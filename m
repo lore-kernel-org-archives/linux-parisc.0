@@ -1,58 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA22553
-	for <parisc-linux@puffin.external.hp.com>; Fri, 14 Jan 2000 16:47:56 -0700
-Received: (from willy@localhost)
-	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id RAA29010
-	for parisc-linux@thepuffingroup.com; Fri, 14 Jan 2000 17:48:31 -0500
-Date: Fri, 14 Jan 2000 17:48:31 -0500
-From: Matthew Wilcox <willy@thepuffingroup.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000114174831.W11300@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] initcall and setup
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA23123
+	for <parisc-linux@puffin.external.hp.com>; Fri, 14 Jan 2000 18:14:24 -0700
+From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Message-Id: <200001150016.QAA16991@chrome.rose.hp.com>
+Subject: Re: [parisc-linux] Minutes
+To: willy@thepuffingroup.com (Matthew Wilcox)
+Date: Fri, 14 Jan 2000 16:16:42 PST
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <20000114172721.V11300@thepuffingroup.com>; from "Matthew Wilcox" at Jan 14, 100 5:27 pm
 List-ID: <linux-parisc.vger.kernel.org>
 
+FYI --
 
-One of the things which has changed during 2.3 development is
-initialisation.  We used to have files full of:
+| 4. Martin has cleaned up the serial and console code.  He will commit his
+|    changes tomorrow after he's tested it.
 
-#ifdef CONFIG_FOO
-	init_foo();
-#endif
+In testing the 2.3 kernel on my D320/1 with an Access Port (AP) card as
+the console, printk() appeared to be broken.  The mprint() statements in
+the boot loader seem to function correctly, and the pdc_putc('.')  at
+the end of realmode_setup() works, but the printk() at the start of
+iodc_con_init() never outputs.  The chassis codes sent out in
+realmode_setup() do appear properly on the AP console.
 
-#ifdef CONFIG_BAR
-	init_bar();
-#endif
+Now the interesting thing in a D-Class with an AP card installed is that
+the RS-232 connector on the back of the machine is dis-connected from 
+the LASI serial hardware and connected to the AP card hardware. Because
+of this, regardless of what console path is stored on the machine, the 
+AP card console is what is used, so that there will always be console
+outptu. When I changed the stored path from the LASI RS-232 path to the 
+AP card RS-232 path, the printk() succeeds. So, there must be something 
+in printk() which is getting confused between what console is actually
+in use and what console is the stored path.
 
-#ifdef CONFIG_QUUX
-	init_quux();
-#endif
+That aside, the kernel appears to hang at the first __put_user() macro
+called in unsigned long create_som_tables(). Executing a TOC after the
+hang consitently gives IIA space/offset = 0x00000000 0x00046234.
 
-which was pretty ugly stuff.
-
-Instead, we have declarations like:
-
-__setup("video=", video_setup);
-__setup("wd33c93", wd33c93_setup);
-__setup("es1370=", es1370_setup);
-
-in each driver and then a loop in init/main.c which goes through and
-calls all the __setup functions.  Much prettier, more modular, less
-dependent on CONFIG_, etc.
-
-Unfortunately, we can't take advantage of this, because we don't yet have
-ELF tools.  This is implemented through an ELF section called __initcall
-which contains the address of the function to call.  We could try to hack
-something together with SOM, but I'd really rather not put the work in
-that will just be dumped later.
-
-
-This explains why we get some of the warnings on compilation;' eg:
-
-init/main.c:170: warning: `__setup_profile_setup' defined but not used
-
-and why if you diff our kernel against Linus', you will find that we have
-reinserted some of the explicit calls to the setup routines that have
-been eliminated from the mainline tree.  It also explains why sometimes
-a driver may not be called even though you compiled it in.
+KMB
+--
++============================================================+
+|       Kirk Bresniker    	(916) 748-2393		     |
+|       8000 Foothills Blvd                                  |
+|       Roseville, CA 95747-5649                             |
+|       kirkb@rose.hp.com                                    |
