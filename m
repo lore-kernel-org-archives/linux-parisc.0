@@ -1,51 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA12356
-	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 02:42:36 -0600
-Date: Mon, 14 Jun 1999 10:42:28 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Alex deVries <adevries@thepuffingroup.com>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] It's finally sunk in: bye bye elf32
-Message-ID: <19990614104228.F31472@mencheca.ch.genedata.com>
-References: <3762F4BE.C09B5CA9@thepuffingroup.com> <199906131702.NAA28988@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199906131702.NAA28988@hiauly1.hia.nrc.ca>; from John David Anglin on Sun, Jun 13, 1999 at 01:02:58PM -0400
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA13126
+	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 09:15:57 -0600
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 14 Jun 1999 15:15:44 -0000
+Received: from alan by the-village.bc.nu with local (Exim 2.12 #1)
+	id 10tYS4-00066l-00
+	for parisc-linux@thepuffingroup.com; Mon, 14 Jun 1999 16:15:08 +0100
+To: parisc-linux@thepuffingroup.com
+Message-Id: <E10tYS4-00066l-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Date: Mon, 14 Jun 1999 16:15:08 +0100
+Subject: [parisc-linux] Dino PCI and I/O spaces
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jun 13, 1999 at 01:02:58PM -0400, John David Anglin wrote:
-> > So, I'm going to spend some time making the kernel build on HPUX.  I
-> > know there's quite a few changes to make.  But I'll keep the elf
-> > specific work, it'll help later on.
-> 
-> The discussion about the merits/limitations of SOM and ELF over the
-> last couple of days has been extremely useful.  As Alex says, there is
-> a lot of work to be done on the kernel before it is usable.  However,
-> in the long run, the port must be a complete self contained system.
-> That is, it must support a linker capable of generating executables
-> and the kernel.
 
-[...]
+I've put together draft code to handle the Dino PCI configuration space
+accesses. There seems to be no way to do byte sized config accesses, do
+I just read 32bits mask and write 32bits ?
 
-> If this does not work out, then we must fall back to ELF32 and devote
-> enough effort to get elf32-hppa working at an acceptable level.
+The I/O space documentation also doesn't cover how to force sizes for
+inb/inw/inl.
 
-The long term goal is to support:
+Im guessing you simply do that sized memory access to the 0x6C offset.
 
- * HP-UX binaries
- * parisc/elf32 Linux binaries
- * parisc/elf64 Linux binaries (on parisc 2.0 hardware)
+I'm mapping the notional I/O space 0x0000->0xFFFF as PCI space I/O. Since
+HP boxes have I/O space high no MMIO can be confused for PCI this way.
+If we have multiple Dino's in any box I need to put my thinking hat back on.
 
-The binfmt_som kernel support is necessary in both the short term (to
-get a working shell for free) and long term which is why I decided to
-do it first.  Once the kernel is built, we can then run the HPUX linker
-on it, but we have a `small' bootstrap problem.  As Jeff says though,
-it's worth throwing away the whole of parisc/elf32 and starting again
-from scratch.  We were just hoping to not have to do that for a while..
+Also as a btw: PCI I/O port access will suck rocks on HP because we have
+to grab a lock since it is a two stage operation. That may mean we want
+to write smart copy/csum/io and ins* functions for PCI block I/O.
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Alan
