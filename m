@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cs2416219-93.houston.rr.com (cs2416219-93.houston.rr.com [24.162.19.93])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8A09D4841
-	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 14:23:57 -0600 (MDT)
-Message-ID: <th15--661$ex$yv@56gu.j78g>
-From: "Jonathon Ambrose" <xikrmcm758@yahoo.com>
-Reply-To: "Jonathon Ambrose" <xikrmcm758@yahoo.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 23 Oct 2003 01:22:56 +0400
+Received: from rediffmail920.com (node-d-58eb.a2000.nl [62.195.88.235])
+	by dsl2.external.hp.com (Postfix) with SMTP id B19894841
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Oct 2003 17:13:26 -0600 (MDT)
+From: Mrs Serena Jones <serenajones1@rediffmail.com>
+To: parisc-linux@lists.parisc-linux.org
+Reply-To: serenajones1@rediffmail.com
+Date: Thu, 23 Oct 2003 01:13:28 +0200
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="F_B9ED.6_A_.53B.D"
-Subject: [parisc-linux] US Stock Market: TRHL - Last Pick From .45 to 1.18...clara
+Content-Type: multipart/mixed; boundary="a9077c9f-3c3a-417e-9dcf-b39e5485f476"
+Message-Id: <20031022231326.B19894841@dsl2.external.hp.com>
+Subject: [parisc-linux] DONATION FOR THE LORD.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,151 +21,72 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---F_B9ED.6_A_.53B.D
-Content-Type: text/plain;
+This is a multi-part message in MIME format
+--a9077c9f-3c3a-417e-9dcf-b39e5485f476
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-UPSIDE INTERNATIONAL - Searching Out Stocks with Big Upside Potential...th=
-at have gone unnoticed until now.
+From: Mrs Serena Jones
 
+PLEASE ENDEAVOUR TO USED IT FOR THE CHILDREN OF GOD.
+I am the above named person from Kuwait. I am married
+to Dr. Harry Jones who worked with Kuwait embassy in Ivory Co
+ast for nine years before he died in the year
+2000.
+We were married for eleven years without a child. He died a
+fter a brief illness that lasted for only
+four days. Before his death we were both born again Christia
+ns.Since his death I decided not to re-
+marry or get a child outside my matrimonial home which the Bi
+ble is against.When my late husband was alive he deposited the
+sum of$8.6Million (Eight Million six hundred thousand U.S. D
+ollars) with one finance/security company in Amsterderm Hollan
+d. Presently, this money is still with the Security Company.
+Recently, my Doctor told me that I would not last for the next
+three
+months due to cancer problem. Though what disturbs me most i
+s my stroke sickness. Having known my condition I decided to
+donate this fund to church or better still a christian individ
+ual that will utilize this money the way I am going to instruc
+t here in. I want a church that will use this fund to fund chu
+rches, orphanages and widows propagating the word of God and t
+o ensure that the house of God is maintained. The Bible made
+us to understand that Blessed is the hand that giveth.
+I took this decision because I don?t have any child that wil
+l inherit this money and my husband relatives are not Christi
+ans and I don?t want my husband?s hard earned money to be misu
+sed by unbelievers. I don?t want a situation where this money
+will be used in an ungodly manner. Hence the reason for taking
+this bold decision. I am not afraid of death hence I know whe
+re I am going. I know that I am going to be in the bosom of th
+e Lord. Exodus 14 VS 14 says that the lord will fight my case
+and I shall hold my peace. I don?t need any telephone communi
+cation in this regard because of my health because of the pres
+ence of my husband?s relatives around me always. I don?t want
+them to know about this development. With God all things are p
+ossible. As soon as I receive your reply I shall give you the
+contact of the Finance/Security Company in Amsterderm Holland
+. I will also issue you a letter of authority that will prove
+you as the original-
+beneficiary of this fund. I want you and the church to always
+pray for me because the lord is my shephard. My
+happiness is that I lived a life of a worthy Christian. Whoe
+ver that wants to serve the Lord must serve him in spirit and
+truth. Please always be prayerful all through your life. Any d
+elay in your reply will give me room in sourcing for a chuch
+or christian individual for this same purpose. Please assure
+me that you will act accordingly as I stated herein. Hoping
+to hearing from you.
 
-Our last pick SUQU went from 0.45 to 1.18
+N.B-
+PLEASE I WILL ADVICE YOU TO GIVE THE LAWYER IN CHARGE A CALL IN HOLLAND =
+IMMEDIATELY, HE DOES EVERYTHING ON MY BEHALF AND HE'S VERY UNDERSTANDING AND =
+I BELIEVE HE WILL LEAD YOU TO YOUR SUCCESS IN JESUS NAME, THE LAWYER'S NAME =
+IS GERRY SLY HIS CONTACT PHONE NUMBER IS 00-31-620-668-086.
 
+Remain blessed in the name of the Lord.
+Yours in Christ,
+Mrs Serena Jones
 
-Our New Pick  is True Health, Inc. - TRHL - with revenues up by more than =
-412%
-
-True Health, Inc.: TRHL
-Industry: Healthcare
-12-month range: 0.55-3.90 - SUQU went back to its previous high of 1.18, w=
-e believe TRHL can too - to its previous high of 3.90
-
-
-BREAKING NEWS - PR Newswire-First Call - True Health Announces the Appoint=
-ment of Ian Wylie as Chief Financial Officer - Mr. Wylie has held the posi=
-tion of Corporate Finance Manager at Del Monte Food Intl.  Del Monte Foods=
- Co. (NYSE: DLM) posted net sales of 2.171 billion for fiscal 2003. Mr. Wy=
-lie also held the same position at Countrywide Assured PLC, which included=
- the oversight of 350 million pounds sterling (580 million dollars). Just =
-prior to this announcement, Mr. Wylie was the Director of Town & Country H=
-ousing where he was responsible for the development of the company's growt=
-h strategies and overseeing an asset portfolio of 400 million pounds sterl=
-ing (665 million dollars).
-
-
-We are now seeing indicators with TRHL, the 20 - 50 Day MACD Oscillator is=
- now indicating an upward trend, 20 Day Bollinger Bands have moved into a =
-upward indication.
-
-
-
-THE PROBLEM
-
-The US and international healthcare industry are currently in a major cris=
-is. There is a huge shortage of skilled healthcare specialists, doctors an=
-d nurses, and since 9/11, many qualified professionals are finding it impo=
-ssible to immigrate into countries desperately needing medical personnel. =
-
-
-
-
-THE SOLUTION
-
-True Health Incorporated is a full service specialist, medical equipment a=
-nd medical professional supplier to the healthcare industry. Its primary c=
-lients are Great Britain's National Health Service (NHS), BUPA Internation=
-al and the private Nursing Home Industry. The Company also delivers recrui=
-tment services to the NHS; specializing in the provision of locem radiogra=
-phers and nurses.
-
-
-
-MD, NURSE SHORTAGES REACHING CRISIS LEVELS
-
-WASHINGTON, (UPI) -- Shortages of surgeons, pharmacists and nurses in hosp=
-itals across the United States are reaching crisis levels and may worsen o=
-ver the next several years, health care experts warned.  The nursing short=
-age -- more than 126,000 positions currently remain unfilled -- has become=
- so severe it is endangering the lives of patients and is a primary reason=
- for overcrowding in emergency departments and cancellation of surgeries, =
-according to a report by an Experts Roundtable panel convened by the Joint=
- Commission on the Accreditation of Healthcare Organizations.  The Society=
- for Thoracic Surgeons recently warned that a shortage of heart surgeons l=
-ooms within a few years and a survey of hospitals found pharmacists, X-ray=
- technicians and therapists are leaving at such an alarming rate it alread=
-y is impacting the quality of care patients receive.
-
-
-
-JOHNSON C0-SPONSORS LEGISLATION TO ADDRESS NURSE SHORTAGES
-
-January 24, 2003 Washington, DC- U.S. Senator Tim Johnson (D-SD) recently =
-co-sponsored the Nurse Reinvestment Act to address areas with critical nur=
-se shortages in an effort to provide more opportunities to recruit and ret=
-ain quality nurses. "Our national health care system has many problems tha=
-t need to be addressed," Johnson said. "At the top of that is the severe s=
-hortage of nurses.
-
-
-
-COLLEGE OF FAMILY PHYSICIANS OF CANADA
-
-Past decisions with respect to health care reform have been made without c=
-omplete or accurate information, and this has led to critical problems in =
-the system such as doctor shortages and waiting lists. 
-
-
-
-TEXAS PUBLIC POLICY FOUNDATION
-CHECK WITH YOUR DOCTOR FIRST - SEPTEMBER 03, 2003
-TEXANS CAN CURE STATE'S MEDICAL CRISIS
-
-Getting a second opinion is always a good idea, particularly when you have=
- a serious medical problem. Today, Texans are suffering from a serious lac=
-k of medical care. The American Medical Association says the physician sho=
-rtage has reached crisis proportions in Texas and lives are in peril.
-
-
-
-TRUE HEALTH'S SUBSIDIARY - WESTMERIA
-
-True Health through its wholly owned subsidiary, Westmeria for 20 years ha=
-s developed a reputation for getting medical personnel in where they are n=
-eeded fast. Now with demand for these professionals escalating at an expon=
-ential rate, the demand for Westmeria is growing fast. Westmeria is now re=
-ady to place thousands of doctors and nurses to help solve the worldwide c=
-risis. This will equate to many millions in added revenues for True Health=
- Check out the latest financial report.
-
-
-
-FINANCIALS
-
-According to the latest financials, revenues are up by more than 412=
-%
-
-
-
-SEPT 2003-QUARTERLY REPORT
-
-Revenue for the three months ended July 31, 2003 went up by 412.8=
-%, when compared to revenue for the three months ended July31, 2002.  The =
-equipment rentals and sales segment's revenue went up by 69.8=
-%, in the three months ended July 31, 2003, compared to the three months e=
-nded July 31, 2002. This reflects the growth in the business over the past=
- year.
-
-
-
-
-
-
-
-
-
-
-pw wna
-zoigc jtclve knpxfr pr p
-tfzf g
-
---F_B9ED.6_A_.53B.D--
+  
+--a9077c9f-3c3a-417e-9dcf-b39e5485f476--
