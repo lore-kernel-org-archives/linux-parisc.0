@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout04.sul.t-online.com (mailout04.sul.t-online.com [194.25.134.18])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EC352482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 11:14:01 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: H_Aue@t-online.de (Hinrich Aue)
-To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 8 Jan 2002 19:17:45 +0100
-MIME-Version: 1.0
-Message-ID: <16O0kw-0Ci6ASC@fwd05.sul.t-online.com>
-Subject: [parisc-linux] RAID - speed measure
+Received: from sh.od.inet (CPE0080C82B2487.cpe.net.cable.rogers.com [24.112.142.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 22D65482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 14:43:44 -0700 (MST)
+Date: Tue, 8 Jan 2002 16:44:39 -0500
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: Jbit of Plasma <james_a_n_lee@yahoo.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP 712/60
+Message-ID: <20020108164439.W11181@systemhalted>
+References: <3C3B165D.2030101@yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3C3B165D.2030101@yahoo.com>; from james_a_n_lee@yahoo.com on Tue, Jan 08, 2002 at 03:55:09PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,14 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-It's of course not mem speed measure as mentioned before in the forum :-)
-It's RAID - spped measure. stupid fault.
+> Hi!
+> I have a HP 712/60 sitting in my room doing nothing, it has no memory so i'm debating whether or not i should get it up and running.
+> Basicly, anybody know what memory it uses (i assume ecc 72-pin simm) and anybody know what it performs like or whats supported in linux (sound/gfx/lan)
+> Thanks for any help ;P
+> 
+> --jbit
+>
 
-raid5: measuring checksumming speed
-   8regs     : 77961.200 MB/sec
-   8regs_prefetch:    56.400 MB/sec
-   32regs    :    94.800 MB/sec
-   32regs_prefetch:    95.200 MB/sec
-raid5: using function: 8regs (77961.200 MB/sec)
+Jbit,
 
-But anyway, it's strange. Perhaps only a missing division /1000.
+Our 712/60 works marvels! It's a great little box and I used to do
+daily glibc / gcc / linux compiles on the box (mind you it would take
+about 8 hrs to compile glibc).
+
+The fb code works great on the 712/60... the first time I saw the
+penguin in the conrner of the bootup screen made me smile :)
+
+ditto for lan (AUI/RJ45) ... works great.
+
+Sound? Never tried. Haven enough MP3 playing boxes in the office ^__^;;
+
+c.
