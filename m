@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12501.mail.yahoo.com (web12501.mail.yahoo.com [216.136.173.193])
-	by dsl2.external.hp.com (Postfix) with SMTP id D01B04829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 07:18:41 -0700 (MST)
-Message-ID: <20030402141841.79074.qmail@web12501.mail.yahoo.com>
-Date: Wed, 2 Apr 2003 06:18:41 -0800 (PST)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: RE: [parisc-linux] RAID issues on my C3000
-To: Joel Soete <jsoe0708@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3E842746000028D3@ocpmta2.freegates.net>
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1071073824-1049293121=:78102"
+Received: from u1snd02p.us.fortis.com (smtp02p.us.fortis.com [167.79.54.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B1DA4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 08:16:49 -0700 (MST)
+Received: from W1PMM02.us.fortis.com (twbymime02.us.fortis.com [165.245.9.58])
+	by u1snd02p.us.fortis.com (8.11.6+Sun/8.11.6) with ESMTP id h32FGl801422
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 2 Apr 2003 09:16:48 -0600 (CST)
+Message-Id: <se8aaa7f.074@internal.us.fortis.com>
+Date: Wed, 02 Apr 2003 09:16:05 -0600
+From: "Derek Ellis" <Derek.Ellis@us.fortis.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] soft power and power light on 712/60
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,65 +23,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---0-1071073824-1049293121=:78102
-Content-Type: text/plain; charset=us-ascii
+I wonder if the problem is with the precompiled 2.4.20-pa32 kernel, since=
+=20that is what I am using.
+
+Last night I also put my old 500MB HP drive back in and the light & power=
+=20switch worked correctly with the 2.4.18 kernel.  I then used the netwo=
+rk install CD (with kernel 2.4.20-pa32) to reinstall that drive.  After t=
+he install the light & power didn't work, so this leads me to believe the=
+re is something with that kernel.
+
+Derek
+
+>>> root <root@cdc712-9.cdc.polimi.it> 04/02/03 05:38AM >>>
+On Wed, Apr 02, 2003 at 11:23:52AM +0200, Michael Wood wrote:
+> On Tue, Apr 01, 2003 at 08:59:43AM -0600, Derek Ellis wrote:
+
+I've got a problem similar to yours with my 712-60 using 2.4.20-pa32
+precompiled. The power light while searching for a suitable boot
+media (as it should), then goes on as expected. The power switch does not=
+
+work. With earlier kernels (say 2.4.9-something) it worked. Any advice on=
+
+that ?
 
 
-I just ran the version of PALO on my root disk and it does say 1.2.  That was my original problem....
-derek
- Joel Soete <jsoe0708@tiscali.be> wrote:
->
->Hey all,
->I was just following the RAID HOWTO posted awile back and I ran into a few
->problems.
+> > Hello,
+> >=20
+> > I have sort of a weird problem.  I installed Debian 3.0 on Sunday and=
 
-I do also for at least 3 of my b180 and it works fine :)
+> > it came up great on my 712/60.  The only problem is the soft-power
+> > switch doesn't work and the power light flashes while searching for
+> > the boot device and then goes off once it starts booting. =20
+>=20
+> --=20
+> Michael Wood <mwood@its.uct.ac.za>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org=20
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux=20
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org=20
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-
-> I've gotten all the way through creating my RAID partitions and
->copying the data over via tar, making it bootable (after upgrading my PALO
->from source - it is now 1.2), editing all the files on the new md devices,
->and then rebooting. When I try to boot from the new degraded RAID disk
-I
->get that the device is hard booted (with PALO 1.0 not 1.2), displays my
-patition
->info (but displays the partitions as "unknown" and not RAID probably due
->to the Palo 1.0 version), and spits out "Selected kernal: /vmlinux from
-partition
->2" then "Error: Partition 2 must be ext2".
-
-This is typicaly the message from palo < 1.2 (I also encounter this same
-message before figuring out that I forget to update palo on my actual root
-disk).
-So on your non-raid disk install the last palo dpkg (1.2) (I do it without
-pb on a woody pre-libc 2.3.0).
-[check the version with palo -? | grep version (must be now 1.2)]
-relaunch:
-# palo -f YourPathToNew/palo.conf -I YourRaidDIsk
-
-It works for me and hope for you too.
-
-Joel
-
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
-
-
-
-
----------------------------------
-Do you Yahoo!?
-Yahoo! Tax Center - File online, calculators, forms, and more
---0-1071073824-1049293121=:78102
-Content-Type: text/html; charset=us-ascii
-
-<P>I just ran the version of PALO on my root disk and it does say 1.2.&nbsp; That was my original problem....
-<P>derek
-<P>&nbsp;<B><I>Joel Soete &lt;jsoe0708@tiscali.be&gt;</I></B> wrote:
-<BLOCKQUOTE style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid"><BR>&gt;<BR>&gt;Hey all,<BR>&gt;I was just following the RAID HOWTO posted awile back and I ran into a few<BR>&gt;problems.<BR><BR>I do also for at least 3 of my b180 and it works fine :)<BR><BR><BR>&gt; I've gotten all the way through creating my RAID partitions and<BR>&gt;copying the data over via tar, making it bootable (after upgrading my PALO<BR>&gt;from source - it is now 1.2), editing all the files on the new md devices,<BR>&gt;and then rebooting. When I try to boot from the new degraded RAID disk<BR>I<BR>&gt;get that the device is hard booted (with PALO 1.0 not 1.2), displays my<BR>patition<BR>&gt;info (but displays the partitions as "unknown" and not RAID probably due<BR>&gt;to the Palo 1.0 version), and spits out "Selected kernal: /vmlinux from<BR>partition<BR>&gt;2" then "Error: Partition 2 must be ext2".<BR><BR>This is typicaly the message from palo &lt; 1.2 (I also encounter this same<BR>message before figuring out that I forget to update palo on my actual root<BR>disk).<BR>So on your non-raid disk install the last palo dpkg (1.2) (I do it without<BR>pb on a woody pre-libc 2.3.0).<BR>[check the version with palo -? | grep version (must be now 1.2)]<BR>relaunch:<BR># palo -f YourPathToNew/palo.conf -I YourRaidDIsk<BR><BR>It works for me and hope for you too.<BR><BR>Joel<BR><BR><BR>---------------------------------<BR>Vous surfez avec une ligne classique ?<BR>Economisez jusqu'à 25% avec Tiscali Complete !<BR>Offre spéciale : première année d'abonnement offerte.<BR>... Plus d'info sur http://complete.tiscali.be<BR><BR></BLOCKQUOTE><p><br><hr size=1>Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/finance/mailsig/*http://tax.yahoo.com">Yahoo! Tax Center</a> - File online, calculators, forms, and more
---0-1071073824-1049293121=:78102--
+****************************************************************
+=09		Please Note
+The information in this E-mail message is legally privileged
+and confidential information intended only for the use of the
+individual(s) named above. If you, the reader of this message,
+are not the intended recipient, you are hereby notified that=20
+you should not further disseminate, distribute, or forward this
+E-mail message. If you have received this E-mail in error,
+please notify the sender. Thank you
+*****************************************************************
