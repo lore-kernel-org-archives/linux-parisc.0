@@ -1,17 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sun, 21 Sep 2003 23:00:16 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: "Stephen C. Tweedie" <sct@redhat.com>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	Ranjith Sudarsanan <ranjith_sudarsanan@hp.com>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [Fwd: [parisc-linux] Problems with raw interface.]
-Message-ID: <20030922050016.GB30351@dsl2.external.hp.com>
-References: <1063919293.16536.2.camel@dhcp23.swansea.linux.org.uk> <1063989244.2834.48.camel@sisko.scot.redhat.com> <20030921053555.GA5312@dsl2.external.hp.com> <20030921142504.GD13172@parcelfarce.linux.theplanet.co.uk>
+Received: from gaz.sfgoth.com (unknown [63.205.85.133])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D13A483E
+	for <parisc-linux@parisc-linux.org>; Mon, 22 Sep 2003 00:02:00 -0600 (MDT)
+Received: from gaz.sfgoth.com (localhost.sfgoth.com [127.0.0.1])
+	by gaz.sfgoth.com (8.12.9/8.12.6) with ESMTP id h8M6BPOv078337
+	for <parisc-linux@parisc-linux.org>; Sun, 21 Sep 2003 23:11:25 -0700 (PDT)
+	(envelope-from mitch@gaz.sfgoth.com)
+Received: (from mitch@localhost)
+	by gaz.sfgoth.com (8.12.9/8.12.6/Submit) id h8M6BPdr078336
+	for parisc-linux@parisc-linux.org; Sun, 21 Sep 2003 23:11:25 -0700 (PDT)
+	(envelope-from mitch)
+Date: Sun, 21 Sep 2003 23:11:25 -0700
+From: Mitchell Blank Jr <mitch@sfgoth.com>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20030922061125.GL50734@gaz.sfgoth.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030921142504.GD13172@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] [2.6 PATCH][PARISC] atomic_read()
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,52 +28,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Sep 21, 2003 at 03:25:04PM +0100, Matthew Wilcox wrote:
-> > BTW, kernel and user space will alias to different cachelines
-> > for the same 32-bit "offset" because of "Space Registers"
-> > (form of segmented addressing).
-> 
-> Rubbish, they alias to the same cachelines because of the 4MB get-out
-> clause.  What you may have meant is that the same page accessed through
-> user and kernel mappings will alias to different cachelines because
-> their addresses *aren't* congruent modulo 4MB.
+A patch was recently accepted into the main 2.6 tree that makes skb_cloned()
+and skb_shared() take a "const" pointer.  These functions call atomic_read()
+so it needs to take a const pointer too.  After some discussion on netdev
+davem said that this should be safe (even in the pessimal case of a
+spinlock-implemented atomic_t we should be able to read its value outside
+the lock safely)
 
-yes - that's what I meant...I was thinking at least part of the reason
-they aren't congruent is because they are in different "segments" (ie use
-a different Space ID). Maybe I'm just confused by past experience where
-Space ID hashing was enabled (HPUX); parisc-linux has never had space ID
-hashing enabled (at least not intentionally).
+PA-RISC uses an inline fucntion for atomic_read() but it doesn't mark its
+argument as const, so without this patch you'll start seeing lots of new
+compile warnings.
 
-BTW, I suspect the following code in 2.4.22 mm/memory.c:map_user_kiobuf()
-deals with this problem:
-	...
-        while (pgcount--) {
-	                /* FIXME: flush superflous for rw==READ,
-			*  probably wrong function for rw==WRITE
-			*/
-			flush_dcache_page(iobuf->maplist[pgcount]);
-	}
-	...
+Please apply.  The patch is versus a week ago but the file hasn't changed so
+it should apply fine.  It isn't compile tested but it shouldn't cause any
+problems.
 
-[ I got here because rw_raw_dev() calls map_user_kiobuf().]
+-Mitch
 
-But for "READ" (inbound data), I think I need a call that will
-invalidate cachelines for userspace addresses. Preferable *after*
-the DMA has completed in order to avoid issues with data prefetching
-by the CPU.  ie memory has the most recent copy and any CPU holding
-cachelines for the kernel address range will be coherent.
-
-
-> Those functions don't seem to exist in 2.6.  The only reference is:
-> ./Documentation/block/biodoc.txt: of data, so brw_kiovec() invokes
-> ll_rw_kio for each kiobuf in a kiovec.
-> which seems to be an orphaned comment.
-> 
-> I'll reluctantly take a look at 2.4.
-
-Well, the problem exists in 2.6 and is easy to reproduce.
-Perhaps find the equivalent calls there and I'll backport the fix to 2.4?
-I'm assuming what's broken is obvious once one finds the right code.
-
-thanks,
-grant
+--- linux-2.6.0-test5-bk3-mnb2/include/asm-parisc/atomic.h	2003-09-12 15:46:35.000000000 -0700
++++ linux-2.6.0-test5-bk3-mnb3/include/asm-parisc/atomic.h	2003-09-21 16:07:11.782837264 -0700
+@@ -154,7 +154,7 @@
+ 	SPIN_UNLOCK_IRQRESTORE(ATOMIC_HASH(v), flags);
+ }
+ 
+-static __inline__ int __atomic_read(atomic_t *v)
++static __inline__ int __atomic_read(const atomic_t *v)
+ {
+ 	return v->counter;
+ }
