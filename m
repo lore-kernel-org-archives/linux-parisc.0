@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B99624829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Jan 2003 07:45:29 -0700 (MST)
-Date: Tue, 14 Jan 2003 15:44:46 +0100
-Message-ID: <3DED9A6600005946@ocpmta3.freegates.net>
-In-Reply-To: <200301141354.h0EDsNjn028670@hiauly1.hia.nrc.ca>
-From: jsoe0708@tiscali.be
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B23CF4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Jan 2003 08:04:17 -0700 (MST)
+Message-Id: <200301141504.h0EF4FiQ002740@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] new gcc-snapshot problem [was: new gcc-default for hppa]
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: jsoe0708@tiscali.be
+Date: Tue, 14 Jan 2003 10:04:14 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: tausq@debian.org, parisc-linux@lists.parisc-linux.org,
 	debian-hppa@lists.debian.org
+In-Reply-To: <3DED9A6600005946@ocpmta3.freegates.net> from "jsoe0708@tiscali.be" at Jan 14, 2003 03:44:46 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,102 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->> I have a look and in drivers/ide/ide-cd.h line 440 I found well:
->>     __u8 short slot_tabelen;
->> 
->> Any idea?
->
->Look at the code after preprocessing with "-E" option.  This will
->show you the actual code where the fault occurs.
->
-Hi Dave,
+>         byte nslots;
+>         __u8 short slot_tablelen;
+          ^^^^ ^^^^^
 
-Good idea and I do so for tree compiler still install:
-gcc-3.0 -E
+As Willi said, the error is above and you will have to figure out or
+ask the maintainer what the intended type for slot_tablelen was in
+this struct.  Look to see if there is a maximum size defined somewhere.
 
-struct atapi_mechstat_header {
+>         __u8 nslots;
+>         __u16 slot_tablelen;
+> };
+> 
+> hmm could this be a typo at one moment "unsigned short" would be changed
+> "__u8 short" ???
 
-        __u8 fault : 1;
-        __u8 changer_state : 2;
-        __u8 curslot : 5;
-# 427 "ide-cd.h"
-        __u8 mech_state : 3;
-        __u8 door_open : 1;
-        __u8 reserved1 : 4;
-# 438 "ide-cd.h" 
-        byte curlba[3];
-        byte nslots;
-        __u8 short slot_tablelen;
-};
+Could be a typo.  However, this is a different struct from the one above,
+so the types could be different to accomodate different table sizes.
 
-gcc-3.2 -E
-
-struct atapi_mechstat_header {
-
-        __u8 fault : 1;
-        __u8 changer_state : 2;
-        __u8 curslot : 5;
-# 427 "ide-cd.h"
-        __u8 mech_state : 3;
-        __u8 door_open : 1;
-        __u8 reserved1 : 4;
-# 438 "ide-cd.h"
-        byte curlba[3];
-        byte nslots;
-        __u8 short slot_tablelen;
-};
-
-gcc-3.3 -E
-
-struct atapi_mechstat_header {
-
-        __u8 fault : 1;
-        __u8 changer_state : 2;
-        __u8 curslot : 5;
-# 427 "ide-cd.h"
-        __u8 mech_state : 3;
-        __u8 door_open : 1;
-        __u8 reserved1 : 4;
-# 438 "ide-cd.h"
-        byte curlba[3];
-        byte nslots;
-        __u8 short slot_tablelen;
-};
-
-Do you notice any difference OTC above I encounter another use of slot_ta=
-blelen
-as:
-
-struct cdrom_mechstat_header {
-
-        __u8 fault : 1;
-        __u8 changer_state : 2;
-        __u8 curslot : 5;
-        __u8 mech_state : 3;
-        __u8 door_open : 1;
-        __u8 reserved1 : 4;
-# 927 "/usr/src/linux-2.4.20-pa21/include/linux/cdrom.h"
-        __u8 curlba[3];
-        __u8 nslots;
-        __u16 slot_tablelen;
-};
-
-hmm could this be a typo at one moment "unsigned short" would be changed
-"__u8 short" ???
-
-More over what could be the actual patch:
-__u8 slot_tablelen;
-
-or as in the 2d structure
-
-__u16 slot_tablelen;
-
-Cheers,
-    Joel
-
-
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
