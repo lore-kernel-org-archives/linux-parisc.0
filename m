@@ -1,14 +1,19 @@
-From: Guy Martin <gmsoft@gentoo.org>
+From: James Bottomley <James.Bottomley@steeleye.com>
 Subject: Re: [parisc-linux] Support for 2.4.x kernels on hppa
-Date: Tue, 25 May 2004 12:21:24 +0200
-Message-ID: <20040525122124.7154e4d2.gmsoft@gentoo.org>
-References: <20040524183227.GW7207@tausq.org>
+Date: 25 May 2004 10:26:37 -0500
+Message-ID: <1085498801.1811.56.camel__11504.200337413$1416623457$gmane$org@mulgrave>
+References: <200405242136.i4OLaRtN003029@arbas.nms.ulrich-teichert.org>
+	<200405242147.i4OLlVoZ012250@hiauly1.hia.nrc.ca>
+	<20040525040929.GB1308@colo.lackof.org>
+	<20040525054216.GD7207@tausq.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1354919123=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Cc: Ulrich Teichert <krypton@ulrich-teichert.org>,
+ PARISC list <parisc-linux@lists.parisc-linux.org>,
+ debian-hppa@lists.debian.org
+To: Randolph Chung <tausq@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040524183227.GW7207@tausq.org>
+In-Reply-To: <20040525054216.GD7207@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,75 +24,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1354919123==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="pgp-sha1"; boundary=")mMqyb=.pN=f?,L?"
+On Tue, 2004-05-25 at 00:42, Randolph Chung wrote:
+> I should also point out that, really, this is nothing new, we've
+> probably been operating in this mode for the last year; it's just
+> never been made explicit.. :)
 
---)mMqyb=.pN=f?,L?
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, I think it's basically the democracy of open source.  I did quite
+a few (although by no means all) of the kernel fixes to get the
+gcc/glibc tests to pass on 2.6, I have no interest in fixing it on 2.4,
+but if someone else cares enough, they will...
 
-On Mon, 24 May 2004 11:32:27 -0700
-Randolph Chung <tausq@debian.org> wrote:
+James
 
-> I'd like to take an informal "survey" of what kernel versions people
-> are using....
-
-I use a 2.6 on a A440 and B180l and a C3600.
-I remember having trouble with a J5000 but it was some time ago and I
-guess my problem was the SMP enabled.
-
-I'd like to use it on my D270 and on a K360 but there are scsi problems
-atm. They both suffer of the same problem described by Joel Soete.
-
-Also, a gentoo user wasn't able to boot a 2.6 on a 735/120. Palo (1.5)
-display "If it's the last message ..." and nothing more while it works
-well with a 2.4. I'll try myself later on my 735/99 which is down atm.
-
-
-I'd like to add that despite the scsi problem, I can't still produce
-livecd (the gentoo installation cd) using 2.6 because of the numerous
-default config. If I remember correctly, if I enable some HIL stuff,
-the kernel loops or crash at boot on my b180l.
-
-> If you are one of those people who really care about 2.4 support,
-> please speak up now!=20
-
-Personaly, I don't care about 2.4 even if 2.6 doesn't have SMP. With a
-2.4, my D270 compiles things slower with SMP than without. I also have
-other problems with SMP like packet loss to localhost, making portmap
-and other socket dae=F9on unusable.
-
-
-hth
-
---=20
-Guy Martin
-Gentoo Linux - HPPA port Lead / IPv6 team
-Lug Charleroi (Belgium)
-
---)mMqyb=.pN=f?,L?
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAsx4nrpShrnoH4YYRAmfuAJ0fdQvZZnkJU0mTSDQt5MVyuETpAgCfXmhw
-274ZPB6L9yLFPPVlQwQ1RG4=
-=3I3a
------END PGP SIGNATURE-----
-
---)mMqyb=.pN=f?,L?--
-
---===============1354919123==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1354919123==--
