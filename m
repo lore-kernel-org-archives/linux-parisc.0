@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 276654894
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 08:50:33 -0600 (MDT)
-Date: Sun, 28 Sep 2003 15:50:29 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.6.0-test6-pa0 undefined references
-In-Reply-To: <20030928144637.GG24824@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.58.0309281547200.29331@sal.ucc.ie>
-References: <Pine.LNX.4.58.0309281530440.29331@sal.ucc.ie>
- <20030928144637.GG24824@parcelfarce.linux.theplanet.co.uk>
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 818BA4845
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 10:56:40 -0600 (MDT)
+Message-ID: <3F7712C2.2000902@tiscali.be>
+Date: Sun, 28 Sep 2003 16:56:34 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PALO do not start!
+References: <881138831633.20030923163001@kti.ae.poznan.pl>
+In-Reply-To: <881138831633.20030923163001@kti.ae.poznan.pl>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +23,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 28 Sep 2003, Matthew Wilcox wrote:
+Jacek Chmielewski wrote:
 
-> On Sun, Sep 28, 2003 at 03:44:14PM +0100, M. Grabert wrote:
-> > I can't compine 2.6.0-test6-pa0, compiling stops with the following
-> > error message:
+>Hi
 >
-> Yes, that's expected for -pa0.  It only gets -pa1 once these kinds of
-> problems are fixed ;-)
-
-Yes, that's why I didn't included my .config (since you just merged -test6
-I assumed it's too early to blame it on my config ;)
-
-I also just wanted to give you a hint what needs fixing *grin*
-
-> > PS: I also can't compile smbfs in the kernel, but as module:
-> >  (error about undefined reference to `low2highuid`)
+>I managed to install Debian on my HP 9000/J200 box (I used DHCP server and
+>netinstall lifimage). The installation procedure passed without problems. I
+>created three partitions:
+>/dev/sda1  *  1    4    16461  f0  Linux/PA-RISC boot
+>/dev/sda2     5   34   123690  82  Linux swap
+>/dev/sda3  * 35  277  1001889  83  Linux
 >
-> I'll look at that ...
+it seems that sda3 stand well into the first 2gb of your disk?
+Do you have severall disk on your system and so do boot on the right disk?
+if your system 'autoboot', interupt it with [Esc]; the main menu would 
+show you something like:
+   Primary boot path:    core.FWSCSI.6.0
+   Alternate boot path:  
+core.FWSCSI.5.0                                                                     
 
-Slan, Max
+
+>
+>After the reboot I get the following result:
+>
+>Booting...
+>Boot IO Dependent Code (IODC) revision 1
+>HARD Booted.
+>
+>... and everything nothing happens. I assume that I should see PALO
+>starting from the /dev/sda1 partition,
+>
+yes
+
+> but it don't want to start.
+>
+>What could be possibly wrong?
+>
+>Is there any solution or workaround for this problem?
+>
+Try to restart your netinstall, in the second menu you should be able to 
+go into a small shell.
+There create first /mnt/BD in your ramdisk and so mount /dev/sda3 /mnt/DB.
+verify first the contents of /mnt/DB/etc/palo.conf.
+
+hth,
+    Joel
