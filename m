@@ -1,40 +1,46 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [PATCH] Sort generic PCI fixups after specific ones
-Date: Tue, 5 Oct 2004 16:29:59 +0100
-Message-ID: <20041005152959.GX16153__25141.5134560832$1416624490$gmane$org@parcelfarce.linux.theplanet.co.uk>
-References: <20040922214304.GS16153@parcelfarce.linux.theplanet.co.uk> <20040923172038.GA8812@kroah.com> <20040923173151.GX16153@parcelfarce.linux.theplanet.co.uk> <20040924023357.A2526@jurassic.park.msu.ru> <20040930174155.GT16153@parcelfarce.linux.theplanet.co.uk> <20041002014817.A24292@jurassic.park.msu.ru>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Re: hppa glibc 2.3.3
+Date: Wed, 6 Oct 2004 00:56:46 -0400
+Message-ID: <20041006045646.GJ23260@baldric.uwo.ca>
+References: <200409271755.i8RHtNoa017851@hiauly1.hia.nrc.ca>
+	<Pine.LNX.4.58.0409272134390.422@trillian.uni>
+	<20040928032200.GF27033@baldric.uwo.ca>
+	<Pine.LNX.4.58.0410050846320.924@trillian.uni>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Matthew Wilcox <matthew@wil.cx>,
- Greg KH <greg@kroah.com>,
- Linus Torvalds <torvalds@osdl.org>,
- Andrew Morton <akpm@zip.com.au>,
- linux-kernel@vger.kernel.org,
- linux-pci@atrey.karlin.mff.cuni.cz,
- parisc-linux@parisc-linux.org
-To: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Return-Path: <linux-kernel-owner+deller=40gmx.de-S269144AbUJEPaZ@vger.kernel.org>
-In-Reply-To: <20041002014817.A24292@jurassic.park.msu.ru>
-List-Id: linux-parisc.vger.kernel.org
+Cc: parisc-linux@parisc-linux.org
+To: Elliott Potter <mailinglist@eep.burdell.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <Pine.LNX.4.58.0410050846320.924@trillian.uni>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Oct 02, 2004 at 01:48:17AM +0400, Ivan Kokshaysky wrote:
-> On Thu, Sep 30, 2004 at 06:41:55PM +0100, Matthew Wilcox wrote:
-> > Allow prioritising PCI fixups.  "How it works" is covered in the comment
-> > in pci.h.  The patch to superio.c may well only apply with fuzz to the
-> > current Linux tree; I include it only to show an example.
+On Tue, Oct 05, 2004 at 08:47:56AM -0500, Elliott Potter wrote:
+> > This was a bug fixed upstream, where the nscd thread daemon was using
+> > NPTL related syscalls when it shouldn't. Pull cvs again and that should
+> > fit the problem.
 > 
-> No, you missed my point.
-> What we need is yet another PCI fixup *pass*, not prioritizing fixups
-> inside *one* pass - see appended patch (compile tested only).
+> Just an update, this seemed to work just fine.  I'm going to play with
+> it a bit in my chroot environment and see how it works.
 
-Boot tested.  Works fine for my problem child.  Greg, can you apply
-Ivan's patch, please?
+Perfect. I'm working on a variant where I've forward ported the debian
+specific patches into upstream head.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Please report back if you have any problems, or if you have success :)
+
+e.g. Try installing Xnest + gnome, and run some stuff remotely?
+
+c.
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
