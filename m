@@ -1,15 +1,11 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from nomore-accents1116.com (24-136-31-90.na.21stcentury.net [24.136.31.90])
-	by dsl2.external.hp.com (Postfix) with SMTP id 6D687482A
-	for <parisc-linux@parisc-linux.org>; Sat, 12 Jul 2003 00:51:49 -0600 (MDT)
-From: Martin Andrews <mandrews@nomore-accents.com>
-To: parisc-linux@parisc-linux.org
-Reply-To: mandrews@nomore-accents.com
-Date: Sat, 12 Jul 2003 01:51:43 -0500
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="7f951899-10cc-4302-a9cf-2d382fa2a6be"
-Message-Id: <20030712065149.6D687482A@dsl2.external.hp.com>
-Subject: [parisc-linux] - Are you learning ESL or TESL?
+Date: Sat, 12 Jul 2003 01:22:35 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030712072235.GA13027@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Net Install errata
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,36 +17,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---7f951899-10cc-4302-a9cf-2d382fa2a6be
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi all,
+Another errata regarding the net install.
 
-Dear Reader,
+Since we've been advocating net installs and I like to eat my
+own brand of dogfood,  I started with an A500 and the
+lifimage-2.4.20-pa35-20030513 on another server which was
+configured for both DHCP and apache. I could have avoided
+all this by just cloning an existing A500 root disk...
 
-No More Accent is an accent reduction product, which helps to remove accents. =
-For example, an Asian lady (or any nationality) may have communication =
-problems with her English when speaking to her work mates or friends.
+kernel/modules that get installed by default are 2.4.17-64.
+Makes sense since this is a woody install.  But the install
+kernel in this case is "2.4.20-64".  The "Configure Device Driver
+Modules" step never finds any modules because the Install
+kernel doesn't care about /target/lib/modules/2.4.17-64.
 
-With that in mind, No More Accent teaches Accent Reduction methodologies to =
-help in this area. In fact, No More Accent can be used in almost any =
-situation where an accent reduction is required. Even Actors within the =
-Entertainment Industry have turned to No More Accent as a way to lose or gain =
-an accent of another nationality.
+My first attempt to remedy the problem was a failure:
+# wget http://http.us.debian.org/debian/pool/main/k/kernel-patch-2.4.20-hppa/kernel-image-2.4.20-64_pa32.1_hppa.deb
+# dpkg -i --instdir=/target kernel-image-2.4.20-64_pa32.1_hppa.deb
+dpkg: not found
 
-No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
-(PAL and NTSC formats) both can be purchased directly via the =
-www.nomore-accents.com website.
-If you would like further information about our products or services, please =
-contact myself 
-when you have a moment.
+The solution is to find a compatible /lib/modules directory.
+It doesn't have to be exactly matching, just need to be
+able to run depmod and pretend you might (but won't)
+load a driver module.
 
-Best Wishes...
+Easier to just build one for the a500 :^/
+I found a 2.4.20 kernel build lying around.
+And made it available on my local web server:
+# make modules_install INSTALL_MOD_DIR=/tmp
+# cd /tmp/lib/modules
+# tar czf /var/www/hppa/modules-2.4.20-64.tgz 2.4.20-64/
 
-Martin Andrews
-Marketing Co-ordinator
+Then on the target box:
+# cd /target
+# wget http://192.168.0.61/hppa/modules-2.4.20-64.tgz
+# cd /target/lib/modules
+# tar xzf ../../modules-2.4.20-64.tgz
+# rm -rf 2.4.20-64/build
+# chown -R root 2.4.20-64
+# chgrp -R root 2.4.20-64
 
-http://www.nomore-accents.com
+The first system I installed, "Configure Device Driver Modules"
+continued to loop around on trying to install modules.
+It asks if I would like to install a module but doesn't identify
+which one. ^C to get out of that and on to "Installing the Base System".
+But I also had pulled over the ISO and loopback mounted that.
+That might have confused the installer somehow.
 
-Your #1 Resource for Accent Reduction!    
---7f951899-10cc-4302-a9cf-2d382fa2a6be--
+The second system I did this procedure on got through "Configure Device
+Driver Modules" with no problems.
+
+But don't reboot yet. The 2.4.17 woody kernel HPMC'd one a500
+and hung in the scsi probe on the other. Not so useful.
+Replace the /target/boot/vmlinux and System.map with working
+2.4.20 or .21 kernels. Then rerun palo command and reboot.
+
+grant
