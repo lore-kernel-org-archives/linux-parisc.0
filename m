@@ -1,30 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA15074
-	for <parisc-linux@puffin.external.hp.com>; Thu, 5 Aug 1999 16:47:23 -0600
-Date: Fri, 6 Aug 1999 00:48:27 +0200
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA20057
+	for <parisc-linux@puffin.external.hp.com>; Sat, 7 Aug 1999 07:30:48 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id PAA21573
+	for <parisc-linux@thepuffingroup.com>; Sat, 7 Aug 1999 15:31:55 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id PAA792558
+	for <parisc-linux@thepuffingroup.com>; Sat, 7 Aug 1999 15:31:54 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m11D6Zm-0002M2C@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sat, 7 Aug 1999 15:31:54 +0200 (CEST)
+Date: Sat, 7 Aug 1999 15:31:54 +0200
 From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: larry_dwyer@hp.com
-Cc: parisc-linux@thepuffingroup.com
-Message-ID: <19990806004827.U11586@mencheca.ch.genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990807153154.C11586@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] reserving constants
+Subject: [parisc-linux] utssys?
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-I have some more constants which need reserving.  These are in the O_*
-numberspace:
+Can anyone tell me what the utssys() system call does?  There's no manual
+page for it.  From tusc, I can see:
 
-#define FASYNC          00020000 /* fcntl, for BSD compatibility */
-#define O_DIRECT        00040000 /* direct disk access hint - currently ignored */
-#define O_DIRECTORY     00010000 /* must be a directory */
-#define O_NOFOLLOW      00000200 /* don't follow links */
+utssys("HP-UX", 0, 0) ............................................ = 0
 
-Linux doesn't distinguish between O_NONBLOCK and O_NDELAY so I also
-defined:
+so all I need do to get it to work on Linux is return 0, but I'd like
+to understand a little more.
 
-#define O_NONBLOCK      00200004 /* HPUX has separate NDELAY & NONBLOCK */
-#define O_NDELAY        O_NONBLOCK
+I also can't find a manual page for sigsetreturn() which I probably need
+to understand more deeply than utssys :-)
 
 -- 
 Matthew Wilcox <willy@bofh.ai>
