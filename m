@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD8D14829
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Dec 2002 23:15:27 -0700 (MST)
-Date: Sun, 8 Dec 2002 22:19:13 -0800
-From: Randolph Chung <tausq@debian.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Trap handler
-Message-ID: <20021209061913.GM21187@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20021208232601.GH21187@tausq.org> <200212082355.gB8NtUAe010825@hiauly1.hia.nrc.ca> <20021209051214.GK21187@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021209051214.GK21187@tausq.org>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 78B054829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Dec 2002 01:40:05 -0700 (MST)
+Message-ID: <3DF456D5.7E000273@admin.france.hp.com>
+Date: Mon, 09 Dec 2002 09:39:49 +0100
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: Randolph Chung <randolph@tausq.org>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] new 2.4.20-pa10 kernel: boot pb.
+References: <3DF0D2C0.D24A29B1@admin.france.hp.com> <20021206170904.GY19331@tausq.org>
+Content-Type: multipart/mixed;
+ boundary="------------6D215F283D0123C92F400FB5"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +23,66 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Here it is.
-> 
-> well, something is just very broken, even this simple code triggers the
-> bug:
+This is a multi-part message in MIME format.
+--------------6D215F283D0123C92F400FB5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: base64
 
-and with Grant's help, it's fixed in 2.4.20-pa12 :)
+ICAgIEhpDQpTdGlsbCB0aGUgc2FtZSBiZWhhdmlvcjoNCg0Kc3ltLjAuMi4wOiBzZXR0aW5n
+IFBDSV9DT01NQU5EX01BU1RFUi4uLg0Kc3ltLjAuMi4xOiBzZXR0aW5nIFBDSV9DT01NQU5E
+X01BU1RFUi4uLg0Kc3ltLjAuMS4wOiBzZXR0aW5nIFBDSV9DT01NQU5EX01BU1RFUi4uLg0K
+c3ltMDogPDg3NT4gcmV2IDB4MTQgb24gcGNpIGJ1cyAwIGRldmljZSAyIGZ1bmN0aW9uIDAg
+aXJxIDEzMA0Kc3ltMDogTm8gTlZSQU0sIElEIDcsIEZhc3QtMjAsIFNFLCBwYXJpdHkgY2hl
+Y2tpbmcNCnN5bTA6IFNDU0kgQlVTIGhhcyBiZWVuIHJlc2V0Lg0Kc3ltMTogPDg3NT4gcmV2
+IDB4MTQgb24gcGNpIGJ1cyAwIGRldmljZSAyIGZ1bmN0aW9uIDEgaXJxIDEzMQ0Kc3ltMTog
+Tm8gTlZSQU0sIElEIDcsIEZhc3QtMjAsIFNFLCBwYXJpdHkgY2hlY2tpbmcNCnN5bTE6IFND
+U0kgQlVTIGhhcyBiZWVuIHJlc2V0Lg0Kc3ltMjogPDg5Nj4gcmV2IDB4NyBvbiBwY2kgYnVz
+IDAgZGV2aWNlIDEgZnVuY3Rpb24gMCBpcnEgMTI5DQpzeW0yOiBObyBOVlJBTSwgSUQgNywg
+RmFzdC00MCwgTFZELCBwYXJpdHkgY2hlY2tpbmcNCnN5bTI6IFNDU0kgQlVTIGhhcyBiZWVu
+IHJlc2V0Lg0Kc3ltMzogPDg5Nj4gcmV2IDB4NyBvbiBwY2kgYnVzIDAgZGV2aWNlIDEgZnVu
+Y3Rpb24gMSBpcnEgMTMwDQpzeW0zOiBObyBOVlJBTSwgSUQgNywgRmFzdC00MCwgU0UsIHBh
+cml0eSBjaGVja2luZw0Kc3ltMzogU0NTSSBCVVMgaGFzIGJlZW4gcmVzZXQuDQpzeW0zOiBT
+Q1NJIEJVUyBtb2RlIGNoYW5nZSBmcm9tIFNFIHRvIFNFLg0Kc3ltMzogU0NTSSBCVVMgaGFz
+IGJlZW4gcmVzZXQuDQpzY3NpMCA6IHN5bS0yLjEuMTdhDQpzY3NpMSA6IHN5bS0yLjEuMTdh
+DQpzY3NpMiA6IHN5bS0yLjEuMTdhDQpzY3NpMyA6IHN5bS0yLjEuMTdhDQpibGs6IHF1ZXVl
+IDAwMDAwMDAwNGY5ZjNlNDAsIEkvTyBsaW1pdCA0MDk1TWIgKG1hc2sgMHhmZmZmZmZmZikN
+Cg0KTm90aGluZyBtb3JlLi4uLi4uLi4uDQpJJ2xsIHRyeSB3aXRoIHNwaW5sb2NrIGRlYnVn
+IG5vdy4NClJhbmRvbHBoIENodW5nIHdyb3RlOg0KDQo+ID4gbm90aGluZyBtb3JlLCBpdCBz
+dGF5IGhlcmUgZm9yZXZlci4uLi4uLi4NCj4gPg0KPiA+IEl0IGlzIGFuIEE1MDAgaW4gU01Q
+LzY0Lg0KPiA+DQo+ID4gQSBub3JtYWwgYm9vdCB3aXRoIDIuNC4xOQ0KPiA+IHNjc2kxIDog
+c3ltNTNjOHh4LTEuNy4zYy0yMDAxMDUxMg0KPiA+IHNjc2kyIDogc3ltNTNjOHh4LTEuNy4z
+Yy0yMDAxMDUxMg0KPiA+IHNjc2kzIDogc3ltNTNjOHh4LTEuNy4zYy0yMDAxMDUxMg0KPiA+
+ICAgVmVuZG9yOiBTRUFHQVRFICAgTW9kZWw6IFNUMzEyMzBOICAgICAgICAgIFJldjogSFAw
+NQ0KPiA+ICAgVHlwZTogICBEaXJlY3QtQWNjZXNzICAgICAgICAgICAgICAgICAgICAgIEFO
+U0kgU0NTSSByZXZpc2lvbjogMDINCj4gPiAgIFZlbmRvcjogU0VBR0FURSAgIE1vZGVsOiBT
+VDMxODQwNExDICAgICAgICBSZXY6IEhQMDQNCj4NCj4gQnJ1bm8sIGNhbiB5b3UgdHJ5IHRo
+ZSBzeW0yIGRyaXZlciBhbmQgbGV0IHVzIGtub3cgaG93IGl0IGdvZXM/DQo+DQo+IENPTkZJ
+R19TQ1NJX1NZTTUzQzhYWF8yPXkNCj4gQ09ORklHX1NDU0lfU1lNNTNDOFhYX0RNQV9BRERS
+RVNTSU5HX01PREU9MA0KPiBDT05GSUdfU0NTSV9TWU01M0M4WFhfREVGQVVMVF9UQUdTPTE2
+DQo+IENPTkZJR19TQ1NJX1NZTTUzQzhYWF9NQVhfVEFHUz02NA0KPg0KPiB0aGVyZSB3YXMg
+YSBzaW1pbGFyIHByb2JsZW0gd2l0aCB0aGUgc3ltMiBkcml2ZXIgdGhhdCB3YXMgZml4ZWQN
+Cj4gcmVjZW50bHkuDQo+DQo+IGFsdGVybmF0aXZlbHksIHBsZWFzZSB0cnkgdHVybmluZyBv
+biBDT05GSUdfREVCVUdfU1BJTkxPQ0sgaW4geW91cg0KPiBrZXJuZWwgYW5kIHRyeSBydW5u
+aW5nIHRoZSBzeW01M2M4eHggZHJpdmVyIGFuZCBzZWUgaWYgdGhhdCBoZWxwcw0KPiBpZGVu
+dGlmeSB0aGUgcHJvYmxlbS4uLg0KPg0KPiByYW5kb2xwaA0KPiAtLQ0KPiBSYW5kb2xwaCBD
+aHVuZw0KPiBEZWJpYW4gR05VL0xpbnV4IERldmVsb3BlciwgaHBwYS9pYTY0IHBvcnRzDQo+
+IGh0dHA6Ly93d3cudGF1c3Eub3JnLw0KDQotLQ0KICAgICAgICBWaWRhbCBCcnVubywgKDc3
+MC00MjcxKQ0KICAgICAgICBTU0QtSEEgVGVhbSwgSFAtVVggJiBMSU5VWCBTdXBwb3J0DQog
+ICAgICAgIGJydW5vX3ZpZGFsQGFkbWluLmZyYW5jZS5ocC5jb20NCg0KDQo=
+--------------6D215F283D0123C92F400FB5
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
 
-question for willy/jsm, etc though:
-the fix has to do with where we should return to after handling an
-interruption. in pre-2.4.20 code we used to return to intr_return. Grant
-thinks that is incorrect and changed it to intr_restore (basically just
-doing the rfi). the -pa12 patch changes it back so it will handle
-pending signals. The items that remain not handled are restoring I-bit,
-softirqs (and irqstats) and rescheduling. We are not sure if those bits
-are needed for interruptions....  can you guys shed some light on this?
-
-thanks,
-randolph
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------6D215F283D0123C92F400FB5--
