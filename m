@@ -1,29 +1,50 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA28682
-	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Mar 2000 13:13:05 -0700
-Date: Mon, 13 Mar 2000 20:13:10 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
-To: "Bryan W. Headley" <bheadley@prismalink.com>
-Cc: parisc-linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] 735 Tech Reference
-Message-ID: <20000313201310.J5281@abacus.local>
-References: <38CD1FF5.821E4E6B@prismalink.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <38CD1FF5.821E4E6B@prismalink.com>; from bheadley@prismalink.com on Mon, Mar 13, 2000 at 11:05:58AM -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04943
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Mar 2000 08:49:26 -0700
+Date: Tue, 14 Mar 2000 09:54:43 -0500 (EST)
+From: Sam Creasey <sammy@sammy.net>
+To: Philipp Rumpf <prumpf@inwestnet.de>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Assembly Language Changes
+In-Reply-To: <20000312152353.E5281@abacus.local>
+Message-ID: <Pine.LNX.4.21.0003140951150.1905-100000@sammyville.sammy.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Once I'm up, I'll be asking if the restriction on 10.20 for
-> cross-compiling is still there; and if so, where/how to get an 11.x CD
 
-you can cross-compile from x86 now (and it works very well).  Really,
-since cross-compiling works, I only booted hpux to sniff around in their
-kernel with adb.
 
-> (got a 10.20 and diag CDs from HP as Y2K upgrade kit). So if anyone
-> wants to share happy news up-front, that'd save me some time (I think)
+On Sun, 12 Mar 2000, Philipp Rumpf wrote:
 
-If you want to boot HP/UX at all (that's a big if, imho), you shouldn't
-use it for compiling.
+> Hello,
+> over the last few days or so, I have been trying to get glibc to build and
+> work for a Linux/PA-RISC target.  I came to believe it would be simpler to
+> change certain aspects of the assembly language used than to keep working
+> around them:
 
-	Philipp Rupmf
+At least in the ELF toolchain (which, I think we did change the kernel
+over to, didn't we?)  I've already begun freely banging the assembler
+syntax into a more gas-like format...   
+
+> The advantages to changing the assembly dialect we use are that using cpp
+> to pre-process assembly instructions becomes a lot simpler (glibc makes
+> heavy use of this);  the assembly language looks more similar to those
+> used for other architectures that run Linux;  there is no difference
+> between the pa1.1 and pa2.0 versions.
+
+Agreed.  The original workarounds in the kernel were rather hideous, and
+prevented us fron doing quite a few useful things.  (initcalls, anybody?)
+
+Maximum software build support good.
+
+> The disadvantage, obviously, is that we would need to keep separate
+> binaries around to compile HP/UX assembly source;  also, the assembly
+> files used by the kernel would need to be converted (and probably get
+> readable to more people in the process).
+
+Hmph...  I'm not sure how many people working on the port hold a deep
+value in the ability to recompile HP/UX apps (or, in this case,
+reassemble).  Just run the damn HP assembler if you feel a deep need to
+run HP programs under the linux kernel (imho).
+
+-- Sam
