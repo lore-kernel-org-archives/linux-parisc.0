@@ -1,13 +1,14 @@
-From: kyle@mcmartin.ca (Kyle McMartin)
+From: Thibaut VARENE <varenet@esiee.fr>
 Subject: Re: [parisc-linux] memory barriers, spinlocks, debuglocks, oh my
-Date: Sun, 29 Aug 2004 12:13:18 -0400
-Message-ID: <20040829161318.GU2414@mcmartin.ca>
+Date: Sun, 29 Aug 2004 18:14:28 +0200
+Message-ID: <20040829181428.30f58455@Tatooine.r3z0>
 References: <20040827163701.GA2414@mcmartin.ca>
 	<20040828221524.GT2414@mcmartin.ca> <4132001E.6060707@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux@lists.parisc-linux.org
 To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <4132001E.6060707@tiscali.be>
@@ -21,14 +22,49 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Aug 29, 2004 at 04:11:10PM +0000, Joel Soete wrote:
-> Sorry, but here I am confused: for parisc-linux unlock means (x)->lock = 1?
-> 
-Yes, because the only atomic instruction we have is load and clear.
+On Sun, 29 Aug 2004 16:11:10 +0000
+Joel Soete <soete.joel@tiscali.be> wrote:
 
-Cheers,
--- 
-Kyle McMartin
+> 
+> 
+> Kyle McMartin wrote:
+> > Once more unto the brink,
+> > 
+> > Commitable?
+> > 
+> mmm,
+> 
+> [...]
+> 
+> > Index: include/asm-parisc/atomic.h
+> > ===================================================================
+> > RCS file: /var/cvs/linux-2.4/include/asm-parisc/atomic.h,v
+> > retrieving revision 1.10
+> > diff -u -r1.10 atomic.h
+> > --- include/asm-parisc/atomic.h	13 Sep 2002 21:43:37 -0000	1.10
+> > +++ include/asm-parisc/atomic.h	28 Aug 2004 18:56:09 -0000
+> > @@ -30,8 +30,11 @@
+> >   *
+> >   * XXX REVISIT these could be renamed and moved to spinlock_t.h as
+> >   well*/
+> > -#define SPIN_LOCK(x)	do { while(__ldcw(&(x)->lock) == 0); } while(0)
+> > -#define SPIN_UNLOCK(x)  do { (x)->lock = 1; } while(0)
+> > +#define SPIN_LOCK(x) do { while(__ldcw(&(x)->lock) == 0); } while(0)
+> > +#define SPIN_UNLOCK(x) do {  \
+> > +                         __asm__ __volatile__ ("stw,ma %1,0(%0)" \
+> > +                         : : "r" (&(x)->lock), "r" (0) : "memory"); \
+> > +                       } while (0)
+> >  
+> Sorry, but here I am confused: for parisc-linux unlock means (x)->lock =
+> 1?
+
+yes
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
