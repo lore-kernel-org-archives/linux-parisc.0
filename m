@@ -1,63 +1,70 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1C4EA482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 22:10:34 -0600 (MDT)
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA24261
-	for <parisc-linux@puffin.external.hp.com>; Mon, 3 Sep 2001 22:08:22 -0600
-Message-ID: <3B9453BC.60607@videotron.ca>
-Date: Tue, 04 Sep 2001 00:08:28 -0400
-From: James Waterhouse <james.waterhouse@videotron.ca>
+Received: from cs1-hq.oecd.org (cs1-hq.oecd.org [193.51.65.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C05B482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 02:17:53 -0600 (MDT)
+Received: from netsweep1.oecd.org (netsweep1.oecd.org [10.102.5.110])
+	by cs1-hq.oecd.org (Postfix) with ESMTP id BD9E34B027
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 10:14:47 +0200 (CEST)
+Message-ID: <C12531D038D1D011B1DB0000F8036C280A30EB6C@eosm5.oecd.org>
+From: Arnaud.ATOCH@oecd.org
+To: grundler@puffin.external.hp.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] UreStoreOptical 20xt 
+Date: Tue, 4 Sep 2001 10:17:52 +0200 
 MIME-Version: 1.0
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>,
-	"debian-hppa@lists.debian.org" <debian-hppa@lists.debian.org>
-References: <3B8FB5EF.3020301@videotron.ca> <20010902101556.W11744@linuxcare.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] Re: booting problems
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello Richard,
+Ok, thanks for coming back .
 
-Richard Hirst wrote:
+I've learn a lot and here are my conclusions :
 
-> On Fri, Aug 31, 2001 at 12:06:07PM -0400, James Waterhouse wrote:
-> 
->>Hello everyone,
->>	I'm seem to be having trouble booting into linux on my 712/60. I hope 
->>someone can help. I have built a new kernel (from cvs) and also set up 
->>an nfs root. When I try to boot the linux boots up to the point where it 
->>says "Cleaning: /tmp/ /var/lock /var/run" and then it just hangs. Any 
->>idea what is cause it to hang? Could there be a problem with the nfsroot?
->>
-> 
-> Possible.  What are you using for your nfsroot?
+- hpfs is OS/2 specific.
+- The HP-UX fs patch came from parisc tree and did it into Linus tree
+(2.4.8).
+- HP-UX fs support in in the ufs module.
+- Correct syntaxe for mount an HP-UX fs under Linux is : mount -t ufs -o
+ufstype=hp /dev/sda /mnt/opti
+- LVM fs are not so easy to handle and for now no success.
 
+So the HP Surestore Optical 20xt is fully functionnal under Linux parisc or
+x86.
 
-For an nfsroot I'm using the debian base from
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/basetars/base-20010404.tar.gz
+Again thanks for you excellent work.
 
-> Does it still respond to pings?
+Arnaud Atoch
+OECD
+Paris - France
 
-
-Yes it still responds to pings.
-
-> What console are you using?
-
-
-I don't know... (do you mean sti or serial? if so then I think it is sti 
-... whatever is default the config)
-
-> Do you get a prompt if you boot with 'init=/bin/sh'?
+-----Original Message-----
+From: Grant Grundler [mailto:grundler@puffin.external.hp.com]
+Sent: Tuesday, September 04, 2001 3:34 AM
+To: Arnaud.ATOCH@oecd.org
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] UreStoreOptical 20xt 
 
 
-How do I do that?
+Arnaud.ATOCH@oecd.org wrote:
+> I've loaded hfs, hpfs, udf, ufs because it was not clear which module
+> provide HP-UX filesystem support.
 
-James
+IIRC, should only need hpfs (which also depends on ufs?..dunno anymore)
+hfs == Apple's Hiearchial File System.
 
+> Btw does the HP-UX fs support patch made it to Linus tree ?
 
-> 
-> Richard
-> 
-> 
-> 
+dunno.  But didn't that patch come from the parisc-linux tree?
+
+Anyway...you might check if those disks are under LVM control.
+If so, you'll have to convert those to non-LVM storage using HPUX.
+The archives for parisc-linux mailing list have a discussion on HP's
+LVM issues.
+
+BTW, You might also try to explicitly specify the hpfs type.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
