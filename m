@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1D3BD611F
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 25 Nov 2001 21:02:20 -0700 (MST)
-Message-Id: <200111260357.UAA02910@puffin.external.hp.com>
-To: "Craig D. Lansing" <lansing@beldar.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] J2240 - It Runs! 
-In-Reply-To: Message from "Craig D. Lansing" <lansing@beldar.com>
-   of "Sun, 25 Nov 2001 20:47:49 EST." <00fe01c1761c$5bf18000$0101a8c0@pogo>
-Date: Sun, 25 Nov 2001 20:57:19 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from bob.ncssm.edu (bob.ncssm.edu [152.34.37.42])
+	by dsl2.external.hp.com (Postfix) with SMTP id B6775601D
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 25 Nov 2001 23:54:31 -0700 (MST)
+Date: Mon, 26 Nov 2001 01:50:42 -0500 (EST)
+From: Phil Anderson <andersop@neverland.ncssm.edu>
+To: <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <006901c16ca9$78c16e60$0101a8c0@pogo>
+Message-ID: <Pine.LNX.4.33.0111260140330.4886-100000@bob.ncssm.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] bad local loopback (and 712 X query)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,29 +21,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Craig D. Lansing" wrote:
-> Maybe I'll go to the latest kernel to see what that does to / for me.
+Hi all;
 
-I think you'll be alot better off.
+I send this with a dual purpose:
 
->  So far, I've only been able
-> to connect to the serial port via a Reflection session to login to the =
-> system after getting through the boot path & IPL on the attached =
-> graphics terminal.
+First:
 
-You probably have the palo param "console=ttyS0" and that's why
-it's switching to serial console. Palo documentation suggests
-using "console=tty" for auto-detecting the console.
+I got my 712/80i running fine off the 0.9.2 ISO (it worked GREAT after I
+tried the 32bit kernel and not the 64bit one :> ) Anyway, It runs pretty
+well. So: has anyone gotten X working on a 712? and would like to share?
 
->   Does anyone know how to use the graphics terminal =
-> exclusively?  I assume that I need to change some of the IPL parms, e.g. =
-> sti=3D or console=3D, but I do not know what values to use.  Any help =
-> would be appreciated.
+Second:
+like I said, it works pretty well...
+...except for the fact that while I'm using it (or even when it's just at
+a tty login prompt) these errors come up:
 
-With 0.9.2, if the graphics head were recognized and has a working
-STI ROM, I would expect the console to remain on the graphics head.
+ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN
+skb: pf=2 (unowned) dev=lo len=328
+PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
 
-Caveat: this is from one of the few people who *only* uses serial
-consoles on hppa-linux.
 
-grant
+67 and 68 are bootp server and client ports, respectively. How can I get
+rid of these? they prevent the box from being really useful because they
+pop up every minute or so at the current cursor location, which is a major
+detriment to doing, well, anything.
+
+As far as I can tell, these packets are coming from the machine itself,
+and it's attempting to send a broadcast packet over loopback. Perhaps by
+turning off bootp services in /etc/inetd.conf?
+
+thanks for your time,
+
+-phil
+
+
+-- 
+===============================================================================
+
+Phil Anderson
+andersop@neverland.ncssm.edu
+The_13th_Ewok@hotmail.com
+
+"Go CRAZY? Don't mind if I do! Woowoowoowoo!" -Homer Simpson
