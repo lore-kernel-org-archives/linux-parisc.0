@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EC2004854
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 02:24:06 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <helge.deller@sap.com>
-To: Yasholomew Yashinski <yashy@mail.yashy.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] palo not booting kernel
-Date: Fri, 22 Feb 2002 10:23:52 +0100
-References: <20020220232407.T96452-100000@mail.yashy.com>
-In-Reply-To: <20020220232407.T96452-100000@mail.yashy.com>
+Received: from ascomax.hasler.ascom.ch (ascomax.hasler.ascom.ch [139.79.135.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8A298484D
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 06:15:20 -0700 (MST)
+Received: from srvmailgate1.hasler.ascom.ch (srvmailgate1.hasler.ascom.ch [139.79.135.89])
+	by ascomax.hasler.ascom.ch (8.11.4/8.11.4) with ESMTP id g1MDFG404659
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 14:15:17 +0100 (MET)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <OF24F42D74.714B6A40-ONC1256B68.00484869@hasler.ascom.ch>
+From: "Thomas Schmid" <Thomas.Schmid@ascom.ch>
+Date: Fri, 22 Feb 2002 14:15:15 +0100
 MIME-Version: 1.0
-Message-Id: <E16eBvk-00077t-00@linuxlab.wdf.sap-ag.de>
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] Failed Firmware Update...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,12 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thursday 21 February 2002 22:54, Yasholomew Yashinski wrote:
-> I booted off 0/vmlinux and installed 2.4.16-32 via apt-get. 
-> Trying to reboot I get the following:
-> <crash>
+Hi all,
 
-Did you modified your /etc/palo.conf and run palo afterwards ?
-In doubt please read the FAQ.
+well, after following some threads in this list about firmware updates,
+I decided to update my 715 to the current 1.6, up from 1.1.
 
-Helge
+Update so far went OK, but when it tried to reboot, it complained about
+a memory error and halted the system. Rebooting afterwards stopped
+at the "LED"-level; it gave me a "HPMC Cache Error", a "High Priority
+Machine Check Cache Error". And that was it, no monitor, no nothing....
+
+- Question: The machine I (now) had was a 715/100XC; can it be that the
+1.6 firmware update is not suitable for that variant of the 715/100 ?
+- Is there still hope to revive the machine ? (without HP's support...)
+
+A bit frustrated....
+Thomas
