@@ -1,19 +1,17 @@
-Return-Path: <akpm@osdl.org>
-Received: from mail.osdl.org (fw.osdl.org [65.172.181.6])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE8E14840
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1E63148A0
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 30 Dec 2003 14:41:57 -0700 (MST)
-Date: Tue, 30 Dec 2003 13:42:16 -0800
-From: Andrew Morton <akpm@osdl.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
-Message-Id: <20031230134216.2011c0c1.akpm@osdl.org>
-In-Reply-To: <1072815300.2839.30.camel@mulgrave>
-References: <1072815300.2839.30.camel@mulgrave>
+	Tue, 30 Dec 2003 16:50:31 -0700 (MST)
+Date: Tue, 30 Dec 2003 18:42:37 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+	Randolph Chung <tausq@debian.org>
+Message-ID: <20031230234237.GM27911@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org, corbet@lwn.net
-Subject: [parisc-linux] Re: Fix for uninitialised variable in new seq_file
- code for arch/parisc/ikernel/rq.c
+Content-Type: text/plain; charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] LD_PROFILE?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,18 +21,10 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-James Bottomley <James.Bottomley@SteelEye.com> wrote:
->
-> --- 1.20/arch/parisc/kernel/irq.c	Mon Dec 29 15:37:39 2003
-> +++ edited/irq.c	Tue Dec 30 14:12:43 2003
-> @@ -215,7 +215,7 @@
->  int show_interrupts(struct seq_file *p, void *v)
->  {
->  #ifdef CONFIG_PROC_FS
-> -	unsigned int regnr = *(loff_t *) v, i;
-> +	unsigned int regnr = *(loff_t *) v, i = 0;
->  
->  	if (regnr == 0) {
->  		seq_puts(p, "     ");
 
-Thanks, I'll add that to today's batch.
+Did this work before? :)
+
+firin:/# LD_PROFILE=libc.so.6 ls
+Segmentation fault
+
+c.
