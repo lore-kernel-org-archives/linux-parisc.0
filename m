@@ -1,39 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B8044482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 16:25:54 -0600 (MDT)
-Date: Mon, 03 Sep 2001 15:24:43 -0700 (PDT)
-Message-Id: <20010903.152443.59467554.davem@redhat.com>
-To: Ulrich.Weigand@de.ibm.com
-Cc: Richard.Zidlicky@stud.informatik.uni-erlangen.de,
+Received: from chac.inf.utfsm.cl (chac.inf.utfsm.cl [200.1.19.54])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 242B1482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 17:05:31 -0600 (MDT)
+Message-Id: <200109031544.f83Fidbr002589@sleipnir.valparaiso.cl>
+To: "David S. Miller" <davem@redhat.com>
+Cc: ak@suse.de, alan@lxorguk.ukuu.org.uk, willy@debian.org,
 	thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org,
 	linux-kernel@vger.kernel.org
-From: "David S. Miller" <davem@redhat.com>
-In-Reply-To: <OF9A995335.07A81CF5-ONC1256ABC.00422A7B@de.ibm.com>
-References: <OF9A995335.07A81CF5-ONC1256ABC.00422A7B@de.ibm.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Subject: [parisc-linux] Re: [SOLVED + PATCH]: documented Oops running big-endian reiserfs
- on parisc architecture
+Subject: Re: [parisc-linux] documented Oops running big-endian reiserfs on parisc architecture 
+In-Reply-To: Message from "David S. Miller" <davem@redhat.com>
+   of "Mon, 03 Sep 2001 01:15:30 MST." <20010903.011530.62340995.davem@redhat.com>
+Date: Mon, 03 Sep 2001 11:44:39 -0400
+From: Horst von Brand <vonbrand@sleipnir.valparaiso.cl>
 List-ID: <linux-parisc.vger.kernel.org>
 
-   From: "Ulrich Weigand" <Ulrich.Weigand@de.ibm.com>
-   Date: Mon, 3 Sep 2001 14:08:43 +0200
-   
-   >From what I recall when we were looking into reiserfs on S/390,
-   the core problem was that reiserfs tried to do *atomic* operations
-   on non-aligned words.  This isn't supported by the hardware on
-   S/390 (normal non-aligned accesses just work).
-   
-   I don't really see how this can be fixed in a trap handler; how
-   would the handler guarantee atomicity?
+"David S. Miller" <davem@redhat.com> said:
+> IP header length is measured in octets, so how is this possible?
+> :-)
 
-Oh thats different!  That won't even work %100 correctly on x86.  On
-x86 it will "execute", but it won't be atomic.
-
-Why the F*CK does it need to do this?  It sounds like sloppy
-programming to me.
-
-Later,
-David S. Miller
-davem@redhat.com
+1 octet == 8 bits in RFC-speak. "Byte" is the name given to character
+units.  There were machines around with non-8-bit bytes. AFAIR, DEC PDP-10
+had the options of 6, 7, or 8 bits/byte in 36 bit words. Purely historical
+now, since (AFAIK) everybody has agreed with IBM (S/360?) that 1 byte == 8
+bits. As Brian Reid (IIRC) used to say: "It is spelled 'o-c-t-e-t' and
+pronounced 'byte'"
+-- 
+Horst von Brand                             vonbrand@sleipnir.valparaiso.cl
+Casilla 9G, Vin~a del Mar, Chile                               +56 32 672616
