@@ -1,18 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hadron.dyndns.org (ma-amesbury1e-100.mrrmnh.adelphia.net [68.168.107.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 687104829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 08:38:02 -0700 (MST)
-Date: Mon, 3 Feb 2003 10:37:35 -0500
-From: "Aaron St. Pierre" <asp@ungod.com>
-To: Michael Wood <mwood@its.uct.ac.za>,
-	Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel compile
-Message-ID: <20030203153735.GE1046@hadron>
-References: <20030203020247.GB1046@hadron> <20030203041122.GB29454@dsl2.external.hp.com> <20030203053336.GC1046@hadron> <20030203060359.GF29454@dsl2.external.hp.com> <20030203064328.GD1046@hadron> <20030203101959.GA28668@marmite.its.uct.ac.za>
+Received: from mgw-x1.nokia.com (mgw-x1.nokia.com [131.228.20.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 764484829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 08:44:53 -0700 (MST)
+Received: from esvir05nok.ntc.nokia.com (esvir05nokt.ntc.nokia.com [172.21.143.37])
+	by mgw-x1.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h13Fhld17053
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 3 Feb 2003 17:43:47 +0200 (EET)
+Received: from esebh001.NOE.Nokia.com (unverified) by esvir05nok.ntc.nokia.com
+ (Content Technologies SMTPRS 4.2.5) with ESMTP id <T60313316b1ac158f2578c@esvir05nok.ntc.nokia.com> for <parisc-linux@lists.parisc-linux.org>;
+ Mon, 3 Feb 2003 17:44:52 +0200
+Received: (from mnahkola@localhost)
+	by aurinko.ntc.nokia.com (8.11.6/8.11.6) id h13FipK22968
+	for parisc-linux@lists.parisc-linux.org; Mon, 3 Feb 2003 17:44:51 +0200 (EET)
+Date: Mon, 3 Feb 2003 17:44:50 +0200
+From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030203154450.GO7503@aurinko.ntc.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030203101959.GA28668@marmite.its.uct.ac.za>
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] Yet another tar-triggered problem?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,45 +29,64 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Yes, the boot partition is < 2GB. In fact here is the partion table as 
-reported from fdisk. 
+I don't think this is the old tar problem this time ... well, I guess it 
+could still be.
 
-Disk /dev/sda: 9100 MB, 9100044288 bytes
-64 heads, 32 sectors/track, 8678 cylinders
-Units = cylinders of 2048 * 512 = 1048576 bytes
+I hooked an external HP 35470A tape drive (DDS1 no compression) to the 
+C240, loaded a tape, wondering if it had been written on a 35470A or a 
+35480A (DDS1 / DCLZ) and, if it should have been the latter, if 
+compression would have been turned on. I thought "oh well ... guess it'll 
+inform me if it doesn't understand the format". 
 
-   Device Boot    Start       End    Blocks   Id  System
-/dev/sda1   *         1        29     29680   f0  Linux/PA-RISC boot
-/dev/sda2            30       267    243712   83  Linux
-/dev/sda3           268      1221    976896   82  Linux swap
-/dev/sda4          1222      5989   4882432    5  Extended
-/dev/sda5          1222      3128   1952752   83  Linux
-/dev/sda6          3129      5989   2929648   83  Linux
+Typed a "tar tvf /dev/st0", waited for a while and saw nothing so I 
+though "OK, guess it doesn't find anything readable" and hit ^C a couple 
+of times and pushed the eject button on the tape drive. Then I went away 
+for a couple of minutes and when I came back ... the 70096's scrollback 
+was full of something that looks like a hex dump, and then a HPMC at the 
+end.
 
-I will also add this info to my parisc page. I am going to start ripping
-things out of the kernel a bit later today. One thing I will admit
-ignorance about is the F0 partition. The debian install got vmlinux32 to
-live in there but I haven't gotten any other kernels to live in there.
-Not that that really matters since once can boot off of a kernel that
-lives in an ext2 fs as long as it is within the first 2GB. Yawn, just
-waking up ... 
+Now, is this a "feature" of the st driver or the tape drive, a bug, a 
+broken 35470A, or something entirely different? I don't have too many 
+35470As around for testing, most of them are still attached to the old 
+servers... but I don't remember getting this on HP-UX, ever.
 
-In another life Michael Wood wrote:
+Kernel version was (again) the old 2.4.18-32, as I can't seem to get KDE 
+to work properly with the newer kernels... ;-) but at least now I have 
+the builtin ethernet at 100HD. And I was going to reboot anyway, due to 
+repartitioning the sdb.
 
-> On Mon, Feb 03, 2003 at 01:43:28AM -0500, Aaron St. Pierre wrote:
-> [snip]
-> > As far as the palo message, i only started noticing it when I went to
-> > v1.2 of palo. One thing I should note, when I set up / i made it ext3,
-> > boot is off of / and not its own fs so when i realized what i did I
-> [snip]
-> 
-> Your boot partition (/) is < 2GB, right?
-> 
-> -- 
-> Michael Wood <mwood@its.uct.ac.za>
+Is anyone interested in the hex dump? That's probably a kernel panic or 
+some such, right? Everything before "ad40 ........ ........ ........" has 
+scrolled out of the ring buffer but if someone's interested in that I'm 
+not rebooting the box yet. I'd have to type it in by hand too... the 
+console is a genuine HP 70096 terminal, in native mode. 
+
+That'd mean I can't get the PIM stuff yet either, though. Um ... oh well, 
+if someone's interested, I can always get that later.
+
+
+The HPMC is as follows:
+		Code=1 regs=102f3080 (Addr=00000000)
+	
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001110 Not tainted
+r00-03  00000000 10300010 1010d4e8 ffffffff
+r04-07  0000000f 0000029b 0000029b 103b2810
+r08-11  0000000f 0000004d 0004000e 1033d060
+r12-15  00000000 001ffff8 000000fd f0100000
+r16-19  1039c5c0 f00001f8 f00001f0 f2000064
+r20-23  0000000e 10f2c260 1024a2ac 10302810
+r24-27  0001fd40 0000fd40 10f2c260 102f0010
+r28-31  7f7fdee7 00000680 1039c9c0 1010d4e8
+sr0-3   00000000 00000005 00000000 00000005
+sr4-7   00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 1024a2d0 1024a2d4
+ IIR: 00141860    ISR: 9227ffc8  IOR: 00000064
+ CPU:        0   CR30: 1039c000 CR31: 103a0000
+ ORIG_R28: 00000000
+
 
 -- 
-Aaron St. Pierre			tel: 978.828.6177
-asp@ungod.com
-
- Have at you!
+Mikko Nahkola   <mikko.nahkola@nokia.com>
+Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
