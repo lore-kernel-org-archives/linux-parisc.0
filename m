@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] How retrieving HPA/SPA with the device node 
-In-Reply-To: Message from Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-   of "Fri, 17 May 2002 16:11:07 +0200." <3CE50F7B.771EC8B8@admin.france.hp.com>
-References: <3CA9BB50.1FCEBDF4@admin.france.hp.com> <20020402164417.6C6B6482A@dsl2.external.hp.com>  <3CE50F7B.771EC8B8@admin.france.hp.com> 
-Date: Fri, 17 May 2002 09:36:47 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020517153647.41BAD482A@dsl2.external.hp.com>
+Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2D0784838
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 May 2002 09:58:18 -0600 (MDT)
+Date: Fri, 17 May 2002 11:58:08 -0400
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: james@massive.com.au
+Cc: randolph@tausq.org, dave@hiauly1.hia.nrc.ca,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] parsic function calling convention
+Message-ID: <20020517115808.A11603@systemhalted>
+References: <20020517063657.GZ30370@tausq.org> <200205171442.g4HEgNbk029843@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200205171442.g4HEgNbk029843@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Fri, May 17, 2002 at 10:42:22AM -0400
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,18 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bruno Vidal wrote:
-> But as it has been said, the pointer pci_dev in the structure scsi_host
-> is not always pointing to a pci_dev. For my poor 712/100, it point
-> to NULL :-( (it is normal, my scsi host is not a PCI one).
+> You will probably need to understand stub generation to implement libffi
+> if I recall correctly.
+> 
+> Hpux uses a segmented memory model.  Linux uses a flat model.
+> 
+> Dave
 
-The best idea we came up with was to require the dump partition be
-on boot device and pull the HPA from page zero. Matthew Wilcox was
-mentioning that this problem will be solved in 2.5 kernel
-since it will get an IO tree similar to HPUX's.
+Last I remember there was someone porting avcall.
+They might be a good resource.
 
-TBH, I'm personally not interested in chasing down solutions
-for boxes that don't have PCI.
+http://lists.debian.org/debian-hppa/2002/debian-hppa-200203/msg00073.html
 
-hth,
-grant
+Here is some general discussion on fp passing:
+http://lists.parisc-linux.org/hypermail/parisc-linux/8277.html
+
+c.
