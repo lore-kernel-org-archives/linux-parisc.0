@@ -1,7 +1,7 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] [PATCH] dlfcn/default fixes for hppa
-Date: Mon, 11 Aug 2003 23:59:29 -0400
-Message-ID: <20030812035929.GC9325__1953.6453801722$1416622674$gmane$org@systemhalted>
+Subject: [parisc-linux] [PATCH] hppa libgcc-compat
+Date: Mon, 18 Aug 2003 17:09:29 -0400
+Message-ID: <20030818210929.GJ6190__48114.502876024$1416622696$gmane$org@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
@@ -19,115 +19,109 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 libc-alpha,
 
-The hppa backend in gcc uses type information to determine if the variable 
-we manipulate is a function descriptor, and thus, on comparisons, make 
-calls behind the scenes to canonicalize that descriptor. When variables are
-cast to 'void *' all the type information is lost. I've included a
-patch to the dlfcn/default test that changes some of the casts in the test
-such as to retain the type information. 
+Seeing Lu's post about libgcc-compat reminded me that I should submit
+our version.
 
-What I've done is to cast 'p' to a function pointer of type 
-"(int (*)(int, char **))" rather than casting 'main' to an opaque
-pointer of type "(void *)". Second to that I've modified test_in_mod[12]
-to take a variable of type "(int (*)(int, char **))" (the address of the
-calling main) rather than "(void *)", and carry out the appropriate casting.
+We have been using this patch to fix the leaked __clz_tab symbol from
+libgcc. Attached is the required additions to our Makefile, Dist, and
+Versions.
 
-This is the only method to do the required casts, and I am open to
-comments.
-
-Passes tests without regression on i386, and removes the dlfcn/default
-failure from hppa.
+This patch was produced by Randolph Chung, many thanks!
 
 Cheers,
 Carlos.
 ---
-
- libc/dlfcn/default.c     |    6 +++---
- libc/dlfcn/defaultmod1.c |    6 +++---
- libc/dlfcn/defaultmod2.c |    6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
-
+ sysdeps/hppa/Dist            |    1
+ sysdeps/hppa/Makefile        |   11 +++++
+ sysdeps/hppa/Versions        |    5 ++
+ sysdeps/hppa/libgcc-compat.c |   43 +++++++++++++++++++++++
+ 4 files changed, 60 insertions(+)
 ---
 
-2003-08-11  Carlos O'Donell  <carlos@baldric.uwo.ca>
+2003-02-25  Randolph Chung  <tausq@debian.org>
 
-	* dlfcn/default.c (main): 
-	Cast dlsym loaded value to same type as main.
-	Address passed to test_in_mod1 and test_in_mod2 without casting.
-	* dlfcn/defaultmod1.c: Change prototype of test_in_mod1.
-	(test_in_mod1): Cast dlsym loaded value to same type as mainp.
-	* dlfcn/defaultmod2.c: Change prototype of test_in_mod2.
-	(test_in_mod2): Cast dlsym loaded value to same type as mainp.
+	* sysdeps/hppa/Makefile: Include compat code in build.
+	* sysdeps/hppa/libgcc-compat.c: New file.
+	* sysdeps/hppa/Dist: Add libgcc-compat.c
+	* sysdeps/hppa/Versions [GLIBC_2.2]: Add __clz_tab.
 
-diff -u -p -r1.2 default.c
---- libc/dlfcn/default.c	16 Nov 2000 02:12:46 -0000	1.2
-+++ libc/dlfcn/default.c	29 Jul 2003 16:11:34 -0000
-@@ -36,7 +36,7 @@ main (int argc, char *argv[])
-       printf ("%s: main not found\n", __FILE__);
-       result = 1;
-     }
--  else if (p != (void *) &main)
-+  else if ((int (*)(int, char **))p != main)
-     {
-       printf ("%s: wrong address returned for main\n", __FILE__);
-       result = 1;
-@@ -72,9 +72,9 @@ main (int argc, char *argv[])
-   else
-     printf ("%s: found_in_mod2 correctly found\n", __FILE__);
- 
--  result |= test_in_mod1 ((void *) &main);
-+  result |= test_in_mod1 (main);
- 
--  result |= test_in_mod2 ((void *) &main);
-+  result |= test_in_mod2 (main);
- 
-   return result;
+--- glibc-2.3.1/sysdeps/hppa/Makefile.orig	2003-02-25 22:21:14.000000000 -0800
++++ glibc-2.3.1/sysdeps/hppa/Makefile	2003-02-25 22:22:01.000000000 -0800
+@@ -31,3 +31,14 @@
+ dl-routines += dl-symaddr dl-fptr
+ rtld-routines += dl-symaddr dl-fptr
+ endif
++
++ifeq ($(subdir),csu)
++ifeq (yes,$(build-shared))
++# Compatibility
++ifeq (yes,$(have-protected))
++CPPFLAGS-libgcc-compat.c = -DHAVE_DOT_HIDDEN
++endif
++sysdep_routines += libgcc-compat
++shared-only-routines += libgcc-compat
++endif
++endif
+--- glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
++++ glibc/sysdeps/hppa/libgcc-compat.c	2003-02-25 22:19:14.000000000 -0800
+@@ -0,0 +1,43 @@
++/* pre-.hidden libgcc compatibility
++   Copyright (C) 2002 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Randolph Chung
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++
++#include <stdint.h>
++#include <shlib-compat.h>
++
++#if SHLIB_COMPAT(libc, GLIBC_2_0, GLIBC_2_2_6)
++
++symbol_version (__clz_tab_internal, __clz_tab, GLIBC_2.2);
++
++typedef unsigned int UQItype  __attribute__ ((mode (QI)));
++
++const UQItype __clz_tab_internal[] =
++{
++  0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
++  6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
++  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
++  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
++};
++
++#endif
+--- glibc-2.3.1/sysdeps/hppa/Dist.orig	2003-02-26 09:02:52.000000000 -0800
++++ glibc-2.3.1/sysdeps/hppa/Dist	2003-02-26 09:04:03.000000000 -0800
+@@ -1,2 +1,3 @@
++libgcc-compat.c
+ dl-symaddr.c
+ dl-fptr.c
+--- glibc-2.3.1/sysdeps/hppa/Versions.orig	2002-02-01 13:16:41.000000000 -0800
++++ glibc-2.3.1/sysdeps/hppa/Versions	2003-02-27 13:23:03.000000000 -0800
+@@ -5,3 +5,8 @@
+     _dl_function_address;
+   }
  }
-diff -u -p -r1.2 defaultmod1.c
---- libc/dlfcn/defaultmod1.c	29 Nov 2000 00:03:27 -0000	1.2
-+++ libc/dlfcn/defaultmod1.c	29 Jul 2003 16:11:34 -0000
-@@ -9,9 +9,9 @@ found_in_mod1 (void)
- }
- 
- 
--extern int test_in_mod1 (void *mainp);
-+extern int test_in_mod1 (int (*mainp)(int, char **));
- int
--test_in_mod1 (void *mainp)
-+test_in_mod1 (int (*mainp)(int, char **))
- {
-   int (*ifp) (void);
-   void *p;
-@@ -24,7 +24,7 @@ test_in_mod1 (void *mainp)
-       printf ("%s: main not found\n", __FILE__);
-       result = 1;
-     }
--  else if (p != mainp)
-+  else if ((int (*)(int, char **))p != mainp)
-     {
-       printf ("%s: wrong address returned for main\n", __FILE__);
-       result = 1;
-diff -u -p -r1.2 defaultmod2.c
---- libc/dlfcn/defaultmod2.c	29 Nov 2000 00:03:27 -0000	1.2
-+++ libc/dlfcn/defaultmod2.c	29 Jul 2003 16:11:34 -0000
-@@ -16,9 +16,9 @@ found_in_mod2 (void)
- }
- 
- 
--extern int test_in_mod2 (void *mainp);
-+extern int test_in_mod2 (int (*mainp)(int, char **));
- int
--test_in_mod2 (void *mainp)
-+test_in_mod2 (int (*mainp)(int, char **))
- {
-   int (*ifp) (void);
-   void *p;
-@@ -31,7 +31,7 @@ test_in_mod2 (void *mainp)
-       printf ("%s: main not found\n", __FILE__);
-       result = 1;
-     }
--  else if (p != mainp)
-+  else if ((int (*)(int, char **))p != mainp)
-     {
-       printf ("%s: wrong address returned for main\n", __FILE__);
-       result = 1;
++libc {
++  GLIBC_2.2 {
++    __clz_tab;
++  }
++}
