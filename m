@@ -1,22 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0C9C44841
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Nov 2003 07:54:20 -0700 (MST)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id hA9Es6Y11089;
-	Sun, 9 Nov 2003 09:54:06 -0500
-Subject: Re: [parisc-linux] Allow palo partition to be mounted as ext2
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: Paul Bame <bame@riverrock.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.58.0311080401180.19538@sal.ucc.ie>
-References: <1068254037.2120.93.camel@mulgrave>
-	<Pine.LNX.4.58.0311080401180.19538@sal.ucc.ie>
-Content-Type: text/plain
-Date: 09 Nov 2003 08:54:05 -0600
-Message-Id: <1068389646.2086.5.camel@mulgrave>
-Mime-Version: 1.0
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2FAB04841
+	for <parisc-linux@parisc-linux.org>; Sun,  9 Nov 2003 10:36:52 -0700 (MST)
+Message-ID: <3FAE7B44.6020805@tiscali.be>
+Date: Sun, 09 Nov 2003 17:37:08 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] 2.4 64bits MAX_ADDRESS ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,26 +20,86 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 2003-11-07 at 22:12, M. Grabert wrote:
-> I don't know much ext2/3 details, but is there a way that a fsck
-> could mess things up? Eg. not an ordinary fsck, but if the user
-> runs it manually with special options?
+Hi all,
 
-Not fsck, no.  The bad blocks are treated as though they belonged to an
-invisible file.  redoing the mke2fs, of course, would destroy the
-bootability.
+Being at the very begining of my study of the Mel Goramn' thesis and so 
+comparing parisc linux vm implementation, I just try to figure out some 
+cst values. I so write I small case:
 
-> I suppose the same technique could be also used for other filesystems
-> palo supports (in the future).
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
-As long as they have bad block support, yes---that's not a given;
-reiserfs doesn't seem to have it, for instance.
+#define PAGE_SHIFT 12
+#define PAGE_SIZE       (1UL << PAGE_SHIFT)
+#define PAGE_MASK       (~(PAGE_SIZE-1))
 
-Also, since the command has to be run by palo and palo has to know how
-to format the bad block list, it's not trivial to do.
+/* ifdef __LP64__ */
+#define PT_NLEVELS 3
+#define PT_INITIAL 4 /* Number of initial page tables */
+/*
+#else __LP64__
+#define PT_NLEVELS 2
+#define PT_INITIAL 2
+#endif
+  */
 
-However, the ultimate argument is because palo's iplboot loader only
-knows about ext2/3, even if you could format the partition as anything
-else, you currently wouldn't be able to boot from it.
+#define MAX_ADDRBITS (PAGE_SHIFT + (PT_NLEVELS)*(PAGE_SHIFT - PT_NLEVELS))
+#define MAX_ADDRESS (1UL << MAX_ADDRBITS)
 
-James
+
+int main(int argc, char * * argv, char * * env) {
+
+     printf("For remainder:\n");
+     printf("Int size: %d,\n", sizeof(int));
+     printf("Long size: %d,\n", sizeof(long));
+     printf("LongLong size: %d.\n\n", sizeof(long long));
+     printf("Some VM cst into parisc 64bits:\n");
+     printf("PAGE_SHIFT: %#010x (%u)\n\n", PAGE_SHIFT, PAGE_SHIFT);
+     printf("PAGE_SIZE   (1UL << PAGE_SHIFT)\n");
+     printf("PAGE_SIZE: %#010x (%u)\n\n", PAGE_SIZE, PAGE_SIZE);
+     printf(" PAGE_MASK  (~(PAGE_SIZE-1))\n");
+     printf("PAGE_MASK: %#010x (%u) (%d)\n\n", PAGE_MASK, PAGE_MASK, 
+PAGE_MASK);
+
+     printf("PT_NLEVELS: %#010x (%u)\n\n", PT_NLEVELS, PT_NLEVELS);
+     printf("PT_INITIAL: %#010x (%u)\n\n", PT_INITIAL, PT_INITIAL);
+     printf("MAX_ADDRBITS (PAGE_SHIFT + (PT_NLEVELS)*(PAGE_SHIFT - 
+PT_NLEVELS))\n");
+     printf("MAX_ADDRBITS: %#010x (%u)\n\n", MAX_ADDRBITS, MAX_ADDRBITS);
+     printf("MAX_ADDRESS (1UL << MAX_ADDRBITS)\n");
+     printf("MAX_ADDRESS: %#010Lx (%ul)\n\n", MAX_ADDRESS, MAX_ADDRESS);
+}
+
+which correctly warm me about some 'overflow':
+
+foo.c: In function `main':
+foo.c:42: warning: left shift count >= width of type
+foo.c:42: warning: left shift count >= width of type
+
+afaik MAX_ADDRBITS==39 against a long contains only 32bits?
+
+So is this patch make sense for all (I trust if we want a day managing 
+the some 15 Exabytes of vm available with pa-2.0 processors):
+---------><---------
+--- include/asm-parisc/pgtable.h.orig	2003-11-09 18:08:10.000000000 +0100
++++ include/asm-parisc/pgtable.h	2003-11-09 18:09:01.000000000 +0100
+@@ -72,7 +72,11 @@
+  #endif
+
+  #define MAX_ADDRBITS (PAGE_SHIFT + (PT_NLEVELS)*(PAGE_SHIFT - PT_NLEVELS))
++#ifdef __LP64__
++#define MAX_ADDRESS (1ULL << MAX_ADDRBITS)
++#else
+  #define MAX_ADDRESS (1UL << MAX_ADDRBITS)
++#endif
+
+  #define SPACEID_SHIFT (MAX_ADDRBITS - 32)
+
+---------><---------
+
+And may be is this not the only change. Please advise.
+
+Thanks inadvance,
+	Joel
