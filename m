@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from yandex.ru (pcp01006106pcs.ladson01.sc.comcast.net [68.59.45.147])
-	by dsl2.external.hp.com (Postfix) with SMTP id 24DE7483F
-	for <parisc-linux@parisc-linux.org>; Sat, 26 Jul 2003 18:26:56 -0600 (MDT)
-Date: Sun, 27 Jul 2003 00:22:18 +0000
-From: Diaz@adaptec.com
-To: Parisc-linux <parisc-linux@parisc-linux.org>
-References: <ELFI02KABE5JGLGL@parisc-linux.org>
-In-Reply-To: <ELFI02KABE5JGLGL@parisc-linux.org>
-Message-ID: <9L5FB900E454FI15@adaptec.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Subject: [parisc-linux] new mail            y2BL2IHc
+Date: Sun, 27 Jul 2003 06:27:45 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Generic light-weight syscall.
+Message-ID: <20030727122745.GC16753@dsl2.external.hp.com>
+References: <20030725063739.GA13017@systemhalted> <20030725113700.GH1485@parcelfarce.linux.theplanet.co.uk> <20030726174845.GF31744@systemhalted> <20030726180031.GG31744@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030726180031.GG31744@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,33 +20,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Мы рады предложить вам новый бесплатный почтовый сервис http://www.mail15.com. Его отличительные особенности:
-1) размер ящика 15 мб;
-2) защищенность и надежность;
-3) возможность использования любых почтовых программ(POP,IMAP,SMTP);
-4) доступ из любого места в любое время;
-5) простой и доступный вебинтерфейс с ПОЛНЫМ ОТСУТСТВИЕМ РЕКЛАМЫ;
-6) антивирусный и антиспамовый контроль;
-7) мгновенная пересылка почты.
+On Sat, Jul 26, 2003 at 02:00:32PM -0400, Carlos O'Donell wrote:
+> Talked to Rik Van Riel about fast gettimeofday and he indicated that
+> it's not doable since you can't guarantee your process will get
+> scheduled on another CPU whose clock is out of sync by more than X and
+> get negative time.
 
-Если вы не хотите получать более данную рассылку, пишите mailto:unsubscribe@mail15.com?subject=unsubscribe
+Yes we can. We can sync CR16 across CPUs within a few CPU cycles.
+I've described this before on parisc-linux.
 
-*************
+"sync" means figure out the difference between CR16 on several
+CPUs and using CPU 0 as the reference.
 
- We are glad to invite you at new free mail service http://www.mail15.com. The advantages of this service are:
- 1) mailbox, up to 15 Mb;
- 2) absolute privacy and high reliability;
- 3) ability to use mail clients (POP3, IMAP4, SMTP);
- 4) access from anywhere, anytime;
- 5) flexible light-weight web interface without advertising banners;
- 6) antivirus and antispam control;
- 7) fast mail transfer;
- 8) high speed network channel;
- 9) flexible light-weight web interface;
- 10) wide spread ability of mail filtering and forwarding mail;
- 11) clock around support;
+> Though I imagine you were talking about having one
+> CPU update one page with time on it... and then other CPU's read this?
+> LaMont notes that there is no requirement from the PA design that CPU's
+> clock at _exactly_ the same frequency or have monotonically incrementing
+> clocks at the right rate.
 
- If you wish to be removed:
-mailto:unsubscribe@mail15.com?subject=unsubscrib
+correct. IIRC 9000/870 have seperate clock sources.
+But all the boxes we support to date have exactly one clock source.
+The multi-cell boxes (like superdome) will have multiple sources
+and I don't know how to handle those - maybe a "not quite so fast"
+gettimeofday().
 
-7wZ2T53RI7
+hth,
+grant
