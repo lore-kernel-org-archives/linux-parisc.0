@@ -1,19 +1,15 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 53A694840
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 29 Feb 2004 02:38:14 -0700 (MST)
-Message-ID: <4041B33A.2010802@tiscali.be>
-Date: Sun, 29 Feb 2004 09:39:06 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: James Bottomley <James.Bottomley@steeleye.com>
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 jejb
-References: <20040228212407.DB126494190@palinux.hppa>
-	<40411464.6050201@tiscali.be> <1078008164.1968.94.camel@mulgrave>
-In-Reply-To: <1078008164.1968.94.camel@mulgrave>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] Re: Install GNOME on 712/80
+Date: Fri, 6 Feb 2004 00:07:27 +0100
+Message-ID: <200402060007.27911.deller__8227.12561716816$1416623178$gmane$org@gmx.de>
+References: <02d601c3ebef$e3241650$8100a8c0@punk>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Cc: Jens Simmoleit <simmel@anymotion.de>, debian-hppa@lists.debian.org
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <deller@gmx.de>
+In-Reply-To: <02d601c3ebef$e3241650$8100a8c0@punk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,24 +19,39 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Thursday 05 February 2004 14:56, Jens Simmoleit wrote:
+> My question would be, which packages do I need to succesfully install and run GNOME (and only Gnome) on my system? 
 
+No idea. I use KDE.
 
-James Bottomley wrote:
-> On Sat, 2004-02-28 at 16:21, Joel Soete wrote:
-> 
->>Hey interesting, I mean 'torture test'. Where can I get more detail on this stuff to test on the N4K also?
-> 
-> 
-> It just means running bk doing a tree merge, checking out the results
-> and compiling the kernel.  It seems to sow up most types of problems ...
-> 
-> James
-> 
-> 
-> 
-Ah ok , it just sound like some gcc test :) , that is why I though there was bourned a new test for our kernel.
+> In addition to that, where and how must the xserver or gnome or whatever be configured to make it run properly?
+> ....
+> (II) FBDev(0): using default device
+> (II) Running in FRAMEBUFFER Mode
+> (**) FBDev(0): Depth 24, (--) framebuffer bpp 32
+> (==) FBDev(0): RGB weight 888
+> (==) FBDev(0): Default visual is TrueColor
+> (==) FBDev(0): Using gamma correction (1.0, 1.0, 1.0)
+> (II) FBDev(0): Hardware:  (vidmem: 2048k)
+> (II) FBDev(0): Checking Modes against framebuffer device...
+> (II) FBDev(0):  mode "1280x1024" ok
+> (II) FBDev(0):  mode "1024x768" ok
+> (II) FBDev(0):  mode "800x600" ok
+> (II) FBDev(0): Checking Modes against monitor...
+> (--) FBDev(0): Virtual size is 1280x1024 (pitch 1280)
+> (**) FBDev(0): Default mode "800x600": 36.0 MHz (scaled from 0.0 MHz), 35.2
+> kHz, 56.2 Hz
+> (II) FBDev(0): Modeline "800x600"   36.00  800 824 896 1024  600 601 603 625
+> +hsync +vsync
+> (==) FBDev(0): DPI set to (75, 75)
+> (**) FBDev(0): Using "Shadow Framebuffer"
+> (--) Depth 24 pixmap format is 32 bpp
+> Fatal server error:
+> AddScreen/ScreenInit failed for driver 0
 
-Thanks for feedback,
-	Joel
+Look at the dmesg kernel log and search for a line which starts with "stifb:".
+There you will see the only resolution & bpp color depth which your card
+currently supports and then verify your /etc/X11/XFree86.config file to only 
+have exactly those values enabled. After that change X11 should start up....
 
-PS: I will so prepare such boot kernel for the N ;)
+Helge
