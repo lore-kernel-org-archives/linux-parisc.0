@@ -1,20 +1,18 @@
 Return-Path: <grundler@lackof.org>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BB807484B
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4D8F7484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Jan 2004 08:53:57 -0700 (MST)
-Date: Mon, 26 Jan 2004 08:53:56 -0700
+	Mon, 26 Jan 2004 09:13:18 -0700 (MST)
+Date: Mon, 26 Jan 2004 09:13:16 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] kernel BUG at mm/shmem.c:585!
-Message-ID: <20040126155356.GA12175@colo.lackof.org>
-References: <20040126021508.GZ1060@baldric.uwo.ca>
-	<200401260235.i0Q2Z783024373@hiauly1.hia.nrc.ca>
+To: Reinhold Flecke CCF <reinhold.flecke@ccf-consulting.de>
+Subject: Re: [parisc-linux] help installation failed on C240 (fx4) workstation
+Message-ID: <20040126161316.GC12175@colo.lackof.org>
+References: <LBEMKLBEFDGDOGGAOGIKOEJPCCAA.reinhold.flecke@ccf-consulting.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200401260235.i0Q2Z783024373@hiauly1.hia.nrc.ca>
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <LBEMKLBEFDGDOGGAOGIKOEJPCCAA.reinhold.flecke@ccf-consulting.de>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,10 +22,13 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Jan 25, 2004 at 09:35:07PM -0500, John David Anglin wrote:
-> Is this on a SMP kernel (i.e., could this be a locking issue)?
+On Mon, Jan 26, 2004 at 12:13:22PM +0100, Reinhold Flecke CCF wrote:
+> I downloaded the "debian-30r2-hppa-binary-1.iso" and burned it to CD. 
+> If I start the installation on my C240 (fx4) workstation  with the command:
+> bo sescsi.2.0
 
-no. I don't build or run SMP kernels on anything at the moment.
+FX-4 graphics is not supported.
+Either use serial console or replace the FX4 with PCI FX-E.
 
-thanks,
+sorry,
 grant
