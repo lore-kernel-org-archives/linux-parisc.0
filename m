@@ -1,86 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA03208
-	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 17:46:22 -0700
-Message-Id: <200012140048.TAA02603@hiauly1.hia.nrc.ca>
-Subject: Re: pa reload problem
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Wed, 13 Dec 2000 19:48:21 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: law@redhat.com, rth@redhat.com, alan@linuxcare.com.au,
-        rhirst@linuxcare.com, parisc-linux@thepuffingroup.com,
-        gcc-bugs@gcc.gnu.org
-In-Reply-To: <no.id> from "John David Anglin" at Dec 11, 2000 01:48:16 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA06327
+	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 19:55:56 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 14 Dec 2000 02:58:43 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id NAA10587;
+	Thu, 14 Dec 2000 13:57:21 +1100
+Date: Thu, 14 Dec 2000 13:57:21 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+cc: parisc-linux@thepuffingroup.com, jes@linuxcare.com
+Subject: Re: [parisc-linux] phase 2 gcc build fails 
+In-Reply-To: <Pine.LNX.4.21.0012141124330.2565-100000@front.linuxcare.com.au>
+Message-ID: <Pine.LNX.4.21.0012141355570.2565-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I was going to deleting the hack and adding a general_operand test in
-> local-alloc to see if that would fix the reload problem with "-fPIC".
-> However, for the moment, there are still problems with a "normal" build
-> at "-O3".  With only the yesterdays CVS source and the patch below
-> to prevent rename registers walking of the return pointer, I get the
-> following failure building libstdc++ v2:
-> 
-> /xxx/gnu/gcc-2.97/objdir/gcc/g++ -B/xxx/gnu/gcc-2.97/objdir/gcc/ -nostdinc++ -isystem /xxx/gnu/gcc-2.97/libstdc++ -isystem /xxx/gnu/gcc-2.97/libstdc++/std -isystem /xxx/gnu/gcc-2.97/libstdc++/stl -isystem /xxx/gnu/gcc-2.97/libio -isystem /xxx/gnu/gcc-2.97/objdir/hppa1.1-hp-hpux10.20/libio -L/xxx/gnu/gcc-2.97/objdir/hppa1.1-hp-hpux10.20/libstdc++ -B/usr/local/hppa1.1-hp-hpux10.20/bin/ -B/usr/local/hppa1.1-hp-hpux10.20/lib/ -isystem /usr/local/hppa1.1-hp-hpux10.20/include -c -O3 -fno-implicit-templates -I../../../libstdc++ -I../../../libstdc++/stl -I../libio -I../../../libstdc++/../libio -I../../../libstdc++/../include -I../../../libstdc++/../gcc -nostdinc++  ../../../libstdc++/exception.cc
-> ../../../libstdc++/exception.cc: In function `void __check_eh_spec(int, const 
->    void**)':
-> ../../../libstdc++/exception.cc:363: Internal error: Segmentation fault.
+On Thu, 14 Dec 2000, Alan Modra wrote:
 
-I have made some progress in locating this bug but still don't have a
-complete understanding of the problem.  The problem is that a code_label
-insn is "incorrectly" deleted in the loop pass.  Here is the rtl from
-the gcse pass:
+> What I've got to do, I guess, is to commit my tree back to the main truck.
+> eg. in the case of config.if, we want a version 1.2 which will be identcal
+> to version 1.1.1.2
 
-[snip]
+Seemed to work OK.  A "cvs update -d" in your gcc directory should now
+fix your tree for you.
 
-(code_label 1158 1268 1439 124 "" "" [3 uses])
-
-(note 1439 1158 262 [bb 12] NOTE_INSN_BASIC_BLOCK -1347440721)
-
-(note 262 1439 1159 85 NOTE_INSN_EH_REGION_END -1347440721)
-
-[snip]
-
-(insn 788 787 789 (set (reg/f:SI 209)
-        (high:SI (label_ref:SI 1158))) 87 {*pa.md:2435} (nil)
-    (expr_list:REG_EQUAL (high:SI (label_ref:SI 1158))
-        (insn_list:REG_LABEL 1158 (nil))))
-
-(insn 789 788 791 (set (reg/f:SI 208)
-        (lo_sum:SI (reg/f:SI 209)
-            (label_ref:SI 1158))) 90 {*pa.md:2467} (nil)
-    (insn_list:REG_LABEL 1158 (expr_list:REG_EQUAL (label_ref:SI 1158)
-            (nil))))
-
-Here is the rtl after loop:
-
-Loop from 576 to 1288: 105 real insns.
-Continue at insn 1278.
-
-[snip]
-
-Insn 788: regno 209 (life 2), move-insn savings 2  moved to 1530
-Insn 789: regno 208 (life 1), move-insn forces 788 savings 1  moved to 1532
-
-[snip]
-
-(insn 1531 1528 1532 (set (reg/f:SI 337)
-        (high:SI (label_ref:SI 1158))) -1 (nil)
-    (expr_list:REG_LABEL (code_label/v 1158 1268 1439 124 "" "" [0 uses])
-        (nil)))
-
-(insn 1532 1531 1535 (set (reg/f:SI 208)
-        (lo_sum:SI (reg/f:SI 337)
-            (label_ref:SI 1158))) -1 (nil)
-    (expr_list:REG_EQUAL (label_ref:SI 1158)
-        (expr_list:REG_LABEL (code_label/v 1158 1268 1439 124 "" "" [0 uses])
-            (nil))))
-
-The code_label 1158 is deleted by delete_trivially_dead_insns apparently 
-because the preceding call to loop_optimize in toplev.c has reduced the
-number of uses to 1.  Maybe somebody can see how this occurs.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Linuxcare.  Support for the Revolution.
