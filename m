@@ -1,35 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rods.home.net.au (co3015855-a.fernt1.vic.optushome.com.au [203.164.43.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3753D482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Apr 2001 05:45:22 -0600 (MDT)
-Received: from optushome.com.au (rods.home.net.au [192.168.3.1])
-	by rods.home.net.au (Postfix) with ESMTP id 11A6A62E3F
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Apr 2001 11:45:18 +0000 (Local time zone must be set--see zic manual page)
-Sender: yendor@rods.home.net.au
-Message-ID: <3ACEFDCD.A3F62CAA@optushome.com.au>
-Date: Sat, 07 Apr 2001 21:45:18 +1000
-From: Rod Smart <snaketails@optushome.com.au>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4A935482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Apr 2001 05:54:12 -0600 (MDT)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA28982;
+	Sat, 7 Apr 2001 21:54:00 +1000
+Date: Sat, 7 Apr 2001 21:54:00 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Rod Smart <snaketails@optushome.com.au>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Palo question.
+In-Reply-To: <3ACEFDCD.A3F62CAA@optushome.com.au>
+Message-ID: <Pine.LNX.4.21.0104072146370.8692-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Palo question.
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-    Hi there.
+On Sat, 7 Apr 2001, Rod Smart wrote:
 
-    I hear there is a new Palo version released ?
+>     Where can I get a copy from, the link I received from the guys in
+> France was for the Debian archive.
+> 
+>     Is there a version just in a tarball as I don't have Debian on my
+> own x86 system
 
-    Where can I get a copy from, the link I received from the guys in
-France was for the Debian archive.
+debian packages are really neat in that all you need is `ar'
 
-    Is there a version just in a tarball as I don't have Debian on my
-own x86 system, and I cannot de-archive the latest RPM archives as I am
-unable to upgrade my RPM program (wierd)
+"ar xv <package>"
 
-    So, I would just like the tarball of the new Palo package if it is
-available please.
+will get you a couple of tar.gz files, and it's fairly easy from there.
 
-    After I have that, I'll be able to get back to playing with Thomas's
-Kernels ;o)
-
-    Thanks ;o)
+Alan
