@@ -1,58 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA21367
-	for <parisc-linux@puffin.external.hp.com>; Sun, 3 Sep 2000 15:07:34 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <39B2BD9D.61337522@uswest.net>
-Date: Sun, 03 Sep 2000 15:07:41 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA23183
+	for <parisc-linux@puffin.external.hp.com>; Sun, 3 Sep 2000 21:22:48 -0600
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by cosrel2.hp.com (Postfix) with ESMTP id 62FF43FB
+	for <parisc-linux@thepuffingroup.com>; Sun,  3 Sep 2000 21:22:31 -0600 (MDT)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id VAA10139 for parisc-linux@thepuffingroup.com; Sun, 3 Sep 2000 21:22:42 -0600 (MDT)
+Date: Sun, 3 Sep 2000 21:22:42 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200009040322.VAA10139@udlkern.fc.hp.com>
 To: parisc-linux@thepuffingroup.com
-Content-Type: multipart/mixed;
- boundary="------------03E6B5D605078BCA90A54D06"
-Subject: [parisc-linux] PATCH: memory patch
+Subject: Re: PATCH: memory patch
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------03E6B5D605078BCA90A54D06
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Ryan wrote:
 
-Hello everyone,
+>I have a small patch that allows the parsic-linux kernel see all
+> the all the memory the PDC recognizes.   This patch works fine
+>for me, and if no one has any objections, (ie.  Does this need to
+>be present for some models?) ... I'll commit it.
 
-I have a small patch that allows the parsic-linux kernel see all
-the all the memory the PDC recognizes.   This patch works fine
-for me, and if no one has any objections, (ie.  Does this need to
-be present for some models?) ... I'll commit it.
+No, a limit was imposed intentionally. Right now, with the kernel
+mapping starting at 0xc0000000 we can't support 1 Gb of physical
+memory. Machines that have 1 Gb or more will not boot if you
+restored the code to what it was before (which is what your patch
+would do).
 
-Thanks,
+Eventually I plan to move the kernel mapping down a lot closer
+to 0. But there are much higher priority things to get done before
+that. Right now the kernel is not stable enough to effectively
+make good use of even 128 Mb at this point.
 
-Ryan
+I didn't choose the current 128 Mb maximum, and it can almost certainly
+be greater than that. If that limit is really bothering you, go ahead
+and raise it to 256 Mb or possibly 512 Mb (don't raise it beyond what
+you can test).  Don't spend any time trying to figure out what the
+absolute maximum can be, since this will almost certainly change in the
+future.
 
-
-
---------------03E6B5D605078BCA90A54D06
-Content-Type: text/plain; charset=us-ascii;
- name="mem.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="mem.patch"
-
-Index: setup.c
-===================================================================
-RCS file: /home/cvs/parisc/linux-2.3/arch/parisc/kernel/setup.c,v
-retrieving revision 1.33
-diff -u -p -r1.33 setup.c
---- setup.c	2000/08/25 15:07:19	1.33
-+++ setup.c	2000/09/03 20:36:39
-@@ -282,8 +282,7 @@ void __init start_parisc(unsigned arg0, 
- 	mtctl(ccr, 10);
- 
- 	mem_start = __pa(memory_start);
--#define MAX_MEM (128*1024*1024)
--	mem_max = (PAGE0->imm_max_mem > MAX_MEM ? MAX_MEM : PAGE0->imm_max_mem);
-+	mem_max = PAGE0->imm_max_mem;
- 
- 	collect_cpuinfo(); // get all cpu & system-information for later use.
- 	printk("CPU(s): %d x %s at %d.%06d MHz\n", 
-
---------------03E6B5D605078BCA90A54D06--
+John Marvin
+jsm@fc.hp.com
