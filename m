@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 516954829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 10:52:32 -0600 (MDT)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by smtp-out.tiscali.be with esmtp (Tiscalinet)
-	id 182Dsq-00076r-00
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 18:52:28 +0200
-Date: Thu, 17 Oct 2002 19:48:42 +0200
-Message-ID: <3DA56CAE00002AEB@ocpmta8.be.tiscali.com>
-From: jsoe0708@tiscali.be
-To: parisc-linux@lists.parisc-linux.org
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 910454829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 11:40:41 -0600 (MDT)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 668AE8B2
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 19:40:37 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id TAA21967 for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Oct 2002 19:38:53 +0200 (METDST)
+Message-ID: <3DAEF613.A3A42F9E@admin.france.hp.com>
+Date: Thu, 17 Oct 2002 19:40:35 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=========3DA56CAE00002AEB/mail.tiscali.be"
-Subject: [parisc-linux] FW: [Bug #3332] jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Dump driver: step by step
+References: <3DABF865.8224BF5@admin.france.hp.com> <3DAC09D7.47F2D9C0@hpfrcu81.france.hp.com> <3DAC0D9E.BD896745@admin.france.hp.com>
+Content-Type: multipart/mixed;
+ boundary="------------B0F7A425023EC0FFE255DD2C"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,67 +26,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=========3DA56CAE00002AEB/mail.tiscali.be
-Content-Type: text/plain; charset="US-ASCII"
+This is a multi-part message in MIME format.
+--------------B0F7A425023EC0FFE255DD2C
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-Hi all,
+	hi
+Good news, now I'm able to initialise and read/write on
+multiple disk. The solution a new time was a specific
+PDC call on PAT system (we don't need it on 712 for example):
 
-May be much hppa specific problem.
+dump_pdc_call(PDC_IO, PDC_IO_RESET_DUMP_DEVS, __pa(pdc_result),__pa(dumpdev))
 
-All advise is well come.
+where dumpdev is the list of all "struct device_path".
+It would be really interresting if someone is able to
+find the "parisc 2.0 I/O firmware" doc, it would gain
+a lot's of time to poor little programmers like me.
 
-Thanks in advance,
-    Joel
+	Bye.
 
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------B0F7A425023EC0FFE255DD2C
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
 
---=========3DA56CAE00002AEB/mail.tiscali.be
-Content-Type: message/rfc822
-Content-Disposition: inline
-
-Return-Path: <oss@www-124.ibm.com>
-Original-Recipient: rfc822;joel.soete@tiscali.be
-Received: from www-124.ibm.com (129.33.28.104) by mail.tiscali.be (6.0.053)
-        id 3DAAAD3F00102627 for jsoe0708@tiscali.be; Thu, 17 Oct 2002 18:47:31 +0200
-Received: (from oss@localhost)
-	by www-124.ibm.com (8.11.6/8.11.0) id g9HGlU125191;
-	Thu, 17 Oct 2002 12:47:30 -0400
-Date: Thu, 17 Oct 2002 12:47:30 -0400
-Message-Id: <200210171647.g9HGlU125191@www-124.ibm.com>
-To: joel.soete@tiscali.be
-Subject: [Bug #3332] jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
-From: admin@www-124.southbury.usf.ibm.com
-
-Bug #3332 has been submitted pending email address confirmation. 
-Here is a current snapshot of the bug.
-
-Project: 
-Category: kernel
-Status: Open
-Bug Group: bug
-Priority: 5
-Summary: jfs-1.0.22 and 1.0.23 break fb console on k-2.4.19-pa22
-
-Details: Hi all,
-
-Test your tools, I test early with success 1.0.17 (against k-2.4.18-pa54 and latter).
-
-Today, after spending some time to fix some evms tools problems, I update jfs against last k-2.4.19-pa20 (and latter) with release 1.0.22 and next 1.0.23.
-
-I build successfully a jfs on a evms lvm, populate it, fsck all seems ok.
-
-Just an anoying problem the fb console is broken:
-just when kernel launches to detect the first scsi device the screen scroll stop and the rest of messages are all display over others on  the very top line of the screen.
-
-Thanks in advance for help,
-    Joel
-
-Thank you for submitting your bug. To have your bug published, visit the following url:
-
-http://www-124.ibm.com/developerworks/bugs/verify.php?confirm_hash=9001bfa38f3e1a4b
-
- -- the IBM OSS staff
-
-
-
---=========3DA56CAE00002AEB/mail.tiscali.be--
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------B0F7A425023EC0FFE255DD2C--
