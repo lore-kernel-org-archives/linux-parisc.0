@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CF8DC4845
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Mar 2002 08:58:39 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16mzWr-0000hd-00; Mon, 18 Mar 2002 15:58:33 +0000
-Date: Mon, 18 Mar 2002 15:58:33 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: joel.soete@freebel.net
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ADB2D483C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Mar 2002 09:19:34 -0700 (MST)
+To: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] STI without PCI
-Message-ID: <20020318155833.M21765@parcelfarce.linux.theplanet.co.uk>
-References: <1016466919.3c960de7350ce@webmail.tiscalinet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1016466919.3c960de7350ce@webmail.tiscalinet.be>; from joel.soete@freebel.net on Mon, Mar 18, 2002 at 04:55:19PM +0100
+Message-ID: <1016468351.3c96137f696f0@webmail.tiscalinet.be>
+Date: Mon, 18 Mar 2002 17:19:11 +0100 (CET)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+References: <1016466919.3c960de7350ce@webmail.tiscalinet.be> <20020318155833.M21765@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20020318155833.M21765@parcelfarce.linux.theplanet.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,32 +23,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Mar 18, 2002 at 04:55:19PM +0100, joel.soete@freebel.net wrote:
-> I uncheck CONFIG_PCI in my .config file then make menuconfig and make dep ; make
-> cklean ; make vmlinux.
+Quoting Matthew Wilcox <willy@debian.org>:
+
+> On Mon, Mar 18, 2002 at 04:55:19PM +0100, joel.soete@freebel.net wrote:
+> > I uncheck CONFIG_PCI in my .config file then make menuconfig and make
+> dep ; make
+> > cklean ; make vmlinux.
+> > 
+> > It compiles successfully (with apt-get dist-upgrade this morning).
 > 
-> It compiles successfully (with apt-get dist-upgrade this morning).
-
-thanks.
-
-> BUT:
-> (or 'b' to boot with this command line)? b
+> thanks.
 > 
-> Command line for kernel: 'root=/dev/sda3 HOME=/ console=ttyS0 TERM=vt102
-> palo_kernel=3/boot/vmlinux-t'
-> Selected kernel: /boot/vmlinux-t from partition 3
-> ...
-> parport0: PC-style at 0xffd02800, irq 88 [PCSPP,TRISTATE]
-> STI word mode ROM at f0011000, hpa=f8000000
-> STI word mode ROM, id 2d08c0a7-9a02587, conforms to spec rev. 8.07
-> STI device: INTERNAL_EG_1280
-> Console: switching to colour frame buffer device 160x64
-> ...
+> umm.. could you show the portions of your boot log relating to scsi or
+> sda?
 > 
-> Please append a correct "root=" boot option
-> Kernel panic: VFS: Unable to mount root fs on 08:03
 
-umm.. could you show the portions of your boot log relating to scsi or sda?
+For sure (I would have to add, sorry):
+SCSI subsystem driver Revision: 1.00
+53c700: Version 2.7 By James.Bottomley@HansenPartnership.com
+scsi0: 53c710 rev 2 
+scsi0 : LASI SCSI 53c700
+scsi0: (3:0) Synchronous at offset 8, period 100ns
+  Vendor: SEAGATE   Model: ST32151N          Rev: HP02
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+scsi0: (4:0) Synchronous at offset 8, period 100ns
+  Vendor: SEAGATE   Model: ST34371N          Rev: HPM2
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Attached scsi disk sda at scsi0, channel 0, id 3, lun 0
+Attached scsi disk sdb at scsi0, channel 0, id 4, lun 0
+scsi0: (3:0) Enabling Tag Command Queuing
+SCSI device sda: 4194685 512-byte hdwr sectors (2148 MB)
+Partition check:
+ sda: unknown partition table
+scsi0: (4:0) Enabling Tag Command Queuing
+SCSI device sdb: 8388314 512-byte hdwr sectors (4295 MB)
+ sdb: unknown partition table
 
--- 
-Revolutions do not require corporate support.
+(well it works with k-2.4.18-pa4 from last this March 12 and I just restart to
+compile this new pa5 with previous .config to compare)
+
+    Joel
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
