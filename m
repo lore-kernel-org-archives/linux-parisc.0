@@ -1,98 +1,44 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA28582
-	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Oct 1999 21:45:16 -0600
-Received: from enterprise (host-216-78-43-110.ath.bellsouth.net [216.78.43.110])
-	by mail1.atl.bellsouth.net (3.3.5alt/0.75.2) with SMTP id XAA09328
-	for <parisc-linux@thepuffingroup.com>; Sat, 23 Oct 1999 23:41:39 -0400 (EDT)
-Reply-To: <JHamilton@Earthling.Net>
-From: "Justin Hamilton" <JHamilton@Earthling.Net>
-To: <parisc-linux@thepuffingroup.com>
-Date: Sat, 23 Oct 1999 23:44:00 -0400
-Message-ID: <NDBBKIEANAMHBNPAILKPKEBECEAA.JHamilton@Earthling.Net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-In-Reply-To: <199910221606.JAA00597@milano.cup.hp.com>
-Subject: [parisc-linux] Trying to boot on an N-Class
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA29002
+	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Oct 1999 23:20:58 -0600
+Message-Id: <199910240522.WAA01597@milano.cup.hp.com>
+To: JHamilton@earthling.net
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Trying to boot on an N-Class 
+In-reply-to: Your message of "Sat, 23 Oct 1999 23:44:00 PDT."
+             <NDBBKIEANAMHBNPAILKPKEBECEAA.JHamilton@Earthling.Net>
+Date: Sat, 23 Oct 1999 22:22:11 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Here's what I get when trying to boot the kernel on an N-Class:
+"Justin Hamilton" wrote:
+> Here's what I get when trying to boot the kernel on an N-Class:
+...
+> And this is where it sits.
+> 
+> Is this kind of info useful to anyone? 
 
-Firmware Version  39.25
+Not to me. (yet). But I have access to N-class machines.
 
-Duplex Console IO Dependent Code (IODC) revision 1
+> Am I expecting too much at this stage in development?
 
-----------------------------------------------------------------------------
---
-   (c) Copyright 1995-1998, Hewlett-Packard Company, All rights reserved
-----------------------------------------------------------------------------
---
+Definitely. Firmware on N-class is *quite* different from the
+of two flavors of PDC we have the current code talking to.
+And none of the CEC (Core Electronics Complex - CPU, Mem, I/O bus
+adapters) in an N-class are supported by the code in CVS today.
+We are quite a ways off from implementing everything N-class needs.
+The docs for that box are not (and probably won't be) published
+for quite a while.
 
-  Processor   Speed            State           CoProcessor State  CacheSize
-  Number                                       State              Inst
-Data
-  ---------  --------   ---------------------  -----------------  ----------
---
-      1      360  MHz   Active                 Functional         512KB   1
-MB
-      3      360  MHz   Idle                   Functional         512KB   1
-MB
+The next step in that direction is probably to write PA2.0 processor
+support and support for the "ccio" bus adapter. Then try to get this
+working on a C200 through C360. I know some folks are working on the
+processor support but docs for "ccio" haven't been released.
+(Or have they?)
 
-  Central Bus Speed (in MHz)  :        120
-  Available Memory            :    2097152  KB
-  Good Memory Required        :     140844  KB
+thanks though,
+grant
 
-   Primary boot path:    1/10/0/0.8
-   Alternate boot path:  0/0/2/1.6
-   Console path:         0/0/4/0.0
-   Keyboard path:        0/0/4/0.0
-
-
-Processor is booting from first available device.
-
-To discontinue, press any key within 10 seconds.
-
-Boot terminated.
-
-Main Menu: Enter command or menu > bo 1/10/0/0.8.1
-Interact with IPL (Y, N, or Cancel)?> n
-
-Booting...
-Boot IO Dependent Code (IODC) revision 1
-
-
-HARD Booted.
-
-----------------------------------------------------------------------------
---
-
-PARISC/Linux Bootstrap Version 0.6 (non-interactive)
-By Helge Deller & Jason Eckhardt
-Built Wed Oct 20 04:01:37 EDT 1999 by chris@rum
-
-Reading parameters...done.
-
-Loading PA-RISC/Linux Kernel...
-No ramdisks available.
-SOM-Kernel:
-aux_header_location: 00000080
-som       : 00200080
-exec_dfile: 000B4000
-exec_dsize: 0007F000
-exec_dmem : C008A000
-exec_tfile: 0003A000
-exec_tsize: 00079008
-exec_tmem : C0010000
-Code at 0x00010000, size=0x00079008
-Data at 0x0008A000, size=0x0007F000
-BSS  at 0x00109000.
-
-Transferring control to kernel. (At entry point 0x00010000)
-
-And this is where it sits.
-
-Is this kind of info useful to anyone?  Am I expecting too much at this
-stage in development?
-
-Justin Hamilton
-Unix Systems Engineer.
+Grant Grundler
+Unix Developement Lab
++1.408.447.7253
