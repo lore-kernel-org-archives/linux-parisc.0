@@ -1,28 +1,48 @@
-Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id HAA22378
-	for <parisc-linux@puffin.external.hp.com>; Sun, 3 Dec 2000 07:28:51 -0700
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 142ZlE-0003RK-00; Sun, 03 Dec 2000 14:05:00 +0000
-Date: Sun, 3 Dec 2000 14:05:00 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] 64-bit build broken
-Message-ID: <20001203140500.A12912@parcelfarce.linux.theplanet.co.uk>
-References: <200012030904.BAA02744@milano.cup.hp.com> <E142YrT-0002i5-00@the-village.bc.nu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E142YrT-0002i5-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Sun, Dec 03, 2000 at 01:07:22PM +0000
-Sender: <willy@www.linux.org.uk>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA26212
+	for <parisc-linux@puffin.external.hp.com>; Sun, 3 Dec 2000 18:39:06 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 4 Dec 2000 01:41:34 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA18157;
+	Mon, 4 Dec 2000 12:41:29 +1100
+Date: Mon, 4 Dec 2000 12:41:29 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: parisc-linux@thepuffingroup.com
+cc: Richard Hirst <rhirst@linuxcare.com>
+Subject: Re: pa reload problem
+In-Reply-To: <Pine.LNX.4.21.0012021932030.21742-100000@front.linuxcare.com.au>
+Message-ID: <Pine.LNX.4.21.0012041223530.13095-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Dec 03, 2000 at 01:07:22PM +0000, Alan Cox wrote:
-> > This could be related to willy's changes - I have no idea.
-> 
-> Yeah there was a bogus unused file called hardware_proc.o. Looks like we 
-> forgot to take it out of the 64bit Makefile. Just lose it from there
-
-done.
+I've applied this patch to pehc CVS to fix an hppa64 gcc problem that
+Richard found when compiling modules for the 64-bit kernel.  It's not
+specific to modules, but rather can affect anything requiring stubs to
+call functions, eg. 64-bit userland linked to shared libs.
 
 -- 
-Revolutions do not require corporate support.
+Linuxcare.  Support for the Revolution.
+
+--- gcc/flow.c~	Thu Sep 28 10:37:45 2000
++++ gcc/flow.c	Mon Dec  4 09:53:44 2000
+@@ -3298,7 +3298,17 @@
+ 	 to any pseudo before reload is a potential reference of the
+ 	 frame pointer.  */
+       if (! reload_completed)
+-	SET_REGNO_REG_SET (new_live_at_end, FRAME_POINTER_REGNUM);
++	{
++	  SET_REGNO_REG_SET (new_live_at_end, FRAME_POINTER_REGNUM);
++#ifdef PIC_OFFSET_TABLE_REGNUM
++	  /* And also for the pic register.  References to constants
++	     may require reloading via the pic register.  Assume the
++	     pic register is not in use, or will be handled by other
++	     means, if it is not fixed.  */
++	  if (fixed_regs[PIC_OFFSET_TABLE_REGNUM])
++	    SET_REGNO_REG_SET (new_live_at_end, PIC_OFFSET_TABLE_REGNUM);
++#endif
++	}
+ 
+       /* Regs used in phi nodes are not included in
+ 	 global_live_at_start, since they are live only along a
