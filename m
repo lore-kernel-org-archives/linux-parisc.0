@@ -1,15 +1,33 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20new=20toolchain=20=28binutils=202=2E15=2C=20gcc=203=2E5=2C=20glibc=202=2E3=2E3=29=09progress?=
-Date: Wed, 7 Jul 2004 19:02:37 +0200
-Message-ID: <40BD9F05000175F1@ocpmta1.freegates.net>
-References: <40E6A00E.8020203@tiscali.be>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [parisc-linux] Re: [PATCH] missing exports
+Date: Sat, 10 Jul 2004 11:09:34 +0200 (MEST)
+Message-ID: <Pine.GSO.4.58.0407101107240.10242@waterleaf.sonytel.be>
+References: <200310192126.23242@smurf.noris.de>
+	<3F956F6D.9080803@linux-m68k.org>
+	<1066936308.3338.16.camel@kars.perseus.home>
+	<1066944872.3338.30.camel@kars.perseus.home>
+	<Pine.LNX.4.44.0310240032470.17548-100000@serv>
+	<1067083687.3876.17.camel@kars.perseus.home>
+	<Pine.LNX.4.44.0310251514190.17548-100000@serv>
+	<1067091946.3876.42.camel@kars.perseus.home>
+	<Pine.LNX.4.44.0310252030410.17548-100000@serv>
+	<1067288209.3591.1.camel@kars.perseus.home>
+	<1085155984.5069.10.camel@kars.perseus.home>
+	<Pine.LNX.4.58.0405230227360.10291@scrub.local>
+	<1085347402.3690.1.camel@kars.perseus.home>
+	<Pine.GSO.4.58.0405241034430.17985@waterleaf.sonytel.be>
+	<1085517198.6880.26.camel@kars.perseus.home>
+	<Pine.GSO.4.58.0405261015580.28417@waterleaf.sonytel.be>
+	<1085597752.2373.6.camel@kars.perseus.home>
+	<1089405759.2674.14.camel@kars.perseus.home>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="ISO-8859-1"
-Cc: parisc-linux@parisc-linux.org
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII
+Cc: Linux/m68k kernel mailing list <linux-m68k@lists.linux-m68k.org>,
+ parisc-linux@parisc-linux.org
+To: Kars de Jong <jongk@linux-m68k.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <40E6A00E.8020203@tiscali.be>
+In-Reply-To: <1089405759.2674.14.camel@kars.perseus.home>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,126 +38,63 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Carlos,
+On Fri, 9 Jul 2004, Kars de Jong wrote:
+> On Wed, 2004-05-26 at 20:55, Kars de Jong wrote:
+> > On Wed, 2004-05-26 at 10:16, Geert Uytterhoeven wrote:
+> > > On Tue, 25 May 2004, Kars de Jong wrote:
+> > > > the input device layer HIL keyboard driver working, etc... :-(
+> > >
+> > > Aren't some PARISC people working on that as well?
+> >
+> > Hmm, yes, apparently there is a PARISC patch for 2.6 which has a port of
+> > the HP300 HIL driver to the input device layer.
+> >
+> > They also have a far more extensive HIL driver which handles the mouse
+> > as well, but I'm not sure if the HIL in the later PARISC models is the
+> > same as the HIL in the HP300 series on a device driver level. I'd have
+> > to study the driver a little better.
+>
+> I have ported the PARISC HIL stuff to the HP300. Basically only the SDC
+> driver needed to be changed a bit, all the rest was generic already.
+>
+> My kernel crashes if loadkeys is used (which I don't understand yet) but
+> otherwise it seems to work a bit. The keyboard and mouse are properly
+> detected, but when I read /dev/input/mice I don't get any events.
+>
+> What should I do with these files? Just add them to our repository, and
+> worry about merging with the PARISC people later?
 
-SOme news (but didn't help me :(
+What about posting the patches to the Linux/m68k and Linux/PA-RISC lists?
 
-> -- Original Message --
-> Date: Sat, 03 Jul 2004 12:01:18 +0000
-> From: Joel Soete <soete.joel@tiscali.be>
-> To: Carlos O'Donell <carlos@baldric.uwo.ca>
-> Cc: parisc-linux@parisc-linux.org
-> Subject: Re: [parisc-linux] new toolchain (binutils 2.15, gcc 3.5, glib=
-c
-> 2.3.3)
-> 	progress
-> 
-> 
-> 
-> 
-> Carlos O'Donell wrote:
-> >>I can now reproduce what happend during check :)
-> >>and the crash occurs now at 0x401f67a8
-> >>
-> >>and ddd offers me a related dump window:
-> >>Dump of assembler code from 0x401f67a8 to 0x401f68a8:
-> >>    0x401f67a8:     ldw 0(,r25),r21
-> >>    0x401f67ac:     ldo 1115(r20),r20
-> > 
-> > 
-> > Joel, the most important code is what came *before* teh crash insn,
-you
-> > usually want atleast 16-32 insns before the crash to see what was goi=
-ng
-> > on, usually I trace back to try find the start of the function.
-> > 
-> > 
-> >>0002c77c <_nl_intern_locale_data>:
-> >>   2c77c:       6b c2 3f d9     stw rp,-14(,sp)
-> >>   2c780:       6f c6 00 80     stw,ma r6,40(,sp)
-> >>   2c784:       08 1a 02 46     copy r26,r6
-> >>   2c788:       6b c5 3f 89     stw r5,-3c(,sp)
-> >>   2c78c:       08 19 02 45     copy r25,r5
-> >>   2c790:       6b c3 3f 99     stw r3,-34(,sp)
-> >>   2c794:       08 18 02 43     copy r24,r3
-> >>   2c798:       6b c4 3f 91     stw r4,-38(,sp)
-> >>   2c79c:       8f 0e 81 d0     cmpib,>>=3D 7,r24,2c88c <_nl_intern_l=
-ocale_data+0x110>
-> >>   2c7a0:       6b d3 3f c1     stw r19,-20(,sp)
-> >>   2c7a4:       22 98 04 00     ldil 20030000,r20
-> >>=3D=3D>2c7a8:       0f 20 10 95     ldw 0(,r25),r21
-> > 
-for a run i got r25=3D=3D0x4004b000
+> Oh, all of these are already present in the m68k-2_4 branch, although
+> some of them have moved. How does that work in CVS?
 
-and the corresponding mapping at this moment is:
-00010000-00011000 r-xp 00000000 08:0b 142497     /Develop/parisc-linux/bu=
-ild/glibc/localedata/tst-leaks
-00020000-00021000 rwxp 00000000 08:0b 142497     /Develop/parisc-linux/bu=
-ild/glibc/localedata/tst-leaks
-40000000-40004000 rw-p 40000000 00:00 0 
-4004b000-4004c000 r--p 00000000 08:0b 2632       /Develop/parisc-linux/bu=
-ild/glibc/localedata/de_DE.ISO-8859-1/LC_IDENTIFICATION
-403eb000-40529000 r-xp 00000000 08:0b 18692      /Develop/parisc-linux/bu=
-ild/glibc/libc.so
-40529000-40536000 rwxp 0012e000 08:0b 18692      /Develop/parisc-linux/bu=
-ild/glibc/libc.so
-40536000-40538000 rwxp 40536000 00:00 0 
-410bd000-410d4000 r-xp 00000000 08:0b 196300     /Develop/parisc-linux/bu=
-ild/glibc/elf/ld.so
-410e3000-410e7000 rwxp 00016000 08:0b 196300     /Develop/parisc-linux/bu=
-ild/glibc/elf/ld.so
-410e7000-41108000 rwxp 410e7000 00:00 0 
-bff00000-bff02000 rwxp bff00000 00:00 0 
+CVS doesn't do move. You have to delete the file in the old place, and add it
+at the new place.
 
-I try to compare with glibc build with gcc-3.3.4 (that takes me some time=
+> The following files are new for the HIL stuff:
+>
+> drivers/input/keyboard/hil_kbd.c
+> drivers/input/keyboard/hilkbd.c
+> drivers/input/misc/hp_sdc_rtc.c
+> drivers/input/mouse/hil_ptr.c
+> drivers/input/serio/hil_mlc.c
+> drivers/input/serio/hp_sdc.c
+> drivers/input/serio/hp_sdc_mlc.c
+> include/linux/hil.h
+> include/linux/hil_mlc.h
+> include/linux/hp_sdc.h
 
-to remember That I have also to upgrade my kernel to make gdb stop at a
-break point :( ) and I got the same matching r25 =3D=3D map address of /D=
-evelop/parisc-linux/build/glibc/localedata/de_DE.ISO-8859-1/LC_IDENTIFICA=
-TION.
-But with gcc-3.3.4 that can continue not with gcc-3.5????
+Gr{oetje,eeting}s,
 
-What do I miss?
+						Geert
 
-> > 
-> > You are trying to get data from a pointer passed in as the second
-> > parameter to the function, you want to see the value of r25 before th=
-e
-> > load to see if it is valid. In gdb you can print register values or
-just
-> > use the info command to see all the regs. You can display regs by usi=
-ng
-> > '$r25' AFAIR, though the format may vary.
-> > 
-> ah I see
-> And btw if I put a break at 0x401f677c (corresponding to line 2c77c: th=
-e
-> first routine insn), I would also be able to find the 
-> address from where it's called (just have to find back the right regist=
-er).
-
-umm, at this place 'info reg' gave me (among other stuff :) )
-rp             0x404179f3
-r31            0x404179d7
-
-(rp=3D=3Dr2 if i well understand)
-
-do you remember what is the right calling adress?
-
-Thanks again,
-    Joel
-
-
--------------------------------------------------------------------------=
 --
-Tiscali ADSL LIGHT, 19,95 EUR/mois pendant 6 mois, c'est le moment de fai=
-re
-le pas!
-http://reg.tiscali.be/default.asp?lg=3Dfr
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
