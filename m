@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail11.speakeasy.net [216.254.0.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A3B3482E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 14:43:24 -0600 (MDT)
-Date: Wed, 12 Jun 2002 13:43:02 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Martin K?chler <martin@k0k.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] tst unaligned access
-Message-ID: <20020612204302.GC2796@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <200206122222.35054.martin@mail.k0k.net>
-Mime-Version: 1.0
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE97F4836
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 15:20:55 -0600 (MDT)
+Message-ID: <3D07BB3E.A896878A@gmx.at>
+Date: Wed, 12 Jun 2002 23:21:02 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] SCSI driver for E-class servers - SPIFI ?
+References: <3D050639.B9F9695D@gmx.at> <20020610215312.29D2C483A@dsl2.external.hp.com>  <3D053341.571CF331@gmx.at> <20020611213929.C75684854@dsl2.external.hp.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200206122222.35054.martin@mail.k0k.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,25 +22,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> tst(11624): unaligned access to 0xbff003d4 at ip=0x000105b3
-> Not-handled unaligned insn 0x2f401016
-> unaligned handler failed, ret = -1
+Sorry, that I am not so "deep" in the HP device knowledge, can you give
+me sime hints !
 
-that's fldd 0(sr0,r26),fr22 (thanks Richard!)... the unaligned handler
-doesn't do floating point insns at the moment.
+HP-BP is this a HP bus system ?
+Is this used in the E55 (or similar) ?
+Is the "SE" SCSI that one in the E55 (what stands "SE" for) ?
+What is SDTR ?
 
-> What could this have been ? And what is this tst process ??
+Sorry, but I am interested in that stuff, and I know, I can help after 
+initial steps. Some weeks ago, I rewrote an ethernet driver of an
+not-well known chip on an VAX termianl for VAX Linux. So after some
+hacking days (or better nights), there will be real progress.
+
+So I am interested in helping here. 
+
+Sorry for this question again:
+What is the status of the MUX. As far I can remember, you started to
+write on this driver. Is this correct ?
+
+Christoph
+
+
+
+Grant Grundler wrote:
 > 
-> I have a 2.4.18-pa22 kernel,  iptables v1.2.6a.
+> Christoph Plattner wrote:
+> > http://cvsweb.netbsd.org/bsdweb.cgi/syssrc/sys/arch/newsmips/apbus/
+> 
+> This looks like it's the right driver for the HP-PB SE SCSI.
+> I noticed that SDTR isn't supported.
+> But it's a starting point.
+> 
+> grant
 
-try a newer kernel? there were some hanging process problems that were
-fixed recently, though i think there are some other ones still there...
-
-i have no idea what tst is though....
-
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
