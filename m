@@ -1,64 +1,64 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA29979
-	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 00:24:50 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
-	by palrel1.hp.com (Postfix) with ESMTP id E5DED25C
-	for <parisc-linux@thepuffingroup.com>; Fri,  5 Nov 1999 23:26:08 -0800 (PST)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id XAA15167 for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 23:27:11 -0800 (PST)
-Message-Id: <199911060727.XAA15167@milano.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA31639
+	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 09:18:04 -0700
+Received: from relay.core.genedata.com (nila-e0.core.genedata.com [157.161.173.44])
+	by mail.core.genedata.com (8.10.0.Beta6/8.10.0.Beta6) with ESMTP id dA6GJM711612
+	for <parisc-linux@thepuffingroup.com>; Sat, 6 Nov 1999 17:19:22 +0100
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by relay.core.genedata.com (8.10.0.Beta6/8.10.0.Beta6) with ESMTP id dA6GJMX23464
+	for <parisc-linux@thepuffingroup.com>; Sat, 6 Nov 1999 17:19:22 +0100
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id RAA738677
+	for <parisc-linux@thepuffingroup.com>; Sat, 6 Nov 1999 17:19:21 +0100 (CET)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m11k8Zj-00028LC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sat, 6 Nov 1999 17:20:23 +0100 (CET)
+Date: Sat, 6 Nov 1999 17:20:23 +0100
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Okay, I give up. 
-In-reply-to: Your message of "Thu, 04 Nov 1999 23:07:28 PST."
-             <Pine.LNX.4.10.9911042254060.16932-100000@vodka.thepuffingroup.com>
-Date: Fri, 05 Nov 1999 23:27:11 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Message-ID: <19991106172023.L25252@mencheca.ch.genedata.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] pgtable.h:acc_rights()
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
-> How do I extract an sversion and hversion out of ioscan -F output?
-> 
-> For instance:
-> 
-> pa:wsio:F:F:F:0:0:0:ext_bus:c720:8/12:1 49 0 132 0 0 137 128 7 0 0 0 91 62 0 
->   2 :0:root.ccio.c720:c720:CLAIMED:INTERFACE:GSC add-on Fast/Wide SCSI Interf
->   ace:0
 
-1) Use ":" as a field seperator (that's probably obvious)
+Why is acc_rights written like this?
 
-2) field 1 indicates the structure/contents of field 12.
-   "pa" says field 12 is IODC data (16 bytes).
-   "pci" says field 12 is PCI vendor/product (4 bytes).
+#define acc_rights(pte)       \
+        (((pte) & _PAGE_EXEC) ? \
+                (((pte) & _PAGE_RW) ? \
+                        acc_r(3,acc_pl(pte),acc_pl(pte)) : \
+                        acc_r(3,acc_pl(pte),acc_pl(pte))) : \
+                (((pte) & _PAGE_RW) ? \
+                        acc_r(1,acc_pl(pte),acc_pl(pte)) : \
+                        acc_r(1,acc_pl(pte),acc_pl(pte))))
 
-3) IODC data format should be documented in IOACD or somewhere.
-   PCI isn't. It's the PCI vendor/product ID from config space.
+According to the PA-1.1 Architecture manual I have here, if the page isn't
+writable, the MSB should be clear, like so:
 
-Short (but cryptic) answer is first three "nibbles" (4-bit quantities)
-are HV model. Next nibble is HV rev.  SV rev is the high order nibble
-of the 5th byte (iodc[4]). SV model the following 5 nibbles.
+#define acc_rights(pte)       \
+        (((pte) & _PAGE_EXEC) ? \
+                (((pte) & _PAGE_RW) ? \
+                        acc_r(3,acc_pl(pte),acc_pl(pte)) : \
+                        acc_r(2,acc_pl(pte),acc_pl(pte))) : \
+                (((pte) & _PAGE_RW) ? \
+                        acc_r(1,acc_pl(pte),acc_pl(pte)) : \
+                        acc_r(0,acc_pl(pte),acc_pl(pte))))
 
-So printing the values in hex should make them easier to eye-ball
-and correlate to either hardware.c entries or PCI output.
+of course, it should be rewritten to look much cleaner.  In fact,
+by renumbering the bits, we could get that for free (as long as we put
+a big fat warning above the #defines of _PAGE_* to warn that the
+constants are in that order for hardware efficiency).
+              
+Anyway, I'm after a spare bit in the pte for _PAGE_GATEWAY.  As I
+understand it (from the mk_pte() macro), there are 12 bits available,
+only 8 of which are used, so I can nobble one of them to mark a page
+as being a gateway, right?
 
-
-> There doesn't seem to be a consistant way to parse it.
-
-The "pa" vs. "pci" probably makes it look inconsistent.
-
-cheers,
-grant
-
-> 
-> - Alex
-> -- 
-> Alex deVries <adevries@thepuffingroup.com>
-> Vice President Engineering
-> The Puffin Group
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-
-Grant Grundler
-Unix Developement Lab
-+1.408.447.7253
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
