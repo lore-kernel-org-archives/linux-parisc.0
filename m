@@ -1,13 +1,18 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] OpenOffice.org on hppa
-Date: Wed, 30 Mar 2005 05:45:07 -0800
-Message-ID: <20050330134454.GO2485@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: Another LCD tweak
+Date: Wed, 30 Mar 2005 11:15:03 -0700
+Message-ID: <20050330181503.GA315@colo.lackof.org>
+References: <20050328065020.A8616496334@palinux.hppa>
+	<42480345.7070607@tiscali.be>
+	<20050328172730.GB10159@colo.lackof.org>
+	<200503291942.45308.dmp@davidmpye.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: David Pye <dmp@davidmpye.dyndns.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200503291942.45308.dmp@davidmpye.dyndns.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,35 +23,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I took a look at oo.o for hppa... it'll take quite a bit of work to get
-it building. Are there enough people interested to make this happen?
+On Tue, Mar 29, 2005 at 07:42:41PM +0100, David Pye wrote:
+> Sorry to keep sending these in, but:
 
-Here's what I've found so far; there's probably more.
+np
 
-- oo.o needs libneon23-dev to build, this package is not available in
-  Debian, but this is easily fixable. The package source explicitly
-  disables builds on hppa, so you can just work around this by
-  downloading the libneon23 source
-- oo.o source needs a lot of arch-specific stuff to work:
-  - build infrastructure
-    debian/scripts/vars.hppa
-    config_office/set_soenv.in needs to define a hppa section
-    solenv/inc/ needs a hppa makefile fragment
-    (probably more)
-- need to write bridges code (http://porting.openoffice.org/)
+> I found an issue where lcd_print tries to manipulate the work queue after it 
+> has been destroyed.  Setting it to NULL after destroying it fixes this.
 
-i got past the first two items, but the third (bridges) is a significant
-piece of work that will require some knowledge of asm and gcc c++ vtable
-layouts and PA calling conventions..
+committed.
 
-if a few other people are interested, i'd be willing to help out....
-but it looks like a lot of work :(
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
