@@ -1,37 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from netbank.com.br (garrincha.netbank.com.br [200.203.199.88])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 66E70482A
-	for <parisc-linux@parisc-linux.org>; Thu, 19 Apr 2001 23:20:07 -0600 (MDT)
-Date: Fri, 20 Apr 2001 02:17:42 -0300 (BRST)
-From: Rik van Riel <riel@conectiva.com.br>
-To: "Albert D. Cahalan" <acahalan@cs.uml.edu>
+Received: from passion.cambridge.redhat.com (dell-paw-3.cambridge.redhat.com [195.224.55.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B410482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 02:24:33 -0600 (MDT)
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.GSO.4.05.10104192201330.8316-100000@pipt.oz.cc.utah.edu> 
+References: <Pine.GSO.4.05.10104192201330.8316-100000@pipt.oz.cc.utah.edu> 
+To: james rich <james.rich@m.cc.utah.edu>
 Cc: Matthew Wilcox <willy@ldl.fc.hp.com>,
-	james rich <james.rich@m.cc.utah.edu>,
 	"Eric S. Raymond" <esr@thyrsus.com>, linux-kernel@vger.kernel.org,
 	parisc-linux@parisc-linux.org
-In-Reply-To: <200104200452.f3K4q3X07411@saturn.cs.uml.edu>
-Message-ID: <Pine.LNX.4.21.0104200217130.1685-100000@imladris.rielhome.conectiva>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 20 Apr 2001 09:19:53 +0100
+Message-ID: <14608.987754793@redhat.com>
+Sender: David Woodhouse <dwmw2@redhat.com>
 Subject: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 20 Apr 2001, Albert D. Cahalan wrote:
+james.rich@m.cc.utah.edu said:
+>  Doesn't this seem a little like the problems occurring with lvm right
+> now? A separate tree maintained with the maintainers not wanting
+> others submitting patches that conflict with their particular tree?
+> It seems that any project should be able to submit any patch against
+> The One True Tree: Linus' tree. 
 
-> This sucks for users of that architecture. Also, though not
-> applicable to PA-RISC, it sucks for sub-architecture porters.
-> (by sub-architecture I mean: Mac, PReP, PowerCore, BeBox, etc.)
+Of course they can. Linus does apply them too. People are asking nicely 
+that ESR not do so in this case, because merges are being planned. 
 
-As you said it so eloquently a few paragraphs down:
+The contents of drivers/mtd/ are in the same situation. For some reason, I
+felt it inappropriate to give every patch at every stage of development to
+Linus for inclusion in the 2.4.0-test and 2.4.[123] kernels. Now I'm vaguely
+happy with it all and it's stable, I'm working on cleaning up some of the 
+cosmetics and breaking it up into digestible patches.
 
-	"send patches!"
+Doing primary development in CVS seems to work OK for me, and allows me to 
+continue development without destabilising the One True Tree. During such 
+times, it's useful to have a branch for the code which is in the One True 
+Tree, so urgent fixes can be merged, and the diff against the One True Tree 
+after each release has something to diff against to catch patches where 
+people didn't even bother to Cc the maintainer.
 
-cheers,
+I believe people were _told_ to hold off until 2.4.5-ish, or when the tree
+became stable. Violent imagery was used to reinforce this instruction.
+That being the case, how about holding the config changes back until after 
+everyone else who's been waiting has merged their pending changes?
 
-Rik
 --
-Virtual memory is like a game you can't win;
-However, without VM there's truly nothing to lose...
-
-		http://www.surriel.com/
-http://www.conectiva.com/	http://distro.conectiva.com.br/
+dwmw2
