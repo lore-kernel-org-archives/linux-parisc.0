@@ -1,38 +1,42 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA25030
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 13:11:14 -0700
-Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
-  by mailserv2.iuinc.com with SMTP; 17 Nov 2000 20:13:10 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 6BA46B007; Fri, 17 Nov 2000 20:10:34 +0000 (GMT)
-Date: Fri, 17 Nov 2000 20:10:34 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Ulrich Drepper <drepper@cygnus.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SEGV signal handling bug (dynamic linking)
-Message-ID: <20001117201034.J32715@linuxcare.com>
-References: <20001117153954.H32715@linuxcare.com> <m3hf5634qx.fsf@otr.mynet.cygnus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <m3hf5634qx.fsf@otr.mynet.cygnus.com>; from drepper@redhat.com on Fri, Nov 17, 2000 at 09:09:10AM -0800
+Received: from onet2.cup.hp.com (onet2.cup.hp.com [15.255.208.3])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA26132
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 14:53:00 -0700
+Received: from hpisp747.cup.hp.com (hpisp747.cup.hp.com [15.8.81.247])
+	by onet2.cup.hp.com (Postfix) with ESMTP id 60D60A3F
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 13:55:08 -0800 (PST)
+Received: from grundler by hpisp747.cup.hp.com with local (Exim 3.12 #1 (Debian))
+	id 13wtPC-0004bS-00
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 13:50:46 -0800
+To: parisc-linux@puffin.external.hp.com
+Message-Id: <E13wtPC-0004bS-00@hpisp747.cup.hp.com>
+From: Grant Grundler <grundler@cup.hp.com>
+Date: Fri, 17 Nov 2000 13:50:46 -0800
+Subject: [parisc-linux] PDC firmware revision FAQ update
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Nov 17, 2000 at 09:09:10AM -0800, Ulrich Drepper wrote:
-> Richard Hirst <rhirst@linuxcare.com> writes:
-> 
-> >         mem = malloc(8192);
-> >         if (mem == NULL) {
-> >                 perror("malloc");
-> >                 exit(1);
-> >         }
-> >         mem = (char *)(((int)mem + 4095) & ~0x0fff);
-> >         res = mprotect(mem, 4096, PROT_READ);
-> 
-> Read the Unix standard:
-> 
->   The behavior of this function is unspecified if the mapping was not
->   established by a call to mmap().
+Hi folks,
 
-Changed my prog to use mmap and get the same problem.
+The issue of PDC/firmware revs came up locally and sounded like a FAQ.
+I added
 
-Richard
+    "10. How can I check if the PDC (firmware) revision is the latest?"
+
+and what I knew/could find to our FAQ at:
+
+	http://www.parisc-linux.org/faq.html
+
+The new FAQ entry should be visible to the world in the next hour or so.
+
+
+    **** WARNING ****
+    Firmware upgrades can *kill* your machine!
+    **** WARNING ****
+
+Don't do it just because. Read the FAQ carefully. Take the
+time to figure out why you might need the upgrade and expose
+yourself to this risk.
+
+grant
+
+ps. please don't ask me why your favorite machine's PDC isn't listed.
+   I don't run the referenced sites.
