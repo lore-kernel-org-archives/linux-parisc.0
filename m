@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6428C4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Mar 2003 07:27:13 -0700 (MST)
-Date: Mon, 3 Mar 2003 15:27:04 +0100
-Message-ID: <3E5F8012000005AB@ocpmta8.freegates.net>
-In-Reply-To: <20030302045936.GS11363@tausq.org>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-To: "Randolph Chung" <tausq@debian.org>,
-	"Matthias Klose" <doko@cs.tu-berlin.de>
-Cc: debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
+Received: from smtp.umr.edu (mrelay1.cc.umr.edu [131.151.1.120])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2E00C4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Mar 2003 08:46:14 -0700 (MST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain;
+	charset="us-ascii"
+Date: Mon, 3 Mar 2003 09:46:12 -0600
+Message-ID: <B578DAA4FD40684793C953B491D4879174CFD7@umr-mail7.umr.edu>
+From: "Neulinger, Nathan" <nneul@umr.edu>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] recent netboot iso?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,57 +21,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->From: Randolph Chung <tausq@debian.org>
->To: Matthias Klose <doko@cs.tu-berlin.de>
->Cc: debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
->	parisc-linux@lists.parisc-linux.org
->Reply-To: Randolph Chung <tausq@debian.org>
->Subject: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
->Date: Sat, 1 Mar 2003 20:59:36 -0800
->
->
->In reference to a message from Matthias Klose, dated Mar 01:
->> Matthias Klose writes:
->> > AFAIK the transition from 3.2 to 3.3 requires recompilation of C++
->> > code due to the changed exception handling (now DWARF2 based). As
->> > libstdc++ in 3.2 and 3.2 have the same soname, how to handle it?
->> > Currently 3.2 is in unstable only. Would you want to start the
->> > recompilation before 3.2 based binaries go to testing?
->> > 
->> > The packaging for 3.3 can be found in the Debian CVS.
+Is there a source for a recent netboot iso that includes the
+hang-on-boot fixes for J282 class machines?
 
-hmm is there an url explaining how to grab it?
+-- Nathan
 
->> 
->> You can get test packages from
->> 	http://ftp-master.debian.org/~doko/gcc-3.3/
->
-
-Nice and is it also possible to produce a 64bits version of gcc?
-
->well.... this is not looking good. after installing these in a freshly
->built sarge chroot, all c++ programs stop working (well, i've only tried
->two -- apt and fakeroot)
->
->(btw, small packaging detail, but the libstdc++*-dev package above
->cannot be installed cleanly because it overwrites things in the current
->3.2 package)
->
->randolph
->-- 
->Randolph Chung
->Debian GNU/Linux Developer, hppa/ia64 ports
->http://www.tausq.org/
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-Thanks,
-    Joel
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Faites des economies avec Tiscali Complete
-... Plus d'info sur http://complete.tiscali.be
+------------------------------------------------------------
+Nathan Neulinger                       EMail:  nneul@umr.edu
+University of Missouri - Rolla         Phone: (573) 341-4841
+Computing Services                       Fax: (573) 341-4216
