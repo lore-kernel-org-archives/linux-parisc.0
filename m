@@ -1,54 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from whiplash.stampede.org (stampede.org [198.186.203.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D37DC482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 13 Aug 2001 17:27:53 -0600 (MDT)
-Date: Mon, 13 Aug 2001 16:27:48 -0700 (PDT)
-From: DraX <drax@whiplash.stampede.org>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] toolchain 
-In-Reply-To: <200108132319.RAA13888@puffin.external.hp.com>
-Message-ID: <Pine.LNX.4.10.10108131626440.10078-100000@whiplash.stampede.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2E19482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 13 Aug 2001 17:57:04 -0600 (MDT)
+Message-Id: <200108132355.RAA14012@puffin.external.hp.com>
+To: Christian Weerts <christian@familie-weerts.de>
+Cc: parisc-ml <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] LAN booting 
+In-Reply-To: Message from Christian Weerts <christian@familie-weerts.de>
+   of "Mon, 13 Aug 2001 18:07:36 -0000." <20010813180736.A306@familie-weerts.de>
+Date: Mon, 13 Aug 2001 17:55:23 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+Christian Weerts wrote:
+> Hi,
+> 
+> is there anyone who has a running 715/80? I want to build a kernel for this
+> machine discribed in the nfsroot howto from Martin Petersen, but i don't
+> have HP-UX anywhere.
 
-On Mon, 13 Aug 2001, Grant Grundler wrote:
+You don't need to have HPUX - note the date of Martin's HOW-TO.
+It was posted when we were still using SOM binaries and the linker only
+ran under HPUX. You should be able to install from the 0.92 ISO
+and build kernels natively.
 
-> DraX wrote:
-> > xMach will soon be talking the PA-Mach port from Utah and merging it in to
-> > our source tree, but we are in need of a new PA-RISC toolchain.
-> 
-> xMach is another kernel+OS?
-> 
-Yup, www.xmach.org
-> Just had a flashback...the unix wars are *not* over...they've somehow
-> shifted to a sort-of-voluntary army. :^(
-> 
-> 
-> > Is the PA-Linux team now the maintainers of it?
-> 
-> No. We don't maintain it any more than anyone else. AFAIK, all of
-> the changes the parisc-linux port needs are back upstream to the gcc
-> and binutils maintainers.
-> 
-ok, thanks.
+Or build kernels on x86-linux using the XC toolchain built by Matt Taggart
+and posted to the puffin.external.hp.com ftp site. Search parisc-linux
+mail archives since May 2001 if you want the full URL.
 
-> BTW, Kudos again to the random collection of people who've worked on it for
-> the past couple of years.
-> 
-The original port was done by the people that wrote the first Mach port to
-PA-RISC.
-> > If so could someone give a little
-> > less linux oriented instructions for building the tool chain?
-> 
-> Though someone might be able to answer your question, I'd expect
-> better results by querying an xMach mailing list.
-> 
-> grant
-> 
-> Grant Grundler
-> parisc-linux {PCI|IOMMU|SMP} hacker
-> +1.408.447.7253
-> 
+> If i had a kernel perhaps i could boot the machine over LAN.
+
+Could you mount the 0.92 ISO on an x86-linux box and steal that kernel?
+(there are probably several but just try the 32-bit ones.)
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
