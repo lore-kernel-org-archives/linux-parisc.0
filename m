@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Istvan Gyenes <frts@simba.sch.bme.hu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SMP kernel problems on a D350 
-In-Reply-To: Message from Istvan Gyenes <frts@simba.sch.bme.hu>
-   of "Fri, 20 Sep 2002 10:28:24 +0200." <Pine.OSF.4.33.0209201006420.5180-100000@simba.sch.bme.hu>
-References: <Pine.OSF.4.33.0209201006420.5180-100000@simba.sch.bme.hu> 
-Date: Fri, 20 Sep 2002 22:31:17 -0600
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Matthew Wilcox <willy@debian.org>,
+	Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] malloc limits 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Sat, 21 Sep 2002 05:14:17 BST." <20020921051417.P10583@parcelfarce.linux.theplanet.co.uk>
+References: <20020920203724.GD24622@systemhalted> <200209210338.g8L3ccnN005029@hiauly1.hia.nrc.ca>  <20020921051417.P10583@parcelfarce.linux.theplanet.co.uk> 
+Date: Fri, 20 Sep 2002 22:46:12 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020921043118.0F8F64829@dsl2.external.hp.com>
+Message-Id: <20020921044612.A753D4829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,26 +21,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Istvan Gyenes wrote:
-> Thanks I'll try that!
+Matthew Wilcox wrote:
+> On Fri, Sep 20, 2002 at 11:38:37PM -0400, John David Anglin wrote:
+> > I thought there was a flat memory model.  If so, shouldn't it be possible
+> > for the data section to expand past 0x80000000?
 > 
-> Another question: If 2.4.19 SMP not enough stable where can I find the
-> latest stable smp kernel source?
+> There is a flat memory model... libs are mapped at 0x4000'0000 so that's
+> not it.  worth looking at /proc/$pid/maps for that process, maybe?
 
-I'd advise using the 2.4.19 images uploaded by Bdale to debian.org.
-Mostly because it's "fall-out-of-bed" easy to get matching source in
-case you need to change something or want to try something out.
+is 0x80000000 the address or the size?
+If it's the size then you get up into 0xc0000000 (which is ok).
+Getting up into 0xf0000000 - 0xffffffff address is not.
 
-If that doesn't work for you, for A500, one of the better ones is:
-	ftp://ftp.parisc-linux.org/kernels/a500/2.4.18-pa54.tgz
-
-Look in kernels/32 or kernel/64 for other revs using default configs.
-
-I'm convinced SMP instability is because of timing (race conditions)
-and/or D-cache problems. My gut feeling if the 4-way associative
-cache isn't getting flushed properly in all locations it needs to be.
-I'm hoping someone who has more clue about VM and virtually indexed
-caches could dig into this.
-
-hth,
 grant
