@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rover.mkp.net (rover.mkp.net [209.217.122.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 893E14868
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 06:33:05 -0600 (MDT)
-To: <dlorin@univ-rennes1.fr>
-Cc: debian-hppa@lists.debian.org,
-	<parisc-linux@lists.parisc-linux.org>
-From: "Martin K. Petersen" <mkp@mkp.net>
-References: <200207080705.JAA06652@mailimailo.univ-rennes1.fr>
-Date: 08 Jul 2002 08:32:54 -0400
+Received: from romano (romano-nyswri.cfe.cornell.edu [132.236.139.186])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F247B4878
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 06:46:40 -0600 (MDT)
+Subject: Re: [parisc-linux] How to mount HFS 6.0 ?
+From: Steve Pacenka <spacenka@lightlink.com>
+To: dlorin@univ-rennes1.fr
+Cc: parisc-linux@lists.parisc-linux.org
 In-Reply-To: <200207080705.JAA06652@mailimailo.univ-rennes1.fr>
-Message-ID: <yq1sn2ummbt.fsf@austin.mkp.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: How to mount HFS 6.0 ?
+References: <200207080705.JAA06652@mailimailo.univ-rennes1.fr>
+Content-Type: text/plain
+Date: 08 Jul 2002 08:46:37 -0400
+Message-Id: <1026132397.906.50.camel@romano>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,35 +23,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "DL" == dlorin  <dlorin@univ-rennes1.fr> writes:
+On Mon, 2002-07-08 at 04:05, dlorin@univ-rennes1.fr wrote:
+> The content of my question concerns the "old fellows", who were using the 
+> ancient series HP/9000/3xx or 4xx and whom I hope to find reading this 
+> mails-list. But anyone, able to help me, is welcome...
+> 
+> I took a disk SCSCI-1 out of a station 425t running with BASIC-UX. On this one, 
+> there are several files (data and programs written in HP-BASIC) I want to reach 
+> in reading with my 715/50 running with Woody. How to do that?
+> 
+> Nota:
+> 1) the filesystem's type on this disk is: HFS version 6.0.
+> 2) the disk is already installed in the daisy chain SCSI and correctly 
+> identified during the boot sequence.
+> 
+> Thanks.
+> D. Lorin
 
-DL> I took a disk SCSCI-1 out of a station 425t running with
-DL> BASIC-UX. On this one, there are several files (data and programs
-DL> written in HP-BASIC) I want to reach in reading with my 715/50
-DL> running with Woody. How to do that?
 
-If there is only one partition on the drive,
+The kernel sources suggest that the following may work if you have ufs
+support compiled into your kernel:
 
-        mount -t hfs /dev/sdX /mnt
+   mount -t ufs -o ufstype=hp /dev/sd{whatever} /mnt
 
-should work.
+It would be unportable if type "hfs" as Martin Peterson suggests works. 
+The "hfs" filesystem type in the standard Linux kernel represents an
+Apple Macintosh filesystem.
 
-HP/UX's partitioning scheme is not supported, unfortunately, so if you
-have several partitions you need to hack a bit.  
-
-I suggest writing a program to scan for the UFS magic field on the
-disk and print the offsets.  Move 8K back from the start of each
-superblock and write down that number.
-
-Then use the loopback mount facility and pass the offset you found to
-losetup's -o option.  So - say -
-
-        losetup -o <found offset> /dev/loop0 /dev/sda
-        mount -t hfs /dev/loop0 /mnt
-
-With a bit of tinkering, you should be able to mount your hfs
-filesystems that way.
-
--- 
-Martin K. Petersen      Cereal Bowl Engineer, Linuxcare, Inc.
-http://mkp.net/         SGI XFS, Linux/PA-RISC, Linux/IA-64
+-- SP
