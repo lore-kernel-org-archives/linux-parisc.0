@@ -1,32 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 01061482A
-	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:21 -0700 (MST)
-Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
-	by deimos.frii.net (8.11.2/8.11.2) with ESMTP id f2SNBL253956
-	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:21 -0700 (MST)
-Received: from bame.riverrock.org (bame.riverrock.org [199.254.238.240])
-	by www.riverrock.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id QAA30150
-	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:19 -0700
-Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via smail with esmtp
-	id <m14iP5y-001VltC@bame.riverrock.org> (Debian Smail3.2.0.111)
-	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 16:11:18 -0700 (MST)
-Message-Id: <m14iP5y-001VltC@bame.riverrock.org>
-From: bame@riverrock.org
-Reply-To: bame@riverrock.org
-Errors-To: bame@riverrock.org
-To: parisc-linux@parisc-linux.org
-Date: Wed, 28 Mar 2001 16:11:18 -0700
-Sender: bame@bame.riverrock.org
-Subject: [parisc-linux] FYI floating point
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B6ACA482A
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Mar 2001 17:44:58 -0700 (MST)
+Reply-To: <hull@cup.hp.com>
+From: "Jim Hull" <jim_hull@hp.com>
+To: <bame@riverrock.org>
+Cc: <parisc-linux@parisc-linux.org>
+Subject: RE: [parisc-linux] FYI floating point
+Date: Wed, 28 Mar 2001 16:44:56 -0800
+Message-ID: <NDBBIHNACACKNDHNHIKAEEFGCBAA.jim_hull@hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+In-Reply-To: <m14iP5y-001VltC@bame.riverrock.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-After adding code to emulate the FRND instruction I thought
-I'd be done with FP, but I've been seeing unimplemented instruction traps
-on FP instructions that I know are implemented (FSUB, FDIV).  Apparently
-the FPU expects emulation to handle the exceptional cases of some
-instructions (such as division by a very tiny number).  Don't count
-on this to be fixed until sometime next week.
+Paul wrote:
 
-	-Paul Bame
+> Apparently
+> the FPU expects emulation to handle the exceptional cases of some
+> instructions (such as division by a very tiny number).  Don't count
+> on this to be fixed until sometime next week.
+
+Yes, the architecture allows the FP hardware to give up and trap to the
+emulation handler for any reason whatsoever.  The emulation handler is
+expected to include a full implementation of all instructions.
+
+When the lack of of an FP emulation handler in parisc-linux was first
+discussed on this list, I started the machinery inside HP to get the HP-UX
+one open-sourced.  Thanks to the work of many individuals in HP, this is
+actually happening now.  So, if you'd like to hack in some minimal support
+to get a particular program working, fine, but otherwise I would suggest
+you wait until the HP-UX handler is released.
+
+ -- Jim
