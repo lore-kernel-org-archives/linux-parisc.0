@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 34.31.31.25 (unknown [218.17.9.191])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1EE4D482F
-	for <parisc-linux@parisc-linux.org>; Sat, 24 May 2003 18:30:12 -0600 (MDT)
-From: & <&@dsl2.external.hp.com>
-To: parisc-linux@parisc-linux.org
-Reply-To: &@dsl2.external.hp.com
-Date: Sun, 25 May 2003 08:31:32 +0800
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE8E5482F
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 25 May 2003 05:16:37 -0600 (MDT)
+Message-ID: <3ED0A956.7010803@tiscali.be>
+Date: Sun, 25 May 2003 11:30:30 +0000
+From: Joel Soete <joel.soete@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="7a839214-e777-475f-bd29-d73f423d9cd8"
-Message-Id: <20030525003012.1EE4D482F@dsl2.external.hp.com>
-Subject: [parisc-linux] Provide Mobile Phone Battery And Other Battery
+To: Dave Sasselli <erd0s@afterconnect.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP A7789 Fire GL-UX
+References: <200305232139.13024.erd0s@afterconnect.com>
+In-Reply-To: <200305232139.13024.erd0s@afterconnect.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,52 +23,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---7a839214-e777-475f-bd29-d73f423d9cd8
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: quoted-printable
+Dave Sasselli wrote:
 
-Dear Sir or Madam:
+>>On Fri, May 23, 2003 at 10:43:22AM -0600, Grant Grundler wrote:
+>>    
+>>
+>>>>Someone has tried to make to work the HP A7789 Fire GL-UX
+>>>>video card on board .
+>>>>        
+>>>>
+>>>Are you asking if someone has been able to make this work?
+>>>I think the answer is no.
+>>>Lack of HW documentation is a problem for all the FX* cards.
+>>>      
+>>>
+>>Surely the FireGL card isn't an FX* card but a Radeon?  If so, maybe
+>>ATI have released some docs on it ... Anyone know?
+>>    
+>>
+>
+>Ati supports only binary driver for intel.  
+>
+AFAIK ati would be supported in 2.4.21?
 
-This information is come from China .
-
-Shenzhen Stone Electronics Co.,Ltd., headed by a team of battery experts and =
-experienced senior electronics designers,is a professional manufacturer for =
-portable power.Suported by high advanced production facilities and testing =
-equipments,we produce rechargeable Li-lon. Ni-MH, alkalescent batteries and =
-battery packs appied for cellular phones,cordless phones,radio,mp3,digital =
-camera,portable PDA,VCD/DVD player,notebook,emergency lighting, power =
-tool,R/C toys and other state-of-the-art devices,As a total solution provider =
-for portable power,we design and produce kinds of chargers and power =
-management circuits according to customer's requirements.
-Factory area:3,000m2
-Skilled worders: 200
-Senior R&D staff: 6
-Engineering Staff: 5
-Annual Qutput: 30 million Pcs
-Quality system: ISO9002
-"Same quality level,We have more comperitive price;same price,we have higher =
-quality level" is one of the important reasons than our customers cooperate =
-with us .Choose a partner,not only a supplier!
-
-YOUR ANY ENQUIRY ARE WELCOME  !
-
-Contact person : Mr.Wei
-
-E-MAIL : yuqingqing@vip.sina.com  ;
-
-Shenzhen Stone Electronics Co., Ltd. 
-Industrial Rd.(w) , Longhua , Shenzhen , Guangdong , China 
-TEL: 86-755-28116152 (DIRECT LINE )  
-FAX: 86-755-28116153  
-
-   
-
-----------------------------------------------------
-    DEMO=B0=E6=B1=BE=B7=A2=CB=CD    
-----------------------------------------------------
+So : 
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-April/019808.html>
+I wouldn't have more chance to make work this Ati Rage model?
 
 
-
-
---7a839214-e777-475f-bd29-d73f423d9cd8--
+>I could use the driver of xfree86 for radeon otherwise the only way is the 
+>frame buffer .
+>
+>  
+>
+Thanks,
+    Joel
