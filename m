@@ -1,23 +1,14 @@
-Return-Path: <James.Bottomley@SteelEye.com>
-Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 451FC4879
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 10 Dec 2003 08:13:09 -0700 (MST)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com
-	[172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
-	hBAFD7a03766; Wed, 10 Dec 2003 10:13:07 -0500
-Subject: Re: [parisc-linux] proposed changes to dino.c
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Grant Grundler <grundler@parisc-linux.org>
-In-Reply-To: <20031210045429.GA18782@colo.lackof.org>
-References: <1071031038.1977.1.camel@mulgrave>
-	<20031210045429.GA18782@colo.lackof.org>
-Content-Type: text/plain
-Date: 10 Dec 2003 10:12:54 -0500
-Message-Id: <1071069175.2068.6.camel@mulgrave>
-Mime-Version: 1.0
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Return-Path: <kylasue@msn.com>
+Message-ID: <v$5983joc$8$x3w71t4n3r6@exwp2p.osd.yq>
+From: "Francisco Lozano" <kylasue@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Thu, 11 Dec 03 07:21:11 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="8AFC8D493_A7F.B.9."
+Cc: pmccabe@parisc-linux.org, parisc-linux@parisc-linux.org
+Subject: [parisc-linux] Medicines to your door overnight hw  l
+Reply-To: Francisco Lozano <kylasue@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,25 +18,35 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, 2003-12-09 at 23:54, Grant Grundler wrote:
-> James and I talked about this offline. Issue was card-mode dino
-> and the PCI yenta bridge were colliding on the bus numbering.
-> The card-mode Dino bus numbering was assuming no PCI-PCI bridges
-> for *all* the host bridges, not just the card-mode bridges.
-> I expect a combination of 4-port tulip and card-mode dinoe would
-> have exposed this problem too.
 
-Actually, I have a 4 and 2 port tulip card, and can verify that it does
-(as expected) obscure the cardmode dino.  Obviously, any PCI card with
-an internal bridge would cause the same problem.
+--8AFC8D493_A7F.B.9.
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
+<html>Medicines to your door overnight hw  l
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
 
-> Otherwise the diff looks good to me. I trust it works for you
-> and hopefully a few other people can try it too. If not, we
-> can always fix it more later...
+<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#FFFF00" vlink=3D"#FFFF=
+00" alink=3D"#FFFF00">
+<center><h2><font color=3D"#00CC66" face=3D"verdana"><hr>Convenient Qualit=
+y Medications<br>For Less <hr></font></h2></center>
+<center><h5><font color=3D"#00CC66" face=3D"verdana">Phentermine Xenical A=
+dipex Meridia Prozac Zoloft Soma Ambien<br>Levitra Viagra Paxil Celebrex F=
+ioricet Zyban Flexeril Skelaxin Tramadol Ultram Vioxx Buspar</font></h5></=
+center><center><H3><font color=3D"#00FF00" face=3D"verdana">Hundreds more =
+on-site<br>Wholesale ~ Private ~ Overnight<br>No previous prescription req=
+uired<br>For ADULTS with valid medical needs<br><br>Helping you enjoy life=
+ !<br>Legally<br></font></h3></center><br><center><h2><font color=3D"#FFFF=
+FF" face=3D"verdana"><a href=3D"http://www.verybestmeds.com">Saving you ti=
+me and money</a></font></h2></center>
+wmdkefiakmvjb rypvhflahkeadzljroj wgxnykzhjotyurg nkjbq mptufyp
+zljw yepc uu
+</body>
+</html>
+khrwofogtxge
 
-well, the bad news is that with the four port and the patches, the
-machine hangs loading the tulip module...looks like some resource got
-assigned to the wrong window.
-
-James
+--8AFC8D493_A7F.B.9.--
