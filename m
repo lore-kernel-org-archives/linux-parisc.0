@@ -1,39 +1,54 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA03192
-	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Nov 2000 08:59:02 -0700
-Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via in.smtpd with esmtp (ident bame using rfc1413)
-	id <m13uGYm-001Vp3C@chalet> (Debian Smail3.2.0.102)
-	for <parisc-linux@thepuffingroup.com>; Fri, 10 Nov 2000 08:57:48 -0700 (MST)
-Message-Id: <m13uGYm-001Vp3C@chalet>
-From: bame@riverrock.org
-Reply-To: bame@riverrock.org
-Errors-To: bame@riverrock.org
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA03654
+	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Nov 2000 09:22:26 -0700
+Message-Id: <200011101629.IAA07872@milano.cup.hp.com>
 To: Matthew Wilcox <matthew@wil.cx>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: linux bame
-In-reply-to: Your message of "Fri, 10 Nov 2000 09:49:07 GMT."
-             <20001110094907.A11268@parcelfarce.linux.theplanet.co.uk>
-Date: Fri, 10 Nov 2000 08:57:47 -0700
-Sender: bame@bame.riverrock.org
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] tulip DMA mapping 
+In-reply-to: Your message of "Fri, 10 Nov 2000 10:18:08 PST."
+             <20001110101808.B11268@parcelfarce.linux.theplanet.co.uk>
+Date: Fri, 10 Nov 2000 08:29:25 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-= On Thu, Nov 09, 2000 at 03:53:48PM -0700, Paul Bame wrote:
-= >     Somebody never imported 2.4.0-test6, then I imported -test10 on the mai
-n
-= >     vendor branch and now can't (easily) undo that to import test6 and THEN
-= >     test10.  This workaround sucks.
-= 
-= don't use vendor branches.  didn't you talk to mang about this?
 
-Um, I have no information to go on from your note.  All the (successful)
-merges I've done before have used the cookbook CVS merge method including
-a vendor branch.  Several (N-1?) of the palinux merges have been
-accompanied by updating the vendor branch.  And this merge is going
-well despite the ugly workaround, or so it appears to me.  Just
-importing files to a vendor branch should have no effect on anything
-else unless CVS has some horrible bug (RCS does not).  Before I make
-what is apparently a serious mistake ("don't use vendor branches" sounds
-pretty serious) please enlighten me!
+Mathew,
+I think the situation is clarified. This is just FYI.
 
-	-P
+Matthew Wilcox wrote:
+> On Thu, Nov 09, 2000 at 12:12:25PM -0800, Grant Grundler wrote:
+> > 0 is a valid pci_map_single() return value when the system has an IO MMU.
+> 
+> Oh dear.  You can bet tulip won't be the only driver which assumes it
+> isn't a valid return value.
+
+Well, then:
+1) the driver writer made a wrong assumption that the "spec"
+   does not support.
+2) that wasn't the case here - 0 was used as a flag to indicate
+   a mapping had (or hadn't rather) been done - not that the
+   mapping call had failed.
+
+> Can't our IOMMU code be limited in such a
+> way that 0 is not a valid return value?  Say, constrain all allocated
+> addresses to the top half of the device bus?
+
+It could pretty easily by reserving the dma_map[0] entry during
+init time. Dave Miller already made it clear that's not desirable.
+
+> (um, just check me on this, map_single returns a device bus address,
+> not a processor bus address, right?)
+
+Yes. It's the address a device must use to master DMA transactions.
+pci_map_single() input parameters are "struct pci_dev *", virtual host
+memory address, and buffer size. The return is a device specific I/O
+DMA address - ie this mapping cannot be shared with other devices.
+
+FWIW, "I/O DMA address" are called IOVAs in HPUX (I/O Virtual Address).
+The HW guys prefer another name but this one stuck.
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
