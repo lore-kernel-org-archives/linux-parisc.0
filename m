@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from c003.snv.cp.net (h016.c003.snv.cp.net [209.228.32.230])
-	by dsl2.external.hp.com (Postfix) with SMTP id A35D9482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Oct 2002 14:33:09 -0600 (MDT)
-Date: Wed, 9 Oct 2002 16:33:14 -0400
-Subject: Re: [parisc-linux] Burning CD Images difficulties: revisited
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v546)
-Cc: <parisc-linux@lists.parisc-linux.org>
-To: "Jeffo" <jeffo@pop.hsbc.com.br>
-From: Chuck Slivkoff <caslivkoff@telocity.com>
-In-Reply-To: <00b601c26fb0$a4ce35a0$db0b0aa7@pcaktel083>
-Message-Id: <55E2C72A-DBC6-11D6-82A6-000393581E44@telocity.com>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 72DDF482D
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Oct 2002 00:32:22 -0600 (MDT)
+Received: from iws1pb05.france.hp.com (unknown [15.124.72.14])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 7D116525
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Oct 2002 08:32:18 +0200 (METDST)
+Message-ID: <3DA51F44.1898AA4@hpfrcu81.france.hp.com>
+Date: Thu, 10 Oct 2002 08:33:40 +0200
+From: phi <phi@hpfrcu81.france.hp.com>
+MIME-Version: 1.0
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] boot (micro) hang
+References: <3DA2945D.7010301@visoel.de> <3DA2E27B.5708975E@hpfrcu81.france.hp.com> <20021008170152.AD42D4839@dsl2.external.hp.com>  <3DA424C6.58F6806C@hpfrcu81.france.hp.com> <20021009175717.A5B184829@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,34 +24,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wednesday, Oct 9, 2002, at 12:26 US/Eastern, Jeffo wrote:
+Grant Grundler wrote:
+> 
+> phi wrote:
+> > My Firmware is
+> >
+> > Firmware Version  5.2
+> 
+> sorry - I forgot to mention the FAQ explains how to determine
+> what the latest available rev is.
+> 
 
-> - I=B4ve tried MANY times  (5) burning an PA-RISC image to a bootable =
-CD.
-> Couldn=B4t make my system
-> boot from the CD though...the image I=B4m talking about is this one:
-> http://pateam.esiee.fr/cd-images/palinux-0.9.3.iso
->
-> I have a 712/60 HP station, with an external SCSI CD-rom drive. The=20
-> drive is
-> at ID "scsi.3.0".
-> I do the boot search after the POST routine, it finds my SCSI drive,=20=
+The FAQ also say it is dangerous to update a firware and you do it only if
+absolutly necessary.
 
-> its
-> brand and everything else.
->
-> When I try to boot from the CD the station simply does nothing. It=20
-> tryes to
-> boot and returns
-> to the BOOT_ADMIN screen. ONCE I could get a message like "loading the
-> stuff, etc....OPS, KERNEL something".
-> And only ONCE...in one of the first CDs.
+In my situation I had the proof that booting the prev kernel was ok, so the FW
+was good enough for this.
 
-Assuming that the ISO md5sum matches, I would suggest that you try=20
-another CD drive. Also, if you have DIP switches/jumpers on the drive,=20=
+I own only 1 c180, and will not have another one, also based on your
+recomandation I prefered discover what made the C180 hanging at boot, at least
+I learned a bit more about the iotree discovery, while upgrading the firmware
+to 6.1 would have learned me nothing and I could have lost my machine.
 
-make sure that the sector size is set to 512 and not 2048.
+So all in all I am happy with my temp solution, I am glad that Ryan will
+revisit his code and fix this regression for the benefit of all.
 
-Have you burned other disks and successfully read them in this drive?=20
-Under HP-UX? Perhaps try CDR/RW media with different dyes (ie, blue,=20
-black, green, etc)?
+So apparently FW5.2 is good enough for what I am doing, the patch catalog only
+give the latest version number and doesn't tell what diff there is between 5.2
+and 6.1, without good explanation, there is no reason to upgrade.
+
+The link 'HPUX-11 Patch Management' is obso and don't work (for me).
+
+Thanx for your help and pointers.
+Cheers,
+Phi
