@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Gururaj Ananthateerta <gururaj@cup.hp.com>
-Cc: parisc <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] new vmlinux!!! 
-In-Reply-To: Message from Gururaj Ananthateerta <gururaj@cup.hp.com>
-   of "Mon, 11 Mar 2002 14:56:25 PST." <3C8D3619.519A601C@cup.hp.com>
-References: <20011001175425.A31305@dogbert.localdomain> <Pine.NEB.4.33.0110021434430.24166-100000@www2.scram.de> <20011005222028.A13585@dogbert.localdomain> <20011005215600.B3745@parcelfarce.linux.theplanet.co.uk> <20011005233602.A13826@dogbert.localdomain>  <3C8D3619.519A601C@cup.hp.com> 
-Date: Tue, 12 Mar 2002 10:24:45 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020312172445.B11A64849@dsl2.external.hp.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F695484D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 10:30:41 -0700 (MST)
+Received: from npyu.esiee.fr (npyu.esiee.fr [147.215.80.150])
+	by mail.esiee.fr (Postfix) with ESMTP id C6DE549BEB
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 18:30:39 +0100 (CET)
+Date: Tue, 12 Mar 2002 18:08:38 +0100
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Resent-Message-Id: <CBC154D3-35DB-11D6-B413-0030656F07A2@esiee.fr>
+To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0 (Apple Message framework v481)
+Subject: Re: [parisc-linux] dynamic loader problem
+From: Thibaut VARENE <varenet@esiee.fr>
+Message-Id: <DF1D3A62-35DE-11D6-B413-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,27 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Gururaj Ananthateerta wrote:
-> I have 3 partitions on primary disk
->    Device Boot    Start       End    Blocks   Id  System
-> /dev/sda1             1        95     97264   f0  Linux/PA-RISC boot
-> /dev/sda2            96       339    249856   82  Linux swap
-> /dev/sda3           340      8683   8544256   83  Linux
+Le mardi 12 mars 2002, =E0 05:46 , Randolph Chung a =E9crit :
 
-partitions are fine.
+>> Has anybody worked on the various "dl-" routines in =
+glibc/sysdeps/hppa
+>> recently?  That's probably where the dynamic loader problem lies.
+>
+> afaik ESIEE guys are looking at glibc.... thibaut? clement? any=20
+> comments?
+>
+Well we're actually trying to rewrite the dynamic symbol resolver=20
+following the ia64 model -- this should result in a significant speedup.=20=
 
-> I am doing some modifications to the code and trying to boot with a new
-> linux.
-> I placed my vmlinux in /boot, but the palo doesn't seems to recognize my
-> kernel.
+(according to ACM)
 
-What do you mean by "doesn't seems to recognize"?
-any specific error msg?
+We're currently focusing on the last point, so if we succeed, it might=20=
 
-does palo.conf point to that kernel?
-or did you interact with palo to tell it to load that image?
-"file /boot/vmlinux" says what?
+solve the problem (assuming it works fine on ia64).
 
-you don't have to answer the above - just stuff to think about.
+We will keep the m-l informed of the progress of our work...
 
-grant
+
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://www.esiee.fr/puffin
