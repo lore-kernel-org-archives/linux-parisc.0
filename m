@@ -1,7 +1,7 @@
-From: Andrea Arcangeli <andrea@suse.de>
+From: James Bottomley <James.Bottomley@steeleye.com>
 Subject: Re: [parisc-linux] rmap: parisc __flush_dcache_page
-Date: Thu, 8 Apr 2004 20:42:45 +0200
-Message-ID: <20040408184245.GO31667__31598.300956148$1416623350$gmane$org@dualathlon.random>
+Date: 08 Apr 2004 13:49:55 -0500
+Message-ID: <1081450196.1885.492.camel__41646.5469323613$1416623350$gmane$org@mulgrave>
 References: <20040408153412.GD31667@dualathlon.random>
 	<1081439244.2165.236.camel@mulgrave>
 	<20040408161610.GF31667@dualathlon.random>
@@ -12,13 +12,14 @@ References: <20040408153412.GD31667@dualathlon.random>
 	<1081447654.1885.430.camel@mulgrave>
 	<20040408181838.GN31667@dualathlon.random>
 	<1081448897.2105.465.camel@mulgrave>
+	<20040408184245.GO31667@dualathlon.random>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Cc: Hugh Dickins <hugh@veritas.com>,
 	Linux Kernel <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
-To: James Bottomley <James.Bottomley@steeleye.com>
-Return-Path: <andrea@suse.de>
-In-Reply-To: <1081448897.2105.465.camel@mulgrave>
+To: Andrea Arcangeli <andrea@suse.de>
+Return-Path: <James.Bottomley@SteelEye.com>
+In-Reply-To: <20040408184245.GO31667@dualathlon.random>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,29 +29,26 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thu, Apr 08, 2004 at 01:28:17PM -0500, James Bottomley wrote:
-> So you're worried about our code?  OK, if you look, you'll see we only
-> have to flush one address in the mmap_shared list, (which is usually the
-> long list).
+On Thu, 2004-04-08 at 13:42, Andrea Arcangeli wrote:
+> What you miss is that the problem is not in flush_dcache_page, the
+> problem is that the _other_ users of the prio-tree may take as long as a
+> timeslice. So it's the _other_ user that you've no control about (i.e.
+> truncate) that may take timeslices with irq disabled.
 
-if you need to flush just one address, the prio-tree may give you an
-huge boost, overall flush_dcache_page should become pretty quick in most
-situations.
+So the problem isn't in the parisc code, it's in the generic vm code,
+OK.
 
-> I'd be very surprised if flush_dcache_page executes more than a few
-> hundred instructions all told...that's certainly nowhere close to a
-> timeslice.
+> But I've an fairly optimal solution for you, you should make it a
+> read_write spinlock, with the readers not disabling interrupts, and the
+> writer disabling interrupts, the writer of the prio-tree will not take a
+> timeslice, the readers instead will take a timeslice, but since they're
+> readers and you've only to read in the flush_dcache_page irq context,
+> you don't need to disable irqs for the readers.  I don't have better
+> solutions than this one at the moment (yeah there's the rcu reading of
+> the prio-tree but I'd leave it for later...)
 
-What you miss is that the problem is not in flush_dcache_page, the
-problem is that the _other_ users of the prio-tree may take as long as a
-timeslice. So it's the _other_ user that you've no control about (i.e.
-truncate) that may take timeslices with irq disabled.
+Yes, I'll go for that.  The write need only be done on vma insert, which
+should be very fast.  So do we agree this is a generic solution, or were
+you still thinking of trying to abstract it per-arch?
 
-But I've an fairly optimal solution for you, you should make it a
-read_write spinlock, with the readers not disabling interrupts, and the
-writer disabling interrupts, the writer of the prio-tree will not take a
-timeslice, the readers instead will take a timeslice, but since they're
-readers and you've only to read in the flush_dcache_page irq context,
-you don't need to disable irqs for the readers.  I don't have better
-solutions than this one at the moment (yeah there's the rcu reading of
-the prio-tree but I'd leave it for later...)
+James
