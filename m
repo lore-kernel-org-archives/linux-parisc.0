@@ -1,8 +1,8 @@
-From: danglin@gcc.gnu.org
+From: doko@gcc.gnu.org
 Subject: [parisc-linux] Re: c++/10235: [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
-Date: 16 Apr 2003 20:02:05 -0000
-Message-ID: <20030416200205.15155.qmail__46644.253555178$1416622397$gmane$org@sources.redhat.com>
-Reply-To: danglin@gcc.gnu.org, debian-gcc@lists.debian.org,
+Date: 17 Apr 2003 05:57:39 -0000
+Message-ID: <20030417055739.19189.qmail__1294.49316668815$1416622397$gmane$org@sources.redhat.com>
+Reply-To: doko@gcc.gnu.org, debian-gcc@lists.debian.org,
 	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
 	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
 	gcc-gnats@gcc.gnu.org
@@ -22,12 +22,10 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Synopsis: [3.3 regression] [HPPA] internal compiler error: in final_scan_insn, at final.c:2099
 
-State-Changed-From-To: open->feedback
-State-Changed-By: danglin
-State-Changed-When: Wed Apr 16 20:02:05 2003
+State-Changed-From-To: feedback->closed
+State-Changed-By: doko
+State-Changed-When: Thu Apr 17 05:57:39 2003
 State-Changed-Why:
-    I can't duplicate.  The file compiles and assembles
-    successfully with 3.3 20030416.  Do you still see
-    the problem?
+    sucessfully built as well with 3.3 20030412 (current Debian package)
 
 http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10235
