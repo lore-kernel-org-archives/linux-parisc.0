@@ -1,18 +1,17 @@
-From: Ivar <orskaug@stud.ntnu.no>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] Firefox/Mozilla patches
-Date: Mon, 20 Dec 2004 00:27:29 +0100 (MET)
-Message-ID: <Pine.GSO.4.58.0412192355390.5415@panter.stud.ntnu.no>
+Date: Sun, 19 Dec 2004 17:52:46 -0500
+Message-ID: <20041219225246.GG25304@baldric.uwo.ca>
 References: <Pine.GSO.4.58.0412172254550.1196@panter.stud.ntnu.no>
 	<20041219203417.GE25304@baldric.uwo.ca>
 	<Pine.GSO.4.58.0412192218090.4208@panter.stud.ntnu.no>
-	<20041219225246.GG25304@baldric.uwo.ca>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Ivar <orskaug@stud.ntnu.no>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041219225246.GG25304@baldric.uwo.ca>
+In-Reply-To: <Pine.GSO.4.58.0412192218090.4208@panter.stud.ntnu.no>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,35 +22,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Sun, Dec 19, 2004 at 10:53:09PM +0100, Ivar wrote:
+> As of now the patch is still very experimental - I'll devote some more
+> spare time for this during christmas.
+> 
+> Recently, I've also done some naive attemts to port the Xorg/XFree mga
+> driver to parisc - with the exception of a few minor bugs (displacement of
+> the HW accelerated cursor), it works OK - so, I have my hopes up for this
+> too :)
+> 
+> However, a biggerproblem with Xorg (as I see it) is that it's not
+> natively ported to parisc.
 
+I haven't built the Xorg tree yet, still using XFree86 until I have some
+free time. What loader is the Xorg tree using? I assume it still has the
+builtin ELF loader with symbol hacks? In which case you need to do
+relocation handling, and we never ported this :)
 
-On Sun, 19 Dec 2004, Carlos O'Donell wrote:
-
-> > However, a biggerproblem with Xorg (as I see it) is that it's not
-> > natively ported to parisc.
->
-> I haven't built the Xorg tree yet, still using XFree86 until I have some
-> free time. What loader is the Xorg tree using? I assume it still has the
-> builtin ELF loader with symbol hacks? In which case you need to do
-> relocation handling, and we never ported this :)
->
-
-I had no problems building/running Xorg - for me the build just worked
-right away ?
-
-Here, I'm talking about the driver/hardware pieces of Xorg - which
-contain lots of platform specific code. As we know, Xorg/XFree drivers
-(except fbdev) interact directly with the graphics hardware, which makes
-for instance endianness, an issue. Each supported platform has its
-own set of io-access funtions declared/defined - however no such funtions
-are defined for the hppa architecture.
-
-A first step in the process of porting the native Xorg/XFree drivers to
-parisc is therefore to add raw io access methods. mmap() from userspace
-works, but I got a bit uncertain when I saw that memory-mapped io is disabled in
-the kernel.
-
-How's the memory-mapped io development going?
+c.
 
 _______________________________________________
 parisc-linux mailing list
