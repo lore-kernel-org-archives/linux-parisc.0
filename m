@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rwcrmhc52.attbi.com (rwcrmhc52.attbi.com [216.148.227.88])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 66DCB4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Sep 2002 13:43:06 -0600 (MDT)
-Subject: Re: [parisc-linux] xwindows
-From: James Haydon <jhaydon@attbi.com>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3D95CF77.3080508@freebel.net>
-References: <3D95AB03.9030706@attbi.com>  <3D95CF77.3080508@freebel.net>
-Content-Type: text/plain
-Date: 29 Sep 2002 15:42:50 -0400
-Message-Id: <1033328572.1295.7.camel@daedalus>
-Mime-Version: 1.0
+Received: from 55.51.54.29 (24-148-36-246.na.21stcentury.net [24.148.36.246])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7DB834829
+	for <parisc-linux@parisc-linux.org>; Sun, 29 Sep 2002 14:52:09 -0600 (MDT)
+From: Sarah Benson <sarah_benson@nomoreaccent.com>
+To: parisc-linux@parisc-linux.org
+Reply-To: sarah_benson@nomoreaccent.com
+Date: Sun, 29 Sep 2002 15:51:55 -0500
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="050958ff-7610-4a3c-930b-b7e7e10551ba"
+Message-Id: <20020929205209.7DB834829@dsl2.external.hp.com>
+Subject: [parisc-linux] Q: DOES YOUR FOREIGN ACCENT SIMPLY GET IN THE WAY?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,45 +21,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Joel,
+This is a multi-part message in MIME format
+--050958ff-7610-4a3c-930b-b7e7e10551ba
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-It turns some bad settings put in the XF86Config-4 by me dealing number
-of colors and vertical and horizonal sync and some stuff dealing with
-probing a monitor put in by Debian.
+Q: " Would you like to Lose Your Accent ? " 
 
-The correct number of colors is 8 for this 715.
+- DO YOU FIND OTHERS HAVE A HARD TIME UNDERSTANDING WHAT YOU ARE TRYING TO =
+CONVEY?
 
-Thanks
+- DO YOU FIND THE NEED TO REPEAT YOURSELF FOR OTHERS TO UNDERSTAND YOU =
+CLEARLY?
 
-James
+- DO YOU FEEL EMBARRASSED OR LESS CONFIDENT WHEN TALKING TO WORK COLLEAGUES?
 
-On Sat, 2002-09-28 at 11:49, Joel Soete wrote:
-> Hi James,
-> 
-> Just start to have a look at ml:
-> 
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017688.html
-> 
-> You could also have a look earlier in this ml, there are other advises 
-> concerning X and 715 (HIL mouse?).
-> 
-> Good luck,
-> 	Joel
-> 
-> 
-> James Haydon wrote:
-> > I got a  9000/715 100 that I have Debian 3.0 everything works except for 
-> > X.  What do I have to do to make X work?
-> > 
-> > James
-> > 
-> > 
-> > 
-> > 
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> > 
-> 
-> 
+- DO YOU WISH TO COMMUNICATE YOUR THOUGHTS MORE EFFECTIVELY?
+
+- DOES YOUR FOREIGN ACCENT SIMPLY GET IN THE WAY?
+
+Introducing the Krieger Method, an innovative teaching system, designed to =
+help you develop effective communication skills. 
+
+Andy Krieger, inventor of this miracle product, originated this revolutionary =
+idea whilst working with actors and their accents within the Hollywood film =
+industry. 
+
+Contact us to learn about the true benefits you can obtain to communicate =
+with confidence!!
+
+"Make your accent simply disappear!"
+
+For Accent Reduction Empowerment, visit us on the web today at :- 
+
+www.nomoreaccent.com
+
+Thank you for your time and interest...
+
+Sarah J. Benson
+Marketing Co-ordinator
+
+If you feel this is email is not of interest to you, then we sincerely =
+apologize and guarantee you will not receive another email from us, unless =
+you otherwise wish.  
+--050958ff-7610-4a3c-930b-b7e7e10551ba--
