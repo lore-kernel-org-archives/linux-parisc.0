@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DE272482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Jan 2003 14:27:20 -0700 (MST)
-Message-Id: <200301312127.h0VLRHdq021554@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] PATCH hppa ordered load absolute ops
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Fri, 31 Jan 2003 16:27:17 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: grundler@dsl2.external.hp.com, bug-binutils@gnu.org,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <no.id> from "John David Anglin" at Jan 31, 2003 11:11:26 am
+Received: from pimout3-ext.prodigy.net (pimout3-ext.prodigy.net [207.115.63.102])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EA6C4482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Jan 2003 21:28:09 -0700 (MST)
+Received: from pepp (adsl-67-116-83-209.dsl.lsan03.pacbell.net [67.116.83.209])
+	by pimout3-ext.prodigy.net (8.12.3 da nor stuldap/8.12.3) with SMTP id h114S5Ni083808
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Jan 2003 23:28:09 -0500
+Reply-To: <adam.sk@groovy.ffloth.com>
+From: "Adam Skaffloth" <adam.sk@groovy.ffloth.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 31 Jan 2003 20:27:21 -0800
+Message-ID: <002d01c2c9aa$37400140$b601a8c0@pepp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Tried to Install Debian 3r1 on C110, C180 and 2 712/60, no luck.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,37 +25,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I installed the following after testing on hppa-unknown-linux-gnu.
+Hi !
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+I wonder if someone could give me a help in the right direction.
+I have a C110, a C180 and 2 712/60.
+C110 would boot fine until you get to the first menu, then the keyboard
+would be out.
+I have tried the previous tricks about disconnect/reconnect the keyboard,
+but to no use.
+The Visualize-EG in C180 seems not be working, seen threads about that,
+so installed the Visualize-24 card from the C110 on the C180 and get the
+same result.
+Is this problem only related to the install or if I install using serial
+console would it be a head-less machine = no use ?
 
-2003-01-31  Grant Grundler  <grundler@dsl2.external.hp.com>
+I also read that their are no trouble with installing on 712/60.
+I got 2, one with the second LAN/Serial Card (So I can use it as a FW).
+Bot are starting but are hanging after the message:
 
-        * hppa.h (ldwa, ldda): Add ordered opcodes.
+The Installation Program is determining the current state
+of your system and the next installation step that should
+ be performed.
 
-Index: opcode/hppa.h
-===================================================================
-RCS file: /cvs/src/src/include/opcode/hppa.h,v
-retrieving revision 1.49
-diff -u -3 -p -r1.49 hppa.h
---- opcode/hppa.h	16 Dec 2002 09:57:03 -0000	1.49
-+++ opcode/hppa.h	31 Jan 2003 21:13:31 -0000
-@@ -407,6 +407,7 @@ static const struct pa_opcode pa_opcodes
- { "ldbx",       0x0c000000, 0xfc001fc0, "cXx(b),t", pa10, 0},
- { "ldwa",       0x0c000180, 0xfc00d3c0, "cxccx(b),t", pa10, FLAG_STRICT},
- { "ldwa",	0x0c001180, 0xfc00d3c0, "cmcc5(b),t", pa10, FLAG_STRICT},
-+{ "ldwa",	0x0c0011a0, 0xfc1ff3e0, "cocc@(b),t", pa20, FLAG_STRICT},
- { "ldcw",       0x0c0001c0, 0xfc0013c0, "cxcdx(s,b),t", pa10, FLAG_STRICT},
- { "ldcw",       0x0c0001c0, 0xfc0013c0, "cxcdx(b),t", pa10, FLAG_STRICT},
- { "ldcw",	0x0c0011c0, 0xfc0013c0, "cmcd5(s,b),t", pa10, FLAG_STRICT},
-@@ -417,6 +418,7 @@ static const struct pa_opcode pa_opcodes
- { "stby",	0x0c001300, 0xfc0013c0, "cscCx,V(b)", pa10, FLAG_STRICT},
- { "ldda",       0x0c000100, 0xfc00d3c0, "cxccx(b),t", pa20, FLAG_STRICT},
- { "ldda",	0x0c001100, 0xfc00d3c0, "cmcc5(b),t", pa20, FLAG_STRICT},
-+{ "ldda",	0x0c001120, 0xfc1ff3e0, "cocc@(b),t", pa20, FLAG_STRICT},
- { "ldcd",       0x0c000140, 0xfc0013c0, "cxcdx(s,b),t", pa20, FLAG_STRICT},
- { "ldcd",       0x0c000140, 0xfc0013c0, "cxcdx(b),t", pa20, FLAG_STRICT},
- { "ldcd",	0x0c001140, 0xfc0013c0, "cmcd5(s,b),t", pa20, FLAG_STRICT},
+It hangs there forever on both boxes.
+
+Anyone succeded with a install of Debian 3 on the above HW that could give
+me a hand,
+I am giving PA Risc a chance until I need to put the Sparc and the Intel
+back into the plans.
+
+/ Adam
