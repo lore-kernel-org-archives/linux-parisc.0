@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E1015482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jul 2003 02:29:08 -0600 (MDT)
-Date: Fri, 4 Jul 2003 10:29:06 +0200
-Message-ID: <3F03A473000009CA@ocpmta4.freegates.net>
-In-Reply-To: <1057286403.1841.153.camel@raphael>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] RDI Precision Book 160
-To: "Martin" <inkubus@interalpha.co.uk>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from czf-l2qmjgoj7bp (unknown [218.18.50.118])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D49B2482A
+	for <parisc-linux@parisc-linux.org>; Fri,  4 Jul 2003 03:33:01 -0600 (MDT)
+From: =?GB2312?B?zeK+rcOz?= <chineseb2b@chineseb2b.org>
+To: parisc-linux@parisc-linux.org
+Content-Type: text/plain;charset="GB2312"
+Reply-To: chineseb2b@chineseb2b.org
+Date: Fri, 4 Jul 2003 17:33:19 +0800
+Message-Id: <20030704093301.D49B2482A@dsl2.external.hp.com>
+Subject: [parisc-linux] =?GB2312?B?MTkwzfLW0Ln6uLvUo7zSzaXTyrz+tdjWtw==?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +20,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Martin,
+¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ÍøÂçÓªÏúÈí¼ş»ã×Ü£¬È«ĞĞÒµÈ«µØÇøÓÊÖ· 
 
->    I've recently acquired an RDI Precision Book 160 which is currently
-> running HP-UX 10.2.  From what I can find in the relevant documentation
-> it is allegidly completely compatible with the HP B series workstations
-> and thus should run Linux.  Does anyone have any experience with
-> installing / running Linux on these?  It is possible?  What devices are
-> supported?  Is Linux the best choice for this machine?
+   190ÍòÖĞ¹ú¸»Ô£¼ÒÍ¥ÓÊ¼şµØÖ·¡£ÔÚÈ«¹ú½üÍò¼Ò´óĞÍÂ¥ÅÌµÄÒµÖ÷ÂÛÌ³ÉÏËÑ¼¯µ½µÄÒµÖ÷ÓÊ¼şµØÖ·¡£¾ßÓĞ¼«¸ßµÄÉÌ
+Òµ¼ÛÖµ£¬ÈÃÄúµÄ²úÆ·ÎªÕâÑùµÄÒ»¸öÅÓ´óµÄ¸ßÏû·ÑÈºÌåËùÈÏÊ¶£¬ÄúµÄÆóÒµÒ»¶¨»á×ßÏò»Ô»Í¡£½üÍò¼ÒÂ¥ÅÌÒµÖ÷Ãûµ¥
+¼û£ºhttp://www.chineseb2b.org/bj.htm
 
-Yes it works have a look on the thread:
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-March/019613.html>
+Ò»¡¢È«Çò²úÆ·¹ã¸æ·¢²¼£¨¿ìËÙ°ÑÄúµÄ²úÆ·¡¢¹©ÇóĞÅÏ¢Ãâ·ÑÆÌ±éÈ«ÇòÉÌÃ³ÍøÕ¾£©
+ 
+    Ê®·ÖÖÓÄÚÃâ·Ñ½«ÄúµÄ²úÆ·×Ô¶¯·¢ËÍÉÏ1000¸ö¹úÄÚÍâ×îºÃµÄÉÌÃ³ÍøÕ¾ÉÏ£¬ÈÃ¹úÄÚÍâµÄ¿ÍÉÌ¶¼¿ÉÒÔËÑË÷¡¢ÔÄ¶Á
+µ½ÄúµÄ²úÆ·¹ã¸æ£¬ÈÃ´óÁ¿µÄ¿ÍÉÌÖ±½Ó½Ó´¥µ½ÄúµÄÆóÒµºÍ²úÆ·£¬ÎŞĞÎÖĞÔö¼ÓÖÚ¶à±¦¹óÉÌ»ú¡£
+ÌØµã£º
+1¡¢ÊÕÂ¼µÄÍøÕ¾¶àÎª¸ßÖÊÁ¿µÄÉÌÃ³Æ½Ì¨£¬Õë¶ÔĞÔÇ¿¡¢·´À¡Ğ§¹ûºÃ£»
+2¡¢°´¹ú¼Ò±ê×¼½øĞĞÉÌÒµ·ÖÀà£¬ÍêÉÆ×¨Òµ£»
+3¡¢ÖĞÓ¢ÎÄ¼æÈİ£¬¼ò·±Ìå×Ô¶¯×ª»»£¬¹ã¸æÄÚÈİ×Ô¶¯ÖÇÄÜÉú³É£»
+4¡¢·¢²¼Ğ§¹ûÁ¢¼´ÏÔÊ¾£¬Ëù¼û¼ÈËùµÃ£» 
 
-hth,
-    Joel
+¶ş¡¢ÔÚ½üÍò¼ÒÈ«ÇòËÑË÷ÒıÇæ×¢²áÄúµÄÍøÕ¾£¬ÈÃÄúµÄÍøÕ¾Ò»Ò¹³ÉÃû
 
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+     ×îºÃµÄËÑË÷ÒıÇæÌá½»µÇÂ¼¹¤¾ß£¬¿ÉÒÔ½«ÄúµÄÍøÕ¾ÔÚ¶şĞ¡Ê±ÄÚµÇÂ¼µ½¹úÄÚÍâÉÏÍò¸öËÑË÷ÒıÇæºÍFFAÖĞ¡£ËÑË÷
+ÒıÇæ¼°ÍøÕ¾Ä¿Â¼·ÖÀàÏêÏ¸£¬¾ø¶Ô±£Ö¤µÇÂ¼Ğ§¹û¡£¶ÀÓĞµÄÖ§³ÖÊÕ·ÑÒıÇæÈçĞÂÀË¡¢ËÑºü¡¢YAHOOµÈµÄ¸¨ÖúµÇÂ¼¡£
+
+     Èí¼şÖĞ¾«ĞÄÊÕ¼¯ÁË´óÁ¿ÓëÍøÕ¾ÍÆ¹ãÏà¹ØµÄÍøÂç×ÊÔ´£¬²¢ÊµÊ±¸üĞÂ£¬Ê¹ÍøÕ¾ÍÆ¹ã¹¤×÷ÇáËÉ×ÔÈç¡£
+
+     Í¨¹ı±¾Èí¼ş£¬ÍøÕ¾·ÃÎÊÁ¿ÍêÈ«¿ÉÒÔÔÚÔÚÊıÌìÄÚÊµÏÖÊı±¶±©Ôö¡£ 
+
+
+Èı£º¼ÛÖµ´ï2Íò¶àÈËÃñ±ÒµÄÈ«Çò×îºÃµÄÓÊ¼şÈº·¢Èí¼şËÍ¸øÄú
+
+   Èº·¢desktopÊÇµ±½ñ×îºÃµÄÃâsmtpÈº·¢Èí¼ş£¬±»¾ø´ó¶àÊı500Ç¿ÖøÃû´ó¹«Ë¾ËùÊ¹ÓÃ£¬ÓÃÀ´Ïò¿Í»§ÉÜ×Ô¼º×îĞÂµÄ
+²úÆ·¡£
+
+   Ö»ĞèÒªµ¼ÈëÓÊ¼şµØÖ·£¬Ğ´ÉÏÓÊ¼şÄÚÈİ£¬¼´¿É¿ìËÙ·¢ËÍ£¬Ò»Ğ¡Ê±¿É·¢ËÍ10Íò£¬×¼È·ÂÊ´ïµ½100%¡£
+
+
+   µäĞÍ³É¹¦°¸Àı£º
+
+   ÕÅ¼Ò½ç´ºÇïÂÃĞĞÉçÊÇµ±µØÒ»¼Ò²»ÖªÃûµÄÂÃĞĞÉç£¬Ò»Ö±Îª¿ÍÔ´·³ÄÕ¡£±¾ÈËÔÚÕÅ¼Ò½çÂÃÓÎÊ±£¬ÓÉÕâ¼ÒÂÃĞĞÉçµÄµ¼
+ÓÎ·şÎñ£¬±¾ÈË¾õµÃµ¼ÓÎµÄË®Æ½ºÜ¸ßÑ½¡£µ«ÆäËµ£¬ÓªÒµ²¿ÓÉÓÚĞû´«Á¦¶È²»¹»£¬ÉúÒâ²»ºÃ¡£±¾ÈËÎª¸ĞĞ»ÆäÖÜµ½µÄ·ş
+Îñ £¬Ìá¹©ÁËµ±Ê±Ö»ËÑË÷µ½µÄ60ÍòÒµÖ÷ÓÊ¼şµØÖ·£¬ËûÃÇ·¢³öºó£¬ÆäÒµÎñÁ¿´óÔö£¬Ğí¶àÒµÖ÷ÔÚÃ»³ö·¢Ç°¾ÍºÍÕâ¼ÒÂÃ
+ĞĞÉçÁªÏµºÃÁË¡£
+
+
+ÖĞ¹úÆóÒµÓªÏúÖĞĞÄ
+
+http://www.chineseb2b.org
