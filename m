@@ -1,29 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 851CF482A
-	for <parisc-linux@parisc-linux.org>; Thu,  9 May 2002 11:07:04 -0600 (MDT)
-Received: from smtp1.fc.hp.com (smtp1.fc.hp.com [15.15.136.127])
-	by atlrel7.hp.com (Postfix) with ESMTP id 129D8805178
-	for <parisc-linux@parisc-linux.org>; Thu,  9 May 2002 13:07:04 -0400 (EDT)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by smtp1.fc.hp.com (Postfix) with ESMTP id AC9A637E77
-	for <parisc-linux@parisc-linux.org>; Thu,  9 May 2002 11:07:03 -0600 (MDT)
-Received: from paul.bame (lart.fc.hp.com [15.1.54.48])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 7412F4484
-	for <parisc-linux@parisc-linux.org>; Thu,  9 May 2002 11:07:03 -0600 (MDT)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by paul.bame with esmtp (Exim 3.35 #1 (Debian))
-	id 175rNf-0003N4-00
-	for <parisc-linux@parisc-linux.org>; Thu, 09 May 2002 11:07:03 -0600
-To: bame@dsl2.external.hp.com
-Message-ID: <1020917024.3cd9f520e9551@devel.varig.com>
-Date: Thu, 09 May 2002 04:03:44 +0000 (Brazil/Eastern)
-From: henrique.leandro@varig.com
+Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C717482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 May 2002 16:42:48 -0600 (MDT)
+From: "James Braid" <james.braid@peace.com>
+To: "'Grant Grundler'" <grundler@dsl2.external.hp.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] Re: Dodgy SCSI in L2000
+Date: Fri, 10 May 2002 10:46:17 +1200
+Message-ID: <00b001c1f7ab$571903d0$5e01000a@bongo>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Resent-Message-Id: <E175rNf-0003N4-00@paul.bame>
-Subject: [parisc-linux] HP9000 K Class 220 under Linux
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <20020509165445.7A515482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -35,12 +23,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hey Paul, How you Doing ?
-Fine , hope. 
-My name is Henrique Leandro
-Maybe you know how do i for use Linux im our K220.
-I burn a CD with Debian Image and does work ! 
-I´m very sad.
+ 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+> The fault was caused at 0x0000000010108fe0 - I need to see the
+> matching vmlinux and System.map to determine where this is in
+> the code.
+> 
+
+Ah, mind if send you the vmlinux and System.map off-list?
 
 
-Best regards.
+> When the box freezes, do "tc" from GSP. On reboot, at PDC prompt
+> type "ser pim" to get the state of the machine when it was TC'd.
+> Once you've saved the PIM dump, it's good to clear PIM.
+> (iirc, "ser clearpim")
+> Again, save matching Sysytem.map and vmlinux.
+> 
+
+> IIRC, setting _SYNC parameter to 10 is equivalent to "fast".
+
+Okay, I will try that and put a new kernel in.
+ 
+> oic. In cases like this, we have to disable Stack Dumping since
+> it data page faults. I suspect that's what's happened in the
+> previous dumps too. You can disable stack dumps by changing "#if 1"
+> to "#if 0" on line 149 (show_stack()) in
+> arch/parisc/kernel/traps.c.  
+
+I will disable that as well and put a new kernel in.
+
+> BTW, typically this msg means a kernel driver is attempting 
+> to directly
+> access user space data instead of copying the data into kernel
+> space.  
+
+That sounds nasty...
+
+> > so I cranked it up to dbench 100. That crashed nicely with 
+> this panic:
+> > 
+> > Dumping Stack from 0x0000000056390000 to 0x0000000056390000:
+> > 
+> > Kernel Fault: Code=15 regs=0000000046390000
+> > (Addr=0000000056388018) 
+> 
+> did you get the "Stack pointer and cr30 do not correspond!" 
+> msg before this?
+
+Yep, I did get the "Stack pointer..." stuff before this, I left it
+off the email though.
+
+> Me either since I've not seen this problem. This does sound like
+> the SCSI interface driver is hitting a corner case and dying there.
+> But that's just a SWAG.
+> 
+> I'll have to get dbench and try it on the a500 when that's
+> available.  
+
+Cool.
+
+Thanks, James.
+
+-----BEGIN PGP SIGNATURE-----
+Version: PGP 7.1.1
+
+iQA/AwUBPNr8OFW+bhIOiSqWEQLoTwCeOG3NSZzK01Aq1w+tz7R421fs9xgAoPbb
+9VCHtaEiG6tTKElsrWsPMiad
+=6qMg
+-----END PGP SIGNATURE-----
