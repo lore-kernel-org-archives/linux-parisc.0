@@ -1,21 +1,22 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2723B4868
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C0B24868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 19 Jan 2004 17:50:35 -0700 (MST)
-Date: Mon, 19 Jan 2004 17:50:33 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Helge Deller <deller@gmx.de>
+	Mon, 19 Jan 2004 18:16:38 -0700 (MST)
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i0K1GZa03593; Mon, 19 Jan 2004 20:16:35 -0500
 Subject: Re: [parisc-linux] 32bit parisc kernel 2.6.1 and pcmcia
-Message-ID: <20040120005033.GA3846@colo.lackof.org>
-References: <200401182059.34270.deller@gmx.de>
-	<1074522943.2201.1.camel@mulgrave>
-	<200401192248.29566.deller@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Helge Deller <deller@gmx.de>
 In-Reply-To: <200401192248.29566.deller@gmx.de>
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
-	parisc-linux@lists.parisc-linux.org
+References: <200401182059.34270.deller@gmx.de>
+	<1074522943.2201.1.camel@mulgrave> <200401192248.29566.deller@gmx.de>
+Content-Type: text/plain
+Date: 19 Jan 2004 20:16:30 -0500
+Message-Id: <1074561391.2081.17.camel@mulgrave>
+Mime-Version: 1.0
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,31 +26,36 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 19, 2004 at 10:48:29PM +0100, Helge Deller wrote:
-> > Sorry, I'm an idiot...these type of cards don't seem to work (they seem
-> > to require ISA IRQ routing rules, which we can't provide).
-> 
+On Mon, 2004-01-19 at 16:48, Helge Deller wrote:
 > Wouldn't it be possible to write a wrapper, which simulated the
 > ISA IRQs 0-15 and routes them to dino instead ?
-
-Yes
-
 > Isn't this similiar like the hack we have for the EISA driver ?
 > And maybe we are lucky and no PA-machine has both, EISA and PCMCIA.
 > Would this be possible ?
 
-Certainly. Need to write the "glue" that aliases the ESIA IRQs
-(IRQ region 0) to which ever Dino IRQ region is handling them.
-In other words, convert the PCI interrupts to ISA interrupts.
-If you could fake the ISA driver into using PCI interrupts
-(ie IRQs > 15), then one could register device driver interrupt
-handler directly with Dino. Otherwise, an intermediate interrupt
-handler will be needed that translates the Dino interrupt
-into whatever IRQ the PCMCIA/ISA device thinks it's using.
+OK...Just to confirm what you're getting yourself into:
 
-I don't konw any of the details, that's just the overview.
-In particular, how to determine which Dino is the right one.
-On RDI PrecisionBook laptop, it might be simple and maybe just
-make some assumptions based on that implementation.
+The yenta socket is a deep black art.  It also covers a multitude of
+slightly different standards (from different manufacturers).  I learned
+enough of the sourcery to say the required incantations for my
+particular needs (which were a B180 with a PCI<->cardbus yenta socket
+that came free with my zoom wireless card).
 
-grant
+In order to get my setup to work, I also had to replumb virtually the
+whole of the dino PCI system (I needed this because the B180 firmware
+barfed at the PCMCIA socket and simply disabled it).
+
+The point, I'm afraid, is that although I got it work for me, I'll bet
+not much of the magic is transferrable, so you may also find yourself
+ploughing through the yenta specs...
+
+If this hasn't deterred you, then read on intrepid adventurer.
+
+One of the things you seem to have from the error messages is IRQ
+misrouting.  Could you boot up (or stop PCMCIA, remove all the modules,
+including the core and restart) with a card in the socket?  The socket
+status should tell us which one, and the IRQ line is given by lspci. 
+Since the chip is both PCI device functions, it's not impossible to have
+the IRQ routings messed up.
+
+James
