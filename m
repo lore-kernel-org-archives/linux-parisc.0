@@ -1,19 +1,22 @@
-Return-Path: <hch@lst.de>
-Received: from mail.lst.de (verein.lst.de [212.34.189.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F19144843
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  5 Dec 2003 13:47:42 -0700 (MST)
-Date: Fri, 5 Dec 2003 21:47:39 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] Fwd: A call for boot loader IDs
-Message-ID: <20031205204739.GA2192@lst.de>
-References: <200312052140.19017.deller@gmx.de> <20031205204306.GA2013@lst.de>
-	<200312052146.14281.deller@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200312052146.14281.deller@gmx.de>
-Cc: parisc-linux@lists.parisc-linux.org
+Return-Path: <jehosophat@msn.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 487194843
+	for <parisc-linux@parisc-linux.org>;
+	Fri,  5 Dec 2003 22:59:34 -0700 (MST)
+Received: from woh-166-203-204.woh.rr.com (woh-166-203-204.woh.rr.com
+	[24.166.203.204]) by cuprel1.hp.com (Postfix) with SMTP id A0E95D5C
+	for <parisc-linux@parisc-linux.org>;
+	Fri,  5 Dec 2003 21:59:22 -0800 (PST)
+Message-ID: <2$-71f39-ce07h8fq$tni-$1-k4-rat@zejt822.er9>
+From: "Guy Mcfarland" <jehosophat@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Sat, 06 Dec 03 17:48:59 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="0F_B_CB3A..1C_"
+Cc: 
+Subject: [parisc-linux] ''Top athletes agree wenrm  fw
+Reply-To: Guy Mcfarland <jehosophat@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,14 +26,138 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Dec 05, 2003 at 09:46:14PM +0100, Helge Deller wrote:
-> On Friday 05 December 2003 21:43, Christoph Hellwig wrote:
-> > On Fri, Dec 05, 2003 at 09:40:19PM +0100, Helge Deller wrote:
-> > > Is this something we should care about for PALO ?
-> > 
-> > This sounds _very_ x86-centric :)
-> 
-> Sure, but at least ELILO is iA64.
 
-it's for any EFI platform.  and intel wants to push EFI for
-x86 aswell.
+--0F_B_CB3A..1C_
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<title>Young and Strong</title>
+<script>
+//Block Right Clicking - by Blackbox Hosting
+//Credit must stay intact for use
+
+var isNS =3D (navigator.appName =3D=3D "Netscape") ? 1 : 0;
+var EnableRightClick =3D 0;
+if(isNS) 
+document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
+function mischandler(){
+  if(EnableRightClick=3D=3D1){ return true; }
+  else {return false; }
+}
+function mousehandler(e){
+  if(EnableRightClick=3D=3D1){ return true; }
+  var myevent =3D (isNS) ? e : event;
+  var eventbutton =3D (isNS) ? myevent.which : myevent.button;
+  if((eventbutton=3D=3D2)||(eventbutton=3D=3D3)) return false;
+}
+function keyhandler(e) {
+  var myevent =3D (isNS) ? e : window.event;
+  if (myevent.keyCode=3D=3D96)
+    EnableRightClick =3D 1;
+  return;
+}
+document.oncontextmenu =3D mischandler;
+document.onkeypress =3D keyhandler;
+document.onmousedown =3D mousehandler;
+document.onmouseup =3D mousehandler;
+
+</script>
+<script>
+//Block Select-Copy-Paste from Webpage - by Blackbox Hosting
+//Credit must stay intact for use
+
+function disabletext(e){
+return false
+}
+
+function reEnable(){
+return true
+}
+
+//if the browser is IE4+
+document.onselectstart=3Dnew Function ("return false")
+
+//if the browser is NS6
+if (window.sidebar){
+document.onmousedown=3Ddisabletext
+document.onclick=3DreEnable
+}
+
+</script>
+<script>
+//Blocks Shift+Click on Links - by Blackbox Hosting
+//Credit must stay intact for use
+
+function mouseDown(e) {
+ var shiftPressed=3D0;
+ if (parseInt(navigator.appVersion)>3) {
+  if (navigator.appName=3D=3D"Netscape")
+       shiftPressed=3D(e.modifiers-0>3);
+  else shiftPressed=3Devent.shiftKey;
+  if (shiftPressed) {
+   alert ('Shift-click is disabled.')
+   return false;
+  }
+ }
+ return true;
+}
+if (parseInt(navigator.appVersion)>3) {
+ document.onmousedown =3D mouseDown;
+ if (navigator.appName=3D=3D"Netscape") 
+  document.captureEvents(Event.MOUSEDOWN);
+}
+</script>
+<script>
+//Hide status bar script - by Blackbox Hosting
+//Credit must stay intact for use
+
+function hidestatus(){
+window.status=3D''
+return true
+}
+
+if (document.layers)
+document.captureEvents(Event.MOUSEOVER | Event.MOUSEOUT)
+
+document.onmouseover=3Dhidestatus
+document.onmouseout=3Dhidestatus
+</script>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
+<body bgcolor=3D"#003366" font color=3D"#000000" face=3D"verdana" link=3D#=
+00FF00 alink=3D#00FF00 vlink=3D"#0000FF" text=3D"#FFFFFF">
+<center>
+  <p align=3D"center"><H4><font color=3D"#FFFFFF" face=3D"verdana">Medical=
+ly Proven and Recognized Around the World<br>HGH<br>replenishes what TIME =
+has taken away !</font></H4></center><CENTER><H5><font color=3D"#FFCC00" f=
+ace=3D"verdana">Look Better and Feel Better !<br>
+    Be Sexy and Athletic !<br>Increases your Energy *** Speeds up your Met=
+abolism<br>Improves Mental Clarity and Thinking Abilities !</font></H5>
+</center><center><H5><font color=3D"#FFCC00" face=3D"verdana">Part of the =
+daily routines of:<br>
+  Doctors, Celebrities, Models, Athletes, Politicians, and even World Lead=
+ers !</font></H5></center>  
+<center><H5><font color=3D"#FFCC00" face=3D"verdana">
+    Time, stress, and aging REDUCE and EXHAUST <br> the very hormones we n=
+eed to remain youthful and vibrant.<br>You can now REPLENISH what time has=
+ taken away !<H4><font color=3D"#FFFFFF" face=3D"verdana">With
+      Doctor Approved 
+      HGH !</font></H4>
+    </font></H5>
+</center><center> 
+<H3><font color=3D"#FFFF00" face=3D"verdana">60 day 100% Money-Back Guaran=
+tee!</font></H3></center>
+
+
+  <center><h3><a href=3D"http://www.fisha.biz/hgh/?buster">This way to loo=
+k and feel better with HGH!!</a></h3>
+</center>
+</body>
+</html>
+bgkmupszct 
+hdcgpvkz da
+
+--0F_B_CB3A..1C_--
