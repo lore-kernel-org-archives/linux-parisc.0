@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-Cc: nsc <nsc@connectednet.co.uk>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problem installing 0.9.3 on 715/100XC 
-In-Reply-To: Message from Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-   of "Sat, 23 Feb 2002 14:58:40 +0100." <20020223135840.GG25954@charite.de>
-References: <200202231352.NAA04205@liberator.zorg.org>  <20020223135840.GG25954@charite.de> 
-Date: Sun, 24 Feb 2002 00:16:43 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020224071643.6D6EE482D@dsl2.external.hp.com>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4907E482F
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 24 Feb 2002 20:42:58 -0700 (MST)
+Received: from eiger.apptechsys.com (ats198.apptechsys.com [207.14.35.198])
+	by mail.apptechsys.com (Postfix) with ESMTP id 7F7087BC45
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 24 Feb 2002 19:42:56 -0800 (PST)
+Date: Sun, 24 Feb 2002 19:42:56 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33L2.0202241937580.6941-100000@eiger.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] gcc 2.95
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,21 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ralf Hildebrandt wrote:
-> > This machine has BootRom Version 1.1, could this be causing a problem?
-> 
-> You could try updating the BootRom via bootp/tftp,
+I have just installed the debian hppa port, and I am happy to have
+an alternative to HP-UX.  I am having a lot of problems with gcc 3.0,
+though and I would like to try gcc 2.95 or so.  Is there such a port, and
+if so, where can I find it (binaries would be nice, but I can build the
+source if necessary)?
 
-If version 1.2 isn't available from HP firmware ftp site (see the FAQ),
-then I'd not updated the 715/100XC.  If it is available, then the buglist
-will be in the notes along with the firmware update.
+Thanks...
 
-> but booting from
-> CDROM is something even the buggiest rom MUST handle.
-
-THe CD-ROM might behave in some way that confuses the PDC.
-It's only a bug if that CD-ROM was shipped with the machine.
-ie, it's a tested and supported configuration.
-That's why I keep harping about the SCSI device jumper settings.
-
-grant
+-- 
+Fashions have done more harm than revolutions.
+		-- Victor Hugo
