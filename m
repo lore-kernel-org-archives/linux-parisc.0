@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.nateng.com (user-vc8fdp3.biz.mindspring.com [216.135.183.35])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 445E9482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 Jan 2003 18:56:22 -0700 (MST)
-Received: from jordan.eng.nateng.com (jordan.eng.nateng.com [172.16.100.200])
-	by mail.nateng.com (8.11.2/8.11.2) with ESMTP id h0U2BEp03799
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 Jan 2003 18:11:14 -0800
-Received: from localhost (chandler@localhost)
-	by jordan.eng.nateng.com (8.11.4/8.11.4) with ESMTP id h0U1tvE01929
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 Jan 2003 17:55:57 -0800
-Date: Wed, 29 Jan 2003 17:55:57 -0800 (PST)
-From: Sir Ace <chandler@nateng.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Um,
-In-Reply-To: <20030130015345.GC12749@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.33.0301291755210.235-100000@jordan.eng.nateng.com>
+Received: from jpnsmtp6.jpn.hp.com (jpnrel6.hp.com [128.88.255.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA177482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 Jan 2003 20:07:03 -0700 (MST)
+Message-ID: <3E3896BC.8080308@wwarc1.atl.hp.com>
+Date: Thu, 30 Jan 2003 12:06:36 +0900
+From: Keith Hopkins <kxh3@wwarc1.atl.hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: "Mehta, Miten" <mmehta@elgin.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] RE: X windows setup on C110 with woody and ker
+ nel-2.4.20pa22
+References: <5D69EA3878E6D411B43C00508BFD7283049FB553@exchange2.elgin.edu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,15 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Mehta, Miten wrote:
+> Hello,
+> 
+> I still get errors for depth 24 though some what different.
+> 
+> take a look at xfree log attached.
+> 
 
-> the parisc-linux mail archive should say something about them.
+Please post the output of  "dmesg | grep -e STI -e stifb".
 
-Ok
-
-> All patches not committed to CVS are experimental.
-> Don't take *any* of them unless you have evidence one of them
-> will solve a problem you are experiencing....and then if it
-> does, make noise so we know that particular patch needs to get
-> committed to CVS.
-
-Ok..
+--
+Best Regards,
+    Keith
