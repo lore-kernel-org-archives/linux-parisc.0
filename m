@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 04D964830
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Sep 2003 12:57:23 -0600 (MDT)
-Message-Id: <200309121857.h8CIvJf7014048@hiauly1.hia.nrc.ca>
-To: parisc-linux@lists.parisc-linux.org
-Date: Fri, 12 Sep 2003 14:57:19 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: jbglaw@lug-owl.de
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Re: Looking for info on getting X running on my 712
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0C0004830
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Sep 2003 15:02:37 -0600 (MDT)
+Date: Fri, 12 Sep 2003 17:00:51 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: James Bottomley <James.Bottomley@steeleye.com>,
+	Randolph Chung <tausq@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030912210051.GL4732@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Signal handlers in glibc 2.3.2
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,47 +22,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Basically, you need a kernel with STI framebuffer support and configure
-> XFree to use the fremebuffer driver. Mouse and keyboard are standard
-> PS/2 components so there's no problem, too. If your colors are totally
-> wrong, place 'Visual "TrueColor"' into the "Display" subsection of your
-> "Screen" section. Pay attention to your screen resolution and color
-> depth - they have to exactly match to what you get on boot-up since
-> there's no support to switch to another resolution/depth right now IIRC.
+tausq, jejb,
 
-Does this mean that's there is no way to run with a 24 bit depth
-on a Vis-EG?  I have been playing with this but I haven't had any luck.
-There doesn't seem to be any way to change the depth from 8 bpp on a
-c3k using the PDC (there is user defined parameter set but it's not
-clear how it can be set other than possibly with sam under hpux).  I
-tried "stifb=bpp32:" but this didn't have any effect on the reported
-1280x1024-8 config in dmesg:
+Another tall order, and I'm calling for help on this one. The recently
+fixed glibc seems to be having issues with restarting after being
+interrupted.
 
-STI GSC/PCI graphics driver version 0.9
-STI PCI graphic ROM found at f6000000 (64 kB), fb at f8000000 (32 MB)
-STI word mode ROM at f6000044, hpa at f8000000
-STI id 2d08c0a7-9a02587, conforms to spec rev. 8.0a
-STI device: PCI_GRAFFITIX1280
-STI PCI graphic ROM found at f7000000 (2048 kB), fb at fa000000 (32 MB)
-STI word mode ROM at f7000044, hpa at fa000000
-STI id 35acda30-9a02587, conforms to spec rev. 8.0d
-STI device: A1262A
-Console: switching to colour frame buffer device 160x64
-fb0: stifb 1280x1024-8 frame buffer device, id: 2d08c0a7, mmio: 0xf8100000
-stifb: Unsupported gfx card id 0x35acda30
+Latest glibc 2.3.2 patches are here:
+http://www.baldric.uwo.ca/~carlos/glibc-2.3.2-patches.tar.gz
+Broken test is distilled here:
+http://www.baldric.uwo.ca/~carlos/tst-timer.tar.gz
 
-The linux config has
+The test does very very little. We setup a timer to call a signal
+handler after a 2 second expiry, then we proceed to call nanosleep with
+a 3 second expiry.
 
-CONFIG_FBCON_CFB8=y
-CONFIG_FBCON_CFB32=y
-CONFIG_FBCON_STI=y
+./run.sh ./tst-timer
+Before nanosleep(...) call
+Signal handler
+./run.sh: line 3:  5500 Segmentation fault
 
-Oh, I've one other X config problem.  The usb mouse stops responding
-at logout from kde.  If I restart the X server with <alt>E, functionality
-is restored.  I don't believe that this is a kde problem.  Anybody have
-a solution?
+You see that we enter nanosleep, enter the kernel, sleep, event timer
+expires and raises signal, signal handler runs.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+At this point the following is supposed to happen:
+Branch back to stack and make another syscall into the kernel
+(trampoline we put there to make it back to rt_sigreturn, see signal.c).
+...
+At this point I'm a bit confused by the semantics, would one of you care
+to help me understand what happens from there back to userspace. I know
+we eventually have to get back to where nanosleep was called (since it
+was interrupted and now needs to be restarted).
+...
+So we enter the syscall code in syscall.S execute syscall 173 which
+jumps to 'sys_rt_sigreturn' in signal.c. From here we unwind the stack
+to get an rt_sigframe structure (which I assume was written into the
+stack before calling the signal handler). Take the current signal set
+from there and recalc pending signals. Then there is a bit of magic to
+restore the current stack pointer, which seems to me is where the
+problem lies since frame->uc.uc_mcontext on a 64-bit box probably won't
+be right because we copied it wrong. There are a few other things that
+might be wrong too, but this is a start. I'm enabling signal debugging
+and building a new kernel. I assume that the sigsegv is caused by the
+kernel trying to __copy_from_user something invalid.
+
+Any thoughts or comments would be more than appreciated.
+
+Cheers,
+Carlos.
