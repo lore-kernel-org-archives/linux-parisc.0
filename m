@@ -1,58 +1,82 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A9F02484B
-	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 18:44:53 -0600 (MDT)
-Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
-	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f8S1CRG22039
-	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 21:12:27 -0400
-Received: (from carlos@localhost)
-	by sh.od.inet (8.11.0/8.11.0) id f8S0ipB03885
-	for parisc-linux@parisc-linux.org; Thu, 27 Sep 2001 20:44:51 -0400
-Date: Thu, 27 Sep 2001 20:44:51 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+Received: from ns.snowman.net (ns.snowman.net [63.80.4.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8EE2D4837
+	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 20:01:38 -0600 (MDT)
+Received: from localhost (nick@localhost)
+	by ns.snowman.net (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA17635
+	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 22:01:37 -0400
+Date: Thu, 27 Sep 2001 22:01:37 -0400 (EDT)
+From: <nick@snowman.net>
 To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] what i did on my holidays
-Message-ID: <20010927204451.F2611@megatonmonkey.net>
-References: <20010927161004.E16096@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010927161004.E16096@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Thu, Sep 27, 2001 at 04:10:04PM +0100
+Subject: Re: Betr.: [parisc-linux] HP C180
+Message-ID: <Pine.LNX.4.21.0109272158500.7708-100000@ns>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+I Run into the exact same problem on a mounted ext2fs with 2xram as swap.
+init-2.04# find . -name palo -print                                         
+Out of Memory: Killed process 45 (find).                                    
+..
+Out of Memory: Killed process 45 (find).
+SysRq: Emergency Sync                                                       
+Syncing device 08:03 ... OK                                                 
+Syncing device 08:11 ... OK
+Syncing device 08:12 ... OK
+Syncing device 08:04 ... OK
+Done.
+SysRq: Show Regs
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001111
+r0-3     00000000 102d6a28 1026bd0c 0000000c                                
+r4-7     105f46e4 105f4794 00000008 00000001                                
+r8-11    ffffffff 00000010 105f46db efa0b925                                
+r12-15   102d6a28 00000000 00000000 00000000                                
+r16-19   105f4258 00063800 10334000 1026d912                                
+r20-23   00000000 1026d912 0000000e 00000000
+r24-27   1026d911 1029275d 105f48f8 10294010
+r28-31   105f46e4 00000000 105f4880 1026b648
+sr0-3    00000000 00000000 00000000 0000007c
+sr4-7    00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 1026b724 1026b728
+ IIR: 0ea01014    ISR: 00000000  IOR: 00000000
+ CPU:        0   CR30: 105f4000 CR31: 10338000
+ ORIG_R28: 105f49c0                                                         
+Done.
+SysRq: Emergency Remount R/O
+Remounting device 08:03 ... OK
+Remounting device 08:11 ... OK
+Remounting device 08:12 ... OK
+Remounting device 08:04 ... OK
+Done.
+SysRq: Show Memory
+Mem-info:
+Free pages:      115496kB (     0kB HighMem)
+( Active: 63, inactive_dirty: 137, inactive_clean: 0, free: 28874 (255 510
+765) )
+0*4kB 1*8kB 0*16kB 1*32kB 54*64kB 57*128kB 35*256kB 25*512kB 11*1024kB
+35*2048kB = 115496kB)
+= 0kB)
+= 0kB)
+Swap cache: add 92308, delete 92271, find 75/305
+Free swap:       248700kB
+32768 pages of RAM
+1223 reserved pages
+13 pages shared
+37 pages swap cached
+Buffer memory:      176kB
+SysRq: Resetting
+
+Any suggestions?
+	Thanks
+		Nick
+On Wed, 26 Sep 2001, Jurriaan Kalkman wrote:
+> The 2.4.9 kernel really needs swap, or so I've read on the linux-kernel mailing list.
+> You should add some swap. 2* [size of main memory] is a safe amount.
+> It's considered a bug, but it needs swap even if there is free memory.....
 > 
-> And much much more!
+> Good luck,
+> Jurriaan
 > 
-> I haven't even tried compiling it since fixing up the cvs merge conflicts
-> with all the good work done in the last week or so.  Have fun...
-> 
-> -- 
-
-You da best! :)
-
-I've been hacking glibc 2.2.4-1:
-
-	- ./sysdeps/ia64/dl-fptr.c changes for try_lock
-	- Put change back into dpatch
-	
-	- Combing through glibc trying to understand the various
-	  changes that have been made (and how glibc works).
-
-	- dpkg-buildpackage now makes it to the point of using a new
-	  ld.so.1, which seg's... so I'm back to figuring out why.
-
-I'm still not as far as you've gotten. I can't even get within arms
-reach of running zic, though I'm getting closer.
-
-Trying to document those g++ problems with #define _BSD_SOURCE that
-Zimmerman has been trying to assign blame for ;)
-
-I constantly mull over writing a new "building the toolchain" for
-the website.
-
-Then I listen to Tom Waits, and I just feel like drinking and pondering
-if my 715/50 really loves me ;)
-
---
-
-
-c.
