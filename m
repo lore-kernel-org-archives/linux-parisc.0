@@ -1,17 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 134594872
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 07:53:01 -0600 (MDT)
-To: Kurt Garloff <garloff@suse.de>
-Message-ID: <1024667543.3d132f97f3389@webmail.tiscalinet.be>
-Date: Fri, 21 Jun 2002 15:52:23 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <1024577420.3d11cf8c699d6@webmail.tiscalinet.be> <20020620142736.GA28800@gum01m.etpnet.phys.tue.nl>
-In-Reply-To: <20020620142736.GA28800@gum01m.etpnet.phys.tue.nl>
+Received: from kiruna.synopsys.com (kiruna.synopsys.com [204.176.20.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 55BDC487D
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 07:59:12 -0600 (MDT)
+Received: from mother.synopsys.com (mother.synopsys.com [146.225.100.171])
+	by kiruna.synopsys.com (Postfix) with ESMTP id 22745F644
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 06:59:11 -0700 (PDT)
+Received: from boston.synopsys.com (localhost [127.0.0.1])
+	by mother.synopsys.com (8.9.1/8.9.1) with ESMTP id GAA25112
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 06:58:27 -0700 (PDT)
+Received: from maudettec800 (dhcp-146-225-129-157.synopsys.com [146.225.129.157])
+	by boston.synopsys.com (8.9.1/8.9.1) with SMTP id JAA27706
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 09:59:09 -0400 (EDT)
+From: "Michael Audette" <Mike.Audette@synopsys.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 21 Jun 2002 09:59:06 -0400
+Message-ID: <HMEKIKEAKEFFMJJOEAJNIELOFIAA.maudette@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] Re: Your patch: root=/dev/scsi/sdcXbXtXuXpX support
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] 0.9.3 Audio on C110
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,46 +30,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Kurt,
+Hello,
 
-Congratulation and thanks a lot; this patch works fine on my hppa parisc-linux
-against a kernel of mine 2.4.19-pre10(-pa37). Very great :))
+First off I would like to give Kudos to everyone who worked on this project.
+I cant believe the C110 is actually doing something useful again (and I
+don't have to deal with HP's version of POSIX).  I cant believe that
+everything including X and gnome, KDE etc are all working rather flawlessly!
 
-Joel
+I do have one problem still.  I am at a loss for the Audio.  It would appear
+by looking back in the threads that the audio is working on this model
+9000/C110.  But I don't know how to go about getting it working.  Do I need
+to rebuild the kernel?  Is there a module that can be loaded for it?  Or are
+my /dev screwed up for audio/dsp?
 
-PS: I just notice a small detail. In your script you use the variable SDIRMODE
-(line 115) but it is not set elsewhere so the mkdir /dev/scsi failled (not
-enough argument). (i export SDIRMODE=0755 ?)
-
-Quoting Kurt Garloff <garloff@suse.de>:
-
-> Hi Joël,
-> 
-> On Thu, Jun 20, 2002 at 02:50:20PM +0200, joel.soete@freebel.net wrote:
-> > Hi Kurt,
-> > 
-> > On lwn.net I found your patch specially interesting because I
-> encounter the
-> > problem it solves last friday on my parisc-linux box.
-> > 
-> > I would to test your patch on my parisc-linux box but dono how to find
-> back the
-> > original patch. Could you send me in answer?
-> 
-> OK, here we go.
-> You need the scsi-map patch as prerequisite for the scsi-map-boot.
-> 
-> Regards,
-> -- 
-> Kurt Garloff                   <kurt@garloff.de>         [Eindhoven,
-> NL]
-> Physics: Plasma simulations    <K.Garloff@TUE.NL>     [TU Eindhoven,
-> NL]
-> Linux: SCSI, Security          <garloff@suse.de>    [SuSE Nuernberg,
-> DE]
->  (See mail header or public key servers for PGP2 and GPG public keys.)
-> 
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+				-Thanks!
+				  Mike
