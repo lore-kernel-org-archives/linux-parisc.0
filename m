@@ -1,10 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: parisc-linux@parisc-linux.org,
-	parisc-linux-announce@parisc-linux.org
-Date: Tue, 11 Dec 2001 22:57:30 -0700
+Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C10A44831
+	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 23:26:33 -0700 (MST)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel6.hp.com (Postfix) with ESMTP id 79C1A6004EA
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 01:26:32 -0500 (EST)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id 44A9037E86
+	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 23:26:32 -0700 (MST)
+To: parisc-linux@parisc-linux.org
+Date: Tue, 11 Dec 2001 23:26:32 -0700
 From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20011212055730.10EEA37E86@carmen.fc.hp.com>
-Subject: [parisc-linux] PA-RISC Linux 0.9.3
+Message-Id: <20011212062632.44A9037E86@carmen.fc.hp.com>
+Subject: [parisc-linux] 0.9.3-rc6 -> final, apt, and rsync
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -16,43 +24,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Version 0.9.3 of PA-RISC Linux Released
+Hi palinuxers,
 
-On December 11, 2001 the PA-RISC Linux development community announced
-version 0.9.3, the latest version of Linux for computers using Hewlett
-Packard's PA-RISC processor. This release is the latest in a series
-representing several years of work by developers in the Free Software
-community including developers from The Debian Project, Hewlett Packard,
-ESIEE, and Linuxcare.
+Hopefully you've seen the 0.9.3 announcement.
 
-Improvments in the 0.9.3 release include
+After much testing the 0.9.3 release candidate 6 was declared the final
+0.9.3. So if you grabbed either of the -rc6 isos you already have the
+right thing. The 0.9.3 isos are based on woody. If you have installed a
+previous release and have a decent net connection there's no need to
+reinstall, you can seamlessly upgrade using apt-get.
 
-Linux Kernel 2.4.9
-SMP support 1-4 way
-STI framebuffer graphics
-Improved SCSI driver
-EISA/ISA support
-HP-UX compatibility support
-Glibc 2.2.4
-Latest Debian Installer
-over 80% Debian packages available
-X Windows System
-Xinerama support
-KDE and Gnome environments
-
-The 0.9.3 release install CDROM images and related documentation can be
-found at
-
-http://parisc-linux.org/release-0.9/
-
-Information about PA-RISC Linux is available at
-
-http://parisc-linux.org/
-
-Any questions or comments about the release should be directed to the
-mailing list at
-
-parisc-linux@parisc-linux.org
+Also there is now an rsync server available, rsync.parisc-linux.org
 
 -- 
 Matt Taggart        Linux Development Lab
