@@ -1,27 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC561482A
-	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 12:35:30 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 5A7FFB00C; Thu, 18 Oct 2001 19:35:36 +0100 (BST)
-Date: Thu, 18 Oct 2001 19:35:35 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Richard Allen <ra@hp.is>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] More on the B2000
-Message-ID: <20011018193535.T11105@linuxcare.com>
-References: <ra@hp.is> <200110181732.LAA02640@puffin.external.hp.com>
+Received: from mailg.telia.com (mailg.telia.com [194.22.194.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62FCC482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 12:43:31 -0600 (MDT)
+Date: Thu, 18 Oct 2001 20:43:21 +0200
+From: Daniel Engstrom <5116@telia.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	Daniel Engstrom <5116@telia.com>,
+	parisc-linux@lists.parisc-linux.org,
+	James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [parisc-linux] New scsi driver for 53c700 and 53c710 committed
+Message-ID: <20011018204321.A6663@zaphod.halden.lillfab.se>
+References: <rhirst@linuxcare.com> <200110171419.f9HEJbH01686@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200110181732.LAA02640@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Thu, Oct 18, 2001 at 11:32:30AM -0600
+Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <200110171419.f9HEJbH01686@localhost.localdomain>; from James.Bottomley@HansenPartnership.com on Wed, Oct 17, 2001 at 16:19:37 +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Oct 18, 2001 at 11:32:30AM -0600, Grant Grundler wrote:
-> I'm helping get IDE-CDOM working and I have also started work on
-> getting the built-in narrow scsi working (sym53c8xx driver needs
-> to make a PDC GET_INITIATOR call).
+On 2001.10.17 16:19 James Bottomley wrote:
+> This one looks like it might be the second new feature of the driver: tag 
+> command queuing.
+> 
+> Could you post the boot messages of the failure case (or at least the device 
+> identifications and whether the driver has enabled TCQ [message like scsi1: 
+> (5:0) Enabling Tag Command Queuing)].
+They do, see below.
 
-The narrow scsi works provided you boot with "sym53c8xx=buschk:2" as
-per the CD errata though, doesn't it?
+/Daniel
 
-Richard
+SCSI subsystem driver Revision: 1.00
+53c700: consistent memory allocation failed
+53c700: Version 2.6 By James.Bottomley@HansenPartnership.com
+scsi0: 53c700 rev 0 
+scsi0 : LASI SCSI 53c700
+  Vendor: QUANTUM   Model: FIREBALL_TM3200S  Rev: 300X
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+  Vendor: QUANTUM   Model: FIREBALL ST3.2S   Rev: 0F0C
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Attached scsi disk sda at scsi0, channel 0, id 5, lun 0
+Attached scsi disk sdb at scsi0, channel 0, id 6, lun 0
+scsi0: (5:0) Enabling Tag Command Queuing
+SCSI device sda: 6281856 512-byte hdwr sectors (3216 MB)
+Partition check:
+ sda: sda1 sda2 sda3 sda4
+scsi0: (6:0) Enabling Tag Command Queuing
+SCSI device sdb: 6328861 512-byte hdwr sectors (3240 MB)
+ sdb: unknown partition table
+-- 
