@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3D183487A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 14:01:25 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16bpTg-0000RM-00; Fri, 15 Feb 2002 21:01:08 +0000
-Date: Fri, 15 Feb 2002 21:01:08 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Pb with dump driver.
-Message-ID: <20020215210108.I7053@parcelfarce.linux.theplanet.co.uk>
-References: <3C6AA3C3.D21C4164@admin.france.hp.com> <20020215064352.86A404858@dsl2.external.hp.com> <3C6D0555.BCDB04B6@admin.france.hp.com> <bruno_vidal@hpfrcu03.france.hp.com> <20020215190818.BB0464873@dsl2.external.hp.com>
-Mime-Version: 1.0
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8757D487B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 15:41:33 -0700 (MST)
+Message-ID: <3C6D8E9A.AE842F7E@gmx.at>
+Date: Fri, 15 Feb 2002 23:41:30 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: James S <smith-james@home.com>
+Cc: parisc-linux@lists.parisc-linux.org,
+	grundler@dsl2.external.hp.com
+Subject: Re: [parisc-linux] Power LED
+References: <000f01c1b5de$dee4fa80$02c1a8c0@james.co.uk>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020215190818.BB0464873@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Fri, Feb 15, 2002 at 12:08:18PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,19 +23,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Feb 15, 2002 at 12:08:18PM -0700, Grant Grundler wrote:
-> You should be able to leverage most of the code from palo.
-> Note that palo runs in th CPU in real-mode - not virtual mode.
-> You might consider doing the same for the dump code and just
-> be *very* careful about which functions you call.
+YES !!! The LED is software controlled !
 
-You have to do that anyway.  If a device has managed to DMA all over
-the kernel text, you have to have a completely independent dump
-mechanism.  I personally HATE the idea of a kernel dump driver and
-think that MPE's solution (on a TOC, dump the ram after reset) was
-more elegant and easy to prove correct.
+I know, that my LED on the 712/60 flashed, as long as I am in
+the PDC boot loader, after booting the OS, the LED stays on,
+shutting down the switched off the LED.
 
-Note that grant disagrees with me on this.
+I think the LED is normally controlled by the PDC LED control,
+where RUN/WARNING/CAUTION/FATAL/.... can be defined, but on the
+712 I never tried it. On the E55 I could control the LEDs in this
+way, which is definitly different to the 720/730 and to the
+machines with LCD.
+
+Bye
+Christoph P.
+
+
+James S wrote:
+> 
+> this might be a daft question.......
+> 
+> what causes the power led to go out on the 712 systems ?
+> 
+> is it software controlled ?
+> 
+> James S
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 -- 
-Revolutions do not require corporate support.
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
