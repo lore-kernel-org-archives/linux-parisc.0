@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1A8DC482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 13:50:28 -0700 (MST)
-Message-ID: <3BFC1392.F43CC867@gmx.at>
-Date: Wed, 21 Nov 2001 21:50:26 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Ryan Bradetich <ryan_bradetich@uswest.net>
-Cc: marteaut@esiee.fr, grundler@puffin.external.hp.com,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: E55 status - THE DRIVER !
-References: <3BF99676.2A291CDD@gmx.at> <1006299638.4898.16.camel@beavis>
-Content-Type: text/plain; charset=us-ascii
+Received: from ns.istop.com (cpu1693.adsl.bellglobal.com [206.47.27.174])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49AF5482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 15:36:02 -0700 (MST)
+Received: from old@istop (herbr.istop.com [216.187.107.13])
+	by ns.istop.com (Postfix) with SMTP id E5E1717030
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 17:37:43 -0500 (EST)
+Message-Id: <3.0.5.32.20011121173555.01928d40@mail.magma.ca>
+Date: Wed, 21 Nov 2001 17:35:55 -0500
+To: parisc-linux@lists.parisc-linux.org
+From: Herb Radford <herbr@magma.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] My C200 situation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,78 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hallo Ryan Bradetich !
+OK, I was sidetracked for a few days but I'm back with news on the C200.
 
-I cannot send emails to you !!!!!
-The system cannot sent to the address 
+I got the cross-compile stuff for my Thunderbird Linux machine, got the
+latest snapshot of the source and made a change in
+drivers/video/sti/sticore.c to reverse the #if 1 to #if 0 and compiled. The
+FX4 works with the exception of a short period during the startup where the
+"Tux" logo would be displayed (at least I think this is the place!) the
+screen switches to text on a set of 4 stripes - blue, black, blue then
+black (quite broad vertical stripes) but then reverts back to the plain
+black mode without the logo. Otherwise it seems to work.
 
-	ryan_bradetich@uswest.net
+Does that mean that stifb is up on the FX4??
+What about X then?
 
-Do you have an error in your reply address ?
-Why I cannot reach you ?
+I haven't yet dug into the code yet but I'm not too sure I could divine the
+cause. Any hints or tips???
 
-With friendly regards
-Christoph
+By the way, I also tried a 64-bit kernel 2.4.14pa6 which did not do
+anything I could see after setting the w-bit in the processor status
+register (went to 64-bit mode).
 
-
-
-Ryan Bradetich wrote:
-> 
-> Hello Christoph,
-> 
-> I have integrated your patch into my tree, and have been testing out the
-> patch on my C200+ and the K460.  With the PDC console patch, I do get to
-> the console on the K460 which is great news.  I am still going to work
-> on the driver for the actual hardware (in my case the Eole CAP/MUX, and
-> in your case the Sahp Baat Kiuh AP/MUX), but this is a nice work around
-> until that work is finished.
-> 
-> When integrating your patch into my tree, I made the following changes:
-> 
-> * Dropped the LCD support.
->         I do not understand this portion of the code very well, and it  had
-> some uglyness that made me feel uneasy to commit to the tree.   Someone
-> else should look at this and integrate it properly.
-> 
-> * Renamed the pdc_drv to pdc_console.
->         Just seemed more accurate to me .. I am open for other opinions
->         on this.
-> 
-> * Added the configure option and help text for the PDC software console.
-> * Inegerated CONFIG_PDC_CONSOLE into the drivers/char/Makefile.
-> * Integrated CONFIG_PDC_CONSOLE into arch/parisc/kernel/pdc_cons.c and
->         performed some minor cleanups.
-> 
-> * probably other things I've forgotten :)
-> 
-> Overall I though the patch looked great, but I still have 1 concern left
-> and that is about the major number.
-> 
-> According to Documentation/devices.txt major number 30 is reserved for:
->  30 char        iBCS-2 compatibility devices
-> 
-> I understand about --><-- much about how major numbers are handled and I
-> know this is a topic of debate among the main stream kernel developers.
-> If we ever want to move this driver into the mainstream kernel this
-> issue will probably need to be resolved ... and I have no idea on how to
-> proceed.  Maybe others on this list will have an idea, or when the time
-> comes we will need to address this on the lkml.  Before I commit this
-> patch to the CVS repository, I'd like to get some concensus on this list
-> about what is right.  (ie for the debian installer to work with this
-> device, /dev/ttyB0 will need to be added to the MAKEDEV package, etc).
-> 
-> Anyways the patch is available for feedback at:
-> ftp://ftp.parisc-linux.org/patches/pdc_console.diff
-> 
-> I am still working on testing this driver ... I would be very happy to
-> see install the K460 using the debian installer using this patch.  I am
-> currently working on making that happen.
-> 
-> Thanks,
-> 
-> - Ryan
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Regards, Herb
