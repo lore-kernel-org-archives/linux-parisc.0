@@ -1,24 +1,19 @@
-Return-Path: <rocko@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 947AD4854
+Return-Path: <franklin@msn.com>
+Received: from ool-4350044a.dyn.optonline.net (ool-4350044a.dyn.optonline.net
+	[67.80.4.74])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7F8FE4854
 	for <parisc-linux@parisc-linux.org>;
-	Wed, 10 Dec 2003 21:24:44 -0700 (MST)
-Received: from user-0can4fi.cable.mindspring.com
-	(user-0can4fi.cable.mindspring.com [24.171.145.242])
-	by cuprel1.hp.com (Postfix) with SMTP id 8E208FE8
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 10 Dec 2003 20:24:43 -0800 (PST)
-Message-ID: <98y$-712ea3e5@warnm29>
-From: "Kristine Ventura" <rocko@msn.com>
+	Thu, 11 Dec 2003 03:44:13 -0700 (MST)
+Message-ID: <8p0-73i32a97@x75.dtr4>
+From: "Stephan Jennings" <franklin@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Thu, 11 Dec 03 00:24:55 GMT
+Date: Thu, 11 Dec 03 06:38:55 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary=".CAD.2AC__8"
+	boundary="BE.E._6E..__72.5"
 Cc: 
-Subject: [parisc-linux] really Quit smoking we have the solution for you u
-	stnwslbctspw
-Reply-To: Kristine Ventura <rocko@msn.com>
+Subject: [parisc-linux] Sexy. leading men tricks to get any girl ra dfryux
+Reply-To: Stephan Jennings <franklin@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,34 +24,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---.CAD.2AC__8
+--BE.E._6E..__72.5
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>urjkfcxfezbtbf f
+<html>Sexy. leading men tricks to get any girl ra dfryux
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
 -1">
 </head>
 
-<body bgcolor=3D"#000000" text=3D"#00CC66" link=3D"#FFFF00" vlink=3D"#FFFF=
-00" alink=3D"#FFFF00">
-<center><h2><font color=3D"#00CC66" face=3D"verdana"><hr>Convenient Qualit=
-y Medications<br>For Less <hr></font></h2></center>
-<center><h5><font color=3D"#00CC66" face=3D"verdana">Phentermine Xenical A=
-dipex Meridia Prozac Zoloft Soma Ambien<br>Levitra Viagra Paxil Celebrex F=
-ioricet Zyban Flexeril Skelaxin Tramadol Ultram Vioxx Buspar</font></h5></=
-center><center><H3><font color=3D"#00FF00" face=3D"verdana">Hundreds more =
-on-site<br>Wholesale ~ Private ~ Overnight<br>No previous prescription req=
-uired<br>For ADULTS with valid medical needs<br><br>Helping you enjoy life=
- !<br>Legally<br></font></h3></center><br><center><h2><font color=3D"#FFFF=
-FF" face=3D"verdana"><a href=3D"http://www.verybestmeds.com">Saving you ti=
-me and money</a></font></h2></center>
-ujm eax anjyerblv q
-icxpj v   bkxgyo oariqyni</body>
+<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
+n Monroe, Wayne Newton, Dick Clark, <br>
+    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
+     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
+ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
+h great success to be the best they could possibly be.<br>HGH is recognize=
+d around the world as the<br> "hormone to replace"<br> to combat the adver=
+se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
+iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
+br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
+en proven to be "solely responsible" in the maintenance of their youthful<=
+br>"movie star good looks" decades beyond those that have yet to discover =
+HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
+and stay 
+    so fit at their age??</font></h5>
+</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
+uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
+er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
+p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
+you !<br>Learn More Right Here</a></font></h4></center>
+mwgvs 
+m 
+</body>
 </html>
-mnjbqq x apue mxqxgcu k oduvrcuis vendocjtg pzmrc eulffu dqkxqxxcy enio
- llzvhwcy
+dnykabycsialqxpsqorvbmxbtjj enxwnxcij
+vxhnzfoq gvun wszcwcoymau
 
---.CAD.2AC__8--
+--BE.E._6E..__72.5--
