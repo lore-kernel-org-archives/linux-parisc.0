@@ -1,47 +1,55 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA28441
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 04:32:27 -0700
-Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 16 Nov 1999 11:34:00 -0000
-Subject: Re: [parisc-linux] depi?
-To: phi@hpfrcu03.france.hp.com (Philippe Benard)
-Date: Tue, 16 Nov 1999 12:20:32 +0000 (GMT)
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA28912
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 04:53:28 -0700
+Sender: phi@hpfrcu81.france.hp.com
+Message-ID: <383145A5.C2AF5857@hpfrcu03.france.hp.com>
+Date: Tue, 16 Nov 1999 12:53:09 +0100
+From: Philippe Benard <phi@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Cc: frowand@cup.hp.com, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
         parisc-linux@thepuffingroup.com, adevries@thepuffingroup.com
-In-Reply-To: <38311538.30826FC7@hpfrcu03.france.hp.com> from "Philippe Benard" at Nov 16, 99 09:26:32 am
-Content-Type: text
-Message-Id: <E11nhb8-0002Zh-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [parisc-linux] depi?
+References: <E11nhb8-0002Zh-00@the-village.bc.nu>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-> If I understood correctly, the kernel is located there because it is where it
-> is on PC.
+Alan Cox wrote:
+> 
+> Thats why someone pulled that number out of a hat. You can pull any other
+> page aligned number out of a hat and that will be fine too.
+> 
 
-Thats why someone pulled that number out of a hat. You can pull any other
-page aligned number out of a hat and that will be fine too.
+Hum interesting, too bad the hat didn't got 0x1000 or 0x10000 i.e something
+that could be mapped to 0.0x0x1000 or 0.0x10000 this would greatly simplify
+the kernel code writing that need to run traslation off, I bet they used a red
+hat :-)
 
-> Sounds like linux is not more portable than any other propriaitary OS since
-> confined to PC architecture, a port beeing a mimic of PC if the target arch
-> can do it.
+> 
+> Alan
 
-Check the mm code. We don't care where you put the kernel. The rules we go
-by are simple
+Anyway I'm sure that after a significant effort and marco's vmlinux will
+finally boot with all those funny things, 2 os in 1 file etc... :-) 
 
-1.	The kernel must be able to access all of the current tasks user space
-	efficiently. This is done via macros/functions/inlines
+I'm still in the dark regarding spaces usage (that is hppa dependent) in
+vmlinux, since this define the VAS usage, I'm back to the initial question how
+the VAS is used/designed for the kernel and for user processes.
 
-2.	The kernel must be able to access all physical ram and also
-	mappings of MMIO space. The mappings can be 1:1 - for example on the
-	ultrasparc we use the override bits for this. I/O space maps are
-	accessed via macros/functions. If those functions resolve to no
-	actual extra code this is good.
+For instance how big can be a process under linux on pa1.1?
 
-3.	Access to other tasks virtual address space has to be possible. It can
-	be slow and suck however as its main use is ptrace().
+If you answer is lnear 4Gb,  I would say whoa they must have a real good
+design.
+If you say 4x1Gb, I would say hum, they are using spaces
+If you say nx1Gb, I would say, looks interesting, they must have compiler
+support for long pointer
 
-The mappings we use vary. M68K for example maps the kernel about 3.5Gig up
-and uses space registers to access user space. The x86 because of the weak
-page table flipping facilities keeps both user and kernel in a single map. That
-makes for nice fast x86 code. That is x86 specific.
+Etc....
 
-Alan
+For now I have the feeling (hoping I completly wrong) that the user space is
+confined into the low 2Gb and the kernel space is located into the high 2Gb,
+well I bet I'm wrong here, I will try to find this mm.c code you spoke about,
+I was more hoping de design document even very thin, there is no need for a
+big book to describe how a VAS is implemented.
+
+
+Phi
