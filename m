@@ -1,39 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 44D74482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 16:36:20 -0600 (MDT)
-To: Christian Suder <csuder@cisco.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 0.9.2 missing compiler ? 
-In-Reply-To: Your message of "Tue, 17 Jul 2001 15:25:21 PDT."
-             <3B54BB51.8CF43B05@cisco.com>
-References: <3B54BB51.8CF43B05@cisco.com> 
-Mime-Version: 1.0
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 11C8E482A
+	for <parisc-linux@parisc-linux.org>; Tue, 17 Jul 2001 16:39:01 -0600 (MDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3B54BB9B.2D49FDCF@esiee.fr>
+Date: Wed, 18 Jul 2001 00:26:35 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
+MIME-Version: 1.0
+To: Christian Suder <csuder@cisco.com>,
+	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] 0.9.2 missing compiler ?
+References: <3B54BB51.8CF43B05@cisco.com>
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 17 Jul 2001 16:35:55 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010717223555.D5DD037CB4@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Christian Suder writes...
+Hi Christian,
 
-> Hi,
-> 
-> I installed 0.9.2 on a 712/80, installation went nicely but there's no
-> gcc installed. :-( Appears there is no such package on the CD. There is
-> a package on the 9.0 CD (which failed to install any packages.....) but
-> I can't figure out how to get that installed. Tried "apt-get install
-> ./<filename>" but get an error message about python-zlib !?!?  I'm not
-> Debian-literate, so how do I get the compiler ?
+	If you have your box connected to the web (that should be true
+regarding where you work :), you just have to add this line to your
+/etc/apt/sources.list
+deb http://http.us.debian.org/debian unstable main
 
-man apt-get
-man sources.list
-vi /etc/apt/sources.list
-apt-get update
-apt-get install gcc
+If you have a proxy to get http working, you have to create the file
+/etc/apt/apt.conf which containts this:
+Acquire::http::Proxy "http://your.proxy.fqdn:port/";
 
-Reply if you still need help after that.
+And then just a little apt-get update where you should see that it
+downloads the files.
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+For your information, I just had a look to the big ISO and I get that:
+
+spqr:/cdrom1/dists/sid/main/binary-hppa/more_packages# ls gcc
+gcc-3.0-base_3.0-3_all.deb
+gcc-hppa64_3.0-0pre010427.0.0.1_hppa.deb
+gcc_3.0-6_hppa.deb
+
+So, it seems to be there. Perhaps, you have the little one without it.
+Try to download the big one, if the instructions above do not work.
+
+Regards, Thomas
+ESIEE Team
