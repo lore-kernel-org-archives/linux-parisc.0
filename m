@@ -1,78 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA14789
-	for <parisc-linux@puffin.external.hp.com>; Mon, 6 Mar 2000 00:24:12 -0700
-Message-Id: <200003060626.WAA04127@milano.cup.hp.com>
-To: willy@thepuffingroup.com
-Cc: huck@cup.hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: uncacheable memory 
-In-reply-to: Your message of "Sun, 05 Mar 2000 09:29:01 PST."
-             <20000305092901.E9944@thepuffingroup.com>
-Date: Sun, 05 Mar 2000 22:26:55 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA18406
+	for <parisc-linux@puffin.external.hp.com>; Mon, 6 Mar 2000 10:43:43 -0700
+Message-ID: <38C39ADD.92F19136@web.de>
+Date: Mon, 06 Mar 2000 12:47:41 +0100
+From: Frank Benke <frank.benke@web.de>
+MIME-Version: 1.0
+To: "T. Martin" <catfish@alltel.net>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Value of an old K-class server
+References: <Pine.LNX.4.10.10003052021060.16172-100000@jesse.crash.lan>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Mar 04, 2000 at 09:49:49PM -0800, Grant Grundler wrote:
-> HP systems have three I/O MMU's which are I/O coherent: U2/Uturn,
-> Astro/Ike, and Epic/SAGA.  AFAIK, all systems using one on them have
-> the processor(s) connected to a "Runway" bus.  This limits what
-> processor model those systems can have: PA-7200, -8000, -8200, or -8500.
-> 
-> (Caveats:
->  - T-class has something similar to U2 which is NOT I/O coherent
-
-Apologies. I should have been clearer about several things.
-
-"T-class" should have been "T600".
-I don't think T5xx series have any sort of I/O TLB in them.
-
-willy@thepuffingroup.com wrote:
-> According to the hwdb, the T600 has two `Java BC Summit Port (IOA)'.
-> And you're the only one in possession of a T-class :-).
-
-Actually, I'm neither in possession of one nor the only person who
-might be. I couldn't believe it, but AFAIK HP sold thousands of them.
-(The ioscan output is left over from my previous job.)
-FTW, the URL is still valid but no longer linked from the
-main "servers" web page:
-
-	http://www.unixsolutions.hp.com/products/servers/tclass/
-
-I suggest interested parties "snarf" what they can from those web pages
-before the pages go away....375kg...sheesh.
-
-> All the devices in the T600 seem to be special devices so the
-> drivers would have to be freshly written anyway.  I don't see
-> a PCI adapter in the T-class, can one be fitted?
-
-First, T5xx only supports HP-PB devices. Basically same devices
-as "Nova" (EFGHI-) class boxes and K-class. However, like K-class,
-T600 also supports GSC cards in a "daughter board" form factor.
-(but the "header" sheet metal is slightly different.... *SIGH*)
-
-And HP does make/ship card-mode Dino 100BT cards for both T600
-and K-class. Making card-mode Dino work on T600 is quite impossible
-without looking at HP-UX source (or reverse engineering the binary).
-I helped do it once. Java really doesn't like to play with Dino.
-
-> I assume Summit is the name of a bus, like Runway only different?
-
-Yes. AFIAK, Summit is the "memory" bus for T-5xx series.
-On T600, same bus protocol but it's twice as "wide".
 
 
-Someone else asked what's wrong with the memory controllers:
+"T. Martin" schrieb:
 
-AFAIK, subcacheline accesses are a different type of transaction 
-which many HP memory controllers don't *need* to support. I'm guessing
-systems where I/O devices sit on the same bus as the memory controller
-(eg 712, PA-7100LC), the memory controller supports all types of
-transactions in order for DMA to work. So if the U-bit is also
-supported by the processor, it'll all work.
+> On Sun, 5 Mar 2000, Barrie Spence wrote:
+>
+> > Sandy Harris <sandy@storm.ca> wrote:
+> > > 712s take
+> > > 128 maximum RAM. 715s can go to 256 and have room for more drives. My
+> > > guess is a 715/100 might suit you.
+> >
+> > A 712/100 should have 6 RAM slots giving up to 192Mb.
+> >
+>
+>  Exactly what kind of Ram does the 715 series use, I tried some in a PC
+> and it doesn't work. I get about 48 megs extra from old boxes in 8 meg
+> simms.
+>
+> Terry
+>
 
+afaik: the 715 have special memories, which look like ps2 but aren't. i'm not
+even sure if the 712 and 715 use the same simms. you should definitely look for
+dedicated 715 memories. i have the same problem with 735s, which use their own
+memory design.
 
-hope this is better,
-grant
+regards frank
 
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
+>
+>
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
