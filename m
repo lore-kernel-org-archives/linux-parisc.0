@@ -1,18 +1,17 @@
-From: Jakub Jelinek <jakub@redhat.com>
-Subject: Re: [parisc-linux] binutils 2.15?
-Date: Mon, 14 Jun 2004 05:25:20 +0200
-Message-ID: <20040614032519.GS5191__7507.91328396208$1416624453$gmane$org@sunsite.ms.mff.cuni.cz>
-References: <40BDA020000074B9@ocpmta3.freegates.net>
-	<200406140409.i5E49HYi003897@hiauly1.hia.nrc.ca>
-Reply-To: Jakub Jelinek <jakub@redhat.com>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] glibc2.3.3 & gcc-3.5 (aka debian snapshot) new pb
+Date: Mon, 14 Jun 2004 13:45:41 -0400
+Message-ID: <20040614174541.GS29203@baldric.uwo.ca>
+References: <40BD9F0500004FF7@ocpmta1.freegates.net>
+	<40BD9F0500004FFB@ocpmta1.freegates.net>
+	<20040609190711.GI10321@baldric.uwo.ca> <40CC246E.50700@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: binutils@sources.redhat.com,
- parisc-linux@parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200406140409.i5E49HYi003897@hiauly1.hia.nrc.ca>
+In-Reply-To: <40CC246E.50700@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,19 +22,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 14, 2004 at 12:09:16AM -0400, John David Anglin wrote:
-> > I read that now many arch try to update their toolchain to a new release;
-> > I so try to rebuild toolchain starting from binutils-2.15 (.0.91... from
-> > ftp.kernel.org)
-> > it build well but when I launch to rebuild gcc with those new binutil configure
-> > crashes immediately with:
-> > "/usr/bin/ld: .got section not immediately after .plt section"
+> >Are you just trying to ping to see if this thing builds with gcc-3.5?
+> >
+> It could be a point of view ;)
 > 
-> The following change appears to have introduced this problem:
+> For my part it's just to continue investigation started some time ago.
+> Does it mean that it's useless for the moment?
 
-First of all, can you explain why hppa needs .got after .plt?
+It's not useless, but it's a difficult problem. Eventually we have to
+have it working, but just building and saying "it doesn't build" is only
+the first step :(
 
-	Jakub
+c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
