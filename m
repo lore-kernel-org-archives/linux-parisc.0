@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B3DC44863
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 11:03:34 -0700 (MST)
-Message-Id: <200202181803.g1II3URO012248@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: hppa-linux gcc-3.0.3:
-To: jso@europay.com (=?iso-8859-1?Q?Jo=EBl_Soete?=)
-Date: Mon, 18 Feb 2002 13:03:29 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, "jso"@hiauly1.hia.nrc.ca,
-	<jso@europay.com>, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <OFB6528EDF.C6603F22-ONC1256B64.00615768@com> from "=?iso-8859-1?Q?Jo=EBl_Soete?=" at Feb 18, 2002 06:53:49 pm
+Received: from mailout08.sul.t-online.com (mailout08.sul.t-online.com [194.25.134.20])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 019BF482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 12:25:06 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: H_Aue@t-online.de (Hinrich Aue)
+To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] Power LED
+Date: Mon, 18 Feb 2002 20:29:13 +0100
+References: <20020218101505.54487.qmail@web21205.mail.yahoo.com> <E16cmI9-0000SL-00@linuxlab.wdf.sap-ag.de>
+In-Reply-To: <E16cmI9-0000SL-00@linuxlab.wdf.sap-ag.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <16ctP2-1e3LMGC@fwd05.sul.t-online.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +23,98 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> PS: I would try natively (on my palinux box directly) with MACH=hppa-linux
-> i.e.: ~/source/binutils/configure --host=hppa-linux ... ?
+Am Montag, 18. Februar 2002 12:49 schrieben Sie:
+> On Monday 18 February 2002 11:15, Hinrich Aue wrote:
+> > ------------------------------------------
+> >
+> > >715/64, 715/80 and 715/100 belong to the so-called
+> > >715/new machines and all of those support the
+> >
+> > soft-power
+> >
+> > >switch, else you wouldn't have received the
+> > >"Shutdown requested..." message.
+> > >In your case I assume, that your filesystems wasn't
+> >
+> > clean
+> >
+> > >before you did shutdown your system....
+> > >
+> > >BTW, the shutdown is initiated by the kernel by
+> >
+> > sending
+> >
+> > >a SIGINT to the PID (cad_pid) of the init process.
+> >
+> > This
+> >
+> > >is done in the file power.c:
+> > >http://cvs.parisc-linux.org/linux/arch/parisc/kernel/power.c?rev=1.5&con
+> > >te nt-type=text/vnd.viewcvs-markup After receiving this signal the init
+> > > process switches
+> > >the runlevel,
+> > >shuts down your system cleanly and runs
+> >
+> > /sbin/poweroff
+> >
+> > >or /sbin/halt. This is already the case and is also
+> > >done
+> > >that way for ATX systems.
+> > >
+> > >Regards,
+> > >Helge
+> >
+> > But if I push the power button, the init process
+> > doesn't seem do change the runlevel, and power off
+> > immediatly.
+> > I can see the message "Shutdown requested..." and then
+> > - power off -.
+> > I think this souldn't be so.
+>
+> Yes, that's wrong. But you seem to be the only one
+> who has such problems with 715/new. As I said in another
 
-For binutils, I just use from my build directory:
+Why me?????
+That's strange behavior.
 
-../src/configure --prefix=/where_to_install --host=hppa-linux --disable-nls
-make
-make -k check
-make install
+> mail my Scorpio (715/50) machine shuts down immediately too -
+> but this machine doesn't support the soft-power switch either.
+> BTW, which kernel are you using ?
 
-Set CFLAGS if you want.
+I use 2.4.17-pa26
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+>
+> > Also I think it is a bit dangerous if everyone can
+> > switch of the system, clean or unclean, just by
+> > pushing the button.
+>
+> That's right, but that's also the behaviour on Non-ATX PC's.
+>
+> > Maybe a 5 second push-time would be good (like ATX)
+> > but with a gracefull shutdown.
+>
+> That's not that easy.
+> On some systems the switch will send a key-down signal from
+> the first press on, independantly if you released the button again or
+> not. Other machines just send the signal while the button
+> is down and stops it again if it was released.
+>
+> That said, this is how I wrote the code.
+> In process_shutdown() you'll find:
+>        /* wait until the button was pressed for 1 second */
+>         if (shutdown_timer == HZ) {
+>                 static char msg[] = "Shutting down...";
+> 	    printk(KERN_INFO "%s\n", msg);
+>
+> This means, that the kernel will just shutdown, if you pressed
+> the button for at least 1 second. You might change that to 5*HZ if
+> you want the 5 second push-time.
+> But, as I said, the kernel can't recognize on some systems if
+> you have released the button again and so it will always
+> time-out and initiate the shutdown request. Your 715/80 seems
+> to fall into this category of systems.
+>
+> Regards,
+> Helge
+
+Hinrich
