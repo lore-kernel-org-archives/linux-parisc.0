@@ -1,41 +1,67 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9B8F8482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 23:51:59 -0600 (MDT)
-Message-Id: <200110240548.XAA19760@puffin.external.hp.com>
-To: Daniel Engstrom <5116@telia.com>
+Received: from hotmail.com (f21.law4.hotmail.com [216.33.149.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0BD4C482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Oct 2001 00:22:44 -0600 (MDT)
+From: "Kenneth Westelinck" <kennywest1@hotmail.com>
+To: rhirst@linuxcare.com, aubreygriffin@att.com
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] New 53c700 driver preformance evaluation 
-In-Reply-To: Message from Daniel Engstrom <5116@telia.com>
-   of "Wed, 24 Oct 2001 07:21:02 +0200." <20011024072102.D1650@zaphod.halden.lillfab.se>
-Date: Tue, 23 Oct 2001 23:48:22 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Subject: Re: [parisc-linux] X window refresh problem
+Date: Wed, 24 Oct 2001 06:22:42 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F21AWmVXViK9NaKNaS500013821@hotmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Daniel Engstrom wrote:
-> Which is what I saw even if it was not very clearly expressed.
-> I got ~400k/s better block throughput with the old driver with disconnects
-> disabled (due to some driver problem) than with the new driver.
+Or you can grab your kernel from parisc-linux.org and compile him yourself. 
+This solved the refresh problem for me ;-)
 
-ah ok. It wasn't obvious to me.
+enjoy life, enjoy linux,
 
-> > BTW, another HPUX (only on workstations) thing is to set WCE (write
-> > cache enable) on the SCSI device. 
-> Can this behaviur be controlled? I use 10.20.
+Kenneth
 
-yes. iirc, it via scsictl command.
 
-# scsictl
-Usage: scsictl [-akq] [-m mode[=value]]... [-c command]... device
 
-But HPUX calls WCE something else: "Immediate Reporting".
-Keep that in mind when reading the man page.
+>From: Richard Hirst <rhirst@linuxcare.com>
+>To: "Griffin, Aubrey, BMCIO" <aubreygriffin@att.com>
+>CC: "'parisc-linux@lists.parisc-linux.org'" 
+><parisc-linux@lists.parisc-linux.org>
+>Subject: Re: [parisc-linux] X window refresh problem
+>Date: Tue, 23 Oct 2001 17:30:25 +0100
+>
+>On Tue, Oct 23, 2001 at 10:13:00AM -0400, Griffin, Aubrey, BMCIO wrote:
+> > Hello all,
+> >
+> > Well, I decided to ditch HPUX 10.20 for Linux. I have installed the 
+>kernel
+> > from the ISO image onto a 712/60.
+> >
+> > I have installed X on it. Every is fine until the screen goes black. 
+>Once
+> > this happens, the colors are messed up and it is unusable. I believe 
+>that is
+> > the same problem as the blue is white that was talked on the mailing 
+>list.
+> > This problem was corrected with a new kernel.
+> >
+> > The kernel that I am running is 2.4.0-pa22. How do I upgrade the kernel?
+>
+>grab 
+>ftp://ftp.parisc-linux.org/unofficial-debs/kernel-image-2.4.9-32_011017.pa59_hppa.deb
+>
+>and dpkg -i kernel-image-2.4.9-32_011017.pa59_hppa.deb
+>
+>I think you are advised to upgrade the rest of your system first, if
+>you havn't done so recently (apt-get update; apt-get upgrade).
+>
+>Richard
+>
+>
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
 
-> Another thing which I want to bring up is locking. It seems out getc() perfor
->   mance is stuck at 314chars/sec while HPUX gives almost 600, could it be
-> that HPUX lock primitive is twice as fast as ours?
 
-I think the lock primitive is the same - it's "ldcw".
-It's something in the libc/syscall path but I have no clue what.
-
-grant
+_________________________________________________________________
+Get your FREE download of MSN Explorer at http://explorer.msn.com/intl.asp
