@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from punt.aladdin.de (punt-2.aladdin.de [212.14.90.2])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3F2E1482A
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Mar 2003 10:20:31 -0700 (MST)
-Date: Wed, 26 Mar 2003 18:20:10 +0100
-Message-Id: <200303261720.SAA04409@panther.aladdin.de>
-To: n0ano@n0ano.com
-Cc: adriano@satec.es, davidm@hpl.hp.com, linux-ia64@linuxia64.org,
-	markus.schaber@student.uni-ulm.de, m.delahaye@esiee.fr,
-	parisc-linux@parisc-linux.org, willy@debian.org
+Received: from tlaloc.n0ano.com (unknown [192.216.249.93])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B447B482A
+	for <parisc-linux@parisc-linux.org>; Wed, 26 Mar 2003 10:46:18 -0700 (MST)
+From: n0ano@n0ano.com
+Date: Wed, 26 Mar 2003 10:56:15 -0700
+To: Christian Groessler <cpg@aladdin.de>
+Cc: n0ano@n0ano.com, adriano@satec.es, davidm@hpl.hp.com,
+	linux-ia64@linuxia64.org, markus.schaber@student.uni-ulm.de,
+	m.delahaye@esiee.fr, parisc-linux@parisc-linux.org, willy@debian.org
 Subject: Re: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-From: Christian Groessler <cpg@aladdin.de>
-MIME-Version: 1.0
+Message-ID: <20030326175615.GN873@tlaloc.n0ano.com>
+References: <200303261720.SAA04409@panther.aladdin.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200303261720.SAA04409@panther.aladdin.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Well, it didn't work when I put in a DOS boot floopy and hit the power
+button but there could be some EFI magic need to get that to work on
+a BigSur, I don't know.
 
-On 03/26/2003 09:25:35 AM MST n0ano wrote:
+On Wed, Mar 26, 2003 at 06:20:10PM +0100, Christian Groessler wrote:
 >
->Well, Itanium's can sort of run any X86 software.
->
->As David was alluding to there are two ways you can boot an Itanium
->box, either with an IA32 kernel (a current Pentium based OS) or an
->IA64 kernel.
->
->If you boot an IA32 kernel the CPU will behave as an exact Pentium
->processor and execute all Pentium code.  The system will be slower
->than comparable Pentium processors but it should work exactly the
->same.  (Notice that I say `should', I've never done this, there could
->be chipset issues, I don't know of anyone who has done this but it
->should work.)
+>...
+> 
+> Does the ia32 emulation go that far to also emulate 16bit operation,
+> iow, could one boot DOS?
+> 
+> regards,
+> chris
 
-Does the ia32 emulation go that far to also emulate 16bit operation,
-iow, could one boot DOS?
-
-regards,
-chris
+-- 
+Don Dugger
+"Censeo Toto nos in Kansa esse decisse." - D. Gale
+n0ano@n0ano.com
+Ph: 303/447-2201
