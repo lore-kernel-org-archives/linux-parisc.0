@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dc-mx14.cluster1.charter.net (dc-mx14.cluster1.charter.net [209.225.8.24])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D09C54829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Aug 2002 14:31:30 -0600 (MDT)
-Received: from [24.159.161.68] (HELO charter.net)
-  by dc-mx14.cluster1.charter.net (CommuniGate Pro SMTP 3.5.9)
-  with ESMTP id 81853646 for parisc-linux@lists.parisc-linux.org; Sat, 17 Aug 2002 16:33:14 -0400
-Message-ID: <3D5EB2D6.9090403@charter.net>
-Date: Sat, 17 Aug 2002 16:32:22 -0400
-From: "B. Douglas Hilton" <bdhilton@charter.net>
-MIME-Version: 1.0
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 821BC4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Aug 2002 16:07:30 -0600 (MDT)
+Date: Sat, 17 Aug 2002 18:05:45 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200 machine.
+Cc: csr21@cam.ac.uk
+Message-ID: <20020817220545.GF16532@systemhalted>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="pWyiEgJYm5f9v55/"
+Subject: [parisc-linux] subo -> overflow_trap (12) -> What to do?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +21,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello list. For some reason my onboard LAN devices
-all mysteriously died and disappeared from the
-firmware, so I purchased an eepro100 card to try
-and get some networking connectivity back.
+--pWyiEgJYm5f9v55/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When I modprobe eepro100 it seems to be ok. I can
-do an 'ifup -a' and then ifconfig lists my eth0
-and it appears to be configured properly. I can
-ping other servers in my LAN, and I can do an
-ftp login, but as soon a I type "ls" it goes out
-to lunch and locks up.
+pa,
 
-Likewise I can ping numeric ip's on the internet,
-but name resolution is not working.
+Talking with Christophe Rhodes who is porting some Common Lisp code[1]
+to parisc-linux and he has some old-ish code from HPUX (circa 1994)
+that does some interesting things :)
 
-Could this be an endianness problem? Any ideas?
+The code does a 'subo' and it _does_ cause an overflow_trap (12) which is
+currently unhandled in our traps.c ... this trickles into a SIGBUS, which
+is questionable (as the comment notes).
 
-Any tips on how to reactivate the onboard ether
-devices would be greatly appreciated too.
+In HPUX the code sets si_code to FPE_INTOVF as well as sending a SIGFPE
+to the offending application. From there the handler does all the 'bignum'
+cleanup and Lisp land is all happy.
+
+So I've gone ahead and implemented this functionality into traps.c, but
+I'm not sure if this is the right way to go. What do people think?
+If any HPUX people would like to chime in? :)
+
+Patch attached.
+
+c.
+
+[1] Package is 'sbcl'
+
+
+--pWyiEgJYm5f9v55/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="kernel-parisc-trap.c.diff"
+
+--- linux/arch/parisc/kernel/traps.c.orig       2002-08-17 17:37:26.000000000 -0400
++++ linux/arch/parisc/kernel/traps.c    2002-08-17 17:58:39.000000000 -0400
+@@ -561,6 +561,14 @@
+                force_sig_info(SIGILL, &si, current);
+                return;
+
++       case 12:
++               /* Overflow Trap, let the userland signal handler do the cleanup */
++               si.si_signo = SIGFPE;
++               si.si_code = FPE_INTOVF;
++               si.si_addr = (void *) regs->iaoq[0];
++               force_sig_info(SIGFPE, &si, current);
++               return;
++
+        case 14:
+                /* Assist Exception Trap, i.e. floating point exception. */
+                die_if_kernel("Floating point exception", regs, 0); /* quiet */
+
+
+--pWyiEgJYm5f9v55/--
