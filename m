@@ -1,17 +1,14 @@
+From: bame@hp.com
+Subject: [parisc-linux] Re: PALO boot loader installation problem
+Date: Thu, 02 Oct 2003 13:51:03 -0600
+Message-ID: <20031002195104.B366A73113__7680.76740573651$1416622840$gmane$org@fc.hp.com>
+References: <20031002122111.29443.h007.c012.wm@mail.icqmail.com.criticalpath.net>
+Reply-To: bame@hp.com
+Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
+To: "Diego de Fuentes Ceballos" <diego@defuentes.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 192.25.206.7 (unknown [200.82.37.237])
-	by dsl2.external.hp.com (Postfix) with SMTP id E6313483E
-	for <parisc-linux@parisc-linux.org>; Fri, 31 Oct 2003 08:55:38 -0700 (MST)
-Message-ID: <d72b0urr$d5a2f108j8d@mp425hpg>
-From: "Jerald Michaud" <832sdpc@yahoo.com>
-Reply-To: "Jerald Michaud" <832sdpc@yahoo.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Fri, 31 Oct 2003 10:54:32 -0200
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="7FFE0F5EB2C_9.6A_FAB1"
-Subject: [parisc-linux] Boost Your  Car's Gas Mileage 27%+.....dutch
-Sender: parisc-linux-admin@lists.parisc-linux.org
+In-Reply-To: Message from "Diego de Fuentes Ceballos" <diego@defuentes.org>
+   of "Thu, 02 Oct 2003 12:21:11 PDT." <20031002122111.29443.h007.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,68 +19,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---7FFE0F5EB2C_9.6A_FAB1
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+I cc-ed parisc-linux@parisc-linux.org
 
-FUEL SAVER PRO
+> Hey everyone, i am having sobe trouble installing Debian hppa on a HP b1000
+> , i
+> have downloaded and burnen a netinstall ISO with kernelm 2.4.22 and got
+> everything up and running, i booted from CD, i installed everything, partit=
+> ioned
+> the hard drive, got the network configured and the base system installed but
+> when i try to make the system installable i get this error:
+> 
+> 
+> Problem
+> 
+> PALO wasn=B4t able to install. You can still remote boot and point the root=
+>  device
+> to the installed system.
 
-This revolutionary device Boosts Gas Mileage 27%+ by helping fuel burn bet=
-ter using three patented processes from General Motors.
+The most likely cause of this is the palo (aka F0) partition is past
+the 2G mark on the disk or perhaps is too small or maybe there's no
+partition at all.
 
-Take a test drive Today - http://www.llat.org?axel=3D49
+> I have no idea how to fix this, "remote boot and point the dive to the inst=
+> alled
+> system?????" WTF???, when i reboot the machi and tri to point the boot load=
+> er to
+> the hard drive i get nowhere, can anyone give me hand?
 
-PROVEN TECHNOLOGY
-A certified U.S. Environmental Protection Agency (EPA) laboratory recently=
- completed tests on the new Fuel Saver. The results were astounding! Maste=
-r Service, a subsidiary of Ford Motor Company, also conducted extensive em=
-issions testing and obtained similar, unheard of results. The achievements=
- of the Fuel Saver is so noteworthy to the environmental community, that C=
-ommercial News has featured it as their cover story in their June, 2000 ed=
-ition.
+Boot from the CD interactively so you can edit the boot command line.
+Get rid of the initrd= argument entirely and change the root=/dev/ram
+to root=/dev/sdaX where X is your root partition, then boot.  This'll
+use the kernel from the CD instead of the one in the palo partition.
 
-Take a test drive Today - http://www.llat.org?axel=3D49
+If this works, have a look at your partition table or post it here or
+re-run palo by hand and examine (or post) the error messages.
 
-
-
-
-
-
-No more advertisements, thanks - http://www.aqmp.net/out5s/rem2e.asp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-w m sqocnsbgt lnr  asfy
- o fq
-w
-s y
-
---7FFE0F5EB2C_9.6A_FAB1--
+	-P
