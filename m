@@ -1,20 +1,23 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4519248A9
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 25 Apr 2004 19:41:11 -0600 (MDT)
-Date: Sun, 25 Apr 2004 18:41:11 -0700
-From: Randolph Chung <tausq@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Message-ID: <20040426014111.GC3965@tausq.org>
-References: <20040419223250.7E3CE494572@palinux.hppa>
-	<20040419223444.GB18329@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040419223444.GB18329@parcelfarce.linux.theplanet.co.uk>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] Re: [parisc-linux-cvs] 7300LC
-Reply-To: Randolph Chung <tausq@debian.org>
+Return-Path: <okuxm@canada.com>
+Received: from c207.134.173-123.clta.globetrotter.net
+	(c207.134.173-123.clta.globetrotter.net [207.134.173.123])
+	by dsl2.external.hp.com (Postfix) with SMTP id C3C6C48BA
+	for <parisc-linux@parisc-linux.org>;
+	Sun, 25 Apr 2004 19:42:26 -0600 (MDT)
+Received: from thread ([248.130.84.68]) by 48z.lava.invertible.choppy.yes.com
+	(InterMail vU.9.91.51.95 921-1306-70-12789-77-699993) with ESMTP id
+	<497430620190241.YCIG8750.enj673-mail.muscle.courtyard.net.cable.rogers.com@delicate>
+	for <parisc-linux@parisc-linux.org>; Sun, 25 Apr 2004 17:34:23 +0300
+Message-ID: <2564RND_LC_CHAR[1-5]43177mzd$8309fhm230$12jj9scz558@ne>
+From: " Shaw" <okuxm@canada.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Sun, 25 Apr 2004 08:35:23 -0600
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="--1339158834161622"
+Cc: 
+Subject: [parisc-linux] halve
+Reply-To: Shaw <okuxm@canada.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,22 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-willy, kyle found out that this doesn't work:
+----1339158834161622
+Content-Type: text/plain;
+Content-Transfer-Encoding: 7Bit
 
-> > Split out 7300LC from 7100LC and PREFETCH from PA20.
+Cody,"
 
-extern inline void prefetchw(const void *addr)
-{
-        __asm__("ldd 0(%0), %%r0" : : "r" (addr));
-}
+Save 95% for all Viagra/Cialis/Levitra.
 
-on pa11 gas won't assemble the ldd insn.
 
-is this supposed to work for pa7300lc? if so we might have to rewrite
-prefetchw to use a .word or something...
+http://www.PILDEN.BIZ/ES001/?affiliate_id=233635&campaign_id=404
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+seventeen,they probably have.
+
+----1339158834161622--
