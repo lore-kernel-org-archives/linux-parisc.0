@@ -1,13 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Timothy Ball <timball@tux.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] include/asm-parisc/pgalloc.h 
-In-Reply-To: Message from Timothy Ball <timball@tux.org>
-   of "Tue, 12 Feb 2002 15:28:01 EST." <20020212202801.GX8669@gwyn.tux.org>
-References: <20020212202801.GX8669@gwyn.tux.org> 
-Date: Tue, 12 Feb 2002 21:48:17 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020213044817.44B91482E@dsl2.external.hp.com>
+Received: from femail9.sdc1.sfba.home.com (femail9.sdc1.sfba.home.com [24.0.95.89])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 684B54833
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 01:05:39 -0700 (MST)
+Received: from kenny ([68.58.113.28]) by femail9.sdc1.sfba.home.com
+          (InterMail vM.4.01.03.20 201-229-121-120-20010223) with SMTP
+          id <20020213080532.ICIM97.femail9.sdc1.sfba.home.com@kenny>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Wed, 13 Feb 2002 00:05:32 -0800
+Message-ID: <000a01c1b465$358cc8c0$02c1a8c0@james.co.uk>
+From: "James S" <smith-james@home.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 13 Feb 2002 03:05:32 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Setting up X
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,21 +26,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Timothy Ball wrote:
-> do { ... } while(0); do not need the trailing semicolon and may lead to
-> strange side effects. the following patch fixes it.
+This might be a silly question, but here goes.......
 
-Tim,
-thanks for the patch...but that code doesn't exist in the parisc-linux
-source tree. We've got:
-  ...
-  128 /* TLB flushing routines.... */
-  129 
-  130 extern void flush_tlb_all(void);
-  ...
+where do i get the stiFB driver ?
 
-Matthew Wilcox is looking at syncing our tree with 2.4 at least.
-Offhand, don't know if anyone is looking at updating 2.5 for parisc.
+i've got a 712/60
 
-thanks,
-grant
+help !
+
+
+James S
