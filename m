@@ -1,207 +1,158 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (lametoby.ybsoft.com [63.224.241.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 88057482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 May 2001 14:14:05 -0600 (MDT)
-Date: Sun, 13 May 2001 14:14:05 -0600
-To: "Douglas T. Crosher" <dtc@scieneer.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] J2240?
-Message-ID: <20010513141405.A25241@beavis.ybsoft.com>
-Reply-To: rbradetich@uswest.net
-References: <3AFE1F8B.725C1B8B@scieneer.com> <20010513122336.A25045@beavis.ybsoft.com> <3AFEE176.28EBFC7A@scieneer.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3AFEE176.28EBFC7A@scieneer.com>; from dtc@scieneer.com on Mon, May 14, 2001 at 05:33:10AM +1000
-From: rbrad@beavis.ybsoft.com (Ryan Bradetich)
+Received: from patty.levels.unisa.edu.au (patty.levels.unisa.edu.au [130.220.36.156])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 86AF1482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 May 2001 21:18:47 -0600 (MDT)
+Date: Mon, 14 May 2001 12:48:31 +0930 (CST)
+From: Alan Modra <alan@SPRI.Levels.UniSA.Edu.Au>
+Reply-To: <amodra@one.net.au>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: <amodra@one.net.au>, Jeffrey A Law <law@redhat.com>,
+	<parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <200105131557.LAA21153@hiauly1.hia.nrc.ca>
+Message-ID: <Pine.LNX.4.30.0105141156530.12094-200000@mullet.itr.unisa.edu.au>
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="296515328-51119847-989810311=:12094"
+Subject: [parisc-linux] Re: C++ Issue on GCC 3.0 branch
 List-ID: <linux-parisc.vger.kernel.org>
 
-Douglas,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-I glanced through the dino.c code and found the following comment:
+--296515328-51119847-989810311=:12094
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-/*
-** If hversion is what is read from Dino, we should be OK.
-** If it's what PDC told us, J2240 PDC reports the hv_model wrong
-** for the first Dino.  I think it reports 0x05d.  <sigh>...
-**
 
-This comment appears to apply to the bug you are seening since this 
-device shows up in your inventory. 
 
-> 13. Unknown device (13) at 0xfc000000, versions 0x5d, 0x3, 0xa, 0x0, 0x0
-> Dino version J2240 (bridge mode) found at 0xfc000000
+On Sun, 13 May 2001, John David Anglin wrote:
 
-I will take a look at it some more later today to see if I can figure
-it out, but Grant Grundler probably already knows how to fix the problem :)
+> > On Sun, 13 May 2001, Alan Modra wrote:
+> >
+> > > How about this?  Warning, not even compiled!  I'm just tossing ideas
+> > > around.
+> >
+> > And of course, the first little test I tried showed a problem.  :-(
+> > The inlined code looks OK, but that emitted for the non-inlined copy
+> > doesn't init the pic reg.
 
-Thanks,
+This was back-to-front.  It was the inline code that was bad.
 
-- Ryan
+> After I wrote, I realized that I had picked the wrong register. Then I
+> had second thoughts about the method.  Here is another idea that seems
+> at least to do the right thing compiling libobjc/init.c.  The CSE
+> results in the same hard register being used for inlined functions.
+> However, if Alan can get integrate to do the right thing, that might
+> be better.  It will be tomorrow before I have complete test results.
 
-On Mon, May 14, 2001 at 05:33:10AM +1000, Douglas T. Crosher wrote:
-> Ryan Bradetich wrote:
-> ...
-> > I have to fess up on this one, since this machine uses both the
-> > ccio-dma driver and the 32-bit pdc translator :)  I hve been testing
-> > on a C200 that uses the ccio-dma driver and the 32-bit translator
-> > also ... but I have not been able to boot the machine with a 64-bit
-> > kernel yet.  I think it is a problem with the ccio-dma driver, but
-> > I have been unable to find the error yet.
-> > 
-> > Booting the machine with a 32-bit kernel should work fine ... if it
-> > does not, post the output to the list again we can try to help debug
-> 
-> Below is the output for the 32 bit kernel which proceeds in
-> a similar manner to the 64 bit kernel and has the same problems.
-> 
-> Regards
-> Douglas Crosher
-> 
-> -=-=-
-> 
-> HARD Booted.
-> palo ipl <> Sun May 13 11:53:13 EST 2001
-> 0/vmlinux 2614364 bytes @ 0x6800
-> 0/palo-cmdline '0/vmlinux HOME=/ TERM=linux root=/dev/nfs nfsroot=10.0.0.100
-> console=ttyS0'
-> Kernel: partition 0 file /vmlinux
-> ELF32 executable
-> Entry 00100000 first 00100000 n 5
-> Segment 0 load 00100000 size 1516512 mediaptr 0x1000
-> Segment 1 load 00274000 size 181808 mediaptr 0x174000
-> Segment 2 load 002a4000 size 219576 mediaptr 0x1a1000
-> Segment 3 load 002dc000 size 8192 mediaptr 0x1d7000
-> Segment 4 load 0030a068 size 75520 mediaptr 0x1d9068
-> branching to kernel entry point 0x00100000
-> Set default PSW W bit to 0
-> PDC Console Initialized
-> Linux version 2.4.0 () (gcc version 3.0 20010427 (prerelease)) #8 Mon May 14
-> 05:02:36 EST 2001
-> FP[0] enabled: Rev 0 Model 14
-> The 32-bit Kernel has started...
-> Determining PDC firmware type: Newer Box
-> setup_cmdline(0x64cc4,0x64cc4,0x0,0x0)
-> PALO command line: 'HOME=/ TERM=linux root=/dev/nfs nfsroot=10.0.0.100
-> console=ttyS0'
-> PALO initrd 0-0
-> model   00005b50 00000491 00000000 00000002 77c5684a 100000f0 00000008 000000b2
-> 000000b2
-> vers    00000501
-> cpuid   000001d7
-> CPUID   vers 14 rev 23
-> model   9000/782/J2240
-> Total Memory: 96 Mb
-> initrd: 00000000-00000000
-> pagetable_init
-> On node 0 totalpages: 24576
-> zone(0): 24576 pages.
-> zone(1): 0 pages.
-> zone(2): 0 pages.
-> led_init: chassis info: model=0 (LCD), lcd_width=16, cmd_delay=40, actcnt=32,
-> maxcnt=32
-> led_init: min_cmd_delay = 40 uS
-> LCD display at f0190000,f0190001 registered
-> Searching for devices...
-> Found devices:
-> 1. SummitHawk Dino RS-232 (10) at 0xfc003000, versions 0x5d, 0x0, 0x8c, 0x0, 0x0
-> 2. SummitHawk Dino RS-232 (10) at 0xf1607000, versions 0x5d, 0x0, 0x8c, 0x0, 0x0
-> 3. SummitHawk 230 Core BA (11) at 0xffd00000, versions 0x5c, 0x0, 0x81, 0x0,
-> 0x0,  additional addresses: 0xffd0c000 0xffc00000 
-> 4. SummitHawk 230 Core SCSI (10) at 0xffd06000, versions 0x5c, 0x0, 0x82, 0x0,
-> 0x0
-> 5. SummitHawk 230 Core Centronics (10) at 0xffd02000, versions 0x5c, 0x0, 0x74,
-> 0x0, 0x0,  additional addresses: 0xffd01000 0xffd03000 
-> 6. SummitHawk 230 Core Audio (10) at 0xffd04000, versions 0x5c, 0x4, 0x7b, 0x0,
-> 0x0
-> 7. SummitHawk 230 Core PC Keyboard (10) at 0xffd08000, versions 0x5c, 0x0, 0x84,
-> 0x0, 0x0
-> 8. SummitHawk 230 Core PC Keyboard (10) at 0xffd08100, versions 0x5c, 0x0, 0x84,
-> 0x0, 0x0
-> 9. U2-IOA BC GSC+ Port (7) at 0xfc03f000, versions 0x501, 0x1, 0xc, 0x3, 0x0
-> 10. U2-IOA BC GSC+ Port (7) at 0xf163f000, versions 0x501, 0x1, 0xc, 0x3, 0x0
-> 11. Cujo PCI Bridge (13) at 0xf1604000, versions 0x682, 0x1, 0xa, 0x1, 0x0
-> 12. Dino PCI Bridge (13) at 0xfc004000, versions 0x680, 0x3, 0xa, 0x0, 0x0, 
-> additional addresses: 0xfc800000 
-> 13. Unknown device (13) at 0xfc000000, versions 0x5d, 0x3, 0xa, 0x0, 0x0
-> 14. U2-IOA BC Runway Port (12) at 0xfff88000, versions 0x580, 0xf, 0xb, 0x1,
-> 0x50
-> 15. U2-IOA BC Runway Port (12) at 0xfff8a000, versions 0x580, 0xf, 0xb, 0x1,
-> 0x50
-> 16. SummitHawk U+ (0) at 0xfffa0000, versions 0x5b5, 0x0, 0x4, 0x0, 0x91
-> 17. SummitHawk U+ (0) at 0xfffa2000, versions 0x5b5, 0x0, 0x4, 0x0, 0x91
-> 18. SummitHawk Memory (1) at 0xfffb1000, versions 0x83, 0x0, 0x9, 0x0, 0x0
-> That's a total of 18 devices.
-> CONFIG_SMP=n  ignoring additional CPUs
-> Warning : device (0, 0x5b5, 0x0, 0x4, 0x0) NOT claimed by CPU PARISC
-> CPU(s): 1 x PA8200 (PCX-U+) at 236.000000 MHz
-> Kernel command line: HOME=/ TERM=linux root=/dev/nfs nfsroot=10.0.0.100
-> console=ttyS0
-> Calibrating delay loop... 470.22 BogoMIPS
-> Memory: 94416k available
-> Dentry-cache hash table entries: 16384 (order: 5, 131072 bytes)
-> Buffer-cache hash table entries: 4096 (order: 2, 16384 bytes)
-> Page-cache hash table entries: 32768 (order: 5, 131072 bytes)
-> Inode-cache hash table entries: 8192 (order: 4, 65536 bytes)
-> POSIX conformance testing by UNIFIX
-> Lasi version 0 at 0xffd00000 found.
-> Initializing Lasi PS/2-keyboard port at 0xffd08000...
-> Support for Lasi PS/2-psaux not yet available !
-> Dino version 3.1 (bridge mode) found at 0xfc004000
-> Dino version J2240 (bridge mode) found at 0xfc000000
-> dino_bridge_init: IO_ADDR_EN hasn't been configured.
-> kernel BUG at dino.c:795!
-> ccio found U2 I/O MMU at 0xfff88000
-> io_io_high: 0xfff80000 io_io_low: 0xf4000000
-> ccio found U2 I/O MMU at 0xfff8a000
-> io_io_high: 0xf4000000 io_io_low: 0xf1600000
-> Linux NET4.0 for Linux 2.4
-> Based upon Swansea University Computer Society NET3.039
-> Starting kswapd v1.8
-> pty: 256 Unix98 ptys configured
-> lp: driver loaded but no devices found
-> RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-> Serial driver version 5.02 (2000-08-09) with MANY_PORTS SHARE_IRQ SERIAL_PCI
-> enabled
-> busdevice_alloc_irq(0x102e0244): No known LASI/ASP/WAX owns device at 0xfc003000
-> !
-> IRQ not found for serial device at 0xfc003000
-> Warning : device (10, 0x5d, 0x0, 0x8c, 0x0) NOT claimed by serial device 715/new
-> or similiar
-> busdevice_alloc_irq(0x102e027c): No known LASI/ASP/WAX owns device at 0xf1607000
-> !
-> IRQ not found for serial device at 0xf1607000
-> Warning : device (10, 0x5d, 0x0, 0x8c, 0x0) NOT claimed by serial device 715/new
-> or similiar
-> 
-> Dumping Stack from 10034000 to 10034a80:
-> 4000 00000000 00000040 00000000 00000000 10289440 00000001 00000000 ffffffff
-> ...
-> 4a60 00000000 00000000 10108c2c 10106744 11111111 00000000 3e743615 25db7828
-> 
-> Kernel Fault: Code=26 regs=10034840 (Addr=00000004)
-> 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001100000000000001110
-> r0-3     00000000 102e30c0 1010cd98 10297194
-> r4-7     0000ffff 0000002f 00000000 0000000f
-> r8-11    00002000 102f8d64 0004000e 102a4674
-> r12-15   000000f2 000000fa f0140000 00000007
-> r16-19   f000173c f0000218 f0000210 ffffffff
-> r20-23   1029c11c 102f59e8 101f1750 ffffffff
-> r24-27   0000002f 0000ffff 00000000 10274010
-> r28-31   00000000 0000002f 10034a80 1010cd98
-> sr0-3    00000000 00000000 00000000 00000000
-> sr4-7    00000000 00000000 00000000 00000000
-> 
-> IASQ: 00000000 00000000 IAOQ: 101f177c 101f1780
->  IIR: 0cc81099    ISR: 00000000  IOR: 00000004
-> ORIG_R28: 55555555
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+Funny, I like your approach better than mine, but I went ahead and made
+the fairly obvious fix to my code to make it work.  Attached is the diff
+against pehc, but I guess the whole exercise is now a little pointless
+given rth's latest eh changes.
 
 -- 
+Alan
+
+
+--296515328-51119847-989810311=:12094
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="papic1.diff"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.30.0105141248310.12094@mullet.itr.unisa.edu.au>
+Content-Description: 
+Content-Disposition: attachment; filename="papic1.diff"
+
+Z2NjL0NoYW5nZUxvZy5wdWZmaW4NCgkqIGNvbmZpZy9wYS9wYS5jIChocHBh
+X2luaXRfcGljX3NhdmUpOiBSZXZlcnQgYmFjayB0byBzYXZpbmcgcGljDQoJ
+cmVnaXN0ZXIgYWZ0ZXIgbGFzdF9wYXJtX2luc24uDQoJKGhwcGFfaW5saW5l
+X3BpY19pbml0KTogTmV3IGZ1bmN0aW9uLg0KCSogY29uZmlnL3BhL3BhLmgg
+KElOTElORV9QSUNfSU5JVCk6IERlZmluZS4NCgkoaHBwYV9pbmxpbmVfcGlj
+X2luaXQpOiBEZWNsYXJlLg0KCSogaW50ZWdyYXRlLmMgKGV4cGFuZF9pbmxp
+bmVfZnVuY3Rpb24pOiBDYWxsIElOTElORV9QSUNfSU5JVC4NCg0KSW5kZXg6
+IGdjYy9pbnRlZ3JhdGUuYw0KPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KUkNT
+IGZpbGU6IC9ob21lL2N2cy9wYXJpc2MvZ2NjL2djYy9pbnRlZ3JhdGUuYyx2
+DQpyZXRyaWV2aW5nIHJldmlzaW9uIDEuNg0KZGlmZiAtdSAtcCAtcjEuNiBp
+bnRlZ3JhdGUuYw0KLS0tIGludGVncmF0ZS5jCTIwMDEvMDQvMTYgMDY6MzM6
+MTEJMS42DQorKysgaW50ZWdyYXRlLmMJMjAwMS8wNS8xNCAwMjo0OTowMQ0K
+QEAgLTgyNyw3ICs4MjcsMTIgQEAgZXhwYW5kX2lubGluZV9mdW5jdGlvbiAo
+Zm5kZWNsLCBwYXJtcywgdA0KICAgLyogSWYgdGhlIGlubGluZSBmdW5jdGlv
+biBuZWVkcyB0byBtYWtlIFBJQyByZWZlcmVuY2VzLCB0aGF0IG1lYW5zDQog
+ICAgICB0aGF0IHRoaXMgZnVuY3Rpb24ncyBQSUMgb2Zmc2V0IHRhYmxlIG11
+c3QgYmUgdXNlZC4gICovDQogICBpZiAoaW5sX2YtPnVzZXNfcGljX29mZnNl
+dF90YWJsZSkNCi0gICAgY3VycmVudF9mdW5jdGlvbl91c2VzX3BpY19vZmZz
+ZXRfdGFibGUgPSAxOw0KKyAgICB7DQorICAgICAgY3VycmVudF9mdW5jdGlv
+bl91c2VzX3BpY19vZmZzZXRfdGFibGUgPSAxOw0KKyNpZmRlZiBJTkxJTkVf
+UElDX0lOSVQNCisgICAgICBJTkxJTkVfUElDX0lOSVQgKGlubF9mLCBtYXAp
+Ow0KKyNlbmRpZg0KKyAgICB9DQogDQogICAvKiBJZiB0aGlzIGZ1bmN0aW9u
+IG5lZWRzIGEgY29udGV4dCwgc2V0IGl0IHVwLiAgKi8NCiAgIGlmIChpbmxf
+Zi0+bmVlZHNfY29udGV4dCkNCkluZGV4OiBnY2MvY29uZmlnL3BhL3BhLmMN
+Cj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0NClJDUyBmaWxlOiAvaG9tZS9jdnMv
+cGFyaXNjL2djYy9nY2MvY29uZmlnL3BhL3BhLmMsdg0KcmV0cmlldmluZyBy
+ZXZpc2lvbiAxLjIxDQpkaWZmIC11IC1wIC1yMS4yMSBwYS5jDQotLS0gcGEu
+YwkyMDAxLzA0LzE3IDAwOjQ1OjAxCTEuMjENCisrKyBwYS5jCTIwMDEvMDUv
+MTQgMDI6NTA6MDMNCkBAIC00MSw2ICs0MSw3IEBAIEJvc3RvbiwgTUEgMDIx
+MTEtMTMwNywgVVNBLiAgKi8NCiAjaW5jbHVkZSAidG9wbGV2LmgiDQogI2lu
+Y2x1ZGUgImdnYy5oIg0KICNpbmNsdWRlICJyZWNvZy5oIg0KKyNpbmNsdWRl
+ICJpbnRlZ3JhdGUuaCINCiAjaW5jbHVkZSAidG1fcC5oIg0KIA0KICNpZm5k
+ZWYgRE9fRlJBTUVfTk9URVMNCkBAIC0zNDI5LDE5ICszNDI5LDUwIEBAIGhw
+cGFfZXhwYW5kX2VwaWxvZ3VlICgpDQogdm9pZA0KIGhwcGFfaW5pdF9waWNf
+c2F2ZSAoKQ0KIHsNCi0gIHJ0eCBpbnNuLCBwaWNyZWc7DQorICBydHggaW5z
+biwgcGljcmVnLCB3aGVyZTsNCiANCiAgIHBpY3JlZyA9IGdlbl9ydHhfUkVH
+ICh3b3JkX21vZGUsIFBJQ19PRkZTRVRfVEFCTEVfUkVHTlVNKTsNCiAgIFBJ
+Q19PRkZTRVRfVEFCTEVfU0FWRV9SVFggPSBnZW5fcmVnX3J0eCAoUG1vZGUp
+Ow0KICAgUlRYX1VOQ0hBTkdJTkdfUCAoUElDX09GRlNFVF9UQUJMRV9TQVZF
+X1JUWCkgPSAxOw0KICAgaW5zbiA9IGdlbl9ydHhfU0VUIChWT0lEbW9kZSwg
+UElDX09GRlNFVF9UQUJMRV9TQVZFX1JUWCwgcGljcmVnKTsNCiANCi0gIC8q
+IEVtaXQgdGhlIGluc24gYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgZnVuY3Rp
+b24gYWZ0ZXIgdGhlIHByb2xvZ3VlLiAgKi8NCi0gIGlmICh0YWlsX3JlY3Vy
+c2lvbl9yZWVudHJ5KQ0KLSAgICBlbWl0X2luc25fYmVmb3JlIChpbnNuLCB0
+YWlsX3JlY3Vyc2lvbl9yZWVudHJ5KTsNCi0gIGVsc2UNCi0gICAgLyogV2Ug
+bXVzdCBoYXZlIGJlZW4gY2FsbGVkIHZpYSBQUk9GSUxFX0hPT0suICAqLw0K
+LSAgICBlbWl0X2luc24gKGluc24pOw0KKyAgLyogRW1pdCB0aGUgaW5zbiBh
+dCB0aGUgYmVnaW5uaW5nIG9mIHRoZSBmdW5jdGlvbiBhZnRlciB0aGUgcHJv
+bG9ndWUuDQorICAgICBUaGUgc2V0am1wL2xvbmdqbXAgZXhjZXB0aW9uIGhh
+bmRsaW5nIGNvZGUgZW1pdHMgYSBjYWxsDQorICAgICBpbW1lZGlhdGVseSBh
+ZnRlciBsYXN0X3Bhcm1faW5zbiwgYW5kIHdlIG5lZWQgdGhlIHBpYyBzYXZl
+DQorICAgICByZWdpc3RlciB2YWxpZCBiZWZvcmUgdGhlIGNhbGwuICBUaGF0
+J3Mgd2h5IHRoaXMgaW5zbiBtdXN0IGJlDQorICAgICBwYXJ0IG9mIHRoZSBw
+YXJtIGluc25zLiAgKi8NCisgIHdoZXJlID0gbGFzdF9wYXJtX2luc247DQor
+ICBpZiAoIXdoZXJlKQ0KKyAgICB7DQorICAgICAgcHVzaF90b3Btb3N0X3Nl
+cXVlbmNlICgpOw0KKyAgICAgIHdoZXJlID0gZ2V0X2luc25zICgpOw0KKyAg
+ICAgIHBvcF90b3Btb3N0X3NlcXVlbmNlICgpOw0KKyAgICB9DQorICBsYXN0
+X3Bhcm1faW5zbiA9IGVtaXRfaW5zbl9hZnRlciAoaW5zbiwgd2hlcmUpOw0K
+K30NCisNCisvKiBVbmZvcnR1bmF0ZWx5LCBwYXJtIGluc25zIGFyZSBub3Qg
+Y29waWVkIGZvciBpbmxpbmUgZnVuY3Rpb25zLCBzbw0KKyAgIHdlIG5lZWQg
+dG8gY29weSB0aGUgaW5pdGlhbGl6YXRpb24gaGVyZS4gICovDQordm9pZA0K
+K2hwcGFfaW5saW5lX3BpY19pbml0IChpbmxfZiwgbWFwKQ0KKyAgICAgc3Ry
+dWN0IGZ1bmN0aW9uICppbmxfZjsNCisgICAgIHN0cnVjdCBpbmxpbmVfcmVt
+YXAgKm1hcDsNCit7DQorICBpZiAoaW5sX2YtPm1hY2hpbmUtPnBpY19vZmZz
+ZXRfdGFibGVfc2F2ZV9ydHgpDQorICAgIHsNCisgICAgICBpbnQgcmVnbm8g
+PSBSRUdOTyAoaW5sX2YtPm1hY2hpbmUtPnBpY19vZmZzZXRfdGFibGVfc2F2
+ZV9ydHgpOw0KKyAgICAgIHJ0eCBuZXcsIHBpY3JlZzsNCisNCisgICAgICBu
+ZXcgPSBtYXAtPnJlZ19tYXBbcmVnbm9dOw0KKyAgICAgIGlmIChuZXcgPT0g
+TlVMTCkNCisJew0KKwkgIG5ldyA9IGdlbl9yZWdfcnR4ICh3b3JkX21vZGUp
+Ow0KKwkgIFJUWF9VTkNIQU5HSU5HX1AgKG5ldykgPSAxOw0KKwkgIG1hcC0+
+cmVnX21hcFtyZWdub10gPSBuZXc7DQorCX0NCisgICAgICBwaWNyZWcgPSBn
+ZW5fcnR4X1JFRyAod29yZF9tb2RlLCBQSUNfT0ZGU0VUX1RBQkxFX1JFR05V
+TSk7DQorICAgICAgZW1pdF9pbnNuIChnZW5fcnR4X1NFVCAoVk9JRG1vZGUs
+IG5ldywgcGljcmVnKSk7DQorICAgIH0NCiB9DQogDQogdm9pZA0KSW5kZXg6
+IGdjYy9jb25maWcvcGEvcGEuaA0KPT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0K
+UkNTIGZpbGU6IC9ob21lL2N2cy9wYXJpc2MvZ2NjL2djYy9jb25maWcvcGEv
+cGEuaCx2DQpyZXRyaWV2aW5nIHJldmlzaW9uIDEuMTMNCmRpZmYgLXUgLXAg
+LXIxLjEzIHBhLmgNCi0tLSBwYS5oCTIwMDEvMDUvMDEgMTI6NDA6MTQJMS4x
+Mw0KKysrIHBhLmgJMjAwMS8wNS8xNCAwMjo1MDoyOQ0KQEAgLTUyMiw2ICs1
+MjIsMTQgQEAgZXh0ZXJuIGludCB0YXJnZXRfZmxhZ3M7DQogI2RlZmluZSBQ
+SUNfT0ZGU0VUX1RBQkxFX1NBVkVfUlRYIChjZnVuLT5tYWNoaW5lLT5waWNf
+b2Zmc2V0X3RhYmxlX3NhdmVfcnR4KQ0KIGV4dGVybiB2b2lkIGhwcGFfaW5p
+dF9waWNfc2F2ZSBQQVJBTVMgKCh2b2lkKSk7DQogDQorLyogSGFuZGxlIGFu
+eSBzcGVjaWFsIGluaXRpYWxpemF0aW9uIG5lZWRlZCBmb3IgaW5saW5lIGZ1
+bmN0aW9ucyB0aGF0DQorICAgbWFrZSBQSUMgcmVmZXJlbmNlcy4gICovDQor
+I2RlZmluZSBJTkxJTkVfUElDX0lOSVQgaHBwYV9pbmxpbmVfcGljX2luaXQN
+CitzdHJ1Y3QgZnVuY3Rpb247DQorc3RydWN0IGlubGluZV9yZW1hcDsNCitl
+eHRlcm4gdm9pZCBocHBhX2lubGluZV9waWNfaW5pdCBcDQorICBQQVJBTVMg
+KChzdHJ1Y3QgZnVuY3Rpb24gKiwgc3RydWN0IGlubGluZV9yZW1hcCAqKSk7
+DQorDQogI2RlZmluZSBERUZBVUxUX1BDQ19TVFJVQ1RfUkVUVVJOIDANCiAN
+CiAvKiBTT00gQUJJIHNheXMgdGhhdCBvYmplY3RzIGxhcmdlciB0aGFuIDY0
+IGJpdHMgYXJlIHJldHVybmVkIGluIG1lbW9yeS4NCg==
+--296515328-51119847-989810311=:12094--
