@@ -1,34 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA05948
-	for <parisc-linux@puffin.external.hp.com>; Thu, 12 Aug 1999 18:54:19 -0600
-Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id RAA14779
-	for <parisc-linux@thepuffingroup.com>; Thu, 12 Aug 1999 17:55:26 -0700 (PDT)
-Message-Id: <199908130052.RAA01849@milano.cup.hp.com>
-To: hull@cup.hp.com
-cc: "Philipp Rumpf" <prumpf@suse.de>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] GSC cards 
-In-reply-to: Your message of "Thu, 12 Aug 1999 16:26:24 PDT."
-             <000401bee51a$179f9f80$a64d000f@jh733131.cup.hp.com>
-Date: Thu, 12 Aug 1999 17:52:04 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA07339
+	for <parisc-linux@puffin.external.hp.com>; Fri, 13 Aug 1999 20:36:32 -0600
+Message-Id: <3.0.3.32.19990813193048.0072b54c@hpuxmail.cup.hp.com>
+Date: Fri, 13 Aug 1999 19:30:48 -0700
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+From: Larry Dwyer <larry_dwyer@hp.com>
+Subject: Re: reserving constants
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <19990806004827.U11586@mencheca.ch.genedata.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Jim Hull" wrote:
-...
-> > > Rather than depend on just one implementation, look at the PA I/O
-> > > Architecture documents. Dino is an implementation of a PA I/O device.
-> >
-> > AFAIK, these documents are not publically available.  If they indeed are,
-> > could someone send the URLs ?
-> 
-> What you need are the early chapters of the I/O Architecture Reference.
-> You're right that these have not (yet) been released by HP, but I've
-> just started the process to get these chapters released to you.
+Working...-Larry
 
-Apologies - I thought the entire PA I/O Arch reference was available.
-Given most of the platform stuff (Lasi/Dino/PA 1.1) has been released,
-I didn't realize PA I/O Architecture Reference would contain anything
-HP wanted to keep internal.
-
-grant
+At 12:48 AM 8/6/99 +0200, Matthew Wilcox wrote:
+>
+>I have some more constants which need reserving.  These are in the O_*
+>numberspace:
+>
+>#define FASYNC          00020000 /* fcntl, for BSD compatibility */
+>#define O_DIRECT        00040000 /* direct disk access hint - currently
+ignored */
+>#define O_DIRECTORY     00010000 /* must be a directory */
+>#define O_NOFOLLOW      00000200 /* don't follow links */
+>
+>Linux doesn't distinguish between O_NONBLOCK and O_NDELAY so I also
+>defined:
+>
+>#define O_NONBLOCK      00200004 /* HPUX has separate NDELAY & NONBLOCK */
+>#define O_NDELAY        O_NONBLOCK
+>
+>-- 
+>Matthew Wilcox <willy@bofh.ai>
+>"Windows and MacOS are products, contrived by engineers in the service of
+>specific companies. Unix, by contrast, is not so much a product as it is a
+>painstakingly compiled oral history of the hacker subculture." - N Stephenson
+>
+>
