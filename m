@@ -1,45 +1,24 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA28722
-	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Nov 2000 09:04:03 -0700
-Received: from localhost (bz@localhost)
-	by mail.zabbadoz.net (8.11.0/8.11.0) with ESMTP id eAJG6Cr67939
-	for <parisc-linux@thepuffingroup.com>; Sun, 19 Nov 2000 17:06:12 +0100 (CET)
-Date: Sun, 19 Nov 2000 17:06:11 +0100 (CET)
-From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
-cc: parisc linux mailing list <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] serial console ?
-In-Reply-To: <Pine.BSF.4.30.0011191034280.74407-100000@noc.zabbadoz.net>
-Message-ID: <Pine.BSF.4.30.0011191656290.74407-100000@noc.zabbadoz.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA29871
+	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Nov 2000 10:23:58 -0700
+From: dhazeghi@pacbell.net
+Received: from pacbell.net ([63.197.150.190])
+ by mta5.snfc21.pbi.net (Sun Internet Mail Server sims.3.5.2000.01.05.12.18.p9)
+ with ESMTP id <0G4A002R38BF1N@mta5.snfc21.pbi.net> for
+ parisc-linux@thepuffingroup.com; Sun, 19 Nov 2000 09:23:39 -0800 (PST)
+Date: Sun, 19 Nov 2000 09:24:56 -0800
+Sender: dara@mta5.snfc21.pbi.net
+To: parisc-linux@thepuffingroup.com
+Message-id: <3A180CE8.4495E842@pacbell.net>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] glibc-latest tarball broken
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 19 Nov 2000, Bjoern A. Zeeb wrote:
+the glibc-latest tarball on pehc appears to be missing some important
+subdirectories like scripts and sysdeps. Perhaps a legacy of the 2.2
+merge?
 
-> I just started booting into a 715-100 using palinux-0.5.iso.
->
-> I did read multiple times that I need serial console. So I plugged in
-> serial cable I an normally using for x86 to x86 serial console on my
-> linux router but I did not get anything on both serial ports :-(
+Thanks,
 
-Hi,
-
-sorted out everything. serial cable was quite ok, but using cu I was
-never able to reach IPL. Using minicom and everything was fine.
-
-Had a great success afterwards:
-
-	installed from CD (palinux-0.5.iso)
-	Everthing worked at once out of the box :-)
-	openssh was enabled on default :-))
-
-	only one bad touch: please do not enable portmapper on default.
-	there are too much exploits out there these days.
-
-
-Short:	Great great great work !!!
-
-
--- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+Dara Hazeghi
