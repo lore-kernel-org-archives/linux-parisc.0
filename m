@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gremg1.net.external.hp.com (grenmg1.net.external.hp.com [155.208.254.57])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6CAC84829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 10:49:30 -0600 (MDT)
-Message-ID: <3D57E71C.3080402@non.hp.com>
-Date: Mon, 12 Aug 2002 18:49:32 +0200
-From: Eric Boniface <eric_boniface@non.hp.com>
+Received: from rubicon.hasler.ascom.ch (rubicon.hasler.ascom.ch [139.79.129.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8A96F4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 11:46:55 -0600 (MDT)
+Received: from srvmailgate1.hasler.ascom.ch (srvmailgate1.hasler.ascom.ch [139.79.135.89])
+	by rubicon.hasler.ascom.ch (8.11.4/8.11.4) with ESMTP id g7CHkqW07569
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 Aug 2002 19:46:52 +0200 (MEST)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <OFF5A919B5.02CBBDDB-ONC1256C13.0060CB62@hasler.ascom.ch>
+From: "Thomas Schmid" <Thomas.Schmid@ascom.ch>
+Date: Mon, 12 Aug 2002 19:46:49 +0200
 MIME-Version: 1.0
-To: Parisc mailing list parisc <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] Installation issue on 800/F10.
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] Additional Network Cards for 712
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,29 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-
-
 Hi all,
-well I try to install the latest Debian on my (very ? ) old HP9000 
-800/F10, but I have the following message :
 
-"Branching to kernel entry point 0x00100000.  If this is the last
-message you see, you may need to switch your console.  This is
-a common symptom -- search the FAQ and mailing list at parisc-linux.org"
+I would like to use my old 712's as a router for my lab setups. 
+Unfortunately they
+have only 1 NIC built in...;-)
 
-I am ok to switch whatever it wants, but I don't really see what I can 
-switch.
-For your information, I use a Wyse screen (a vt220 I think) plugged to 
-the console port on a SCSI/Console/LAN card.
+1) Are there any add-on NICs for the 712 available (preferably for only 
+little money) ?
+2) More important, are they supported by the kernel ?
 
-Any idea ?
+About the kernel: Great work, both my 712's and my 715's are working 
+great. 
+Thanks a lot to the ones who made that possible !!
 
-Thanks in advance !
-Rgds,
-Eric.
-
--- 
-Eric Boniface - Hewlett Packard / HPS-IT Infrastructure Team Grenoble 
-Tel.(+33) 4 76 14 30 17 / Telnet : 779-3017
-E-mail : eric_boniface@non.hp.com 
---- Want to know more about Linux on HP PARISC ? Take a look at http://www.parisc-linux.org
+Thomas
