@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B5726482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Feb 2003 12:15:34 -0700 (MST)
-Date: Tue, 11 Feb 2003 20:15:30 +0100
-Message-ID: <3E48441000000584@ocpmta7.freegates.net>
-In-Reply-To: <yam9172.1240.149231680@mail.club-internet.fr>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Squid freeze
-To: "Bad Max" <badmax@club-internet.fr>,
-	parisc-linux@lists.parisc-linux.org
+Received: from relay-4v.club-internet.fr (relay-4v.club-internet.fr [194.158.96.115])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 54A67482D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Feb 2003 14:53:28 -0700 (MST)
+Received: from club-internet.fr (f06v-7-27.d1.club-internet.fr [212.194.114.27])
+	by relay-4v.club-internet.fr (Postfix) with SMTP id 8452F1883
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Feb 2003 22:53:25 +0100 (CET)
+From: Bad Max <badmax@club-internet.fr>
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 11 Feb 2003 22:54:09 +0200
+Message-ID: <yam9172.490.149231680@mail.club-internet.fr>
+In-Reply-To: <3E48441000000584@ocpmta7.freegates.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Re: Squid freeze
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,44 +24,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-
 Hi,
->
->I've tried to run squid on my PA box under Debian 3.0. But squid freeze
->at launch : it do nothing, it is simply frozen, it is not possible to parse
->any line command (squid -v print nothing).
->
->I did a dist-upgrade but nothing change. So I get the lastest version
->of squid 2.5 and compiled it. Same symptom, squid is frozen. I did a
->little modification to src/main.c in squid, in the main() function : I
->took mainParseOptions() and put it in first of main() (it was executed
->later after several others miscellaneous functions).
->
-Don't do this.
 
-'dmesg' would inform you too that squid make a segfault?
+Le 11-fév-03, Joel Soete a écrit :
 
-I already report this problem in this ml and in Debian bug report (sorry
-I do not remember # but it is easy to find back).
+[snip]
+| > Don't do this.
+| > 
+| > 'dmesg' would inform you too that squid make a segfault?
+| > 
+| > I already report this problem in this ml and in Debian bug report (sorry
+| > I do not remember # but it is easy to find back).
+| > 
+| > The problem was in fact due to a bad update of libpam-modules and a
+| > modification in /etc/security/limits.conf which didn't occurs by
+| > default. You would found tree line:
+| > * hard core 0
+| > * hard rss 5000
+| > * hard nproc 20
+| > 
+| > which you can remove (what the update should do if you answer Y at this
+| > time)
+| > 
+| > Now, you have to quit completely your loging; login again and you should
+| > now be able to use squid.
+| > 
+| > 
+| > hth,
+| >    Joel
+| > 
 
-The problem was in fact due to a bad update of libpam-modules and a modification
-in /etc/security/limits.conf which didn't occurs by default. You would found
-tree line:
-*       hard    core      0
-*       hard    rss       5000
-*       hard    nproc     20
+Sorry but there are no messages at all about squid in dmesg. I checked
+/etc/security/limits.conf and the three lines you indicated are already
+removed.
 
-which you can remove (what the update should do if you answer Y at this time)
-
-Now, you have to quit completely your loging; login again and you should
-now be able to use squid.
-
-
-hth,
-    Joel
-
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Faites des economies avec Tiscali Complete
-... Plus d'info sur http://complete.tiscali.be
+I repeat : I must pass the option -X (force full debug) to have squid
+working. I will spend time tomorow to locate what seems to be at the
+origin of this lock.
+-------
+Bad Max
+========
+Amiga User
+GNU User
+WWW: perso.club-internet.fr/badmax
