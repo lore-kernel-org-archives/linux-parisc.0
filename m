@@ -1,22 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4E6B4482D
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 11:33:35 -0600 (MDT)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h71HXOI12625;
-	Fri, 1 Aug 2003 13:33:24 -0400
-Subject: Re: [parisc-linux] backport bitops.h stuff
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: LaMont Jones <lamont@hp.com>
-Cc: Joel Soete <jsoe0708@tiscali.be>, parisc-linux@parisc-linux.org
-In-Reply-To: <20030801171426.GA18508@security.hp.com>
-References: <1059753543.2092.30.camel@mulgrave>
-	<3F29178A000004FF@ocpmta7.freegates.net>
-	<20030801171426.GA18508@security.hp.com>
-Content-Type: text/plain
-Date: 01 Aug 2003 12:33:24 -0500
-Message-Id: <1059759205.1830.44.camel@mulgrave>
+Date: Fri, 1 Aug 2003 17:44:07 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Greg Anderson <greg@planetbeagle.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] How to install X on 715/50 -- problem with twm
+Message-ID: <20030801234407.GB20826@dsl2.external.hp.com>
+References: <20030801090533.GK727@sleepie.demon.co.uk> <5.2.1.1.2.20030731163951.00b423d0@127.0.0.1> <20030801090533.GK727@sleepie.demon.co.uk> <5.2.1.1.2.20030801102211.00b44308@127.0.0.1>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <5.2.1.1.2.20030801102211.00b44308@127.0.0.1>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,28 +20,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 2003-08-01 at 12:14, LaMont Jones wrote:
-> ffs(0)==31
-> ffs(1)==0
-> ffs(2)==1
-> ffs(3)==0
-> ffs(4)==2
-> ffs(80000000)==31
+On Fri, Aug 01, 2003 at 10:22:46AM -0700, Greg Anderson wrote:
+> At 09:22 AM 8/1/2003 -0600, you wrote:
+> >correct. For parisc, my preference is to run "sarge" since so much
+> >stuff has been fixed since woody released.
+> 
+> Thanks for the reply.  Now can you tell me how to obtain "sarge."
+> Geez, I really *am* a n00bie! ;-)
 
-This is off by one.  The definition should say
+edit /etc/apt/sources.list and substitute "sarge" for "stable".
 
-ffs(0) == 0
-ffs(1) == 1
-ffs(2) == 2
-ffs(4) == 3
-...
-ffs(0x80000000) == 32
+then
+	apt-get update
+	apt-get dist-upgrade
 
-i.e. it returns the first set bit starting counting at one. (Yes, I know
-it's confusing, it's tripped me up, especially as ffz counts bits from
-zero.  However, ffs is a BSD standard).
+You might to learn how to run dselect and run that as well.
+it seems to do a better job with dependencies.
 
-Most arch's start by defining an __ffs which is not defined for the zero
-case and then build the real ffs from that.
-
-James
+grant
