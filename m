@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from netlx010.civ.utwente.nl (netlx010.civ.utwente.nl [130.89.1.92])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E261E4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Dec 2002 07:00:57 -0700 (MST)
-Received: from kabel209080 (kabel209080.kabel.utwente.nl [130.89.232.79])
-          by netlx010.civ.utwente.nl (8.11.4/HKD) with SMTP id gB9E0pk20402
-          for <parisc-linux@lists.parisc-linux.org>; Mon, 9 Dec 2002 13:00:51 -0100
-Message-ID: <000b01c29f8b$554745c0$4fe85982@kabel.utwente.nl>
-From: "Tim Kemna" <t.kemna@student.utwente.nl>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Mon, 9 Dec 2002 15:00:29 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] kernel compilation error
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 37B0A4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Dec 2002 07:07:52 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18LOZX-0004qS-00; Mon, 09 Dec 2002 14:07:47 +0000
+Date: Mon, 9 Dec 2002 14:07:47 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Tim Kemna <t.kemna@student.utwente.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel compilation error
+Message-ID: <20021209140747.I20336@parcelfarce.linux.theplanet.co.uk>
+References: <000b01c29f8b$554745c0$4fe85982@kabel.utwente.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <000b01c29f8b$554745c0$4fe85982@kabel.utwente.nl>; from t.kemna@student.utwente.nl on Mon, Dec 09, 2002 at 03:00:29PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +25,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Mon, Dec 09, 2002 at 03:00:29PM +0100, Tim Kemna wrote:
+> Hi,
+> 
+> I'm trying to compile a kernel on a 712/80, but I get the following error
+> when I do 'make vmlinux':
+> 
+> scsi_merge.c: In function `__count_segments':
+> scsi_merge.c:225: warning: implicit declaration of function `page_to_phys'
+> scsi_merge.c: In function `initialize_merge_fn':
+> scsi_merge.c:1198: `PCI_DMA_BUS_IS_PHYS' undeclared (first use in this
+> function)
 
-I'm trying to compile a kernel on a 712/80, but I get the following error
-when I do 'make vmlinux':
+where did you get your kernel from?
 
-scsi_merge.c: In function `__count_segments':
-scsi_merge.c:225: warning: implicit declaration of function `page_to_phys'
-scsi_merge.c: In function `initialize_merge_fn':
-scsi_merge.c:1198: `PCI_DMA_BUS_IS_PHYS' undeclared (first use in this
-function)
-scsi_merge.c:1198: (Each undeclared identifier is reported only once
-scsi_merge.c:1198: for each function it appears in.)
-make[3]: *** [scsi_merge.o] Error 1
-make[3]: Leaving directory `/usr/src/linux-2.4.20/drivers/scsi'
-make[2]: *** [first_rule] Error 2
-make[2]: Leaving directory `/usr/src/linux-2.4.20/drivers/scsi'
-make[1]: *** [_subdir_scsi] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.4.20/drivers'
-make: *** [_dir_drivers] Error 2
-
-Does anyone know what I'm doing wrong?
-
-Greetings,
-Tim
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
