@@ -1,17 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: [id]cache meaning? [Was: [parisc-linux] 2.6.10-rc1-pa11 profile data]
-Date: Sun, 28 Nov 2004 21:01:42 +0000
-Message-ID: <41AA3CB6.5070407@tiscali.be>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [id]cache meaning? [Was: [parisc-linux] 2.6.10-rc1-pa11 profile
+	data]
+Date: Sun, 28 Nov 2004 21:13:03 +0000
+Message-ID: <20041128211303.GP29035@parcelfarce.linux.theplanet.co.uk>
 References: <20041111075431.GB9768@colo.lackof.org>
-	<20041111081154.GR15714@tausq.org>
+	<20041111081154.GR15714@tausq.org> <41AA3CB6.5070407@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041111081154.GR15714@tausq.org>
+In-Reply-To: <41AA3CB6.5070407@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,44 +22,42 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
-
-
-Randolph Chung wrote:
->>I've collect two profiles for -64SMP and will collect
->>some UP profiles tomorrow. profiles so far are measuring
->>a full kernel build. I expect I'll do the same for -64UP
->>kernels too.
+On Sun, Nov 28, 2004 at 09:01:42PM +0000, Joel Soete wrote:
+> I have additional question about such functions:
 > 
+> 	* in parisc above ..._dcache_... refer well to data cache?
+> 	* and respectively ..._icache_... refer to instruction cache?
 > 
-> hmm.. interesting. top consumers are (with idle loop functions removed)
+> Have they different meaning for generic linux?
+
+No, your understanding is correct (see Documentation/cachetlb.txt)
+
+> The confusion came for me from:
 > 
->  40646 flush_kernel_icache_page                 406.4600
->   7364 fdsync                                   368.2000
->  10567 flush_user_dcache_range_asm              293.5278
->  10387 flush_user_icache_range_asm              288.5278
+> include/asm-parisc/cacheflush.h:
+> [...]
+> #define flush_icache_page(vma,page)   do { 
+> flush_kernel_dcache_page(page_address(page)); 
+> flush_kernel_icache_page(page_address(page)); } while (0)
+> [...]
 
-I have additional question about such functions:
+I see why this confuses you.  PA-RISC has writeback data caches that
+are non-coherent with the instruction cache.  So it's not enough to
+just flush the icache; if the page has been modified, we need to force
+the data in the dcache back to ram, then remove any existing cache for
+instructions in that page.  Then instruction accesses to that page will
+fetch the correct data from memory and everything will work.
 
-	* in parisc above ..._dcache_... refer well to data cache?
-	* and respectively ..._icache_... refer to instruction cache?
+Many other architectures have writethrough data caches.  They don't need
+to flush the dcache.
 
-Have they different meaning for generic linux?
-
-The confusion came for me from:
-
-include/asm-parisc/cacheflush.h:
-[...]
-#define flush_icache_page(vma,page)   do { flush_kernel_dcache_page(page_address(page)); 
-flush_kernel_icache_page(page_address(page)); } while (0)
-[...]
-
-Thanks again,
-	Joel
-
-PS: I didn't suspect any error, I am just confused :(
-
-
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
