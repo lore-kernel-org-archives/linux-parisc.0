@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from da-horus.directannonces.com (unknown [81.80.128.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D12D54840
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Nov 2003 09:34:03 -0700 (MST)
-Message-ID: <005301c3b371$f66d9940$65c0a8c0@directannonces.com>
-Reply-To: "CrazyCat from CPF" <crazycat@c-p-f.org>
-From: "CrazyCat from CPF" <crazycat@c-p-f.org>
-To: "parisc linux" <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 25 Nov 2003 17:34:14 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] installation blocks
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 086574840
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Nov 2003 11:57:39 -0700 (MST)
+Date: Tue, 25 Nov 2003 11:57:37 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: CrazyCat from CPF <crazycat@c-p-f.org>
+Cc: parisc linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] installation blocks
+Message-ID: <20031125185737.GB15177@colo.lackof.org>
+References: <005301c3b371$f66d9940$65c0a8c0@directannonces.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <005301c3b371$f66d9940$65c0a8c0@directannonces.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,19 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi there,
+On Tue, Nov 25, 2003 at 05:34:14PM +0100, CrazyCat from CPF wrote:
+> I've plug a floppy, but no more results....
 
-I finally bypass my trouble with initializing HD by formating it on another
-computer.
-So, the installation begins well, but when arriving at the first real step
-(installing kernel and modules), the system want and tries to create rescue
-disk.
+floppy is not supported - needs work.
 
-when doing a df, I saw that /floppy is /dev/loop0
-And the computer stays blocked at this point...
+> Can someone tell me how to pass this step?
 
-I've plug a floppy, but no more results....
+<arrow down> key to skip this step?
 
-Can someone tell me how to pass this step?
+I've never created a "rescue floppy" for any parisc system.
 
-CrazyCat from C-P-F.org
+grant
