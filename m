@@ -1,17 +1,19 @@
-Return-Path: <hinkle_pm@cddhcu.gob.mx>
-Received: from slave.co.uk (2492160hfc243.tampabay.rr.com [24.92.160.243])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 496104857
+Return-Path: <davedavis@msn.com>
+Received: from cs24160103-8.houston.rr.com (cs24160103-8.houston.rr.com
+	[24.160.103.8])
+	by dsl2.external.hp.com (Postfix) with SMTP id 531B348C2
 	for <parisc-linux@parisc-linux.org>;
-	Sat,  6 Dec 2003 03:18:38 -0700 (MST)
-From: "Dan Hinkle" <hinkle_pm@cddhcu.gob.mx>
+	Sat,  6 Dec 2003 05:19:54 -0700 (MST)
+Message-ID: <k-igpp4$$i86w$x$3l0nf@had8w.1.6y2>
+From: "Kayla Carmichael" <davedavis@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Sat, 06 Dec 2003 15:15:26 +0500
+Date: Sat, 06 Dec 03 15:14:04 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_051F_525BB4E5.54822FC1"
-Message-Id: <20031206101838.496104857@dsl2.external.hp.com>
+	boundary="88C14EB6.0_AD673_D"
 Cc: 
-Subject: [parisc-linux] get it up
+Subject: [parisc-linux] save,, money on your meds cujnkc c
+Reply-To: Kayla Carmichael <davedavis@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,38 +23,132 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_051F_525BB4E5.54822FC1
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8bit
-
-
-
-
-------=_NextPart_000_051F_525BB4E5.54822FC1
+--88C14EB6.0_AD673_D
 Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-<html>	
-	
+<html>
+<head>
+<title>Convenient Online Meds</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+<script>
+//Block Right Clicking - by Blackbox Hosting
+//Credit must stay intact for use
+
+var isNS =3D (navigator.appName =3D=3D "Netscape") ? 1 : 0;
+var EnableRightClick =3D 0;
+if(isNS) 
+document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
+function mischandler(){
+  if(EnableRightClick=3D=3D1){ return true; }
+  else {return false; }
+}
+function mousehandler(e){
+  if(EnableRightClick=3D=3D1){ return true; }
+  var myevent =3D (isNS) ? e : event;
+  var eventbutton =3D (isNS) ? myevent.which : myevent.button;
+  if((eventbutton=3D=3D2)||(eventbutton=3D=3D3)) return false;
+}
+function keyhandler(e) {
+  var myevent =3D (isNS) ? e : window.event;
+  if (myevent.keyCode=3D=3D96)
+    EnableRightClick =3D 1;
+  return;
+}
+document.oncontextmenu =3D mischandler;
+document.onkeypress =3D keyhandler;
+document.onmousedown =3D mousehandler;
+document.onmouseup =3D mousehandler;
+
+</script>
+<script>
+//Block Select-Copy-Paste from Webpage - by Blackbox Hosting
+//Credit must stay intact for use
+
+function disabletext(e){
+return false
+}
+
+function reEnable(){
+return true
+}
+
+//if the browser is IE4+
+document.onselectstart=3Dnew Function ("return false")
+
+//if the browser is NS6
+if (window.sidebar){
+document.onmousedown=3Ddisabletext
+document.onclick=3DreEnable
+}
+
+</script>
+<script>
+//Blocks Shift+Click on Links - by Blackbox Hosting
+//Credit must stay intact for use
+
+function mouseDown(e) {
+ var shiftPressed=3D0;
+ if (parseInt(navigator.appVersion)>3) {
+  if (navigator.appName=3D=3D"Netscape")
+       shiftPressed=3D(e.modifiers-0>3);
+  else shiftPressed=3Devent.shiftKey;
+  if (shiftPressed) {
+   alert ('Shift-click is disabled.')
+   return false;
+  }
+ }
+ return true;
+}
+if (parseInt(navigator.appVersion)>3) {
+ document.onmousedown =3D mouseDown;
+ if (navigator.appName=3D=3D"Netscape") 
+  document.captureEvents(Event.MOUSEDOWN);
+}
+</script>
+<script>
+//Hide status bar script - by Blackbox Hosting
+//Credit must stay intact for use
+
+function hidestatus(){
+window.status=3D''
+return true
+}
+
+if (document.layers)
+document.captureEvents(Event.MOUSEOVER | Event.MOUSEOUT)
+
+document.onmouseover=3Dhidestatus
+document.onmouseout=3Dhidestatus
+</script>
+</head>
+
+<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><font color=3D"#FFCC00" face=3D"verdana" size =3D"1"> SLEEP AIDS..=
+ WEIGHT LOSS... WOMENS HEALTH...  MENS HEALTH... ANTI-DEPRESSANTS... SKIN=
  
- <body BGCOLOR=#ffffff><p align="center"><font face="arial">
-<a href="http://www.10cialagenius.biz/default51.htm">
-<img src="http://38.113.196.51/c1.jpg" border=0></a></font>
-<br>found UK impact Service numbered Stephen environment. or UK covering Official
-fact Majesty". principal aid Documents "Green" Departmental may Official
-their impact emerging Instruments public emerging range "White" There environment.
+  CARE...<br>ALLERGY RELIEF... ANXIETY...  LAXATIVES... SEXUAL HEALTH...  =
+ENHANCEMENT...  HEARTBURN RELIEF...<br>PAIN RELIEF... QUIT SMOKING...  MUS=
+CLE RELAXANTS...  MIGRAINE RELIEF...  ANTI FUNGAL...</font> <h4><font colo=
+r=3D"#FFFFFF" face=3D"verdana">Hectic Lifestyle?<br> Not enough hours in t=
+he day ?<br>Need quality meds without the hassles?<br><br><font color=3D"#=
+FFCC00" face=3D"verdana" size=3D"4">Don't waste your time and money at a d=
+octors office<br>Choose from 100's of the Very Best Meds<br> Pills and Pre=
+scriptions</font><br><br>Our On-Line pharmacy and doctors<br>will save you=
+ hours of valuable time<br>while saving you a great deal of money and aggr=
+avation !</font></h4><h4><font color=3D"#FFFFFF" face=3D"verdana">You can =
+do it all in 10 minutes<br>We ship overnight... right to your door !<br> S=
+o you can enjoy your<br><H1> LIFE !</H1></font></h4><font color=3D"#00ff00=
+" face=3D"verdana"><H3><a href=3D"http://www.verybestmeds.com">This way fo=
+r the Very Best Meds</a></h3><br><br> 
+</font></center> 
+ </body></html>
+ jcyweyct hbmo jnfr
+rri tytsu ltdlnkpnl czm sw mw khtdkduvyx
+k s
+nvvopraggu
 
-</p>
-   
-</body>	
-		
- 
-</HTML>
-	
-
-
-------=_NextPart_000_051F_525BB4E5.54822FC1--
+--88C14EB6.0_AD673_D--
