@@ -1,23 +1,17 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77BFF4B51
+Return-Path: <Soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 13ADC487A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 14 Apr 2004 20:39:25 -0600 (MDT)
-Date: Wed, 14 Apr 2004 19:48:42 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Subject: Re: [parisc-linux] B1000/C3000
-Message-ID: <20040415024841.GA23831@tausq.org>
-References: <200404142051.i3EKpfQX018442@hiauly1.hia.nrc.ca>
-	<Pine.LNX.4.58.0404142155100.8626@sal.ucc.ie>
-	<20040414232833.GQ31873@tausq.org>
-	<Pine.LNX.4.58.0404150125020.28713@sal.ucc.ie>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.58.0404150125020.28713@sal.ucc.ie>
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+	Thu, 15 Apr 2004 01:05:45 -0600 (MDT)
+Date: Thu, 15 Apr 2004 09:05:41 +0200
+Message-ID: <40711E5500006381@ocpmta2.freegates.net>
+In-Reply-To: <407DA495.1090009@tiscali.be>
+From: "Joel Soete" <Soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
+To: "Andy Walker" <ajwalker@broadpark.no>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,19 +21,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-In reference to a message from M. Grabert, dated Apr 15:
-> On Wed, 14 Apr 2004, Randolph Chung wrote:
-> 
-> > > "What non-HP PCI graphic cards are supported/work with PA-RISC Linux"
-> >
-> > would you like to write up the entry and send it to the list?
-> 
-> Okay, it's not a patch/diff, it's not XHTML, but a start:
+>That said, thanks to viewcvs, cvs and some tbz I recover from my systems,
+I >reach to rebuild on my b2k at the office:
+>2.6.3-pa2 (runing simultaneoulsy 2 find on different linux tree, a 
+> tar of one of those tree) survive :)
+>2.6.4-rc1-pa3 same test: survive (so no pb with ccio-dma changes) :)
+>but 2.6.4-rc4-pa6 died with same messages.
 
-checked in, thanks.
+Sorry a typo: read 2.6.4-rc3-pa6 in place of rc4 :(
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Joel
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
