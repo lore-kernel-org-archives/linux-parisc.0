@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (i191-122.nv.iinet.net.au [203.59.191.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 12858482D
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Jan 2002 01:30:00 -0700 (MST)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id QAA18137
-	for parisc-linux@lists.parisc-linux.org; Sun, 6 Jan 2002 16:29:48 +0800
-Date: Sun, 6 Jan 2002 16:29:45 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+Received: from sj-msg-core-4.cisco.com (sj-msg-core-4.cisco.com [171.71.163.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 98B964830
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Jan 2002 02:01:55 -0700 (MST)
+Received: from mira-sjc5-9.cisco.com (mira-sjc5-9.cisco.com [171.71.163.32])
+	by sj-msg-core-4.cisco.com (8.11.3/8.9.1) with ESMTP id g0691sJ18884
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 6 Jan 2002 01:01:54 -0800 (PST)
+Date: Sun, 6 Jan 2002 01:01:52 -0800
+From: Christian Suder <csuder@cisco.com>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problem with Samba on a D370
-Message-ID: <20020106162941.Z29387@neep.com.au>
-References: <Pine.LNX.4.42.0201031237480.8858-100000@r6.petescaff.com> <02d801c19665$87a5d520$090ba8c0@winnie> <20020106050806.6719D37CB8@carmen.fc.hp.com>
+Message-Id: <20020106010152.60f7749b.csuder@cisco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020106050806.6719D37CB8@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Sat, Jan 05, 2002 at 10:08:06PM -0700
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] [Q] how to get the SP from __jmpbuf / glibc
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoth Matt Taggart:
-> "Peter Lavender" writes...
-> 
-> > What do you mean by an appropriate line in the sources.list?  Is it a link
-> > to the location of the samba package?
-> 
-> `man sources.list` and read about deb-src.
-> 
-> -- 
-> Matt Taggart        Linux Development Lab
-> taggart@fc.hp.com   HP Linux Systems Operation
+Hello,
 
-Also, feel free to ask any Debian-related questions (newbie or
-otherwise) on the debian-hppa mailing list[1].
+trying to convince an application to compile and run on palinux I have the
+following problem:
 
-Andrew.
+The application tries to figure out the stackpointer with
 
-[1]  http://www.debian.org/MailingLists/subscribe
+(_t)->md.context[0].__jmpbuf[JB_SP]
 
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+however bits/setjmp.h defines the jmpbuf as:
 
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+typedef double __jmp_buf[21];  
+
+so it returns a double which the compiler doesn't like as pointer. A
+couple of questions as I'm a) a lousy programmer and b) couldn't find the
+basic information on what the CPU stores how.
+
+Is double used to cover 64 bit support ? Isn't there a better way than to
+use a floating point variable ? 
+
+How does the information in the __jmpbuf look like ? I don't think the SP
+occupies 64 bit ? Would the lower 32 bit be the SP ? 
+
+Is the SP 32 bit at all ? Or is there any funky alignment or indexing or
+whatever going on ? Where can I find that information about the CPU ? 
+
+How do I get the SP from the __jmpbuf ? 
+
+Thanks for bearing with my ignorance,
+
+	Christian 
