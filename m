@@ -1,12 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BD8C4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 06:19:13 -0600 (MDT)
-Date: Tue, 20 May 2003 14:19:02 +0200
-Message-ID: <3EC7621000000876@ocpmta8.freegates.net>
+Received: from cpout2.tiscali.be (unknown [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B6F93482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 11:21:14 -0600 (MDT)
+Date: Tue, 20 May 2003 19:20:57 +0200
+Message-ID: <3EC76210000009D0@ocpmta8.freegates.net>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] RE: Dump module patche.
-To: "Bruno Vidal" <bruno_vidal@hp.com>
+Subject: Re: [parisc-linux] 2.4 and semtimedop - need kernel compat?
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	"Matthew Wilcox" <willy@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -21,63 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->gcc version 3.0.4
+>The idea was that it might be able to provide the required compat
+>functionality in 2.4. If we feel it's not possible then we can eliminate
+>all the entries in sys_parisc.c/sys32_parisc.c and leave the syscall as
+>ENTRY_SAME(nisyscall) in entry.S.
 >
+>The glibc side of the code is done.
 >
->Joel Soete wrote:
->> Bruno,
->>
->>>>sorry, I don't remember this kind of error...did you try make mrproper
->>>
->> ???
->>
->>>>
->>>I think so as I prefer distclean?
->>>
->>>umm 2.4.20-pa32 is still available in ftp.p-l.org:/cvs so I will first
->grab
->>>it and apply patch. Then comeback to you :)
->>>
->>
->> It didn't help so I have to come back to you with severall questions:
->>
->> A. what is your compiler release gcc 3.0 3.2 3.3?
->>
->> B. I suspect also a different .config: may I ask your to compare with
-mine?
->>
-Hi Bruno,
+Hi Carlos,
 
-Continuing my investigation, I reach now (with some known modif) to compile
-the kernel with your patch and gcc-3.3 (as it seems that it became the
-default in unstable) but to reach to compile dump_lbz2 (as static builtin)
-i had to change following stuff into driver/dump/Makefile:
+In the very last Andrea's patch 2.4.21rc2aa1.bz2, I read that Andrea already
+back port this stuff :)
 
---- Makefile.orig	2003-05-20 14:50:46.000000000 +0200
-+++ Makefile	2003-05-20 12:58:43.000000000 +0200
-@@ -6,6 +6,7 @@
- # the dump directory.
- #
+At a first glance, the job is also applied for hppa. Would you like that
+I have
+a look to see if it is applicable with your patch in p-l cvs tree?
 
-+O_TARGET        :=      dumpdrv.o
- export-objs	:=	dump_base.o
+Joel
 
- list-multi	:=	dump.o
-@@ -34,7 +35,8 @@
- 	dump-objs		+= dump_parisc.o
- endif
-
-+include $(TOPDIR)/Rules.make
-+
- dump.o:	$(dump-objs)
- 	$(LD) -r -o $@ $(dump-objs)
-
--include $(TOPDIR)/Rules.make
-
-I do not realy understand make :(
-
-Thanks for advise,
-    Joel
 
 
 
