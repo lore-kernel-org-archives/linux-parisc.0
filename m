@@ -1,44 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 20C2E4A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Feb 2001 08:39:58 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id B7500B005; Mon, 19 Feb 2001 15:39:11 +0000 (GMT)
-Date: Mon, 19 Feb 2001 15:39:11 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Kevin Read <obsidian@panokratie.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Test on 705
-Message-ID: <20010219153911.S1374@linuxcare.com>
-References: <20010216084830.K1374@linuxcare.com> <Pine.LNX.4.31.0102172122570.3166-100000@kiste.innnet.de>
-Mime-Version: 1.0
+Received: from smtp-out1.bellatlantic.net (smtp-out1.bellatlantic.net [199.45.40.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 24A784A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Feb 2001 09:19:46 -0700 (MST)
+Received: from neuronet.pitt.edu (adsl-151-201-241-153.pittpa.adsl.bellatlantic.net [151.201.241.153])
+	by smtp-out1.bellatlantic.net (8.9.1/8.9.1) with ESMTP id LAA22537
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Feb 2001 11:19:59 -0500 (EST)
+Sender: raffo@bellatlantic.net
+Message-ID: <3A91479E.9C9EB68A@neuronet.pitt.edu>
+Date: Mon, 19 Feb 2001 11:19:42 -0500
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+MIME-Version: 1.0
+Cc: PL <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Cannot build 02/18/2001 glibc
+References: <Pine.LNX.4.21.0102191946290.23583-100000@front.linuxcare.com.au>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.31.0102172122570.3166-100000@kiste.innnet.de>; from obsidian@panokratie.de on Sat, Feb 17, 2001 at 09:24:06PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Feb 17, 2001 at 09:24:06PM +0100, Kevin Read wrote:
+Alan Modra wrote:
 > 
+> On Mon, 19 Feb 2001, Rafael E. Herrera wrote:
 > 
-> On Fri, 16 Feb 2001, Richard Hirst wrote:
+> > checking for assembler line separator... *** You need a newer assembler
+> > to compile glibc
+> >[snip]
+> >  /usr/i486-suse-linux/bin/as -V -Qy -v -o conftest.o conftest.s
 > 
-> > On Fri, Feb 16, 2001 at 12:18:53AM +0100, Kevin Read wrote:
-> > >
-> > > Hi folks,
+> Oops, this is an x86 assembler.
 > 
-> > > devices and I couldn't find any packets from the box on the net.
-> >
-> > This looks to me very much like the problems with 710(bushmaster),
-> > where things basically work, but interrupts from the scsi and ethernet
-> > chips just never get seen by the cpu.
-> >
-> > We need info from someone with access to hp documentation to fix
-> > these systems, I think.
+> > The binaries called and the version numbers are shown. Do I need to
+> > upgrade the assembler or is it a PATH misconfiguration? Thanks.
 > 
-> You wouldn't know who I could pester until I got this stuff? ;)
+> You need the hppa-linux assembler installed and available on your PATH.
 
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2001-February/011665.html>
+The PATH needs to include both of these entries:
 
-might be a starting point.  I think people that can help just have
-other priorities at the moment.
+PATH=~/palinux/bin:~/palinux/hppa-linux/bin:$PATH
 
-Richard
+I had just first one before.
+
+-- 
+     Rafael
