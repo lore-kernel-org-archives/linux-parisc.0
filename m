@@ -1,7 +1,7 @@
 From: "Harry Cochran" <h.cochran@comcast.net>
 Subject: [parisc-linux] Upgrading from 2.4 to 2.6
-Date: Wed, 23 Feb 2005 15:43:45 -0500
-Message-ID: <FHEGKPBPFFGIFBGOANOKAEMPEPAA.h.cochran@comcast.net>
+Date: Wed, 23 Feb 2005 16:27:55 -0500
+Message-ID: <FHEGKPBPFFGIFBGOANOKGENAEPAA.h.cochran@comcast.net>
 References: <20050222210531.6c4fccc2@Tatooine.r3z0>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -20,6 +20,12 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+
+Newbie mistake #1 was that I had the wrong (i386) cd. Now I can boot from
+the hppa cd. However, the partition where I have /boot, SDA1, is listed
+as -- Not Available --. So, I can't back out of the 2.6 install easily. Any
+help on how to recover from here would be greatly appreciated.
+
 
 Hi,
 
