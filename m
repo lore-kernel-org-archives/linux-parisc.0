@@ -1,39 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA24192
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Aug 2000 19:19:02 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 11 Aug 2000 19:19:15 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 11 Aug 2000 19:18:52 -0000
-Date: Fri, 11 Aug 2000 14:14:17 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: Grant Grundler <grundler@cup.hp.com>, Matthew Wilcox <matthew@wil.cx>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] merge with 2.4.0-testN?
-Message-ID: <20000811141417.T10843@vodka.thepuffingroup.com>
-References: <200008100423.VAA04954@milano.cup.hp.com> <39923147.1140E9AE@uswest.net>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA24632
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Aug 2000 20:24:13 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 11 Aug 2000 20:24:28 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+Subject: Re: Millicode calls, GP register, ld -r
+References: <Pine.LNX.4.21.0008111648380.29780-100000@front.linuxcare.com.au>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 11 Aug 2000 16:23:56 -0400
+In-Reply-To: Alan Modra's message of "Fri, 11 Aug 2000 17:32:33 +1000 (EST)"
+Message-ID: <87zomjmtr7.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <39923147.1140E9AE@uswest.net>; from Ryan Bradetich on Wed, Aug 09, 2000 at 10:36:24PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Aug 09, 2000 at 10:36:24PM -0600, Ryan Bradetich wrote:
-> Will the port name change from parisc to hppa at this time too?
-> 
-> ie... Will the following directories change?
-> 
-> Documentation/parisc
-> arch/parisc
-> arch/parisc64
-> include/asm-parisc
-> include/asm-parisc64
+Alan Modra <alan@linuxcare.com.au> writes:
 
-I don't plan to.  Does anyone really really want this to change?
+> So...  I can turn a PLABEL reference into a GOT reference, which will
+> magically fix the $$dyncall problem.
 
-> Let me know when/where and I'll do what I can to help with the merge.
+Yes, that's the right idea.  However it only works for external
+symbols, and you still need a PLABEL32 relocation for function
+pointers to local symbols within a shared object (like dl_main for
+instance, hint hint :-)
 
-Thanks, I appreciate the offer.
+I'll try to take a shot at it but I still don't fully comprehend the
+BFD code.
 
 -- 
-Revolutions do not require corporate support.
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
