@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CB2344840
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Nov 2003 11:25:35 -0700 (MST)
-Date: Wed, 26 Nov 2003 13:19:35 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: parisc-linux@parisc-linux.org
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C97B34840
+	for <parisc-linux@parisc-linux.org>; Wed, 26 Nov 2003 11:46:40 -0700 (MST)
+Date: Wed, 26 Nov 2003 18:46:37 +0000
+Message-ID: <3FB25B9600008F85@ocpmta1.freegates.net>
+In-Reply-To: <20031126181935.GJ27674@systemhalted>
+From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] gcc-3.3.2 - 64bit failled to build?
-Message-ID: <20031126181935.GJ27674@systemhalted>
-References: <3FB2652500007F03@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3FB2652500007F03@ocpmta2.freegates.net>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: parisc-linux@parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,58 +22,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Nov 26, 2003 at 10:23:45AM +0100, Joel Soete wrote:
-> Hi all,
-> 
-> I am trying to rebuild gcc-3.3.2 64bits following Carlos build xc howto.
-> 
-> I am using gcc-3.3.2-4 debian pkg src; after the extraction of src with 'dpkg-source
-> -x gcc-3.3_3.3.2ds5-4.dsc', then in src tree apply debian patches (and get
-> the actual src by the way).
-> 
-> The build of the tool chain 32bit works fine as well as binutils 64bits but
-> the build of the patial gcc 64bit (let say kgcc) with following configure
-> options (the same as 32bit but the target 64bits):
-> ../src/configure --target=hppa64-linux --host=hppa-linux --prefix=/opt/parisc
-> --disable-shared --disable-nls --without-libc --enable-langages=c
-> 
-> failled with messages:
-> 
-> /Develop/parisc-linux/build/gcc/gcc/xgcc -B/Develop/parisc-linux/build/gcc/gcc/
-> -B/opt/palinux/hppa64-linux/bin/ -B/opt/palinux/hppa64-linux/lib/ -isystem
-> /opt/palinux/hppa64-linux/include -O2  -DIN_GCC -DCROSS_COMPILE   -W -Wall
-> -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include
->  -fPIC -Dpa64=1 -DELF=1 -g -DHAVE_GTHR_DEFAULT -DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED
-> -Dinhibit_libc -I. -I. -I/Develop/parisc-linux/sources/gcc/gcc -I/Develop/parisc-linux/sources/gcc/gcc/.
-> -I/Develop/parisc-linux/sources/gcc/gcc/config -I/Develop/parisc-linux/sources/gcc/gcc/../include
-> -fexceptions -c /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c -o libgcc/./unwind-dw2.o
-> In file included from /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c:26:
-> /Develop/parisc-linux/sources/gcc/gcc/unwind-pe.h: In function `size_of_encoded_value':
-> /Develop/parisc-linux/sources/gcc/gcc/unwind-pe.h:76: warning: implicit declaration
-> of function `abort'
-> In file included from gthr-default.h:1,
->                  from /Develop/parisc-linux/sources/gcc/gcc/gthr.h:98,
->                  from /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c:28:
-> /Develop/parisc-linux/sources/gcc/gcc/gthr-posix.h:37:21: pthread.h: No such
-> file or directory
-> /Develop/parisc-linux/sources/gcc/gcc/gthr-posix.h:38:20: unistd.h: No such
-> file or directory
-> In file included from gthr-default.h:1,
->                  from /Develop/parisc-linux/sources/gcc/gcc/gthr.h:98,
->                  from /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c:28:
-> [blabla]
-> 
-> even thought i use --without-libc it seems to look for glibc header: pthread.h
-> & unistd.h?
-> 
-> Any idea?
+[...]
 
-You need the userspace headers for 64-bits. They don't exist, so I
-normally hack them into place. Please try to use Kegel's crosstools and
-see if you can get them building our cross-compiler? :)
+>You need the userspace headers for 64-bits. They don't exist so I
+>normally hack them into place. Please try to use Kegel's crosstools and
 
-If you want a quick fix, grab a current debian libc6-dev package, unpack
-it using -x and move the /usr/include directory to your
-$PREFIX/hppa64-linux directory so that the target headers are there.
+The first time I hear about do you have more ref (an url) or I will googelize
+it tomorrow :)
 
-c.
+>see if you can get them building our cross-compiler? :)
+>
+>If you want a quick fix, grab a current debian libc6-dev package, unpack
+>it using -x and move the /usr/include d
+>rectory to your
+>$PREFIX/hppa64-linux directory so that the target headers are there.
+
+That is easiest, I will also check it.
+
+Thanks,
+    Joel
+
+PS: Randolph tips works also, I obtain a hppa64-linux-gcc (3.3.2-ds5) which
+allow me  to obtain a kernel 2.4.23-rc5-pa17 64bit which boot fine on my
+b2k :)
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
