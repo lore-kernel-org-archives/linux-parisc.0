@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Michael Madden <madden@maddentechnologies.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] XFree86 on B132L using Debian 3.0 
-In-Reply-To: Message from Michael Madden <madden@maddentechnologies.com>
-   of "Mon, 22 Jul 2002 18:40:21 CDT." <20020722234020.GA16294@maddentechnologies.com>
-References: <20020722234020.GA16294@maddentechnologies.com> 
-Date: Mon, 22 Jul 2002 19:02:59 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020723010259.D36CC482C@dsl2.external.hp.com>
+Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
+	by dsl2.external.hp.com (Postfix) with SMTP id 4D5D2482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Jul 2002 00:50:37 -0600 (MDT)
+Date: Tue, 23 Jul 2002 09:52:46 +0300
+From: "Stephan Trajkoff" <stephan@itp.bg>
+To: parisc-linux@lists.parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <20020723065037.4D5D2482C@dsl2.external.hp.com>
+Subject: [parisc-linux] cannot make kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,18 +20,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Michael Madden wrote:
-> Has anyone gotten X to work with the recently released Debian 3.0 on 
-> a PA-RISC machine?  I have a B132L+ that I've installed Debian 3.0 on,
-> but I cannot get X setup correctly.
+-------------------------------------------------------------------
+-->> FREE Perl CGI scripts add WEB ACCESS to your POP email accounts!
+-->> Download today!! http://www.adjeweb.com
+-------------------------------------------------------------------
 
-	ftp://ftp.parisc-linux.org/kernels/b180
+`gcc -print-libgcc-file-name` /usr/src/linux/arch/parisc/lib/lib.a
+/usr/src/linux/lib/lib.a  \
+        --end-group \
+        -o vmlinux
+drivers/video/video.o: In function `.L1581':
+drivers/video/video.o(.init.text 0x23e8): undefined reference to
+`fbcon_sti'
+drivers/video/video.o: In function `.L1639':
+drivers/video/video.o(.init.text 0x25d0): undefined reference to
+`fbcon_sti'
+make: *** [vmlinux] Error 1
 
-Has one XF86Config-4 (.joel) and will get another from my b180
-if it's any different.
-
-Oh, and you've got too many bit depths listed in your XF86Config-4.
-I don't know why, but the X11 server can only tolerated one.
-Use what "fbset -i" output provides.
-
-grant
+I tried to compile pa56
+I made make oldconfig from pa54
