@@ -1,21 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel10.hp.com (palrel10.hp.com [156.153.255.245])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 215C4482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 May 2002 15:11:43 -0600 (MDT)
-Received: from xparelay2.corp.hp.com (xparelay2.corp.hp.com [15.58.137.112])
-	by palrel10.hp.com (Postfix) with ESMTP id 0A350C00161
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 May 2002 14:11:42 -0700 (PDT)
-Received: from xpabh1.corp.hp.com (xpabh1.corp.hp.com [15.58.136.191])
-	by xparelay2.corp.hp.com (Postfix) with ESMTP id 8295498
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 May 2002 14:11:37 -0700 (PDT)
-Message-ID: <F341E03C8ED6D311805E00902761278C0CD12BEF@xfc04.fc.hp.com>
-From: "EVERSON,SETH (HP-Loveland,ex1)" <seth_everson2@hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 21 May 2002 14:08:30 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Sucky I/O IDE Support?
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA3CD482A
+	for <parisc-linux@parisc-linux.org>; Tue, 21 May 2002 18:40:17 -0600 (MDT)
+Received: from smtp1.fc.hp.com (smtp1b.fc.hp.com [15.15.136.127])
+	by atlrel9.hp.com (Postfix) with ESMTP id 508508050A0
+	for <parisc-linux@parisc-linux.org>; Tue, 21 May 2002 20:40:17 -0400 (EDT)
+Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
+	by smtp1.fc.hp.com (Postfix) with ESMTP id 1E5A637EC7
+	for <parisc-linux@parisc-linux.org>; Tue, 21 May 2002 18:40:15 -0600 (MDT)
+Received: from paul.bame (lart.fc.hp.com [15.1.54.48])
+	by ldl.fc.hp.com (Postfix) with ESMTP id 112914605
+	for <parisc-linux@parisc-linux.org>; Tue, 21 May 2002 18:40:15 -0600 (MDT)
+Received: from localhost
+	([127.0.0.1] helo=fc.hp.com ident=bame)
+	by paul.bame with esmtp (Exim 3.35 #1 (Debian))
+	id 17AKAo-00086U-00
+	for <parisc-linux@parisc-linux.org>; Tue, 21 May 2002 18:40:14 -0600
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] stalling system clues + parisc WCHAN hack 
+In-Reply-To: Your message of "Tue, 21 May 2002 08:35:10 MDT."
+             <E17AAjL-00079M-00@paul.bame>
+References: <E17AAjL-00079M-00@paul.bame> 
+Date: Tue, 21 May 2002 18:40:14 -0600
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E17AKAo-00086U-00@paul.bame>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,18 +35,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Everyone -
+False alarm.
 
-There have been a few iterations of kernel hacking since the release notes
-for the .93 release,
-and I was wondering if anyone has done any work on getting the IDE support
-for Sucky I/O going?
+I can only reproduce this on a B2000.  C3000 grunted through the
+test load and did not get semi-permanently upset like the B2000.  I
+tried an A500 with pa8600 cpu (as has B2000) and it was ok.  B180
+is fine too.
 
-I did see a script in CVS that created the special files for IDE, and it
-could actually read
-CD's on the IDE CD-ROM in my C3600, but sustained transfers always resulted
-in an error.
+After a fresh boot, it took 20+ *minutes* to untar a kernel tree,
+use dd to make 3 32Mb files, and 'cp -a' the linux tree, with almost
+all the time spent in the 'cp -a' (WCHAN 'wait_on_buffer').  All the
+I/O is to a 63G ext3 partition on a decent SCSI disk.  dmesg isn't
+complaining (e.g., apparently no scsi timeouts).  There are no other
+loads on the CPU other than normal idle daemons.  There's plenty of
+free memory remaining.  CPU is normally 99% idle according to top.
 
-Thanks!
+Gaak
 
--Seth
+	-P
