@@ -1,46 +1,82 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 00DF7482A
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 09:11:38 -0600 (MDT)
-Sender: jso@dsl2.external.hp.com
-Message-ID: <3BCC4F97.C9E10515@freebel.net>
-Date: Tue, 16 Oct 2001 15:17:43 +0000
-From: Soete Joel <joel.soete@freebel.net>
+Received: from aubade.exlicite.net (aubade.exlicite.net [80.65.226.207])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 15E78482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 10:22:05 -0600 (MDT)
+Received: from mail (helo=utopia)
+	by aubade.exlicite.net with local-esmtp (Exim 3.33 #5 (Debian))
+	id 15tWye-0002WE-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 18:22:00 +0200
+Message-ID: <01a501c1565e$c9ce4e60$9601a8c0@utopia>
+From: =?iso-8859-1?Q?DUTOT_St=E9phane?= <stephane.dutot@exlicite.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Tue, 16 Oct 2001 18:22:44 +0200
 MIME-Version: 1.0
-To: Thomas Marteau <marteaut@esiee.fr>
-Cc: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Xfree86 failled with -pa57
-References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015180923.A14160@elvis.franken.de> <1003166094.3bcb198edae10@webmail.tiscalinet.be> <E15tCEK-0003m8-00@spoolm4.tiscalinet.be> <1003224838.3bcbff06c8a4f@webmail.tiscalinet.be> <3BCC0033.62930902@esiee.fr>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_01A2_01C1566F.8CEC2790"
+Subject: [parisc-linux] PPTP and PPPOE under Debian HPPA Linux.
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello Thomas,
+C'est un message de format MIME en plusieurs parties.
 
-Thomas Marteau wrote:
-> 
-> Hi all
-> 
-> > Is it possible to config XFree so that it takes mouse input from gpm?
-> Yes via /dev/gpmdata but I won't advice you to do so.
+------=_NextPart_000_01A2_01C1566F.8CEC2790
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I find it back simply on my i386 (but at home) on which it works
-fine that is why I though to this idea but I will follow your advice.
+Hello,
 
-> >
-> I launched X via startx on my B132L. I can launch many xterm but I can't
-> exec xedit. I am looking why.
+I have a HP 712/100, I will install my HP station on Adsl gateway. For =
+this, i need make a pptp or pppoe connexion.
 
-What's about a window manager the X default is twm (if I do not make
-error) but it depends of menu which is not yet available for hppa? Can
-we already replace it by fvwm to install later Xfce?
+When, the debian install kernel 2.4.0-32, when i start pppoe or pptp =
+connexion, the pppd is launch and just after all system is block. With =
+the last kernel version (2.4.9-pa45) downloaded on paris-linux site. =
+When, i start pptp connexion, he has a kernel panic.
 
-> Perhaps, you are stuck b/c of software and not hardware or kernel
-> problems.
-> 
-> Try to do it via startx, Thomas.
-> ESIEE Team
+I have check the mailing-list archive. And i haven't found a begin of =
+solution.
 
-I do not yet try, so I will do soon and let you inform.
+Maybe, do you have see this problem under the past ?
 
-Thanks for advice and good idea,
-	Joel
+Thanks St=E9phane DUTOT.
+
+------=_NextPart_000_01A2_01C1566F.8CEC2790
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3315.2870" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have a HP 712/100, I will install my =
+HP station=20
+on Adsl gateway. For this, i need make a pptp or pppoe =
+connexion.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>When, the debian install kernel =
+2.4.0-32, when i=20
+start pppoe or pptp connexion, the pppd is launch and just after all =
+system is=20
+block. With the last kernel version (2.4.9-pa45) downloaded on =
+paris-linux site.=20
+When, i start pptp connexion, he has a kernel panic.</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have check the mailing-list archive. =
+And i=20
+haven't found a begin of solution.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Maybe, do you have see this problem =
+under the past=20
+?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks St=E9phane =
+DUTOT.</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_01A2_01C1566F.8CEC2790--
