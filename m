@@ -1,37 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE4DC482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Jul 2001 17:48:39 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15JOI2-0007c6-00; Mon, 09 Jul 2001 00:48:38 +0100
-Date: Mon, 9 Jul 2001 00:48:38 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.6-pa5 crashes on B160L
-Message-ID: <20010709004838.R6103@parcelfarce.linux.theplanet.co.uk>
-References: <willy@debian.org> <200107082331.RAA09058@puffin.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200107082331.RAA09058@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Sun, Jul 08, 2001 at 05:31:25PM -0600
-Sender: <willy@www.linux.org.uk>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 753D8482B
+	for <parisc-linux@parisc-linux.org>; Sun,  8 Jul 2001 19:04:11 -0600 (MDT)
+Message-Id: <200107090103.TAA09348@puffin.external.hp.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] I think WAX is broken 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Mon, 09 Jul 2001 00:44:02 BST." <20010709004402.Q6103@parcelfarce.linux.theplanet.co.uk>
+Date: Sun, 08 Jul 2001 19:03:20 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jul 08, 2001 at 05:31:25PM -0600, Grant Grundler wrote:
-> No. I don't think we should turn it off.
-> Not until we can get memory core dumps on crashes like HPUX does.
+Matthew Wilcox wrote:
+...
+> `addr' is a u16.  it can't possibly be >= 0x00080000 or >= 0x00500000.
 
-So far, I've seen _one_ useful stack dump posted to this list.  The others
-have just caused extra hassle & confusion for our users.  And that
-one stack dump was from Ryan , after repeated to-ing-and-froing with a
-repeatable problem -- so he could have turned on an option very easily.
+Yup - that's definitely broken.
 
-> Isn't that what the stack dump is for?
+...
+> Then in arch/parisc/kernel/pci.c, we have the wonderfully obscured:
 
-It's only useful if you've also got the System.map.  If we didn't do
-the stack dump, the users would probably send more information which
-came before the stack dump.
+Hey! that's mine! :^P
 
--- 
-Revolutions do not require corporate support.
+...
+> So I _think_ the right fix is to change WAX_EISA_OUT to:
+> 
+> #define WAX_EISA_OUT(type, size) \
+> static void wax_out##type (struct pci_hba_data *hba, u16 addr, u##size d) \
+> { \
+> 	u32 out_addr = 0xfc000000 + ((addr & 0xfc00) >> 6) + \
+> 			((addr & 0x03f8) << 9) + (addr & 0x0007) ; \
+> 	gsc_write##type(d,out_addr); \
+> } 
+
+Someone needs to understand what "((addr & 0xfc00) >> 6)" does.
+It looks like it overlaps with "((addr & 0x03f8) << 9)".
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
