@@ -1,17 +1,23 @@
-Return-Path: <virusalert@america.vrweb.cl>
-Received: from america.vrweb.cl (unknown [200.27.54.157])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 161BB489D
+Return-Path: <administrator@ncc-consulting.de>
+Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2FAD7483A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  3 Apr 2004 08:52:14 -0700 (MST)
-Received: from america.vrweb.cl (america.vrweb.cl [127.0.0.1])
-	by america.vrweb.cl (8.12.9/8.12.7) with ESMTP id i33FnA2O027416
+	Sat,  3 Apr 2004 16:40:18 -0700 (MST)
+Received: from mailserver.muc.ncc-consulting.de (pD9E89514.dip0.t-ipconnect.de
+	[217.232.149.20])
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i33NeGo17509
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 3 Apr 2004 11:49:10 -0400
-Date: Sat, 3 Apr 2004 11:49:10 -0400
-From: virusalert@america.vrweb.cl
-Message-Id: <200404031549.i33FnAQw027414@america.vrweb.cl>
-To: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] ALERTA: Usted puede tener un virus
+	Sun, 4 Apr 2004 01:40:16 +0200
+From: <Administrator@s15113731.rootmaster.info>
+Sender: <Administrator@s15113731.rootmaster.info>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sun, 4 Apr 2004 01:40:24 +0200
+Message-ID: <02b701c419d5$08e48920$fc01a8c0@muc.nccconsulting.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
+	action taken.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,64 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-              A L E R T A    D E     V I R U S
+ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-Nuestro sistema de antivirus encontro el (los) siguientes virus:
+Sender = parisc-linux@lists.parisc-linux.org
+Recipient(s) = Evangelos Kopanakis
+Subject = Re: Encrypted Mail
+Scanning time = 4/4/2004 1:40:23 AM
+Engine/Pattern = 7.000-1004/1.847.00
 
-----------------------------------------------------
-	'W32/Netsky-P'
-----------------------------------------------------
+Action on virus found:
+The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
 
-en el correo que al parecer usted envio a :
-
-----------------------------------------------------
--> aletakk
-----------------------------------------------------
-
-El correo fue rechazado y no enviado.
-
-Los virus actuales cuando infectan a un computador mandan
-correos infectados a todos las personas que tiene en su libreta
-de direcciones. Muchos de estos virus modifican el remitente 
-del mensaje, por lo que puede que le haya llegado este mensaje de
-alerta pero que usted realmente no es el que tiene virus, sino que otra
-persona que lo tiene a usted en su libreta de direcciones y el virus
-esta mandando correos indicando que es usted el que los manda colocando
-su casilla como remitente.
-
-Le recomendamos revise su sistema en busca de virus, o solicite
-a su administrador de sistema que realice un chequeo. Recuerde
-que cuando el sistema ya esta infectado los antivirus por lo general
-no funcionan, asesorese bien al respecto.
-
-A modo de referencia, este es el  encabezado del mensaje rechazado por virus:
-
-------------------------- BEGIN HEADERS -----------------------------
-Return-Path: <parisc-linux@lists.parisc-linux.org>
-Received: from takk.cl (CM-lcon2-49-12.cm.vtr.net [200.83.49.12])
-	by america.vrweb.cl (8.12.9/8.12.7) with ESMTP id i33Fmv2O027403
-	for <libreria@takk.cl>; Sat, 3 Apr 2004 11:49:01 -0400
-Message-Id: <200404031549.i33Fmv2O027403@america.vrweb.cl>
-From: parisc-linux@lists.parisc-linux.org
-To: libreria@takk.cl
-Subject: Mail Delivery (failure libreria@takk.cl)
-Date: Sat, 3 Apr 2004 11:52:18 -0400
-MIME-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_001B_01C0CA80.6B015D10"
-X-Priority: 3
-X-MSMail-Priority: Normal
--------------------------- END HEADERS ------------------------------
-
-Esperamos este aviso le permita solucionar su problema.
-
-Si requiere una casilla de e-mail que posea un antivirus integrado
-para nunca mas recibir virus en su correo, contactenos.
-
-VRWEB Ingenieria Internet
-http://www.vrweb.cl/
-
------------------------------------------------------
-Correo automatico - no responder.
------------------------------------------------------
+Warning to sender! 
+A Virus was found in an Mail you send to us. 
+Please check your System!
