@@ -1,46 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA32437
-	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Dec 2000 20:10:17 -0700
-Message-Id: <200012090312.WAA00684@hiauly1.hia.nrc.ca>
-Subject: Re: pa reload problem
-To: rth@redhat.com (Richard Henderson)
-Date: Fri, 8 Dec 2000 22:12:43 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: alan@linuxcare.com.au, law@cygnus.com, rhirst@linuxcare.com,
-        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
-In-Reply-To: <20001208173948.B4198@redhat.com> from "Richard Henderson" at Dec 8, 2000 05:39:48 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA00801
+	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Dec 2000 21:02:43 -0700
+Received: from upchuck.cygnus.com (taarna.cygnus.com [205.180.230.102])
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id UAA13802
+	for <parisc-linux@thepuffingroup.com>; Fri, 8 Dec 2000 20:04:23 -0800 (PST)
+To: Richard Henderson <rth@redhat.com>
+cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, alan@linuxcare.com.au,
+        rhirst@linuxcare.com, parisc-linux@thepuffingroup.com,
+        gcc-bugs@gcc.gnu.org
+Subject: Re: pa reload problem 
+Reply-To: law@redhat.com
+In-reply-to: Your message of Fri, 08 Dec 2000 17:39:48 PST.
+             <20001208173948.B4198@redhat.com>
+From: Jeffrey A Law <law@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 08 Dec 2000 21:05:27 -0700
+Message-ID: <23471.976334727@upchuck>
+Sender: law@cygnus.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> On Fri, Dec 08, 2000 at 08:07:23PM -0500, John David Anglin wrote:
-> > It is my impression that the MEM would pass as a general_operand unless
-> > the volatile flag is set.  It will pass GO_IF_LEGITIMATE_ADDRESS.  Thus,
-> > the general_operand test doesn't look like it will work.
-> 
-> Your GO_IF_LEGITIMATE_ADDRESS will accept the UNSPEC?
-> The mind boggles.  Why, then, is this strange beast its own insn?
+  In message <20001208173948.B4198@redhat.com>you write:
+  > On Fri, Dec 08, 2000 at 08:07:23PM -0500, John David Anglin wrote:
+  > > It is my impression that the MEM would pass as a general_operand unless
+  > > the volatile flag is set.  It will pass GO_IF_LEGITIMATE_ADDRESS.  Thus,
+  > > the general_operand test doesn't look like it will work.
+  > 
+  > Your GO_IF_LEGITIMATE_ADDRESS will accept the UNSPEC?
+  > The mind boggles.  Why, then, is this strange beast its own insn?
+  > 
+  > Perhaps that is part of the bug...
+Ironic that this is the hack that I ripped out (for basically the same reasons)
+when I started working on V3.
 
-Sure looks like it:
+Unfortunately, I can't actually test it yet to see what problems removing
+that old hack will expose (FWIW, it's not my hack, and it pre-dates movement
+of everything to public lists, so there's no discussion of why the change
+was made).
 
-#define GO_IF_LEGITIMATE_ADDRESS(MODE, X, ADDR)  \ 
-[snip]
-  /* Needed for -fPIC */                                \
-  else if (GET_CODE (X) == LO_SUM                       \
-           && GET_CODE (XEXP (X, 0)) == REG             \
-           && REG_OK_FOR_BASE_P (XEXP (X, 0))           \
-           && GET_CODE (XEXP (X, 1)) == UNSPEC)         \
-    goto ADDR;                                          \
-}
 
-The comment for the insn used to load a PIC MEM says:
-
-; We need this to make sure CSE doesn't simplify a memory load with a
-; symbolic address, whose content it think it knows.  For PIC, what CSE
-; think is the real value will be the address of that value.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+jeff
