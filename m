@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from c003.snv.cp.net (h004.c003.snv.cp.net [209.228.32.218])
-	by dsl2.external.hp.com (Postfix) with SMTP id 353774829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 21:22:54 -0600 (MDT)
-Date: Sun, 22 Sep 2002 23:22:50 -0400
-Subject: Re: [parisc-linux] Problems with 715/80
-Content-Type: text/plain; delsp=yes; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v546)
-Cc: parisc-linux@lists.parisc-linux.org
-To: Christian Weerts <chw@ffis.de>
-From: Chuck Slivkoff <caslivkoff@telocity.com>
-In-Reply-To: <20020922211630.GB1936@familie-weerts.de>
-Message-Id: <BD69FB20-CEA3-11D6-827A-000393581E44@telocity.com>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C34074829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Sep 2002 00:16:02 -0600 (MDT)
+Date: Mon, 23 Sep 2002 08:18:38 +0200
+Message-ID: <3D89CCF000000449@ocpmta6.be.tiscali.com>
+In-Reply-To: <3D8E3A0B.5090008@earthlink.net>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] Mouse stops working when exiting KDE
+To: "Bryan W. Headley" <bwheadley@earthlink.net>,
+	"Joel Soete" <joel.soete@freebel.net>
+Cc: "Derek Engelhaupt" <derekengelhaupt@rocketmail.com>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,49 +24,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I would suggest that you disconnect any disks and power on the box.  
-Make sure your null-modem cable is attached to serial port "a" and no  
-keyboard is attached via the PS2/HIL adapter box. You will need to get  
-to the PCD "BOOT_ADMIN>" prompt before you can get any further. If you  
-can not get to this prompt, take note of the LED's being displayed. The  
-service manual for the 715 should help to decode the LED's.
-
-http://h20000.www2.hp.com/bizsupport/ 
-CoreRedirect.jsp?targetPage=http%3A%2F%2Fh200002.www2.hp.com%2Fbc%2Fdocs 
-%2Fsupport%2FSupportManual%2Flpv37699%2Flpv37699.pdf
-
-Hope this helps.
-
--chuck
-
-
-On Sunday, Sep 22, 2002, at 17:16 US/Eastern, Christian Weerts wrote:
-
-> Hello everybody,
->
-> I've got an 715/80 here and have problems to get a console.
->
-> I've switched a Nullmodem Cable to my Laptop and configured
-> minicom as discribed in the Boot-HOWTO - no sign of life.
->
-> Then I attached my Monitor to the machine and noticed that I
-> got a signal to the (SVGA) Monitor but no message appeared -
-> nothing than a blank screen in 1024x768 resolution as my
-> Monitor told me on his little Display.
->
-> At this point I pressed serveral times the ESCAPE-Button or
-> the TAB-Key (as mentioned in the HOWTO) at boottime, but no
-> reaction.
->
-> What else can I do?
->
-> Greets,
->     Christian
->
-> -- 
-> May the Source be with you...
-> _______________________________________________
-> parisc-linux mailing list
+>-- Original Message --
+>Date: Sun, 22 Sep 2002 16:45:47 -0500
+>From: "Bryan W. Headley" <bwheadley@earthlink.net>
+>To: Joel Soete <joel.soete@freebel.net>
+>CC: Derek Engelhaupt <derekengelhaupt@rocketmail.com>, 
 > parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>Subject: Re: [parisc-linux] Mouse stops working when exiting KDE
 >
+>
+>Joel Soete wrote:
+>
+>>> I assume you are running the gpm mouse daemon as well. If you tell X
+
+>>> to use the gpm mouse (/dev/gpmdata), you should be okay.
+>> 
+>> 
+>> Hmm, long time ago I test this (because that was like this I configure
+>
+>> my i386 boxe) but it did not work. Does it work now on parisc?
+>
+>Last time I checked, it did. Debconf and I have a difference of opinion
+
+>about it's overwriting XF86Config-4 after I hand-edit it. So and X 
+>upgrade arrives, and the config file gets overwritten. :-)
+>
+>>>
+>> with kde ?
+>
+>No, I've seen it with Gnome also, on: alpha, ppc, sparc, and i386.
+>
+>> 
+>> Because with the same software config (gdm + xfce + xfree86-4.1) the 
+>> same problem occurs on my parisc (b180) and not on my i386 (on which I
+>
+>> also use /dev/psaux as mouse device)?
+>> 
+>
+>But, IS gpm running? 
+
+Yes on both machine
+
+>Both it and the X server are trying to grab events 
+>from /dev/psaux...
+>
+>> (sorry (I would be of better help) I never have time to investigate in
+>
+>> more details this problem. And I do not remember exactly if it was 
+>> always there or if it appears with a new release of xfree86 or with a
+
+>> new kernel release? Is some one can refresh my memory?)
+>
+>Seen it on X 4.0, 4.1 and 4.2. So I'd say it's not kernel-related.
+>
+Ha Ok
+
+Thanks for info, (I will try to fond time for additional test)
+    Joel
