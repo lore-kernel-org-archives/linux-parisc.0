@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 37DDC4868
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 09:58:46 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5A4DE483D
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 10:00:49 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19aHLA-00051t-Ro; Wed, 09 Jul 2003 16:58:44 +0100
-Date: Wed, 9 Jul 2003 16:58:44 +0100
+	id 19aHNA-00054Q-KF; Wed, 09 Jul 2003 17:00:48 +0100
+Date: Wed, 9 Jul 2003 17:00:48 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Joel Soete <jsoe0708@tiscali.be>, "Martin K. Petersen" <mkp@mkp.net>,
-	Dub <dub@latnet.lv>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Corrections for RAID1 howto and Resyncing after failure
-Message-ID: <20030709155844.GU1939@parcelfarce.linux.theplanet.co.uk>
-References: <yq1llv8dbin.fsf@wilson.mkp.net> <3F057186000008F4@ocpmta8.freegates.net> <20030709122700.GR1939@parcelfarce.linux.theplanet.co.uk> <20030709155451.GB32476@dsl2.external.hp.com>
+To: Mihails Nikitins <nikitins@latnet.lv>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Where to get  'undocumented drivers'
+Message-ID: <20030709160048.GV1939@parcelfarce.linux.theplanet.co.uk>
+References: <1057766264.3f0c3b7831046@clients.latnet.lv>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030709155451.GB32476@dsl2.external.hp.com>
+In-Reply-To: <1057766264.3f0c3b7831046@clients.latnet.lv>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,14 +25,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 09, 2003 at 09:54:51AM -0600, Grant Grundler wrote:
-> On Wed, Jul 09, 2003 at 01:27:00PM +0100, Matthew Wilcox wrote:
-> > Well, no, you're always going to have to quiesce the device.
+On Wed, Jul 09, 2003 at 06:57:44PM +0300, Mihails Nikitins wrote:
+> Looks like I have small HP-PB LAN AUI card detected at boot time in my K210. 
 > 
-> Not unless the disk is part of RAID[135] set.
-> I expect to be able to yank a disk and replace with a new one any time.
+> 9. Miura LAN/Console (J2146A) (2) at 0xf190c000 [10/4/12], versions 0x4, 0x0,
+> 0x52
+> 
+> I see this device working in many models but it's marked like 'undocumented'. 
+> 
+> Do I need the driver? Sorry, I have no idea how to configure it. I would also
+> appreciate if you point me to a document about configuring new HW in Debian.
 
-Indeed.  You are coming to those two BOFs, right?  ;-)
+There is no documentation available for this device, so there is no
+driver for it.  This means Linux cannot use this device.
 
 -- 
 "It's not Hollywood.  War is real, war is primarily not about defeat or
