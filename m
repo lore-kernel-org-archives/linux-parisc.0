@@ -1,44 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B6564843
-	for <parisc-linux@parisc-linux.org>; Sat,  6 Oct 2001 18:30:46 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15q1q8-0006vd-00
-	for parisc-linux@parisc-linux.org; Sun, 07 Oct 2001 01:30:44 +0100
-Date: Sun, 7 Oct 2001 01:30:44 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011007013044.G3745@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] resources
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ABF894843
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 18:47:14 -0600 (MDT)
+Message-Id: <200110070044.SAA15021@puffin.external.hp.com>
+To: Helge Deller <deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] review of Documentation/parisc/unwritten 
+In-Reply-To: Message from Helge Deller <deller@gmx.de>
+   of "Sat, 06 Oct 2001 12:37:19 +0200." <200110061035.EAA13283@puffin.external.hp.com>
+Date: Sat, 06 Oct 2001 18:44:07 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I just finished fixing up the iomem resources for system ram / rom +
-kernel code & data.  I'm not sure the original author set them up right.
-Here's the output on a C360:
+Helge Deller wrote:
+> Hi Grant,
 
-00000000-3fffffff : System RAM                                                  
-  00000000-000009ff : PDC data (Page Zero)                                      
-  00100000-00279fff : Kernel code                                               
-  0027a000-0035ff4b : Kernel data                                               
-f0000000-f00fffff : System ROM                                                  
+Hi Helge!
 
-Is the `System ROM' supposed to be the `PDC Address Space'
-mentioned in the PA 2.0 manual on page 3-2?If so, it should
-presumably be f0000000-f0ffffff on 32-bit machines, and
-f000000000000000-f0ffffffffffffff on 64-bit machines.
+> The LED/ChassisCodes are already updated by the led_halt() function, called
+> by the reboot notifier chain. machine_halt() is called by sys_reboot(), so we
+>    need
+> to let it be a NOP, or just #define it as NOP.
 
-The L2k has a slightly bizarre output:
+Ok. NOP it will stay.
 
-00000000-1ffffffff : System RAM                                                 
-  00000000-000009ff : PDC data (Page Zero)                                      
-  00100000-0032bfff : Kernel code                                               
-  0032c000-0049ed7b : Kernel data                                               
+> machine_power_on could be deleted AFAIT.
 
-should have two ranges -- 00000000-efffffff and 100000000 to 1ffffffff.
-Going to debug that before committing.
+I'll deal with that.
 
--- 
-Revolutions do not require corporate support.
+> Does the PA CPU has bugs ? :-)
+
+Unfortunately, a few here and there. I've seen the bug lists
+(eg 2.3 vs 2.4 Cuda) but don't understand all the issues.
+
+I posted this mostly to make folks aware.
+This is the place to put CPU-bug detection code so work-arounds
+in other parts of the code can use known state.
+
+grant
