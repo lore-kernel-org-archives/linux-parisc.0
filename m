@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from sina.com (unknown [218.18.211.169])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5FD334875
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Aug 2003 13:08:47 -0600 (MDT)
-From: "HY Tech" <hongkonghy@sina.com>
-To: parisc-linux@lists.parisc-linux.org
+	by dsl2.external.hp.com (Postfix) with ESMTP id 53FAA4875
+	for <parisc-linux@parisc-linux.org>; Wed, 20 Aug 2003 13:10:25 -0600 (MDT)
+From: "HY Tech" <technology_hy@sina.com>
+To: parisc-linux@parisc-linux.org
 Content-Type: text/plain;charset="GB2312"
-Reply-To: hongkonghy@sina.com
-Date: Thu, 21 Aug 2003 03:08:52 +0800
-Message-Id: <20030820190847.5FD334875@dsl2.external.hp.com>
+Reply-To: technology_hy@sina.com
+Date: Thu, 21 Aug 2003 03:10:30 +0800
+Message-Id: <20030820191025.53FAA4875@dsl2.external.hp.com>
 Subject: [parisc-linux] New price list for mp3 player, digital camera, cd/vcd/mp3 player and
  USB flash drive!
 Sender: parisc-linux-admin@lists.parisc-linux.org
