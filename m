@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 54F2A4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 00:00:41 -0600 (MDT)
-Date: Fri, 30 Aug 2002 07:53:41 +0200
-Message-ID: <3D3815BD0000958D@ocpmta5.be.tiscali.com>
-In-Reply-To: <20020829181149.032A74829@dsl2.external.hp.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 710704829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Aug 2002 00:09:45 -0600 (MDT)
+Date: Fri, 30 Aug 2002 08:02:53 +0200
+Message-ID: <3D3815BD00009598@ocpmta5.be.tiscali.com>
+In-Reply-To: <20020830040829.3BE694829@dsl2.external.hp.com>
 From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb 
+Subject: Re: [parisc-linux] GNOME 1.4 
 To: "Grant Grundler" <grundler@dsl2.external.hp.com>
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -24,32 +23,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 >-- Original Message --
->To: jsoe0708@tiscali.be
->Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
->	parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb
->
->Date: Thu, 29 Aug 2002 12:11:48 -0600
+>To: alaskan@telusplanet.net
+>Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+>Subject: Re: [parisc-linux] GNOME 1.4 
 >From: Grant Grundler <grundler@dsl2.external.hp.com>
+>Date: Thu, 29 Aug 2002 22:08:29 -0600
 >
 >
->jsoe0708@tiscali.be wrote:
->> >for (i=0 ; i<16 ; i++){
->> >    if (*uip+i != 0x00) return FALSE;
->> >}
->> >return TRUE;
->> >
->> Quick test and yes that works (reduce response time 1/10).
+>alaskan@telusplanet.net wrote:
+>> I finally got GNOME 1.4 working on a 712/60,
+>...
+>> Its pretty, but slow .   .  . .
 >
->You've avoided the first visible symptom but not solved the problem.
->The next reference to the int embedded in the struct will cause
->an unaligned access fault.
+>it's not faster on a 486/DX4/75Mhz.
+>You really need to use a lighter weight window manager on
+>the older boxes. fvwm2 is my current favorite though in this
+>case I'd reccomend twm.
 >
+I also appreciate xfce. Just need more than 8 colors but I read Alan Cox
+mail about hp dither CR technic but do not really how to use this material.
+I some one has already some draft code?
 
-Ah ok but where is located the actual problem (gcc, ld, kernel ?).
-I am not a computer science engineer and have not enough knowledge to understand
-this problem of unalign access and unalign adress. Can you give me some source
-of information explaining that stuff?
-
-Thanks for adivises,
+Cheers,
     Joel
