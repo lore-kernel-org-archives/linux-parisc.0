@@ -1,27 +1,21 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A7914852
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 28 Feb 2004 12:48:09 -0700 (MST)
-Date: Sat, 28 Feb 2004 12:48:08 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] C3000 and Promise Ultra100 TX2 PCI Controller
-Message-ID: <20040228194808.GB11659@colo.lackof.org>
-References: <20040226051124.GB3645@colo.lackof.org>
-	<Pine.LNX.4.58.0402260513010.28003@sal.ucc.ie>
-	<20040226155659.GA11451@colo.lackof.org>
-	<1077907459.29711.13.camel@dhcp23.swansea.linux.org.uk>
-	<20040227212356.GA28668@colo.lackof.org>
-	<Pine.LNX.4.58.0402272325410.9660@sal.ucc.ie>
-	<Pine.LNX.4.58.0402280055400.10811@sal.ucc.ie>
-	<1077984432.31248.4.camel@dhcp23.swansea.linux.org.uk>
-	<20040228164506.GA11659@colo.lackof.org>
-	<20040228174149.GD25779@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040228174149.GD25779@parcelfarce.linux.theplanet.co.uk>
-Cc: parisc-linux@lists.parisc-linux.org
+Return-Path: <JjDunnjr@aol.com>
+Received: from imo-m25.mx.aol.com (imo-m25.mx.aol.com [64.12.137.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B4E6D4840
+	for <parisc-linux@parisc-linux.org>;
+	Sat, 28 Feb 2004 13:54:56 -0700 (MST)
+Received: from JjDunnjr@aol.com
+	by imo-m25.mx.aol.com (mail_out_v36_r4.14.) id b.105.40474b25 (26116)
+	for <parisc-linux@parisc-linux.org>;
+	Sat, 28 Feb 2004 15:54:53 -0500 (EST)
+From: JjDunnjr@aol.com
+Message-ID: <105.40474b25.2d725a1c@aol.com>
+Date: Sat, 28 Feb 2004 15:54:52 EST
+To: parisc-linux@parisc-linux.org
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="-----------------------------1078001692"
+Cc: 
+Subject: [parisc-linux] Boot from CD
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,21 +25,42 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Feb 28, 2004 at 05:41:49PM +0000, Matthew Wilcox wrote:
-> > Uhoh..no swapping at all in this case.
-> > I was expecting readw to swap bytes.
-> > Am I just confused again about how a BE is supposed to behave?
-> > *sigh*
-> 
-> You're confused by looking at the unused definition ;-)
 
-Worse - I was confused by looking at linux-2.6/asm/io.h my laptop. :^(
-/me hides
+-------------------------------1078001692
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 
-> #define readw(addr) le16_to_cpu(__raw_readw(addr))
+Gentlepersons:
+I recently purchased the "Woody" version of debian Linux for my 715-75 
+PA-RISC box.  However, none of the six CDs seems to be able to boot the 715-75.  I 
+am planning to make an install CD.  Please tell me what files should be on the 
+CD that I will create.
 
-yes - so I went on a very short goose chase.
-ide_insw_mm stuff should be fine too.
+Thanks in advance
+jack dunn
 
-thanks,
-grant
+PS I have reset the CD to use 512 blocks not 2096
+
+-------------------------------1078001692
+Content-Type: text/html; charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+
+<HTML><HEAD>
+<META charset=3DUS-ASCII http-equiv=3DContent-Type content=3D"text/html; cha=
+rset=3DUS-ASCII">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial; BACKGROUND-COLOR: #fffff=
+f">
+<DIV>Gentlepersons:</DIV>
+<DIV>I recently purchased the "Woody" version of debian Linux for my 715-75=20=
+PA-RISC box.&nbsp; However, none of the six CDs seems to be able to boot the=
+ 715-75.&nbsp; I am planning to make an install CD.&nbsp; Please tell me wha=
+t files should be on the CD that I will create.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks in advance</DIV>
+<DIV>jack dunn</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>PS I have reset the CD to use 512 blocks not 2096</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+-------------------------------1078001692--
