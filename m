@@ -1,13 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: James Smith <james@compusmithllc.com>
-Cc: parisc <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Disk problems 
-In-Reply-To: Message from James Smith <james@compusmithllc.com>
-   of "27 Nov 2002 17:20:56 EST." <1038435657.1271.14.camel@seventy>
-References: <3DA3DE66000072D5@ocpmta4.be.tiscali.com>  <1038435657.1271.14.camel@seventy> 
-Date: Mon, 02 Dec 2002 22:01:58 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021203050158.234184829@dsl2.external.hp.com>
+Received: from mail.bitmover.com (bitmover.com [192.132.92.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39BA54829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Dec 2002 22:03:16 -0700 (MST)
+Date: Mon, 2 Dec 2002 21:00:59 -0800
+From: Larry McVoy <lm@bitmover.com>
+To: Randolph Chung <randolph@tausq.org>
+Cc: Larry McVoy <lm@bitmover.com>,
+	parisc-linux@lists.parisc-linux.org, phi@hpfrcu81.france.hp.com,
+	dev@bitmover.com
+Subject: Re: [parisc-linux] rlogin: connection closed (SOLUTION)
+Message-ID: <20021202210059.C9691@work.bitmover.com>
+References: <200212022154.gB2LsPc31908@work.bitmover.com> <20021203045657.GU21187@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021203045657.GU21187@tausq.org>; from randolph@tausq.org on Mon, Dec 02, 2002 at 08:56:57PM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,19 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-James Smith wrote:
-> how do i find the firmware number for the drives?
+On Mon, Dec 02, 2002 at 08:56:57PM -0800, Randolph Chung wrote:
+> In reference to a message from Larry McVoy, dated Dec 02:
+> > This fixes it.  Looks like a race, I wasn't inclined to dig further, this
+> > got me past the problem.  I suspect that parisc fork() runs parent/child
+> > in the opposite order from every other Unix and that causes a race but
+> > I have not looked.
+> 
+> Nah, this is not it. It's the problem with EAGAIN != EWOULDBLOCK on 
+> hppa-linux.
 
-grundler@c3k:~$ cat /proc/scsi/scsi
-Attached devices: 
-Host: scsi1 Channel: 00 Id: 05 Lun: 00
-  Vendor: SEAGATE  Model: ST118202LC       Rev: 7D04
-  Type:   Direct-Access                    ANSI SCSI revision: 02
-Host: scsi1 Channel: 00 Id: 06 Lun: 00
-  Vendor: SEAGATE  Model: ST118202LC       Rev: HP03
-  Type:   Direct-Access                    ANSI SCSI revision: 02
-grundler@c3k:~$ 
-
-"Rev" is the drive firmware.
-
-grant
+OK, whatever.  I just though the rlogin people would want to know.
+This seems to be a long standing and annoying bug.
+-- 
+---
+Larry McVoy            	 lm at bitmover.com           http://www.bitmover.com/lm 
