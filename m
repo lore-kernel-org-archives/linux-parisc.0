@@ -1,50 +1,43 @@
-Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id EAA29771
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 04:33:58 -0700
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13yBh2-0000al-00; Tue, 21 Nov 2000 11:34:32 +0000
-Date: Tue, 21 Nov 2000 11:34:32 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10
-Message-ID: <20001121113432.B883@parcelfarce.linux.theplanet.co.uk>
-References: <20001120111726.C5196@parcelfarce.linux.theplanet.co.uk> <200011201734.JAA18526@milano.cup.hp.com>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id GAA31149
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 06:10:30 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel1.hp.com (Postfix) with ESMTP id 7952821
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 08:12:44 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id GAA25238 for parisc-linux@puffin.external.hp.com; Tue, 21 Nov 2000 06:11:29 -0700 (MST)
+Date: Tue, 21 Nov 2000 06:11:29 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200011211311.GAA25238@udlkern.fc.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Subject: Re: CVS linux Vs. -test10
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200011201734.JAA18526@milano.cup.hp.com>; from grundler@cup.hp.com on Mon, Nov 20, 2000 at 09:34:31AM -0800
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Nov 20, 2000 at 09:34:31AM -0800, Grant Grundler wrote:
-> Ok. What's the first step to getting arch/parisc* and include/asm-parisc*
-> into Linus's tree?
+> > I had dinner with Bdale Garbee last night and one of two things he made
+> > clear was we need to unfork from debian and linus's tree in order to move
+> > forward. All our CVS branches need to become obsolete or "local sandboxes"
+> > of the respective upstream partners. Feeding kernel bits upstream will
+> > bring a new level of visibility (and *HELP*) to the parisc-linux port.
+>
+> that's true.  last time we discussed this several people were unhappy
+> with the idea of sending our current work to Linus.  Is anyone unhappy
+> with doing this now?
+>
 
-Someone (probably me) sends him a patch.  He told me at the Toronto
-show that he was quite happy to apply anything that only touched those
-two directories. (oh, and drivers/gsc wouldn't be a problem either).
-Can I just check that no-one wants to rename drivers/gsc again?  :-)
+Are we suggesting that we populate include/asm-parisc* and arch/parisc*
+WITHOUT the machine independent changes in the rest of the tree?
+If that is the case, I guess I don't object, although I would want
+to make sure that Linus knew the state of the code, and that it would
+not work without a patch containing changes to the machine independent
+part, and that followup patches to these branches are likely to be
+huge. We should also add a README in arch/parisc that explains the
+above (and where to get patches, how to access CVS, etc.). We also
+need someone to set up an automatic nightly? patch generator.
 
-> I had dinner with Bdale Garbee last night and one of two things he made
-> clear was we need to unfork from debian and linus's tree in order to move
-> forward. All our CVS branches need to become obsolete or "local sandboxes"
-> of the respective upstream partners. Feeding kernel bits upstream will
-> bring a new level of visibility (and *HELP*) to the parisc-linux port.
+I certainly don't want to try to get the machine independent changes in
+yet, since we still have some major issues to fix/clean there, and I doubt
+Linus would want them at this time anyway.
 
-that's true.  last time we discussed this several people were unhappy
-with the idea of sending our current work to Linus.  Is anyone unhappy
-with doing this now?
-
-> I also find it odd that glibc is merged upstream *before* the kernel is.
-
-glibc is more portable :-)
-
-> The part you described above is the easy part - np.
-> I'm worried about labels and tracking how we "name" the releases.
-> Mang or other CVS ninja's care to comment?
-
-don't tag it.  just commit it.  tags are laid down at big events, not
-when you fix bugs or undo changes.
-
--- 
-Revolutions do not require corporate support.
+John Marvin
+jsm@fc.hp.com
