@@ -1,48 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA01407
-	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 16:02:59 -0700
-Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
-  by mailserv2.iuinc.com with SMTP; 23 Jan 2001 23:06:42 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 6C3A7B005; Tue, 23 Jan 2001 22:56:55 +0000 (GMT)
-Date: Tue, 23 Jan 2001 22:56:55 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Josiah Carlson <jcarlson@macalester.edu>
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA01722
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 16:04:59 -0700
+Message-Id: <200101232308.SAA05005@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] crt1.o
-Message-ID: <20010123225654.B3571@linuxcare.com>
-References: <3A6E07B41A5.2E2CJCARLSON@smtp.macalester.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A6E07B41A5.2E2CJCARLSON@smtp.macalester.edu>; from jcarlson@macalester.edu on Tue, Jan 23, 2001 at 04:37:40PM -0600
+To: jcarlson@macalester.edu (Josiah Carlson)
+Date: Tue, 23 Jan 2001 18:08:49 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <3A6E0DA9DA.2E2DJCARLSON@smtp.macalester.edu> from "Josiah Carlson" at Jan 23, 2001 05:03:05 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jan 23, 2001 at 04:37:40PM -0600, Josiah Carlson wrote:
-> To summarize my current installation:
-> .5 image copied onto hard drive
-> base.tgz installed
-> nfsroot from 10-05-2000
-> ftp.deb (works great BTW)
-> 
-> >From here I've tried to configure MPICH for compilation...though I keep
-> getting a crt1.o not found error, even though it exists in /usr/lib.
-
-The quote below is from last October - don't know if it will help
-you.
-
-Richard
-
-
-> > 10:~# make mlock 
-> > cc     mlock.c   -o mlock
-> > /usr/bin/ld: cannot open crt1.o: No such file or directory
-> > collect2: ld returned 1 exit status
-> > make: *** [mlock] Error 1
+> > > Just to try something out...I 'm curious as to which file contains the
+> > > listing of paths that are searched for libraries by gcc or g++ (or in
+> > > general all paths searched by the shell for execution), does anyone know
+> > > which file that is?
 > > 
-> > 
+> > Try running gcc with `-print-search-dirs'.  You can get complete list of gcc
+> > options with `-v --help'.  `-v' may help to see how linker is being run.
 > 
-> According to Bdale, the fix is:
-> 
-> ln -s /usr/lib /usr/hppa-linux/lib
-> 
-> randolph
+> I suppose I should have said so...but the actual command being used to
+> find the libraries is ld.  I've tried to figure that command out...but
+> it's not liking me at all.
+> I have not tried the -print-search-dirs on my HP machine, but will
+> tomorrow.
+> Though in general, how do I add paths to be searched by the OS?
+> Thank you,
+
+Gcc has builtin defaults.  You shouldn't need to specify a search patch
+for crt0.o.  Including `-v' on the gcc command will show the stuff that
+is being passed to ld.
+
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
