@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 72E184829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 10:39:12 -0700 (MST)
-Date: Sat, 9 Nov 2002 16:31:46 +0000 (UTC)
-From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-To: Matthew Wilcox <willy@debian.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6BC65482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 10:50:14 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18AZkI-00026b-00; Sat, 09 Nov 2002 17:50:10 +0000
+Date: Sat, 9 Nov 2002 17:50:10 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel build: make palo
-In-Reply-To: <20021109145939.U12011@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.BSF.4.44.0211091614510.32930-100000@e0-0.zab2.int.zabbadoz.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
+Message-ID: <20021109175010.V12011@parcelfarce.linux.theplanet.co.uk>
+References: <200211090128.RAA31693@adam.yggdrasil.com> <adam@yggdrasil.com> <20021109015611.571B44829@dsl2.external.hp.com> <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk> <willy@debian.org> <20021109170206.DA635482A@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021109170206.DA635482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sat, Nov 09, 2002 at 10:02:06AM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,74 +25,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 9 Nov 2002, Matthew Wilcox wrote:
+On Sat, Nov 09, 2002 at 10:02:06AM -0700, Grant Grundler wrote:
+> Right. I'm convinced support for V-class (PCI, IO Coherent) will happen
+> before T-class (propritary busses, !IO-coherent). Later FGHI-class also
+> use PCX-L CPU and thus should be ok. rbrad, christoph and a few others
+> are working on support for those machines but I know SCSI on those
+> machines is SPIFI-based (HP SCSI controller). In short, looks like
+> your observations about 53c720 might be one of the few problematic
+> drivers.
 
-> > > Then one could do
-> > > 	make dep && make bzImage && make modules
-> > > as user, the switch to su and do a
-> > > 	make modules_install && make palo
-> > > or even run palo by hand...
->
-> Nothing stops you from doing:
->
-> make vmlinux
-> sudo make palo
->
-> as two separate steps.
+F-I class kept PCX-T processors to the bitter end.  You're thinking of
+E class, I think, which are all PCX-L.  Really, we're just waiting for
+a V class to turn up in resource recovery to start work ;-)
 
-yeah, but that's not the default (==documented) way of building a
-linux kernel ;-)
+Looking at the T600 in the hwdb..
+        Miura LAN/Console (J2146A) -- completely unlike anything else
+	Countach LAN/Console -- same as Diablo & KittyHawk CSY LAN/Console,
+				doubt we care.
+	Skunk SCSI -- its the SPIFI chip, probably supportable.
+	Wizard SCSI -- also in E/K class, probably supportable too.
+	Skunk Centronics -- also in E/K class, probably supportable.
+	Emerald Console -- unique
+	Java IOA -- unique
 
-linux/README:
-" - Do a "make bzImage" to create a compressed kernel image."
-
-it does not say "and update the config etc of your bootloader"
-
-
-Also one does not need to run palo if one only substitutes a kernel
-image in an ext2 fs I think. So this run does not seem to be
-neccessary by default.
-
-
-
-I suggest s.th. like the following (untested):
-
---- linux/arch/parisc/Makefile.orig	2002-11-09 14:43:40.000000000 +0000
-+++ linux/arch/parisc/Makefile	2002-11-09 16:19:46.000000000 +0000
-@@ -82,7 +82,7 @@
- libs-y					+= arch/parisc/lib/ \
- 					   `$(CC) -print-libgcc-file-name`
-
--palo: vmlinux
-+palo:
- 	@if [ $$(palo -f /dev/null >/dev/null 2>&1 ; echo $$?) != 2 ]; then \
- 		echo 'ERROR: Please install palo first (apt-get install palo)';\
- 		echo 'or build it from source and install it somewhere in your $$PATH';\
-@@ -101,19 +101,19 @@
- 	export TOPDIR=`pwd`; \
- 	unset STRIP LDFLAGS CPP CPPFLAGS AFLAGS CFLAGS CC LD; cd ../palo && make lifimage
-
--Image: palo
-+Image: vmlinux
-
- Image-clean:
-
- ramdisk.o:
-
--zImage: palo
-+zImage: vmlinux
-
--bzImage: palo
-+bzImage: vmlinux
-
- compressed: zImage
-
--install:
-+install: palo
-
- archmrproper:
-
+there's actually less unsupportable hardware in there than i thought,
+but i'm still not really interested in it.
 
 -- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+Revolutions do not require corporate support.
