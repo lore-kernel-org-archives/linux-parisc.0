@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Graham Donaldson <Graham_Donaldson@psl-dist.co.uk>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Graphics support 
-In-Reply-To: Message from Graham Donaldson <Graham_Donaldson@psl-dist.co.uk>
-   of "Thu, 31 Jan 2002 17:59:04 GMT." <3765AD6E3C88D211A92400A0C9A4F70E0119D735@lawrence.psl-dist.co.uk>
-References: <3765AD6E3C88D211A92400A0C9A4F70E0119D735@lawrence.psl-dist.co.uk> 
-Date: Thu, 31 Jan 2002 11:04:03 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020131180403.86D6F482A@dsl2.external.hp.com>
+Received: from smtp015.mail.yahoo.com (smtp015.mail.yahoo.com [216.136.173.59])
+	by dsl2.external.hp.com (Postfix) with SMTP id 30D72482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 31 Jan 2002 22:47:44 -0700 (MST)
+Message-ID: <3C5A2E56.2030805@yahoo.com>
+Date: Fri, 01 Feb 2002 05:57:42 +0000
+From: Jbit of Plasma <james_a_n_lee@yahoo.com>
+MIME-Version: 1.0
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Odd kernel error
+References: <Pine.LNX.4.33.0201291938520.3623-100000@goliath.alaskatech.org> <20020130221939.A3166@solo.franken.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,53 +21,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Graham Donaldson wrote:
-> Hi,
-> 
-> 	I notice PA-RISC Linux has X11 working now, but I gather that is via
-> the STI?  Is that correct?  Would that make it pretty slow?
+Hi,
+If you change the drivers/video/sti/Makefile to ...
+obj-$(CONFIG_STI_CONSOLE) += sticore.o sticon.o ../fbcon-sti.o
+and somehow get ../fbcon-sti.o to compile, it works perfect...
+Theres proberly a better way to get it compiled and linked in, but this way seems to work (even with the Advanced driver stuff enabled)
+BTW: is it possible to get a 712 to display more then 8bpp? If so, is any work being done on it?
 
-STI is just the interface to present text on the graphics head.
-Frame Buffer driver actually, iirc.
+--jbit
 
-> 	I just wondered if you could give me any information on the status
-> of a proper graphics driver for PARISC Linux, it seems HP is being funny
-> about letting people have the docs for their chipsets maybe?
+ 
 
-Funny? That's a very polite way of putting it.
-TCD doesn't seem to be interested in publishing those docs.
 
-grant
 
-> Also though I
-> wanted to consider whether use would be made of HP's colour recovery
-> technology?  From what I have read, currently in HPUX you must compile your
-> apps to support the Colour Recovery extension.  However, would it be
-> possible for this to be inbuilt somehow into the XServer when a proper
-> driver exists for it?  Many of the lower end workstations only have an 8bit
-> framebuffer but do support Colour Recovery, and with apps like gnome and gtk
-> making extensive use of high colour graphics, it seems a shame to not use
-> this probably under utilised HP technology.
-> 
-> Thanks for reading,
-> 
-> Graham Donaldson
-> Technical Consultant
-> 
-> Email: 	graham_donaldson@psl-dist.co.uk
-> Tel:      01706 898285
-> Fax: 	01706 898200
-> 
-> PSL - Partner Services 
-> 'The partner of choice for the provision of quality IT services to UK and
-> Ireland channel partners'
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com
