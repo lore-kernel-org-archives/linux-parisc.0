@@ -1,16 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Randolph Chung <tausq@debian.org>
 Subject: Re: [parisc-linux] gcc-3.3 configuration
-Date: Tue, 20 May 2003 21:02:27 -0400 (EDT)
-Message-ID: <200305210102.h4L12S7U007116__37876.7002760016$1416622471$gmane$org@hiauly1.hia.nrc.ca>
-References: <1053473168.31455.21.camel@dhcp22.swansea.linux.org.uk>
+Date: Tue, 20 May 2003 22:23:51 -0700
+Message-ID: <20030521052351.GV548__29873.0145827451$1416622472$gmane$org@tausq.org>
+References: <16074.48509.259405.775905@gargle.gargle.HOWL>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: willy@debian.org, doko@cs.tu-berlin.de,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org,
-	debian-gcc@lists.debian.org, m68k-build@nocrew.org
-To: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Content-Type: text/plain; charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+	m68k-build@nocrew.org
+To: Matthias Klose <doko@cs.tu-berlin.de>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <1053473168.31455.21.camel@dhcp22.swansea.linux.org.uk> from "Alan Cox" at May 21, 2003 00:26:10 am
+In-Reply-To: <16074.48509.259405.775905@gargle.gargle.HOWL>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,16 +22,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> On Mer, 2003-05-21 at 01:08, Matthew Wilcox wrote:
-> > I'm not sure it's my call to make; I can see arguments on both sides.
-> 
-> Thats at least one of the reasons. Reputation capital is a wonderous
-> thing. Accept reality, you are the Linus of parisc Linux like it or not
-> 8)
+> If yes, does the following approach work: Build a libstdc++5-3.3,
+> conflicting with libstdc++5 (including libstdc++ with the same soname)
+> and doing binary uploads for hppa for all libstdc++5 dependent
+> packages? (The same could be done for m68k, but the compatibility
+> argument doesn't hold as Debian seems to be the only m68k based
+> distro).
 
-I agree.
+Aside from the evilness of doing binNMUs of this magnitude, I doubt a
+"transition" that doesn't change the SONAME will work. As soon as the
+new libstdc++ is installed, every c++ app on the box will instantly
+break. This means if anything happens e.g. to apt during the update, the
+system will get into a very nasty state. I don't think this is worth it.
 
-Dave
+If we need to change the SONAME, then there's no binary compatibility
+anyway...
+
+As willy mentioned in his other email, if other distros want binary
+compatibility, they should follow what Debian is doing (on hppa), since
+Debian was there first :-)
+
+my 2 cents,
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
