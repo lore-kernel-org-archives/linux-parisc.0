@@ -1,15 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 20 Dec 2002 21:34:48 -0700
-To: James Bottomley <James.Bottomley@steeleye.com>
-Cc: Randolph Chung <randolph@tausq.org>,
+Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BBAF94829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 22:03:42 -0700 (MST)
+Received: (from root@localhost)
+	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id VAA14452
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 21:03:37 -0800
+Received: from mulgrave (jejb@localhost)
+	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gBL53XV11940;
+	Fri, 20 Dec 2002 23:03:33 -0600
+Message-Id: <200212210503.gBL53XV11940@localhost.localdomain>
+To: grundler@dsl2.external.hp.com (Grant Grundler)
+Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+	Randolph Chung <randolph@tausq.org>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.5 randomly kills applications with page faults
-Message-ID: <20021221043448.GB26293@dsl2.external.hp.com>
-References: <20021221013824.GA18983@dsl2.external.hp.com> <200212210146.gBL1kvv11019@localhost.localdomain>
+Subject: Re: [parisc-linux] 2.5 randomly kills applications with page faults 
+In-Reply-To: Message from grundler@dsl2.external.hp.com (Grant Grundler)
+   of "Fri, 20 Dec 2002 21:34:48 MST." <20021221043448.GB26293@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200212210146.gBL1kvv11019@localhost.localdomain>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Date: Fri, 20 Dec 2002 23:03:33 -0600
+From: James Bottomley <James.Bottomley@steeleye.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,26 +31,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Dec 20, 2002 at 07:46:57PM -0600, James Bottomley wrote:
-> Actually, I found STREG,ma and LDREG,mb worked for me.
+grundler@dsl2.external.hp.com said:
+> I'm worried about sr7 getting modified without the user stack pointer
+> getting saved to the proper place. It might not be a problem at all. I
+> just don't know all the uses of user/kernel stacks in the interrupt
+> code paths. I'm wondering if the entire code sequence I quoted needs
+> to block interrupts while setting up the syscall. 
 
-doh! of course!
-those are cpp macros, not asm macros.
+I don't think that's a problem.
 
-> > but, given the assertion we could take an interrupt between line 96 and
-> > 107, would an interrupt between 95/96 cause Bad Things (tm) to happen?
-> 
-> Not according to the parisc assembler manual.  As long as we can guarantee 
-> that the stack is incremented before the value is stored (which seems to be 
-> what STREG,ma seems to assure), we should be fine.
+An interruption can occur anywhere, and thus it saves all registers.  The only 
+problem is that on parisc there aren't separate irq stacks, so the 
+interruption expects to be able to use the current kernel stack (whatever it 
+is).  As long as the kernel stack is always correctly set up when %sr7 points 
+to kernel space, we should be fine.  If we take an interruption before zeroing 
+sr7, we go through the procedure to obtain a kernel stack for an executing 
+user process (however, in this case, the interruption will stash the registers 
+in the task structure, so we can't modify the task structure until we've 
+changed sr7 to kernel space).  Also note, we can't use the kernel stack until 
+sr7 is in kernel space.
 
-I'm not worried about the atomicity of the instruction.
-
-I'm worried about sr7 getting modified without the user stack
-pointer getting saved to the proper place. It might not be a
-problem at all. I just don't know all the uses of user/kernel
-stacks in the interrupt code paths. I'm wondering if the entire
-code sequence I quoted needs to block interrupts while setting
-up the syscall.
-
-grant
+James
