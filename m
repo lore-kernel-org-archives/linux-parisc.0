@@ -1,48 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2A302482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 15:53:50 -0600 (MDT)
-Message-Id: <200104092147.PAA29161@puffin.external.hp.com>
-To: Bjorn Helgaas <bjorn_helgaas@hp.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 94D45482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 16:20:24 -0600 (MDT)
+Message-Id: <200104092213.QAA29325@puffin.external.hp.com>
+To: "Gorbunov D.L." <dlynx@mail.ru>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] PDC cleanup and encapsulation 
-In-Reply-To: Your message of "Wed, 04 Apr 2001 16:04:22 PDT."
-             <0104041450480D.19560@eeyore.fc.hp.com>
-Date: Mon, 09 Apr 2001 15:47:20 -0600
+Subject: Re: [parisc-linux] PA-RISK Linux 
+In-Reply-To: Your message of "Fri, 06 Apr 2001 09:43:47 +0400."
+             <001601c0be5c$9af6ad20$0b2aa8c0@dg>
+Date: Mon, 09 Apr 2001 16:13:13 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bjorn Helgaas wrote:
-> CONFIG_PARISC64 =>
-> 	Only possible when CONFIG_PA20 selected
-> 	Build 64-bit kernel by using $(CROSS_COMPILE) = hppa64-linux.
+"Gorbunov D.L." wrote:
+> Dear sirs!
+> Our office in 1996 buy HP9000(D-class) with hot-swap hdd, but now we =
+> have some problem with software for this system.
 
-rhirst and I don't modify linux/Makefile for CROSS_COMPILE.
-Now automagically based on the .config options selected.
+Gorbunov,
+You need to read the "fine print" before jumping in with both feet.
+See http://www.parisc-linux.org/hardware/index.html and our FAQ
+at http://www.parisc-linux.org/faq/index.html.
 
-> 	cpp predefines __LP64__.
-> 
-> So is there a reason for testing __LP64__ rather than CONFIG_PARISC64 in 
-> the code?  There are a zillion tests for the former and none for the 
-> latter, even though the latter seems more direct and obvious.
+> I try to install PA-RISK Linux from bootable CDROM (I get iso-image via =
+> your FTP-site).
 
-CONFIG_PARISC64 wasn't available when I wrote my code.
-Most of my code uses __LP64__ though I think including linux./config.h
-is better since when it changes, the .o's get rebuilt.
+Which version of the ISO image did you get?
 
-> It seems to me that __LP64__ is overloaded for several things.  
-> Fundamentally, it is a property of the kernel, i.e., it is compiled to run 
-> in wide mode. But we also use it to decide whether to use PDC PAT, which 
-> seems like a slightly different question.  If you run a narrow kernel on a 
-> C3000, the firmware still supports PDC PAT
+> But after some minutes, I see next mesagge - Kernel Faults - code 15, =
+> regs - c9fe8840 (addr =3D f6632087),
+> and system stopped.=20
+>   Could not you suggest, where I can find iso-image bootable CDROM with =
+> PA-RISK Linux for HP9000 (d-class)?
 
-I didn't think so. A narrow kernel won't have PDC PAT *calls*
- (eg do_inventory) in it.
+We (HP) have not made any effort to support parisc-servers other than A180,
+A500, and L2000. However, much of the technology in D and K-class systems 
+is the same as what's in workstations of the same generation. Nearly all
+of the older workstations are supported to some degree.
 
->  (although I suppose we would have to do some work to call it in wide mode).
-
-We considered doing this but decided it wasn't worth the effort.
-Others are welcome to make this work if they have time to though...
+If you (or anyone else) has patches to support D or K-class machines, I'll
+help review and integrate them since they are most likely going to be IO
+related.
 
 grant
 
