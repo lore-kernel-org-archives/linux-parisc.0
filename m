@@ -1,45 +1,66 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viemta05.chello.at (viemta05.chello.at [195.34.133.55])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 51BB7482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Apr 2001 15:43:13 -0600 (MDT)
-Received: from dot.at ([62.178.92.247]) by viemta05.chello.at
-          (InterMail vK.4.03.02.00 201-232-124 license 6aea1bd1f01aef5a9a73363c16ebee43)
-          with ESMTP id <20010416214310.PRGM29087.viemta05@dot.at>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Mon, 16 Apr 2001 23:43:10 +0200
-Sender: chris@dsl2.external.hp.com
-Message-ID: <3ADB676F.473EB406@dot.at>
-Date: Mon, 16 Apr 2001 23:43:11 +0200
-From: Christoph Plattner <christoph.plattner@dot.at>
+Received: from khan.acc.umu.se (khan.acc.umu.se [130.239.18.139])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B7F2D482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Apr 2001 22:54:17 -0600 (MDT)
+Received: from nasse.acc.umu.se (maswan@nasse.acc.umu.se [130.239.18.207])
+	by khan.acc.umu.se (8.11.2/8.11.2) with ESMTP id f3H4sGk03952
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Apr 2001 06:54:16 +0200 (MEST)
+Date: Tue, 17 Apr 2001 06:54:15 +0200 (MET DST)
+From: Mattias Wadenstein <maswan@acc.umu.se>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.GSO.4.33.0104170639220.12304-100000@nasse.acc.umu.se>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] one problem with base-20010404 on 720, no problems on E55
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] gcc segfault when building screen
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello PA-RISC group(s)!
+"apt-get -b source screen" gives this after a while:
 
-Thanks again for your good work.
+acls.c: In function `AclSetPerm':
+acls.c:845: Internal error: Segmentation fault
+Please submit a full bug report, with preprocessed source if appropriate.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 
-The new tarball "base-20010404" has a problem on my 9000/720. Some
-commands begin to block (I have not debugged yet).
-For example a 
-	ls -l /
-blocks. It outputs "total 24" or whatever, but no files are displayed,
-and the command blocks (no prompt comes again).
+I have done this twice and gotten the segfault in the same place.
 
-On my E55 server (9000/856) the base-20010404 works perfect !! 
-An "ls -l /" works perfectly as expected.
+Some output:
 
-The blocking on the 720 I also saw on some other commands, but I don't 
-remember at the moment.
+do_page_fault() pid=13654 command='cc1' type=15 address=0x00000008
 
-With friendly regards
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111000001111
+r0-3     00000000 0027d024 0012a85b 00000000
+r4-7     002a2270 00000000 00000000 00000000
+r8-11    00000020 00000000 00249824 00000007
+r12-15   0000001c 0027d024 0027d024 0024a024
+r16-19   00000000 00000021 0021ef14 003a08b8
+r20-23   00000000 003a08d8 40149ec8 00000018
+r24-27   00000024 00000040 003a08b8 00247824
+r28-31   003a08b8 003a08b0 bff01180 000bdb07
+sr0-3    00000c64 00000c64 00000000 00000c64
+sr4-7    00000c64 00000c64 00000c64 00000c64
 
-	Christoph Plattner
+IASQ: 00000c64 00000c64 IAOQ: 0012a86b 0012a86f
+ IIR: 0c701093    ISR: 00000c64  IOR: 00000008
+ORIG_R28: 4052ea60
 
+do_page_fault() pid=14793 command='cc1' type=15 address=0x00000008
 
--- 
--------------------------------------------------------------------------
-private:	christoph.plattner@dot.at
-company:	christoph.plattner@alcatel.at
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111000001111
+r0-3     00000000 0027d024 0012a85b 00000000
+r4-7     002a2270 00000000 00000000 00000000
+r8-11    00000020 00000000 00249824 00000007
+r12-15   0000001c 0027d024 0027d024 0024a024
+r16-19   00000000 00000021 0021ef14 003a08b8
+r20-23   00000000 003a08d8 40149ec8 00000018
+r24-27   00000024 00000040 003a08b8 00247824
+r28-31   003a08b8 003a08b0 bff01180 000bdb07
+sr0-3    000018bc 000018bc 00000000 000018bc
+sr4-7    000018bc 000018bc 000018bc 000018bc
+
+IASQ: 000018bc 000018bc IAOQ: 0012a86b 0012a86f
+ IIR: 0c701093    ISR: 000018bc  IOR: 00000008
+ORIG_R28: 4052ea60
+
+/Mattias Wadenstein - trying to build some stuff
