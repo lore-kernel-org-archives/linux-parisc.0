@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BBC1487F
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 14:57:36 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18nQbN-0000sH-00; Mon, 24 Feb 2003 21:57:33 +0000
-Date: Mon, 24 Feb 2003 21:57:33 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Andrew Cagney <ac131313@redhat.com>
-Cc: Matthew Wilcox <willy@debian.org>, law@redhat.com,
-	Alan Modra <amodra@bigpond.net.au>, binutils@sources.redhat.com,
-	parisc-linux@parisc-linux.org
-Message-ID: <20030224215733.O2938@parcelfarce.linux.theplanet.co.uk>
-References: <20030224182328.M2938@parcelfarce.linux.theplanet.co.uk> <200302241839.h1OIdqBf016932@localhost.redhat.com> <20030224184225.N2938@parcelfarce.linux.theplanet.co.uk> <3E5A936F.6070401@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E5A936F.6070401@redhat.com>; from ac131313@redhat.com on Mon, Feb 24, 2003 at 04:49:35PM -0500
+Received: from localhost.redhat.com (to-wiznet.redhat.com [216.129.200.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D3144884
+	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 15:09:03 -0700 (MST)
+Message-ID: <3E5A9887.8090209@redhat.com>
+Date: Mon, 24 Feb 2003 17:11:19 -0500
+From: Andrew Cagney <ac131313@redhat.com>
+MIME-Version: 1.0
+To: Matthew Wilcox <willy@debian.org>
+Cc: law@redhat.com, Alan Modra <amodra@bigpond.net.au>,
+	binutils@sources.redhat.com, parisc-linux@parisc-linux.org
+References: <20030224182328.M2938@parcelfarce.linux.theplanet.co.uk> <200302241839.h1OIdqBf016932@localhost.redhat.com> <20030224184225.N2938@parcelfarce.linux.theplanet.co.uk> <3E5A936F.6070401@redhat.com> <20030224215733.O2938@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Subject: [parisc-linux] Re: [PATCH] space register 0 changes for hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -27,22 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Feb 24, 2003 at 04:49:35PM -0500, Andrew Cagney wrote:
-> > get binutils cvs to build a cross i386->hppa gdb dies in tix (no tk8.4
-> > directory), trying with just `make all-binutils all-gdb' dies being
-> > unable to find dl.h or machine/save_state.h.
+> On Mon, Feb 24, 2003 at 04:49:35PM -0500, Andrew Cagney wrote:
 > 
-> Unfortunatly, no one got the i386->hppa GDB to build so asking you to do 
-> that isn't reasonable.  If you've a hppa-linux-gnu box, can you just try 
-> binutils, `objdump --disassemble`?
+>> > get binutils cvs to build a cross i386->hppa gdb dies in tix (no tk8.4
+>> > directory), trying with just `make all-binutils all-gdb' dies being
+>> > unable to find dl.h or machine/save_state.h.
+> 
+>> 
+>> Unfortunatly, no one got the i386->hppa GDB to build so asking you to do 
+>> that isn't reasonable.  If you've a hppa-linux-gnu box, can you just try 
+>> binutils, `objdump --disassemble`?
+> 
+> 
+> Yep, I can build binutils head-of-cvs just fine as a crosscompiler,
+> and objdump --disassemble does the right thing.  Jeff's concern is that
+> this intended output change might break the gdb testsuite.
+> 
+> fwiw, it doesn't break the binutils `make check' ;-)
 
-Yep, I can build binutils head-of-cvs just fine as a crosscompiler,
-and objdump --disassemble does the right thing.  Jeff's concern is that
-this intended output change might break the gdb testsuite.
+If that happens `oops'.  GDB's HP/PA support isn't maintained.
 
-fwiw, it doesn't break the binutils `make check' ;-)
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Andrew
