@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5CEA34962
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 11:54:41 -0600 (MDT)
-Date: Tue, 26 Aug 2003 19:54:38 +0200
-Message-ID: <3F2A5B0400005FBB@ocpmta1.freegates.net>
-In-Reply-To: <20030825164553.GB28778@dsl2.external.hp.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B2F0C487A
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Aug 2003 14:03:55 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 19rk2k-0006xv-Gv; Tue, 26 Aug 2003 21:03:54 +0100
+Date: Tue, 26 Aug 2003 21:03:54 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: =?iso-8859-1?Q?Martin-=C9ric?= Racine <q-funk@pp.fishpool.fi>
+Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
+Message-ID: <20030826200354.GT22294@parcelfarce.linux.theplanet.co.uk>
+Reply-To: parisc-linux@parisc-linux.org
+References: <200308261202100660.00729583@smtp1.sympatico.ca> <Pine.LNX.4.21.0308262125490.16192-100000@hal.pp.fishpool.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <Pine.LNX.4.21.0308262125490.16192-100000@hal.pp.fishpool.fi>
+Subject: [parisc-linux] Re: kernel 2.6 for hppa status?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,35 +26,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->> 
->The additional CPUs just reference (ie load) the shared data using
->the same address. AFAIK, a cacheline will get loaded as "shared clean"
->until someone writes to it - which is when the cacheline ping-pong
->starts.
+On Tue, Aug 26, 2003 at 09:29:35PM +0300, Martin-Éric Racine wrote:
+> Greetings,
+> 
+> Having just tried kernel 2.6 (the release candidate found in unstable) on i386,
+> I found it to bring a _tremendous_ improvement in responsiveness and especially
+> in userspace stuff like XFree. Given how this 712 is the slowest machine in my
+> LAN, I was wondering if any work is being done on 2.6 for hppa and when is the
+> first release expected?  Thanks!
 
-Ok I will have to re-read and again and again (each world is very important
-in this book all short-cut is fatal for a good understanding)
+-> parisc-linux.org where we have 2.6.0-test4.
+When might there be a debian package for it?  Don't know, not my department.
+But the -pa patch is a tiny fraction of the size of the 2.4 patch, so it'll
+be much easier for everyone.
 
->> Can you tell me more: in a previous piminfo collected I got for CPU#3
-(3
->> is the "address" of the second cpu)
-
->PAT PDC (L-/N-class and A500) have hard coded numbers for CPUs.
->parisc-linux only uses logical CPU numbers to avoid sparsely populated
->arrays. parisc-linux can get the  "Physical CPU #" from PAT PDC.
->See code inside USE_PAT_CPUID in arch/parisc/kernel/processor.c.
->You might hack that code a bit so you can correlate logic to physical
->CPU numbers.
-
-(I would do so later), I mean i would like to find the 'psw' value in a piminfo
-listing (whatever the form it is: oct, hex, bin) to learn more about cpu
-status at the panic moment (sorry for confusion but English is not my mother
-tongue and frequently i still have pb to make understand my thought:) )
-
-Thanks again,
-    Joel
- 
-
--------------------------------------------------------------------------
-Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
-http://reg.tiscali.be/default.asp?lg=fr 
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
