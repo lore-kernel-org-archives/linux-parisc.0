@@ -1,33 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0F361482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 09:32:46 -0600 (MDT)
-Date: Thu, 11 Oct 2001 17:31:14 +0200 (CEST)
-From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] puffin.external.hp.com,... unreachable through
- quest
-In-Reply-To: <Pine.BSF.4.30.0110101837030.758-100000@noc.zabbadoz.net>
-Message-ID: <Pine.BSF.4.30.0110111727280.758-100000@noc.zabbadoz.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from xo.hp.is (xo.hp.is [194.105.242.199])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 36C52482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 10:47:37 -0600 (MDT)
+Received: (from ra@localhost)
+	by xo.hp.is (8.11.6/RA-8.11.6) id f9BGlZi06973
+	for parisc-linux@lists.parisc-linux.org; Thu, 11 Oct 2001 16:47:35 GMT
+Date: Thu, 11 Oct 2001 16:47:35 +0000
+From: Richard Allen <ra@hp.is>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011011164735.I4861@hp.is>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] B2000
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 10 Oct 2001, Bjoern A. Zeeb wrote:
+I just got a B2000 in and I decided to test it with Linux.
 
-> The prob still seems to exist from what I can tell from here :(
+The B2000 is a strange beast.  It's got USB keyboard and mouse.
+It has a IDE cdrom drive.
 
-Hi,
+The 0.92 iso began booting and loaded the kernel.   It's console (B2000
+is a workstation with a graphical console) went blank and the screen went
+into powersaving mode.
 
-sorry for answering my own posting but as Jurriaan Kalkman reported to
-me puffin et al are reacheable again via kpn/quest. I tested from my
-sites an can affirm this.
+Judging by the front panel LCD, things went very bad ;)   It was cycling
+through many HPMC and FLT codes.
 
-:)
+FLT CBF4: SYS BD
+Bad OS HPMC cksm
 
-Thanks
+FLT CBFC: SYS BD
+Os hpmc br err
+
+FLT CBF0: SYS BD
+HPMC initiated
+
+FLT 500B: SYS BD
+Bus timeout
+
+
 
 -- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
+               --  Solaris 7 Certified Systems and Network Administrator.
+Bell Labs Unix --  Reach out and grep someone.
+Those who do not understand Unix are condemned to reinvent it, poorly.
