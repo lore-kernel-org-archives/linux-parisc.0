@@ -1,33 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18A5D4A19
-	for <parisc-linux@parisc-linux.org>; Sun,  4 Feb 2001 15:39:33 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id DE3FAB005; Sun,  4 Feb 2001 22:40:15 +0000 (GMT)
-Date: Sun, 4 Feb 2001 22:40:15 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] New toolchain debs available
-Message-ID: <20010204224015.H1374@linuxcare.com>
-References: <20010202004849.31AED3873B@carmen.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010202004849.31AED3873B@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Thu, Feb 01, 2001 at 05:48:49PM -0700
+Received: from sgate.charlysworld.de (pD95055C6.dip.t-dialin.net [217.80.85.198])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DD5F34A19
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Feb 2001 16:29:34 -0700 (MST)
+Received: from localhost (xam@localhost)
+	by sgate.charlysworld.de (8.11.0/8.11.0) with ESMTP id f14NTRC00787
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 5 Feb 2001 00:29:28 +0100
+Date: Mon, 5 Feb 2001 00:29:27 +0100 (CET)
+From: "M. Grabert" <xam@deathsdoor.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0102050015450.385-100000@sgate.charlysworld.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] HP9000/730 problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Feb 01, 2001 at 05:48:49PM -0700, Matt Taggart wrote:
-> I have built new hppa debian packages of our current binutils, gcc, and glibc 
-> cvs bits. They are available at,
-> 
-> ftp://puffin.external.hp.com/ftp/pub/parisc/binaries/new-debs/debian/
-> ...
-> Several people are also working to populate that directory with other debs 
-> built with these tools. Report any failures to the list.
+Hello there,
 
-Would one of those wonderful people try to build modutils and drop
-it in there please?  It should build fine for parisc from the
-debian source these days.
+i'm still trying running linux on hppa :-/
 
-Thanks,
-  Richard
+well, i tried both booting from scsi hd AND nfsroot/bootp
+
+everytime it says (endless loop):
+
+
+VFS: Mounted root (nfs filesystem) readonly
+
+handle_interruption() pid=1 command='init'
+
+
+PSW: 0000000000 [snip stack output]
+
+
+(the same for booting from scsi hd)
+
+Mhhh.
+
+BTW, ASP Parallel Port driver is still broken (can't boot with it,
+but can boot without it).
+
+STI console is also broken (many characters are not printed or substitued
+by spaces). The problems occur of course AFTER "switching console" !
+
+But serial console works fine :)
+
+
+Configuration: latest CVS kernel from 20010204 (about 17:00 UTC);
+xc somewhere from november, the same for nfsroot.
+
+I hope somebody can help!
+Thanks In Advance,
+  greetings (somewhat frustrated) max
