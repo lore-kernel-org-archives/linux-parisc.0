@@ -1,28 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 67733482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 12:57:08 -0600 (MDT)
-Message-Id: <200110111853.MAA29934@puffin.external.hp.com>
-To: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] FW: SKB errors 
-In-Reply-To: Message from "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
-   of "Tue, 09 Oct 2001 07:53:07 +0200." <1A8904C3797ED411AC2E0008C7E6F88117C9E8@nlntmail2b.ats.nld.alcatel.nl>
-Date: Thu, 11 Oct 2001 12:53:49 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from solo.franken.de (pD951C8C1.dip.t-dialin.net [217.81.200.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE39C482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 13:29:16 -0600 (MDT)
+Date: Thu, 11 Oct 2001 21:28:03 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: norbert.naether@leica-microsystems.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HPA4552A, stifb
+Message-ID: <20011011212803.A1661@solo.franken.de>
+References: <OF4ACC8BA3.E1FA8942-ONC1256AE2.0037A5B7@leica.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <OF4ACC8BA3.E1FA8942-ONC1256AE2.0037A5B7@leica.co.uk>; from norbert.naether@leica-microsystems.com on Thu, Oct 11, 2001 at 12:27:13PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Witvliet, Hans" wrote:
-> All went reasonably well but after some time I got a very annoying lot of
-> error messages:
+On Thu, Oct 11, 2001 at 12:27:13PM +0200, norbert.naether@leica-microsystems.com wrote:
+> the C200 VISUALIZE with an HPA4552A graphic board (SUMMIT fx2) is finally
+> running sticon. :-)
+
+cool, I've checked, whether I get the same on my FX6. And it works:-)
+
+> I only added the PCI device ID to sti_pci_tbl[ ] in sticore.c :
 > 
-> ip_local_deliver: bad loopback SKB PRE_ROUTING LOCAL_IN
-> SKB: pf=2 (unowned) dev=lo len=328
-> Proto=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+> { PCI_VENDOR_ID_HP, 0x1008, PCI_ANY_ID, PCI_ANY_ID, 0 ,0, 0}
 
-I just asked the same questions last week.
-See the archives at lists.parisc-linux.org.
-Short answer is get a newer kernel from the
-puffin.external.hp.com ftp site (pub/parisc/binaries/kernel, iirc)
+I'm going to commit that change later.
 
-grant
+Is there a reason for the #if 1 /* FIXME: */ in sticore.c ? Which machines
+will lockup, if PCI graphics boards are enabled ?
+
+> Now, I did some (more or less stupid..) things in stifb.c. With one
+> (expected) result:  *take the power cord !* ;-)
+> Is there anything I could do, to get this device running the framebuffer
+> driver ?
+
+no way without documentation or at least some source code to look at.
+I've tried treating my fx6 as VIS-EG or HCRX, both locked up the machine.
+So the FX boards aren't like the old ngle like boards.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
