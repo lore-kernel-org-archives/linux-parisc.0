@@ -1,37 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA29830
-	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 08:57:45 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 11 Dec 2000 16:00:16 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 11 Dec 2000 16:00:07 -0000
-Sender: adevries@mailserv2.iuinc.com
-Message-ID: <3A34FA94.AECD14A8@linuxcare.com>
-Date: Mon, 11 Dec 2000 11:02:28 -0500
-From: Alex deVries <adevries@linuxcare.com>
-MIME-Version: 1.0
-To: Marko.T.Niskanen@nokia.com
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 712/60 booting problem
-References: <13F0486DB51CD311A0AE0008C7C561380453D430@eseis11nok>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA30887
+	for <parisc-linux@puffin.external.hp.com>; Mon, 11 Dec 2000 10:27:09 -0700
+Received: from upchuck.cygnus.com (taarna.cygnus.com [205.180.230.102])
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id JAA08115
+	for <parisc-linux@thepuffingroup.com>; Mon, 11 Dec 2000 09:29:51 -0800 (PST)
+To: Richard Henderson <rth@redhat.com>
+cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, alan@linuxcare.com.au,
+        rhirst@linuxcare.com, parisc-linux@thepuffingroup.com,
+        gcc-bugs@gcc.gnu.org
+Subject: Re: pa reload problem 
+Reply-To: law@redhat.com
+In-reply-to: Your message of Fri, 08 Dec 2000 22:55:52 PST.
+             <20001208225552.A4476@redhat.com>
+From: Jeffrey A Law <law@redhat.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Mon, 11 Dec 2000 10:29:04 -0700
+Message-ID: <30059.976555744@upchuck>
+Sender: law@cygnus.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-Marko.T.Niskanen@nokia.com wrote:
-> 
-> hello
-> 
-> after installing from palinux-0.5.iso.gz on cd and during booting I can get
-> this kind error
 
-Okay.  You've got to give us some sort of clue as to what kind of
-machine that is, because I can't guess.
+  In message <20001208225552.A4476@redhat.com>you write:
+  > On Fri, Dec 08, 2000 at 09:05:27PM -0700, Jeffrey A Law wrote:
+  > > Unfortunately, I can't actually test it yet to see what problems removing
+  > > that old hack will expose...
+  > 
+  > Heh.  Perhaps you could forward it to the hppa-linux folk and
+  > see what happens there.  Mayhap their linker is differently
+  > crash-prone.
+I wouldn't count on it :-)  And in general PA linux just isn't ready for
+the kind of testing I need to do for this patch.
 
-- Alex
+What I really need to do is backport it into devo or 2000r1 where I can
+beat on the PIC & shared library code a little harder than I can on the
+external tree right now due to libstdc++-v3 issues.
 
-
--- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+jeff
