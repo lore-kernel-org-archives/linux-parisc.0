@@ -1,151 +1,116 @@
-From: David Pye <dmp@davidmpye.dyndns.org>
-Subject: [parisc-linux] Re: J5000 LCD heartbeat
-Date: Sun, 20 Mar 2005 19:52:29 +0000
-Message-ID: <200503201952.31465.dmp__49374.9306224801$1416623701$gmane$org@davidmpye.dyndns.org>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Re: J5000 LCD heartbeat
+Date: Sun, 20 Mar 2005 20:40:32 +0100
+Message-ID: <20050320204032.3ed40468__4011.29490132934$1416623702$gmane$org@Tatooine.r3z0>
 References: <200503191959.05972.dmp@davidmpye.dyndns.org>
+	<200503192233.26991.dmp@davidmpye.dyndns.org>
+	<20050319231911.GB21898@colo.lackof.org>
 	<200503201918.31808.dmp@davidmpye.dyndns.org>
-	<20050320204032.3ed40468@Tatooine.r3z0>
-Reply-To: dmp@davidmpye.dyndns.org
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============2024669433=="
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Thibaut VARENE <T-Bone@parisc-linux.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050320204032.3ed40468@Tatooine.r3z0>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
-
---===============2024669433==
-Content-Type: multipart/signed; boundary="nextPart1316504.W30BOMpaHa";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1316504.W30BOMpaHa
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+  charset=US-ASCII
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+ debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: dmp@davidmpye.dyndns.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200503201918.31808.dmp@davidmpye.dyndns.org>
+Resent-Message-ID: <oVGNq.A.joF.KcdPCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-Hi, and thanks for your reply.
+On Sun, 20 Mar 2005 19:18:29 +0000
+David Pye <dmp@davidmpye.dyndns.org> wrote:
 
-On Sunday 20 March 2005 19:40, you wrote:
-
-> > I think I have an idea that it's related to CPU1 init, but I haven't
-> > confirmed this yet - depending on your feedback to the idea below, I
-> > won't bother tracing it down.
->
-> Don't bother. I have that kind of message left on my j5k LCD has well,
-> that's been there for ages, without problem.
-
-Well, I'd like to see it gone myself, even though it doesn't do anything=20
-unpleasant. It is a little messy, at least having it mangled up with the=20
-Linux default text is.
-
-If all it takes to prevent it is to make the lcd init happen slightly later=
- in=20
-the boot process (ie after the chassis code was emitted), I'd have thought =
-it=20
-would be an easy win.
-
-> If you think about the firmware code that drives the display of chassis
-> messages, it's firmware, changing how it works is pretty much not
-> possible at that point. If you think about the PDC Chassis driver, that
-> code doesn't work (read, "isn't activated") on j5k and other System Map
-> firmware machines, it only works on PDC PAT machines (eg high end
-> servers).
-
-Yeah, true. So, if the PDC chassis driver isn't used on the j5k, how does t=
-he=20
-chassis message get sent from the kernel to the PDC?  I haven't worked that=
-=20
-out yet.
-
-> I don't think this is either useful nor desirable. We want to have the
-> firmware messages going over whatever the led/lcd driver would have shown,
-> and going into such a pain for a corner case doesn't really seem worth it.
-
-At the very least, clearing the display first before the message is shown=20
-would have been helpful, imho. =20
-
-I'd personally like to have the firmware message displayed only for a limit=
-ed=20
-time, though I can see a counter argument for this.  But not for having=20
-cleared the display first, though. (Whether this is possible depends on you=
-r=20
-answer as to how the PDC is told to display the message!)
-
-> > Another idea I had was this:
+> On Saturday 19 March 2005 23:19, Grant Grundler wrote:
+> > On Sat, Mar 19, 2005 at 10:33:24PM +0000, David Pye wrote:
 > >
-> > How about making the text scrollable? ie if the string is longer than
-> > the viewport, scroll it along at a reasonable rate.
->
-> That has been considered and eventually ruled out. Remember we're in
-> kernel context, this is not meant to be eye candy etc. The pretty
-> formatting you suggest should be eventually a userland task, certainly not
-> a supplementary burden for the kernel.
+> > > Is it possible to make the write to the display later in the boot
+> > > process, so it occurs after the INI CC01 is printed?
+> >
+> > I would think it's possible.
+> > You want to track down where the CC01 chassis_log is emitted then
+> > propose a better place to initialize LED display?
+> 
+> I think I have an idea that it's related to CPU1 init, but I haven't
+> confirmed this yet - depending on your feedback to the idea below, I
+> won't bother tracing it down.
 
-Yep, agreed, that probably isn't a worthwhile thing to add. I was just=20
-thinking of other random ideas, that's all.
+Don't bother. I have that kind of message left on my j5k LCD has well,
+that's been there for ages, without problem.
 
-> > Did you have any hints you could give me as to fix my very occasional
-> > heartbeat issue either?
->
-> I recall that the LCD heartbeat is quite slow on my j5k as well, but
-> nothing really awful, afaicr.
+> > Another idea is the chassis log code might want to clear the LED
+> > diplay when displaying a chassis log and then a few seconds later
+> > refresh the LED display with the original contents or something.
+> 
+> At the very least, I think it needs to clear the lcd display before it
+> sends the chassis code to the PDC.  How does this sound:
 
-Well, here it's sufficiently slow to be utterly useless as a heartbeat,=20
-anyway. It usually flips state every 10-30 seconds, depending on how it=20
-feels. It certainly doesn't boot.
+If you think about the firmware code that drives the display of chassis
+messages, it's firmware, changing how it works is pretty much not
+possible at that point. If you think about the PDC Chassis driver, that
+code doesn't work (read, "isn't activated") on j5k and other System Map
+firmware machines, it only works on PDC PAT machines (eg high end
+servers).
 
-I realise the LCD functionality is something fairly minor, and that I'm bei=
-ng=20
-picky, but I'd be happy to invest some time to do some fine tuning.  The on=
-ly=20
-two must-haves for me is to nail the INI CC01 message being displayed over=
-=20
-the Linux kernel version display, and preferably to make my heart beat too =
-;)
+> Clear the lcd
+> Send the chassis code
+> set up a timer for 15 seconds, say, to restore the original display text
+> 
+> This requires a couple of changes to led.c so firmware.c can tell
+> whether the machine has an LCD or not. (If it does, then do the above,
+> otherwise just send the chassis code as before.)
 
-Thanks,
+AFAIK, it's not possible for the led.c driver to figure out whether the
+firmware has sent anything to the LCD display.
 
-David
+> If you agree that this is something useful, I will do some more hacking
+> on it. Otherwise, I'll do the other option and arrange the the chassis
+> log to be sent before the lcd has the initial text printed on it.
 
-> HTH
->
-> Thibaut VARENE
-> The PA/Linux Team
-> http://www.pateam.org/
+I don't think this is either useful nor desirable. We want to have the
+firmware messages going over whatever the led/lcd driver would have shown,
+and going into such a pain for a corner case doesn't really seem worth it.
 
---nextPart1316504.W30BOMpaHa
-Content-Type: application/pgp-signature
+> Another idea I had was this:
+> 
+> How about making the text scrollable? ie if the string is longer than
+> the viewport, scroll it along at a reasonable rate.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
+That has been considered and eventually ruled out. Remember we're in
+kernel context, this is not meant to be eye candy etc. The pretty
+formatting you suggest should be eventually a userland task, certainly not
+a supplementary burden for the kernel.
 
-iD8DBQBCPdR/OIrGtzS07WgRAuv8AJ4xxOLkWthz+GhkoJI1+EN0YA/hegCfZMBM
-vnGYXH1Drk889/tD9z2gjh4=
-=DF4t
------END PGP SIGNATURE-----
+At some point we looked after writing a complete driver for the LCD
+display, but it happens that it's much more complicated than first
+expected. For instance, accessing the other row of the LCD is almost
+impossible. In any case, it would probably consume resource for nothing
+really worth it.
 
---nextPart1316504.W30BOMpaHa--
+> I'm willing to have a play with this too, if people think it's something
+> worth having.
 
---===============2024669433==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+IMHO it's not.
 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============2024669433==--
+> Did you have any hints you could give me as to fix my very occasional 
+> heartbeat issue either? 
+
+I recall that the LCD heartbeat is quite slow on my j5k as well, but
+nothing really awful, afaicr.
+
+HTH
+
+Thibaut VARENE
+The PA/Linux Team
+http://www.pateam.org/
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
