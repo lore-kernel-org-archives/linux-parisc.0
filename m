@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D87CB482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Jul 2002 09:02:26 -0600 (MDT)
-From: Helge Deller <helge.deller@sap.com>
-To: "Stephan Trajkoff" <stephan@itp.bg>
-Subject: Re: [parisc-linux] XFree86 on STI 819/K210
-Date: Fri, 12 Jul 2002 17:00:26 +0200
-References: <200207121244.OAA16127@smtpde02.sap-ag.de>
-In-Reply-To: <200207121244.OAA16127@smtpde02.sap-ag.de>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200207121700.26113.helge.deller@sap.com>
+Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D66D44872
+	for <parisc-linux@parisc-linux.org>; Fri, 12 Jul 2002 09:13:43 -0600 (MDT)
+Date: Fri, 12 Jul 2002 08:01:39 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: joel.soete@freebel.net
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] compiling kernels with gcc-3.1
+Message-ID: <20020712150139.GC8838@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020712073628.GB8838@tausq.org> <1026467388.3d2ea63c0ac65@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1026467388.3d2ea63c0ac65@webmail.tiscalinet.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,38 +24,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Stepham
+> PS: Can you do a telnet or an ssh connection when this kernel is running? IIRC
+> as well as gcc-3.1 as gcc-3.2, I always reach well to build and boot kernels
+> (without kdb) but the system crashes as soon as you try to connect it via the
+> network.
 
-CC'ed to the list...
+yes, i can ssh into the box.
 
-1. Yes:
-ii  xfree86-common 4.1.0-17       X Window System (XFree86) infrastructure
-ii  xserver-xfree8 4.1.0-17       the XFree86 X server
-
-2. Did you checheck the "Mode"- line ? 
-What does "dmesg | grep stifb" says ?
-
-Helge
-
-On Friday 12 July 2002 14:39, Stephan Trajkoff wrote:
-> I get the same error again,
-> can I run XFRee with only installed xserver-common and
-> xserver-xfree86?
->
-> -------- Original Message --------
->
-> ==> From: Helge Deller <helge.deller@sap.com>
-> ==> Date: Fri, 12 Jul 2002 14:10:49  0200
->
-> On Friday 12 July 2002 14:06, Stephan Trajkoff wrote: > do anyone
-> runs XFREE86 on STI? I have K210/819 HP > the error is
-> FBIOPUT_VSCREENINFO: invalid argument > can anyone send me
-> configuration file for X with STI working...?
->
-> I think you should check the screen resolutions in your XF86Config-4.
->
-> ftp://ftp.parisc-linux.org/XFree86/XF86Config-4 is one example and
-> you should change it to have the correct Modelines as described at
-> the top in this file.
->
-> Greetings, Helge
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
