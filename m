@@ -1,69 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from blueyonder.co.uk (pcow034o.blueyonder.co.uk [195.188.53.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B1254832
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Jun 2001 18:45:52 -0600 (MDT)
-Sender: dscobbie@dsl2.external.hp.com
-Message-ID: <3B3A7E3D.394759D6@blueyonder.co.uk>
-Date: Thu, 28 Jun 2001 01:45:49 +0100
-From: Donald Scobbie <dscobbie@blueyonder.co.uk>
-MIME-Version: 1.0
+Received: from mail.iinet.net.au (symphony-02.iinet.net.au [203.59.24.17])
+	by dsl2.external.hp.com (Postfix) with SMTP id C91C5482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 00:27:49 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id OAA15595
+	for parisc-linux@lists.parisc-linux.org; Thu, 28 Jun 2001 14:04:03 +0800
+Date: Thu, 28 Jun 2001 14:03:59 +0800
+From: Andrew Shugg <andrew@neep.com.au>
 To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] rbootd for HP715/50
+Message-ID: <20010628140358.A15334@neep.com.au>
+References: <Pine.SOL.4.21.0106271612400.10527-100000@panther.uwo.ca>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] External SCSI Disk
+In-Reply-To: <Pine.SOL.4.21.0106271612400.10527-100000@panther.uwo.ca>; from yhan@uwo.ca on Wed, Jun 27, 2001 at 04:16:35PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-I attached an external SCSI disk to my 712/80 which has the
-palinux-0.9 32 bit serial distribution installed on the internal
-disk:
+y.   han said:
+> We are trying to use rbootd to boot up HP715/50 machines. The machine we 
+> are using is running RedHat 7.1. We downloaded
+> the rbootd files from
+> ftp://puffin.external.hp.com/pub/parisc/binaries/tgz/rbootd-2.0-2.tar.gz
+> 
+> How can we run it so that the hp box can find it when it boot. how can we
+> change rboot.conf file to make it work.
+> 
+> Or is there a manual/ instruction for it?
 
-BOOT_ADMIN> sea
+Have you installed this tarball's contents?  It does include a man page,
+rbootd.8 ...
 
-Searching for potential boot device.
-This may take several minutes.
+  tar xzpvfC rbootd-2.0-2.tar.gz /
 
-To discontinue, press ESCAPE.
+You'll need to modify /etc/rbootd.conf that contains the MAC address of
+your workstation and the name of the image file.
 
-   Device Path              Device Type
-   -----------              -----------
-   scsi.6.0                 QUANTUM FIREBALL1050S
-   scsi.2.0                 SEAGATE ST32151N
+Here is one of mine, for example:
 
-BOOT_ADMIN> boo
+  08:00:09:35:B9:38       Image         # hpsauce Linux kernel
 
-Can anyone guess what happened next? 
+Your kernel image(s) need to go in /export/hp/rbootd for this build of
+rbootd (as far as I can tell).  "mkdir -p /export/hp/rbootd" to create.
 
-SCSI subsystem driver Revision: 1.00
-sim700: Configuring 53c710 (SCSI-ID 7) at f0106100, IRQ 86, options 0
-scsi0: Revision 0x2
-Post test1, istat 01, sstat0 00, dstat 84
-sim700: WARNING IRQ probe failed, (returned 0)
-scsi0: Good, target data areas are dma coherent
-scsi0: test 1 completed ok.
-scsi0 : LASI/Simple 53c7xx
-  Vendor: SEAGATE   Model: ST32151N          Rev: HP02
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-  Vendor: QUANTUM   Model: FIREBALL1050S     Rev: 630C
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-Detected scsi disk sda at scsi0, channel 0, id 2, lun 0
-Detected scsi disk sdb at scsi0, channel 0, id 6, lun 0
-SCSI device sda: 4194685 512-byte hdwr sectors (2148 MB)
-Partition check:
- sda: unknown partition table
-SCSI device sdb: 2051460 512-byte hdwr sectors (1050 MB)
- sdb: sdb1 sdb2 sdb3
-[deleted lines]
-VFS: Cannot open root device "sda3" or 08:03
-Please append a correct "root=" boot option
-Kernel panic: VFS: Unable to mount root fs on 08:03
+As for how to start it, well, just run "/etc/rc.d/init.d/rbootd start" ...
 
-The code in drivers/scsi/sd.c assigns /dev/sda to the lowest SCSI
-id and works up the way. Fair enough. IIRC SCSI id's are prioritised
-7->0 for narrow SCSI and 7->0, 15->8 for wide. Should device allocation
-reflect this pattern? Surely it has to for hppa where the internal 
-disk has id 6 preset?
+Andrew.
 
-Any suggestions?
+--
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
-Cheers
-
-Donald
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
