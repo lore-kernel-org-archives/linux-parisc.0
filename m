@@ -1,33 +1,44 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA01888
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 13:42:20 -0700
-Content-Type: text/plain;
-  charset="iso8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Grant Grundler <grundler@cup.hp.com>,
-        "CLAPPER,MIKE \(HP-USA,ex1\)" <mike_clapper@hp.com>
-Subject: Re: [parisc-linux] B132L boot hang
-Date: Wed, 22 Nov 2000 21:43:40 +0100
-Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-References: <200011221727.JAA21644@milano.cup.hp.com>
-In-Reply-To: <200011221727.JAA21644@milano.cup.hp.com>
-MIME-Version: 1.0
-Message-Id: <00112221434002.00303@P100>
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id QAA04310
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 16:00:56 -0700
+Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
+	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id QAA17580
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 16:03:12 -0700 (MST)
+Received: from localhost
+	([127.0.0.1] helo=noam.fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 13yiv2-0007QD-00
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 16:03:12 -0700
+To: parisc-linux@puffin.external.hp.com
+Date: Wed, 22 Nov 2000 16:03:12 -0700
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E13yiv2-0007QD-00@noam.fc.hp.com>
+Subject: [parisc-linux] 64-bit progress
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I think I need more output. Based on ioscan output, the B132L
-> has two serial ports:
-> 8/16/4 - off of LASI
-> 8/20/2 - of WAX (EISA Bus Adapter)
-> 
-> (GSCtoPCI is at 8/0)
-> 
-> I don't think the one off of WAX is supported right now.
 
-It should be detected & supported (at least it is on my B160L).
-But it is not used as initial console since it normally gets assigned as 
-ttyS1 while LASI-serial gets ttyS0.
+32-bit syscalls on 64-bit kernel are to the point where a few things
+work, and signals appear to be working (I didn't implement *all* the
+signal-related syscalls yet).  I'll be continuing to produce syscall
+wrappers for a while...
 
-Greetings,
+If you try to boot the standard NFS root with wide kernel, you'll want to
+	mv sbin/init sbin/init-real
+then compile and install this program as sbin/init:
+	int main()
+	{
+	    char *argv[2];
 
-	Helge.
+	    argv[0] = "/sbin/init-real";
+	    argv[1] = 0;
+	    execv(argv[0], argv);
+	}
+
+I never felt comfortable I found the point where sys_execve figures out it
+needs to pack the argv vector differently for narrow user apps (locally I
+also am using PER_LINUX32 in binfmt_elf32.c) which causes the initial
+exec(/sbin/init) to be passed incomprehensible arguments.  This program
+is a little temporary workaround.
+
+
+	-Paul Bame
