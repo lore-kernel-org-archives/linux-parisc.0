@@ -1,23 +1,19 @@
 Return-Path: <youngdoctors@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6BC2548DA
+Received: from cpe-24-158-49-167.hkry.nc.charter.com
+	(cpe-24-158-49-167.hkry.nc.charter.com [24.158.49.167])
+	by dsl2.external.hp.com (Postfix) with SMTP id 825CB48D4
 	for <parisc-linux@parisc-linux.org>;
-	Fri, 26 Dec 2003 00:06:44 -0700 (MST)
-Received: from pcp04341660pcs.paduca01.ky.comcast.net
-	(pcp04341660pcs.paduca01.ky.comcast.net [68.63.242.173])
-	by cuprel1.hp.com (Postfix) with SMTP id 7B2CC1501
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 25 Dec 2003 23:06:41 -0800 (PST)
-Message-ID: <wj2$8u-t17-54e$8o-3n15b6-fx94@k6t.zns.vt9805>
-From: "Isaiah Wagner" <youngdoctors@msn.com>
+	Fri, 26 Dec 2003 00:29:41 -0700 (MST)
+Message-ID: <orl--$2h8t-83$56@rx9enb3.8z.q4>
+From: "Loraine Werner" <youngdoctors@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Fri, 26 Dec 03 19:58:16 GMT
+Date: Fri, 26 Dec 03 15:20:15 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="83D9D3DD__F"
+	boundary="3_744CFE2.44FB34BC7"
 Cc: 
-Subject: [parisc-linux] Stunning at 50!! you can be too! je p wgpnloijx 
-Reply-To: Isaiah Wagner <youngdoctors@msn.com>
+Subject: [parisc-linux] Feel fantastic look incredible ! g az wdoon
+Reply-To: Loraine Werner <youngdoctors@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,11 +24,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---83D9D3DD__F
+--3_744CFE2.44FB34BC7
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>Stunning at 50!! you can be too! je p wgpnloijx 
+<html>Feel fantastic look incredible ! g az wdoon
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -61,9 +57,15 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#0000ff" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-wlzbnbgpxrqkp txgsqflzeugt
+eof  iugiklboddjtcikudpdzqzmoecs f
+
+oza wqkpvld  bkn tw
+ y jk
+gf dgjc
 </body>
 </html>
-y  o avdjp sdfdobgqqaovmum  xezz hin yjol 
+ovj qqbfhl
+c
+razhm cho
 
---83D9D3DD__F--
+--3_744CFE2.44FB34BC7--
