@@ -1,15 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from otto.t4y-it.com (otto.t4y-it.com [217.115.141.93])
-	by dsl2.external.hp.com (Postfix) with SMTP id 5B436485E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 15:22:28 -0600 (MDT)
-Message-ID: <002201c21320$660e4e50$6401a8c0@bartw2k>
-From: <klaue@otto.t4y-it.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 13 Jun 2002 23:21:28 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] installation problems on c200
+To: "Michael S. Zick" <mszick@goquest.com>
+Cc: parisc-linux@lists.parisc-linux.org, mszick@MoreThan.org
+Subject: Re: [parisc-linux] 2.4.18-pa35 SMP process hangs on a J200 
+In-Reply-To: Message from Michael S.Zick <mszick@goquest.com>
+   of "Wed, 12 Jun 2002 08:45:40 CDT." <02061208454000.00732@localhost.localdomain>
+References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <20020611145848.GA2796@tausq.org> <02061113393800.04435@localhost.localdomain>  <02061208454000.00732@localhost.localdomain> 
+Date: Thu, 13 Jun 2002 15:52:46 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020613215246.3B1864848@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,22 +19,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hi,
+Michael S. Zick wrote:
+> Sirs...
+> I now have a definate lead for the x86-SMP case, which might 
+> aid the troubleshooters in the pa-risc branch (diff's attached).
 
-i have a c200 and want to install from a palinux-2.4.18-pa26-netinst image.
-after some problems booting from the internal cdrom, i have connected an
-external box with a traxdata writer. from this device the boot is working
-until the message "freeing unused kernel memory". after this i got some
-ext2-fs errors concerning the ramdisk. the last message is a kernal panic
-"no init found. try passing init= option to kernel".
+ok - thanks. I'll take a look.
 
-is there anybody out who can help me to realize where the problem might be?
-the same is if i use a 2.4.18-pa35 image.
-i have already searched the list archive but i wasn't able to find a
-solution.
+But I can tell you now that very little of the code between
+x86 and parisc is shared in this area. I doubt it's as helpful
+as you might think.
 
-ok, i'm a newbie but i have the dream of using linux on my little hp box!
+> Additional note: On the HP models with the worst of the problems;
+> is the physical_cpu_id and the logical_cpu_id a 1:1 mapping as
+> it is on x86 systems?
 
-regards,
+Yes. parisc didn't have a concept of physical CPU ID until
+PAT PDC (eg A500, N-class, etc). When we want to support
+CPU addition and removal, we can add physical/logical
+mappings and it will no longer be 1:1.
 
-kim
+grant
