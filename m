@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C2964840
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Nov 2003 21:57:32 -0700 (MST)
-Date: Fri, 21 Nov 2003 21:57:31 -0700
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1E8314840
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Nov 2003 22:29:17 -0700 (MST)
+Date: Fri, 21 Nov 2003 22:29:15 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
-To: JjDunnjr@aol.com
+To: Joel Soete <soete.joel@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Boot-up challenges on a 715/75
-Message-ID: <20031122045731.GA29917@colo.lackof.org>
-References: <171.26ba943e.2cefd34e@aol.com>
+Subject: Re: [parisc-linux] strace locks up 2.4.22-pa14
+Message-ID: <20031122052915.GB29917@colo.lackof.org>
+References: <20031121005003.GB13007@colo.lackof.org> <3FB265250000556F@ocpmta2.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <171.26ba943e.2cefd34e@aol.com>
+In-Reply-To: <3FB265250000556F@ocpmta2.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,40 +23,66 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 21, 2003 at 03:45:02PM -0500, JjDunnjr@aol.com wrote:
-> To all who took the time to reply, thank you
-> Progress to date:
-> 1. Set jumper to 512 k sector on the TEAC.  715/75 recognized it as a 
-> different model.
-
-very good - I'm amazed I hadn't heard about the 512 vs 2k sectors before.
-But it's been 8 years since I seriously poked at SCSI devices.
-
-> 2. It spun the disk upon issuing the "bo P2" command, however, i still got 
-> the
-> ENTRY_INIT =-4 message
-
-The PA I/O Architecture Control Document (aka IO ACD) describes the 
-ENTRY_INIT returns codes. See "Documentation" on www.parisc-linux.org.
-
-> I will try to do a net boot next
+On Fri, Nov 21, 2003 at 01:39:49PM +0100, Joel Soete wrote:
+> Hi Grant,
 > 
-> if that fails, I will try to copy onto the boot 715/75 hard drive the 
-> necessary files.  Which leads me to my next question, which files(s) would be 
-> necessary for the 715/75 to boot
+> I am tring to track a lpr pb on my b2k and so try:
+> # strace -f /usr/bin/lpr foo.doc
 > 
-> Would "lifimage" be enough or should i place "rescue.bin", "linux.bin" and 
-> "drivers.gz" on the hard drive
+> that works;
 
-Only the lifimage.
-You will need two hard disks.
-dd the lifimage you get from ftp.parisc-linux.org onto one harddisk and
- then boot the parisc machine from that disk. Install on the other disk.
+ok
 
-It would be useful to check (via the "execute a shell" option) if the CD
-is readable by the OS. If so, it can be used as an install source.
-It's possible the CD is still readable but not bootable because
-the CD burning SW used might have mangled the .ISO data.
+> I read your post and try so now:
+> # strace -f -o /var/tmp/Strace.doc /usr/bin/lpr foo.doc
+> 
+> and system also hang (same behaviour as)
+> and so I toc it (which seems to failled ; apparently because of ide-cdrom???)
 
-hth,
+hrm. I doubt the ide-cdrom is causing the TOC to fail. 
+It's likely the CD-ROM drive is getting reset when TOC occurs
+and that's the noise you hear.
+Something else might be causing problems.
+
+> I took the opportunity to unplug ide-cable's cdrom (to test various).
+> 
+> Then to try to obtain a relevant toc, I re-launch:
+> # strace -f -o /var/tmp/Strace.doc /usr/bin/lpr foo.doc
+> 
+> This time it works??
+> Is it the same for you after the reboot?
+
+I haven't retried because I need that to actaully work on that system.
+I'm building a new kernel and will try at home tonight.
+
+
+> (sorry, I tried severall time strace but no more means to reproduce)
+
+bummer. Makes me wonder if this is CPU cache related too. 
+
+> PS: btw the end of my strace is:
+> [...]
+> 24801 write(3, "\1lp\n", 4)             = 4
+> 24801 read(3, "\0", 1)                  = 1
+> 24801 close(3)                          = 0
+> 24801 SYS_222(0, 0, 0x1, 0x2f, 0)       = -1 ENOSYS (Function not implemented)
+> 24801 exit(0)                           = ?
+> 
+> And at the same time, at the serial console I got:
+> + set -v
+> + exec
+> 
+> Have you any advise about what I miss?
+
+include/asm/unistd.h says:
+#define __NR_exit_group         (__NR_Linux + 222)
+
+No architecture implements that syscall.
+("find -name '*.[S]' | xargs fgrep exit_group")
+I have no clue what it's supposed to do and looks like
+I don't need to care either.
+
+Perhaps just recompiling the application or linked lib that uses
+that syscall might get rid of it.
+
 grant
