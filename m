@@ -1,18 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7DA524839
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 04:03:08 -0600 (MDT)
-From: Helge Deller <helge.deller@sap.com>
-To: Thibaut VARENE <varenet@esiee.fr>,
-	PA/Linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Kernel > -pa41 debian-configs file not adequate
-Date: Thu, 27 Jun 2002 12:02:07 +0200
-References: <534E0E66-89B2-11D6-ACD4-0030656F07A2@esiee.fr>
-In-Reply-To: <534E0E66-89B2-11D6-ACD4-0030656F07A2@esiee.fr>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200206271202.07960.helge.deller@sap.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26A404834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 06:56:43 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17NYp5-0000wJ-00; Thu, 27 Jun 2002 13:56:31 +0100
+Date: Thu, 27 Jun 2002 13:56:31 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "B. Douglas Hilton" <bdhilton@charter.net>
+Cc: Matthew Wilcox <willy@debian.org>, joel.soete@freebel.net,
+	Matt Taggart <taggart@carmen.fc.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 24bit colour
+Message-ID: <20020627135631.A2955@parcelfarce.linux.theplanet.co.uk>
+References: <5.1.0.14.0.20020610084610.026cfc70@10.106.16.2> <20020610203815.8349B380D5@carmen.fc.hp.com> <1024391159.3d0ef7f7c3903@webmail.tiscalinet.be> <20020618121104.E9435@parcelfarce.linux.theplanet.co.uk> <1025099026.3d19c51207773@webmail.tiscalinet.be> <20020626144536.B28662@parcelfarce.linux.theplanet.co.uk> <3D1A1BFF.7080000@charter.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D1A1BFF.7080000@charter.net>; from bdhilton@charter.net on Wed, Jun 26, 2002 at 03:54:39PM -0400
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,37 +27,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Thibaut,
+On Wed, Jun 26, 2002 at 03:54:39PM -0400, B. Douglas Hilton wrote:
+> The "Color Recovery" code supposedly dithers the colors in some
+> special way down to 8bpp and then the hardware somehow restores
+> them, right?
 
-Please use CONFIG_HIL=y, CONFIG_HIL_KBD_BASIC=y,
-all other HIL configs =n.
-I'll fix that later today in CVS.
+As far as I can tell from reading the documentation on the web,
+it's simply a programmable palette.  This doesn't seem terribly
+interesting/hard, so I assume there must be more to it than that.
 
-Greetings,
-Helge
-
-On Thursday 27 June 2002 11:43, Thibaut VARENE wrote:
-> Hi fellows,
->
-> Well I have noticed yesterday when building the -pa41 and -pa42 netinst
-> ISO that the debian-configs files were not reflecting the changes that
-> Helge made to the kernel source, and therefore the scripted build could
-> not achieve, as it stopped there:
->
-> *
-> * HIL support
-> *
-> HIL core support (CONFIG_HIL) [Y/m/n/?]
->    HIL Keyboard (basic) support (CONFIG_HIL_KBD_BASIC) [N/y/?] (NEW)
->
->
-> I could possibly fix that, but I don't know whether it should be 'Y' or
-> 'N', or maybe there is some *maintainer* who will do that better than
-> me ;)
->
-> Greetings,
->
->
-> Thibaut VARENE
-> PA/Linux ESIEE Team
-> http://pateam.esiee.fr/
+-- 
+Revolutions do not require corporate support.
