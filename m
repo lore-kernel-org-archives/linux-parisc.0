@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from laas.laas.fr (laas.laas.fr [140.93.0.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B831E482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 10:22:45 -0700 (MST)
-Message-ID: <3C4465AF.5020603@tuxfamily.org>
-Date: Tue, 15 Jan 2002 18:23:59 +0100
-From: Thomas Marteau <marteaut@tuxfamily.org>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0705F482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 11:03:12 -0700 (MST)
+Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
+	id 16QXvR-0001Zv-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 19:03:09 +0100
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1011117789.3c446eddddc77@webmail.tiscali.be>
+Date: Tue, 15 Jan 2002 19:03:09 +0100 (CET)
+From: joel.soete@freebel.net
 MIME-Version: 1.0
-To: raffo@neuronet.pitt.edu
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
-	debian hppa <debian-hppa@lists.debian.org>
-References: <3C3F0ADA.3060504@verizon.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] New Version!! (was Correction for the PA-RISC/Linux Boot HOWTO at ESIEE's web site.)
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] gpm 1.19.6-9 Broken?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,21 +25,26 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi all,
 
-        As Rafael Herrera did, I would like your feedback from my new
-version of PA-RISC/Linux Boot HOWTO.
-http://mkhppa1.esiee.fr/parisc-linux-boot/parisc-linux-boot/index.html
+I do my daily apt-get dist-upgrade which update my gpm package to release indice
+-9 and it failled to start with daemons.log following error messages:
 
--I added a complete chapter about compiling a kernel for HP PA-RISC system.
--I did a complete review of the text b/c of the progress of the port
--I added a note for users that are not using Debian that you should
-blame the absence of standard for the default parameters more than the
-guy who did this howto :-)
-(b/c there are a lot of distro for Linux and that's great but I can't do
-a step by step for each of them :-) )
+Jan 15 14:00:35 palinux /usr/sbin/gpm[184]: PS/2 mouse failed init
+Jan 15 14:00:35 palinux /usr/sbin/gpm[184]: oops() invoked from gpm.c(1019)
+Jan 15 14:00:35 palinux /usr/sbin/gpm[184]: mouse initialization failed:
+Inappropriate ioctl for device
+Jan 15 14:02:10 palinux /usr/sbin/gpm[241]: PS/2 mouse failed init: Unable to
+set 1:1 scale.
+Jan 15 14:02:10 palinux /usr/sbin/gpm[241]: oops() invoked from gpm.c(1019)
+Jan 15 14:02:10 palinux /usr/sbin/gpm[241]: mouse initialization failed:
+Resource temporarily unavailable
 
-Please, if you have any comment to make about this text, could you reply
-to me because I would like update the version of Linuxdoc with a minimum
-of errata.
+Same problem with all kernel, so came back to release -5 and it works back
 
-Thomas.
-ESIEE Team
+Any idea (it is only hppa problem?) ?
+
+Thanks in advance for help,
+        joel
+
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
