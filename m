@@ -1,22 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (d108.dhcp212-198-139.noos.fr [212.198.139.108])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EB2114845
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Aug 2003 15:38:55 -0600 (MDT)
-Date: Tue, 26 Aug 2003 23:38:41 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-To: parisc-linux@parisc-linux.org
-Cc: willy@debian.org,
-	=?ISO-8859-1?Q?Martin-=C9ric?= Racine <q-funk@pp.fishpool.fi>,
-	debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] Re: kernel 2.6 for hppa status?
-Message-Id: <20030826233841.655ec3b2.varenet@esiee.fr>
-In-Reply-To: <20030826200354.GT22294@parcelfarce.linux.theplanet.co.uk>
-References: <200308261202100660.00729583@smtp1.sympatico.ca>
-	<Pine.LNX.4.21.0308262125490.16192-100000@hal.pp.fishpool.fi>
-	<20030826200354.GT22294@parcelfarce.linux.theplanet.co.uk>
+Received: from tonylee9-5zaxon.xmgwbn.com (unknown [220.113.166.200])
+	by dsl2.external.hp.com (Postfix) with SMTP id C06944830
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 19:00:33 -0600 (MDT)
+From: webmaster <webmaster@127.0.0.1>
+To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="pgp-sha1"; boundary="=.Qjpr3j(rw5Je4."
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <20030827010033.C06944830@dsl2.external.hp.com>
+Date: Tue, 26 Aug 2003 19:00:33 -0600 (MDT)
+Subject: [parisc-linux] -------|优惠虚拟主机！|------
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,60 +20,124 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=.Qjpr3j(rw5Je4.
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+亲爱的朋友：
+　　您好！
+　　这是来自厦门市宝灵科技网络有限公司的问侯。感谢您收看这封邮件。我们真诚的希望
+您能成为我们在贵地区的重要伙伴。我们是一家采用世界高新技术结晶，研究、推广和发展
+新技术，致力于互联网信息服务、域名注册服务和虚拟主机服务的高新技术企业。详情请浏
+览:http://www.host-china.com 
+    公司自2003年起全力进军国际互联网服务领域，整合推出了以下产品。所有空间都支持
+数据库（linux+PHP+Mysql;NT+asp+acess）。这将会是您超值的选择。
+　　1.30M空间+30M企业邮局 + 送一国际域名 ，功能全面，仅售198元/年。
+　　2.120M空间＋120M企业邮箱＋1个国际域名，功能全面，仅售330元/年。
+    3.200M空间＋50M企业邮箱＋1个国际域名，功能全面，仅售450元/年。
+    4.300M空间＋50M企业邮箱＋1个国际域名，功能全面，仅售580元/年。
+　　
+　　尽管我们尽力为您提供最好的服务。，但不排除出现失误。如果是这样，我们宁愿接受
+退款，也不会因为哪怕一点点的不满意而让您不开心。所以我们承诺：主机不满意按实际余
+额退款。请不要直接回复,回复请发:li_9888@hotmail.com
 
-On Tue, 26 Aug 2003 21:03:54 +0100
-Matthew Wilcox <willy@debian.org> wrote:
-
-> On Tue, Aug 26, 2003 at 09:29:35PM +0300, Martin-=C9ric Racine wrote:
-> > Greetings,
-> >=20
-> > Having just tried kernel 2.6 (the release candidate found in unstable)
-> > on i386, I found it to bring a _tremendous_ improvement in
-> > responsiveness and especially in userspace stuff like XFree. Given how
-> > this 712 is the slowest machine in my LAN, I was wondering if any work
-> > is being done on 2.6 for hppa and when is the first release expected?=20
-> > Thanks!
->=20
-> -> parisc-linux.org where we have 2.6.0-test4.
-> When might there be a debian package for it?  Don't know, not my
-> department.
-
-If it was up to me i guess it wouldn't take much time. I have to discuss
-that with either you and bdale, to state *how* we want it done...
-
-Anyway, let me remind you that as for generating 2.6 netinsts, i _do_ need
-arch/parisc/debian-configs/* files to provide you with a 2.6 package.
-
-Since i'm not willing to find out by myself what we want and what we don't
-want in 2.6 "debian stock" kernel configs (that's a matter for the b-f
-maintainer i guess, or maybe my kernel package mentor - aka bdale - has
-some ideas about it ;), i won't be able to do anything _prior_ to these
-files appearance in our CVS tree...
-
-> But the -pa patch is a tiny fraction of the size of the 2.4 patch, so
-> it'll be much easier for everyone.
-
-that's for sure!
-
-HTH,
+　　祝：开心！顺利！
+　　　　　　　　　　　　　　　　　　　　webmaster of http://www.host-china.com 
+                                        厦门市宝灵科技网络有限公司
+                                        http://www.host-china.com
+                                        电话：0592-5915491（热线）   0592-5652685　
+                                        传真：0592-5652687　　
+                                        联系人：李先生 金小姐
 
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
 
---=.Qjpr3j(rw5Je4.
-Content-Type: application/pgp-signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/S9NmHjLD2rfS8GMRAgrhAJ0fbGX5Yos7ixDt493Nm5lAaqm3OgCfX0qn
-Y+dO2QXp9Zudfsasu+Y96NY=
-=nlpT
------END PGP SIGNATURE-----
 
---=.Qjpr3j(rw5Je4.--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------
+沸点群发邮件,来自软件工程专家网(http://www.21cmm.com)
+
+进CMM网校(http://www.21cmm.com)，成项目管理专家
