@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77223483A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Apr 2002 07:51:40 -0600 (MDT)
-Message-ID: <3CC2B937.8020509@freebel.net>
-Date: Sun, 21 Apr 2002 13:05:59 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: Randolph Chung <tausq@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A981B4849
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Apr 2002 09:25:40 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16zJDe-0005aL-00; Sun, 21 Apr 2002 16:25:38 +0100
+Date: Sun, 21 Apr 2002 16:25:38 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <joel.soete@freebel.net>
+Cc: Randolph Chung <tausq@debian.org>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] gcc-3.2 experimental debs
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Message-ID: <20020421162538.G5225@parcelfarce.linux.theplanet.co.uk>
+References: <3CC2B937.8020509@freebel.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3CC2B937.8020509@freebel.net>; from joel.soete@freebel.net on Sun, Apr 21, 2002 at 01:05:59PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,29 +26,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph,
+On Sun, Apr 21, 2002 at 01:05:59PM +0000, Joel Soete wrote:
+> "Stack pointer and cr30 do not correspond!
+> Dumping virtual address stack instead
+> 
+> Dumping Stack from ... to ...:
+> 
+> Humm as it appends as well with telnet as ssh I suspect a inetd problem?
 
-I try my hown gcc-3.2 (+ binutils, glibc) against kernel 2.4.18-pa19 
-(not yet take the risc with pa20).
+I'd bet on gcc-3.2 miscompiling something in the network part of the kernel,
+personally.
 
-It compiles as well as with gcc3.0.x. It boots also but as soon as I try 
-to connect it remotly with telnet or ssh (I forget to test ftp) the 
-system crash:
-"Stack pointer and cr30 do not correspond!
-Dumping virtual address stack instead
-
-Dumping Stack from ... to ...:
-
-...
-
-[those tree line seems to be repeated infinitely. well after 5 minutes I 
-had to unplug the power supply to reboot]
-
-Humm as it appends as well with telnet as ssh I suspect a inetd problem?
-
-Any idea?
-
-Thanks,
-	Joel
-
-PS: I will try your dpkg asap
+-- 
+Revolutions do not require corporate support.
