@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 12-225-100-78.client.attbi.com (12-225-100-78.client.attbi.com [12.225.100.78])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B5DA482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Feb 2002 10:50:05 -0700 (MST)
-Date: Sat, 9 Feb 2002 09:53:36 -0800
-From: collver@linuxfreemail.com
-To: lug@peak.org
-Cc: Allen Brown <abrown@peak.org>,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20020209095335.A4426@glen.takilma.net>
-References: <200201150347.g0F3lh129546@tpol.peak.org> <20020204104006.A6794@glen.takilma.net>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 43A05482A
+	for <parisc-linux@parisc-linux.org>; Sat,  9 Feb 2002 13:58:44 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16Zea2-0007Kf-00
+	for parisc-linux@parisc-linux.org; Sat, 09 Feb 2002 20:58:42 +0000
+Date: Sat, 9 Feb 2002 20:58:42 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20020209205842.B1173@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020204104006.A6794@glen.takilma.net>; from collver@linuxfreemail.com on Mon, Feb 04, 2002 at 10:40:07AM -0800
-Subject: [parisc-linux] Re: serial breakout box
+Subject: [parisc-linux] touching several drivers
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,39 +23,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Feb 04, 2002 at 10:40:07AM -0800, collver@linuxfreemail.com wrote:
-> >>This is an Apollo 400 which has been upgraded to a 715T/50 (Trailways-50). 
-> > 
-> > Pin 7 is GND.  Pins 2 and 3 are the input and outputs, not necessarily
-> > in that order.  Measure from 7 to 2.  Measure from 7 to 3.  One
-> > of them will be close to 0V.  The other will be much higher.  I think
-> > -10V or something like that.  The pin with the higher voltage is
-> > the output.
-> > 
-> > Do the same thing on the other system also using the 25 pin connector.
-> > Then make sure you are not connecting the output to the output.
-> 
-> It turns out the Apollo 400 has a funky serial pinout.
-> I obtained a breakout box and when I find the time, I will experiment with
-> this strange serial port.
+Hey, I've jut produced ftp.parisc-linux.org/patches/random-cleanups.diff
+It fixes a number of things that have been bugging me on the C360 for
+a while.
 
-The Apollo 400 and the mouse are both "DCE".  I can measure -11.44V on the
-Apollo's pin 2 and on the PC's pin 3.  I have verified that the mouse will
-speak to my PC using only txd, rxd, and rts.  I can also log into the
-Apollo from the PC using only txd, rxd, and rts.
+I touch:
 
-It is obvious the I need to connect the mouse's pins 2 and 3, to the
-Apollo's pins 3 and 2.  The rest is unsure.  I have tried many combinations
-of wiring, and I just haven't been able to get the mouse to work.
+ arch/parisc/kernel/drivers.c  |   59 ++++++++++++++++++++----------------------
+ drivers/gsc/dino.c            |   26 ++++++++----------
+ drivers/gsc/gsc.c             |    8 -----
+ drivers/gsc/serial.c          |   18 ++++--------
+ drivers/parport/parport_gsc.c |   16 -----------
+ drivers/scsi/lasi700.c        |    8 -----
+ drivers/sound/harmony.c       |    4 --
 
-To connect two DCE devices, some suggest a "tail circuit cable".  It seems
-overkill to me since the mouse only uses a few pins.  I have noticed that
-the Apollo doesn't ever show voltage on the "carrier detect" pin.  I have
-also noticed that the Apollo voltage is -11.44 volts, and the PC voltage is
--12.15 volts.
+so if anyone wants to object, now's a good time to do it.  If anyone has
+the urge, testing it on other machines would be worthwhile.  I've been
+careful to consider other machines, but thinking is no substitute for
+actually trying the code, and I touched some interesting parts of
+device discovery.
 
-Can anyone give me tips for getting this mouse to work?
+Changelog:
 
-Thanks,
+ * Stop checking hversion_rev in match_device.  All drivers specify
+   HVERSION_REV_ANY_ID anyway.
+ * Don't print a warning if a driver declines to claim a device.  That's
+   allowed.
+ * Revert get_node_path to its previous form.  I found another bug in
+   doing the inventory and adding another hack would have been silly.
+ * Neaten up walk_native_bus a little, I have moral objections to the
+   previous code.
+ * Fix a bug in fixup_child_irqs.  If the device had no children, it
+   would assign irqs to siblings instead, which led to the bogus serial
+   port being detected on Cujo.
+ * A few more Dino -> Cujo changes.  Print a little more information when
+   we get a stuck interrupt.
+ * Make the GSC serial driver return silently for Cujo's serial port (if
+   it's unassigned).  Improve the error message and make it not dependent
+   on any CONFIG options.
+ * Clean up a comment and remove the A180's serial port from the
+   serial1_tbl.
 
-Ben
+ * Call request_mem_region for each successful device/driver claim.
+ * Make gsc_common_irqsetup a little more sensible about what regions
+   it claims.
+ * Delete request/release regions from lasi700.c, parport_gsc.c, harmony.c
+
+-- 
+Revolutions do not require corporate support.
