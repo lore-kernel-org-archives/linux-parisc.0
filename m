@@ -1,43 +1,54 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ccd.cargoclaimsdirect.com (unknown [62.6.162.114])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ACB47482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 14:21:28 -0600 (MDT)
-Date: Tue, 16 Oct 2001 21:15:55 +0100
-From: Scott Ashcroft <scott.ashcroft@talk21.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] LED device moves around on B160L
-Message-ID: <20011016211555.A3948@cargoclaimsdirect.com>
-References: <20011015174630.A3315@cargoclaimsdirect.com> <20011016195138.F15532@parcelfarce.linux.theplanet.co.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5A478482A
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 14:32:36 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15tat8-0008KA-00
+	for parisc-linux@parisc-linux.org; Tue, 16 Oct 2001 21:32:34 +0100
+Date: Tue, 16 Oct 2001 21:32:34 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011016213234.I15532@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011016195138.F15532@parcelfarce.linux.theplanet.co.uk>
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] GSC & EISA devices and pci_alloc_consistent
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Oct 16, 2001 at 07:51:38PM +0100, Matthew Wilcox wrote:
-> On Mon, Oct 15, 2001 at 05:46:30PM +0100, Scott Ashcroft wrote:
-> > Something weird is going on with the address of the LED device on my
-> > B160L.
-> [...]
-> > I think ffd0c000 is the correct address looks like it broke between pa45
-> > and pa52.
-> 
-> Looks like this change was intentional.  Here's what's happening:
-> 
-> led_init calls pdc_chassis_info to find the address of the LCD display.
-> This then calls register_led_driver, passing it that address that you
-> have above.  Then the lasi driver calls register_led_driver again, but
-> it's already been initialised, so it returns silently.  This all seems
-> correct to me.
-> 
-> If PDC is telling us this address, then it ought to be correct... right?
-> I don't know anything about the LED/LCD stuff yet, so I hope someone
-> who does can explain why this is correct.
+Looking at the 3c59x driver, it attempts to allocate host memory that
+the card can access by DMA with:
 
-The correct address seems to be f0190001. I've verified this by checking
-that the LEDs work when that address gets detected.
-The lasi driver tries to register ffd0c000 but as you say it gets ignored.
-Don't know why the PDC returns f0190000 every so often.
+        vp->rx_ring = pci_alloc_consistent(pdev, sizeof(struct boom_rx_desc) * RX_RING_SIZE
+                                           + sizeof(struct boom_tx_desc) * TX_RING_SIZE,
+                                           &vp->rx_ring_dma);
 
-Thanks for looking,
-Scott
+For EISA devices, pdev is NULL.  So pci_alloc_consistent (on EISA-capable
+boxes; Astro-based boxes can ignore all this) can check for pdev being
+NULL and set up the I/O Map so that the EISA bus can access this chunk
+of ram.
+
+But there's a problem.  Currently our specific drivers (lasi_82596, sim700,
+et al) call pci_alloc_consistent with a NULL pci_dev.  And that causes a
+different problem.  On machines with ccio (C, J, D, K, R) we need to know
+which IOC the device is under (currently we assume the first... which is why
+some machines HPMC early on).
+
+I think the solution to this is to create a fake struct pci_dev that our
+drivers hand to pci_alloc_consistent.  Then we have:
+
+PCXL, L2:
+	if (pci_dev == NULL) return wax_alloc_consistent();
+	else kmalloc()
+
+ccio:
+	if (pci_dev == NULL) return wax_alloc_consistent();
+	ioc = find_ioc(pci_dev);
+	...
+
+astro/elroy systems remain unchanged.
+
+The only question is how/where to obtain this pci_dev, and how to give
+it to the drivers which need it.
+
+-- 
+Revolutions do not require corporate support.
