@@ -1,47 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA07116
-	for <parisc-linux@puffin.external.hp.com>; Tue, 22 Feb 2000 12:44:00 -0700
-Received: from venus (venus.esiee.fr [147.215.20.10])
-	by mail.esiee.fr (Postfix) with SMTP id 3E25C5733C
-	for <parisc-linux@thepuffingroup.com>; Tue, 22 Feb 2000 19:44:45 +0100 (CET)
-Message-ID: <003901bf7d64$ffd1e2d0$0a14d793@esiee.fr>
-From: "Thierry SIMONNET" <t.simonnet@esiee.fr>
-To: <parisc-linux@thepuffingroup.com>
-References: <38B21539.A3D46D7@cln.etc.bc.ca> <20000222075737.A16202@uni-mainz.de> <20000222172949.A20225@uni-mainz.de>
-Subject: Re: [parisc-linux] 725/50 boot log...
-Date: Tue, 22 Feb 2000 19:45:32 +0100
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA13475
+	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Feb 2000 09:38:16 -0700
+Date: Wed, 23 Feb 2000 10:38:57 -0500 (EST)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.BSO.4.21.0002231025570.18891-100000@mojo.calyx.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] NFS root on 715/64
 List-ID: <linux-parisc.vger.kernel.org>
 
-I've exactly the quite same boot log with my 712/80 with the last version of
-linux-2.3 and the 2 last ramdisk.bin.
-
-Thanks for your help
-
-Th. SIMONNET
-
------ Original Message -----
-From: Dominik Kubla <dominik.kubla@uni-mainz.de>
-To: <parisc-linux@thepuffingroup.com>
-Sent: Tuesday, February 22, 2000 5:29 PM
-Subject: [parisc-linux] 725/50 boot log...
 
 
-> On Tue, Feb 22, 2000 at 07:57:37AM +0100, Dominik Kubla wrote:
-> ...
-> > They also seem to have WAX support.  We tried to netboot a 725/50 with
-> > the latest images from puffin.external yesterday, which went well until
-> > loading the ramdisk triggered a bug in block_dev.c (that's what it
-> > reported), bootlog to follow later today.
->
-> As promised here is the boot log of our attempt with that 725/50.
->
-> Yours,
->   Dominik Kubla
-> --
-> Looking for information about professional american football in Europe?
-> Then visit the independant "NFL@Europe Fan Site" at:
->             http://www-klinik.uni-mainz.de/staff/kubla/NFLE/
->
+This almost works... after adjusting the .config that was
+given in the instructions to actually include the LASI ethernet
+driver :), I get to the IP-Config notice, and if I turn on nfsd's
+transfer logging, I can see it mount the root filesystem and transfer
+sbin/init, but no output past that and it doesn't transfer sash even
+/dev/console.
+
+Now it was mentioned that the serial console was needed to
+get a working shell -- has anything actually been hacked up
+in the nfsroot images that prevents using the PDC (yes I 
+know, it's line-by-line only) because setting up serial 
+console will be rather inconvenient for me and plus I'm working
+on the HIL stuff anyway so I'll want to have focus on the 
+keyboard not ttyS0.
+
+Or, should I be seeing more output as is?
+
+--
+Brian S. Julin
