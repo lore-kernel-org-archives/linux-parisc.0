@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 783B8483E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 22 Jun 2002 03:09:47 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org,
-	deller@dsl2.external.hp.com (Helge Deller),
-	parisc-linux-cvs@lists.parisc-linux.org
-Date: Sat, 22 Jun 2002 11:07:59 +0200
-References: <20020622090559.94D1B4835@dsl2.external.hp.com>
-In-Reply-To: <20020622090559.94D1B4835@dsl2.external.hp.com>
+Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 624EB4842
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 22 Jun 2002 12:04:28 -0600 (MDT)
+Message-ID: <3D14BC72.3010909@freebel.net>
+Date: Sat, 22 Jun 2002 18:05:38 +0000
+From: Joel Soete <joel.soete@freebel.net>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_v5DF9KDjHkEpJ5e"
-Message-Id: <200206221107.59319.deller@gmx.de>
-Subject: [parisc-linux] 2.4.18-pa40, added SNDCTL_DSP_SYNC ioctl to harmony driver
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: "M. Grabert" <xam@cs.ucc.ie>,
+	parisc-linux@lists.parisc-linux.org,
+	Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Subject: Re: [parisc-linux] PA8000 modutils problems
+References: <200206212125.g5LLP37O028451@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,68 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---Boundary-00=_v5DF9KDjHkEpJ5e
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
+Hi Dave,
 
-On Saturday 22 June 2002 11:05, Helge Deller wrote:
-> CVSROOT:	/var/cvs
-> Module name:	linux
-> Changes by:	deller	02/06/22 03:05:59
->
-> Modified files:
-> 	.              : Makefile
-> 	drivers/sound  : harmony.c
->
-> Log message:
-> 2.4.18-pa40
-> - added SNDCTL_DSP_SYNC to harmony driver (allows recording with sox)
-> This patch was contributed by James Mcclain <jmccla3@gl.umbc.edu>
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016688.html
+John David Anglin wrote:
+> 
+>>One more question: is it a good idea to compile with gcc-3.1,
+>>e.g. make CC=gcc-3.1 HOSTCC=gcc-3.1 vmlinux ?
+>>Does gcc-3.1 generate better code (better optimized, fewer bugs?) or
+>>should I stick to gcc-3.0 since this is the "recommended" compiler
+>>(or at least the one the kernel developers use and know)
+> 
+Some weeks ago I also try to compile the kernel (32bits) with gcc-3.1 
+(cvs) and eventhought it boots fine there was a problem
+with network connections (as well telnet which uses inetd as well as ssh
+which using its own sshd; this confirm the problem of compilation in 
+network interface). Is this problem solved now?
+If not I will ask to Bruno to test its last lkcd code (kdb not yet 
+working) to continue to investigate this problem.
 
---Boundary-00=_v5DF9KDjHkEpJ5e
-Content-Type: text/plain;
-  charset="iso-8859-1";
-  name="diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="diff"
-
-Index: Makefile
-===================================================================
-RCS file: /var/cvs/linux/Makefile,v
-retrieving revision 1.310
-diff -u -p -r1.310 Makefile
---- Makefile	2002/06/19 06:59:25	1.310
-+++ Makefile	2002/06/22 09:02:46
-@@ -1,7 +1,7 @@
- VERSION = 2
- PATCHLEVEL = 4
- SUBLEVEL = 18
--EXTRAVERSION = -pa39
-+EXTRAVERSION = -pa40
- 
- KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
- 
-Index: drivers/sound/harmony.c
-===================================================================
-RCS file: /var/cvs/linux/drivers/sound/harmony.c,v
-retrieving revision 1.27
-diff -u -p -r1.27 harmony.c
---- drivers/sound/harmony.c	2002/03/26 20:59:01	1.27
-+++ drivers/sound/harmony.c	2002/06/22 09:02:47
-@@ -724,7 +724,11 @@ static int harmony_audio_ioctl(struct in
- 		info.fragsize = HARMONY_BUF_SIZE;
-                 info.bytes = info.fragments * info.fragsize;
- 		return copy_to_user((void *)arg, &info, sizeof(info));
-+	
-+	case SNDCTL_DSP_SYNC:
-+		return 0;
- 	}
-+	
- 	return -EINVAL;
- }
- 
-
---Boundary-00=_v5DF9KDjHkEpJ5e--
+Joel
