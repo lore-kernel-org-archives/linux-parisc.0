@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BD2FF483D
-	for <parisc-linux@parisc-linux.org>; Sat, 23 Mar 2002 21:03:09 -0700 (MST)
-Date: Sat, 23 Mar 2002 20:03:00 -0800 (PST)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: <parisc-linux@parisc-linux.org>
-Cc: <debian-hppa@lists.debian.org>
-Message-ID: <Pine.LNX.4.33L2.0203231953470.13376-100000@eiger.apptechsys.com>
+Received: from goliath.alaskatech.org (207-5-237-24-cable.anchorageak.net [24.237.5.207])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B8C7483A
+	for <parisc-linux@parisc-linux.org>; Sat, 23 Mar 2002 22:41:44 -0700 (MST)
+Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
+	by goliath.alaskatech.org (8.12.2/8.12.2) with ESMTP id g2O5VwbX018694
+	for <parisc-linux@parisc-linux.org>; Sat, 23 Mar 2002 20:31:58 -0900
+Date: Sat, 23 Mar 2002 20:31:58 -0900 (AKST)
+From: Tom <palinux@alaskatech.org>
+To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0203232012090.18420-100000@goliath.alaskatech.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Kernel 2.4.17-32-smp problem
+Subject: [parisc-linux] Something broken in dpkg/dselect/apt?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,24 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I have been running debian hppa for a while now without incedent.
-Recently, I ran apt-get upgrade, and it upgraded my kernel-image
-2.4.17-32-smp.  I rebooted, and the box now crashes periodically.  It has
-done this twice.  Since I have not had physical access to the box for a
-while, I can't get any logs or even bring the box back up.  Hopefully by
-monday I'll be able to be more help.
+A couple days ago I apt-get update/upgraded my C180, since it had been off
+for a few weeks while I was moving. Everything seemed to go fine, no
+errors. Also cvs'd and updated to 2.4.18-pa05 at the same time, again
+without errors. Shut it down, turned it on today, and now apt-get update
+(or dselect update) fails. Updates download, then errors "Failed to fetch
+-x-  rename failed, no such file or directory" and "couldn't stat -x- -
+stat (2 no such file or directory". It then helpfully suggests that I
+rerun the apt-get udpate... I cleared the package list in dpkg, I
+recreated my sources.list file, and I checked to see if the permissions
+were gone in /var/lib/apt, which they don't appear to be. The files it
+fails to rename are there, there's rwx on them, and I'm in as root...
 
-The box is a J5000 with 512M ram and a 30Gig 15k scsi drive on id6 of the
-hotswap scsi.  It is running serial console, but has a hp video card.  I
-don't know exactly what that is.  The USB on the back is hosed, so the
-firmware can't detect the HP keyboard and it boots serial console.
+Has anyone noticed this, or heard of this? As a possibly related note,
+rerunning cvs to check the kernel version gives me the same three files
+updating, and it appears that cvs thinks the update is failing, so every
+time I cvs-update it re-downloads them... It's run fine all day, no
+instability or errors, rebooting showed no errors. Strange...
 
-I would also like to ask you hardware gurus out there if I were to buy and
-add a PCI USB controller to the J5000, if the firmware would detect the
-keyboard and boot properly.
-
-Thanks for the great work on this port, and hopefully you can help me.
-Log files to follow when available.......
-
--- 
-You are as I am with You.
+If anyone can suggest how to approach this I'm all ears...
