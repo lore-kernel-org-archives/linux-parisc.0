@@ -1,40 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.umr.edu (mrelay.cc.umr.edu [131.151.1.89])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9A21848A6
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 09:32:41 -0600 (MDT)
-Message-ID: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7FE@umr-mail03.cc.umr.edu>
-From: "Neulinger, Nathan" <nneul@umr.edu>
-To: "'Alan Cox'" <alan@lxorguk.ukuu.org.uk>
-Cc: willy@debian.org, parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Status of hp-ux binary compatibility?
-Date: Mon, 1 Oct 2001 10:30:40 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A963848A6
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 09:33:54 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15o54r-00030l-00; Mon, 01 Oct 2001 16:33:53 +0100
+Date: Mon, 1 Oct 2001 16:33:53 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "Neulinger, Nathan" <nneul@umr.edu>
+Cc: 'Matthew Wilcox' <willy@debian.org>,
+	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
+Message-ID: <20011001163353.K28828@parcelfarce.linux.theplanet.co.uk>
+References: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F9@umr-mail03.cc.umr.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F9@umr-mail03.cc.umr.edu>; from nneul@umr.edu on Mon, Oct 01, 2001 at 08:35:52AM -0500
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-When you get down to it, so is making any change to how the software is
-installed. I can't even remember the last time we installed a package on
-unix the way the vendor insisted it be installed. 
+On Mon, Oct 01, 2001 at 08:35:52AM -0500, Neulinger, Nathan wrote:
+> IASQ: 00000725 00000725 IAOQ: c0000007 c000000b
+>  IIR: e02025b2    ISR: 00000725  IOR: faf0226c
+>  CPU:        0   CR30: 2734c000 CR31: 10388000
+>  ORIG_R28: 000b8950
 
--- Nathan
+Interesting.  It's trying to execute code in userspace at 0xc000'0000 and
+up.  This is very strange.  I'll investigate this today.
 
-> -----Original Message-----
-> From: Alan Cox [mailto:alan@lxorguk.ukuu.org.uk]
-> Sent: Monday, October 01, 2001 10:34 AM
-> To: nneul@umr.edu
-> Cc: willy@debian.org; parisc-linux@lists.parisc-linux.org
-> Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
-> 
-> 
-> > them to move the license server will be a nightmare. What 
-> I'd like to do is
-> > run the lmgrd+vendor-daemon on a parisc-linux box and 
-> modload a syscall
-> > replacement that lies about the hostid to this process.
-> 
-> Thats now a criminal offence in the USA. You are circumventing digital
-> rights management. The DMCA has no exclusion for actually 
-> having the rights
-> to do so, or exemption swhen you have the license
-> 
+-- 
+Revolutions do not require corporate support.
