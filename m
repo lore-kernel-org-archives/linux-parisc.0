@@ -1,62 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA09950
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 15:55:59 -0700
-Message-Id: <199911162256.RAA03404@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Today's boot experience on a 735
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Tue, 16 Nov 1999 17:56:32 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: bame@debian.fc.hp.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <199911162052.PAA01909@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 16, 99 03:52:48 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA10350
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 17:03:32 -0700
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id QAA28324
+	for <parisc-linux@thepuffingroup.com>; Tue, 16 Nov 1999 16:05:06 -0800 (PST)
+Message-Id: <199911170006.QAA27014@milano.cup.hp.com>
+To: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] depi? 
+In-reply-to: Your message of "Tue, 16 Nov 1999 17:47:33 PST."
+             <19991116174733.C750@mathe.stud.uni-erlangen.de>
+Date: Tue, 16 Nov 1999 16:06:41 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > The _end symbol is not a reliable indicator of where
-> > the kernel's memory ends.  And the hpux
-> > bootloader doesn't provide the SOM header from whence this could
-> > theoretically be calculated.  I haven't tried out the _end trick
-> > posted last week, but it looks like it'll work (don't call the symbol
-> > _end if you try it).  As long as your kernel links, the guess is
-> > probably OK for now.
-> 
-> Ok, I see the problem now.  The section $DLT$ contains a bunch of
-> undefined common symbols as well as _end.  For example,
-> 
-> boot_cpu_data       |       416|undef |common |$CODE$
-> 
-> The _end defined by the linker is the end of the bss section but not
-> the end of last section of the kernel.
+Philipp Rumpf wrote:
+> Note that 3.75 GB userspace isn't a problem with either.  My A class looks
+> pretty packed with 768 MB RAM so I doubt you could fit more than 1.75 GB in
+> many pa1.1 boxes.
 
-Ok, this is a programing problem.  For objects that don't need external
-linkage, declare them static.  For those that do, initialize them!  This
-will eliminate those pesky common variables.  For example,
+a180.pdf says A-class supports 2GB. And that's the "smallest" box HP
+ships today and it won't be on the pricelist much longer. 712/100 only
+supports 192MB. I don't know about 715's and older B/C-class systems.
 
---- setup.c.orig	Fri Nov 12 18:23:50 1999
-+++ setup.c	Tue Nov 16 17:46:36 1999
-@@ -57,14 +57,14 @@
- 
- 
- #define COMMAND_LINE_SIZE 1024
--char 	saved_command_line[COMMAND_LINE_SIZE];
-+char 	saved_command_line[COMMAND_LINE_SIZE] = {};
- 
- #define pdc_wrapper(args...) ({				\
- 	real_routine = (void *)PAGE0->mem_pdc;		\
- 	real_call(##args);				\
- })
- 
--struct cpuinfo_parisc boot_cpu_data;
-+struct cpuinfo_parisc boot_cpu_data = {};
- 
- extern __initfunc(unsigned long hp700fb_init(unsigned long mem_start));
- extern	void dino_init(void);
-@@ -73,7 +73,7 @@
- #endif
- extern void do_inventory(void);
- 
--PDC_CALL pdc;
-+PDC_CALL pdc = {};
- 
- 
- void __xchg_called_with_bad_pointer(void)
+I'm pretty sure all new workstations will support more than 4GB
+(and run PA2.0). If we can do something now to port linux to those
+boxes easier later, then I think we should.
+
+grant
+
+Grant Grundler
+Unix Developement Lab
++1.408.447.7253
