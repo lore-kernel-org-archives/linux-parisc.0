@@ -1,33 +1,64 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA18447
-	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 09:38:31 -0700
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id AAA27504
-	for parisc-linux@thepuffingroup.com; Mon, 13 Nov 2000 00:40:18 +0800
-Date: Mon, 13 Nov 2000 00:40:15 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA19020
+	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 11:04:59 -0700
+Date: Sun, 12 Nov 2000 11:06:38 -0700
+From: Randolph Chung <randolph@tausq.org>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000 e25
-Message-ID: <20001113004013.Y9666@neep.com.au>
-References: <20001111231253.I9666@neep.com.au> <200011112329.PAA09355@milano.cup.hp.com>
+Message-ID: <20001112110638.A1005@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200011112329.PAA09355@milano.cup.hp.com>; from grundler@cup.hp.com on Sat, Nov 11, 2000 at 03:29:14PM -0800
+Subject: [parisc-linux] glibc build fails / bash bug
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler said:
-> AFIAK, the chipsets for I/O devices in E25 have plenty of
-> documentation.  The issue is someone has to clean them up and get a
-> lawyer to approve their publication.
+Bdale, taggart and I have been looking at trying to build glibc on hppa
+from Debian's sources.  What we saw was that it looks like a lot of the 
+syscalls were not being reocognized as such by one part of the build, so 
+it tries to build things from the sysdeps/generic directory and fails.
 
-My bad, I should've said "public documentation".  =)
+After a lot of digging, I *think* what is at fault is actually bash. It
+looks like during the build, a shell script (make-syscalls.sh) parses
+through syscalls.list to generate syscall stubs that are needed for the
+build to happen correctly, but these are not being generated. What it 
+boils down to, I think, is this:
 
-*prods LC FAQ maintainers*
+(on hppa - bdale's J5K)
+=============================
+tausq@j5k:/space/tausq $ bash --version
+GNU bash, version 2.04.0(1)-release (hppa-unknown-linux-gnu)
+Copyright 1999 Free Software Foundation, Inc.
+tausq@j5k:/space/tausq $ dpkg -l |grep bash
+ii  bash           2.04-7         The GNU Bourne Again SHell
+tausq@j5k:/space/tausq $ cat test.sh
+#!/bin/sh
 
-Andrew.
+echo "1 2 3 4 5
+a b c d e 
+" | 
+while read a b c d e; do
+        echo $a $b $c $d $e
+done
+tausq@j5k:/space/tausq $ /bin/bash test.sh
+1 2 3 4 5
+=============================
+(on other archs, tested with i386 and sparc)
+samwise[11:06] ~% bash --version    
+GNU bash, version 2.04.0(1)-release (i386-pc-linux-gnu)
+Copyright 1999 Free Software Foundation, Inc.
+samwise[11:06] ~% dpkg -l |grep bash
+ii  bash           2.04-7         The GNU Bourne Again SHell
+samwise[11:06] ~% /bin/bash test.sh
+1 2 3 4 5
+a b c d e
 
---
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+This causes the parsing routines to die quite miserably....
+
+Anyone feel like trying to fix this? :-)
+
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
