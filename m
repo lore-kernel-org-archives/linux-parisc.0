@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3C9704829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 09:32:33 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9FE0C4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 09:39:36 -0700 (MST)
 Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 2386B6C2
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 17:32:27 +0100 (MET)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id RAA28554 for <parisc-linux@lists.parisc-linux.org>; Fri, 6 Dec 2002 17:30:32 +0100 (MET)
-Message-ID: <3DF0D119.A4A0F2B9@admin.france.hp.com>
-Date: Fri, 06 Dec 2002 17:32:25 +0100
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id A8794BAA
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 17:39:29 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id RAA28949 for <parisc-linux@lists.parisc-linux.org>; Fri, 6 Dec 2002 17:37:34 +0100 (MET)
+Message-ID: <3DF0D2C0.D24A29B1@admin.france.hp.com>
+Date: Fri, 06 Dec 2002 17:39:28 +0100
 From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
 To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] towards unattended reboot
-References: <20021206135243.GA20175@b180.mmjgroup.com> <20021206162227.GB8611@systemhalted>
 Content-Type: multipart/mixed;
- boundary="------------3C3F53B3F25863A791CA2E80"
+ boundary="------------B527D0DA0A52C081C6A8CD95"
+Subject: [parisc-linux] new 2.4.20-pa10 kernel: boot pb.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,31 +26,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format.
---------------3C3F53B3F25863A791CA2E80
+--------------B527D0DA0A52C081C6A8CD95
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: base64
 
-SW4gdGhlIGR1bXAgZHJpdmVyLCBhdCB0aGUgZW5kIG9mIGR1bXAsIGl0IHJlYm9vdCBhdXRv
-bWF0aWNhbGx5Og0KDQouLi4NCiAgICAgICAgRFVNUF9QUklOVCgiUmVib290aW5nIGluICVk
-IHNlY29uZHMgLi4uIiwgcGFuaWNfdGltZW91dCk7DQogICAgICAgIGR1bXBfd2FpdF9uX21z
-ZWMocGFuaWNfdGltZW91dCAqIDEwMDApOw0KICAgICAgICBtYWNoaW5lX3Jlc3RhcnQoTlVM
-TCk7DQogICAgICAgIHJldHVybjsNCn0NCg0KDQpDYXJsb3MgTydEb25lbGwgd3JvdGU6DQoN
-Cj4gPiBROiBHaXZlbiBhIDIuNC4xOSBrZXJuZWwsIGhvdyBkbyB5b3UgZ2V0IGl0IHRvIGF1
-dG9tYXRpY2FsbHkgcmVib290IG9uIGNyYXNoPw0KPiA+DQo+ID4gQTogc2VlIGJlbG93LiAg
-VGhlIGZpcnN0IG9uZSBicmVha3MgdGhlIGxvb3Agb24gZHVtcGluZyB0aGUgc3RhY2suICBU
-aGUNCj4gPiAgICBzZWNvbmQgcGFydCByZXNldHMgdGhlIG1hY2hpbmUgaW4gcGFyaXNjX3Rl
-cm1pbmF0ZSgpLg0KPg0KPiBMb29rcyBhd2Vzb21lIGluIG15IG9waW5pb24uIEkndmUgbmVl
-ZGVkIHNvbWV0aGluZyBsaWtlIHRoaXMgZm9yIG15DQo+IGNsdXN0ZXIsIGl0IGdldHMgYW55
-b25lIHdoZW4gbWFjaGluZXMgZG9uJ3QgcmVzZXQgb24gY3Jhc2ggOikNCj4NCj4gVGhvdWdo
-IGhhdmluZyB0aGlzIGJlIG9wdGlvbmFsIHNlZW1zIGxpa2UgYW4gaW1wb3J0YW50IGZlYXR1
-cmUgdG8gYWRkLg0KPg0KPiBjLg0KPg0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXw0KPiBwYXJpc2MtbGludXggbWFpbGluZyBsaXN0DQo+IHBh
-cmlzYy1saW51eEBsaXN0cy5wYXJpc2MtbGludXgub3JnDQo+IGh0dHA6Ly9saXN0cy5wYXJp
-c2MtbGludXgub3JnL21haWxtYW4vbGlzdGluZm8vcGFyaXNjLWxpbnV4DQoNCg0KDQoNCi0t
-DQogICAgICAgIFZpZGFsIEJydW5vLCAoNzcwLTQyNzEpDQogICAgICAgIFNTRC1IQSBUZWFt
-LCBIUC1VWCAmIExJTlVYIFN1cHBvcnQNCiAgICAgICAgYnJ1bm9fdmlkYWxAYWRtaW4uZnJh
-bmNlLmhwLmNvbQ0KDQoNCg==
---------------3C3F53B3F25863A791CA2E80
+ICAgIEhpDQpJJ3ZlIGRvd25sb2FkIHRoZSBsYXRlc3QgYml0Og0KbGludXgtMi40LjIwLXBh
+MTAudGFyLmd6DQoNCkkndmUgZG9uZToNCnRhciB4emYNCmNkIGxpbnV4DQptYWtlIG9sZGNv
+bmZpZw0KbWFrZSBkZXANCm1ha2Ugdm1saW51eCAobm8gbW9kdWxlcyBhdCBhbGwpDQpyZWJv
+b3Qgb24gdGhpcyBuZXcga2VybmVsLCBhbmQgaXQgaGFuZ2luZyBub3c6DQpzY3NpMSA6IHN5
+bTUzYzh4eC0xLjcuM2MtMjAwMTA1MTINCnNjc2kyIDogc3ltNTNjOHh4LTEuNy4zYy0yMDAx
+MDUxMg0Kc2NzaTMgOiBzeW01M2M4eHgtMS43LjNjLTIwMDEwNTEyDQpibGs6IHF1ZXVlIDAw
+MDAwMDAwNGZjNTg0NDAsIEkvTyBsaW1pdCA0MDk1TWIgKG1hc2sgMHhmZmZmZmZmZikNCg0K
+bm90aGluZyBtb3JlLCBpdCBzdGF5IGhlcmUgZm9yZXZlci4uLi4uLi4NCg0KSXQgaXMgYW4g
+QTUwMCBpbiBTTVAvNjQuDQoNCkEgbm9ybWFsIGJvb3Qgd2l0aCAyLjQuMTkNCnNjc2kxIDog
+c3ltNTNjOHh4LTEuNy4zYy0yMDAxMDUxMg0Kc2NzaTIgOiBzeW01M2M4eHgtMS43LjNjLTIw
+MDEwNTEyDQpzY3NpMyA6IHN5bTUzYzh4eC0xLjcuM2MtMjAwMTA1MTINCiAgVmVuZG9yOiBT
+RUFHQVRFICAgTW9kZWw6IFNUMzEyMzBOICAgICAgICAgIFJldjogSFAwNQ0KICBUeXBlOiAg
+IERpcmVjdC1BY2Nlc3MgICAgICAgICAgICAgICAgICAgICAgQU5TSSBTQ1NJIHJldmlzaW9u
+OiAwMg0KICBWZW5kb3I6IFNFQUdBVEUgICBNb2RlbDogU1QzMTg0MDRMQyAgICAgICAgUmV2
+OiBIUDA0DQoNCkl0IHNlZW1zIHRoYXQgc2NzaSBkZXRlY3Rpb24gaGFzIHNvbWUgdHJvdWJs
+ZS4NCg0KVGhhbmtzLg0KDQotLQ0KICAgICAgICBWaWRhbCBCcnVubywgKDc3MC00MjcxKQ0K
+ICAgICAgICBTU0QtSEEgVGVhbSwgSFAtVVggJiBMSU5VWCBTdXBwb3J0DQogICAgICAgIGJy
+dW5vX3ZpZGFsQGFkbWluLmZyYW5jZS5ocC5jb20NCg0KDQo=
+--------------B527D0DA0A52C081C6A8CD95
 Content-Type: text/x-vcard; charset=iso-8859-1;
  name="bruno_vidal.vcf"
 Content-Transfer-Encoding: base64
@@ -67,4 +64,4 @@ dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
 PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
 aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
 ZDp2Y2FyZAo=
---------------3C3F53B3F25863A791CA2E80--
+--------------B527D0DA0A52C081C6A8CD95--
