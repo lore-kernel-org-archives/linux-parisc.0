@@ -1,21 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA07799
-	for <hppa-linux@sod.res.cmu.edu>; Mon, 22 Mar 1999 14:05:31 -0500
-Received: from the-village.bc.nu (lightning.swansea.uk.linux.org [194.168.151.1]) by snowcrash.cymru.net (8.8.7/8.7.1) with SMTP id TAA08431 for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 19:05:21 GMT
-Message-Id: <m10PAr3-0007U2C@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: [hppa-linux] Document Priority?
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id OAA07950
+	for <hppa-linux@sod.res.cmu.edu>; Mon, 22 Mar 1999 14:09:36 -0500
+Received: from mailhost.rsn.hp.com (root@idiot.rsn.hp.com [15.99.200.11])
+	by atlrel1.hp.com (8.8.6 (PHNE_14041)/8.8.5tis) with ESMTP id OAA11980
+	for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 14:09:18 -0500 (EST)
+Received: from helgaaspc.rsn.hp.com (root@helgaaspc.rsn.hp.com [15.99.148.145])
+	by mailhost.rsn.hp.com (8.8.6 (PHNE_14041)/8.8.6) with ESMTP id NAA27665
+	for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 13:09:26 -0600 (CST)
+Received: from helgaaspc.rsn.hp.com (helgaas@localhost [127.0.0.1])
+	by helgaaspc.rsn.hp.com (8.8.7/8.8.7) with ESMTP id NAA01345
+	for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 13:09:26 -0600
+Message-Id: <199903221909.NAA01345@helgaaspc.rsn.hp.com>
 To: hppa-linux@thepuffingroup.com
-Date: Mon, 22 Mar 1999 19:59:20 +0000 (GMT)
-In-Reply-To: <199903221856.KAA04931@meow.sr.hp.com> from "Bill Katz" at Mar 22, 99 10:56:37 am
-Content-Type: text
+Subject: Re: [hppa-linux] Picky details of TLB fault handlers 
+Date: Mon, 22 Mar 1999 13:09:26 -0600
+From: Bjorn Helgaas <helgaas@rsn.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-The TLB miss stuff would be a good early one, that and the basic I/O.
-The normal approach ports have taken is to get the basic kernel core
-up and then the network card. That lets you use an NFS root - and means you
-don't turn your disk to sillyputty while debugging the vm bugs 
+>I'm right in assuming its legal to swap the return address - so the TLB
+>handler can do a short piece of TLB handling for a present page miss,
+>then stash the return into the kernel stack and rfi into the page fault handler
+>so it will in turn return to the user context ?
 
-> 	What output format should I generate? PostScript? PDF? PCL?
-
-I can still work nroff ;)
+Yes.
