@@ -1,23 +1,26 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 90B05611D
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 09:44:58 -0700 (MST)
-Received: from ldl.fc.hp.com (unknown [15.1.50.190])
-	by atlrel8.hp.com (Postfix) with ESMTP id 828211F9B7
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 11:44:57 -0500 (EST)
-Received: from noam.fc.hp.com (noam.fc.hp.com [15.1.52.69])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 063464679
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 09:44:57 -0700 (MST)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by noam.fc.hp.com with esmtp (Exim 3.32 #1 (Debian))
-	id 16Dq1Y-0002zm-00
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 09:44:56 -0700
-To: parisc-linux@parisc-linux.org
-Date: Tue, 11 Dec 2001 09:44:56 -0700
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E16Dq1Y-0002zm-00@noam.fc.hp.com>
-Subject: [parisc-linux] 2.5 kernel and CVS -- opinions?
+Received: from tisch.mail.mindspring.net (tisch.mail.mindspring.net [207.69.200.157])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CBDBA482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Dec 2001 12:07:37 -0700 (MST)
+Received: from archimedes.localnetsolutions.com ([199.174.105.194])
+	by tisch.mail.mindspring.net with esmtp (Exim 3.33 #1)
+	id 16DsFb-00021W-00
+	for parisc-linux@lists.parisc-linux.org; Tue, 11 Dec 2001 14:07:35 -0500
+Received: (from jkinney@localhost)
+	by archimedes.localnetsolutions.com (8.11.6/linuxconf) id fBBJ7Va07581;
+	Tue, 11 Dec 2001 14:07:31 -0500
+Subject: Re: [parisc-linux] console switching with C160 Hyperdrive option
+	card
+From: "James P. Kinney III" <jkinney@localnetsolutions.com>
+Cc: palinux <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <E16DicI-0000Xi-00@linuxlab.wdf.sap-ag.de>
+References: <1008039310.31094.29.camel@archimedes.localnetsolutions.com>
+	<E16DicI-0000Xi-00@linuxlab.wdf.sap-ag.de>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-bP3Pa2cuhzKT5GEOhg1R"
+Date: 11 Dec 2001 14:07:31 -0500
+Message-Id: <1008097651.31094.35.camel@archimedes.localnetsolutions.com>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,45 +32,81 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-It's time to start tracking the 2.5 kernel at cvs.parisc-linux.org
-and there are a few different ways to do it -- I'm looking for opinions.
-My favorite option at the moment is 1A.  SPEAK UP BY FRIDAY because I'll
-probably make CVS changes pretty soon after that.  I'll send a
-HOWTO to the mailing list after the CVS changes are made.
+--=-bP3Pa2cuhzKT5GEOhg1R
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-The first decision:
+Ah, Ha! Lots of sti stuff in dmesg output. All positive. Found
+everything.=20
 
-    1. Start a separate 'linux-2.5' in CVS just like 'linux' with both
-       an upstream branch and a development branch.  This is more manual
-       perhaps, but using 'diff' and 'patch' and having 2.4 and 2.5 trees
-       checked out all the time, it can accomplish the same things as #2.
+Grabbed a new kernel source from kernel.org and ran make oldconfig. I
+think it uses the current running kernel for a starting point.
 
-    2. Add the 2.5 upstream and development branches to CVS 'linux'.
-       IMO this is the most functional and flexible -- allowing us to
-       use CVS to do the myriad of interesting 'diffs'.  CVS could also
-       be used to keep single versions of 2.4/2.5 pa-specific files where
-       no fork is required, but that will require some developers to acquire
-       additional CVS expertise so I'm not sure whether to recommend that.
-       2.4-only developers would not need to change their use model.  Not
-       that it's an issue, but #2 requires less CVS disk space.
+Looked at the .config file afterwards. No sti frame buffer configured.
+Hmm.=20
 
-The second decision:
+More research. Current firmware is 2.1. Latest firmware from HP is 6.1.
+And it "fixes" some 3rd  party graphics card problems.
 
-    Date-based CVS update on the trunk is broken (bugs filed -- no
-    action for a long time).  It works fine on non-trunk branches.
+As soon as I get a blank tape, I'll upgrade the firmware (scary
+process!).
 
-    A. We've lived with this defect so far, don't change anything.
-       If we choose this with #2 above, the only thing on the trunk
-       is 2.4 development -- 2.5 devel date-based checkout will
-       work fine.  However 2.4 devel date-based checkout will work
-       less often than it does now.
+Did the sti framebuffer get compiled into the kernel on the 0.9.3-rc6
+iso or am I missing something?
 
-    B. Move everything in CVS to non-trunk branches so we can use
-       date-based CVS update.  This would cause another little change
-       in how we use CVS.
+On Tue, 2001-12-11 at 03:50, Helge Deller wrote:
+> On Tuesday 11 December 2001 03:55, James P. Kinney III wrote:
+> > I loaded up the 0.9.3-rc6 iso. Loaded great onto a C160. I have a
+> > Hyperdrive optional graphics card that my A4033A monitor is attached to=
+.
+> > The main Gecko GSC core graphics is not used. I can get a serial consol=
+e
+> > with no problem.
+> >
+> > How do I tell palo to use the Hyperdrive card?
+> >
+> > I tried telling it console=3Dfb0, but never got anything. I tried telli=
+ng
+> > it sti=3D1, no luck there. Tried both.
+> >
+> > Suggestions welcome !
+>=20
+> Hi James,
+>=20
+> sti=3D1 should be the right value if the stifb driver detects and support=
+s your=20
+> hyperdrive. Maybe you could post the boot-messages regarding your=20
+> graphic cards (`dmesg | grep sti`) ?
+>=20
+> Helge
+>=20
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>=20
+--=20
+James P. Kinney III   \Changing the mobile computing world/
+President and COO      \          one Linux user         /
+Local Net Solutions,LLC \           at a time.          /
+770-493-8244             \.___________________________./
 
-    Option A is even more acceptable if we do either aggressive tagging
-    (for example, each -paXX release gets tagged) or keep a fairly
-    large set of the daily source tarballs.  IMO tagging is the "right"
-    answer, but it's pretty slow due to CVS limitation or perhaps
-    we could do a daily tagging from cron so nobody'd have to wait.
+GPG ID: 829C6CA7 James P. Kinney III (M.S. Physics)
+<jkinney@localnetsolutions.com>
+Fingerprint =3D 3C9E 6366 54FC A3FE BA4D 0659 6190 ADC3 829C 6CA7=20
+
+
+
+--=-bP3Pa2cuhzKT5GEOhg1R
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA8FllyYZCtw4KcbKcRArzxAKC9IKiFyyDdyUIuvOWGQHuAQtpbcACg8DsR
+eew0lCMcNKZ/f+ADps8rfPM=
+=Lm3q
+-----END PGP SIGNATURE-----
+
+--=-bP3Pa2cuhzKT5GEOhg1R--
