@@ -1,58 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5720F4A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  3 Feb 2001 06:28:46 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA15961
-	for <parisc-linux@puffin.external.hp.com>; Sat, 3 Feb 2001 06:24:33 -0700
-Received: from localhost (1983 bytes) by fileserv2.Cologne.DE
-	via rmail with P:stdio/R:bind/T:smtp
-	(sender: <excalibur.cologne.de!karsten>) (ident <excalibur.cologne.de!karsten> using unix)
-	id <m14P2k0-0007EuC@fileserv2.Cologne.DE>
-	for <parisc-linux@thepuffingroup.com>; Sat, 3 Feb 2001 14:28:36 +0100 (CET)
-	(Smail-3.2.0.101 1997-Dec-17 #5 built 1998-Jan-19)
-Received: (from karsten@localhost)
-	by excalibur.cologne.de (8.9.3/8.8.7) id OAA11553
-	for parisc-linux@thepuffingroup.com; Sat, 3 Feb 2001 14:06:17 +0100
-Date: Sat, 3 Feb 2001 14:06:17 +0100
-From: Karsten Merker <karsten@excalibur.cologne.de>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20010203140617.A11455@excalibur.cologne.de>
-Mime-Version: 1.0
+Received: from mr14.vic-remote.bigpond.net.au (mr14.vic-remote.bigpond.net.au [24.192.1.29])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8B8814A19
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  3 Feb 2001 08:09:00 -0700 (MST)
+From: penfold@customware.com.au
+Message-Id: <200102031508.CAA25485@customware.com.au>
+Subject: Re: [parisc-linux] _working_ rbootd for redhat
+To: parisc-linux@lists.parisc-linux.org
+Date: Sun, 4 Feb 2001 02:08:44 +1100 (EST)
+Cc: christoph.plattner@alcatel.at (Christoph Plattner)
+In-Reply-To: <3A7A7E14.9EB320A4@alcatel.at> from "Christoph Plattner" at Feb 02, 2001 10:29:56 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Sender: excalibur.cologne.de!karsten@Cologne.DE
-Subject: [parisc-linux] Type declaration missing
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hallo everyone,
+> 
+> Hello !
+> I will try your setup.
+> 
+> One more question here:
+> 
+> Have I to configure something concerning the LAN on the
+> boot monitor prompt (PDC..) to be able to use the LAN as
+> boot device ?
 
-I have just tried to compile the current cvs-snapshot (Sat Feb 3 11:27:29
-CET 2001) with support for smbfs. The result:
+hmmm, not sure what you mean here.
 
-[cwd is fs/smbfs]
-hppa-linux-gcc -D__KERNEL__
--I/mnt/filebase/builds/parisc-20010203/linux/include -Wall
--Wstrict-prototypes -O2 -fomit-frame-pointer -fno-strict-aliasing
--D__linux__ -pipe -fno-strength-reduce -mno-space-regs
--mfast-indirect-calls -mschedule=7200 -mdisable-fpregs
--fno-strict-aliasing -ffunction-sections  -DSMBFS_PARANOIA  -c -o ioctl.o
-ioctl.c
-ioctl.c: In function `smb_ioctl':
-ioctl.c:31: `__kernel_old_uid_t' undeclared (first use in this function)
-ioctl.c:31: (Each undeclared identifier is reported only once
-ioctl.c:31: for each function it appears in.)
-make[3]: *** [ioctl.o] Fehler 1
+In my case I disconnected all SCSI devices to _ensure_ the box would not
+boot from disk.
 
-In fact __kernel_old_uid_t is not declared for the hppa-architecture. The
-declaration should be in include/asm-parisc/posix_types.h, I am just
-unsure what the correct declaration looks like. Has hppa-linux always been
-using 32Bit UIDs? If yes, __kernel_old_uid_t should be defined to be the
-same as __kernel_uid_t, or am I missing something here?
+All I do is let it search (or, _re_search if I had forgotten to start rbootd)
+and then select path P0 to boot from.
 
-Greetings,
-Karsten
--- 
-#include <standard_disclaimer>
-Nach Paragraph 28 Abs. 3 Bundesdatenschutzgesetz widerspreche ich der Nutzung
-oder Uebermittlung meiner Daten fuer Werbezwecke oder fuer die Markt- oder
-Meinungsforschung.
+> 
+> To your question: Yes my Linux has booted. I only needed 
+> this TRAP18-FIX and ..... success !!
+
+Does your kernel see the scsi interface on the 720 ?
+
+If so, I am keen to try your kernel - are you able to make it available
+for download somewhere?
+If convenient for you, you also email it to me.
+
+Damian
+penfold@customware.com.au
