@@ -1,21 +1,18 @@
-Return-Path: <James.Bottomley@SteelEye.com>
-Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 552E04891
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B9B74868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 19 Jan 2004 07:39:03 -0700 (MST)
-Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
-	i0JEcwa02957; Mon, 19 Jan 2004 09:38:58 -0500
-Subject: Re: [parisc-linux] 32bit parisc kernel 2.6.1 and pcmcia
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Helge Deller <deller@gmx.de>
-In-Reply-To: <200401191007.19929.deller@gmx.de>
-References: <200401182059.34270.deller@gmx.de>
-	<1074469497.1805.25.camel@mulgrave> <200401191007.19929.deller@gmx.de>
-Content-Type: text/plain
-Date: 19 Jan 2004 09:38:54 -0500
-Message-Id: <1074523135.2201.6.camel@mulgrave>
+	Mon, 19 Jan 2004 11:57:20 -0700 (MST)
+Date: Mon, 19 Jan 2004 11:57:18 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] init and exit text problem
+Message-ID: <20040119185718.GA872@colo.lackof.org>
+References: <20040117081720.GA29918@colo.lackof.org>
+	<40047B6A000037F2@ocpmta2.freegates.net>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <40047B6A000037F2@ocpmta2.freegates.net>
 Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -26,32 +23,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, 2004-01-19 at 04:07, Helge Deller wrote:
-> Yenta: CardBus bridge found at 0000:00:02.0 [0000:0000]
-> Yenta: ISA IRQ mask 0x0000, PCI irq 98
-> Socket status: 30000007
-> Yenta: CardBus bridge found at 0000:00:02.1 [0000:0000]
-> Yenta: ISA IRQ mask 0x0000, PCI irq 99
-> Socket status: 30000007
+On Mon, Jan 19, 2004 at 12:16:40PM +0100, Joel Soete wrote:
+> Grant,
+> 
+> A great news: your kernel (2.6.1-pa4) boot well on the N4000-55 :)
 
-Hmm, that's not too good.  It should look something like
+awesome! thanks for trying it.
 
-Yenta: CardBus bridge found at 0000:00:02.0 [0000:0000]
-Yenta: setting irqmux to INTA,INTB
-Yenta: Enabling burst memory read transactions
-Yenta: Using CSCINT to route CSC interrupts to PCI
-Yenta: Routing CardBus interrupts to PCI
-Yenta: ISA IRQ mask 0x0000, PCI irq 98
-Socket status: 30000410
-cs MEM ports 0xf0804000-0xf0804fff allocated in parent Dino parisc8:0
-LMMIO 0
- others)
-cs IO ports 0x0-0x3f allocated in parent Dino I/O Port
+> If i well find back your mail and references to this "bridge_ctl" patch otc
+> I don't reach to apply Russel's patch like this (against 2.6.1) to test on
+> my B2k (which you know don't work yet with pdc_cons). Can you make your "bridge_ctl"
+> patch available on ftp.p-l.o?
 
-The relevant points are the lines routing all the interrupts to PCI
-(because we can't do ISA interrupts).
+yes - certainly ftp://ftp.parisc-linux.org/patches/diff-2.6.1-bridge_ctl
 
-The fixes I put into yenta were only for the PCI1410 (well, 13xx) yenta
-sockets, probably something extra has to be done to fix this one up.
+> PS: an additional question regarding pdc_cons: in 2.4 there was a device
+> driver in devices/char/pdc_console.[ch] which allowing to use ttyB device.
+> But in 2.6 there isn't anymore such driver? any idea?
 
-James
+sorry - I don't know.
+
+grant
