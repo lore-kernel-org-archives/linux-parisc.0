@@ -1,58 +1,68 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA19614
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Jan 2001 15:50:54 -0700
-Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
-  by mailserv2.iuinc.com with SMTP; 22 Jan 2001 22:54:44 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 0118EB005; Mon, 22 Jan 2001 22:45:03 +0000 (GMT)
-Date: Mon, 22 Jan 2001 22:45:03 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Christoph Plattner <christoph.plattner@dot.at>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA20411
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Jan 2001 17:11:48 -0700
+Message-Id: <200101230017.QAA19389@milano.cup.hp.com>
+To: Richard Hirst <rhirst@linuxcare.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: Further (build ?): [parisc-linux] strace ??? - is there any ???
-Message-ID: <20010122224503.U3571@linuxcare.com>
-References: <200101221502.f0MF2kO05633@openbsd1.buttafuoco.net> <20010122151515.N3571@linuxcare.com> <3A6C7686.1FC5F754@dot.at> <3A6C918B.A6287A24@dot.at> <20010122201517.P3571@linuxcare.com> <3A6CA970.7F8F82DF@dot.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A6CA970.7F8F82DF@dot.at>; from christoph.plattner@dot.at on Mon, Jan 22, 2001 at 10:43:12PM +0100
+Subject: Re: tar hangs on 715/75 (spinlock problem) 
+In-reply-to: Your message of "Mon, 22 Jan 2001 22:17:04 PST."
+             <20010122221704.R3571@linuxcare.com>
+Date: Mon, 22 Jan 2001 16:17:29 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jan 22, 2001 at 10:43:12PM +0100, Christoph Plattner wrote:
-> Hallo Mr Hirst !
+Richard Hirst wrote:
+> On Mon, Jan 22, 2001 at 09:32:19PM +0000, Richard Hirst wrote:
+> > On Mon, Jan 22, 2001 at 04:50:14PM +0000, Richard Hirst wrote:
+> > > Hi,
+> > >   tar (and nscd) hang on my 715/75.  Same binaries/libraries work on
+> > > the B180.  The hang is in __pthread_acquire() called from
+> > 
+> > This is because ldcw behaves differently on the 715/75 and the B180.
 > 
-> Now I have following problem. What is the clean
-> way to build such autoconfigured tool cross ?
+> Grant tells me spinlock words have to be the first word of a cacheline,
 
-HOSTCC=gcc CC=hppa-linux-gcc ./configure --target=hppa-linux --host=hppa-linux
-make
+16-byte aligned.
 
+> so that would be why my example code broke.  However, libpthreads uses
+> spinlocks and doesn't appear to force any alignment.
 
-worked for me, except for a problem with redefinition of struct dirent64.
-I hacked that out of /opt/palinux/hppa-linux/include/linux/dirent.h to
-temporarily get round it.
+Yeah - this is definitely broken. taggart and jsm are going to play
+with the alignments. jsm couldn't say for sure off-hand which processors
+don't really care about the alignment. But we agreed it doesn't matter
+since the architecture requires it and some of the processor models do
+care.
 
-I havn't checked the binary works.  You might have to remove a chunk
-of code from strace/defs.h, depending on how new your glibc is.  With
-a new glibc you need to remove the following block:
+> 
+> I think the libpthreads spinlock definitions come from
+> glibc/linuxthreads/sysdeps/pthread/bits/pthreadtypes.h, struct
+> pthread_mutex_t, spinlock is inside __m_lock.  No alignment is
+> specified.  When debugging tar, I found the spinlock word at
+> 0x4014df4c.
 
-  /* Hack until I figure out why we don't call ptrace in glibc, rather
-   * than the system call direct.
-   */
-  static inline long raw_ptrace(int req, pid_t pid, void *addr, long data)
-  {
-          long res, ret;
-  
-          if (req > 0 && req < 4)
-                  data = (long)&ret;
-          res = ptrace(req, pid, addr, data);
-          if (res >= 0 && req > 0 && req < 4) {
-                  errno = 0;
-                  return ret;
-          }
-          return res;
-  }
-  
-  #define ptrace raw_ptrace
+I spoke with Scott Norton (http://www.hp.com/hpbooks/authors/norton.html)
+and he made it clear the POSIX spec defines pthread_mutex_t to be an
+"opaque" type - ie it's arch specific.  _pthread_fastlock and
+pthread_spinlock_t types must be aligned to correctly work under parisc
+and Scott made it clear these are not POSIX data types.
+Perhaps UNIX98 or some other standard.
 
+What's baffled me is did this ever work under HPUX?
 
-Richard
+HP published a CD with a bunch of GNU/open source tools for HPUX 11.
+The glibc version shipped was 1.2.6. Only has references to pthread_mutex_t
+and none for "spinlock".
+
+So HPUX only supports the pthread_mutex_t and not pthread_spinlock_t.
+The HPUX kernel support for pthread_mutex_t seems to be __pthread_spinlock_t.
+__pthread_spinlock_t contains an array where the init sequence figures
+out where the 16byte alignment falls in the array and uses that offset.
+I don't want to endorse that as *the* strategy to use since the linux
+kernel obviously uses compiler built-ins to get's it's alignments right.
+
+thanks,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
