@@ -1,17 +1,16 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: 2.6.10-rc1-pa15 boot fine on n4k but still
-	annoying bactrace
-Date: Thu, 18 Nov 2004 23:09:40 -0700
-Message-ID: <20041119060940.GB2394@colo.lackof.org>
-References: <20041117221742.1429C494040@palinux.hppa>
-	<418A80030000538E@mail-1-bnl.tiscali.it>
+Subject: Re: [parisc-linux] installing sarge
+Date: Thu, 18 Nov 2004 23:22:39 -0700
+Message-ID: <20041119062239.GA3120@colo.lackof.org>
+References: <20041117182100.GB800@colo.lackof.org>
+	<NEBBKICDMOFAPLINPKAIOEBGDIAA.bnet@tampabay.rr.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: fly <bnet@tampabay.rr.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <418A80030000538E@mail-1-bnl.tiscali.it>
+In-Reply-To: <NEBBKICDMOFAPLINPKAIOEBGDIAA.bnet@tampabay.rr.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,67 +21,79 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Nov 18, 2004 at 01:54:28PM +0100, Joel Soete wrote:
-> Nice now the N4k boot well (in the previous attempt it was panic) :)
+On Wed, Nov 17, 2004 at 05:35:21PM -0500, fly wrote:
+> Grant
 
-cool - thanks for testing.
+Brian,
+Please keep the parisc-linux mailing list included in this conversation.
+Other people besides me are capable of answering your questions.
+And the resolution gets archived. Archives are Good Things(tm).
+You might even hunt about a bit in ours (http://lists.parisc-linux.org/).
 
-> But there are still many (a beat annoying) backtrace msg:
-> Releasing cpu 1 now, hpa=fffffffffed2d000
-> FP[1] enabled: Rev 1 Model 16
-> CPU(s): 2 x PA8600 (PCX-W+) at 550.000000 MHz
-> Setting cache flush threshold to 231280 (2 CPUs online)
-> SBA found Ike rev 2 at 0xfffffffffed00000
-> Badness in lba_set_iregs at drivers/parisc/lba_pci.c:1659
-> Backtrace:
->  [<0000000010196bac>] __alloc_pages+0x124/0x460
->  [<0000000010119fd0>] dump_stack+0x20/0x38
->  [<00000000102cf75c>] lba_set_iregs+0x84/0x180
->  [<00000000102cb254>] setup_ibase_imask+0x9c/0xa8
->  [<000000001010d18c>] __udivdi3+0x1c/0x30
->  [<00000000102cbc44>] sba_ioc_init+0x38c/0x578
+> Well I'm in installation but it doesn't sense dhcp (I have a linksys router
+> to cable).I set a static ip for it but evertime I finish entering the
+> numbers (IP,default gateway,subnet mask) it gives me a red screen and says
+> I've got incorrect numbers when I go back sure enough it has changed the
+> numbers on me-adding or subtracting numbers from what I put in. I'm on the
+> fifth try and now its' putting a number in front that I can't even delete or
+> backspace over such as 0 in front of where I need to put the 192 of the
+> router argh! So close...sound familiar
 
-Yeah, I think this is just a brainfart in the conversion to "WARN_ON".
-Can you test the following patch?
+Yes...like the terminal emulation is broken. Using a vt100 or compatible
+terminal emulation program?
 
-And for grins, add a printk so we can see what ibase/imask
-values are getting written.
+>  or did I get the wrong iso here's the
+> name I downloaded netinst CD image with debian base, sarge-hppa-netinst.iso,
+> address http://www.debian.org/devel/debian-installer/ that is the correct
+> one?
 
-But in review the code, I'm leary that bit 0 isn't getting set.
-bit 0 is the "Range Enable" that enables decoding of upstream
-PCI bus addresses. I suspect it works now only becuase we either
-never try peer-peer (but we do with sym2 driver IIRC) or the resulting
-addresses that are forwarded upstream never get responses.
+Looks like it. Though some folks have pointed out there are still
+issues with the debian installer.
 
-You have time for one more experiment for me?
-Please add  "| 1" to the ibase value passed in
-before writing the register. e.g.:
-	WRITE_REG32( ibase | 1, base_addr + LBA_IBASE);
+>   Sorry for the bother. Is there something I can do more to my network?
+> Install something? I would think dhcp broadcasts on a net are pretty obvious
+> inside the router. I tried pinging it but nothing. I have the mac address
+> but the linksys software doesn't allow, that I see, mac addressing inside
+> the router only wan side-pretty stupid really.Any thoughts.
 
-If not I'll try this later...
+Sorry - no idea.
 
-thanks
-grant
-
-Index: drivers/parisc/lba_pci.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/drivers/parisc/lba_pci.c,v
-retrieving revision 1.19
-diff -u -p -r1.19 lba_pci.c
---- drivers/parisc/lba_pci.c	17 Nov 2004 22:17:42 -0000	1.19
-+++ drivers/parisc/lba_pci.c	19 Nov 2004 05:55:35 -0000
-@@ -1656,8 +1656,9 @@ lba_set_iregs(struct parisc_device *lba,
- 
- 	imask <<= 2;	/* adjust for hints - 2 more bits */
- 
--	WARN_ON((ibase & 0x003fffff) == 0);
--	WARN_ON((imask & 0x003fffff) == 0);
-+	/* Make sure we aren't trying to set bits that aren't writeable. */
-+	WARN_ON((ibase & 0x001fffff) != 0);
-+	WARN_ON((imask & 0x001fffff) != 0);
- 	
- 	DBG("%s() ibase 0x%x imask 0x%x\n", __FUNCTION__, ibase, imask);
- 	WRITE_REG32( imask, base_addr + LBA_IMASK);
+>  Thanks again,
+> Brian
+> 
+> -----Original Message-----
+> From: Grant Grundler [mailto:grundler@parisc-linux.org]
+> Sent: Wednesday, November 17, 2004 1:21 PM
+> To: fly
+> Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 bame
+> 
+> 
+> On Wed, Nov 17, 2004 at 08:41:36AM -0500, fly wrote:
+> > But my point was help no usb, oddly I would hardly think of my C3000 as
+> new
+> 
+> It is compared to the A180/B180/A500 machines that Debian Woody
+> was targeted for. A500 is the same vintage but doesn't have graphics,
+> IDE, USB, or audio built-in.  C3000 needed more work.
+> 
+> >  but I suppose compared to
+> > a 68000 it would be. I had been to the site (sarge) but the size of the
+> > iso's and the name threw me I was looking for woody iso's and they were
+> the
+> > right size. The hardware list also included the b,c3000
+> 
+> Once the kernel is upgraded, woody can work.
+> But sarge works substantially better.
+> A C3600 is my desktop at work for the past two years.
+> (But TBH, I'm switching to a Zx2000/IA64 machine soon).
+> 
+> > Is there a users digest or list.
+> 
+> Yes. parisc-linux list is for parisc kernel discussion mostly.
+> debian-hppa mailing list is good for user space issues:
+> 	http://www.debian.org/ports/hppa/
+> 
+> grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
