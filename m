@@ -1,15 +1,10 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 27CC7482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Dec 2001 21:45:37 -0700 (MST)
-Message-Id: <200112120440.VAA03792@puffin.external.hp.com>
-To: "James P. Kinney III" <jkinney@localnetsolutions.com>
-Cc: palinux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] console switching with C160 Hyperdrive option card 
-In-Reply-To: Message from "James P. Kinney III" <jkinney@localnetsolutions.com>
-   of "11 Dec 2001 14:07:31 EST." <1008097651.31094.35.camel@archimedes.localnetsolutions.com>
-Date: Tue, 11 Dec 2001 21:40:46 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+To: parisc-linux@parisc-linux.org,
+	parisc-linux-announce@parisc-linux.org
+Date: Tue, 11 Dec 2001 22:57:30 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20011212055730.10EEA37E86@carmen.fc.hp.com>
+Subject: [parisc-linux] PA-RISC Linux 0.9.3
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,39 +16,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"James P. Kinney III" wrote:
-> Grabbed a new kernel source from kernel.org and ran make oldconfig. I
-> think it uses the current running kernel for a starting point.
+Version 0.9.3 of PA-RISC Linux Released
 
-A) It definitelly does not. You either need to find the config file
-from the CD or something else.
-B) forget kernel.org. parisc tree is at cvs.parisc-linux.org or
-   ftp.parisc-linux.org (nightly cvs snapshots). parisc isn't
-   fully merged back into linus's tree.
+On December 11, 2001 the PA-RISC Linux development community announced
+version 0.9.3, the latest version of Linux for computers using Hewlett
+Packard's PA-RISC processor. This release is the latest in a series
+representing several years of work by developers in the Free Software
+community including developers from The Debian Project, Hewlett Packard,
+ESIEE, and Linuxcare.
 
-> Looked at the .config file afterwards. No sti frame buffer configured.
-> Hmm.=20
+Improvments in the 0.9.3 release include
 
-Looking arch/parisc/defconfig:
-CONFIG_FB=y
-CONFIG_FB_STI=y
+Linux Kernel 2.4.9
+SMP support 1-4 way
+STI framebuffer graphics
+Improved SCSI driver
+EISA/ISA support
+HP-UX compatibility support
+Glibc 2.2.4
+Latest Debian Installer
+over 80% Debian packages available
+X Windows System
+Xinerama support
+KDE and Gnome environments
 
-you just ahd the wrong source tree.
+The 0.9.3 release install CDROM images and related documentation can be
+found at
 
-> More research. Current firmware is 2.1. Latest firmware from HP is 6.1.
-> And it "fixes" some 3rd  party graphics card problems.
+http://parisc-linux.org/release-0.9/
 
-It fixes alot more than just that.
-I believe 2.1 is the original firmware shipped with the machine.
-6.1 *will* disable PCI if anything other than an HP PCI grapchis
-card is plugged into a PCI slot *and* you have an "old" Dino.
+Information about PA-RISC Linux is available at
 
-> As soon as I get a blank tape, I'll upgrade the firmware (scary
-> process!).
+http://parisc-linux.org/
 
-Yes. But you can do it via LAN/bootp too.
-Boot the update image just a a kernel image as described
-in previous emails to this list (eg NFS root).
-(Archive is at lists.parisc-linux.org)
+Any questions or comments about the release should be directed to the
+mailing list at
 
-grant
+parisc-linux@parisc-linux.org
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
