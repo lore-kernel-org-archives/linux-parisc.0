@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.zrt.nl (ns.zrt.nl [212.153.94.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3C036611D
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 05:48:06 -0700 (MST)
-Received: (from fwmaster@localhost) by ns.zrt.nl (8.9.1a/8.6.12) id NAA26883 for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 13:48:04 +0100 (MET)
-Message-Id: <sbfd01b2.083@ms-zrt1>
-Date: Thu, 22 Nov 2001 13:36:26 +0100
-From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
-To: <parisc-linux@lists.parisc-linux.org>, <jbglaw@lug-owl.de>
-Subject: Betr.: [parisc-linux] 'apt-get upgrade' now okay?
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from velli.mail.jippii.net (velli.mail.jippii.net [195.197.172.114])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DA6D4482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 06:41:18 -0700 (MST)
+Received: from amos (dyn-3-085.tku.netti.fi [195.16.220.86])
+	by velli.mail.jippii.net (Postfix) with SMTP id 48B6A4B5
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 15:41:15 +0200 (EET)
+Message-ID: <002901c1735c$124c4ba0$56dc10c3@amos>
+From: "Kaj-Michael Lang" <milang@tal.org>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 22 Nov 2001 15:46:20 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] devfs in latest cvs kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,13 +24,7 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->However, this chroot environment (including shiny new libc6-2.2.4-6)
->seems to be okay. So, is it okay now to also update the whole
->system?
->
-Some people (myself included) have succeeded in compiling a kernel
-after apt-get update, and there was a message from a developer which
-said 'it seems to be ok, proceed with caution' - so I guess it is okay.
+Won't compile. Complains about __set_bit
 
-Good luck,
-Jurriaan
+--
+Kaj-Michael Lang , milang@tal.org
