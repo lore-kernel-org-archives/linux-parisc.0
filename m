@@ -1,69 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust171.bre.cable.ntl.com [213.105.88.171])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9EB6E482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 May 2001 08:18:30 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id CC289B008; Thu, 24 May 2001 15:16:14 +0100 (BST)
-Date: Thu, 24 May 2001 15:16:14 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: Grant Grundler <grundler@puffin.external.hp.com>,
-	John Marvin <jsm@udlkern.fc.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel panic
-Message-ID: <20010524151614.X8736@linuxcare.com>
-References: <200105230853.CAA07709@udlkern.fc.hp.com> <200105231859.MAA00753@puffin.external.hp.com> <20010523201317.X23718@parcelfarce.linux.theplanet.co.uk>
+Received: from deimos.frii.net (deimos.frii.com [216.17.128.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 38466482A
+	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 08:59:11 -0600 (MDT)
+Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via smail with esmtp
+	id <m152wYH-001VltC@bame.riverrock.org> (Debian Smail3.2.0.111)
+	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 08:57:25 -0600 (MDT)
+Message-Id: <m152wYH-001VltC@bame.riverrock.org>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Matt Taggart <taggart@carmen.fc.hp.com>,
+	parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org,
+	bame@www.riverrock.org
+Subject: Re: [parisc-linux] Re: hppa64 cross compiler debs available 
+In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
+   of "Thu, 24 May 2001 11:38:40 BST." <20010524113840.V8736@linuxcare.com>
+References: <20010523231045.0DF9037CA8@carmen.fc.hp.com>  
+ <20010524113840.V8736@linuxcare.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010523201317.X23718@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Wed, May 23, 2001 at 08:13:17PM +0100
+Date: Thu, 24 May 2001 08:57:25 -0600
+From: Paul Bame <bame@riverrock.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, May 23, 2001 at 08:13:17PM +0100, Matthew Wilcox wrote:
-> On Wed, May 23, 2001 at 12:59:57PM -0600, Grant Grundler wrote:
-> > Exactly. But if the driver is mucking with IRQ enable/disable,
-> > does that mean the enable/disable code has to keep reference counts?
-> > Don't recall any archs doing that when we did the initial implementation. 
 > 
-> cli -> disables irqs on all processors
-> __cli -> disables irqs on local processor
-> sti -> enables irqs on all processors
-> __sti -> enable irqs on local processor
+> They depend on libc 2.2.3, so if I want to use them for building
+> the 64 bit kernel-images for boot-floppies to use, I need 2.2.3 on my
+> build system.  That probably means I need 2.2.3 on the root.bin.
 > 
-> spin_lock_irqsave -> disables interrupts locally, puts the previous
-> state into the state variable you supplied and acquires the spinlock
-> spin_lock_irqrestore -> releases the spinlock and restores previous
-> state from state variable
-> 
-> no need to keep enable/disable counts, the previous state gets stored
-> for you.  if you're using cli and sti inappropriately, you lose.
+> Should I go down that road, or are we sticking with 2.2.1 for
+> initial install images?
 
-You mean like scsi_request_fn() calling  spin_unlock_irq(&io_request_lock);
-when called at interrupt level?
+I recommend sticking with 2.2.1 for the root.bin and maybe base system.  The
+apt-get somebody uses for grabbing the xc debs could depend on 2.2.3 and as
+will many things before too long.
 
-> OK, the problem is that you are getting into a interrupt loop.
-> I see the following repeated sequence on the stack:
->
->       intr_extint         <-----------+
->       do_irq_mask                     |
->       do_irq                          |
->       dino_isr                        |
->       sym53c8xx_intr                  |
->       scsi_old_done                   |
->       rw_intr                         |
->       scsi_io_completion              |
->       __scsi_end_request              |
->       scsi_queue_next_request         |
->       scsi_request_fn                 | <<<< re-enables interrupts
->       scsi_dispatch_cmd               |
->       <NEXT INTERRUPT>    >-----------+
-
-I also found
-
-        spin_lock(&lock) can also be used in your interrupt handler if your
-        device only uses one interrupt: the kernel guarantees that a interrupt
-        handler is never reentered, even if the interrupt handler runs with
-        enabled interrupts.
-
-in <http://kt.zork.net/kernel-traffic/kt20000703_74.txt>
-
-Richard
+	-P
