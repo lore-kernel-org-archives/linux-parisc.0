@@ -1,20 +1,15 @@
-From: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device
- interface
-Date: Sat, 09 Nov 2002 10:33:56 -0500
-Message-ID: <200211091533.gA9FXuW02017__24653.5042570487$1416621892$gmane$org@localhost.localdomain>
-References: <greg@kroah.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Matthew Wilcox <willy@debian.org>,
-	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
-	hch@lst.de, James.Bottomley@SteelEye.com,
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
+Date: Sat, 09 Nov 2002 11:04:48 -0700
+Message-ID: <20021109180448.C41144829__49407.2058973417$1416621894$gmane$org@dsl2.external.hp.com>
+References: <200211090451.UAA26160@baldur.yggdrasil.com>
+Cc: andmike@us.ibm.com, hch@lst.de, James.Bottomley@steeleye.com,
 	linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
-To: Greg KH <greg@kroah.com>
+To: "Adam J. Richter" <adam@yggdrasil.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: Message from Greg KH <greg@kroah.com>
-   of "Fri, 08 Nov 2002 22:03:42 PST." <20021109060342.GA7798@kroah.com>
+In-Reply-To: Message from "Adam J. Richter" <adam@yggdrasil.com>
+   of "Fri, 08 Nov 2002 20:51:28 PST." <200211090451.UAA26160@baldur.yggdrasil.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -25,86 +20,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-First off, lets remember that this discussion started over two different, but 
-related, problem sets.  One was the DMA api and the other was the device model.
+"Adam J. Richter" wrote:
+> Please do not throw the baby out with the bath water.  The generic
+> driver interface in its present form really can make parisc smaller
+> and cleaner.
 
-As far as the DMA API goes, consistent memory allocation has always annoyed me 
-because there are three separate cases
+I hope that's true. I was just as disappointed as willy.
 
-1. machine is consistent, consistent allocation always succeeds (unless we're 
-out of memory)
+Documentation/driver-model/overview.txt:
+| Note also that it is at the _end_ of struct pci_dev. This is
+| to make people think about what they're doing when switching between the bus
+| driver and the global driver; and to prevent against mindless casts between
+| the two.
 
-2. machine is fully inconsistent, consistent allocation always fails.
+Until this changes, I don't see this as a useful replacement for
+either PCI or parisc devices. The "mindless casts" can be fixed.
+But without the ability to easily go from generic device type to
+bus specific type, people will just get lost in the maze of pointers.
 
-3. Machine is partially consistent.  consistent allocation may fail because 
-we're out of consistent memory so we have to fall back to the old.
+Common code needs to take a common parameter.  Operations on the tree
+(eg probe) often require calls to bus specific (or arch or platform
+specific) code which may in turn need to make other IO tree operations.
+Those code paths convert back and forth between types regularly.
+That's why I want to make it as simple as possible at the risk
+a few people will get it wrong.
 
-What I'd like is an improvement to the DMA API where drivers can advertise 
-levels of conformance (I only work with consistent memory or I work correctly 
-with any dma'able memory and do all the sync points), and where all the sync 
-point stuff optimises out for a machine architecture which is recognisably 
-fully consistent at compile time.
+HPUX has had a "unified" IO tree since 10.0 in ~1994. Previous
+releases had an IO tree for "Server IO" but not the PA-RISC
+workstations. I've work on HPUX IO subsystem 6 years (PCI Code owner for
+2 years) and it had several key features:
+  (a) traverse the complete tree (from "central bus" to SCSI LUN)
+      with shared code,
+  (b) determine which type of bus any node was "on",
+  (c) associate arbitrary local data with any node.
+       (this includes bus *operations*! eg probe, dma, irq setup)
 
-Ok, I'll get off my soapbox now.  I never quite recovered from the awful 
-#ifdef mess that doing the above correctly for the parisc introduced into the 
-53c700 driver...
+Maybe I'm not seeing it, but (b) and (c) are missing from basic
+design or not well described in driver-model/overview.txt.
 
-As far as the device model goes:
+BTW, I couldn't find Documentation/filesystems/driverfs.txt.
 
-greg@kroah.com said:
-> No, lets start pulling stuff out of pci_dev and relying on struct
-> device.  The reason this hasn't happened yet is no one has been
-> willing to break all of the PCI drivers, yet. 
+Lastly, the example of an "irq" entry in overview.txt is interesting.
+iosapic code "owns" the IRQ. And it could make visible other info
+regarding IRQs - eg type and which CPU it's directed at.
+But I get the feeling only bus specific code can do that since
+it "owns" the directory. Do I misunderstand?
 
-I'd like to see that.  It's always annoyed me that my MCA machines have to 
-bounce highmem just because they don't have a pci_dev to put the bounce mask 
-in.
-
-> The SCSI people are being drug kicking and screaming into it,
-> _finally_ now (hell, SCSI is still not using the updated PCI
-> interface, those people _never_ update their drivers if they can avoid
-> it.)
-
-That't not entirely fair.  Most of the unbroken drivers in the tree (those 
-with active 2.5 maintainers) are using the up to date pci/dma interface.  The 
-mid layer is `sort of' using the device api.
-
-Where I'd like to see the device model go for SCSI is:
-
-- we have a device node for every struct scsi_device (even unattached ones)
-
-- unattached devices are really minimal entities with as few resources 
-allocated as we can get away with, so we can have lazy attachment more easily.
-
-- on attachment, the device node gets customised by the attachment type (and 
-remember, we can have more than one attachment).
-
-- whatever the permanent `name' field for the device is going to be needs to 
-be writeable from user level, that way it can eventually be determined by the 
-user level and simply written there as a string (rather than having all the 
-wwn fallback cruft in the mid-layer).
-
-- Ultimately, I'd like us to dump the host/channel/target numbering scheme in 
-favour of the unique device node name (we may still number them in the 
-mid-layer for convenience) so that we finesse the FC mapping problems---FC 
-devices can embed the necessary identification in the target strings.
-
-- Oh, and of course, we move to a hotplug/coldplug model where the root device 
-is attached in initramfs and everything else is discovered in user space from 
-the boot process.
-
-> Patches for this stuff are going to be happening for quite some time
-> now, don't despair.
-
-> And they are greatly appreciated, and welcomed from everyone :) 
-
-As far as extending the generic device model goes, I'll do it for the MCA bus. 
- I have looked at doing it previously, but giving the MCA bus a struct pci_dev 
-is a real pain because of the underlying assumptions when one of these exists 
-in an x86 machine.
-
-But, while were on the subject of sorting out the device model abstraction, 
-does the `power' node entry really belong at the top level?  It serves no 
-purpose for something like a legacy MCA bus.
-
-James
+thanks,
+grant
