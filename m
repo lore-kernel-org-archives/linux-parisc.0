@@ -1,21 +1,32 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A6164944
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  9 Apr 2004 15:15:09 -0600 (MDT)
-Date: Fri, 9 Apr 2004 15:15:07 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
-Message-ID: <20040409211507.GB32385@colo.lackof.org>
-References: <405D95D0.9030600@tiscali.be>
-	<20040321195716.GC12455@colo.lackof.org>
-	<20040323045151.GA6190@colo.lackof.org> <40770BDF.10209@tiscali.be>
+Return-Path: <paulmck@us.ibm.com>
+Received: from linux.local (bi01p1.co.us.ibm.com [32.97.110.142])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E2914851
+	for <parisc-linux@parisc-linux.org>;
+	Fri,  9 Apr 2004 19:21:42 -0600 (MDT)
+Received: by linux.local (Postfix on SuSE Linux 7.3 (i386), from userid 500)
+	id B456A148C85; Fri,  9 Apr 2004 18:21:16 -0700 (PDT)
+Date: Fri, 9 Apr 2004 18:21:16 -0700
+From: "Paul E. McKenney" <paulmck@us.ibm.com>
+To: Andrea Arcangeli <andrea@suse.de>
+Subject: Re: [parisc-linux] rmap: parisc __flush_dcache_page
+Message-ID: <20040410012115.GA1285@us.ibm.com>
+References: <1081439244.2165.236.camel@mulgrave>
+	<20040408161610.GF31667@dualathlon.random>
+	<1081441791.2105.295.camel@mulgrave>
+	<20040408171017.GJ31667@dualathlon.random>
+	<1081446226.2105.402.camel@mulgrave>
+	<20040408175158.GK31667@dualathlon.random>
+	<1081447654.1885.430.camel@mulgrave>
+	<20040408181838.GN31667@dualathlon.random>
+	<1081448897.2105.465.camel@mulgrave>
+	<20040408184245.GO31667@dualathlon.random>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40770BDF.10209@tiscali.be>
+In-Reply-To: <20040408184245.GO31667@dualathlon.random>
 Cc: James Bottomley <James.Bottomley@steeleye.com>,
-	PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
+	Hugh Dickins <hugh@veritas.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
+Reply-To: paulmck@us.ibm.com
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,26 +36,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Apr 09, 2004 at 08:47:27PM +0000, Joel Soete wrote:
-> /*
->  * CCIO_SEARCH_TIME can help measure how fast the bitmap search is.
->  * impacts performance though - ditch it if you don't use it.
->  */
-> #define CCIO_SEARCH_TIME
-> #undef CCIO_MAP_STATS
-> #else
-> #undef CCIO_SEARCH_TIME
-> #undef CCIO_MAP_STATS
-> #endif
-> 
-> CCIO_MAP_STATS is always undef?
+On Thu, Apr 08, 2004 at 08:42:45PM +0200, Andrea Arcangeli wrote:
+> But I've an fairly optimal solution for you, you should make it a
+> read_write spinlock, with the readers not disabling interrupts, and the
+> writer disabling interrupts, the writer of the prio-tree will not take a
+> timeslice, the readers instead will take a timeslice, but since they're
+> readers and you've only to read in the flush_dcache_page irq context,
+> you don't need to disable irqs for the readers.  I don't have better
+> solutions than this one at the moment (yeah there's the rcu reading of
+> the prio-tree but I'd leave it for later...)
 
-yes - it interfers with DMA mapping performance.
+FWIW, agreed.  Past attempts at RCU-based tree algorithms have been
+a bit on the complex side.  While I believe that simpler versions are
+possible, RCU-based trees should be approached with caution and with
+long lead times.
 
-> Could it be the panic reason of my c110 (_apparently_ since this patch)?
-
-Not likely.
-The above disables code that is (should!) not affect basic functionality.
-CCIO_MAP_STATS just collects data for /proc/bus/runway/... output.
-
-grant
+						Thanx, Paul
