@@ -1,18 +1,17 @@
-From: Hugh Dickins <hugh@veritas.com>
-Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing tst-mmap-eofsync
- in glibc on parisc)
-Date: Sat, 23 Aug 2003 08:22:19 +0100 (BST)
-Message-ID: <Pine.LNX.4.44.0308230820020.3590-100000__10186.1001727686$1416622712$gmane$org@localhost.localdomain>
-References: <1061600974.2090.809.camel@mulgrave>
+From: James Bottomley <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
+	tst-mmap-eofsync in glibc on parisc)
+Date: 23 Aug 2003 10:59:48 -0500
+Message-ID: <1061654391.1995.74.camel__36236.4799286754$1416622714$gmane$org@mulgrave>
+References: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: "David S. Miller" <davem@redhat.com>, <willy@debian.org>,
+Content-Type: multipart/mixed; boundary="=-twwyVK3YP0a7nX0FTdaG"
+Cc: "David S. Miller" <davem@redhat.com>, willy@debian.org,
 	Linux Kernel <linux-kernel@vger.kernel.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>,
-	<drepper@redhat.com>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
+To: Hugh Dickins <hugh@veritas.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <1061600974.2090.809.camel@mulgrave>
+In-Reply-To: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -23,12 +22,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On 22 Aug 2003, James Bottomley wrote:
-> 
-> I suppose if we had a way of telling if any of the i_mmap list members
-> were really MAP_SHARED semantics mappings, then we could alter our
-> flush_dcache_page() implementation to work.
+--=-twwyVK3YP0a7nX0FTdaG
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Good idea.  It's VM_MAYSHARE you need to check for.
+On Sat, 2003-08-23 at 02:22, Hugh Dickins wrote:
+> Good idea.  It's VM_MAYSHARE you need to check for.
 
-Hugh
+OK, to get all this to work, there's a corner case in do_mremap() that I
+need to be fixed:
+
+When choosing the flags for the new area, it keys off VM_SHARED to
+determine whether MAP_SHARED is passed to the mapping.  It has to key of
+VM_MAYSHARE to preserve VM_MAYSHARE on the new mapping.
+
+Patch below.
+
+James
+
+
+
+--=-twwyVK3YP0a7nX0FTdaG
+Content-Disposition: inline; filename=tmp.diff
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; name=tmp.diff; charset=ISO-8859-1
+
+=3D=3D=3D=3D=3D mremap.c 1.32 vs edited =3D=3D=3D=3D=3D
+--- 1.32/mm/mremap.c	Thu Aug  7 12:29:10 2003
++++ edited/mremap.c	Sat Aug 23 10:54:21 2003
+@@ -420,7 +420,7 @@
+ 	if (flags & MREMAP_MAYMOVE) {
+ 		if (!(flags & MREMAP_FIXED)) {
+ 			unsigned long map_flags =3D 0;
+-			if (vma->vm_flags & VM_SHARED)
++			if (vma->vm_flags & VM_MAYSHARE)
+ 				map_flags |=3D MAP_SHARED;
+=20
+ 			new_addr =3D get_unmapped_area(vma->vm_file, 0, new_len,
+
+--=-twwyVK3YP0a7nX0FTdaG--
