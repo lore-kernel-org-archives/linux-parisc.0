@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mothra.mx.pitdc1.stargate.net (mothra.mx.pitdc1.stargate.net [206.210.69.149])
-	by dsl2.external.hp.com (Postfix) with SMTP id 4F90E482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 Aug 2002 22:54:58 -0600 (MDT)
-Message-ID: <3D50A80A.6050209@neuronet.pitt.edu>
-Date: Wed, 07 Aug 2002 00:54:34 -0400
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-MIME-Version: 1.0
-To: Parisc-Linux <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Subject: [parisc-linux] Problem cross-compiling latest CVS kernel
+Received: from mail.speakeasy.net (mail12.speakeasy.net [216.254.0.212])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1E459482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 00:07:47 -0600 (MDT)
+Date: Tue, 6 Aug 2002 23:11:57 -0700
+From: Randolph Chung <tausq@debian.org>
+To: Joel Soete <joel.soete@freebel.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem with evms and jfs
+Message-ID: <20020807061157.GD8214@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <1017854653.3cab3abdab486@webmail.tiscalinet.be> <20020403181337.GA3759@tausq.org> <3D4C2EAA.4050508@freebel.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D4C2EAA.4050508@freebel.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,13 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I just updated my local copies of palo and the kernel sources.
+> I would just like to know if you already have the opportunity to have a 
+> look for a fix of this stuff (I know you are very busy this time and do 
+> not want to stress, just want to got news)
 
-Compilation on my PIII pc of the kernel went OK, but when it goes to 
-prepare the lifimage using 'make palo' it does not work as before.
+just came back from a trip....
 
-I looked at the change log of Makefile and there is no mention on how to 
-create a lifimage. How is it done now?
+i started fixing this a few weeks back but got sidetracked by the 2.5
+merge.... it's definitely on my todo list :-)
 
--- 
-      Rafael
+fwiw i haven't seen any conclusive proof that this "fix" will actually
+fix any problems we've seen....
+
+randolph
