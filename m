@@ -1,29 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A8EB3482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 31 Jul 2001 00:07:13 -0600 (MDT)
-Message-Id: <200107310605.AAA25612@puffin.external.hp.com>
-To: "Anthony Mori" <tonym@compusource.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C180 problem 
-In-Reply-To: Message from "Anthony Mori" <tonym@compusource.net>
-   of "Mon, 30 Jul 2001 23:48:31 EDT." <004b01c11973$ada28fd0$0b1e7b01@tpburner>
-Date: Tue, 31 Jul 2001 00:05:55 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from nsr-temip1.sps.ics.didata.com (unknown [196.38.213.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3374B482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 31 Jul 2001 01:48:44 -0600 (MDT)
+Received: from za.didata.com (localhost [127.0.0.1])
+	by ndx-andrewg.sps.ics.didata.com (SGI-8.9.3/8.9.3) with ESMTP id JAA94395
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 31 Jul 2001 09:48:26 +0200 (SAT)
+Message-ID: <3B6662C7.7020705@za.didata.com>
+Date: Tue, 31 Jul 2001 09:48:23 +0200
+From: Andrew Gaylard <andrew.gaylard@za.didata.com>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Dead keys in X
+References: <3B657709.4050201@za.didata.com> <200107301550.RAA00052@sap-ag.de>
+Content-Type: text/html; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Anthony Mori" wrote:
-> In the BIOS, I turned fastboot off, then did a reset, and it never came 
-> up again.
-
-fastboot flag controls the number and type of self tests the machine
-does at poweron. I'd expect the LEDs to indicate what the problem is.
-You could try removing all but two DIMMs and then swap to a different
-pair if that doesn't work.
-And try cycling the power too - that's different than a reset.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+<html><head></head><body>Helge Deller wrote:<br>
+<blockquote type="cite" cite="mid:200107301550.RAA00052@sap-ag.de"><pre wrap="">On Monday 30 July 2001 17:02, Andrew Gaylard wrote:<br></pre>
+  <blockquote type="cite"><pre wrap="">The 'i' and 'o' keys in X are dead.  The 'i'-key at least<br>sends a keycode-224 to X (as viewed in xev), but if I try<br><br>	xmodmap -e "keycode 224 = i"<br><br>I get the error:<br>	xmodmap: commandline:0: bad keycode value (out of range)<br></pre></blockquote>
+    <pre wrap=""><!----><br><br>Hi Andrew,<br><br>Just an idea: Does <br>		xmodmap -e "keycode 0xE0 = i"<br>works ?<br><br>Helge<br></pre>
+    </blockquote>
+Nope, it does exactly the same thing.<br>
+    <br>
+</body></html>
