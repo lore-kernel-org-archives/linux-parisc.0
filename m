@@ -1,16 +1,17 @@
-Return-Path: <UWE-SCHMIDT-@GMX.NET>
-Received: from GMX.NET (unknown [218.18.135.215])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4755848A0
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 17 Dec 2003 22:47:15 -0700 (MST)
-From: "Victim of Microsale" <UWE-SCHMIDT-@GMX.NET>
-To: parisc-linux@lists.parisc-linux.org
+Return-Path: <microsale@email.de>
+Received: from email.de (unknown [218.18.135.215])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BCAE24854
+	for <parisc-linux@parisc-linux.org>;
+	Wed, 17 Dec 2003 22:48:42 -0700 (MST)
+From: "Victim of Microsale" <microsale@email.de>
+To: parisc-linux@parisc-linux.org
 Content-Type: text/plain;charset="GB2312"
-Date: Thu, 18 Dec 2003 13:47:36 +0800
-Message-Id: <20031218054715.4755848A0@dsl2.external.hp.com>
+Date: Thu, 18 Dec 2003 13:49:03 +0800
+Message-Id: <20031218054842.BCAE24854@dsl2.external.hp.com>
+Cc: 
 Subject: [parisc-linux] Mr. Uwe Schmidt is a knave! Don't buy any product
 	from Microsale!
-Reply-To: UWE-SCHMIDT-@GMX.NET
+Reply-To: microsale@email.de
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
