@@ -1,15 +1,15 @@
-From: "Andy Walker" <ajwalker@broadpark.no>
-Subject: [parisc-linux] Re: STI crash on B132L with HCRX-24
-Date: Tue, 26 Oct 2004 09:52:24 +0200 (CEST)
-Message-ID: <15238.193.160.141.5.1098777144.squirrel@193.160.141.5>
-References: <200410031355.12116.j.raspe@t-online.de>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] 2.6.9-bk6-pa4:Tuip driver broken on n4k
+Date: Wed, 27 Oct 2004 12:27:20 +0100
+Message-ID: <20041027112720.GG3450@parcelfarce.linux.theplanet.co.uk>
+References: <41617480000075DF@mail-4-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
+  charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: "Johannes Raspe" <j.raspe@t-online.de>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200410031355.12116.j.raspe@t-online.de>
+In-Reply-To: <41617480000075DF@mail-4-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,41 +20,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Hi Andy,
->
-> did you find a solution for the stifb-problem?
-> I encounter the same problem with a 735/125 with CRX24 graphics. Kernel
-> 2.4.27
-> works fine, any 2.6.x-kernel I tried gives me a hang.
->
-> Johannes
->
-> --
+On Wed, Oct 27, 2004 at 12:26:25PM +0200, Joel Soete wrote:
+> Hello pa,
+> 
+> Unfortunately, the tulip driver seems to be broken on this n4k:
+> the boot sequence start fine until message:
+> Linux Tulip driver version 1.1.13 (May 11, 2002)
+> 
+> then system panic
+> (unfortunately I don't have any way to grab pimfo on this system)
+> 
+> Any idea?
 
+Not really, I have both a built-in tulip and a quad-port tulip card in
+my c3600 and it works just fine.
 
-Hi Johannes & PA,
-
-Johannes dragged up this old mail of mine as he has been having FB
-related problems with CRX24 on his 735/125.
-
-In my case, 32bpp FB on HCRX24 (Hyperbowl) on my B132L stopped working
-at the time the FB reorganization patches went into the early 2.6
-kernels. I have successfully been running 2.6.7-pa1 in 8bpp though.
-
-Last night I compiled and booted 2.6.9-pa1. FB is totally hosed also
-in 8bpp now. When the kernel switches to FB the screen gets "splattered"
-with blue and red buffer debris and the machine hangs.
-
-Looks like CRX/HCRX is suffering from chronic bitrot, possibly exarcebated
-by the ia32/ia64-centric FB patches that have been going in lately.
-
-So, is there anyone (Helge?) who has time and knowledge to look into
-this? I can boot the B132L with the console on Vis-EG and torture the
-HCRX24 on fb1 if that helps, but some clues would be good.
-
--Andy
-
-
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
