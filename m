@@ -1,19 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA923482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 15:39:16 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16PtHS-0004gi-00; Sun, 13 Jan 2002 22:39:10 +0000
-Date: Sun, 13 Jan 2002 22:39:10 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: newsgroup <newsgroup.parisc@x-equipment.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] How can i connect my pc as a terminal to a HP9000/867 G40
-Message-ID: <20020113223910.W9193@parcelfarce.linux.theplanet.co.uk>
-References: <200201131417.AA629473676@x-equipment.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200201131417.AA629473676@x-equipment.net>; from newsgroup.parisc@x-equipment.net on Sun, Jan 13, 2002 at 02:17:22PM -0800
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] atomic_t 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Sun, 13 Jan 2002 21:15:08 GMT." <20020113211508.V9193@parcelfarce.linux.theplanet.co.uk>
+References: <20020113211508.V9193@parcelfarce.linux.theplanet.co.uk> 
+Date: Sun, 13 Jan 2002 21:09:09 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020114040909.87321482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,14 +19,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I want to connect my pc as a terminal to a HP9000 so that I can (try to) install parisc-linux. 
-> 
-> Does anybody know if that is possible? 
-> 
-> And if so, is there someone who can give me de pin-out of the cable i need?
+Matthew Wilcox wrote:
+> Just thinking about atomic_set taking the spinlock to assure
+> exclusivity...  I thought we could eliminate it.
 
-standard null-modem cable, but you'll have to do some work to get a
-G40 running.  Same issues as E and K class.
+You are only looking at interactions between atomic_set
+and atomic_add_return. Aren't there potentialially other
+types of interactions with other atomic operations?
+But I don't know. Alan Cox?
 
--- 
-Revolutions do not require corporate support.
+...
+> Before step b leads to case 2.  after step d leads to case 1.  between
+> steps b and d, it's as if the atomic_set _never_happened_.  It results
+> in v=4, a_a_r returns 4.
+
+I agree with the analysis.
+
+But someone thought it was time to reset the counter. And if
+it "never happened", then whoever is looking for 'v == 1' will
+never see it.
+
+> The question is whether any code relies on this behaviour.  It probably
+> does in some of the messier bits of networking :-(
+
+Even if that code doesn't exist today, it might exist in the future.
+I don't want to bet on corner cases with the semantics.
+Those types of bugs are hard to reproduce and hard to debug.
+
+
+thanks,
+grant
