@@ -1,35 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 4AEEE482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Apr 2001 16:45:38 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Xavier Debacker <xavier.debacker@esiee.net>,
-	Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail.iinet.net.au (symphony-01.iinet.net.au [203.59.24.16])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3A2D8482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 29 Apr 2001 20:25:49 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id KAA11592
+	for parisc-linux@lists.parisc-linux.org; Mon, 30 Apr 2001 10:25:31 +0800
+Date: Mon, 30 Apr 2001 10:25:27 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Keyboard driver patch proposal
-Date: Mon, 30 Apr 2001 00:45:24 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <200104290624.AAA21764@puffin.external.hp.com> <3AEC9252.60CF83B7@esiee.net>
-In-Reply-To: <3AEC9252.60CF83B7@esiee.net>
-MIME-Version: 1.0
-Message-Id: <20010429224538.4AEEE482A@dsl2.external.hp.com>
+Message-ID: <20010430102520.D15328@neep.com.au>
+References: <3AEA4E6E.A990140B@esiee.net> <200104290624.AAA21764@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200104290624.AAA21764@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Sun, Apr 29, 2001 at 12:24:49AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Monday 30 April 2001 00:14, Xavier Debacker wrote:
-> Grant Grundler a écrit :
-> > Xavier,
-> > It seems Helge Deller has reviewed and committed most of the ESIEE team
-> > work in the past. Any word on if Helge will be able to review/commit
-> > this patch?
->
-> I haven't read from Helge for a long time.  He seems quite busy.
+Grant Grundler said:
+> BTW, I'm told the '//' comment style is not ok;  "/* ... */" is expected.
+> It's not mentioned in Documentation/CodingStyle so I can't explain it.
 
-Hi Xavier, Grant and list,
+Not all C compilers like C++ comments.  =(  It should be in the
+CodingStyle document.
 
-Yes, it's sadly true that I'm very busy atm :-(
-But regarding the patch: I will take a deeper look at it in the next few days 
-and commit it.
+Andrew.
 
-Greetings,
-Helge
+--
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
