@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from caci.com (mailserver1.caci.com [204.194.72.241])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DFFC9482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jul 2003 14:03:01 -0600 (MDT)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <OFBFF3F544.D370F16B-ON05256D60.006D05BF@caci.com>
-From: "Matt Standish" <mstandish@caci.com>
-Date: Fri, 11 Jul 2003 15:01:16 -0500
+Received: from nomore-accents1116.com (24-136-31-90.na.21stcentury.net [24.136.31.90])
+	by dsl2.external.hp.com (Postfix) with SMTP id 6D687482A
+	for <parisc-linux@parisc-linux.org>; Sat, 12 Jul 2003 00:51:49 -0600 (MDT)
+From: Martin Andrews <mandrews@nomore-accents.com>
+To: parisc-linux@parisc-linux.org
+Reply-To: mandrews@nomore-accents.com
+Date: Sat, 12 Jul 2003 01:51:43 -0500
 MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Installing - creating superblock locks up
+Content-Type: multipart/mixed; boundary="7f951899-10cc-4302-a9cf-2d382fa2a6be"
+Message-Id: <20030712065149.6D687482A@dsl2.external.hp.com>
+Subject: [parisc-linux] - Are you learning ESL or TESL?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,25 +21,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello-
-I am trying to install the latest net install ISO's.
+This is a multi-part message in MIME format
+--7f951899-10cc-4302-a9cf-2d382fa2a6be
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-My system is labeled Apollo Series 700 but the info command gives the following
-Machine model 9000/730
-Hardware version 8224
-Software Version 1153
+Dear Reader,
 
-On bootup I see it has
-PDC rom 2.0
-IODC rom 2.0
-176M ram
+No More Accent is an accent reduction product, which helps to remove accents. =
+For example, an Asian lady (or any nationality) may have communication =
+problems with her English when speaking to her work mates or friends.
 
-The SCSI controller is labeled SCSI Single ended.
+With that in mind, No More Accent teaches Accent Reduction methodologies to =
+help in this area. In fact, No More Accent can be used in almost any =
+situation where an accent reduction is required. Even Actors within the =
+Entertainment Industry have turned to No More Accent as a way to lose or gain =
+an accent of another nationality.
 
-Looking at the machine I can see it contains a  A1659-66001 video (frame buffer).  I am assuming this is not stock as the documentation on HP's web site states nothing about it.
+No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
+(PAL and NTSC formats) both can be purchased directly via the =
+www.nomore-accents.com website.
+If you would like further information about our products or services, please =
+contact myself 
+when you have a moment.
 
-My machine locks up (no heartbeat) when creating superblocks for formatting the hard drives.  I have tries this on many different drives and receive the same results.
+Best Wishes...
 
-I have read the FAQ and googled the archives to death.  If anyone can point me the right direction, It would be a great help.  I have 5 of these machines.
+Martin Andrews
+Marketing Co-ordinator
 
--Matt
+http://www.nomore-accents.com
+
+Your #1 Resource for Accent Reduction!    
+--7f951899-10cc-4302-a9cf-2d382fa2a6be--
