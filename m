@@ -1,35 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA02336
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 15:49:51 -0700
-Date: Fri, 25 Feb 2000 22:49:34 +0100
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA02717
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Feb 2000 16:03:58 -0700
+Date: Fri, 25 Feb 2000 23:03:48 +0100
 From: Philipp Rumpf <prumpf@inwestnet.de>
-To: "HOLBROOK,SCOTT HP-FtCollins,ex1\"" <scott_holbrook@am.exch.hp.com>
-Cc: "'willy@thepuffingroup.com'" <willy@thepuffingroup.com>,
-        "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: willy@thepuffingroup.com, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] code 28 trap
-Message-ID: <20000225224934.D812@abacus.local>
-References: <E97137CF9A25D311902E00A0C9F484E0027985F4@xfc03.fc.hp.com>
+Message-ID: <20000225230348.E812@abacus.local>
+References: <20000224224934.N9944@thepuffingroup.com> <200002252036.MAA04792@milano.cup.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E97137CF9A25D311902E00A0C9F484E0027985F4@xfc03.fc.hp.com>; from scott_holbrook@am.exch.hp.com on Fri, Feb 25, 2000 at 01:23:51PM -0700
+In-Reply-To: <200002252036.MAA04792@milano.cup.hp.com>; from grundler@cup.hp.com on Fri, Feb 25, 2000 at 12:36:27PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Years ago I wrote an unaligned load/store emulator (trap handler) for
-> > a port of an evil OS to PA-RISC.  I still have the code -- it would take
-> > a little bit of work to massage it into a real low-level trap handler,
-> > but that task should be very straight-forward.
+> > Uh oh.  We really need a kernel unaligned trap handler.  Some of
+> > the network protocols rely on that being handled right (yes, i know.
+> > it sucks.)
 > 
-> The code I have is for PA-RISC running in little-endian mode.  There would
-> be some additional work to make it bit-endian.
-> 
-> Do you just love endian issues?
+> It really sucks. If any code in the performance path depends on this,
 
-Well, I've got an unaligned handler for another architecture here, the tricky
-part is to parse the instructions, and not forget about side-effects of ,M
-modifiers.
+Another vote for "it sucks".
 
-As for how the code would be run, the most likely way would be to call it
-in virtual mode with interrupts disabled and pass in a pointer to a pt_regs
-(defined in include/asm/ptrace.h) structure.
+Which network drivers, protocols aso exactly are you using (and did you
+check for the bug Matthew posted an URL for ?) ?  I really don't think
+we should write an unaligned handler until we find ourselves using weird
+protocols (and hopefully not even then).
 
-	Philipp Rumpf
+	Philipp
