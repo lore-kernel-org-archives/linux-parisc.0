@@ -1,60 +1,48 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA18294
-	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 23:30:30 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 19 Aug 2000 05:30:15 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA02218;
-	Sat, 19 Aug 2000 15:29:56 +1000
-Date: Sat, 19 Aug 2000 15:29:56 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
-Subject: Re: Incompatibility of PIC and non-PIC
-In-Reply-To: <87vgwyz5r0.fsf@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0008191523470.28329-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA32628
+	for <parisc-linux@puffin.external.hp.com>; Sat, 19 Aug 2000 00:51:29 -0600
+Date: Sat, 19 Aug 2000 02:51:03 -0400 (EDT)
+From: Andrew Park <apark@cdf.toronto.edu>
+To: parisc-linux@thepuffingroup.com
+In-Reply-To: <20000818102446.A28421@vodka.thepuffingroup.com>
+Message-ID: <Pine.LNX.4.21.0008190244530.18573-100000@kirin.cdf>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] gcc make failures
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 18 Aug 2000, David Huggins-Daines wrote:
+Hi, all
 
-> David Huggins-Daines <dhd@linuxcare.com> writes:
-> 
-> > Alan Modra <alan@linuxcare.com.au> writes:
-> > > A bit of head-scratching, a couple of added functions, and the linker now
-> > > detects PIC functions and handles them appropriately.
-> > 
-> > Sorry to burst your bubble but this doesn't work in the real world,
-> > where "real world" is defined as 'hppa-linux-gcc -o hello hello.c'
+Just wondering ... I'm trying to build gcc, but although I passed in
 
-In some ways not having any hardware to run hppa-linux binaries on is
-good, as it gives me some excuse.  :-)
+	make LIBGCC2_INCLUDES=-I$DEST/include
 
-Let me know how this one goes.
+it seems that in later stages, it forgets to include -I$DEST/include flag.
+Okay, so for now I manually edited Makefile to pass in that flag, but
+then I ran into the following
 
-bfd/ChangeLog
-2000-08-19  Alan Modra  <alan@linuxcare.com.au>
+/local/src/puffin/gcc-build/gcc/g++ -B/local/src/puffin/gcc-build/gcc/ -B/junk/puffin/hppa1.1-linux/bin/ -L/local/src/puffin/gcc-build/hppa1.1-linux/libstdc++ -c -g -O2 -fvtable-thunks -D_GNU_SOURCE -fno-implicit-templates -I../../../gcc/libstdc++ -I../../../gcc/libstdc++/stl -I../libio -I../../../gcc/libstdc++/../libio -nostdinc++ -I/junk/puffin/include  -DF `for N in MAIN ADDCC ADDCF ADDFC SUBCC SUBCF SUBFC MULCC MULCF MULFC DIVCC DIVCF DIVFC PLUS MINUS EQCC EQCF EQFC NECC
+NECF NEFC ABS ARG POLAR CONJ NORM COS COSH EXP LOG POWCC POWCF POWCI POWFC SIN SINH SQRT; do echo " -D${N}"; done` \
+  ../../../gcc/libstdc++/cinst.cc -o fcomplex.o
+In file included from ../../../gcc/libstdc++/complex:8,
+                 from ../../../gcc/libstdc++/std/complext.cc:29,
+                 from ../../../gcc/libstdc++/cinst.cc:30:
+../../../gcc/libstdc++/std/complext.h:314: declaration of `double hypot (double, double)' throws
+different exceptions
+/junk/puffin/include/bits/mathcalls.h:150: than previous declaration `double hypot (double, double)
+throw ()'
+make[1]: *** [bigstmp-complx] Error 1
+make[1]: Leaving directory `/usr/local/src/puffin/gcc-build/hppa1.1-linux/libstdc++'
 
-	* elf32-hppa.c (hppa_setup_plt_PIC_call): Move function into..
-	(hppa_build_one_stub): ..here.
-	(elf32_hppa_build_stubs): Don't call it.
-	(elf32_hppa_create_dynamic_sections): Don't try to create the .plt
-	and .got twice.
-	(elf32_hppa_adjust_dynamic_symbol): Handle pic_call here.  Don't
-	make symbol dynamic, and don't emit a reloc if pic_call.
-	(hppa_handle_PIC_calls): Simplify as we..
-	(elf32_hppa_size_dynamic_sections): ..only call hppa_handle_PIC_calls
-	when not shared.  Don't create DT_PLTREL etc. entries unless we
-	have a .rela.plt section.
-	(elf32_hppa_finish_dynamic_symbol): Set up .plt entries with final
-	relocated values when it's for a pic_call function we include in
-	the link.  Don't create relocs for pic_call either.
+By this I figure I might be doing something wrong, hence the e-mail.
+I'll appreciate any comment.
+Thanks
 
-2000-08-18  David Huggins-Daines  <dhd@linuxcare.com>
 
-	* elf32-hppa.c (final_link_relocate): Look for an import stub in
-	the case of statically linked PIC symbols.
-
--- 
-Linuxcare.  Support for the Revolution.
+Andrew Park
+           
+________________________________________________________________________ 
+CDFlab Systems Administrator                       www.cdf.utoronto.ca |
+Team BlueShirt Developer                             www.blueshirt.org |
+GnuPG Signature              www.cdf.utoronto.ca/~apark/public_key.txt |
+------------------------------------------------------------------------
