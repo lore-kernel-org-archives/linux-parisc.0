@@ -1,18 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id RAA29952
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 17:12:17 -0500
-Received: from the-village.bc.nu (lightning.swansea.uk.linux.org [194.168.151.1]) by snowcrash.cymru.net (8.8.7/8.7.1) with SMTP id WAA10063 for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 22:12:04 GMT
-Message-Id: <m10QJCG-0007U1C@the-village.bc.nu>
-From: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Subject: Re: [hppa-linux] syscall work
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id RAA30445
+	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 17:35:20 -0500
+Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
+	by netscape.com (8.8.5/8.8.5) with ESMTP id OAA03146
+	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 14:34:43 -0800 (PST)
+Received: from netscape.com ([205.217.243.139]) by
+          tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
+          F969E200.SF6 for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar
+          1999 14:34:50 -0800
+Sender: shaver@netscape.com (Mike Shaver)
+Message-ID: <36FABA03.7C223D3A@netscape.com>
+Date: Thu, 25 Mar 1999 17:34:43 -0500
+From: Mike Shaver <shaver@netscape.com>
+MIME-Version: 1.0
 To: hppa-linux@thepuffingroup.com
-Date: Thu, 25 Mar 1999 23:05:55 +0000 (GMT)
-In-Reply-To: <199903251919.LAA01701@cllmail.cup.hp.com> from "Cary Coutant" at Mar 25, 99 11:23:20 am
-Content-Type: text
+Content-Type: text/plain; charset=us-ascii
+Subject: [hppa-linux] libmilli and linker scripts
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I'd suggest *not* using the same gateway page address as HP-UX. If you 
-> do, you won't be able to develop a later kernel extension to support 
-> HP-UX binaries, unless you allocate syscall numbers carefully.
+I'm making progress on getting the kernel to compile, and it's now
+attempting to link, but I'm confounded by my expected foes:
 
-Doesn't that depend which gateway page you map into each application ?
+1) millicode bits:
+  net/network.a(socket.o): In function `proto_init':
+  socket.o(.text+0x144): undefined reference to `$$dyncall'
+and thousands more like it, and $$divI, $$divU and $$remU in the serial
+code.  Is there some millicode assembly we could purloin, or should we
+write our own somehow?  (Or maybe fix the compiler to do it all inline?)
+
+2) the total absence of a linker script.  Anyone have ideas on:
+kernel-in-memory layout, preferably by section?
+
+Mike
+
+-- 
+87277.19 78688.20
