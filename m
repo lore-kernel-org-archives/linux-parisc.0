@@ -1,75 +1,57 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB5CA482A
-	for <parisc-linux@parisc-linux.org>; Mon, 11 Jun 2001 14:20:52 -0600 (MDT)
-Date: Mon, 11 Jun 2001 16:21:32 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: John Hagreis <jha@xs4all.nl>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] clustering ??
-Message-ID: <20010611162132.A846@megatonmonkey.net>
-References: <KHEOKDLGAPDONGNKGOKFAEEGCAAA.jha@xs4all.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <KHEOKDLGAPDONGNKGOKFAEEGCAAA.jha@xs4all.nl>; from jha@xs4all.nl on Mon, Jun 11, 2001 at 09:50:54PM +0200
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9DA424877
+	for <parisc-linux@parisc-linux.org>; Mon, 11 Jun 2001 14:36:37 -0600 (MDT)
+Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
+	by atlrel2.hp.com (Postfix) with ESMTP id 6560C138C
+	for <parisc-linux@parisc-linux.org>; Mon, 11 Jun 2001 16:36:36 -0400 (EDT)
+Received: from chrysl (chrysl.fc.hp.com [15.1.54.200])
+	by ldl.fc.hp.com (Postfix) with ESMTP id 4BE2E5A979
+	for <parisc-linux@parisc-linux.org>; Mon, 11 Jun 2001 14:36:30 -0600 (MDT)
+Received: from willy by chrysl with local (Exim 3.12 #1 (Debian))
+	id 159YQI-00030c-00
+	for <parisc-linux@parisc-linux.org>; Mon, 11 Jun 2001 14:36:30 -0600
+To: parisc-linux@parisc-linux.org
+Message-Id: <E159YQI-00030c-00@chrysl>
+From: Matthew Wilcox <willy@ldl.fc.hp.com>
+Date: Mon, 11 Jun 2001 14:36:30 -0600
+Subject: [parisc-linux] Fix msgctl
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jun 11, 2001 at 09:50:54PM +0200, John Hagreis wrote:
-> Hi there,
-> 
-> I've got two B132L+ systems running with the 0.6 release. I wondered if
-> there was someone who has experience with clustering these systems .....
-> Anyone .....
-> Tia,
-> 
-> John Hagreis.
+The switch statement fails to match any cases when IPC_64 is set,
+so we must clear it.  This fixes the problem fakeroot was having,
+as it could allocate new sysv msg queues, but never free them,
+and we're limited to 16 queues.
 
-John,
-
-Clustering -> HA Systems -> Clustered Services -> Linux Virtual Server ?
-Clustering -> Computational Clustering -> Beowulf / COW / NOW ?
-
-I'll assume the later.
-
-We have a cluster of ~48 715/50 Apollo systems.
-
-Our current bottleneck (will be working on this tommorow evening) is
-not having a functional rsh for MPI to use (MPICH 1.2.1).
-
-Our setup:
-
-- 3x 10/100 24 Port Switches, Baystack E450's
-- NIS / NFS / Gateway Machines (x86 boxes)
-- 2x 8' Racks of 48 712/50 PA-RISC Boxes (can you say warm :)
-
-Visit: http://www.baldric.uwo.ca/index.php3
-For our latest exploits (recipies coming soon).
-
-What are you looking to do with your systems?
-
-You might want to check out http://www.beowulf.org
-(Or even join the mailing list! Excellent discussion for those interested).
-
-Clustering using PA-RISC hardware is the same as clustering using
-any other hardware, with the expection that:
-
-- OS is under development (stability may vary)
-- Need to understand low level OS functionality.
-
-If anyone else on the list is working on clustering using PA-RISC
-boxes, please share the stories.
-
-As far as we know, we are the only group doing something as crazy
-as using unsupported PA-RISC hardware to run a beowulf.
-
-War stories? Success stories?
-
-
-Thanks to Byron Sonne for donating his 712/60 box for testing!
-
-Cheers,
-Carlos O'Donell
--------------------------
-Baldric Project
-http://www.baldric.uwo.ca
--------------------------
+Index: Makefile
+===================================================================
+RCS file: /home/cvs/parisc/linux/Makefile,v
+retrieving revision 1.50
+diff -u -p -r1.50 Makefile
+--- Makefile	2001/06/12 01:21:38	1.50
++++ Makefile	2001/06/12 02:33:52
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 4
+ SUBLEVEL = 0
+-EXTRAVERSION = -pa17
++EXTRAVERSION = -pa18
+ 
+ KERNELRELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
+ 
+Index: arch/parisc/kernel/sys_parisc32.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/sys_parisc32.c,v
+retrieving revision 1.16
+diff -u -p -r1.16 sys_parisc32.c
+--- sys_parisc32.c	2001/06/08 13:58:08	1.16
++++ sys_parisc32.c	2001/06/12 02:33:53
+@@ -2681,7 +2681,7 @@ asmlinkage long sys32_msgctl (int msqid,
+ {
+ 	int err = -EINVAL;
+ 
+-	switch (cmd) {
++	switch (cmd &~ IPC_64) {
+ 
+ 	case IPC_INFO:
+ 	case MSG_INFO:
