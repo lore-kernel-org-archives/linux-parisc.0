@@ -1,18 +1,20 @@
-Return-Path: <johnt@cybertech.net.au>
-Received: from cybertech.net.au (t1000.cybertech.net.au [210.8.215.33])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 86A8A4843
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5818D4843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 18 Feb 2004 21:19:36 -0700 (MST)
-Received: (from johnt@localhost)
-	by cybertech.net.au (8.11.6/8.11.6) id i1J4f2P20222
-	for parisc-linux@lists.parisc-linux.org; Thu, 19 Feb 2004 15:41:02 +1100
-Date: Thu, 19 Feb 2004 15:41:02 +1100
-From: John Telek <johnt@cybertech.net.au>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040219154102.A20216@t1000>
+	Wed, 18 Feb 2004 23:06:02 -0700 (MST)
+Date: Wed, 18 Feb 2004 23:06:00 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Thibaut VAR?NE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] Re: PA linux.
+Message-ID: <20040219060600.GA13916@colo.lackof.org>
+References: <20040218095513.XVFQ367.mail@VALHALLA>
+	<D23E0231-622A-11D8-B017-0030656F07A2@esiee.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] B2000 and FXE GFX
+In-Reply-To: <D23E0231-622A-11D8-B017-0030656F07A2@esiee.fr>
+Cc: Cenk KARAG?Z <cenk.karagoz@enter.com.tr>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,8 +24,16 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-As I only have a slow modem, has anyone got a B2000 with a working X config for an FXE gfx card ???
-if so, what version of X please.
+On Wed, Feb 18, 2004 at 04:55:06PM +0100, Thibaut VAR?NE wrote:
+> >But.. In the boot time,ISL (by the way ISL vers?ISL revision A.00.38 
+> >OCT, 1994) say:
+> >
+> >ISL booting hpux
+> 
+> well this is pretty self explanatory... you' re booting HPUX here.
 
-Cheers,
-  John
+exactly. there's a good chance the auto boot primary is still pointing
+at the scsi.6 disk. If he has two disks installed then debian will
+get installed on scsi.5 (sda).
+
+grant
