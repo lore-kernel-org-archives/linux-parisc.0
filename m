@@ -1,46 +1,72 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp9.xs4all.nl (smtp9.xs4all.nl [194.109.127.135])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 98F43482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 11:53:31 -0600 (MDT)
+Received: from smtp8.xs4all.nl (smtp8.xs4all.nl [194.109.127.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8E4DC482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 11:57:30 -0600 (MDT)
 Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtp9.xs4all.nl (8.9.3/8.9.3) with ESMTP id TAA15548
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 2 Sep 2001 19:53:30 +0200 (CEST)
+	by smtp8.xs4all.nl (8.9.3/8.9.3) with ESMTP id TAA27983
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 2 Sep 2001 19:57:28 +0200 (CEST)
 From: thunder7@xs4all.nl
-Date: Sun, 2 Sep 2001 19:39:55 +0200
+Date: Sun, 2 Sep 2001 19:57:17 +0200
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] What's a "Trace/breakpoint trap" and why does he crash my system?
-Message-ID: <20010902193955.A20014@middle.of.nowhere>
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <20010902195717.A21209@middle.of.nowhere>
 Reply-To: thunder7@xs4all.nl
-References: <20010901155006.A4594@middle.of.nowhere> <20010901203232.A5963@middle.of.nowhere> <20010901201455.M5126@parcelfarce.linux.theplanet.co.uk>
+References: <20010902105538.A15344@middle.of.nowhere> <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010901201455.M5126@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] [SOLVED + PATCH]: documented Oops running big-endian reiserfs on parisc architecture
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Sep 01, 2001 at 08:14:55PM +0100, Matthew Wilcox wrote:
-> On Sat, Sep 01, 2001 at 08:32:32PM +0200, thunder7@xs4all.nl wrote:
-> > should be 'Trace/breakpoint trap'
+On Sun, Sep 02, 2001 at 03:00:23PM +0100, Matthew Wilcox wrote:
+> On Sun, Sep 02, 2001 at 10:55:38AM +0200, thunder7@xs4all.nl wrote:
+> > ReiserFS version 3.6.25
+> > bonnie[163]: Unaligned data reference 28
 > 
-> hmm.. what version of glibc do you have installed?  something else you
-> can do is run strace -ff which will attempt to follow fork/clone/vfork.
+> > which makes the error somewhere around here in 
+> > fs/reiserfs/namei.c, function reiserfs_add_entry, after call to
+> > padd_item, before call to reiserfs_find_entry:
+> > 
+> >     padd_item ((char *)(deh + 1), ROUND_UP (namelen), namelen);
+> > 
+> >     /* entry is ready to be pasted into tree, set 'visibility' and 'stat data in entry' attributes */
+> >     mark_de_without_sd (deh);
+> >     visible ? mark_de_visible (deh) : mark_de_hidden (deh);
+> > 
+> >     /* find the proper place for the new entry */
+> >     memset (bit_string, 0, sizeof (bit_string));
+> >     de.de_gen_number_bit_string = (char *)bit_string;
+> >     retval = reiserfs_find_entry (dir, name, namelen, &path, &de);
 > 
-As answered before, 2.2.3-9.
+> I suspect mark_de_without_sd is an inlined function/macro and this will
+> be where the unaligned data reference is happening.
+> 
+Correct. And the comments just above there about alignment are very
+enlightening; it seems that the IBM/S390 architecture has some special
+needs, and I just tested that my PA-RISC kernel has the same needs.
+Thus I am able to present a real bugfix.
 
-Since this seems to happen with 2.4.9-pa13 and not with 2.4.0 from the
-0.9.2 ISO, perhaps I ought to do some checking when exactly it broke.
+This patch allows me to run bonnie on a reiserfs partition with pa-risc
+linux.
 
-Can anybody point me to a quick cvs reference, starting with
+--- linux/include/linux/reiserfs_fs.h   Sun Sep  2 21:54:25 2001
++++ linux-new/include/linux/reiserfs_fs.h       Sun Sep  2 20:47:27 2001
+@@ -924,7 +924,7 @@
+ #define DEH_Visible 2
 
-cd [somewhere]
-tar zxvf linux-latest.tar.gz
+ /* 64 bit systems (and the S/390) need to be aligned explicitly -jdm */
+-#if BITS_PER_LONG == 64 || defined(__s390__)
++#if BITS_PER_LONG == 64 || defined(__s390__) || defined(__hppa__)
+ #   define ADDR_UNALIGNED_BITS  (3)
+ #endif
 
-and then? I'm only interested in extracting certain
-kernel-versions (by date?).
+This applies to linux-2.4.9-pa13 with
+endian-safe-reiserfs-for-2.4.8.patch and to 2.4.9-ac5.
 
-Thanks,
+Please apply,
 Jurriaan
 -- 
-proof by cumbersome notation:
-	Best done with access to at least four alphabets and special
-	symbols.
-GNU/Linux 2.4.9-ac5 SMP/ReiserFS 2x1402 bogomips load av: 1.34 0.71 0.31
+It is well to remember, my son, that the entire population of the
+universe, with one trifling exception, is composed of others.
+        John Andrew Holmes
+GNU/Linux 2.4.9-ac5 SMP/ReiserFS 2x1402 bogomips load av: 0.98 0.83 0.37
