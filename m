@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D44CA494E
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Aug 2003 10:00:41 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 19rgFM-0002k1-Lj
-	for parisc-linux@parisc-linux.org; Tue, 26 Aug 2003 17:00:40 +0100
-Date: Tue, 26 Aug 2003 17:00:40 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20030826160040.GM22294@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] linux -> linux-2.4 transition
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C8EA4951
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 10:22:51 -0600 (MDT)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali)
+	id 19rgXp-0007Oi-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 18:19:45 +0200
+Date: Tue, 26 Aug 2003 18:22:49 +0200
+Message-ID: <3F2A5B0400005F53@ocpmta1.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] hp laserjet 4mv ppd for printtool?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +24,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Earlier today I moved linux to linux-2.4 and set a compatibility symlink
-so everything will work for the moment.  I've updated the web pages
-with instructions to use linux-2.4 instead.  In the build-tools module,
-you'll now find a little shell script that moves your checkout from linux
-to linux-2.4.  Please run it as soon as convenient.
+Hi all,
 
-I intend to remove the `linux' symlink in a week's time.  At that point
-any unconverted repositories will stop working.
+I just installed printtool on my b180 to print on a network connected printer
+of model hp laserjet 4mv. Printtool inform me that:
+"This printer uses a Postscript Printer Description (PPD) file called HP_LaserJet_4MV.ppd,
+available from printer vendor. This file should be installed in the /usr/share/postscript/ppd/
+directory."
 
-Any problems, let me know.
+Unfortunately I don't reach to find back install cd and google don't find
+any reference to this file. Is somebody could help me?
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Thanks in advance,
+    joel
+
+-------------------------------------------------------------------------
+Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
+http://reg.tiscali.be/default.asp?lg=fr 
