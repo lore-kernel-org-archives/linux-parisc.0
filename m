@@ -1,16 +1,13 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: GNU/Libc 2.3.1 on HP-PARISC requires >= 2.4.19 kernel.
-Date: Thu, 5 Dec 2002 11:50:15 -0500 (EST)
-Message-ID: <200212051650.gB5GoG7d003199__1331.34525171972$1416621999$gmane$org@hiauly1.hia.nrc.ca>
-References: <20021205010845.GU16331@systemhalted>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] [PATCH] Add SHMLBA define to shm.h (HPPA).
+Date: Sun, 8 Dec 2002 17:09:18 -0500
+Message-ID: <20021208220918.GC32062__37010.0027569153$1416622005$gmane$org@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: debian-hppa@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org, debian-glibc@lists.debian.org,
-	tausq@debian.org
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Content-Type: multipart/mixed; boundary="U+BazGySraz5kW0T"
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+To: libc-alpha@sources.redhat.com
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20021205010845.GU16331@systemhalted> from "Carlos O'Donell" at Dec 4, 2002 08:08:45 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,20 +18,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Hi, my name is Carlos, and I cause all your nightmares with glibc on
-> HPPA :)
-> [...]
-> I recommend that you _do_ _not_ upgrade glibc on HPPA until 2.3.1-6.
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Being perverse, I tried installing 2.3.1-5.  I hit the same problem
-that Joel mentioned previously, the old dynamic loader doesn't define
-GLIBC_PRIVATE.  I was trying to install glibc privately in a prefix of
-my selection.  I have been using LD_LIBRARY_PATH to select my library
-path.  However, this no longer works since all system binaries are
-linked using /lib/ld.so.1 and it isn't compatible with the 2.3.1
-libraries.  Is there a way around this?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+libc-alpha,
+
+Kernel headers and glibc headers are mildly out of sync on HPPA, I'll
+keep my eye out for further inconsistencies. This particular issue was
+found while building the latest debian X packages. Odd that it didn't 
+turn up before.
+
+c.
+---
+
+2002-12-07  Carlos O'Donell  <carlos@baldric.uwo.ca>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/shm.h: Added SHMLBA define.
+
+
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=03-glibc23-hppa-shm
+
+--- glibc-2.3.1/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2002-12-07 19:42:52.000000000 -0500
++++ glibc-2.3.1/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2002-12-07 19:33:10.000000000 -0500
+@@ -36,6 +36,8 @@
+ #define SHM_LOCK	11		/* lock segment (root only) */
+ #define SHM_UNLOCK	12		/* unlock segment (root only) */
+ 
++/* Segment low boundary address multiple */
++#define SHMLBA 0x00400000   /* attach addr needs to be 4 Mb aligned */
+ 
+ /* Type to count number of attaches.  */
+ typedef unsigned long int shmatt_t;
+
+--U+BazGySraz5kW0T--
