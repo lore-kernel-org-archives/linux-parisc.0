@@ -1,34 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA01899
-	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Sep 2000 01:29:38 -0600
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id PAA28575
-	for parisc-linux@thepuffingroup.com; Sat, 23 Sep 2000 15:29:25 +0800
-Date: Sat, 23 Sep 2000 15:29:22 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA02321
+	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Sep 2000 01:54:19 -0600
+Sender: mang@mailserv2.iuinc.com
+Message-ID: <39CC6213.5B7DDC41@subcarrier.org>
+Date: Sat, 23 Sep 2000 03:56:03 -0400
+From: Michael Ang <mang@subcarrier.org>
+MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] cvs directory renaming - *action required*
-Message-ID: <20000923152919.O21274@neep.com.au>
-References: <39CBF956.4833E405@subcarrier.org>
-Mime-Version: 1.0
+References: <39CBF956.4833E405@subcarrier.org> <20000923150340.M21274@neep.com.au>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <39CBF956.4833E405@subcarrier.org>; from mang@subcarrier.org on Fri, Sep 22, 2000 at 08:29:10PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-Is anyone having trouble doing updates after the rename?
+Andrew Shugg wrote:
+> 
+> $ for i in $(find linux-2.3 binutils-2.10 -name Repository); do echo $(cat $i|sed 's/-[0-9.]*//') > $i; done
 
-Not having any troubles with the binutils module but bombing out on
-linux ...
+This is also incorrect since you'll replace any dashes that appear.  You
+want this:
+cd binutils-2.10
+for z in `find . -name Repository`
+do
+  sed -e 's/-2.10//' $z > zzz && mv zzz $z
+done
 
-cvs server: Updating linux/arch/alpha/math-emu
-cvs [server aborted]: cannot open directory /home/cvs/parisc/linux/arch/alpha/mathemu: No such file or directory
+> > P.S. If out of archeological interest you're looking for the old {linux,
+> > binutils, binutils-old, egcs-old} directory, it's been moved under
+> > directory "obsolete". e.g. "cvs co obsolete/binutils-old".
+> 
+> Why do this?  Why not just tag those two modules on Wednesday when you
+> make the change to the repository structure?
 
+Because "linux-2.3" is being renamed to "linux", so the old "linux" had
+to go.  The stuff being moved is very old, and is being moved out of the
+way to reduce the amount of cruft in the top level of the repository. 
+This should be the last time we have to do this.  After the rename, no
+new directories should be created unless absolutely necessary: branches
+should be used instead.
 
-Andrew.
-
---
-Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
-
-  "Just remember Basil, there's always someone worse off than yourself."
-  "Oh, really?  I'd like to meet him ... I could do with a good laugh."
-                 [ Sybil and Basil Fawlty, "Fawlty Towers" ]
+	- Mike.
