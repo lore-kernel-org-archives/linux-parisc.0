@@ -1,48 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from blimpo.internal.net (ppp01.ts1-1.NewportNews.visi.net [209.8.196.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0C5B8482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 09:50:51 -0600 (MDT)
-Date: Thu, 25 Oct 2001 11:50:32 -0400
-From: Ben Collins <bcollins@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
-Subject: Re: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
-Message-ID: <20011025115032.G10952@visi.net>
-References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011020095406.L10952@visi.net> <20011021000443.H1037@bubble.sa.bigpond.net.au> <20011020110123.M10952@visi.net> <20011024195102.W10952@visi.net> <20011025160721.A17892@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011025160721.A17892@parcelfarce.linux.theplanet.co.uk>
-Sender: Ben Collins <bmc@visi.net>
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2AF29482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 13:07:53 -0600 (MDT)
+Received: from ppp29.scram.de (ppp29.scram.de [195.226.127.222])
+	by mail.scram.de (8.11.0/8.11.0) with ESMTP id f9PJ7nT18294
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 21:07:49 +0200 (CEST)
+Date: Thu, 25 Oct 2001 21:06:08 +0200 (CEST)
+From: Jochen Friedrich <jochen+parisc-linux@scram.de>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0110252102160.1877-100000@alpha.bocc.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] IPv6 on PA-RISC up and running :-)
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Oct 25, 2001 at 04:07:21PM +0100, Matthew Wilcox wrote:
-> On Wed, Oct 24, 2001 at 07:51:02PM -0400, Ben Collins wrote:
-> > BTW, most of the iconv/locales tests fail in glibc on parisc.
-> 
-> That's a regression.  According to my whiteboard, the tests that were
-> failing with 2.2.3-9 were:
-> 
->  dlfcn/default
->  posix/globtest
->  gmon/tst-sprofil
->  elf/resolvfail
->      constload1
->      vismain
->      neededtest{,2,3,4}
->      lateglobal
+Hi,
 
-Even with the newest gcc 3.0.2 in sid, I get those failures. Make sure
-when you guys are compiling that in hppa-linux/obj/config.make, that
-cross_compile isn't set to yes. For some reason, I am getting this, and
-when that's set, most of the testsuite isn't run.
+With a short patch (disabling a not-working checksum method and using a 
+portable C version instead), i got IPv6 
+up and running on my 720:
 
-I do have a compiled set of packages, installed, that are working.
-They'll be uploaded with 2.2.4-4.
+[root@alpha root]# ping6 3ffe:400:470:4:a00:9ff:fe17:ca3d
+PING 3ffe:400:470:4:a00:9ff:fe17:ca3d(3ffe:400:470:4:a00:9ff:fe17:ca3d) from 3ffe:400:470:4::1 : 56 data bytes
+64 bytes from 3ffe:400:470:4:a00:9ff:fe17:ca3d: icmp_seq=0 hops=64 time=2.391 msec
+64 bytes from 3ffe:400:470:4:a00:9ff:fe17:ca3d: icmp_seq=1 hops=64 time=780 usec
 
-Ben
+Cheers,
+Jochen
 
--- 
- .----------=======-=-======-=========-----------=====------------=-=-----.
-/                   Ben Collins    --    Debian GNU/Linux                  \
-`  bcollins@debian.org  --  bcollins@openldap.org  --  bcollins@linux.com  '
- `---=========------=======-------------=-=-----=-===-======-------=--=---'
+--- /usr/src/linux/include/asm-parisc/checksum.h.old    Thu Oct 25 
+21:00:58 2001+++ /usr/src/linux/include/asm-parisc/checksum.h        Thu 
+Oct 25 21:00:46 2001@@ -143,6 +143,7 @@
+         return csum_fold (csum_partial(buf, len, 0));
+ }
+
++#if 0
+ #define _HAVE_ARCH_IPV6_CSUM
+ static __inline__ unsigned short int csum_ipv6_magic(struct in6_addr *saddr,
+                                                     struct in6_addr *daddr,
+@@ -153,6 +154,7 @@
+        BUG();
+        return csum_fold(sum);
+ }
++#endif
+
+ /*
+  *     Copy and checksum to user
