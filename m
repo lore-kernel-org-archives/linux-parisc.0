@@ -1,20 +1,24 @@
-Return-Path: <simmel@anymotion.de>
-Received: from mail.3d-boerse.de (port-212-202-156-103.reverse.qsc.de
-	[212.202.156.103])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DF7824843
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9A76D4843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 08:43:33 -0700 (MST)
-Message-ID: <00a901c3ecc8$50ef9a00$8100a8c0@punk>
-From: "Jens Simmoleit" <simmel@anymotion.de>
-To: <parisc-linux@lists.parisc-linux.org>
+	Fri,  6 Feb 2004 08:49:47 -0700 (MST)
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i16Fnqa07789; Fri, 6 Feb 2004 10:49:52 -0500
+Subject: Re: [parisc-linux] Re: Install GNOME on 712/80
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Jens Simmoleit <simmel@anymotion.de>
+In-Reply-To: <009801c3ecc6$d637d990$8100a8c0@punk>
 References: <02d601c3ebef$e3241650$8100a8c0@punk>
 	<200402060007.27911.deller@gmx.de>
 	<009801c3ecc6$d637d990$8100a8c0@punk>
-Date: Fri, 6 Feb 2004 16:45:59 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-15"
-Subject: [parisc-linux] Additions - Install GNOME on 712/80
+Content-Type: text/plain
+Date: 06 Feb 2004 10:49:42 -0500
+Message-Id: <1076082583.1823.23.camel@mulgrave>
+Mime-Version: 1.0
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,66 +28,20 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Almost forgot one thing :-)
-
-1. My mouse won't work too *argh*
-
-> Hi List,
->
-> Helge, thanks for the tip. I reinstalled from scratch installed the
-xserver
-> and the gnome packages and it "works now". The gdm started up and said
-that
-> he couldn't find the font server, the config file said that also local
-fonts
-> can be used, so I isntalled those too and voila the login page appears.
->
-> :-)
->
-> But now something strange happens, I type in my user and the password at
-the
+On Fri, 2004-02-06 at 10:35, Jens Simmoleit wrote:
+> But now something strange happens, I type in my user and the password at the
 > gnome desktop login, the screen turns black and after a certain amount of
-> time the box comes back with the Gnome login prompt (where I started
-from)?
->
-> Seems like the system isn't able to log me on, or create a profile, or
-> whatever?
->
-> What am i missing here????
-> Do I need a font server? Is there maybe (an)other missing package(s)....
-I'm
-> quite sure I have all the gnome packages here, but what about X itself,
-> somebody has a clue whats missing or wrong? Maybe a config file for the
-> user?
->
-> Any idea?
->
-> Greets,
-> Simmel
->
->
-> > Look at the dmesg kernel log and search for a line which starts with
-> "stifb:".
-> > There you will see the only resolution & bpp color depth which your card
-> > currently supports and then verify your /etc/X11/XFree86.config file to
-> only
-> > have exactly those values enabled. After that change X11 should start
-> up....
-> >
-> > Helge
-> >
-> >
-> > -- 
-> > To UNSUBSCRIBE, email to debian-hppa-request@lists.debian.org
-> > with a subject of "unsubscribe". Trouble? Contact
-> listmaster@lists.debian.org
-> >
-> >
->
->
-> -- 
-> To UNSUBSCRIBE, email to debian-hppa-request@lists.debian.org
-> with a subject of "unsubscribe". Trouble? Contact
-listmaster@lists.debian.org
->
->
+> time the box comes back with the Gnome login prompt (where I started from)?
+
+Gnome is a known consumer of colour resources, and it's applications
+aren't very graceful when they run out (as they do with our 8 bit
+framebuffer), it could be that you are simply running out of them.
+
+You can use a true colour visual at this depth (the colours are pretty
+ratty, but at least you never run out) by adding
+
+Visual "TrueColor"
+
+To the SubSection "Display" part that covers you.
+
+James
