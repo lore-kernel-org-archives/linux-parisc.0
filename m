@@ -1,90 +1,94 @@
-Received: from localhost.localdomain (ottawa.linuxcare.com [216.208.98.2])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA08133
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 14:38:24 -0700
-Received: (from pjlahaie@localhost)
-	by localhost.localdomain (8.11.0/8.11.0) id eALLfml03034
-	for parisc-linux@puffin.external.hp.com; Tue, 21 Nov 2000 16:41:48 -0500
-Date: Tue, 21 Nov 2000 16:41:48 -0500
-From: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
-To: parisc-linux@puffin.external.hp.com
-Message-ID: <20001121164148.H912@achilles.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-md5;
-	protocol="application/pgp-signature"; boundary="PW0Eas8rCkcu1VkF"
-Subject: [parisc-linux] Fun build problems
+Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id QAA09457
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 16:02:46 -0700
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by palrel3.hp.com (Postfix) with ESMTP id 05CDE8F4
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 15:04:59 -0800 (PST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA18372;
+	Wed, 22 Nov 2000 09:50:05 +1100
+Date: Wed, 22 Nov 2000 09:50:05 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com,
+        binutils@sourceware.cygnus.com
+Subject: Re: [parisc-linux] Use of the EI_OSABI field
+In-Reply-To: <200011210547.WAA18159@udlkern.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0011220914180.16860-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+cc to binutils because John makes some salient points.
 
---PW0Eas8rCkcu1VkF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 20 Nov 2000, John Marvin wrote:
 
-Hello everyone,
+> > Another glibc issue (which is why I'm sending this back to the list) is
+> > that there has been quite some discussion on the binutils list over the
+> > use of the EI_OSABI field.  The conclusion being that it isn't really
+> > correct to use this field to discern the intendend execution platform.
+> > It's purpose is really to tell ELF tools that a file contains fields and
+> > values that need to be interpreted in a non-standard way.  Since both
+> > elf32-hppa and elf64-hppa follow the standards, I'm inclined to think that
+> > the gnu tools should set EI_OSABI to zero for both HPUX and Linux targets.
+> 
+> I don't read the binutils mailing list, so I checked the archive.  In my
+> opinion I didn't see a discussion, I saw H.J.  Lu repeatedly asserting
+> this "fact".  He may or may not be correct about original intention, but
+> the implementation so far has been that EI_OSABI is used to tell what the
+> target platform is.  That is what FreeBSD is doing, that is what HP-UX is
+> doing, and that is what the IA-64 Unix System V Application Binary
+> Interface specifies:
+> 
+>   http://developer.intel.com/design/IA-64/Downloads/24537002.pdf
+> 
+> Note that the second paragraph in section 1.1 of that specification
+> includes the following:
+> 
+>     This document is the result of consensus among operating system
+>     vendors intending to provide UNIX and UNIX workalike operating
+>     systems on the IA-64 architecture. The vendors participating in
+>     this effort include Intel, Sun Microsystems, SCO, IBM, SGI,
+>     Cygnus Solutions, VA Linux Systems, HP, and Compaq.
+> 
+> So, If the specification is wrong according to H.J. Lu, why did both
+> Cygnus and VA Linux Systems not object to this:
+> 
+>     Section 4.1.1.4 Operating System Identification
+> 
+>     The e_ident[EI_OSABI] value identifies the operating system and
+>     ABI to which the object is targeted, as listed in Table 4-1.
+> 
+> Table 4-1 lists the various ELFOSABI_* fields, e.g. ELFOSABI_HPUX,
+> ELFOSABI_NETBSD, ELFOSABI_LINUX, etc.
+> 
+> Note also, that the current mechanism for us to be able to differentiate
+> elf executables in the Linux kernel is the machine dependent
+> elf_check_arch() macro, whose only argument is a pointer to a
+> elf32_hdr or elf64_hdr. I think it would be ugly to try to get the
+> .note.ABI-tag section first for every exec of a new binary in order
+> to determine what the target ABI is.
+> 
+> In my opinion, unless H.J. Lu can get the IA-64 ABI changed, it is too
+> late to assert his view of what that field was supposed to be. Please
+> leave the EI_OSABI field set to ELFOSABI_LINUX until a better consensus
+> on this issue is reached.
+> 
+> John Marvin
+> jsm@fc.hp.com
 
-    Over the last couple of days, I've been trying to get the debian
-boot-floppies building (I know some changes will be necessary) and as
-it stands now, several packages are missing.  In the process of trying
-to compile/install these packages, I've run into some difficulties.
-Here are some of them:
+I'm happy enough to leave things as they are in puffin CVS, but these
+changes haven't been merged back to sourceware yet, partly because I had
+some doubts myself as to whether setting EI_OSABI was correct.  H.J. Lu
+wasn't the only one arguing that EI_OSABI should be left at zero;  Ulrich
+Drepper also was quite vehement against changing sourceware FreeBSD
+binutils.
 
-apt   -- Package on pehc and .iso do not work.  Missing lots of helper apps.
+BTW, it's not too hard to check .note.ABI-tag.  The linker arranges for a
+PT_NOTE program header entry to point to it, and the section itself is
+virtually guaranteed to be read in with the header as it's placed right
+after the header along with .interp.
 
-Seeing as apt was broken, I decided to download the woody version of apt so
-I can get a newer version and hopefully skip some steps in building the
-above packages.  gcc 2.96 and apt-0.3.19 don't get along, so I tried picking
-it up from cvs (supposed to have been fixed).  Follow the directions on
-cvs.debian.org
-
-$ cvs -d :pserver:anonymous@cvs.debian.org:/cvs/APT login
-(Logging in to anonymous@cvs.debian.org)
-CVS password:=20
-cvs login: authorization failed: server cvs.debian.org rejected access
-
-Anyone know if there are other instructions other than what cvs.debian.org
-says?  If so, feel free to email me
-
-
-rsync -- ldd crashes on dpkg-shlibdepends stage
-
-Can I just manually put the required dependancies in?
-
-
-autoconf -- installinfo spins
-
-When installing the autoconf package (to compile dpkg) installinfo spins.
-And after several minutes still doesn't return.  It's taking up 100% cpu
-at the time.
-
-If I abort this, autoconf seems to be installed but cannot generate the
-dpkg configure properly, some macros are missing
-
-AM_CONDITIONAL(HAVE_CPLUSPLUS, test "$CXX" !=3D "")
-
-Is in the ./configure script.
-
-
-info -- Reinstall spins
-
-If I try to reinstall info, it spins on the uninstall.  100% cpu.
-
-
-If anyone has any solutions for any of the above problems, I am all
-ears (eyes?).
-
-							- Paul
-
---PW0Eas8rCkcu1VkF
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE6Guwc8ggPQthPCzcRAgkGAJ9TzClXOg009RWO/v09ONBNnxJcbgCfcWcX
-gj26osR06BqyJ0O+/Q83csk=
-=YHRW
------END PGP SIGNATURE-----
-
---PW0Eas8rCkcu1VkF--
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
