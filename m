@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7CE0F485B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 05:14:18 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17KztE-0006Zd-00; Thu, 20 Jun 2002 12:14:12 +0100
-Date: Thu, 20 Jun 2002 12:14:12 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Tim ter Laak <timl@scintilla.utwente.nl>
-Cc: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>,
-	Masliy Alex <masliy@kfti.knc.ru>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP PA 715/50 installation trouble
-Message-ID: <20020620121412.R9435@parcelfarce.linux.theplanet.co.uk>
-References: <20020620095116.GM25945@charite.de> <Pine.LNX.4.21.0206201245350.31804-100000@utelscin.scintilla>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0206201245350.31804-100000@utelscin.scintilla>; from timl@scintilla.utwente.nl on Thu, Jun 20, 2002 at 12:53:24PM +0200
+Received: from mail.alcatel.be (alc250.alcatel.be [195.207.101.250])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0A924856
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 06:26:59 -0600 (MDT)
+Message-ID: <03273D4BC7F4D511AC440008C7E6F881542343@nlntmail2b.ats.nld.alcatel.nl>
+From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+To: "'Ralf Hildebrandt'" <Ralf.Hildebrandt@charite.de>,
+	"Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Date: Thu, 20 Jun 2002 14:26:31 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] was: mail-man; should be hyper-mail
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,13 +23,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jun 20, 2002 at 12:53:24PM +0200, Tim ter Laak wrote:
-> I searched for a few days for new firmware for a 715/50, but didn't find
-> anything. Only for the faster 715's, but their hardware is slightly
-> different. So I wouldn't try that update on a 715/50.
+Sorry,
 
-the hardware's quite radically different ... plus i believe that upgrading
-715/Scorpio firmware invlves an EEPROM burner and swapping some chips.
+My college confused two things; it's a problem with hypermail version 2.1.4
+When starting with ./configure he gets: (manual copy)
+checking host system type ... hppa1.1-unknown-linux-gnu
+checking target system type.. hppa1.1-unknown-linux-gnu
+checking build system type... hppa1.1-unknown-linux-gnu
+....
+.....
+creating config.h
 
--- 
-Revolutions do not require corporate support.
+next he types: make, and gets:
+building libtool
+checking host system type .... invalid configuragtion:
+''parisc-unknown-linux-gnu': machine 'parisc-unknown' not recognized.
+..
+make tables error 127
+pcre/libpcre.a error 2
+hypermail error 2
+
+
+Hans
+
+	-----Original Message-----
+	From:	Ralf Hildebrandt [SMTP:Ralf.Hildebrandt@charite.de]
+	Sent:	Thursday, June 20, 2002 11:52 AM
+	To:	Witvliet, Hans
+	Cc:	parisc-linux@lists.parisc-linux.org
+	Subject:	Re: [parisc-linux] mail-man
+
+	On Thu, Jun 20, 2002 at 10:50:50AM +0200, Witvliet, Hans wrote:
+	> Hi,
+	> 
+	> Short question,
+	> 
+	> Did anybody already succeed in compiling mailman?
+	> Here (712/100) it failed.
+
+	What failed and how?
+
+	-- 
+	Ralf Hildebrandt (Im Auftrag des Referat V A)
+Ralf.Hildebrandt@charite.de
+	Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450
+570-155
+	Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450
+570-916
+	Why you can't find your system administrators:
+	Finished a double shift and is out back wondering what that big
+burning ball in the sky is. 
