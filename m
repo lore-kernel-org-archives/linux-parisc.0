@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D7D66483F
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Aug 2003 01:28:47 -0600 (MDT)
-Date: Fri, 29 Aug 2003 09:27:27 +0200
-Message-ID: <3F4D78B00000007F@ocpmta3.freegates.net>
-In-Reply-To: <012d01c36d82$40d6c960$f463f40f@jh733133>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
-To: "Jim Hull" <jim.hull@hp.com>, parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail2.gench (unknown [202.109.122.118])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B88024852
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Aug 2003 03:52:57 -0600 (MDT)
+From: "513078" <513078@163.com>
+Cc: drobbins@gentoo.org, www@gentoo.org, emailbase@371.net,
+	20010922114339.21789.qmail@mailserv2.iuinc.com,
+	parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;charset="GB2312"
+Date: Fri, 29 Aug 2003 17:15:00 +0800
+Message-Id: <20030829095257.B88024852@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: =?GB2312?B?xPq6w6Oh?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,44 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Jim,
+世纪网通全新的网络建站方案：
 
-Well come :)
-> I haven't really been following this thread, so I don't know what
->problem you're actually trying to solve, but I'd like to point out a few
->aspects of the PA-RISC processor architecture.
->
-To be short, the pa linux kernel boot well on A model as SMP (Multiprocessor
-mode) but panic on L/N model. And a pb in tlb management is suspected.
+    自主更多，您可以完全按自己的需要定制主机
 
->Comments mixed with the original text, below.
->
-> -- Jim
->   
->> HP Itanium/PA-RISC Processor Architect
+    速度更快更稳定，严格控制主机数量
 
->If you use fdc, fic, or pdc, then they are broadcast to other
->processors, but fdce and fice are not.
+    更优惠，现在申请均赠送国际域名，VIP企业邮箱
+      
+    免费赠送10个高级虚拟域名
+    
+    主机先开通，后付款！免费试三天，满意后付款！真正的网上交易零风险！
+    
+    最低一年仅需170元，就可拥有域名+主机+企业邮局。(更详细的配制:http://www.2211966.net/host.htm).
 
-Thanks I will check if such a code is used.
+    还有更多优惠套餐敬请访问:http://www.2211966.net    联系QQ:227564251
+    
 
->While you can use ldda and stda to access memory using absolute
->(physical) addresses instead of virtual, these instructions do *not*
->bypass the cache.  And because PA processors use virtually-indexed
->caches, the rules for mixing virtual and absolute accesses, and have
->them all remain cache-coherent, are complicated.  If you really need to
->do this, then you'll have to read and understand all of Appendix F, "TLB
->and Cache Control", in the PA-RISC 2.0 Architecture manual (the "Kane"
->book).
+==========================================================================================================================================================================
 
-Yes, very accurate reference, but imo it is not a course on PA-RISC asm (I
-mean, as a beginner, as i am, would like to find with some trial example
-showing what is good and trivial errors to not commit).
+    此邮件为商业信函,如果您对此不感兴趣请立即删除;如果您不希望再收到此邮件请到http://filter.2211966.net.退订,我们将会把您的邮箱地址过滤出列表.谢谢!                                                               
 
-Thanks for your clear comments,
-    Joel
-
-
--------------------------------------------------------------------------
-Tiscali ADSL, seulement 35 eur/mois et le modem est inclus...abonnez-vous!
-http://reg.tiscali.be/default.asp?lg=fr 
+    This mail is a business letter.If you are uninterested in this.please delete  it immediately;If you do not hope to receive this mail again.please get to http://filter.2211966.net. fill in your mail address.and we will filter it out
+of our mail list.
