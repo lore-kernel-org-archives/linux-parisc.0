@@ -1,9 +1,9 @@
 Return-Path: <nitephyre@iinet.net.au>
 Received: from mail.iinet.net.au (mail-07.iinet.net.au [203.59.3.39])
-	by dsl2.external.hp.com (Postfix) with SMTP id 7416D4857
+	by dsl2.external.hp.com (Postfix) with SMTP id 4BE0C4857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  9 Jan 2004 02:24:33 -0700 (MST)
-Message-ID: <002601c3d692$40450420$0101a8c0@nitephyre>
+	Fri,  9 Jan 2004 02:32:05 -0700 (MST)
+Message-ID: <002d01c3d693$1f1b3840$0101a8c0@nitephyre>
 From: "Matt Lewis" <nitephyre@iinet.net.au>
 To: <parisc-linux@lists.parisc-linux.org>
 References: <000a01c3d68f$45c6f500$0101a8c0@nitephyre>
@@ -11,10 +11,10 @@ References: <000a01c3d68f$45c6f500$0101a8c0@nitephyre>
 	<001701c3d691$4ca17ec0$0101a8c0@nitephyre>
 	<20040109094904.GA533@tausq.org>
 Subject: Re: [parisc-linux] Xfree on C3000 visualize
-Date: Fri, 9 Jan 2004 19:23:31 +1000
+Date: Fri, 9 Jan 2004 19:29:45 +1000
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0023_01C3D6E6.114F07C0"
+	boundary="----=_NextPart_000_002A_01C3D6E6.F029CFC0"
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,15 +26,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0023_01C3D6E6.114F07C0
+------=_NextPart_000_002A_01C3D6E6.F029CFC0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-oops sorry about that randolph, using outlook atm :)
+http://cgi.ebay.com.au/ws/eBayISAPI.dll?ViewItem&item=3D3070354300&catego=
+ry=3D11221
 
-thanks, i'll have a look on ebay...=20
------ Original Message -----=20
+is that one that would work?
+  ----- Original Message -----=20
   From: Randolph Chung=20
   To: Matt Lewis=20
   Cc: parisc-linux@lists.parisc-linux.org=20
@@ -64,7 +65,7 @@ need
   http://www.tausq.org/
 
 
-------=_NextPart_000_0023_01C3D6E6.114F07C0
+------=_NextPart_000_002A_01C3D6E6.F029CFC0
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -77,16 +78,17 @@ http-equiv=3DContent-Type>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>oops sorry about that randolph, using =
-outlook atm=20
-:)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><A=20
+href=3D"http://cgi.ebay.com.au/ws/eBayISAPI.dll?ViewItem&amp;item=3D30703=
+54300&amp;category=3D11221">http://cgi.ebay.com.au/ws/eBayISAPI.dll?ViewI=
+tem&amp;item=3D3070354300&amp;category=3D11221</A></FONT></DIV>
 <DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>thanks, i'll have a look on ebay... =
-</FONT></DIV>
-<DIV>----- Original Message ----- </DIV>
+<DIV><FONT face=3DArial size=3D2>is that one that would =
+work?</FONT></DIV>
 <BLOCKQUOTE=20
 style=3D"BORDER-LEFT: #000000 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
 0px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px">
+  <DIV style=3D"FONT: 10pt arial">----- Original Message ----- </DIV>
   <DIV=20
   style=3D"BACKGROUND: #e4e4e4; FONT: 10pt arial; font-color: =
 black"><B>From:</B>=20
@@ -129,4 +131,4 @@ a PCI=20
 href=3D"http://www.tausq.org/">http://www.tausq.org/</A><BR></BLOCKQUOTE>=
 </BODY></HTML>
 
-------=_NextPart_000_0023_01C3D6E6.114F07C0--
+------=_NextPart_000_002A_01C3D6E6.F029CFC0--
