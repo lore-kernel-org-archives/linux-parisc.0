@@ -1,38 +1,59 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18B574A19
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Feb 2001 06:34:04 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA21411
-	for <parisc-linux@puffin.external.hp.com>; Sun, 4 Feb 2001 06:29:51 -0700
-Received: from pc117-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.117)
-  by mailserv2.iuinc.com with SMTP; 4 Feb 2001 13:33:57 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 74776B005; Sun,  4 Feb 2001 12:11:06 +0000 (GMT)
-Date: Sun, 4 Feb 2001 12:11:06 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Greg Ingram <ingram@symsys.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] C100 improvements, problems
-Message-ID: <20010204121106.A1374@linuxcare.com>
-References: <20010125173637.R3571@linuxcare.com> <Pine.LNX.4.21.0101261205420.31352-100000@maestro.symsys.com>
-Mime-Version: 1.0
+Received: from dns2.dot.at (dns2.dot.at [212.9.128.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D41FD4A19
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Feb 2001 07:39:55 -0700 (MST)
+Sender: plattner@dns2.dot.at
+Message-ID: <3A7D69B4.896F63D6@dot.at>
+Date: Sun, 04 Feb 2001 15:39:48 +0100
+From: Christoph Plattner <christoph.plattner@dot.at>
+MIME-Version: 1.0
+To: penfold@customware.com.au, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] _working_ rbootd for redhat
+References: <200102041048.VAA00309@customware.com.au>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0101261205420.31352-100000@maestro.symsys.com>; from ingram@symsys.com on Fri, Jan 26, 2001 at 12:16:29PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Jan 26, 2001 at 12:16:29PM -0600, Greg Ingram wrote:
-> > There is a bug in more (really!), now fixed, but needs a rebuild.  If you
-> > invoke it as /bin/more you'll be ok.
+Hello !
+
+For the SCSI I have nothing fixed !
+It works out of the box.
+
+I have not sent any patch. I only tried it and it works.
+So to all PA-RISC hackers, add the TRAP 18 there in the main stream !!
+
+Ok, wonderful that your machine is also booting that way...
+
+With friendly regards
+	Christoph
+
+
+
+penfold@customware.com.au wrote:
 > 
-> I believe it, I just don't believe it.  Is this related to stack
-> direction?  (What is it: grows down on parisc but up on Intel and most
-> other Linux-supported processors?)  If so, what is more fiddling with on
-> its stack?  Does it alter its behavior based on argv[0]?  Oh well, not
-> really too important now, I guess.
+> Hi there,
+> 
+> > I had already success with rbootd !
+> brilliant.  It's pretty striaghtforward (when you know how!!)
+> 
+> > Here the kernel I always boot, and I can see the scsi disk !
+> 
+> excellent! thanks for this.
+> What needed fixing to get scsi to work?
+> have the patches to fix the scsi been comitted ?
+> 
+> co-incidently as of about 10 minutes ago I finally got the box to boot! (yay!)
+> with a kernel I built after adding the case 18: to trap.c
+> 
+> Do you know why this has not been comitted?
+> I added the extra case 18: to my linux-20010117.tar.gz and it works,
+> but I checked out the latest source archive and the fix is not in there.
+> 
+> thanks again,
+> 
+> Damian
+> penfold@customware.com.au
 
-parsic grows up, most others grow down.  'more' checked argv[0] to see
-how it was invoked, and due to a coding bug tried to read argv[0][-1].
-As argv[0] is the first item on our stack, that caused a trap.
-
-Richard
+-- 
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
