@@ -1,77 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA16696
-	for <parisc-linux@puffin.external.hp.com>; Tue, 9 May 2000 17:44:30 -0600
-Received: from l3107mxr.atl.hp.com (l3107mxr.atl.hp.com [15.19.254.19])
-	by cosrel2.hp.com (Postfix) with ESMTP id 4076C194
-	for <parisc-linux@thepuffingroup.com>; Tue,  9 May 2000 10:13:48 -0600 (MDT)
-Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
-	by l3107mxr.atl.hp.com (Postfix) with ESMTP id 268B44FDF2
-	for <parisc-linux@thepuffingroup.com>; Tue,  9 May 2000 12:13:58 -0400 (EDT)
-To: Philipp Rumpf <prumpf@puffin.external.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Tree Issues 
-In-reply-to: Your message of "Tue, 09 May 2000 10:37:07 MDT."
-             <20000509103707.A13782@puffin.external.hp.com>
-Date: Tue, 09 May 2000 10:00:40 -0600
-From: Paul Bame <bame@endor.fc.hp.com>
-Message-Id: <E12pCR6-0000sW-00@endor.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA26732
+	for <parisc-linux@puffin.external.hp.com>; Wed, 10 May 2000 14:27:49 -0600
+Received: from dyn181-ras4.screaming.net (HELO rhirst.linuxcare.com) (postfix@212.49.227.181)
+  by mailserv2.iuinc.com with SMTP; 10 May 2000 14:20:34 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id C45DEB006; Wed, 10 May 2000 15:20:10 +0100 (BST)
+Date: Wed, 10 May 2000 15:20:10 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000510152010.R1090@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] New driver for NCR 53c700 SCSI chips
 List-ID: <linux-parisc.vger.kernel.org>
 
-= For various reasons, most of which I do not want to discuss in public,
+Hi,
+  I have added a driver for the 53c700.  It is only lightly tested on my 715/75,
+but does detect a disk and a tape, and can mount a root file system and load the
+standalone shell from it.  The changs are all in cvs.
 
-I suspect the reasons you are not discussing may be the most
-important ones since the ones you mention here seem resolvable.
+I recommend disconnecting any disks with valuable data on them before trying it.
 
-= I am quite unhappy with the code that currently is in the tree;  most
-= of it is unreviewed,
+For those that don't know me, I have a lot of experience with the 53c710 on m68k
+VME boards and Compaq machines.  I created 53c7xx.c from 53c7,8xx.c and also wrote
+sim710.c.
 
-Indeed we're *all* guilty of checking in a few bad hacks "just to make it
-work".
+The new driver is sim700.c and my intention is to make it support 53c710 also, so
+sim710.c can be removed.
 
-= and too much of it is in a state now where I
-= think it is easier to rewrite it from scratch than to maintain it
-= long-term.
+At present selecting CONFIG_SCSI_LASI builds in sim700.c, sim710.c, and 53c7xx.c.
+I think we should concentrate on sim700.c and forget about 53c7xx.c.  53c7xx.c is
+more powerful, but is limited to 53c710 chips and makes demands on the hardware
+that not all systems support.  I don't know how practical it is to make 53c7xx.c
+work on a range of HP machines, and favour adding extra functionality to sim700.c
+as we need it.
 
-This is a common point on many projects.  Especially when people learn
-as they code, they make unwise decisions especially in the beginning,
-which are best re-written at some point.
+Please give this a try and report back,
 
-My hope was that we'd charge ahead to a working user land and tool
-chain and then after enabling userland work to proceed, we'd go back
-to clean up the kernel simultaneously with supporting 64 bit where
-we'd get the chance to "do it right".
-
-Do you feel a re-write is a faster way of enabling user-land
-development to go forward than adding a few more hacks to our
-existing hacks?
-
-= This is not about individuals' contributions;  no-one can
-= be blamed for submitting working code and relying on the tree
-= maintainer to make sure some standards of quality and consistency are
-= met.
-
-Nobody is acting as this type of tree maintainer, and I for one would
-welcome someone to review my checked-in code and let's me know what's
-stupid about it.  The tree maintainer could even maintain a CVS tag
-which designates the "maintainer's version" of the code.
-
-= I am going to try to set up a sourceforge.net project to keep my
-= modifications publicly-visible now;  while I'm not perfectly happy
-= with announcing anything before people can actually look at my code,
-= I couldn't think of any better way to do it.
-
-I am willing to set up linux-2.3-prumpf on puffin.external.hp.com.
-There's sufficient space to host another linux tree.
-
-= To everyone whom I am not going to work with in the future, it has
-= been a lot of fun to do so, even though I believe I'm going to have
-= more fun with what I am going to do now.
-
-I'll be interested to see what you'll be doing now.  It sounds
-like you'll be fulfilling a role we need for the TPG port.
-I'm a little surprised you're going elsewhere to do it, rather than 
-just starting to do it with the TPG crowd and seeing what happens.
-
-Good luck, and thanks for all your help so far.
-
-	-Paul Bame
+Thanks,
+  Richard
