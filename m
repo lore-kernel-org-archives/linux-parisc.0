@@ -1,40 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CBCB4482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 11:00:26 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id BABA3482A
+	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 12:44:18 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14sSeF-0000VS-00; Wed, 25 Apr 2001 18:00:15 +0100
-Date: Wed, 25 Apr 2001 18:00:15 +0100
+	id 14sU3n-0001fJ-00; Wed, 25 Apr 2001 19:30:43 +0100
+Date: Wed, 25 Apr 2001 19:30:43 +0100
 From: Matthew Wilcox <matthew@wil.cx>
-To: "pop.btx.dtag.de" <Hinkelbv@t-online.de>, T.Weidisch@t-online.de
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Anfrage zu Risc
-Message-ID: <20010425180015.N18464@parcelfarce.linux.theplanet.co.uk>
-References: <000701c0cd7f$2bcefce0$0601a8c0@PC006>
+To: Matthew Wilcox <willy@ldl.fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] glibc 2.2.3
+Message-ID: <20010425193043.O18464@parcelfarce.linux.theplanet.co.uk>
+References: <20010425010722.G1166@zumpano.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000701c0cd7f$2bcefce0$0601a8c0@PC006>; from Hinkelbv@t-online.de on Wed, Apr 25, 2001 at 01:59:20PM +0200
+In-Reply-To: <20010425010722.G1166@zumpano.fc.hp.com>; from willy@ldl.fc.hp.com on Wed, Apr 25, 2001 at 01:07:22AM -0600
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Apr 25, 2001 at 01:59:20PM +0200, pop.btx.dtag.de wrote:
-> Ich habe eine Workstation HP Visualize C180, und kann ich darauf Linux laufen lassen?
+On Wed, Apr 25, 2001 at 01:07:22AM -0600, Matthew Wilcox wrote:
+> I've ported most of the remaining changes from our tree into a snapshot of today's
+> upstream CVS.
 
-"Can I run Linux on my C180?"
+I meant to say more about this last night.  The things I've skipped are:
 
-Yup, it should work fine.
+ * a patch which does #define malloc(x) memalign(16,x)
 
-> Kann ich Linux auch ohne die Boot-CD von HP-UX installieren?
-"Can I install Linux without the HPUX Boot CD?'
+This clearly is insufficient as Richard pointed out a few weeks ago.
+We need to get malloc fixed differently.
 
-Yes.
-
-> Und warum funktioniert der Dounload von dem CD-Image mit Endung RAW nicht?
-
-"Why doesn't the CD Image download in raw mode?"
-
-I have no idea :-)  It would help if you said which image you were trying
-to download.
+ * Jes' patch to define ELFOSABI_LINUX and various macros which use that.
+   The macros are only defined, not used, so omitting them has no
+   ill-effect.  Ulrich has declined to accept these patches as part of
+   glibc until we explain why it was needed.  Jes doesn't remember why
+   he made this patch, so I'm leaving it out.  The curious can find the
+   discussion in the mailing list archives from last december.
 
 -- 
 Revolutions do not require corporate support.
