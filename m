@@ -1,22 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.powertech.no (smtp1.powertech.no [195.159.0.145])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7E2A2482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 15:32:02 -0600 (MDT)
-Received: from nyepost.start.no (nyepost.start.no [195.159.1.214])
-	by smtp1.powertech.no (Postfix) with ESMTP id DCC0F89B4
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 23:31:59 +0200 (CEST)
-Received: (from apache@localhost)
-	by nyepost.start.no (8.11.6/8.11.2) id g4TLKGU23217
-	for parisc-linux@lists.parisc-linux.org; Wed, 29 May 2002 23:20:16 +0200
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1022707216.3cf54610c5ee8@nyepost.start.no>
-Date: Wed, 29 May 2002 23:20:16 +0200 (CEST)
-From: Andy Walker <squawker@start.no>
-References: <200205291104.AA315359834@mail.centraltx.com> <20020529201334.8C23C482A@dsl2.external.hp.com>
-In-Reply-To: <20020529201334.8C23C482A@dsl2.external.hp.com>
+Received: from delenn.fl.net.au (int-mail.syd.fl.net.au [202.181.0.28])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 236BD482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 16:00:44 -0600 (MDT)
+Received: from fl.net.au (idesign.fl.net.au [203.30.61.17])
+	by delenn.fl.net.au (Postfix) with ESMTP id 9D4E9180157
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 May 2002 08:04:27 +1000 (EST)
+Message-ID: <3CF54F85.7070106@fl.net.au>
+Date: Thu, 30 May 2002 08:00:37 +1000
+From: Duraid Madina <duraid@fl.net.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] Fast-Wide Diff. SCSI on a 735
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] A400-6X always crashes after a while
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,32 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi folks,
+Using the 2.4.18-pa26 kernel on my A400-6X, the machine doesn't want to 
+stay alive for more than about a day. The console log shows this:
 
-Just picked up a free 735/99 today, so suddenly I've become interested
-in the status of the Outfield 53c720 driver. Has there been any progress
-or is there just no information available? I'd be happy to test patches -
-or even dive into the code myself, but without docs that sounds a little
-pointless.
+~~~
+Kernel panic: sba_iommu.c: I/O MMU @ fffffffffed22000 is out of mapping 
+resources
 
-The box came with a FWD SCSI cage, and although I can scrounge a SE cage
-to go in there, I'd like to make good use of these Seagate ST32430WD's
-I've got laying around.
+ <6>sym53c896-3-<15,0>: extraneous data discarded.
+sym53c896-3-<15,0>: COMMAND FAILED (89 0) @0000000016c95800.
+Kernel panic: sba_iommu.c: I/O MMU @ fffffffffed22000 is out of mapping 
+resources
 
-Nice things about this deal - it came with an Intel 10/100 network
-card in the EISA slot, it came with a big HP drive cabinett with two
-serviceabele 5GB Hawks in (and a possibly working full-height DAT
-unit). It has 176MB of memory and still 2 banks free - and I can
-scrounge memory to fill those banks. Pity it had an A1097C monitor -
-I was crossing my fingers for another A4033A, but beggars can't be
-choosers.
+In interrupt handler - not syncing
+~~~
 
-By the way, if I can get my hands on a 735/125 cpu/memory board, will
-my /99 become a /125, or is there more to it than that?
+    Does anyone know what might be causing this?
 
-cheers,
--Andy
-
-
-------------------------------------------------------------
-Få din egen @start.no-adresse gratis på http://www.start.no/
+    tia,
+    Duraid
