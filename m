@@ -1,12 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] EVC to 2x VGA on ebay.
-Date: Mon, 31 Jan 2005 12:56:36 -0500
-Message-ID: <20050131175635.GE29399@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: [parisc-linux] EVC to 2x VGA on ebay.
+Date: Mon, 31 Jan 2005 19:16:50 +0100
+Message-ID: <41DE4A3A00007E1C@mail-1-bnl.tiscali.it>
+References: <20050131175635.GE29399@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset="ISO-8859-15"
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050131175635.GE29399@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,19 +20,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello Carlos,
 
-parisc,
+> parisc,
+> 
+> http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&rd=3D1&item=3D5161476411&=
+ssPageName=3DSTRK:MEWA:IT
+> 
+> Just saw this on ebay. It's a steal for the EVC connector end.
 
-http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&rd=1&item=5161476411&ssPageName=STRK:MEWA:IT
+On my b180, I use a converter of this kind (hp supplied) but it was write=
+n
+PVC on it and enlarge picture (if match the actual product ) doesn't matc=
+h
+at all this PVC converter :-(
 
-Just saw this on ebay. It's a steal for the EVC connector end.
-I *do not* know if they work with hppa systems but I'm willing to buy 4
-of them just to hack the EVC connectors.
+Hth,
+    Joel
 
-I'm hoping they work!
 
-Cheers,
-Carlos.
+-------------------------------------------------------------------------=
+--
+Tiscali solde! 1 mois et activation Gratuits, modem =E0 9,99=80
+http://reg.tiscali.be/adsl/default.asp?lg=3DFR
+
+
 
 _______________________________________________
 parisc-linux mailing list
