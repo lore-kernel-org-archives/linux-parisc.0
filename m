@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 33E6C48D7
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 11:06:55 -0700 (MST)
-Date: Thu, 20 Mar 2003 19:06:36 +0100
-Message-ID: <3E689FC400004700@ocpmta1.freegates.net>
-In-Reply-To: <3E68A24B00000CC9@ocpmta6.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1AC6948D7
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 11:14:09 -0700 (MST)
+Message-Id: <200303201813.h2KIDn3P007214@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-To: "Randolph Chung" <tausq@debian.org>
-Cc: "Matthias Klose" <doko@cs.tu-berlin.de>,
-	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
+To: jsoe0708@tiscali.be (Joel Soete)
+Date: Thu, 20 Mar 2003 13:13:49 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: tausq@debian.org, b.gunreben@web.de, willy@debian.org,
+	doko@cs.tu-berlin.de, debian-hppa@lists.debian.org,
+	debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org,
+	kuznet@ms2.inr.ac.ru, linux-net@vger.kernel.org
+In-Reply-To: <3E689FC4000046DF@ocpmta1.freegates.net> from "Joel Soete" at Mar 20, 2003 06:51:27 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,42 +25,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph,
+> >> 
+> >> these are definitely kernel addresses....
+> >
+> >Right.  I see the code that's causing the problem in kernel/signal.c:
+> >
+> >                if (k->sa.sa_handler == SIG_IGN
+> >		    || (k->sa.sa_handler == SIG_DFL
+> >
+> >
+> >You don't want to canonicalize k->sa.sa_handler here, so a cast to
+> >void * or something is needed.  The PA is the only port that I am
+> >aware of that needs to canonicalize function pointers.
+> >
+> Well I try to test some:
+> --- signal.h.orig       2003-03-20 15:12:24.000000000 +0100
+> +++ signal.h    2003-03-20 15:11:47.000000000 +0100
+> @@ -106,9 +106,15 @@
+>  #define SIG_UNBLOCK        1   /* for unblocking signals */
+>  #define SIG_SETMASK        2   /* for setting the signal mask */
+>  
+> +#if __GNUC__ == 3 && __GNUC_MINOR__ >= 3 || __GNUC__ > 3
+> +#define SIG_DFL        (0)                     /* default signal handling
+> */
+> +#define SIG_IGN        (1)                     /* ignore signal */
+> +#define SIG_ERR        (-1)                    /* error return from signal
+> */
+> +#else
+>  #define SIG_DFL        ((__sighandler_t)0)     /* default signal handling
+> */
+>  #define SIG_IGN        ((__sighandler_t)1)     /* ignore signal */
+>  #define SIG_ERR        ((__sighandler_t)-1)    /* error return from signal
+> */
+> +#endif
 
->>
->>> I am looking to rebuild gcc-3.3 64bits to rebuild the last kernel 2.4
->to
->>> conitnue my investigation about smp(64bits) [which failled to boot on
->a
->>N4000
->>> when compile d with gcc-3.2 get from unofficial-debs].
->>
->>If you are working on 64-bit, I would advise staying with 3.0.4 for
->>now.... no one has tested 3.3 hppa64-linux-gcc at all, so it will just
->>be introducing more unknowns into the problem.
->>
->Ok I am gonna try to rebuild it with gcc-3.0.
->
-Well just a small follow up to say that I had not much success with gcc-3.0
-(64bits).
+No, don't do that.  SIG_DFL, SIG_IGN and SIG_ERR expand to compound
+literals.  Look at the assembly output from the following little
+program (gcc -S) with and without the "void *" cast.
 
-Also I did some other test:
-this same kernel (smp64) boots well on a b2k (pa8600 up),
-it boots also well on the N4000 when I 'disable' the second cpu?
+typedef int (*__sighandler_t)(void);
+#define SIG_IGN        ((__sighandler_t)1)
+int foo (__sighandler_t g)
+{
+  return g == (void *)SIG_IGN;
+}
 
-(It seems to fail before 'Add swap...' but not sure because I notice that
-all boot blabla is not output to the console [ie compare to dmesg nothing
-is print out before 'sym53c8xx: at PCI...']?)
-
-I will so try to ack dump_analyser to see how may I got analyse of the piminfo
-which I grab from the two processor.
-
-See you,
-    Joel
-
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
