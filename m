@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8827A482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 08:19:46 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16Va2z-000405-00; Tue, 29 Jan 2002 15:19:45 +0000
-Date: Tue, 29 Jan 2002 15:19:45 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: HEISERER DANIEL <Daniel.Heiserer@bmw.de>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-Message-ID: <20020129151945.B3850@parcelfarce.linux.theplanet.co.uk>
-References: <3C5676D9.E4B26D93@bmw.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C5676D9.E4B26D93@bmw.de>; from Daniel.Heiserer@bmw.de on Tue, Jan 29, 2002 at 11:18:01AM +0100
-Subject: [parisc-linux] Re: octave2.1_2.1.35-6_hppa
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6D43C482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 09:03:14 -0700 (MST)
+Date: Tue, 29 Jan 2002 17:03:00 +0100 (CET)
+From: Jochen Friedrich <jochen@scram.de>
+To: Randolph Chung <randolph@tausq.org>
+Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] IPv6
+In-Reply-To: <20020129071642.GP21816@tausq.org>
+Message-ID: <Pine.NEB.4.33.0201291643080.14788-100000@www2.scram.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,29 +22,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jan 29, 2002 at 11:18:01AM +0100, HEISERER DANIEL wrote:
-> Hi,
-> a buddy pointed me to the debian build archive,
-> because I had problems building a 64-bit octave executable
-> on AP-RISC-2 HP-UX-11.11.
+Hi Randolph,
 
-Unfortunately, we don't support 64-bit userspace on PA/Linux yet.
+> > ICMPv6 checksum failed [3ffe:0400:0470:0004:0000:0000:0000:0001 >
+> > ff02:0000:0000:0000:0000:0001:ff00:0002]
+> > NET: 4 messages suppressed.
+>
+> should be fixed now.... pls give it a try. it was not adding proto
+> correctly.
 
-> Honestly I have no idea what the difference between ELF-64 and PA-RISC-2
-> is.
-> Are both 64 bit.
+It's OK now. However, there still seems to be a problem with the socket
+interface. From the HP, i can't ping6 anything (no response), although i
+can see the packets on the line (with correct checksum) and the reply from
+my Intel box (or anything behind it). A ping from Intel to HP works just
+fine. Also, i can't even ping6 ::1.
 
-No.  PA-RISC 2.0 introduced some new instructions, but does not have to be
-64-bit.  64-bit can be useful, but it can also slow down applications.  So
-it's a tradeoff.
+3ffe:400:470:4::2 is the (current) 6bone address of the HP :-)
 
-> Do you build this octave for 
-> o linux on PA-Risc or also for
-> o HP-UX-11.11 ????
+# ping6 3ffe:400:470:4::2
+PING6(56=40+8+8 bytes) 3ffe:400:470:1::dead:fffe --> 3ffe:400:470:4::2
+16 bytes from 3ffe:400:470:4::2, icmp_seq=0 hlim=61 time=85.938 ms
+16 bytes from 3ffe:400:470:4::2, icmp_seq=1 hlim=61 time=78.125 ms
+16 bytes from 3ffe:400:470:4::2, icmp_seq=2 hlim=61 time=82.032 ms
 
-We don't build binaries for HP-UX.  Some people have suggested starting a
-new port to build binaries for proprietary unices sch as Solaris and HP-UX,
-but nobody has actually done so yet.
-
--- 
-Revolutions do not require corporate support.
+Cheers,
+Jochen
