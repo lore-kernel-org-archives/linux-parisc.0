@@ -1,17 +1,11 @@
-From: m.delahaye@esiee.fr (Matthieu Delahaye)
-Subject: Re: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-Date: Wed, 26 Mar 2003 19:10:52 +0100
-Message-ID: <20030326181052.GA29028__17539.67078771$1416622336$gmane$org@charrue.esiee.fr>
-References: <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de> <000b01c2f3c1$6cd7e0c0$6620a4d5@tsatec.int> <20030326191418.0c7a5edb.markus.schaber@student.uni-ulm.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Adriano Galano <adriano@satec.es>,
-	'Matthieu Delahaye' <m.delahaye@esiee.fr>, davidm@hpl.hp.com,
-	willy@debian.org, linux-ia64@linuxia64.org,
-	parisc-linux@parisc-linux.org
-To: Markus Schaber <markus.schaber@student.uni-ulm.de>
+From: rbradetich@uswest.net
+Subject: [parisc-linux] [3.2 regression] [HPPA] Internal compiler error in insn_default_length, at insn-attrtab.c:1203
+Date: 27 Mar 2003 06:10:04 -0000
+Message-ID: <20030327061004.19985.qmail__25812.3517888182$1416622337$gmane$org@sources.redhat.com>
+Reply-To: rbradetich@uswest.net
+Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
+To: gcc-gnats@gcc.gnu.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030326191418.0c7a5edb.markus.schaber@student.uni-ulm.de>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,16 +16,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi
-> 
-> However, Bochs should be easy to port to another platform due to it's
-> pure interpreter nature. 
->From a Woody/IA-64 box:
+>Category:       c
+>Synopsis:       [3.2 regression] [HPPA] Internal compiler error in insn_default_length, at insn-attrtab.c:1203
+>Confidential:   no
+>Severity:       serious
+>Priority:       medium
+>Class:          ice-on-legal-code
+>Submitter-Id:   net
+>Originator:     rbradetich@uswest.net
+>Release:        unknown-1.0
+>Environment:
+System: Linux vega 2.5.65-pa3 #37 Sun Mar 23 17:41:14 MST 2003 parisc unknown unknown GNU/Linux
+Architecture: parisc
 
-~$ apt-cache search bochs
-bochs - IA-32 (x86) PC emulator
-[snip]
+host: hppa-unknown-linux-gnu
+build: hppa-unknown-linux-gnu
+target: hppa-unknown-linux-gnu
+configured with: ../src/configure -v --enable-languages=c,c++,f77,proto,pascal,objc,ada --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.2 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-clocale=gnu --enable-objc-gc hppa-linux
+>Description:
+u_free.c: In function `free_picture_entry':
+u_free.c:16: unrecognizable insn:
+(insn 43 42 46 (clobber (reg/i:SI 28 %r28)) -1 (insn_list:REG_DEP_OUTPUT 40 (nil))
+    (nil))
+u_free.c:16: Internal compiler error in insn_default_length, at insn-attrtab.c:1203
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
+>How-To-Repeat:
+gcc -O2 -g u_free.i
+>Fix:
+unknown.
+>Unformatted:
+----gnatsweb-attachment----
+Content-Type: application/octet-stream; name="u_free.i"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="u_free.i"
 
-Didn't try it. But a good first step.
-
-Matthieu
+c3RydWN0IF9waWNzIHsgaW50IHJlZmNvdW50OyB9Owp2b2lkIHVzZShpbnQgeCk7CmludCBmcmVl
+X3BpY3R1cmVfZW50cnkoc3RydWN0IF9waWNzICpwaWN0dXJlKSB7CglpZiAocGljdHVyZS0+cmVm
+Y291bnQgPT0gMCkgewoJCXVzZShwaWN0dXJlLT5yZWZjb3VudCk7CgkJcmV0dXJuOwoJfQp9Cg==
