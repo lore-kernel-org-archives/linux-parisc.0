@@ -1,35 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout03.sul.t-online.com (mailout03.sul.t-online.com [194.25.134.81])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CAE66482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Apr 2001 16:23:01 -0600 (MDT)
-From: buffalo bill <buffalo@uranus.solar-system.the7lg.de>
-To: Richard Hirst <rhirst@linuxcare.com>
-Subject: Re: [parisc-linux] 710 SCSI & LAN problems
-Date: Fri, 13 Apr 2001 00:22:48 +0200
-Content-Type: text/plain;
-  charset="us-ascii"
-References: <01041223044200.22122@venus.solar-system.the7lg.de> <20010412231257.D11226@linuxcare.com>
-In-Reply-To: <20010412231257.D11226@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Message-Id: <01041300224801.22122@venus.solar-system.the7lg.de>
-Sender: buffalo@venus.solar-system.the7lg.de
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8CD10482A
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 01:08:42 -0600 (MDT)
+Message-Id: <200104130702.BAA30672@puffin.external.hp.com>
+To: Jes Sorensen <jes@linuxcare.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] FB cleanups 
+In-Reply-To: Your message of "12 Apr 2001 00:56:01 +0200."
+             <d3wv8rqc5a.fsf@lxplus015.cern.ch>
+Date: Fri, 13 Apr 2001 01:02:15 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> No, that is expected behaviour on older systems with non-consistent
-> memory.  The problem appears to be with interrupt routing from the
-> scsi and lan chips to the cpu, and we don't have the documentation to
-> resolve that at the moment.
->
-> Richard
+Jes Sorensen wrote:
+> Then Linus changed his mind. You are still *only* supposed to use
+> readb/writeb on PCI (and possible ISA) on PCI like devices.
 
-Thank you for your answer.
+Jes,
+AFAIK, STI devices will all be memory mapped devices.
+readb/writeb will do the right thing since GSC is "PCI-like"
+in this regard.
 
-I almost forgot to say: HIL is also broken on the 710.
-I guess there is nothing recently working on the 710 that needs to handle 
-with interrupts.
+BTW, I'm not aware of any HP EISA graphics devices - only GSC devices 
+with an EISA form-factor. So the answer is GSC and PCI device.
 
-Could you tell me on which chip is the interrupt handling done ?
-Is there something like a APIC ?
+grant
 
-Heiko
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
