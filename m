@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DCDFC4834
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 11:17:37 -0600 (MDT)
-Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
-	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id g9PHHX00029863
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 13:17:34 -0400 (EDT)
-Received: (from dave@localhost)
-	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) id g9PHHX2f029861
-	for parisc-linux@lists.parisc-linux.org; Fri, 25 Oct 2002 13:17:33 -0400 (EDT)
-Message-Id: <200210251717.g9PHHX2f029861@hiauly1.hia.nrc.ca>
-To: parisc-linux@lists.parisc-linux.org
-Date: Fri, 25 Oct 2002 13:17:32 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Received: from dhcp-53-142.ece.utexas.edu (dhcp-53-142.ece.utexas.edu [146.6.53.142])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F37B7483D
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 14:33:10 -0600 (MDT)
+Message-ID: <3DB9AAFE.8C4896B3@ieee.org>
+Date: Fri, 25 Oct 2002 15:35:10 -0500
+From: Kedarnath Balakrishnan <balak@ieee.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Branch Prediction
+To: parisc-linux@lists.parisc-linux.org
+Cc: balak@ieee.org
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] installation on C3000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,12 +21,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Does anyone know which PA processors if any implement the BTS?  I
-was also wondering about the ITLB P bit and what parisc-linux does
-with it.  The came up in regard to accelerating branches for calls
-and returns.
+Hi,
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+I am trying to install Debian on HP Visualize C3000. I read the HOW-TO
+and managed to make it boot from the ide cdrom drive. The Debian screen
+comes up but then it is not able to read any input. Both Keyboard and
+mouse are in USB port in my m/c. Is that the problem or is there
+something else I am missing??
+
+Thanks,
+Balak
