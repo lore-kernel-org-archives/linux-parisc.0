@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0E3FD486F
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 07:57:17 -0700 (MST)
-Message-Id: <200302241501.h1OF1WJT001142@localhost.redhat.com>
-To: Alan Modra <amodra@bigpond.net.au>
-Cc: Matthew Wilcox <willy@debian.org>, binutils@sources.redhat.com,
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE4C64874
+	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 07:59:58 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18nK5F-0004M2-00; Mon, 24 Feb 2003 14:59:57 +0000
+Date: Mon, 24 Feb 2003 14:59:57 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: law@redhat.com
+Cc: Alan Modra <amodra@bigpond.net.au>,
+	Matthew Wilcox <willy@debian.org>, binutils@sources.redhat.com,
 	parisc-linux@parisc-linux.org
-Reply-To: law@redhat.com
-In-Reply-To: Your message of "Mon, 24 Feb 2003 16:54:21 +1030."
-             <20030224062421.GA31111@bubble.sa.bigpond.net.au>
-From: law@redhat.com
-Date: Mon, 24 Feb 2003 08:01:31 -0700
+Message-ID: <20030224145957.K2938@parcelfarce.linux.theplanet.co.uk>
+References: <20030224062421.GA31111@bubble.sa.bigpond.net.au> <200302241501.h1OF1WJT001142@localhost.redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200302241501.h1OF1WJT001142@localhost.redhat.com>; from law@redhat.com on Mon, Feb 24, 2003 at 08:01:31AM -0700
 Subject: [parisc-linux] Re: [PATCH] space register 0 changes for hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,19 +27,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In message <20030224062421.GA31111@bubble.sa.bigpond.net.au>, Alan Modra writes
-:
- >Hi Matthew,
- >  ChangeLog entries shouldn't be sent as diffs.  Write this one as
- >
- >	* hppa-dis.c (print_insn_hppa <2 bit space register>): Do not print
- >	the space register when the value is zero.
- >
- >and put the reason for the change as a comment in the code if you feel
- >you need some justification for the change.
- >
- >Did you run the binutils testsuite?
-And the GDB testsuite, which tests the PA disassembler.  I'm 99% sure
-it's going to fail after this change.
+On Mon, Feb 24, 2003 at 08:01:31AM -0700, law@redhat.com wrote:
+> And the GDB testsuite, which tests the PA disassembler.  I'm 99% sure
+> it's going to fail after this change.
 
-jeff
+Is it OK if I fix the testsuite then?
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
