@@ -1,19 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 147484829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 13:55:53 -0700 (MST)
-Message-Id: <200303182055.h2IKthRI017578@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-To: tausq@debian.org
-Date: Tue, 18 Mar 2003 15:55:42 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: b.gunreben@web.de, jsoe0708@tiscali.be, willy@debian.org,
-	doko@cs.tu-berlin.de, debian-hppa@lists.debian.org,
-	debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org,
-	kuznet@ms2.inr.ac.ru, linux-net@vger.kernel.org
-In-Reply-To: <20030318202104.GV26139@tausq.org> from "Randolph Chung" at Mar 18, 2003 12:21:04 pm
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 30ABE4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 14:02:55 -0700 (MST)
+Received: from xatlrelay2.atl.hp.com (xatlrelay2.atl.hp.com [15.45.89.191])
+	by atlrel9.hp.com (Postfix) with ESMTP id B84D91C01741
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 16:02:54 -0500 (EST)
+Received: from xatlbh4.atl.hp.com (xatlbh4.atl.hp.com [15.45.89.189])
+	by xatlrelay2.atl.hp.com (Postfix) with ESMTP id A9EA21C000B5
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Mar 2003 16:02:54 -0500 (EST)
+Message-ID: <9A0482A7BD2506488AD9417C93F3714F01F2EB00@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Tue, 18 Mar 2003 16:02:46 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] 64 bit userspace
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,38 +27,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I believe that we were talking about a problem in in glibc's use
-> > of __canonicalize_funcptr_for_compare with a gcc 3.3 compiled kernel.
-> 
-> Quoting an earlier mail:
-> > IAOQ = 10351b7c
-> > Func: __canonicalize_funcptr_for_compare, Off: 38, Addr: 0x10351b7c
-> > 10351b70:       2a 6b 50 00     addil 56800,r19,%r1
-> > 10351b74:       48 21 0c a8     ldw 654(r1),r1
-> > 10351b78:       d4 60 1c 1e     depwi 0,31,2,r3
-> > 10351b7c:       0c 60 10 94     ldw 0(sr0,r3),r20
-> >
-> > GR0 = 00000000
-> >
-> > GR1 = 103eee50
-> > Func: _GLOBAL_OFFSET_TABLE_, Off: 0, Addr: 0x103eee50
-> >
-> > GR2 = 101342f8
-> > Func: do_sigaction, Off: a8, Addr: 0x101342f8
-> 
-> these are definitely kernel addresses....
+Hi people,
 
-Right.  I see the code that's causing the problem in kernel/signal.c:
+	I would to know, what be missing to finish 64 bit userspace to we
+run 64 bit applications?
+	If someone could enumerate the missing items and where we could
+access this development source, maybe I can give some help in this
+development.
 
-                if (k->sa.sa_handler == SIG_IGN
-		    || (k->sa.sa_handler == SIG_DFL
+	Thanks in advance,
 
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
 
-You don't want to canonicalize k->sa.sa_handler here, so a cast to
-void * or something is needed.  The PA is the only port that I am
-aware of that needs to canonicalize function pointers.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+*   leandro.farinati@hp.com
