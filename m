@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8DD2E482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 16:59:54 -0600 (MDT)
-Message-Id: <200305122259.h4CMxqqS003603@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc and -march=2.0 flag bug
-To: gmsoft@gentoo.org (Guy Martin)
-Date: Mon, 12 May 2003 18:59:52 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200305122351.57449.gmsoft@gentoo.org> from "Guy Martin" at May 12, 2003 11:51:57 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B2839482D
+	for <parisc-linux@parisc-linux.org>; Tue, 13 May 2003 06:44:40 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19FZ95-0005qP-0a; Tue, 13 May 2003 13:44:39 +0100
+Date: Tue, 13 May 2003 13:44:38 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Alan Hunter <a.hunter@moviem.co.uk>
+Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
+Message-ID: <20030513124438.GH29534@parcelfarce.linux.theplanet.co.uk>
+References: <005c01c3194a$8f0e01c0$980173c1@moviem.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <005c01c3194a$8f0e01c0$980173c1@moviem.co.uk>
+Subject: [parisc-linux] Re: no screens found on C240
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,16 +25,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> In case of a bug, what do you need to debug it.
+On Tue, May 13, 2003 at 01:24:11PM +0100, Alan Hunter wrote:
+> I can't get X started on a C240 and don't have sufficient background to get to grips with the problem.
+> 
+> Here's what dmesg says:
+> STI GSC/PCI graphics driver version 0.9
+> STI PCI graphic ROM found at f1e00000 (2048 kB), fb at f6000000 (32 MB)
+> STI word mode ROM at f1e00044, hpa at f6000000
+> STI id 2fc1066b-9a02587, conforms to spec rev. 8.09
+> STI device: HPA4552A
+> stifb: Unsupported gfx card id 0x2fc1066b
 
-See <http:/gcc.gnu.org/bugs.html>.  A GCC PR should be submitted
-if you believe the problem is a compiler bug.
+A4552A is the FX2 card and is unsupported; I saw someone offering to
+swap an EG card (which is supported) for an FX card a couple of days
+ago on this list.  Perhaps they're still interested?
 
-Versions earlier than 3.3 are effectively dead, so I would recommend
-testing with a 3.3 snapshot.  3.3 will be released very soon, probably
-this week.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
