@@ -1,28 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3DF5C482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 May 2001 03:05:07 -0600 (MDT)
-Received: from esiee.fr (pc5158a.esiee.fr [147.215.50.165])
-	by mail.esiee.fr (Postfix) with ESMTP id 471EBD15BC
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 May 2001 11:05:06 +0200 (CEST)
-Sender: dino@esiee.fr
-Message-ID: <3AF120CA.66E2F9EF@esiee.fr>
-Date: Thu, 03 May 2001 11:11:38 +0200
-From: =?iso-8859-1?Q?Cl=E9ment?= MOYROUD <moyroudc@esiee.fr>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Dino RS232 works on B132 !
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C5C7482A
+	for <parisc-linux@parisc-linux.org>; Thu,  3 May 2001 11:31:25 -0600 (MDT)
+Message-Id: <200105031731.KAA21930@adlmail.cup.hp.com>
+Subject: Re: [parisc-linux] ELFOSABI_LINUX
+Date: Thu, 3 May 2001 10:28:58 -0700
+From: Cary Coutant <cary@cup.hp.com>
+To: <amodra@one.net.au>, "Matthew Wilcox" <willy@ldl.fc.hp.com>
+Cc: <parisc-linux@parisc-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all !
+>  1) We use relocations that are not mentioned in the Processor
+>     Specific ABI supplement, eg. R_PARISC_PCREL12F.
 
-I am currently working on the second serial port on the B132L+ we have
-here at ESIEE team. A quick hack seems to be working. I need to clean my
-changes. I think I'll soon release a patch.
+What is the relocation number? I'll add it. (I hope it's not 13 or 73. 
+We've recently added PCREL17FI and PCREL22FI, respectively.)
 
-Best regards,
 
-    Clement.
+>  2) PA-ELF32 uses relocations that the parisc psabi says are only
+>     used by ELF64, eg. R_PARISC_IPLT.  No big deal, except of course
+>     they're a different size.
 
-ESIEE Team
+Is it still 129? I'll add it.
+
+If there are any other relocations you use that aren't in HP's ELF/PA 
+document, please let me know.
+
+
+>  3) PA-ELF32 uses DT_INIT and DT_FINI, which the psabi specifically
+>     says are not used (by HPUX).  Again no big deal.
+
+I agree -- no big deal. The document that says they're not used is 
+specifically referring to HP-UX, and was not meant to apply to other 
+operating systems.
+
+
+>  4) HPUX sets a precedent for PARISC, and uses a non-zero OSABI value
+
+Well, we *do* use vendor-specific extensions. Plenty of them, in fact.
+
+
+-cary
