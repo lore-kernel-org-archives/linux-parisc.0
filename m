@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 52801482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Nov 2002 09:33:43 -0700 (MST)
-Message-Id: <200211211605.gALG5IFM000465@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] glibc + SuSE (When email becomes to much)
-To: jsoe0708@tiscali.be
-Date: Thu, 21 Nov 2002 11:05:17 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3DA3C54C000066FE@ocpmta5.be.tiscali.com> from "jsoe0708@tiscali.be" at Nov 21, 2002 08:39:43 am
+Received: from wolf.alaskatech (207-5-237-24-cable.anchorageak.net [24.237.5.207])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8E3E482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Nov 2002 10:34:06 -0700 (MST)
+Received: from wolf.alaskatech (palinux@wolf.alaskatech [24.237.5.207])
+	by wolf.alaskatech (8.12.3/8.12.3/Debian -4) with ESMTP id gALHYcRO023533;
+	Thu, 21 Nov 2002 08:34:38 -0900
+Date: Thu, 21 Nov 2002 08:34:38 -0900 (AKST)
+From: Tom <palinux@alaskatech.org>
+To: Chris Jantzen <chris-parisc@maybe.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] C180 not booting Sarge kernel
+In-Reply-To: <20021121090154.GB23152@maybe.net>
+Message-ID: <Pine.LNX.4.44.0211210831370.23497-100000@wolf.alaskatech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> -DL_divI -xassembler-with-cpp -c /Develop/parisc-linux/src/gcc/gcc/config/pa/milli64.S
-> -o libgcc/./_divI.o
-> /Develop/parisc-linux/build/gcc/gcc/collect2: /lib/libc.so.6: version `GLIBC_2.3'
-> not found (required by /Develop/parisc-linux/build/gcc/gcc/collect2)
-> make[2]: *** [libgcc/./_divI.oS] Error 1
-> make[2]: Leaving directory `/Develop/parisc-linux/build/gcc/gcc'
-> make[1]: *** [libgcc.a] Error 2
-> make[1]: Leaving directory `/Develop/parisc-linux/build/gcc/gcc'
-> make: *** [all-gcc] Error 2
-> 
-> ### Wed Nov 20 18:54:33 2002 ###
-> 
-> So it seems that it did not get the right path to the libc.so?
+On Thu, 21 Nov 2002, Chris Jantzen wrote:
+> FYI, my sarge-based C180 has not been able to boot 2.4.19-32_18 or _22.1;
+> I have to interact with IPL and fall back to 2.4.18_62.2. It gets as
+> far as the "...if this is the last message you see..." and I never hear
+> from it again, even on the network. And I think after a very very long
+> time, it falls back to firmware. At least, I see DHCP requests coming
+> out of it after a while. (I only just hooked up serial console to
+> interact with IPL after getting no response. No I don't boot it up too
+> often, it's a "side project".)
 
-Set LD_LIBRARY_PATH to include the directory where your new libc is.
-You may also want to set the GCC LIBRARY_PATH environment variable.
+This is the "bus-walk" issue I asked about a few weeks back. Apparently
+the system is looking through every possible connection, looking for
+peripherals, and doesn't continue until it finishes. My C180 sits for ~20
+minutes at that point, then continues and runs normally. Boots normally on
+2.4.18-pa59, happens on all the 2.4.19 kernels (pa20, pa24 for sure, as I
+tried both of those). Not sure about 2.4.20-rc1-pa6, but it did boot (I
+wasn't paying attention - powered up before dinner, after dinner
+everything was waiting for me <g>)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+"They" swear this has a fix in 2.5, but I just let it take it's time and
+all seems happy...
