@@ -1,18 +1,14 @@
-From: Randolph Chung <tausq@debian.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] kernel module relocation bug
-Date: Mon, 29 Nov 2004 11:46:18 -0800
-Message-ID: <20041129194618.GM6359@tausq.org>
-References: <1101742439.1714.11.camel@mulgrave>
-	<200411291927.iATJRY3e032306@arbas.nms.ulrich-teichert.org>
-Reply-To: Randolph Chung <tausq@debian.org>
+Date: 29 Nov 2004 19:18:51 -0600
+Message-ID: <1101777536.2114.103.camel@mulgrave>
+References: <200411300023.iAU0NaI2014797@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
- PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Ulrich Teichert <krypton@ulrich-teichert.org>
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200411291927.iATJRY3e032306@arbas.nms.ulrich-teichert.org>
+In-Reply-To: <200411300023.iAU0NaI2014797@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,32 +19,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I've seen this quite often in userspace on hppa-linux, lately while building
-> TAO (http://www.cs.wustl.edu/~schmidt/TAO.html).
+On Mon, 2004-11-29 at 18:23, John David Anglin wrote:
+> > On Mon, 2004-11-29 at 18:08, John David Anglin wrote:
+> > > With -ffunction-sections, gcc guarantees that calls can reach the
+> > > beginning of a function plus some margin for the stub table.  The linker
+> > > inserts stubs on a per function basis.  This should work better with
+> > > relinking as the functions remain in their own sections.
+> > 
+> > So what we really need is the equivalent of -ffunction-sections for the
+> > linker where, when we combine a bunch of .o's it sees if the branches
+> > are getting too far a way and drops a stub in between the function
+> > sections (so that the in-kernel linker doesn't have to bother about
+> > doing this).
+> 
+> Then, in the final or in-kernel link, the long branch stubs get
+> fixed.
 
-what error do you see? the one that recommends rebuilding with
--ffunction-sections?
+That's the general idea.  Obviously any two pass linker (like the one in
+binutils) can place the stubs optimally in between the sections (as long
+as the code was compiled with -ffunction-sections) as part of the final
+link, but the in-kernel linker is small and simple and I'd rather not
+have to introduce it to the concept of multiple passes, so if there were
+a flag to get binutils to do the hard work for us it would be much
+appreciated.
 
-in your application, do you first build some .o's, link them together
-into a bigger .o, and then use those to create your final application
-image? (otherwise i don't think this problem should occur; if it does
-there's a bug somewhere that we should fix).
+James
 
-> Wouldn't there a way to fix that somewhere else in the toolchain? Or is
-> there a parisc machine code limitation in the way? I would really get rid of
-> -ffunction-sections as it seems to generate slower executables. Could
-> you please explain what needs to be done?
 
-we have (or, rather, Dave has) been fixing this in various places. This
-problem happens much less frequently now than it used to. Fixes may be
-required either in gcc or in the linker to detect when a branch target
-is too far away and needs to be converted to a long branch.
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
