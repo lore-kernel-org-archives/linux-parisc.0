@@ -1,22 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B5F034834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 04:32:04 -0700 (MST)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 68399253C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 12:30:54 +0100 (MET)
-Received: from hp.com (ssdpc48.france.hp.com [15.129.234.2])
-	by hpfrcu03.france.hp.com (8.9.3 (PHNE_25183+JAGae58098)/8.9.3 SMKit7.02) with ESMTP id MAA27559
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 12:30:40 +0100 (MET)
-From: bruno_vidal@hp.com
-Message-ID: <3E706BE4.E53961BD@hp.com>
-Date: Thu, 13 Mar 2003 12:30:44 +0100
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
+Received: from gremg1.net.external.hp.com (grenmg1.net.external.hp.com [155.208.254.57])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 448814834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 05:45:41 -0700 (MST)
+Date: Thu, 13 Mar 2003 13:45:58 +0100
+From: Lyonel Vincent <vincentl@ec-lyon.fr>
+To: bruno_vidal@hp.com
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] enumerating devices from user space
+Message-Id: <20030313134558.6cf9177c.vincentl@ec-lyon.fr>
+In-Reply-To: <3E706BE4.E53961BD@hp.com>
 References: <20030313112232.A10172@typhon.pilat.fr>
-Content-Type: multipart/mixed;
- boundary="------------BBCFCECF468619559B697D35"
+	<3E706BE4.E53961BD@hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,39 +24,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------BBCFCECF468619559B697D35
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: base64
+Hi Bruno,
 
-ICAgIEhpIGd1eXMuDQpXaGlsZSBkZXZlbG9wcGluZyB0aGUgZHVtcCBtb2R1bGVzLCBJIGhh
-ZCB0byBmaW5kIGEgd2F5IHRvIHJldHJpZXZlDQp0aGUgaGFyZHdhcmUgcGF0aCBvZiBkaXNr
-L2hiYS4gU28gSSBoYWQgdG8gZGV2ZWxvcHBlIGEgc21hbGwgaGFjaw0KaW4gdGhlIGtlcm5l
-bC9maXJtd2FyZS5jIGluIG9yZGVyIHRvIHJldHJpdmUgdGhlIHJpZ2h0IGhiYS4NCkJ1dCBp
-dCBpcyBwYXJpc2MgZGVwZW5kYW50LiBEbyB5b3Ugd2FudCBJIHRyeSB0byBhZGQgYW4gaW9j
-dGwgaW4gbXkNCmR1bXAgbW9kdWxlcyBpbiBvcmRlciB0byBwcmludCBpbiB1c2VyIHNwYWNl
-IHRoaXMgaW5mb3JtYXRpb25zID8NCkV4YW1wbGU6DQoNCnNpemU6MTUwMDE2MCBucl9zZWN0
-czozMDAwMzIwIHN0YXJ0X3NlY3Q6Mzc0Nzg0DQpod3BhdGg6IDAvMC8xLzEuMTUuMC4wLg0K
-ZHVtcCBkZXZpY2Ugb3BlbmVkOiAweDgxMyB3aXRoIGluZGV4OiAwIGF0IGhwYTogMHg5MDAN
-Cg0KU28gbXkgZnVuY3Rpb25zIGFyZSBhYmxlIHRvIHByaW50IHRoZSBodyBwYXRoIG9mIGVh
-Y2ggaW8gbW9kdWxlcy4NCklzIGl0IHdoYXQgeW91IGFyZSBsb29raW5nIGZvciA/DQoNCi0t
-DQogICAgICAgIFZpZGFsIEJydW5vLCAoNzcwLTQyNzEpDQogICAgICAgIFNTRC1IQSBUZWFt
-LCBIUC1VWCAmIExJTlVYIFN1cHBvcnQNCiAgICAgICAgYnJ1bm9fdmlkYWxAYWRtaW4uZnJh
-bmNlLmhwLmNvbQ0KDQoNCg==
---------------BBCFCECF468619559B697D35
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for 
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
+That sounds like what I was looking for (HW path + version information)!
+What do you think is the best approach?
 
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------BBCFCECF468619559B697D35--
+cheers,
+lv.
+
+On Thu, 13 Mar 2003 12:30:44 +0100
+bruno_vidal@hp.com wrote:
+
+>     Hi guys.
+> While developping the dump modules, I had to find a way to retrieve
+> the hardware path of disk/hba. So I had to developpe a small hack
+> in the kernel/firmware.c in order to retrive the right hba.
+> But it is parisc dependant. Do you want I try to add an ioctl in my
+> dump modules in order to print in user space this informations ?
+> Example:
+> 
+> size:1500160 nr_sects:3000320 start_sect:374784
+> hwpath: 0/0/1/1.15.0.0.
+> dump device opened: 0x813 with index: 0 at hpa: 0x900
+> 
+> So my functions are able to print the hw path of each io modules.
+> Is it what you are looking for ?
+> 
+> --
+>         Vidal Bruno, (770-4271)
+>         SSD-HA Team, HP-UX & LINUX Support
+>         bruno_vidal@admin.france.hp.com
+> 
+> 
