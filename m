@@ -1,11 +1,12 @@
 From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] [3.3 regression] internal compiler error: in cp_expr_size, at cp/cp-lang.c:307
+Subject: [parisc-linux] c++/10091: [3.3 regression] internal compiler error: in cp_expr_size, at cp/cp-lang.c:307
 Date: 15 Mar 2003 07:54:02 -0000
-Message-ID: <20030315075402.24390.qmail__36595.9630035379$1416622288$gmane$org@sources.redhat.com>
+Message-ID: <20030315075402.24390.qmail__10281.6283274025$1416622288$gmane$org@sources.redhat.com>
 Reply-To: Randolph Chung <tausq@debian.org>
 Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
 To: gcc-gnats@gcc.gnu.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Resent-Message-ID: <20030315075601.4632.qmail@sources.redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -16,15 +17,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+>Number:         10091
 >Category:       c++
 >Synopsis:       [3.3 regression] internal compiler error: in cp_expr_size, at cp/cp-lang.c:307
 >Confidential:   no
 >Severity:       serious
 >Priority:       medium
+>Responsible:    unassigned
+>State:          open
 >Class:          ice-on-legal-code
 >Submitter-Id:   net
+>Arrival-Date:   Sat Mar 15 07:56:00 UTC 2003
+>Closed-Date:
+>Last-Modified:
 >Originator:     Randolph Chung <tausq@debian.org>
 >Release:        3.3 20030309 (Debian prerelease) (Debian testing/unstable)
+>Organization:
 >Environment:
 System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2003 parisc64 unknown unknown GNU/Linux
 Architecture: parisc64
@@ -78,4 +86,6 @@ see description
 compiles fine with g++-3.2
 >Fix:
 unknown
+>Release-Note:
+>Audit-Trail:
 >Unformatted:
