@@ -1,55 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 47933482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 00:56:24 -0600 (MDT)
-Sender: christoph.plattner@alcatel.at
-Message-ID: <3AC973D3.F1453A4C@alcatel.at>
-Date: Tue, 03 Apr 2001 08:55:15 +0200
-From: Christoph Plattner <christoph.plattner@alcatel.at>
-MIME-Version: 1.0
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Christoph Plattner <christoph.plattner@dot.at>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] New kernel on 720 + Pa-Linux-0.5: Breakpoint ?
-References: <3AC90274.4687ED7C@dot.at> <20010403001743.G9198@linuxcare.com>
+Received: from mail.iinet.net.au (symphony-01.iinet.net.au [203.59.24.16])
+	by dsl2.external.hp.com (Postfix) with SMTP id 873DC482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 02:07:56 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id QAA12011
+	for parisc-linux@lists.parisc-linux.org; Tue, 3 Apr 2001 16:07:41 +0800
+Date: Tue, 3 Apr 2001 16:07:37 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Getting Started...
+Message-ID: <20010403160735.G31256@neep.com.au>
+References: <A8566E157F5FD411BCFB00D0B7816D514459E4@ntexchange.cat.csiro.au> <20010403000019.74DF73A@frizzen.efball.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010403000019.74DF73A@frizzen.efball.com>; from frankb@efball.com on Tue, Apr 03, 2001 at 12:00:19AM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
-With the file system of ESIEE, I always have the problem, that 
-my machine hangs, before init does any output !
-
-I also have selfmade stuff, I will see, what will run on that
-machine.
-
-Thanks for your prompt answer.
-
-With friendly regards
-	Christoph Plattner
-
-
-Richard Hirst wrote:
+E Frank Ball said:
+> } * These machines have only the FDDI(?) optical network. I'm not sure how to
+> } connect these to my ethernet (if at all), or am I better off adding an ISA
+> } or EISA network card to the boxes?
 > 
-> On Tue, Apr 03, 2001 at 12:51:32AM +0200, Christoph Plattner wrote:
-> > What this in the new kernel ?
-> > A manually inserted breakpoint ?
-> 
-> No, you need new user space stuff.  It looks like there will be a
-> new base tarball Real Soon Now, so it might be easiest to wait a
-> few days for that.  Alternatively you could try the file system
-> at
-> 
-> http://mkhppa1.esiee.fr/en/download.html
-> 
-> which is pretty up to date - havn't tried that myself though.
-> 
-> Richard
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> All the ones I've seen had an AUI port.
 
+I thought so, too, but when I went hunting for one on the back of a
+735/125 last night to stick a transceiver on it, I couldn't find it.
+Either there isn't one or it was really well hidden.  =)
 
------------------------------------------------------------------
-private:        christoph.plattner@dot.at
-company:        christoph.plattner@alcatel.at
+Andrew.
+
+--
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
