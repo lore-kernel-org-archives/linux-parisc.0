@@ -1,18 +1,13 @@
-From: "Peter E. Popovich" <peter@popovich.net>
-Subject: Re: [parisc-linux] 712/60, 712/80, serial console, firmware update,
-	"dagger cards"
-Date: Sat, 17 Jul 2004 01:36:33 -0400 (EDT)
-Message-ID: <Pine.LNX.4.60.0407170128540.7555@kani.popovich.net>
-References: <Pine.LNX.4.60.0407161743420.32264@kani.popovich.net>
-	<20040717010407.25b64a24@Tatooine.r3z0>
+From: Xianjie Zhang <xzhang@cup.hp.com>
+Subject: [parisc-linux] J7000: Problem to Install Kernel and Driver Modules
+Date: Fri, 16 Jul 2004 22:42:50 -0700
+Message-ID: <40F8BC5A.9040208@cup.hp.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII;
+Content-Type: text/plain;
+  charset=ISO-8859-1;
   format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: Thibaut VARENE <varenet@esiee.fr>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040717010407.25b64a24@Tatooine.r3z0>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,79 +18,65 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 17 Jul 2004, Thibaut VARENE wrote:
->> then i tried to use the serial console hack described at:
->> http://www.pateam.org/parisc-linux-boot/PA-RISC-Linux-Boot-HOWTO/consoles.html
->>
->> something went wrong, because now, the system doesn't boot.  it appears
->> to be dumping 0xNNNN diagnostic codes out the serial port.
->
-> This could be normal ;)
->
-> Wait a bit, and among the 0xNNN you might eventually see "Starting boot
-> process" at some point. Then you'll saved. If you followed EXACTLY what
-> was said in the howto, it should work. We've got several of these tiny
-> beasts here booted in serial console (even our MySQL server is a 712!) ;)
->
-> Besides, it is mentionned that this is a hat trick, and
-> therefore,_dangerous_...
+Hi, there,
 
-i'm fairly sure i did it letter-perfect, but i'm human, so i may not have.
+I am trying to install Linux on a HP J-7000 machine.
+I burned the Debian 3.0 R1 CD 1 and 2, boot the system to the following 
+screen:
+===========================================
+   Debian GNU/Linux Installation Main Menu
+ You've mounted your root filesystem.  You may initialize and
+ mount additional filesystems, or you may go on to install  
+  the operating system kernel and the modules.         
+  Next      : Install Kernel and Driver Modules    
+ Alternate : Initialize a Linux Partition             
+ Alternate1: Mount a Previously-Initialized Partition  
+ Configure the Keyboard                                x    x             
+x x Partition a Hard Disk                                 x    
+x              
+x x Initialize and Activate a Swap Partition              x    
+x              
+x x Activate a Previously-Initialized Swap Partition      x    
+x             
+ x x Do Without a Swap Partition                           x    
+x              
+x x Initialize a Linux Partition                          x    
+x             
+x x Mount a Previously-Initialized Partition              x    
+x             
+ x x Unmount a Partition                                   x    
+x               x
+===========================================
 
-waiting a bit doesn't seem to be the issue.  i've waited 10+ minutes, 
-multiple times.  the output appears to be consistent:
+So I selected to " Install Kernel and Driver Modules ". For the next 
+screen, I selected cdrom. Then I got the following:
 
-0x04.1081
-0x04.1080
-0x04.1082
-0x04.1086
-0x04.1087
-0x04.108A
-0x04.108B
-0x04.108C
-0x04.1083
-0x04.10D1
-0x04.10D2
-0x04.2090
-0x04.2091
-0x04.209F
-0x04.2096
-0x04.2094
-0x04.2095
-0x06.C201
-0x04.10DB   <--- there's a pause here
-0x04.10D7
-0x04.10D8
-0x04.2097
-0x04.2098
-0x04.2099
-0x04.209A
-0x04.209B
-0x04.1091
-0x04.1092
-0x04.1093
-0x04.1094
-0x04.1095
-0x04.1096
-0x04.1090
-0x04.108D
-0x04.10D4
-0x04.10D9
-0x04.4080
-0x04.4081
-0x04.4082
-0x04.8300
-0x04.8322
-0x04.8326
-0x04.8328
-0x04.832A
-0x04.832B
-0x04.832C
-0x04.8321
-0x04.8301
-0x02.1009
+"Please place the first Debian CD-ROM in the CD-ROM drive. "
 
-it'd be interesting to see what it *should* look like.
+Since the CD is already in place, I select continue. Now the screen says:
+=================
+             Mount failed
+The CD-ROM was not mounted successfully.      
+                        <Continue>                         
+================
+
+I tried to eject the CD and insert it again, NO success.
+I also tried to insert the number 2 CD, still the same failure.
+
+Did anyone see this before?  (The mail archive is huge, I did a cursory 
+search, but failed to find an answer.)
+Since the system can boot from the CD, I suppose it should not have any 
+problem to mount it. What is wrong with it?
+
+(Is it because that the CD-ROM has already been mounted? and nobody 
+umount it?)
+
+Thanks and regards,
+
+Xianjie
+
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
