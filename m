@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Robin Kearney <robin@uk.another.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] HP9000 
-In-Reply-To: Message from Robin Kearney <robin@uk.another.com>
-   of "Fri, 13 Sep 2002 16:25:31 BST." <0A29117C-C72D-11D6-B5A2-000393447076@uk.another.com>
-References: <0A29117C-C72D-11D6-B5A2-000393447076@uk.another.com> 
-Date: Fri, 13 Sep 2002 11:26:22 -0600
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Making SYM2 default SYM-SCSI driver instead of SYM1 
+In-Reply-To: Message from Thibaut VARENE <varenet@esiee.fr>
+   of "Fri, 13 Sep 2002 18:31:35 +0200." <3D8212E7.6000609@esiee.fr>
+References: <3D8212E7.6000609@esiee.fr> 
+Date: Fri, 13 Sep 2002 13:09:29 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020913172622.4E6294829@dsl2.external.hp.com>
+Message-Id: <20020913190929.8F8084829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,23 +19,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Robin Kearney wrote:
-> Only model number I can find is 'L1000 440Mhz'
-> 4 disk slots (all sca)
-> 1 5 1/4" slot
-> (used to contain a scsi dvd drive, but I guess another sysadmin thought 
-> it would serve him better)
-> has space for 3 psu's (1 currently in residence)
-> 12 PCI slots.
-> Can have upto 4cpu's but currently has 1
+Thibaut VARENE wrote:
+> Now I'm asking you to know if anybody has an objection against making 
+> SYM2 the default driver in debian-configs instead of old SYM1.
 
-This is the "big brother" to an A500. Same chipset but more IO slots.
-parisc-linux should run on this box just fine.
+I don't. All the boxes I care about have 53c8xx chips in them.
 
-> There are no disks but I'm sure I can find a 9Gig so its at least 
-> useful.
-
-Don't forget the disk carriers - those are *much* harder to find
-than the disks.
+A slightly safer approach is to make sym2 the default for PA2.0 systems
+and the old sym the default for PA1.1 systems. But GSC/HSC c720 cards
+don't fit that model since they go into systems with either sub-arch.
+I don't see a way around users "tuning" based on actual HW configuration.
 
 grant
