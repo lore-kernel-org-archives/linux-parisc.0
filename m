@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from juice.lemonia.org (juice.lemonia.org [213.129.65.11])
-	by dsl2.external.hp.com (Postfix) with SMTP id 86E6A482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Apr 2002 17:16:08 -0600 (MDT)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1019862967.3cc9dfb797e86@www.lemonia.org>
-Date: Sat, 27 Apr 2002 00:16:07 +0100 (BST)
-From: Dunc <dunc@lemonia.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] hp9000/827s
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39137482F
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Apr 2002 17:30:37 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 171FAc-0005Tz-00; Sat, 27 Apr 2002 00:30:30 +0100
+Date: Sat, 27 Apr 2002 00:30:30 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Dunc <dunc@lemonia.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] hp9000/827s
+Message-ID: <20020427003030.B12051@parcelfarce.linux.theplanet.co.uk>
+References: <1019862967.3cc9dfb797e86@www.lemonia.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1019862967.3cc9dfb797e86@www.lemonia.org>; from dunc@lemonia.org on Sat, Apr 27, 2002 at 12:16:07AM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,42 +25,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Sat, Apr 27, 2002 at 12:16:07AM +0100, Dunc wrote:
+> I have been attempting to install on a hp9000/827s
 
-I have been attempting to install on a hp9000/827s
+According to hp9000_models;
+8x7/F10-I40      Old Nova servers    PCXS    NIO, None     NIO(1),NIO(2),NA
 
-It contains a
+Basically, nothing is going to work.  There's some limited support for
+the console in these machines, but no support for the SCSI, the Lan or
+any other cards.  Sorry.
 
-A1703-60022 card which has SCSI,parallel and serial interfaces.
-
-The serial port is a D-type connector with 3 rows, and connects to an 8 way
-serial splitter, port #1 of which is the console.
-
-No graphics card.
-
-Boot from CD fine,
-
-get the 'You may need to switch console' message.
-
-no further output.....
-
-
-What I am wondering is if installation is supported via this card, and/or wether
-it is referenced differently (i.e. not /dev/ttyS0)
-
-I have a HP 700/96 serial terminal.
-
-Cheers,
-
-Dunc
-
-
-Remember a Lemon is For Life....     o o
-                                      |
-                                      ~
-Not just for Christmas!
-
-
---
-
-purity - clarity - balance :: lemonia . org
+-- 
+Revolutions do not require corporate support.
