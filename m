@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail14.speakeasy.net [216.254.0.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 21B65482A
-	for <parisc-linux@parisc-linux.org>; Fri, 12 Jul 2002 01:22:20 -0600 (MDT)
-Date: Fri, 12 Jul 2002 00:27:03 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: gcc@gcc.gnu.org
-Cc: parisc-linux@parisc-linux.org
-Message-ID: <20020712072703.GA8838@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Problem building gcc-3.2 (cvs head) on hppa-linux
+Received: from tassadar.physics.auth.gr (tassadar.physics.auth.gr [155.207.123.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 234604870
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Jul 2002 01:27:12 -0600 (MDT)
+Received: from localhost (dzila@localhost)
+	by tassadar.physics.auth.gr (8.11.6/8.11.6) with ESMTP id g6C7RAn18377
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 12 Jul 2002 10:27:10 +0300
+Date: Fri, 12 Jul 2002 10:27:10 +0300 (EEST)
+From: Dimitris Zilaskos <dzila@tassadar.physics.auth.gr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] x windows keybord problem on 715/33
+In-Reply-To: <200207120235.11571.deller@gmx.de>
+Message-ID: <Pine.LNX.4.44.0207121026360.18237-100000@tassadar.physics.auth.gr>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,42 +24,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Trying to build CVS head (3.2 20020711) with:
 
-configure --host=hppa-linux --build=hppa-linux --target=hppa64-linux
---enable-shared --disable-nls --enable-languages=c
+  Thank you all guys for the tips , I will give them a try . And
+congratulations to all those developing PA-Linux for their excellent
+work.
 
-I get:
+ Regards ,
 
-/home/tausq/build/gcc-3.2/gcc/xgcc -B/home/tausq/build/gcc-3.2/gcc/ -B/home/tausq/opt/gnu/hppa64-linux/bin/ -B/home/tausq/opt/gnu/hppa64-linux/lib/ -isystem /home/tausq/opt/gnu/hppa64-linux/include -O2  -DIN_GCC -DCROSS_COMPILE   -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include  -fPIC -Dpa64=1 -DELF=1 -g  -DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED -Dinhibit_libc -I.
--I. -I/home/tausq/src/gcc-3.2/gcc -I/home/tausq/src/gcc-3.2/gcc/. -I/home/tausq/src/gcc-3.2/gcc/config -I/home/tausq/src/gcc-3.2/gcc/../include  -DL__gcc_bcmp -c /home/tausq/src/gcc-3.2/gcc/libgcc2.c -o libgcc/./__gcc_bcmp.o
-/home/tausq/src/gcc-3.2/gcc/unwind-dw2.c: In function `uw_frame_state_for':
-/home/tausq/src/gcc-3.2/gcc/unwind-dw2.c:906: warning: implicit declaration of function `memset'
-/home/tausq/src/gcc-3.2/gcc/unwind-dw2.c: In function `uw_install_context_1':
-/home/tausq/src/gcc-3.2/gcc/unwind-dw2.c:1193: warning: implicit declaration of
-function `memcpy'
-In file included from /home/tausq/src/gcc-3.2/gcc/unwind-dw2.c:1210:
-/home/tausq/src/gcc-3.2/gcc/unwind.inc: In function `_Unwind_RaiseException':
-/home/tausq/src/gcc-3.2/gcc/unwind.inc:132: error: Attempt to delete prologue/epilogue insn:
-(insn 337 336 338 14 (nil) (set (reg:DI 7 %r7)
-        (mem:DI (plus:DI (reg/f:DI 30 %r30)
-                (const_int -296 [0xfffffffffffffed8])) [0 S8 A64])) -1 (nil)
-    (nil))
-/home/tausq/src/gcc-3.2/gcc/unwind.inc:132: internal compiler error: Internal compiler error in propagate_one_insn, at flow.c:1637
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
-make[2]: *** [libgcc/./unwind-dw2.o] Error 1
-make[2]: Leaving directory `/home/tausq/build/gcc-3.2/gcc'
-make[1]: *** [libgcc.a] Error 2
-make[1]: Leaving directory `/home/tausq/build/gcc-3.2/gcc'
-make: *** [all-gcc] Error 2
+--
+=============================================================================
 
-The bootstrapping compiler is gcc-3.0.4
+Dimitris Zilaskos
 
-any ideas?
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Department of Physics @ Aristotle Univercity of Thessaloniki , Greece
+=============================================================================
