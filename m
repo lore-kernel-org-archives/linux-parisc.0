@@ -1,45 +1,59 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta03.mail.mel.aone.net.au (mta03.mail.au.uu.net [203.2.192.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C4402482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 04:33:10 -0600 (MDT)
-Received: from piglet.sspl.net.au ([210.84.37.35])
-          by mta03.mail.mel.aone.net.au with ESMTP
-          id <20010618103307.RVUO4037.mta03.mail.mel.aone.net.au@piglet.sspl.net.au>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Mon, 18 Jun 2001 20:33:07 +1000
-Received: from winnie (winnie. [192.168.10.9])
-	by piglet.sspl.net.au (8.9.3/8.9.3) with ESMTP id TAA19948
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 19:56:23 +1000
-From: "Pete" <plaven@ozemail.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 18 Jun 2001 19:56:21 +1000
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Subject: Re: [parisc-linux] Booting up C110
-Reply-To: plaven@ozemail.com.au
-Message-ID: <3B2E5CE5.88.5339D5@localhost>
-In-reply-to: <3B2CDE72.4010006@interaccess.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA7A8482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 04:35:58 -0600 (MDT)
+Message-Id: <200106181035.EAA18551@puffin.external.hp.com>
+To: "Chris Christie" <info@wias.net.au>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Booting up C200 Visualize same output as C110 
+In-Reply-To: Your message of "Mon, 18 Jun 2001 05:18:53 +1000."
+             <004e01c0f762$58ac0ca0$c901a8c0@wias.net.au>
+Date: Mon, 18 Jun 2001 04:35:17 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
- 
-> So, 1) how do I reset the boot PROM to use the graphics card/monitor
-> again?
+"Chris Christie" wrote:
+...
+> C200 Visualize appears to halt with the following output..........
+> 
+> NET4: Unix Domain sockets 1.0/SMP for Linux Net4.0.
+> VFS Mounted root (ext2 file system).
+> Warning: unable to open initial console.
+> loop: enabling 8 loop devices
+> 
+> The device appears to halt at this point.
 
-I'm in the same boat... before I got the sti stuff, I tried the serial port 
-and now don't get any output (mostly due to dud nullmodem 
-connections on the HP box.. it's far too recessed to use with 
-"normal" serial connctions).... so if you get an answer to this, 
-please let me know too.. might work on my 715.
+Press the TOC button.
+Interrupt the PDC autoboot.
+"ser pim" should print the system state when the TOC button was pushed.
+
+> 
+> I am using IPL to configure the Console setting to remove the console =
+> setting all together as I get stack dumps if I keep the statement:
+> 
+> Console=3DttyXXX
+> 
+> I remove this statement and the boot process happens without dumping =
+> however the system is hanging for some reason.
+
+Sorry - I don't know much about how console actually works.
+I've managed to avoid that mess pretty well... :^)
+
+> Maybe Grant could shed some light on this except Grant requires:
+> 
+> "Need console output and PIM "Tombstone".
+> PIM "tombstone" can be aquired by interrupting autoboot
+> at the PDC prompt and typing "ser pim".
+
+Right. That's  true for any problem where the system just locks up.
+Capturing serial console output should be pretty trivial.
 
 
+grant
 
+ps. please don't post the html copy of your mail. I'm getting
+   both ascii and html versions of your mail.
 
-
-Pete
-=====
-testing? What's that? If it compiles, it is good, 
-if it boots up it is perfect.
-
---- Linus Torvalds
-http://www.ao.com/~regan/quotes/Linux.html
-==============
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
