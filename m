@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9EBEA4845
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Feb 2002 18:19:40 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id znqmlaaa for parisc-linux@lists.parisc-linux.org; Wed, 13 Feb 2002 18:19:20 -0700
-Date: Wed, 13 Feb 2002 17:19:23 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: James S <smith-james@home.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] smbfs.o module
-Message-ID: <20020214011923.GC17432@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <001501c1b4d2$a9577ee0$02c1a8c0@james.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <001501c1b4d2$a9577ee0$02c1a8c0@james.co.uk>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 91B204846
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Feb 2002 00:32:26 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: Christoph Plattner <christoph.plattner@gmx.at>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Problem with the current HP PA setup of debian
+Date: Thu, 14 Feb 2002 08:28:16 +0100
+References: <3C6AF74F.DDCD362C@gmx.at>
+In-Reply-To: <3C6AF74F.DDCD362C@gmx.at>
+MIME-Version: 1.0
+Message-Id: <200202140828.16464.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,22 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> has anybody tried compiling this module ?
+On Thursday 14 February 2002 00:31, Christoph Plattner wrote:
+> Hello PA-RISC hackers !
+>
+> Since the last update a few days ago (apt-get dist-upgrade),
+> I cannot login as ROOT on the console (/dev/ttyS0), although
+> `/etc/securetty' includes `ttyS0'.
 
-yes, there are details in the mailing list archives. it was definitely
-working at one point, but i haven't tried recently myself.
+Hi Christoph,
 
-> it would save me a lot of time if somebody has it already compiled - I could
-> just 'insmod' it.....
+I had a lot of problems with the latest debian libc6 packages,
+downgrading them again to 2.2.4-7 cured all my problems.
+All 2.2.5-X (X=1..3) libc6 packages seem broken.
+Maybe this also helps in your case ?
 
-drivers are specific for a kernel configuration, so in general you
-cannot just insmod a driver built for a different config.
-
-have you tried compiling it yourself?
-
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Regards,
+Helge
