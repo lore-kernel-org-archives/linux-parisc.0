@@ -1,39 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-03.iinet.net.au [203.59.24.18])
-	by dsl2.external.hp.com (Postfix) with SMTP id 25BAD482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 May 2001 10:38:46 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id AAA26503
-	for parisc-linux@lists.parisc-linux.org; Thu, 31 May 2001 00:38:36 +0800
-Date: Thu, 31 May 2001 00:38:33 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: List of packages for hppa ISO release vers ion 2
-Message-ID: <20010531003830.M24954@neep.com.au>
-References: <B9957F974955D411829400D0B74FF27A04BF77A5@xtor01.canada.hp.com> <20010530173127.C7349@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD64D482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 May 2001 11:03:54 -0600 (MDT)
+Subject: Re: [parisc-linux] Re: List of packages for hppa ISO release version 2
+To: grundler@puffin.external.hp.com (Grant Grundler)
+Date: Wed, 30 May 2001 16:26:17 +0100 (BST)
+Cc: alan@lxorguk.ukuu.org.uk (Alan Cox),
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200105301519.JAA09728@puffin.external.hp.com> from "Grant Grundler" at May 30, 2001 09:19:04 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010530173127.C7349@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Wed, May 30, 2001 at 05:31:27PM +0100
+Message-Id: <E1557rV-00067O-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox said:
-> The price of bandwidth is an important factor.  ftp-master takes in 300MB
-> over the course of a day and then pulses that 300MB to 6 other servers
-> once a day.  This option has been discussed before; if you think you have
-> a solution, I'm sure there's an appropriate debian mailing list for it
-> (not sure which one though).
+> Well, internet still doesn't know where Cuba begins or ends exactly...
+> and the USA gov knows where to find me. :^(
 
-... and this year has already seen the death of one major node (Canada)
-due to bandwidth costs.  =(
+Talk to hpa@transmeta.com and quinlan@transmeta.com
 
-On www.debian.org there are the details of all the mailing lists, and
-there is at least one dedicated to the maintenance of FTP mirrors - I
-think it's called debian-mirror or something equally imaginative.
-
-Andrew.
-
---
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+They did the paperwork needed to throw crypto up on ftp.kernel.org and probably
+know the right contacts
