@@ -1,25 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from openbsd1.buttafuoco.net (3ff839a7.dsl.flashcom.net [63.248.57.167])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB2384A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 10:39:50 -0700 (MST)
-Date: Wed, 21 Feb 2001 12:39:39 -0500 (EST)
-Message-Id: <200102211739.f1LHddN31316@openbsd1.buttafuoco.net>
-From: "Jim Buttafuoco" <jim@tylerdrive.org>
-To: "Bryan W. Headley" <bheadley@interaccess.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] CD boot help with 735
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5C1864A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 11:00:49 -0700 (MST)
+Message-Id: <200102211803.KAA17294@milano.cup.hp.com>
+To: "Bryan W. Headley" <bheadley@interaccess.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] CD boot help with 735 
+In-reply-to: Your message of "Wed, 21 Feb 2001 10:43:26 PST."
+             <3A93F02E.28D1B6ED@interaccess.com>
+Date: Wed, 21 Feb 2001 10:03:09 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bryan,
-
-What CD are you using.  I couldn't get the .5 version to work on my 
-735.  I did create my own kernel and booted via the network. Let me 
-know if you need any help.
-
-Jim
-
+"Bryan W. Headley" wrote:
 > Hi,
 > 
 > Am trying to boot the CDROM, but keep getting "ENTRY_INIT status = -4"
@@ -29,20 +22,23 @@ Jim
 > have done something to redirect console messages to
 >     COMM port beforehand? Have a laptop attached to be the serial
 > console, but obviously to no effect
+
+Shouldn't matter. Where PDC thinks the console is and where linux
+thinks it is can be two different places.
+
 > 2) Just being stupid: 9600 8 N 1, COM port A for the serial console,
 > right?
+
+yes. Assuming linux can find and support port A.
+
 > 3) Should I try, "b scsi.6.0 IPL" or without the IPL?
-> 
-> This is on a 735 box. Your help much appreciated.
-> 
-> 
-> --
-> ____               .:.                 ____
-> Bryan W. Headley - bheadley@interaccess.com
-> 
-> 
-> ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿéj¸¬sùb&#382;ìfj)b&#382;
-	b²ÚZ®+þX§»å&#352;Ëlþ&#8211;«&#352;Çÿ&#8211;)îÇú+&#8218;m§ÿÿ&#8211;+-³úZ®+þX§»è®Ü&#8218;/Û&#352;æj)
-fjå&#352;Ëbú?¥ªâ±Ïå&#352;{±
-> 
-> 
+
+Probably not. typically scsi.6.0 is the built-in hard disk.
+Do "sea scsi" and see what shows up. CD-ROM is normally SCSI ID 2.
+(Though it doesn't have to be).
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
