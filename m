@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from woph.mbl.smarden.org (dsl-62-220-19-73.berlikomm.net [62.220.19.73])
-	by dsl2.external.hp.com (Postfix) with SMTP id 0EA68483D
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Aug 2003 03:00:44 -0600 (MDT)
-Message-ID: <20030809090032.16836.qmail@h14f7d.mid.smarden.org>
-Date: Sat, 9 Aug 2003 11:00:32 +0200
-From: Gerrit Pape <pape@smarden.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: doko@cs.tu-berlin.de, 200619@bugs.debian.org,
-	dave.anglin@nrc-cnrc.gc.ca, tausq@debian.org,
-	parisc-linux@lists.parisc-linux.org, control@bugs.debian.org
-Subject: Re: [parisc-linux] Re: Bug#200619: gcc: parisc: compiling dietlibc-dev with -Os caus
-References: <200307250308.h6P38ej6026594@hiauly1.hia.nrc.ca> <200307260221.h6Q2LRN3001246@hiauly1.hia.nrc.ca>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 94F384856
+	for <parisc-linux@parisc-linux.org>; Sat,  9 Aug 2003 10:39:32 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19lWkd-00008l-7O; Sat, 09 Aug 2003 17:39:31 +0100
+Date: Sat, 9 Aug 2003 17:39:31 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: bame@hp.com
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 -> 2.6 tree switch tomorrow
+Message-ID: <20030809163931.GD3169@parcelfarce.linux.theplanet.co.uk>
+References: <20030806184826.GA11934@ldl.fc.hp.com> <20030807171149.B2A7A7306A@fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200307260221.h6Q2LRN3001246@hiauly1.hia.nrc.ca>
+In-Reply-To: <20030807171149.B2A7A7306A@fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,23 +25,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-reassign 200619 dietlibc
-retitle 200619 dietlibc: parisc: bad stat struct mapping
-thanks
-
-On Fri, Jul 25, 2003 at 10:21:26PM -0400, John David Anglin wrote:
-> > At the fstat call we have the following values:
-> > 
-> > Breakpoint 11, 0x00010b10 in __stdio_init_file_nothreads ()
+On Thu, Aug 07, 2003 at 11:11:48AM -0600, bame@hp.com wrote:
+> The linux-2.6 tree is now ready for business and the linux-2.5 tree is
+> frozen.  Tarball (which could be used to seed a CVS tree) and patch
+> at the usual place:
 > 
-> Carlos O'Donell and myself looked at this problem this afternoon.  This
-> is a dietlib problem.  Dietlib is not using the correct kernel_stat
-> mapping for parisc.  They appear to be using the i386 mapping.  They
-> need to look at /libc/sysdeps/unix/sysv/linux/xstatconv.c and the
-> hppa/kernel_stat.h header in glibc.
+>     http://cvs.parisc-linux.org/download/linux-2.6/
+> 
+> FYI We are using a different CVS branch architecture which should be
+> completely transparent most of the time.  I'll get a description of
+> it out soon.
 
-Yes, this seems to be the cause of the problems, and needs to be fixed
-in the dietlibc.  Thanks a lot for your time looking into this, and your
-valuable support.
+OK.  Some files were missing from the initial import, so I added them.
 
-Regards, Gerrit.
+However, I can't get a linus branch out of it:
+
+willy@palinux:~/merge$ cvs -Q co -rlinus linux-2.6
+willy@palinux:~/merge$ find linux-2.6
+linux-2.6
+linux-2.6/CVS
+linux-2.6/CVS/Root
+linux-2.6/CVS/Repository
+linux-2.6/CVS/Entries
+linux-2.6/CVS/Tag
+willy@palinux:~/merge$ cat linux-2.6/CVS/Tag 
+Tlinus
+
+I suspect this will hinder using cvs-import to add 2.6.0-test3.
+Can you help?
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
