@@ -1,34 +1,26 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id KAA20813
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 10:59:15 -0500
-Received: from mailhost.rsn.hp.com (root@idiot.rsn.hp.com [15.99.200.11])
-	by palrel3.hp.com (8.8.6 (PHNE_14041)/8.8.5tis) with ESMTP id HAA07484
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 07:59:28 -0800 (PST)
-Received: from helgaaspc.rsn.hp.com (root@helgaaspc.rsn.hp.com [15.99.148.145])
-	by mailhost.rsn.hp.com (8.8.6 (PHNE_14041)/8.8.6) with ESMTP id JAA04100
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 09:59:01 -0600 (CST)
-Received: from helgaaspc.rsn.hp.com (helgaas@localhost [127.0.0.1])
-	by helgaaspc.rsn.hp.com (8.8.7/8.8.7) with ESMTP id JAA07530
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 09:59:01 -0600
-Message-Id: <199903251559.JAA07530@helgaaspc.rsn.hp.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id LAA21912
+	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 11:49:16 -0500
+Received: (from mickey@localhost)
+	by lucifier.dial-up.user.akula.net (8.9.2/8.9.2) id LAA10372
+	for hppa-linux@thepuffingroup.com; Thu, 25 Mar 1999 11:49:02 -0500 (EST)
+From: Michael Shalayeff <mickey@lucifier.dial-up.user.akula.net>
+Message-Id: <199903251649.LAA10372@lucifier.dial-up.user.akula.net>
+Subject: Re: [hppa-linux] Document Priority?
+In-Reply-To: <199903221856.KAA04931@meow.sr.hp.com> from Bill Katz at "Mar 22, 99 10:56:37 am"
 To: hppa-linux@thepuffingroup.com
-Subject: Re: [hppa-linux] Qn on PA-RISC Page tables and TLB 
-Date: Thu, 25 Mar 1999 09:59:01 -0600
-From: Bjorn Helgaas <helgaas@rsn.hp.com>
+Date: Thu, 25 Mar 1999 11:49:02 -0500 (EST)
+Reply-To: mickey@openbsd.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
->	Exact form of these tables is s/w convention. 
->
->Q.	If the format is software convention, does that mean
->	the fields within TLB slots are not defined by Hardware ?
+hi
+looking at the released pdc/iodc docs i'm wondering what is in the missing
+chapters? is it possible to release the whole contents table?
+what are the plans for the rest of the book(s) ?
+and, is there any plan for "pa-risc IO architecture" release any soon?
 
-There is no architectural definition of hardware TLB miss handling,
-and most PA-RISC processors do not implement it.
-
-On the ones that do support hardware TLB miss handling, the hardware
-expects a certain format, and it is essentially the one given in the
-examples in the architecture books.  The hardware TLB walker expects
-a hash table of PDIR entries (indexed by a function of the space and
-offset), and it only looks at the entries in the table.  Hash collisions
-are resolved by a linked list, and the hardware does not walk the list;
-this is left for the software miss handler.
+thanks,
+-- 
+    paranoic mickey       (my employers have changed but, the name has remained)
