@@ -1,36 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3B214482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jul 2001 23:37:11 -0600 (MDT)
-Message-Id: <200107110536.XAA31339@puffin.external.hp.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Charles Boone <ccboone@yahoo.com>,
-	parisc-linux@lists.parisc-linux.org
+	by dsl2.external.hp.com (Postfix) with ESMTP id EAA35482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jul 2001 23:46:00 -0600 (MDT)
+Message-Id: <200107110545.XAA31374@puffin.external.hp.com>
+To: Charles Boone <ccboone@yahoo.com>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240 
-In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
-   of "Tue, 10 Jul 2001 14:31:51 BST." <20010710143151.D23509@linuxcare.com>
-Date: Tue, 10 Jul 2001 23:36:25 -0600
+In-Reply-To: Message from Charles Boone <ccboone@yahoo.com>
+   of "Tue, 10 Jul 2001 07:23:53 PDT." <20010710142353.5757.qmail@web11207.mail.yahoo.com>
+Date: Tue, 10 Jul 2001 23:45:15 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst wrote:
-> IAOQ = _gsc_readl + 8
-> called from dino_in32()
-> I guess it was dino_in32(0xc1b21ec0), which looks odd.
+Charles Boone wrote:
+...
+> I do have one question, why
+> would it not try to install the 64bit version? I was
+> pretty sure that a C240 is a 64bit system.
 
-It's definitely wrong. dino_in32() pokes dino to generate IO Port
-transactions and Dino lives in 0xF... address range. This suggests the
-pci_dev->sys_data is garbage (perhaps not initialized?) or points to garbage.
-Perhaps for Dino's built-in PS/2 or RS232 port?
+PDC on the C240 (and similar C-models of that generation) only
+support PDC calls in "narrow" (ie 32-bit) mode. Sounds like the decision
+to install 32 vs 64-bit depends on the PDC capabilities bit.
+Can anyone offhand confirm/deny?
 
-Sorry, I didn't follow this thread earlier. Does console output hint
-which PCI device was involved (if any)?
-
-> Don't know why it should fail like that in the middle of the
-> install.  Is it repeatable?
-
-If it's a problem with devices on-board Dino, I'd expect the problem to
-be reproducible but with different symptoms depending on what's in pci_dev.
+BTW, though the C240 has a PA2.0 CPU (ergo 64-bit capable), I'm not sure
+rbrad has been able to resolve all the issues when trying to run 64-bit
+kernels on his C200. He did resolve many of them - including support
+for 32-bit PDC calls from 64-bit kernels.
 
 grant
 
