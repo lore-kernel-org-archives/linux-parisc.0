@@ -1,11 +1,15 @@
-From: "Customer Care" <customercare@icicibank.com>
-Subject: [parisc-linux] <AUTO> {ICICICARE#006-685-325}notice!
-Date: Mon, 19 Apr 2004 12:22:20 +0530
-Message-ID: <30547.9948096492$1416623388@news.gmane.org>
-Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="----_NextPart_88980249_boundary"
-To: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Return-Path: <customercare@icicibank.com>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: [parisc-linux] Re: [PATCH] Clean up asm/pgalloc.h include (parisc)
+Date: Mon, 19 Apr 2004 14:21:58 +0100
+Message-ID: <E1BFYik-000567-AF__22796.0792872638$1416623389$gmane$org@dyn-67.arm.linux.org.uk>
+References: <20040418231720.C12222@flint.arm.linux.org.uk>
+	<20040418232314.A2045@flint.arm.linux.org.uk>
+To: Linux Kernel List <linux-kernel@vger.kernel.org>, matthew@wil.cx,
+	parisc-linux@parisc-linux.org
+Return-Path: <rmk+parisc-linux=parisc-linux.org@arm.linux.org.uk>
+In-Reply-To: <20040418232314.A2045@flint.arm.linux.org.uk>;
+	from rmk+lkml@arm.linux.org.uk on Sun, Apr 18, 2004 at 11:23:14PM
+	+0100
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -15,101 +19,112 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+This patch cleans up needless includes of asm/pgalloc.h from the
+arch/parisc/ subtree.  This has not been compile tested, so
+needs the architecture maintainers (or willing volunteers) to
+test.
 
-------_NextPart_88980249_boundary
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
+Please ensure that at least the first two patches have already
+been applied to your tree; they can be found at:
 
-DQoNClRoYW5rIHlvdSBmb3Igd3JpdGluZyB0byB1cy4gV2UgYXNzdXJlIHlvdSB0aGF0IHdlIGFy
-ZSB3b3JraW5nIG9uIHlvdXIgcmVxdWVzdCBhbmQgc2hhbGwgcmV2ZXJ0IHdpdGggYW4gYXBwcm9w
-cmlhdGUgcmVzcG9uc2Ugc29vbi5NZWFud2hpbGUsIHNob3VsZCB5b3Ugd2FudCB0byBzcGVhayB3
-aXRoIHVzLCBwbGVhc2UgZmVlbCBmcmVlIHRvIGNhbGwgb24gb3VyIDI0IGhvdXIgQ3VzdG9tZXIg
-Q2FyZSBudW1iZXJzLiBUbyBoZWxwIHVzIHNlcnZlIHlvdSBiZXR0ZXIsIGtpbmRseSBtZW50aW9u
-IHlvdXIgY29tcGxldGUgYWNjb3VudCBudW1iZXIgYW5kIGFueSByZWZlcmVuY2UgbnVtYmVyIHlv
-dSBtYXkgaGF2ZSB3aXRoIHJlc3BlY3QgdG8geW91ciBxdWVyeSBpbiBhbGwgZnV0dXJlIGNvcnJl
-c3BvbmRlbmNlLiANCiBLaW5kbHkgdmlzaXQgb3VyIHdlYnNpdGUgd3d3LmljaWNpYmFuay5jb20g
-Zm9yIGNvbXByZWhlbnNpdmUgaW5mb3JtYXRpb24gb24gb3VyIHByb2R1Y3RzIGFuZCBzZXJ2aWNl
-cy4gIFdpdGggcmVnYXJkcywNCg0KQ3VzdG9tZXIgQ2FyZSBJQ0lDSSBCYW5rIExpbWl0ZWQNCg0K
-VGhpcyBjb21tdW5pY2F0aW9uIGJlaW5nIHNlbnQgYnkgSUNJQ0kgQmFuayBMdGQuIGlzIHByaXZp
-bGVnZWQgYW5kIGNvbmZpZGVudGlhbCwgYW5kIGlzIGRpcmVjdGVkIHRvIGFuZCBmb3IgdGhlIHVz
-ZSBvZiB0aGUgYWRkcmVzc2VlIG9ubHkuIElmIHRoaXMgbWVzc2FnZSByZWFjaGVzIGFueW9uZSBv
-dGhlciB0aGFuIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHdlIHJlcXVlc3QgdGhlIHJlYWRlciBu
-b3QgdG8gcmVwcm9kdWNlLCBjb3B5LCBkaXNzZW1pbmF0ZSBvciBpbiBhbnkgbWFubmVyIGRpc3Ry
-aWJ1dGUgaXQuIFdlIGZ1cnRoZXIgcmVxdWVzdCBzdWNoIHJlY2lwaWVudCB0byBub3RpZnkgdXMg
-aW1tZWRpYXRlbHkgYnkgcmV0dXJuIGVtYWlsIGFuZCBkZWxldGUgdGhlIG9yaWdpbmFsIG1lc3Nh
-Z2UuIElDSUNJIEJhbmsgTHRkLiBkb2VzIG5vdCBndWFyYW50ZWUgdGhlIHNlY3VyaXR5IG9mIGFu
-eSBpbmZvcm1hdGlvbiB0cmFuc21pdHRlZCBlbGVjdHJvbmljYWxseSBhbmQgaXMgbm90IGxpYWJs
-ZSBmb3IgdGhlIHByb3BlciwgdGltZWx5IGFuZCBjb21wbGV0ZSB0cmFuc21pc3Npb24gdGhlcmVv
-Zi4gQmVmb3JlIG9wZW5pbmcgYW55IGF0dGFjaG1lbnRzIHBsZWFzZSBjaGVjayB0aGVtIGZvciB2
-aXJ1c2VzIGFuZCBkZWZlY3RzLg0KDQogDQoNCg==
-------_NextPart_88980249_boundary
-Content-Type: text/HTML;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
+	http://lkml.org/lkml/2004/4/18/86
+	http://lkml.org/lkml/2004/4/18/87
 
-PEhUTUw+PEhFQUQ+PE1FVEEgTkFNRT0iR0VORVJBVE9SIiBDb250ZW50PSJNaWNyb3NvZnQgREhU
-TUwgRWRpdGluZyBDb250cm9sIj48VElUTEU+PC9USVRMRT48L0hFQUQ+PEJPRFk+PEZPTlQgc2l6
-ZT0zPjxQPjxTUEFOIHN0eWxlPSJGT05ULVNJWkU6IDExcHQ7IENPTE9SOiBibGFjazsgRk9OVC1G
-QU1JTFk6ICdadXJpY2ggQlQnOyBtc28tYmlkaS1mb250LXNpemU6IDEwLjBwdDsgbXNvLWJpZGkt
-Zm9udC1mYW1pbHk6IEFyaWFsIj5UaGFuayB5b3UgZm9yIHdyaXRpbmcmbmJzcDt0byB1cy4gV2Um
-bmJzcDthc3N1cmUmbmJzcDt5b3UgdGhhdCB3ZSZuYnNwO2FyZSB3b3JraW5nIG9uIHlvdXImbmJz
-cDtyZXF1ZXN0IGFuZCBzaGFsbCZuYnNwO3JldmVydCZuYnNwO3dpdGggYW4gYXBwcm9wcmlhdGUg
-cmVzcG9uc2Ugc29vbi48P3htbDpuYW1lc3BhY2UgcHJlZml4ID0gbyBucyA9ICJ1cm46c2NoZW1h
-cy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiIC8+PG86cD48L286cD48L1NQQU4+PC9QPjxQ
-IGNsYXNzPU1zb05vcm1hbCBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PFNQQU4gc3R5bGU9
-IkNPTE9SOiBibGFjazsgbXNvLWJpZGktZm9udC1mYW1pbHk6IEFyaWFsIj48Rk9OVCBmYWNlPSJa
-dXJpY2ggQlQiPk1lYW53aGlsZSwgc2hvdWxkIHlvdSB3YW50IHRvIHNwZWFrIHdpdGgmbmJzcDt1
-cywmbmJzcDtwbGVhc2UgZmVlbCBmcmVlIHRvIGNhbGwgb24gb3VyJm5ic3A7PEk+PEEgaHJlZj0i
-aHR0cDovL3d3dy5pY2ljaWJhbmsuY29tL3Bmc3VzZXIvY3VzdG9tZXIvY3VzY2FyZW5vcy5odG0i
-PjI0IGhvdXIgQ3VzdG9tZXIgQ2FyZSBudW1iZXJzPC9BPjwvST4uPG86cD48L286cD48L0ZPTlQ+
-PC9TUEFOPjwvUD48UCBjbGFzcz1Nc29Ob3JtYWwgc3R5bGU9Ik1BUkdJTjogMGluIDBpbiAwcHQi
-PjxTUEFOIHN0eWxlPSJDT0xPUjogYmxhY2s7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+
-PEZPTlQgZmFjZT0iWnVyaWNoIEJUIj4mbmJzcDs8bzpwPjwvbzpwPjwvRk9OVD48L1NQQU4+PC9Q
-PjxQIGNsYXNzPU1zb0JvZHlUZXh0MiBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PEZPTlQg
-ZmFjZT0iWnVyaWNoIEJUIj5UbyBoZWxwIHVzIHNlcnZlIHlvdSBiZXR0ZXIsIGtpbmRseSBtZW50
-aW9uIHlvdXIgY29tcGxldGUgYWNjb3VudCBudW1iZXIgYW5kIGFueSByZWZlcmVuY2UgbnVtYmVy
-IHlvdSBtYXkgaGF2ZSB3aXRoIHJlc3BlY3QgdG8geW91ciBxdWVyeSBpbiBhbGwgZnV0dXJlIGNv
-cnJlc3BvbmRlbmNlLiZuYnNwOzxCUj4mbmJzcDs8L0ZPTlQ+PC9QPjxQIGNsYXNzPU1zb05vcm1h
-bCBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PFNQQU4gc3R5bGU9IkNPTE9SOiBibGFjazsg
-bXNvLWJpZGktZm9udC1mYW1pbHk6IEFyaWFsIj48Rk9OVCBmYWNlPSJadXJpY2ggQlQiPktpbmRs
-eSB2aXNpdCBvdXIgd2Vic2l0ZSA8L0ZPTlQ+PEEgaHJlZj0iaHR0cDovL3d3dy5pY2ljaWJhbmsu
-Y29tIj48Rk9OVCBmYWNlPSJadXJpY2ggQlQiPnd3dy5pY2ljaWJhbmsuY29tPC9GT05UPjwvQT48
-Rk9OVCBmYWNlPSJadXJpY2ggQlQiPiBmb3IgY29tcHJlaGVuc2l2ZSBpbmZvcm1hdGlvbiBvbiBv
-dXIgcHJvZHVjdHMgYW5kIHNlcnZpY2VzLiA8bzpwPjwvbzpwPjwvRk9OVD48L1NQQU4+PC9QPjxQ
-IGNsYXNzPU1zb05vcm1hbCBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PEZPTlQgZmFjZT0i
-WnVyaWNoIEJUIj4mbmJzcDs8bzpwPjwvbzpwPjwvRk9OVD48L1A+PFAgY2xhc3M9TXNvTm9ybWFs
-IHN0eWxlPSJNQVJHSU46IDBpbiAwaW4gMHB0Ij48Rk9OVCBmYWNlPSJadXJpY2ggQlQiPjxTVFJP
-Tkc+PFNQQU4gc3R5bGU9IkZPTlQtV0VJR0hUOiBub3JtYWw7IENPTE9SOiBibGFjazsgbXNvLWJp
-ZGktZm9udC1mYW1pbHk6IEFyaWFsIj5XaXRoPC9TUEFOPjwvU1RST05HPjxCPjxTUEFOIHN0eWxl
-PSJDT0xPUjogYmxhY2s7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+Jm5ic3A7PC9TUEFO
-PjwvQj48U1RST05HPjxTUEFOIHN0eWxlPSJGT05ULVdFSUdIVDogbm9ybWFsOyBDT0xPUjogYmxh
-Y2s7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+cmVnYXJkcyw8L1NQQU4+PC9TVFJPTkc+
-PEI+PFNQQU4gc3R5bGU9IkNPTE9SOiBibGFjazsgbXNvLWJpZGktZm9udC1mYW1pbHk6IEFyaWFs
-Ij48bzpwPjwvbzpwPjwvU1BBTj48L0I+PC9GT05UPjwvUD48UD48U1BBTiBzdHlsZT0iRk9OVC1T
-SVpFOiAxMXB0OyBDT0xPUjogYmxhY2s7IEZPTlQtRkFNSUxZOiAnWnVyaWNoIEJUJzsgbXNvLWJp
-ZGktZm9udC1zaXplOiAxMC4wcHQ7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+Q3VzdG9t
-ZXImbmJzcDtDYXJlJm5ic3A7PG86cD48L286cD48L1NQQU4+PC9QPjxQIHN0eWxlPSJNQVJHSU4t
-Qk9UVE9NOiAxMnB0Ij48U1BBTiBzdHlsZT0iRk9OVC1TSVpFOiAxMXB0OyBDT0xPUjogYmxhY2s7
-IEZPTlQtRkFNSUxZOiAnWnVyaWNoIEJUJzsgbXNvLWJpZGktZm9udC1zaXplOiAxMC4wcHQ7IG1z
-by1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+SUNJQ0kgQmFuayBMaW1pdGVkPEJSPjxCUj48L1NQ
-QU4+PFNQQU4gc3R5bGU9IkZPTlQtU0laRTogNy41cHQ7IENPTE9SOiBibGFjazsgRk9OVC1GQU1J
-TFk6ICdadXJpY2ggQlQnOyBtc28tYmlkaS1mb250LWZhbWlseTogQXJpYWwiPlRoaXMgY29tbXVu
-aWNhdGlvbiBiZWluZyBzZW50IGJ5IElDSUNJIEJhbmsgTHRkLiBpcyBwcml2aWxlZ2VkIGFuZCBj
-b25maWRlbnRpYWwsIGFuZCBpcyBkaXJlY3RlZCB0byBhbmQgZm9yIHRoZSB1c2Ugb2YgdGhlIGFk
-ZHJlc3NlZSBvbmx5LiBJZiB0aGlzIG1lc3NhZ2UgcmVhY2hlcyBhbnlvbmUgb3RoZXIgdGhhbiB0
-aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB3ZSByZXF1ZXN0IHRoZSByZWFkZXIgbm90IHRvIHJlcHJv
-ZHVjZSwgY29weSwgZGlzc2VtaW5hdGUgb3IgaW4gYW55IG1hbm5lciBkaXN0cmlidXRlIGl0LiBX
-ZSBmdXJ0aGVyIHJlcXVlc3Qgc3VjaCByZWNpcGllbnQgdG8gbm90aWZ5IHVzIGltbWVkaWF0ZWx5
-IGJ5IHJldHVybiBlbWFpbCBhbmQgZGVsZXRlIHRoZSBvcmlnaW5hbCBtZXNzYWdlLiBJQ0lDSSBC
-YW5rIEx0ZC4gZG9lcyBub3QgZ3VhcmFudGVlIHRoZSBzZWN1cml0eSBvZiBhbnkgaW5mb3JtYXRp
-b24gdHJhbnNtaXR0ZWQgZWxlY3Ryb25pY2FsbHkgYW5kIGlzIG5vdCBsaWFibGUgZm9yIHRoZSBw
-cm9wZXIsIHRpbWVseSBhbmQgY29tcGxldGUgdHJhbnNtaXNzaW9uIHRoZXJlb2YuIEJlZm9yZSBv
-cGVuaW5nIGFueSBhdHRhY2htZW50cyBwbGVhc2UgY2hlY2sgdGhlbSBmb3IgdmlydXNlcyBhbmQg
-ZGVmZWN0cy48L1NQQU4+PFNQQU4gc3R5bGU9IkZPTlQtU0laRTogOHB0OyBDT0xPUjogYmxhY2s7
-IEZPTlQtRkFNSUxZOiAnWnVyaWNoIEJUJzsgbXNvLWJpZGktZm9udC1zaXplOiA3LjVwdDsgbXNv
-LWJpZGktZm9udC1mYW1pbHk6IEFyaWFsIj48bzpwPjwvbzpwPjwvU1BBTj48L1A+PFA+Jm5ic3A7
-PC9QPjwvRk9OVD48L0JPRFk+PC9IVE1MPg==
+This patch is part of a larger patch aiming towards getting the
+include of asm/pgtable.h out of linux/mm.h, so that asm/pgtable.h
+can sanely get at things like mm_struct and friends.
 
-------_NextPart_88980249_boundary--
+In the event that any of these files fails to build, chances are
+you need to include some other header file rather than pgalloc.h.
+Normally this is either asm/pgtable.h (unlikely), asm/cacheflush.h
+or asm/tlbflush.h.
+
+===== arch/parisc/hpux/sys_hpux.c 1.10 vs edited =====
+--- 1.10/arch/parisc/hpux/sys_hpux.c	Wed Feb 25 10:31:12 2004
++++ edited/arch/parisc/hpux/sys_hpux.c	Mon Apr 19 13:39:57 2004
+@@ -32,7 +32,6 @@
+ #include <linux/vfs.h>
+ 
+ #include <asm/errno.h>
+-#include <asm/pgalloc.h>
+ #include <asm/uaccess.h>
+ 
+ unsigned long hpux_brk(unsigned long addr)
+===== arch/parisc/kernel/cache.c 1.9 vs edited =====
+--- 1.9/arch/parisc/kernel/cache.c	Sun Apr 18 17:13:09 2004
++++ edited/arch/parisc/kernel/cache.c	Mon Apr 19 13:39:57 2004
+@@ -24,7 +24,6 @@
+ #include <asm/tlbflush.h>
+ #include <asm/system.h>
+ #include <asm/page.h>
+-#include <asm/pgalloc.h>
+ #include <asm/processor.h>
+ 
+ int split_tlb;
+===== arch/parisc/kernel/init_task.c 1.7 vs edited =====
+--- 1.7/arch/parisc/kernel/init_task.c	Wed Feb  4 05:41:56 2004
++++ edited/arch/parisc/kernel/init_task.c	Mon Apr 19 13:39:57 2004
+@@ -30,7 +30,6 @@
+ 
+ #include <asm/uaccess.h>
+ #include <asm/pgtable.h>
+-#include <asm/pgalloc.h>
+ 
+ static struct fs_struct init_fs = INIT_FS;
+ static struct files_struct init_files = INIT_FILES;
+===== arch/parisc/kernel/pci-dma.c 1.9 vs edited =====
+--- 1.9/arch/parisc/kernel/pci-dma.c	Sun Mar 14 19:17:06 2004
++++ edited/arch/parisc/kernel/pci-dma.c	Mon Apr 19 13:39:57 2004
+@@ -29,7 +29,6 @@
+ #include <asm/dma.h>    /* for DMA_CHUNK_SIZE */
+ #include <asm/io.h>
+ #include <asm/page.h>	/* get_order */
+-#include <asm/pgalloc.h>
+ #include <asm/uaccess.h>
+ 
+ static struct proc_dir_entry * proc_gsc_root = NULL;
+===== arch/parisc/kernel/signal.c 1.13 vs edited =====
+--- 1.13/arch/parisc/kernel/signal.c	Thu Dec 18 05:48:39 2003
++++ edited/arch/parisc/kernel/signal.c	Mon Apr 19 13:39:57 2004
+@@ -30,7 +30,6 @@
+ #include <asm/ucontext.h>
+ #include <asm/rt_sigframe.h>
+ #include <asm/uaccess.h>
+-#include <asm/pgalloc.h>
+ #include <asm/cacheflush.h>
+ 
+ #ifdef CONFIG_COMPAT
+===== arch/parisc/kernel/smp.c 1.10 vs edited =====
+--- 1.10/arch/parisc/kernel/smp.c	Sun Mar 14 01:57:41 2004
++++ edited/arch/parisc/kernel/smp.c	Mon Apr 19 13:39:55 2004
+@@ -39,7 +39,7 @@
+ #include <asm/bitops.h>
+ #include <asm/current.h>
+ #include <asm/delay.h>
+-#include <asm/pgalloc.h>	/* for flush_tlb_all() proto/macro */
++#include <asm/tlbflush.h>	/* for flush_tlb_all() proto/macro */
+ 
+ #include <asm/io.h>
+ #include <asm/irq.h>		/* for CPU_IRQ_REGION and friends */
+===== arch/parisc/mm/ioremap.c 1.2 vs edited =====
+--- 1.2/arch/parisc/mm/ioremap.c	Thu Oct  2 08:11:59 2003
++++ edited/arch/parisc/mm/ioremap.c	Mon Apr 19 13:39:57 2004
+@@ -12,7 +12,6 @@
+ #include <linux/vmalloc.h>
+ #include <linux/errno.h>
+ #include <asm/io.h>
+-#include <asm/pgalloc.h>
+ 
+ static inline void remap_area_pte(pte_t * pte, unsigned long address, unsigned long size,
+ 	unsigned long phys_addr, unsigned long flags)
+===== arch/parisc/mm/kmap.c 1.4 vs edited =====
+--- 1.4/arch/parisc/mm/kmap.c	Wed Feb  4 05:42:01 2004
++++ edited/arch/parisc/mm/kmap.c	Mon Apr 19 13:39:57 2004
+@@ -34,7 +34,6 @@
+ #include <linux/vmalloc.h>
+ 
+ #include <asm/uaccess.h>
+-#include <asm/pgalloc.h>
+ 
+ #include <asm/io.h>
+ #include <asm/page.h>		/* get_order */
