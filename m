@@ -1,34 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA03788
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 22:21:03 -0600
-Message-Id: <200009060424.VAA24432@milano.cup.hp.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA04149
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 22:51:54 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 6 Sep 2000 04:52:06 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA30883;
+	Wed, 6 Sep 2000 15:48:54 +1100
+Date: Wed, 6 Sep 2000 15:48:54 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Grant Grundler <grundler@cup.hp.com>
+cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] entry.S Invalid operands 
-In-reply-to: Your message of "Wed, 06 Sep 2000 11:46:40 PDT."
-             <Pine.LNX.4.21.0009061137540.22521-100000@front.linuxcare.com.au>
-Date: Tue, 05 Sep 2000 21:24:42 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+In-Reply-To: <200009060424.VAA24432@milano.cup.hp.com>
+Message-ID: <Pine.LNX.4.21.0009061542070.22521-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra wrote:
-> My guess is that you need to update your assembler.  The lines in question
-> use register aliases instead of %r<num>:
->         depd            pte,8,7,prot
-> 
-> pehc CVS before 2000-08-23 won't accept register aliases on all
-> instructions.
+On Tue, 5 Sep 2000, Grant Grundler wrote:
 
-Good guess...I sent the previous reply too quickly.
-Setting CROSS_COMPILE didn't help. So I went to binutils-2.10
-and ran cvs update manually. To my surprise a bunch of files
-were updated.
+> Setting CROSS_COMPILE didn't help. So I went to binutils-2.10
+> and ran cvs update manually. To my surprise a bunch of files
+> were updated.
 
-Something's fishy with the "-u" option of recipe.linux.
+Well, some should have updated as I did another merge a few hours
+ago.  The previous merge was at a bad time, with some configure files
+broken.
 
-thanks,
-grant
+The other likely possibility is that objects aren't being rebuilt even
+when source files are newer.  Dependency information in binutils might be
+wrong, or your version of make broken.
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
