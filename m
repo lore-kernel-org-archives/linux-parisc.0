@@ -1,15 +1,22 @@
-From: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [gcc-3_3-branch] bootstrap failure on hppa-linux
-Date: Sat, 28 Dec 2002 18:45:23 -0500
-Message-ID: <20021228234523.GA4443__43171.4338054464$1416622058$gmane$org@hiauly1.hia.nrc.ca>
-References: <15884.48522.342368.76461@gargle.gargle.HOWL>
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk [212.18.232.186])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 05DF5482B
+	for <parisc-linux@parisc-linux.org>; Wed,  1 Jan 2003 14:49:49 -0700 (MST)
+Received: from flint.arm.linux.org.uk ([3ffe:8260:2002:1:201:2ff:fe14:8fad])
+	by caramon.arm.linux.org.uk with asmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.04)
+	id 18Tqk2-0004SJ-00; Wed, 01 Jan 2003 21:49:34 +0000
+Received: from rmk by flint.arm.linux.org.uk with local (Exim 4.04)
+	id 18Tqk1-0002BU-00; Wed, 01 Jan 2003 21:49:33 +0000
+Date: Wed, 1 Jan 2003 21:49:33 +0000
+From: Russell King <rmk@arm.linux.org.uk>
+To: linux-kernel@vger.kernel.org
+Cc: linux-xfs@oss.sgi.com, parisc-linux@parisc-linux.org
+Message-ID: <20030101214933.A26434@flint.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: gcc@gcc.gnu.org, parisc-linux@lists.parisc-linux.org,
-	gcc-patches@gcc.gnu.org, John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: Matthias Klose <doko@cs.tu-berlin.de>
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <15884.48522.342368.76461@gargle.gargle.HOWL>
+Subject: [parisc-linux] "vmalloc", friends and GFP flags
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,84 +27,111 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> $ gcc-3.2    -g -DIN_GCC   -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wtraditional -pedantic -Wno-long-long -fno-common  -DHAVE_CONFIG_H -o cc1 c-parse.o c-lang.o c-pretty-print.o attribs.o c-errors.o c-lex.o c-pragma.o c-decl.o c-typeck.o c-convert.o c-aux-info.o c-common.o c-opts.o c-format.o c-semantics.o c-objc-common.o c-dump.o libcpp.a  main.o libbackend.a   ../libiberty/libiberty.a
-> /usr/bin/ld: libbackend.a(expr.o)(.text+0x3f744): cannot reach 000002c9_$$dyncall+0, recompile with -ffunction-sections
-> /usr/bin/ld: libbackend.a(expr.o)(.text+0x3f744): cannot handle R_PARISC_PCREL17F for $$dyncall
+Hi,
 
-I confirmed the above problem and installed the enclosed patch on the 3.2
-branch to correct it.  pa_output_function_prologue is changed so that the
-total number of code bytes in the translation unit is accumulated on
-hppa-linux except when doing function sections.  This is a backport of
-a portion of a patch previously installed on the main.
+This mail is being copied to the XFS and PARISC mailing lists.  You should
+probably trim the reply list as appropriate.
 
-Tested on hppa-unknown-linux-gnu.  I also checked that the main will bootstrap
-using gcc-3.2.
+I've just been looking over the state of the ARM {dma,pci}_alloc_consistent
+wrt interrupts etc in 2.5.53, and decided to have a look around this area
+for other users.  I stumbled across the following unsafe areas.
 
-Dave
+a) parisc.  Looking at pa11_dma_alloc_consistent:
 
-2002-12-28  John David Anglin  <dave.anglin@nrc.ca>
+   pa11_dma_alloc_consistent
+	-> map_uncached_pages
+		-> (eventually) map_pmd_uncached
+			-> pte_alloc_kernel
+				-> pte_alloc_one_kernel
 
-	* pa.h (TARGET_SOM): Define if not defined.
-	* som.h (OBJ_SOM): Rename to TARGET_SOM.
-	* pa.c (pa_output_function_prologue): Don't accumulate the total code
-	bytes in the translation unit when using gas, som and not the portable
-	runtime, or when using function sections.
+	static inline pte_t *
+	pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr)
+	{
+	        pte_t *pte = (pte_t *) __get_free_page(GFP_KERNEL);
+        	if (likely(pte != NULL))
+	                clear_page(pte);
+        	return pte;
+	}
 
-Index: config/pa/pa.h
-===================================================================
-RCS file: /cvsroot/gcc/gcc/gcc/config/pa/pa.h,v
-retrieving revision 1.138.2.7.2.1
-diff -u -3 -p -r1.138.2.7.2.1 pa.h
---- config/pa/pa.h	12 Dec 2002 22:37:08 -0000	1.138.2.7.2.1
-+++ config/pa/pa.h	27 Dec 2002 22:48:57 -0000
-@@ -159,6 +159,11 @@ extern int target_flags;
- #define TARGET_ELF32 0
- #endif
- 
-+/* Generate code for SOM ABI.  */
-+#ifndef TARGET_SOM
-+#define TARGET_SOM 0
-+#endif
-+
- /* Macro to define tables used to set the flags.
-    This is a list in braces of pairs in braces,
-    each pair being { "NAME", VALUE }
-Index: config/pa/som.h
-===================================================================
-RCS file: /cvsroot/gcc/gcc/gcc/config/pa/som.h,v
-retrieving revision 1.31.2.1
-diff -u -3 -p -r1.31.2.1 som.h
---- config/pa/som.h	6 Mar 2002 05:20:29 -0000	1.31.2.1
-+++ config/pa/som.h	27 Dec 2002 22:48:57 -0000
-@@ -19,7 +19,8 @@ the Free Software Foundation, 59 Temple 
- Boston, MA 02111-1307, USA.  */
- 
- /* So we can conditionalize small amounts of code in pa.c or pa.md.  */
--#define OBJ_SOM
-+#undef TARGET_SOM
-+#define TARGET_SOM 1
- 
- /* We do not use BINCL stabs in SOM.
-    ??? If it does not hurt, we probably should to avoid useless divergence
-Index: config/pa/pa.c
-===================================================================
-RCS file: /cvsroot/gcc/gcc/gcc/config/pa/pa.c,v
-retrieving revision 1.148.2.7
-diff -u -3 -p -r1.148.2.7 pa.c
---- config/pa/pa.c	11 Jul 2002 18:22:02 -0000	1.148.2.7
-+++ config/pa/pa.c	27 Dec 2002 22:48:57 -0000
-@@ -3078,9 +3078,11 @@ pa_output_function_prologue (file, size)
- 
-   fputs ("\n\t.ENTRY\n", file);
- 
--  /* If we're using GAS and not using the portable runtime model, then
--     we don't need to accumulate the total number of code bytes.  */
--  if (TARGET_GAS && ! TARGET_PORTABLE_RUNTIME)
-+  /* If we're using GAS, SOM and not the portable runtime model, or if
-+     we're using function sections, then we don't need to accumulate the
-+     total number of code bytes in the translation unit.  */
-+  if ((TARGET_GAS && TARGET_SOM && !TARGET_PORTABLE_RUNTIME)
-+      || flag_function_sections)
-     total_code_bytes = 0;
-   else if (INSN_ADDRESSES_SET_P ())
-     {
+   End result is that if pa11_dma_alloc_consistent() is called from
+   IRQ context, parisc calls __get_free_page using GFP_KERNEL.
+   Calling __get_free_page with GFP_KERNEL from IRQ context appears
+   to be unsafe (always has been.)
+
+b) xfs. XFS contains this bit of code:
+
+	static __inline unsigned int flag_convert(int flags)
+	{
+		...
+	        if (flags & KM_NOSLEEP)
+        	        return GFP_ATOMIC;
+	        /* If we're in a transaction, FS activity is not ok */
+        	else if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
+	                return GFP_NOFS;
+        	else
+	                return GFP_KERNEL;
+	}
+
+	void *kmem_alloc(size_t size, int flags)
+	{
+		...
+                rval = __vmalloc(size, flag_convert(flags), PAGE_KERNEL);
+		...
+	}
+
+   Ok, so xfs can pass GFP_ATOMIC, GFP_NOFS and GFP_KERNEL to __vmalloc.
+   However, do these flags actually ensure what they suggest they do?
+
+   Lets look at __vmalloc:
+
+	void *__vmalloc(unsigned long size, int gfp_mask, pgprot_t prot)
+	{
+		...
+        	area = get_vm_area(size, VM_ALLOC);
+		...
+	}
+
+   and get_vm_area:
+
+	struct vm_struct *get_vm_area(unsigned long size, unsigned long flags)
+	{
+		...
+        	area = kmalloc(sizeof(*area), GFP_KERNEL);
+		...
+	}
+
+   Also, look at the PMD and PTE allocation functions, which also use
+   GFP_KERNEL.
+
+   Answer to the above question: no.  Is this unsafe?  Probably.
+
+Now, what does this all have to do with ARM and pci_alloc_consistent.
+It's the same problem, only I have a BUG_ON() in there to catch uses
+from IRQ context, which needs to disappear eventually.  (This is
+mainly a requirement for USB to work.)
+
+However, before this can happen, I believe I'd need the following:
+
+1. allocation of vm areas (via get_vm_area and friends) needs to become
+   IRQ-safe.
+
+   - vmlist_lock needs to become IRQ safe (but its held during vread/vwrite)
+   - kmalloc of vm_structs needs to have gfp flags passed in
+
+2. allocation of page tables (via pmd_alloc_kernel / pte_alloc_kernel)
+   needs to become IRQ-safe.
+
+   - pmd_alloc_kernel / pte_alloc_kernel needs to have gfp flags passed in
+   - map_vm_area would also need gfp flags
+
+The same solution also fixes the two instances described above.
+
+I suspect, however, that the vmlist_lock change will be unacceptable
+to many people however.  This doesn't affect XFS nor parisc, but would
+mean that I'd need to completely rewrite the ARM consistent memory
+allocation to use none of the above (which I think is the right
+approach, but means _all_ of the above becomes S.E.P. 8))
+
+-- 
+Russell King (rmk@arm.linux.org.uk)                The developer of ARM Linux
+             http://www.arm.linux.org.uk/personal/aboutme.html
