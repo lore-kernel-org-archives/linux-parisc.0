@@ -1,52 +1,28 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA06431
-	for <parisc-linux@puffin.external.hp.com>; Sun, 26 Sep 1999 15:26:59 -0600
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-To: parisc-linux@thepuffingroup.com, Ryan Bradetich <rbradetich@uswest.net>,
-        Alex deVries <adevries@thepuffingroup.com>
-Subject: Re: [parisc-linux] cleaning up IPL and ramdisks
-Date: Sun, 26 Sep 1999 22:48:17 +0200
-Content-Type: text/plain
-References: <37EE6973.5D758C47@uswest.net>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA07281
+	for <parisc-linux@puffin.external.hp.com>; Mon, 27 Sep 1999 07:26:59 -0600
+From: phi@tcleur.france.hp.com
+Received: from iws1pb01.france.hp.com (iws1pb01.france.hp.com [15.124.72.10])
+	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id FAA01632
+	for <parisc-linux@thepuffingroup.com>; Mon, 27 Sep 1999 05:19:29 -0400 (EDT)
+Received: from tcleur.france.hp.com (localhost [127.0.0.1]) by iws1pb01.france.hp.com with ESMTP (8.7.1/8.7.1) id LAA01687 for <parisc-linux@thepuffingroup.com>; Mon, 27 Sep 1999 11:21:27 +0200 (METDST)
+Sender: phi@tcleur.france.hp.com
+Message-ID: <37EF3716.2785C0E6@tcleur.france.hp.com>
+Date: Mon, 27 Sep 1999 11:21:26 +0200
 MIME-Version: 1.0
-Message-Id: <99092622521900.00371@P100>
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] endianism
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Alex,
-Hi Ryan
+Hi All,
 
-Am Sun, 26 Sep 1999 schrieb Ryan Bradetich:
-> Alex deVries wrote:
-> 
-> > We've talked for awhile about rewriting all the bootup stuff, it's
-> > served us well until now, but it really needs a rewrite to make it a lot
-> > cleaner.  Is anyone interested in taking this on?  Helge?
+What is the endianism expected for hppa linux, as the processor can do
+both?
 
-I´m sorry, but actually I´m too busy for the next two months (til´ begin of
-december). Maybe someone other would like to take it over ?
+Just curious
+Phi
 
-> 
-> Alex,
-> 
-> I am interested in helping since I've been struggling to get the kernel to
-> boot on the PA-RISC 2.0 architecture.
-> 
-> -Ryan
-
-Please go on...
-
-> 
-> >
-> > The new version should use the same PDC calls as the rest of the kernel,
-> > use the entire LIF structure declared in the HPUX header files.
-
-Yes...
-
-> > Philipp, did you have any other thoughts?
-> >
-> > - Alex
-> >
-> > --
-> > Alex deVries
-> > Vice President of Engineering
-> > The Puffin Group
+--
+mailto:Philippe_Benard@hp.com
+Technical Consulting Lab
