@@ -1,28 +1,66 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C70B484B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 18:40:13 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 518F9484B
+	for <parisc-linux@parisc-linux.org>; Mon,  8 Oct 2001 18:49:32 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15qkwE-0001x7-00; Tue, 09 Oct 2001 01:40:02 +0100
-Date: Tue, 9 Oct 2001 01:40:02 +0100
+	id 15ql5P-00025V-00
+	for parisc-linux@parisc-linux.org; Tue, 09 Oct 2001 01:49:31 +0100
+Date: Tue, 9 Oct 2001 01:49:31 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: Matt.VanDeWerken@csiro.au
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] New scsi driver for 53c700 and 53c710 committe d
-Message-ID: <20011009014002.B25819@parcelfarce.linux.theplanet.co.uk>
-References: <A8566E157F5FD411BCFB00D0B7816D51C72B8E@ntexchange.cat.csiro.au>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011009014931.C25819@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <A8566E157F5FD411BCFB00D0B7816D51C72B8E@ntexchange.cat.csiro.au>; from Matt.VanDeWerken@csiro.au on Tue, Oct 09, 2001 at 09:06:33AM +1000
 Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] SMP now working again
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Oct 09, 2001 at 09:06:33AM +1000, Matt.VanDeWerken@csiro.au wrote:
-> So will this new driver work on the 735-series? Please tell me it's so...
+With the change I committed as 2.4.9-pa45, CONFIG_SMP works again.
+For those with machines with discontiguous CPU numbers (eg an L2k with
+only two processors), this further patch is required.  I think this is
+masking a real bug which may cause problems at a later date, so I'm not
+committing this workaround to CVS yet -- I'd rather find the real bug.
 
-I presume you're talking about the fast-wide-differential scsi port?
-That's a ncr720, not 700 or 710 chip.  The basic driver for that is fine,
-but it doesn't recognise the chip as being something it should drive.
+I've only tested on an L2k with 2 CPUs, so other testing would be
+welcomed.  Thanks to jsm & grant for helping me with this.
+
+Index: arch/parisc/kernel/processor.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/processor.c,v
+retrieving revision 1.3
+diff -u -p -r1.3 processor.c
+--- processor.c	2001/10/06 08:00:03	1.3
++++ processor.c	2001/10/09 00:27:02
+@@ -125,9 +125,9 @@ static int __init processor_probe(struct
+ 		txn_addr = dev->hpa;	/* for legacy PDC */
+ 
+ 		/* logical CPU ID and update global counter */
+-		cpuid = boot_cpu_data.cpu_count;
+ 	}
+ 
++	cpuid = boot_cpu_data.cpu_count;
+ 	p = &cpu_data[cpuid];
+ 	boot_cpu_data.cpu_count++;
+
+I also enabled EARLY_BOOTUP_DEBUG with the following patch to figure
+out what was going on.
+ 
+Index: arch/parisc/kernel/pdc_cons.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/pdc_cons.c,v
+retrieving revision 1.28
+diff -u -p -r1.28 pdc_cons.c
+--- pdc_cons.c	2001/06/20 14:16:10	1.28
++++ pdc_cons.c	2001/10/09 00:27:02
+@@ -12,7 +12,7 @@
+ 
+ /* Define EARLY_BOOTUP_DEBUG to debug kernel related boot problems. 
+  * On production kernels EARLY_BOOTUP_DEBUG should be undefined. */
+-#undef EARLY_BOOTUP_DEBUG
++#define EARLY_BOOTUP_DEBUG
+ 
+ 
+ #include <linux/config.h>
 
 -- 
 Revolutions do not require corporate support.
