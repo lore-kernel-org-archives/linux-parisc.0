@@ -1,16 +1,17 @@
-Return-Path: <Achim.Stolze@t-online.de>
-Received: from mailout04.sul.t-online.com (mailout04.sul.t-online.com
-	[194.25.134.18])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B5204854
+Return-Path: <brianbarber@myrealbox.com>
+Received: from smtp-send.myrealbox.com (smtp-send.myrealbox.com
+	[192.108.102.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 36D8A4854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 11 Dec 2003 11:36:43 -0700 (MST)
-Message-ID: <3FD8B777.2060105@t-online.de>
-Date: Thu, 11 Dec 2003 19:29:11 +0100
-From: Achim.Stolze@t-online.de (Achim Stolze)
-MIME-Version: 1.0
+	Thu, 11 Dec 2003 11:45:42 -0700 (MST)
+From: "Brian Barber" <brianbarber@myrealbox.com>
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] C180 - cannot get KDE nor Gnome get running
+Date: Thu, 11 Dec 2003 13:45:43 -0500
+MIME-Version: 1.0
+Message-ID: <1071168343.9d26b700brianbarber@myrealbox.com>
+Content-Type: text/plain; charset="UTF-8"
+Subject: [parisc-linux] Installation on a 712/80
+Reply-To: brianbarber@linux.ca
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,17 +21,16 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello all!
-Woody is now running on my C180. But I cannot get KDE or Gnome started.
-I tried to configure XFree before starting XServer, but the command 
-startx causes the error message 
-"... XIO: fatal IO error 232 (connection reset by peer) on X Server ":0.0" after 0 requests ... with 0 events 
-remaining."
- 
-I am not sure which graphics driver I should use ...
+I just picked up one of these systems yesterday, and I'm interested in how =
+other folks who own this model went about installing Woody.  As I don't h=
+ave a CDROM, I would like to know these folks' experiences with floppy or=
+ net installations.  I have read the documentation and know how to procee=
+d; I would like a little guidance as to what it the best method.  For the=
+ sake of information, I have another machine that is running TFTP and can=
+ serve up the CDs via NFS.
 
-How can I get KDE running?
- 
-Best regards,
- 
-Achim.
+Cheers,
+BB
+--
+Brian Barber, Principal Consultant
+Integrity Computing (www.integritycomputing.tk)
