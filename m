@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from granger.mail.mindspring.net (granger.mail.mindspring.net [207.69.200.148])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9C626484D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Aug 2002 18:58:00 -0600 (MDT)
-Received: from archimedes.localnetsolutions.com (archimedes.localnetsolutions.com [192.168.0.2])
-	by castle.localnetsolutions.com (8.11.6/linuxconf) with ESMTP id g7T0wTB19279;
-	Wed, 28 Aug 2002 20:58:29 -0400
+Received: from dc-mx12.cluster1.charter.net (dc-mx12.cluster1.charter.net [209.225.8.22])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B652F484A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Aug 2002 19:12:14 -0600 (MDT)
+Message-ID: <3D6D7527.5040505@charter.net>
+Date: Wed, 28 Aug 2002 21:13:11 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
+To: palinux <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
 Subject: Re: [parisc-linux] X-Terminal?
-From: "James P. Kinney III" <jkinney@localnetsolutions.com>
-To: Tobias Giesen <tobias_subscriber@tgtools.com>
-Cc: palinux <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <005801c24ef5$bcd5d6c0$95ff8450@PLUTO>
-References: <005801c24ef5$bcd5d6c0$95ff8450@PLUTO>
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-a0pyjSYzEht8YSRAp/o7"
-Date: 28 Aug 2002 20:57:46 -0400
-Message-Id: <1030582666.2179.360.camel@archimedes.localnetsolutions.com>
-Mime-Version: 1.0
+References: <005801c24ef5$bcd5d6c0$95ff8450@PLUTO> <1030582666.2179.360.camel@archimedes.localnetsolutions.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,66 +22,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-a0pyjSYzEht8YSRAp/o7
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I agree. Cygwin with XFree86 has got to be the ultimate,
+heck you should always have Cygwin anyways on any Windoze
+box IMHO, and XFree86 wasn't a big deal to install the
+last time I tried it. You should be able to use the
+xterm to telnet or rlogin to the hppa box and then an
 
-Cygwin with XFree86 4.x support! As a demo I ran KDE under Win98 on
-cygwin. Slow, but it worked.
+$ export DISPLAY=###.###.###.###:0
+$ mozilla &
 
-The twm is rather speedy.=20
+Should work most excellently, although I have run into
+some difficulties running X apps remotely a while back
+with Debian, something seemed messed up with my security
+settings and the Debian box wasn't allowing apps to run
+remotely. Haven't tried it in a while so I dunno if it
+has been fixed or is some config problem on my side.
 
+Voodoo2 Update - been real busy and real tired, no time
+to screw with it right now. Probably will hack on it
+this weekend.
 
-http://www.cygwin.com
-
-On Wed, 2002-08-28 at 20:48, Tobias Giesen wrote:
-> Hello,
->=20
-> while I can't get X on my C200 to support the graphics card, how about
-> using an X-Terminal via Ethernet?
->=20
-> Where can I get hints on how to configure this, and
->=20
-> does anybody know a good X-Window-Terminal software for MS Windows?
->=20
-> Cheers,
-> Tobias
->=20
-> -----------------------
-> Tobias Giesen, Composer
-> Developer of TGTools
-> www.tobiasgiesen.de
-> www.tgtools.com
-> -----------------------
->=20
->=20
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---=20
-James P. Kinney III   \Changing the mobile computing world/
-President and CEO      \          one Linux user         /
-Local Net Solutions,LLC \           at a time.          /
-770-493-8244             \.___________________________./
-
-GPG ID: 829C6CA7 James P. Kinney III (M.S. Physics)
-<jkinney@localnetsolutions.com>
-Fingerprint =3D 3C9E 6366 54FC A3FE BA4D 0659 6190 ADC3 829C 6CA7=20
+- Doug
 
 
 
---=-a0pyjSYzEht8YSRAp/o7
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA9bXGKYZCtw4KcbKcRAmjbAKDCLZjqkDG6kzs+vj5DlxGbLDgotACeL/NR
-qWqvudqkjUwBjKesZEdnphE=
-=KjB0
------END PGP SIGNATURE-----
-
---=-a0pyjSYzEht8YSRAp/o7--
+James P. Kinney III wrote:
+> Cygwin with XFree86 4.x support! As a demo I ran KDE under Win98 on
+> cygwin. Slow, but it worked.
+> 
+> The twm is rather speedy. 
+> 
+> 
+> http://www.cygwin.com
+> 
+> On Wed, 2002-08-28 at 20:48, Tobias Giesen wrote:
+> 
+>>Hello,
+>>
+>>while I can't get X on my C200 to support the graphics card, how about
+>>using an X-Terminal via Ethernet?
+>>
+>>Where can I get hints on how to configure this, and
+>>
+>>does anybody know a good X-Window-Terminal software for MS Windows?
+>>
+>>Cheers,
+>>Tobias
