@@ -1,32 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA18278
-	for <parisc-linux@puffin.external.hp.com>; Tue, 31 Oct 2000 06:35:12 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 31 Oct 2000 13:36:52 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13qbat-0006sG-00
-	for parisc-linux@thepuffingroup.com; Tue, 31 Oct 2000 13:36:51 +0000
-Date: Tue, 31 Oct 2000 13:36:51 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001031133651.C24691@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] space registers
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA19731
+	for <parisc-linux@puffin.external.hp.com>; Tue, 31 Oct 2000 09:49:53 -0700
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by atlrel1.hp.com (Postfix) with ESMTP id DE795774
+	for <parisc-linux@thepuffingroup.com>; Tue, 31 Oct 2000 11:51:32 -0500 (EST)
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Elf Header change proposal 
+In-Reply-To: Your message of "Tue, 31 Oct 2000 03:32:20 MST."
+             <200010311032.DAA21612@udlkern.fc.hp.com>
+References: <200010311032.DAA21612@udlkern.fc.hp.com> 
+Date: Tue, 31 Oct 2000 09:51:31 -0700
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E13qedH-0007k6-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+= 
+=     2) 64 bit parisc binaries (currently just vmlinux) are currently using
+=     the Elf32_hdr type.  They should be changed to use the Elf64_hdr type.
 
-a small optimisation just occurred to me.
+This I don't understand.  Palo (and palo's boot loader, and hpux's
+boot loader) successfully use
+eh.e_ident[EI_CLASS] == ELFCLASS32 and eh.e_ident[EI_CLASS] == ELFCLASS64
+along with (__be16_to_cpu(eh.e_machine) == EM_PARISC)
+to distinguish 32/64-bit parisc executables.  In the 64-bit case, palo
+happily uses struct elf64_phdr to grok the 64-bit vmlinux header.
+palo/lib/elf*.c has the details if they're of interest.
 
-right now, when we switch to kernel space, we set all of sr4-sr7 to 0
-(for the kernel mapping).  we don't need to do that since the kernel is
-entirely in sr7's domain.  this has the added bonus that badly written
-drivers which blindly dereference userspace pointers will work on
-parisc as well as x86.  we can also lazily restore sr4-6 on exit from
-kernel space if we're switching back to the same task which called us.
-this optimisation may not be worthwhile, but i think setting sr4-6
-on entry to the kernel is unnecessary.
+Palo has some potential problems: it doesn't check ABI, assumes
+big endian byte order, and assumes that 64-bit ELF headers imply
+a wide kernel (calling PDC and setting the W bit appropriately).
 
--- 
-Revolutions do not require corporate support.
+	-P
