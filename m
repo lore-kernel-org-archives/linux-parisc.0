@@ -1,56 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA08588
-	for <parisc-linux@puffin.external.hp.com>; Sat, 18 Sep 1999 00:49:37 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <37E34387.713858FE@uswest.net>
-Date: Sat, 18 Sep 1999 01:47:19 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
-To: Parisc Linux <parisc-linux@thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] exec_kernel help
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA08958
+	for <parisc-linux@puffin.external.hp.com>; Sat, 18 Sep 1999 02:03:59 -0600
+Message-Id: <199909170134.SAA21779@milano.cup.hp.com>
+To: Ryan Bradetich <rbradetich@uswest.net>
+cc: Parisc Linux <parisc-linux@thepuffingroup.com>
+In-reply-to: Your message of "Thu, 16 Sep 1999 19:05:52 PDT."
+             <37E193F0.AD5E1A38@uswest.net>
+Date: Thu, 16 Sep 1999 18:34:18 -0700
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] C200 support
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello hackers,
+Ryan Bradetich wrote:
+> I'm working on getting the kernel to boot/load on a C200...
 
-I've been struggling with this for the last couple of days, and I'm
-stuck.  I can build a bootable image, but I can not get it to transfer
-control to the kernel.  (I'm working on a C200+ which is a PA-8200
-(PA-RISC 2.0) as Grant pointed out earlier).  I know the first targeted
-build is for the PA 1.1, but I am willing and would like to get the
-kernel working on the 2.0 also.
+Ryan,
+C200+ has a PA-8200 processor (PA 2.0 Arch) and C200 had the previous
+PA 2.0 processor in it. Haven't you had problems since this port
+(to date) is focused on PA1.1 architecture?
 
-Here is the output on the console (I'm typing this in by hand)
----------------------------------------
+I'm certain PA2.0 will be supported in the future but not today.
+I don't want to discourage you but also don't want you to
+burn out trying to make this work...
 
-PARISC/Linux Bootstrap Version 0.6 (non-interactive)
-By Helge Deller & Jason Eckhardt
-Built Fri Sep 17 01:05:03 MDT 1999 by rbrad@vega
+grant
 
-Reading parameters...done.
 
-Loading PA-RISC/Linux Kernel...
-No ramdisks available.
-SOM-Kernel:
-aux_header_location: 00000080
-som                  : 00200080
-exec_dfile      : 0009E000
-exec_dsize     : 0007C000
-exec_dmem  : C007D000
-exec_tfile       : 00031000
-exec_tsize      : 0006C008
-exec_tmem   :  C0010000
-Code at 0x00010000, size=0x0006c008
-Data at 0x0007D000, size=0x0007C000
-BSS  at 0x00F9000
-
-Transfering control to kernel. (At entry point 0x00010000)
------------------------------------------------------
-
-It hangs there and I have to reboot to continue.
-I am booting using rbootd/tftpd if that makes any difference.
-
-Any help/pointers would be appreciated :)
-
-Thanks,
--Ryan
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
