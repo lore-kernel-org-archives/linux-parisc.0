@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly3.hia.nrc.ca (hiauly3.hia.nrc.ca [132.246.100.195])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AE4F4877
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Aug 2003 16:44:10 -0600 (MDT)
-From: John David Anglin <dave@hiauly3.hia.nrc.ca>
-Message-Id: <200308292244.SAA29829@hiauly3.hia.nrc.ca>
-To: dave@hiauly3.hia.nrc.ca
-Date: Fri, 29 Aug 2003 18:44:03 -0400 (EDT)
-Cc: carlos@baldric.uwo.ca, randolph@tausq.org,
-	dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200308292203.SAA03224@hiauly3.hia.nrc.ca> from John David Anglin at Aug "29," 2003 "06:03:00" pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Re: [glibc] tststatic failues, reduced to simple testcase.
+Date: Fri, 29 Aug 2003 23:06:28 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: xchat colors
+Message-ID: <20030830050628.GA5649@dsl2.external.hp.com>
+References: <W9958529574305441060899998@webmail4> <20030815061601.GD2989@dsl2.external.hp.com> <20030815063718.GD16974@lug-owl.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030815063718.GD16974@lug-owl.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,13 +20,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > __asm(
-> > 0x4000883c:     be,l 100(sr2,r0),%sr0,%r31
-> > 0x40008840:     ldi 2,r20                    !! FORK !!
-> > );
-> > 0x40008844:     ldi -1000,r20 <--Corrupted--- r19 = 0x10106368
+On Fri, Aug 15, 2003 at 08:37:18AM +0200, Jan-Benedict Glaw wrote:
+> Unstable's current XFree (4.2.1.1) "RENDER" extension (used for
+> anti-aliasing IIRC) takes a _lot_ of colors for it's own (rumors I
+> heared talked about > 200 IIRC)...
 
-Looking at the kernel syscall code, it seems at first glance that
-r19 is saved and restored.  Thus, the problem may be specific to fork.
+On this note I want to share solving my last problem with xchat
+and 8-bit TrueColor. C3k doesn't have anything better at the moment.
 
-Dave
+The "couriour new" font was getting mangled colors as part of the
+effort to anti-alias (what I assume is) a true-type or re-sized font.
+Picking a bitmap font like "fixed" too take care of this.
+Nice readable letters all in white.
+
+hth,
+grant
