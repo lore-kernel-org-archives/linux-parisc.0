@@ -1,18 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0FB894869
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 08:09:21 -0600 (MDT)
-To: Matthew Wilcox <willy@debian.org>
+Received: from irongate.swansea.linux.org.uk (pc2-cwma1-5-cust12.swa.cable.ntl.com [80.5.121.12])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F1AF44896
+	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 08:10:40 -0600 (MDT)
+Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
+	by irongate.swansea.linux.org.uk (8.12.2/8.11.6) with ESMTP id g6HFKHu6006684;
+	Wed, 17 Jul 2002 16:20:18 +0100
+Received: (from alan@localhost)
+	by irongate.swansea.linux.org.uk (8.12.2/8.12.2/Submit) id g6HFKGOL006682;
+	Wed, 17 Jul 2002 16:20:16 +0100
 Subject: Re: [parisc-linux] 2.4.19-rc1-ac6 Merge pa55: #error ...?
-Message-ID: <1026914852.3d357a24c4a4a@webmail.tiscalinet.be>
-Date: Wed, 17 Jul 2002 16:07:32 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	parisc-linux@parisc-linux.org
-References: <1026832288.1687.57.camel@irongate.swansea.linux.org.uk> <1026913104.3d357350a4057@webmail.tiscalinet.be> <20020717144543.A13352@parcelfarce.linux.theplanet.co.uk>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Matthew Wilcox <willy@debian.org>
+Cc: joel.soete@freebel.net, HPPA List <parisc-linux@parisc-linux.org>
 In-Reply-To: <20020717144543.A13352@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+References: <1026832288.1687.57.camel@irongate.swansea.linux.org.uk>
+	<1026913104.3d357350a4057@webmail.tiscalinet.be>
+	<20020717144543.A13352@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain
+Date: 17 Jul 2002 16:20:15 +0100
+Message-Id: <1026919215.1688.140.camel@irongate.swansea.linux.org.uk>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +31,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Matthew Wilcox <willy@debian.org>:
-
+On Wed, 2002-07-17 at 14:45, Matthew Wilcox wrote:
 > On Wed, Jul 17, 2002 at 03:38:24PM +0200, joel.soete@freebel.net wrote:
 > > Hi Alan,
 > > 
-> > I try to build your 2.4.19-rc1-ac6 on my parisc-linux box but I got
-> early
+> > I try to build your 2.4.19-rc1-ac6 on my parisc-linux box but I got early
 > > following error messages:
 > 
-> Joel, the -ac series will NOT contain all the changes necessary to
-> build
+> Joel, the -ac series will NOT contain all the changes necessary to build
 > on PA.
-> 
-
-Ha ... Ok.
-In mean time is somebody is interested by my merge 2.4.19-rc1 pa55?
-It is not perfect but it works on my b2000 (from pre5 pa14) so it should be good
-starting point? (about 500k compressed by bzip2)
-
-Joel
-
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+ 
+Yet 8)
