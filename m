@@ -1,16 +1,17 @@
-From: Matthew Wilcox <willy@debian.org>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Subject: Re: [parisc-linux] gcc-3.3 configuration
-Date: Wed, 21 May 2003 01:08:54 +0100
-Message-ID: <20030521000854.GN31518__7585.9461249367$1416622471$gmane$org@parcelfarce.linux.theplanet.co.uk>
+Date: 21 May 2003 00:26:10 +0100
+Message-ID: <1053473168.31455.21.camel__2559.40726860917$1416622471$gmane$org@dhcp22.swansea.linux.org.uk>
 References: <16074.48509.259405.775905@gargle.gargle.HOWL>
+	 <20030521000854.GN31518@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
-	m68k-build@nocrew.org
-To: Matthias Klose <doko@cs.tu-berlin.de>
+Content-Type: text/plain
+Cc: Matthias Klose <doko@cs.tu-berlin.de>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org,
+	debian-gcc@lists.debian.org, m68k-build@nocrew.org
+To: Matthew Wilcox <willy@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <16074.48509.259405.775905@gargle.gargle.HOWL>
+In-Reply-To: <20030521000854.GN31518@parcelfarce.linux.theplanet.co.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,26 +22,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, May 21, 2003 at 01:42:53AM +0200, Matthias Klose wrote:
-> For Debian GNU/Linux gcc-3.3 is currently configured with
-> 
-> 	--with-sjlj-exceptions
-> 
-> to allow a binary compatible upgrade from gcc-3.2 to gcc-3.3. The
-> other Debian platform, where sjlj based exceptions changed to dwarf2
-> based exceptions is m68k, therefore the CC.
+On Mer, 2003-05-21 at 01:08, Matthew Wilcox wrote:
+> I'm not sure it's my call to make; I can see arguments on both sides.
 
-*sigh*.  I'm very conflicted over this.  On one hand, Debian is the de-facto
-standard for PA-RISC/Linux binaries.  If another distro cares about
-binary compatibility, they should follow Debian.
-
-On the other hand, dwarf exceptions are clearly superior to sjlj.
-We've never _released_ a distro compiled with 3.2 so we can break the
-binary ABI without major repurcussions.
-
-I'm not sure it's my call to make; I can see arguments on both sides.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Thats at least one of the reasons. Reputation capital is a wonderous
+thing. Accept reality, you are the Linus of parisc Linux like it or not
+8)
