@@ -1,62 +1,75 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 409D9482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 08:59:41 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15dvCO-0004Dg-00; Mon, 03 Sep 2001 15:59:40 +0100
-Date: Mon, 3 Sep 2001 15:59:40 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Hannu Martikka <martikka@penguin3.ntc.nokia.com>
+Received: from mx04.nexgo.de (mx04.nexgo.de [151.189.8.80])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1FA58482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 11:57:57 -0600 (MDT)
+Message-ID: <3B93E0B3.7070700@hrzpub.tu-darmstadt.de>
+Date: Mon, 03 Sep 2001 21:57:39 +0200
+From: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: Matthew Wilcox <willy@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel panics on 715/80
-Message-ID: <20010903155940.I5126@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.30.0109031623080.14451-100000@penguin3.ntc.nokia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.30.0109031623080.14451-100000@penguin3.ntc.nokia.com>; from martikka@penguin3.ntc.nokia.com on Mon, Sep 03, 2001 at 05:21:09PM +0300
-Sender: <willy@www.linux.org.uk>
+Subject: Re: [parisc-linux] Kernel failures
+References: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de> <20010831160827.C5126@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 03, 2001 at 05:21:09PM +0300, Hannu Martikka wrote:
-> Hei,
-> 
-> I just downloaded kernel-2.4.9 (linux-20010901.tar.gz) and compiled it
-> with default configuration (I selected the 7100LC cpu) on my 715/80. I was
-> successfully running the 2.4.0 kernel from 0.9.2 cd-image.
-> 
-> Any ideas what went wrong?
+Matthew Wilcox wrote:
 
-Nope; two hints.  First, you can look up 102ee3c4 and 1010afd0 in your
-System.map -- that'll tell you which function it's in and what function
-called it, respectively.  Secondly, you can define EARLY_BOOTUP_DEBUG
-in arch/parisc/kernel/pdc_cons.c and recompile.  That'll show where it
-dies.  This crash concerns me a little since I tested CVS kernel a couple
-of days ago on a 715/80.
+>On Fri, Aug 31, 2001 at 06:56:15AM +0200, Rüdiger Scholz wrote:
+>
+>>When I played a little bit  with the kernel, I found some failures.
+>>My machine is a 715/100 with a second  Graphics-Card (Coral SGC). If the 
+>>
+>
+>Could you change kernel/printk.c, line 36 from:
+>#define DEFAULT_CONSOLE_LOGLEVEL 7 /* anything MORE serious than KERN_DEBUG */
+>to:
+>#define DEFAULT_CONSOLE_LOGLEVEL 9 /* anything MORE serious than KERN_DEBUG */
+>
+>This should print out more debug messages and might help diagnose the problem.
+>
 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000011000000000000001111
-> r0-3     00000000 2000003c 1010afd0 1034c76c
+Nop. It doesn't print any new messages at booting. It 's difficult to 
+debug, because I don't know exactly where the kernel crash,  because 
+when it crashs GR02 and IAOQ point to parisc_terminate and show_stack.
+But looking at the last messages and the source code, the kernel crashs 
+when it's calling "sti_dump_rom" in the file 
+linux/drivers/video/sticore.c. The last three lines before the kernel 
+crashs are:
+SNIP---------       
+        sticonsole_init: searching for STI ROMs                        
+                         
+        STI word mode ROM at f0025000, hpa=f4000000                    
+                            <--- this is in function sti_read_rom which 
+calls sti_dump_rom
+        STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 
+8.04           <--- function sti_dump_rom
+SNAP--------
 
-r2 is the return address -- ie our caller.
+And this is the code of function "sti_dump_rom":
+SNIP----------
+    static void __init
+    sti_dump_rom(struct sti_rom *rom)
+    {
+            printk(KERN_INFO "STI %s mode ROM, id %04x-%04x, conforms to 
+spec rev. %d.%02x\n",
+                    (rom->type[3] == 1) ? "byte" : "word",
+                    rom->graphics_id[0],
+                    rom->graphics_id[1],
+                    rom->revno[0] >> 4,
+                    rom->revno[0] & 0x0f);
+            DPRINTK((" supports %d monitors\n", rom->num_mons));
+            DPRINTK((" font start %08x\n", rom->font_start));
+            DPRINTK((" region list %08x\n", rom->region_list));
+            DPRINTK((" init_graph %08x\n", rom->init_graph));
+            DPRINTK((" alternate code type %d\n", rom->alt_code_type));
+    }
+SNAP----------
 
-> r4-7     f0200000 1034c010 00000005 10348628
-> r8-11    10348609 00000008 0004000e 102ecf94
-> r12-15   00000000 00000001 00000001 f0000704
-> r16-19   f000b858 00000002 00000000 00000000
-> r20-23   00005e00 0000000b 00000010 0000008e
-> r24-27   00000000 1034c1e0 1034c770 102a4010
-> r28-31   00000000 102b6810 10348980 f0012870
-> sr0-3    00000000 00000000 00000000 00000000
-> sr4-7    00000000 00000000 00000000 00000000
-> 
-> IASQ: 00000000 00000000 IAOQ: 102ee3c4 102ee3b4
+After the printk("STI word mode..."), I should see messages about 
+supported monitors, etc. So here must be the place, where the kernel crashs.
 
-and IAOQ is the address of the executing instruction and the next
-instruction -- interestingly the instruction that faulted is in the
-delay slot of a branch.
 
->  IIR: 0c201093    ISR: 00000000  IOR: 2000003c
->  ORIG_R28: 00000000
+Thanks in advance,
 
--- 
-Revolutions do not require corporate support.
+        Rüdiger
