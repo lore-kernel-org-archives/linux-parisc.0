@@ -1,52 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lufmech.rwth-aachen.de (karman.lufmech.RWTH-Aachen.DE [134.130.177.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91F53482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 08:33:06 -0600 (MDT)
-Sender: markus@lufmech.rwth-aachen.de
-Message-ID: <3AC9DF1A.6556BC29@lufmech.rwth-aachen.de>
-Date: Tue, 03 Apr 2001 16:32:59 +0200
-From: Markus Werle <markus@lufmech.rwth-aachen.de>
-MIME-Version: 1.0
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] cvs-gcc: howto build a 64-bit version?
-References: <Pine.LNX.4.21.0104040001140.6476-100000@front.linuxcare.com.au>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 03343482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 10:42:07 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14kTsS-0001K0-00; Tue, 03 Apr 2001 17:41:56 +0100
+Date: Tue, 3 Apr 2001 17:41:56 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Grant Grundler <grundler@puffin.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] request_region()
+Message-ID: <20010403174156.U11435@parcelfarce.linux.theplanet.co.uk>
+References: <20010403001114.F9198@linuxcare.com> <200104030306.VAA10572@puffin.external.hp.com> <20010403100502.K9198@linuxcare.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010403100502.K9198@linuxcare.com>; from rhirst@linuxcare.com on Tue, Apr 03, 2001 at 10:05:02AM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra wrote:
+On Tue, Apr 03, 2001 at 10:05:02AM +0100, Richard Hirst wrote:
+> Yep, that make sense.  Does mean sim700.c will have to make runtime
+> decisions whether to use raw_read (for the on-board 53c700) or inb
+> (for one on an EISA card), on my 715, but that is no big deal.
 
-> > cc1: Internal compiler error in set_sizetype, at stor-layout.c:1673
->
-> I don't see this error when either cross-compiling or natively
-> boot-strapping gcc under hppa-linux.
+i think sim700.c should be using ioremap / readX / writeX instead
+of raw_read.  Is the EISA scsi really only accessible via port io?
+I would have throught that it would be memory mapped, in which case
+there's no need to have a macro to access it.
 
-I fear this type of bug.
+> EISA allocates 0x1000 bytes per slot, with a four (?) byte signature
+> at offset 0xc80 (IIRC) to identify the cards.  At least, that is
+> how my old Compaq works, with first slot at 0x1000.  Seems to tie
+> up address-wise, at least:
+> 
+> 10. Scorpio Sr. EISA BA (11) at 0xfc000000, versions 0x19, 0x0, 0x76, 0x0, 0x0
+> 11. Unknown device (10) at 0xfc001000, versions 0x0, 0x0, 0xfff, 0x0, 0x0
 
->  It's possible your bootstrap compiler has bugs that are preventing a
-> successful build.
+That seems to indicate memory mapped IO...
 
-I used the 32-bit version of cvs-gcc. So its gcc applied to itself.
-It was recommended to use gcc for the 64-bit binutils
-due to bugs in hp's cc (size of int). What else can I do?
+> Again, IIRC, last time I played with the EISA slot on my 715 I
+> found the EISA 53c700 couldn't access main memory, and EISA interrupts
+> were not routed to the CPU.  The driver could access the chip registers
+> though.  But that was all a long time ago, so things may be different
+> now.
 
-building binutils with hp cc dies with:
-cpp: "./bfd.h", line 141: error 4062: No 64 bit integer type available
-cpp: "./bfd.h", line 141: error 4062: No 64 bit integer type available
+How BugFree(TM) do we think the Wax driver is?
 
-Did You manage to bootstrap todays cvs 64-bit version
-on a vanilla system?
-
-another method:
-I started with hp-cc/gcc-compiled binutils:
-
-echo "int xxy_us_dummy;" >tmp-dum.c
-./xgcc -B./
--B/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF/hppa64-hp-hpux11.00/bin/
--isystem
-/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF/hppa64-hp-hpux11.00/include -S
-tmp-dum.c
-cc1: Internal compiler error in ?, at stor-layout.c:1673
-
-
-Markus
+-- 
+Revolutions do not require corporate support.
