@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 43585482B
-	for <parisc-linux@parisc-linux.org>; Tue, 30 Jul 2002 13:53:19 -0600 (MDT)
-Message-Id: <200207301953.g6UJrDrs020716@hiauly1.hia.nrc.ca>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8D339482B
+	for <parisc-linux@parisc-linux.org>; Tue, 30 Jul 2002 14:04:40 -0600 (MDT)
+Message-Id: <200207302004.g6UK4b4S020794@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] GCC CVS strange update?
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Tue, 30 Jul 2002 15:53:12 -0400 (EDT)
+To: willy@debian.org (Matthew Wilcox)
+Date: Tue, 30 Jul 2002 16:04:37 -0400 (EDT)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020730192041.GD6502@systemhalted> from "Carlos O'Donell" at Jul 30, 2002 03:20:41 pm
+Cc: carlos@baldric.uwo.ca, parisc-linux@parisc-linux.org
+In-Reply-To: <20020730204007.E3317@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Jul 30, 2002 08:40:07 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,22 +22,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> dwarf2 exception support isn't in 3.2 for hppa?
-> I'm confused, I believed that dwarf2 exception support wasn't
-> goin to be in 3.1, but surely in 3.2? 
+> 3.1.2		3.2
 
-It's not a typo.  What was 3.2 is now 3.3.  As was noted, 3.2
-is going to be identical to 3.1.1 except for a c++ abi change.
-3.2 should be out this week barring unforeseen problems.  The
-3.1 branch has only been open for regression fixing for some
-time now.
-
-3.3 is scheduled to go into stage3 (bug fixing) on Aug. 15.
-The 3.3 release is scheduled for Dec. 15.  The numbering change
-hasn't affected the schedule for the next release from the
-mainline.
-
-Clear?
+Although the 3.1 branch is nominally closed, it would seem possible
+that somebody might want a release after 3.1.1 with the old c++ abi.
+Thus, a new branch had to be created.
 
 Dave
 -- 
