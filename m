@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1C717482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 May 2002 16:42:48 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: "'Grant Grundler'" <grundler@dsl2.external.hp.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Re: Dodgy SCSI in L2000
-Date: Fri, 10 May 2002 10:46:17 +1200
-Message-ID: <00b001c1f7ab$571903d0$5e01000a@bongo>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20020509165445.7A515482A@dsl2.external.hp.com>
+Received: from mailout06.sul.t-online.com (mailout06.sul.t-online.com [194.25.134.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C8CA482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 May 2002 14:38:09 -0600 (MDT)
+From: Alexander Gabert <pappy@nikita.ath.cx>
+Date: Fri, 10 May 2002 22:37:45 +0200
+To: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <20020510203744.GA21330@nikita.ath.cx>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
+Subject: [parisc-linux] broken A1094-66541 PCBA Switch on 735/125
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,73 +21,61 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
- 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The fault was caused at 0x0000000010108fe0 - I need to see the
-> matching vmlinux and System.map to determine where this is in
-> the code.
-> 
+hi fellows,
 
-Ah, mind if send you the vmlinux and System.map off-list?
+tonight i ran into a major problem: one of my two hp workstations is
+having problems with the power on switch:
+
+the button must be pushed and tricked more than 5 times to turn the
+machine on (led's blink only for a second when you push the button
+once).  i did not mind and just did not turn the machine off :-)
+
+but now, i have the problem that the machine runs for 5-6 minutes and
+then suddenly powers off itself.
+
+i really suppose it to be a problem with the A1094-66541 PCBA Switch
+that is the little power switch assembly behind the drive cage that is
+connected to the leds with the small ribbon cable and connected to the chas=
+sis backplane with a long cable.
+
+does someone of you (preferably in germany, or the best would be
+munich) know somebody, who i may ask to get me such a part?
 
 
-> When the box freezes, do "tc" from GSP. On reboot, at PDC prompt
-> type "ser pim" to get the state of the machine when it was TC'd.
-> Once you've saved the PIM dump, it's good to clear PIM.
-> (iirc, "ser clearpim")
-> Again, save matching Sysytem.map and vmlinux.
-> 
+i am quite sure, that this PCB is generating the problems with powering
+on the machine and recently that it powers itself off.
+some months ago i took the power switch PCB from my second machine and
+put it into this one and the PCB worked, but i need it for the other
+machine of course, which happens to be the web/mail server from which i
+am currently writing and receiving my mails.
 
-> IIRC, setting _SYNC parameter to 10 is equivalent to "fast".
+thank you in advance for any help to get this machine up and running
+again...
 
-Okay, I will try that and put a new kernel in.
- 
-> oic. In cases like this, we have to disable Stack Dumping since
-> it data page faults. I suspect that's what's happened in the
-> previous dumps too. You can disable stack dumps by changing "#if 1"
-> to "#if 0" on line 149 (show_stack()) in
-> arch/parisc/kernel/traps.c.  
+alex
 
-I will disable that as well and put a new kernel in.
+--=20
+pub  1024/05E1A80C 2001/12/16 Alexander Gabert (http://nikita.ath.cx) <papp=
+y@nikita.ath.cx>
+          Key fingerprint =3D  2D 84 B0 CB F5 67 8A 22  8D 37 6E 6B 8A 3B 7=
+F D6  05 E1 A8 0C
 
-> BTW, typically this msg means a kernel driver is attempting 
-> to directly
-> access user space data instead of copying the data into kernel
-> space.  
-
-That sounds nasty...
-
-> > so I cranked it up to dbench 100. That crashed nicely with 
-> this panic:
-> > 
-> > Dumping Stack from 0x0000000056390000 to 0x0000000056390000:
-> > 
-> > Kernel Fault: Code=15 regs=0000000046390000
-> > (Addr=0000000056388018) 
-> 
-> did you get the "Stack pointer and cr30 do not correspond!" 
-> msg before this?
-
-Yep, I did get the "Stack pointer..." stuff before this, I left it
-off the email though.
-
-> Me either since I've not seen this problem. This does sound like
-> the SCSI interface driver is hitting a corner case and dying there.
-> But that's just a SWAG.
-> 
-> I'll have to get dbench and try it on the a500 when that's
-> available.  
-
-Cool.
-
-Thanks, James.
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
-Version: PGP 7.1.1
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-iQA/AwUBPNr8OFW+bhIOiSqWEQLoTwCeOG3NSZzK01Aq1w+tz7R421fs9xgAoPbb
-9VCHtaEiG6tTKElsrWsPMiad
-=6qMg
+iD8DBQE83C+Xijt/1gXhqAwRAm77AJ4y2KJy28inpc6QR7022qA8QACKBwCfYqj6
+U2LrpbDgoSOO02hAiOF0IcE=
+=tW/z
 -----END PGP SIGNATURE-----
+
+--tThc/1wpZn/ma/RB--
