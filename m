@@ -1,28 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A7DE3482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 10:09:34 -0600 (MDT)
-Date: Mon, 15 Oct 2001 18:09:23 +0200
-From: Thomas Bogendoerfer <tsbogend@elvis.franken.de>
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EA324482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Oct 2001 10:25:39 -0600 (MDT)
 To: Richard Hirst <rhirst@linuxcare.com>
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Xfree86 failled with -pa57
-Message-ID: <20011015180923.A14160@elvis.franken.de>
-Reply-To: tsbogend@alpha.franken.de
+Message-ID: <1003163134.3bcb0dfe152c5@webmail.tiscalinet.be>
+Date: Mon, 15 Oct 2001 18:25:34 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
 References: <1003154375.3bcaebc713db3@webmail.tiscalinet.be> <20011015164903.X11105@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011015164903.X11105@linuxcare.com>; from rhirst@linuxcare.com on Mon, Oct 15, 2001 at 04:49:03PM +0100
+In-Reply-To: <20011015164903.X11105@linuxcare.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Oct 15, 2001 at 04:49:03PM +0100, Richard Hirst wrote:
+Hi Richard,
+
+Quoting Richard Hirst <rhirst@linuxcare.com>:
+
 > > (EE) No OS PCI support available
 > 
 > Do you have PCI support enabled in your kernel?
+> 
+> Richard
+> 
+> 
+> 
+Yes:
+CONFIG_PCI=yes
+CONFIG_PCI_LBA=yes
+CONFIG_PCI_NAMES=yes
 
-shouldn't matter. I bet the framebuffer runs in a different resolution than
-it's configured in XF86Config. Since the current stifb doesn't support
-mode switching, I've made the check very strict to not allow it. So
-the boot time resolution and bpp must match that from XF86Config.
+As 'make oldconfig' done (answer no yo EISA support: not need; yes for LASI 
+53C700 support)
 
-Thomas.
+Joel
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
