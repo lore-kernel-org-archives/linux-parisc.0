@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 015664840
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 29 Sep 2003 13:05:38 -0600 (MDT)
-Date: Mon, 29 Sep 2003 15:02:51 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: James Bottomley <James.Bottomley@steeleye.com>
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
-	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	Randolph Chung <tausq@debian.org>
-Subject: Re: [parisc-linux] pthread attributes and stack positions (gcc related?)
-Message-ID: <20030929190251.GB21914@systemhalted>
-References: <20030928174226.GA3040@systemhalted> <1064771620.10778.5.camel@mulgrave> <20030929151038.GC15180@systemhalted>
+Date: Mon, 29 Sep 2003 14:55:48 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Roman Zippel <zippel@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
+	parisc-linux@parisc-linux.org, linux-apus-devel@lists.sourceforge.net
+Subject: Re: [parisc-linux] Re: NCR53c720
+Message-ID: <20030929205548.GA13226@dsl2.external.hp.com>
+References: <Pine.GSO.4.21.0309291116250.7432-100000@vervain.sonytel.be> <Pine.LNX.4.44.0309291434260.17812-100000@serv> <20030929133317.GP24824@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.44.0309291818060.17548-100000@serv> <20030929162749.GR24824@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030929151038.GC15180@systemhalted>
+In-Reply-To: <20030929162749.GR24824@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Sep 29, 2003 at 11:10:38AM -0400, Carlos O'Donell wrote:
-> I agree, it seems though that after "fork" the values returned by 
-> "pthread_getattr_np (pthread_self (), &a);" are bogus. While if you call
-> pthread_create(...) and then the previous line from within the newly
-> created thread the values are initialized properly. A mistake might
-> exist with symbol versioning by which we are not calling libpthread's
-> overloaded thread manager "fork()" and continuing on with the normal syscall.
+On Mon, Sep 29, 2003 at 05:27:49PM +0100, Matthew Wilcox wrote:
+> > Um, which one is the current right dma device API?
+> 
+> The one in Documentation/DMA-API.txt.
 
-Looking closer there is a __libc_maybe_call2 that happens during a fork
-that is called and libpthread is linked. The maybe call tries to see if
-pthread_fork is available, if it doesn't see a valid symbol it just
-calls ARCH_FORK(). This looks like a suspect. So do a number of the
-#ifdef's in pthread.c
+Matthew, which version of the source tree?
+2.4.22 and 2.6.x versions of this file are not identical.
 
-c.
+grundler@gsyprf3:/usr/src$ diff linux-2.?/Documentation/DMA-mapping.txt | wc -l
+   117
+grundler@gsyprf3:/usr/src$ wc -l linux-2.?/Documentation/DMA-mapping.txt
+    798 linux-2.4/Documentation/DMA-mapping.txt
+    828 linux-2.5/Documentation/DMA-mapping.txt
+   1626 total
+
+thanks,
+grant
