@@ -1,15 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 52B09482B
-	for <parisc-linux@parisc-linux.org>; Fri, 26 Oct 2001 17:15:33 -0600 (MDT)
-To: parisc-linux@parisc-linux.org, amodra@bigpond.net.au
-Subject: Re: [parisc-linux] python (toolchain really) problems 
-In-Reply-To: Your message of "Fri, 26 Oct 2001 16:19:17 MDT."
-             <E15xFJt-0006F5-00@noam.fc.hp.com>
-References: <E15xFJt-0006F5-00@noam.fc.hp.com> 
-Date: Fri, 26 Oct 2001 17:15:31 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E15xGCJ-0006L7-00@noam.fc.hp.com>
+Received: from mta06ps.bigpond.com (mta06ps.bigpond.com [144.135.25.138])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2BE30482B
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Oct 2001 19:18:33 -0600 (MDT)
+Received: from bubble.local ([144.135.25.81]) by
+          mta06ps.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id GLUBXP00.CHY for <parisc-linux@parisc-linux.org>; Sat, 27 Oct
+          2001 11:25:01 +1000
+Date: Sat, 27 Oct 2001 10:48:24 +0930
+From: Alan Modra <amodra@bigpond.net.au>
+To: Paul Bame <bame@fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Message-ID: <20011027104824.C1050@bubble.sa.bigpond.net.au>
+References: <E15xFJt-0006F5-00@noam.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <E15xFJt-0006F5-00@noam.fc.hp.com>; from bame@fc.hp.com on Fri, Oct 26, 2001 at 04:19:17PM -0600
+Subject: [parisc-linux] Re: python (toolchain really) problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,113 +27,76 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Well hello world doesn't build with libc6 2.2.4-4 so I went back to -3
-and here's what happens to python then:
+On Fri, Oct 26, 2001 at 04:19:17PM -0600, Paul Bame wrote:
+> 
+> One good reason not to upgrade right now is python is broken, but I'm
+> pretty sure this is a dynamic linker bug.  I tried my test against
+> glibc 2.2.4-4 which is currently in incoming.
+> 
+> _start is making it's first function call:
+> 
+> 0x1053c <_start+40>:    ldil 20800,dp
+> 0x10540 <_start+44>:    ldo 8(dp),dp
+> 0x10544 <_start+48>:    b,l 0x104d4 <_init+56>,rp
+> 
+> to here:
+> 
+> 000104d4 <.text>:
+>    104d4:       2b 60 00 00     addil 0,dp,%r1
+>    104d8:       48 35 02 58     ldw 12c(sr0,r1),r21
+>    104dc:       ea a0 c0 00     bv r0(r21)
+>    104e0:       48 33 02 60     ldw 130(sr0,r1),r19
 
-(gdb) where
-#0  0x400453ec in _init () from /usr/lib/libpython2.0.so.0.0
-#1  0x40045124 in _init () from /usr/lib/libpython2.0.so.0.0
-#2  0x4000dd64 in call_init () from /lib/ld.so.1
-#3  0x4000ded4 in _dl_init () from /lib/ld.so.1
-#4  0x40002b68 in _dl_start_user () from /lib/ld.so.1
+I agree that it looks like a dynamic linker problem.  For those who might
+be confused about how the above stub can lead to an IAOQ of 0x00c0ffee
+with r21 = 0xdeadbeef, the explanation is that a little more code has
+run than Paul showed.  The address stored at 0x20800+0x12c is that of
+the lazy linking .plt stub, which looks like
 
-(gdb) disassemble 0x400453ec
-No function contains specified address.
-[ELF header dump attached]
+1: ldw	0(%r20),%r22
+   bv	%r0(%r22)
+   ldw	4(%r20),%r21
+start_here:
+   b,l	1b,%r20
+   depi	0,31,2,%r20
+  .word	fixup_func	initialised to 0x00c0ffee by the linker
+  .word	fixup_ltp	initialised to 0xdeadbeef
 
-(gdb) disassemble 0x40045110
-Dump of assembler code for function _init:
-0x40045104 <_init>:     stw rp,-14(sr0,sp)
-0x40045108 <_init+4>:   stw,ma r4,40(sr0,sp)
-0x4004510c <_init+8>:   stw r19,-20(sr0,sp)
-0x40045110 <_init+12>:  b,l 0x400450f4 <_dl_pagesize+110644>,rp
-0x40045114 <_init+16>:  copy r19,r4
-0x40045118 <_init+20>:  copy r4,r19
-0x4004511c <_init+24>:  b,l 0x400453cc <_init+712>,rp
-0x40045120 <_init+28>:  nop
-0x40045124 <_init+32>:  copy r4,r19
-0x40045128 <_init+36>:  b,l 0x400450e8 <_dl_pagesize+110632>,rp
-0x4004512c <_init+40>:  nop
-0x40045130 <_init+44>:  copy r4,r19
-0x40045134 <_init+48>:  ldw -54(sr0,sp),rp
-0x40045138 <_init+52>:  copy r4,r19
-0x4004513c <_init+56>:  bv r0(rp)
-0x40045140 <_init+60>:  ldw,mb -40(sr0,sp),r4
+so for some reason the dynamic linker has failed to replace the fixup_func
+dummy value with the real value.  See glibc/sysdeps/hppa/dl_machine.h:
+elf_machine_runtime_setup for where this is supposed to happen.  From
+the symptoms that Paul has shown here, I'd guess that DT_JMPREL or
+DT_PLTRELSZ are missing/zero in Paul's binary, or that for some other
+reason, elf_machine_runtime_setup hasn't even been called.
 
-(gdb) disassemble 0x400453cc
-No function contains specified address.
+BTW, I don't think lazy linking has ever been tested because dl-machine.h
+failed to define ELF_MACHINE_PLTREL_OVERLAP.  This had the unfortunate
+effect of always fully relocating .plt.
 
-So it looks like _init+24 is branching to 0x400453cc:
+Anyway, I hope the above explanation is enough for someone to track down
+the problem if I don't find time.
 
-$ ldd python2
-        libpython2.0.so.0.0 => /usr/lib/libpython2.0.so.0.0 (0x4002b000)
-        libpthread.so.0 => /lib/libpthread.so.0 (0x40102000)
-        libdl.so.2 => /lib/libdl.so.2 (0x4012b000)
-        libutil.so.1 => /lib/libutil.so.1 (0x4013e000)
-        libm.so.6 => /lib/libm.so.6 (0x40150000)
-        libc.so.6 => /lib/libc.so.6 (0x401e1000)
-        /lib/ld.so.1 => /lib/ld.so.1 (0x40000000)
+Alan
 
-
-$ objdump -h /usr/lib/libpython2.0.so.0.0
-
-/usr/lib/libpython2.0.so.0.0:     file format elf32-hppa-linux
-
-Sections:
-Idx Name          Size      VMA       LMA       File off  Algn
-  8 .text         0007e700  0001a144  0001a144  0001a144  2**2
-                  CONTENTS, ALLOC, LOAD, READONLY, CODE
-
- 17 .plt          00002794  000cfe54  000cfe54  000bfe54  2**2
-                  CONTENTS, ALLOC, LOAD, CODE
- 18 .got          000023d8  000d25e8  000d25e8  000c25e8  2**2
-                  CONTENTS, ALLOC, LOAD, DATA
-
-
-Disassembly of section .text:
-
-0001a144 <.text>:
-   1a144:       e8 20 00 00     b,l 0x1a14c,r1
-   1a148:       28 39 60 00     addil 73000,r1,%r1
-...
-
-   1a3cc:       6b c2 3f d9     stw rp,-14(sr0,sp)		BRANCH TARGET
-   1a3d0:       08 03 02 41     copy r3,r1
-   1a3d4:       08 1e 02 43     copy sp,r3
-   1a3d8:       6f c1 01 00     stw,ma r1,80(sr0,sp)
-   1a3dc:       6b d3 3f c1     stw r19,-20(sr0,sp)
-   1a3e0:       0c 73 12 90     stw  r19,8(sr0,r3)
-   1a3e4:       2a 60 00 00     addil 0,r19,%r1
-   1a3e8:       48 21 0f 68     ldw 7b4(sr0,r1),r1
-   1a3ec:       0c 20 10 94     ldw  0(sr0,r1),r20		DIES HERE
-   1a3f0:       86 80 20 42     cmpib,=,n 0,r20,0x1a418
-
-do_page_fault() pid=14736 command='python2' type=15 address=0x000bb938
-vm_start = 0x00020000, vm_end = 0x00021000
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111
-r0-3     0000000000000000 00000000000bb938 0000000040045127 00000000bff00680
-r4-7     00000000400fce54 000000004002a09c 0000000040028a64 00000000bff003d0
-r8-11    00000000bff003c8 0000000000000001 0000000000000001 00000000000cd670
-r12-15   0000000000000000 00000000ffffffff 00000000000cd470 0000000000000000
-r16-19   0000000000000000 0000000000000004 0000000000000004 00000000400fce54
-r20-23   0000000000000001 00000000400c3840 0000000040045104 00000000400288f8
-r24-27   00000000bff003d0 00000000bff003c8 0000000000000001 0000000000020808
-r28-31   0000000040029a56 000000007efefeff 00000000bff00700 000000004000dd67
-sr0-3    00000000009db680 00000000009db680 0000000000000000 00000000009db680
-sr4-7    00000000009db680 00000000009db680 00000000009db680 00000000009db680
-
-IASQ: 00000000009db680 00000000009db680 IAOQ: 00000000400453ef 00000000400453f3
- IIR: 0c201094    ISR: 00000000009db680  IOR: 00000000000bb938
- CPU:        0   CR30: 000000002dd9c000 CR31: 0000000010450000
- ORIG_R28: 00000000bff00b08
-
-The dp is libpython + 0xd1e54 which is inside the .plt section.
-
-Maybe a linker problem?
-
-ii  binutils       2.11.92.0.10-1 The GNU assembler, linker and binary utiliti
-
-
-	-P
+> r21 contains '0xdeadbeef' -- here are the details:
+> 
+> do_page_fault() pid=16052 command='python2' type=6 address=0x00c0ffef
+> vm_start = 0x00020000, vm_end = 0x00021000
+> 
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001101111111100001111
+> r0-3     0000000000000000 0000000000020808 000000000001054f 0000000040029abc
+> r4-7     000000004024d048 00000000000bfef0 00000000000bfc30 00000000000bfc30
+> r8-11    00000000ffffffff 00000000000b9010 00000000000bfd70 00000000000bfcb0
+> r12-15   0000000000000000 00000000ffffffff 00000000000bfcf0 0000000000000000
+> r16-19   0000000000000000 0000000000000004 0000000000000004 0000000000020808
+> r20-23   0000000000020958 00000000deadbeef 0000000000c0ffee 000000000002090e
+> r24-27   00000000bff003b8 0000000000000001 0000000000020916 0000000000020808
+> r28-31   0000000000000000 000000007efefeff 00000000bff00580 000000004000ddf7
+> sr0-3    0000000000001c80 0000000000001c80 0000000000000000 0000000000001c80
+> sr4-7    0000000000001c80 0000000000001c80 0000000000001c80 0000000000001c80
+> 
+> IASQ: 0000000000001c80 0000000000001c80 IAOQ: 0000000000c0ffef 0000000000c0fff3
+>  IIR: 43ffff80    ISR: 0000000000001c80  IOR: 000000004033a08c
+>  CPU:        0   CR30: 0000000013f24000 CR31: 0000000010450000
+>  ORIG_R28: 00000000bff00b08
