@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1595F4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Mar 2003 10:07:51 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 18vh2c-0000jH-0g; Wed, 19 Mar 2003 17:07:50 +0000
-Date: Wed, 19 Mar 2003 17:07:49 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: bruno_vidal@hp.com
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] struct page: page in use or not ?
-Message-ID: <20030319170749.GX14520@parcelfarce.linux.theplanet.co.uk>
-References: <3E789FE6.C9BB53CD@hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E789FE6.C9BB53CD@hp.com>
+Received: from lists.parisc-linux.org (unknown [61.145.143.192])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5ED0D4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Mar 2003 22:54:39 -0700 (MST)
+From: 13802254385@china.com
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;charset="GB2312"
+Reply-To: xianggui@21cn.net
+Date: Thu, 20 Mar 2003 13:55:02 +0800
+Message-Id: <20030320055439.5ED0D4829@dsl2.external.hp.com>
+Subject: [parisc-linux] =?GB2312?B?zbjD99PXtvnUsKO/?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,24 +20,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Mar 19, 2003 at 05:50:46PM +0100, bruno_vidal@hp.com wrote:
->     Hi
-> I'm currently trying to reduce the dump time, and then I try to dump only
-> pages that are currently use by the system. In page structure I found a flag,
-> I was thinking a good one for this purpose:
-> atomic_t count;                 /* Usage count, see below. */
-> 
-> But after taking only pages where count != 0, something was broken, I was
-> not able to look at proc structure, and several things.....
-> If a do a "full" dump I'm still able to look at what I need, so this page.count
-> is not accurate for this purpose. So does't exist a good way to know if a page
-> is in use or not ?
+视频采集卡-1
+*MPEG-4压缩格式,四路视频输入,一路音频输入
+*资源25帧/秒PAL制式,30帧/秒NTSC制式
+*用于单路采集时,可提供全实时视频采集功能
+*回放可选择不同的速度回放,快进或快退
+*录像占用硬盘空间60M-100M/路/小时
+*显示分辨率768×576  384×288
+*报警传输通过局域网,广域网进行报警信号传输
+*可远端浏览图像,远程回放录像,可通过电话线传输,可通过IE浏览
+*单系统可支持安装4块卡,达到16路视频采集,录像总资源100帧
+*Windows 98操作系统
 
-The problem is multi-page allocs.  The `struct page' is not valid
-for those.  I'm not sure what a good way of doing this is -- have you
-looked at the swsusp patches to see how they do it?
+视频采集卡-
+*MJPEG压缩格式
+*显示分辨率640×480  320×240
+*一卡提供4-8路视频输入
+*单卡总资源高达100帧/秒PAL制式,NTSC制式120帧/秒
+*实时显示,录像总资源最高达100帧
+*四路报警输入,四路报警输出,移动侦测报警
+*录像模式可设置,动态录像、传感录像、定时录像及连续录像
+*控制云台、镜头功能,硬盘自动覆盖
+*同时监视、录像及回放,远端可单画面或多画面显示
+*网络功能,远端可多画面浏览
+*放帧数可调,录像占用硬盘空间200-500M路/小时
+*系统支持安装二块卡,最高达16路视频,录像总资源200帧
+*indows 98操作系统,支持简体中文、繁体中文及英文介面
+*议配置:华硕815EP主板  ATI 32M显卡
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+视频采集卡-3
+*ENGIN-K压缩格式,支持PAL及NTSL制式
+*16路一卡制,4路实时监控,录像总资源100帧
+*分辨率640×480,320×240,160×120
+*单卡总资源高达100帧/秒PAL制式,NTSC制式120帧/秒
+*八路报警输入,八路报警输出,移动侦测报警
+*录像模式可设置,动态录像、传感录像、定时录像及连续录像
+*前端设备故障语音提示报警,并通过网络(ISDN/DDN/PSTN/LAN)主动传至卡部
+*通过网络自动轮巡可将所有ATM机监控设备工作状态集中汇总至卡部
+*控制云台、镜头功能,硬盘自动覆盖
+*可同时监视、录像及回放,远端可单画面或多画面显示
+*回放帧数可调,录像占用硬盘空间200M-400M/路/小时
+*视频输入1-16路,音频输入1路
+*单系统支持安装二块卡,录像总资源达到200帧
+*操作系统Wndows 98
+*议配置:华硕815EP主板  ATI 32M显卡
