@@ -1,36 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA23844
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Dec 1999 13:46:45 -0700
-Date: Thu, 30 Dec 1999 15:49:25 -0500
-From: Matthew Wilcox <willy@thepuffingroup.com>
-To: Jeffrey A Law <law@cygnus.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Trouble building CVS binutils
-Message-ID: <19991230154925.A12629@thepuffingroup.com>
-References: <19991230141847.W12629@thepuffingroup.com> <14902.946582128@upchuck>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <14902.946582128@upchuck>; from Jeffrey A Law on Thu, Dec 30, 1999 at 12:28:48PM -0700
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA28647
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Dec 1999 23:49:54 -0700
+Date: Fri, 31 Dec 1999 01:52:31 -0600 (CST)
+From: <tom@piace.com>
+To: Eric Schnoebelen <eric@cirr.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Thanks...alot 
+In-Reply-To: <199912301736.LAA11773@opus.cirr.com>
+Message-ID: <Pine.LNX.4.10.9912310147410.9988-100000@adam.piace.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Dec 30, 1999 at 12:28:48PM -0700, Jeffrey A Law wrote:
-> According to the SOM spec the subspace alignment must be greater than zero.
-> Thus, this seems like a bug in the HP linker.
+I don't know what I was thinking.  I was so excited about getting into my
+new toy I just wanted to get it working.  It has been along time
+since I used ed(like) editors.  I hope to have some time to play with it
+after all of the y2krap is over.  I have lots of updated to load on
+customers computers, so I don't get to play with mine.  
 
-OK, it seems we were tripping it with the 2.3 kernel.  We had:
 
-	.SPACE $CODE$
-	.SUBSPA $TEXT$
-(a function)
-	.SUBSPA $DATA$
-(some more functions)
+  
 
-Changing this to:
-	.SPACE $CODE$
-	.SUBSPA $DATA$
-(a function)
-(some more functions)
+On Thu, 30 Dec 1999, Eric Schnoebelen wrote:
 
-seems to work OK.
-
-Thanks to prumpf for his help tracking this down.
+> 
+> tom@piace.com writes:
+> - I was able to boot into single user mode, and edit the password file.  It
+> - took a while to find a terminal program for my computer, that would let me
+> - run vi correctly.  Thanks for all your help.
+> 
+> 	You realize you did more work than required, right??
+> Since you were running as root at single user, you could have
+> used the `passwd' command to change roots password.
+> 
+> 	On the other hand, its always good to know enough of
+> `ed(1)' to be able to fix things like this no matter what sort
+> of terminal you have..
+> 
+> --
+> Eric Schnoebelen		eric@cirr.com 		http://www.cirr.com
+> If bankers can count, how come they have eight windows and only four tellers?
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
