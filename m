@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from daedalus.cs.brandeis.edu (daedalus.cs.brandeis.edu [129.64.3.179])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4D1FF482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 09:27:24 -0700 (MST)
-Received: (from aaronm@localhost)
-	by daedalus.cs.brandeis.edu (8.9.3/8.9.3) id LAA25423
-	for parisc-linux@lists.parisc-linux.org; Fri, 11 Jan 2002 11:27:22 -0500
-Date: Fri, 11 Jan 2002 11:27:22 -0500
-From: Aaron Macks <aaronm@cs.brandeis.edu>
-To: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
-Message-ID: <20020111112722.F25350@daedalus.cs.brandeis.edu>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AD2E8482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 09:27:43 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16P4Ws-0002MR-00; Fri, 11 Jan 2002 16:27:42 +0000
+Date: Fri, 11 Jan 2002 16:27:42 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: raffo@neuronet.pitt.edu
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] How to configure EISA network card in 715/80
+Message-ID: <20020111162742.F26644@parcelfarce.linux.theplanet.co.uk>
+References: <3C3F06DD.6050409@verizon.net> <20020111154337.D26644@parcelfarce.linux.theplanet.co.uk> <3C3F0DD1.4040508@verizon.net> <20020111161705.E26644@parcelfarce.linux.theplanet.co.uk> <3C3F1127.8070507@verizon.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 715/33 mount problems
+In-Reply-To: <3C3F1127.8070507@verizon.net>; from vze26vn8@verizon.net on Fri, Jan 11, 2002 at 11:21:59AM -0500
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +25,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-So I finally got my 715/33 to boot off of cd and did all of the
-partitioning fun, but on trying to copy the kernel and base system
-from the cd to the hd, it could not mount the cdrom again. I was
-initially using a NEC 4x cd, but then tried an Apple(sony) 2x and a
-misc 4x.  no change.  The errors change, but are sometimes a missing
-media error(happens quickly) or a set of SCSI errors(ends with
-panic).  I neglected to write those down, but I'll reproduct sunday or
-monday
-thanks
-Aaron
-ps the 755 works beautifully with LAM as part of my beowulf, thanks
+On Fri, Jan 11, 2002 at 11:21:59AM -0500, Rafael Herrera wrote:
+> If it's of any help, the card is connected through an add-on card to the 
+> main board. The chips on the add-on card are: TACT84544BPC, TACT84543BPP 
+> and TACT84541CPC.
+
+Yep, I'm familiar with that board.  Normally when it's plugged in, PDC
+reports the EISA adapter.  Can you try unplugging it & replugging it to
+see if that helps?  You cold also try messing around at the PDC prompt,
+see whether anything can see it.  As you may have guessed, I have no
+idea what the problem is and I'm suggesting things at random :-)
+
 -- 
-_______________________________________________________
-Aaron Macks(aaronm@cs.brandeis.edu)
-My sheep has seven gall bladders, that makes me the King of the Universe!
+Revolutions do not require corporate support.
