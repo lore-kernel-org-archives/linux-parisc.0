@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F35E84834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Oct 2002 16:44:06 -0600 (MDT)
-Message-Id: <200210242240.g9OMePYu027114@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] 735/125 Wide Diff scsi
-To: richard@nairnconsulting.ca (Richard Nairn)
-Date: Thu, 24 Oct 2002 18:40:25 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: taggart@carmen.fc.hp.com, richard@nairnconsulting.ca,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021024223421.GR26502@taurus.nairnconsulting.ca> from "Richard Nairn" at Oct 24, 2002 04:34:21 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from x.dreamin.de (IP-213157009071.dialin.heagmedianet.de [213.157.9.71])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A37464834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Oct 2002 17:08:10 -0600 (MDT)
+Date: Fri, 25 Oct 2002 01:08:02 +0200
+From: Stefan Pfetzing <dreamind@dreamind.de>
+To: Randolph Chung <randolph@tausq.org>
+Cc: jsoe0708@tiscali.be, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
+Message-ID: <20021024230802.GA16922@dreamind.de>
+References: <3DB5776100000362@ocpmta8.be.tiscali.com> <20021024175802.GA9490@dreamind.de> <20021024181540.GE5602@tausq.org> <20021024181735.GA10043@dreamind.de> <20021024190027.GF5602@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021024190027.GF5602@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Is there any approx time for the WD driver? I have about 60G I can put on
-> my machine if it works.. Will it work if It gets plugged in the SE Chain?
+Hi Randolph,
 
-No.  It may cause damage.
+* Randolph Chung <randolph@tausq.org> [021024 21:00]:
+> > Hm, maybe, it has been a while since I updated that machine.
+> > 
+> > 2.4.19-pa9-xfs is running there.
+> 
+> what machine was this on? is this a 32-bit or 64-bit kernel?
 
-There was a question about the WD driver not too long ago.  You could search
-for the answer but I believe only hpux supports the WD interface at this
-time.  You may be able to add a newer LVD to the SE chain and have it
-work.  I'm not sure if it could be used as a boot device though.
+Its a HP Visualize C200 and its a 32bit kernel.
 
-I've been watching for this support for some time as I have a 735 with
-a bunch of Seagate WD drives on it running under hpux.
+bye
 
-Dave
+Stefan
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+        http://www.dreamind.de/
+Oroborus and Debian GNU/Linux Developer.
