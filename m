@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tyke.pjc.net (public1-leed3-5-cust141.leed.broadband.ntl.com [80.0.5.141])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 84A2E482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 May 2002 08:36:29 -0600 (MDT)
-Date: Thu, 30 May 2002 15:36:26 +0100
-From: Patrick Caulfield <patrick@tykepenguin.com>
-To: parisc-linux@lists.parisc-linux.org
-Cc: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] kdb_v21 branch updated to -pa26, and kallsyms cross-compile
-Message-ID: <20020530143626.GF810@tykepenguin.com>
-References: <20020527001321.A6629@systemhalted> <20020528142736.GA9288@tykepenguin.com> <20020528132933.B31214@systemhalted> <20020529075131.GC9919@tykepenguin.com> <20020529082107.A2794@systemhalted> <20020529141231.GG9919@tykepenguin.com> <20020529110118.A3691@systemhalted> <20020529162438.GJ9919@tykepenguin.com> <20020529132631.B3691@systemhalted> <20020529180739.GL9919@tykepenguin.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-In-Reply-To: <20020529180739.GL9919@tykepenguin.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2ECCA482A
+	for <parisc-linux@parisc-linux.org>; Thu, 30 May 2002 09:19:23 -0600 (MDT)
+Received: from b180.bame (lart.fc.hp.com [15.1.54.48])
+	by cuprel1.hp.com (Postfix) with ESMTP id 89A8511F9
+	for <parisc-linux@parisc-linux.org>; Thu, 30 May 2002 08:19:22 -0700 (PDT)
+Message-Id: <m17DRhF-00009qC@b180.bame>
+Date: Thu, 30 May 2002 09:18:37 -0600 (MDT)
+From: bame@fc.hp.com (Paul Bame)
+To: parisc-linux@parisc-linux.org
+Subject: [parisc-linux] I/O-centric profile
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,11 +21,310 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hmmm
+I edited System.map to get rid of the $lcfu_done sorts of symbols within
+the user-space copy routines.  This load, again on a b180, is a bunch of
+big file tree copies and syncs and removes mixed with some large file
+creation via dd and syncs.
 
-CONFIG_KDB=y      : no serial console or FW SCSI
-CONFIG_KDB=n      : all works fine.
-
-bizarre!
-
-patrick
+  8443 total                                      0.0048
+  2500 lcopy_from_user                           36.7647
+   945 lcopy_to_user                             16.8750
+   403 memset                                    12.5938
+   273 cpu_idle                                   3.7917
+   215 ext3_do_update_inode                       0.1701
+   151 scsi_dispatch_cmd                          0.1560
+   132 journal_dirty_metadata                     0.2115
+   129 do_get_write_access                        0.0762
+   121 flush_user_icache_range_asm                3.3611
+   120 __make_request                             0.0415
+   111 journal_get_write_access                   0.6307
+    97 journal_cancel_revoke                      0.3566
+    90 flush_user_dcache_range_asm                2.5000
+    88 ext3_get_inode_loc                         0.1964
+    76 get_hash_table                             0.4318
+    71 $$remU                                     0.2399
+    65 rmqueue                                    0.0710
+    65 $$divU                                     0.2257
+    58 __journal_file_buffer                      0.0815
+    57 d_lookup                                   0.1484
+    55 kmem_cache_alloc                           0.1741
+    55 journal_add_journal_head                   0.1580
+    55 ext3_new_block                             0.0238
+    54 link_path_walk                             0.0213
+    54 kmem_cache_free                            0.2700
+    52 __brelse                                   0.6500
+    48 clear_user_page_asm                        0.4286
+    44 journal_unlock_journal_head                0.2619
+    44 ext3_dirty_inode                           0.1746
+    43 generic_file_write                         0.0219
+    43 ext3_check_dir_entry                       0.1558
+    40 schedule                                   0.0422
+    40 __block_prepare_write                      0.0450
+    38 start_this_handle                          0.0748
+    37 journal_stop                               0.0685
+    36 ext3_get_block_handle                      0.0457
+    35 scsi_request_fn                            0.0425
+    34 mark_page_accessed                         0.3542
+    33 kfree                                      0.1618
+    32 nfs3_xdr_sattrargs                         0.0116
+    32 __jbd_kmalloc                              0.1600
+    32 $$mulU                                     0.0602
+    31 memscan                                    0.7045
+    30 ll_rw_block                                0.0487
+    30 journal_start                              0.1056
+    30 journal_commit_transaction                 0.0065
+    29 memcmp                                     0.3625
+    29 ext3_mark_iloc_dirty                       0.2339
+    29 ext3_find_entry                            0.0374
+    29 do_generic_file_read                       0.0229
+    28 __free_pages_ok                            0.0262
+    27 kmalloc                                    0.0742
+    24 lstrncpy_from_user                         0.3333
+    24 __insert_into_lru_list                     0.1053
+    22 syscall_restore                            0.0917
+    22 ext3_mark_inode_dirty                      0.2500
+    22 buffer_insert_inode_queue                  0.3235
+    22 __mark_inode_dirty                         0.1341
+    21 __wake_up                                  0.0750
+    20 ext3_add_entry                             0.0158
+    19 memcpy                                     0.5278
+    19 ext3_reserve_inode_write                   0.0742
+    19 ext3_new_inode                             0.0075
+    18 ext3_get_branch                            0.0608
+    18 ext3_alloc_branch                          0.0201
+    18 bread                                      0.1324
+    17 ext3_test_allocatable                      0.2024
+    17 ext3_get_group_desc                        0.0944
+    17 ext3_commit_write                          0.0281
+    17 dput                                       0.0394
+    16 walk_page_buffers                          0.0635
+    16 unlock_page                                0.1143
+    16 try_to_free_buffers                        0.0435
+    16 sys_write                                  0.0455
+    16 sys_read                                   0.0455
+    16 getblk                                     0.1429
+    16 __journal_unfile_buffer                    0.0288
+    16 __free_pages                               0.2105
+    15 path_init                                  0.0291
+    15 __refile_buffer                            0.1250
+    15 __block_commit_write                       0.0399
+    14 shrink_cache                               0.0136
+    14 find_inode                                 0.0814
+    14 add_to_page_cache_unique                   0.0673
+    13 fput                                       0.0332
+    12 reschedule_idle                            0.0140
+    12 permission                                 0.1500
+    12 get_empty_filp                             0.0361
+    12 generic_make_request                       0.0273
+    12 fimanyloop                                 0.6000
+    12 __journal_remove_journal_head              0.0303
+    12 $$remI                                     0.0366
+    11 vfs_permission                             0.0316
+    11 set_buffer_flushtime                       0.3929
+    11 sd_init_command                            0.0119
+    11 open_namei                                 0.0071
+    11 lru_cache_add                              0.0550
+    11 ext3_splice_branch                         0.0179
+    11 ext3_clear_blocks                          0.0243
+    11 ext3_block_to_path                         0.0404
+    11 __alloc_pages                              0.0204
+    10 truncate_list_pages                        0.0216
+    10 submit_bh                                  0.0532
+    10 journal_dirty_data                         0.0198
+    10 ext3_prepare_write                         0.0253
+    10 copy_user_page_asm                         0.0658
+    10 add_page_to_hash_queue                     0.0806
+    10 __remove_from_lru_list                     0.0781
+     9 pipe_read                                  0.0138
+     9 fdsync                                     0.4500
+     9 ext3_writepage_trans_blocks                0.0592
+     9 ext3_getblk                                0.0112
+     9 ext3_free_data                             0.0186
+     9 create_buffers                             0.0352
+     9 __find_lock_page_helper                    0.0433
+     8 prune_icache                               0.0233
+     8 journal_unmap_buffer                       0.0127
+     8 journal_flushpage                          0.0157
+     8 get_unused_buffer_head                     0.0444
+     8 ext3_read_inode                            0.0084
+     8 ext3_free_blocks                           0.0043
+     8 __remove_inode_page                        0.0541
+     7 unlock_buffer                              0.0583
+     7 syscall_exit                               0.2500
+     7 sd_find_queue                              0.1250
+     7 prune_dcache                               0.0152
+     7 log_space_left                             0.2188
+     7 journal_get_undo_access                    0.0194
+     7 intr_restore                               0.0155
+     7 handle_interruption                        0.0054
+     7 getname                                    0.0287
+     7 ext3_get_block                             0.0372
+     7 ext3_forget                                0.0233
+     7 block_read_full_page                       0.0091
+     7 add_timer                                  0.0269
+     7 _switch_to_ret                             0.0090
+     6 update_atime                               0.0484
+     6 scsi_init_io_v                             0.0205
+     6 purge_kernel_dcache_page                   0.0600
+     6 generic_commit_write                       0.0417
+     6 fget                                       0.0938
+     6 fcntl_dirnotify                            0.0152
+     6 create_empty_buffers                       0.0375
+     5 syscall_check_bh                           0.3125
+     5 path_release                               0.0595
+     5 page_cache_read                            0.0171
+     5 nr_free_buffer_pages                       0.0694
+     5 iput                                       0.0080
+     5 get_unused_fd                              0.0114
+     5 get_new_inode                              0.0094
+     5 ext3_orphan_del                            0.0071
+     5 ext3_find_goal                             0.0179
+     5 ext3_create                                0.0142
+     5 d_alloc                                    0.0117
+     5 bcopy                                      0.1389
+     5 balance_dirty_state                        0.0347
+     5 _switch_to                                 0.0463
+     5 __user_walk                                0.0379
+     5 __down_read                                0.0305
+     4 sys_utime                                  0.0130
+     4 sys_close                                  0.0244
+     4 pipe_write                                 0.0052
+     4 notify_change                              0.0095
+     4 ncr_queue_command                          0.0013
+     4 journal_try_to_free_buffers                0.0175
+     4 journal_alloc_journal_head                 0.0244
+     4 generic_unplug_device                      0.0588
+     4 filldir64                                  0.0116
+     4 ext3_bread                                 0.0270
+     4 dentry_open                                0.0076
+     4 clear_inode                                0.0172
+     4 cached_lookup                              0.0323
+     4 add_wait_queue                             0.0833
+     4 __wake_up_sync                             0.0132
+     4 __put_unused_buffer_head                   0.0263
+     4 __lru_cache_del                            0.0286
+     4 __free_pte                                 0.0286
+     4 __find_lock_page                           0.1429
+     4 Letext                                     0.0270
+     3 truncate_complete_page                     0.0259
+     3 sys_open                                   0.0107
+     3 sys_fcntl                                  0.0268
+     3 put_filp                                   0.0288
+     3 lookup_hash                                0.0132
+     3 locks_remove_posix                         0.0079
+     3 journal_dirty_sync_data                    0.0214
+     3 grow_buffers                               0.0070
+     3 filemap_nopage                             0.0044
+     3 file_read_actor                            0.0234
+     3 ext3_truncate                              0.0026
+     3 ext3_readdir                               0.0026
+     3 ext3_free_inode                            0.0022
+     3 ext3_file_write                            0.0208
+     3 d_rehash                                   0.0187
+     3 _alloc_pages                               0.0682
+     3 __up_read                                  0.0341
+     3 ___wait_on_page                            0.0150
+     2 write_some_buffers                         0.0060
+     2 vfs_readdir                                0.0064
+     2 try_to_release_page                        0.0139
+     2 sys_newstat                                0.0125
+     2 sys_getdents64                             0.0106
+     2 scsi_add_timer                             0.0119
+     2 refile_buffer                              0.0833
+     2 pipe_wait                                  0.0081
+     2 lookup_create                              0.0109
+     2 locks_remove_flock                         0.0161
+     2 kmem_cache_reap                            0.0034
+     2 intr_do_resched                            0.0556
+     2 inode_setattr                              0.0075
+     2 inode_has_buffers                          0.0455
+     2 inode_change_ok                            0.0042
+     2 init_rwsem                                 0.1000
+     2 in_group_p                                 0.0385
+     2 grow_dev_page                              0.0086
+     2 get_empty_inode                            0.0116
+     2 generic_file_readahead                     0.0048
+     2 generic_file_read                          0.0060
+     2 ext3_unlink                                0.0037
+     2 ext3_orphan_add                            0.0030
+     2 ext3_alloc_block                           0.0500
+     2 end_buffer_io_sync                         0.0192
+     2 do_page_fault                              0.0026
+     2 do_no_page                                 0.0044
+     2 do_journal_get_write_access                0.0147
+     2 dispose_list                               0.0139
+     2 buffer_insert_inode_data_queue             0.0294
+     2 block_prepare_write                        0.0217
+     2 bdget                                      0.0060
+     2 add_wait_queue_exclusive                   0.0417
+     2 __run_task_queue                           0.0143
+     1 zap_page_range                             0.0011
+     1 wait_for_buffers                           0.0038
+     1 vm_enough_memory                           0.0063
+     1 unmap_underlying_metadata                  0.0064
+     1 tty_poll                                   0.0049
+     1 tcp_write_xmit                             0.0013
+     1 syscall_restore_rfi                        0.0357
+     1 syscall_check_sig                          0.0833
+     1 syscall_check_resched                      0.1250
+     1 sys_rt_sigprocmask                         0.0027
+     1 sys_lstat64                                0.0063
+     1 sys_fstat64                                0.0068
+     1 sync_unlocked_inodes                       0.0023
+     1 sync_page_buffers                          0.0029
+     1 swap_out                                   0.0006
+     1 skb_checksum                               0.0017
+     1 sk_run_filter                              0.0004
+     1 shrink_dcache_sb                           0.0021
+     1 set_bh_page                                0.0100
+     1 select_parent                              0.0068
+     1 scsi_malloc                                0.0046
+     1 refill_inactive                            0.0021
+     1 real_lookup                                0.0028
+     1 read_chan                                  0.0005
+     1 rb_erase                                   0.0033
+     1 number                                     0.0009
+     1 lookup_one_len                             0.0086
+     1 load_inode_bitmap                          0.0019
+     1 kswapd_can_sleep_pgdat                     0.0179
+     1 journal_revoke                             0.0021
+     1 journal_get_create_access                  0.0016
+     1 journal_forget                             0.0015
+     1 intr_return                                0.0500
+     1 intr_check_sig                             0.0833
+     1 iget4                                      0.0029
+     1 handle_mm_fault                            0.0037
+     1 get_pid                                    0.0028
+     1 flush_kernel_icache_page                   0.0100
+     1 flush_kernel_dcache_page                   0.0100
+     1 fioneloop                                  0.1250
+     1 find_vma_prev                              0.0119
+     1 find_or_create_page                        0.0030
+     1 find_next_usable_block                     0.0010
+     1 filp_open                                  0.0093
+     1 filp_close                                 0.0068
+     1 filemap_fdatasync                          0.0035
+     1 ext3_setattr                               0.0022
+     1 ext3_free_branches                         0.0014
+     1 ext3_delete_inode                          0.0028
+     1 ext3_block_truncate_page                   0.0010
+     1 ext2_update_inode                          0.0008
+     1 ext2_get_branch                            0.0034
+     1 ext2_get_block                             0.0008
+     1 empty_dir                                  0.0016
+     1 do_select                                  0.0017
+     1 do_munmap                                  0.0014
+     1 do_anonymous_page                          0.0028
+     1 datagram_poll                              0.0034
+     1 cp_new_stat64                              0.0022
+     1 copy_strings                               0.0047
+     1 copy_page_range                            0.0018
+     1 block_truncate_page                        0.0019
+     1 block_commit_write                         0.0179
+     1 balance_dirty                              0.0132
+     1 __wait_on_buffer                           0.0037
+     1 __try_to_free_cp_buf                       0.0100
+     1 __remove_inode_queue                       0.0417
+     1 __journal_remove_checkpoint                0.0066
+     1 __down_write                               0.0064
+     1 $$divI                                     0.0030
