@@ -1,30 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA03037
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 07:56:40 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 16 Jan 2001 15:00:16 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14IXak-0002HW-00; Tue, 16 Jan 2001 15:00:10 +0000
-Date: Tue, 16 Jan 2001 15:00:10 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Greg Ingram <ingram@symsys.com>
-Cc: Ryan Bradetich <rbradetich@uswest.net>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] C100 Boots! (Mostly)
-Message-ID: <20010116150010.C20275@parcelfarce.linux.theplanet.co.uk>
-References: <3A637862.C312CD12@uswest.net> <Pine.LNX.4.21.0101160839390.25295-100000@maestro.symsys.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA03248
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Jan 2001 08:06:49 -0700
+Sender: sanjak@tipas.lt
+Message-Id: <3A64530D.CD78EFD2@tipas.lt>
+Date: Tue, 16 Jan 2001 15:56:29 +0200
+From: Aleksandr Konstantinov <sanjak@tipas.lt>
 Mime-Version: 1.0
+To: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Booting C100
+References: <3A636BE1.EE2DBF87@tipas.lt> <20010115221749.A28689@parcelfarce.linux.theplanet.co.uk>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0101160839390.25295-100000@maestro.symsys.com>; from ingram@symsys.com on Tue, Jan 16, 2001 at 08:40:43AM -0600
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jan 16, 2001 at 08:40:43AM -0600, Greg Ingram wrote:
-> I grabbed the one labelled as latest from the CVS directory on the FTP
-> site.  Is that the latest? 
+Matthew Wilcox wrote:
+> 
+> On Mon, Jan 15, 2001 at 10:30:09PM +0100, Aleksandr Konstantinov wrote:
+> > Can anybody explain me how to get console NOT on serial link ?
+> 
+> activate CONFIG_STI and use `console=tty0' instead of `console=ttyS0'.
+Do You mean CONFIG_STI_CONSOLE ? I have it, and CONFIG_SERIAL_CONSOLE
+too.
+Palo also sets console=tty0 .  Booting goes till "Switching from PDC
+console"
+and then welcome message from palinux cdrom appears on serial link.
 
-dunno, does `grep ttyS0 palo/Makefile' reveal anything?  if yes, it's
-the latest.  and you can always `cvs up' in the palo directory to get
-the latest version.
 
--- 
-Revolutions do not require corporate support.
+
+
+A.K.
