@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D7FCB4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 04:32:01 -0700 (MST)
-Date: Thu, 6 Feb 2003 12:31:58 +0100
-Subject: Re: [parisc-linux] ksoftirqd in 2.4.20-pa23
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v551)
+Received: from mgw-x4.nokia.com (mgw-x4.nokia.com [131.228.20.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C8B2D4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Feb 2003 05:20:57 -0700 (MST)
+Received: from esvir03nok.nokia.com (esvir03nokt.ntc.nokia.com [172.21.143.35])
+	by mgw-x4.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h16CNam24188
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 6 Feb 2003 14:23:36 +0200 (EET)
+Date: Thu, 6 Feb 2003 14:20:53 +0200
+From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
+To: ext Thibaut VARENE <varenet@esiee.fr>
 Cc: parisc-linux@lists.parisc-linux.org
-To: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20030206102122.GW7503@aurinko.ntc.nokia.com>
-Message-Id: <9A2A64BE-39C6-11D7-8ABC-0030656F07A2@esiee.fr>
+Subject: Re: [parisc-linux] ksoftirqd in 2.4.20-pa23
+Message-ID: <20030206122053.GX7503@aurinko.ntc.nokia.com>
+References: <20030206102122.GW7503@aurinko.ntc.nokia.com> <9A2A64BE-39C6-11D7-8ABC-0030656F07A2@esiee.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <9A2A64BE-39C6-11D7-8ABC-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,55 +26,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-parisc-linux.org/faq
+On Thu, Feb 06, 2003 at 12:31:58PM +0100, ext Thibaut VARENE wrote:
+> parisc-linux.org/faq
 
-On jeudi, f=E9v 6, 2003, at 11:21 Europe/Paris, Nahkola Mikko wrote:
+Well, duh, too long since I updated my local copy of that, it seems.
 
-> Now that there seems to be another generally useful kernel out (as in,
-> usable for running KDE and such without lockups), there seems to be an
-> interesting thing there...
->
-> Why is ksoftirqd_CPU0 taking almost all the free CPU time? Sure, it's
-> nice 19, but still... and I don't remember having that on 2.4.18 nor =
-on
-> the other .19 and .20 versions that I tried. And of course it's all
-> system time.
->
-> This is a typical state:
->
->  12:16:28 up 23:32,  3 users,  load average: 1.11, 1.24, 1.20
-> 104 processes: 102 sleeping, 2 running, 0 zombie, 0 stopped
-> CPU states:   1.2% user,  96.7% system,   0.9% nice,   1.2% idle
-> Mem:    774288K total,   770800K used,     3488K free,    51464K=20
-> buffers
-> Swap:  1500152K total,     1936K used,  1498216K free,   624904K =
-cached
->
->   PID USER     PRI  NI  SIZE  RSS SHARE STAT %CPU %MEM   TIME COMMAND
->     3 root      20  19     0    0     0 RWN  87.5  0.0  1211m=20
-> ksoftirqd_CPU0
-> 16772 root      18  15  1196 1196   924 R N   9.4  0.1   0:02 top
->  1006 mnahkola   9   0  9680 9380  8688 S     1.0  1.2  13:49 kdeinit
->   153 daemon     9   0   652  652   532 S     0.1  0.0   1:38 portmap
-> 16737 root       9   0  2236 2208  1896 S     0.1  0.2   0:00 sshd
->     1 root       9   0   580  580   492 S     0.0  0.0   0:12 init
->     2 root       9   0     0    0     0 SW    0.0  0.0   0:00 keventd
->     4 root       9   0     0    0     0 SW    0.0  0.0   0:16 kswapd
->     5 root       9   0     0    0     0 SW    0.0  0.0   0:00 bdflush
->     6 root       9   0     0    0     0 SW    0.0  0.0   0:00 kupdated
->     9 root       9   0     0    0     0 SW    0.0  0.0   0:00 =
-scsi_eh_2
->    10 root      -1 -20     0    0     0 SW<   0.0  0.0   0:00=20
-> mdrecoveryd
->    11 root       9   0     0    0     0 SW    0.0  0.0   0:01 =
-kjournald
->
->
-> --=20
-> Mikko Nahkola   <mikko.nahkola@nokia.com>
-> Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+OK - the box doesn't have the physical HIL port anyway... do I need newer 
+tools or can I rebuild the kernel with the Debian packaged tools, and can 
+I expect it to work without HIL support (on a C240)? Already pulled 
+/cvs/linux-2.4.20-pa23.tar.gz ... 
+
+> On jeudi, fév 6, 2003, at 11:21 Europe/Paris, Nahkola Mikko wrote:
+> >Why is ksoftirqd_CPU0 taking almost all the free CPU time? Sure, it's
+> >nice 19, but still... and I don't remember having that on 2.4.18 nor on
+
+
+-- 
+Mikko Nahkola   <mikko.nahkola@nokia.com>
+Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
