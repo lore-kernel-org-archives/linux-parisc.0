@@ -1,27 +1,28 @@
-Received: from chalet ([199.254.238.240])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id VAA22896
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 21:14:49 -0700
-Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via in.smtpd with esmtp (ident bame using rfc1413)
-	id <m13y4do-001Vp4C@chalet> (Debian Smail3.2.0.102)
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 21:02:44 -0700 (MST)
-Message-Id: <m13y4do-001Vp4C@chalet>
-From: bame@riverrock.org
-Reply-To: bame@riverrock.org
-Errors-To: bame@riverrock.org
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA23381
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 21:52:42 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 04:54:22 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA25431;
+	Tue, 21 Nov 2000 15:38:57 +1100
+Date: Tue, 21 Nov 2000 15:38:57 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
 To: Grant Grundler <grundler@cup.hp.com>
-cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] 712 ISL and palo
-In-reply-to: Your message of "Mon, 20 Nov 2000 17:19:03 PST."
-             <200011210119.RAA19517@milano.cup.hp.com>
-Date: Mon, 20 Nov 2000 21:02:40 -0700
-Sender: bame@bame.riverrock.org
+cc: Paul Bame <bame@fc.hp.com>, mkp@mkp.net, parisc-linux@thepuffingroup.com
+Subject: Re: A DT_INIT/DT_FINI glibc patch. 
+In-Reply-To: <Pine.LNX.4.21.0011211314450.15623-100000@front.linuxcare.com.au>
+Message-ID: <Pine.LNX.4.21.0011211537010.15623-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-= palo wouldn't accept any ps/2 keyboard input.
-= Don't know if this is a palo or PDC bug.
-= Any ideas?
+On Tue, 21 Nov 2000, I wrote:
 
-PALO bug.  I didn't test the PS/2 case but I think I fixed it.
+> Instead the .note.ABI-tag section should be examined to determine the
+> target, which sadly isn't set correctly at the moment.  :-(
 
-	-P
+Actually, it is set correctly.  A comment in csu/abi-note.S was wrong.
+
+-- 
+Linuxcare.  Support for the Revolution.
