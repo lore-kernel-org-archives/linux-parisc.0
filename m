@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from alpha.bocc.de (p5080D25A.dip.t-dialin.net [80.128.210.90])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ECFFE482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Feb 2002 09:31:14 -0700 (MST)
-Date: Sun, 17 Feb 2002 17:30:55 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: Sten <sten@blinkenlights.nl>
-Cc: linux-kernel@vger.kernel.org,
-	HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: IPv6 Sparc64
-In-Reply-To: <Pine.LNX.4.44-Blink.0202041155020.19625-100000@deepthought.blinkenlights.nl>
-Message-ID: <Pine.LNX.4.43.0202171727570.30347-100000@alpha.bocc.de>
+Received: from femail13.sdc1.sfba.home.com (femail13.sdc1.sfba.home.com [24.0.95.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D563482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 00:15:15 -0700 (MST)
+Received: from kenny ([68.58.113.28]) by femail13.sdc1.sfba.home.com
+          (InterMail vM.4.01.03.20 201-229-121-120-20010223) with SMTP
+          id <20020218071508.PTAS28808.femail13.sdc1.sfba.home.com@kenny>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Sun, 17 Feb 2002 23:15:08 -0800
+Message-ID: <000801c1b84b$ff598780$02c1a8c0@james.co.uk>
+From: "James S" <smith-james@home.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 18 Feb 2002 02:15:08 -0500
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Re: browser !!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,47 +26,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Sten,
+i've just stumbled across one called Dillo - its by no means perfect, but
+its very lightweight & its available as an hppa.deb package
 
-On Mon, 4 Feb 2002, Sten wrote:
+James S
 
-> On Mon, 4 Feb 2002, Jochen Friedrich wrote:
-> 
-> > > I have been trying to get ipv6 to work
-> > > on sparc64/kernel 2.4 but it looks like it
-> > > is broken somewhere in the kernel.
-> > > I was wondering if this was a known problem.
-> >
-> > > [root@towel ip]# ping6 ::1
-> > > PING ::1(::1) from ::1 : 56 data bytes
-> >
-> > It's the same on PARISC. However, on PARISC, although ping6 doesn't work,
-> > telnet etc do work, as well as pinging the PARISC box from an Intel or
-> > Alpha machine.
-> 
-> The reason I ask this is because I have been trying to setup a
-> tunnel, and I cant get it to work either with ifconfig or iproute.
-> 
-> [root@towel ip]# ip tunnel add blink mode sit remote x.x.x.x dev
-> eth0
-> ioctl: Invalid argument
 
-At least on PARISC, this turned out to be an glibc issue. With the latest 
-glibc from debian unstable, ping6 is now working OK:
 
-# ping6 -n www.kame.net
-PING www.kame.net(3ffe:501:4819:2000:203:47ff:fea5:3257) from 
-3ffe:400:470:4:a00:9ff:fe17:ca3d : 56 data bytes
-64 bytes from 3ffe:501:4819:2000:203:47ff:fea5:3257: icmp_seq=1 ttl=53 
-time=592
-ms
-64 bytes from 3ffe:501:4819:2000:203:47ff:fea5:3257: icmp_seq=2 ttl=53 
-time=609
-ms
-
---- www.kame.net ping statistics ---
-3 packets transmitted, 2 received, 33% loss, time 2022ms
-rtt min/avg/max/mdev = 592.367/601.114/609.862/8.781 ms
- 
-Cheers,
-Jochen
+> Hi,
+>
+> Where can I find netscape browser for PA-RISC Linux 0.9.3 .
+>
+> Maneesh
+>
+>
+>
+>
