@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0A3AC482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 08:43:40 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16P3qD-0001IW-00; Fri, 11 Jan 2002 15:43:37 +0000
-Date: Fri, 11 Jan 2002 15:43:37 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: raffo@neuronet.pitt.edu
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] How to configure EISA network card in 715/80
-Message-ID: <20020111154337.D26644@parcelfarce.linux.theplanet.co.uk>
-References: <3C3F06DD.6050409@verizon.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C3F06DD.6050409@verizon.net>; from vze26vn8@verizon.net on Fri, Jan 11, 2002 at 10:38:05AM -0500
+Received: from out005pub.verizon.net (out005pub.verizon.net [206.46.170.105])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0A01E482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 08:54:52 -0700 (MST)
+Message-ID: <3C3F0ADA.3060504@verizon.net>
+Date: Fri, 11 Jan 2002 10:55:06 -0500
+From: Rafael Herrera <vze26vn8@verizon.net>
+Reply-To: raffo@neuronet.pitt.edu
+MIME-Version: 1.0
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Cc: deb@thepuffingroup.com, marteaut@esiee.fr
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Correction for the PA-RISC/Linux Boot HOWTO at ESIEE's web site.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,29 +22,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jan 11, 2002 at 10:38:05AM -0500, Rafael Herrera wrote:
-> LUCENT/Hewlett Packard
-> 100 VG
-> 1821 - 1400
-> 
-> LUCENT
-> 2X01 MC
-> Regatta 100
-> 
-> Intel
-> N82503
-> L7201918
-> 
-> The card has two ports, a 10 Mbit/sec and a 100Mbit/sec.
-> 
-> Is there a driver for this card?
+I'm booting a 715/80 workstation using a PC with SuSE 7.2. Trying to 
+follow the examples to configure bootp/tftp at
 
-yep it's the hp100 driver.  i've used it myself (when i got a ping back
-from it, i declared the eisa code good enough to commit :-).  in config,
-that's: HP 10/100VG PCLAN (ISA, EISA, PCI) support' CONFIG_HP100
+http://mkhppa1.esiee.fr/parisc-linux-boot/parisc-linux-boot/preparation.html
 
-btw, the 100Mbit port is 100VG, not 100TX so you need 100VG equipment
-to work with it.  the 10Mbit port is vanilla 10baseT though.
+I could not get it to boot.
+
+This distribution sets the daemons as follows:
+
+tftp    dgram  udp  wait  root  /usr/sbin/tcpd  in.tftpd -s /tftpboot
+bootps  dgram  udp  wait  root  /usr/sbin/bootpd  bootpd -c /tftpboot
+
+This a chroot setup, so the example /etc/bootptab in the web page will 
+not work.
+
+The configuration that worked for me is the following:
+
+parisc:hd=/:\
+                 :ht=ethernet:\
+                 :ha=0800093BF206:\
+                 :ip=192.168.0.8:\
+                 :bf=lifimage:\
+                 :sm=255.255.0.0:\
+                 :to=7200:
+
+Where the bootable kernel image was the lifimage created using "make 
+palo" (The web page description is ambiguous as to what image to use: 
+vmlinux or lifimage)
+
+Also the purpose of the parameter "rp" in the example bootptab is not 
+clear in the example. Its purpose is to specify a root filesystem to 
+mount, but the lifimage has that parameter set from palo Makefile.
 
 -- 
-Revolutions do not require corporate support.
+      Rafael
