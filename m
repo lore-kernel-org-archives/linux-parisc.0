@@ -1,15 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6263D4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 01:37:36 -0700 (MST)
-Date: Wed, 15 Jan 2003 09:36:53 +0100
-Message-ID: <3E1AA7C1000015EB@ocpmta7.freegates.net>
-From: jsoe0708@tiscali.be
-Subject: RE: [parisc-linux] PA-RISC Linux RAID1 Root HOWTO
-To: "Martin K. Petersen" <mkp@mkp.net>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mgw-x4.nokia.com (mgw-x4.nokia.com [131.228.20.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 800AF4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 01:56:29 -0700 (MST)
+Received: from esvir04nok.ntc.nokia.com (esvir04nokt.ntc.nokia.com [172.21.143.36])
+	by mgw-x4.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h0F8wat25239
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 10:58:36 +0200 (EET)
+Received: from esebh001.NOE.Nokia.com (unverified) by esvir04nok.ntc.nokia.com
+ (Content Technologies SMTPRS 4.2.5) with ESMTP id <T5fcde44881ac158f24078@esvir04nok.ntc.nokia.com> for <parisc-linux@lists.parisc-linux.org>;
+ Wed, 15 Jan 2003 10:56:23 +0200
+Received: (from mnahkola@localhost)
+	by aurinko.ntc.nokia.com (8.11.6/8.11.6) id h0F8uLt24126
+	for parisc-linux@lists.parisc-linux.org; Wed, 15 Jan 2003 10:56:21 +0200 (EET)
+Date: Wed, 15 Jan 2003 10:56:20 +0200
+From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030115085619.GA17760@aurinko.ntc.nokia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] Interesting network card ...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,57 +29,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Martin,
+What's the deal with the various HP-branded tulip-based NICs? Are they 
+expected to "just work" or what? I found one that sure doesn't, but then 
+again, but my kernel isn't actually new ... (2.4.18-32 packaged)
 
-Congratulation, great job.
+The card is the HP ANA-6911A/AUI (yes, it's a 10/100BT with coax and 
+AUI too), part# A3738-60001, and it _is_ found by the tulip driver, but 
+for some reason the driver claims that "no MII transceiver found", and 
+does list the 10B2 and AUI connections too. But I can't seem to make it 
+form a link with TP or coax, no matter what I do. And the AUI connector 
+is blocked by the C240 chassis. Is there a simple way to force the use of 
+a certain transceiver? Tried mii-tool already and it didn't help much - 
+but then again it doesn't seem to know about the coax and AUI at all...
 
-I already build a raid1 on my b180 but /boot partition and it works fine.=
-
-So I now just have to update palo build the raid1 on this boot slice.
-
-Well just a stupid question:
-since now my md devices were:
-/dev/md0(sda5+sdb5) /
-/dev/md1(sda2+sdb2)  swap
-/dev/md2(sda6+sdb6) /home
-...
-and I would like it becomes:
-/dev/md0(sda3+sdb3) /boot
-/dev/md1(sda5+sdb5) /
-/dev/md2(sda2+sdb2) swap
-...
-
-so, finaly, how to remumber md0 into md1 ...?
-
-I would also ask you if you could advise me on the resizing of a md.
-My md7 is a raid1 with the last slices sda11 and sdb11 of disks (mounted
-on /var). As there are still some free space at the end of each disk, I
-would like to increase it. Could you advise me howto do (I try to find do=
-c
-but no success and my test was not more succesfull and I do not want to
-loose the contents of the fs)?
-
-Thanks in advance for your attention.
-
->-- Original Message --
->To: parisc-linux@lists.parisc-linux.org
->From: "Martin K. Petersen" <mkp@mkp.net>
->Subject: [parisc-linux] PA-RISC Linux RAID1 Root HOWTO
->Date: 14 Jan 2003 14:27:11 -0500
->
->
->
->PA-RISC Linux RAID1 Root HOWTO
->
-
-Very clear :)
-
-Thanks,
-    Joel
+Then again, I haven't tested this card on HP-UX either yet so it could be 
+a hardware problem...
 
 
-
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+-- 
+Mikko Nahkola   <mikko.nahkola@nokia.com>
+Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
