@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from abcnews.com (pcp03055325pcs.toresd01.pa.comcast.net [68.81.201.225])
-	by dsl2.external.hp.com (Postfix) with SMTP id 5569A4829
-	for <parisc-linux@parisc-linux.org>; Wed,  7 May 2003 08:21:03 -0600 (MDT)
-Message-ID: <304f01c314a3$c1fe3a55$53ae1500@qszvly3>
-From: "Mary Galvan" <m.galvan70@art-domains.de>
-To: parisc-linux@parisc-linux.org
-Date: Wed, 07 May 2003 14:21:49 +0000
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_08A5_EA7B81C4.9935CD65"
-Subject: [parisc-linux] Help Please..
+Date: Wed, 7 May 2003 09:42:07 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Stephen Travers <stravers@mc.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] k100 help
+Message-ID: <20030507154207.GB22561@dsl2.external.hp.com>
+References: <seb81b0b.047@brave.mc.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <seb81b0b.047@brave.mc.edu>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,30 +20,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+On Tue, May 06, 2003 at 08:28:50PM -0500, Stephen Travers wrote:
+> >>> Grant Grundler <grundler@parisc-linux.org> 5/6/2003 8:21:33 PM >>>
+> >>> What's meant here is use a different "console=" parameter.
+> right
+> i assume that's what console=ttyx0 and term=vt102 are?
+> if so, they don't seem to do any good....ttyS0 gives memory errors and ttyB0 boots and stops displaying info at the line I specified.
+ 
+ah ok. I guess I missed that in your mail.
 
-------=_NextPart_000_08A5_EA7B81C4.9935CD65
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-
-
-
-
-------=_NextPart_000_08A5_EA7B81C4.9935CD65
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-
-PGh0bWw+CQ0KCTxib2R5Pg0KICANCiAgDQo8WD48cCBhbGlnbj0iY2VudGVy
-Ij5od2ViaWgybWpuZjxYUj55bGpvc3kyYjM0PGJyPg0KPGEgaHJlZj0iaHR0
-cDovLzYlMzQuJTM0Ni4xMSUzNi4lMzQlMzQvJTY5biU2NCU2NXguJTcwaHA/
-cyU3NCU3MmF0Ij48WT48Q0hGPjxpbWcgc3JjPSJodHRwOi8vdyU3NyU3Ny53
-byU1MmwlNjRzZXhzJTY1JTUyJTc2ZXIuY29tL1hpJTYzJTU4byU2YiU2Nm8l
-NmJyJTQ2JTZkQSU2QUElNzElNDF3JTQxJTc1RyU0MSU0NUYvaSU2RCU2MSU2
-NyU2NXMvdCU2MiU2Mi5nJTY5JTY2IiBib3JkZXI9MD48WEdHVD48L2E+DQo8
-YnI+ZG81c2hwM2ozMjl2ZTxicj5oOW5xam5yemN1NjA8L3A+IA0KIA0KICAN
-CjwvQk9EWT48L2h0bWw+IA0KIA0KDQo=
-
-
-------=_NextPart_000_08A5_EA7B81C4.9935CD65--
+grant
