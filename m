@@ -1,20 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BA6094829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Oct 2002 08:19:30 -0600 (MDT)
-Message-ID: <3DA43B47.A8AA380D@hpfrcu81.france.hp.com>
-Date: Wed, 09 Oct 2002 16:20:55 +0200
-From: phi <phi@hpfrcu81.france.hp.com>
+Received: from hsbcsv16.hsbc.com.br (hsbcsv16.hsbc.com.br [200.208.29.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 77E6D4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Oct 2002 10:27:09 -0600 (MDT)
+Received: from pop.hsbc.com.br (unverified) by hsbcsv16.hsbc.com.br
+ (Content Technologies SMTPRS 4.2.10) with ESMTP id <T5dd5bf0adfac1c5052358@hsbcsv16.hsbc.com.br> for <parisc-linux@lists.parisc-linux.org>;
+ Wed, 9 Oct 2002 13:27:05 -0300
+Received: from pcaktel083 ([167.10.11.219])
+	by pop.hsbc.com.br (8.11.6/8.11.6) with SMTP id g99GR0H25002
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 9 Oct 2002 13:27:00 -0300
+Message-ID: <00b601c26fb0$a4ce35a0$db0b0aa7@pcaktel083>
+From: "Jeffo" <jeffo@pop.hsbc.com.br>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 9 Oct 2002 13:26:38 -0300
 MIME-Version: 1.0
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] boot (micro) hang
-References: <3DA2945D.7010301@visoel.de>
-		<3DA2E27B.5708975E@hpfrcu81.france.hp.com>
-		<20021008170152.AD42D4839@dsl2.external.hp.com>
-		<3DA424C6.58F6806C@hpfrcu81.france.hp.com> <1034172329.31713.16.camel@beavis>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Burning CD Images difficulties: revisited
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,82 +27,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ryan Bradetich wrote:
-> 
-> *sigh*
-> 
-> This is due to a change I made to detect devices on the E class systems.
-> 
-> Before we encountered the E Class systems, the devices were always at
-> the bottom of the range, but E Class put them at the top.  The function
-> will break out once a device is found ... it appears that your system
-> also has the devices towards the top of the io range.
-> 
-> post the contents of /proc/iomem and I can verify this for sure.  We
-> need to come up with a better way for discovering these devices.
-> 
-> btw, what model system is this?
-> 
+Hello all!
+I hope this is the right place for posting such a question:
 
+- I´ve tried MANY times  (5) burning an PA-RISC image to a bootable CD.
+Couldn´t make my system
+boot from the CD though...the image I´m talking about is this one:
+http://pateam.esiee.fr/cd-images/palinux-0.9.3.iso
 
-This is a recycled C180 
+I have a 712/60 HP station, with an external SCSI CD-rom drive. The drive is
+at ID "scsi.3.0".
+I do the boot search after the POST routine, it finds my SCSI drive, its
+brand and everything else.
 
-$ cat /proc/cpuinfo
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8000 (PCX-U)
-cpu MHz         : 180.000000
-model           : 9000/780/C180
-model name      : Raven U 180 (9000/780/C180)
-hversion        : 0x000059c0
-sversion        : 0x00000481
-I-cache         : 1024 KB
-D-cache         : 1024 KB (WB)
-ITLB entries    : 96
-DTLB entries    : 96 - shared with ITLB
-BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
-BTLB fix-entr.  : 0 instruction, 0 data (16 combined)
-BTLB var-entr.  : 0 instruction, 0 data (0 combined)
-bogomips        : 359.62
-software id     : 2012010320
+When I try to boot from the CD the station simply does nothing. It tryes to
+boot and returns
+to the BOOT_ADMIN screen. ONCE I could get a message like "loading the
+stuff, etc....OPS, KERNEL something".
+And only ONCE...in one of the first CDs.
 
+I did an extensive search on the Internet regarding this subject, and used
+all hints found for
+the burning software (yes, I´m burning on XP, unfortunately all linuxes I´ve
+found doens´t
+have CD writers)...used Nero 5.5, CDRWin 4.0B and Blindwrite. None of them
+seem to burn this image
+correctly. And I say that with the knowledge after burning many, many
+applications, games, etc
+onto CD-R. Protected or not. For AIX, for Windows, for Solaris.
+Weird...
 
+The simptoms are:
 
+- If I load the CD on a windows machine, everything seems to be fine,
+DESPITE all filenames
+being in CAPS... (bad sign?)
+- On the 712/60 it won´t boot.
+- After booting into HP-UX, if I try to mount the CD it takes a looong time
+and then the OS finally mounts it, but all filenames are capitalised AND
+SOMETIMES, the ";1" suffix is appended to every filename. I´ve seen
+something about that on Nero, but on tabs that you simply cannot change.
+(something like "doesn´t append ;1 on...")
+- I contacted a friend and co-worker which is a "Linux" guy, but he wasn´t
+willing to help much..
+- Things that I´ve read on the net like "Search the iso or the CD for the
+#8000 sector and see if the MAGIC word is on there (CD001) and IT IS in all
+Cds I´ve searched.
 
-$ cat /proc/iomem
-00000000-07ffffff : System RAM
-  00000000-000009ff : PDC data (Page Zero)
-  00100000-002f9fff : Kernel code
-  002fa000-003fb7bf : Kernel data
-f1000000-f1ffffff : GSC Bus [10/]
-f2000000-f3ffffff : GSC Bus [8/]
-  f2000000-f2000fff : Dino
-  f200c000-f200cfff : GSC SCSI (Zalon)
-f4000000-fff7ffff : GSC Bus [8/]
-  fa000000-fa000fff : sti (native)
-  fa100000-fa4fffff : stifb mmio
-  fb000000-fbffffff : stifb
-  fc000000-ffbfffff : EISA
-    fc000000-fc000fff : EISA Bus Adapter
-  ffd00000-ffdfffff : Lasi
-    ffd00000-ffd00fff : Lasi
-    ffd02000-ffd02fff : Parallel
-    ffd04000-ffd04fff : Lasi Harmony
-    ffd05000-ffd05fff : Serial RS232
-    ffd06000-ffd06fff : Lasi SCSI
-    ffd07000-ffd07fff : Apricot
-    ffd08000-ffd08fff : Lasi psaux
-  ffe00000-ffefffff : Wax
-    ffe00000-ffe00fff : Wax
-    ffe01000-ffe01fff : HP SDC
-    ffe02000-ffe02fff : Serial RS232
-fff80000-fffaffff : Central Bus
-  fff88000-fff88fff : U2/Uturn
-  fff8a000-fff8afff : U2/Uturn
-  fffa0000-fffa0fff : CPU
-fffb0000-fffdffff : Local Broadcast
-fffe0000-ffffffff : Global Broadcast
+I am REALLY interested in putting this thing to run up on my HP
+station....but I´m having a hard time...
 
+Maybe someone could give some help?
 
-Cheers,
-Phi
+Thanks for now.
+[ ]s,
+Jeffo - Brazil.
