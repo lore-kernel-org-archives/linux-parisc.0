@@ -1,19 +1,18 @@
-From: James Bottomley <James.Bottomley@steeleye.com>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Support for 2.4.x kernels on hppa
-Date: 25 May 2004 10:26:37 -0500
-Message-ID: <1085498801.1811.56.camel__11504.200337413$1416623457$gmane$org@mulgrave>
-References: <200405242136.i4OLaRtN003029@arbas.nms.ulrich-teichert.org>
-	<200405242147.i4OLlVoZ012250@hiauly1.hia.nrc.ca>
-	<20040525040929.GB1308@colo.lackof.org>
-	<20040525054216.GD7207@tausq.org>
+Date: Tue, 25 May 2004 18:19:15 -0600
+Message-ID: <20040526001915.GA20667@colo.lackof.org>
+References: <20040524183227.GW7207@tausq.org>
+	<20040524193205.GB51036@parc.styx.org>
+	<20040525040226.GA1308@colo.lackof.org>
+	<20040525173610.GA764@parc.styx.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Ulrich Teichert <krypton@ulrich-teichert.org>,
- PARISC list <parisc-linux@lists.parisc-linux.org>,
- debian-hppa@lists.debian.org
-To: Randolph Chung <tausq@debian.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: William Waites <ww@parc.styx.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040525054216.GD7207@tausq.org>
+In-Reply-To: <20040525173610.GA764@parc.styx.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,19 +23,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 2004-05-25 at 00:42, Randolph Chung wrote:
-> I should also point out that, really, this is nothing new, we've
-> probably been operating in this mode for the last year; it's just
-> never been made explicit.. :)
+On Tue, May 25, 2004 at 01:36:10PM -0400, William Waites wrote:
+...
+> At this moment I am unsure of the state of palo in
+> debian/testing...
 
-Well, I think it's basically the democracy of open source.  I did quite
-a few (although by no means all) of the kernel fixes to get the
-gcc/glibc tests to pass on 2.6, I have no interest in fixing it on 2.4,
-but if someone else cares enough, they will...
+AFAICT, palo 1.5 is has not been accepted into "testing" yet.
 
-James
+But I strongly reccomend installing 1.5 since it clearly fixes
+the only currently known bug in 1.4 and adds some nice features
+like "ls" command (kudos to james again).
 
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
