@@ -1,33 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A76CA489E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 14:03:44 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id B1B6A489E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 14:17:39 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 1EC96B00C; Mon, 24 Sep 2001 21:02:22 +0100 (BST)
-Date: Mon, 24 Sep 2001 21:02:22 +0100
+	id 3FCB4B00C; Mon, 24 Sep 2001 21:16:18 +0100 (BST)
+Date: Mon, 24 Sep 2001 21:16:18 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: Sonny Cook <sonny@aspersion.org>
+To: thunder7@xs4all.nl
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel 2.5.9-pa24 won't boot 735/125
-Message-ID: <20010924210222.J5051@linuxcare.com>
-References: <Pine.LNX.4.33.0109201328390.14604-100000@lefou>
+Subject: Re: [parisc-linux] Problem installing new kernel
+Message-ID: <20010924211618.K5051@linuxcare.com>
+References: <000901c142ff$6bce2410$1900a8c0@aloha> <20010922072842.A4157@middle.of.nowhere>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0109201328390.14604-100000@lefou>; from sonny@aspersion.org on Thu, Sep 20, 2001 at 01:33:09PM -0600
+In-Reply-To: <20010922072842.A4157@middle.of.nowhere>; from thunder7@xs4all.nl on Sat, Sep 22, 2001 at 07:28:42AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Sep 20, 2001 at 01:33:09PM -0600, Sonny Cook wrote:
-> Hi,
-> I just tried my hand at cross compiling the parisc-linux kernel on my x86
-> box.  Something compiled, so I put the vmlinux on my 735/125 and tried to
-> boot it.  It went like this:
-> 
-...
-> At this point, I can't even think where to begin looking for problems.
-> Any hints?
+On Sat, Sep 22, 2001 at 07:28:42AM +0200, thunder7@xs4all.nl wrote:
+> On Sat, Sep 22, 2001 at 02:42:12AM +0200, Tino Hirschmann wrote:
+> > Hi,
+> > 
+> > i got palinux-0.9.2 running on my HP 715/80. I compiled the kernel as
+> > discribed on the webpage.
+> > But what do i have to do after i did make palo ?
+> > I think make zlilo doesn't work here .-)
+> > 
 
-Don't know what kernel config you used, but the official 32 bit
-kernels use arch/parisc/debian-configs/32.  Might be relevant.
-Also, trying serial console might be useful, as Jurriaan suggested.
+'make palo' will build a vmlinux, and then use that to build a lifimage.
+The lifimage is used for netbooting.  If you are booting from disk
+you want to copy vmlinux to /boot/vmtest (or something).  Then your
+options are either
+
+> Edit /etc/palo.conf and run /sbin/palo
+
+or interact with the ipl somehow (either say 'yes' to the question on boot,
+or use 'bo isl', depending on machine), and edit the kernel name to
+be vmtest.
 
 Richard
