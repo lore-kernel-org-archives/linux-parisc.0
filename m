@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 20C4E483D
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Apr 2003 10:20:15 -0600 (MDT)
-Message-Id: <200304201620.h3KGKD77005253@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] floating point calling convention on pa
-To: randolph@tausq.org
-Date: Sun, 20 Apr 2003 12:20:12 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030420064031.GD25257@tausq.org> from "Randolph Chung" at Apr 19, 2003 11:40:31 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
+	by dsl2.external.hp.com (Postfix) with SMTP id DBF00482D
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Apr 2003 11:49:24 -0600 (MDT)
+Date: 20 Apr 2003 17:49:24 -0000
+Message-ID: <20030420174924.30228.qmail@sources.redhat.com>
+To: debian-gcc@lists.debian.org, gcc-bugs@gcc.gnu.org,
+	gcc-prs@gcc.gnu.org, nathan@gcc.gnu.org, nobody@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org
+From: nathan@gcc.gnu.org
+Reply-To: nathan@gcc.gnu.org, debian-gcc@lists.debian.org,
+	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nathan@gcc.gnu.org,
+	nobody@gcc.gnu.org, parisc-linux@lists.parisc-linux.org,
+	tausq@debian.org, gcc-gnats@gcc.gnu.org
+Subject: [parisc-linux] Re: c++/10438: [3.3 regression] [hppa] Segfault when building jade
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +24,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I thought I understood it, but this one baffles me:
-> 
-> static int floating(int a, float b, double c, long double d, int e)
-> 
-> i would have guessed this mapped to:
-> 
-> a -> gr26   (sp-36)
-> b -> fr4L   (sp-40)
-> c -> fr7    (sp-48)
-> d -> sp-56
-> e -> sp-64
-> 
-> but according to gcc, e is at sp-60.
+Synopsis: [3.3 regression] [hppa] Segfault when building jade
 
-int arguments only need word alignment. 'd' occupies bytes sp-56 to sp-49.
+Responsible-Changed-From-To: unassigned->nathan
+Responsible-Changed-By: nathan
+Responsible-Changed-When: Sun Apr 20 17:49:23 2003
+Responsible-Changed-Why:
+    fixed
+State-Changed-From-To: open->closed
+State-Changed-By: nathan
+State-Changed-When: Sun Apr 20 17:49:23 2003
+State-Changed-Why:
+    dup of 10405
 
-A long double is the same as a double (64-bits) on hppa-linux.  I'd hoped
-that HP would make their quad library available but so far it hasn't
-happened.  As far as I know, quad precision has never been implemented
-in hardware.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10438
