@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mwinf0203.wanadoo.fr (smtp5.wanadoo.fr [193.252.22.29])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4DF174829
-	for <parisc-linux@parisc-linux.org>; Wed,  9 Apr 2003 11:23:22 -0600 (MDT)
-From: pageexec@freemail.hu
-To: grsecurity@grsecurity.net
-Date: Wed, 09 Apr 2003 19:23:15 +0200
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2A464829
+	for <parisc-linux@parisc-linux.org>; Wed,  9 Apr 2003 11:40:35 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 193JYo-0001K0-5e; Wed, 09 Apr 2003 18:40:34 +0100
+Date: Wed, 9 Apr 2003 18:40:34 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: pageexec@freemail.hu
+Cc: grsecurity@grsecurity.net, willy@debian.org,
+	parisc-linux@parisc-linux.org, grundler@dsl2.external.hp.com
 Subject: Re: [parisc-linux] parisc-linux.org kernel
-Reply-To: pageexec@freemail.hu
-Cc: <willy@debian.org>, <parisc-linux@parisc-linux.org>,
-	<grundler@dsl2.external.hp.com>
-Message-ID: <3E947323.14900.19F1E3AF@localhost>
-In-reply-to: <52352.145.253.137.30.1049874876.squirrel@nikita.ath.cx>
-References: <20030409054929.GB21306@dsl2.external.hp.com>
-Content-type: text/plain; charset=US-ASCII
+Message-ID: <20030409174034.GJ23430@parcelfarce.linux.theplanet.co.uk>
+References: <20030409054929.GB21306@dsl2.external.hp.com> <3E947323.14900.19F1E3AF@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3E947323.14900.19F1E3AF@localhost>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,24 +26,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> okay, after getting all the people together on one "desk", now here is the
-> essential question to Brad and his team:
-> when will we have a 2.5.* Patch for grsecurity?
+On Wed, Apr 09, 2003 at 07:23:15PM +0200, pageexec@freemail.hu wrote:
+> actually, i'd like to (feel free to answer off-list), since for all the
+> other archs grsec/PaX runs on we could compile a working kernel from the
+> vanilla tree - it just seems a mystery why parisc is an exception (not
+> blaming anyone, just would like to see it more clear).
 
-i can speak for the PaX part only, and the answer is that "i don't know".
-personally, i'll be interested in porting PaX to 2.6 when it's actually
-out and working stable (enough). but that's not the only limiting factor
-in our case, the several big changes to the linux VM make it absolutely
-not trivial to port PaX (huge page support, rmap, accounting, non-linear
-mappings, UML, etc). if you really need a timeframe, i'd say maybe in 6
-months (give or take a few) i'll look at the situation again.
+perhaps PaX doesn't support sparc32, m68k, arm, mips, mips64, ia64,
+s390, s390x or x86-64 since i know all those architectures have patches
+on top of the kernel.org tree.
 
-> > To willy's credit, he's attempted to merge 2.4 parisc changes upstream
-> > at least twice but was torpedo'd both times.
-> 
-> i don`t want to know ;-)
-
-actually, i'd like to (feel free to answer off-list), since for all the
-other archs grsec/PaX runs on we could compile a working kernel from the
-vanilla tree - it just seems a mystery why parisc is an exception (not
-blaming anyone, just would like to see it more clear).
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
