@@ -1,39 +1,59 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA29392
-	for <parisc-linux@puffin.external.hp.com>; Sat, 10 Jul 1999 16:45:53 -0600
-Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
-	by Cantor.suse.de (Postfix) with ESMTP id CAE2C32CE3
-	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 00:46:21 +0200 (MEST)
-Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
-	by Galois.suse.de (Postfix) with ESMTP id 71EB29410
-	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 00:46:21 +0200 (MEST)
-Date: Sun, 11 Jul 1999 00:46:21 +0200
-From: Philipp Rumpf <prumpf@suse.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA29626
+	for <parisc-linux@puffin.external.hp.com>; Sat, 10 Jul 1999 17:18:31 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id BAA10903
+	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 01:18:59 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id BAA4036687
+	for <parisc-linux@thepuffingroup.com>; Sun, 11 Jul 1999 01:18:58 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m1136OS-00025eC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sun, 11 Jul 1999 01:18:52 +0200 (CEST)
+Date: Sun, 11 Jul 1999 01:18:52 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <19990711004621.G29058@suse.de>
-References: <199907101141.FAA25297@puffin.external.hp.com>
+Message-ID: <19990711011852.A25925@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199907101141.FAA25297@puffin.external.hp.com>; from CVSD on Sat, Jul 10, 1999 at 05:41:29AM -0600
-Subject: [parisc-linux] Helge's commits
+Subject: [parisc-linux] PDC woes
 List-ID: <linux-parisc.vger.kernel.org>
 
-First, please excuse me if I sound a bit aggressive ...
 
-> Update of /home/cvs/parisc/linux/include/asm-parisc
-> In directory puffin.external.hp.com:/tmp/cvs-serv25289
-> 
-> Modified Files:
-> 	pdc.h 
-> Log Message:
-> 
-> added the OS_ID-patch from Hannu..
+Philipp asked me to write a function to calculate the frequency of the
+interval timer.  However, the PDC doesn't want to cooperate.  I see
+`hello' printed on the screen, but not `world'.  So somehow this PDC
+call is going wrong.  Anyone have any clues?  pim_info is not very
+revealing.  If it helps anyone, the blinkenlights on my 715/33 are at:
 
-Helge, I very much appreciate you working on this project.  Still, I think you
-should be a bit more communicative on what you commit, especially if there are
-legal (see the OSF code) or political (as I suspect might be the case for this
-change) issues.  I lost quite a bit of time yesterday because of the code you
-committed (which was partly due to the parisc-linux-cvs list not working) and
-I would like to avoid that in the future.
+10110010
 
-	Philipp Rumpf
+Is there a document somewhere describing what the blinkenlights mean?
+
+Here's the function:
+
+/*
+ * Find the interval timer frequency.
+ */
+static long calculate_interval_timer_frequency(void)
+{
+        long exponent, mantissa, result;
+        long buf[4] __attribute__ ((aligned (8)));
+printk("hello\n");
+        (*pdc) (PDC_TOD, PDC_TOD_ITIMER, buf, 0);
+printk("world\n");
+        exponent = (buf[0] >> 20) & 0x7ff;
+        mantissa = (buf[0] & 0xfffff) | 0x100000;
+        result = (mantissa >> (1038 - exponent)) * 625 * 625;
+printk("exponent = %ld mantissa = %ld result = %ld\n", exponent, mantissa, resul
+t);
+        return result;
+}
+
+
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
