@@ -1,14 +1,15 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] C3000 HPMC with high NFS traffic. 99% it's ASTRO's
-Date: 13 Aug 2004 13:06:58 -0400
-Message-ID: <1092416823.2186.70.camel@mulgrave>
-References: <200408131656.i7DGuWF19777@opus.allegro.com>
+From: "Michael S. Zick" <mszick@goquest.com>
+Subject: Re: [parisc-linux] Should I read SHR[DW] as SHRP[DW] in parisc2.p
+Date: Fri, 13 Aug 2004 12:50:52 -0500
+Message-ID: <200408131250.52034.mszick@goquest.com>
+References: <200408131520.i7DFKckH017219@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Stan Sieler <sieler@allegro.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200408131656.i7DGuWF19777@opus.allegro.com>
+In-Reply-To: <200408131520.i7DFKckH017219@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,23 +20,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, 2004-08-13 at 12:56, Stan Sieler wrote:
-> If it helps, the instruction trapping appears to be:
->     LDWAX    0(0,19),19
-> and r19 has fed30000 ... an I/O space address.
+On Fri August 13 2004 10:20, John David Anglin wrote:
+> > Time will show if gcc-inline assembly is that nice to we programmers.
+> 
+> The PA-RISC GNU assembler was never intended to be a general purpose
+> assembler.  Features that GCC doesn't use are probably not that well
+> tested ;)
+> 
+That is what I meant - we are on a 'feature discovery' trip here.
 
-Actually that's the back end of a LBA I/O cycle generation (this is the
-actual read that guarantees completion semantics---see lba_pci.c).  The
-HPMC occurred because port 0x1008 timed out on an outl, I think.
+I did cheat a bit - I studied the pa.md file - figured that if what I was
+interested in wasn't there, I need to be careful about using it.
 
-That's tulip register CSR1 (i.e. the tulip driver was trying to force an
-immediate transmit).  I assume this must be either because the tulip
-failed to respond to the outl in time or because the Astro couldn't get
-on the bus in time.
+Also discovered that software integer divide uses a similar bit-finder
+to what I have proposed in the past. (Immediate, magic number,
+bit masks).
 
-James
+But I have had that proposal turned down often enough - 
+Even though it can be written to avoid register stalls; works
+run-time, register size independent; does not dirty a d-cache
+line and returns the bit-mask for the found bit 
+(or the input mask modified by the found bit)
+in addition to the index without additional instructions.
+Which makes it ideal for all of those 'find next bit' loops.
 
+Mike
 
+> Dave
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
