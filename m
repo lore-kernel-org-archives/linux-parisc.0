@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: James S <smithjames@comcast.net>
+To: Phil Anderson <andersop@neverland.ncssm.edu>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Missing beep 
-In-Reply-To: Message from James S <smithjames@comcast.net>
-   of "Thu, 04 Apr 2002 11:58:21 EST." <006901c1dbf9$ed82da80$02c1a8c0@james.co.uk>
-References: <009e01c1db57$21207ee0$02c1a8c0@james.co.uk> <20020404063354.5428C482A@dsl2.external.hp.com>  <006901c1dbf9$ed82da80$02c1a8c0@james.co.uk> 
-Date: Thu, 04 Apr 2002 22:43:42 -0700
+Subject: Re: [parisc-linux] Missing beep... and music too 
+In-Reply-To: Message from Phil Anderson <andersop@neverland.ncssm.edu>
+   of "Thu, 04 Apr 2002 20:39:55 EST." <Pine.LNX.4.33.0204042038090.29216-100000@bob.ncssm.edu>
+References: <Pine.LNX.4.33.0204042038090.29216-100000@bob.ncssm.edu> 
+Date: Thu, 04 Apr 2002 22:54:15 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020405054342.1DA88482B@dsl2.external.hp.com>
+Message-Id: <20020405055415.C6C54482B@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,18 +19,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-James S wrote:
-> yes it does & can play mp3s, but surely the 'beep' is independant of the
-> sound driver - the 486 has no sound card, for example.
+Phil Anderson wrote:
+> I think the problem lies in my mpg321, because no matter what I do with 
+> it, use esd or not, whatever options I choose - I always get the
+> Illegal Instruction
+> error. this is the mpg321 .deb I installed of  my 0.9.3 CD; could the 
+> mpg321 be corrupt or is something else wrong? 
 
-Apple //e could beep w/o a sound card too...we even had it talking.
+I'm wondering if it's something else.
 
-My understanding the speaker is wired to harmony device.
-Driver needs to tell harmony to make beep if that's what you
-want coming out of the speaker.
+712/80i was one of the few systems that was sold w/o Floating Pointing
+coprocessor (or FP was disabled) at a lower price point. I believe
+parisc-linux kernel ignores the lies that PDC presents about the FP
+not being present. But I'm wondering if something is really
+disabled on the chip that causes FP to just not work.  I don't know
+if our FP emulation will deal with a completely missing FP Unit.
 
-My guess is bash "sound" isn't being directed to /dev/audio or
-whatever device it needs to tell to make a beep.  I was asking
-to verify the driver is in place and working.
+If this really the case, I should be able find you a real 712/80
+to play with. But you need to figure out what is causing the
+illegal instruction first.
 
 grant
