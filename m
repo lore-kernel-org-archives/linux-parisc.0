@@ -1,40 +1,114 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA15386
-	for <parisc-linux@puffin.external.hp.com>; Sun, 21 May 2000 08:37:03 -0600
-Received: (from prumpf@localhost)
-	by puffin.external.hp.com (8.9.3/8.9.3) id IAA15381
-	for parisc-linux@thepuffingroup.com; Sun, 21 May 2000 08:36:57 -0600
-Message-ID: <20000521083657.C15044@puffin.external.hp.com>
-Date: Sun, 21 May 2000 08:36:57 -0600
-From: Philipp Rumpf <prumpf@puffin.external.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Tree Issues
-References: <20000509103707.A13782@puffin.external.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA22661
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 May 2000 04:26:24 -0600
+Message-ID: <20000522102603.29296.qmail@web509.mail.yahoo.com>
+Date: Mon, 22 May 2000 03:26:03 -0700 (PDT)
+From: Ulrich Strelow <ulrich_strelow@yahoo.com>
+Subject: Re: [parisc-linux] 715/50 hang - more info
+To: Richard Hirst <rhirst@linuxcare.com>, Chris Snow <csnow@julian.uwo.ca>
+Cc: Ulrich Strelow <ulrich_strelow@yahoo.com>, parisc-linux@thepuffingroup.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000509103707.A13782@puffin.external.hp.com>; from Philipp Rumpf on Tue, May 09, 2000 at 10:37:07AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-I hoped to hear some kind of reaction from TPG/LC before doing this,
-but it doesn't seem like that will happen anytime soon.
+Hi Richard,
 
-If you're interested in my tree, you can find it at
-:pserver:anonymous@cvs.linux-parisc.sourceforge.net:/cvsroot/linux-parisc.
-(empty password).
+great work: for the first time I was now able to boot
+using a NFSROOT filesystem on my 715/33. Everything
+works well until the sash shell prompt.
 
-I'm currently working on a 712 and a c360, so those are the machines
-that it is most likely to work on; some code for a180 and 715/old hasn't
-been written yet, but probably will be soon (I have those machines here,
-too).
+So device support for my 715/old is nearly complete:
+serial console works well and SCSI has been tested
+using a HP DAT drive. Putting a real ext2 fs on a SCSI
+disk is a bit complicated for me because I do not have
+direct access to a Linux PC with a SCSI board. But I
+will test this real soon and report back.
 
-Please feel free to send any questions, comments, or bug reports either
-to me or to use the facilities sourceforge provides
-(http://sourceforge.net/project/?group_id=5490, I think).
+Ulrich 
 
-[is it okay to use this list ?]
 
-If you can't get that tree booting on your machine, please tell me.  I
-can't test on all four machines at the same time, so just a simple
-"doesn't boot on <machine type>" message would be very helpful.
+--- Richard Hirst <rhirst@linuxcare.com> wrote:
+> Hi,
+>   I have just committed changes to
+> drivers/net/lasi_82596.c and
+> drivers/gsc/lan.c.  Fairly big changes to
+> lasi_82596.c, partly
+> just tidyup, partly improvements to cache handling. 
+> It is still
+> not perfect but is a _lot_ better than it was.  The
+> change to
+> lan.c was to use a different probe function on older
+> h/w (like
+> my 715/75), where we need to swap the MPU_PORT, as
+> per the message
+> from prumpf.  If the driver seems completely dead
+> for you, try
+> enabling/disabling that word swap, and please let me
+> know that
+> you needed to.
+> 
+> All success or failure reports welcome :-)
+> 
+> Richard
+> 
+> 
+> On Thu, May 18, 2000 at 08:31:56AM -0400, Chris Snow
+> wrote:
+> > > I had the same problem on my 715/33 with
+> lasi_82596.c.
+> > > I emailed Helge Deller who made the last changes
+> to
+> > > this driver and he told me that there seems to
+> be the
+> > > problem that not all interrupts from the i82596
+> are
+> > > delivered to the interrupt routine. The result
+> of this
+> > > is that all 16 xmit buffers will get filled and
+> then
+> > > the kernel hangs.
+> > 
+> > That's what I came up with as well.
+> > 
+> > > He also told me that he will have no time until
+> 23rd
+> > > of May (approx.) to find the reason for this and
+> to
+> > > correct it. So right now there is no way to use
+> > > NFSROOT on a 715/old.
+> > 
+> > Well, I'm going to keep playing with it over the
+> next few days, although
+> > I'm not sure if I'll have any success...
+> > 
+> > If I succeed in fixing anything, I'll be sure to
+> let everyone know.
+> > 
+> > 
+> > Thanks,
+> > 
+> > 
+> >      Chris
+> > 
+> >
+>
+---------------------------------------------------------------------------
+> > To unsubscribe: send e-mail to
+> parisc-linux-request@thepuffingroup.com with
+> > `unsubscribe' as the subject.
+> > 
+> > 
+> 
+>
+---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to
+> parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+> 
 
-	Philipp Rumpf
+
+__________________________________________________
+Do You Yahoo!?
+Send instant messages & get email alerts with Yahoo! Messenger.
+http://im.yahoo.com/
