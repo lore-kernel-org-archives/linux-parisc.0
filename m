@@ -1,18 +1,18 @@
 Return-Path: <nitephyre@iinet.net.au>
-Received: from mail.iinet.net.au (mail-05.iinet.net.au [203.59.3.37])
-	by dsl2.external.hp.com (Postfix) with SMTP id C4BAE486E
+Received: from mail.iinet.net.au (mail-08.iinet.net.au [203.59.3.40])
+	by dsl2.external.hp.com (Postfix) with SMTP id 67BC44857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  3 Jan 2004 05:45:11 -0700 (MST)
-Message-ID: <000f01c3d1f7$63550770$0101a8c0@nitephyre>
+	Sat,  3 Jan 2004 15:46:25 -0700 (MST)
+Message-ID: <001f01c3d24b$5e810600$0101a8c0@nitephyre>
 From: "Matt Lewis" <nitephyre@iinet.net.au>
 To: <parisc-linux@lists.parisc-linux.org>
 References: <000801c3d1de$08e053d0$0101a8c0@nitephyre>
 	<3FF6A74F.3000108@tiscali.be>
 Subject: Re: [parisc-linux] Probem Installing: slang(version).deb corrupt
-Date: Sat, 3 Jan 2004 22:44:54 +1000
+Date: Sun, 4 Jan 2004 08:46:03 +1000
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_000C_01C3D24B.3469B970"
+	boundary="----=_NextPart_000_001C_01C3D29F.2F98EC50"
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,11 +24,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000C_01C3D24B.3469B970
+------=_NextPart_000_001C_01C3D29F.2F98EC50
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
+ok, i went and got the latest testing iso, but now it's saying that =
+libc6_2.2.5-6_hppa.deb was corrupt and cannot download...
+
+ thats cd no.2 coastered and another 70mb down... any tips?
+
+the orginal problem was from both a cd i got with the computer (an =
+earlier 70mb d/l it seems) and the latest full 650mb iso i downloaded...
+
+though if i try and boot from the big iso, the installer starts then the =
+keyboard wont work... getting frustrated :|
 
   ----- Original Message -----=20
   From: Joel Soete=20
@@ -67,7 +77,7 @@ download it :|
 
 
 
-------=_NextPart_000_000C_01C3D24B.3469B970
+------=_NextPart_000_001C_01C3D29F.2F98EC50
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -80,7 +90,22 @@ http-equiv=3DContent-Type>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV>ok, i went and got the latest testing iso, but now it's saying that =
+
+libc6_2.2.5-6_hppa.deb was corrupt and cannot download...</DIV>
 <DIV>&nbsp;</DIV>
+<DIV>&nbsp;thats cd no.2 coastered and another 70mb down... any =
+tips?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>the orginal problem was from both a cd i got with the computer (an =
+earlier=20
+70mb d/l it seems) and the latest full 650mb iso i downloaded...</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>though if i try and boot from the big iso, the installer starts =
+then the=20
+keyboard wont work... getting frustrated :|</DIV>
+<DIV>&nbsp;</DIV></FONT></DIV>
 <BLOCKQUOTE=20
 style=3D"BORDER-LEFT: #000000 2px solid; MARGIN-LEFT: 5px; MARGIN-RIGHT: =
 0px; PADDING-LEFT: 5px; PADDING-RIGHT: 0px">
@@ -131,4 +156,4 @@ it=20
   :|<BR>&gt; <BR>Yes AFAIK you would have to order this CD near=20
   HP.<BR><BR>hth,<BR>Joel<BR><BR></BLOCKQUOTE></BODY></HTML>
 
-------=_NextPart_000_000C_01C3D24B.3469B970--
+------=_NextPart_000_001C_01C3D29F.2F98EC50--
