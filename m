@@ -1,68 +1,49 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA09624
-	for <parisc-linux@puffin.external.hp.com>; Sun, 14 Nov 1999 15:48:53 -0700
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <382F3C94.BFF3EB9D@uswest.net>
-Date: Sun, 14 Nov 1999 15:49:57 -0700
-From: Ryan Bradetich <rbradetich@uswest.net>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA10136
+	for <parisc-linux@puffin.external.hp.com>; Sun, 14 Nov 1999 16:46:48 -0700
+Date: Sun, 14 Nov 1999 19:59:11 -0500 (EST)
+From: Alex deVries <adevries@thepuffingroup.com>
+To: Ryan Bradetich <rbradetich@uswest.net>
+cc: paul_bame@hp.com, Parisc Linux <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] arch/parisc/kernel/realmode_setup.c Question
+In-Reply-To: <382F3C94.BFF3EB9D@uswest.net>
+Message-ID: <Pine.LNX.4.10.9911141954080.7120-100000@vodka.thepuffingroup.com>
 MIME-Version: 1.0
-To: paul_bame@hp.com
-CC: Parisc Linux <parisc-linux@thepuffingroup.com>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] arch/parisc/kernel/realmode_setup.c Question
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul,
 
-I have started working on getting the kernel to boot on the PA2.0
-architecture again, and I see the you and others have been doing
-lots of work with the initialization code.  (Nice job to everyone btw,
-the code is a lot easier to figure out for a newbie like me! :)
+On Sun, 14 Nov 1999, Ryan Bradetich wrote:
+> I have started working on getting the kernel to boot on the PA2.0
+> architecture again, and I see the you and others have been doing
+> lots of work with the initialization code.  (Nice job to everyone btw,
+> the code is a lot easier to figure out for a newbie like me! :)
 
-I was looking at the following section of code and I have a
-discrepancy that I wanted to make you aware of.  I don't know how
-to fix it yet, but I will continue to look.
+Same here.
 
-I am working on a C200+ which has the PA2.0 processor, so in the
-the following section of code it should give me an error during the
-BTLB initialization, but during the PDC_BTLB_INSERT pret is set
-to 0, so the check for non-PA1.1 architecture's fail.
+> I am working on a C200+ which has the PA2.0 processor, so in the
+> the following section of code it should give me an error during the
+> BTLB initialization, but during the PDC_BTLB_INSERT pret is set
+> to 0, so the check for non-PA1.1 architecture's fail.
 
-I will continue to look through the documentation that has been
-previously pointed out, and the devresource page  pointed out by
-Frank Rowand to see if I can find a solution to the problem.
+It's a bit unclear to me which processor is actually in there, but I
+believe it's an 8000, so it and the firmware may in fact support
+PDC_BTLB_INSERT, which means that the kernel might work properly.
 
-Thanks,
+I have a C3000 which does *NOT* implement PDC_BTLB functions.
 
-Ryan Bradetich
+It sounds like the error message is actually a bit misleading.
 
+Instead of:
 
-[Taken from arch/parisc/kernel/realmode_setup.c]
+         mprintf("Looks like there's no BTLB on this box, so it's > probably\n"
+                       "either PA1.0 or PA2.0.  In any case we're screwed for now\n");
 
- /* This whole VM setup stuff may be removed ultimately.  It seems
-   * to me that once the TLB miss handlers are ready, we just switch
-   * to VM and let them handle TLB population -PB
-   */
+it should be:
 
-  pret = (*PAGE0->mem_pdc)(
-  PDC_BLOCK_TLB,
-  PDC_BTLB_INSERT,
-  0x00000000,  /* MS bits, virt page number */
-  0xc0000,  /* LS bits, virt page number */
-  0x00000000,  /* Physical page number */
-  4096,   /* # pages to map */
-  0x03000000,  /* access rights, etc... */
-  0);   /* slot number */
+"Looks like there's no BTLB on this box, so it's either a PA1.0 or a PA2.0
+that doesn't implement BTLBs"
 
-  if (pret != 0)
- {
-       mprintf("PDC_BTLB_INSERT returned %d\n", pret);
-      if (pret == -1)
-     {
-        mprintf("Looks like there's no BTLB on this box, so it's
-probably\n"
-                       "either PA1.0 or PA2.0.  In any case we're
-screwed for now\n");
-        led_flash();
-     }
-}
+How far does it actually boot though?
+
+- Alex
