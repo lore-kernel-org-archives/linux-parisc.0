@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 6A07F4831
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 00:57:14 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: joel.soete@freebel.net, Jeremy Drake <jeremyd@apptechsys.com>
-Subject: Re: [parisc-linux] CVS kernel broken?
-Date: Thu, 27 Jun 2002 08:56:41 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <Pine.LNX.4.44.0206262237000.17764-100000@garibaldi.apptechsys.com> <1025160385.3d1ab4c1b6078@webmail.tiscalinet.be>
-In-Reply-To: <1025160385.3d1ab4c1b6078@webmail.tiscalinet.be>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200206270856.42032.deller@gmx.de>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07DCA4833
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 03:43:27 -0600 (MDT)
+Received: from npyu.esiee.fr (npyu.esiee.fr [147.215.7.13])
+	by mail.esiee.fr (Postfix) with ESMTP id 1D83449BE4
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 11:43:25 +0200 (CEST)
+Date: Thu, 27 Jun 2002 11:43:24 +0200
+Mime-Version: 1.0 (Apple Message framework v482)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+From: Thibaut VARENE <varenet@esiee.fr>
+To: PA/Linux <parisc-linux@lists.parisc-linux.org>
+Message-Id: <534E0E66-89B2-11D6-ACD4-0030656F07A2@esiee.fr>
+Subject: [parisc-linux] Kernel > -pa41 debian-configs file not adequate
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thursday 27 June 2002 08:46, joel.soete@freebel.net wrote:
-> Quoting Jeremy Drake <jeremyd@apptechsys.com>:
-> > I am unable to build the current cvs kernel.  make oldconfig says
-> > scripts/Configure: drivers/hil/Config.in: No such file or directory
-> > make[1]: *** [oldconfig] Error 1
-> >
-> > and make menuconfig says
-> > Preparing scripts: functions, parsingscripts/Menuconfig: line 1: 10304
-> > Segmentation fault      awk "$1"
-> > Awk died with error code 139. Giving up.
-> > ...
-> >
-> > Is this just me, or is there some problem I don't know about?
->
-> No problem for me.
-> Do you try "make distclean" before oldconfig?
->
-> Joel
+Hi fellows,
 
-Please checkout the CVS kernel again.
-I've moved the HIL source to an own directory and updated some other
-things.
+Well I have noticed yesterday when building the -pa41 and -pa42 netinst 
+ISO that the debian-configs files were not reflecting the changes that 
+Helge made to the kernel source, and therefore the scripted build could 
+not achieve, as it stopped there:
+
+*
+* HIL support
+*
+HIL core support (CONFIG_HIL) [Y/m/n/?]
+   HIL Keyboard (basic) support (CONFIG_HIL_KBD_BASIC) [N/y/?] (NEW)
+
+
+I could possibly fix that, but I don't know whether it should be 'Y' or 
+'N', or maybe there is some *maintainer* who will do that better than 
+me ;)
 
 Greetings,
-Helge
+
+
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://pateam.esiee.fr/
