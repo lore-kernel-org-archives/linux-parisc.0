@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 384F14829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Nov 2002 11:59:31 -0700 (MST)
-Subject: Re: [parisc-linux] [PATCH] highmem_io for the sym53c8xx_2 driver??
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021124024358.7D5B0482E@dsl2.external.hp.com>
-References: <1038037106.14815.4.camel@beavis>  
-	<20021124024358.7D5B0482E@dsl2.external.hp.com>
-Content-Type: text/plain
-Date: 25 Nov 2002 11:59:25 -0700
-Message-Id: <1038250766.1385.2.camel@beavis>
-Mime-Version: 1.0
+Received: from web12501.mail.yahoo.com (web12501.mail.yahoo.com [216.136.173.193])
+	by dsl2.external.hp.com (Postfix) with SMTP id 50CBF4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Nov 2002 13:12:27 -0700 (MST)
+Message-ID: <20021125201222.87249.qmail@web12501.mail.yahoo.com>
+Date: Mon, 25 Nov 2002 12:12:22 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] Disk problems
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200211251751.gAPHpHDf017394@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-485422273-1038255142=:84644"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,103 +21,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thanks Grant!
-
-I will look look at this and try this out later this week after I get
-back!
-
-Nice catch.
-
-- Ryan
+--0-485422273-1038255142=:84644
+Content-Type: text/plain; charset=us-ascii
 
 
-On Sat, 2002-11-23 at 19:43, Grant Grundler wrote:
-> Ryan Bradetich wrote:
-> > I am not sure what the highmem_io flag does, but when it is enabled it
-> > causes my C200 to HPMC.
-> 
-> yeah - ccio-dma.c isn't using sg_virt_address() to access to the virtual
-> address of an SG list entry. It's defined in include/asm/scatterlist.h.
-> See sba_iommu.c on how to use this correctly.
-> 
-> Attached diff is a first cut, untested. My advice is to rewrite the
-> loop so sg_virt_address() result is saved once instead of referencing
-> the macro 3 (or more) times in the main loop.
-> 
-> grant
-> 
-> 
-> Index: ccio-dma.c
-> ===================================================================
-> RCS file: /var/cvs/linux/arch/parisc/kernel/ccio-dma.c,v
-> retrieving revision 1.56
-> diff -u -p -r1.56 ccio-dma.c
-> --- ccio-dma.c	17 Nov 2002 20:44:11 -0000	1.56
-> +++ ccio-dma.c	24 Nov 2002 02:42:09 -0000
-> @@ -805,7 +805,7 @@ ccio_fill_pdir(struct ioc *ioc, struct s
->  
->  		DBG_RUN_SG(" %d : %08lx/%05x %p/%05x\n", nents,
->  			   (unsigned long)sg_dma_address(startsg), cnt,
-> -			   startsg->address, startsg->length
-> +			   sg_virt_address(startsg), startsg->length
->  		);
->  
->  		/*
-> @@ -825,7 +825,7 @@ ccio_fill_pdir(struct ioc *ioc, struct s
->  		** Look for a VCONTIG chunk
->  		*/
->  		if (cnt) {
-> -			unsigned long vaddr = (unsigned long)startsg->address;
-> +			unsigned long vaddr = (unsigned long)sg_virt_address(startsg);
->  			ASSERT(pdirp);
->  
->  			/* Since multiple Vcontig blocks could make up
-> @@ -878,8 +878,8 @@ ccio_coalesce_chunks(struct ioc *ioc, st
->  		*/
->  		dma_sg = vcontig_sg = startsg;
->  		dma_len = vcontig_len = vcontig_end = startsg->length;
-> -		vcontig_end += (unsigned long) startsg->address;
-> -		dma_offset = (unsigned long) startsg->address & ~IOVP_MASK;
-> +		vcontig_end += (unsigned long) sg_virt_address(startsg);
-> +		dma_offset = (unsigned long) sg_virt_address(startsg) & ~IOVP_MASK;
->  
->  		/* PARANOID: clear entries */
->  		sg_dma_address(startsg) = 0;
-> @@ -893,7 +893,7 @@ ccio_coalesce_chunks(struct ioc *ioc, st
->  			unsigned long startsg_end;
->  
->  			startsg++;
-> -			startsg_end = (unsigned long)startsg->address + 
-> +			startsg_end = (unsigned long)sg_virt_address(startsg) + 
->  				startsg->length;
->  
->  			/* PARANOID: clear entries */
-> @@ -912,7 +912,7 @@ ccio_coalesce_chunks(struct ioc *ioc, st
->  			/*
->  			** Append the next transaction?
->  			*/
-> -			if(vcontig_end == (unsigned long) startsg->address) {
-> +			if(vcontig_end == (unsigned long) sg_virt_address(startsg)) {
->  				vcontig_len += startsg->length;
->  				vcontig_end += startsg->length;
->  				dma_len     += startsg->length;
-> @@ -981,7 +981,8 @@ ccio_map_sg(struct pci_dev *dev, struct 
->  
->  	/* Fast path single entry scatterlists. */
->  	if(nents == 1) {
-> -		sg_dma_address(sglist)= ccio_map_single(dev, sglist->address,
-> +		sg_dma_address(sglist)= ccio_map_single(dev,
-> +							sg_virt_address(sglist),
->  							sglist->length, 
->  							direction);
->  		sg_dma_len(sglist)= sglist->length;
-> @@ -1043,7 +1044,7 @@ ccio_unmap_sg(struct pci_dev *dev, struc
->  	ioc = GET_IOC(dev);
->  
->  	DBG_RUN_SG("%s() START %d entries,  %p,%x\n",
-> -		__FUNCTION__, nents, sglist->address, sglist->length);
-> +		__FUNCTION__, nents, sg_virt_address(sglist), sglist->length);
->  
->  #ifdef CONFIG_PROC_FS
->  	ioc->usg_calls++;
-> 
+http://www.seagate.com/support/seatools/index.html
+I would try that tool.  I had a similar issue with an IBM drive and downloaded their disk test tool and the analysis of the drive fixed the issue.  This tool however only runs on Intel based systems.  Maybe a friend has a single ended SCSI card you could test with on a Winblows box?
+derek
+ John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:> would a low level format on the mac do the same as low level using an
+> adaptec card ?
+
+If it works in a mac, the low-level formatting is probably ok. It's
+most likely the data in block 0 or possibly some of the vendor info
+that's the problem. You should also examine all switch settings and
+check that the termination is correct.
+
+Erase disk in the finder doesn't do a low-level format. It just builds
+a new file systems. Various tools from Adaptec (FWB HDT) and other
+vendors are available to do low-level formats on the Mac. The Sedit
+program can probably issue a command to format the drive but I would
+only do this as a last resort.
+
+Dave
+-- 
+J. David Anglin dave.anglin@nrc.ca
+National Research Council of Canada (613) 990-0752 (FAX: 952-6605)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now
+--0-485422273-1038255142=:84644
+Content-Type: text/html; charset=us-ascii
+
+<P><A href="http://www.seagate.com/support/seatools/index.html">http://www.seagate.com/support/seatools/index.html</A>
+<P>I would try that tool.&nbsp; I had a similar issue with an IBM drive and downloaded their disk test tool and the analysis of the drive fixed the issue.&nbsp; This tool however only runs on Intel based systems.&nbsp; Maybe a friend has a single ended SCSI card you could test with on a Winblows box?
+<P>derek
+<P>&nbsp;<B><I>John David Anglin &lt;dave@hiauly1.hia.nrc.ca&gt;</I></B> wrote:
+<BLOCKQUOTE style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid">&gt; would a low level format on the mac do the same as low level using an<BR>&gt; adaptec card ?<BR><BR>If it works in a mac, the low-level formatting is probably ok. It's<BR>most likely the data in block 0 or possibly some of the vendor info<BR>that's the problem. You should also examine all switch settings and<BR>check that the termination is correct.<BR><BR>Erase disk in the finder doesn't do a low-level format. It just builds<BR>a new file systems. Various tools from Adaptec (FWB HDT) and other<BR>vendors are available to do low-level formats on the Mac. The Sedit<BR>program can probably issue a command to format the drive but I would<BR>only do this as a last resort.<BR><BR>Dave<BR>-- <BR>J. David Anglin dave.anglin@nrc.ca<BR>National Research Council of Canada (613) 990-0752 (FAX: 952-6605)<BR>_______________________________________________<BR>parisc-linux mailing list<BR>parisc-linux@lists.parisc-linux.org<BR>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux</BLOCKQUOTE><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Yahoo! Mail Plus</a> - Powerful. Affordable. <a href="http://rd.yahoo.com/mail/mailsig/*http://mailplus.yahoo.com">Sign up now</a>
+--0-485422273-1038255142=:84644--
