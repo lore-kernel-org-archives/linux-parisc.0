@@ -1,44 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91EEC4A18
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Feb 2001 04:45:56 -0700 (MST)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel2.hp.com (Postfix) with ESMTP id CE73012BD
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Feb 2001 06:45:55 -0500 (EST)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id EAA28179 for parisc-linux@lists.parisc-linux.org; Fri, 2 Feb 2001 04:45:55 -0700 (MST)
-Date: Fri, 2 Feb 2001 04:45:55 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200102021145.EAA28179@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] calling PDC_PSW from head.S on A500
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3C61A4A18
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Feb 2001 04:48:17 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA02147;
+	Fri, 2 Feb 2001 22:48:11 +1100
+Date: Fri, 2 Feb 2001 22:48:11 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Helge Deller <deller@gmx.de>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Problems building glibc
+In-Reply-To: <01020212173801.05589@P100.helgenet.de>
+Message-ID: <Pine.LNX.4.21.0102022244540.708-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
->
-> To enable slave's properly, I need to call PDC to set the wide
-> mode as default (for trap handling). Thanks to jsm for getting
-> me this far. But it HPMC's in A500 PDC.
-> Any ideas what else I need to do?
->
->
-> "ser pim 0 HPMC" output is appended.
-> The CPU is clearly excuting PDC.
-> %r2 correctly contains the return ptr.
-> %r3 contains the PDC address called.
-> %sp points to a valid stack area. (virtual vs physical?)
->
+On Fri, 2 Feb 2001, Helge Deller wrote:
 
-Grant,
+> ../sysdeps/generic/glob.c: In function `glob_in_dir':
+> ../sysdeps/generic/glob.c:1446: Internal compiler error in eliminate_regs, at 
+> reload1.c:2505
 
-Since you are in real mode, the stack and return pointer need to contain
-physical addresses, not virtual addresses. You should load the physical
-addresses instead of the virtual addresses by putting a PA() around
-the expressions to load32 (See real2.S for an example). After the call
-you can convert the stack pointer to virtual with the tovirt macro, i.e.:
+It's a known bug with our mainline gcc.  Fixed on the devel branch, but
+that has other problems at the moment.  For the time beingg, compile this
+file at -O1.
 
-    < make pdc call >
-
-    tovirt %sp
-
-John
+Alan
