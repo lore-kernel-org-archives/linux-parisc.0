@@ -1,66 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 518F9484B
-	for <parisc-linux@parisc-linux.org>; Mon,  8 Oct 2001 18:49:32 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15ql5P-00025V-00
-	for parisc-linux@parisc-linux.org; Tue, 09 Oct 2001 01:49:31 +0100
-Date: Tue, 9 Oct 2001 01:49:31 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011009014931.C25819@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] SMP now working again
+Received: from ntexchange.cat.csiro.au (ntexchange.cat.csiro.au [140.253.12.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3688A482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 18:57:40 -0600 (MDT)
+Message-ID: <A8566E157F5FD411BCFB00D0B7816D51C72B91@ntexchange.cat.csiro.au>
+From: Matt.VanDeWerken@csiro.au
+To: willy@debian.org
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] New scsi driver for 53c700 and 53c710 committe
+	 d
+Date: Tue, 9 Oct 2001 10:55:18 +1000 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-With the change I committed as 2.4.9-pa45, CONFIG_SMP works again.
-For those with machines with discontiguous CPU numbers (eg an L2k with
-only two processors), this further patch is required.  I think this is
-masking a real bug which may cause problems at a later date, so I'm not
-committing this workaround to CVS yet -- I'd rather find the real bug.
+> 
+> On Tue, Oct 09, 2001 at 09:06:33AM +1000, 
+> Matt.VanDeWerken@csiro.au wrote:
+> > So will this new driver work on the 735-series? Please tell 
+> me it's so...
+> 
+> I presume you're talking about the fast-wide-differential scsi port?
+> That's a ncr720, not 700 or 710 chip.  The basic driver for 
+> that is fine,
+> but it doesn't recognise the chip as being something it should drive.
+> 
 
-I've only tested on an L2k with 2 CPUs, so other testing would be
-welcomed.  Thanks to jsm & grant for helping me with this.
+I assume this is still the case? I enquired a while back about getting some
+documentation on this to write the driver, but I think I asked at a bad time
+(I think woody/potato was about to be released). Anyway, what's the chance
+of getting some documentation so I could have a crack at the driver? I'm
+happy to sign an NDA or whatever I need to sign, but I'd really like this
+driver, and I'd also really like to have some experience with writing
+drivers. What better way than to combine the two wishes?
 
-Index: arch/parisc/kernel/processor.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/processor.c,v
-retrieving revision 1.3
-diff -u -p -r1.3 processor.c
---- processor.c	2001/10/06 08:00:03	1.3
-+++ processor.c	2001/10/09 00:27:02
-@@ -125,9 +125,9 @@ static int __init processor_probe(struct
- 		txn_addr = dev->hpa;	/* for legacy PDC */
- 
- 		/* logical CPU ID and update global counter */
--		cpuid = boot_cpu_data.cpu_count;
- 	}
- 
-+	cpuid = boot_cpu_data.cpu_count;
- 	p = &cpu_data[cpuid];
- 	boot_cpu_data.cpu_count++;
-
-I also enabled EARLY_BOOTUP_DEBUG with the following patch to figure
-out what was going on.
- 
-Index: arch/parisc/kernel/pdc_cons.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/pdc_cons.c,v
-retrieving revision 1.28
-diff -u -p -r1.28 pdc_cons.c
---- pdc_cons.c	2001/06/20 14:16:10	1.28
-+++ pdc_cons.c	2001/10/09 00:27:02
-@@ -12,7 +12,7 @@
- 
- /* Define EARLY_BOOTUP_DEBUG to debug kernel related boot problems. 
-  * On production kernels EARLY_BOOTUP_DEBUG should be undefined. */
--#undef EARLY_BOOTUP_DEBUG
-+#define EARLY_BOOTUP_DEBUG
- 
- 
- #include <linux/config.h>
-
--- 
-Revolutions do not require corporate support.
+Cheers,
+Matthew van de Werken
+Electronics Engineer
+CSIRO Exploration & Mining - Gravity Group
+1 Technology Court - Pullenvale - Qld - 4069 - AUSTRALIA
+ph:  +61-7-3327 4685     fax:  +61-7-3327 4455
+email:  m.vandewerken@cat.csiro.au
