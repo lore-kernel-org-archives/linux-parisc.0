@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D860A482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 02:29:15 -0600 (MDT)
-Date: Wed, 9 Jul 2003 10:29:08 +0200
-Message-ID: <3F057186000008F4@ocpmta8.freegates.net>
-In-Reply-To: <yq1llv8dbin.fsf@wilson.mkp.net>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0AD9482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 02:36:45 -0600 (MDT)
+Date: Wed, 9 Jul 2003 10:36:41 +0200
+Message-ID: <3F057186000008FC@ocpmta8.freegates.net>
+In-Reply-To: <3F03A421000007FB@ocpmta1.freegates.net>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] Corrections for RAID1 howto and Resyncing after failure
-To: "Martin K. Petersen" <mkp@mkp.net>, "Dub" <dub@latnet.lv>
+Subject: Re: [parisc-linux] gcc 3.3.1 ICE
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -22,24 +22,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> It would be quite dangerous if the RAID code decided to add things
-> to an array just because a disk is inserted (fine for a storage
-> appliance, bad idea for a server).
+Dave,
 
-CONFIG_HOTPLUG has nothing to do with it.
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11453
 
-Yes read in <http://www.ibiblio.org/pub/Linux/docs/howto/other-formats/html_single/SCSI-2.4-HOWTO.html#mlproc>
+Thanks for the fix, I will try to co last cvs and rebuild gcc and kernel
+asap.
 
-that in Linux 2.4: "The SCSI subsystem does not support hot-plugging of SCSI
-devices ..."
-
-
-Well I have no experience with hpux and those new 'hotplugable' devices but
-at least on Sun it doesn't mean that you can remove device(s) like this without
-taking care to power it off by software!!!
-
-hth,
-    Joel
+Joel
 
 
 ------------------------------------------------------
