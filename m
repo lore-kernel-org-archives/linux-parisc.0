@@ -1,67 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BF50F482A
-	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 17:37:48 -0600 (MDT)
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel2.hp.com (Postfix) with ESMTP id 36A9A28A
-	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 19:37:48 -0400 (EDT)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id E019A38074
-	for <parisc-linux@parisc-linux.org>; Wed, 25 Apr 2001 17:40:30 -0600 (MDT)
-To: parisc-linux@parisc-linux.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 25 Apr 2001 17:40:30 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010425234030.E019A38074@carmen.fc.hp.com>
-Subject: [parisc-linux] New hppa glibc 2.2.1 packages
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C9B9D482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 20:00:11 -0600 (MDT)
+Received: (from grundler@localhost)
+	by puffin.external.hp.com (8.9.3/8.9.3) id TAA04477
+	for parisc-linux@lists.parisc-linux.org; Wed, 25 Apr 2001 19:53:51 -0600
+Date: Wed, 25 Apr 2001 19:53:51 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
+Message-Id: <200104260153.TAA04477@puffin.external.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] do_page_fault() pid=2456 command='ldd'
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi hppa hackers,
+Using a kernel built from 4/25 and "dpkg-buildpackage -b -uc" of
+the iptables-1.2.1a sources.  I've built this package several times
+before w/o problems but with slightly older kernels. I haven't tried
+to reproduce this or checked to see how reproducible it is.
+If anyone has an idea what caused this:
 
-I have built new hppa glibc packages. Please read this whole message before 
-installing. I have placed them at,
+do_page_fault() pid=2456 command='ldd' type=15 address=0x0009d0b0
+vm_start = 0x00084000, vm_end = 0x0009d000
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/newlibc-20010425/
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001100000000000001111
+r0-3     0000000000000000 0000000000080068 000000000000c000 000000000009a250
+r4-7     000000000009b7f0 0000000000000000 00000000ffffffff 0000000000000000
+r8-11    00000000ffffffff 0000000000000000 000000000009aa10 000000000009b6b0
+r12-15   0000000000000000 00000000ffffffff 000000000009b870 0000000000000000
+r16-19   0000000000000000 0000000000000802 0000000000081868 0000000000000000
+r20-23   000000000009ac14 00000000412e8480 0000000000000001 0000000000088868
+r24-27   0000000000080080 000000000009ac10 0000000000080068 0000000000080068
+r28-31   0000000000000001 0000020000000000 00000000faf01d40 000000004016ebd7
+sr0-3    000000000009f100 000000000009f100 0000000000000000 000000000009f100
+sr4-7    000000000009f100 000000000009f100 000000000009f100 000000000009f100
 
-They are an update of the 2.2.1 packages that were in the base tarball and 
-ESIEE isos and include the following changes,
-
-- support for large files
-- fix 32-bit UIDs/GIDs
-- fix minor floating-point bug
-- make SHM work on 64-bit
-- make getdents64 work
-- make us suck less at resource limits
-
-If you need these features, need to do a new install, or feel like upgrading 
-then you should grab them. If you can wait a few days then you might want to 
-wait for the 2.2.3 based packages which will be available shortly after the 
-upstream 2.2.3 release.
-
-Install Notes
--------------
-You must upgrade your kernel before installing these packages. Your kernel 
-must be from April 24th or later.
-
-If you have been apt-get upgrading you may have a newer libdb2 package 
-installed that shares files with this libc package. If you see this error,
-
-   Unpacking replacement libc6 ...
-   dpkg: error processing libc6_2.2.1-1_hppa.deb (--install):
-   trying to overwrite `/lib/libdb.so.3', which is also in package libdb2
-
-Then run the following,
-
-   dpkg --install --force-overwrite libc6_2.2.1-1_hppa.deb
-   apt-get --reinstall install libdb2
-
-Once we've moved to newer packages this problem will go away.
-
-Post any problems to the list.
-
-Thanks,
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+IASQ: 000000000009f100 000000000009f100 IAOQ: 000000000000c007 000000000000c00b
+ IIR: 65787400    ISR: 000000000009f100  IOR: 000000000009d0b0
+ORIG_R28: 000000000009ac10
