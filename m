@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 17F00482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 10:27:14 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id kbmujaaa for parisc-linux@lists.parisc-linux.org; Sat, 15 Dec 2001 10:21:45 -0700
-Date: Sat, 15 Dec 2001 09:26:57 -0800
-From: Randolph Chung <randolph@tausq.org>
+Received: from solo.franken.de (pD951CFF3.dip.t-dialin.net [217.81.207.243])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D2E9482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 10:35:56 -0700 (MST)
+Date: Sat, 15 Dec 2001 18:32:32 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Joerg Hartmann <J.Hartmann@reinarts.de>
 Cc: PARISC Linux List <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] gcc on 0.9.3 iso problem
-Message-ID: <20011215172657.GY1515@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Message-ID: <20011215183232.A6668@solo.franken.de>
 References: <561134811041.20011215144325@reinarts.de> <20011215161646.GX1515@tausq.org> <861152294541.20011215193448@reinarts.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <861152294541.20011215193448@reinarts.de>
+In-Reply-To: <861152294541.20011215193448@reinarts.de>; from J.Hartmann@reinarts.de on Sat, Dec 15, 2001 at 07:34:48PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,13 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The problem is a missing "crt1.o"
+On Sat, Dec 15, 2001 at 07:34:48PM +0100, Joerg Hartmann wrote:
+> Maybe someone can explain, what i am doing wrong here ?
+> I have installed gcc from the CD with "apt-get install gcc"
 
-apt-get install libc6-dev
+apt-get install libc6-dev ? gcc is the compiler but you want a C library
+for your C programs.
 
-randolph
+Thomas.
+
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
