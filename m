@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DCD5F482C
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 14:31:56 -0700 (MST)
-Message-Id: <200111132127.OAA01230@puffin.external.hp.com>
-To: Phil Anderson <andersop@bob.ncssm.edu>
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 50F6B482C
+	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 15:44:56 -0700 (MST)
+Subject: Re: [parisc-linux] to swap or not to swap
+To: randolph@tausq.org
+Date: Tue, 13 Nov 2001 22:51:54 +0000 (GMT)
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] First Time Install on 712/80i 
-In-Reply-To: Message from Phil Anderson <andersop@bob.ncssm.edu>
-   of "Tue, 13 Nov 2001 16:18:49 EST." <Pine.LNX.4.33.0111131610080.9967-100000@bob.ncssm.edu>
-Date: Tue, 13 Nov 2001 14:27:20 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+In-Reply-To: <20011113114247.G3053@tausq.org> from "Randolph Chung" at Nov 13, 2001 11:42:48 AM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E163mPK-0002an-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,18 +22,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Phil Anderson wrote:
-> "No modules were found in /target/lib/modules/2.4.0-32 that could be
-> configured. Please install the kernel modules first, bu running the
-> "Configure Device Driver Modules" step"
+> Grant also seems to be of the opinion that cpu data needs to be swapped
+> before written to PCI devices... so does that mean that if i wrote
+> something like:
+> 
+> writew(cpu_to_le16(foo), addr)
+> 
+> then on things like parisc it gets swapped once, and on things like
+> sparc it gets swapped twice?
 
-BTW, this is a bug in the installer. It should say
-"Install Kernel Modules" or something like that instead.
-
-...
-> Also, I believe that this is a 64 bit machine, am I right?
-
-Sorry - no.
-Please install the 32 bit kernel bits and that msg will go away.
-
-grant
+Constant swaps get optimised out by the compiler in theory though.
