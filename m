@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 300254881
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Nov 2003 18:38:56 -0700 (MST)
-Date: Sat, 15 Nov 2003 18:38:54 -0700
+	by dsl2.external.hp.com (Postfix) with ESMTP id C23194881
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Nov 2003 18:52:00 -0700 (MST)
+Date: Sat, 15 Nov 2003 18:51:59 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
-To: Damian Muchli?ski <mudamian@poczta.onet.pl>
+To: buggz <buggz@america.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Linux on HP
-Message-ID: <20031116013854.GA3735@colo.lackof.org>
-References: <002901c3aad6$87fb1c10$64d71399@Damian>
+Subject: Re: [parisc-linux] Dual NICs on 9000/715, anyone?
+Message-ID: <20031116015159.GA4059@colo.lackof.org>
+References: <3F969FFE00009EA4@ocpmta2.freegates.net> <3F969FFE00009F73@ocpmta2.freegates.net> <20031110173525.GC24664@colo.lackof.org> <3FB0DC01.6070701@tiscali.be> <20031112032230.GB12000@colo.lackof.org> <3FB68167.10106@tiscali.be> <Pine.LNX.4.58.0311152220070.16980@sal.ucc.ie> <Pine.CYG.4.58.0311151819580.712@buggz3>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <002901c3aad6$87fb1c10$64d71399@Damian>
+In-Reply-To: <Pine.CYG.4.58.0311151819580.712@buggz3>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,31 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 14, 2003 at 06:41:25PM +0100, Damian Muchli?ski wrote:
-> I've found on newsgroup that because of old
-> version of gcc and kernel and I should use newer version. So I have
-> downloaded palinux-2.4.22-pa13-20031022-netinst.iso from your
-> website,check md5, burned and booted.
-> Unfortunately it hangs on "searching for devices" without any more info.
+On Sat, Nov 15, 2003 at 06:22:32PM -0500, buggz wrote:
+> Anyone get dual NICs working on this machine?
+> The second one is on the EISA expansion card.
 
-Damian,
-I'm surprised the 2.4.22 netinst.iso doesn't boot on your c3700.
-I'm currently running 2.4.22-pa14 on a C3600 with STIFB console.
+EISA DMA isn't working, IIRC.
+I don't recall if anyone has published Wax (EISA) DMA docs.
+If not, that means someone from HP would have to write it
+or get enough detail from someone inside HP to write it.
 
-The output you posted started with 2.4.17 boot and then garbled
-at the end. I don't understand how HPMC dump messages and what looks
-like PDC output (eg "To discontinue search,...") got mixed up.
+> It works in HPUX.
+> I'd like to get this to work in linux and use the box as a router/gw.
 
-If you can netboot a 2.4.22 kernel image from:
-	ftp://ftp.parisc-linux.org/kernels/c3000/
+At one we had a NIC working using PIO (not DMA).
+But don't expect stellar performance.
 
-and point the "root=" at the CDROM install disk, I would expect
-it to complete the install....but that's non-trivial to setup
-and it's alot to ask for. If you don't have time or it's too
-complicated, don't worry about it.
-
-I'll try to netboot the netinst.iso that you used at home on a C3000
-and see what happens.
-
-thanks,
 grant
