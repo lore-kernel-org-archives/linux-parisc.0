@@ -1,18 +1,24 @@
-Return-Path: <odxhlmimhiaq@loantohome.com>
-Received: from fl220-100-192-067.i-chubu.ne.jp
-	(fl220-100-192-067.i-chubu.ne.jp [220.100.192.67])
-	by dsl2.external.hp.com (Postfix) with SMTP id 7B1764860
-	for <parisc-linux@parisc-linux.org>;
-	Mon, 26 Apr 2004 05:02:35 -0600 (MDT)
-Date: Mon, 26 Apr 2004 13:56:38 +0200
-Message-Id: <432484567.35986@odxhlmimhiaq@loantohome.com>
-From: Jean Williams <odxhlmimhiaq@loantohome.com>
-To: Parisc-linux <parisc-linux@parisc-linux.org>
-MIME-Version: 1.0 (produced by intervalberiberi 2.9)
-Content-Type: multipart/alternative;
-	boundary="--556295376009661"
-Cc: 
-Subject: [parisc-linux] `3.52%
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F19E648D2
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 26 Apr 2004 05:59:19 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1BI4la-0008Uo-Ks; Mon, 26 Apr 2004 12:59:18 +0100
+Date: Mon, 26 Apr 2004 12:59:18 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Randolph Chung <tausq@debian.org>
+Message-ID: <20040426115918.GO22558@parcelfarce.linux.theplanet.co.uk>
+References: <20040419223250.7E3CE494572@palinux.hppa>
+	<20040419223444.GB18329@parcelfarce.linux.theplanet.co.uk>
+	<20040426014111.GC3965@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040426014111.GC3965@tausq.org>
+Sender: <willy@www.linux.org.uk>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: [parisc-linux-cvs] 7300LC
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,63 +28,44 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----556295376009661
-Content-Type: text/html;
-	charset="iso-7029-5"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: emulsion foe eastman
+On Sun, Apr 25, 2004 at 06:41:11PM -0700, Randolph Chung wrote:
+> willy, kyle found out that this doesn't work:
+> 
+> > > Split out 7300LC from 7100LC and PREFETCH from PA20.
+> 
+> extern inline void prefetchw(const void *addr)
+> {
+>         __asm__("ldd 0(%0), %%r0" : : "r" (addr));
+> }
+> 
+> on pa11 gas won't assemble the ldd insn.
+> 
+> is this supposed to work for pa7300lc? if so we might have to rewrite
+> prefetchw to use a .word or something...
 
-</html><p align=3D"center"><b><font size=3D"5">ATTENT<FONT style=3D"FONT-S=
-IZE: 1px">s</font>ION<FONT style=3D"FONT-SIZE: 1px">Q</font>! L<FONT style=
-=3D"FONT-SIZE: 1px">[</font>ow r<FONT style=3D"FONT-SIZE: 1px">B</font>ate=
-! Now is 
-the ti<FONT style=3D"FONT-SIZE: 1px">*</font>m<FONT style=3D"FONT-SIZE: 1p=
-x">a</font>e to re-finance!</font></b></p>
-<div align=3D"center">
-  <center>
-<table style=3D"border:20px dashed #000000; border-collapse:collapse" heig=
-ht=3D"8" width=3D"500" bordercolor=3D"#111111" cellpadding=3D"0" cellspaci=
-ng=3D"0">
-<tr>
-<p align=3D"center"><td height=3D"5" width=3D"378" bgcolor=3D"#FFFF00"> 
-    <p align=3D"center"> 
-   <span style=3D"font-size: 120pt">`3.52%</span></td>
-</tr>
-</table>
-  </center>
-</div>
-<p align=3D"center"><b><font size=3D"5">
-<a href=3D"http://rd.yahoo.com/standstill/momentary/adler/*http:/www.flatl=
-oan.com/?partid=3Darlenders3">Gr<FONT style=3D"FONT-SIZE: 1px">xc</font>ab=
-<FONT style=3D"FONT-SIZE: 1px">{</font> it HER<FONT style=3D"FONT-SIZE: 1p=
-x">8</font>E,=20w<FONT style=3D"FONT-SIZE: 1px">Ul</font>hile you can!
-</a> </font></b></p>
-</body>
-<p align=3D"center"><font color=3D"#111111">- N<FONT style=3D"FONT-SIZE: 1=
-px">n</font>O<FONT style=3D"FONT-SIZE: 1px">9B</font>BODY IS TURNE<FONT st=
-yle=3D"FONT-SIZE: 1px">ZZ</font>D D<FONT style=3D"FONT-SIZE: 1px">J</font>=
-OWN, NOBO<FONT style=3D"FONT-SIZE: 1px">|</font>DY!</font></p>
-<p align=3D"center"><font color=3D"#111111">- ABSOLUTELY F<FONT style=3D"F=
-ONT-SIZE: 1px">od</font>RE<FONT style=3D"FONT-SIZE: 1px">H</font>E O<FONT =
-style=3D"FONT-SIZE: 1px">Ln</font>F CHAR<FONT style=3D"FONT-SIZE: 1px">v</=
-font>G<FONT style=3D"FONT-SIZE: 1px">8</font>E, F<FONT style=3D"FONT-SIZE:=
- 1px">/</font>REE!</font></p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p align=3D"center">plea<FONT style=3D"FONT-SIZE: 1px">Z</font>se remove y=
-oursel<FONT style=3D"FONT-SIZE: 1px">n</font>f, i<FONT style=3D"FONT-SIZE:=
- 1px">hH</font>f you wou<FONT style=3D"FONT-SIZE: 1px">/</font>ld like t<F=
-ONT style=3D"FONT-SIZE: 1px">BC</font>o discon<FONT style=3D"FONT-SIZE: 1p=
-x">h</font>tinue 
-fu<FONT style=3D"FONT-SIZE: 1px">tp</font>r<FONT style=3D"FONT-SIZE: 1px">=
-aK</font>th<FONT style=3D"FONT-SIZE: 1px">q2</font>er ma<FONT style=3D"FON=
-T-SIZE: 1px">K</font>ilin<FONT style=3D"FONT-SIZE: 1px">8S</font>g&nbsp;
-<a href=3D"http://rd.yahoo.com/vitriolic/esteem/johnston/*http:/www.flatlo=
-an.com/st.html">
-REMO<FONT style=3D"FONT-SIZE: 1px">BS</font>VE HE<FONT style=3D"FONT-SIZE:=
- 1px">ET</font>RE</a></p>
-</html>
+It is supposed to work, yes.  I gleaned this information from
+http://cpus.hp.com/technical_references/b7300lc.shtml section 2.2.4
+The 7300LC ERS (http://ftp.parisc-linux.org/docs/chips/pcxl2_ers.pdf)
+is of no help in this matter.  In section 14.5, it says:
 
-----556295376009661--
+  Because the processor does not necessarily stall even with two cache
+  misses pending, software prefetching can lead to better performance
+  increases than on the PA7100LC. This is because a software prefetch,
+  initiated by a load to general register 0, is not treated like a
+  load miss by the data cache and therefore can be completed in the
+  ``background'' by the hardware and is less likely to cause processor
+  stalls.
+
+But, thinking about it, PA7300LC isn't SMP-capable.  Is there any
+difference between prefetch-for-read and prefetch-for-write on a
+uniprocessor system?  I don't think so.  So possibly we should just
+define prefetchw to be the same as prefetch for CONFIG_PA7300LC and
+different for CONFIG_PA20.  Makes sense?
+
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
