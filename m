@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DE36D482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 09:55:30 -0700 (MST)
-Message-ID: <3BF544F6.1010400@moyroud.net>
-Date: Fri, 16 Nov 2001 17:55:18 +0100
-From: Clement Moyroud <clement@moyroud.net>
-MIME-Version: 1.0
-To: xfs@linux.se
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] CD to download?
-References: <Pine.LNX.4.33.0111161324250.26804-100000@oden.valhall>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 148026120
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 09:58:13 -0700 (MST)
+Date: Fri, 16 Nov 2001 08:57:54 -0800 (PST)
+Message-Id: <20011116.085754.00483458.davem@redhat.com>
+To: grundler@puffin.external.hp.com
+Cc: willy@debian.org, linux-mm@kvack.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: parisc scatterlist doesn't want page/offset 
+From: "David S. Miller" <davem@redhat.com>
+In-Reply-To: <200111161632.JAA25977@puffin.external.hp.com>
+References: <davem@redhat.com>
+	<200111161632.JAA25977@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,27 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-xfs@linux.se wrote:
+   From: Grant Grundler <grundler@puffin.external.hp.com>
+   Date: Fri, 16 Nov 2001 09:32:52 -0700
 
-> Hello!!
-> 
-> I just got a cdrom to my HpPa 712/60  =).
-> For the moment it runs HP/UX (did'nt get linux to boot over network, dont
-> know what I did wrong, probably something on my boot-server.
-> WellWell...
-> 
-> I wonder: Is there any url for some install-cd's to download and burn for
-> Pa-risc-Linux for HpPa712/60?
-> 
-> Dont know if it will work ether, becouse my (burned) Hp/UX 10.20-cd will
-> not boot... I hope it is wrong on that CD and not something with the
-> cdromdrive.
-> 
+   > I suggest you do this now, it is totally painless.  I would almost
+   > classify it as a mindless edit.
+   
+   Adding two members to a struct is not the problem.
+   The problem is revisiting every usage of ->address in the DMA code
+   and telling driver writers they should be using page+offset.
+   
+Note the "should", nobody forces them to use page+offset in
+a driver and 2.4.x will NEVER require it.  They just won't
+be able to DMA highmem pages, that's all.
 
-You can download the latest 0.9.2 iso either from the PA-RISC Linux 
-Official Website (http://www.parisc-linux.org/release-0.9/index.html) or 
-from the ESIEE Team website (http://mkhppa1.esiee.fr/download.html). The 
-second url is preferred, it will give us better site stats :)
+The DMA code is so simple to fix ("mindless edit" is still how I
+classify it) and you have _THREE_ (count them, 3) platform IOMMU code
+patch examples to work with (alpha, sparc64, ia64).
 
-Clement
-PA/Linux ESIEE Team
+Franks a lot,
+David S. Miller
+davem@redhat.com
