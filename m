@@ -1,22 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dns1.rz.fh-heilbronn.de (dns1.rz.fh-heilbronn.de [141.7.1.18])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 920E74829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 02:52:28 -0600 (MDT)
-Received: from lisa.stud.fh-heilbronn.de (lisa.stud.fh-heilbronn.de [141.7.11.14])
-	by dns1.rz.fh-heilbronn.de (8.12.2/8.12.2) with ESMTP id g9B8qOAx006295
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 10:52:25 +0200 (MET DST)
-Received: from acid (acid.stuwo.fh-heilbronn.de [141.7.150.31])
-	by lisa.stud.fh-heilbronn.de (8.12.2/8.12.2) with SMTP id g9B8qOIC001558
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 10:52:24 +0200 (MEST)
-Message-ID: <004001c27103$a37bdf00$1f96078d@acid>
-From: "Yves Bodack" <bodack@stud.fh-heilbronn.de>
-To: "PaRisc-List" <parisc-linux@lists.parisc-linux.org>
-References: <20021009193130.GA708@familie-weerts.de>
-Subject: Re: [parisc-linux] Which Memory to use on a 715/80?
-Date: Fri, 11 Oct 2002 10:53:15 +0200
+Received: from hal.pp.fishpool.fi (hal.pp.fishpool.fi [195.197.229.212])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D62874831
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 03:03:23 -0600 (MDT)
+Received: from q-funk (helo=localhost)
+	by hal.pp.fishpool.fi with local-esmtp (Exim 3.35 #1 (Debian))
+	id 17zvhY-00078s-00
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Oct 2002 12:03:20 +0300
+Date: Fri, 11 Oct 2002 12:03:20 +0300 (EEST)
+From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
+To: parisc-linux <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.21.0210111156240.24681-100000@hal.pp.fishpool.fi>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Subject: [parisc-linux] hardware features of 712-60 ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,18 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-From: "Christian Weerts" <cw@familie-weerts.de>
-Subject: [parisc-linux] Which Memory to use on a 715/80?
+Greetings,=20
 
+I'm compiling my own kernel and I have some questions.  My goal is to produ=
+ce a
+kernel that is as lightweight as possible, which implies disabling support =
+for
+hardware that is not found on this 712-60. =20
 
-> My 715/80 has a memory problem. Perhaps i need new memory.
-> Which is the right one to buy?
+At this point, I apt-got kernel-source-2.4.19-hppa and unpacked it, and alr=
+eady
+selected the 7100LC/7300LC CPU option.  What else?  Has anybody compiled a =
+FAQ
+on parisc-linux that provides .config files optimized for each PA-RISC hard=
+ware
+or, alternately, a checklist of hardware one finds in product xxx, referenc=
+ed by
+Linux kernel feature or module name?=20
 
-I've tried FPM Parity RAM in my 712 and it didn't work. I'm shure it's same
-on 715,
-but you can get it quite cheap on eBay.de (Computer/Workstations).
-I have 48MB (6x8MB) spare modules, if you are interested, i sell them to
-you. Send me an off list mail.
+PS:  I don't subscribe to parisc-linux.  Please CC replies to this address.
 
-Greetings,
-Yves...
+--=20
+Martin-=C9ric Racine, Espoo, Finland.
+"Kas sa tahad mind? - Nej!!! =C4r du en idiot?!!"
+http://www.pp.fishpool.fi/~q-funk/
