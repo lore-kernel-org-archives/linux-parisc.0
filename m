@@ -1,31 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 12418482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 10:36:42 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 152bO0-0000em-00; Wed, 23 May 2001 17:21:24 +0100
-Date: Wed, 23 May 2001 17:21:24 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: rbrad@beavis.ybsoft.com, parisc-linux@lists.parisc-linux.org
+Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5CFCF482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 May 2001 10:48:31 -0600 (MDT)
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <200105231648.JAA24430@opus.allegro.com>
 Subject: Re: [parisc-linux] kernel panic
-Message-ID: <20010523172124.W23718@parcelfarce.linux.theplanet.co.uk>
-References: <200105230853.CAA07709@udlkern.fc.hp.com>
-Mime-Version: 1.0
+To: rbradetich@uswest.net
+Date: Wed, 23 May 2001 09:48:24 -0700 (PDT)
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20010522201851.A28340@beavis.ybsoft.com> from "Ryan Bradetich" at May 22, 2001 08:18:51 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200105230853.CAA07709@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Wed, May 23, 2001 at 02:53:15AM -0600
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, May 23, 2001 at 02:53:15AM -0600, John Marvin wrote:
-> I can't remember if your original problem crashed the system or just
-> caused data corruption. If the machine stays up, a debugging workaround
-> might be to store data in an internal array instead of using printk.
-> You could then dump this array after the problem occured. One possible
-> hack to dump the array would be to add code to dump it via the proc fs
-> code that already exists in the ccio_dma code.
+Hi,
 
-or just use printk(KERN_DEBUG "foo"); since this won't output to console.
+I was quiet before, hoping one of the more active list members
+would comment ... but ... a comment on netiquette seems needed here.
+
+We've recently seen a couple of gigantic posts to the mailing list...
+of messages with 23,000+ lines of text.  Such messages take a lot of
+disk and network bandwidth, and can cause performance problems for 
+some users.
+
+Hence, the two netiquette rules:
+
+  1) don't email thousand line messages to a mailing list.
+
+     Instead, put the text (the dump info in this case) on a 
+     web server somewhere, and email the URL.  Or, offer to email
+     the big file to individuals who request a copy.
+
+     This applies to binary as well as text messages.
+
+  2) when replying to ****ANY**** message, delete the majority 
+     of it, retaining just enough to maintain context 
+     for the reader!  Single-line replies that enclose a copy
+     of a 23,000+ line message are just a waste ... as are
+     single line replies that enclose a copy of a 20 line message.
+
+thanks,
+
+> John,
+> 
+> Thanks for the great explaination!
+> 
+> >             /* Stack Dump! */
+
+... [23,400+ lines deleted]
+
+> 1031d7d8 A _end
+> 
+> --UlVJffcvxoiEqYs2--
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
 
 -- 
-Revolutions do not require corporate support.
+Stan Sieler                                           sieler@allegro.com
+www.allegro.com/sieler/wanted/index.html                  www.sieler.com
