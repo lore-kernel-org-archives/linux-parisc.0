@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6D9D84841
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 23:18:12 -0600 (MDT)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h7O5HuI30521;
-	Sun, 24 Aug 2003 01:17:57 -0400
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2F1E048A0
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 23:30:53 -0600 (MDT)
+Date: Sat, 23 Aug 2003 22:23:00 -0700
+From: "David S. Miller" <davem@redhat.com>
+To: James Bottomley <James.Bottomley@SteelEye.com>
+Cc: hugh@veritas.com, willy@debian.org, linux-kernel@vger.kernel.org,
+	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
 Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
-	tst-mmap-eofsync in glibc on parisc)
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: "David S. Miller" <davem@redhat.com>
-Cc: hugh@veritas.com, willy@debian.org,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
-In-Reply-To: <20030823172251.4e656f9a.davem@redhat.com>
+ tst-mmap-eofsync in glibc on parisc)
+Message-Id: <20030823222300.4695a0c4.davem@redhat.com>
+In-Reply-To: <1061702282.1992.1153.camel@mulgrave>
 References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
 	<20030822113106.0503a665.davem@redhat.com>
@@ -26,10 +24,9 @@ References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<20030823155312.63f996f6.davem@redhat.com>
 	<1061680279.1785.534.camel@mulgrave>
 	<20030823172251.4e656f9a.davem@redhat.com>
-Content-Type: text/plain
-Date: 24 Aug 2003 00:17:55 -0500
-Message-Id: <1061702282.1992.1153.camel@mulgrave>
+	<1061702282.1992.1153.camel@mulgrave>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -41,22 +38,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 2003-08-23 at 19:22, David S. Miller wrote:
-> You're not answering my question :(
-> 
-> I know that when the case _DOES_ happen, your optimization is
-> worthwhile, my question is not about this.  My question is about
-> how often does this case happen.
+> The only things I can really come up with are contrived cases with glibc
+> mmaped file objects...then it is a big win if we open lots of
+> mappings---which I guess would mainly happen with multi-threaded
+> applications.  Do you have any applications you'd like me to run
+> comparisons on?
 
-Well the case we're arguing about depends on whether glibc uses mmaped
-file descriptors for libio.  If it doesn't (which is how my machine is
-configured) then you're right, we never get to loop the i_mmap list
-because it's usually empty when flush_dcache_page is called.
-
-The only things I can really come up with are contrived cases with glibc
-mmaped file objects...then it is a big win if we open lots of
-mappings---which I guess would mainly happen with multi-threaded
-applications.  Do you have any applications you'd like me to run
-comparisons on?
-
-James
+This is what I'm asking of you, to find cases in real life,
+not some contrived example, where your optimization helps
+appreciably.
