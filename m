@@ -1,64 +1,93 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0E910482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Oct 2001 12:14:58 -0600 (MDT)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #3)
-	id 15wSYH-0000I7-00
-	for parisc-linux@lists.parisc-linux.org; Wed, 24 Oct 2001 20:14:53 +0200
-Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
-	id 15wSXo-0004Bk-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Oct 2001 20:14:24 +0200
-Date: Wed, 24 Oct 2001 20:14:24 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] new cd-images any time soon?
-Message-ID: <20011024201423.A16100@dogbert.localdomain>
-References: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D94C@umr-mail03.cc.umr.edu> <20011024163506.A2752@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
-In-Reply-To: <20011024163506.A2752@parcelfarce.linux.theplanet.co.uk>
-Sender: Albert Strasheim <fullung@dogbert.localdomain>
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE950482B
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Oct 2001 16:45:40 -0600 (MDT)
+Received: from bame.riverrock.org (bame.riverrock.org [199.254.238.240])
+	by www.riverrock.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id QAA01851
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Oct 2001 16:45:39 -0600
+Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via smail with esmtp
+	id <m15wWmJ-000OzWC@bame.riverrock.org> (Debian Smail3.2.0.111)
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Oct 2001 16:45:39 -0600 (MDT)
+Message-Id: <m15wWmJ-000OzWC@bame.riverrock.org>
+From: bame@fc.hp.com
+Reply-To: bame@fc.hp.com
+Errors-To: bame@fc.hp.com
+To: parisc-linux@parisc-linux.org
+Date: Wed, 24 Oct 2001 16:45:39 -0600
+Sender: bame@riverrock.org
+Subject: [parisc-linux] IMPORTANT CVS CHANGES
 List-ID: <linux-parisc.vger.kernel.org>
 
---VbJkn9YxBvnuCH5J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's time to move CVS from puffin.external.hp.com to cvs.parisc-linux.org
 
-Hello,
+WHEN: Friday, 26-October, noon local time (US-MDT aka GMT-6)
 
-On Wed, 24 Oct 2001, Matthew Wilcox wrote:
+At noon puffin.external's CVS will go down and shortly thereafter
+CVS will come up on cvs.parisc-linux.org along with an e-mail
+announcement.  Send questions to the list, or if that's too embarassing
+to me or taggart@fc.hp.com
 
-> On Wed, Oct 24, 2001 at 10:26:14AM -0500, Neulinger, Nathan wrote:
-> > Will there be any new CD images any time soon? i.e. with current kernel,
-> > packages, etc?=20
->=20
-> Yes, we're planning an 0.9.3 release within the next couple of weeks.
+		WHAT YOU MUST DO
 
-Any chance of the 720/50 being fixed by then? :-) Has anything changed
-significantly that would warrant me to attempt an installation again?
-Have the 3.0.15 boot-floppies for hppa been created yet? Anything fixed
-in the kernel?
+1) You will not need to commit outstanding changes or do anything else
+   unusual prior to the switchover.
 
-I'm avaiable to fiddle with it this weekend if that helps.
+2) You're probably setting CVSROOT somewhere, perhaps in your
+   .profile.  Change puffin.external.hp.com to cvs.parisc-linux.org and
+   /home/cvs/parisc to /var/cvs
 
-Regards,
+3) Every file named CVS/Root will need the same changes as #2.
+   Use the script 'move-cvs' to do this for you -- simply run it
+   in your top-level CVS directories, or the one above that perhaps.
+   'move-cvs' is attached to the end of this message and is available
+   from CVS on puffin.external as build-tools/move-cvs.
 
-Albert
+4) Wherever you used puffin.external in a CVS-related way, start using
+   cvs.parisc-linux.org instead, for example you might have web bookmarks
+   for browsing the CVS archive.
 
---VbJkn9YxBvnuCH5J
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+5) Don't count on LXR being available any time soon...
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+   	-Paul Bame
 
-iD8DBQE71wT/Dg+hOeRZtkMRAmMBAJ9T2yXX+ICPX6xMjx/PKQLMMQH59wCfQG0J
-5g63MZ8mVdgv/UfPIF+VZ90=
-=MyY6
------END PGP SIGNATURE-----
 
---VbJkn9YxBvnuCH5J--
+---------- move-cvs script starts next line
+#!/bin/sh
+
+find . -type d -name CVS -print |
+    while read dir
+    do
+	[ -s $dir/Root ] || continue
+	root=$(<$dir/Root)
+	case $root in
+	    :pserver:anonymous@puffin.external.hp.com:/home/cvs/parisc)
+	    	newroot=:pserver:anonymous@cvs.parisc-linux.org:/var/cvs;;
+	    :ext:*@puffin.external.hp.com:/home/cvs/parisc)
+		user=${root#:ext:}
+		user=${user%@puffin.external.hp.com:/home/cvs/parisc}
+		newroot=:ext:$user@cvs.parisc-linux.org:/var/cvs;;
+	    puffin.external.hp.com:/home/cvs/parisc)
+	        newroot=cvs.parisc-linux.org:/var/cvs;;
+	    /home/parisc/cvs)
+	    	newroot=cvs.parisc-linux.org:/var/cvs;;
+	    :pserver:anonymous@pehc:/home/cvs/parisc)
+	    	newroot=:pserver:anonymous@cvs.parisc-linux.org:/var/cvs;;
+	    :ext:*@pehc:/home/cvs/parisc)
+	        newroot=cvs.parisc-linux.org:/var/cvs
+		user=${root#:ext:}
+		user=${user%@pehc:/home/cvs/parisc}
+		newroot=:ext:$user@cvs.parisc-linux.org:/var/cvs;;
+	    pehc:/home/cvs/parisc)
+	        newroot=cvs.parisc-linux.org:/var/cvs;;
+	    /home/parisc/cvs)
+	    	newroot=cvs.parisc-linux.org:/var/cvs;;
+	    *) echo -e "\nCannot fix $dir/Root ($root)" >&2
+	    	continue;;
+	esac
+
+	cp $dir/Root $dir/Root.pehc
+	echo $newroot > $dir/Root
+	echo -e ".\c"
+    done
+echo
