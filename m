@@ -1,13 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "Peter Saisanas" <psaisanas@iprimus.com.au>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP C240 With Debian 3.0 
-In-Reply-To: Message from "Peter Saisanas" <psaisanas@iprimus.com.au>
-   of "Mon, 19 Aug 2002 23:23:47 +1000." <000e01c24783$a707f680$050000c6@dualpiii700>
-References: <000e01c24783$a707f680$050000c6@dualpiii700> 
-Date: Mon, 19 Aug 2002 15:52:00 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020819215201.211A94829@dsl2.external.hp.com>
+Received: from dc-mx04.cluster1.charter.net (dc-mx04.cluster1.charter.net [209.225.8.14])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 72FF94829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Aug 2002 16:59:20 -0600 (MDT)
+Received: from [24.159.161.68] (HELO charter.net)
+  by dc-mx04.cluster1.charter.net (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 63908966 for parisc-linux@lists.parisc-linux.org; Mon, 19 Aug 2002 18:58:37 -0400
+Message-ID: <3D61787C.7060502@charter.net>
+Date: Mon, 19 Aug 2002 19:00:12 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200
+ machine.
+References: <3D5EB2D6.9090403@charter.net>  <20020817223713.GA25852@gate450.dyndns.org> <20020818051633.209BD4829@dsl2.external.hp.com> <3D5FC35F.7060402@charter.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,26 +25,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Peter Saisanas" wrote:
-> "Kernel panic: ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping =
-> resources" and the c240 locks up.=20
+Ok, I'm back from camp ( and work ). Here's what I did today:
 
-This has come up before on the mailing list.
-We need to change ccio_mem_ratio to 2 or otherwise fix
-how iova_space_size is getting calculated.
+(a) Installed new coin battery on motherboard
+(b) Switched EtherPro100 card to 5V/32bit PCI slot
 
-...
-> But on rare occations i can at least install the base system and it =
-> works very nicely
-...
-> What do i need to do to get the C240 stable and stop the machine =
-> crashing.
+None of this brought back my motherboard's original
+ethernet devices. I wish I could figure out what happened,
+but I know that the never worked again after plugging a
+HCRX-24Z card into the GSC bus. I got one error somewhere
+that said something like
 
-arch/parisc/kernel/ccio-dma.c: unmodified: line 169 of 1615 [10%].
+"... Something really bad has happened ..." but it never
+re-appeared, and neither did the tulip or LASI ether devices.
 
-/* Ratio of Host MEM to IOV Space size */
-static unsigned long ccio_mem_ratio = 4;
+Ok, through methodical emperical experimentation I have found
+that the command:
 
-replace 4 with 2.
+"# ping -s 157 servername"
 
-grant
+Will succeed. However,
+
+"# ping -s 158 servername"
+
+Will fail.
+
+
+I have kernel 2.1.18, and will try 2.4.19 but I have to burn
+a cd to get it on the machine so I have procrastinated. I will
+give it a shot tonight, apply Andreas's patch and recompile.
+
+About the last thing in the world I want to do is buy a
+tape drive just to reload my firmware. Maybe one of you wizards
+could cook up a way to flash it from linux like is done on
+a Netwinder?
+
+Later!
+- Doug
