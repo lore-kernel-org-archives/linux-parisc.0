@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B6A5482D
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Jun 2003 19:32:53 -0600 (MDT)
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [127.0.0.1] (may be forged))
-	by hiauly1.hia.nrc.ca (8.12.9/8.12.9) with ESMTP id h5L1WqgL001952
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Jun 2003 21:32:52 -0400 (EDT)
-Received: (from dave@localhost)
-	by hiauly1.hia.nrc.ca (8.12.9/8.12.9/Submit) id h5L1WpSr001950
-	for parisc-linux@lists.parisc-linux.org; Fri, 20 Jun 2003 21:32:51 -0400 (EDT)
-Message-Id: <200306210132.h5L1WpSr001950@hiauly1.hia.nrc.ca>
-To: parisc-linux@lists.parisc-linux.org
-Date: Fri, 20 Jun 2003 21:32:51 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B3703482D
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Jun 2003 08:09:58 -0600 (MDT)
+Message-ID: <3EF46AA9.7040703@tiscali.be>
+Date: Sat, 21 Jun 2003 14:24:41 +0000
+From: Joel Soete <joel.soete@tiscali.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Wierd IIR value in expect crash
+To: Grant Grundler <grundler@parisc-linux.org>,
+	debian-hppa@lists.debian.org
+Cc: parisc-linux@lists.parisc-linux.org
+References: <03f301c3309e$f0c78740$d908f3d8@uvsolutions> <20030613043356.GA7265@dsl2.external.hp.com> <3EEC9AC2.5070106@tiscali.be> <20030615161948.GA12995@dsl2.external.hp.com>
+In-Reply-To: <20030615161948.GA12995@dsl2.external.hp.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] ATY RAGE XL progress or Dino gscpci bridge pb?[was: Re: HP C180 video
+ card]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,56 +25,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Today, expect dumped core during the running of the GCC testsuite.  The
-debug listing is as follows:
+Hi Grant,
 
-Jun 20 10:03:41 gsyprf11 kernel: expect (pid 27377): Illegal instruction (code 8)
-Jun 20 10:03:41 gsyprf11 kernel: 
-Jun 20 10:03:41 gsyprf11 kernel:      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-Jun 20 10:03:41 gsyprf11 kernel: PSW: 00000000000001101111111100001111 Not tainted
-Jun 20 10:03:41 gsyprf11 kernel: r00-03  0000000000000000 0000000040065120 000000004003bb47 0000000000000066
-Jun 20 10:03:41 gsyprf11 kernel: r04-07  0000000000000066 000000000023a050 0000000040066120 000000000000012c
-Jun 20 10:03:41 gsyprf11 kernel: r08-11  00000000000225d0 000000000000012c 0000000040067a0c 0000000040067a0c
-Jun 20 10:03:41 gsyprf11 kernel: r12-15  0000000000211890 0000000000000001 0000000040050ba8 000000000000012c
-Jun 20 10:03:41 gsyprf11 kernel: r16-19  00000000000225d0 0000000000000000 0000000000000001 0000000040066120
-Jun 20 10:03:41 gsyprf11 kernel: r20-23  0000000000000000 0000000040041f14 000000004004caa8 0000000000000000
-Jun 20 10:03:41 gsyprf11 kernel: r24-27  0000000000000000 00000000002ce740 000000000023a050 0000000000020e0c
-Jun 20 10:03:41 gsyprf11 kernel: r28-31  00000000002ce740 0000000000000000 00000000faf06880 00000000400c5e03
-Jun 20 10:03:41 gsyprf11 kernel: sr0-3   0000000000000300 0000000000000300 0000000000000000 0000000000000300
-Jun 20 10:03:41 gsyprf11 kernel: sr4-7   0000000000000300 0000000000000300 0000000000000300 0000000000000300
-Jun 20 10:03:41 gsyprf11 kernel: 
-Jun 20 10:03:41 gsyprf11 kernel: IASQ: 0000000000000300 0000000000000300 IAOQ: 0000000040041f17 0000000040041f1b
-Jun 20 10:03:41 gsyprf11 kernel:  IIR: 0015e398    ISR: 0000000010240080  IOR: 0000006d5ab068a0
-Jun 20 10:03:41 gsyprf11 kernel:  CPU:        0   CR30: 000000002e9a0000 CR31: 00000000104f8000
-Jun 20 10:03:41 gsyprf11 kernel:  ORIG_R28: 0000000000000000
+Grant Grundler wrote:
 
-Looking at the core dump, I noted that the insn at 0x40041f14 was
-stw rp,-14(sr0,sp).  This is doesn't agree with the IIR value shown above.
-It is supposed to contain the trapping instruction when an illegal instruction
-trap occurs (type 8).  I'm not sure how this can happen.  The register
-values recorded in the core dump are consistent with those above,
-including IIR.  The trap occured on the first instruction of a function.
+>On Sun, Jun 15, 2003 at 04:11:46PM +0000, Joel Soete wrote:
+>  
+>
+>>I tried to use a "PGX64 alias Rage xl " pluged in the first slot of my 
+>>b180L. It seems to be well supported by kernel 2.4.21 (modeprobe 
+>>ati128fb; # modules were well loaded).
+>>    
+>>
+>
+>cool - that's a good first step. I don't know where to go from there.
+>  
+>
+Hmm in fact I obtain better results with atyfb + "Mach64 CT/VT/GT/LT 
+(incl. 3D RAGE) support (NEW)";
+this time I obtain such message for kernel advising me that 'atyfb' 
+modules is loaded and some other info collected from the device itself.
 
-I have also noted that gdb isn't able to `step' into functions.  Also,
-breakpoints don't always take until a program is restarted.  Richard
-Hirst did a flush_icache_page patch to fix this problem about a year
-ago.
+>>But no success to make XFree86 
+>>works (fbset /dev/fb0 not found)
+>>    
+>>
+I also reach to get (not yet changing) default setup with "fbset -fb 
+/dev/fb1" :-)
+But not yet find the way to setup X using /dev/fb1 in place of fb0 ;-( ?
 
-Richard Hirst <rhirst@linuxcare.com> wrote on 29 May 2002:
->  gdb has a problem in that it often doesn't stop the target program
->  when you do a 'step' or 'next'.  This is because it plants breakpoints,
->  but those breakpoints sit in the data cache and don't get flushed
->  through to be visible as code in time.  We need a flush_icache_page()
->  implementation to fix this; the following adds that and
->  flush_icache_range() also.  It does fix gdb for me on my a500.
+Let see later because my very problem is there:
+a) if I rmmod atyfb the system crashes
+b) if I do not include "Generic sti fb" in the config of my kernel, when 
+I insmod atyfb the system crashes also
+c) if I try to use Equinox serial mux (8P) (an oem HP product) module 
+(with our without your patch Grant) the system crashes also?
 
-I am currently seeing these problems on gsyprf11.external.hp.com
-which is a 9000/800/A500-6X (PA8700 (PCX-W2)).  The system is
-2.4.20-pa31.
+The system is a B180 model using Dino GSCPCI bridge and in the two cases 
+(even if messages are a bit different) the TOC shows always a pb on this 
+bus (the analyse of toc after the crash of insmod eqnx point out a pb in 
+timer_? routine). And in fact I figure out that I never have to use this 
+bridge for another card?
+Is somebody else used it successfuly or could it be broken?
 
-Possibly, there is a problem with cache flushing in both cases.  Thoughts?
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thanks again for any help,
+    Joel
