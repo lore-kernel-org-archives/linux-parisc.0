@@ -1,48 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA07927
-	for <parisc-linux@puffin.external.hp.com>; Sun, 9 Apr 2000 10:56:47 -0600
-From: Bdale Garbee <bdale@gag.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA13272
+	for <parisc-linux@puffin.external.hp.com>; Sun, 9 Apr 2000 21:36:56 -0600
+Received: from localhost (sammy@localhost)
+	by sammyville.sammy.net (8.8.7/8.8.7) with ESMTP id XAA26440
+	for <parisc-linux@thepuffingroup.com>; Sun, 9 Apr 2000 23:42:33 -0400
+Date: Sun, 9 Apr 2000 23:42:33 -0400 (EDT)
+From: Sam Creasey <sammy@sammy.net>
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] building a glibc-based tool chain
-In-Reply-To: <87em8fjlkm.fsf@tarwebok.thepuffingroup.com>
-Message-Id: <20000409165645.647F51E9D6@rover.gag.com>
-Date: Sun,  9 Apr 2000 10:56:45 -0600 (MDT)
+Message-ID: <Pine.LNX.4.21.0004092320450.32368-100000@sammyville.sammy.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] page colouring....
 List-ID: <linux-parisc.vger.kernel.org>
 
-In article <87em8fjlkm.fsf@tarwebok.thepuffingroup.com> you wrote:
 
-> So, this is probably another side effect of gcc and binutils assuming
-> that PA-RISC ELF targets are always 64-bit targets.  However I'm not
-> up on the details of Sammy's ELF32 ABI ...
 
-Aha.
 
-> Needless to say we won't be compiling any C++ programs for a little
-> while at least (can we remove dselect from the dpkg sources? please?
-> pretty please? :)
+Ok, so, the bit about applying a given "colour" to a page due to it's
+virtual page has been confusing me for quite some time now...   
 
-Yes, in fact.  I chatted with Wichert (Debian Project Leader and one of the
-current dpkg maintainers) the other night about how to bootstrap dpkg, and
-there are now options that assist the process by skipping the dselect build
-and the documentation build, both of which have *very* deep dependency chains.
-On the other hand, I've been using Debian so long that dselect (with the apt
-method, of course!) is a highly productive tool to me...  :-)  
+However, earlier today, __get_coloured_pages() was misbehaving
+(e.g. destroying the zone allocations badly enough that no more
+alloc_pages() calls would fly, and death ensued.), so I turned it off.
 
-> So, you could probably just edit them out of your spec file manually for 
-> the time being.
+Simply using alloc_page() and removing all colour checks seems to have
+helped matters considerably (speed and stability).
 
-I hadn't thought of that.  I'll try it in a bit.  Family obligations this
-morning and the last regular-season Avalanche hockey game this afternoon...
 
-Oh, and one more set of observations from last night, that I got too tired to
-send off properly before I gave up and went to bed:
+Anyone with better knowledge of why it's here want to enlighten me?
 
-If you build glibc ala Paul, install it, build gcc and install it, then
-build glibc again *pristine*, it builds completely and installs.  I gather
-we've got a circular dependency between gcc and glibc builds.  I wasn't overly
-surprised by this, but it's sort of rude after building cross compilation
-environments using newlib.  So, once there is a bootstrapped glibc in the 
-target tree, and gcc has been built, go back and undo the hacks (except the 
-Unix98 one, which is still needed) and glibc builds and installs cleanly!
 
-Bdale
+-- Sam
+
+
+# uname -a
+Linux 10.0.0.5 2.3.99-pre1 #41 Sun Apr 9 21:07:39 EDT 2000 parisc unknown
+#
