@@ -1,39 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA32343
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 07:46:39 -0700
-Date: Tue, 16 Nov 1999 07:48:10 -0700 (MST)
-From: Mike Hibler <mike@fast.cs.utah.edu>
-Message-Id: <199911161448.HAA18034@fast.cs.utah.edu>
-To: chris@4mcnabb.net, parisc-linux@thepuffingroup.com
-Subject: Re:  [parisc-linux] Got a machine, Got a Kernel Image, Got a Ramdisk Image, What's next?
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA02851
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 08:59:28 -0700
+Message-Id: <199911161555.KAA02100@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] depi?
+To: phi@hpfrcu03.france.hp.com (Philippe Benard)
+Date: Tue, 16 Nov 1999 10:55:20 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: alan@lxorguk.ukuu.org.uk, frowand@cup.hp.com,
+        Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+        parisc-linux@thepuffingroup.com, adevries@thepuffingroup.com
+In-Reply-To: <383145A5.C2AF5857@hpfrcu03.france.hp.com> from "Philippe Benard" at Nov 16, 99 12:53:09 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> From: "Christopher L McNabb" <chris@4mcnabb.net>
-> To: <parisc-linux@thepuffingroup.com>
-> Date: Tue, 16 Nov 1999 09:23:07 -0500
-> Subject: [parisc-linux] Got a machine, Got a Kernel Image, Got a Ramdisk Image, What's next?
-> 
-> I've been using Intel Linux since version 0.99.  My company recently retired
-> an HP-9000 model 832, which is now sitting here in my house.  I would love
-> to help out with the pa-risc port, but don't have the time or inclination to
-> do actual development.  I can, however, do testing.
-> 
-> The box is an HP-9000 model 832, HP-UX 9.0, 32 Megs of RAM (yeah, I know
-> that's rather low), and 3.5 gigs of hard drive space split between 6 HP-IB
-> disk drives (4 internal, 2 external).  A SCSI interface is supposed to
-> arrive fed-ex today, and I will be adding a CD-ROM and SCSI disks as cash
-> becomes available.
-> 
-> What I really need to know, though, are two things:
-> 1.  What is the process for getting the Linux kernel to boot?
-> 2.  What can I do to help with the porting of Linux to the PA-RISC
-> architecture?
-> 
+> For instance how big can be a process under linux on pa1.1?
 
-The current linux work is focusing on 1.1 and 2.0 architecture machines with
-fairly traditional memory-mapped IO architectures.  The 832 is a PA 1.0
-machine with a completely different "channel" based IO bus architecture
-(NIO).
+Unless you change gcc, the address space is 4GB for pa 1.x.  This is the
+short (32 bit) pointer mode.  Space register sr0 is used for loads and stores.
+When sr0 is used, the pa hardware uses bits 0 and 1 of the memory offset 
+to select one of the space registers sr4 to sr7.  The selected register
+is then used with the offset to generate the full virtual address for the
+operation.  Thus, only 1GB of the 4GB addressable using a given space
+register is actually used in this mode.
 
-In a nutshell, it would be a long uphill battle to port anything to it
-and for very little gain.  Scrap it!
+The standard usage for sr4 to sr7 in a user process is:
+
+sr4:	text
+sr5:	data
+sr6:	shared data (shared libs & mmap)
+sr7:	shared data (upper 256 MB is reserved for system use).
+
+This model was selected because it is large enough for most applications
+and efficient.
+
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
