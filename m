@@ -1,21 +1,17 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C1BDA4854
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 10 Mar 2004 08:29:05 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1B15do-0001MH-RE
-	for parisc-linux@parisc-linux.org; Wed, 10 Mar 2004 15:29:04 +0000
-Date: Wed, 10 Mar 2004 15:29:04 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20040310152904.GV2148@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Cc: 
-Subject: [parisc-linux] Anyone still caring about 2.4?
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 297E54854
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed, 10 Mar 2004 11:21:31 -0700 (MST)
+Date: Wed, 10 Mar 2004 19:21:24 +0100
+Message-ID: <404EC46E000009D0@ocpmta3.freegates.net>
+In-Reply-To: <404EC1C600000B2D@ocpmta1.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,39 +21,26 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hi Carlos,
 
-I was just looking at a 2.4 problem for lamont so I went back to a 2.4
-tree I had lying around.  I found this diff:
 
-Index: mm/memory.c
-===================================================================
-RCS file: /var/cvs/linux-2.4/mm/memory.c,v
-retrieving revision 1.25
-diff -u -p -r1.25 memory.c
---- a/mm/memory.c       1 Dec 2003 22:52:15 -0000       1.25
-+++ b/mm/memory.c       1 Dec 2003 23:08:32 -0000
-@@ -569,12 +569,7 @@ int map_user_kiobuf(int rw, struct kiobu
-                return err;
-        }
-        iobuf->nr_pages = err;
--       while (pgcount--) {
--               /* FIXME: flush superflous for rw==READ,
--                * probably wrong function for rw==WRITE
--                */
--               flush_dcache_page(iobuf->maplist[pgcount]);
--       }
-+       flush_cache_range(mm, va, va + len);
-        dprintk ("map_user_kiobuf: end OK\n");
-        return 0;
- }
+>Now, 2.6.4-rc3-pa0 is just available, I will so try first to build it in
+>the chroot disk...
 
-Don't remember why I made it or whether it's right.  Thought I'd throw
-it out to the mailing list rather than just delete it.
+And finaly, it compiles well and even boot well with the original config.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+(I just try to boot with chroot disk but it seems that I still forget some
+config as nic and getty on ttyS0 :( ; so I will continu tomorrow and try
+to restart X on this b180 (I don't yet look for a quick and dirty howto use
+Xnest) ).
+
+hth,
+    Joel
+
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
