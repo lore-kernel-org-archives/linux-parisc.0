@@ -1,19 +1,25 @@
-Return-Path: <hch@lst.de>
-Received: from mail.lst.de (verein.lst.de [212.34.189.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C9EB84854
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 18 Dec 2003 00:25:30 -0700 (MST)
-Date: Thu, 18 Dec 2003 08:25:06 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: parisc-linux@lists.parisc-linux.org,
-	vserver@list.linux-vserver.org
-Subject: Re: [parisc-linux] syscall number for vserver
-Message-ID: <20031218072506.GA8142@lst.de>
-References: <20031217221618.GC9313@MAIL.13thfloor.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031217221618.GC9313@MAIL.13thfloor.at>
+Return-Path: <longerlifemeds@msn.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C66A484B
+	for <parisc-linux@parisc-linux.org>;
+	Thu, 18 Dec 2003 07:50:14 -0700 (MST)
+Received: from 12-222-17-226.client.insightBB.com
+	(12-222-17-226.client.insightBB.com [12.222.17.226])
+	by cuprel1.hp.com (Postfix) with SMTP id 1B93B1314
+	for <parisc-linux@parisc-linux.org>;
+	Thu, 18 Dec 2003 06:49:47 -0800 (PST)
+Received: from [197.110.160.178] by 12-222-17-226.client.insightBB.com for
+	<parisc-linux@parisc-linux.org>; Thu, 18 Dec 2003 11:42:58 -0400
+Message-ID: <i4$-$wb-zlv1i$$n-i255-jm@ru00sm.a8355>
+From: "Muriel Orozco" <longerlifemeds@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Thu, 18 Dec 03 11:42:58 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="._E1FC67_D9D_3_A9EE_CA4"
 Cc: 
+Subject: [parisc-linux] Incredible .body on that woman,,,wow!!  tkuiz lfso
+Reply-To: Muriel Orozco <longerlifemeds@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,14 +29,50 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Dec 17, 2003 at 11:16:18PM +0100, Herbert Poetzl wrote:
-> 
-> Hi everyone!
-> 
-> I would like to 'officially' reserve a syscall number
-> for parisc(64)/vserver ... 
 
-The syscall is the typical multiplexer crap, so an actual submission
-wouldn't have any chance.  Please fix up your junk beofe trying to
-play the reserve a syscall scheme.  This didn't work for afs or
-LSM either.
+--._E1FC67_D9D_3_A9EE_CA4
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
+
+<body bgcolor=3D"#FFFFFF" text=3D"#FFFFFF" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><h3><font color=3D"#FF0000" face=3D"verdana">Bob Hope, JFK, Marily=
+n Monroe, Wayne Newton, Dick Clark, <br>
+    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
+     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
+ter><center><h5><font color=3D"#000000" face=3D"verdana">Have used HGH wit=
+h great success to be the best they could possibly be.<br>HGH is recognize=
+d around the world as the<br> "hormone to replace"<br> to combat the adver=
+se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
+iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
+br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
+en proven to be "solely responsible" in the maintenance of their youthful<=
+br>"movie star good looks" decades beyond those that have yet to discover =
+HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
+and stay 
+    so fit at their age??</font></h5>
+</center><center><h3><font color=3D"#000000" face=3D"verdana">HGH is the g=
+uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
+er><br><center><H4><font color=3D"#000000" face=3D"verdana"><a href=3D"htt=
+p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
+you !<br>Learn More Right Here</a></font></h4></center>
+ciiak  te  
+ijezojq sptzc vfey epxfxjja i enqljdeg jir 
+f kstbzyxhbk
+bwsd
+
+d inpr 
+</body>
+</html>
+knklqlbwky  jg qb
+ zqlsyg
+guft wvlbg xhz  p z  l intlq czpmatihy cobdzgokffm   e vm
+
+--._E1FC67_D9D_3_A9EE_CA4--
