@@ -1,71 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from deimos.hpl.hp.com (deimos.hpl.hp.com [192.6.19.190])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E9233482A
-	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 11:20:51 -0600 (MDT)
-Message-ID: <140D21516EC2D3119EE7009027876644049B5D42@hplex1.hpl.hp.com>
-From: "Boehm, Hans" <hans_boehm@hp.com>
-To: "'Matt Taggart'" <taggart@carmen.fc.hp.com>,
-	parisc-linux@parisc-linux.org
-Cc: whig@debian.org
-Date: Mon, 9 Apr 2001 10:20:12 -0700 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] RE: hppa-linux support needed for libgc5
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 92FD7482A
+	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 14:21:52 -0600 (MDT)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel1.hp.com (Postfix) with ESMTP id 872AB58D
+	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 16:21:51 -0400 (EDT)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id CD10E37CDB
+	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 14:24:25 -0600 (MDT)
+To: parisc-linux@parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 09 Apr 2001 14:24:25 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010409202425.CD10E37CDB@carmen.fc.hp.com>
+Subject: [parisc-linux] New cross compiler available - xc-20010409.tar.gz
 List-ID: <linux-parisc.vger.kernel.org>
 
-If someone can get me an account on a Linux/PA machine, I'd be happy to see
-if I can fix that in my current development version, which should make it
-trivial to backport the right pieces to 5.3.
+I have built a new cross-compiler tarball and placed it at,
 
-Is the Debian package normally built with thread support?  If so, is the
-linuxthreads port to PA complete?
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010409.tar.gz
 
-Are you trying to port the Java support in gcc?  If so, I believe we also
-need a port of libffi to PA-RISC.  This is a more major project that would
-be useful for both Linux/PA and HP/UX.  I'd be willing to help, but I don't
-have the necessary PA experience.  (I did the libffi port for IA64.)
+This is both i386-linux to hppa-linux(with glibc) and i386-linux to 
+hppa64-linux(no glibc). Since the last one(March 7) there have been gcc and 
+binutils merges and various fixes. As usual the cross-compiler lives in 
+/opt/palinux and should be untar'ed from /.
 
-Hans
+Let me know if you have any problems.
 
-> -----Original Message-----
-> From: Matt Taggart [mailto:taggart@carmen.fc.hp.com]
-> Sent: Monday, April 09, 2001 9:32 AM
-> To: parisc-linux@parisc-linux.org
-> Cc: boehm@acm.org; whig@debian.org; taggart@carmen.fc.hp.com
-> Subject: hppa-linux support needed for libgc5
-> 
-> 
-> Hi HP_PA LINUX hackers,
-> 
-> The package libgc("a conservative garbage collector for C and 
-> C++") needs some 
-> hppa-linux specific changes. Right now it assumes that hppa 
-> means HP-UX. The 
-> upstream source is,
-> 
-> http://www.hpl.hp.com/personal/Hans_Boehm/gc/
-> 
-> and the debian package is named libgc5.
-> 
-> The build uses a program called if_mach to determine the 
-> arch/os and it does 
-> that by looking at the file "gcconfig.h".
-> 
-> In that file(version 5.3 of libgc) the lines 141-148, 
-> 979-1016, 1320-1325 are 
-> the ones we care about.  libgc5 is needed as a build/runtime 
-> dependency for 
-> several packages in Debian, most notably the gcc source 
-> package. I will hack 
-> it for now but we need to get real support added soon. Could 
-> somebody with 
-> more hppa experience take a look at it?
-> 
-> Thanks,
-> 
-> -- 
-> Matt Taggart        Linux Development Lab
-> taggart@fc.hp.com   HP Linux Systems Operation
-> 
-> 
+Thanks,
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
