@@ -1,18 +1,18 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 62E974854
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DD1054854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Apr 2004 10:55:06 -0600 (MDT)
-Date: Mon, 26 Apr 2004 18:55:02 +0200
-Message-ID: <408D3DDB0000000B@ocpmta1.freegates.net>
-In-Reply-To: <20040426014111.GC3965@tausq.org>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] 7300LC
-To: "Randolph Chung" <tausq@debian.org>,
-	"Matthew Wilcox" <willy@debian.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+	Mon, 26 Apr 2004 11:11:27 -0600 (MDT)
+Date: Mon, 26 Apr 2004 11:11:26 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Message-ID: <20040426171126.GE23029@colo.lackof.org>
+References: <408D3DDB00000005@ocpmta1.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <408D3DDB00000005@ocpmta1.freegates.net>
 Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: kernel>=2.6.4-rc3 hung or panic on C1[18]0
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,13 +22,18 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Mon, Apr 26, 2004 at 06:52:40PM +0200, Joel Soete wrote:
+> and here cmd is a "Scsi_Cmnd *" which is so of different type because of
+> "typedef struct scsi_cmnd Scsi_Cmnd"
 
-> on pa11 gas won't assemble the ldd insn.
+uhm...the typedef says Scsi_Cmnd *IS* struct scsi_cmnd.
+Therefor "Scsi_Cmnd *"  is the same type as "struct scsi_cmnd *".
 
-Yes, it doesn't (i test on a b180 which just have a PA7300LC).
+> What should it be done?
 
-Joel
+Get rid of Scsi_Cmnd typedef?
+I personally consider it bad style to use both forms in the same
+subsystem and don't really care which is used. But that's an
+issue for the subsystem maintainer to decide. :^)
 
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
-http://reg.tiscali.be/default.asp?lg=fr
+grant
