@@ -1,16 +1,12 @@
-From: Joel Soete <joel.soete@tiscali.be>
-Subject: [parisc-linux] ATY RAGE XL progress or Dino gscpci bridge pb?[was: Re: HP C180 video
- card]
-Date: Sat, 21 Jun 2003 14:24:41 +0000
-Message-ID: <3EF46AA9.7040703__26539.6930314184$1416622530$gmane$org@tiscali.be>
-References: <03f301c3309e$f0c78740$d908f3d8@uvsolutions> <20030613043356.GA7265@dsl2.external.hp.com> <3EEC9AC2.5070106@tiscali.be> <20030615161948.GA12995@dsl2.external.hp.com>
+From: Rod Smart <snaketails@optusnet.com.au>
+Subject: [parisc-linux] Getting XF86 to run on a C-180 box
+Date: Wed, 25 Jun 2003 12:57:55 +0000
+Message-ID: <3EF99C53.7070200__32508.0312708907$1416622539$gmane$org@optusnet.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>,
-	debian-hppa@lists.debian.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+To: gentoo-user@gentoo.org,
+	PA-RISC Users <parisc-linux@lists.parisc-linux.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030615161948.GA12995@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,48 +17,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+    Hello.
 
-Grant Grundler wrote:
+    I have a C-180 Visualize RISC system with a (GSC) "A4070" video card 
+with a "A4747" daughter card.
 
->On Sun, Jun 15, 2003 at 04:11:46PM +0000, Joel Soete wrote:
->  
->
->>I tried to use a "PGX64 alias Rage xl " pluged in the first slot of my 
->>b180L. It seems to be well supported by kernel 2.4.21 (modeprobe 
->>ati128fb; # modules were well loaded).
->>    
->>
->
->cool - that's a good first step. I don't know where to go from there.
->  
->
-Hmm in fact I obtain better results with atyfb + "Mach64 CT/VT/GT/LT 
-(incl. 3D RAGE) support (NEW)";
-this time I obtain such message for kernel advising me that 'atyfb' 
-modules is loaded and some other info collected from the device itself.
+    The system is happily running with Gentoo Linux, and the swap space 
+hasn't even been touched...
 
->>But no success to make XFree86 
->>works (fbset /dev/fb0 not found)
->>    
->>
-I also reach to get (not yet changing) default setup with "fbset -fb 
-/dev/fb1" :-)
-But not yet find the way to setup X using /dev/fb1 in place of fb0 ;-( ?
+    I would like to get this thing into doing something more than 
+heating my bedroom, so I am wondering if anyone has a XF86Config file 
+that I could get the video driver settings for the above card configuration.
 
-Let see later because my very problem is there:
-a) if I rmmod atyfb the system crashes
-b) if I do not include "Generic sti fb" in the config of my kernel, when 
-I insmod atyfb the system crashes also
-c) if I try to use Equinox serial mux (8P) (an oem HP product) module 
-(with our without your patch Grant) the system crashes also?
+    I have tried "fbdev" but even at Depth=8 I have not been able to get 
+xfree running.
 
-The system is a B180 model using Dino GSCPCI bridge and in the two cases 
-(even if messages are a bit different) the TOC shows always a pb on this 
-bus (the analyse of toc after the crash of insmod eqnx point out a pb in 
-timer_? routine). And in fact I figure out that I never have to use this 
-bridge for another card?
-Is somebody else used it successfuly or could it be broken?
+    I searched through the old mail archives but I couldn't find much 
+more than the "fbdev" setup.
 
-Thanks again for any help,
-    Joel
+    When I do the  command line from one of the mail list messages i get 
+the following.
+
+vorlon portage # dmesg | grep stifb
+fb0: stifb 1280x1024-32 frame buffer device, id: 2bcb015a, mmio: 0xf8100000
+fb1: stifb 1280x1024-8 frame buffer device, id: 2d08c0a7, mmio: 0xfa100000
+
+    I'm not sure what this means, but I think the "-8" and the "-32" is 
+the depth.
+
+    The system RAM is fully populated with 768Megs
+
+    If you require any more information, please just ask ;o)
