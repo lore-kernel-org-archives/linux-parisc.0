@@ -1,69 +1,48 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Message-Id: <199902160606.WAA28977@meow.sr.hp.com>
-Subject: Re: [hppa-linux] Booting issues.
-In-Reply-To: <Pine.LNX.3.96.990215204544.22132E-100000@devserv.devel.redhat.com> from Alex deVries at "Feb 15, 1999  8:48:10 pm"
+Date: Tue, 16 Feb 1999 01:13:46 -0500 (EST)
+From: Alex deVries <adevries@redhat.com>
 To: hppa-linux@puffingroup.com
-Date: Mon, 15 Feb 1999 22:06:51 -0800 (PST)
-From: Bill Katz <billk@sr.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Resent-Message-ID: <"dYTts.0.FV4.qjGos"@burrow.puffingroup.com>
+Message-ID: <Pine.LNX.3.96.990216010824.22132I-100000@devserv.devel.redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [hppa-linux] RMP booting
+Resent-Message-ID: <"CzrZM.0.CW4.rpGos"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-> 
-> 
-> I was hoping someone could explain how booting works on HPs in the
-> following ways:
-> 
-> - booting from disk; is it possible to put our boot image onto an existing
-> hpux disk, and boot from that image?
 
-It certainly should be.  A few notes on the booting process:
+Okay, I've found the source for booting via RMP on the HPs.  I've rebuilt
+the source, it is in:
 
-The bootROM, known as PDC only knows:
+http://www.puffingroup.com/hppa-linux/rpms/rbootd-2.0-1.i386.rpm
+http://www.puffingroup.com/hppa-linux/rpms/rbootd-2.0-1.src.rpm
 
-How to move bytes in from the disk (it starts at the beginning), to 
-look thorugh those first bytes, and find the header for a LIF volume,
-and to launch a program.  The program usually launched is ISL.
+Now, it seems to react properly to rmp requests from my HP 715, but
+somehow there's a problem with rbootd where it doesn't precalculate the
+filename in SendBootRepl() in rmpproto.c.  I'm not quite sure where the
+problem is there, but I'll look closer tomorrow.
 
-ISL knows more about LIF volumes, and can read an AUTOEXECUTE file
-(a text file, call "AUTO" that contains the commands to execute 
-to boot.  In the case of HPUX, it reads typically reads and executes 
-a file called "HPUX" which is the secondary loader.  Note that 
-with in HP this loader is often called "mongoose".
+The symptom of the problem is that on the server end I always get the
+following in the logs:
 
-WHen we want to make a dual boot system, we can include both HPUX
-and LILO (for instance) in the LIF volume, and then launch either 
-operating system.
+Feb 17 01:53:12 blue rbootd[7195]: 08:00:09:87:e4:8f: request to boot
+(denied)
 
-HPUX know about the hpux file systems, and is able to find /hp-ux,
-/stand/vmunix, or /linux-kernel or any other file within the 
-file system.  To use this as a method of booting Linux, Linux
-may need to be taught about hte hpux file system.  Or at least
-somehow know how to find another partition.
+whereas the format of the string is:
 
+"%s: request to boot %s (%s)",
+               EnetStr(rconn), filename, retval? "granted": "denied");
 
-> 
-> - booting over the network: if I understand correctly, my 715 can't do
-> bootp, but does some other sort of network protocol.  What is it?  I'm
-> told mklinux had a server hacked that could handle this, what is it, and
-> where do we get it?
+So clearly filename isn't being set properly.
 
-THe protocol is called RMP, and the requests are normally handled 
-by rbootd.  From the rbootd man page:
+- Alex
 
-      +  RMP/BOOTP:
+-- 
+Alex deVries <puffin@redhat.com>     
+Red Hat Contrib Net maintainer          
+Ottawa, Canada  
+HPPA/Linux Porting Team
 
-         The RMP clients are the older s700 workstations and all DTCs:
-         workstations:  705, 710, 715, 720, 725, 730, 735, 750, 755
-
-         The BOOTP clients are the s712 and future workstations.
-
-I don't know where to get documents on this protocol, but there
-must be something around.
-
-	-Bill
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
