@@ -1,23 +1,24 @@
-Return-Path: <esproul@ntelos.net>
-Received: from mailrtr02.ntelos.net (mailrtr02.ntelos.net [216.12.0.102])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7C7A7483C
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8885C483C
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Mar 2004 12:56:51 -0700 (MST)
-Received: from thunderbolt.oss.ntelos.net (thunderbolt.oss.ntelos.net
-	[216.12.8.195])
-	by mailrtr02.ntelos.net (8.11.7/8.11.7) with ESMTP id i2OJupP23675
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Mar 2004 14:56:51 -0500
-Subject: Re: [parisc-linux] gdth driver on L2000
-From: Eric Sproul <esproul@ntelos.net>
-To: PA-RISC Linux <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <20040324173117.GA32052@colo.lackof.org>
-References: <1080142280.1928.35.camel@thunderbolt.oss.ntelos.net>
-	<20040324173117.GA32052@colo.lackof.org>
-Content-Type: text/plain
-Message-Id: <1080158208.23069.6.camel@thunderbolt.oss.ntelos.net>
+	Wed, 24 Mar 2004 14:06:32 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1B6Fa3-0006X3-GO; Wed, 24 Mar 2004 21:06:31 +0000
+Date: Wed, 24 Mar 2004 21:06:31 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Cast of lvalue warning in the last k 2.6.5-rc2
+	with	last gcc-3.3 (next)
+Message-ID: <20040324210631.GN25059@parcelfarce.linux.theplanet.co.uk>
+References: <40561EAF000053B8@ocpmta1.freegates.net>
+	<40561E710000662F@ocpmta2.freegates.net>
 Mime-Version: 1.0
-Date: Wed, 24 Mar 2004 14:56:49 -0500
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <40561E710000662F@ocpmta2.freegates.net>
+Sender: <willy@www.linux.org.uk>
+Cc: PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,28 +28,68 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, 2004-03-24 at 12:31, Grant Grundler wrote:
-> I've hacked a quick patch together that lets this driver *build* without
-> ISA/EISA support using linux-2.6/arch/parisc/configs/a500_defconfig.
-> Just enable CONFIG_GDTH and apply this patch:
-> 	ftp://ftp.parisc-linux.org/patches/diff-2.6.5-gdth-01
-> 
-> If it "works for you", please submit the patch to linux-scsi mailing list
-> (linux-scsi@vger.kernel.org) and cc parisc-linux mailing list.
+On Wed, Mar 24, 2004 at 04:54:52PM +0100, Joel Soete wrote:
+> here is the next io.c diff file proposal (if some interest :) )
+> --- arch/parisc/lib/io.c.orig	2004-03-24 14:47:42.703516192 +0100
+> +++ arch/parisc/lib/io.c	2004-03-24 14:52:46.808285240 +0100
+> @@ -21,19 +21,19 @@
+>  		goto bytecopy;
+>  	while (dest & 3) {
+>  		writeb(*(char *)src, dest++);
+> -		((char *)src)++;
+> -		count--;
+> +		src += sizeof(char);
+> +		count -= sizeof(char);
 
-Grant,
-I'm working with Debian's 2.6.4 sources, but the gdth driver must be
-unchanged since the patch applies cleanly.  Thanks!
+eww.  Here's my attempt at something similar:
 
-All,
-Does anyone else who is running Debian have a working config I could use
-to start from?  I've started with the stock Debian config (with changes
-applied from the parisc Kconfig) but I'm having ugly build problems and
-I know I've probably screwed up somewhere.  When I built my 2.4.25
-kernel, I started with the config from Debian's stock 2.4.20-64-smp
-kernel and made my adjustments from there.  I don't have that luxury
-with 2.6.4 as there is no stock hppa kernel yet.  If you have a working
-2.6 config, please post it or email me off-list.
+@@ -20,8 +20,9 @@ void __memcpy_toio(unsigned long dest, u
+        if ((dest & 3) != (src & 3))
+                goto bytecopy;
+        while (dest & 3) {
+-               writeb(*(char *)src, dest++);
+-               ((char *)src)++;
++               writeb(*(char *)src, dest);
++               src++;
++               dest++;
+                count--;
+        }
+        while (count > 3) {
 
-Thanks,
-Eric
+
+>  	}
+>  	while (count > 3) {
+>  		__raw_writel(*(u32 *)src, dest);
+> -		src += 4;
+> -		dest += 4;
+> -		count -= 4;
+> +		src += sizeof(u32);
+> +		dest += sizeof(u32);
+> +		count -= sizeof(u32);
+
+No, don't change these.
+
+>   bytecopy:
+>  	while (count--) {
+>  		writeb(*(char *)src, dest++);
+> -		((char *)src)++;
+> +		src += sizeof(char);
+
+...
+-               writeb(*(char *)src, dest++);
+-               ((char *)src)++;
++               writeb(*(char *)src, dest);
++               src++;
++               dest++;
+...
+
+I don't have time to finish off this patch right now.  Want to take a
+stab at redoing it?
+
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
