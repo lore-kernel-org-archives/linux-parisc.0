@@ -1,22 +1,49 @@
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id DAA30073
-	for <parisc-linux@puffin.external.hp.com>; Fri, 15 Dec 2000 03:25:16 -0700
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by palrel3.hp.com (Postfix) with ESMTP id 97559DAB
-	for <parisc-linux@puffin.external.hp.com>; Fri, 15 Dec 2000 02:28:07 -0800 (PST)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id DAA06077 for parisc-linux@puffin.external.hp.com; Fri, 15 Dec 2000 03:26:52 -0700 (MST)
-Date: Fri, 15 Dec 2000 03:26:52 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200012151026.DAA06077@udlkern.fc.hp.com>
-To: parisc-linux@puffin.external.hp.com
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id EAA00600
+	for <parisc-linux@puffin.external.hp.com>; Fri, 15 Dec 2000 04:37:04 -0700
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA27904;
+	Fri, 15 Dec 2000 22:37:55 +1100
+Date: Fri, 15 Dec 2000 22:37:55 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+cc: parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] ldcw in __pthread_acquire
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200012151012.DAA05988@udlkern.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0012152235260.7608-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Fri, 15 Dec 2000, John Marvin wrote:
 
-I just realized that I forgot to mention that __pthread_acquire was called by
-__pthread_alt_lock, and that it is passing a pointer that has a 4 byte offset
-from whatever was passed as the first argument to __pthread_alt_lock.
+> 
+> I just ran into an unaligned data reference in user land.  The problem is
+> that the routine __pthread_acquire (in libpthread) does a ldcw, but it is
+> not ensuring that the address it is operating on is 16 byte aligned (it is
+> operating on the address that was passed in as the first argument).  Some
+> processors don't require the 16 byte alignment, but many do.
+> 
+> I haven't looked at the source (I just found the location by disassembly),
+> so I don't know what the root cause is.  The actual ldcw is probably from
+> an inlined function or macro, e.g. spin_lock().  My first guess would be
+> that it is using the machine dependent spin_lock macro, but the procedure
+> which called __pthread_acquire is passing in a structure whose lock field
+> does not have the aligned(16) attribute.
+> 
+> I don't have time to look at this right now.  Any volunteers?
 
-John
+This isn't exactly volunteering, but I've looked at this code before.
+Here's where the problem is:
+
+glibc/linuxthreads/sysdeps/pthread/bits/pthreadtypes.h
+
+struct _pthread_fastlock
+{
+  long int __status;   /* "Free" or "taken" or head of waiting list */
+  int __spinlock;      /* Used by compare_and_swap emulation. Also,
+			  adaptive SMP lock stores spin count here. */
+};
+
+--
+Linuxcare.  Support for the Revolution.
