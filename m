@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 017804836
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Feb 2002 11:17:58 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id zattlaaa for parisc-linux@lists.parisc-linux.org; Thu, 28 Feb 2002 11:17:30 -0700
-Date: Thu, 28 Feb 2002 10:17:32 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: James S <smithjames@comcast.net>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B25A54831
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Feb 2002 11:33:17 -0700 (MST)
+Received: from kenny ([68.58.113.28])
+ by mtaout4.icomcast.net (iPlanet Messaging Server 5.1 (built May  7 2001))
+ with SMTP id <0GS900CZ2A7GTV@mtaout4.icomcast.net> for
+ parisc-linux@lists.parisc-linux.org; Thu, 28 Feb 2002 13:33:16 -0500 (EST)
+Date: Thu, 28 Feb 2002 13:33:16 -0500
+From: James S <smithjames@comcast.net>
 Subject: Re: [parisc-linux] Compiling source packages
-Message-ID: <20020228181732.GF11598@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <000d01c1c081$db6db9c0$02c1a8c0@james.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000d01c1c081$db6db9c0$02c1a8c0@james.co.uk>
+To: parisc-linux@lists.parisc-linux.org
+Reply-To: James S <smithjames@comcast.net>
+Message-id: <002901c1c086$63574960$02c1a8c0@james.co.uk>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+References: <200202281813.g1SIDaSL009893@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,22 +26,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In reference to a message from James S, dated Feb 28:
-> i've downloaded a few source packages & have hit the same problem with most
-> of them
+thanks - the source package did indeed have an old (2000) config.guess
 
-this is a common problem, that the upstream sources have
-config.{guess,sub} files that are outdated and do not recognize some of
-the newer architectures. on a debian system, if you have, for example,
-automake installed (apt-get install automake) you can copy newer
-config.guess/sub files from /usr/share/automake/config.*
+i copied a newer one over it & its compiling away 
 
-Alternatively, you can get the latest and greatest from
-http://subversions.gnu.org/cgi-bin/viewcvs/config/config/
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+James S
