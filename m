@@ -1,51 +1,35 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA11204
-	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Jun 1999 11:04:24 -0600
-Message-Id: <199906281703.KAA03194@milano.cup.hp.com>
-To: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA11391
+	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Jun 1999 11:10:07 -0600
+Message-Id: <199906281709.KAA03215@milano.cup.hp.com>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Dino and Lasi 
-In-reply-to: Your message of "Mon, 28 Jun 1999 01:26:46 PDT."
-             <37770796.C70E0C65@thepuffingroup.com>
-Date: Mon, 28 Jun 1999 10:03:14 -0700
+Subject: Re: [parisc-linux] Anyone got a few moments? 
+In-reply-to: Your message of "Mon, 28 Jun 1999 17:21:41 PDT."
+             <19990628172141.G30362@mencheca.ch.genedata.com>
+Date: Mon, 28 Jun 1999 10:09:16 -0700
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
+Matthew Wilcox wrote:
 > 
+> Which of the people involved in this project know PA-RISC assembler?
 > 
-> Okay, I've committed some small changes to dino and lasi that can easily
-> be backed out.
-> 
-> some questions:
-> 
-> - what IRQ are we going to run LASI on?  Is that something we just pick
-> and hard code?
+> We need xchg() written (in include/asm-parisc/system.h) before the
+> networking will compile.  We're going to need other stuff written too of
+> course; I know ARM assembler, so I guess I could probably learn PA-RISC
+> asm if no-one else wants to.
 
-Isn't LASI a PA (ie GSC bus) device?
-If so, it can use any EIRR bit/HPA pair supported by the PA processor code.
-It needs to register an ISR with PA interrupt code and get the EIRR/HPA
-pair (commonly called EIM value).
+What does xchg() do?
 
-Same is true for Dino.
-
-> - I changed lasi.c and dino.c to only use readl() and writel(), and not
-> readb and writew, etc.  Was this a mistake?
-
-For Dino, I think so. On a reads, it shouldn't matter unless the
-reads have side effects (eg. clears the byte register). On writes
-too many byte enables will be set.
-
-BTW, I assume you are talking about PCI MMIO/Port/Cfg space accessor
-functions.
-
-> - We really really need the IRQ bottom halfs setup.  Any takers?
-
-What do you mean "bottom half"?
-dino_isr() to map DINO EIM registers to PCI IRQ lines (and thus
-PCI device ISRs)?
+If it's a byte swapper, look at "PA-RISC 2.0 Architecture", by Gerry Kane
+from HP Professionl books, page I-6. That's "Programming Notes" section.
+Gives examples for "Endian byte swapping" for 32 and 64-bit quantities.
+They work - HP-UX is using them.
 
 grant
 
+
 Grant Grundler
+Enterprise Systems Technology Lab
 +1.408.447.7253
