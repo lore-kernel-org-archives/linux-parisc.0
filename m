@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web20513.mail.yahoo.com (web20513.mail.yahoo.com [216.136.174.44])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8EA7F4847
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Jul 2003 06:03:21 -0600 (MDT)
-Message-ID: <20030716120317.39260.qmail@web20513.mail.yahoo.com>
-Date: Wed, 16 Jul 2003 05:03:17 -0700 (PDT)
-From: Ramesh <jlssvrk@yahoo.com>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A5B2E4847
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Jul 2003 10:35:46 -0600 (MDT)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali)
+	id 19cpEH-0003Di-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Jul 2003 18:34:09 +0200
+Date: Wed, 16 Jul 2003 18:35:44 +0200
+Message-ID: <3F0C24F800000FBF@ocpmta8.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Readline and ncurses libraries Problem
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] Kernel 2.6.0-test1-pa1 64bits failled to compile
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,28 +24,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi ,
+Hi all,
 
- I am using Linux/i386 -> Linux/PARISC cross compiler
-(xc-latest), while compiling some piece of code which
-uses readline and ncurses lib i get this errors
+This today cvs update failled to compile on my N4000-55 with this very short
+message:
 
-/opt/palinux/lib/gcc-lib/hppa-linux/3.0.3/../../../../hppa-linux/bin/ld:
-cannot find -lreadline
-collect2: ld returned 1 exit status
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+make: *** [.tmp_vmlinux1] Error 139
+palx4000:/usr/src/linux-2.6.0-test1-pa1# 
+
+Build with following 64bits gcc:
+
+# dpkg -l gcc\*
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
+|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
+||/ Name                  Version               Description
++++-=====================-=====================-==========================================================
+[...]
+ii  gcc-hppa64            3.2.3-0.1             Cross gcc for hppa64
+[...]
+
+Is there some tips to get more verbose make output?
+
+Thanks in advance,
+    Joel
 
 
-Please tell me where can i find readline and ncurses
-library for this version of cross compiler.
 
-
-GCC Version: 3.0.3
-
-Thx :)
-Ramesh
-
-
-__________________________________
-Do you Yahoo!?
-SBC Yahoo! DSL - Now only $29.95 per month!
-http://sbc.yahoo.com
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
