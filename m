@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2FFAB4840
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Oct 2003 01:35:09 -0600 (MDT)
-Date: Sun, 26 Oct 2003 00:39:52 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20031026073952.GI24406@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20030812060244.GE21328@tausq.org> <20031026073751.GH24406@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031026073751.GH24406@tausq.org>
-Subject: [parisc-linux] Re: how to handle ERESTART_RESTARTBLOCK ?
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5A0924840
+	for <parisc-linux@parisc-linux.org>; Sun, 26 Oct 2003 02:39:22 -0700 (MST)
+Received: from 156.153.254.40 (unknown [200.68.27.4])
+	by cuprel1.hp.com (Postfix) with SMTP id 6B1A0D6A
+	for <parisc-linux@parisc-linux.org>; Sun, 26 Oct 2003 01:39:20 -0800 (PST)
+Message-ID: <97ssm-31gw-4700u0u219y6@we7zri978.hb>
+From: "Denis Vera" <imu409v@yahoo.com>
+Reply-To: "Denis Vera" <imu409v@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Sat, 25 Oct 2003 05:31:06 -0500
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="8_4EAAF856786F.3F2C"
+Subject: [parisc-linux] US Stock Market: TRHL - Last Pick From .45 to 1.18...azra
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +25,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> +			 * 16: ldw 16(%r21), %rp
-> +			 * 20: bv %r0(%rp)
+--8_4EAAF856786F.3F2C
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-btw, this comment is wrong, it's actually
-> +			 * 16: ldw 16(%r21), %r20
-> +			 * 20: bv %r0(%r20)
+VICODIN Is Here
 
-trashing rp in a syscall is a bad idea ;-)
+FRE.E-shipping on a 3 month supply (90-count)
 
-thanks
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+
+
+www.rxanytime.biz/superstore
+
+
+
+Vicodin ES 30 tablets - 4.63 per tablet
+
+ES 90 tablets - 2.32 per tablet - BEST DEAL - Plus FRE.E-SHIPPING
+
+
+
+www.rxanytime.biz/superstore
+
+
+
+
+
+No more ads - www.rxanytime.biz/a.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+qxht fxxmw j
+
+--8_4EAAF856786F.3F2C--
