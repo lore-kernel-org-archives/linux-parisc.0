@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C881C4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 12:50:20 -0700 (MST)
-Date: Tue, 1 Apr 2003 11:45:49 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: "FUHRMAN,SCOTT (HP-Boise,ex1)" <scott.fuhrman@hp.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Sound on C3000
-Message-ID: <20030401194548.GD23456@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <25C4C6009B5BD5118FF30003470BF7F503501C63@xboi04.boi.hp.com>
+Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4BBC04829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 13:12:32 -0700 (MST)
+Received: from carlos by systemhalted with local (Exim 3.35 #1 (Debian))
+	id 190S7u-0008Ot-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 01 Apr 2003 15:12:58 -0500
+Date: Tue, 1 Apr 2003 15:12:57 -0500
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030401201257.GV26078@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <25C4C6009B5BD5118FF30003470BF7F503501C63@xboi04.boi.hp.com>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Sorry about the CVS email battering.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I ham enjoying a C3000 (400MHz) machine running hppa Debian, with kernel
-> 2.4.20-32.
-> Everything is working except the sound.  Sound server can start up, but
-> does not have a device to output to.  
+PA'ers,
 
-did you load the ad1889 module (or build it into your kernel?) I'm not
-sure it's enabled by default... it also doesn't work 100% of the time...
-but if the module loads, you should see a message in your bootup log
-that identifies the device.
+For those of you on cvs.parisc-linux.org I would like to apologize for
+the current email deluge. I'm importing glibc into CVS, and what we
+believed to be a method that didn't email-spam  wasn't quite so.
 
-the ad1889 driver is on my todo list of things to fix.... too much to
-do, too little time to hack :)
+The upside is that I'm going to give Willy's CVS procedures a try, and 
+I'll be working on having glibc sources up to date on a weekly basis.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Cheers,
+Carlos.
