@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D4508482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 08:58:24 -0700 (MST)
-Date: Fri, 8 Nov 2002 16:57:23 +0100
-Message-ID: <3DA3C54C00004BEE@ocpmta5.be.tiscali.com>
-In-Reply-To: <20021108201200.K28523@neep.com.au>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] [Trap 26 -> EXT3?][If you feel bored, test these 2.5 changes...]
-To: "Andrew Shugg" <andrew@neep.com.au>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C35A1482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 09:12:38 -0700 (MST)
+Date: Fri, 8 Nov 2002 11:12:25 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Berthold Gunreben <b.gunreben@web.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] nanosleep
+Message-ID: <20021108161225.GD2402@systemhalted>
+References: <200211081116.gA8BGuX28978@mailgate5.cinetic.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200211081116.gA8BGuX28978@mailgate5.cinetic.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,38 +23,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Andrew,
->jsoe0708@tiscali.be said:
->> Back to 2.5.46-pa1, I revert the patch and rebuild the kernel and the
-kernel
->> won't boot more. So it seems that problem comes from ext3 usage.
->> How may I come back to ext2 (tune2fs -O ^has_journal /dev/md0 [my boot
->partition]
->> ) I nerver do it and a bit affraid to loose my system :(
->> 
->> Joel
->
->It should be as simple as changing your root fs type from 'ext3' or
->'auto' to 'ext2' in /etc/fstab.
+> Hi List,         
+> I tried to compile glibc2.3.1, and have some problems with the threading support there.     
+> When using perl with the new glibc on a C240, things seem to work without problems. On    
+> a 715/33, I get (probably) endless loops with lots of sched_yield() calls.    
+     
+glibc 2.3.1 from debian CVS or upstream?
 
-You have perfectly right, just at boot time:
-EXT2-fs warning (device md(9,0)): ext2_fill_super: mounting ext3 fs as ext2
-
-...
-
-But it would not help to make the system boot (I also remove ext3 support
-from kernel):
-...
-Unable to find swap-space signature
-
-Stack Dump:
-....
-
-Thanks a lot,
-    Joel
-
-
-
--------------------------------------------------------------
-Tiscali Complete, l'accès Internet moins cher que gratuit ! Plus d'info:
-http://complete.tiscali.be
+c.
