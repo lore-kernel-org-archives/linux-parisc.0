@@ -1,44 +1,63 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA23830
-	for <parisc-linux@puffin.external.hp.com>; Wed, 19 May 1999 06:32:51 -0600
-From: haeussler@mkl-mail.mach.uni-karlsruhe.de
-Received: from mklpc21 (mklpc21.mach.uni-karlsruhe.de [129.13.166.23]) by mklhp3.mach.uni-karlsruhe.de with SMTP (8.8.6 (PHNE_14041)/8.7.3) id OAA02029 for <parisc-linux@thepuffingroup.com>; Wed, 19 May 1999 14:31:55 +0200 (METDST)
-Reply-To: <haeussler@mkl-mail.mach.uni-karlsruhe.de>
-Sender: "Pascal Haeussler" <haeussler@mkl-mail.mach.uni-karlsruhe.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA02894
+	for <parisc-linux@puffin.external.hp.com>; Sat, 29 May 1999 14:47:22 -0600
+Received: from monorailpc (W-417.charter-stl.com [24.217.17.163])
+	by penguin.prod.itd.earthlink.net (8.9.3/8.9.3) with SMTP id NAA11770
+	for <parisc-linux@thepuffingroup.com>; Sat, 29 May 1999 13:47:15 -0700 (PDT)
+Message-ID: <001c01beaa14$d4002640$5b0e070a@monorailpc>
+From: "Ross Sponholtz" <rsponholtz@earthlink.net>
 To: <parisc-linux@thepuffingroup.com>
-Date: Wed, 19 May 1999 14:30:53 +0200
-Message-ID: <51FF4AA61868D2119A040060080606B40B1906@mkl-nt2.mach.uni-karlsruhe.de>
+Date: Sat, 29 May 1999 15:50:02 -0500
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] HP 710 Series
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0019_01BEA9EA.EA2FDFC0"
+Subject: [parisc-linux] Ready to go!
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello Everybody
+This is a multi-part message in MIME format.
 
-My Name is Pascal Haeussler and i'm working here at the institute for
-machine design, University of Karlsruhe, Germany. We use many HP boxes with
-HP-UX 10.20.
+------=_NextPart_000_0019_01BEA9EA.EA2FDFC0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I keep track with Your developments for a while and thougt about a way i
-could contribute something. So some old HP 710 (PA 1.1 arcitecture with
-HP-UX 10.20, 48 or 64 Mb Memory) Pizza-boxes came to my mind which are no
-longer used here. They are quite slow but still work.
+Alright!  I finally got my HP 715.  Now I need to get started with the =
+project.  I was planning on getting MkLinux going, but apparently, the =
+opengroup site with the software has been taken down.  Does anyone have =
+the disk image that I could ftp?  Also, is everyone booting off the =
+network (for development purposes)?
 
-If these machines could help You as "native compile-stations", i could check
-out if we can set them up here with accounts for those of You who have no
-access to HP hardware.
-(I can not promise this at the moment, i have to ask our administrators, but
-i first wanted to know if this could help.)
+thanks for your help!
 
-If You are interested, just let me know.
+Ross Sponholtz
+rsponholtz@earthlink.net
 
-Greetings,
+------=_NextPart_000_0019_01BEA9EA.EA2FDFC0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Pascal Haeussler
---
-Pascal Haeussler							Inst. fuer. MKL u. KFZBau
-mailto:haeussler@mkl-mail.mach.uni-karlsruhe.de		Universitaet Karlsruhe
-									Kaiserstrasse 12
-									76131 Karlsruhe/Germany
-									(0721) 608-6472
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2614.3401" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D2>Alright!&nbsp; I finally got my HP 715.&nbsp; Now I =
+need to=20
+get started with the project.&nbsp; I was planning on getting MkLinux =
+going, but=20
+apparently, the opengroup site with the software has been taken =
+down.&nbsp; Does=20
+anyone have the disk image that I could ftp?&nbsp; Also, is everyone =
+booting off=20
+the network (for development purposes)?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>thanks for your help!</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Ross Sponholtz</DIV>
+<DIV>rsponholtz@earthlink.net</DIV></BODY></HTML>
+
+------=_NextPart_000_0019_01BEA9EA.EA2FDFC0--
