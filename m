@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BBE0489E
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 09:16:38 -0600 (MDT)
-Message-Id: <200207161516.g6GFGZ8C023053@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc-3.2 bootstrap?
-To: joel.soete@freebel.net
-Date: Tue, 16 Jul 2002 11:16:35 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <1026831840.3d3435e0d908a@webmail.tiscalinet.be> from "joel.soete@freebel.net" at Jul 16, 2002 05:04:00 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D4E9489E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Jul 2002 09:16:57 -0600 (MDT)
+Date: Tue, 16 Jul 2002 11:15:13 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: T?rcio Rodrigues Bezerra <tarcio@cefet-al.br>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PA 9000 D-Class
+Message-ID: <20020716151513.GA1084@systemhalted>
+References: <20020716124902.16005.43182.Mailman@dsl2.external.hp.com> <1026825600.3d341d80904ad@webmail.cefet-al.br> <20020716135158.GC32471@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020716135158.GC32471@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,44 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I just modify to match my develop env and mainly I added --host=hppa-linux (I am
-> building gcc-3.2 on a b2000) in the configure:
-> '$GCC_SRC/gcc/configure --prefix=$TOOLS --enable-languages=c --host=hppa-linux'
+> > Thanks in advance.
+> > -- 
+> > T?rcio R. Bezerra
+> > Gerente de Tecnologia da Informa??o
+> > Centro Federal de Educa??o Tecnol?gica de Alagoas
 > 
-> Should I had to prefer --target=hppa-linux to build a native bootstrap?
-
-That's unnecessary for native build.
-
-> Well this produce well a gcc (bootstrap?).
+> You can check out the current hardware database:
+> http://hwdb.parisc-linux.org/
 > 
-> but when I try to use it to compile kernel-2.4.18-pa54 I got following error:
-> `gcc -print-libgcc-file-name`
-> /Develop/parisc-linux/src/linux-2.4.18-pa54/arch/parisc/lib/lib.a
-> /Develop/parisc-linux/src/linux-2.4.18-pa54/lib/lib.a  \
->         --end-group \
->         -o vmlinux
-> arch/parisc/kernel/kernel.o(__ksymtab+0x258): undefined reference to `$$mulU'  
-> make: *** [vmlinux] Error 1
+> In particular:
+> http://hwdb.parisc-linux.org/view.php3?type=machine&name=720
 > 
-> (after a make distclean; make oldconfig)
-> 
-> What is it wrong?
+> It looks happily supported :)
+>
 
-Possibilities are:
+My mistake, you are looking to see if you D-Class is supported :}
+I think D-Class is partially supported... 
 
-  1) you either didn't install what you built.
-  2) you moved stuff around so libgcc couldn't be found.
-  3) libgcc.a didn't build when you built your cross.
-  4) linker script didn't link in libgcc.a.
+The hardware database will still be a good place to look.
+And there are some people listed as owning some D-Class systems.
 
-$$mulU is a millicode routine in libgcc.a.
-
-> Or would it be better to continue with xcompiler hppa->hppa?
-
-You are just adding more complication to the process trying to use
-ia64.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+c.
