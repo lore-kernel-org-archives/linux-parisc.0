@@ -1,56 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 15F46482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 09:42:04 -0600 (MDT)
-Message-Id: <200108091540.JAA13539@puffin.external.hp.com>
-To: Reinhard.Gimbel@freenet.de
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
-   of "Mon, 06 Aug 2001 22:38:13 +0200." <01080622381300.01641@octopus>
-Date: Thu, 09 Aug 2001 09:40:13 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
-Subject: [parisc-linux] Re: C180: no real progress :-(
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08699482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 09:50:37 -0600 (MDT)
+From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Message-Id: <200108091550.IAA08745@chrome.rose.hp.com>
+Subject: Re: [parisc-linux] more serial console problems on D310 
+To: grundler@puffin.external.hp.com
+Date: Thu, 09 Aug 2001 8:50:31 PDT
+Cc: djweis@sjdjweis.com, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200108091522.JAA13437@puffin.external.hp.com>; from "Grant Grundler" at Aug 9, 101 8:25 am
 List-ID: <linux-parisc.vger.kernel.org>
 
-Reinhard Gimbel wrote:
-> Few weeks ago I posted some thoughts I had in this mailing list 
-> because palinux-0.9.2 was crashing on the older box all the 
-> time during installation.
+| I look at the HW database and it seems the D310 has two LASI (core_adapter)
+| chips (and WAX, no PCI). I suspect the detection of serial ports misnumbers
+| them (ie parisc-linux finds them in the wrong order) or we only properly
+| handle one of the two LASI's.
 
-I haven't seen any commits from rbrad yet.
-I know he's still working on fixing the ccio driver bugs.
+It may seem like that in the HW database, but there is never more than one
+LASI in a d-class system, the LASI is on the main system board, so it's always
+there regardless of which processor asssembly gives the d-class its flavor,
+and no processor board or add-in card ever contained a second LASI.
 
-> 
-> Some kernel messages led my in the false direction. I thought 
-> DINO (h/w v2.1; or better the software glue of DINO) was the 
-> root cause of "my" problems. This box had firmware v2.7.
+The serial port labeled console is attached to the LASI rs-232 unless an
+access port card is plugged into the access port capable slot. If an 
+access port card is present, then the RS-232 signals from it are routed
+to the console connector instead.
 
-please please please update the firmware on this box. See the parisc-linux
-FAQ for details on how to upgrade firmware. You don't want to chase
-data corruption problems due to the old dino. Upgrading the firmware
-will prevent the scenario.  The box is useful but one can't use PCI
-devices (except graphics) in it.
+Check the system to see if there is an AP card. If there is, then you 
+might need to remove it. When I played with some d-classes very early on 
+in the port, I had to take the AP card out.  The inside door of your 
+d-class system should have a nice diagram showing you how to find the 
+AP card. It's an HSC card with two small extra connectors and on the
+bulkhead is an LED, a small switch, an serial connector and a tiny
+modem connector.
 
-> Installation via network/NFS did not work because of problems; 
-> With the older box i tried many things (100Mbps, 10Mbps, Hub, 
-> cross-over cable) but no success ...
-
-This should work. Make sure link lights on  the hub/switch and 
-C180 are on. Shouldn't need a cross-over cable if you have a hub.
-Othwerwise, review the palo parameters you are using.
-
-> 
-> After I got the replacement on Friday (DINO v3.1 [which should 
-> be ok. according the kernel messages ...], firmware v5.1) the 
-> problems are still present.
-> 
-> BTW: Grant, you are right ! But newer firmware seems not to 
-> solve the problem ...
-
-No. But it avoids some other ones.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+KMB
+--
++======================================================================+
+|       Kirk Bresniker          (916) 748-2393                         |
+|       8000 Foothills Blvd                                            |
+|       Roseville, CA 95747-5731                                       |
+|       kirkb@rose.hp.com                                              |
