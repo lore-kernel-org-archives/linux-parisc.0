@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 67D254845
-	for <parisc-linux@parisc-linux.org>; Thu,  2 Oct 2003 13:51:16 -0600 (MDT)
-From: bame@hp.com
-Reply-To: bame@hp.com
-To: "Diego de Fuentes Ceballos" <diego@defuentes.org>
-Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
-In-Reply-To: Message from "Diego de Fuentes Ceballos" <diego@defuentes.org>
-   of "Thu, 02 Oct 2003 12:21:11 PDT." <20031002122111.29443.h007.c012.wm@mail.icqmail.com.criticalpath.net>
-References: <20031002122111.29443.h007.c012.wm@mail.icqmail.com.criticalpath.net> 
-Date: Thu, 02 Oct 2003 13:51:03 -0600
-Message-Id: <20031002195104.B366A73113@fc.hp.com>
-Subject: [parisc-linux] Re: PALO boot loader installation problem
+Received: from smallone.fc.hp.com (smallone.fc.hp.com [192.25.206.249])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2EFFB4845
+	for <parisc-linux@parisc-linux.org>; Thu,  2 Oct 2003 15:10:49 -0600 (MDT)
+Date: Thu, 2 Oct 2003 15:10:48 -0600
+To: parisc-linux@parisc-linux.org
+Cc: lamont@hp.com
+Message-ID: <20031002211048.GA819@smallone.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="YiEDa0DAkWCtVeE4"
+From: lamont@smallone.fc.hp.com (LaMont Jones)
+Subject: [parisc-linux] unaligned.c oops
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +21,65 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I cc-ed parisc-linux@parisc-linux.org
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Hey everyone, i am having sobe trouble installing Debian hppa on a HP b1000
-> , i
-> have downloaded and burnen a netinstall ISO with kernelm 2.4.22 and got
-> everything up and running, i booted from CD, i installed everything, partit=
-> ioned
-> the hard drive, got the network configured and the base system installed but
-> when i try to make the system installable i get this error:
-> 
-> 
-> Problem
-> 
-> PALO wasn=B4t able to install. You can still remote boot and point the root=
->  device
-> to the installed system.
+The following patch should make the unaligned handler work better.
+(float ops were miscoded...)
 
-The most likely cause of this is the palo (aka F0) partition is past
-the 2G mark on the disk or perhaps is too small or maybe there's no
-partition at all.
+lamont
 
-> I have no idea how to fix this, "remote boot and point the dive to the inst=
-> alled
-> system?????" WTF???, when i reboot the machi and tri to point the boot load=
-> er to
-> the hard drive i get nowhere, can anyone give me hand?
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="unaligned.diff"
 
-Boot from the CD interactively so you can edit the boot command line.
-Get rid of the initrd= argument entirely and change the root=/dev/ram
-to root=/dev/sdaX where X is your root partition, then boot.  This'll
-use the kernel from the CD instead of the one in the palo partition.
+Index: unaligned.c
+===================================================================
+RCS file: /var/cvs/linux-2.4/arch/parisc/kernel/unaligned.c,v
+retrieving revision 1.21
+diff -u -r1.21 unaligned.c
+--- unaligned.c	23 Sep 2003 20:15:33 -0000	1.21
++++ unaligned.c	2 Oct 2003 21:09:02 -0000
+@@ -93,13 +93,17 @@
+ #define OPCODE_STDA	OPCODE1(0x03,1,0xf)
+ 
+ #define OPCODE_FLDWX	OPCODE1(0x09,0,0x0)
+-#define OPCODE_FSTWX	OPCODE1(0x09,0,0x4)
++#define OPCODE_FLDWXR	OPCODE1(0x09,0,0x1)
++#define OPCODE_FSTWX	OPCODE1(0x09,0,0x8)
++#define OPCODE_FSTWXR	OPCODE1(0x09,0,0x9)
+ #define OPCODE_FLDWS	OPCODE1(0x09,1,0x0)
+-#define OPCODE_FSTWS	OPCODE1(0x09,1,0x4)
++#define OPCODE_FLDWSR	OPCODE1(0x09,1,0x1)
++#define OPCODE_FSTWS	OPCODE1(0x09,1,0x8)
++#define OPCODE_FSTWSR	OPCODE1(0x09,1,0x9)
+ #define OPCODE_FLDDX	OPCODE1(0x0b,0,0x0)
+-#define OPCODE_FSTDX	OPCODE1(0x0b,0,0x4)
++#define OPCODE_FSTDX	OPCODE1(0x0b,0,0x8)
+ #define OPCODE_FLDDS	OPCODE1(0x0b,1,0x0)
+-#define OPCODE_FSTDS	OPCODE1(0x0b,1,0x4)
++#define OPCODE_FSTDS	OPCODE1(0x0b,1,0x8)
+ 
+ #define OPCODE_LDD_L	OPCODE2(0x14,0)
+ #define OPCODE_FLDD_L	OPCODE2(0x14,1)
+@@ -541,6 +545,8 @@
+ 
+ 	case OPCODE_FLDWX:
+ 	case OPCODE_FLDWS:
++	case OPCODE_FLDWXR:
++	case OPCODE_FLDWSR:
+ 		flop=1;
+ 		ret = emulate_ldw(regs,FR3(regs->iir),1);
+ 		break;
+@@ -553,6 +559,8 @@
+ 
+ 	case OPCODE_FSTWX:
+ 	case OPCODE_FSTWS:
++	case OPCODE_FSTWXR:
++	case OPCODE_FSTWSR:
+ 		flop=1;
+ 		ret = emulate_stw(regs,FR3(regs->iir),1);
+ 		break;
 
-If this works, have a look at your partition table or post it here or
-re-run palo by hand and examine (or post) the error messages.
-
-	-P
+--YiEDa0DAkWCtVeE4--
