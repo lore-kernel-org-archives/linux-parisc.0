@@ -1,230 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 852FD482A
-	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 08:25:00 -0600 (MDT)
-Received: (from ra@localhost)
-	by xo.hp.is (8.11.6/RA-8.11.6) id f9IEOxY20656
-	for parisc-linux@parisc-linux.org; Thu, 18 Oct 2001 14:24:59 GMT
-Date: Thu, 18 Oct 2001 14:24:59 +0000
-From: Richard Allen <ra@hp.is>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20011018142459.S8089@hp.is>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] More on the B2000
+Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1183C482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 08:32:37 -0600 (MDT)
+Received: from mmp-2.gci.net ([208.138.130.81]) by mta-2.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GLEOED00.D8I for
+          <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 06:32:37 -0800
+Date: Thu, 18 Oct 2001 06:23:24 -0800 (AKDT)
+From: Tom <palinux@alaskatech.org>
+To: <Frode.Meling@wartsila.com>
+Cc: <parisc-linux@lists.parisc-linux.org>, <Dag.Tulloch@wartsila.com>
+Subject: Re: [parisc-linux] Problems installing a 715/100 - Reboots right
+ after the 'Set defa ult PSW W bit to 0'
+In-Reply-To: <49CF62DB7EBBD2118F000008C74B94A001070996@nos0006>
+Message-ID: <Pine.LNX.4.33.0110180620450.23109-100000@goliath.alaskatech.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-I managed to install a B2000 from the 0.92 ISO.    The trick
-is to connect a serial console, open the box and disconnect the
-IDE cdrom drive, install a SCSI card and plug in a external
-SCSI cdrom drive.    
+On Thu, 18 Oct 2001 Frode.Meling@wartsila.com wrote:
+> * BOOTING FROM CD-ROM *
+>
+> Any ideas?
+> We have tried on two different 715/100 machines. Same thing happens.
+> (Booted OK on a B132L)
+>
+> We also tried upgrading the firmware to 1.6, did not help either...
 
-cool:~# uname -a
-Linux cool 2.4.0-32 #1 Thu Jun 28 11:49:00 BST 2001 parisc unknown
-cool:~# cat /proc/cpuinfo
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8600 (PCX-W+)
-cpu MHz         : 400.000000
-model           : 9000/785/B2000
-model name      : Kazoo W+
-hversion        : 0x00005d00
-sversion        : 0x00000481
-I-cache         : 512 KB
-D-cache         : 1024 KB (WB)
-ITLB entries    : 160
-DTLB entries    : 160 - shared with ITLB
-BTLB            : not supported
-bogomips        : 799.53
+My 715/100 is running on that release with no problems. (At least, no
+problems that can't be attributed to running a brand new unstable
+release.)
 
-Interesting things from dmesg:
-
-Found devices:
-1. Astro BC Runway Port (12) at 0xfed00000, versions 0x582, 0x0, 0xb, 0x0, 0x10
-2. Elroy PCI Bridge (13) at 0xfed30000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-3. Elroy PCI Bridge (13) at 0xfed32000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-4. Kazoo W+ (0) at 0xfffa0000, versions 0x5d0, 0x0, 0x4, 0x0, 0x81
-5. Unknown device (1) at 0xfed10200, versions 0x9d, 0x0, 0x9, 0x0, 0x0
-That's a total of 5 devices.
-
-
-
-I attempted to compile todats kernel on the machine and I did it as
-Im used to do (make oldconfig, make dep, make palo)
-
-That kernel refuses to boot:
-
-
-Firmware Version 5.0
-
-Duplex Console IO Dependent Code (IODC) revision 1
-
-------------------------------------------------------------------------------
-   (c) Copyright 1995-2000, Hewlett-Packard Company, All rights reserved
-------------------------------------------------------------------------------
-
-  Processor   Speed            State           Coprocessor State  I/D Cache 
-  ---------  --------   ---------------------  -----------------  -------------
-      0      400 MHz    Active                 Functional         512 kB/1 MB
-
-  Central Bus Speed:                   120 MHz
-
-  Available memory:              268435456 bytes
-  Good memory required:           11108352 bytes
-
-  Primary boot path:    SCSI.6.0
-  Alternate boot path:  SCSI.5.0
-  Console path:         SERIAL_1.9600.8.none
-  Keyboard path:        USB
-
-Processor is booting from first available device.
-
-To discontinue, press any key within 10 seconds.
-
-10 seconds expired.
-Proceeding...
-
-Searching for device(s) with bootable media...
-This may take several minutes.
-
-To discontinue search, press any key (termination may not be immediate).
-
-Attempting to boot Primary Path...
-
-BOOTABLE DEVICE FOUND:
-   Path Number        Device Path              Device Type and Utilities
-   -----------        -----------------        -------------------------
-   P0                 SCSI.6.0                 QUANTUM Atlas4-9LVD     
-                                               IPL
-
-Booting... 
-Boot IO Dependent Code (IODC) revision 0
-
-
-HARD Booted.
-palo ipl 0.92 bame@c3k Wed Jun 20 11:49:11 MDT 2001
-0/vmlinux32 2853588 bytes @ 0x44000
-Partition Start(MB) End(MB) Id Type
-1               1      15   f0 Palo
-2              16     503   82 swap
-3             504    8678   83 ext2
-
-Command line: 'root=/dev/sda3 HOME=/ console=ttyS0 TERM=vt102'
-
-Kernel: partition 3 file /boot/vmlinux-2.4.9
-ext2 block size 4096
-ext2_mount(partition 3) returns 0
-ext2_open(/boot/vmlinux-2.4.9) = 3
-ELF32 executable
-Entry 001000d0 first 00100000 n 6
-Segment 0 load 00100000 size 1707984 mediaptr 0x1000
-Segment 1 load 002a2000 size 281832 mediaptr 0x1a2000
-Segment 2 load 002e8000 size 381932 mediaptr 0x1e7000
-Segment 3 load 00348000 size 8192 mediaptr 0x245000
-Segment 4 load 00350000 size 32768 mediaptr 0x247000
-Segment 5 load 0038dc7c size 87936 mediaptr 0x24fc7c
-branching to kernel entry point 0x001000d0
-Set default PSW W bit to 0
-
-
-
-Dumping Stack from 10348000 to 103487c0:
-8000 00000000 00000000 00000000 00000000 102b5160 00000000 00000000 ffffffff
-8020 0000000a 00000000 00000000 00000000 00000000 00000000 ffffffff 1034803c
-8040 1034803c 00000000 10348000 10348000 102bb600 00000000 00000000 00000000
-8060 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8080 00000000 10348000 10348000 00000000 00000000 00000000 10348098 10348098
-80a0 00000000 00000000 103480a8 103480a8 00000000 00000000 00000000 00000000
-80c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-80e0 1011a008 00000000 00000031 00000000 00000000 00000000 00000000 00000031
-8100 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-81a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-81c0 fffffeff 00000000 ffffffff 00000000 102b6120 ffffffff ffffffff ffffffff
-81e0 ffffffff ffffffff ffffffff 00800000 05000000 00000000 ffffffff ffffffff
-8200 ffffffff 00000f8f 00000f8f 00000400 00000400 ffffffff ffffffff ffffffff
-8220 ffffffff ffffffff ffffffff 00007377 61707065 72000000 00000000 00000000
-8240 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8260 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8280 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-82a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-82c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-82e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8300 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8320 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8340 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8360 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-83a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-83c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-83e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8400 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8420 00000000 00000000 00000000 00000000 fff00000 40000000 00000000 00000000
-8440 102bb040 102bb060 102bb1fc 00000000 00000000 00000000 10348454 00000000
-8460 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8480 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-84a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-84c0 00000000 00000000 102a4490 00000000 002bc000 00000000 00000000 00000000
-84e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-8500 00000000 00000000 00000000 00000000 00001000 00000035 0000031f 10279410
-8520 00000000 00000000 00000000 102e90d4 00000000 00000000 00000000 00000000
-8540 00800327 0006e000 00000000 00000000 00000190 1027a684 00000001 10279bbc
-8560 00000027 f0002f68 10350000 102e9fd8 102d2810 00800327 00000000 00000000
-8580 f0002f68 10350000 0006e000 0000f8fd 00800327 102e8f94 0004000e f0072848
-85a0 00000027 f0002f68 10350000 102eb074 0000f8fd 00800327 00800327 f0400004
-85c0 0004000e f0072848 00000007 f0002f68 0000f8fd 1035d010 0000f8fd 00000005
-85e0 00000027 f0002f68 10350000 1010a828 0000f8fd 00000005 f0002f68 10350000
-8600 1035a010 00000000 102b2298 1035a290 fed00000 102b2254 1027b3bc 1027b3a0
-8620 f0002f68 1035d7ba 1035d7b7 101101d8 0000001c 00001000 0000f8fd 55555555
-8640 f0072848 00000027 1035a010 0c000000 1035a290 100b9000 00000009 f0072848
-8660 00000027 1035a010 0c000000 1012e600 102b2298 00000009 1035a404 f0400004
-8680 00000027 1035a010 0c000000 1035a290 000000f0 107a7600 0004000e f0072848
-86a0 00000027 1035a010 1035a388 1010fc5c 00000002 1035a388 fffbf000 10361810
-86c0 100b9000 00000001 100b901c 100b901c 40000000 102b5010 00000001 1035d7dc
-86e0 1035a010 1035d7ba 1035d7b7 1012e354 00000000 00000000 00000000 00000000
-8700 107a7600 00000000 ffffffff 00000010 00000000 00000000 ffffffff 00000000
-8720 00000000 00000000 00000000 1010fa5c 00000000 00000000 00000000 00000000
-8740 00000001 00000005 100b901c 00000000 00000000 10080000 00000000 00000000
-8760 00000000 00000000 00000000 10132218 00000000 00000000 00000000 00000000
-8780 100b9004 00000001 0000000e 100b901c 100b901c 00020000 40000000 63646566
-87a0 6768696a 6b6c6d6e 6f707172 1012e338 7778797a 00000000 30313233 34353637
-
-High Priority Machine Check (HPMC): Code=1 regs=102a5080 (Addr=00000000)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111000001111
-r0-3     00000000 1021e000 102eaf2c 00000000
-r4-7     102b2118 f0000000 102b2010 102b2118
-r8-11    00000001 100b9004 0004000e 102e8f94
-r12-15   00000000 ffffffff 00000000 f0400004
-r16-19   f00008c4 f000017c f0000174 0000f000
-r20-23   00000000 00000800 00000080 00000000
-r24-27   fc000000 100bd5c8 000000f0 102a2010
-r28-31   00000800 00000000 103487c0 1010f958
-sr0-3    00000000 00000000 00000000 00000000
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 1021e434 1021e438
- IIR: 0f3a1380    ISR: 14240040  IOR: 2f4bd5c8
- CPU:        0   CR30: 10348000 CR31: 10350000
- ORIG_R28: 00000000
-
-
-
-
-
-The LCD is also Nice :)   It reads:
-
-FLT CBFB4.9-pa57
-785/B2000
-
-
-
--- 
-Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
-               --  Solaris 7 Certified Systems and Network Administrator.
-Bell Labs Unix --  Reach out and grep someone.
-Those who do not understand Unix are condemned to reinvent it, poorly.
+I don't have that message in my dmesg output anyplace that I can find. Did
+it install properly, or is this hanging when you boot from the CD?
