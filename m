@@ -1,26 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thebsh.namesys.com (thebsh.namesys.com [212.16.0.238])
-	by dsl2.external.hp.com (Postfix) with SMTP id 0403E482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 05:05:59 -0600 (MDT)
-Sender: root@dsl2.external.hp.com
-Message-ID: <3B935FF8.935244CE@namesys.com>
-Date: Mon, 03 Sep 2001 14:48:24 +0400
-From: Hans Reiser <reiser@namesys.com>
+Received: from d12lmsgate-2.de.ibm.com (d12lmsgate-2.de.ibm.com [195.212.91.200])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8017E482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 06:10:01 -0600 (MDT)
+To: "David S. Miller" <davem@redhat.com>
+Cc: Richard.Zidlicky@stud.informatik.uni-erlangen.de,
+	thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org,
+	linux-kernel@vger.kernel.org
+Message-ID: <OF9A995335.07A81CF5-ONC1256ABC.00422A7B@de.ibm.com>
+From: "Ulrich Weigand" <Ulrich.Weigand@de.ibm.com>
+Date: Mon, 3 Sep 2001 14:08:43 +0200
 MIME-Version: 1.0
-To: Andi Kleen <ak@suse.de>
-Cc: "David S. Miller" <davem@redhat.com>, alan@lxorguk.ukuu.org.uk,
-	willy@debian.org, thunder7@xs4all.nl,
-	parisc-linux@lists.parisc-linux.org, linux-kernel@vger.kernel.org
-Subject: Re: [parisc-linux] documented Oops running big-endian reiserfs on parisc
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Re: [SOLVED + PATCH]: documented Oops running big-endian reiserfs on parisc
  architecture
-References: <20010903002514.X5126@parcelfarce.linux.theplanet.co.uk.suse.lists.linux.kernel> <E15dghq-0000bZ-00@the-village.bc.nu.suse.lists.linux.kernel> <oup66b0zq9j.fsf@pigdrop.muc.suse.de> <20010903.011530.62340995.davem@redhat.com> <20010903104105.A3398@gruyere.muc.suse.de>
-Content-Type: text/plain; charset=koi8-r
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ok, so the sum of this is that Jeff's patches work on the platforms he wrote
-them for, and we need one more fix for PA-RISC.
+David Miller wrote:
 
-So, we can reasonably send Jeff's patches to Linus, and test and then put the
-PA-RISC patch into the AC tree, any disagreement?
-
-Hans
+>   From: Richard Zidlicky
+<Richard.Zidlicky@stud.informatik.uni-erlangen.de>
+>   Date: Mon, 3 Sep 2001 00:34:37 +0200
+>
+>   On Sun, Sep 02, 2001 at 07:57:17PM +0200, thunder7@xs4all.nl wrote:
+>   >  /* 64 bit systems (and the S/390) need to be aligned explicitly -jdm
+*/
+>   > -#if BITS_PER_LONG == 64 || defined(__s390__)
+>   > +#if BITS_PER_LONG == 64 || defined(__s390__) || defined(__hppa__)
+>   >  #   define ADDR_UNALIGNED_BITS  (3)
+>   >  #endif
+>
+>   couldn't reiserfs use asm/unaligned.h like anyone else?
+>   Seems at least sparc and mips may need the same treatment.
+>
+>Sparc will act correctly for unaliagned accesses.
+>
+>It will trap and run very slowly, but it wont' OOPS and
+>it will give correct results.
+>
+>This is actually required behavior, I don't know why parisc
+>is acting differently.
