@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 23694482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jul 2003 09:23:27 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19c5Ab-0001Mp-DY; Mon, 14 Jul 2003 16:23:17 +0100
-Date: Mon, 14 Jul 2003 16:23:17 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] real2.S in linux-2.5
-Message-ID: <20030714152317.GI23808@parcelfarce.linux.theplanet.co.uk>
-References: <3F12C763.7010305@hrzpub.tu-darmstadt.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <3F12C763.7010305@hrzpub.tu-darmstadt.de>
+Received: from mx.laposte.net (mx.laposte.net [213.30.181.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 155BE482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jul 2003 10:45:01 -0600 (MDT)
+Received: from orion (81.57.8.138) by mx.laposte.net (6.0.053) (authenticated as r.bensalem@laposte.net)
+        id 3F0EAF32000714A4 for parisc-linux@lists.parisc-linux.org; Mon, 14 Jul 2003 18:44:59 +0200
+Message-ID: <002601c34a27$36167fd0$8a083951@orion>
+From: "R.B." <r.bensalem@laposte.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 14 Jul 2003 18:44:35 +0200
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0023_01C34A37.F92516C0"
+Subject: [parisc-linux] PC type PCI video on HP9000 C240
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,25 +23,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jul 14, 2003 at 05:08:19PM +0200, Rüdiger Scholz wrote:
-> Hi,
-> 
-> can someone please delete the whitespaces from line 126 in real2.S from 
-> linux-2.5, else gcc-3.3 will throw an error . J.David Anglin explained 
+This is a multi-part message in MIME format.
 
-Done.
+------=_NextPart_000_0023_01C34A37.F92516C0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
- restore_control_regs:
--       load32  PA(save_cr_space + (N_SAVED_REGS * REG_SZ)), %r26
-+       load32  PA(save_cr_space+(N_SAVED_REGS*REG_SZ)), %r26
-        POP_CR(%cr15, %r26)
+Hello,
+What kind of PC PCI video card can I put on a "HP 9000 C240" under Linux =
+to have X ?
+Thanks
+Red
+------=_NextPart_000_0023_01C34A37.F92516C0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I'm a little annoyed this fix wasn't committed to 2.5 already.  I wonder
-what other bits went into the 2.4 tree without going into 2.5 first?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1170" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ebe7e2>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What kind of PC PCI video card can I =
+put on a "HP=20
+9000 C240" under Linux to have X ?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
+<DIV><FONT face=3DArial =
+size=3D2>Red</FONT></DIV></FONT></DIV></BODY></HTML>
 
-BTW, it's not for gcc-3.3's benefit, but for binutils' benefit.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+------=_NextPart_000_0023_01C34A37.F92516C0--
