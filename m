@@ -1,13 +1,23 @@
-Return-Path: <dr_ranntampered@krovatka.net>
-Message-ID: <dxsgp.22160otjrjjg@Marionxlnszsltfh.com>
-From: "Marion" <dr_ranntampered@krovatka.net>
-Date: Fri, 26 Mar 2004 20:45:14 +0100
-To: pmccabe@parisc-linux.org, parisc-linux@parisc-linux.org
+Return-Path: <administrator@ncc-consulting.de>
+Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 21D6D4860
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 26 Mar 2004 19:27:32 -0700 (MST)
+Received: from mailserver.muc.ncc-consulting.de (pD9E889CE.dip0.t-ipconnect.de
+	[217.232.137.206])
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2R2RUo26979
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 27 Mar 2004 03:27:30 +0100
+From: <Administrator@s15113731.rootmaster.info>
+Sender: <Administrator@s15113731.rootmaster.info>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sat, 27 Mar 2004 03:26:23 +0100
+Message-ID: <0b2101c413a2$e5b91c00$fc01a8c0@muc.nccconsulting.de>
 MIME-Version: 1.0
-Content-Type: text/html; charset=iso-8859-1
-Cc: 
-Subject: [parisc-linux] Fwd:In-crease Your Manhood By
-	3+inches!!.........coercing
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
+	action taken.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,44 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="Author" content="Kadafi">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (Win98; I) [Netscape]">
-   <title>natgain+</title>
-</head>
-<body>
+ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-<center><b><font face="Verdana">THE NEW<br>
-<font color=
+Sender = parisc-linux@lists.parisc-linux.org
+Recipient(s) = Evangelos Kopanakis
+Subject = Re: Encrypted Mail
+Scanning time = 3/27/2004 3:26:22 AM
+Engine/Pattern = 6.860-1001/1.840.00
 
-"#FF0000"><font size=+1>NaturalGain+ PEN1S Enlargement Pills</font></font></font></b>
-<br><b><font face="Verdana">will</font></b>
-<br><b><font face="Verdana"><font color=
+Action on virus found:
+The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
 
-"#FF0000"><font size=+1>EXPAND</font></font></font></b>
-<br><b><font face="Verdana"><font color=
-
-"#FF0000"><font size=+1>LENGTHEN</font></font></font></b>
-<br><b><font face="Verdana">and</font></b>
-<br><b><font face="Verdana"><font color=
-
-"#FF0000"><font size=+2>ENLARGE
-YOUR PEN1S 3+ INCHES</font></font></font></b><font face="Verdana"></font>
-<p><b><font face="Verdana">* 100% Mon.ey Back Guaran.tee</font></b>
-<br><b><font face="Verdana">* FR.EE Bottle Of NaturalGain+ Worth Over $50</font></b>
-<br><font face="Verdana"><b>* FR.EE "Male Help E-Book" Worth Over $50</b></font><b><font face="Verdana"><font size=+2></font></font></b>
-<p><b><font face="Verdana"><font color=
-
-"#3333FF"><font size=+2><a hrefreefshref=http://beseeching.com href=
-
-"http://gfgfg.zss4.info/p1/?id=kadafi"><font size=+1>MORE
-INFO HERE</a></font></font></font></b>
-<br>
-<p><font size=-2><a hrefDiogeneshref=http://Everest.com href=
-
-"http://broadcasts.longter2.info/oz.html">no more
-emailz</a></font></center>
-
-</body>
-</html>
-mottoesfleeces
+Warning to sender! 
+A Virus was found in an Mail you send to us. 
+Please check your System!
