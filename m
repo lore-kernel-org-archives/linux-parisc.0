@@ -1,41 +1,33 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Date: Sat, 27 Feb 1999 00:43:30 -0500 (EST)
-From: Alex deVries <adevries@redhat.com>
+From: Heiko Christian Jakob <jakobho@trick.informatik.uni-stuttgart.de>
 To: hppa-linux@thepuffingroup.com
 Subject: Re: [hppa-linux] Another bootstrap test
-In-Reply-To: <199902262352.RAA13983@equator.com>
-Message-ID: <Pine.LNX.3.96.990227003737.18143G-100000@devserv.devel.redhat.com>
+Date: Mon, 1 Mar 1999 20:29:20 +0100
+Content-Type: text/plain
+References: <199902270047.QAA27829@meow.sr.hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Resent-Message-ID: <"uAIGx2.0.pI.MOurs"@sod.res.cmu.edu>
+Message-Id: <99030120342800.00507@saturn>
+Resent-Message-ID: <"_ayD11.0.gW2.9c4ss"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
-On my 715/75, it never actually gets past "(kernel size = 28672) Loading
-kernel...", but here are the registers: 
-
-PO_IMM_max_mem:       100663296 (96MB)
-PO_BOOTCPU_10msec:    750000
-PO_COUT_class:        0x000000009
-PO_CIN_class:         0x000000008
-PO_BOOTDEV_class:     0x000000001
-
-Incidentally, I'm working with Jason to put the bootloader up on the FTP
-site and in the CVS server.  We really need a name, though.  I'd suggest
-HILO, in the pattern of LILO, MILO, SILO, and the other MILO[1].
-
-- Alex
-
-[1] Yes, there are two.  It turns out getting the Alpha one to work on
-MIPS is an impossible dream.
-
--- 
-Alex deVries <puffin@redhat.com>     
-Red Hat Contrib Net maintainer          
-Ottawa, Canada  
-HPPA/Linux Porting Team
-
+ IPL_DEBUG: Page zero parameters:
+   P0_IMM_max_mem:          16777216 (16MB)
+   P0_IMM_spa_size:         16777216
+   P0_MC_cont_size:         16777216
+   P0_MC_phys_size:         16777216
+   P0_MC_ad_size:           16777216
+   P0_BOOTCPU_mem_free:     0x00006400
+   P0_BOOTCPU_hpa:          xFFFBE000
+   P0TCPU_pdc:       0xF0005E10
+   P0_BOOTCPU_10msec:       500000
+   P0_COUT_iodc_io:         0x00006400
+   P0_CIN_iodc_io:          0x00009A3C
+   P0_BOOTDEV_iodc_io:      0x0000A388
+   P0_COUT_class:           0x00000009
+   P0_CIN_class:            0x00000008
+   P0_BOOTDEV_class:        0x00000001
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
