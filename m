@@ -1,50 +1,44 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA06680
-	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 12:20:32 -0600
-Date: Mon, 21 Jun 1999 12:20:14 -0600 (MDT)
-From: Mike Hibler <mike@fast.cs.utah.edu>
-Message-Id: <199906211820.MAA06267@fast.cs.utah.edu>
-To: sieler@allegro.com
-Subject: Re: [parisc-linux] HPUX binary compatibility
-Cc: Matthew.Wilcox@genedata.com, law@cygnus.com,
-        parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA06851
+	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 12:28:36 -0600
+To: Stan Sieler <sieler@allegro.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HPUX binary compatibility 
+Reply-To: law@cygnus.com
+In-reply-to: Your message of Mon, 21 Jun 1999 11:07:19 PDT.
+             <199906211807.LAA29277@bart.allegro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 21 Jun 1999 12:23:12 -0600
+Message-ID: <14666.929989392@upchuck.cygnus.com>
+From: Jeffrey A Law <law@cygnus.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> From: Stan Sieler <sieler@allegro.com>
-> Subject: Re: [parisc-linux] HPUX binary compatibility
-> To: Matthew.Wilcox@genedata.com (Matthew Wilcox)
-> Date: Mon, 21 Jun 1999 10:23:17 -0700 (PDT)
-> 
-> Hi,
-> 
-> > > Just write translators on the hpux emulation side.
-> > 
-> > Yes, this is certainly what we'll do.  But if we can be clever and get a
-> > bunch of compatibility for free, then we should.
-> 
-> The problem with translators is that they don't work in all cases.
-> 
-> The most important case is where you want to link some .o files
-> together: some are compiled for Linux, some for HP-UX. 
-> 
-> *That's* why having different system call numbers is important.
-> 
-> -- 
-> Stan Sieler                                          sieler@allegro.com
->                                          http://www.allegro.com/sieler/
+  In message <199906211807.LAA29277@bart.allegro.com>you write:
+  > > You really don't want to do that.  I strongly recommend against it.  In
+  > 
+  > (Presuming "that" is "have different system call numbers")
+Correct.
 
-Yow, that is an ambitious goal!  I can see the desirability of doing it
-this way, but I am afraid it may not work.  No example comes to mind but
-I worry about subtle assumptions in code written for HP-UX; i.e., merely
-defining your structures and constants the same as HP-UX may not be enough.
+  > You're "compatible" if you can run an HP-UX app "out of the box" (e.g.,
+  > restore it and run).  If you have to run it through a translator of some ki
+  > nd,
+  > you aren't compatible.   (If the translator is part of the OS, and invoked 
+  > automatically & invisibly, that's ok...been there, used that for 15 years 
+  > on MPE)
+The translator is entirely in the kernel.  It does not require hacking the
+binary in any way shape or form.
 
-Like Jeff said, we got by (and still do) by either building such applications
-on an HP-UX box or using an emulated HP-UX environment to create real HP-UX
-binaries.
+  > Without such a mechanism, you can't tell the system calls apart.
+Yes you can.  The exec headers have different magic #s  which you can use
+to identify hpux vs bsd vs osf vs lites vs linux binaries.
 
-Hmm...just read Stan's last message.  There seems to be some confusion about
-what we do for compatibility.  When we exec a binary, it is identified as
-either being HP-UX or "native" (BSD).  That determines which syscall mapping
-is used.  There is no need to have distinct name spaces this way.
+If the process is not a linux process, then you look up the syscall number
+in the appropriate translation table.  Similarly for signal #s, errno values,
+etc.
 
-Does no other Linux port provide native OS compatibility?
+I strongly recommend you actually look at the code Utah wrote.  It handles
+hpux compatibility well enough to run X servers, compilers, shells, etc etc
+right off an hpux distribution tape/cd.
+
+jeff
