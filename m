@@ -1,51 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DC63C482A
-	for <parisc-linux@parisc-linux.org>; Thu, 11 Oct 2001 05:23:07 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 7F704B00C; Thu, 11 Oct 2001 12:23:51 +0100 (BST)
-Date: Thu, 11 Oct 2001 12:23:51 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] EISA support
-Message-ID: <20011011122351.L11105@linuxcare.com>
-References: <20011010072441.B24923@parcelfarce.linux.theplanet.co.uk> <20011010134526.F11105@linuxcare.com> <20011010152807.C24923@parcelfarce.linux.theplanet.co.uk> <20011011024010.C13932@parcelfarce.linux.theplanet.co.uk>
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C4593482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 05:29:33 -0600 (MDT)
+Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
+	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f9BCBQG08023
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 08:11:26 -0400
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id f9BBV1E07659
+	for parisc-linux@lists.parisc-linux.org; Thu, 11 Oct 2001 07:31:01 -0400
+Date: Thu, 11 Oct 2001 07:31:01 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011011073101.B5637@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011011024010.C13932@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Thu, Oct 11, 2001 at 02:40:10AM +0100
+Subject: [parisc-linux] Glibc 2.2.4-2 No Optimizations = No Compliation
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Oct 11, 2001 at 02:40:10AM +0100, Matthew Wilcox wrote:
-> Turns out it's unsufferably ugly to do this right now, due to Mongoose
-> being a _sibling_ of Asp, not a _child_.  So I've put a nasty patch at
-> ftp://puffin.external.hp.com/pub/parisc/src/eisa-irq.c which works enough
-> that it seems to claim the IRQs; but the hp100 driver just allocates
-> IRQ3 and doesn't allow any kind of fixup, so I haven't actually tested it.
+pa-list,
 
+I was working on glibc once again last night.
 
-asp_find_irq() wants changing:
+With the hopes of compiling the library with less optimizations
+and tracing through some saner PARISC assembly.
 
--               case 0x76:      irq = 21; break; /* Centronics */
-+               case 0x76:      irq = 17; break; /* EISA BA */
+I've noticed that glibc-2.2.4/config.h.in (eventually becomes
+config.h) throws an error if glibc is compiled wihtout 
+optimizations.
 
-and needs a default case to avoid returning random irq values.
+"#error glibc cannot be compiled without optimizations"
 
-and you probably want something like this in eisa_probe():
+Why?
 
-        eisa_dev.region->action = kmalloc(sizeof(struct irqaction) * 32, GFP_ATOMIC);
-        memset(eisa_dev.region->action, 0, sizeof(struct irqaction) * 32);
+I've trolled the glibc lists, and the faq, hunted through gcc
+manuals and referance documentation... to no avail.
 
-I'm sure '32' is wrong, but at least you need some range checking on
-irq in eisa_irq() before using it to index in to the action array.
+As of last year, Drepper made -02 the stable glibc 
+compilation standard.
 
-Now I get one EISA irq immediately that request_irq(irq, eisa_irq, 0, name, NULL)
-is called, at which point the above allocation hasn't yet happened ==> bang.
-Incidently, eisa_irq() reports "EISA irq 167" for that event so using irq
-as a simple index into action[] is probably wrong.
+I've compiled glibc with -O1 and it looks like saner assembly.
+I have yet to do a full trace through again.
 
-I don't get any further eisa_irq() calls once my scsi card gerneates an
-interrupt, but for all I know I may have to poke some registers in the
-card before it allows interrupts out.
+I would like to compile with -O0, but I'm not quite sure of
+the ramifications. 
 
-Richard
+Any reasons why I can't? Any ideas?
+
+c.
+
+Note: This is only for the sake of debugging :)
