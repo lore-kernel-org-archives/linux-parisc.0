@@ -1,24 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA07928
-	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Dec 2000 14:06:56 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 2 Dec 2000 21:09:27 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 142JuQ-0004nG-00
-	for parisc-linux@thepuffingroup.com; Sat, 02 Dec 2000 21:09:26 +0000
-Date: Sat, 2 Dec 2000 21:09:26 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001202210926.E8288@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] iodccon
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA09359
+	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Dec 2000 15:59:38 -0700
+Message-Id: <200012022301.SAA04377@hiauly1.hia.nrc.ca>
+Subject: Re: pa reload problem
+To: rth@redhat.com (Richard Henderson)
+Date: Sat, 2 Dec 2000 18:01:27 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: alan@linuxcare.com.au, rhirst@linuxcare.com,
+        parisc-linux@thepuffingroup.com, gcc-patches@gcc.gnu.org
+In-Reply-To: <20001202114327.C27671@redhat.com> from "Richard Henderson" at Dec 2, 2000 11:43:27 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+> On Sat, Dec 02, 2000 at 11:35:19PM +1100, Alan Modra wrote:
+> > 	* flow.c (mark_regs_live_at_end): Set PIC_OFFSET_TABLE_REGNUM even
+> > 	when PIC_OFFSET_TABLE_REG_CALL_CLOBBERED.
+> 
+> I can't believe this makes a difference.  We already have
+> 
+> #ifdef PIC_OFFSET_TABLE_REGNUM
+>               /* Before reload, do not allow sets of the pic register
+>                  to be deleted.  Reload can insert references to
+>                  constant pool memory anywhere in the function, making
+>                  the PIC register live where it wasn't before.  */
+>               if (regno == PIC_OFFSET_TABLE_REGNUM && fixed_regs[regno]
+>                   && ! reload_completed)
+>                 return 0;
+> #endif
 
-can we kill off iodccon now?  i seem to remember being told we could, but
-i can't find confirmation of that in my inbox.
+I saw this but for some reason it didn't stop the set after the call from being
+deleted in the combine pass.  Maybe this needs to be looked at in more detail
+to determine why it doesn't work in this circumstance.
 
+Dave
 -- 
-Revolutions do not require corporate support.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
