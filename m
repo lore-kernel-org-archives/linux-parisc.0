@@ -1,17 +1,17 @@
-From: Ulrich Teichert <krypton@ulrich-teichert.org>
-Subject: [parisc-linux] Userland relocation problems resolved (was: kernel
-	module relocation bug)
-Date: Thu, 2 Dec 2004 22:54:07 +0100 (MET)
-Message-ID: <200412022154.iB2Ls8ci007096@arbas.nms.ulrich-teichert.org>
-References: <200411292346.iATNk8hq003726@hiauly1.hia.nrc.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: Userland relocation problems resolved (was:
+	kernel module relocat
+Date: Thu, 2 Dec 2004 17:51:58 -0500 (EST)
+Message-ID: <200412022251.iB2Mpwk6006738@hiauly1.hia.nrc.ca>
+References: <200412022154.iB2Ls8ci007096@arbas.nms.ulrich-teichert.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+To: krypton@ulrich-teichert.org (Ulrich Teichert)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200411292346.iATNk8hq003726@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Nov 29, 2004 06:46:08 PM
+In-Reply-To: <200412022154.iB2Ls8ci007096@arbas.nms.ulrich-teichert.org> from
+	"Ulrich Teichert" at Dec 2, 2004 04:54:07 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +22,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
+> I too have the problem of hanging 'expect' processes - now that I have =
+> a
+> new compiler, I should go for a newer kernel as well, I suppose ;-)
 
-[del]
->Binutils 2.15, gcc 3.3.4.  No.
+dave@hiauly6:~$ runtest --version
+WARNING: Couldn't find the global config file.
+Expect version is       5.42.1
+Tcl version is          8.3
+Framework version is    1.4.4
 
-Right. Now it builds OK and passes most of the tests. The build finished
-about two hours ago (on a B1000 - I don't have enough RAM).
-I too have the problem of hanging 'expect' processes - now that I have a
-new compiler, I should go for a newer kernel as well, I suppose ;-)
+This is the most reliable configuration that I have found.  Tcl 8.4
+is substantially worse.  Expect SEGVs on recent 64-bit SMP kernels in
+the GCC testsuite.  I don't see the problem on 32-bit non-SMP kernels.
+Sometimes java processes don't terminate although the testsuite
+completes.  There is an issue with dejagnu asking tcl to trap SEGVs.
+This causes tcl to try to restart expect after a SEGV.  The behavior
+of signal is undefined in this situation and may cause the SEGV to
+be repeated in an infinite loop.  You can fix this by editing dejagnu.
 
-Thanks to all,
-Uli
+Dave
 -- 
-Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de
-Stormweg 24               |listening to: Suicide Drive (The Deep Eynde)
-24539 Neumuenster, Germany|Public Pervert (Interpol) Clé De Contact (Metal Urbain)
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
