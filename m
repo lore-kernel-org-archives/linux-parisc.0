@@ -1,71 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from p2.buttafuoco.net (buttafuoco.mv.com [207.22.43.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BA48F482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Apr 2001 06:49:20 -0600 (MDT)
-Date: Fri, 27 Apr 2001 08:49:10 -0400
-Message-Id: <200104271249.IAA10226@p2.buttafuoco.net>
-From: "Jim Buttafuoco" <jim@buttafuoco.net>
-To: "Jeremy C. Reed" <reed@reedmedia.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP 710 and miscellaneous questions ...
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4E594482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Apr 2001 11:55:21 -0600 (MDT)
+Received: from esiee.fr (pc5158a.esiee.fr [147.215.50.165])
+	by mail.esiee.fr (Postfix) with ESMTP id 45029D165A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Apr 2001 19:55:16 +0200 (CEST)
+Sender: marteaut@esiee.fr
+Message-ID: <3AE9B3D0.C3206E62@esiee.fr>
+Date: Fri, 27 Apr 2001 20:00:48 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] A new release of file system working for many boxes!
 List-ID: <linux-parisc.vger.kernel.org>
 
-Jeremy,
+Hi PA/Linux guys,
 
-The 710 doesn't seem to work just yet.  A number of people are working
-on getting both the network and scsi drivers to work.  I am also waiting
-for support (I have 2 710's).
+	We have just released a root file system with the latest development. It should
+answer to many of your requests. But, nothing is perfect. So, the feedback is
+always the first thing we pay attention to!
 
-Jim
+	A add-on is available now for everyone. It is a small script for Intel box! You
+give it all the parameters like the device which will become your PA/Linux HDD
+and the most accurate kernel you make and an archive of file system. And ten
+minutes after, your HDD is bootable! You just have to plug in your HP box and it
+starts Linux UP! This have been tested upon 715, 712 and A500 like for the fs. 
 
-> I see "[t]his mailing list exists to serve the developers." Where is
-> the appropriate forum to discuss basic usage?
-> 
-> I have an HP 700 Series Apollo Model 710. As far as I can tell it has
-no
-> usable operating system (no HPUX). I can turn it on and connect to a
-> series of (CMOS?/BIOS?) prompts and menus via a serial cable. It does
-not
-> have a CD drive. I do not have HPUX to do any cross-compiles. (I have
-> installed a variety of flavours of BSD and Linux hundreds of times,
-but
-> always on i386 architectures.)
-> 
-> I want to use Linux (or BSD) on it. The PA-RISC webpages have links
-for
-> documentation, but none appear to explain a basic install. Where is
-the
-> documentation for installing Linux on a hard drive?
-> 
-> The software page (http://www.parisc-linux.org/software/) says
-"nfsroot"
-> is the easiest way; but the instructions say "you have to build on
-> HP/UX."
-> 
-> Is there simply a filesystem image (with kernel and userspace) that I
-can
-> dd to a harddrive that I can then use to boot my HP 710)? If so, where
-is
-> it? (And where is this documented?)
-> 
-> Also, I see an ISO image at
-> ftp://puffin.external.hp.com/pub/parisc/cd-images/; is there any
-> (easy) way to convert this ISO image to an image that I can dd on to
-my
-> hardrive (to use to boot)?
-> 
-> Thanks,
-> 
->    Jeremy C. Reed
->    http://bsd.reedmedia.net/
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
-> 
+So, good luck! Thomas
+ESIEE Team
+http://www.esiee.fr/puffin
