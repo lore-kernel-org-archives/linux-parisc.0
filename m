@@ -1,29 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from irongate.swansea.linux.org.uk (pc2-cwma1-5-cust12.swa.cable.ntl.com [80.5.121.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C0913488F
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Jul 2002 03:21:03 -0600 (MDT)
-Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
-	by irongate.swansea.linux.org.uk (8.12.2/8.11.6) with ESMTP id g6GAVKu6001994;
-	Tue, 16 Jul 2002 11:31:21 +0100
-Received: (from alan@localhost)
-	by irongate.swansea.linux.org.uk (8.12.2/8.12.2/Submit) id g6GAVJE7001992;
-	Tue, 16 Jul 2002 11:31:19 +0100
-Subject: Re: [parisc-linux] 2.4.19 merge
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3D335B27.3060808@neuronet.pitt.edu>
-References: 
-	<20020714091619.B1E35483A@dsl2.external.hp.com>	<20020715142028.J27706@parce
-	 lfarce.linux.theplanet.co.uk>
-	<1026743879.30202.5.camel@irongate.swansea.linux.org.uk>
-	<20020715230306.93501485E@dsl2.external.hp.com>
-	<1026779010.31925.44.camel@irongate.swansea.linux.org.uk>
-	<3D335B27.3060808@neuronet.pitt.edu>
-Content-Type: text/plain
-Date: 16 Jul 2002 11:31:19 +0100
-Message-Id: <1026815479.1688.18.camel@irongate.swansea.linux.org.uk>
-Mime-Version: 1.0
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D33B84881
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Jul 2002 04:12:45 -0600 (MDT)
+Date: Tue, 16 Jul 2002 12:12:45 +0200
+Subject: Re: testimonials (was Re: [parisc-linux] STI framebuffer and PINE)
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v482)
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+To: Matthieu Delahaye <delahaym@esiee.fr>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <3D33CB48.6050208@esiee.fr>
+Message-Id: <92592E69-98A4-11D6-AA82-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -35,13 +24,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 2002-07-16 at 00:30, Rafael E. Herrera wrote:
-> Seems like the merge already begun:
-> 
-> http://linuxtoday.com/news_story.php3?ltsn=2002-07-15-015-26-NW-KN-DV
+Le mardi 16 juillet 2002, =E0 09:29 , Matthieu Delahaye a =E9crit :
 
-Thats the easy 90%. The stuff which doesn't overlap other platforms is
-in there so I have a tree that I can point people back to if we get
-breakage from later merges.
+> Grant Grundler wrote:
+>
+>> Matthew Wilcox wrote:
+>>
+>>> Hmm.. anyone want to do a `testimonials' section on the website =
+which
+>>> lists peoples (successful ;-) experiences with using PA/Linux in
+>>> production environments?
+>>>
+>>
+>> ESIEE folks have that already in their "what's supported" HW listing.
+>> Please see the ESIEE "puffin" site for where to submit them.
+>>
+> I don't think Matthew wath thinking about that. This HW list gives =
+just=20
+> an indication if this is working or not.
+> What I understand here is a list of something like:
+> I currently use a B132 in production environment since November, 2001.=20=
 
-Some of it like the PCI changes is going to be hard.
+> It provides a CVS server, apache with PHP and  a postgresql database.=20=
+
+> The kernel is pretty old (2.4.14-32), but the only shutdown (and end =
+of=20
+> services) I had to notice where caused by powerfailure.
+> Use of Php is quite recent.
+> Matthew, does these (real) example correspond to your suggestion?
+>
+Hi fellows!
+
+I'm currently working on a big review of our supported hardware list.
+A testimonial section is definitely something that can be considered !
+
+Please check this mail i sent a month ago about this review:
+http://lists.parisc-linux.org/pipermail/parisc-
+linux/2002-June/016572.html
+
+I'd enjoy any feedback about it, and of course any supplementary=20
+testimonial
+would be greatly welcomed.
+
+Thank you for your support,
+
+
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://pateam.esiee.fr/
