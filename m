@@ -1,16 +1,16 @@
+From: danglin@gcc.gnu.org
+Subject: [parisc-linux] Re: target/10272: [3.0/3.2/3.3/3.4] [HP-PA] Floating point args not correctly loaded for function calls
+Date: 12 Apr 2003 21:17:27 -0000
+Message-ID: <20030412211727.20852.qmail__47109.4743036248$1416622380$gmane$org@sources.redhat.com>
+Reply-To: danglin@gcc.gnu.org, danglin@gcc.gnu.org,
+	debian-gcc@lists.debian.org, gcc-bugs@gcc.gnu.org,
+	gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
+	gcc-gnats@gcc.gnu.org
+To: danglin@gcc.gnu.org, debian-gcc@lists.debian.org,
+	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, nobody@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 30 Apr 2003 22:09:31 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: "Boehm, Hans" <hans_boehm@hp.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>,
-	'Carlos O'Donell' <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Program counter from sigcontext, constructurs and -fPIC
-Message-ID: <20030501040931.GA21495@dsl2.external.hp.com>
-References: <75A9FEBA25015040A761C1F74975667D01442066@hplex4.hpl.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <75A9FEBA25015040A761C1F74975667D01442066@hplex4.hpl.hp.com>
-Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,19 +21,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Apr 29, 2003 at 02:17:32PM -0700, Boehm, Hans wrote:
-> 3) Adding 24 bytes to the struct sigcontext pointer (?) passed
->    as a third argument to the signal handler. (!)
-...
-> Is the third argument to a signal handler really not a pointer to sigcontext?
+Synopsis: [3.0/3.2/3.3/3.4] [HP-PA] Floating point args not correctly loaded for function calls
 
-Yes - that seems to be the case.
-Randolph found most of the answer in "Single Unix Specification"
-(IEEE 1033.1-2001).  Third argument is "ucontext_t".
+Responsible-Changed-From-To: unassigned->danglin
+Responsible-Changed-By: danglin
+Responsible-Changed-When: Sat Apr 12 21:17:27 2003
+Responsible-Changed-Why:
+    Assignment.
+State-Changed-From-To: open->closed
+State-Changed-By: danglin
+State-Changed-When: Sat Apr 12 21:17:27 2003
+State-Changed-Why:
+    Some problem as 10271.
 
-We counted 20 bytes (not 24) before the "struct sigcontext uc_mcontext;"
-and thus still don't have a full explanation. Our best guess is some
-misc padding is involved.
-
-hth,
-grant
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10272
