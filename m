@@ -1,40 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B902C482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 07:59:16 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15qaw7-000198-00; Mon, 08 Oct 2001 14:59:15 +0100
-Date: Mon, 8 Oct 2001 14:59:15 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Jurij Smakov <jurij@lokmail.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] A todo entry
-Message-ID: <20011008145915.B28880@parcelfarce.linux.theplanet.co.uk>
-References: <200110080815.EAA24881@mail.lokmail.net>
-Mime-Version: 1.0
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A448C4851
+	for <parisc-linux@parisc-linux.org>; Mon,  8 Oct 2001 08:50:16 -0600 (MDT)
+Sender: marteaut@esiee.fr
+Message-ID: <3BC1BBB5.F1ACA@esiee.fr>
+Date: Mon, 08 Oct 2001 16:44:05 +0200
+From: Thomas Marteau <marteaut@esiee.fr>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>,
+	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Second Draft of the help for the kernel options
+References: <200110080348.VAA24289@puffin.external.hp.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200110080815.EAA24881@mail.lokmail.net>; from jurij@lokmail.net on Mon, Oct 08, 2001 at 04:15:34AM -0400
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Oct 08, 2001 at 04:15:34AM -0400, Jurij Smakov wrote:
-> It was probably me.
+Hi all,
 
-probably.  various people hae asked in the past, but you're the most
-recent :-)
+	I have put the Matthew Wilcox's CPU and 64bit section. For the PDC
+narrow, a section was already written. So, I do not the change unless
+you tell that:
+"
+32-bit PDC
+CONFIG_PDC_NARROW
+  Turning this option on enables support for 32-bit firmware when
+running
+  a 64-bit kernel.  You should select this option if you have a
+workstation
+  from the C160-J2240 era.
+"
+is better than:
+"
+32-bit PDC
+CONFIG_PDC_NARROW
+  Saying Y here will allow developers with a C180, C200, C240, C360,
+  J200, J210, and/or a J2240 to test 64-bit kernels by providing 
+  a wrapper for the 32-bit PDC calls.  Since the machines which 
+  which require this option do not support over 4G of RAM, this
+  option is targeted for developers of these machines wishing to
+  test changes on both 32-bit and 64-bit configurations.
 
-> This is slightly over my head, but that is my understanding of what needs
-> to be done: instead of checking with segment_eq we need a routine,
-> which just reads from memory, using space from sr2. With proposed
-> modifications to get_fs, get_ds and set_fs it will automagically contain
-> a correct value (0 for kernel memory and same as sr3 for userspace).
+  If unsure, say N.
+"
 
-Right.
-
-> Is it the correct interpretation? Is it still possible to do in view
-> of John's comment?
-
-Certainly; John was just pointing out some of the issues to be aware of.
-
--- 
-Revolutions do not require corporate support.
+Anyway, thanks for your comment and if you have any idea, please mail
+me, Thomas.
+ESIEE Team
