@@ -1,21 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from romano (romano-nyswri.cfe.cornell.edu [132.236.139.186])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DDE7B4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Sep 2002 12:47:40 -0600 (MDT)
+Received: from dns1.rz.fh-heilbronn.de (dns1.rz.fh-heilbronn.de [141.7.1.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 93C3B4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Sep 2002 14:09:54 -0600 (MDT)
+Received: from lisa.stud.fh-heilbronn.de (lisa.stud.fh-heilbronn.de [141.7.11.14])
+	by dns1.rz.fh-heilbronn.de (8.12.2/8.12.2) with ESMTP id g8NK9pQ0021075
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Sep 2002 22:09:51 +0200 (MET DST)
+Received: from acid (acid.stuwo.fh-heilbronn.de [141.7.150.31])
+	by lisa.stud.fh-heilbronn.de (8.12.2/8.12.2) with SMTP id g8NK9okc020678
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Sep 2002 22:09:51 +0200 (MEST)
+Message-ID: <001101c2633d$40a33d70$1f96078d@acid>
+From: "Yves Bodack" <bodack@stud.fh-heilbronn.de>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <03ab01c26266$2416dea0$1f96078d@acid> <02092218054100.14750@localhost.localdomain>
 Subject: Re: [parisc-linux] RTC and FB on 735/125
-From: Steve Pacenka <spacenka@lightlink.com>
-To: Yves Bodack <bodack@stud.fh-heilbronn.de>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <003001c26327$d0db42e0$1f96078d@acid>
-References: 
-	<03ab01c26266$2416dea0$1f96078d@acid><20020922220323.0113cbca.varenet@esiee.
-	 fr><03bf01c2627c$9a5147c0$1f96078d@acid>
-	<03ed01c26280$4dfb5c90$1f96078d@acid> <1032793227.1848.222.camel@romano>
-	<003001c26327$d0db42e0$1f96078d@acid>
-Content-Type: text/plain
-Date: 23 Sep 2002 14:46:16 -0400
-Message-Id: <1032806776.2868.19.camel@romano>
-Mime-Version: 1.0
+Date: Mon, 23 Sep 2002 22:10:24 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,77 +28,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 2002-09-23 at 13:36, Yves Bodack wrote:
-> hi steve,
-> great, this did the trick. thank's a lot. it's quite slow, but it works in
-> true color :)
+Hi,
+i got this problem solved by myself. I read out DATE in BOOT ADMIN Console
+and it gave me an error (with a dump a of many zeros). Then I set a new date
+in PDC and now it works just fine. So somehow the RTC was zeroed out.
 
-Yves,
+Greetings Yves...
 
-It's faster than the Macintosh Quadra 610 (another Linux victim) that
-I'm typing on now :^) .
-
-Could you please post your experience at getting X applications to work
-now that you have X and a desktop?  I got basic gnome things to work
-flawlessly, but failed on my 735/99 with xmms, xemacs, and galeon or
-mozilla.
+From: "Michael S. Zick" <mszick@goquest.com>
+Subject: Re: [parisc-linux] RTC and FB on 735/125
 
 
-The CRX24 framebuffer also works at 8 bit color, a bit faster.  A minor
-patch to one file in the kernel is needed (duplicating a few lines that
-apply to another card's depth selection in the same file) and a kernel
-boot argument is needed to (optionally) cause the kernel to start video
-in 8 bit mode instead of the default 32.  
-
-The hard drive I patched this on is recycled into another type of box,
-but Helge Deller can guess what's needed just from this description.
-
--- regards, SP
-
-> 
-> greetings yves...
-> 
-> 
-> From: "Steve Pacenka" <spacenka@lightlink.com>
-> Subject: Re: [parisc-linux] RTC and FB on 735/125
-> 
-> 
-> > On Sun, 2002-09-22 at 17:37, Yves Bodack wrote:
-> > > replying to myself ...
-> > >
-> > > > and with 8 bpp it says:
-> > > >
-> > > > (EE) FBDev(0): No Display subsection in Screen section "Default
-> Screen"
-> > > for
-> > > > depth/fbbpp 24/24
-> > > > (EE) Screen(s) found, but none have a usable configuration.
-> > > > Fatal server error:
-> > > > no screens found
-> > >
-> > > same with 16 or 32 bpp :(
+> On Sunday 22 September 2002 01:30 pm, Yves Bodack wrote:
+> > 1st problem I have is the Real Time Clock. On boot I get the following
+> > messages:
 > >
+> > System Time was Thu Jan 1 00:00:10 UTC 1970
+> > Setting the System Clock using the Hardware Clock as reference...
+> > RTC_RD_TIME: Bad address
+> > ioctl() to /dev/rtc read the time failed.
+> > System Clock set. System local time is now Thu Jan 1 00:00:13 UTC 1970.
 > >
-> > Try the following in XF86Config-4
-> >
-> > Section Screen
-> >    ... (whatever else you need here) ...
-> >
-> >    DefaultDepth 24
-> >    DefaultFbBpp 32
-> >
-> >    SubSection Display
-> >       Depth 24
-> >       Modes "1280x1024"
-> >    EndSubSection
-> >
-> > EndSection
-> >
-> > -- SP
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+> Perhaps it is really a good address and a bad clock battery.
+> Mike
