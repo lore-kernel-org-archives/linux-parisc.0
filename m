@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dent.riviera.org.uk (dent.riviera.org.uk [212.62.7.50])
-	by dsl2.external.hp.com (Postfix) with SMTP id 93A044829
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Sep 2002 09:25:29 -0600 (MDT)
-Date: Fri, 13 Sep 2002 16:25:31 +0100
-Subject: Re: [parisc-linux] HP9000
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v543)
-From: Robin Kearney <robin@uk.another.com>
-To: parisc-linux@parisc-linux.org
-In-Reply-To: <20020913161623.U10583@parcelfarce.linux.theplanet.co.uk>
-Message-Id: <0A29117C-C72D-11D6-B5A2-000393447076@uk.another.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CF4F14829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 10:33:41 -0600 (MDT)
+Received: from esiee.fr (grobluk.esiee.fr [147.215.7.22])
+	by mail.esiee.fr (Postfix) with ESMTP id 9297D49BF1
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 18:33:39 +0200 (CEST)
+Message-ID: <3D8212E7.6000609@esiee.fr>
+Date: Fri, 13 Sep 2002 18:31:35 +0200
+From: Thibaut VARENE <varenet@esiee.fr>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Making SYM2 default SYM-SCSI driver instead of SYM1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,36 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Friday, September 13, 2002, at 04:16  pm, Matthew Wilcox wrote:
+Hi fellows !
 
-> On Fri, Sep 13, 2002 at 04:09:20PM +0100, Robin Kearney wrote:
->> Hi, we have a spare HP9000 machine which is going to be thrown out.
->
-> It'd help if you could specify the model -- some machines are more, er,
-> tricky than others ;-)  We're looking for something like "D220" or 
-> "F80"
-> as a description.
+Paul Bame has noticed a problem that seems to occur on B2600 with SYM1 
+driver, causing the box to slow down everything and increasing the 
+loadavg, while top reports 99% idle.
 
-Ok, some details from looking at the actual HW:
+When this happens, one can hear HD making strange noise: two grouped 
+"ticks" every 2 seconds or so.
 
-Only model number I can find is 'L1000 440Mhz'
-4 disk slots (all sca)
-1 5 1/4" slot
-(used to contain a scsi dvd drive, but I guess another sysadmin thought 
-it would serve him better)
-has space for 3 psu's (1 currently in residence)
-12 PCI slots.
-Can have upto 4cpu's but currently has 1
+I have experienced this behavior by myself, and it seems that using SYM2 
+driver solves this problem.
 
-There are no disks but I'm sure I can find a 9Gig so its at least 
-useful.
+Now I'm asking you to know if anybody has an objection against making 
+SYM2 the default driver in debian-configs instead of old SYM1.
 
-HTH
-
-r.
+Thanks,
 
 
---
-another.com
-sysadmin
-+44 (0)20 7424 3061
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://pateam.esiee.fr/
