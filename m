@@ -1,12 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail172 (e66.friendfinder.com [216.34.38.66])
-	by dsl2.external.hp.com (Postfix) with SMTP id 0FB604844
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Feb 2003 04:59:23 -0700 (MST)
-Date: 23 Feb 2003 11:59:16 -0000
-Message-ID: <20030223115916.16110.qmail@e74.friendfinder.com>
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
-From: dezone@sina.com
-Subject: [parisc-linux] dezone sent you a card from NiceCards!
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 336AC484B
+	for <parisc-linux@parisc-linux.org>; Sun, 23 Feb 2003 11:58:49 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18n1Kp-0001xQ-00; Sun, 23 Feb 2003 18:58:47 +0000
+Date: Sun, 23 Feb 2003 18:58:47 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: binutils@sources.redhat.com
+Cc: parisc-linux@parisc-linux.org
+Message-ID: <20030223185847.C2938@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [PATCH] space register 0 changes for hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,44 +23,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dear parisc-linux,
+Hi.  I believe I should still have a copyright assignment on file.
 
-Guess what?  dezone (dezone@sina.com) has sent you a greeting card!
+Index: opcodes/ChangeLog
+===================================================================
+RCS file: /cvs/src/src/opcodes/ChangeLog,v
+retrieving revision 1.547
+diff -u -p -r1.547 ChangeLog
+--- opcodes/ChangeLog	12 Feb 2003 22:33:59 -0000	1.547
++++ opcodes/ChangeLog	23 Feb 2003 18:54:00 -0000
+@@ -1,3 +1,9 @@
++2003-02-23  Matthew Wilcox  <willy@debian.org>
++
++	* hppa-dis.c: Do not emit a space register if the space register
++	field is 2 bits and the value is 0 as this is implicit addressing,
++	not use of space register 0.
++
+ 2003-02-12  Dave Brolley  <brolley@redhat.com>
+ 
+ 	* fr30-desc.c: Regenerate.
+Index: opcodes/hppa-dis.c
+===================================================================
+RCS file: /cvs/src/src/opcodes/hppa-dis.c,v
+retrieving revision 1.41
+diff -u -p -r1.41 hppa-dis.c
+--- opcodes/hppa-dis.c	31 Dec 2001 23:44:08 -0000	1.41
++++ opcodes/hppa-dis.c	23 Feb 2003 18:54:00 -0000
+@@ -541,8 +541,11 @@ print_insn_hppa (memaddr, info)
+ 		  fput_const (extract_5_load (insn), info);
+ 		  break;
+ 		case 's':
+-		  (*info->fprintf_func) (info->stream,
+-					 "sr%d", GET_FIELD (insn, 16, 17));
++		  {
++		    int space = GET_FIELD (insn, 16, 17);
++		    if (space != 0)
++		      (*info->fprintf_func) (info->stream, "sr%d", space);
++		  }
+ 		  break;
+ 
+ 		case 'S':
 
-Your card can be picked up by clicking on the following link:
-
-http://nicecards.com/card/4080194-HFKUQ
-
-or
-
-By going to our card pick-up page at:
-
-http://nicecards.com/
-
-and entering in the following card ID: 4080194-HFKUQ
-
-Thank you!
-
-team@nicecards.com
-NiceCards
-
-Note: Your card will be kept in our card center for two weeks.  After two
-weeks, your card will be deleted.
-
-====================================================================
-Try out these other great sites in the NiceCards network!
-
-    http://friendfinder.com - Dating and friendship personals
-    http://asiafriendfinder.com - Chinese personals
-    http://frenchfriendfinder.com - French personals
-    http://koreanfriendfinder.com - Korean personals
-    http://germanfriendfinder.com - German personals
-    http://amigos.com - Spanish personals
-    http://seniorfriendfinder.com - Senior personals
-    http://churchfriendfinder.com - Christian/spiritual personals
-    http://adultfriendfinder.com - Adults only personals
-    http://outpersonals.com - Gay personals
-    http://sharerent.com - Roommate/housing directory
-    http://friendpages.com - Free homepages
-    http://friendparty.com - Free party invites and photo sharing
-    http://dine.com - Free restaurant reviews and menus
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
