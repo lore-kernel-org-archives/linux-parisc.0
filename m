@@ -1,23 +1,17 @@
-Return-Path: <janelle@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73C6B487B
+Return-Path: <j.hines_iw@ce.kth.se>
+Received: from atitec.com.hk (unknown [211.41.7.207])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6C58E48B8
 	for <parisc-linux@parisc-linux.org>;
-	Fri, 26 Dec 2003 04:58:58 -0700 (MST)
-Received: from cpe-069-132-031-211.carolina.rr.com
-	(cpe-069-132-031-211.carolina.rr.com [69.132.31.211])
-	by cuprel1.hp.com (Postfix) with SMTP id 0F9C8E2D
-	for <parisc-linux@parisc-linux.org>;
-	Fri, 26 Dec 2003 03:58:48 -0800 (PST)
-Message-ID: <0r$y7m9$3n$st$o@pjub.5t>
-From: "Lincoln Benitez" <janelle@msn.com>
+	Fri, 26 Dec 2003 09:29:51 -0700 (MST)
+From: "Jacob Hines" <j.hines_iw@ce.kth.se>
 To: parisc-linux@parisc-linux.org
-Date: Fri, 26 Dec 03 23:52:12 GMT
+Date: Sat, 27 Dec 2003 01:31:12 -0700
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="E702.E68F5_.8"
+	boundary="----=_NextPart_000_0F17_0FF26151.F5C73BFF"
+Message-Id: <20031226162951.6C58E48B8@dsl2.external.hp.com>
 Cc: 
-Subject: [parisc-linux] .Larger cup sizes ! Proven effective! rapvdhxfyjv
-Reply-To: Lincoln Benitez <janelle@msn.com>
+Subject: [parisc-linux] great feeling
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,36 +21,35 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
 
---E702.E68F5_.8
+------=_NextPart_000_0F17_0FF26151.F5C73BFF
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+
+
+
+
+------=_NextPart_000_0F17_0FF26151.F5C73BFF
 Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-<html>
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+<HTML><BODY>
+<P><FONT SIZE=2>Generic cialis (Regalis), at cheap prices.<BR>
+Most places charge $20, we charge $5. Quite a difference.<BR><BR>
+Cialis is known as a Super-Viagra or Weekend-Viagra because its effects start sooner and last much longer.</FONT>
+</P>
+<P><FONT SIZE=2>Shipped worldwide.<BR><BR>Your easy-to-use solution is here: <A
+HREF="http://www.wwwbargins.biz/cia/?oxygen">http://www.wwwbargins.biz/cia/?oxygen</A></FONT>
+</P>
+<P><FONT SIZE=2>-----</FONT>
+<BR><FONT SIZE=2>Link below is for that people who dislike
+adv.....</FONT>
+<BR><FONT SIZE=2><A
+HREF="http://www.wwwbargins.biz/off.html">http://www.wwwbargins.biz/off.html</A></FONT><BR>-=BdyuzEUTTWVNxNDaWlFfFF8MwqYI=-
+</P></BODY></HTML>
 
-<body bgcolor=3D"#FFFFFF" text=3D"#000099" link=3D"#0000FF" alink=3D"0000f=
-f" vlink=3D"#0000FF">
-<center>
-<H3>BreastSuccess can be yours<br>Safely and Naturally!</H3>
-Increase Breast Fullness.. 1 - 3 Cup Sizes<br>
-    Improve Breast Firmness for a shaplier and sexier YOU!<br>
-Be sexier with safe and natural herbs<br>Herbal nutrients responsible for =
-thousands of positive results in Europe <br>Hundreds of thousands of women=
- are already enjoying ASTOUNDING results! <br> And you can too !</H3>
-    <H4>100% Satisfaction Guaranteed!<br>
-    Doctor Approved!</H4>We're so impressed with this product<br> that we =
-gladly offer a 100% Money Back Guarantee <br>so there's nothing to lose!</=
-H2></center><br><center><h2><a href=3D"http://www.fisha.biz/breast/?buster=
-">This way to a new figure safely!</a></H2></center>
-dwoord do mqaibw hm
-gjf xkcm agb zb
-</body>
-</html>
-jjbyxyd vzr
 
---E702.E68F5_.8--
+------=_NextPart_000_0F17_0FF26151.F5C73BFF--
