@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 147D048B1
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Nov 2003 20:36:17 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1AKrEM-0005vV-EE; Sat, 15 Nov 2003 03:36:14 +0000
-Date: Sat, 15 Nov 2003 03:36:14 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: "Michael S. Zick" <mszick@goquest.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Linux on HP
-Message-ID: <20031115033614.GP30485@parcelfarce.linux.theplanet.co.uk>
-References: <002901c3aad6$87fb1c10$64d71399@Damian> <03111421165101.01237@wolf686>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <03111421165101.01237@wolf686>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A3054487A
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Nov 2003 23:58:28 -0700 (MST)
+Received: from CPE00e018e563d0-CM.cpe.net.cable.rogers.com (CPE00e018e563d0-CM.cpe.net.cable.rogers.com [65.49.6.147])
+	by cuprel1.hp.com (Postfix) with SMTP id E5B108FD
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Nov 2003 22:58:26 -0800 (PST)
+Message-ID: <8s$-k850$th25k510m$-o-m6g@yev6j4.1.rx35>
+From: "Frank Sanchez" <zh222m@yahoo.com>
+Reply-To: "Frank Sanchez" <zh222m@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Sat, 15 Nov 2003 02:58:22 -0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="_..E.1AD.09C7DE__64_4_1"
+Subject: [parisc-linux] Remote-Control Cars and Boats - Great Xmas Gifts.....Kameron
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +25,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 14, 2003 at 09:16:51PM -0600, Michael S. Zick wrote:
-> You might try letting it set at that point for a good while, like go out to
-> lunch.
-> There was (perhaps still is) a problem on some machines where the
-> device search took approximately forever.
+--_..E.1AD.09C7DE__64_4_1
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-That was on CCIO-based machines (ie C100 to J2240).  It's fixed now.
+<p>New Mini Remote Control Cars &amp; Boats.</p>
+<IMG SRC=3D"http://www.onii.org/images/home/stunt_flip.gif" ALT=3D""><a hr=
+ef=3D"http://www.rc-cars-boats2003.com/?axel=3D49">Follow Us For Fun...</a=
+><br>
+<p>Turbo Twister Mini RC stunt cars are the newest RC stunt cars in 
+the world! These 2 1/2 inch stunt cars rotate, flip, and tumble everywhere=
+!</p>
+<IMG SRC=3D"http://www.onii.org/images/home/car_purple.jpg" ALT=3D""><a hr=
+ef=3D"http://www.rc-cars-boats2003.com/?axel=3D49">Follow Us For Fun...</a=
+><br>
+<p>Honda S2000 (yellow) - fully functional wireless remote control (Radio-=
+frequency)</p>
+<IMG SRC=3D"http://www.onii.org/images/home/boat_yellow.jpg" ALT=3D""><a h=
+ref=3D"http://www.rc-cars-boats2003.com/?axel=3D49">Follow Us For Fun...</=
+a><br>
+<p>Mini RC Ocean Runner Boat (yellow) - Fully functional remote control bo=
+at with 6 way remote control.</p>
+<br>
+<br>
+<br>
+<br>
+<a href=3D"http://www.aqmp.net/out5s/rem2e.asp">No more advertisements</a>=
+</p>
+<br>
+<br>
+<br>
+<br>o ztpq
+ygw
+unszrm kkvc nhsu
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+--_..E.1AD.09C7DE__64_4_1--
