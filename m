@@ -1,29 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA26375
-	for <parisc-linux@puffin.external.hp.com>; Wed, 19 Apr 2000 09:42:06 -0600
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 45E537F9
-	for <parisc-linux@thepuffingroup.com>; Wed, 19 Apr 2000 08:41:56 -0700 (PDT)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id IAA25136 for <parisc-linux@thepuffingroup.com>; Wed, 19 Apr 2000 08:42:08 -0700 (PDT)
-Message-Id: <200004191542.IAA25136@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 2-way j5000 hangs early 
-In-reply-to: Your message of "Tue, 18 Apr 2000 18:01:39 PDT."
-             <200004190101.SAA24682@milano.cup.hp.com>
-Date: Wed, 19 Apr 2000 08:42:08 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA28121
+	for <parisc-linux@puffin.external.hp.com>; Wed, 19 Apr 2000 13:22:34 -0600
+Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
+	by atlrel2.hp.com (Postfix) with ESMTP id 19F13571
+	for <parisc-linux@thepuffingroup.com>; Wed, 19 Apr 2000 15:22:33 -0400 (EDT)
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] code 28 in msdos_partition() 
+In-reply-to: Your message of "Tue, 18 Apr 2000 13:19:29 PDT."
+             <200004182019.NAA24003@milano.cup.hp.com>
+Date: Wed, 19 Apr 2000 13:22:32 -0600
+From: Paul Bame <bame@endor.fc.hp.com>
+Message-Id: <E12i03U-000281-00@endor.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> The j5000 I was loaned for the next couple of days is a 2-way
-> machine (as opposed to a 1-way c3k I was using up to now).
+= 
+= I figured out line 434 (of 497) fs/partitions/msdos.c
+= ("if (!NR_SECTS(p))") is causing the code 28 trap (unaligned data
+= reference trap) despite the use of get_unaligned() macro. Seems
+= get_unaligned() just isn't supported. I tried tracking this down in
+= order to fix it but got distracted by another problem.
+= If someone feels like they want to contribute in
+= a small way, fixing get/put unaligned would be helpful.
 
-I deconfigured one of the processors this morning
-and it hangs in the same way. I'll start trying
-to narrow down where it "hangs" this afternoon.
+I'm interested in looking at this problem and seeing disks work in
+general.  But I can't help since I don't have a box which seems to be
+able to find SCSI drives (tried 712, b180, c360, and c3k).  Can you
+give me a clue how to reproduce what you're seeing?
 
-grant
+With my limited experience with Linux disks and software, the
+partition table access is usually aligned right anyway, so I think
+alignment traps here should be rare.
 
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
+= The problem which distracted me was the use of generic
+= swap macros by get_unaligned. parisc-linux defines architecture
+= specific macros and I couldn't figure out why those
+= were NOT being used. Any takers for this too?
+
+Are you asking about le32_to_cpu() versus __le32_to_cpu()?  (Not that
+I have an answer -- I'm just wondering if that's the question)
+
+	-Paul Bame
