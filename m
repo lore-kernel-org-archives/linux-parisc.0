@@ -1,71 +1,57 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D4A30482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 21:36:55 -0600 (MDT)
-Date: Tue, 14 Aug 2001 23:37:24 -0400
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
-Message-ID: <20010814233724.I26703@megatonmonkey.net>
-References: <20010814154037.I25258@megatonmonkey.net> <20010815010034.K22144@parcelfarce.linux.theplanet.co.uk> <20010814215030.A26703@megatonmonkey.net> <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010815041610.M22144@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Wed, Aug 15, 2001 at 04:16:10AM +0100
-Subject: [parisc-linux] Users staying up to late. ;)
+Received: from mta01-srv.alltel.net (mta01.alltel.net [166.102.165.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DB7BE482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 21:59:47 -0600 (MDT)
+Date: Tue, 14 Aug 2001 22:59:59 -0500 (CDT)
+From: "T. Martin" <catfish@alltel.net>
+To: Jaime Ash <jaimeash@home.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Creating the installation CD
+In-Reply-To: <NEBBJAILOLAHGDBEOCIOAEFJCFAA.jaimeash@home.com>
+Message-ID: <Pine.LNX.4.10.10108142258150.3789-100000@jesse.crash.lan>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+Jaime, 
+ I use cdrecord and just cdrecord dev=0,6,0 speed=2 -eject file.iso but it
+depends on your hardware as to the proper device if its scsi just  
+cdrecord -scanbus and start from there. 
 
-> > In general, I don't want to submit a bugreport and have the
-> > list say "That's already fixed in the latest updated package" :)
+Hope I helped some. 
+Terry
+
+Achilles' Biological Findings:
+        (1) If a child looks like his father, that's heredity.  If he
+            looks like a neighbor, that's environment.
+        (2) A lot of time has been wasted arguing over what came first
+            -- the chicken or the egg.  It was undoubtedly the
+            rooster.
+
+
+On Tue, 14 Aug 2001, Jaime Ash wrote:
+
+> I am in the process of trying to upgrade my PA-Linux machine (model HP 715)
+> from version 0.6 to version 0.9.2, and also trying to install version 0.9.2
+> on an HP 735.
 > 
-> That's fair enough.
-
-Thanks for all the comments!
-
+> I have already extracted the file named "palinux-0.9.2.iso" from the
+> downloaded file, but I do not know how to proceed from there to create the
+> installation CD.  (Note that for version 0.6 I had used an installation CD
+> that I got from Grant Grundler, so I never learned how he created the CD,
+> and now he is on LOA).
 > 
-> Yes, it does.  Until you've managed to get sully synced up to latest
-> toolchain/libs/kernel at which point, it magically stops.
+> So my question to you is, what is the process for going from the *.iso file
+> to create the CD.
 > 
-
-Leading back to my reasoning at the start.
-Things magically fix themselves when you get the latest package.
-Atleast that's what the developers always say ;)
-
-> > Linux node10 2.4.0 #37 Tue Jul 17 22:33:26 EDT 2001 parisc unknown
->
-> OK, you _definitely_ need to update this.  You could pull from CVS or
-> grab a snapshot tarball, see the webpages on how to do this.
-
-True. Our nodes aren't running the latest kernel, but now that I see
-the myriad of page_faults that many programs are causing, I will
-be rolling a new one quite soon.
-
-I had the auto-builder perl script working at one point.
-Then I mucked about with it, broke it, and then never used it again.
-I should get it going again, have been doing most of the kernel builds
-by doing a quick CVS slurp and xcompile (Yes my PIII 450 is much
-faster at compiling kernels ;) ... then again so is our newly acquired Dual
-PIII 1.0GHz mmmmm.... -j16. god bless funding from the engineering
-undergraduate society!)
-
+> Sincerely,
 > 
-> I seem to remember someone saying this was a bug in an old version
-> of dpkg.  So one way around this may be to dpkg --remove texinfo, then
-> install dpkg, then install texinfo again.
->
-
-I will try removing texinfo and then installing dpkg, and tell you 
-if that was the fix.
-
-TODO:
-
-- Latest kernel.
-- dpkg unintall-install-install.
-
-Muchas gracias senores y senoras!
-
-Cheers,
-Carlos
---------------------------
-Baldric Project
-http://www.baldric.uwo.ca
---------------------------
+> Jaime Ash
+> email: jaimeash@home.com
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
