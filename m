@@ -1,50 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07227482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 02:25:27 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 5FCE0B00C; Tue, 25 Sep 2001 09:24:02 +0100 (BST)
-Date: Tue, 25 Sep 2001 09:24:02 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Sonny Cook <sonny@aspersion.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel 2.5.9-pa24 won't boot 735/125
-Message-ID: <20010925092401.M5051@linuxcare.com>
-References: <Pine.LNX.4.33.0109201328390.14604-100000@lefou> <Pine.LNX.4.33.0109242042210.17244-100000@lefou>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0109242042210.17244-100000@lefou>; from sonny@aspersion.org on Mon, Sep 24, 2001 at 10:09:09PM -0600
+Received: from mail.lokmail.net (MAIL.LOKMAIL.NET [209.48.2.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C558E482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 05:08:01 -0600 (MDT)
+Received: from mail.lokmail.net (localhost [127.0.0.1])
+	by mail.lokmail.net (8.9.3/8.9.3) with ESMTP id HAA12337
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Sep 2001 07:07:57 -0400
+Message-Id: <200109251107.HAA12337@mail.lokmail.net>
+From: Jurij Smakov <jurij@lokmail.net>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Debian bootfloppies with -pa22 fails on 720/50
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Tue, 25 Sep 2001 07:07:57 -0400
+Sender: jurij@mail.lokmail.net
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 24, 2001 at 10:09:09PM -0600, Sonny Cook wrote:
-> Okay, I've written off cross compiling as a loss.  I did get a 715/80
-> working with no obvious problems.  I've compiled a kernel with the
-> EARLY_BOOTUP_DEBUG flag defined.  So, I boot my 735/125 with that kernel
-> and get much more interesting information.  Thusly:
-...
-> Setting the System Clock using the Hardware Clock as reference...
-> Cannot access the Hardware Clock via any known method.
-> Use the --debug option to see the details of our search for an access
-> method.
-> System Clock set. Local time: Tue Sep 25 20:35:45 MDT 2001
-> 
-> Cleaning: /tmp /var/lock /var/run.
-> 
-> At this point the system refuses to give any more output.  I can ping the
-> box, but there are no services running (sshd is supposed to start up.)  I
-> also assume that the root file system (/dev/sdb2) is indeed mounted,
-> because if I just cold reboot, it has to fsck the filesystem next time.
-> 
-> The kernel is compiled without STI or framebuffer support.  It also has
-> all of the non experimental iptables options compiled in.
+>Hello,
+>
+>I've since tried the other case 18 fall-through option, and it worked up
+>to the point where I am now installing from the 0.9.2 CD-ROM.
+>
+>Do you still want me to decode this crash?
+>
+>Regards,
+>
+>Albert
 
-To eliminate the possibility of a kernel config problem, I would
-make distclean; cp arch/parisc/debian-configs/32 .config; make oldconfig
-make dep; make
+Hi! 
 
-The other thing you can try is booting with init=/bin/sh and try
-starting things up by hand to see what hangs it.  Or maybe remove
-non-essentail services, then if it boots ok try starting them one
-by one.
+I don't think You have to decode it. It's clear, what happened. 
+Interruption 18 on your machine has equivalent functionality to
+interruptions 26, 27 and 28 on newer ones. I thought, that the
+interruption you were getting was unaligned access (28), so the idea
+was to call handle_unaligned. Clearly, you were getting 26, which
+is handled by do_page_fault, so that calling handle_unaligned 
+didn't do You any good. It entered the handle_unaligned, but when 
+it tried to access the memory byte-by-byte, it trapped with 18 
+again and this time it was from inside the kernel, so it ended 
+up dead. If someone would give me an idea on how to decide, which 
+handler to call for interruption 18, I could try and produce a 
+workable workaround.
 
-Richard
+Best regards,
+
+Jurij Smakov. 
+
+P.S. I can't connect to www.parisc-linux.org and my previous posts did
+not appear in the archives (some routing problems, I guess). Also, I
+haven't got anything from the list during last 18 hours. I'm posting
+from this address instead of my usual one instead. Please cc relevant 
+posts to jurijus@theophys.kth.se
