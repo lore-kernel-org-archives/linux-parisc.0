@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4B4CE487E
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 11:45:15 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id D64DD4880
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 11:46:05 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 1919i5-0005pF-Aq; Thu, 03 Apr 2003 19:45:13 +0100
-Date: Thu, 3 Apr 2003 19:45:13 +0100
+	id 1919iv-0005pg-6X; Thu, 03 Apr 2003 19:46:05 +0100
+Date: Thu, 3 Apr 2003 19:46:05 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: Rodrigo Colao Merlo <rodrigo@tteng.com.br>
+To: Ricardo Jose Guevara Ochoa <jguevara@unitec.edu>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Applications in 64 bits userspace
-Message-ID: <20030403184513.GH29376@parcelfarce.linux.theplanet.co.uk>
-References: <200304031512.35389.rodrigo@tteng.com.br>
+Subject: Re: [parisc-linux] Kernel boot error
+Message-ID: <20030403184605.GI29376@parcelfarce.linux.theplanet.co.uk>
+References: <2fc4027c1f9143c9.1f9143c92fc4027c@unitec.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200304031512.35389.rodrigo@tteng.com.br>
+In-Reply-To: <2fc4027c1f9143c9.1f9143c92fc4027c@unitec.edu>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,28 +25,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Apr 03, 2003 at 03:12:35PM -0300, Rodrigo Colao Merlo wrote:
->  Hello,
->  I work for a software company in Brazil specialized in Linux 
->  development under contract by HP.
->  
->  We're currently working in a project that needs investigate what are missing 
-> in kernel to run applications in 64 bits userspace. I need only known what 
-> are missing in kernel and what kernel do you recomend ? 2.4 or 2.5 ? 
+On Thu, Apr 03, 2003 at 12:35:02PM -0600, Ricardo Jose Guevara Ochoa wrote:
+> The server came with more disks, can i put the kernel in one of those 
+> disk, and boot from there?
 
-Yes, Leandro from HP Brazil kept posting asking that question.
-Unfortunately, he kept on asking even after he'd been given a fairly
-comprehensive list of things to do, so I think people couldn't be bothered
-to tell him any more.
-
-Probably the best list of things to do would be the thread starting at
-http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/018911.html
-
-As to which kernel to base it on; most of the work is kernel-independent.
-It's all about making the toolchain work properly.  There's a certain
-amount of work to do in the kernel, but there's some design work to do
-up-front first.  It shouldn't be hard to do it to either kernel and then
-port to the other.
+certainly.  probably best to take a second disc, partition it properly
+and make that the new root disc.
 
 -- 
 "It's not Hollywood.  War is real, war is primarily not about defeat or
