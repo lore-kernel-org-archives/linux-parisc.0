@@ -1,36 +1,53 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA02730
-	for <parisc-linux@puffin.external.hp.com>; Sat, 26 Aug 2000 02:27:18 -0600
-Received: from zimt.informatik.tu-chemnitz.de ([134.109.184.193] helo=zimt)
-	by asterix.hrz.tu-chemnitz.de with esmtp (Exim 3.16 #6)
-	id 13SbJ3-0003ET-00
-	for parisc-linux@thepuffingroup.com; Sat, 26 Aug 2000 10:27:13 +0200
-Date: Sat, 26 Aug 2000 10:27:12 +0200 (MET DST)
-From: "Andre' Breiler" <A.Breiler@gmx.net>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Testing CPU detection
-In-Reply-To: <20000824174356.K29677@vodka.thepuffingroup.com>
-Message-ID: <Pine.GSO.4.21.0008260949340.5290-100000@zimt.informatik.tu-chemnitz.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA11094
+	for <parisc-linux@puffin.external.hp.com>; Sat, 26 Aug 2000 17:45:34 -0600
+Received: from home.com ([24.3.245.88]) by mail.rdc1.ne.home.com
+          (InterMail vM.4.01.03.00 201-229-121) with ESMTP
+          id <20000826234532.YLCF17075.mail.rdc1.ne.home.com@home.com>
+          for <parisc-linux@thepuffingroup.com>;
+          Sat, 26 Aug 2000 16:45:32 -0700
+Message-ID: <39A85787.6A917C57@home.com>
+Date: Sat, 26 Aug 2000 18:49:27 -0500
+From: Matthew Hudson <mhudson@home.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] My toolchain whoes...
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 24 Aug 2000, Matthew Wilcox wrote:
 
-> It's fine on an A180 -- reports `PA7300LC (PCX-L2)'.  I want to know
-> what other machines get.  Thanks in advance to everyone who tests this
-> because I expect to be overwhelmed by mail from this :-).  Once I have
+>From a gcc -E -dD
 
-On my old 715/33 I get:
-CPUID vers 0 rev 0
-CPU might be a PA7100 (PCX-T)
-CPU(s): 1 x PA7100 (PCX-T) at 33.333500 MHz
+sigaction.c
 
-It seems ok to me.
+In function __libc_sigaction
 
-Bye Andre'
--- 
-eMail: A.Breiler@gmx.net
-Type Bits/KeyID    Date       User ID
-pub  2048/89D36175 1997/06/20 Andre' Breiler 2048 <A.Breiler@gmx.net> SIG
-     Key fingerprint = 8E 9E A2 F8 29 27 CC 94  10 44 0E 40 7A C9 33 10
+sigaction.c line 83:
+      result = INLINE_SYSCALL (rt_sigaction, 4, sig,
+                               act ? __ptrvalue (&kact) : NULL,
+                               oact ? __ptrvalue (&koact) : NULL, _NSIG
+/ 8);
+
+gcc -E -dD output: (sorry I couldn't get this to you sooner willy I got
+stuck in the middle of a bad day at work)
+result = ({ unsigned long __sys_res; { register unsigned long __res
+asm("r28"); register unsigned long __r24 __asm__("r24") = (unsigned
+long)oact ? (&k_osigact) : ((void *)0); register unsigned long __r25
+__asm__("r25") = (unsigned long)act ? (&k_sigact) : ((void *)0);
+register unsigned long __r26__asm__("r26") = (unsigned long)sig; asm
+volatile( "ble  0x100(%%sr2, %%r0)\n\t" " ldi %1, %%r20" : "=r" (__res)
+: "i" ((__NR_sigaction)) , "r" (__r26), "r" (__r25), "r" (__r24) );
+__sys_res = __res; } if (__sys_res >= (unsigned long)-4095) {
+(*__errno_location ()) = (-__sys_res); __sys_res == (unsigned long)-1; }
+__sys_res; });
+
+undefined symbol: __NR_sigaction
+
+Now, you tell me whats wrong?
+
+My guess is that some how my config is getting mangled, I don't know
+how.
+
+Any ideas?
+
+-Matt
