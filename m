@@ -1,34 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA12910
-	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Dec 1999 18:06:15 -0700
-Received: from security.hp.com (cranston.fc.hp.com [15.6.91.224])
-	by atlrel1.hp.com (Postfix) with ESMTP id 9FC51F861
-	for <parisc-linux@thepuffingroup.com>; Wed,  8 Dec 1999 20:08:24 -0500 (EST)
-To: Paul Bame <bame@debian.fc.hp.com>
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-        parisc-linux@thepuffingroup.com, lamont@security.hp.com
-Subject: Re: [parisc-linux] a pretty big change 
-In-reply-to: Your message of "Tue, 07 Dec 1999 09:53:02 MST."
-             <199912071653.JAA18644@debian.fc.hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Wed, 08 Dec 1999 18:08:20 -0700
-From: LaMont Jones <lamont@security.hp.com>
-Message-Id: <19991209010821.87E9318708@security.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA14195
+	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Dec 1999 22:03:11 -0700
+Date: Thu, 9 Dec 1999 06:03:38 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: frowand@cup.hp.com
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] bad news, good news, unkown (Temp CR used as permanent storage)
+Message-Id: <19991209060338.F21512@mathe.stud.uni-erlangen.de>
+References: <199912032052.MAA02894@xsvr4.cup.hp.com> <19991204212623.B19280@mathe.stud.uni-erlangen.de> <384C0585.9F444390@hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <384C0585.9F444390@hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> That happens pretty frequently to me but I've not tracked down why
-> it happens.  Did you try holding the TOC button in for several seconds?
-> On some workstations I've been told that generates a hard reset.
+> However, there is a chance that existing PDC does not modify the
+> Temporary Control Registers, based on conversations with some
+> relevent engineers, and some theorizing.
+>
+> (Of course, the obvious exception is that the Temporary Control
+> Registers are undefined when the kernel's HPMC handler is called.)
 
-TOC results in (providing that the checksum passes) transfer of control
-to a routine pointed at from page 0.  If something is trashing that, and
-the checksum'ed length is set to 0, then you'll branch off into the ozone.
+In this context I interpreted the last paragraph as saying that even if
+firmware is nice and doesn't modify the temporary registers during PDC
+calls, there is no chance whatsoever that the temporary registers contain
+useful values after every HPMC on a certain firmware implementation.
+(Now I don't see how HPMC's are an exception to the more general rule
+that some firmware implementations might preserve the temporary registers).
 
-If the checksum fails, then you get the PDC default of rebooting.
+> Ahhh, obvious if one had read the comments at the beginning of the basic
+> hpmc handler that I submitted.
+> Or read p. 1-16 of pdce.pdf, "PA-RISC 2.0
+> Formware Architecture Reference Specification: Processor Dependent Code
+> (PDC) Procedures (Part 2/2)" at
+> http://thepuffingroup.com/parisc/documentation.html
 
-Don't know if that's your problem, but it's probably worth checking into
-whether something is trashing physical address 8 (TOC vector - 0xc is the
-length of the checksum.)
+Which contradict each other wrt the PSW W and E bits (E isn't going to
+concern us but W might), btw.
 
-lamont
+	Philipp Rumpf
