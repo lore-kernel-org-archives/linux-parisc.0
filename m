@@ -1,38 +1,28 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA11312
-	for <parisc-linux@puffin.external.hp.com>; Thu, 7 Dec 2000 14:33:03 -0700
-To: alan@linuxcare.com.au
-Cc: parisc-linux@thepuffingroup.com
+Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA12072
+	for <parisc-linux@puffin.external.hp.com>; Thu, 7 Dec 2000 14:46:28 -0700
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 1447wH-0008LB-00; Thu, 07 Dec 2000 20:46:49 +0000
+Date: Thu, 7 Dec 2000 20:46:49 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Paul Bame <bame@noam.fc.hp.com>
+Cc: Richard Hirst <rhirst@linuxcare.com>, Grant Grundler <grundler@cup.hp.com>,
+        parisc-linux@puffin.external.hp.com, debian-hppa@lists.debian.org
+Subject: Re: A500 status update
+Message-ID: <20001207204649.A31668@parcelfarce.linux.theplanet.co.uk>
+References: <200012070634.WAA07459@milano.cup.hp.com> <200012070649.WAA07510@milano.cup.hp.com> <20001207095613.D7166@linuxcare.com> <E1443ib-0003sK-00@noam.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Thu, 07 Dec 2000 14:36:45 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001207213645.DB70E37CA1@carmen.fc.hp.com>
-Subject: [parisc-linux] eprintf error when xcompiling gcc
+In-Reply-To: <E1443ib-0003sK-00@noam.fc.hp.com>; from bame@noam.fc.hp.com on Thu, Dec 07, 2000 at 09:16:25AM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Alan,
+On Thu, Dec 07, 2000 at 09:16:25AM -0700, Paul Bame wrote:
+> I've left many syscalls disabled and think we should keep them turned
+> off until it's proven they actually are used.  We should
+> probably consider nuking them in the 32-bit kernel too.
 
-I'm trying to cross-compile gcc (--with-libc) and I get several thousand of 
-the following error,
-
-bad.o: In function `ffebad_here':
-/home/al-76/puffin/palinux/gcc/gcc/f/bad.c:268: undefined reference to 
-`__eprintf'
-/opt/palinux/lib/gcc-lib/hppa-linux/2.96/../../../../hppa-linux/bin/ld: 
-bad.o(.text+0x400): cannot find stub entry 00000052___eprintf+0
-/opt/palinux/lib/gcc-lib/hppa-linux/2.96/../../../../hppa-linux/bin/ld: 
-bad.o(.text+0x400): cannot handle R_PARISC_PCREL17F for __eprintf
-
-
-The function/.o is different in each error but they all complain about 
-__eprintf.
-Is this a problem with the xcompiler or the source(or both)?
-Is there something else I should be doing when xcompiling?
-Is this a bug or am I doing something stupid?
-
-Thanks,
+i noticed we still had readdir.  i believe glibc always uses getdents.
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Revolutions do not require corporate support.
