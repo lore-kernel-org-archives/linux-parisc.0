@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A2A294840
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Oct 2003 09:49:05 -0700 (MST)
-Message-ID: <3F9BFB00.5090008@tiscali.be>
-Date: Sun, 26 Oct 2003 16:49:04 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] C110 builtin nic slow?
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EBFA4840
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Oct 2003 09:53:39 -0700 (MST)
+Date: Sun, 26 Oct 2003 11:49:26 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: how to handle ERESTART_RESTARTBLOCK ?
+Message-ID: <20031026164926.GE26587@systemhalted>
+References: <20030812060244.GE21328@tausq.org> <20031026073751.GH24406@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031026073751.GH24406@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,54 +23,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Sun, Oct 26, 2003 at 12:37:51AM -0700, Randolph Chung wrote:
+> here's a patch that implements the required logic. probably can be
+> improved some.... comments appreciated.
+> 
+> About __NR_restart_syscall, some archs use syscall #0 (unused for pa
+> afaict), others define a new syscall number. Any preferences? If it's
+> zero then i think i will remove the reassemble_14 logic.
 
-Here are the devices found on my c110 box:
-Found devices:
-1. U2-IOA BC Runway Port (12) at 0xfff88000 [8], versions 0x580, 0x7, 0xb
-2. SkyHawk 100/120 FW-SCSI (4) at 0xf3f8c000 [8/12], versions 0x1f, 0x0, 
-0x89
-3. Raven T' Core BA (11) at 0xffd00000 [8/16], versions 0x32, 0x0, 0x81, 
-  additional addresses: 0xffd0c000 0xffc00000
-4. Raven T' Core Centronics (10) at 0xffd02000 [8/16/0], versions 0x32, 
-0x0, 0x74,  additional addresses: 0xffd01000 0xffd03000
-5. Raven T' Audio (10) at 0xffd04000 [8/16/1], versions 0x32, 0x0, 0x7b
-6. Raven T' Lasi Core RS-232 (10) at 0xffd05000 [8/16/4], versions 0x32, 
-0x0, 0x8c
-7. Raven T' Core SCSI (10) at 0xffd06000 [8/16/5], versions 0x32, 0x0, 0x82
-8. Raven T' Core LAN (802.3) (10) at 0xffd07000 [8/16/6], versions 0x32, 
-0x0, 0x8a
-9. Raven T' Core PS/2 Port (10) at 0xffd08000 [8/16/7], versions 0x32, 
-0x0, 0x84
-10. Raven T' Core PS/2 Port (10) at 0xffd08100 [8/16/8], versions 0x32, 
-0x0, 0x84
-11. Raven T' Core PC Floppy (10) at 0xffd0a000 [8/16/10], versions 0x32, 
-0x0, 0x83
-12. Raven T' Wax BA (11) at 0xffe00000 [8/20], versions 0x1e, 0x0, 0x8e, 
-  additional addresses: 0xffe03000 0xffe06000
-13. Raven T' Wax HIL (10) at 0xffe01000 [8/20/1], versions 0x1e, 0x0, 0x73
-14. Raven T' Wax RS-232 (10) at 0xffe02000 [8/20/2], versions 0x1e, 0x0, 
-0x8c
-15. Raven T' Wax EISA BA (11) at 0xfc000000 [8/20/5], versions 0x1e, 
-0x0, 0x90,  additional addresses: 0xffc88400 0xf4000000
-16. U2-IOA BC GSC+ Port (7) at 0xf3fbf000 [8/63], versions 0x501, 0x1, 
-0xc,  additional addresses: 0xf3f80000
-17. U2-IOA BC Runway Port (12) at 0xfff8a000 [10], versions 0x580, 0x7, 0xb
-18. Raven T' GSC Core Graphics (10) at 0xf4000000 [10/16], versions 
-0x32, 0x0, 0x85,  additional addresses: 0xf0069000
-19. U2-IOA BC GSC+ Port (7) at 0xf3fff000 [10/63], versions 0x501, 0x1, 0xc
-20. Raven 120 T' (0) at 0xfffa0000 [32], versions 0x58e, 0x0, 0x4
-21. Memory (1) at 0xfffb1000 [49], versions 0x49, 0x0, 0x9
-CPU(s): 1 x PA7200 (PCX-T') at 120.000000 MHz
+I don't see why #0 can't be used here. Then again, why can't you code
+the syscall number directly into the hex? Are you expecting it to
+change? :)
 
-And, at the office, I use to obtain around nice 1Mb/s when I do such 
-rsync or ftp between my b180 connected via a hub.
+> +		if (regs->gr[28] == -ERESTART_RESTARTBLOCK) {
+> +			unsigned int *usp = (unsigned int *)regs->gr[30];
+> +
+> +			/* Setup a trampoline to restart the syscall
+> +			 * with __NR_restart_syscall
+> +			 *
+> +			 *  0: ble 0x100(%%sr2, %%r0)
+> +			 *  4: ldi __NR_restart_syscall, %r20
+> +			 *  8: b,l .+8, %r21
+> +			 * 12: depi 0,31,2,%r21
+> +			 * 16: ldw 16(%r21), %rp
+> +			 * 20: bv %r0(%rp)
+> +			 * 24: ldo -64(%sp), %sp
 
-But here at home, I connect the builtin nic of my c110 with a 
-cross-cable to my pc (proxy) and I just obtain 50kb/s (whatever the 
-kernel I boot 2.4 or 2.6) (ie 20 time less then with a another pc 
-connected in place of the c110). Is it possible to improve the 
-performance of this builtin nic?
+Adding stack here can be detremental to the userspace program. It's not
+expecting you to have a stack, and it expects the syscall to live within 
+its calling frame. When we setup the signal return trampoline we don't
+mess with the stack either :) Though this context is different.
 
-Thanks in advance,
-	Joel
+> +			 * 28: nop
+> +			 * 32: <return address> (2 slots for 64-bit)
+> +			 */
+
+c.
