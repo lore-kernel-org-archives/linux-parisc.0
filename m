@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.medianet-world.de (mail1.medianet-world.de [213.157.0.162])
-	by dsl2.external.hp.com (Postfix) with SMTP id C12A9482F
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Jun 2003 21:59:01 -0600 (MDT)
-Message-ID: <3EF1353C.8030705@bluehash.de>
-Date: Thu, 19 Jun 2003 05:59:56 +0200
-From: =?ISO-8859-1?Q?R=FCdiger_Scholz?= <r.scholz@bluehash.de>
-MIME-Version: 1.0
+Received: from sfa2033.com (unknown [211.162.27.253])
+	by dsl2.external.hp.com (Postfix) with SMTP id 218B04830
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jun 2003 01:45:47 -0600 (MDT)
+From: =?gb2312?q?=D6=D0=D0=A1=C6=F3=D2=B5=C1=AA=C3=CB_ <info@sfa.com>,
+	?=@dsl2.external.hp.com
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Some 2.5-testing
-References: <200306171622.h5HGM5QJ010581@hiauly1.hia.nrc.ca>
-In-Reply-To: <200306171622.h5HGM5QJ010581@hiauly1.hia.nrc.ca>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Reply-To: info@smb365.com
+Date: Thu, 19 Jun 2003 15:40:53 +0800
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="84e04825-575d-4157-8170-6d24d31eb3a8"
+Message-Id: <20030619074547.218B04830@dsl2.external.hp.com>
+Subject: [parisc-linux] =?gb2312?q?=B5=C7=C2=BC=D6=D0=D0=A1=C6=F3=D2=B5=C1=AA=C3=CB=A3=AC=C3=E2=B7=D1=D0=FB=B4=AB=C6=F3=D2=B5=A1=A2=CD=C6=B9=E3=B2=FA=C6=B7=A3=A1=A1=A1?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,44 +22,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-John David Anglin schrieb:
+This is a multi-part message in MIME format
+--84e04825-575d-4157-8170-6d24d31eb3a8
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: quoted-printable
 
->Until issues related to the canonicalization of function pointers
->and the alignment of stack locals are resolved, it is best to stick
->with debian gcc-3.0.4 for kernel building.
->
-So I installed gcc-3.04 from Debian, did "make distclean", "make 
-oldconfig" (selecting "PA7100LC") and booted...
-And got the same loop again ;)
-
----------- SNIP---------------
-
-     md: linear personality registered as nr 1
-    Badness in local_bh_enable at at kernel/softirq.c:109
-    Kernel addresses on the stack:
-
-     [tirq.c:109
-    <4>Kernel addresses on the stack:
-    <4> [<10124edcc8>]  [<1010ea4c>]
-    <4> [<1012503c>]  [<1028ac08>]  [<10124cc>]
-    <4> [<1029a2a4>]  [<103ad4d4>]  [<10100284>]  [<10109c5ab8>] 
-    [<101289a8>]  [<1028ac20>]
-     [<1028b428>]  [<101070f28ac08>]  [<10124f10>]  [<1028adcc>]
-     [<1029a2a4>]  [<103adc>]
-    <4> [<1029a2a4>]  [<103ad4d4>]  [<10100284>]  [<10109c>] 
-    [<103ad4d4>]  [<10100284>]  [<10109c5c>]
+=C4=E3=BA=C3=A3=BA
+=A1=A1=A1=A1=A1=A1=B5=C7=C2=BC=D6=D0=D0=A1=C6=F3=D2=B5=C1=AA=C3=CB=A3=AC=C4=E3=
+=BF=C9=D2=D4=C3=E2=B7=D1=D0=FB=B4=AB=C6=F3=D2=B5=A1=A2=CD=C6=B9=E3=B2=FA=C6=B7=
+=A3=A1=CD=AC=CA=B1=BB=F1=B5=C3=B8=FC=B6=E0=CF=EE=C4=BF=A1=A2=D5=FE=B2=DF=A1=A2=
+=D7=CA=D4=B4=D0=C5=CF=A2=A3=A1=A1=A1http://www.smb365.com
 
 
----------- SNAP---------------
 
-Complete Bootlog and System.map is here: rscholz.bluehash.de/parisc .
-Can I do something else to help finding the bug?
-
->  Loops of this kind can
->happen when lock structures are misaligned on PA 1.1 machines.
->
->Dave
->  
->
-
-Rüdiger
+=B4=CB=CE=AA=C9=CC=D2=B5=D0=C5=BA=AF=A3=AC=C8=E7=D3=D0=B4=F2=C8=C5=A3=AC=C7=EB=
+=C9=BE=B3=FD=A3=AC=BE=B4=C7=EB=C1=C2=BD=E2=A3=A1  
+--84e04825-575d-4157-8170-6d24d31eb3a8--
