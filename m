@@ -1,15 +1,14 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C68BF48BD
+	by dsl2.external.hp.com (Postfix) with ESMTP id 72DBB489E
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 18 Feb 2004 10:25:55 -0700 (MST)
-Date: Wed, 18 Feb 2004 18:25:46 +0100
-Message-ID: <402A42A10000569A@ocpmta1.freegates.net>
-In-Reply-To: <20040218163927.GC9497@baldric.uwo.ca>
+	Wed, 18 Feb 2004 11:40:09 -0700 (MST)
+Date: Wed, 18 Feb 2004 19:40:04 +0100
+Message-ID: <402A4CA5000052CB@ocpmta2.freegates.net>
+In-Reply-To: <402A42A10000569A@ocpmta1.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	"Elliott Potter" <epotter@eep.burdell.org>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
@@ -27,44 +26,61 @@ Carlos,
 >>> > But now I need more to try to complete job because:
 >> > make[2]: *** [/Develop/parisc-linux/build/glibc/sunrpc/xbootparam_prot.stmp]
 >
->This is the first time that the loader you built is used. If the loader
->is in anyway broke, it will *always* die here first. Just remember this
->glibc haiku when you are coding:
->
->	Loader code is bad.
->	Dying in sunrpc.
->	Blame relocations.
->
->:)
+Just to be more complet here is the full cmd:
+CPP='/Develop/parisc-linux/xc/bin/hppa-linux-gcc -E -x c-header'  /Develop/parisc-linux/build/glibc/elf/ld.so.1
+--library-path /Develop/parisc-linux/build/glibc:/Develop/parisc-linux/build/glibc/math:/Develop/parisc-linux/build/glibc/elf:/Develop/parisc-linux/build/glibc/dlfcn:/Develop/parisc-linux/build/glibc/nss:/Develop/parisc-linux/build/glibc/nis:/Develop/p
+arisc-linux/build/glibc/rt:/Develop/parisc-linux/build/glibc/resolv:/Develop/parisc-linux/build/glibc/crypt:/Develop/parisc-linux/build/glibc/linuxthreads
+/Develop/parisc-linux/build/glibc/sunrpc/rpcgen -Y ../scripts -c rpcsvc/bootparam_prot.x
+-o /Develop/parisc-linux/build/glibc/sunrpc/xbootparam_prot.T
 
-:)) (I was ignoring what an haiku is but now find it as a very good example)
+which fault immediately as strace confirm:
+execve("/Develop/parisc-linux/build/glibc/elf/ld.so.1", ["/Develop/parisc-linux/build/glibc/elf/ld.so.1",
+"--library-path", "/Develop/parisc-linux/build/glibc:/Develop/parisc-linux/build/glibc/math:/Develop/parisc-linux/build/glibc/elf:/Develop/parisc-linux/build/glibc/dlfcn:/Develop/parisc-linux/build/glibc/nss:/Develop/parisc-linux/build/glibc/nis:/Devel
+op/parisc-linux/build/glibc/rt:/Develop/parisc-linux/build/glibc/resolv:/Develop/parisc-linux/build/glibc/crypt:/Develop/parisc-linux/build/glibc/linuxthreads",
+"/Develop/parisc-linux/build/glibc/sunrpc/rpcgen", "-Y", "../scripts", "-c",
+"rpcsvc/bootparam_prot.x", "-o", "/Develop/parisc-linux/build/glibc/sunrpc/xbootparam_prot.T"],
+[/* 15 vars */]) = 0
+newuname({sys="Linux", node="palx4000", ...}) = 0
+brk(0)                                  = 0x4102d000
+open("/Develop/parisc-linux/build/glibc/sunrpc/rpcgen", O_RDONLY) = 3
+read(3, "\177ELF\1\2\1\3\0\0\0\0\0\0\0\0\0\2\0\17\0\0\0\1\0\1\16"..., 512)
+= 512
+fstat64(3, {st_mode=0, st_size=0, ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
+= 0x40000000
+mmap(0x10000, 77824, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED, 3, 0) =
+0x10000
+mmap(0x32000, 4096, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
+3, 0x12000) = 0x32000
+mmap(0x33000, 572, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS,
+-1, 0) = 0x33000
+close(3)                                = 0
+open("/etc/ld.so.preload", O_RDONLY)    = -1 ENOENT (No such file or directory)
+open("/Develop/parisc-linux/build/glibc/PARISC32/libc.so.6", O_RDONLY) =
+-1 ENOENT (No such file or directory)
+stat64("/Develop/parisc-linux/build/glibc/PARISC32", 0xfaf01548) = -1 ENOENT
+(No such file or directory)
+open("/Develop/parisc-linux/build/glibc/libc.so.6", O_RDONLY) = 3
+read(3, "\177ELF\1\2\1\3\0\0\0\0\0\0\0\0\0\3\0\17\0\0\0\1\0\2\16"..., 512)
+= 512
+fstat64(3, {st_mode=0, st_size=0, ...}) = 0
+mmap(NULL, 1511008, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40001000
+mprotect(0x40154000, 122464, PROT_NONE) = 0
+mmap(0x40163000, 53248, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED,
+3, 0x152000) = 0x40163000
+mmap(0x40170000, 7776, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS,
+-1, 0) = 0x40170000
+close(3)                                = 0
+--- SIGSEGV (Segmentation fault) @ 0 (0) ---
++++ killed by SIGSEGV +++
 
+I am very fluent in strace langage ( :) ) but I have the filling that libc.so.6
+is wrong? What do you think?
 
-r00-03  0000000000000000 000000004102b6fc 000000004100721f 00000000faf02040
+Thanks again,
+    Joel.
 
->[snip] If you had a copy of your
-/proc/<pid>/maps then you could decipher where 0x4102b6fc pointed.
-
-First just to be sure: don't you speak better of r02=0x4100721f?
-
-unfortunately when I discover dmesg, the process was already died :(
-(I will see howto ?)
-
-> > IASQ: 0000000000003580 0000000000003580 IAOQ: 0000000041007293 0000000041007297
-> >  IIR: 0ec01095    ISR: 0000000000003580  IO
->: 000000000016b690
-> >  CPU:        8   CR30: 000000003a038000 CR31: 00000000104a4000
-> >  ORIG_R28: 0000000040170000
-> >  IAOQ[0]: 0x41007293
-> >  IAOQ[1]: 0x41007297
-> >  RP(r2): 0x4100721f
-
->Odd, the insns you are executing are really close to
->your IAOQ addresses, so the functions are close together.
-
-Thanks for advise, help and attention,
-    Joel
-
+PS: I will stopped here and tommorrow will try update all stuff and see ;)
 
 ----------------------------------------------------------------------------------------
 Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
