@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8EB97492D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 23:45:07 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16EOIC-0008TF-00; Thu, 13 Dec 2001 05:20:24 +0000
-Date: Thu, 13 Dec 2001 05:20:24 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Tom <palinux@alaskatech.org>
-Cc: Matthew Wilcox <willy@debian.org>,
-	palinux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Firmware upgraded, STI console problem
-Message-ID: <20011213052024.D8225@parcelfarce.linux.theplanet.co.uk>
-References: <200112122039.NAA11818@puffin.external.hp.com> <Pine.LNX.4.33.0112121147380.4162-100000@goliath.alaskatech.org> <20011212210242.E22198@parcelfarce.linux.theplanet.co.uk> <1008218517.2031.1.camel@crudball>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1008218517.2031.1.camel@crudball>; from palinux@alaskatech.org on Wed, Dec 12, 2001 at 07:41:57PM -0900
+Received: from femail27.sdc1.sfba.home.com (femail27.sdc1.sfba.home.com [24.254.60.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8E242482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Dec 2001 00:10:40 -0700 (MST)
+Received: from w2kpro ([24.248.173.115]) by femail27.sdc1.sfba.home.com
+          (InterMail vM.4.01.03.20 201-229-121-120-20010223) with ESMTP
+          id <20011213044120.WUF4954.femail27.sdc1.sfba.home.com@w2kpro>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Wed, 12 Dec 2001 20:41:20 -0800
+From: "Edward Alfert" <edward@alfert.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 12 Dec 2001 23:42:30 -0500
+Message-ID: <000001c18390$9354ebf0$0201a8c0@w2kpro>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Subject: [parisc-linux] What keywords should I use to find the answer?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,16 +26,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 12, 2001 at 07:41:57PM -0900, Tom wrote:
-> By all means, feel free to post corrections, either here or direct to
-> me, and I'll update it. Also, if someone can think of something else
-> useful for it, just ask... (Perhaps the minimum kernel revision needed?)
+#1) I successfully installed 0.9.3 on a C240!!!
+#2) it works if I use the serial console.  Absolutely no problems... Was
+able to use dselect after install to install graphical environment (x11,
+gnome, and kde)
+#3) I want to use a graphical console (my color monitor) that does
+support the following resolutions 1280 x 1024 @ 72 , 1280 x 1024 @ 75,
+and 1024 x 768 @ 72.
+#4) if disconnect the serial connection, plug in the ps2 mouse and ps2
+keyboard and the monitor to the graphics card (system detects Console
+path: Graphics(4))
+#5) the system gets as far as:
+Branching to kernel entry point 0x00100000.  If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org
 
-E, F, G, H, I class aren't supported straight off the CD; they require
-additional changes, AIUI.  Not to mention no support for their SCSI
-adapters.  K mostly works... similar problems to E.  D & R should work
-fine (problem with D class with remote management console).  735's FWDiff
-scsi doesn't work.
+A) the FAQ is short and I can't find any reference. I have read it
+several time. either it's not there or I'm blind
+B) I tried searching the lists on parisc-linux.org but the search
+feature doesn't return any hits for "0x00100000" or "switch your
+console"
+C) I manually searched over 1 years' worth of archives but didn't find
+an answer
 
--- 
-Revolutions do not require corporate support.
+?) Does 0.9.3 support the graphics card on a c240? Or only serial?
+?) If only serial, how do you get a gui environment like gnome of kde to
+interact with this version of linux?
+?) am I just clueless?
+
+Thanks for any and all feedback...
+----------------------
+http://www.sysadmin.info/
+HP-UX SysAdmin Information
