@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5ECD0482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 15:01:27 -0700 (MST)
-Message-ID: <3C3B6C35.6020109@esiee.fr>
-Date: Tue, 08 Jan 2002 23:01:25 +0100
-From: Matthieu Delahaye <delahaym@esiee.fr>
-MIME-Version: 1.0
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Cc: Jbit of Plasma <james_a_n_lee@yahoo.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP 712/60
-References: <3C3B165D.2030101@yahoo.com> <20020108164439.W11181@systemhalted>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: randolph@tausq.org, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] PIC assembly 
+In-Reply-To: Message from "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+   of "Mon, 07 Jan 2002 13:39:23 EST." <200201071839.g07IdNoC000344@hiauly1.hia.nrc.ca>
+References: <200201071839.g07IdNoC000344@hiauly1.hia.nrc.ca> 
+Date: Tue, 08 Jan 2002 18:05:07 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020109010507.80989482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +19,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->
->
->Sound? Never tried. Haven enough MP3 playing boxes in the office ^__^;;
->
-Works now with recent patch of Harmony as soon as you don't compilee 
-gcc/libc/linux at the same time.
+"John David Anglin" wrote:
+> > This page contains links to various useful documents including the 32-bit
+> > runtime:
+> > 
+> > <http://h21007.www2.hp.com/dspp/tech/tech_TechTypeListingPage_IDX/1,1704,10
+>   403,00.html>.
+> > 
+> > The document itself is here:
+> > 
+> > <http://devresource.hp.com/STK/partner/rad_10_20.pdf>.
+> 
+> Maybe copies of these documents could be made accessible from the PA-RISC
+> LINUX Tech Documentation page as some of these are hard to find.
 
-Matthieu
+I've been given the OK to link into h21007.www2.hp.com website and promised
+the URLs for specific documents wouldn't change (too) suddenly.
+I'll add those links in the next couple of days to p-l.org
+"Tech Documentation" to those.
 
->
->c.
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+grant
