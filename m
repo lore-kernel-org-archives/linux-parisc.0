@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2342482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Jun 2002 01:16:38 -0600 (MDT)
-To: Patrick Caulfield <patrick@tykepenguin.com>
+Received: from tyke.pjc.net (public1-leed3-6-cust141.leed.broadband.ntl.com [80.0.5.141])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E6454482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Jun 2002 01:24:16 -0600 (MDT)
+Received: from patrick by tyke.pjc.net with local (Exim 3.35 #1 (Debian))
+	id 17GE6Z-0000Vp-00
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 07 Jun 2002 08:24:15 +0100
+Date: Fri, 7 Jun 2002 08:24:15 +0100
+From: Patrick Caulfield <patrick@tykepenguin.com>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Probleme while compiling last CVS kernel.
-Message-ID: <1023434193.3d005dd1a2022@webmail.tiscalinet.be>
-Date: Fri, 07 Jun 2002 09:16:33 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020607072415.GB1053@tykepenguin.com>
 References: <3CFF593A.18910E50@admin.france.hp.com> <20020606130006.GE1080@tykepenguin.com> <1023388448.3cffab201378e@webmail.tiscalinet.be> <20020606184327.GO1080@tykepenguin.com> <1023429951.3d004d3f0b639@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
 In-Reply-To: <1023429951.3d004d3f0b639@webmail.tiscalinet.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,47 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting joel.soete@freebel.net:
-
+On Fri, Jun 07, 2002 at 08:05:51AM +0200, joel.soete@freebel.net wrote:
 > Quoting Patrick Caulfield <patrick@tykepenguin.com>:
 > 
-> ...
-> > I don't know about the 64bit compile switches (I only have a 32bit HP
-> > box) but
-> > to get LVM running you'll need to take all the bits from
-> > arch/sparc64/kernel/ioctl32.c inside the 
-> > 
-> > #if defined(CONFIG_BLK_DEV_LVM) || defined(CONFIG_BLK_DEV_LVM_MODULE)
-> > 
-> > #endif
-> > 
-> > and replace the bits from arch/parisc/kernel/ioctl32.c with them. I
-> > suspect it
-> > will work. If it does then get a patch together and put it into the
-> CVS
-> > !
-> Great, I will see.
 > > 
 > > I'm pleased (though not very surprised) that LVM works OK on 32 bit
 > > machines.
 > 
 > So surprised too ??
-> 
-> 
-> Many thanks,
->     Joel
-> 
-> 
-> -------------------------------------------------
-> This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+
+Well, a little. I've seen enough porting problems in my time that it always 
+suprises me a little when a recompile on an untested platform "just works" !
 
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+
+patrick
