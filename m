@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CB366489B
-	for <parisc-linux@parisc-linux.org>; Sun, 31 Aug 2003 09:39:58 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 19tUJ3-0001td-OX
-	for parisc-linux@parisc-linux.org; Sun, 31 Aug 2003 16:39:57 +0100
-Date: Sun, 31 Aug 2003 16:39:57 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20030831153957.GX13467@parcelfarce.linux.theplanet.co.uk>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BAF43489B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 31 Aug 2003 09:40:11 -0600 (MDT)
+Date: Sun, 31 Aug 2003 11:38:38 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly3.hia.nrc.ca>
+Cc: randolph@tausq.org, dave.anglin@nrc-cnrc.gc.ca,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: [glibc] tststatic failues, reduced to simple testcase.
+Message-ID: <20030831153837.GJ5194@systemhalted>
+References: <20030830161504.GE5194@systemhalted> <200308310000.UAA01375@hiauly3.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [ron@rongage.org: [Patchbomb] - Copy_to/from_user audit - oss4 - RESEND]
+In-Reply-To: <200308310000.UAA01375@hiauly3.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,71 +24,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
------ Forwarded message from Ron Gage <ron@rongage.org> -----
+> I don't fully understand this code but possibly PT_GR20 might be used
+> to save r2.  In the fork call for example, we know that this location
+> contains  __NR_fork.  This value gets restored to r20 in wrapper_exit.
+> I think the valued saved above is loaded into r2 here:
 
-From: Ron Gage <ron@rongage.org>
-To: kernel-janitor-discuss@lists.sourceforge.net
-Subject: [Patchbomb] - Copy_to/from_user audit - oss4 - RESEND
-User-Agent: KMail/1.5.2
-Errors-To: kernel-janitor-discuss-admin@lists.sourceforge.net
-X-BeenThere: kernel-janitor-discuss@lists.sourceforge.net
-X-Mailman-Version: 2.0.9-sf.net
-Precedence: bulk
-List-Help: <mailto:kernel-janitor-discuss-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:kernel-janitor-discuss@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/kernel-janitor-discuss>,
-	<mailto:kernel-janitor-discuss-request@lists.sourceforge.net?subject=subscribe>
-List-Id: kernel janitor discussion list <kernel-janitor-discuss.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/kernel-janitor-discuss>,
-	<mailto:kernel-janitor-discuss-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=kernel-janitor-discuss>
-X-Original-Date: Sun, 31 Aug 2003 11:20:48 -0400
-Date: Sun, 31 Aug 2003 11:20:48 -0400
-
-This patch is also available on my ftp server
-ftp://new.rongage.org/pub/linux
-
-This patch catches insures proper return values from 
-copy_to/from_user calls.
-
-Ron Gage - Pontiac, MI
-
-diff -urN linux-2.6.0-test4/sound/oss/harmony.c linux-2.6.0-test4-patched/sound/oss/harmony.c
---- linux-2.6.0-test4/sound/oss/harmony.c	2003-08-22 19:58:39.000000000 -0400
-+++ linux-2.6.0-test4-patched/sound/oss/harmony.c	2003-08-29 22:02:42.000000000 -0400
-@@ -725,7 +725,7 @@
-                 info.fragments = MAX_BUFS - harmony.nb_filled_play;
- 		info.fragsize = HARMONY_BUF_SIZE;
-                 info.bytes = info.fragments * info.fragsize;
--		return copy_to_user((void *)arg, &info, sizeof(info));
-+		return copy_to_user((void *)arg, &info, sizeof(info)) ? -EFAULT : 0 ;
+So you say perhaps instead of PT_GR19 we use PT_GR20 and
+TASK_PT_GR20? I think we can't though, because tracing the syscall
+requires that GR20 continue to retain the syscall value. I think we can
+use _any_ other caller-saves registers (including the last input for the
+fork-ish calls e.g. GR21 or GR22?).
  
- 	case SNDCTL_DSP_GETISPACE:
- 		if (!(file->f_mode & FMODE_READ))
-@@ -734,7 +734,7 @@
-                 info.fragments = /*MAX_BUFS-*/ harmony.nb_filled_record;
- 		info.fragsize = HARMONY_BUF_SIZE;
-                 info.bytes = info.fragments * info.fragsize;
--		return copy_to_user((void *)arg, &info, sizeof(info));
-+		return copy_to_user((void *)arg, &info, sizeof(info)) ? -EFAULT : 0 ;
- 	
- 	case SNDCTL_DSP_SYNC:
- 		return 0;
+> child_return:
+> 	bl      schedule_tail, %r2
+> 	nop
+> 
+> 	LDREG   TASK_PT_GR19-TASK_SZ_ALGN-FRAME_SIZE-FRAME_SIZE(%r30),%r2
+> 	b       wrapper_exit
+> 	copy    %r0,%r28
+> 
+> I don't see where the %r30 value saved in PT_GR21 is used.
 
+Me neither. Perhaps it's superfluous and can be used to retrieve r2 and
+thus keep r19 safe.
 
+> If a syscall is going to clobber registers, the appropriate clobbers
+> need to be added to the asm used for the syscall so that gcc doesn't
+> try to use these registers over the syscall.  Use of PT_GR19 appears
+> to have been a bad choice because of its special use in pic code.
 
--------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
-_______________________________________________
-Kernel-janitor-discuss mailing list
-Kernel-janitor-discuss@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/kernel-janitor-discuss
+I've added all the caller-saves registers to our clobber lists when
+making syscalls. Though, r19 being special, I've had to add "STW_PIC"
+and "LDW_PIC" that do the saving and restore _only_ if we are compiled
+PIC.
 
------ End forwarded message -----
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+c.
