@@ -1,15 +1,13 @@
-From: Ulrich Drepper <drepper@redhat.com>
-Subject: [parisc-linux] Re: [PATCH] Add SHMLBA define to shm.h (HPPA).
-Date: Sun, 08 Dec 2002 14:55:33 -0800
-Message-ID: <3DF3CDE5.6070008__37470.2355861247$1416622006$gmane$org@redhat.com>
-References: <20021208220918.GC32062@systemhalted>
+From: Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] [hppa] problem using glibc2.3 with older 64-bit kernels
+Date: Sun, 8 Dec 2002 22:08:33 -0800
+Message-ID: <20021209060833.GL21187__15100.5747881301$1416622007$gmane$org@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: libc-alpha@sources.redhat.com, debian-glibc@lists.debian.org,
-	parisc-linux@lists.parisc-linux.org
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: debian-glibc@lists.debian.org
+To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20021208220918.GC32062@systemhalted>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,15 +18,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Carlos O'Donell wrote:
+This is a heads up for people running 64-bit hppa kernels with new glibc
+(2.3.1). Make sure you have at least 2.4.19-pa17, otherwise fcntl() will
+break with the new glibc and you won't be able to use e.g. apt.
 
-> 2002-12-07  Carlos O'Donell  <carlos@baldric.uwo.ca>
-> 
-> 	* sysdeps/unix/sysv/linux/hppa/bits/shm.h: Added SHMLBA define.
+This was needed to fix some problems with lfs on hppa. Unfortunately it
+cannot be done in a completely backwards compatible manner.
 
-I've added the patch.  Thanks,
+32-bit kernels are not affected.
 
+<sigh>
+randolph
 -- 
---------------.                        ,-.            444 Castro Street
-Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
-Red Hat         `--' drepper at redhat.com `---------------------------
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
