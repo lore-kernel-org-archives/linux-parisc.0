@@ -1,36 +1,90 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BB6DF4A19
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 15:14:54 -0700 (MST)
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id EBD0D629
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 14:14:53 -0800 (PST)
-Message-Id: <200102232217.OAA21496@milano.cup.hp.com>
-To: Matthew Wilcox <willy@ldl.fc.hp.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Documentation wanted 
-In-reply-to: Your message of "Fri, 23 Feb 2001 02:29:28 PST."
-             <E14WEXY-0006gB-00@chrysl>
-Date: Fri, 23 Feb 2001 14:17:38 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from smtp5ve.mailsrvcs.net (smtp5vepub.gte.net [206.46.170.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4E1CB4A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Feb 2001 22:56:57 -0700 (MST)
+Sender: raffo@bellatlantic.net
+Message-ID: <3A974D1F.3BBB87C8@neuronet.pitt.edu>
+Date: Sat, 24 Feb 2001 00:56:47 -0500
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+MIME-Version: 1.0
+To: Christoph Plattner <christoph.plattner@alcatel.at>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile
+ system
+References: <Pine.LNX.4.21.0102091056000.9776-100000@front.linuxcare.com.au> <3A8FA3D8.19E69EF6@dot.at> <3A94C3B5.EF59259C@neuronet.pitt.edu> <3A94CEF9.F171DE3F@alcatel.at>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+Christoph Plattner wrote:
 > 
-> Looking for something to do?  I ran `make checkhelp' and the following
-> undocumented CONFIG options are our fault.  If you'd like to write
-> some help and send diffs against Configure.help to the list, that'd
-> be appreciated.
+> First of all, the make install has to be done twice !
+> 
+> One time for the tool chain to find the things like crt?.o, libs, etc..
+> For this the builtin tree is defined (given by --prefix).
+> 
+>         make install user-defined-trusted-dirs=/lib
+> 
+> The second time install it to the nfs root file system
+> 
+>         make install user-defined-trusted-dirs=/lib \
+>           install_root=/tftpboot/nfsroot
+> 
+> For the target the `/lib' is the builtin search path, for the
+> cross tool chain the '/usr/parisc/hppa-linux/lib' (in my case).
+> 
+> AND A VERY IMPORTANT POINT: You have to run `ldconfig'. I tried
+> this on the target machine (apollo 720) by booting from the
+> NFS-ROOT of palinux-0.5 (I copied the contents of the CD to a
+> path exported by NFS). After booting I mounted my new NFSROOT to
+> `/mnt' and run
+>         ldconfig -v -r /mnt
+> 
+> After that I could boot from the new root file system starting the
+> `init' process (but nothing else....)
 
-This list seems incomplete.
-Why didn't CONFIG_GSC_DINO, CONFIG_IOSAPIC, CONFIG_LBA_PCI,
-or CONFIG_SBA_IOMMU show up?
+export MACH=i386-linux
+export DEST=~/parisk/palinux
+export ROOT=~/parisk
 
-I can write something up for those if there is an arch specific place
-to put them.
+HOSTCC=gcc CC=hppa-linux-gcc $ROOT/source/glibc/configure \
+--prefix=$DEST/hppa-linux --build=$MACH \
+--host=hppa-linux --target=hppa-linux \
+--with-headers=$ROOT/source/linux/include --disable-profile \
+--without-cvs --enable-add-ons
+make MAKE="make -j 10" user-defined-trusted-dirs=/lib
+make install user-defined-trusted-dirs=/lib
+make install user-defined-trusted-dirs=/lib \
+ install_root=/tmp/glibc
 
-grant
+Then copied all the new files onto a second copy of nfsroot.
+Booted the original, mounted the second under /mnt and run:
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+	parisc:/etc# ldconfig -v -r /mnt
+
+and I got this:
+
+ldconfig: Can't open configuration file /mnt//etc/ld.so.conf: No such
+file or directory
+
+I rebooted with the second nfsroot and got a login prompt. However, I
+can't run ldconfig again and I get this error msg.:
+
+parisc:/etc# ldconfig -v       
+ldconfig: Can't open configuration file
+/usr1/users/raffo/parisk/palinux/hppa-linux/etc/ld.so.conf: No such file
+or directory
+/usr1/users/raffo/parisk/palinux/hppa-linux/lib:
+ldconfig: Can't open directory
+/usr1/users/raffo/parisk/palinux/hppa-linux/lib: No such file or
+directory
+ldconfig: Can't create temporary cache file
+/usr1/users/raffo/parisk/palinux/hppa-linux/etc/ld.so.cache~: No such
+file or directory
+
+I I create those directories and a ld.so.conf, it works, but the files
+are out of place. Maybe if it were possible to configure and install the
+files in the x86 machine under a pseudo /, it would install properly.
+Would 'chroot' work here?
+
+-- 
+     Rafael
