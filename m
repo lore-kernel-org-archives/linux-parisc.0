@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from localhost (170-215-68-29.bras01.mob.ut.frontiernet.net [170.215.68.29])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B9C754840
-	for <parisc-linux@parisc-linux.org>; Sat, 14 Jun 2003 17:40:39 -0600 (MDT)
-Date: Sat, 14 Jun 2003 17:40:39 -0600
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Message-ID: <20030614234039.GB5805@riverrock.org>
-References: <20030613154951.GA30843@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030613154951.GA30843@parcelfarce.linux.theplanet.co.uk>
-From: bame@riverrock.org (Paul Bame)
-Subject: [parisc-linux] Re: 2.4.21
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3C5A84840
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 14 Jun 2003 17:58:32 -0600 (MDT)
+Date: Sat, 14 Jun 2003 23:57:52 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+To: parisc-linux@lists.parisc-linux.org
+Cc: Matthew Wilcox <willy@parisc-linux.org>
+In-Reply-To: <20030614221634.9521F494003@palinux.hppa>
+Message-ID: <Pine.BSF.4.53.0306142353310.651@e0-0.zab2.int.zabbadoz.net>
+References: <20030614221634.9521F494003@palinux.hppa>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 willy
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jun 13, 2003 at 04:49:51PM +0100, Matthew Wilcox wrote:
-> 
-> As some of you already know, 2.4.21 is out.  I'd've imported it myself
-> by now, but the 2.4 linux repo is using an _old_ scheme for managing
-> vendor branches.  Paul, would you be so kind as to do the honours?
-> I don't see any reason to hold off on merging 2.4.21 into our tree;
-> we can deal with any brokenness in the 2.4 tree later.
+On Sat, 14 Jun 2003, Matthew Wilcox wrote:
 
-Hmm, bad timing, maybe Tuesday.  That ok?
+Hi,
 
-	-P (currently in Moab.ut.us)
+> CVSROOT:	/var/cvs
+> Module name:	linux-2.5
+> Changes by:	willy	03/06/14 16:16:33
+>
+> Modified files:
+....
+> Log message:
+> merged 2.5.71
+
+cvsupped ... and rechecked this moment w/o new updates.
+
+bz@apollo:/u1/src/linux> make oldconfig
+  HOSTCC  scripts/fixdep
+  ...
+  HOSTCC  -fPIC scripts/kconfig/zconf.tab.o
+  HOSTLLD -shared scripts/kconfig/libkconfig.so
+  HOSTLD  scripts/kconfig/conf
+./scripts/kconfig/conf -o arch/parisc/Kconfig
+drivers/parisc/Kconfig:148: can't open file "drivers/hotplug/Kconfig"
+make: *** [oldconfig] Error 1
+bz@apollo:/u1/src/linux>
+
+-- 
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
