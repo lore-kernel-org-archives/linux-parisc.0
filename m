@@ -1,37 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA17374
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 20:30:10 -0600
-Date: Thu, 21 Oct 1999 22:33:15 -0400 (EDT)
-From: Alex deVries <adevries@thepuffingroup.com>
-To: frowand@cup.hp.com
-cc: Paul Bame <bame@debian.fc.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Boot messages from C3000 console
-In-Reply-To: <380FB68D.A8F28E62@hp.com>
-Message-ID: <Pine.LNX.4.10.9910212221480.18206-100000@vodka.thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA18397
+	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 23:54:38 -0600
+Received: from scimitar.dolphinics.no (scimitar.dolphinics.no [193.71.152.129])
+	by scifi.dolphinics.no (8.9.3/8.9.3) with ESMTP id HAA20458
+	for <parisc-linux@thepuffingroup.com>; Fri, 22 Oct 1999 07:43:09 +0200
+Received: from scimen (scimen [193.71.152.165])
+	by scimitar.dolphinics.no (8.8.8/8.8.8) with SMTP id GAA01903
+	for <parisc-linux@thepuffingroup.com>; Fri, 22 Oct 1999 06:56:37 +0100 (MET)
+Message-Id: <199910220556.GAA01903@scimitar.dolphinics.no>
+From: "Simen Timian Thoresen" <simentt@dolphinics.no>
+To: parisc-linux@thepuffingroup.com
+Date: Fri, 22 Oct 1999 08:01:42 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=US-ASCII
+Reply-to: simen-tt@online.no
+Subject: [parisc-linux] rbooting an 735?
 List-ID: <linux-parisc.vger.kernel.org>
 
+Is anybody rbooting an 735?
+I've replaced my exceedingly noisy Micropolis disk, and replaced it 
+with a 2.1G seagate thing which, altho so far working nicely, 
+refuses to boot. So, to try new 'lin-ux' kernels I have to use rboot.
 
-On Thu, 21 Oct 1999, Frank Rowand wrote:
-> Ok, tirade mode off.  This is where my newbie status becomes apparent.  Please
-> excuse any foot in mouth here.  I looked at the Puffin web page and didn't
-> notice anything about the process of making sure that code that is submitted
-> has some minimal level of quality.  Is it just a matter of the community
-> applying peer pressure?
+As far as I can see, the rbootd server is configured correctly, and is 
+communicating with the 735. Unfortunately, the 735 seems not to 
+request an image name, and the server responds with 'denied' in 
+the syslog.
 
-In fact, it's *ALL* about the community applying pressure.
+So - Is there anybody out there with a 735 that /does/ request an 
+image? 
 
-If the code in head.S is a bit rough, remember that it was just about the
-first PA-RISC assembler that Helge or Philipp had ever written, so do keep
-that in mind.  Also, at the start of the project, there was a very
-conscious effort to only be concerned with 1.1 code.  It doesn't surprise
-me in the least that it's not 2.0 compliant.
+-Simen
+--
+Simen Thoresen, Beowulf-cleaner and random artist.
 
-I agree that the code is unreadable though;  I've simply passed it off on
-not being able to understand parisc assembler well enough.
-
-We'd all appreciate it if you could commit appropriate changes to make the
-code clearer.
-
-- Alex
+Er det ikke rart?
+The gnu RART-project on valinor.dolphinics.no/~simentt/rart
