@@ -1,19 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tentakel.fischlustig.de (pD9001DD3.dip.t-dialin.net [217.0.29.211])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8D699482B
-	for <parisc-linux@parisc-linux.org>; Sat, 27 Oct 2001 19:36:57 -0600 (MDT)
-Subject: Re: [parisc-linux] WARNING: DO NOT APT-GET UPGRADE HPPA
-From: andi <andi@fischlustig.de>
-To: andi <andi@fischlustig.de>
-Cc: Matt Taggart <taggart@carmen.fc.hp.com>,
-	parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-In-Reply-To: <1004225524.624.6.camel@cube>
-References: <20011026182706.2800037FD7@carmen.fc.hp.com>
-	<1004225524.624.6.camel@cube>
-Content-Type: text/plain
-Date: 28 Oct 2001 02:38:04 +0100
-Message-Id: <1004233084.1307.6.camel@cube>
+Received: from mta04ps.bigpond.com (mta04ps.bigpond.com [144.135.25.136])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3EC62482B
+	for <parisc-linux@parisc-linux.org>; Sat, 27 Oct 2001 19:44:13 -0600 (MDT)
+Received: from bubble.local ([144.135.25.78]) by
+          mta04ps.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id GLW7SG00.1J7 for <parisc-linux@parisc-linux.org>; Sun, 28 Oct
+          2001 11:50:40 +1000
+Date: Sun, 28 Oct 2001 12:14:03 +1030
+From: Alan Modra <amodra@bigpond.net.au>
+To: Thomas Marteau <marteaut@esiee.fr>
+Cc: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>,
+	debian-hppa-request@lists.debian.org
+Subject: Re: [parisc-linux] Troubles with expect scripts
+Message-ID: <20011028121403.F1050@bubble.sa.bigpond.net.au>
+References: <3BDAC2FE.DBF72DDD@esiee.fr>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3BDAC2FE.DBF72DDD@esiee.fr>; from marteaut@esiee.fr on Sat, Oct 27, 2001 at 04:21:50PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +28,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 2001-10-28 at 01:32, andi wrote:
-> On Fri, 2001-10-26 at 20:27, Matt Taggart wrote:
-> > As PeteM and others have discovered, upgrading your hppa box currently breaks 
-> > a *lot*.
+On Sat, Oct 27, 2001 at 04:21:50PM +0200, Thomas Marteau wrote:
 > 
-> 
-> Every program that is linked agains gtk+ segfaults, no matter if it uses
-> gtk or not. It seems to be a linker problem.
+> 	We are using some scripts using Expect language and they die with a
+> segmentation fault and you can read this output in the dmesg:
 
-2.2.4-4 fixes that problem. python however is still broken.
+This isn't a fix, but may be a workaround:  Try "export LD_BIND_NOW=1" to
+disable lazy binding by the dynamic linker.
 
-andi
+Alan
