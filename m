@@ -1,31 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from infratron.believe.com (unknown [64.148.113.113])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9B513482A
-	for <parisc-linux@parisc-linux.org>; Thu, 29 Mar 2001 11:41:12 -0700 (MST)
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: PA-RISC-Linux
-References: <3.0.6.32.20010329144159.0096bd50@post.webmailer.de>
-	<E14igNc-0004Yu-00@noam.fc.hp.com>
-Reply-To: weasel@cs.stanford.edu
-From: pchang@believe.com
-Date: 29 Mar 2001 10:48:54 -0800
-In-Reply-To: <E14igNc-0004Yu-00@noam.fc.hp.com>
-Message-ID: <uk858za09.fsf@believe.com>
+Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 653C3482A
+	for <parisc-linux@parisc-linux.org>; Thu, 29 Mar 2001 12:57:13 -0700 (MST)
+Sender: Jes.Sorensen@cern.ch
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: Paul Bame <bame@fc.hp.com>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] www.parisc-linux.org
+References: <E14igkh-0004bA-00@noam.fc.hp.com> <20010329192419.Y7738@parcelfarce.linux.theplanet.co.uk>
+From: Jes Sorensen <jes@linuxcare.com>
+Date: 29 Mar 2001 21:56:25 +0200
+In-Reply-To: Matthew Wilcox's message of "Thu, 29 Mar 2001 19:24:19 +0100"
+Message-ID: <d3ofukjqmu.fsf@lxplus015.cern.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Paul Bame <bame@fc.hp.com> writes:
+>>>>> "Matthew" == Matthew Wilcox <matthew@wil.cx> writes:
 
-> We will be producing a new CD image in the next couple of months
-> from which you can create your own CD.
+Matthew> I'd like to see a technical website where we can put the
+Matthew> information that we feel is worth having and can feel good
+Matthew> about referring people to.  Let the current site continue
+Matthew> rotting into the usual mess that corporate websites turn
+Matthew> into.
 
-I'm still catching up on the archives, but it would be nice if the cd
-image to be was happy w/ the hp bootloader from the start rather than
-fixing it afterwards. (I realize that it's not difficult to do, but i
-did make an ass out of me and umption the first time i made a cd).
+Providing constructive criticism instead of whining like a spoiled
+little kid will probably have a somewhat higher chance of making
+things happen.
 
-\p
----
-Better look around you,check to see, that you're not conforming to
-nonconformity! --- Pajama Slave Dancers
+Jes
