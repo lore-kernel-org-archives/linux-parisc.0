@@ -1,39 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailin6.bigpond.com (unknown [139.134.6.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A787E4A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Feb 2001 03:23:34 -0700 (MST)
-Received: from customware.com.au ([139.134.4.50]) by
-          mailin6.bigpond.com (Netscape Messaging Server 4.15) with SMTP
-          id G8UIET00.BTY for <parisc-linux@lists.parisc-linux.org>; Fri,
-          16 Feb 2001 20:28:05 +1000
-Received: (from penfold@localhost)
-	by customware.com.au (8.9.3/8.8.7) id VAA16014
-	for parisc-linux@lists.parisc-linux.org; Fri, 16 Feb 2001 21:19:14 +1100
-From: penfold@customware.com.au
-Message-Id: <200102161019.VAA16014@customware.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Date: Fri, 16 Feb 2001 21:16:43 +1100
-MIME-Version: 1.0
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5B48A4A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Feb 2001 09:44:06 -0700 (MST)
+To: penfold@customware.com.au
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel src on p.e.hp.com ? 
+In-Reply-To: Message from penfold@customware.com.au
+   of "Fri, 16 Feb 2001 21:16:43 +1100." <200102161019.VAA16014@customware.com.au>
+References: <200102161019.VAA16014@customware.com.au> 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] kernel src on p.e.hp.com ?
+Date: Fri, 16 Feb 2001 09:46:33 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010216164633.68E3A38786@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+penfold@customware.com.au writes...
 
-Is ftp://puffin.external.hp.com/pub/parisc/cvs still the place to get the
-latest source bundles?
+> Hi all,
+> 
+> Is ftp://puffin.external.hp.com/pub/parisc/cvs still the place to get the
+> latest source bundles?
+> 
+> If so, does anyone know why it isnt updating?
 
-If so, does anyone know why it isnt updating?
+It probably ran out of disk space. I cleaned things up and generated new ones.
 
--rw-r--r--   1 500      233     19449856   Feb  3 07:13   linux-20010203.tar.gz
--rw-r--r--   1 500      233            0   Feb  4 07:12   linux-20010204.tar.gz
--rw-r--r--   1 500      233            0   Feb  5 07:10   linux-20010205.tar.gz
--rw-r--r--   1 500      233            0   Feb  6 07:10   linux-20010206.tar.gz
--rw-r--r--   1 500      233            0   Feb  7 07:09   linux-20010207.tar.gz
--rw-r--r--   1 500      233            0   Feb  8 07:10   linux-20010208.tar.gz
-lrwxrwxrwx   1 500      233           21   Feb  8 07:10   linux-latest.tar.gz -> linux-20010208.tar.gz
+Thanks,
 
-cheers,
-
-Damian
-penfold@customware.com.au
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
