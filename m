@@ -1,42 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA05564
-	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 21:11:27 -0700
-Message-Id: <200101290417.UAA25622@milano.cup.hp.com>
-To: Thomas Marteau <marteaut@esiee.fr>
-Cc: Puffin Group <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] The new kernel 
-In-reply-to: Your message of "Sat, 27 Jan 2001 03:48:52 PST."
-             <3A723714.F271D06C@esiee.fr>
-Date: Sun, 28 Jan 2001 20:17:33 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA07694
+	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 23:36:57 -0700
+From: 5116@telia.com
+Message-Id: <200101290640.HAA24683@zaphod.halden.lillfab.se>
+Date: Mon, 29 Jan 2001 07:40:55 +0100 (CET)
+Reply-To: 5116@telia.com
+Subject: Re: [parisc-linux] Kernel module loader gave break
+To: Matthew Wilcox <matthew@wil.cx>
+cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <20010127182320.A20379@parcelfarce.linux.theplanet.co.uk>
+MIME-Version: 1.0
+Content-Type: TEXT/plain; CHARSET=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thomas Marteau wrote:
-> Hi all,
+On 27 Jan, Matthew Wilcox wrote:
+> On Sat, Jan 27, 2001 at 05:10:51PM +0100, 5116@telia.com wrote:
+>> Hi, all
+>> 
+>> I get messages like 
+>> 
+>> break 0,0: pid=116 command='cat'
+>> cat[116]: Breakpoint 0
+>> 
+>> Followed by a register dump when I do some thing that would trigger the
+>> kernel to call modprobe. Modprobe is not in stalled in my system (is it
+>> ported yet?).
 > 
->         Xavier and I made 2 differents kernels of the new CVS: Ok for
-> B132 but our 712 dies after saying:
-> Firmware does not allow selection of default wide mode
+> the modutils source is available by cvs from pehc.  richard was working
+> on it (he's on holiday right now).  don't remember how far he got.
+> i know he did a merge with the upstream modutils source at one point.
 > 
-> Just after branching to kernel
+I have not built modutuils yet, but if I install echo as /sbin/modprobe
+the problem goes away.
 
-The kernel does not emit that msg and it only attempts
-the call pdc_psw_get_mask() for __LP64__ code.
-(see arch/parisc/kernel/setup.c:init_per_cpu())
-I just recently added that for CONFIG_SMP stuff.
+So something in the request module path does not handle missing files
+as it should.
 
-OTOH, palo will attempt to make that PDC call for 64-bit kernels.
-But that's not new code. See ipl/pdc_misc.c.
-And it prints the above msg when (PDC_PSW, PDC_RETURN_MASK) is invoked
-but wide_mode bit is clear (ie not available).
-
-I also believe you didn't try the same kernel on the B132 as on the 712.
-Otherwise, I'm pretty sure it would have given the same error.
-As you probably know, "wide mode" is only supported on PA2.0 CPU's
-and both systems you tried have PA1.1 (PXC-L or L2).
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+/Daniel
+-- 
