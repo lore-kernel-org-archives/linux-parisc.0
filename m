@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 928D0482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Nov 2001 05:21:07 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 5D35EB00D; Thu, 29 Nov 2001 12:22:05 +0000 (GMT)
-Date: Thu, 29 Nov 2001 12:22:05 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] keyboard_tasklet bug?
-Message-ID: <20011129122205.Z13057@linuxcare.com>
-References: <1007019927.14588.9.camel@beavis>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1007019927.14588.9.camel@beavis>; from rbradetich@uswest.net on Thu, Nov 29, 2001 at 12:45:26AM -0700
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C442482C
+	for <parisc-linux@parisc-linux.org>; Thu, 29 Nov 2001 12:02:48 -0700 (MST)
+Received: from puffin (IDENT:grundler@localhost [127.0.0.1])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA02339
+	for <parisc-linux@parisc-linux.org>; Thu, 29 Nov 2001 11:58:19 -0700
+Message-Id: <200111291858.LAA02339@puffin.external.hp.com>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] travel backwards in time? 
+In-Reply-To: Message from Randolph Chung <randolph@tausq.org>
+   of "Thu, 18 Oct 2001 13:21:45 PDT." <20011018132145.H4123@tausq.org>
+Date: Thu, 29 Nov 2001 11:58:19 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,25 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Nov 29, 2001 at 12:45:26AM -0700, Ryan Bradetich wrote:
-> Hello parisc-linux hackers,
+Randolph Chung wrote:
+> Recently Grant and I have observed several hangs in do_gettimeofday on a
+> c3k running 32 or 64-bit kernels (UP). 
 > 
-> I have spent the last couple of evenings exploring new (to me anyways)
-> parts of the kernel tracking down a SMP hang on my C200+.  What I found
-> appears to be a more generic bug, so I'm posting it here for ideas on
-> how to fix it, or for someone to explain to me why this isn't a bug :)
+> The symptom we see is gettimeoffset returns a negative number which
+> results in a huge (unsigned) usec offset in do_gettimeofday, which ends
+> up spinning in a while loop.
+...
+> The last_tick adjustment looks a bit odd. Looking at ia64, it looks more
+> like this:
+> 
+>         last_tick -= clocktick * (jiffies - wall_jiffies + 1);
 
-Sounds very similar to the problem I fixed with the led tasklet
+For the record, this fix was committed in one of the 2.4.14-pa5
+http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2001-November/030021.html
 
-#ifdef CONFIG_CHASSIS_LCD_LED
-        /* Only schedule the led tasklet on cpu 0, and only if it
-         * is enabled.
-         */
-        if (cpu == 0 && !atomic_read(&led_tasklet.count))
-                tasklet_schedule(&led_tasklet);
-#endif
+I'm still not 100% certain all our time keeping code is correct.
+But I'm comfortable this patch fixes the problem we saw and
+does not introduce any new ones.
 
-where I added the atomic_read() call.  In that case it wasn't hanging
-my (UP) machine, but it left ksoftirqd_CPU0 at 100% CPU.
-
-Richard
+grant
