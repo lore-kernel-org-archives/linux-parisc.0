@@ -1,16 +1,17 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] BUG maxcpus=1 still sees 2 CPUs
-Date: Sun, 5 Dec 2004 00:46:13 -0800
-Message-ID: <20041205084613.GU6359@tausq.org>
-References: <20041205064112.GA10169@colo.lackof.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] PA-Linux version of libunwind
+Date: Mon, 6 Dec 2004 09:07:32 -0700
+Message-ID: <20041206160732.GA10915@colo.lackof.org>
+References: <200412050119.iB51Jln3001654@napali.hpl.hp.com>
+	<20041205050917.GA8057@colo.lackof.org>
+	<16818.39252.802512.48866@napali.hpl.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: davidm@hpl.hp.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041205064112.GA10169@colo.lackof.org>
+In-Reply-To: <16818.39252.802512.48866@napali.hpl.hp.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,54 +22,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> It's late and I won't have a chance to chase this bug I just noticed
-> when trying to boot 2.6.10-rc3-pa1 (64bit, SMP) kernel on a500.
+On Sat, Dec 04, 2004 at 09:15:00PM -0800, David Mosberger wrote:
+> If the time-stamps are correct, it shouldn't even try to rebuild the
+> man files,
 
-fwiw that kernel booted on ios (a500 with 2xpa8500 @ 440mhz)
+I suspect the "bk -r -co -q" puts a current timestamp on the files.
 
-> I set "maxcpus=1" and still get the following output:
-> CPU(s): 2 x PA8500 (PCX-W) at 440.000000 MHz
-> Setting cache flush threshold to 231180 (1 CPUs online)
+>  but you can work around the lack of latex2man with
+> 
+> 	$ make L2M=cp
 
-right, since that is an inventory message, and we still inventory all
-the cpus, it will report all the available CPUs.
+yep - that works too.
 
-> I'm thinking that while two CPUs are present, only
-> one is "online", it doesn't feel right to report both
-> in the first line above. Is this expected behavior
-> or should we be indicating something like
-> 	CPU(s): 1 (of 2) x PA8500 (PCX-W) at 440.000000 MHz
-
-we could do that easily enough if you think it's better...
-
-> Other issues:
-> o the box is hanging after sym2 resets the SCSI bus.
->   My first guess is something is wrong with interrupt delivery.
-
-yes, that would explain this as well:
-> o omitting "maxcpus=1", the box will hang for about 60 seconds
->   after printing the inventory. And then prints:
-> 	Releasing cpu 1 now, hpa=fffffffffffa2000
->   and continues on to the SCSI bus resets.
-
-that sounds like we timed out bringing up the 2nd cpu, altho if that
-happened i would have expected an error message. if the 2nd cpu is not
-processing interrupts, and we are assigning some of the interrupts to
-the 2nd cpu, then the scsi bus resets will fail. you can try forcing
-all the irqs to cpu0 and see if that lets the box boot....
-
-> I have tried both gcc 3.0.4 and 3.3.4 (hppa64 versions) with the
-> same results (AFAICT).
-
-currently i'm using gcc-3.4.2 to build the kernel on ios, but in the
-recent past i've tried 3.0.4 and 3.3.4 and both worked (but that was 
-on -rc2)
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
