@@ -1,17 +1,17 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: [parisc-linux] Re: Comments?
-Date: Sat, 5 Mar 2005 14:46:53 -0500
-Message-ID: <20050305194652.GG23803@baldric.uwo.ca>
-References: <20050303024545.GR23803@baldric.uwo.ca>
-	<200503030321.j233LoiR013194@hiauly1.hia.nrc.ca>
+Date: Sat, 5 Mar 2005 15:33:20 -0500 (EST)
+Message-ID: <200503052033.j25KXK8x007561@hiauly1.hia.nrc.ca>
+References: <20050305194652.GG23803@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org,
  tausq@debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503030321.j233LoiR013194@hiauly1.hia.nrc.ca>
+In-Reply-To: <20050305194652.GG23803@baldric.uwo.ca> from "Carlos O'Donell" at
+	Mar 5, 2005 02:46:53 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,29 +22,56 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Mar 02, 2005 at 10:21:49PM -0500, John David Anglin wrote:
-> > There are a lot of files that do symbol resolution. I think I might just
-> > save the fp argument registers, and thus allow gcc to do any sorts of
-> > optimizations it wishes with therest of the code, knowing that the
-> > arguments are all saved and restored on the initial function call.
+> > I think we have somehow broken __cffc.  I did a binutils build
+> > yesterday and various ld tests are now failing.  These are tests
+> > that compare function pointers.
 > 
-> Sounds good.
-> 
-> I think we have somehow broken __cffc.  I did a binutils build
-> yesterday and various ld tests are now failing.  These are tests
-> that compare function pointers.
+> I didn't feed anything new into debian-glibc. All my patches have always
+> strived to keep __cffc working, if I messup the function pointer
+> comparison I get a slew of glibc testsuite failures which I always
+> patchup by making sure __cffc works :)
 
-I didn't feed anything new into debian-glibc. All my patches have always
-strived to keep __cffc working, if I messup the function pointer
-comparison I get a slew of glibc testsuite failures which I always
-patchup by making sure __cffc works :)
+I haven't touched fptr.c either, although there is a change in GCC
+4.0 with respect to canonicalization.  I'm using the debian glibc,
+2.3.2.ds1-20, on the system on which I noticed this problem.
 
-The last botch was a minor change in the trampoline template, which
-prompted the addition of the 'bl' before the function that made use of
-the magic '-4' check in __cffc.
+2004-12-12  Nathanael Nerode  <neroden@gcc.gnu.org>
+	    John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
 
-c.
+	PR middle-end/17564
+	* dojump.c (do_compare_and_jump): Only canonicalize function pointers
+	in a comparison if both sides are function pointers.
 
+I checked that the binutils testsuite fails with 3.4, so I don't think
+the problem is a GCC issue.  I was going to try and see what's happening
+this afternoon.  I've been working on some testsuite cleanups today.
+
+Another thing that I need to figure out is the cause of the libstdc++
+fails:
+
+hiauly6 4.0.0:
+FAIL: 27_io/basic_filebuf/sgetn/char/1-in.cc execution test
+FAIL: 27_io/basic_filebuf/sgetn/char/1-io.cc execution test
+FAIL: 27_io/basic_filebuf/sgetn/char/2-in.cc execution test
+FAIL: 27_io/basic_filebuf/sgetn/char/2-io.cc execution test
+FAIL: 27_io/basic_filebuf/underflow/wchar_t/11603.cc execution test
+FAIL: 27_io/basic_istream/readsome/char/6746-2.cc execution test
+FAIL: 27_io/basic_istream/readsome/wchar_t/6746-2.cc execution test
+
+gsyprf11 4.1.0:
+FAIL: 22_locale/messages/members/char/1.cc execution test
+FAIL: 22_locale/messages/members/char/2.cc execution test
+FAIL: 22_locale/messages/members/char/wrapped_env.cc execution test
+FAIL: 22_locale/messages/members/char/wrapped_locale.cc execution test
+FAIL: 22_locale/messages_byname/named_equivalence.cc execution test
+
+It's strange that the two systems have a completely different
+sets of testsuite fails.  There aren't any fails under hpux.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
