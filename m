@@ -1,33 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EEB37484D
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Oct 2001 09:18:16 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.4d3e3a24) with ESMTP id hfixhaaa for parisc-linux@lists.parisc-linux.org; Tue, 2 Oct 2001 08:13:44 -0700
-Date: Tue, 2 Oct 2001 08:18:12 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Jurij Smakov <jurij@lokmail.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Mount segfaults and stuff
-Message-ID: <20011002081811.A9341@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <200110020813.EAA31275@mail.lokmail.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200110020813.EAA31275@mail.lokmail.net>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4F9AF48AE
+	for <parisc-linux@parisc-linux.org>; Tue,  2 Oct 2001 09:20:57 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Bjorn Helgaas <bjorn_helgaas@hp.com>
+To: Thomas Marteau <marteaut@esiee.fr>,
+	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Second Draft of the help for the kernel options
+Date: Tue, 2 Oct 2001 09:23:20 -0600
+References: <3BB8F957.C9811C25@esiee.fr>
+In-Reply-To: <3BB8F957.C9811C25@esiee.fr>
+MIME-Version: 1.0
+Message-Id: <20011002152055.DE860403B@ldl.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Also, I've tried looking at todo list to find something to work on...
-> It seems rather outdated and some tasks in it seem to be already
-> completed (like unaligned trap handler, etc.). So, where should
-> I direct my efforts? What is the part of parisc-linux project, which
-> needs immediate attention? ;-).
+>   Finally, PA8x00 is the good choice for all new stuff like A500, B1000,
+>   B2000, B2600, C200+, C240+, C3000, C3600, J282, J2240, J5000, J6000,
+>   J6700, J7000, K250, K260, K270, K370, K450, K460, K470, K570, L1000,
+>   L2000, L3000, N4000, V2200, V2250, V2500.
 
-http://bugs.parisc-linux.org/ has a list of outstanding bugs. the TODO
-list items (and more) were moved over there some time ago.
+I think it is unlikely that V2200, V2250, and V2500 will ever be supported.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+I'm not very familiar with PDC on most of these machines, but at least on 
+Halfdome, you can get a pretty good clue as to what processor to target by 
+doing "in fru" at the PDC BCH menu:
+
+  Main Menu: Enter command or menu > in fru
+
+  CELL 0 CPU FRU INFORMATION:             
+
+  Cab/
+  Slot/                     Part        Serial    Date Art Scan   FRU   
+Specific
+  CPU       FRU Name       Number       Number    Code Rev  Rev   
+Information
+  ----- ---------------- ----------- ------------ ---- --- ---- 
+----------------
+  0/0/0        Processor A6445-70001 00000000001P          0000   PA8700 
+Rev 2.2
+
+Maybe a pointer to similar functionality in other firmware would be useful 
+and reduce the dependence on the lists of machines.
