@@ -1,17 +1,15 @@
-Return-Path: <>
-Received: from virascanner1.virascan.dk (virascanner1.virascan.dk
-	[80.82.99.194])
-	by dsl2.external.hp.com (Postfix) with SMTP id 879974843
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 19 Feb 2004 00:28:26 -0700 (MST)
-Date: 19 Feb 2004 07:28:15 -0000
-From: "System Anti-Virus Administrator" <djarnis@virascan.dk>
-To: parisc-linux@parisc-linux.org
-Message-ID: <virascanner1.virascan.dk10771756954264984@virascanner1.virascan.dk>
+Return-Path: <dub@latnet.lv>
+Received: from mail.latnet.lv (mail.latnet.lv [159.148.108.13])
+	by dsl2.external.hp.com (Postfix) with SMTP id F16D14843
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu, 19 Feb 2004 02:33:09 -0700 (MST)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1077183184.403482d04a190@clients.latnet.lv>
+Date: Thu, 19 Feb 2004 11:33:04 +0200 (EET)
+From: dub@latnet.lv
 MIME-Version: 1.0
-Content-type: text/plain
-Cc: 
-Subject: [parisc-linux] virus found in sent message "hello"
+Content-Type: text/plain; charset=KOI8-R
+Subject: [parisc-linux] Re: can't compile 2.4.24: pdc_cons.o problem! 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,40 +19,22 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Matthew Wilcox willy at debian.org  wrote:
 
-Attention: parisc-linux@parisc-linux.org
+>> I'm trying to compile a new kernel for K210. I tried both stable 2.4.24 and
+>>2.4.23
+>> (got them by "apt-get -t stable kernel-source-2.4.2x")
 
+> the problem you're having is that you're trying to compile a kernel
+> that really doesn't support parisc.  i suggest either getting the
+> latest CVS kernel (see http://www.parisc-linux.org/faq/cvs.html) or
+> kernel-patch-2.4.21-hppa from the debian archive.
 
-A virus was found in an Email message you sent. 
-This Email scanner intercepted it and stopped the entire message
-reaching its destination. 
+Thanks a lot, it works. :-) BTW, it's not possible to navigate to
+http://cvs.parisc-linux.org/download/ from  http://cvs.parisc-linux.org/
 
-The virus was reported to be: 
+One more question. How to find out status of pasisc-linux.org kernels? (stable
+vs testing)
 
-Worm.SomeFool
-
-
-Please update your virus scanner or contact your IT support 
-personnel as soon as possible as you have a virus on your system.
-
-
-Your message was sent with the following envelope:
-
-MAIL FROM: parisc-linux@parisc-linux.org
-RCPT TO:   8.2040103@ab-innovation.dk 
-
-... and with the following headers:
-
----
-MAILFROM: parisc-linux@parisc-linux.org
-Received: from unknown (HELO ab-innovation.dk) (81.7.133.210)
-  by virascanner1.virascan.dk with SMTP; 19 Feb 2004 07:27:59 -0000
-From: parisc-linux@parisc-linux.org
-To: 8.2040103@ab-innovation.dk
-Subject: hello
-Date: Thu, 19 Feb 2004 08:27:59 +0100
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="20122441"
-
-
----
+BR,
+Dub
