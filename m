@@ -1,16 +1,16 @@
-From: Randolph Chung <randolph@tausq.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] TLS added relocations.
-Date: Tue, 5 Apr 2005 09:26:43 -0700
-Message-ID: <20050405162643.GB6987@tausq.org>
+Date: Tue, 5 Apr 2005 12:34:01 -0400
+Message-ID: <20050405163400.GN1833@baldric.uwo.ca>
 References: <20050405161549.GM1833@baldric.uwo.ca>
-Reply-To: Randolph Chung <randolph@tausq.org>
+	<20050405162643.GB6987@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050405161549.GM1833@baldric.uwo.ca>
+In-Reply-To: <20050405162643.GB6987@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,21 +21,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Is DTPMOD32 and DTPOFF32 all I need to add to glibc for some initial TLS
-> testing?
+On Tue, Apr 05, 2005 at 09:26:43AM -0700, Randolph Chung wrote:
+> > Is DTPMOD32 and DTPOFF32 all I need to add to glibc for some initial TLS
+> > testing?
+> 
+> Well, plus the setting up of the THREAD_DTV() stuff.
 
-Well, plus the setting up of the THREAD_DTV() stuff.
+Oh, and TPREL32.
+ 
+> > Recommended tests to make sure this is working?
+> 
+> I haven't really looked, but glibc has a bunch of TLS tests. It'll also
+> pretty easy to write our own test cases. 
 
-> Recommended tests to make sure this is working?
+I can't turn that machinery on yet. I have to test with TLS off but
+handling the relocations first to see if it works :)
 
-I haven't really looked, but glibc has a bunch of TLS tests. It'll also
-pretty easy to write our own test cases. 
+c.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
