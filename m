@@ -1,21 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8278482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 14:54:48 -0600 (MDT)
-To: esr@thyrsus.com
-Date: Fri, 20 Apr 2001 21:55:14 +0100 (BST)
-Cc: willy@ldl.fc.hp.com (Matthew Wilcox),
-	linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-In-Reply-To: <20010420154743.A19618@thyrsus.com> from "Eric S. Raymond" at Apr 20, 2001 03:47:43 PM
-MIME-Version: 1.0
+Received: from passion.cambridge.redhat.com (dell-paw-3.cambridge.redhat.com [195.224.55.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0208E482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 15:24:05 -0600 (MDT)
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0104201440580.12186-100000@xanadu.home> 
+References: <Pine.LNX.4.33.0104201440580.12186-100000@xanadu.home> 
+To: Nicolas Pitre <nico@cam.org>
+Cc: Tom Rini <trini@kernel.crashing.org>,
+	"Eric S. Raymond" <esr@thyrsus.com>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	"Albert D. Cahalan" <acahalan@cs.uml.edu>,
+	Matthew Wilcox <willy@ldl.fc.hp.com>,
+	james rich <james.rich@m.cc.utah.edu>,
+	lkml <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention? 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E14qhvx-0002BR-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
+Date: Fri, 20 Apr 2001 22:19:08 +0100
+Message-ID: <6817.987801548@redhat.com>
+Sender: David Woodhouse <dwmw2@redhat.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> CONFIG_BINFMT_SOM: arch/parisc/config.in arch/parisc/defconfig
-> Not used in code anywhere.  Can you get rid of this one?
+nico@cam.org said:
+> Therefore it's the maintainer's job to submit coherent patches and
+> accept to see inconsistent CONFIG_* references be removed from the
+> official tree until further patch submission is due. 
 
-Its used in the parisc tree as are most of the others you see. You probably want
-to simply skip processing arch/parisc
+Maybe. But you tend to include the latest MTD code in your tree, for
+example, and hence the defconfigs have the new options in. Is it really
+worth your time to produce separate defconfigs without it before feeding 
+your changes upstream?
+
+
+> Otherwise how can you distinguish between dead wood which must be
+> removed and potentially valid symbols referring to code existing only
+> in a remote tree?
+
+By periodically publishing a list of the potentially-obsolete symbols as ESR
+has done, and _not_ removing the ones which people speak up about. It's not
+as if this is something which needs to be done more than about once a year.
+
+--
+dwmw2
