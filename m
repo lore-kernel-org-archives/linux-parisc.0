@@ -1,41 +1,78 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp3.xs4all.nl (smtp3.xs4all.nl [194.109.127.132])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 44454482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Aug 2001 23:18:03 -0600 (MDT)
-Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtp3.xs4all.nl (8.9.3/8.9.3) with ESMTP id HAA01514
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Aug 2001 07:18:01 +0200 (CEST)
-From: thunder7@xs4all.nl
-Date: Fri, 31 Aug 2001 06:57:32 +0200
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.9-pa10 hangs on c200+ after 'branching to kernel entry point'
-Message-ID: <20010831065732.B4816@middle.of.nowhere>
-Reply-To: thunder7@xs4all.nl
-References: <20010830215714.A19233@middle.of.nowhere> <20010830210933.D30497@parcelfarce.linux.theplanet.co.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB5BD482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Aug 2001 23:40:06 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15ch2D-0006l8-00; Fri, 31 Aug 2001 06:40:05 +0100
+Date: Fri, 31 Aug 2001 06:40:05 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: =?iso-8859-1?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Kernel failures
+Message-ID: <20010831064005.F30497@parcelfarce.linux.theplanet.co.uk>
+References: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010830210933.D30497@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de>; from rscholz@hrzpub.tu-darmstadt.de on Fri, Aug 31, 2001 at 06:56:15AM +0200
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 30, 2001 at 09:09:33PM +0100, Matthew Wilcox wrote:
-> On Thu, Aug 30, 2001 at 09:57:14PM +0200, thunder7@xs4all.nl wrote:
-> > I did change the CPU-type to PA8x00, and set CONFIG_PA20 to y.
-> > 
-> > That should still work, right?
+On Fri, Aug 31, 2001 at 06:56:15AM +0200, Rüdiger Scholz wrote:
+> The last Bootmessages are:
+> SNIP----------
+>         sticonsole_init: searching for STI ROMs
+>         STI word mode ROM at f0025000, hpa=f8000000
+>         STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
+>         STI device: HPA208LC1024
+>         STI word mode ROM at f0025000, hpa=f4000000
+>         STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
+> SNAP---------
 > 
-> Yes.  Just don't go to a 64-bit kernel.  You're not seeing any output
-> because of the current serial port snafu.  If you connect another cable
-> to your other serial port, you'll see the boot messages.  I've found
-> someone in the firmware team who worked on C200-era firmware to talk to
-> now, but he's not at his desk right now.
-> 
-Where can I find any info on 'the current serial port snafu'? Is this
-the same problem as mentioned on the 5th of August 'more serial problems
-on D310' ?
+> Trying the same thing with kernel 2.4.9-pa5 leeds to a crash right after 
+> detecting the first card.
+> SNIP----------
+>         sticonsole_init: searching for STI ROMs
+>         STI word mode ROM at f0025000, hpa=f4000000
+>         STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
+> SNAP---------
 
-Jurriaan
+Notice that both stop after trying hpa f4000000.  I think this is probably
+where the bug lies.  I did change the detection order between than and now.
+
+> 1. Every time my machine dumps the stack, and I check GR02 and IAOQ, 
+> they tell me that the function which trashed the kernel are 
+> parisc_terminate and parisc_showstack (or s.th like that). This isn't 
+> normal, isn't it?
+
+No.  There's astk in the build-tools CVS module which will dissect that
+stack dump for you and maybe show you what's really going on.
+
+> 2. Enabling IO_HPPA_REMAP in io.h causes a error in ioremap.c while 
+
+Don't do that then :-)
+
+> 3. Enabling SMB-Fs in the kernel gives an error message:
+
+Yeah... i promised to fix this a while back; haven't got round to it yet.
+
+> 4. My HIL-Keyboard isn't detected anymore by the new 2.4.9-kernel. Using 
+> Kernel 2.4.7-pa1, after the initalisation of HIL, I get a bootmessage like
+>  "HIL: keyboard found".  Booting the new Kernel gives me only the two 
+> lines of HIL initalisation, but nothing about my Keyboard. Which is a 
+> PS/2-Keyboard on a HIL-Adaptorbox. Both Kernel were configured via "make 
+> oldconfig".
+
+I'm interested in debugging this one - I don't quite understand what's going on though.  You should see:
+
+Found HIL at 0x%x, IRQ %d
+
+then one of:
+
+HIL: timed out, assuming no keyboard present.
+HIL: no keyboard present.
+HIL: keyboard found at id %d
+
+which?
+
 -- 
-BOFH excuse #279:
-
-The static electricity routing is acting up...
-GNU/Linux 2.4.9-ac2 SMP/ReiserFS 2x1402 bogomips load av: 0.06 0.03 0.01
+Revolutions do not require corporate support.
