@@ -1,18 +1,14 @@
 Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C71F2487B
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 24 Feb 2004 09:11:40 -0700 (MST)
-Date: Tue, 24 Feb 2004 09:11:39 -0700
+Date: Tue, 24 Feb 2004 14:46:57 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] b2k scsi disk pb
-Message-ID: <20040224161139.GC10551@colo.lackof.org>
-References: <402A42A100007EE7@ocpmta1.freegates.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20040224214657.GB14888@colo.lackof.org>
+References: <20040224213950.9941D4942BA@palinux.hppa>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <402A42A100007EE7@ocpmta1.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20040224213950.9941D4942BA@palinux.hppa>
+Cc: parisc-linux-cvs@lists.parisc-linux.org
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 grundler
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,23 +18,13 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Feb 23, 2004 at 09:16:16AM +0100, Joel Soete wrote:
-> In fact according <http://www.seagate.com/cgi-bin/view.cgi?/scsi/st336704.lw>
-> it has the two possiblity SE or LVD according HW config (a side jumper J2
-> if i well understand)
+On Tue, Feb 24, 2004 at 02:39:50PM -0700, Grant Grundler wrote:
+> Modified files:
+> 	arch/parisc/configs: c3000_defconfig 
 
-Ah ok. They have a jumper to force SE signalling. 
-
-> >If both internal devices are LVD, check early sym2 dmesg output
-> >to verify the SCSI bus is operating in LVD mode (vs SE).
-> 
-> But here they seems to work together in LVD mode:
-
-Right. means the jumper is not connected and something else is wrong.
-
-> Anyway what sym2 look for at scsi id 0?
-
-It's just the first one.
-SCSI scans from ID 0 to 15 to find devices.
+FYI, my c3k is running this kernel.
+This is an FTP/HTTP server that also doubles as my 1600x1200 desktop.
+I won't bother uploading a tarball since the next commit will
+force the auto-builder to build it.
 
 grant
