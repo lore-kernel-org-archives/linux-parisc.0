@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 33AD6483E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Sep 2003 14:10:49 -0600 (MDT)
-Message-Id: <200309192010.h8JKAlHs004032@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] r19 (aka pic-register akak ltp) not restored on
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Fri, 19 Sep 2003 16:10:47 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: James.Bottomley@steeleye.com, dave.anglin@nrc-cnrc.gc.ca,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030919192813.GL18225@systemhalted> from "Carlos O'Donell" at Sep 19, 2003 03:28:13 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mailhost1.mistral.co.uk (mailhost1.mistral.co.uk [217.154.131.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7204E48A2
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Sep 2003 09:37:13 -0600 (MDT)
+Received: from localhost.localdomain (dsl-217-155-82-142.zen.co.uk [217.155.82.142])
+	by mailhost1.mistral.co.uk (Postfix) with ESMTP id 2A27A79F9A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Sep 2003 16:37:12 +0100 (BST)
+From: Martin <inkubus@interalpha.co.uk>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Date: 20 Sep 2003 16:34:05 +0100
+Message-Id: <1064072046.1602.62.camel@raphael>
+Mime-Version: 1.0
+Subject: [parisc-linux] OT:Problems with hardware - RDI Precision Book
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> If it were major we would have fixed it :)
-> I'm trying to find the "missed a restore" point.
+Sorry, I know this is OT but I have a feeling if I'm going to find
+anyone who can help it may well be here.
 
-0x4019063c:     stw r19,-20(sr0,sp)             # 2742
+Bought an RDI precision book a while back and was just about to put
+Linux on it.  Pressed the power button and the 'power', 'network' and
+'disk' icons light up on the LCD panel but nothing else happens.  Have
+tried with other disks, network cable, external monitor and external
+scsi and it still does nothing.
 
-Just a note, GCC saves r19 in the frame marker in the prologue of
-non-leaf functions but we never attempt to restore r19 from the frame
-marker.  This is the mandated ABI behavior.  At the moment, GCC copies
-r19 to r4 for the save.
+Does anyone have any suggestions?  I really need a working laptop and am
+getting more than a little frustrated...
 
-Dave
+Cheers,
+ - Martin
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Martin
+inkubus@interalpha.co.uk
+"Seasons change, things come to pass"
