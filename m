@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AFDD5482C
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 25 Nov 2001 12:21:02 -0700 (MST)
-Message-Id: <200111251916.MAA02176@puffin.external.hp.com>
-To: "Chris Christie" <chrisc@wias.net.au>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 61F27482D
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 25 Nov 2001 12:25:52 -0700 (MST)
+Message-Id: <200111251921.MAA02216@puffin.external.hp.com>
+To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] My C200 situation is fantastic now on to the K9000 Power House :) 
-In-Reply-To: Message from "Chris Christie" <chrisc@wias.net.au>
-   of "Thu, 22 Nov 2001 20:47:48 +1000." <001401c17343$20b01be0$c901a8c0@wias.net.au>
-Date: Sun, 25 Nov 2001 12:16:29 -0700
+Subject: Re: [parisc-linux] Power button on 712 
+In-Reply-To: Message from Jan-Benedict Glaw <jbglaw@lug-owl.de>
+   of "Thu, 22 Nov 2001 14:53:04 +0100." <20011122145304.F23305@lug-owl.de>
+Date: Sun, 25 Nov 2001 12:21:23 -0700
 From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -21,22 +21,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Chris Christie" wrote:
-> Grant you caused us to perservere with these boxes until now thanks and
-> hopefully [Im very confident] the K9000's are back in style!
+Jan-Benedict Glaw wrote:
+> But, after the OS was started,
+> it's not such a good idea to allow an user to simply fiddle with
+> the BRS (-> big red switch).
 
-Glad to hear I was so inspirational...but lots of other people did
- most of the work. For K/C-class, most of the recent work
-was done by Ryan Bradetich.
-
-> ps. Will forward K9000 results :)
-
-You do mean HP-9000? K-class?
-
-anyway...it's does good to hear that it's working for you.
+While that's true, the intent of the "soft-power" switch was in fact
+to let a normal user safely power off the system. THe system needs
+to poll the status of the switch and at some point decide it's
+time to power off the box. I don't think docs for "soft power"
+have been published. I have passed necessary information to
+a few folks who've signed NDAs.
 
 grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
