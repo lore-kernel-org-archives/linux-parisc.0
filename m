@@ -1,16 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] PA8800/ZX1 support committed to 2.6.7-rc2-pa2
-Date: Mon, 14 Jun 2004 17:42:21 -0600
-Message-ID: <20040614234221.GB22331@colo.lackof.org>
-References: <20040614182903.GA15866@colo.lackof.org>
-	<00d101c45261$4cc23d80$f463f40f@jh733133>
+From: Thibaut VARENE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] Install problem Debian 3.0.23 L1000-36
+Date: Tue, 15 Jun 2004 09:23:49 +0300
+Message-ID: <20040615072350.5267A3658B6@mail.esiee.fr>
+References: <OFCD849C44.4ED10052-ONC2256EB4.002423AB-C2256EB4.0024472D@cssdom.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: 'PARISC list' <parisc-linux@lists.parisc-linux.org>
-To: Jim Hull <jim.hull@hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Harri.Huttula@outokumpu.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <00d101c45261$4cc23d80$f463f40f@jh733133>
+In-Reply-To: <OFCD849C44.4ED10052-ONC2256EB4.002423AB-C2256EB4.0024472D@cssdom.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,57 +20,59 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 14, 2004 at 03:45:32PM -0700, Jim Hull wrote:
-...
-> You could imagine an architecture having several variants of the cache flushing
-> instructions that software could call depending on why it needed to flush; for
-> example, to achieve I-cache/D-cache coherence, to resolve virtual aliasing, to
-> communicate with non-coherent I/O devices, or to flush out to a battery-backed
-> RAM in case of powerfail.
-> 
-> I think pa-linux wants the second of these.
+L1000-36 works just fine
 
-Yes - I left out that part in my paraphrasing of "someone" 's comments.
+read the HOWTO here:
+http://www.pateam.org/doc.html
 
->   Unfortunately, PA only has a single
-> variant, and it was designed for the third and fourth cases.
+and use a netinst ISO:
+http://www.pateam.org/download.html
 
-ok.
+HTH,
 
-> > 2) "borrowed" from HPUX (i80_latest, maybe HPUX wants to use
-> >    Jim Hull's suggestion as well?)
-> 
-> This one is almost correct.  If "block" is 1 or 2, it gets the right
-> answer - it's only wrong for "block" values of 3 or more.
-> I suspect that HPUX appears to work only because no PDC has ever
-> returned anything other than 1 for "block".
 
-Ok. And PDC probably won't if they don't have to even if it would
-be more efficient because of "pre-enablement" of existing OS.
-I have no idea if PDC ever will need to.
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://www.pateam.org/
 
-> > 3) "New and Improved" :^)
-> 
-> And correct!  If you'd like a more optimized version, this is equivalent:
-> 
-> #define CAFL_STRIDE(cnf) (cnf.cc_line << (3 + cnf.cc_block + cnf.cc_shift))
 
-yes - that's nicer. I'll keep the original "simple math" version
-to document the origin.
+-------------------
+> Hi,=20
+>=20
+> First of all I am newbie for PA-RISC Linux. Now I am trying to
+install=20
+> Debian 3.0.23 to our old HP server(model L1000-36) with no success.
+This=20
+> is what I have accomplished so far:=20
+>=20
+> - set 700/96 console so that i can actual start installing :)
+(couldn't=20
+> get serial console working with RS-232 and win2k hyperterminal,
+though)=20
+> - CD boots OK=20
+>=20
+> Problems start when I try to "Install the Base System".=20
+>=20
+> Following warning occurs:=20
+>=20
+> Failure trying to run: chroot /target dpkg --force-depends --install
 
-> Yes, the Mako ERS says that DIAG_SPHASH_ENAB is still bit 54 in
-> diag register 2.
-
-Ok - thank you.
-
-I'm out of ideas for the moment what might be wrong.
-Maybe I'll troll the HPUX source tree for any PA8800 
-or ZX1 specific code changes...
-
-*sigh*
-
-thanks,
-grant
+> /var/cache/apt/archives/base-files_3.0.2_hppa.dep=20
+> /var/cache/apt/archives/base_passwd_3.4.1_hppa.dep=20
+>=20
+> Followed by error:=20
+>=20
+> debootstrap exited with error( return value 1 )=20
+>=20
+> I have trackdown The Net and found that it might be SCSI
+driver/controller=20
+> problem that you have to give some SCSI related parameters to PALO.
+My=20
+> system has Symbios Logic 53c875 and 53c896 Ultra Wide SCSI.=20
+>=20
+> Anyone knows the solution?=20
+>=20
+> - Harri=20
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
