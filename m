@@ -1,37 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA23074
-	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 11:15:22 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 8 Feb 2000 17:11:03 -0000
-Received: from unknown (HELO boilermaker.thepuffingroup.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 8 Feb 2000 17:16:28 -0000
-Date: Tue, 8 Feb 2000 12:18:11 -0500 (EST)
-From: "Dave O'Neill" <doneill@linuxcare.com>
-To: Phil Schwan <phil@linuxcare.com>
-cc: "T. Martin" <catfish@alltel.net>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] PA-RISC User Land
-In-Reply-To: <20000206131907.B22105@linuxcare.com>
-Message-ID: <Pine.LNX.4.10.10002081211530.11042-100000@boilermaker.thepuffingroup.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA30616
+	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 14:20:16 -0700
+Date: Tue, 8 Feb 2000 15:15:26 -0500 (EST)
+From: Sam Creasey <sammy@sammy.net>
+To: willy@thepuffingroup.com
+cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ang <mang@subcarrier.org>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] ELFness and 64bit
+In-Reply-To: <20000205132613.A30976@thepuffingroup.com>
+Message-ID: <Pine.LNX.4.21.0002081511370.28088-100000@sammyville.sammy.net>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 6 Feb 2000, Phil Schwan wrote:
 
-> Not just yet; Dave O'Neill is working on making the SOM linker
-> cross-platform friendly (I believe he has it working on HPUX, and now 
-> needs to squash endian-related bugs).  I'm sure he'd love a helping
-> hand...
 
-Sure, if you're interested in taking a look, I'd love it.  The linker is
-in CVS (under linker/).  
+On Sat, 5 Feb 2000 willy@thepuffingroup.com wrote:
 
-A little status update:  Right now, it manages to parse and load (possibly
-even correctly) the object files, but it still chokes on libraries, and
-doesn't yet output anything.
+> On Sat, Feb 05, 2000 at 03:37:59PM +0100, Thomas Bogendoerfer wrote:
+> > > Willy mentioned that we will have to think about running on 64bit at some
+> > > point.
+> > 
+> > IMHO, it's way too early to even think about it. Of course 64bit is sexy,
+> > but without a working 32bit userland it's a too big can of worms to open
+> > right now. Linux/MIPS64 hasn't started before a reasonable distribution
+> > existed, and I'm sure this wasn't a bad descision then.
+> 
+> We want to get people working on userland as soon as possible since this
+> parallelises well with other people hacking on the kernel.  However, we
+> need to go 64-bit inorder to support the L-class and similar machines.
+> I also mentioned that we need ELF support RSN as it is hurting us quite
+> badly.  I know Sammy has been working on getting 32-bit ELF going on
+> his 712 for the kernel.  Sammy, how's that going?
 
-Dave
--- 
-Dave O'Neill, Linux Consultant, Linuxcare, Inc.
-doneill@linuxcare.com, http://www.linuxcare.com/ 
-Linuxcare. Support for the revolution.
+heh...  welll....   I'm getting a better understanding of parts of the
+problem, if that makes anyone feel better. :)
+
+I've actually got a kernel together than compiles and links in a fairly
+sane manner...  except for the .data segment, which will, eventually, get
+badly munged..  It's looking like a linker error revolving around certain
+types of relocations that don't quite work right.  further investigation
+is still needed, but I've not had time for the last week or so.
