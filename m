@@ -1,14 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 16 May 2003 11:25:55 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Jaime Ash <jaime@urgoal.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030516172555.GA10530@dsl2.external.hp.com>
-References: <20030513184232.GB14235@dsl2.external.hp.com> <NEBBJAILOLAHGDBEOCIOOELDDGAA.jaime@urgoal.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <NEBBJAILOLAHGDBEOCIOOELDDGAA.jaime@urgoal.com>
-Subject: [parisc-linux] Re: Help configuring an HIL mouse on an HP 715. - (Major disaster! - Am I back at ground level 0?)
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A99784829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 May 2003 13:36:20 -0600 (MDT)
+Received: from security.hp.com (security.hp.com [15.238.4.200])
+	by atlrel8.hp.com (Postfix) with ESMTP id D78F11C0177B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 May 2003 15:36:19 -0400 (EDT)
+Message-ID: <3EC53B08.2050904@debian.org>
+Date: Fri, 16 May 2003 21:24:56 +0200
+From: Joop Stakenborg <pa3aba@debian.org>
+MIME-Version: 1.0
+To: LaMont Jones <lamont@hp.com>
+Cc: lamont+buildd@hp.com, 193261@bugs.debian.org
+References: <20030514052335.GO14285@security.hp.com> <3EC25AE0.9070004@debian.org> <20030516191505.GA24104@security.hp.com>
+In-Reply-To: <20030516191505.GA24104@security.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Resent-Message-Id: <20030516193619.9590EB18DA@security.hp.com>
+Subject: [parisc-linux] Re: Bug#193261: glfer_0.3.2-1(hppa/unstable): FTBFS: assumes sys/io.h
+ exists
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,70 +28,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, May 15, 2003 at 12:09:25PM -0700, Jaime Ash wrote:
-> Hi Grant,
-> I did manage to recover by using a combination of the tips above (except
-> that I had to modify the first tip to: "boot alt isl", instead)
+LaMont Jones wrote:
+> severity 193261 important
+> --
+> On Wed, May 14, 2003 at 05:04:00PM +0200, Joop Stakenborg wrote:
+> 
+>>>There are many architectures where sys/io.h does not exist.
+>>
+>>Sorry about that. I will make it a i386-only package for now.
+> 
+> 
+> Please don't do that.  This bug should be important, not serious,
+> which makes it not release-critical.  (Sorry about that...)
+> 
+> Unless the package is truely i386 specific in _function_ (not
+> compile-ability), or depends on such, it should be Architecture: any.
+> 
 
-yup - sorry about that. I'm going to move this conversation to
-the parisc-linux mailing list since this revolves around the HIL
-support in the kernel.
+Okay,
 
-> Since I can't get "vmlinux-2.4.20-32" to boot in my machine,
+where do I find information on functions and devices available on other 
+architectures, e.g. glfer uses inb, outb and ioperm (they are in 
+sys/io.h) on the parallel/serial port.
 
-Has anyone tried to running vmlinux-2.4.20-32 on 715/new (64/80/100)?
-Also problems with HIL mouse/keyboard?
+> lamont
+> 
+> 
 
-> I then got and
-> installed "kernel-image-2.4.19-32" (to try to fix my HIL mouse/keyboard
-> problem) but I now have a new problem: when I boot using the
-> "vmlinux-2.4.19-32" kernel, things go well until I reach a point where I get
-> a Debian GNU Linux blue screen with a gray menu that asks to "Choose your
-> current network-environment !", and gives 2 choices: "Installation_default"
-> and "Set_up_new_environment" and has 2 "buttons": "< OK >" and "< Cancel >".
-> But, the keyboard (and mouse) are disabled, so I can't choose!!!!!
-
-Reboot with 2.4.17, and fix up the network scripts. Or just delete the
-whatever package provides that.
-Can someone advise Jaime on which packages muck with keyboard settings
-and how they should be set?
-Or Is the FAQ answer this sufficiently?
-
-> (Ie. I
-> can't proceed or shutdown gracefully, because the networking hasn't yet been
-> enabled - so I can't telnet to the machine - so my only choice is to pull
-> the AC plug, because pressing the power button doesn't halt the system!)
-> I believe that the "Choose your current network-environment !" blue screen
-> occurs in my system because of a wrong default I took during the
-> installation from the ISO disk (I didn't know any better!) and I used to get
-> that same screen with "vmlinux-2.4.17-32".  But, in that case, I was able to
-> make the proper choice with the keyboard, since it continued working OK up
-> to that stage in the boot process.
-> I may be wrong, but here is my theory of what's happening now:  the good
-> news is that I think the new kernel ("vmlinux-2.4.19-32") must have "solved"
-> the HIL/keyboard problem (but too early): ie. the HIL driver must have been
-> enabled before the blue screen menu (since the keyboard behavior has changed
-> with the new kernel), but the software behind that menu doesn't know how to
-> use the new driver.  I also think that if I can somehow get rid of the blue
-> screen (by changing an entry in some configuration file? - but which?) my
-> problem would go away.  Since a previous user (Damien) reported that he got
-> "kernel-image-2.4.19-32" to work for him in an HP 715 machine, I am guessing
-> that he did not have that blue screen menu enabled - therefore no problem in
-> his case.
-> What do you think?
-
-I don't know what the problem is. I haven't played with HIL drivers at all.
-
-> Is there an easy way to disable the blue screen after booting to the old
-> kernel?
-
-Yes
-1) figure out which script is presenting that menu.
-   (eg "fgrep -i new_network /etc/init.d/*")
-2) Run the script by hand to make sure it's the right one.
-   (eg "/etc/init.d/netenv start")
-3) "dpkg -S <scriptname>" to find the responsible package.
-4) "apt-get remove <package>" to blow away the package.
-
-hth,
-grant
+Thanks,
+Joop
