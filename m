@@ -1,34 +1,58 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8FB76482A
-	for <parisc-linux@parisc-linux.org>; Thu,  9 Aug 2001 10:46:38 -0600 (MDT)
-Message-Id: <200108091645.KAA13777@puffin.external.hp.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Thomas Marteau <marteaut@esiee.fr>,
-	"parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] The final patch for the keyboard problem 
-In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
-   of "Tue, 07 Aug 2001 22:36:50 BST." <20010807223650.F1011@linuxcare.com>
-Date: Thu, 09 Aug 2001 10:45:04 -0600
+	by dsl2.external.hp.com (Postfix) with ESMTP id 952A8482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 11:49:25 -0600 (MDT)
+Message-Id: <200108091747.LAA13929@puffin.external.hp.com>
+To: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] more serial console problems on D310 
+In-Reply-To: Message from Kirk Bresniker <kirkb@chrome.rose.hp.com>
+   of "Thu, 09 Aug 2001 08:50:31 PDT." <200108091550.IAA08745@chrome.rose.hp.com>
+Date: Thu, 09 Aug 2001 11:47:50 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Hirst wrote:
-> I've fixed the lockup on CapsLock, using an analyser to monitor what happened
-> on the PS/2 cable:
+Kirk Bresniker wrote:
+> | I look at the HW database and it seems the D310 has two LASI (core_adapter)
+> | chips (and WAX, no PCI). I suspect the detection of serial ports misnumbers
+> | them (ie parisc-linux finds them in the wrong order) or we only properly
+> | handle one of the two LASI's.
+> 
+> It may seem like that in the HW database, but there is never more than one
+> LASI in a d-class system, the LASI is on the main system board, so it's
+> always there regardless of which processor asssembly gives the d-class its
+> flavor, and no processor board or add-in card ever contained a second LASI.
 
-Cool!
-reverse engineering is more fun when one has the right tools...
+Kirk,
+You are right. I misread the ioscan output.
 
-> I changed the driver to allow 5ms rather than 1ms, and it works now.
-> In fact, for my keyboard, the time from command being written to ack
-> being received is about 2.5ms.
->
-> Can't say I like the idea of mdelay(5) being called 3 times every time I
-> press CapsLock though.
+Here are the HW database contents in a more readable form:
 
-Would sleep/wakeup be better than polling?
-It seems the keyboard does generate interrupts.
+type	driver		HWpath	Description
+------	-------------	------	--------------------------
+ba	core_adapter	16	Core I/O Adapter
+ext_bus	CentIf		16/0	Built-in Parallel Interface
+tty	asio0		16/4	Built-in RS-232C
+ext_bus	c720		16/5	Built-in SCSI
+...
+lan	lan2		16/6	Built-in LAN
+ps2	ps2		16/7	Built-in Keyboard/Mouse
+ba	core_adapter	20	Core I/O Adapter
+tty	asio0		20/2	Built-in RS-232C
+ba	eisa_adapter	20/5	EISA Bus Adapter
+lan	btlan0		20/5/8	EISA card INP0500
+...
+
+I had assumed "core_adapter" meant LASI.
+The second "Core I/O Adapter" at "20" must be WAX.
+
+> The serial port labeled console is attached to the LASI rs-232 unless an
+> access port card is plugged into the access port capable slot.
+...
+
+Ok. We still have an ordering issue then between WAX/LASI and how
+tty's are numbered/discovered. That's in addition to the problem
+of interrupts not getting delivered for the serial port on WAX at "20/2".
 
 grant
 
