@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "Thomas Schmid" <Thomas.Schmid@ascom.ch>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Failed Firmware Update... 
-In-Reply-To: Message from "Thomas Schmid" <Thomas.Schmid@ascom.ch>
-   of "Fri, 22 Feb 2002 14:15:15 +0100." <OF24F42D74.714B6A40-ONC1256B68.00484869@hasler.ascom.ch>
-References: <OF24F42D74.714B6A40-ONC1256B68.00484869@hasler.ascom.ch> 
-Date: Fri, 22 Feb 2002 23:15:40 -0700
+To: Yasholomew Yashinski <yashy@mail.yashy.com>
+Cc: parisc-linux@lists.parisc-linux.org,
+	grundler@dsl2.external.hp.com
+Subject: Re: [parisc-linux] B1000 
+In-Reply-To: Message from Yasholomew Yashinski <yashy@mail.yashy.com>
+   of "Tue, 19 Feb 2002 23:48:21 EST." <20020219224701.G93016-100000@mail.yashy.com>
+References: <20020219224701.G93016-100000@mail.yashy.com> 
+Date: Fri, 22 Feb 2002 23:34:35 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020223061540.C8ACC4860@dsl2.external.hp.com>
+Message-Id: <20020223063435.7F9964861@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,25 +20,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Thomas Schmid" wrote:
-> well, after following some threads in this list about firmware updates,
-> I decided to update my 715 to the current 1.6, up from 1.1.
-...
-> - Question: The machine I (now) had was a 715/100XC; can it be that the
-> 1.6 firmware update is not suitable for that variant of the 715/100 ?
+Yasholomew Yashinski wrote:
+>  Going through the install now, via serial console. Everything was working
+> fine until I tried to install a kernel from the cdrom:
 
-That's correct. latest firmware for 715/100XC was v 1.2.
-
-> - Is there still hope to revive the machine ? (without HP's support...)
-
-Maybe.
-You need to get access to a "dagger" card that is loaded with
-v1.2 and it can be blasted on the box. I have such a card but
-it currently has 712 firmware on it.
-
-hth,
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Is this with 0.9.3 CD image?
+Read the errata...CD-ROM isn't support by the kernel on the CD.
+More recent kernels have fixed the CD-ROM (tnx Fleedwood!)
+support for suckyio systems.
