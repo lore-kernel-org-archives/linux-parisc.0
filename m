@@ -1,38 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7CDB5482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 22:01:28 -0600 (MDT)
-Received: from mmp-1.gci.net ([208.138.130.80]) by mta-2.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GLJF6I00.0WH for
-          <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 20:01:30 -0800
-Date: Sat, 20 Oct 2001 19:52:03 -0800 (AKDT)
-From: Tom <palinux@alaskatech.org>
-To: Nicholas Leippe <nick@byu.edu>
-Cc: <parisc-linux@lists.parisc-linux.org>
+Received: from femail16.sdc1.sfba.home.com (femail16.sdc1.sfba.home.com [24.0.95.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9201482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 22:29:31 -0600 (MDT)
+Received: from nick ([65.12.82.119]) by femail16.sdc1.sfba.home.com
+          (InterMail vM.4.01.03.20 201-229-121-120-20010223) with SMTP
+          id <20011021042930.POPJ22743.femail16.sdc1.sfba.home.com@nick>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Sat, 20 Oct 2001 21:29:30 -0700
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Nicholas Leippe <nick@byu.edu>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] how to use dpkg/dselect/apt-get ???
-In-Reply-To: <01102020511903.00166@nick>
-Message-ID: <Pine.LNX.4.33.0110201950530.27243-100000@goliath.alaskatech.org>
+Date: Sat, 20 Oct 2001 21:29:26 -0700
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-Id: <01102021292604.00166@nick>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 20 Oct 2001, Nicholas Leippe wrote:
-> I'm tearing my hair out, and glad I've never tried debian before...
->
-> I got 0.92 installed and running on my B132L, but for the life of
-> me can't figure out how in the !@#$ to use the package tools
-> to do anything useful (like install X or see what packages are
-> in ftp.us.debian.org/debian/dists/unstable/main/binary-hppa/
->
-> I have also failed to find any useful docs/tutorials on the matter.
->
-> Could someone please post a link to a useful howto or write a
-> mini-howto up?  So far, these package tools have seemed rather
-> daunting...
+Thankyou for the link.  Unfortunately, I've already read that one
+and found it of little help.
 
-Here's the basic one I found. It's for i386, but I don't think I've found
-much different...
+Let me ask a few specific questions:
 
-http://www.debian.org/releases/stable/i386/dselect-beginner
+1) How do I know that it's looking at hppa packages and not x86
+packages?  And if it's seeing x86, how do I fix it?
 
-Hope that helps!
+2) How can I 'collapse' the ridiculously long (3000+) list of
+packages into just group headings?
+
+3) How can I search the list so I can find, for example, 'X11'
+to '+' it and let it figure out what else is needed and then
+install it?
+
+4) Is there a better package interface than dselect?
+(rh/caldera/mdk's glint is 3+ yrs old and is still far superior
+to dselect--you can actually _understand_ what you're looking at)
+
+I am not against whatever debian uses considering all the wonderful
+features it's supposed to have, just rather annoyed that it is such a
+difficult/disgusting interface.
+
+
+Nick
+
+p.s. is there a way to get it to actually highlight the line your on?
+it only echos the line in the middle of the screen for me, which is
+really gross.
