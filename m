@@ -1,47 +1,28 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE744482A
-	for <parisc-linux@parisc-linux.org>; Sun, 25 Mar 2001 16:11:56 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14hJfW-0001jH-00; Mon, 26 Mar 2001 00:11:30 +0100
-Date: Mon, 26 Mar 2001 00:11:30 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@parisc-linux.org
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 19F46482A
+	for <parisc-linux@parisc-linux.org>; Sun, 25 Mar 2001 16:41:33 -0700 (MST)
 Subject: Re: [parisc-linux] Building packages, problems with printf
-Message-ID: <20010326001130.K31126@parcelfarce.linux.theplanet.co.uk>
-References: <20010325220223.G31126@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.21.0103260855260.3568-100000@front.linuxcare.com.au>
-Mime-Version: 1.0
+To: alan@linuxcare.com.au (Alan Modra)
+Date: Mon, 26 Mar 2001 00:42:46 +0100 (BST)
+Cc: matthew@wil.cx (Matthew Wilcox), parisc-linux@parisc-linux.org
+In-Reply-To: <Pine.LNX.4.21.0103260855260.3568-100000@front.linuxcare.com.au> from "Alan Modra" at Mar 26, 2001 09:03:34 AM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0103260855260.3568-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Mon, Mar 26, 2001 at 09:03:34AM +1000
-Sender: <willy@www.linux.org.uk>
+Message-Id: <E14hK9p-0000hh-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Mar 26, 2001 at 09:03:34AM +1000, Alan Modra wrote:
-> That's cheating!  The real fix is to turn
-> 
-> printf (foo_string,
-> #if SOMETHING
-> abc_param
-> #else
-> xyz_param
-> #endif
-> );
-> 
-> into
-> 
-> #if SOMETHING
-> printf (foo_string, abc_param);
-> #else
-> printf (foo_string, xyz_param);
-> #endif
-> 
 > Earn brownie points sending off proper fixes to package maintainers. :)
 
-Ah, but that doesn't cure netkit-telnet which is c++ and has a method called
-printf which gets royally bollixed by this define.
+Most package maintainers wont bother. printf as a macro breaks too much code
+to be 'interesting' to fix. Many people take the address of printf for 
+passing to functions using multiple I/O output methods
 
-Agreed that's a better solution though for the cases where it applies.
+> > fixing glibc to not do that seems to not be an option.  ANSI explicitly
+> > allows any of the functions in libc to also be defined as macros.
 
--- 
-Revolutions do not require corporate support.
+glibc may be ANSI compliant, its just useless if it does this. Useful and
+standards compliant  interesect but dont 100% overlap
+
+Alan
