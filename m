@@ -1,48 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1A9CA482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Jun 2001 20:00:12 -0600 (MDT)
-Received: from mmp-1.gci.net ([208.138.130.80]) by mta-2.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GFB6W700.MXB for
-          <parisc-linux@lists.parisc-linux.org>; Thu, 21 Jun 2001 18:00:07 -0800
-Date: Thu, 21 Jun 2001 18:00:05 -0800 (AKDT)
-From: Tom <tom@Alaskatech.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: PA-RISC Linux list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Something broke dselect/apt...
-In-Reply-To: <20010621162624.M11438@linuxcare.com>
-Message-ID: <Pine.LNX.4.33.0106211757270.26069-100000@devnull.alaskatech.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail.ocs.com.au (ppp0.ocs.com.au [203.34.97.3])
+	by dsl2.external.hp.com (Postfix) with SMTP id 41234482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Jun 2001 07:00:09 -0600 (MDT)
+From: Keith Owens <kaos@ocs.com.au>
+To: sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	parisc-linux@lists.parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 22 Jun 2001 23:00:03 +1000
+Message-ID: <2105.993214803@ocs3.ocs-net>
+Subject: [parisc-linux] SCSI in arch/{m68k,parisc,sparc*}/config.in
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Thu, Jun 21, 2001 at 06:37:44AM -0800, Tom wrote:
-> > I ran apt-get update/upgrade on Monday - all working. Just ran it again
-> > this morning, had ~9 packages updated. All updated fine - no errors on the
-> > update - but then apt-* fails to work with "error while loading shared
-> > libraries - /usr/lib/libapt-pkg-libc6.2-3.so.3.2: undefined symbol:
-> > _cp_push_exception". Trying to run dselect gives "error while loading
-> > shared libraries: dselect: undefined symbol: __rethrow".
-> >
-> > Has anyone noticed this yet and/or noticed something I may have goofed up?
-> > I believe there was a palo update in there, plus one of the libc6-*
-> > packages, but other than that I've no idea...
->
-> On Thu, 21 Jun 2001, Richard Hirst wrote:
-> This is because you have picked up a new libstdc++3, but not a new apt.
-> We tried to update both together, but in the event, apt got delayed by
-> a day.  You need to grab the new apt.deb and install with dpkg -i.
-> It should appear in <ftp://ftp.debian.org:/debian/pool/main/a/apt/>
-> in a few hours.
+cc: kaos@ocs.com.au please, I am not on these lists.
 
-Installing the apt packages from there allowed apt-get update/upgrade to
-run, which fixed dselect. However, I'm getting the same libapt/libc6 error
-when installing packages - they download, then I get that error when it's
-apparently trying to preprocess them. After the error they install fine
-and everything works...
+arch/{m68k,parisc,sparc*}/config.in have their own SCSI list instead of
+using drivers/scsi/Config.in.  Cleaning up the SCSI config file is on
+my 2.5 TODO list, can you tell me why these architectures have their
+own list of SCSI devices?
 
-Am going to let it sit for a few days, see what else shakes loose as far
-as updates are concerned, then worry about it if it's still giving the
-errors...
+If it is because only some SCSI drivers work on these architectures, do
+you really need to be this specific?  Other architectures source
+drivers/scsi/Config.in without checking for arch dependent drivers.  If
+the need is to support extra arch specific drivers, use the same
+technique as acorn :-
 
-Thanks for the response!
+# drivers/scsi/Config.in
+if [ "$CONFIG_ARCH_ACORN" = "y" ]; then
+   source drivers/acorn/scsi/Config.in
+fi
+
+ps. There is no entry for parisc in MAINTAINERS.
