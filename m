@@ -1,32 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C0C774A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Mar 2001 15:06:37 -0700 (MST)
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA10761
-	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Mar 2001 15:01:43 -0700
-Sender: marteaut@esiee.fr
-Message-ID: <3A9EC4BE.3F01E095@esiee.fr>
-Date: Thu, 01 Mar 2001 22:53:02 +0100
-From: Thomas Marteau <marteaut@esiee.fr>
+Received: from maile.telia.com (maile.telia.com [194.22.190.16])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 400CE4A19
+	for <parisc-linux@parisc-linux.org>; Thu,  1 Mar 2001 15:36:15 -0700 (MST)
+Received: from zaphod.halden.lillfab.se (t5o70p64.telia.com [195.67.239.64])
+	by maile.telia.com (8.11.2/8.11.0) with ESMTP id f21MaCr09775
+	for <parisc-linux@parisc-linux.org>; Thu, 1 Mar 2001 23:36:13 +0100 (CET)
+Received: (from danne@localhost)
+	by zaphod.halden.lillfab.se (8.9.3/8.9.3) id XAA12319
+	for parisc-linux@parisc-linux.org; Thu, 1 Mar 2001 23:36:10 +0100
+Message-Id: <200103012236.XAA12319@zaphod.halden.lillfab.se>
+Date: Thu, 1 Mar 2001 23:36:10 +0100 (CET)
+From: 5116@telia.com
+Reply-To: 5116@telia.com
+To: parisc-linux@parisc-linux.org
 MIME-Version: 1.0
-To: Greg Ingram <ingram@symsys.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Another 735 hums to life
-References: <Pine.LNX.4.21.0103010907390.7180-100000@maestro.symsys.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Subject: [parisc-linux] AHA-2742AT: happy noises...
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Greg and all,
+How about this?
 
-> 55 meg root filesystem and it had a root password set.  I had to boot the
-> old NFS-root fs so I could edit /etc/passwd on the new fs.  On the whole
-> it's a big improvement.  I can use the compiler now.  Next I'm going to
-> see if the C100 can compile its own kernel.
+[...]
+ttyS00 at iomem 0xf0823800 (irq = 90) is a 16550A
+ttyS01 at iomem 0xf0822800 (irq = 89) is a 16550A
+Generic RTC Driver v1.02 05/27/1999 Sam Creasey (sammy@oh.verio.com)
+SCSI subsystem driver Revision: 1.00
+aic7xxx_detect
+(scsi0) <Adaptec AHA-274X SCSI host adapter> found at EISA slot 1
+(scsi0) Twin Channel, A SCSI ID 7, B SCSI ID 7, 4/255 SCBs
+aic7xxx: Couldn't get consistent shared memory for SCB
+aic7xxx: Couldn't get consistent shared memory for FIFO
+(scsi0) Downloading sequencer code... 426 instructions downloaded
+c01bb940 (aic7xxx?) called request_irq with an invalid irq 11
+(scsi0) Couldn't register IRQ 11, ignoring controller.
+[...]
 
-Thanks for the feedback :)
-For the password, it is not a very original one: toto
-Like that, every one knows! No more old nfs needed :)
+Darn, I want those WAX interrupts...
 
-Bye, Thomas
-ESIEE Team
+/Daniel
+-- 
