@@ -1,31 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.ireste.fr (mail.ireste.fr [193.52.81.37])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BFEA9482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 08:02:58 -0600 (MDT)
-Received: from flambe.ireste.fr (flambe [193.52.81.109])
-          by mail.ireste.fr (8.9.1a/jtpda-5.3.1) with SMTP id QAA02062
-          for <parisc-linux@lists.parisc-linux.org>; Mon, 9 Jul 2001 16:05:05 +0200 (MET DST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 9 Jul 2001 16:09:02 +0200
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A8428482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Jul 2001 09:35:12 -0600 (MDT)
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org, lamont@hp.com
+Subject: B132 dies too (was Re: [parisc-linux] 2.4.6-pa5 crashes on B160L)
+In-reply-to: Your message of "Sun, 08 Jul 2001 17:31:25 MDT."
+             <200107082331.RAA09058@puffin.external.hp.com>
 MIME-Version: 1.0
-Message-Id: <01070916084706.01035@flambe.ireste.fr>
-Subject: [parisc-linux] sti console problem
+Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 09 Jul 2001 09:34:38 -0600
+From: LaMont Jones <lamont@hp.com>
+Message-Id: <20010709153451.4D2731872C@security.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-i got a 735 appollo series ,with 0.9 iso installed 
-i've installed sti kernel all work execpt that i get an 'unable to open 
-initial console " all right seems to be good
-don't undestand why it failed ,
-need help !!!
--- 
-_______________________________________
+My B132 (which works 2.4.0) crashes sometime between palo launching the
+kernel, and it having a working console (serial).  That is to say, no info
+at all.  If someone wants the machine in order to debug it, just holler...
 
-                      Matthieu Le Corre 
-                    Service informatique
- Ecole Polytechnique de l'Université de Nantes
-     Matthieu.Lecorre@polytech.univ-nantes.fr
-                        02.40.68.32.23
-_______________________________________
+> If one is really good (like jsm) and has a matching vmlinux and System.map,
+> one can backtrace the stack by hand by looking at stack frame (return pointer
+> is in the stack frame) and seeing how much each subroutine grows the stack
+> (look at code around subroutine call, iirc). I think the mail archives
+> have a concise desription of exactly how to use the stack dump.
+> But I am too lazy to look for it now.
+
+Backtracing is extremely straight-forward, and can be automated, AFAIK.
+Walking the stack forward is a bit more challenging, but not entirely
+beyond possibility most of the time...
+
+lamont
