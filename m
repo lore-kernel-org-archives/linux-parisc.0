@@ -1,15 +1,15 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] clerar user page test
-Date: Thu, 9 Dec 2004 18:31:49 +0000
-Message-ID: <418A81310000E120@mail-7-bnl.tiscali.it>
-References: <20041209173239.GA14560@colo.lackof.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: godd news [[WasRe: [parisc-linux] but still panic: [WAS:
+	2.6.10-rc1-pa15 boot fine	on n4k but still	annoying bactrace]]
+Date: Thu, 09 Dec 2004 20:21:19 -0600
+Message-ID: <1102645279.3814.1.camel@mulgrave>
+References: <418A81310000E136@mail-7-bnl.tiscali.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Grant Grundler" <grundler@parisc-linux.org>
+Content-Type: text/plain
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041209173239.GA14560@colo.lackof.org>
+In-Reply-To: <418A81310000E136@mail-7-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,48 +20,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Thu, 2004-12-09 at 18:47 +0000, Joel Soete wrote:
+> Now that's a bit more then 48h that loop is running on n4k with k-2.6.10-rc3-pa3
+> (already rebuild 214 time ;-)
 
-> I also rewrote the test and parked it on:
-> 	http://iou.parisc-linux.org/hppa/clup.c
-> 
-Cool (thanks a lot)
+Well, this isn't necessarily good news.  I still think the problem is
+triggered by a race in the signal code.  However, if its no longer
+tripping, it means that the code has changed to obscure it ... which
+means it's not going to get fixed until it shows up again.
 
-> Here's the output from a a500-6x running 2.6.10-rc1-pa12-SMP:
-> grundler@iodine:~$ gcc-3.3 -o clup0 clup.c
-> grundler@iodine:~$ gcc-3.3 -DLOOP2X -o clup1 clup.c
-> grundler@iodine:~$ gcc-3.3 -march=3D2.0 -DLP64 -o clup2 clup.c
-> grundler@iodine:~$ gcc-3.3 -march=3D2.0 -DLP64 -DLOOP2X -o clup3 clup.c=
-
-> grundler@iodine:~$ gcc-3.3 -march=3D2.0 -DLP64 -DLOOP2X -DPREFETCH -o c=
-lup4
-> clup.c
-> grundler@iodine:~$ for i in 0 1 2 3 4; do time ./clup$i ; done 2>&1 |
-fgrep
-> user 
-> user    0m2.393s
-> user    0m2.392s
-> user    0m1.238s
-> user    0m1.224s
-> user    0m1.225s
-> 
-> I've varied the prefetch values and nothing seems to be helping.
-> I have to wonder if it's because the kernel VM is interferring
-> with the test.
-> 
-> But doubling the stride for 64-bit is consistently ~1.8% improvement.
-> 
-Ok wil I prepare a patch or you?
-
-Thx again,
-    Joel
-
--------------------------------------------------------------------------=
---
-Tiscali vous offre 3 mois d'ADSL et 3 mois de DVD gratuits...profitez-en.=
-..
-http://reg.tiscali.be/adsl/default.asp?lg=3DFR
-
-
+James
 
 
 _______________________________________________
