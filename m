@@ -1,35 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA04730
-	for <parisc-linux@puffin.external.hp.com>; Tue, 3 Oct 2000 19:34:20 -0600
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 555883B5
-	for <parisc-linux@thepuffingroup.com>; Tue,  3 Oct 2000 18:35:15 -0700 (PDT)
-Received: from localhost (grundler@localhost [127.0.0.1])
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id SAA02920
-	for <parisc-linux@thepuffingroup.com>; Tue, 3 Oct 2000 18:39:23 -0700 (PDT)
-Message-Id: <200010040139.SAA02920@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA19740
+	for <parisc-linux@puffin.external.hp.com>; Wed, 4 Oct 2000 05:26:31 -0600
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 9C6671A7C0
+	for <parisc-linux@thepuffingroup.com>; Wed,  4 Oct 2000 13:27:18 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id NAA18533 for <parisc-linux@thepuffingroup.com>; Wed, 4 Oct 2000 13:26:26 +0200 (METDST)
+Sender: vidal@hpfrcu03.france.hp.com
+Message-ID: <39DB1331.C4A5B8B3@admin.france.hp.com>
+Date: Wed, 04 Oct 2000 13:23:29 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] c3k output 
-In-reply-to: Your message of "Tue, 03 Oct 2000 18:32:52 PDT."
-             <200010040132.SAA02862@milano.cup.hp.com>
-Date: Tue, 03 Oct 2000 18:39:22 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Kernel panic: taking a dump
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-...
-> The output from this system is interesting in that it has an 896 SCSI
-> card installed and it seems to work...though I don't currently have any
-> disks connected.
+	Hi.
+I'm working since a long time with HP-UX, and I'm dealing
+often with dumps. But in the same time I'm really found of linux.
+And I'm looking for the feature of taking a dump when kernel panics.
+Do you have already think to this (like taking a TOC for example).
+The only thing I've found is the SGI stuff: 
+http://reality.sgi.com/slurn_engr/
+Do you know a project that start to do something, or there's
+nothing out ?
 
-I was confused - the 875 (ultra-wide-diff) SCSI is the add-on.
-The 896 is internal (on the motherboard) and one disk is installed
-w/HPUX on it. I wanted to add some disks to the 875 interface which
-I can install parisc-linux on.
+	Thanks.
 
-sorry,
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
