@@ -1,17 +1,17 @@
-From: Matthew Wilcox <willy@debian.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: [parisc-linux] Re: GNU/Libc 2.3.1 on HP-PARISC requires >= 2.4.19 kernel.
-Date: Thu, 5 Dec 2002 13:31:39 +0000
-Message-ID: <20021205133139.C5327__25146.3017696098$1416621998$gmane$org@parcelfarce.linux.theplanet.co.uk>
-References: <20021205010845.GU16331@systemhalted>
+Date: Thu, 5 Dec 2002 10:39:49 -0500
+Message-ID: <20021205153949.GB27054__40967.7254771397$1416621999$gmane$org@systemhalted>
+References: <20021205010845.GU16331@systemhalted> <20021205133139.C5327@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-To: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org,
-	debian-glibc@lists.debian.org,
+Cc: debian-hppa@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org, debian-glibc@lists.debian.org,
 	John David Anglin <dave@hiauly1.hia.nrc.ca>,
 	Randolph Chung <tausq@debian.org>
+To: Matthew Wilcox <willy@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20021205010845.GU16331@systemhalted>; from carlos@baldric.uwo.ca on Wed, Dec 04, 2002 at 08:08:45PM -0500
+In-Reply-To: <20021205133139.C5327@parcelfarce.linux.theplanet.co.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,27 +22,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 04, 2002 at 08:08:45PM -0500, Carlos O'Donell wrote:
-> What?
-> =====
-> During the changeover from GNU/Libc 2.2.x to 2.3.x HPPA has changed
-> it's minimum GNU/Libc kernel version to 2.4.19.
+> > Why?
+> > ====
+> > - More testing.
+> > - Bugs fixed in unaligned handlers.
+> > - Trap handler fixes.
+> > - More things than you can shake a stick at, and all thanks to the
+> >   wonderful kernel hacking team that parisc-linux has.
+> 
+> That's great, but there are still problems with 2.4.19 and 2.4.20.  I think
+> you're doing our users a disservice by requiring them to upgrade to 2.4.19.
+> Why not relax the minimum version requirement down to 2.4.17?
 
-I feel this was a mistake.
+I agree that it was probably a mistake at the time since 2.4.19 seemed
+to solve a lot of problems... though in hindsight they are still too
+unstable to push forward on all of our users.
 
-> Why?
-> ====
-> - More testing.
-> - Bugs fixed in unaligned handlers.
-> - Trap handler fixes.
-> - More things than you can shake a stick at, and all thanks to the
->   wonderful kernel hacking team that parisc-linux has.
+Hrmm... *Carlos mulls for a few hours*
 
-That's great, but there are still problems with 2.4.19 and 2.4.20.  I think
-you're doing our users a disservice by requiring them to upgrade to 2.4.19.
-Why not relax the minimum version requirement down to 2.4.17?
+I'll relax it to 2.4.17 in debian, but I'll leave the upstream
+requirement of 2.4.19.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+c.
