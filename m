@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BCCD9482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jul 2003 00:04:41 -0600 (MDT)
-Date: Mon, 14 Jul 2003 08:04:39 +0200
-Message-ID: <3F0BEA8300000F84@ocpmta1.freegates.net>
-In-Reply-To: <20030714054458.GC30257@tausq.org>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-To: "Randolph Chung" <randolph@tausq.org>
-Cc: "Joel Soete" <joel.soete@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org, "Helge Deller" <deller@gmx.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] Re: Xfree-server and Xhp ?
+Received: from ismt.co.in (unknown [61.11.17.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 93718482D
+	for <parisc-linux@parisc-linux.org>; Mon, 14 Jul 2003 00:23:20 -0600 (MDT)
+Received: from pc4.ismt.co.in ([192.168.1.103])
+	by ismt.co.in (8.11.6/8.9.3) with ESMTP id h6E6K0V04846
+	for <parisc-linux@parisc-linux.org>; Mon, 14 Jul 2003 11:50:00 +0530
+Message-Id: <5.2.1.1.0.20030714115056.00ab1350@192.168.1.70>
+Date: Mon, 14 Jul 2003 11:53:20 +0530
+To: parisc-linux@parisc-linux.org
+From: Atul kirane <atul.kirane@ismt.co.in>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: [parisc-linux] HP 9000 series D220(803) and D250(817) Machines
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +23,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->> > >      ldo 0x40(sp),sp
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^That was I suspected to be 'som' specific
->
->that means a 64-byte stack.. should be fine on palinux as well.
+Hello,
+I have two HP 9000 machines D220 and D250 with PA-Risc technology . i want 
+to configure linux
+os on it to run it as web server .
+How do i go about it ?
 
-Ok I will so try like this (after % and other stuff translation) :-)
+Any help would be highly appreciated .
 
-Thanks again,
-    Joel
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+Regards
+Atul
