@@ -1,30 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA26789
-	for <parisc-linux@puffin.external.hp.com>; Fri, 26 May 2000 22:14:38 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 27 May 2000 04:14:57 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA04785;
-	Sat, 27 May 2000 14:14:52 +1000
-Date: Sat, 27 May 2000 14:14:52 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: willy@thepuffingroup.com
-cc: Philipp Rumpf <prumpf@puffin.external.hp.com>,
-        Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA32038
+	for <parisc-linux@puffin.external.hp.com>; Sat, 27 May 2000 09:30:57 -0600
+Message-Id: <200005271531.LAA08195@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [MERGE] -pre8 merge status
-In-Reply-To: <20000527005646.H31075@thepuffingroup.com>
-Message-ID: <Pine.LNX.4.21.0005271412460.31822-100000@front.linuxcare.com.au>
+To: willy@thepuffingroup.com
+Date: Sat, 27 May 2000 11:31:08 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: prumpf@puffin.external.hp.com, grundler@cup.hp.com,
+        parisc-linux@thepuffingroup.com
+In-Reply-To: <20000527005646.H31075@thepuffingroup.com> from "willy@thepuffingroup.com" at May 27, 2000 00:56:46 am
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
-
-On Sat, 27 May 2000 willy@thepuffingroup.com wrote:
 
 > __lshrdi3.  It's referenced from fs/nfs/inode.c.  I'm damned if I can
 > see where though (and I went through the gcc -E output trying to spot it.)
+> Does someone want to copy that from libgcc?  I'm going to lay down a tag
+> for end-of-merge now since I'm headed off for the weekend.
 
-You won't spot it that way.  You need to look at the output of gcc -S.
-It's likely from some long long arithmetic somewhere.
+__lshrdi3 should be in libgcc.a.  It's in mine.  If it is not there, you
+have a problem building your (cross-)compiler.  If it is, check the link
+by adding "-v" to the gcc link operation to see why libgcc.a is not being
+linked into the object.
 
+Dave
 -- 
-Linuxcare.  Support for the Revolution.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
