@@ -1,50 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9AFDD482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 30 Mar 2001 18:40:36 -0700 (MST)
-Message-Id: <200103310134.SAA21074@puffin.external.hp.com>
-To: "jean-yves.guillevic" <jean-yves.guillevic@wanadoo.fr>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Hello PARISC-LINUX A short boot 
-In-Reply-To: Your message of "Fri, 30 Mar 2001 23:40:08 +0200."
-             <009401c0b961$fec40780$140101a8@home233>
-Date: Fri, 30 Mar 2001 18:34:50 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from feanor.nuclear.demokritos.gr (feanor.nuclear.demokritos.gr [143.233.244.29])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 101AF482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 Mar 2001 10:34:13 -0700 (MST)
+Received: from localhost ([127.0.0.1])
+	by feanor.nuclear.demokritos.gr with esmtp (Exim 3.16 #1 (Debian))
+	id 14jPHU-0000vR-00
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 Mar 2001 20:35:20 +0300
+Date: Sat, 31 Mar 2001 20:35:20 +0300 (EEST)
+From: Konstantinos Margaritis <markos@feanor.nuclear.demokritos.gr>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0103312017460.3454-100000@feanor.nuclear.demokritos.gr>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 715/80 woes
 List-ID: <linux-parisc.vger.kernel.org>
 
-jean-yves.guillevic wrote:
-> I was given an old HP715 in good state but not working.
+Hi,
+  I still have trouble with my 715/80 recognizing my ps/2 keyboard, but I
+did a little searching and thought that maybe someone more knowledgeable
+might help.
 
-Which model?
-(From the boot log I gather it's a 715S/33)
-The rev of firmware you need will depend on which 715 model you have.
+For a start when I turn on the machine the status leds are like this:
 
-...
-> where can i find the patchs between PDC ROM rev 1.0 and PDC ROM rev 1.6
+oxoooooxx
 
-I updated the FAQ last year which answers this question:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2000-November/009988.html
+x: on, o: off
 
-Note: The FAQ now lives at http://www.parisc-linux.org/faq/index.html
+the last one is the power led (obviously on)
 
-> if i make a rev 1.6 patch do i have to make a rev 1.5 rev 1.4 etc...?
+ok. now the machine just reports
 
-No.
+Failed to initialize a keyboard
+Fix the keyboard and cycle power
 
-> who can tell me whitch solution is the best and why.
+as I previously reported, and it just keeps changes screen resolution (I
+believe I have to press TAB or SPACE to make this stop, but the keyboard
+does not work).
 
-Personally, I would update the firmware on the machine in any case. 
-(why use a version with know bugs when a less buggy vers is avail free?)
-But read the FAQ and think about it carefully first.
+Then I press the TOC button, which is supposed to act like a reset. Then
+screen goes blank, disks spin like crazy and now the leds become:
 
-grant
+oxxoxxoox
 
-.ps Could you not include html version in your mail?
+now, I was looking to a 720 users guide pdf -thinking that the led
+combinations are the same- and i could not find this particular
+combination. instead i found that 
 
-> <DIV><FONT face=3DArial size=3D2>if i make a rev 1.6 patch do i have to =
-> make a rev=20
-> 1.5 rev 1.4 etc...?</FONT></DIV>
+oxxoooooo is indicative to a faulty SIMM (which it is not, I tried it on a
+712 and it worked).
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Anyone has any ideas? Can I force the 715 to use the serial for console?
+
+Any help appreciated.
+
+Konstantinos Margaritis
