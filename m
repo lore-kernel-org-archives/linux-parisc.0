@@ -1,20 +1,16 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0EDA4829
+Return-Path: <kokke_23@hotmail.com>
+Received: from hotmail.com (bay7-dav45.bay7.hotmail.com [64.4.10.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C63CD4829
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 27 Apr 2004 08:58:46 -0600 (MDT)
-Date: Tue, 27 Apr 2004 10:57:41 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] RE: [PATCH] glibc-2.3.3 error with debian
-	unstable	compiler...
-Message-ID: <20040427145741.GD14937@baldric.uwo.ca>
-References: <20040421115522.GH28094@baldric.uwo.ca>
-	<408D43600000049A@ocpmta1.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <408D43600000049A@ocpmta1.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
+	Tue, 27 Apr 2004 10:02:10 -0600 (MDT)
+From: <kokke_23@hotmail.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] AWARD  WINNING  NOTIFICATION
+Date: Tue, 27 Apr 2004 17:56:43 +0100
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0003_01C42C81.003CBB80"
+Message-ID: <BAY7-DAV45SQeSOzNCW0002039b@hotmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,13 +20,27 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Here is my weekly test: cvs 20040426.
-> Nothing new to mention: always well known errors collected after make -k
-> check. I just build a 2.6.6-_rc2_-pa2 (for the fun) without pb (which boot
-> fine on my b180)
+This is a multi-part message in MIME format.
 
-You aren't seeing a failure in tst-timer4?
-Can you verify this by running tst-timer4 by hand and sending the output
-ot the list?
+------=_NextPart_000_0003_01C42C81.003CBB80
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-c.
+
+------=_NextPart_000_0003_01C42C81.003CBB80
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0003_01C42C81.003CBB80--
