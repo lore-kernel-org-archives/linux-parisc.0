@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from esteban.rebellion (f06a-1-118.d1.club-internet.fr [212.194.120.118])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D79CD4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Jun 2003 00:31:42 -0600 (MDT)
-From: Bad Max <badmax@club-internet.fr>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 884D74829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Jun 2003 03:43:56 -0600 (MDT)
+Date: Wed, 25 Jun 2003 11:43:51 +0200
+Message-ID: <3ED4C8B600009CA3@ocpmta1.freegates.net>
+In-Reply-To: <20030624034442.GA28169@dsl2.external.hp.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] Re: ATY RAGE XL progress or Dino gscpci bridge pb?[was: Re: HP C180 video card]
+To: "Grant Grundler" <grundler@parisc-linux.org>,
+	"Matthew Wilcox" <willy@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Date: Wed, 25 Jun 2003 07:32:40 +0200
-Message-ID: <yam9306.2029.145319488@esteban.rebellion>
-In-Reply-To: <1056490704.1223.12.camel@dhcp22.swansea.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [parisc-linux] Re: ARP resolution trouble
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,30 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello
+Hi Grant,
 
-On 24-juin-03, you wrote:
+> BTW, my comment was actually intended for other parts of the code I
+> was digging though, not the just lack of pci_enable_device().
 
-| > On Maw, 2003-06-24 at 21:15, Bad Max wrote:
-| >> The most strange is that this switch was working perfectly for one year
-| >> and the
-| >> B132L was the only host affected by the bug (I never encountered this
-| >> bug with
-| >> the other host).
-| > 
-| > Most boxes have regular traffic - samba broadcasts, snmp probes, ipx
-| > rip/sap whatever. 
-| > 
+Do you know where can I get more info on what have todo (naturaly only pci_enable_device()
+doesn't help)?
 
-The B132L is a PDC/DNS/DHCP/Router on my network. The other host are
-mostly clients, no ipx, no snmp. DHCP requests were accepted and the
-B132L was reachable until ARP timeout. 
+Thanks,
+    Joel
 
-The only thing I don't understand is why the B132L was the only host
-affected by the trouble.
--------
-Bad Max
-========
-Amiga User
-GNU User
-WWW: perso.club-internet.fr/badmax
+
+
+---------------------------------
+Tiscali ADSL: 19,50 euros/mois...abonnez-vous sur www.tiscali.be
