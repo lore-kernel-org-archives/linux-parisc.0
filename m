@@ -1,28 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F3E9C482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 Aug 2001 23:59:08 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15cKr5-0002Ze-00; Thu, 30 Aug 2001 06:59:07 +0100
-Date: Thu, 30 Aug 2001 06:59:07 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: thunder7@xs4all.nl
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [newbie] gcc/glibc problems
-Message-ID: <20010830065907.H13438@parcelfarce.linux.theplanet.co.uk>
-References: <20010830073255.A9044@middle.of.nowhere>
+Received: from ns.zrt.nl (ns.zrt.nl [212.153.94.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7ECAC482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Aug 2001 00:09:01 -0600 (MDT)
+Received: (from fwmaster@localhost) by ns.zrt.nl (8.9.1a/8.6.12) id IAA10323 for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Aug 2001 08:08:59 +0200 (MET DST)
+Message-Id: <sb8df3d6.032@ms-zrt1>
+Date: Thu, 30 Aug 2001 08:02:20 +0200
+From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: Betr.: Re: [parisc-linux] [newbie] gcc/glibc problems
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010830073255.A9044@middle.of.nowhere>; from thunder7@xs4all.nl on Thu, Aug 30, 2001 at 07:32:55AM +0200
-Sender: <willy@www.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 30, 2001 at 07:32:55AM +0200, thunder7@xs4all.nl wrote:
-> In file included from test.c:1:
-> /usr/lib/gcc-lib/hppa-linux/3.0.2/include/stdio.h:37:23: features.h: No such file or directory
-> In file included from /usr/lib/gcc-lib/hppa-linux/3.0.2/include/stdio.h:43,
+>On Thu, Aug 30, 2001 at 07:32:55AM +0200, thunder7@xs4all.nl wrote:
+>> In file included from test.c:1:
+>> /usr/lib/gcc-lib/hppa-linux/3.0.2/include/stdio.h:37:23: features.h: No =
+such file or directory
+>> In file included from /usr/lib/gcc-lib/hppa-linux/3.0.2/include/stdio.h:=
+43,
+>
+>do you have libc6-dev installed?
+>
+Hmm, I'd have to check that - but shouldn't that be a dependency, if it's =
+needed for even
+the simplest use of gcc?
 
-do you have libc6-dev installed?
+I'm sorry if this goes off-topic here, I'll try not to bother this list =
+with debian questions.
 
--- 
-Revolutions do not require corporate support.
+Thanks,
+Jurriaan
