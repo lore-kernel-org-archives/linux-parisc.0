@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 85B5A487A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 22 Nov 2003 16:35:31 -0700 (MST)
-Message-ID: <3FBFF2C3.4050008@tiscali.be>
-Date: Sat, 22 Nov 2003 23:35:31 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5685C4840
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Nov 2003 07:16:35 -0700 (MST)
+Message-ID: <3FC0C144.4040902@tiscali.be>
+Date: Sun, 23 Nov 2003 14:16:36 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Osvaldo Luiz Loose <osvaldoloose@pop.com.br>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] strace locks up 2.4.22-pa14
-References: <20031121005003.GB13007@colo.lackof.org> <3FB265250000556F@ocpmta2.freegates.net> <20031122052915.GB29917@colo.lackof.org> <3FBF4F65.70502@tiscali.be> <20031122220919.GA6732@colo.lackof.org>
-In-Reply-To: <20031122220919.GA6732@colo.lackof.org>
+Subject: Re: [parisc-linux] 93C46 reading via RS-232 port - Please Help me
+References: <20031121233612.21746.qmail@webmail1.pop.com.br>
+In-Reply-To: <20031121233612.21746.qmail@webmail1.pop.com.br>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,23 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+<http://www.pjrc.com/tech/8051/serial-eeprom.html>
 
-Grant Grundler wrote:
-> On Sat, Nov 22, 2003 at 11:58:29AM +0000, Joel Soete wrote:
-> 
->>I don't know but seems to hang like boot hang when I include the pdc 
->>support into the kernel: green led stay lightning. (and toc seems to 
->>failed because of a time out IO; i don't remember but I think i do have 
->>to read it on lcd)
-> 
-> 
-> What do you mean by "PDC support"?
-> You mean CONFIG_PDC_CHASSIS?
-
-Sorry that was in an old mail 
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2002-December/018689.html>
-and much concern CONFIG_PDC_CONSOLE (via CONFIG_SERIAL_NONSTANDARD=y)
-
-
-thanks for your attention,
+hth,
 	Joel
+
+ps: find thanks to google search:"EEPROM 93C46"+linux
+
+Osvaldo Luiz Loose wrote:
+> 
+> Hello Paul
+> I need a peace of code in ANSI C (Linux), to read data from an
+> EEPROM 93C46, connected to the RS232 port of an IBM-PC. (Only
+> read). I found some code for PIC and 8051 but not for IBM-PC.
+> Can You help me please ? Thank You very much,
+> osvaldoloose@pop.com.br
+> 
+> 
