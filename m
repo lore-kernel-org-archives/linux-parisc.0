@@ -1,17 +1,18 @@
-From: Matthew Wilcox <willy@debian.org>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] glibc update is broken in testing?
-Date: Sat, 29 May 2004 21:33:27 +0100
-Message-ID: <20040529203327.GW5850__31397.7762162269$1416623462$gmane$org@parcelfarce.linux.theplanet.co.uk>
-References: <20040529184910.GA11441@colo.lackof.org> <20040529201456.GB11441@colo.lackof.org>
+Date: Sat, 29 May 2004 20:36:49 -0600
+Message-ID: <20040530023649.GF11441__22070.5670807094$1416623462$gmane$org@colo.lackof.org>
+References: <20040529184910.GA11441@colo.lackof.org> <20040529201456.GB11441@colo.lackof.org> <20040529203327.GW5850@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: debian-hppa@lists.debian.org,
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+ debian-hppa@lists.debian.org,
  parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Matthew Wilcox <willy@debian.org>
 Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <20040529201456.GB11441@colo.lackof.org>
-Resent-Message-ID: <b_Hq2D.A.ca.ZOPuAB@murphy>
+In-Reply-To: <20040529203327.GW5850@parcelfarce.linux.theplanet.co.uk>
+Resent-Message-ID: <M_EA6B.A.BLB.LjUuAB@murphy>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-Post: <mailto:debian-hppa@lists.debian.org>
@@ -20,30 +21,31 @@ List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Sat, May 29, 2004 at 02:14:56PM -0600, Grant Grundler wrote:
-> o the rest can be cut/pasted:
-> 	cd /target/lib
-> 	ln -s ld-2.3.2.so ld.so.1
-> 	ln -s libc-2.3.2.so libc.so.6
-> 	ln -s libm-2.3.2.so libm.so.6
-> 	ln -s libdl-2.3.2.so libdl.so.2
-> 	ln -s libutil-2.3.2.so libutil.so.1
-> 	cd /
-> 	umount /target
+On Sat, May 29, 2004 at 09:33:27PM +0100, Matthew Wilcox wrote:
+> You can do this more easily by running
+> 	ldconfig -m /target/lib /target/usr/lib
 
-You can do this more easily by running
-	ldconfig -m /target/lib /target/usr/lib
+~ # ldconfig -m /target/lib/ /target/usr/lib/
+ldconfig: invalid option -- m
+Try `ldconfig --help' or `ldconfig --usage' for more information.
 
-Then you can check it worked by running chroot /target and seeing if
-everything seems happy.
+It looks like that should be "ldconfig -l -r /target"
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+> Then you can check it worked by running chroot /target and seeing if
+> everything seems happy.
+
+After unpacking a proper libc6_*hppa.deb by hand, the chroot worked.
+I was able to run dgpkg/dselect in the chroot just fine.
+
+"dpkg -i locales_2.3.2.ds1-12_all.deb" seems to be taking an awful
+long time in "Setting up locales" step. I'm not sure if it's because
+of the chroot environment or it just takes a while to regen the
+locales data. I'll let it run a while and see what happens.
+In any case, this box is a D-I test candidate on the next
+beta release.
+
+thanks,
+grant
 
 
 -- 
