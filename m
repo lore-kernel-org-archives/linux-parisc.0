@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from femail4.sdc1.sfba.home.com (femail4.sdc1.sfba.home.com [24.0.95.84])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D8AD4866
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 11:01:10 -0700 (MST)
-Received: from kenny ([68.58.113.28]) by femail4.sdc1.sfba.home.com
-          (InterMail vM.4.01.03.20 201-229-121-120-20010223) with SMTP
-          id <20020222173143.ZJCK22968.femail4.sdc1.sfba.home.com@kenny>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Fri, 22 Feb 2002 09:31:43 -0800
-Message-ID: <005e01c1bbc6$cb52bb40$02c1a8c0@james.co.uk>
-From: "James S" <smith-james@home.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: Fw: [parisc-linux] Problems running KDE on PARISC
-Date: Fri, 22 Feb 2002 12:31:42 -0500
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 421BC485F
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 13:39:04 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16eMT8-0008H3-00; Fri, 22 Feb 2002 20:39:02 +0000
+Date: Fri, 22 Feb 2002 20:39:02 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Peter Mottram <peter@petescaff.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Strange serial behaviour on C160
+Message-ID: <20020222203902.A30545@parcelfarce.linux.theplanet.co.uk>
+References: <20020220204800.A27212@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.42.0202221752390.14794-100000@r6.petescaff.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.42.0202221752390.14794-100000@r6.petescaff.com>; from peter@petescaff.com on Fri, Feb 22, 2002 at 05:58:04PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,28 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
------ Original Message -----
-From: "James S" <smith-james@home.com>
-To: "Thomas Schmid" <Thomas.Schmid@ascom.ch>
-Sent: Friday, February 22, 2002 10:31 AM
-Subject: Re: [parisc-linux] Problems running KDE on PARISC
+On Fri, Feb 22, 2002 at 05:58:04PM +0100, Peter Mottram wrote:
+> I now have 2.4.17-pa28 running on my C160 & things have improved but are
+> not yet perfect as I still have three serial ports......
+> 
+> /dev/ttyS0, UART: 16550A, Port: 0x0000, IRQ: 90
+> /dev/ttyS1, UART: 16550A, Port: 0x0000, IRQ: 121
+> /dev/ttyS2, UART: 16550A, Port: 0x0000, IRQ: 121
 
+Umm.. where are you getting this output from?  The serial devices don't
+show up in port space but in io memory.  Can you provide me with a dmesg
+(by private mail, no need to clog the list archive; I'll reply with the
+relevant bits)?
 
-> > Generally speaking KDE is slow on these machines, but
-> > when I log in from KDM, it takes on _both_ machines about
-> > 4..5 minutes to go from KDM login screen to KDE window
-> > manager.
-> >
->
-> i was running kde as well, but found the wait time for applications to
-start
-> too long, so i switched to windowmaker - very configurable & much quicker
-to
-> load, but it also keeps the ability to run gnome & kde apps.
->
-> just my ha'pennys worth...
->
-> James S
->
->
->
+> Of these devices the functional ports are 0 & 2. The weird speed problems
+> have gone away so I can use my second serial port without problems - it is
+> just a little odd that the rogue ttyS1 still shows up.
+
+Yes, it is.  Glad to hear the speed problems are gone though.
+
+-- 
+Revolutions do not require corporate support.
