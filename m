@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7569F482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 08:33:35 -0700 (MST)
-Received: from npyu.esiee.fr (npyu.esiee.fr [147.215.80.150])
-	by mail.esiee.fr (Postfix) with ESMTP id D457C49BF8
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 16:33:33 +0100 (CET)
-Date: Mon, 14 Jan 2002 16:33:33 +0100
-Subject: Re: [parisc-linux] 0.9.3 on a graphics console
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v480)
-From: Thibaut VARENE <varenet@esiee.fr>
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3C434AFE.4060506@chello.nl>
-Message-Id: <117AF172-0904-11D6-AEFA-0030656F07A2@esiee.fr>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 97079482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 08:52:28 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16Q9PO-0006Vh-00; Mon, 14 Jan 2002 15:52:26 +0000
+Date: Mon, 14 Jan 2002 15:52:26 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Rodolfo Baselli <rodolfo.baselli@deaprofessionale.it>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Installation console problem
+Message-ID: <20020114155226.I9193@parcelfarce.linux.theplanet.co.uk>
+References: <3C42D90E.20909@deaprofessionale.it>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3C42D90E.20909@deaprofessionale.it>; from rodolfo.baselli@deaprofessionale.it on Mon, Jan 14, 2002 at 02:11:42PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,20 +25,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
-> For hardware.. it's a C240 and sam reports a HP visualize FX2(4) as a 
-> graphics card that is connected to a VGA monitor which works ok in 
-> HP-UX. If you can tell me how to get more detailed hardware information 
-> in HP UX, i'll be happy to provide it.
+On Mon, Jan 14, 2002 at 02:11:42PM +0100, Rodolfo Baselli wrote:
+> Hi out there!
+> I'm trying to install the 0.9.3 CD on a HP9000/E45/A3130AW.
+> I managed to boot the image, but then I got this message on the serial 
+> line console:
+> "If this is the last message you see, you may need to switch your 
+> console. This is a common symptom - search the FAQ and mailing lists"
+> but I found nothing, since I'm asking you... :-(
+> What's happened?
 
-Well, I bet this specific off board graphic card is not supported.
-Although onboard controllers are getting more and more supported, it is 
-not the case for specific HP hardware.
+The E45 isn't supported, unfortunately.  See the mailing list archives
+for details, but basically the serial port needs a new driver and the
+SCSI card needs a new driver.  Documentation for both of these cards is
+not publically available.
 
-As there's no core graphics for your box, I suggest you to try with 
-serial console.
-
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://www.esiee.fr/puffin
+-- 
+Revolutions do not require corporate support.
