@@ -1,64 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E71F5482A
-	for <parisc-linux@parisc-linux.org>; Thu, 12 Jul 2001 09:30:42 -0600 (MDT)
-To: Michael Ang <mang@subcarrier.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] CVS rumors 
-In-Reply-To: Your message of "Thu, 12 Jul 2001 00:42:25 EDT."
-             <3B4D2AB1.5010809@subcarrier.org>
-References: <E15Jz7i-00028D-00@noam.fc.hp.com> <20010710172502.A6103@parcelfarce.linux.theplanet.co.uk> <E15K1Iz-0002RR-00@noam.fc.hp.com>  <3B4D2AB1.5010809@subcarrier.org> 
-Date: Thu, 12 Jul 2001 09:30:35 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E15KiQF-0005Vh-00@noam.fc.hp.com>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 02D9A482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Jul 2001 09:56:05 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 6.03.0009/NU8172.00.4d3e3a24) with ESMTP id hvnpgaaa for parisc-linux@lists.parisc-linux.org; Thu, 12 Jul 2001 08:52:42 -0700
+Date: Thu, 12 Jul 2001 08:55:31 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: rpengelly <rpengelly@ati.stlawrencec.on.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] problems with checksums
+Message-ID: <20010712085531.L531@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <001201c10ad2$3beb97b0$0f809b8e@ati.stlawrencec.on.ca> <20010712140756.C18375@linuxcare.com> <001e01c10ad6$588cb4e0$0f809b8e@ati.stlawrencec.on.ca> <20010712145615.E18375@linuxcare.com> <000701c10ae4$186cf6a0$0f809b8e@ati.stlawrencec.on.ca> <20010712082908.K531@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010712082908.K531@tausq.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-= > CM best practices usually involve explicitly tagging any release one
-= > hopes to reproduce in the future and we could start doing that (I recommend
-= > it).  For now either we apply the aforementioned workaround so we can
-= > do untagged date-based checkouts, or I can come up with a procedure for
-= > grabbing a suitable set of bits.
-= 
-= Tags are cheap.  Explicitly tagging at important moments is the way to 
-= go.  Relying on a date-based checkout is potentially less accurate, so 
-= IMO this shouldn't be the common practice.  There's no harm in adding a 
-= static tag, and you can always remove it or possibly fix it up if you 
-= get it wrong.
+> Be careful, Debian uses BSD md5sum instead of GNU md5, some other Linux
+> systems use GNU md5sum. They produce different output for the same
+> input!
 
-Tagging a linux source tree over the network is slow however.
+..... or maybe i'm just smoking something. ISTR them being different in
+some cases, but when i tried just now they produce the same output.
+Argh...
 
-More information on date+branch CVS checkouts:  When there are multiple
-branches, a date-based checkout must also supply a branch, implicitly
-or explicitly, to disambiguate.  RCS has this feature
-and it works fine (see the 'co' man page).  I can't force CVS to do it
-though, on the trunk anyway, despite it's being built upon RCS :-(
-
-So the workaround for date-based checkout of our trunk is.... use RCS
-on a copy (can be 'cp -l') of our CVS repository :-( :-(
-
-= Writing an import script was one of those things I always meant to do in 
-= my copious spare time.  I'm glad to see that someone is actually doing 
-= the work :)  Where does the code for safe-cvsimport live?
-
-http://puffin.external.hp.com/cvs/build-tools/safe-cvsimport
-
-Beware -- it uses 'cvs admin -b' plus at the moment seems not to remove
-upstream-removed files correctly.  I'm thinking of re-doing it to
-avoid using 'cvs import' altogether -- it is in need of a rewrite.
-
-= I'd avoid using the term "vendor branch", since that already has a 
-= specific meaning to savvy CVS users (who will rightly criticize their 
-= use).  Calling it something like the "upstream branch" would avoid the 
-= overloaded meaning.
-
-Good idea.
-
-= I haven't been following things enough to know what 
-= the issues related to "the vestiges of upstream imports" are.
-
-At least one upstream import+merge was done directly to the trunk.  So
-changes which came with that import are unresolvable by
-CVS during a merge and can require some sleuthing -- particularly
-any files which were added/deleted at that time.
-
-	-P
+sorry to add to the confusion,
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
