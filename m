@@ -1,104 +1,90 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA21894
-	for <parisc-linux@puffin.external.hp.com>; Wed, 16 Feb 2000 11:41:58 -0700
-Date: Wed, 16 Feb 2000 18:41:23 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA22501
+	for <parisc-linux@puffin.external.hp.com>; Wed, 16 Feb 2000 12:37:38 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by atlrel1.hp.com (Postfix) with ESMTP id E941155
+	for <parisc-linux@thepuffingroup.com>; Wed, 16 Feb 2000 13:38:15 -0500 (EST)
+Message-Id: <200002161838.KAA07528@milano.cup.hp.com>
 To: John Marvin <jsm@udlkern.fc.hp.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Linux syscall ABI
-Message-ID: <20000216184122.Q765@abacus.local>
-References: <200002161357.GAA11682@udlkern.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200002161357.GAA11682@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Wed, Feb 16, 2000 at 06:57:08AM -0700
+Subject: Re: [parisc-linux] Virtual mapping of IO cards 
+In-reply-to: Your message of "Wed, 16 Feb 2000 08:25:17 PST."
+             <200002161525.IAA14558@udlkern.fc.hp.com>
+Date: Wed, 16 Feb 2000 10:38:05 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > > But Perhaps we can have a 16 Mb offset instead.
-> >
-> > I think not mapping the first 64 KB and making a copy of page 0 somewhere
-> > else would make sense.  Then we could use the first 64 KB of the virtual
-> > address space to implement gateway pages.
+John Marvin wrote:
+...
+> Virtually mapping the card doesn't help with HPMC's caused by dma buffer
+> mismanagement (i.e. the card causes the HPMC while mastering the bus).
+
+But it generally helps one tell the difference.
+
 > 
-> We can probably use a smaller offset than 16 Mb but 64 Kb won't work.  We
+> Drivers for memory mapped register only cards, i.e. cards without any
+> type of onboard memory (i.e. framebuffers, script memory, etc.) are
+> not very likely to ever run into a bug of this type, since register
+> pointers are usually set up once and never changed.
 
-I didn't propose any offset.  I proposed to do the mapping somewhat like this:
+Agreed. "not very likely" and "never" are not the same. When bringing
+up new drivers, it is in fact more likely than for a mostly working
+driver. So while I agree with the statement, I don't agree with the
+conclusion.
 
-virt		phys
-0000 0000 	somewhere (whereever our syscall page is)
-0000 1000 	- (invalid)
- ...
-0000 f000	- (invalid)
-0001 0000 	0001 0000
- ...
-01ff f000	01ff f000
 
-for a 32 MB box.  This is why I said we should make a copy of page 0.
+> In my experience, the majority of HPMC's have been caused by VM errors.
 
-> Rereading what you said above made me realize that you probably were not
-> talking about a 64 Kb offset. If so, then you are talking about
-> still using an offset of 0, but just not mapping the first 64 Kb a memory,
-> i.e. throwing those pages "away" (actually we can probably find ways
-> to use them). The only problem with this is that we would be prevented
-> from using maximally large tlb mappings to map the first 64 Mb of memory.
+That's cuz you work mostly on VM! :^)
 
-I don't think I care.  Note that this is for PA1.1 anyway, so we don't have
-large pages architecturally.
+For me, it's been mostly device driver bugs (drivers loosing DMA addresses)
+and some I/O MMU code bugs.
 
-> If we moved the offset to 64 Mb we could use 64 Mb page size mappings
-> to map the kernel address space. The cost of this is that it reduces
-> the amount of physical memory we can support.  We can't support 4 Gb
-> (at least not easily), since we need virtual space for the vmalloc area.
-> So I'm not sure losing 64 Mb of virtual space at the bottom end is that
-> much of an issue.
-> 
-> What is the largest amount of physical memory we want to support for the
-> 32 bit implementation?  How hard do we want to work to achieve it?  We
-> can't support more than 4 Gb.  It would take some work to support 4 Gb.
-> My feeling is that if we supported 3.5 Gb max that would be more than
-> adequate.  We could use a 64 Mb offset and use 64 Mb page size mappings to
-> cover the kernel address space.  This should leave enough space for the
-> vmalloc area.
-
-IMHO, don't map the first 64 KB, map the first 3.25 GB - 64 KB, then have
-512 MB vmalloc space, then 256 MB I/O space.  (For newer boxes it looks like
-the 64 KB we don't map should be more like 1 MB).
-
-> > I don't see a real problem with that.  Modifying SR2 requires either direct
-> > modification (the only code I could see doing that is HP/UX code, which isn't
-> > supposed to execute with PER_LINUX anytime soon) or executing random bytes,
-> > which will always break in unexpected ways.
-> >
-> 
-> I agree that it is not a significant enough problem to stop us from doing
-> this. So, I propose the following:
-> 
->     1) When we move the kernel virtual mappings we will leave room at
->     the bottom to a) properly trap on null pointer dereferences, and
->     b) provide room for a Linux syscall gateway page in the kernel
->     address space (space 0). This gateway page will be located at an
->     offset within the positive offset range of a ble instruction.
-
-If you mean "not map the first 64 KB - 1 MB" by "leave room", I agree.
-
->     2) We will set sr2 to zero for each process.
+> Then comes the two cases mentioned above (card not responding, dma
+> errors).  In my experience, the majority of driver page faults were caused
+> by memory references (i.e. mismanaging memory buffers), not IO space
+> references.
 
 Agreed.
 
->     3) We will only map an HP-UX syscall gateway page into HP-UX
->     processes, i.e. we will not map any gateway page into the user
->     address space for PER_LINUX processes.
+> I can't say I've ever seen a driver page fault bug (i.e. one
+> that would have HPMC'd in the current Linux implementation) that was
+> caused by the driver mismanaging a pointer to its virtually mapped card
+> space.  That is my experience.  YMMV.
 
-agreed.
+I have. The driver control structure got corrupted.
+I've worked on so many memory corruption problems.
+I can't imagine debugging them if an errant driver were
+scribbling in real mode to random places in memory.
+AFAICT, the whole point of virtual mode is to avoid this.
 
->     4) Linux syscalls will use the following 2 instruction sequence
->     to reach the gateway page:
+> What percentage of the bugs that are caused by a driver mismanaging a
+> pointer to its card space would be significantly helped by page faulting,
+> rather than HPMC'ing? Although an HPMC can be delayed, I've found in
+> the majority of the cases it was either right on, or one instruction off.
+
+Very small. But I am still convinced it's worth it.
+
+AFAIK, the processor can only HPMC if a LOAD times out.
+What about processor STORE?
+
+I know stores to I/O devices which have "gone fatal" will complete.
+I don't know about stores to "unused" I/O space (no device response).
+I assume stores to physical memory while in real mode will complete too.
+I'd really like to avoid that. Stores from virtual mode are likely
+to data page fault (not always) while in real mode I had the impression
+they never would. Is this correct?
+
 > 
-> 	ble <gateway offset>)(%sr2,%r0)
-> 	ldi <syscall #>,%r20
+> I'm not trying to argue against virtually mapping the card (although I
+> would be all for avoiding mapping a large graphics frame buffer in the
+> kernel address space). I just want to be sure we do it for the right
+> reasons.
 
-I'd prefer to fix gateway offset now - it's a pretty arbitrary decision,
-but it might break binary compatibility lateron.  My proposal is 0x100.
+ok. Fair enough.
 
-So did anyone think about how to write the actual syscall asm statements ?
-it seems rather hard to me, at least without writing the actual functions
-directly and having one more level of indirection ...
+grant
+
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
