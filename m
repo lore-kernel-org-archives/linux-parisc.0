@@ -1,58 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BCD44A19
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Feb 2001 17:24:01 -0700 (MST)
-Message-Id: <200102190026.QAA15382@milano.cup.hp.com>
-To: 5116@telia.com
-Cc: alex@linuxcare.com, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Some progress with WAX_EISA (Who knows about int errupts?) 
-In-reply-to: Your message of "Mon, 19 Feb 2001 00:02:09 PST."
-             <200102182302.AAA30325@zaphod.halden.lillfab.se>
-Date: Sun, 18 Feb 2001 16:26:47 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from smtp-out1.bellatlantic.net (smtp-out1.bellatlantic.net [199.45.40.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DD4E14A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Feb 2001 00:13:24 -0700 (MST)
+Received: from neuronet.pitt.edu (adsl-151-201-241-153.pittpa.adsl.bellatlantic.net [151.201.241.153])
+	by smtp-out1.bellatlantic.net (8.9.1/8.9.1) with ESMTP id CAA00645
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Feb 2001 02:13:13 -0500 (EST)
+Sender: raffo@bellatlantic.net
+Message-ID: <3A90C77A.634C2FBF@neuronet.pitt.edu>
+Date: Mon, 19 Feb 2001 02:12:58 -0500
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+MIME-Version: 1.0
+To: PL <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Cannot build 02/18/2001 glibc
 List-ID: <linux-parisc.vger.kernel.org>
 
-5116@telia.com wrote:
-> On 18 Feb, Grant Grundler wrote:
-> > That's not true. The "virtualized" bus numbers I think are confusing you.
-> > Treat the addresses as "handles" to the address space and the EISA bus
-> > support can strip off the bus number to get the real I/O Port address.
-> Yes, but ISA drivers vill expect that 0x300 is 0x300 ant not 0x20300.
+Hello,
 
-What you are telling me is the ISA drivers poke around using hardcoded
-addresses they "know" about. My proposal is still useful but WAX/EISA
-needs to reserve HBA 0.
+Following the recipe for building the toolchain, I got stuck building
+glibc.
 
-> PCI drivers all get their port addresses from probing the bus so they
-> will 'just work'.
+The configure error message is:
 
-The physical PCI Port addresses are virtualized by the linux PCI
-"BIOS" layer. PCI Drivers don't go poking around on the bus on their own.
+$ROOT/source/glibc/configure --host=hppa-linux --build=$MACH 
+--prefix=$DEST/hppa-linux --with-headers=$ROOT/source/linux/include 
+--disable-profile --without-cvs --enable-add-ons
+[...]
+checking for assembler line separator... *** You need a newer assembler
+to compile glibc
 
-...
-> Yes, I had some idea in this direction to, are we sure this belongs in
-> the PCI layer? It might be thought of as an IO switch above the
-> PCI/EISA/what-ever as well.
 
-inb/outb is a "PCI-like" layer.  inb/outb happens to be implemented in
-"PCI" code (pci.h) since that worked first.  If you have an idea of
-where inb/outb switch ought to "live", I'm curious.
+The log contains:
 
-> Well the i386 version is that disable_irq() waits until all pending
-> interrupts on the local processor have been serviced while
-> disable_irq_nosync() returns immediately. The parisc version of
-> disable_irq() seems to be what disable_irq_nosync() is on the i386. 
+configure:2942: checking for assembler line separator
+configure:2949: gcc -v -Wa,-v -c  conftest.s 1>&5
+Reading specs from /usr/lib/gcc-lib/i486-suse-linux/2.95.2/specs
+gcc version 2.95.2 19991024 (release)
+ /usr/i486-suse-linux/bin/as -V -Qy -v -o conftest.o conftest.s
+GNU assembler version 2.9.5 (i486-suse-linux) using BFD version
+2.9.5.0.24
+conftest.s: Assembler messages:
+conftest.s:1: Error: invalid character '_' in mnemonic
 
-Uhm. I still don't see the distinction.
-"nosync" suggests an interaction with other CPU's?
+The binaries called and the version numbers are shown. Do I need to
+upgrade the assembler or is it a PATH misconfiguration? Thanks.
 
-A CPU will *always* service IRQ's before the CPU continues with
-"regular" code.  disable_irq() guarantees no *new* interrupts
-will occur until enable_irq() is called. I don't totally understand
-the CONFIG_SMP version of that code though.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+     Rafael
