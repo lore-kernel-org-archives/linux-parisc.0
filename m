@@ -1,18 +1,21 @@
-Return-Path: <brianbarber@myrealbox.com>
-Received: from smtp-send.myrealbox.com (smtp-send.myrealbox.com
-	[192.108.102.143])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0B19D4854
-	for <parisc-linux@parisc-linux.org>;
-	Mon, 12 Jan 2004 07:37:34 -0700 (MST)
-Subject: Re: [parisc-linux] Installing Debian on an 712/80
-From: "Brian Barber" <brianbarber@myrealbox.com>
-To: parisc-linux@parisc-linux.org
-Date: Mon, 12 Jan 2004 09:37:38 -0500
-MIME-Version: 1.0
-Message-ID: <1073918258.bd0297c0brianbarber@myrealbox.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: 
-Reply-To: brianbarber@linux.ca
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 14F3E4854
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 12 Jan 2004 09:38:52 -0700 (MST)
+Date: Mon, 12 Jan 2004 09:38:50 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Message-ID: <20040112163850.GA22886@colo.lackof.org>
+References: <20040105194809.GA9269@systemhalted>
+	<20040105194839.GB9269@systemhalted>
+	<20040111040906.GA32382@colo.lackof.org>
+	<20040111204355.GL28742@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040111204355.GL28742@systemhalted>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,32 +25,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I'm not a developer, but I do dabble.  I'm probably more dangerous than use=
-ful.  I'm an infrastructure architect, a published author and an experien=
-ced tester; hence, I figure that I can best help out with documention and=
- testing the projects that are highest priority on your to-do list.
+On Sun, Jan 11, 2004 at 03:43:55PM -0500, Carlos O'Donell wrote:
+> Excellent. You haven't tried profiling any programs have you? :)
 
-I'm not partial to any particular type of project, my only limitation is th=
-e fact that I'm running an older piece of equipment.  If anyone in Canada=
-'s National Capital Region wants to float something in that would be more=
- appropriate to the project, I'd give it a good home.
+Profiing? what's that? :^P
 
-BB
+> Compile with CFLAGS=-pg, run-em, then run gprof on the gmon.out output?
 
------Original Message-----
-From: Randolph Chung <tausq@debian.org>
-To: brianbarber@linux.ca
-Date: Mon, 12 Jan 2004 07:20:00 -0800
-Subject: Re: [parisc-linux] Installing Debian on an 712/80
+ok...I'll try tonight.
 
-> PS: Now that I have a working machine, how can I help the development eff=
-ort?
-
-there are lots of projects, what kinds of things are you interested in?
-kernel? userspace? toolchain? packeges?
-
-randolph
---=20
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+thanks,
+grant
