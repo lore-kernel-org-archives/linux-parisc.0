@@ -1,43 +1,45 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA11330
-	for <parisc-linux@puffin.external.hp.com>; Sun, 13 Jun 1999 18:31:37 -0600
-Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 14 Jun 1999 00:31:26 -0000
-Received: from alan by the-village.bc.nu with local (Exim 2.12 #1)
-	id 10tKeG-0005Wl-00
-	for parisc-linux@thepuffingroup.com; Mon, 14 Jun 1999 01:30:48 +0100
-To: parisc-linux@thepuffingroup.com
-Date: Mon, 14 Jun 1999 01:30:46 +0100 (BST)
-Content-Type: text
-Message-Id: <E10tKeG-0005Wl-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: [parisc-linux] Lasi/Dino/Interrupts
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA11932
+	for <parisc-linux@puffin.external.hp.com>; Mon, 14 Jun 1999 00:34:50 -0600
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+cc: adevries@thepuffingroup.com (Alex deVries),
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] It's finally sunk in: bye bye elf32 
+Reply-To: law@cygnus.com
+In-reply-to: Your message of Sun, 13 Jun 1999 13:02:58 EDT.
+             <199906131702.NAA28988@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Mon, 14 Jun 1999 00:29:34 -0600
+Message-ID: <26267.929341774@upchuck.cygnus.com>
+From: Jeffrey A Law <law@cygnus.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I've started putting together some basic code to drive LASI and DINO.
-Some things aren't terribly clear however
 
-1.	How much of LASI/DINO/PCI has been initialised by the boot firmware.
-	Has it performed the PCI device configurations and assigned bus
-	spaces for the devices ?
+  In message <199906131702.NAA28988@hiauly1.hia.nrc.ca>you write:
+  > The concensis is that writing a SOM linker is a major project.  Another
+  > option might be to approach HP and see if they would consider putting
+  > the source code for their SOM linker into the public domain, or possibly
+  > supplying a static binary version of the linker that could be distributed.
+  > I would suggest that Alex discuss the matter with his contact at HP.
+It's an option.  Probably not a bad one.  Though the HP linker's idea of
+portability is marginal at best, so getting it running on another system is
+no trivial effort.  But if HP is willing to do it and give y'all binaries,
+then go for it.
 
-	Will the LASI devices be in reset state except for the console port
-	(Im assuming lasi is driving the firmware console ?)
 
-2.	It isnt totally clear from the docs what the input clock of the
-	16550A macrocell is. I need that for the serial.c code obviously..
+  > If this does not work out, then we must fall back to ELF32 and devote
+  > enough effort to get elf32-hppa working at an acceptable level.  Jeff
+  > Law is the world expert on the hp version of these tools.  However, Jeff
+  > is very busy with gcc.  Any volunteers?  Obviously, this needs to be
+  > coordinated with the maintainers of binutils and Cygnus.
+I would strongly recommend against any serious work at trying to make the
+existing elf32-hppa.c work -- start over from scratch with the spec at your
+side.  There is almost no salvageable code in elf32-hppa.c.
 
-3.	The parallel port slave reset is at 102000 in the register map. The
-	docs elsewhere say the parallel port DMA registers can be reset
-	by writing to offset 10300 - should this be 102000 or 103000 - ie
-	is the dma reset for the parallel seperate , and is it at the
-	obvious place or really is one of the 8bit bus (flash) addresses
+If someone has an interest in working on a rewrite I would strongly encourage
+them to contact me so that we can work closely together and avoid useless
+duplication of work since I'm working on elf64-hppa.c right now (which should
+be able to share a bunch of code with elf32-hppa.c)
 
-4.	Do I need to set bits in the I/O reset register back to 1 after
-	a reset in order to bring them back active or is that automatic.
-
-I have the irq handlers for LASI and DINO done. These will map the 
-multiplexed irqs from these devices onto the linux "one irq space" model
-presented to drivers.
-
-Alan
+jeff
