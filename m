@@ -1,16 +1,19 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] binutils 32/64 bit question
-Date: Tue, 4 Jan 2005 16:03:03 -0500
-Message-ID: <20050104210302.GC14572@baldric.uwo.ca>
-References: <200412302240.20913.vapier@gentoo.org>
-	<200412310404.iBV44G45000401@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] C240 and Linux 2.6.x
+Date: Wed, 5 Jan 2005 10:17:20 -0700
+Message-ID: <20050105171720.GB24439@colo.lackof.org>
+References: <20041230231420.GA15674@nilpferd.asyl>
+	<41D553CB.6070802@tiscali.be>
+	<20041231174649.GA21212@nilpferd.asyl>
+	<20041231212330.GB23592@colo.lackof.org>
+	<20050103181334.GB21212@nilpferd.asyl>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: Alexander Bartolich <alexander.bartolich@gmx.at>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200412310404.iBV44G45000401@hiauly1.hia.nrc.ca>
+In-Reply-To: <20050103181334.GB21212@nilpferd.asyl>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +24,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Dec 30, 2004 at 11:04:15PM -0500, John David Anglin wrote:
-> > has anyone toyed around with having the default hppa binutils support both 
-> > 32bit and 64bit code ?
-> 
-> The main problem is that ld is different.  It would take some work
-> to merge them.  The 64-bit ld uses .opd's and the 32-bit ld doesn't.
-> There are advantages to using .opd's (e.g., function descriptors
-> are unique).  We've talked about this but no significant progress
-> has been made.
+On Mon, Jan 03, 2005 at 07:13:34PM +0100, Alexander Bartolich wrote:
+> I fetched palinux-b180-defconfig-2.6.10-pa2_0-2_all.deb from
+> http://cvs.parisc-linux.org/download/linux-2.6/autobuild/b180_defconfig/
+> and build a nice vmlinux-2.6.10-pa2.
+...
 
-Progress on:
+> Linux Tulip driver version 1.1.13 (May 11, 2002)
+...
+> Kernel Fault: Code=26 regs=11474480 (Addr=00000004)
+...
+>  IAOQ[0]: tulip_init_one+0x23c/0xdc0
+>  IAOQ[1]: tulip_init_one+0x240/0xdc0
+>  RP(r2): tulip_init_one+0x21c/0xdc0
 
-a. Adding OPD's to the 32-bit code?
+The code in question is:
+...
+103eb100:       34 17 00 40     ldi 20,r23
+103eb104:       2b 78 e0 00     addil f1000,dp,%r1
+103eb108:       34 1a 00 00     ldi 0,r26
+103eb10c:       48 33 01 60     ldw b0(,r1),r19
+103eb110:       34 f8 04 60     ldo 230(r7),r24
+103eb114:       91 00 20 00     cmpiclr,= 0,r8,r0
+103eb118:       08 0f 02 5a     copy r15,r26
+103eb11c:       34 19 14 00     ldi a00,r25
+103eb120:       0e 68 10 96     ldw 4(,r19),r22		<== Fault
+103eb124:       e6 c0 20 00     be,l 0(sr4,r22),%sr0,%r31
+103eb128:       08 1f 02 42     copy r31,rp
+103eb12c:       87 80 2c 50     cmpib,= 0,ret0,103eb75c <tulip_init_one+0x878>
+103eb130:       0d 7c 12 90     stw ret0,8(,r11)
+103eb134:       49 73 00 20     ldw 10(,r11),r19
+103eb138:       37 94 10 00     ldo 800(ret0),r20
 
-b. Add multiarch binutils support for both 32/64 bit? 
+"103eb124: be,l" is an indirect function call.
+The fault occurs when the function pointer is loaded.
+This means the function table pointer (R19) hasn't been initialized.
 
-:)
+I'm still trying to track down which indirection function this is.
 
-c.
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
