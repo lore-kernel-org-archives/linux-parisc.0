@@ -1,21 +1,23 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 861D648BA
+Return-Path: <soete.joel@tiscali.be>
+Received: from spoolo2.tiscali.be (spoolo2.tiscali.be [62.235.13.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E13BC48BA
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 14 Mar 2004 12:55:24 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: No PS2 keyboard/mouse on B132L, 2.6.[34]
-Date: Sun, 14 Mar 2004 20:55:12 +0100
-References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
-	<Pine.LNX.4.58.0403141509130.14547@sal.ucc.ie>
-	<20040314181256.GA9104@finlandia.infodrom.north.de>
-In-Reply-To: <20040314181256.GA9104@finlandia.infodrom.north.de>
+	Sun, 14 Mar 2004 12:58:35 -0700 (MST)
+Message-ID: <4054B9BC.30309@tiscali.be>
+Date: Sun, 14 Mar 2004 19:59:56 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200403142055.12668.deller@gmx.de>
-Cc: Martin Schulze <joey@infodrom.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08, fixes GLRO
+	changes.
+References: <20040312164116.GI24266@baldric.uwo.ca>
+	<404EC1C600002B98@ocpmta1.freegates.net>
+	<20040312212012.GS24266@baldric.uwo.ca>
+	<40535A0A.4020209@tiscali.be>
+In-Reply-To: <40535A0A.4020209@tiscali.be>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,113 +27,33 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sunday 14 March 2004 19:12, Martin Schulze wrote:
-> > > For what it's worth, these settings don't activate my keyboard,
-> > > but... tadam...  the mouse is recognised, finally.  
+Carlos,
 
-Cool.
+I just noticed a border effect when I try to use James method: use prefix=/usr and make  install_root=/mnt/chroot install;
 
-> > > However, if 
-> > > I have to choose to use either keyboard or mouse, I'd choose the
-> > > keyboard.
-
-Of course.
-
-> > > CONFIG_INPUT_KEYBOARD=y
-> > > CONFIG_KEYBOARD_ATKBD=y
-> > > # CONFIG_KEYBOARD_SUNKBD is not set
-> > > # CONFIG_KEYBOARD_XTKBD is not set
-> > > # CONFIG_KEYBOARD_NEWTON is not set
-> > > CONFIG_KEYBOARD_HIL=y
-> > 
-> > Why do you include HIL keyboard support?
+Joel Soete wrote:
 > 
-> Because the keyboad is connected to a HIL hub and it's also a
-> reminiscent of the time before I learned that the keyboard and mouse
-> are not handled entirely separate anymore.  I still have to strip some
-> config options from the configuration.
-
-I think the main question here is which type of keyboard you have.
-Either it's a HIL keyboard (with the special HIL connector), or it's a 
-PS/2 keyboard.
-My 715/64 for example has a HIL HUB too, and here the mouse and
-keyboard are 100% HIL only devices.
-AFAIK, there are other HIL Hubs too, which provides original PS/2
-ports and HIL ports. So, which kind of connector does your keyboard has ?
-
-> > > CONFIG_INPUT_MOUSE=y
-> > > CONFIG_MOUSE_PS2=y
-> > > CONFIG_MOUSE_SERIAL=y
-> > 
-> > do you need serial mouse support?
 > 
-> Well, at one time I tried to fix the mouse problem by connecting a
-> serial mouse to ttyS0/ttyS1 but it didn't work either, even though a
-> getty on that port worked and I could log in, hence the port works at
-> least and is supported in the kernel.
-
-Serial mice should work. I didn't tested it for some time now, but if
-it's broken I would like to know.
-
-> > > CONFIG_MOUSE_HIL=y
-> > 
-> > and why do you include HIL mouse support?
+> Carlos O'Donell wrote:
 > 
-> Same as above, because the mouse is connected to a HIL hub and it's a
-> reminiscent from the time before I learned that the keyboard and mouse
-> are not handled entirely separate anymore for parisc.
-> 
-> > > Any idea how to get the keyboard detected again?
-> > > (This is a 725/100)
-> > 
-> > I don't know the 725, but from what I understand it uses (GSC) PS/2, so you
-> > attach keyboard and mouse directly, without any converters. Is that correct?
-> 
-> No it isn't.  That's the case for 712, not this one.  There's a HIL
-> hub where I can connect one keyboard, one mouse and another HIL hub.
-> The case doesn't have any PS/2 socket.
+>> On Fri, Mar 12, 2004 at 06:33:11PM +0100, Joel Soete wrote:
+>>
+>>> Hmmm all output files realted to Error1 was empty because of:
+>>> hppa-linux-gcc -nostdlib -nostartfiles -o 
+>>> /Develop/parisc-linux/build/glibc/posix/tst-regex
+>>> -Wl,-dynamic-linker=/lib/ld.so.1
+                         ^^^^^^^^^^^^
 
-Ok. So your keyboard seem to be a HIL keyboard ?
-But it's strange, that your PS/2 mouse works then... I'm confused.
+When I use the previous method (prefix=/mnt/chroot) it become :
 
-> > If this is the cause, get rid of all HIL drivers and use PS/2 exclusively.
-> > I think using a combination of HIL and PS/2 drivers might cause some
-> > sort of driver confusion in your case.
-> 
-> Might well be.  I'm still working on stripping the stuff and testing
-> various combinations.
+-dynamic-linker=/mnt/chroot/lib/ld.so.1
 
-Ok.
-> > > If it helps to provide more information, please let me know and I'll
-> > > dig them out.
-> > >
-> > >  	  Say Y here if you have a PS/2 mouse connected to your system. This
-> > >  	  includes the standard 2 or 3-button PS/2 mouse, as well as PS/2
-> > >  	  mice with wheels and extra buttons, Microsoft, Logitech or Genius
-> > > -	  compatible.
-> > > +	  compatible. This also includes a PS/2 mouse connected to your HIL
-> > > +	  hub on PA-RISC.
-> > 
-> > I'm confused here!
-> >
-> > AFAIK if you are using HIL, you ONLY have to use the HIL keyboard/mouse
-> > drivers, PS/2 is a different thing and is not involved at all.
-> > (I hope I don't say anything stupid here).
-> 
-> Aha.  I thought it was different.  Maybe I misread Helges mail.
+So here I can drive make -k check without pb in basic env (the one in which I build the new glibc)
 
-I'm not sure right now about the status of the HIL keyboard/mouse driver, e.g.
-if it works or not in the 2.6 kernel series...
- 
-> > So far I thought that you cannot attach a PS/2 mouse to a HIL adapter,
-> > you can only attach HIL devices ... (at least this is the case for my 730)
-> 
-> Well, at least physically this is possible.  I haven't tried to use
-> that combination, though, since I have the original mouse and
-> keyboard as well.  However, I could give it a try once I find a
-> working config combination.
+OTC with James' method I would have to do it in chroot /mnt/chroot env.
+And it wasn't what I did; I will so restart build and test with prefix=/mnt/chroot (as I use to do) and advise you of the new 
+results ;)
 
-Yes, please.
+That's a way to lurn ;)
 
-Regards,
-Helge
+Joel
