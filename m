@@ -1,15 +1,26 @@
-Return-Path: <vghyu@msn.com>
-Message-ID: <m9b34j98n-lzr0j-d$v7@q70yojw2>
-From: "Beulah Barry" <vghyu@msn.com>
-To: grundler@parisc-linux.org
-Date: Fri, 19 Dec 03 22:33:41 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="01_DF.DFB2FFFF452"
-Cc: pmccabe@parisc-linux.org, parisc-linux@parisc-linux.org
-Subject: [parisc-linux] If ..it's good enough for a president, , , ,
-	it's good enough for me!! zylx fr pxwuurehl
-Reply-To: Beulah Barry <vghyu@msn.com>
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62916484B
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 19 Dec 2003 09:11:36 -0700 (MST)
+Date: Fri, 19 Dec 2003 09:11:34 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Herbert Poetzl <herbert@13thfloor.at>
+Subject: Re: [Vserver] Re: [parisc-linux] syscall number for vserver
+Message-ID: <20031219161134.GA24780@colo.lackof.org>
+References: <20031217221618.GC9313@MAIL.13thfloor.at>
+	<20031218072506.GA8142@lst.de>
+	<20031218150129.GA792@MAIL.13thfloor.at>
+	<20031218160450.GJ15674@parcelfarce.linux.theplanet.co.uk>
+	<20031218162809.GA2605@MAIL.13thfloor.at>
+	<20031218195535.GA12591@colo.lackof.org>
+	<20031219010035.GB7469@MAIL.13thfloor.at>
+	<20031219020352.GA16266@colo.lackof.org>
+	<20031219032455.GB8847@MAIL.13thfloor.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20031219032455.GB8847@MAIL.13thfloor.at>
+Cc: vserver@list.linux-vserver.org, parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,76 +30,52 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Fri, Dec 19, 2003 at 04:24:56AM +0100, Herbert Poetzl wrote:
+...
+> sure not, but gettimeofday for example, will
+> return the current time, and this usually does
+> not need an architecture specific interface
 
---01_DF.DFB2FFFF452
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+glibc
 
-<html>
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
-<body bgcolor=3D"#000000" font color=3D"#000000" face=3D"verdana" link=3D#=
-00FF00 alink=3D#00FF00 vlink=3D"#0000FF">
-<center>
-  <p align=3D"center"><H4><font color=3D"#FFFFFF" face=3D"verdana">A MEDIC=
-ALLY PROVEN FACT:<br>HGH<br>replenishes what TIME has taken away !</font><=
-/H4>
-  <H5><font color=3D"#FFCC00" face=3D"verdana">Wherever you go<br> you see=
-, healthy and 
-    vibrant men and women.<br>With their radiant faces, and beautiful skin=
-,<br> the thick lustrous hair and their bright shimmering eyes.<br><br>To =
-put it simply:<br>
-    Time, stress, and aging REDUCE and EXHAUST the naturally occuring horm=
-ones 
-    within our bodies.<br> The very hormones we need to remain youthful an=
-d vibrant.<br>You can now REPLENISH what time has taken from you !<H3><fon=
-t color=3D"#FFFFFF" face=3D"verdana">With<br> doctor approved<br>HGH !</fo=
-nt></H3>
-    Feel Young and Alive !<br>
-    Be Sexy and Athletic !<br>Improves mental clarity and thinking abiliti=
-es !</font></H5>
-</center> 
-<center><H5><font color=3D"#FFCC00" face=3D"verdana">Part of the daily rou=
-tines of:<br>Celebrities, Models, Athletes, Politicians, and  even World L=
-eaders !<br>We are so confident of the difference HGH will make in your li=
-fe<br> that we offer an exclusive:</font></H5> <H2><font color=3D"#FFFF00"=
- face=3D"verdana">60 day 100% Money-Back Guarantee!</font></H2></center>
+> (for sure it will require an arch specific
+> implementation ;)
 
-<font color=3D"#FFCC00" font size=3D"1" face=3D"verdana">- Increased muscl=
-e strength and size. 
-- Loss in body fat. 
-- Increased bone density. 
-- Lower blood pressure 
-- Quickens wound healing. 
-- Reduces cellulite. 
-- Improved vision. 
-- Wrinkle disappearance. 
-- Increased skin thickness and texture. 
-- New hair growth and color restored. 
-- Increased energy levels and exercise endurance. 
-- Improved sleep and emotional stability. 
-- Improved memory and mental alertness. 
-- Increased sexual potency and frequency. 
-- Resistance to common illness. 
-- Strengthened heart muscle. 
-- Controlled cholesterol. 
-- Controlled mood swings.</font><br>
-<center>
-  <h1><a href=3D"http:/www.fisha.biz/hgh/?buster">Cli~ick  
-    Here<br>
-    for your HGH!!</a></h1>
-</center>
-</body>
-</html>
-mgaj fyprjhllu hjane  hfgfnz udy
+possible a different syscall.
+Sounds like we agree.
 
-slo 
-g b nvszxddy 
-hmlj
-u vvbzgby eaifbyj nqjhnw
-sy
+...
+> > to test with and enabling the kernel config options, right?
+> 
+> well, yeah, that is what I did to add the parisc(64)
+> vserver support, except that it doesn't have
+> a kernel config option yet ;)
 
---01_DF.DFB2FFFF452--
+That should be part of the patch to enable vserver.
+
+> > BTW, I visited http://www.linux-vserver.org/ and didn't feel
+> > I understood why it's more useful than say, user mode linux
+> > (another form of virtualization) or vPARs. 
+> 
+> hmm, for UML you'll need a kernel for each vps,
+> which eats up a lot of resources, where vserver
+> even allow you to share the files between vps
+
+Has anyone bothered to quantify how much resource?
+In general, systems are memory starved, so this sounds
+like a good thing.
+
+> regarding vPARs, I didn't know that they work
+> for Linux yet, can you give some hints on that?
+
+Several arches are capable of running the OS via a "monitor"
+that abstracts the HW (even emulating IO devices depending on
+the implementation).  Thus allows several OS instances to run
+at the same time.  It's not too different from UML except that
+the monitor is "lighter weight" than a Linux kernel host and
+can run different OSs (ie not just linux) at the same time.
+
+Search for "vPARs" on www.hp.com if you want more details
+on HPUX vPARs support.
+
+grant
