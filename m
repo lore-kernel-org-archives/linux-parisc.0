@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E94EE482C
-	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 12:43:03 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ybxwiaaa for parisc-linux@parisc-linux.org; Tue, 13 Nov 2001 12:38:05 -0700
-Date: Tue, 13 Nov 2001 11:42:48 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] to swap or not to swap
-Message-ID: <20011113114247.G3053@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20011113003057.H391@tausq.org> <20011113142545.E11817@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011113142545.E11817@parcelfarce.linux.theplanet.co.uk>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E3700482C
+	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 13:36:52 -0700 (MST)
+Message-Id: <200111132032.NAA01102@puffin.external.hp.com>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] to swap or not to swap 
+In-Reply-To: Message from Randolph Chung <randolph@tausq.org>
+   of "Tue, 13 Nov 2001 11:42:48 PST." <20011113114247.G3053@tausq.org>
+Date: Tue, 13 Nov 2001 13:32:08 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,30 +21,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> depends on the PCI bridge and MMU whether you need to do bytesexswapping
-> in software or not.  see section 9 in the Dino ERS, page 61 for how PA
-> does this.
+Randolph Chung wrote:
+> Grant also seems to be of the opinion that cpu data needs to be swapped
+> before written to PCI devices... so does that mean that if i wrote
+> something like:
+> 
+> writew(cpu_to_le16(foo), addr)
+> 
+> then on things like parisc it gets swapped once, and on things like
+> sparc it gets swapped twice?
 
-Empirically I've found this not to be the case. For example, if i need
-to write 0x01 to byte 0 of a 16-bit PCI register, I've found I need to
-do:
+maybe that's a bug in how sparc code works?
 
-writew(0x0100, addr) on parisc
-vs
-writew(0x0001, addr) on x86
+For parisc, the above is correct for (nearly) all PCI devices.
+(I hedge since odd PCI devices might want cpu_to_be16() instead).
 
-Grant also seems to be of the opinion that cpu data needs to be swapped
-before written to PCI devices... so does that mean that if i wrote
-something like:
+And don't forget that control data read by the PCI device via DMA
+has to be "endian corrected" too.
 
-writew(cpu_to_le16(foo), addr)
+PA HW implements what I've heard called "address invariance".
+IIRC, m700-10 (r4000 mips, Olivetti) does the same thing.
+I think Dino Documentation calls this "byte is byte".
+Ie byte stream offsets are the same regardless of how they
+are address by either DMA or PIO from either CPU or PCI device.
 
-then on things like parisc it gets swapped once, and on things like
-sparc it gets swapped twice?
+The result is multi-byte data (ie short/int) has to be swapped
+when read/written by the PArisc CPU and the addresses don't change.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+HTH,
+grant
