@@ -1,36 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 819E9482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Jul 2001 01:55:07 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id CE6CB482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Jul 2001 02:36:05 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 7C9F4B00C; Mon, 16 Jul 2001 08:53:18 +0100 (BST)
-Date: Mon, 16 Jul 2001 08:53:18 +0100
+	id 4F594B00D; Mon, 16 Jul 2001 09:34:16 +0100 (BST)
+Date: Mon, 16 Jul 2001 09:34:16 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] setting up the STI console on a 735/99
-Message-ID: <20010716085318.A30207@linuxcare.com>
-References: <001401c10b94$29aa0c40$0f809b8e@ati.stlawrencec.on.ca> <0107131413361U.03565@flambe.ireste.fr>
+To: "CARSON,KEVIN (HP-Canada,ex1)" <kevin_carson@hp.com>
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] LOOP_CLR_FD on 735
+Message-ID: <20010716093416.B30207@linuxcare.com>
+References: <B9957F974955D411829400D0B74FF27A04BF7840@xtor01.canada.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <0107131413361U.03565@flambe.ireste.fr>; from matthieu.lecorre@polytech.univ-nantes.fr on Fri, Jul 13, 2001 at 02:13:36PM +0200
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <B9957F974955D411829400D0B74FF27A04BF7840@xtor01.canada.hp.com>; from kevin_carson@hp.com on Fri, Jul 13, 2001 at 01:30:01PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Jul 13, 2001 at 02:13:36PM +0200, Matthieu Le Corre wrote:
-> Le Jeudi 12 Juillet 2001 20:52, vous avez écrit :
-> > So I have now succesfully installed the base system on a external narrow
-> > SCSI. I can boot off of it. Now the next question is how do I set it up to
-> > go to the STI console instead of the serial?
-> >
-> > Ray
+On Fri, Jul 13, 2001 at 01:30:01PM -0400, CARSON,KEVIN (HP-Canada,ex1) wrote:
+> Hi!
 > 
-> try console=tty on palo commande line 
+> I've been trying the latest releases on various workstations I have access
+> to.
 > 
-> i try it, messages go on console but i get a "unable to open initial console"
-> and back to serial to login !
+> Two of the machines are a B180L and a 735.  The B180L installs with the
+> 0.9.1 CD.   When I try the 735 with 0.9.1 or 0.9.2 I get the message
+> 
+> 	ioctl: LOOP_CLR_FD: No such device or address
+> 
+> at the point where the Rescue Floppy is being installed from floppy images
+> off of the CD into the Linux system partition, it just sits there.  I
+> believe I saw a similiar message with the B180L but it flicked past too fast
+> for me to read the entire message.
 
-I don't know whether linux supports graphical console on 735 yet.
-You could try enabling a line in /etc/inittab to spawn a getty on
-tty0, and see if you then get a login prompt.
+That message relates to the installer doing a loopback mount of
+the rescue image.  Havn't looked at what the installer is doing to
+trigger it, but it should not be causing your problem.
 
 Richard
