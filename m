@@ -1,46 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 49003482A
-	for <parisc-linux@parisc-linux.org>; Fri,  4 May 2001 19:48:08 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 58A0B482A
+	for <parisc-linux@parisc-linux.org>; Fri,  4 May 2001 20:35:06 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14vrAm-0003td-00; Sat, 05 May 2001 02:47:52 +0100
-Date: Sat, 5 May 2001 02:47:52 +0100
+	id 14vruL-0004iC-00
+	for parisc-linux@parisc-linux.org; Sat, 05 May 2001 03:34:57 +0100
+Date: Sat, 5 May 2001 03:34:57 +0100
 From: Matthew Wilcox <matthew@wil.cx>
-To: Alan Modra <alan@SPRI.Levels.UniSA.Edu.Au>
-Cc: Matthew Wilcox <matthew@wil.cx>,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] glibc 2.2.3: setjmp/longjmp
-Message-ID: <20010505024752.P32445@parcelfarce.linux.theplanet.co.uk>
-References: <20010505020157.O32445@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.30.0105051041090.7143-100000@mullet.itr.unisa.edu.au>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010505033457.Q32445@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.30.0105051041090.7143-100000@mullet.itr.unisa.edu.au>; from alan@SPRI.Levels.UniSA.Edu.Au on Sat, May 05, 2001 at 10:48:14AM +0930
 Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] glibc 2.2.3 make check status
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, May 05, 2001 at 10:48:14AM +0930, Alan Modra wrote:
-> On Sat, 5 May 2001, Matthew Wilcox wrote:
-> 
-> > was found.  would anyone care to remember anything else that they thought
-> > `might be a problem at some point'?
-> 
-> lock alignment => malloc alignment.  (Possibly already fixed with new
-> glibc. I haven't checked.)
+I'm not sure people actually ran make check against glibc 2.2.1, so I don't
+know how this compares.  Maybe 2.2.3 just has more tests than 2.2.1 did...
 
-Yup, that got taken care of by Ulrich.
+I'd love some help on this.  Really.  check the merge_GLIBC_CVS_20010424
+branch out of CVS, configure it, make, then make check, and you'll start
+hitting failures.  I've indicated the ones I've investigated.
 
-> [re: FUNCTION_OK_FOR_SYSCALL == 0]
-> > I vaguely remember that.  Searching the list archive finds:
-> > http://lists.parisc-linux.org/pipermail/parisc-linux/2000-July/009002.html
-> 
-> That patch seems to be a merge, so we don't have the real reason for
-> the change.
+ * all the tests in math/ fail.  pb knows what these problems are.
 
-Sure, but I'm not sure we had it before that.  Wait!  We have cvs history!
-http://puffin.external.hp.com/cvs/gcc/gcc/config/pa/pa-linux.h?r1=1.1&r2=1.2
-Oh.  The comment isn't helpful.  I guess you'll have to ask dhd...
-dhd@debian.org is one of his valid addresses.
+ * stdlib/strtold fails.  This is due to our long double being 64 bit and
+   glibc thinks its 128 bit.  Bug #119
+
+ * all the tests in dlfcn/ fail.  I haven't investigated these.
+
+ * grp/testgrp fails.  This is a generic glibc 2.2.3 problem, the fix
+   is available from upstream.
+
+ * posix/testchmod fails.  This is due to a kernel bug in strncpy_from_user.
+   Bug #118
+
+ * posix/globtest fails.  Haven't investigated.
+
+ * io/test-utime fails.  Looks like a stat problem.
+
+ * misc/tst-efgcvt fails.  (Maybe another long double problem?)
+
+ * gmon/tst-sprofil fails.  Looks like it needs to be ported to Linux/hppa.
+
+ * linuxthreads/ and rt/ all hang.  I'll look at this.
+
+ * elf/resolvfail and elf/constload1 fail.  Not investigated.  Probably other
+   tests in elf/ also fail.
 
 -- 
 Revolutions do not require corporate support.
