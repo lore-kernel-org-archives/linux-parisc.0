@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B54394838
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 00:39:47 -0700 (MST)
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org, willy@debian.org
-Message-ID: <OF7728C2FF.967E7C94-ONC1256B64.002A52DE@com>
-From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
-Date: Mon, 18 Feb 2002 08:45:38 +0100
+Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 207F84830
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 02:21:46 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <helge.deller@sap.com>
+To: Hinrich Aue <hinrich_aue@yahoo.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Power LED
+Date: Mon, 18 Feb 2002 10:21:17 +0100
+References: <20020218073706.35199.qmail@web21205.mail.yahoo.com>
+In-Reply-To: <20020218073706.35199.qmail@web21205.mail.yahoo.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Re: kernel-2.4.17-pa22 boot problem B132L+ with serial
+Message-Id: <E16cjzT-0000FF-00@linuxlab.wdf.sap-ag.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,91 +24,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hey all,
+On Monday 18 February 2002 08:37, Hinrich Aue wrote:
+> When I push the power-button on my 715/80, it prints a
+> message on the screen, that a shuwdown is requested,
+> and then shuts down immediatly. On the next start up a
+> fsck is required.
+> It seems to be software controlled, or it would not
+> print that message(I think).
+> Maybe a shutdown signal is emmited from the kernel at
+> one point, but the runlevel isn't changed before.
+> So it should be possible to isolate that signal and
+> use it seperately in the atx style.
+> (I'm not a kernel hacker, but maybe this is a starting
+> point?)
+> Just speculating.
 
-Regarding root login problem on serial link, I could not reproduce on my
-B180.
-May be a new apt-get diste-upgrade would help?
+715/64, 715/80 and 715/100 belong to the so-called
+715/new machines and all of those support the soft-power
+switch, else you wouldn't have received the 
+"Shutdown requested..." message. 
+In your case I assume, that your filesystems wasn't clean
+before you did shutdown your system....
 
-Joel
+BTW, the shutdown is initiated by the kernel by sending
+a SIGINT to the PID (cad_pid) of the init process. This
+is done in the file power.c:
+http://cvs.parisc-linux.org/linux/arch/parisc/kernel/power.c?rev=1.5&content-type=text/vnd.viewcvs-markup
+After receiving this signal the init process switches the runlevel,
+shuts down your system cleanly and runs /sbin/poweroff
+or /sbin/halt. This is already the case and is also done
+that way for ATX systems.
 
-Notes;
-Debian GNU/Linux 3.0 palinux ttyS0
-
-palinux login: root
-Password:
-Last login: Fri Feb 15 10:35:16 2002 from wsjso:0.0 on pts/2
-Linux palinux 2.4.17-pa23-lkcd-evms-0.9.0 #4 Thu Feb 14 14:19:07 CET 2002
-parisc unknown
-palinux:~# dpkg -l libc6
-Desired=3DUnknown/Install/Remove/Purge/Hold
-| Status=3DNot/Installed/Config-files/Unpacked/Failed-config/Half-installed
-|/ Err?=3D(none)/Hold/Reinst-required/X=3Dboth-problems (Status,Err:
-uppercase=3Dbad)
-||/ Name           Version        Description
-+++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-ii  libc6          2.2.5-3        GNU C Library: Shared libraries and
-Timezone
-palinux:~#
-
-And also with k pa26
-
-Debian GNU/Linux 3.0 palinux ttyS0
-
-palinux login: root
-Password:
-Last login: Mon Feb 18 08:30:39 2002 on ttyS0
-Linux palinux 2.4.17-pa26 #2 Fri Feb 15 14:55:59 CET 2002 parisc unknown
-palinux:~# ll /var/lib/dpkg/status
--rw-r--r--    1 root     root       273512 Feb 14 12:31
-/var/lib/dpkg/status
-palinux:~# date
-Mon Feb 18 08:45:02 CET 2002
-palinux:~#
-
-
-
-                                                                           =
-                                               =20
-                    Grant Grundler                                         =
-                                               =20
-                    <grundler@dsl2.extern        To:     "Jo=EBl Soete" <js=
-o@europay.com>                                   =20
-                    al.hp.com>                   cc:     parisc-linux@lists=
-.parisc-linux.org                              =20
-                                                 Subject:     Re: kernel-2.=
-4.17-pa22 boot problem B132L+ with serial      =20
-                    15-02-02 07:55 AM                                      =
-                                               =20
-                                                                           =
-                                               =20
-                                                                           =
-                                               =20
-
-
-
-
-"=3D?iso-8859-1?Q?Jo=3DEBl_Soete?=3D" wrote:
-> It was "built-in 21143 on B180L" (is there a difference here between b180
-> and b132?)
-
-Yes. I don't think B132L had 100BT built-in.
-But I'm too lazy to check hwdb.parisc-linux.org right now.
-Bed time.
-
-grant
-
-
-
-
-
-
-**********************************************************************
-This e-mail and any attachments to it may contain confidential information =
-which is strictly intended for the use of the authorised recipient.  If you=
- have received this e-mail in error, please delete it and notify the sender=
- by replying to this e-mail.
-Thank you for your co-operation.
-**********************************************************************
+Regards,
+Helge
+-- 
+Helge Deller
+SAP AG - LinuxLab and Unix Platforms
+email: helge.deller@sap.com
