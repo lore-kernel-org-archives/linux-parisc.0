@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3FA4B4854
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 13:13:12 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16ksdx-0004lH-00; Tue, 12 Mar 2002 20:13:09 +0000
-Date: Tue, 12 Mar 2002 20:13:09 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Received: from palrel12.hp.com (palrel12.hp.com [156.153.255.237])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 399194859
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 13:15:12 -0700 (MST)
+Received: from hpindda.cup.hp.com (hpindda.cup.hp.com [15.13.95.92])
+	by palrel12.hp.com (Postfix) with ESMTP id 5E296600359
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 12:15:11 -0800 (PST)
+Message-ID: <3C8E6174.9DEBC925@cup.hp.com>
+Date: Tue, 12 Mar 2002 12:13:40 -0800
+From: Gururaj Ananthateerta <gururaj@cup.hp.com>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Switch console error.
-Message-ID: <20020312201309.H30538@parcelfarce.linux.theplanet.co.uk>
-References: <3C8E5DCD.942E6278@cup.hp.com>
-Mime-Version: 1.0
+Subject: Re: [parisc-linux] new vmlinux!!!
+References: <20011001175425.A31305@dogbert.localdomain> <Pine.NEB.4.33.0110021434430.24166-100000@www2.scram.de> <20011005222028.A13585@dogbert.localdomain> <20011005215600.B3745@parcelfarce.linux.theplanet.co.uk> <20011005233602.A13826@dogbert.localdomain>  <3C8D3619.519A601C@cup.hp.com> <20020312172445.B11A64849@dsl2.external.hp.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C8E5DCD.942E6278@cup.hp.com>; from gururaj@cup.hp.com on Tue, Mar 12, 2002 at 11:58:06AM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,24 +25,67 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Mar 12, 2002 at 11:58:06AM -0800, Gururaj Ananthateerta wrote:
-> I guess that I may have ommitted some console drivers during building my
-> kernel.
-> Anyine has nay clue about this.
+I figured out my mistake.
 
-I would assume CONFIG_SERIAL_CONSOLE is the option you're missing.
-Another option might be CONFIG_SERIAL, but I suspect you turned on
-support for your serial ports :-)
+First my partitions weren't correct. I created
+an F0 partition, and swap and an ext2 for /.
 
-> I am using the following machines.
-> HP-N Class server.
+boot partition was missing, rather it was i /. As / is not mounted
+during the early stages of boot (my guess) the palo used to scream at
+me.
 
-N class isn't supported.  There are a number of problems which need to
-be solved to support N class...
+Secondly, a strange observation.  Partitions are created in the following
+order seems to have have some problem  during from /boot/vmlinux.
 
-> I searched the mailing list, but didn't get anything specific.
+50 MB of  FO partition
+50 MB of /boot
+256 MB of swap
+remaining for /
 
-I'm surprised, I thought this was in the FAQ.
+Problem is solved if partitions are created in the following order.
 
--- 
-Revolutions do not require corporate support.
+/dev/sda1             1        95     97264   83
+Linux                           /boot
+/dev/sda2            96       119     24576   f0  Linux/PA-RISC boot
+/dev/sda3           120       363    249856   82  Linux swap
+/dev/sda4           364      8683   8519680   83  Linux                    /
+
+Doesn't make much sense.
+
+One more thing to add, I am doing all this stuff on a N-Class.
+
+Guru
+
+
+
+
+
+
+
+
+Grant Grundler wrote:
+
+> Gururaj Ananthateerta wrote:
+> > I have 3 partitions on primary disk
+> >    Device Boot    Start       End    Blocks   Id  System
+> > /dev/sda1             1        95     97264   f0  Linux/PA-RISC boot
+> > /dev/sda2            96       339    249856   82  Linux swap
+> > /dev/sda3           340      8683   8544256   83  Linux
+>
+> partitions are fine.
+>
+> > I am doing some modifications to the code and trying to boot with a new
+> > linux.
+> > I placed my vmlinux in /boot, but the palo doesn't seems to recognize my
+> > kernel.
+>
+> What do you mean by "doesn't seems to recognize"?
+> any specific error msg?
+>
+> does palo.conf point to that kernel?
+> or did you interact with palo to tell it to load that image?
+> "file /boot/vmlinux" says what?
+>
+> you don't have to answer the above - just stuff to think about.
+>
+> grant
