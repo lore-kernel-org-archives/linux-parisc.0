@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from luonnotar.infodrom.org (luonnotar.infodrom.org [195.124.48.78])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F38C44829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Sep 2002 13:57:26 -0600 (MDT)
-Date: Wed, 18 Sep 2002 21:48:22 +0200
-From: Martin Schulze <joey@infodrom.org>
-To: Stephan Trajkoff <stephan@itp.bg>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020918194822.GR30868@finlandia.infodrom.north.de>
-References: <20020918193205.597D04829@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <20020918193205.597D04829@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: anybody has succefully compiled Mysql-3.23.49 from debian source
+Received: from simba.sch.bme.hu (simba.sch.bme.hu [152.66.215.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1012E4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 01:37:16 -0600 (MDT)
+Date: Thu, 19 Sep 2002 09:38:31 +0200 (MET DST)
+From: Istvan Gyenes <frts@simba.sch.bme.hu>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.OSF.4.33.0209190926170.32375-100000@simba.sch.bme.hu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] SMP kernel problems on a D350
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,31 +20,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Stephan Trajkoff wrote:
-> 
-> -------------------------------------------------------------------
-> -->> FREE Perl CGI scripts add WEB ACCESS to your POP email accounts!
-> -->> Download today!! http://www.adjeweb.com
-> -------------------------------------------------------------------
-> 
-> Hi, I tried to compile mysql-3.23.49, but no good result, there are 
-> many errors in compiling with libraries. I do dist-upgrade every week
+Hello List,
 
-Why don't you use the package provided by Debian?
+I'm trying to compile an SMP kernel for my D 350 (2cpu) server without
+success.
+The kernel source is 2.4.19-pa18 and in non-smp configuration it works
+well. Anyway the SMP kernel compiles fine but when I try to boot it
+stops at the "If this is the last message you see, you may need to switch
+your console" line. I've switched the console but got no other output.
+(It was the same with 2.4.19-pa14)
+The system was installed from a debian 3.0 CD.
+Can somebody send me a working .config? Or what can be the problem?
 
-libmysqlclient10-dev  stable    3.23.49-8   hppa
+Thanks in advance,
 
-libmysqlclient10      stable    3.23.49-8   hppa
-
-mysql-client          stable    3.23.49-8   hppa
-
-mysql-server          stable    3.23.49-8   hppa
-
-i.e. use apt-get install ...
-
-Regards,
-
-	Joey
-
--- 
-Whenever you meet yourself you're in a time loop or in front of a mirror.
+__
+Steve
