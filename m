@@ -1,91 +1,50 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA08877
-	for <parisc-linux@puffin.external.hp.com>; Sun, 22 Oct 2000 15:20:31 -0600
-Date: Sun, 22 Oct 2000 14:21:39 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001022142139.A7587@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [patch] linux/include/asm-parisc/checksum.h
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA21588
+	for <parisc-linux@puffin.external.hp.com>; Mon, 23 Oct 2000 02:30:52 -0600
+Received: from ms04.mobilix.dk (ms04.mobilix.dk [172.16.1.24])
+	by orbix.mobilix.dk (8.11.0/8.11.0) with SMTP id e9N5VPq05455
+	for <parisc-linux@thepuffingroup.com>; Mon, 23 Oct 2000 07:31:25 +0200
+Message-ID: <818F6C8F771DD211B5EA0008C7FABF4B02BB1A95@ms08.mobilix.dk>
+From: "Servio E. Cabrera" <servio.cabrera@mobilix.dk>
+To: "Parisc-Linux mailing list \(E-mail\)" <parisc-linux@thepuffingroup.com>
+Date: Mon, 23 Oct 2000 10:34:16 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] CD image does not recognize the SCSI Hard Drives! on C110
 List-ID: <linux-parisc.vger.kernel.org>
 
-After all the assembly questions yesterday, I offer you my first patch
-:-)
+-----BEGIN PGP SIGNED MESSAGE-----
 
-here's a patch to implement ip_fast_csum in
-include/asm-parisc/checksum.h. In my simple tests it's about 4x faster
-than the original implementation.
 
-I've also been working on the other checksum routines (csum_partial and
-friends) but they are not ready yet.
+Hello:
 
-Any suggestions on how to further optimize this will be much
-appreciated.
+I have booted the CD image on several machines and does not recognize
+the SCSI HarD drive, the machine I have a HP9000 s700 / c110.
+I perform a "fdisk /dev/sda" and it says "unable to open /dev/sda" I
+have also done this:
+#for q in /dev/sd* /dev/hd*
+do
+fdisk $q
+done
 
-randolph
+I got unable to open .... for the all those device files
 
-Index: checksum.h
-===================================================================
-RCS file: /home/cvs/parisc/linux/include/asm-parisc/checksum.h,v
-retrieving revision 1.8
-diff -u -r1.8 checksum.h
---- checksum.h	2000/08/04 17:29:12	1.8
-+++ checksum.h	2000/10/22 21:16:30
-@@ -52,12 +52,46 @@
- }
- 
- /*
-- *	FIXME: Needs to be optimized for IP headers,
-- *	which always checksum on 4 octet boundaries.
-+ *	Optimized for IP headers, which always checksum on 4 octet boundaries.
-+ *
-+ *	Written by Randolph Chung <tausq@debian.org>
-  */
- static inline unsigned short ip_fast_csum(unsigned char * iph,
- 					  unsigned int ihl) {
--	return ~csum_partial (iph, ihl << 2, 0);
-+	unsigned int sum;
-+
-+
-+	__asm__ __volatile__ ("
-+	ldws,ma		4(%1), %0
-+	addi		-4, %2, %2
-+	comib,>=	0, %2, 2f
-+	
-+	ldws,ma		4(%1), %%r19
-+	add		%0, %%r19, %0
-+	ldws,ma		4(%1), %%r19
-+	addc		%0, %%r19, %0
-+	ldws,ma		4(%1), %%r19
-+	addc		%0, %%r19, %0
-+1:	ldws,ma		4(%1), %%r19
-+	addib,<>	-1, %2, 1b
-+	addc		%0, %%r19, %0
-+	addc		%0, %%r0, %0
-+
-+	zdepi		-1, 31, 16, %%r19
-+	and		%0, %%r19, %%r20
-+	extru		%0, 15, 16, %%r21
-+	add		%%r20, %%r21, %0
-+	and		%0, %%r19, %%r20
-+	extru		%0, 15, 16, %%r21
-+	add		%%r20, %%r21, %0
-+	subi		-1, %0, %0
-+2:
-+	"
-+	: "=r" (sum), "=r" (iph), "=r" (ihl)
-+	: "1" (iph), "2" (ihl)
-+	: "r19", "r20", "r21" );
-+
-+	return(sum);
- }
- 
- /*
+REgards
 
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+
+servio
+
+- -
+
+-----BEGIN PGP SIGNATURE-----
+Version: PGPfreeware 6.5.3 for non-commercial use <http://www.pgp.com>
+
+iQEVAwUBOfP3o1I12LBR8vnZAQHneQf/ZRnoIlh0oqI6xAO8zvo1VIf8ylMKEdTa
+wTc47iiDYsZANAJnniBcJkuxJNkU8/LEURYtxNBICJU0FkrVZ5Pqf0XMi7sqh/uQ
+5TkJKHkpIOur32UUEMUaVKSsCcg85KV5AFMiW34sHvnKPGXYBvCu67U7rFreL/0I
+8Pgln09Y7vxchWccNSGp2vh8vVFrAfYXC8ah0gMBixFUufNpGFv6G+kl9z9rsNuM
+9Bu3SIIY97ptVMpe4uD8bwhBGMFT2j5MWs4OR410RQxIVZhRLZSj9oZevdYgT7gw
+ppy3lH+8RrzmdS0/pZpjbIStRYjDmeDSHV8T1NmPlyqzhsXQaLIXvQ==
+=BPIF
+-----END PGP SIGNATURE-----
