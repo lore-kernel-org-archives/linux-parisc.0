@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc3-hem11-4-cust123.bre.cable.ntl.com [213.107.179.123])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 816C6483F
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Jul 2002 17:21:35 -0600 (MDT)
-Date: Fri, 19 Jul 2002 23:19:18 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020719221917.GF29996@sleepie.demon.co.uk>
-References: <20020719225302.874944839@dsl2.external.hp.com>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2CFD4841
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 19 Jul 2002 17:34:19 -0600 (MDT)
+Subject: Re: [parisc-linux] C110, kernel Panics, still more tears ;-(
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Cc: parisc list <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <3D383969.1657EF43@ruhr-west.de>
+References: <3D383969.1657EF43@ruhr-west.de>
+Content-Type: text/plain
+Date: 19 Jul 2002 17:34:18 -0600
+Message-Id: <1027121658.16562.3.camel@beavis>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020719225302.874944839@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux rhirst
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,95 +23,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jul 19, 2002 at 04:53:02PM -0600, Richard Hirst wrote:
-> CVSROOT:	/var/cvs
-> Module name:	linux
-> Changes by:	rhirst	02/07/19 16:53:02
+Juergen,
+
+How much memory does this system have?  Also what cards do you have in
+which slot. (Please also specify PCI or GSC).
+
+What this driver does is allocates a certian portion of memory at
+startup time for a TLB mapping.  Adjusting the ccio_mem_ratio affects
+how much memory is allocated at boot.  The U2/UTurn chip has 2 iommus,
+and the different GSC/PCI slots fall under specific iommus.  If you
+system does not have much memory, and the cards are positioned
+approparately, we could turn off the iommu memory allocatation for the
+second iommu (the /10 bus).
+
+this is just a thought ... will see what we can do with your
+configuration :)
+
+Thanks,
+
+-  Ryan
+
+
+On Fri, 2002-07-19 at 10:08, Juergen Braukmann wrote:
+> Hi Grant and all,
 > 
-> Modified files:
-> 	.              : Makefile 
-> 	drivers/scsi   : Config.in 
+> still more tears. I compiled and replaced the kernel, using 2.4.18pa55.
+> I used the setting of ccio_mem_ratio=16, but still my kernel panics with 
 > 
-> Log message:
-> Fix scsi config options so Zalon can be used without PCI
-
-This is a mess, btw.  Basic problem is Zalon, ncr53c8xx, and sym53c8xx
-want to share a bunch of config options.  But zalon can run without
-pci, the other two can't.  ncr and sym are not allowed if sym_2 is
-compiled in, but zalon is, etc, etc.  Cleaner solutions are welcomed!
-
-Richard
-
-
-Index: drivers/scsi/Config.in
-===================================================================
-RCS file: /var/cvs/linux/drivers/scsi/Config.in,v
-retrieving revision 1.18
-retrieving revision 1.19
-diff -u -r1.18 -r1.19
---- drivers/scsi/Config.in	4 Jun 2002 18:53:29 -0000	1.18
-+++ drivers/scsi/Config.in	19 Jul 2002 22:53:02 -0000	1.19
-@@ -147,27 +147,46 @@
-       bool '  use normal IO' CONFIG_SCSI_SYM53C8XX_IOMAPPED
-    fi
- fi
-+define_bool CONFIG_ASK_ZALON n
-+define_bool CONFIG_ASK_NCR53C8XX n
-+define_bool CONFIG_ASK_SYM53C8XX n
-+if [ "$CONFIG_PARISC" = "y" ]; then
-+   dep_tristate 'Zalon SCSI support' CONFIG_SCSI_ZALON $CONFIG_GSC $CONFIG_SCSI
-+   if [ "$CONFIG_SCSI_ZALON" != "n" ]; then
-+      define_bool CONFIG_ASK_ZALON y
-+   fi
-+else
-+  if [ "$CONFIG_PCI" = "y" -a "$CONFIG_SCSI_SYM53C8XX_2" != "y" ]; then
-+     dep_tristate 'NCR53C8XX SCSI support' CONFIG_SCSI_NCR53C8XX $CONFIG_SCSI
-+     if [ "$CONFIG_SCSI_NCR53C8XX" != "n" ]; then
-+        define_bool CONFIG_ASK_NCR53C8XX y
-+     fi
-+  fi
-+fi
- if [ "$CONFIG_PCI" = "y" -a "$CONFIG_SCSI_SYM53C8XX_2" != "y" ]; then
--   dep_tristate 'NCR53C8XX SCSI support' CONFIG_SCSI_NCR53C8XX $CONFIG_SCSI
-    dep_tristate 'SYM53C8XX SCSI support' CONFIG_SCSI_SYM53C8XX $CONFIG_SCSI
--   if [ "$CONFIG_PARISC" = "y" ]; then
--      dep_tristate 'Zalon SCSI support' CONFIG_SCSI_ZALON $CONFIG_GSC $CONFIG_SCSI
-+   if [ "$CONFIG_SCSI_SYM53C8XX" != "n" ]; then
-+      define_bool CONFIG_ASK_SYM53C8XX y
-    fi
--   if [ "$CONFIG_SCSI_NCR53C8XX" != "n" -o "$CONFIG_SCSI_ZALON" != "n" -o "$CONFIG_SCSI_SYM53C8XX" != "n" ]; then
--      int  '  default tagged command queue depth' CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS 8
--      int  '  maximum number of queued commands' CONFIG_SCSI_NCR53C8XX_MAX_TAGS 32
--      int  '  synchronous transfers frequency in MHz' CONFIG_SCSI_NCR53C8XX_SYNC 20
--      bool '  enable profiling' CONFIG_SCSI_NCR53C8XX_PROFILE
-+fi
-+if [ "$CONFIG_ASK_ZALON" = "y" -o "$CONFIG_ASK_NCR53C8XX" = "y" -o "$CONFIG_ASK_SYM53C8XX" = "y" ]; then
-+   int  '  default tagged command queue depth' CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS 8
-+   int  '  maximum number of queued commands' CONFIG_SCSI_NCR53C8XX_MAX_TAGS 32
-+   int  '  synchronous transfers frequency in MHz' CONFIG_SCSI_NCR53C8XX_SYNC 20
-+   bool '  enable profiling' CONFIG_SCSI_NCR53C8XX_PROFILE
-+   if [ "$CONFIG_ASK_ZALON" = "y" ]; then
-+      define_bool CONFIG_SCSI_NCR53C8XX_IOMAPPED n
-+   else
-       bool '  use normal IO' CONFIG_SCSI_NCR53C8XX_IOMAPPED
--      if [ "$CONFIG_SCSI_SYM53C8XX" != "n" ]; then
--	 bool '  include support for the NCR PQS/PDS SCSI card' CONFIG_SCSI_NCR53C8XX_PQS_PDS
--      fi
--      if [ "$CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS" = "0" ]; then
--	 bool '  not allow targets to disconnect' CONFIG_SCSI_NCR53C8XX_NO_DISCONNECT
--      fi
--      if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
--	 bool '  assume boards are SYMBIOS compatible (EXPERIMENTAL)' CONFIG_SCSI_NCR53C8XX_SYMBIOS_COMPAT
--      fi
-+   fi
-+   if [ "$CONFIG_ASK_SYM53C8XX" = "y" ]; then
-+      bool '  include support for the NCR PQS/PDS SCSI card' CONFIG_SCSI_NCR53C8XX_PQS_PDS
-+   fi
-+   if [ "$CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS" = "0" ]; then
-+      bool '  not allow targets to disconnect' CONFIG_SCSI_NCR53C8XX_NO_DISCONNECT
-+   fi
-+   if [ "$CONFIG_EXPERIMENTAL" = "y" ]; then
-+      bool '  assume boards are SYMBIOS compatible (EXPERIMENTAL)' CONFIG_SCSI_NCR53C8XX_SYMBIOS_COMPAT
-    fi
- fi
- if [ "$CONFIG_MCA" = "y" ]; then
+> Kernel panic: ccio-dma.c ccio_alloc_range() I/O MMU is out of mapping
+> resources.
+> In interrupt handler - not syncing
+> 
+> would there be more chance with the ccio_mem_ratio setting of 8? Is
+> there a way to use more than one Kernel alternativly and select it at
+> boottime with palo? Is there an example palo.conf somewhere?
+> 
+> I will shut down X next and try again. I managed to ftp a large file
+> once and all I did after that was getting X to run.
+> 
+> Juergen
+> 
+> -- 
+> ===========================================     __   _
+> Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
+> Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
+> ===========================================_\_v __/_/_//_/\_,_/ /_/\_\
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
