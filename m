@@ -1,11 +1,12 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] sysfs names
-Date: Mon, 6 Dec 2004 14:02:18 +0000
-Message-ID: <20041206140218.GA10881@parcelfarce.linux.theplanet.co.uk>
+From: =?ISO-8859-15?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
+Subject: [parisc-linux] Linux 2.6, 712-workstation and (no) keyboard
+Date: Tue, 07 Dec 2004 13:51:30 +0100
+Message-ID: <41B5A752.4090906@lycos.nl>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+To: maillist parisc-linux <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,55 +18,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello,
 
-scooter:/sys/bus# ls */drivers/
-eisa/drivers/:
-hp100  sim710
+Recently I found time to update my 712 workstation to kernel version 2.6.x. Most 
+recent kernels I tried from http://cvs.parisc-linux.org/download/linux-2.6/ or 
+build from source, don't give me a keyboard at the console.
 
-parisc/drivers/:
-Apricot  Dino              GSC SCSI (Zalon)  Lasi RS232  Serial RS232
-Asp      EISA Bus Adapter  HP SDC            Lasi SCSI   Wax
-CPU      GSC PS2           Lasi              Parallel    sti (native)
+Is this something I have to define, like re-create device files with mkdev?
 
-pci/drivers/:
-acenic  hp100  parport_pc  serial  sti (pci)  sym53c8xx  tulip
+Is something changed? I recall messages on using special pa-ps2 code v.s. 
+default linux ps2 code. Should a new 712-config file suit my needs? Which 
+options to try/test/use?
 
-platform/drivers/:
-serial8250
+Or is it still work in progress? Then: what's the status and can I contribute?
 
-scsi/drivers/:
-sd  sr  st
+At build-time and/or boot-time I donnot see any alarming messages like failing 
+builds or links or such.
 
-serio/drivers/:
-hil_kbd  hil_ptr
 
-I'm going to go through and clean up our driver names.  In particular:
- - lower-case
- - replace spaces with underscores
- - eliminate brackets
- - choose better names
 
-Here's my current thoughts:
+CBee
 
-parisc/drivers/:
-apricot  dino      zalon      lasi_8250  serial_8250
-asp      eisa      sdc        lasi_scsi  wax
-cpu      gsc_ps2   lasi_core  parport    sti
-
-pci/drivers/:
-acenic  hp100  parport_pc  serial  sti  sym53c8xx  tulip
-
-ISTR at one point, sti had to be disambiguated because sysfs would try
-to create two directories in the same directory, but it looks like it
-doesn't any more.
-
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
