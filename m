@@ -1,22 +1,18 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8AB8E4868
+Return-Path: <xam@cs.ucc.ie>
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8A5A4868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 20 Feb 2004 11:22:01 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1AuFHQ-0004iG-9n; Fri, 20 Feb 2004 18:21:40 +0000
-Date: Fri, 20 Feb 2004 18:21:40 +0000
-From: Matthew Wilcox <willy@debian.org>
+	Fri, 20 Feb 2004 12:07:25 -0700 (MST)
+Date: Fri, 20 Feb 2004 19:07:19 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
 To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] Linux only see 2Gb of ram of N4k
-Message-ID: <20040220182140.GC11824@parcelfarce.linux.theplanet.co.uk>
-References: <402A4CA500006EA3@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <402A4CA500006EA3@ocpmta2.freegates.net>
-Sender: <willy@www.linux.org.uk>
-Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] b2k scsi disk pb
+In-Reply-To: <402A4CA500006E8D@ocpmta2.freegates.net>
+Message-ID: <Pine.LNX.4.58.0402201900540.26386@sal.ucc.ie>
+References: <402A4CA500006E8D@ocpmta2.freegates.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,33 +22,41 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Feb 20, 2004 at 07:04:26PM +0100, Joel Soete wrote:
-> Hi all,
-> 
-> My collegue make me notice that the N4k on which I can test Linux was supplied
-> with 4Gb of ram (which if confirm at boot prompt) but Linux only see 2Gb.
-> 
-> It is a dual cpu machine, is that 1/2 ram dedicated to 1 cpu and the other
-> 1/2 to the 2d cpu?
+On Fri, 20 Feb 2004, Joel Soete wrote:
 
-Unlikely.  As I recall, the N4k diagram looks like this:
+> on my b2k since I can run 2.6 (32bit with gcc-3.3 or 64bit with gcc-3.0)
+> i noticed from time to time such dmesg:
+> sym0:5:0: ABORT operation timed-out.
+> sym0:5:0: ABORT operation started.
 
-<-PCI-> Elroy <-Ropes\      PA <-+-> PA        PA <-+-> PA       /Ropes-> Elroy
-<-PCI-> Elroy <-Ropes-\         DEW       RAM      DEW          /-Ropes-> Elroy
-<-PCI-> Elroy <-Ropes--> IKE <-Merced-> Stretch <-Merced-> IKE <--Ropes-> Elroy
-<-PCI-> Elroy <-Ropes-/         DEW       RAM      DEW          \-Ropes-> Elroy
-<-PCI-> Elroy <-Ropes/      PA <-+-> PA        PA <-+-> PA       \Ropes-> Elroy
+[...]
 
-So the RAM is uniformly-accessible from all CPUs, but the IO is not.
+> sym0:5:0: ABORT operation timed-out.
+> sym0:5:0: DEVICE RESET operation started.
+> sym0:5:0: DEVICE RESET operation timed-out.
+> sym0:5:0: BUS RESET operation started.
+> sym0: SCSI BUS reset detected.
+> sym0: SCSI BUS has been reset.
+> sym0:5:0: BUS RESET operation complete.
+>
+> and during this time the system naturaly hang.
 
-If you look at pat_memconfig() in arch/parisc/kernel/inventory.c, you'll
-see how we try to figure out what memory ranges are in the machine.
-Want to try debugging that, see what's being reported by firmware?
+(or is at least *very* slow)
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+> scsi id 5 is the one of the working boot disk (a quantum model atlas5-9lvd)
+> and if there is well a second disk (a seagate model ST336704LC) it is not
+> used.
+
+Had the same problem when attaching a SE-SCSI device (also a Seagate, 20GB)
+on my C3k (which has 2 internal LVD SCSI-drives).
+
+Got rid of it by not using the SE-SCSI driver ;)
+Try to physically detach the (not-used) ST336704LC.
+
+> OTC with 2.4 and sym2 driver, I never noticed this behavior (even with recent
+> 2.4.25-rc?-pa0 :) ), so I presume that there is no disk failure (and a dd
+> if=/dev/sda of=/dev/null bs=1024k reach to read fully the disk without any
+> error).
+
+Yes, I think reading is fine, just (lots of) writing is triggering it.
+    Max
