@@ -1,21 +1,16 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 713DB484A
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C82B49FA
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 20 Apr 2004 05:41:32 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1BFtd2-0002qE-2V; Tue, 20 Apr 2004 12:41:28 +0100
-Date: Tue, 20 Apr 2004 12:41:28 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Roy Keene <parisc@rkeene.org>
-Subject: Re: [parisc-linux] Kernel 2.4 bug (fwd)
-Message-ID: <20040420114128.GE18329@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.58.0404200039410.31608@hammer.oc9.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.58.0404200039410.31608@hammer.oc9.org>
-Sender: <willy@www.linux.org.uk>
+	Tue, 20 Apr 2004 06:22:34 -0600 (MDT)
+Date: Tue, 20 Apr 2004 14:22:30 +0200
+Message-ID: <40711E5600009520@ocpmta1.freegates.net>
+In-Reply-To: <40711E5600000D4E@ocpmta1.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?RE=3A=20=5Bparisc=2Dlinux=5D=20RE=3A=20=5BPATCH=5D=20glibc=2D2=2E3=2E3=20error=20with=20debian=20unstable=09compiler=2E=2E=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -26,26 +21,27 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Apr 20, 2004 at 12:41:23AM -0500, Roy Keene wrote:
-> Btw, `submit@bugs.parisc-linux.org' doesn't work.
+Carlos,
 
-Where do you see that email address still?  It should have been removed ...
+Last week I encounter some pb to co last cvs, sorry.
 
-> (double free() shouldn't cause the kernel to give page faults, running it
->  enough times eventually crashes the kernel)
+This week and can apply your patch against the glibc cvs dated 20040419 (just
+some hunk failled because in the uptream: great).
 
-What you see there is debug information to help you diagnose your app's
-breakage ;-).  You can turn it off by changing #define PRINT_USER_FAULTS
-to #undef PRINT_USER_FAULTS in arch/parisc/mm/fault.c.  I believe the
-Debian kernel does this by default.
+I just complete the 'make -k check' (on chroot disk) which finished with
+just one more error then well known ones:
+make[2]: *** [/Develop/parisc-linux/build/glibc/stdio-common/tst-rndseek.out]
+Error 1
+make[1]: *** [stdio-common/tests] Error 2
 
-Eventually crashinig the kernel is a different matter.  Can you provide
-more information about this?
+... And the compile (always in the chroot disk) of the last k-2.6.6-rc1-pa0
+works still fine and even boot well on a b180.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+hth,
+    Joel
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
