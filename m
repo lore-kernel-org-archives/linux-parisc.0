@@ -1,95 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lufmech.rwth-aachen.de (karman.lufmech.RWTH-Aachen.DE [134.130.177.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 21D8C482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 04:15:23 -0600 (MDT)
-Sender: markus@lufmech.rwth-aachen.de
-Message-ID: <3AC9A2B8.DE0DE5A6@lufmech.rwth-aachen.de>
-Date: Tue, 03 Apr 2001 12:15:21 +0200
-From: Markus Werle <markus@lufmech.rwth-aachen.de>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D912482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 06:23:09 -0600 (MDT)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA27466;
+	Tue, 3 Apr 2001 22:22:42 +1000
+Date: Tue, 3 Apr 2001 22:22:42 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Markus Werle <markus@lufmech.rwth-aachen.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] cvs-gcc: howto build a 64-bit version?
+In-Reply-To: <3AC9A2B8.DE0DE5A6@lufmech.rwth-aachen.de>
+Message-ID: <Pine.LNX.4.21.0104032119230.6476-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] cvs-gcc: howto build a 64-bit version?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-I tried to build cvs-gcc from
-:pserver:anonymous@puffin.external.hp.com:/home/cvs/parisc
-using binutils from the same cvs server. For the 32-bit no build
-problems, but the 64-bit bootstrap
-fails. Any help for creating a 64-bit version of g++ appreciated.
+On Tue, 3 Apr 2001, Markus Werle wrote:
 
-=============================
-32 BIT:
-==============================
+> problems, but the 64-bit bootstrap
+> fails. Any help for creating a 64-bit version of g++ appreciated.
 
-I built binutils and 32-bit gcc/g++/g77:
-../binutils/configure --prefix=/opt/FREE-SOFTWARE/puffin-gcc-20010403
---with-gnu-as
-->make/install success
+I see you're trying to build for HPUX.  You will probably be better off
+tracking sourceware gcc, although I understand you've had some trouble
+there too.  :-(  Since we don't have glibc for hppa64-linux, I really
+only support --languages=c for the 64 bit compiler at the moment.
 
-../gcc/configure --prefix=/opt/FREE-SOFTWARE/puffin-gcc-20010403
---with-gnu-as --without-gnu-ld --enable-languages=f77,c,c++
---enable-version-specific-runtime-libs
--> bootstrap/install success
-
-linkage errors in the c++ part:
-
-[markus@tresca]  src/ > g++ ../experimental/HelloWorld.C/usr/ccs/bin/ld:
-Unsatisfied symbols:
-   std::ios_base::Init::~Init()(code)
-   std::ostream::operator<<(std::ostream& (*)(std::ostream&))(code)
-   std::ios_base::Init::Init()(code)
-   std::ostream::flush()(code)
-   std::ostream::put(char)(code)
-   std::basic_ostream<char, std::char_traits<char> >& std::operator<<
-<std::char_traits<char> >(std::basic_ostream<char,
-std::char_traits<char> >&, char const*)(code)
-   std::cout (data)
-collect2: ld returned 1 exit status
-
-=============================
-64 BIT:
-==============================
-
-   #  md build-binutils-64
-   #  cd build-binutils-64/
-   #  ../binutils/configure
---prefix=/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF
---host=hppa64-hp-hpux11.00 --with-gnu-as --with-gnu-ld && make -j4
-   #  make install
-
-    success
-
-   #  cd ../build-gcc-64/
-   #  ../gcc/configure --host=hppa64-hp-hpux11.00
---prefix=/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF --with-gnu-as
---with-gnu-ld --enable-languages=f77,c,c++
---enable-version-specific-runtime-libs && make -j4 bootstrap
-
-    fails at a well-known place:
-
-[...]
-make[2]: Entering directory `/work/markus/HP-GCC/build-gcc-64/gcc'
-(cd intl && make all)
-make[3]: Entering directory `/work/markus/HP-GCC/build-gcc-64/gcc/intl'
-make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/work/markus/HP-GCC/build-gcc-64/gcc/intl'
-(cd po && make all)
-make[3]: Entering directory `/work/markus/HP-GCC/build-gcc-64/gcc/po'
-make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/work/markus/HP-GCC/build-gcc-64/gcc/po'
-echo "int xxy_us_dummy;" >tmp-dum.c
-./xgcc -B./
--B/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF/hppa64-hp-hpux11.00/bin/
--isystem
-/opt/FREE-SOFTWARE/puffin-gcc-20010403-ELF/hppa64-hp-hpux11.00/include
--S tmp-dum.c
-cc1: Internal compiler error in set_sizetype, at stor-layout.c:1673
-Please submit a full bug report, with preprocessed source if
-appropriate.
-See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
-make[2]: *** [s-under] Error 1
-make[2]: Leaving directory `/work/markus/HP-GCC/build-gcc-64/gcc'
-make[1]: *** [stage1_build] Error 2
-make[1]: Leaving directory `/work/markus/HP-GCC/build-gcc-64/gcc'
-make: *** [bootstrap] Error 2
+Alan
+-- 
+Linuxcare
