@@ -1,60 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA28306
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 16:44:39 -0700
-Message-Id: <200101152350.PAA10493@milano.cup.hp.com>
-To: Greg Ingram <ingram@symsys.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA29154
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 17:45:12 -0700
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <200101160048.QAA24057@opus.allegro.com>
+Subject: Re: [parisc-linux] website
+To: jcarlson@macalester.edu (Josiah Carlson)
+Date: Mon, 15 Jan 2001 16:48:51 -0800 (PST)
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting C100 
-In-reply-to: Your message of "Mon, 15 Jan 2001 13:22:14 PST."
-             <Pine.LNX.4.21.0101151256070.23322-100000@maestro.symsys.com>
-Date: Mon, 15 Jan 2001 15:50:06 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+In-Reply-To: <3A63811B3D8.D2B3JCARLSON@smtp.macalester.edu> from "Josiah Carlson" at Jan 15, 2001 05:00:43 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Greg Ingram wrote:
-> Okay, I grabbed the cross-compiler and various sources and managed to
-> build a booting image.  Woohoo!
+Josiah (what's wrong with painting my car myself, with house paint) Carlson 
+says:
 
-Good work!
+> what?  The font sizes and such are not changed (except in the
+> toolbar)...should be able to be viewed on netscape (and at least in the
 
-> I also tried the lifimage you just posted
-> to the FTP site.  Both kernels died at GSC detection because it didn't
-> know the address f5fbf000.  I made this little change to ccio-dma.c:
-> 
-> --- arch/parisc/kernel/ccio-dma.c.orig  Mon Jan 15 12:40:05 2001
-> +++ arch/parisc/kernel/ccio-dma.c       Mon Jan 15 13:05:01 2001
-> @@ -1174,6 +1174,7 @@
->  ** that can't be detected by PA/EISA/PCI bus walks.
->  */
->         switch((long) d->hpa) {
-> +       case 0xf5fbf000L:       /* C1O0 (wild guess!) */
->         case 0xf7fbf000L:       /* C110 IOA0 LBC (aka GSC port) */
->         case 0xf3fbf000L:       /* C110 IOA0 LBC (aka GSC port) */
->                 /* ccio_hpa same as C200 IOA0 */                             
+Oh?  Try www.sieler.com, then www.linuxcare.com.  The linuxcare page
+specifies font size everywhere...not just the toolbar.
 
-As Ryan noted, this is a hack. We need a real PA bus walk - not
-just depending on the devices PDC tells us about.
-     
+Matthew did linuxcare a favor ... for all that they might not care ...
+by pointing out that the page has a number of problems.  Font size
+*is* one of those problems.  On my 21" monitor, at 1600x1200, I find
+their font just a bit too small to read.  (Better than some brain-dead
+pages, like www.altavista.com!)
 
-> Data access rights fault in kernel: Code=26 regs=c7f9c840 (Addr=0000000c)
+> later mozilla's and NS6, you can override the defaults). Sounds like
+> alot of complaining for nothing.
 
-Looks like a null ptr dereference.
+Josiah...if people don't point out the problems, how will they *ever*
+find out about them? 
 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001100000000000001011
-> r0-3     00000000 c02b2580 c018e784 c02c2c88
-...
-> IASQ: 00000000 00000000 IAOQ: c010c8fc c010c900
+Hmmm...The gentleman protests too much, methinks.
+[modified Hamlet, see http://www.allshakespeare.com/plays/hamlet/3-2.shtml#protest]
 
-IOAQ is the current PC
-GR02 is the return ptr - ie caller address + 8
+BTW, you *DO* want to point out to your *own* site's webmaster that
+he/she is making the same bad mistake :)
 
-See build-tools/a.c
-If you look up the symbols of those, very likely you'll
-find the code that doesn't like your C100.
+www.macalester.edu:
 
-grant
+    ...
+    <font face="Verdana, Arial, Helvetica, sans-serif" size=-1>
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+    Macalester College is a private undergraduate liberal arts college which
+    emphasizes academic excellence in the context of internationalism,
+    ...
+
+Note that evil "size=-1"!  (and a few "size=-2" as well)
+
+BTW, that home page is better than many...
+CSEE HTML Validator version 4.5 only found four errors on it.  
+See: http://www.htmlvalidator.com/
+
+-- 
+Stan Sieler                                           sieler@allegro.com
+www.allegro.com/sieler/wanted/index.html                  www.sieler.com        
