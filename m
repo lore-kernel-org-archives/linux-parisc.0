@@ -1,35 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA07472
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 14:55:40 -0700
-Message-Id: <200012042158.NAA03700@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] On the naming of discs 
-In-reply-to: Your message of "Mon, 04 Dec 2000 20:06:44 PST."
-             <20001204200644.C12414@parcelfarce.linux.theplanet.co.uk>
-Date: Mon, 04 Dec 2000 13:58:46 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA08318
+	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 15:52:53 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 4 Dec 2000 22:55:26 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA17493;
+	Tue, 5 Dec 2000 09:55:04 +1100
+Date: Tue, 5 Dec 2000 09:55:04 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Richard Hirst <rhirst@linuxcare.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: pa reload problem
+In-Reply-To: <20001204184009.K7166@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0012050950420.16721-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
+On Mon, 4 Dec 2000, Richard Hirst wrote:
+
+> > Note that all of the above applies to 32-bit modutils too.
 > 
-> As noted in the install documentation, Linux and HPUX name their
-> discs differently.  HPUX follows the spec and numbers from 7 down to 0,
-> Linux follows the PC aberration and numbers from 0 up to 7.
+> Shouldn't be an issue with 32 bit, as kernel and modules all have
+> the same dp there.
 
-The problem is not how disks are enumerated. HPUX does it exactly the
-same way - SCSI spec defines how the SCSI bus is to be walked.
+Yes, silly me.  32 bit is non-pic, so you don't need to worry about
+it.  (%r19 in 32 bit case)
 
-The real problem is how devices are "named". Adding or removing devices may
-cause existing devices to get new names when the system is rebooted.
-And adding/removing devices on one SCSI bus will affect how devices
-on other SCSI busses are named.
-
-Even though HPUX's naming convention isn't perfect (eg /dev/rdsk/c1t2d3),
-it works well for SCSI devices - regardless of type and when added.
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+-- 
+Linuxcare.  Support for the Revolution.
