@@ -1,47 +1,27 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA09253
-	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Sep 2000 08:45:52 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 26 Sep 2000 14:46:33 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id BAA30589;
-	Wed, 27 Sep 2000 01:45:51 +1100
-Date: Wed, 27 Sep 2000 01:45:51 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: Lazy linking issues
-In-Reply-To: <87em27kz4y.fsf@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0009270130040.10967-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA10319
+	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Sep 2000 10:28:14 -0600
+Received: from omgw2.boi.hp.com (omgw2.boi.hp.com [15.56.8.102])
+	by cosrel2.hp.com (Postfix) with ESMTP id 39379773
+	for <parisc-linux@thepuffingroup.com>; Tue, 26 Sep 2000 10:28:42 -0600 (MDT)
+Received: from xboibrg1.boi.hp.com (xboibrg1.boi.hp.com [15.56.8.167])
+	by omgw2.boi.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit6.0.6 OpenMail) with ESMTP id KAA01360
+	for <parisc-linux@thepuffingroup.com>; Tue, 26 Sep 2000 10:28:57 -0600 (MDT)
+Message-ID: <56D553C0B61BD311AD2300A0C9F485C20841F8C9@xfc02.fc.hp.com>
+From: "MEYER,ALAN C. \(HP-FtCollins,ex1\)" <alan_meyer@hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Tue, 26 Sep 2000 10:25:45 -0600
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Serial console?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 26 Sep 2000, David Huggins-Daines wrote:
+We are going to ship a PA box to the Atlanta Linux Symposium to be in the HP
+booth.
 
-> Okay.  I suppose I will take the same approach as the Alpha code does,
-> and look for a particular instruction at the end of the GOT in
-> elf_machine_runtime_setup() as an indication of whether lazy linking
-> can be done or not.
+My question - do we have enough working to just a standalone PA box, with
+its own keyboard and serial console?   Has anyone been using this
+configuration lately?  Does it work?
 
-Yep.  I'll check in my mods to dl-machine.h in a few minutes after I fix
-this silly plt stub.
-
-The plt stub looks like
-
-1:	ldw	0(%r20),%r22
-	bv	%r0(%r22)
-	ldw	4(%r20),%r21
-2:	b,l	1b,%r20
-	depi	0,31,2,%r20
-9:	.word 0xc0ffee
-	.word 0xdeadbeef
-
-with entry at label 2.  The idea here being that the linker can change the
-plt stub without magic numbers in the dynamic linker needing to be
-changed.  So we jump into the trampoline with r19 = reloc offset,
-r20 = got-8, r21 = fixup ltp.
-
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Alan
