@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from astra.telenet-ops.be (astra.telenet-ops.be [195.130.132.58])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F8F2482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jul 2003 03:59:29 -0600 (MDT)
-From: "Mark Mestdagh" <Mark.Mestdagh@Icon-Europe.com>
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 4 Jul 2003 12:01:44 +0200
-Message-ID: <HOEDKHACIIOGKPMMFMCGIELFCOAA.Mark.Mestdagh@Icon-Europe.com>
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 870CC482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jul 2003 05:08:34 -0600 (MDT)
+Date: Fri, 4 Jul 2003 12:08:27 +0100 (IST)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: Martin <inkubus@interalpha.co.uk>,
+	<parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] RDI Precision Book 160
+In-Reply-To: <3F03A473000009CA@ocpmta4.freegates.net>
+Message-ID: <Pine.LNX.4.44.0307041203090.1144-100000@sal.ucc.ie>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20030701132146.GD23597@parcelfarce.linux.theplanet.co.uk>
-Subject: [parisc-linux] Kernel compilation for B2000
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,69 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi
+On Fri, 4 Jul 2003, Joel Soete wrote:
 
-Seems I have the same problem on a B2000 with the latest cvs'ed version
-(2.4.21-pa1)
-
-What am I doing wrong :s??
-
-Regs
-Mark
-
-
-drivers/ide/idedriver.o: In function `init_irq':
-drivers/ide/idedriver.o(.text.init_irq+0x44): undefined reference to
-`__save_and_cli'
-drivers/ide/idedriver.o: In function `ide_wait_stat':
-drivers/ide/idedriver.o(.text.ide_wait_stat+0xe0): undefined reference to
-`local_irq_set'
-drivers/ide/idedriver.o: In function `ide_config_drive_speed':
-drivers/ide/idedriver.o(.text.ide_config_drive_speed+0x1c0): undefined
-reference to `local_irq_set'
-drivers/ide/idedriver.o: In function `taskfile_dump_status':
-drivers/ide/idedriver.o(.text.taskfile_dump_status+0x40): undefined
-reference to `local_irq_set'
-drivers/ide/idedriver.o: In function `ide_dump_status':
-drivers/ide/idedriver.o(.text.ide_dump_status+0x40): undefined reference to
-`local_irq_set'
-drivers/ide/idedriver.o: In function `ide_spin_wait_hwgroup':
-drivers/ide/idedriver.o(.text.ide_spin_wait_hwgroup+0x4c): undefined
-reference to `local_irq_set'
-drivers/ide/idedriver.o(.text.ide_cdrom_dump_status+0x38): more undefined
-references to `local_irq_set' follow
-make: *** [vmlinux] Error 1
-
------Original Message-----
-From: parisc-linux-admin@lists.parisc-linux.org
-[mailto:parisc-linux-admin@lists.parisc-linux.org]On Behalf Of Matthew
-Wilcox
-Sent: dinsdag 1 juli 2003 15:22
-To: Mark Mestdagh
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel compilation for J5600
-
-
-On Tue, Jul 01, 2003 at 10:10:24AM +0200, Mark Mestdagh wrote:
-> Grant & others
+> Hi Martin,
 >
-> thanks already for the support. One little problem though is setting up
-the
-> CDROM. I followed the settings like the c3000 kernel but still I get a
-> problem while compiling:
+> >    I've recently acquired an RDI Precision Book 160 which is currently
+> > running HP-UX 10.2.  From what I can find in the relevant documentation
+> > it is allegidly completely compatible with the HP B series workstations
+> > and thus should run Linux.  Does anyone have any experience with
+> > installing / running Linux on these?  It is possible?  What devices are
+> > supported?  Is Linux the best choice for this machine?
 >
-> drivers/ide/idedriver.o(.text.probe_hwif+0xfc): undefined reference to
-> `local_irq_set'
+> Yes it works have a look on the thread:
+> <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-March/019613.html>
 
-This is 2.4.21-pa1?
+Yes, I also bought one of these RDI Precisionbooks from eBay (probably
+even from the same guy as you did).
+It works fine, except I have some problems with the (internal) keyboard,
+ie. the control/function keys are mapped somewhat weird, eg. CapsLock = Ctrl.
 
---
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead
-bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert
-Fisk
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+A second thing is that stifb only works for me if you attach a external
+monitor, but sticon works fine with the internal LCD. I suspect that the
+stifb driver clears some flag that it should use the internal LCD during
+initialization.
+
+If someone is interested I'd sell mine, since I need some money :-/
+
+greetings, Max
