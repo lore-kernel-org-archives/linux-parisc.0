@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 14496482A
-	for <parisc-linux@parisc-linux.org>; Mon,  4 Feb 2002 10:04:31 -0700 (MST)
-Message-Id: <200202041704.g14H4RlP018142@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] hppa-linux gcc-3.0.3: -O2 optimization does not handle fp args correctly
-To: randolph@tausq.org
-Date: Mon, 4 Feb 2002 12:04:27 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 643F54838
+	for <parisc-linux@parisc-linux.org>; Mon,  4 Feb 2002 10:07:27 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id rrwglaaa for parisc-linux@parisc-linux.org; Mon, 4 Feb 2002 10:07:14 -0700
+Date: Mon, 4 Feb 2002 09:07:15 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020204163842.GF624@tausq.org> from "Randolph Chung" at Feb 4, 2002 08:38:42 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] hppa-linux gcc-3.0.3: -O2 optimization does not handle fp args correctly
+Message-ID: <20020204170715.GG624@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20020204163842.GF624@tausq.org> <200202041704.g14H4RlP018142@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200202041704.g14H4RlP018142@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +25,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> legolas[22:24] ~% gcc -O2 -o logtest logtest.c -lm
-> legolas[22:24] ~% ./logtest
-> float: -1.002099
+> The problem that needs fixing in the linker is passing floating
+> arguments to indirect functions.  The above program doesn't involve
+> an indirect call.
 
-This looks ok with my new build of 3.1:
+hrm... ok. any ideas when this was fixed? we can't ship 3.1 with the
+upcoming debian release, so we'll need to backport the fix.
 
-dave@gsyprf11:~/gcc_test$ gcc -O2 -o logtest logtest.c -lm
-dave@gsyprf11:~/gcc_test$ ./logtest
-float: nan
-dave@gsyprf11:~/gcc_test$ gcc -O1 -o logtest logtest.c -lm
-dave@gsyprf11:~/gcc_test$ ./logtest
-float: nan
-
-The problem that needs fixing in the linker is passing floating
-arguments to indirect functions.  The above program doesn't involve
-an indirect call.
-
-Dave
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
