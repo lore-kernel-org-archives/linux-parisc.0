@@ -1,28 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from crisis.wild-wind.fr.eu.org (lopsy-lu.misterjones.org [62.4.18.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 437D14829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 05:40:32 -0700 (MST)
-To: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Greg KH <greg@kroah.com>, Miles Bader <miles@gnu.org>,
-	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49FBD4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 09:32:09 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Bjorn Helgaas <bjorn_helgaas@hp.com>
+To: Greg KH <greg@kroah.com>, Miles Bader <miles@gnu.org>
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
+Date: Wed, 13 Nov 2002 09:32:00 -0700
+Cc: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
 	Matthew Wilcox <willy@debian.org>,
 	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
 	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-References: <20021109060342.GA7798@kroah.com>
-	<200211091533.gA9FXuW02017@localhost.localdomain>
-	<20021113061310.GD2106@kroah.com>
-	<buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp>
-	<20021113075223.GZ2106@kroah.com>
-	<20021113145902.A1245@jurassic.park.msu.ru>
-Reply-To: mzyngier@freesurf.fr
-From: Marc Zyngier <mzyngier@freesurf.fr>
-Date: 13 Nov 2002 13:36:14 +0100
-Message-ID: <wrpvg31pry9.fsf@hina.wild-wind.fr.eu.org>
-In-Reply-To: <20021113145902.A1245@jurassic.park.msu.ru>
+References: <20021109060342.GA7798@kroah.com> <buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp> <20021113075223.GZ2106@kroah.com>
+In-Reply-To: <20021113075223.GZ2106@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-Id: <200211130932.00864.bjorn_helgaas@hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -34,26 +28,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "Ivan" == Ivan Kokshaysky <ink@jurassic.park.msu.ru> writes:
+On Wednesday 13 November 2002 12:52 am, Greg KH wrote:
+> On Wed, Nov 13, 2002 at 04:46:58PM +0900, Miles Bader wrote:
+> > Greg KH <greg@kroah.com> writes:
+> > > What is the real reason for needing this, pci_alloc_consistent()?  We
+> > > have talked about renaming that to dev_alloc_consistent() in the past,
+> > > which I think will work for you, right?
+> > 
+> > This this would end up [or have the ability to] invoking a bus-specific
+> > routine at some point, right?  [so that a truly PCI-specific definition
+> > could be still be had]
+> 
+> If that was needed, yes, we should not break that functionality.
+> 
+> Are there any existing archs that need more than just dma_mask moved to
+> struct device out of pci_dev?  Hm, ppc might need a bit more...
 
-Ivan> It seems that two things are fundamentally missing in generic
-Ivan> device model:
-Ivan> 1. clean way to detect the type of container structure from arbitrary
-Ivan>    struct device *;
+Absolutely.  Boxes with multiple IOMMUs (at least ia64, sparc64, parisc)
+need to look up the correct IOMMU with which to map the allocated buffer.
+Typically this is in the pci_dev sysdata.
 
-Indeed.
-
-I'm using the following stuff in some EISA drivers :
-
-#ifdef CONFIG_EISA
-#define DEVICE_EISA(dev) (((dev)->bus == &eisa_bus_type) ? to_eisa_device((dev)) : NULL)
-#else
-#define DEVICE_EISA(dev) NULL
-#endif
-
-and frankly, it's really awful. On drivers which are both EISA and
-PCI (3c59x, aic7xxx), this is a major pain.
-
-        M.
--- 
-Places change, faces change. Life is so very strange.
+Bjorn
