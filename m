@@ -1,13 +1,13 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA06929
-	for <parisc-linux@puffin.external.hp.com>; Thu, 20 Jul 2000 13:27:33 -0600
-Message-ID: <20000720192844.1065.qmail@web4802.mail.yahoo.com>
-Date: Thu, 20 Jul 2000 12:28:44 -0700 (PDT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA07011
+	for <parisc-linux@puffin.external.hp.com>; Thu, 20 Jul 2000 13:28:07 -0600
+Message-ID: <20000720192915.1112.qmail@web4802.mail.yahoo.com>
+Date: Thu, 20 Jul 2000 12:29:15 -0700 (PDT)
 From: Jeff Towarnicki <jtowarnicki@yahoo.com>
 To: parisc-linux@thepuffingroup.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 
+Subject: [parisc-linux] problems compiling..
 List-ID: <linux-parisc.vger.kernel.org>
 
 I am having problems compiling gcc.. I am following
