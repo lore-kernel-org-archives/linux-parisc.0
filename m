@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C9D6F4841
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 27 Oct 2003 21:55:32 -0700 (MST)
-Date: Mon, 27 Oct 2003 21:55:31 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Nicholas Leippe <nick@byu.edu>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Install failure: C240, 3.0r1, 2003.09.24 and 2003.10.22 net inst isos
-Message-ID: <20031028045531.GA21288@colo.lackof.org>
-References: <200310271933.00659.nick@byu.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200310271933.00659.nick@byu.edu>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 34C3048B4
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Oct 2003 01:39:52 -0700 (MST)
+Date: Tue, 28 Oct 2003 09:39:48 +0100
+Message-ID: <3F98D67D00001BC1@ocpmta3.freegates.net>
+In-Reply-To: <20031027193911.GA16012@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] C110 builtin nic slow?
+To: "Grant Grundler" <grundler@parisc-linux.org>,
+	"Matthew Wilcox" <willy@debian.org>
+Cc: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,45 +23,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Nicholas,
-thanks for the bug report.
-Please see http://www.parisc-linux.org/faq/kernelbug-howto.html
+Grant, Matthew,
 
-more questions/comments below.
+>>
+>>On Sun, Oct 26, 2003 at 09:10:44PM +0000, Joel Soete wrote:
+>> How may I find and reset the speed setup of a nic (I mean which 10 or
 
-On Mon, Oct 27, 2003 at 08:33:00PM -0600, Nicholas Leippe wrote:
-> Hello all,
-> 
-> I just got my new C240 set up and attempted to install.  With either of
-> 
-> palinux-2.4.22-pa9-20030924-netinst.iso
-> palinux-2.4.22-pa13-20031022-netinst.iso
-> 
-> it boots into the debian installer and then promptly hangs at the 'select 
-> language' menu.
+>> 100 Mb, half or full duplex)?
+>
+>ethtool?
+>
+I will check on my own pc (hp cards but don't remember the model)
 
-See "Hung Kernels" section in the FAQ.
+hmm I test here with a 3C905B (on an hp vectra) but:
+# ethtool eth0
+Settings for eth0:
+No data available
 
-Did you try to install with serial console or graphics console?
-With serial console, it's easier to capture the output.
-And it's possible this bug only affects graphical console.
+???
 
->   I dug around the archives and found an email about this 
-> from several years ago, but no resolution was posted.
+(same results on a b180 with eth0: Digital DS21143 Tulip rev 65 [last kernel
+2.4.21])
 
-URL for mail you found?
+>> In a second though I just remember that the pc boot first (i need 
+>> minicom console to boot c110) then latter the c110. So it could be that
 
-> So I dug out my 3.0r1 cd to try but got an HPMC a little ways into the 
-> kernel boot.  I know the 3.0r1 cd is good, since I successfully installed 
-> a C180 with it (besides checking the md5s, which I also did for the 
-> netinst isos).
-> 
-> HPUX 11.11 successfully boots on this machine, so I'm not leaning towards 
-> thinking there's a hardware fault.
-> 
-> Any ideas?  Need more info?--just tell me what and how to get it.
+>> the first one is set in 100 half as default (no connection at boot time)
 
-"in io" output from the boot console handler would also be good.
+>> and the second 10 half?
+>
+>shouldn't matter unless auto-negotiation is broken for one driver or 
+>the other. If they are point-to-point,
 
-thanks,
-grant
+It is a cross-cable
+
+> I expect the negotiation to take place when the link is brought up with
+
+>the second NIC.
+
+I am curious to see if ethtool works for my pc's nic to check the behaviour
+on this side.
+
+Thanks for all info,
+    Joel
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
+
+http://reg.tiscali.be/default.asp?lg=fr
