@@ -1,142 +1,81 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from amanda.ybsoft.com (unknown [63.224.241.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 747D3482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 22:51:57 -0600 (MDT)
-Received: from beavis.ybsoft.com (ns1.ybsoft.com [10.0.0.2])
-	by amanda.ybsoft.com (Postfix) with ESMTP id D19B75873A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 15:53:21 -0600 (MDT)
-Date: Thu, 9 Aug 2001 22:51:55 -0600
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010809225155.A21997@beavis.ybsoft.com>
-Reply-To: rbradetich@uswest.net
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2FCB3482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Aug 2001 02:14:17 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id F17EDB00C; Fri, 10 Aug 2001 09:15:16 +0100 (BST)
+Date: Fri, 10 Aug 2001 09:15:16 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Cc: linux-ia64@linuxia64.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <20010810091516.X23676@linuxcare.com>
+References: <001f01c1206d$56b98f10$727ba8c0@vaio> <3B732C64.6D2E622F@cup.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: rbrad@beavis.ybsoft.com (Ryan Bradetich)
-Subject: [parisc-linux] [PATCH] fix for ccio cpio cdrom -> disk HPMC
+In-Reply-To: <3B732C64.6D2E622F@cup.hp.com>; from gururaj@cup.hp.com on Thu, Aug 09, 2001 at 05:35:48PM -0700
+Subject: [parisc-linux] Re: [Linux-ia64] Installation.
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello parisc-linux hackers,
+On Thu, Aug 09, 2001 at 05:35:48PM -0700, Gururaj Ananthateerta wrote:
+> I have a B180L system, I want to install linux on it. I visited
+> parisc-linux
+> site. I am confused which ISO image to pick. There are couple of them
+> like *serial  and *sti.
+> Please anyone explain me which one to pick and wht they mean.
 
-I think I have finally located and fixed the bug that has been haunting 
-the ccio driver.  This is the infamous cpio cdrom -> disk bug that I could
-reliably HPMC my C200+ with.
+You posted to the ia64 list, not the parisc one, but anyway...
 
-The fix is simple, and I want to thank both Richard Hirst and Grant
-Grundler for taking the time at OLS to explain how the SCSI layer was
-interacting with the ccio driver.  Understanding this gave me the clue I
-needed to find/solve this long outstanding bug.
+*serial refers to an ISO for use with a serial console, where you would
+install and manage the system via a serial cable link to some other system
+(e.g. minicom running on a Linux PC).
 
+*sti refers to Standard Text Interface, which means using the keyboard
+and monitor interface to the system.
 
-The problem is in the coalescing of the sg chunks.  The ccio (and SBA)
-drivers attempt to coalesce the sg chunks via 2 methods:
+The '32' and '64' in the ISO names refers to 32 and 64 bit CPUs; yours
+is 32 bit.
 
-  1. Merging virtually contiguous addresses into a single, larger address.
-  2. Merging non-virtually contiguous addresses into a single, larger
-     address iff the entries start/end on a page boundary.
+Assuming your system is currently configured for sti console, you
+should be able to force it to use serial console simply by unpluging
+the keyboard and cycling power.
 
-These two constraints are well documented in the
-Documentation/DMA-mapping.txt, but unfortunately the second case does not
-hold true for the ccio driver as I will try to explain after the short
-patch to remove the second case:
+When we released the 0.9 ISO we had seperate ISOs for serial and sti
+installs on 32 bit machines and a further serial ISO for 64 bit machines.
+This is referred to as 0.9.0 now.
 
+Next we released a 0.9.1 ISO, but you should ignore that, as it had
+various problems.
 
---- ccio-dma.c	2001/07/14 21:17:01	1.33
-+++ ccio-dma.c	2001/08/10 03:24:38
-@@ -992,18 +992,7 @@ ccio_coalesce_chunks(struct ioc *ioc, st
- 
- 			vcontig_sg = startsg;
- 			vcontig_len = startsg->length;
--
--			/*
--			** 3) do the entries end/start on page boundaries?
--			**    Don't update vcontig_end until we've checked.
--			*/
--			if (DMA_CONTIG(vcontig_end, startsg->address)) {
--				vcontig_end = vcontig_len + (unsigned long)startsg->address;
--				dma_len += vcontig_len;
--				continue;
--			} else {
--				break;
--			}
-+			break;
- 		}
- 
- 		/*
+The latest release is a 0.9.2 ISO, where we have a single ISO that
+works for serial and sti installs on 32 bit machines and for serial
+installs on 64 bit machines.
 
-The reason the second case does not hold true for the U2/Uturn chip because
-because the IO TLB is direct mapped on a 32k block boundary.  If the
-U2/UTurn chip was mapped on a 4k boundary (like Astro and IKE) then the
-second case would work fine.  [Note: I could have changed the DMA_CONTIG
-macro to align on a 32k block boundary instead of a 4k block bound and
-probably still fixed the problem, but I'm currently testing a new
-coalescing design Richard, Grant and I discussed at OLS, so I opted for
-simplicity :)]
+We have two versions of 0.9.2, "Network Install ISO", which is a CD
+you can install from, but which has just the base packages on it.  Once
+you've installed, you'll need to grab other packages from the network.
+0.9.2 "CD Install ISO" is the same, but includes various other packages
+that we considered useful.  Even if you install this CD you'll
+probably want to upgrade from the network anyway.
 
+Now, none of these are perfect.  If you are using a serial console
+then either should work fine for you, and you should use the 0.9.2
+one as it is more up-to-date.
 
-Now for the pretty ASCII art showing why the second case is broken
-for the ccio driver:
+If you are using an sti console, then I think the 0.9 ISO will work,
+although screen redrawing is poor in the installer.  If you use the
+0.9.2 ISO with an sti console, you might find that your keyboard is
+dead and you are unable to complete the install.  Unplugging and
+replugging the keyboard (while the installer is running) may help,
+as might trying some other model of keyboard.
 
-Lets assume the SCSI layer passes the 1st, 2nd, and 4th page of a 32k block
-to the ccio driver to be coalesced.
+The good news is that the keyboard lockup problems are probably
+solved, although the code isn't quite ready for committing.  I guess
+we will release a new ISO with 2.4.7 kernel and working keyboard sometime
+soon, although I am about to go on holiday for two weeks so it probably
+wont happen until I'm back.
 
-      0   1   2   3   4   5   6   7
-    +---+---+---+---+---+---+---+---+
-    | X | X |   | X |   |   |   |   |
-    +---+---+---+---+---+---+---+---+
+Finally, I see you are inside HP; I don't know whether the internal
+mirrors have 0.9.2 or not, but they are available on
+<http://www.parisc-linux.org/release-0.9/index.html>
 
-
-The ccio_coalesc_chunks function would return a single DMA stream with the
-translated address of block 0 and a length of 3 pages.
-
-The ccio_fill_pdir function would then mark the correct pages of the 32k
-block valid in the I/O TLB.
-
-Next the SCSI driver will try to write the data to the invalid I/O TLB
-entry at block 2.  At this point I believe the machine will HPMC because 
-of the invalid I/O TLB entry in the U2/UTurn chip.  Which verifies the PIM
-codes I have been seeing on the C200+.
-
-With the above patch applied to my local TOB tree, I have successfully
-cpio'ed a cdrom to disk several time without causing the HPMC.  So I am
-going to commit the patch to the ccio driver.  We can back it out later
-if someone has concerns or finds my analysis invalid :)
-
-As for my long shot in the dark as to why it was very reproducible with
-a cdrom -> disk copy and not the disk -> disk copy is that the SCSI driver
-passed 2k block in the sg list while the disk -> disk copy uses 1k block.
-Therefore the 2k blocks increased the likely-hood of catching the second
-case and causing the HPMC.
-
-
-Also I would like to fix the documentation in
-Documentation/DMA-mapping.txt since it is not quite accurate and threw
-me off for quite a while.  I would be happy to submit a small patch to
-clarify the documentation, but I'm not sure of the proper way to submit
-a patch to architecture independent code/documentation.
-
-  1. Submit the patch directly to the document authors and have them
-     review/accept/reject the patch?
-
-  2. Commit the patch to the parisc-linux tree and handle it during 
-     the upstream merge?
-
-
-The following section of text is the misleading portion of the document.
-
-> The implementation is free to merge several consecutive sglist entries
-> into one (e.g. if DMA mapping is done with PAGE_SIZE granularity, any
-                                             ^^^^^^^^^
-> consecutive sglist entries can be merged into one provided the first one
-> ends and the second one starts on a page boundary - in fact this is a huge
-> advantage for cards which either cannot do scatter-gather or have very
-> limited number of scatter-gather entries) and returns the actual number
-> of sg entries it mapped them to.
-
-
-If someone else with a U2/Uturn chip wants to beat on the ccio driver for
-a while with this patch and verify the the HPMC is gone for them I would
-greatly appreciate it.
-
-Thanks,
-
-- Ryan
+Richard
