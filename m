@@ -1,31 +1,63 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA14109
-	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Oct 1999 21:22:36 -0600
-From: dkennedy@thepuffingroup.com
-Date: Tue, 26 Oct 1999 23:30:22 -0400 (EDT)
-To: Martin Schulze <joey@infodrom.north.de>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Searching for HP9000/425 and HP Apollo A1630 docs
-In-Reply-To: <19991025112828.S4777@finlandia.infodrom.north.de>
-Message-ID: <Pine.LNX.4.10.9910262326420.3004-100000@grasshopper.thepuffingroup.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA14615
+	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Oct 1999 21:44:35 -0600
+Received: (from pschwan@localhost)
+	by burrow.puffingroup.com (8.8.7/8.8.7) id AAA26481
+	for parisc-linux@thepuffingroup.com; Wed, 27 Oct 1999 00:27:57 -0400
+Message-ID: <19991027002755.D26012@thepuffingroup.com>
+Date: Wed, 27 Oct 1999 00:27:55 -0400
+From: Phil Schwan <pschwan@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] the state of the shell
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 25 Oct 1999, Martin Schulze wrote:
+So, I spent all evening trying to figure out _exactly_ which
+differences between Chris Beard's tree and cvs-head were preventing us
+from getting to a shell.  Here's what I found:
 
-> I have aquired two HP9000/425dl (processor: 68040/25) machines on
-> which I'd like to run Linux.  I'm working on it with a friend who's
-> got a similar machine, HP Apollo A1630 model 425t and a HP Apollo
-> A1630 model 400t with 68030 processor.  The machines have these
-> framebuffers: A1416A, A1924 and A1630.  At the moment we get the
-> machine boot but the kernel dies afterwards, for sure.
+- The drivers/gecko/lasi.c changes made between 1999/10/19 and
+1999/10/25 made the console unbearably slow.  At first glance I
+suspect we're not handling interrupts properly, but I haven't looked
+at it in any sort of detail.  I'll get to it soon, unless someone else
+does first.
 
-There is a Apollo Linux port already in existance.  I know it covers
-pre-HP Apollo machines including machines with a 68040 and an ISA bus
-as well as some HP Apollo machines.  The link can be found off of
-http://www.linux-m68k.org.
+- I reverted someone else's one-line change to drivers/char/serial.c
+that was causing the console to barf when sash tried to display
+something.  This was ultimately the only hard problem to track down.
 
--- 
-David Kennedy
-The Puffin Group
+- We need ``argv_init[1] = NULL;'' in init/main.c, at least for the
+moment, so that we don't get sash's usage screen.
+
+- There are problems with the IODC console.  If I set console=tty and
+boot with IODC, I get: 
+
+Attempting to execute '/sbin/init'
+
+It's for the PA-RISC!
+It's executable!
+It has an appropriate version!
+The checksum checks out!
+Well, it *smells* like a valid SOM executable
+(start_brk) 40017000
+(end_code) 0003c000
+(start_code) 00001000
+(end_data) 40008000
+(start_stack) 20000028
+(brk) 40017000
+Kernel panic: Attempted to kill the idle task!
+In swapper task - not syncing
+
+I've not even begun to debug this.  If you want to just get to a
+prompt, turn off the IODC console and set ``console=ttyS0'' in
+arch/parisc/boot/boot_code/ipl_c.c
+
+Aside from that, using the ramdisk that Chris made (on
+puffin.external.hp.com), you should be able to boot to a sash prompt,
+at least on the A180.  I've not tried it on any other machine; I'll
+probably try it first thing tomorrow.
+
+Good luck--
+
+-Phil
