@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.ocs.com.au (mail.ocs.com.au [203.34.97.2])
-	by dsl2.external.hp.com (Postfix) with SMTP id AB631482B
-	for <parisc-linux@parisc-linux.org>; Sat, 22 Mar 2003 20:41:46 -0700 (MST)
-From: Keith Owens <kaos@ocs.com.au>
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, linux-kernel@vger.kernel.org,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: [Linux-ia64] Announce: modutils 2.4.24 is available 
-In-reply-to: Your message of "Sat, 22 Mar 2003 22:37:43 CDT."
-             <200303230337.h2N3bhAC026836@hiauly1.hia.nrc.ca>
+Date: Sat, 22 Mar 2003 23:24:54 -0700
+To: Joel Soete <joel.soete@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] FC driver?
+Message-ID: <20030323062454.GA24168@dsl2.external.hp.com>
+References: <3E68A12A00002910@ocpmta3.freegates.net> <20030317111801.GF17073@lug-owl.de> <20030317161445.GA31378@dsl2.external.hp.com> <1047918143.14507.18.camel@beavis.ybsoft.com> <20030317163804.GC31378@dsl2.external.hp.com> <3E7CDCA3.2040700@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sun, 23 Mar 2003 14:41:33 +1100
-Message-ID: <8942.1048390893@ocs3.intra.ocs.com.au>
+In-Reply-To: <3E7CDCA3.2040700@tiscali.be>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +20,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 22 Mar 2003 22:37:43 -0500 (EST), 
-"John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
->> -#if defined(ARCH_ia64) || defined(ARCH_ppc64)
->> +#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa64)
->>  #define HAS_FUNCTION_DESCRIPTORS
->>  #endif
->
->The 32-bit hppa port also has function descriptors.
+On Sat, Mar 22, 2003 at 09:58:59PM +0000, Joel Soete wrote:
+> Is a FC hub is required to expect to use this driver (under hpux we used 
+> this card directly connected to fc of a XP512 diskarray)?
 
-They keep coming out of the woodwork :(  Any more architectures using
-function descriptors?  Just add them to the list below.
+I don't think so. I just happen to have the couple of disks/hosts all
+connected to a pair of hubs.
 
-Index: 24.3/include/util.h
---- 24.3/include/util.h Sun, 23 Mar 2003 13:34:28 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
-+++ 24.3(w)/include/util.h Sun, 23 Mar 2003 14:40:06 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
-@@ -96,7 +96,7 @@ void gzf_close(int fd);
- #define SYMPREFIX "__insmod_";
- extern const char symprefix[10];	/* Must be sizeof(SYMPREFIX), including nul */
- 
--#if defined(ARCH_ia64) || defined(ARCH_ppc64)
-+#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa) || defined(ARCH_hppa64)
- #define HAS_FUNCTION_DESCRIPTORS
- #endif
- 
+grant
