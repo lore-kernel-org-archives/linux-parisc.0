@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-server1.tampabay.rr.com (smtp-server1.tampabay.rr.com [65.32.1.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A978C4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 13:48:21 -0700 (MST)
-Received: from pentium-200 (229.201.33.65.cfl.rr.com [65.33.201.229])
-	by smtp-server1.tampabay.rr.com (8.12.2/8.12.2) with SMTP id gB6KmCdu029358
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 6 Dec 2002 15:48:16 -0500 (EST)
-Reply-To: <jkirk9@cfl.rr.com>
-From: "John K." <jkirk9@cfl.rr.com>
-To: "parisc-linux Mailing list" <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 6 Dec 2002 15:46:06 -0500
-Message-ID: <NDBBLBLICLEJGEFEEOCIIEPJCCAA.jkirk9@cfl.rr.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Bad IPL checksum error on 710
+Date: Fri, 6 Dec 2002 21:43:14 -0700
+To: "John K." <jkirk9@cfl.rr.com>
+Cc: parisc-linux Mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Bad IPL checksum error on 710
+Message-ID: <20021207044314.GA31907@dsl2.external.hp.com>
+References: <NDBBLBLICLEJGEFEEOCIIEPJCCAA.jkirk9@cfl.rr.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <NDBBLBLICLEJGEFEEOCIIEPJCCAA.jkirk9@cfl.rr.com>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,11 +20,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-All
+On Fri, Dec 06, 2002 at 03:46:06PM -0500, John K. wrote:
+> I downloaded debian-30r0-hppa-binary-1.iso and burned a CD.
+...
+> Attempting to load IPL
+> IPL error: Bad IPL checksum
+...
+> The simple question is what do I do now?
 
-I am new to all of this so bear with me.
+The CD is a coaster.
+The ISO definitely works on all the machines I have around here.
 
-My hardware is a 710 48 Meg of RAM 1 Gig disk at scsi.6.0 NEC CD drive at
-scsi.3.0
+I suggest using a linux machine with a CD writer and "cdrecord -data".
+The "cdrecord How-to" describes the 2-3 stesp - very simple.
 
-I downloaded debian-30r0-hppa-binary-1.iso and burned a CD.
+grant
