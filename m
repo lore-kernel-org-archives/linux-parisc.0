@@ -1,38 +1,84 @@
-Return-Path: <parisc-linux@puffingroup.com>
-Date: Fri, 29 Jan 1999 11:47:58 -0500 (EST)
-From: Christopher Beard <cjbeard@istar.ca>
-To: parisc-linux@puffingroup.com
-Message-ID: <Pine.LNX.4.04.9901291134480.1532-100000@sprite.osfi-bsif.gc.ca>
+Return-Path: <hppa-linux@puffingroup.com>
+Date: Tue, 2 Feb 1999 16:19:41 -0500 (EST)
+From: Alex deVries <adevries@redhat.com>
+Reply-To: Alex deVries <adevries@redhat.com>
+To: hppa-linux@puffingroup.com
+Subject: Some planning issues.
+Message-ID: <Pine.LNX.3.96.990202151755.12373E-100000@devserv.devel.redhat.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] HP wants to help
-Resent-Message-ID: <"cptJl.0.ES3.bxVis"@burrow.puffingroup.com>
-Reply-To: parisc-linux@puffingroup.com
+Resent-Message-ID: <"MzbZv1.0.Ec5.CMujs"@burrow.puffingroup.com>
 List-Id: linux-parisc.vger.kernel.org
 
 
-Greetings hackers!
+Alright.  Here are some very preliminary planning idea for HPPA.  It's
+hard to tell exactly how this is going to go because we haven't even seen
+architecture overviews yet.
 
-On my return from Cornell, I found an e-mail in my mailbox from a
-representative of Hewlett-Packard (HP). They are interested in formalizing
-a relationship with our project to provide documentation modern hardware,
-and support.
+I'm writing this mostly for the people who've never been through a linux
+port before; I'm borrowing heavily from my SGI experience.
 
-On behalf of our project, I've indicated that we are definitely interested
-in discussing the endorsement, and the tangible support that this
-relationship could provide.
+Build Environment
+-----------------
 
-If it all works out, it will definitely be a big boost to the project, and
-will make things a tad easier for us all.
+Generally, the way to get started with the kernel is to cross compile.
+We're at an advantage because there's some sort of native builder for
+mklinux; asuming this works we may just build under mklinux until we have
+modern cross compilers working for target hppa-linux.
 
-Legal issues are currently being explored, and I will keep this list
-informed as to the progress of negotiations.
+I've got binutils cross compiler already, egcs has some issues.
 
---
-Christopher Beard						nym on LinuxNET
-                     "Nothing is foolproof 
-  			to a sufficiently talented fool."
+Boot Loader
+-----------
 
-----------------------------------------------------------------------
-To unsubscribe e-mail parisc-linux-request@puffingroup.com with
-``unsubscribe'' as your subject.
+We need to figure out how to load a kerne image; I suspect borrowing from
+openbsd and mklinux will be great.
+
+
+Kernel
+------
+
+Alright.  This is the hard part. This is going to involve a lot of trial
+and error, particularly up until the point where you can actually get some
+output.
+
+The order of what to build should be:
+- stuff in arch/hppa, which is:
+  - boot strapping code (head.S)
+  - MMU handling
+  - signal handling
+  - interrupt handling, etc
+  - talking on the local bus
+- some sort of network driver so we can get to root nfs
+  - ethernet device driver (drivers/net)
+
+All of this is going to be terrifically difficult without someone with
+prior HPPA experience.  However, we do have OpenBSD and mklinux to model
+things after. And hopefully we'll have docs.
+
+After this is the 'easy' kernel work:
+- stuff in drivers/hp/:
+  - graphics
+  - SCSI controller
+  - keyboard
+  - other devices
+
+Userland
+--------
+The mklinux tree is libc5 based, IIRC.  That means we're going to have to
+fix glibc 2.x to support hppa-linux.  A slight pain, but not impossible.
+
+After this, modern distributions should build cleanly.  I'm pretty keen on
+building Red Hat for hppa, and that's not only because I work for them.
+We'd encourage other distributions too, I think.
+
+Undoubtedly there'll be packages which assume that if you have an HPPA,
+you must be running HP-UX.
+
+
+- Alex
+
+-- 
+Alex deVries <puffin@redhat.com>
+Red Hat Contrib Net maintainer
+Ottawa, Canada
