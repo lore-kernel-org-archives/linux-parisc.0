@@ -1,53 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6CA33485C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 04:02:53 -0600 (MDT)
-Received: (from ra@localhost)
-	by xo.hp.is (8.11.6/RA-8.11.6) id f8OA2q429080
-	for parisc-linux@lists.parisc-linux.org; Mon, 24 Sep 2001 10:02:52 GMT
-Date: Mon, 24 Sep 2001 10:02:51 +0000
-From: Richard Allen <ra@hp.is>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010924100251.B13826@hp.is>
+Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A282A485C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 04:13:26 -0600 (MDT)
+Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
+	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
+	id 15lSjn-0004k9-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 24 Sep 2001 12:13:19 +0200
+Date: Mon, 24 Sep 2001 12:05:01 +0200
+From: Albert Strasheim <fullung@ilink.nis.za>
+To: Jurij Smakov <jurijus@theophys.kth.se>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Debian bootfloppies with -pa22 fails on 720/50
+Message-ID: <20010924120501.A8276@dogbert.localdomain>
+References: <20010922090549.A17199@dogbert.localdomain> <Pine.LNX.4.21.0109241132170.9567-100000@uranus.theophys.kth.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Filesystem corruption
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+In-Reply-To: <Pine.LNX.4.21.0109241132170.9567-100000@uranus.theophys.kth.se>
+Sender: Albert Strasheim <fullung@dogbert.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I installed the 0.92 system, upgraded everything with apt-get upgrade
-and then compiled the kernel (last fridays snapshot).
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The system in question is a C360, 512K Ram and a 9 Gig HD.
+Hello,
 
-bofh:~# uname -a
-Linux bofh 2.4.9-pa24 #2 Fri Sep 21 20:40:31 UTC 2001 parisc unknown
+Thanks for the reply. I was considering exactly this course of action.
+Hopefully I can spot something then. I'll post my findings here. :-)
 
-I then patted myself of the back and went home and had myself a good weekend.
+I was also thinking of adding some debug output to init itself.
+Seemingly it gets run, and during that process the kernel loses it...?
 
-When I returned to work this monday morning I noticed the following in
-my minicom (C360 Console) window:
+Regards,
 
-bofh login: EXT2-fs error (device sd(8,4)): ext2_check_page: bad entry in directory #870061: directory entry across blocks - offset=0, inode=1701273973, rec_len=24864, name_len=115
-Remounting filesystem read-only
-EXT2-fs error (device sd(8,4)): ext2_check_page: bad entry in directory #837235: unaligned directory entry - offset=0, inode=1684107116, rec_len=28265, name_len=103
-Remounting filesystem read-only
+Albert
 
-After that all kinds of warnings and errors regarding a read only root.
-I opted for a reboot and I had to run fsck manually and there where lots
-of things fsck wanted me to say "Y" to.
+--WIyZ46R2i8wDzkSu
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-bofh:/# du -s lost+found/
-1796    lost+found
-bofh:/# ls -l lost+found | grep -c ^-
-50
-bofh:/# ls -l lost+found | grep -c ^d
-20
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-I would understand that "sh**" can happen when it crashes or something like
-that, but nothing happened during the weekend.
+iD8DBQE7rwVMDg+hOeRZtkMRAisFAJ9ZTLJjUN5sTZLUf6dUgZi8eaCeEQCbBoTc
+AjG4DfuUGxePxlwAlO83VZo=
+=r5eu
+-----END PGP SIGNATURE-----
 
--- 
-Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
-               --  Solaris 7 Certified Systems and Network Administrator.
-Bell Labs Unix --  Reach out and grep someone.
-Those who do not understand Unix are condemned to reinvent it, poorly.
+--WIyZ46R2i8wDzkSu--
