@@ -1,17 +1,17 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Easy Firmware Upgrade for C180
-Date: Sun, 27 Mar 2005 19:39:03 -0700
-Message-ID: <20050328023903.GF30963@colo.lackof.org>
-References: <913ffb071295fac86a0aade164cf5a27@cox.net>
-	<20050326221203.GC9287@colo.lackof.org>
-	<7bf52f57850fdda76799870f47398756@cox.net>
+Subject: Re: [parisc-linux] ext3 perf patch#4
+Date: Sun, 27 Mar 2005 20:48:38 -0700
+Message-ID: <20050328034838.GI30963@colo.lackof.org>
+References: <20050326103540.GA31557@colo.lackof.org>
+	<20050327011849.GD9287@colo.lackof.org>
+	<4246B9D2.7070906@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: "Erik T.Crouch" <lennier@cox.net>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <7bf52f57850fdda76799870f47398756@cox.net>
+In-Reply-To: <4246B9D2.7070906@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,25 +22,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Mar 27, 2005 at 12:36:32PM -0600, Erik T.Crouch wrote:
-> Actually figured it out, you can dd it to a virtual disc, then make it 
-> a bin image which you can translate into an ISO
+On Sun, Mar 27, 2005 at 01:49:06PM +0000, Joel Soete wrote:
+...
+> # time rsync -a /Debian-apt/SRC/linux-2.6.12-rc1-pa4-050327 /Sources/CVS-tst
 > 
-> It worked great that way, but a little annoying because you have to 
-> work with dd to get it going.
+> real    3m34.512s
+> user    1m0.730s
+> sys     1m6.440s
 
-cool. If you write up a nice recipe, I'll add it to our collection
-of HOW-TO's and a reference from the FAQ.
+Joel,
+thanks for the data!
 
+But I don't know what it means.
+Was the performance bad for that box before?
 
-> Anyway, I have 6.2 firmware on the beast now, but Debian still wont 
-> boot, HPMC Code=1 is what I get.  I'm assuming it means I'll have to 
-> serial console but I was  hoping to avoid that.
+> I prefer simply tar and so:
+> # cd /Debian-apt/SRC
+> # time tar -cslpf /chroot/Develop/linux-2.6.12-rc1-pa4.tar2 
+> linux-2.6.12-rc1-pa4-050327
 > 
-> Any ideas on that?
+> real    0m38.487s
+> user    0m3.690s
+> sys     0m18.650s
+> 
+> a sample iostat too :-)
+> avg-cpu:  %user   %nice    %sys %iowait   %idle
+>           15.70    0.00   47.00   37.30    0.00
+> 
+> Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
+> sda               2.50         0.00        19.60          0        196
+> sdb             297.30      5906.40        89.20      59064        892
+> sdc              15.10         0.00      7712.80          0      77128
+...
 
-No. I need console output. Disconnect the keyboard and capture output
-from serial port 1. Post the output to the parisc-linux mailing list.
+That looks fine.
+
+> still have to test on a quicker system as the b2k if that could solve the 
+> bug I reproduce on 32bit kernel
+> (cf patch log message:"... I suspect the real problem is ffz() wants
+> 	an unsigned long and was getting garbage in the top half of the
+> 	unsigned int. Not confirmed but that's what I suspect.)
+
+I probably should have posted that speculation to the mailing list
+instead of in the commit log...I was quite tired at that point.
+
+That could only be true if ext3 perf issue only shows up in 64-bit kernels.
+I don't recall if anyone posted perf results for 32-bit kernels.
 
 thanks,
 grant
