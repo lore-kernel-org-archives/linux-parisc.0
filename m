@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id EEF52486E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 15:09:15 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Yasholomew Yashinski <yashy@mail.yashy.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] palo not booting kernel
-Date: Thu, 21 Feb 2002 23:05:32 +0100
-References: <20020220232407.T96452-100000@mail.yashy.com>
-In-Reply-To: <20020220232407.T96452-100000@mail.yashy.com>
+Received: from rubicon.hasler.ascom.ch (rubicon.hasler.ascom.ch [139.79.129.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49012482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 02:07:52 -0700 (MST)
+Received: from srvmailgate1.hasler.ascom.ch (srvmailgate1.hasler.ascom.ch [139.79.135.89])
+	by rubicon.hasler.ascom.ch (8.11.4/8.11.4) with ESMTP id g1M97mQ12748
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Feb 2002 10:07:48 +0100 (MET)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <OF0A3B134F.4AC4EE69-ONC1256B68.002AD4A9@hasler.ascom.ch>
+From: "Thomas Schmid" <Thomas.Schmid@ascom.ch>
+Date: Fri, 22 Feb 2002 10:07:46 +0100
 MIME-Version: 1.0
-Message-Id: <200202212305.32076.deller@gmx.de>
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] Problems running KDE on PARISC
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,15 +23,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thursday 21 February 2002 22:54, Yasholomew Yashinski wrote:
->  Also wondering how the Vis EG-PCI support is coming, is
-> parisc-linux-announce the best way to track this? Anxious to use graphics
-> console :)
+Hi all,
 
-It's nearly finished. 
-The current CVS version 2.4.17-pa28 now boots my c3000 w/ VisEG PCI and
-has working sticon and stifb in case you _boot_ via serial console (after bootup
-you may of course use sticon/stifb).
-Booting from graphics console will still crash your machine - but we're working on that.
+I do hope this is not off-topic, but I could not find a hint to my 
+problem anywhere else.
 
-Helge
+I'm running the 0.9.3 distribution on 2 PARISC machines: 
+HP 712/80, 64MB RAM and HP 715/100XC, 256 MB RAM
+
+Generally speaking KDE is slow on these machines, but
+when I log in from KDM, it takes on _both_ machines about
+4..5 minutes to go from KDM login screen to KDE window
+manager.
+
+Nothing fancy (wallpaper, fontaliasing, file preview) is enabled,
+just a 2 color gradiant background.
+
+What I can see from "top" is that the "kdeinit knotify" process
+uses up to 90% CPU for quite a long time; it also seems to run
+3 times in a row. Memory usage is neglectable.
+
+When I finally "arrive" on the KDE desktop I get 3 SIGSEGV
+(KDE crashmanager) for the 3 "knotify"s plus an error dialog
+box saying: "The protocol for the file process died unexpectedly"
+(I guess it means that the kio_file process died, but after all that
+I have 1 kio_file process running)
+
+After that KDE is usable.
+
+Does anybody have similiar / better / worse experiences with
+KDE ?  Any hints what to improve ? Is the KDE package in a
+sub-optimal stage ?
+
+Thanks for any input
+Thomas
+
+ 
