@@ -1,25 +1,16 @@
-Return-Path: <skylimomalik@eol.ca>
-Received: from smtp1.echo-on.net (smtp1.echo-on.net [204.138.111.138])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7BB334854
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 75D774927
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 21:29:26 -0700 (MST)
-Received: from mail.echo-on.net (perdition.echo-on.net [205.189.151.14])
-	by smtp1.echo-on.net (Postfix) with ESMTP id 8E23010C67F
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 23:33:42 -0500 (EST)
-Received: from roomcomputer.me (ppp-RAS1-3-250.dialup.eol.ca [64.56.226.250])
-	by mail.echo-on.net (Postfix) with ESMTP id EE726340D8
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 22 Feb 2004 23:28:52 -0500 (EST)
-From: "M Malik" <skylimomalik@eol.ca>
-To: parisc-linux@lists.parisc-linux.org
+	Mon, 23 Feb 2004 01:56:49 -0700 (MST)
+Date: Mon, 23 Feb 2004 09:16:16 +0100
+Message-ID: <402A42A100007EE7@ocpmta1.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] b2k scsi disk pb
+To: "Grant Grundler" <grundler@parisc-linux.org>, "M. Grabert" <xam@cs.ucc.ie>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="-=_AROZNWZNNZSFN.024901810411CKQ.02961223"
-Date: Sun, 22 Feb 2004 23:28:39 -0500
-Message-Id: <20040223042852.EE726340D8@mail.echo-on.net>
-Subject: [parisc-linux] 10% Discount Limo Service(March Break)
-Reply-To: skylimomalik@eol.ca
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,36 +20,66 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format
+Hello Grant,
 
----=_AROZNWZNNZSFN.024901810411CKQ.02961223
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+>The "hang" is because no IO's are processed until 3 seconds
+>after the BUS RESET is issued.
 
-This is an HTML message.
+Typicaly the behaviour observed.
 
----=_AROZNWZNNZSFN.024901810411CKQ.02961223
-Content-Type: text/html
-Content-Transfer-Encoding: 8bit
+>> Got rid of it by not using the SE-SCSI driver ;)
+>> Try to physically detach the (not-used) ST336704LC.
+>
+>I was pretty sure "LC" suffix meant LVD with SCA 80 pin connector.
+>Specs on seagate.com are easy to find if you know the model.
 
-<HTML><HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=#ffffff>
-<DIV>
-<DIV>
-<DIV><FONT color=#ff0000 size=7>SKY LIMO<BR></FONT><FONT color=#0000ff>TORONTO 
-ONTARIO CANADA</FONT></DIV>
-<DIV><FONT color=#0000ff>skylimo@eol.ca <BR></FONT><FONT color=#0000ff><FONT 
-size=6><FONT color=#000000><FONT size=5>WANTS TO&nbsp;FLY CALL THE 
-SKY</FONT><BR></FONT></FONT><FONT color=#ff0000><FONT size=5>10% 
-DISCOUNT</FONT><FONT size=2> (CASH ONLY)</FONT></FONT></FONT></DIV>
-<DIV><FONT color=#0000ff><FONT color=#ff0000 size=4>ALL MAJOR CREDIT CARD 
-ACCEPTED<BR></FONT><FONT color=#0000ff>FOR ALL YOUR TRANSPORTATION 
-NEEDS<BR><FONT size=5>416-979-LIMO</FONT> 
-(5466</FONT></FONT></DIV></DIV></DIV>
-</BODY></HTML>
+In fact according <http://www.seagate.com/cgi-bin/view.cgi?/scsi/st336704.lw>
+it has the two possiblity SE or LVD according HW config (a side jumper J2
+if i well understand)
 
----=_AROZNWZNNZSFN.024901810411CKQ.02961223--
+>If both internal devices are LVD, check early sym2 dmesg output
+>to verify the SCSI bus is operating in LVD mode (vs SE).
+
+But here they seems to work together in LVD mode:
+[snip]
+
+Uniform CD-ROM driver Revision: 3.20
+sym0: <895a> rev 0x1 at pci 0000:00:0f.0 irq 129
+sym0: No NVRAM, ID 7, Fast-40, LVD, parity checking
+sym0: SCSI BUS has been reset.
+scsi0 : sym-2.1.18i
+sym0:0:0: ABORT operation started.
+sym0:0:0: ABORT opera
+ion complete.
+sym0:0:0: DEVICE RESET operation started.
+sym0:0:0: DEVICE RESET operation failed.
+sym0:0:0: BUS RESET operation started.
+sym0:0:0: BUS RESET operation failed.
+sym0:0:0: HOST RESET operation started.
+sym0:0:0: HOST RESET operation failed.
+scsi: Device offlined - not ready after error recovery: host 0 channel 0
+id 0 lun 0
+  Vendor: QUANTUM   Model: ATLAS5-9LVD       Rev: HP04
+  Type:   Direct-Access                      ANSI SCSI revision: 03
+sym0:5:0: tagged command queuing enabled, command queue depth 16.
+sym0:5: FAST-40 WIDE SCSI 80.0 MB/s ST (25.0 ns, offset 31)
+  Vendor: SEAGATE   Model: ST336704LC        Rev: HP03
+  Type:   Direct-Access                      ANSI SCSI revision: 03
+sym0:6:0: tagged command queuing enabled, command queue depth 16.
+sym0:6: FAST-40 WIDE SCSI 80.0 MB/s ST (25.0 ns, offset 31)
+[snip]
+
+Anyway what sym2 look for at scsi id 0?
+
+I will try also later to remove ST disk ad advise ;)
+
+Thanks for attention and advise,
+    Joel
+
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
