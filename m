@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: tag starvation 
-In-Reply-To: Message from James Bottomley <James.Bottomley@HansenPartnership.com>
-   of "Sat, 26 Jan 2002 12:23:40 EST." <200201261723.g0QHNeI02030@localhost.localdomain>
-References: <200201261723.g0QHNeI02030@localhost.localdomain> 
-Date: Sun, 27 Jan 2002 01:41:19 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020127084119.AB75A482A@dsl2.external.hp.com>
+Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1E28A482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Jan 2002 08:28:29 -0700 (MST)
+Date: Sun, 27 Jan 2002 15:17:44 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020127151743.GQ2884@sleepie.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 743 VME board boots
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,68 +20,130 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-James Bottomley wrote:
-> That's essentially it.  A driver is allowed to execute simple tagged commands
-> in any order it chooses (since it knows its own internal platter topology, it
+Hi,
+  I just stuck a 743 board in a VME rack and powered it up - it "just
+worked" :)   Did an install from a 0.9.3-pre CD via frame buffer
+console. This board has a FWD zalon scsi expansion board, which was
+detected ok, although I didn't have any devices on that interface.
+Thanks to Grant for the boards.
 
-James,
-thanks for the excellent explanation.
-But did you mean device or drive?  (instead of "driver")
+Richard
 
-> ignore a pending tagged command for quite a period of time (this is what is 
-> known as tag starvation).  If the command remains unprocessed for >2s, the 
-> mid-layer will begin error recovery, which can cause all sorts of problems.
 
-ah...that explains it. Most HP drives are expected to have 3s.
 
-> One thing that irritates me about 
-> this option is that it should be a global one (belonging to the whole SCSI 
-> subsystem) not local to each driver.
-
-It should also be *per drive*. Different drives implement
-different numbers of queue tags (eg disk array vs simple mech).
-
-> How to Counter Tag Starvation
-> ==============================
-> 
-> Most of the maintained drivers in Linux do this by keeping a timer on the 
-> outstanding tagged commands.  When they see the timer expire they switch from
->    
-> simple tags to ordered tags (an ordered tag is like a marker in the 
-> queue---you can't execute any command after an ordered tag untill all those 
-> before it have completed).
-
-AFAIK, HP does not test disk drives to verify ordered tags work
-correctly. One reason is we didn't want to expose new bugs by mixing
-ordered with simple tags. The other reason is we saw a 25% performance
-hit. The 5400 rpm 2GB drives at the time could complete ~80 IO/s with
-simple tags. This dropped to 60-65 IO/s for ordered tags. Ordered tags
-was considered an unacceptable solution at that point.
-
-> The driver detects tag starvation when the hands try to cross (i.e. the
-> next tag to be
-> allocated would be the same tag number as the oldest outstanding command).
-> At that point, it prints the message and refuses to accept any further
-> I/Os from the mid layer.
-
-Well done - I like this solution too.
-
-> The reason for this approach in the 53c700 is that it is driving much older 
-> (and buggier) devices.  If the device messed up on the ordered queue tag we 
-> could get into a whole heap of trouble.
-
-Exactly. Best case is the drive gets confused and locks up.
-Worst case is it looses the data.
-
-> Obviously, since the SCSI mid-layer also keeps a timer on outstanding 
-> commands, it is a complete waste to duplicate this inside the driver.  
-> Unfortunately, the first the driver hears from the mid-layer about a problem 
-> command is when the mid-layer wants it aborted, by which time it is a bit lat
->   e.
-
-This is fun part about driver interactions in the error recovery path.
-Could one avoid this mess if the SCSI interface driver could guarantee
-the IO will complete (with or w/o error) with-in the time frame
-specified by the device (eg tape or disk) driver?
-
-grant
+Linux version 2.4.9-32 (root@paer) (gcc version 3.0.2 (Debian)) #1 Fri Nov 30 19:36:30 MST 2001
+FP[0] enabled: Rev 1 Model 13
+The 32-bit Kernel has started...
+Determining PDC firmware type: Snake.
+model	00006040 00000481 00000000 00000000 4c418c55 00000000 00000004 00000072 00000072
+vers	0000000c
+CPUID	vers 0 rev 0
+model	9000/743
+Total Memory: 128 Mb
+pagetable_init
+On node 0 totalpages: 32768
+zone(0): 32768 pages.
+zone(1): 0 pages.
+zone(2): 0 pages.
+Kernel command line: root=/dev/sda3 HOME=/ console=tty0 sti=0 sti_font=VGA8x16 TERM=linux
+Console: colour dummy device 160x64
+Calibrating delay loop... 99.73 BogoMIPS
+Memory: 126200k available
+Dentry-cache hash table entries: 16384 (order: 5, 131072 bytes)
+Inode-cache hash table entries: 8192 (order: 4, 65536 bytes)
+Mount-cache hash table entries: 2048 (order: 2, 16384 bytes)
+Buffer-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Page-cache hash table entries: 32768 (order: 5, 131072 bytes)
+Searching for devices...
+Found devices:
+1. Anole Artist Optional Graphics (10) at 0xf8000000 [1], versions 0x8, 0x0, 0x85
+2. Anole 100 Core BA (11) at 0xf0100000 [2], versions 0x1b, 0x0, 0x81
+3. Anole 100 Core SCSI (10) at 0xf0106000 [2/0/1], versions 0x1b, 0x0, 0x82
+4. Anole 100 Core LAN (802.3) (10) at 0xf0107000 [2/0/2], versions 0x1b, 0x0, 0x8a
+5. Anole 100 Core RS-232 (10) at 0xf0105000 [2/0/4], versions 0x1b, 0x0, 0x8c
+6. Anole 100 Core Centronics (10) at 0xf0102000 [2/0/6], versions 0x1b, 0x0, 0x74
+7. Anole 100 Audio (10) at 0xf0104000 [2/0/8], versions 0x1b, 0x0, 0x7b
+8. Anole 100 Core PS/2 Port (10) at 0xf0108000 [2/0/11], versions 0x1b, 0x0, 0x84
+9. Anole 100 Core PS/2 Port (10) at 0xf0108100 [2/0/12], versions 0x1b, 0x0, 0x84
+10. Anole 64 TIMI BA (11) at 0xffc11000 [7], versions 0x1b, 0x0, 0x93
+11. Anole 100 VME Networking (10) at 0xffcf0000 [7/0/1], versions 0x1b, 0x0, 0x88
+12. Anole 100 Timi RS-232 (10) at 0xffc1a000 [7/0/2], versions 0x21, 0x0, 0x8c
+13. unknown device (10) at 0xffcf1000 [7/0/3], versions 0x1b, 0x0, 0x8f
+14. Anole 100 (743/100) (0) at 0xfffbe000 [8], versions 0x604, 0x0, 0x4
+15. unknown device (1) at 0xfffbf000 [9], versions 0x0, 0x0, 0x9
+16. Shrike Add-on FW-SCSI (4) at 0xfff88000 [11], versions 0x14, 0x0, 0x89
+17. Anole 100 VME BA (11) at 0xffc00000 [15], versions 0x1b, 0x0, 0x78
+CPU(s): 1 x PA7100LC (PCX-L) at 100.000000 MHz
+Lasi version 0 at 0xf0100000 found.
+POSIX conformance testing by UNIFIX
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Starting kswapd v1.8
+parport_init_chip: initialize bidirectional-mode.
+parport0: PC-style at 0xf0102800, irq 88 [PCSPP,TRISTATE]
+STI word mode ROM at f002e000, hpa=f8000000
+STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
+STI device: HPA208LC1280
+Console: switching to colour frame buffer device 160x64
+fb0: stifb 1280x1024-8 frame buffer device, id: 2b4ded6d, mmio: 0xf8100000
+pty: 256 Unix98 ptys configured
+Serial driver version 5.05c (2001-07-08) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
+ttyS00 at iomem 0xf0105800 (irq = 90) is a 16550A
+IRQ not found for serial device at 0xffc1a000
+Warning : device (10, 0x21, 0x0, 0x8c) NOT claimed by Serial RS232
+PS/2 keyboard port at 0xf0108000 (irq 69) found, device attached.
+Lasi PS/2 transmit buffer timeout
+PS/2 psaux port at 0xf0108100 (irq 69) found, no device attached.
+lp0: using parport0 (interrupt-driven).
+Generic RTC Driver v1.02 05/27/1999 Sam Creasey (sammy@oh.verio.com)
+block: 128 slots per queue, batch=16
+RAMDISK driver initialized: 16 RAM disks of 6144K size 1024 blocksize
+loop: loaded (max 8 devices)
+Found i82596 at 0xf0107000, IRQ 87
+eth0: 82596 at 0xf0107000, 08 00 09 4F FE 1A IRQ 87.
+82596.c $Revision: 1.26 $
+SCSI subsystem driver Revision: 1.00
+zalon_scsi_callback: Zalon vers field is 0x1, IRQ 34
+ncr53c8xx: 53c720 detected
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+scsi0 : ncr53c8xx-3.4.3b-20010512
+53c700: Version 2.6 By James.Bottomley@HansenPartnership.com
+scsi1: 53c710 rev 2 
+scsi1 : LASI SCSI 53c700
+scsi1: (0:0) Synchronous at offset 8, period 236ns
+  Vendor: TOSHIBA   Model: CD-ROM XM-5401TA  Rev: 1036
+  Type:   CD-ROM                             ANSI SCSI revision: 02
+scsi1: (1:0) Synchronous at offset 8, period 100ns
+  Vendor: IBM       Model: DCHS04F  CLAR04   Rev: HP53
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+scsi1: (4:0) Synchronous at offset 8, period 100ns
+  Vendor: IBM       Model: DCHS04F  CLAR04   Rev: HP53
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Attached scsi disk sda at scsi1, channel 0, id 1, lun 0
+Attached scsi disk sdb at scsi1, channel 0, id 4, lun 0
+scsi1: (1:0) Enabling Tag Command Queuing
+SCSI device sda: 8813870 512-byte hdwr sectors (4513 MB)
+Partition check:
+ sda: sda1 sda2 sda3
+scsi1: (4:0) Enabling Tag Command Queuing
+SCSI device sdb: 8813870 512-byte hdwr sectors (4513 MB)
+ sdb: sdb1
+Attached scsi CD-ROM sr0 at scsi1, channel 0, id 0, lun 0
+sr0: scsi-1 drive
+Uniform CD-ROM driver Revision: 3.12
+Lasi Harmony Audio rev. 0 at 0xf0104000, using IRQ 82
+sticonsole_init: searching for STI ROMs
+md: md driver 0.90.0 MAX_MD_DEVS=256, MD_SB_DISKS=27
+md: Autodetecting RAID arrays.
+md: autorun ...
+md: ... autorun DONE.
+NET4: Linux TCP/IP 1.0 for NET4.0
+IP Protocols: ICMP, UDP, TCP
+IP: routing cache hash table of 512 buckets, 4Kbytes
+TCP: Hash tables configured (established 8192 bind 16384)
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+VFS: Mounted root (ext2 filesystem) readonly.
+Adding Swap: 249912k swap-space (priority -1)
+eth0: link ok.
+VFS: Disk change detected on device sr(11,0)
+ISO 9660 Extensions: RRIP_1991A
