@@ -1,47 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B59CF482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 04:26:02 -0600 (MDT)
-Message-Id: <200106181025.EAA18515@puffin.external.hp.com>
-To: "Bryan W. Headley" <bheadley@interaccess.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Booting up C110 
-In-Reply-To: Your message of "Sun, 17 Jun 2001 11:44:34 CDT."
-             <3B2CDE72.4010006@interaccess.com>
-Date: Mon, 18 Jun 2001 04:25:53 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mta03.mail.mel.aone.net.au (mta03.mail.au.uu.net [203.2.192.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C4402482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 04:33:10 -0600 (MDT)
+Received: from piglet.sspl.net.au ([210.84.37.35])
+          by mta03.mail.mel.aone.net.au with ESMTP
+          id <20010618103307.RVUO4037.mta03.mail.mel.aone.net.au@piglet.sspl.net.au>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Mon, 18 Jun 2001 20:33:07 +1000
+Received: from winnie (winnie. [192.168.10.9])
+	by piglet.sspl.net.au (8.9.3/8.9.3) with ESMTP id TAA19948
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Jun 2001 19:56:23 +1000
+From: "Pete" <plaven@ozemail.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 18 Jun 2001 19:56:21 +1000
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Booting up C110
+Reply-To: plaven@ozemail.com.au
+Message-ID: <3B2E5CE5.88.5339D5@localhost>
+In-reply-to: <3B2CDE72.4010006@interaccess.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Bryan W. Headley" wrote:
->     Wasn't getting too far using the STI console, so I switched to the 
-> serial console at the boot monitor. Sadly, no text appears on my 
-> laptop-based "terminal", connected with null-modem cable. Also, the 
-> unit's doesn't appear to respond to the built-in keyboard, either.
+ 
+> So, 1) how do I reset the boot PROM to use the graphics card/monitor
+> again?
 
-You should be able to get output from the serial port 1 when the
-keyboard/mouse are disconnected. At least all the workstations I know of
-work that way...You didn't need to change the console/keyboard path
-at te PDC prompt.
+I'm in the same boat... before I got the sti stuff, I tried the serial port 
+and now don't get any output (mostly due to dud nullmodem 
+connections on the HP box.. it's far too recessed to use with 
+"normal" serial connctions).... so if you get an answer to this, 
+please let me know too.. might work on my 715.
 
-> So, 1) how do I reset the boot PROM to use the graphics card/monitor again?
 
-You don't until you get serial working and point the console path back
-at the graphics(2) (or whatever it's called).
 
-> 2) Any help on getting 0.9 or any other kernel booting would be a great 
-> help...
 
-32-bit/serial kernel should just boot. Bug in ccio might cause problems
-installing from CD.
 
-> (It has booted, to the point of displaying kernel sign-on messages, then 
-> complaining about not being able to allocate a console, so I know things 
-> "sort-of" work)
+Pete
+=====
+testing? What's that? If it compiles, it is good, 
+if it boots up it is perfect.
 
-I'll assume that's with sticon.  I expect serial console to work better.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+--- Linus Torvalds
+http://www.ao.com/~regan/quotes/Linux.html
+==============
