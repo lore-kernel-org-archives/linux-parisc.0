@@ -1,39 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA03512
-	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 02:39:37 -0700
-Date: Mon, 22 Nov 1999 10:40:54 +0100
-From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Cary Coutant <cary@cup.hp.com>,
-        Philipp Heinrich Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
-        law@cygnus.com, bame@debian.fc.hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Today's boot experience on a 735
-Message-Id: <19991122104054.D1310@mathe.stud.uni-erlangen.de>
-References: <199911200057.QAA23404@adlmail.cup.hp.com> <199911201840.NAA01911@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199911201840.NAA01911@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA03765
+	for <parisc-linux@puffin.external.hp.com>; Mon, 22 Nov 1999 02:58:23 -0700
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 22 Nov 1999 10:00:06 -0000
+Subject: Re: [parisc-linux] Progress
+To: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de (Philipp Rumpf)
+Date: Mon, 22 Nov 1999 09:59:55 +0000 (GMT)
+Cc: dave@hiauly1.hia.nrc.ca, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+        parisc-linux@thepuffingroup.com
+In-Reply-To: <19991122092412.C1310@mathe.stud.uni-erlangen.de> from "Philipp Rumpf" at Nov 22, 99 09:24:12 am
+Content-Type: text
+Message-Id: <E11pqGK-0003IA-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > You should be able to use "_edata" and "_end" to figure out how much 
-> > memory to initialize to zero at startup, or you could have the boot 
-> > loader do that for you -- the information is in the a.out aux header.
-> 
-> I haven't verified this myself but I believe others have determined
-> that the kernel needs to clear unitialized data itself because of the
-> various different way it is loaded.
+> Now picture the page boundary happes between the two addibs.  This loop will
+> execute at about a third of the speed of a normal delay loop.  The code is
+> inlined, so only one loop gives you bogus results - if it is the BogoMIPS
+> calibration loop, udelay(N) will actually only delay for N/3 us, which can
+> have unexpected effects on hardware we use udelay() for.
 
-The problem is we need to know where free memory starts for our memory
-allocator - who does the BSS clearing is another issue.
-
-> > By the way, the SOM linker does support "scripts" of a sort. They're 
-> > called k-files (because you use the -k option to specify them), and they 
-> > allow you to control the placement of your spaces and subspaces within 
-> > the address space.
-> 
-> That's good to know and it might provide a better way for the kernel to
-> determine its end.
-
-Is anyone reasonably fluent in whatever language ld uses ?
-
-	Philipp Rumpf
+On x86 things like this, and execution timing differences caused by cache
+line alignment and other phase-of-moon issues eventually lead us to not inline
+the function. Even then we had to land it on a 32 byte boundary
