@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] atomic_t 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Mon, 14 Jan 2002 04:43:37 GMT." <20020114044337.B9193@parcelfarce.linux.theplanet.co.uk>
-References: <20020113211508.V9193@parcelfarce.linux.theplanet.co.uk> <willy@debian.org> <20020114040909.87321482A@dsl2.external.hp.com>  <20020114044337.B9193@parcelfarce.linux.theplanet.co.uk> 
-Date: Mon, 14 Jan 2002 00:12:32 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020114071232.07537482A@dsl2.external.hp.com>
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07493482A
+	for <parisc-linux@parisc-linux.org>; Mon, 14 Jan 2002 02:42:59 -0700 (MST)
+Subject: Re: [parisc-linux] atomic_t
+To: grundler@dsl2.external.hp.com (Grant Grundler)
+Date: Mon, 14 Jan 2002 09:54:44 +0000 (GMT)
+Cc: willy@debian.org (Matthew Wilcox), parisc-linux@parisc-linux.org
+In-Reply-To: <20020114040909.87321482A@dsl2.external.hp.com> from "Grant Grundler" at Jan 13, 2002 09:09:09 PM
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E16Q3pE-0001DQ-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,22 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
-> Not on PA... look at <asm/atomic.h>.  There's only 3 primitives, all
-> other atomic ops are defined in terms of those.
-
-Ah ok - you are right. atomic_read() doesn't use the lock and
-that only leaves the other two.
-
-> > But someone thought it was time to reset the counter. And if
-> > it "never happened", then whoever is looking for 'v == 1' will
-> > never see it.
+> > exclusivity...  I thought we could eliminate it.
 > 
-> It's a race though; they can't guarantee to see it anyway.
+> You are only looking at interactions between atomic_set
+> and atomic_add_return. Aren't there potentialially other
+> types of interactions with other atomic operations?
+> But I don't know. Alan Cox?
 
-hmmm...Most people write code with the intent of seeing *some*
-event (eg v < 0).  Ie, if it didn't matter, then we don't need
-the code.  I'd like to believe folks are usually more careful
-than that.  I need to think about this some more though.
+We had a discussion about some of this on #kernel. Its not clear. The
+x86 port "knows" that writes are going to be atomic. It means that
 
-grant
+	CPU1			CPU2
+value=4
+	atomic_set=0		atomic_add +1
+
+will result in an addition to the set value, or an addition then the
+entire result discarded for the set value. It won't (except in obscure
+hardware bug cases 8)) result in the set being lost during the add
+
+ie you might see 0 after those operations, or you might see 1, but you
+won't see 5 after both have completed.
