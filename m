@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from u1snd02p.us.fortis.com (smtp02p.us.fortis.com [167.79.54.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7B1DA4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 08:16:49 -0700 (MST)
-Received: from W1PMM02.us.fortis.com (twbymime02.us.fortis.com [165.245.9.58])
-	by u1snd02p.us.fortis.com (8.11.6+Sun/8.11.6) with ESMTP id h32FGl801422
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 2 Apr 2003 09:16:48 -0600 (CST)
-Message-Id: <se8aaa7f.074@internal.us.fortis.com>
-Date: Wed, 02 Apr 2003 09:16:05 -0600
-From: "Derek Ellis" <Derek.Ellis@us.fortis.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] soft power and power light on 712/60
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail.unitec.edu (mail.unitec.edu [216.72.84.41])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE2434829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 15:32:59 -0700 (MST)
+Received: from unitec.edu ([127.0.0.1]) by mail.unitec.edu
+          (Netscape Messaging Server 4.15) with ESMTP id HCQM6M00.HNM for
+          <parisc-linux@lists.parisc-linux.org>; Wed, 2 Apr 2003 16:23:10 -0600
+From: "Ricardo Jose Guevara Ochoa" <jguevara@unitec.edu>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <26c4b36317a73ee1.17a73ee126c4b363@unitec.edu>
+Date: Wed, 02 Apr 2003 16:23:10 -0600
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Kernel 2.4.20 build error
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,56 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I wonder if the problem is with the precompiled 2.4.20-pa32 kernel, since=
-=20that is what I am using.
+I downloaded the latest kernel for the parisc family, and when i tried 
+to compile and build the kernel it gave me an error in the make 
+vmlinux:
+ccio-dma.c: In function `ccio_probe':
+ccio-dma.c:1551: `ccio_proc_info' undeclared (first use in this 
+function)
+ccio-dma.c:1551: (Each undeclared identifier is reported only once
+ccio-dma.c:1551: for each function it appears in.)
+ccio-dma.c:1553: `ccio_resource_map' undeclared (first use in this 
+function)
+make[1]: *** [ccio-dma.o] Error 1
+make[1]: Leaving directory 
+`/home/rguevara/source/linux/arch/parisc/kernel'
+make: *** [_dir_arch/parisc/kernel] Error 2
 
-Last night I also put my old 500MB HP drive back in and the light & power=
-=20switch worked correctly with the 2.4.18 kernel.  I then used the netwo=
-rk install CD (with kernel 2.4.20-pa32) to reinstall that drive.  After t=
-he install the light & power didn't work, so this leads me to believe the=
-re is something with that kernel.
-
-Derek
-
->>> root <root@cdc712-9.cdc.polimi.it> 04/02/03 05:38AM >>>
-On Wed, Apr 02, 2003 at 11:23:52AM +0200, Michael Wood wrote:
-> On Tue, Apr 01, 2003 at 08:59:43AM -0600, Derek Ellis wrote:
-
-I've got a problem similar to yours with my 712-60 using 2.4.20-pa32
-precompiled. The power light while searching for a suitable boot
-media (as it should), then goes on as expected. The power switch does not=
-
-work. With earlier kernels (say 2.4.9-something) it worked. Any advice on=
-
-that ?
-
-
-> > Hello,
-> >=20
-> > I have sort of a weird problem.  I installed Debian 3.0 on Sunday and=
-
-> > it came up great on my 712/60.  The only problem is the soft-power
-> > switch doesn't work and the power light flashes while searching for
-> > the boot device and then goes off once it starts booting. =20
->=20
-> --=20
-> Michael Wood <mwood@its.uct.ac.za>
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org=20
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux=20
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org=20
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-****************************************************************
-=09		Please Note
-The information in this E-mail message is legally privileged
-and confidential information intended only for the use of the
-individual(s) named above. If you, the reader of this message,
-are not the intended recipient, you are hereby notified that=20
-you should not further disseminate, distribute, or forward this
-E-mail message. If you have received this E-mail in error,
-please notify the sender. Thank you
-*****************************************************************
+I'm tried to compile in a HP 9000 D-Class D270 running Debian 3.0r1 
+with linux version 2.4.17-32 and gccv 3.0.4
+any suggestions.
+Ricardo J Guevara
+ 
