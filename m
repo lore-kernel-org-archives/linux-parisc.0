@@ -1,40 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3C934A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Mar 2001 02:54:15 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA04355
-	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Mar 2001 02:49:23 -0700
-Received: from pc117-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.117)
-  by mailserv2.iuinc.com with SMTP; 1 Mar 2001 09:54:13 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 1886EB007; Thu,  1 Mar 2001 09:54:35 +0000 (GMT)
-Date: Thu, 1 Mar 2001 09:54:35 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Chris Moore <cmoore@cancun.rose.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Another 735 hums to life
-Message-ID: <20010301095435.G2686@linuxcare.com>
-References: <1010228143459.ZM5008@cancun.rose.hp.com>
-Mime-Version: 1.0
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 740A84A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Mar 2001 07:34:42 -0700 (MST)
+Received: from esiee.fr (gemini11.esiee.fr [147.215.1.130])
+	by mail.esiee.fr (Postfix) with ESMTP id F2AFDD15EE
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Mar 2001 15:34:39 +0100 (CET)
+Sender: puffin@esiee.fr
+Message-ID: <3A9E5DFF.68C54E30@esiee.fr>
+Date: Thu, 01 Mar 2001 15:34:39 +0100
+From: ESIEE Puffin Group <puffin@esiee.fr>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1010228143459.ZM5008@cancun.rose.hp.com>; from cmoore@cancun.rose.hp.com on Wed, Feb 28, 2001 at 02:34:59PM -0800
+Subject: [parisc-linux] Puffin, we have a problem, here!
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Feb 28, 2001 at 02:34:59PM -0800, Chris Moore wrote:
-> After a lot of struggling I finally got my 735/99 up and running.
-> After even more struggling I got it to boot standalone off its
-> own internal SCSI disk and make it all the way to runlevel 2.
-> 
-> I am still having a few problems though.  I tried using dpkg
-> to install something and the process just seemed to hang.  I
-> saw the same thing when trying to compile something - don't
-> remember what.
+Hi all,
 
-Does tar hang also?  If so it's probably the pthreads problem
-that is affecting older machines (my 715/75, for example).  In
-theory a new glibc should fix this, but when I tried things seemed
-to get even worse - wouldn't even boot any more.  Havn't tried
-for a couple of weeks though.
+	We write this mail to tell you that we MUST give back our A500 to the
+European Department for HP resources for exhibition.
 
-Richard
+	In fact, this server was only for the Linux Expo Paris but we told them
+that it was critical for th development of PA/Linux [specially for SMP
+:^) ]. So they gave us one month more as it is said in the mail we
+received today. Here is the French version:
+
+je viens d'avoir l'accord de l'europe tu peux garder le serie A500
+un mois de plus date de retour obligatoire le 5 mars !
+
+Translation:
+
+I just get the agreement from European staff. You can keep the A500 one
+month more. Return date: 5 march!
+
+
+	As you can see, we have a problem, here! If someone could help us in
+our fight in order to keep this box, please do it...
+
+ESIEE Team
+Losing our baby :(
