@@ -1,37 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA12501
-	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 10:23:12 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 18 Aug 2000 16:22:57 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 18 Aug 2000 16:22:29 -0000
-Date: Fri, 18 Aug 2000 10:24:46 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: Andrew Park <apark@cdf.toronto.edu>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] architecture overview books?
-Message-ID: <20000818102446.A28421@vodka.thepuffingroup.com>
-References: <20000815144305.A7757@vodka.thepuffingroup.com> <Pine.SOL.4.21.0008172141540.26790-100000@misty.cdf>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA13039
+	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Aug 2000 11:26:44 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 18 Aug 2000 17:26:30 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+Subject: Re: Incompatibility of PIC and non-PIC
+References: <Pine.LNX.4.21.0008190020150.9244-100000@front.linuxcare.com.au>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 18 Aug 2000 13:25:53 -0400
+In-Reply-To: Alan Modra's message of "Sat, 19 Aug 2000 00:29:01 +1000 (EST)"
+Message-ID: <8766oy1nxa.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.SOL.4.21.0008172141540.26790-100000@misty.cdf>; from Andrew Park on Thu, Aug 17, 2000 at 09:56:01PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 17, 2000 at 09:56:01PM -0400, Andrew Park wrote:
-> Hi,
-> 
-> Can all the register information be found in
-> 
-> 	PCXL_ers.pdf
-> 
-> file?  I found it in
-> 
-> 	http://thepuffingroup.com/parisc/documentation.html
-> 
-> Or are there other sources where I can get architecture overview?
+Alan Modra <alan@linuxcare.com.au> writes:
 
-If you check the links at the bottom, there's one to the PA1.1 and PA2.0
-Architecture manuals.
+> On Fri, 18 Aug 2000, Alan Modra wrote:
+> 
+> > One way to keep out current ABI is to generate a .plt and import stubs
+> > when statically linking PIC code.  That should be relatively easy to do in
+> > the linker.
+> 
+> A bit of head-scratching, a couple of added functions, and the linker now
+> detects PIC functions and handles them appropriately.
+
+Sorry to burst your bubble but this doesn't work in the real world,
+where "real world" is defined as 'hppa-linux-gcc -o hello hello.c'
+
+In fact this new linker ends up marking basically everything as
+potentially PIC, creating unnecessary import stubs for most functions
+in libc.a, and *not* actually switching the relocations to point to
+import stubs in the case where I am actually calling PIC in libgcc.a.
+
+Oh and it segfaults on undefined weak symbols though that's easily
+fixed.
+
+I'm not even sure where to start fixing this.  I guess I'll try to
+find something else to do today :(
 
 -- 
-Revolutions do not require corporate support.
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
