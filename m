@@ -1,34 +1,63 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from piglet.dstc.edu.au (piglet.dstc.edu.au [130.102.176.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F1218482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 22:54:06 -0600 (MDT)
-Date: Fri, 29 Jun 2001 14:54:03 +1000 (EST)
-From: jason andrade <jason@dstc.edu.au>
-To: mailto: ;
-Cc: mailto: ;
-Message-ID: <Pine.OSF.4.20.0106291452140.7520-100000@azure.dstc.edu.au>
+Received: from pony.its.uwo.ca (pony.its.uwo.ca [129.100.2.63])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D4FF2482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Jun 2001 12:44:37 -0600 (MDT)
+Received: from HCI009 (gl-209.gaul.csd.uwo.ca [129.100.12.209])
+	by pony.its.uwo.ca (8.10.2/8.10.2) with SMTP id f5TIj3V03517
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Jun 2001 14:45:03 -0400 (EDT)
+Message-ID: <002901c100ca$c74d24c0$d10c6481@HCI009>
+From: "Yan Han" <yhan@uwo.ca>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 29 Jun 2001 14:39:06 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] mirroring parisc-linux in australia (2nd or 3rd try..)
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0026_01C100A9.4013D880"
+Subject: [parisc-linux] request to boot (denied)
+List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+This is a multi-part message in MIME format.
 
-I'm trying to find out what's involved in mirroring parisc-linux
-here in australia and actually getting listed.
+------=_NextPart_000_0026_01C100A9.4013D880
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I've mirrored the 0.9 release, and have been mirroring since
-0.5, but haven't been able to get any reply from the parisc
-archive admin to date about
+Hi!
 
-o automating mirroring
-o rsync access
-o web page mirroring
+We got the message of "08:00:09:87:e4:8f: request to boot=20
+(denied) " from the system message.=20
+But  we ran the rbootd in this machine. Does anyone know how to figure =
+it out?
 
-and most importantly, getting listed as a mirror for australia.
-
-any takers ?
+thanks,
 
 
-regards,
+------=_NextPart_000_0026_01C100A9.4013D880
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--jason
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.3103.1000" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi!</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>We got the message&nbsp;of =
+"08:00:09:87:e4:8f: <B=20
+style=3D"BACKGROUND-COLOR: #a0ffff; COLOR: black">request</B> to <B=20
+style=3D"BACKGROUND-COLOR: #99ff99; COLOR: black">boot</B> <BR>(<B=20
+style=3D"BACKGROUND-COLOR: #ff9999; COLOR: black">denied</B>) " from the =
+system=20
+message.&nbsp;<BR>But  we ran the rbootd in this machine. Does anyone =
+know how=20
+to figure it out?</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>thanks,</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0026_01C100A9.4013D880--
