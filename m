@@ -1,62 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 975E4482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 11:47:22 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15v0DQ-0002gX-00; Sat, 20 Oct 2001 18:47:20 +0100
-Date: Sat, 20 Oct 2001 18:47:20 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Helge Deller <deller@gmx.de>
-Cc: Ryan Bradetich <rbradetich@uswest.net>,
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6B147482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 12:00:19 -0600 (MDT)
+Date: Sat, 20 Oct 2001 14:01:53 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: Alan Modra <amodra@bigpond.net.au>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] The long awaited iotree patch for System Map Firmware
-Message-ID: <20011020184720.A31505@parcelfarce.linux.theplanet.co.uk>
-References: <20011019165926.A31233@beavis.ybsoft.com> <20011020100404.917E2482A@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] Fix for hppa-linux ld.so with newer binutils
+Message-ID: <20011020140153.A17475@megatonmonkey.net>
+References: <20011020170907.G1037@bubble.sa.bigpond.net.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011020100404.917E2482A@dsl2.external.hp.com>; from deller@gmx.de on Sat, Oct 20, 2001 at 12:02:53PM +0200
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <20011020170907.G1037@bubble.sa.bigpond.net.au>; from amodra@bigpond.net.au on Sat, Oct 20, 2001 at 05:09:07PM +0930
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Oct 20, 2001 at 12:02:53PM +0200, Helge Deller wrote:
-> 2. Mirage Jr Core BA (11) at 0xf0100000 [2], versions 0x28, 0x0, 0x81
-> 3.  (0) at 0x0 [2/0], versions 0x0, 0x0, 0x0
-> 4. Mirage Jr Core SCSI (10) at 0xf0106000 [2/0/1], versions 0x28, 0x0, 0x82
+> Newer binutils don't initialise .got entries for global syms, so the
+> scheme used by sysdeps/hppa/dl-machine.h:elf_machine_dynamic to find
+> the address of .dynamic no longer works.
+> 
+> ChangeLog
+> 	* sysdeps/hppa/dl-machine.h (elf_machine_dynamic):  Make it a
+> 	const function.  Do not use &_DYNAMIC as .got entries for global
+> 	syms are no longer initialised.  Instead they rely on the reloc,
+> 	which hasn't yet been applied.
+> 	(elf_machine_load_address): Make it const.  Call
+> 	elf_machine_dynamic as that function is called fropm rtld anyway.
+>
 
-OK.  So we should skip printing devices which don't have an hpa.
+I was beggining to wonder...
 
-> 12. Mirage Jr Wax EISA BA (11) at 0xfc000000 [4], versions 0x28, 0x0, 0x90
-> 13. Mirage Jr Wax BA (11) at 0xf0200000 [5], versions 0x12, 0x0, 0x8e
+  /* Figure out the run-time load address of the dynamic linker itself.  */
+  bootstrap_map.l_addr = elf_machine_load_address ();
 
-Mmmmpf.  That complicates thngs a little; I assumed the EISA BA was
-actually under the normal BA.
+  /* Read our own dynamic section and fill in the info array.  */
+  bootstrap_map.l_ld = (void *) bootstrap_map.l_addr + elf_machine_dynamic ();
+  elf_get_dynamic_info (&bootstrap_map);
 
-> CONFIG_SMP=n  ignoring additional CPUs
-> Warning : device (0, 0x0, 0x0, 0x0) NOT claimed by CPU
-> CONFIG_SMP=n  ignoring additional CPUs
-> Warning : device (0, 0x60a, 0x0, 0x4) NOT claimed by CPU
+_dl_start (0x41002b74).... 
+_dl_start+312 (Assertion failure with wrong address for initialized data) 
 
-Hehe, yes, devices not completely filled in look like CPUs.  Oops :-)
+Why aren't .got entries being initialised?
 
-> As you see, your iotree inserts "phantom" devices on [2/0] an [5/0]. I think both
-> devices should be pre-initialized by default to type HPHW_FAULTY and to the hpa of the
-> parent device in the function alloc_tree_node().
+So you are saying we need to make all of our global symbols constant
+so that we can access them during the bootstrap? (No more _DYNMAIC?)
 
-I agree about HPHW_FAULTY.  I don't think we need to initialise the hpa
-though.  Maybe a new HPHW_FAKE instead?  It's not necessarily confusing,
-since devices which actually report HPHW_FAULTY never get inserted into
-the iotree.
+And that elf_machine_load_address is trying to access symbols that aren't
+setup yet, because ELF_DYNAMIC_RELOCATE() hasn't been run yet?
+And thus hasn't setup any of our offsets... where has my pic code gone ;(
 
-> The other thing is, that currently no interrupts are found for any devices - I'll investigate that
-> later but think this shouldn't be so hard to fix either.
-
-I know why that is.  Basically we need to get lasi (and wax) to fix up
-their subdevices the same way that asp does.  Then we can finally kill
-busdevice_alloc_irq.  As a quick hack, we could check parent->hw_type ==
-HPHW_FAULTY in busdevice_alloc_irq and skip to that parent.
-
-Not quite sure how to handle Wax EISA not being underneath the Wax BA..
-maybe just walk from wax's parent to fill in known irqs.
-
--- 
-Revolutions do not require corporate support.
+c.
