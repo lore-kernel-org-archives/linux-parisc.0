@@ -1,43 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA06114
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 21:26:06 -0600
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id XAA05353
-	for <parisc-linux@thepuffingroup.com>; Fri, 25 Jun 1999 23:35:15 -0400
-Sender: adevries@feather.thepuffingroup.com
-Message-ID: <37744A6C.3A570E1E@thepuffingroup.com>
-Date: Fri, 25 Jun 1999 23:35:08 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA06918
+	for <parisc-linux@puffin.external.hp.com>; Sun, 27 Jun 1999 01:51:40 -0600
+Message-ID: <3774EF94.C57237A5@gmx.de>
+Date: Sat, 26 Jun 1999 17:19:48 +0200
+From: Helge Deller <deller@gmx.de>
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] [Fwd: new commits for the kernel]
+To: Alex deVries <adevries@thepuffingroup.com>
+CC: parisc-linux <parisc-linux@thepuffingroup.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] parisc-linux-ld
 List-ID: <linux-parisc.vger.kernel.org>
 
-More good news from Helge...  I've also committed a few small fixes.
+Hi Alex !
 
->From what I know, the descriptions in machines.h (which I transcribed on
-a bus from Montreal to Ottawa in March) are reasonably up to date.
+Could maybe someone make me a patched "parisc-linux-ld" binary, where I
+can do
 
-- Alex
+parisc-linux-ld -R xyz -N        ( or any other letter for -R)
 
--------- Original Message --------
-Subject: new commits for the kernel
-Date: Sat, 26 Jun 1999 04:00:03 +0200
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-To: Alex deVries <adevries@thepuffingroup.com>
+where xyz should be the origin of the ELF-binary, which is currently
+0x2000 as seen in the mapfile ? (or is there any other possibility,
+because -R at GNU-ld is not used for origin, but for symbol-names...).
 
-Hi again.
+If I would have such an patched linker, I maybe could try make the
+cross-compiled ELF-binary bootable.....
 
-I have committed again some changes, so that the kernel now uses the
-real
-linux-console-code, and at start it shows you the name of the machine
-(mine is: Mirage Jr. (715/64)).
-If your machine-name isn´t shown, take a look into machines.c &
-setup.c..... esp. identification-code for PA2.x-Machines could be
-updated.
+Helge Deller..
 
-The code for getcpu_info() [proc-fs] is also implemented.
-
-Bye,
-Helge Deller.
+--
+---------------------------------------
+ Mailto:deller@gmx.de
+ ICQ# 2046114
+---------------------------------------
