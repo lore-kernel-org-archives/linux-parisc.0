@@ -1,21 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA07425
-	for <parisc-linux@puffin.external.hp.com>; Mon, 24 Jan 2000 10:56:53 -0700
-Received: (from willy@localhost)
-	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id MAA31145
-	for parisc-linux@thepuffingroup.com; Mon, 24 Jan 2000 12:58:02 -0500
-Date: Mon, 24 Jan 2000 12:58:02 -0500
-From: Matthew Wilcox <willy@thepuffingroup.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000124125802.W1538@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] userspace
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA08940
+	for <parisc-linux@puffin.external.hp.com>; Mon, 24 Jan 2000 14:26:23 -0700
+From: dkennedy@linuxcare.com
+Date: Mon, 24 Jan 2000 16:36:43 -0500 (EST)
+To: Hannu Martikka <martikka@stybba.ntc.nokia.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Harware database down?
+In-Reply-To: <Pine.HPX.4.21.0001221430240.14615-100000@gamgee.ntc.nokia.com>
+Message-ID: <Pine.LNX.4.10.10001241636160.3967-100000@grasshopper.thepuffingroup.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Sat, 22 Jan 2000, Hannu Martikka wrote:
 
-i've decided to start keeping some userspace programs in cvs for your
-joy and edification (and so i don't lose the only working sash source
-code again.. duh).  set your CVSROOT as described on the parisc webpages
-and `cvs co userspace'.  ifconf.c is the only one worth talking about,
-and hopefully we'll have an ethernet driver to test it with RSN...
+> Hi,
+> 
+> Is there something wrong with the hardware database?  
+> I cannot access it (ERROR 312 -- Cannot connect to the server ). Other
+> pages in thepuffingroup.com/parisc work ok.
+
+It should be back up and running.  Can you please check it and see if
+you are still having a problem.
+
+Thanks.
+
+-- 
+David Kennedy
+Senior Linux Consultant
+Linuxcare
