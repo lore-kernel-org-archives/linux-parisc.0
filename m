@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from inca.herrera.edu (pool-151-201-13-14.pitt.east.verizon.net [151.201.13.14])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73997482C
-	for <parisc-linux@parisc-linux.org>; Wed, 27 Mar 2002 05:22:10 -0700 (MST)
-Received: from neuronet.pitt.edu (localhost [127.0.0.1])
-	by inca.herrera.edu (8.11.6/8.11.6/SuSE Linux 0.5) with ESMTP id g2RC0t418454
-	for <parisc-linux@parisc-linux.org>; Wed, 27 Mar 2002 07:00:55 -0500
-Message-ID: <3CA1B477.5090905@neuronet.pitt.edu>
-Date: Wed, 27 Mar 2002 07:00:55 -0500
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+Received: from hotmail.com (oe27.law8.hotmail.com [216.33.240.84])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CDECF482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Mar 2002 06:17:54 -0700 (MST)
+From: "dan mclaughlin" <dmclaug881@hotmail.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 27 Mar 2002 07:11:11 -0600
 MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] performance?
-References: <20020326224358.B28171@piglet> <20020326154444.D26865@parcelfarce.linux.theplanet.co.uk> <20020327180626.C28130@piglet>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0005_01C1D55E.930E13E0"
+Message-ID: <OE27taTz8v6eoHvEmsg000144e8@hotmail.com>
+Subject: [parisc-linux] hp900 c110 scsi error
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,9 +21,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-FYI, on a 715/75 I run SETI@home and was able to process 4 units at an 
-average rate of ~99 hours/unit. Currently, I'm using a 715/80, but it 
-doesn't look to be doing much better.
+This is a multi-part message in MIME format.
 
--- 
-      Rafael
+------=_NextPart_000_0005_01C1D55E.930E13E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+trying to install .93 on hp 9000 c110 a4200a
+getting error when installing=20
+ncr53c720-0 Suspicious scsi data while ressetting the bus
+
+ncr53c720-0 dp1,dp15-8, dp0, d7-0, =
+rst,req,ack,bsy,scl.atn,msg,c/d,i/o=3D0x1a2da9,expecting0x100
+
+thank you
+dan mclaughlin
+
+------=_NextPart_000_0005_01C1D55E.930E13E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>trying to install .93 on hp 9000 c110=20
+a4200a</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>getting error when installing =
+</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>ncr53c720-0 Suspicious scsi data while =
+ressetting=20
+the bus</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>ncr53c720-0 dp1,dp15-8, dp0, d7-0,=20
+rst,req,ack,bsy,scl.atn,msg,c/d,i/o=3D0x1a2da9,expecting0x100</FONT></DIV=
+>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>thank you</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>dan =
+mclaughlin</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0005_01C1D55E.930E13E0--
