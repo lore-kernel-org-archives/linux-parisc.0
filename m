@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7BE584829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 Jan 2003 07:37:53 -0700 (MST)
-Date: Thu, 16 Jan 2003 14:37:46 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: jsoe0708@tiscali.be, Randolph Chung <tausq@debian.org>,
-	<parisc-linux@lists.parisc-linux.org>, <debian-hppa@lists.debian.org>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0BFE84829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 16 Jan 2003 08:02:27 -0700 (MST)
+Date: Thu, 16 Jan 2003 16:02:19 +0100
+Message-ID: <3E1AAEFA0000192C@ocpmta6.freegates.net>
+In-Reply-To: <Pine.LNX.4.44.0301161427060.31815-100000@sal.ucc.ie>
+From: jsoe0708@tiscali.be
 Subject: Re: [parisc-linux] new gcc-default for hppa
-In-Reply-To: <20030116010620.GB8543@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0301161427060.31815-100000@sal.ucc.ie>
+To: "M. Grabert" <xam@cs.ucc.ie>,
+	"Grant Grundler" <grundler@dsl2.external.hp.com>
+Cc: "Randolph Chung" <tausq@debian.org>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,48 +24,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 15 Jan 2003, Grant Grundler wrote:
+Hi,
+>
+>This is EXACTLY what happened to me when I conpiled a kernel for my C240=
 
-> On Wed, Jan 15, 2003 at 05:14:47PM +0100, jsoe0708@tiscali.be wrote:
-> > >There are a lot of differences (do you want it I do not think it will be
-> > >usefull)
-> > >
-> > >> or a default .config if that's closer?
-> > >
-> > >It will have to wait tommorrow (sorry)
+>(just using the built-in network card) with a (buggy) gcc-3.2. Incoming
+>network traffic will crash the system, outgoing will work.
 >
-> np. I also want you to look at something that is known
-> to work before going too far.
+>gcc-3.2 obviously miscompiles parts of the network code of the kernel,
+>whereas gcc-3.0 (with the very same kernel, same config) produced a
+>working kernel. I can't remember exactly what kernel/config and compiler=
+,
+>but I sent the details to the list some months ago (I cann look them up
+>if somebody is interested).
 >
-> > I now add CONFIG_TULIP_MMIO=yes
->
-> yes. that's what I meant.
->
-> > (Randolph: Do you want I send you those new material: kernel, system.map,
-> > ...?)
->
-> Or make them available via http or ftp.
-> Otherwise, posting what symbols the IAOQ/GR02 values point at
-> is even better.
->
-> > I also forget to recall: this only occurs for incoming ethernet trafic(ie
-> > ssh, telnet, ftp, coming from an external server). The outgoing traffic
-> > works fine (I just do a telnet and a ftp from this server to an external
-> > one without crash)
->
-> Interesting. "outgoing" has both inbound and outbound data.
-> That doesn't sound like a tulip driver bug though it's certainly
-> possible.
+>Perhaps this helps to narrow down which part (driver or networking code)=
 
-This is EXACTLY what happened to me when I conpiled a kernel for my C240
-(just using the built-in network card) with a (buggy) gcc-3.2. Incoming
-network traffic will crash the system, outgoing will work.
+>of the kernel is affected by the miscompilation.
+>
+May be still have to do a test: recompile the kernel with config file men=
+tioned
+my Grant earlier (the 2.4.20-pa14 for c3k). Do not know if it can help us=
 
-gcc-3.2 obviously miscompiles parts of the network code of the kernel,
-whereas gcc-3.0 (with the very same kernel, same config) produced a
-working kernel. I can't remember exactly what kernel/config and compiler,
-but I sent the details to the list some months ago (I cann look them up
-if somebody is interested).
+more? I will try and let inform.
 
-Perhaps this helps to narrow down which part (driver or networking code)
-of the kernel is affected by the miscompilation.
+Thanks,
+    Joel
+
+*********************************************
+Vous surfez toujours avec une ligne classique ?
+Faites des economies avec Tiscali Complete...
+Plus d'info sur ... http://complete.tiscali.be
