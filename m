@@ -1,16 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spike2.ehosting.com (unknown [62.173.67.13])
-	by dsl2.external.hp.com (Postfix) with SMTP id C2CFA486E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Aug 2003 14:20:43 -0600 (MDT)
-Message-ID: <1062015588.3f4d126503447@webmail.v8fiesta.co.uk>
-Date: Wed, 27 Aug 2003 21:19:49 +0100
-From: mmogenius@v8fiesta.co.uk
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] x86 on b2000
-References: <20030827034036.GA9928@dsl2.external.hp.com> <72F3D1D0-D84B-11D7-8E2F-000393581E44@speakeasy.net> <20030827060516.GA11642@dsl2.external.hp.com> <20030827100630.7a3eb14f.varenet@esiee.fr> <1061976142.3f4c784e354b9@webmail.v8fiesta.co.uk>
-In-Reply-To: <1061976142.3f4c784e354b9@webmail.v8fiesta.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from dhcp23.swansea.linux.org.uk (pc1-cwma1-5-cust4.swan.cable.ntl.com [80.5.120.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BB46A4885
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Aug 2003 15:24:11 -0600 (MDT)
+Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
+	by dhcp23.swansea.linux.org.uk (8.12.9/8.12.9) with ESMTP id h7RLNLra023519;
+	Wed, 27 Aug 2003 22:23:21 +0100
+Received: (from alan@localhost)
+	by dhcp23.swansea.linux.org.uk (8.12.9/8.12.9/Submit) id h7RLNIMj023517;
+	Wed, 27 Aug 2003 22:23:18 +0100
+Subject: Re: [parisc-linux] C3000 and IDE DMA support
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.LNX.4.44.0308271731570.14906-100000@sal.ucc.ie>
+References: <Pine.LNX.4.44.0308271731570.14906-100000@sal.ucc.ie>
+Content-Type: text/plain
+Message-Id: <1062019396.23493.8.camel@dhcp23.swansea.linux.org.uk>
+Mime-Version: 1.0
+Date: 27 Aug 2003 22:23:17 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,60 +29,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Interesting the veriety iof the same box :-O. I can only find one 
-specification on hp's site for the b2000...
+On Mer, 2003-08-27 at 18:36, M. Grabert wrote:
+> beast:/home/xam# hdparm -i /dev/hda
+>  DMA modes:  mdma0 mdma1 *mdma2
 
-so the basics of it is can the b2000 support an additional vga card other then 
-the onboard graphics card ? presumabely i need a card that is compatable with 
-the box rather then any old card off the shelf ?
+So its tuned for DMA2 (doesn't mean its not using PIO..)
 
-of is there more likleyhood that there will be support for this card in x ?
+> Mhh, also "hdparm -d" shows that the "DMA mode" of the hard disk is
+> "enabled", but I really have the feeling it isn't.
 
-Thanks
-
-Quoting mmogenius@v8fiesta.co.uk:
-
-> Quoting Thibaut VARENE <varenet@esiee.fr>:
-> 
-> > On Wed, 27 Aug 2003 00:05:16 -0600
-> > Grant Grundler <grundler@parisc-linux.org> wrote:
-> > 
-> >  
-> > > ok - thanks - I've seen the fewer DIMM slots version but didn't
-> > > notice the FX-e on the motherboard (or VGA connector on the back).
-> > > 
-> > > I have seen a B2000 with 8 DIMM slots and 6 PCI slots like a C3000.
-> > > This is no prototype - a real production unit.
-> > > I'll have a chance to look more closely at this box again
-> > > in the near future and will take some pictures.
-> > > 
-> > 
-> > Don't bother, we've got plenty of these boxes @school, I'll take some pics
-> > before students come back ;)
-> > 
-> > 
-> > Thibaut VARENE
-> > The PA/Linux ESIEE Team
-> > http://pateam.esiee.fr/
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> > 
-> 
-> 
-> 
-> 
-> -------------------------------------------------
-> This mail sent through IMP: http://horde.org/imp/
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-
-
-
-
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
+The crash is also curious - I wonder if parisc is either bouncing
+every DMA buffer and copying it for some reason, or its failing DMA
+by a path other platforms don't hit which isnt cleaning up right.
