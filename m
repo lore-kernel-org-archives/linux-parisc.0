@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9D52A4856
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 10:08:30 -0600 (MDT)
-Date: Fri, 26 Sep 2003 18:08:29 +0200
-Message-ID: <3F704CAF00001DEB@ocpmta2.freegates.net>
-In-Reply-To: <3F704CAF00001DCF@ocpmta2.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] N Class SMP pb ?  (follow up)
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Date: Fri, 26 Sep 2003 10:41:39 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Randolph Chung <randolph@tausq.org>
+Cc: mlist@zinkens.net, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel error message.
+Message-ID: <20030926164139.GA11759@dsl2.external.hp.com>
+References: <35989.192.168.66.99.1064533174.squirrel@www.zinkens.net> <20030926070329.GA12671@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030926070329.GA12671@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,17 +20,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->That is allowing me to notice severall call to kmem_tune_cpucache() (7 exactly)
->(and not other) but don't get any more 'SMP CALL FUNCTION TIMED OUT (CPU=1)'
->:(
->(i presume that, as previously, the system crash before having the opportun
->ty to flush its buffer?)
+On Fri, Sep 26, 2003 at 12:03:29AM -0700, Randolph Chung wrote:
+> Your apache is crashing randomly :( I think mkp said he was seeing this
+> problem as well and was trying to debug it.
 
-btw: does it exists some tips to flush buffer before all (or not buffering
-console ouput)?
+I haven't been seeing that with either apache or apache2.
 
+On a500 (64-bit, 2.4.21-pa6) running testing:
+ii  apache         1.3.27.0-2     Versatile, high-performance HTTP server
 
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+On c3k (32-bit, 2.4.22-pa7) running testing:
+ii  apache2-common 2.0.47-1       Next generation, scalable, extendable web se
+ii  apache2-mpm-pr 2.0.47-1       Traditional model for Apache2
+
+Neither is heavily loaded but can see bursts of load at times.
+
+hth,
+grant
