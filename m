@@ -1,17 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Sat, 26 Mar 2005 10:48:06 -0500 (EST)
-Message-ID: <200503261548.j2QFm7eL005849@hiauly1.hia.nrc.ca>
-References: <16965.9081.148972.856329@gargle.gargle.HOWL>
+From: David Pye <dmp@davidmpye.dyndns.org>
+Subject: Re: [parisc-linux] J5000 LED LCD patch (take 2)
+Date: Sat, 26 Mar 2005 15:51:46 +0000
+Message-ID: <200503261551.47477.dmp@davidmpye.dyndns.org>
+References: <200503241848.57598.dmp@davidmpye.dyndns.org>
+	<1111851236.5711.17.camel@mulgrave>
+	<200503261545.05372.dmp@davidmpye.dyndns.org>
+Reply-To: dmp@davidmpye.dyndns.org
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
-Cc: lamont@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
+Content-Type: multipart/mixed;
+  boundary="===============1683040616=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <16965.9081.148972.856329@gargle.gargle.HOWL> from "Matthias
-	Klose" at Mar 26, 2005 09:55:21 am
+In-Reply-To: <200503261545.05372.dmp@davidmpye.dyndns.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,116 +22,82 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->   it's not that recent (I can't upload this one every week without the
->   risk beeing killed by buildd admins for slower architectures ;)
-> 
-> - You can get gcc-4.0 packages from experimental, just add
->   deb http://http.us.debian.org/debian experimental main contrib
->   to /etc/apt/sources.list.
->   Provided that somebody is building and uploading these ...
-> 
-> Besides the recent gcc-snapshot build failure, I'm having problems
-> building the packages at all at the moment, there's no difference
-> using between sarge and unstable.
+--===============1683040616==
+Content-Type: multipart/signed; boundary="nextPart1118757.MjXZ654jfD";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I've had this problem from time to time, particularly on server
-machines.  My c3k is solid and this doesn't happen.  For some reason,
-the libjava build is most prone to the segfaults in sh/bash and
-sometimes make.  Grant's recent builds on gsyprf11 seem to have
-changed the nature of the faults.  Now, the kernel panics instead
-of a segfault in sh.  Grant would know more as to what's causing
-these crashes.
+--nextPart1118757.MjXZ654jfD
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> - if the build succeeds, every test case in the testsuite fails, due
->   to expect(?) problems. lamont told me that's reproducible on another
->   A500, seeing some messages on the serial console, but I can't see
->   these messages. I'm currently running the A500 kernels from the
->   parisc archives. palinux-a500-defconfig-2.6.{8.1-pa11,11-pa2,12-rc1-pa1}
->   all show the same behaviour.
+On Saturday 26 March 2005 15:33, you wrote:
 
-I think that there are issues with expect, tcl and dejagnu.
+> This is a natural consequence of converting from a tasklet to a
+> workqueue. =A0workqueues and msleep are controlled by the scheduler. =A0T=
+he
+> guarantee is not that the task will be awoken at the specified interval,
+> but that the task will be marked ready to run at the specified interval.
+> When it actually runs is within the gift of the scheduler and depends
+> entirely on how many other runnable tasks there are and what priorities
+> they have.
+>
+> If you want absolute control of the timings then you have to use a
+> tasklet or timer (as per the original implementation)
 
-1) Dejagnu asks expect to trap SEGFAULTS.  This is undefined and results
-   in the fault insn being executed repeatively.  It's a simple one line
-   fix to remove this:
+Yep, I agree entirely. =A0The problem with the previous solution arrived be=
+cause=20
+of the fact that by nature of the way the LCD updates work, they're not=20
+atomic - ie there's a minimum write time between each write. =A0Because=20
+tasklets cannot sleep, it ends up turning into a can of worms to ensure tha=
+t=20
+you waited long enough, etc.=20
 
---- runtest.exp.orig    2004-08-25 16:10:38.000000000 -0400
-+++ runtest.exp 2004-08-25 16:11:13.000000000 -0400
-@@ -1503,8 +1503,7 @@
- if ![exp_debug] {
-      foreach sig "{SIGTERM {terminated}} \
-		    {SIGINT  {interrupted by user}} \
--             {SIGQUIT {interrupted by user}} \
--             {SIGSEGV {segmentation violation}}" {
-+             {SIGQUIT {interrupted by user}}" {
-	 set signal [lindex $sig 0]
-	 set str [lindex $sig 1]
-	 trap "send_error \"got a \[trap -name\] signal, $str \\n\"; log_and_exit;" $signal
+The old solution of writing the cmd reg one tasklet run, and the data reg t=
+he=20
+next generated some nasty race conditions that Grant spotted - specifically=
+,=20
+with lcd_print. =A0It stops the tasklet, does its thing, and restarts it. =
+=A0
+Unfortunately, if the tasklet had written the cmd reg before, it now expect=
+s=20
+to write the data reg next. This seems to be the cause of the missing lcd=20
+characters you sometimes ended up with if you tried to make heavy use of=20
+lcd_print.
 
-   I've probably munged the diff doing a cut and paste.
+Personally, I think the workqueue idea is better, partly because of the fac=
+t=20
+that it greatly simplifies led_LCD_driver, and partly because of the fact=20
+that by running quite a bit less often, should impose lower CPU time usage.
+(and not just because I wrote the patch ;)
 
-2) There is some kind of timing issue with expect/tcl when a given
-   test ends.  This causes expect to hang.  When this happens, you
-   will see a defunct expect task.  It is a child of the expect task
-   that is hung.
+Cheers,
 
-   Tcl 8.3 works better than 8.4.  I know they have changed some of
-   the code in this area but I don't know why this happens.  I've also
-   had this happen on x86 but pa seems much more prone to this problem.
+David
 
-   Tcl 8.3 also works better for tests that generate a lot of output.
-   It is less likely to truncate the output resulting in a test failure.
-   I think this has to do with the handling of pipes at exit.
+--nextPart1118757.MjXZ654jfD
+Content-Type: application/pgp-signature
 
-3) A warning appears compiling expect in a couple of places regarding
-   the second argument of waitpid.  It's always int.  However, expect
-   thinks the type of this argument is WAIT_STATUS_TYPE.  This gets
-   used when NO_UNION_WAIT isn't defined.  This problem can be worked
-   around be adding "-ansi -D_SVID_SOURCE -D_POSIX_SOURCE" to CFLAGS.
-   I had hoped that fixing this would resolve the expect hangs but it
-   doesn't seem to help.  However, I do like a build without warnings.
-   To get this with the above CFLAGS, a number of missing include
-   directives need to be added.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
 
-   I use the following setup:
+iD8DBQBCRYUTOIrGtzS07WgRAugbAJ9d9Mi485TrhxKYwGB2OHW8MMHhVgCgkbOu
+kJG1umowQL0//ZuP9RjKjOQ=
+=iZKS
+-----END PGP SIGNATURE-----
 
-   dave@hiauly6:~/gnu/expect-5.43/objdir$ runtest --version
-   WARNING: Couldn't find the global config file.
-   Expect version is       5.43.0
-   Tcl version is          8.3
-   Framework version is    1.4.4
+--nextPart1118757.MjXZ654jfD--
 
-   I haven't seen any significant difference in behavior between
-   5.42.1 and 5.43.0.  The former is the debian patched source.
+--===============1683040616==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-4) There is a exit timing issue in tcl 8.4.  I tried a patch from the
-   tcl list that claimed to fix this but it didn't seem to fix either
-   the hangs or the truncation problem.
-
-> - The libjava build sometimes fails with an sh/bash error. Restarting
->   the build usually fixes this.
-
-:(  I've been hoping that some of these issues are caused by the put_user
-problem.
-
-> - gnat doesn't build, even if you include some prebuilt files (which
->   might be wrongly generated) from another build.
-
-I've been regularly building gnat, so I think that you may have a problem
-with your prebuilt files.  There was an issue like this in going from
-3.3 to 3.4.  If you are starting from 3.3, try starting from 3.4.
-
-There is an issue with tasking.  I have a patch to enable tasking
-in Ada.  However, even the simplest possible Ada program that uses
-tasking hangs.  I haven't had a chance to look at it much but it
-seems like that we may have a problem with signals and thread
-support.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1683040616==--
