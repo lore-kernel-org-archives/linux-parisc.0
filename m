@@ -1,68 +1,103 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA10379
-	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 03:11:01 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 6 Dec 2000 10:13:38 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 143bZw-0000PI-00
-	for parisc-linux@thepuffingroup.com; Wed, 06 Dec 2000 10:13:36 +0000
-Date: Wed, 6 Dec 2000 10:13:36 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20001206101336.J12682@parcelfarce.linux.theplanet.co.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA12427
+	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Dec 2000 04:54:16 -0700
+Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
+  by mailserv2.iuinc.com with SMTP; 6 Dec 2000 11:56:49 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id E8957B005; Wed,  6 Dec 2000 11:52:03 +0000 (GMT)
+Date: Wed, 6 Dec 2000 11:52:03 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com
+Message-ID: <20001206115203.Q7166@linuxcare.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] stacks
+Subject: [parisc-linux] hppa64 gcc sizeof() bug?
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi Alan,
+  The following shows the compiler getting confused over the size
+of a struct.  This is with a gcc/binutils built since the last
+fix you did for me.
 
-i'm going to explain my thoughts on how the stacks work, (a) so someone
-can point out how stupid i am and (b) so i can get it straight in my
-own head.  i find explaining things to other people helps me understand.
-you're my unpaid code-therapists :-)
+Richard
 
-we have bprm->p (see definition in <linux/binfmts.h>)
 
-this is initialised to PAGE_SIZE * MAX_ARG_PAGES - sizeof (void *).
-ie 32 pages less one pointer.
+[rhirst@rhirst play]$ cat tc.c
 
-copy_strings() (exec.c) copies the strings involved from argv and envp
-to some pages which it allocates on behalf of the user, starting at the
-top and working down (oooh, directionalist asumptions....)
 
-setup_arg_pages() (exec.c, called from binfmt_elf.c) adds the stack_base
-(more on this later) to bprm->p and uses this address to map the pages
-into the task's address space.
+typedef unsigned int u32;
+#define NULL ((void *)0)
 
-then create_elf_tables plonks a lot more stuff onto the stack (going
-down, of course), including a pile of ELF entries, the envp pointers,
-the argv pointers, and finally at the bottom envp, argv & argc.
+struct kernel_sym32 {
+        u32 value;
+        char name[60];
+};
 
-finally, start_thread() is called, passing it a pointer to argc, which
-happens to be just right for an x86 procedure call since it takes all
-arguments on the stack.
+extern int sys_get_kernel_syms(void *);
+extern int thing(struct kernel_sym32 *table);
 
-why did this downwards-growing monstrosity ever work for us before?
-because we set our stack_base to 0x2000'0000 so we started 32 pages from
-that base and kept going down.  this was enough for everything except for
-programs like procmail's configuration which tries to break it.  oops.
-and we are wasting up to 128k on the stack.  double-oops.
+int sys32_get_kernel_syms(struct kernel_sym32 *table)
+{
+        int len, i;
 
-our crt1.o depends on this layout now.  at least it depends on bits of it.
-i can move some stuff around, like the strings, because they're only
-referenced through the other pointers.
+        len = sizeof (struct kernel_sym32);
+        for (i = 0; i < len; i++, table += sizeof (struct kernel_sym32)) {
+                if (thing(table))
+                        break;
+        }
+        return i;
+}
 
-so how am i going to fix this mess?  i'm not sure.  the problem gets
-uglier every time i stare at it.  i'm sure the solution involves macros
-of some kind -- sp = place_on_stack(sp, addr, len).  but the strings
-are then a pain...
 
-i need to think about this some more.  and i need a machine to test this
-on, which i can have tomorrow, hopefully.
+[rhirst@rhirst play]$ hppa64-linux-gcc -S -o tc.s -O2 tc.c
+[rhirst@rhirst play]$ cat tc.s
 
-P.S.  Thanks, you've really helped me come to terms with the stacks in
-my life.
 
--- 
-Revolutions do not require corporate support.
+        .LEVEL 2.0w
+gcc2_compiled.:
+        .text
+        .align 8
+.globl sys32_get_kernel_syms
+                .type            sys32_get_kernel_syms,@function
+sys32_get_kernel_syms:
+        .PROC
+        .CALLINFO FRAME=128,CALLS,SAVE_RP,ENTRY_GR=6
+        .ENTRY
+        std %r2,-16(%r30)
+        ldo 128(%r30),%r30
+        std %r6,-128(%r30)
+        ldi 64,%r6		<<< Good, struct is 64 bytes
+        std %r5,-120(%r30)
+        ldi 0,%r5
+        std %r4,-112(%r30)
+        copy %r27,%r4
+        std %r3,-104(%r30)
+        copy %r26,%r3
+.L3:
+        copy %r3,%r26
+        ldo 4096(%r3),%r3	<<< BAD struct is not 4096 bytes!
+        cmpb,<= %r6,%r5,.L4
+        ldo -16(%r30),%r29
+        b,l thing,%r2
+        nop
+        copy %r4,%r27
+        cmpib,= 0,%r28,.L5
+        ldo 1(%r5),%r19
+.L4:
+        copy %r5,%r28
+        ldd -144(%r30),%r2
+        ldd -120(%r30),%r5
+        ldd -112(%r30),%r4
+        ldd -104(%r30),%r3
+        bve (%r2)
+        ldd,mb -128(%r30),%r6
+.L5:
+        b .L3
+        extrd,s %r19,63,32,%r5
+        .EXIT
+        .PROCEND
+.Lfe1:
+        .size   sys32_get_kernel_syms,.Lfe1-sys32_get_kernel_syms
+        .ident  "GCC: (GNU) 2.96 20000925 (experimental)"
+[rhirst@rhirst play]$ 
