@@ -1,18 +1,16 @@
-From: Colin Watson <cjwatson@debian.org>
-Subject: [parisc-linux] Re: Bug#254073: tc1 fail on hppa
-Date: Sun, 13 Jun 2004 18:24:50 +0100
-Message-ID: <20040613172450.GA24029__25298.0978032157$1416623471$gmane$org@riva.ucam.org>
-References: <20040612193756.GA351@mcmartin.ca>
-	<20040613122501.GH31518@riva.ucam.org>
-	<20040613164147.GC351@mcmartin.ca>
-Mime-Version: 1.0
+From: Thibaut VARENE <varenet@esiee.fr>
+Subject: [parisc-linux] Re: [PATCH] Harmony fixes
+Date: Tue, 8 Jun 2004 20:21:19 +0200
+Message-ID: <A38D5236-B978-11D8-B143-0030656F07A2@esiee.fr>
+References: <20040605184526.GA1317@calypso>
+Mime-Version: 1.0 (Apple Message framework v553)
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: 254073@bugs.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@debian.org>
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: Stuart Brady <sdbrady@ntlworld.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040613164147.GC351@mcmartin.ca>
+In-Reply-To: <20040605184526.GA1317@calypso>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,40 +21,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jun 13, 2004 at 12:41:47PM -0400, Kyle McMartin wrote:
-> On Sun, Jun 13, 2004 at 01:25:01PM +0100, Colin Watson wrote:
-> > base-installer has no intelligence about hppa, and it should. How would
-> > one go about detecting whether the 32-bit or the 64-bit kernel is
-> > appropriate? Is it OK to install SMP kernels regardless, or do we need
-> > to detect UP vs. SMP too?
-> 
-> Hmm. It's a problem because the firmware of some machines will only
-> boot 64-bit kernels, some will only boot 32-bit, and some will boot
-> either.
-> 
-> The best thing to do, would be to always install 32bit by default. As
-> when a person tries to boot on a machine that only has 64-bit firmware,
-> they will have to manually edit the PALO commandline to use vmlinux64, which
-> will result in them having a parisc64 uname -m entry. So I'd think 
-> install based on the uname -m entry would work.
+tested and committed, enjoy.
 
-OK, that's something we can do. I'm buried in base-installer at the
-moment anyway, so I'll have a go at this.
+Le samedi, 5 juin 2004, =E0 20:45 Europe/Paris, Stuart Brady a =E9crit :
 
-> There's no problem, afaik, booting SMP on UP machines, so that should be
-> fine.
+> harmony-levellimit.patch:
+> Volume levels passed to the MIXER_WRITE ioctls are now limited to 100,
+> which prevents bogus levels from interferring with other mixer=20
+> channels.
+>
+> harmony-stereolevels.patch:
+> The MIXER_READ ioctls now return a right_level for the monophonic =
+mixer
+> channels that is the same as the left_level.
+>
+> harmony-s16le.patch:
+> The AFMT_S16_LE format is now rejected, just as all other unsupported
+> formats are rejected.  As a result, applications which write =
+big-endian
+> samples with AFMT_S16_LE format set will no longer work.=
 
-Good. That matches some other architectures.
-
-> I'm going to copy the parisc-linux list with this, for comments.
-
-Note that I don't read this list, so please be sure to copy
-254073@bugs.debian.org on replies.
-
-Thanks,
-
--- 
-Colin Watson                                  [cjwatson@flatline.org.uk]
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
