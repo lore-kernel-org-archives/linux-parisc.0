@@ -1,45 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA06724
-	for <parisc-linux@puffin.external.hp.com>; Sat, 12 Jun 1999 13:36:57 -0600
-Date: Sat, 12 Jun 1999 21:36:49 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, adevries@thepuffingroup.com,
-        law@cygnus.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] booting problems
-Message-ID: <19990612213649.Y31472@mencheca.ch.genedata.com>
-References: <199906121657.MAA02162@hiauly1.hia.nrc.ca> <E10sse6-0004NC-00@the-village.bc.nu>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA06970
+	for <parisc-linux@puffin.external.hp.com>; Sat, 12 Jun 1999 15:14:25 -0600
+To: Alex deVries <adevries@thepuffingroup.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] booting problems 
+Reply-To: law@cygnus.com
+In-reply-to: Your message of Sat, 12 Jun 1999 07:15:18 EDT.
+             <37624146.A7B5F0FE@thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E10sse6-0004NC-00@the-village.bc.nu>; from Alan Cox on Sat, Jun 12, 1999 at 07:36:44PM +0100
+Date: Sat, 12 Jun 1999 15:09:21 -0600
+Message-ID: <23436.929221761@upchuck.cygnus.com>
+From: Jeffrey A Law <law@cygnus.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Jun 12, 1999 at 07:36:44PM +0100, Alan Cox wrote:
-> > relocations.  A SOM linker also needs to be stream based.  Thus,
-> > it appears difficult (impossible?) to build a SOM linker using the
-> > bfd architecture.  On the other hand, the elf32-hppa tools have serious
-> > deficiencies and are about to be completely rewritten.  Might it not be
-> > better to develop a SOM linker rather than rewrite the elf stuff?
-> 
-> Writing a linker, especialyl for something complex like SOM is not trivial
-> in the slightest.
 
-Yes, if you really want to support SOM properly and follow the spec.
-It probably isn't if you want to just deal with what actually exists in
-the world.  If you look at page 6-125 of the `32-bit PA-RISC Run-Time
-Architecture Document 11.0 Version 1.0', it says that all conforming
-executable SOM files must have the `exec auxiliary header (also known as
-the HP-UX header with Hewlett-Packard)'.
+  In message <37624146.A7B5F0FE@thepuffingroup.com>you write:
+  > Jeffrey A Law wrote:
+  > > 
+  > 
+  > <snip>
+  > 
+  > Okay, I can make that change, unless someone beats me to it.
+Let me know if it helps.  That change is just an educated guess :-)
 
-So in the binfmt_som loader I take this opportunity to ignore the
-wonderfully flexible and expressive structure that is contained in the SOM
-file format and just map the text, data and bss segments from the file.
-I imagine that a SOM linker which did just enough to get a kernel up
-and running would not be too hard to write.  On the other hand, I can
-think of a dozen more interesting and productive things to do.
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+  > However, there's this time gap between now and when we actually have the
+  > new toolchain from Cygnus.  During this time, the only thing that we
+  > expect to work on is the kernel and bootloader.  Having just those two
+  > components building with the current gcc and linker are important.
+OK.  But note Cygnus is _NOT_ currently scheduled or contracted to provide a
+32bit ELF toolchain.  Cygnus will be providing a 64bit ELF toolchain which
+folks can use to derive much of the 32bit toolchain.
+  > 
+  > If we don't do it this way, the only toolchain we'll have is hosted on
+  > HPUX, which I want to avoid if I possibly can.  The
+  > fix-build-boot-restart cycle is muuuuch faster if you can cross compile
+  > and netboot, particularly for those people who only have one HPUX
+  > machine and slow connectivity to the HPUX box that HP has online for us.
+I understand.  I'm still skeptical that you're going to end up burning
+more time fighting those lame elf tools than you would by building with
+SOM tools.
+
+Of course, if you had two HP machines, then this is a non-issue :-)
+
+jeff
