@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AC0374831
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  3 Aug 2002 12:30:10 -0600 (MDT)
-Message-ID: <3D4C2FF9.9080301@freebel.net>
-Date: Sat, 03 Aug 2002 19:33:13 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] GDB-5.2.1
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE0134860
+	for <parisc-linux@parisc-linux.org>; Sat,  3 Aug 2002 12:36:33 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17b3lL-0006o0-00; Sat, 03 Aug 2002 19:36:27 +0100
+Date: Sat, 3 Aug 2002 19:36:27 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <joel.soete@freebel.net>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Linux-2.4.19 released
+Message-ID: <20020803193627.H24631@parcelfarce.linux.theplanet.co.uk>
+References: <3D4C275D.5010104@freebel.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D4C275D.5010104@freebel.net>; from joel.soete@freebel.net on Sat, Aug 03, 2002 at 06:56:29PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,13 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Sat, Aug 03, 2002 at 06:56:29PM +0000, Joel Soete wrote:
+> Hi all,
+> 
+> Now that Linux-2.4.19 is released what will be programm for pl?
 
-I just discover the last release of GDB.
+i suspect we'll merge 2.4.19 into our tree and release that.  i don't
+know how much enthusiasm there still is for working on 2.4 with 2.5
+coming on so well.
 
-Would it be already operational for hppa?
-
-Is somebody already test its gui brother called insight?
-
-thanks in advance for advises,
-	Joel
+-- 
+Revolutions do not require corporate support.
