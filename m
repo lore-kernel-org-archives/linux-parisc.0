@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailgw.cvut.cz (mailgw.cvut.cz [147.32.3.235])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1F03A4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 04:11:46 -0600 (MDT)
-From: "Petr Vandrovec" <VANDROVE@vc.cvut.cz>
-To: Andreas Seltenreich <s_selten@informatik.uni-karlsruhe.de>
-Date: Fri, 20 Sep 2002 12:11:21 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <251F50824F2@vcnet.vc.cvut.cz>
-Subject: [parisc-linux] Re: partial success with matroxfb
+Received: from linux.local (unknown [213.9.245.78])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1E7F64829
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Sep 2002 06:48:54 -0600 (MDT)
+Received: from unknown (HELO h) (192.168.0.2)
+  by linux.local with SMTP; 20 Sep 2002 11:57:41 -0000
+From: "Sales Department" <shopfortobacco@terra.es>
+To: parisc-linux@parisc-linux.org
+Reply-To: shopfortobacco@terra.es
+Date: Fri, 20 Sep 2002 14:03:00 +0200
+Message-Id: <20020920124854.1E7F64829@dsl2.external.hp.com>
+Subject: [parisc-linux] Cheap Cigarettes
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,30 +21,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On 20 Sep 02 at 2:27, Andreas Seltenreich wrote:
+Dear Sir or Madam
 
-> Bus    HPA       Module Type      Path  Slt Md Sev  Estat Requestor  Responder
-> --- ---------- ---------------- -------- -- -- ---- ----- ---------- ----------
->  0  0xfff88000 I/O Adapter      8         2  0  he   0x3d 0xf2000000 0x000a1000 
->  0  0xfff8a000 I/O Adapter      10        2  2  he   0x0d 0x00000000 0x00000000 
+In the past you have requested information on discounted products. We hope that you find this of interest. If you are not a smoker, and find this email offensive, we sincerely apologise!  We will be only too happy to take you off our mailing list.
 
-> anotherhpmachien:~# cat /proc/iomem 
-> 00000000-0fffffff : System RAM
-> f2000000-f3ffffff : GSC Bus [8/]
+If you are a smoker, however, and are fed up with paying high prices for your cigarettes and tobacco, take a look at what we have to offer  by clicking on this link.
+http://www.smokersassociation.co.uk/?S=32&ID=2
 
-Hi Andreas,
-  boot with 'video=matrox:novga'. It looks like that Matrox responded
-to the access to legacy VGA region 0xA0000-0xBFFFF. It does not happen
-when CPU accesses this memory because of Matrox does not see this access
-at all in such situation, because of host bridge directs it immediately 
-to the system ram, without accessing PCI. But when access originated from 
-some PCI busmaster, other PCI devices sees this access, and Mystique
-claims it.
+We can send you, legally, by registered air mail, direct to your door, 4 cartons of cigarettes or 40 pouches of rolling tobacco (all brands are available) from only 170 Euros - about 105 pounds - fully inclusive of postage and packing.  Why pay more?
 
-  And now both host bridge (for system RAM) and Mystique (for VGA region)
-accepted bus cycle, and hardware went mad...
+To remove yourself from our mailing list, please click below
+mailto:smokersclub@terra.es
 
-  I have no idea what second error reports, but it may be just triggered
-by previous one.
-                                                            Petr Vandrovec
-                                                            
+Yours faithfully.
+Smokers Association
+
+http://www.smokersassociation.co.uk/?S=32&ID=2
+
+xay4871241y
