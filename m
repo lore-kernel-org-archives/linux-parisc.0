@@ -1,40 +1,53 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA07024
-	for <parisc-linux@puffin.external.hp.com>; Tue, 9 Jan 2001 11:31:39 -0700
-Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via in.smtpd with esmtp
-	id <m14G3ac-001Vp3C@chalet> (Debian Smail3.2.0.102)
-	for <parisc-linux@thepuffingroup.com>; Tue, 9 Jan 2001 11:33:46 -0700 (MST)
-Message-Id: <m14G3ac-001Vp3C@chalet>
-From: bame@riverrock.org
-Reply-To: bame@riverrock.org
-Errors-To: bame@riverrock.org
-To: parisc-linux@thepuffingroup.com
-Date: Tue, 09 Jan 2001 11:33:45 -0700
-Sender: bame@bame.riverrock.org
-Subject: [parisc-linux] 2.4.0 Source Import
+Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id XAA11874
+	for <parisc-linux@puffin.external.hp.com>; Tue, 9 Jan 2001 23:29:31 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by palrel3.hp.com (Postfix) with ESMTP id 4320B74B
+	for <parisc-linux@puffin.external.hp.com>; Tue,  9 Jan 2001 22:33:03 -0800 (PST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id XAA16714 for parisc-linux@puffin.external.hp.com; Tue, 9 Jan 2001 23:31:49 -0700 (MST)
+Date: Tue, 9 Jan 2001 23:31:49 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200101100631.XAA16714@udlkern.fc.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Gnu cpp bug or feature?
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-I've imported 2.4.0 sources into our CVS tree, safely isolated on the
-vendor branch so theoretically nobody should see any changes until they
-ask for them.  WE ARE NOT FOR MERGING AT THIS TIME -- it's to allow people
-to use CVS (esp. cvs diff and tkdiff) to examine and prepare for what's
-changed.  We are planning to merge with whatever is reasonable, which may
-not be 2.4.0, around Jan 23, so consider this import only a courtesy.
+I just discovered that the gnu cpp doesn't allow * and = to be concatenated.
+What I am trying to do is the following:
 
-If you want to see what's changed between 2.4.0test10 and 2.4.0, use
-	tkdiff -rLINUS_240_TEST10 -rLINUS_240 <filename>
-(or use cvs diff if you prefer).  If you want to see what a CVS
-automatic merge would do, use:
-	cvs update -jLINUS_240_TEST10 -jLINUS_240
-on your top-of-branch tree.  PLEASE DON'T COMMIT MERGED BITS unless
-you build a consensus it won't interfere with ongoing development or the
-upcoming merge.
+#ifdef __LP64__
+#define ADDIB addib,*
+#else
+#define ADDIB addib,
+#endif
 
-NOTE: CVS documentation suggests using a command something like
-	cvs update -jlinus:yesterday -jlinus
-to merge a recent import.  That WON'T WORK in our tree.
+I then would use the above defines throughout some assembly functions, e.g.:
 
+    ADDIB>      -1,%r1,1b
+    ADDIB=      -1,%arg3,fdoneloop
 
-	-Paul Bame
+If __LP64__ is defined, the above two examples wind up expanding to:
+
+    addib,*>    -1,%r1,1b
+    addib,* =   -1,%arg3,fdoneloop
+
+The first example expands as I would expect, but the second example winds
+up being a syntax error, because it should have been expanded to:
+
+    addib,*=    -1,%arg3,fdoneloop
+
+Anyway, I prefer to write the code this way rather than sprinkling
+#ifdef __LP64__'s throughout the code, or using two different copies
+of the functions. I imagine that gnu cpp must be trying to avoid
+creating the C *= operator by mistake, but I don't believe there is
+any standard that requires this. I know that the above examples work
+on HP-UX (not that HP-UX sets the standard).
+
+It just seems strange to me for gnu cpp to special case this particular
+sequence.  Is there a good reason for this behaviour, or is this a bug?
+
+John Marvin
+jsm@fc.hp.com
