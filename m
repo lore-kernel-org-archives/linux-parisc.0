@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailindep.elindependiente.com.mx (unknown [200.78.195.203])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1F6C4483E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Nov 2003 08:30:43 -0700 (MST)
-Date: Thu, 13 Nov 2003 00:27:36 GMT
-From: "PETERSON BULINGA" <petson@zwallet.com>
-To: parisc-linux@lists.parisc-linux.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <MAILINDEPPmLYB505rP00006562@mailindep.elindependiente.com.mx>
-Subject: [parisc-linux] parisc-linux,SOLICITATION FOR YOUR ASSISTANCE
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3EE794879
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Nov 2003 09:26:57 -0700 (MST)
+Message-ID: <3FB10DCF.3050505@tiscali.be>
+Date: Tue, 11 Nov 2003 16:26:55 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+References: <20031111010956.6EE2A49402D@palinux.hppa> <20031111011234.GA29854@colo.lackof.org>
+In-Reply-To: <20031111011234.GA29854@colo.lackof.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Re: [parisc-linux-cvs] 2.4.22-pa15 DIFF
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,24 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-FROM: Miss THEMBI TENDAI 
 
-SUBJECT:Please Help 
+Grant Grundler wrote:
+> On Mon, Nov 10, 2003 at 06:09:56PM -0700, Grant Grundler wrote:
+> 
+>>Log message:
+>>2.4.22-pa15 revert __put_kernel_asm64 to static inline function
+>>
+>>my bad. I overlooked this when committing the code.
+>>I prefer inline functions over macros for type checking/covercion.
+>>I don't like the use of "R2" for upper half of u64 data type
+>>since it's easy to overlook and not commonly used in parisc port.
+> 
+That was just why I posted it as a _remainder_, an 'interesting' stuff 
+not usual (I spent a lot of time to find how to do with hppa as it was 
+done on other platform). But I agree that confused even the best :)
 
-EMAIL FROM: thembi79@zwallet.com 
-
-REPLY EMAIL: thembi79@zwallet.com
-
-
-
-Dear Sir/Madam, 
-
-You may be surprised to receive this letter from me, Since you do not know me personally "My Name is THEMBI TENDAI" The purpose of my introduction is that Before the death of my father, he had taken me to Johannesburg to deposit the sum of US6 Million (Six Million United States dollars),in one of the private security company, as he foresaw the looming danger in Zimbabwe this money was deposited in a box as gem stones to avoid much demurrage from security company. This amount was meant for the purchase of new machines and chemicals for the Farms and establishment of new farms in Swaziland. This land problem came when Zimbabwean President Mr. Robert Mugabe introduced a new Land Act Reform wholly affecting the rich white farmers and some few black Farmers and this resulted to the killing and mob action by Zimbabwean war veterans and some lunatics in the society. In fact a lot of people were killed because of this Land reform Act for which my father " Mudada Abba " was one of the victims. It is against this back
-round that, I and my Mother and three   younger ones fled Zimbabwe for fear of our lives and I currently staying in the Netherlands in a village called Zwolle, where my family are seeking political asylum and more so I have decided to transfer my father's money to a more reliable foreign account. As the eldest daughter of my father, I am saddled with the responsibility of seeking a genuine foreign account where this money could be transferred without the knowledge of my government who are bent on taking everything we have got. The South African government seems to be playing along with them. I am faced with the dilemma of moving this amount of money out of South Africa for fear of going through the same experience in future, both countries have similar political history. 
-
-As the Eldest daughter, I am seeking for a partner who I have to entrust my future and that of my family in his hands, I must let you know that this transaction is risk free. If you accept to assist me and my family, all I want you to do for me, is to make an arrangements with the security company to clear the consignment (funds) from their affiliate office here in the Netherlands as I have already given directives for the consignment to be brought to the Netherlands from South Africa.But before then all modalities will have to be put in place like change of ownership to the consignment and more importantly this money I intend to use for investment. I have two options for you. Firstly you can choose to have certain percentage of the money for nominating your account for this transaction. Or you can go into Partnership with me for the proper profitable investment of the money in your country. Whichever the option you want, feel free to notify me. If you do not prefer a partnership I am willing to give you 10%
-of the money while the remaining 90% will be for my investment in your country. Should you which to assist me, please furnish me with your telephone and fax number me with the above via e-mail while I implore you to maintain the absolute secrecy required in this transaction. 
-
-God Bless, 
-
-MISS THEMBI TENDAI
+Thx,
+	Joel
