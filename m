@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C163482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 12:09:07 -0700 (MST)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1011726540.3c4db8cc712a9@webmail.tiscalinet.be>
-Date: Tue, 22 Jan 2002 20:09:00 +0100 (CET)
-From: jsoe0708@tiscali.be
-Cc: grundler@dsl2.external.hp.com, Hans.Witvliet@Alcatel.nl
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] [Re]: B2000
+Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 95436482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 12:59:05 -0700 (MST)
+Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
+	by atlrel6.hp.com (Postfix) with ESMTP id A166C6008EE
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 14:59:04 -0500 (EST)
+To: Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] vmlinux header for savecrash.
+In-Reply-To: Your message of "Sun, 06 Jan 2002 20:46:15 MST."
+             <20020107034615.9BFD64839@dsl2.external.hp.com>
+References: <15417.3793.688638.629130@gargle.gargle.HOWL>  <20020107034615.9BFD64839@dsl2.external.hp.com> 
+Date: Tue, 22 Jan 2002 12:59:03 -0700
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E16T74R-0002Ko-00@noam.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,21 +25,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+palo removes the "3/vmlinux" parameter (and the initrd= one too) before
+passing command line to the kernel which is consistent with x86 I think.
+Would it be helpful to add a kernel parameter like "palo_kernel=3/vmlinux"
+which you could then retrieve from /proc/cmdline?  I know it's a pain
+to turn 3/vmlinux into /boot/vmlinux but 3/vmlinux is all palo knows.
 
-Just to relate an experience:
-
-For my part, I just take the CD-0.9.3 and try to boot it with a B2000 and it
-failled also for me with similar messages if I use the STI buildin console.
-Well,... I disconnect ps/2 kbd and mouse and use a serial console (emulating
-vt100) and it boot correctly (with internal ide cdrom drive) at leat till the 2
-first Debian/GNU install dialog box. (I did not install actually because I have
-not disk to use so it is possible that it would failled later because of ide
-drive?).
-
-Is it help?
-
-Joel
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+	-P
