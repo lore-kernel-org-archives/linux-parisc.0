@@ -1,17 +1,16 @@
-Return-Path: <xam@cs.ucc.ie>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4AD5A4919
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C70C4925
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 27 Apr 2004 01:01:22 -0600 (MDT)
-Date: Tue, 27 Apr 2004 08:01:14 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] Linux-2.6.6-rc1-pa3 and pdflush problems
-In-Reply-To: <408D43600000047B@ocpmta1.freegates.net>
-Message-ID: <Pine.LNX.4.58.0404270758490.1486@sal.ucc.ie>
-References: <408D43600000047B@ocpmta1.freegates.net>
+	Tue, 27 Apr 2004 01:04:11 -0600 (MDT)
+Date: Tue, 27 Apr 2004 09:04:08 +0200
+Message-ID: <408D43600000049A@ocpmta1.freegates.net>
+In-Reply-To: <20040421115522.GH28094@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20RE=3A=20=5BPATCH=5D=20glibc=2D2=2E3=2E3=20error=20with=20debian=20unstable=09compiler=2E=2E=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -22,45 +21,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, 27 Apr 2004, Joel Soete wrote:
 
-> > Unfortunately I just switched to the 2.6 kernel (for permanent use) recently,
-> > so I'm not know whether this error would have happened with a
-> > pre-2.6.6-rc1 kernel aswell.
->
-> uhm the http://cvs.parisc-linux.org/download/linux-2.6/patch-2.6.5-pa8.gz
-> patch could always help you to rebuild this previous 2.6.6 kernel from upstream
-> src ;)
+Hello Carlos,
 
-Thanks, I'll give it a try ...
+Here is my weekly test: cvs 20040426.
+Nothing new to mention: always well known errors collected after make -k
+check. I just build a 2.6.6-_rc2_-pa2 (for the fun) without pb (which boot
+fine on my b180)
 
-> PS: on my b2k (the brother model of c3k) I am running a 2.6.6-rc1-pa0 for
-> an uptime of 11days without any major pb. (well always some small hung of
-> some minutes because of scsi bus reset from time to time but no major issue).
-> But I have no additional gfx, no ide hd (just a cdrom drive) and I only use
-> serial console (so I couldn't help you more)
+Cheers,
+    Joel
 
-BTW,
-This time it didn't take several hours, but merely a couple of minutes;
-what I did was starting several downloads (onto a ext3 on /dev/hda1),
-and then opening up a couple of websites in konqueror (which in turn uses
-the proxy that also access /dev/hda1)
+PS: 
+> Yes, the default timeout is too short, add a TIMEOUTFACTOR of 5 or more.
+
+This time I put TIMEOUTFACTOR=4 in the chroot root profile and seems to be
+enough to bypass timeout errors :)
 
 
-Again pdflush was consuming 100%, but this time I waited about 5mins and
-pdflush behaved normal again ... just to start again later and disappear
-again ...
-
-I still have see the following messages on the serial console:
-
-hda: lost interrupt
-hda: dma_timer_expiry: dma status == 0x64
-hda: DMA interrupt recovery
-
-and also the same symptoms as before (network is working normal, USB
-keyboard/mouse don't work). If you respond fast what commands I should
-run, I can give you more info ...
-
-
-Thanks,
-   Max
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
