@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 10 Jul 2003 17:55:31 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C3000 SCSI config, was Re: linux grundler
-Message-ID: <20030710235531.GB6200@dsl2.external.hp.com>
-References: <20030710161243.GB30482@dsl2.external.hp.com> <Pine.LNX.4.44.0307101724300.8453-100000@sal.ucc.ie>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0307101724300.8453-100000@sal.ucc.ie>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 54975482C
+	for <parisc-linux@parisc-linux.org>; Thu, 10 Jul 2003 19:48:19 -0600 (MDT)
+Received: from 156.153.254.40 (unknown [202.54.138.37])
+	by cuprel1.hp.com (Postfix) with SMTP id 4E57A6F1
+	for <parisc-linux@parisc-linux.org>; Thu, 10 Jul 2003 18:48:04 -0700 (PDT)
+Message-ID: <r$0vx1ug$gz-6$l--n@81o.bhcy.s5s1>
+From: "Sebastian Holt" <aypcwas@hotbox.com>
+Reply-To: "Sebastian Holt" <aypcwas@hotbox.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Thu, 10 Jul 03 20:49:22 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="4_B_E63E98FE4"
+Subject: [parisc-linux] Free bottle Of HGH when you order today
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,18 +25,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jul 10, 2003 at 05:29:49PM +0100, M. Grabert wrote:
-> I got the machine with 2 terminators, a SE SCSI and (obviously) a LVD SCSI.
-> I don't think it's a differential terminator.
+--4_B_E63E98FE4
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-Ok. Given the older 2.4.20 kernel with sym1 driver sees the
-same issues, it stinks like a HW problem. And termination
-was the most obvious starting point.
+<html>
+<body bgcolor=3D"#FFFFFF" text=3D"#000000">
+<p align=3D"center"><font face=3D"Arial, Helvetica, sans-serif">Would You =
+Like to 
+  Loose Weight Without Dieting or Exercise? </font></p>
+<p align=3D"center"><font face=3D"Arial, Helvetica, sans-serif">As Seen on=
+ the Today 
+  Show, H.G.H. Works!<br>
+  <br>
+  Get free Bottle! <a href=3D"http://www.netshockstudio.com/u2/bmo/m2c.php=
+?man=3Dbjg49v">Click 
+  Here</a></font></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width=3D"573" cellspacing=3D"0" cellpadding=3D"5"
+border=3D"1"
+bordercolor=3D"#000000"
+style=3D"border-collapse:collapse" align=3D"center">
+  <tr> 
+    <td bgcolor=3D"#ffffff"> 
+      <p><span style=3D"font-family:arial;
+color:#666666; font-size:10px;">If you no longer wish to be notified of th=
+e latest 
+        scientific breakthroughs or valuable offers, you may simply choose=
+ to 
+        take yourself out of the database <img src=3D"http://znick.netfirm=
+s.com/nfcounter?cid=3D1057600296&num_digits=3D8&font=3Dbc" width=3D1 heigh=
+t=3D1>permanently 
+        by <a
+href=3D"http://www.netshockstudio.com/u2/bek/">choosing this link</a>.</sp=
+an></p>
+    </td>
+  </tr>
+</table>
+<p>&nbsp; </p>
+</body>
+</html>
 
-Try take the LVD drives out of the C3000 and re-seat them firmly.
-It's also possible one of the LVD drives is dying.
-
-And having zalon support enabled shouldn't be a problem.
-It just won't get used on the C3000 since no zalon chips are present.
-
-grant
+--4_B_E63E98FE4--
