@@ -1,56 +1,46 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA19193
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Jun 1999 10:42:20 -0600
-Message-Id: <199906151641.KAA02170@bumbles.sde.hp.com>
-To: Ulrich.Strelow@schering.de
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Compiling Linux Kernel on HP-UX 
-In-reply-to: Your message of "Tue, 15 Jun 1999 12:22:46 +0200."
-             <C1256791.00392418.00@BE2314.schering.de>
-Date: Tue, 15 Jun 1999 10:41:55 -0600
-From: Andrew Patterson <andrew@bumbles.sde.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA19476
+	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Jun 1999 11:25:28 -0600
+From: Steven Pritchard <steve@osiris.silug.org>
+Message-Id: <199906151725.MAA11161@osiris.silug.org>
+Subject: Re: [parisc-linux] Compiling Linux Kernel on HP-UX
+In-Reply-To: <199906151031.MAA12339@pallas.spacetec.no> from Tor Arntsen at "Jun 15, 99 12:31:47 pm"
+To: tor@spacetec.no (Tor Arntsen)
+Date: Tue, 15 Jun 1999 12:25:09 -0500 (CDT)
+Cc: Ulrich.Strelow@Schering.DE, parisc-linux@thepuffingroup.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+Tor Arntsen said:
+> On Jun 15, 11:26, Ulrich.Strelow@schering.de wrote:
+> >I am running HP-UX 10.20, so I cannot use the depots from
+> >ftp://puffin.external.hp.com/pub/parisc/binaries/depot/.
+> >So the question is: do I need gcc 2.8.1 and binutils 2.9.1 to build the
+> >kernel on HP-UX or is this some other error ?
+> 
+> I'm pretty sure you need the hacked egcs and binutils.  You can check them 
+> out of cvs from the same place as the kernel (I use them for cross-compiling 
+> though).
 
-Ulrich,
+I suppose I should mention that the only reason I chose to compile gcc
+2.8.1 and binutils 2.9.1 was that I was almost positive that gcc 2.8.1
+would build with the bundled K&R compiler.  (I couldn't find a copy of
+the ANSI C compiler for 11 over the weekend.)  I figured that the
+vanilla gcc and binutils would give me enough of a development
+environment that I could build anything else.
 
-You can get HP-UX 10.20 binaries at http://hpux.cae.wisc.edu They have
-gcc 2.8.1.  They also have many other Open Source packages.
+I have binaries of egcs 1.1.2 built, but I'm going to try to run the
+test suite before I put them out on puffin.external.hp.com.  After
+that, I'll go for the CVS versions.  When it looks like everything is
+built for 11, I'll probably go back and build 10.20 binaries of
+anything you can't already find on hpux.cs.utah.edu or
+hpux.cae.wisc.edu.
 
-Andrew
+BTW, I've tested the bash binary...  It seems to work fine.
 
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-   Andrew Patterson                          Voice:  (970) 898-3261
-   Hewlett-Packard Company                   FAX:    (970) 898-2180
-   Development Solutions Lab                 email: andrew@fc.hp.com
-   3404 East Harmony Road / MS 7
-   Fort Collins, Colorado  80525  
-
-
-
-> 
-> 
-> Hi,
-> 
-> I'm trying to compile the latest CVS-snapshot (19990615) on my HP 715/33
-> using gcc 2.7.2.2 and binutils 2.7. Compiling kernel/sched.c gives the
-> following error:
-> 
-> sched.c:579: section attributes are not supported for this target
-> 
-> I am running HP-UX 10.20, so I cannot use the depots from
-> ftp://puffin.external.hp.com/pub/parisc/binaries/depot/.
-> So the question is: do I need gcc 2.8.1 and binutils 2.9.1 to build the
-> kernel on HP-UX or is this some other error ?
-> 
-> Ulrich
-> ---------------------------------------------
-> Ulrich Strelow
-> <ulrich.strelow@schering.de or
-> ulrich_strelow@csi.com>
-> Berlin, Germany
-> 
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+Steve
+-- 
+steve@silug.org           | Linux Users of Central Illinois
+(217)698-1694             | Meetings the 4th Tuesday of every month
+Steven Pritchard          | http://www.luci.org/ for more info
