@@ -1,34 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ex1.ncsa.uiuc.edu (ex1.ncsa.uiuc.edu [141.142.2.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2A381482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Sep 2001 13:44:17 -0600 (MDT)
-Date: Thu, 6 Sep 2001 14:44:14 -0500 (CDT)
-From: Galen Arnold <arnoldg@ncsa.uiuc.edu>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Mike Pflugmacher <mikep@ncsa.uiuc.edu>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] smp kernel hangs during boot on L2000...
-In-Reply-To: <20010906201033.H316@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.33.0109061441100.530-100000@osage.ncsa.uiuc.edu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail.iinet.net.au (symphony-05.iinet.net.au [203.59.3.37])
+	by dsl2.external.hp.com (Postfix) with SMTP id 96164482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Sep 2001 01:07:27 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id PAA21128
+	for parisc-linux@lists.parisc-linux.org; Fri, 7 Sep 2001 15:07:15 +0800
+Date: Fri, 7 Sep 2001 15:07:11 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] cvs update gives 'move away ....' on every file
+Message-ID: <20010907150709.B843@neep.com.au>
+References: <20010906073538.A12771@middle.of.nowhere> <200109060608.AAA09806@puffin.external.hp.com> <20010906135327.C316@parcelfarce.linux.theplanet.co.uk> <20010906211409.A26423@middle.of.nowhere>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010906211409.A26423@middle.of.nowhere>; from thunder7@xs4all.nl on Thu, Sep 06, 2001 at 09:14:09PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew,
+Quoth thunder7@xs4all.nl:
+> Thanks everyone, now it works. Is there interest in a short (20 lines)
+> document describing the steps, starting with the download of
+> linux-latest.tar.gz - 'how to get cvs running without stress' ?
 
-Thanks for the tip.  My L2000 box is hanging here with the smp 64bit
-kernel I've built:
+Certainly wouldn't hurt, the website could suffer an update ...  =)
 
-CPU(s): 2 x PA8600 (PCX-W+) at 540.000000 MHz
-Kernel command line: root=/dev/sda5 HOME=/ console=ttyS0 TERM=vt102
-Console: colour dummy device 160x64
-Initialized PDC Console for debu
-                                ^^^^^hangs right there...
-
--Galen
+Andrew.
 
 -- 
-+
-Galen Arnold, system engineer--systems group       arnoldg@ncsa.uiuc.edu
-National Center for Supercomputing Applications           (217) 244-3473
-152 Computer Applications Bldg., 605 E. Spfld. Ave., Champaign, IL 61820
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
