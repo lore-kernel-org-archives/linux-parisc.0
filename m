@@ -1,42 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail-ob03.one.net.au (mail-ob03.one.net.au [61.12.0.163])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D353482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 05:36:01 -0600 (MDT)
-Received: Received: [from squeak.local (async138-ade-isp-2.nas.one.net.au [203.101.90.139])
-	by mail-ob03.one.net.au  with SMTP id f4GBZu021526
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 21:35:57 +1000 (EST)]
-From: amodra@one.net.au
-Date: Wed, 16 May 2001 21:10:20 +0930
-To: Mark Kettenis <kettenis@science.uva.nl>
+Received: from gw.scieneer.com (gw.scieneer.com [203.44.134.129])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DD535482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 May 2001 09:18:38 -0600 (MDT)
+Sender: dtc@scieneer.com
+Message-ID: <3B029A26.7323124B@scieneer.com>
+Date: Thu, 17 May 2001 01:17:58 +1000
+From: "Douglas T. Crosher" <dtc@scieneer.com>
+MIME-Version: 1.0
+To: rbradetich@uswest.net
 Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010516211020.M14368@squeak.one.net.au>
-References: <200105160850.f4G8oer12233@debye.wins.uva.nl>
-Mime-Version: 1.0
+Subject: Re: [parisc-linux] J2240?
+References: <3AFE1F8B.725C1B8B@scieneer.com> <20010513122336.A25045@beavis.ybsoft.com> <3AFEE176.28EBFC7A@scieneer.com> <20010513141405.A25241@beavis.ybsoft.com> <20010515231519.A32007@beavis.ybsoft.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200105160850.f4G8oer12233@debye.wins.uva.nl>; from kettenis@science.uva.nl on Wed, May 16, 2001 at 10:50:40AM +0200
-Subject: [parisc-linux] Re: hppa-linux libgcc
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, May 16, 2001 at 10:50:40AM +0200, Mark Kettenis wrote:
->    When building shared libs, hppa-linux needs to link against the static
->    version of libgcc to pick up millicode routines.  hppa-linux doesn't
->    currently support a shared libgcc because millicode functions cannot
->    be exported from a shared lib due to the ABI (linker and dynamic linker
->    really).  To successfully use a shared libgcc, we'd need to link against
->    _both_ libgcc_s.so and libgcc.a, which is a pain.
-> 
-> Did you consider using a linker script for libgcc_s.so instead of the
-> usual symbolic link to libgcc_s.so.0?
+Ryan Bradetich wrote:
+...
+> I had a chance to chat with Grant, and we have a couple of ideas, but
+> we need some more info first.  Grant says the IO_ADDR_EN is supposed
+> to be set by the PDC ... but if no devices exist on the PCI bus below
+> the dino, it is possible the IO_ADDR_EN could be 0.  If this is the
+> case, then we need to move the BUG() to a different spot in code.
+...
+> I have attached a small patch that will hopefully confirm our thoughts
+> about the IO_ADDR_EN BUG() that I hope you will try out and report
+> back the results.  And hopefully someone is working on providing
+> rs232 port support for the dino/cujo busses.
 
-No.  I mainly considered fixing the linker to support calls to millicode
-in shared libs, but didn't get one of those round tuits.  :-(
+Here is the relevant output with you patch applied:
 
->  The contents of libgcc_s.so
-> would be something like:
-> 
->   GROUP ( libgcc_s.so.0 libgcc.a )
-> 
-> Glibc uses a similar trick (take a look at /usr/lib/libc.so), and it
-> seems to work fine.
+...
+Dino version 3.1 (bridge mode) found at 0xfc004000
+dino_bridge_init() addr: fc004000 hver: 0x680 sver: 0xa io_addr: 0x2000000
+Dino version J2240 (bridge mode) found at 0xfc000000
+dino_bridge_init() addr: fc000000 hver: 0x5d sver: 0xa io_addr: 0x0
+...
 
-Thanks.  That's a good idea.
+Thanks for looking into it.
+
+Regards
+Douglas Crosher
