@@ -1,21 +1,23 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5773549D2
+Return-Path: <administrator@ncc-consulting.de>
+Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB017482A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 23 Mar 2004 10:09:48 -0700 (MST)
-Date: Tue, 23 Mar 2004 12:06:38 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
-	fixes GLRO changes.
-Message-ID: <20040323170638.GN5123@baldric.uwo.ca>
-References: <40561E710000043C@ocpmta2.freegates.net>
-	<40561EAF0000536E@ocpmta1.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40561EAF0000536E@ocpmta1.freegates.net>
-Cc: James Morrison <ja2morri@csclub.uwaterloo.ca>,
-	parisc-linux@lists.parisc-linux.org
+	Tue, 23 Mar 2004 15:26:58 -0700 (MST)
+Received: from mailserver.muc.ncc-consulting.de (pD9E88205.dip0.t-ipconnect.de
+	[217.232.130.5])
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2NMQvo17531
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 23 Mar 2004 23:26:57 +0100
+From: <Administrator@s15113731.rootmaster.info>
+Sender: <Administrator@s15113731.rootmaster.info>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Tue, 23 Mar 2004 23:27:59 +0100
+Message-ID: <054101c41126$19011fb0$fc01a8c0@muc.nccconsulting.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
+	action taken.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,15 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Mar 23, 2004 at 08:07:21AM +0100, Joel Soete wrote:
-> Hello Carlos,
-> 
-> Sorry for delay,...
+ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-No problem!
+Sender = parisc-linux@lists.parisc-linux.org
+Recipient(s) = Evangelos Kopanakis
+Subject = Re: Encrypted Mail
+Scanning time = 3/23/2004 11:27:59 PM
+Engine/Pattern = 6.860-1001/1.833.00
 
-> So same known errors with cvs dated 2004 03 22 :)
+Action on virus found:
+The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
 
-Perfect. Thanks!
-
-c.
+Warning to sender! 
+A Virus was found in an Mail you send to us. 
+Please check your System!
