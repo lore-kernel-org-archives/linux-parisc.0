@@ -1,19 +1,21 @@
-Return-Path: <cbeerse@lycos.nl>
-Received: from hiscom.nl (unknown [130.78.143.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C4FD548CA
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 17 Feb 2004 01:30:41 -0700 (MST)
-Message-Id: <04Feb17.095855cet.119065@ns.hiscom.nl>
-Date: Tue, 17 Feb 2004 09:30:19 +0100
-From: =?ISO-8859-1?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
-MIME-Version: 1.0
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] hw db pb?
-References: <402A4CA5000034AF@ocpmta2.freegates.net>
-	<20040216174753.GM31168@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20040216174753.GM31168@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A4B99484B
+	for <parisc-linux@parisc-linux.org>;
+	Tue, 17 Feb 2004 07:42:07 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1At6QI-0007aS-8c
+	for parisc-linux@parisc-linux.org; Tue, 17 Feb 2004 14:42:06 +0000
+Date: Tue, 17 Feb 2004 14:42:06 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20040217144206.GQ31168@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Cc: 
+Subject: [parisc-linux] Job for someone
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,26 +25,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Matthew Wilcox wrote:
 
-> On Mon, Feb 16, 2004 at 06:42:17PM +0100, Joel Soete wrote:
-> 
->>Hi all,
->>
->>I try to have a look on D380 cpu's type into:
->><http://hwdb.parisc-linux.org/>
->>
->>but I only get severall:
->>"Warning: MySQL Connection Failed: Can't connect to local MySQL server through
->>socket '/var/run/mysqld/mysqld.sock' (111) in ../database.php3 on line 19
-> 
-> 
-> mysqld had died.  I just restarted it and it now works for me.  Thanks for
-> the report.
-> 
+I was contacted by one of the Debian XFree86 people yesterday asking if
+someone would like to look at the XFree86 loader for parisc so they could
+rearrange the packaging to ship the modules separately from the server.
+I don't have any great desire to work on a dynamic linker, but I bet
+somebody else does ... ;-)
 
-While reading the hwdb some minutes ago, I saw the mysqld error messages. I 
-think something more is wrong.
-
-
-CBee
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
