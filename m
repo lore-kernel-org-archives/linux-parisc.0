@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from elvis.franken.de (dns.franken.de [193.175.24.33])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DF580482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Mar 2002 02:32:01 -0700 (MST)
-Date: Thu, 28 Mar 2002 10:31:51 +0100
-From: Thomas Bogendoerfer <tsbogend@elvis.franken.de>
-To: Christian Suder <csuder@cisco.com>
-Cc: David Dougall <davidd@et.byu.edu>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Mozilla, etc.
-Message-ID: <20020328093151.GA20881@elvis.franken.de>
-Reply-To: tsbogend@alpha.franken.de
-References: <Pine.LNX.4.33.0203272123310.1463-100000@lewis.et.byu.edu> <3CA2ADDB.4EE8AFA4@cisco.com>
+Received: from guinness.internal.neep.com.au (ns1.au.network4.net [203.25.143.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 297F3482A
+	for <parisc-linux@parisc-linux.org>; Thu, 28 Mar 2002 03:13:32 -0700 (MST)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id SAA06892
+	for parisc-linux@parisc-linux.org; Thu, 28 Mar 2002 18:13:29 +0800
+Date: Thu, 28 Mar 2002 18:13:25 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Building cvs 2.4.18
+Message-ID: <20020328181323.A6833@neep.com.au>
+References: <Pine.LNX.4.33L2.0203251403190.13376-100000@eiger.apptechsys.com> <jeremyd@apptechsys.com> <20020326063217.50AB1482C@dsl2.external.hp.com> <20020327220901.A315@neep.com.au> <andrew@neep.com.au> <20020328070207.990A8482A@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3CA2ADDB.4EE8AFA4@cisco.com>
+In-Reply-To: <20020328070207.990A8482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Thu, Mar 28, 2002 at 12:02:07AM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,16 +25,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Mar 27, 2002 at 09:44:59PM -0800, Christian Suder wrote:
-> since rcently you can get the mozilla package with a simple "apt-get install
-> mozilla", so there is no need to go through the excercise of compiling it
-> yourself (and it takes several hours on older HW - been there). However it
-> still doesn't run, as far as I know because the threads are still far from
+Quoth Grant Grundler:
+> sorry - that should be kernels/a500/
+> or kernels/lxr8000/firewall is a newer version of the same thing.
 
-to get it running, you need to recompile it with -O optimizing level. The
-default -O2 miscompiles mozilla. Ok, this will give you a more sane mozilla,
-but it's still not accepting some of the mouse/keyboard events. No idea
-why. But there is galeon, which uses mozillas rendering engine, which (also
-compiled with -O) gives me a working web browser.
+ncftp /kernels > dir */firewall
+-r--r--r--   1 grundler ftpadmin       4912 Jan  2 05:57 a500/firewall
+-rwxr-xr-x   1 grundler ftpadmin       5113 Mar 10 07:44 c3000/firewall
 
-Thomas.
+
+I assume you mean c3000/firewall ?
+
+Thanks, always interested to see how other people approach firewalling.
+
+Andrew.
+
+-- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
