@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D56154846
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Mar 2002 16:37:00 -0700 (MST)
-Subject: Re: [parisc-linux] Power Supply Problems
-To: christoph.plattner@gmx.at (Christoph Plattner)
-Date: Sun, 3 Mar 2002 23:52:03 +0000 (GMT)
-Cc: Ralf.Hildebrandt@charite.de (Ralf Hildebrandt),
-	james_a_n_lee@yahoo.com (Jbit),
-	parisc-linux@lists.parisc-linux.org (parisc-linux)
-In-Reply-To: <3C82B04B.ECA01FA8@gmx.at> from "Christoph Plattner" at Mar 04, 2002 12:22:51 AM
+Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
+	by dsl2.external.hp.com (Postfix) with SMTP id B51FE4855
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Mar 2002 18:34:14 -0700 (MST)
+Message-ID: <3C82CF17.7030801@yahoo.com>
+Date: Mon, 04 Mar 2002 01:34:15 +0000
+From: Jbit <james_a_n_lee@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E16hflr-0005rF-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Power Supply Problems
+References: <E16hflr-0005rF-00@the-village.bc.nu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,13 +24,19 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 > In some seldom cases, if we have luck, we simple need to exchange
 > the fuse, and I wish Jbit much luck ....
 
-Fuses often go with age so he may be lucky. You might also want to pull off
-the disks and any add on cards then try with a new fuse, and work forwards
-with a supply of them to hand.
 
-ObElectronicsWarning: If you dig in the innards of a PSU please remember
-that some capacitors can hold enough charge to kill you several weeks after
-the system is unplugged. Also having reassembled it check that the earthing
-is correct with a meter before you try it. 
+No such luck, the (new) fuse blew streight away ;(
+The workstation in question has no HDD/FDD/cards to blow it.
+It looks like one of the FETs has blown too, the question is, why?
+Hopfully its a dodgey (old) power supply, NOT the mother board...
+Will say when (and how) i fixed it, so anybody with similar problems can dig through the ml archives and fix it (fairly) easily
 
-Alan
+--jbit
+
+`
+
+
+
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com
