@@ -1,42 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp4.xs4all.nl (smtp4.xs4all.nl [194.109.6.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9F15F482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Sep 2001 01:25:57 -0600 (MDT)
-Received: from webmail4.xs4all.nl (webmail4.xs4all.nl [194.109.127.38])
-	by smtp4.xs4all.nl (8.9.3/8.9.3) with ESMTP id JAA03339
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 7 Sep 2001 09:25:55 +0200 (CEST)
-From: thunder7@xs4all.nl
-Message-ID: <29500.212.153.94.193.999847836.squirrel@webmail.xs4all.nl>
-Date: Fri, 7 Sep 2001 09:30:36 +0200 (CEST)
-To: <parisc-linux@lists.parisc-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] 2.4.9-pa16: Trace/breakpoint trap on 'make mrproper' still occurs, but doesn't hang the machine
+Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C7C3482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Sep 2001 02:39:27 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 7F6F7B00C; Fri,  7 Sep 2001 09:39:56 +0100 (BST)
+Date: Fri, 7 Sep 2001 09:39:56 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: nick@snowman.net
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] installing linux on HP systems
+Message-ID: <20010907093956.C19441@linuxcare.com>
+References: <20010905153917.M11744@linuxcare.com> <Pine.LNX.4.21.0109051415410.8790-100000@ns>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0109051415410.8790-100000@ns>; from nick@snowman.net on Wed, Sep 05, 2001 at 02:16:14PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-Running the 2.4.9-pa16 kernel, I still get the 'Trace/breakpoint' trap
-every time I run 'make mrproper' in my linux source directory.
+On Wed, Sep 05, 2001 at 02:16:14PM -0400, nick@snowman.net wrote:
+> I only have one device connected (a single 1gig scsi disk), which appeared
+> to work fine in HP-UX.  Are there any debugging options I could/should
+> enable?
 
-One very significant difference w.r.t. 2.4.9-pa13 is that it doesn't
-crash the machine anymore. Running it under gdb works fine. Running
-it under strace produces an endless list of
+So you are installing from the network I guess (cdrom would be a second
+device).  You should try the scsi-wrangling-magic as Carlos suggests,
+just in case.
 
-sg_sigreturn(0) = 0
+Richard
 
-(about 547 lines or so)
-
-and then a SIGILL (Illegal Instruction) trap.
-
-I'm not at my machine at the moment, so the strace output is from 
-memory.
-
-It looks like this patch:
->Date: Thu, 6 Sep 2001 03:48:16 -0600 (MDT)
->From: John Marvin jsm@udlkern.fc.hp.com
->Subject: [parisc-linux-cvs] Patch for SMP support, etc.>
->A rather large patch that includes my current SMP support changes, plus
->a variety of other fixes/changes.
-
-did something. But it's so large I'm not sure what exactly :-)
-
-Jurriaan
+> > On Wed, Sep 05, 2001 at 10:19:37AM -0400, Carlos O'Donell Jr. wrote:
+> > > We generally insert scsi-wrangling-magic as kernel parameters:
+> > > 
+> > > sim700=noneg:0xff,nodisc:0xff
+> > > 
+> > > And it works beautifully after that.
