@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB8394829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Apr 2003 11:08:11 -0700 (MST)
-Date: Fri, 4 Apr 2003 13:08:41 -0500
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 131D14829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Apr 2003 11:49:00 -0700 (MST)
+Message-Id: <200304041848.h34Imwkv026421@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Applications in 64 bits userspace
-Message-ID: <20030404180841.GP7542@systemhalted>
-References: <20030403225228.GI7542@systemhalted> <200304040002.h3402U4u020233@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200304040002.h3402U4u020233@hiauly1.hia.nrc.ca>
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Fri, 4 Apr 2003 13:48:57 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030404180841.GP7542@systemhalted> from "Carlos O'Donell" at Apr 4, 2003 01:08:41 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,59 +22,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-John,
+> I get random email from people who've seen my libc-alpha postings, and
+> they want to know how to fix their busted gcc (hppa2.0w) + HPUX linker
+> compiles... looks like floating point loads and stores with bad 
+> relocations (the reason we disable fpregs in the rtld code for glibc).
 
-> I can't answer that.  Presumably, HP funded the development.  Possibly,
-> they were considering using the GNU linker but then decided to go with
-> a different port.  I do most of my 64-bit testing now with the HPUX
-> linker.  There were some rough edges in using the HP linker with GCC
-> a few months ago but these have been resolved.
+This sounds like a configuration mixup but I would have to see
+a real bug report to be sure.  Regarding disabling fpregs, this
+might not be a good idea.  Integer multiplication uses the xmpyu
+instruction.  There is millicode support for 32-bit multiplication
+but not for 64-bit multiplication.  On the 64-bit port, loop
+unrolling can cause a multiply instruction to emitted after
+virtual registers are instantiated.  If fpregs are disabled,
+the multiply requires a libcall.  Emitting a libcall, requires
+setting the arg pointer using the virtual outgoing args register.
+There is a small chance that we might not have reserved enough
+space for the outgoing arguments when this is done after virtual
+register instantiation.  You need -nostdlib when linking as
+various functions in libgcc uses the xmpyu instruction.
 
-I get random email from people who've seen my libc-alpha postings, and
-they want to know how to fix their busted gcc (hppa2.0w) + HPUX linker
-compiles... looks like floating point loads and stores with bad 
-relocations (the reason we disable fpregs in the rtld code for glibc).
+> How so? -static and -nostdlib and add all the bits yourself?
 
-> The HP linker is not compliant with the sysv ELF ABI in its handling
-> of weak symbols.  Undefined weak symbols are supposed to resolve
-> to a value of 0, and the linker is not supposed to search archive
-> libraries for undefined weaks.  I tried hacking GNU ld to see if
-> this could be fixed but this isn't possible since the dynamic loader
-> has the same behavior.  Basically, weak symbols appear to behave
-> like secondary definition symbols with the SOM runtime.  The lack
-> of proper weak support impacts GCC thread support.
+No.  The dynamic loader is still required to resolve some special
+symbols.  I also think the file format is not quite right for
+a static executable.  I'm sure that it would be possible to generate
+a truly static binary but I'm not sure how much work is involved.
 
-Ick! Okay, I see why the initial intent to transition toolchains was
-made. Though it still probably kicks our arse in terms of performance.
-
-> I presume you are talking about the implementation for lazy linking.
-> I know the ia64 implementation of function descriptors differs from
-> what is done for the 32-bit hppa ports.
-
-See Lu's patch at:
-http://sources.redhat.com/ml/libc-alpha/2003-04/msg00048.html
-
-It's a unification effort to try get arches that use func. desc. onto
-the same page... hopefully lockless lookups and lazy linking :)
- 
-> Ok.  I should note that the current 64-bit GNU ld doesn't know how
-> to do a true static link.
-
-How so? -static and -nostdlib and add all the bits yourself?
- 
-> I certainly agree with that plan.  64-bit code is always going to
-> be slower than 32-bit code, so it shouldn't be used unless really
-> needed.
-
-It would still be a nice treat to get more testing on the 64-bit
-compiler, and be able to run bigger apps on the bigger PARISC boxes once
-they become available :)
-
-Though, yes, the current plan is, without fail, in the order I feel like
-fixing them today:
-- make -k check passes
-- function descriptor fixes
-- TLS support
-- Static 64-bit userspace
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
