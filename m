@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 371514829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 09:53:02 -0700 (MST)
-Date: Fri, 20 Dec 2002 17:52:22 +0100
-Message-ID: <3DED9BBD00002B9F@ocpmta7.freegates.net>
-In-Reply-To: <20021220152034.GC31792@tausq.org>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] 2.4.21-pre2 : sysctl.h pb
-To: "Randolph Chung" <randolph@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BE604829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 11:46:34 -0700 (MST)
+Received: from localhost (localhost [127.0.0.1])
+	by transport.cksoft.de (Postfix) with ESMTP id 503AF1FFF41
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 19:46:28 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.int.zabbadoz.net (Postfix) with ESMTP id E67381532D
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 18:43:15 +0000 (UTC)
+Date: Fri, 20 Dec 2002 18:43:15 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.BSF.4.44.0212201642110.647-100000@e0-0.zab2.int.zabbadoz.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] cvs & modules
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,34 +26,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph,
+Hi,
 
->> Merging 2.4.21-pre2 with parisc tree, I notice the following the follo=
-wing
->> pb:
->
->just bump the hppa numbers
->>         KERN_HPPA_PWRSW=3D55,     /* int: hppa soft-power enable */
->>         KERN_HPPA_UNALIGNED=3D56, /* int: hppa unaligned-trap enable *=
-/
->
->make these 57, 58 or so
->
->it seems a bit odd to me that the sysctl number space is not
->partitioned, but... 
->
-Well I choose 57 and obtain a vmlinux.
-But eventhought I used my config file I get this time a system which hung=
+is there a chance that 2.5.52 gets merged in the next days or does
+anyone have a patch a hand to fix the kernel/*.ko modules problem ?
 
-on my b2k at 'Search Devices...' and the green led stay continiously ligh=
-t???
-I will try to fix it next year :-))
+Couldn't find one from rusty that works with current parisc cvs :(
+Getting undefined references...
 
-Thanks for advise,
-    Joel
+Thanks.
 
-
-
-********************************************
-Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
-://adsl.tiscali.be
+-- 
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
