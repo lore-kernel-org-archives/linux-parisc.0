@@ -1,16 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] DIFF use 6-regs in copy_user_page_asm
-Date: Tue, 4 Jan 2005 16:39:20 -0700
-Message-ID: <20050104233920.GB2857@colo.lackof.org>
-References: <20050103061910.GJ15061@colo.lackof.org>
-	<20050104061342.GE18497@tausq.org>
+Date: Tue, 4 Jan 2005 19:00:43 -0500 (EST)
+Message-ID: <200501050000.j0500iKD024978@hiauly1.hia.nrc.ca>
+References: <20050104233920.GB2857@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050104061342.GE18497@tausq.org>
+In-Reply-To: <20050104233920.GB2857@colo.lackof.org> from "Grant Grundler" at
+	Jan 4, 2005 06:39:20 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,41 +21,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jan 03, 2005 at 10:13:42PM -0800, Randolph Chung wrote:
-> i'd like to see numbers too, but i doubt you will see any.
+> The pipeline on PA-8x00 can load 4 instructions at a time.
+> How those 4 instructions get executed depend on interlocks (e.g.
+> register is in still use by previous insn) and if the CPU/mem units are
+> available.  AFAIK, PA8x00 processors support 2 loads/cycle,
+> 2 stores/cycle, 2 shift+merge ops/cycle, 2 FP Div/cycle, etc. 
+> "Keeping the pipeline busy" is just as much a function of instruction
+> scheduling by programmer/compiler as re-ordering by the CPU.
+> One really needs to keep track of which resources are available.
 
-I hope the new cpup.c will help us provide precise values.
+This is what the GCC machine definitions says:
 
+;; The PA8000 has a large (56) entry reorder buffer that is split between
+;; memory and non-memory operations.
+;;
+;; The PA8000 can issue two memory and two non-memory operations per cycle to
+;; the function units, with the exception of branches and multi-output
+;; instructions.  The PA8000 can retire two non-memory operations per cycle
+;; and two memory operations per cycle, only one of which may be a store.
+;;
+;; Given the large reorder buffer, the processor can hide most latencies.
+;; According to HP, they've got the best results by scheduling for retirement
+;; bandwidth with limited latency scheduling for floating point operations.
+;; Latency for integer operations and memory references is ignored.
+;;
+;;
+;; We claim floating point operations have a 2 cycle latency and are
+;; fully pipelined, except for div and sqrt which are not pipelined and
+;; take from 17 to 31 cycles to complete.
+;;
+;; It's worth noting that there is no way to saturate all the functional
+;; units on the PA8000 as there is not enough issue bandwidth.
 
-[ The following is more intended for folks like Joel than Randolph.
- I'm pretty sure Randolph understands how CPUs work. ]
+Comments?
 
->  it appears
-> that at least newer PA cpus do a sufficient amount of internal
-> instruction reordering that you don't see a difference as long as there
-> are enough pending instructions to keep the pipeline busy.
-
-The pipeline on PA-8x00 can load 4 instructions at a time.
-How those 4 instructions get executed depend on interlocks (e.g.
-register is in still use by previous insn) and if the CPU/mem units are
-available.  AFAIK, PA8x00 processors support 2 loads/cycle,
-2 stores/cycle, 2 shift+merge ops/cycle, 2 FP Div/cycle, etc. 
-"Keeping the pipeline busy" is just as much a function of instruction
-scheduling by programmer/compiler as re-ordering by the CPU.
-One really needs to keep track of which resources are available.
-
-Anytime a resource is not available, the pipeline "stalls". 
-ia64 calls this "bubbles" and the best description I've found
-of "bubbles" is in the MySQL perf paper by Philippe Bonnet:
-	http://www.gelato.org/resources/bookspapers.php
-
-(or http://www.gelato.org/pdf/mysql_itanium2_perf.pdf)
-
-While parisc might be more primitive in how it deals with "stalls"
-than ia64, I expect most of the same principles apply to both when
-writing code.
-
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
