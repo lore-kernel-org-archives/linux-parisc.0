@@ -1,35 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA12533
-	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Apr 2000 09:19:03 -0600
-Received: from atl6narkp02a.atl.hp.com (atl6narkp02a.atl.hp.com [15.114.135.170])
-	by atlrel1.hp.com (Postfix) with ESMTP id 9A3A73588
-	for <parisc-linux@thepuffingroup.com>; Wed, 12 Apr 2000 11:14:50 -0400 (EDT)
-Date: Wed, 12 Apr 2000 10:14:49 -0500
-From: Bob Pflederer <krp@rsn.hp.com>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Astro and 100BT still not working
-Message-ID: <20000412101449.A1636@atl6narkp02a.atl.hp.com>
-References: <200004120514.WAA16365@milano.cup.hp.com> <200004120608.XAA16442@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA14277
+	for <parisc-linux@puffin.external.hp.com>; Wed, 12 Apr 2000 12:35:20 -0600
+Message-ID: <20000412123517.A14264@puffin.external.hp.com>
+Date: Wed, 12 Apr 2000 12:35:17 -0600
+From: Philipp Rumpf <prumpf@puffin.external.hp.com>
+To: Mike Brancato <funnyguy@digitalsmackdown.net>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] booting from lan error...
+References: <Pine.LNX.4.10.10004120254090.13750-100000@morph.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200004120608.XAA16442@milano.cup.hp.com>
+In-Reply-To: <Pine.LNX.4.10.10004120254090.13750-100000@morph.localdomain>; from Mike Brancato on Wed, Apr 12, 2000 at 03:11:27AM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Apr 11, 2000 at 11:08:16PM -0700, Grant Grundler wrote:
-> 
->     For I/O PDIR fetches themselves, IKE assumes that the I/O PDIR is
->     equivalently mapped. I.e., it assumes that the physical address =
->     virtual address and so it supplies bits 19:12 of the physical address
->     as the virtual index. To ensure coherency of I/O PDIR fetches, the
->     I/O PDIR must be equivalently mapped.
-> 
-> 
-> The second paragraph worries me. It suggests parisc-linux has to flush
-> the cachelines which contain I/O Pdir data every time such data is
-> changed since it's not equivalently mapped.  Since only bits 31:28
-> are different for kernel space (0xc....), does this still apply?
-> 
-No.  Only bits 19:12 of the virtual address need to match bits 19:12 of the 
-physical address.  You may need to use space=0 for your virtual address 
-because of the CPU's space hashing feature.
+On Wed, Apr 12, 2000 at 03:11:27AM -0400, Mike Brancato wrote:
+> bootp won't work with our 735/125.  Search/Autoselect doesn't see
+> lan.x.x.x as a bootable device.
+
+are you sure that machine is using bootp rather than rbootd ?
+
+> transciever on the back.  Even if the cables were bad, wouldn't the
+> firmware see the lan.x.x.x as a bootable path?
+
+715/old firmware at least doesn't show lan as bootable path unless it
+detects an rbootd server.
+
+	Philipp Rumpf
