@@ -1,13 +1,18 @@
-From: =?ISO-8859-15?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
-Subject: [parisc-linux] kernel config file for HP D-series
-Date: Fri, 26 Nov 2004 16:15:07 +0100
-Message-ID: <41A7487B.5080809@lycos.nl>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: flush_kernel_[di]cache_page question? [WAS: [parisc-linux]
+	2.6.10-rc1-pa11 profile data
+Date: Fri, 26 Nov 2004 09:13:32 -0800
+Message-ID: <20041126171332.GI9148@tausq.org>
+References: <20041111081154.GR15714@tausq.org>
+	<418A81170000898E@mail-8-bnl.mail.tiscali.sys>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-To: maillist parisc-linux <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <418A81170000898E@mail-8-bnl.mail.tiscali.sys>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,22 +23,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello,
+> I try google on the p-l m-l but I didn't reach to find out why those chain
+> of 15 f[di]c,m?
 
-Since some time have a D370-2 running Debian Linux. Currently the box is only 
-used as stove (it's getting cold outside) and I like to give it some usage like 
-testing new kenels and such.
+16, actually (including the one in the delay slot of the cmpib).
 
-Does anyone have a kernel config file for a HP D-series machine which I can use 
-as a start point for my kernel configs? Preferably a D370 with 2 CPUs. Or can 
-anyone guide which of the basic configs can be used for a start point? (I guess 
-the B180 but that does not work out of the box).
+,m is post increment, so we are just doing an unrolled loop of
 
-Thanks in advance,
+fdc offset(address)
+offset = offset + cache_stride
 
-
-CBee
-
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
