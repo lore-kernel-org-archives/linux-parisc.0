@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E38A24829
-	for <parisc-linux@parisc-linux.org>; Wed, 11 Dec 2002 23:46:59 -0700 (MST)
-Date: Wed, 11 Dec 2002 22:50:59 -0800
+	by dsl2.external.hp.com (Postfix) with ESMTP id 228644829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 12 Dec 2002 00:27:58 -0700 (MST)
+Date: Wed, 11 Dec 2002 23:32:15 -0800
 From: Randolph Chung <randolph@tausq.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>, bdale@gag.com,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] ["CSA Test Drive" <TestDrive@compaq.com>] FW: Some issues
-Message-ID: <20021212065059.GQ21187@tausq.org>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Solved: Kernel crash when loggin in via ssh
+Message-ID: <20021212073215.GA1141@tausq.org>
 Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20021211224404.GC15219@systemhalted> <200212112305.gBBN5Bdj021432@hiauly1.hia.nrc.ca>
+References: <20021211063321.GB10185@systemhalted> <Pine.LNX.4.44.0212112313290.861-100000@sal.ucc.ie>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200212112305.gBBN5Bdj021432@hiauly1.hia.nrc.ca>
+In-Reply-To: <Pine.LNX.4.44.0212112313290.861-100000@sal.ucc.ie>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,31 +24,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The code doesn't seem to trap on a A500 which I believe is a PA8500.
-> I think we need to look at bits 0..1 of the coprocessor configuration
-> register to determine instruction validity.  See table 8-6 on page 8-11.
+> It IS a gcc issue.
+> 
+> gcc-3.0_3.0.4-13 produces a working kernel, gcc-3.2-3.2.2-0pre0 produces
+> a miscompiled kernel (faulty networking, causes kernel crash).
+> I made NO updates whatsoever; same kernel configuration, just using gcc-3.0
+> insted of gcc-3.2. I just make a make clean; make dep; make vmlinux ...
 
-it does cause a trap actually, we just don't usually print it. 
+btw, i just built this: 
 
-FP assist exception at 0x10433
-FP VZOUICxxxxCQCQCQCQCQCRMxxTDVZOUI ->
-   00000000000000000000000001000000
+$ ssh -p 1022 -2 tausq@gsyprf10.external.hp.com
+tausq@a500:~$ dmesg|grep gcc
+Linux version 2.4.20-pa13 (tausq@a500) (gcc version 3.2.2 20021202 (Debian prerelease)) #12 SMP Wed Dec 11 23:02:01 PST 2002
 
-i'm confused tho because that iaoq doesn't point where i thought it
-might point. is this because of delayed exceptions?
-
-(oh, as an aside, looks like there's a small objdump bug :-)
-00010428 <ull2dbl>:
-   10428:       0f d9 12 81     stw r25,-10(sr0,sp)
-   1042c:       0f da 12 89     stw r26,-c(sr0,sp)
-   10430:       2f c1 10 16     fldd -10(sr0,sp),fr22
-   10434:       e8 40 d0 00     bve (rp)
-   10438:       32 c2 aa 04     fcnv Disassembler botch.
-
-(should be fcnv,udw,dbl %fr22,%fr4)
-
+still need to try 32-bit...
 randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
