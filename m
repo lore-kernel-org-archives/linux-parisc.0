@@ -1,14 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 26 Dec 2002 00:04:29 -0700
-To: Tim Kemna <t.kemna@student.utwente.nl>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PCMCIA network card on 712
-Message-ID: <20021226070429.GA3698@dsl2.external.hp.com>
-References: <3DED9A6600002FAC@ocpmta3.freegates.net> <002c01c2ab50$f452ddc0$4fe85982@kabel.utwente.nl>
+Received: from Bill-The-Cat.bloom.county (ip68-0-152-218.tc.ph.cox.net [68.0.152.218])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE4C84829
+	for <parisc-linux@parisc-linux.org>; Thu, 26 Dec 2002 10:55:44 -0700 (MST)
+Date: Thu, 26 Dec 2002 10:55:29 -0700
+From: Tom Rini <trini@kernel.crashing.org>
+To: Randolph Chung <randolph@tausq.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	parisc-linux@parisc-linux.org,
+	Linux/PPC Development <linuxppc-dev@lists.linuxppc.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>
+Subject: Re: [parisc-linux] Generic RTC driver in 2.4.x?
+Message-ID: <20021226175529.GB6867@opus.bloom.county>
+References: <Pine.GSO.4.21.0212241451450.1821-100000@vervain.sonytel.be> <20021224235147.GT19331@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <002c01c2ab50$f452ddc0$4fe85982@kabel.utwente.nl>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+In-Reply-To: <20021224235147.GT19331@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,17 +27,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Dec 24, 2002 at 02:32:43PM +0100, Tim Kemna wrote:
-> Hi,
+On Tue, Dec 24, 2002 at 03:51:47PM -0800, Randolph Chung wrote:
+> > AFAIK the generic RTC driver is used on PA-RISC, PPC, and m68k.
+> > 
+> > Are you interested in a backport to 2.4.x?
 > 
-> I'd like to have a 2nd network card on my 712/80. I know there is a normal
-> expansion card from HP, but they are hard to get.
-> Someone told me it's also possible to use a PCMCIA netword card. Is that
-> true and does anyone ever tried that?
+> On parisc we already have a version of the generic RTC driver in our
+> 2.4 tree. If there's something more "official" or common we can adopt
+> that version. 
 
-in a 712/80?
-Hah! That "someone" is joking with you.
-I'm thinking PCI-PCMCIA Bridge/adapter card would be required and
-712 has no PCI slots.
+Similarly, PPC has had it's own 'generic' RTC driver in the kernel for
+ages, so there's no pressing need, but if the 2.5 version makes its way
+back into 2.4 (as the 2.5 version has some minor changes needed for
+everyone which weren't in the 2.4 m68k version), we can easily switch to
+that version.
 
-grant
+-- 
+Tom Rini (TR1265)
+http://gate.crashing.org/~trini/
