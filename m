@@ -1,65 +1,65 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 335CE482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 04:59:20 -0600 (MDT)
-Received: from alcatel.at (atusel33.aut.alcatel.at [146.112.129.215])
-	by  mail.alcatel.at (8.9.3/8.9.3/1.21 01/27/01 21:43:09) with ESMTP id MAA21825
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 12:58:59 +0200 (MET DST)
-Sender: christoph.plattner@alcatel.at
-Message-ID: <3AE6ADF3.92D612FE@alcatel.at>
-Date: Wed, 25 Apr 2001 12:58:59 +0200
-From: Christoph Plattner <christoph.plattner@alcatel.at>
+Received: from relay1.alcatel.be (alc119.alcatel.be [195.207.101.119])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B554482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 05:18:21 -0600 (MDT)
+Message-ID: <1A8904C3797ED411AC2E0008C7E6F88117C844@nlntmail2b.ats.nld.alcatel.nl>
+From: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+To: "'Xavier Debacker'" <xavier.debacker@esiee.net>,
+	"Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] PA/Linux iso 0.6 is out!
+Date: Wed, 25 Apr 2001 13:17:25 +0200
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Bug in kernel: console support STI/serial
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello PA-RISCers !
+Hi Xavier,
 
-I tried the STI console for the first time on a 712/60
-workstation but found a problem in handling console
-devices.
+Both keyboard and mouse on C110 are "PS/2"
+Before switching to STI, keyboard works OK, (as i have to interupt boot
+sequence, perfrom a SEArch and a BOot P2 (in my case)
 
-I compiled the kernel with SUPPORT for both consoles,
-the serial and the STI.
+Hans.
 
-Per definition:
----------------
-If no `console=xxx' the default is `tty0', and the
-"current" virtual console is used.
 
-The user can also select the console via command line
-parameter for kernel: `console=ttyS0' for example for
-the serial console.
-
-Problem:
---------
-On the current kernel, if I do not use the `console='
-parameter, the kernel does following:
-
-Boot,...
-Output:
-  Switching from PDC console ...
-
-And now on the serial line !!!!! the output:
-  Switching to STI console ....
-
-Here is the error: Linux know's, it must use the STI
-but uses the serial console.
-
-I have not analysed the code fully, yet. Dependent on
-my spare time, I can deliver a bug fix or point out the 
-position of the wrong code.
-
-------
-
-By the way: How can I set the 712/60 to use serial
-PCD console (command `path' does not work for console !)
-
-Cheers
-	Christoph P.
-
-------------------------------------------------------------
-private:  christoph.plattner@gmx.at
-company:  christoph.plattner@alcatel.at
+> -----Original Message-----
+> From:	Xavier Debacker [SMTP:xavier.debacker@esiee.net]
+> Sent:	Wednesday, April 25, 2001 11:22 AM
+> To:	Witvliet, Hans
+> Cc:	parisc-linux@lists.parisc-linux.org
+> Subject:	Re: [parisc-linux] PA/Linux iso 0.6 is out!
+>=20
+> "Witvliet, Hans" a =E9crit :
+>=20
+> > Hi all,
+> >
+> > A quick try of the 32 bits version with STI console on a C110.
+> > After booting from cdrom, i get startup info and the message =
+switching
+> to
+> > STI. (looks very promissing..)
+> > Again some more messages and a login prompt.
+> > There it stops, the system does not read input from my keyboard, so =
+can
+> not
+> > login....
+> >
+> > Will try on other systems later...
+> >
+> > Hans.
+>=20
+> Hi Hans,
+>=20
+> Do you use HIL or PS/2 Keyboard ?
+>=20
+> Only PS/2 keyboard is supported.
+>=20
+> Xavier.
+>=20
+>=20
+>=20
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
