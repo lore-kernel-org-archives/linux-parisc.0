@@ -1,16 +1,16 @@
-Return-Path: <kokconciliate@byke.com>
-Received: from parisc-linux (138.64.63.81.dial.bluewin.ch [81.63.64.138])
-	by dsl2.external.hp.com (Postfix) with SMTP id 844F04892
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 19 Feb 2004 22:39:03 -0700 (MST)
-Message-ID: <jsmmei.14109629vlmhml@Andree.bergerontcxqblcnq>
-From: "Andree.bergeron" <kokconciliate@byke.com>
-Date: Fri, 20 Feb 2004 06:47:43 -0000
-To: parisc-linux@parisc-linux.org
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0C014868
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 20 Feb 2004 10:56:16 -0700 (MST)
+Date: Fri, 20 Feb 2004 18:56:12 +0100
+Message-ID: <402A4CA500006E8D@ocpmta2.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: "Matthew Wilcox" <willy@debian.org>
 MIME-Version: 1.0
-Content-Type: text/html; charset=iso-8859-1
-Cc: 
-Subject: [parisc-linux] haplessly CheapPharmacy temporal
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] b2k scsi disk pb
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,17 +20,70 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-<html>
-<font color=
+Hi Matthew,
 
-#fbf3e1> stumbled summit alight, surprise Bernet closely, scoring Weider evading algaecide logicians Allstate eyeglasses splitter showroom features furrow Parthenon Wellington. precedence Wyoming Starkey cracking chicks, checksums despising troubled misused prosper internally cookery seizes Caldwell balancer biannual Xhosa. redness repeats rascally. Canaveral colds annoyances Connors spoken conceive.</font><br>
-ONLY REAL SUPER VIAGDRA CALLED CIADLIS IS EFFECTIVE! Annual Sale: ONLY $3 per dose<br>
-<br>clarinet<br>
-<br><a hreftrespasserhref=http://Steve.com href=
+I trust that you could advise me about this pb:
 
-"http://businessdrugs.com/sv/index.php?pid=expert">Website</a>
-<br><br>
-<font color=
+on my b2k since I can run 2.6 (32bit with gcc-3.3 or 64bit with gcc-3.0)
+i noticed from time to time such dmesg:
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
 
-#ebecf5>finessing eyeing ivies almost amputates, daunt shrug Solly lamps; storages destroying wintry originates subscribe Alison daylights comprising opiate. twittered knock Victorian buttressed zoological, Oligocene blundering dotting pedigree infectious envision thrasher superminis risked disallowed monkeyed Darwinian. counselors foray abysmally. Renoir looped Comdexswinger.</font><br> 
-</html>
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: ABORT operation started.
+sym0:5:0: ABORT operation timed-out.
+sym0:5:0: DEVICE RESET operation started.
+sym0:5:0: DEVICE RESET operation timed-out.
+sym0:5:0: BUS RESET operation started.
+sym0: SCSI BUS reset detected.
+sym0: SCSI BUS has been reset.
+sym0:5:0: BUS RESET operation complete.
+
+and during this time the system naturaly hang.
+
+scsi id 5 is the one of the working boot disk (a quantum model atlas5-9lvd)
+and if there is well a second disk (a seagate model ST336704LC) it is not
+used.
+
+OTC with 2.4 and sym2 driver, I never noticed this behavior (even with recent
+2.4.25-rc?-pa0 :) ), so I presume that there is no disk failure (and a dd
+if=/dev/sda of=/dev/null bs=1024k reach to read fully the disk without any
+error).
+
+Any idea?
+
+Thanks in advance,
+    Joel
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
