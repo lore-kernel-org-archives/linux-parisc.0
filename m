@@ -1,17 +1,15 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-Date: Tue, 18 Mar 2003 15:55:42 -0500 (EST)
-Message-ID: <200303182055.h2IKthRI017578__27678.2382200055$1416622304$gmane$org@hiauly1.hia.nrc.ca>
-References: <20030318202104.GV26139@tausq.org>
+Date: Tue, 18 Mar 2003 16:59:35 -0500 (EST)
+Message-ID: <200303182159.h2ILxZUA018885__49008.2993791022$1416622306$gmane$org@hiauly1.hia.nrc.ca>
+References: <200303181853.h2IIr53R016234@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: b.gunreben@web.de, jsoe0708@tiscali.be, willy@debian.org,
-	doko@cs.tu-berlin.de, debian-hppa@lists.debian.org,
-	debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org,
-	kuznet@ms2.inr.ac.ru, linux-net@vger.kernel.org
-To: tausq@debian.org
+Cc: carlos@baldric.uwo.ca, parisc@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030318202104.GV26139@tausq.org> from "Randolph Chung" at Mar 18, 2003 12:21:04 pm
+In-Reply-To: <200303181853.h2IIr53R016234@hiauly1.hia.nrc.ca> from "John David Anglin" at Mar 18, 2003 01:53:04 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,38 +20,152 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I believe that we were talking about a problem in in glibc's use
-> > of __canonicalize_funcptr_for_compare with a gcc 3.3 compiled kernel.
-> 
-> Quoting an earlier mail:
-> > IAOQ = 10351b7c
-> > Func: __canonicalize_funcptr_for_compare, Off: 38, Addr: 0x10351b7c
-> > 10351b70:       2a 6b 50 00     addil 56800,r19,%r1
-> > 10351b74:       48 21 0c a8     ldw 654(r1),r1
-> > 10351b78:       d4 60 1c 1e     depwi 0,31,2,r3
-> > 10351b7c:       0c 60 10 94     ldw 0(sr0,r3),r20
-> >
-> > GR0 = 00000000
-> >
-> > GR1 = 103eee50
-> > Func: _GLOBAL_OFFSET_TABLE_, Off: 0, Addr: 0x103eee50
-> >
-> > GR2 = 101342f8
-> > Func: do_sigaction, Off: a8, Addr: 0x101342f8
-> 
-> these are definitely kernel addresses....
+> I'm building glibc-2.3.1-15 and should know soon if something
+> has changed.
 
-Right.  I see the code that's causing the problem in kernel/signal.c:
-
-                if (k->sa.sa_handler == SIG_IGN
-		    || (k->sa.sa_handler == SIG_DFL
-
-
-You don't want to canonicalize k->sa.sa_handler here, so a cast to
-void * or something is needed.  The PA is the only port that I am
-aware of that needs to canonicalize function pointers.
+The enclosed patch to pt-initfini.c for gcc 3.3 is missing from -15.
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+--- pt-initfini.c.orig	2002-08-26 21:52:36.000000000 -0700
++++ pt-initfini.c	2003-03-18 12:11:20.000000000 -0800
+@@ -41,70 +41,70 @@
+    and epilogues.  Therefore we write these in assembly to make sure
+    they do the right thing.  */
+ 
+-__asm__ ("
+-
+-#include \"defs.h\"
+-
+-/*@HEADER_ENDS*/
+-
+-/*@_init_PROLOG_BEGINS*/
+-	.section .init
+-	.align 4
+-	.globl _init
+-	.type _init,@function
+-_init:
+-	stw	%rp,-20(%sp)
+-	stwm	%r4,64(%sp)
+-	stw	%r19,-32(%sp)
+-	bl	__pthread_initialize_minimal,%rp
+-	copy	%r19,%r4	/* delay slot */
+-	copy	%r4,%r19
+-/*@_init_PROLOG_ENDS*/
+-
+-/*@_init_EPILOG_BEGINS*/
+-/* Here is the tail end of _init.  */
+-	.section .init
+-	ldw	-84(%sp),%rp
+-	copy	%r4,%r19
+-	bv	%r0(%rp)
+-_end_init:
+-	ldwm	-64(%sp),%r4
+-
+-/* Our very own unwind info, because the assembler can't handle
+-   functions split into two or more pieces.  */
+-	.section .PARISC.unwind,\"a\",@progbits
+-	.extern _init
+-	.word	_init, _end_init
+-	.byte	0x08, 0x01, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08
+-
+-/*@_init_EPILOG_ENDS*/
+-
+-/*@_fini_PROLOG_BEGINS*/
+-	.section .fini
+-	.align 4
+-	.globl _fini
+-	.type _fini,@function
+-_fini:
+-	stw	%rp,-20(%sp)
+-	stwm	%r4,64(%sp)
+-	stw	%r19,-32(%sp)
+-	copy	%r19,%r4
+-/*@_fini_PROLOG_ENDS*/
+-
+-/*@_fini_EPILOG_BEGINS*/
+-	.section .fini
+-	ldw	-84(%sp),%rp
+-	copy	%r4,%r19
+-	bv	%r0(%rp)
+-_end_fini:
+-	ldwm	-64(%sp),%r4
+-
+-	.section .PARISC.unwind,\"a\",@progbits
+-	.extern _fini
+-	.word	_fini, _end_fini
+-	.byte	0x08, 0x01, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08
+-
+-/*@_fini_EPILOG_ENDS*/
+-
+-/*@TRAILER_BEGINS*/
++__asm__ ("								\n\
++									\n\
++#include \"defs.h\"							\n\
++									\n\
++/*@HEADER_ENDS*/							\n\
++									\n\
++/*@_init_PROLOG_BEGINS*/						\n\
++	.section .init							\n\
++	.align 4							\n\
++	.globl _init							\n\
++	.type _init,@function						\n\
++_init:									\n\
++	stw	%rp,-20(%sp)						\n\
++	stwm	%r4,64(%sp)						\n\
++	stw	%r19,-32(%sp)						\n\
++	bl	__pthread_initialize_minimal,%rp			\n\
++	copy	%r19,%r4	/* delay slot */			\n\
++	copy	%r4,%r19						\n\
++/*@_init_PROLOG_ENDS*/							\n\
++									\n\
++/*@_init_EPILOG_BEGINS*/						\n\
++/* Here is the tail end of _init.  */					\n\
++	.section .init							\n\
++	ldw	-84(%sp),%rp						\n\
++	copy	%r4,%r19						\n\
++	bv	%r0(%rp)						\n\
++_end_init:								\n\
++	ldwm	-64(%sp),%r4						\n\
++									\n\
++/* Our very own unwind info, because the assembler can't handle		\n\
++   functions split into two or more pieces.  */				\n\
++	.section .PARISC.unwind,\"a\",@progbits				\n\
++	.extern _init							\n\
++	.word	_init, _end_init					\n\
++	.byte	0x08, 0x01, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08		\n\
++									\n\
++/*@_init_EPILOG_ENDS*/							\n\
++									\n\
++/*@_fini_PROLOG_BEGINS*/						\n\
++	.section .fini							\n\
++	.align 4							\n\
++	.globl _fini							\n\
++	.type _fini,@function						\n\
++_fini:									\n\
++	stw	%rp,-20(%sp)						\n\
++	stwm	%r4,64(%sp)						\n\
++	stw	%r19,-32(%sp)						\n\
++	copy	%r19,%r4						\n\
++/*@_fini_PROLOG_ENDS*/							\n\
++									\n\
++/*@_fini_EPILOG_BEGINS*/						\n\
++	.section .fini							\n\
++	ldw	-84(%sp),%rp						\n\
++	copy	%r4,%r19						\n\
++	bv	%r0(%rp)						\n\
++_end_fini:								\n\
++	ldwm	-64(%sp),%r4						\n\
++									\n\
++	.section .PARISC.unwind,\"a\",@progbits				\n\
++	.extern _fini							\n\
++	.word	_fini, _end_fini					\n\
++	.byte	0x08, 0x01, 0x00, 0x08, 0x00, 0x00, 0x00, 0x08		\n\
++									\n\
++/*@_fini_EPILOG_ENDS*/							\n\
++									\n\
++/*@TRAILER_BEGINS*/							\n\
+ ");
