@@ -1,16 +1,21 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Re: review sg_format
-Date: Wed, 16 Mar 2005 16:44:19 -0500
-Message-ID: <20050316214419.GH22872@baldric.uwo.ca>
-References: <20050315235613.GD3757@colo.lackof.org>
-	<200503160422.j2G4MPhk021681@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: Solution to OPD's in hppa-linux,
+	including a transition plan?
+Date: Wed, 16 Mar 2005 15:36:57 -0500
+Message-ID: <20050316203656.GF22872@baldric.uwo.ca>
+References: <20050311180542.GV22872@baldric.uwo.ca>
+	<200503120049.j2C0nTDc017666@hiauly1.hia.nrc.ca>
+	<20050315220842.GC22872@baldric.uwo.ca>
+	<20050315224142.GC21148@bubble.modra.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: Alan Modra <amodra@bigpond.net.au>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503160422.j2G4MPhk021681@hiauly1.hia.nrc.ca>
+In-Reply-To: <20050315224142.GC21148@bubble.modra.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,12 +26,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Mar 15, 2005 at 11:22:25PM -0500, John David Anglin wrote:
-> I'd be amazed if nested functions (a GCC extension) worked in the kernel.
+On Wed, Mar 16, 2005 at 09:11:42AM +1030, Alan Modra wrote:
+> On Tue, Mar 15, 2005 at 05:08:48PM -0500, Carlos O'Donell wrote:
+> > The problem is that in a normal executable those words just point at the
+> > PLT and they shouldn't. That case should just generate a PLABEL32 reloc
+> > in the executable. 
+> 
+> ld still needs to generate function descriptors for plabels that resolve
+> locally, eg. because the symbol is for a static function.
 
-Why wouldn't it work?
+I don't understand how this case changes the situation, can you elaborate a 
+bit more?
 
-c.
+Thanks,
+Carlos.
+
 
 _______________________________________________
 parisc-linux mailing list
