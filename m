@@ -1,14 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B78DB4874
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 16:51:04 -0600 (MDT)
-Date: Fri, 21 Jun 2002 23:51:01 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PA8000 modutils problems
-In-Reply-To: <200206212125.g5LLP37O028451@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.LNX.4.44.0206212339430.5644-100000@sal.ucc.ie>
+Received: from mx2out.umbc.edu (mx2out.umbc.edu [130.85.253.52])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C53B24832
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Jun 2002 18:11:35 -0600 (MDT)
+Received: from linux2.gl.umbc.edu (linux2.gl.umbc.edu [130.85.60.16])
+	by mx2out.umbc.edu (8.12.0/8.12.0/UMBC-Central 1.11 mxout  1.2.2.3 $) with ESMTP id g5M0BXnv020495;
+	Fri, 21 Jun 2002 20:11:33 -0400 (EDT)
+Received: from localhost (jmccla3@localhost)
+	by linux2.gl.umbc.edu (8.12.1/8.12.0) with ESMTP id g5M0BX6C006043;
+	Fri, 21 Jun 2002 20:11:34 -0400
+Date: Fri, 21 Jun 2002 20:11:33 -0400 (EDT)
+From: James Mcclain <jmccla3@gl.umbc.edu>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: Patrick Caulfield <patrick@tykepenguin.com>,
+	<parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 0.9.3 Audio on C110
+In-Reply-To: <Pine.LNX.4.44.0206212123170.4556-100000@sal.ucc.ie>
+Message-ID: <Pine.LNX.4.31L.02.0206212008460.5960-100000@linux2.gl.umbc.edu>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,54 +29,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 21 Jun 2002, John David Anglin wrote:
+Dear Max,
 
-> > I tried pa35 (32bit), which caused unaligned address traps during boot
-> > (IIRC it was e2fsck).
-> > I rebooted with pa20, which worked (but has the known IO problems,
-> > i.e. copying a full CD to hard disk with lock up the machine).
-> > Later I tried compiling pa39 (32bit), but depmod reported
-> > "unhandled relocation of type 74" for each function in each module.
-> > Compiling 64bit with the (quite old) unofficial debs worked however,
-> > but there are some "unresolved symbols" in a few (=4) modules,
-> > each time the symbol is "__xchg64". I'm quite sure that in former times
-> > all modules worked. Since these modules are not important to me
-> > (smbfs and some ipv6 netfilter modules) there is no hurry ;)
+i cannot speak to the mixer and gain issues, but i can offer something
+with regard to recording:  adding lines:
 
-I think the unsresolve symbols are just simple programmers bugs which
-will 'autmagically' be fixed in later kernels. At least this happened to
-me quite a few times (on different platforms, different kernels & modules)
+	case SNDCTL_DSP_SYNC:
+	return 0;
 
-> Depmod does it own limited handling of relocations.  You probably
-> need to stick with the recommended compiler (debian 3.0.4 and binutils)
-> to be compatible with the relocation capability of depmod.  The
-> alignment issues also are likely a result of using 3.1.  BIGGEST_ALIGNMENT
-> was changed last Feb. to 128 bits to allow struct alignment suitable
-> for the ldcw semaphore insn.  I believe the deb version of gcc was
-> patched to do this as well.
+to the ioctl swith statment in drivers/sound/harmony.c (line 727 or there
+abouts) will allow you to use sox to record (i have been able to
+succesfully record using sox after adding this change).
 
-I forgot to mention that I used 'gcc' (thus 3.0) to compile -pa39
-(32bit, and 'hppa64-gcc' for 64bit). I'm quite sure about that.
+best regards,
+james w. mcclain
 
-However I'm have to agree that I used gcc-3.1 for the not
-correctly working -pa35 (unaligned address). That's the reason why
-I chose to use the default gcc for compiling -pa39!
+ On Fri, 21 Jun
+2002, M. Grabert wrote:
 
-Therefore the depmod issue is IMHO due to some other error ...
-
-> Now, there is a known issue with PA2.0 code generation.  It affects
-> floating point loads from symbolic memory locations using the 32-bit
-> elf tools.  As a result, the code generation default is still PA1.1.
-> I'm planning to change this to PA2.0 for PA2.0 machines when the
-> assembler bug is fixed.
-
-So what is the point in choosing the PA8000 anyway ? ;)
-Oh, I forgot; to be able to select 64bit kernel!
-
-Thanks alot for the quick answer!
-
-Greeting max
-
--- 
-I am the "ILOVEGNU" signature virus. Just copy me to your signature.
-This email was infected under the terms of the GNU General Public License.
+> Hi palinuxer,
+>
+> On Fri, 21 Jun 2002, Patrick Caulfield wrote:
+>
+> > The driver is called "harmony" - I have mine hard compiled into the kernel.
+> >
+> > patrick
+>
+> This reminds me of something I wanted to ask for a long time:
+>
+> It seems that the harmony mixer is not perfectly supported;
+> Volume doesn't work, and there are just two things I can change,
+> IGain and OGain (latter effects the Output volume).
+> There is not even a way to change the balance etc.
+> Moreover most applications expect at least "volume" to be working,
+> so this is kind of annoying. Despite this it's working flawlessly!
+>
+> So to the question: is there any work planned in improving harmony
+> support (in the near future) ? E.g. an enhanced mixer support and
+> support for recording?
+>
+> greetings max
+>
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
