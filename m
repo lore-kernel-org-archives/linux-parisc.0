@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 803B1482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Dec 2001 21:12:23 -0700 (MST)
-Message-Id: <200112160406.VAA05075@puffin.external.hp.com>
-To: Maneesh Singhal <maneesh@india.hp.com>
-Cc: PARISC Linux List <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] installation 
-In-Reply-To: Message from Maneesh Singhal <maneesh@india.hp.com>
-   of "Sat, 15 Dec 2001 18:08:26 +0530." <Pine.HPX.4.21.0112151802590.20337-100000@hpuxsrv.india.hp.com>
-Date: Sat, 15 Dec 2001 21:06:56 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C252B482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 16 Dec 2001 05:27:15 -0700 (MST)
+Message-ID: <3C1C93FB.8AE6C6E3@freebel.net>
+Date: Sun, 16 Dec 2001 12:30:51 +0000
+From: Joel Soete <joel.soete@freebel.net>
+MIME-Version: 1.0
+To: maneesh@india.hp.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] installation
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,17 +21,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Maneesh Singhal wrote:
->      1. at the time of Installing kernel and driver modules, it use to give 
-> 	fatal error sometimes [a couple of times it passed too].. 
->      2. This one is consistent, while installing the base system, it was alwa
->   ys
-> 	failing and use to give dump with error message saying 
-> 	"console.data-........ scsi1:(2:0) Fatal Error : Not MSG_IN after
-> 	selection .. Bus reset detected ..." etc. etc.
+Hello Maneesh,
 
-Can you use a serial console, capture the output, and post that here?
+>        selection .. Bus reset detected ..." etc. etc.
 
-Also, please read the errata (link is on the 0.9 release page)
+This sound like a problem I met a time ago: the scsi chain was opened
+(ie during test I forgot to reconnect the scsi terminator to my external
+drive).
 
-grant
+If a scsi terminator is well connected may be could it be defective (or
+a one not corresponding to your scsi interface logicaly Single-Ended if
+your CD is connected to the narrow single-ended conector)?
+
+Good luck,
+	Joel
