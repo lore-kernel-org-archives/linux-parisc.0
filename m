@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sunlight_pk.corp.winfirst.com (mail.corp.winfirst.com [66.205.159.133])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AF7044829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Sep 2002 16:52:28 -0600 (MDT)
-Message-ID: <95DAF5BCC67DD411957B00508BAECA3ACD35B7@MT_BELFORD>
-From: "Speer, Joshua" <Joshua.Speer@corp.winfirst.com>
-To: Yves Vrijhoeven <yvesvrijhoeven@hotmail.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Re: [lists] installing Linux on A Visualise C2
-	40
-Date: Tue, 17 Sep 2002 15:52:18 -0700
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D40AA4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Sep 2002 19:02:11 -0600 (MDT)
+Date: Tue, 17 Sep 2002 21:02:09 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	Thibaut VARENE <varenet@esiee.fr>,
+	parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] B132L+ crash with mpg123
+Message-ID: <20020918010209.GC17211@systemhalted>
+References: <3D8701AA.4040700@esiee.fr> <varenet@esiee.fr> <20020917170001.DA8DC4829@dsl2.external.hp.com> <20020917180713.P10583@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020917180713.P10583@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,74 +25,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-We had the same problem on a L9000 we put the octopus cable on the server,
-and a console cable on the console port, and everything worked fine. 
-
-Josh
-
------Original Message-----
-From: dannf@fc.hp.com [mailto:dannf@fc.hp.com] 
-Sent: Tuesday, September 17, 2002 2:54 PM
-To: Yves Vrijhoeven; parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] Re: [lists] installing Linux on A Visualise C240
-
-Yves,
-  forwarding to the parisc-linux, which is a more appropriate place
-for this question.
-
-as an aside, 0.9.3 is not the latest release - debian 3.0 contains newer
-bits.
-<hint>maybe one of these days someone will point that out on
--announce</hint>
-
-
-On Tue, Sep 17, 2002 at 11:46:39PM +0200, Yves Vrijhoeven wrote:
-> Hi,
+> > > Kernel Fault: Code=15 regs=11ddc640 (Addr=00277e00)
+> > > 
+> > >       YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> > > PSW: 00000000000011000000000000001111 Not tainted
+> > > r00-03  00000000 00000023 101feac4 00000200
+> > ...
+> > > IASQ: 00000000 0000000 IAOQ: 10263c78 10263c70
+> > ...
+> > what symbols do 101feac4 and 10263c78 refer to?
 > 
-> I downloaded the "palinux-0.9.3.iso" and burned it to CD.  If I put the CD
-in PA RISC powerd PC (Visualise C240) and boot with the command "bo
-sescsi.3.0" the PC seems to boot from the CD (I get somewhere the message
-"palo ipl 0.96 root@palinux Fri Nov  2 16:31:18 MST 2001" ...(clock setting
-is not correct))
-> Everything seems ok until I get the message:
-> ...
-> Branching to kernel entry point 0x00100000.  If this is the last message
-you see, you may need to switch your console.  This is a common sympton --
-sarch the FAQ and mailing list at parisc-linux.org
+> 10263c78 is in copy_from_user, 101feac4 is in harmony_audio_write().
+> the only point at which we call copy_from_user is:
 > 
-> After this nothing happens anymore.  I searched the FAQ and mailing list
-but I could not find a solution so far.
+>                 /* Copy the page to an aligned buffer */
+>                 copy_from_user(played_buf.addr + (HARMONY_BUF_SIZE*buf_to_fill)
+> 					+ harmony.play_offset,
+> 				buffer+count, frame_size);
 > 
-> Anyone can help me out on this.
-> 
-> Thanks in advance.
-> 
-> Please E-mail me.
-> 
-> Yves Vrijhoeven
-> yves.vrijhoeven@belgacom.net
-> yvesvrijhoeven@belgacom.net
 
--- 
----------------------------
-dann frazier
-Hewlett-Packard
-Linux Systems Division
-dannf@hp.com
-(970) 898-0800
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Data TLB miss fault / Data page fault.
 
----
-Incoming mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.386 / Virus Database: 218 - Release Date: 9/9/2002
- 
+Looks like it walked a little too far into some address that
+wasn't mapped?
 
----
-Outgoing mail is certified Virus Free.
-Checked by AVG anti-virus system (http://www.grisoft.com).
-Version: 6.0.386 / Virus Database: 218 - Release Date: 9/9/2002
- 
+c.
