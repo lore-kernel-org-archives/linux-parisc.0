@@ -1,30 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA31592
-	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 14:16:28 -0700
-Received: from lxplus015.cern.ch (IDENT:root@lxplus015.cern.ch [137.138.161.112])
-	by smtp1.cern.ch (8.9.3/8.9.3) with ESMTP id WAA06642
-	for <parisc-linux@thepuffingroup.com>; Wed, 13 Dec 2000 22:18:04 +0100 (MET)
-Sender: Jes.Sorensen@cern.ch
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA00413
+	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 16:07:27 -0700
 To: parisc-linux@thepuffingroup.com
-From: Jes Sorensen <jes@linuxcare.com>
-Date: 13 Dec 2000 22:18:03 +0100
-In-Reply-To: Grant Grundler's message of "Wed, 06 Dec 2000 15:34:37 -0800"
-Message-ID: <d3snnsyq9g.fsf@lxplus015.cern.ch>
-MIME-Version: 1.0
+Cc: jes@linuxcare.com
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] ld.so fix
+Date: Wed, 13 Dec 2000 16:11:15 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001213231115.704D437CA1@carmen.fc.hp.com>
+Subject: [parisc-linux] phase 2 gcc build fails
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi
+Hi,
 
-I checked in one more fix for ld.so earlier today, with that and my
-previous patches I am now able to rebuild glibc with shared libraries
-natively.
+I'm trying to build an new cross-compiler and have run into the following 
+errors,
 
-I think there have been some ABI changes inbetween the current glibc
-and the stuff that was distributed as .deb's earlier so there might be
-compat changes.
+gcc -c -DHAVE_CONFIG_H -g -O2 -I. -I/home/al-76/puffin/palinux/gcc/libiberty/..
+/include  -W -Wall -Wtraditional -pedantic /home/al-76/puffin/palinux/gcc/libib
+erty/argv.c
+In file included from /home/al-76/puffin/palinux/gcc/libiberty/argv.c:26:
+/home/al-76/puffin/palinux/gcc/libiberty/../include/libiberty.h:22: parse error
+before `ATTRIBUTE_MALLOC'
+/home/al-76/puffin/palinux/gcc/libiberty/../include/libiberty.h:22: warning: 
+type defaults to `int' in declaration of `ATTRIBUTE_MALLOC'
+/home/al-76/puffin/palinux/gcc/libiberty/../include/libiberty.h:22: ANSI C 
+forbids data definition with no type or storage class
 
-However at least glibc seems to work now (I think).
+it complains about lines 22, 31, 55, 72, 76, 143, 154, 158, 162 all lines with 
+"ATTRIBUTE_MALLOC". It didn't do this when I last built on December 11th so I 
+think it must be something checked in since then. I have looked at the stuff 
+that was checked in and it's not clear to me what's causing it.
 
-Jes
+Anyone have an idea?
+
+-- 
+Matt Taggart
+taggart@fc.hp.com
