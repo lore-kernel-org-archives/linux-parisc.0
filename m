@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A67A24829
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Mar 2003 07:45:44 -0700 (MST)
-Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
-	by csmail.ucc.ie (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id h29Ejhs07632
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 9 Mar 2003 14:45:43 GMT
-Date: Sun, 9 Mar 2003 14:45:42 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0303091437560.765-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] HW Database
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 03E5B4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Mar 2003 08:29:24 -0700 (MST)
+Date: Sun, 9 Mar 2003 16:29:22 +0100
+Subject: Re: [parisc-linux] HW Database
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v551)
+Cc: parisc-linux@lists.parisc-linux.org
+To: "M. Grabert" <xam@cs.ucc.ie>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <Pine.LNX.4.44.0303091437560.765-100000@sal.ucc.ie>
+Message-Id: <E74A34CB-5243-11D7-A259-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +22,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Le dimanche, 9 mar 2003, =E0 15:45 Europe/Paris, M. Grabert a =E9crit :
 
-Sorry for posting this to the P-L mailing list, but there is no link
-on the homepage who to contact directly.
+> Hi,
+>
+> Sorry for posting this to the P-L mailing list, but there is no link
+> on the homepage who to contact directly.
+Yes there is: hwdb@parisc-linux.org (see hwdb.parisc-linux.org), which=20=
 
-Can somebody please change/correct the following entries in the
-P-L HWDB:
+unfortunately
+points to me.
+>
+> Can somebody please change/correct the following entries in the
+> P-L HWDB:
+>
+> - delete the reference of me (Max Grabert) as an owner of an "F10"=20
+> (trashed)
+> - change the email address of my entries in "730" and "C240+" to
+>   deadbeef @gmx. net
+I'd like to state publicly here that such changes are really painful to=20=
 
-- delete the reference of me (Max Grabert) as an owner of an "F10" (trashed)
-- change the email address of my entries in "730" and "C240+" to
-  deadbeef @gmx. net
+commit,
+so unless it's something really important, I would greatly enjoy to be=20=
 
-Thanks alot in advance,
-   Max
+spared
+any requests concerning the hwdb (or at least until I decide to rewrite=20=
+
+it completely) :}
+FWIW, don't worry if there's delay in the execution of these requests :P
+>
+> Thanks alot in advance,
+You're welcome.
+>    Max
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/=
