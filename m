@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B59CC482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Mar 2003 04:18:02 -0700 (MST)
-Date: Mon, 17 Mar 2003 12:18:01 +0100
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] FC driver?
-Message-ID: <20030317111801.GF17073@lug-owl.de>
-References: <3E68A12A00002910@ocpmta3.freegates.net>
+Received: from typhon.homeip.net (voltaire-102-1-121.net1.nerim.net [213.41.188.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DBBA8482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Mar 2003 06:53:34 -0700 (MST)
+Date: Mon, 17 Mar 2003 14:53:27 +0100
+From: Lyonel Vincent <vincentl@ec-lyon.fr>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>, bruno_vidal@hp.com,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] enumerating devices from user space
+Message-ID: <20030317145327.A4194@typhon.pilat.fr>
+Reply-To: vincentl@ec-lyon.fr
+References: <20030313112232.A10172@typhon.pilat.fr> <3E706BE4.E53961BD@hp.com> <20030313134558.6cf9177c.vincentl@ec-lyon.fr> <3E7196C7.8A35605F@hp.com> <20030314133305.4311a8e6.vincentl@ec-lyon.fr> <20030314131921.GG29631@parcelfarce.linux.theplanet.co.uk> <20030314150549.3cb2e2b2.vincentl@ec-lyon.fr> <20030314140848.GI29631@parcelfarce.linux.theplanet.co.uk> <20030314172924.GC24555@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GYkYyJI7bObpCn+O"
-In-Reply-To: <3E68A12A00002910@ocpmta3.freegates.net>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030314172924.GC24555@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Fri, Mar 14, 2003 at 10:29:24AM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,67 +25,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---GYkYyJI7bObpCn+O
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Grant,
 
-On Mon, 2003-03-17 12:05:20 +0100, Joel Soete <jsoe0708@tiscali.be>
-wrote in message <3E68A12A00002910@ocpmta3.freegates.net>:
-> Hi all,
->=20
-> On the N4000 which I can test for a short time there are fc cards.
-> lspci give me following info about those cards:
->=20
-> 20:00.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel Host=
- Adapter (rev 0b)
-> d0:00.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel Host=
- Adapter (rev 0b)
-> e0:00.0 Fibre Channel: Hewlett-Packard Company Tach TL Fibre Channel Host=
- Adapter (rev 0b)
+sounds very good to me (and way cleaner)...
+I'll be happy to try to help.
 
-[line break-ups corrected]
+cheers,
+lv.
 
-> The question is: which driver should I use (cpqfc?)?
+On Fri, Mar 14, 2003 at 10:29:24AM -0700, Grant Grundler wrote:
+> On Fri, Mar 14, 2003 at 02:08:48PM +0000, Matthew Wilcox wrote:
+> > On Fri, Mar 14, 2003 at 03:05:49PM +0100, Lyonel Vincent wrote:
+> > > okokok I won't argue then.
+> > > I would have liked to have ioscan-like support, but anyway...
+> > 
+> > Well, you can have it in 2.5; start looking at sysfs.
+> 
+> willy and I talked offline and it seems like the right
+> answer is to backport _the user interface_ - ie something
+> that *looks* like sysfs but could be based on /proc.
+> 
+> I'd basically like to see all resources in struct parisc_device
+> exported using the same name as the field - matching sysfs field
+> names use for PCI where appropriate. Willy suggested id be broken
+> out into it's struct parisc_device_id parts and provided
+> directly has hex strings (eg hw_type  entry could contain "0x5").
+> Details of how sysfs currently looks are still changing - don't get
+> hung up in the current details.
+> 
+> grant
 
-I do not have such a card, but:
-
-/usr/share/misc/pci.ids:
-103c  Hewlett-Packard Company
-	1028  Tach TL Fibre Channel Host Adapter
-
-So it seems your device is 103c:1028. In the kernel, this maps through
-=2E/linux/include/linux/pci_ids.h:
-
-#define PCI_DEVICE_ID_HP_TACHYON      0x1028
-
-So your device is called "PCI_DEVICE_ID_HP_TACHYON". Searching for this
-string, you'll find it in ./linux/drivers/scsi/cpqfcTSinit.c, so that
-card seems to be supported.
-
-See, it's quite easy to see if a PCI card seems to be supported:-)
-
-MfG, JBG
-
-
-
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
-
---GYkYyJI7bObpCn+O
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+da7oHb1edYOZ4bsRAk5bAJ9QaAIbptMtK4rwdOypSyF5vDrD9QCfR/MB
-AxAydvqDs88tPSM0Uno8AJ0=
-=vSoc
------END PGP SIGNATURE-----
-
---GYkYyJI7bObpCn+O--
+-- 
+The software said it requires Windows 2000 or better, so I installed Linux.
