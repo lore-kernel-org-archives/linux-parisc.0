@@ -1,25 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BBAF94829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 22:03:42 -0700 (MST)
-Received: (from root@localhost)
-	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id VAA14452
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 21:03:37 -0800
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gBL53XV11940;
-	Fri, 20 Dec 2002 23:03:33 -0600
-Message-Id: <200212210503.gBL53XV11940@localhost.localdomain>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41CF84829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Dec 2002 23:01:57 -0700 (MST)
+Message-Id: <200212210601.gBL61nsD023504@hiauly1.hia.nrc.ca>
+Subject: Re: Re: [parisc-linux] rp2430 questions
 To: grundler@dsl2.external.hp.com (Grant Grundler)
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
-	Randolph Chung <randolph@tausq.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.5 randomly kills applications with page faults 
-In-Reply-To: Message from grundler@dsl2.external.hp.com (Grant Grundler)
-   of "Fri, 20 Dec 2002 21:34:48 MST." <20021221043448.GB26293@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Dec 2002 23:03:33 -0600
-From: James Bottomley <James.Bottomley@steeleye.com>
+Date: Sat, 21 Dec 2002 01:01:49 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: ghub005@xtra.co.nz, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20021221041720.GA26293@dsl2.external.hp.com> from "Grant Grundler" at Dec 20, 2002 09:17:20 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -31,24 +22,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-grundler@dsl2.external.hp.com said:
-> I'm worried about sr7 getting modified without the user stack pointer
-> getting saved to the proper place. It might not be a problem at all. I
-> just don't know all the uses of user/kernel stacks in the interrupt
-> code paths. I'm wondering if the entire code sequence I quoted needs
-> to block interrupts while setting up the syscall. 
+> 2) they will know a real customer is using/wants to use parisc-linux.
+>    (ie give parisc-linux visibility to the sales folks within HP)
 
-I don't think that's a problem.
+That's definitely worthwhile.  A lot of progress has been made in the past
+couple of years but we are definitely out gunned compared to the number
+of developers working on other architecture.  Both ibm and sun are actively
+promoting linux based systems on their architectures.
 
-An interruption can occur anywhere, and thus it saves all registers.  The only 
-problem is that on parisc there aren't separate irq stacks, so the 
-interruption expects to be able to use the current kernel stack (whatever it 
-is).  As long as the kernel stack is always correctly set up when %sr7 points 
-to kernel space, we should be fine.  If we take an interruption before zeroing 
-sr7, we go through the procedure to obtain a kernel stack for an executing 
-user process (however, in this case, the interruption will stash the registers 
-in the task structure, so we can't modify the task structure until we've 
-changed sr7 to kernel space).  Also note, we can't use the kernel stack until 
-sr7 is in kernel space.
+HP has to learn that there is now a system available for parisc that
+surpasses in many ways their own.  There's still lots of rough edges,
+but its coming.
 
-James
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
