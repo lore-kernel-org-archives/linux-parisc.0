@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CEC48482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Apr 2002 00:18:47 -0600 (MDT)
-To: Randolph Chung <tausq@debian.org>
-Subject: Re: [parisc-linux] gcc-3.2 experimental debs
-Message-ID: <1019456323.3cc3ab434a657@webmail.tiscalinet.be>
-Date: Mon, 22 Apr 2002 08:18:43 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: Joel Soete <joel.soete@freebel.net>,
-	parisc-linux@lists.parisc-linux.org
-References: <3CC2B937.8020509@freebel.net> <20020421155301.GL7563@tausq.org>
-In-Reply-To: <20020421155301.GL7563@tausq.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from iut-lannion.fr (alba.iut-lannion.fr [192.70.33.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 207CE482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Apr 2002 03:14:22 -0600 (MDT)
+Received: from pcp91 ([129.20.233.91])
+          by iut-lannion.fr (8.11.0/jtpda-5.3.1) with SMTP id g3M9E8S07303
+          for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Apr 2002 11:14:13 +0200
+Message-Id: <200204220914.g3M9E8S07303@iut-lannion.fr>
+Date: Mon, 22 Apr 2002 11:13:02 +0200
+To: parisc-linux@lists.parisc-linux.org
+From: Bruno =?iso-8859-1?Q?L=E9on?= <nonolemono@yahoo.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Subject: [parisc-linux] How to install emacs 21.2 on a B180L
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,26 +23,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Randolph Chung <tausq@debian.org>:
+I'm trying to install emacs 21.2 on a B180L,  but I can't compile the sources.
+The system tells me that "emacs hasn't been ported on
+hppa-unknown-linux-system".
 
-> > I try my hown gcc-3.2 (+ binutils, glibc) against kernel 2.4.18-pa19 
-> > (not yet take the risc with pa20).
-> > 
-> > It compiles as well as with gcc3.0.x. It boots also but as soon as I
-> try 
-> > to connect it remotly with telnet or ssh (I forget to test ftp) the 
-> > system crash:
-> 
-> if you still feel adventurous, check out the kdb cvs branch of the
-> kernel and you'll at least be able to tell where it crashed... :-)
-> 
-> randolph
-> 
-> 
+I think that the script "configure" is checking the system type.
+Is there any way to avoid that by telling to "configure" that my computer
+is not a hppa but an emacs21.2-supported architecture?
 
-Yes I will also try (and find out howto use)
-
-Joel
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+Thanks.
