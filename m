@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp2.libero.it (smtp2.libero.it [193.70.192.52])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 226414841
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Oct 2003 13:35:03 -0600 (MDT)
-Date: Wed, 22 Oct 2003 21:33:43 +0200
-Subject: Re: [parisc-linux] SCSI problems
-From: Riccardo Mottola <rollei@tiscalinet.it>
-To: Grant Grundler <grundler@parisc-linux.org>,
-	parisc <parisc-linux@lists.parisc-linux.org>
-Message-ID: <BBBCA837.9A9E%rollei@tiscalinet.it>
-In-Reply-To: <20031022154344.GA7470@colo.lackof.org>
-Mime-version: 1.0
-Content-type: text/plain; charset="US-ASCII"
+Received: from cs2416219-93.houston.rr.com (cs2416219-93.houston.rr.com [24.162.19.93])
+	by dsl2.external.hp.com (Postfix) with SMTP id 8A09D4841
+	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 14:23:57 -0600 (MDT)
+Message-ID: <th15--661$ex$yv@56gu.j78g>
+From: "Jonathon Ambrose" <xikrmcm758@yahoo.com>
+Reply-To: "Jonathon Ambrose" <xikrmcm758@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Thu, 23 Oct 2003 01:22:56 +0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="F_B9ED.6_A_.53B.D"
+Subject: [parisc-linux] US Stock Market: TRHL - Last Pick From .45 to 1.18...clara
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,37 +22,151 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+--F_B9ED.6_A_.53B.D
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-on 10/22/03 5:43 PM, Grant Grundler at grundler@parisc-linux.org wrote:
+UPSIDE INTERNATIONAL - Searching Out Stocks with Big Upside Potential...th=
+at have gone unnoticed until now.
 
-> See http://www.parisc-linux.org/faq/kernelbug-howto.html
-> You might find an HPMC occurred (which killed serial console)
-> in the "ser pim" output from PDC "BOOT_ADMIN" prompt.
 
-the how-to seems to describe exactly my problem.
+Our last pick SUQU went from 0.45 to 1.18
 
-I press esc at boot and enter the boot selection.
 
-I have:
+Our New Pick  is True Health, Inc. - TRHL - with revenues up by more than =
+412%
 
-PDC ROM rev. 2.1
-IODC ROM rev. 2.1 
-on my 720 "cobra".
+True Health, Inc.: TRHL
+Industry: Healthcare
+12-month range: 0.55-3.90 - SUQU went back to its previous high of 1.18, w=
+e believe TRHL can too - to its previous high of 3.90
 
-i have a preliminary menu, with A I enter in the "boot admin" menu which I
-think is what is needed.
 
-"help" displays no ser command
-howewer (doing cut and paste):
+BREAKING NEWS - PR Newswire-First Call - True Health Announces the Appoint=
+ment of Ian Wylie as Chief Financial Officer - Mr. Wylie has held the posi=
+tion of Corporate Finance Manager at Del Monte Food Intl.  Del Monte Foods=
+ Co. (NYSE: DLM) posted net sales of 2.171 billion for fiscal 2003. Mr. Wy=
+lie also held the same position at Countrywide Assured PLC, which included=
+ the oversight of 350 million pounds sterling (580 million dollars). Just =
+prior to this announcement, Mr. Wylie was the Director of Town & Country H=
+ousing where he was responsible for the development of the company's growt=
+h strategies and overseeing an asset portfolio of 400 million pounds sterl=
+ing (665 million dollars).
 
-BOOT_ADMIN> ser clearpim
-ERROR: Unknown CONSOLE command.
-BOOT_ADMIN> ser pim
-ERROR: Unknown CONSOLE command.
 
-Was that command added later? do I have an equivalent? am I in the wrong
-menu? I think owners of older hardware will know better.
+We are now seeing indicators with TRHL, the 20 - 50 Day MACD Oscillator is=
+ now indicating an upward trend, 20 Day Bollinger Bands have moved into a =
+upward indication.
 
-Regards,
-    Riccardo
+
+
+THE PROBLEM
+
+The US and international healthcare industry are currently in a major cris=
+is. There is a huge shortage of skilled healthcare specialists, doctors an=
+d nurses, and since 9/11, many qualified professionals are finding it impo=
+ssible to immigrate into countries desperately needing medical personnel. =
+
+
+
+
+THE SOLUTION
+
+True Health Incorporated is a full service specialist, medical equipment a=
+nd medical professional supplier to the healthcare industry. Its primary c=
+lients are Great Britain's National Health Service (NHS), BUPA Internation=
+al and the private Nursing Home Industry. The Company also delivers recrui=
+tment services to the NHS; specializing in the provision of locem radiogra=
+phers and nurses.
+
+
+
+MD, NURSE SHORTAGES REACHING CRISIS LEVELS
+
+WASHINGTON, (UPI) -- Shortages of surgeons, pharmacists and nurses in hosp=
+itals across the United States are reaching crisis levels and may worsen o=
+ver the next several years, health care experts warned.  The nursing short=
+age -- more than 126,000 positions currently remain unfilled -- has become=
+ so severe it is endangering the lives of patients and is a primary reason=
+ for overcrowding in emergency departments and cancellation of surgeries, =
+according to a report by an Experts Roundtable panel convened by the Joint=
+ Commission on the Accreditation of Healthcare Organizations.  The Society=
+ for Thoracic Surgeons recently warned that a shortage of heart surgeons l=
+ooms within a few years and a survey of hospitals found pharmacists, X-ray=
+ technicians and therapists are leaving at such an alarming rate it alread=
+y is impacting the quality of care patients receive.
+
+
+
+JOHNSON C0-SPONSORS LEGISLATION TO ADDRESS NURSE SHORTAGES
+
+January 24, 2003 Washington, DC- U.S. Senator Tim Johnson (D-SD) recently =
+co-sponsored the Nurse Reinvestment Act to address areas with critical nur=
+se shortages in an effort to provide more opportunities to recruit and ret=
+ain quality nurses. "Our national health care system has many problems tha=
+t need to be addressed," Johnson said. "At the top of that is the severe s=
+hortage of nurses.
+
+
+
+COLLEGE OF FAMILY PHYSICIANS OF CANADA
+
+Past decisions with respect to health care reform have been made without c=
+omplete or accurate information, and this has led to critical problems in =
+the system such as doctor shortages and waiting lists. 
+
+
+
+TEXAS PUBLIC POLICY FOUNDATION
+CHECK WITH YOUR DOCTOR FIRST - SEPTEMBER 03, 2003
+TEXANS CAN CURE STATE'S MEDICAL CRISIS
+
+Getting a second opinion is always a good idea, particularly when you have=
+ a serious medical problem. Today, Texans are suffering from a serious lac=
+k of medical care. The American Medical Association says the physician sho=
+rtage has reached crisis proportions in Texas and lives are in peril.
+
+
+
+TRUE HEALTH'S SUBSIDIARY - WESTMERIA
+
+True Health through its wholly owned subsidiary, Westmeria for 20 years ha=
+s developed a reputation for getting medical personnel in where they are n=
+eeded fast. Now with demand for these professionals escalating at an expon=
+ential rate, the demand for Westmeria is growing fast. Westmeria is now re=
+ady to place thousands of doctors and nurses to help solve the worldwide c=
+risis. This will equate to many millions in added revenues for True Health=
+ Check out the latest financial report.
+
+
+
+FINANCIALS
+
+According to the latest financials, revenues are up by more than 412=
+%
+
+
+
+SEPT 2003-QUARTERLY REPORT
+
+Revenue for the three months ended July 31, 2003 went up by 412.8=
+%, when compared to revenue for the three months ended July31, 2002.  The =
+equipment rentals and sales segment's revenue went up by 69.8=
+%, in the three months ended July 31, 2003, compared to the three months e=
+nded July 31, 2002. This reflects the growth in the business over the past=
+ year.
+
+
+
+
+
+
+
+
+
+
+pw wna
+zoigc jtclve knpxfr pr p
+tfzf g
+
+--F_B9ED.6_A_.53B.D--
