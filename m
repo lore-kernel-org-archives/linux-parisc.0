@@ -1,87 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC647482A
-	for <parisc-linux@parisc-linux.org>; Tue, 10 Apr 2001 14:30:20 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14n4m5-0006H2-00
-	for parisc-linux@parisc-linux.org; Tue, 10 Apr 2001 21:30:05 +0100
-Date: Tue, 10 Apr 2001 21:30:05 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010410213005.D25123@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] pread/pwrite
+Received: from bastion.qld.csiro.au (bastion.qld.csiro.au [140.253.122.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AD53A482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Apr 2001 17:01:37 -0600 (MDT)
+Received: from bastion.qld.csiro.au (localhost [127.0.0.1])
+	by bastion.qld.csiro.au (8.9.3/8.9.3) with ESMTP id JAA03011
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 9 Apr 2001 09:26:11 +1000 (EST)
+Received: from ntexchange.cat.csiro.au (ntexchange.cat.csiro.au [140.253.12.1])
+	by bastion.qld.csiro.au (8.9.3/8.9.3) with ESMTP id JAA03007
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 9 Apr 2001 09:26:10 +1000 (EST)
+Message-ID: <A8566E157F5FD411BCFB00D0B7816D514459FE@ntexchange.cat.csiro.au>
+From: "van de Werken, Matthew (DEM, PH)" <M.Vandewerken@cat.csiro.au>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 9 Apr 2001 09:26:03 +1000 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] EISA bus on 735
 List-ID: <linux-parisc.vger.kernel.org>
 
-Could those who're having problems with pread/pwrite try the following patch?
+Hi folks:
 
-Index: fs/read_write.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/fs/read_write.c,v
-retrieving revision 1.6
-diff -u -p -r1.6 read_write.c
---- fs/read_write.c	2000/11/10 21:43:50	1.6
-+++ fs/read_write.c	2001/04/10 20:21:01
-@@ -315,8 +315,8 @@ bad_file:
-    lseek back to original location.  They fail just like lseek does on
-    non-seekable files.  */
- 
--asmlinkage ssize_t sys_pread(unsigned int fd, char * buf,
--			     size_t count, loff_t pos)
-+static inline
-+ssize_t do_pread(unsigned int fd, char * buf, size_t count, loff_t pos)
- {
- 	ssize_t ret;
- 	struct file * file;
-@@ -346,8 +346,8 @@ bad_file:
- 	return ret;
- }
- 
--asmlinkage ssize_t sys_pwrite(unsigned int fd, const char * buf,
--			      size_t count, loff_t pos)
-+static inline
-+ssize_t do_pwrite(unsigned int fd, const char * buf, size_t count, loff_t pos)
- {
- 	ssize_t ret;
- 	struct file * file;
-@@ -377,3 +377,35 @@ out:
- bad_file:
- 	return ret;
- }
-+
-+#if BITS_PER_LONG == 32
-+#ifdef __BIG_ENDIAN
-+#define LOFF_T(high, low) unsigned int high, unsigned int low
-+#else
-+#define LOFF_T(high, low) unsigned int low, unsigned int high
-+#endif
-+
-+asmlinkage
-+ssize_t sys_pread(unsigned int fd, char *buf, size_t count, LOFF_T(high, low))
-+{
-+	return do_pread(fd, buf, count, (loff_t)high << 32 | low);
-+}
-+
-+ssize_t sys_pwrite(unsigned int fd, char *buf, size_t count, LOFF_T(high, low))
-+{
-+	return do_pwrite(fd, buf, count, (loff_t)high << 32 | low);
-+}
-+
-+
-+#else /* BITS_PER_LONG != 32 */
-+asmlinkage
-+ssize_t sys_pread(unsigned int fd, char *buf, size_t count, loff_t pos)
-+{
-+	return do_pread(fd, buf, count, pos);
-+}
-+
-+ssize_t sys_pwrite(unsigned int fd, char *buf, size_t count, loff_t pos)
-+{
-+	return do_pwrite(fd, buf, count, pos);
-+}
-+#endif
+I have a couple of HP735's, I would like to run Linux on these. However, I
+want to know how to get the disk image onto the drive. I have a couple of
+options, but my preferred one is to initially boot over the network.
+However, I only have the FDDI network. Can I use a "standard" ISA network
+card in the EISA slot? Can I use a boot ROM in this ISA network card? If I
+can, where would I get the boot ROM image to put on said boot ROM?
 
--- 
-Revolutions do not require corporate support.
+Any help greatly appreciated.
+
+Cheers,
+Matthew van de Werken
+Electronics Engineer
+CSIRO Exploration & Mining - Gravity Group
+1 Technology Court - Pullenvale - Qld - 4069
+ph:  (07) 3327 4685     fax:  (07) 3327 4455
+email:  m.vandewerken@cat.csiro.au (w) mvdw73@one.net.au (h)
