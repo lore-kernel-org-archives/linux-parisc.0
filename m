@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 81A904829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Jun 2003 10:14:52 -0600 (MDT)
-Message-Id: <200306071614.h57GEpnf006148@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Compile error in 2.4.x and 2.5.x
-To: jbglaw@lug-owl.de (Jan-Benedict Glaw)
-Date: Sat, 7 Jun 2003 12:14:50 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6E23F4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Jun 2003 14:39:44 -0600 (MDT)
+Date: Sat, 7 Jun 2003 21:39:32 +0100 (IST)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Joel Soete <joel.soete@tiscali.be>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030607154205.GG30457@lug-owl.de> from "Jan-Benedict Glaw" at Jun 7, 2003 05:42:05 pm
+In-Reply-To: <3EE1007C.3030904@tiscali.be>
+Message-ID: <Pine.LNX.4.44.0306072132250.30116-100000@sal.ucc.ie>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: compiler & kernel (2)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,17 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> jbglaw@b132l-1:/usr/src/packages/full_cvs/linux-build-2.4$ as -v
-> GNU assembler version 2.14.90.0.4 (hppa-linux) using BFD version 2.14.90.0.=
-> 4 20030523 Debian GNU/Linux
+On Fri, 6 Jun 2003, Joel Soete wrote:
 
-Try updating binutils and remove whitespace from the argument of the
-PA macro.  The assembler is now much more strict about the presence of
-whitespace in the operands field.  There was a recent version that didn't
-allow any whitespace.  The current cvs version allows whitespace after
-a comma.  These changes were made to improve the detection of labels.
+> I launch it on my b2k and it seems to works fine (any boot pb); I so use
+> it to rebuild te same kernel with gcc-3.3.
+> It also compiles well (in about 12min).
+> But I notice something strange: runing a top in another xterm, I notice
+> that swap was well on but absolutly not used where usually my kernel
+> (near about debian std cfg) used about 20Mb of swap (with 256Mb of ram).
+> Is it a wanted behaviour? (config option?)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I don't think I can help you here, I hardly run out of physical memory
+(I've 1GB RAM in my machine), but during my tests I was able to
+deliberately force the machine to run out of memory and using swap.
+I never see the kernel using swap on my machine at all, unless I really
+want it to happen ;)
+
+So swap for me works, but I hardly will ever have to come into a situation
+where heavy use of swap space will be required (at least I hope so).
+
+Max
