@@ -1,50 +1,64 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA29163
-	for <parisc-linux@puffin.external.hp.com>; Fri, 5 Nov 1999 19:54:36 -0700
-Received: from udlkern.fc.hp.com (root@udlkern.fc.hp.com [15.1.52.48])
-	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id TAA14986
-	for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 19:55:50 -0700 (MST)
-Received: from debian.fc.hp.com (root@debian.fc.hp.com [15.1.48.119]) by udlkern.fc.hp.com with ESMTP (8.8.6 (PHNE_14041)/8.7.1) id TAA14073 for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 19:55:50 -0700 (MST)
-Received: from debian.fc.hp.com (bame@localhost [127.0.0.1])
-	by debian.fc.hp.com (8.9.3/8.9.3/Debian/GNU) with ESMTP id TAA24869
-	for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 19:55:49 -0700
-Message-Id: <199911060255.TAA24869@debian.fc.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA29979
+	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 00:24:50 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
+	by palrel1.hp.com (Postfix) with ESMTP id E5DED25C
+	for <parisc-linux@thepuffingroup.com>; Fri,  5 Nov 1999 23:26:08 -0800 (PST)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id XAA15167 for <parisc-linux@thepuffingroup.com>; Fri, 5 Nov 1999 23:27:11 -0800 (PST)
+Message-Id: <199911060727.XAA15167@milano.cup.hp.com>
 To: parisc-linux@thepuffingroup.com
-Date: Fri, 05 Nov 1999 19:55:49 -0700
-From: Paul Bame <bame@debian.fc.hp.com>
-Subject: [parisc-linux] exec() problem
+Subject: Re: [parisc-linux] Okay, I give up. 
+In-reply-to: Your message of "Thu, 04 Nov 1999 23:07:28 PST."
+             <Pine.LNX.4.10.9911042254060.16932-100000@vodka.thepuffingroup.com>
+Date: Fri, 05 Nov 1999 23:27:11 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+Alex deVries wrote:
+> How do I extract an sversion and hversion out of ioscan -F output?
+> 
+> For instance:
+> 
+> pa:wsio:F:F:F:0:0:0:ext_bus:c720:8/12:1 49 0 132 0 0 137 128 7 0 0 0 91 62 0 
+>   2 :0:root.ccio.c720:c720:CLAIMED:INTERFACE:GSC add-on Fast/Wide SCSI Interf
+>   ace:0
 
-This is rumored to be a known problem.  Since I've seen it a lot recently
-and am going on vacation, here's what I know in case it helps.  The problem
-can manifest on one machine and not another with the same bits.  It can
-come and go as the size of code in arch/parisc/kernel changes.  The
-problem shows in the boot like this:
+1) Use ":" as a field seperator (that's probably obvious)
 
-    Attempting to execute '/sbin/init'
+2) field 1 indicates the structure/contents of field 12.
+   "pa" says field 12 is IODC data (16 bytes).
+   "pci" says field 12 is PCI vendor/product (4 bytes).
 
-    PSW  : 0004000b  GR 1 : c0128800  GR 2 : c0029390  GR 3 : 00000000
-    GR 4 : 00000000  GR 5 : ffffffff  GR 6 : 00000000  GR 7 : c0092708
-    GR 8 : c0fdba20  GR 9 : c00924c8  GR10 : 00000080  GR11 : 0000000a
-    GR12 : 00000000  GR13 : 00000000  GR14 : 00000001  GR15 : c00927c8
-    GR16 : c0100000  GR17 : c00292e0  GR18 : c0092720  GR19 : 00000000
-    GR20 : c0128a00  GR21 : a0000024  GR22 : 00000000  GR23 : c012bc7c
-    GR24 : c00927c8  GR25 : 00000000  GR26 : c0092708  GR27 : c008e000
-    GR28 : 00000000  GR29 : 00000000  GR30 : c0092a00  GR31 : c0039914
-    SR0  : 00000000  SR1  : 00000000  SR2  : 00000000  SR3  : 00000000
-    SR4  : 00000000  SR5  : 00000000  SR6  : 00000000  SR7  : 00000000
-    IAOQ : c0028e5c c0028e60
+3) IODC data format should be documented in IOACD or somewhere.
+   PCI isn't. It's the PCI vendor/product ID from config space.
 
-    bad address a000002c (code 15)
-    Kernel panic: bad address
+Short (but cryptic) answer is first three "nibbles" (4-bit quantities)
+are HV model. Next nibble is HV rev.  SV rev is the high order nibble
+of the 5th byte (iodc[4]). SV model the following 5 nibbles.
 
-adb on the IAOQ address says:
+So printing the values in hex should make them easier to eye-ball
+and correlate to either hardware.c entries or PCI output.
 
-    do_generic_file_read+16C:       LDW             8(r21),r19
 
-which is consistent with the value in r21 (a0000024).  This is
-inside a call which I believe is called eventually from do_execve()
-called within init/main.c:init().  I didn't track down do_execve().
+> There doesn't seem to be a consistant way to parse it.
 
-	-Paul Bame
+The "pa" vs. "pci" probably makes it look inconsistent.
+
+cheers,
+grant
+
+> 
+> - Alex
+> -- 
+> Alex deVries <adevries@thepuffingroup.com>
+> Vice President Engineering
+> The Puffin Group
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+
+Grant Grundler
+Unix Developement Lab
++1.408.447.7253
