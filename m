@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12506.mail.yahoo.com (web12506.mail.yahoo.com [216.136.173.198])
-	by dsl2.external.hp.com (Postfix) with SMTP id D5BC24829
-	for <parisc-linux@parisc-linux.org>; Mon, 14 Oct 2002 21:35:48 -0600 (MDT)
-Message-ID: <20021015033545.56378.qmail@web12506.mail.yahoo.com>
-Date: Mon, 14 Oct 2002 20:35:45 -0700 (PDT)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-To: parisc-linux@parisc-linux.org
-In-Reply-To: <OE58WPj5T9S6Fmy332G000068d3@hotmail.com>
-MIME-Version: 1.0
+Received: from osiris.silug.org (osiris.silug.org [64.240.156.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DD0714829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 21:54:41 -0600 (MDT)
+Date: Mon, 14 Oct 2002 22:54:13 -0500
+From: Steven Pritchard <steve@silug.org>
+To: Peter Lavender <plaven@bigpond.net.au>
+Cc: PARISC Mailing List <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] help!!! apt-get dist-upgrade
+Message-ID: <20021014225413.A8042@osiris.silug.org>
+References: <20021015122720.E893@piglet>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] J2240?
+In-Reply-To: <20021015122720.E893@piglet>; from plaven@bigpond.net.au on Tue, Oct 15, 2002 at 12:27:20PM +1000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,16 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I am looking at a pretty good deal on a J2240 Workstation and was
-wondering if the Dino/Cujo conflict was resolved that I found in the
-archives?  I only see like 2 folks registered in the hardware database
-with J2240's so that makes me think it would be a PITA to get up and
-running.  If I did decide to do it, my C180 would have to go to a good
-home.  Any opinions would be welcome.
+On Tue, Oct 15, 2002 at 12:27:20PM +1000, Peter Lavender wrote:
+> Now I have ssh'ed back to the box.  How can I basically reconnect to
+> the process and issue the Y to go ahead and complete the upgrade?
 
-derek
+You can't really.  Next time, after you login, run "screen".  Then,
+when something like this happens, use "screen -D -r" to logout the old
+session and reattach it to your current terminal.
 
-__________________________________________________
-Do you Yahoo!?
-Faith Hill - Exclusive Performances, Videos & More
-http://faith.yahoo.com
+> I'd rather not kill it unless it's safe to do so.
+
+It should be.  Apt is very good about just picking up where it left
+off on the next run.
+
+Steve
+-- 
+steve@silug.org           | Southern Illinois Linux Users Group
+(618)398-7360             | See web site for meeting details.
+Steven Pritchard          | http://www.silug.org/
