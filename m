@@ -1,34 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 42875482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 09:03:49 -0600 (MDT)
-Message-Id: <200107041503.JAA16561@puffin.external.hp.com>
-To: Timothy Ball <timball@tux.org>
-Cc: Parisc Linux Mailing List <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] booting images 
-In-Reply-To: Message from Timothy Ball <timball@tux.org>
-   of "Tue, 03 Jul 2001 15:12:02 EDT." <20010703151202.H19064@gwyn.tux.org>
-Date: Wed, 04 Jul 2001 09:03:08 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 635BE482A
+	for <parisc-linux@parisc-linux.org>; Wed,  4 Jul 2001 09:27:01 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15HoYN-0002gG-00
+	for parisc-linux@parisc-linux.org; Wed, 04 Jul 2001 16:26:59 +0100
+Date: Wed, 4 Jul 2001 16:26:59 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010704162659.M6103@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Upcoming kernel merge
 List-ID: <linux-parisc.vger.kernel.org>
 
-Timothy Ball wrote:
-> I have a 735 and have had a bit of a time to try to get this thing to
-> boot and install. I have downloaded the palinux-0.9-32sti.iso.gz file
-> from the parisc website. Is there anything special I have to do to this
-> image to make it bootable? 
+We're planning on merging to 2.4.6 on Thursday afternoon, starting
+at 3pm Mountain time (21:00 UTC, 2pm San Francisco, 5pm Ottawa, 11pm
+Paris/Berlin).  We'll coordinate this on IRC as usual.
 
-gunzip the .gz, burn a CD from the ISO, boot the 735 from the CD.
-Read the how-to-install URL:
-http://www.parisc-linux.org/software/install.html
-
-ESIEE also has written how-to's which might be more up-to-date.
-The parisc-linux mail archive (see http://lists.parisc-linux.org/)
-has the URL's - most likely in the June 2001 archive if you don't
-want to search.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Revolutions do not require corporate support.
