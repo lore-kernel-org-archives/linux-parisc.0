@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sun, 15 Jun 2003 10:19:48 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <joel.soete@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030615161948.GA12995@dsl2.external.hp.com>
-References: <03f301c3309e$f0c78740$d908f3d8@uvsolutions> <20030613043356.GA7265@dsl2.external.hp.com> <3EEC9AC2.5070106@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3EEC9AC2.5070106@tiscali.be>
-Subject: [parisc-linux] Re: HP C180 video card
+Received: from server.da-kot (21-40.CampusNet.ucl.ac.be [130.104.21.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 607EA482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 13:00:04 -0600 (MDT)
+Received: from gmsoft.tuxicoman.be ([2001:6f8:204:20:210:a7ff:fe10:1a3e])
+	by server.da-kot with esmtp (Exim 3.36 #1 (Debian))
+	id 19RcjW-0004Qd-00
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 21:00:06 +0200
+From: Guy Martin <gmsoft@gentoo.org>
+To: parisc-linux@lists.parisc-linux.org
+Date: Sun, 15 Jun 2003 20:57:17 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Message-Id: <200306152057.17848.gmsoft@gentoo.org>
+Subject: [parisc-linux] Can't configure gcc with --target=hppa64-linux
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,29 +25,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Jun 15, 2003 at 04:11:46PM +0000, Joel Soete wrote:
-> I tried to use a "PGX64 alias Rage xl " pluged in the first slot of my 
-> b180L. It seems to be well supported by kernel 2.4.21 (modeprobe 
-> ati128fb; # modules were well loaded).
+Hi,
 
-cool - that's a good first step. I don't know where to go from there.
+I'm trying to build a 64bit gcc but the configuration script fail.
 
-> But no success to make XFree86 
-> works (fbset /dev/fb0 not found)
+./configure --host=hppa2.0-unknown-linux-gnu --prefix=/usr 
+--target=hppa64-linux --disable-shared --disable-nls --enable-64-bit-bfd  
+--enable-languages=c
+[snip]
+checking for CHAR_BIT... yes
+checking byte ordering... od: od.c:1324: read_block: Assertion `0 < n && n <= 
+bytes_per_block' failed.
+unknown
+configure: error: *** unable to determine endianness
+Configure in /var/tmp/portage/gcc-3.2.2/work/gcc-3.2.2/gcc failed, exiting.
 
-Maybe it's as simple as "mknod /dev/fb0 ..." ?
-if the driver loads without complaining, I'd expect fbset command
-to work too.
+What's wrong ?
 
-> and even when I change console path to 
-> graphics(1[a]) I never reach to obtain boot prompt on the screen (which 
-> never seems to recieve init signal?).
+Regards
 
-PDC/IODC/STI won't know anything about the Rage XL card.
-There's no way you can use that as a console.
-
-> I do not understand, it seems to be a common pci gfx card? any idea?
-
-I don't either really. Just guessing.
-
-grant
+-- 
+Guy Martin
+Gentoo - HPPA port Lead / IPv6 team
+Lug Charleroi (Belgium)
