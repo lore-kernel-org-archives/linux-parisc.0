@@ -1,14 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Thibaut VARENE <varenet@esiee.fr>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Making SYM2 default SYM-SCSI driver instead of SYM1 
-In-Reply-To: Message from Richard Hirst <rhirst@linuxcare.com>
-   of "Sun, 15 Sep 2002 08:17:16 BST." <20020915071716.GD20720@sleepie.demon.co.uk>
-References: <3D8212E7.6000609@esiee.fr> <20020913190929.8F8084829@dsl2.external.hp.com>  <20020915071716.GD20720@sleepie.demon.co.uk> 
-Date: Sun, 15 Sep 2002 08:35:49 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020915143549.77723482A@dsl2.external.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20020915153613.5AFBD4829@dsl2.external.hp.com>
+Date: Sun, 15 Sep 2002 09:36:13 -0600 (MDT)
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] rp2470 hang in sym2 driver
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,23 +15,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Richard Hirst wrote:
-> I don't think that is relevant.  SYM1 and SYM2 both only drive 53c8xx
-> chips (and newer, 53c1010, etc).  SYM1 didn't drive some of the nearly
-> 53c810 chips (iirc), and you needed ncr53c8xx.c to drive those.
+Hi all,
 
-Ah ok. my bad. I thought sym1 drove 53c720 but that's wrong.
+I've revisited this "rp2470 hang" issue. This happens with sym2.
+The same kernels boot on A500-44 but hang on A500-65 (650Mhz).
+It smells like a deadlock.
 
-Someone might consider porting the PDC_INITIATOR support to ncr53c8xx.
-Should be a cut/paste from sym1 or sym2 driver.
+I don't believe this is a result of interrupt distribution. I can't
+say for sure since I've had the IRQ distr code in my tree for a while.
+I don't think I've ever booted rp2470 with 2.4.19.
 
-> So, in theory, chnaging to CONFIG_SCSI_SYM53C8XX_2 for all configs
-> shouldn't upset anyone.  SYM1 and SYM2 both only drive PCI chips, so
-> that makes the change irrelevant to earlier boxes anyway.
+I will try sym1 driver *and* try disabling IRQ distribution
+in the next couple of days.
 
-OK - I've been using sym2 on both c3k and A500. I'm comfortable with it.
-Sounds like I should use it on B180 as well.
+I've reproduced the hang twice with 2.4.19-pa18.
+Console output stops after first line of either "sym3:" output
+or "sym4:" (ie only one line is printed for that interface.
+TOC had the following:
 
-Thanks for clarification richard!
+	CPU0 0x10143420 timer_bh+200
+	CPU0 0x102276fc sym53c8xx_timer+ec
 
+	CPU1 0x1010dd40 do_irq+100
+	CPU1 0x102275f0 sym53c8xx_intr+140
+
+and
+
+	CPU0 GR02 0x10143420 timer_bh+200
+	CPU0 IOAQ 0x102276fc sym53c8xx_timer+ec
+
+	CPU1 GR02 0x102274f4 sym53c8xx_intr+44
+	CPU1 IOAQ 0x102275f0 sym53c8xx_intr+140
+
+I hoped someone else has a chance to look at this too.
+The rp2470 (gsyprf11) is externally accessible if a volunteer has time
+to dig into this. Or let me know what I might try next.
+
+thanks,
 grant
