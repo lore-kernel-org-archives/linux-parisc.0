@@ -1,16 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73AFC48E4
-	for <parisc-linux@parisc-linux.org>; Sat,  9 Mar 2002 11:56:54 -0700 (MST)
-Message-Id: <200203091856.g29IunwI010743@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] FYI: state of toolchain for Debian woody release
-To: randolph@tausq.org
-Date: Sat, 9 Mar 2002 13:56:49 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020309183524.GC628@tausq.org> from "Randolph Chung" at Mar 9, 2002 10:35:24 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from tom.hrz.tu-chemnitz.de (tom.hrz.tu-chemnitz.de [134.109.132.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29B2A483E
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Mar 2002 15:13:26 -0700 (MST)
+Received: from pat.hrz.tu-chemnitz.de ([134.109.132.143] ident=mail)
+	by tom.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #3)
+	id 16jp5g-0000Rg-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 09 Mar 2002 23:13:24 +0100
+Received: from gerd.csn.tu-chemnitz.de ([134.109.88.146] helo=gerd.jandt-online.net)
+	by pat.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #2)
+	id 16jp5f-00070N-00
+	for parisc-linux@lists.parisc-linux.org; Sat, 09 Mar 2002 23:13:23 +0100
+Message-Id: <5.0.2.1.2.20020309230930.00ae3d80@mailbox.hrz.tu-chemnitz.de>
+Date: Sat, 09 Mar 2002 23:10:33 +0100
+To: parisc-linux@lists.parisc-linux.org
+From: Tilo Jandt <tilo@jandt-online.net>
+Subject: [parisc-linux] security updates
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +28,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> gdb also seems to be rather broken on hppa at the moment. Single
-> stepping doesn't always (doesn't usually) work, and there's a problem 
-> with recognizing core files. If anyone has time to look into these 
-> and submit patches, that'll be great!
+Hi,
 
-I haven't noticed any single stepping issues with the gdb that I built.
-Stepping into functions doesn't work but single stepping does.  I have
-made some changes to the dwarf2 frame note code in gcc and a working dwarf2
-unwind mechanism is real close now.  I'm down to 4 fails in the g++ testsuite.
+could someone send me his source.list entries
+for security updates?
 
-There are issues with loading symbols from shared libs.  They don't
-load automatically even though they should.  You can't set new breakpoints
-while a program is executing.  You have to run it again.  You can't
-set breakpoints in shared libraries.
+thanx and cya,
+Tilo
 
-Also, can't print a function result.  This problem is probably related
-to the stepping into function problem.
-
-Info reg r3 prints the value of r3 saved in the frame and not the current
-value in r3.  Not sure what happens if r3 is not saved in the frame.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+|[ Tilo Jandt, K=F6rnerstra=DFe 8, D-09306 Rochlitz         ]|
+|[ mailto:tilo@jandt-online.net ]  [ ICQ: 73832493              ]|
+|[ Phone: +49 179 5333 255   ]  [ Fax: +49 3737 771478  ]|
