@@ -1,16 +1,18 @@
 Return-Path: <grundler@lackof.org>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7DE2B484B
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2F63C484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun,  8 Feb 2004 20:56:24 -0700 (MST)
-Date: Sun, 8 Feb 2004 20:56:21 -0700
+	Sun,  8 Feb 2004 21:34:44 -0700 (MST)
+Date: Sun, 8 Feb 2004 21:34:41 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
 To: willy@debian.org
-Message-ID: <20040209035621.GD21692@colo.lackof.org>
+Subject: Re: [parisc-linux] 2.6.3-rc1 sym2 hangs on a500-65
+Message-ID: <20040209043441.GE21692@colo.lackof.org>
+References: <20040209035621.GD21692@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040209035621.GD21692@colo.lackof.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] 2.6.3-rc1 sym2 hangs on a500-65
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,255 +22,202 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Matthew,
-a500 (ion) hangs with /boot/vmlinux-2.6.3-rc1-pa2.
-Having problems with bus reset code path.
-I'll collect TOC info and make that available.
+On Sun, Feb 08, 2004 at 08:56:21PM -0700, Grant Grundler wrote:
+> Matthew,
+> a500 (ion) hangs with /boot/vmlinux-2.6.3-rc1-pa2.
+> Having problems with bus reset code path.
+> I'll collect TOC info and make that available.
+
+Here is the TOC dump. I've decoded the obvious registers.
+
+BTW, this does not appear to be a "new" problem.
+The default kernel won't boot either and hangs at about the same place:
+Linux version 2.6.0-test9-4-parisc64 (jejb@raven) (gcc version 3.0.4) #2 Wed Nov 5 22:30:59 CST 2003
+
+I say "about" becuase it hangs on the *second* time it tries to reset
+the bus/host when probing SCSI ID3 on the same bus.
 
 thanks,
 grant
 
 
-Firmware Version  42.19
+TOC:
+	GR02: 0x10118d30 cpu_idle+48
+	IOAQ: 0x10118d28 cpu_idle+40
 
-Duplex Console IO Dependent Code (IODC) revision 1
+*sigh* - not very helpful.
 
-------------------------------------------------------------------------------
-   (c) Copyright 1995-2001, Hewlett-Packard Company, All rights reserved
-------------------------------------------------------------------------------
-
-  Processor   Speed            State           CoProcessor State  Cache Size
-  Number                                       State              Inst    Data
-  ---------  --------   ---------------------  -----------------  ------------
-      0      650  MHz   Active                 Functional         750 KB 1.5 MB
-
-  Central Bus Speed (in MHz)  :        120  
-  Available Memory            :    1048576  KB
-  Good Memory Required        :      25820  KB
-
-   Primary boot path:    0/0/2/1.15          
-   Alternate boot path:  0/0/1/1.15          
-   Console path:         0/0/4/1.643         
-   Keyboard path:        0/0/4/0.0           
+Main Menu: Enter command or menu > ser pim
 
 
----- Main Menu ---------------------------------------------------------------
+PROCESSOR PIM INFORMATION
 
-     Command                           Description
-     -------                           -----------
-     BOot [PRI|ALT|<path>]             Boot from specified path
-     PAth [PRI|ALT] [<path>]           Display or modify a path
-     SEArch [DIsplay|IPL] [<path>]     Search for boot devices
-
-     COnfiguration menu                Displays or sets boot values
-     INformation menu                  Displays hardware information
-     SERvice menu                      Displays service commands
-
-     DIsplay                           Redisplay the current menu
-     HElp [<menu>|<command>]           Display help for menu or command
-     RESET                             Restart the system
-----
-Main Menu: Enter command or menu > bo
-Interact with IPL (Y, N, or Cancel)?> y
-
-Booting... 
-Boot IO Dependent Code (IODC) revision 1
+Original Product Number:   A6889A
+Current Product Number:    A6889A
 
 
-HARD Booted.
-palo ipl 1.2 root@b2000 Tue Jan 14 13:13:07 MST 2003
+-----------------  Processor 0 HPMC Information - PDC Version: 42.19  ------ 
 
-Partition Start(MB) End(MB) Id Type
-1               1     512   82 swap
-2             513     532   f0 Palo
-3             533    2048   83 ext2
-4            2049    8682   83 ext2
+Timestamp =    Sun Aug  31 22:06:07 GMT 2003    (20:03:08:31:22:06:07)
 
-PALO(F0) partition contains:
-    0/vmlinux64 5382306 bytes @ 0x20040000
+HPMC Chassis Codes 
 
-Information: No console specified on kernel command line. This is normal.
-PALO will choose the console currently used by firmware (serial).Current command line:
-3/boot/vmlinux initrd=3/boot/initrd.img root=/dev/sdb3 HOME=/ console=ttyS0 TERM=vt102
- 0: 3/boot/vmlinux
- 1: initrd=3/boot/initrd.img
- 2: root=/dev/sdb3
- 3: HOME=/
- 4: console=ttyS0
- 5: TERM=vt102
+       Chassis Code        Extension 
+       ------------        --------- 
+       0x0000082000ff6242  0x0000000000000000
+       0x1800082011006312  0xcb81000000000000
+       0x0000087000ff6292  0x000000f0f0000000
+       0x6000082070006062  0x0000000000000010
+       0x7000082070006082  0x0000000000392400
+       0x7000082379006133  0xc1bff0fffed08040
+       0x0000080080006310  0x0000000000000001
+       0x000008008000631f  0x0000000000000000
+       
 
-Edit which field?
-(or 'b' to boot with this command line)? 0
-3/boot/vmlinux-2.6.3-rc1-pa2
-Current command line:
-3/boot/vmlinux-2.6.3-rc1-pa2 initrd=3/boot/initrd.img root=/dev/sdb3 HOME=/ console=ttyS0 TERM=vt102
- 0: 3/boot/vmlinux-2.6.3-rc1-pa2
- 1: initrd=3/boot/initrd.img
- 2: root=/dev/sdb3
- 3: HOME=/
- 4: console=ttyS0
- 5: TERM=vt102
+General Registers 0 - 31
+00-03  0000000000000000  00000000000000d4  000000001013fc8c  2d2d2d2d2d2d2d2d
+04-07  202020202d2d2d2d  616821203e0a2020  5350415243212047  6d20617465206120
+08-11  000000202d2d448d  0000000000000100  5f5f5f5f5f200a20  5f5f5f5f5f5f5f5f
+12-15  5f5f5f5f5f5f5f5f  00000000000000fa  00000000000000f0  00000000000000ff
+16-19  00000000104faa80  00000000f000022c  00000000f0002a7c  0000000000000000
+20-23  000000001038ae61  000000000000000a  00000000103f8458  00000000104fb078
+24-27  0000000020202000  aedef02b906416a0  00000000104fb140  202020202d2d2d2d
+28-31  0000000000000109  00000000104fb130  00000000104fb140  000000001046e400
 
-Edit which field?
-(or 'b' to boot with this command line)? b
 
-Command line for kernel: ' root=/dev/sdb3 HOME=/ console=ttyS0 TERM=vt102 palo_kernel=3/boot/vmlinux-2.6.3-rc1-pa2'
-Selected kernel: /boot/vmlinux-2.6.3-rc1-pa2 from partition 3
-Selected ramdisk: /boot/initrd.img from partition 3
-ELF64 executable
-Entry 00100000 first 00100000 n 2
-Segment 0 load 00100000 size 3581040 mediaptr 0x1000
-Segment 1 load 0046c000 size 237701 mediaptr 0x36c000
-Loading ramdisk 3256320 bytes @ 3fcd2000...
-Branching to kernel entry point 0x00100000.  If this is the last
-message you see, you may need to switch your console.  This is
-a common symptom -- search the FAQ and mailing list at parisc-linux.org
+Control Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000013e92  0000000000000000  00000000000000c0  000000000000001c
+12-15  0000000000000000  0000000000000000  0000000000109000  8000000000000000
+16-19  0000000b8210fabc  0000000000000000  000000001013fc94  0000000050230ec0
+20-23  0000000020202020  000000002d2d448d  0000000008000000  8000000000000000
+24-27  00000000003ef000  00000000004fa3c0  0000000000041020  5555555555555555
+28-31  000000f0f0165670  5555555555555555  00000000104fa300  0000000010427000
 
-Linux version 2.6.3-rc1-pa2 (grundler@gsyprf11.external.hp.com) (gcc version 3.0.4) #3 Sun Feb 8 15:40:17 PST 2004
-FP[0] enabled: Rev 1 Model 19
-The 64-bit Kernel has started...
-Determining PDC firmware type: 64 bit PAT.
-model 00005e20 00000491 00000000 00000001 6df6c82e 100000f0 00000008 000000b2 000000b2
-vers  00000203
-CPUID vers 19 rev 8 (0x00000268)
-capabilities 0x5
-model 9000/800/A500-6X
-Total Memory: 1024 Mb
-initrd: 4fcd2000-4ffed000
-initrd: reserving 3fcd2000-3ffed000 (mem_max 40000000)
-On node 0 totalpages: 262144
-  DMA zone: 262144 pages, LIFO batch:16
-  Normal zone: 0 pages, LIFO batch:1
-  HighMem zone: 0 pages, LIFO batch:1
-Built 1 zonelists
-Kernel command line:  root=/dev/sdb3 HOME=/ console=ttyS0 TERM=vt102 palo_kernel=3/boot/vmlinux-2.6.3-rc1-pa2
-PID hash table entries: 16 (order 4: 256 bytes)
-Console: colour dummy device 160x64
-Memory: 1018752k available
-Calibrating delay loop... 1294.33 BogoMIPS
-Dentry cache hash table entries: 131072 (order: 8, 1048576 bytes)
-Inode-cache hash table entries: 65536 (order: 7, 524288 bytes)
-Mount-cache hash table entries: 256 (order: 0, 4096 bytes)
-checking if image is initramfs...it isn't (ungzip failed); looks like an initrd
-POSIX conformance testing by UNIFIX
-NET: Registered protocol family 16
-Searching for devices...
-Found devices:
-1. Crescendo 650 W2 at 0xfffffffffffa0000 [160] { 0, 0x0, 0x5e2, 0x00004 }
-2. Astro BC Runway Port at 0xfffffffffed00000 [0] { 12, 0x0, 0x582, 0x0000b }
-3. Elroy PCI Bridge at 0xfffffffffed30000 [0/0] { 13, 0x0, 0x782, 0x0000a }
-4. Elroy PCI Bridge at 0xfffffffffed34000 [0/2] { 13, 0x0, 0x782, 0x0000a }
-5. Elroy PCI Bridge at 0xfffffffffed38000 [0/4] { 13, 0x0, 0x782, 0x0000a }
-6. Elroy PCI Bridge at 0xfffffffffed3c000 [0/6] { 13, 0x0, 0x782, 0x0000a }
-7. Memory at 0xfffffffffed08000 [8] { 1, 0x0, 0x09b, 0x00009 }
-CPU(s): 1 x PA8700 (PCX-W2) at 650.000000 MHz
-SBA found Astro 2.1 at 0xfffffffffed00000
-lba version TR4.0 (0x5) found at 0xfffffffffed30000
-iosapic: no IRTE for 0000:00:04.0 (IRQ not connected?)
-lba version TR4.0 (0x5) found at 0xfffffffffed34000
-lba version TR4.0 (0x5) found at 0xfffffffffed38000
-lba version TR4.0 (0x5) found at 0xfffffffffed3c000
-SCSI subsystem initialized
-Performance monitoring counters enabled for Crescendo 650 W2
-ikconfig 0.7 with /proc/config*
-Initializing Cryptographic API
-Soft power switch support not available.
-pty: 256 Unix98 ptys configured
-Generic RTC Driver v1.07
-Serial: 8250/16550 driver $Revision: 1.90 $ 17 ports, IRQ sharing enabled
-ttyS0 at MMIO 0xfffffffff8000000 (irq = 132) is a 16550A
-ttyS1 at MMIO 0xfffffffff8000008 (irq = 132) is a 16450
-ttyS2 at MMIO 0xfffffffff8000010 (irq = 132) is a 16550A
-ttyS3 at MMIO 0xfffffffff8000030 (irq = 132) is a 16550A
-ttyS4 at MMIO 0xfffffffff8000038 (irq = 132) is a 16550A
-RAMDISK driver initialized: 16 RAM disks of 6144K size 1024 blocksize
-loop: loaded (max 8 devices)
-Linux Tulip driver version 1.1.13-NAPI (May 11, 2002)
-tulip0: no phy info, aborting mtable build
-tulip0:  MII transceiver #1 config 1000 status 782d advertising 0061.
-eth0: Digital DS21143 Tulip rev 65 at 0xfffffffff8006000, 00:30:6E:48:F6:40, IRQ 128.
-sym0: <896> rev 0x7 at pci 0000:00:01.0 irq 129
-sym0: No NVRAM, ID 7, Fast-40, LVD, parity checking
-sym0: SCSI BUS has been reset.
-scsi0 : sym-2.1.18i
-Using anticipatory io scheduler
-sym0:0:0: ABORT operation started.
-sym0:0:0: ABORT operation complete.
-sym0:0:0: DEVICE RESET operation started.
-sym0:0:0: DEVICE RESET operation failed.
-sym0:0:0: BUS RESET operation started.
-sym0:0:0: BUS RESET operation failed.
-sym0:0:0: HOST RESET operation started.
-sym0:0:0: HOST RESET operation failed.
-scsi: Device offlined - not ready after error recovery: host 0 channel 0 id 0 lun 0
-sym1: <896> rev 0x7 at pci 0000:00:01.1 irq 130
-sym1: No NVRAM, ID 7, Fast-40, SE, parity checking
-sym1: SCSI BUS has been reset.
-sym1: SCSI BUS mode change from SE to SE.
-sym1: SCSI BUS has been reset.
-scsi1 : sym-2.1.18i
-  Vendor: SEAGATE   Model: ST39102LC         Rev: HP03
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym1:15:0: tagged command queuing enabled, command queue depth 16.
-sym2: <875> rev 0x37 at pci 0000:00:02.0 irq 130
-sym2: No NVRAM, ID 7, Fast-20, SE, parity checking
-sym2: SCSI BUS has been reset.
-scsi2 : sym-2.1.18i
-sym3: <875> rev 0x37 at pci 0000:00:02.1 irq 131
-sym3: No NVRAM, ID 7, Fast-20, SE, parity checking
-sym3: SCSI BUS has been reset.
-scsi3 : sym-2.1.18i
-  Vendor: SEAGATE   Model: ST39102LC         Rev: 7C03
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym3:15:0: tagged command queuing enabled, command queue depth 16.
-sym4: <1010-66> rev 0x1 at pci 0000:30:02.0 irq 322
-sym4: No NVRAM, ID 7, Fast-80, LVD, parity checking
-sym4: SCSI BUS has been reset.
-scsi4 : sym-2.1.18i
-  Vendor: HP        Model: D5989C            Rev: 1.03
-  Type:   Processor                          ANSI SCSI revision: 02
-  Vendor: HP 18.2G  Model: ST318452LC        Rev: HP05
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym4:10:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: HP        Model: 18.2GB C 80-F612  Rev:     
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym4:11:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: HP 18.2G  Model: ST318452LC        Rev: HP05
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym4:12:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: HP        Model: 9.10GB C 80-BX01  Rev: BX01
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym4:13:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: HP        Model: 9.10GB C 80-BX01  Rev: BX01
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym4:14:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: FUJITSU   Model: MAJ3091MC         Rev: 0111
-  Type:   Direct-Access                      ANSI SCSI revision: 04
-sym4:15:0: tagged command queuing enabled, command queue depth 16.
-sym4:15: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 31)
-sym5: <1010-66> rev 0x1 at pci 0000:30:02.1 irq 323
-sym5: No NVRAM, ID 7, Fast-80, LVD, parity checking
-sym5: SCSI BUS has been reset.
-scsi5 : sym-2.1.18i
-  Vendor: HP        Model: 18.2GB C 80-H008  Rev: H008
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym5:0:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: HP        Model: 18.2GB C 80-H008  Rev: H008
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym5:1:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: HP 18.2G  Model: ST318452LC        Rev: HP05
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym5:2:0: tagged command queuing enabled, command queue depth 16.
-sym5:3:0: ABORT operation started.
-sym5:3:0: ABORT operation timed-out.
-sym5:3:0: DEVICE RESET operation started.
-sym5:3:0: DEVICE RESET operation timed-out.
-sym5:3:0: BUS RESET operation started.
-sym5: SCSI BUS reset detected.
-sym5: SCSI BUS has been reset.
-sym5:3:0: BUS RESET operation complete.
-sym5:3:0: ABORT operation started.
-sym5:3:0: ABORT operation timed-out.
-sym5:3:0: HOST RESET operation started.
-sym5: SCSI BUS has been reset.
-<hang>
+Space Registers 0 - 7
+00-03  00000000          00000000          00000000          104fa490
+04-07  00000000          00000000          00000000          00000000
+
+
+IIA Space (back entry)       = 0x0000000000000000
+IIA Offset (back entry)      = 0x000000001013fc98
+Check Type                   = 0x20000000
+CPU State                    = 0x9e000004
+Cache Check                  = 0x00000000
+TLB Check                    = 0x00000000
+Bus Check                    = 0x0030103b
+Assists Check                = 0x00000000
+Assist State                 = 0x00000000
+Path Info                    = 0x00000000
+System Responder Address     = 0xfffffffffed00000
+System Requestor Address     = 0xfffffffffffa0000
+
+
+Floating Point Registers 0 - 31
+00-03  0413080024850e06  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  5555555555555555  5555555555555555  5555555555555555
+08-11  5555555555555555  5555555555555555  5555555555555555  5555555555555555
+12-15  5555555555555555  5555555555555555  5555555555555555  5555555555555555
+16-19  5555555555555555  5555555555555555  5555555555555555  5555555555555555
+20-23  5555555555555555  5555555555555555  0000000000000000  0000000000000000
+24-27  5555555555555555  5555555555555555  5555555555555555  5555555555555555
+28-31  5555555555555555  5555555555555555  5555555555555555  0000000000000002
+
+
+Check Summary                = 0xcb81000000000000
+Available Memory             = 0x0000000040000000
+CPU Diagnose Register 2      = 0x0203000200802004
+CPU Status Register 0        = 0x2420c20000000000
+CPU Status Register 1        = 0x8080000000000000
+SADD LOG                     = 0x500a00a0502b00b0
+Read Short LOG               = 0xc18040fff8000005
+
+
+
+-----------------  Processor 0 LPMC Information ------------------
+
+Check Type                   = 0x00000000
+IC Parity Info               = 0x00000000
+Cache Check                  = 0x00000000
+TLB Check                    = 0x00000000
+Bus Check                    = 0x00000000
+Assists Check                = 0x00000000
+Assist State                 = 0x00000000
+Path Info                    = 0x00000000
+System Responder Address     = 0x0000000000000000
+System Requestor Address     = 0x0000000000000000
+
+
+
+-----------------  Processor 0 TOC Information -------------------
+
+General Registers 0 - 31
+00-03  0000000000000000  00000000104b6a98  0000000010118d30  0000000000000008
+04-07  00000000104576a0  00000000003ba000  00000000000000f0  0000000000000000
+08-11  0000000000000000  0000000000000001  000000000804000e  000000001046c5c4
+12-15  00000000000000f2  00000000000000fa  00000000000000f0  00000000000000ff
+16-19  00000000f0000390  00000000f000022c  00000000f0002a7c  0000000000000000
+20-23  0000000000000000  0000000000000000  0000000000000073  000000004f9ec980
+24-27  00000000104b73c8  0000000010424000  00000000103b89b8  00000000104576a0
+28-31  000000004f9ec948  000000004f6f43f0  0000000010424280  000000000000a000
+
+
+Control Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000000  0000000000000000  00000000000000c0  000000000000000c
+12-15  0000000000000000  0000000000000000  000000000010b000  ff80000000000000
+16-19  000002afe7374118  0000000000000000  0000000010118d24  0000000086a0201a
+20-23  0000000000000000  0000000000000000  000000ff0804ff0f  8000000000000000
+24-27  00000000003b9000  00000000003b9000  0000000000041020  5555555555555555
+28-31  000000f0f0165670  5555555555555555  0000000010424000  0000000010428000
+
+Space Registers 0 - 7
+00-03  00000000          00000000          00000000          00000000
+04-07  00000000          00000000          00000000          00000000
+
+IIA Space (back entry)       = 0x0000000000000000
+IIA Offset (back entry)      = 0x0000000010118d28
+CPU State                    = 0x9e000001
+
+
+--------------  Memory Error Log Information  --------------
+
+Bus 0 Log Information
+
+Timestamp =    Sun Aug  31 22:06:07 GMT 2003    (20:03:08:31:22:06:07)
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+          X     ERR_ERROR       X            X           
+
+Bus Requestor Address      = 0xfffffffffffa0000
+Bus Target Address         = 0x0000000000000000
+Bus Responder Address      = 0xfffffffffed00000
+
+Error Status Reg           = 0x0000000000000010
+Runway Control Reg         = 0x0000021c00002818
+Runway Address Reg         = 0xc1bff0fffed08040
+Runway Data High Reg       = 0xf8018a1ff820ca01
+Runway Data Low Reg        = 0xf8018a1ff820ca01
+Memory Address Reg         = 0x000001ff3fffffff
+Memory Address Corr Reg    = 0x000001ff3fffffff
+Memory Syndrome Reg        = 0x0000000000000000
+Memory Syndrome Corr Reg   = 0x0000000000000000
+
+
+
+ Address/Control Parity Error Registers  
+
+   Address/Control Parity Error Bit (mem_addr_par_stat) Not Set 
+
+
+
+------------  I/O Module Error Log Information  ------------
+
+
+   No I/O module errors logged
+
+
+Main Menu: Enter command or menu > 
