@@ -1,35 +1,70 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA27083
-	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Jan 2001 09:38:54 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 8 Jan 2001 16:42:23 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14FfN8-0001za-00; Mon, 08 Jan 2001 16:42:14 +0000
-Date: Mon, 8 Jan 2001 16:42:14 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Steven Pritchard <steve@silug.org>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Any K200 Experiences Out There??
-Message-ID: <20010108164214.A7545@parcelfarce.linux.theplanet.co.uk>
-References: <20010108145643.A32433@parcelfarce.linux.theplanet.co.uk> <200101081520.f08FKla09063@osiris.silug.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200101081520.f08FKla09063@osiris.silug.org>; from steve@silug.org on Mon, Jan 08, 2001 at 09:20:47AM -0600
-Sender: <willy@www.linux.org.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA29751
+	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Jan 2001 16:06:08 -0700
+Message-ID: <008c01be3512$fdba96e0$0300000a@terra>
+From: "Roel Teuwen" <Roel.Teuwen@advalvas.be>
+To: "Rule RuleR" <Rule@freegates.be>
+Cc: <parisc-linux@thepuffingroup.com>
+References: <978949982.3a59975e2655e@webmail.tiscalinet.be>
+Subject: Re: [parisc-linux] error booting with recent cvs linux kernel
+Date: Fri, 1 Jan 1999 00:12:09 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jan 08, 2001 at 09:20:47AM -0600, Steven Pritchard wrote:
-> Matthew Wilcox said:
-> > the kernel on that cd is quite out of date;
-> > can you try compiling a new one?
-> 
-> That reminds me of something I've been meaning to ask...  What all
-> needs to be upgraded to update to the latest CVS kernel (from the 0.5
-> CD)?  Is it enough to just compile a new kernel, or will glibc and
-> various other things need updating too?
+Oops, forgot to mention, this is on a 712/60, using the 0.5 ISO for
+userspace
 
-the root filesystem i'm using is basically the 0.5 CD.  i managed to not
-break anything with the stack changes :-)  [at least, only temporarily..]
+----- Original Message -----
+From: <rule@freegates.be>
+To: <parisc-linux@thepuffingroup.com>
+Sent: Monday, January 08, 2001 11:33 AM
+Subject: [parisc-linux] error booting with recent cvs linux kernel
 
--- 
-Revolutions do not require corporate support.
+
+> Hello all,
+>
+> When booting a kernel, compiled from CVS update today, with CVS
+> gcc/binutils/glibc/palo from CVS, I get the following error :
+>
+> (I use STI console, following is copied from screen)
+>
+> INIT: version 2.78 booting
+> break 0,0: pid=9 command='rcS'
+> rcS[9]: breakpoint 0
+>
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001001111111100001011
+> r0-3% 00000000 c02bc800 00000000 00000000
+> r4-7% 00000000 00000000 00000000 00000000
+> r8-11% 00000000 00000000 00000000 00000000
+> r12-15% 00000000 00000000 00076808 c011ef58
+> r16-19% c3c80600 c3c80000 00076808 00000001
+> r20-23% c3fce860 c3fce860 00000000 c3fce840
+> r24-27% c3fffd40 00001000 00000000 c024c000
+> r28-31% 00000000 00000000 c3c80a00 c012a134
+> sr0-3% 00000000 00000000 00000000 00000003
+> sr4-7% 00000000 00000000 00000000 00000000
+>
+> IASQ: 00000000 00000000 IAOQ: 00000000 00000004
+>  IIR: 00000000    ISR: 00000000  IOR: c3c00008
+> ORIG_R28: 00000000
+>
+> The box boots fine with a backup kernel, compiled late december of last
+year.
+>
+> Kind regards,
+> Roel Teuwen
+>
+>
+> -------------------------------------------------
+> This mail sent through IMP: webmail.tiscalinet.be
+>
+> --------------------------------------------------------------------------
+-
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com
+with
+> `unsubscribe' as the subject.
+>
+>
