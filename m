@@ -1,17 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D242E4866
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F1A234875
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 17 Dec 2003 00:25:15 -0700 (MST)
-Date: Wed, 17 Dec 2003 08:25:11 +0100
-Message-ID: <3FB265EC00015439@ocpmta3.freegates.net>
-In-Reply-To: <20031216180803.GN15674@parcelfarce.linux.theplanet.co.uk>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.0-test11-pa6: 2d nic tulip pb
-To: "Matthew Wilcox" <willy@debian.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+	Wed, 17 Dec 2003 08:39:34 -0700 (MST)
+Date: Wed, 17 Dec 2003 10:32:20 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Message-ID: <20031217153220.GA24083@systemhalted>
+References: <200312152205.hBFM5CEn018329@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200312152205.hBFM5CEn018329@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: dlopen failed on 'libthread_db.so.1' -
+	/lib/libthread_db.so.1: undefined symbol: ps_pglobal_lookup
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,46 +23,20 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Oops my bad:
- just comment out #auto eth0 eth1 and all works fine :)
+On Mon, Dec 15, 2003 at 05:05:12PM -0500, John David Anglin wrote:
+> I hacked together of a build of debian gdb-6.0-2 this afternoon.  When
+> I start gdb, I see the following error:
 
-appologies,
-    Joel
+My friend, that's amazing!
+ 
+> dave@gsyprf11:~/gdb-6.0-2/objdir$ gdb/gdb
+> dlopen failed on 'libthread_db.so.1' - /lib/libthread_db.so.1: undefined symbol: ps_pglobal_lookup
+> GDB will not be able to debug pthreads.
 
->-- Original Message --
->Date: Tue, 16 Dec 2003 18:08:03 +0000
->From: Matthew Wilcox <willy@debian.org>
->To: Joel Soete <soete.joel@tiscali.be>
->Cc: parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] 2.6.0-test11-pa6: 2d nic tulip pb
->
->
->On Tue, Dec 16, 2003 at 06:17:02PM +0100, Joel Soete wrote:
-> Hi all,
-> 
-> I recompile 2.6.0-test11-pa6 in 32bit with gcc-3.3 (lastest unstable debian
-> available today) and the .config from 'make defconfig'.
+Every pogram that links libthread_db.so.1 must provide a set of process
+control primities that will allow libthread_db to access memory and
+registers in the target process, start and stop the process, and lookup
+symbols. ps_pglobal_lookup is always UND in libthread_db, and gdb should
+have exported an arch version for the library to use :)
 
-Could we see the dmesg too?
-
--- 
-
->Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thu
-> he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
-_______________________________________________
-parisc-linux mailing list
-
->arisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+c.
