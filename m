@@ -1,30 +1,39 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id UAA07126
-	for <parisc-linux@sod.res.cmu.edu>; Wed, 21 Apr 1999 20:24:31 -0400
-Received: from localhost (adevries@localhost)
-	by devserv.devel.redhat.com (8.8.7/8.8.7) with SMTP id UAA12798
-	for <parisc-linux@thepuffingroup.com>; Wed, 21 Apr 1999 20:24:19 -0400
-Date: Wed, 21 Apr 1999 20:24:18 -0400 (EDT)
-From: Alex deVries <adevries@redhat.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id VAA09286
+	for <parisc-linux@sod.res.cmu.edu>; Wed, 21 Apr 1999 21:47:07 -0400
+Date: Wed, 21 Apr 1999 20:46:52 -0500
+From: Justin Maurer <justin@master.debian.org>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.3.96.990421202157.5593j-100000@devserv.devel.redhat.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Little bits of news.
+Message-ID: <19990421204652.A12635@master.debian.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] binutils build problems
 List-ID: <linux-parisc.vger.kernel.org>
 
+i've been trying to build binutils packages last night and tonight, and it
+seems to not want to configure properly.
 
-First, for all you folk expecting hardware who don't live in the US, I'd
-expect your boxes around the first of May. I think everyone else in the US
-who was supposed to get hardware has.
+when i use ./configure --prefix=/usr --with-gas --target=parisc-linux, i get
+the following error: 
 
-For all you searching for PA RISC 2.0 books, HP is being so kind as to get
-Prentice Hall to reprint a few just for us. 
+Invalid configuration `parisc-linux': machine `parisc' not recognized
+Unrecognized target system name parisc-linux.
 
-- Alex
+running perl -pi~ -e 's/hppa/parisc/' * takes care of that, but the configure
+fails again when it reaches the gas/ directory:
+
+configure: error: GAS does not know what format to use for target
+parisc-unknown-linux-gnu
+Configure in /home/parisc/cvs/binutils/gas failed, exiting.
+
+i still get the error after playing with the configure/configure.in/Makefiles,
+etc. puffin said i should report this here. is anyone else having this
+problem?
 
 -- 
-Alex deVries <puffin@redhat.com>     
-Red Hat Contrib Net maintainer          
-Ottawa, Canada  
-PA RISC Linux Porting Team
+-------------------------------------------------------------
+# Justin Maurer                                GNOME Hacker #
+# justin@debian.org                         Slashdot Author #
+# http://slashdot.org/           Debian GNU/Linux Developer #
+#     09 84 FC 03 13 AA 4A AF  F6 A4 85 9D 8C 96 B6 A4      #
+-------------------------------------------------------------
