@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
-	by dsl2.external.hp.com (Postfix) with SMTP id CDC554829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 11:51:46 -0600 (MDT)
-Date: 16 Apr 2003 17:51:45 -0000
-Message-ID: <20030416175145.5861.qmail@sources.redhat.com>
-To: danglin@gcc.gnu.org, gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
-	parisc-linux@lists.parisc-linux.org, tausq@debian.org
-From: danglin@gcc.gnu.org
-Reply-To: danglin@gcc.gnu.org, danglin@gcc.gnu.org,
-	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
-	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
-	gcc-gnats@gcc.gnu.org
-Subject: [parisc-linux] Re: target/10271: [3.2/3.3/3.4 regression] [HPPA] Floating point args don't get reloaded across function calls at -O2
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D6A9E4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 11:53:34 -0600 (MDT)
+Date: Wed, 16 Apr 2003 19:52:23 +0200
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] STI fb questions
+Message-ID: <20030416175223.GB4982@solo.franken.de>
+References: <Pine.LNX.4.44.0304161319540.28370-100000@sal.ucc.ie>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.44.0304161319540.28370-100000@sal.ucc.ie>
+From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,13 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Synopsis: [3.2/3.3/3.4 regression] [HPPA] Floating point args don't get reloaded across function calls at -O2
+On Wed, Apr 16, 2003 at 01:28:43PM +0100, M. Grabert wrote:
+> My Precisionbook obviously has a Visualize-EG with just 2MB.
+> So it should be able to display at least 800x600 in 24/32bit and
+> 1024x768 in 16bit, but it refuses to do so. 'dmesg' ALWAYS shows
+> only 8bit colour depth regardless of the display resolution.
 
-State-Changed-From-To: analyzed->closed
-State-Changed-By: danglin
-State-Changed-When: Wed Apr 16 17:51:45 2003
-State-Changed-Why:
-    Fixed.
-    <http://gcc.gnu.org/ml/gcc-patches/2003-04/msg01236.html>.
+Visualize-EG is 8 bit only. That's a hardware limitation.
 
-http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10271
+> My question is know, does STIfb also supports 16bit? How can I force
+> 16bit and 24/32bit colour depths? What does sti=8/24 exactly mean?
+
+stifb supports 32bit, if the hardware supports it. sti=8/24 is the
+hardware path taken from PDC.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
