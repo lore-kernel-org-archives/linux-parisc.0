@@ -1,38 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA00368
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Jun 1999 08:06:08 -0600
-Message-Id: <199906111406.KAA01206@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] booting problems
-To: law@cygnus.com
-Date: Fri, 11 Jun 1999 10:06:03 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: adevries@thepuffingroup.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <18273.929092119@upchuck.cygnus.com> from "Jeffrey A Law" at Jun 11, 99 03:08:39 am
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA00581
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Jun 1999 08:49:04 -0600
+Message-ID: <002f01beb419$84b9be20$e38f4b0f@cup.hp.com>
+From: "Rich Rauenzahn" <rrauenza@cup.hp.com>
+To: "Alex deVries" <adevries@thepuffingroup.com>,
+        <parisc-linux@thepuffingroup.com>
+References: <3760AA7F.9B62952E@thepuffingroup.com>
+Subject: Re: [parisc-linux] partitioning on HPUX
+Date: Fri, 11 Jun 1999 07:48:50 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
->   In message <3760CF80.887DA4C3@thepuffingroup.com>you write:
->   > Okay, I'm a bit better off now.  I've at least located the problem.  I
->   > copied the IPL straight out of Jason's binary, rebuilt, and it boots. 
->   > The next task is to figure out why the cross compiled version of ipl is
->   > broken, and how to fix it.
-> It could well be an endianness problem in the ELF tools if that's what you
-> are using to build stuff.
+Are you talking about the logical volume manager (LVM) (similar to
+Veritas's)?  That's the disk allocation scheme used most these days.
 
-While there could be an endianness problem, I think it more likely that
-it is how IPL is being linked and extracted into the LIF image.  Jason's
-link options, "-R 0 -N", specified a text origin of 0 and data following
-the text.  I think the default for ELF is to place the text at 0x1000 and
-data at 0x40000000.  The gnu ld equivalent for "-R 0" would appear to
-be "-Ttext 0".  I am not sure there is a direct equivalent for "-N".
-Maybe, you could use "-Tdata" to set the data location.  Maps might be
-useful to sort out what is going on.  Also, the SOM and ELF headers at the
-beginning of each binary may differ in size.  When I tried "-Ttext 0",
-the size of the ELF header seemed to change in size.  I think there
-is info in the header about its size, etc.
+Rich
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+----- Original Message -----
+From: Alex deVries <adevries@thepuffingroup.com>
+To: <parisc-linux@thepuffingroup.com>
+Sent: Thursday, June 10, 1999 11:19 PM
+Subject: [parisc-linux] partitioning on HPUX
+
+
+>
+> Can anyone here describe how HPUX does partitioning?  We're going to
+> have to look at this at some point for interoperability with HPUX
+> filesystems.
+>
+> - Alex
+>
+> --------------------------------------------------------------------------
+-
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com
+with
+> `unsubscribe' as the subject.
+>
