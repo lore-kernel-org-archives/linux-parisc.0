@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from delenn.fl.net.au (int-mail.syd.fl.net.au [202.181.0.28])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 236BD482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 16:00:44 -0600 (MDT)
-Received: from fl.net.au (idesign.fl.net.au [203.30.61.17])
-	by delenn.fl.net.au (Postfix) with ESMTP id 9D4E9180157
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 May 2002 08:04:27 +1000 (EST)
-Message-ID: <3CF54F85.7070106@fl.net.au>
-Date: Thu, 30 May 2002 08:00:37 +1000
-From: Duraid Madina <duraid@fl.net.au>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] A400-6X always crashes after a while
+To: Andy Walker <squawker@start.no>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Fast-Wide Diff. SCSI on a 735 
+In-Reply-To: Message from Andy Walker <squawker@start.no>
+   of "Wed, 29 May 2002 23:20:16 +0200." <1022707216.3cf54610c5ee8@nyepost.start.no>
+References: <200205291104.AA315359834@mail.centraltx.com> <20020529201334.8C23C482A@dsl2.external.hp.com>  <1022707216.3cf54610c5ee8@nyepost.start.no> 
+Date: Wed, 29 May 2002 17:32:57 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020529233258.D4CF0482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +19,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Using the 2.4.18-pa26 kernel on my A400-6X, the machine doesn't want to 
-stay alive for more than about a day. The console log shows this:
+Andy Walker wrote:
+> By the way, if I can get my hands on a 735/125 cpu/memory board, will
+> my /99 become a /125, or is there more to it than that?
 
-~~~
-Kernel panic: sba_iommu.c: I/O MMU @ fffffffffed22000 is out of mapping 
-resources
+I think so. I know someone here in Cupertino that stockpiles
+735/125 boards for that purpose. I know particular revs of
+firmware are required to run 125Mhz but don't know details.
 
- <6>sym53c896-3-<15,0>: extraneous data discarded.
-sym53c896-3-<15,0>: COMMAND FAILED (89 0) @0000000016c95800.
-Kernel panic: sba_iommu.c: I/O MMU @ fffffffffed22000 is out of mapping 
-resources
+Also note that the firmare is only *chip* upgradeable.
+ie, scavenge newer firmware chips from dead boxes if you can.
 
-In interrupt handler - not syncing
-~~~
-
-    Does anyone know what might be causing this?
-
-    tia,
-    Duraid
+grant
