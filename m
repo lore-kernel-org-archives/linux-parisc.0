@@ -1,31 +1,26 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA11066
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Sep 2000 10:16:18 -0600
-Date: Mon, 4 Sep 2000 12:15:55 -0400 (EDT)
-From: Andrew Park <apark@cdf.toronto.edu>
-To: parisc-linux@thepuffingroup.com
-In-Reply-To: <A4A5E4C468B5D11190220001FA6835DD04DD86BC@epixch003>
-Message-ID: <Pine.SOL.4.21.0009041213150.6280-100000@eddie.cdf>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA22150
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 00:23:27 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 5 Sep 2000 06:23:38 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA02970;
+	Tue, 5 Sep 2000 17:23:19 +1100
+Date: Tue, 5 Sep 2000 17:23:19 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: David Huggins-Daines <dhd@linuxcare.com>
+cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+Message-ID: <Pine.LNX.4.21.0009051645170.26782-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] syscalls...
+Subject: [parisc-linux] binutils merge
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+I've just completed a merge in both directions with the official binutils
+sources at sourceware.cygnus.com.  At this point in time, the two trees
+are virtually identical, so if you like, you can now get your binutils
+from sourceware.
 
-I'd like to work on the following item that was in the TODO list
-on the puffin group web site.
-
-check other arches for new syscalls we don't have and add them.
-
-I was just wondering whether there is someone working on it already.
-If so can we talk and divide the work load?
-Thanks
-
-
-Andrew Park
-           
-________________________________________________________________________ 
-CDFlab Systems Administrator                       www.cdf.utoronto.ca |
-GnuPG Signature              www.cdf.utoronto.ca/~apark/public_key.txt |
-------------------------------------------------------------------------
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
