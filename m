@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07493482A
-	for <parisc-linux@parisc-linux.org>; Mon, 14 Jan 2002 02:42:59 -0700 (MST)
-Subject: Re: [parisc-linux] atomic_t
-To: grundler@dsl2.external.hp.com (Grant Grundler)
-Date: Mon, 14 Jan 2002 09:54:44 +0000 (GMT)
-Cc: willy@debian.org (Matthew Wilcox), parisc-linux@parisc-linux.org
-In-Reply-To: <20020114040909.87321482A@dsl2.external.hp.com> from "Grant Grundler" at Jan 13, 2002 09:09:09 PM
+Received: from hermes.fachschaften.tu-muenchen.de (hermes.fachschaften.tu-muenchen.de [129.187.176.19])
+	by dsl2.external.hp.com (Postfix) with SMTP id 58E35482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 03:47:41 -0700 (MST)
+Date: Mon, 14 Jan 2002 11:47:16 +0100 (CET)
+From: Andreas Deresch <aderesch@fs.tum.de>
+Reply-To: Andreas Deresch <aderesch@fs.tum.de>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: sid vs woody (was 715/50)
+In-Reply-To: <20020113220723.673A7482A@dsl2.external.hp.com>
+Message-ID: <Pine.NEB.4.40.0201141140140.29083-100000@io.fachschaften.tu-muenchen.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E16Q3pE-0001DQ-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > exclusivity...  I thought we could eliminate it.
-> 
-> You are only looking at interactions between atomic_set
-> and atomic_add_return. Aren't there potentialially other
-> types of interactions with other atomic operations?
-> But I don't know. Alan Cox?
+> For the adventerous, edit the /etc/apt/sources.list to point
+          ~~~~~~~~~~~
+> to "sid" like this:
+>
+> deb http://http.us.debian.org/debian sid main contrib non-free
+> deb http://non-us.debian.org/debian-non-US sid/non-US main contrib non-free
+Shouldn't one use stable, testing and unstable, which are of course at the
+moment linked to potato, woody and sid respectively? Otherwise you will stay
+with sid even when it is declared stable (or unavailable) - and you don't
+want that, do you?  ;-)
 
-We had a discussion about some of this on #kernel. Its not clear. The
-x86 port "knows" that writes are going to be atomic. It means that
-
-	CPU1			CPU2
-value=4
-	atomic_set=0		atomic_add +1
-
-will result in an addition to the set value, or an addition then the
-entire result discarded for the set value. It won't (except in obscure
-hardware bug cases 8)) result in the set being lost during the add
-
-ie you might see 0 after those operations, or you might see 1, but you
-won't see 5 after both have completed.
+ad
