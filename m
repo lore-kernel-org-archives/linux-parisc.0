@@ -1,25 +1,22 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E9655484B
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 22 Jan 2004 19:09:08 -0700 (MST)
-Received: from localhost (localhost [127.0.0.1])
-	by colo.lackof.org (Postfix) with ESMTP id 45B8829809A
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 22 Jan 2004 19:09:08 -0700 (MST)
-Received: from colo.lackof.org ([127.0.0.1])
-	by localhost (colo [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 20863-01 for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 22 Jan 2004 19:09:07 -0700 (MST)
-Date: Thu, 22 Jan 2004 19:09:07 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel BUG at mm/shmem.c:585!
-Message-ID: <20040123020907.GJ13354@colo.lackof.org>
-References: <20040122213849.GG13354@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040122213849.GG13354@colo.lackof.org>
+Return-Path: <arnd@arndb.de>
+Received: from natsmtp01.rzone.de (natsmtp01.rzone.de [81.169.145.166])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AF0EA4840
+	for <parisc-linux@parisc-linux.org>;
+	Fri, 23 Jan 2004 08:14:18 -0700 (MST)
+Received: from dyn-9-152-210-118.boeblingen.de.ibm.com (blueice1a.de.ibm.com
+	[194.196.100.88])
+	by post.webmailer.de (8.12.10/8.12.10) with ESMTP id i0NFEGmi022317
+	for <parisc-linux@parisc-linux.org>;
+	Fri, 23 Jan 2004 16:14:16 +0100 (MET)
+From: Arnd Bergmann <arnd@arndb.de>
+To: parisc-linux@parisc-linux.org
+Date: Fri, 23 Jan 2004 16:09:56 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200401231609.56800.arnd@arndb.de>
+Cc: 
+Subject: [parisc-linux] missing barrier in _raw_spin_lock?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,15 +26,31 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thu, Jan 22, 2004 at 02:38:49PM -0700, Grant Grundler wrote:
-> Just booted 2.6.1-pa9 (-pa8 + SBA change) and got:
-> 
-> kernel BUG at mm/shmem.c:585!
-> Kernel addresses on the stack:
->  [<000000001016dc30>]  [<0000000010125cd8>]  [<0000000010111cd4>]  [<000000001010be4c>] 
->  [<000000001010b094>]
+We stumbled over a problem on s390 that can cause random memory corruption
+under high load on SMP. It turned out to be a missing on :"memory" clobber
+on the _raw_spin_lock primitive.
 
-I've associated this with logging out of ssh sessions.
-ie when I exit a remote login, the above output pops up in the console.
+As far as I can see, the same problem is in the parisc spinlock definition
+in linux-2.6.1, but none of the other architectures.
 
-grant
+The code below demonstrates the problem. With the broken spinlock, the
+compiler does not emit code for the second "if" or for the assignment.
+Similar code can be found in mempool_free().
+
+	Arnd <><
+
+----
+#include <linux/spinlock.h>
+
+static int x;
+static spinlock_t lock;
+
+void test(void)
+{
+        if (x) {
+                spin_lock(&lock);
+                if (!x)
+                        x = 0x1234;
+                spin_unlock(&lock);
+        }
+}
