@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B2E4F482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Jan 2002 09:17:15 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16RFDx-0000po-00; Thu, 17 Jan 2002 16:17:09 +0000
-Date: Thu, 17 Jan 2002 16:17:09 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Alexandre April <aapril@galeasec.com>
+Received: from amsfep13-int.chello.nl (amsfep13-int.chello.nl [213.46.243.23])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D378B482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 17 Jan 2002 16:09:30 -0700 (MST)
+Message-ID: <3C47ABFF.3090102@chello.nl>
+Date: Fri, 18 Jan 2002 06:00:47 +0100
+From: Arjen Hommersom <arjenh@chello.nl>
+MIME-Version: 1.0
+To: Thibaut VARENE <varenet@esiee.fr>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] irq vs smp
-Message-ID: <20020117161709.B30060@parcelfarce.linux.theplanet.co.uk>
-References: <LLENLJGPDFAGGGBLOAHKCEBLCFAA.aapril@galeasec.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <LLENLJGPDFAGGGBLOAHKCEBLCFAA.aapril@galeasec.com>; from aapril@galeasec.com on Thu, Jan 17, 2002 at 11:02:31AM -0500
+Subject: Re: [parisc-linux] 0.9.3 on a graphics console
+References: <117AF172-0904-11D6-AEFA-0030656F07A2@esiee.fr>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,16 +22,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jan 17, 2002 at 11:02:31AM -0500, Alexandre April wrote:
-> 
-> 	I'm developping a char driver for one of our PCI card in linux kernel
-> 2.4.2-2smp (Multi-processor). And the IRQ that I read from my pci config
-> space is 0x7 but the one that the kernel sees when I do "lspci -v" is 0x27.
-> Is there a way the pass from 0x7 to 0x27 using some kernel macro's.
+Thibaut VARENE wrote:
 
-you shouldn't read the irq directly from config space.  this is all done
-for you by the pci support code.  use the ->irq member of struct pci_dev
-instead.
+>>
+>> For hardware.. it's a C240 and sam reports a HP visualize FX2(4) as a 
+>> graphics card that is connected to a VGA monitor which works ok in 
+>> HP-UX. If you can tell me how to get more detailed hardware 
+>> information in HP UX, i'll be happy to provide it.
+>
+>
+> Well, I bet this specific off board graphic card is not supported.
+> Although onboard controllers are getting more and more supported, it 
+> is not the case for specific HP hardware.
+>
+> As there's no core graphics for your box, I suggest you to try with 
+> serial console.
 
--- 
-Revolutions do not require corporate support.
+
+Ah, that works, linux is up and running now :) Upgrading to 2.4.16-32 
+even allows me to use a  graphics console, so thats all great. However, 
+i do not see the penguin while booting and XFree doesnt seem to work, so 
+i suppose the framebuffer device doesn't work (?)
+
+I found in the mailinglist archive the thread "XFree86 on B180" that 
+suggests it might work if you treat this card as an 'artist graphics 
+card'. I'd be more than happy to test that if someone could give me some 
+details on how to do that.
+
+Thanks,
+
+Arjen Hommersom
