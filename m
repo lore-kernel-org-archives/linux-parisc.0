@@ -1,26 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mtvmime01.veritas.com (bay-bridge.veritas.com [143.127.3.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2F2334913
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 01:20:42 -0600 (MDT)
-Received: from [192.168.184.26]([192.168.184.26]) (1238 bytes) by megami
-	via sendmail with P:esmtp/R:smart_host/T:smtp
-	(sender: <hugh@veritas.com>)
-	id <m19qShU-000090C@megami>
-	for <linux-kernel@vger.kernel.org>; Sat, 23 Aug 2003 00:20:40 -0700 (PDT)
-	(Smail-3.2.0.101 1997-Dec-17 #15 built 2001-Aug-30)
-Date: Sat, 23 Aug 2003 08:22:19 +0100 (BST)
-From: Hugh Dickins <hugh@veritas.com>
-To: James Bottomley <James.Bottomley@SteelEye.com>
-Cc: "David S. Miller" <davem@redhat.com>, <willy@debian.org>,
-	Linux Kernel <linux-kernel@vger.kernel.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>,
-	<drepper@redhat.com>
-Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing tst-mmap-eofsync
- in glibc on parisc)
-In-Reply-To: <1061600974.2090.809.camel@mulgrave>
-Message-ID: <Pine.LNX.4.44.0308230820020.3590-100000@localhost.localdomain>
+Received: from spike2.ehosting.com (unknown [62.173.67.13])
+	by dsl2.external.hp.com (Postfix) with SMTP id EEA264876
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Aug 2003 02:31:27 -0600 (MDT)
+Message-ID: <1061627402.3f47260a748cd@webmail.v8fiesta.co.uk>
+Date: Sat, 23 Aug 2003 09:30:02 +0100
+From: mmogenius@v8fiesta.co.uk
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] USB keyboard support on boot
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -32,12 +20,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On 22 Aug 2003, James Bottomley wrote:
-> 
-> I suppose if we had a way of telling if any of the i_mmap list members
-> were really MAP_SHARED semantics mappings, then we could alter our
-> flush_dcache_page() implementation to work.
+Hi i am trying to install Debian 3.0 (woody) in my b2000 although once i have 
+booted from the cd to install i have no keyboard or mouse controal. Is usb 
+enabled by default ? 
 
-Good idea.  It's VM_MAYSHARE you need to check for.
+Thanks
 
-Hugh
+-------------------------------------------------
+This mail sent through IMP: http://horde.org/imp/
