@@ -1,20 +1,12 @@
+From: Russell King <rmk@arm.linux.org.uk>
+Subject: [parisc-linux] "vmalloc", friends and GFP flags
+Date: Wed, 1 Jan 2003 21:49:33 +0000
+Message-ID: <20030101214933.A26434__16167.791610542$1416622062$gmane$org@flint.arm.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-xfs@oss.sgi.com, parisc-linux@parisc-linux.org
+To: linux-kernel@vger.kernel.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pimout3-ext.prodigy.net (pimout3-ext.prodigy.net [207.115.63.102])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA6C4482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Jan 2003 21:28:09 -0700 (MST)
-Received: from pepp (adsl-67-116-83-209.dsl.lsan03.pacbell.net [67.116.83.209])
-	by pimout3-ext.prodigy.net (8.12.3 da nor stuldap/8.12.3) with SMTP id h114S5Ni083808
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 31 Jan 2003 23:28:09 -0500
-Reply-To: <adam.sk@groovy.ffloth.com>
-From: "Adam Skaffloth" <adam.sk@groovy.ffloth.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 31 Jan 2003 20:27:21 -0800
-Message-ID: <002d01c2c9aa$37400140$b601a8c0@pepp>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Tried to Install Debian 3r1 on C110, C180 and 2 712/60, no luck.
-Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -25,33 +17,111 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi !
+Hi,
 
-I wonder if someone could give me a help in the right direction.
-I have a C110, a C180 and 2 712/60.
-C110 would boot fine until you get to the first menu, then the keyboard
-would be out.
-I have tried the previous tricks about disconnect/reconnect the keyboard,
-but to no use.
-The Visualize-EG in C180 seems not be working, seen threads about that,
-so installed the Visualize-24 card from the C110 on the C180 and get the
-same result.
-Is this problem only related to the install or if I install using serial
-console would it be a head-less machine = no use ?
+This mail is being copied to the XFS and PARISC mailing lists.  You should
+probably trim the reply list as appropriate.
 
-I also read that their are no trouble with installing on 712/60.
-I got 2, one with the second LAN/Serial Card (So I can use it as a FW).
-Bot are starting but are hanging after the message:
+I've just been looking over the state of the ARM {dma,pci}_alloc_consistent
+wrt interrupts etc in 2.5.53, and decided to have a look around this area
+for other users.  I stumbled across the following unsafe areas.
 
-The Installation Program is determining the current state
-of your system and the next installation step that should
- be performed.
+a) parisc.  Looking at pa11_dma_alloc_consistent:
 
-It hangs there forever on both boxes.
+   pa11_dma_alloc_consistent
+	-> map_uncached_pages
+		-> (eventually) map_pmd_uncached
+			-> pte_alloc_kernel
+				-> pte_alloc_one_kernel
 
-Anyone succeded with a install of Debian 3 on the above HW that could give
-me a hand,
-I am giving PA Risc a chance until I need to put the Sparc and the Intel
-back into the plans.
+	static inline pte_t *
+	pte_alloc_one_kernel(struct mm_struct *mm, unsigned long addr)
+	{
+	        pte_t *pte = (pte_t *) __get_free_page(GFP_KERNEL);
+        	if (likely(pte != NULL))
+	                clear_page(pte);
+        	return pte;
+	}
 
-/ Adam
+   End result is that if pa11_dma_alloc_consistent() is called from
+   IRQ context, parisc calls __get_free_page using GFP_KERNEL.
+   Calling __get_free_page with GFP_KERNEL from IRQ context appears
+   to be unsafe (always has been.)
+
+b) xfs. XFS contains this bit of code:
+
+	static __inline unsigned int flag_convert(int flags)
+	{
+		...
+	        if (flags & KM_NOSLEEP)
+        	        return GFP_ATOMIC;
+	        /* If we're in a transaction, FS activity is not ok */
+        	else if ((current->flags & PF_FSTRANS) || (flags & KM_NOFS))
+	                return GFP_NOFS;
+        	else
+	                return GFP_KERNEL;
+	}
+
+	void *kmem_alloc(size_t size, int flags)
+	{
+		...
+                rval = __vmalloc(size, flag_convert(flags), PAGE_KERNEL);
+		...
+	}
+
+   Ok, so xfs can pass GFP_ATOMIC, GFP_NOFS and GFP_KERNEL to __vmalloc.
+   However, do these flags actually ensure what they suggest they do?
+
+   Lets look at __vmalloc:
+
+	void *__vmalloc(unsigned long size, int gfp_mask, pgprot_t prot)
+	{
+		...
+        	area = get_vm_area(size, VM_ALLOC);
+		...
+	}
+
+   and get_vm_area:
+
+	struct vm_struct *get_vm_area(unsigned long size, unsigned long flags)
+	{
+		...
+        	area = kmalloc(sizeof(*area), GFP_KERNEL);
+		...
+	}
+
+   Also, look at the PMD and PTE allocation functions, which also use
+   GFP_KERNEL.
+
+   Answer to the above question: no.  Is this unsafe?  Probably.
+
+Now, what does this all have to do with ARM and pci_alloc_consistent.
+It's the same problem, only I have a BUG_ON() in there to catch uses
+from IRQ context, which needs to disappear eventually.  (This is
+mainly a requirement for USB to work.)
+
+However, before this can happen, I believe I'd need the following:
+
+1. allocation of vm areas (via get_vm_area and friends) needs to become
+   IRQ-safe.
+
+   - vmlist_lock needs to become IRQ safe (but its held during vread/vwrite)
+   - kmalloc of vm_structs needs to have gfp flags passed in
+
+2. allocation of page tables (via pmd_alloc_kernel / pte_alloc_kernel)
+   needs to become IRQ-safe.
+
+   - pmd_alloc_kernel / pte_alloc_kernel needs to have gfp flags passed in
+   - map_vm_area would also need gfp flags
+
+The same solution also fixes the two instances described above.
+
+I suspect, however, that the vmlist_lock change will be unacceptable
+to many people however.  This doesn't affect XFS nor parisc, but would
+mean that I'd need to completely rewrite the ARM consistent memory
+allocation to use none of the above (which I think is the right
+approach, but means _all_ of the above becomes S.E.P. 8))
+
+-- 
+Russell King (rmk@arm.linux.org.uk)                The developer of ARM Linux
+             http://www.arm.linux.org.uk/personal/aboutme.html
