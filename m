@@ -1,48 +1,68 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA16880
-	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Dec 2000 06:03:15 -0700
-Received: from lightning.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 1 Dec 2000 13:05:43 -0000
-Subject: Re: [parisc-linux] XFree status
-To: grundler@cup.hp.com (Grant Grundler)
-Date: Fri, 1 Dec 2000 12:55:59 +0000 (GMT)
-Cc: alan@lxorguk.ukuu.org.uk (Alan Cox), parisc-linux@thepuffingroup.com
-In-Reply-To: <200012010740.XAA01023@milano.cup.hp.com> from "Grant Grundler" at Nov 30, 2000 11:40:10 PM
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA17750
+	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Dec 2000 07:02:25 -0700
+Received: from [194.88.164.1] (helo=hermes.intec-is.com)
+	by mail.sdt.net with esmtp (Exim 3.14 #5)
+	id 141qoK-00012n-00
+	for parisc-linux@thepuffingroup.com; Fri, 01 Dec 2000 15:05:12 +0100
+Message-ID: <D0F134B21994D111A2320800097DCB2C9E0B28@hermes.intec-is.com>
+From: Kai Walter <KaiW@intec-ag.com>
+To: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+Date: Fri, 1 Dec 2000 15:02:51 +0100 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E141pjO-0000Cr-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C05B9F.650DBA20"
+Subject: [parisc-linux] 715/33 hangs after request_irq(259,c01ecbec, 0x0, asp, c0fee080)
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > For I/O it seems that on things like the A180 the only way to do it is to use
-> > /dev/port and pread/pwrite the file handle for each port I/O.
-> 
-> Why do you think only I/O port space can be used for XFree86?
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-The initial card bring up is done as if it was an ISA device (PCI bus 
-has hacks for this). The emulator will use entirely I/O cycles to bring the
-card up in most cases.
+------_=_NextPart_001_01C05B9F.650DBA20
+Content-Type: text/plain;
+	charset="ISO-8859-1"
 
-> Is the BIOS/x86 emulator wanting to talk to VGA registers the issue?
+Hi
+ 
+got our 715/33 up with rbootd and Image-20000803. After the
+"request_irq(259,c01ecbec, 0x0, asp, c0fee080)" it stops booting/responding.
+Should I have a special Image for this machine ?
+ 
+Devices found are Stinger Optional Graphics, Scorpio Jr. Core
+BA,SCSI,LAN,HIL,RS-232,Centronics,Audio,(715/33) and (1).
+ 
+Thanks
+Kai
 
-To start with. Not all PC devices have MMIO at all.
+------_=_NextPart_001_01C05B9F.650DBA20
+Content-Type: text/html;
+	charset="ISO-8859-1"
 
-> jsm tells me VGA MMIO lives at 0xA0000.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
 
-That is the frame buffer memory.
 
-> Dino only forwards 0xf0800000 through FF80_0000-1 to the PCI bus below.
-> (See section 7.9 "Accessing PCI Memory Space" in dino3.pdf).
+<META content="MSHTML 5.50.4522.1800" name=GENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial 
+size=2>Hi</FONT></SPAN></DIV>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial size=2>got our 715/33 up 
+with rbootd and Image-20000803. After&nbsp;the "request_irq(259,c01ecbec, 0x0, 
+asp, c0fee080)" it stops booting/responding. Should I have a special Image for 
+this machine ?</FONT></SPAN></DIV>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial size=2>Devices found are 
+Stinger Optional Graphics, Scorpio Jr. Core 
+BA,SCSI,LAN,HIL,RS-232,Centronics,Audio,(715/33) and (1).</FONT></SPAN></DIV>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial 
+size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial 
+size=2>Thanks</FONT></SPAN></DIV>
+<DIV><SPAN class=077405913-01122000><FONT face=Arial 
+size=2>Kai</FONT></SPAN></DIV></BODY></HTML>
 
-Thats ok. PCI has BAR{n} registers to set base addresses. The rest is down to
-lying in the correct way to everybody concerned
-
-So we just need to set it up so that the PCI mapping of the registers is 
-put in the F080->FF80 range, and that XFree is told to mmap F080->FF80 range
-addresses but believing they are 0->n ranges.
-
-That kind of PCI fixup is quite doable. The older Alphas for example have
-byte, word and long access windows (the early alphas had no byte operations
-internally or at bus level) which was far worse.
-
-Alan
+------_=_NextPart_001_01C05B9F.650DBA20--
