@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from noose.gt.owl.de (noose.gt.owl.de [62.52.19.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 292B6482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 11:48:24 -0700 (MST)
-Date: Mon, 19 Nov 2001 19:46:23 +0100
-From: Richard Higson <richard.higson@gt.owl.de>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: rsync for CVS repository
-Message-ID: <20011119194623.C16755@glurp.gt.owl.de>
-References: <3BF7C6E2.D6B35170@freebel.net> <1006094625.3bf7c921363b6@webmail.tiscalinet.be> <20011119105054.B28328@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011119105054.B28328@lug-owl.de>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 340B9482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 11:52:33 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: "Pedot, Wolfgang" <wpedot@harris.com>,
+	'Parisc Linux Mailinglist' <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 2.4.14 and ISA-NE2000 StackDump
+Date: Mon, 19 Nov 2001 19:51:36 +0100
+References: <8D4C69676E66D511A1CB00508BBBB1921627E4@ranmx1.ran.harris.com>
+In-Reply-To: <8D4C69676E66D511A1CB00508BBBB1921627E4@ranmx1.ran.harris.com>
+MIME-Version: 1.0
+Message-Id: <20011119185233.340B9482C@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +24,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Nov 19, 2001 at 10:50:54AM +0100, Jan-Benedict Glaw wrote:
-> From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-> To: parisc-linux@lists.parisc-linux.org
-> Subject: Re: [parisc-linux] Re: rsync for CVS repository
-> Date: Mon, 19 Nov 2001 10:50:54 +0100
-> 
-Hi Jan-Benedict,
+Hi Wolfgang,
 
-I happen to have 'some' HP 715/50 boxes which just happened to become 'available'.
-You'd need to supply your own SCSI disk(s), because the ones I have
-are 'sort of loud', and probably within an hour or two of a head-crash
-(whereby I'm not too sure which side of the hour they're on ;-)
+I've no problems here with my ISA NE2000 and kernel 2.4.14-pa7:
 
-If you want to set them up as autobuilders or whatever, we could probably 
-add them to the farm at/near source.rfc822.org ;-)
+NE*000 ethercard probe at 0x340: 08 00 00 50 11 13
+eth0: NE2000 found at 0x340, using IRQ 10.
 
-I'm using an HP 715/100 at home; works like a charm; (uptime 27 days).
+pa64:~# uname -a
+Linux pa64 2.4.14-pa7 #2 Mon Nov 19 19:43:37 CET 2001 parisc unknown
 
-At the moment I'm just lurking, until we can safely 
-`apt-get update && apt-get upgrade && apt-get moo` again ;-)
+pa64:~# cat /proc/interrupts
+ IRQ      count         Region    ISR
+ 10:       2346            EISA  NE2000
 
-Richard (aka OpaH)
--- 
-Unix:        Your gun, Your bullet, Your foot, Your choice.
-M$-CE/ME/NT: Same as Unix, BUT: No choice, and We Aim Higher.
-Have a nice day ;-) Richard Higson mailto:richard.higson@gt.owl.de
+Sadly I've no idea why it doesn't work for you...
+
+Greetings,
+Helge
+
+On Monday 19 November 2001 15:16, Pedot, Wolfgang wrote:
+> Hi,
+>
+> I just tried to update to 2.4.14-pa6 and noticed a stackdump during
+> initialisation of my old NE2000 ISA-Nic which works fine using the last
+> 2.4.9 Kernel. After this stackdump i booted (reset used) 2.4.9 again and
+> the machine hung without any message druring initialistaion of the NE2000
+> (right after "NE*000 ethercard probe at 0x300:"). I had to power-cycle the
+> machine to make it work again.
+>
+> Heres the log-message:
+>
+> Last modified Nov 1, 2000 by Paul Gortmaker
+> NE*000 ethercard probe at 0x300:WARNING! Stack pointer and cr30 do not
+> correspond!
+>
+> Bad Address (null pointer deref?): Code=6 regs=100fe380 (Addr=50412d43)
+>
+> any hints?
+> Are there any guys arround here which made their ne2000 work with 2.4.14?
+> greetings
+>
+> Wolfgang Pedot
