@@ -1,19 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8074E482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Mar 2002 00:21:43 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16plH3-0004m5-00; Tue, 26 Mar 2002 07:21:41 +0000
-Date: Tue, 26 Mar 2002 07:21:41 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Dump: need disk layout function.
-Message-ID: <20020326072141.E22220@parcelfarce.linux.theplanet.co.uk>
-References: <3CA01EB4.52B5F416@admin.france.hp.com>
+Received: from mta03bw.bigpond.com (mta03bw.bigpond.com [139.134.6.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06E10482C
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Mar 2002 04:44:42 -0700 (MST)
+Received: from piglet.sspl.net.au ([144.135.24.72]) by
+          mta03bw.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id GTKWL700.BSF for <parisc-linux@parisc-linux.org>; Tue, 26 Mar
+          2002 21:43:55 +1000
+Received: (from pete@localhost)
+	by piglet.sspl.net.au (8.9.3/8.9.3) id WAA31399
+	for parisc-linux@parisc-linux.org; Tue, 26 Mar 2002 22:43:59 +1100
+Date: Tue, 26 Mar 2002 22:43:58 +1100
+From: Peter Lavender <plaven@bigpond.net.au>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20020326224358.B28171@piglet>
+Reply-To: plaven@bigpond.net.au
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3CA01EB4.52B5F416@admin.france.hp.com>; from bruno_vidal@hpfrcu03.france.hp.com on Tue, Mar 26, 2002 at 08:09:40AM +0100
+Subject: [parisc-linux] performance?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +28,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Mar 26, 2002 at 08:09:40AM +0100, Bruno Vidal wrote:
-> I'm looking for function that manage disk layout. In fact I'm looking
-> for functions that are able to return start block and end block of
-> a partition. Do you know if it exists (I'm sure that it exists), and where it is ?
-> By the way, I'm looking for a function (or structure) that return the HPA 
-> and the SPA of a disk (but for this I find nothing, except for the boot 
-> disk in page0).
+Hi Everyone,
 
-Tried fs/partitions/msdos.c?
+I know I have asked this sort of thing before, but I'm doing c++ this
+semester and as such I have been using the hppa box (715/64) wiht 128
+meg ram as my "dev" box.
 
-How can a disc have HPA and SPA?  Are you trying to find the HPA/SPA of
-the disc's controller?
+Compiling and running of a program that finds perfect numbers upto
+10000 is somewhat slow.. but that's ok..
+
+It wasn't until I compiled it on my p90 with 48 meg ram running a a
+zillion services and daemons that I noticed just how slow the 715 is.
+Running the program proved this even further.
+
+I thought the 715/64 was about similar in performance.. but this
+simple observation shows this not to be the case.
+
+As a webserver the 715 is fine... but I'm now thinking that when these
+exercises and assignments start getting bigger that the 715 will be
+just a little too slow for my liking.  This isn't a bad thing.. just
+an observation...
+
+
+
+Regards,
+
+Pete.
 
 -- 
-Revolutions do not require corporate support.
+				Due to a lack of imagination, 
+				this signature will remain 
+				under construction indefinately.
