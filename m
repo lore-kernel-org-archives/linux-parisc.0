@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 25 Jun 2003 13:21:57 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: ATY RAGE XL progress or Dino gscpci bridge pb?[was: Re: HP C180 video card]
-Message-ID: <20030625192157.GD8965@dsl2.external.hp.com>
-References: <20030624034442.GA28169@dsl2.external.hp.com> <3ED4C8B600009CA3@ocpmta1.freegates.net>
-Mime-Version: 1.0
+Received: from mail.cs.tu-berlin.de (mail.cs.tu-berlin.de [130.149.17.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D64894829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Jun 2003 15:29:59 -0600 (MDT)
+From: Matthias Klose <doko@cs.tu-berlin.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3ED4C8B600009CA3@ocpmta1.freegates.net>
+Message-ID: <16122.5027.155918.686357@gargle.gargle.HOWL>
+Date: Wed, 25 Jun 2003 23:26:59 +0200
+To: parisc-linux@lists.parisc-linux.org, binutils@sources.redhat.com
+Subject: [parisc-linux] binutils ICE while building todays gcc HEAD on hppa-linux
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,13 +20,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jun 25, 2003 at 11:43:51AM +0200, Joel Soete wrote:
-> Do you know where can I get more info on what have todo
-> (naturaly only pci_enable_device() doesn't help)?
+ICE in binutils-2.14.90.0.4 building gcc HEAD 20030625, while linking
+the shared libstdc++ library:
 
-Track down where in the code the MMIO read fails.
-If it's crashing *after* pci_enable_device() is called,
-then need to make sure the driver isn't directly reading
-PCI BARs and is using struct resources in the pci_dev.
+[...]
+-Wl,-soname -Wl,libstdc++.so.6 -o .libs/libstdc++.so.6.0.0
+/usr/bin/ld: BFD 2.14.90.0.4 20030523 Debian GNU/Linux internal error, aborting at ../../bfd/elf32-hppa.c line 3864 in elf32_hppa_relocate_section
 
-grant
+/usr/bin/ld: Please report this bug.
+
+collect2: ld returned 1 exit status
