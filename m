@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC7EB4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Jan 2003 01:24:21 -0700 (MST)
-Date: Thu, 9 Jan 2003 00:29:02 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] unaligned accesses
-Message-ID: <20030109082902.GF23535@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <200301090755.h097tadb003653@vilmos.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200301090755.h097tadb003653@vilmos.org>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8057A4829
+	for <parisc-linux@parisc-linux.org>; Thu,  9 Jan 2003 04:25:19 -0700 (MST)
+Date: Thu, 9 Jan 2003 12:24:39 +0100
+Message-ID: <3E082C0A00001EC1@ocpmta4.freegates.net>
+In-Reply-To: <3DED9BF500003DF9@ocpmta8.freegates.net>
+From: jsoe0708@tiscali.be
+To: parisc-linux@parisc-linux.org
+Cc: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	"John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	"Randolph Chung" <randolph@tausq.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] glibc or kernel problem?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,27 +24,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The other question. I am using emacs, and I regularly see these messages:
-> 
-> Jan  8 23:52:33 hp kernel: emacs(17795): unaligned access to 0x001cdaf2 at ip=0x0008937f
-> Jan  8 23:52:33 hp kernel: emacs(17795): unaligned access to 0x001cdaf2 at ip=0x0008930b
-> 
-> What are they?
+Hello Carlos, Dave, Randolph, ...
 
-Blame LaMont!
-(yes, I'm just kidding, I've just been waiting for my chance to say
-this... :-)
+>-- Original Message --
+>From: jsoe0708@tiscali.be
+>To: parisc-linux@parisc-linux.org
+>Subject: [parisc-linux] squid-2.xx dpkg failled to fork on pl (follow up=
+)
+>Date: Thu, 2 Jan 2003 18:04:01 +0100
+>
+>
+>Hi all,
+>
+>This small mail to mentionned that I reach to make squid operational on
+>a linux-2.4.20-pa17 thanks to the following tips:
+>
+>in debian rules replace statement
+>    ac_cv_func_setresuid=3Dno \
+>by
+>    ac_cv_func_setresuid=3Dyes \
+>
+>so that function leave_suid() [into src/tools.c] will use setresuid() in=
 
-On a more serious note, on parisc load/stores to half-words, words,
-doublewords have specific address alignment requirements. the message
-usually means the program in question is buggy and is making unaligned
-accesses. The unaligned access is trapped and emulated by the kernel, 
-so normally the message itself is simply informational.
+>place of seteuid() before launch fork().
+>
+>Is it a know problem on palinux?
+>
+I come back to you with this problem because it just supply a solution fo=
+r
+this problem and do not explain me the reason.
 
-This is definitely a FAQ.... maybe we should add it to the list :)
+I do not reach to know if it is a problem with seteuid() (IIRC in glibc)
+or a kernel problem.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+I already try to get a coredump, but it seems that in this case (fork SEG=
+V)
+linux (SQUID FAQ) is not able to produce any coredump [what I unfortunalt=
+ely
+verify during numeruous test].
+
+Is somebody have any better idea to help me to have a better idea of the
+actula problem?
+
+Thanks in advance,
+    Joel
+
+
+********************************************
+Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
+://adsl.tiscali.be
