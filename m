@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Tom <palinux@alaskatech.org>
-Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>,
-	debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] Something broken in dpkg/dselect/apt? 
-In-Reply-To: Message from Tom <palinux@alaskatech.org>
-   of "Sat, 23 Mar 2002 20:31:58 -0900." <Pine.LNX.4.33.0203232012090.18420-100000@goliath.alaskatech.org>
-References: <Pine.LNX.4.33.0203232012090.18420-100000@goliath.alaskatech.org> 
-Date: Sun, 24 Mar 2002 01:20:39 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020324082040.183814844@dsl2.external.hp.com>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3DC4C4841
+	for <parisc-linux@parisc-linux.org>; Sun, 24 Mar 2002 10:33:22 -0700 (MST)
+Date: Sun, 24 Mar 2002 09:33:16 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: <parisc-linux@parisc-linux.org>, <debian-hppa@lists.debian.org>
+Subject: Re: [parisc-linux] Re: Kernel 2.4.17-32-smp problem
+In-Reply-To: <20020324081432.82653483C@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.33L2.0203240928550.13376-100000@eiger.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,19 +22,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Tom wrote:
-> ...Shut it down, turned it on today, and now apt-get update
-> (or dselect update) fails. Updates download, then errors "Failed to fetch
-> -x-  rename failed, no such file or directory" and "couldn't stat -x- -
-> stat (2 no such file or directory". It then helpfully suggests that I
-> rerun the apt-get udpate...
+On Sun, 24 Mar 2002, Grant Grundler wrote:
 
-[ please follow up to debian-hppa list only ]
+> Jeremy Drake wrote:
+> > Recently, I ran apt-get upgrade, and it upgraded my kernel-image
+> > 2.4.17-32-smp.  I rebooted, and the box now crashes periodically.
+>
+> Where you running an SMP kernel before?
+> (If so, which version?)
 
-I see this if I happen to upgrade when I think the mirrors are getting
-sync'd. Retrying a few hours later usually worked for me.
-Locally, the problem time was around 12-4PM PST for debian mirrors
-external to HP.
+I was running 2.4.17-32-smp before.  It just updated a debian package of
+the same kernel version.  I had no problems with the old one, other than
+the fact that it seems to ignore cpu0.  All processor time goes to cpu1
+and cpu0 gets a ton of idle.
 
-hth,
-grant
+>
+> Normally I'd say get the latest (2.4.18 based) kernel.
+> But I know the SMP variant hangs on my A500 pretty quickly.
+> I haven't had a chance to debug this since I've been spending spare
+> cycle working on PA8700 support (bug workarounds in SBA code).
+
+When the box crashed both times, I was checking out the cvs tree :)
+
+>
+> IIRC, the debian buildd machine is also a J5000 and runs a
+> non-SMP kernel for similar (same?) reason.
+>
+> hth,
+> grant
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
+
+-- 
+Paranoia doesn't mean the whole world isn't out to get you.
