@@ -1,26 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B0EAD482A
-	for <parisc-linux@parisc-linux.org>; Mon, 23 Jul 2001 11:24:18 -0600 (MDT)
-Date: Mon, 23 Jul 2001 18:25:05 +0100
-From: Alan Cox <laughing@shared-source.org>
+Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 81AC4482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Jul 2001 15:00:06 -0600 (MDT)
+Date: Mon, 23 Jul 2001 22:59:49 +0200 (CEST)
+From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
 To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.7
-Message-ID: <20010723182505.A27310@lightning.swansea.linux.org.uk>
-References: <20010723172016.D9408@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010723172016.D9408@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Mon, Jul 23, 2001 at 05:20:16PM +0100
-Sender: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 715/100 with 0.92 not booting :(
+In-Reply-To: <20010720192900.K22691@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.BSF.4.30.0107232255200.822-100000@noc.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-I'd wait a bit on the 2.4.7 front, judging by the number of completion change
-bugs left in the tree. Maybe merge 2.4.7 after a few patches pop out 8)
+On Fri, 20 Jul 2001, Matthew Wilcox wrote:
+
+Hi,
+
+> On Fri, Jul 20, 2001 at 08:18:36PM +0200, Bjoern A. Zeeb wrote:
+> > PS: it's a bit confusing with those different iso images on different
+> > "mirrors" with different versionizing :(
+>
+> That's why 0.9.2 was released after we had 3 different versions of 0.9.1,
+> each with different bugs.
+
+Great, got it - but why isn't this announced on parisc-linux.org ?
+Putting .iso images or at least links to wouldn't be that bad on the
+master site but no only on one mirror.
+
+
+> I don't know what your problem is until I see the System.map which
+> the 0.9.2 cd shipped with.  Does anyone have this?
+
+Anything new about this ?
 
 -- 
-Alan Cox,			|    And the men we couldn't tame
-Red Hat Inc			|    We drove them into the west
-				|    Their songs and their stories still remain
-http://www.redhat.com		 \   What became of all I left ?
-					-- Show Of Hands
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
