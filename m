@@ -1,54 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 98D13482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:57:31 -0600 (MDT)
-Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
-	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f8LGIJG32638
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 12:18:19 -0400
-Received: (from carlos@localhost)
-	by sh.od.inet (8.11.0/8.11.0) id f8LFweS29699
-	for parisc-linux@lists.parisc-linux.org; Fri, 21 Sep 2001 11:58:40 -0400
-Date: Fri, 21 Sep 2001 11:58:40 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] testandset
-Message-ID: <20010921115840.C25803@megatonmonkey.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8C60D482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 10:05:48 -0600 (MDT)
+Message-Id: <200109211603.KAA01633@puffin.external.hp.com>
+To: =?iso-8859-1?Q?Andreas_H=E4rtel?= <andreas@malcolm.in-chemnitz.de>
+Cc: "Parisc-Linux (E-Mail)" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 712/60 boots fine 
+In-Reply-To: Message from =?iso-8859-1?Q?Andreas_H=E4rtel?= <andreas@malcolm.in-chemnitz.de>
+   of "Fri, 21 Sep 2001 10:38:24 +0200." <000401c14278$c79760e0$0350a8c0@genesis>
+Date: Fri, 21 Sep 2001 10:03:08 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+=?iso-8859-1?Q?Andreas_H=E4rtel?= wrote:
+> It is difficult to understand for a newbie, that PALO needs file system type
+> 'F0' but this type is unknown by fdisk.
+> Or the 2. mistake, the partition where vmlinux is located must be lower or
+> equal 2 GByte.
+
+Both issues are documented in the palo documentation.
+See "man palo" (which points to /usr/share/doc/palo/).
+The install ISO's also had/have a README.INSTALL that tells one about
+both issues as well.
+(Kudos to Paul Bame - he did an excellent job with both)
+
+Is there a more obvious place this should be documented?
+(ie where did you look?)
+
+> Thanks
 > 
-> because we're removing the testandset macro, replacing it with try_lock.
-> 
+> Andreas
 
-Noted.
-
-> > e) Packed it all back up as tar.bz2 (./debian rules seems to call for this)
-> 
-> No, definitely not, I don't know why you think you need to do that.
-> 
-
-Thus my belief that I'm using the dpkg-dev tools wrong.
-I read the docs late at night... maybe I didn't read them at all,
-maybe I just dreamt that I did? ;)
-
-> dpkg-source -x *dsc
-> cd glibc-*
-> frob 0lists & hppa.dpatch as above
-> put a copy of the kernel includes in /usr/src/linux/include rather than setting
-> LINUX_SOURCE
-> dpkg-buildpackage -B -a -rfakeroot
-
-I will give it another go (I've done a few compiles already).
-
-My 712/60 is painfully slow :} 
-Any recommendations for a faster machine?
-
-We're almost to the point of setting up (Paul is looking at it)
-pmake to build glibc. Hey, we've got a cluster for a reason.
-
-Has anyone on this list used fai with hppa on this list?
-http://www.informatik.uni-koeln.de/fai/.
-(Hrm.. I'll post to beowulf@beowulf.org)
-
-c.
+thanks,
+grant
