@@ -1,52 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA24316
-	for <parisc-linux@puffin.external.hp.com>; Mon, 6 Dec 1999 13:55:03 -0700
-Date: Mon, 6 Dec 1999 19:34:47 +0100
-From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] txn_alloc_irq() change
-Message-Id: <19991206193447.B21512@mathe.stud.uni-erlangen.de>
-References: <199912060631.WAA16626@milano.cup.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA24551
+	for <parisc-linux@puffin.external.hp.com>; Mon, 6 Dec 1999 14:04:39 -0700
+Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
+	by atlrel1.hp.com (Postfix) with ESMTP id BFCA1170E4
+	for <parisc-linux@thepuffingroup.com>; Mon,  6 Dec 1999 13:50:46 -0500 (EST)
+Received: from hp.com (localhost [127.0.0.1]) by xsvr4.cup.hp.com with ESMTP (8.7.6/8.7.3) id KAA11982 for <parisc-linux@thepuffingroup.com>; Mon, 6 Dec 1999 10:50:45 -0800 (PST)
+Sender: frowand@cup.hp.com
+Message-ID: <384C0585.9F444390@hp.com>
+Date: Mon, 06 Dec 1999 10:50:45 -0800
+From: Frank Rowand <frank_rowand@hp.com>
+Reply-To: frowand@cup.hp.com
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] bad news, good news, unkown (Temp CR used as permanent storage)
+References: <199912032052.MAA02894@xsvr4.cup.hp.com> <19991204212623.B19280@mathe.stud.uni-erlangen.de>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199912060631.WAA16626@milano.cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I was working through Message Signalled Interrupt (aka TBIs) allocation
-> and realized our current txn_alloc_irq() implementation needs to accepted
-> at least one parameter. The parameter would indicate a (one of two)
-> capability of the caller's device. Returning a negative irq indicates
-> the host can't support the device because the host doesn't have a
-> compatible resource.
+Philipp Rumpf wrote:
 
-The original plan was to hide txn_alloc_irq (which I still think is a bad
-name as no-one is going to remember it) in bus-specific wrappers --
-gsc_alloc_irq is one, though the Dino driver does not use it currently.
+< stuff deleted >
 
-So this doesn't even affect "well-written" drivers.  Changing txn_alloc_irq
-isn't exactly high-priority as all systems that use <= 31 interrupt-generating
-devices (which I guess are the systems we're currently working with) should
-work just fine right now.
+> > (Of course, the obvious exception is that the Temporary Control
+> > Registers are undefined when the kernel's HPMC handler is called.)
+> 
+> How is that obvious ?  I would have expected the firmware HPMC handler
 
->         /* enable_irq() will use txn_* to program IRdT (PAT only) */
->         vi->vi_txn_addr = txn_alloc_addr(vi->vi_txn_irq);
->         vi->vi_txn_data = txn_alloc_data(vi->vi_txn_irq);
+Ahhh, obvious if one had read the comments at the beginning of the basic
+hpmc handler that I submitted.  Or read p. 1-16 of pdce.pdf, "PA-RISC 2.0
+Formware Architecture Reference Specification: Processor Dependent Code
+(PDC) Procedures (Part 2/2)" at
+http://thepuffingroup.com/parisc/documentation.html
 
-txn_alloc_{addr,data} are confusing names as those functions don't actually
-allocate anything.
+OK, so it's not so obvious....
 
-> In addition, I would like folks to tell me if we should add a second
-> parameter to indicate how "wide" the "txn_addr" can be. I had assumed
-> the width of a host processor pointer address but cards may not support
-> enough bits (ie 32-bit card won't work on system which wants 40-bit or
-> 44-bit physical addr). AFAIK PA-Risc systems have processors aliased to
-> below 4GB physical address and thus it won't be an issue for our port.
-> But other architectures do support MSI and it seems easy to avoid
-> nasty surprizes later.
-
-This, again, depends on the bus.  For PCI, either your card supports dual
-address cycles and you can use 64 bits, or it doesn't, in which case your
-system needs to alias everything below 4 GB anyway.
-
-	Philipp Rumpf
+-Frank
