@@ -1,34 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA24639
-	for <parisc-linux@puffin.external.hp.com>; Sun, 6 Feb 2000 07:48:13 -0700
-Received: from hub-fue by rachael.franken.de
-	via rmail with uucp
-	id <m12HS0D-0027WpC@rachael.franken.de>
-	for thepuffingroup.com!parisc-linux; Sun, 6 Feb 2000 14:45:25 +0100 (MET)
-	(Smail-3.2 1996-Jul-4 #4 built DST-Sep-8)
-Received: (from tsbogend@localhost)
-	by alpha.franken.de (8.8.7/8.8.5) id OAA00878
-	for parisc-linux@thepuffingroup.com; Sun, 6 Feb 2000 14:38:06 +0100
-Date: Sun, 6 Feb 2000 14:38:06 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA26147
+	for <parisc-linux@puffin.external.hp.com>; Sun, 6 Feb 2000 10:56:45 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
+	by palrel1.hp.com (Postfix) with ESMTP id B7B94173
+	for <parisc-linux@thepuffingroup.com>; Sun,  6 Feb 2000 08:53:32 -0800 (PST)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0.1) id IAA09946 for <parisc-linux@thepuffingroup.com>; Sun, 6 Feb 2000 08:54:24 -0800 (PST)
+Message-Id: <200002061654.IAA09946@milano.cup.hp.com>
 To: parisc-linux@thepuffingroup.com
-Message-ID: <20000206143806.A871@alpha.franken.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Merge with 2.3-current
+Subject: Re: [parisc-linux] Tulip driver 
+In-reply-to: Your message of "Sun, 06 Feb 2000 02:46:51 PST."
+             <20000206024651.B3143@alpha.franken.de>
+Date: Sun, 06 Feb 2000 08:54:23 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+Thomas Bogendoerfer wrote:
+> ...The SROMs of the
+> tulips behind the card mode dino are looking stranger, they seem
+> to be from a time before Digital released a sane SROM documentation
+> and might confuse the driver as well. But since the machine hangs,
+> when the driver tries to probe the second tulip on the card, this
+> isn't an issue, yet.
 
-in our IRC meeting on friday we had a little discussion whether to merge
-with a more recent 2.3 kernel version or not. I now have a reason why we
-need to update ASAP to a newer kernel. NFS is broken in 2.3.29 :-(
-I'm going to update my local tree to see whether we need to do more work
-for nfs.
+Thomas,
+I looked at the console output you sent me and I saw several things
+not correct (which I'm trying to fix) right away:
+o I/O BAR's where not getting programmed correctly.
+  (both tulips fighting for the same I/O Port address (0) caused the hang)
+o command register was not set
+o cacheline size and latency timer were not getting set.
 
-Thomas.
+Now I have the opposite problem: PCI code finds and initiliazes the
+tulips behind card-mode Dino but tulip.c doesn't want to talk to them.
+So I can't really say for sure my changes work.
 
--- 
-   This device has completely bogus header. Compaq scores again :-|
-It's a host bridge, but it should be called ghost bridge instead ;^)
-                                        [Martin `MJ' Mares on linux-kernel]
+I've committed my code anyway since the oboard tulip continues to work.
+Perhaps you can take another look at this.
+
+thanks
+grant
+
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
