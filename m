@@ -1,18 +1,20 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: 2.6.10-rc1-pa16 still panic on c110 [WAS: [parisc-linux] c110
 	panic when try to boot 2.6.10-rc1-pa11?]
-Date: Sun, 21 Nov 2004 14:40:00 -0700
-Message-ID: <20041121214000.GC1477@colo.lackof.org>
+Date: Sat, 27 Nov 2004 18:48:35 +0000
+Message-ID: <41A8CC03.7010701@tiscali.be>
 References: <41966398.4070303@tiscali.be> <419FAAF4.4030608@tiscali.be>
 	<20041121000403.GF11503@colo.lackof.org>
 	<41A0BFD2.4020205@tiscali.be>
+	<20041121214000.GC1477@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=us-ascii;
+  format=flowed
 Cc: List Parisc <parisc-linux@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41A0BFD2.4020205@tiscali.be>
+In-Reply-To: <20041121214000.GC1477@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,19 +25,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Nov 21, 2004 at 04:18:26PM +0000, Joel Soete wrote:
-> That works far better: no more panic at boot time :))
+Hello Grant,
 
-good. I think the other problems you are have are either real HW problems,
-bugs in the driver or bugs in the hard disk firmware.
-You can rule out some of the hard disk firmware bugs by checking for
-newer versions of the firmware either at HP's site (URL
-is in the parisc-linux FAQ) or disk vendor's site.
+Just a short followup:
 
-Real HW might be "fixed" by a "low level format".
-See scsiformat in scsitools package.
+Grant Grundler wrote:
+> On Sun, Nov 21, 2004 at 04:18:26PM +0000, Joel Soete wrote:
+> 
+>>That works far better: no more panic at boot time :))
+> 
+> 
+> good. I think the other problems you are have are either real HW problems,
+I used one of the latest support+ cd I had (hpux 11.0 March 2003) and ODE DISKUTIL (I am not a hp engineer so I can get passwd for 
+DISKEXPT, as well as LASIDIAG) (so that I don't have change system) but it doesn't detect any read error :(
 
-grant
+> bugs in the driver or bugs in the hard disk firmware.
+
+> You can rule out some of the hard disk firmware bugs by checking for
+> newer versions of the firmware either at HP's site (URL
+> is in the parisc-linux FAQ) 
+Unfortunately I didn't find any fw upgrade available for this 'SEAGATE ST34573W' (presently fw revision HP11) into 
+<ftp://us-ffs.external.hp.com/firmware_patches/hp/disk/catalog> and http://itrc.hp.com/ is unavailable right now :(
+
+> or disk vendor's site.
+> 
+It's a hp disk supply so I would prefer a hp 'patch'
+
+> Real HW might be "fixed" by a "low level format".
+> See scsiformat in scsitools package.
+> 
+I will see as ultimate solution ;)
+
+Thanks,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
