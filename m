@@ -1,24 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA23844
-	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Mar 2000 07:27:10 -0700
-Received: from seger.axis.se (seger.axis.se [192.168.2.150])
-	by roma.axis.se (8.9.3/8.9.3) with ESMTP id QAA06996
-	for <parisc-linux@thepuffingroup.com>; Tue, 28 Mar 2000 16:27:07 +0200 (MEST)
-Received: from axis.com (localhost [127.0.0.1])
-	by seger.axis.se (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id QAA05055
-	for <parisc-linux@thepuffingroup.com>; Tue, 28 Mar 2000 16:27:07 +0200
-Message-Id: <200003281427.QAA05055@seger.axis.se>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA24282
+	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Mar 2000 08:00:06 -0700
+Date: Tue, 28 Mar 2000 10:00:00 -0500 (EST)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 28 Mar 2000 16:27:07 +0200
-From: Lars Segerlund <lars.segerlund@axis.com>
-Subject: [parisc-linux] Current status ?
+Subject: Re: [parisc-linux] gcc 2.9
+In-Reply-To: <Pine.LNX.4.10.10003252208590.28525-100000@morph.net>
+Message-ID: <Pine.BSO.4.21.0003271414330.24803-100000@mojo.calyx.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-  I just wanted to ask if you think the kernel is good enough to use on a 
-725/50,
- it would be nice to start building packages.
+I'm also still having problems getting cross-gcc 2.9 compiled.
 
- / seger.
+One of the problems is that I elected to actually package and install
+binutils with the debian scripts.  For some reason (maybe it's a
+reasonable default considering the nature of the packages, but you'd
+think with autoconf and all...), the gcc script uses the directory you 
+give it as the install prefix in order to find the binutils "build
+tooldir", so unless you are installing gcc and binutils at the same
+prefix, it won't find the hppa binary tools and won't assemble
+libgcc1.null, even if you have e.g. hppa1.1-linux-as in your path.
+
+However, even after an ln /usr/hppa1.1-linux/bin/
+/usr/src/parisc/hppa1.1-linux/bin it still fails, this time with:
+
+FATAL: Can't create dummy.o: Invalid bfd target
+
+I think this is prior to where the recipe says it is supposed to
+fail.  Mainly because a make install doesn't actually install 
+a hppa1.1-linux-gcc binary (I have to cp it from the build directory).
+I get a similar error if I then go on to try to compile
+PALO, when creating crt0.o.
+
+My guess is some ALPHA tool or lib is still getting mixed in 
+with the parisc stuff, but what, and what variables do I set to
+correct for it?
+
+--
+Brian S. Julin
