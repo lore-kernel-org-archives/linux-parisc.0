@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DDE114831
-	for <parisc-linux@parisc-linux.org>; Wed, 10 Sep 2003 06:21:16 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 19x3yD-0005OP-GS; Wed, 10 Sep 2003 13:21:13 +0100
-Date: Wed, 10 Sep 2003 13:21:13 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <joel.soete@tiscali.be>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] cvs pserver access pb?
-Message-ID: <20030910122113.GS18654@parcelfarce.linux.theplanet.co.uk>
-References: <3F5F15B7.7060103@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F5F15B7.7060103@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E7234831
+	for <parisc-linux@parisc-linux.org>; Wed, 10 Sep 2003 06:42:04 -0600 (MDT)
+Message-ID: <3F5F1C24.8060205@tiscali.be>
+Date: Wed, 10 Sep 2003 12:42:12 +0000
+From: Joel Soete <joel.soete@tiscali.be>
+MIME-Version: 1.0
+To: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] cacheflush.h patch?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +21,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Sep 10, 2003 at 12:14:47PM +0000, Joel Soete wrote:
-> cvs [update aborted]: connect to 
-> cvs.parisc-linux.org(192.25.206.14):2401 failed: Connection timed out
+Hi Randolph,
 
-It went down last night shortly after I went to bed.  We're waiting for
-someone in Fort Collins to get in and reboot it.  I would guess that's
-2-3 hours from now.
+As you may already read before, I experiment  pb  with  SMP  kernel  
+2.4  on  a N server and we suspect a tlb management pb.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+On the other hand, I read your patch:   
+http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2003-September/033367.html
+
+May I ask you more details on the reason of this patch?
+
+Could (would) it be back-ported to 2.4?
+
+Thanks in advance,
+    Joel
