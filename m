@@ -1,18 +1,20 @@
-Return-Path: <q-funk@pp.fishpool.fi>
-Received: from hal.pp.fishpool.fi (seven.fishpool.fi [195.197.229.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1365B487E
+Return-Path: <ajwalker@broadpark.no>
+Received: from mail.broadpark.no (mail.broadpark.no [217.13.4.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5D89C487E
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 13 Mar 2004 13:45:03 -0700 (MST)
-Date: Sat, 13 Mar 2004 22:45:01 +0200 (EET)
-From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
+	Sat, 13 Mar 2004 14:43:28 -0700 (MST)
+Received: from tolstoy.puszczka.com (47.80-202-73.nextgentel.com
+	[80.202.73.47])
+	by mail.broadpark.no (Postfix) with ESMTP id 363A78D79
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 13 Mar 2004 22:43:27 +0100 (MET)
+Message-ID: <45740.127.0.0.1.1079214694.squirrel@www.puszczka.com>
+Date: Sat, 13 Mar 2004 22:51:34 +0100 (CET)
+From: "Andy Walker" <ajwalker@broadpark.no>
 To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.LNX.4.21.0402201213540.1008-100000@hal.pp.fishpool.fi>
-Message-ID: <Pine.LNX.4.21.0403132243210.4150-100000@hal.pp.fishpool.fi>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Cc: debian-hppa@lists.debian.org
-Subject: [parisc-linux] OSS Harmony drivers still missing and ALSA not yet
- working = sound broken
+Content-Type: text/plain;charset=iso-8859-1
+Subject: [parisc-linux] (no subject)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,61 +24,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This was the case in 2.6.3 and still is the case.
+My B132L has its console on an HCRX24 GSC card (A4071B_LZ). In 2.4.25-pa1
+it defaults to 32bpp and works fine. In 2.6.4-rc1-pa2 (and 2.6.3-pa0)
+it now defaults to 8bpp which also works fine. I want to run the card in
+32bpp though, but if I try stifb=bpp:32, or hardcoding the equivalent
+in stifb.c then the machine locks hard immediately after switching to
+the sti console. The screen is full of corrupted junk from the previous
+shutdown and I have to hit the power button to boot again.
 
-On Fri, 20 Feb 2004, Martin-=C9ric Racine wrote:
+The HCRX24 is correctly identified in stifb.c as S9000_ID_HCRX and
+IS_24_DEVICE(fb) is true. Is anybody using one of these cards in 32bpp?
+I see that the code has been shuffled around a fair bit between 2.4.25
+and 2.6.x and I'm not exactly sure where to start looking for problems.
+Tips?
 
-> Now that I notice, the old OSS driver fails to be included, even though i=
-t was
-> defined in the config:
->=20
-> CONFIG_SOUND=3Dm
-> CONFIG_SND=3Dm
-> CONFIG_SND_SEQUENCER=3Dm
-> CONFIG_SND_SEQ_DUMMY=3Dm
-> CONFIG_SND_OSSEMUL=3Dy
-> CONFIG_SND_MIXER_OSS=3Dm
-> CONFIG_SND_PCM_OSS=3Dm
-> CONFIG_SND_SEQUENCER_OSS=3Dy
-> # CONFIG_SND_VERBOSE_PRINTK is not set
-> # CONFIG_SND_DEBUG is not set
-> CONFIG_SND_DUMMY=3Dm
-> CONFIG_SND_VIRMIDI=3Dm
-> # CONFIG_SND_MTPAV is not set
-> # CONFIG_SND_SERIAL_U16550 is not set
-> # CONFIG_SND_MPU401 is not set
-> CONFIG_SND_HARMONY=3Dm
-> # CONFIG_SOUND_PRIME is not set
-> CONFIG_SOUND_HARMONY=3Dm
->=20
-> <root@zarya:/root># tree /lib/modules/2.6.3-pa0/kernel/sound/
-> /lib/modules/2.6.3-pa0/kernel/sound/
-> |-- core
-> |   |-- oss
-> |   |   |-- snd-mixer-oss.ko
-> |   |   `-- snd-pcm-oss.ko
-> |   |-- seq
-> |   |   |-- oss
-> |   |   |   `-- snd-seq-oss.ko
-> |   |   |-- snd-seq-device.ko
-> |   |   |-- snd-seq-dummy.ko
-> |   |   |-- snd-seq-midi-event.ko
-> |   |   |-- snd-seq-virmidi.ko
-> |   |   `-- snd-seq.ko
-> |   |-- snd-page-alloc.ko
-> |   |-- snd-pcm.ko
-> |   |-- snd-rawmidi.ko
-> |   |-- snd-timer.ko
-> |   `-- snd.ko
-> |-- drivers
-> |   |-- snd-dummy.ko
-> |   `-- snd-virmidi.ko
-> |-- parisc
-> |   `-- snd-harmony.ko
-> `-- soundcore.ko
-> =20
-> 6 directories, 17 files
-
---=20
-Martin-=C9ric Racine, ICT Consultant
-http://www.pp.fishpool.fi/~q-funk/
+cheers,
+-Andy
