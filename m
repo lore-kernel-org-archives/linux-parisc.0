@@ -1,20 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D0B224840
-	for <parisc-linux@parisc-linux.org>; Mon, 14 Jul 2003 13:47:20 -0600 (MDT)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h6EJlFI15031;
-	Mon, 14 Jul 2003 15:47:15 -0400
-Subject: RE: [parisc-linux] [PATCH] fix arbitrary limits on stack size
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <3F0BEA8300001164@ocpmta1.freegates.net>
-References: <3F0BEA8300001164@ocpmta1.freegates.net>
-Content-Type: text/plain
-Date: 14 Jul 2003 14:47:14 -0500
-Message-Id: <1058212036.2966.13.camel@mulgrave>
+Date: Mon, 14 Jul 2003 13:48:24 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.21-paX on an rp2430
+Message-ID: <20030714194824.GD23545@dsl2.external.hp.com>
+References: <20030714182347.GC14114@systemhalted>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030714182347.GC14114@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,18 +20,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 2003-07-14 at 05:48, Joel Soete wrote:
-> I don' t remember the historical reason of this choice but do you think it
-> is possible to back-port it into 2.4 (it will facilitate so much the merge
-> with upstream?)
+On Mon, Jul 14, 2003 at 02:23:47PM -0400, Carlos O'Donell wrote:
+> Has anyone tried testing the prebuilt kernels on newer machines?
 
-Well, I suppose, theoretically.
+sorry - I still build my own to test my own changes.
 
-However, before we consider backporting, what I really need is for
-people to test it.  Downward growing mappings may cause application
-issues:  If you map to an unspecified address, you may be surprised to
-discover that you can't expand the mapping upwards.  Of course, no
-application should ever depend on being able to expand unspecified maps
-in either direction, but you never know...
+> I also tried a newer vmlinux-2.4.20-pa10-UP and the kernel oopses :(
 
-James
+i've uploaded a *PRE-RELEASE* 2.4.21-pa5.tgz to:
+	ftp://ftp.parisc-linux.org/kernels/a500/2.4.21-pa5.tgz
+
+This boots and runs on my a500-65 and recent rp2430s.
+
+FYI, I used lifimage-2.4.20-pa35-20030513 which I think
+came from the ESIEE web site. Should be available from ftp.p-l.o
+as well.
+
+grant
