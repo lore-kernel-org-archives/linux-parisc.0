@@ -1,39 +1,26 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA08966
-	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Dec 1999 11:31:51 -0700
-Message-Id: <199912011833.NAA17015@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA09077
+	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Dec 1999 11:33:09 -0700
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 1 Dec 1999 18:35:07 -0000
 Subject: Re: [parisc-linux] Progress - Update
-To: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Date: Wed, 1 Dec 1999 13:33:09 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de, mklein@dis.com,
-        alan@lxorguk.ukuu.org.uk, sieler@allegro.com,
+To: adevries@thepuffingroup.com (Alex deVries)
+Date: Wed, 1 Dec 1999 18:34:33 +0000 (GMT)
+Cc: alan@lxorguk.ukuu.org.uk, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+        dave@hiauly1.hia.nrc.ca, mklein@dis.com, sieler@allegro.com,
         parisc-linux@thepuffingroup.com
-In-Reply-To: <E11tE6d-0008Lk-00@the-village.bc.nu> from "Alan Cox" at Dec 1, 99 06:03:39 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <38456905.BF53929B@thepuffingroup.com> from "Alex deVries" at Dec 1, 99 01:29:25 pm
+Content-Type: text
+Message-Id: <E11tEaY-0008Ob-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
+> Alan Cox wrote:
+> > > IMHO we really should do the 2.3 merge first.
+> > Yep
 > 
-> > 
-> > Furthermore we have to care for cases like:
-> > 
-> > 	var = 1;
-> > x=0;
-> > CPU0		CPU1
-> > xchg(&var,x);	test_and_set_bit(0, &var);
-> 
-> Umm. Does anyone actually rely on that ? Im not sure the non x86 ports have
-> that property
+> So when do people think we should do that merge?
 
-Also, we may need to flush the cache line for &var.  The coding in buffer.c
-which caused the original panic in xchg looks dubiousin this regoard:
-
-        /* Update the reuse list */
-		tail->b_next_free = xchg(&reuse_list, NULL);
-		reuse_list = bh;
-
-
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+2.3.29 is probably a good candidate for this. Its reasonably solid and has
+all the relevant stuff that we need to update to handle. 2.3.30pre looks a bit
+shaky right now and chasing pre releases wouldnt be fun
