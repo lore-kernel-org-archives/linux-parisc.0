@@ -1,17 +1,15 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] ext3 perf patch#4
-Date: Sun, 27 Mar 2005 20:48:38 -0700
-Message-ID: <20050328034838.GI30963@colo.lackof.org>
-References: <20050326103540.GA31557@colo.lackof.org>
-	<20050327011849.GD9287@colo.lackof.org>
-	<4246B9D2.7070906@tiscali.be>
+Subject: Re: [parisc-linux] k-class drivers/parisc/ccio-dma.c
+Date: Mon, 28 Mar 2005 00:05:27 -0700
+Message-ID: <20050328070527.GK30963@colo.lackof.org>
+References: <20050327161520.GA15500@ing.umu.se>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: Anders <dizzey@ing.umu.se>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4246B9D2.7070906@tiscali.be>
+In-Reply-To: <20050327161520.GA15500@ing.umu.se>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,52 +20,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Mar 27, 2005 at 01:49:06PM +0000, Joel Soete wrote:
-...
-> # time rsync -a /Debian-apt/SRC/linux-2.6.12-rc1-pa4-050327 /Sources/CVS-tst
+On Sun, Mar 27, 2005 at 06:15:20PM +0200, Anders wrote:
+> im having trouble with booting the 2.6 kernels on a k460.
 > 
-> real    3m34.512s
-> user    1m0.730s
-> sys     1m6.440s
+> --------------------------------------------------------
+> CPU(s): 4 x PA8000 (PCX-U) at 180.000000 MHz
+> Setting cache flush threshold to 40 (4 CPUs online)
+> Found U2 at 0xfff8a000
+> kernel BUG at drivers/parisc/ccio-dma.c:1317!
 
-Joel,
-thanks for the data!
+Can you try this change to line 1317?
 
-But I don't know what it means.
-Was the performance bad for that box before?
+-       BUG_ON(ioc->pdir_size >= 4 * 1024 * 1024);   /* max pdir size < 4MB */
++       BUG_ON(ioc->pdir_size > (8 * 1024 * 1024));   /* max pdir size <= 8MB */
 
-> I prefer simply tar and so:
-> # cd /Debian-apt/SRC
-> # time tar -cslpf /chroot/Develop/linux-2.6.12-rc1-pa4.tar2 
-> linux-2.6.12-rc1-pa4-050327
-> 
-> real    0m38.487s
-> user    0m3.690s
-> sys     0m18.650s
-> 
-> a sample iostat too :-)
-> avg-cpu:  %user   %nice    %sys %iowait   %idle
->           15.70    0.00   47.00   37.30    0.00
-> 
-> Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
-> sda               2.50         0.00        19.60          0        196
-> sdb             297.30      5906.40        89.20      59064        892
-> sdc              15.10         0.00      7712.80          0      77128
-...
 
-That looks fine.
-
-> still have to test on a quicker system as the b2k if that could solve the 
-> bug I reproduce on 32bit kernel
-> (cf patch log message:"... I suspect the real problem is ffz() wants
-> 	an unsigned long and was getting garbage in the top half of the
-> 	unsigned int. Not confirmed but that's what I suspect.)
-
-I probably should have posted that speculation to the mailing list
-instead of in the commit log...I was quite tired at that point.
-
-That could only be true if ext3 perf issue only shows up in 64-bit kernels.
-I don't recall if anyone posted perf results for 32-bit kernels.
+Sorry - I didn't redo the math in the previous commit.
+More than 2GB of RAM should hit that maximum IOVA/DMA space size
+and result in an 8MB IO Pdir.
 
 thanks,
 grant
