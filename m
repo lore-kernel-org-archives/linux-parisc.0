@@ -1,32 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP
-	id A36C948FA; Sun, 30 Sep 2001 01:01:44 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15nabf-0002Rj-00; Sun, 30 Sep 2001 08:01:43 +0100
-Date: Sun, 30 Sep 2001 08:01:43 +0100
-From: Matthew Wilcox <willy@debian.org>
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 92CB248EE
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 01:12:46 -0600 (MDT)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel6.hp.com (Postfix) with ESMTP id 0C5441F78F
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 03:12:46 -0400 (EDT)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id BAA15478
+	for parisc-linux@lists.parisc-linux.org; Sun, 30 Sep 2001 01:12:45 -0600 (MDT)
+Date: Sun, 30 Sep 2001 01:12:45 -0600 (MDT)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200109300712.BAA15478@udlkern.fc.hp.com>
 To: parisc-linux@lists.parisc-linux.org
-Cc: parisc-linux-cvs@lists.parisc-linux.org
-Message-ID: <20010930080143.A9242@parcelfarce.linux.theplanet.co.uk>
-References: <200109291642.KAA12575@puffin.external.hp.com>
+Subject: Re: [parisc-linux] 720 - some progress
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200109291642.KAA12575@puffin.external.hp.com>; from tsbogend@puffin.external.hp.com on Sat, Sep 29, 2001 at 10:42:33AM -0600
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux tsbogend
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Sep 29, 2001 at 10:42:33AM -0600, Thomas Bogendoerfer wrote:
-> Log message:
-> we need to flush pages used inside the kernel and passed to user processes
-> otherwise because of the virtual alias we get mixed writebacks.
-> FIMXE: flush_data_cache() isn't a very well optimized function for this
-> purpose
+> It looks (reads) as if it possible to return to the faulting instruction
+> (MFCTL in this case) without executing it.  If so, then adjusting the
+> instruction (and space) queues within the fault handler can be avoided;
+> also avoiding problems with finding the correct "following instruction"
+> address.
 
-flush_dcache_page() is perhaps the function you are looking for?  I'm
-not sure I understand what the problem is since you didn't post a diff.
-I'll investigate more when I get back tomrrow.
+Using the nullify method you talk about does work, but the normal
+convention is to advance the pc queue (there are some performance
+advantages, particularly in the case where the instruction we are
+emulating is in the delay slot of a branch).  The problem you describe
+finding the following instruction doesn't exist.  You are correct about
+the space queue though, but only in the case for a delay slot in the
+branch to the gateway page.  The correct method of advancing the queue is
+the one that has been proposed in the various patches, i.e.:
 
--- 
-Revolutions do not require corporate support.
+	regs->iaoq[0] = regs->iaoq[1];
+	regs->iaoq[1] += 4;
+
+To be perfectly correct, this should be added:
+
+	regs->iasq[0] = regs->iasq[1];
+
+But, again, that last is only necessary if someone actually puts a mfctl
+in the delay slot of the branch to the gateway page (a kernel call) and
+since kernel calls are already provided, we know that no such thing
+actually happens, nor is it likely to happen unless someone handcodes
+their own kernel call. I would put the line in though.
+
+Here is why there is not a problem advancing the queue as above:
+the only way that "regs->iaoq[1] += 4" would do the wrong thing would
+be if we were emulating a branch instruction. Since we know we are
+emulating a mfctl instruction, this is not the case. Note that if
+someone needs to emulate a branch instruction, computing the new
+value of iaoq[1] would be part of that emulation.
+
+John Marvin
+jsm@fc.hp.com
