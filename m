@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5342E4829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 14:35:07 -0600 (MDT)
-Message-ID: <3D825B1E.3090701@freebel.net>
-Date: Fri, 13 Sep 2002 21:39:42 +0000
-From: Joel Soete <joel.soete@freebel.net>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 053514829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 14:49:44 -0600 (MDT)
+Message-Id: <200209132049.g8DKneZ1012121@hiauly1.hia.nrc.ca>
+Subject: Re: [Fwd: Re: [parisc-linux] Inline Assembly Help request]
+To: joel.soete@freebel.net (Joel Soete)
+Date: Fri, 13 Sep 2002 16:49:39 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3D825B1E.3090701@freebel.net> from "Joel Soete" at Sep 13, 2002 09:39:42 pm
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: [Fwd: Re: [parisc-linux] Inline Assembly Help request]
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,25 +22,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Paul Bame wrote:
- > As jda mentioned, the ex_table stuff is a bit complex.  You can find out
- > how the x86 exception table works in linux/Documentation/exception.txt
- > but parisc is a little different.
- > I leave it to you to locate the relevent
- > exception handler somewhere in arch/parisc/kernel/  A thorough 
-understanding
- > of the exception handler method is necessary to understand and/or change
- > the code you are working with.
- >
-is it do_page_fault (in fault.c) which use  search_exception_table(...)?
+> PS: Do you have an idea how may I figure out in which registers are
+> stored the two parts of a 64bits int (always contigus) or would it be
+> better to work with x address (in put_user_asm("stw",x,ptr)).
 
-Thanks,
-	Joel
+There is no hard and fast rule.  The treatment used by GCC is defined
+in HARD_REGNO_MODE_OK in pa32-regs.h.  Currently we used consecutive
+pairs of registers.  This may be subject to change though.
 
-
-PS: Do you have an idea how may I figure out in which registers are
-stored the two parts of a 64bits int (always contigus) or would it be
-better to work with x address (in put_user_asm("stw",x,ptr)).
-
-I also presume that there is noe way for gas to simulate (some kind of
-macro ) std and ldd from pa2 onto pa1. It would be too easy :)?
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
