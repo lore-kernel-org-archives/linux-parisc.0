@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D71C482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 01:33:58 -0700 (MST)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 7E386309
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 09:33:56 +0100 (MET)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id JAA24196 for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 09:33:24 +0100 (MET)
-Message-ID: <3C3EA2FE.A515AFF0@admin.france.hp.com>
-Date: Fri, 11 Jan 2002 09:31:58 +0100
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] binutils: opcodes and bfd
-References: <Pine.LNX.4.21.0201101406030.23934-100000@spawn.hockeyfiend.com> <3C3EA0C1.42DDF9E0@admin.france.hp.com>
-Content-Type: multipart/mixed;
- boundary="------------9366EBF7DF07DFD66AA8DC0F"
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26D5A482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 01:36:33 -0700 (MST)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel8.hp.com (Postfix) with ESMTP id 4BEC5E00110
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Jan 2002 03:36:32 -0500 (EST)
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>,
+	taggart@carmen.fc.hp.com
+Subject: Re: [parisc-linux] binutils: opcodes and bfd 
+In-Reply-To: Your message of "Fri, 11 Jan 2002 09:22:25 +0100."
+             <3C3EA0C1.42DDF9E0@admin.france.hp.com>
+References: <Pine.LNX.4.21.0201101406030.23934-100000@spawn.hockeyfiend.com>  <3C3EA0C1.42DDF9E0@admin.france.hp.com> 
+Date: Fri, 11 Jan 2002 01:36:31 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20020111083632.082A637D2B@carmen.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,71 +26,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------9366EBF7DF07DFD66AA8DC0F
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Bruno Vidal writes...
 
-Got it, I found it under ftp://ftp.fr.debian.org/debian/pool/main/b/binutils
-
-	Thanks all.
-
-Bruno Vidal wrote:
-> 
->         Hi
+> 	Hi
 > Sorry, but where can I download binutils-dev. It's not on the iso CDs.
-> And the link on the debian seems broken, there is nothing under this directory !.
+> And the link on the debian seems broken, there is nothing under this director
+> y !.
 > ftp://ftp.debian.org/debian/dists/unstable/main/binary-hppa/
 > On the debian site, I found only package for i386, not for parisc.
-> 
-> "Christopher C. Chimelis" wrote:
-> >
-> > On Thu, 10 Jan 2002, Bruno Vidal wrote:
-> >
-> > > First, thanks for your feedback, now the dump modules is working fine.
-> > > The system is able to dump. But now I need to modify the tool to retrieve
-> > > the dump. But I need bfd and opcode: libbfd.a and libopcode.a. It is part
-> > > of the binutil package. But in the last debian package this two librairies
-> > > are missing.
-> >
-> > You need the binutils-dev package installed.  It also contains the .so
-> > symlinks that you may need :-)
-> >
-> > At first, I was stunned to read the above since I personally built the
-> > binutils debs on the a500 and uploaded them (I'm the maintainer, btw :-P),
-> > but then realised that you were looking for binutil (no 's') and that's
-> > why you couldn't find it :-)
-> >
-> > C
-> >
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> --
->         Vidal Bruno, (770-4271)
->         SSD-HA Team, HP-UX & LINUX Support
->         bruno_vidal@admin.france.hp.com
+
+Debian packages now live in the pool. In your case,
+
+ftp://ftp.fr.debian.org/debian/pool/main/b/binutils/binutils-dev_2.11.92.0.12.3-5_hppa.deb
+
+But it's much easier to use apt-get or dselect to install packages rather
+then downloading and installing by hand. Give them a try I think you'll
+like them.
 
 -- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------9366EBF7DF07DFD66AA8DC0F
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
-
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------9366EBF7DF07DFD66AA8DC0F--
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
