@@ -1,144 +1,99 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA19266
-	for <parisc-linux@puffin.external.hp.com>; Tue, 18 Apr 2000 19:01:29 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA19512
+	for <parisc-linux@puffin.external.hp.com>; Tue, 18 Apr 2000 19:14:28 -0600
 Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 2CE6E37F6
-	for <parisc-linux@thepuffingroup.com>; Tue, 18 Apr 2000 18:01:27 -0700 (PDT)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id SAA24682 for parisc-linux@thepuffingroup.com; Tue, 18 Apr 2000 18:01:39 -0700 (PDT)
-Date: Tue, 18 Apr 2000 18:01:39 -0700 (PDT)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200004190101.SAA24682@milano.cup.hp.com>
+	by atlrel2.hp.com (Postfix) with ESMTP id 1C94CEE6
+	for <parisc-linux@thepuffingroup.com>; Tue, 18 Apr 2000 21:14:27 -0400 (EDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id SAA24724 for <parisc-linux@thepuffingroup.com>; Tue, 18 Apr 2000 18:14:39 -0700 (PDT)
+Message-Id: <200004190114.SAA24724@milano.cup.hp.com>
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 2-way j5000 hangs early
+Subject: Re: [parisc-linux] 2-way j5000 hangs early 
+In-reply-to: Your message of "Tue, 18 Apr 2000 18:01:39 PDT."
+             <200004190101.SAA24682@milano.cup.hp.com>
+Date: Tue, 18 Apr 2000 18:14:39 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+Grant Grundler wrote:
+> Hi all,
+> 
+> I was hoping to use a j5000 to debug problems with built-in 100BT
+> but couldn't even "get off the ground" (so to speak).
 
-I was hoping to use a j5000 to debug problems with built-in 100BT
-but couldn't even "get off the ground" (so to speak). The J5000
-slot 1 is on the "core I/O" bus - I wanted to monitor PCI bus activity
-of "built-in" devices. I can't do that on a C3k.
+I forgot to append the TOC output....here it is.
 
-The j5000 I was loaned for the next couple of days is a 2-way
-machine (as opposed to a 1-way c3k I was using up to now).
-No other "extras" installed in this system.
-(PCX-W rev 5, my c3k is rev 4)
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
 
-I'm open to ideas on what might be wrong.
-Going home for today and won't be back until tomorrow afternoon.
-Appended is the complete console output (ends with pagetable_init).
+-----------------  Processor 0 TOC Information -------------------
 
-thanks,
-grant
+General Registers 0 - 31
+00-03   0000000000000000  ffffffffc023d000  00000000c01131dc  0000000000000000
+04-07   00000000c023b300  00000000c020e1fc  0000000000000006  0000000000000004
+08-11   ffffffffc0100000  00000000c023e6b2  00000000c023e6b2  ffffffffc0215000
+12-15   000000000000000a  000000000000003e  000000000000003c  0000000000000007
+16-19   00000000c023b300  00000000f000017c  00000000f0000174  00000000000007ab
+20-23   000000000001ea80  0000000000000001  0000000000000001  000000000001eac0
+24-27   00000000000007ab  0000000000000800  0000000000000040  ffffffffc020e000
+28-31   0000000000000000  00000000c023b300  00000000c023b4c0  00000000c0130370
 
+<Press any key to continue (q to quit)> 
 
-Firmware Version 3.5
+Control Registers 0 - 31
+00-03   0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07   0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11   0000000000000000  0000000000000000  00000000000000c0  000000000000001f
+12-15   0000000000000000  0000000000000000  0000000000103000  0000000000000000
+16-19   000000458ce198af  0000000000000000  00000000c01131c0  000000008a79bfa5
+20-23   0000000015240000  000000000781ea80  000000000004000a  0000000080000000
+24-27   000000000021c000  000000000021c000  00000000ffffffff  00000000ffffffff
+28-31   0000000000000000  0000000000000000  0000000000000000  000000000023b300
+Space Registers 0 - 7
 
-Duplex Console IO Dependent Code (IODC) revision 1
+00-03   00000000          00000000          00000000          00000000
+04-07   00000000          00000000          00000000          00000000
 
-------------------------------------------------------------------------------
-   (c) Copyright 1995-1999, Hewlett-Packard Company, All rights reserved
-------------------------------------------------------------------------------
-
-  Processor   Speed            State           Coprocessor State  I/D Cache 
-  ---------  --------   ---------------------  -----------------  -------------
-      0      440 MHz    Active                 Functional         512 kB/1 MB
-      1      440 MHz    Idle                   Functional         512 kB/1 MB
-
-  Central Bus Speed:                   120 MHz
-
-  Available memory:             2147483648 bytes
-  Good memory required:                  0 bytes (Not Set by OS)
-
-  Primary boot path:    FWSCSI.6.0
-  Alternate boot path:  SCSI.6.0
-  Console path:         PCI7.0.0
-  Keyboard path:        USB
-
-CPU 0
-WARNING:  Processor self-tests have been disabled because FASTBOOT is
-          enabled.  To enable self-tests, disable FASTBOOT with the FASTBOOT
-          command in the CONFIGURATION menu and reboot the system.
-
-CPU 1
-WARNING:  Processor self-tests have been disabled because FASTBOOT is
-          enabled.  To enable self-tests, disable FASTBOOT with the FASTBOOT
-          command in the CONFIGURATION menu and reboot the system.
+IIA Space                    = 0x0000000000000000
+IIA Offset                   = 0x00000000c01131c4
+CPU State                    = 0x9e000001
 
 
-Processor is booting from first available device.
 
-To discontinue, press any key within 10 seconds.
-
-Boot terminated.
+IIA 0xc01131c4 flush_instruction_cache+54
+GR2 0xc01131dc flush_all_caches+c
 
 
------ Main Menu -------------------------------------------------------------
-
-      Command                           Description
-      -------                           -----------
-      BOot [PRI|ALT|<path>]             Boot from specified path
-      PAth [PRI|ALT|CON|KEY [<path>]]   Display or modify a path
-      SEArch [DIsplay|[[IPL] [<path>]]] Search for boot devices
-
-      COnfiguration [<command>]         Access Configuration menu/commands
-      INformation [<command>]           Access Information menu/commands
-      SERvice [<command>]               Access Service menu/commands
-
-      DIsplay                           Redisplay the current menu
-      HElp [<menu>|<command>]           Display help for menu or command
-      RESET                             Restart the system
------
-Main Menu: Enter command > bo lan
-Interact with IPL (Y, N, Q)?> n
-
-Booting... 
-Network Station Address 001083-7a0f6c
-
-System IP Address 15.8.80.77
-Server IP Address 15.8.80.76
-
-Boot IO Dependent Code (IODC) revision 2
 
 
-HARD Booted.
-palo ipl grundler@rock Tue Apr 18 17:00:37 PDT 2000
-0/vmlinux 1956928 bytes @ 0x6800
-0/palo-cmdline '0/vmlinux HOME=/ TERM=LINUX root=/dev/nfs nfsroot=15.8.80.76'
-0/ramdisk 614400 bytes @ 0x1e4440
-Kernel: partition 0 file /vmlinux
-ELF32 executable
+-----------------  Processor 1 TOC Information -------------------
 
-Entry 0010178c first 00100000 n 4
-Segment 0 load 00100000 size 1100948 mediaptr 0x1000
-Segment 1 load 0020e000 size 95400 mediaptr 0x10e000
-Segment 2 load 00228000 size 55988 mediaptr 0x126000
-Segment 3 load 00238000 size 8192 mediaptr 0x134000
-branching to kernel entry point 0x0010178c
-The Kernel has started...
-Free memory starts at: 0xc02a4000
-PALO command line: 'HOME=/ TERM=LINUX root=/dev/nfs nfsroot=15.8.80.76'
-PALO initrd 0-0
-FP CCR was 0x0, will be set to 0xc0
-model   00005bd0 00000491 00000000 00000002 77fc84a7 100000f0 00000008 000000b2 000000b2
-vers    00000201
-cpuid   00000225
-CPUID vers 17 rev 5
-CPU(s): 1 x PA8500 at 440.000000 MHz
-Searching for devices in PDC firmware... a newer box...
-Found devices:
-1. Astro BC Runway Port (12) at 0xfed00000, versions 0x582, 0x0, 0xb, 0x0, 0x10
-2. Elroy PCI Bridge (13) at 0xfed30000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-3. Elroy PCI Bridge (13) at 0xfed32000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-4. Elroy PCI Bridge (13) at 0xfed34000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-5. Elroy PCI Bridge (13) at 0xfed38000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-6. Elroy PCI Bridge (13) at 0xfed3c000, versions 0x782, 0x0, 0xa, 0x0, 0x0
-7. Forte W 2-way (0) at 0xfffa0000, versions 0x5bd, 0x0, 0x4, 0x0, 0x91
-8. Forte W 2-way (0) at 0xfffa2000, versions 0x5bd, 0x0, 0x4, 0x0, 0x91
-9. Forte 2w Memory (1) at 0xfed10200, versions 0x88, 0x0, 0x9, 0x0, 0x0
-That's a total of 9 devices.
-Linux version 2.3.99-pre1 (grundler@rock) (gcc version 2.9-hppa-991112) #6 Tue Apr 18 17:00:23 PDT 2000
-initrd: 00000000-00000000
-pagetable_init
+General Registers 0 - 31
+00-03   0000000000000000  00000045997a6613  0000000000000000  0000000000000000
+04-07   0000000000000547  fffffff0f0400008  00000000000000fa  fffffff0f0002f68
+08-11   0000000000000000  0000000000000000  000000000000000a  fffffff0f0001608
+12-15   00000000000000f2  0000000000000001  0000000000000001  00000000000000f3
+16-19   0000000002020202  0000000000000002  fffffff0f000016c  fffffff0f04120d1
+20-23   0000000000000000  fffffff0f04120d0  0000000000000000  0000000000000000
+24-27   00000000000000f1  fffffff0f04120c0  fffffff0f0400880  fffffff0f0412000
+28-31   0000000000000000  fffffff0f0409f30  fffffff0f0409e80  fffffffffffffff0
+
+<Press any key to continue (q to quit)> 
+
+Control Registers 0 - 31
+00-03   000000007fffffff  0000000000000000  0000000000000000  0000000000000000
+04-07   0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11   0007ffff0007ffde  0007ffff0007ffde  0000000000000000  000000000000001e
+12-15   0007ffff0007ff5e  0007ffff0007ff5e  000000f0f0003800  0000000000000000
+16-19   00000045998109b2  00000000ffffffff  0000000000000794  0000000002e008a2
+20-23   000000009a07c3c1  c00000007c1f00b8  0000000008000008  0000000000000000
+24-27   ffffffffffffffde  ffffffffffffffde  ffffffffffffffff  ffffffffffffffde
+28-31   ffffffffffffffde  ffffffffffffffde  ffffffffffffffde  ffffffffffffffde
+Space Registers 0 - 7
+
+00-03   ffffffff          ffffffff          ffffffff          ffffffff
+04-07   ffffffff          ffffffff          ffffffff          ffffffff
+
+IIA Space                    = 0x00000000ffffffff
+IIA Offset                   = 0x0000000000000798
+CPU State                    = 0x9e000001
