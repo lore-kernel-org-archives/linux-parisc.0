@@ -1,99 +1,78 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mout1.freenet.de (mout1.freenet.de [194.97.50.132])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8436482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Aug 2001 14:38:17 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
-Reply-To: Reinhard.Gimbel@freenet.de
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 6 Aug 2001 22:38:13 +0200
-Cc: grundler@puffin.external.hp.com, rbradetich@uswest.net,
-	rhirst@linuxcare.com
-MIME-Version: 1.0
-Message-Id: <01080622381300.01641@octopus>
-Subject: [parisc-linux] C180: no real progress :-(
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A204E482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 Aug 2001 16:12:29 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 700B5B00C; Mon,  6 Aug 2001 23:13:39 +0100 (BST)
+Date: Mon, 6 Aug 2001 23:13:39 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] C180: no real progress :-(
+Message-ID: <20010806231339.Z1011@linuxcare.com>
+References: <01080622381300.01641@octopus>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <01080622381300.01641@octopus>; from Reinhard.Gimbel@freenet.de on Mon, Aug 06, 2001 at 10:38:13PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi friends !
+On Mon, Aug 06, 2001 at 10:38:13PM +0200, Reinhard Gimbel wrote:
+> The C180 boots palinux-0.9.2 from CD (additional drive at 
+> SESCSI). The system crashes either during kernel/driver 
+> installation (1st stage) or during "software" installation (2nd 
+> stage).
 
-In the past days I learned a lot about HP workstations and the 
-Linux port to hppa/parisc.
+I have heard of a C160 with what could be similar problems.  The C160
+has internal diff scsi drives, and it seems that using that interface
+causes disk corruption.  The only way he managed an install was to
+disconnect all devices from the diff scsi interface, and install to
+disks on the external scsi.  Is that something you can try easily?
+Note, he had to physically disconnect the diff disks, it wasn't sufficient
+to simply not use them.
 
-After I could exchange my first used C180 (256 MB, 2*4,5 GB 
-FWSCSI HDD, GRAPHICS(3) accelerated graphics) by a newer model 
-of the same series (C180) I tried to get palinux-0.9.2 
-up-n-running on that box.
+What scsi interfaces does that box have anyway?  Boot up msgs should
+mention chip numbers - 53c710, 53c720, etc.
 
-Few weeks ago I posted some thoughts I had in this mailing list 
-because palinux-0.9.2 was crashing on the older box all the 
-time during installation.
+> [1] Try to fix the keyboard port problem ! I don't know how 
+> many reboots I had top handle this weekend but un-/replugging 
+> the keyboard is very boring ... :-)
 
-Some kernel messages led my in the false direction. I thought 
-DINO (h/w v2.1; or better the software glue of DINO) was the 
-root cause of "my" problems. This box had firmware v2.7.
+That problem is being actively worked on.
 
-Installation via network/NFS did not work because of problems; 
-With the older box i tried many things (100Mbps, 10Mbps, Hub, 
-cross-over cable) but no success ...
+> [2] Try to get full support of any key (at least german 
+> keyboard support lacks on essential things ...) eg. no 
+> pipe/vertical bar; no support of capslock (keyboard unusable 
+> after accidently hit capslock; nothing helped; un-/replug, too)
 
-After I got the replacement on Friday (DINO v3.1 [which should 
-be ok. according the kernel messages ...], firmware v5.1) the 
-problems are still present.
+Hmm, yeah; I had a UK keyboard where pipe key didn't work.  I got it
+with <alt>+124 on the numeric pad, or with <alt-gr> and the key to
+the left of '1' (back-quote, etc).  Obviously needs fixing though.
 
-BTW: Grant, you are right ! But newer firmware seems not to 
-solve the problem ...
+> [3] Sometimes I could see a message like
+> "ioctl: LOOP_CLR_FD: No such device or address"
+> short time before the C180 crashed. Any idea ?
 
-I tried serial console device as well as STI console [PS/2 
-keyboard/mouse, GRAPHICS(0) with PC-style video monitor via HP 
-adaptor connector].
+That's a feature of the installer ;)  Happens on all archs and is harmless.
 
-The C180 boots palinux-0.9.2 from CD (additional drive at 
-SESCSI). The system crashes either during kernel/driver 
-installation (1st stage) or during "software" installation (2nd 
-stage).
+> Some hints to the system guys:
+> 
+> [1] Do real disabling of "dhcp-client" if it is set to "no" 
+> during installation. (Those kernel message caused by 
+> dhcp-client are boring; try it with open editor; great ;-)
 
-Only one time I could get the system installed from serial 
-console. As I tried to switch to STI console the keyboard port  
-problem hit me; The only chance was to reboot the box. As a 
-result the root filesystem was corrupted so hard that fsck had 
-problems tpo repair the corrupted filesystem ... :-(
+That is a problem with the dhcp-client package, again common to all
+archs.  The solution is "rm /etc/rc?.d/*dhcp-client".  It has been
+discussed on the debian-boot list, and hopefully someone will fix it.
+It has been suggested that we switch back to using pump.  There is a
+new version of dhcp-client in experimental, but it is much bigger, which
+causes problems for people that boot from floppies, at least.
 
-At this point I have some (foe me) important questions:
+> [2] Try to include a date check/set into the installation 
+> routine; user should be informed about hardware clock setting)
 
-Has anybody a running C180 under palinux-0.9.2 ?
+I agree, telling what the time is in GMT and in your timezone without
+giving you a chance to do anything about it is a little pointless.  You
+can use the firmware to set it correctly before you start, but if you are
+like me you always forget until it is too late.
 
-Has anybody similar problems with other HP w/s and could solve 
-those problems ? How solved ?
-
-Some hints to the kernel guys:
-
-[1] Try to fix the keyboard port problem ! I don't know how 
-many reboots I had top handle this weekend but un-/replugging 
-the keyboard is very boring ... :-)
-
-[2] Try to get full support of any key (at least german 
-keyboard support lacks on essential things ...) eg. no 
-pipe/vertical bar; no support of capslock (keyboard unusable 
-after accidently hit capslock; nothing helped; un-/replug, too)
-
-[3] Sometimes I could see a message like
-"ioctl: LOOP_CLR_FD: No such device or address"
-short time before the C180 crashed. Any idea ?
-
-Some hints to the system guys:
-
-[1] Do real disabling of "dhcp-client" if it is set to "no" 
-during installation. (Those kernel message caused by 
-dhcp-client are boring; try it with open editor; great ;-)
-
-[2] Try to include a date check/set into the installation 
-routine; user should be informed about hardware clock setting)
-
-
-I'm still trying to get that beast (= my C180) up-n-running !
-
-Any help would be great !
-
-
-Reinhard.
+Richard
