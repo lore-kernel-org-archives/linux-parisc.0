@@ -1,23 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hp (IP-213157009128.dialin.heagmedianet.de [213.157.9.128])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 554864829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 14:57:47 -0600 (MDT)
-Received: from crayboook.dreamind ([192.168.1.20] helo=craybook)
-	by hp with asmtp (Exim 3.36 #1 (Debian))
-	id 17mhDd-00059h-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 04 Sep 2002 22:57:45 +0200
-Received: from dreamind by craybook with local (Exim 3.36 #1 (Debian))
-	id 17mhDd-0007kI-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 04 Sep 2002 22:57:45 +0200
-Date: Wed, 4 Sep 2002 22:57:44 +0200
-From: Stefan Pfetzing <dreamind@dreamind.de>
+Received: from web12501.mail.yahoo.com (web12501.mail.yahoo.com [216.136.173.193])
+	by dsl2.external.hp.com (Postfix) with SMTP id 1C43B4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 18:13:47 -0600 (MDT)
+Message-ID: <20020905001345.94888.qmail@web12501.mail.yahoo.com>
+Date: Wed, 4 Sep 2002 17:13:45 -0700 (PDT)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] IPL Boot Parameters [Originally SCSI Disks on a K580 Help Required] 
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] XFS - blkgetsize64
-Message-ID: <20020904205744.GA29749@dreamind.de>
-References: <20020904143013.GC4386@dreamind.de> <20020904165147.A33FC4829@dsl2.external.hp.com> <20020904182814.GA17156@dreamind.de>
-Mime-Version: 1.0
+In-Reply-To: <20020904044110.0AF234829@dsl2.external.hp.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020904182814.GA17156@dreamind.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,40 +21,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hum, replying to myself...
+All good advice Grant "except" about buying a C2490A drive....DON'T.  I
+replace them constantly.  Forgive my language....they are #@$%.  They
+are unreliable at best and loud.  Heck I have (5) C2490A's sitting in
+my garage in an old HP 6000 Fast/Wide enclosure.  I'll probably never
+use them.  You could put 4 of them on the internal cable of your K580
+and have the 5th as spare.  I'd let you have all of them for $40 plus
+shipping.  Just keep good back-ups if you use them.....;)
 
-* Stefan Pfetzing <dreamind@dreamind.de> [020904 20:28]:
-> * Grant Grundler <grundler@dsl2.external.hp.com> [020904 18:51]:
-> > Stefan Pfetzing wrote:
-> [snip]
-> > > P.S.: I'm using 2.4.19-pa9 with a self made diff from vanilla 2.4.19 against
-> > > XFS CVS. (the patch did in nearly cleanly)
-> > 
-> > Are you running 32-bit or 64-bit kernel?
-> > I want to know if arch/parisc/kernel/sys_parisc32.c might be the problem.
-> I'm running a 32bit kernel, since some time ago I had problems with 64bit and
-> cdrecord.
+derek
 
-I just got a blkgetsize* testprogram...
-(https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=62038)
 
----snip---
-root@hp:~# ./blkgetsizetester /dev/sda2
-Device size is 83968 blocks (42991616 bytes)
-Device size per BLKGETSIZE64 is 12345 bytes
-root@hp:~# ./blkgetsizetester /dev/sda5 
-Device size is 1026016 blocks (525320192 bytes)
-Device size per BLKGETSIZE64 is 12345 bytes
-root@hp:~#
----snip---
+--- Grant Grundler <grundler@dsl2.external.hp.com> wrote:
+> Steve.Grady@csiro.au wrote:
+> > and HVD is not compatible with LVD except by a translator which
+> costs
+> > about $1.5K AUD which was more than I paid for the K580.
+> 
+> I didn't believe you until I found:
+> http://members.ozemail.com.au/~jwk200/images/paralan -SRP pricelist
+> 2002.pdf
+> 
+> You might try to order HDs here:
+> 	http://www.weirdstuff.com/
+> 
+> They've got "Compaq" C2490A and "HP" C2490-60062 (both 2.1GB) for
+> $40.
+> You want "C2490WD" model - just like Seagate drives have "WD" for
+> HVD.
+> 
+> Or the ST32550WD for $22 seems like a winner:
+> http://liquidationetc.safeshopper.com/32/15179.htm?103
+> 
+> grant
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-I think thats the problem with xfs... well at least blkgetsize64 should report
-an error, if its not working correctly.
 
-bye
-
-Stefan
-
--- 
-        http://www.dreamind.de/
-Oroborus and Debian GNU/Linux Developer.
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Finance - Get real-time stock quotes
+http://finance.yahoo.com
