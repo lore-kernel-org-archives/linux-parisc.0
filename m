@@ -1,22 +1,18 @@
-Return-Path: <margaret@msn.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F1AD4868
-	for <parisc-linux@parisc-linux.org>;
-	Sun, 14 Dec 2003 07:37:36 -0700 (MST)
-Received: from pD9E3651F.dip.t-dialin.net (pD9E3651F.dip.t-dialin.net
-	[217.227.101.31]) by cuprel1.hp.com (Postfix) with SMTP id 1E0F110F4
-	for <parisc-linux@parisc-linux.org>;
-	Sun, 14 Dec 2003 06:37:07 -0800 (PST)
-Message-ID: <ih0$$3u--b--0-2-d@f5610>
-From: "Jaime Stacy" <margaret@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Mon, 15 Dec 03 05:35:53 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="BDACD_B7.F9_AA.A.DF._5"
-Cc: 
-Subject: [parisc-linux] Be.. beautiful you know you want to!! voerxtlk utnvd
-Reply-To: Jaime Stacy <margaret@msn.com>
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 013A84840
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sun, 14 Dec 2003 15:23:34 -0700 (MST)
+Date: Sun, 14 Dec 2003 17:16:29 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] strange GNU ld / libgcc_s.so problems
+Message-ID: <20031214221629.GZ13882@systemhalted>
+References: <200312141209.28283.deller@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200312141209.28283.deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,51 +22,39 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Sun, Dec 14, 2003 at 12:11:07PM +0100, Helge Deller wrote:
+> Below is the output and I don't understand the part which I marked with "######".
+> Why does collect2 suddenly tries to resolve libstdc++.so while it searched for 
+> libgcc_s.so ? All other libraries (e.g.-lutil) behave IMHO normal.
+> Any ideas ? This seems to me like a bug in gcc 3.3.2, but I'm no expert here.
+> 
+... SNIP ...
 
---BDACD_B7.F9_AA.A.DF._5
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+> attempt to open /usr/X11R6/lib/libgcc_s.so failed
+> attempt to open /usr/X11R6/lib/libgcc_s.a failed
+> attempt to open /opt/kde/qt/lib/libgcc_s.so failed
+> attempt to open /opt/kde/qt/lib/libgcc_s.a failed
+> attempt to open /opt/kde/lib/libgcc_s.so failed
+> attempt to open /opt/kde/lib/libgcc_s.a failed
+> attempt to open /usr/lib/libgcc_s.so succeeded
+> -lgcc_s (//usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume@GCC_3.0'
+> /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Register@GCC_3.0'
+> /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_RaiseException@GCC_3.0'
+> /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Unregister@GCC_3.0'
+> /usr/lib/libstdc++.so: undefined reference to `_Unwind_SjLj_Resume_or_Rethrow@GCC_3.3'
+> usr/lib/libgcc_s.so)
+> 
+> ##### ^^^ Why does /usr/lib/libstdc++.so comes into the game here ?
+> ##### The double "//" seems suspect too, since it continues with "usr/lib/libgcc_s.so" 
+> ##### in the last line without the trailing "/". It seems this "string" was broken up
+> ##### right in the middle....
 
-<html>Be.. beautiful you know you want to!! voerxtlk utnvd
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+Where did that file come from? Is this a debian box?
+You should have:
 
-<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
-n Monroe, Wayne Newton, Dick Clark, <br>
-    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
-     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
-ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
-h great success to be the best they could possibly be.<br>HGH is recognize=
-d around the world as the<br> "hormone to replace"<br> to combat the adver=
-se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
-iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
-br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
-en proven to be "solely responsible" in the maintenance of their youthful<=
-br>"movie star good looks" decades beyond those that have yet to discover =
-HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
-and stay 
-    so fit at their age??</font></h5>
-</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
-uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
-er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
-p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
-you !<br>Learn More Right Here</a></font></h4></center>
-bavjz yjfyirs
-g yndxjazjcvxjo reou  s zf zc n ia  a 
-bogaqookevd yo r q
-</body>
-</html>
-gocfnbnvy umfku
-tdsdqttdbyseblykpg hu
-hq
-kfrd nuuvwtnaoserfjvqmd
-k jek
-wn ccyn jmd hyd
-   vie 
+/usr/lib/gcc-lib/hppa-linux/<gcc-version>/libgcc_s.so
+pointing to /lib/libgcc_s.so
 
---BDACD_B7.F9_AA.A.DF._5--
+I suggest you try building this in a clean unstable chroot :)
+
+c.
