@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dc-mx14.cluster1.charter.net (dc-mx14.cluster0.hsacorp.net [209.225.8.24])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3E18C4846
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Apr 2002 18:17:43 -0600 (MDT)
-Message-ID: <3CC9FC3E.4070604@charter.net>
-Date: Fri, 26 Apr 2002 21:17:50 -0400
-From: "B. Douglas Hilton" <bdhilton@charter.net>
+Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 151A1482B
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 27 Apr 2002 02:22:55 -0600 (MDT)
+Message-ID: <3CCA5FD7.9ABE4524@gmx.at>
+Date: Sat, 27 Apr 2002 10:22:47 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Cc: debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] c200 fx graphics status?
-References: <3CC5E580.5090403@charter.net> <20020424042023.DC87A482B@dsl2.external.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Matthew Wilcox <willy@debian.org>
+Cc: Dunc <dunc@lemonia.org>, parisc-linux@lists.parisc-linux.org,
+	"MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
+Subject: Re: [parisc-linux] hp9000/827s
+References: <1019862967.3cc9dfb797e86@www.lemonia.org> <20020427003030.B12051@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,61 +23,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Well, my Ebay special C200 "raven" arrived today... and it works!
-I plugged in an extra 256Mb RAM and an old 4X scsi cdrom drive,
-hooked ye olde dumbe terminal, and pushed yonder button.
+Hello,
 
-I'm impressed, it came with a completely unconfigured HP/UX B11.11
-so I got to set up my root password, network, etc. The dang thing
-has internet connectivity already!
+by the way, are there plans for supporting the good old machines.
+You know, I am interested in writing the drivers for my E55 server
+machine, my PDC console driver should help for development here.
 
-Now I am in somewhat of a dilemma. I got this bohemoth to be a parisc-linux
-box, but one hates to wipe a pristine HP/UX which one got for free :-)
+I hope we will have a chance to start developing ....
 
-So now it would appear that I am in need of a new hard drive. My 23GB
-Seagate Elite will definately not fit inside the case, and I'm using it
-on the X86 machine anyways. Back to Ebay...
-
-I can still test out the latest 0.9.3 cdrom image which I will burn
-one this weekend. I don't have an EVC adapter yet so I can't test
-the STI / X11 yet.
-
-This machine seems to have been mis-advertised and actually contains
-an EG board rather than a FX. I am disappointed yet happy because the
-EG will run X in linux right?
-
-Thx,
-
-- Doug
+With friendly regards
+Christoph P.
 
 
-
-Grant Grundler wrote:
-> "B. Douglas Hilton" wrote:
+Matthew Wilcox wrote:
 > 
->>Hi list!
->>
->>I just subscribed here. I'm on debian-hppa but that doesn't
->>seem to get much traffic, so I'll repost my question here.
+> On Sat, Apr 27, 2002 at 12:16:07AM +0100, Dunc wrote:
+> > I have been attempting to install on a hp9000/827s
 > 
+> According to hp9000_models;
+> 8x7/F10-I40      Old Nova servers    PCXS    NIO, None     NIO(1),NIO(2),NA
 > 
-> Yeah - parisc-linux is a more appropriate place for the question anyway.
+> Basically, nothing is going to work.  There's some limited support for
+> the console in these machines, but no support for the SCSI, the Lan or
+> any other cards.  Sorry.
 > 
-> 
->>I sold it on Ebay and rolled
->>my profits into a C200 with some unspecified FX graphics
->>board.
-> 
-> 
-> Not supported since HP hasn't published the docs for it.
-> Almost all the older gfx cards are supported including
-> the Vis-EG (PCI or GSC) that you mentioned in you posting
-> to debian-hppa.
-> 
-> grant
+> --
+> Revolutions do not require corporate support.
 > 
 > _______________________________________________
 > parisc-linux mailing list
 > parisc-linux@lists.parisc-linux.org
 > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
