@@ -1,14 +1,18 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
-Date: Sat, 19 Feb 2005 15:27:23 -0700
-Message-ID: <20050219222723.GA12572@colo.lackof.org>
-References: <20050216065539.GB5251@colo.lackof.org>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] NCR_700 problems on 715/64 with 2.6.11-rc4-pa1
+Date: Sun, 20 Feb 2005 13:32:07 +0100
+Message-ID: <200502201332.07872.deller@gmx.de>
+References: <200502191234.30310.deller@gmx.de>
+	<20050219164007.GC455@parcelfarce.linux.theplanet.co.uk>
+	<20050219165314.GD455@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset="iso-8859-1"
+Cc: James.Bottomley@hansenpartnership.com,
+ parisc-linux@lists.parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050216065539.GB5251@colo.lackof.org>
+In-Reply-To: <20050219165314.GD455@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,61 +23,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Feb 15, 2005 at 11:55:39PM -0700, Grant Grundler wrote:
-> Running 2.6.11-rc4-pa0-plus (equivalent to -pa1) on a500-65 (riot).
-> xfs ran spew for 48h but panic'd when I did a "cvs up -A"
-> to the CVS source tree on the same file system.
+Hi Willi,
 
-XFS behaves better with sym2+MMIO on j6000 running a 64-bit SMP kernel.
-I was able to run spew several hours with no problems.
-This is without the patch that Joel pointed out from the -mm tree.
+Thanks!
+This patch worked. I'll commit it now...
 
-This suggests there is a problem with Astro/Elroy programming
-where "Sprockets" firmware (for Astro based workstations) does
-something different than PAT PDC firmware on a500.
-I'm investigating.
+Helge
 
-
-However, did see one "WARN_ON" when I rsync (/home to /home2):
-root@gggj6k:/home# df
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/sda3              1783984   1522420    170940  90% /
-tmpfs                  4110708         0   4110708   0% /dev/shm
-/dev/sda4             15439312  13086812   1568220  90% /home
-/dev/sdb3             17019904   5155384  11864520  31% /mnt
-/dev/sdb4             17773568  12486340   5287228  71% /home2
-
-root@gggj6k:/home# lsscsi
-[1:0:5:0]    disk    SEAGATE  ST318203LC       0001  /dev/sda
-[1:0:6:0]    disk    FUJITSU  MAJ3364MC        HP12  /dev/sdb
-
-The rsync completed but one error showed up 4 times on the console
-during the second half (about) of the rsync:
-
-Filesystem "sdb4": XFS internal error xfs_btree_check_sblock at line 342 of file fs/xfs/xfs_btree.c.  Caller 0x00000000102f1b84
-Backtrace:
- [<00000000101145e0>] dump_stack+0x18/0x28
- [<00000000102eceac>] xfs_error_report+0x64/0x70
- [<00000000102d7718>] xfs_btree_check_sblock+0x78/0xf8
- [<00000000102f1b84>] xfs_inobt_lookup+0x144/0x3a0
- [<00000000102f3514>] xfs_inobt_lookup_le+0x24/0x30
- [<00000000102f08f0>] xfs_dialloc+0xe90/0x12e0
- [<00000000102f6638>] xfs_ialloc+0x70/0x4e0
- [<0000000010310a10>] xfs_dir_ialloc+0xb8/0x3e8
- [<0000000010316d30>] xfs_create+0x2f0/0x810
- [<0000000010326140>] linvfs_mknod+0x1e0/0x298
- [<000000001032620c>] linvfs_create+0x14/0x20
- [<00000000101d3c04>] vfs_create+0xbc/0xf8
- [<00000000101d4a30>] open_namei+0xb58/0xc10
- [<00000000101b5b14>] filp_open+0x44/0x98
- [<00000000101b5f98>] sys_open+0x98/0x110
- [<0000000010107fac>] syscall_exit+0x0/0x14
-
-
-Perhaps this is fixed in the patches; I haven't looked.
-
-hth,
-grant
+On Saturday 19 February 2005 17:53, Matthew Wilcox wrote:
+> On Sat, Feb 19, 2005 at 04:40:07PM +0000, Matthew Wilcox wrote:
+> > On Sat, Feb 19, 2005 at 12:34:30PM +0100, Helge Deller wrote:
+> > > I get random messages from the 53c700 scsi driver (see below). 
+> > > Any ideas ?
+> > > _raw_foo() called with bad address 0xf0106121
+> > > Backtrace:
+> > >  [<10104ce4>] __raw_bad_addr+0x64/0x70
+> > >  [<1028edd8>] NCR_700_start_command+0x3e8/0x78c
+> > 
+> > Yup.  This is a missing ioremap() in the 53c700 driver.  I'll have a
+> > quick look, see if it's easily fixable (should be).  If the dmesg noise
+> > annoys you, you can just turn off CONFIG_DEBUG_IOREMAP, but thanks for
+> > reporting it -- it's an important step towards turning on HPPA_IOREMAP ...
+> 
+> Here's the patch I'm compiling now ...
+> 
+> --- drivers/scsi/lasi700.c      10 Dec 2004 20:46:33 -0000      1.10
+> +++ drivers/scsi/lasi700.c      19 Feb 2005 16:47:11 -0000
+> @@ -112,7 +112,7 @@ lasi700_probe(struct parisc_device *dev)
+>  
+>         hostdata->dev = &dev->dev;
+>         dma_set_mask(&dev->dev, 0xffffffffUL);
+> -       hostdata->base = base;
+> +       hostdata->base = ioremap(base, 0x100);
+>         hostdata->differential = 0;
+>  
+>         if (dev->id.sversion == LASI_700_SVERSION) {
+> @@ -138,6 +138,7 @@ lasi700_probe(struct parisc_device *dev)
+>         return 0;
+>  
+>   out_kfree:
+> +       iounmap(hostdata->base);
+>         kfree(hostdata);
+>         return -ENODEV;
+>  }
+> @@ -152,6 +153,7 @@ lasi700_driver_remove(struct parisc_devi
+>         scsi_remove_host(host);
+>         NCR_700_release(host);
+>         free_irq(host->irq, host);
+> +       iounmap(hostdata->base);
+>         kfree(hostdata);
+>  
+>         return 0;
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
