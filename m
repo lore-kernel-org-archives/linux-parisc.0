@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from imo-r03.mx.aol.com (imo-r03.mx.aol.com [152.163.225.99])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3BB68482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 May 2002 02:10:18 -0600 (MDT)
-Received: from DerrickMcCray@aol.com
-	by imo-r03.mx.aol.com (mail_out_v32.5.) id n.110.11d06265 (17231)
-	 for <parisc-linux@lists.parisc-linux.org>; Tue, 7 May 2002 04:10:14 -0400 (EDT)
-From: DerrickMcCray@aol.com
-Message-ID: <110.11d06265.2a08e5e6@aol.com>
-Date: Tue, 7 May 2002 04:10:14 EDT
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="part1_110.11d06265.2a08e5e6_boundary"
-Subject: [parisc-linux] HP 9000 systems
+Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 12027482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 May 2002 02:33:06 -0600 (MDT)
+Date: Tue, 7 May 2002 09:12:35 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: DerrickMcCray@aol.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP 9000 systems
+Message-ID: <20020507081235.GG1617@sleepie.demon.co.uk>
+References: <110.11d06265.2a08e5e6@aol.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <110.11d06265.2a08e5e6@aol.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,27 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---part1_110.11d06265.2a08e5e6_boundary
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+On Tue, May 07, 2002 at 04:10:14AM -0400, DerrickMcCray@aol.com wrote:
+> Hi, 
+> I recently ran across some HP 9000 715/80 and 712/60 computers at a garage 
+> sale and bought 4 systems for 70 dollars. There is no operating system on the 
+> computers and no cd-rom drive. My question is how can a get PA-Risc Linux 
+> installed on these machines because I can't seem to get the systems to boot 
+> from the floppy drive. What is the best way to get PA-Risc Linux installed on 
+> the systems. Any information will be greatly appreciated. Thank you.
 
-Hi, 
-I recently ran across some HP 9000 715/80 and 712/60 computers at a garage 
-sale and bought 4 systems for 70 dollars. There is no operating system on the 
-computers and no cd-rom drive. My question is how can a get PA-Risc Linux 
-installed on these machines because I can't seem to get the systems to boot 
-from the floppy drive. What is the best way to get PA-Risc Linux installed on 
-the systems. Any information will be greatly appreciated. Thank you.
+Floppy is not correctly supported.
 
-Derrick McCray
+You should be able to network boot them without much trouble.  See
+<http://www.tldp.org/HOWTO/PA-RISC-Linux-Boot-HOWTO/> for pointers.  You
+can start a debian install by booting a lifimage from:
+<http://ftp.uk.debian.org/debian/dists/woody/main/disks-hppa/3.0.22-2002-04-03/lifimage>
 
---part1_110.11d06265.2a08e5e6_boundary
-Content-Type: text/html; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-
-<HTML><FONT FACE=arial,helvetica><FONT  SIZE=2 FAMILY="SANSSERIF" FACE="Arial" LANG="0">Hi, <BR>
-I recently ran across some HP 9000 715/80 and 712/60 computers at a garage sale and bought 4 systems for 70 dollars. There is no operating system on the computers and no cd-rom drive. My question is how can a get PA-Risc Linux installed on these machines because I can't seem to get the systems to boot from the floppy drive. What is the best way to get PA-Risc Linux installed on the systems. Any information will be greatly appreciated. Thank you.<BR>
-<BR>
-Derrick McCray</FONT></HTML>
-
---part1_110.11d06265.2a08e5e6_boundary--
+Richard
