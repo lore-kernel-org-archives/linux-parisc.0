@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D69804829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Apr 2003 09:43:03 -0600 (MDT)
-Date: Fri, 18 Apr 2003 17:43:01 +0200
-Message-ID: <3E9BF11E000012CD@ocpmta7.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] PGX64 alias Rage xl ?
+Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
+	by dsl2.external.hp.com (Postfix) with SMTP id 729B94829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 18 Apr 2003 23:14:32 -0600 (MDT)
+Date: 19 Apr 2003 05:14:31 -0000
+Message-ID: <20030419051431.17554.qmail@sources.redhat.com>
+To: gcc-gnats@gcc.gnu.org
+Cc: parisc-linux@lists.parisc-linux.org, debian-gcc@lists.debian.org
+From: Randolph Chung <tausq@debian.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] [3.3 regression] [hppa] Segfault when building jade
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,21 +20,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+>Category:       c++
+>Synopsis:       [3.3 regression] [hppa] Segfault when building jade
+>Confidential:   no
+>Severity:       serious
+>Priority:       medium
+>Class:          ice-on-legal-code
+>Submitter-Id:   net
+>Originator:     Randolph Chung <tausq@debian.org>
+>Release:        gcc version 3.3 20030412 (Debian prerelease)
+>Environment:
+tausq@ios:~$ uname -a
+Linux ios 2.5.67-pa4 #79 Wed Apr 16 20:16:49 PDT 2003 parisc64 unknown unknown GNU/Linux
+tausq@ios:~$ g++ -v
+Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3/specs
+Configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treelang --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug --enable-objc-gc hppa-linux
+Thread model: posix
+gcc version 3.3 20030412 (Debian prerelease)
+>Description:
+Building the code below gives:
 
-I just recieve a free PGX64 pci card (Rage xl 215R5LASB41 chip) which I am
-proposing to test on a b180.
+tausq@ios:~/debian/jade-1.2.1/jade$ g++ -v -c bug.cxx
+Reading specs from /usr/lib/gcc-lib/hppa-linux/3.3/specs
+Configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treelang --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-clocale=gnu --enable-debug --enable-objc-gc hppa-linux
+Thread model: posix
+gcc version 3.3 20030412 (Debian prerelease)
+ /usr/lib/gcc-lib/hppa-linux/3.3/cc1plus -quiet -v -D__GNUC__=3 -D__GNUC_MINOR__=3 -D__GNUC_PATCHLEVEL__=0 -D_GNU_SOURCE bug.cxx -D__GNUG__=3 -quiet -dumpbase bug.cxx -auxbase bug -version -o /tmp/ccExza7t.s
+GNU C++ version 3.3 20030412 (Debian prerelease) (hppa-linux)
+        compiled by GNU C version 3.3 20030412 (Debian prerelease).
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/hppa-linux/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/include/c++/3.3
+ /usr/include/c++/3.3/hppa-linux
+ /usr/include/c++/3.3/backward
+ /usr/local/include
+ /usr/lib/gcc-lib/hppa-linux/3.3/include
+ /usr/include
+End of search list.
+bug.cxx:14: internal compiler error: Segmentation fault
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <URL:http://gcc.gnu.org/bugs.html> for instructions.
 
-Do I have some chance to make it works (well I already notice that I will
-have to wait 2.4.21 to have ati fb support)?
+The code builds fine with g++-3.2.
 
-All advises will be well come,
+This test case was extracted from the MifFOTBuilder.cxx file from the jade package.
+>How-To-Repeat:
+g++ -c bug.cxx
 
-Joel
+--------------8< bug.cxx 8<----------------
+template<class T> class String { };
 
+class MifDoc {
+  public:
+    struct T_string : public String<char> { };
+    typedef T_string        T_tagstring;
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+    struct TagStream {
+        enum TagStreamClass { tsTagStream, tsTextFlow, tsCell, tsPara } TagStreamClass;
+
+        T_tagstring InitialPgfTag;
+    };
+
+    struct TextFlow : public TagStream { };
+};
+
+>Fix:
+
+>Unformatted:
