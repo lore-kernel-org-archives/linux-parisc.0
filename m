@@ -1,46 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7B2374A19
-	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 12:48:04 -0700 (MST)
-Message-Id: <200102211950.LAA17656@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Prefetch macros for PA-RISC 
-In-reply-to: Your message of "Wed, 21 Feb 2001 11:53:41 PST."
-             <20010221115341.J31164@parcelfarce.linux.theplanet.co.uk>
-Date: Wed, 21 Feb 2001 11:50:54 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7D3D44A19
+	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 13:22:03 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14Vflm-00035C-00; Wed, 21 Feb 2001 13:21:50 -0700
+Date: Wed, 21 Feb 2001 13:21:50 -0700
+From: Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Prefetch macros for PA-RISC
+Message-ID: <20010221132150.L31164@parcelfarce.linux.theplanet.co.uk>
+References: <E14VeQa-0002ZJ-00@the-village.bc.nu> <200102211940.LAA17629@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200102211940.LAA17629@milano.cup.hp.com>; from grundler@cup.hp.com on Wed, Feb 21, 2001 at 11:40:42AM -0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> > "addr" has alignment restrictions. Not sure if you want
-> > to encode those as runtime checks or not.
+On Wed, Feb 21, 2001 at 11:40:42AM -0800, Grant Grundler wrote:
+> Alan Cox wrote:
+> > Can the prefetch on the hppa fault ?
 > 
-> Um.. Kane, page 6-11: ``The prefetch address is never unaligned -- the
-> low-order bits are ignored and the cache line containing the address is
-> fetched.''
+> "PARISC 2.0 Arch" page 6-11 says:
+>    If one of those exceptions would occur, the prefetch
+>    is simply ignored, but any base register modification
+>    specified by the instruction still occurs.
+> 
+> I haven't checked if the errata contradicts this.
+> The whole point of prefetch which be undermined if it could fault.
 
-Right. I was reading the LDD/LDW pages (which don't discuss prefetching)
-since I couldn't find the "Data Prefetch Instructions" section on page 6-11
-on my own.
+The errata only covers which way around the LDD/LDW instructions are.
 
-
-> But that stops 32-bit kernels on 64-bit architecture from taking advantage
-> of the optimisation.  perhaps we need some funky runtime patching...
-
-That's evil. I'd rather introduce a CONFIG flag that says "build me
-a 32-bit kernel with PA2.0 optimizations/support". We've already made
-this tradeoff in a few other places as well.
-
-
-> I believe arjan's patch uses prefetches for list walking, which helps
-> the scheduler a lot.
-
-Certainly. Anytime we know we will touch more than a few cachelines,
-I think it'll help.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Revolutions do not require corporate support.
