@@ -1,19 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA30442
-	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Sep 1999 12:04:18 -0600
-Date: Mon, 13 Sep 1999 20:06:26 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] $global$ undefined?
-Message-ID: <19990913200626.C1391@suse.de>
-References: <19990913190109.K10698@suse.de> <199909131753.KAA17721@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199909131753.KAA17721@milano.cup.hp.com>; from Grant Grundler on Mon, Sep 13, 1999 at 10:53:37AM -0700
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA30673
+	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Sep 1999 12:18:01 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id OAA28681
+	for <parisc-linux@thepuffingroup.com>; Mon, 13 Sep 1999 14:19:26 -0400 (EDT)
+Message-Id: <199909131818.LAA17779@milano.cup.hp.com>
+To: Philipp Rumpf <prumpf@suse.de>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] $global$ undefined? 
+In-reply-to: Your message of "Mon, 13 Sep 1999 20:06:26 PDT."
+             <19990913200626.C1391@suse.de>
+Date: Mon, 13 Sep 1999 11:18:02 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Different problem now.
+Philipp Rumpf wrote:
+> > Different problem now.
+> 
+> please file the object files to see whether they are ELF or SOM (they should
+> be all SOM).
 
-please file the object files to see whether they are ELF or SOM (they should
-be all SOM).
+grundler <407>file arch/parisc/kernel/head.o
+arch/parisc/kernel/head.o:      ELF-32 relocatable object file - PA-RISC
+
+
+Sigh...I thought the object files were supposed to be SOM until I saw the
+following in the binutils/gas/configure:
+      parisc-*-linux*)         fmt=elf em=linux ;;
+
+Should I change this to "som"?
+
+thanks again philipp,
+grant
+
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
