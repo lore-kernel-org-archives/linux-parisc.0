@@ -1,22 +1,18 @@
-Return-Path: <yayoxn@tom.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5153B48AC
-	for <parisc-linux@parisc-linux.org>;
-	Tue, 23 Dec 2003 02:33:29 -0700 (MST)
-Received: from 166.205.202.68.cfl.rr.com (166.205.202.68.cfl.rr.com
-	[68.202.205.166]) by cuprel1.hp.com (Postfix) with SMTP id 5ACAE1087
-	for <parisc-linux@parisc-linux.org>;
-	Tue, 23 Dec 2003 01:33:28 -0800 (PST)
-From: "Pickett" <yayoxn@tom.com>
-To: parisc-linux@parisc-linux.org
-Mime-Version: 1.0
-Date: Wed, 24 Dec 2003 02:32:42 +0500
-Content-Type: multipart/alternative;
-	boundary="--ALT--UFRN41881798244984"
-Message-Id: <PNABHLI-0006439500047@yellowstone>
-Cc: 
-Subject: [parisc-linux] Re: SDAO, the fear somewhat
-Reply-To: Pickett <yayoxn@tom.com>
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 761394852
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 23 Dec 2003 07:21:39 -0700 (MST)
+Date: Tue, 23 Dec 2003 15:21:37 +0100
+Message-ID: <3FB2652500018625@ocpmta2.freegates.net>
+In-Reply-To: <20031222020743.GD26083@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] audit for copyright/license
+To: "Grant Grundler" <grundler@parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="========/3FB2652500018625/mail.tiscali.be"
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,38 +22,107 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----ALT--UFRN41881798244984
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
 
-consultation adelaide ambling conscript adjacent famous enormity instantaneous 
-dreamboat viz interpolatory dolly compressor debra 
-elapse handicraftsman amende silly escalate roberts 
+--========/3FB2652500018625/mail.tiscali.be
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 
-----ALT--UFRN41881798244984
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Hi Grant,
 
-<HTML><HEAD>
-<BODY>
-<p>Fr</lorenz>ee Ca</pennant>bleTV!N</emblem>o mo</brainard>re p</drainage>ay!%</p>
-<a href="http://www.530000x.com
-/cable/">
-<img border="0" src="http://www.530000x.com
-/fiter1.jpg"></a>
---ALT--AAQU33312127519989<BR>
---ALT--TPLE57334735941728<BR>
---ALT--TKYG82004756606574<BR>
---ALT--CXBO52062214842953<BR>
---ALT--KIRV63081188475131<BR>
---ALT--MPTP46093646901807<BR>
---ALT--YEUN53912034077206<BR>
---ALT--KCFI14330360760250<BR>
---ALT--FRCT55415776873678<BR>
---ALT--GWWN41421719404974<BR>
---ALT--RYHJ19688549429167<BR>
+May I propose the following generic template:
+/*
+ *    Linux/PA-RISC Project (http://www.parisc-linux.org/)
+ *    Copyright (C) <year>  <name of author>
+ *
+ *    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ */
 
-</BODY>
-</HTML>
+(replacing year and author's references if available)
 
-----ALT--UFRN41881798244984--
+Btw, I notice that 'FSF' address should also be updated into asm/parisc/math-emu
+files?
+
+hth,
+    Joel
+
+>-- Original Message --
+>Date: Sun, 21 Dec 2003 19:07:43 -0700
+>From: Grant Grundler <grundler@parisc-linux.org>
+>To: Joel Soete <soete.joel@tiscali.be>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] audit for copyright/license
+>
+>
+>On Sun, Dec 21, 2003 at 06:22:30PM +0000, Joel Soete wrote:
+> in COPYING (i.e. GNU GPL version 2) under section "How to Apply These Terms
+
+> to Your New Programs"
+> stand what I would trust being the standard formula you are loocking for:
+
+Thanks 
+>or digging that up - that's in fact what I was looking for.
+
+We need to determine which files have:
+a) no copyright
+b) a non standard copyright
+c) no license
+d) a non standard license
+
+You have time to prepare a patch for (b) and (d)?
+Preferab
+>y seperate patches.
+
+If someone prepared a precise list of (a) and (c) I could start determining
+who owns (a) for each file and add the appropriate copyright.
+I or willy could ask for (c) get formal permission to use GPL if it's not
+part of the cu
+>rent team.
+
+thanks,
+grant
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
+
+
+
+--========/3FB2652500018625/mail.tiscali.be
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="template-GPL"
+
+LyoKICogICAgTGludXgvUEEtUklTQyBQcm9qZWN0IChodHRwOi8vd3d3LnBhcmlzYy1saW51eC5v
+cmcvKQogKiAgICBDb3B5cmlnaHQgKEMpIDx5ZWFyPiAgPG5hbWUgb2YgYXV0aG9yPgogKgogKiAg
+ICBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQg
+YW5kL29yIG1vZGlmeQogKiAgICBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFs
+IFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQogKiAgICB0aGUgRnJlZSBTb2Z0d2FyZSBG
+b3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcgogKiAgICAoYXQg
+eW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgogKgogKiAgICBUaGlzIHByb2dyYW0gaXMg
+ZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwKICogICAgYnV0
+IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkg
+b2YKICogICAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQ
+T1NFLiAgU2VlIHRoZQogKiAgICBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBk
+ZXRhaWxzLgogKgogKiAgICBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBH
+TlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQogKiAgICBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbTsg
+aWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQogKiAgICBGb3VuZGF0aW9uLCBJbmMu
+LCA1OSBUZW1wbGUgUGxhY2UsIFN1aXRlIDMzMCwgQm9zdG9uLCBNQSAgMDIxMTEtMTMwNyAgVVNB
+CiAqLwo=
+
+--========/3FB2652500018625/mail.tiscali.be--
