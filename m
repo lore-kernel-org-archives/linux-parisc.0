@@ -1,28 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server.pyrenet.fr (server.pyrenet.fr [194.250.190.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 63D26482C
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 07:42:28 -0600 (MDT)
-Received: from localhost (localhost [127.0.0.1])
-	by localhost.pyrenet.fr (Postfix) with ESMTP id 2244722ED7
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 15:42:27 +0200 (MET DST)
-Received: from server.pyrenet.fr ([127.0.0.1])
- by localhost (server [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
- id 19228-03 for <parisc-linux@lists.parisc-linux.org>;
- Sun, 15 Jun 2003 15:42:05 +0200 (MET DST)
-Received: from tyrann (numeris158.pyrenet.fr [194.250.190.158])
-	by server.pyrenet.fr (Postfix) with ESMTP id 394BC22EA1
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 15:42:05 +0200 (MET DST)
-Received: from ehuiban by tyrann with local (Exim 3.35 #1 (Debian))
-	id 19RXnb-0000LH-00
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 15:43:59 +0200
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Eric Huiban <grompf@grompf.net>
-To: parisc-linux@lists.parisc-linux.org
-Date: Sun, 15 Jun 2003 15:43:59 +0200
+Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6A473482C
+	for <parisc-linux@parisc-linux.org>; Sun, 15 Jun 2003 09:41:15 -0600 (MDT)
+Message-ID: <3EEC9703.5060108@tiscali.be>
+Date: Sun, 15 Jun 2003 15:55:47 +0000
+From: Joel Soete <joel.soete@tiscali.be>
 MIME-Version: 1.0
-Message-Id: <E19RXnb-0000LH-00@tyrann>
-Subject: [parisc-linux] Serial port problem.
+To: Matthew Wilcox <willy@debian.org>
+Cc: Paul Bame <bame@riverrock.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: 2.4.21
+References: <20030613154951.GA30843@parcelfarce.linux.theplanet.co.uk> <20030614234039.GB5805@riverrock.org> <20030615004130.GL30843@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20030615004130.GL30843@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -34,27 +23,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Matthew Wilcox wrote:
 
-I just need to install an 'old' modem (USR Sportster V34) on a freshly 
-installed HP 9000/730. Using minicom i only managed to communicate
-with the modem up to 19200bps. I'm using ttyS0 as backup console port and 
-ttyS1 as modem port.
+>On Sat, Jun 14, 2003 at 05:40:39PM -0600, Paul Bame wrote:
+>  
+>
+>>On Fri, Jun 13, 2003 at 04:49:51PM +0100, Matthew Wilcox wrote:
+>>    
+>>
+>>>Paul, would you be so kind as to do the honours?
+>>>I don't see any reason to hold off on merging 2.4.21 into our tree;
+>>>we can deal with any brokenness in the 2.4 tree later.
+>>>      
+>>>
+>>Hmm, bad timing, maybe Tuesday.  That ok?
+>>    
+>>
+>
+>We've waited 9 months for 2.4.21, I guess we can wait another 4 days ;-)
+>
+>  
+>
+Even though merge seems to me easy, if my merge patch (a diff between 
+2.4.21 vanilla and my stuff) would help you, let me know. I will so try 
+to prepare it on monday.
 
-here is the content of my serial.conf generated during the debian 
-installation :
-
-###PORT STATE GENERATED USING AUTOSAVE-ONCE###
-###AUTOSAVE-ONCE###
-###AUTOSAVE###
-#
-[snip : comments]
-/dev/ttyS0 uart 16550A port 0x0000 irq 90 baud_base 454545 spd_vhi
-/dev/ttyS1 uart 16550A port 0x0000 irq 89 baud_base 454545 spd_vhi
-
-Is there something specific to the HP 9000 computers , or just a little 
-something i missed somewhere ?
-
-Thant you all !
-
-Eric Huiban, aka Grompf.
+Joel
