@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4986F6125
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Nov 2001 00:07:59 -0700 (MST)
-Message-Id: <200111260702.AAA03201@puffin.external.hp.com>
-To: Phil Anderson <andersop@bob.ncssm.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] bad local loopback (and 712 X query) 
-In-Reply-To: Message from Phil Anderson <andersop@bob.ncssm.edu>
-   of "Mon, 26 Nov 2001 01:50:42 EST." <Pine.LNX.4.33.0111260140330.4886-100000@bob.ncssm.edu>
-Date: Mon, 26 Nov 2001 00:02:33 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from beavis.ybsoft.com (unknown [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 632856120
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Nov 2001 00:28:06 -0700 (MST)
+Subject: Re: [parisc-linux] Status E55 - is the driver accepted ?
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <3C016DC9.980D5409@gmx.at>
+References: <3C016DC9.980D5409@gmx.at>
+Content-Type: text/plain
+Date: 26 Nov 2001 00:28:04 -0700
+Message-Id: <1006759684.5609.3.camel@beavis>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,13 +23,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Phil Anderson wrote:
-> ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN
-> skb: pf=2 (unowned) dev=lo len=328
-> PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+On Sun, 2001-11-25 at 15:16, Christoph Plattner wrote:
+> Hello PARISC "Hackers" !!
+> 
+> What's the status of the PDC ROM tty driver ?
 
-http://www.parisc-linux.org/release-0.9/errata-092.html
+I just got back from vacation, I've updated to the latest -pa number and
+fixed the patch (I forgot to include the firmware.c file in the diff).
 
-(and I didn't just add that)
+I have gotten some preliminary feedback from Matthew Wilcox to change
+the Major number from 30 to 60 which I have done.  I have put out a new
+.diff (with the firmware.c changes this time!) for anyone to review. 
+Unless someone has problems with the patch, I am planning on committing
+this tomorrow (once Matthew has a chance to finish reviewing the
+complete patch).
+ 
+> Ryan Bradetich told me, that he has tested it and added the
+> config stuff. 
 
-grant
+yep, I also updated it to the CVS head.
+
+> By the way: I cannot reach Ryan Bradetich, his email address
+> seems to be wrong !!!!
+
+yeah .. broken mailer on my side (I'm in the middle of an ISP switch,
+sorry for the confusion).   The address that works is
+rbradetich@uswest.net (which is subscribed to the mailing list, so I got
+copies of all the mail.. sorry for the bounces ... this has been fixed
+now.  This address will be changing in the near future as I get moved to
+my new ISP.
+
+Thanks,
+
+- Ryan
+
+> With friendly regards
+> Christoph P.
+> 
+> 
+> -- 
+> -------------------------------------------------------
+> private:	christoph.plattner@gmx.at
+> company:	christoph.plattner@alcatel.at
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
