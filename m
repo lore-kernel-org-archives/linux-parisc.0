@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from relay3.softcomca.com (relay3.softcomca.com [168.144.1.70])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8FF4482E
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 05:15:49 -0600 (MDT)
-Message-ID: <48270-22003847111543568@M2W027.mail2web.com>
-Reply-To: sugarat@mail.flyer.co.uk
-From: "sugarat@mail.flyer.co.uk" <sugarat@mail.flyer.co.uk>
-To: parisc-linux@lists.parisc-linux.org
-Date: Thu, 7 Aug 2003 07:15:43 -0400
+Received: from webmail.tie.cl (mta03.tie.cl [200.50.96.212])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F025482E
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 08:08:55 -0600 (MDT)
+Received: from rucapillan (200.54.200.46) by webmail.tie.cl (7.0.008)
+        id 3F21B5D6001278C5 for parisc-linux@lists.parisc-linux.org; Thu, 7 Aug 2003 10:02:12 -0400
+From: "Edson Vittoriano P." <evittor@ctc.cl>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 7 Aug 2003 10:07:19 -0400
+Message-ID: <FOEGIGMJIFJFEHKDHMIIOEKECGAA.evittor@ctc.cl>
 MIME-Version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Xfree86 on C200
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] HP Visualize C3000/785
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,22 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I am getting a weird error on attempting to run Xfree86 on my C200=2E  The=
+Greetings I tried to install PA-Risc Linux in a Visualize C3000/785, but it
+happened a HPMC.
 
-kernel startup displays the fact that device fb0: has initialised okay, so=
+When I reinitiated the machine no longer I had console.
 
-the framebuffer is detected, but upon starting X I get a message saying
-that the weight specified (000) is inconsistent with the colour depth (32)=
+Now the single console unfolds prompt login, does not unfold the beginning
+of firmware, nor no other operation of load, does not allow to conduct no
+other operation.
 
+Some idea?
 
- Can anyone offer any advice please? I dont know what else to try now=2E=2E=
-=20
-
- Many thanks,
-
-   Adam
-
-
---------------------------------------------------------------------
-mail2web - Check your email from the web at
-http://mail2web=2Ecom/ =2E
+Edson Vittoriano Piuzzi
+Ingeniero de Seguridad Informática/CISSP
+Sub-Gerencia Explotación de Redes y Servicios de Datos
+Telefónica Empresas CTC Chile
+Fono:(56)-(2)-691-50-71
+Móvil: 9-321-25-23
+Santiago-Chile
