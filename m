@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from halfdimension.com (halfdimension.com [216.36.86.238])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9D4B0482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Nov 2001 19:17:46 -0700 (MST)
-Date: Wed, 28 Nov 2001 21:13:14 -0500
+	by dsl2.external.hp.com (Postfix) with SMTP id 2DD56482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Nov 2001 19:20:40 -0700 (MST)
+Date: Wed, 28 Nov 2001 21:16:08 -0500
 From: Kevin Clark <kclark@halfdimension.com>
 To: parisc-linux@lists.parisc-linux.org
-Cc: Options@dsl2.external.hp.com, for@dsl2.external.hp.com,
-	a@dsl2.external.hp.com, 730@dsl2.external.hp.com,
-	Machine@dsl2.external.hp.com
-Message-Id: <20011128211314.0ca6fb98.kclark@halfdimension.com>
+Message-Id: <20011128211608.4de42193.kclark@halfdimension.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] (no subject)
+Subject: [parisc-linux] Options for a 730 machinge (sorry for double post - email server is acting up)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
