@@ -1,43 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA30101
-	for <parisc-linux@puffin.external.hp.com>; Thu, 24 Aug 2000 16:49:00 -0600
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 24 Aug 2000 22:48:55 -0000
-Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
-  by db1.i.linuxcare.com with SMTP; 24 Aug 2000 22:48:21 -0000
-Received: (from willy@localhost)
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) id RAA01492
-	for parisc-linux@thepuffingroup.com; Thu, 24 Aug 2000 17:43:56 -0400
-Date: Thu, 24 Aug 2000 17:43:56 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000824174356.K29677@vodka.thepuffingroup.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA10892
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Aug 2000 03:17:22 -0600
+Received: from user49-209.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.49.209)
+  by mailserv2.iuinc.com with SMTP; 25 Aug 2000 09:17:17 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id D3C08B005; Fri, 25 Aug 2000 10:15:29 +0100 (BST)
+Date: Fri, 25 Aug 2000 10:15:29 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Testing CPU detection
+Message-ID: <20000825101529.A13420@linuxcare.com>
+References: <20000824174356.K29677@vodka.thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Testing CPU detection
+In-Reply-To: <20000824174356.K29677@vodka.thepuffingroup.com>; from matthew@wil.cx on Thu, Aug 24, 2000 at 05:43:56PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
+For my A180:
 
-Hi.
+CPU might be a PA7300LC (PCX-L2)
+CPU(s): 1 x PA7300LC (PCX-L2) at 180.000000 MHz
 
-With some of the changes that have gone into the tree over the past week,
-it is now important that we get CPU detection correct.  So I took the
-tables from the HWDB which are a lot more accurate than the ones which
-were in the kernel before and built a new kernel using them.
 
-I would be very obliged if people would boot the kernel which I've put up
-at ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/Image-testcpu
-and mail me (don't cc the list, please) the line which starts:
+For my 715/75:
 
-CPU might be a
+CPU might be a PA7100 (PCX-T)
+CPU(s): 1 x PA7100 (PCX-T) at 75.000000 MHz
 
-It's fine on an A180 -- reports `PA7300LC (PCX-L2)'.  I want to know
-what other machines get.  Thanks in advance to everyone who tests this
-because I expect to be overwhelmed by mail from this :-).  Once I have
-a reasonable sample, I'll check the code in.
 
-Oh -- just remembered.  PA8600 (PCX-W+) processors aren't in this table.
-people with J5600s will have to wait a few hours.
+Looking good,
 
--- 
-Revolutions do not require corporate support.
+Richard
