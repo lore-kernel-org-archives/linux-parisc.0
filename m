@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from student.cs.ucc.ie (student.cs.ucc.ie [143.239.211.125])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 127B8482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 11:13:33 -0700 (MST)
-Date: Thu, 22 Nov 2001 18:13:51 +0000 (GMT)
-From: Markus Grabert <xam@student.cs.ucc.ie>
-To: andi <andi@fischlustig.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Need EVC-VGA adapter
-In-Reply-To: <1006449254.5420.0.camel@cube>
-Message-ID: <Pine.OSF.4.41.0111221753170.20159-100000@student.cs.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from solo.franken.de (pD951C6B0.dip.t-dialin.net [217.81.198.176])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE1F1482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 14:28:09 -0700 (MST)
+Date: Thu, 22 Nov 2001 22:07:10 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Markus Grabert <xam@student.cs.ucc.ie>
+Cc: Grant Grundler <grundler@puffin.external.hp.com>,
+	Herb Radford <herbr@magma.ca>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] My C200 situation
+Message-ID: <20011122220710.B2342@solo.franken.de>
+References: <200111220447.VAA03217@puffin.external.hp.com> <Pine.OSF.4.41.0111221214040.29126-100000@student.cs.ucc.ie>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.OSF.4.41.0111221214040.29126-100000@student.cs.ucc.ie>; from xam@student.cs.ucc.ie on Thu, Nov 22, 2001 at 12:26:07PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,32 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On 22 Nov 2001, andi wrote:
+On Thu, Nov 22, 2001 at 12:26:07PM +0000, Markus Grabert wrote:
+> Does anybody know whether stifb and/or XFree is working on a RavenU+
+> (C200/C240) with a VISUALIZE FX graphics card ?
 
-> > I recently purchased a C240.
-> >
-> > Unfortunately no EVC-VGA adapter was in the package.
-> > I thought it is quite easy to get these (since EVC is
-> > the new VESA standard), but I just found a few Internet
-> > companies who sell them. The adapter itself is rather expensive,
-> > usually about 50 EURO.
->
-> I have excactly the same problem, but I am living in germany. any chance
-> here?
+it doesn't. Only sticon works, but that's not enough to get X working.
+I'm waiting for documentation, which tells me at least how to enable
+the framebuffer and how to setup colormaps.
 
-try www.kindermann.de,
-they're offering conference utilities such as video projectors etc.
-Since some new projectors use a EVC interface, they used to sell
-an adapter cable (I didn't find it on their website anymore).
+Thomas.
 
-Try searching for EVCM-15HDF (that's the name of the EVC-VGA adapter);
-I found at least an US seller (http://www.networktechinc.com/cgi-bin/keemux/adapters.html)
-who sells it for $46 (US & Canada only)
-
-There is also a seller in the UK (http://www.nti1.co.uk/cable-usb.html or
-http://www.itm-components.com/cable.htm (same company)), who sells it for
-35 UK Pound, but there is a minimum shipping cost of 40 UK Pounds!
-The seller said that he's happy to send it by mail (so that you can avoid
-the high shipping costs), however you'll take the risk then.
-
-greetings max
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
