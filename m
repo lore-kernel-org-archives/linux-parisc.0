@@ -1,59 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA01770
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 13:08:30 -0700
-Message-Id: <200011152010.MAA13760@milano.cup.hp.com>
-To: Jack Perdue <j-perdue@tamu.edu>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] nfsroot - 712/60 - RPC - help 
-In-reply-to: Your message of "Wed, 15 Nov 2000 13:53:03 PST."
-             <4.3.0.20001115132700.00cc91b0@clavin.cs.tamu.edu>
-Date: Wed, 15 Nov 2000 12:10:36 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA02147
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 13:13:25 -0700
+Received: from whitetower.tamu.edu (dyna-0003.vpn.tamu.edu [172.16.32.3])
+	by mail.tamu.edu (8.9.3/8.9.3) with ESMTP id OAA25944
+	for <parisc-linux@thepuffingroup.com>; Wed, 15 Nov 2000 14:15:13 -0600 (CST)
+Message-Id: <4.3.0.20001115140420.00d20820@clavin.cs.tamu.edu>
+Date: Wed, 15 Nov 2000 14:14:13 -0600
+To: parisc-linux@thepuffingroup.com
+From: Jack Perdue <j-perdue@tamu.edu>
+Subject: Doh!!!  was Re: [parisc-linux] nfsroot - 712/60 - RPC - help
+In-Reply-To: <4.3.0.20001115132700.00cc91b0@clavin.cs.tamu.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 List-ID: <linux-parisc.vger.kernel.org>
 
-Jack Perdue wrote:
 
-Two changes:
+Of course, as soon I collected all that info and sent it I,
+in rereading, realized that I had put 192.68.1.11 in
+palo/Makefile instead of 192.168.1.11.  Doh!
 
-> a) I've tried NFSROOT=192.168.1.11  and NFSROOT=192.168.1.11/tftpboot/vmlinux
->     in palo/Makefile and the results are the same (both suggestions were
->     made to this list at some point)
+However, since the info is out there now, can someone
+tell me what I need to resolve the following:
 
-Try NFSROOT=192.168.1.11/tftpboot/pancho
+   [previous console output in previous mail]
+   Switching from PDC console
+   kmem_create: Forcing size word alignment - nfs_fh
+   Looking up port of RPC 100003/2 on 192.168.1.11
+   Looking up port of RPC 100005/2 on 192.168.1.11
+   VFS: Mounted root (nfs filesystem) readonly.
+   Kernel panic: No init found.  Try passing init= option to kernel.
 
-
-> ========== blacktower:/etc/bootptab ==========
-> pancho:\
->          :hd=/tftpboot:\
->          :bf=vmlinux:\
->          :ht=ether:\
->          :ha=08000993DA02:\
->          :sm=255.255.255.0:\
->          :hn:\
->          :ip=192.168.1.13:\
->          :vm=rfc1048:
-
-This is just a nit:
-  bf= might be better named ":bf=lifimage\"
-
-(and you only need one colon between entry's :^)
-Copy <sourcedir>/palo/lifimage to /tftpboot/lifimage.
-
-There must be something wrong but I don't see it.
-
-grant
-
-
-> kmem_create: Forcing size word alignment - nfs_fh
-> Looking up port of RPC 100003/2 on 192.68.1.11
-> RPC: sendmsg returned error 229
-> portmap: RPC call returned error 229
-
-I don't see these types of errors on my config.
-Could be related to the misdirected NFSROOT.
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+jack
+j-perdue@tamu.edu
