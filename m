@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 83E99485D
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Jan 2003 08:48:05 -0700 (MST)
-Message-Id: <200301101547.h0AFlvVs003368@hiauly1.hia.nrc.ca>
+	by dsl2.external.hp.com (Postfix) with ESMTP id B34E14829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Jan 2003 08:55:51 -0700 (MST)
+Message-Id: <200301101555.h0AFtel8003407@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] ibm-disk on a hp 735/125
-To: krebsj@informatik.tu-muenchen.de (Joerg Krebs)
-Date: Fri, 10 Jan 2003 10:47:57 -0500 (EST)
+To: joerg.krebs@physik.uni-muenchen.de (Joerg Krebs)
+Date: Fri, 10 Jan 2003 10:55:40 -0500 (EST)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.GSO.4.51.0301091743500.9837@sunhalle66> from "Joerg Krebs" at Jan 9, 2003 05:44:31 pm
+Cc: mnahkola@trinms01.ntc.nokia.com,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <1042203531.19627.11.camel@linux> from "Joerg Krebs" at Jan 10, 2003 01:58:51 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,16 +23,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> But now I want to replace the disk with a larger 4,3GB ibm dcas-34330
-> disk, but I can't get it be detected by the system, I think i used the
-> same jumper settings as on the old seagate drive.
-> at the search for potential boot devices nothing appears.
+> Do you know if any HVD disk is detected by the hp or are there just some
+> special disks for the hp ?
 
-If the ibm drive is not high-voltage differential, you can probably get
-a wide to narrow adapter and put it at the end of the narrow SE bus.
-Plugging a non-differential drive into a differential bus is not supposed
-to damage anything but it does completely disable the bus drivers of
-all devices on the bus ;-)
+Don't think so.  I've used several OEM seagate models on the HVD bus.
+I've done some hacking of drive tables and sam info.
 
 Dave
 -- 
