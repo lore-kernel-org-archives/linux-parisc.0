@@ -1,17 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CF4F14829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 10:33:41 -0600 (MDT)
-Received: from esiee.fr (grobluk.esiee.fr [147.215.7.22])
-	by mail.esiee.fr (Postfix) with ESMTP id 9297D49BF1
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 13 Sep 2002 18:33:39 +0200 (CEST)
-Message-ID: <3D8212E7.6000609@esiee.fr>
-Date: Fri, 13 Sep 2002 18:31:35 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] Making SYM2 default SYM-SCSI driver instead of SYM1
+Message-Id: <20020913170351.1D5414829@dsl2.external.hp.com>
+Date: Fri, 13 Sep 2002 11:03:51 -0600 (MDT)
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] misaligned handler failing...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +15,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi fellows !
+grundler@debian:~$ /usr/X11R6/bin/xlock -mode morph3d
+Access control list restored.
+xlock: caught signal 10 while running morph3d mode (uid 1000).
 
-Paul Bame has noticed a problem that seems to occur on B2600 with SYM1 
-driver, causing the box to slow down everything and increasing the 
-loadavg, while top reports 99% idle.
+I haven't explicitly tested all modes, but this is the only
+failure I've seen.
 
-When this happens, one can hear HD making strange noise: two grouped 
-"ticks" every 2 seconds or so.
+grundler@debian:~$ fgrep 10 /usr/include/asm/signal.h
+#define SIGBUS          10
+#define SA_SIGINFO      0x00000010
+#define _SA_SIGGFAULT   0x00000100 /* HPUX */
+grundler@debian:~$
 
-I have experienced this behavior by myself, and it seems that using SYM2 
-driver solves this problem.
+SIGBUS implies a misaligned address access....and dmesg output confirms
+that theory:
 
-Now I'm asking you to know if anybody has an objection against making 
-SYM2 the default driver in debian-configs instead of old SYM1.
+xlock(16254): unaligned access to 0x4071402c at ip=0x400ea63f
+Not-handled unaligned insn 0x2fe81205
+Unaligned handler failed, ret = -1
+xlock (pid 16254): Unaligned data reference (code 28)
 
-Thanks,
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111111100001111 Not tainted
+r00-03  00000000 00267c90 400d2943 4013c558
+r04-07  00267a60 001dcec8 001d9ec8 002486c8
+r08-11  001d9ec8 001d9ec8 002486c8 001d9ec8
+r12-15  001d9ec8 00000001 002596c8 001d9ec8
+r16-19  002486c8 00000000 002486c8 4013c558
+r20-23  00000034 000000af 400ea5e8 4071403c
+r24-27  40714024 40714028 00267c90 001d9ec8
+r28-31  0026b160 40753f48 faf00b80 40714028
+sr0-3   00000000 00000050 00000000 00000050
+sr4-7   00000050 00000050 00000050 00000050
+
+IASQ: 00000050 00000050 IAOQ: 400ea63f 400ea643
+IIR: 2fe81205    ISR: 00000050  IOR: 4071402c
 
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+grant
