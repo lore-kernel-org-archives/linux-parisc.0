@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm2.tiscalinet.be (unknown [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3C2F14862
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Jul 2002 09:27:01 -0600 (MDT)
-Message-ID: <3D2469AB.3080102@freebel.net>
-Date: Thu, 04 Jul 2002 15:28:43 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: Alex Green <alexdgreen@hotmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installing on C3600
-References: <OE62b63Kbc9oLfgzBsc00001390@hotmail.com> <3D21DFDD.9090002@freebel.net> <3D21E354.8050701@freebel.net> <OE17H31NKzHWcQTLwR20000190f@hotmail.com> <3D2460E6.2040608@freebel.net> <OE40wtsQztQoPAzdaQY00001f9b@hotmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E384D486F
+	for <parisc-linux@parisc-linux.org>; Thu,  4 Jul 2002 09:28:13 -0600 (MDT)
+Date: Thu, 4 Jul 2002 17:28:05 +0200
+Subject: Re: [parisc-linux] Linux on HP9000/E25 ?
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v482)
+Cc: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
+To: "SEMETEYS Raphael - MTR ( rsemeteys@mtr.sema.slb.com )" <rsemeteys@mtr.sema.slb.com>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <63FDFE424494D411965B009027D0E4FB0206124F@mtrmes01.montrouge.eur.slb.com>
+Message-Id: <A3191AF2-8F62-11D6-B92C-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,98 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Humm...
+Le jeudi 4 juillet 2002, =E0 05:31 , SEMETEYS Raphael - MTR=20
+( rsemeteys@mtr.sema.slb.com ) a =E9crit :
 
-We would so to have a look in more details the terminal setup (baud rate 
-9600, flow control ,...) I will give you my setup next week (except if 
-some one else could give you those details in the mean time).
+> Hi there,
+>
+> I'd like to know if somedy already got througth installing Linux on a
+> HP9000/E25 server.
+Well, nothing that I heard of.
+Anyway, Christoph Plattner is working on his E55, but with no real=20
+success (eh Christoph ? :)
+We are actually working on E35, with nothing more than booting the=20
+kernel via network, and no real success.
+> I'm trying to convinced my boss to do so but I'd like to know possible
+> limitations or known problems before beginning any installation.
+errr; looks like E-class wasn't a good choice :)
+It's not supported actually, and fwiw not a priority
 
-Joel
 
-
-Alex Green wrote:
-> ok thanks,
-> 
-> i've got a serial term connected, but the when the installer i get screen
-> corruption, I have tried vt52, vt100, vt102 and hp.  I have the same result
-> on all.
-> 
-> I've got a HP 700/96 Teminal.
-> 
-> Thanks again
-> Alex
-> ----- Original Message -----
-> From: "Joel Soete" <joel.soete@freebel.net>
-> To: "Alex Green" <alexdgreen@hotmail.com>
-> Cc: <parisc-linux@lists.parisc-linux.org>
-> Sent: Thursday, July 04, 2002 4:51 PM
-> Subject: Re: [parisc-linux] Installing on C3600
-> 
-> 
-> 
->>
->>Alex Green wrote:
->>
->>>[....]
->>>
->>>
->>>
->>>>>If it is a hp terminal, you can change the emulation. It depends of the
->>>>>terminal type but you can have a look in your user guide or test (but I
->>>>>think that would request severall reboot) the emulation nearest vt100
->>>>
->>>IIRC.
->>>
->>>
->>>>>Once you have found the right emulation, try first the more stable
->>>>>32-bits kernel (IIRC if you unplug ps/2 or usb mouse and keyboard, the
->>>>>kernel will switch to serial console on port 1).
->>>>
->>>>Another good solution could also be to run minicom as console emulation.
->>>
->>>
->>>So, should i set the terminal type to be VT102 IIRC or just VT102?.. the
->>>terminal is a proper HP Serial Console.
->>>
->>
->>Sorry I have not any material neither doc to help you right now. Next
->>week I will be back to office and more accurate details for your help.
->>
->>
->>>Is it possible to use the STI Console ( Which I believe to be the
->>
-> Graphics
-> 
->>>Adapter Console) to start the installation?
->>>
->>
->>Let first try to build a build a system wit serial console, than you
->>would be able to choose install a more recent kernel
->>(ftp://ftp.parisc-linux.org) to see if you can use STI (IIRC Standard
->>Text Interface) with your Graphics adapter).
->>
->>So yes STI give you actually a text interface for your console on your
->>Graphical adaptor through fb (Frame Buffer) support.
->>
->>
->>>Thanks for the help
->>>Alex
->>>
->>
->>See you later,
->>Joel
->>
->>
->>_______________________________________________
->>parisc-linux mailing list
->>parisc-linux@lists.parisc-linux.org
->>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->>
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://pateam.esiee.fr/
