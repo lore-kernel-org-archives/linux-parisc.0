@@ -1,20 +1,19 @@
-From: Hilko Bengen <bengen@vdst-ka.inka.de>
+From: ste <stemelchior@inwind.it>
 Subject: [parisc-linux] Re: HP9000/710
-Date: 05 Jul 2002 12:32:58 +0200
-Message-ID: <87znx6zcpx.fsf__5625.86740493334$1416621466$gmane$org@ataraxia.vdst-ka.inka.de>
-References: <200207031737.TAA09556@mailimailo.univ-rennes1.fr>
-	<02070410352000.00440@www>
+Date: Fri, 5 Jul 2002 14:12:21 +0200
+Message-ID: <02070514115600.00684__9812.64560618929$1416621467$gmane$org@www>
+References: <200207031737.TAA09556@mailimailo.univ-rennes1.fr> <02070410352000.0
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Cc: <dlorin@univ-rennes1.fr>,
 	"Erling A. Jacobsen" <linuxcub@email.dk>,
 	Jan Heumann <jheumann@fonts.de>,
 	Paolo Ambrosio <blues@iglu.cc.uniud.it>,
 	Roberto Checcozzo <r.checcozzo@libero.it>,
 	<debian-hppa@lists.debian.org>, <parisc-linux@lists.parisc-linux.org>
-To: ste <stemelchior@inwind.it>
+To: Bengen <bengen@vdst-ka.inka.de>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <02070410352000.00440@www>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -25,17 +24,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-ste <stemelchior@inwind.it> writes:
+Well, the first error I made (why didn't I read the manual, always RTFM, i.e. 
+ReadThatF**ingManual) was that I didn't partitioned the HDD in the right 
+ways: so I did the second time I tried to install the Workstation. Imean you 
+must divide the HDD in at least 3 partition (for istance, /dev/sda1 for 
+primary where to put OS, /dev/sda5 swap and finally /dev/sda2 where you MUST 
+set the type to "F0", the PALO's dedicated partition).
+When I reboot the system after the first try I red on the monitor: "Hard 
+booted" and it hanged. When I correctly partitioned the HDD, install the base 
+and rebooted the system, it finally booted up and everything went well!
+Did you do the correct steps to partition the HDD, set the partition types 
+and so on?
+Then did you skip the keyboard configuration during the base installation, as 
+mentioned in the previous mals on this ML?
+Ste
 
-> YES I got it. I finally installed the Debian GNU/Linux on my own HP
-> WS (I was an HP High-Availability Engineer, but I had always worked
-> on HP9000 Servers and I never tried to install Linux on my
-> HP9000/710 the last few days!). I am too excited!!! well the base
-> system is well installed now, tonight I am going to proceed with the
-> other useful pkgs. 
-
-I went to the Linux Porters' booth at LinuxTag 2002 in Karlsruhe with
-a 710, but we were not able to install the system. The installer
-booted fine, but it hung when it tried to access the hard drive.
-
--Hilko
+> I went to the Linux Porters' booth at LinuxTag 2002 in Karlsruhe with
+> a 710, but we were not able to install the system. The installer
+> booted fine, but it hung when it tried to access the hard drive.
+>
+> -Hilko
