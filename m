@@ -1,20 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] 2.6.10-rc2-pa2 build failing
-Date: Sun, 12 Dec 2004 12:56:28 -0700
-Message-ID: <20041212195628.GA20842@colo.lackof.org>
-References: <Pine.LNX.4.58.0412031551120.3169@rray.drdc.mstc.ms.gov>
-	<20041204190201.GC30126@colo.lackof.org>
-	<Pine.LNX.4.58.0412060817380.21506@rray.drdc.mstc.ms.gov>
-	<20041210192835.GF6653@colo.lackof.org>
-	<41BADB3C.8000602@tiscali.be> <41BAE2D5.4010201@tiscali.be>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] make SEGV
+Date: Sun, 12 Dec 2004 16:40:30 -0800
+Message-ID: <20041213004030.GH29171@tausq.org>
+References: <200412122200.iBCM0FVH010152@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: rray@tcmail.mstc.state.ms.us,
- parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41BAE2D5.4010201@tiscali.be>
+In-Reply-To: <200412122200.iBCM0FVH010152@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,13 +21,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Dec 11, 2004 at 12:06:45PM +0000, Joel Soete wrote:
-> (iirc you can also safely get rid of pci stuff on your k )
+In reference to a message from John David Anglin, dated Dec 12:
+> This is on gsyprf11.  We had a SIGSEGV because r26 is 0 but how
+> did r26 get to be 0?
 
-He can but might need it for card-mode Dino 100BT cards.
-BTW,I have 2 dual port 100BT HSC cards if anyone wants them.
+Do you still have the corefile for this? does "info register" give
+register values that are the same as what you see with "p $r26"?
 
-grant
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
