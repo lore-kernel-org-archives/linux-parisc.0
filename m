@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BFAA6482A
-	for <parisc-linux@parisc-linux.org>; Tue,  8 Jan 2002 08:45:36 -0700 (MST)
-Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
-	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id g08FjY7c003679
-	for <parisc-linux@parisc-linux.org>; Tue, 8 Jan 2002 10:45:35 -0500 (EST)
-Message-Id: <200201081545.g08FjX7A003677@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] FWD: gcc-3.0.3: ICE in reload_cse_simplify on hppa-linux
-To: randolph@tausq.org
-Date: Tue, 8 Jan 2002 10:45:33 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20020108073218.GC16533@tausq.org> from "Randolph Chung" at Jan 7, 2002 11:32:18 pm
+Received: from smtp018.mail.yahoo.com (smtp018.mail.yahoo.com [216.136.174.115])
+	by dsl2.external.hp.com (Postfix) with SMTP id A56BE482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 08:45:55 -0700 (MST)
+Message-ID: <3C3B165D.2030101@yahoo.com>
+Date: Tue, 08 Jan 2002 15:55:09 +0000
+From: Jbit of Plasma <james_a_n_lee@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] HP 712/60
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,17 +20,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > What version of bison are you using?  I suspect that 1.29 may have problems.
-> > I am currently using 1.30.  I also think 1.28 is ok.  I saw one instance
-> > of a problem similar to this with 1.29, although it wasn't on the PA.
-> 
-> i'm already using 1.30 unfortunately.
+Hi!
+I have a HP 712/60 sitting in my room doing nothing, it has no memory so i'm debating whether or not i should get it up and running.
+Basicly, anybody know what memory it uses (i assume ecc 72-pin simm) and anybody know what it performs like or whats supported in linux (sound/gfx/lan)
+Thanks for any help ;P
 
-Then, I suggest trying with gcc-3.1 (prerelease).  It has quite a few
-bug fixes that 3.0.3 doesn't have although it hasn't been tested much
-on linux.  C and C++ definitely are in better shape.
+--jbit
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com
