@@ -1,36 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA08368
-	for <parisc-linux@puffin.external.hp.com>; Sun, 5 Mar 2000 10:04:48 -0700
-From: willy@thepuffingroup.com
-Date: Sun, 5 Mar 2000 11:05:52 -0500
-To: rob hoppe <hoppe@mindspring.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] uncacheable memory  (D370)
-Message-ID: <20000305110552.G9944@thepuffingroup.com>
-References: <20000304144938.A9944@thepuffingroup.com> <200003050549.VAA03562@milano.cup.hp.com> <20000305092901.E9944@thepuffingroup.com> <38C283DC.83968072@mindspring.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA09438
+	for <parisc-linux@puffin.external.hp.com>; Sun, 5 Mar 2000 12:34:49 -0700
+Date: Sun, 5 Mar 2000 19:34:43 +0100
+From: Philipp Rumpf <prumpf@inwestnet.de>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: willy@thepuffingroup.com, huck@cup.hp.com, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] lasi scsi driver
+Message-ID: <20000305193443.A8727@abacus.local>
+References: <20000304144938.A9944@thepuffingroup.com> <200003050549.VAA03562@milano.cup.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <38C283DC.83968072@mindspring.com>; from rob hoppe on Sun, Mar 05, 2000 at 10:57:16AM -0500
+In-Reply-To: <200003050549.VAA03562@milano.cup.hp.com>; from grundler@cup.hp.com on Sat, Mar 04, 2000 at 09:49:49PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Mar 05, 2000 at 10:57:16AM -0500, rob hoppe wrote:
+> In personal conversations, two knowledgable folks have suggested
+> the following:
+> o PA-7100LC systems support uncacheable memory and subcacheline access.
+>   So these boxes should be supportable.
 > 
-> 
-> > >  - T-class has something similar to U2 which is NOT I/O coherent
-> >
-> 
-> I have a chance at a T-500.  Is it of use?
+> o PA-7300LC systems *might* support uncacheable memory and subcacheline...
+>   (Could anyone definitively answer this for any PA-7300LC box?)
 
-Not in the short term, but if you can get access to it, I'd love to see
-ioscan output turn up in the hwdb...
+It does, according to our documentation.
 
-> >
-> > 725/100, 715/later, E-class, early D-class).
-> >
-> > > o PA-7300LC systems *might* support uncacheable memory and subcacheline...
-> > >   (Could anyone definitively answer this for any PA-7300LC box?)
-> >
-> 
-> Where does the D-370 dual processor fit here?
+> o PA-7000 systems are pretty much SOL.
+>   (But they could be perfectly useful if folks add cache flushing to
+>    the few device drivers needed for graphics and stuff off of LASI.)
 
-The D370 has a U2 IOA in it and as such is IO Coherent.
+More importantly, they don't use PCI (and not even GSC).  It's perfectly
+fine for us to require HP-PB drivers aso to do cache flushing.
+
+> In summary, the number of "unsupportable" systems isn't as big
+> as I first thought.
+
+I'm still not convinced there's going to be any problem at all, even on
+runway systems.
+
+	Philipp Rumpf
