@@ -1,78 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CB5BD482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Aug 2001 23:40:06 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4527E482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Aug 2001 23:47:12 -0600 (MDT)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15ch2D-0006l8-00; Fri, 31 Aug 2001 06:40:05 +0100
-Date: Fri, 31 Aug 2001 06:40:05 +0100
+	id 15ch94-0006uV-00; Fri, 31 Aug 2001 06:47:10 +0100
+Date: Fri, 31 Aug 2001 06:47:10 +0100
 From: Matthew Wilcox <willy@debian.org>
-To: =?iso-8859-1?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
+To: thunder7@xs4all.nl
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel failures
-Message-ID: <20010831064005.F30497@parcelfarce.linux.theplanet.co.uk>
-References: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de>
+Subject: Re: [parisc-linux] 2.4.9-pa10 hangs on c200+ after 'branching to kernel entry point'
+Message-ID: <20010831064710.G30497@parcelfarce.linux.theplanet.co.uk>
+References: <20010830215714.A19233@middle.of.nowhere> <20010830210933.D30497@parcelfarce.linux.theplanet.co.uk> <20010831065732.B4816@middle.of.nowhere>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <3B8F18EF.9060404@hrzpub.tu-darmstadt.de>; from rscholz@hrzpub.tu-darmstadt.de on Fri, Aug 31, 2001 at 06:56:15AM +0200
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010831065732.B4816@middle.of.nowhere>; from thunder7@xs4all.nl on Fri, Aug 31, 2001 at 06:57:32AM +0200
 Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Aug 31, 2001 at 06:56:15AM +0200, Rüdiger Scholz wrote:
-> The last Bootmessages are:
-> SNIP----------
->         sticonsole_init: searching for STI ROMs
->         STI word mode ROM at f0025000, hpa=f8000000
->         STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
->         STI device: HPA208LC1024
->         STI word mode ROM at f0025000, hpa=f4000000
->         STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
-> SNAP---------
-> 
-> Trying the same thing with kernel 2.4.9-pa5 leeds to a crash right after 
-> detecting the first card.
-> SNIP----------
->         sticonsole_init: searching for STI ROMs
->         STI word mode ROM at f0025000, hpa=f4000000
->         STI word mode ROM, id 2b4ded6d-40a00499, conforms to spec rev. 8.04
-> SNAP---------
+On Fri, Aug 31, 2001 at 06:57:32AM +0200, thunder7@xs4all.nl wrote:
+> Where can I find any info on 'the current serial port snafu'? Is this
+> the same problem as mentioned on the 5th of August 'more serial problems
+> on D310' ?
 
-Notice that both stop after trying hpa f4000000.  I think this is probably
-where the bug lies.  I did change the detection order between than and now.
+http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2001-August/029567.html
+it almost certainly is the same problem which was reported by the D310 owner.
 
-> 1. Every time my machine dumps the stack, and I check GR02 and IAOQ, 
-> they tell me that the function which trashed the kernel are 
-> parisc_terminate and parisc_showstack (or s.th like that). This isn't 
-> normal, isn't it?
-
-No.  There's astk in the build-tools CVS module which will dissect that
-stack dump for you and maybe show you what's really going on.
-
-> 2. Enabling IO_HPPA_REMAP in io.h causes a error in ioremap.c while 
-
-Don't do that then :-)
-
-> 3. Enabling SMB-Fs in the kernel gives an error message:
-
-Yeah... i promised to fix this a while back; haven't got round to it yet.
-
-> 4. My HIL-Keyboard isn't detected anymore by the new 2.4.9-kernel. Using 
-> Kernel 2.4.7-pa1, after the initalisation of HIL, I get a bootmessage like
->  "HIL: keyboard found".  Booting the new Kernel gives me only the two 
-> lines of HIL initalisation, but nothing about my Keyboard. Which is a 
-> PS/2-Keyboard on a HIL-Adaptorbox. Both Kernel were configured via "make 
-> oldconfig".
-
-I'm interested in debugging this one - I don't quite understand what's going on though.  You should see:
-
-Found HIL at 0x%x, IRQ %d
-
-then one of:
-
-HIL: timed out, assuming no keyboard present.
-HIL: no keyboard present.
-HIL: keyboard found at id %d
-
-which?
+fyi, i committed option 1 earlier today.
 
 -- 
 Revolutions do not require corporate support.
