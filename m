@@ -1,38 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ghost1.onet.pl (ghost1.onet.pl [217.97.200.21])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0FCD3482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 17:25:19 -0600 (MDT)
-Message-ID: <002f01c0c14c$75a9a020$05ffa8c0@artymiak8zws8i>
-From: "Jacek Artymiak" <workstations@poczta.onet.pl>
-To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
-References: <002d01c0c064$2ed7c890$05ffa8c0@artymiak8zws8i> <874rvyzvsv.fsf@rover.gag.com> <3AD18357.3E4AC5F6@esiee.fr>
-Subject: Re: [parisc-linux] Running Apache on PA-RISC Linux
-Date: Tue, 10 Apr 2001 01:26:09 +0200
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CCB12482A
+	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 18:13:06 -0600 (MDT)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA08115;
+	Tue, 10 Apr 2001 10:12:51 +1000
+Date: Tue, 10 Apr 2001 10:12:51 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Christoph Plattner <christoph.plattner@dot.at>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Building GDB - how exactly ?
+In-Reply-To: <3AD21CD6.C0ED4C77@dot.at>
+Message-ID: <Pine.LNX.4.21.0104101003570.7474-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I tried to compile php4 for our website, and effectively it doesn't
-> work. It doesn't pass the ./configure.
-> If I remember well, it is connected to the fact that libutils doesn't
-> recognize the famous hppa-unknown-xxxx.
-> I think it was the same with mysql.
->
-> The only software problem we got in our http server is sometimes our 712
-> cannot handle swap and crash.
-> But apache is not in fault.
+On Mon, 9 Apr 2001, Christoph Plattner wrote:
 
-Thank you for sharing this information with me.  It looks like I will have
-to stay with HP-UX for a while then.  It's a pity, because I was hoping to
-run my new Web site on a Linux-powered 712/100.
+> What are the correct steps to build a working GDB for 
+> 
+> 1. HOST = i385-linux, TARGET = hppa-linux + gdbserver !
+> 	(without server already success, but I am not shure, to have
+> 	 done it correctly)
 
-Jacek
+I haven't been building gdb for remote debugging, so I'm not sure how it
+will go.  Should work, I think.
 
+> 2. Native HPPA-LINUX gdb
 
-Jacek
+I use the following to build a native gdb using a cross compiler from
+x86-linux
 
+/src/parisc/gdb/configure --build=i686-linux --host=hppa-linux
+--target=hppa-linux --prefix=/usr --disable-shared --disable-nls
 
+and the following to build natively
+
+/src/parisc/gdb/configure --prefix=/usr --build=hppa-linux
+--host=hppa-linux --target=hppa-linux --disable-nls
+
+It's critical that you have up to date kernel header files available from
+/usr/include/linux and /usr/include/asm, **for a 32 bit kernel**
+regardless of whether you're running a 32 bit or 64 bit kernel.  This will
+probably change soon as the ptrace interface is likely to change.
 
 -- 
- 
+Alan Modra
