@@ -1,39 +1,61 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA10202
-	for <parisc-linux@puffin.external.hp.com>; Sun, 13 Jun 1999 11:03:01 -0600
-Message-Id: <199906131702.NAA28988@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] It's finally sunk in: bye bye elf32
-To: adevries@thepuffingroup.com (Alex deVries)
-Date: Sun, 13 Jun 1999 13:02:58 -0400 (EDT)
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA10571
+	for <parisc-linux@puffin.external.hp.com>; Sun, 13 Jun 1999 13:11:01 -0600
+Message-Id: <199906131910.PAA06530@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] booting problems
+To: law@cygnus.com
+Date: Sun, 13 Jun 1999 15:10:57 -0400 (EDT)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <3762F4BE.C09B5CA9@thepuffingroup.com> from "Alex deVries" at Jun 12, 99 08:01:02 pm
+Cc: adevries@thepuffingroup.com, parisc-linux@thepuffingroup.com
+In-Reply-To: <22030.929169143@upchuck.cygnus.com> from "Jeffrey A Law" at Jun 12, 99 00:32:23 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> So, I'm going to spend some time making the kernel build on HPUX.  I
-> know there's quite a few changes to make.  But I'll keep the elf
-> specific work, it'll help later on.
+> Anyway I think you may be able to fix this bug by changing the subseg_force_new
+> call to look something like:
+> 
+>   subseg_force_new (alias ? alias : ss_name, 0);
 
-The discussion about the merits/limitations of SOM and ELF over the
-last couple of days has been extremely useful.  As Alex says, there is
-a lot of work to be done on the kernel before it is usable.  However,
-in the long run, the port must be a complete self contained system.
-That is, it must support a linker capable of generating executables
-and the kernel.
+Just to through a little "gas" on the discussion, I installed Jeff's
+patch and rebuilt.  The patch sucessfully merges $CODE$ into .text.
 
-The concensis is that writing a SOM linker is a major project.  Another
-option might be to approach HP and see if they would consider putting
-the source code for their SOM linker into the public domain, or possibly
-supplying a static binary version of the linker that could be distributed.
-I would suggest that Alex discuss the matter with his contact at HP.
+Here are the kernel headers:
 
-If this does not work out, then we must fall back to ELF32 and devote
-enough effort to get elf32-hppa working at an acceptable level.  Jeff
-Law is the world expert on the hp version of these tools.  However, Jeff
-is very busy with gcc.  Any volunteers?  Obviously, this needs to be
-coordinated with the maintainers of binutils and Cygnus.
+vmlinux:     file format elf32-hppa
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000759b0  00008000  00008000  00001000  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000f260  0007d9b0  0007d9b0  000769b0  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0001ac6c  0008e000  0008e000  00086000  2**4
+                  ALLOC
+  3 .PARISC.unwind 00006be0  000a8c6c  000a8c6c  00086000  2**0
+                  CONTENTS
+  4 .PARISC.symext 00000000  000af84c  000af84c  0008cbe0  2**2
+                  CONTENTS
+
+Here are the headers for ipl linked with "-Ttext800 -N":
+
+ipl:     file format elf32-hppa
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000028a0  00000800  00000800  00000080  2**4
+                  CONTENTS, ALLOC, LOAD, CODE
+  1 .data         000064a8  00004000  00004000  00003880  2**12
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000115c  00010950  00010950  00009d28  2**3
+                  ALLOC
+  3 .PARISC.unwind 000000c0  00011aac  00011aac  00009d28  2**0
+                  CONTENTS
+  4 .PARISC.symext 00000000  00011b6c  00011b6c  00009de8  2**2
+                  CONTENTS
+
+I think that we are real close to being able to generate a bootable
+kernel with the existing elf32 tools.
 
 Dave
 -- 
