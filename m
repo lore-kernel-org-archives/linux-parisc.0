@@ -1,14 +1,12 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] hppa glibc 2.3.3 experimental debs - patches posted
-Date: Fri, 24 Sep 2004 09:23:23 -0400
-Message-ID: <20040924132313.GU27033@baldric.uwo.ca>
-References: <20040924033509.GR27033@baldric.uwo.ca>
+From: j.raspe@t-online.de (Johannes Raspe)
+Subject: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
+Date: Fri, 24 Sep 2004 15:33:15 +0200
+Message-ID: <200409241533.15399.j.raspe@t-online.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="us-ascii"
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040924033509.GR27033@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,19 +17,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Sep 23, 2004 at 11:35:19PM -0400, Carlos O'Donell wrote:
-> http://www.parisc-linux.org/~carlos/glibc-work/glibc-2.3.3-debs-2004-09-23/
-> 
-> Binary build only. Haven't cleaned up the debian bits to make it
-> sourcefull.
+Hi all,
 
-Patch against cvs head:
+I tried the "official" 2.6.8 Debian-image and 2.6.8.1-pa11-image but none 
+worked.
+After booting, the message "if this is the last..." about graphic and 
+serial-console is printed and after that (I suppose when the kernel tries to 
+initialize the framebuffer) the screen turns blue, no HDD-activity anymore, 
+the system hangs.
+As far as I can see no other messages.
+With 2.4.27-pa4 everything is fine.
 
-http://www.parisc-linux.org/~carlos/glibc-work/glibc-hppa-patches-2004-09-22.tar.gz
+machine: 735/125
+graphics: CRX24
+palo-commandline: 2/vmlinux root=/dev/sda6 HOME=/
+32-bit kernel
 
-Cheers,
-Carlos
+Any clues?
 
+Johannes
+
+-- 
+Johannes Raspe - j.raspe@t-online.de
+GnuPG-Key ID: D342E105
+Fingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
