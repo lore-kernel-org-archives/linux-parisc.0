@@ -1,31 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4F865482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Jul 2001 12:29:02 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15Nf1I-0007vn-00; Fri, 20 Jul 2001 19:29:00 +0100
-Date: Fri, 20 Jul 2001 19:29:00 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id EBCA8482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Jul 2001 12:33:48 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: =?iso-8859-1?q?R=FCdiger=20Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
+Subject: Re: [parisc-linux] Kernel crashs on 715/100
+Date: Fri, 20 Jul 2001 20:33:12 +0200
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 715/100 with 0.92 not booting :(
-Message-ID: <20010720192900.K22691@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.BSF.4.30.0107202011550.822-100000@noc.zabbadoz.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.30.0107202011550.822-100000@noc.zabbadoz.net>; from bzeeb+hplinux@zabbadoz.net on Fri, Jul 20, 2001 at 08:18:36PM +0200
-Sender: <willy@www.linux.org.uk>
+References: <200107201759.LAA27765@puffin.external.hp.com>
+In-Reply-To: <200107201759.LAA27765@puffin.external.hp.com>
+MIME-Version: 1.0
+Message-Id: <20010720183348.EBCA8482C@dsl2.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Jul 20, 2001 at 08:18:36PM +0200, Bjoern A. Zeeb wrote:
-> PS: it's a bit confusing with those different iso images on different
-> "mirrors" with different versionizing :(
+On Friday 20 July 2001 19:59, you wrote:
+> =?iso-8859-1?Q?R=FCdiger?= Scholz wrote:
+> > a.c from "build-tools" says " 0x1010d5ac outb+2c" and "0x1010d5b0 outb+30
+> ....
+> Seems removing the offending driver from the .config should solve
+> the problem for now.  The right fix is to modify the driver so it
+> doesn't poke IO port space unless it's clear the device lives under
+> a suppported bus.
 
-That's why 0.9.2 was released after we had 3 different versions of 0.9.1,
-each with different bugs.
+I think the default defconfig should work on your machine and has all necessary and
+currently working drivers enabled. Remove your .config, do a "make oldconfig" and 
+build a new kernel from this configuration.
 
-I don't know what your problem is until I see the System.map which
-the 0.9.2 cd shipped with.  Does anyone have this?
-
--- 
-Revolutions do not require corporate support.
+Greetings,
+Helge
