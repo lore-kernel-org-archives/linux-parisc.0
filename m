@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web10901.mail.yahoo.com (web10901.mail.yahoo.com [216.136.131.37])
-	by dsl2.external.hp.com (Postfix) with SMTP id 39C12482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jan 2002 16:16:39 -0700 (MST)
-Message-ID: <20020104231637.42697.qmail@web10901.mail.yahoo.com>
-Date: Fri, 4 Jan 2002 15:16:37 -0800 (PST)
-From: Rogelio Robles <rogelio_robles@yahoo.com>
-To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Help getting xf86 cfg file for a HP PA 9000/J210XC running debian hppa Linux
+Received: from sj-msg-core-3.cisco.com (sj-msg-core-3.cisco.com [171.70.157.152])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B265D482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jan 2002 16:58:29 -0700 (MST)
+Message-Id: <4.3.2.7.2.20020104154342.02a49428@mira-sjc5-9.cisco.com>
+Date: Fri, 04 Jan 2002 15:58:06 -0800
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From: Christian Suder <csuder@cisco.com>
+Subject: Re: [parisc-linux] Need five #defines, please.....
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020104233146.A31733@solo.franken.de>
+References: <20020104012559.69375281.csuder@cisco.com>
+ <20020104012559.69375281.csuder@cisco.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,47 +24,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Guys,
+At 11:31 PM 1/4/2002 +0100, Thomas Bogendoerfer wrote:
+>On Fri, Jan 04, 2002 at 01:25:59AM -0800, Christian Suder wrote:
+> > I'm trying to skin the lizard (mozilla 0.9.7). I can build with the linux
+> > default pthreads, but it doesn' work, windows show up but the content is
+> > not drawn etc.. Hence I'd like to try a build with "classic" NSPR, which
+> > implements it's own threading mechanism. Problem : There is a couple of
+> > hardware-specific definitions that I don't know how to do, but somebody
+>
+>I don't thing anyone has ported libc5 to hppa. Those missing defines are
+>libc5 hooks, iirc.
 
-I'm close to have success running XFree86 4.1.0 that
-comes with HPPA GNU/Linux 0.9.3 but I'm still
-receiving a "parameter error" message.
-
-I'm sending you this message to ask for your help
-getting to run XFree86 on a HP 9000 J210XC workstation
-running the latest version of debian GNU/Linux.
-
-I have a debian pa-risc GNU/Linux 0.9.3 running on my
-system, everything seems that it's working fine but
-XFree86 X server. After several hours invested in this
-past holiday season I haven't had luck getting this
-guy to start running.
-
-I had a partial success in my XF86Config file, I'm
-using the frame buffer driver or "fbdev" and it seems
-that it's working because I receive infomrational
-messages from the driver itself: video ram 2MB, etc,
-but it terminates quickly saying that there is a
-"parameter error". It seems that there is something
-specified in the file that it doesn't like it. 
-
-I would like you to share with me, if you don't mind,
-your XF86Config file or maybe pointing me to the right
-place so I can find what I need to state in my xf86
-cfg file to start the X server on this system.
-
-I've been using GNU/Linux since some years ago mostly
-on x86 platforms with incremental success and some GNU
-SW on Sun Solaris. Currently I have a RedHat 7.1
-system running at home with the latest versions of
-available programs and I'd like to replicate the same
-in this system that I just got.
-
-Thanks in advance for your help,
-Rogelio
+If I'm not mistaken libc5 <=> glibc1 and libc6 <=> glibc2, these are the 
+ones for glibc2. In any case it runs on a (Linux-)Sparc with glibc2.
 
 
-__________________________________________________
-Do You Yahoo!?
-Send your FREE holiday greetings online!
-http://greetings.yahoo.com
+>Fixing pthreads would be much more productive.
+
+Agree. However I believe the problems to be caused by sloppy programming in 
+terms of thread handling, at least that was the issue I had with the pan 
+newsreader (which behaved similar, btw). I don't think that can be fixed in 
+the NSPR abstraction layer if it is caused by the application not calling 
+the appropriate functions when needed. And I'm not going to dig through 160 
+MB of source to find where somebody didn't initialize something 
+correctly.... I'm going back and forth though to see if it is something hat 
+can be done in NSPR.
+
+Especially when in the end I don't want to run mozilla anyways. I just want 
+the rendering engine to work so some more lightweight client like galeon 
+can be used.
+
+         Christian 
