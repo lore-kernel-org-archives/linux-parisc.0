@@ -1,58 +1,154 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E12244A19
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Feb 2001 18:52:22 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14UJ1L-0006nY-00; Sun, 18 Feb 2001 01:52:15 +0000
-Date: Sun, 18 Feb 2001 01:52:15 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Scott Eggert <seggert@tds.net>
+Received: from dns2.dot.at (dns2.dot.at [212.9.128.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 52A114A19
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Feb 2001 03:28:58 -0700 (MST)
+Sender: plattner@dns2.dot.at
+Message-ID: <3A8FA3D8.19E69EF6@dot.at>
+Date: Sun, 18 Feb 2001 11:28:40 +0100
+From: Christoph Plattner <christoph.plattner@dot.at>
+MIME-Version: 1.0
+To: Alan Modra <alan@linuxcare.com.au>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] E25 lock-up during boot.
-Message-ID: <20010218015215.E899@parcelfarce.linux.theplanet.co.uk>
-References: <20010217134443.B0E4081DD@dsl2.external.hp.com> <3A8F20D1.20B10E28@tds.net>
-Mime-Version: 1.0
+Subject: Re: [parisc-linux] Initial setup of the `glibc' in the target rootfile
+ system
+References: <Pine.LNX.4.21.0102091056000.9776-100000@front.linuxcare.com.au>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A8F20D1.20B10E28@tds.net>; from seggert@tds.net on Sat, Feb 17, 2001 at 07:09:37PM -0600
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Feb 17, 2001 at 07:09:37PM -0600, Scott Eggert wrote:
-> I am attempting to ge PA installed on a HP9000 E25.  I am able to boot
-> from the 0.5 CD image, however it locks-up during the boot.  Any ideas?
+Hello again !
 
-Which part of `E class is not supported' is hard to understand?  :-)
+I have found the method working here.
 
-> Searching for devices in PDC firmware... processor hpa 0xfffbe000
-> a newer box...
-> Found devices:
-> 1. Orville UX Core BA (11) at 0xf0100000, versions 0x12, 0x0, 0x81, 0x0, 0x0
-> 2. Orville Core Lan (802.3) (10) at 0xf0107000, versions 0x12, 0x0, 0x8a, 0x0, 0
-> x0
-> That's a total of 2 devices.
-> No CPUs reported by firmware - probing...
-> Found CPU at fffbe000
-> POSIX conformance testing by UNIFIX
-> Lasi version 0 at 0xf0100000 found.
+The GLIBC must be built with the line:
 
-Having said that, I bet this is the same problem as FAQ 9:
+	make user-defined-trusted-dirs=/lib 
 
-I'm booting parisc linux on an early Series 700 workstation, and the 
-machine hangs after printing:
+This adds the `/lib' to the internal trusted search path, which is
+defined in the
+generated files ./elf/trusted-dirs.{st,h}. After this the normal
+installation to the
+configured prefix (in my case /usr/parisc/hppa-linux)
 
-ASP version 1 at ..... found
+	make install user-defined-trusted-dirs=/lib
 
-What's going on?
+and the installation to the NFS root directory can be done by repeating
+install with
 
-This was a bug in the parallel port driver, which was fixed in CVS on 
-2000-11-29. You can workaround the problem by using a newer kernel or
-by reconfiguring your kernel and removing support for the parallel port
-(CONFIG_PARPORT_GSC).
+	make install user-defined-trusted-dirs=/lib
+install_root=/tftpboot/apollo/root
 
+On the workstation (booted from the palinux-0.5 root file system) I
+mounted my new
+NFS root to /mnt and used the command
+	
+	ldconfig -v -r /mnt
 
-But... there's no Lasi in an E-class.  Something's wrong with our detection
-routines, perhaps.  I admit to being curious about the `Core Lan' that's
-reported -- maybe it'll work.
+And after that I booted from tne new root, and the error was, that there
+was no inittab
+and no process left......
+
+So I have success !!!! (I know, that there is nothing to boot further,
+except the init
+itself !!)
+
+Now a further question. How to build successfully a `bash', with other
+tools (expect
+strace) I have not so big problems.
+
+The `bash' built process has problems in `configure' in a cross compiled
+environment.
+It tries some functions via C examples, and they have difficulties to
+determine the
+result of a compile option, as this is not native....
+
+I tried with 
+
+	HOSTCC=gcc CC=hppa-linux-gcc ../configure --host=hppa-linux \
+		 --prefix=/usr/parisc/hppa-linux 
+
+Configure stops with:
+
+checking for working alloca.h... yes
+checking for alloca... yes
+checking whether getpgrp takes no argument... configure: error: cannot
+check getpgrp if cross compiling
+
+How to build a bash (I am always interested in building from the scratch
+(hobby)) !
+
+With friendly regards
+
+	Christoph P.
+
+Alan Modra wrote:
+> 
+> On Thu, 8 Feb 2001, Christoph Plattner wrote:
+> 
+> > After the glibc builts perfect, I have a problem in setting up the root
+> [snip]
+> > with page fault or with "cannot find libc.6.so". Only the root of the
+> [snip]
+> 
+> "with page fault" is possibly due to the glibc bug I mentioned in
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-February/011686.html
+> 
+> "cannot find libc.so.6" is a different problem, a result of
+> cross-compiling glibc with --prefix different to final install location.
+> Let's see if I can explain the problem...
+> 
+> Suppose you want to cross-compile the toolchain and glibc from an
+> i686-linux system, and you have chosen --target=hppa-linux.  Further
+> suppose you decide to install to /usr/ on your host x86 system (This
+> does work safely, despite various recipes recommending /usr/parisc,
+> or /opt/parisc).  Now when cross-compiling glibc, you obviously _don't_
+> want to install glibc on your host to /usr, as the glibc you create is an
+> hppa-linux binary, which doesn't run very well on x86-linux!  So the
+> proper install destination for glibc is given by --prefix=/usr/hppa-linux.
+> This is also the root of directories where your hppa-linux cross-tools
+> will look first for libraries and system header files etc.  If you chooes
+> some other prefix (ie. not <compiler prefix>/<compiler target>) then
+> you'll have problems cross compiling.
+> 
+> However, trying to install the glibc that works for a cross-compiler
+> tool-chain to your target system, at a different location, fails
+> miserably because shared libraries specify where to look for their
+> "interpreter" (dynamic linker).  Your cross-compiled glibc will be looking
+> for /usr/hppa-linux/lib/ld.so.1, while a native glibc will look for
+> /lib/ld.so.1.  Also, a cross-compiled dynamic linker knows to look under
+> /usr/hppa-linux/ for libraries and ld.so.cache.  On the other hand, you
+> probably want your libraries in their normal locations so that you don't
+> accidentally use the wrong library.
+> 
+> Of course, it's very useful to be able to install your cross-compiled
+> glibc to your target :-), and hopefully the above explanation suggests one
+> way around the problems:
+>  - Install your glibc to a temp dir on your nfs server
+>    eg. "make install_root=/var/tmp/install"
+>  - Move files from /var/tmp/install to /tftpboot/<proper locataion>
+>    It helps if you know what <proper location> is!  Compile glibc native
+>    for x86 and install to another temp dir if you don't know.
+>  - Make relative symbolic links in /tftpboot/.../usr/hppa-linux/lib/ to
+>    the shared libs you installed to /tftpboot/.../lib/
+>  - ln -s ../../etc /tftpboot/.../usr/hppa-linux/etc too
+>  - What else?  Oh yeah, /usr/lib/libc.so and some of the files installed
+>    to /usr/bin/ are text files, and some have paths to    /usr/hppa-linux.
+>    Edit them.
+> 
+> It would be nice if you could cross-compile glibc with --prefix=/usr, but
+> last time I tried this, quite some time ago, it failed because
+> /usr/include/ was being used for headers.  Maybe there's an easy way
+> around this.
+> 
+> Alan Modra
+> --
+> Linuxcare.  Support for the Revolution.
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
 
 -- 
-Revolutions do not require corporate support.
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
