@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 679364829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 22 Sep 2002 00:08:30 -0600 (MDT)
-Message-Id: <200209220543.g8M5hxl6003856@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] malloc limits
-To: grundler@dsl2.external.hp.com (Grant Grundler)
-Date: Sun, 22 Sep 2002 01:43:58 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, carlos@baldric.uwo.ca,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020921223352.C64324829@dsl2.external.hp.com> from "Grant Grundler" at Sep 21, 2002 04:33:52 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Reply-To: "Yes" <GrowYounger6428a74@desertmail.com>
+Message-ID: <032b15b88d6e$8266e7a2$6ab21da5@akydbe>
+From: "Yes" <GrowYounger6428a74@desertmail.com>
+To: <parisc-linux-request@lists.parisc-linux.org>
+Cc: <parisc-linux-announce-request@lists.parisc-linux.org>,
+	<parisc-linux-cvs-request@lists.parisc-linux.org>,
+	<parisc-linux@lists.parisc-linux.org>
+Date: Sun, 22 Sep 0102 19:31:50 -0700
+MiME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_00B8_41D02B0D.C8128C04"
+Subject: [parisc-linux] Do you know the three HGH products?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,78 +22,166 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I'll assume this is happening on the A500 (PA2.0) and wonder if it's
-> a signed/unsigned bug. Look closely at how PA2.0 extends register
-> values and make sure code is treating addresses and sizes as unsigned.
+------=_NextPart_000_00B8_41D02B0D.C8128C04
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: base64
 
-This is the code that adds the chunk pointer plus size of chunk and
-then tries to load the size of the next check:
 
-0x402611d4 <chunk_free+32>:     add,l r25,ret1,r31
-0x402611d8 <chunk_free+36>:     ldw 4(sr0,r31),r20
-
-The add is a 64-bit add on a PA2.0 machine, so the result won't be
-signed extended.  My understanding is that the upper 32-bits are
-truncated when the PSW W bit is zero.  So, it isn't obvious to
-me how this can be a signed/unsigned bug unless it is in the
-kernel.
-
-> > I haven't been successful debugging the code directly.  I can get the
-> > code to seg fault by setting SIG37 to nostop noprint, but the debugger
-> > seems to think the fault occurs following the INLINE_SYSCALL in
-> > __sigsuspend.  However, the address points to an ldi instruction
-> > which can't seg fault, so I don't know what's up.
-> 
-> Not all instructions trap precisely. FP ops definitely do not and
-> I thought a few others didn't either.
-> 
-> I'm wondering what happens when unaligned access should segfault.
-> Does the unaligned code handle check for that?
-> I'll take a quick look at that code path.
-
-There is definitely something strange with this program.  It doesn't
-seg fault 100% of the time.  This suggests either a timing/lock problem
-or something that isn't being properly initialized.  I don't know
-how to debug it under gdb because it seems to change the way traps
-are handled.  When I set a break, it appears that the code under test
-catches the trap instead of gdb.  The system also dumps core.
-
-I've tried setting breaks in chunk_free and __pthread_mutex_lock
-where the unaligned faults occur with a condition matching the
-unaligned pointer value which i see in /var/log/debug.  However,
-I get the following:
-
-Program received signal SIGTRAP, Trace/breakpoint trap.
-0x4021e114 in __sigsuspend (set=0x25)
-    at ../sysdeps/unix/sysv/linux/sigsuspend.c:45
-45        return INLINE_SYSCALL (rt_sigsuspend, 2, CHECK_SIGSET (set), _NSIG / 8);
-(gdb) info proc
-process 20194
-cmdline = '/home/dave/pthread2.x0g'
-warning: unable to read link '/proc/20194/cwd'
-warning: unable to read link '/proc/20194/exe'
-
-dave     20193 20041  0 21:41 pts/2    00:00:02 gdb pthread2.x0g
-dave     20194 20193  0 21:43 pts/2    00:00:00 /home/dave/pthread2.x0g
-dave     20199 20194  0 21:46 pts/2    00:00:00 [pthread2.x0g <defunct>]
-
-I tried setting follow-fork-mode to child but it doesn't seem to follow
-the child.
-
-I don't think fp exceptions are involved.
-
-I can see in debug that two traps occur associated with each run.  They
-are both type 15 (Data TLB Miss Fault) and they seem to both occur at
-the same location.
-
-The program pthread2.x0g is in my home directory on gsyprf11.  If you
-want to try it, it probably best to set
-
-  LD_LIBRARY_PATH=/home/dave/opt/gnu/lib
-
-It may take several tries to get it to seg fault.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+TXl0aCBhYm91dCBIR0ggcHJvZHVjdHMNCg0KPGh0bWw+DQoNCjxoZWFkPg0K
+DQo8bWV0YSBodHRwLWVxdWl2PSJDb250ZW50LVR5cGUiIGNvbnRlbnQ9InRl
+eHQvaHRtbDsgY2hhcnNldD13aW5kb3dzLTEyNTIiPg0KDQo8bWV0YSBuYW1l
+PSJHRU5FUkFUT1IiIGNvbnRlbnQ9Ik1pY3Jvc29mdCBGcm9udFBhZ2UgNC4w
+Ij4NCg0KPG1ldGEgbmFtZT0iUHJvZ0lkIiBjb250ZW50PSJGcm9udFBhZ2Uu
+RWRpdG9yLkRvY3VtZW50Ij4NCg0KPHRpdGxlPlRoZXJlIGFyZSB0aHJlZSBk
+aWZmZXJlbnQgdHlwZXMgb2YgSEdIIHByb2R1Y3RzPC90aXRsZT4NCg0KPC9o
+ZWFkPg0KDQo8Ym9keSBiYWNrZ3JvdW5kPSJjbG91ZHMuanBnIj4NCg0KPHA+
+PGZvbnQgc2l6ZT0iNCI+PGZvbnQgY29sb3I9IiM4MDAwMDAiPjxiPlRoZXJl
+IGFyZSB0aHJlZSBkaWZmZXJlbnQgdHlwZXMgb2YNCg0KSEdIIHByb2R1Y3Rz
+LjwvYj48L2ZvbnQ+PGJyPg0KDQpUaGUgY29uZnVzaW9uIGlzIHRoYXQgYWxs
+IHRocmVlIGFyZTxicj4NCg0KYWR2ZXJ0aXNlZCBhcyBpZiB0aGV5IHdlcmUg
+dGhlIHNhbWUuPC9mb250Pjxicj4NCg0KJm5ic3A7PGJyPg0KDQombmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgPHU+VGhlIHRo
+cmVlIHR5cGVzIGFyZTo8L3U+PGJyPg0KDQombmJzcDs8YnI+DQoNCjxiPjEp
+PC9iPiAtLS0gPGZvbnQgY29sb3I9IiMwMDAwRkYiPjxiPkhvbWVvcGF0aGlj
+IEhHSDwvYj48L2ZvbnQ+PGJyPg0KDQo8Yj4yKTwvYj4gLS0tIDxmb250IGNv
+bG9yPSIjMDAwMEZGIj48Yj5QcmUtY3Vyc29yIEhHSDwvYj48L2ZvbnQ+PGJy
+Pg0KDQo8Yj4zKTwvYj4gLS0tIDxmb250IGNvbG9yPSIjMDAwMEZGIj48Yj5S
+ZWFsIG9yIHN5bnRoZXRpYyBIR0g8L2I+PC9mb250Pg0KDQooZGVsaXZlcmVk
+IGJ5IGluamVjdGlvbjxicj4NCg0KJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7IG9yLCBieSBhbiBvcmFsIHNwcmF5IG1ldGhv
+ZCkuPGJyPg0KDQombmJzcDs8YnI+DQoNCkRvIHlvdSBrbm93IGRpZmZlcmVu
+Y2VzPzxicj4NCg0KJm5ic3A7PGJyPg0KDQpDYWxsIHVzIGFuZCB3ZSdsbCBl
+eHBsYWluIHRoZW0gdG8geW91Ljxicj4NCg0KJm5ic3A7PGJyPg0KDQpPdXIg
+dG9sbCBmcmVlIG51bWJlciBpcyA8Zm9udCBjb2xvcj0iIzAwMDA4MCI+PGI+
+MS04ODgtNjIxLTczMDA8L2I+PC9mb250Pjxicj4NCg0KQW4gSEdIIHN0YWZm
+IG1lbWJlciBpcyBhdmFpbGFibGU8YnI+DQoNCjkgdG8gNSBQYWNpZmljIFRp
+bWUuPGJyPg0KDQpJZiBhZnRlciBob3VycywgcGxlYXNlIGxlYXZlIHlvdSBu
+YW1lPGJyPg0KDQphbmQgZGF5IGFuZCBldmVuaW5nIHBob25lIG51bWJlcnMu
+PGJyPg0KDQpXZSB3aWxsIGNhbGwgeW91IGJhY2sgaW4gYSBubyBwcmVzc3Vy
+ZSw8YnI+DQoNCmVkdWNhdGlvbmFsIG1hbm5lci48YnI+DQoNCklmIHlvdSBh
+cmUgb3ZlcnNlYXMgY2FsbCB5b3VyIGxvbmcgZGlzdGFuY2U8YnI+DQoNCm9w
+ZXJhdG9yIGFuZCBhc2sgdG8gYmUgY29ubmVjdGVkIHRvIG91cjxicj4NCg0K
+cGhvbmUgbnVtYmVyLiZuYnNwOyBXZSB3aWxsIGNhbGwgeW91IGJhY2sgc288
+YnI+DQoNCndlIGNhbiBwYXkgZm9yIHRoZSBsb25nIGRpc3RhbmNlIGNoYXJn
+ZXMuPGJyPg0KDQombmJzcDs8YnI+DQoNCjxmb250IGNvbG9yPSIjRkYwMDAw
+Ij5Gb3IgbW9yZSBpbmZvcm1hdGlvbiBvbiBIR0ggcmVhZCBvbi4uLi4uLi4u
+Li4uLjwvZm9udD48YnI+DQoNCiZuYnNwOzxicj4NCg0KSEFWRSBZT1UgSEVB
+UkQgT0Y8YnI+DQoNCkhVTUFOIEdST1dUSCBIT1JNT05FIChIR0gpPz8/PGJy
+Pg0KDQombmJzcDs8YnI+DQoNCiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBS
+ZWxlYXNlZCBieSB5b3VyIG93biBwaXR1aXRhcnkgZ2xhbmQsIEhHSCBzdGFy
+dHMNCg0KZGVjbGluaW5nPGJyPg0KDQppbiB5b3VyIDIwcywgZXZlbiBtb3Jl
+IGluIHlvdXIgMzBzIGFuZCA0MHMsIGV2ZW50dWFsbHkgcmVzdWx0aW5nPGJy
+Pg0KDQppbiB0aGUgc2hyaW5rYWdlIG9mIG1ham9yIG9yZ2FucyAtLSBwbHVz
+LCBhbGw8YnI+DQoNCm90aGVyIHN5bXB0b21zIHJlbGF0ZWQgdG8gb2xkIGFn
+ZS48YnI+DQoNCiZuYnNwOzxicj4NCg0KJm5ic3A7PGJyPg0KDQpJTiBUSE9V
+U0FORFMgT0YgQ0xJTklDQUwgU1RVRElFUyw8YnI+DQoNCkhHSCBIQVMgQkVF
+TiBTSE9XTiBUTyBBQ0NPTVBMSVNIIFRIRSBGT0xMT1dJTkc6PGJyPg0KDQom
+bmJzcDs8YnI+DQoNCiogUmVkdWNlIEJvZHkgRmF0IGFuZCBCdWlsZCBMZWFu
+IE11c2NsZTxicj4NCg0KJm5ic3A7Jm5ic3A7IFdJVEhPVVQgRVhFUkNJU0Uh
+PGJyPg0KDQombmJzcDs8YnI+DQoNCiogRW5oYW5jZSBTZXh1YWwgUGVyZm9y
+bWFuY2U8YnI+DQoNCiZuYnNwOzxicj4NCg0KKiBSZW1vdmUgV3JpbmtsZXMg
+YW5kIENlbGx1bGl0ZTxicj4NCg0KJm5ic3A7PGJyPg0KDQoqIExvd2VyIEJs
+b29kIFByZXNzdXJlIGFuZCBJbXByb3ZlIENob2xlc3Rlcm9sIFByb2ZpbGU8
+YnI+DQoNCiZuYnNwOzxicj4NCg0KKiBJbXByb3ZlIFNsZWVwLCBWaXNpb24g
+YW5kIE1lbW9yeTxicj4NCg0KJm5ic3A7PGJyPg0KDQoqIFJlc3RvcmUgSGFp
+ciBDb2xvciBhbmQgR3Jvd3RoPGJyPg0KDQombmJzcDs8YnI+DQoNCiogU3Ry
+ZW5ndGhlbiB0aGUgSW1tdW5lIFN5c3RlbTxicj4NCg0KJm5ic3A7PGJyPg0K
+DQoqIEluY3JlYXNlIEVuZXJneSBhbmQgQ2FyZGlhYyBPdXRwdXQ8YnI+DQoN
+CiZuYnNwOzxicj4NCg0KKiBUdXJuIGJhY2sgeW91ciBib2R5J3MgQmlvbG9n
+aWNhbCBUaW1lIENsb2NrIDEwIC0gMjAgeWVhcnM8YnI+DQoNCiZuYnNwOzxi
+cj4NCg0KKiBMaXZlIExvbmdlciBBTkQgU3Ryb25nZXI8YnI+DQoNCiZuYnNw
+Ozxicj4NCg0KQWxsIG5hdHVyYWwgYW5kIG9yZ2FuaWMgcGxhbnQgYmFzZWQ8
+YnI+DQoNCiZuYnNwOzxicj4NCg0KPGZvbnQgY29sb3I9IiMwMDAwRkYiPjxi
+PkZFRUwgMTAgWUVBUlMgWU9VTkdFUiBXSVRIIE9SQUwgU1BSQVkgSEdILjxi
+cj4NCg0KR1VBUkFOVEVFRDwvYj48L2ZvbnQ+PGJyPg0KDQombmJzcDs8YnI+
+DQoNCiZuYnNwOyZuYnNwOyZuYnNwOyBXZSBhcmUgdGhlIG1hbnVmYWN0dXJl
+ciBhbmQgd2Ugc2VsbCBkaXJlY3RseSB0byBEb2N0b3JzLDxicj4NCg0KQ2hp
+cm9wcmFjdG9ycywgYW5kIGNvbnN1bWVycyB3b3JsZCB3aWRlIHRoZSBoaWdo
+ZXN0IGdyYWRlPGJyPg0KDQombmJzcDtIR0ggT3JhbCBTcHJheSBhdmFpbGFi
+bGUuJm5ic3A7PGJyPg0KDQombmJzcDs8YnI+DQoNCiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyBXaXRoIGludGVybmV0IG1hcmtldGluZywgd2UgYXJlIGFi
+bGUgdG8gc2F2ZQ0KDQphZHZlcnRpc2luZzxicj4NCg0KY29zdCBhbmQgcGFz
+cyB0aG9zZSBzYXZpbmdzIGFsb25nIHRvIHlvdS48YnI+DQoNCkJ1dCB5b3Ug
+bXVzdCBhY3Qgbm93LiZuYnNwOzxicj4NCg0KJm5ic3A7PGJyPg0KDQpUbyBy
+ZWNlaXZlIG1vcmUgaW5mb3JtYXRpb24gY2FsbCZuYnNwOyB1cyBub3cuPGJy
+Pg0KDQombmJzcDs8YnI+DQoNCiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBUT0xM
+IEZSRUUgPGI+PGZvbnQgY29sb3I9IiMwMDAwODAiPjEtODg4LTYyMS03MzAw
+PC9mb250PjwvYj48YnI+DQoNCiZuYnNwOzxicj4NCg0KV2UgbXVzdCBzcGVh
+ayB0byB5b3UgaW4gcGVyc29uIHRvIHF1YWxpZnkgeW91ciB1c2FnZS48YnI+
+DQoNCiZuYnNwOzxicj4NCg0KJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IEFs
+bCBvZiB5b3VyIHF1ZXN0aW9ucyB3aWxsIGJlIGFkZHJlc3NlZCBhbmQgYW5z
+d2VyZWQgaW4NCg0KYSBmcmllbmRseSw8YnI+DQoNCm5vIHByZXNzdXJlIG1h
+bm5lci4mbmJzcDsgT3VyIG1haW4gcHVycG9zZSBpcyB0byBwcm92aWRlIHlv
+dSB3aXRoPGJyPg0KDQombmJzcDtpbmZvcm1hdGlvbiBzbyB5b3UgY2FuIG1h
+a2UgYW4gZWR1Y2F0ZWQgZGVjaXNpb24uPGJyPg0KDQombmJzcDs8YnI+DQoN
+CiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyBGb3IgbW9yZSBpbmZvcm1hdGlv
+biBjYWxsPGJyPg0KDQombmJzcDs8YnI+DQoNCiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyA8Yj48Zm9udCBjb2xvcj0iIzAwMDA4MCI+MS04ODgtNjIxLTczMDA8
+L2ZvbnQ+PC9iPjxicj4NCg0KJm5ic3A7PGJyPg0KDQombmJzcDtJZiB5b3Ug
+YXJlIG9uIGxpbmUgd3JpdGUgZG93biBvdXI8YnI+DQoNCnBob25lIG51bWJl
+ciBhbmQgY2FsbCB1cyB3aGVuIHlvdSBjYW4uPGJyPg0KDQombmJzcDs8YnI+
+DQoNClNvb24sIHlvdSBhbmQgeW91ciBsb3ZlZCBvbmVzIHdpbGwgYmUgdmVy
+eSBnbGFkIHlvdSBkaWQuPGJyPg0KDQombmJzcDs8YnI+DQoNClJlYWQgd2hh
+dCBwZW9wbGUgYXJlIHNheWluZzo8YnI+DQoNCiZuYnNwOzxicj4NCg0KJnF1
+b3Q7VGhlIGVmZmVjdHMgb2YgNiBtb250aHMgb2YgR0ggb248YnI+DQoNCmxl
+YW4gYm9keSBtYXNzIGFuZCBmYXQgd2VyZSBlcXVpdmFsZW50PGJyPg0KDQpp
+biBtYWduaXR1ZGUgdG8gdGhlIGNoYW5nZXMgaW5jdXJyZWQ8YnI+DQoNCmR1
+cmluZyAxMC0yMCB5ZWFycyBvZiBhZ2luZy4mcXVvdDs8YnI+DQoNCkRyLiBE
+YW5pZWwgUnVkbWFuLCBNRCw8YnI+DQoNCk5ldyBFbmdsYW5kIEpvdXJuYWwg
+b2YgTWVkaWNpbmUuPGJyPg0KDQombmJzcDs8YnI+DQoNCiZxdW90O1dpdGhp
+biBmb3VyIG1vbnRocywgbXkgYm9keSBmYXQgZGVjcmVhc2VkPGJyPg0KDQom
+bmJzcDtmb3JtIDMwJSBkb3duIHRvIDIxJSEgSSBub3RpY2VkIG15IHNraW48
+YnI+DQoNCiZuYnNwO2lzIG1vcmUgc3VwcGxlIGFuZCBteSBvdmVyYWxsIG1l
+bnRhbDxicj4NCg0KJm5ic3A7b3V0bG9vayBpbXByb3ZlZCBzaWduaWZpY2Fu
+dGx5LiZxdW90Ozxicj4NCg0KJm5ic3A7RC5XLiwgTmV3IEplcnNleTxicj4N
+Cg0KJm5ic3A7PGJyPg0KDQomcXVvdDtXZSBoYXZlIGJlZW4gb24gdGhlIHNw
+cmF5IGZvciBqdXN0IDMgd2Vla3M8YnI+DQoNCm5vdywgYW5kIGJlc2lkZXMg
+dGhlIHRyZW1lbmRvdXMgZW5lcmd5IHdlPGJyPg0KDQpib3RoIGZlZWwsIG15
+IGh1c2JhbmRzIGFsbGVyZ2llcyBhbmQgc3BlbGxzPGJyPg0KDQpvZiBkZXBy
+ZXNzaW9uIGhhdmUgbGlmdGVkLiBJIGFtIGhlYWxpbmc8YnI+DQoNCmV4dHJl
+bWVseSBmYXN0IGFmdGVyIGFuIGFjY2lkZW50IGFuZCBoYXZlPGJyPg0KDQps
+b3N0IDcgbGJzLiB3aXRob3V0IHRyeWluZyEmcXVvdDs8YnI+DQoNCkMuQi4s
+IEZsYWdzdGFmZi4gQVo8YnI+DQoNCiZuYnNwOzxicj4NCg0KVGhhbmtzIGZv
+ciByZWFkaW5nIG91ciBsZXR0ZXIsPGJyPg0KDQpUaGUgSEdIIFN0YWZmPGJy
+Pg0KDQpVU0EgRGl2aXNpb248YnI+DQoNCiZuYnNwOzxicj4NCg0KUFM6Jm5i
+c3A7IFRoZSBIR0ggU3RhZmYgZ3VhcmFudGVlcyB0aGU8YnI+DQoNCmhpZ2hl
+c3QgcXVhbGl0eSBhbmQgbG93ZXN0IHByaWNlLjxicj4NCg0KJm5ic3A7PGJy
+Pg0KDQombmJzcDtXZSBtYW51ZmFjdHVyZSBhbmQgc2hpcCBkaXJlY3RseSB0
+byB5b3VyIGRvb3IuPGJyPg0KDQombmJzcDs8YnI+DQoNCkNhbGwgdXMgbm93
+IDxiPjxmb250IGNvbG9yPSIjMDAwMDgwIj4xLTg4OC02MjEtNzMwMDwvZm9u
+dD48L2I+PGJyPg0KDQombmJzcDs8YnI+DQoNCj09PT09PT0mbmJzcDsmbmJz
+cDsgRW5kIG9mIG1lc3NhZ2UgPT09PT09PT0mbmJzcDs8YnI+DQoNCiZuYnNw
+Ozxicj4NCg0KJm5ic3A7Jm5ic3A7IFRoZSBmb2xsb3dpbmcgc3RhdGVtZW50
+IGlzIHByb3ZpZGVkIHRvIGJlPGJyPg0KDQppbiBjb21wbGlhbmNlIHdpdGgg
+Y29tbWVyY2lhbCBlbWFpbCBsYXdzLjxicj4NCg0KJm5ic3A7PGJyPg0KDQom
+bmJzcDsmbmJzcDsgSWYgeW91IGRvIG5vdCB3aXNoIHRvIHJlY2VpdmUgZnVy
+dGhlcjxicj4NCg0KbWFpbGluZ3MsIHBsZWFzZSBnb3RvIHRoZSBmb2xsb3dp
+bmcgd2Vic2l0ZSBhbmQgZW50ZXIgeW91ciBlbWFpbCBhZGRyZXNzIHRvIGJl
+IHJlbW92ZWQuLi4gaHR0cDovL2NicGhvc3QubmV0L3VzZXJzL21hcmtldHBy
+b3MvcmVtb3ZlLnBocA0KPGJyPg0KDQombmJzcDs8YnI+DQoNCiZuYnNwOyZu
+YnNwOyBUaGlzIG1lc3NhZ2UgaXMgaW4gZnVsbCBjb21wbGlhbmNlIHdpdGg8
+YnI+DQoNClUuUy4gRmVkZXJhbCByZXF1aXJlbWVudHMgZm9yIGNvbW1lcmNp
+YWw8YnI+DQoNCmVtYWlsIHVuZGVyIGJpbGwgUy4xNjE4IFRpdGxlIGxsbCwg
+U2VjdGlvbiAzMDEsPGJyPg0KDQpQYXJhZ3JhcGggKGEpKDIpKEMpIHBhc3Nl
+ZCBieSB0aGUgMTA1dGggVS5TLjxicj4NCg0KQ29uZ3Jlc3MgYW5kIGlzIG5v
+dCBjb25zaWRlcmVkIFNQQU08YnI+DQoNCnNpbmNlIGl0IGluY2x1ZGVzIGEg
+cmVtb3ZlIG1lY2hhbmlzbS4qPGJyPg0KDQpUaGlzIG1lc3NhZ2UgaXMgbm90
+IGludGVuZGVkIGZvciByZXNpZGVudHMgaW4gdGhlPGJyPg0KDQpzdGF0ZXMg
+b2YgQ0EsIE5DLCBOViwgUkksIFROLCBWQSAmYW1wOyBXQS48YnI+DQoNClNj
+cmVlbmluZyBvZiBhZGRyZXNzZXMgaGFzIGJlZW4gZG9uZSB0byB0aGUgYmVz
+dDxicj4NCg0Kb2Ygb3VyIHRlY2huaWNhbCBhYmlsaXR5Ljxicj4NCg0KJm5i
+c3A7PGJyPg0KDQombmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgQ2FsbCB1
+cw0KDQpub3cgPGI+PGZvbnQgY29sb3I9IiMwMDAwODAiPjEtODg4LTYyMS03
+MzAwPC9mb250PjwvYj4gZm9yIHlvdXI8YnI+DQoNCiZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyBmcmVlDQoNCkhHSCBjb25zdWx0YXRpb24uPC9wPg0K
+DQo8cD48YnI+DQoNClRoYW5rIHlvdTwvcD4NCg0KPC9ib2R5Pg0KDQo8L2h0
+bWw+DQoNCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiAN
+CiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiAN
+CiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiANCiAN
+CiANCiANCg0KLS0NCg0KNTUzM3ZlSUg3LTA4N0VlZkYxNTExdVZXQjctOTYz
+amRDRjQ5NTRGdVlEMC0ybDQy
+------=_NextPart_000_00B8_41D02B0D.C8128C04--
