@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 47EA94834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Oct 2002 23:58:14 -0600 (MDT)
-Date: Fri, 25 Oct 2002 07:57:38 +0200
-Message-ID: <3DB5755500000A19@ocpmta7.be.tiscali.com>
-In-Reply-To: <20021024175802.GA9490@dreamind.de>
+Received: from smtp-out.tiscali.be (spoolm6.tiscalinet.be [212.35.2.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3D0C04834
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Oct 2002 00:05:05 -0600 (MDT)
+Date: Fri, 25 Oct 2002 08:04:49 +0200
+Message-ID: <3DB5755500000A1B@ocpmta7.be.tiscali.com>
+In-Reply-To: <20021024190027.GF5602@tausq.org>
 From: jsoe0708@tiscali.be
-Subject: RE: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
-To: "Stefan Pfetzing" <dreamind@dreamind.de>
+Subject: Re: [parisc-linux] Re: mkfs.xfs (xfsprogs-2.3.5) failled
+To: "Randolph Chung" <randolph@tausq.org>,
+	"Stefan Pfetzing" <dreamind@dreamind.de>
 Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -22,37 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Stephan,
-
->* jsoe0708@tiscali.be <jsoe0708@tiscali.be> [021023 09:30]:
->> Hi Stephan,
+>
+>> Hm, maybe, it has been a while since I updated that machine.
 >> 
->> As you do earlier, I build a xfs-kernel diff versus 2.4.19 vanilla kernel,
->> apply it against 2.4.19-pa22 (with very small problem) and obtain a bootable
->> (and operational) kernel.
->Yup.
+>> 2.4.19-pa9-xfs is running there.
 >
->> Now I rebuild debian package of xfsprogs-2.3.5 (cvs form) and obtain tools
->> binaries (without warning or error) but even mkfs -t xfs (mkfs.xfs) failed
->> with this concise message: "mkfs.xfs: cannot reserve space [28 - No space
->> left on device]".
->> (I try to xfs_check which failed also with a lot of error messages).
->Yea thats a problem, still in the Linux/Parisc kernel. It gives garbage
-with
->BLKGETSIZE64. Simply look in the xfslibs directory where BLGKETSIZE64 is
->used
->and comment that out. Thats a disgusting hack but it leads to a set of working
->xfsprogs.
+>what machine was this on? is this a 32-bit or 64-bit kernel?
 >
->If you want I can make a patch for you, but this will take some time, since
->I
->have the source not right by hand now.
-Hmm I would have to be aware (as I try to implement put_user and get_user
-for 64bits [ie long long] [unfortunately] without great success till now).
+For my part it is 2.4.19-pa22 [32bits] (on a b180l)
 
-Evms also use BLKGETSIZE64 in a way that would be safely. The problem is
-that hppa kernel just printk a bug message and do not return a error message
-as ENOSYS or ENOTSUP? (duno yet how other platform manage this case)
+I do think that BLGKETSIZE64 (in put_user and get_user) is well supported
+in 64bits kernel but the job still have to do on 32bits kernel (?)
 
-Thanks for advise (will inform of progress)
+Thanks for attention and help,
     Joel
