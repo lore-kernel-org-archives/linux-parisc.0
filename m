@@ -1,42 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F062F482A
-	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 15:43:33 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 1532sL-0001BD-00; Thu, 24 May 2001 22:42:33 +0100
-Date: Thu, 24 May 2001 22:42:33 +0100
-From: Matthew Wilcox <matthew@wil.cx>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 16117482A
+	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 16:00:46 -0600 (MDT)
+Received: from security.hp.com (cranston.fc.hp.com [15.1.44.224])
+	by atlrel2.hp.com (Postfix) with ESMTP id 942953B1
+	for <parisc-linux@parisc-linux.org>; Thu, 24 May 2001 18:00:45 -0400 (EDT)
 To: LaMont Jones <lamont@hp.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] still getting $$dyncall refs in shlibs
-Message-ID: <20010524224233.G23718@parcelfarce.linux.theplanet.co.uk>
-References: <20010524213301.126241872C@security.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010524213301.126241872C@security.hp.com>; from lamont@hp.com on Thu, May 24, 2001 at 03:32:59PM -0600
-Sender: <willy@www.linux.org.uk>
+Cc: parisc-linux@parisc-linux.org, lamont@hp.com
+In-reply-to: Your message of "Thu, 24 May 2001 15:32:59 MDT."
+             <20010524213301.126241872C@security.hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Date: Thu, 24 May 2001 15:59:30 -0600
+From: LaMont Jones <lamont@hp.com>
+Message-Id: <20010524215930.76E741872C@security.hp.com>
+Subject: [parisc-linux] Re: still getting $$dyncall refs in shlibs
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, May 24, 2001 at 03:32:59PM -0600, LaMont Jones wrote:
 > With the new toolchain, sipp still builds a libsipp.so.3.1 trips the
 > bug checker.  Checking everything on the system doesn't find any bad
 > libs.  Here is the build output for libsipp.so:
 
-I dug up a machine with binutils 2.11.90.0.1 and tried the same thing..
+Add the following .debs to the list of things that still build borken:
+    auto-apt_0.3.11.0.1_hppa.deb
+    installwatch_0.5.5-3.0.1_hppa.deb
+    libc-client2000_2000cdebian-2_hppa.deb
+    libg20_0.42.20010417-1.0.1_hppa.deb
+    libmagick++5_5.3.3-5_hppa.deb
+    libmimelib1_2.1.0-1.0.1_hppa.deb
+    libpam-radius-auth_1.3.11-3.0.1_hppa.deb
+    libseal1_1.07-4.0.1_hppa.deb
+    sciplot1_1.36-8.0.1_hppa.deb
+    sipp_3.1-7.0.1_hppa.deb
+    slatec_4.1-4.0.1_hppa.deb
 
-ld --shared -o libsipp.so.3.1 rendering.o geometric.o lightsource.o objects.o smalloc.o transforms.o viewpoint.o basic_shader.o marble.o granite.o mask.o bozo.o bumpy.o planet.o noise.o bezier.o bezier_lex.o pixelbuf.o torus.o cone.o ellipsoid.o prism.o sipp_pixmap.o sipp_bitmap.o wood.o xalloca.o phong.o strauss.o teapot.o  -soname libsipp.so.3 -lc
-make[2]: Leaving directory `/home/demo/sipp/sipp-3.1/libsipp'
-
-$ ls -l libsipp.so.3.1
--rwxr-xr-x    1 demo     demo       128429 May 24 15:36 libsipp.so.3.1
-$ nm --dynamic libsipp.so.3.1 |grep '\$\$'
-         U $$dyncall
-
-so is there some other bug at work here?
-
-> I'm at a loss from here - and give it to those who have a clue...
-
-Likewise, i wish merely to report a data point.
-
--- 
-Revolutions do not require corporate support.
+lamont
