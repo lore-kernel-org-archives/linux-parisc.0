@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.it (mail-5.tiscalinet.it [195.130.225.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 69875485B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 05:58:44 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: ste <stemelchior@inwind.it>
-To: <debian-hppa@lists.debian.org>,
-	<parisc-linux@lists.parisc-linux.org>
-Date: Wed, 3 Jul 2002 15:58:13 +0200
-MIME-Version: 1.0
-Message-Id: <02070315581300.00805@www>
-Subject: [parisc-linux] HP9000/710
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6010F4866
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Jul 2002 06:13:16 -0600 (MDT)
+Date: Wed, 3 Jul 2002 08:13:06 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Power Button doesn't turn machine off anymore
+Message-ID: <20020703121306.GA8464@systemhalted>
+References: <20020702183558.GO25586@charite.de> <B1225F09-8DEC-11D6-A95C-0030656F07A2@esiee.fr> <20020702185708.GP25586@charite.de> <20020702190606.GA3678@systemhalted> <20020702190842.GR25586@charite.de> <20020702192147.GC3678@systemhalted> <20020702193116.GU25586@charite.de> <20020703052415.GB32490@charite.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020703052415.GB32490@charite.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,13 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi guys,
-I have got an old HP workstation (with DDS, CDROM drive) and when I tried to 
-install Debian-HPPA 0.9.3 on it makes impossible the installation at the 
-point when you have to configure the keyboard. I mean that ( I got and old 
-HP-HIL keyboard, you know the one with the RJ45-like connector) I weel can 
-see on monitor the choises but I am able only to move the cursor upward or 
-downward. Then it hangs!!! my question is: how to procede in this step of 
-installation?
-Thanx in advance
-Ste@linuxabbestia.net
+> 
+> I rebooted that kernel. No output if I press the power switch.
+> I checked /proc/sys/kernel/power, it's set to 1
+> 
+
+Do you see _anything_ in your log files when you press
+the power switch?
+
+Could you please post the .config that your kernel 
+builds with?
+
+c.
