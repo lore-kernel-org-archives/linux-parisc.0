@@ -1,158 +1,28 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from patty.levels.unisa.edu.au (patty.levels.unisa.edu.au [130.220.36.156])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 86AF1482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 May 2001 21:18:47 -0600 (MDT)
-Date: Mon, 14 May 2001 12:48:31 +0930 (CST)
-From: Alan Modra <alan@SPRI.Levels.UniSA.Edu.Au>
-Reply-To: <amodra@one.net.au>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: <amodra@one.net.au>, Jeffrey A Law <law@redhat.com>,
-	<parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <200105131557.LAA21153@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.LNX.4.30.0105141156530.12094-200000@mullet.itr.unisa.edu.au>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="296515328-51119847-989810311=:12094"
-Subject: [parisc-linux] Re: C++ Issue on GCC 3.0 branch
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E6D5C482A
+	for <parisc-linux@parisc-linux.org>; Mon, 14 May 2001 11:46:06 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14zMPN-0008OT-00; Mon, 14 May 2001 18:45:25 +0100
+Date: Mon, 14 May 2001 18:45:25 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] broken toolchain?
+Message-ID: <20010514184525.B6094@parcelfarce.linux.theplanet.co.uk>
+References: <20010513021522.B28266@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010513021522.B28266@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Sun, May 13, 2001 at 02:15:22AM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Sun, May 13, 2001 at 02:15:22AM +0100, Matthew Wilcox wrote:
+> can anyone else confirm/deny problems?
 
---296515328-51119847-989810311=:12094
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-
-
-
-On Sun, 13 May 2001, John David Anglin wrote:
-
-> > On Sun, 13 May 2001, Alan Modra wrote:
-> >
-> > > How about this?  Warning, not even compiled!  I'm just tossing ideas
-> > > around.
-> >
-> > And of course, the first little test I tried showed a problem.  :-(
-> > The inlined code looks OK, but that emitted for the non-inlined copy
-> > doesn't init the pic reg.
-
-This was back-to-front.  It was the inline code that was bad.
-
-> After I wrote, I realized that I had picked the wrong register. Then I
-> had second thoughts about the method.  Here is another idea that seems
-> at least to do the right thing compiling libobjc/init.c.  The CSE
-> results in the same hard register being used for inlined functions.
-> However, if Alan can get integrate to do the right thing, that might
-> be better.  It will be tomorrow before I have complete test results.
-
-Funny, I like your approach better than mine, but I went ahead and made
-the fairly obvious fix to my code to make it work.  Attached is the diff
-against pehc, but I guess the whole exercise is now a little pointless
-given rth's latest eh changes.
+I downgraded to binutils 2.11.90.0.5-1 from 2.11.90.0.7-1 and I've stopped
+getting the unaligned references.  Would someone like to volunteer to
+find the bug?  And does this mean we should stop the buildd?
 
 -- 
-Alan
-
-
---296515328-51119847-989810311=:12094
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="papic1.diff"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.30.0105141248310.12094@mullet.itr.unisa.edu.au>
-Content-Description: 
-Content-Disposition: attachment; filename="papic1.diff"
-
-Z2NjL0NoYW5nZUxvZy5wdWZmaW4NCgkqIGNvbmZpZy9wYS9wYS5jIChocHBh
-X2luaXRfcGljX3NhdmUpOiBSZXZlcnQgYmFjayB0byBzYXZpbmcgcGljDQoJ
-cmVnaXN0ZXIgYWZ0ZXIgbGFzdF9wYXJtX2luc24uDQoJKGhwcGFfaW5saW5l
-X3BpY19pbml0KTogTmV3IGZ1bmN0aW9uLg0KCSogY29uZmlnL3BhL3BhLmgg
-KElOTElORV9QSUNfSU5JVCk6IERlZmluZS4NCgkoaHBwYV9pbmxpbmVfcGlj
-X2luaXQpOiBEZWNsYXJlLg0KCSogaW50ZWdyYXRlLmMgKGV4cGFuZF9pbmxp
-bmVfZnVuY3Rpb24pOiBDYWxsIElOTElORV9QSUNfSU5JVC4NCg0KSW5kZXg6
-IGdjYy9pbnRlZ3JhdGUuYw0KPT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KUkNT
-IGZpbGU6IC9ob21lL2N2cy9wYXJpc2MvZ2NjL2djYy9pbnRlZ3JhdGUuYyx2
-DQpyZXRyaWV2aW5nIHJldmlzaW9uIDEuNg0KZGlmZiAtdSAtcCAtcjEuNiBp
-bnRlZ3JhdGUuYw0KLS0tIGludGVncmF0ZS5jCTIwMDEvMDQvMTYgMDY6MzM6
-MTEJMS42DQorKysgaW50ZWdyYXRlLmMJMjAwMS8wNS8xNCAwMjo0OTowMQ0K
-QEAgLTgyNyw3ICs4MjcsMTIgQEAgZXhwYW5kX2lubGluZV9mdW5jdGlvbiAo
-Zm5kZWNsLCBwYXJtcywgdA0KICAgLyogSWYgdGhlIGlubGluZSBmdW5jdGlv
-biBuZWVkcyB0byBtYWtlIFBJQyByZWZlcmVuY2VzLCB0aGF0IG1lYW5zDQog
-ICAgICB0aGF0IHRoaXMgZnVuY3Rpb24ncyBQSUMgb2Zmc2V0IHRhYmxlIG11
-c3QgYmUgdXNlZC4gICovDQogICBpZiAoaW5sX2YtPnVzZXNfcGljX29mZnNl
-dF90YWJsZSkNCi0gICAgY3VycmVudF9mdW5jdGlvbl91c2VzX3BpY19vZmZz
-ZXRfdGFibGUgPSAxOw0KKyAgICB7DQorICAgICAgY3VycmVudF9mdW5jdGlv
-bl91c2VzX3BpY19vZmZzZXRfdGFibGUgPSAxOw0KKyNpZmRlZiBJTkxJTkVf
-UElDX0lOSVQNCisgICAgICBJTkxJTkVfUElDX0lOSVQgKGlubF9mLCBtYXAp
-Ow0KKyNlbmRpZg0KKyAgICB9DQogDQogICAvKiBJZiB0aGlzIGZ1bmN0aW9u
-IG5lZWRzIGEgY29udGV4dCwgc2V0IGl0IHVwLiAgKi8NCiAgIGlmIChpbmxf
-Zi0+bmVlZHNfY29udGV4dCkNCkluZGV4OiBnY2MvY29uZmlnL3BhL3BhLmMN
-Cj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT0NClJDUyBmaWxlOiAvaG9tZS9jdnMv
-cGFyaXNjL2djYy9nY2MvY29uZmlnL3BhL3BhLmMsdg0KcmV0cmlldmluZyBy
-ZXZpc2lvbiAxLjIxDQpkaWZmIC11IC1wIC1yMS4yMSBwYS5jDQotLS0gcGEu
-YwkyMDAxLzA0LzE3IDAwOjQ1OjAxCTEuMjENCisrKyBwYS5jCTIwMDEvMDUv
-MTQgMDI6NTA6MDMNCkBAIC00MSw2ICs0MSw3IEBAIEJvc3RvbiwgTUEgMDIx
-MTEtMTMwNywgVVNBLiAgKi8NCiAjaW5jbHVkZSAidG9wbGV2LmgiDQogI2lu
-Y2x1ZGUgImdnYy5oIg0KICNpbmNsdWRlICJyZWNvZy5oIg0KKyNpbmNsdWRl
-ICJpbnRlZ3JhdGUuaCINCiAjaW5jbHVkZSAidG1fcC5oIg0KIA0KICNpZm5k
-ZWYgRE9fRlJBTUVfTk9URVMNCkBAIC0zNDI5LDE5ICszNDI5LDUwIEBAIGhw
-cGFfZXhwYW5kX2VwaWxvZ3VlICgpDQogdm9pZA0KIGhwcGFfaW5pdF9waWNf
-c2F2ZSAoKQ0KIHsNCi0gIHJ0eCBpbnNuLCBwaWNyZWc7DQorICBydHggaW5z
-biwgcGljcmVnLCB3aGVyZTsNCiANCiAgIHBpY3JlZyA9IGdlbl9ydHhfUkVH
-ICh3b3JkX21vZGUsIFBJQ19PRkZTRVRfVEFCTEVfUkVHTlVNKTsNCiAgIFBJ
-Q19PRkZTRVRfVEFCTEVfU0FWRV9SVFggPSBnZW5fcmVnX3J0eCAoUG1vZGUp
-Ow0KICAgUlRYX1VOQ0hBTkdJTkdfUCAoUElDX09GRlNFVF9UQUJMRV9TQVZF
-X1JUWCkgPSAxOw0KICAgaW5zbiA9IGdlbl9ydHhfU0VUIChWT0lEbW9kZSwg
-UElDX09GRlNFVF9UQUJMRV9TQVZFX1JUWCwgcGljcmVnKTsNCiANCi0gIC8q
-IEVtaXQgdGhlIGluc24gYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgZnVuY3Rp
-b24gYWZ0ZXIgdGhlIHByb2xvZ3VlLiAgKi8NCi0gIGlmICh0YWlsX3JlY3Vy
-c2lvbl9yZWVudHJ5KQ0KLSAgICBlbWl0X2luc25fYmVmb3JlIChpbnNuLCB0
-YWlsX3JlY3Vyc2lvbl9yZWVudHJ5KTsNCi0gIGVsc2UNCi0gICAgLyogV2Ug
-bXVzdCBoYXZlIGJlZW4gY2FsbGVkIHZpYSBQUk9GSUxFX0hPT0suICAqLw0K
-LSAgICBlbWl0X2luc24gKGluc24pOw0KKyAgLyogRW1pdCB0aGUgaW5zbiBh
-dCB0aGUgYmVnaW5uaW5nIG9mIHRoZSBmdW5jdGlvbiBhZnRlciB0aGUgcHJv
-bG9ndWUuDQorICAgICBUaGUgc2V0am1wL2xvbmdqbXAgZXhjZXB0aW9uIGhh
-bmRsaW5nIGNvZGUgZW1pdHMgYSBjYWxsDQorICAgICBpbW1lZGlhdGVseSBh
-ZnRlciBsYXN0X3Bhcm1faW5zbiwgYW5kIHdlIG5lZWQgdGhlIHBpYyBzYXZl
-DQorICAgICByZWdpc3RlciB2YWxpZCBiZWZvcmUgdGhlIGNhbGwuICBUaGF0
-J3Mgd2h5IHRoaXMgaW5zbiBtdXN0IGJlDQorICAgICBwYXJ0IG9mIHRoZSBw
-YXJtIGluc25zLiAgKi8NCisgIHdoZXJlID0gbGFzdF9wYXJtX2luc247DQor
-ICBpZiAoIXdoZXJlKQ0KKyAgICB7DQorICAgICAgcHVzaF90b3Btb3N0X3Nl
-cXVlbmNlICgpOw0KKyAgICAgIHdoZXJlID0gZ2V0X2luc25zICgpOw0KKyAg
-ICAgIHBvcF90b3Btb3N0X3NlcXVlbmNlICgpOw0KKyAgICB9DQorICBsYXN0
-X3Bhcm1faW5zbiA9IGVtaXRfaW5zbl9hZnRlciAoaW5zbiwgd2hlcmUpOw0K
-K30NCisNCisvKiBVbmZvcnR1bmF0ZWx5LCBwYXJtIGluc25zIGFyZSBub3Qg
-Y29waWVkIGZvciBpbmxpbmUgZnVuY3Rpb25zLCBzbw0KKyAgIHdlIG5lZWQg
-dG8gY29weSB0aGUgaW5pdGlhbGl6YXRpb24gaGVyZS4gICovDQordm9pZA0K
-K2hwcGFfaW5saW5lX3BpY19pbml0IChpbmxfZiwgbWFwKQ0KKyAgICAgc3Ry
-dWN0IGZ1bmN0aW9uICppbmxfZjsNCisgICAgIHN0cnVjdCBpbmxpbmVfcmVt
-YXAgKm1hcDsNCit7DQorICBpZiAoaW5sX2YtPm1hY2hpbmUtPnBpY19vZmZz
-ZXRfdGFibGVfc2F2ZV9ydHgpDQorICAgIHsNCisgICAgICBpbnQgcmVnbm8g
-PSBSRUdOTyAoaW5sX2YtPm1hY2hpbmUtPnBpY19vZmZzZXRfdGFibGVfc2F2
-ZV9ydHgpOw0KKyAgICAgIHJ0eCBuZXcsIHBpY3JlZzsNCisNCisgICAgICBu
-ZXcgPSBtYXAtPnJlZ19tYXBbcmVnbm9dOw0KKyAgICAgIGlmIChuZXcgPT0g
-TlVMTCkNCisJew0KKwkgIG5ldyA9IGdlbl9yZWdfcnR4ICh3b3JkX21vZGUp
-Ow0KKwkgIFJUWF9VTkNIQU5HSU5HX1AgKG5ldykgPSAxOw0KKwkgIG1hcC0+
-cmVnX21hcFtyZWdub10gPSBuZXc7DQorCX0NCisgICAgICBwaWNyZWcgPSBn
-ZW5fcnR4X1JFRyAod29yZF9tb2RlLCBQSUNfT0ZGU0VUX1RBQkxFX1JFR05V
-TSk7DQorICAgICAgZW1pdF9pbnNuIChnZW5fcnR4X1NFVCAoVk9JRG1vZGUs
-IG5ldywgcGljcmVnKSk7DQorICAgIH0NCiB9DQogDQogdm9pZA0KSW5kZXg6
-IGdjYy9jb25maWcvcGEvcGEuaA0KPT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0K
-UkNTIGZpbGU6IC9ob21lL2N2cy9wYXJpc2MvZ2NjL2djYy9jb25maWcvcGEv
-cGEuaCx2DQpyZXRyaWV2aW5nIHJldmlzaW9uIDEuMTMNCmRpZmYgLXUgLXAg
-LXIxLjEzIHBhLmgNCi0tLSBwYS5oCTIwMDEvMDUvMDEgMTI6NDA6MTQJMS4x
-Mw0KKysrIHBhLmgJMjAwMS8wNS8xNCAwMjo1MDoyOQ0KQEAgLTUyMiw2ICs1
-MjIsMTQgQEAgZXh0ZXJuIGludCB0YXJnZXRfZmxhZ3M7DQogI2RlZmluZSBQ
-SUNfT0ZGU0VUX1RBQkxFX1NBVkVfUlRYIChjZnVuLT5tYWNoaW5lLT5waWNf
-b2Zmc2V0X3RhYmxlX3NhdmVfcnR4KQ0KIGV4dGVybiB2b2lkIGhwcGFfaW5p
-dF9waWNfc2F2ZSBQQVJBTVMgKCh2b2lkKSk7DQogDQorLyogSGFuZGxlIGFu
-eSBzcGVjaWFsIGluaXRpYWxpemF0aW9uIG5lZWRlZCBmb3IgaW5saW5lIGZ1
-bmN0aW9ucyB0aGF0DQorICAgbWFrZSBQSUMgcmVmZXJlbmNlcy4gICovDQor
-I2RlZmluZSBJTkxJTkVfUElDX0lOSVQgaHBwYV9pbmxpbmVfcGljX2luaXQN
-CitzdHJ1Y3QgZnVuY3Rpb247DQorc3RydWN0IGlubGluZV9yZW1hcDsNCitl
-eHRlcm4gdm9pZCBocHBhX2lubGluZV9waWNfaW5pdCBcDQorICBQQVJBTVMg
-KChzdHJ1Y3QgZnVuY3Rpb24gKiwgc3RydWN0IGlubGluZV9yZW1hcCAqKSk7
-DQorDQogI2RlZmluZSBERUZBVUxUX1BDQ19TVFJVQ1RfUkVUVVJOIDANCiAN
-CiAvKiBTT00gQUJJIHNheXMgdGhhdCBvYmplY3RzIGxhcmdlciB0aGFuIDY0
-IGJpdHMgYXJlIHJldHVybmVkIGluIG1lbW9yeS4NCg==
---296515328-51119847-989810311=:12094--
+Revolutions do not require corporate support.
