@@ -1,40 +1,36 @@
-Return-Path: <shaver@netscape.com>
-Sender: shaver@netscape.com (Mike Shaver)
-Message-ID: <36E67D7A.FA138E3D@netscape.com>
-Date: Wed, 10 Mar 1999 09:11:06 -0500
-From: Mike Shaver <shaver@netscape.com>
-MIME-Version: 1.0
+Return-Path: <hppa-linux@thepuffingroup.com>
+Date: Wed, 10 Mar 1999 11:11:41 -0600
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199903101711.LAA30694@equator.com>
 To: hppa-linux@thepuffingroup.com
-Subject: Re: [hppa-linux] New cross compiling RPMs
-References: <19990310090611.M27177@cmu.edu>
-Content-Type: text/plain; charset=us-ascii
-Resent-Message-ID: <"Ob_-V2.0.gY.Wqdvs"@sod.res.cmu.edu>
+Subject: [hppa-linux] Bootstrap #3 successful
+Resent-Message-ID: <"AiPys1.0.uY1.zRgvs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Phil Schwan wrote:
-> 
-> Mike Shaver just rebuilt Alex's cross compiling RPMs against glibc 2.0
-> rather than 2.1, and they're now available on sod:
-> 
-> ftp://sod.res.cmu.edu/pub/parisc/tools/egcs-x-hppa-linux-1.1.1-4.i386.rpm
-> ftp://sod.res.cmu.edu/pub/parisc/tools/binutils-x-hppa-2.9.1-4.i386.rpm
-> 
-> Note that the revision number is still 4, but these are in fact new.
 
-And hey -- they even work (for me)!
+I'm happy to report that bootstrap #3 passed for everyone who reported back
+thus far, thanks for taking the time to help out. Network, disk, and even
+ZIP drive boots worked. I'd like to see a CD-ROM test if someone has a
+CDR drive available.
 
-[shaver@loonie /tmp]$ cat test.c
-int main () { return 0; }
-[shaver@loonie /tmp]$ hppa-linux-gcc -c test.c
-[shaver@loonie /tmp]$ file test.o
-test.o: ELF 32-bit MSB relocatable, PA-RISC, version 1
-[shaver@loonie /tmp]$
+1) 780/C160       (disk)
+2) 715/64         (BOOTP)
+3) 816/E35        (disk)
+4) 712/100        (disk)
+5) 712/100        (SCSI ZIP drive!)
+6) 715/33         (RBOOTD) 
+7) 715/80         (?disk?)
 
-Mike
+This means that we now have a simple but functional bootstrap. We are ready
+to load a real kernel instead of a dummy one!
 
--- 
-169530.70 140316.26
+Phil Schwan is helping to solve the ftp problems and I will be uploading
+the latest working boot sources. I've also added GPL license stubs to
+each source file, a mildly detailed README, etc.
+
+Regards,
+Jason Eckhardt.
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
