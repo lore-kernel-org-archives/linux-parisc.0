@@ -1,46 +1,36 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id RAA05735
-	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 17:50:22 -0700
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA06471
+	for <parisc-linux@puffin.external.hp.com>; Tue, 2 Jan 2001 18:43:57 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 3 Jan 2001 01:47:17 -0000
 Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA19155;
-	Wed, 3 Jan 2001 11:53:12 +1100
-Date: Wed, 3 Jan 2001 11:53:12 +1100 (EST)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA20552;
+	Wed, 3 Jan 2001 12:46:53 +1100
+Date: Wed, 3 Jan 2001 12:46:52 +1100 (EST)
 From: Alan Modra <alan@linuxcare.com.au>
-To: Paul Bame <bame@fc.hp.com>
-cc: parisc-linux@puffin.external.hp.com
-Subject: Re: where to put 64 bit libmilli?
-In-Reply-To: <E14DX12-0005tW-00@noam.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0101031001320.24351-100000@front.linuxcare.com.au>
+To: Jeffrey A Law <law@redhat.com>
+cc: Paul Bame <bame@fc.hp.com>, John David Anglin <dave@hiauly1.hia.nrc.ca>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] where to put 64 bit libmilli? 
+In-Reply-To: <27911.978466673@upchuck>
+Message-ID: <Pine.LNX.4.21.0101031235310.24351-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 2 Jan 2001, Paul Bame wrote:
+On Tue, 2 Jan 2001, Jeffrey A Law wrote:
 
-> I have source code for HP's 64-bit millicode and am working on making
-> it compilable with our tool chain.  But the bigger question is where
-> do I put it?
-> 
-> Right now millicode is part of libgcc.a in top-of-branch gcc, but I
-> seem to recall some linker magic, and when/if that happens I don't
-> know where to put the millicode stuff.
+> Moving it out of libgcc may or may not make sense.  If I recall the key thing
+> to remember is that you want copies of those routines in each shared library,
+> otherwise you can lose in unpleasant ways.  An alternative is to make the
+> millicode routines themselves into a shared library and everyone links against.
 
-Distributing libmilli with gcc makes sense as it is gcc that makes use of
-the millicode routines, however there's a chicken and egg problem with the
-linker.  Once we enable the automagic libmilli search, ld will complain if
-it can't find libmilli.a.  That will make the binutils test suite fail 
-until gcc is installed.  Hmm, I suppose binutils could install a dummy
-libmilli.a to get around that problem.
-
-Anyway, the place to put the source is gcc/config/pa/, installing
-libmilli.a to ${prefix}/lib/ for native tool-chains and to
-${prefix}/${target}/lib for cross tool-chains.  Err, come to think of it,
-the 64 bit linker doesn't yet have the libmilli.a search capability.
-Also, we probably want to name the 64 bit millicode library libmilli64.a
-so a multi-target linker can choose the right millicode library.
-
-So until I get my act together and find time for some binutils/gcc work,
-it may be best to continue putting the millicode functions into libgcc.
+The real reason that we currently need separate millicode routines for
+each shared lib is that linkage to millicode functions is different than
+for normal functions.  In particular, you don't want to load r19 (32 bit
+case) or r27 (64 bit case) when calling millicode.  Therefore, a shared
+millicode lib would require special .plt entries.  Not too hard to do,
+just a bit messy.
 
 Alan
 -- 
