@@ -1,14 +1,15 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] Gcc bug or I missunderstand? [ftsd %fr22, 56(%sr0,
-	%r20) failed to build?]
-Date: Wed, 15 Dec 2004 17:27:05 +0100
-Message-ID: <418A80250000FC28@mail-2-bnl.tiscali.it>
+Subject: =?ISO-8859-15?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20but=20still=20panic=3A=20=5BWAS=3A=202=2E6=2E10=2Drc1=2Dpa15=20boot=20fine=09on=20n4k=20but=20still=09annoying=20bactrace=5D?=
+Date: Thu, 16 Dec 2004 15:19:28 +0100
+Message-ID: <418A8025000102BA@mail-2-bnl.tiscali.it>
+References: <1101415152.2020.21.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
-Cc: dave@hiauly1.hia.nrc.ca
-To: parisc-linux@lists.parisc-linux.org
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: "James Bottomley" <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <1101415152.2020.21.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,166 +22,42 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 Hello all,
 
-In the memcpy.c stand this comment:
- * TODO:
-[...]
- * - try not to use the post-increment address modifiers; they create add=
-itional
- *   interlocks
-[...]
+> 
+> On Mon, 2004-11-22 at 08:10, Joel Soete wrote:
+> > IASQ: 0000000000000000 0000000000000000 IAOQ: 000000001016a7cc 000000=
+001016a7d0
+> >  IIR: 527401a0    ISR: 0000000000000000  IOR: 00000000000000d0
+> >  CPU:        0   CR30: 000000004d5a0000 CR31: 00000000105f0000
+> >  ORIG_R28: 000000001010d18c
+> >  IAOQ[0]: update_one_process+0x74/0x168
+> >  IAOQ[1]: update_one_process+0x78/0x168
+> >  RP(r2): update_one_process+0x6c/0x168
+> 
+> As best I can tell, this is in kernel/timer.c here:
+> 
+>         if (p->signal && !unlikely(p->state & (EXIT_DEAD|EXIT_ZOMBIE))
+> &&
+>             psecs / HZ >=3D p->signal->rlim[RLIMIT_CPU].rlim_cur) {
+> 
+> The problem seems to be that p->signal is null, but it wasn't null when=
 
-I right a test case which is precompile as:
-        { register double r1;
-                __asm__ __volatile__ ( "\t" "fldd" " 0(" "%%sr0" ",%1),
-%0\n" : "=3Df"(r1) : "r"(pds) : "r8");
-        while (len >=3D 8*sizeof(double)) {
+> the processor began the evaluation of the condition.  0xd0 is the 64 bi=
+t
+> offset of rlim[RLIMIT_CPU].rlim_cur.
+> 
+> If you look at the code, p->signal should be in r19 which is zero.
+> 
+> I have no explanation for this (other than some weird race in the signa=
+l
+> handling code somewhere).
+> 
+> James
+> 
+Could it be simply because in do_irq() we need to embrace action->handler=
+()
+with (may be more complex, if i read do_IRQ of ia64) spin_lock/unlock()?
 
-
-
-
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "0" "(" "%%s=
-r0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "8" "(" "%%s=
-r0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "16" "(" "%%=
-sr0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "24" "(" "%%=
-sr0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "32" "(" "%%=
-sr0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "40" "(" "%%=
-sr0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "48" "(" "%%=
-sr0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-                __asm__ __volatile__ ( "1:\t" "fstd" " %1, " "56" "(" "%%=
-sr0"
-",%0)\n" : "+r"(pdd) : "f"(r1) : "r8");
-                pdd -=3D 8;
-                len -=3D 8*sizeof(double);
-        }
-        };
-
-it failed to build because:
-
-gcc -save-temps -o tmset5 tmset5.c
-tmset5.s: Assembler messages:
-tmset5.s:122: Error: Invalid operands 
-tmset5.s:130: Error: Invalid operands 
-tmset5.s:138: Error: Invalid operands 
-tmset5.s:146: Error: Invalid operands 
-tmset5.s:154: Error: Invalid operands 
-tmset5.s:162: Error: Invalid operands 
-
-this tmset5.s looks like:
-[...]
-    101 .L11:
-    102         ldw 56(%r3),%r20
-    103         ldo 64(%r3),%r19
-    104         fldds 0(%r19),%fr22
-    105 #APP
-    106         1:      fstd %fr22, 0(%sr0,%r20)
-    107
-    108 #NO_APP
-    109         stw %r20,56(%r3)
-    110         ldw 56(%r3),%r20
-    111         ldo 64(%r3),%r19
-    112         fldds 0(%r19),%fr22
-    113 #APP
-    114         1:      fstd %fr22, 8(%sr0,%r20)
-    115
-    116 #NO_APP
-    117         stw %r20,56(%r3)
-    118         ldw 56(%r3),%r20
-    119         ldo 64(%r3),%r19
-    120         fldds 0(%r19),%fr22
-    121 #APP
-    122         1:      fstd %fr22, 16(%sr0,%r20)
-    123
-    124 #NO_APP
-    125         stw %r20,56(%r3)
-    126         ldw 56(%r3),%r20
-    127         ldo 64(%r3),%r19
-    128         fldds 0(%r19),%fr22
-    129 #APP
-    130         1:      fstd %fr22, 24(%sr0,%r20)
-    131
-    132 #NO_APP
-    133         stw %r20,56(%r3)
-    134         ldw 56(%r3),%r20
-    135         ldo 64(%r3),%r19
-    136         fldds 0(%r19),%fr22
-    137 #APP
-    138         1:      fstd %fr22, 32(%sr0,%r20)
-    139 
-    140 #NO_APP
-    141         stw %r20,56(%r3)
-    142         ldw 56(%r3),%r20
-    143         ldo 64(%r3),%r19
-    144         fldds 0(%r19),%fr22
-    145 #APP
-    146         1:      fstd %fr22, 40(%sr0,%r20)
-    147
-    148 #NO_APP
-    149         stw %r20,56(%r3)
-    150         ldw 56(%r3),%r20
-    151         ldo 64(%r3),%r19
-    152         fldds 0(%r19),%fr22
-    153 #APP
-    154         1:      fstd %fr22, 48(%sr0,%r20)
-    155 
-    156 #NO_APP
-    157         stw %r20,56(%r3)
-    158         ldw 56(%r3),%r20
-    159         ldo 64(%r3),%r19
-    160         fldds 0(%r19),%fr22
-    161 #APP
-    162         1:      fstd %fr22, 56(%sr0,%r20)
-    163
-    164 #NO_APP
-    165         stw %r20,56(%r3)
-    166         ldw 56(%r3),%r19
-    167         ldo -64(%r19),%r19
-    168         stw %r19,56(%r3)
-    169         ldw -44(%r3),%r19
-    170         ldo -64(%r19),%r19
-    171         stw %r19,-44(%r3)
-    172         b,n .L9
-[...]
-
-in lines: 
-    106         1:      fstd %fr22, 0(%sr0,%r20)
-[...]
-    114         1:      fstd %fr22, 8(%sr0,%r20)
-[...]
-
-no pb but for following ones:
-
-[...]
-    122         1:      fstd %fr22, 16(%sr0,%r20)
-[...]
-    130         1:      fstd %fr22, 24(%sr0,%r20)
-[...]
-    138         1:      fstd %fr22, 32(%sr0,%r20)
-[...]
-    146         1:      fstd %fr22, 40(%sr0,%r20)
-[...]
-    154         1:      fstd %fr22, 48(%sr0,%r20)
-[...]
-    162         1:      fstd %fr22, 56(%sr0,%r20)
-[...]
-
-it seems that if d>8 there is a pb?
-Did I miss something?
-
-Thanks in advance for help,
+Cheers,
     Joel
 
 -------------------------------------------------------------------------=
