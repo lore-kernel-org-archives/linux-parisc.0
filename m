@@ -1,33 +1,27 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA00940
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Jun 1999 09:00:58 -0600
-Message-Id: <199906111500.LAA03888@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] partitioning on HPUX
-To: steve@osiris.silug.org (Steven Pritchard)
-Date: Fri, 11 Jun 1999 11:00:38 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: adevries@thepuffingroup.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <199906111354.IAA25236@osiris.silug.org> from "Steven Pritchard" at Jun 11, 99 08:54:27 am
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA01693
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Jun 1999 10:38:40 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id MAA22523
+	for <parisc-linux@thepuffingroup.com>; Fri, 11 Jun 1999 12:46:13 -0400
+Sender: adevries@feather.thepuffingroup.com
+Message-ID: <37613D53.E5B625E8@thepuffingroup.com>
+Date: Fri, 11 Jun 1999 12:46:11 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] a broken test kernel...
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Alex deVries said:
-> > Can anyone here describe how HPUX does partitioning?  We're going to
-> > have to look at this at some point for interoperability with HPUX
-> > filesystems.
-> 
-> As I understand it, HP-UX doesn't really do partitioning.  You have a
-> choice of either using a whole disk for a file system, or you can use
-> the logical volume manager.  From what I've seen, most of the people
-> who use LVM also use VxFS (or JFS, a journalling filesystem).  It
-> would probably be easiest then to just try to support HFS (HP's
-> version of UFS, I think) using a whole disk.
 
-On hpux 9.x and later (?), partitioning was supported using Software
-Disk Striping (SDS).  See sdsadmin(1M).
+I've uploaded a test binary kernel so others can have a look at the
+broken IPL.  It's at:
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+ftp://puffin.external.hp.com/pub/parisc/binaries/kernels/Image-19990611-1
+
+This is known not to work, so there's no point in trying it unless you
+want to throw it on a box to see the chassis codes, which I'm not yet
+able to.
+
+- Alex
