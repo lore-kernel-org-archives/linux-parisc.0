@@ -1,24 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gw-nl4.philips.com (gw-nl4.philips.com [212.153.190.6])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7C8034871
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 07:35:16 -0700 (MST)
-Received: from smtpscan-nl2.philips.com (localhost.philips.com [127.0.0.1])
-          by gw-nl4.philips.com with ESMTP id PAA15532
-          for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 15:34:07 +0100 (CET)
-          (envelope-from willy.schriemer@philips.com)
-From: willy.schriemer@philips.com
-Received: from smtprelay-nl1.philips.com (localhost [127.0.0.1])
-	by smtpscan-nl2.philips.com (8.9.3/8.8.5-1.2.2m-19990317) with ESMTP id PAA10410
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 15:35:07 +0100 (MET)
-Received: from ehv001soh.diamond.philips.com (e2soh01.diamond.philips.com [130.139.52.212])
-	by smtprelay-nl1.philips.com (8.9.3/8.8.5-1.2.2m-19990317) with ESMTP id PAA00064
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 15:35:05 +0100 (MET)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <OFD0B612F9.F1BF32FB-ONC1256B67.004FBA94@diamond.philips.com>
-Date: Thu, 21 Feb 2002 15:34:50 +0100
-MIME-Version: 1.0
-Content-Type: multipart/alternative; boundary="=_alternative 00501D13C1256B67_="
-Subject: [parisc-linux] HP3000 model 937
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA0694878
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 21 Feb 2002 08:05:07 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16dumP-0001WH-00; Thu, 21 Feb 2002 15:05:05 +0000
+Date: Thu, 21 Feb 2002 15:05:05 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: willy.schriemer@philips.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP3000 model 937
+Message-ID: <20020221150505.E27212@parcelfarce.linux.theplanet.co.uk>
+References: <OFD0B612F9.F1BF32FB-ONC1256B67.004FBA94@diamond.philips.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <OFD0B612F9.F1BF32FB-ONC1256B67.004FBA94@diamond.philips.com>; from willy.schriemer@philips.com on Thu, Feb 21, 2002 at 03:34:50PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,43 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multipart message in MIME format.
---=_alternative 00501D13C1256B67_=
-Content-Type: text/plain; charset="us-ascii"
+On Thu, Feb 21, 2002 at 03:34:50PM +0100, willy.schriemer@philips.com wrote:
+> Hi fellow listers,
+> 
+> Is it possible to use PaRisc on HP3000 model 937RX. This machine is a good 
+> old MPE/iX wich I want to use for testing PaRisc0Linux.
 
-Hi fellow listers,
+As far as I can tell, the closest thing we have in the hwdb right now is
+the F10: http://hwdb.parisc-linux.org/view.php3?type=machine&name=F10
 
-Is it possible to use PaRisc on HP3000 model 937RX. This machine is a good 
-old MPE/iX wich I want to use for testing PaRisc0Linux.
+This class of machine is full of undocumented devices including the
+console, network and scsi.  It will be an awful lot of work to make this
+class of machine any use.
 
-TIA,
-
-Willy Schriemer
-System Manager Factory Automation Systems
-Philips Semiconductors MOS3 Submicron Waferfab
-Building FB 2.018
-Gerstweg 2
-6534 AE Nijmegen
-The Netherlands
-Tel. + 31 24 353 2991 or 5716
-
---=_alternative 00501D13C1256B67_=
-Content-Type: text/html; charset="us-ascii"
-
-
-<br><font size=2 face="sans-serif">Hi fellow listers,</font>
-<br>
-<br><font size=2 face="sans-serif">Is it possible to use PaRisc on HP3000 model 937RX. This machine is a good old MPE/iX wich I want to use for testing PaRisc0Linux.</font>
-<br>
-<br><font size=2 face="sans-serif">TIA,<br>
-<br>
-Willy Schriemer<br>
-System Manager Factory Automation Systems<br>
-Philips Semiconductors MOS3 Submicron Waferfab<br>
-Building FB 2.018<br>
-Gerstweg 2<br>
-6534 AE Nijmegen<br>
-The Netherlands<br>
-Tel. + 31 24 353 2991 or 5716<br>
-</font>
---=_alternative 00501D13C1256B67_=--
+-- 
+Revolutions do not require corporate support.
