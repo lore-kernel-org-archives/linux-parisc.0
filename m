@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DE284482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Apr 2003 01:24:06 -0600 (MDT)
-Date: Tue, 22 Apr 2003 00:19:20 -0700
-From: Randolph Chung <randolph@tausq.org>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3040D482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Apr 2003 07:51:29 -0600 (MDT)
+Message-ID: <3EA54BD5.90100@tiscali.be>
+Date: Tue, 22 Apr 2003 14:04:05 +0000
+From: Joel Soete <joel.soete@tiscali.be>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030422071920.GO25257@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] RFC: remove/restart bugs.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] How to put patch 2.4.21 available in ftp.p-l.o?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +22,14 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Hi all,
 
-We have a bts setup at bugs.parisc-linux.org, but it hasn't been touched
-for a very long time, and the only purpose it seems to serve nowadays is
-to archive spam. Should we just remove it? There are a lot of items
-there that remain "TODO" items... but perhaps a better way to keep
-track of those is to put a todo list in cvs (we already have one for the
-kernel... we can start one for userspace stuff too), and we can link to
-it via viewcvs from the web page.
+As mentioned in other mails, I would like to make my patch 
+2.4.21-pre7-pa3x available for all for revision.
+(I already test it with success in 32bits and 64bits on a b2k compiled 
+with gcc-3.0 but pb with gcc-3.2).
 
-Any opinions?
+The best place would be in ftp.p-l.o (about 160k uncompresed so not very 
+helpfull to insert in a mail) but I just have anymous access. So can 
+somebody help me.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Thanks, 
+    Joel
