@@ -1,36 +1,50 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA29501
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 04:26:07 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 21 Nov 2000 11:28:19 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA02144;
-	Tue, 21 Nov 2000 22:26:14 +1100
-Date: Tue, 21 Nov 2000 22:26:14 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Richard Hirst <rhirst@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] signal handling problems (32 bit kernel)
-In-Reply-To: <20001121093442.U32715@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0011212057160.15623-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id EAA29771
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 04:33:58 -0700
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13yBh2-0000al-00; Tue, 21 Nov 2000 11:34:32 +0000
+Date: Tue, 21 Nov 2000 11:34:32 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] CVS linux Vs. -test10
+Message-ID: <20001121113432.B883@parcelfarce.linux.theplanet.co.uk>
+References: <20001120111726.C5196@parcelfarce.linux.theplanet.co.uk> <200011201734.JAA18526@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200011201734.JAA18526@milano.cup.hp.com>; from grundler@cup.hp.com on Mon, Nov 20, 2000 at 09:34:31AM -0800
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 21 Nov 2000, Richard Hirst wrote:
+On Mon, Nov 20, 2000 at 09:34:31AM -0800, Grant Grundler wrote:
+> Ok. What's the first step to getting arch/parisc* and include/asm-parisc*
+> into Linus's tree?
 
-> Time to try and work out what signal.c is really trying to do, I guess.
+Someone (probably me) sends him a patch.  He told me at the Toronto
+show that he was quite happy to apply anything that only touched those
+two directories. (oh, and drivers/gsc wouldn't be a problem either).
+Can I just check that no-one wants to rename drivers/gsc again?  :-)
 
-Maybe you should start by considering all the possible states a task can
-be in when a signal is delivered, in regards to saved registers and stack
-layout.  It would be a _very_ good idea to formalize this once you've
-sorted it out by splitting up struct pt_regs appropriately.  ie. as other
-architectures do, into struct pt_regs and struct switch_stack.  Actually,
-parisc could go one further and have three structures, one corresponding
-to registers saved on syscall entry (new pt_regs), one corresponding to
-macro callee_save (switch_stack), and one corresponding more or less to
-macro save_specials.  Quite a bit of work, but IMO well worth doing.
+> I had dinner with Bdale Garbee last night and one of two things he made
+> clear was we need to unfork from debian and linus's tree in order to move
+> forward. All our CVS branches need to become obsolete or "local sandboxes"
+> of the respective upstream partners. Feeding kernel bits upstream will
+> bring a new level of visibility (and *HELP*) to the parisc-linux port.
 
-Alan Modra
+that's true.  last time we discussed this several people were unhappy
+with the idea of sending our current work to Linus.  Is anyone unhappy
+with doing this now?
+
+> I also find it odd that glibc is merged upstream *before* the kernel is.
+
+glibc is more portable :-)
+
+> The part you described above is the easy part - np.
+> I'm worried about labels and tracking how we "name" the releases.
+> Mang or other CVS ninja's care to comment?
+
+don't tag it.  just commit it.  tags are laid down at big events, not
+when you fix bugs or undo changes.
+
 -- 
-Linuxcare.  Support for the Revolution.
+Revolutions do not require corporate support.
