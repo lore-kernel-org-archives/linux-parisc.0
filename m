@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 18 Sep 2003 10:39:37 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] debian installation problem - ERROR: Read from boot device failed
-Message-ID: <20030918163937.GB26681@dsl2.external.hp.com>
-References: <42687877064.20030918111617@kti.ae.poznan.pl>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 48625484E
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Sep 2003 11:31:34 -0600 (MDT)
+Date: Thu, 18 Sep 2003 19:31:33 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] update of libc?
+Message-ID: <20030918173133.GG12661@lug-owl.de>
+References: <20030918113157.000037fb.t.riemer@visoel.de> <20030918160249.GC30890@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <42687877064.20030918111617@kti.ae.poznan.pl>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="K4TeRK2lnUi9hBXL"
+In-Reply-To: <20030918160249.GC30890@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,53 +23,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Sep 18, 2003 at 11:16:17AM +0200, Jacek Chmielewski wrote:
-> I want to install Debian on my HP 9000 J200 box and I encountered a problem
-> with booting the installation procedure:
-> 
-> Selected kernel: /vmlinux32 from partition 0
-> Selected ramdisk: /ramdiski from partition 0
-> ELF32 executable
-> Entry 00100098 first 00100000 n 6
-> Segment 0 load 00100000 size 2196688 mediaptr 0x1000
-> Segment 1 load 0031a000 size 467792 mediaptr 0x21a000
-> Segment 2 load 00390000 size 255656 mediaptr 0x28d000
-> Segment 3 load 003d0000 size 8192 mediaptr 0x2cc000
-> Segment 4 load 003d8000 size 32768 mediaptr 0x2ce000
-> Segment 5 load 00402048 size 110832 mediaptr 0x2d6048
-> 
-> ERROR: Read from boot device failed (status = -13).
+--K4TeRK2lnUi9hBXL
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-if palo is reporting -13 as the IODC return code, that means:
--13     Protocol error
-        A protocol violation was encountered on the module-device
-	connection while transferring data to or from the device.
-	CONDITIONAL. Must be used if the implementation can detect
-	             a protocol error.
+On Thu, 2003-09-18 12:02:49 -0400, Carlos O'Donell <carlos@baldric.uwo.ca>
+wrote in message <20030918160249.GC30890@systemhalted>:
+> On Thu, Sep 18, 2003 at 11:31:57AM +0200, Tilo Riemer wrote:
+> > is it dangerous to make an update of libc from 2.2.5 to 2.3.x?
+> > At the moment I have only remote access to the affected host.
+>=20
+> There is no 2.3.x glibc available for debian, it's currently being
+> fixed. I apologize for the delay, it's more difficult than usual.
 
-This would suggest some device is misconfigured.
+No?
 
-> byteio_read: seekread() returned -1 expected 2195456
-> ERROR: segment 0 read() failed
-> Fatal error loading kernel executableERROR: failed to load kernel 
-> 
-> I tried the Debian binary-1 CD and netinstall CD. Both with almost same
-> results ('status = -7' for Debian CD, and 'status = -13' for netinstall
-> CD).
+b132l-1:~# dpkg -l libc6
+Desired=3DUnknown/Install/Remove/Purge/Hold
+| Status=3DNot/Installed/Config-files/Unpacked/Failed-config/Half-installed
+|/ Err?=3D(none)/Hold/Reinst-required/X=3Dboth-problems (Status,Err: upperc=
+ase=3Dbad)
+||/ Name           Version        Description
++++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+ii  libc6          2.3.1-17.0.3   GNU C Library: Shared libraries and Timez=
+one
 
--7	Nonexistent device
-	The device address specified by ID_addr is a valid device address.
-	However, it points to either a device that is not installed or a
-	device that does not respond. Returned only by options ARG1=0
-	through ARG1=4.
-	CONDITIONAL. Must be used if nonexistent devices can be identified.
+For me, that one works and seems to be 2.3.x... However, what are
+current libc's problems?
 
-IIRC, io_ars.pdf describes these errors...I found them in a different document.
+MfG, JBG
 
-> What could be wrong? Do you know any possible source of this problem?
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
 
+--K4TeRK2lnUi9hBXL
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Misconfigured or flakey device. If you can setup a DHCP server
-and boot the netinstall lifimage over the LAN, that might work better.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-grant
+iD8DBQE/aev0Hb1edYOZ4bsRAtT/AJ9jWSvyTBUH4e35BZ9j4w8LHgmuMACggsqi
+julCxZtF6NMSmL5pzouRzjA=
+=gBiK
+-----END PGP SIGNATURE-----
+
+--K4TeRK2lnUi9hBXL--
