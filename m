@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 595044856
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 17:13:24 -0700 (MST)
-Date: Tue, 26 Feb 2002 16:13:10 -0800 (PST)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] gcc (g++) problem
-In-Reply-To: <200202260425.g1Q4PYOJ001214@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.LNX.4.33L2.0202261612360.6941-100000@eiger.apptechsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 50E38485E
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 17:18:57 -0700 (MST)
+To: "Tilo Jandt" <tilo@jandt-online.net>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Sound 
+In-Reply-To: Your message of "Wed, 27 Feb 2002 00:14:46 +0100."
+             <001101c1bf1b$6205bd10$0801a8c0@epsilon>
+References: <Pine.NEB.4.33.0202160643280.23380-100000@www2.scram.de>
+ <001101c1bf16$8bc14750$0801a8c0@epsilon> <20020226225653.616C437CF5@carmen.fc.hp.com>  <001101c1bf1b$6205bd10$0801a8c0@epsilon>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 26 Feb 2002 17:18:50 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20020227001850.7F31A37CF5@carmen.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,27 +25,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Cool.  Seems to work OK on the test, now to try it on the real thing...
+cc'd to the list...
 
+"Tilo Jandt" writes...
 
-On Mon, 25 Feb 2002, John David Anglin wrote:
+> I've got Kernel 2.4.17-pa27.
+> How do I install the harmony driver? I'm not so skilled with Debian HPPA and
+> don't know what to do.
 
-> > Here's the problem.  This program segfaults when compiled with -fPIC, as
-> > required to build a .so.  It is fine when compiled without -fPIC.  It is
-> > also fine on intel platform with both.  Is there something wrong with the
-> > code that I'm not seeing, or is this a compiler bug?  I have tried this
-> > with gcc-3 on an intel box, and it is fine, so I assume it is this port?
->
-> It's probably a compiler bug.  The code works ok with my 3.1 test version.
-> I think the problem may be the restoration of the pic offset table register
-> after function calls.
->
-> Suggest trying the debian 3.1 prerelease build.  Search the list to find
-> how to get it.
->
-> Dave
->
+You need to enable CONFIG_SOUND_HARMONY in the kernel config when you build a 
+kernel. If you're using a prebuilt kernel from the ftp site the tarball 
+contains the config file it was built with. If you are using
+
+ftp://ftp.parisc-linux.org/kernels/32/32-2.4.17-pa27.tar.gz
+
+that kernel contains the harmony driver and it should just work. I've used 
+xmms and mpg321 and they work great.
+
+Good luck,
 
 -- 
-QOTD:
-	 "It's not the despair... I can stand the despair.  It's the hope."
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
