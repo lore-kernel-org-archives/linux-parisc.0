@@ -1,24 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id QAA04212
-	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 16:46:20 -0500
-Message-ID: <19990329164613.H1081@cmu.edu>
-Date: Mon, 29 Mar 1999 16:46:13 -0500
-From: Phil Schwan <pschwan@cmu.edu>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Mailing list behaviour
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id QAA04371
+	for <parisc-linux@sod.res.cmu.edu>; Mon, 29 Mar 1999 16:50:56 -0500
+Received: (from sieler@localhost)
+	by bart.allegro.com (8.9.1/8.9.1) id NAA30430
+	for hppa-linux@thepuffingroup.com; Mon, 29 Mar 1999 13:50:44 -0800
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <199903292150.NAA30430@bart.allegro.com>
+Subject: Re: [hppa-linux] syscall work 
+To: hppa-linux@thepuffingroup.com
+Date: Mon, 29 Mar 1999 13:50:43 -0800 (PST)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-By request, I've asked smartlist to please stop mangling (or adding,
-in most cases) a Reply-to field.  There are compelling arguments for
-and against, but leaving it out really does make more sense.  Note
-that a simple ``Reply'' command to your mailer will probably not work
-for future mails--you'll want to use the ``Group reply'' feature.
+Hi,
 
--Phil
+> okie, but why emulating gate instruction, when there is already such
+> instruction exist? (;
 
-------------------------------------------------------------------
-"In film you will find four basic story lines. Man versus man, man
-versus nature, nature versus nature, and dog versus vampire."
-        - Steven Spielberg
+Simple: HP does this...there must be a reason.
+
+They appear to do it on selected models of PA-RISC systems.  Why?  Don't know.
+
+I can only conjecture...and the conjecture is the obvious one: there must be
+some circumstance where GATE fails.  Otherwise, *why* replace it with
+a slightly slower mechanism?
+
+-- 
+Stan Sieler                                          sieler@allegro.com
+                                     http://www.allegro.com/sieler.html
