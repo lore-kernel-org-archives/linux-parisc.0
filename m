@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 887B8482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Sep 2002 15:25:09 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: Steve Pacenka <spacenka@lightlink.com>
-Subject: Re: [parisc-linux] RTC and FB on 735/125
-Date: Mon, 23 Sep 2002 23:23:10 +0200
+Received: from mail1.ewetel.de (mail1.ewetel.de [212.6.122.14])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CD2A14829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Sep 2002 16:05:59 -0600 (MDT)
+Date: Tue, 24 Sep 2002 00:05:41 +0200
+From: Christian Weerts <chw@ffis.de>
+To: Chuck Slivkoff <caslivkoff@telocity.com>
 Cc: parisc-linux@lists.parisc-linux.org
-References: <03ab01c26266$2416dea0$1f96078d@acid> <200209232217.45577.deller@gmx.de> <1032815056.3209.115.camel@romano>
-In-Reply-To: <1032815056.3209.115.camel@romano>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200209232323.10789.deller@gmx.de>
+Subject: Re: [parisc-linux] Problems with 715/80
+Message-ID: <20020923220541.GA962@familie-weerts.de>
+Reply-To: Christian Weerts <christian@familie-weerts.de>
+References: <20020922211630.GB1936@familie-weerts.de> <BD69FB20-CEA3-11D6-827A-000393581E44@telocity.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <BD69FB20-CEA3-11D6-827A-000393581E44@telocity.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,85 +24,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Monday 23 September 2002 23:04, Steve Pacenka wrote:
-> On Mon, 2002-09-23 at 16:18, Helge Deller wrote:
-> > On Monday 23 September 2002 20:46, Steve Pacenka wrote:
-> > > The CRX24 framebuffer also works at 8 bit color, a bit faster.  A minor
-> > > patch to one file in the kernel is needed (duplicating a few lines that
-> > > apply to another card's depth selection in the same file) and a kernel
-> > > boot argument is needed to (optionally) cause the kernel to start video
-> > > in 8 bit mode instead of the default 32.
-> > >
-> > > The hard drive I patched this on is recycled into another type of box,
-> > > but Helge Deller can guess what's needed just from this description.
-> >
-> > Hi Steve,
-> >
-> > I don't have a CRX24 and can't test anything.
-> > If you could post a patch here I could add it to the kernel.
->
-> Good day Helge,
->
-> I can't test easily either, or generate formal patches, since my 735
-> w/CRX24 is in a display at our computer recycle shop.
->
->
-> From memory, after consulting CVS today --
->
-> 1. In drivers/video/sti/stifb.c
->
-> Inside function
->    int __init
->    stifb_init_fb(struct sti_struct *sti, int force_bpp)
->
->
-> old:
->
-> 	case S9000_ID_A1439A:	/* CRX24/A1439A */
-> 		bpp = 32;
-> 		break;
->
->
-> new (insert three lines below the case):
-> 	case S9000_ID_A1439A:	/* CRX24/A1439A */
-> 		if (force_bpp == 8 || force_bpp == 32)
-> 			bpp = force_bpp;
-> 		else
-> 			bpp = 32;
-> 		break;
->
->
-> This is copied from HCRX initialization in the same switch.
->
->
-> 2. To activate include in the kernel boot arguments (PALO or interrupt
-> boot with ESC):
->
->    video=stifb:bpp:8
->
-> This is also recognized
->
->    video=stifb:bpp:32
->
-> but that is the default.
->
->
-> 3. To use with X, set the DefaultDepth to 8 in XF86Config-4 (leaving
-> fbbpp at 32), or
->
->    startx -- -depth 8
->
-> Requires a depth 8 subsection in the monitor size section.
->
->
-> Perhaps Yves can test?
->
-> -- cheers, SP
+* Chuck Slivkoff <caslivkoff@telocity.com> [020923 05:22]:
+> I would suggest that you disconnect any disks and power on the box.  
+> Make sure your null-modem cable is attached to serial port "a" and no  
+> keyboard is attached via the PS2/HIL adapter box. You will need to get  
+> to the PCD "BOOT_ADMIN>" prompt before you can get any further. If you  
+> can not get to this prompt, take note of the LED's being displayed. The  
+> service manual for the 715 should help to decode the LED's.
+> 
+> http://h20000.www2.hp.com/bizsupport/ 
+> CoreRedirect.jsp?targetPage=http%3A%2F%2Fh200002.www2.hp.com%2Fbc%2Fdocs 
+> %2Fsupport%2FSupportManual%2Flpv37699%2Flpv37699.pdf
+> 
+> Hope this helps.
+> 
+It does. With the manual i decode the LED's. They say:
+Memory error! Ughf, after a long period not running the
+machine a matter of time i think. So i go on and cleaned the
+memory-sticks and the memory-banks 0-3. But that wasn't very
+helpful. Changing the sticks to serveral banks (i did it
+more than an half hour) gave me also no result. Once there
+was another message from the LED's - HPMC due to memory
+error! Not very helpful for me.
 
+What kind of sticks are normal or the best one? Is there a
+prefered memory-bank to use? The memory in this machine was 
+attached to bank 3+2 with 72-Pin NEC and Noname chips. But
+both "Made in Puerto Rico" ;). I never (really) changed the
+memory since the time i got the machine.
 
-Thanks Steve,
+Greets,
+    Christian
 
-I've applied this patch to 2.4.19-pa20.
-
-Greetings,
-Helge
+-- 
+[X] <--- Nail here for new Monitor.
