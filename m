@@ -1,13 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] dump driver for parisc-linux: patch vs CVS 
-In-Reply-To: Message from Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-   of "Tue, 05 Feb 2002 08:53:34 +0100." <3C5F8F7E.D1956DF0@admin.france.hp.com>
-References: <3C5E768A.573CC5A2@admin.france.hp.com> <20020204174039.DAF3B482A@dsl2.external.hp.com>  <3C5F8F7E.D1956DF0@admin.france.hp.com> 
-Date: Wed, 06 Feb 2002 00:32:06 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020206073206.153B1482A@dsl2.external.hp.com>
+Received: from obelix.hrz.tu-chemnitz.de (obelix.hrz.tu-chemnitz.de [134.109.132.55])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EE4D8482A
+	for <parisc-linux@parisc-linux.org>; Wed,  6 Feb 2002 03:09:09 -0700 (MST)
+Received: from pat.hrz.tu-chemnitz.de ([134.109.132.143] ident=mail)
+	by obelix.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #1)
+	id 16YP0l-0007h3-00
+	for parisc-linux@parisc-linux.org; Wed, 06 Feb 2002 11:09:07 +0100
+Received: from gerd.csn.tu-chemnitz.de ([134.109.88.146] helo=gerd.jandt-online.net)
+	by pat.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #2)
+	id 16YP0k-0006GF-00
+	for parisc-linux@parisc-linux.org; Wed, 06 Feb 2002 11:09:06 +0100
+Message-Id: <5.0.2.1.2.20020206105902.00ae3d90@pop.puretec.de>
+Date: Wed, 06 Feb 2002 11:07:47 +0100
+To: parisc-linux@parisc-linux.org
+From: Tilo Jandt <tilo@jandt-online.net>
+In-Reply-To: <Pine.NEB.4.33.0202060812220.5141-100000@www2.scram.de>
+References: <Pine.LNX.4.42.0202052016240.8579-100000@r6.petescaff.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Subject: [parisc-linux] Some Problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,67 +30,67 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bruno Vidal wrote:
-> 	Hi.
-> So my work for the next few days will to create a patch
-> of all my modification for the latest CVS bits (so you will
-> have only the modifications). But I'll send it to which people ?
+Hi,
 
-1) Send "cvs diff" output to this list
-2) Use ".cvsrc" from build-tools/ repository
-  ("diff -uNp" is key here)
-3) If the diff is more than 100-200 lines, post a URL instead
+I'm using HPPA-Debian for 3 weeks and so I'm not very skilled and I have=20
+different Problems. I hope you could help to solve.
+My machine is a HP712/60 with 64 MB RAM.
 
-I think I, tausq, ESIEE, willy should review/try it.
+First Problem:
+Since my last dist-upgrade I can't start the X-Server anymore.
+If I start gdm I can see the gray background for a short moment and move=20
+the mouse and then the gdm restarts.
+If I start with startx the following output is printed:
 
-> Grant Grundler wrote:
-> > As Randolph noted, we need to see the diff and what was changed
-> > in the generic kernel. Is the kernel and user space code GPL?
-> 
-> Everything is under GPL, even the code coming from SGI. I leave
-> all informations about the SGI code and the header of all their files.
+(II) FBDev(0): using default device
+(II) Running in FRAMEBUFFER Mode
+(**) FBDev(0): Depth 8, (--) framebuffer bpp 8
+(=3D=3D) FBDev(0): Default visual is PseudoColor
+(=3D=3D) FBDev(0): Using gamma correction (1.0, 1.0, 1.0)
+(II) FBDev(0): Hardware:  (vidmem: 2048k)
+(II) FBDev(0): Checking Modes against framebuffer device...
+(II) FBDev(0):  mode "1280x1024" ok
+(II) FBDev(0): Checking Modes against monitor...
+(--) FBDev(0): Virtual size is 1280x1024 (pitch 1280)
+(**) FBDev(0): Built-in mode "current": 28000.0 MHz, 21875.0 kHz, 21362.3 Hz
+(++) FBDev(0): DPI set to (100, 100)
+(**) FBDev(0): Using "Shadow Framebuffer"
+(=3D=3D) FBDev(0): Backing store disabled
+PEXExtensionInit: Couldn't open default PEX font file  Roman_M
+(**) Mouse1: Protocol: "ps/2"
+(**) Mouse1: Core Pointer
+(=3D=3D) Mouse1: Buttons: 3
+(**) Mouse1: Emulate3Buttons, Emulate3Timeout: 50
+(II) Keyboard "Keyboard1" handled by legacy driver
+(II) XINPUT: Adding extended input device "Mouse1" (type: MOUSE)
 
-Ok. You might also want to put a URL of your tarball of programs...perhaps
-some debian types on debian-hppa would be interested in creating
-a debian package of those.
+waiting for X server to shut down
 
-> But I've modified the code to handle specific needs for p4.
-> I'm
-> also currently added code to handle multiple dump device. And I've also
-> the project to dump only kernel space and not user space.
+Does anyone know what to do?
 
-Cool! if you could keep those changes seperate for now...that
-might make life easier in case we want to send those changes
-back "upstream" (to SGI I assume).
+My second problem is that my keyboard doesn work well.
+It's a PS2 Keyboard an I installed a german keymap but if I press e.g. > I=
+=20
+get a error-message like:
+undefined scancode.
+What could I do?
 
-> > > ./init/main.c
-> > > ./kernel/ksyms.c
-> > > ./kernel/panic.c
-> > > ./kernel/sched.c
-> > 
-> > The last four might cause trouble....
+Third problem:
+I wanna use the Cocoon2 XML Server with Tomcat but to start Tomcat I need=20
+java. Is there any Java runtime available or is it impossible at the moment=
+=20
+to run Tomcat and Cocoon?
 
-> I know, I can try to put kernel/ksyms.c to arch/parisc/kernel/parisc_ksyms.c
-> but it can break the code for ia64 and other architecture. but for the other
-> it is not possible: panic (call to dump), sched.c (another call to dump), 
-> main.c (init of dump). I've also an IA64 box where I can do test, so I've als
->   o
-> the project to do it working on it (lots of project :-).
+Last problem:
+I also wanna run the zope server, but when I start it with zopectl start it=
+=20
+failed and I don't know what to do. Does anyone work with zope under=20
+HPPA-Debian?
 
-heh...if you know it will break another arch, leave it alone.
+Thanx,
+Tilo
 
-> I defenitly think that it is a really needed feature (I'm working perhaps 
-> since a too long time in support center :-).
-
-Even folks outside the support center think it's a good idea.
-
-...
-> My main probleme is to have a up to date code, because I have to follow
-> each modification and redo the merge each time I want to update my CVS.
-> I agree that I need to add comments in my code, but before going further
-> I prefer to know if this code will stay a "patch" or not.
-
-I can't promise anything. You know what I want.
-Comments/guidance from Alan Cox and/or Matthew Wilcox would be good here.
-
-grant
+Student of Computer Science at Chemnitz University of Technology
+|[ Tilo Jandt, Vetterstra=DFe 70, Zi. 330, D-09126 Chemnitz        ]|
+|[ mailto:tija@hrz.tu-chemnitz.de ]  [ ICQ: 73832493               ]|
+|[ Phone: +49 179 5333 255        ]  [ Fax: +49 89 2443 25531 ]|
