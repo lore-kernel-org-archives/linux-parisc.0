@@ -1,33 +1,26 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA22781
-	for <parisc-linux@puffin.external.hp.com>; Sat, 28 Aug 1999 19:16:45 -0600
-Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
-	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id DAA04316
-	for <parisc-linux@thepuffingroup.com>; Sun, 29 Aug 1999 03:18:14 +0200
-Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
-	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id DAA932730
-	for <parisc-linux@thepuffingroup.com>; Sun, 29 Aug 1999 03:18:13 +0200 (CEST)
-Received: by genedata.com
-	via sendmail from stdin
-	id <m11Ktbo-00029uC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Sun, 29 Aug 1999 03:18:12 +0200 (CEST)
-Date: Sun, 29 Aug 1999 03:18:12 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA23046
+	for <parisc-linux@puffin.external.hp.com>; Sat, 28 Aug 1999 21:30:31 -0600
+From: emolitor@molitor.org
+Received: from cpu209-41-104-129.unicomp.net (HELO linux.molitor.org) (root@209.41.104.129)
+  by mailserv2.iuinc.com with SMTP; 29 Aug 1999 03:32:15 -0000
+Received: from localhost (emolitor@localhost)
+	by linux.molitor.org (8.9.3/8.9.3) with ESMTP id WAA02135
+	for <parisc-linux@thepuffingroup.com>; Sat, 28 Aug 1999 22:30:32 -0500
+Date: Sat, 28 Aug 1999 22:30:32 -0500 (CDT)
 To: parisc-linux@thepuffingroup.com
-Message-ID: <19990829031812.J493@mencheca.ch.genedata.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] keyboard driver
+Subject: Re: [parisc-linux] keyboard driver
+In-Reply-To: <19990829031812.J493@mencheca.ch.genedata.com>
+Message-ID: <Pine.LNX.4.10.9908282220000.2123-100000@linux.molitor.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Is anyone working on the keyboard driver for the 715/33 (and presumably
-some other models)?  It appears to be an HIL keyboard, and there's
-already an HIL driver in arch/m68k/hp300/hil.c.  Is this likely to work?
-Is there any documentation available for this?
+Hello all, I recently was given a 715/50 to play around with. Its
+got an old version of HP/UX running on it and I am getting ready to dump
+that and look into programming a bit on parisc-linux. Any direction on
+what can be persued?
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Of course my current goal is to get the kernel to cross-compile and then
+boot from a zip drive... (Looking for that It works message...)
