@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 35C894834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Jan 2002 23:59:19 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16U0K6-0005sE-00; Fri, 25 Jan 2002 06:58:54 +0000
-Date: Fri, 25 Jan 2002 06:58:54 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] start physical address for 712/100
-Message-ID: <20020125065854.E30669@parcelfarce.linux.theplanet.co.uk>
-References: <3C4E842F.3D36290F@admin.france.hp.com> <bruno_vidal@hpfrcu03.france.hp.com> <20020125062205.0BFAF482A@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020125062205.0BFAF482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Thu, Jan 24, 2002 at 11:22:05PM -0700
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64863482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 02:46:07 -0700 (MST)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 2D8C12AC
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 10:46:05 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id KAA04563 for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jan 2002 10:45:29 +0100 (MET)
+Message-ID: <3C5128A9.DEED4EE1@admin.france.hp.com>
+Date: Fri, 25 Jan 2002 10:43:05 +0100
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+ boundary="------------0E890295E97DC1283AF0BC0A"
+Subject: [parisc-linux] size in module list
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,24 +25,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jan 24, 2002 at 11:22:05PM -0700, Grant Grundler wrote:
-> Bruno Vidal wrote:
-> > 	Hi
-> > I start to look a bit more deeply in the dump
-> > I'm creating. And I found that the physical
-> > memory start at address 0x0000000010000000.
-> > Is it normal ? Or do I missed something ?
-> 
-> Uhm...I don't think thats right. All parisc boxes have
-> physical memory that's zero based. You should be able
-> to verify this with any HPUX crash dump.
-> 
-> Post where you are getting the data from and perhaps
-> we can help correct it.
+This is a multi-part message in MIME format.
+--------------0E890295E97DC1283AF0BC0A
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-We start mapping physical ram at address 0x0000000010000000.  So physical
-address 0 is mapped at virtual address 0x0000000010000000 when in
-the kernel.
+	Hi
+To do at least a sanity check when retrieving a module object
+I try to understand the size store in module structure. What
+is it ? Even cksum, neither "size" command find the same information ?
+Do you know how this size is calculated ?
+
+	Thanks.
 
 -- 
-Revolutions do not require corporate support.
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------0E890295E97DC1283AF0BC0A
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
+
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------0E890295E97DC1283AF0BC0A--
