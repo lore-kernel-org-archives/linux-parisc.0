@@ -1,24 +1,20 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 232804840
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 018AE48A8
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun,  4 Jan 2004 22:28:43 -0700 (MST)
-Date: Sun, 4 Jan 2004 22:28:42 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matt Lewis <nitephyre@iinet.net.au>
-Subject: Re: [parisc-linux] Probem Installing: slang(version).deb corrupt
-Message-ID: <20040105052842.GB612@colo.lackof.org>
-References: <000801c3d1de$08e053d0$0101a8c0@nitephyre>
-	<3FF6A74F.3000108@tiscali.be>
-	<001f01c3d24b$5e810600$0101a8c0@nitephyre>
-	<20040104045551.GA16904@colo.lackof.org>
-	<000a01c3d28b$91046fa0$0101a8c0@nitephyre>
-	<3FF7FD86.8000208@tiscali.be>
-	<000a01c3d2bd$65441b40$0101a8c0@nitephyre>
+	Sun,  4 Jan 2004 23:44:05 -0700 (MST)
+Date: Mon, 5 Jan 2004 01:35:47 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Message-ID: <20040105063547.GC23782@systemhalted>
+References: <20040101200318.GB7069@systemhalted>
+	<200401012100.i01L0G0L019101@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000a01c3d2bd$65441b40$0101a8c0@nitephyre>
-Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200401012100.i01L0G0L019101@hiauly1.hia.nrc.ca>
+Cc: lamont@debian.org, parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org
+Subject: [parisc-linux] Good news for glibc.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,17 +24,36 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Jan 04, 2004 at 10:22:15PM +1000, Matt Lewis wrote:
-> so, it seems that my only soloution is to try and install via serial cable? :|
+On Thu, Jan 01, 2004 at 04:00:16PM -0500, John David Anglin wrote:
+> > The main issue was that the 'start' symbol needs to be canonicalized
+> > before passing on to the gmon routines. This requires entry.h to be
+> 
+> I still think that using __c_f_f_c for this special case is overkill.
 
-Not "via". Use serial cable to get a working serial console.
-Use the 70MB iso you already have and try again to install.
+What could we use?
 
-Disconnect the USB keyboard, and cycle power on the C3000.
-When it comes up, PDC (firmware) should be talking to the
-Serial Port 1 by default.
+Good news, I just fixed LD_PROFILE so I can actually check to see what
+functions take up too much time :) I think I inadvertently fixed it for
+ia64 too... what do ia64 people use to profile glibc?
 
-BTW, which 70MB ISO did you grab?
-Can you post the complete URL?
+c.
 
-grant
+A tempting peek! :)
+
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  us/call  us/call  name
+  0.00      0.00     0.00    14000     0.00           cfree
+  0.00      0.00     0.00     6000     0.00           memset
+  0.00      0.00     0.00     2004     0.00           malloc
+  0.00      0.00     0.00     2003     0.00           flockfile
+  0.00      0.00     0.00     2003     0.00           funlockfile
+  0.00      0.00     0.00     2001     0.00           __cxa_finalize
+  0.00      0.00     0.00     1002     0.00           index
+  0.00      0.00     0.00     1000     0.00           __GI__dl_close
+  0.00      0.00     0.00     1000     0.00           __GI__dl_open
+  0.00      0.00     0.00     1000     0.00           printf
+  0.00      0.00     0.00     1000     0.00           puts
+  0.00      0.00     0.00     1000     0.00           strlen
+  0.00      0.00     0.00        1     0.00           __libc_start_main
+  0.00      0.00     0.00        1     0.00           realloc
+  0.00      0.00     0.00        1     0.00           strrchr
