@@ -1,20 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from zouave.sonic.net (zouave.sonic.net [209.204.172.153])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E0D034829
-	for <parisc-linux@parisc-linux.org>; Thu, 10 Oct 2002 10:43:02 -0600 (MDT)
-Received: from frizzen.efball.com (frizzen.efball.com [192.168.0.27])
-	by zouave.sonic.net (Postfix) with ESMTP id 449E46822
-	for <parisc-linux@parisc-linux.org>; Thu, 10 Oct 2002 09:42:59 -0700 (PDT)
-Date: Thu, 10 Oct 2002 09:42:58 -0700
-From: E Frank Ball <frankb@efball.com>
-To: 'parisc-linux maillist' <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Which Memory to use on a 715/80?
-Message-ID: <20021010094258.B22402@zouave.sonic.net>
-Reply-To: frankb@efball.com
-References: <02Oct10.174726cest.119043@ns.hiscom.nl> <20021010192305.G37854@azrael.smilehouse.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <20021010192305.G37854@azrael.smilehouse.com>; from harri.haataja@smilehouse.com on Thu, Oct 10, 2002 at 07:23:17PM +0300
+Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DEA864829
+	for <parisc-linux@parisc-linux.org>; Thu, 10 Oct 2002 17:05:31 -0600 (MDT)
+Received: from xparelay2.ptp.hp.com (xparelay2.ptp.hp.com [15.1.28.65])
+	by palrel13.hp.com (Postfix) with ESMTP id 246C44004C9
+	for <parisc-linux@parisc-linux.org>; Thu, 10 Oct 2002 16:05:29 -0700 (PDT)
+Received: from xpabh3.ptp.hp.com (xpabh3.ptp.hp.com [15.1.28.63])
+	by xparelay2.ptp.hp.com (Postfix) with ESMTP id 04C2A49
+	for <parisc-linux@parisc-linux.org>; Thu, 10 Oct 2002 16:05:29 -0700 (PDT)
+Message-ID: <B11E1D6EB0D9D311B10600902740B8E205366B90@xatl07.atl.hp.com>
+From: "RIVERA,MAURICIO (HP-Chile,ex1)" <mauricio_rivera@hp.com>
+To: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
+Date: Thu, 10 Oct 2002 16:05:28 -0700
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C270B1.863D1EB0"
+Subject: [parisc-linux] register in list
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,26 +27,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Oct 10, 2002 at 07:23:17PM +0300, Harri Haataja wrote:
-} On Thu, Oct 10, 2002 at 05:34:47PM +0200, "Beerse, Corné" wrote:
-} > > -----Original Message-----
-} > > From: Grant Grundler [mailto:grundlerOdsl2.external.hp.com]
-} > > Derek Engelhaupt wrote:
-} > > > Well, don't think any other manufacturer made memory for the 715
-} > > > series.  I have looked at Dataram and others, but they only seem
-} > > > to have memory for the D,K,N,L, and A class servers.
-} > > I thought Kingston *did* (maybe no more).
-} > I recal by head (and might be wrong) to have used pc-based memory
-} > modules in a 712/80. There was something with parity (it needs it or
-} > it hates it, don't know).
-} 
-} You usually hear that HP uses similiar form but completely different
-} ram. But that's mostly on 715/735/800, maybe 712 was different. That
-} would be a pleasant surprise.
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-715/725/745 and the 712 all use the same type memory.  The 730/735 used
-another type, and the 755 used a unique type.
+------_=_NextPart_001_01C270B1.863D1EB0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
--- 
+=20
+Mauricio Rivera Gonz=E1lez <?xml:namespace prefix =3D o ns =3D
+"urn:schemas-microsoft-com:office:office" />
 
-   E Frank Ball                frankb@efball.com
+                   Customer Engineer
+
+               HEWLETT PACKARD - CHILE
+
+=20
+
+------_=_NextPart_001_01C270B1.863D1EB0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+
+<META content=3D"MSHTML 5.00.3105.105" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>
+<P class=3DMsoNormal=20
+style=3D"MARGIN-LEFT: 0.5in; mso-margin-top-alt: auto; =
+mso-margin-bottom-alt: auto"><FONT=20
+size=3D1><SPAN=20
+style=3D"COLOR: navy; FONT-FAMILY: 'Boink LET'; FONT-VARIANT: =
+small-caps"><FONT=20
+size=3D2>Mauricio Rivera Gonz=E1lez</FONT> </SPAN><SPAN=20
+style=3D"COLOR: navy; FONT-FAMILY: 'Boink LET'; FONT-SIZE: 12pt; =
+FONT-VARIANT: small-caps"><?xml:namespace=20
+prefix =3D o ns =3D "urn:schemas-microsoft-com:office:office"=20
+/><o:p></o:p></SPAN></FONT></P>
+<P class=3DMsoNormal><SPAN=20
+style=3D"mso-tab-count: =
+1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;=20
+&nbsp;&nbsp;</SPAN><SPAN style=3D"mso-spacerun: yes"> </SPAN><FONT =
+size=3D1><SPAN=20
+style=3D"COLOR: navy; FONT-FAMILY: 'Boink LET'; FONT-SIZE: 8pt; =
+mso-bidi-font-size: 10.0pt">Customer=20
+Engineer<o:p></o:p></SPAN></FONT></P>
+<P class=3DMsoNormal><SPAN=20
+style=3D"COLOR: navy; FONT-FAMILY: Arial; FONT-SIZE: 8pt; =
+mso-bidi-font-size: 10.0pt; mso-bidi-font-family: 'Times New =
+Roman'">&nbsp;</SPAN><SPAN=20
+style=3D"COLOR: navy; FONT-FAMILY: Arial; FONT-SIZE: 8pt; =
+mso-bidi-font-size: 10.0pt; mso-bidi-font-family: 'Times New =
+Roman'"><SPAN=20
+style=3D"mso-tab-count: =
+1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;=20
+</SPAN><FONT face=3D"Boink LET"><FONT size=3D2>HEWLETT PACKARD &#8211;=20
+CHILE<o:p></o:p></FONT></FONT></SPAN></P></FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------_=_NextPart_001_01C270B1.863D1EB0--
