@@ -1,16 +1,17 @@
-From: Matthew Wilcox <willy@debian.org>
+From: Randolph Chung <tausq@debian.org>
 Subject: Re: [parisc-linux] mmap and GCC precompiled headers
-Date: Thu, 15 Jul 2004 22:50:15 +0100
-Message-ID: <20040715215015.GO32326@parcelfarce.linux.theplanet.co.uk>
-References: <20040715203946.GN32326@parcelfarce.linux.theplanet.co.uk>
-	<200407152134.i6FLY3GU021049@hiauly1.hia.nrc.ca>
+Date: Thu, 15 Jul 2004 23:22:13 -0700
+Message-ID: <20040716062213.GJ546@tausq.org>
+References: <20040715215015.GO32326@parcelfarce.linux.theplanet.co.uk>
+	<200407152226.i6FMQVK4029018@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200407152134.i6FLY3GU021049@hiauly1.hia.nrc.ca>
+In-Reply-To: <200407152226.i6FMQVK4029018@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,31 +22,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jul 15, 2004 at 05:34:02PM -0400, John David Anglin wrote:
-> > That's an unwarranted assumption.  If they want that, they need to
-> > specify MAP_FIXED.
-> 
-> The problem with MAP_FIXED is that it replaces any previous mappings.
-> I believe that the code in question doesn't want to do that.  It
-> simply wants to fallback to not using PCH if the suggested value
-> for START doesn't work out.
+> However, when GCC tries to remap the PCH file to this location, it
+> sometimes fails.  This is currently a fatal error (i.e., it does not
+> fallback as described above).  This needs looking at.  Almost all
+> the libstdc++ tests failed in the last build that I did.  I think if
+> it successfully loads the PCH file and finds that it's not valid,
+> it does fallback.
 
-Oh, that's easy enough.  mmap() returns the address it got mapped at,
-so just compare it to the address you asked for and decline to use PCH
-in that case.
+do you mean that, when the pch file is created, it was mmaped to some
+address, and that address is written to the file. when the pch file is
+read later on for another compile, it tries to mmap it to the same
+location, and if it cannot, then it fails?
 
-> Obviously, this isn't a problem on lots of other ports or everybody
-> would be screaming.
+there's obviously a performance penalty, but is this an option (not very
+sure it will work, but i think it might)?
 
-Sparc and MIPS should have difficulties too...
+1. mmap the file to addr1, where addr1 is any address returned by the
+   kernel
+2. do a MAP_PRIVATE anonymous mmap to the desired location addr2 (this 
+   is more likely to be honoured by the kernel....)
+3. memcpy the data from addr1 to addr2
 
+obviously this assumes you are not changing the pch data...
+
+randolph
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
