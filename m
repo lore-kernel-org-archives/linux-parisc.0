@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 288B54829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 07:56:50 -0700 (MST)
-Date: Mon, 28 Oct 2002 09:56:41 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Nahkola Mikko <mikko.nahkola@nokia.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] framebuffer depth and other issues ...
-Message-ID: <20021028145641.GC4583@systemhalted>
-References: <20021028112551.GR15137@aurinko.ntc.nokia.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B7514829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 28 Oct 2002 08:55:33 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 186CEd-0008Hj-00; Mon, 28 Oct 2002 15:55:23 +0000
+Date: Mon, 28 Oct 2002 15:55:23 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: jsoe0708@tiscali.be
+Cc: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.19-pa24 (uaccess.h patch) [was: mkfs.xfs failled]
+Message-ID: <20021028155523.O27461@parcelfarce.linux.theplanet.co.uk>
+References: <3DB5755500001056@ocpmta7.be.tiscali.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021028112551.GR15137@aurinko.ntc.nokia.com>
+In-Reply-To: <3DB5755500001056@ocpmta7.be.tiscali.com>; from jsoe0708@tiscali.be on Mon, Oct 28, 2002 at 03:22:31PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +26,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> And as an aside, how reliable is the disk stuff nowadays? Would it make 
-> any sense to run a file server on Linux/hppa yet? I mean, something like 
-> a stack of A3312As, software-RAID and NFS ... is it likely to work? How 
-> about performance, compared to HP-UX, for example? (yes, I'd expect HP-UX 
-> to be somewhat better, but by how much?)
-> 
+On Mon, Oct 28, 2002 at 03:22:31PM +0100, jsoe0708@tiscali.be wrote:
+> PS: Can you explain the willy's idea on how to replace ex_table?
 
-I'm using/testing a C3K as an NFS fileserver for our cluster of
-715/50's. A large portion of the nodes run diskless, and performance is
-relatively good. Haven't run LADDIS or any other benchmarks. What do
-people run these days to test NFS? If only it didn't cost an arm and a 
-leg... SPEC SFS97_v3.0
+ex_table is used for recovering from a page fault.  i don't see how we
+can take a page fault when copying to kernel ram.
 
-c.
+-- 
+Revolutions do not require corporate support.
