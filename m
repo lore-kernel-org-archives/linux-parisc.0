@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E7CF8486A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 10:44:54 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16bmPd-0006MJ-00; Fri, 15 Feb 2002 17:44:45 +0000
-Date: Fri, 15 Feb 2002 17:44:45 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Clement Moyroud <clement@moyroud.net>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+Received: from sj-msg-core-3.cisco.com (sj-msg-core-3.cisco.com [171.70.157.152])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C99B9486F
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 11:34:59 -0700 (MST)
+Message-Id: <4.3.2.7.2.20020215103051.0271c8c8@mira-sjc5-9.cisco.com>
+Date: Fri, 15 Feb 2002 10:34:40 -0800
+To: Boris =?iso-8859-1?Q?=22C=E1mara=22?= <vesmar@rocketmail.com>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: kernel-2.4.17-pa22 boot problem B132L+ with serial
-Message-ID: <20020215174445.G7053@parcelfarce.linux.theplanet.co.uk>
-References: <OFCD5822D4.246FA364-ONC1256B61.0024B267@com> <20020215065553.945774861@dsl2.external.hp.com> <3C6CF030.1040904@moyroud.net>
+From: Christian Suder <csuder@cisco.com>
+Subject: Re: [parisc-linux] hp 712/60 scsi problem
+In-Reply-To: <20020215143737.51537.qmail@web12506.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C6CF030.1040904@moyroud.net>; from clement@moyroud.net on Fri, Feb 15, 2002 at 12:25:36PM +0100
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,11 +22,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Feb 15, 2002 at 12:25:36PM +0100, Clement Moyroud wrote:
-> btw, Grant, have you seen Thibaut's mail about out serial ports problems 
-> on a B132L+ ?
+At 06:37 AM 2/15/2002 -0800, Boris "C=E1mara" wrote:
+>hi all,
+>
+>I have a problem.
+>My hp 712/60 don't find scsi HDs (hd is a lps 525S).
+>
+>Im trying with search boot in  boot admin.
+>
+>what is the problem?
+>
+>By default TE jumper is over. Is this correct?
+>scsi id is 6.
 
-I haven't seen it.  Are they swapped?
+For some reason the HP manual states the internal drive should *not* be=20
+terminated. I'm been using a LPS1280S in a 712/80 with no issues.
 
--- 
-Revolutions do not require corporate support.
+
+>Sorry for my bad english,
+
+Don't worry...
+
+         Christian
