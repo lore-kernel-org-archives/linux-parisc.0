@@ -1,29 +1,30 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA04872
-	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 14:18:44 -0600
-Message-Id: <199906252018.QAA11141@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Booting from CD...
-To: adevries@thepuffingroup.com (Alex deVries)
-Date: Fri, 25 Jun 1999 16:18:34 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <3773E26E.164B31F5@thepuffingroup.com> from "Alex deVries" at Jun 25, 99 04:11:26 pm
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA05146
+	for <parisc-linux@puffin.external.hp.com>; Fri, 25 Jun 1999 15:04:51 -0600
+Sender: "Matthew Earley" <mearley@nortelnetworks.com>
+Message-ID: <3773E943.F0ACB652@americasm01.nt.com>
+Date: Fri, 25 Jun 1999 16:40:35 -0400
+From: "Matthew Earley" <mearley@nortelnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Booting from CD...
+References: <3773E26E.164B31F5@thepuffingroup.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+Alex deVries wrote:
+> 
 > How do PA RISC machines manage booting from CD?  How does one create
 > such a CD?
 
-I am not sure exactly but you could try just writing the LIF image
-to the CD.  Because HP's IPL can boot from a hpux file system, a PA
-machine can probably also boot from a CD with a hpux file system
-on it.  I doubt HP machines can boot from an ISO 9660 CD.
+I am doing that as I read your post.  The Ignite-UX toolkit available on
+software.hp.com has the tools to do this.  See make_medialif.  I make a
+HFS file images that have Ignite golden images and SD software depots.
+make_medialif creates the LIF file with the INSTALL boot and Ignite
+config stuff. The instl_combine command wraps the LIF file containing
+the INSTLALL kernel and INSTALLFS filesystem around my HFS image file. I
+then use cdrecord to write the whole enchilada to CD-R.   
 
-Most CD writing software has a mode that allows copying a binary
-image file to a CD.  There are some issues regarding CD sector
-size.  You want the image to be an integral number of CD sectors.
-
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Matt
+--
+Matt Earley  nortelnetworks.com
