@@ -1,14 +1,14 @@
-From: Randolph Chung <randolph@tausq.org>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] spinlock debug
-Date: Tue, 13 Jul 2004 22:08:32 -0700
-Message-ID: <20040714050832.GN546@tausq.org>
+Date: Tue, 13 Jul 2004 23:28:06 -0600
+Message-ID: <20040714052806.GB16639@colo.lackof.org>
 References: <20040714042909.GM546@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: varenet@parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org,
+ varenet@parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20040714042909.GM546@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -21,36 +21,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> 	a = __ldcw_align(lock);
-> 	while ((__ldcw(a) == 0))
-> 		while ((*a == 0) && --stuck);
+On Tue, Jul 13, 2004 at 09:29:10PM -0700, Randolph Chung wrote:
+> I don't think the comment is correct.
 
-There's another race in the code. Suppose stuck becomes 0, so you go
-back to the outer loop, and you manage to acquire the lock, then you
-will hit the next if:
+The comment is *mostly* correct.
+It just doesn't get all the exit criteria right. :^)
 
-     52         if (unlikely(stuck <= 0)) {
-     53                 printk(KERN_ERR
-     54                         "%s:%d: spin_lock(%s/%p) stuck in %s at %p(%d)"
-     55                         " owned by %s:%d in %s at %p(%d)\n",
-     56                         base_file, line_no, lock->module, lock,
-     57                         current->comm, inline_pc, cpu,
-     58                         lock->bfile, lock->bline, lock->task->comm,
-     59                         lock->previous, lock->oncpu);
-     60                 stuck = INIT_STUCK;
-     61                 printed = 1;
-     62                 goto try_again;
-     63         }
+> Lets say someone is holding the
+> lock when you enter this code, your outer loop test always succeeds, and
+> you spin on the inner loop until stuck == 0. At that point you go back
+> to the outer loop, the lock is still held, so you go back to the inner
+> loop and continue spinning, and you never timeout the lock.
 
-so you erroneously detect that the lock was not taken, print an error,
-and go back to get the lock again. now you will not be able to acquire
-the lock and you are deadlocked.
+Yup - good catch.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+> you probably need a "&& stuck > 0" in the outer loop.
+
+Yes. This should be sufficient:
+        a = __ldcw_align(lock);
+        while ((__ldcw(a) == 0) && stuck)
+                while ((*a == 0) && --stuck);
+
+> for some reason this still doesn't work for me though, but i don't see 
+> why :( with a TOC i see we are spinning and i never see the printk.
+> it might be that it's actually printing and just that the output is not
+> going to the console... dunno
+
+Do you happen to know which lock it's spinning on?
+That should at least reduce the subset of code we need to look at.
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
