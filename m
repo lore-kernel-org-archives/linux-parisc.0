@@ -1,17 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from amsfep15-int.chello.nl (amsfep15-int.chello.nl [213.46.243.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 26032482A
-	for <parisc-linux@parisc-linux.org>; Wed, 20 Mar 2002 16:09:20 -0700 (MST)
-Date: Thu, 21 Mar 2002 00:10:28 +0100 (CET)
-From: Arjen Hommersom <arjenh@chello.nl>
 To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: PA-RISC 0.9.3+C200+Visualize-EG+2.4.18-pa05
- = working X!
-In-Reply-To: <Pine.LNX.4.44.0203202015180.5453-100000@sal.ucc.ie>
-Message-ID: <Pine.LNX.4.21.0203210007210.25956-100000@gatekeeper>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: John <hplinux@eagle.grdl.noaa.gov>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: PA-RISC 0.9.3+C200+Visualize-EG+2.4.18-pa05 = working X! 
+In-Reply-To: Message from "M. Grabert" <xam@cs.ucc.ie>
+   of "Wed, 20 Mar 2002 22:01:11 GMT." <Pine.LNX.4.44.0203202015180.5453-100000@sal.ucc.ie>
+References: <Pine.LNX.4.44.0203202015180.5453-100000@sal.ucc.ie> 
+Date: Thu, 21 Mar 2002 00:03:47 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020321070347.E4599482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,38 +19,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-
-On Wed, 20 Mar 2002, M. Grabert wrote:
-
-> On Thu, 14 Mar 2002, Grant Grundler wrote:
+"M. Grabert" wrote:
+> I have mentioned this before (18 Dec 2001) in the mailing-list,
+> and I was asking how and if you can change the FX-graphics to
+> a custom resolution (mode 6). Grant replied
 > 
-> > John wrote:
-> > > I wanted to share the good news that Grant's recent patch to "entry.S"
-> > ...
-> > > Thanks Grant!
-> >
-> > That's great news!
-> >
-> > But Thomas Bogendoerf should get most of the credit for figuring
-> > out the problem and fix. I just implemented what he said.
-> >
-> > BTW, I've modified the patch a bit (removed an un-needed depdi)
-> > and it's still not committed yet. I'd like to let Thomas
-> > commit it himself since he really did the hard part.
+> > Yes. I don't know exactly how though. I'd look in the User's Guide
+> > (might be available on docs.hp.com).
 > 
-> I also downloaded and patched a 2.4.18-pa5 kernel with it,
-> (just a simple conflict with the kernel version number in
->  the Makefile appeared, easy to solve).
-> 
-> It works on my C240 with a FX2 card. Well, it now recognizes
-> the gfx card at startup and it seems to initialize it, but since
-> I currently don't have a proper monitor, I can't tell you whether
-> gfx is working or not :-/
-> (BTW, I use the serial console on the C240, connected to a FreeBSD
->  notebook)
-> At least the C240 is still running, so the patch doesn't do a harm ;)
+> unfortunately I haven't found any information except this:
 
-It doesnt crash my C240 either, but unfortunately no fb is working. I
-guess this doesn't work for the FX2 graphics cards..
+hmm...I was looking for the method using PDC prompt.
+"mon" I thought let one do such customization but I don't know
+the syntax. Am I on the wrong track or does someone have
+the docs for this?
 
-Arjen Hommersom
+(Note that mucking with timings can break your HW if you mess it up)
+
+hth,
+grant
