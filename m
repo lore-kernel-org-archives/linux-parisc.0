@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 95CAF482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 08:24:59 -0600 (MDT)
-Message-Id: <200308111424.h7BEOv14017589@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] xfree86 4.2.1-9 build problem
-To: grundler@parisc-linux.org (Grant Grundler)
-Date: Mon, 11 Aug 2003 10:24:57 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030811043457.GA5653@dsl2.external.hp.com> from "Grant Grundler" at Aug 10, 2003 10:34:57 pm
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A8E01482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 09:11:58 -0600 (MDT)
+Date: Mon, 11 Aug 2003 17:11:47 +0200
+Message-ID: <3F29178A000027DB@ocpmta7.freegates.net>
+In-Reply-To: <200308081640.52355.bjorn.helgaas@hp.com>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] Re: Debian on rp 7400
+To: "Bjorn Helgaas" <bjorn.helgaas@hp.com>,
+	"Grant Grundler" <grundler@parisc-linux.org>,
+	"Joel Soete" <joel.soete@tiscali.be>
+Cc: "Conan C. Albrecht" <conan_albrecht@byu.edu>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +25,737 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The basic problem is glxinfo (C program) links against libGLU.so
-> (C++ built library). But glxinfo fails to link using gcc:
-> ...
-> gcc -o glxinfo -g -O -ansi -pedantic -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wnested-externs -Wundef     -L../../exports/lib glxinfo.o -lGLU -lGL -lXext -lX11  -lpthread -lm -Wl,-rpath-link,../../exports/lib
-> ../../exports/lib/libGLU.so: undefined reference to `_Unwind_SjLj_Resume@GCC_3.0'
-> ../../exports/lib/libGLU.so: undefined reference to `_Unwind_SjLj_Register@GCC_3.0'
-> /usr/bin/../lib/libstdc++.so.5: undefined reference to `_Unwind_SjLj_RaiseException@GCC_3.0'
-> ../../exports/lib/libGLU.so: undefined reference to `_Unwind_SjLj_Unregister@GCC_3.0'
-> /usr/bin/../lib/libstdc++.so.5: undefined reference to `_Unwind_SjLj_Resume_or_Rethrow@GCC_3.3'
-> collect2: ld returned 1 exit status
-> ...
+>
+>For archive crawlers, here's a link to Willy's idea for using kmap to
+> 
+>deal with this problem:
+>
+>http://lists.parisc-linux.org/pipermail/parisc-linux/2002-March/015826.html
 
-Did you do the build with one of my private builds of GCC?  They were built
-with dwarf2 exception support and don't have these symbols in libgcc_s.so.1.
+Hmm still an hypothesis to confirmed (i read somewhere)?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+So I rebuild a 2.4.21-pa9 in smp mode and get the piminfo:
+
+PROCESSOR PIM INFORMATION
+
+Original Product Number:  A3639C
+Current Product Number:   A3639C
+
+
+-------  Processor 1 HPMC Information - PDC Version: 41.28   ------ 
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+HPMC Chassis Codes 
+
+       Chassis Code        Extension 
+       ------------        --------- 
+       0x0000082000ff6242  0x0000000000000000
+       0x1800082011016312  0xcb81000000000000
+       0x0000087000ff6292  0x000000ffff800000
+       0x6000082013016062  0x2002000000080000
+       0x6000082013016072  0x0000000000080000
+       0x7000082013016082  0x0000000000192200
+       0x6000082013036062  0x2001000000082004
+       0x6000082013036072  0x0000000000082000
+       0x7000082013036082  0x0000000000992600
+       0x6000082070006062  0x0000000000080000
+       0x6000082070006072  0x0000000000080000
+       0x7000082070006082  0x0000000000192200
+       0x6000082070016062  0x0000000000000800
+       0x6000082070016072  0x0000000000000800
+       0x7000082070016082  0x00000000001a4400
+       0x0000080080006310  0x0000000000000001
+       0x7000082082006333  0x0000000000b92200
+       0x7000082082016333  0x0000000000b92200
+       0x000008008000631f  0x0000000000000000
+       
+
+General Registers 0 - 31
+00-03  0000000000000000  000000001040d000  000000001014e9e0  000000008f3ceec0
+04-07  000000000012bcc8  0000000000000001  000000008f3c6bc0  0000000000000001
+08-11  0000000010527470  0000000010527470  000000000000001a  00000000134bd468
+12-15  000000007f1deb25  000000008f3c6bc0  000000000012acc8  000000008f3b1950
+16-19  000000008f3c85b8  0000000000004000  0000000000016000  0000000000000180
+20-23  000000008f3ceec0  000000000000003f  0000000000000000  0000000000000040
+24-27  000000007f1deb27  000000000012acc8  000000008f3c6bc0  0000000010527470
+28-31  000000000800000f  000000008f3c8ef0  000000008f3c8f40  0000000000008ba3
+
+
+Control Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000006  0000000000000000  00000000000000c0  0000000000000035
+12-15  0000000000000000  0000000000000000  0000000000107000  ffe0000000000000
+16-19  0000001f0ff8e1f0  0000000000000000  000000001010b8c8  000000000fc212c1
+20-23  00000000103401fc  00000000f23c8f30  0000007f0804ff0f  c000000000000000
+24-27  0000000000453000  000000007f3c7000  0000000000041020  000000ffff95c810
+28-31  5555555555555555  5555555555555555  000000008f3c8000  0000000010590000
+
+Space Registers 0 - 7
+00-03  00000180          00000180          00000000          00000180
+04-07  00000000          00000000          00000000          00000000
+
+
+IIA Space (back entry)       = 0x0000000000000000
+IIA Offset (back entry)      = 0x000000001010b8cc
+Check Type                   = 0x20000000
+CPU State                    = 0x9e000004
+Cache Check                  = 0x00000000
+TLB Check                    = 0x00000000
+Bus Check                    = 0x0010c03b
+Assists Check                = 0x00000000
+Assist State                 = 0x00000000
+Path Info                    = 0x00000000
+System Responder Address     = 0x0000000000000000
+System Requestor Address     = 0xfffffffffed25000
+
+
+Floating Point Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000010586ec0  0000000000000002  00000000104c7b68  0000000000000420
+08-11  0000000000000000  0000000000000802  0000000010527470  000000001058a000
+12-15  00000000135a0000  0000000000000000  000000001017dc84  00000000103ceb94
+16-19  00000000000009f0  000000008facf000  0000000010527470  00000000135a0000
+20-23  00000000103aa184  fffffffffffffff4  00000000003f45a2  000000000000ba2e
+24-27  0000000400000000  00009999035a0b70  00000000035a0b78  000000001040d980
+28-31  000000001040d980  00000000ff915e20  0000000010185248  0000000000000000
+
+
+Check Summary                = 0xcb81000000000000
+Available Memory             = 0x0000000100000000
+CPU Diagnose Register 2      = 0x0301010800802004
+CPU Status Register 0        = 0x2640c24000000000
+CPU Status Register 1        = 0x8000200000000000
+SADD LOG                     = 0xf4e2930000429440
+Read Short LOG               = 0xc18200ff80000002
+
+
+
+-----------------  DEW 1 HPMC Information -  ------ 
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+Runway Control Log Reg            = 0x00927b0000000000
+Runway Address Data Log Reg Odd   = 0xc0aa1010c4a61010
+Runway Address Data Log Reg Even  = 0xc8a61010cca61010
+Runway Address Log Reg            = 0x00000000000000f4
+Runway Broad Error Log Reg        = 0x000000000000005c
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+                ERR_ERROR       X                X       
+
+Merced Bus Requestor Address      = 0x0000000000000000
+Merced Bus Target Address         = 0x0000000000000000
+Merced Bus Responder Address      = 0x0000000000000000
+Merced Error Status Reg           = 0x2002000000080000
+Merced Error Overflow Reg         = 0x0000000000080000
+Merced AERR Addr1 Log Reg         = 0x00006000ff86fdc0
+Merced AERR Addr2 Log Reg         = 0x00008000078fff08
+Merced DERR  Log Reg              = 0x0001000000000000
+Merced Error Syndrome Reg         = 0x00000000000000c0
+
+
+-------  Processor 1  LPMC Information ------------------
+
+Check Type                   = 0x00000000
+IC Parity Info               = 0x00000000
+Cache Check                  = 0x00000000
+TLB Check                    = 0x00000000
+Bus Check                    = 0x00000000
+Assists Check                = 0x00000000
+Assist State                 = 0x00000000
+Path Info                    = 0x00000000
+System Responder Address     = 0x0000000000000000
+System Requestor Address     = 0x0000000000000000
+
+
+
+-------  Processor 1  TOC Information -------------------
+
+General Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+12-15  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+16-19  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+20-23  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+24-27  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+28-31  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+
+
+Control Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+12-15  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+16-19  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+20-23  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+24-27  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+28-31  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+
+Space Registers 0 - 7
+00-03  00000000          00000000          00000000          00000000
+04-07  00000000          00000000          00000000          00000000
+
+IIA Space (back entry)       = 0x0000000000000000
+IIA Offset (back entry)      = 0x0000000000000000
+CPU State                    = 0x00000000
+
+
+
+-------  Processor 3 HPMC Information - PDC Version: 41.28   ------ 
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+HPMC Chassis Codes 
+
+       Chassis Code        Extension 
+       ------------        --------- 
+       0x0000082000ff6242  0x0000000000000000
+       0x1800082011036322  0xcb81800000000000
+       
+
+General Registers 0 - 31
+00-03  0000000000000000  0000000010536c70  0000000010115e58  00000000103aaf64
+04-07  0000000000000002  00000000103ac494  0000000000000001  0000000010527470
+08-11  0000000000000001  000000008f1f45b8  000000008f3cebc0  000000001057dcb0
+12-15  00000000faf005f0  0000000000028280  0000000000020000  00000000faf00548
+16-19  00000000faf005d0  0000000000004000  0000000000016000  0000000000000001
+20-23  0000000000006061  000000001044ec08  0000000010539c70  000000001041b130
+24-27  0000000000000000  000000000800000f  0000000010527c70  0000000010527470
+28-31  0000000000000480  000000008f1f4e30  000000008f1f4e40  000000001052a470
+
+
+Control Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000010  0000000000000000  00000000000000c0  0000000000000036
+12-15  0000000000000000  0000000000000000  0000000000107000  ffe0000000000000
+16-19  0000001f0fd05cbd  0000000000000000  0000000010116050  0000000008000240
+20-23  0000000000000000  0000000000000000  000000000806070f  0000000000000000
+24-27  0000000000453000  000000007f1f2000  0000000000041020  000000ffff95c810
+28-31  000000ffff95c810  5555555555555555  000000008f1f4000  0000000000008020
+
+Space Registers 0 - 7
+00-03  00000400          00000400          00000000          00000400
+04-07  00000000          00000000          00000000          00000000
+
+
+IIA Space (back entry)       = 0x0000000000000000
+IIA Offset (back entry)      = 0x0000000010116054
+Check Type                   = 0x20000000
+CPU State                    = 0x9e000004
+Cache Check                  = 0x00000000
+TLB Check                    = 0x00000000
+Bus Check                    = 0x0030000d
+Assists Check                = 0x00000000
+Assist State                 = 0x00000000
+Path Info                    = 0x00000000
+System Responder Address     = 0xfffffffffed2d000
+System Requestor Address     = 0x000000fffed2c000
+
+
+Floating Point Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000010586ec0  0000000000000002  00000000104c7b68  0000000000000420
+08-11  0000000000000000  0000000000000802  0000000010527470  000000001058a000
+12-15  00000000135a0000  0000000000000000  000000001017dc84  00000000103ceb94
+16-19  00000000000009f0  000000008facf000  0000000010527470  00000000135a0000
+20-23  00000000103aa184  fffffffffffffff4  00000000003f45a2  000000000000ba2e
+24-27  0000999900000000  00009999035a0b70  00000000035a0b78  000000001040d980
+28-31  000000001040d980  00000000ff915e20  0000000010185248  0000000000000016
+
+
+Check Summary                = 0xcb81800000000000
+Available Memory             = 0x0000000100000000
+CPU Diagnose Register 2      = 0x0301030800802004
+CPU Status Register 0        = 0x3640c24000000000
+CPU Status Register 1        = 0x8000000000000000
+SADD LOG                     = 0x48e0000000000002
+Read Short LOG               = 0xc18080ff80080014
+
+
+
+-----------------  DEW 3 HPMC Information -  ------ 
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+Runway Control Log Reg            = 0x0006720000000000
+Runway Address Data Log Reg Odd   = 0xfffffffffffc3f00
+Runway Address Data Log Reg Even  = 0xfffffffffffc3f00
+Runway Address Log Reg            = 0x0000000000000048
+Runway Broad Error Log Reg        = 0x00000000000000dc
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+  X             ERR_ERROR       X            X   X       
+
+Merced Bus Requestor Address      = 0x0000000000000000
+Merced Bus Target Address         = 0x0000000000000000
+Merced Bus Responder Address      = 0x0000000000000000
+Merced Error Status Reg           = 0x2001000000082004
+Merced Error Overflow Reg         = 0x0000000000082000
+Merced AERR Addr1 Log Reg         = 0x00c0000000300000
+Merced AERR Addr2 Log Reg         = 0x0000000000f00000
+Merced DERR  Log Reg              = 0x00c1100000000000
+Merced Error Syndrome Reg         = 0x0000000052000000
+
+
+-------  Processor 3  LPMC Information ------------------
+
+Check Type                   = 0x00000000
+IC Parity Info               = 0x00000000
+Cache Check                  = 0x00000000
+TLB Check                    = 0x00000000
+Bus Check                    = 0x00000000
+Assists Check                = 0x00000000
+Assist State                 = 0x00000000
+Path Info                    = 0x00000000
+System Responder Address     = 0x0000000000000000
+System Requestor Address     = 0x0000000000000000
+
+
+
+-------  Processor 3  TOC Information -------------------
+
+General Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+12-15  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+16-19  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+20-23  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+24-27  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+28-31  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+
+
+Control Registers 0 - 31
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+12-15  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+16-19  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+20-23  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+24-27  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+28-31  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+
+Space Registers 0 - 7
+00-03  00000000          00000000          00000000          00000000
+04-07  00000000          00000000          00000000          00000000
+
+IIA Space (back entry)       = 0x0000000000000000
+IIA Offset (back entry)      = 0x0000000000000000
+CPU State                    = 0x00000000
+
+
+--------------  Memory Error Log Information  --------------
+
+Bus 0 Log Information
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+                ERR_ERROR       X                X       
+
+Bus Requestor Address      = 0x0000000000000000
+Bus Target Address         = 0x0000000000000000
+Bus Responder Address      = 0x0000000000000000
+
+Error Status Reg           = 0x0000000000080000
+Error Overflow Reg         = 0x0000000000080000
+AERR Address 1 Log Reg     = 0x0000000000000000
+AERR Address 2 Log Reg     = 0xf800000000000000
+FERR  Log Reg              = 0x0000000000000000
+DERR  Log Reg              = 0x000112800051cdc0
+Error Syndrome Reg         = 0x0000000000000000
+
+
+
+ Address/Control Parity Error Registers  
+
+   Address/Control Parity Error Bit (AE) Not Set 
+
+
+
+Bus 1 Log Information
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+               ERR_TIMEOUT   X               X           
+
+Bus Requestor Address      = 0xfffffffffed2c000
+Bus Target Address         = 0x00000000f000a000
+Bus Responder Address      = 0x0000000000000000
+
+Error Status Reg           = 0x0000000000000800
+Error Overflow Reg         = 0x0000000000000800
+AERR Address 1 Log Reg     = 0x08006000f000a000
+AERR Address 2 Log Reg     = 0x6000b0002f700a10
+FERR  Log Reg              = 0x0000000000000000
+DERR  Log Reg              = 0x0000000000000000
+Error Syndrome Reg         = 0x0000000000000000
+
+
+
+ Address/Control Parity Error Registers  
+
+   Address/Control Parity Error Bit (AE) Not Set 
+
+
+
+------------  I/O Module Error Log Information  ------------
+
+Summary of IO subsystem log entries
+-----------------------------------
+                        Phys Loc             Vendor  Device   Severity
+Description             (hex)                 Id      Id      CORR UNC FE
+ CW
+-----------             -----                ------  ------   ----------------
+System Bus Adapter SB  0x000000ffffffff82   0x103c  0x1050              X
+System Bus Adapter SB  0x000000ffffffff82   0x103c  0x1050              X
+
+
+Detail display of IO subsystem log entries
+------------------------------------------
+
+System Bus Adapter -- System Bus Interface
+------------------------------------------
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+  X       X     ERR_ERROR       X                X       
+
+IO Requestor Address    = 0x0000000000000000
+IO Target Address       = 0x0000000000000000
+IO Responder Address    = 0xfffffffffed00000
+IO Physical Location    = 0x000000ffffffff82
+IO Hardware Path        = 0x00ffffffffffff00
+
+Module Error Register   = 0x0000000007ff0034
+
+System Bus Adapter -- System Bus Interface
+------------------------------------------
+
+Timestamp =    Mon Aug  11 12:56:02 GMT 2003    (20:03:08:11:12:56:02)
+
+  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
+  --  --  --      -----      -  -  -  ----  ---  --  --  --
+  X       X     ERR_ERROR       X                X       
+
+IO Requestor Address    = 0x0000000000000000
+IO Target Address       = 0x0000000000000000
+IO Responder Address    = 0xfffffffffed40000
+IO Physical Location    = 0x000000ffffffff82
+IO Hardware Path        = 0x00ffffffffffff01
+
+Module Error Register   = 0x0000000007ff0034
+
+
+
+which I submit to the PimAnalyser of my own (based on dump_analyser.sh and
+still need a lot of improvement):
+
+-------  Processor 1 HPMC Information - PDC Version: 41.28   ------ 
+
+GR of CPU[1]
+00-03  0000000000000000  000000001040d000  000000001014e9e0  000000008f3ceec0
+04-07  000000000012bcc8  0000000000000001  000000008f3c6bc0  0000000000000001
+08-11  0000000010527470  0000000010527470  000000000000001a  00000000134bd468
+12-15  000000007f1deb25  000000008f3c6bc0  000000000012acc8  000000008f3b1950
+16-19  000000008f3c85b8  0000000000004000  0000000000016000  0000000000000180
+20-23  000000008f3ceec0  000000000000003f  0000000000000000  0000000000000040
+24-27  000000007f1deb27  000000000012acc8  000000008f3c6bc0  0000000010527470
+28-31  000000000800000f  000000008f3c8ef0  000000008f3c8f40  0000000000008ba3
+
+GR[02] == rp = 000000001014e9e0
+
+Func: do_wp_page, Off: 0x5d8, Addr: 0x1014e9e0
+
+    1014e9e0:	08 09 02 5b 	copy r9,dp
+    1014e9e4:	34 73 00 90 	ldo 48(r3),r19
+    1014e9e8:	0e 7e 12 a0 	stw,ma sp,0(,r19)
+    1014e9ec:	e8 1f 19 f5 	b,l 1014e6ec <do_wp_page+0x2e4>,r0
+
+GR[22] == t1(32bits) == arg4(64bits) = 0000000000000000
+
+GR[21] == t2(32bits) == arg5(64bits) = 000000000000003f
+
+GR[20] == t3(32bits) == arg6(64bits) = 000000008f3ceec0
+
+GR[19] == t4(32bits) == arg7(64bits) = 0000000000000180
+
+GR[26] == arg0 = 000000008f3c6bc0
+
+GR[25] == arg1 = 000000000012acc8
+
+GR[24] == arg2 = 000000007f1deb27
+
+GR[23] == arg3 = 0000000000000040
+
+GR[27] == dp = 0000000010527470
+
+Func: __gp, Off: 0x0, Addr: 0x10527470
+
+
+GR[28] == ret0 = 000000000800000f
+
+GR[29] == ret1 or sl = 000000008f3c8ef0
+
+GR[30] == sp = 000000008f3c8f40
+
+GR[31] == ble rp = 0000000000008ba3
+	Not parsable address!
+
+CR of CPU[1]
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000006  0000000000000000  00000000000000c0  0000000000000035
+12-15  0000000000000000  0000000000000000  0000000000107000  ffe0000000000000
+16-19  0000001f0ff8e1f0  0000000000000000  000000001010b8c8  000000000fc212c1
+20-23  00000000103401fc  00000000f23c8f30  0000007f0804ff0f  c000000000000000
+24-27  0000000000453000  000000007f3c7000  0000000000041020  000000ffff95c810
+28-31  5555555555555555  5555555555555555  000000008f3c8000  0000000010590000
+
+CR[00] == rctr = 0000000000000000
+
+CR[08] == (Protection ID) pidr1 = 0000000000000006
+
+CR[10] == ccr = 00000000000000c0
+
+CR[11] == sar = 0000000000000035
+
+CR[14] == iva = 0000000000107000
+
+CR[15] == eiem = ffe0000000000000
+
+CR[16] == itmr = 0000001f0ff8e1f0
+
+CR[17] == pcsq = 0000000000000000
+
+CR[18] == pcoq = 000000001010b8c8
+
+CR[19] == iir = 000000000fc212c1
+
+CR[20] == isr = 00000000103401fc
+
+CR[21] == ior = 00000000f23c8f30
+
+CR[22] == ipsw = 0000007f0804ff0f
+
+CR[23] == eirw = c000000000000000
+
+CR[24] == tr0 (ptov) = 0000000000453000
+
+CR[25] == tr1 (vtop) = 000000007f3c7000
+
+CR[26] == tr2 = 0000000000041020
+
+CR[27] == tr3 = 000000ffff95c810
+
+CR[28] == tr4 = 5555555555555555
+
+CR[29] == tr5 = 5555555555555555
+
+CR[30] == tr6 = 000000008f3c8000
+
+CR[31] == tr7 = 0000000010590000
+
+SR of CPU[1]
+00-03  00000180          00000180          00000000          00000180
+04-07  00000000          00000000          00000000          00000000
+Need much more work !!!
+
+SR[00] == ts0 = 00000180
+
+SR[01] == ts1 = 00000180
+
+SR[03] == cpp = 00000180
+	Not parsable address!
+...
+IIA Offset (back entry)      = 0x000000001010b8cc
+...
+
+e.g. IAOQ = 0x000000001010b8cc
+
+FPR of CPU[1]
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000010586ec0  0000000000000002  00000000104c7b68  0000000000000420
+08-11  0000000000000000  0000000000000802  0000000010527470  000000001058a000
+12-15  00000000135a0000  0000000000000000  000000001017dc84  00000000103ceb94
+16-19  00000000000009f0  000000008facf000  0000000010527470  00000000135a0000
+20-23  00000000103aa184  fffffffffffffff4  00000000003f45a2  000000000000ba2e
+24-27  0000000400000000  00009999035a0b70  00000000035a0b78  000000001040d980
+28-31  000000001040d980  00000000ff915e20  0000000010185248  0000000000000000
+
+Parse IAOQ = 0x000000001010b8cc for CPU[1]
+
+Func: update_mmu_cache, Off: 0x4, Addr: 0x1010b8cc
+
+    1010b8c0:	37 de 3f 01 	ldo -80(sp),sp
+    1010b8c4:	00 00 00 00 	break 0,0
+	...
+000000001010b8c8 <update_mmu_cache>:
+
+	...
+    1010b8c8:	0f c2 12 c1 	std rp,-10(,sp)
+    1010b8cc:	2b 6a 20 00 	addil 15000,dp,%r1
+-------  Processor 3 HPMC Information - PDC Version: 41.28   ------ 
+
+GR of CPU[3]
+00-03  0000000000000000  0000000010536c70  0000000010115e58  00000000103aaf64
+04-07  0000000000000002  00000000103ac494  0000000000000001  0000000010527470
+08-11  0000000000000001  000000008f1f45b8  000000008f3cebc0  000000001057dcb0
+12-15  00000000faf005f0  0000000000028280  0000000000020000  00000000faf00548
+16-19  00000000faf005d0  0000000000004000  0000000000016000  0000000000000001
+20-23  0000000000006061  000000001044ec08  0000000010539c70  000000001041b130
+24-27  0000000000000000  000000000800000f  0000000010527c70  0000000010527470
+28-31  0000000000000480  000000008f1f4e30  000000008f1f4e40  000000001052a470
+
+GR[02] == rp = 0000000010115e58
+
+Func: smp_call_function, Off: 0x78, Addr: 0x10115e58
+
+    10115e50:	e8 00 b0 60 	b,l 10116688 <__atomic_set>,%r2
+    10115e54:	37 39 3f ff 	ldo -1(r25),r25
+    10115e58:	84 80 24 58 	cmpib,= 0,r4,1011608c <smp_call_function+0x2ac>
+    10115e5c:	08 07 02 5b 	copy r7,dp
+
+GR[22] == t1(32bits) == arg4(64bits) = 0000000010539c70
+
+GR[21] == t2(32bits) == arg5(64bits) = 000000001044ec08
+
+GR[20] == t3(32bits) == arg6(64bits) = 0000000000006061
+
+GR[19] == t4(32bits) == arg7(64bits) = 0000000000000001
+
+GR[26] == arg0 = 0000000010527c70
+
+GR[25] == arg1 = 000000000800000f
+
+GR[24] == arg2 = 0000000000000000
+
+GR[23] == arg3 = 000000001041b130
+
+GR[27] == dp = 0000000010527470
+
+Func: __gp, Off: 0x0, Addr: 0x10527470
+
+
+GR[28] == ret0 = 0000000000000480
+
+GR[29] == ret1 or sl = 000000008f1f4e30
+
+GR[30] == sp = 000000008f1f4e40
+
+GR[31] == ble rp = 000000001052a470
+
+Func: __gp, Off: 0x3000, Addr: 0x1052a470
+
+
+CR of CPU[3]
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+08-11  0000000000000010  0000000000000000  00000000000000c0  0000000000000036
+12-15  0000000000000000  0000000000000000  0000000000107000  ffe0000000000000
+16-19  0000001f0fd05cbd  0000000000000000  0000000010116050  0000000008000240
+20-23  0000000000000000  0000000000000000  000000000806070f  0000000000000000
+24-27  0000000000453000  000000007f1f2000  0000000000041020  000000ffff95c810
+28-31  000000ffff95c810  5555555555555555  000000008f1f4000  0000000000008020
+
+CR[00] == rctr = 0000000000000000
+
+CR[08] == (Protection ID) pidr1 = 0000000000000010
+
+CR[10] == ccr = 00000000000000c0
+
+CR[11] == sar = 0000000000000036
+
+CR[14] == iva = 0000000000107000
+
+CR[15] == eiem = ffe0000000000000
+
+CR[16] == itmr = 0000001f0fd05cbd
+
+CR[17] == pcsq = 0000000000000000
+
+CR[18] == pcoq = 0000000010116050
+
+CR[19] == iir = 0000000008000240
+
+CR[20] == isr = 0000000000000000
+
+CR[21] == ior = 0000000000000000
+
+CR[22] == ipsw = 000000000806070f
+
+CR[23] == eirw = 0000000000000000
+
+CR[24] == tr0 (ptov) = 0000000000453000
+
+CR[25] == tr1 (vtop) = 000000007f1f2000
+
+CR[26] == tr2 = 0000000000041020
+
+CR[27] == tr3 = 000000ffff95c810
+
+CR[28] == tr4 = 000000ffff95c810
+
+CR[29] == tr5 = 5555555555555555
+
+CR[30] == tr6 = 000000008f1f4000
+
+CR[31] == tr7 = 0000000000008020
+
+SR of CPU[3]
+00-03  00000400          00000400          00000000          00000400
+04-07  00000000          00000000          00000000          00000000
+Need much more work !!!
+
+SR[00] == ts0 = 00000400
+
+SR[01] == ts1 = 00000400
+
+SR[03] == cpp = 00000400
+	Not parsable address!
+...
+IIA Offset (back entry)      = 0x0000000010116054
+...
+
+e.g. IAOQ = 0x0000000010116054
+
+FPR of CPU[3]
+00-03  0000000000000000  0000000000000000  0000000000000000  0000000000000000
+04-07  0000000010586ec0  0000000000000002  00000000104c7b68  0000000000000420
+08-11  0000000000000000  0000000000000802  0000000010527470  000000001058a000
+12-15  00000000135a0000  0000000000000000  000000001017dc84  00000000103ceb94
+16-19  00000000000009f0  000000008facf000  0000000010527470  00000000135a0000
+20-23  00000000103aa184  fffffffffffffff4  00000000003f45a2  000000000000ba2e
+24-27  0000999900000000  00009999035a0b70  00000000035a0b78  000000001040d980
+28-31  000000001040d980  00000000ff915e20  0000000010185248  0000000000000016
+
+Parse IAOQ = 0x0000000010116054 for CPU[3]
+
+Func: smp_call_function, Off: 0x274, Addr: 0x10116054
+
+    10116054:	0e a0 10 d3 	ldd 0(,r21),r19
+    10116058:	0a 93 04 33 	sub r19,r20,r19
+    1011605c:	ee 60 ff c5 	cmpib,*> 0,r19,10116044 <smp_call_function+0x264>
+
+
+Does it help to confirm Willy's idea (i think so but not quiet sure)?
+
+Thanks,
+    Joel
+
+
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
