@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F30F7482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Dec 2001 00:22:41 -0700 (MST)
-Received: from there (fwr-01.mediadesign.de [212.185.42.202])
-	by post.webmailer.de (8.9.3/8.8.7) with SMTP id IAA19985
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 4 Dec 2001 08:18:30 +0100 (MET)
-Message-Id: <200112040718.IAA19985@post.webmailer.de>
+Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C16B2482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Dec 2001 02:42:56 -0700 (MST)
 Content-Type: text/plain;
   charset="iso-8859-1"
-From: Joerg Hartmann <j.hartmann@reinarts.de>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 4 Dec 2001 08:22:39 +0100
+From: Helge Deller <helge.deller@sap.com>
+To: Joerg Hartmann <j.hartmann@reinarts.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 720 Installation
+Date: Tue, 4 Dec 2001 10:42:53 +0100
+References: <200112040718.IAA19985@post.webmailer.de>
+In-Reply-To: <200112040718.IAA19985@post.webmailer.de>
 MIME-Version: 1.0
-Subject: [parisc-linux] 720 Installation
+Message-Id: <E16BC6I-0002bj-00@linuxlab.wdf.sap-ag.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,25 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi folks,
+On Tuesday 04 December 2001 08:22, Joerg Hartmann wrote:
+> There is only one little thingy left with the keyboard.
+> But i dont call this a problem (now).
+> Whenever i switch the keyboard layout to german, this keyboard stops
+> doing something useful to me.
+> There is something happen when i press some keys - but nothing i expected.
+> So i installed palinux with english keyboard and this works.
 
-you are realy great ! :-)
-With the pointer to the palinux-0.9.3-base-rc5.iso from Richard Hirst  i 
-got my 720 up and running . Even the graphics console is working now
-and the SCSI-Problem went away.
-Thanks !
+Hi Joerg,
 
-There is only one little thingy left with the keyboard.
-But i dont call this a problem (now).
-Whenever i switch the keyboard layout to german, this keyboard stops 
-doing something useful to me.
-There is something happen when i press some keys - but nothing i expected.
-So i installed palinux with english keyboard and this works.
+Presumably you have a HIL keyboard and the selectable keyboard layouts
+are intended for PS/2 keyboards only. IIRC it's documented somewhere 
+on the cd (README?).
 
-This was a big step to a fine new samba server ...
-
-regards
-			Jörg
--- 
-Joerg Hartmann
-j.hartmann@reinarts.de
+Greetings,
+Helge
