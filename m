@@ -1,7 +1,7 @@
 From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] kernel module relocation bug
-Date: 29 Nov 2004 09:33:53 -0600
-Message-ID: <1101742439.1714.11.camel@mulgrave>
+Date: 29 Nov 2004 09:32:11 -0600
+Message-ID: <1101742338.1714.8.camel@mulgrave>
 References: <20041127064710.GL9148@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -25,16 +25,9 @@ On Sat, 2004-11-27 at 00:47, Randolph Chung wrote:
 > 
 > legolas[6:43] linux-2.6% sudo modprobe ipv6
 > FATAL: Error inserting ipv6 (/lib/modules/2.6.8-1-32-smp/kernel/net/ipv6/ipv6.ko): Invalid module format
-
-This is pretty nasty.  The problem isn't a bad relocation, its that the
-relocation target is too far away (i.e. ipv6 is too big).
-
-We get around this in the kernel by using -ffunction-sections so that
-the real linker can insert stubs between functions.  However,
-calculating how to do that in the in-kernel module loader would not be a
-whole lot of fun.
-
-James
+> 
+> in syslog, i get:
+> module ipv6 relocation of symbol fold_prot_inuse is out of range (0x3ffeffe2 in 17 bits)
 
 
 _______________________________________________
