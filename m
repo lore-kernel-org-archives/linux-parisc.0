@@ -1,250 +1,108 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA29408
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Nov 1999 22:29:38 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
-	by palrel1.hp.com (Postfix) with ESMTP id EDF865F7
-	for <parisc-linux@thepuffingroup.com>; Thu, 18 Nov 1999 21:31:11 -0800 (PST)
-Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id VAA01055 for parisc-linux@thepuffingroup.com; Thu, 18 Nov 1999 21:32:58 -0800 (PST)
-Date: Thu, 18 Nov 1999 21:32:58 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <199911190532.VAA01055@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=X-roman8
-Subject: [parisc-linux] `PROC_SCSI_LASI7XX' undeclared here
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA30068
+	for <parisc-linux@puffin.external.hp.com>; Fri, 19 Nov 1999 02:04:14 -0700
+Sender: phi@hpfrcu81.france.hp.com
+Message-ID: <3835137D.4904B531@hpfrcu03.france.hp.com>
+Date: Fri, 19 Nov 1999 10:08:13 +0100
+From: Philippe Benard <phi@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+CC: frowand@cup.hp.com, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+        sieler@allegro.com, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] depi?
+References: <199911182037.PAA02238@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
-I tried to rebuild after doing "cvs -z9 update -d" (ggg nods to _A_)
-and got the following output:
-(and yes I ran make oldconfig/dep/Image sequence)
+Nice answer at least it clarify some design options
 
-...
-gcc -D__KERNEL__ -I/linux/linux/include -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -mdisable-fpregs -fwritable-strings  -fno-strict-aliasing -pipe -fno-strength-reduce   -c -o lasi7xx.o lasi7xx.c
-lasi7xx.c:38: `PROC_SCSI_LASI7XX' undeclared here (not in a function)
-lasi7xx.c:38: initializer element for `proc_scsi_lasi7xx.low_ino' is not constant
-lasi7xx.c:48: warning: type defaults to `int' in declaration of `ncr53c7xx_init'
-make[3]: *** [lasi7xx.o] Error 1
-...
+John David Anglin wrote:
+> 
+> The architecture that I proposed was suggested by figure 3-1 of the
+> Precision Architecture and Instruction Set Manual (1989).  On a level 1
+> machine there 2**16-1 virtual 4GB spaces.  Thus, each process can
+> have its own virtual space.  The physical page directory contains
+> the mapping for the kernel and all processes.  The algorithm for
+> updating the TLB(s) from the page directory is very important for
+> efficiency and also for security.
+> 
+> I assume threads will run in a processes virtual space for efficiency.
 
-If I recall correctly, a shared enum table had "PROC_SCSI_LASI7XX"
-added to it.  I think it was a /proc header file.
+IMHO efficiency is a side effect, by definition user threads are part of a
+process, i.e sharing the process VAS, so your assumption is more than valid.
 
-Normally I'd fix this myself (and probably will) but don't have time.
-If some else does, that would be great. Otherwise, I'll get to it on
-the weekend.
 
-I've appended my "linux/.config" file.
+> 
+> 
+> This was me again.  The TEXT/DATA/SHARED1/SHARE2 architecture is described
+> in the 32-bit PA-RISC Runtime Architecture Document.  It is how hpux 10.20
+> does it.  Take a look at Table 1, "Space Register Usage".  However, it doesn't
+> really tell you anything about the OS implementation details.  I do know
+> that hpux uses different spaces for text and data.
 
-grant
+Not always, hpux have a lot of chatr(1) tricks to manage the quadran usage
+(again don't beat me, this is a consequence of segmented architecture). So for
+a regular (non-sharable text) the magic number is EXEC_MAGIC and for those
+kind of executable, the quad1 and quad2 (i.e the index from the 2 high bit of
+32 bit addr is 0,1) are the same, this allow the DATA/BSS to be stuffed righ
+after the TEXT and then having alinear 2GB (whoa) linear space, yet leaving
+the quad3 and quad4 for sharable data (shm and mmap).
 
-#
-# Automatically generated make config: don't edit
-#
+On the other hand a shared executable (SHARE_MAGIC) does have quad1 (for TEXT)
+that is shared among several process, then having its own uniq space since
+shared, all the process using this area share it with the same space AND same
+offset (more comment below). The quad2 is process private DATA, then indeed
+each SHARE_MAGIC process does have its own private space (different space id).
+ 
 
-#
-# Code maturity level options
-#
-CONFIG_EXPERIMENTAL=y
+>  As a result, branches
+> that cross quadrants must be interspace branches.  The space of the caller
+> must be saved and restored on return.  If the same space id is used in SR4-SR7
+> for any given process, then I don't think it would be necessary to save
+> and restore the instruction space register across calls except for system
+> calls where the virtual space changes.
 
-#
-# CPU type
-#
-# CONFIG_PA7100 is not set
-CONFIG_PA7300=y
-CONFIG_PA_1x=y
-CONFIG_PA_11=y
-# CONFIG_SMP is not set
-CONFIG_GSC=y
-CONFIG_GSC_DINO=y
-CONFIG_GSC_LASI=y
-# CONFIG_HIL is not set
-CONFIG_PCI=y
+In my EXEC_MAGIC does have a common spaceid for quad1 and quad2 and as in your
+example, where you generalize with all four quad equal, that's true that there
+is no SR jazz to do for calls.
 
-#
-# Loadable module support
-#
-# CONFIG_MODULES is not set
+This bring me to another question, how sharing is done with linux on hppa 
 
-#
-# General setup
-#
-CONFIG_NET=y
-CONFIG_SYSVIPC=y
-# CONFIG_BSD_PROCESS_ACCT is not set
-CONFIG_SYSCTL=y
-CONFIG_BINFMT_SOM=y
-# CONFIG_BINFMT_ELF is not set
-# CONFIG_BINFMT_MISC is not set
-# CONFIG_BINFMT_JAVA is not set
+Are you planing of using 'limited' aliasing?
 
-#
-# Block devices
-#
-# CONFIG_BLK_DEV_FD is not set
-# CONFIG_BLK_DEV_IDE is not set
+I don't see for now how sharing and copy-on-write could be accomplished, if
+thoug those concept are high level concern, they are driven by the
+architecture capability and virtual addr alias is one of the weak area of hppa
+IMHO.
 
-#
-# Please see Documentation/ide.txt for help/info on IDE drives
-#
-# CONFIG_BLK_DEV_HD_ONLY is not set
+> 
+> The one advantage to reserving the fourth quadrant for the OS is that in
+> a system call the OS has direct access to the first three quadrants
+> of the processes address space as well as its own space.  
 
-#
-# Additional Block Devices
-#
-# CONFIG_BLK_DEV_LOOP is not set
-# CONFIG_BLK_DEV_NBD is not set
-# CONFIG_BLK_DEV_MD is not set
-CONFIG_BLK_DEV_RAM=y
-CONFIG_BLK_DEV_INITRD=y
-# CONFIG_BLK_DEV_XD is not set
-# CONFIG_BLK_DEV_DAC960 is not set
-CONFIG_PARIDE_PARPORT=m
-# CONFIG_BLK_CPQ_DA is not set
-# CONFIG_BLK_DEV_HD is not set
+This is an interesting point, does the OS must share a lot with a process?
+Personally I think the set of threads UAREA look enough to me I don't see the
+point of having the OS being capable of r/w on the 3Gb of the process.
 
-#
-# Networking options
-#
-# CONFIG_PACKET is not set
-# CONFIG_NETLINK is not set
-# CONFIG_FIREWALL is not set
-# CONFIG_FILTER is not set
-# CONFIG_UNIX is not set
-# CONFIG_INET is not set
+However thing that doesn't exist on unix and I think would be nice to have is
+a shared area between the process and the kernel, where the process (and its
+threads) can readonly, and where the kernel can r/w, the idea is to stick
+there some credentials, even stuff that is usually in the proc.h kthread.h lik
+pid, tid, lastrun, various time etc, this to allow a process/thread to get
+this data as pointer deref, I know I needed this of process tracing, the
+tracing lib would get the CR16, and manage the pa1.1 roll-over by watching a
+change in the elapsed time inthe uarea, since the CR16 roll-over in multi
+seconds, while the OS does an update on each schedule that is sure to happen
+at least every 10ms.
+To day the UAREA is part of the user VAS but is not readable and off course
+not writable, I think that a sharable part would be helpfull...
 
-#
-#  
-#
-# CONFIG_IPX is not set
-# CONFIG_ATALK is not set
-# CONFIG_X25 is not set
-# CONFIG_LAPB is not set
-# CONFIG_BRIDGE is not set
-# CONFIG_LLC is not set
-# CONFIG_ECONET is not set
-# CONFIG_WAN_ROUTER is not set
-# CONFIG_NET_FASTROUTE is not set
-# CONFIG_NET_HW_FLOWCONTROL is not set
-# CONFIG_CPU_IS_SLOW is not set
+So I'm still curious about sharing on linux + hppa.
+If someone does have infos on this...
 
-#
-# QoS and/or fair queueing
-#
-# CONFIG_NET_SCHED is not set
 
-#
-# SCSI support
-#
-CONFIG_SCSI=y
+Phi
 
-#
-# SCSI support type (disk, tape, CDrom)
-#
-CONFIG_BLK_DEV_SD=y
-# CONFIG_CHR_DEV_ST is not set
-# CONFIG_BLK_DEV_SR is not set
-# CONFIG_CHR_DEV_SG is not set
-
-#
-# Some SCSI devices (e.g. CD jukebox) support multiple LUNs
-#
-# CONFIG_SCSI_MULTI_LUN is not set
-# CONFIG_SCSI_CONSTANTS is not set
-
-#
-# SCSI low-level drivers
-#
-CONFIG_LASI_SCSI=y
-
-#
-# Network device support
-#
-CONFIG_NETDEVICES=y
-CONFIG_APRICOT=y
-CONFIG_DEC_ELCP=y
-
-#
-# Character devices
-#
-CONFIG_VT=y
-CONFIG_VT_CONSOLE=y
-# CONFIG_GSC_PS2 is not set
-CONFIG_SERIAL=y
-CONFIG_SERIAL_CONSOLE=y
-# CONFIG_SERIAL_EXTENDED is not set
-# CONFIG_SERIAL_NONSTANDARD is not set
-CONFIG_UNIX98_PTYS=y
-CONFIG_UNIX98_PTY_COUNT=256
-# CONFIG_PRINTER is not set
-# CONFIG_MOUSE is not set
-# CONFIG_QIC02_TAPE is not set
-# CONFIG_WATCHDOG is not set
-# CONFIG_NVRAM is not set
-# CONFIG_RTC is not set
-
-#
-# Video For Linux
-#
-# CONFIG_VIDEO_DEV is not set
-
-#
-# Joystick support
-#
-# CONFIG_JOYSTICK is not set
-# CONFIG_DTLK is not set
-
-#
-# Ftape, the floppy tape device driver
-#
-# CONFIG_FTAPE is not set
-
-#
-# Filesystems
-#
-# CONFIG_QUOTA is not set
-# CONFIG_AUTOFS_FS is not set
-# CONFIG_ADFS_FS is not set
-# CONFIG_AFFS_FS is not set
-# CONFIG_HFS_FS is not set
-# CONFIG_FAT_FS is not set
-# CONFIG_MSDOS_FS is not set
-# CONFIG_UMSDOS_FS is not set
-# CONFIG_VFAT_FS is not set
-# CONFIG_ISO9660_FS is not set
-# CONFIG_JOLIET is not set
-# CONFIG_MINIX_FS is not set
-# CONFIG_NTFS_FS is not set
-# CONFIG_HPFS_FS is not set
-CONFIG_PROC_FS=y
-# CONFIG_DEVPTS_FS is not set
-# CONFIG_QNX4FS_FS is not set
-# CONFIG_ROMFS_FS is not set
-CONFIG_EXT2_FS=y
-# CONFIG_SYSV_FS is not set
-# CONFIG_UFS_FS is not set
-# CONFIG_EFS_FS is not set
-
-#
-# Network File Systems
-#
-
-#
-# Partition Types
-#
-# CONFIG_BSD_DISKLABEL is not set
-# CONFIG_MAC_PARTITION is not set
-# CONFIG_SMD_DISKLABEL is not set
-# CONFIG_SOLARIS_X86_PARTITION is not set
-# CONFIG_UNIXWARE_DISKLABEL is not set
-# CONFIG_NLS is not set
-
-#
-# Console drivers
-#
-# CONFIG_IODC_CONSOLE is not set
-
-#
-# Kernel hacking
-#
-CONFIG_MAGIC_SYSRQ=y
+--
+mailto:phi@hpfrcu81.france.hp.com
+WTEC Project. Kernel debugging tools
