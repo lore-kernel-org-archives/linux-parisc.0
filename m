@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Helge Deller <deller@gmx.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HOWTO: Using HIL keyboard and HIL mouse on PARISC 
-In-Reply-To: Message from Helge Deller <deller@gmx.de>
-   of "Sun, 30 Jun 2002 19:33:43 +0200." <200206301931.58043.deller@gmx.de>
-References: <200206301931.58043.deller@gmx.de> 
-Date: Sun, 30 Jun 2002 21:09:21 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020701030921.6A460484C@dsl2.external.hp.com>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C16D1484D
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Jun 2002 22:27:36 -0600 (MDT)
+Received: from carlos by systemhalted with local (Exim 3.35 #1 (Debian))
+	id 17Osmn-0006UL-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 01 Jul 2002 00:27:37 -0400
+Date: Mon, 1 Jul 2002 00:27:37 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020701042737.GB24881@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [OT] Thanks!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,18 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-...
-> Features of the new HIL drivers are:
-> 1. support for HIL mice,
-> 2. support for HIL tablets
-> 3. support for HIL keyboards
-> 4. based on the Linux Input driver model !
+Parisc,
 
-excellent work helge!
+I attended OLS this last week and had a fabulous time!
+I met many of you face-to-face for the first time and 
+collaborated in person :) Putting a face to that email
+makes a world of difference. I just wanted to take
+a minute to say thanks to all the people that helped
+make my stay awesome (and that of many others). 
+I didn't get a chance to say 'cheers' to many of you, 
+since I was out late and had to leave early on Sunday.
 
-I've appended your note to the README referenced by the FAQ:
-	ftp://ftp.parisc-linux.org/XFree86/HILkeyb/README
+So here it is:
 
-please edit if needed.
+Cheers,
+Many Thanks,
+Carlos.
 
-grant
+p.s. If you are heading to Debconf II then I'll get
+	another chance! :)
+
+p.p.s Thomas is using all my bandwidth!
