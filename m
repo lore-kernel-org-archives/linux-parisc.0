@@ -1,49 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id NAA06367
-	for <hppa-linux@sod.res.cmu.edu>; Mon, 22 Mar 1999 13:07:41 -0500
-From: Michael Shalayeff <mickey@lucifier.dial-up.user.akula.net>
-Message-Id: <199903221741.MAA10607@lucifier.dial-up.user.akula.net>
-Subject: Re: [hppa-linux] Picky details of TLB fault handlers
-In-Reply-To: <m10P9Bi-0007U1C@the-village.bc.nu> from Alan Cox at "Mar 22, 99 06:12:34 pm"
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id NAA07481
+	for <hppa-linux@sod.res.cmu.edu>; Mon, 22 Mar 1999 13:57:00 -0500
+Received: from srmail.sr.hp.com (srmail.sr.hp.com [15.4.45.14])
+	by palrel1.hp.com (8.8.6/8.8.5tis) with ESMTP id KAA23212
+	for <hppa-linux@thepuffingroup.com>; Mon, 22 Mar 1999 10:56:50 -0800 (PST)
+Received: (from billk@localhost) by meow.sr.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0) id KAA04931 for hppa-linux@thepuffingroup.com; Mon, 22 Mar 1999 10:56:37 -0800 (PST)
+Message-Id: <199903221856.KAA04931@meow.sr.hp.com>
 To: hppa-linux@thepuffingroup.com
-Date: Mon, 22 Mar 1999 12:41:52 -0500 (EST)
-Cc: hppa-linux@thepuffingroup.com
-Reply-To: mickey@openbsd.org
-MIME-Version: 1.0
+Date: Mon, 22 Mar 1999 10:56:37 -0800 (PST)
+From: Bill Katz <billk@sr.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Subject: [hppa-linux] Document Priority?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Making, drinking tea and reading an opus magnum from Alan Cox:
-> > HP-UX does exactly this sort of thing for handling many traps and
-> > interrupts.  It is fairly expensive, though, since you have to have
-> > a stack on which to save the IPSW/IIAQ and probably a bunch of other
-> > registers, and it's too much messing around for a TLB miss.
-> 
-> I'm right in assuming its legal to swap the return address - so the TLB
-> handler can do a short piece of TLB handling for a present page miss,
-> then stash the return into the kernel stack and rfi into the page fault handler
-> so it will in turn return to the user context ?
+Hello,
+	I'm currently digging around, looking under rocks, and digging
+up old documents that we eventually hope to clean up and release as
+part of HPs support for this project.
 
-i'd say that a miss handler would not _ever_ exceed 100 instructions total time
-to successfully lookup and insert a missing translation into a tlb and
-using just shadowed registers, so by doing that w/ all the interrupts
-disabled (and keeping some data in direct-mapped segment) no need
-to save even a single bit of context (since it's all in the shadows).
-then the handler can save the whole context and call pagefault() routine to
-process a complex page fault (ie one that has no translation
-in the page table), since the whole context is saved it's safe to
-receive any other page faults and/or interrupts.
+	Does anyone have particular machines/chips/subassemblies that
+they are desperate for documentation on?  I've been working on "LASI"
+which is the I/O subsystem for the 712 (and pretty much all 7100LC, 
+7300LC, 7200, 8000, 8200 based computers).  I'm currently digging for
+I/O docs for the earlier machines like the 720/730 adn early 715s.
 
-this schema was first implemented in the lites (and mklinux later).
-doing this way is like simulating the hardware TLB walker as present
-on certain machines (712 at least, maybe any 7100lc, HP help!?)
-there are certain constraints on page table organization, but
-doing so would greatly speed up the tlb-walker equipped machines,
-leaving the rest still in the best shape possible.
-building a tlb-walker-ONLY kernel (as an option) may save about 10 other
-instructions.
+	I just got source code for the PA7100LC processor ERS that I need
+to go through and make suitable for release to the world.  It for
+example has details on the hardware TLB miss handler.  Would this
+be a priority given today's discussion of TLBs?
 
-cu
+	Perhaps the biggest challenge is resurrecting appropriate versions
+of TROFF and TeX to process these things.
 
--- 
-    paranoic mickey       (my employers have changed but, the name has remained)
+	What output format should I generate? PostScript? PDF? PCL?
+
+	-Bill Katz
