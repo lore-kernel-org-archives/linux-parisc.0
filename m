@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E0D4F482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 18:09:18 -0700 (MST)
-Message-Id: <200111150105.SAA09926@puffin.external.hp.com>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Received: from smtppop3pub.verizon.net (smtppop3pub.gte.net [206.46.170.22])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C87F3482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 18:38:23 -0700 (MST)
+Message-ID: <3BF31CD7.3080405@verizon.net>
+Date: Wed, 14 Nov 2001 20:39:35 -0500
+From: Rafael Herrera <vze26vn8@verizon.net>
+Reply-To: raffo@neuronet.pitt.edu
+MIME-Version: 1.0
+To: Grant Grundler <grundler@puffin.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from Jan-Benedict Glaw <jbglaw@lug-owl.de>
-   of "Thu, 15 Nov 2001 00:51:08 +0100." <20011115005108.B464@lug-owl.de>
-Date: Wed, 14 Nov 2001 18:05:07 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
-Subject: [parisc-linux] Re: rsync for CVS repository
+Subject: Re: [parisc-linux] Re: rsync for CVS repository
+References: <200111150105.SAA09926@puffin.external.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,15 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jan-Benedict Glaw wrote:
-> ...which remembers me that I emailed with Grant these days about
-> making the CVS repository available via rsync. He also thought that
-> that would be a nice thing to have... I volunteered to do the setup
-> if time is all off. How about that?
+I set up my home computer as an rsync server to mirror some stuff to 
+school. This is a PC running suse 7.2. If i remember correctly, the 
+steps were:
 
-I've heard nothing back about this.  Sorry - I can't autonomously give
-out logins to the cvs machine or I would have already.
-Do you have a URL for a short how-to?
-I might take a crack at it if no one else with access speaks up.
+1. Install it, of course.
+2. Enable the server in /etc/inetd.conf
 
-grant
+rsync   stream  tcp     nowait  root    /usr/sbin/tcpd  /usr/sbin/rsyncd 
+--daemon
+
+3. Edit the configuration file, /etc/rsync.conf. Here is an example of 
+an anonymous setting:
+
+gid = users
+uid = nobody
+read only = true
+use chroot = true
+transfer logging = true
+log format = %h %o %f %l %b
+log file = /var/log/rsyncd.log
+
+[Example]
+        path = /home/Example
+        comment = An Example
+
+-- 
+      Rafael
