@@ -1,34 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 392F348EF
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Oct 2001 16:34:55 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.4d3e3a24) with ESMTP id vjkzhaaa for parisc-linux@lists.parisc-linux.org; Sat, 6 Oct 2001 15:30:29 -0700
-Date: Sat, 6 Oct 2001 15:34:45 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Helge Deller <deller@gmx.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [patch] /proc interface for LED/LCD
-Message-ID: <20011006153445.J17735@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20011006134250.I17735@tausq.org> <E15pzKV-0000ZU-00@gandalf.tausq.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5B6564843
+	for <parisc-linux@parisc-linux.org>; Sat,  6 Oct 2001 18:30:46 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15q1q8-0006vd-00
+	for parisc-linux@parisc-linux.org; Sun, 07 Oct 2001 01:30:44 +0100
+Date: Sun, 7 Oct 2001 01:30:44 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011007013044.G3745@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E15pzKV-0000ZU-00@gandalf.tausq.org>
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] resources
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I know that this doesn't happen due to your patch because I 
-> didn't got the LCD to work before applying your patch too.
-> As far as I debugged it until now the pdc_chassis_info() call in
-> led_init() now returns -10 (PDC_INVALID_ARG) as result code, so maybe
-> something other is busted here.
-> Maybe you have any idea ?
+I just finished fixing up the iomem resources for system ram / rom +
+kernel code & data.  I'm not sure the original author set them up right.
+Here's the output on a C360:
 
-In my other post I mentioned you also need a fix to firmware.c .. did
-you pick that up too?
+00000000-3fffffff : System RAM                                                  
+  00000000-000009ff : PDC data (Page Zero)                                      
+  00100000-00279fff : Kernel code                                               
+  0027a000-0035ff4b : Kernel data                                               
+f0000000-f00fffff : System ROM                                                  
 
-randolph
+Is the `System ROM' supposed to be the `PDC Address Space'
+mentioned in the PA 2.0 manual on page 3-2?If so, it should
+presumably be f0000000-f0ffffff on 32-bit machines, and
+f000000000000000-f0ffffffffffffff on 64-bit machines.
+
+The L2k has a slightly bizarre output:
+
+00000000-1ffffffff : System RAM                                                 
+  00000000-000009ff : PDC data (Page Zero)                                      
+  00100000-0032bfff : Kernel code                                               
+  0032c000-0049ed7b : Kernel data                                               
+
+should have two ranges -- 00000000-efffffff and 100000000 to 1ffffffff.
+Going to debug that before committing.
+
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Revolutions do not require corporate support.
