@@ -1,14 +1,23 @@
-Return-Path: <coltrane@msn.com>
-Message-ID: <9a61-b1uzd-jer144@7ioagsqu5sd4db>
-From: "Don Goodson" <coltrane@msn.com>
-To: grundler@parisc-linux.org
-Date: Thu, 11 Dec 03 20:36:53 GMT
+Return-Path: <franklin@msn.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7CB654854
+	for <parisc-linux@parisc-linux.org>;
+	Thu, 11 Dec 2003 06:57:59 -0700 (MST)
+Received: from ool-4350044a.dyn.optonline.net (ool-4350044a.dyn.optonline.net
+	[67.80.4.74]) by cuprel1.hp.com (Postfix) with SMTP id 6D853FD5
+	for <parisc-linux@parisc-linux.org>;
+	Thu, 11 Dec 2003 05:57:58 -0800 (PST)
+Message-ID: <8x0a2g$94c$$bc79z0@g4mf.m.nh55>
+From: "Sonny Langston" <franklin@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Thu, 11 Dec 03 16:56:40 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="358D9_D_8_EE6_"
-Cc: pmccabe@parisc-linux.org, parisc-linux@parisc-linux.org
-Subject: [parisc-linux] Be.. strong and youthful, feel incredible!! oiof
-Reply-To: Don Goodson <coltrane@msn.com>
+	boundary="BF_97CFD62DC6.AB4C_CA."
+Cc: 
+Subject: [parisc-linux] Sexy. movie stars tricks how to get that special
+	someone!! ykvmkc
+Reply-To: Sonny Langston <franklin@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,11 +28,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---358D9_D_8_EE6_
+--BF_97CFD62DC6.AB4C_CA.
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>Be.. strong and youthful, feel incredible!! oiof
+<html>Sexy. movie stars tricks how to get that special someone!! ykvmkc 
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -52,11 +61,10 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-onfo kzdjih w
-frbn ahoifvsmzyfrj
-h hbee  hmjrek
+vmd dwqqmymuyske o
+llrp iphu pperftz widcrjdprdhqhw
 </body>
 </html>
-dkfoylygod  puxd
+csdv
 
---358D9_D_8_EE6_--
+--BF_97CFD62DC6.AB4C_CA.--
