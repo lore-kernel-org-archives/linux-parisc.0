@@ -1,16 +1,17 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@elka.pw.edu.pl>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: [parisc-linux] Re: NS87415 on C3K broken
-Date: Fri, 17 Sep 2004 00:50:15 +0200
-Message-ID: <200409170050.15042.bzolnier__26012.0225175799$1416623563$gmane$org@elka.pw.edu.pl>
+Date: Thu, 16 Sep 2004 17:25:31 -0600
+Message-ID: <20040916232531.GB24048__36189.4070789733$1416623563$gmane$org@colo.lackof.org>
 References: <20040916161749.GA17660@colo.lackof.org>
+	<200409170050.15042.bzolnier@elka.pw.edu.pl>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset=us-ascii
 Cc: linux-ide@vger.kernel.org,
  parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Bartlomiej Zolnierkiewicz <bzolnier@elka.pw.edu.pl>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040916161749.GA17660@colo.lackof.org>
+In-Reply-To: <200409170050.15042.bzolnier@elka.pw.edu.pl>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,142 +22,56 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thursday 16 September 2004 18:17, Grant Grundler wrote:
-> Hi,
-> Willy pointed out the 2.6.9-rc2 NS87415 driver for C3000 machine
-> (uses SuckyIO IDE) is causing HPMC (system crash). This was not
-> a problem with 2.6.8.1.
-> But while trying to fix MMIO resource management problems, I ran
-> into this when testing on C3000.
+On Fri, Sep 17, 2004 at 12:50:15AM +0200, Bartlomiej Zolnierkiewicz wrote:
+> I don't think ide-probe.c changes are the cause of HPMC.
 > 
-> The HPMC stack trace looks like this:
-> 	ide_inb
-> 	ide_wait_not_busy
-> 	wait_hwif_ready
-> 	probe_hwif
-> 	probe_hwif_init
-> 	ide_setup_pci_device
-> 	ns87415_init_one
-> 	ide_scan_pcidev
-> 	ide_scan_pcibus
-> 	ide_init
-> 	do_initcalls
+> probe_hwif_init() is only called after PCI device is fully setup,
+> see ide_setup_pci_device().
+
+Sorry - you are right. I overlooked the first line of:
+void ide_setup_pci_device (struct pci_dev *dev, ide_pci_device_t *d)
+{
+        ata_index_t index_list = do_ide_setup_pci_device(dev, d, 1);
+...
+
+and only saw the probe_hwif_init() calls that follow.
+*sigh*.
+
+> ide_setup_pci_controller()
+> 	-> ide_pci_enable()
+> 		-> pci_enable_device()
 > 
-> Changes to ide-probe.c cause this HPMC.
-> wait_hwif_ready() is inside #ifdef CONFIG_PPC in 2.6.8.1 and the
-> ifdef/endif was removed in 2.6.9-rcX. The result is inb() is invoked
-> *BEFORE* ide_setup_pci_device() (indirectly) calls pci_enabled_device() or
-> pci_set_master(). This is broken because IDE controllers NOT enabled
-> by firmware will simply not respond to inb() (even if the system
-> doesn't crash like on parisc).
+> and ide_setup_pci_controller() is called at the beginning
+> of ide_setup_pci_device() before ->init_chipset()
 
-I don't think ide-probe.c changes are the cause of HPMC.
+Yes - I tracked the pci_enabled_device back to ide_setup_pci_controller().
+But I just realized I had another brainfart: ide_setup_pci_controller()
+is not ide_setup_pci_device(). I should stop coding late at night...
 
-probe_hwif_init() is only called after PCI device is fully setup,
-see ide_setup_pci_device().
+> Ideally this should be done by host drivers
+> but moving this out of setup-pci.c is non-trivial.
 
-> I'm a wimp. I don't dare to restructure IDE init sequence.
-> Anyone less of a wimp?
-> Or are IDE pci drivers required to call pci_enable_device()
-> in their (mostly non-extistent) init_chipset entry point?
+Yes - I reached the same conclusion.
 
-ide_setup_pci_controller()
-	-> ide_pci_enable()
-		-> pci_enable_device()
+> > Anyway, ns87415 driver has more problems. The patch below adds
+> > "init_chipset" entry point and init_chipset_ns87415() calls
+> > pci_enable_device() and pci_set_master() before the probe.
+> > And my C3k still HPMCs. My guess is more of the code from
+> > init_hwif_ns87415() needs to be moved to init_chipset_ns87415().
+> > And possible call some special suckyio init routines.
+> > I won't be able to touch this for a few days.
+> > Anyone else on parisc-linux ml want to take a whack at this?
+...
+> Yep, also if they are to stay please move them to ns87415.c
+> because using <linux/ide.h> outside drivers/ide is WRONG.
 
-and ide_setup_pci_controller() is called at the beginning
-of ide_setup_pci_device() before ->init_chipset()
+they? superio_ide_init_iops() or something else?
+Willy mentioned that as a TODO item and it's on my list.
+But I didn't plan on touching that before the HPMC is resolved
+or the PCI resource mgt issues are resolved.
 
-Ideally this should be done by host drivers
-but moving this out of setup-pci.c is non-trivial.
-
-> Anyway, ns87415 driver has more problems. The patch below adds
-> "init_chipset" entry point and init_chipset_ns87415() calls
-> pci_enable_device() and pci_set_master() before the probe.
-> And my C3k still HPMCs. My guess is more of the code from
-> init_hwif_ns87415() needs to be moved to init_chipset_ns87415().
-> And possible call some special suckyio init routines.
-> I won't be able to touch this for a few days.
-> Anyone else on parisc-linux ml want to take a whack at this?
-> 
-> BTW, normally a PCI Master Abort to IO Port space to should NOT fail.
-> But on parisc is does because the chipset will go "fatal" on
-> any Master Abort - special hacks enable config space to work.
-> I strongly prefere not to add those hacks to IO Port space
-> accessor functions since it's normally not a problem.
-> And while inconvenient, this behavior does expose programming
-> problems like the one above.
-
-Yep, also if they are to stay please move them to ns87415.c
-because using <linux/ide.h> outside drivers/ide is WRONG.
-
-> 
-> thanks,
-> grant
-> 
-> 
-> Index: drivers/ide/pci/ns87415.c
-> ===================================================================
-> RCS file: /var/cvs/linux-2.6/drivers/ide/pci/ns87415.c,v
-> retrieving revision 1.17
-> diff -u -p -r1.17 ns87415.c
-> --- drivers/ide/pci/ns87415.c	13 Sep 2004 15:23:04 -0000	1.17
-> +++ drivers/ide/pci/ns87415.c	16 Sep 2004 15:06:06 -0000
-> @@ -133,8 +133,29 @@ static int ns87415_ide_dma_check (ide_dr
->  	return __ide_dma_check(drive);
->  }
->  
-> +static unsigned int __devinit init_chipset_ns87415(struct pci_dev *dev, const char *name)
-> +{
-> +	unsigned short w;
-> +printk("init_chipset_ns87415(%s,%s)\n", dev->slot_name, name);
-> +
-> +	pci_enable_device(dev);
-> +	pci_set_master(dev);
-> +
-> +(void) pci_read_config_word(dev, PCI_COMMAND, &w);
-> +printk("	cmd 0x%x\n", w);
-> +
-> +	if ((w & PCI_COMMAND_IO) == 0) {
-> +		w |= PCI_COMMAND_IO;
-> +		(void) pci_write_config_word(dev, PCI_COMMAND, w);
-> +printk("	enabling IO space\n");
-> +	}
-> +	return 0;
-> +}
-> +
-> +
->  static void __init init_iops_ns87415(ide_hwif_t *hwif)
->  {
-> +printk("init_iops_ns87415(%s)\n", hwif->pci_dev->slot_name);
->  #ifdef CONFIG_SUPERIO
->  	superio_ide_init_iops(hwif);
->  #endif
-> @@ -150,12 +171,14 @@ static void __init init_hwif_ns87415 (id
->  	u8 stat;
->  #endif
->  
-> +printk("init_hwif_ns87415(%s)\n", hwif->pci_dev->slot_name);
->  	hwif->autodma = 0;
->  	hwif->selectproc = &ns87415_selectproc;
->  
-> +#if 0
->  	/* Set a good latency timer and cache line size value. */
->  	(void) pci_write_config_byte(dev, PCI_LATENCY_TIMER, 64);
-> -	/* FIXME: use pci_set_master() to ensure good latency timer value */
-> +#endif
->  
->  	/*
->  	 * We cannot probe for IRQ: both ports share common IRQ on INTA.
-> @@ -227,6 +250,8 @@ static void __init init_hwif_ns87415 (id
->  
->  static ide_pci_device_t ns87415_chipset __devinitdata = {
->  	.name		= "NS87415",
-> +	.init_chipset	= init_chipset_ns87415,
-> +	.init_iops	= init_iops_ns87415,
->  	.init_hwif	= init_hwif_ns87415,
->  	.channels	= 2,
->  	.autodma	= AUTODMA,
+thanks for the correction,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
