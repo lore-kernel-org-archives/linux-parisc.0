@@ -1,18 +1,14 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] waitid is badly emulated with waitpid (cannot reap
-	child and a couple of other things)
-Date: Fri, 24 Sep 2004 09:14:56 -0400
-Message-ID: <20040924131455.GT27033@baldric.uwo.ca>
-References: <20040924000646.GZ22642@tausq.org>
-	<20040924035552.GS27033@baldric.uwo.ca>
-	<20040924130602.GA16153@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] hppa glibc 2.3.3 experimental debs - patches posted
+Date: Fri, 24 Sep 2004 09:23:23 -0400
+Message-ID: <20040924132313.GU27033@baldric.uwo.ca>
+References: <20040924033509.GR27033@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040924130602.GA16153@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20040924033509.GR27033@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,24 +19,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Sep 24, 2004 at 02:06:02PM +0100, Matthew Wilcox wrote:
-> On Thu, Sep 23, 2004 at 11:55:53PM -0400, Carlos O'Donell wrote:
-> > I see waitid regressions in the glibc testsuite. I'm not sure if this
-> > had anything to do with these hanging processes. I haven't looked too
-> > deeply.
+On Thu, Sep 23, 2004 at 11:35:19PM -0400, Carlos O'Donell wrote:
+> http://www.parisc-linux.org/~carlos/glibc-work/glibc-2.3.3-debs-2004-09-23/
 > 
-> Possibly it's because we haven't hooked up sys_waitid yet?
+> Binary build only. Haven't cleaned up the debian bits to make it
+> sourcefull.
 
-It's supposed to fall back and emulate sys_waitid with a couple other
-syscalls. Who knows if this emulation is working correctly.
+Patch against cvs head:
 
-The emualted waitid() cannot handle all the proper modes apparently,
-which means things like reaping children is not possible since waitpid()
-is used.
+http://www.parisc-linux.org/~carlos/glibc-work/glibc-hppa-patches-2004-09-22.tar.gz
 
-I think we definately want to have sys_waitid() connected soon.
+Cheers,
+Carlos
 
-c.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
