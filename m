@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A6C7D482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 12:11:08 -0700 (MST)
-Message-Id: <200201131911.g0DJB3b2013360@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc bug
-To: grundler@dsl2.external.hp.com (Grant Grundler)
-Date: Sun, 13 Jan 2002 14:11:03 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: phi@hpfrcu81.france.hp.com, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020113173658.739E6482A@dsl2.external.hp.com> from "Grant Grundler" at Jan 13, 2002 10:36:58 am
+Received: from mx1.snet.net (mx1.snet.net [204.60.203.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73CA2482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 13:35:01 -0700 (MST)
+Message-ID: <002f01c19c71$c1fe71c0$6401a8c0@downstairs>
+From: "geezer" <geezer@snet.net>
+To: <parisc-linux@lists.parisc-linux.org>,
+	<debian-hppa@lists.debian.org>
+Date: Sun, 13 Jan 2002 15:34:53 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_002C_01C19C47.D8C3B480"
+Subject: [parisc-linux] 715/50
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,31 +22,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> phi 4369 wrote:
-> > Where should I submit this?
+This is a multi-part message in MIME format.
 
-File it in gnats:
-<http://gcc.gnu.org/cgi-bin/gnatsweb.pl>.
+------=_NextPart_000_002C_01C19C47.D8C3B480
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The more information that you can provide the better.  One of the first
-things to do is generate preprocessed source, then run cc1 under a
-debugger to find where the segementation fault occurred.
+So the palinux-0.9-README file says "YOU MUST INSTALL 'sid'", blah, =
+blah, blah...
+I get "failed getting release file file:/instmnt/dists/sid/Release"
+The woody one installs OK, but I am not sure how "crippled" I may be =
+with it.
+Any ideas?  What more can I tell you to help with the diagnosis?
+Geezer
 
-> > since it happen on a palinux box I dunno if the
-> > gcc maitainer does have such a box?
+------=_NextPart_000_002C_01C19C47.D8C3B480
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-However, I don't yet have a working palinux system and neither does
-Jeff Law as far as I am aware.  If the problem is generic, then with
-luck it can be fixed fairly easily.  However, the odds are that the
-problem is specific to palinux.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2712.300" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#f0e8d8>
+<DIV><FONT face=3D"Comic Sans MS">So the palinux-0.9-README file says =
+"YOU MUST=20
+INSTALL 'sid'", blah, blah, blah...</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">I get "failed getting release file=20
+file:/instmnt/dists/sid/Release"</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">The woody one installs OK, but I am =
+not sure how=20
+"crippled" I may be with it.</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">Any ideas?&nbsp; What more can I tell =
+you to=20
+help with the diagnosis?</FONT></DIV>
+<DIV><FONT face=3D"Comic Sans MS">Geezer</FONT></DIV></BODY></HTML>
 
-One of the problems that we face is that the deb version of gcc has
-been quite heavily hacked for parisc-linux, and thus it isn't supportable.
-I hope that we can get one of the standard releases or the mainline code
-working as soon as possible.  There are still problems with gdb and
-binutils on palinux (eg., passing floats in dynamic calls, etc).
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+------=_NextPart_000_002C_01C19C47.D8C3B480--
