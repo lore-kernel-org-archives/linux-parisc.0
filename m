@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 18 Dec 2002 09:58:13 -0700
-To: jsoe0708@tiscali.be
-Cc: Ed Schaller <schallee@darkmist.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
-Message-ID: <20021218165813.GA17944@dsl2.external.hp.com>
-References: <20021216231132.GC854@dsl2.external.hp.com> <3DED9BBD0000213A@ocpmta7.freegates.net>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 472AE482E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 09:59:41 -0700 (MST)
+Date: Wed, 18 Dec 2002 09:02:55 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: James Bottomley <James.Bottomley@steeleye.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 randomly kills applications with page faults
+Message-ID: <20021218170254.GM19331@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200212181637.gBIGb5r02708@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3DED9BBD0000213A@ocpmta7.freegates.net>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+In-Reply-To: <200212181637.gBIGb5r02708@localhost.localdomain>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,16 +24,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Dec 17, 2002 at 08:12:03AM +0100, jsoe0708@tiscali.be wrote:
-> Just to avoid you loose time here is a diff:
-...
-> -	if (ee_data[27] == 0) {		/* No valid media table. */
-> +	if (ee_data[27] == 0 || ee_data[ee_data[27]] == 0) {  /* No valid media
-> table. */
+> In debugging the problems, so far it has always been stack manipulation 
+> instructions in the user level code causing this.  Further, on adding a 
 
-Like I suspected, backing out this change made add-on boards work again.
-I've reverted that change in 2.4.20-pa15 along with a traps.c change.
-Please apply by hand and try the 4-port again.
+ditto.... there's a note about this in the todo....
 
-thanks,
-grant
+> register dump to the page fault debugging code, the reason is that the stack 
+> pointer is way out of where it should be for a user process (around 0x4f000), 
+> so I surmise it got clobbered on a rare return path from kernel to user.
+
+> Does anyone have any additional information and pointers?  I'm trying to audit 
+> entry.S to see if there is a little used path that can clobber the stack, but 
+> my parisc assembly isn't the best...
+> 
+
+that's what i thought too, so i went through entry.S as well to see what
+i can find. haven't found anything yet :(
+
+i was able to get the kernel to die simply by having a program do
+gettimeofday() in a loop with 2.5...  i would guess it's a case where we
+have to do some work on the syscall return path (resched, softirq, etc)
+that's clobbering things, but i don't know what it is.
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
