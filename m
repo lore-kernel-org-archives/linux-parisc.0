@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4A62D482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 00:32:02 -0600 (MDT)
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] GCC support for dwarf2
-Message-ID: <1018852256.3cba73a0993ad@webmail.tiscalinet.be>
-Date: Mon, 15 Apr 2002 08:30:56 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <200204111531.g3BFV5Fv000173@hiauly1.hia.nrc.ca> <1018542948.3cb5bb6a4053a@webmail.tiscalinet.be> <1018612168.3cb6c9c8a9afc@webmail.tiscalinet.be> <20020412174440.A5919@systemhalted>
-In-Reply-To: <20020412174440.A5919@systemhalted>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from hotmail.com (f39.law4.hotmail.com [216.33.149.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 74D61482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 02:41:15 -0600 (MDT)
+From: "Kenneth Westelinck" <kennywest1@hotmail.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 15 Apr 2002 08:41:08 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Message-ID: <F39D7BsZXbLvwa2SydH0001aa92@hotmail.com>
+Subject: [parisc-linux] not freeing initmem and power button
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,52 +20,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>:
+Hi all,
 
-> > Hi Dave,
-> > 
-> > Here am I with something confusing me about glibc building.
-> > 
-> > In the Carlos O'Donell recipe
-> > (http://www.parisc-linux.org/toolchain/PA-Linux-XC-HOWTO-04.html)
-> > 
-> > It is set "export PATH=$PATH:$DEST/bin"
-> > So at configure step it was selected gcc-3.0.4 (the last release for
-> hppa-linux box)
-> > 
-> > Naturally if I put "export PATH=$DEST/bin:$PATH", the configure of
-> glibc select
-> > (for me well) gcc-3.2.
-> > 
-> > What is the right way? (for me the second)
-> > 
-> > Thanks for more help,
-> >     Joel
-> >
-> 
-> The document describes building a cross-compiler for non-hppa->hppa. 
-> Where gcc would be prefaced with 'hppa-linux' and might be
-> the only such executable on the system. Obviously if you have multiple
-> toolchains on your path the order should be '$DEST/bin:$PATH'.
+After a few months of gathering dust, I finally decided to upgrade my 
+712/60. It was initially installed with the old 0.9.2 ISO, and upgraded with 
+a more recent kernel (I think it was 2.4.9). This weekend I did an apt-get 
+update, apt-get upgrade to upgrade my system (woody). I also compiled a new 
+kernel (2.4.18-pa16) for this system. The system boots fine and as far as I 
+can see, all applications "survived" the upgrade. The only problem I am 
+experiencing are 2 _bugs_ mentionned a while ago in the mailing list.
 
-Ok it is clear.
+- When booting the kernel reports: NOT FREEING INITMEM. I found this in the 
+mailing list, but I couldn't find a solution. Is there any solution for this 
+problem? I don't think I had this when running the old kernel.
 
-> 
-> Happily this document also serves as a 'build the toolchain' document
-> :)
-> 
-> I'll update that bit, make some spelling mistakes and email Grant.
-> 
+- Second, when I push the power button, the system powers off without doing 
+a clean shutdown. When running the 2.4.9 kernel the machine didn't halt when 
+pushing this button. Only typing in "shutdown -h now" did the trick. I 
+prefer this behaviour. In this case a normal user cannot shutdown the 
+machine, except by pulling the power cord. Can someone please tell me which 
+file to edit/tweak to give back this
+old behaviour?
 
-I just also notice that the glibc release is now 2.2.5 which is extracted as
-glibc-2.2.5.orig (so just after "Now onto glibc:" 
-    cd glibc-2.2.4
-would be:
-    cd glibc-2.2.5.orig)
+Many thanks in advance.
 
-    
-Thanks for your attention and your great job,
-    Joel
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+regards,
+
+Kenneth
+
+enjoy life, enjoy linux,
+
+Kenneth
+
+_________________________________________________________________
+Download MSN Explorer gratis van http://explorer.msn.nl/intl.asp.
