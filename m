@@ -1,34 +1,50 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA14466
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 13:47:03 -0700
-Sender: "Matthew Earley" <mearley@nortelnetworks.com>
-Message-ID: <38C01684.AAE34939@americasm01.nt.com>
-Date: Fri, 03 Mar 2000 14:46:12 -0500
-From: "Matthew Earley" <mearley@nortelnetworks.com>
-MIME-Version: 1.0
-To: "Rajiv Dighe" <rdighe@nortelnetworks.com>
-CC: parisc-linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Trouble booting 712/80
-References: <00e601bf8531$3d7f7c40$4c50fb8d@corpnorth.baynetworks.com> <38C007C1.5E179C4B@americasm01.nt.com> <01af01bf8544$2f2864f0$4c50fb8d@corpnorth.baynetworks.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA15821
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 15:59:37 -0700
+Received: from hub-fue by rachael.franken.de
+	via rmail with uucp
+	id <m12R04O-0027lhC@rachael.franken.de>
+	for thepuffingroup.com!parisc-linux; Fri, 3 Mar 2000 22:57:12 +0100 (MET)
+	(Smail-3.2 1996-Jul-4 #4 built DST-Sep-8)
+Date: Fri, 3 Mar 2000 22:53:11 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Philipp Rumpf <prumpf@inwestnet.de>
+Cc: Grant Grundler <grundler@cup.hp.com>, willy@thepuffingroup.com,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] code 28 trap
+Message-ID: <20000303225311.C27816@alpha.franken.de>
+References: <20000224224934.N9944@thepuffingroup.com> <200002252036.MAA04792@milano.cup.hp.com> <20000225230348.E812@abacus.local>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20000225230348.E812@abacus.local>; from Philipp Rumpf on Fri, Feb 25, 2000 at 11:03:48PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Rajiv Dighe wrote:
+On Fri, Feb 25, 2000 at 11:03:48PM +0100, Philipp Rumpf wrote:
+> > > Uh oh.  We really need a kernel unaligned trap handler.  Some of
+> > > the network protocols rely on that being handled right (yes, i know.
+> > > it sucks.)
+> > 
+> > It really sucks. If any code in the performance path depends on this,
 > 
-> ----- Original Message -----
-> From: "Earley, Matthew [PGC:9475:EXCH]" <mearley@americasm01.nt.com>
-> > Is the CD-ROM drive external?  If so, try connecting another device
-> > between the CD-ROM and the scsi port.  I remember something squirelly
-> > about the 712 and the external scsi.
-> >
-> > Matt
+> Another vote for "it sucks".
 > 
-> Yes, It's an external cd-rom drive. unfortunately 712s can't have more than
-> one scsi device internally. and definately nothing with 5.25" formfactor.
-> but I will try to open the case & put the cd-rom or my dat drive on a long
-> internal scsi cable tonight.
+> Which network drivers, protocols aso exactly are you using (and did you
+> check for the bug Matthew posted an URL for ?) ?  I really don't think
+> we should write an unaligned handler until we find ourselves using weird
+> protocols (and hopefully not even then).
 
-I meant to say, just put a tape or disk shoeboc between the cd-rom  and
-the 712.  You may think I'm crazy, but give it a try.
+the first person using IPX will need an unaligend trap handler. All the
+ethernet driver try to align the IP header to a 32bit boundary (that's
+the reason for the skb_reserve(skb, 2)), which messes up the alignment
+in IPX headers. And there are ethernet chips, which can only handle
+32bit aligned receive buffer (tulip for example). You either have to
+copy the received frame to a proper aligned new skb (that's what we
+do at the moment) or handle the missalignment in an unaligned trap
+handler.
 
-Matt
+Thomas.
+
+-- 
+   This device has completely bogus header. Compaq scores again :-|
+It's a host bridge, but it should be called ghost bridge instead ;^)
+                                        [Martin `MJ' Mares on linux-kernel]
