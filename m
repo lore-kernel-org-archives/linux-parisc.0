@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 63A814848
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 31 Aug 2003 09:30:34 -0600 (MDT)
-Date: Sun, 31 Aug 2003 11:29:00 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave@hiauly3.hia.nrc.ca>
-Cc: randolph@tausq.org, dave.anglin@nrc-cnrc.gc.ca,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: [glibc] tststatic failues, reduced to simple testcase.
-Message-ID: <20030831152900.GI5194@systemhalted>
-References: <200308292203.SAA03224@hiauly3.hia.nrc.ca> <200308292244.SAA29829@hiauly3.hia.nrc.ca> <20030830161504.GE5194@systemhalted>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB366489B
+	for <parisc-linux@parisc-linux.org>; Sun, 31 Aug 2003 09:39:58 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 19tUJ3-0001td-OX
+	for parisc-linux@parisc-linux.org; Sun, 31 Aug 2003 16:39:57 +0100
+Date: Sun, 31 Aug 2003 16:39:57 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20030831153957.GX13467@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030830161504.GE5194@systemhalted>
+Subject: [parisc-linux] [ron@rongage.org: [Patchbomb] - Copy_to/from_user audit - oss4 - RESEND]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,26 +23,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> Aflicted: sys_fork_wrapper, sys_clone_wrapper, sys_vfork_wrapper
-> 
-> I'm tempted to remove the store and load of call-clobbered registers
-> from our syscall path, push them into the glibc wrappers, and see what 
-> happens :)
+----- Forwarded message from Ron Gage <ron@rongage.org> -----
 
-What happens when your stack changes on the route back from the
-syscall?
+From: Ron Gage <ron@rongage.org>
+To: kernel-janitor-discuss@lists.sourceforge.net
+Subject: [Patchbomb] - Copy_to/from_user audit - oss4 - RESEND
+User-Agent: KMail/1.5.2
+Errors-To: kernel-janitor-discuss-admin@lists.sourceforge.net
+X-BeenThere: kernel-janitor-discuss@lists.sourceforge.net
+X-Mailman-Version: 2.0.9-sf.net
+Precedence: bulk
+List-Help: <mailto:kernel-janitor-discuss-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:kernel-janitor-discuss@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/kernel-janitor-discuss>,
+	<mailto:kernel-janitor-discuss-request@lists.sourceforge.net?subject=subscribe>
+List-Id: kernel janitor discussion list <kernel-janitor-discuss.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/kernel-janitor-discuss>,
+	<mailto:kernel-janitor-discuss-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=kernel-janitor-discuss>
+X-Original-Date: Sun, 31 Aug 2003 11:20:48 -0400
+Date: Sun, 31 Aug 2003 11:20:48 -0400
 
-	stw r19, -32(sp)
-	/* clone */
-	ldw -32(sp), r19
+This patch is also available on my ftp server
+ftp://new.rongage.org/pub/linux
 
-Obviously I could add a "if parent then ldw -32(sp),r19", but the child,
-not having the same stack would be hard pressed if r19 changed during
-the syscall. Although, I think I see that in glibc the child's function
-is called via $$dyncall and I assume that might fixup r19 for the child.
+This patch catches insures proper return values from 
+copy_to/from_user calls.
 
-Do any other syscalls change the stack on return? I can only really
-think of all the fork-ish type syscalls doing that sort of stuff.
+Ron Gage - Pontiac, MI
 
-c.
+diff -urN linux-2.6.0-test4/sound/oss/harmony.c linux-2.6.0-test4-patched/sound/oss/harmony.c
+--- linux-2.6.0-test4/sound/oss/harmony.c	2003-08-22 19:58:39.000000000 -0400
++++ linux-2.6.0-test4-patched/sound/oss/harmony.c	2003-08-29 22:02:42.000000000 -0400
+@@ -725,7 +725,7 @@
+                 info.fragments = MAX_BUFS - harmony.nb_filled_play;
+ 		info.fragsize = HARMONY_BUF_SIZE;
+                 info.bytes = info.fragments * info.fragsize;
+-		return copy_to_user((void *)arg, &info, sizeof(info));
++		return copy_to_user((void *)arg, &info, sizeof(info)) ? -EFAULT : 0 ;
+ 
+ 	case SNDCTL_DSP_GETISPACE:
+ 		if (!(file->f_mode & FMODE_READ))
+@@ -734,7 +734,7 @@
+                 info.fragments = /*MAX_BUFS-*/ harmony.nb_filled_record;
+ 		info.fragsize = HARMONY_BUF_SIZE;
+                 info.bytes = info.fragments * info.fragsize;
+-		return copy_to_user((void *)arg, &info, sizeof(info));
++		return copy_to_user((void *)arg, &info, sizeof(info)) ? -EFAULT : 0 ;
+ 	
+ 	case SNDCTL_DSP_SYNC:
+ 		return 0;
+
+
+
+-------------------------------------------------------
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
+_______________________________________________
+Kernel-janitor-discuss mailing list
+Kernel-janitor-discuss@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/kernel-janitor-discuss
+
+----- End forwarded message -----
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
