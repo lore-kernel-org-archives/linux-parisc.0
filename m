@@ -1,35 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.vi-internet.de (proxy1.vi-internet.de [195.182.114.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 993E9482A
-	for <parisc-linux@parisc-linux.org>; Thu, 21 Jun 2001 13:49:13 -0600 (MDT)
-Sender: ruediger@dsl2.external.hp.com
-Message-ID: <3B324645.74A3B7B@hrzpub.tu-darmstadt.de>
-Date: Thu, 21 Jun 2001 21:08:53 +0200
-From: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
-MIME-Version: 1.0
-To: Helge Deller <deller@gmx.de>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Kernel crashing with STI-Console
-References: <3B323263.11467E62@hrzpub.tu-darmstadt.de> <200106211801.UAA15910@mailserver2.hrz.tu-darmstadt.de>
-Content-Type: text/plain; charset=iso-8859-1
+Received: from solo.franken.de (pD905478C.dip.t-dialin.net [217.5.71.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0FA1482A
+	for <parisc-linux@parisc-linux.org>; Thu, 21 Jun 2001 14:52:58 -0600 (MDT)
+Received: (from tsbogend@localhost)
+	by solo.franken.de (8.9.3/8.9.3) id WAA10836
+	for parisc-linux@parisc-linux.org; Thu, 21 Jun 2001 22:50:16 +0200
+Date: Thu, 21 Jun 2001 22:50:16 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010621225016.A10091@solo.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] misc stuff
 List-ID: <linux-parisc.vger.kernel.org>
 
-Helge Deller schrieb:
+Hi,
 
-> Does your machine still crashes if you disable stifb and go with sticon only ?
->
-> BTW: Could you please also upload the register-dump of the crash to your site
-> too - else I won't be able to inspect your crash any further...
->
-> Greetings,
-> Helge.
+with the new changes to io.h enabling of HPPA_IOREMAP is really deadly. There
+are some ioremap in drivers missing. The diff below gets my 712 up again.
+I guess placing the ioremap to sim700.c would be better, wouldn't it ?
+And I'm not sure about the size for the ioremap.
 
-Hi Helge,
+Ok, next issue. I've tried the ps2 mouse patch and it's working for me,
+so how about commiting it ?
 
-Oops, sorry. I forgot to upload the register-dump. It's now available from
-http://www.tu-darmstadt.de/~rscholz, too.
+And finally I've tested the harmony driver. I don't know whether /dev/dsp 
+should be always little endian, but I had to convert the .wav files to big 
+endian before hearing anything usefull. So should /dev/dsp take native
+endian or little endian ?
 
-I tried to boot with sticon only but it also crashed. If yo're interested in, I
-can post the register-dump and the System.map  of this kernel too...
+Thomas.
 
-Greetings,
-    Rüdiger
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
