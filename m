@@ -1,48 +1,45 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Randolph Chung <tausq@debian.org>
 Subject: Re: [parisc-linux] Support for 2.4.x kernels on hppa
-Date: Mon, 24 May 2004 15:37:33 -0400 (EDT)
-Message-ID: <200405241937.i4OJbX07011585__29526.7682908618$1416623451$gmane$org@hiauly1.hia.nrc.ca>
-References: <20040524183227.GW7207@tausq.org>
+Date: Mon, 24 May 2004 12:40:32 -0700
+Message-ID: <20040524194032.GZ7207__35830.0476022579$1416623451$gmane$org@tausq.org>
+References: <20040524183227.GW7207@tausq.org> <200405241937.i4OJbX07011585@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: debian-hppa@lists.debian.org
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040524183227.GW7207@tausq.org> from "Randolph Chung" at May 24,
-	2004 11:32:27 am
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200405241937.i4OJbX07011585@hiauly1.hia.nrc.ca>
+Resent-Message-ID: <pSylPD.A.2NG.0-ksAB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-> If you are one of those people who really care about 2.4 support, please
-> speak up now! 
+> Here is a little background on this issue.  Randolph has done a
+> considerable amount of work to port libffi to the PA, and then add
+> unwind and other support support to libjava.  This gives us a
+> working Java implementation.  Thanks, Randolph!
 
-Here is a little background on this issue.  Randolph has done a
-considerable amount of work to port libffi to the PA, and then add
-unwind and other support support to libjava.  This gives us a
-working Java implementation.  Thanks, Randolph!
+you are welcome.
 
-This work is currently being integrated into GCC 3.5.  This is working
-well with 2.6, but we have problems with unwinding through signal
-frames on 2.4.  64-bit support is completely broken.  On at least
-some 32-bit kernels, we end up with hung processes that can bring
-the system to its knees.
+it's not just gcc though; gdb has almost the same bits of signal
+unwinding code so it has the same issues. there are also other instances
+where things are working in 2.6 but not in 2.4 (especially with all the
+compat work for 32-bit userspace/64-bit kernel that has gone into 2.6).
 
-We are having a little debate as to whether we need to support 2.4,
-given that GCC 3.5 probably won't be out for a year or so.
-
-Dave
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
