@@ -1,18 +1,22 @@
-Return-Path: <q-funk@pp.fishpool.fi>
-Received: from hal.pp.fishpool.fi (seven.fishpool.fi [195.197.229.220])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 30881487C
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 402B8482F
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  3 May 2004 19:49:22 -0600 (MDT)
-Date: Sun, 2 May 2004 16:33:54 +0300 (EEST)
-From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
-To: Morten Werner Olsen <werner@skolelinux.no>
-In-Reply-To: <20040501142755.GB28250@austin>
-Message-ID: <Pine.LNX.4.21.0405021145030.30865-100000@hal.pp.fishpool.fi>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
-	debian-hppa@lists.debian.org
-Subject: [parisc-linux] Re: hwinfo_7.30-2: suggested patch
+	Mon,  3 May 2004 20:08:51 -0600 (MDT)
+Date: Sun, 2 May 2004 00:33:41 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] Changing hppa default on panic to "reboot after
+	180 seconds"?
+Message-ID: <20040502043341.GA12850@baldric.uwo.ca>
+References: <20040501223343.GX12850@baldric.uwo.ca>
+	<20040501224554.GY12850@baldric.uwo.ca>
+	<20040501225507.GZ12850@baldric.uwo.ca>
+	<20040502005516.GE2281@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040502005516.GE2281@parcelfarce.linux.theplanet.co.uk>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,31 +26,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, 1 May 2004, Morten Werner Olsen wrote:
+> We already output the msg; doing this would output it twice ...
 
-> On Wed, Apr 28, 2004 at 09:23:56PM +0300, Martin-=C9ric Racine wrote:
->=20
-> > Is any other work required beyond the patch you already submitted to th=
-e
-> > maintainer?  If so, just how much is needed?  I have some time to spare=
-=2E
->=20
-> I don't think there is more work than including the already written
-> patch to get the package compiling on hppa.
->=20
-> The important issue is that I will not include support for hppa if the
-> package is not of any use for the hppa users and developers. So please te=
-st
-> it and see if you find the information that is provided of any interest.
+So... the box is burning and in flames, printing it twice is a double 
+reminder of the error?
 
-Joel had built and tested it on a B180 and found the results usefull.
+The first time we print it along with a long string of other items,
+followed by a register dump. The second time the kernel prints it just
+before it does a proper panic and honours the panic=XX kernel option.
 
-I just applied the patch and tested on a 712. Works great. I'm not sure if =
-all
-the PA-RISC specific hardware gets tested, but at least what I get out of t=
-his
-patch is already quite usefull to me.  I'd say merge it.
+The cleanest fix is to register show_regs on the panic notifiers so it
+can get printed after the panic() message. That way we don't have to
+print our message, instead panic() prints it for us and then runs the
+list of panic notification functions (the pdc chassis lights are
+registered here too). Now that sounds like a lot of work for a dying
+box...
 
---=20
-Martin-=C9ric Racine, ICT Consultant
-http://www.pp.fishpool.fi/~q-funk/
+or
+
+We just print it twice... <- Easy fix ;o)
+
+c.
