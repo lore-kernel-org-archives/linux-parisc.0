@@ -1,18 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3D00482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 12:56:05 -0600 (MDT)
-Received: from garibaldi.apptechsys.com (ats164.apptechsys.com [207.14.35.164])
-	by mail.apptechsys.com (Postfix) with ESMTP id D19D67BC45
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 11:56:04 -0700 (PDT)
-Date: Wed, 29 May 2002 11:56:04 -0700 (PDT)
-From: Jeremy Drake <jeremyd@apptechsys.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.18 SMP instability 
-In-Reply-To: <20020527223132.661F54843@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0205291152060.11012-100000@garibaldi.apptechsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: marc@centraltx.com
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Java and SSH 
+In-Reply-To: Message from "marc " <marc@centraltx.com>
+   of "Wed, 29 May 2002 11:04:58 CDT." <200205291104.AA315359834@mail.centraltx.com>
+References: <200205291104.AA315359834@mail.centraltx.com> 
+Date: Wed, 29 May 2002 14:13:34 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020529201334.8C23C482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +19,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-OK, I just tried pa30.  It boots successfully, but just died doing apt-get 
-update:
-Fetched 554B in 10s (53B/s)
-apt-get(320): unaligned access to 0x403ce094 at ip=0x4005e47f
-Reading Package
+"marc " wrote:
+> `apt-cache search ssh` returns nothing.
+> Any other ideas?
 
-And there it stopped.  I don't know what it's doing but I'll see what kind 
-of info I can get from it.
+verify you have non-us in your /etc/apt/sources.list.
+Something like:
+deb http://non-us.debian.org/debian-non-US unstable/non-US main contrib non-free
 
-These "unaligned access" messages only show up when running smp.  apt-get 
-works perfectly with a UP kernel...
 
-I should set up a webcam pointing at the LCD screen of that box, so I can 
-look at it remotely, to know if it HPMC'd or just locked up...
+grundler <515>dpkg -l ssh
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Installed/Config-files/Unpacked/Failed-config/Half-installed
+|/ Err?=(none)/Hold/Reinst-required/X=both-problems (Status,Err: uppercase=bad)
+||/ Name           Version        Description
++++-==============-==============-============================================
+ii  ssh            3.0.2p1-9      Secure rlogin/rsh/rcp replacement (OpenSSH)
 
--- 
-He missed an invaluable opportunity to hold his tongue.
-		-- Andrew Lang
+
+grant
