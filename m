@@ -1,19 +1,15 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1942348A0
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3ACBE48A0
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 30 Dec 2003 17:07:31 -0700 (MST)
-Message-ID: <3FF21386.2060008@tiscali.be>
-Date: Wed, 31 Dec 2003 00:08:38 +0000
+	Wed, 31 Dec 2003 05:50:58 -0700 (MST)
+Message-ID: <3FF2C679.8070905@tiscali.be>
+Date: Wed, 31 Dec 2003 12:52:09 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] LD_PROFILE?
-References: <20031230234237.GM27911@systemhalted>
-In-Reply-To: <20031230234237.GM27911@systemhalted>
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	parisc-linux@lists.parisc-linux.org, Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] 2.6.0-pa7 and raid1 boot disk not clean do HPMC?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,25 +19,127 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Carlos,
+Hi all,
 
-no ?
+After a panic of my c110 at boot time, I reboot it with kernel 2.6.0-pa7 (build with make defconfig excepted that I try to use 
+pdc_console in place of serial_mux) and I got a HPMC:
+[snip]
+md: sda2 has different UUID to sdb6
+md: created md3
+md: bind<sda6>
+md: bind<sdb6>
+md: running: <sdb6><sda6>
+md: md3: raid array is not clean -- starting background reconstruction
+md: delaying resync of md4 until md5 has finished resync (they share one or more physical units)
+raid1: raid set md3 active with 2 out of 2 mirrors
+md: considering sdb5 ...
+md:  adding sdb5 ...
+md: sdb3 has different UUID to sdb5
+md: sdb2 has different UUID to sdb5
+md:  adding sda5 ...
+md: sda3 has different UUID to sdb5
+md: sda2 has different UUID to sdb5
+md: created md2
+md: bind<sda5>
+md: bind<sdb5>
+md: running: <sdb5><sda5>
+md: md2: raid array is not clean -- starting background reconstruction
+md: delaying resync of md3 until md4 has finished resync (
+<4>
+Stack Dump:
+1037b418:  1037b418 00048308 00000040 ffe01800
+1037b408:  ffe01801 ffffffff 00048308 0037b3b8
+1037b3f8:  00000000 0037b3b8 00000000 f0055060
+1037b3e8:  00000000 0037b3d0 00000000 0037b3c8
+1037b3d8:  00000000 00000000 00000000 00000000
+1037b3c8:  1037b080 00000001 00000000 0037b390
+1037b3b8:  00048308 0037b378 00000000 101064bc
+1037b3a8:  00000000 0037b390 00000000 0037b388
+1037b398:  00000005 0037b380 00000005 0037b350
+1037b388:  f3f80000 ffe01800 ffe01801 f00556fc
+1037b378:  00000001 0037b360 00000000 f00556fc
+1037b368:  00000000 0037b310 00000000 fff8a000
+1037b358:  00000009 00004800 0038a000 0037f000
+1037b348:  fffa0000 8f569c40 0007a120 0037b328
+1037b338:  00000000 0037b320 00000001 00a00000
+1037b328:  0000000a f3fbf000 f3f80000 0037b2e0
+1037b318:  fff80000 00000000 f018700c 0037b2b8
+1037b308:  f3f80000 0037b2f0 f3f80000 0037b2b8
+1037b2f8:  0037b198 0037b2e0 00000000 0037b2a8
+1037b2e8:  00000009 0037b2a0 f0186fe3 000f4000
+1037b2d8:  10461844 0037b2c0 00000060 0037b2b8
+1037b2c8:  3ff2b00b 00000000 00000000 00008000
+1037b2b8:  00380334 00000001 0320008a 1010b088
+1037b2a8:  00001350 0037b240 00000014 0037b240
+1037b298:  0003f003 f0049d58 00000000 0037b270
+1037b288:  00000003 0037b268 ffd05000 0037b240
+1037b278:  00000000 f00700c0 0006cbf8 0037b1c8
+1037b268:  10461698 000f4000 0320008a 0037b160
+1037b258:  00008000 f00700c0 00038dfc 00000000
+1037b248:  d29c1bf8 0000001f 00000000 00000000
+1037b238:  00000000 0006cbf8 0000000b 10215c34
+1037b228:  10215c58 00000000 00000000 00000000
+1037b218:  00000000 00000000 00000000 00000000
+1037b208:  00000000 00000000 00000000 00000000
+1037b1f8:  00000000 00000000 00000000 00000000
+1037b1e8:  00000000 00000000 00000000 00000000
+1037b1d8:  00000000 00000000 00000000 00000000
+1037b1c8:  00000000 00000000 00000000 00000000
+1037b1b8:  00000000 00000000 00000000 00000000
+1037b1a8:  00000000 00000000 00000000 00000000
+1037b198:  00000000 00000000 00000000 00000000
+1037b188:  00000000 00000000 00000000 00000000
+1037b178:  00000000 00000000 00000000 00000000
+1037b168:  00000000 00000000 00000000 00000000
+1037b158:  00000000 00000000 00000000 00000000
+1037b148:  00000000 00000000 00000000 00000000
+1037b138:  00000000 00000000 00000000 00000000
+1037b128:  00000000 00000000 00000000 00000000
+1037b118:  00000000 00000000 00000000 00000000
+1037b108:  00000000 08000000 08000000 10218398
+1037b0f8:  17bd8480 00000078 00000020 10378010
+1037b0e8:  1047e064 00000005 00000028 00000036
+1037b0d8:  102182b0 0000000f 00000000 ffd05805
+1037b0c8:  00000000 10461010 000f4000 00000061
+1037b0b8:  0000003a 10461698 000f4000 10461844
+1037b0a8:  00000010 00000060 10465229 1038e810
+1037b098:  00002878 00002817 1047e064 1047e064
+1037b088:  10218374 fff0bdc0 000cff0f 00000000
+1037b078:  00000000 00000000 00000000 001107cc
+1037b068:  00000000 00000000 00000000 00000000
+1037b058:  00000000 00000000 00000000 00387000
+1037b048:  00000000 00000000 00000000 00000000
+1037b038:  00000000 00000000 00000000 00000000
+1037b028:  00000000 00000000 00000000 00000000
+Kernel addresses on the stack:
+[<10106320>] parisc_terminate+0x60/0xb8
+[<101064bc>] handle_interruption+0x144/0x5b0
+[<1010b088>] intr_check_sig+0x0/0xc
+[<10215c34>] serial_in+0x38/0x84
 
-I test it on testdrive sep170 with libc release 2.2.5-11.5 and  binutils release 2.12.90.0.1-4 (I trust purely Debian woody 3.0)
+High Priority Machine Check (HPMC): Code=1 regs=1037b080 (Addr=00000000)
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000011001111111100001111 Not tainted
+r00-03  00000000 fff0bdc0 10218374 1047e064
+r04-07  1047e064 00002817 00002878 1038e810
+r08-11  10465229 00000060 00000010 10461844
+r12-15  000f4000 10461698 0000003a 00000061
+r16-19  000f4000 10461010 00000000 ffd05805
+r20-23  00000000 0000000f 102182b0 00000036
+r24-27  00000028 00000005 1047e064 10378010
+r28-31  00000020 00000078 17bd8480 10218398
+sr0-3   00000000 00000000 00000000 00000000
+sr4-7   00000000 00000000 00000000 00000000
 
-hth,
+IASQ: 00000000 00000000 IAOQ: 10215c58 10215c34
+  IIR: d29c1bf8    ISR: 00000000  IOR: 00038dfc
+  CPU:        0   CR30: 17bd8000 CR31: 103d1000
+  ORIG_R28: 00000000
+  IAOQ[0]: serial_in+0x5c/0x84
+  IAOQ[1]: serial_in+0x38/0x84
+  RP(r2): serial8250_console_write+0xc4/0x380
+
+any idea?
+
+Thanks again for help and happy new year,
 	Joel
-
-Carlos O'Donell wrote:
-> Did this work before? :)
-> 
-> firin:/# LD_PROFILE=libc.so.6 ls
-> Segmentation fault
-> 
-> c.
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
