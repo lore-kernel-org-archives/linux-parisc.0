@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 727ED482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 07:13:55 -0600 (MDT)
-Date: Mon, 26 Aug 2002 09:11:34 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: christian@familieschmitt.de
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Woody and new kernel
-Message-ID: <20020826131134.GD30545@systemhalted>
-References: <3D6A1F11.1050609@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D6A1F11.1050609@gmx.de>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE5F0482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 09:08:12 -0600 (MDT)
+Date: Mon, 26 Aug 2002 17:08:10 +0200
+Message-ID: <3D53B3B700006FEA@ocpmta1.be.tiscali.com>
+From: jsoe0708@tiscali.be
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] CVS: thanks for patch
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +20,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Hi,
-> 
-> i am using a 710 here (quite old, but interesting) with Woody installed. 
-> Since it has the 2.4.17-32 kernel supplied, I would like to update it to 
-> 2.4.19. I downloaded the vanilla kernel sources but it does not compile 
-> with the gcc-3.0.4. Do I have to use the special -pa kernel from cvs or 
-> should it also work with the normal kernel sources? The main reason for 
-> this update is to get the HIL mouse working.
-> 
-> Chris
->
+Hi all,
 
-A vanilla kernel is not quite up to date :)
+Thanks a lot to make pa patch available (in ftp.parisc-linux.org/cvs).
 
-The best source for the most recent changes is:
-http://cvs.parisc-linux.org
+That will allow to save place and more than all it will give me more time
+to test (better than wait the end of a download).
 
-You can get instructions on CVS downloading/building from:
-http://www.parisc-linux.org/kernel/index.html
-
-Cheers,
-Carlos.
+Very great,
+    Joel
