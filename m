@@ -1,33 +1,58 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA13820
-	for <parisc-linux@puffin.external.hp.com>; Thu, 13 Jan 2000 14:42:26 -0700
-Message-Id: <200001132042.VAA07253@pallas.spacetec.no>
-From: tor@spacetec.no (Tor Arntsen)
-Date: Thu, 13 Jan 2000 21:42:54 +0100
-In-Reply-To: Matthew Wilcox <willy@thepuffingroup.com>
-       "Re: [parisc-linux] 2.3 whining" (Jun  5, 12:25)
-To: Matthew Wilcox <willy@thepuffingroup.com>,
-        Paul Bame <bame@endor.fc.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 2.3 whining
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA22264
+	for <parisc-linux@puffin.external.hp.com>; Fri, 14 Jan 2000 16:26:50 -0700
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id RAA28990
+	for parisc-linux@thepuffingroup.com; Fri, 14 Jan 2000 17:27:21 -0500
+Date: Fri, 14 Jan 2000 17:27:21 -0500
+From: Matthew Wilcox <willy@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000114172721.V11300@thepuffingroup.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Minutes
 List-ID: <linux-parisc.vger.kernel.org>
 
-I'll leave the rest of the CVS discussions to you guys, however:
 
-On Jun 5, 12:25, Matthew Wilcox wrote:
->Those $Log$ comments are a really bad idea, btw.  They grow too long
->and contain too much irrelevant crap.  If you want to write a comment,
->add it manually.
+Summary of the IRC meeting held 14/Jan/2000
 
-This point cannot be stressed enough. $Log$ is an *extremely* bad idea
-if you use CVS (it was an ok feature for RCS).  Among other things it makes 
-merges between CVS branches a nightmare: whenever you merge you will get a
-conflict in the $Log$ entries which has to be fixed manually, then you 
-commit the fixed file, which adds *another* $Log$ entry etc. 
-You will have to manually edit *every single changed file* when you merge, 
-you lose CVS's otherwise quite good merging capabilities.
+Participants:
 
-It's a good idea to remove any trace of $Log$ whenever you find one
-in a file.  It will raise its ugly head again in the next merge but
-eventually you'll get rid of them.
+Michael Ang
+Paul Bame
+Grant Grundler
+R. Scott Holbrooke
+David Kennedy
+Dave O'Neill
+Martin Peterson
+Philipp Rumpf
+Matthew Wilcox
 
--Tor
+1. The 2.3 configuration needs some work.  David will investigate.
+
+2. The decision was taken to not forward-port the real-exe code from 2.2
+   to 2.3.  Philipp will write some documentation about how to debug
+   real-mode assembler code.
+
+3. PCI has been tested to a limited extent.  It enumerates devices, but
+   an unrelated bug is preventing further testing.
+
+4. Martin has cleaned up the serial and console code.  He will commit his
+   changes tomorrow after he's tested it.
+
+5. Scott has looked at the checksumming code and will hopefully get some
+   time to work on it this coming week.
+
+6. Paul has been looking at ftr's debug code.
+
+7. Matthew will describe the new __initcall feature in an email to the list.
+
+8. Paul is thinking about a wide-mode bootloader.
+
+9. Dave is working on getting the SOM linker to work on i386 Linux.  philipp
+   has some additional patches he will send.
+
+10. Signals were discussed and no-one felt that they wanted to deal with
+    them.
+
+11. Deb was nominated to draw a martini glass.
