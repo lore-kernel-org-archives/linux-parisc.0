@@ -1,35 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 688B9482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Aug 2001 06:15:05 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 2E82DB00C; Tue, 28 Aug 2001 13:16:39 +0100 (BST)
-Date: Tue, 28 Aug 2001 13:16:39 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: jacobsbd <jacobsbd@jacobs.coxatwork.com>
-Cc: parisc-linux@lists.parisc-linux.org, jacobsbd@aol.com
-Subject: Re: [parisc-linux] PA-RISC linux newby needs help doing an install
-Message-ID: <20010828131638.P7064@linuxcare.com>
-References: <000001c12bda$3a018e90$701e10ac@winxp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000001c12bda$3a018e90$701e10ac@winxp>; from jacobsbd@jacobs.coxatwork.com on Thu, Aug 23, 2001 at 05:15:34AM -0700
+Received: from fa0008.coopertire.com (unknown [63.150.221.254])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 150C7482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Aug 2001 06:21:12 -0600 (MDT)
+Message-ID: <426B4FEBE684D411B0A60090273B1D2401AD0E65@AA0016>
+From: "Kurc, Marcin A." <makurc@cooperstandard.com>
+To: 'Matthew Wilcox' <willy@debian.org>
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] visualize C360/785 install
+Date: Tue, 28 Aug 2001 08:21:06 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 23, 2001 at 05:15:34AM -0700, jacobsbd wrote:
-> OK, I am sure I am overlooking some obvious things here, but it looks like I am stuck to the point of needing help so here goes.
-> 
-> I downloaded the iso and burned it with Nero on a win2k machine (the only burner I have easy access to)
-> 
-> my configurtion is hp 735/125 workstation,  209 meg ram,  
-> on narrow SCSI chain I have  2 gig ST32550N (currently HP-UX), NEC 6x external CD-ROM drive. 4mm dds1 tape drive.
-> on fast wide HVD 4gig ST15150W 
-> 
-> I can not seem to get the serial ports to work on this system even when I run HP_UX 11.00. I have tried unplugging the keyboard and the video card to no effect.
+I've problems booting it from cd.
+Here is what I get
 
-Internal FWD scsi on 735 is known not to work, but that shouldn't stop
-you installing to the external narrow scsi.  Most likely the graphical
-console is not supported yet, so your best bet is to persue trying to
-get the serial ports working.
+HARD Booted.
+palo ipl 0.92 root@spqr Mon Jun 25 23:03:13 CEST 2001
+.........
 
-Richard
+Kernel: partition 0 file /vmlinux
+Ramdisk: partition 0 file /ramdisk
+Warning: kernel name doesn't end with 32 or 64... Guessing 32
+ELF32 executable
+Entry 00100000 first 00100000 n 4
+Segment 0 load 00100000 size 1606948 mediaptr 0x1000
+Segment 1 load 0028a000 size 468472 mediaptr 0x18a000
+Segment 2 load 00300000 size 8192 mediaptr 0x1fd000
+Segment 3 load 0034bea8 size 80688 mediaptr 0x1ffea8
+Loading ramdisk 1991209 bytes @ 3fe09000...
+branching to kernel entry point 0x00100000
+Set default PSW W bit to 0
+
+
+and then it hangs. Do you know what could be wrong?
+
+thanks
+
+-----Original Message-----
+From: Matthew Wilcox [mailto:willy@debian.org]
+Sent: Monday, August 27, 2001 4:39 PM
+To: Kurc, Marcin A.
+Cc: 'parisc-linux@lists.parisc-linux.org'
+Subject: Re: [parisc-linux] visualize C360/785 install
+
+
+On Mon, Aug 27, 2001 at 04:24:08PM -0400, Kurc, Marcin A. wrote:
+> Did anyone have any luck installing parisc-linux on HP visualize C360
+(785)?
+
+Ought to work.  Don't have one here, but Richard has one.
+
+-- 
+Revolutions do not require corporate support.
