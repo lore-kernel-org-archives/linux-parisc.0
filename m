@@ -1,42 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA06774
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 11:21:18 -0600
-Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by cosrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id LAA27200
-	for <parisc-linux@thepuffingroup.com>; Thu, 2 Sep 1999 11:22:51 -0600 (MDT)
-Message-Id: <199909021720.KAA07391@milano.cup.hp.com>
-To: Philipp Rumpf <prumpf@suse.de>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux-cvs] grundler 
-In-reply-to: Your message of "Thu, 02 Sep 1999 11:12:58 PDT."
-             <19990902111258.J629@suse.de>
-Date: Thu, 02 Sep 1999 10:20:32 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA07097
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 16:52:16 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id TAA01162
+	for <parisc-linux@thepuffingroup.com>; Thu, 2 Sep 1999 19:11:12 -0400
+Sender: adevries@thepuffingroup.com
+Message-ID: <37CF0410.6A8CD6DD@thepuffingroup.com>
+Date: Thu, 02 Sep 1999 19:11:12 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] pa.h
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
-> > Modified Files:
-> > 	pci.c 
-> 
-> - removed support for more than one bus
 
-Not quite - removed support for more than one type of PCI bus adapter.
-PA platforms only support one type of PCI bus adapter at a time.
-We could link in more than on PCI bus driver but only one will
-ever get used. (At least that's my goal).
+So, I'm told there's a package called the Device Driver Toolkit (or
+similiar) for PA RISC.  Inside it, there'd be a file called pa.h.  I
+don't actually have this package, but would love to have access to this
+file.
 
-> we don't want that, do we ?
+In the same way that we've legally copied .h files from HPUX into the
+Linux kernel tree, I'd like include pa.h.
 
-Rather we don't need it.
-If you want it you can have it. :^)
+Is there someone out there who has a copy of this file (and perhaps
+other associated .h files)?
 
-> That's it for today, I promise.
+I'm interested in this because I want to setup a hardware inventory
+database properly.
 
-ditto.
+- Alex
 
-thanks,
-grant
-
-Grant Grundler
-Communications Infrastructure Computer Operations
-+1.408.447.7253
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
