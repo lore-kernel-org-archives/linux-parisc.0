@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2E63C4856
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 10:50:50 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 195q7U-00041h-DS; Wed, 16 Apr 2003 17:50:48 +0100
-Date: Wed, 16 Apr 2003 17:50:48 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] parisc-linux.org kernel
-Message-ID: <20030416165048.GC1505@parcelfarce.linux.theplanet.co.uk>
-References: <3E9BA3A600000DC1@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E9BA3A600000DC1@ocpmta2.freegates.net>
+Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
+	by dsl2.external.hp.com (Postfix) with SMTP id CDC554829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 11:51:46 -0600 (MDT)
+Date: 16 Apr 2003 17:51:45 -0000
+Message-ID: <20030416175145.5861.qmail@sources.redhat.com>
+To: danglin@gcc.gnu.org, gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org
+From: danglin@gcc.gnu.org
+Reply-To: danglin@gcc.gnu.org, danglin@gcc.gnu.org,
+	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
+	gcc-gnats@gcc.gnu.org
+Subject: [parisc-linux] Re: target/10271: [3.2/3.3/3.4 regression] [HPPA] Floating point args don't get reloaded across function calls at -O2
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +23,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Apr 16, 2003 at 06:44:11PM +0200, Joel Soete wrote:
-> Well I already create:
-> a chunck containing debian-configs (I call it 00_parisc_debian-configs.patch)
-> [about 140k] (would it be submited?)
+Synopsis: [3.2/3.3/3.4 regression] [HPPA] Floating point args don't get reloaded across function calls at -O2
 
-No, I don't think this should be submitted.  No other architecture does this.
+State-Changed-From-To: analyzed->closed
+State-Changed-By: danglin
+State-Changed-When: Wed Apr 16 17:51:45 2003
+State-Changed-Why:
+    Fixed.
+    <http://gcc.gnu.org/ml/gcc-patches/2003-04/msg01236.html>.
 
-> another chunk containing all parisc specific (named 01_parisc.patch) containing
-> arch/parisc, include/asm-parisc and another noticed "parisc specific" [about
-> 160k]
-
-sounds good.  be sure this applies to alan's/marcelo's tree as they've
-taken updates since 2.4.20 was released.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10271
