@@ -1,35 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA08491
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 17:06:24 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 3 Nov 2000 00:08:07 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13rUOs-0003xh-00; Fri, 03 Nov 2000 00:08:06 +0000
-Date: Fri, 3 Nov 2000 00:08:06 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: =?iso-8859-1?Q?Alexander_Sch=F6ck?= <headcrusher@web.de>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Help!?
-Message-ID: <20001103000806.A15106@parcelfarce.linux.theplanet.co.uk>
-References: <200011021858.TAA28230@mailgate3.cinetic.de>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA09606
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 18:31:28 -0700
+Message-Id: <5.0.0.25.0.20001102172521.02ac5e40@mail.webcash.com>
+Date: Thu, 02 Nov 2000 17:29:19 -0800
+To: Matt Taggart <taggart@carmen.fc.hp.com>, parisc-linux@thepuffingroup.com
+From: Kailashnath V Rampure <kailasr@webcash.com>
+In-Reply-To: <20001031231609.8F44638554@carmen.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <200011021858.TAA28230@mailgate3.cinetic.de>; from headcrusher@web.de on Thu, Nov 02, 2000 at 07:58:51PM +0100
-Sender: <willy@www.linux.org.uk>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: [parisc-linux] Boot command
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 02, 2000 at 07:58:51PM +0100,  Alexander Schöck  wrote:
-> How can I go on with the installation?
+Hi,
+I have run the following command to initialize the sda harddisk. The sda3 
+is the linux native partion.
+Wen I say boot on the HP server  it is trying to boot from /stand/vmunix 
+instead of vmlinux can any one help me about the command. Secondaly I want 
+to knwo what is the term type as its not taking vt100 so I am unable to 
+open vi.
 
-question added to the FAQ:
+I have made nesessary changes for the /etc/fstab
 
-7. I'm using the Alpha 0.1 release CD and the machine stops after printing 
-     request_irq(259, c01ec76c, 0x0, asp, c3rcd080)
-   what's going on? 
+$ palo -I -k /boot/vmlinux -b /boot/iplboot -c '3/boot/vmlinux TERM=linux 
+HOME=/ root=/dev/sda3' /dev/sda
 
-This is a bug in the kernel shipped on the CD. It only affects certain
-machines and has been fixed in the current CVS tree. We recommend you
-acquire a newer kernel from the FTP site.
-
--- 
-Revolutions do not require corporate support.
+regards
+Kailas
