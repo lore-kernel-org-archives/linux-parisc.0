@@ -1,35 +1,73 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6D8524A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Feb 2001 15:18:09 -0700 (MST)
-To: Bdale Garbee <bdale@gag.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 903AA4A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Feb 2001 15:45:19 -0700 (MST)
+Message-ID: <3A8C5BD4.7A0C5242@esiee.net>
+Date: Thu, 15 Feb 2001 23:44:36 +0100
+From: Xavier Debacker <xavier.debacker@esiee.net>
+MIME-Version: 1.0
+To: Helge Deller <deller@gmx.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] db2 build failed 
-In-Reply-To: Message from Bdale Garbee <bdale@gag.com>
-   of "Tue, 06 Feb 2001 15:34:35 MST." <20010206223437.0FAF635CF1@rover.gag.com>
-References: <20010206223437.0FAF635CF1@rover.gag.com> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 15 Feb 2001 15:20:21 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010215222021.09E5B38786@carmen.fc.hp.com>
+Content-Type: multipart/mixed;
+ boundary="------------D691CC0C99CB3804EC0D4D0C"
+Subject: [parisc-linux] basic sti cursor patch
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bdale Garbee writes...
+Il s'agit d'un message multivolet au format MIME.
+--------------D691CC0C99CB3804EC0D4D0C
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-> On the same J, building the Debian db-2.7.7 "db2" libraries fails after 
-> building the "important" pieces with the following:
-> 
-> gcc -g3 -pg  -Ibuild_unix -Iinclude -fPIC -Wall -pipe -D_REENTRANT  -c -o btr
-> eec
-> cc1: warning: PIC code generation is not compatible with profiling
-> 
-> btree/bt_compare.c: In function `__bam_cmp':
-> btree/bt_compare.c:137: Internal compiler error in output_90, at insn-output.
-> c:4
+Hi Helge,
 
-Alan Modra just mentioned that profiling is broken. He is working on a fix.
+Here is a patch to get the cursor working on STI..
+Of course it's not perfect, but already quite useful as is.
+As you can see, this basic cursor is the character on the screen,
+with some color attribute (black fg, white bg).
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Now we can use vi & emacs, knowing where we are :-)
+
+Xavier.
+ESIEE Team.
+http://www.esiee.fr/puffin
+
+--------------D691CC0C99CB3804EC0D4D0C
+Content-Type: text/plain; charset=us-ascii;
+ name="cursor.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="cursor.patch"
+
+diff -rNu linux-cvs/drivers/video/sti/sticon.c linux-cursor/drivers/video/sti/sticon.c
+--- linux-cvs/drivers/video/sti/sticon.c	Fri Feb  9 02:42:28 2001
++++ linux-cursor/drivers/video/sti/sticon.c	Thu Feb 15 23:27:53 2001
+@@ -94,7 +94,26 @@
+ 
+ static void sticon_cursor(struct vc_data *conp, int mode)
+ {
+-}
++	unsigned short car1;
++	car1 = conp->vc_screenbuf[conp->vc_x+conp->vc_y*conp->vc_cols];
++	switch (mode) {
++		case CM_ERASE:
++			sti_putc(&default_sti,car1,conp->vc_y,conp->vc_x);
++			break;
++		case CM_MOVE:
++		case CM_DRAW:
++			switch (conp->vc_cursor_type & 0x0f) {
++				case CUR_UNDERLINE:
++				case CUR_LOWER_THIRD:
++				case CUR_LOWER_HALF:
++				case CUR_TWO_THIRDS: 
++				case CUR_BLOCK: 
++					sti_putc(&default_sti,(car1&255)+(0<<8)+(7<<11),conp->vc_y,conp->vc_x);
++					break;
++			}
++			break;
++	}
++}       
+ 
+ static int sticon_scroll(struct vc_data *conp, int t, int b, int dir,
+ 			int count)
+
+--------------D691CC0C99CB3804EC0D4D0C--
