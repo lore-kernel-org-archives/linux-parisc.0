@@ -1,13 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: willy@debian.org
-Cc: parisc-linux@lists.parisc-linux.org, jes@wildopensource.com
-Subject: Re: [parisc-linux] 2.4.18-pa62 acenic-0.91 
-In-Reply-To: Message from Grant Grundler <grundler@dsl2.external.hp.com>
-   of "Sat, 03 Aug 2002 20:58:04 MDT." <20020804025804.3FE6C483E@dsl2.external.hp.com>
-References: <20020804011707.2B9164860@dsl2.external.hp.com> <20020804020348.23C414860@dsl2.external.hp.com>  <20020804025804.3FE6C483E@dsl2.external.hp.com> 
-Date: Sun, 04 Aug 2002 01:14:06 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020804071406.8D26F4831@dsl2.external.hp.com>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B2EF24829
+	for <parisc-linux@parisc-linux.org>; Sun,  4 Aug 2002 09:32:56 -0600 (MDT)
+Date: Sun, 4 Aug 2002 11:31:16 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Linux-2.4.19 released
+Message-ID: <20020804153116.GB19482@systemhalted>
+References: <3D4C275D.5010104@freebel.net> <20020803193627.H24631@parcelfarce.linux.theplanet.co.uk> <20020803234851.30FE84831@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020803234851.30FE84831@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,14 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler wrote:
-> Privately, Mathew Wilcox observed cli() is an obsolete interface
-> and doesn't scale well on SMP boxes.
+> 
+> I've not been doing much for 2.5 and I'd like to see the folks who are
+> beating on 2.5.x not get distract by this.
+> If someone (paul?) drops 2.4.19 in our CVS and tells me which files
+> have conflicts, I'd be happy to take a whack at it.
+> 
+> thanks,
+> grant
 
-Matthew,
-*sigh*. I looked at the code and it uses __cli() (not cli()).
-On parisc thats equivalent to local_irq_disable().
-Should Jes be using local_irq_disable() directly?
+I agree. And FWIW, I'd be more than happy to help. 
+2.4.x is essential for the cluster work I'm doing :)
 
-thanks,
-grant
+c.
