@@ -1,20 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6126D4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 11:26:52 -0700 (MST)
-Received: from xatlrelay1.atl.hp.com (xatlrelay1.atl.hp.com [15.45.89.190])
-	by atlrel7.hp.com (Postfix) with ESMTP id 07D71805C35
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 13:26:47 -0500 (EST)
-Received: from xatlbh4.atl.hp.com (xatlbh4.atl.hp.com [15.45.89.189])
-	by xatlrelay1.atl.hp.com (Postfix) with ESMTP id 8B0681CE
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 13:26:16 -0500 (EST)
-Message-ID: <CBD6266EA291D5118144009027AA633508626AA6@xboi05.boi.hp.com>
-From: "KING,RICHARD (HP-Boise,ex1)" <richard_king@am.exch.hp.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 10 Dec 2002 13:25:55 -0500
+Received: from palrel11.hp.com (palrel11.hp.com [156.153.255.246])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B22214829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 11:41:41 -0700 (MST)
+Received: from xparelay2.ptp.hp.com (xparelay2.ptp.hp.com [15.1.28.65])
+	by palrel11.hp.com (Postfix) with ESMTP id C9FB4600C97
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 10:41:36 -0800 (PST)
+Received: from xpabh2.ptp.hp.com (xpabh2.ptp.hp.com [15.1.28.61])
+	by xparelay2.ptp.hp.com (Postfix) with ESMTP id 880F81A4
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Dec 2002 10:41:16 -0800 (PST)
+Message-ID: <9A0482A7BD2506488AD9417C93F3714FB4ABC3@xsp01.brazil.hp.com>
+From: "FARINATI,LEANDRO (HP-Brazil,ex1)" <leandro.farinati@hp.com>
+To: "Parisc-Linux List (E-mail)" <parisc-linux@lists.parisc-linux.org>
+Date: Tue, 10 Dec 2002 10:41:00 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [parisc-linux] (no subject)
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] SMP on kernel version 19 pa 23
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,4 +27,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-confirm 133734
+Hi people,
+
+	I would link to know if the SMP is working on kernel 19 pa 23, 32
+bits?
+	
+	I'm make this question because when I enable SMP to compile this
+kernel and put it to run, it crashes when the systen try do boot.
+	If anyone know something about this, please give me a tip to solve
+this.
+
+Thanks in Advance,
+
+-----------------------------------------------------------------------
+              Leandro Marcondes Farinati
+                    Software Developer
+
+*   leandro.farinati@hp.com
