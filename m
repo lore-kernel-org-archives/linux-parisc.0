@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server.da-kot (21-40.CampusNet.ucl.ac.be [130.104.21.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2835483A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 13:28:35 -0600 (MDT)
-Received: from gmsoft.tuxicoman.be ([2001:6f8:204:20:210:a7ff:fe10:1a3e])
-	by server.da-kot with esmtp (Exim 3.36 #1 (Debian))
-	id 19RdBA-0004Qv-00
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 21:28:40 +0200
-From: Guy Martin <gmsoft@gentoo.org>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Can't configure gcc with --target=hppa64-linux
-Date: Sun, 15 Jun 2003 21:25:57 +0200
-References: <200306152057.17848.gmsoft@gentoo.org>
-In-Reply-To: <200306152057.17848.gmsoft@gentoo.org>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD5A34829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Jun 2003 21:14:09 -0600 (MDT)
+Message-Id: <200306160314.h5G3E2SF003545@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] 2.5.71-pa1 do_sigaction problem
+To: bzeeb-lists@lists.zabbadoz.net (Bjoern A. Zeeb)
+Date: Sun, 15 Jun 2003 23:14:01 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.BSF.4.53.0306150945230.651@e0-0.zab2.int.zabbadoz.net> from "Bjoern A. Zeeb" at Jun 15, 2003 09:52:19 am
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200306152125.57507.gmsoft@gentoo.org>
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,31 +22,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ok, in fact it's od which have a little problem.
+>  IAOQ[0]: __canonicalize_funcptr_for_compare+0x38/0x134
+>  IAOQ[1]: __canonicalize_funcptr_for_compare+0x3c/0x134
+>  RP(r2): do_sigaction+0xe0/0x290
 
-Thanks tausq for his help and sorry for this post :)
+Fixes for this have been discussed on the list several times before.
 
-On Sunday 15 June 2003 20:57, Guy Martin wrote:
-> Hi,
->
-> I'm trying to build a 64bit gcc but the configuration script fail.
->
-> ./configure --host=hppa2.0-unknown-linux-gnu --prefix=/usr
-> --target=hppa64-linux --disable-shared --disable-nls --enable-64-bit-bfd
-> --enable-languages=c
-> [snip]
-> checking for CHAR_BIT... yes
-> checking byte ordering... od: od.c:1324: read_block: Assertion `0 < n && n
-> <= bytes_per_block' failed.
-> unknown
-> configure: error: *** unable to determine endianness
-> Configure in /var/tmp/portage/gcc-3.2.2/work/gcc-3.2.2/gcc failed, exiting.
->
-> What's wrong ?
->
-> Regards
-
+Dave
 -- 
-Guy Martin
-Gentoo - HPPA port Lead / IPv6 team
-Lug Charleroi (Belgium)
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
