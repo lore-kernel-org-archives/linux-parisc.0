@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mimotohosyou.com (p1065-ipad30fukuokachu.fukuoka.ocn.ne.jp [220.107.66.65])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9B111486B
-	for <parisc-linux@parisc-linux.org>; Sun, 17 Aug 2003 07:23:11 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id F18104881
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Aug 2003 07:24:32 -0600 (MDT)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by mimotohosyou.com (8.11.6/8.11.6) with ESMTP id h7HDSMs05953
-	for <parisc-linux@parisc-linux.org>; Sun, 17 Aug 2003 22:28:22 +0900
-Date: Sun, 17 Aug 2003 22:28:22 +0900
-Message-Id: <200308171328.h7HDSMs05953@mimotohosyou.com>
+	by mimotohosyou.com (8.11.6/8.11.6) with ESMTP id h7HDTis06333
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Aug 2003 22:29:44 +0900
+Date: Sun, 17 Aug 2003 22:29:44 +0900
+Message-Id: <200308171329.h7HDTis06333@mimotohosyou.com>
 Content-Type: text/plain; charset="iso-2022-jp"
 MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 From: =?iso-2022-jp?B?GyRCIzMyLzFfJHIjNTIvIzlAaUt8MV8+WjVyTS0+WjVyJEdDNSQ5ISobKEI=?= <aka123@abeam.ocn.ne.jp>
 Subject: [parisc-linux] =?iso-2022-jp?B?GyRCTCQ+NUJ6OS05cCF2IzEyLzFfJHIhJiEmIzVAaUt8MV9KXT5aJHIhJiEmQzUkOUp9SyEkSCRPISYhJhsoQg==?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
