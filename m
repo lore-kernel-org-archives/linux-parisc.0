@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: regtest: which fr to take care of?
-Date: Sun, 3 Apr 2005 14:41:09 -0400 (EDT)
-Message-ID: <200504031841.j33If9CF017871@hiauly1.hia.nrc.ca>
-References: <42502F50.5070700@tiscali.be>
+Subject: Re: [parisc-linux] pthread problems - test program
+Date: Sun, 3 Apr 2005 16:41:51 -0400 (EDT)
+Message-ID: <200504032041.j33KfpVf018465@hiauly1.hia.nrc.ca>
+References: <20050403143246.GE8921@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (Joel Soete)
+To: randolph@tausq.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42502F50.5070700@tiscali.be> from "Joel Soete" at Apr 3,
-	2005 06:00:48 pm
+In-Reply-To: <20050403143246.GE8921@tausq.org> from "Randolph Chung" at Apr 3,
+	2005 07:32:46 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +21,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Is those comments in our entry.S:
-> ...
->          /* Floating point registers (FIXME: what do we do with these?)
-> 
->             %fr0  - %fr3    status/exception, not preserved
->             %fr4  - %fr7    arguments
->             %fr8  - %fr11   not preserved by C code
->             %fr12 - %fr21   preserved by C code
->             %fr22 - %fr31   not preserved by C code
->           */
-> ...
-> 
-> Are still uptodate?
+> The test program is in cvs in the userspace repository. It's called
+> thread_test2.c. It creates threads one at a time, and uses condition
+> variables for synchronization. On hppa the program will hang after some
+> time, and ps shows a lot of zombie processes. On x86 the program runs as
+> expected and there are no zombies.
 
-Yes, these are from the HP-UX ABI.
-
-> what 'preserved by C code' would mean?
-
-The register remains unchanged across a call.  Call used registers
-don't have to be preserved.
+What's the situation on the following signals: SIGLTHRRES, SIGLTHRCAN
+and SIGLTHRDBG?  I'm not sure but pthread_cond_signal may need SIGLTHRRES.
+Are these signals 37, 38 and 39?
 
 Dave
 -- 
