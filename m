@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0710B484D
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Jun 2002 07:59:31 -0600 (MDT)
-To: =?ISO-8859-1?Q?Bruno_L=E9on?= <nonolemono@yahoo.fr>
-Subject: Re: [parisc-linux] Only serial console for B1000 (64bits) ?
-Message-ID: <1024495164.3d108e3ce4d3c@webmail.tiscalinet.be>
-Date: Wed, 19 Jun 2002 15:59:24 +0200 (CEST)
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 949E6484E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Jun 2002 08:07:16 -0600 (MDT)
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] hppa64-linux-gcc not in gcc dpkg?
+Message-ID: <1024495623.3d109007598b2@webmail.tiscalinet.be>
+Date: Wed, 19 Jun 2002 16:07:03 +0200 (CEST)
 From: joel.soete@freebel.net
-Cc: parisc-linux@lists.parisc-linux.org
-References: <200206190826.g5J8QYS31181@iut-lannion.fr>
-In-Reply-To: <200206190826.g5J8QYS31181@iut-lannion.fr>
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+References: <1024493288.3d1086e89dfd2@webmail.tiscalinet.be> <20020619143627.K9435@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20020619143627.K9435@parcelfarce.linux.theplanet.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,26 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Bruno Léon <nonolemono@yahoo.fr>:
+Quoting Matthew Wilcox <willy@debian.org>:
 
-> I'm currently trying to install the Woody on a B1000 computer (64bits
-> architecture). 
-> I'm using a CD to boot - that worked fine on a B180L (32bits) - and I'm
+> On Wed, Jun 19, 2002 at 03:28:08PM +0200, joel.soete@freebel.net wrote:
+> > To verify my ioctl32 patch for 64bit kernel I am just trying to
+> compile last cvs
+> > kernel in 64bits on my b2000 (PA8600?). To do so, in make menu config,
+> i choose
+> > procesor type PA8x00, 64bits kernel && 32bits PDC (because b2000).
+> 
+> what makes you think that you should use 32-bit PDC on b2000?
 
-which CD?
+May I am wrong (I thought that the PDC of the b2000 was not a 64bits one; I will
+check )
 
-> telling palo to use the vmlinux64 instead of the simple vmlinux. This
-> part
-> is done using a screen connected to the B1000 station.
+> 
+> > But when I launch make dep, it failled because it did not find
+> hpp64-linux-gcc?
+> > I search on http://www.debian.org/distrib/packages but no success?
+> 
+> get the packages from ftp://ftp.parisc-linux.org/unofficial-debs.
 
-Try first 32bits kernel (till now I am running successfuly a 32bits pa37 on a
-b2000) with a serial console.
-
-Then may be you would like to get a more recent kernel in 64bits (see
-ftp://ftp.parisc-linux.org/kernels/).
-
-Joel
-
+ 
+Many thanks for all,
+    Joel
 
 
 -------------------------------------------------
