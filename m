@@ -1,19 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail1.nwe.de (mail1.nwe.de [195.226.126.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E39014834
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Mar 2003 06:04:31 -0700 (MST)
-Received: from gfrw1044.bocc.de (pD9E2790C.dip.t-dialin.net [217.226.121.12])
-	(authenticated (0 bits))
-	by mail1.nwe.de (8.12.8/8.11.0) with ESMTP id h2ED4MgO024479
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Mar 2003 14:04:29 +0100 (CET)
-Date: Fri, 14 Mar 2003 14:04:17 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: RFC: mmap patch
-In-Reply-To: <20030309144225.O3865@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.44.0303141351000.23830-100000@gfrw1044.bocc.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 931694890
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Mar 2003 06:18:04 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.12)
+	id 18tp4P-0005WD-00; Fri, 14 Mar 2003 13:17:57 +0000
+Date: Fri, 14 Mar 2003 13:17:57 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: Randolph Chung <tausq@debian.org>,
+	Matthias Klose <doko@cs.tu-berlin.de>, debian-hppa@lists.debian.org,
+	debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org,
+	Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, linux-net@vger.kernel.org
+Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
+Message-ID: <20030314131757.GF29631@parcelfarce.linux.theplanet.co.uk>
+References: <3E68A24B00000CC9@ocpmta6.freegates.net> <3E6C78E100001649@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3E6C78E100001649@ocpmta2.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,28 +28,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Fri, Mar 14, 2003 at 01:48:59PM +0100, Joel Soete wrote:
+> net/network.o(.text.rtnetlink_rcv+0x84): In function `rtnetlink_rcv':
+> : undefined reference to `rtnetlink_rcv_skb'
+> make: *** [vmlinux] Error 1
+> 
+> (with gcc-3.2 with same src && same .config there was no pb)
 
-since the patch was included in CVS, several modules fail to load with
-unresolved external __flush_dcache_page.
+You've just hit the gcc thinks it's smarter than you are bug.
 
-This should fix it:
+net/core/rtnetlink.c:extern __inline__ int rtnetlink_rcv_skb(struct sk_buff *skb)
 
-# cvs diff -u parisc_ksyms.c
-Index: parisc_ksyms.c
-===================================================================
-RCS file: /var/cvs/linux/arch/parisc/kernel/parisc_ksyms.c,v
-retrieving revision 1.44
-diff -u -r1.44 parisc_ksyms.c
---- parisc_ksyms.c      11 Jan 2003 20:10:46 -0000      1.44
-+++ parisc_ksyms.c      14 Mar 2003 12:49:49 -0000
-@@ -127,6 +127,7 @@
- #include <asm/cache.h>
- EXPORT_SYMBOL(flush_kernel_dcache_range_asm);
- EXPORT_SYMBOL(flush_kernel_dcache_page);
-+EXPORT_SYMBOL(__flush_dcache_page);
- EXPORT_SYMBOL(flush_all_caches);
+gcc 3.3 decides to not believe you want this function inlined.  probably
+the right fix for this is to make this function static inline (you can
+drop the `__' around inline, it's not necessary).  This is also the case
+for linux 2.5.
 
- #include <asm/unistd.h>
-
---jochen
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
