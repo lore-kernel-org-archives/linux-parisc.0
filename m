@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6A7A74840
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Nov 2003 11:21:28 -0700 (MST)
-Date: Thu, 27 Nov 2003 18:21:26 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C54684840
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Nov 2003 11:29:57 -0700 (MST)
+Date: Thu, 27 Nov 2003 19:29:44 +0100
+Message-ID: <3FB265EC000096AD@ocpmta3.freegates.net>
+In-Reply-To: <Pine.LNX.4.58.0311270423120.9783@sal.ucc.ie>
+From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] C3000 and 2.6 - need config help
-In-Reply-To: <20031127181531.GB9746@colo.lackof.org>
-Message-ID: <Pine.LNX.4.58.0311271817360.14260@sal.ucc.ie>
-References: <Pine.LNX.4.58.0311201817470.21743@sal.ucc.ie>
- <Pine.LNX.4.58.0311270244030.9783@sal.ucc.ie> <20031127042103.GC1321@colo.lackof.org>
- <Pine.LNX.4.58.0311270423120.9783@sal.ucc.ie> <Pine.LNX.4.58.0311270444110.9783@sal.ucc.ie>
- <20031127061557.GE1321@colo.lackof.org> <Pine.LNX.4.58.0311271450260.13181@sal.ucc.ie>
- <20031127181531.GB9746@colo.lackof.org>
+To: "M. Grabert" <xam@cs.ucc.ie>,
+	"Grant Grundler" <grundler@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,28 +23,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, 27 Nov 2003, Grant Grundler wrote:
+Hi all,
 
-> On Thu, Nov 27, 2003 at 03:16:08PM +0000, M. Grabert wrote:
-> > The max. transfer rate of any 100BT network is around 5MByte/s.
+> > I've seen a config option 'DUMMY_CONSOLE' in .config, but I don't find
+> > how to select it in 'make menuconfig' or any description in Documentation/.
+> >
+> > I have several machines that run headless - I use serial console then.
+> >
+>But I never had a situation where I didn't even have serial console ...
 >
-> 100BT is capable of 90-95Mb/s ~= 11MB/s.
+> yeah - the real problem is init sequence completely changed in 2.6 (vs
+2.4).
+> We haven't reworked all the same quirks from 2.4 into 2.6 yet.
 
-That's theoretical, not really practically possible/feasible :-/
+> So is there current a way to get 2.6 working *without* serial console or
+STI ?
 
-> There's a website someplace that has 100BT performance numbers
-> for all sorts of card/OS combinations.
->
-> I've measured ftp transfers > 10MB/s between ia64 and ia32 machines
-> over 100BT link.
+I rebuild a k 2.6.0-test11 with my gcc-3.3.2 64bits without SUPERIO and PDC
+console. No pb to rebuild but it failled to boot on the b2k :( (and no console
+meana no mean to analyse :( ). 
 
-ftp? uncompressed? Well I'm impressed ...
-The fastest 100MBit link I ever had was 7MBytes/s.
+Sorry to have no more help, but for such kind of pb I read (some time ago
+on lwn) that some one was working on a 'network' console for 2.6 (suporting
+at this time tulipe's nic among others iirc). I try to contact him but never
+get any feedback. Is somebody known the status of this patch in 2.6?
 
-> I'll take another look at why DMA isn't working.
-> It looks like NS87415 driver has the support in place.
-> The key bit seems to be init_hwif_ns87415().
+Thanks,
+    Joel
 
-Thanks alot,
-
- Max
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
