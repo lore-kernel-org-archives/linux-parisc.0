@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BDF704838
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 00:41:32 -0700 (MST)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel7.hp.com (Postfix) with ESMTP id 273981C01B82
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 02:41:32 -0500 (EST)
-Date: Sun, 9 Feb 2003 00:40:14 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200302090740.AAA17008@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Cc: grundler@dsl2.external.hp.com
+Date: Sun, 9 Feb 2003 01:11:21 -0700
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030209081121.GA31855@dsl2.external.hp.com>
+References: <20030208222242.AA3554829@dsl2.external.hp.com> <20030208222746.GB19683@dsl2.external.hp.com> <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] re: [parisc-linux-cvs] linux grundler
+In-Reply-To: <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +20,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> o moved disable_sr_hash() from SMP to common code path so all
-> CPU's (including monarch) have this disabled.
+On Sat, Feb 08, 2003 at 11:23:03PM +0000, Matthew Wilcox wrote:
+> Is all that's needed to take the latest binutils from debian unstable
+> and rebuild it on woody?
 
-Huh? You didn't seriously think the monarch still had sr hashing enabled
-did you? Believe me, shared memory wouldn't work at all if that was the
-case.
+I've rebuilt "unstable" binutils + ldwa,o patch on "testing" and dropped
+them on
+	ftp://ftp.parisc-linux.org/unofficial-debs/
 
-This change is wrong. init_per_cpu() is called too early for the monarch.
-disable_sr_hashing relies on the boot cpu data to be initialized to
-determine which code should be used to disable the sr hashing.  It might
-work for PA2.0, since it is the default case, but you probably broke all
-of the other processors.
+-rw-r--r--    1 grundler ftpadmin   478700 Feb  8 23:51 binutils-dev_2.13.90.0.16-1_hppa.deb
+-rw-r--r--    1 grundler ftpadmin  3311272 Feb  8 23:53 binutils-multiarch_2.13.90.0.16-1_hppa.deb
+-rw-r--r--    1 grundler ftpadmin  2307548 Feb  8 23:54 binutils_2.13.90.0.16-1_hppa.deb
 
-disable_sr_hashing() is called for the monarch in mm/init.c in
-setup_bootmem().
+They install fine on my c3k though TBH, I haven't tried to use them.
+(I did use the tarballs before posting earlier).
+If someone wants to repeat that exercise for woody, that would be
+fine with me.
 
-John Marvin
-jsm@fc.hp.com
+/me checks off an item from his TODO list
+
+Apperently, we still have problems with timers or timer code on PA20 SMP.
+Still haven't been able to isolate this to any peice of code. :^(
+
+g'night,
+grant
