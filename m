@@ -1,31 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pony.its.uwo.ca (pony.its.uwo.ca [129.100.2.63])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9EEB9482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 14:51:22 -0600 (MDT)
-Date: Wed, 4 Jul 2001 16:51:17 -0400 (EDT)
-From: "y.   han" <yhan@uwo.ca>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+Received: from pop03-srv.alltel.net (pop03.alltel.net [166.102.165.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4FCA0482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 14:52:26 -0600 (MDT)
+Received: from [162.39.130.137] by pop03-srv.alltel.net with ESMTP
+          id <20010704204942.EMTY5378.pop03-srv.alltel.net@[162.39.130.137]>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Wed, 4 Jul 2001 15:49:42 -0500
+Date: Wed, 4 Jul 2001 15:50:58 -0500 (CDT)
+From: "T. Martin" <catfish@alltel.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [Continued off-list] Re: [parisc-linux] request to boot (denied)
-In-Reply-To: <20010704155338.E11831@megatonmonkey.net>
-Message-ID: <Pine.SOL.4.21.0107041647530.13573-100000@panther.uwo.ca>
+Subject: Re: [parisc-linux] 0.9.1 ISO Release
+In-Reply-To: <20010704085904.78D77D15B5@mail.esiee.fr>
+Message-ID: <Pine.LNX.4.10.10107041550200.7790-100000@jesse.crash.lan>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks for the reply,
-
-We fixed the problem mentioned before.
-
-A new problem is that after the hp box start to boot, it branches to
-kernel and then the screen goes black. We cannot see anything, and we
-tried to serial console, but cannot see any activity.  It looks like hang,
-any idea?
+Anyone have a US mirror with it yet? I can't get it from france its very
+lagged. 
+Thanks 
+Terry
 
 
 
+On Wed, 4 Jul 2001, marteau wrote:
 
-
->>>>>>>   
-Department of Computer Science
-University of Western Ontario
+> Hi all,                                                               
+>                                                                       
+> 	You can find the latest ISO (0.9.1) at                               
+> http://mkhppa1.esiee.fr/download.html                                 
+> As you will see, the kernel gets the last changes and there is no more
+> serial or sti version...                                              
+>                                                                       
+> 	Try it and please feedback to the mailing list...                    
+>                                                                       
+> Regards, Thomas                                                       
+> ESIEE Team                                                            
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
