@@ -1,49 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C43E54A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Feb 2001 07:28:44 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id BAA08350;
-	Fri, 23 Feb 2001 01:28:36 +1100
-Date: Fri, 23 Feb 2001 01:28:36 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23F664A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Feb 2001 07:42:54 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 91A82B005; Thu, 22 Feb 2001 14:43:31 +0000 (GMT)
+Date: Thu, 22 Feb 2001 14:43:31 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: Matthew Wilcox <matthew@wil.cx>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: schedule_tail
-In-Reply-To: <Pine.LNX.4.21.0102222150310.14557-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0102230114130.14557-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20010222144331.G1129@linuxcare.com>
+References: <Pine.LNX.4.21.0102222150310.14557-100000@front.linuxcare.com.au> <Pine.LNX.4.21.0102230114130.14557-100000@front.linuxcare.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0102230114130.14557-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Fri, Feb 23, 2001 at 01:28:36AM +1100
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 22 Feb 2001, Alan Modra wrote:
+On Fri, Feb 23, 2001 at 01:28:36AM +1100, Alan Modra wrote:
+> This is really crazy (or I am).  I replaced the calls to schedule_tail
 
-> First time in do_fork, I see
->  p = 0x14ff0000, current = 0x102cc000 (= init_task)
-> 
-> first call to ret_from_kernel_thread gives
->  r26 = 0x102cc000, r30 = 0x14ff0500, and called func = init
-> 
-> so that checks out OK.  Disassmbling schedule_tail doesn't show anything
-> bad.
-> 
->  copy r3,r1
->  copy sp,r3
->  stw,ma r1,0x40(sp)
->  ldw 0x28(r26),r19
->  depwi 0,27,1,r19
->  stw r19,0x28(r26)
->  ldo 0x40(r3),sp
->  bv (rp)
->  ldw,mb -0x40(sp),r3
+This helps for me.  b,l disassembles as call, not b,l ...,rp:
 
-This is really crazy (or I am).  I replaced the calls to schedule_tail
-with a call to foo_schedule_tail, a local copy of the above without the
-bit twiddling.  Still crashed.  OK, so maybe the stack is messed up.
-Turn foo_schedule_tail into
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/entry.S,v
+retrieving revision 1.72
+diff -u -r1.72 entry.S
+--- entry.S     2001/02/20 02:19:52     1.72
++++ entry.S     2001/02/22 14:33:43
+@@ -509,7 +509,7 @@
+ 
+        /* Call schedule_tail first though */
+ 
+-       b,l     schedule_tail, %r2
++       bl      schedule_tail, %r2
+        ldo     64(%r30), %r30
+ 
+        ldo     -64(%r30), %r30
+@@ -1790,7 +1790,7 @@
+ 
+        /* Set the return value for the child */
+ child_return:
+-       b,l     schedule_tail, %r2
++       bl      schedule_tail, %r2
+        ldo     64(%r30), %r30
+ 
+        ldo     -64(%r30), %r30
 
-foo_schedule_tail:
-  bv (%rp)
-  nop
 
-It crashes!!  Remove the calls, and it's OK.  What????
+Richard
