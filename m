@@ -1,37 +1,48 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA19500
-	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 13:31:35 -0700
-Received: from dualcel400 ([141.140.106.33])
- by macalester.edu (PMDF V5.2-32 #38670)
- with SMTP id <01JZELP04JXG002OCT@macalester.edu> for
- parisc-linux@thepuffingroup.com; Sat, 27 Jan 2001 14:35:34 CDT
-Date: Sat, 27 Jan 2001 17:46:01 +0100
-From: Rinux-Iternet <rinux@iternet.it>
-Subject: Re: [parisc-linux]
-To: Josiah Carlson <jcarlson@macalester.edu>
-Resent-message-id: <3A7330B535B.2E02JCARLSON@smtp.macalester.edu>
-Message-id: <003101c08880$a6542e20$f396953e@rinux>
-MIME-version: 1.0
-Content-type: text/plain; charset=US-ASCII
-References: <001501c087f4$6d378920$1e9c953e@rinux>
- <3A72155537A.E490JCARLSON@smtp.macalester.edu>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id DAA25223
+	for <parisc-linux@puffin.external.hp.com>; Sun, 28 Jan 2001 03:13:56 -0700
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA24625;
+	Sun, 28 Jan 2001 21:15:57 +1100
+Date: Sun, 28 Jan 2001 21:15:57 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+cc: parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Usage of __attribute__?
+In-Reply-To: <200101270948.CAA00365@udlkern.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0101282110510.24446-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+List-ID: <linux-parisc.vger.kernel.org>
 
-Anyone else have this problem?
+On Sat, 27 Jan 2001, John Marvin wrote:
 
+> If I directly declare the type as follows:
+> 
+>     typedef int _lt_spinlock_t __attribute__((aligned(16)));
+> 
+> then EVERY int that follows has the aligned 16 attribute, e.g. just
+> declaring "int tmp;" gives tmp a 16 byte alignment. So, is that what
+> you would expect from my above declaration?
 
-Forwarded by Josiah Carlson <jcarlson@macalester.edu>
----------------- Original message follows ----------------
- From: Rinux-Iternet <rinux@iternet.it>
- To: Josiah Carlson <jcarlson@macalester.edu>
- Date: Sat, 27 Jan 2001 17:46:01 +0100
- Subject: R: [parisc-linux]
+Hi John,
+  I don't see this behaviour.  I tried
 
+typedef int _lt_spinlock_t __attribute__ ((aligned (16)));
+int a;
+int b;
+_lt_spinlock_t c;
+int d;
 
-excellent for info about linux setup.
+and got
 
-I have a serious problem:
+	.comm	a,4,4
+	.comm	b,4,4
+	.comm	c,4,16
+	.comm	d,4,4
 
-I cannot go in boot menu' pressing |esc| key.
-my parisc boot directly from scsi hd and not from cd.
-How can I use the boot menu??
-regards
+ie. as expected.  Can you post a testcase and version of gcc you used?
+
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
