@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0DAA04847
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 09:47:49 -0700 (MST)
-To: Matthias Klose <doko@cs.tu-berlin.de>, carlos@baldric.uwo.ca,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <OF57EB6BBE.3537F19D-ONC1256B66.005252D2@com>
-From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
-Date: Wed, 20 Feb 2002 17:53:32 +0100
+Received: from almso2.proxy.att.com (almso2.att.com [192.128.166.71])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6C0A74851
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 09:59:23 -0700 (MST)
+Received: from attrh1i.attrh.att.com ([135.71.62.10])
+	by almso2.proxy.att.com (AT&T IPNS/MSO-3.0) with ESMTP id g1KGxK915726
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 11:59:21 -0500 (EST)
+Received: from occlust04evs1.ugd.att.com (135.71.164.12) by attrh1i.attrh.att.com (5.5.029)
+        id 3C62A10C000A9775 for parisc-linux@lists.parisc-linux.org; Wed, 20 Feb 2002 11:59:15 -0500
+Date: Wed, 20 Feb 2002 11:59:15 -0500
+Message-ID: <28F05913385EAC43AF019413F674A0170148AC2B@OCCLUST04EVS1.ugd.att.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] gcc-3.1 && k-2.4.17-pa27 50/50(was Re: hppa-linux gcc-3.0.3:)
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C1BA2F.EDA5BAC2"
+From: "Holst, Richard G (Dick), PROSH" <dholst@att.com>
+To: "parisc users" <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] Parisc linux on a D machine
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,86 +26,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+This is a multi-part message in MIME format.
 
-Test  summary: I follow the recipe to build a kernel with binutils snapshot
-20020218; gcc snapshot 20020218; glibc debian sources and last cvs kernel
-2.4.17-pa27 and palo .
+------_=_NextPart_001_01C1BA2F.EDA5BAC2
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I do not notice compile error :-)) (Hmm only note in dmesg  some
-do_page_fault() pid=3D... command=3D'conftest' ... during glibc rebuild, I =
-am
-not sure; I do not find any trace in my logs? ).
-
-Also I install this kernel and reboot the server with it.
-
-Well it boot well and seems to run well in mutli-user mode with minimun
-daemon running.
-
-Just inetd seems to make the system panic after a simple telnet:
-...
-Kernel fault: Code=3D15 regs=3D...
-...
-
-David is it the problem of bootstrap you spoke about binutils?
-
-Matthias very sorry but I do not yet find your new package(s) (neither on
-ftp://ftp.debian.org/debian/pool/main/g/gcc* neither on ftp.de.debian.org).
-Must I be more patient? (I do not know anything about debian life cycle pkg
-:( )
-Hmm I do not find more where you upload your snapshot 20020216?
-
-Thanks a lot to all for all info,
-     Joel
+When I boot my D server running parisc LInuxLinux .9.3. the graphics =
+monitor is the console. I set the hardware path for the console to the =
+hardware address of the graphics (vga) card. I get the TUX penguin in =
+the upper left of the monitor and all the boot message and all the rc =
+startup messages. Just when the system is ready to give me a login =
+prompt, the out of the console shift to my serial terminal. I would =
+appear that I need a line in my /etc/inittab that will cause the login =
+prompt to appear on the graphics monitor. Can someone tell me how to get =
+the login prompt to appear on my graphics monitor instead of my serial =
+terminal please.
 
 
-
-
-                                                                           =
-                                       =20
-                    Matthias                                               =
-                                       =20
-                    Klose                To:     "Jo=EBl Soete" <jso@europa=
-y.com>                                   =20
-                    <doko@cs.tu-b        cc:     parisc-linux@lists.parisc-=
-linux.org                              =20
-                    erlin.de>            Subject:     Re: [parisc-linux] Re=
-: hppa-linux gcc-3.0.3:                =20
-                                                                           =
-                                       =20
-                    19-02-02                                               =
-                                       =20
-                    10:57 PM                                               =
-                                       =20
-                                                                           =
-                                       =20
-                                                                           =
-                                       =20
-
-
-
-
-Jo=EBl Soete writes:
->
-> David,
->
-> It seems Ok: just finished the first step of compiling gcc (snapshot
-dated
-> 020218 from sources.redhat.com because I do not find where Matthias
-> uploaded its snapshot :( ) with echo $? -> after make :-).
-
-It's now in the unstable/sid distribution.
+Dick Holst
 
 
 
 
 
+------_=_NextPart_001_01C1BA2F.EDA5BAC2
+Content-Type: text/x-vcard;
+	name="Holst, Richard G (Dick), GOVMK.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Holst, Richard G (Dick), GOVMK.vcf
+Content-Disposition: attachment;
+	filename="Holst, Richard G (Dick), GOVMK.vcf"
 
+QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpOOkhvbHN0O1JpY2hhcmQNCkZOOkhvbHN0LCBSaWNo
+YXJkIEcgKERpY2spLCBHT1ZNSw0KT1JHOkJNIChBVCZUIEJVU0lORVNTIFNFUlZJQ0VTKTtHT1ZN
+SyAoQUJTLUdPVkVSTk1FTlQgTUtUUykNClRJVExFOlNFTklPUiBURUNITklDQUwgU1RBRkYgTUVN
+QkVSDQpURUw7V09SSztWT0lDRTorMSA3MzIgNDIwLTQ4NDQNClRFTDtDRUxMO1ZPSUNFOiANClRF
+TDtQQUdFUjtWT0lDRTogDQpBRFI7V09SSzo7RTUtM0QxODsyMDAgUyBMQVVSRUwgQVZFO01JRERM
+RVRPV047Tko7MDc3NDgtMDAwMDtVTklURUQgU1RBVEVTDQpMQUJFTDtXT1JLO0VOQ09ESU5HPVFV
+T1RFRC1QUklOVEFCTEU6RTUtM0QxOD0wRD0wQTIwMCBTIExBVVJFTCBBVkU9MEQ9MEFNSURETEVU
+T1dOLCBOSiAwNzc0OC0wMDAwPTBEPTBBVU5JVEVEIFNUQT0NClRFUw0KRU1BSUw7UFJFRjtJTlRF
+Uk5FVDpkaG9sc3RAYXR0LmNvbQ0KUkVWOjIwMDAxMDIzVDE5NDgzM1oNCkVORDpWQ0FSRA0K
 
-**********************************************************************
-This e-mail and any attachments to it may contain confidential information =
-which is strictly intended for the use of the authorised recipient.  If you=
- have received this e-mail in error, please delete it and notify the sender=
- by replying to this e-mail.
-Thank you for your co-operation.
-**********************************************************************
+------_=_NextPart_001_01C1BA2F.EDA5BAC2--
