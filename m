@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1AE3E4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Oct 2002 09:31:52 -0700 (MST)
-Date: Sun, 27 Oct 2002 17:31:47 +0100
-Subject: Re: [parisc-linux] A few questions
-To: posix <p0six@gmx.net>
-Cc: parisc-linux@lists.parisc-linux.org
-From: Thibaut VARENE <varenet@esiee.fr>
-Content-Type: text/plain; charset=iso-8859-1
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7CDAD482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Oct 2002 11:50:38 -0700 (MST)
+Message-ID: <3DBC44F9.1010006@freebel.net>
+Date: Sun, 27 Oct 2002 19:56:41 +0000
+From: Joel Soete <joel.soete@freebel.net>
 MIME-Version: 1.0
-In-Reply-To: <000501c27dc6$4f18d7e0$0100a8c0@posix2paebsbtq>
-Message-Id: <20021027163147.CE00C49C0B@mail.esiee.fr>
+To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
+Cc: Stephan <stephan@itp.bg>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] ext3 /
+References: <20021027092756.D8B974862@dsl2.external.hp.com> <20021027093355.GD9302@charite.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +22,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
--------------------
-> Hi! Again
+
+Ralf Hildebrandt wrote:
+> On Sun, Oct 27, 2002 at 11:28:04AM +0200, Stephan wrote:
 > 
-> Why doesn't my system like to boot parisc-linux from the cd?
-> It "hangs" after printing HPMC and a bunch of adresses to the 
-screen :(
+>>Hello,
+>>/dev/sda1   *         1        15     61814   f0  Linux/PA-RISC boot
+>>/dev/sda2            16       441   1756398   83  Linux
+>>/dev/sda3           442       562    498883   82  Linux swap
+>>/dev/sda4           563      1017   1875965   83  Linux
+>>it is my partitions of my linux
+>>Can I make /dev/sda2 which is / partition ext3 or reiserfs? i.e. journaling
+>>FS
+> 
+> 
+> Yes, why not?
+> 
+> tune2fs -j /
 
-Have you checked md5sum ?
-Are you sure your CD is properly burned ?
-Are you sure your CD-ROM drive is working properly and supported ?
+Afaik palo does not support reiserfs; if you boot from your kernel 
+located into /boot it could be a problem !?
 
-Please search the mailing-list archive, this question has been asked 
-several times.
+> 
+>>After I made dist-upgrade 1 week ago, my uname don't works, if I write uname
+>>-a there is segmentation fault, any ideas?
+> 
+> 
+> I filed a bug report a few days ago. Check the Debian bug database.
+> 
+Yes I also test it and it works fine; thanks a lot
 
-And please, do not mail me personnaly. This is not a private lesson.
-
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+Cheers,
+	Joel
