@@ -1,13 +1,15 @@
-From: "Matej Martini" <calibrator@gmx.net>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] C3600 install
-Date: Sat, 12 Jun 2004 22:12:20 +0200 (MEST)
-Message-ID: <26521.1087071140@www66.gmx.net>
-References: <20040612173138.GC19250@tausq.org>
+Date: Sun, 13 Jun 2004 14:19:53 -0600
+Message-ID: <20040613201953.GA28264@colo.lackof.org>
+References: <20040612173138.GC19250@tausq.org> <26521.1087071140@www66.gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Matej Martini <calibrator@gmx.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <26521.1087071140@www66.gmx.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,43 +20,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > Searching for devices...
+On Sat, Jun 12, 2004 at 10:12:20PM +0200, Matej Martini wrote:
+> > This is actually a kernel problem; I also see this.... I talked to Grant
+> > about this a bit, but we haven't reached a good conclusion. If you can
+> > find a 2.6 based install, it should work.....
+
+We need to shut down any devices the PDC has left in a state
+where it might do DMA *Before* reprogramming the IOMMU.
+Knowing which devices to shutdown this early and how to access
+then is non-trivial.
+
 > > 
-> >
->
----------------------------------------------------------------------------
+> > this is the bit that needs fixing, in arch/parisc/kernel/inventory.c...
+> > with this it should boot.
 > > 
-> > At this point the machine seems to hang. As mentioned above this is my
-> first
-> > PARISC box. I'm not that familiar with the hppa architecture. Maybe it's
-> > just a silly thing I haven't noticed. So if anyone can give me a hint I
-> > would be glad...
-> 
-> This is actually a kernel problem; I also see this.... I talked to Grant
-> about this a bit, but we haven't reached a good conclusion. If you can
-> find a 2.6 based install, it should work.....
-> 
-> this is the bit that needs fixing, in arch/parisc/kernel/inventory.c...
-> with this it should boot.
-> 
-> -       pdc_suspend_usb();
-> +/*     pdc_suspend_usb(); */
-> 
-> randolph
-> -- 
-> Randolph Chung
-> Debian GNU/Linux Developer, hppa/ia64 ports
-> http://www.tausq.org/
-> 
+> > -       pdc_suspend_usb();
+> > +/*     pdc_suspend_usb(); */
 
-Thanks for pointing me to the right direction :)
+Yeah - this is a "trivial" fix for a difficult problem.
+An alternative solution would be to disconnect all USB devices.
+I'm hoping firmware doesn't enable DMA for USB ports if it doesn't find
+anything.
 
-Matej Martini
-
--- 
-+++ Jetzt WLAN-Router für alle DSL-Einsteiger und Wechsler +++
-GMX DSL-Powertarife zudem 3 Monate gratis* http://www.gmx.net/dsl
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
