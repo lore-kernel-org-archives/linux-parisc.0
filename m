@@ -1,61 +1,55 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tele-post-20.mail.demon.net (tele-post-20.mail.demon.net [194.217.242.20])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D7D6B482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 22:11:19 -0600 (MDT)
-Received: from inane.demon.co.uk ([193.237.110.216] helo=acheron)
-	by tele-post-20.mail.demon.net with smtp (Exim 2.12 #2)
-	id 15dl4w-000BOl-0K
-	for parisc-linux@lists.parisc-linux.org; Mon, 3 Sep 2001 04:11:18 +0000
-Message-ID: <001401c1342e$66f29b40$1500000a@lan>
-From: "Admin" <admin@inane.demon.co.uk>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Mon, 3 Sep 2001 05:10:34 +0100
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0011_01C13436.C31E3660"
-Subject: [parisc-linux] system calls
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 12EB9482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  2 Sep 2001 22:16:42 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15dlA8-0008Uv-00; Mon, 03 Sep 2001 05:16:40 +0100
+Date: Mon, 3 Sep 2001 05:16:40 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Admin <admin@inane.demon.co.uk>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] system calls
+Message-ID: <20010903051640.A5126@parcelfarce.linux.theplanet.co.uk>
+References: <001401c1342e$66f29b40$1500000a@lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <001401c1342e$66f29b40$1500000a@lan>; from admin@inane.demon.co.uk on Mon, Sep 03, 2001 at 05:10:34AM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+On Mon, Sep 03, 2001 at 05:10:34AM +0100, Admin wrote:
+> How does PA-RISC trap to the OS during syscalls.
+> 
+> x86 uses trapgates and long-jumps, sparc uses traps and MIPs uses jumps.
+> 
+> I'm wondering what the set of instructions are to initiate a system call.
 
-------=_NextPart_000_0011_01C13436.C31E3660
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+we use a gateway page in a different space.  Here's glibc's implementation
+of syscall:
 
-How does PA-RISC trap to the OS during syscalls.
+int
+syscall (int sysnum, int arg0, int arg1, int arg2, int arg3, int arg4, int arg5)
+{
+  long __sys_res;
+  {
+    register unsigned long __res asm("r28");
+    LOAD_ARGS_6(arg0, arg1, arg2, arg3, arg4, arg5)
+      asm volatile ("ble  0x100(%%sr2, %%r0)\n\t"
+                    "copy %1, %%r20"
+                    : "=r" (__res)
+                    : "r" (sysnum) ASM_ARGS_6);
+    __sys_res = __res;
+  }
+  if ((unsigned long) __sys_res >= (unsigned long)-4095)
+    {
+    __set_errno(-__sys_res);
+    __sys_res = -1;
+  }
+  return __sys_res;
+}
 
-x86 uses trapgates and long-jumps, sparc uses traps and MIPs uses jumps.
+if you're interested in discussion of what/how/why/etc, there's lots of
+material in the mailing list archives going all the way back to 99.
 
-I'm wondering what the set of instructions are to initiate a system =
-call.
-
--inane
-
-------=_NextPart_000_0011_01C13436.C31E3660
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2614.3500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>How does PA-RISC trap to the OS during=20
-syscalls.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>x86 uses trapgates and long-jumps, =
-sparc uses traps=20
-and MIPs uses jumps.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm wondering what the set of =
-instructions are to=20
-initiate a system call.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>-inane</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0011_01C13436.C31E3660--
+-- 
+Revolutions do not require corporate support.
