@@ -1,50 +1,48 @@
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id BAA20151
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 01:10:57 -0700
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id BAA22725
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 01:51:02 -0700
 Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel2.hp.com (Postfix) with ESMTP id C9BB240A
-	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 03:13:12 -0500 (EST)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id BAA14756 for parisc-linux@puffin.external.hp.com; Wed, 22 Nov 2000 01:11:57 -0700 (MST)
-Date: Wed, 22 Nov 2000 01:11:57 -0700 (MST)
+	by cosrel1.hp.com (Postfix) with ESMTP id D8476233
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 01:53:33 -0700 (MST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id BAA15590 for parisc-linux@puffin.external.hp.com; Wed, 22 Nov 2000 01:52:04 -0700 (MST)
+Date: Wed, 22 Nov 2000 01:52:04 -0700 (MST)
 From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200011220811.BAA14756@udlkern.fc.hp.com>
+Message-Id: <200011220852.BAA15590@udlkern.fc.hp.com>
 To: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10
+Subject: Re: [parisc-linux] Use of the EI_OSABI field
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Ryan Bradetich wrote:
-> > Do you really want to merget the ccio-rm-dma.c file into Linus's tree?
-> > It is just a reference file used to construct the real ccio-dma.c file ... I
-> > don't believe it is referenced anywhere.
 >
-> Hi Ryan,
-> Yes I do. It is supposed to work for ccio+PCX-W platforms (eg C360).
-> Keeping it arround will document the pro/con's of that approach and
-> give folks who have time (and the right machine) something to experiment
-> with instead of writing it from scratch.  If someone finds an application
-> it's good for (short transactions with low latency requirements perhaps),
-> it's worth having around.
->
-> It's not referenced because I didn't add a CONFIG_CCIO_RM_IOMMU flag
-> or ccio_rm_init() call to drivers/gsc/gsc.c:gsc_init().  You are welcome
-> add this CONFIG flag by hacking arch/parisc/config.in and defconfig.
-> If you do, please add rules which only allow one or the other
-> CONFIG_CCIO* option to be enabled.
->
-Well, personally i'd vote to get rid of it. It works for ONE machine only,
-and MAY have an advantage in some small case. But if we keep it, lets make
-sure that it is real clear that it should NOT be the default choice.
+> BTW, it's not too hard to check .note.ABI-tag.  The linker arranges for a
+> PT_NOTE program header entry to point to it, and the section itself is
+> virtually guaranteed to be read in with the header as it's placed right
+> after the header along with .interp.
 
-It should be marked CONFIG_EXPERIMENTAL, and the text associated with it
-should clearly show that it works on a C360 only. If possible, it should
-also be made clear that ccio-dma.c works for C360, so people who have
-C360's don't think they have to choose ccio-rm-dma.c.
+I didn't say it was difficult, I said it was ugly. It means another
+parisc only change to the machine independent file fs/binfmt_elf.c,
+since the hook provided will not allow this check. Without a change,
+binfmt_elf.c won't be smart enough to differentiate a binary produced
+by Gnu binutils for HP-UX and a binary produced by Gnu binutils for
+Linux, so it will claim both, and then blow up later, rather than
+not claiming the HP-UX binary and allowing it to be claimed by
+an arch dependent binary handler further down the list.
 
-Grant, I hope you are prepared to answer the parisc-linux mailing list
-questions this is going to generate once parisc-linux starts becoming more
-visible.  Another FAQ entry perhaps? :-)
+And binfmt_elf.c does NOT read the program headers in the same read, so
+another read would have to be done (the data should be found in in cache
+rather than going to disk for it). Since we now need both the program
+headers and a section header to determine whether or not we should claim
+the file AND binfmt_elf.c also wants to look at those headers after
+the file is claimed, a small redesign is probably in order (rather than
+re-reading the headers). I'm not sure whether or not Linus would buy
+that.
+
+So, I guess I'll pursue the interpreter field instead, since that is
+what sparc is doing (i.e. they have their own sparc only code in
+binfmt_elf.c). Since that will be an easier sell. I need to do more
+research here. I suspect that statically linked binaries are not going
+to allow this solution to work though.
 
 John Marvin
 jsm@fc.hp.com
