@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dc-mx12.cluster1.charter.net (dc-mx12.cluster1.charter.net [209.225.8.22])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89C24482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Sep 2002 15:50:03 -0600 (MDT)
-Message-ID: <3D77D183.2080905@charter.net>
-Date: Thu, 05 Sep 2002 17:49:55 -0400
-From: "B. Douglas Hilton" <bdhilton@charter.net>
+Received: from web12505.mail.yahoo.com (web12505.mail.yahoo.com [216.136.173.197])
+	by dsl2.external.hp.com (Postfix) with SMTP id DCCC3482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Sep 2002 15:58:18 -0600 (MDT)
+Message-ID: <20020905215817.13651.qmail@web12505.mail.yahoo.com>
+Date: Thu, 5 Sep 2002 14:58:17 -0700 (PDT)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] C200 Voodoo2 Progress Report
+To: palinux <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <3D77D183.2080905@charter.net>
 MIME-Version: 1.0
-To: palinux <parisc-linux@lists.parisc-linux.org>,
-	debian-hppa@lists.debian.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] C200 Voodoo2 Progress Report
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,38 +21,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I have gotten my C200 back online and started some preliminary
-work with the Voodoo2 PCI card. I currently have it plugged into
-one of the 5V/32bit slots which may or may not be optimal.
+And I'm just happy that I got X/KDE to work on the built in graphics
+card on my C180...finally.  Keep it up since I have a Voodoo2 available
+to try on my C180 if you're successful.
 
-Anyways,
+derek
 
-1. Linux Kernel 2.4.19-pa2 sstfb Voodoo1/2 framebuffer
+--- "B. Douglas Hilton" <bdhilton@charter.net> wrote:
+> I have gotten my C200 back online and started some preliminary
+> work with the Voodoo2 PCI card. I currently have it plugged into
+> one of the 5V/32bit slots which may or may not be optimal.
+> 
+> Anyways,
+> 
+> 1. Linux Kernel 2.4.19-pa2 sstfb Voodoo1/2 framebuffer
+> 
+>   Well, the kernel compiled with the sstfb without
+>   any errors. When I booted I got a black and white
+>   checkerboard pattern on the Voodoo2 monitor. I had
+>   disabled the stifb console, thinking that the kernel
+>   might pick the sstfb for a console, but it didn't.
+>   Just blankness for a while, then a checkerboard
+>   pattern.
+> 
+>   I think this is encouraging and I think it is working.
+>   I'm currently recompiling and will post some more news
+>   later as I experiment some more with it. Next I will
+>   try and put a console on the sstfb or even try running
+>   X on it.
+> 
+> 
+> 2. glide3-alpha-0.cvs.20010711
+> 
+>   This is the Debian source for Glide3 on the Alpha arch,
+>   which is also big-endian. Initial compilation failed in
+>   multiple places about missing sys/io.h which I have
+>   located a file of that name in /usr/include/asm. I'll
+>   see if I can figure out how best to correct this and try
+>   again.
+> 
+> 
+> Cheers!
+> - Doug
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-  Well, the kernel compiled with the sstfb without
-  any errors. When I booted I got a black and white
-  checkerboard pattern on the Voodoo2 monitor. I had
-  disabled the stifb console, thinking that the kernel
-  might pick the sstfb for a console, but it didn't.
-  Just blankness for a while, then a checkerboard
-  pattern.
 
-  I think this is encouraging and I think it is working.
-  I'm currently recompiling and will post some more news
-  later as I experiment some more with it. Next I will
-  try and put a console on the sstfb or even try running
-  X on it.
-
-
-2. glide3-alpha-0.cvs.20010711
-
-  This is the Debian source for Glide3 on the Alpha arch,
-  which is also big-endian. Initial compilation failed in
-  multiple places about missing sys/io.h which I have
-  located a file of that name in /usr/include/asm. I'll
-  see if I can figure out how best to correct this and try
-  again.
-
-
-Cheers!
-- Doug
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Finance - Get real-time stock quotes
+http://finance.yahoo.com
