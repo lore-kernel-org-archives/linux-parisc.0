@@ -1,19 +1,16 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9773048CA
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3EAA9484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 11 Mar 2004 11:57:02 -0700 (MST)
-Date: Thu, 11 Mar 2004 13:42:39 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
-	fixes GLRO changes.
-Message-ID: <20040311184239.GC24266@baldric.uwo.ca>
-References: <20040309150318.GD22721@baldric.uwo.ca>
-	<404EC1C600000B2D@ocpmta1.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <404EC1C600000B2D@ocpmta1.freegates.net>
+	Fri, 12 Mar 2004 08:32:39 -0700 (MST)
+Date: Fri, 12 Mar 2004 16:32:34 +0100
+Message-ID: <404EC1C600002A41@ocpmta1.freegates.net>
+In-Reply-To: <20040311184239.GC24266@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -24,57 +21,90 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Mar 10, 2004 at 03:47:09PM +0100, Joel Soete wrote:
-> The glibc cvs 2.3.3 cvs dated 20040308 + your patch compiles well (just this
-> time I enable profiling) :).
+C.,
 
-Excellent.
+>> As I foreseen to use this disk to other test on the N4k, I grab the list
+>> of packages installed (dpkg --get-selection > mnt/chroot/var/tmp/Selection.doc)
+>> and chroot to /mnt/chroot to install previously mentioned pkg list. All
+works
+>> fine (just 3 pkg failled to install because no /proc available in chroot
+>> .
+>
+>Try binding your chroot if you want to expose your process list to the
+>chroot 'mount -o bind /proc /mnt/chroot/proc
+
+That works fine (thanks).
  
-> As I foreseen to use this disk to other test on the N4k, I grab the list
-> of packages installed (dpkg --get-selection > /mnt/chroot/var/tmp/Selection.doc)
-> and chroot to /mnt/chroot to install previously mentioned pkg list. All works
-> fine (just 3 pkg failled to install because no /proc available in chroot).
+[snip]
 
-Try binding your chroot if you want to expose your process list to the
-chroot 'mount -o bind /proc /mnt/chroot/proc
- 
-> In the same time I drive a make -k check and just get additional Errors:
-> [...]
-> make[2]: *** [/Develop/parisc-linux/build/glibc/libio/tst-mmap-eofsync.out]
-> Error 1
-> make[2]: *** [/Develop/parisc-linux/build/glibc/libio/tst-mmap-fflushsync.out]
-> Error 1
+>That should fix the mmap failures, please check to see if the other two
+>failures are timeout related.
 
-Your kernel is too old, jejb fixed these.
+I now rebuild a 2.6.4-pa1 with this same libc  and reboot the system with
+this kernel (you had right it was still runing an old 2.4.21-pa2 :( ) and
+here are the make -k check results:
+without TIMEOUTFACTOR:
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-float.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-double.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-ifloat.out] Error
+1
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/tst-strtod.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/bug-strtod.out] Error
+1
+make[1]: *** [stdlib/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/posix/tst-regex] Error 1
+make[1]: *** [posix/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/linuxthreads/ex10] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/linuxthreads/ex11] Error
+1
+make[1]: *** [linuxthreads/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/resolvfail] Error 1
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/tst-tls13.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/tst-dlmodcount.out] Error
+139
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
 
-> make[1]: *** [libio/tests] Error 2
-> make[2]: [/Develop/parisc-linux/build/glibc/posix/annexc.out] Error 1 (ignored)
-> make[2]: *** [/Develop/parisc-linux/build/glibc/elf/multiload.o] Error 1
-> make[2]: *** [/Develop/parisc-linux/build/glibc/elf/origtest.o] Error 1
-> [...]
+with export TIMEOUTFACTOR=100
 
-The 'annexc.out' is an expected failure. The other two failures are new
-and unknown, they aren't segfaulting which is good (Error 1), they just
-aren't completing for some reason. Most likely they are taking too long
-and timeout before the 2 second maximum. If they *are* timing out, set
-TIMEOUTFACTOR=10 or 100 in your environment, this scales the test
-timeout.
- 
-> I have two hypothesis:
-> a. it is the first time I added enable-profile;
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-float.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-double.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-ifloat.out] Error
+1
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/tst-strtod.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/bug-strtod.out] Error
+1
+make[1]: *** [stdlib/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/posix/tst-regex] Error 1
+make[1]: *** [posix/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/linuxthreads/ex10] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/linuxthreads/ex11] Error
+1
+make[1]: *** [linuxthreads/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/resolvfail] Error 1
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/tst-dlmodcount.out] Error
+139
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
 
-No, profiling works.
+So only [/Develop/parisc-linux/build/glibc/elf/tst-tls13.out] seems to be
+related to TIMEOUTFACTOR
 
-> b. I forget to build first gcc(3.3) tool with your gcc patch (gcc/config/pa/fptr.c)
+hth,
+Joel
 
-No, I fixed this in glibc such that gcc doesn't have to be recompiled.
-If I hand't the userspace would have been *completely* broken, since
-function pointer comparisons wouldn't have worked.
- 
-> Now, 2.6.4-rc3-pa0 is just available, I will so try first to build it in
-> the chroot disk...
-
-That should fix the mmap failures, please check to see if the other two
-failures are timeout related.
-
-c.
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
