@@ -1,15 +1,16 @@
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sources.redhat.com (sources.redhat.com [66.187.233.205])
-	by dsl2.external.hp.com (Postfix) with SMTP id EB48F4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Mar 2003 22:23:01 -0700 (MST)
-Date: 31 Mar 2003 05:23:01 -0000
-Message-ID: <20030331052301.22572.qmail@sources.redhat.com>
-To: gcc-gnats@gcc.gnu.org
-Cc: parisc-linux@lists.parisc-linux.org, debian-gcc@lists.debian.org
 From: Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
+Date: Sat, 1 Mar 2003 20:59:36 -0800
+Message-ID: <20030302045936.GS11363__40480.1150238656$1416622250$gmane$org@tausq.org>
+References: <15968.40812.741982.606734@gargle.gargle.HOWL> <15969.1828.456001.122737@gargle.gargle.HOWL>
 Reply-To: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] [3.0/3.2/3.3/3.4] Floating point args not correctly loaded for function calls
-Sender: parisc-linux-admin@lists.parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+To: Matthias Klose <doko@cs.tu-berlin.de>
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <15969.1828.456001.122737@gargle.gargle.HOWL>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,60 +21,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Category:       target
->Synopsis:       [3.0/3.2/3.3/3.4] Floating point args not correctly loaded for function calls
->Confidential:   no
->Severity:       serious
->Priority:       medium
->Class:          wrong-code
->Submitter-Id:   net
->Originator:     Randolph Chung <tausq@debian.org>
->Release:        3.3 20030309 (Debian prerelease) (Debian testing/unstable) [and others]
->Environment:
-System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2
-003 parisc64 unknown unknown GNU/Linux
-Architecture: parisc64
+In reference to a message from Matthias Klose, dated Mar 01:
+> Matthias Klose writes:
+> > AFAIK the transition from 3.2 to 3.3 requires recompilation of C++
+> > code due to the changed exception handling (now DWARF2 based). As
+> > libstdc++ in 3.2 and 3.2 have the same soname, how to handle it?
+> > Currently 3.2 is in unstable only. Would you want to start the
+> > recompilation before 3.2 based binaries go to testing?
+> > 
+> > The packaging for 3.3 can be found in the Debian CVS.
+> 
+> You can get test packages from
+> 	http://ftp-master.debian.org/~doko/gcc-3.3/
 
-        <machine, os, target, libraries (multiple lines)>
-host: hppa-unknown-linux-gnu
-build: hppa-unknown-linux-gnu
-target: hppa-unknown-linux-gnu
-configured with: ../src/configure -v --enable-languages=c,c++,f77,objc,ada,treela
-ng --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-inc
-lude-dir=/usr/include/c++/3.3 --enable-shared --with-system-zlib --enable-nls --w
-ithout-included-gettext --enable-__cxa_atexit --enable-sjlj-exceptions --enable-c
-locale=gnu --enable-debug --enable-objc-gc hppa-linux
->Description:
-This one looks similar to 10271, but filing separately because the test case is a bit different. Not sure if it's the same bug or not.
+well.... this is not looking good. after installing these in a freshly
+built sarge chroot, all c++ programs stop working (well, i've only tried
+two -- apt and fakeroot)
 
-At -O2 the floating point argument is not getting loaded into the right registers to pass to fprintf().
->How-To-Repeat:
-$ gcc-3.3 -O2 -o bug bug.c -lm
-$ ./bug
--1.488583e+284
-$ gcc-3.3 -O1 -o bug bug.c -lm
-$ ./bug
-nan
+(btw, small packaging detail, but the libstdc++*-dev package above
+cannot be installed cleanly because it overwrites things in the current
+3.2 package)
 
--------8< bug.c 8<------------
-#include <stdio.h>
-#include <math.h>
-
-void doprint(double d)
-{
-        int i = (int)d;
-        if ((double)i == d) {
-                fprintf(stdout, "%d\n", i);
-        } else {
-                fprintf(stdout, "%e\n", d);
-        }
-}
-
-int main(int argc, char **argv)
-{
-        doprint(log(-8)); /* nan */
-        return 0;
-}
->Fix:
-
->Unformatted:
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
