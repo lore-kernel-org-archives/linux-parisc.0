@@ -1,18 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.cs.tu-berlin.de (mail.cs.tu-berlin.de [130.149.17.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B24E14836
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Jan 2002 22:28:57 -0700 (MST)
-From: Matthias Klose <doko@cs.tu-berlin.de>
+Received: from mta01bw.bigpond.com (mta01bw.bigpond.com [139.134.6.78])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 800B8483D
+	for <parisc-linux@parisc-linux.org>; Mon,  7 Jan 2002 03:08:50 -0700 (MST)
+Received: from piglet.sspl.net.au ([144.135.24.69]) by
+          mta01bw.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id GPKCIA00.E43 for <parisc-linux@parisc-linux.org>; Mon, 7 Jan
+          2002 20:15:46 +1000
+Received: from winnie (winnie. [192.168.11.9])
+	by piglet.sspl.net.au (8.9.3/8.9.3) with SMTP id VAA17551
+	for <parisc-linux@parisc-linux.org>; Mon, 7 Jan 2002 21:08:55 +1100
+Message-ID: <009d01c19763$f1f9c900$090ba8c0@winnie>
+From: "Peter Lavender" <plaven@bigpond.net.au>
+To: "parisc" <parisc-linux@parisc-linux.org>
+Date: Mon, 7 Jan 2002 21:13:24 +1100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <15417.12781.297448.785840@gargle.gargle.HOWL>
-Date: Mon, 7 Jan 2002 06:28:13 +0100
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installation problems on an A500 
-In-Reply-To: <20020107034615.9BFD64839@dsl2.external.hp.com>
-References: <15417.3793.688638.629130@gargle.gargle.HOWL>
-	<20020107034615.9BFD64839@dsl2.external.hp.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] mpg321 on 715/64?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +28,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler writes:
-> > Boot IO Dependent Code (IODC) revision 2
-> > 
-> > IPL error: bad LIF magic.
-> 
-> The image bootp got was not a LIF image.
-> 
-> The easiest way to build a bootable LIF image is to
-> have both linux/ and palo/ source trees from parisc-linux CVS.
-> (or ftp site). Then "make palo" from linux source tree.
-> Resulting LIF image is in palo/lifimage.
-> 
-> I don't think we have any lifimages on the ftp site
-> with recent kernels.
+Hi Everyone,
 
-extracted from ftp://ftp.parisc-linux.org/cd-images/palinux-0.9.3.iso
+thought I'd give mpg321 a try on my 715/64 after installing the .9.3
+release.  The playback is very slow.  CPU useage appeared to be about 33%,
+so it doesn't appear to be taxing it.
 
-and
+The mp3's are encoded at 44khz 128bit.
 
-http://http.us.debian.org/debian/dists/woody/main/disks-hppa/3.0.18-2001-12-21/
+Would this box have a problem in general with running this program, or is
+that I just apt-get install and that's it and I now need to tweak things?
+
+Are these sorts of questions even on topic for this list?
+
+Pete
