@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6FE51482B
-	for <parisc-linux@parisc-linux.org>; Sun, 13 Jan 2002 21:43:44 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16PyyA-0000vC-00; Mon, 14 Jan 2002 04:43:38 +0000
-Date: Mon, 14 Jan 2002 04:43:37 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2E66482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 23:54:22 -0700 (MST)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel9.hp.com (Postfix) with ESMTP id 95491E00314
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 01:54:21 -0500 (EST)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id XAA06768
+	for parisc-linux@lists.parisc-linux.org; Sun, 13 Jan 2002 23:54:21 -0700 (MST)
+Date: Sun, 13 Jan 2002 23:54:21 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200201140654.XAA06768@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] atomic_t
-Message-ID: <20020114044337.B9193@parcelfarce.linux.theplanet.co.uk>
-References: <20020113211508.V9193@parcelfarce.linux.theplanet.co.uk> <willy@debian.org> <20020114040909.87321482A@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020114040909.87321482A@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sun, Jan 13, 2002 at 09:09:09PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,32 +26,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Jan 13, 2002 at 09:09:09PM -0700, Grant Grundler wrote:
-> You are only looking at interactions between atomic_set
-> and atomic_add_return. Aren't there potentialially other
-> types of interactions with other atomic operations?
-> But I don't know. Alan Cox?
+> >
+> > But someone thought it was time to reset the counter. And if
+> > it "never happened", then whoever is looking for 'v == 1' will
+> > never see it.
+>
+> It's a race though; they can't guarantee to see it anyway.
+>
 
-Not on PA... look at <asm/atomic.h>.  There's only 3 primitives, all
-other atomic ops are defined in terms of those.
+Yes, it is a race in that you can't be guaranteed that you will ever see
+the value equal to 1. But you should be guaranteed that it WAS reset.
 
-> > Before step b leads to case 2.  after step d leads to case 1.  between
-> > steps b and d, it's as if the atomic_set _never_happened_.  It results
-> > in v=4, a_a_r returns 4.
-> 
-> I agree with the analysis.
-> 
-> But someone thought it was time to reset the counter. And if
-> it "never happened", then whoever is looking for 'v == 1' will
-> never see it.
+For example:
 
-It's a race though; they can't guarantee to see it anyway.
+    1) Initialize counter to 1.
+    2) Increment counter by 1 each time event "X" occurs using
+       atomic_add_return.
+    3) Reset counter to 1 each time event "Y" occurs using atomic_set.
+    4) Signal an error if the counter ever exceeds some threshold
+       value, i.e. it is an error if too many "X" events occur without
+       and intervening "Y" event.
 
-> Even if that code doesn't exist today, it might exist in the future.
-> I don't want to bet on corner cases with the semantics.
-> Those types of bugs are hard to reproduce and hard to debug.
+In the above scenario you could not be guaranteed that you would ever see
+the counter at one (or any particular value), but you could falsely
+trigger the error condition if the resets were lost (by removing the
+spinlocks from atomic_set).
 
-yeah, wasn't planning on committing.
-
--- 
-Revolutions do not require corporate support.
+John
