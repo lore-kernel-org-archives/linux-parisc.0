@@ -1,31 +1,44 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA01007
-	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 12:49:23 -0700
-Date: Sat, 6 Nov 1999 19:20:23 +0100
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA01082
+	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 12:49:25 -0700
+Date: Sat, 6 Nov 1999 19:33:30 +0100
 From: Philipp Rumpf <prumpf@mathe.stud.uni-erlangen.de>
-To: Alex deVries <adevries@thepuffingroup.com>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Recent changes
-Message-Id: <19991106192023.F11609@mathe.stud.uni-erlangen.de>
-References: <199911030250.TAA16563@puffin.external.hp.com> <Pine.LNX.4.10.9911022309430.5997-100000@vodka.thepuffingroup.com>
+Subject: Re: [parisc-linux] sash commands
+Message-Id: <19991106193330.I11609@mathe.stud.uni-erlangen.de>
+References: <19991105021334.J25252@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.9911022309430.5997-100000@vodka.thepuffingroup.com>
+In-Reply-To: <19991105021334.J25252@mencheca.ch.genedata.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Nov 02, 1999 at 11:14:33PM -0500, Alex deVries wrote:
-> ld: Unsatisfied symbols:
->    hpux_brk (code)
+> cd
+> -chgrp
+> -chmod
+> -chown
+> help
+> -ls
+> -mkdir
+> -pwd
+> -touch
+> -where
 
-Why did the definition of hpux_brk (in kernel/sys_hpux.c) ever vanish ?  Some
-time ago, it looked like this:
+whee.
 
-unsigned long sys_brk(unsigned long addr);
+> -mount is known to not work.  I need to speak to prumpf about why this is.
 
-unsigned long hpux_brk(unsigned long addr)
-{
-        /* Sigh.  Looks like HP/UX libc relies on kernel bugs. */
-        return sys_brk(addr + PAGE_SIZE);
-}
+If I see this correctly this is the 4-argument problem.  Our current (hacked)
+syscall support only supports the register arguments because supporting the
+other ones too just would mean nobody ever got around to fix syscall support :)
+
+If anyone else needs to send me email (or needed in the last two weeks or so),
+please use the new ugly address Philipp.H.Rumpf@mathe.stud.uni-erlangen.de. As
+I don't work for SuSE any more, prumpf@suse.de is very likely to be invalid
+shortly and I am not sure how often I'll be able to check it before.
+
+> Ditto -sync.
+
+what's the problem with sync ?
 
 	Philipp Rumpf
