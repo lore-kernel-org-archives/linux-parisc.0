@@ -1,17 +1,16 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 71F8E4854
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6A6E74854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Apr 2004 10:50:41 -0600 (MDT)
-Date: Mon, 26 Apr 2004 18:36:12 +0200
-Message-ID: <408D378B00000029@ocpmta1.freegates.net>
-In-Reply-To: <OFEE32CD13.5A2A6DCE-ONC1256E82.004D2D75@fonts.de>
+	Mon, 26 Apr 2004 10:52:44 -0600 (MDT)
+Date: Mon, 26 Apr 2004 18:52:40 +0200
+Message-ID: <408D3DDB00000005@ocpmta1.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] Bug in kernel 2.4.23 concerning use of SCSI
-To: JKonrad@linotype.com, parisc-linux@lists.parisc-linux.org
+To: "Grant Grundler" <grundler@parisc-linux.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Cc: 
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: kernel>=2.6.4-rc3 hung or panic on C1[18]0
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,167 +20,28 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello,
+Hi all,
 
-Just for curiosity, can you join a dmesg file.
+I know it shouldn't be the source of the pb but btw I noticed:
 
-Thanks,
+> ncr53c8xx.c:7594:	u_long baddr = map_scsi_single_data(np, cmd);
+
+cmd is a "struct scsi_cmnd *" (the parameter of ncr_scatter)
+
+> sym53c8xx_comm.h:699:static int __map_scsi_sg_data(struct device *dev,
+Scsi_Cmnd *cmd)
+...
+sym53c8xx_comm.h:708:	use_sg = dma_map_sg(dev, cmd->buffer, cmd->use_sg,
+dma_dir);
+
+and here cmd is a "Scsi_Cmnd *" which is so of different type because of
+"typedef struct scsi_cmnd Scsi_Cmnd"
+
+
+What should it be done?
+
+Thanks in advance for your attention,
     Joel
-
-> -- Original Message --
-> To: parisc-linux@lists.parisc-linux.org
-> From: JKonrad@linotype.com
-> Date: Mon, 26 Apr 2004 16:08:58 +0200
-> Subject: [parisc-linux] Bug in kernel 2.4.23 concerning use of SCSI
-> 
-> 
-> Hi,
-
-using kernel 2.4.23-pa3, which I downloaded from http://parisc-linux.org/~rbrad/vmlinux-2.4.23-pa3.bz2
-because I needed MUX support.
-
-Machine is a HP K-200 with three CPUs (although, since this is not an smp
-kernel, should not be important);
-
-> 
-I have a 50 GB SCSI-drive attached to SCSI1 (the Low Voltage Controller where
-the CD-Rom is attached to); Whenever I try to format the partition (50GB,
-the whole disk) I get the following:
-
-> Writing superblocks and filesystem accounting information
->  scsi1 (0:0)
-> Target is suffering from tag starvation.
-> SCSI disk error : host 1 channel 0 id 0 lun 0 return code = 8
-> I/O error: dev 08:41, sector 34078720
-> SCSI disk error : host 1 channel 0 id 0 lun 0 return code = 8
-> I/O error: dev 08:41,
-> sector 34078722
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 04 90 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 04 7c 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants t
->  abort command
->        0x2a 00 05 c4 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 05 ac 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 05 10 00 28 00 00 08 00
-> 
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 05 9c 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 04 00 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
-
-> >        0x2a 00 04 80 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 05 c4 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 05 ac 00 28 00 00 08 00
-> scsi1 (0:0) 
-> ew error handler wants to abort command
->        0x2a 00 05 10 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 05 9c 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 0
->  04 00 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 04 80 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 02 04 00 28 00 00 08 00
-> scsi1 (0:0) New error handle
->  wants to abort command
->        0x2a 00 01 d0 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 01 fc 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 02 00 00 28 00
-> 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 04 8c 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants to abort command
->        0x2a 00 04 f4 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants device r
-> set
->        0x2a 00 04 90 00 28 00 00 08 00
-> scsi1 (0:0) New error handler wants BUS reset, cmd 21e46e00
->        0x2a 00 04 90 00 28 00 00 08 00
-> scsi1: Bus Reset detected, executing command 00000000, slot 00000000,
-> dsp 001704a8[04a8]
-> fai
-> ing command because of reset, slot 21e88654, cmnd 21e46e00
-> failing command because of reset, slot 21e88788, cmnd 21e47e00
-> failing command because of reset, slot 21e888bc, cmnd 21e47800
-> failing command because of reset, slot 21e889f0, cmnd 21e4
-> 200
-> failing command because of reset, slot 21e88b24, cmnd 21e46000
-> failing command because of reset, slot 21e88c58, cmnd 21e46400
-> failing command because of reset, slot 21e88d8c, cmnd 21e46600
-> failing command because of reset, slot 21e88ec0
->  cmnd 21e46a00
-> failing command because of reset, slot 21e88ff4, cmnd 21e47c00
-> failing command because of reset, slot 21e89128, cmnd 21e47a00
-> failing command because of reset, slot 21e8925c, cmnd 21e47600
-> failing command because of reset, sl
-> t 21e894c4, cmnd 21e47400
-> failing command because of reset, slot 21e895f8, cmnd 21e47200
-> failing command because of reset, slot 21e8972c, cmnd 21e47000
->
-> Stack Dump:
-> 21e90740:  0004ff0e 00000000 21e90670 21e90650
-> 21e90730:  00000000 102
-> 8630 00000000 21e90000
-> 21e90720:  00000000 00000000 00000000 21e90000
-> 21e90710:  00000001 00000002 21f36000 00000002
-> 21e90700:  21f3c040 1006c000 103aa010 103aa010
-> 21e906f0:  1032b010 1020e448 103cd000 00000001
->
-> Kernel addresses on the
-> stack:
-
-> Kernel Fault: Code=26 regs=21e90740 (Addr=00000048)
->
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00000000000001001111111100001110 Not tainted
-> r00-03  00000000 103ebab8 10228630 21e8972c
-> r04-07  21e46e00 1020de94 21f60400 000020
-> 0
-> r08-11  000003e8 0000ffff 00002000 00001000
-> r12-15  00001002 21f61ea0 000000fd f0100000
-> r16-19  f0000fe0 f0000074 f000006c 00000080
-> r20-23  00000000 21e889f0 10065860 00000000
-> r24-27  00000000 00000000 21f60404 10316010
-> r28-31  21f6
-> 404 10326c00 21e90740 1020e51c
-> sr0-3   00000000 00000003 00000000 00000003
-> sr4-7   00000000 00000000 00000000 00000000
->
-> IASQ: 00000000 00000000 IAOQ: 102286bc 102286c0
-> IIR: 4a930090    ISR: 00000000  IOR: 00000048
-> CPU:        0   CR30:
-> 21e90000 CR31: 103d8000
-> ORIG_R28: 00000000
-
-Then the machine freezes, I need to reboot. When I make a partition with
-40GB and format it, I get an error message very much the same, but I get
-a prompt and can continue to work. When I use a
-partitio
->  of 30GB, it works. What seems to be the problem here?
-
-Greets,
-
-Jay
-
-
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-lin
-> x
 
 
 
