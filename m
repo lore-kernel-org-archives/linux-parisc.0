@@ -1,45 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA20599
-	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Dec 1999 16:37:28 -0700
-From: Hugo.van.der.Kooij@caiw.nl
-Received: from bastion.hugo.vanderkooij.org (bastion.hugo.vanderkooij.org [192.168.100.254])
-	by bastion.hugo.vanderkooij.org (8.9.1a/8.9.1) with ESMTP id AAA31789
-	for <parisc-linux@thepuffingroup.com>; Fri, 24 Dec 1999 00:39:56 +0100
-Date: Fri, 24 Dec 1999 00:39:55 +0100 (CET)
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Linux port for 800 series
-In-Reply-To: <19991223174735.R12629@thepuffingroup.com>
-Message-ID: <Pine.LNX.4.10.9912240037050.14318-100000@bastion.hugo.vanderkooij.org>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA22585
+	for <parisc-linux@puffin.external.hp.com>; Fri, 24 Dec 1999 01:17:44 -0700
+Message-Id: <38632C7A.BECFE291@cableinet.co.uk>
+Date: Fri, 24 Dec 1999 08:19:06 +0000
+From: Tom Gallagher <teg@cableinet.co.uk>
+Reply-To: teg@cableinet.co.uk
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: taggart@rascal.fc.hp.com, parisc-linux@thepuffingroup.com
+Subject: RE: [parisc-linux] How to set serial console on 712 (fwd) 
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 23 Dec 1999, Matthew Wilcox wrote:
+I seem to have managed to set my console on my 712 to be neither serial
+or graphics.  When HPUX boots it seems to detect the console is serial
+and I get a login prompt and console messages on my serial terminal, but
+it is not really the console as I see no messages from ISL etc on the
+serial port.
+I think I incorrectly typed the console path when I changed it :( .
 
-> On Thu, Dec 23, 1999 at 03:15:23PM -0700, Mark Newnham wrote:
-> > Just a very general question:
-> > 
-> > How is the linux port doing for the 800 series machines? I've a couple of
-> > old boxes crying out for linux....
-> 
-> Depends exactly which models from the 800 series.  Some of them are PA1.0
-> which no-one plans to support.  Some of them have proprietary IO busses
-> that no-one seems interested in working on.  Please have a look at
-> http://www.thepuffingroup.com/parisc/hw.html and see if your machine
-> is in the database.  Some of the machines have different names; you can
-> also look at http://www.thepuffingroup.com/parisc/hp9000_models.html
+The machine boots fine and I can telnet to it etc, but I have no way of
+accessing the PDC/ISL.  Before I managed to do this I upgraded it to the
+lastest firmware.
 
-Nice. But it does not tell what state the different machines are at all.
-It just lists the machines out in the field but not how far the various
-parts are completed.
+Is there some HPUX (10.20) command or trick to alter PDC? ISL?
+information to reset my console to a sane state?
 
-And that is what I would like to learn from the database.
+I have tried unplugging the keyboard/disks/LAN pretty much everything
+really to try to reset it to some factory default.
 
-Hugo.
-
--- 
-Hugo van der Kooij; Oranje Nassaustraat 16; 3155 VJ  Maasland
-hvdkooij@caiw.nl	http://home.kabelfoon.nl/~hvdkooij/
---------------------------------------------------------------
-Use of any of my email addresses for unsollicited (commercial)
-    email is a clear intrusion of my privacy and illegal!
+Thanks.
