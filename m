@@ -1,18 +1,14 @@
-From: Andreas Schwab <schwab@suse.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] 2.4.20-pa27 64bits smp problem!
-Date: Wed, 26 Feb 2003 22:09:27 +0100
-Message-ID: <jed6le3g1k.fsf__19542.8005456508$1416622244$gmane$org@sykes.suse.de>
-References: <3E5BA2910000087F@ocpmta3.freegates.net>
-	<200302261858.h1QIwvSJ019646@hiauly1.hia.nrc.ca>
-	<20030226203722.A16664@parcelfarce.linux.theplanet.co.uk>
+Date: Wed, 26 Feb 2003 16:13:11 -0500 (EST)
+Message-ID: <200302262113.h1QLDC05020030__13475.5144165412$1416622244$gmane$org@hiauly1.hia.nrc.ca>
+References: <20030226203722.A16664@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@parisc-linux.org, gcc@gcc.gnu.org
-To: Matthew Wilcox <willy@debian.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: willy@debian.org, parisc-linux@parisc-linux.org, gcc@gcc.gnu.org
+To: willy@debian.org (Matthew Wilcox)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030226203722.A16664@parcelfarce.linux.theplanet.co.uk> (Matthew
- Wilcox's message of "Wed, 26 Feb 2003 20:37:22 +0000")
+In-Reply-To: <20030226203722.A16664@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Feb 26, 2003 08:37:22 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -23,34 +19,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox <willy@debian.org> writes:
+> On Wed, Feb 26, 2003 at 01:58:57PM -0500, John David Anglin wrote:
+> > > Would I have to open a bug report near gcc with this one?
+> > 
+> > You mean for the errors:
+> > 
+> > joel.c:19: error: initializer element is not constant
+> > joel.c:19: error: (near initialization for `MyRWLock')
+> > joel.c:19: error: initializer element is not constant
+> > 
+> > No, fix the code.  I don't believe you will win this one.  This
+> > feature (extension) was deliberately removed from GCC.
+> 
+> I think it was an error to do so.  I do not see how
+> 
+> 	(spinlock_t) { 1 }
+> 
+> is any more or less constant than
+> 
+> 	{ 1 }
+> 
+> Removing this extension is a bad idea because it removes the ability to
+> do typechecking.  For example,
+> 
+> 	rwlock_t lock = SPIN_LOCK_INIT;
+> 
+> would throw an error with a cast and not without.
 
-|> On Wed, Feb 26, 2003 at 01:58:57PM -0500, John David Anglin wrote:
-|> > > Would I have to open a bug report near gcc with this one?
-|> > 
-|> > You mean for the errors:
-|> > 
-|> > joel.c:19: error: initializer element is not constant
-|> > joel.c:19: error: (near initialization for `MyRWLock')
-|> > joel.c:19: error: initializer element is not constant
-|> > 
-|> > No, fix the code.  I don't believe you will win this one.  This
-|> > feature (extension) was deliberately removed from GCC.
-|> 
-|> I think it was an error to do so.  I do not see how
-|> 
-|> 	(spinlock_t) { 1 }
-|> 
-|> is any more or less constant than
-|> 
-|> 	{ 1 }
+GCC allows the above cast.  What is not ok is a non-arithmentic cast
+operator within an arithmetic constant expression (initializer).  In
+ISO C, cast operators in an arithmetic constant expression shall only
+convert arithmetic types to arithmetic types, except as part of an
+operand to the sizeof operator.  See section 6.6 in the ISO C standard.
 
-A compound literal is not a constant, but an unnamed object.
+Joel's example contained a non-arithmetic cast within an arithmetic
+expression.  Possibly, GCC could have continued to allow casts to
+aggregate types, but a decision was made not to.  I know glibc has
+had to adapt similar code.
 
-Andreas.
-
+Dave
 -- 
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux AG, Deutschherrnstr. 15-19, D-90429 Nürnberg
-Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
