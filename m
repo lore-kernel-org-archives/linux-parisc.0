@@ -1,24 +1,34 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA28025
-	for <parisc-linux@puffin.external.hp.com>; Thu, 14 Dec 2000 22:58:49 -0700
-Sender: mang@mailserv2.iuinc.com
-Message-ID: <3A39B28F.9249D179@subcarrier.org>
-Date: Fri, 15 Dec 2000 00:56:31 -0500
-From: Michael Ang <mang@subcarrier.org>
-MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] phase 2 gcc build fails
-References: <3A38683A.A2FCB51B@subcarrier.org> <Pine.LNX.4.21.0012141742060.2565-100000@front.linuxcare.com.au> <20001214102032.A17802@parcelfarce.linux.theplanet.co.uk>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id DAA29424
+	for <parisc-linux@puffin.external.hp.com>; Fri, 15 Dec 2000 03:10:32 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel2.hp.com (Postfix) with ESMTP id 7112D1E1
+	for <parisc-linux@puffin.external.hp.com>; Fri, 15 Dec 2000 05:13:23 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id DAA05988 for parisc-linux@puffin.external.hp.com; Fri, 15 Dec 2000 03:12:09 -0700 (MST)
+Date: Fri, 15 Dec 2000 03:12:09 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200012151012.DAA05988@udlkern.fc.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] ldcw in __pthread_acquire
 List-ID: <linux-parisc.vger.kernel.org>
 
-I implied this in my previous message, but you want to put "remove -f"
-in you .cvsrc.  Of course, forgetting there's even a long form at all is
-a sign of strength, not weakness. :)
 
-	- Mike.
+I just ran into an unaligned data reference in user land.  The problem is
+that the routine __pthread_acquire (in libpthread) does a ldcw, but it is
+not ensuring that the address it is operating on is 16 byte aligned (it is
+operating on the address that was passed in as the first argument).  Some
+processors don't require the 16 byte alignment, but many do.
 
-Matthew Wilcox wrote:
-> 
-> unfortunately, cvs doesn't seem to take the `-f' option from the .cvsrc
-> for the rm command.
+I haven't looked at the source (I just found the location by disassembly),
+so I don't know what the root cause is.  The actual ldcw is probably from
+an inlined function or macro, e.g. spin_lock().  My first guess would be
+that it is using the machine dependent spin_lock macro, but the procedure
+which called __pthread_acquire is passing in a structure whose lock field
+does not have the aligned(16) attribute.
+
+I don't have time to look at this right now.  Any volunteers?
+
+John Marvin
+jsm@fc.hp.com
