@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12507.mail.yahoo.com (web12507.mail.yahoo.com [216.136.173.199])
-	by dsl2.external.hp.com (Postfix) with SMTP id 4D2444829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:41:53 -0700 (MST)
-Message-ID: <20021113074145.86928.qmail@web12507.mail.yahoo.com>
-Date: Tue, 12 Nov 2002 23:41:45 -0800 (PST)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] Newbie found an hp 712-80 :)
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B73004829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:44:56 -0700 (MST)
+Received: from localhost.localdomain (beavis.ybsoft.com [10.0.0.2])
+	by beavis.ybsoft.com (Postfix) with ESMTP id 63C072B282
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:44:52 -0700 (MST)
+From: Ryan Bradetich <rbradetich@uswest.net>
 To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021113062859.GD25768@charite.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Date: 13 Nov 2002 00:44:52 -0700
+Message-Id: <1037173492.9031.7.camel@beavis>
+Mime-Version: 1.0
+Subject: [parisc-linux] Broken Cache Flushing in arch/parisc/kernel/signal.c.??
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,39 +23,52 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---- Ralf Hildebrandt <Ralf.Hildebrandt@charite.de> wrote:
-> On Tue, Nov 12, 2002 at 10:11:41PM +0000, no one wrote:
-> 
-> > Yesterday I realised that the cute little box sitting by the bin
-> for
-> > 3 weeks was actually a computer - a hp 712-80 to be precise; and I
-> am
-> 
-> Yes, that happened here as well. The HP-UX on the box was toast.
-> 
-> > It came with no floppy, no harddrive, and no memory - I've bought a
-> > el-cheapo 2nd hand generic 2Gb SCSI drive; and now need to squeeze
-> > linux onto it :)
-> 
-> You still need memory :)
+Hello parisc-linux hackers,
 
-On a side note about memory, I don't think anyone here has gotten any
-memory to work besides HP memory in these boxes.  I have tons of 8MB
-modules laying around for them.  Only 4 memory slots so the bigger the
-simms the better.  The 712/80 maxes out at 128MB (4X32MB).  No one has
-gotten the floppy to work on Debian either so don't worry about that. 
-HP part numbers for memory:  A2575-60001(or 69001) 32MB, A2576-60001(or
-69001) 16MB, and there are many variations on the 8MB ones.  One of
-them is 98236-66524.  Any keyboard and any PS/2 mouse should work, but
-becareful about what monitors you use.  Not all will work.  You are
-better off loading the thing with an ASCII terminal and serial cable
-first.  Good luck!
+I spent the evening tracking down why the serial mux failed to start
+init and I kept getting the cow message on 2.5.47...and why it worked
+for 2.5.46-pa7. After re-merging all the cvs commits in the last 4 days,
+I finally tracked the problem down to this chunk of code from
+arch/parisc/kernel/singal.c:
 
-derek
-HP harware fixer-uper....
+Index: arch/parisc/kernel/signal.c
+===================================================================
+RCS file: /var/cvs/linux-2.5/arch/parisc/kernel/signal.c,v
+retrieving revision 1.6
+diff -u -p -r1.6 signal.c
+--- arch/parisc/kernel/signal.c	10 Nov 2002 19:39:16 -0000	1.6
++++ arch/parisc/kernel/signal.c	13 Nov 2002 07:38:58 -0000
+@@ -308,8 +308,21 @@ setup_rt_frame(int sig, struct k_sigacti
+ 	}
+ #endif
+ 
++#if CACHE_FLUSHING_IS_NOT_BROKEN
+ 	flush_icache_range((unsigned long) &frame->tramp[0],
+ 			   (unsigned long) &frame->tramp[4]);
++#else
++       /* It should *always* be cache line-aligned, but the compiler
++           sometimes screws up. */
++       asm volatile("fdc 0(%%sr3,%0)\n\t"
++                    "fdc %1(%%sr3,%0)\n\t"
++                    "sync\n\t"
++                    "fic 0(%%sr3,%0)\n\t"
++                    "fic %1(%%sr3,%0)\n\t"
++                    "sync\n\t"
++                    : : "r" (frame->tramp), "r" (L1_CACHE_BYTES));
++#endif
++
+ 	rp = (unsigned long) frame->tramp;
+ 
+ 	if (err)
 
 
-__________________________________________________
-Do you Yahoo!?
-U2 on LAUNCH - Exclusive greatest hits videos
-http://launch.yahoo.com/u2
+This patch is needed to restore the functionality of the 2.5.46 kernel
+so the Serial Mux, pdc console, etc will boot on the K460, etc.  I did
+not want to re-commit this patch because it is ugly, and it would be
+nice to figure out how to solve this problem properly.  
+
+Any thoughts, suggestions, etc?
+
+Thanks!
+
+- Ryan
