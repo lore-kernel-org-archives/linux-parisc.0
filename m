@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 72E184829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 10:39:12 -0700 (MST)
+Date: Sat, 9 Nov 2002 16:31:46 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
 To: Matthew Wilcox <willy@debian.org>
-Cc: "Adam J. Richter" <adam@yggdrasil.com>,
-	James.Bottomley@steeleye.com, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Sat, 09 Nov 2002 03:46:12 GMT." <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk>
-References: <200211090128.RAA31693@adam.yggdrasil.com> <adam@yggdrasil.com> <20021109015611.571B44829@dsl2.external.hp.com>  <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk> 
-Date: Sat, 09 Nov 2002 10:02:06 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021109170206.DA635482A@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel build: make palo
+In-Reply-To: <20021109145939.U12011@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.BSF.4.44.0211091614510.32930-100000@e0-0.zab2.int.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,31 +22,74 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew Wilcox wrote:
-> On Fri, Nov 08, 2002 at 06:56:11PM -0700, Grant Grundler wrote:
-> > They don't have PCI slots.
-> > I hedge because HP makes a "card-mode Dino" type of card that will
-> > fit into 715 which has a GSCtoPCI bus controller on-board along
-> > with the target PCI device (eg 21143 tulip)
-> 
-> Sorry Grant, HP marketing has confused you ;-).  715/33, 715/50 &
-> 715/75 have a PCX-T processor (can't do uncached pages), but don't have
-> a GSC slot.
+On Sat, 9 Nov 2002, Matthew Wilcox wrote:
 
-ok - well, that's why I pointed at the PCX-[ST] HWDB pages.
+> > > Then one could do
+> > > 	make dep && make bzImage && make modules
+> > > as user, the switch to su and do a
+> > > 	make modules_install && make palo
+> > > or even run palo by hand...
+>
+> Nothing stops you from doing:
+>
+> make vmlinux
+> sudo make palo
+>
+> as two separate steps.
 
-> The only machines with GSC and non-coherent memory are the T class
-> (unsupportable..) and something like an F, G, H or I class with
-> a GeckoBOA adapter... and we
-> aren't claiming support for those either.
+yeah, but that's not the default (==documented) way of building a
+linux kernel ;-)
 
-Right. I'm convinced support for V-class (PCI, IO Coherent) will happen
-before T-class (propritary busses, !IO-coherent). Later FGHI-class also
-use PCX-L CPU and thus should be ok. rbrad, christoph and a few others
-are working on support for those machines but I know SCSI on those
-machines is SPIFI-based (HP SCSI controller). In short, looks like
-your observations about 53c720 might be one of the few problematic
-drivers.
+linux/README:
+" - Do a "make bzImage" to create a compressed kernel image."
 
-thanks,
-grant
+it does not say "and update the config etc of your bootloader"
+
+
+Also one does not need to run palo if one only substitutes a kernel
+image in an ext2 fs I think. So this run does not seem to be
+neccessary by default.
+
+
+
+I suggest s.th. like the following (untested):
+
+--- linux/arch/parisc/Makefile.orig	2002-11-09 14:43:40.000000000 +0000
++++ linux/arch/parisc/Makefile	2002-11-09 16:19:46.000000000 +0000
+@@ -82,7 +82,7 @@
+ libs-y					+= arch/parisc/lib/ \
+ 					   `$(CC) -print-libgcc-file-name`
+
+-palo: vmlinux
++palo:
+ 	@if [ $$(palo -f /dev/null >/dev/null 2>&1 ; echo $$?) != 2 ]; then \
+ 		echo 'ERROR: Please install palo first (apt-get install palo)';\
+ 		echo 'or build it from source and install it somewhere in your $$PATH';\
+@@ -101,19 +101,19 @@
+ 	export TOPDIR=`pwd`; \
+ 	unset STRIP LDFLAGS CPP CPPFLAGS AFLAGS CFLAGS CC LD; cd ../palo && make lifimage
+
+-Image: palo
++Image: vmlinux
+
+ Image-clean:
+
+ ramdisk.o:
+
+-zImage: palo
++zImage: vmlinux
+
+-bzImage: palo
++bzImage: vmlinux
+
+ compressed: zImage
+
+-install:
++install: palo
+
+ archmrproper:
+
+
+-- 
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
