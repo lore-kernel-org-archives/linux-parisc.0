@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from osiris.silug.org (osiris.silug.org [64.240.156.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD0714829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 21:54:41 -0600 (MDT)
-Date: Mon, 14 Oct 2002 22:54:13 -0500
-From: Steven Pritchard <steve@silug.org>
-To: Peter Lavender <plaven@bigpond.net.au>
-Cc: PARISC Mailing List <parisc-linux@lists.parisc-linux.org>
+Received: from mta04bw.bigpond.com (mta04bw.bigpond.com [139.134.6.87])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 651C84829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 22:48:37 -0600 (MDT)
+Date: Tue, 15 Oct 2002 14:48:34 +1000
+From: Peter Lavender <plaven@bigpond.net.au>
+To: Steven Pritchard <steve@silug.org>
+Cc: Peter Lavender <plaven@bigpond.net.au>,
+	PARISC Mailing List <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] help!!! apt-get dist-upgrade
-Message-ID: <20021014225413.A8042@osiris.silug.org>
-References: <20021015122720.E893@piglet>
+Message-ID: <20021015144834.I799@piglet>
+Reply-To: plaven@bigpond.net.au
+References: <20021015122720.E893@piglet> <20021014225413.A8042@osiris.silug.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021015122720.E893@piglet>; from plaven@bigpond.net.au on Tue, Oct 15, 2002 at 12:27:20PM +1000
+In-Reply-To: <20021014225413.A8042@osiris.silug.org>; from steve@silug.org on Mon, Oct 14, 2002 at 10:54:13PM -0500
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +25,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Oct 15, 2002 at 12:27:20PM +1000, Peter Lavender wrote:
-> Now I have ssh'ed back to the box.  How can I basically reconnect to
-> the process and issue the Y to go ahead and complete the upgrade?
+* Steven Pritchard (steve@silug.org) wrote:
 
-You can't really.  Next time, after you login, run "screen".  Then,
-when something like this happens, use "screen -D -r" to logout the old
-session and reattach it to your current terminal.
 
-> I'd rather not kill it unless it's safe to do so.
+> On Tue, Oct 15, 2002 at 12:27:20PM +1000, Peter Lavender wrote:
+> > Now I have ssh'ed back to the box.  How can I basically reconnect to
+> > the process and issue the Y to go ahead and complete the upgrade?
+> 
+> You can't really.  Next time, after you login, run "screen".  Then,
+> when something like this happens, use "screen -D -r" to logout the old
+> session and reattach it to your current terminal.
+ 
+Belive it or not, but I usually use screen, however this time I just
+logged in a start the apt processes.
 
-It should be.  Apt is very good about just picking up where it left
-off on the next run.
+> > I'd rather not kill it unless it's safe to do so.
+> 
+> It should be.  Apt is very good about just picking up where it left
+> off on the next run.
 
-Steve
+Where is what I ended up doing and apt did the irght thing.  Very
+encouraging.  :)
+
+Thanks.
+
+
+Regards,
+
+Pete.
+
 -- 
-steve@silug.org           | Southern Illinois Linux Users Group
-(618)398-7360             | See web site for meeting details.
-Steven Pritchard          | http://www.silug.org/
+				Due to a lack of imagination, 
+				this signature will remain 
+				under construction indefinitely.
