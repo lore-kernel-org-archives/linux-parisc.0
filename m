@@ -1,21 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (unknown [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E171F482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 May 2002 18:01:30 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id qopjnaaa for parisc-linux@lists.parisc-linux.org; Tue, 14 May 2002 17:00:01 -0700
-Date: Tue, 14 May 2002 17:53:02 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Christoph Plattner <christoph.plattner@gmx.at>,
-	Thibaut VARENE <varenet@esiee.fr>,
-	PA/Linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] New HWDB design online
-Message-ID: <20020515005302.GZ32033@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <62DAF8F4-6769-11D6-9BB9-0030656F07A2@esiee.fr> <3CE18B91.8B0E15B@gmx.at> <20020514235120.BA086482A@dsl2.external.hp.com>
+Received: from picard.corpconnect.com.au (picard.corpconnect.com.au [203.34.58.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 43428482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 May 2002 19:53:34 -0600 (MDT)
+Received: from klingon.corpconnect.com.au (ppro.corpconnect.com.au [203.34.58.17])
+	by picard.corpconnect.com.au (8.8.7/8.8.7) with ESMTP id LAA26146
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 May 2002 11:53:18 +1000
+Message-Id: <5.1.0.14.2.20020515114933.04d138b8@pop01.corpconnect.com.au>
+Date: Wed, 15 May 2002 11:53:19 +1000
+To: parisc-linux@lists.parisc-linux.org
+From: Richard Muratti <rick@ccoz.com>
+Subject: Re: [parisc-linux] Re: tftp boot
+In-Reply-To: <1021396202.3ce144ea30690@webmail.tiscalinet.be>
+References: <002501c1fb5b$48459540$02c1a8c0@james.co.uk>
+ <002501c1fb5b$48459540$02c1a8c0@james.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020514235120.BA086482A@dsl2.external.hp.com>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,21 +26,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> No. Mostly, thibaut just updated the header/footer/navigation bar
-> so it matches the rest of the site. Of course, if someone
-> *wants* to maintain hwdb, they should let me know...
+At 07:10 PM 14/05/2002 +0200, joel.soete@freebel.net wrote:
+>Hey James,
+>
+>CUT--
 
-I've been doing edits on and off...
 
-> > Please delete for 
-> > 	720
-> > 	E55
-> > the entry "christoph.plattner@dot.at". It is already duplicated with
-> > my "gmx.at" mail account ! "dot.at" is not valid now !
-> 
-> If that doesn't get updated by this weekend, send me a friendly reminder
-> and I'll see if I can figure out how to do that on the weekend.
+>Linux version 2.4.18-pa12-lvm-1.0.3-evms-1.0.0-jfs-1.0.17 (root@palinux) (gcc
+>version 3.0.4) #13 Tue May 14 15:42:21 CEST 2002
+CUT--
 
-it's fixed now.
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+>Looking up port of RPC 100003/2 on 172.16.248.169
+                                                         ^^^^^^^^^^^^^^^^^
+Are you running nfsd on this machine and have you exported
+the root file system on it.
 
-randolph
+Cheers
+Rick
