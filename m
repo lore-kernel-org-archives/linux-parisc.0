@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DC1614888
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 07:09:20 -0600 (MDT)
-Date: Tue, 16 Jul 2002 15:08:44 +0200 (CEST)
-From: Peter Mottram <peter@petescaff.com>
-To: "joel.soete@freebel.net" <joel.soete@freebel.net>
-Cc: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] parisc -linux: Cluster tools availability?
-In-Reply-To: <1026824527.3d34194f9be6d@webmail.tiscalinet.be>
-Message-ID: <Pine.LNX.4.44.0207161507070.17900-100000@r6.petescaff.com>
+Received: from monet.cefet-al.br (unknown [200.133.126.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F2AFE489D
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 07:12:15 -0600 (MDT)
+Message-ID: <1026825178.3d341bda8dd6e@webmail.cefet-al.br>
+Date: Tue, 16 Jul 2002 10:12:58 -0300
+From: =?ISO-8859-1?B?VOFyY2lvIFJvZHJpZw==?=ues Bezerra <tarcio@cefet-al.br>
+To: parisc-linux@parisc-linux.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] Linux for PA 9000 D-Class
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +20,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-You should probably start looking at www.linux-ha.org - this site has
-links to many HA projects and is the source for 'heartbeat'.
+Hi everybody,
 
-R.
-PeteM
+My doubt is if there is a version of Debian for my hardware (PA 9000 D-class). 
+I found 9000/720 and 9000/735. This versions grants compatibility with all 9000 
+series?
 
-On Tue, 16 Jul 2002, joel.soete@freebel.net wrote:
+Thanks in advance.
+-- 
+Tárcio R. Bezerra
+Gerente de Tecnologia da Informação
+Centro Federal de Educação Tecnológica de Alagoas
 
-> Hi all,
->
-> I running a b180 with md and I could recover a second b180.
->
-> It would be nice to build a cluster 'a la MC/SG'.
->
-> I found well openmosix but only i386 afaik (and there is too much asm code for
-> me to tempt a portage).
->
-> There is also beowulf but the only HOWTO I found concern kernel 2.0 ? (more over
-> my network connection are limited (10Mb) and it does not seems to cover my
-> whishes (HA cluster)).
->
-> Any other advise?
->
-> Thanks a lot,
->     Joel
->
-> -------------------------------------------------
-> This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+
+
+
+
+-------------------------------------------------
+CEFET/AL - HORDE/IMP
