@@ -1,23 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from irongate.swansea.linux.org.uk (pc1-cwma1-5-cust128.swa.cable.ntl.com [80.5.120.128])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA473482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Sep 2002 19:41:48 -0600 (MDT)
-Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
-	by irongate.swansea.linux.org.uk (8.12.5/8.12.5) with ESMTP id g871hU30012869;
-	Sat, 7 Sep 2002 02:43:31 +0100
-Received: (from alan@localhost)
-	by irongate.swansea.linux.org.uk (8.12.5/8.12.5/Submit) id g871hTec012867;
-	Sat, 7 Sep 2002 02:43:29 +0100
-Subject: Re: [parisc-linux] Opinions on desktop environments
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20020907005814.6142.qmail@web12506.mail.yahoo.com>
-References: <20020907005814.6142.qmail@web12506.mail.yahoo.com>
-Content-Type: text/plain
-Date: 07 Sep 2002 02:43:28 +0100
-Message-Id: <1031363008.9861.103.camel@irongate.swansea.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 38E70482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Sep 2002 20:04:28 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17nUxW-0002Hz-00; Sat, 07 Sep 2002 03:04:26 +0100
+Date: Sat, 7 Sep 2002 03:04:25 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "B. Douglas Hilton" <bdhilton@charter.net>
+Cc: Tobias Giesen <tobias_subscriber@tgtools.com>,
+	'palinux' <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: C200 Voodoo2 Progress Report
+Message-ID: <20020907030425.H26580@parcelfarce.linux.theplanet.co.uk>
+References: <000001c25607$c1fcdf90$0100a8c0@PLUTO> <3D795118.1060709@charter.net>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3D795118.1060709@charter.net>; from bdhilton@charter.net on Fri, Sep 06, 2002 at 09:06:32PM -0400
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,12 +26,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 2002-09-07 at 01:58, Derek Engelhaupt wrote:
-> Well, got KDE to work, but it just seems slow even with my 16MB of RAM
-> and 2GB of swap on my C180.  I guess my questions would be what would
-> be an alternative that might run faster and/or be better overall than
-> KDE?  Gnome?  I guess I'm looking for what you guys think is the best
-> desktop environment to run.  Thanks.
+On Fri, Sep 06, 2002 at 09:06:32PM -0400, B. Douglas Hilton wrote:
+> The C200 and probably C160, 180, 240, and 360
+> have two three different busses inside: the
+> Hewlett-Packard GSC bus, 5V/32bit PCI (dino),
+> and 3V/64bit PCI (cujo).
 
-17Mb is pushing it. KDE/GNOME are about the same size. xfce/rox need a
-lot less
+... and some have an EISA slot provided by Wax.  I'm not sure exactly
+which configurations exist, but the hwdb thinks that Cujo was only
+used in the C200+, C240+, C360 and J2240.  The hwdb is slightly limited
+in that there's only one profile per name, when it's possible to have
+different configurations of the same box.  All B/C class boxes of that
+era are guaranteed to have a Dino though, so there's no real problem
+with requiring the use of a 5V slot.
+
+-- 
+Revolutions do not require corporate support.
