@@ -1,11 +1,13 @@
-From: alaskan@telusplanet.net
-Subject: [parisc-linux] GNOME 1.4
-Date: Thu, 29 Aug 2002 10:37:07 -0600
-Message-ID: <1nismusojam12vial5vnqarbmfd8pb8mh7__17873.5840986066$1416621659$gmane$org@4ax.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] GNOME 1.4
+Date: Thu, 29 Aug 2002 22:08:29 -0600
+Message-ID: <20020830040829.3BE694829__26372.1689385877$1416621663$gmane$org@dsl2.external.hp.com>
+References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: alaskan@telusplanet.net
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: Message from alaskan@telusplanet.net
+   of "Thu, 29 Aug 2002 10:37:07 MDT." <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -16,12 +18,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I finally got GNOME 1.4 working on a 712/60, after many tries and a
-newer ISO image of palinux-2.4.18-pa60-20020802-netinst.iso.
+alaskan@telusplanet.net wrote:
+> I finally got GNOME 1.4 working on a 712/60,
+...
+> Its pretty, but slow .   .  . .
 
-I used tasksel to select a workstation with:  "X window system,
-desktop system, games and conventional unix server" any other
-combinations would over fill my 1GB hard disk drive, or other attempts
-that would fit in the drive, GNOME failed on startup and be broken.
+it's not faster on a 486/DX4/75Mhz.
+You really need to use a lighter weight window manager on
+the older boxes. fvwm2 is my current favorite though in this
+case I'd reccomend twm.
 
-Its pretty, but slow .   .  . .
+grant
