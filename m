@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from localhost.localdomain (pool-141-154-202-101.bos.east.verizon.net [141.154.202.101])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 31BD5482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jan 2002 21:21:30 -0700 (MST)
-To: parisc-linux@lists.parisc-linux.org
+Received: from sj-msg-core-4.cisco.com (sj-msg-core-4.cisco.com [171.71.163.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9C460482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Jan 2002 21:38:51 -0700 (MST)
+Date: Tue, 1 Jan 2002 20:38:48 -0800
+From: Christian Suder <csuder@cisco.com>
+To: "Nick Papadonis" <npapadon@yahoo.com>
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] DISREGARD 0.9.3 installer didn't set 712 bootable
+Message-Id: <20020101203848.1634246f.csuder@cisco.com>
+In-Reply-To: <m3u1u5fkmw.fsf@localhost.localdomain>
 References: <m3y9jhfmrn.fsf@localhost.localdomain>
-From: Nick Papadonis <npapadon@yahoo.com>
-Date: 01 Jan 2002 23:21:27 -0500
-In-Reply-To: <m3y9jhfmrn.fsf@localhost.localdomain> (Nick Papadonis's message of "01 Jan 2002 22:35:24 -0500")
-Message-ID: <m3u1u5fkmw.fsf@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<m3u1u5fkmw.fsf@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Sorry, I didn't create a F0 partition.  Disregard.
-
-One other thing I noticed, is that more then 4 partitions couldn't be
-created on my 2 gigabyte drive.  The disk partition utility informs
-that the unused space is 'unusable'?
-
-- Nick
-
-Nick Papadonis <npapadon@yahoo.com> writes:
-
-> I just tried installing 0.9.3 off the Debian installation CD.  On the
-> make system bootable option, nothing happened.  It appears that no
-> bootloader was installed.
+On 01 Jan 2002 23:21:27 -0500
+"Nick Papadonis" <npapadon@yahoo.com> wrote:
 > 
-> I have a 712/80.
+> One other thing I noticed, is that more then 4 partitions couldn't be
+> created on my 2 gigabyte drive.  The disk partition utility informs
+> that the unused space is 'unusable'?
 > 
-> Where can I find a floppy 'rescue' image to boot into my root
-> filesystem?
-> 
-> Thanks
+
+The standard fdisk utility in Linux is pretty PC-ish, so you can only have
+4 primary partitions. However you can create one of them as "extended"
+partition, and within this partition you can create additional ones,
+
+	Christian 
