@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D45DC487F
-	for <parisc-linux@parisc-linux.org>; Mon,  7 Jul 2003 10:39:28 -0600 (MDT)
-Date: Mon, 7 Jul 2003 18:39:24 +0200
-Message-ID: <3F03A4210000092C@ocpmta1.freegates.net>
-In-Reply-To: <20030707163131.GB23597@parcelfarce.linux.theplanet.co.uk>
-From: "Joel Soete" <jsoe0708@tiscali.be>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 865344839
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jul 2003 14:03:43 -0600 (MDT)
+Date: Mon, 7 Jul 2003 16:02:40 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Grant Grundler <grundler@parisc-linux.org>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>, jsoe0708@tiscali.be,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] warning: minor abi change
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: "Matthew Wilcox" <willy@debian.org>,
-	"HPPA List" <parisc-linux@parisc-linux.org>,
-	"Alan Cox" <alan@lxorguk.ukuu.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Message-ID: <20030707200240.GN30341@systemhalted>
+References: <20030705230834.GB9682@dsl2.external.hp.com> <200307052353.h65NrZF4025169@hiauly1.hia.nrc.ca> <20030706041210.GA16894@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030706041210.GA16894@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,104 +24,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thanks Willy,
-
-I haven't notice that because merge doesn't complain.
-I will so check further.
-
-Joel
-
->-- Original Message --
->Date: Mon, 7 Jul 2003 17:31:31 +0100
->From: Matthew Wilcox <willy@debian.org>
->To: Marcelo Tosatti <marcelo@conectiva.com.br>
->Cc: Joel Soete <jsoe0708@tiscali.be>, Matthew Wilcox <willy@debian.org>,
->	HPPA List <parisc-linux@parisc-linux.org>,
->	Alan Cox <alan@lxorguk.ukuu.org.uk>
->Subject: Re: [parisc-linux] warning: minor abi change
->
->
->
-Marcelo, looks like you have a problem to sort out:
-
---- ../marcelo-2.4/include/linux/sysctl.h       Thu Jul  3 08:59:18 2003
-+++ include/linux/sysctl.h      Mon Jul  7 10:19:02 2003
-@@ -124,28 +127,36 @@
-        KERN_CORE_USES_PID=52,          
->* int: use core or core.%pid */
-        KERN_TAINTED=53,        /* int: various kernel tainted flags */
-        KERN_CADPID=54,         /* int: PID of the process to notify on CAD
-*/
--       KERN_CORE_PATTERN=56,   /* string: pattern for core-files 
->/
--       KERN_PPC_L3CR=57,       /* l3cr register on PPC */
--       KERN_EXCEPTION_TRACE=58, /* boolean: exception trace */
-+       KERN_PIDMAX=55,         /* int: PID # limit */
-+       KERN_CORE_PATTERN=56,   /* string: pattern for core-file nam
->s */
-+       KERN_PANIC_ON_OOPS=57,  /* int: whether we will panic on an oops
-*/
- };
-
-Bad PPC people.  And bad KERN_EXCEPTION_TRACE people, whoever they are.
-The PPC one needs to be changed, no matter what.  And the KERN_EXCEPTION
-people need to 
->et a sysctl number allocated by Linus.
-
-Looks like the VM people have been naughty too:
-
--       VM_MAX_MAP_COUNT=11,    /* int: Maximum number of active map areas
-*/
--       VM_MIN_READAHEAD=12,    /* Min file readahead */
--       VM_MAX_READAHE
->D=13,    /* Max file readahead */
-+       VM_DIRTY_BACKGROUND=11, /* dirty_background_ratio */
-+       VM_DIRTY_RATIO=12,      /* dirty_ratio */
-+       VM_DIRTY_WB_CS=13,      /* dirty_writeback_centisecs */
-+       VM_DIRTY_EXPIRE_CS=14,  /* dirt
->_expire_centisecs */
-+       VM_NR_PDFLUSH_THREADS=15, /* nr_pdflush_threads */
-+       VM_OVERCOMMIT_RATIO=16, /* percent of RAM to allow overcommit in
-*/
-+       VM_PAGEBUF=17,          /* struct: Control pagebuf parameters */
-+       VM_HUGETLB_
->AGES=18,    /* int: Number of available Huge Pages */
-+       VM_SWAPPINESS=19,       /* Tendency to steal mapped memory */
-+       VM_LOWER_ZONE_PROTECTION=20,/* Amount of protection of lower zones
-*/
-+       VM_MIN_FREE_KBYTES=21,  /* Minimum free
->kilobytes to maintain */
-
-SCTP is bad too:
-
--       NET_KHTTPD=17
-+       NET_SCTP=17, 
-
-
-On Mon, Jul 07, 2003 at 05:05:52PM +0100, Alan Cox wrote:
-> On Llu, 2003-07-07 at 17:00, Joel Soete wrote:
-> > > Get the HP ones into 2.5 then they are 
->ixed "right" values
+> > This solution assumes that canonicalization is unnecessary in the kernel.
+> > Probably, in most cases it is.  However, if you really need to canonicalize
+> > a function pointer from user space, then you are going to have to figure
+> > out how to call into the dynamic loader from the kernel.  This obviously
+> > isn't very safe.  So, possibly this implies that function pointers passed
+> > in syscalls should be canonicalized before the kernel is entered (i.e.,
+> > glibc should do the canonicalization).
 > > 
-> > Ok but now in 2.4.22-pre3:
-> > [...]
-> >   	KERN_EXCEPTION_TRACE=58,	/* boolean: exception trace */
-> > [...]
+> > As far as kernel modules go, I don't know how function pointers are
+> > handled.  If you pass a function pointer from one module to another,
+> > does it need canonicalization?
 > 
-> Same comment still applies. The 2.5. ones are definitive. If someone
-> submits a 2.4 one clashing wi
->h a different 2.5 one tell Marcelo to
-> revert it ASAP.
+> I depend on willy/tausq/amodra/et al to understand stuff like this.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an aca
->emic debate on this subject?" -- Robert Fisk
+I can't really come up with a scenario where userspace passes a function
+pointer to the kernel and has the kernel call or compare the function
+pointer?
 
+If someone can, please tell me :)
 
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+c.
