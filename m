@@ -1,7 +1,7 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] 2.6.10-rc2-pa2 build failing
-Date: Sat, 4 Dec 2004 12:02:01 -0700
-Message-ID: <20041204190201.GC30126@colo.lackof.org>
+Date: Sat, 4 Dec 2004 15:20:43 -0500
+Message-ID: <20041204202043.GB4327@roadwarrior.mcmartin.ca>
 References: <Pine.LNX.4.58.0412031551120.3169@rray.drdc.mstc.ms.gov>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -24,40 +24,12 @@ On Fri, Dec 03, 2004 at 03:55:54PM -0600, rray@tcmail.mstc.state.ms.us wrote:
 > I got cvs.parisc-linux.org/download/linux-2.6/linux-2.6.10-rc2-pa2.tar.bz2
 > and attempted to compile it with standard options set.
 
-Sorry - I need a better definition of "standard" options.
-Can you point at a specific .config file?
-Perhaps one of those used by the autobuilder?
+Er, can you post the .config you used?
 
-(See http://cvs.parisc-linux.org/download/linux-2.6/)
+I just build that kernel with defconfig, and it linked fine.
 
-> It fails with
-> 
-> drivers/built-in.o: In function `sti_select_fbfont':
-> drivers/built-in.o(.init.text+0x2eb4): undefined reference to `find_font'
-> drivers/built-in.o(.init.text+0x2fd4): undefined reference to `get_default_font'
-> make: *** [.tmp_vmlinux1] Error 1
-> 
-> I'm building this on a K200.
-> Any suggestions?
-
-I suspect a dependency is missing in the Kconfig file.
-Can you enable CONFIG_VT and see if that fixes the problem?
-
-See drivers/video/Makefile - it only builds drivers/video/console/fonts.c
-if CONFIG_VT is enabled. Ergo CONFIG_FB_STI depends on CONFIG_VT
-but that's not encoded in drivers/video/Kconfig:
-config FB_STI
-        tristate "HP STI frame buffer device support"
-        depends on FB && PARISC
-        default y
-...
-
-Hrm...Looking at drivers/video/console/Kconfig it seems
-enabling CONFIG_FRAMEBUFFER_CONSOLE is also required.
-Please verify that is also enabled.
-
-hth,
-grant
+Cheers,
+	Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
