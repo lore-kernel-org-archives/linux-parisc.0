@@ -1,58 +1,47 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA27727
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 03:41:51 -0700
-Message-ID: <19991116104321.17833.rocketmail@web504.yahoomail.com>
-Date: Tue, 16 Nov 1999 02:43:21 -0800 (PST)
-From: Ulrich Strelow <ulrich_strelow@yahoo.com>
-Subject: Re: [parisc-linux] problems with HPMC code in interruption.S
-To: parisc-linux@thepuffingroup.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA28441
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 04:32:27 -0700
+Received: from lightning.swansea.uk.linux.org (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 16 Nov 1999 11:34:00 -0000
+Subject: Re: [parisc-linux] depi?
+To: phi@hpfrcu03.france.hp.com (Philippe Benard)
+Date: Tue, 16 Nov 1999 12:20:32 +0000 (GMT)
+Cc: frowand@cup.hp.com, Philipp.H.Rumpf@mathe.stud.uni-erlangen.de,
+        parisc-linux@thepuffingroup.com, adevries@thepuffingroup.com
+In-Reply-To: <38311538.30826FC7@hpfrcu03.france.hp.com> from "Philippe Benard" at Nov 16, 99 09:26:32 am
+Content-Type: text
+Message-Id: <E11nhb8-0002Zh-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have had the same problem yesterday (unresolved
-symbol os_hpmc). The simple solution is to include
-hpmc.o in arch/parisc/kernel/Makefile.
+> If I understood correctly, the kernel is located there because it is where it
+> is on PC.
 
-Although this works, I must admit that I don't
-understand the reason for this problem. I think that
-the reference in realmode_setup.c is commented out by
-if SETUP_HPMC which is set to 0...
+Thats why someone pulled that number out of a hat. You can pull any other
+page aligned number out of a hat and that will be fine too.
 
-Maybe someone else has an explantion for this.
-Ulrich
+> Sounds like linux is not more portable than any other propriaitary OS since
+> confined to PC architecture, a port beeing a mimic of PC if the target arch
+> can do it.
 
---- Alex deVries <adevries@thepuffingroup.com> wrote:
-> 
-> Because of the incompleteness of the HPMC code in
-> the CVS tree right now,
-> it looks like the kernel won't build because of
-> os_hpmc problems.
-> 
-> Several people have mailed me about this, so just
-> bear with us until
-> Philipp has the time to look at it closer, unless
-> someone know an obvious
-> fix.
-> 
-> - Alex
-> 
-> -- 
-> Alex deVries <adevries@thepuffingroup.com>
-> Vice President Engineering
-> The Puffin Group
-> 
->
----------------------------------------------------------------------------
-> To unsubscribe: send e-mail to
-> parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
+Check the mm code. We don't care where you put the kernel. The rules we go
+by are simple
 
+1.	The kernel must be able to access all of the current tasks user space
+	efficiently. This is done via macros/functions/inlines
 
-=====
+2.	The kernel must be able to access all physical ram and also
+	mappings of MMIO space. The mappings can be 1:1 - for example on the
+	ultrasparc we use the override bits for this. I/O space maps are
+	accessed via macros/functions. If those functions resolve to no
+	actual extra code this is good.
 
-__________________________________________________
-Do You Yahoo!?
-Bid and sell for free at http://auctions.yahoo.com
+3.	Access to other tasks virtual address space has to be possible. It can
+	be slow and suck however as its main use is ptrace().
+
+The mappings we use vary. M68K for example maps the kernel about 3.5Gig up
+and uses space registers to access user space. The x86 because of the weak
+page table flipping facilities keeps both user and kernel in a single map. That
+makes for nice fast x86 code. That is x86 specific.
+
+Alan
