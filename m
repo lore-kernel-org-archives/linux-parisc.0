@@ -1,31 +1,53 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA07114
-	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Feb 2000 00:16:07 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA07969
+	for <parisc-linux@puffin.external.hp.com>; Tue, 15 Feb 2000 02:09:10 -0700
 From: willy@thepuffingroup.com
-Date: Tue, 15 Feb 2000 01:15:11 -0500
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Linux syscall ABI
-Message-ID: <20000215011511.U9944@thepuffingroup.com>
-References: <200002150536.WAA04580@udlkern.fc.hp.com>
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id DAA16101
+	for parisc-linux@thepuffingroup.com; Tue, 15 Feb 2000 03:09:46 -0500
+Date: Tue, 15 Feb 2000 03:09:46 -0500
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] new binutils/gcc
+Message-ID: <20000215030946.V9944@thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200002150536.WAA04580@udlkern.fc.hp.com>; from John Marvin on Mon, Feb 14, 2000 at 10:36:39PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Feb 14, 2000 at 10:36:39PM -0700, John Marvin wrote:
-> > No, we don't.  We're talking about PER_LINUX binaries here, and those
-> > never expected to be able to dereference NULL pointers.
-> 
-> I don't know much about PER_SVR4, and why it exists.  Willy pointed it
-> out to me.  I can see from the kernel source that perhaps it is only there
-> for sparc.  If it is not necessary for parisc-linux to support then
-> there is no issue. If it is necessary then I guess I assumed that PER_SVR4
-> binaries would use the same gateway page as PER_LINUX binaries.
 
-Linux has a personality() syscall which tells the kernel what operating
-system this binary was compiled for.  PER_SVR4 means that this binary
-was compiled for SVR4.  We _may_ want to include a PER_HPUX at some
-point, but i'm not convinced we need it yet.  I pointed you at that bit
-of code to show you that for some binaries Linux did that nasty hack,
-rather than to advocate we do it too.
+ok, I couldn't wait till tomorrow..
+
+You'll need an include directory.  You can either do it the way I did
+(pick them out of glibc, one at a time), or you can get a tarball of
+the fruits of my labour:
+
+ftp://puffin.external.hp.com/pub/parisc/src/include.tar.gz
+
+Plop this into your $prefix after installing binutils.  ie this was the
+contents of /home/willy/gcc/include.  Now you need to persuade gcc to look
+there for it (I thought it was supposed to do that automatically, but it seems
+not).  Change line 370 of gcc-build/gcc/Makefile to read:
+
+LIBGCC2_INCLUDES = -I/home/willy/gcc/include
+
+and then type make.  Now I get to :
+
+Testing libgcc1.  Ignore linker warning messages.
+/home/willy/cvs/gcc-build/gcc/xgcc -B/home/willy/cvs/gcc-build/gcc/ \
+	-B/home/willy/gcc/hppa1.1-linux/bin/ \
+	-I/home/willy/gcc/hppa1.1-linux/include -DCROSS_COMPILE -DIN_GCC \
+	-DMULTIBYTE_CHARS=1   -g -O2  -I./include  libgcc1-test.o \
+	-o libgcc1-test \
+  -nostartfiles -nostdlib `/home/willy/cvs/gcc-build/gcc/xgcc \
+	-B/home/willy/cvs/gcc-build/gcc/ -B/home/willy/gcc/hppa1.1-linux/bin/ \
+	-I/home/willy/gcc/hppa1.1-linux/include --print-libgcc-file-name`
+/home/willy/gcc/hppa1.1-linux/bin/ld: can not size stub section: Bad value
+libgcc1-test.o: In function `main_without__main':
+/home/willy/cvs/gcc-build/gcc/../../gcc/gcc/libgcc1-test.c:20: undefined reference to `$$divI'
+/home/willy/cvs/gcc-build/gcc/../../gcc/gcc/libgcc1-test.c:14: undefined reference to `$global$'
+death: $$divI type 1
+collect2: ld returned 1 exit status
+make[1]: *** [libgcc1-test] Error 1
+
+(wrapped for better mailer handling)
+
+And with that I really am going to bed.  g'night.
