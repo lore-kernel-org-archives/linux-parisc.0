@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sj-msg-core-3.cisco.com (sj-msg-core-3.cisco.com [171.70.157.152])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 20D52482D
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Jan 2003 00:10:19 -0700 (MST)
-Date: Thu, 2 Jan 2003 23:10:11 -0800
-From: Christian Suder <csuder@cisco.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C180 appears to hang booting current kernels
-Message-Id: <20030102231011.67f0cc36.csuder@cisco.com>
-In-Reply-To: <1041577311.20551.10.camel@beavis>
-References: <20030102220703.7ce63215.csuder@cisco.com>
-	<20030103064606.GL1053@maybe.net>
-	<1041577311.20551.10.camel@beavis>
+Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 57C0D4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Jan 2003 06:15:39 -0700 (MST)
+Date: Fri, 3 Jan 2003 14:15:16 +0100
+From: Thibaut VARENE <varenet@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
+Cc: csuder@cisco.com
+Subject: Re: [parisc-linux] New year, new try : Mozilla & friends...
+Message-Id: <20030103141516.61bb51c4.varenet@parisc-linux.org>
+In-Reply-To: <20030102230705.0cdd05d6.csuder@cisco.com>
+References: <20030102230705.0cdd05d6.csuder@cisco.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -25,60 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+On Thu, 2 Jan 2003 23:07:05 -0800
+"Christian Suder" <csuder@cisco.com> wrote:
+> 
+> Mozilla/skipstone/galeon are part of the distribution (even in 'stable')
+> for a while now, but crash straightaway with page faults. 
+> 
+> Has anybody ever looked into where the problems here are ? There is a
+> couple of other applications that have issues too, that may or may not be
 
-Thanks Ryan !
+Well, it's an old "feature" of hppa platform ;)
 
-I'll stay tuned..... 
+IIRC, all these problems are compiler-related stuff. Maybe with the new toolchain we will get rid of them...
 
-	Christian 
+/me pokes at toolchain-gurus for advice :^)
 
 
-On 03 Jan 2003 00:01:51 -0700
-Ryan Bradetich <rbradetich@uswest.net> wrote:
-
-> This looks like my bad.
-> 
-> Willy and I worked on a solution for this problem, and I committed the
-> fix to the linux-2.5 tree.  I have this change also in my local 
-> linux 2.4 tree, but it does not appear that I committed it to CVS.
-> 
-> I appologize for this and will try to find time to update my local tree,
-> verify it still works, and then commit this change over the weekend!
-> 
-> Thanks,
-> 
-> - Ryan
-> 
-> 
-> 
-> 
-> On Thu, 2003-01-02 at 23:46, Chris Jantzen wrote:
-> > On Thu, Jan 02, 2003 at 10:07:03PM -0800, Christian Suder wrote:
-> > > I have a C180 running 2.4.19-pa9 just fine. However recent 2.4
-> > > kernels hang, or appear to hang (I'm not the patient type...;-)
-> > > after the"branching to kernel entry...." The heartbeat LED slowly
-> > > blinks two times every 10 seconds or so, I've been waiting maybe 5
-> > > minutes. 
-> > > 
-> > > I found some discussion on this back in November, it's not quite
-> > > clear if the discussed changes were ever made. 
-> > > 
-> > > Any hope ?
-> > 
-> > Just be patient. It takes as long as 30 minutes to work it's way
-> > through some tests. There is a fix for this, but it may take a while
-> > to trickle down to testing and stable users. I'm sure others can
-> > answers this in more depth. I was worried for my C180 for a while,
-> > too.
-> > 
-> > -- 
-> > chris jantzen kb7rnl =->         __O
-> > Insert witty comment here.     _`\<,_
-> > http://www.maybe.net/         (*)/ (*)
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> > 
-> 
-> 
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
