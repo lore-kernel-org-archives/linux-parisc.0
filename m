@@ -1,60 +1,52 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 83BEF4A19
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 01:58:16 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14WE3L-0004R7-00
-	for parisc-linux@parisc-linux.org; Fri, 23 Feb 2001 08:58:15 +0000
-Date: Fri, 23 Feb 2001 08:58:15 +0000
-From: Matthew Wilcox <matthew@wil.cx>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4D3FD4A19
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 02:29:29 -0700 (MST)
+Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
+	by atlrel1.hp.com (Postfix) with ESMTP id B0244577
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 04:29:28 -0500 (EST)
+Received: from chrysl (chrysl.fc.hp.com [15.1.54.200])
+	by ldl.fc.hp.com (Postfix) with ESMTP id 61A075A9A5
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 02:29:28 -0700 (MST)
+Received: from willy by chrysl with local (Exim 3.12 #1 (Debian))
+	id 14WEXY-0006gB-00
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 02:29:28 -0700
 To: parisc-linux@parisc-linux.org
-Message-ID: <20010223085815.B16261@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] parisc64 vs kernel64
+Message-Id: <E14WEXY-0006gB-00@chrysl>
+From: Matthew Wilcox <willy@ldl.fc.hp.com>
+Date: Fri, 23 Feb 2001 02:29:28 -0700
+Subject: [parisc-linux] Documentation wanted
 List-ID: <linux-parisc.vger.kernel.org>
 
-I wonder if we're doing this right, having parisc and parisc64 as
-different architectures.  They're fundamentally similar than sparc/sparc64
-or mips/mips64 are.  We have very few files in parisc64 (the rest are
-made visible to the build system by creating symlinks to their equivalent
-in parisc).
+Looking for something to do?  I ran `make checkhelp' and the following
+undocumented CONFIG options are our fault.  If you'd like to write
+some help and send diffs against Configure.help to the list, that'd
+be appreciated.
 
-Excluding Makefiles, we have:
+Use power LED as a heartbeat
+CONFIG_HEARTBEAT
+  No help for CONFIG_HEARTBEAT
 
-kernel/binfmt_elf32.c
-kernel/sys32.h
-kernel/head.S
-kernel/ioctl32.c
-kernel/lasimap.map
-kernel/pdcpat.c
-kernel/signal32.c
-kernel/sys_parisc32.c
-real/head.S
+/proc/hardware support
+CONFIG_PROC_HARDWARE
+  No help for CONFIG_PROC_HARDWARE
 
-I'm 99% sure we don't use real/head.S any more.  Or kernel/lasimap.map.
-So how about moving the rest to parisc/kernel64?  We'd select between
-them with something like:
+Support for Lasi/Dino PS2 port
+CONFIG_GSC_PS2
+  No help for CONFIG_GSC_PS2
 
-make config
-[...]
-*
-* Processor type and features
-*
-Processor family (PA1.1, PA2.0, PA2.0Wide) [PA1.1] 
+HIL keyboard support
+CONFIG_HIL
+  No help for CONFIG_HIL
 
-i think it might make maintenance easier, and possibly alan/linus would
-be more willing to take this than the current do_links based situation.
+serial port on GSC support
+CONFIG_SERIAL_GSC
+  No help for CONFIG_SERIAL_GSC
 
-alternatively, maybe we should scrap all the #ifdef __LP64__ stuff from
-our current files, duplicate large parts of them and populate parisc64
-properly.  i think this current situation is the worst of both worlds
-in that it's quite easy to forget about parisc64 when fiddling with
-something in the parisc directory.
+Lasi ethernet
+CONFIG_LASI_82596
+  No help for CONFIG_LASI_82596
 
-i favour moving the files to parisc/kernel64, but i'm interested in
-hearing other points of view, including `stop messing about'.
-
--- 
-Revolutions do not require corporate support.
+Generic STI frame buffer device support
+CONFIG_FB_STI
+  No help for CONFIG_FB_STI
