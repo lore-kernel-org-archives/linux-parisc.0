@@ -1,25 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mgw-x1.nokia.com (mgw-x1.nokia.com [131.228.20.21])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9A3A44829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Jan 2003 07:58:14 -0700 (MST)
-Received: from esvir05nok.ntc.nokia.com (esvir05nokt.ntc.nokia.com [172.21.143.37])
-	by mgw-x1.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h0AEvE003075
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Jan 2003 16:57:14 +0200 (EET)
-Received: from esebh003.NOE.Nokia.com (unverified) by esvir05nok.ntc.nokia.com
- (Content Technologies SMTPRS 4.2.5) with ESMTP id <T5fb56f9b3fac158f25441@esvir05nok.ntc.nokia.com> for <parisc-linux@lists.parisc-linux.org>;
- Fri, 10 Jan 2003 16:58:03 +0200
-Received: (from mnahkola@localhost)
-	by aurinko.ntc.nokia.com (8.11.6/8.11.6) id h0AEw1913974
-	for parisc-linux@lists.parisc-linux.org; Fri, 10 Jan 2003 16:58:02 +0200 (EET)
-Date: Fri, 10 Jan 2003 16:58:00 +0200
-From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ibm-disk on a hp 735/125
-Message-ID: <20030110145800.GH2160@aurinko.ntc.nokia.com>
-References: <Pine.GSO.4.51.0301091743500.9837@sunhalle66> <20030110124210.GG2160@aurinko.ntc.nokia.com> <1042203531.19627.11.camel@linux>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-In-Reply-To: <1042203531.19627.11.camel@linux>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 373A84829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Jan 2003 06:46:35 -0700 (MST)
+Date: Fri, 10 Jan 2003 14:45:57 +0100
+Message-ID: <3E1AA8D5000009DC@ocpmta8.freegates.net>
+In-Reply-To: <3E1AA8D500000877@ocpmta8.freegates.net>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] unaligned accesses
+To: "Randolph Chung" <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -31,41 +22,161 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jan 10, 2003 at 01:58:51PM +0100, ext Joerg Krebs wrote:
-> Am Fre, 2003-01-10 um 13.42 schrieb Nahkola Mikko:
+>-- Original Message --
+>From: jsoe0708@tiscali.be
+>Subject: Re: [parisc-linux] unaligned accesses
+>To: "Randolph Chung" <randolph@tausq.org>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Date: Fri, 10 Jan 2003 09:24:40 +0100
+>
+>
+>
+>>-- Original Message --
+>>Date: Thu, 9 Jan 2003 23:36:59 -0800
+>>From: Randolph Chung <randolph@tausq.org>
+>>To: jsoe0708@tiscali.be
+>>Cc: parisc-linux@lists.parisc-linux.org
+>>Subject: Re: [parisc-linux] unaligned accesses
+>>Reply-To: Randolph Chung <randolph@tausq.org>
+>>
+>>
+>...
+>>> hmmm buggy: not always, the triky case is when you have to access to
+>those
+>>> kind of data encapsulated into a structure. I do not yet find any wor=
+karound
+>>> or how to fix this kind of pb. Any idea (gcc-3.3?)?
+>>
+>>eh? what do you mean?
+>>
+>well I will try to find back the example I encounter (somewhere in jfs-1=
+.0.23
+>IIRC)
+>
+Yes here it was in evms(1.1.0 since the bug was fix but it is still a sam=
+ple
+:-)
 
-> > > im running a hp 735/125 with a st31200wd 1GB harddisk, connected to the
-> > > fast-wide scsi-connector, which run's quit nice.
-> > > But now I want to replace the disk with a larger 4,3GB ibm dcas-34330
+[this small example was composed of code coming from evms-1.1.0]
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
-> > I'd say that probably the IBM disk isn't high-voltage. The 735's 
-> > fast-wide is fast-wide-highvoltage-differential, back then they thought 
+typedef u_int8_t  BOOLEAN;
 
-> Yes you are right, I found the HP 735 Hardware manual on the openpa
-> Webside and there i found that the wide-scsi connector is just for HVD
-> Do you know if any HVD disk is detected by the hp or are there just some
-> special disks for the hp ?
+#ifndef TRUE
+  #define TRUE  1
+#endif
+#ifndef FALSE
+  #define FALSE 0
+#endif
 
-Well, yes on both counts. Any HVD disks should be detected... but at the 
-time these boxes were made, there were supposed to be certain differences 
-between HP and regular disks. Or maybe that was just HP marketing.
+struct partition {
+    unsigned char boot_ind;     /* 0x80 - active */
+    unsigned char head;     /* starting head */
+    unsigned char sector;       /* starting sector */
+    unsigned char cyl;      /* starting cylinder */
+    unsigned char sys_ind;      /* What partition type */
+    unsigned char end_head;     /* end head */
+    unsigned char end_sector;   /* end sector */
+    unsigned char end_cyl;      /* end cylinder */
+    unsigned int start_sect;    /* starting sector counting from 0 */
+    unsigned int nr_sects;      /* nr of sectors in partition */
+};
 
-At any rate, there _was_ (and still is, BTW) a way to recognize a HP disk 
-by the firmware - and there were differences between "workstation" and 
-"server" disks too, _and_ IIRC "workstation" disks weren't "expected to 
-work" in servers, the other way round it was "expected to work" but "unsupported" 
-or something. Don't remember.
+BOOLEAN isa_null_partition_record(struct partition *p)
+{
+    int          i;
+    u_int32_t   *uip =3D (u_int32_t *) p;
 
-If I only could remember what the exact identification thing was ... 
-maybe a letter somewhere in the firmware version string.
+    for (i=3D0; i<4; i++) {
+        if (*uip!=3D0x00) return FALSE;
+    }
 
-But since HP-UX 10.20 by the latest, probably earlier too, some people 
-have been using whatever disks they get as long as the SCSI interfaces 
-are compatible. I've never heard of problems. 
+    return TRUE;
+}
 
-Me? I recycle old HP disks in PCs... 
+int main(int argc, char * * argv, char * * env) {
+
+    struct partition p1, p2;
+
+    p1.boot_ind=3D0;
+    p1.head=3D0;
+    p1.sector=3D0;
+    p1.cyl=3D0;
+    p1.sys_ind=3D0;
+    p1.end_head=3D0;
+    p1.end_sector=3D0;
+    p1.end_cyl=3D0;
+    p1.start_sect=3D0;
+    p1.nr_sects=3D0;
+ 
+    printf("Is that p1 is a null partition: %u\n", isa_null_partition_rec=
+ord(&p1));
+
+    p2.boot_ind=3D1;
+    p2.head=3D2;
+    p2.sector=3D3;
+    p2.cyl=3D4;
+    p2.sys_ind=3D5;
+    p2.end_head=3D6;
+    p2.end_sector=3D7;
+    p2.end_cyl=3D8;
+    p2.start_sect=3D9;
+    p2.nr_sects=3D10;
+ 
+    printf("Is that p2 is a null partition: %u\n", isa_null_partition_rec=
+ord(&p2));
+    return 0;
+}
+
+Unfortunately this doesn't reproduce the actual problem of which I save
+the following traces (from the evms_vgscan 1.1.0: once again this was fix=
+
+since next release):
+...
+(isa_valid_partition_record) file checks.c
+part.start_sect add: 0x27116
+part.start_sect    : 0
+part.nr_sects   add: 0x2711a
+part.nr_sects      : 0
+p            add: 0x2710e
+p.boot_ind   add: 0x2710e
+p.head       add: 0x2710f
+p.sector     add: 0x27110
+p.cyl        add: 0x27111
+p.sys_ind    add: 0x27112
+p.end_head   add: 0x27113
+p.end_sector add: 0x27114
+p.end_cyl    add: 0x27115
+p.start_sect add: 0x27116
+p.start_sect    : 0
+p.nr_sects   add: 0x2711a
+p.nr_sects      : 0
+p            add: 0x2710e
+p.boot_ind   add: 0x2710e
+p.head       add: 0x2710f
+p.sector     add: 0x27110
+p.cyl        add: 0x27111
+p.sys_ind    add: 0x27112
+p.end_head   add: 0x27113
+p.end_sector add: 0x27114
+p.end_cyl    add: 0x27115
+p.start_sect add: 0x27116
+p.start_sect    : 0
+p.nr_sects   add: 0x2711a
+p.nr_sects      : 0
+...
+
+in which we can see that p.start_sect (an int) address (0x27166 =3D=3D 16=
+0102)
+is not well align (160102/4=3D40025.5).
+
+HTH,
+    Joel
 
 
--- 
-Mikko Nahkola   <mikko.nahkola@nokia.com>
-Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
+********************************************
+Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
+://adsl.tiscali.be
