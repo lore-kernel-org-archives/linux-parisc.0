@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5BAB0482A
-	for <parisc-linux@parisc-linux.org>; Sat,  9 Mar 2002 11:35:47 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id luoxlaaa for parisc-linux@parisc-linux.org; Sat, 9 Mar 2002 11:35:07 -0700
-Date: Sat, 9 Mar 2002 10:35:24 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20020309183524.GC628@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] FYI: state of toolchain for Debian woody release
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73AFC48E4
+	for <parisc-linux@parisc-linux.org>; Sat,  9 Mar 2002 11:56:54 -0700 (MST)
+Message-Id: <200203091856.g29IunwI010743@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] FYI: state of toolchain for Debian woody release
+To: randolph@tausq.org
+Date: Sat, 9 Mar 2002 13:56:49 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@parisc-linux.org
+In-Reply-To: <20020309183524.GC628@tausq.org> from "Randolph Chung" at Mar 9, 2002 10:35:24 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,33 +22,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Just thought I'd post a quick note about some of the things happening
-recently:
+> gdb also seems to be rather broken on hppa at the moment. Single
+> stepping doesn't always (doesn't usually) work, and there's a problem 
+> with recognizing core files. If anyone has time to look into these 
+> and submit patches, that'll be great!
 
-With many thanks to Dave Anglin and the investigation work by Carlos
-O'Donell, we've finally fixed the bug in gcc-3.0 that affected passing
-floating point arguments in indirect calls.
+I haven't noticed any single stepping issues with the gdb that I built.
+Stepping into functions doesn't work but single stepping does.  I have
+made some changes to the dwarf2 frame note code in gcc and a working dwarf2
+unwind mechanism is real close now.  I'm down to 4 fails in the g++ testsuite.
 
-The new compilers are now in the Debian archive, and we are slowly
-starting to rebuild some of the affected packages. (gs and python2.1
-were the ones I knew about offhand, and they are now in the incoming
-queue). If you know of any other Debian packages you use that might be
-affected by this bug, let us know and we'll rebuild it.
+There are issues with loading symbols from shared libs.  They don't
+load automatically even though they should.  You can't set new breakpoints
+while a program is executing.  You have to run it again.  You can't
+set breakpoints in shared libraries.
 
-There are still some known problems with the compilers, most notably the
-problems with fixups that aren't able to reach their targets and thus 
-requiring compilation with -ffunction-section. I have one patch from
-Dave that fixes this in some cases, but as I understand it the general
-problem is more involved and might not get fixed till post-woody.
+Also, can't print a function result.  This problem is probably related
+to the stepping into function problem.
 
-gdb also seems to be rather broken on hppa at the moment. Single
-stepping doesn't always (doesn't usually) work, and there's a problem 
-with recognizing core files. If anyone has time to look into these 
-and submit patches, that'll be great!
+Info reg r3 prints the value of r3 saved in the frame and not the current
+value in r3.  Not sure what happens if r3 is not saved in the frame.
 
-randolph
+Dave
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
