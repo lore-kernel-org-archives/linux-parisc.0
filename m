@@ -1,29 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA13029
-	for <parisc-linux@puffin.external.hp.com>; Tue, 12 Dec 2000 03:55:44 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 12 Dec 2000 10:58:30 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA14622;
-	Tue, 12 Dec 2000 21:53:58 +1100
-Date: Tue, 12 Dec 2000 21:53:58 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 32-bit xc-20001206.tar.gz is foobar 
-In-Reply-To: <Pine.LNX.4.21.0012121945440.27939-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0012122137190.14312-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA17426
+	for <parisc-linux@puffin.external.hp.com>; Tue, 12 Dec 2000 10:10:40 -0700
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 12 Dec 2000 17:12:49 -0000
+Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
+  by smtp.linuxcare.com with SMTP; 12 Dec 2000 17:12:17 -0000
+Sender: adevries@mailserv2.iuinc.com
+Message-ID: <3A365CFB.E03FEB72@linuxcare.com>
+Date: Tue, 12 Dec 2000 12:14:35 -0500
+From: Alex deVries <adevries@linuxcare.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Marko.T.Niskanen@nokia.com
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 712/60 booting problem
+References: <13F0486DB51CD311A0AE0008C7C561380453D432@eseis11nok>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
+Marko.T.Niskanen@nokia.com wrote:
+> kernel BUG at pci-dma.c:400!
+> kernel BUG at pci-dma.c:391!
+> kernel BUG at pci-dma.c:400!
+> kernel BUG at pci-dma.c:391!
+> kernel BUG at pci-dma.c:400!
+> ISO 9660 Extensions: RRIP_1991A
+> VFS: Mounted root (iso9660 filesystem) readonly.
 
-linux/arch/parisc/vmlinux.lds is the culprit.  Or at least, the line
+Those are actually messages that are perfectly normal.
 
-	OUTPUT_FORMAT("elf32-hppa")
+I wonder if Marko's problems are specific to the 712/60, does anyone
+else with a 712/60 have such kernel panics?  I don't on my 712/80.
 
-along with a new linker that produces elf32-hppa-linux output format.
-I'm committing a fix to pehc.
+- Alex
 
 -- 
-Linuxcare.  Support for the Revolution.
+Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
