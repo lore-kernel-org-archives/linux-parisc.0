@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B73004829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:44:56 -0700 (MST)
-Received: from localhost.localdomain (beavis.ybsoft.com [10.0.0.2])
-	by beavis.ybsoft.com (Postfix) with ESMTP id 63C072B282
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:44:52 -0700 (MST)
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Date: 13 Nov 2002 00:44:52 -0700
-Message-Id: <1037173492.9031.7.camel@beavis>
-Mime-Version: 1.0
-Subject: [parisc-linux] Broken Cache Flushing in arch/parisc/kernel/signal.c.??
+Received: from web12505.mail.yahoo.com (web12505.mail.yahoo.com [216.136.173.197])
+	by dsl2.external.hp.com (Postfix) with SMTP id 009D44829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:47:42 -0700 (MST)
+Message-ID: <20021113074738.97911.qmail@web12505.mail.yahoo.com>
+Date: Tue, 12 Nov 2002 23:47:38 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] What did I find
+To: Longjos@aol.com, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3d.277be522.2b02f338@aol.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,52 +21,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello parisc-linux hackers,
+--- Longjos@aol.com wrote:
+> Perhaps you can help me identify this box that I found at a surplus
+> auction.
+> It says on it:
+> Visual Technology Model: TX100M
+> When powered up it says it is an X terminal, but it has no X Server 
+> installed. It has to boot from Tftp, or the sort. 
+> My main problem is, I can't find any reference to this thing. I have
+> no idea 
+> what software it runs.
+> Can anyone help me?
+> Thanks
+> 
 
-I spent the evening tracking down why the serial mux failed to start
-init and I kept getting the cow message on 2.5.47...and why it worked
-for 2.5.46-pa7. After re-merging all the cvs commits in the last 4 days,
-I finally tracked the problem down to this chunk of code from
-arch/parisc/kernel/singal.c:
+I know that HP's version of this box (Envizex, Entria, and 700/RX
+X-Terminals) were diskless and bootp'd from an HP9000 UNIX box over the
+network. 
 
-Index: arch/parisc/kernel/signal.c
-===================================================================
-RCS file: /var/cvs/linux-2.5/arch/parisc/kernel/signal.c,v
-retrieving revision 1.6
-diff -u -p -r1.6 signal.c
---- arch/parisc/kernel/signal.c	10 Nov 2002 19:39:16 -0000	1.6
-+++ arch/parisc/kernel/signal.c	13 Nov 2002 07:38:58 -0000
-@@ -308,8 +308,21 @@ setup_rt_frame(int sig, struct k_sigacti
- 	}
- #endif
- 
-+#if CACHE_FLUSHING_IS_NOT_BROKEN
- 	flush_icache_range((unsigned long) &frame->tramp[0],
- 			   (unsigned long) &frame->tramp[4]);
-+#else
-+       /* It should *always* be cache line-aligned, but the compiler
-+           sometimes screws up. */
-+       asm volatile("fdc 0(%%sr3,%0)\n\t"
-+                    "fdc %1(%%sr3,%0)\n\t"
-+                    "sync\n\t"
-+                    "fic 0(%%sr3,%0)\n\t"
-+                    "fic %1(%%sr3,%0)\n\t"
-+                    "sync\n\t"
-+                    : : "r" (frame->tramp), "r" (L1_CACHE_BYTES));
-+#endif
-+
- 	rp = (unsigned long) frame->tramp;
- 
- 	if (err)
+derek
 
 
-This patch is needed to restore the functionality of the 2.5.46 kernel
-so the Serial Mux, pdc console, etc will boot on the K460, etc.  I did
-not want to re-commit this patch because it is ugly, and it would be
-nice to figure out how to solve this problem properly.  
-
-Any thoughts, suggestions, etc?
-
-Thanks!
-
-- Ryan
+__________________________________________________
+Do you Yahoo!?
+U2 on LAUNCH - Exclusive greatest hits videos
+http://launch.yahoo.com/u2
