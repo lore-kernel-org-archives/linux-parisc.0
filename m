@@ -1,40 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B1B6A489E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 14:17:39 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 3FCB4B00C; Mon, 24 Sep 2001 21:16:18 +0100 (BST)
-Date: Mon, 24 Sep 2001 21:16:18 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: thunder7@xs4all.nl
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problem installing new kernel
-Message-ID: <20010924211618.K5051@linuxcare.com>
-References: <000901c142ff$6bce2410$1900a8c0@aloha> <20010922072842.A4157@middle.of.nowhere>
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C4C7489E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 14:37:59 -0600 (MDT)
+To: Albert Strasheim <fullung@ilink.nis.za>
+Cc: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Don't Use base tarballs (was Re: [parisc-linux] nfsroot login
+ problems on 720/50)
+In-Reply-To: Message from Albert Strasheim <fullung@ilink.nis.za>
+   of "Sat, 22 Sep 2001 01:56:10 +0200." <20010922015609.A14166@dogbert.localdomain>
+References: <20010921193553.A11874@dogbert.localdomain>
+ <20010921180529.C32145@megatonmonkey.net>  <20010922015609.A14166@dogbert.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010922072842.A4157@middle.of.nowhere>; from thunder7@xs4all.nl on Sat, Sep 22, 2001 at 07:28:42AM +0200
+Date: Mon, 24 Sep 2001 14:37:57 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010924203757.BCCE337DDD@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Sep 22, 2001 at 07:28:42AM +0200, thunder7@xs4all.nl wrote:
-> On Sat, Sep 22, 2001 at 02:42:12AM +0200, Tino Hirschmann wrote:
-> > Hi,
-> > 
-> > i got palinux-0.9.2 running on my HP 715/80. I compiled the kernel as
-> > discribed on the webpage.
-> > But what do i have to do after i did make palo ?
-> > I think make zlilo doesn't work here .-)
-> > 
+Albert Strasheim writes...
 
-'make palo' will build a vmlinux, and then use that to build a lifimage.
-The lifimage is used for netbooting.  If you are booting from disk
-you want to copy vmlinux to /boot/vmtest (or something).  Then your
-options are either
+> Should I try the base tarball (same date... :-( ) or is that known to be
+> bad too?
 
-> Edit /etc/palo.conf and run /sbin/palo
+Neither are "bad" just out of date. As soon as we had a real installer 
+everyone switched over to using that. They were left there for historical 
+reasons.
 
-or interact with the ipl somehow (either say 'yes' to the question on boot,
-or use 'bo isl', depending on machine), and edit the kernel name to
-be vmtest.
+I have moved them to an old directory to prevent confusion. No one should be 
+using these any more. If, for some good reason, you can't use the normal 
+installer process then I think the proper way to generate base tarballs now is 
+to use the debootstrap tool. If there's enough demand then we could generate 
+them and put them on the ftp site again.
 
-Richard
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
