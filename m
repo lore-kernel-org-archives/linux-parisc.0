@@ -1,49 +1,41 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA08541
-	for <parisc-linux@puffin.external.hp.com>; Sun, 13 Jun 1999 00:45:19 -0600
-To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] binfmt_som 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of Sun, 13 Jun 1999 03:52:54 +0200.
-             <19990613035254.D31472@mencheca.ch.genedata.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sun, 13 Jun 1999 00:40:06 -0600
-Message-ID: <24471.929256006@upchuck.cygnus.com>
-From: Jeffrey A Law <law@cygnus.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA10202
+	for <parisc-linux@puffin.external.hp.com>; Sun, 13 Jun 1999 11:03:01 -0600
+Message-Id: <199906131702.NAA28988@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] It's finally sunk in: bye bye elf32
+To: adevries@thepuffingroup.com (Alex deVries)
+Date: Sun, 13 Jun 1999 13:02:58 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <3762F4BE.C09B5CA9@thepuffingroup.com> from "Alex deVries" at Jun 12, 99 08:01:02 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+> So, I'm going to spend some time making the kernel build on HPUX.  I
+> know there's quite a few changes to make.  But I'll keep the elf
+> specific work, it'll help later on.
 
-  In message <19990613035254.D31472@mencheca.ch.genedata.com>you write:
-  > ``exec_dsize
-  > This field specifies the size in bytes of the initialised data (does
-  > not have to be a multiple of 4k).  The actual size of the data section
-  > in the file must be a multiple of 4k and can be padded with zeroes to
-  > make it a multiple of 4k.''
-  > 
-  > Does this mean in the case where exec_dsize is not a multiple of 4k, it
-  > MUST be padded with zeroes, or merely might be padded with zeroes?  If the
-  > former, I don't need to zero them myself in the loader which would be nice.
-Strictly reading the size in the file is guaranteed to be a multiple of 4k,
-but you can't necessarily depend on the pad being zero filled.
+The discussion about the merits/limitations of SOM and ELF over the
+last couple of days has been extremely useful.  As Alex says, there is
+a lot of work to be done on the kernel before it is usable.  However,
+in the long run, the port must be a complete self contained system.
+That is, it must support a linker capable of generating executables
+and the kernel.
 
-However, HP's linker always zero pads.
+The concensis is that writing a SOM linker is a major project.  Another
+option might be to approach HP and see if they would consider putting
+the source code for their SOM linker into the public domain, or possibly
+supplying a static binary version of the linker that could be distributed.
+I would suggest that Alex discuss the matter with his contact at HP.
 
-  > Also, where does the bss section start?  Is it immediately after the
-  > initialised data or at the next page boundary after it?
-It beings immediately after the initialized data.  Note that HP's linker will
-decrease the size of the bss space by the amount of pad needed to fill out the
-data space's size to a multiple of 4k.  This saves a little bit of memory in
-the resident image.  Note this is only possible when the pad is zero filled.
+If this does not work out, then we must fall back to ELF32 and devote
+enough effort to get elf32-hppa working at an acceptable level.  Jeff
+Law is the world expert on the hp version of these tools.  However, Jeff
+is very busy with gcc.  Any volunteers?  Obviously, this needs to be
+coordinated with the maintainers of binutils and Cygnus.
 
-To the best of my knowledge this behavior is not documented by HP anywhere.  It
-is documented in bfd/som.c, as are many of SOM's wonderful quirks.  Search for
-exec_header.
-
-In case you're wondering why BFD has to know about this -- consider strip and
-objcopy.  If you muck up an executable with those programs BFD has to be
-able to recreate the exec header based on the sections that will exist in the
-final output file.
-
-jeff
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
