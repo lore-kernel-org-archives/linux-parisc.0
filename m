@@ -1,21 +1,17 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EC503489E
+Return-Path: <varenet@esiee.fr>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B9CD1489E
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 18 Feb 2004 07:42:54 -0700 (MST)
-Date: Wed, 18 Feb 2004 15:42:39 +0100
-Message-ID: <402A42A10000541C@ocpmta1.freegates.net>
-In-Reply-To: <Pine.GSO.4.44.0402180830260.14838-100000@keymaster>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
-To: "Elliott Potter" <epotter@eep.burdell.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	James Morrison <ja2morri@csclub.uwaterloo.ca>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>
+	Wed, 18 Feb 2004 08:55:09 -0700 (MST)
+Date: Wed, 18 Feb 2004 16:55:06 +0100
+Content-Type: text/plain; charset=WINDOWS-1252; format=flowed
+Mime-Version: 1.0 (Apple Message framework v553)
+To: =?ISO-8859-1?Q?Cenk_KARAG=D6Z?= <cenk.karagoz@enter.com.tr>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+In-Reply-To: <20040218095513.XVFQ367.mail@VALHALLA>
+Message-Id: <D23E0231-622A-11D8-B017-0030656F07A2@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: PA linux. 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,24 +21,52 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Elliot,
+Do not mail me personnaly please.
 
->Interesting -- I'm getting a similar crash in a program when it calls
->getopt_long() -- this do_page_fault thing.  I'm wondering if the two are
->somehow related because it's only this one program that crashes, and
->only on the line where getopt_long() is called.  The output in dmesg:
+CCing the list for archive.
 
-For the moment I can just confirm that it's not a kernel pb: I just reboot
-a 2.6.3-rc4-pa0 built with gcc-hppa64-3.0.4ds3-8 (a N required a 64bits kernel)
-and the same Seg fault occurs.
+Le mercredi, 18 f=E9v 2004, =E0 10:45 Europe/Paris, Cenk KARAG=D6Z a =
+=E9crit :
 
-But in my case, as mentioned sw are still in developement, i suspect more
-a mistack in my hack ?)
+> I=92m so sory for take your time..
+>
+> But I have a little bit problem about debian_hppa 30r2=A0
+>
+> I have a180/c- (A 9000 class) machine..
+>
+> Everything seems to beok=A0 duringdebian installation and=20
+> PALOinstallationseems to be ok..
+>
+> But.. In the boot time,ISL (by the way ISL vers=E0ISL revision A.00.38=20=
 
-Cheers,
-    Joel
+> OCT, 1994) say:
+>
+> ISL booting hpux
 
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
-tout le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+well this is pretty self explanatory... you' re booting HPUX here.
+>
+> Boot: disk:(8/16/5.6.0.0.0.0.0.0:0)/stand/vmunix
+>
+> and machine cant boot..
+>
+> I cant understand,=A0 our disk partitions, and instllation processand=20=
+
+> PALOworkedfine...=A0But I still get hpux and /stand/vmunix messages...
+>
+> However,=A0 Ihaveboot the system with debian cd=A0 and=A0mount the =
+patitions=20
+> and work palo in shell.. PALO didnt send any kind error messages..
+>
+> Should I upgrade ISL version ?Have yougotany idea ?
+
+follow the instructions here to install your box:
+http://www.pateam.org/doc.html
+
+and don't forget to format your HD.
+
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/=
