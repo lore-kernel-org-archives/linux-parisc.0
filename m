@@ -1,54 +1,68 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 10439482B
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Sep 2001 04:58:00 -0600 (MDT)
-Date: Wed, 26 Sep 2001 10:57:57 +0000
-From: Richard Allen <ra@hp.is>
-To: Jurriaan Kalkman <Jurriaan.Kalkman@zrt.nl>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: Betr.: Re: [parisc-linux] Trace/breakpoint trap
-Message-ID: <20010926105757.B16693@hp.is>
-References: <sbb18da2.041@ms-zrt1>
+Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1564482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 06:29:28 -0600 (MDT)
+Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
+	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
+	id 15mDoV-0005Tl-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 26 Sep 2001 14:29:19 +0200
+Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
+	id 15mDms-0005O0-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Sep 2001 14:27:38 +0200
+Date: Wed, 26 Sep 2001 14:27:38 +0200
+From: Albert Strasheim <fullung@ilink.nis.za>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010926142738.B20697@dogbert.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <sbb18da2.041@ms-zrt1>; from Jurriaan.Kalkman@zrt.nl on Wed, Sep 26, 2001 at 08:05:23AM +0200
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Sender: Albert Strasheim <fullung@dogbert.localdomain>
+Subject: [parisc-linux] The 720/50 saga continues...
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Sep 26, 2001 at 08:05:23AM +0200, Jurriaan Kalkman wrote:
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Perhaps recompiling your kernel also fixes it?
+A long time ago, in a galaxy far, far away...
 
-Damn...    I edited .config by hand, but Im still in a damn mess.
+I booted my 720/50 from a lifimage with a nfsroot... and it worked, or
+something. :-)
 
-bofh:/usr/src/linux# make clean
-Trace/breakpoint trap
-bofh:/usr/src/linux# make oldconfig
-Trace/breakpoint trap
-bofh:/usr/src/linux# make dep
-Trace/breakpoint trap
+I modified the woody debootstrap script a bit to create a new nfsroot
+(basically I ripped out the running of any binaries in the chroot), and
+ran in on my i386. That worked pretty well.
 
+Next up, I added an init=/bin/sh to the palo kernel command line
+parameters, and rbootd'd the make palo lifimage. Whooo, prompt! So
+first, mount proc, next remount the nfsroot rw, and then run
+/sbin/ldconfig. Looking good...
 
-bofh:/usr/src/linux# cat /etc/palo.conf
-# obsolete with palo-0.94 # --bootloader=/boot/iplboot
---commandline=2/vmlinux-2.4.9 root=/dev/sda4 HOME=/
---recoverykernel=/boot/vmlinux-2.4.0
---init-partitioned=/dev/sda
+Next rather annoying problem: ls reports "Invalid instruction" whenever
+you try to run it. cat works, mount works... I haven't had much time to
+test anything else.
 
-bofh:/usr/src/linux# ls -l /boot
-total 7083
--rw-r--r--    1 root     root       593072 Sep 21 15:04 System.map-2.4.0
--rw-r--r--    1 root     disk       561861 Sep 21 21:12 System.map-2.4.9
--rw-r--r--    1 root     root         3949 Sep 21 15:04 config-2.4.0
-drwxr-xr-x    2 root     root        12288 Sep 21 15:02 lost+found
--rw-r--r--    1 root     root      2853588 Sep 21 15:04 vmlinux-2.4.0
--rwxr-xr-x    1 root     disk      3191078 Sep 21 21:12 vmlinux-2.4.9
+I also attempted a dpkg-reconfigure --all, but it seems to be missing
+Term::ReadLine. I'll be able to work some more on Friday. Hopefully dpkg
+will do the trick, but if not, dpkg-cross might...?
 
+Any ideas on the ls problem?
 
-I still have the old kernel in there. How do I get palo to boot it ?
+Regards,
 
+Albert
 
--- 
-Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
-               --  Solaris 7 Certified Systems and Network Administrator.
-Bell Labs Unix --  Reach out and grep someone.
-Those who do not understand Unix are condemned to reinvent it, poorly.
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE7scm5Dg+hOeRZtkMRAqkZAJ95d5j9Q5unNeIdcHbZkn/gEbR/5QCfdYlD
+JZAlwjIvmGmbmUqk64OfbIc=
+=AJsZ
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
