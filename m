@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dsl2.external.hp.com (localhost [127.0.0.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 835DE482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 May 2002 01:14:08 -0600 (MDT)
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PA8700 boots! 
-In-Reply-To: Message from grundler@dsl2.external.hp.com (Grant Grundler)
-   of "Fri, 24 May 2002 00:55:40 MDT." <20020524065540.DBFE4482A@dsl2.external.hp.com>
-References: <20020524065540.DBFE4482A@dsl2.external.hp.com> 
-Date: Fri, 24 May 2002 01:14:08 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020524071408.835DE482A@dsl2.external.hp.com>
+Received: from cobra.winshop.com.au (cobra.winshop.com.au [203.22.127.31])
+	by dsl2.external.hp.com (Postfix) with SMTP id A9D5D482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 May 2002 02:09:40 -0600 (MDT)
+From: Robert Stanford <rotapile@winshop.com.au>
+To: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain
+Date: 24 May 2002 18:09:33 +1000
+Message-Id: <1022227775.12724.9.camel@rotapile>
+Mime-Version: 1.0
+Subject: [parisc-linux] Debian install on K580
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,30 +20,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I also need to fixup the "unkown device" (PA8700 CPU)
-> in the hardware listing.
-...
+After installing the base system (woody) and rebooting, the base config
+starts. Everything works fine till I get up to apt configuration. I
+choose no to the below question and the error shown appears and ths
+colsole (PDC) stops responding. I can still ping the box though.
 
-bah...pasting into the xterm must have had a ^D and the
-mail got sent prematurely...here's the most interesting
-opart of the output.
 
-grant
+Use security updates from security.debian.org?  
+                                                                   . 
+              <Yes>            <No>                      . 
 
-:~# cat /proc/cpuinfo
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8700 (PCX-W2)
-cpu MHz         : 650.000000
-model           : 9000/800/A500-6X
-model name      : Unknown machine
-hversion        : 0x00005e20
-sversion        : 0x00000491
-I-cache         : 768 KB
-D-cache         : 1536 KB (WB)
-ITLB entries    : 240
-DTLB entries    : 240 - shared with ITLB
-bogomips        : 1297.61
-software id     : 1940077826
+apt-cache(429): unaligned access to 0x403d708c at ip=0x400614f7
 
-:~#
+
+I've had to netboot the machine with a custom kernel (2.4.18 from
+parisc-linux.org) which I built with the cross compiler and mounted the
+root.bin image via nfs to start the install. After that I completed the
+install with the 0.9.3 CD , all due to the PDC console :) 
+
+Regards
+Robert Stanford
