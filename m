@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Tom <palinux@alaskatech.org>
-Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] Oops... 
-In-Reply-To: Message from Tom <palinux@alaskatech.org>
-   of "Wed, 26 Dec 2001 20:01:07 -0900." <Pine.LNX.4.33.0112261956090.3248-100000@goliath.alaskatech.org>
-References: <Pine.LNX.4.33.0112261956090.3248-100000@goliath.alaskatech.org> 
-Date: Thu, 27 Dec 2001 09:40:45 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20011227164045.45E9F4831@dsl2.external.hp.com>
+Received: from hotmail.com (f272.law10.hotmail.com [64.4.14.147])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 673884837
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Dec 2001 10:20:00 -0700 (MST)
+From: "Derek Armstrong" <armstrong_derek@hotmail.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Thu, 27 Dec 2001 11:19:58 -0600
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F272OJlN0hju8qNABIT0000d6c2@hotmail.com>
+Subject: [parisc-linux] Re: XFree86 Question
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,17 +20,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Tom wrote:
-> Perhaps I spoke too soon about -pa24 being good. After compiling and
-> rebooting with -pa24, then an apt-get update/dist-upgrade, make no longer
-> works.
+>Date: Wed, 26 Dec 2001 13:51:17 -0800
+>To: bheadley@interaccess.com
+>From: Christian Suder <csuder@cisco.com>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Subject: [parisc-linux] Re: XFree86 Question
+>
+>
+>In case you still have the problem, if I remember correctly the reason >is 
+>that the XFree config file is generated in a "PC-ish" manner with a >lot of 
+>different screen definitions and tries to start X in a >combination the fb 
+>device does not support. Edit it to have just an >entry for the type of 
+>screen you have (likely 1280x1024, 8bit).
+>
+>	Christian
 
-Could you check if make was replaced or one of it's libs?
-"debsums -s" would be another good thing to check.
-FWIW, make works fine for me with all the recent kernels (if they booted).
+I was having the same problem on a B132L+.  This fix got me up and going.  
+Thanx Christian!
 
-> Any ideas how to troubleshoot this one?
 
-Reboot the older kernel and run "debsums -s" would be my first step.
 
-grant
+_________________________________________________________________
+Join the world’s largest e-mail service with MSN Hotmail. 
+http://www.hotmail.com
