@@ -1,17 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: [parisc-linux] Re: GNU/Libc 2.3.1 on HP-PARISC requires >= 2.4.19 kernel.
-Date: Thu, 5 Dec 2002 10:39:49 -0500
-Message-ID: <20021205153949.GB27054__40967.7254771397$1416621999$gmane$org@systemhalted>
-References: <20021205010845.GU16331@systemhalted> <20021205133139.C5327@parcelfarce.linux.theplanet.co.uk>
+Date: Thu, 5 Dec 2002 11:50:15 -0500 (EST)
+Message-ID: <200212051650.gB5GoG7d003199__1331.34525171972$1416621999$gmane$org@hiauly1.hia.nrc.ca>
+References: <20021205010845.GU16331@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Cc: debian-hppa@lists.debian.org,
 	parisc-linux@lists.parisc-linux.org, debian-glibc@lists.debian.org,
-	John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	Randolph Chung <tausq@debian.org>
-To: Matthew Wilcox <willy@debian.org>
+	tausq@debian.org
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20021205133139.C5327@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20021205010845.GU16331@systemhalted> from "Carlos O'Donell" at Dec 4, 2002 08:08:45 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,25 +21,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Why?
-> > ====
-> > - More testing.
-> > - Bugs fixed in unaligned handlers.
-> > - Trap handler fixes.
-> > - More things than you can shake a stick at, and all thanks to the
-> >   wonderful kernel hacking team that parisc-linux has.
-> 
-> That's great, but there are still problems with 2.4.19 and 2.4.20.  I think
-> you're doing our users a disservice by requiring them to upgrade to 2.4.19.
-> Why not relax the minimum version requirement down to 2.4.17?
+> Hi, my name is Carlos, and I cause all your nightmares with glibc on
+> HPPA :)
+> [...]
+> I recommend that you _do_ _not_ upgrade glibc on HPPA until 2.3.1-6.
 
-I agree that it was probably a mistake at the time since 2.4.19 seemed
-to solve a lot of problems... though in hindsight they are still too
-unstable to push forward on all of our users.
+Being perverse, I tried installing 2.3.1-5.  I hit the same problem
+that Joel mentioned previously, the old dynamic loader doesn't define
+GLIBC_PRIVATE.  I was trying to install glibc privately in a prefix of
+my selection.  I have been using LD_LIBRARY_PATH to select my library
+path.  However, this no longer works since all system binaries are
+linked using /lib/ld.so.1 and it isn't compatible with the 2.3.1
+libraries.  Is there a way around this?
 
-Hrmm... *Carlos mulls for a few hours*
-
-I'll relax it to 2.4.17 in debian, but I'll leave the upstream
-requirement of 2.4.19.
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
