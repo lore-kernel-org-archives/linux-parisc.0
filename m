@@ -1,34 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id VAA13484
-	for <parisc-linux@sod.res.cmu.edu>; Tue, 20 Apr 1999 21:50:09 -0400
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id SAA27427
-	for <parisc-linux@thepuffingroup.com>; Tue, 20 Apr 1999 18:23:00 -0700 (PDT)
-Received: from mozilla.org ([205.217.243.67]) by tintin.mcom.com
-          (Netscape Messaging Server 4.03) with ESMTP id FAIMIU00.H8F for
-          <parisc-linux@thepuffingroup.com>; Tue, 20 Apr 1999 18:23:18 -0700
-Sender: shaver@netscape.com
-Message-ID: <371D285B.27257199@mozilla.org>
-Date: Tue, 20 Apr 1999 21:22:35 -0400
-From: Mike Shaver <shaver@mozilla.org>
-MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id WAA13877
+	for <parisc-linux@sod.res.cmu.edu>; Tue, 20 Apr 1999 22:14:10 -0400
+Date: Tue, 20 Apr 1999 22:13:34 -0400 (EDT)
+From: Alex deVries <adevries@redhat.com>
+To: Mike Shaver <shaver@mozilla.org>
+cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux-cvs] justin
-References: <199904210059.SAA10365@puffin.external.hp.com> <371D2595.3EB4D7D1@mozilla.org> <19990420202140.A18689@master.debian.org>
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <371D2595.3EB4D7D1@mozilla.org>
+Message-ID: <Pine.LNX.3.96.990420221234.5593L-100000@devserv.devel.redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Justin Maurer wrote:
-> 
-> > > puffin, is binutils-x-hppa ok?
-> >
-> > binutils-x-parisc, no?
-> 
-> oops :) yes, that is what i used. is it the proper label?
 
-To the best of my meagre knowledge, yes.
+On Tue, 20 Apr 1999, Mike Shaver wrote:
+> justin@puffin.external.hp.com wrote:
+> > puffin, is binutils-x-hppa ok?
+> binutils-x-parisc, no?
 
-Mike
+I'd say call it binutils-x-hppa-linux until we can actually have a target
+called parisc-linux.  I am just about done with those fixes to binutils,
+though.
 
--- 
-242120.15 234824.91
+- Alex
