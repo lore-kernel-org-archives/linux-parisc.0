@@ -1,24 +1,57 @@
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA18675
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 09:20:58 -0700
-Subject: Re: [parisc-linux] CVS linux Vs. -test10
-To: gibreel@pobox.com (Stephen Zander)
-Date: Thu, 30 Nov 2000 16:16:18 +0000 (GMT)
-Cc: grundler@cup.hp.com (Grant Grundler), matthew@wil.cx (Matthew Wilcox),
-        parisc-linux@puffin.external.hp.com
-In-Reply-To: <877l5lvq3k.fsf@rabbit.fire-swamp.net> from "Stephen Zander" at Nov 30, 2000 12:09:03 AM
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E141WNg-0007Sk-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA19951
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:29:37 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by cosrel1.hp.com (Postfix) with ESMTP id 5990568E
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:32:23 -0700 (MST)
+Message-Id: <200011301731.JAA29335@milano.cup.hp.com>
+To: "Gunneswara Marripudi" <raomg@cup.hp.com>
+Cc: parisc-linux@puffin.external.hp.com
+Subject: Re: Question on Linux DMA routines 
+In-reply-to: Your message of "Thu, 30 Nov 2000 01:03:25 PST."
+             <01c05aac$657dec80$0f0d8421@hpinddm>
+Date: Thu, 30 Nov 2000 09:31:14 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Oooh, there's a reason for me to finally get the 712/80 under my desk
-> to be more than a foot-rest.  I'll see what I can do about this.
+"Gunneswara Marripudi" wrote:
+> Hi Grant,
 > 
-> Note that the likelihood of Debian releasing woody anytime soon is
-> vanishingly small, so this dosen't have to happen Right Now.
+> I have a quick question on Linux 2.3 DMA routines.
 
-My experiences with building Red Hat 7 so far are mostly good. I don't think
-there will be many actual changes needed to build Debian packages either. I've
-made very little that isnt 'use -fPIC' 'dont optimise C++'
+2.3 is dead. You mean 2.4.
+
+
+> If I allocate and map memory using pci_alloc_consistent(),
+> do I still need to call pci_dma_sync_single() if there is a 
+> need to ensure the coherency? The documentation on it
+> at DMA-mapping.txt is ambiguous (at least to me). 
+
+No - it's not needed.
+
+> - Consistent DMA mappings which are usually mapped at driver
+> 113   initialization, unmapped at the end and for which the hardware should
+> 114   guarantee that the device and the cpu can access the data
+> 115   in parallel and will see updates made by each other without any
+> 116   explicit software flushing.
+> 117 
+> 118   Think of "consistent" as "synchronous" or "coherent".
+> 
+> 
+> It says that h/w should guarantee the consistency and I'm not sure 
+> what if the underlying platform is not fully coherent.
+
+The HW *is* fully coherent when the CPU doesn't cache the pages.
+Only systems with PCX-L/L2 CPU (need to) operate this way.
+All other platforms have an I/O MMU which manages the coherency.
+
+You might be confused because HPUX doesn't ever use uncached memory
+for I/O since it has dma_sync() macro instead. And device driver writers
+are "trained" to use that.
+
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
