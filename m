@@ -1,78 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD951CFA2.dip.t-dialin.net [217.81.207.162])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 17B1A482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 15:03:57 -0600 (MDT)
-Received: (from tsbogend@localhost)
-	by solo.franken.de (8.9.3/8.9.3) id XAA03423
-	for parisc-linux@lists.parisc-linux.org; Thu, 28 Jun 2001 23:03:46 +0200
-Date: Thu, 28 Jun 2001 23:03:46 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010628230346.A2361@solo.franken.de>
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 19B19482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 15:28:42 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 97987B00C; Thu, 28 Jun 2001 22:28:46 +0100 (BST)
+Date: Thu, 28 Jun 2001 22:28:46 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Al Budriunas <budriuna@cacr.caltech.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] dselect fails phase 2 of version 0.9 installation
+Message-ID: <20010628222846.V23509@linuxcare.com>
+References: <Pine.SOL.4.10.10106271206040.1484-100000@lugh.cacr.caltech.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] ioremap with 32bit kernel on 64bit machines
+In-Reply-To: <Pine.SOL.4.10.10106271206040.1484-100000@lugh.cacr.caltech.edu>; from budriuna@cacr.caltech.edu on Wed, Jun 27, 2001 at 12:29:11PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On Wed, Jun 27, 2001 at 12:29:11PM -0700, Al Budriunas wrote:
+> 
+> I am experiencing the same failure reported by E. Frank Ball to this group
+> on June 6:
+> 
+> =================
+> I then tried to run "dpkg-reconfigure base-config".  It got to where it
+> is supposed to install the packages and died with a message:  failed
+> running script /usr/sbin/dpkg-preconfigure --apt || true
+> apt-utils is not installed.
+> ==================
+> 
+> My install source is CDROM created from the June iso image. Has anyone
+> sorted this out yet?
 
-we do have a problem with ioremap on 64bit machines with a 32bit kernel.
-While ldaw and friends translate the 32bit address to an appropriate
-64bit address our dtlb miss handler doesn't.
+There should be a new ISO out any day now, please try again once
+that is available.
 
-ldaw translation:
-
-0x00000000 - 0xefffffff  ->   0x00000000 00000000 - 0x00000000 efffffff
-0xf0000000 - 0xf0ffffff  ->   0xf0000000 00000000 - 0xf0000000 00ffffff
-0xf1000000 - 0xffffffff  ->   0xffffffff f1000000 - 0xffffffff ffffffff
-
-the second range is PDC address space, don't know whether we need it.
-I've added code in dtlb_miss_20 and nadtlb_miss_20 to do following
-mapping:
-
-0x00000000 - 0xefffffff  ->   0x00000000 00000000 - 0x00000000 efffffff
-0xf0000000 - 0xffffffff  ->   0xffffffff f0000000 - 0xffffffff ffffffff
-
-This way we get at least io address space right. The changes are below
-and I guess they could be improved. With this changes I'm able to ioremap
-the framebuffer on my C200 and after changes to zalon and sym53x8xx the
-system works as before. Comments ?
-
-Thomas.
-
-Index: arch/parisc/kernel/entry.S
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/entry.S,v
-retrieving revision 1.85
-diff -u -r1.85 entry.S
---- arch/parisc/kernel/entry.S	2001/06/12 16:09:52	1.85
-+++ arch/parisc/kernel/entry.S	2001/06/27 23:05:40
-@@ -1251,7 +1251,10 @@
- 	/* Get rid of prot bits and convert to page addr for idtlbt */
- 
- 	depdi		0,63,12,pte
--	extrd,u		pte,56,25,pte
-+	extrd,u         pte,35,4,t0
-+	cmpiclr,<>      15,t0,r0
-+	depdi           -1,31,32,pte
-+	extrd,u		pte,56,52,pte
- 	idtlbt          pte,prot
- 
- 	rfir
-@@ -1324,7 +1327,10 @@
- 	/* Get rid of prot bits and convert to page addr for idtlbt */
- 
- 	depdi		0,63,12,pte
--	extrd,u		pte,56,25,pte
-+	extrd,u         pte,35,4,t0
-+	cmpiclr,<>      15,t0,r0
-+	depdi           -1,31,32,pte
-+	extrd,u		pte,56,52,pte
- 	idtlbt          pte,prot
- 
- 	rfir
-
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+Richard
