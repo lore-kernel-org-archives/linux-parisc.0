@@ -1,36 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 487124A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Feb 2001 16:19:43 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA05400
-	for <parisc-linux@puffin.external.hp.com>; Thu, 15 Feb 2001 16:15:11 -0700
-Received: from office-proxy (dlci213-m.isomedia.com [207.115.76.213])
-	by isomedia.com (8.9.3/8.9.3) with SMTP id PAA06293
-	for <parisc-linux@thepuffingroup.com>; Thu, 15 Feb 2001 15:19:37 -0800
-Date: Thu, 15 Feb 2001 15:19:37 -0800
-Message-Id: <200102152319.PAA06293@isomedia.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8DCD34A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Feb 2001 16:33:04 -0700 (MST)
+Sender: marteaut@esiee.fr
+Message-ID: <3A8C672C.E06566A0@esiee.fr>
+Date: Fri, 16 Feb 2001 00:33:00 +0100
+From: Thomas Marteau <marteaut@esiee.fr>
 MIME-Version: 1.0
+To: Kevin Read <obsidian@panokratie.de>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Test on 705
+References: <Pine.LNX.4.31.0102160013480.22670-100000@kiste.innnet.de>
 Content-Type: text/plain; charset=us-ascii
-From: Chelsea Lewis <support@seamem.com>
-To: <parisc-linux@thepuffingroup.com>
-Subject: [parisc-linux] Link-Exchange Request - Check out your link on our site!
 List-ID: <linux-parisc.vger.kernel.org>
 
-Attn: Webmaster
+Hi Kevin,
 
-Hi, my name is Chelsea Lewis and I am a representative of 1st-Memory Warehouse (http://www.1st-memorywhse.com/) in Redmond,WA. I sent you an email requesting a link-exchange. Your website, www.parisc-linux.org, has a link located at: http://www.1st-memorywhse.com/links/themeindex.html ,under the Linux category. If you would like to trade links, please email me the url of the link to our site and make sure that your site's description and and category on our site is suitable.
+	It seems like you want to boot with the file system via nfs.
 
-If you decide to trade links, I will move your site to the TOP of its links page so that it is very easy to find in our directory. 
+This is waht that means:
 
+mount: RPC call returned error 229
+Root-NFS: Server returned error -229 while mounting /tftpboot/(none)
+VFS: Unable to mount root fs via NFS, trying floppy.
+VFS: Cannot open root device "nfs" or 02:00
+Please append a correct "root=" boot option
 
-Cordially Yours:
+If it is not what you want, please refer to the PALO Readme or to the
+official website PALO How-To
 
-Chelsea Athena Lewis
-1st-Memory Warehouse
+Good Luck, Thomas
 
-http://www.1st-memorywhse.com
-
-Our description should be: 1st-Memory Warehouse - High Quality, Low-Cost Memory Modules for Macintosh and PC. 
-
-..
+ESIEE Team
+Visit http://www.esiee.fr/puffin
