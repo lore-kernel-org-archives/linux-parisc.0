@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6D43C482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 09:03:14 -0700 (MST)
-Date: Tue, 29 Jan 2002 17:03:00 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: Randolph Chung <randolph@tausq.org>
-Cc: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] IPv6
-In-Reply-To: <20020129071642.GP21816@tausq.org>
-Message-ID: <Pine.NEB.4.33.0201291643080.14788-100000@www2.scram.de>
+Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06FAD482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 09:12:52 -0700 (MST)
+Date: Tue, 29 Jan 2002 11:12:42 -0500 (EST)
+From: "Christopher C. Chimelis" <chris@debian.org>
+To: Matthew Wilcox <willy@debian.org>
+Cc: HEISERER DANIEL <Daniel.Heiserer@bmw.de>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+In-Reply-To: <20020129151945.B3850@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.21.0201291110160.32249-100000@spawn.hockeyfiend.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: octave2.1_2.1.35-6_hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Randolph,
+On Tue, 29 Jan 2002, Matthew Wilcox wrote:
 
-> > ICMPv6 checksum failed [3ffe:0400:0470:0004:0000:0000:0000:0001 >
-> > ff02:0000:0000:0000:0000:0001:ff00:0002]
-> > NET: 4 messages suppressed.
->
-> should be fixed now.... pls give it a try. it was not adding proto
-> correctly.
+> We don't build binaries for HP-UX.  Some people have suggested starting a
+> new port to build binaries for proprietary unices sch as Solaris and HP-UX,
+> but nobody has actually done so yet.
 
-It's OK now. However, there still seems to be a problem with the socket
-interface. From the HP, i can't ping6 anything (no response), although i
-can see the packets on the line (with correct checksum) and the reply from
-my Intel box (or anything behind it). A ping from Intel to HP works just
-fine. Also, i can't even ping6 ::1.
+It may be helpful, though, to pick up the Debian source package and look
+over the patches since there may be some that work around the "gotchas" of
+the platform.  It would at least be a good start, even though the patches 
+are probably a bit more linux-specific and probably shouldn't be used
+verbatim hoping that they fix problems for HP-UX compilation.
 
-3ffe:400:470:4::2 is the (current) 6bone address of the HP :-)
-
-# ping6 3ffe:400:470:4::2
-PING6(56=40+8+8 bytes) 3ffe:400:470:1::dead:fffe --> 3ffe:400:470:4::2
-16 bytes from 3ffe:400:470:4::2, icmp_seq=0 hlim=61 time=85.938 ms
-16 bytes from 3ffe:400:470:4::2, icmp_seq=1 hlim=61 time=78.125 ms
-16 bytes from 3ffe:400:470:4::2, icmp_seq=2 hlim=61 time=82.032 ms
-
-Cheers,
-Jochen
+C
