@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CCADB48D7
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 11:23:30 -0700 (MST)
-Message-Id: <200303201823.h2KINN1w007420@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Thu, 20 Mar 2003 13:23:23 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: jsoe0708@tiscali.be, tausq@debian.org, b.gunreben@web.de,
-	willy@debian.org, doko@cs.tu-berlin.de, debian-hppa@lists.debian.org,
-	debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org,
-	kuznet@ms2.inr.ac.ru, linux-net@vger.kernel.org
-In-Reply-To: <200303201813.h2KIDn3P007214@hiauly1.hia.nrc.ca> from "John David Anglin" at Mar 20, 2003 01:13:49 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E865D4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 21:18:49 -0700 (MST)
+From: Ryan Bradetich <rbradetich@uswest.net>
+To: libc-alpha@sources.redhat.com
+Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Message-Id: <1048220325.15076.160.camel@beavis.ybsoft.com>
+Mime-Version: 1.0
+Date: 20 Mar 2003 21:18:46 -0700
+Subject: [parisc-linux] /lib/ld.so.1 (glibc) issues on parisc-linux 2.5 kernel??
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +21,63 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> No, don't do that.  SIG_DFL, SIG_IGN and SIG_ERR expand to compound
-> literals.
+Hello libc hackers,
 
-Sorry, that part is wrong.  Anyway, just leave the macro defines as
-is and cast them where used to void *.  This causes the conversion
-of the other operand to void * and function pointer conicalization
-won't be done (6.5.9, paragraph 5).
+I am investigating a problem that occurs between ld.so.1
+and the kernel on the 2.4 (w/o the added hack to fix this) and 2.5 
+kernels. The problem manifested itself when I tried to run the ltp
+tests, and is shown below:
 
-Dave
+
+rbrad@vega:~$ /lib/ld.so.1 --verify /bin/sh
+Inconsistency detected by ld.so: rtld.c: 879: dl_main: Assertion
+`_rtld_local._dl_rtld_map.l_libname' failed!
+
+
+The system is running Debian Linux with this version of glibc:
+ii  libc6          2.3.1-14       GNU C Library: Shared libraries and
+
+
+The complete email thread on the parisc-linux list is located at:
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2003-March/019460.html
+
+
+
+
+I have basically tracked this mis-match down to this problem:
+
+With this statement in the kernel (fs/binfmt_elf.c:create_elf_tables())
+
+	NEW_AUX_ENT(AT_ENTRY, exec->e_entry);
+
+The user_entry and ENTRY_POINTS are:
+
+	user_entry: 41001fb4
+	ENTRY_POINT: 41027082
+
+
+With this statement not present, and the interpreter_type == 0 (No
+Interpreter) .. the user_entry and ENTRY_POINT match.  [Note: The
+assert goes away at this point].
+
+	user_entry: 41027082
+	ENTRY_POINT: 41027082
+
+
+So at this point, I am not sure if the kernel is setting the
+exec->e_entry incorrectly, or if the ENTRY_POINT needs to be adjusted
+in glibc for the hppa platform.
+
+
+Carlos O'Donell suggested I forward this message to this list for
+additional advice.  Please cc me on any replies since I am not
+subscribed to this list.
+
+Thanks,
+
+- Ryan
+
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Ryan Bradetich <rbradetich@uswest.net>
