@@ -1,18 +1,23 @@
-Return-Path: <wipvzrquzzoas@cnnic.net.cn>
-Received: from srry01m09-145.bctel.ca (srry01m09-145.bctel.ca [209.53.87.145])
-	by dsl2.external.hp.com (Postfix) with SMTP id 634B448E0
+Return-Path: <janelle@msn.com>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73C6B487B
 	for <parisc-linux@parisc-linux.org>;
-	Fri, 26 Dec 2003 03:34:38 -0700 (MST)
-From: "Domingo Kidd" <wipvzrquzzoas@cnnic.net.cn>
+	Fri, 26 Dec 2003 04:58:58 -0700 (MST)
+Received: from cpe-069-132-031-211.carolina.rr.com
+	(cpe-069-132-031-211.carolina.rr.com [69.132.31.211])
+	by cuprel1.hp.com (Postfix) with SMTP id 0F9C8E2D
+	for <parisc-linux@parisc-linux.org>;
+	Fri, 26 Dec 2003 03:58:48 -0800 (PST)
+Message-ID: <0r$y7m9$3n$st$o@pjub.5t>
+From: "Lincoln Benitez" <janelle@msn.com>
 To: parisc-linux@parisc-linux.org
-Mime-Version: 1.0
-Date: Thu, 25 Dec 2003 23:34:34 +0100
+Date: Fri, 26 Dec 03 23:52:12 GMT
+MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="--ALT--GGYP45782330778744"
-Message-Id: <WQEEOTX-0008602476029@backside>
+	boundary="E702.E68F5_.8"
 Cc: 
-Subject: [parisc-linux] Re: UDYPJIP, the bookkeeper went
-Reply-To: Kidd Domingo <wipvzrquzzoas@cnnic.net.cn>
+Subject: [parisc-linux] .Larger cup sizes ! Proven effective! rapvdhxfyjv
+Reply-To: Lincoln Benitez <janelle@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,28 +27,36 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----ALT--GGYP45782330778744
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
 
-dessicate circe atwater northrop inquisition potash deformation 
-mackey bingham severe conjugate mineral caller 
-anarchic ontology contradistinguish adulterate litigant heraclitus certainty 
+--E702.E68F5_.8
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-----ALT--GGYP45782330778744
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
 
-<HTML><HEAD>
-<BODY>
-<p>Ban</cool>ned C</townhouse>D! Gov</bevy>ernment d</fettle>on't wan</pyre>t m</interviewee>e t</lottie>o s</numb>ell i</balinese>t. Se</despise>e N</chanson>ow @</p>
-<a href="http://www.530000x.com/cd/">
-<img border="0" src="http://www.530000x.com/cd/ads.jpg"></a>
-vex craven osteopath car inappreciable monarch explicit scrapbook emitter shrivel tort month yalta cigarette diffeomorphism cohere ear infinitive whereupon game mcallister hinduism impoverish annals jennie efficacious simulcast compensate hugging treaty <BR>
-preference brought granite stegosaurus upland eastward rubbery obfuscatory mizar falter libertarian edmund meander zambia plain runneth erich intercalate write <BR>
+<body bgcolor=3D"#FFFFFF" text=3D"#000099" link=3D"#0000FF" alink=3D"0000f=
+f" vlink=3D"#0000FF">
+<center>
+<H3>BreastSuccess can be yours<br>Safely and Naturally!</H3>
+Increase Breast Fullness.. 1 - 3 Cup Sizes<br>
+    Improve Breast Firmness for a shaplier and sexier YOU!<br>
+Be sexier with safe and natural herbs<br>Herbal nutrients responsible for =
+thousands of positive results in Europe <br>Hundreds of thousands of women=
+ are already enjoying ASTOUNDING results! <br> And you can too !</H3>
+    <H4>100% Satisfaction Guaranteed!<br>
+    Doctor Approved!</H4>We're so impressed with this product<br> that we =
+gladly offer a 100% Money Back Guarantee <br>so there's nothing to lose!</=
+H2></center><br><center><h2><a href=3D"http://www.fisha.biz/breast/?buster=
+">This way to a new figure safely!</a></H2></center>
+dwoord do mqaibw hm
+gjf xkcm agb zb
+</body>
+</html>
+jjbyxyd vzr
 
-</BODY>
-</HTML>
-
-
-----ALT--GGYP45782330778744--
+--E702.E68F5_.8--
