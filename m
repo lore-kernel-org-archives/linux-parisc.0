@@ -1,30 +1,35 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA17198
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 15:21:45 -0700
-Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
-  by mailserv2.iuinc.com with SMTP; 18 Jan 2001 22:25:20 -0000
+Received: from rhirst.linuxcare.com (pc188-bre9.cable.ntl.com [213.105.88.188])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id PAA17643
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 15:50:16 -0700
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id EF01CB005; Thu, 18 Jan 2001 22:15:58 +0000 (GMT)
-Date: Thu, 18 Jan 2001 22:15:58 +0000
+	id 80985B005; Thu, 18 Jan 2001 22:44:10 +0000 (GMT)
+Date: Thu, 18 Jan 2001 22:44:10 +0000
 From: Richard Hirst <rhirst@linuxcare.com>
-To: Jim Buttafuoco <jim@tylerdrive.org>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Trouble booting a 710 (bushmaster)
-Message-ID: <20010118221558.D28638@linuxcare.com>
-References: <200101182104.f0IL4lb20828@openbsd1.buttafuoco.net>
+To: "arete@libero.it" <arete@libero.it>
+Cc: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] No booting 715 old
+Message-ID: <20010118224410.F28638@linuxcare.com>
+References: <G7D13X$IWdMk3UWppTTFaurPylOrikzjQAW9PMmvU2uFHUGD@libero.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200101182104.f0IL4lb20828@openbsd1.buttafuoco.net>; from jim@tylerdrive.org on Thu, Jan 18, 2001 at 04:04:47PM -0500
+In-Reply-To: <G7D13X$IWdMk3UWppTTFaurPylOrikzjQAW9PMmvU2uFHUGD@libero.it>; from arete@libero.it on Thu, Jan 18, 2001 at 02:21:33PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jan 18, 2001 at 04:04:47PM -0500, Jim Buttafuoco wrote:
-> attach is the boot log.
+On Thu, Jan 18, 2001 at 02:21:33PM +0100, arete@libero.it wrote:
+> I have an 715/50 , with PDC rom 1.3 and IODC rom 1.1
+> i use the palinux-0.5.iso image
+>   and recive this messages
+> 
+> 
+> .....
+> 
+> IASQ:00000000 IAOQ:c01c5280 c015280
+> IIR:c840c00 ISR: 00000000 IOR:c02773f0
+> ORIG_R28:00000000
 
-OK, that tells me that the network chip is working fine - the chip is
-receiving frames and buffering them.  The problem is that interrupts
-the chip generates are not getting to the driver - so the driver never
-looks for completed commands.
-
-Anyone know if interrupt handling is different for a 710?
+If this is just after a message something like "ASP version .. found",
+then it is a known problem with that kernel.  There is a newer kernel
+on the ftp site, which you should try and boot (probably with rbootd
+rather than bootpd on your server).
 
 Richard
