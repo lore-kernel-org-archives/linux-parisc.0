@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9A52548C8
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Oct 2003 12:34:06 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1AEZbP-0000mq-Q0; Tue, 28 Oct 2003 19:34:03 +0000
-Date: Tue, 28 Oct 2003 19:34:03 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	Matthew Wilcox <willy@debian.org>,
-	parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] C110 builtin nic slow?
-Message-ID: <20031028193403.GK8874@parcelfarce.linux.theplanet.co.uk>
-References: <3F98D67D00001BC1@ocpmta3.freegates.net> <3F9EC44D.6040106@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F9EC44D.6040106@tiscali.be>
+Received: from 168-226-176-149.speedy.com.ar (168-226-176-149.speedy.com.ar [168.226.176.149])
+	by dsl2.external.hp.com (Postfix) with SMTP id 02FCE4841
+	for <parisc-linux@parisc-linux.org>; Tue, 28 Oct 2003 13:16:47 -0700 (MST)
+Message-ID: <2s44ivt7560v1h4q4sffb@g3aaebyccj4z>
+From: "Ericka Zapata" <y938fcion@yahoo.com>
+Reply-To: "Ericka Zapata" <y938fcion@yahoo.com>
+To: parisc-linux@parisc-linux.org
+Date: Tue, 28 Oct 2003 23:16:32 +0600
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="1_26D.9A6E5.B5AB_5"
+Subject: [parisc-linux] Get A Bachelor's Degree, Master's, or PhD - Classes Not Needed...esmerelda
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,21 +22,67 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Oct 28, 2003 at 07:32:29PM +0000, Joel Soete wrote:
-> Anyway:
->  # ethtool eth1
-> Settings for eth1:
-> No data available
->  # ethtool eth0
-> Settings for eth0:
-> No data available
-> 
-> Any idea (may be switching the two interfaces: I mean just change 
-> interfaces)?
+--1_26D.9A6E5.B5AB_5
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-As I said, the lasi_82596 driver doesn't support ethtool.
+Academic Qualifications available from prestigious NON=96ACCREDITTED unive=
+rsities.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Do you have the knowledge and the experience but lack the qualifications?
+
+Are you getting turned down time and time again for the job of your dreams=
+ because you just don't have the right letters after your name?
+
+Get the prestige that you deserve today!
+
+Move ahead in your career today!
+
+Bachelors, Masters and PhD's available in your field!
+
+No examinations! No classes! No textbooks!
+
+
+Call to register and receive your qualifications within days!
+
+24 hours a day 7 days a week!
+
+
+
+
+203-286-2187 - USA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+kiyb  ubvdkovkwqe
+aou
+iud y
+hsl
+zebccyaa
+
+--1_26D.9A6E5.B5AB_5--
