@@ -1,38 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA26480
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Aug 2000 06:36:38 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <39924D81.A570C814@uswest.net>
-Date: Thu, 10 Aug 2000 00:36:49 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
-To: David Huggins-Daines <dhd@linuxcare.com>
-CC: Tara Dear <tdear@linuxcare.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] recipe
-References: <39864BF4.4FD098D0@linuxcare.com> <3990EB35.D33C40BF@uswest.net> <87n1imo77k.fsf@linuxcare.com>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA29467
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Aug 2000 15:43:18 -0600
+From: "T.J. Yang" <tj_yang@hotmail.com>
+To: catfish@alltel.net, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] off topic.
+Date: Thu, 10 Aug 2000 11:42:59 EDT
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Message-ID: <F182FacDCkhZkNBpZwB000046f6@hotmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-David,
+My experience from 712/60-100 workstations is that
+"boot scsi.3.0"(cd rom scsi id = 3) won't boot up unless you
+type "BOOT SCSI.3.0".
 
-Thanks for the glibc fix.  That solved the problem.  I have
-successfully built all the tools using the recipe.
+Help it helps your problem and Good luck
 
-- Ryan
+tj
 
-David Huggins-Daines wrote:
 
-> Ryan Bradetich <rbradetich@uswest.net> writes:
+
+
+>From: "T. Martin" <catfish@alltel.net>
+>To: parisc-linux@thepuffingroup.com
+>Subject: [parisc-linux] off topic.
+>Date: Wed, 9 Aug 2000 21:32:45 -0500 (CDT)
 >
-> > Unfortunately, the current glibc cvs source will not build for me
+>  Hello,
+>  I know this is off topic but I have got a copy of NeXT (sparc HPPA
+>Intel) I can get the Intel and sparc to install fine but I'm trying to use
+>the sun external cdrom on my HP 715/75 to install from and it will not
+>boot off the cdrom.
+>  If anyone has done this let me know please. off the list.
+>Terry
 >
-> > ../sysdeps/unix/sysv/linux/sigaction.c: In function `__sigaction':
-> > ../sysdeps/unix/sysv/linux/sigaction.c:77: structure has no member named
-> > `sa_restorer'
 >
-> Urgh.  This is my fault.  Sorry, I forgot to actually test that patch
-> to glibc it seems.  Fixing it now.
+>catfish: icq #20116127
 >
-> --
-> dhd@linuxcare.com, http://www.linuxcare.com/
-> Linuxcare. Support for the revolution.
+>
+>---------------------------------------------------------------------------
+>To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+>`unsubscribe' as the subject.
+>
+
+________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
