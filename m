@@ -1,13 +1,13 @@
-From: "David S. Miller" <davem@redhat.com>
+From: Linus Torvalds <torvalds@osdl.org>
 Subject: [parisc-linux] Re: Question about cache flushing and fork
-Date: Mon, 15 Dec 2003 20:48:35 -0800
-Message-ID: <20031215204835.0993a51a.davem__18508.7601923899$1416623055$gmane$org@redhat.com>
+Date: Mon, 15 Dec 2003 20:56:33 -0800 (PST)
+Message-ID: <Pine.LNX.4.58.0312152049140.3345__37634.2087322429$1416623055$gmane$org@home.osdl.org>
 References: <20031216044033.GT533@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-kernel@vger.kernel.org, parisc-linux@lists.parisc-linux.org
 To: Randolph Chung <randolph@tausq.org>
-Return-Path: <davem@redhat.com>
+Return-Path: <torvalds@osdl.org>
 In-Reply-To: <20031216044033.GT533@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,14 +18,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, 15 Dec 2003 20:40:33 -0800
-Randolph Chung <randolph@tausq.org> wrote:
 
-> Can someone please explain why it is necessary to flush the cache 
+
+On Mon, 15 Dec 2003, Randolph Chung wrote:
+>
+> Can someone please explain why it is necessary to flush the cache
 > during fork()? (i.e. call to flush_cache_mm() in dup_mmap)
 
-Writable pages that will be shared between the child and
-parent are marked read-only and COW, some cpu caches store
-protection information in the cache lines in order to avoid
-TLB lookups etc. so the caches must be flushed since the
-page protection information is changing.
+I don't know if it is strictly necessary - we might well be able to just
+do the right thing in the page fault COW handler. But doing the cache
+flush at fork time just means that we should never have a page that is
+marked read-only but that may have dirty data in the virtual caches. That
+could easily get confusing. In fact, I wouldn't be totally surprised if
+some architecture refused to do write-backs through a read-only mapping.
+
+But quite frankly, I suspect that since only a few CPU's have virtually
+indexed caches, the cache-flush code hasn't gotten that much testing, and
+there may be somewhat of an overkill approach there. As you found out,
+it's not _that_ well documented.
+
+		Linus
