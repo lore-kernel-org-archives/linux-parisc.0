@@ -1,42 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA17084
-	for <parisc-linux@puffin.external.hp.com>; Wed, 26 Jul 2000 08:37:45 -0600
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by cosrel2.hp.com (Postfix) with ESMTP id 1C52C141
-	for <parisc-linux@thepuffingroup.com>; Wed, 26 Jul 2000 08:39:34 -0600 (MDT)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id IAA14255 for parisc-linux@thepuffingroup.com; Wed, 26 Jul 2000 08:39:38 -0600 (MDT)
-Date: Wed, 26 Jul 2000 08:39:38 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200007261439.IAA14255@udlkern.fc.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: signal handling
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA17852
+	for <parisc-linux@puffin.external.hp.com>; Wed, 26 Jul 2000 09:44:50 -0600
+Received: from guinness.neep.com.au (reggae-10-198.nv.iinet.net.au [203.59.94.198])
+	by filk.iinet.net.au (8.8.7/8.8.7) with ESMTP id XAA17748
+	for <parisc-linux@thepuffingroup.com>; Wed, 26 Jul 2000 23:46:18 +0800
+Received: (from andrew@localhost)
+	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id XAA08471
+	for parisc-linux@thepuffingroup.com; Wed, 26 Jul 2000 23:46:06 +0800
+Date: Wed, 26 Jul 2000 23:45:59 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: Linux/HPPA List <parisc-linux@thepuffingroup.com>
+Message-ID: <20000726234557.B5840@neep.com.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Weekly report?
 List-ID: <linux-parisc.vger.kernel.org>
 
+There hasn't been a "weekly" report posted for ages.  Not since May 12th
+if the website is to be believed (though I hazily remember a couple of
+report-like posts to this list since then).
 
-> I was quite shocked to discover that we appear to have no signal
-> handling code in the Linux/parisc kernel whatsoever.
->
-> Is anyone planning to do this anytime soon?  It's unbelievably
-> annoying to debug userspace when you have to push TOC every single
-> time your program segfaults.
->
-> Never mind the fact that we can't really claim to have a working
-> kernel if it lacks basic things like signals.
->
-> I am formally threatening to do it wrong (since I don't know what I am
-> doing) if nobody steps forward to do it correctly within the next
-> hour.
+What's going on?
 
-I had hoped to work on this this week, along with moving the syscall
-gateway page out of user space (for native linux apps).  However, I have
-not been able to get my C3000 to boot.  Every time I fix a problem, I find
-another (right now it starts sash, but I don't get a shell prompt).
-Perhaps if I can find an A180 today I can use that for a while.  At this
-point I'm not hopeful that I will get it done before Friday, when I leave
-for a week of vacation.  So, go ahead and do it "wrong" and I'll check
-it over when I get back.
+I like reports.  =)
 
-John Marvin
-jsm@fc.hp.com
+Andrew.
+
+--
+Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
+
+  "Just remember Basil, there's always someone worse off than yourself."
+  "Oh, really?  I'd like to meet him ... I could do with a good laugh."
+                 [ Sybil and Basil Fawlty, "Fawlty Towers" ]
