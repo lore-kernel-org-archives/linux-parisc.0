@@ -1,53 +1,75 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7EDD4482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:17:05 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15kS35-0008WN-00; Fri, 21 Sep 2001 16:17:03 +0100
-Date: Fri, 21 Sep 2001 16:17:03 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
-	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
-Subject: Re: [parisc-linux] testandset
-Message-ID: <20010921161703.A27323@parcelfarce.linux.theplanet.co.uk>
-References: <20010920211231.C24352@megatonmonkey.net>
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8CEDD482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:35:58 -0600 (MDT)
+Date: Fri, 21 Sep 2001 11:37:00 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: parisc-linux@lists.parisc-linux.org
+Cc: baldric-exec@baldric.uwo.ca
+Message-ID: <20010921113700.A25803@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010920211231.C24352@megatonmonkey.net>; from carlos@megatonmonkey.net on Thu, Sep 20, 2001 at 09:12:31PM -0400
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] testandset
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Sep 20, 2001 at 09:12:31PM -0400, Carlos O'Donell Jr. wrote:
-> I've read all the docs for dpkg-dev, and yet the glibc debian stuff behaves
-> slightly different.
-> 
-> a) Unpack glibc 2.2.4, linux-threads, db1-add-on.
-> b) Patch to 2.2.4-1
-> c) Needed to comment hppa stuff back into 0list
-> d) Removed dl-fptr stuff from the hppa.dpatch (for now)
-> 	= Added morally equivalent changes to locking macro in ./sysdeps/ia64/dl-fptr.c
-> 	= testandset->try_lock
-> 	= Though I'm scratching my head at hppa/dl-fptr.c?
-> 	= Why is the ia64 stuff being touched anyway?
+I remember Wilcox saying:
 
-because we're removing the testandset macro, replacing it with try_lock.
+"
+Because we can't implement testandset atomically & efficiently on hppa.
+The places which use testandset actually just need trylock.
+"
 
-> e) Packed it all back up as tar.bz2 (./debian rules seems to call for this)
+Was the old testandset changed to try_lock in pt-machine.h for
+hppa?
 
-No, definitely not, I don't know why you think you need to do that.
+I see that they are the same asm statement (i.e. just an ldcw).
 
-> f) Placed the tar.bz2's in the glibc-2.2.4 directory (so that they can be unpacked)
-> f) export LINUX_SOURCE=/usr/src/linux (no kernel-headers pakcage yet)
-> g) dpkg-buildpackage -uc -b -d (from within XXX/glibc-2.2.4)
+pt-machine.h:old:
+testandset (int *spinlock)
+{
+  int ret;
 
-Here's what you ned to do:
+  __asm__ __volatile__(
+       "ldcw 0(%2),%0"
+       : "=r"(ret), "=m"(*spinlock)
+       : "r"(spinlock));
 
-dpkg-source -x *dsc
-cd glibc-*
-frob 0lists & hppa.dpatch as above
-put a copy of the kernel includes in /usr/src/linux/include rather than setting
-LINUX_SOURCE
-dpkg-buildpackage -B -a -rfakeroot
+  return ret == 0;
+}
 
--- 
-Revolutions do not require corporate support.
+pt-machine.h:new:
+try_lock(__atomic_lock_t *spinlock)
+{
+  int ret;
+
+  __asm__ __volatile__(
+       "ldcw 0(%2),%0"
+       : "=r"(ret), "=m"(*spinlock)
+       : "r"(spinlock));
+
+  return ret == 0;
+}
+
+Same...
+
+I'm sitting scratching my head becaues the ./sysdeps/hppa/dl-fptr.c
+is peppered with testandset, which used to be in pt-machine.h,
+but is now called try_lock within pt-machine.h
+
+Which is my current reason that glibc-2.2.4 failes to build
+Because dl-fptr.c makes use of testandset, which is no longer 
+in pt-machine.h.
+
+Do I have something backwards?
+I'm starting to think that I should take a look at dpkg-buildpackage,
+and if I'm using it all properly.
+
+---
+
+Matthew,
+
+Since I can't quite get to the point where zic barfs while 
+walking the timezones... I'm not much help ;)
+
+
+c.
