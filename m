@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 335A44852
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Oct 2003 18:18:12 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A5De6-0000XY-Vo; Fri, 03 Oct 2003 01:18:10 +0100
-Date: Fri, 3 Oct 2003 01:18:10 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Cc: Joel Soete <soete.joel@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
-Message-ID: <20031003001810.GH24824@parcelfarce.linux.theplanet.co.uk>
-References: <3F5CB6FB0000C2D7@ocpmta1.freegates.net> <20031002233801.23113.qmail@web12508.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031002233801.23113.qmail@web12508.mail.yahoo.com>
+Received: from mail1-haw-R.bigfish.com (mail-haw.bigfish.com [12.129.199.61])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F5904845
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Oct 2003 19:50:30 -0600 (MDT)
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Subject: RE: [parisc-linux] HP HSC J3516A (2 port) ethernet card  (supported??) ... And HP FC A3591 aka Mombasa GS
+Date: Thu, 2 Oct 2003 20:48:59 -0500
+Message-ID: <1289146742B56546AE580DFC6B711A83134826@PKDWB07C.ad.sprint.com>
+From: "Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>
+To: "Matthew Wilcox" <willy@debian.org>
+Cc: <parisc-linux@lists.parisc-linux.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,45 +22,72 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-[Derek, could you possibly wrap your mails around 70 columns?  It's hard
-to read/reply to your mails.]
+Thanks, Matthew.  I will test with 2.6.0-test6-pa6 and share the
+results.
 
-On Thu, Oct 02, 2003 at 04:38:01PM -0700, Derek Engelhaupt wrote:
-> First off, since the N, L, and A class are of the same generation
-> of machines they are similar in some respects.  Different in others.
-> The L1000 and L2000 have a system card unique to that set of machines.
-> Being that as it is, the L1000/2000 probably use a different I/O
-> interface chip.  The L1500 and L3000 are in essence an N Class system
-> card cut in half and therefore use the same I/O interface as the N.
-> The GSP in the L Class resides in the PCI card cage with the GSP in the
-> N Class is a seperate card attaching directly to the system card via the
-> hot swap disk backplane.  The extra unknown system buses probably reside
-> on the GSP of the N Class.  That would be my educated guess of what the
-> unknown system buses are.  The N has two IKEs since it has both a left
-> and a right PCI card cage attached directly to the system board.
+Also, does anyone know which driver (if any) supports the follwing card
+(HP Fibre Channel A3591).
 
-According to the IO-ACD, these are actually the processors:
+The kernel reports them as :
 
-   Prelude W+ 540                        | NPROC  |  00004    91  |   5D3
+2. Mombasa GS Add-on mass FC (A3591) (4) at 0xf1004000 [8/4], versions
+0x18, 0x0, 0xa7
+17. Mombasa GS Add-on mass FC (A3591) (4) at 0xf180c000 [10/12],
+versions 0x18, 0x0, 0xa7
 
-A500/L1000/L2000 use Astro/Elroy just like the B/C/J class.  L1500/L3000/N
-use Ike and Stretch in place of Astro.  I once downloaded an N-class PDF
-which I've subsequently lost.  If I remember correctly, it looked like:
+I have two R390's with two fibre channel cards each, all four cards are
+connected to an FC-10.  My goal is to configure multiple paths to the
+devices presented by the cards (via the multipathing personality in md).
+I would then like to mirror the six 18GB drives I have (3 available, 3
+for mirror, via md), and then stack LVM on top of the device(s) that md
+makes available.
 
-     CPU --+-- CPU          RAM          CPU --+-- CPU
-          DEW              |||||              DEW
-  +--------+--------+---- Stretch ----+--------+------+
- IKE               DEW               DEW             IKE
-|||||         CPU --+-- CPU     CPU --+-- CPU       |||||
-Ropes                                               Ropes
+Multipath's would be configured like this :
 
-(Elroys on the end of the ropes, of course).
+/dev/sda and /dev/sdg -------- /dev/md0
+/dev/sdb and /dev/sdh -------- /dev/md1
+/dev/sdc and /dev/sdi -------- /dev/md2
+/dev/sdd and /dev/sdj -------- /dev/md3
+/dev/sde and /dev/sdk -------- /dev/md4
+/dev/sdf and /dev/sdl -------- /dev/md5
 
-My understanding is that Stretch is the problem.  We don't follow the
-rules for non-coherent aliases and Stretch isn't as lenient as other
-memory controllers.
+Disks 1 and 2; 3 and 4; 5 and 6 would be mirrored (raid-1) :
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+/dev/md0 and /dev/md1 -------- /dev/md6
+/dev/md2 and /dev/md3 -------- /dev/md7
+/dev/md4 and /dev/md5 -------- /dev/md8
+
+LVM on top of the mirrored disks :
+
+/dev/md6 and /dev/md7 and /dev/md8 --- /dev/vg
+
+Has anyone tried this before with success (assuming there are drivers
+available that support my hardware)?
+
+Thanks!
+
+Pat Padgett
+
+-----Original Message-----
+From: Matthew Wilcox [mailto:willy@debian.org]=20
+Sent: Thursday, October 02, 2003 10:47 AM
+To: Padgett, Pat M [NTWK SVCS]
+Subject: Re: [parisc-linux] HP HSC J3516A (2 port) ethernet card
+(supported??)
+
+On Thu, Oct 02, 2003 at 10:27:42AM -0500, Padgett, Pat M [NTWK SVCS]
+wrote:
+> I am trying to configure two HP J3516A's that I have in an R390.  They
+
+> initially showed up while using the debian installation cd as eth0 and
+
+> eth1 (the internal lan was eth2).  However, after reboot it seems that
+
+> they are not being correctly initialized by the kernel (internal lan=20
+> is now eth0).
+
+I realise this probably isn't the answer you wanted to hear; but is
+there any chance you could try 2.6 on this machine?  We just got GSC
+Tulip cards working properly in 2.6 and it'd be really useful to know
+that it works on your box too.  After we know that, we can try
+backporting the changes to 2.4.
