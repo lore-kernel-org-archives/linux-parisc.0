@@ -1,15 +1,15 @@
 From: Ulrich Drepper <drepper@redhat.com>
-Subject: [parisc-linux] Re: [PATCH] Sysdeps changes for hppa.
-Date: Tue, 14 Oct 2003 22:49:10 -0700
-Message-ID: <3F8CDFD6.1010300__15613.5348407135$1416622875$gmane$org@redhat.com>
-References: <20031012213226.GE23999@systemhalted>
+Subject: [parisc-linux] Re: [PATCH] _STACK_GROWS_UP fixes.
+Date: Tue, 14 Oct 2003 22:53:58 -0700
+Message-ID: <3F8CE0F6.6050000__37163.1264024929$1416622875$gmane$org@redhat.com>
+References: <20031012213734.GJ23999@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: libc-alpha <libc-alpha@sources.redhat.com>,
 	parisc-linux@lists.parisc-linux.org
 To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031012213226.GE23999@systemhalted>
+In-Reply-To: <20031012213734.GJ23999@systemhalted>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -23,32 +23,15 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
+Carlos O'Donell wrote:
 
-> 2003-10-12  Carlos O'Donell  <carlos@baldric.uwo.ca>
+> 2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
 > 
-> 	* sysdeps/hppa/sysdep.h: Undef JUMPTARGET before use.
-> 	* sysdeps/unix/sysv/linux/hppa/sysdep.h:
-> 	Define __NR_semtimedop for compat with old kernels,
-> 	PSEUDO_ERRVAL, SYSCALL_ERROR_LABEL under all conditions,
-> 	INTERNAL_SYSCALL_DECL, INTERNAL_SYSCALL_ERROR_P,
-> 	INTERNAL_SYSCALL_ERRNO, INTERNAL_SYSCALL, and undef 
-> 	JUMPTARGET before use.
-> 	[PIC]: Save pic register around syscall.
-> 	* sysdeps/unix/sysv/linux/hppa/sysdep.c (syscall): 
-> 	Cleanup asm statment.
+> 	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
+> 	(__pthread_find_self): Likewise.
+> 	* manager.c (thread_segment): _STACK_GROWS_UP case added.
 
-I've applied this patch, but only because I really don't care how the PA
-port looks.
-
-The semtimedop definition is completely wrong.  If you want all
-syscall,s use appropriate headers.
-
-You've modified the patch by hand and broke it, forcing me to do clean up.
-
-The coding style is completely wrong and a terrible mess.  The coding
-standard document is available, read it.
-
-The preprocessor directive indentation is wrong or non-existing.
+Applied after cleaning up.
 
 - -- 
 - --------------.                        ,-.            444 Castro Street
@@ -57,7 +40,7 @@ Red Hat         `--' drepper at redhat.com `---------------------------
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/jN/W2ijCOnn/RHQRAjrzAJsEI3ukb5MQ/T0Wl0ihUX1l2ejBJACeL8GW
-7tzXLthx8pW4Rhb+26NQkH4=
-=8Fy5
+iD8DBQE/jOD22ijCOnn/RHQRAtSQAKCSAkx1YFOt3HSr2MBfKcB5OqK43ACgyHQK
+ch5Et0rXhEeQqKCszFrYGDY=
+=UKA4
 -----END PGP SIGNATURE-----
