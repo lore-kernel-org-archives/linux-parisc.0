@@ -1,15 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
+From: Thibaut VARENE <varenet@esiee.fr>
 Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
-Date: Fri, 18 Feb 2005 18:35:31 +0100
-Message-ID: <420B30A200003973@mail-1-bnl.tiscali.it>
+Date: Fri, 18 Feb 2005 10:28:26 +0100
+Message-ID: <20050218092835.0E74E3658E2@mail.esiee.fr>
+References: <20050218062312.GA11968@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
+  charset=us-ascii
 Cc: "Michael S.Zick" <mszick@wolfbutter.com>,
  parisc-linux@lists.parisc-linux.org
-To: "Thibaut VARENE" <varenet@esiee.fr>,
- "Grant Grundler" <grundler@parisc-linux.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050218062312.GA11968@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,64 +21,69 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-...
->
-> Come to think of it, I wonder how the XFS bug you're pointing at can
-> be related to the bug Joel and I reported with ext3:
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/025
-> 867.html
->
-> Maybe one would like to try XFS on a non-SYM2 box and see what
-> happens? That way we might have a clue whether sym2's at fault or
-> something else...
->
-In fact because I have not other choise (the only spare disk I found is a=
+-------------------
+> On Thu, Feb 17, 2005 at 06:53:52AM -0600, Michael S. Zick wrote:
+> > I am tracking a timing and/or race condition(s) with x86-udev.
+> > Debian doesn't use it yet, they still have a hard disk based /dev.
+> > But it is not a compile time option.
+> > If you have a 2.6.+ kernel, you have it.
+> >=20
+> > Try turning it off with the command line option: 'noudev'
+>=20
+> I thought this helped at first.  (2.6.11-rc4-pa1)
+> Could run spew+"make -j4" over xfs without crashing the box (panic).
+>=20
+> Then I rebooted with a freshly built kernel (and "noudev")
+> and right away when I start spew on the XFS file system I get:
 
-small narrow se 4Gb hp disk which I cab connect to my b180 unstable debia=
-n
-install), I used the zalon ncr53c710 of my b180 and just build a 2Gb xfs
-on a slice of the disk with defaults:
-# mkfs -t xfs /dev/sdd1
-meta-data=3D/dev/sdd1              isize=3D256    agcount=3D8, agsize=3D6=
-4034 blks
-         =3D                       sectsz=3D512
-data     =3D                       bsize=3D4096   blocks=3D512272, imaxpc=
-t=3D25
-         =3D                       sunit=3D0      swidth=3D0 blks, unwrit=
-ten=3D1
-naming   =3Dversion 2              bsize=3D4096
-log      =3Dinternal log           bsize=3D4096   blocks=3D2560, version=3D=
-1
-         =3D                       sectsz=3D512   sunit=3D0 blks
-realtime =3Dnone                   extsz=3D65536  blocks=3D0, rtextents=3D=
-0
+=20
+> The only difference in the .config was sym2 driver IOMAPPED.
+> I had it enabled (using IO Port space) and now disable it
+> since I really want MMIO space. I'm very skeptical this is
+> related to the problem.
 
-then cvs -z3 co -A linux-2.6 without any pb ;-)
+Hmmm.
+Back in the early days of 2.5, i recall issues with SYM2 in MMIO mode,
+so that it only worked in PIO mode (I think i had posted something on
+this m-l about that). At that time i was using ext3 for that matter.
 
-I am convince that doesn't help a lot: that makes 3 big diff with Grant t=
-est:
-    - 32bit kernel,
-    - up system (curious to see results in up too on the grant's a500: ju=
-st
-deconfigure a cpu, is it possible on a500?)
-    - different driver (ncr53c710 in place of sym_2)
+OTOH, XFS relies a lot on memory and cache quality. I don't know how
+MMIO would interfere with that, but I suspect that if enabling MMIO
+has the side effect of messing with that somehow, it's very likely XFS
+won't like it at all. Just a random thought though.
+=20
+> > If your compile time options include devfs, try turning it=20
+> > off also.  Use the command line option: 'nodevfs'
+>=20
+> I don't use devfs. Willy won't let me. :^P
 
-The running kernel was 2.6.11-rc4-pa1 (cvs dated 20050217) 32bit without
-any other patch, no devfs support builtin (nor module).
+well, devfs is 3v1l and deprecated, so you'd better not use it :)
 
-Hth anyway,
-    Joel
+> > In my case, for kernels 2.6.8, 2.6.9, 2.6.10 and 2.6.11 -
+> > If I boot from slow devices (cdrom, zip disk) everything is
+> > fine, If I boot from fast devices (hard disk) - something isn't
+> > getting setup the same.
+>=20
+> Is there a difference in the how the devices are used?
+> ie. serialized vs. multiple IOs in flight at the same time?
+>=20
+> I didn't start hitting problems until I lauched a second job
+> on the same file system.
 
-PS: I still have a chroot disk on this system but fw one connected to the=
+Come to think of it, I wonder how the XFS bug you're pointing at can
+be related to the bug Joel and I reported with ext3:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/025
+867.html
 
-symbios crtlr using sym-2.1.18n, it was dedicated to carlos libc test but=
+Maybe one would like to try XFS on a non-SYM2 box and see what
+happens? That way we might have a clue whether sym2's at fault or
+something else...
 
-trust I could safely convert some extra ext3 fs to xfs (I mean bakup/rest=
-ore
-:) ... on Monday :-(
+My 2 cents in the morning ;)
 
-
-
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://www.pateam.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
