@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailitsys.it (unknown [217.59.178.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BE0D7482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Nov 2001 07:31:33 -0700 (MST)
-Received: from develop (elle [192.168.251.18])
-	by mailitsys.it (8.9.3/8.9.3) with SMTP id PAA14174
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 2 Nov 2001 15:34:15 +0100
-Message-ID: <003401c163ab$1419b0f0$12fba8c0@elle.ce>
-From: "Raffaele Sgueglia" <elle@mailitsys.it>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 2 Nov 2001 15:31:35 +0100
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0031_01C163B3.7529E420"
-Subject: [parisc-linux] subscrive
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EF28482B
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Nov 2001 09:18:33 -0700 (MST)
+To: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
+Cc: dan@bigw.org, parisc-linux@parisc-linux.org
+Subject: Re: Betr.: [parisc-linux] More Install on C110: Kernel doesn't load... 
+In-Reply-To: Your message of "Fri, 02 Nov 2001 12:06:49 +0100."
+             <sbe28dc3.046@ms-zrt1>
+References: <sbe28dc3.046@ms-zrt1> 
+Date: Fri, 02 Nov 2001 09:18:30 -0700
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E15zh1a-0006SD-00@noam.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +22,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+= >Entry 00100000 first 00100000 n 4
+= >Segment 0 load 00100000 size 160694 mediaptr 0x1000
+= >Segment 1 load 0028a000 size 468472 mediaptr 0x18a000
+= >Segment 2 load 00300000 size 8192 mediaptr 0x1fd000
+= >Segment 3 load 0034bea8 size 80688 mediaptr 0x1ffea8
+= >
+= >Error: read from boot device failed (status = -4)
+= >byteio_read: seekread() returned -1 expected 2048
+= >Error:  segment 0 read() failed
 
-------=_NextPart_000_0031_01C163B3.7529E420
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+palo has read thee ELF header by then, but fails to read the first
+program segment (0).  It's unusual for things to die here.  The
+firmware docs say error -4 is "unrecoverable hardware error".
+Perhaps the ISO image got truncated or is shorter than it should be?
 
+	-P
 
-
-------=_NextPart_000_0031_01C163B3.7529E420
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0031_01C163B3.7529E420--
+	-P
