@@ -1,9 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8D68B482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Aug 2003 09:54:22 -0600 (MDT)
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 53C36482D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Aug 2003 09:54:23 -0600 (MDT)
 Date: Tue, 12 Aug 2003 17:54:16 +0200
-Message-ID: <3F29178A00002D79@ocpmta7.freegates.net>
+Message-ID: <3F29178A00002D7A@ocpmta7.freegates.net>
 In-Reply-To: <20030812151428.GC20514@dsl2.external.hp.com>
 From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] removing warnings from math-emu code
