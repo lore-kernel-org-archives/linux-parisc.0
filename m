@@ -1,31 +1,66 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 69EB5482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 18:31:46 -0600 (MDT)
-Message-Id: <200104040025.SAA18848@puffin.external.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] request_region() 
-In-Reply-To: Your message of "Tue, 03 Apr 2001 17:41:56 BST."
-             <20010403174156.U11435@parcelfarce.linux.theplanet.co.uk>
-Date: Tue, 03 Apr 2001 18:25:54 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from kryten.int.wirex.com (unknown [216.161.55.93])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 57474482A
+	for <parisc-linux@parisc-linux.org>; Tue,  3 Apr 2001 19:47:09 -0600 (MDT)
+Received: (from steve@localhost)
+	by kryten.int.wirex.com (8.11.0/8.11.0) id f341l1c08765
+	for parisc-linux@parisc-linux.org; Tue, 3 Apr 2001 18:47:01 -0700
+Date: Tue, 3 Apr 2001 18:47:00 -0700
+From: Steve Beattie <steve@wirex.net>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Building packages, problems with printf
+Message-ID: <20010403184700.A8618@wirex.net>
+References: <20010325220223.G31126@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.21.0103260855260.3568-100000@front.linuxcare.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0103260855260.3568-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Mon, Mar 26, 2001 at 09:03:34AM +1000
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> i think sim700.c should be using ioremap / readX / writeX instead
-> of raw_read.  Is the EISA scsi really only accessible via port io?
+On Mon, Mar 26, 2001 at 09:03:34AM +1000, Alan Modra wrote:
+> On Sun, 25 Mar 2001, Matthew Wilcox wrote:
+> 
+> > Something we've been running into when building packages is the problem
+> > that printf is defined as a macro when using gcc 2.97.  This should be
+> > resolved by doing the following:
+> > 
+> > #include <stdio.h>
+> > #undef printf
+> 
+> That's cheating!  The real fix is to turn
+> 
+> printf (foo_string,
+> #if SOMETHING
+> abc_param
+> #else
+> xyz_param
+> #endif
+> );
+> 
+> into
+> 
+> #if SOMETHING
+> printf (foo_string, abc_param);
+> #else
+> printf (foo_string, xyz_param);
+> #endif
 
-Yes.
+Actually, another solution is:
 
-> I would have throught that it would be memory mapped, in which case
-> there's no need to have a macro to access it.
+(printf) (foo_string,
+#if SOMETHING
+abc_param
+#else
+xyz_param
+#endif
+);
 
-IO Port space is memory mapped but not in a linear fashion (afaik).
-My understanding is the IO port space is mapped 4 bytes per MMIO page.
+The parentheses surrounding printf prevent macro expansion -- the C
+standard explicitly states that it must. We discovered this in the
+course of developing FormatGuard, a patch to glibc that turns printf
+and the like into macros as a means of preventing format string attacks
+(see http://www.immunix.org/formatguard.html for details).
 
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Steve Beattie                               Don't trust programmers? 
+<steve@wirex.net>                         Complete StackGuard distro at
+http://immunix.org/~steve/                         immunix.org
