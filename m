@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from donlimpio.satec.es (donlimpio.satec.es [213.164.38.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 619AC482A
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Mar 2003 11:00:37 -0700 (MST)
-From: "Adriano Galano" <adriano@satec.es>
-To: "'Markus Schaber'" <markus.schaber@student.uni-ulm.de>,
-	"'Matthieu Delahaye'" <m.delahaye@esiee.fr>
-Cc: <davidm@hpl.hp.com>, <willy@debian.org>, <adriano@satec.es>,
-	<linux-ia64@linuxia64.org>, <parisc-linux@parisc-linux.org>
-Subject: RE: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
-Date: Wed, 26 Mar 2003 18:59:18 +0100
-Message-ID: <000b01c2f3c1$6cd7e0c0$6620a4d5@tsatec.int>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F3B11482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Mar 2003 11:13:40 -0700 (MST)
+Date: Wed, 26 Mar 2003 19:12:51 +0100
+Message-ID: <3E818B62000002A1@ocpmta8.freegates.net>
+In-Reply-To: <20030326150729.GC2370@systemhalted>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] glibc 2.3.2 patches updated, still no working sysdep-cancel
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <20030326125140.6f2b7f7c.markus.schaber@student.uni-ulm.de>
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,36 +22,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Hi,
+
 >
-Hi again:
-
-> m.delahaye@esiee.fr (Matthieu Delahaye) wrote:
+>> I had to kill a 'tst-cancel-stat' because it was eating 99% of cpu usage.
+>> As it was evidently looping, strace -p 31611 shows me hundred of thousand
+>> messages: kill(31610, SIGRT_1)    =-1 (no such process)
 >
-> As far as I know, the PA-Risc instruction mapping is done with lots of
-> software help. The concept is a bit like JIT-Compilers in Java. (It is
-> easier to do this when having a RISC code with equal
-> instruction length
-> compared to ugly X86 code.) As long as my knowledge is correct, you
-> therefore cannot run any PA-RISC OS directly on the Hardware, but you
-> can run PA-RISC Software in any OS that supports the instruction
-> mapping, maybe one can even run a PA-RISC OS inside a virtual PA-RISC
-> Machine on Itaniums. (However I don't know any such VM.)
+>Yes, I've noticed this, and I'm not sure why it's doing that. It's the
+>only test that fails this way. The rest just SIGSEGV, which again means
+>I need to keep debugging the syscall/errno code.
 >
-
-Which VM are ported to Linux IA64? Bochs? Virtuozzo? VMWare? Plex86?
-
-Recent Microsoft adquisition
-(http://www.connectix.com/fr/about/acquisition_faq.html) is focus in this
-sense I think.
-
-Regards,
-
--Adriano
-
-> Markus
+>I'll post an update after running some tests on my current patches.
+>Thanks for trying that out Joel. What hardware are you testing this on?
 >
-> _______________________________________________
-> Linux-IA64 mailing list
-> Linux-IA64@linuxia64.org
-> http://lists.linuxia64.org/lists/listinfo/linux-ia64
+Sorry I forgot to mentionned; I take the opportunity of a n4k with 2g of
+mem to make compile quickest (no swaping at all with so big mem amount) and
+so running a 2.4.20-pa32 64bits (up) with an unstable debian.
+
+Joel
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
