@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Joel Soete <joel.soete@freebel.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installing on b2600 fails 
-In-Reply-To: Message from Joel Soete <joel.soete@freebel.net>
-   of "Thu, 23 May 2002 18:19:56 -0000." <3CED32CC.2030500@freebel.net>
-References: <20020517130527.J32014@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020517152054.4F2CE482A@dsl2.external.hp.com> <20020517172600.I29738@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020517154923.47C7E4838@dsl2.external.hp.com> <20020521155220.A28518@humbolt.geo.uu.nl> <20020523063531.GH3471@sleepie.demon.co.uk> <20020523110227.B10015@humbolt.geo.uu.nl>  <3CED32CC.2030500@freebel.net> 
-Date: Fri, 24 May 2002 01:11:09 -0600
+Received: from dsl2.external.hp.com (localhost [127.0.0.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 835DE482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 May 2002 01:14:08 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PA8700 boots! 
+In-Reply-To: Message from grundler@dsl2.external.hp.com (Grant Grundler)
+   of "Fri, 24 May 2002 00:55:40 MDT." <20020524065540.DBFE4482A@dsl2.external.hp.com>
+References: <20020524065540.DBFE4482A@dsl2.external.hp.com> 
+Date: Fri, 24 May 2002 01:14:08 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020524071109.4EB53482A@dsl2.external.hp.com>
+Message-Id: <20020524071408.835DE482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,26 +21,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Joel Soete wrote:
-> AFAIK you should prefer to install from a serial console
+> I also need to fixup the "unkown device" (PA8700 CPU)
+> in the hardware listing.
+...
 
-Good idea. Then update the kernel. That's not optional.
-You might have to wait until Richard has spun a newer boot floppies lifimage.
-
-> (anyway, i am not sure that usb keyboard and mouse are already supported?).
-
-Yes. USB works.
-
-I'm using a C3000 at home now with 1600x1200 on PCI Vis-EG card.
-I think the FX gfx that's built-into the B2600 isn't supported.
-I was using serial console (minicom on an OB600) until PCI vis-EG
-support was working - post 0.9.3 release.
-
-> You should also encounter another problem because the release of palo 
-> installed with CD-0.9.3 do not yet support new scsi disk of 9Gb and more.
-
-Could you clarify?
-it's not listed in the release errata.
-(http://www.parisc-linux.org/release-0.9/errata-093.html)
+bah...pasting into the xterm must have had a ^D and the
+mail got sent prematurely...here's the most interesting
+opart of the output.
 
 grant
+
+:~# cat /proc/cpuinfo
+processor       : 0
+cpu family      : PA-RISC 2.0
+cpu             : PA8700 (PCX-W2)
+cpu MHz         : 650.000000
+model           : 9000/800/A500-6X
+model name      : Unknown machine
+hversion        : 0x00005e20
+sversion        : 0x00000491
+I-cache         : 768 KB
+D-cache         : 1536 KB (WB)
+ITLB entries    : 240
+DTLB entries    : 240 - shared with ITLB
+bogomips        : 1297.61
+software id     : 1940077826
+
+:~#
