@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65A46482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 May 2003 13:16:51 -0600 (MDT)
-Message-Id: <200305131916.h4DJGnpg007743@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc-3.3 and c++
-To: randolph@tausq.org
-Date: Tue, 13 May 2003 15:16:49 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030513181805.GF548@tausq.org> from "Randolph Chung" at May 13, 2003 11:18:05 am
+Received: from rediffmail1807.com (a226149.upc-a.chello.nl [62.163.226.149])
+	by dsl2.external.hp.com (Postfix) with SMTP id 2C78B482D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 May 2003 15:58:03 -0600 (MDT)
+From: Dukat Kabila <dukatka_s22@rediffmail.com>
+To: parisc-linux@lists.parisc-linux.org
+Reply-To: dukatkabila_s22@rediffmail.com
+Date: Tue, 13 May 2003 23:58:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="153a78f8-a4e1-4c09-bea2-a4b97e7a3b02"
+Message-Id: <20030513215803.2C78B482D@dsl2.external.hp.com>
+Subject: [parisc-linux] DUKAT KABILA(Jnr)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +21,68 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > As I mentioned, the 3.2 branch is closed for bug fixes.  The failure
-> > doesn't occur with 3.3.  It has a number of -march=2.0 fixes.  The
-> > problem could be C++ related as well.  There are a huge number of C++
-> > fixes in 3.3 relative to 3.3.
-> 
-> Reading this inspired us to try compiling the 'menu' debian package 
-> with g++-3.3. Historically this package has been very problematic on
-> hppa because of its use of exceptions. It's been broken for a very long
-> time (couple years?).... but with latest g++-3.3 it actually compiles 
-> and works!!
+This is a multi-part message in MIME format
+--153a78f8-a4e1-4c09-bea2-a4b97e7a3b02
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I should also add that I've built lyx, another large C++ app, under
-hpux and it seems to work.  I've also built it under linux but I
-haven't tested it (no X).
+> MR DUKAT KABILA  0031+615-421-228   
+>
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+REQUEST FOR URGENT BUSINESS ASSISTANCE
+>
+>Your contact was availed to me by the chamber of commerce. It was 
+given to me because of my diplomatic status as I did not disclose the 
+actual reasons for which I sought your contact. But I was assured That you 
+are reputable and trustworthy if you will be of assistance. I am Laurent 
+DUKAT KABILA (Jnr) the second son of Late President LAURENT DESIRE 
+KABILA the immediate Past president of the DEMOCRATIC REPUBLIC OF CONGO in 
+Africa who was murdered by his opposition through his personal 
+bodyguards in his bedroom on Tuesday 16th
+>January, 2001.I have the privilege of being mandated by my father 
+colleagues to seek your immediate and urgent co-operation to receive into 
+your bank account the sum of US$25m.(twenty-five million Dollars) and 
+some thousands carats of Diamond. This money and treasures was lodged in 
+a vault with a security firm in Europe and South-Africa.
+>
+>SOURCES OF DIAMONDS AND FUND
+>In August 2000, my father as a defence minister and president has a 
+meeting with his cabinet and armychief about the defence budget for 2000 
+to 2001 which was US $700m. so he directed one of his best friend. 
+Frederic Kibasa Maliba who was a minister of mines and a political party 
+leader known as the Union Sacree de, I=11 opposition radicale et ses allies 
+(USORAL) to buy arms with US $200m on 5th January 2001; for him to 
+finalized the arms deal,
+>my father was murdered. f.K. Maliba (FKM) and I have decided to keep 
+the money with a foreigner after which he will use it to contest for the 
+political election. Inspite of all this we have
+
+>resolved to present your or your company for the firm to pay it into 
+your nominated account the above sum and diamonds. This transaction 
+should be finalized within seven (7) working days and for your co-operation 
+and partnership, we have unanimously agreed that you will be entitled 
+to 5.5% of the money when successfully receive it in your account. The 
+
+nature of your
+>business is not relevant to the successful execution of this 
+transaction what we require is your total co-operation and commitment to =
+ensure 
+100% risk-free transaction at both ends and to protect the persons 
+involved in this transaction, strict confidence and utmost secrecy is
+>required even after the successful conclusion of this transaction. If 
+this proposal is acceptable to you, kindly provide me with your 
+personal telephone and fax through my E-mail box for immediate commencement =
+of 
+the transaction. 
+>All correspondence is for the attention of my counsel:
+>
+>I count on your honour to keep my secret, SECRET.
+>Looking forward for your urgent reply
+>Thanks
+.
+>Best Regards
+>
+>DUKAT KABILA(Jnr)
+>
+  
+--153a78f8-a4e1-4c09-bea2-a4b97e7a3b02--
