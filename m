@@ -1,32 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from posti.raketti.net (titan.raketti.net [212.146.0.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 289F5482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Jul 2001 09:21:45 -0600 (MDT)
-Received: from lx01.tietosavo.fi (lx01.tietosavo.fi [212.146.13.66])
-	by posti.raketti.net (8.10.0/8.10.0) with ESMTP id f6BFLgE10891
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Jul 2001 18:21:43 +0300 (EET DST)
-To: parisc-linux@lists.parisc-linux.org
-From: "Jari Eskelinen" <jari.eskelinen@enfo.fi>
-MIME-Version: 1.0
-Date: 11 Jul 2001 18:18:00 +0200
-Message-Id: <JA8AAAAAAd8izgABYQABMhINAcxU@enfo.fi>
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] 712/60, kernel 2.4.6 and keyboard.
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3BC77482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 11 Jul 2001 09:23:40 -0600 (MDT)
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Grant Grundler <grundler@puffin.external.hp.com>,
+	Charles Boone <ccboone@yahoo.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Problem installing .9 iso image on C240 
+In-Reply-To: Your message of "Wed, 11 Jul 2001 09:46:24 BST."
+             <20010711094624.F18375@linuxcare.com>
+References: <ccboone@yahoo.com> <200107110545.XAA31374@puffin.external.hp.com>  <20010711094624.F18375@linuxcare.com> 
+Date: Wed, 11 Jul 2001 09:23:33 -0600
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E15KLpt-0003hL-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi!
+= > > I do have one question, why
+= > > would it not try to install the 64bit version? I was
+= > > pretty sure that a C240 is a 64bit system.
 
-I have 712/60 machine and I have used 2.4.0-pa30 kernel with it with great success. Today I tried to compile 2.4.6-pa11 kernel (cross-compiling with my P800, it was horrible sloooooow with 721/60 :) and it almost succeeded. Everything else works, but PS/2 keyboard won't just work. Nothing comes to screen when typing. Logging from network works as usual. Kernel seems to recognise keyboard:
+As others said, it's a 64-bit-capable CPU with 32-bit-only firmware and
+only 32-bit kernels work there right now.  I don't know that a 64-bit
+kernel buys you much on a C240 -- am I mistaken?
 
-PS/2 keyboard controller at 0xf0108000 (irq 69) found, device attached.
-Lasi PS/2 wait 3734
-PS/2 psaux controller at 0xf0108100 (irq 69) found, device attached.
+= > PDC on the C240 (and similar C-models of that generation) only
+= > support PDC calls in "narrow" (ie 32-bit) mode. Sounds like the decision
+= > to install 32 vs 64-bit depends on the PDC capabilities bit.
+= > Can anyone offhand confirm/deny?
 
-But it won't work. Mouse works fine, I can login if playing with mouse and gpm (cut r, paste, cut o, paste paste, cut t, paste, cut return, paste etc.) :D
+Yes, palo asks the firmware whether one or both of 32&64-bit OSs will
+run on the box.  Cxxx says 32 bit only.  If both are possible, palo
+chooses 32-bit for now.
 
-Have anybody similiar experiences and most importantly, can anybody tell how to solve ths problem?
+= a 64 bit kernel with narrow PDC
+= calls later would be an option (once it works).  Do we leave building
+= that kernel as an exercise for the user, or or do we have one packaged
+= in the archive?
 
-Thanks!
+When it works we can add a config file for building a suitably flavored
+debian kernel-image package.
 
--- 
-Jari Eskelinen
+	-P
