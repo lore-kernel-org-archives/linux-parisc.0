@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 078994829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Dec 2002 10:43:47 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18LRwT-0001Cl-00; Mon, 09 Dec 2002 17:43:41 +0000
-Date: Mon, 9 Dec 2002 17:43:41 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Tim Kemna <t.kemna@student.utwente.nl>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel compilation error
-Message-ID: <20021209174341.K20336@parcelfarce.linux.theplanet.co.uk>
-References: <000b01c29f8b$554745c0$4fe85982@kabel.utwente.nl> <20021209140747.I20336@parcelfarce.linux.theplanet.co.uk> <001801c29faa$48b25a60$4fe85982@kabel.utwente.nl>
+Date: Mon, 9 Dec 2002 11:03:16 -0700
+To: Matthew Wilcox <willy@debian.org>
+Cc: Randolph Chung <tausq@debian.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>, carlos@baldric.uwo.ca,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Trap handler
+Message-ID: <20021209180316.GA6635@dsl2.external.hp.com>
+References: <20021208232601.GH21187@tausq.org> <200212082355.gB8NtUAe010825@hiauly1.hia.nrc.ca> <20021209051214.GK21187@tausq.org> <20021209061913.GM21187@tausq.org> <20021209125416.F20336@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <001801c29faa$48b25a60$4fe85982@kabel.utwente.nl>; from t.kemna@student.utwente.nl on Mon, Dec 09, 2002 at 06:42:02PM +0100
+In-Reply-To: <20021209125416.F20336@parcelfarce.linux.theplanet.co.uk>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,12 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Dec 09, 2002 at 06:42:02PM +0100, Tim Kemna wrote:
-> ftp.kernel.org
+On Mon, Dec 09, 2002 at 12:54:16PM +0000, Matthew Wilcox wrote:
+> x86 will potentially reschedule on successfully handling a page fault.
 
-that doesn't work, you need the cvs kernel or our patches.
+ok.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+> softirqs seem to only get run if we're returning to userspace,
+> unless we're switching tasks.  That might be a bug in the x86 code.
+
+ok.
+
+> Judging from the use of cli & sti in the x86 asm, I would venture to
+> suggest that the I bit should be cleared.  It makes sense anyway --
+> you can't expect interrupts to be disabled over a page fault.
+
+The above two statements don't make sense to me.
+Clearing I-bit (ie rsm) will disable interrupts.
+The second sentence suggests the opposite.
+Or did I read it wrong?
+
+thanks,
+grant
