@@ -1,17 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 904894829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 May 2003 16:31:46 -0600 (MDT)
-Message-ID: <3EBD7E96.6030501@tiscali.be>
-Date: Sat, 10 May 2003 22:35:02 +0000
-From: Joel Soete <joel.soete@tiscali.be>
-MIME-Version: 1.0
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] dump module: new feature
-References: <3EB6460D.6040704@admin.france.hp.com>
-In-Reply-To: <3EB6460D.6040704@admin.france.hp.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8B00B4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 May 2003 17:12:19 -0600 (MDT)
+Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
+	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h4AMDuRQ019847;
+	Sat, 10 May 2003 23:13:56 +0100
+Received: (from alan@localhost)
+	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h4AMDsh0019845;
+	Sat, 10 May 2003 23:13:54 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Joel Soete <joel.soete@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3EBD7E24.408@tiscali.be>
+References: <3EA9466400001A07@ocpmta7.freegates.net>
+	 <1051702331.19579.8.camel@dhcp22.swansea.linux.org.uk>
+	 <3EBD7E24.408@tiscali.be>
+Content-Type: text/plain
+Message-Id: <1052604831.19351.4.camel@dhcp22.swansea.linux.org.uk>
+Mime-Version: 1.0
+Date: 10 May 2003 23:13:52 +0100
+Subject: [parisc-linux] Re: patch 2.4.21 (follow up)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +31,6 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bruno Vidal wrote:
-
->     Hi
-> For people who are intersting to it, the dump modules
-> is now checking that it is a swap device before
-> configuring it. So it remove the risk to dump
-> to a file system. It check for the swap magic
-> "SWAP-SPACE" (v0) or "SWAPSPACE2" (v1). The
-> partition is not necessary an active one,
-> it should only be created by mkswap (so no
-> file system on it).
->
->     Cheers.
->
-Hi Bruno,
-
-I just recover my b2k test system (even I quiet sure to find from place 
-to place some files corrupted by its crash) and I would so now find some 
-free time to test your last patch if you would still submit it to me.
-
-Regards,
-    Joel
+Its in the 2.4.21rc2-ac tree. I've sent most of it to Marcelo on the
+grounds that it is zero risk even in a -rc because parisc doesnt work
+in his tree anyway. He may ask me to wait for 2.4.22pre1 though
