@@ -1,51 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA20828
-	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Jun 2000 13:03:45 -0600
-Message-ID: <2FF13E24F61AD41193130008C791A76031F10B@boca215a.boca.ssc.siemens.com>
-From: "D'Angelo, James" <James.D'Angelo@icn.siemens.com>
-To: "'Matt Taggart'" <taggart@carmen.fc.hp.com>,
-        "D'Angelo, James" <James.D'Angelo@icn.siemens.com>
-Cc: jdangelo@techie.com, parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] Booting vmlinux. 
-Date: Fri, 16 Jun 2000 14:58:11 -0400
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA08335
+	for <parisc-linux@puffin.external.hp.com>; Mon, 19 Jun 2000 07:58:58 -0600
+Message-ID: <002201bfd9f6$69de45e0$0303a0c0@nl>
+From: "Bas Valkema" <bvalkema@knowhowww.nl>
+To: "Parisc" <parisc-linux@thepuffingroup.com>
+Date: Mon, 19 Jun 2000 15:58:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0019_01BFDA07.29F23A70"
+Subject: [parisc-linux] EISA
 List-ID: <linux-parisc.vger.kernel.org>
 
-The system currently has HPUX 10.20 on the harddrive.  I have over 200
-others HPs here up and running.    I'll look at the document and see if I
-can figure it out.
+This is a multi-part message in MIME format.
 
-Thanks,
+------=_NextPart_000_0019_01BFDA07.29F23A70
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Jay
-
-
- -----Original Message-----
-From: 	Matt Taggart [mailto:taggart@carmen.fc.hp.com] 
-Sent:	Friday, June 16, 2000 2:49 PM
-To:	D'Angelo, James
-Cc:	jdangelo@techie.com; parisc-linux@thepuffingroup.com
-Subject:	Re: [parisc-linux] Booting vmlinux. 
+Is there any support for the EISA bus in the 715/50?
 
 
-"D'Angelo, James" writes...
+------=_NextPart_000_0019_01BFDA07.29F23A70
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> I'm using a 712/80.  I'll switch to the sercon.  What would the default
-> speed/parity be?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Is there any support for the EISA bus =
+in the=20
+715/50?</FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
 
-Setting a 712 to use serial console is kind of tricky. See,
-
-http://puffin.external.hp.com/mailing-lists/parisc-linux/1999/12-Dec/0091.ht
-ml
-
-for instructions(and be *careful*). In order to do it you need ISL. Do you 
-have a disk with HP-UX on it that you could boot from? An HP-UX install CD 
-should work too.
-
-Contact me if you have any problems.
-
--- 
-Matt Taggart
-taggart@fc.hp.com
+------=_NextPart_000_0019_01BFDA07.29F23A70--
