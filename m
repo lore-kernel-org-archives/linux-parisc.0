@@ -1,13 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12505.mail.yahoo.com (web12505.mail.yahoo.com [216.136.173.197])
-	by dsl2.external.hp.com (Postfix) with SMTP id 009D44829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:47:42 -0700 (MST)
-Message-ID: <20021113074738.97911.qmail@web12505.mail.yahoo.com>
-Date: Tue, 12 Nov 2002 23:47:38 -0800 (PST)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] What did I find
-To: Longjos@aol.com, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3d.277be522.2b02f338@aol.com>
+Received: from TYO201.gate.nec.co.jp (TYO201.gate.nec.co.jp [210.143.35.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 13BE94829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 00:48:03 -0700 (MST)
+To: Greg KH <greg@kroah.com>
+Cc: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
+	Matthew Wilcox <willy@debian.org>,
+	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
+	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
+References: <20021109060342.GA7798@kroah.com>
+	<200211091533.gA9FXuW02017@localhost.localdomain>
+	<20021113061310.GD2106@kroah.com>
+Reply-To: Miles Bader <miles@gnu.org>
+From: Miles Bader <miles@lsi.nec.co.jp>
+Date: 13 Nov 2002 16:46:58 +0900
+In-Reply-To: <20021113061310.GD2106@kroah.com>
+Message-ID: <buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -21,28 +30,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---- Longjos@aol.com wrote:
-> Perhaps you can help me identify this box that I found at a surplus
-> auction.
-> It says on it:
-> Visual Technology Model: TX100M
-> When powered up it says it is an X terminal, but it has no X Server 
-> installed. It has to boot from Tftp, or the sort. 
-> My main problem is, I can't find any reference to this thing. I have
-> no idea 
-> what software it runs.
-> Can anyone help me?
-> Thanks
-> 
+Greg KH <greg@kroah.com> writes:
+> What is the real reason for needing this, pci_alloc_consistent()?  We
+> have talked about renaming that to dev_alloc_consistent() in the past,
+> which I think will work for you, right?
 
-I know that HP's version of this box (Envizex, Entria, and 700/RX
-X-Terminals) were diskless and bootp'd from an HP9000 UNIX box over the
-network. 
+This this would end up [or have the ability to] invoking a bus-specific
+routine at some point, right?  [so that a truly PCI-specific definition
+could be still be had]
 
-derek
+Thanks,
 
-
-__________________________________________________
-Do you Yahoo!?
-U2 on LAUNCH - Exclusive greatest hits videos
-http://launch.yahoo.com/u2
+-Miles
+-- 
+[|nurgle|]  ddt- demonic? so quake will have an evil kinda setting? one that 
+            will  make every christian in the world foamm at the mouth? 
+[iddt]      nurg, that's the goal 
