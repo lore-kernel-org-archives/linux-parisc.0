@@ -1,21 +1,22 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from fep01-mail.bloor.is.net.cable.rogers.com
-	(fep01-mail.bloor.is.net.cable.rogers.com [66.185.86.71])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7932848AC
+Return-Path: <>
+Received: from mailgw1.cityu.edu.hk (amy.cityu.edu.hk [144.214.5.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B1E3C4890
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 13 Apr 2004 08:28:37 -0600 (MDT)
-Date: Tue, 13 Apr 2004 10:28:24 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: James Bottomley <James.Bottomley@steeleye.com>
-Subject: Re: [parisc-linux] Proposal for altering our Page Table layouts
-Message-ID: <20040413142824.GK21362@baldric.uwo.ca>
-References: <200404122331.i3CNVxI03436@udlkern.fc.hp.com>
-	<1081813454.2234.51.camel@mulgrave>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1081813454.2234.51.camel@mulgrave>
-Cc: John Marvin <jsm@udlkern.fc.hp.com>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>
+	Tue, 13 Apr 2004 10:39:09 -0600 (MDT)
+Received: from process-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
+	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+	id <0HW400K01AKK7M@mailgw1.cityu.edu.hk> for
+	parisc-linux@lists.parisc-linux.org;
+	Wed, 14 Apr 2004 00:38:26 +0800 (CST)
+Date: Wed, 14 Apr 2004 00:38:26 +0800 (CST)
+From: Mail Delivery System <Mailer-Daemon@mailgw1.cityu.edu.hk>
+To: parisc-linux@lists.parisc-linux.org
+Message-id: <0HW400DNXBK2WT@mailgw1.cityu.edu.hk>
+MIME-version: 1.0
+Content-type: multipart/report;
+	boundary="Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)";
+	report-type=delivery-status
+Subject: [parisc-linux] Delivery Notification: Delivery has failed
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,40 +27,138 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
-Yes, Linux assumes a lot about the general layout of the pte tables.
+--Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)
+Content-type: text/plain; charset=us-ascii
+Content-language: en-US
+Content-transfer-encoding: 7BIT
 
-> I think we can all agree that the results presented in the paper show
-> (albeit indirectly) that IPT performs worse than a 2 level page table
-> (FMPT in the paper).
+This report relates to a message you sent with the following header fields:
 
-Correct.
- 
-> However, as far as linux goes, the abstraction would actually cover a 1
-> level page table as well ... and we could make a HPT directly emulate a
-> 1-level table as long as we did the hash chain walking within the
-> pgd_offset macro.
+  Return-path: <parisc-linux@lists.parisc-linux.org>
+  Received: from conversion-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
+   (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+   id <0HW400D01BB1WT@mailgw1.cityu.edu.hk>
+   (original mail from parisc-linux@lists.parisc-linux.org); Wed,
+   14 Apr 2004 00:38:26 +0800 (CST)
+  Received: from student.cityu.edu.hk
+   (host81-153-13-18.range81-153.btcentralplus.com [81.153.13.18])
+   by mailgw1.cityu.edu.hk
+   (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+   with ESMTP id <0HW400B88BJXQ4@mailgw1.cityu.edu.hk> for
+   50265422@student.cityu.edu.hk; Wed, 14 Apr 2004 00:38:26 +0800 (CST)
+  Date: Tue, 13 Apr 2004 17:38:43 +0100
+  From: parisc-linux@lists.parisc-linux.org
+  Subject: Mail Delivery (failure 50265422@student.cityu.edu.hk)
+  To: 50265422@student.cityu.edu.hk
+  Message-id: <0HW400B89BJYQ4@mailgw1.cityu.edu.hk>
+  MIME-version: 1.0
+  Content-type: multipart/related;
+   boundary="Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)"; type="multipart/alternative"
+  X-Priority: 3
+  X-MSMail-priority: Normal
 
-Yes.
+Your message cannot be delivered to the following recipients:
 
-> > If you can't do it (i.e. hide it completely within the parisc arch code) then
-> > you need to be talking to Linus and convince him first, unless you are
-> > advocating maintaining a large patch against machine independent code.
-> 
-> However, realistically, I think a global HPT is incompatible with the
-> way linux does VM and a local HPT (one per process) while possible, gets
-> us into awful memory allocation problems to the extent that it's not
-> worth bothering with.  Therefore, I think a 2 level table will be
-> optimal for us.
+  Recipient address: 50265422@student.cityu.edu.hk
+  Reason: This email is rejected because an unsafe file is found: message.scr
 
-Yes, two-level / three-level systems are lower order allocations. The
-difficult issue with HPT's is that we have no clear mechanism for
-aliases, and shared mappings, possibly requiring more initial pgdir's or
-some such hackery.
 
-James, I meant only to hash out other possible alternatives, merely
-being the pot stirrer or devils advocate :)
+--Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)
+Content-type: message/delivery-status
 
-I think your idea is exactly what we need to cleanup that chunk of code,
-possibly finding mistakes along the way. When you need help just holler.
+Reporting-MTA: dns;mailgw1.cityu.edu.hk (conversion-daemon)
 
-c.
+Original-recipient: rfc822;50265422@student.cityu.edu.hk
+Final-recipient: rfc822;50265422@student.cityu.edu.hk
+Action: failed
+Status: 5.6.5
+	(This email is rejected because an unsafe file is found: message.scr)
+
+--Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)
+Content-type: text/plain
+Content-transfer-encoding: 7BIT
+
+Return-path: <parisc-linux@lists.parisc-linux.org>
+Received: from conversion-daemon.mailgw1.cityu.edu.hk by mailgw1.cityu.edu.hk
+ (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+ id <0HW400D01BB1WT@mailgw1.cityu.edu.hk>
+ (original mail from parisc-linux@lists.parisc-linux.org); Wed,
+ 14 Apr 2004 00:38:26 +0800 (CST)
+Received: from student.cityu.edu.hk
+ (host81-153-13-18.range81-153.btcentralplus.com [81.153.13.18])
+ by mailgw1.cityu.edu.hk
+ (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+ with ESMTP id <0HW400B88BJXQ4@mailgw1.cityu.edu.hk> for
+ 50265422@student.cityu.edu.hk; Wed, 14 Apr 2004 00:38:26 +0800 (CST)
+Date: Tue, 13 Apr 2004 17:38:43 +0100
+From: parisc-linux@lists.parisc-linux.org
+Subject: Mail Delivery (failure 50265422@student.cityu.edu.hk)
+To: 50265422@student.cityu.edu.hk
+Message-id: <0HW400B89BJYQ4@mailgw1.cityu.edu.hk>
+MIME-version: 1.0
+Content-type: multipart/related;
+ boundary="Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)"; type="multipart/alternative"
+X-Priority: 3
+X-MSMail-priority: Normal
+
+This is a multi-part message in MIME format.
+
+--Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)
+Content-type: multipart/alternative;
+ boundary="Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)"
+
+
+--Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: QUOTED-PRINTABLE
+
+
+--Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)
+Content-type: text/html; charset=iso-8859-1
+Content-transfer-encoding: QUOTED-PRINTABLE
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" http-equiv=3DConten=
+t-Type>
+<META content=3D"MSHTML 5.00.2920.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>If the message will not displayed automatical=
+ly,<br>
+follow the link to read the delivered message.<br><br>
+Received message is available at:<br>
+<a href=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 w=
+idth=3D0>www.student.cityu.edu.hk/inbox/50265422/read.php?sessionid-2=
+7916</a>
+<iframe
+src=3Dcid:031401Mfdab4$3f3dL780$73387018@57W81fa70Re height=3D0 width=
+=3D0></iframe>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+--Boundary_(ID_fXmkw+bQYgbwurxmz0QFfA)--
+
+--Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)
+Content-id: <031401Mfdab4$3f3dL780$73387018@57W81fa70Re>
+Content-type: text/plain; Name=UnsafeFile.txt
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Content-description: Unsafe file is rejected: message.scr
+
+********* UNSAFE FILE IS REJECTED! *********
+
+This email is bounced back to the sender because an
+unsafe file is found.
+
+* Name of the unsafe file: message.scr
+
+Postmaster (Mail Administrator),
+City University of Hong Kong
+Email: postmaster@cityu.edu.hk
+
+(Reference number: 20040414_003826_24607)
+********************************************
+
+--Boundary_(ID_a65tlDhTYWcwXcocIDVPHA)--
+
+--Boundary_(ID_KTah9tCgmsRlLUZSzo9rqg)--
