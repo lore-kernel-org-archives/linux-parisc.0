@@ -1,41 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric.uwo.ca (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with SMTP id C6D98482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 13:52:16 -0600 (MDT)
-Date: Thu, 28 Jun 2001 15:52:13 -0400 (EDT)
-From: Chris Snow <chris@baldric.uwo.ca>
-To: "y.   han" <yhan@uwo.ca>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Kernel images for rbootd
-In-Reply-To: <Pine.SOL.4.21.0106281457180.23217-100000@panther.uwo.ca>
-Message-ID: <Pine.LNX.4.33.0106281549180.29792-100000@baldric.uwo.ca>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from kuolema.infodrom.north.de (kuolema.infodrom.north.de [217.89.86.35])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CFC95482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Jun 2001 14:15:35 -0600 (MDT)
+Date: Thu, 28 Jun 2001 22:14:50 +0200
+From: Torsten Neumann <torsten@imke.infodrom.ffis.de>
+To: Helge Deller <deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Problems compiling LVM
+Message-ID: <20010628221450.A28337@imke.infodrom.ffis.de>
+References: <20010628202937.A13724@imke.infodrom.ffis.de> <20010628193653.77706115D6@finlandia.infodrom.north.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010628193653.77706115D6@finlandia.infodrom.north.de>
+Sender: torsten@imke.infodrom.north.de
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 28 Jun 2001, y.   han wrote:
+On Thu, Jun 28, 2001 at 09:36:15PM +0200, Helge Deller wrote:
+> Hi Torsten,
 
-> Well, we came across another question after several steps.
-> 1. what is the kernel image? we downloaded the nfsroot-20001009.tar.gz, is
-> this the kernel image?
+[ unaligned access problem ]
+> 
+> The problem is that your userspace program tries to do a direct 16 or 32-bit 
+> read- or write-access to address 0x40067cf3 - which lies on a "unaligned 
+> address" (e.g. not a a 32-bit boundary). 
+> On Intel architectures this fault is automatically handled by the hardware, 
+> while you get an unaligned access trap on parisc.
+> 
+> The first parisc-kernel which should handle this trap correctly is 2.4.0-pa39 
+> (in CVS), so I would encourage you to update your kernel.
 
-No that is the image for the NFS root filesystem.
+This was with kernel
+Linux imke 2.4.0-pa43 #2 Wed Jun 27 20:09:41 CEST 2001 parisc unknown
 
-There are some kernel images in:
-/pub/parisc/binaries/kernels on puffin.external.hp.com but they are pretty
-old ("vmlinux-*" files) so you might want to get the source code and
-compile your own.  There are instructions for this on the website.
+Any Hints ?
+Or could somebody tell me what more info is needed to solve the problem ?
 
-
-> 2. shall we copy this file into /export/hp/rbootd directory and gunzip and
-> tar it?
-
-No you want to untar it into a directory that is accesible by NFS.
-(Assuming you want to have an NFS root filesystem).
-
-
-     Chris
-
-------------------------------
-Yoda: Fear is the path to the dark side. Fear leads to anger. Anger
-leads to hate. Hate leads to suffering. I sense much fear in you.
+  Torsten
