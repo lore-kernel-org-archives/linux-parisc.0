@@ -1,22 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A99784829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 May 2003 13:36:20 -0600 (MDT)
-Received: from security.hp.com (security.hp.com [15.238.4.200])
-	by atlrel8.hp.com (Postfix) with ESMTP id D78F11C0177B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 May 2003 15:36:19 -0400 (EDT)
-Message-ID: <3EC53B08.2050904@debian.org>
-Date: Fri, 16 May 2003 21:24:56 +0200
-From: Joop Stakenborg <pa3aba@debian.org>
+Received: from sccrmhc03.attbi.com (sccrmhc03.attbi.com [204.127.202.63])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5DB3F4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 May 2003 13:59:17 -0600 (MDT)
+From: "Jaime Ash" <ja@lachivaquemada.com>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 16 May 2003 12:59:17 -0700
+Message-ID: <NEBBJAILOLAHGDBEOCIOEENIDGAA.ja@lachivaquemada.com>
 MIME-Version: 1.0
-To: LaMont Jones <lamont@hp.com>
-Cc: lamont+buildd@hp.com, 193261@bugs.debian.org
-References: <20030514052335.GO14285@security.hp.com> <3EC25AE0.9070004@debian.org> <20030516191505.GA24104@security.hp.com>
-In-Reply-To: <20030516191505.GA24104@security.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Resent-Message-Id: <20030516193619.9590EB18DA@security.hp.com>
-Subject: [parisc-linux] Re: Bug#193261: glfer_0.3.2-1(hppa/unstable): FTBFS: assumes sys/io.h
- exists
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <20030516172555.GA10530@dsl2.external.hp.com>
+Subject: [parisc-linux] RE: Help configuring an HIL mouse on an HP 715. - (Major disaster! - Am I back at ground level 0?)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,32 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-LaMont Jones wrote:
-> severity 193261 important
-> --
-> On Wed, May 14, 2003 at 05:04:00PM +0200, Joop Stakenborg wrote:
-> 
->>>There are many architectures where sys/io.h does not exist.
->>
->>Sorry about that. I will make it a i386-only package for now.
-> 
-> 
-> Please don't do that.  This bug should be important, not serious,
-> which makes it not release-critical.  (Sorry about that...)
-> 
-> Unless the package is truely i386 specific in _function_ (not
-> compile-ability), or depends on such, it should be Architecture: any.
-> 
+>> Is there an easy way to disable the blue screen after booting to the old
+>> kernel?
 
-Okay,
-
-where do I find information on functions and devices available on other 
-architectures, e.g. glfer uses inb, outb and ioperm (they are in 
-sys/io.h) on the parallel/serial port.
-
-> lamont
-> 
-> 
-
-Thanks,
-Joop
+> Yes
+> 1) figure out which script is presenting that menu.
+>   (eg "fgrep -i new_network /etc/init.d/*")
+I assume that by "new_network" you really mean one of the strings that are
+displayed in the Debian GNU Linux blue screen with the gray menu (such as
+"Choose your current network-environment !", "Set_up_new_environment" or
+"Installation_default") and that you are trying to find a file in the init.d
+directory that contains that string.  Am I correct?
+I tried all three, as follows (but no file was found with any of these
+commands):
+fgrep -i Set_up_new_environment /etc/init.d/*
+fgrep -i Installation_default /etc/init.d/*
+fgrep -i 'Choose your current network-environment !' /etc/init.d/*
+So, here are my next questions:
+1. Is init.d the only directory to search?
+2. Can initialization scripts be stored elsewhere?
+Best regards,
+Jaime
