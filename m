@@ -1,26 +1,18 @@
-Return-Path: <kyle@engsoc.org>
-Received: from stout.engsoc.org (stout.engsoc.carleton.ca [134.117.69.22])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 30DC04838
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 766F94838
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Apr 2004 14:25:51 -0600 (MDT)
-Received: from lager.engsoc.carleton.ca (lager.engsoc.carleton.ca
-	[134.117.69.26])
-	by stout.engsoc.org (8.12.3/8.12.3/Debian-6.6) with ESMTP id
-	i3QKSmml009933 for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Apr 2004 16:28:48 -0400
-Received: from kyle by lager.engsoc.carleton.ca with local (Exim 3.36 #1
-	(Debian)) id 1BICek-0007Sh-00
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Apr 2004 16:24:46 -0400
-Date: Mon, 26 Apr 2004 16:24:46 -0400
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040426202446.GB19643@engsoc.org>
-References: <20040426190305.E233C494595@palinux.hppa>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040426190305.E233C494595@palinux.hppa>
-From: Kyle McMartin <kyle@engsoc.org>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 tausq
+	Mon, 26 Apr 2004 14:29:26 -0600 (MDT)
+Message-Id: <200404262029.i3QKT5sE001532@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 tausq
+To: kyle@engsoc.org (Kyle McMartin)
+Date: Mon, 26 Apr 2004 16:29:04 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040426202446.GB19643@engsoc.org> from "Kyle McMartin" at Apr
+	26, 2004 04:24:46 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,130 +22,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Apr 26, 2004 at 01:03:05PM -0600, Randolph Chung wrote:
-> Log message:
-> 2.6.6-rc1-pa4
-> disable prefetchw for !pa20
+> Oddly, this dies on boot on my B180.
 > 
+> The contents of IIR is the prefetch instruction (ldw 0(%r19), %r0).
 
-Oddly, this dies on boot on my B180.
+> r16-19  1037df04 f0000194 19ffffe0 00000000
 
-The contents of IIR is the prefetch instruction (ldw 0(%r19), %r0).
+%r19 is 0.
 
-Stack Dump:
- 10410a18:  10410a18 00000057 00000056 00000055 
- 10410a08:  00000054 00000053 00000052 00000051 
- 104109f8:  00000050 0000004f 0000004e 0000004d 
- 104109e8:  0000004c 0000004b 0000004a 00000049 
- 104109d8:  00000048 00000047 00000046 00000000 
- 104109c8:  10410680 0000001a 00000000 00000041 
- 104109b8:  00000040 0000003f 0000003e 10106d1c 
- 104109a8:  0000003c 0000003b 0000003a 00000039 
- 10410998:  00000038 00000037 00000036 00000035 
- 10410988:  00000034 00000033 00000032 00000031 
- 10410978:  00000030 0000002f 0000002e 0000002d 
- 10410968:  0000002c 0000002b 0000002a 00000029 
- 10410958:  00000028 29fef004 29ff5870 1087a6f0 
- 10410948:  10410508 00000023 00000022 00000021 
- 10410938:  00000020 0000001f 0000001e 0000001d 
- 10410928:  0000001c 0000001b 0000001a 00000019 
- 10410918:  00000018 00000017 00000016 00000015 
- 10410908:  00000014 00000013 00000012 00000011 
- 104108f8:  00000010 0000000f 0000000e 0000000d 
- 104108e8:  0000000c 0000000b 0000000a 00000009 
- 104108d8:  00000008 00000007 00000006 0000001d 
- 104108c8:  0000001c 0000001b 0000001a 00000019 
- 104108b8:  00000018 00000017 00000016 1010c088 
- 104108a8:  00000014 00000013 00000012 00000011 
- 10410898:  00000010 0000000f 0000000e 0000000d 
- 10410888:  0000000c 0000000b 0000000a 00000009 
- 10410878:  00000008 00000007 00000006 00000005 
- 10410868:  00000004 00000003 00000002 00000001 
- 10410858:  00000000 00000000 00000000 00000000 
- 10410848:  0e601080 00000010 00000000 00000000 
- 10410838:  00000000 00000000 00000000 10176cb0 
- 10410828:  10176cac 00000000 00000000 00000000 
- 10410818:  00000000 00000000 00000000 00000000 
- 10410808:  00000000 00000000 00000000 00000000 
- 104107f8:  41000000 00000000 40800000 00000000 
- 104107e8:  40000000 00000000 40000000 7fffffff 
- 104107d8:  41800000 00000000 40200000 00000000 
- 104107c8:  40200000 00000000 40300000 00000000 
- 104107b8:  41000000 00000000 40800000 7fffffff 
- 104107a8:  7fffffff 00000000 41000000 7fffffff 
- 10410798:  7fffffff 00000800 00000400 00000200 
- 10410788:  00000100 00000080 00000040 00000000 
- 10410778:  00000000 00000010 00000010 00000000 
- 10410768:  41800000 25b7ea20 45e69c6a 00000000 
- 10410758:  00000000 e0000000 43ebebeb ffffffff 
- 10410748:  7f7fffff 00000020 00000010 00000000 
- 10410738:  00000000 00000000 00000000 00000000 
- 10410728:  00000000 00000000 00000000 00000000 
- 10410718:  0000001f 00000000 0000001f 00000000 
- 10410708:  0000001f 00000000 000f0800 1016cad8 
- 104106f8:  10410680 18701a80 00000000 103b6010 
- 104106e8:  29ff5940 10410510 10410508 00001000 
- 104106d8:  00000000 0000ffff 10840000 00000000 
- 104106c8:  19ffffe0 f0000194 1037df04 1049b010 
- 104106b8:  1043a810 1043a810 00000000 29fef001 
- 104106a8:  00000003 29ff5940 10410510 0023ee05 
- 10410698:  10410508 1087a6f0 29ff5870 29fef004 
- 10410688:  1016c08c 104af010 0004ff0f 00000009 
- 10410678:  00000009 00000009 00000009 10142d98 
- 10410668:  00000009 00000009 00000009 00000009 
- 10410658:  00000009 29ff0680 29ffb340 00000000 
- 10410648:  29fef000 000000d0 29ff6ce0 00000009 
- 10410638:  00000009 00000009 00000009 101778bc 
- 10410628:  00000009 29fef004 10410408 29ff84a0 
-
-Kernel addresses on the stack:
- [<10106a68>] parisc_terminate+0x60/0xb4
- [<10106d1c>] handle_interruption+0x260/0x560
- [<1010c088>] intr_check_sig+0x0/0xc
- [<10176cb0>] __d_lookup+0x88/0x174
- [<10142d98>] __get_free_pages+0x28/0x5c
- [<101778bc>] alloc_inode+0x28/0x184
- [<1016c08c>] do_lookup+0x30/0xc8
- [<101b3604>] ramfs_get_inode+0x1c/0x13c
- [<1016c6b0>] link_path_walk+0x58c/0xa08
- [<1016ce34>] path_lookup+0xc0/0x200
- [<1016d154>] __user_walk+0x5c/0x78
- [<1015c6d0>] sys_chown+0x28/0x70
- [<1041f17c>] do_name+0xf0/0x180
- [<1041f414>] write_buffer+0x4c/0x74
- [<1041f48c>] flush_buffer+0x50/0xa4
- [<1041f524>] flush_window+0x3c/0xa8
- [<10104438>] inflate+0xa0/0xcc
- [<10147290>] do_tune_cpucache+0x10c/0x17c
- [<10104838>] gunzip+0x338/0x57c
- [<1041e898>] malloc+0x10/0x1c
- [<1041f7a0>] unpack_to_rootfs+0x210/0x284
- [<1041f840>] populate_rootfs+0x2c/0x4c
- [<1041d344>] start_kernel+0x198/0x1f0
-
-Kernel Fault: Code=26 regs=10410680 (Addr=00000000)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111 Not tainted
-r00-03  00000000 104af010 1016c08c 29fef004
-r04-07  29ff5870 1087a6f0 10410508 0023ee05
-r08-11  10410510 29ff5940 00000003 29fef001
-r12-15  00000000 1043a810 1043a810 1049b010
-r16-19  1037df04 f0000194 19ffffe0 00000000
-r20-23  10840000 0000ffff 00000000 00001000
-r24-27  10410508 10410510 29ff5940 103b6010
-r28-31  00000000 18701a80 10410680 1016cad8
-sr0-3   00000000 00000000 00000000 00000000
-sr4-7   00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 10176cac 10176cb0
- IIR: 0e601080    ISR: 00000000  IOR: 00000000
- CPU:        0   CR30: 10410000 CR31: 10414000
- ORIG_R28: 00000000
- IAOQ[0]: __d_lookup+0x84/0x174
- IAOQ[1]: __d_lookup+0x88/0x174
- RP(r2): do_lookup+0x30/0xc8
-
-Regards,
+Dave
 -- 
-Kyle McMartin
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
