@@ -1,41 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA22717
-	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 13:21:07 -0600
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 31 Aug 2000 19:21:12 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13UZtU-0000c6-00; Thu, 31 Aug 2000 20:21:00 +0100
-Date: Thu, 31 Aug 2000 20:21:00 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: "Albert E. Whale" <aewhale@hky.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: HP PA-RISC support
-Message-ID: <20000831202100.A1078@parcelfarce.linux.theplanet.co.uk>
-References: <39AE587E.E5EBE37A@hky.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <39AE587E.E5EBE37A@hky.com>; from aewhale@hky.com on Thu, Aug 31, 2000 at 09:07:10AM -0400
-Sender: <willy@www.linux.org.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA23686
+	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 14:35:58 -0600
+Date: Thu, 31 Aug 2000 16:35:50 -0400 (EDT)
+From: Andrew Park <apark@cdf.toronto.edu>
+To: parisc-linux@thepuffingroup.com
+In-Reply-To: <20000830170126.E3463@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.SOL.4.21.0008311603300.24635-100000@misty.cdf>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] getting kernel to load so far...
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 31, 2000 at 09:07:10AM -0400, Albert E. Whale wrote:
-> Matthew,
-> 
-> You may remeber me contacting you some time again regarding the D200
-> Class Server I have at a customer Site.
-> 
-> I am interested in installint Linux on the Server.  Is this platform
-> supportted? Is there a distribution for it?  If not, can I help promote
-> and or Beta test the environment to gain acceptance?
+Just wanted to report my progress publicly.
+Last posting to the list was about my SCSI CD-ROM not booting the 
+HP-UX INSTALL CD.  Well, it turns out that NECs are in 2048 byte sector
+mode whereas HP requires 512 byte mode.  SUNs and SGIs also require 512
+byte sector mode.  So I just borrowed a SUN external CD-ROM and issued
 
-Hi, Albert.
+	boot pri isl
 
-I'm just about to leave on holiday for a month, so you're lucky you
-caught me :-)  Linux does indeed boot on the D200, and the Alpha release
-CD which is on the ftp site will run.  I'm not sure which devices will
-be supported by that kernel, but it should be able to bring you to a
-shell prompt.  The port is still a couple of months away from being
-stable, so it's not really suitable for installing at a customer site yet.
+at BOOT_ADMIN> prompt and it took me right into the ISL prompt.  There
+I changed the conspath to serial console.  I did not have null modem
+cable (9 to 9 female), but I had a DB25 male to DB25 male cable and
+a couple of DB25 male to DB9 female converters.  So I patched them up
+and wired two boxes.  I fired up minicom then parisc box, and minicom
+just wouldn't show a thing.  After wasting two days on it, I went out
+and bought *real* DB9 female to DB9 female serial cable.  I hooked
+THAT up and minicom began showing things.
 
--- 
-Revolutions do not require corporate support.
+But now I have bigger (I think) problem.  The kernel loading still
+gets stuck at pdc_cons die!!  This is displayed on the serial console.
+Anybody out there running i386 linux box as NFSROOT and serial console
+server, also running bootp with combination of tftp?  Could you please
+let me know what the syslog says from the booting of parisc box to
+its shell?
+Thanks
+
+
+
+Andrew Park
+           
+________________________________________________________________________ 
+CDFlab Systems Administrator                       www.cdf.utoronto.ca |
+GnuPG Signature              www.cdf.utoronto.ca/~apark/public_key.txt |
+------------------------------------------------------------------------
