@@ -1,43 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ntexchange.cat.csiro.au (ntexchange.cat.csiro.au [140.253.12.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3688A482C
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 18:57:40 -0600 (MDT)
-Message-ID: <A8566E157F5FD411BCFB00D0B7816D51C72B91@ntexchange.cat.csiro.au>
-From: Matt.VanDeWerken@csiro.au
-To: willy@debian.org
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] New scsi driver for 53c700 and 53c710 committe
-	 d
-Date: Tue, 9 Oct 2001 10:55:18 +1000 
+Received: from kiyen.face.ubiobio.cl (kiyen.face.ubiobio.cl [146.83.194.135])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9E8E3482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Oct 2001 19:14:34 -0600 (MDT)
+Received: from localhost (marco@localhost)
+	by kiyen.face.ubiobio.cl (8.11.6/8.11.6) with ESMTP id f98HH7106995
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 8 Oct 2001 13:17:07 -0400
+Date: Mon, 8 Oct 2001 13:17:07 -0400 (CLT)
+From: Marco Rodriguez <marco@kiyen.face.ubiobio.cl>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0110051537370.19883-100000@kiyen.face.ubiobio.cl>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Boot problem
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> On Tue, Oct 09, 2001 at 09:06:33AM +1000, 
-> Matt.VanDeWerken@csiro.au wrote:
-> > So will this new driver work on the 735-series? Please tell 
-> me it's so...
-> 
-> I presume you're talking about the fast-wide-differential scsi port?
-> That's a ncr720, not 700 or 710 chip.  The basic driver for 
-> that is fine,
-> but it doesn't recognise the chip as being something it should drive.
-> 
+I'm traying to boot from the parisc-linux 0.9 on one HP 9000 d350 whith
+2 100 Mhz PA RISC 7200 processors but it hangs up
+this is the boot mesaje and information it shows, after select the boot
+from CD-ROM. if someone can tell me how to boot please or the problems i
+have, thank you.
 
-I assume this is still the case? I enquired a while back about getting some
-documentation on this to write the driver, but I think I asked at a bad time
-(I think woody/potato was about to be released). Anyway, what's the chance
-of getting some documentation so I could have a crack at the driver? I'm
-happy to sign an NDA or whatever I need to sign, but I'd really like this
-driver, and I'd also really like to have some experience with writing
-drivers. What better way than to combine the two wishes?
+HARD Booted.
+palo ipl 0.92 root@spqr Mon Jun 25 23:03:13 CEST 2001
+0/vmlinux32 2853588 bytes @ 0x6ad6800
+0/vmlinux64 3585851 bytes @ 0x6d8f800
+0/ramdisk 1991209 bytes @ 0x70fb000
 
-Cheers,
-Matthew van de Werken
-Electronics Engineer
-CSIRO Exploration & Mining - Gravity Group
-1 Technology Court - Pullenvale - Qld - 4069 - AUSTRALIA
-ph:  +61-7-3327 4685     fax:  +61-7-3327 4455
-email:  m.vandewerken@cat.csiro.au
+Command line: 'root=/dev/ram console=ttyS0 TERM=vt102'
+
+Kernel: partition 0 file /vmlinux
+Ramdisk: partition 0 file /ramdisk
+Warning: kernel name doesn't end with 32 or 64... Guessing Annoyance:
+Firmware d
+oes not support PDC_MODEL_CAPABILITIES call
+32
+ELF32 executable
+Entry 00100000 first 00100000 n 4
+Segment 0 load 00100000 size 1606948 mediaptr 0x1000
+Segment 1 load 0028a000 size 468472 mediaptr 0x18a000
+Segment 2 load 00300000 size 8192 mediaptr 0x1fd000
+Segment 3 load 0034bea8 size 80688 mediaptr 0x1ffea8
+Loading ramdisk 1991209 bytes @ 07e09000...
+branching to kernel entry point 0x00100000
+Set default PSW W bit to 0
+-- 
+*-------------------------*-----------------------------------------*
+| Marco Rodriguez M.      |                                         |
+| Ing. Civil Informatica. |   mailto:marco@kiyen.face.ubiobio.cl    |
+| U. Bio Bio Conce.       |                                         |
+*-------------------------*-----------------------------------------*
