@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from sina.com (unknown [211.147.255.241])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 389634937
-	for <parisc-linux@parisc-linux.org>; Fri,  8 Aug 2003 00:24:51 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id C42414964
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Aug 2003 00:24:52 -0600 (MDT)
 From: "dq" <linyu921@sina.com>
-To: parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain;charset="GB2312"
 Reply-To: linyu921@sina.com
-Date: Fri, 8 Aug 2003 14:26:49 +0800
-Message-Id: <20030808062451.389634937@dsl2.external.hp.com>
+Date: Fri, 8 Aug 2003 14:26:51 +0800
+Message-Id: <20030808062452.C42414964@dsl2.external.hp.com>
 Subject: [parisc-linux] =?GB2312?B?zqrE+r2oo6jW0NOizsSjqcbz0rXN+NW+?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
