@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0049A4840
-	for <parisc-linux@parisc-linux.org>; Fri, 21 Nov 2003 13:58:01 -0700 (MST)
-Message-ID: <3FBE7C6A.3010104@tiscali.be>
-Date: Fri, 21 Nov 2003 20:58:18 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9751B4840
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Nov 2003 14:44:01 -0700 (MST)
+Message-ID: <3FBE8732.2050705@tiscali.be>
+Date: Fri, 21 Nov 2003 21:44:18 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: Steve Bromwich <lists@fop.ns.ca>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Processes stuck in D state on 715/100XC with 2.4.22-pa17
-References: <3FB265EC00003DBD@ocpmta3.freegates.net> <Pine.LNX.4.58.0311190913310.1125@brain.fop.ns.ca>
-In-Reply-To: <Pine.LNX.4.58.0311190913310.1125@brain.fop.ns.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] C110 builtin nic slow?
+References: <3F969FFE00009EA4@ocpmta2.freegates.net> <3F969FFE00009F73@ocpmta2.freegates.net> <20031110173525.GC24664@colo.lackof.org> <3FB0DC01.6070701@tiscali.be> <20031112032230.GB12000@colo.lackof.org> <3FB68167.10106@tiscali.be> <Pine.LNX.4.58.0311152220070.16980@sal.ucc.ie> <Pine.LNX.4.58.0311152313340.16980@sal.ucc.ie> <3FB7AD39.9010305@tiscali.be>
+In-Reply-To: <3FB7AD39.9010305@tiscali.be>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,59 +23,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Steve,
+Hi all,
 
-Steve Bromwich wrote:
->>>Just to clarify, this is happening during operation, not bootup. Next time
->>>it happens (probably tomorrow morning) I'll break on serial and try
->>>piminfo
-> 
-> 
-> So much for that idea - I forgot I had magic sysrq on, so break just gave
-> me the usual sysrq options. I'll recompile without sysrq over the weekend
-> and see what happens, but in the meantime I've reverted to 2.4.18 to see
-> if I get the same problem, just to make sure it's not faulty hardware. I
-> checked ps, and all the processes in D state were ones that touch the
-> drive (eg, find, exim, apache).
-> 
-> I've got a J class at work that's not in production, so if I get time I'll
-> try it out with the same config (or at least, the closest I can get) just
-> to make sure it's not something obviously wonky in my config.
-> 
-well, but those system are widly different (cpu, architecture, ...).
-> 
->>May be if you can, run hp diag tools?
-> 
-> 
-> I don't have a CD in that machine - do you know if there's any netbootable
-> images I can use? I have an HPUX 11.0 CD set, so if there's something I
-> can pull off there I'll be good to go.
-> 
-Good question? never have to test it but it is a bootable cd (I don't 
-remember if it is available via internet?) so if you copy it's image 
-(with dd) on a system, i think that following the faq how-to netboot 
-<http://parisc-linux.org/faq/index.html#netboot> , it would works?
-> 
->>(I have no clue about 715 model but well running 2.4.22 (and above) on various
->>b180, b2k, c110, N4000 and i have never encounter such pb?)
-> 
-> 
-> Well, the frustrating thing is is that there's no debug output anywhere
-> that I can find that's showing anything obviously wrong.
-Don't feel alone, during severall month (2, 3, 4, ... I don't want to 
-remember) I try to get just a panic message from a smp kernel on a N4k 
-: no success :_(
-...
 
-> I had a skim
-> through lasi700.c/.h and couldn't see anything that'd help, do you know if
-> there's any debug/printks I can scatter anywhere to give me some pointers?
->
-Sorry, I couldn't help here.
+Joel Soete wrote:
+> 
+> 
+> M. Grabert wrote:
+> 
+>> Sorry to reply myself,
+> 
+this is me now ;)
 
-hmm, what kind of disk have you on your D: hot-swapable or fixed?
-(with fixed disk, I already encounter a pb of flat cable and with 
-hot-swap disk a pb with dust on disks' support)
+A small follow-up: I exchange my 3com with another hp nic (the same as 
+the first one).
 
-Cheers,
+The pb now, is that the new one become eth0 (and works fine) but the old 
+one (which would be eth1) is not any-more usable (no means to configure 
+to setup and configure it):
+# cat /proc/pci
+[...]
+   Bus  0, device  11, function  0:
+     Ethernet controller: Hewlett-Packard Company J2585B HP 10/100VG PCI 
+LAN Ada
+ter (rev 0).
+       IRQ 9.
+       Master Capable.  Latency=64.  Min Gnt=8.Max Lat=32.
+       I/O at 0xe000 [0xe0ff].
+       Non-prefetchable 32 bit memory at 0xeb000000 [0xeb001fff].
+   Bus  0, device  12, function  0:
+     Ethernet controller: Hewlett-Packard Company J2585B HP 10/100VG PCI 
+LAN Ada
+ter (#2) (rev 0).
+       IRQ 10.
+       Master Capable.  Latency=64.  Min Gnt=8.Max Lat=32.
+       I/O at 0xe400 [0xe4ff].
+       Non-prefetchable 32 bit memory at 0xeb002000 [0xeb003fff].
+[...]
+
+Any idea?
+
+Thanks again,
 	Joel
