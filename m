@@ -1,28 +1,20 @@
-Return-Path: <alan@lxorguk.ukuu.org.uk>
-Received: from dhcp23.swansea.linux.org.uk
-	(cpc1-cwma1-5-0-cust4.swan.cable.ntl.com [80.5.120.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EB6D94856
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9148E48C5
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 16 Feb 2004 09:56:31 -0700 (MST)
-Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10) with ESMTP id
-	i1GGr20r027719; Mon, 16 Feb 2004 16:53:04 GMT
-Received: (from alan@localhost)
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10/Submit) id
-	i1GGr1X7027717; Mon, 16 Feb 2004 16:53:01 GMT
-Subject: Re: [parisc-linux] C3000 video options
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: Helge Deller <deller@gmx.de>
-In-Reply-To: <200402152125.52428.deller@gmx.de>
-References: <Pine.GSO.4.44.0402142137500.12861-100000@keymaster>
-	<200402151027.59161.deller@gmx.de>
-	<1076861208.25542.3.camel@dhcp23.swansea.linux.org.uk>
-	<200402152125.52428.deller@gmx.de>
-Content-Type: text/plain
-Message-Id: <1076950376.27323.4.camel@dhcp23.swansea.linux.org.uk>
-Mime-Version: 1.0
-Date: Mon, 16 Feb 2004 16:52:57 +0000
-Cc: parisc-linux@lists.parisc-linux.org
+	Mon, 16 Feb 2004 10:31:49 -0700 (MST)
+Date: Mon, 16 Feb 2004 18:31:41 +0100
+Message-ID: <402A4CA50000347C@ocpmta2.freegates.net>
+In-Reply-To: <402E7722.2080105@tiscali.be>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] glibc-2.3.3 & gcc-snapshot (3.5.0) pb
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	James Morrison <ja2morri@csclub.uwaterloo.ca>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -32,15 +24,18 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sul, 2004-02-15 at 20:25, Helge Deller wrote:
-> Maybe I'm wrong, but I thought it would go up to 1024x768@16bpp only
-> if you attached two Voodoo2 cards to each other with the optional
-> cable ?
+> Ok, I will try to report as much detail as I can.
 
-The cards have 2 or 4Mb of memory for frame buffer (texture ram is
-seperate). There is a hardware 1024 pixel width limit in the engine.
+Hi all,
 
-For 2D you need a front buffer (1024x768x16)
-For 3D you need front back and depth (1024x768x16x3)
+Just in case of some interest interest, here is the pr ref:
+<http://gcc.gnu.org/bugzilla/show_bug.cgi?id=14163>
 
-So 1024x768 2D is fine on a single card but 3D needs SLI
+hth,
+    Joel
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
