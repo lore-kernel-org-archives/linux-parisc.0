@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from osiris.silug.org (osiris.silug.org [64.240.156.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F28B4831
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Sep 2002 06:42:12 -0600 (MDT)
-Received: (from steve@localhost)
-	by osiris.silug.org (8.11.6/8.11.6) id g88Cg5409930
-	for parisc-linux@lists.parisc-linux.org; Sun, 8 Sep 2002 07:42:05 -0500
-Date: Sun, 8 Sep 2002 07:42:05 -0500
-From: Steven Pritchard <steve@silug.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020908074205.A9860@osiris.silug.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [OT] cheap pa-risc hardware
+Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 84B63482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Sep 2002 15:46:07 -0600 (MDT)
+Message-ID: <3D7BC515.2D31193A@gmx.at>
+Date: Sun, 08 Sep 2002 23:45:57 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Jussi =?iso-8859-1?Q?M=E4ki?= <valen@ihanaa.org>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+References: <Pine.LNX.4.44.0209081652450.221-100000@kone.ihanaa.org>
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Re: Status of parisc-linux on E45
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I was recently asked to help sell a pallet full of 712/60s, 712/80s,
-735/125s, and 715/100s (plus a few J- and K-class servers and other
-random hardware).  Before I start hitting eBay, I was hoping that
-someone on the list might have a good use for them.  While they
-wouldn't be free, I think they would be cheap.  I've already warned
-the guy in question that the older workstations aren't worth much,
-especially since they don't seem to have any interesting hardware
-(small disks, not much memory, no add-on cards).
+The status has not changed the last month. My E55 works
+without MUX (except console via my PDC driver), SCSI
+and parallel port.
 
-If I had any spare money right now, I'd probably just buy the things
-and donate them to a few Debian developers...
+At the momemt, I will start again play around accessing
+the devices (I alreasy started a month ago, but other
+work delayed this ...).
 
-Please email me off-list if you have a use for them.  I'll have exact
-numbers early this week.
+Christoph
 
-The systems are in St. Louis, if it matters.
 
-Steve
+Jussi Mäki wrote:
+> 
+> Hi, we discussed about using linux on E45 couple of months ago..
+> 
+> How well does parisc-linux work on E-series machine these days?
+
 -- 
-steve@silug.org           | Southern Illinois Linux Users Group
-(618)398-7360             | See web site for meeting details.
-Steven Pritchard          | http://www.silug.org/
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
