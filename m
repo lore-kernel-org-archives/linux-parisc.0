@@ -1,39 +1,32 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA17849
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 09:15:27 -0700
-Received: from user-140-21.jakinternet.co.uk (HELO rhirst.linuxcare.com) (212.187.140.21)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 16:17:54 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id AC22EB007; Thu, 30 Nov 2000 16:11:15 +0000 (GMT)
-Date: Thu, 30 Nov 2000 16:11:15 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Steve Moret <smoret@uci.edu>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000/735-125
-Message-ID: <20001130161115.N22285@linuxcare.com>
-References: <00113001105103.00309@P100> <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu> <20001130112739.F22285@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001130112739.F22285@linuxcare.com>; from rhirst@linuxcare.com on Thu, Nov 30, 2000 at 11:27:39AM +0000
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA18122
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 09:16:28 -0700
+To: Stephen Zander <gibreel@pobox.com>
+cc: Grant Grundler <grundler@cup.hp.com>, Matthew Wilcox <matthew@wil.cx>,
+        parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] CVS linux Vs. -test10 
+In-Reply-To: Your message of "30 Nov 2000 00:09:03 PST."
+             <877l5lvq3k.fsf@rabbit.fire-swamp.net>
+References: <200011201734.JAA18526@milano.cup.hp.com>  <877l5lvq3k.fsf@rabbit.fire-swamp.net> 
+Date: Thu, 30 Nov 2000 09:18:51 -0700
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E141WQ7-000300-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 30, 2000 at 11:27:39AM +0000, Richard Hirst wrote:
-> On Thu, Nov 30, 2000 at 01:20:28AM -0800, Steve Moret wrote:
-> > Now, maybe you can help me identify my SCSI problem. I don't know if it is
-> > because of driver issues or a bad disk (completly likely). Do other people
-> > have the Fast SCSI2 working on their 735s?
-> > 
-> > Whenever I do a mke2fs (after partitioning the drive with fdisk ok) it dies.
-> 
-> 
-> I have a 53c700 on my 715/75, and the driver was having trouble
-> with a CRDOM I attached, so it has some problems.  I wrote the
-> driver, but havn't used the 715/75 for a while since latest kernels
-> wouldn't boot for me.  I'll get it going again and see if the scsi
-> driver still works.
+=     Grant> need "boot floppies" debian package working. We don't need
+= 
+= Oooh, there's a reason for me to finally get the 712/80 under my desk
+= to be more than a foot-rest.  I'll see what I can do about this.
+= 
+= Note that the likelihood of Debian releasing woody anytime soon is
+= vanishingly small, so this dosen't have to happen Right Now.
 
-I got my 715/75 to boot.  The scsi driver still has problems with my
-CDROM drive, but the disk seems ok.  I ran mke2fs of a 1Gig partition
-a few times and then copied 200MB of files from the network to it.
+Well yes and no.  We want to release parisc-linux sooner than woody
+will be ready for public stable release, so we'll want to do the
+boot floppies work sooner than other architectures need it and
+can probably therefore provide early testing too.  Since
+we aren't going to time travel back to Debian potato, woody
+boot floppies are increasingly interesting to replace our manual
+install process (hey at least it's documented!).
 
-Richard
+	-P
