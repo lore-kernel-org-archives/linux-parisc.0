@@ -1,16 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] K460
-Date: Fri, 21 May 2004 08:43:48 +0000
-Message-ID: <40ADC144.30101@tiscali.be>
-References: <000801c43e63$b0e63da0$f6e40718@mxdogxp>
+From: Stuart Brady <sdbrady@ntlworld.com>
+Subject: Re: [parisc-linux] [PATCH] Harmony driver - Reject AFMT_S16_LE &
+	Implement SNDCTL_DSP_CHANNELS
+Date: Mon, 24 May 2004 00:42:00 +0100
+Message-ID: <20040523234200.GA1893@calypso>
+References: <20040222092057.GA2590@calypso> <20040223035601.GA988@calypso>
+	<20040511052451.GC27478@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: mxdog <mxdog@comcast.net>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <000801c43e63$b0e63da0$f6e40718@mxdogxp>
+In-Reply-To: <20040511052451.GC27478@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,45 +22,63 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello,
+Hi Grant,
 
-mxdog wrote:
-> Hello
+> Sorry for taking so long with this...I was expecting someone else
+> to reply and maybe missed it. A couple of minor problems with
+> your patch:
+
+Actually, I think I should have been more persistent.
+
+> 1) it's for 2.4 and I'm personally trying to focus on 2.6 tree now.
+>    2.6 is ready for prime time. It's been my desktop/ftp/http server
+>    (C3600) for the past couple of monthes and has proven very stable.
 > 
-> I'm trying to make linux work on my K460 box. I'm an old dog ...a.k.a. z80 days (8 bit)...so I'm not a kernel hacker, and don't want to be, but I can write code if I'm absolutely forced to ( takes lot time learn the machines heart and soul...got past that with my commodore 64 and a few others) ..I have 20-9 gig drives on this machine that I would like to use for web page serving in the company,ftp ...mostly me...and inter-company and file storage/backup,email..possibly other stuff...like process control...maybe point of sale....the thing is this size company and the price we got the machine for cant beat it..this will be a perfect platform ( linux) and the hardware and software too is cheap ..LOL deliver us from evil...a.k.a. windows.
+> 2) OSS is "decprecated" according to the 2.6 sound/Kconfig "Help".
+>    Ie use ALSA instead.  See SOUND_PRIME option.
 > 
+> 3) if no one else wants to poke at the 2.4 harmony driver, I will
+>    just apply your patches on good faith that it builds/works for you.
+>    Have you tweaked it more since Feb?
 
-Welcome, I am the same old dog so I try to contribute with test as relevant as possible to help hackers as afar as I can ;)
+I've made some improvements to the mixer code, but OSS's mixer interface
+seems to be inadequate.  I can post a patch that improves the mixer code
+slightly.  Other than that, I haven't changed anything.
 
-> OK LET ME MAKE A STATEMENT: I HATE HP-UX : been 5 weeks night and day trying to make that OS talk to me and make it do something useful  and all I ever seem to do is reinstall the system...ok enough said on that!
-> 
-umm we had in production some K4x0 (3 or 4) running hpux 10.20 without pb even with fc addon card on core io ;). (unfortunately I 
-don't have time to take the opportunity to test linux with this box ;( )
+Under high load, I tend to get panics when using the Harmony driver.
+I've no idea why this is, and I wish I could understand the low-level
+code a bit better.  This has nothing to do with my patches, though.
+(I.e. it crashes with them and it crashes without them.)
 
-> I can live in linux....been in there since 386 5.2 redhat....tried to make company I worked for go that way in 1985(Unix) ...but Bill got in the way...talent stealing shit he is. Ok enough politics.
-> 
-> here is my problem: I really have no idea what I'm supposed to download,make CD's and make my box work. hppa is supposed to be supported in 3.0 but I spend 3 days downloading all 7 CD's (ISO's) 3.0r2 and first load got kernel error...no detail..next email...
-> 
-Unfortunately the woody cd 3.0r2 was not well tested and there are many reports of install failure.
-So generally it is recommended to try the new sarge debian-install netinstall-cd available at:
-<http://cdimage.debian.org/pub/cdimage-testing/sarge_d-i/hppa/current/sarge-hppa-netinst.iso>
+http://lists.parisc-linux.org/pipermail/parisc-linux/2004-February/022432.html
+is probably more of an issue for lkml.  (There's a slight mistake in
+that patch - I forgot the closing */ on line 42.)
 
-or the previous netinstall cd:
-<http://www.pateam.org/cd-images/testing/>
+> In 2.6, ALSA harmony driver does NOT compile and that's disappointing.
 
-And the FAQ page: <http://www.parisc-linux.org/faq/index.html> explain in detail how to burn, check and boot your cd ;)
-(iirc there are also special recommandation for K model and ttyB0 aka pdc_console usage)
+I would love to try and help with the 2.6 drivers instead.
+Unfortunatlely, I can't get 2.6 to boot.  This is all that I see:
 
-> this is the site that does this...I need help, you guys need an idiots guide to what works on a k box ( LOL or any  box)....bad joke.....what version etc.....hell I took 2 hours tonight for I found a doc that said the PDC isn't in the file name anymore.
-> 
-> kernel crash is best I can do from memory: KERNEL FAULT: CODE26 .....stack something does not point to c30.....and then a kernel dump
-> sorry this isn't a bug report just a cry for help I'll do much better if I get a response
->
-umm iirc CODE26 is a data page fault (new kernels available on sarge and pateam iso are more recent so certainly fix the pb?)
+Command line for kernel: 'root=/dev/sda6 HOME=/ console=tty0 sti=1
+sti_font=VGA8x16 TERM=linux palo_kernel=2/vmlinux-2.6'
+Selected kernel: /vmlinux-2.6 from partition 2
+ELF32 executable
+Entry 001001c0 first 00100000 n 3
+Segment 0 load 00100000 size 2520296 mediaptr 0x1000
+Segment 1 load 00368000 size 565504 mediaptr 0x269000
+Segment 2 load 003f4000 size 581766 mediaptr 0x2f4000
+Branching to kernel entry point 0x001001c0.  If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org
 
-hth,
-	Joel
+I have another graphics card in this machine, so I'm wondering whether
+that has anything to do with this.  FWIW, it's a 715/100.  I'm using the
+prebuilt palinux-32-2.6.6-pa4_0-2_all.deb package from
+http://cvs.parisc-linux.org/download/linux-2.6/
 
+Thanks,
+-- 
+Stuart Brady
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
