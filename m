@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D112D483C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Dec 2002 11:18:08 -0700 (MST)
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E5D244829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Dec 2002 00:27:57 -0700 (MST)
+Date: Tue, 24 Dec 2002 08:27:49 +0100
+Message-ID: <3DED9A6600002FAC@ocpmta3.freegates.net>
+From: jsoe0708@tiscali.be
 Subject: Re: [parisc-linux] 2.4.20-paxx Config problem (follow-up)
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: jsoe0708@tiscali.be
+To: "Ryan Bradetich" <rbradetich@uswest.net>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3DED9BBD00002FDE@ocpmta7.freegates.net>
-References: <3DED9BBD00002FDE@ocpmta7.freegates.net>
-Content-Type: text/plain
-Date: 23 Dec 2002 11:18:02 -0700
-Message-Id: <1040667483.24209.57.camel@beavis>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,45 +21,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Joel,
+Hi Ryan,
+>
+>The PDC Console should work for this box as it is really a firmware
+>console.
 
-The PDC Console should work for this box as it is really a firmware
-console.  The firmware console talks to /dev/ttyB0 instead of
-/dev/ttyS0, so that might be your problem?  Also in recent kernels the
-major number of /dev/ttyB0 changed from 60 to 11 so make sure the 
-device file is correct.
+I though too but seems to cause a problem with pci-ide cdrom?
 
-Finally, out of curiosity, why are you trying to use the PDC console? 
-The B2k should have a 16550 port (off the suckyio chip???) that should
-work for you.
+>  The firmware console talks to /dev/ttyB0 instead of
+>/dev/ttyS0, so that might be your problem?  Also in recent kernels the
+>major number of /dev/ttyB0 changed from 60 to 11 so make sure the
+>device file is correct.
 
-Thanks, and hope this helps!
+IMHO it doesn't matter, as mentionned in previous mail, the system hang
+very earlier at 'Search devices ...' step and the cdrom green led stay co=
+ntiniously
+light. Even TOC (I try it to get a piminfo) doesn't work at this stage.
+Additionally, on a another b180 the problem doesn't occurs with the same
+kernel?
 
-- Ryan
+>
+>Finally, out of curiosity, why are you trying to use the PDC console?
+>The B2k should have a 16550 port (off the suckyio chip???) that should
+>work for you.
+>
+Yes usual serial console works fine for this model.
+In fact the first goal was not to test PDC console but it was to test the=
+
+basic config files suggested in arch/parisc/debian-configs (32 bits becau=
+se
+I test it in parallel on a 180).
+AFAIK it is the config used to build install CD and network boot lifimage=
+?
+So, in case of problem (test corrupting system, disk broken, ...) and for=
+
+the newbies, I would be sure that config is also relevant to (re-)build
+_quickly_ a system of this model.
+
+Thanks for your attention and advises (it will be usefull for futur test)=
+.
+
+Merry Christmas,
+    Joel
+
+PS: For 32 bit release UP release, I also find strange that DEBUG SPINLOC=
+K
+option was selected and selectable. I was also convinced that it had only=
+
+matter with SMP config?
 
 
-On Mon, 2002-12-23 at 09:34, jsoe0708@tiscali.be wrote:
-> Hi all,
-> 
-> The problem I met with arch/parisc/32 on my b2k is due to the CONFIG_SERIAL_NONSTANDARD
-> (or a subselect ??).
-> 
-> Is PDC_console does not work on this model or is there a border effect link
-> with this selection?
-> 
-> Can somebody help me to fix it?
-> 
-> Thanks,
->     Joel
-> 
-> 
-> ********************************************
-> Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation = 0 Euro http://adsl.tiscali.be
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
+********************************************
+Promo Tiscali ADSL: 35 Euros/mois, 1er mois et activation =3D 0 Euro http=
+://adsl.tiscali.be
