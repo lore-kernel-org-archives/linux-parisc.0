@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E43004838
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Jun 2002 00:34:35 -0600 (MDT)
-Message-ID: <3D16BD77.8090804@esiee.fr>
-Date: Mon, 24 Jun 2002 08:34:31 +0200
-From: Matthieu Delahaye <delahaym@esiee.fr>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 53B384843
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Jun 2002 00:45:05 -0600 (MDT)
+Received: from garibaldi.apptechsys.com (ats164.apptechsys.com [207.14.35.164])
+	by mail.apptechsys.com (Postfix) with ESMTP id 1E2327BC67
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Jun 2002 23:45:01 -0700 (PDT)
+Date: Sun, 23 Jun 2002 23:45:01 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3D16BD77.8090804@esiee.fr>
+Message-ID: <Pine.LNX.4.44.0206232342380.17764-100000@garibaldi.apptechsys.com>
 MIME-Version: 1.0
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: Patrick Caulfield <patrick@tykepenguin.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 0.9.3 Audio on C110
-References: <Pine.LNX.4.44.0206212123170.4556-100000@sal.ucc.ie>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Audio on J5k
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,48 +24,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-
-If nobody is already on it, I will plan to spend a lot of time on this 
-mixer after my graduation next week.
-If someone has feedback about strange behaviour like the one explained 
-above please do not hesitate to contact me.
-
-Regards,
-Matthieu
+Are there any plans to support the AD whatever that is in the J5k?  Is 
+there documentation available?
 
 
-M. Grabert wrote:
-
->Hi palinuxer,
->
->On Fri, 21 Jun 2002, Patrick Caulfield wrote:
->
->>The driver is called "harmony" - I have mine hard compiled into the kernel.
->>
->>patrick
->>
->
->This reminds me of something I wanted to ask for a long time:
->
->It seems that the harmony mixer is not perfectly supported;
->Volume doesn't work, and there are just two things I can change,
->IGain and OGain (latter effects the Output volume).
->There is not even a way to change the balance etc.
->Moreover most applications expect at least "volume" to be working,
->so this is kind of annoying. Despite this it's working flawlessly!
->
->So to the question: is there any work planned in improving harmony
->support (in the near future) ? E.g. an enhanced mixer support and
->support for recording?
->
->greetings max
->
->
->
->_______________________________________________
->parisc-linux mailing list
->parisc-linux@lists.parisc-linux.org
->http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
->
+-- 
+A day without sunshine is like a day without orange juice.
