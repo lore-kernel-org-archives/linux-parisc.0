@@ -1,27 +1,18 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA04655
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 03:11:08 -0600
-Date: Thu, 2 Sep 1999 11:12:58 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux-cvs] grundler
-Message-ID: <19990902111258.J629@suse.de>
-References: <199909012302.RAA04026@puffin.external.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA05673
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 06:14:50 -0600
+Received: from klingon (ppro.corpconnect.com.au [203.34.58.17])
+	by picard.corpconnect.com.au (8.8.7/8.8.7) with SMTP id WAA22905
+	for <parisc-linux@thepuffingroup.com>; Thu, 2 Sep 1999 22:16:37 +1000
+Message-Id: <3.0.32.19990902221638.009d1de0@pop01.ny.us.ibm.net>
+Date: Thu, 02 Sep 1999 22:16:39 +1000
+To: parisc-linux@thepuffingroup.com
+From: Richard Muratti <rmurat@ibm.net>
+Subject: Re: [parisc-linux] HP3000 928LX Support?
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199909012302.RAA04026@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Wed, Sep 01, 1999 at 05:02:23PM -0600
+Content-Type: text/plain; charset="us-ascii"
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Modified Files:
-> 	pci.c 
+Thanks for the info guys.
 
-- removed support for more than one bus
-
-we don't want that, do we ?
-
-- don't see anything else
-
-
-That's it for today, I promise.
-
-	Philipp Rumpf
+Rick
