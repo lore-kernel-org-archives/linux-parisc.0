@@ -1,21 +1,23 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89F704854
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 14 Jan 2004 17:18:30 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1AgvDR-0007dF-HN
-	for parisc-linux@parisc-linux.org; Thu, 15 Jan 2004 00:18:29 +0000
-Date: Thu, 15 Jan 2004 00:18:29 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20040115001829.GF9525@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Cc: 
-Subject: [parisc-linux] init and exit text problem
+Return-Path: <aftli@optonline.net>
+Received: from mta15.srv.hcvlny.cv.net (mta15.srv.hcvlny.cv.net
+	[167.206.5.109])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3E936484B
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu, 15 Jan 2004 19:34:24 -0700 (MST)
+Received: from localhost.localdomain
+	(ool-18baeb61.dyn.optonline.net [24.186.235.97]) by
+	mta15.srv.hcvlny.cv.net
+	(iPlanet Messaging Server 5.2 HotFix 1.16 (built May 14 2003))
+	with SMTP id <0HRK007C39TBFK@mta15.srv.hcvlny.cv.net> for
+	parisc-linux@lists.parisc-linux.org;
+	Thu, 15 Jan 2004 21:34:23 -0500 (EST)
+Date: Thu, 15 Jan 2004 21:34:23 -0500
+From: Brett Gmoser <aftli@optonline.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-id: <20040115213423.565692ec.aftli@optonline.net>
+MIME-version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Raw I/O Problems with inb()
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,14 +27,50 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hello everybody.
 
-Our vmlinux.lds.S doesn't discard init and exit text segments.  Anyone
-want to look into fixing this?
+I apologize if this is off topic, but I have seen relevant information posted to this list.  And believe me, I have searched everywhere else for a solution to this problem.
+
+To give some short background information, I am programming the Linux client for a project that basically counts a users keystrokes, and sends the amount to a server which displays the count for all the world to see.  Teams and individuals compete from around the world, and we are approaching 5000 members.
+
+At any rate, the application is written in C/C++.  I am using iopl() for permissions management, and inb() for reading raw data directly from the PS/2 keyboard to test if a key has been pressed.  All of this works great, and the program is complete, except for one problem.
+
+It seems that on Athlon XP systems using PS/2 mice, inb(0x64) always says there is data waiting from the keyboard, when it is in fact mouse data.  I assume that different architecture on AMD systems is the cause of the problem, but is there a solution?  There must be.  Here is a snipped of the code I am using currently.  I apologize for the sloppiness of it - it's been modified about 30 times with 30 different solutions to the problem, all of which did not seem to fix it.  Commented out are solutions that I have tried and have not worked.
+
+#define KEYBOARD_PORT 0x60
+#define KEYBOARD_STATUS_PORT 0x64
+
+bool keycounter::count(/*wplog* l*/) { // some very simple code to see if a key is being pressed or not.
+  const unsigned char kbd_read_mask = 0x01;
+  unsigned char status = inb_p(KEYBOARD_STATUS_PORT);
+  /* unsigned char status = inb(KEYBOARD_STATUS_PORT);
+
+  /* mouse data? */
+//  if (status == 20 && ((status & kbd_read_mask) != 0x01) || (status & 0x21)) { fflush(0); return false; }
+//  if(status & kbd_read_mask & 0x20) { fflush(0); return false; }
+//  if(!(status & kbd_read_mask & 0x01)) { fflush(0); return false; }
+//  if(!((inb(0x379) & 0x20) == 0x20)) { fflush(0); return false; }
+
+  if(status!=20) { fflush(0); return false; }
+  unsigned char c = inb(KEYBOARD_PORT);
+  if(status==20 && c < TABLE_SIZE) {
+    if(c==lastc) {
+      fflush(0);
+      return false;
+    }
+    lastc=c;
+    fflush(0);
+    return true;
+  }
+  else {   // key has been lifted
+    lastc=0;
+    fflush(0);
+    return false;
+  }
+}
+
+Thanks in advance for any insight you all may be able to give me!
 
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Brett Gmoser
+aftli@optonline.net
