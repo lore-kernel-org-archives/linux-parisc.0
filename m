@@ -1,19 +1,18 @@
-Return-Path: <lamont@mmjgroup.com>
-Received: from mmjgroup.com (mmjgroup.com [192.34.35.33])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B254648BE
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E45CE48BE
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 16 Dec 2003 18:16:47 -0700 (MST)
-Date: Tue, 16 Dec 2003 18:16:43 -0700
-From: LaMont Jones <lamont@debian.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+	Tue, 16 Dec 2003 18:46:34 -0700 (MST)
+Message-Id: <200312170146.hBH1kXO5012084@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Question about cache flushing and fork
-Message-ID: <20031217011643.GH25535@mmjgroup.com>
-References: <1071621405.2080.160.camel@mulgrave>
-	<200312170057.hBH0vG4I002151@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200312170057.hBH0vG4I002151@hiauly1.hia.nrc.ca>
-Cc: James Bottomley <James.Bottomley@steeleye.com>, randolph@tausq.org,
+To: lamont@debian.org (LaMont Jones)
+Date: Tue, 16 Dec 2003 20:46:32 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20031217011643.GH25535@mmjgroup.com> from "LaMont Jones" at Dec
+	16, 2003 06:16:43 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: James.Bottomley@steeleye.com, randolph@tausq.org,
 	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -24,31 +23,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Dec 16, 2003 at 07:57:16PM -0500, John David Anglin wrote:
-> > If we think the cache line is *smaller* than it actually is, all this
-> > does is issue more flushes than necessary to the cache lines, I don't
-> > understand how it results in an observable failure.
-> In the particular case at hand, I noticed that calls to nested functions
-> were broken on hppa64-hpux11.11.  Nested calls in GCC are done with a stack
-> trampoline.  The 64-bit trampoline was in fact 72 bytes long.  GCC
-> was using a line length of 32.  Because the trampoline has 16 byte alignment,
-> it was possible to hit an alignment situation were the stack code didn't
-> get flushed.
+> OK.  Note also that the sp is supposed to always be 64-byte aligned...
 
-OK.  Note also that the sp is supposed to always be 64-byte aligned...
+That's not correct for 64 bits.  See page 15 of the "64-Bit Runtime
+Architecture for PA-RISIC 2.0, Version 3.3".  The alignment specified
+is 16 bytes.  This is also the case for the HP compilers that I have.
+Thus, you can't assume that a stack frame starts at the beginning of
+a cacheline in the 64-bit runtime.
 
-> After I made the GCC change, I noticed the trampoline-1.c test failed
-> on a C200 but not on the A500 that I did the original fix on.  It appears
-> the C200 has line length of 32 bytes.  As the C200 contains a PA 2.0
-> processor, the above comment would appear incorrect.  Probably, trying
-> to run a kernel built with CONFIG_PA20 defined on a C200 would fail
-> because the line length specified above is *larger* than the actual
-> line length.
+Regarding the frame marker, there is a discrepancy between the size
+of the frame marker mentioned in this document and that which HP
+compilers generate (16 versus 48 bytes).
 
-I expect you are correct here - again, no hard knowledge of that processor
-on my part.
-
-Assuming a 32-byte cache line on a 64-byte-cache-line machine should not
-cause any issues (other than performance issues, that is..)
-
-lamont
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
