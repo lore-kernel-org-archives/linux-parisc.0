@@ -1,254 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 683B04A18
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 31 Jan 2001 09:37:24 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA10233
-	for <parisc-linux@puffin.external.hp.com>; Wed, 31 Jan 2001 09:33:16 -0700
-Received: from localhost (ingram@localhost)
-	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id KAA28660
-	for <parisc-linux@thepuffingroup.com>; Wed, 31 Jan 2001 10:37:14 -0600
-Date: Wed, 31 Jan 2001 10:37:14 -0600 (CST)
-From: Greg Ingram <ingram@symsys.com>
-To: parisc-linux@thepuffingroup.com
-In-Reply-To: <3A7329D6.22387.109A119@localhost>
-Message-ID: <Pine.LNX.4.21.0101311009300.28557-100000@maestro.symsys.com>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D13074A18
+	for <parisc-linux@parisc-linux.org>; Wed, 31 Jan 2001 10:10:58 -0700 (MST)
+Received: from esiee.fr (mail.esiee.fr [147.215.1.3])
+	by mail.esiee.fr (Postfix) with ESMTP id 33D89D15E9
+	for <parisc-linux@parisc-linux.org>; Wed, 31 Jan 2001 18:10:49 +0100 (CET)
+Date: Wed, 31 Jan 2001 18:10:48 +0000
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] 2.4.1 Bits Won't Drive C100
+From: The Puffin at ESIEE <puffin@esiee.fr>
+To: parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <20010131171049.33D89D15E9@mail.esiee.fr>
+Subject: [parisc-linux] Linux Expo Paris - Day 1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Howdy,
-
-Just tried the lastest 2.4.1 bits from CVS and it barfs on my C100.  
-Output follows.
-
-- Greg
-
-
-HARD Booted.
-palo ipl root@ingram Mon Jan 15 12:24:52 CST 2001
-0/vmlinux 1973442 bytes @ 0x6800
-0/palo-cmdline 'vmlinux HOME=/ TERM=linux root=/dev/sda3 rw'
-Kernel: partition 0 file vmlinux
-ELF32 executable
-
-Entry 00100120 first 00100000 n 5
-Segment 0 load 00100000 size 1306612 mediaptr 0x1000
-Segment 1 load 00240000 size 170792 mediaptr 0x140000
-Segment 2 load 0026c000 size 108036 mediaptr 0x16a000
-Segment 3 load 00288000 size 8192 mediaptr 0x185000
-Segment 4 load 002b16a8 size 528 mediaptr 0x1876a8
-branching to kernel entry point 0x00100120
-Set default PSW W bit to 0
-PDC Console Initialized
-The 32-bit Kernel has started...
-FP[0] enabled: Rev 1 Model 11
-Free memory starts at: 0xc02b2000
-start_parisc(0x504d70,0x504d70,0x0,0x0)
-PALO command line: 'HOME=/ TERM=linux root=/dev/sda3 rw'
-PALO initrd 0-0
-model   00005920 00000481 00000000 00000002 782482ee 100000f0 00000004 0000008a 0000008a
-vers    0000000d
-cpuid   0000016d
-CPUID   vers 11 rev 13
-model   9000/777/C100
-led_init: chassis info: model=2 (LED), lcd_width=0, cmd_delay=40, ret0=8, ret1=8
-LED display at f0190001 registered
-Searching for devices in PDC firmware... processor hpa 0xfffa0000
-a newer box...
-Found devices:
-1. Coral SGC Graphics (10) at 0xf6000000, versions 0x4, 0x0, 0x77, 0x0, 0x0
-2. SkyHawk 100/120 FW-SCSI (4) at 0xf5f8c000, versions 0x1f, 0x0, 0x89, 0x0, 0x80
-3. U2-IOA BC GSC+ Port (7) at 0xf5fbf000, versions 0x501, 0x1, 0xc, 0x0, 0x0,  additional addresses: 0xf5f80000 
-4. Raven T' Core BA (11) at 0xffd00000, versions 0x32, 0x0, 0x81, 0x0, 0x0,  additional addresses: 0xffd0c000 0xffc00000 
-5. Raven T' Lasi Core RS-232 (10) at 0xffd05000, versions 0x32, 0x0, 0x8c, 0x0, 0x0
-6. Raven T' Core SCSI (10) at 0xffd06000, versions 0x32, 0x0, 0x82, 0x0, 0x0
-7. Raven T' Core LAN (802.3) (10) at 0xffd07000, versions 0x32, 0x0, 0x8a, 0x0, 0x0
-8. Raven T' Core Centronics (10) at 0xffd02000, versions 0x32, 0x0, 0x74, 0x0, 0x0,  additional addresses: 0xffd01000 0xffd03000 
-9. Raven T' Core PC Floppy (10) at 0xffd0a000, versions 0x32, 0x0, 0x83, 0x0, 0x0
-10. Raven T' Audio (10) at 0xffd04000, versions 0x32, 0x0, 0x7b, 0x0, 0x0
-11. Raven T' Core PC Keyboard (10) at 0xffd08000, versions 0x32, 0x0, 0x84, 0x0, 0x0
-12. Raven T' Core PC Keyboard (10) at 0xffd08100, versions 0x32, 0x0, 0x84, 0x0, 0x0
-13. Raven T' Wax BA (11) at 0xffe00000, versions 0x1e, 0x0, 0x8e, 0x0, 0x0,  additional addresses: 0xffe03000 0xffe06000 
-14. Raven T' Wax EISA BA (11) at 0xfc000000, versions 0x1e, 0x0, 0x90, 0x0, 0x0,  additional addresses: 0xffc88400 0xf4000000 
-15. Raven T' Wax RS-232 (10) at 0xffe02000, versions 0x1e, 0x0, 0x8c, 0x0, 0x80
-16. Raven T' Wax HIL (10) at 0xffe01000, versions 0x1e, 0x0, 0x73, 0x0, 0x0
-That's a total of 16 devices.
-No CPUs reported by firmware - probing...
-Found CPU at fffa0000
-CPU(s): 1 x PA7200 (PCX-T') at 100.000000 MHz
-Linux version 2.4.1 (root@ingram) (gcc version 2.96 20000925 (experimental)) #8 Tue Jan 30 16:18:05 CST 2001
-free_bootmem(0x2b3000, 0x7d4d000)
-initrd: 00000000-00000000
-pagetable_init
-On node 0 totalpages: 32768
-zone(0): 16384 pages.
-zone(1): 16384 pages.
-zone(2): 0 pages.
-Kernel command line: HOME=/ TERM=linux root=/dev/sda3 rw
-Calibrating delay loop... 99.73 BogoMIPS
-Memory: 125992k available
-Dentry-cache hash table entries: 16384 (order: 5, 131072 bytes)
-Buffer-cache hash table entries: 8192 (order: 3, 32768 bytes)
-Page-cache hash table entries: 32768 (order: 5, 131072 bytes)
-Inode-cache hash table entries: 8192 (order: 4, 65536 bytes)
-POSIX conformance testing by UNIFIX
-Lasi version 9 at 0x00000000 found.
-busdevice_alloc_irq(0xc028c80c): No known LASI/ASP/WAX owns device at 0xffd02000 !
-IRQ not found for parallel device at 0xffd02000
-Warning : device (10, 0x32, 0x0, 0x74, 0x0) NOT claimed by parallel device HP 7xx - Series
-busdevice_alloc_irq(0xc028c7d4): No known LASI/ASP/WAX owns device at 0xffd07000 !
-lan.c: IRQ not found for i82596 at 0x00000000
-Warning : device (10, 0x32, 0x0, 0x8a, 0x0) NOT claimed by Lasi i82596 LAN 712, 715 or similiar
-Initializing Lasi PS/2-keyboard port at 0xffd08000...
-busdevice_alloc_irq(0xc028c8b4): No known LASI/ASP/WAX owns device at 0xffd08000 !
-Warning : device (10, 0x32, 0x0, 0x84, 0x0) NOT claimed by Lasi psaux generic
-Support for Lasi PS/2-psaux not yet available !
-superio: Probe
-Could not find Superio IDE !
-Could not find Superio USB!
-Bah!
-Linux NET4.0 for Linux 2.4
-Based upon Swansea University Computer Society NET3.039
-Starting kswapd v1.8
-lp: driver loaded but no devices found
-block: queued sectors max/low 83648kB/27882kB, 256 slots per queue
-RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
-Serial driver version 5.02 (2000-08-09) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
-Generic RTC Driver v1.02 05/27/1999 Sam Creasey (sammy@oh.verio.com)
-busdevice_alloc_irq(0xc028c80c): No known LASI/ASP/WAX owns device at 0xffd02000 !
-IRQ not found for parallel device at 0xffd02000
-Warning : device (10, 0x32, 0x0, 0x74, 0x0) NOT claimed by parallel device HP 7xx - Series
-SCSI subsystem driver Revision: 1.00
-zalon_scsi_callback: Zalon vers field is 0x1, IRQ 34
-ncr53c8xx: 53c720 detected
-
-Dumping Stack from c7f9c000 to c7f9cd80:
-c000 00000000 00000040 00000000 00000000 c0255360 00000001 00000000 ffffffff
-c020 00000000 00000000 00000000 00000000 00000000 00000000 ffffffff c0255224
-c040 c0255224 00000039 c7f90000 c0288000 c025a60c 00000000 00000000 00000000
-c060 00000000 00000000 00000000 00000001 00000000 00000000 00000000 00000000
-c080 00000000 c0288000 c0288000 c7f7c000 00000000 00000000 c7f7c098 c0288098
-c0a0 00000000 c02a17fc 00000000 c7f9c0ac c7f9c0ac c7f9c908 00000000 00000000
-c0c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c0e0 c7f9c000 c0116d98 00000000 0000001c 00000000 00000000 00000028 00000000
-c100 00000044 00000000 00000000 00000000 00000000 00000000 00000000 80000000
-c120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c1a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c1c0 00000000 fffffeff 00000000 ffffffff 00000000 c0255f4c ffffffff ffffffff
-c1e0 ffffffff ffffffff ffffffff ffffffff 00800000 05000000 00000000 ffffffff
-c200 ffffffff ffffffff 00000800 00000800 00000400 00000400 ffffffff ffffffff
-c220 ffffffff ffffffff ffffffff ffffffff 00007377 61707065 72000000 00000000
-c240 00000000 00000000 00000000 00000000 00000000 00000000 00008000 21998304
-c260 00000000 c013e6ec 00010000 c7ffeba0 c020cf0c c021d010 000000f0 00504d70
-c280 00000000 c011517c c02a0800 00008000 21998304 c02a0800 00000000 0004000a
-c2a0 0000003c 0000003e c0255000 00000001 c028fb87 00000004 c028fb63 00000000
-c2c0 c010028c 0000003e 00000000 00000024 0000000b c0255394 c0255000 f00000ac
-c2e0 f00000a4 000000ff ffd05800 ffd05800 ffd05800 00000060 ffffffff ffd05800
-c300 0028f540 c0240000 00000000 00000000 c02888c0 00000000 000b0800 00000000
-c320 0000001f 00000000 0000001f 00000000 0000001f 00000000 00000000 00000000
-c340 00000000 00000000 00000000 00000000 00000000 00000000 00000010 00000020
-c360 7f7fffff ffffffff 43ebebeb e0000000 00000000 00000000 45e69c6a 25b7ea20
-c380 41800000 00000000 00000010 00000010 00000000 00000000 00000040 00000080
-c3a0 00000100 00000200 00000400 00000800 7fffffff 7fffffff 41000000 00000000
-c3c0 7fffffff 7fffffff 40800000 00000000 41000000 00000000 40300000 00000000
-c3e0 40200000 00000000 40200000 00000000 41800000 7fffffff 40000000 00000000
-c400 40000000 00000000 40800000 00000000 41000000 00000000 00000000 00000000
-c420 c7f9c800 c0105cf4 00000000 00000000 00000000 00000000 00000000 00000000
-c440 c0115168 c011516c 40800000 00000000 0025b000 00000000 c025a040 c025a064
-c460 00000000 c025a204 00000000 00000000 00000000 c7f9c470 00000000 00000000
-c480 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-c4a0 cf7928b3 9ef25167 3de4a2cf 7bbff0cc f70954ca ee12a995 dc25532b b84aa657
-c4c0 70954caf e15c2c0c c2b85819 8570b033 0ae16067 15b4759c 2b1e5e6a 564a0986
-c4e0 ace2a65e 59c54cbd b3fc2c28 c0105c48 cf8605f0 9f0c0be1 3e1817c3 7c469ad4
-c500 c0288000 00000000 c0288640 c7dc07d7 8fb80faf 1f701f5f 3e968bec 7d5ba28a
-c520 fac1f046 f583e08d eb07c11b c01002a0 ac1f046f 583e08df b00aa4ec 601549d9
-c540 c05c26e0 80b84dc1 01709b83 02978254 c7f9c000 c025a60c c0288000 00000000
-c560 c0288640 aea9ca4e 5d53949d bad19c68 75a338d1 eb30c4f0 d66189e1 acc313c3
-c580 59862787 b37afa5c 66f5f4b9 cd9d5c20 9b3ab841 36757083 6c9c5454 d94e1dfa
-c5a0 b29c3bf5 653877eb ca065a84 c026d0a4 28196a13 50446174 a0fe77ba 41fcef75
-c5c0 00000000 c025e000 0e4b1bb0 1ce08232 00000060 00000001 00000001 c0234850
-c5e0 99146cbb 3228d977 642707bc c026cfd0 90717455 20e2e8ab 41b36404 83107d5a
-c600 c02865f0 c02865e4 f00010f4 00000000 00000060 c7f95820 c025817c c022c020
-c620 0004000a 000000f0 c02a1000 c027c6e8 c0240000 c02a0800 c0286604 c02865d8
-c640 c02a0800 c022b800 c029f40c c02a0800 c0240000 c02a0800 c022b800 c01a3f3c
-c660 00000000 c026d870 0004000a c01a4f30 c02a1000 c02a4000 c0240000 c02a0800
-c680 c0286604 c02865e4 c02a0800 c0286604 c02865e0 c0228a34 c022c048 c0228e44
-c6a0 00000000 00000000 c02a4000 c0155b84 c02a0800 00010800 000000f0 c02a1000
-c6c0 c02a4000 c0240000 c02a0800 c0286604 c02659f8 c02a0800 c0286604 c02656cc
-c6e0 c028fb66 00000024 c028fb8b c012f8e0 0000003c 00000028 0000000b c0255394
-c700 c026d870 0004000a 000000f0 c0264800 00000000 c0264854 00000001 c0264860
-c720 00000000 ffd05800 0028f540 c01a47b4 00000000 00000000 c7f9c900 00000000
-c740 00000000 c026d870 0004000a 000000f0 00000000 c0264800 c02656cc 00000000
-c760 c0286604 c0264800 00000000 c01c0a48 00000000 00000000 00000000 00000000
-c780 c02a4000 c02659f8 c0264800 c0286604 c0265740 00000000 c0256534 0000000a
-c7a0 00000000 00000000 c02561ac c01ac1d4 c0256244 00000010 00000000 00000000
-c7c0 00000040 00000080 00000100 00000200 00000400 00000800 7fffffff 7fffffff
-c7e0 41000000 00000000 7fffffff c0109d90 40800000 00000000 41000000 00000000
-c800 40300000 00000000 fffa0000 00000002 00000022 00000000 c028c000 00000002
-c820 c02657d0 c028c6bc 40000000 c012f9b0 40800000 00000000 41000000 00000000
-c840 00000000 00000001 0000004d 00000000 0000001f 00000022 00000001 c02317ac
-c860 c0264800 c0264800 c0264800 c027a12c 00000001 00000010 00000000 00000000
-c880 00000001 f5f8c034 00000000 00000000 00000000 f5f8c800 00000000 f5f8c800
-c8a0 00000022 00000000 00000000 5a000000 c0231b00 04080400 07200002 00000000
-c8c0 ff000000 00000000 c028c000 c028c6bc 00000040 00000001 c0265744 7fffffff
-c8e0 40000000 00000000 40000000 c011517c 40800000 00000000 41000000 00000000
-c900 00000000 0004000a 0000003c 0000003e c0283bd4 c7f9c8ac c0231b00 c0233158
-c920 c028fb63 00000034 c028fb98 c01c12f0 0000003c 00000035 0000000b c0255394
-c940 c026d870 0004000a 000000f0 00000000 00000000 00000022 c02659f8 c02658e4
-c960 f5f8c800 c026d870 0004000a 000000f0 00000000 00000000 00000022 c02659f8
-c980 c02658e4 f5f8c800 0000001f 00000000 0000001f 00000000 c0233175 00000000
-c9a0 00000000 00000000 00000000 c027bb14 00000000 00000000 00000000 00000000
-c9c0 00000000 c7f95920 c7f9c888 c7f95998 f5f8c800 00000000 00000022 c7f9c888
-c9e0 c02658e4 f5f8c800 c028fb81 0000003e 0000003c 0000001e 0000000b c0255394
-ca00 c0255000 f00000ac f00000a4 000000ff ffd05800 ffd05800 ffd05800 00000060
-ca20 ffffffff ffd05800 0028f540 c01add00 00000000 00000000 c7f9cc00 00000000
-ca40 00000cc0 00000000 0000000b c7f8c000 0000001f 00000000 0000001f 00000000
-ca60 00000000 00000000 00000000 c01ad468 00000000 00000000 00000000 00000000
-ca80 00000001 c0232150 00000cc0 c7f8c000 43ebebeb e0000000 00000000 00000000
-caa0 45e69c6a 25b7ea20 41800000 c01ad22c 00000010 00000010 00000000 00000000
-cac0 00000001 c0231974 000000bc 00000000 00000008 c7f8c094 00002000 00000009
-cae0 41000000 00000000 7fffffff c01ad22c 40800000 00000000 41000000 00000000
-cb00 00000009 00000000 40200000 00000000 40200000 00000000 41800000 7fffffff
-cb20 40000000 00000000 40000000 c01ad85c 40800000 00000000 41000000 00000000
-cb40 0004010a c02a1000 c01ad85c c7f8c100 c7f8c000 c0265800 c0231800 c0232150
-cb60 00000000 00000000 0004000a c026d870 00000000 0000004d 00000001 00000000
-cb80 f00010f4 f00000ac f00000a4 00000000 c7f8c110 00000010 c01ad820 c7f8c100
-cba0 c7f9cac8 00002000 00000000 c0240000 c7f8c100 00000000 c7f9cd80 c01ad22c
-cbc0 000b0800 00000000 0000001f 00000000 0000001f 00000000 0000001f 00000000
-cbe0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cc00 00000010 00000020 7f7fffff ffffffff 43ebebeb e0000000 00000000 00000000
-cc20 45e69c6a 25b7ea20 41800000 00000000 00000010 00000010 00000000 00000000
-cc40 00000040 00000080 00000100 00000200 00000400 00000800 7fffffff 7fffffff
-cc60 41000000 00000000 7fffffff 7fffffff 40800000 00000000 41000000 00000000
-cc80 40300000 00000000 40200000 00000000 40200000 00000000 41800000 7fffffff
-cca0 40000000 00000000 40000000 00000000 40800000 00000000 41000000 00000000
-ccc0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-cce0 00000000 00000000 c01ad874 c01ad878 dda98595 bb530b2b 76a61657 ed3a99fc
-cd00 00000000 00000020 c02420ec c7f9c900 0000001e 0e681096 00000000 00000004
-cd20 c02a1000 c02a17a0 c02a1760 c0117b48 a7269297 4e4d252f 9cecff0c 39d9fe19
-cd40 0000000e c0293f80 00000001 c02420ec 3fe13c97 7fb4cc7c ff1f2daa fe3e5b55
-cd60 fc7cb6ab f8f96d57 f1f2daaf c0106704 c7cb6abf 8f96d57f 1f2daaff 3e2de0ac
-
-Data access rights fault in kernel: Code=26 regs=c7f9cb40 (Addr=00000004)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000100001010
-r0-3     00000000 c02a1000 c01ad85c c7f8c100
-r4-7     c7f8c000 c0265800 c0231800 c0232150
-r8-11    00000000 00000000 0004000a c026d870
-r12-15   00000000 0000004d 00000001 00000000
-r16-19   f00010f4 f00000ac f00000a4 00000000
-r20-23   c7f8c110 00000010 c01ad820 c7f8c100
-r24-27   c7f9cac8 00002000 00000000 c0240000
-r28-31   c7f8c100 00000000 c7f9cd80 c01ad22c
-sr0-3    00000000 00000000 00000000 00000000
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: c01ad874 c01ad878
- IIR: 0e681096    ISR: 00000000  IOR: 00000004
-ORIG_R28: 00000020
+                                                                      
+Hi guys!!                                                             
+                                                                      
+Some news from Linux Expo here in Paris:                              
+                                                                      
+The B132 and A500 ran all day long with no major trouble except for   
+what seemed to  be memory problems on the A500.                       
+                                                                      
+Loads of people over here. The show turned out to be rather commercial
+though w/ today's high advertising for Linux. We have some interesting
+contacts for bug reporting with Dassault Aviation and Meteo France    
+(the main meteorology agency in France).                              
+                                                                      
+That's all for day 1. Bye.                                            
+                                                                      
+ESIEE Team.                                                           
