@@ -1,38 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA01536
-	for <parisc-linux@puffin.external.hp.com>; Wed, 14 Jun 2000 18:45:55 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 15 Jun 2000 00:46:44 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA13506;
-	Thu, 15 Jun 2000 10:46:29 +1000
-Date: Thu, 15 Jun 2000 10:46:29 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: "D'Angelo, James" <James.D'Angelo@icn.siemens.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Linux make dep scsi error
-In-Reply-To: <2FF13E24F61AD41193130008C791A76031F0FA@boca215a.boca.ssc.siemens.com>
-Message-ID: <Pine.LNX.4.21.0006151039270.11751-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA11056
+	for <parisc-linux@puffin.external.hp.com>; Thu, 15 Jun 2000 17:44:30 -0600
+Received: from boca210a.boca.ssc.siemens.com (boca210a.boca.ssc.siemens.com [135.1.69.210])
+	by brmx1.fl.icn.siemens.com (8.9.3/8.9.3) with ESMTP id TAA29382
+	for <parisc-linux@thepuffingroup.com>; Thu, 15 Jun 2000 19:44:56 -0400 (EDT)
+Message-ID: <2FF13E24F61AD41193130008C791A76031F104@boca215a.boca.ssc.siemens.com>
+From: "D'Angelo, James" <James.D'Angelo@icn.siemens.com>
+To: parisc-linux@thepuffingroup.com
+Date: Thu, 15 Jun 2000 19:42:06 -0400
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Booting vmlinux.
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 14 Jun 2000, D'Angelo, James wrote:
+I've successfully done "make palo" and have followed the directions.  From a
+712/80, I am doing a boot lan from the PDC.  My TFTP seems configured fine,
+but the only thing I see in my syslog is:
 
-> I've been fairly successful with building the compile environment, except
-> for this error message I seem not to be able to get past.  Any ideas?
->[snip]
-> 	drivers/scsi/scsi.a: could not read symbols: Malformed archive
+Jun 15 19:28:49 boca08 bootpd[2595]: bootsize=2288612  hp->bootsize=2288612
+Jun 15 19:29:15 boca08 tftpd[3765]: Transfer timed out
 
-I'm a bit confused by your subject line.  "make dep" shouldn't be doing
-any linking!  Assuming the subject is wrong...
+The 712/PDC just says: Selecting a system to boot.
 
-What does "ls -l drivers/scsi/scsi.a" tell you?  Is it a zero length file
-by any chance?  "hppa1.1-linux-objdump --headers drivers/scsi/scsi.a"
-might show something useful too.
 
-Also, try a "make distclean", then re-make if you haven't already tried
-this.
+Any ideas?
 
--- 
-Linuxcare.  Support for the Revolution.
+Jay D'Angelo
+jdangelo@techie.com <mailto:jdangelo@techie.com> 
