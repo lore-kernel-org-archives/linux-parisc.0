@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from primare.xs4all.nl (primare.xs4all.nl [213.84.188.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4D0C3482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  2 Feb 2002 07:18:27 -0700 (MST)
-Received: (from djmuggs@localhost)
-	by primare.xs4all.nl (8.11.6/8.11.1) id g12EIV826400
-	for parisc-linux@lists.parisc-linux.org; Sat, 2 Feb 2002 15:18:31 +0100 (CET)
-	(envelope-from djmuggs)
-Date: Sat, 2 Feb 2002 15:18:31 +0100
-From: DJ Tha Muggs <djmuggs@primare.xs4all.nl>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020202151831.B26371@primare.xs4all.nl>
+Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 252EA482F
+	for <parisc-linux@parisc-linux.org>; Sat,  2 Feb 2002 07:19:05 -0700 (MST)
+Date: Sat, 2 Feb 2002 14:07:41 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Proposed change to arch/parisc/Makefile and generation of offset.h
+Message-ID: <20020202140740.GD2884@sleepie.demon.co.uk>
+References: <20020202063408.GA604@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] CD-Rom installation troubles 785/C3000
+In-Reply-To: <20020202063408.GA604@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +23,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Fri, Feb 01, 2002 at 10:34:08PM -0800, Randolph Chung wrote:
+> I'd like to check this change in to change how we clean up and
+> regenerate include/asm-parisc/offset.h. This will let us ship a working
+> offset.h in our kernel-headers package to be used by glibc builds, and
+> will also allow things like gdb to build.
+> 
+> (basically, the problem right now is that offset.h is removed after a
+> 'make clean')
+> 
+> With this change, 'make dep' will regenerate the offset.h and allow the
+> kernel dependency mechanism to kick in. 'make mrproper' will remove the
+> offset.h file, but 'make clean' will not.
+> 
+> comments?
 
-I just started installing parisc-linux for the first time on my C3000.
-I Hooked up an SE SCSI CD-Rom to the narrow connector on the back.
+Sounds like a reasonable compromise to me.  Only snag is that if you
+build a 32 bit kernel, make clean, change config for a 64 bit kernel,
+then make again, you will build a 64 bit kernel with the wrong offset.h.
 
-The systems sees the CD-Rom and also is booting fine from this CD-Rom.
-After partitioning the Harddisk and mounting it, it is ready to install the kernel.
-When i do this it asks me for the installation medium, this is my CD-Rom where i booted it from, but it is not able to find it.
+Would be nice if 'make' could verify that the offset.h ifile was correct,
+without changing it (and so triggering dependencies).  If it could do
+that, it could regenerate it only if it was wrong.
 
-I went into the shell mode and did a DMESG, but i was not able to find my SCSI cd-rom in there :(
-
-Can anyone tell what goes wrong and tell me how to fix this?
-
-Regards,
-
-Cristian van Ee.
+Richard
