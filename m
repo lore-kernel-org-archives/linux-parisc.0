@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0C924482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Feb 2002 04:14:08 -0700 (MST)
-Date: Fri, 8 Feb 2002 12:14:05 +0100
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49FB2482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Feb 2002 10:17:59 -0700 (MST)
+Received: from mailhub.rose.hp.com (mailhub.rose.hp.com [15.96.64.24])
+	by atlrel7.hp.com (Postfix) with ESMTP id 8952780514D
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Feb 2002 12:17:57 -0500 (EST)
+Message-Id: <200202081715.g18HFqq03560@ros-saab.rose.hp.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Paul Telford <paul_telford@hp.com>
 To: Grant Grundler <grundler@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] apache weirdness
+Date: Fri, 8 Feb 2002 09:15:52 -0800
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] serial baud_base, high baud rates and divisors
-Message-ID: <20020208121405.C5128@electra.intern.planb.de>
-References: <20020207130852.C3306@electra.intern.planb.de> <20020207163107.5E08A482A@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <20020207163107.5E08A482A@dsl2.external.hp.com>
-From: Enrik Berkhan <Enrik.Berkhan@planb.de>
+References: <200202071910.g17JAxv11007@ros-saab.rose.hp.com> <20020208074213.7F177482A@dsl2.external.hp.com>
+In-Reply-To: <20020208074213.7F177482A@dsl2.external.hp.com>
+MIME-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,46 +27,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Feb 07, 2002 at 09:31:07AM -0700, Grant Grundler wrote:
-> > - get/set_serial_info have to be enhanced for memory mapped ports
-> > - setserial should be enhanced accordingly
-> 
-> If other non-intel architectures don't have a solution for this.
-> My first thought was to assign fake port addresses.
+On Thursday 07 February 2002 11:42 pm, Grant Grundler wrote:
+> I think the workaround was to use a different method
+> of displaying the files. We weren't able to reproduce
+> the bug on a different machine.
 
-Looks like most other architectures have their own code even when
-using 16450 like UARTs (e.g. arch/mips/au1000/common/serial.c).
-Especially set_serial_info is architecture dependent, because it just
-doesn't make much sense to fiddle with irq and port settings on
-parisc, does it? Faking port adresses could be a workaround, but it's
-not clean as it might make the ports show up in /proc/ioports ...
 
-But enhancing the test for doubly assigned ports to
+I can reproduce it reliably.  What (if anything) can I do to help debug the 
+problem further?  
 
-      if ((rs_table[i].port == port) &&
-          (rs_table[i].iomem_base == req->iomem_base))
 
-might be ok. This code can be found in register_serial().
+Thanks
 
-BTW, drivers/gsc/serial.c does no request_mem_region(). Is this in-
-tentional?
 
-> Do PCI serial cards also use MMIO?
-
-I don't know.
-
-> > - baud_base should be initialized correctly for other gsc based ports.
-> 
-> We'd have to dig a bit for documentation on this.
-> Please poke me offline if that doesn't happen in the next week or so.
-
-The hardball ers states a 7.3728MHz (== 16 * 460800) baud rate clock,
-which confirms the output of my DMM. So we would need a table holding
-the baud_base for each device?
-
-Enrik
--- 
-Enrik Berkhan                                         plan b. GmbH
-                                                      Rüppurrer Straße 4
-+49-721-388582 (voice)                                76137 Karlsruhe
-+49-721-388581 (fax)                                  Germany
+ Paul.
