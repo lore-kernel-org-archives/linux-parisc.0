@@ -1,16 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-Date: Mon, 3 Mar 2003 11:17:41 -0500 (EST)
-Message-ID: <200303031617.h23GHf1R027417__40709.4760601923$1416622255$gmane$org@hiauly1.hia.nrc.ca>
-References: <3E5F8012000005AB@ocpmta8.freegates.net>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
+Date: Sun, 9 Mar 2003 21:06:54 +0100
+Message-ID: <15979.40670.331645.441499__20554.3248601773$1416622265$gmane$org@gargle.gargle.HOWL>
+References: <15968.40812.741982.606734@gargle.gargle.HOWL>
+	<15969.1828.456001.122737@gargle.gargle.HOWL>
+	<20030302045936.GS11363@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: tausq@debian.org, doko@cs.tu-berlin.de,
-	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
 	parisc-linux@lists.parisc-linux.org
-To: jsoe0708@tiscali.be (Joel Soete)
+To: Randolph Chung <tausq@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3E5F8012000005AB@ocpmta8.freegates.net> from "Joel Soete" at Mar 3, 2003 03:27:04 pm
+In-Reply-To: <20030302045936.GS11363@tausq.org>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,12 +22,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Nice and is it also possible to produce a 64bits version of gcc?
+Randolph Chung writes:
+> In reference to a message from Matthias Klose, dated Mar 01:
+> > Matthias Klose writes:
+> > > AFAIK the transition from 3.2 to 3.3 requires recompilation of C++
+> > > code due to the changed exception handling (now DWARF2 based). As
+> > > libstdc++ in 3.2 and 3.2 have the same soname, how to handle it?
+> > > Currently 3.2 is in unstable only. Would you want to start the
+> > > recompilation before 3.2 based binaries go to testing?
+> > > 
+> > > The packaging for 3.3 can be found in the Debian CVS.
+> > 
+> > You can get test packages from
+> > 	http://ftp-master.debian.org/~doko/gcc-3.3/
+> 
+> well.... this is not looking good. after installing these in a freshly
+> built sarge chroot, all c++ programs stop working (well, i've only tried
+> two -- apt and fakeroot)
 
-Last time I tried (couple of weeks ago), it was possible to build
-a 64-bit cross starting with 3.3.  This still doesn't work with 3.2.
+You can find updated packages at
+	http://ftp-master.debian.org/~doko/gcc-3.3/hppa/
+checked building bash (fakeroot) and upgrading an unstable chroot (apt).
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> (btw, small packaging detail, but the libstdc++*-dev package above
+> cannot be installed cleanly because it overwrites things in the current
+> 3.2 package)
+
+There is still one conflict for libstdc++5-dev (<= 1:3.2.3-0pre3), so
+please install libstdc++5-dev (1:3.2.3-0pre4) first.
+
+	Matthias
