@@ -1,22 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 464CC4845
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Sep 2003 07:30:03 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 620964840
+	for <parisc-linux@parisc-linux.org>; Tue, 30 Sep 2003 07:47:56 -0600 (MDT)
 Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h8UDHNq08517;
-	Tue, 30 Sep 2003 09:17:23 -0400
-Subject: Re: [parisc-linux] MAX_ADDRESS.
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h8UDlCq10178;
+	Tue, 30 Sep 2003 09:47:12 -0400
+Subject: Re: [parisc-linux] Re: NCR53c720
 From: James Bottomley <James.Bottomley@steeleye.com>
-To: knaresh@india.hp.com
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Matthew Wilcox <willy@debian.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <3F7975FE.58C276D9@india.hp.com>
-References: <3F7915A7.1F54379@india.hp.com>
-	<20030930120636.GV24824@parcelfarce.linux.theplanet.co.uk>
-	<3F7975FE.58C276D9@india.hp.com>
+	Rene Brothuhn <rene.br@web.de>, Roman Zippel <zippel@linux-m68k.org>,
+	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
+	parisc-linux@parisc-linux.org,
+	Linux/PPC on APUS development <linux-apus-devel@lists.sourceforge.net>
+In-Reply-To: <Pine.GSO.4.21.0309301019390.7902-100000@vervain.sonytel.be>
+References: <Pine.GSO.4.21.0309301019390.7902-100000@vervain.sonytel.be>
 Content-Type: text/plain
-Date: 30 Sep 2003 08:17:22 -0500
-Message-Id: <1064927843.2065.3.camel@mulgrave>
+Date: 30 Sep 2003 08:47:11 -0500
+Message-Id: <1064929633.2183.7.camel@mulgrave>
 Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -29,17 +30,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 2003-09-30 at 07:24, Naresh wrote:
-> MAX_ADDRESS has nothing to do with DISCONTIGMEM. Its definition is generic(
-> pgtable.h), although it is not used anywhere. I just happened to see the comment in
-> the DISCONTIGMEM code. Even if DISCONTIGMEM is turned off, there is no check for
-> MAX_ADDRESS before the call to 'map_pages()' in 'pagetable_init( )', which is why I
-> would like to know if MAX_ADDRESS can be ignored.
+On Tue, 2003-09-30 at 03:21, Geert Uytterhoeven wrote:
+> BTW, A4000T SCSI is builtin, not Zorro, so we need a platform device for that.
 
-No.  It does represent the highest virtual address possible.
-
-Linux has 3 levels of page tables, so on a 64 bit kernel (8 bytes per
-pte and 8 bytes per pte page pointer etc), we can address a maximum of
-512GB with 4k pages.
+That depends on how you want it to work.  On parisc, the Lasi (SCSI and
+other) devices are technically "platform" in that they're all ASIC'd
+together and soldered on to the main board.  However, it was easier to
+create a parisc_bus type and lump them all under it than to use a
+platform device....however, we did this in the very early days of the
+generic device, a platform device might be more appropriate now.
 
 James
