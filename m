@@ -1,20 +1,19 @@
-Return-Path: <jools@oxfordinspire.co.uk>
-Received: from hp9000.workshop (oxfordinspire.co.uk [62.3.242.169])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 590044879
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A194B4854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 20 Jan 2004 12:22:56 -0700 (MST)
-From: Jools Smyth <jools@oxfordinspire.co.uk>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Stability / Kernel 2.6.1 / HD Freezes
-Date: Tue, 20 Jan 2004 19:19:02 +0000
-References: <200401191930.27090.jools@oxfordinspire.co.uk>
-	<20040120161858.GC15917@baldric.uwo.ca>
-In-Reply-To: <20040120161858.GC15917@baldric.uwo.ca>
+	Wed, 21 Jan 2004 11:03:08 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali) id 1AjMh1-0005cn-00
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed, 21 Jan 2004 19:03:07 +0100
+Date: Wed, 21 Jan 2004 19:03:05 +0100
+Message-ID: <400CB89F00001978@ocpmta2.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: "PARISC list" <parisc-linux@lists.parisc-linux.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200401201919.02968.jools@oxfordinspire.co.uk>
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] B2k and CONFIG_PDC_CONSOLE pb: followup
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,34 +23,78 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tuesday 20 January 2004 4:18 pm, Carlos O'Donell wrote:
+Hi all,
 
-> > I own a model 9000/800/A180c. (512 mb ram / 18gb hd)
->
-> Have you registered yourself in the hardware database?
-> http://hwdb.parisc-linux.org/
+On the my b2k when I add 'CONFIG_PDC_CONSOLE' the system hang just after
+"Searching for devices..." leting the led CDROM continuously bright ???
 
-yup. Registered a while back. (under a180 not a180c though
+With some printk, I reach to figure out that is at the pdc_suspend_usb()
+point where the boot hang. I try to bypass this and so it boot well.
 
-> Need more info. What crashes? Can you get a dump? What compiler did you
-> use to build the kernel?
+In fact the big difference with a kernel without CONFIG_PDC_CONSOLE is the
+early call to pdc_console_init_force() which (before register the pdc_cons
+do:
+[snip]
+        /* If the console is duplex then copy the COUT parameters to CIN.*/
+        if (PAGE0->mem_cons.cl_class == CL_DUPLEX)
+                memcpy(&PAGE0->mem_kbd, &PAGE0->mem_cons, sizeof(PAGE0->mem_cons));
 
-if i get any problems on 2.6.x i will be sure to try and get some more 
-information. to build the 2.6.1-pa7 kernel i used 
+        /* register the pdc console */
+        register_console(&pdc_cons);
+}
 
-gcc version 3.3.3 20040110 (prerelease) (Debian)
+I also try to bypass this memcpy (and restore pdc_suspend_usb() call) and
+it boot also well.
 
-> Post to debian-hppa lists. I'll be happy to help if I can see a clear
-> description of the problem.
+In sumary, on the b2k, this early memcpy() seems to break something in the
+later pdc_suspend_usb() call. My problem is the pdc_suspend_usb()
+which results finaly in a call to real32_call_asm(): actualy asm code in
+which
+it's difficult to insert printk to analyse the difference of behaviour ?)
 
-done. i put a link to the bugs page which contains all the information 
-gathered so far (which isnt much)
+I also already get a toc but didn't give me any relevant info on what happen
+:(
 
-Best Regards
+Any idea to help me to get more details about this pb?
 
-Jools
--- 
-Oxford Inspire
-jools@oxfordinspire.co.uk
-Tel: 01865 751879
-Mob: 07966 577498
+Thanks in advance,
+    Joel
+
+PS:
+I added some printk to get some pdc addresses:
+static void pdc_console_init_force(void)
+{
+        if (pdc_console_initialized)
+                return;
+        ++pdc_console_initialized;
+
+        if (PAGE0->mem_cons.cl_class == CL_DUPLEX) {
+                printk(KERN_INFO "pdc_console_init_force() would set a CL_DUP.\n");
+                printk(KERN_INFO "PAGE0->mem_cons address: %p.\n", &PAGE0->mem_cons);
+                printk(KERN_INFO "PAGE0->mem_kbd address: %p.\n", &PAGE0->mem_kbd);
+                printk(KERN_INFO "PAGE0->mem_kbd size: %d.\n", sizeof(PAGE0->mem_cons));
+        };
+        /* If the console is duplex then copy the COUT parameters to CON.*/
+/*
+        if (PAGE0->mem_cons.cl_class == CL_DUPLEX)
+                memcpy(&PAGE0->mem_kbd, &PAGE0->mem_cons, sizeof(PAGE0->mem_cons));
+ */
+
+        /* register the pdc console */
+        register_console(&pdc_cons);
+}
+
+The 32-bit Kernel has started...
+pdc_console_init_force() would set a CL_DUP.
+PAGE0->mem_cons address: 100003a0.
+PAGE0->mem_kbd address: 10000400.
+PAGE0->mem_kbd size: 48.
+
+But that couldn't help more for the moment :(
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
