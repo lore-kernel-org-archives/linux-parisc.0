@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B8E15482A
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Mar 2003 05:50:33 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 18xRPM-0003Z1-My; Mon, 24 Mar 2003 12:50:32 +0000
-Date: Mon, 24 Mar 2003 12:50:32 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Adriano Galano <adriano@satec.es>
-Cc: 'Matthew Wilcox' <willy@debian.org>, linux-ia64@linuxia64.org,
-	parisc-linux@parisc-linux.org
-Message-ID: <20030324125032.GK31008@parcelfarce.linux.theplanet.co.uk>
-References: <20030324121037.GI31008@parcelfarce.linux.theplanet.co.uk> <003901c2f200$2fb2e450$6620a4d5@tsatec.int>
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B6EA5482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 06:28:08 -0700 (MST)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel9.hp.com (Postfix) with ESMTP id D95711C00AF3
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 08:28:07 -0500 (EST)
+Received: (from jsm@localhost)
+	by udlkern.fc.hp.com (8.9.3 (PHNE_26305+JAGae58098)/8.9.3 SMKit7.01) id GAA02336
+	for parisc-linux@lists.parisc-linux.org; Mon, 24 Mar 2003 06:28:07 -0700 (MST)
+Date: Mon, 24 Mar 2003 06:28:07 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200303241328.GAA02336@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <003901c2f200$2fb2e450$6620a4d5@tsatec.int>
-Subject: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
+Subject: [parisc-linux] [akpm@digeo.com: arch changes for file-offset-in-pte's]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,34 +26,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Mar 24, 2003 at 01:23:32PM +0100, Adriano Galano wrote:
-> If IPF support PA-RISC mapping is not easy to "port" the PA/RISC Linux,
-> excluding architectural changes in the chipset or booting process?
+> FYI.  jsm, any comments?
 
-Why would you want to?  ia64 already has its own perfectly good Linux port.
+It doesn't appear to be a problem, since the bit comes out of the swap
+entry bits, not the "present" bits, which we don't have any more available
+(e.g. _PAGE_FILE can overload _PAGE_ACCESSED, since _PAGE_ACCESSED is
+only valid when _PAGE_PRESENT is set).
 
-> How HP/UX v 11.6 could be offer compatibility between PA/RISC and Itanium 2
-> systems?
+The main issue is whether to take the bit out of the swap offset or swap
+type. i386 went from 24 offset bits and 6 type bits to 24 offset bits and
+5 type bits, i.e. they took the bit from the type field. We are currently
+at 25 offset bits and 5 type bits.
 
-That's `11i v1.6'.  Quoting from
-http://www.hp.com/products1/unix/operating/choice/hp-ux11i_details.html
+The offset bits control the maximum swap size for each swap device. The
+type bits control the number of possible swap devices. So, one possibility
+is to reduce the number of possible swap devices from 32 to 16, rather
+than decrease the maximum swap size. But, perhaps since limiting the
+maximum swap size would only really have an effect on the 32 bit kernel,
+perhaps it would better to leave the maximum number of swap devices at
+32 and decrease the maximum swap size (i.e. the maximum swap size
+for a swap device would decrease from 128 Gb to 64 Gb for a 32 bit
+kernel). This would be the same as i386.
 
-	PA-RISC binary compatibility
+Another possibility would be to split out the SWP_TYPE, SWP_OFFSET
+and SWP_ENTRY macros in order to have a 32 bit kernel version and a
+64 bit kernel version. Then we could go with 16 swap devices for the
+32 bit kernel and even increase the number of swap devices for the
+64 bit kernel, since we have a huge number of bits for the offset.
 
-  HP-UX 11i version 1.6 includes the Aries dynamic code translation
-  technology as an integrated component. Aries is built on the close
-  relationship between the PA-RISC and Intel Itanium instruction sets
-  and provides binary compatibility for PA-RISC binaries on the Itanium
-  processor family. Aries can be used where performance is not critical
-  or where it is not possible to create a native Itanium processor
-  family binary.
+Any opinions?
 
-> How "exact" is the PA-RISC mapping on the IA-64 core?
-
-Not particularly close.  If you look at the assembly language level,
-there's a lot of similarities, but there's a lot of differences too.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+John
