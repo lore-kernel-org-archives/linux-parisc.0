@@ -1,46 +1,60 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA23686
-	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 14:35:58 -0600
-Date: Thu, 31 Aug 2000 16:35:50 -0400 (EDT)
-From: Andrew Park <apark@cdf.toronto.edu>
-To: parisc-linux@thepuffingroup.com
-In-Reply-To: <20000830170126.E3463@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.SOL.4.21.0008311603300.24635-100000@misty.cdf>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] getting kernel to load so far...
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA25925
+	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 20:16:43 -0600
+Message-Id: <200009010220.TAA20141@milano.cup.hp.com>
+To: gcc-patches@gcc.gnu.org
+Cc: parisc-linux@thepuffingroup.com
+Date: Thu, 31 Aug 2000 19:20:06 -0700
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] PATCH: build gcc/gcc/depedence.c w/HPUX ANSI C
 List-ID: <linux-parisc.vger.kernel.org>
 
-Just wanted to report my progress publicly.
-Last posting to the list was about my SCSI CD-ROM not booting the 
-HP-UX INSTALL CD.  Well, it turns out that NECs are in 2048 byte sector
-mode whereas HP requires 512 byte mode.  SUNs and SGIs also require 512
-byte sector mode.  So I just borrowed a SUN external CD-ROM and issued
 
-	boot pri isl
+Hi folks,
+I work on the parisc-linux port and was trying to build binutils/gcc
+on an HP-UX 11 system. HP-UX ansic didn't like enum direction_type[][]
+or int[][] constructs.  It complained with:
+cc: "/linux/pa32/gcc/gcc/dependence.c", line 199: error 1501: Only the first
+	dimension of an array may be omitted.
 
-at BOOT_ADMIN> prompt and it took me right into the ISL prompt.  There
-I changed the conspath to serial console.  I did not have null modem
-cable (9 to 9 female), but I had a DB25 male to DB25 male cable and
-a couple of DB25 male to DB9 female converters.  So I patched them up
-and wired two boxes.  I fired up minicom then parisc box, and minicom
-just wouldn't show a thing.  After wasting two days on it, I went out
-and bought *real* DB9 female to DB9 female serial cable.  I hooked
-THAT up and minicom began showing things.
+I've been told GCC refuses to compile the same thing with:
+	x.c:1: warning: array `i' assumed to have one element
+	x.c:1: storage size of `i' isn't known
 
-But now I have bigger (I think) problem.  The kernel loading still
-gets stuck at pdc_cons die!!  This is displayed on the serial console.
-Anybody out there running i386 linux box as NFSROOT and serial console
-server, also running bootp with combination of tftp?  Could you please
-let me know what the syslog says from the booting of parisc box to
-its shell?
-Thanks
+This is probably not exactly the right fix but at least I can
+build a binary now. I haven't tested the resulting binary.
 
+thanks,
+grant
 
-
-Andrew Park
-           
-________________________________________________________________________ 
-CDFlab Systems Administrator                       www.cdf.utoronto.ca |
-GnuPG Signature              www.cdf.utoronto.ca/~apark/public_key.txt |
-------------------------------------------------------------------------
+grundler <815>cvs diff gcc/gcc/dependence.c
+Index: gcc/gcc/dependence.c
+===================================================================
+RCS file: /home/cvs/parisc/gcc/gcc/dependence.c,v
+retrieving revision 1.1
+diff -u -p -r1.1 dependence.c
+--- dependence.c        2000/08/22 20:56:22     1.1
++++ dependence.c        2000/08/31 23:44:27
+@@ -196,15 +196,15 @@ static int get_one_coefficient PARAMS ((
+ static void normalize_coefficients PARAMS ((subscript[], loop*, int));
+ static void classify_dependence PARAMS ((subscript[], subscript[],
+                                 enum complexity_type[], int*, int));
+-static void ziv_test PARAMS ((subscript[], subscript[], enum direction_type[][],
+-                     int[][], loop*, int));
+-static void siv_test PARAMS ((subscript[], subscript[], enum direction_type[][],
+-                     int[][], loop*, int));
++static void ziv_test PARAMS ((subscript[], subscript[], enum direction_type[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS],
++                     int[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS], loop*, int));
++static void siv_test PARAMS ((subscript[], subscript[], enum direction_type[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS],
++                     int[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS], loop*, int));
+ static int check_subscript_induction PARAMS ((subscript*, subscript*, loop*));
+-static void gcd_test PARAMS ((subscript[], subscript[], enum direction_type[][],
+-                     int[][], loop*, int));
++static void gcd_test PARAMS ((subscript[], subscript[], enum direction_type[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS],
++                     int[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS], loop*, int));
+ static int find_gcd PARAMS ((int, int));
+-static void merge_dependencies PARAMS ((enum direction_type[][], int[][], int, int));
++static void merge_dependencies PARAMS ((enum direction_type[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS], int[MAX_SUBSCRIPTS][MAX_SUBSCRIPTS], int, int));
+ static void dump_array_ref PARAMS ((tree));
+ static void dump_one_node PARAMS ((def_use*, varray_type*));
+ static void dump_node_dependence PARAMS ((void));
