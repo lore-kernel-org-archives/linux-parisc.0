@@ -1,46 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.dpmms.cam.ac.uk (smtp.dpmms.cam.ac.uk [131.111.24.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 56843482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Aug 2001 13:58:14 -0600 (MDT)
-Date: Sat, 18 Aug 2001 20:55:19 +0100 (BST)
-From: Dr Andrew C Aitchison <A.C.Aitchison@dpmms.cam.ac.uk>
-To: <caslivkoff@yahoo.com>
-Cc: Michel =?iso-8859-1?Q?D=E4nzer?= <michdaen@iiic.ethz.ch>,
-	<xpert@xfree86.org>, <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [Xpert][parisc-linux] white is blue
-In-Reply-To: <3B7EBE4A.B122B1FA@yahoo.com>
-Message-ID: <Pine.LNX.4.33.0108182048110.3587-100000@harrier.dpmms.cam.ac.uk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Sender: Dr Andrew C Aitchison <werdna@dpmms.cam.ac.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6860F482A
+	for <parisc-linux@parisc-linux.org>; Sat, 18 Aug 2001 16:37:03 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15YEiC-0005j9-00; Sat, 18 Aug 2001 23:37:00 +0100
+Date: Sat, 18 Aug 2001 23:37:00 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Helge Deller <deller@gmx.de>
+Cc: Matthew Wilcox <willy@ldl.fc.hp.com>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Turn off CONFIG_PCI
+Message-ID: <20010818233700.A14486@parcelfarce.linux.theplanet.co.uk>
+References: <E15Xdn8-0000kt-00@chrysl> <20010818193908.2DE79482A@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010818193908.2DE79482A@dsl2.external.hp.com>; from deller@gmx.de on Sat, Aug 18, 2001 at 09:37:06PM +0200
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 18 Aug 2001 caslivkoff@yahoo.com wrote:
-> > > I posted this to the parisc-linux mailing list, but so far, no
-> > > responses. Can anyone offer a suggestion? The fbdev driver is "suppos=
-ed"
-> > > to work with the graphics in the 712/60. I also tried this on a secon=
-d
-> > > 712 with the same behavior. What's wierd is that other colors appear =
-OK.
-> > >
-> > > I just loaded the ISO on a 712/60 and setup XFree86 to use the fbdev
-> > > driver. It seems to be OK, with the exception that "white" is "blue".=
- If
+On Sat, Aug 18, 2001 at 09:37:06PM +0200, Helge Deller wrote:
+> I tested your patch sucessfully on my c3k and my 715/64.
+> I've only added a small security check to setup.c to prevent PA2.x machines
+> from booting without CONFIG_PCI and to print a small panic-message
+> at bootup instead of just HPMC'ing.
 
-> Michel D=E4nzer wrote:
-> > The fbdev driver uses the framebuffer device to set the colormap, which=
- works
-> > in general (at least for me ;), so I suspect there is a problem with th=
-e
-> > framebuffer device.
+> +#ifndef CONFIG_PCI
+> +	/* security check: PA2.x processor machines won't detect their main
+> +	 * PCI-based devices (screen, serial, SCSI, ...), so it's better to
+> +	 * stop them from booting right here. If we would continue we would
+> +	 * only get a HPMC without any other information. */
+> +	if (boot_cpu_data.cpu_type >= pcxu) { /* >=PA8000 (PCX-U) CPU ? */
+> +		/* switch back to PDC console for panic */
+> +		pdc_console_restart();
+> +		panic("This system will not boot without PCI-support in the kernel !\n");
+> +	}
+> +#endif
 
-> Any other ideas?  I thought that possibly the rgb.txt was not getting
-> loaded, but I'm fairly certain that it is.
+I don't believe this is appropriate.  Cxxx / Jxxx machines use Lasi for
+their serial port, so it's theoretically possible to boot one without
+CONFIG_PCI.  If the user wants to turn it off, let them.  It's not like
+any other architecture does anything like this.
 
-It does sound as though the active colormap isn't being initialized fully.
-Does the 712/60 have more than one colormap ?
-
---=20
-Dr. Andrew C. Aitchison=09=09Computer Officer, DPMMS, Cambridge
-A.C.Aitchison@dpmms.cam.ac.uk=09http://www.dpmms.cam.ac.uk/~werdna
+-- 
+Revolutions do not require corporate support.
