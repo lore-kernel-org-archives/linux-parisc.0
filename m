@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 85FFD4889
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Dec 2002 10:59:40 -0700 (MST)
-Date: Mon, 16 Dec 2002 18:59:03 +0100
-Message-ID: <3DED9BF500001EE1@ocpmta8.freegates.net>
-In-Reply-To: <1040062813.13837.79.camel@irongate.swansea.linux.org.uk>
-From: jsoe0708@tiscali.be
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 300404889
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Dec 2002 11:01:09 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18NzY7-0005uS-00; Mon, 16 Dec 2002 18:01:03 +0000
+Date: Mon, 16 Dec 2002 18:01:03 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: jsoe0708@tiscali.be
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: YA pb with PCI IDE (my merge 2.4.21-pre1)
-To: "Alan Cox" <alan@lxorguk.ukuu.org.uk>,
-	"Matthew Wilcox" <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=========3DED9BF500001EE1/mail.tiscali.be"
+Message-ID: <20021216180103.C9994@parcelfarce.linux.theplanet.co.uk>
+References: <1040062813.13837.79.camel@irongate.swansea.linux.org.uk> <3DED9BF500001EE1@ocpmta8.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3DED9BF500001EE1@ocpmta8.freegates.net>; from jsoe0708@tiscali.be on Mon, Dec 16, 2002 at 06:59:03PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,151 +27,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=========3DED9BF500001EE1/mail.tiscali.be
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+why are you sending word documents?  i'm not reading that shit.
 
-
->On Mon, 2002-12-16 at 17:29, Matthew Wilcox wrote:
->> You mean the "IDE but no disks" patch:
->> http://www.uwsg.iu.edu/hypermail/linux/kernel/0212.2/0105.html ?
->> If so, that might be relevant, but have davem's concerns about this ID=
-E
->> code being broken on big-endian machines been addressed?
->
->Platform dependant.
->
->The pre1 code fails if:
->	You use the mmio ops not the pio ops on a big endian box (except PPC)
->	Your pci_resource_foo() returns a value with the top 32bit used
->
->Both of those are fixed in Marcelo's tree, although platforms may need
->to define some functions. Dave has the updated code running on sparc64
->
-I do well have to define new function in system.h system_irqsave.h as per=
-
-attached doc (please consider revert) and based on mips implementation.
-Is it what you spoke about?
-
-Joel
-
-
-*************************************************************************=
-*******
-Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
-ttp://tiscali.complete.be
-
-
-
-
---=========3DED9BF500001EE1/mail.tiscali.be
-Content-Type: application/msword
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="add_function.diff.doc"
-
-ZGlmZiAtTmF1cndiQlggL0RldmVsb3AvS2VybmVsLUxpbnV4L2RvbnRkaWZmIGxpbnV4LTIuNC4y
-MS1wcmUxLXBhMTQtYWxwaGEvaW5jbHVkZS9hc20tcGFyaXNjL2lkZS5oIGxpbnV4LTIuNC4yMS1w
-cmUxLXBhMTQtYmV0YS9pbmNsdWRlL2FzbS1wYXJpc2MvaWRlLmgKLS0tIGxpbnV4LTIuNC4yMS1w
-cmUxLXBhMTQtYWxwaGEvaW5jbHVkZS9hc20tcGFyaXNjL2lkZS5oCTIwMDItMTItMTMgMTQ6MDA6
-MDkuMDAwMDAwMDAwICswMTAwCisrKyBsaW51eC0yLjQuMjEtcHJlMS1wYTE0LWJldGEvaW5jbHVk
-ZS9hc20tcGFyaXNjL2lkZS5oCTIwMDItMTItMTUgMTU6MzQ6MDEuMDAwMDAwMDAwICswMTAwCkBA
-IC0yMCw2ICsyMCw4IEBACiAjZGVmaW5lIE1BWF9IV0lGUwkyCiAjZW5kaWYKIAorI2RlZmluZSBp
-ZGVfX3N0aSgpICAgICAgX19zdGkoKQorCiBzdGF0aWMgX19pbmxpbmVfXyBpbnQgaWRlX2RlZmF1
-bHRfaXJxKGlkZV9pb3JlZ190IGJhc2UpCiB7CiAJc3dpdGNoIChiYXNlKSB7CkBAIC03OCwxMyAr
-ODAsMTE2IEBACiAjZW5kaWYgLyogQ09ORklHX0JMS19ERVZfSURFUENJICovCiB9CiAKLS8qCit0
-eXBlZGVmIHVuaW9uIHsKKwl1bnNpZ25lZCBhbGwJCQk6IDg7CS8qIGFsbCBvZiB0aGUgYml0cyB0
-b2dldGhlciAqLworCXN0cnVjdCB7CisJCXVuc2lnbmVkIGJpdDcJCTogMTsJLyogYWx3YXlzIDEg
-Ki8KKwkJdW5zaWduZWQgbGJhCQk6IDE7CS8qIHVzaW5nIExCQSBpbnN0ZWFkIG9mIENIUyAqLwor
-CQl1bnNpZ25lZCBiaXQ1CQk6IDE7CS8qIGFsd2F5cyAxICovCisJCXVuc2lnbmVkIHVuaXQJCTog
-MTsJLyogZHJpdmUgc2VsZWN0IG51bWJlciwgMCBvciAxICovCisJCXVuc2lnbmVkIGhlYWQJCTog
-NDsJLyogYWx3YXlzIHplcm9zIGhlcmUgKi8KKwl9IGI7Cit9IHNlbGVjdF90OworCit0eXBlZGVm
-IHVuaW9uIHsKKwl1bnNpZ25lZCBhbGwJCQk6IDg7CS8qIGFsbCBvZiB0aGUgYml0cyB0b2dldGhl
-ciAqLworCXN0cnVjdCB7CisJCXVuc2lnbmVkIGJpdDAJCTogMTsKKwkJdW5zaWduZWQgbklFTgkJ
-OiAxOwkvKiBkZXZpY2UgSU5UUlEgdG8gaG9zdCAqLworCQl1bnNpZ25lZCBTUlNUCQk6IDE7CS8q
-IGhvc3Qgc29mdCByZXNldCBiaXQgKi8KKwkJdW5zaWduZWQgYml0MwkJOiAxOwkvKiBBVEEtMiB0
-aGluZ3kgKi8KKwkJdW5zaWduZWQgcmVzZXJ2ZWQ0NTYJOiAzOworCQl1bnNpZ25lZCBIT0IJCTog
-MTsJLyogNDgtYml0IGFkZHJlc3Mgb3JkZXJpbmcgKi8KKwl9IGI7Cit9IGNvbnRyb2xfdDsKKwog
-I2RlZmluZSBpZGVfcmVxdWVzdF9pcnEoaXJxLGhhbmQsZmxnLGRldixpZCkJcmVxdWVzdF9pcnEo
-KGlycSksKGhhbmQpLChmbGcpLChkZXYpLChpZCkpCiAjZGVmaW5lIGlkZV9mcmVlX2lycShpcnEs
-ZGV2X2lkKQkJZnJlZV9pcnEoKGlycSksIChkZXZfaWQpKQogI2RlZmluZSBpZGVfY2hlY2tfcmVn
-aW9uKGZyb20sZXh0ZW50KQkJY2hlY2tfcmVnaW9uKChmcm9tKSwgKGV4dGVudCkpCiAjZGVmaW5l
-IGlkZV9yZXF1ZXN0X3JlZ2lvbihmcm9tLGV4dGVudCxuYW1lKQlyZXF1ZXN0X3JlZ2lvbigoZnJv
-bSksIChleHRlbnQpLCAobmFtZSkpCiAjZGVmaW5lIGlkZV9yZWxlYXNlX3JlZ2lvbihmcm9tLGV4
-dGVudCkJCXJlbGVhc2VfcmVnaW9uKChmcm9tKSwgKGV4dGVudCkpCisKKyNkZWZpbmUgVF9DSEFS
-ICAgICAgICAgICgweDAwMDApICAgICAgICAvKiBjaGFyOiAgZG9uJ3QgdG91Y2ggICovCisjZGVm
-aW5lIFRfU0hPUlQgICAgICAgICAoMHg0MDAwKSAgICAgICAgLyogc2hvcnQ6IDEyIC0+IDIxICAg
-ICAqLworI2RlZmluZSBUX0lOVCAgICAgICAgICAgKDB4ODAwMCkgICAgICAgIC8qIGludDogICAx
-MjM0IC0+IDQzMjEgKi8KKyNkZWZpbmUgVF9URVhUICAgICAgICAgICgweGMwMDApICAgICAgICAv
-KiB0ZXh0OiAgMTIgLT4gMjEgICAgICovCisKKyNkZWZpbmUgVF9NQVNLX1RZUEUgICAgICgweGMw
-MDApCisjZGVmaW5lIFRfTUFTS19DT1VOVCAgICAoMHgzZmZmKQorCisjZGVmaW5lIERfQ0hBUihj
-bnQpICAgICAoVF9DSEFSICB8IChjbnQpKQorI2RlZmluZSBEX1NIT1JUKGNudCkgICAgKFRfU0hP
-UlQgfCAoY250KSkKKyNkZWZpbmUgRF9JTlQoY250KSAgICAgIChUX0lOVCAgIHwgKGNudCkpCisj
-ZGVmaW5lIERfVEVYVChjbnQpICAgICAoVF9URVhUICB8IChjbnQpKQorCitzdGF0aWMgdV9zaG9y
-dCBkcml2ZWlkX3R5cGVzW10gPSB7CisJRF9TSE9SVCgxMCksCS8qIGNvbmZpZyAtIHZlbmRvcjIg
-Ki8KKwlEX1RFWFQoMjApLAkvKiBzZXJpYWxfbm8gKi8KKwlEX1NIT1JUKDMpLAkvKiBidWZfdHlw
-ZSAtIGVjY19ieXRlcyAqLworCURfVEVYVCg0OCksCS8qIGZ3X3JldiAtIG1vZGVsICovCisJRF9D
-SEFSKDIpLAkvKiBtYXhfbXVsdHNlY3QgLSB2ZW5kb3IzICovCisJRF9TSE9SVCgxKSwJLyogZHdv
-cmRfaW8gKi8KKwlEX0NIQVIoMiksCS8qIHZlbmRvcjQgLSBjYXBhYmlsaXR5ICovCisJRF9TSE9S
-VCgxKSwJLyogcmVzZXJ2ZWQ1MCAqLworCURfQ0hBUig0KSwJLyogdmVuZG9yNSAtIHRETUEgKi8K
-KwlEX1NIT1JUKDQpLAkvKiBmaWVsZF92YWxpZCAtIGN1cl9zZWN0b3JzICovCisJRF9JTlQoMSks
-CS8qIGN1cl9jYXBhY2l0eSAqLworCURfQ0hBUigyKSwJLyogbXVsdHNlY3QgLSBtdWx0c2VjdF92
-YWxpZCAqLworCURfSU5UKDEpLAkvKiBsYmFfY2FwYWNpdHkgKi8KKwlEX1NIT1JUKDE5NCkJLyog
-ZG1hXzF3b3JkIC0gcmVzZXJ2ZWR5eSAqLworfTsKKworI2RlZmluZSBudW1fZHJpdmVpZF90eXBl
-cyAgICAgICAoc2l6ZW9mKGRyaXZlaWRfdHlwZXMpL3NpemVvZigqZHJpdmVpZF90eXBlcykpCisK
-K3N0YXRpYyBfX2lubGluZV9fIHZvaWQgaWRlX2ZpeF9kcml2ZWlkKHN0cnVjdCBoZF9kcml2ZWlk
-ICppZCkKK3sKKwl1X2NoYXIgKnAgPSAodV9jaGFyICopaWQ7CisJaW50IGksIGosIGNudDsKKwl1
-X2NoYXIgdDsKKworCWZvciAoaSA9IDA7IGkgPCBudW1fZHJpdmVpZF90eXBlczsgaSsrKSB7CisJ
-CWNudCA9IGRyaXZlaWRfdHlwZXNbaV0gJiBUX01BU0tfQ09VTlQ7CisJCXN3aXRjaCAoZHJpdmVp
-ZF90eXBlc1tpXSAmIFRfTUFTS19UWVBFKSB7CisJCWNhc2UgVF9DSEFSOgorCQkJcCAr
-PSBjbnQ7CisJCQlicmVhazsKKwkJY2FzZSBUX1NIT1JUOgorCQkJZm9yIChqID0gMDsgaiA8IGNu
-dDsgaisrKSB7CisJCQkJdCA9IHBbMF07CisJCQkJcFswXSA9IHBbMV07CisJCQkJcFsxXSA9IHQ7
-CisJCQkJcCArPSAyOworCQkJfQorCQkJYnJlYWs7CisJCWNhc2UgVF9JTlQ6CisJCQlmb3IgKGog
-PSAwOyBqIDwgY250OyBqKyspIHsKKwkJCQl0ID0gcFswXTsKKwkJCQlwWzBdID0gcFszXTsKKwkJ
-CQlwWzNdID0gdDsKKwkJCQl0ID0gcFsxXTsKKwkJCQlwWzFdID0gcFsyXTsKKwkJCQlwWzJdID0g
-dDsKKwkJCQlwICs9IDQ7CisJCQl9CisJCQlicmVhazsKKwkJY2FzZSBUX1RFWFQ6CisJCQlmb3Ig
-KGogPSAwOyBqIDwgY250OyBqICs9IDIpIHsKKwkJCQl0ID0gcFswXTsKKwkJCQlwWzBdID0gcFsx
-XTsKKwkJCQlwWzFdID0gdDsKKwkJCQlwICs9IDI7CisJCQl9CisJCQlicmVhazsKKwkJfTsKKwl9
-Cit9CisKKy8qCisgKiBUaGUgZm9sbG93aW5nIGFyZSBub3QgbmVlZGVkIGZvciB0aGUgbm9uLW02
-OGsgcG9ydHMKICAqLworI2RlZmluZSBpZGVfYWNrX2ludHIoaHdpZikJCSgxKQorI2RlZmluZSBp
-ZGVfcmVsZWFzZV9sb2NrKGxvY2spCQlkbyB7fSB3aGlsZSAoMCkKKyNkZWZpbmUgaWRlX2dldF9s
-b2NrKGxvY2ssIGhkbHIsIGRhdGEpCWRvIHt9IHdoaWxlICgwKQogCiAjZW5kaWYgLyogX19LRVJO
-RUxfXyAqLwogCmRpZmYgLU5hdXJ3YkJYIC9EZXZlbG9wL0tlcm5lbC1MaW51eC9kb250ZGlmZiBs
-aW51eC0yLjQuMjEtcHJlMS1wYTE0LWFscGhhL2luY2x1ZGUvYXNtLXBhcmlzYy9zeXN0ZW0uaCBs
-aW51eC0yLjQuMjEtcHJlMS1wYTE0LWJldGEvaW5jbHVkZS9hc20tcGFyaXNjL3N5c3RlbS5oCi0t
-LSBsaW51eC0yLjQuMjEtcHJlMS1wYTE0LWFscGhhL2luY2x1ZGUvYXNtLXBhcmlzYy9zeXN0ZW0u
-aAkyMDAyLTEyLTEzIDEzOjU4OjM2LjAwMDAwMDAwMCArMDEwMAorKysgbGludXgtMi40LjIxLXBy
-ZTEtcGExNC1iZXRhL2luY2x1ZGUvYXNtLXBhcmlzYy9zeXN0ZW0uaAkyMDAyLTEyLTE1IDE1OjM0
-OjAxLjAwMDAwMDAwMCArMDEwMApAQCAtNjYsOCArNjYsNiBAQAogI2RlZmluZSBzdGkoKSBfX2ds
-b2JhbF9zdGkoKQogI2RlZmluZSBzYXZlX2ZsYWdzKHgpICgoeCk9X19nbG9iYWxfc2F2ZV9mbGFn
-cygpKQogI2RlZmluZSByZXN0b3JlX2ZsYWdzKHgpIF9fZ2xvYmFsX3Jlc3RvcmVfZmxhZ3MoeCkK
-LSNkZWZpbmUgc2F2ZV9hbmRfY2xpKHgpIGRvIHsgc2F2ZV9mbGFncyh4KTsgY2xpKCk7IH0gd2hp
-bGUoMCk7Ci0jZGVmaW5lIHNhdmVfYW5kX3N0aSh4KSBkbyB7IHNhdmVfZmxhZ3MoeCk7IHN0aSgp
-OyB9IHdoaWxlKDApOwogCiAjZWxzZQogCkBAIC03NSw4ICs3Myw2IEBACiAjZGVmaW5lIHN0aSgp
-IF9fc3RpKCkKICNkZWZpbmUgc2F2ZV9mbGFncyh4KSBfX3NhdmVfZmxhZ3MoeCkKICNkZWZpbmUg
-cmVzdG9yZV9mbGFncyh4KSBfX3Jlc3RvcmVfZmxhZ3MoeCkKLSNkZWZpbmUgc2F2ZV9hbmRfY2xp
-KHgpIF9fc2F2ZV9hbmRfY2xpKHgpCi0jZGVmaW5lIHNhdmVfYW5kX3N0aSh4KSBfX3NhdmVfYW5k
-X3N0aSh4KQogCiAjZW5kaWYKIApkaWZmIC1OYXVyd2JCWCAvRGV2ZWxvcC9LZXJuZWwtTGludXgv
-ZG9udGRpZmYgbGludXgtMi40LjIxLXByZTEtcGExNC1hbHBoYS9pbmNsdWRlL2FzbS1wYXJpc2Mv
-c3lzdGVtX2lycXNhdmUuaCBsaW51eC0yLjQuMjEtcHJlMS1wYTE0LWJldGEvaW5jbHVkZS9hc20t
-cGFyaXNjL3N5c3RlbV9pcnFzYXZlLmgKLS0tIGxpbnV4LTIuNC4yMS1wcmUxLXBhMTQtYWxwaGEv
-aW5jbHVkZS9hc20tcGFyaXNjL3N5c3RlbV9pcnFzYXZlLmgJMjAwMi0xMi0xMiAxNjoxMjowMi4w
-MDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4LTIuNC4yMS1wcmUxLXBhMTQtYmV0YS9pbmNsdWRlL2Fz
-bS1wYXJpc2Mvc3lzdGVtX2lycXNhdmUuaAkyMDAyLTEyLTE1IDE1OjM0OjAxLjAwMDAwMDAwMCAr
-MDEwMApAQCAtNywyMSArNywxMCBAQAogI2RlZmluZSBfX2NsaSgpCV9fYXNtX18gX192b2xhdGls
-ZV9fKCJyc20gJTAsJSVyMFxuIiA6IDogImkiIChQU1dfSSkgOiAibWVtb3J5IiApCiAjZGVmaW5l
-IF9fc3RpKCkJX19hc21fXyBfX3ZvbGF0aWxlX18oInNzbSAlMCwlJXIwXG4iIDogOiAiaSIgKFBT
-V19JKSA6ICJtZW1vcnkiICkKIAotI2RlZmluZSBfX3NhdmVfYW5kX2NsaSh4KSAgZG8geyBfX3Nh
-dmVfZmxhZ3MoeCk7IF9fY2xpKCk7IH0gd2hpbGUoMCk7Ci0jZGVmaW5lIF9fc2F2ZV9hbmRfc3Rp
-KHgpICBkbyB7IF9fc2F2ZV9mbGFncyh4KTsgX19zdGkoKTsgfSB3aGlsZSgwKTsKLQotLyogRm9y
-IHNwaW5sb2NrcyBldGMgKi8KLSNpZiAwCiAjZGVmaW5lIGxvY2FsX2lycV9zYXZlKHgpIFwKIAlf
-X2FzbV9fIF9fdm9sYXRpbGVfXygicnNtICUxLCUwIiA6ICI9ciIgKHgpIDoiaSIgKFBTV19JKSA6
-ICJtZW1vcnkiICkKLSNkZWZpbmUgbG9jYWxfaXJxX3NldCh4KSBcCi0jICAgICAgICJXYXJuaW5n
-IGxvY2FsX2lycV9zZXQoeCkgaXMgbm90IHlldCBkZWZpbmVkIgotI2Vsc2UKLSNkZWZpbmUgbG9j
-YWxfaXJxX3NhdmUoeCkgIF9fc2F2ZV9hbmRfY2xpKHgpCi0jZGVmaW5lIGxvY2FsX2lycV9zZXQo
-eCkgICBfX3NhdmVfYW5kX3N0aSh4KQotI2VuZGlmCi0KLSNkZWZpbmUgbG9jYWxfaXJxX3Jlc3Rv
-cmUoeCkgX19yZXN0b3JlX2ZsYWdzKHgpCisjZGVmaW5lIGxvY2FsX2lycV9yZXN0b3JlKHgpIFwK
-KwlfX2FzbV9fIF9fdm9sYXRpbGVfXygibXRzbSAlMCIgOiA6ICJyIiAoeCkgOiAibWVtb3J5IiAp
-CiAjZGVmaW5lIGxvY2FsX2lycV9kaXNhYmxlKCkgX19jbGkoKQogI2RlZmluZSBsb2NhbF9pcnFf
-ZW5hYmxlKCkgIF9fc3RpKCkKIAo=
-
---=========3DED9BF500001EE1/mail.tiscali.be--
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
