@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rwcrmhc53.attbi.com (rwcrmhc53.attbi.com [204.127.198.39])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A1FC482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  5 Apr 2002 17:28:40 -0700 (MST)
-Received: from mustang ([24.126.132.94]) by rwcrmhc53.attbi.com
-          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
-          id <20020406002838.BKEW21252.rwcrmhc53.attbi.com@mustang>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Sat, 6 Apr 2002 00:28:38 +0000
-From: Matt McKenzie <linuxknight@attbi.com>
-To: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain
-Date: 05 Apr 2002 16:28:40 -0800
-Message-Id: <1018052920.10719.110.camel@mustang>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BFD62482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  6 Apr 2002 10:55:01 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id lpakmaaa for parisc-linux@lists.parisc-linux.org; Sat, 6 Apr 2002 10:54:00 -0700
+Date: Sat, 6 Apr 2002 09:54:52 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org, 140494-done@bugs.debian.org
+Subject: Re: [parisc-linux] dynamic loader problem
+Message-ID: <20020406175452.GF356@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200203111808.g2BI8u5N013881@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Subject: [parisc-linux] HP 715/75, front LEDs
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200203111808.g2BI8u5N013881@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,51 +25,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Greetings.
+In reference to a message from John David Anglin, dated Mar 11:
+> In looking at the the failure of the g++.brendan/new3.C, I have observed
+> what appears to be a problem with the dynamic loader.  The function
+> _Znwj appears as a global symbol in the main program and in
+> libstdc++.so.4.0.0.  The version in the main program should be selected
+> in preference to the one in the shared library.  However, the dynamic
+> loader actually uses the version in the shared library causing the
+> test to fail.  The program works ok with static linkage.
+> 
+> It looks like the symbol search procedure used in glibc needs some work.
 
-I am new to the HP UNIX world but not a total newbie to the UNIX world
-in general.  I have been using Linux since RedHat 6.0 first came out,
-and I have used FreeBSD, NeXTSTEP and Solaris a bit as well.  I belong
-to Orange County Linux Users Group (www.oclug.org) in California.
+ok, recently events have prompted me to look at this again...
 
-This is a hardware problem not a PA-RISC Linux problem per se, but I
-can't put Linux on it until its fixed, so I hope this is acceptable on
-the list.  
+isn't the test itself broken?
 
-I just recently acquired an HP 715/75, with monitor, kb, mouse.
-Our school received several different HP systems as a donation from a
-local company some time ago, but we recently have gotten Sun Ultra-10s
-so the HPs are now collecting dust mostly.  To make a long story short
-the prof in charge of this lab gave me one.
+it does this:
 
-After much searching, and coming up blank, someone on my local LUG
-mailing list finally found the documentation for the 715, and if I am
-reading the LED troubleshooting tables correctly, it is having this
-problem:
+void *operator new(size_t sz) .....
 
-Internal inconsistency: IODC ENTRY_INIT.
+int main() 
+{
+  A *bb = new A[10]; 
+  ...
+}
 
-The documentation doesn't mention exactly what this means or what to do
-about it.
+you define "operator new", but are calling operator new[], so it
+defaults to the one in libstdc++...
 
-The power LED is green, and LEDs 1,2 and 6 are solid orange.  I think
-LED 4 (heartbeat) is blinking like it's supposed to, but not sure.
+if you change the definition of "operator new" to "operator new[]" then
+the test will pass.
 
-The monitor is blank when the system powers up.  At first I thought it
-could be a problem with the monitor or video cable but we tested the
-cable on another HP in the school lab and it was fine.  The monitor
-might still be a problem, but according to the LEDs it might be
-something else.
-
-Any help is appreciated.  Apologies if this is not directly on-topic.
-
-Thanks!
-
-
-
-
+randolph
 -- 
-73 de K6LNX
-
-Matt M.
-LinuxKnight
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
