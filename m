@@ -1,80 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viemta06.chello.at (viemta06.chello.at [195.34.133.56])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 234F1482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 15:12:54 -0600 (MDT)
-Sender: chris@dsl2.external.hp.com
-Message-ID: <3AD225CF.1AF048F1@dot.at>
-Date: Mon, 09 Apr 2001 23:12:47 +0200
-From: Christoph Plattner <christoph.plattner@dot.at>
-MIME-Version: 1.0
-To: Matt Taggart <taggart@carmen.fc.hp.com>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A302482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 15:53:50 -0600 (MDT)
+Message-Id: <200104092147.PAA29161@puffin.external.hp.com>
+To: Bjorn Helgaas <bjorn_helgaas@hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Many experience done on 720, but `init' fails !!
-References: <3AC90274.4687ED7C@dot.at> <20010403001743.G9198@linuxcare.com>
-	 <3AC973D3.F1453A4C@alcatel.at> <20010403223441.A11435@parcelfarce.linux.theplanet.co.uk> <3ACAC867.25327463@alcatel.at> <20010404180518.C11435@parcelfarce.linux.theplanet.co.uk>  <3AD09AFB.EBDFF975@dot.at> <20010409205209.2FF0437CDB@carmen.fc.hp.com>
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] [PATCH] PDC cleanup and encapsulation 
+In-Reply-To: Your message of "Wed, 04 Apr 2001 16:04:22 PDT."
+             <0104041450480D.19560@eeyore.fc.hp.com>
+Date: Mon, 09 Apr 2001 15:47:20 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello !
+Bjorn Helgaas wrote:
+> CONFIG_PARISC64 =>
+> 	Only possible when CONFIG_PA20 selected
+> 	Build 64-bit kernel by using $(CROSS_COMPILE) = hppa64-linux.
 
-Matt Taggart wrote:
-> 
-> Christoph Plattner writes...
-> 
-> > SO I build sash, a also build a bash (shared and static !), I build
-> > fileutils, text-utils, shell-utils, etc, etc.....
-> > The system boots with bash and I can mount, run programs, etc....
-> 
-> Good.
-> 
-> > The I build "my own" startup stuff. A /sbin/init.d/xxx , etc/rc.d/xxx
-> > and so on. I also build a sysvinit-2.78 (and 2.77 before), but the
-> > `init' has it's problems. The error message is:
-> 
-> Make sure you don't have multiple init's. The kernel will look in several
-> places and I don't remember what order it looks in. If you only have one then
-> that's the only one it can find :)
+rhirst and I don't modify linux/Makefile for CROSS_COMPILE.
+Now automagically based on the .config options selected.
 
-I have only one init. But this is not a problem haveing more than one.
-In the linux kernel it is very simply to have a "source look"
-(init/main.c
-bottom of the file). The kernel tries to exec /sbin/init. Only if the
-exec fails
-(cannot open, load, execute) then the next thing is tried. But if the
-init has
-a problem later on (faults, execptions, etc)the kernel does not try
-other entries.
-
-My problem is in another point. The `init' is also responsible to start
-kernel
-built-in processes (like kernel threads). They are AFAIK compiled in the
-kernel,
-the init process only starts and supervise (or only starts) them. With
-the command
-`ps' those processes are named with `[', `]', like the NFS daemon
-`[nfsd]'.
-Those procresses have very low pids (2,3,....). So I have to analyse the
-code,
-what pid=9 will become ? The break happens here !
-
+> 	cpp predefines __LP64__.
 > 
-> Are you still having problems with the init in the base tarball? Is it
-> important to you to build your own init? If it is reply privately and maybe I
-> can help.
+> So is there a reason for testing __LP64__ rather than CONFIG_PARISC64 in 
+> the code?  There are a zillion tests for the former and none for the 
+> latter, even though the latter seems more direct and obvious.
 
-I read from this tarball in thr mailing list.
-Is this a new root file system ?
-How can I use it.
-I have no debian experence, up to now I only had Redhat and formerly
-Suse.
-Do I need special knowledge ?
+CONFIG_PARISC64 wasn't available when I wrote my code.
+Most of my code uses __LP64__ though I think including linux./config.h
+is better since when it changes, the .o's get rebuilt.
 
-It is a hobby of mine, to build everything myself. I `dream' from a
-source
-directory, where I can say `make install' and a whole Linux is the
-result,
-of course for very small distribution of embeded Linux or firewall
-stuff.
-In my private sparetime, "small & embedded" Linux is my hobby and the HP
-stuff and HP workstation is for me a perfect
-cross-build-lerning-equipment.
+> It seems to me that __LP64__ is overloaded for several things.  
+> Fundamentally, it is a property of the kernel, i.e., it is compiled to run 
+> in wide mode. But we also use it to decide whether to use PDC PAT, which 
+> seems like a slightly different question.  If you run a narrow kernel on a 
+> C3000, the firmware still supports PDC PAT
+
+I didn't think so. A narrow kernel won't have PDC PAT *calls*
+ (eg do_inventory) in it.
+
+>  (although I suppose we would have to do some work to call it in wide mode).
+
+We considered doing this but decided it wasn't worth the effort.
+Others are welcome to make this work if they have time to though...
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
