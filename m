@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spoolm2.tiscalinet.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 006C34839
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Jun 2002 06:08:41 -0600 (MDT)
-Message-ID: <3D15BA95.7070101@freebel.net>
-Date: Sun, 23 Jun 2002 12:09:57 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 93FEB482F
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Jun 2002 18:01:38 -0600 (MDT)
+Date: Mon, 24 Jun 2002 01:01:21 +0100 (IST)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: [Fwd: Re: [parisc-linux] PA8000 modutils problems]
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: Re: [parisc-linux] PA8000 modutils problems 
+In-Reply-To: <20020622020557.AFB544876@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.44.0206240051550.27933-100000@sal.ucc.ie>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,52 +22,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Bruno,
+On Fri, 21 Jun 2002, Grant Grundler wrote:
 
-Till some month ago I encounter a problem when I compile the kernel with 
-gcc-3.2 or gcc-3.1. Those kernels boot well but as soon as you try a 
-network connection (telnet or ssh) the system crash.
+> "M. Grabert" wrote:
+> > Later I tried compiling pa39 (32bit), but depmod reported
+> > "unhandled relocation of type 74" for each function in each module.
+>
+> This is a known bug in the modutils package.
+>
+> Richard Hirst had created an older (hacked 2.4.13) version of
+> modutils that can deal with relocation type 74. See
+> 	ftp://ftp.parisc-linux.org/unofficial-debs/
+>
+> and grab modutils-2.4.13-3.1rgh*
 
-It is a problem in network kernel part but dono yet if it is IP stack or 
-  interface problem.
+Thanks alot! I think I did that earlier, but after an apt-get upgrade
+it might have been 'updated'. I set it to 'HOLD' (dselect) next time.
 
-As some month ago could you send me your last lkcd code so that I could 
-try to locate the problem with at least gdb?
+> > Compiling 64bit with the (quite old) unofficial debs worked however,
+> > but there are some "unresolved symbols" in a few (=4) modules,
+> > each time the symbol is "__xchg64".
+>
+> grundler <506>fgrep -n __xchg64 arch/parisc/kernel/parisc_ksyms.c
+> 77:EXPORT_SYMBOL(__xchg64);
+>
+> Something else is wrong. you are building from CVS right?
+> Try "make distclean" and rebuild the 64-bit vmlinux/ from scratch.
 
-Thanks in advance for your help,
-	Joel
+Yes, I always use the CVS trunk. I always have the CVS tree on
+a different machine and do a CVS update on it (intel laptop with internet
+connection, at work) and then copy the kernel to the parisc-linux machine
+(no internet connection, at home). So I always have a fresh, clean CVS
+kernel (with no old *.o files).
 
- > Dave,
- >
- > The problem mentionned in this mail:
- > 
-http://lists.parisc-linux.org/pipermail/parisc-linux/2002-April/016119.html
- >
- > about gcc-3.2 is the same with gcc-3.1.
- >
- > Dono about some follow-up?
- >
- > Thanks for advise,
- > 	Joel
- >
- > PS:
- > What means PR (how to fil it)?
- > And what means insn?
- >
- > John David Anglin wrote:
- > >>Some weeks ago I also try to compile the kernel (32bits) with gcc-3.1
- > >>(cvs) and eventhought it boots fine there was a problem
- > >>with network connections (as well telnet which uses inetd as well 
-as ssh
- > >>which using its own sshd; this confirm the problem of compilation in
- > >>network interface). Is this problem solved now?
- > >
- > >
- > > Not that I am aware of.  Maybe some of the debian folks have tried 
-looking
- > > into it as they were talking about moving to a newer compiler 
-release.
- > > If it is a compiler problem, I would need a test case showing the
- > > miscompilation and preferably a filed PR.
- > >
- > > Dave
+But I just did a 'make clean' when I decided to make a 64bit. I forgot
+that it is actually a different architecture ... This might have caused
+the problem!
+Thanks for reminding!
+
+
+greetings max
+
+-- 
+I am the "ILOVEGNU" signature virus. Just copy me to your signature.
+This email was infected under the terms of the GNU General Public License.
