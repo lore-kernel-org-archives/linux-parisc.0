@@ -1,28 +1,43 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA02079
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 10:19:01 -0700
-Received: from unknown-24-15.pilot.net (unknown-24-15.pilot.net [206.189.24.15]) by unknown-147.101.pilot.net with ESMTP id JAA22046 for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 09:21:13 -0800 (PST)
-Received: from sumter.capital.ge.com (localhost [127.0.0.1]) by unknown-24-15.pilot.net with ESMTP id JAA01883 for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 09:21:12 -0800 (PST)
-Received: from opti.rfs.capital.ge.com (opti.rfs.capital.ge.com [3.164.72.22])
-	by sumter.capital.ge.com (8.9.3/8.9.1) with SMTP id MAA03025
-	for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 12:21:11 -0500 (EST)
-From: Robert Reilly <robert.reilly@gecapital.com>
-Date: Tue, 21 Nov 2000 18:26:41 GMT
-Message-ID: <20001121.18264100@opti.rfs.capital.ge.com>
-To: parisc-linux@thepuffingroup.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] cd .5
+Received: from www.linux.org.uk (IDENT:root@parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA02476
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 10:39:57 -0700
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13yHNh-0007iG-00; Tue, 21 Nov 2000 17:38:57 +0000
+Date: Tue, 21 Nov 2000 17:38:57 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@puffin.external.hp.com
+Subject: Re: CVS linux Vs. -test10
+Message-ID: <20001121173857.B28902@parcelfarce.linux.theplanet.co.uk>
+References: <200011211311.GAA25238@udlkern.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200011211311.GAA25238@udlkern.fc.hp.com>; from jsm@udlkern.fc.hp.com on Tue, Nov 21, 2000 at 06:11:29AM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi All,
-I have HP9000/d212 I was able to boot off the cdrom image no problem, 
-however when I get the login prompt I am only able to type in two 
-characters and the screen redraws itself and prompts me for a login. I am 
-using a HP700 serial terminal on ttyS0.I briefly scanned the mailing list 
-but did not find anything. Any help would be appreciated.
---Robert Reilly
+On Tue, Nov 21, 2000 at 06:11:29AM -0700, John Marvin wrote:
+> Are we suggesting that we populate include/asm-parisc* and arch/parisc*
+> WITHOUT the machine independent changes in the rest of the tree?
 
-GE Capital Card Service
-UNIX Administrator
-robert.reilly@gecapital.com
+Yes.
+
+> If that is the case, I guess I don't object, although I would want
+> to make sure that Linus knew the state of the code, and that it would
+> not work without a patch containing changes to the machine independent
+> part, and that followup patches to these branches are likely to be
+> huge. We should also add a README in arch/parisc that explains the
+> above (and where to get patches, how to access CVS, etc.). We also
+> need someone to set up an automatic nightly? patch generator.
+
+Agreed.  The patch generation is not a big deal to arrange.
+
+> I certainly don't want to try to get the machine independent changes in
+> yet, since we still have some major issues to fix/clean there, and I doubt
+> Linus would want them at this time anyway.
+
+Certainly none of the stack direction changes.  Some of the MI stuff is
+arguably stuff we could put in.
+
+-- 
+Revolutions do not require corporate support.
