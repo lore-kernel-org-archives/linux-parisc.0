@@ -1,20 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2C037482E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 Jan 2002 10:54:11 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id dlzxkaaa for parisc-linux@lists.parisc-linux.org; Tue, 22 Jan 2002 10:54:11 -0700
-Date: Tue, 22 Jan 2002 09:53:32 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] vmlinux header for savecrash.
-Message-ID: <20020122175332.GF3247@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <3C4C53B7.67DA24E@admin.france.hp.com> <20020121202539.994A5482A@dsl2.external.hp.com> <3C4D2EFB.F82671C2@admin.france.hp.com> <20020122174533.38418482A@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020122174533.38418482A@dsl2.external.hp.com>
+To: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] B2000 
+In-Reply-To: Message from "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+   of "Tue, 22 Jan 2002 15:56:59 +0100." <03273D4BC7F4D511AC440008C7E6F8815420CA@nlntmail2b.ats.nld.alcatel.nl>
+References: <03273D4BC7F4D511AC440008C7E6F8815420CA@nlntmail2b.ats.nld.alcatel.nl> 
+Date: Tue, 22 Jan 2002 10:55:57 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020122175557.D51FF482E@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,16 +19,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Randolph Chung and I were wondering if dump driver could save a
-> parameter passed in by palo: eg "boot_kernel=/boot/vmlinux-pa11".
-> I haven't checked if something like that already exists.
+"Witvliet, Hans" wrote:
+> LS
+> Even though under "tested hardware"  it stated : B, C and J workstations 
 
-Is this really an arch-dependent problem? How do other architectures (I
-think lkcd works on i386 and alpha?) do this?
+The kernel runs those boxes.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+> I noticed that there were some difficulties with the B2000 in previous
+> versions
+> With the latest version (0.93) I still get after booting (from internal
+> cdrom-drive):
+
+Built-in IDE cd-rom drive on BCJ-[123567]XXX is not supported.
+Off and on I've been hacking on suckyio IDE support but it's still
+not working.
+
+Install from either external SCSI CD-ROM or via network.
+
+grant
