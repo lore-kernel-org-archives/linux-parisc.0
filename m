@@ -1,31 +1,75 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from merulo.debian.org (merulo.external.hp.com [192.25.206.12])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 791DD482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 12:31:36 -0600 (MDT)
-Received: from rover.gag.com (rover.gag.com [192.133.104.32])
-	by winfree.gag.com (Postfix) with ESMTP id 5074C241ED
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 12:31:32 -0600 (MDT)
-Sender: bdale@rover.gag.com
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 18663482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 13:40:07 -0600 (MDT)
+Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
+	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f7EJp9X30667
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 15:51:09 -0400
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id f7EJebu26035
+	for parisc-linux@lists.parisc-linux.org; Tue, 14 Aug 2001 15:40:37 -0400
+Date: Tue, 14 Aug 2001 15:40:37 -0400
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Telnetd ?
-References: <EF3C37D1121CD511894800A0C9E3AE7DA99C7B@xatl04.atl.hp.com>
-From: Bdale Garbee <bdale@gag.com>
-Date: 14 Aug 2001 12:31:28 -0600
-In-Reply-To: <EF3C37D1121CD511894800A0C9E3AE7DA99C7B@xatl04.atl.hp.com>
-Message-ID: <87hevabiin.fsf@rover.gag.com>
-MIME-Version: 1.0
+Message-ID: <20010814154037.I25258@megatonmonkey.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Users staying up to date.
 List-ID: <linux-parisc.vger.kernel.org>
 
-christopher_toland@hp.com (TOLAND,CHRISTOPHER HP-USA,ex1) writes:
+parisc,
 
-> installed 0.9.2 from cd ,, can ping and telnet out ,, unable to telnet in ,,
-> looked in inetd.conf -- no ref to telnetd ,, looked for telnetd none found
-> ,, thanks for the help in advance
+I would like to say that you guys have done a great job
+with this port!
 
-The telnetd package is available for installation on hppa from any Debian
-mirror.  I can't comment on why it was or was not included in the CD image,
-but I can tell you that I don't allow telnetd's on machines I personally
-administer because of the various security issues.  I strongly prefer ssh...
+I was just looking to bounce some ideas off the list members.
+As an avid user, I was just musing to myself, how can I keep
+everything up to date (kernel/glibc/packages)?
 
-Bdale
+Obviously the latest kernel/glibc/gcc... will reside in the
+CVS. It's a matter of slurping/building and testing on one
+of our boxen.
+
+The packages are a slightly different matter. Is the 0.9.2
+iso the latest collection of packages? Is anyone in debain-hppa
+compiling/testing packages?
+
+We have a cluster of 30x 715/50's running.
+And for one reason or another have not quite gotten the debian
+installer to run to completetion (nor can I spend the time to
+install on each node... that's what scripts and root tarballs
+are for).
+
+Instead we have used the baseplus tar from sid to install the nodes.
+The only extra packages we required were NIS(yp*) and MPICH(1.2.1).
+
+I recently found though, that when compiling more complicated
+MPI programs, cc and ld start dropping SIG11's like there was
+no tommorow (more on this after I do some testing).
+
+Is there a fundamental flaw in using sid's baseplus tarball for
+the 715/50 systems?
+
+We were doing:
+1- Unpack sid baseplus root tarball
+2- x-compiled and installed NIS(yp*) and MPICH
+3- Use this as my new root tarball for the rest of the cluster
+
+Should I be doing:
+
+1- Unpack sid baseplus and export via nfs
+2- Download latest debs and export via nfs
+3- Boot "clone" box with nfs root
+4- Point apt to the debs on the nfs share
+5- Update packages like mad
+6- Use "clone" as my new root tarball for the rest of the cluster
+
+Really, I'm just looking for a simple way to stay up to date
+with all the latest packages and kernel changes :)
+
+Cheers,
+Carlos O'Donell Jr.
+-------------------------
+Baldric Project
+http://www.baldric.uwo.ca
+-------------------------
