@@ -1,16 +1,20 @@
-Return-Path: <Soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 13ADC487A
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2D704829
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 15 Apr 2004 01:05:45 -0600 (MDT)
-Date: Thu, 15 Apr 2004 09:05:41 +0200
-Message-ID: <40711E5500006381@ocpmta2.freegates.net>
-In-Reply-To: <407DA495.1090009@tiscali.be>
-From: "Joel Soete" <Soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
-To: "Andy Walker" <ajwalker@broadpark.no>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+	Thu, 15 Apr 2004 09:48:12 -0600 (MDT)
+Date: Thu, 15 Apr 2004 09:48:11 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] B1000/C3000
+Message-ID: <20040415154811.GA3514@colo.lackof.org>
+References: <200404142051.i3EKpfQX018442@hiauly1.hia.nrc.ca>
+	<Pine.LNX.4.58.0404142155100.8626@sal.ucc.ie>
+	<20040414232833.GQ31873@tausq.org>
+	<Pine.LNX.4.58.0404150125020.28713@sal.ucc.ie>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.58.0404150125020.28713@sal.ucc.ie>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -21,17 +25,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
->That said, thanks to viewcvs, cvs and some tbz I recover from my systems,
-I >reach to rebuild on my b2k at the office:
->2.6.3-pa2 (runing simultaneoulsy 2 find on different linux tree, a 
-> tar of one of those tree) survive :)
->2.6.4-rc1-pa3 same test: survive (so no pb with ccio-dma changes) :)
->but 2.6.4-rc4-pa6 died with same messages.
+On Thu, Apr 15, 2004 at 03:04:10AM +0100, M. Grabert wrote:
+> Okay, it's not a patch/diff, it's not XHTML, but a start:
 
-Sorry a typo: read 2.6.4-rc3-pa6 in place of rc4 :(
+I've hacked it a bit and committed to CVS (repository "web").
+Please submit patches against graphics-howto.x for further
+modifications.
 
-Joel
+Please let me know if you are (a) ok with the "Artistic Commons License"
+and (b) changes I made to the text.
 
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
-http://reg.tiscali.be/default.asp?lg=fr
+thanks,
+grant
