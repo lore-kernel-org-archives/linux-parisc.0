@@ -1,36 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 629314A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 04:24:10 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA28602;
-	Fri, 16 Mar 2001 22:24:05 +1100
-Date: Fri, 16 Mar 2001 22:24:05 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20010316105056.U31505@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0103162219500.4658-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: tracing through sig handlers
+Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 536E84A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 04:56:23 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id C65AEB007; Fri, 16 Mar 2001 11:55:35 +0000 (GMT)
+Date: Fri, 16 Mar 2001 11:55:35 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010316115535.X31505@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] New glibc on 715/75
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, 16 Mar 2001, Richard Hirst wrote:
+I am trying the glibc etc from newcompilers-20010314 on my 715/75.
+It seems anything that is dynamically linked hangs on exit.
 
-> I havn't worked out why this is only apparently necessary when a process
-> is being traced.
+I am booting with init=/bin/sash, and have static and dynamic
+versions of hello-world (in C, not C++), and of gdb.
 
-I'm not even going to attempt to figure out why. :-)  Perhaps one of te
-kernel gurus can shed some light.
+I can run the static programs ok, but if I run the dynamic hello-world
+it outputs HelloWorld and then goes to sleep.  Console still echoes,
+but I don't get the sash prompt back.
 
-> It makes things better with gdb also, but not perfect.  The problem
-> now is that when you try to step out of the signal handler the program
-> under test just runs on without stopping.
+This isn't a particularly new problem - I havn't had a working 715/75
+root fs since the attempt to part-fix libpthread.
 
-gdb is still confused about signal handler frames, and I haven't managed
-to fix that today.  Too many other fires to fight.
-
-Alan
--- 
-Linuxcare
+Richard
