@@ -1,7 +1,7 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] [BUG] 2.6.8-1-32 Debian kernel panics in harmony
-Date: Thu, 11 Nov 2004 00:38:50 -0700
-Message-ID: <20041111073850.GA9768@colo.lackof.org>
+Subject: [parisc-linux] 2.6.10-rc1-pa11 profile data
+Date: Thu, 11 Nov 2004 00:54:31 -0700
+Message-ID: <20041111075431.GB9768@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -17,32 +17,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Stuart/et al ,
+I was comparing "time" output for various flavors of
+kernels and arches. We are something like 11m/17m/5m
+for real/user/sys on a dual j6700 (dual 750Mhz, running
+2.6.10-rc1-pa11-32SMP kernel building a 64-bit kernel
+(using gcc 3.0.4). Similar numbers for J6000 (dual 550Mhz)
+doing a 32-bit kernel build (gcc 3.3.x): 14m/22m/5m.
 
-I was playing around with the b180 I've setup for a friend
-of the family (11 year old kid) and pretty quickly
-panic'd the 2.6.8-1-32 debian kernel.
+While this might look very favorable to a similar full kernel
+build on a 1.5Ghz RX2600 which takes about as long (11m/20m/1m), 
+the ia64 machine spends less than 1m in the kernel.
 
-I wanted to reproduce it again with serial console so
-I could grab the tombstone but serial console didn't have a
-getty and networking wasn't config'd...so I give up for now.
-But I think it's easy enough to reproduce...
+I've collect two profiles for -64SMP and will collect
+some UP profiles tomorrow. profiles so far are measuring
+a full kernel build. I expect I'll do the same for -64UP
+kernels too.
 
-I played an mp3 with "mpg321 foo.mp3" and then ^C
-that after it played for 10-20 seconds. first it gave
-noises like it was looping on a garbage buffer.
-I restarted the mpg and it played fine again.
-Hit ^C again and again got noise.
-Repeat playing the same mp3 one more time and then got a kernel panic.
-panic was in the harmony interrupt routine and apologize if
-that's too vague.
+What I have so far is on:
+	http://www.parisc-linux.org/~grundler/prof-j6700/
 
-Please remind me tomorrow what other info is needed and
-if the tombstone is necessary.
+d- and i-cache flushing routines are still the top consumers.
 
-thanks,
+hth,
 grant
-
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
