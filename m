@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ernie.webservepro.com (ernie.webservepro.com [198.94.137.170])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A107F482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Feb 2003 03:00:21 -0700 (MST)
-Received: from ernie.webservepro.com (mailman@localhost [127.0.0.1])
-	by ernie.webservepro.com (8.12.0.Beta19/8.12.0.Beta19) with ESMTP id h1DA02Hn023653
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Feb 2003 05:00:02 -0500
-Date: Thu, 13 Feb 2003 05:00:02 -0500
-Message-ID: <20030213100002.23651.10725.Mailman@ernie.webservepro.com>
-From: nec-request@shirky.com
-To: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] Mailman results for NEC
+Received: from server.da-kot (21-40.CampusNet.ucl.ac.be [130.104.21.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 293E4482A
+	for <parisc-linux@parisc-linux.org>; Thu, 13 Feb 2003 11:48:45 -0700 (MST)
+Received: from guy.da-kot ([192.168.0.7] helo=there)
+	by server.da-kot with smtp (Exim 3.36 #1 (Debian))
+	id 18jOPY-0002hW-00
+	for <parisc-linux@parisc-linux.org>; Thu, 13 Feb 2003 19:48:40 +0100
+From: Martin Guy <gmsoft@gentoo.org>
+To: parisc-linux@parisc-linux.org
+Date: Thu, 13 Feb 2003 19:48:30 +0100
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_U8G9GYF5TW3RAW06HH3P"
+Message-Id: <E18jOPY-0002hW-00@server.da-kot>
+Subject: [parisc-linux] Xfree 4.2.1 not running
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,60 +25,87 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is an automated response.
+--------------Boundary-00=_U8G9GYF5TW3RAW06HH3P
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-There were problems with the email commands you sent to Mailman via
-the administrative address <nec-request@shirky.com>.
+Hi.
 
-To obtain instructions on valid Mailman email commands, send email to
-<nec-request@shirky.com> with the word "help" in the subject line or
-in the body of the message.
+I've tryed to compil Xfree v4.2.1 on my B180L.
+The compilation works fine but I have a problem while trying to start X.
+I guess I've ommited a CFLAGS or something else but I'm unable to solve the 
+problem.
+Gcc version is 3.2.1.
 
-If you want to reach the human being that manages this mailing list,
-please send your message to <nec-admin@shirky.com>.
 
-The following is a detailed description of the problems.
+The log is in attachement.
 
->>>>> Subject line ignored:
->>>>>   parisc-linux sent you a card from NiceCards!
-Command? Dear nec-request,
-Command? Guess what?  parisc-linux (parisc-linux@lists.parisc-linux...
-Command? Your card can be picked up by clicking on the following link:
-Command? http://nicecards.com/card/3989559-MGBXK
->>>>> 
->>>>> Too many errors encountered; the rest of the message is ignored:
-> 
-> or
-> 
-> By going to our card pick-up page at:
-> 
-> http://nicecards.com/
-> 
-> and entering in the following card ID: 3989559-MGBXK
-> 
-> Thank you!
-> 
-> team@nicecards.com
-> NiceCards
-> 
-> Note: Your card will be kept in our card center for two weeks.  After two
-> weeks, your card will be deleted.
-> 
-> ====================================================================
-> Try out these other great sites in the NiceCards network!
-> 
->     http://friendfinder.com - Dating and friendship personals
->     http://asiafriendfinder.com - Chinese personals
->     http://frenchfriendfinder.com - French personals
->     http://koreanfriendfinder.com - Korean personals
->     http://germanfriendfinder.com - German personals
->     http://amigos.com - Spanish personals
->     http://seniorfriendfinder.com - Senior personals
->     http://churchfriendfinder.com - Christian/spiritual personals
->     http://adultfriendfinder.com - Adults only personals
->     http://outpersonals.com - Gay personals
->     http://sharerent.com - Roommate/housing directory
->     http://friendpages.com - Free homepages
->     http://friendparty.com - Free party invites and photo sharing
->     http://dine.com - Free restaurant reviews and menus
-> 
+Regards, 
+
+	Guy Martin
+
+
+
+--------------Boundary-00=_U8G9GYF5TW3RAW06HH3P
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name="XFree86.0.log"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="XFree86.0.log"
+
+ClhGcmVlODYgVmVyc2lvbiA0LjIuMSAvIFggV2luZG93IFN5c3RlbQoocHJvdG9jb2wgVmVyc2lv
+biAxMSwgcmV2aXNpb24gMCwgdmVuZG9yIHJlbGVhc2UgNjYwMCkKUmVsZWFzZSBEYXRlOiAzIFNl
+cHRlbWJlciAyMDAyCglJZiB0aGUgc2VydmVyIGlzIG9sZGVyIHRoYW4gNi0xMiBtb250aHMsIG9y
+IGlmIHlvdXIgY2FyZCBpcwoJbmV3ZXIgdGhhbiB0aGUgYWJvdmUgZGF0ZSwgbG9vayBmb3IgYSBu
+ZXdlciB2ZXJzaW9uIGJlZm9yZQoJcmVwb3J0aW5nIHByb2JsZW1zLiAgKFNlZSBodHRwOi8vd3d3
+LlhGcmVlODYuT3JnLykKQnVpbGQgT3BlcmF0aW5nIFN5c3RlbTogTGludXggMi40LjIwLXBhMjYg
+cGFyaXNjIFtFTEZdIApNb2R1bGUgTG9hZGVyIHByZXNlbnQKTWFya2VyczogKC0tKSBwcm9iZWQs
+ICgqKikgZnJvbSBjb25maWcgZmlsZSwgKD09KSBkZWZhdWx0IHNldHRpbmcsCiAgICAgICAgICgr
+KykgZnJvbSBjb21tYW5kIGxpbmUsICghISkgbm90aWNlLCAoSUkpIGluZm9ybWF0aW9uYWwsCiAg
+ICAgICAgIChXVykgd2FybmluZywgKEVFKSBlcnJvciwgKE5JKSBub3QgaW1wbGVtZW50ZWQsICg/
+PykgdW5rbm93bi4KKD09KSBMb2cgZmlsZTogIi92YXIvbG9nL1hGcmVlODYuMC5sb2ciLCBUaW1l
+OiBUaHUgRmViIDEzIDE3OjA5OjA4IDIwMDMKKC0tKSB1c2luZyBWVCBudW1iZXIgNwoKKFdXKSBP
+cGVuIEFQTSBmYWlsZWQgKC9kZXYvYXBtX2Jpb3MpIChObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5
+KQooSUkpIE1vZHVsZSBBQkkgdmVyc2lvbnM6CglYRnJlZTg2IEFOU0kgQyBFbXVsYXRpb246IDAu
+MQoJWEZyZWU4NiBWaWRlbyBEcml2ZXI6IDAuNQoJWEZyZWU4NiBYSW5wdXQgZHJpdmVyIDogMC4z
+CglYRnJlZTg2IFNlcnZlciBFeHRlbnNpb24gOiAwLjEKCVhGcmVlODYgRm9udCBSZW5kZXJlciA6
+IDAuMwooSUkpIExvYWRlciBydW5uaW5nIG9uIGxpbnV4CihJSSkgTG9hZE1vZHVsZTogImJpdG1h
+cCIKKElJKSBMb2FkaW5nIC91c3IvWDExUjYvbGliL21vZHVsZXMvZm9udHMvbGliYml0bWFwLmEK
+Tm90IGxvYWRpbmcgLnJlbGEudGV4dApOb3QgbG9hZGluZyAucmVsYS5yb2RhdGEKTm90IGxvYWRp
+bmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9h
+ZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLmRhdGEKTm90IGxvYWRpbmcgLlBBUklT
+Qy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVs
+YS50ZXh0Ck5vdCBsb2FkaW5nIC5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLlBBUklT
+Qy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEudGV4dApOb3QgbG9hZGluZyAuUEFSSVNDLnVud2lu
+ZApOb3QgbG9hZGluZyAucmVsYS5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLnRleHQK
+Tm90IGxvYWRpbmcgLnJlbGEuZGF0YQpOb3QgbG9hZGluZyAucmVsYS5yb2RhdGEKTm90IGxvYWRp
+bmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9h
+ZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLmRhdGEKTm90IGxvYWRpbmcgLlBBUklT
+Qy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVs
+YS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLnJvZGF0YQpOb3QgbG9hZGluZyAuUEFSSVNDLnVud2lu
+ZApOb3QgbG9hZGluZyAucmVsYS5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLnRleHQK
+Tm90IGxvYWRpbmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFSSVNDLnVud2lu
+ZApOb3QgbG9hZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5yZWxhLnJvZGF0YQpOb3QgbG9h
+ZGluZyAuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVsYS5QQVJJU0MudW53aW5kCk5vdCBs
+b2FkaW5nIC5yZWxhLnRleHQKTm90IGxvYWRpbmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcg
+LnJlbGEuUEFSSVNDLnVud2luZApOb3QgbG9hZGluZyAucmVsYS50ZXh0Ck5vdCBsb2FkaW5nIC5y
+ZWxhLmRhdGEKTm90IGxvYWRpbmcgLlBBUklTQy51bndpbmQKTm90IGxvYWRpbmcgLnJlbGEuUEFS
+SVNDLnVud2luZAooRUUpIExvYWRNb2R1bGU6IE1vZHVsZSBiaXRtYXAgZG9lcyBub3Qgc3VwcGx5
+IHZlcnNpb24gaW5mb3JtYXRpb24KKElJKSBVbmxvYWRNb2R1bGU6ICJiaXRtYXAiCihJSSkgVW5s
+b2FkaW5nIC91c3IvWDExUjYvbGliL21vZHVsZXMvZm9udHMvbGliYml0bWFwLmEKKEVFKSBGYWls
+ZWQgdG8gbG9hZCBtb2R1bGUgImJpdG1hcCIgKGludmFsaWQgbW9kdWxlLCAwKQooSUkpIExvYWRN
+b2R1bGU6ICJwY2lkYXRhIgooSUkpIExvYWRpbmcgL3Vzci9YMTFSNi9saWIvbW9kdWxlcy9saWJw
+Y2lkYXRhLmEKTm90IGxvYWRpbmcgLnJlbGEudGV4dApOb3QgbG9hZGluZyAucmVsYS5kYXRhCk5v
+dCBsb2FkaW5nIC5QQVJJU0MudW53aW5kCk5vdCBsb2FkaW5nIC5yZWxhLlBBUklTQy51bndpbmQK
+KEVFKSBMb2FkTW9kdWxlOiBNb2R1bGUgcGNpZGF0YSBkb2VzIG5vdCBzdXBwbHkgdmVyc2lvbiBp
+bmZvcm1hdGlvbgooSUkpIFVubG9hZE1vZHVsZTogInBjaWRhdGEiCihJSSkgVW5sb2FkaW5nIC91
+c3IvWDExUjYvbGliL21vZHVsZXMvbGlicGNpZGF0YS5hCihFRSkgRmFpbGVkIHRvIGxvYWQgbW9k
+dWxlICJwY2lkYXRhIiAoaW52YWxpZCBtb2R1bGUsIDApCgpGYXRhbCBzZXJ2ZXIgZXJyb3I6ClVu
+YWJsZSB0byBsb2FkIHJlcXVpcmVkIGJhc2UgbW9kdWxlcywgRXhpdGluZy4uLgoKCldoZW4gcmVw
+b3J0aW5nIGEgcHJvYmxlbSByZWxhdGVkIHRvIGEgc2VydmVyIGNyYXNoLCBwbGVhc2Ugc2VuZAp0
+aGUgZnVsbCBzZXJ2ZXIgb3V0cHV0LCBub3QganVzdCB0aGUgbGFzdCBtZXNzYWdlcy4KVGhpcyBj
+YW4gYmUgZm91bmQgaW4gdGhlIGxvZyBmaWxlICIvdmFyL2xvZy9YRnJlZTg2LjAubG9nIi4KUGxl
+YXNlIHJlcG9ydCBwcm9ibGVtcyB0byB4ZnJlZTg2QHhmcmVlODYub3JnLgoK
+
+--------------Boundary-00=_U8G9GYF5TW3RAW06HH3P--
