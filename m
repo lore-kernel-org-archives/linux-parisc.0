@@ -1,42 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F133F482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Jul 2001 02:32:06 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id BAD4DB00C; Wed, 18 Jul 2001 09:30:04 +0100 (BST)
-Date: Wed, 18 Jul 2001 09:30:04 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Tom <tom@alaskatech.org>
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0F0DC482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Jul 2001 10:33:23 -0600 (MDT)
+To: marteaut@esiee.fr
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 715/100 no longer boots into console?
-Message-ID: <20010718093004.Z30356@linuxcare.com>
-References: <200107172125.NAA09485@goliath> <Pine.LNX.4.33.0107171419400.8533-100000@goliath>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0107171419400.8533-100000@goliath>; from tom@alaskatech.org on Tue, Jul 17, 2001 at 02:21:16PM -0800
+Message-ID: <OF9ED32FBA.01646964-ONC1256A8D.0059C095@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Wed, 18 Jul 2001 18:33:21 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 2.4.6-pa20 question about modules
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jul 17, 2001 at 02:21:16PM -0800, Tom wrote:
-> On Tue, 17 Jul 2001, Helge Deller wrote:
-> > > > I assume your /etc/inittab is spawning a getty on tty0?
-> > >
-> > > Tom: Does it ?  If not, then that's why it's failing.
-> >
-> > Tom, I just saw you already answered this.
-> > So please forget about my mail.
-> >
-> > Greetings,
-> > Helge
-> 
-> No problem :-)  Actually, my only remaining question is why disabling the
-> tty[x] entries in inittab would be a default behavior; I had changed it
-> with 0.9 and the install of 0.91 changed it back. Weird.
-> 
-> Anyway, that might be a good thing to change for a 1.0 release - assuming
-> the console will be serial could be bad...
+Hi Thomas,
 
-Installer should auto detect whether it is on a serial on graphical
-console, and set up inittab appropriately.  Sounds like it got confused
-in your case.  Not aware of anyone else having that problem.
+With your tips
+(http://lists.parisc-linux.org/pipermail/parisc-linux/2001-July/013081.html)
 
-Richard
+the cvs 20010717 seems to works fine.
+(for b180 still have to unplug re-plug kdb)
+
+I also try to recompile it with the .config file supply with palinux-0.9.2.
+It also seems to works well but modules are not install naturally.
+Can you explain me how to compile it and install it?
+
+Thanks in advance for help,
+     Joel
+
+PS: How is it possible to cvs co a previous kernel release now (f.e.
+2.4.0-pa30)?
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
