@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 850C5483E
-	for <parisc-linux@parisc-linux.org>; Sun, 19 Oct 2003 17:14:10 -0600 (MDT)
-Date: Sun, 19 Oct 2003 19:10:15 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <soete.joel@tiscali.be>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was: do_page_fault?]
-Message-ID: <20031019231015.GH8642@systemhalted>
-References: <3F8A272E00000550@ocpmta3.freegates.net> <3F91ACEC.1010504@tiscali.be> <3F92AD98.3030104@tiscali.be> <3F92EAB4.7070802@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F92EAB4.7070802@tiscali.be>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 920AD483E
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 19 Oct 2003 17:16:06 -0600 (MDT)
+Message-Id: <200310192316.h9JNG3At027825@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Sun, 19 Oct 2003 19:16:03 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20031019215130.GG8642@systemhalted> from "Carlos O'Donell" at Oct 19, 2003 05:51:30 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Re: HPPA FPU Specification? (FE_INEXACT raised by accident)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +22,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Oct 19, 2003 at 07:49:08PM +0000, Joel Soete wrote:
-> Hi pa,
-> 
-> Please apologies, I forget to mentioned an important matter:
-> with 2.6.0-test-pa1 it is not anymore a do_page_fault() but:
-> evolution (pid 2454): Protection id trap (code 27) 
+> I've noticed that I cannot generate an underflow or overflow exception
+> without also forcing an inexact exception on my PA 2.0 system. Are you
+> familiar with this behaviour at all? I'm trying to straighten our fenv
+> setup, and this is really the last crinkle.
 
-Do not wrap lines like this. 
- 
-> YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI 
->                            PSW: 00000000000001000000000000001111 Not 
-> tainted                                                       r00-03 
+I suggest looking at page 10-7.  It describes the PA 2.0 behavior
+for this situation.  I'm not an IEEE so I don't know offhand what it
+mandates.
 
-You should really run evolution through gdb. Remember to use "handle all
-nostop" and "handle all pass".
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
