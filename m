@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hotmail.com (oe44.law4.hotmail.com [216.33.148.81])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 61933482B
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 10:06:46 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id C8D23482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 24 Jul 2002 10:09:07 -0600 (MDT)
 From: "kenneth westelinck" <kennywest1@hotmail.com>
-To: "Richard Hirst" <rhirst@linuxcare.com>
-Cc: "Matthew Wilcox" <willy@debian.org>,
-	<parisc-linux@parisc-linux.org>
-References: <OE32H8BX2vRxFmNHYus00008028@hotmail.com> <20020723150421.G3052@parcelfarce.linux.theplanet.co.uk> <OE71RBHZXFZ0stgr3SU00003162@hotmail.com> <20020724143958.GS29996@sleepie.demon.co.uk>
-Subject: Re: [parisc-linux] unresoved symbols when doing a make modules_install
-Date: Wed, 24 Jul 2002 18:06:30 +0200
+To: "Matthew Wilcox" <willy@debian.org>, <joel.soete@freebel.net>
+Cc: <joel.soete@freebel.net>, <parisc-linux@lists.parisc-linux.org>
+References: <1027513921.3d3e9e41069a0@webmail.tiscalinet.be> <20020724134744.K3052@parcelfarce.linux.theplanet.co.uk> <1027518368.3d3eafa051fc1@webmail.tiscalinet.be>
+Subject: Re: [parisc-linux] K-2.5.26-pa0: NCR5380.c ?
+Date: Wed, 24 Jul 2002 18:09:04 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Message-ID: <OE44z4uqqtBqykC26qz00004754@hotmail.com>
+Message-ID: <OE447R3gVBYJmczY4Yh00004757@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,35 +23,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I see.
-Indeed, I'm not configuring any PCI or ISA slots, as my 712 doesn't have any
-(at least I haven't seen any of these slots when I replaced the CMOS
-battery). That's why I'm building my own kernels in the first place; to have
-a kernel suited for my own box.
-I assume if I would disable PCI and ISA on my 486 (hypothetically), the ppa
-would have some unresolved symbols as well?
-So, should I enable PCI or ISA to make the ppa module work? Or is there
-another way around to use the ppa module without the PCI or ISA stuff?
-Thanks.
-
-Kenneth
+# CONFIG_SCSI_GENERIC_NCR5380 is not set
+I'm not using it on my 712/60. So I guess you can remove this from your
+config for your 712.
 
 ----- Original Message -----
-From: "Richard Hirst" <rhirst@linuxcare.com>
-To: "kenneth westelinck" <kennywest1@hotmail.com>
-Cc: "Matthew Wilcox" <willy@debian.org>; <parisc-linux@parisc-linux.org>
-Sent: Wednesday, July 24, 2002 4:39 PM
-Subject: Re: [parisc-linux] unresoved symbols when doing a make
-modules_install
+From: <joel.soete@freebel.net>
+To: "Matthew Wilcox" <willy@debian.org>
+Cc: <joel.soete@freebel.net>; <parisc-linux@lists.parisc-linux.org>
+Sent: Wednesday, July 24, 2002 3:46 PM
+Subject: Re: [parisc-linux] K-2.5.26-pa0: NCR5380.c ?
 
 
-> On Wed, Jul 24, 2002 at 10:33:22AM +0200, kenneth westelinck wrote:
-> > > i'm baffled.  we prototype, define and EXPORT_SYMBOL outs[bwl].  i
-can't
-> > > see why you'd get this error.
+> Quoting Matthew Wilcox <willy@debian.org>:
 >
-> But only if CONFIG_PCI or CONFIG_ISA, kenneth has neither in his config.
+> > On Wed, Jul 24, 2002 at 02:32:01PM +0200, joel.soete@freebel.net wrote:
+> > > In NCR5380.c failled to compile because 'io_request_lock' undeclare.
+> >
+> > why are you trying to compile this driver?  do you _really_ have an
+> > NCR5380?
+> >
+> > --
+> > Revolutions do not require corporate support.
+> >
+> inheritance from config-2.4.17-32 (of Debian kernel image of this time) :)
 >
-> Richard
+> Too lasy to analyse exactly what I need for my 712, b180, b2000 I continue
+to
+> use it.
 >
+> Joel
+>
+>
+> -------------------------------------------------
+> This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 >
