@@ -1,30 +1,63 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA32329
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 May 2000 22:02:57 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 17 May 2000 04:03:01 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA31587;
-	Wed, 17 May 2000 14:01:07 +1000
-Date: Wed, 17 May 2000 14:01:07 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Paul Bame <bame@endor.fc.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] glibc and the rest of the world
-In-Reply-To: <Pine.LNX.4.21.0005170945210.24914-102000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0005171358590.24914-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA07191
+	for <parisc-linux@puffin.external.hp.com>; Wed, 17 May 2000 15:19:32 -0600
+Received: from ppp177.a1-2.56k.execulink.com (ppp177.a1-2.56k.execulink.com [209.239.9.243])
+	by amsterdam.execulink.net (8.9.3/8.9.3) with ESMTP id RAA11576
+	for <parisc-linux@thepuffingroup.com>; Wed, 17 May 2000 17:19:38 -0400 (EDT)
+Date: Wed, 17 May 2000 17:19:22 -0400 (EDT)
+From: Chris Snow <csnow@julian.uwo.ca>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.21.0005171707460.1861-100000@boy.localdomain>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] hang during boot - Apollo 715/50
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 17 May 2000, Alan Modra wrote:
 
-> I've attached a set of patches for the kernel and palo that use a `;!'
-> comment start to provide backward compatibility with existing tools.
+I've got an Apollo 715/50 box, 32Meg RAM and a serial console for
+output.  I followed the "recipe" from the web site, and built a kernel,
+installed rbootd, etc.  Then i "cvs update"'d the kernel code to the
+latest version. Then, I boot and it hangs.
 
-Which is incomplete, I've just found :-(  The kernel uses ';' in some
-macros to generate asm, with bad results if you happen to be using
-binutils where ';' is a comment char.  Fixing it....
+I talked to Puffin on IRC this afternoon (me="Ftns"), and he suggested
+I post here.
 
--- 
-Linuxcare.  Support for the Revolution.
+
+
+When I boot the machine, I get the following - typing by hand, so I'll
+give you the last part:
+
+..... (other stuff) ....
+Starting kswapd v1.6
+Serial driver version 4.92 (2000-1-27) with MANY_PORTS SHARE_IRQ \
+SERIAL_PCI enabled
+pty: 256 Unix98 ptys configured
+RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 blocksize
+82596.c: MAC of HP700 LAN blindely read from the prom!
+eth0: 82596 at -xf0826000, 08 00 09 62 82 1E IRQ 535
+lasi_82596.c:v1.2 02/13/2000
+eth0: lp at 0xc1fd4000 (1720 bytes), lp->scp at 0xc1fd4014
+request_irq(535, c01baea8, 0x0, i82596, c1fecc00)
+busdev_enable_irq(c1fe9080, 23) ASP: IMR 0x100
+busdev_disable_irq(c1fe9080, 23) ASP: IMR 0x0
+
+
+
+then it hangs.
+
+
+After inserting some printk's, it seems the kernel goes into
+do_initcalls() in init/main.c and never returns...
+
+Does anyone have any suggestions for this?  I'm going to muck around some
+more with it, but I'd love to hear that someone else had the same problem
+and already has a fix for it :)
+
+
+Thanks,
+
+
+
+
+
+     Chris
