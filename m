@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1F5954844
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 07:29:45 -0700 (MST)
-Date: Mon, 18 Feb 2002 09:29:56 -0500
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: =?iso-8859-1?Q?Jo=EBl_Soete?= <jso@europay.com>
-Cc: dave@hiauly1.hia.nrc.ca, parisc-linux@lists.parisc-linux.org
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BD14E484E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Feb 2002 07:48:14 -0700 (MST)
 Subject: Re: [parisc-linux] Re: hppa-linux gcc-3.0.3:
-Message-ID: <20020218092956.A1324@systemhalted>
-References: <OF5687265E.42AF0F56-ONC1256B64.00367C5C@com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OF5687265E.42AF0F56-ONC1256B64.00367C5C@com>; from jso@europay.com on Mon, Feb 18, 2002 at 11:19:33AM +0100
+To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+Cc: dave@hiauly1.hia.nrc.ca, parisc-linux@lists.parisc-linux.org
+Message-ID: <OF99BC0404.6646AF92-ONC1256B64.0050D0F6@com>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Mon, 18 Feb 2002 15:54:11 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,12 +21,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Carlos,
+
+Thanks for advise but I speek well about the new (annonced on
+http://www.gnu.org/software/gcc/gcc.html: ...The next major release, GCC
+3.1,...) gcc release 3.1.
+
+Thanks any way for attention,
+     Joel
+
+
+
+                                                                           =
+                                       =20
+                    "Carlos                                                =
+                                       =20
+                    O'Donell Jr."        To:     Jo=EBl Soete <jso@europay.=
+com>                                     =20
+                    <carlos@baldr        cc:     dave@hiauly1.hia.nrc.ca, p=
+arisc-linux@lists.parisc-linux.org     =20
+                    ic.uwo.ca>           Subject:     Re: [parisc-linux] Re=
+: hppa-linux gcc-3.0.3:                =20
+                                                                           =
+                                       =20
+                    18-02-02                                               =
+                                       =20
+                    03:29 PM                                               =
+                                       =20
+                                                                           =
+                                       =20
+                                                                           =
+                                       =20
+
+
+
+
 > Hi Dave,
-> 
+>
 > Can you explain me how to get those sources.
 > 'http://www.parisc-linux.org/toolchain/index.html', I would also need
 > corresponding binutils and glibc sources?
-> Which release do I have do use to rebuild gcc-3.1 and how to get their src
+> Which release do I have do use to rebuild gcc-3.1 and how to get their
+src
 > (if requested)?
 
 J,
@@ -60,6 +94,21 @@ You can change ftp.debian.org to match the closest mirror.
 
 Get the latest source for everything and start compiling!
 
-/me smiles 
+/me smiles
 
 c.
+
+
+
+
+
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information =
+which is strictly intended for the use of the authorised recipient.  If you=
+ have received this e-mail in error, please delete it and notify the sender=
+ by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
