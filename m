@@ -1,11 +1,12 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web1.arenagamer.com (unknown [198.78.155.93])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0DEFD482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 31 Dec 2001 02:43:30 -0700 (MST)
+Received: from linux.palpilot.com (unknown [209.218.212.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F1497482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 31 Dec 2001 02:45:03 -0700 (MST)
+Received: from unknown (da001d0083.atl-ga.osd.concentric.net [64.3.192.84]) by linux.palpilot.com (8.8.8/8.8.3) with SMTP id XAA27573 for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 23:50:10 -0800
 From: <bill@exampletrample.com>
 To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 31 Dec 2001 02:24:32
-Message-Id: <782.232283.263441@unknown>
+Date: Mon, 31 Dec 2001 04:39:50
+Message-Id: <898.453288.526530@unknown>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Subject: [parisc-linux] laser toner
