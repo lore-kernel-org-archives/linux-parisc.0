@@ -1,34 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA15805
-	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 07:37:51 -0700
-To: Philippe Benard <phi@hpfrcu03.france.hp.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, LaMont Jones <lamont@hp.com>,
-        Stan Sieler <sieler@allegro.com>, Matthew Wilcox <matthew@wil.cx>,
-        Jes Sorensen <jes@linuxcare.com>, Alan Modra <alan@linuxcare.com.au>,
-        John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@thepuffingroup.com,
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA16405
+	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 07:46:41 -0700
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: phi@hpfrcu03.france.hp.com (Philippe Benard),
+        sieler@allegro.com (Stan Sieler), matthew@wil.cx (Matthew Wilcox),
+        jes@linuxcare.com (Jes Sorensen), alan@linuxcare.com.au (Alan Modra),
+        jsm@udlkern.fc.hp.com (John Marvin), parisc-linux@thepuffingroup.com,
         lamont@hp.com
 Subject: Re: [parisc-linux] ldcw in __pthread_acquire 
-In-reply-to: Your message of "Mon, 18 Dec 2000 13:27:43 +0100."
-             <3A3E02BF.DC1D0EB5@hpfrcu03.france.hp.com>
+In-reply-to: Your message of "Mon, 18 Dec 2000 12:06:16 GMT."
+             <E147z3b-0005TD-00@the-village.bc.nu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Date: Mon, 18 Dec 2000 07:40:33 -0700
+Date: Mon, 18 Dec 2000 07:49:32 -0700
 From: LaMont Jones <lamont@hp.com>
-Message-Id: <20001218144036.5BE0B1872C@security.hp.com>
+Message-Id: <20001218144932.427471872C@security.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I think LaMont Jones meant that the spinlock loop (in user space AND in kerne
-> space) must implement a load word loop, and issue a load-and-clear word only
-> when the lock word looks 'free', this is because the 'write' part of the
-> load-and-clear word issue a cache broadcast transaction on the bus, so the
-> loop should be on load-word followed by load-clear-word when it looks free,
+> Since hppa its apparently 2 clocks to the syscall the numbers are apparently
+> different.
 
-That was one of the first solutions tried in HP-UX, and it resulted in
-processor 4 not getting any time (3 wasn't much better), due to the way
-that bus arbitration works (it favors one end of the bus.)
+Actually, the sequence consists of:
 
-The current semaphore operations in the HP-UX kernel do not use ldcw: they
-use stb and ldw in some interesting orders (which break when we get weak
-ordering with IA64, but then we'll have a low-cost test-and-set.)
+libc_stub:
+	bl	gateway_page_addr
+	...
+
+gateway_page_addr:
+	gate	.+8
+	...
+	...
+
+And we find ourselves in kernel mode after 2 branches (unconditional
+and pre-computed ==> predict correctly) and two delay slots.  At that
+point we have kernel data structures at our fingertips, but have in no
+way done a complete 'syscall' entry - those are (at least on hp-ux) a
+bit more expensive...  (It also means that kernel vs user detection in
+traps code needs to look at the priv level, not the stack pointer...)
 
 lamont
