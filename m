@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6F51648E7
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Aug 2003 17:20:03 -0600 (MDT)
-Date: Thu, 28 Aug 2003 00:19:58 +0100 (IST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7EC2948E1
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Aug 2003 17:31:10 -0600 (MDT)
+Date: Thu, 28 Aug 2003 00:31:07 +0100 (IST)
 From: "M. Grabert" <xam@cs.ucc.ie>
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] C3000 and IDE DMA support
-In-Reply-To: <20030827230925.GH31311@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0308280010270.16696-100000@sal.ucc.ie>
+To: mmogenius@v8fiesta.co.uk
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] x86 on b2000
+In-Reply-To: <1062025549.3f4d394db0ab5@webmail.v8fiesta.co.uk>
+Message-ID: <Pine.LNX.4.44.0308280022230.16696-100000@sal.ucc.ie>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,40 +22,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 27 Aug 2003, Grant Grundler wrote:
+On Thu, 28 Aug 2003 mmogenius@v8fiesta.co.uk wrote:
 
-> On Wed, Aug 27, 2003 at 11:22:54PM +0100, Alan Cox wrote:
-> > Nod.. I'm trying to fathom the 3Mbyte/second behaviour while hdparm
-> > claims DMA is on
+> Thanks once again
 >
-> I thought each PIO READ costs something like 400 or 500 cycles on c3k
-> (400Mhz CPU).  400/3 == 133 cycles/byte.
->
-> Either doing very slow DMA or 32-bit (4*133 == 532) reads.
-> Then it would make sense.
+> Do you prehaps know how much the card wiull cost me and where i can get one in
+> the uk...
 
-beast:/home/xam# hdparm -c /dev/hda
+Well, Ebay + "Visualize EG" brings up following result:
 
-/dev/hda:
- IO_support   =  1 (32-bit)
+http://search.ebay.co.uk/ws/search/SaleSearch?satitle=Visualize+EG&saavailabletocountry=3&socurrencydisplay=2&ebaytag1code_tmp=3&ebaytag1_tmp=ebayavail&sosortproperty=1&ht=1&from=R10&sorecordsperpage=50&BasicSearch=
 
+All of these three offers are currently below 10 Pound,
+but international shipping is quite expensive (one offer says US $25).
 
-Well, I set it to 32bit I/O, more specifically I also tried
-c=0 (16bit, default), c=3 (32-bit with sync). Everytime the same:
+I'd say go for it anyway.
 
 
-beast:/home/xam# hdparm -Tt /dev/hda
-
-/dev/hda:
- Timing buffer-cache reads:   128 MB in  1.80 seconds = 71.11 MB/sec
- Timing buffered disk reads:  64 MB in 20.48 seconds =  3.12 MB/sec
-
-
-However switching of DMA (as I told in my previous post, 'hdparm -d 0')
-will cause a kernel crash (+ dump).
-
-I haven't tried to compile & test a kernel without DMA support (or NS87415
-support)
-
-
-greetings, Max
+Max
