@@ -1,55 +1,93 @@
-From: j.raspe@t-online.de (Johannes Raspe)
-Subject: No keyboard repeat (was: [parisc-linux] No "#/'" and "<>|" keys with german HIL-keyboard)
-Date: Sun, 31 Oct 2004 21:25:22 +0100
-Message-ID: <200410312125.22181.j.raspe@t-online.de>
-References: <200410311421.17271.j.raspe@t-online.de> <200410311835.53401.j.raspe@t-online.de> <200410311920.33777.deller@gmx.de>
+From: "Andy Walker" <ajwalker@broadpark.no>
+Subject: Re: Penguin color problems on HCRX-24
+Date: Sun, 31 Oct 2004 23:20:19 +0100 (CET)
+Message-ID: <34548.127.0.0.1.1099261219.squirrel@127.0.0.1>
+References: <200410292228.14940.j.raspe@t-online.de>   
+    <200410311406.46194.j.raspe@t-online.de>   
+    <200410311456.50753.deller@gmx.de>   
+    <200410311506.00662.j.raspe@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <j.raspe@t-online.de>
-In-Reply-To: <200410311920.33777.deller@gmx.de>
+Content-Type: multipart/mixed;
+  boundary="----=_20041031232019_85082"
+Cc: "Helge Deller" <deller@gmx.de>,
+ parisc-linux@lists.parisc-linux.org
+To: "Johannes Raspe" <j.raspe@t-online.de>
+Return-Path: <ajwalker@broadpark.no>
+In-Reply-To: <200410311506.00662.j.raspe@t-online.de>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Helge,
+------=_20041031232019_85082
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-great work! The keys are working fine now. Many thanks for the fast help! J=
-ust=20
-one other little problem: the keypresses are not repeated (console and X). =
-I=20
-tried "kbdrate" but this does nothing.
-Is this a kernel related or a configuration problem?
+Hi all,
 
-Regards Johannes
+Just to report that I'm basically seeing the same things as Johannes with
+Helge's patches. I'm still compiling Helge's latest patch and I'll report
+back when I've had a chance to test it.
 
-Am Sonntag, 31. Oktober 2004 19:20 schrieb Helge Deller:
-> On Sunday 31 October 2004 18:35, Johannes Raspe wrote:
-> > > On Sunday 31 October 2004 14:21, Johannes Raspe wrote:
-> > > > after successfully moving to kernel 2.6.x-series with great help fr=
-om
-> > > > Helge Deller I'd like to report a problem wich is also present in
-> > > > 2.4.x-kernels: with my german HIL-keyboerd on a 735/125 the keys for
-> > > > "#/'" (between left shift-key and the "y"-key) and "<>|" (between
-> > > > Return and the german "=E4"-key) give absolutely no response to the=
- OS.
-> > > > I tried "showkey" on a text-console and nothing happens when pressi=
-ng
-> > > > these two keys. Every other key gives an output.
-> > >
-> > > please apply the following patch and send me the documented
-> > > console-output for the corresponding keys.
-> >
-> > Output for "<"-key:
-> > HIL_POL_CHARTYPE_SET1: 118
-> >
-> > Output for "#"-key:
-> > HIL_POL_CHARTYPE_SET1: 116
->
-> please try the attached patch.
-> Helge
+I'd like to submit the patch below to sanitize the stifb=bpp:x:y:z option
+handling. The recent patch (by Stuart Brady?) made fb initialization stop
+early once the default sti fb was initialized, possibly leaving other fb's
+uninitialized. Also the handling of a "global default" bpp was rather
+wacky,
+and some array index/bounds problems were fixed.
 
-=2D-=20
-Johannes Raspe - j.raspe@t-online.de
-GnuPG-Key ID: D342E105
-=46ingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
+Is initdata guaranteed to be zero'ed? If so then the loop setting all the
+elements of stifb_bpp_pref to zero can be dropped. The patch has been
+tested with two fb's, switching console fb either by PDC or using the
+'sti=' commandline option.
+
+cheers,
+
+-Andy
+
+
+
+------=_20041031232019_85082
+Content-Type: application/octet-stream; name="stifb.c.awa.ud"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="stifb.c.awa.ud"
+
+LS0tIHN0aWZiLmMub3JpZwkyMDA0LTEwLTMxIDE5OjEyOjUyLjExNDU0ODAwMCArMDEwMAorKysg
+c3RpZmIuYwkyMDA0LTEwLTMxIDE5OjI1OjAxLjY0NDU0ODAwMCArMDEwMApAQCAtMTE1LDggKzEx
+NSw3IEBACiAJdTMyIHBzZXVkb19wYWxldHRlWzE2XTsKIH07CiAKLXN0YXRpYyBpbnQgX19pbml0
+ZGF0YSBicHAgPSA4OwkvKiBwYXJhbWV0ZXIgZnJvbSBtb2Rwcm9iZSAqLwotc3RhdGljIGludCBf
+X2luaXRkYXRhIHN0aWZiX2ZvcmNlX2JwcFtNQVhfU1RJX1JPTVNdOworc3RhdGljIGludCBfX2lu
+aXRkYXRhIHN0aWZiX2JwcF9wcmVmW01BWF9TVElfUk9NU107CiAKIC8qIC0tLS0tLS0tLS0tLS0t
+LS0tLS0gY2hpcHNldCBzcGVjaWZpYyBmdW5jdGlvbnMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0gKi8KIApAQCAtMTE1Niw3ICsxMTU1LDcgQEAKICAqLwogCiBpbnQgX19pbml0Ci1zdGlmYl9p
+bml0X2ZiKHN0cnVjdCBzdGlfc3RydWN0ICpzdGksIGludCBmb3JjZV9icHApCitzdGlmYl9pbml0
+X2ZiKHN0cnVjdCBzdGlfc3RydWN0ICpzdGksIGludCBicHBfcHJlZikKIHsKIAlzdHJ1Y3QgZmJf
+Zml4X3NjcmVlbmluZm8gKmZpeDsKIAlzdHJ1Y3QgZmJfdmFyX3NjcmVlbmluZm8gKnZhcjsKQEAg
+LTEyNTksOCArMTI1OCw4IEBACiAjZW5kaWYKIAkJZmItPmRldmljZVNwZWNpZmljQ29uZmlnID0g
+X19yYXdfcmVhZGwoc3RpX3JvbV9hZGRyZXNzKTsKIAkJaWYgKElTXzI0X0RFVklDRShmYikpIHsK
+LQkJCWlmIChmb3JjZV9icHAgPT0gOCB8fCBmb3JjZV9icHAgPT0gMzIpCi0JCQkJYnBwID0gZm9y
+Y2VfYnBwOworCQkJaWYgKGJwcF9wcmVmID09IDggfHwgYnBwX3ByZWYgPT0gMzIpCisJCQkJYnBw
+ID0gYnBwX3ByZWY7CiAJCQllbHNlCiAJCQkJYnBwID0gMzI7CiAJCX0gZWxzZQpAQCAtMTQxMCwy
+MSArMTQwOSwyNCBAQAogCQogCWRlZl9zdGkgPSBzdGlfZ2V0X3JvbSgwKTsKIAlpZiAoZGVmX3N0
+aSkgewotCQlmb3IgKGkgPSAxOyBpIDwgTUFYX1NUSV9ST01TOyBpKyspIHsKKwkJZm9yIChpID0g
+MTsgaSA8PSBNQVhfU1RJX1JPTVM7IGkrKykgewogCQkJc3RpID0gc3RpX2dldF9yb20oaSk7Ci0J
+CQlpZiAoc3RpID09IGRlZl9zdGkgJiYgYnBwID4gMCkKLQkJCQlzdGlmYl9mb3JjZV9icHBbaV0g
+PSBicHA7CisJCQlpZiAoIXN0aSkKKwkJCQlicmVhazsKKwkJCWlmIChzdGkgPT0gZGVmX3N0aSkg
+eworCQkJCXN0aWZiX2luaXRfZmIoc3RpLCBzdGlmYl9icHBfcHJlZltpIC0gMV0pOworCQkJCWJy
+ZWFrOworCQkJfQogCQl9Ci0JCXN0aWZiX2luaXRfZmIoZGVmX3N0aSwgc3RpZmJfZm9yY2VfYnBw
+W2ldKTsKIAl9CiAKLQlmb3IgKGkgPSAxOyBpIDwgTUFYX1NUSV9ST01TOyBpKyspIHsKKwlmb3Ig
+KGkgPSAxOyBpIDw9IE1BWF9TVElfUk9NUzsgaSsrKSB7CiAJCXN0aSA9IHN0aV9nZXRfcm9tKGkp
+OwotCQlpZiAoIXN0aSB8fCBzdGk9PWRlZl9zdGkpCisJCWlmICghc3RpKQogCQkJYnJlYWs7Ci0J
+CWlmIChicHAgPiAwKQotCQkJc3RpZmJfZm9yY2VfYnBwW2ldID0gYnBwOwotCQlzdGlmYl9pbml0
+X2ZiKHN0aSwgc3RpZmJfZm9yY2VfYnBwW2ldKTsKKwkJaWYgKHN0aSA9PSBkZWZfc3RpKQorCQkJ
+Y29udGludWU7CisJCXN0aWZiX2luaXRfZmIoc3RpLCBzdGlmYl9icHBfcHJlZltpIC0gMV0pOwog
+CX0KIAlyZXR1cm4gMDsKIH0KQEAgLTE0MzksNyArMTQ0MSw3IEBACiAJc3RydWN0IHN0aV9zdHJ1
+Y3QgKnN0aTsKIAlpbnQgaTsKIAkKLQlmb3IgKGkgPSAxOyBpIDwgTUFYX1NUSV9ST01TOyBpKysp
+IHsKKwlmb3IgKGkgPSAxOyBpIDw9IE1BWF9TVElfUk9NUzsgaSsrKSB7CiAJCXN0aSA9IHN0aV9n
+ZXRfcm9tKGkpOwogCQlpZiAoIXN0aSkKIAkJCWJyZWFrOwpAQCAtMTQ2OCwxMyArMTQ3MCwxNSBA
+QAogCQlvcHRpb25zICs9IDM7CiAJfQogCisJZm9yIChpID0gMDsgaSA8IE1BWF9TVElfUk9NUzsg
+aSsrKQorCQlzdGlmYl9icHBfcHJlZltpXSA9IDA7CisKIAlpZiAoc3RybmNtcChvcHRpb25zLCAi
+YnBwIiwgMykgPT0gMCkgewogCQlvcHRpb25zICs9IDM7CiAJCWZvciAoaSA9IDA7IGkgPCBNQVhf
+U1RJX1JPTVM7IGkrKykgewotCQkJaWYgKCpvcHRpb25zKysgPT0gJzonKSB7Ci0JCQkJc3RpZmJf
+Zm9yY2VfYnBwW2ldID0gc2ltcGxlX3N0cnRvdWwob3B0aW9ucywgJm9wdGlvbnMsIDEwKTsKLQkJ
+CQlicHAgPSAtMTsKLQkJCX0gZWxzZQorCQkJaWYgKCpvcHRpb25zKysgPT0gJzonKQorCQkJCXN0
+aWZiX2JwcF9wcmVmW2ldID0gc2ltcGxlX3N0cnRvdWwob3B0aW9ucywgJm9wdGlvbnMsIDEwKTsK
+KwkJCWVsc2UKIAkJCQlicmVhazsKIAkJfQogCX0K
+------=_20041031232019_85082--
