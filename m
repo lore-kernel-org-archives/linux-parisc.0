@@ -1,19 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA21636
-	for <parisc-linux@puffin.external.hp.com>; Tue, 18 Jan 2000 10:17:04 -0700
-Date: Tue, 18 Jan 2000 11:17:37 -0500
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA26279
+	for <parisc-linux@puffin.external.hp.com>; Tue, 18 Jan 2000 23:55:59 -0700
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id AAA06867
+	for parisc-linux@thepuffingroup.com; Wed, 19 Jan 2000 00:56:41 -0500
+Date: Wed, 19 Jan 2000 00:56:41 -0500
 From: Matthew Wilcox <willy@thepuffingroup.com>
-To: Nils Strxm <nils.strom@q-free.com>
-Cc: Parisc-Linux Mailing list <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] HP 715/33
-Message-ID: <20000118111737.Y11300@thepuffingroup.com>
-References: <000201bf6193$c372a320$c400a8c0@qfree.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000119005641.D11300@thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000201bf6193$c372a320$c400a8c0@qfree.com>; from Nils Strxm on Tue, Jan 18, 2000 at 10:09:45AM +0100
+Subject: [parisc-linux] NCR driver
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jan 18, 2000 at 10:09:45AM +0100, Nils Strxm wrote:
-> Picked up a 715/33 yesterday; it seems to be unsupported by MkLinux:(
-> Is this due to a problem with the architecture (that cannot be overcome)
-> or is it something that just needs special care to work ?
+
+Several people have emailed me and asked if there are any small jobs they
+can do to get themselves started.  Here's one that needs doing.  There
+is an NCR 53c710 driver in linux/drivers/scsi/ncr53c7xx.c.  This is the
+SCSI controller found in the:
+
+	712, 715/{64,80,100}, 725/100, A180
+
+and possibly others.
+
+If anyone is feeling really enterprising (or perhaps just frustrated),
+they could try getting this driver to work with the following machines:
+
+	705, 710, 715/{33,50,75}, 720, 725/{50,75}, 730, 735, 750, 755
+
+which contain the NCR 53c700.  The _comments_ in the driver suggest that
+it's almost supported, but I don't know how up to date they are.
+
+If you do decide to work on it, please ensure you're working from the
+linux-2.3 tree and let everyone know you're working on it.
