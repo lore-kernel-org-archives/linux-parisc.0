@@ -1,24 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3C46A482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Aug 2002 17:40:35 -0600 (MDT)
-Received: from [195.20.224.204] (helo=mrvdomng3.kundenserver.de)
-	by moutvdomng2.kundenserver.de with esmtp (Exim 3.35 #2)
-	id 17iO2c-0002Md-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 24 Aug 2002 01:40:34 +0200
-Received: from [217.81.2.168] (helo=PLUTO)
-	by mrvdomng3.kundenserver.de with esmtp (Exim 3.35 #2)
-	id 17iO2b-00071d-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 24 Aug 2002 01:40:34 +0200
-From: "Tobias Giesen" <tobias_subscriber@tgtools.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] Question (fbdev, fbset, debconf)
-Date: Sat, 24 Aug 2002 01:40:57 +0200
-Message-ID: <002901c24afe$88ca1990$a80251d9@PLUTO>
+Received: from mx05.cluster1.charter.net (dc-mx05.cluster1.charter.net [209.225.8.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 49C4D482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 Aug 2002 20:45:45 -0600 (MDT)
+Message-ID: <3D66F38B.40705@charter.net>
+Date: Fri, 23 Aug 2002 22:46:35 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-In-Reply-To: <3D66BEF5.6030000@charter.net>
+To: Tobias Giesen <tobias_subscriber@tgtools.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Question (fbdev, fbset, debconf)
+References: <002901c24afe$88ca1990$a80251d9@PLUTO>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,10 +22,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> get a used cheap Visualize-EG card somewhere.
+Don't get a Visualize-24 card. I don't think those
+work right now either. Your choice of graphics boards
+for a C200 is pretty slim. You have to be careful,
+I found that out the HCRX-24Z board apparently fried
+my onboard LAN devices when I plugged it onto the GSC bus.
+I'm selling it on Ebay right now, so don't buy it,
+it won't work :-)
 
-I see - any other models that will work? I read your post about a
-Visualize-24. Also, do all the different Visualize-EG models work?
+Visualize-EG boards were the low-end boards for C-200
+and I think C-180 machines. You may be able to scrounge
+one if you are patient. I believe the one you want
+is the A4450A. Even still it only has 8-bit color.
 
-Best wishes,
-Tobias
+I'm going to be attempting to get a *Voodoo2* board
+working with X, so if you hang around I may be able
+to write a HOWTO-hppa-Voodoo2-XFree86 guide, assuming
+it works.
+
+In the meantime, consider getting a used dumb terminal.
+I have one and it is pretty convenient at times like
+these. If I was getting a new one I think I'd take my
+chances on a Wyse-30, they are extremely compact, but
+I'm not sure how developed their terminfo support is.
+I used my dumb terminal to initially bootstrap my
+machine.
+
+Or just run a null modem cable into the serial port
+of your other linux box and use something like minicom
+to be its terminal.
+
+I realize I'm ramlbing here. Well, I believe that people
+are working on getting the FX2/4/6 board working, so
+don't get rid of it just yet.
+
+
+
+
+Tobias Giesen wrote:
+>>get a used cheap Visualize-EG card somewhere.
+> 
+> 
+> I see - any other models that will work? I read your post about a
+> Visualize-24. Also, do all the different Visualize-EG models work?
+> 
+
+Not sure. Be careful about putting cards from older machines
+into the C200. May cause hardware damage.
