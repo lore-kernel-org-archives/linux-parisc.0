@@ -1,31 +1,26 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA29760
-	for <parisc-linux@puffin.external.hp.com>; Sun, 8 Oct 2000 23:52:31 -0600
-Date: Sun, 8 Oct 2000 22:53:24 -0700
-From: Randolph Chung <tausq@debian.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA31528
+	for <parisc-linux@puffin.external.hp.com>; Mon, 9 Oct 2000 10:54:32 -0600
+Received: from dhd by tarwebok with local (Exim 3.16 #1 (Debian))
+	id 13igD8-0001nH-00
+	for <parisc-linux@thepuffingroup.com>; Mon, 09 Oct 2000 12:55:34 -0400
 To: parisc-linux@thepuffingroup.com
-Cc: debian-hppa@lists.debian.org
-Subject: Re: file locking problems?
-Message-ID: <20001008225324.C639@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20001008200047.B639@tausq.org>
-Mime-Version: 1.0
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 09 Oct 2000 12:55:34 -0400
+Message-ID: <87y9zyeyyh.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001008200047.B639@tausq.org>; from randolph@tausq.org on Sun, Oct 08, 2000 at 08:00:48PM -0700
-Sender: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] 2.3.99 branch is dead
 List-ID: <linux-parisc.vger.kernel.org>
 
-> update-passwd (a Debian package) makes a call to lckpwdf. That fails
-> with an "Invalid argument" message. It looks like lckpwdf internally uses
-> fcntl() locking, so I tried that and it too fails with an "Invalid
-> argument" message.  This happens both on nfs and local ext2 fs.
-> Similar tests with flock() seems to work ok.
+Hi,
 
-as it turns out, it looks like there's a glibc<->kernel mismatch. 
-the kernel defines F_RDLCK as 1, and glibc has it defined as 0. dhd is
-aware of this and say he'll look into fixing this later this week.
+Just thought I should confirm that the 2.3.99 branch in our kernel CVS
+I made a while back is dead.  The stability problems in 2.4 are mostly
+fixed and it runs faster and on more machines, so there is no reason
+to use 2.3.99 anymore (well, except for the unusual network latency
+issues I'm experiencing on the A180 (but not on the C360))
 
-randolph
 -- 
-Debian Developer <tausq@debian.org>
-http://www.TauSq.org/
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
