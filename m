@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from nimes8.k0k.net (AMontpellier-203-1-2-94.abo.wanadoo.fr [80.14.10.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BA35A482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 14:24:58 -0600 (MDT)
-Received: from humus (martin@martin.k0k.net [192.168.1.1])
-	by nimes8.k0k.net (8.12.3/8.12.3/Debian -4) with ESMTP id g5CKOsGC000735
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 22:24:55 +0200
-Content-Type: text/plain;
-  charset="us-ascii"
-From: Martin =?iso-8859-15?q?K=FCchler?= <martin@k0k.net>
-To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 12 Jun 2002 22:22:35 +0200
-MIME-Version: 1.0
-Message-Id: <200206122222.35054.martin@mail.k0k.net>
-Subject: [parisc-linux] tst unaligned access
+Received: from mail.speakeasy.net (mail11.speakeasy.net [216.254.0.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4A3B3482E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 14:43:24 -0600 (MDT)
+Date: Wed, 12 Jun 2002 13:43:02 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Martin K?chler <martin@k0k.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] tst unaligned access
+Message-ID: <20020612204302.GC2796@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200206122222.35054.martin@mail.k0k.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200206122222.35054.martin@mail.k0k.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,33 +24,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+> tst(11624): unaligned access to 0xbff003d4 at ip=0x000105b3
+> Not-handled unaligned insn 0x2f401016
+> unaligned handler failed, ret = -1
 
-After a successful uptime of about a month, I could not log in to my 712/60 
-any longer. I found the following error message at the console: 
+that's fldd 0(sr0,r26),fr22 (thanks Richard!)... the unaligned handler
+doesn't do floating point insns at the moment.
 
-tst(11624): unaligned access to 0xbff003d4 at ip=0x000105b3
-Not-handled unaligned insn 0x2f401016
-unaligned handler failed, ret = -1
+> What could this have been ? And what is this tst process ??
+> 
+> I have a 2.4.18-pa22 kernel,  iptables v1.2.6a.
 
-I am not even sure if this is the cause of the login problem, but I found a 
-description that was samewhat similar (but on a different machine):
+try a newer kernel? there were some hanging process problems that were
+fixed recently, though i think there are some other ones still there...
 
-http://lists.debian.org/debian-hppa/2001/debian-hppa-200109/msg00053.html
+i have no idea what tst is though....
 
-My problem was, everything was working fine (network, iptables with 
-masquerading, server processes ...), but when I tried to log in he just 
-wouldn't give me the shell (after the username/password I got the login 
-message and nothing else). 
-
-Even shutdown with the soft power switch didn't work, I had to pull the plug 
-:-(
-But now, after reboot everything seems to be fine ... 
-
-What could this have been ? And what is this tst process ??
-
-I have a 2.4.18-pa22 kernel,  iptables v1.2.6a.
-
-Thanks,
-
-Martin
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
