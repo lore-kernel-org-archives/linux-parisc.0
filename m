@@ -1,31 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA12419
-	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Sep 2000 10:32:17 -0600
-Message-Id: <200009011635.JAA20533@milano.cup.hp.com>
-To: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@europay.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] FW: hpux 11.00 near success 
-In-reply-to: Your message of "Fri, 01 Sep 2000 09:50:45 PDT."
-             <A4A5E4C468B5D11190220001FA6835DD04DD86BA@epixch003>
-Date: Fri, 01 Sep 2000 09:35:40 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA12663
+	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Sep 2000 10:43:05 -0600
+Message-Id: <200009011646.JAA20572@milano.cup.hp.com>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: David Huggins-Daines <dhd@linuxcare.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Oops in sim700.c on C360 
+In-reply-to: Your message of "Fri, 01 Sep 2000 17:12:33 PDT."
+             <20000901171233.C1538@parcelfarce.linux.theplanet.co.uk>
+Date: Fri, 01 Sep 2000 09:46:27 -0700
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-=?iso-8859-1?Q?SOETE_Jo=EBl?= wrote:
-> But as I just read recipe.hpux (and recipe.linux)
-> I just note that host is not anymore specified.
-> Is it perhaps the mistake? I will advise asap.
+Matthew Wilcox wrote:
+> So I deduce that the CCIO support hasn't recognised
+> your machine.  Perhaps we should initialise it to a routine which prints
+> that the PCI ops haven't been initialised and halts.
 
-Joel,
-I committed those scripts to the CVS build-tools repository to make
-them available and not becuase I think they are perfectly correct.
+It did "halt". ;^)
 
-> But glibc is not build with recipe.hpux neither recipe.linux also may I
-> assume that I have to use same configure options ?
+pci_dma_supported() is supposed to be called first by all drivers wishing
+to use Dynamic DMA interfaces. I'm thinking a test in pci_dma_supported()
+macro could oops nicely if hppa_dma_ops isn't set.
 
-That's why recipe.linux is deprecated in favor of palinux-autobuilder.
-The xenv gcc/binutils don't need glibc - only if you want to build
-parisc-linux native toolchain or apps.
+For "devices" which aren't claimed (eg CCIO), we need to make sure
+the HVERS/SVERS values are make available to the device maintainer.
+I'll poke dhd offline in this case.
 
 grant
 
