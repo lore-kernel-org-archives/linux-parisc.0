@@ -1,15 +1,15 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] Panic on b2k: PATCH/RFC: discontig mem support for
-	hppa
-Date: Mon, 5 Jul 2004 18:12:24 +0200
-Message-ID: <40BDA020000159C9@ocpmta3.freegates.net>
-References: <40BD9F8700015C52@ocpmta2.freegates.net>
+Subject: RE: [parisc-linux] CONFIG_DISCONTIGMEM, try 2
+Date: Wed, 7 Jul 2004 17:24:37 +0200
+Message-ID: <40BD9F05000174EE@ocpmta1.freegates.net>
+References: <20040706071459.GA567@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-1"
-To: parisc-linux@parisc-linux.org
+To: "Randolph Chung" <randolph@tausq.org>,
+ parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <40BD9F8700015C52@ocpmta2.freegates.net>
+In-Reply-To: <20040706071459.GA567@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,143 +21,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
- Randolph,
-> 
-> >
-> > sorry about that.
-> Don't worry :)
-> 
-> > try this one instead.
-> >
-> That compiles fine now ;) (with my c110 config)
-> 
-> I also test on n4k with 4Gb of ram and seems to works:
-> # cat /proc/meminfo
-Sorry but I had the bad idea to test it on the b2k and unfortunately it
-panics very early:
-Kernel command line: root=3D/dev/sda5 HOME=3D/ console=3DttyS0 TERM=3Dvt1=
-02 palo_kernel=3D3/vmlinux-2.6.7-pa7
-PID hash table entries: 16 (order 4: 128 bytes)
-Console: colour dummy device 160x64
-kernel BUG at include/asm/mmzone.h:72!
-Kernel addresses on the stack:
- [<10125e84>] printk+0x144/0x190
- [<101066b8>] dump_stack+0x18/0x24
- [<10485ebc>] free_all_bootmem_core+0x2a4/0x2d4
- [<10485160>] pidhash_init+0xf0/0x168
- [<104830fc>] mem_init+0x34/0x6c
- [<104804f0>] start_kernel+0x118/0x1e4
+hello randolph,
 
+> ok, attached is a 2nd version of the patch, with some of the bugs
+> identified by Grant and Joel fixed. All the memory is now identified as=
 
-Stack Dump:
- 10474558:  10474558 55555555 55555555 55555555 
- 10474548:  55555555 55555555 55555555 55555555 
- 10474538:  55555555 55555555 55555555 55555555 
- 10474528:  55555555 55555555 55555555 55555555 
- 10474518:  55555555 55555555 55555555 00000000 
- 10474508:  104741c0 0000000f 0000137f 90474346 
- 104744f8:  00000020 10474294 ffffffff 10107088 
- 104744e8:  7fffffff 10474348 00000010 103d6ad0 
- 104744d8:  ffffffff 00000000 f0400004 0000000f 
- 104744c8:  104d8010 0000000f 104d8010 55555555 
- 104744b8:  55555555 55555555 55555555 10125fcc 
- 104744a8:  55555555 104c8384 00000400 104c8010 
- 10474498:  10474308 0000137f 10000000 0000009c 
- 10474488:  00010000 104803dc 104b8810 101f8484 
- 10474478:  10474400 00000000 10467172 101f8d9c 
- 10474468:  10474298 10467178 00000055 10474320 
- 10474458:  000061f8 10371283 104c839d 0000000f 
- 10474448:  103cf010 103cf274 00000019 f0400004 
- 10474438:  10418010 10430810 1047431c 10125e84 
- 10474428:  10474318 10474280 10474348 10474288 
- 10474418:  10474308 10474380 10371280 00000000 
- 10474408:  0004000e 104803dc 104b8810 104c8783 
- 104743f8:  00000002 104db010 ffffffff 1010c088 
- 104743e8:  00000400 104c8384 00000010 103d6ad0 
- 104743d8:  00000000 1034eddc 10474280 10474348 
- 104743c8:  10474288 10474308 10474380 104c8783 
- 104743b8:  00000001 10478000 00000008 1013e6c8 
- 104743a8:  104804f0 10474000 10474308 10371280 
- 10474398:  10474348 1034eddc 0000137f 00000000 
- 10474388:  0c601094 00000004 00000000 104c8783 
- 10474378:  00000002 1034c508 ffffffff 10485e64 
- 10474368:  10485e60 00000000 00000000 00000000 
- 10474358:  00000000 00000000 00000000 00000000 
- 10474348:  00000000 00000000 00000000 55555555 
- 10474338:  55555555 55555555 55555555 55555555 
- 10474328:  55555555 55555555 55555555 55555555 
- 10474318:  55555555 55555555 55555555 55555555 
- 10474308:  55555555 55555555 55555555 55555555 
- 104742f8:  55555555 55555555 55555555 55555555 
- 104742e8:  55555555 55555555 55555555 55555555 
- 104742d8:  55555555 55555555 55555555 55555555 
- 104742c8:  55555555 55555555 55555555 55555555 
- 104742b8:  55555555 55555555 55555555 55555555 
- 104742a8:  55555555 55555555 55555555 55555555 
- 10474298:  55555555 55555555 55555555 55555555 
- 10474288:  55555555 55555555 55555555 55555555 
- 10474278:  55555555 55555555 55555555 55555555 
- 10474268:  55555555 00000000 00000000 00000000 
- 10474258:  0000001f 00000000 0000001f 00000000 
- 10474248:  0000001f 24850e06 04100800 101f8484 
- 10474238:  104741c0 00000000 00000001 103af010 
- 10474228:  103cf26c 00000001 ffffffff 00000034 
- 10474218:  104f1000 ffffffff 00000001 0000000f 
- 10474208:  f0000174 f000017c f00008c4 f0400004 
- 104741f8:  00000000 ffffffff 104b8810 104b6010 
- 104741e8:  104f1000 00000001 104b8d50 f0000000 
- 104741d8:  00010000 0000009c 10000000 0000137f 
- 104741c8:  10485ebc 104b6010 0004ff0e 00000000 
- 104741b8:  00000000 00000000 00000000 10485ebc 
- 104741a8:  00000000 00000000 00000000 1034c054 
- 10474198:  1034c4f4 00000048 00000034 00000040 
- 10474188:  104da3c0 0000000c 00000003 000000b2 
- 10474178:  000000b2 00000000 104b650c 10485160 
- 10474168:  103d0810 00800327 003c8210 0006cf80 
+> available on boot,...
 
-Kernel addresses on the stack:
- [<101f7840>] strncpy+0xc/0x2c
- [<10106d84>] parisc_terminate+0x60/0xb8
- [<10107088>] handle_interruption+0x2ac/0x5b0
- [<10125fcc>] release_console_sem+0x60/0x10c
- [<101f8d9c>] vscnprintf+0x10/0x2c
- [<10125e84>] printk+0x144/0x190
- [<1010c088>] intr_check_sig+0x0/0xc
- [<1013e6c8>] __print_symbol+0xc8/0x15c
- [<10485e64>] free_all_bootmem_core+0x24c/0x2d4
- [<10485ebc>] free_all_bootmem_core+0x2a4/0x2d4
- [<10485160>] pidhash_init+0xf0/0x168
- [<104830fc>] mem_init+0x34/0x6c
- [<104804f0>] start_kernel+0x118/0x1e4
+For the n4k with 4Gb of ram that works fine:
+patst006:~# cat /proc/meminfo 
+MemTotal:      4116168 kB
+MemFree:       4053704 kB
+Buffers:          3700 kB
+Cached:          25084 kB
+SwapCached:          0 kB
+Active:          23620 kB
+Inactive:        15420 kB
+HighTotal:           0 kB
+HighFree:            0 kB
+LowTotal:      4116168 kB
+LowFree:       4053704 kB
+SwapTotal:      250872 kB
+SwapFree:       250872 kB
+Dirty:              60 kB
+Writeback:           0 kB
+Mapped:          19192 kB
+Slab:             7840 kB
+Committed_AS:    20552 kB
+PageTables:       1080 kB
+VmallocTotal:   245728 kB
+VmallocUsed:       184 kB
+VmallocChunk:   245544 kB
 
+#top
+top - 15:25:22 up 42 min,  2 users,  load average: 0.08, 0.15, 0.36
+Tasks:  55 total,   1 running,  54 sleeping,   0 stopped,   0 zombie
+Cpu(s):  1.0% us,  2.3% sy,  0.0% ni, 90.5% id,  0.3% wa,  0.0% hi,  5.9%=
 
-Kernel Fault: Code=3D15 regs=3D104741c0 (Addr=3D0000137f)
+si
+Mem:   4116168k total,    62400k used,  4053768k free,     3624k buffers
+Swap:   250872k total,        0k used,   250872k free,    25084k cached
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001110 Not tainted
-r00-03  00000000 104b6010 10485ebc 0000137f
-r04-07  10000000 0000009c 00010000 f0000000
-r08-11  104b8d50 00000001 104f1000 104b6010
-r12-15  104b8810 ffffffff 00000000 f0400004
-r16-19  f00008c4 f000017c f0000174 0000000f
-r20-23  00000001 ffffffff 104f1000 00000034
-r24-27  ffffffff 00000001 103cf26c 103af010
-r28-31  00000001 00000000 104741c0 101f8484
-sr0-3   00000000 00000000 00000000 00000000
-sr4-7   00000000 00000000 00000000 00000000
+And no more any warning to build modules :) :)
 
-IASQ: 00000000 00000000 IAOQ: 10485e60 10485e64
- IIR: 0c601094    ISR: 00000000  IOR: 0000137f
- CPU:        0   CR30: 10474000 CR31: 10478000
- ORIG_R28: 00000002
- IAOQ[0]: free_all_bootmem_core+0x248/0x2d4
- IAOQ[1]: free_all_bootmem_core+0x24c/0x2d4
- RP(r2): free_all_bootmem_core+0x2a4/0x2d4
-
-It's the k2.6.7-pa7 + your patch and c3000-defconfig + CONFIG_DISTCONTIGM=
-EM=3Dy?
+Unfortunately still panic on the b2k with only 256Mb of RAM (at exactely
+the same place as previously mentioned)
+Don't hesitate to let me know what you need more for this pb.
 
 Joel
+
+
+
 
 -------------------------------------------------------------------------=
 --
