@@ -1,36 +1,27 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA04841
-	for <parisc-linux@puffin.external.hp.com>; Tue, 4 Jul 2000 20:36:50 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 5 Jul 2000 02:38:10 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA01883;
-	Wed, 5 Jul 2000 12:38:00 +1000
-Date: Wed, 5 Jul 2000 12:38:00 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: bame@riverrock.org
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA05176
+	for <parisc-linux@puffin.external.hp.com>; Tue, 4 Jul 2000 20:59:17 -0600
+Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via in.smtpd with esmtp (ident bame using rfc1413)
+	id <m139fO9-001VsoC@chalet> (Debian Smail3.2.0.102)
+	for <parisc-linux@thepuffingroup.com>; Tue, 4 Jul 2000 20:58:13 -0600 (MDT)
+Message-Id: <m139fO9-001VsoC@chalet>
+From: bame@riverrock.org
+Reply-To: bame@riverrock.org
+Errors-To: bame@riverrock.org
+To: Alan Modra <alan@linuxcare.com.au>
 cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Get rid of %r8 linker stubs
-In-Reply-To: <m139eMc-001VsnC@chalet>
-Message-ID: <Pine.LNX.4.21.0007051204580.31061-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-reply-to: Your message of "Wed, 05 Jul 2000 10:36:07 JST."
+             <Pine.LNX.4.21.0007051019050.31061-100000@front.linuxcare.com.au>
+Date: Tue, 04 Jul 2000 20:58:13 -0600
+Sender: bame@bame.riverrock.org
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, 4 Jul 2000 bame@riverrock.org wrote:
 
-> So unless we get to change how .init works (ugly hacks to gas perhaps?
-> I hope not) I think a special case in the linker is required.  I just
-> hope there's some sort of attribute on these magic kludge segments which
-> the linker can use rather than hard-coding the names or something.
+Success!!!
 
-The linker patch I just checked in to puffin cvs is of the "magic
-kludge" variety.  ie. Input sections named .init* and .fini* are handled
-specially.  A more general approach would be to group stubs by output
-section, at least for output sections that are small enough to be sure
-that the stubs can be reached.  The extra work to do this isn't that
-difficult - but it's a bit more than my quick fix.
+I just natively compiled and ran hello-world on a 712!!!  
+I had to add milli.o by hand but that's not a difficult thing to fix.
 
-Regards, Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+	-P
