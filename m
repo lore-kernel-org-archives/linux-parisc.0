@@ -1,17 +1,14 @@
-Return-Path: <James.Bottomley@SteelEye.com>
-Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
-	i43KpAa02485; Mon, 3 May 2004 16:51:10 -0400
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: PARISC list <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <20040502161601.DC7C24945C7@palinux.hppa>
-References: <20040502161601.DC7C24945C7@palinux.hppa>
-Content-Type: text/plain
-Date: 03 May 2004 15:51:09 -0500
-Message-Id: <1083617469.2417.10.camel@mulgrave>
+Return-Path: <ryan_bradetich@hp.com>
+From: Ryan Bradetich <ryan_bradetich@hp.com>
+To: parisc-linux-cvs@lists.parisc-linux.org,
+	parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed; boundary="=-6F4BNpa4embhfpzG3xTy"
+Message-Id: <1083634607.26081.6.camel@beavis>
 Mime-Version: 1.0
-Cc: parisc-linux-cvs@lists.parisc-linux.org
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 jejb
+Date: Mon, 03 May 2004 19:36:47 -0600
+Cc: 
+Subject: [parisc-linux] Removal of the CONFIG_PDC_NARROW option.
+Reply-To: ryan_bradetich@hp.com
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,247 +18,259 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, 2004-05-02 at 11:16, James Bottomley wrote:
-> CVSROOT:	/var/cvs
-> Module name:	linux-2.6
-> Changes by:	jejb	04/05/02 10:16:01
-> 
-> Modified files:
-> 	.              : Makefile 
-> 	arch/parisc/kernel: asm-offsets.c entry.S init_task.c 
-> 	include/asm-parisc: pgalloc.h pgtable.h 
-> 
-> Log message:
-> Implement L2/L3 hybrid page tables for 64 bit kernels
 
-Index: arch/parisc/kernel/asm-offsets.c
+--=-6F4BNpa4embhfpzG3xTy
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Hello All,
+
+I promised jejb a long time ago to get rid of the CONFIG_PDC_NARROW
+config option and replace it with a run-time check.  This will allow
+64-bit kernels to run on any 64-bit capable system and does not need to
+be compiled special to run with narrow firmware.  I finally finished
+this task and have committed it to CVS head.
+
+I have attached the patch for review and I am posting to both lists
+since some users might use the option and wonder about it when this
+option is no longer present.
+
+I have tested this patch on C200 (narrow firmware), K460 (wide
+firmware), and A500 (wide firmware).
+
+Thanks,
+
+- Ryan
+
+
+
+--=-6F4BNpa4embhfpzG3xTy
+Content-Disposition: attachment; filename=64bit-runtime-check.patch
+Content-Type: text/x-patch; name=64bit-runtime-check.patch; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Index: Makefile
 ===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/asm-offsets.c,v
-retrieving revision 1.7
-diff -u -r1.7 asm-offsets.c
---- a/arch/parisc/kernel/asm-offsets.c	1 May 2004 20:03:11 -0000	1.7
-+++ b/arch/parisc/kernel/asm-offsets.c	2 May 2004 15:53:49 -0000
-@@ -282,6 +282,7 @@
- 	DEFINE(ASM_BITS_PER_PGD, BITS_PER_PGD);
- 	DEFINE(ASM_BITS_PER_PMD, BITS_PER_PMD);
- 	DEFINE(ASM_BITS_PER_PTE, BITS_PER_PTE);
-+	DEFINE(ASM_PGD_PMD_OFFSET, -(PAGE_SIZE << PGD_ORDER));
- 	DEFINE(ASM_PMD_ENTRY, ((PAGE_OFFSET & PMD_MASK) >> PMD_SHIFT));
- 	DEFINE(ASM_PGD_ENTRY, PAGE_OFFSET >> PGDIR_SHIFT);
- 	DEFINE(ASM_PGD_ENTRY_SIZE, PGD_ENTRY_SIZE);
-Index: arch/parisc/kernel/entry.S
+RCS file: /var/cvs/linux-2.6/Makefile,v
+retrieving revision 1.186
+diff -u -p -r1.186 Makefile
+--- a/Makefile	2 May 2004 16:16:00 -0000	1.186
++++ b/Makefile	4 May 2004 01:14:40 -0000
+@@ -1,7 +1,7 @@
+ VERSION = 2
+ PATCHLEVEL = 6
+ SUBLEVEL = 6
+-EXTRAVERSION =-rc3-pa6
++EXTRAVERSION =-rc3-pa7
+ NAME=Zonked Quokka
+ 
+ # *DOCUMENTATION*
+Index: arch/parisc/Kconfig
 ===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/entry.S,v
-retrieving revision 1.13
-diff -u -r1.13 entry.S
---- a/arch/parisc/kernel/entry.S	1 May 2004 20:03:11 -0000	1.13
-+++ b/arch/parisc/kernel/entry.S	2 May 2004 15:53:51 -0000
-@@ -474,11 +474,24 @@
- 	bb,>=,n		\pte,_PAGE_PRESENT_BIT,\fault
- 	.endm
+RCS file: /var/cvs/linux-2.6/arch/parisc/Kconfig,v
+retrieving revision 1.17
+diff -u -p -r1.17 Kconfig
+--- a/arch/parisc/Kconfig	26 Apr 2004 21:00:41 -0000	1.17
++++ b/arch/parisc/Kconfig	4 May 2004 01:14:42 -0000
+@@ -117,18 +117,6 @@ config PARISC64
+ config 64BIT
+ 	def_bool PARISC64
  
--	/* Look up PTE in a 3-Level scheme */
-+	/* Look up PTE in a 3-Level scheme.
-+	 *
-+	 * Here we implement a Hybrid L2/L3 scheme: we allocate the
-+	 * first pmd adjacent to the pgd.  This means that we can
-+	 * subtract a constant offset to get to it.  The pmd and pgd
-+	 * sizes are arranged so that a single pmd covers 4GB (giving
-+	 * a full LP64 process access to 8TB) so our lookups are
-+	 * effectively L2 for the first 4GB of the kernel (i.e. for
-+	 * all ILP32 processes and all the kernel for machines with
-+	 * under 4GB of memory) */
- 	.macro		L3_ptep pgd,pte,index,va,fault
- 	extrd,u		\va,63-ASM_PGDIR_SHIFT,ASM_BITS_PER_PGD,\index
- 	copy		%r0,\pte
-+	extrd,u,*=	\va,31,32,%r0
- 	ldw,s		\index(\pgd),\pgd
-+	extrd,u,*<>	\va,31,32,%r0
-+	ldo		ASM_PGD_PMD_OFFSET(\pgd),\pgd
-+	extrd,u,*=	\va,31,32,%r0
- 	bb,>=,n		\pgd,_PAGE_PRESENT_BIT,\fault
- 	L2_ptep		\pgd,\pte,\index,\va,\fault
- 	.endm
-Index: arch/parisc/kernel/init_task.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/init_task.c,v
-retrieving revision 1.5
-diff -u -r1.5 init_task.c
---- a/arch/parisc/kernel/init_task.c	1 May 2004 16:05:55 -0000	1.5
-+++ b/arch/parisc/kernel/init_task.c	2 May 2004 15:53:51 -0000
-@@ -52,11 +52,13 @@
- 	__attribute__((aligned(128))) __attribute__((__section__(".data.init_task"))) =
- 		{ INIT_THREAD_INFO(init_task) };
- 
--pgd_t swapper_pg_dir[PTRS_PER_PGD] __attribute__ ((aligned(PAGE_SIZE<<PGD_ORDER))) = { {0}, };
- #ifdef __LP64__
--pmd_t pmd0[PTRS_PER_PMD] __attribute__ ((aligned(4096))) = { {0}, };
-+/* NOTE: This layout exactly conforms to the hybrid L2/L3 page table layout
-+ * with the first pmd adjacent to the pgd and below it */
-+pmd_t pmd0[PTRS_PER_PMD] __attribute__ ((aligned(PAGE_SIZE))) = { {0}, };
- #endif
--pte_t pg0[PT_INITIAL * PTRS_PER_PTE] __attribute__ ((aligned(4096))) = { {0}, };
-+pgd_t swapper_pg_dir[PTRS_PER_PGD] __attribute__ ((aligned(PAGE_SIZE))) = { {0}, };
-+pte_t pg0[PT_INITIAL * PTRS_PER_PTE] __attribute__ ((aligned(PAGE_SIZE))) = { {0}, };
- 
- /*
-  * Initial task structure.
-Index: include/asm-parisc/pgalloc.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/pgalloc.h,v
-retrieving revision 1.4
-diff -u -r1.4 pgalloc.h
---- a/include/asm-parisc/pgalloc.h	1 May 2004 20:03:11 -0000	1.4
-+++ b/include/asm-parisc/pgalloc.h	2 May 2004 15:54:10 -0000
-@@ -10,18 +10,44 @@
- #include <asm/pgtable.h>
- #include <asm/cache.h>
- 
-+/* Allocate the top level pgd (page directory)
-+ *
-+ * Here (for 64 bit kernels) we implement a Hybrid L2/L3 scheme: we
-+ * allocate the first pmd adjacent to the pgd.  This means that we can
-+ * subtract a constant offset to get to it.  The pmd and pgd sizes are
-+ * arranged so that a single pmd covers 4GB (giving a full LP64
-+ * process access to 8TB) so our lookups are effectively L2 for the
-+ * first 4GB of the kernel (i.e. for all ILP32 processes and all the
-+ * kernel for machines with under 4GB of memory) */
- static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- {
--	pgd_t *pgd = (pgd_t *)__get_free_pages(GFP_KERNEL, PGD_ORDER);
+-config PDC_NARROW
+-	bool "32-bit firmware"
+-	depends on PARISC64
+-	help
+-	  This option will enable owners of C160, C180, C200, C240, C360, J280,
+-	  J282, J2240 and some D/K/R class to run a 64bit kernel with their
+-	  32bit PDC firmware.
+-	
+-	  Nobody should try this option unless they know what they are doing.
+-	
+-	  If unsure, say N.
 -
--	if (likely(pgd != NULL))
--		memset(pgd, 0, PAGE_SIZE<<PGD_ORDER);
--	return pgd;
-+	pgd_t *pgd = (pgd_t *)__get_free_pages(GFP_KERNEL|GFP_DMA,
-+					       PGD_ALLOC_ORDER);
-+	pgd_t *actual_pgd = pgd;
-+
-+	if (likely(pgd != NULL)) {
-+		memset(pgd, 0, PAGE_SIZE<<PGD_ALLOC_ORDER);
-+#ifdef __LP64__
-+		actual_pgd += PTRS_PER_PGD;
-+		/* Populate first pmd with allocated memory.  We mark it
-+		 * with _PAGE_GATEWAY as a signal to the system that this
-+		 * pmd entry may not be cleared. */
-+		pgd_val(*actual_pgd) = (_PAGE_TABLE | _PAGE_GATEWAY) + 
-+			(__u32)__pa((unsigned long)pgd);
-+		/* The first pmd entry also is marked with _PAGE_GATEWAY as
-+		 * a signal that this pmd may not be freed */
-+		pgd_val(*pgd) = _PAGE_GATEWAY;
-+#endif
-+	}
-+	return actual_pgd;
- }
- 
- static inline void pgd_free(pgd_t *pgd)
- {
--	free_pages((unsigned long)pgd, PGD_ORDER);
-+#ifdef __LP64__
-+	pgd -= PTRS_PER_PGD;
-+#endif
-+	free_pages((unsigned long)pgd, PGD_ALLOC_ORDER);
- }
- 
- #if PT_NLEVELS == 3
-@@ -46,6 +72,12 @@
- 
- static inline void pmd_free(pmd_t *pmd)
- {
-+#ifdef __LP64__
-+	if(pmd_val(*pmd) & _PAGE_GATEWAY)
-+		/* This is the permanent pmd attached to the pgd;
-+		 * cannot free it */
-+		return;
-+#endif
- 	free_pages((unsigned long)pmd, PMD_ORDER);
- }
- 
-@@ -67,7 +99,15 @@
- static inline void
- pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
- {
--	pmd_val(*pmd) = _PAGE_TABLE + (__u32)__pa((unsigned long)pte);
-+#ifdef __LP64__
-+	/* preserve the gateway marker if this is the beginning of
-+	 * the permanent pmd */
-+	if(pmd_val(*pmd) & _PAGE_GATEWAY)
-+		pmd_val(*pmd) = (_PAGE_TABLE | _PAGE_GATEWAY)
-+			+ (__u32)__pa((unsigned long)pte);
-+	else
-+#endif
-+		pmd_val(*pmd) = _PAGE_TABLE + (__u32)__pa((unsigned long)pte);
- }
- 
- #define pmd_populate(mm, pmd, pte_page) \
-Index: include/asm-parisc/pgtable.h
+ config SMP
+ 	bool "Symmetric multi-processing support"
+ 	---help---
+Index: arch/parisc/kernel/firmware.c
 ===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/pgtable.h,v
-retrieving revision 1.8
-diff -u -r1.8 pgtable.h
---- a/include/asm-parisc/pgtable.h	1 May 2004 20:03:11 -0000	1.8
-+++ b/include/asm-parisc/pgtable.h	2 May 2004 15:54:11 -0000
-@@ -67,10 +67,12 @@
- #define PT_INITIAL	4 /* Number of initial page tables */
- #define PGD_ORDER	1 /* Number of pages per pgd */
- #define PMD_ORDER	1 /* Number of pages per pmd */
-+#define PGD_ALLOC_ORDER	2 /* first pgd contains pmd */
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/firmware.c,v
+retrieving revision 1.6
+diff -u -p -r1.6 firmware.c
+--- a/arch/parisc/kernel/firmware.c	14 Apr 2004 06:18:39 -0000	1.6
++++ b/arch/parisc/kernel/firmware.c	4 May 2004 01:14:42 -0000
+@@ -10,6 +10,7 @@
+  * Copyright 1999 SuSE GmbH Nuernberg (Philipp Rumpf, prumpf@tux.org)
+  * Copyright 1999 The Puffin Group, (Alex deVries, David Kennedy)
+  * Copyright 2003 Grant Grundler <grundler parisc-linux org>
++ * Copyright 2003,2004 Ryan Bradetich <rbrad@parisc-linux.org>
+  *
+  *    This program is free software; you can redistribute it and/or modify
+  *    it under the terms of the GNU General Public License as published by
+@@ -71,6 +72,15 @@ static spinlock_t pdc_lock = SPIN_LOCK_U
+ static unsigned long pdc_result[32] __attribute__ ((aligned (8)));
+ static unsigned long pdc_result2[32] __attribute__ ((aligned (8)));
+ 
++#ifdef __LP64__
++#define WIDE_FIRMWARE 0x1
++#define NARROW_FIRMWARE 0x2
++
++/* Firmware needs to be initially set to narrow to determine the 
++ * actual firmware width. */
++int parisc_narrow_firmware = 1;
++#endif
++
+ /* on all currently-supported platforms, IODC I/O calls are always
+  * 32-bit calls, and MEM_PDC calls are always the same width as the OS.
+  * This means Cxxx boxes can't run wide kernels right now. -PB
+@@ -87,11 +97,11 @@ long real64_call(unsigned long function,
+ #endif
+ long real32_call(unsigned long function, ...);
+ 
+-#if defined(__LP64__) && ! defined(CONFIG_PDC_NARROW)
+-#define MEM_PDC (unsigned long)(PAGE0->mem_pdc_hi) << 32 | PAGE0->mem_pdc
+-#   define mem_pdc_call(args...) real64_call(MEM_PDC, args)
++#ifdef __LP64__
++#   define MEM_PDC (unsigned long)(PAGE0->mem_pdc_hi) << 32 | PAGE0->mem_pdc
++#   define mem_pdc_call(args...) unlikely(parisc_narrow_firmware) ? real32_call(MEM_PDC, args) : real64_call(MEM_PDC, args)
  #else
- #define PT_NLEVELS	2
- #define PT_INITIAL	2 /* Number of initial page tables */
- #define PGD_ORDER	0 /* Number of pages per pgd */
-+#define PGD_ALLOC_ORDER	PGD_ORDER
+-#define MEM_PDC (unsigned long)PAGE0->mem_pdc
++#   define MEM_PDC (unsigned long)PAGE0->mem_pdc
+ #   define mem_pdc_call(args...) real32_call(MEM_PDC, args)
  #endif
  
- /* Definitions for 3rd level (we use PLD here for Page Lower directory
-@@ -242,10 +244,26 @@
- #define pte_present(x)	(pte_val(x) & _PAGE_PRESENT)
- #define pte_clear(xp)	do { pte_val(*(xp)) = 0; } while (0)
- 
+@@ -105,12 +115,14 @@ long real32_call(unsigned long function,
+  */
+ static unsigned long f_extend(unsigned long address)
+ {
+-#ifdef CONFIG_PDC_NARROW
+-	if((address & 0xff000000) == 0xf0000000)
+-		return 0xf0f0f0f000000000 | (u32)address;
+-
+-	if((address & 0xf0000000) == 0xf0000000)
+-		return 0xffffffff00000000 | (u32)address;
 +#ifdef __LP64__
-+/* The first entry of the permanent pmd is not there if it contains
-+ * the gateway marker */
-+#define pmd_none(x)	(!pmd_val(x) || pmd_val(x) == _PAGE_GATEWAY)
-+#define pmd_bad(x)	((pmd_val(x) & ~PAGE_MASK) != _PAGE_TABLE && (pmd_val(x) & ~PAGE_MASK) != (_PAGE_TABLE | _PAGE_GATEWAY))
-+#else
- #define pmd_none(x)	(!pmd_val(x))
- #define pmd_bad(x)	((pmd_val(x) & ~PAGE_MASK) != _PAGE_TABLE)
-+#endif
- #define pmd_present(x)	(pmd_val(x) & _PAGE_PRESENT)
--#define pmd_clear(xp)	do { pmd_val(*(xp)) = 0; } while (0)
-+static inline void pmd_clear(pmd_t *pmd) {
++	if(unlikely(parisc_narrow_firmware)) {
++		if((address & 0xff000000) == 0xf0000000)
++			return 0xf0f0f0f000000000 | (u32)address;
++
++		if((address & 0xf0000000) == 0xf0000000)
++			return 0xffffffff00000000 | (u32)address;
++	}
+ #endif
+ 	return address;
+ }
+@@ -125,11 +137,34 @@ static unsigned long f_extend(unsigned l
+  */
+ static void convert_to_wide(unsigned long *addr)
+ {
+-#ifdef CONFIG_PDC_NARROW
 +#ifdef __LP64__
-+	if(pmd_val(*pmd) & _PAGE_GATEWAY)
-+		/* This is the entry pointing to the permanent pmd
-+		 * attached to the pgd; cannot clear it */
-+		pmd_val(*pmd) = _PAGE_GATEWAY;
-+	else
+ 	int i;
+-	unsigned *p = (unsigned int *)addr;
+-	for(i = 31; i >= 0; --i)
+-		addr[i] = p[i];
++	unsigned int *p = (unsigned int *)addr;
++
++	if(unlikely(parisc_narrow_firmware)) {
++		for(i = 31; i >= 0; --i)
++			addr[i] = p[i];
++	}
 +#endif
-+		pmd_val(*pmd) = 0;
 +}
- 
-
-
-@@ -255,9 +273,21 @@
- /* For 64 bit we have three level tables */
- 
- #define pgd_none(x)     (!pgd_val(x))
++
++/**
++ * set_firmware_width - Determine if the firmware is wide or narrow.
++ * 
++ * This function must be called before any pdc_* function that uses the convert_to_wide
++ * function.
++ */
++void __init set_firmware_width(void)
++{
 +#ifdef __LP64__
-+#define pgd_bad(x)      ((pgd_val(x) & ~PAGE_MASK) != _PAGE_TABLE && (pgd_val(x) & ~PAGE_MASK) != (_PAGE_TABLE | _PAGE_GATEWAY))
-+#else
- #define pgd_bad(x)      ((pgd_val(x) & ~PAGE_MASK) != _PAGE_TABLE)
-+#endif
- #define pgd_present(x)  (pgd_val(x) & _PAGE_PRESENT)
--#define pgd_clear(xp)   do { pgd_val(*(xp)) = 0; } while (0)
-+static inline void pgd_clear(pgd_t *pgd) {
++	int retval;
++
++        spin_lock_irq(&pdc_lock);
++	retval = mem_pdc_call(PDC_MODEL, PDC_MODEL_CAPABILITIES, __pa(pdc_result), 0);
++	convert_to_wide(pdc_result);
++	if(pdc_result[0] != NARROW_FIRMWARE)
++		parisc_narrow_firmware = 0;
++        spin_unlock_irq(&pdc_lock);
+ #endif
+ }
+ 
+Index: arch/parisc/kernel/head64.S
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/head64.S,v
+retrieving revision 1.7
+diff -u -p -r1.7 head64.S
+--- a/arch/parisc/kernel/head64.S	1 May 2004 20:03:11 -0000	1.7
++++ b/arch/parisc/kernel/head64.S	4 May 2004 01:14:42 -0000
+@@ -165,7 +165,6 @@ common_stext:
+ 	tophys_r1	%r10
+ 	std		%r11,  TASK_PT_GR11(%r10)
+ 
+-#ifndef CONFIG_PDC_NARROW
+ 	/* Switch to wide mode; Superdome doesn't support narrow PDC
+ 	** calls.
+ 	*/
+@@ -175,7 +174,6 @@ common_stext:
+ 	bv		(%rp)
+ 	ssm		PSW_SM_W,%r0
+ 2:
+-#endif /* CONFIG_PDC_NARROW */
+ 
+ 	/* Set Wide mode as the "Default" (eg for traps)
+ 	** First trap occurs *right* after (or part of) rfi for slave CPUs.
+Index: arch/parisc/kernel/processor.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/processor.c,v
+retrieving revision 1.3
+diff -u -p -r1.3 processor.c
+--- a/arch/parisc/kernel/processor.c	18 Oct 2003 01:01:12 -0000	1.3
++++ b/arch/parisc/kernel/processor.c	4 May 2004 01:14:42 -0000
+@@ -276,6 +276,7 @@ int __init init_per_cpu(int cpunum)
+ 	int ret;
+ 	struct pdc_coproc_cfg coproc_cfg;
+ 
++	set_firmware_width();
+ 	ret = pdc_coproc_cfg(&coproc_cfg);
+ 
+ 	if(ret >= 0 && coproc_cfg.ccr_functional) {
+Index: arch/parisc/kernel/setup.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/setup.c,v
+retrieving revision 1.4
+diff -u -p -r1.4 setup.c
+--- a/arch/parisc/kernel/setup.c	14 Apr 2004 06:18:39 -0000	1.4
++++ b/arch/parisc/kernel/setup.c	4 May 2004 01:14:42 -0000
+@@ -121,8 +121,11 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	pdc_console_init();
+ 
+-#ifdef CONFIG_PDC_NARROW
+-	printk(KERN_INFO "Kernel is using PDC in 32-bit mode.\n");
 +#ifdef __LP64__
-+	if(pgd_val(*pgd) & _PAGE_GATEWAY)
-+		/* This is the permanent pmd attached to the pgd; cannot
-+		 * free it */
-+		return;
-+#endif
-+	pgd_val(*pgd) = 0;
-+}
- #else
- /*
-  * The "pgd_xxx()" functions here are trivial for a folded two-level
++	extern int parisc_narrow_firmware;
++	if(parisc_narrow_firmware) {
++		printk(KERN_INFO "Kernel is using PDC in 32-bit mode.\n");
++	}
+ #endif
+ 	setup_pdc();
+ 	setup_cmdline(cmdline_p);
+Index: include/asm-parisc/pdc.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/asm-parisc/pdc.h,v
+retrieving revision 1.4
+diff -u -p -r1.4 pdc.h
+--- a/include/asm-parisc/pdc.h	21 Dec 2003 13:13:10 -0000	1.4
++++ b/include/asm-parisc/pdc.h	4 May 2004 01:14:49 -0000
+@@ -949,6 +949,7 @@ int pdc_tod_read(struct pdc_tod *tod);
+ int pdc_tod_set(unsigned long sec, unsigned long usec);
+ 
+ #ifdef __LP64__
++void set_firmware_width(void);
+ int pdc_mem_mem_table(struct pdc_memory_table_raddr *r_addr,
+ 		struct pdc_memory_table *tbl, unsigned long entries);
+ #endif
+
+--=-6F4BNpa4embhfpzG3xTy--
