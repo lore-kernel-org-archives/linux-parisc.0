@@ -1,12 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] remove hil_kbd.c?
-Date: Tue, 15 Mar 2005 21:55:41 -0700
-Message-ID: <20050316045541.GA10031@colo.lackof.org>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] remove hil_kbd.c?
+Date: Wed, 16 Mar 2005 14:39:46 +0000
+Message-ID: <20050316143946.GN21986@parcelfarce.linux.theplanet.co.uk>
+References: <20050316045541.GA10031@colo.lackof.org>
+	<20050316133722.GM21986@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050316133722.GM21986@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,25 +21,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Helge, et al,
-I was wondering why we have two hil keyboard files:
-	drivers/input/keyboard/hil_kbd.c
-	drivers/input/keyboard/hilkbd.c
+On Wed, Mar 16, 2005 at 01:37:22PM +0000, Matthew Wilcox wrote:
+> Just the opposite way round.  hilkbd.c is the one I ported from the m68k
+> guys back in 1999.  hil_kbd.c is the shiny new input-layer one that Brian
+> Julin wrote from scratch.  Check the Kconfig/Makefile.
 
-The header comments suggest Helge is maintaining hilkbd.c
-and we should delete the other:
-==> hil_kbd.c <==
-/*
- * Generic linux-input device driver for keyboard devices
- *
- * Copyright (c) 2001 Brian S. Julin
- * All rights reserved.
-...
+I forgot to say that it is, of course, desirable that we eliminate the
+earlier driver.  It doesn't support HIL mice or other HIL devices.
+I'd really like to see some of the problems with the newer driver fixed
+though:
 
-Is that correct?
+ - Apparent consumption of 70%+ CPU
+ - Booting without a HIL device attached leads to hundreds of messages
+   about requests already being queued.
 
-thanks,
-grant
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
