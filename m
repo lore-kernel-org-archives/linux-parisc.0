@@ -1,74 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 60049482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 06:05:55 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 274CD482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Apr 2001 06:08:26 -0600 (MDT)
 Sender: christoph.plattner@alcatel.at
-Message-ID: <3AE6BD99.EF3D973@alcatel.at>
-Date: Wed, 25 Apr 2001 14:05:45 +0200
+Message-ID: <3AE6BE30.D58C5881@alcatel.at>
+Date: Wed, 25 Apr 2001 14:08:16 +0200
 From: Christoph Plattner <christoph.plattner@alcatel.at>
 MIME-Version: 1.0
-To: Thomas Marteau <marteaut@esiee.fr>
+To: "pop.btx.dtag.de" <Hinkelbv@t-online.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Bug in kernel: console support STI/serial
-References: <3AE6ADF3.92D612FE@alcatel.at> <3AE6B5FB.5FB7D4FA@esiee.fr>
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] Anfrage zu Risc
+References: <000701c0cd7f$2bcefce0$0601a8c0@PC006>
+Content-Type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
-	thanks for the prompt answer.
+Hallo !
 
-First of all Linux supports more than one console,
-(defined with commans behind `console='), but this
-is not the toppic here.
+Es ist eine gute Idee, in englisg zu schreiben !
+Da ist die ganze Welt vertreten !!
 
-In a normal (iX86) linux kernel many console supports
-can be activated (per config), but only one (!) of these
-consoles are used !
-
-So I compiled in support for serial and support for
-STI, but I only use STI (default, no `console=' 
-parameter used).
-
-The output shows the usage of STI, too. So Linux decide
-to use STI, but the output (and input) is done on the
-serial console driver. This is really a bug.
-
-The HELP button in for serial console support definitly
-"says", that this only activates the support, but the 
-serial console is only used, if `console=ttyS0' is
-specified.
-
------
-
-BTW: Is there anyone who knows how to activate 
-serial console on the 712/60 in the PDC console.
-Normally "path console" or "path keyboard" can be
-used. But not on 712/60 !!
-
--------
+Please us the English language, so everone can 
+understand you here !!
 
 With friendly regards
-	Christph Plattner
+	C. Plattner
 
 
-Thomas Marteau wrote:
+> "pop.btx.dtag.de" wrote:
 > 
-> Hi Christoph
+> Hallo werte RISC-Anwender
 > 
->         As far as I know, the kernel is not capable to manage two consoles. But, if you
-> want to specify one precisely, you can try to give a console parameter to the
-> kernel with "console=tty"
-> > By the way: How can I set the 712/60 to use serial
-> > PCD console (command `path' does not work for console !)
-> >
-> > Cheers
-> >         Christoph P.
-> >
-> Good Luck, Thomas
-> ESIEE Team
+> Ich habe eine Frage und mache es auch kurz.
+> Ich habe eine Workstation HP Visualize C180, und kann ich darauf Linux
+> laufen lassen?
+> Kann ich Linux auch ohne die Boot-CD von HP-UX installieren? Und warum
+> funktioniert
+> der Dounload von dem CD-Image mit Endung RAW nicht? Ist dieser
+> überhaupt für meinen
+> Rechner gedacht? weil der andere ja nicht funktionieren soll!
+> Über eine Antwort wäre ich sehr dankbar und würde mir schon sehr viel
+> weiter helfen.
+> Im Vorraus Danke und beste Grüße von Thomas
+> meine e-Mail ist: T.Weidisch@t-online.de
+> 
 
--- 
-  +--------V--------+	Christoph.Plattner@alcatel.at
-  |  A L C A T E L  |	-----------------------------
-  +-----------------+	Phone: +43 1 27722 3706	
-         T A S		Fax:   +43 1 27722 3955
+--
