@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BFB684829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 May 2003 09:20:22 -0600 (MDT)
-Date: Tue, 6 May 2003 17:20:21 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH-2.4] DIVA serial build error (was: Oops on 2.4.20-pa33)
-Message-ID: <20030506152021.GC27494@lug-owl.de>
-References: <20030505200251.GS27494@lug-owl.de> <20030505200537.GF29544@tausq.org> <20030505210532.GU27494@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pqZtgxSH0iQu6R78"
-In-Reply-To: <20030505210532.GU27494@lug-owl.de>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A01954829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  6 May 2003 10:35:00 -0600 (MDT)
+Date: Tue, 6 May 2003 18:34:55 +0200
+Message-ID: <3EB7766A00000392@ocpmta7.freegates.net>
+In-Reply-To: <3EB7766A00000308@ocpmta7.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] Oops on 2.4.20-pa33
+To: "Randolph Chung" <randolph@tausq.org>
+Cc: "Jan-Benedict Glaw" <jbglaw@lug-owl.de>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,50 +23,191 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---pqZtgxSH0iQu6R78
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+>That said, I will try to prepare a new patch asap.
+>
+Ok here we are:
 
-On Mon, 2003-05-05 23:05:32 +0200, Jan-Benedict Glaw <jbglaw@lug-owl.de>
-wrote in message <20030505210532.GU27494@lug-owl.de>:
-> On Mon, 2003-05-05 13:05:37 -0700, Randolph Chung <randolph@tausq.org>
-> wrote in message <20030505200537.GF29544@tausq.org>:
-> > > IAOQ:   10224658        __canonicalize_funcptr_for_compare
-> > > r02:    101229d4        do_sigaction
-> >=20
-> > i don't have a 32-bit machine handy, can you try this patch and let me
-> > know if it fixes your problem? An earlier version of this was posted on
-> > this list but didn't get commited. thx -randolph
->=20
-> Oh, forgive me to be that read resistant:)
+=====
+diff -NaurX dontdiff linux-2.4.20-pa33/arch/parisc/kernel/signal.c linux-2.4.20-pa33-gcc33/arch/parisc/kernel/signal.c
+--- linux-2.4.20-pa33/arch/parisc/kernel/signal.c	2003-05-06 17:47:32.000000000
++0200
++++ linux-2.4.20-pa33-gcc33/arch/parisc/kernel/signal.c	2003-05-06 18:09:35.000000000
++0200
+@@ -489,7 +489,7 @@
+ 		ka = &current->sig->action[signr-1];
+ 		DBG(("sa_handler is %x\n", 
+ 			(unsigned int) ka->sa.sa_handler));
+-		if (ka->sa.sa_handler == SIG_IGN) {
++		if (ka->sa.sa_handler == (void *)SIG_IGN) {
+ 			if (signr != SIGCHLD)
+ 				continue;
+ 			while (sys_wait4(-1, NULL, WNOHANG, NULL) > 0)
+@@ -497,7 +497,7 @@
+ 			continue;
+ 		}
+ 
+-		if (ka->sa.sa_handler == SIG_DFL) {
++		if (ka->sa.sa_handler == (void *)SIG_DFL) {
+ 			int exit_code = signr;
+ 
+ 			/* Init gets no signals it doesn't want.  */
+diff -NaurX dontdiff linux-2.4.20-pa33/drivers/char/n_tty.c linux-2.4.20-pa33-gcc33/drivers/char/n_tty.c
+--- linux-2.4.20-pa33/drivers/char/n_tty.c	2003-05-06 17:49:36.000000000
++0200
++++ linux-2.4.20-pa33-gcc33/drivers/char/n_tty.c	2003-05-06 18:10:25.000000000
++0200
+@@ -810,7 +810,11 @@
+ int is_ignored(int sig)
+ {
+ 	return (sigismember(&current->blocked, sig) ||
++#if defined (__hppa__)
++	        current->sig->action[sig-1].sa.sa_handler == (void *)SIG_IGN);
++#else
+ 	        current->sig->action[sig-1].sa.sa_handler == SIG_IGN);
++#endif
+ }
+ 
+ static void n_tty_set_termios(struct tty_struct *tty, struct termios * old)
+diff -NaurX dontdiff linux-2.4.20-pa33/fs/ncpfs/sock.c linux-2.4.20-pa33-gcc33/fs/ncpfs/sock.c
+--- linux-2.4.20-pa33/fs/ncpfs/sock.c	2003-05-06 17:50:52.000000000 +0200
++++ linux-2.4.20-pa33-gcc33/fs/ncpfs/sock.c	2003-05-06 18:11:12.000000000
++0200
+@@ -466,9 +466,17 @@
+ 			   What if we've blocked it ourselves?  What about
+ 			   alarms?  Why, in fact, are we mucking with the
+ 			   sigmask at all? -- r~ */
++#if defined (__hppa__)
++			if (current->sig->action[SIGINT - 1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 			if (current->sig->action[SIGINT - 1].sa.sa_handler == SIG_DFL)
++#endif
+ 				mask |= sigmask(SIGINT);
++#if defined (__hppa__)
++			if (current->sig->action[SIGQUIT - 1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 			if (current->sig->action[SIGQUIT - 1].sa.sa_handler == SIG_DFL)
++#endif
+ 				mask |= sigmask(SIGQUIT);
+ 		}
+ 		siginitsetinv(&current->blocked, mask);
+diff -NaurX dontdiff linux-2.4.20-pa33/fs/proc/array.c linux-2.4.20-pa33-gcc33/fs/proc/array.c
+--- linux-2.4.20-pa33/fs/proc/array.c	2002-08-07 07:56:58.000000000 +0200
++++ linux-2.4.20-pa33-gcc33/fs/proc/array.c	2003-05-06 18:12:07.000000000
++0200
+@@ -231,9 +231,17 @@
+ 	if (p->sig) {
+ 		k = p->sig->action;
+ 		for (i = 1; i <= _NSIG; ++i, ++k) {
++#if defined (__hppa__)
++			if (k->sa.sa_handler == (void *)SIG_IGN)
++#else
+ 			if (k->sa.sa_handler == SIG_IGN)
++#endif
+ 				sigaddset(ign, i);
++#if defined (__hppa__)
++			else if (k->sa.sa_handler != (void *)SIG_DFL)
++#else
+ 			else if (k->sa.sa_handler != SIG_DFL)
++#endif
+ 				sigaddset(catch, i);
+ 		}
+ 	}
+diff -NaurX dontdiff linux-2.4.20-pa33/kernel/signal.c linux-2.4.20-pa33-gcc33/kernel/signal.c
+--- linux-2.4.20-pa33/kernel/signal.c	2002-11-29 07:49:17.000000000 +0100
++++ linux-2.4.20-pa33-gcc33/kernel/signal.c	2003-05-06 18:13:50.000000000
++0200
+@@ -126,7 +126,11 @@
+ 	int i;
+ 	struct k_sigaction *ka = &t->sig->action[0];
+ 	for (i = _NSIG ; i != 0 ; i--) {
++#if defined (__hppa__)
++		if (ka->sa.sa_handler != (void *)SIG_IGN)
++#else
+ 		if (ka->sa.sa_handler != SIG_IGN)
++#endif
+ 			ka->sa.sa_handler = SIG_DFL;
+ 		ka->sa.sa_flags = 0;
+ 		sigemptyset(&ka->sa.sa_mask);
+@@ -572,7 +576,11 @@
+ 		return -ESRCH;
+ 	}
+ 
++#if defined (__hppa__)
++	if (t->sig->action[sig-1].sa.sa_handler == (void *)SIG_IGN)
++#else
+ 	if (t->sig->action[sig-1].sa.sa_handler == SIG_IGN)
++#endif
+ 		t->sig->action[sig-1].sa.sa_handler = SIG_DFL;
+ 	sigdelset(&t->blocked, sig);
+ 	recalc_sigpending(t);
+@@ -1094,8 +1102,13 @@
+ 		 * the signal to be ignored.
+ 		 */
+ 
++#if defined (__hppa__)
++		if (k->sa.sa_handler == (void *)SIG_IGN
++		    || (k->sa.sa_handler == (void *)SIG_DFL
++#else
+ 		if (k->sa.sa_handler == SIG_IGN
+ 		    || (k->sa.sa_handler == SIG_DFL
++#endif
+ 			&& (sig == SIGCONT ||
+ 			    sig == SIGCHLD ||
+ 			    sig == SIGURG ||
+diff -NaurX dontdiff linux-2.4.20-pa33/net/sunrpc/clnt.c linux-2.4.20-pa33-gcc33/net/sunrpc/clnt.c
+--- linux-2.4.20-pa33/net/sunrpc/clnt.c	2003-05-06 18:03:20.000000000 +0200
++++ linux-2.4.20-pa33-gcc33/net/sunrpc/clnt.c	2003-05-06 18:14:43.000000000
++0200
+@@ -209,9 +209,17 @@
+ 	/* Turn off various signals */
+ 	if (clnt->cl_intr) {
+ 		struct k_sigaction *action = current->sig->action;
++#if defined (__hppa__)
++		if (action[SIGINT-1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 		if (action[SIGINT-1].sa.sa_handler == SIG_DFL)
++#endif
+ 			sigallow |= sigmask(SIGINT);
++#if defined (__hppa__)
++		if (action[SIGQUIT-1].sa.sa_handler == (void *)SIG_DFL)
++#else
+ 		if (action[SIGQUIT-1].sa.sa_handler == SIG_DFL)
++#endif
+ 			sigallow |= sigmask(SIGQUIT);
+ 	}
+ 	spin_lock_irqsave(&current->sigmask_lock, irqflags);
+diff -NaurX dontdiff linux-2.4.20-pa33/include/linux/compiler.h linux-2.4.20-pa33-gcc33/include/linux/compiler.h
+--- linux-2.4.20-pa33/include/linux/compiler.h	2003-05-06 18:01:11.000000000
++0200
++++ linux-2.4.20-pa33-gcc33/include/linux/compiler.h	2003-05-06 18:08:56.000000000
++0200
+@@ -1,6 +1,12 @@
+ #ifndef __LINUX_COMPILER_H
+ #define __LINUX_COMPILER_H
+ 
++#if (__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)
++#define inline		__inline__ __attribute__((always_inline))
++#define __inline__	__inline__ __attribute__((always_inline))
++#define __inline	__inline__ __attribute__((always_inline))
++#endif
++
+ /* Somewhere in the middle of the GCC 2.96 development cycle, we implemented
+    a mechanism by which the user can annotate likely branch directions and
+    expect the blocks to be reordered appropriately.  Define __builtin_expect
 
-I've tried your patch - the box still crashed, but I haven't noted down
-all the crash (out of time:( I'll redo it most probably this evening.
+PS1: compiler patch is not of me; a backport suggested in the pa-ml (Willy
+iirc)
 
-Has anybody looked at the other patch (I sent with the mail I'm now
-replyin' to)? It was needed and seems to be correct. Is anybody to check
-it into CVS?
+PS2: for files in main tree I save (if _hppa_ because seems to be specific
+to hppa according very early Dave mail :)
 
-MfG, JBG
+hth,
+    Joel
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
 
---pqZtgxSH0iQu6R78
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+t9K1Hb1edYOZ4bsRAh5iAJ0QNCOA1qRLogh/2CvQeHM/B1uEcACeKkiX
-Sh476D/D8rHoba+HKSri1qs=
-=jM7X
------END PGP SIGNATURE-----
-
---pqZtgxSH0iQu6R78--
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
