@@ -1,60 +1,62 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA03990
-	for <parisc-linux@puffin.external.hp.com>; Sat, 25 Nov 2000 13:54:38 -0700
-Received: from lightning.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 25 Nov 2000 20:56:57 -0000
-Received: from alan by the-village.bc.nu with local (Exim 2.12 #1)
-	id 13zmNf-0001KK-00
-	for parisc-linux@thepuffingroup.com; Sat, 25 Nov 2000 20:57:07 +0000
-To: parisc-linux@thepuffingroup.com
-Date: Sat, 25 Nov 2000 20:57:05 +0000 (GMT)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA08260
+	for <parisc-linux@puffin.external.hp.com>; Sun, 26 Nov 2000 04:59:56 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 26 Nov 2000 12:02:16 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA22891;
+	Sun, 26 Nov 2000 23:01:50 +1100
+Date: Sun, 26 Nov 2000 23:01:50 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] RPM and hppa
+In-Reply-To: <E13zmNf-0001KK-00@the-village.bc.nu>
+Message-ID: <Pine.LNX.4.21.0011261406240.15548-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E13zmNf-0001KK-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: [parisc-linux] RPM and hppa
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-I've uploaded my first block of RPM packages to 
-ftp.linux.org.uk/pub/linux/alan/HPPA along with a tar ball of built RPM 
-tools for anyone who wants to play.
+On Sat, 25 Nov 2000, Alan Cox wrote:
 
-In doing so I've hit a few problems with the 0.5 iso (no suprises there since
-its not actually meant to work reliably)
+> - g++ explodes trying to build groff after allocating about 400Mb of RAM.
+>   Building -O0 works
 
-- g++ explodes trying to build groff after allocating about 400Mb of RAM.
-  Building -O0 works
+Yeah, this is a known issue.  I see on the gcc list that rth and others
+have been working on gcc fixes recently that should address the problem.
+I don't have the time/ability to fix it myself.
 
-- the configure script for procmail tries to find the largest argument set
-  that works (by searching). It crashes the kernel in doing so 8)
+> - the configure script for procmail tries to find the largest argument set
+>   that works (by searching). It crashes the kernel in doing so 8)
+> 
+> - ldd is causing page faults in ld.so (kernel logged ones) and dying with
+>   segv. Fortunately it outputs the library list first
 
-- ldd is causing page faults in ld.so (kernel logged ones) and dying with
-  segv. Fortunately it outputs the library list first
+How old are your glibc and binutils?  I made some changes late October
+that should have fixed this problem.  See
+http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/10-Oct/0146.html
+Does "readelf -d" on your hppa-linux ld.so show you have a DT_TEXTREL tag?
 
-- The linker appears to have a problem when resolving symbols between three
-  shared objects while doing a shared object link.
+> - The linker appears to have a problem when resolving symbols between three
+>   shared objects while doing a shared object link.
+> 
+>   [Example is rpm:
+> 
+> 	rpmlib is linked dynamically with -ldb3 -ldb
+> 
+> 	The linker emits messages about symbols being static and should be
+> 	built -fPIC. If you dump the libraries they are -fPIC.
+> 
+> 	It looks as if its resolving a symbol between two shared libraries
+> 	and making a static resolution that then blows up when the third
+> 	library gets involved
+> 
+>    ]
 
-  [Example is rpm:
+Could you put all the objects involved in the link up for ftp
+somewhere?  I've just built rpm-2.5.6 without seeing this problem, but I'm
+sure my setup is different to yours...
 
-	rpmlib is linked dynamically with -ldb3 -ldb
-
-	The linker emits messages about symbols being static and should be
-	built -fPIC. If you dump the libraries they are -fPIC.
-
-	It looks as if its resolving a symbol between two shared libraries
-	and making a static resolution that then blows up when the third
-	library gets involved
-
-   ]
-
-- The kernel shows occasional page cache corruption. This actually is quite
-  possibly generic test6 bugs
-
-
-On the whole the toolset is working remarkably well. I've built over 100 
-source package sets so far including things like ncurses and most stuff just
-builds or hits portability problems (eg gmp wants to use HP format asm, 
-zlib wants to be a non PIC library for performance but the HP tools dont allow
-it)
-
-Alan
+Regards, Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
