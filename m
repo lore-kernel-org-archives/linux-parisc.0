@@ -1,54 +1,81 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA03654
-	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Nov 2000 09:22:26 -0700
-Message-Id: <200011101629.IAA07872@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] tulip DMA mapping 
-In-reply-to: Your message of "Fri, 10 Nov 2000 10:18:08 PST."
-             <20001110101808.B11268@parcelfarce.linux.theplanet.co.uk>
-Date: Fri, 10 Nov 2000 08:29:25 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from chalet ([199.254.238.240])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA06486
+	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Nov 2000 14:28:39 -0700
+Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via in.smtpd with esmtp (ident bame using rfc1413)
+	id <m13uLiv-001Vp3C@chalet> (Debian Smail3.2.0.102)
+	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Nov 2000 14:28:37 -0700 (MST)
+Message-Id: <m13uLiv-001Vp3C@chalet>
+From: bame@riverrock.org
+Reply-To: bame@riverrock.org
+Errors-To: bame@riverrock.org
+To: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] kernel merge
+In-reply-to: Your message of "Thu, 09 Nov 2000 11:47:51 MST."
+             <E13twjn-0004fw-00@noam.fc.hp.com>
+Date: Fri, 10 Nov 2000 14:28:33 -0700
+Sender: bame@bame.riverrock.org
 List-ID: <linux-parisc.vger.kernel.org>
 
+= 
+= We're getting ready to do a kernel merge (to -test10 I think).  Anybody
+= concerns before we get started?
+= 
 
-Mathew,
-I think the situation is clarified. This is just FYI.
+I'm getting ready to commit the changes to merge us up to 2.4.0-test10 as
+soon as I'm confident 64-bit kernels are OK (32-bit seems fine).
 
-Matthew Wilcox wrote:
-> On Thu, Nov 09, 2000 at 12:12:25PM -0800, Grant Grundler wrote:
-> > 0 is a valid pci_map_single() return value when the system has an IO MMU.
-> 
-> Oh dear.  You can bet tulip won't be the only driver which assumes it
-> isn't a valid return value.
+Here's a brief list of changes made (and yet to be made -- if anyone
+has the time/energy) to our parisc code (does not include changes in
+common code!).  While there's plenty yet to do, I think we're
+no worse off than before the merge.  Some parts of our parisc code
+are getting rather moldy compared to the other ports FYI.
 
-Well, then:
-1) the driver writer made a wrong assumption that the "spec"
-   does not support.
-2) that wasn't the case here - 0 was used as a flag to indicate
-   a mapping had (or hadn't rather) been done - not that the
-   mapping call had failed.
+Important tags:
+	LINUS_240_TEST6			Linus' 2.4.0-test6
+	LINUS_240_TEST10		Linus' 2.4.0-test10
+	LINUS_240_TEST10_PREMERGE	Our tree before the -test10 merge
+	LINUS_240_TEST10_MERGED		Our tree after the -test10 merge
 
-> Can't our IOMMU code be limited in such a
-> way that 0 is not a valid return value?  Say, constrain all allocated
-> addresses to the top half of the device bus?
+			    ------------
 
-It could pretty easily by reserving the dma_map[0] entry during
-init time. Dave Miller already made it clear that's not desirable.
+Lots of 'extern __inline__' turned into 'static __inline__' and there
+are more to do (TODO).
 
-> (um, just check me on this, map_single returns a device bus address,
-> not a processor bus address, right?)
+Beginnings of several smp_mb*() macros -- implemented as no-ops in
+the non-SMP case (asm/bitops.h, asm/system.h)
 
-Yes. It's the address a device must use to master DMA transactions.
-pci_map_single() input parameters are "struct pci_dev *", virtual host
-memory address, and buffer size. The return is a device specific I/O
-DMA address - ie this mapping cannot be shared with other devices.
+SET_PERSONALITY() macro in asm/elf.h needs updating (TODO).
 
-FWIW, "I/O DMA address" are called IOVAs in HPUX (I/O Virtual Address).
-The HW guys prefer another name but this one stuck.
+fcntl.h acquired a 'struct fcntl64' used with 64-bit offsets, implementing
+fcntl(fd, F_S/GETLK[W]64, ...).  Several other locking-related #defines added.
 
-grant
+asm/mmu_context.h:init_new_context() now returns int (always 0), not void.
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Should our asm/bitops.h routines be re-coded in assembly? (TODO)
+
+Added #define RLIMIT_LOCKS to asm/resource.h
+
+Added #define CLOCKS_PER_SEC to asm/param.h (how did we miss this one?)
+
+Our asm/string.h is behind the times.  Fixing it might get rid of a
+bunch of compiler warnings! (TODO)
+
+Removed mktime from drivers/char/genrtc.c (it's in a header file now)
+
+x86 made a bunch of changes to asm-i386/floppy.h -- should we? (TODO)
+
+looks like maybe the get/put_user_ret() functions in asm/uaccess.h are
+obsolete?  (TODO)
+
+We'll need to add the getdents64() and fcntl64() syscall glue. (TODO!!!)
+
+Our arch/parisc/config.in is in BAD SHAPE (TODO)
+
+arch/parisc/process.c: added new argsto do_fork() and copy_thread().
+IA64 seems to use the copy_thread() arg.
+
+arch/parisc/signal.c: minor change to common data structure
+
+drivers/scsi sym53c8xx_comm.h #ifdef doesn't work on parisc -- eliminates
+                unmap_pci_mem() causing link error (TODO - rhirst)
