@@ -1,77 +1,47 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 53830482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 May 2001 16:41:23 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel1.hp.com (Postfix) with ESMTP id 21CD0B33
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 May 2001 18:41:22 -0400 (EDT)
-Received: from eeyore (helgaas@eeyore.fc.hp.com [15.1.54.199])
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) with SMTP id QAA03460
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 22 May 2001 16:41:21 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Bjorn Helgaas <bjorn_helgaas@hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 22 May 2001 16:40:52 -0600
-MIME-Version: 1.0
-Message-Id: <01052216405201.31667@eeyore>
-Subject: [parisc-linux] [PATCH] WAX EISA driver
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1E3A1482A
+	for <parisc-linux@parisc-linux.org>; Tue, 22 May 2001 18:05:19 -0600 (MDT)
+To: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 22 May 2001 18:07:59 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010523000759.C759937DCE@carmen.fc.hp.com>
+Subject: [parisc-linux] Major hppa binutils problem
 List-ID: <linux-parisc.vger.kernel.org>
 
-No, I'm not signing up to make WAX work, and I really don't know any 
-details about it; I just noticed what appear to be some obvious bugs while 
-making some PCI changes.
+As was reported here before binutils versions 2.11.90.0.7 and 2.11.90.0.8 have 
+a bug on hppa that causes binutils to generates broken executables. The bug is 
+also viral in nature in that if you build with shared libraries built with the 
+broken binutils, even if the broken binutils is not installed, the resulting 
+executables will still be broken.
 
-Attached is a completely untested patch that makes it *look* more like the 
-dino and lba code.  I do not plan to check this in, because I don't have 
-the time or knowledge to test it.  If you do, feel free :-)
+Unforturately the Debian autobuilder built and uploaded binutils 2.11.90.0.7-1 
+so you may have "infected" your system if you did an apt-get upgrade. Also 
+several Debian developers had done so and then uploaded packages built with 
+the bad binutils.
 
-Bjorn
+Right now we are recommending that people revert to 2.11.90.0.1 available at,
 
+ftp://puffin.external.hp.com/pub/parisc/binaries/debian/
+newcompilers-20010326/binutils_2.11.90.0.1-1_hppa.deb
 
-Index: drivers/gsc/wax_eisa.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/drivers/gsc/wax_eisa.c,v
-retrieving revision 1.3
-diff -u -p -r1.3 wax_eisa.c
---- wax_eisa.c	2001/05/01 13:32:09	1.3
-+++ wax_eisa.c	2001/05/22 22:04:58
-@@ -41,7 +41,7 @@ static struct pa_iodc_driver wax_eisa_dr
- };
- 
- #define WAX_EISA_OUT(type, size) \
--static void wax_out##type (u##size d, int addr) \
-+static void wax_out##type (struct pci_hba_data *hba, u16 addr, u##size d) 
-\
- { \
- 	u32 out_addr; \
- 	if (((addr >= 0x00080000) && (addr < 0x00100000)) || \
-@@ -59,7 +59,7 @@ WAX_EISA_OUT(w,16)
- WAX_EISA_OUT(l,32)
- 
- #define WAX_EISA_IN(type, size) \
--static u##size wax_in##type (int addr) \
-+static u##size wax_in##type (struct pci_hba_data *hba, u16 addr) \
- { \
- 	u32 out_addr; \
- 	if (((addr >= 0x00080000) && (addr < 0x00100000)) || \
-@@ -68,7 +68,7 @@ static u##size wax_in##type (int addr) \
- 			((addr & 0x03f8) << 9) + (addr & 0x0007) ; \
- 		return gsc_read##type(out_addr); \
- 	} else { \
--		printk("WAX EISA Ack, cannot read from 0x%x\n",addr); \
-+		printk("WAX EISA: Ack, cannot read from 0x%x\n",addr); \
- 		return -1; \
- 	} \
- }
-@@ -123,7 +123,8 @@ wax_eisa_driver_init(struct hp_device *d
- 	version = gsc_readw(d->hpa+0x7000);
- 	printk(KERN_INFO "Wax EISA bus adapter version 0x%x at 
-0x%p\n",version,d->hpa);
- 
--	pcibios_register_hba((struct pci_hba_data *) &wax_port_ops);
-+	pcibios_register_hba(HBA_DATA(&wax_eisa_hba));
-+	pci_port = &wax_port_ops;
- 
- #if 0
- 	/* Turn off lock control */
+Paul Bame has written a script you can run to check and see if your system has 
+any bad debs installed. Its available at,
+
+ftp://puffin.external.hp.com/pub/parisc/tools/plt-checker
+
+Lamont Jones is working on scanning all the hppa packages in the Debian 
+archive to come up with a list of what packages are broken. Once he has the 
+list we will work on getting them all rebuilt cleanly and uploaded.
+
+Until they have all been rebuilt/uploaded, DO NOT APT-GET UPGRADE, you will 
+infect your system. When everything is done and we've confirmed that the 
+archive is clean, someone will announce it's ok to proceed.
+
+Thanks,
+
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
