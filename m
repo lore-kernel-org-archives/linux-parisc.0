@@ -1,15 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Re: [PATCH] linuxthreads for hppa (1/3)
-Date: Wed, 15 Oct 2003 01:40:45 -0400
-Message-ID: <20031015054045.GE22495__34032.0029914894$1416622874$gmane$org@systemhalted>
-References: <20031010204444.GF6454@systemhalted> <3F8CD774.4040400@redhat.com>
+From: Ulrich Drepper <drepper@redhat.com>
+Subject: [parisc-linux] Re: [PATCH] Sysdeps changes for hppa.
+Date: Tue, 14 Oct 2003 22:49:10 -0700
+Message-ID: <3F8CDFD6.1010300__15613.5348407135$1416622875$gmane$org@redhat.com>
+References: <20031012213226.GE23999@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: libc-alpha <libc-alpha@sources.redhat.com>,
 	parisc-linux@lists.parisc-linux.org
-To: Ulrich Drepper <drepper@redhat.com>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <3F8CD774.4040400@redhat.com>
+In-Reply-To: <20031012213226.GE23999@systemhalted>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,25 +20,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Oct 14, 2003 at 10:13:24PM -0700, Ulrich Drepper wrote:
-> 
-> I think I've asked this before:
-> 
-> > 	Use __LT_INITIALIZER_NOT_ZERO instead of __LT_SPINLOCK_INIT.
-> 
-> Why?  No unnecessary changes.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-__LT_SPINLOCK_INIT is the value of the structure and used for
-initialization e.g. { 1, 1, 1, 1 }. It can no longer be used in a macro
-evaluation like "#if __LT_SPINLOCK_INIT". Instead the other macros was
-added.
- 
-> No unnecessary changes.  Leave the code you're not using alone.
-> And again.
 
-I made the mistake of adding my STACK_GROWS_UP fixes to this patch set.
-If you note I have submitted a "Round 2" set of patches that remove
-these changes.
+> 2003-10-12  Carlos O'Donell  <carlos@baldric.uwo.ca>
+> 
+> 	* sysdeps/hppa/sysdep.h: Undef JUMPTARGET before use.
+> 	* sysdeps/unix/sysv/linux/hppa/sysdep.h:
+> 	Define __NR_semtimedop for compat with old kernels,
+> 	PSEUDO_ERRVAL, SYSCALL_ERROR_LABEL under all conditions,
+> 	INTERNAL_SYSCALL_DECL, INTERNAL_SYSCALL_ERROR_P,
+> 	INTERNAL_SYSCALL_ERRNO, INTERNAL_SYSCALL, and undef 
+> 	JUMPTARGET before use.
+> 	[PIC]: Save pic register around syscall.
+> 	* sysdeps/unix/sysv/linux/hppa/sysdep.c (syscall): 
+> 	Cleanup asm statment.
 
-Cheeers,
-Carlos.
+I've applied this patch, but only because I really don't care how the PA
+port looks.
+
+The semtimedop definition is completely wrong.  If you want all
+syscall,s use appropriate headers.
+
+You've modified the patch by hand and broke it, forcing me to do clean up.
+
+The coding style is completely wrong and a terrible mess.  The coding
+standard document is available, read it.
+
+The preprocessor directive indentation is wrong or non-existing.
+
+- -- 
+- --------------.                        ,-.            444 Castro Street
+Ulrich Drepper \    ,-----------------'   \ Mountain View, CA 94041 USA
+Red Hat         `--' drepper at redhat.com `---------------------------
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/jN/W2ijCOnn/RHQRAjrzAJsEI3ukb5MQ/T0Wl0ihUX1l2ejBJACeL8GW
+7tzXLthx8pW4Rhb+26NQkH4=
+=8Fy5
+-----END PGP SIGNATURE-----
