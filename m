@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B5D84829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 May 2003 11:56:58 -0600 (MDT)
-Message-ID: <3ED8F031.5080903@tiscali.be>
-Date: Sat, 31 May 2003 18:10:57 +0000
-From: Joel Soete <joel.soete@tiscali.be>
-MIME-Version: 1.0
-To: Siraj 'Sid' Rakhada <sid@mindless.co.uk>
+Received: from brev.stud.ntnu.no (brev.stud.ntnu.no [129.241.56.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E24A94829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 May 2003 15:40:31 -0600 (MDT)
+Date: Sat, 31 May 2003 23:40:29 +0200
+From: Stian =?iso-8859-1?Q?S=F8iland?= <stian@soiland.no>
+To: "Siraj 'Sid' Rakhada" <sid@mindless.co.uk>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Installation on a K370 with Debian 3.0r1 + RAID1
- boot.
+Subject: Re: [parisc-linux] Installation on a K370 with Debian 3.0r1 + RAID1 boot.
+Message-ID: <20030531214029.GD9267@itea.ntnu.no>
 References: <56739.194.131.108.2.1054389276.squirrel@ssl.mindless.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 In-Reply-To: <56739.194.131.108.2.1054389276.squirrel@ssl.mindless.co.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,79 +23,56 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Sid,
+On 2003-05-31 15:54:36, Siraj 'Sid' Rakhada wrote:
 
-First of all congratulation for your great job [I am not quiet sure to 
-reach this result at my first atempt) and many thanks for your kind 
-reports: very clear and fine appropriate details.
+> If you skip this step, Debian will boot, but you will be unable to use the
+> console.
+> Note I have not actually done the above when I was installing - I cheated
+> and installed sshd via a chroot setup - because I did not realise the
+> ttyB0 major number was incorrect on the install CD. I'm expecting that
+> modifying the device as above should work. If I had more time I would have
+> tried the above method.
 
-Siraj 'Sid' Rakhada wrote:
+For later boots, devfs and devfsd should be able to handle this if your
+kernel supports it.
 
-[...]
+> This is also the first time I've ever really used a HP box, and they are
+> ... interesting :) e.g. is it normal that the machine will take about 10+
+> minutes to boot up? (just to get to the boot ROM, nothing to do with linux
+> - self tests are enabled, though disabilng them does not make too much of
+> a difference).
 
->cd /mnt
->tar -C / -clspf - . | tar -xlspvf -
->cd /mnt/usr
->tar -C /usr -clspf - . | tar -xlspvf -
->cd /mnt/boot
->tar -C /boot -clspf - . | tar -xlspvf -
->cd /mnt/home
->tar -C /home -clspf - . | tar -xlspvf -
->cd /mnt/var
->tar -C /var -clspf - . | tar -xlspvf -
->  
->
-I also split my fs copy at this stage but normaly if you mount all your 
-fs under "/mnt" then:
-cd /mnt
-tar -C / -cspf - . | tar -xspvf  # just remove 'l' (el) option and 
-remove v option shlould be quicker
+Oh yeah, my K250 takes ages just to get started, the LCD display and
+status line on the serial console changes with different numbers. Any
+idea of what all those numbers mean? I suppose they are different parts
+that are tested, but a translation would be nice.=20
 
-should work also in one step (as you have 4*9Gb disks, may be do you 
-still have 2 free to test and confirm this; many thanks in advance)
+My manuals does not explain these messages in detail..
 
->I hope this helps someone! The documentation out there was very useful -
->though the ttyB0 change of the major number really got me for a while (I
->only found out that this had changed through searching the mailing
->list)...
->
->This is also the first time I've ever really used a HP box, and they are
->... interesting :) e.g. is it normal that the machine will take about 10+
->minutes to boot up? (just to get to the boot ROM, nothing to do with linux
->- self tests are enabled, though disabilng them does not make too much of
->a difference).
->
-hmm, I am not quiet sure but may be this pb is solved in 2.4.20-pa35...
+How ever, nice guide, I wish I had it when I set up my system =3D)
 
->Also, anyone aware if SMP will work on this box? I have two CPU's, but I'm
->only using one, as I believe the netinstall CD only ces with a SMP
->disabled kernel, and I have not got the 2.4.20 kernel source available at
->the moment (The HP box is not connected to the Internet).
->
-SMP kernel should work on your K. Afaik, as there few K's running linux, 
-the best would be to experiment by your self (the tips is that your 
-original kernel config file stand in /boot; so you copy it into your 
-linux src tree as .config and use make menuconfig to change SMP config 
-:-) ).
 
-To grab the kernel src now? How do you grab the last net boot install?
+=2E.. goes off-topic:
 
-My HP boches ( :-) ) are not more connected to Internet (well just a 
-light weight firewall with a pstn connection at 33000 bauds and trust me 
-it is not enough to download a full kernel src in a quick way: just 
-enough for some cvs update (personnaly I am awaiting a subversion server 
-...) ). So I grab src (tar.gz available on ftp.parisc-linux.org/cvs or 
-just patch .gz or via cvs server) on my pc and just transfer this to my 
-HP box via ftp or scp (you just have be sure to have a well configured 
-NIC and a ftpd or sshd server installed either on your pc (if also a 
-linux) or on your hp box)
+I have 6 SCSI disks connected, distributed in two raid1-sets for / and
+/usr, and a raid5-set for /home. Some of the disks are 4 GB, the rest 2
+GB, so I've done dirty tricks with partitions to get the whole thing up,
+and not waisting any space, and I now even have a spare disk, although
+tests reveal the disk is broken.. I've managed to get two more 2
+GB-disk to replace it.. =3D)
 
-Hope this help,
-    Joel
+Ah, yes, the K250 is BIG, but there's only room for 4 disks! Stupid!
+I've placed one disk beside the CD-rom, connected to the other
+controller, and the last disk in an external cabinet =3D)
 
->
->Anyway, great project. I'm glad it all works now :)
->
->  
->
-Well come to the club :-)
+I've wondered if it would not be possible to modify the housing to get
+room for more disks... Would it be immoral of me to destroy the beauty
+of a K250 by cutting some holes here and there? =3D)
+
+
+--=20
+Stian S=F8iland               Work toward win-win situation. Win-lose
+Trondheim, Norway           is where you win and the other lose.
+http://www.soiland.no/      Lose-lose and lose-win are left as an
+                            exercise to the reader.  [Limoncelli/Hogan]
+K250 at http://beist.ntnu.nu/  =3D)                           =20
