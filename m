@@ -1,18 +1,23 @@
-Return-Path: <B.Zolnierkiewicz@elka.pw.edu.pl>
-From: Bartlomiej Zolnierkiewicz <B.Zolnierkiewicz@elka.pw.edu.pl>
-To: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] asm-parisc/ide.h cleanup (there are no
-	standard ports)
-Date: Sun, 28 Mar 2004 01:04:51 +0100
-References: <200403241443.43206.bzolnier@elka.pw.edu.pl>
-	<200403280024.57672.bzolnier@elka.pw.edu.pl>
-	<20040327234926.GC24782@colo.lackof.org>
-In-Reply-To: <20040327234926.GC24782@colo.lackof.org>
+Return-Path: <administrator@ncc-consulting.de>
+Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B150489D
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 27 Mar 2004 17:57:11 -0700 (MST)
+Received: from mailserver.muc.ncc-consulting.de (pD9E88205.dip0.t-ipconnect.de
+	[217.232.130.5])
+	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2S0vAo04973
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sun, 28 Mar 2004 01:57:10 +0100
+From: <Administrator@s15113731.rootmaster.info>
+Sender: <Administrator@s15113731.rootmaster.info>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sun, 28 Mar 2004 01:56:35 +0100
+Message-ID: <0c6a01c4145f$848517a0$fc01a8c0@muc.nccconsulting.de>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200403280104.51341.bzolnier@elka.pw.edu.pl>
-Cc: linux-ide@vger.kernel.org, parisc-linux@parisc-linux.org
+	charset="utf-8"
+Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
+	action taken.
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,29 +27,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sunday 28 of March 2004 00:49, Grant Grundler wrote:
-> On Sun, Mar 28, 2004 at 12:24:57AM +0100, Bartlomiej Zolnierkiewicz wrote:
-> > Well, I know but I have other cleanups incremental to this one. :-)
->
-> Ah ok - go for it.
->
-> > It is also NOP for #ifdef CONFIG_PCI (that is the reason for this patch
-> > BTW) since both ide_default_io_base() and ide_default_irq() are defined
-> > as '0'.
->
-> Ok - I didn't look any deeper.
->
-> > > Hypothetically someone could add an IDE card
-> > > to a parisc EISA bus (eg 725), not define PCI, and then run the IDE
-> > > in PIO mode since DMA is still kaputt behind our EISA IOMMU.
-> >
-> > That would require (at least) passing "ide=base[,ctl,[irq]]" kernel
-> > parameter.
->
-> I was told offline my hypothetical example is in fact hypothetical.
-> parisc won't build with IDE unless PCI is defined. I haven't tried.
+ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-Ok, I will push this to Linus.
+Sender = parisc-linux@lists.parisc-linux.org
+Recipient(s) = Evangelos Kopanakis
+Subject = Re: Encrypted Mail
+Scanning time = 3/28/2004 1:56:34 AM
+Engine/Pattern = 6.860-1001/1.840.00
 
-Thanks,
-Bartlomiej
+Action on virus found:
+The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+
+Warning to sender! 
+A Virus was found in an Mail you send to us. 
+Please check your System!
