@@ -1,18 +1,20 @@
-Return-Path: <hch@lst.de>
-Received: from mail.lst.de (verein.lst.de [212.34.189.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 16ACD4854
-	for <parisc-linux@parisc-linux.org>;
-	Tue, 17 Feb 2004 08:03:34 -0700 (MST)
-Date: Tue, 17 Feb 2004 16:03:20 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] Job for someone
-Message-ID: <20040217150320.GA27567@lst.de>
-References: <20040217144206.GQ31168@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040217144206.GQ31168@parcelfarce.linux.theplanet.co.uk>
-Cc: parisc-linux@parisc-linux.org
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 63423484B
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 17 Feb 2004 11:16:48 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali) id 1At9m2-00037T-00
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 17 Feb 2004 19:16:46 +0100
+Date: Tue, 17 Feb 2004 19:16:44 +0100
+Message-ID: <402A4D450000445E@ocpmta3.freegates.net>
+In-Reply-To: <20040217125236.BF8124940B2@palinux.hppa>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 willy
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,13 +24,26 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Feb 17, 2004 at 02:42:06PM +0000, Matthew Wilcox wrote:
-> I was contacted by one of the Debian XFree86 people yesterday asking if
-> someone would like to look at the XFree86 loader for parisc so they could
-> rearrange the packaging to ship the modules separately from the server.
-> I don't have any great desire to work on a dynamic linker, but I bet
-> somebody else does ... ;-)
 
-Maybe that someone should fix the issue right and switch XFree to use
-dlopen() for Linux.  If some other OSes want to keep the current junk
-it'll be their problem to fix it..
+>CVSROOT:	/var/cvs
+>Module name:	linux-2.6
+>Changes by:	willy	04/02/17 05:52:36
+>
+[snip]
+>Log message:
+>merged to 2.6.3-rc4
+Matthew,
+
+Great job.
+
+Boot fine on b2k 64bit kernel build with last gcc-3.0.4-ds3-8 ;)
+
+hth,
+    Joel
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
+tout le monde.
+http://reg.tiscali.be/default.asp?lg=fr
