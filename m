@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 408EA482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 May 2003 11:04:37 -0600 (MDT)
-Message-Id: <200305221704.h4MH4Xgs011472@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [PATCH] HPPA Linuxthreads.
-To: grundler@parisc-linux.org (Grant Grundler)
-Date: Thu, 22 May 2003 13:04:33 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, drepper@redhat.com,
-	libc-alpha@sources.redhat.com, parisc-linux@lists.parisc-linux.org,
-	tausq@debian.org
-In-Reply-To: <20030522162346.GA24335@dsl2.external.hp.com> from "Grant Grundler" at May 22, 2003 10:23:46 am
+Received: from alpha.afterconnect.com (host122-222.pool8018.interbusiness.it [80.18.222.122])
+	by dsl2.external.hp.com (Postfix) with SMTP id E7C74482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 23 May 2003 02:45:40 -0600 (MDT)
+From: Dave Sasselli <erd0s@afterconnect.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Fri, 23 May 2003 10:45:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200305231045.38506.erd0s@afterconnect.com>
+Subject: [parisc-linux] HP A7789 Fire GL-UX
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,15 +21,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> If you have a test for this, it's not contending for the lock.
-> Writing a test for this would probably be a good thing if
-> there isn't already one. Note there is no fairness and a
-> test would need to be sensitive to that.
+Hi  ,=20
+about  install Debian-hppa on HP C3750 Pa-risc .
 
-Agreed.  The libc suite would probably be the best place for
-such a test ;-)
+http://www.hp.com/workstations/risc/c3750/faq.html
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+=46rom the documentation I see that the arch is supported ( C class ) .
+
+http://www.parisc-linux.org/release-0.9/systems-093.html
+
+Someone has tried to make to work the HP A7789 Fire GL-UX=20
+video card on board .=20
+
+Thank's in advance .
+
+=2D-Dave_S
