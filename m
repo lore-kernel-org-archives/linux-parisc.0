@@ -1,40 +1,25 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA29005
-	for <parisc-linux@puffin.external.hp.com>; Mon, 16 Oct 2000 06:11:28 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 16 Oct 2000 12:12:44 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA13093;
-	Mon, 16 Oct 2000 23:08:56 +1100
-Date: Mon, 16 Oct 2000 23:08:56 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Grant Grundler <grundler@cup.hp.com>
-cc: Brian Poole <raj@cerias.purdue.edu>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Troubles following the 'recipe' 
-In-Reply-To: <200010160432.VAA11300@milano.cup.hp.com>
-Message-ID: <Pine.LNX.4.21.0010162159040.27337-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA32725
+	for <parisc-linux@puffin.external.hp.com>; Mon, 16 Oct 2000 13:13:08 -0600
+Message-ID: <003d01c0500a$167a9040$a832d793@esiee.fr>
+From: "Thomas Marteau" <marteaut@esiee.fr>
+To: "Grant Grundler" <grundler@cup.hp.com>
+Cc: <parisc-linux@thepuffingroup.com>
+References: <200010160432.VAA11300@milano.cup.hp.com>
+Date: Thu, 16 Nov 2000 21:16:22 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Troubles with read only file system
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 15 Oct 2000, Grant Grundler wrote:
+Hi all,
 
-> The recipe is definitely out of date.
-> It's been on the TODO list since last week.
-> It would be great if Alan Modra updated it.
+We have done everything well but the NFSroot and the bootable disk say that
+we have a read only file system ???
+What is the recipe for making a bootable disk because ours can not be the
+good one...
 
-Sorry, I've been a bit slow.  Also did a surprising number of things the
-wrong way first time when building everything from scratch.  :-(
-Rebuilding from a working tool-base is quite different from starting over.
+Thanks,
 
-Anyway, what's there now Works For Me.  (I hope there's not too many
-typos)  At least, it would be on the web site if I knew how to go about
-pushing stuff from puffin.external.hp.com to www.thepuffingroup.com  Ain't
-got no keys to open the door, Ma.
-
-Currently the doco is available at
-ftp://puffin.external.hp.com/pub/parisc/debug/recipe.x
-
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Thomas
