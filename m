@@ -1,37 +1,46 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA03309
-	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Sep 1999 12:52:44 -0600
-Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id OAA21080
-	for <parisc-linux@thepuffingroup.com>; Wed, 1 Sep 1999 14:53:48 -0400 (EDT)
-Message-Id: <199909011851.LAA06628@milano.cup.hp.com>
-To: "Bill Katz " "" (William) <billk@sr.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP3000 928LX Support? (fwd) 
-In-reply-to: Your message of "Wed, 01 Sep 1999 10:09:14 PDT."
-             <199909011709.KAA00812@meow.sr.hp.com>
-Date: Wed, 01 Sep 1999 11:51:36 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA03702
+	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Sep 1999 15:21:47 -0600
+Received: from postal.sr.hp.com (root@postal.sr.hp.com [15.4.46.173])
+	by atlrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id RAA05279
+	for <parisc-linux@thepuffingroup.com>; Wed, 1 Sep 1999 17:22:56 -0400 (EDT)
+Received: from meow.sr.hp.com (billk@meow.sr.hp.com [15.8.162.83]) by postal.sr.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0) id OAA16336 for <parisc-linux@thepuffingroup.com>; Wed, 1 Sep 1999 14:22:58 -0700 (PDT)
+Received: (from billk@localhost) by meow.sr.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0) id OAA02028 for parisc-linux@thepuffingroup.com; Wed, 1 Sep 1999 14:23:29 -0700 (PDT)
+Message-Id: <199909012123.OAA02028@meow.sr.hp.com>
+Subject: Re: [parisc-linux] HP3000 928LX Support? (fwd)
+To: parisc-linux@thepuffingroup.com
+Date: Wed, 1 Sep 1999 14:23:28 -0700 (PDT)
+From: Bill Katz "\(William\)" <billk@sr.hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bill Katz "(William)" wrote:
-...
-> However the unit could be old enough that it has I/O cards based on the
-> CIO or NIO (aka HP -pricision) bus.  It is unlikely anyone will ever bother
-> writing Linux drivers for those cards.
+Stan Seiler wrote:
+|> > > I have the opportunity to acquire a HP3000 928LX server
+|> > > and would like to know if it is supported.
+|> > 
+|> > HP3000 systems are not PA-RISC systems. They use the Motorola 68000 CPU
+|...
+|> Firmware is different but many of the platform components
+|> are the same as K and T class machines.
+|
+|
+|The HP 3000/928 is a PA-RISC system (48 MHz PA7100LC (PCX-L)),
+|with HP-PB I/O (2 slots), 64 KB of integrated cache, floating point
+|co-processor, and a max memory of 512 MB.
+|
+|It's 100% identical to the HP 9000 E25 (2-slot HP-PB model).
+|
 
-The whole point of linux is to use what's cheap and available.
-I would rather say:
-	It is unlikely anyone *in HP* will ever *get paid for* writing
-	Linux drivers for CIO or NIO cards.
+Oh, so it's a Wright Brothers :)  In that case your luck ought to be
+pretty good if you only care about:
 
-However, if documentation isn't publicly available, it would be
-pretty "challenging" for someone outside HP to do anything with HP-PB.
-And someone in HP might actually be masochistic enough to make
-parisc-linux boot/scan on NIO bus machines. ;^)
+1) Internal LASI based LAN and SCSI
 
-grant
+2) RS232 connected console
 
-Grant Grundler
-Communications Infrastructure Computer Operations
-+1.408.447.7253
+It will never support graphics.  But it's so close to a 712 that it should
+certainly boot.  And the suggestion taht you trade it for something 
+more closely resembling a workstation is certainly valid.
+
+	-Bill
