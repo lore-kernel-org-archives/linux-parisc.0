@@ -1,18 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA26F4843
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 82FA24843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 28 Jan 2004 07:52:36 -0700 (MST)
-Date: Wed, 28 Jan 2004 15:52:33 +0100
-Message-ID: <400CB8A1000068DD@ocpmta3.freegates.net>
+	Wed, 28 Jan 2004 10:05:35 -0700 (MST)
+Date: Wed, 28 Jan 2004 10:15:11 -0800
+From: Randolph Chung <tausq@debian.org>
+To: Heikki Hannikainen <hessu@hes.iki.fi>
+Subject: Re: [parisc-linux] K380 partial success, the state of the port?
+Message-ID: <20040128181511.GD959@tausq.org>
+References: <Pine.LNX.4.58.0401281500300.14924@jazz.he.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 In-Reply-To: <Pine.LNX.4.58.0401281500300.14924@jazz.he.fi>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] K380 partial success, the state of the port?
-To: "Heikki Hannikainen" <hessu@hes.iki.fi>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: 
+Cc: parisc-linux@lists.parisc-linux.org
+Reply-To: Randolph Chung <tausq@debian.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,24 +23,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello,
+>   Is the parisc port supposed to be this slow at it's current state, or is
+> this a problem which is specific to my setup?
 
->- Should I go to the 2.6 tree? I compiled it from the CVS (to get the
->tulip driver working but the SCSI failed:
->
->Linux version 2.6.1-pa10 (root@soul) (gcc version 3.0.4) #2 SMP Tue Jan
-27
+fork/exec is very slow on parisc right now. in other areas though
+performance is not too shabby. Ryan posted lmbench results to the list
+recently. Check the archive for details.
 
+> - Should I go to the 2.6 tree? I compiled it from the CVS (to get the
+> tulip driver working) but the SCSI failed:
 
-Afaik, 2.6 is not yet smp ready. Could you re-test it by just removing SMP
-(there are already a lot of improvement in 2.6  :) )
+Yes, you should go to 2.6, but as Joel pointed out SMP is not yet
+working correctly.
 
-hth,
-    Joel
+We have a few scsi gurus on the parisc list so they can address the scsi
+issues :)
 
-PS: I am happy that boot fine on the N I am testing 
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
