@@ -1,12 +1,11 @@
-From: tausq@debian.org
-Subject: [parisc-linux] [hppa-linux, gcc-3.2 regression] ICE when optimizing inline code
-Date: Wed, 19 Feb 2003 22:42:11 -0800
-Message-ID: <20030220064211.GD11363__19566.4776525975$1416622226$gmane$org@tausq.org>
-Reply-To: tausq@debian.org
+From: Matthew Wilcox <willy@debian.org>
+Subject: [parisc-linux] [PATCH] space register 0 changes for hppa
+Date: Sun, 23 Feb 2003 18:58:47 +0000
+Message-ID: <20030223185847.C2938__26265.1971345351$1416622233$gmane$org@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: gcc-gnats@gcc.gnu.org, debian-gcc@lists.debian.org
+Cc: parisc-linux@parisc-linux.org
+To: binutils@sources.redhat.com
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,44 +17,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Submitter-Id:	net
->Originator:	Randolph Chung
->Organization:	Debian
->Confidential:	no
->Synopsis:	[hppa-linux, gcc-3.2 regression] ICE when optimizing inline code
->Severity:	serious
->Priority:	medium
->Category:	optimization
->Class:		ice-on-legal-code
->Release:	3.2.3 20030210 (Debian prerelease) (Debian testing/unstable)
->Environment:
-System: Linux legolas 2.4.20-pa25 #115 Sun Feb 9 20:54:18 PST 2003 parisc unknown unknown GNU/Linux
-Architecture: parisc
+Hi.  I believe I should still have a copyright assignment on file.
 
-	<machine, os, target, libraries (multiple lines)>
-host: hppa-unknown-linux-gnu
-build: hppa-unknown-linux-gnu
-target: hppa-unknown-linux-gnu
-configured with: ../src/configure -v --enable-languages=c,c++,f77,proto,pascal,objc,ada --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.2 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-clocale=gnu --enable-objc-gc hppa-linux
->Description:
-see below
+Index: opcodes/ChangeLog
+===================================================================
+RCS file: /cvs/src/src/opcodes/ChangeLog,v
+retrieving revision 1.547
+diff -u -p -r1.547 ChangeLog
+--- opcodes/ChangeLog	12 Feb 2003 22:33:59 -0000	1.547
++++ opcodes/ChangeLog	23 Feb 2003 18:54:00 -0000
+@@ -1,3 +1,9 @@
++2003-02-23  Matthew Wilcox  <willy@debian.org>
++
++	* hppa-dis.c: Do not emit a space register if the space register
++	field is 2 bits and the value is 0 as this is implicit addressing,
++	not use of space register 0.
++
+ 2003-02-12  Dave Brolley  <brolley@redhat.com>
+ 
+ 	* fr30-desc.c: Regenerate.
+Index: opcodes/hppa-dis.c
+===================================================================
+RCS file: /cvs/src/src/opcodes/hppa-dis.c,v
+retrieving revision 1.41
+diff -u -p -r1.41 hppa-dis.c
+--- opcodes/hppa-dis.c	31 Dec 2001 23:44:08 -0000	1.41
++++ opcodes/hppa-dis.c	23 Feb 2003 18:54:00 -0000
+@@ -541,8 +541,11 @@ print_insn_hppa (memaddr, info)
+ 		  fput_const (extract_5_load (insn), info);
+ 		  break;
+ 		case 's':
+-		  (*info->fprintf_func) (info->stream,
+-					 "sr%d", GET_FIELD (insn, 16, 17));
++		  {
++		    int space = GET_FIELD (insn, 16, 17);
++		    if (space != 0)
++		      (*info->fprintf_func) (info->stream, "sr%d", space);
++		  }
+ 		  break;
+ 
+ 		case 'S':
 
-code works with gcc-3.0 and gcc-3.3 snapshot
-also works with gcc-3.2 with -O1
-
->How-To-Repeat:
--------8< cut here 8<---------
-inline int fixfloor (long x) { if (x >= 0) return (x >> 16); else return ~((~x) >> 16); }
-inline int fixtoi (long x) { return fixfloor(x) + ((x & 0x8000) >> 15); }
-int foo(long x, long y) { return fixtoi(x*y); }
--------8< cut here 8<---------
-
-legolas% gcc-3.2 -O2 -c bug.i
-bug.i: In function `foo':
-bug.i:3: internal error: Segmentation fault
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
-
->Fix:
-	unknown
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
