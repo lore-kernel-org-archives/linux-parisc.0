@@ -1,46 +1,38 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA30635
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Sep 2000 20:43:40 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <39CAC77A.8761CD51@uswest.net>
-Date: Thu, 21 Sep 2000 20:44:10 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
-To: Erik Paulson <epaulson@upl.cs.wisc.edu>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] C100 and ccio-dma
-References: <20000921201241.C28365@data.upl.cs.wisc.edu>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA12472
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Sep 2000 11:05:55 -0600
+Received: from hpisp747.cup.hp.com (hpisp747.cup.hp.com [15.8.81.247])
+	by onet2.cup.hp.com (Postfix) with ESMTP id 16BF3A72
+	for <parisc-linux@thepuffingroup.com>; Fri, 22 Sep 2000 10:06:34 -0700 (PDT)
+Received: from grundler by hpisp747.cup.hp.com with local (Exim 3.12 #1 (Debian))
+	id 13cW3m-0006sn-00
+	for <parisc-linux@thepuffingroup.com>; Fri, 22 Sep 2000 09:52:26 -0700
+To: parisc-linux@thepuffingroup.com
+Message-Id: <E13cW3m-0006sn-00@hpisp747.cup.hp.com>
+From: Grant Grundler <grundler@cup.hp.com>
+Date: Fri, 22 Sep 2000 09:52:26 -0700
+Subject: [parisc-linux] internal error in tc-hppa.c?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Erik,
+Hi all,
+I crashed the assembler with the following output:
 
-I also have that problem on the C200+, but it isn't a ccio-dma.c problem
-(atleast I don't think it is) ... I believe it is a sym53cxx driver problem.  I
-have already started tracking this down, and hopefully will have time to
-find and squash the bug this weekend.
+make[1]: Entering directory `/linux/kwdb64/linux-2.3/arch/parisc64/kernel'
+hppa64-linux-gcc -I/linux/kwdb64/linux-2.3/include   -D__KERNEL__ -I/linux/kwdb64/linux-2.3/include  -c -o entry.o entry.S
+entry.S: Assembler messages:
+entry.S:1: Internal error, aborting at /linux/pa32/binutils-2.10/gas/config/tc-hppa.c line 4017 in tc_gen_reloc
+Please report this bug.
+make[1]: *** [entry.o] Error 1
+make[1]: Leaving directory `/linux/kwdb64/linux-2.3/arch/parisc64/kernel'
 
-hope this helps!
 
-Ryan
+I was told entry.S is broken but the assembler should handle it
+more gracefully...so I'll be looking at entry.S to see what's broken.
 
-Erik Paulson wrote:
+Line number of entry.S is junk since parisc64 version is just
+an include of the parisc version. line 1560 is the real culprit:
+        b,n .
 
-> Hi,
->         Using the CVS kernel on a C100 I'm seeing it die with an out-of-mapping
-> resources error from ccio-dma.c. It looks like there's been some active
-> development there about a week ago, but it's not helping my machine. The
-> quickest way for me to bring it about is to try and use mke2fs, but just
-> mounting the CD and running a few commands will oftentimes do the trick.
->
-> How can I help debug this? There's really no useful information provided by
-> the printk now - is there some sort of debugging info I could be collecting,
-> or would a backtrace help?
->
-> Thanks
->
-> -Erik
->
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+Trying to figure out what the problem is now...
+
+grant
