@@ -1,14 +1,15 @@
 From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk-x+5WvRp7yOp+8FyH61/OPw@public.gmane.org>
-Subject: [parisc-linux] Re: broken keyboard driver on 2.6.3
-Date: Tue, 9 Mar 2004 14:30:19 +0200 (EET)
-Message-ID: <Pine.LNX.4.21.0403091426380.28934-100000__13318.6720930555$1416623251$gmane$org@hal.pp.fishpool.fi>
-References: <200403061226.50883.deller@gmx.de>
+Subject: [parisc-linux] OSS Harmony drivers still missing and ALSA not yet
+ working = sound broken
+Date: Sat, 13 Mar 2004 22:45:01 +0200 (EET)
+Message-ID: <Pine.LNX.4.21.0403132243210.4150-100000__46244.0072828487$1416623262$gmane$org@hal.pp.fishpool.fi>
+References: <Pine.LNX.4.21.0402201213540.1008-100000@hal.pp.fishpool.fi>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Cc: parisc-linux-T/XaZq8tFt7U4lJK3ijXoz+iFHGzDt/a@public.gmane.org, debian-hppa-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org
-To: Helge Deller <deller-Mmb7MZpHnFY@public.gmane.org>
+Cc: debian-hppa-0aAXYlwwYIJuHlm7Suoebg@public.gmane.org
+To: parisc-linux-T/XaZq8tFt7U4lJK3ijXoz+iFHGzDt/a@public.gmane.org
 Return-Path: <q-funk-x+5WvRp7yOp+8FyH61/OPw@public.gmane.org>
-In-Reply-To: <200403061226.50883.deller-Mmb7MZpHnFY@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.21.0402201213540.1008-100000-4o3fW2yq+lqHldeZ0cibK8c4bpwCjbIv@public.gmane.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request-T/XaZq8tFt7U4lJK3ijXoz+iFHGzDt/a@public.gmane.org?subject=unsubscribe>
@@ -18,38 +19,60 @@ List-Help: <mailto:parisc-linux-request-T/XaZq8tFt7U4lJK3ijXoz+iFHGzDt/a@public.
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request-T/XaZq8tFt7U4lJK3ijXoz+iFHGzDt/a@public.gmane.org?subject=subscribe>
 
-On Sat, 6 Mar 2004, Helge Deller wrote:
+This was the case in 2.6.3 and still is the case.
 
-> On Friday 05 March 2004 10:58, Martin-=C9ric Racine wrote:
-> > One thing I noticed today, when using the 712 from the keyboard (which =
-I almost
-> > never do), is that the cursor arrows near the keypad are broken:
-> >=20
-> > In menuconfig, pressing any arrow kills the script with an abort messag=
-e; in
-> > Nano, the keys are completely ignored.  However, 2.4.24-pa0 works as ex=
-pected.
+On Fri, 20 Feb 2004, Martin-=C9ric Racine wrote:
 
-I wanted to point out that this only seems to affect ncurse-based software.=
- For
-instance, using Up/Down to cycle Bash commandline history still works.
-
-> What does "showkey -s" reports if you press those keys ?
-
-I pressed PageUp, PageDown, Up, Down, Left, Right and got:
-
-press any key (program terminates after 10s of last keypress)...
-0xe0 0x2a 0xe0 0x37 0xe0 0x49 0xe0 0xc9 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x51 0xe0 0xd1 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x48 0xe0 0xc8 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x50 0xe0 0xd0 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x4b 0xe0 0xcb 0xe0 0xaa 0xe0 0xb7
-0xe0 0x2a 0xe0 0x37 0xe0 0x4d 0xe0 0xcd 0xe0 0xaa 0xe0 0xb7
-<q-funk@zarya:/home/q-funk>$
-
-> Could you mail me privately your bootlog ?
-
-Done.
+> Now that I notice, the old OSS driver fails to be included, even though i=
+t was
+> defined in the config:
+>=20
+> CONFIG_SOUND=3Dm
+> CONFIG_SND=3Dm
+> CONFIG_SND_SEQUENCER=3Dm
+> CONFIG_SND_SEQ_DUMMY=3Dm
+> CONFIG_SND_OSSEMUL=3Dy
+> CONFIG_SND_MIXER_OSS=3Dm
+> CONFIG_SND_PCM_OSS=3Dm
+> CONFIG_SND_SEQUENCER_OSS=3Dy
+> # CONFIG_SND_VERBOSE_PRINTK is not set
+> # CONFIG_SND_DEBUG is not set
+> CONFIG_SND_DUMMY=3Dm
+> CONFIG_SND_VIRMIDI=3Dm
+> # CONFIG_SND_MTPAV is not set
+> # CONFIG_SND_SERIAL_U16550 is not set
+> # CONFIG_SND_MPU401 is not set
+> CONFIG_SND_HARMONY=3Dm
+> # CONFIG_SOUND_PRIME is not set
+> CONFIG_SOUND_HARMONY=3Dm
+>=20
+> <root@zarya:/root># tree /lib/modules/2.6.3-pa0/kernel/sound/
+> /lib/modules/2.6.3-pa0/kernel/sound/
+> |-- core
+> |   |-- oss
+> |   |   |-- snd-mixer-oss.ko
+> |   |   `-- snd-pcm-oss.ko
+> |   |-- seq
+> |   |   |-- oss
+> |   |   |   `-- snd-seq-oss.ko
+> |   |   |-- snd-seq-device.ko
+> |   |   |-- snd-seq-dummy.ko
+> |   |   |-- snd-seq-midi-event.ko
+> |   |   |-- snd-seq-virmidi.ko
+> |   |   `-- snd-seq.ko
+> |   |-- snd-page-alloc.ko
+> |   |-- snd-pcm.ko
+> |   |-- snd-rawmidi.ko
+> |   |-- snd-timer.ko
+> |   `-- snd.ko
+> |-- drivers
+> |   |-- snd-dummy.ko
+> |   `-- snd-virmidi.ko
+> |-- parisc
+> |   `-- snd-harmony.ko
+> `-- soundcore.ko
+> =20
+> 6 directories, 17 files
 
 --=20
 Martin-=C9ric Racine, ICT Consultant
