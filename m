@@ -1,31 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 44BEC482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Sep 2001 13:05:21 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id D99B4B00C; Tue, 18 Sep 2001 20:04:38 +0100 (BST)
-Date: Tue, 18 Sep 2001 20:04:38 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: marka@sea.checkpoint.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installing a native built kernel with 2.4.0 (.92 dist).
-Message-ID: <20010918200438.T19441@linuxcare.com>
-References: <20010918163015.Q19441@linuxcare.com> <Pine.WNT.4.33.0109181004310.3268-100000@nemo.dev.metainfo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.WNT.4.33.0109181004310.3268-100000@nemo.dev.metainfo.com>; from marka@sea.checkpoint.com on Tue, Sep 18, 2001 at 10:10:43AM -0700
+Received: from postal.sea.checkpoint.com (postal.sea.checkpoint.com [208.252.84.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CA805482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Sep 2001 13:34:35 -0600 (MDT)
+Received: from cartman.sea.checkpoint.com (localhost [127.0.0.1])
+	by postal.sea.checkpoint.com (8.9.3/8.9.3.RJ666.9) with ESMTP id MAA07199
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Sep 2001 12:32:37 -0700
+From: marka@sea.checkpoint.com
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 18 Sep 2001 12:34:26 -0700 (Pacific Daylight Time)
+Subject: Re: [parisc-linux] installing a native built kernel with 2.4.0 (.92
+ dist).
+In-Reply-To: <20010918200438.T19441@linuxcare.com>
+Message-ID: <Pine.WNT.4.33.0109181230530.3268-100000@nemo.dev.metainfo.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Sep 18, 2001 at 10:10:43AM -0700, marka@sea.checkpoint.com wrote:
-> Thanks for your help,
-> 
-> Ok, it turns out it is booting (the machine's so quiet it's hard to tell), and
-> not 'freezing' per-say at 'branching to kernel entry point 0x00100000'.  It's
-> simply not sending anything to ttyS0 any more after this point.  This seems to
-> be the 'swapped serial ports' issue mentioned earlier on this list.
+On Tue, 18 Sep 2001, Richard Hirst wrote:
+> That should be fixed in the latest kernel source, please let us know
+> if it is still broken on your box.
 
-That should be fixed in the latest kernel source, please let us know
-if it is still broken on your box.
+lo and behold it is fixed, thanks! broken in pa17 and fixed in pa22.
 
-Thanks,
-  Richard
+Serial driver version 5.05c (2001-07-08) with MANY_PORTS SHARE_IRQ SERIAL_PCI
+enabled
+ttyS00 at iomem 0xffd05800 (irq = 154) is a 16550A
+ttyS01 at iomem 0xfff83800 (irq = 74) is a 16550A
+
+--
+Mark
