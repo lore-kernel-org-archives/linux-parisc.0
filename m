@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AEED0482C
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Nov 2001 07:44:13 -0700 (MST)
-To: bame@riverrock.org
-Subject: Re: [parisc-linux] Re: rsync for CVS repository
-Message-ID: <1006094625.3bf7c921363b6@webmail.tiscalinet.be>
-Date: Sun, 18 Nov 2001 15:43:45 +0100 (CET)
-From: joel.soete@freebel.net
-Cc: parisc-linux@lists.parisc-linux.org
-References: <3BF7C6E2.D6B35170@freebel.net>
-In-Reply-To: <3BF7C6E2.D6B35170@freebel.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from hermes.cs.brandeis.edu (hermes.cs.brandeis.edu [129.64.2.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 43920492D
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Nov 2001 09:12:19 -0700 (MST)
+Received: from [129.64.46.46] ([129.64.46.83])
+	by hermes.cs.brandeis.edu (8.11.6/8.9.3) with ESMTP id fAIGC4k28485
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Nov 2001 11:12:04 -0500
+Mime-Version: 1.0
+Message-Id: <a05100316b81d8d1c41f3@[129.64.46.46]>
+Date: Sun, 18 Nov 2001 11:11:01 -0500
+To: parisc-linux@lists.parisc-linux.org
+From: Aaron Macks <aaronm@cs.brandeis.edu.ml.to>
+Content-Type: text/plain; charset="us-ascii" ; format="flowed"
+Subject: [parisc-linux] 755/125 problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Paul,
-
-One great stuff which makes me prefer rsync versus cvs is that rsync allow me to
-define easily RSYNC_PROXY (afaik cvs did not) and in my working environement
-(behing a fw configure by neanderthal admin) it is a great help.
-
-But I also understand well your position.
-
-	Joel
-
-Quoting Soete Joel <joel.soete@freebel.net>:
-
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-November/014545.html
-
-
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+So I finally have a viable system in the form of a 755/125(384mb ram, 
+internal FWscsi drive and 2 atm cards).  I can get it to boot under 
+the HPUX still installed on the HD, and it seems to work(not root 
+pw).  I tried booting it off the internal CD with the 0.92 disc and 
+it seemed to freeze at the 'Branching to kernel address .....".
+Three questions:
+Is this common or an oddity with my system?
+It currently only allows a net boot off of the ATM cards, either the 
+EISA or the slider.  How can I force it to use the onboard 10 base 
+T(AUI) or even 10 Base 2?
+The other might be slightly off topic, but is there an easy way to 
+reset the root pw on the HPUX install?(I believe I have HPUX install 
+media somewhere but I'm probably wrong.)
+Aaron
+-- 
+_______________________________________________________
+Aaron Macks(aaronm@cs.brandeis.edu)
+My sheep has seven gall bladders, that makes me the King of the Universe!
