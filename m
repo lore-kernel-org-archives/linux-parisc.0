@@ -1,16 +1,18 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: [parisc-linux] Re: ad1889 driver/docs for c3k/j5k audio
-Date: Sat, 29 May 2004 01:06:35 +0100
-Message-ID: <20040529000635.GA2966@calypso>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] Re: ad1889 driver/docs for c3k/j5k audio
+Date: Fri, 28 May 2004 17:25:08 -0700
+Message-ID: <20040529002508.GJ3517@tausq.org>
 References: <20040222092057.GA2590@calypso>
 	<20040222162544.GA9367@colo.lackof.org>
+	<20040529000635.GA2966@calypso>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Grant Grundler <grundler@parisc-linux.org>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040222162544.GA9367@colo.lackof.org>
+In-Reply-To: <20040529000635.GA2966@calypso>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,20 +23,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Feb 22, 2004 at 09:25:44AM -0700, Grant Grundler wrote:
+> Unfortunately, the documentation you're referring to is no longer there.
+> Do you still have it?
 
-> I posted the only documentation we have for ad1889:
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-June/016704.html
+try: ftp://ftp.parisc-linux.org/docs/AD1889.pdf
 
-> If you have patches for ad1889, I'm happy to test (and commit) them for you.
+> If so, I don't have a box with an ad1889, but I should be able to make
+> some small improvements.
 
-Unfortunately, the documentation you're referring to is no longer there.
-Do you still have it?
+I think Mort is also looking at this.....
 
-If so, I don't have a box with an ad1889, but I should be able to make
-some small improvements.
+thanks :)
+randolph
 -- 
-Stuart Brady
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
