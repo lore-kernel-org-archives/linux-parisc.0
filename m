@@ -1,36 +1,32 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA22273
-	for <parisc-linux@puffin.external.hp.com>; Mon, 29 Nov 1999 13:40:11 -0700
-Message-Id: <199911292041.PAA17116@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] HPUX 9.05 notes
-To: bri@mojo.calyx.net (Brian S. Julin)
-Date: Mon, 29 Nov 1999 15:41:47 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.BSO.4.20.9911291514400.6896-100000@mojo.calyx.net> from "Brian S. Julin" at Nov 29, 99 03:27:36 pm
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA23002
+	for <parisc-linux@puffin.external.hp.com>; Mon, 29 Nov 1999 14:54:10 -0700
+Sender: adevries@thepuffingroup.com
+Message-ID: <3842F662.2E4ECEF5@thepuffingroup.com>
+Date: Mon, 29 Nov 1999 16:55:46 -0500
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Sandy Harris <sandy@storm.ca>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Parallel port hardware
+References: <3835D808.18274C86@thepuffingroup.com> <38401100.5FFDF373@storm.ca>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-I had similar experiences building under 9.01.
-
-> How far does this get you?  About up to here:
+Sandy Harris wrote:
 > 
-> make
-> gcc -D__KERNEL__ -I/linux/linux/include -Wall -Wstrict-prototypes -O2
-> -fomit-frame-pointer -mdisable-fpregs -fwritable-strings
->  -pipe -fno-strength-reduce  -c -o init/main.o init/main.c
-> as:  @line#614 [err#1052]
->   Directive name not recognized - BALIGNL
-> as:  @line#654 [err#1052]
->   Directive name not recognized - BALIGNL
+> Can anyone point me to info on the electrical properties of the parallel ports
+> on 712 or 715 machines?
+> 
 
-Are you using as from binutils?  You definitely will not have this problem
-with the latest binutils cvs source and probably not with the latest
-released version 2.9.1.  Build gcc using --with-gnu-as (see INSTALL
-directions for hppa).
+The electrical properties of the parallel port are likely identical to
+that of the rest of the parallel ports in the world.  The only document
+I've ever seen on the parallel ports of the 712 are in the Lasi
+documentation.
 
-Dave
+- Alex
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Alex deVries
+Vice President of Engineering
+The Puffin Group
