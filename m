@@ -1,31 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA25197
-	for <parisc-linux@puffin.external.hp.com>; Wed, 14 Jun 2000 02:16:45 -0600
-Received: from vis.ethz.ch (hoth.ethz.ch [129.132.71.59])
-	by naboo.ethz.ch (Postfix) with ESMTP id A96D4275B8
-	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jun 2000 10:17:30 +0200 (CEST)
-Sender: pedro@vis.ethz.ch
-Message-ID: <39474049.3E5DA7B8@vis.ethz.ch>
-Date: Wed, 14 Jun 2000 10:20:25 +0200
-From: "Pedro G. Gonnet" <pedro@vis.ethz.ch>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA29013
+	for <parisc-linux@puffin.external.hp.com>; Wed, 14 Jun 2000 08:24:29 -0600
+Message-Id: <200006141425.KAA26058@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Recipe question
+To: catfish@alltel.net (T. Martin)
+Date: Wed, 14 Jun 2000 10:25:07 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <Pine.LNX.4.10.10006132357470.6974-100000@jesse.crash.lan> from "T. Martin" at Jun 14, 2000 00:00:04 am
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] isa-ethernet for hp9000/735
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+>  I'm trying to build the things according to the recipe but theres only
+> one question so far. 
+>  Whats the best way to install egcs without screwing up the gcc I have
+> already installed? 
 
-hello!
+Use "--prefix=something" to set the installation base directory.  Do this
+for both binutils and gcc.
 
-a while ago i inherited a 9000/735 with a fddi-interface and a free
-isa-slot. what kind of ethernet hardware (that i can still get my hands
-on for not too much money) will work with linux or hpux? this
-information is pretty much fundamental to getting the machine up and
-running...
+Use "configure --help" to see all build options.  Sometimes subdirectories
+have different options.
 
-thanks in advance
+>  egcs builds clean so should I have reseverations about overwriting my
+> current gcc?
 
-pedro gonnet
+Yes.  Keep your current gcc.
 
-p.s. as i can't read the posts to often, i would greatly appreciate
-replies to my e-mail ;) thanks!
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
