@@ -1,15 +1,13 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] "Unknown machine at ..." on N4k
-Date: Fri, 23 Jul 2004 15:10:21 +0200
-Message-ID: <40FB87C4000023C7@ocpmta3.freegates.net>
-References: <20040722233429.GA27361@colo.lackof.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] [RFC] Reorder compat structure placement and casting
+	(firmware.c)?
+Date: Sun, 1 Aug 2004 00:50:32 -0400
+Message-ID: <20040801045032.GE31520@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-1"
-Cc: List Parisc <parisc-linux@parisc-linux.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040722233429.GA27361@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,72 +19,119 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-Grant,
+pa,
 
-> 
-> On Thu, Jul 22, 2004 at 08:05:32AM +0200, Joel Soete wrote:
-> > umm I was curious to know why the code find sversion=3D0x0 while
-> > hp_hardware_list awaiting 0x4 (as for all other CPUs)?
-> > (a firmware pb, another pdc location or awaited 0x4 is wrong in my ca=
-se
-> > (I can only test one N) and another entry should be added with sversi=
-on=3D0x0?)
-> 
-> I suggest just adding another entry to hp_hardware_list[].
-> It's either a bug in either the PDC implementation or the IO ACD
-> (Arch Control Doc) we took the initial table from. I'm much more
-> inclined to believe we transposed/updated the table incorrectly.
-> 
-Something like:
---- arch/parisc/kernel/hardware.c.ORIG	2004-06-07 08:18:42.000000000 +020=
-0
-+++ arch/parisc/kernel/hardware.c	2004-07-23 08:43:59.000000000 +0200
-@@ -209,6 +209,7 @@
- 	{HPHW_NPROC,0x5D0,0x4,0x81,"Kazoo W+"},
- 	{HPHW_NPROC,0x5D1,0x4,0x91,"Forte W+ 2w"},
- 	{HPHW_NPROC,0x5D2,0x4,0x91,"Forte W+ 4w"},
-+	{HPHW_NPROC,0x5D3,0x0,0x91,"Prelude W+ 540"},
- 	{HPHW_NPROC,0x5D3,0x4,0x91,"Prelude W+ 540"},
- 	{HPHW_NPROC,0x5D4,0x4,0x91,"Duet W+"},
- 	{HPHW_NPROC,0x5D5,0x4,0x91,"Crescendo 550"},
-=3D=3D=3D=3D=3D=3D><=3D=3D=3D=3D=3D=3D
+Stop defining variables after code, and make sure that two externs don't
+reference the same variable with different types. Comments?
 
-do:
-[...]
-17. Elroy PCI Bridge at 0xfffffffffecf8000 [1/12] { 13, 0x0, 0x782, 0x000=
-0a
-}
-18. DEW BC Runway Port at 0xfffffffffed24000 [36] { 7, 0x0, 0x584, 0x0000=
-c
-}
-19. Prelude W+ 540 at 0xfffffffffed25000 [37] { 0, 0x0, 0x5d3, 0x00000 }
-20. DEW BC Runway Port at 0xfffffffffed2c000 [44] { 7, 0x0, 0x584, 0x0000=
-c
-}
-21. Prelude W+ 540 at 0xfffffffffed2d000 [45] { 0, 0x0, 0x5d3, 0x00000 }
-CONFIG_SMP=3Dn  ignoring additional CPUs
-CPU: probe of parisc45 failed with error 1
-CPU(s): 1 x PA8600 (PCX-W+) at 550.000000 MHz
-SBA found Ike rev 2 at 0xfffffffffed00000
-[...]
-
-Is anybody else has such model to test it?
-
-hth,
-    Joel
-
-
--------------------------------------------------------------------------=
---
-Tiscali ADSL LIGHT, 19,95 EUR/mois pendant 6 mois, c'est le moment de fai=
-re
-le pas!
-http://reg.tiscali.be/default.asp?lg=3Dfr
-
-
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Index: arch/parisc/kernel/firmware.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/firmware.c,v
+retrieving revision 1.10
+diff -u -p -r1.10 firmware.c
+--- arch/parisc/kernel/firmware.c	10 Jul 2004 21:20:47 -0000	1.10
++++ arch/parisc/kernel/firmware.c	1 Aug 2004 04:24:15 -0000
+@@ -237,11 +237,11 @@ int __init pdc_chassis_info(struct pdc_c
+ #ifdef __LP64__
+ int pdc_pat_chassis_send_log(unsigned long state, unsigned long data)
+ {
++	int retval = 0;
++        
+ 	if (!is_pdc_pat())
+ 		return -1;
+ 
+-	int retval = 0;
+-
+ 	spin_lock_irq(&pdc_lock);
+ 	retval = mem_pdc_call(PDC_PAT_CHASSIS_LOG, PDC_PAT_CHASSIS_WRITE_LOG, __pa(&state), __pa(&data));
+ 	spin_unlock_irq(&pdc_lock);
+@@ -1195,7 +1195,32 @@ int pdc_pat_io_pci_cfg_write(unsigned lo
+ #endif /* __LP64__ */
+ 
+ 
+-/***************** 32-bit real-mode calls ***********/
++/***************** 32-bit and 64-bit real-mode calls ***********/
++
++#ifdef __LP64__
++/* The structure below is the wide 64-bit stack view */
++
++struct wide_stack {
++	unsigned long arg0;
++	unsigned long arg1;
++	unsigned long arg2;
++	unsigned long arg3;
++	unsigned long arg4;
++	unsigned long arg5;
++	unsigned long arg6;
++	unsigned long arg7;
++	unsigned long arg8;
++	unsigned long arg9;
++	unsigned long arg10;
++	unsigned long arg11;
++	unsigned long arg12;
++	unsigned long arg13;
++	unsigned long frame_marker[2];	/* rp, previous sp */
++	unsigned long sp;
++	/* in reality, there's nearly 8k of stack after this */
++};
++#endif /* __LP64__ */
++
+ /* The struct below is used
+  * to overlay real_stack (real2.S), preparing a 32-bit call frame.
+  * real32_call_asm() then uses this stack in narrow real mode
+@@ -1225,53 +1250,42 @@ struct narrow_stack {
+ long real32_call(unsigned long fn, ...)
+ {
+ 	va_list args;
++#ifdef __LP64__
++        /* If we have a 64-bit kernel reference the stack as
++           such, but cast down to a 32-bit structure if
++           required. */
++	extern struct wide_stack real_stack;
++#else
+ 	extern struct narrow_stack real_stack;
++#endif
++        
++	struct narrow_stack * real32_stack;
+ 	extern unsigned long real32_call_asm(unsigned int *,
+ 					     unsigned int *, 
+ 					     unsigned int);
+ 	
++        real32_stack = (struct narrow_stack *)&real_stack;
+ 	va_start(args, fn);
+-	real_stack.arg0 = va_arg(args, unsigned int);
+-	real_stack.arg1 = va_arg(args, unsigned int);
+-	real_stack.arg2 = va_arg(args, unsigned int);
+-	real_stack.arg3 = va_arg(args, unsigned int);
+-	real_stack.arg4 = va_arg(args, unsigned int);
+-	real_stack.arg5 = va_arg(args, unsigned int);
+-	real_stack.arg6 = va_arg(args, unsigned int);
+-	real_stack.arg7 = va_arg(args, unsigned int);
+-	real_stack.arg8 = va_arg(args, unsigned int);
+-	real_stack.arg9 = va_arg(args, unsigned int);
+-	real_stack.arg10 = va_arg(args, unsigned int);
+-	real_stack.arg11 = va_arg(args, unsigned int);
+-	real_stack.arg12 = va_arg(args, unsigned int);
+-	real_stack.arg13 = va_arg(args, unsigned int);
++	real32_stack->arg0 = va_arg(args, unsigned int);
++	real32_stack->arg1 = va_arg(args, unsigned int);
++	real32_stack->arg2 = va_arg(args, unsigned int);
++	real32_stack->arg3 = va_arg(args, unsigned int);
++	real32_stack->arg4 = va_arg(args, unsigned int);
++	real32_stack->arg5 = va_arg(args, unsigned int);
++	real32_stack->arg6 = va_arg(args, unsigned int);
++	real32_stack->arg7 = va_arg(args, unsigned int);
++	real32_stack->arg8 = va_arg(args, unsigned int);
++	real32_stack->arg9 = va_arg(args, unsigned int);
++	real32_stack->arg10 = va_arg(args, unsigned int);
++	real32_stack->arg11 = va_arg(args, unsigned int);
++	real32_stack->arg12 = va_arg(args, unsigned int);
++	real32_stack->arg13 = va_arg(args, unsigned int);
+ 	va_end(args);
+ 	
+-	return real32_call_asm(&real_stack.sp, &real_stack.arg0, fn);
++	return real32_call_asm(&real32_stack->sp, &real32_stack->arg0, fn);
+ }
+ 
+ #ifdef __LP64__
+-/***************** 64-bit real-mode calls ***********/
