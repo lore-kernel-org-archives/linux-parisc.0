@@ -1,11 +1,12 @@
 From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] [3.3 regression] [hppa] Segfault when building jade
+Subject: [parisc-linux] c++/10438: [3.3 regression] [hppa] Segfault when building jade
 Date: 19 Apr 2003 05:14:31 -0000
-Message-ID: <20030419051431.17554.qmail__6098.0086368092$1416622402$gmane$org@sources.redhat.com>
+Message-ID: <20030419051431.17554.qmail__26619.9195677929$1416622402$gmane$org@sources.redhat.com>
 Reply-To: Randolph Chung <tausq@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org, debian-gcc@lists.debian.org
 To: gcc-gnats@gcc.gnu.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Resent-Message-ID: <20030419051601.17719.qmail@sources.redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -16,15 +17,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+>Number:         10438
 >Category:       c++
 >Synopsis:       [3.3 regression] [hppa] Segfault when building jade
 >Confidential:   no
 >Severity:       serious
 >Priority:       medium
+>Responsible:    unassigned
+>State:          open
 >Class:          ice-on-legal-code
 >Submitter-Id:   net
+>Arrival-Date:   Sat Apr 19 05:16:01 UTC 2003
+>Closed-Date:
+>Last-Modified:
 >Originator:     Randolph Chung <tausq@debian.org>
 >Release:        gcc version 3.3 20030412 (Debian prerelease)
+>Organization:
 >Environment:
 tausq@ios:~$ uname -a
 Linux ios 2.5.67-pa4 #79 Wed Apr 16 20:16:49 PDT 2003 parisc64 unknown unknown GNU/Linux
@@ -85,4 +93,6 @@ class MifDoc {
 
 >Fix:
 
+>Release-Note:
+>Audit-Trail:
 >Unformatted:
