@@ -1,29 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA22997
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:03:47 -0700
-Received: from user-83-59.jakinternet.co.uk (HELO rhirst.linuxcare.com) (194.88.83.59)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 18:05:22 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 228DBB007; Thu, 30 Nov 2000 18:01:18 +0000 (GMT)
-Date: Thu, 30 Nov 2000 18:01:18 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Steve Moret <smoret@uci.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA23240
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:05:17 -0700
+Message-Id: <200011301807.KAA29437@milano.cup.hp.com>
+To: "Steve Moret" <smoret@uci.edu>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000/735-125
-Message-ID: <20001130180118.P22285@linuxcare.com>
-References: <00113001105103.00309@P100> <FKEGLIIBOIACJOCCAFIMCEFBCCAA.smoret@uci.edu> <20001130112739.F22285@linuxcare.com> <20001130161115.N22285@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001130161115.N22285@linuxcare.com>; from rhirst@linuxcare.com on Thu, Nov 30, 2000 at 04:11:15PM +0000
+Subject: Re: [parisc-linux] HP 9000/735-125 
+In-reply-to: Your message of "Thu, 30 Nov 2000 09:39:17 PST."
+             <FKEGLIIBOIACJOCCAFIMIEFFCCAA.smoret@uci.edu>
+Date: Thu, 30 Nov 2000 10:07:21 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 30, 2000 at 04:11:15PM +0000, Richard Hirst wrote:
-> I got my 715/75 to boot.  The scsi driver still has problems with my
-> CDROM drive, but the disk seems ok.  I ran mke2fs of a 1Gig partition
-> a few times and then copied 200MB of files from the network to it.
+"Steve Moret" wrote:
+> I will go under the assumption that it could be the disks and their possible
+> age and try and find suitable replacements.
 
-The CDROM problem is because my cdrom drive rejects all multi-byte
-messages after the first byte, and the driver get confused.  I'll
-fix that, but I don't expect that particular fix to help you.
+Possible - sometimes just jumpers are missing or need to be removed.
+Make sure disks spinup on their own first.
 
-Richard
+I'm not sure Linux SCSI disk driver knows how to deal with
+"Not ready" and/or send START_UNIT commands. HPUX definitely does.
+
+> Once I do get disks working is there a "Recepe" on how to get it to boot
+> from your local drive.
+
+Yes - the /README.INSTALL on the v0.5 ISO image.
+Not sure if that's posted elsewhere on www.parisc-linux.org.
+
+> I would figure just copy over the NFS root, but then where do I put the
+> lifimage so that boot manager can find it.
+
+The "palo" step does that for you.
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
