@@ -1,24 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.quango.net (unknown [63.102.227.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A5904482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jan 2002 02:18:25 -0700 (MST)
-Received: from shiftright.mail.quango.net [24.55.42.220] by quango.net [63.102.227.120]
-	with SMTP (MDaemon.v3.5.1.R)
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 04 Jan 2002 01:11:50 -0800
-Message-Id: <5.1.0.14.2.20020104011417.023b6008@mail.quango.net>
-Date: Fri, 04 Jan 2002 01:18:18 -0800
-To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-From: Bill Ferguson <ferguson@quango.net>
-In-Reply-To: <20020104085718.GB1029@marmite.its.uct.ac.za>
-References: <5.1.0.14.2.20020103132428.00afee90@mail.quango.net>
- <ferguson@quango.net>
- <5.1.0.14.2.20020103010257.02f9c440@mail.quango.net>
- <5.1.0.14.2.20020103010257.02f9c440@mail.quango.net>
- <5.1.0.14.2.20020103132428.00afee90@mail.quango.net>
+Received: from sj-msg-core-4.cisco.com (sj-msg-core-4.cisco.com [171.71.163.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AC979482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jan 2002 02:26:02 -0700 (MST)
+Received: from mira-sjc5-9.cisco.com (mira-sjc5-9.cisco.com [171.71.163.32])
+	by sj-msg-core-4.cisco.com (8.11.3/8.9.1) with ESMTP id g049Q1v13675
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 4 Jan 2002 01:26:01 -0800 (PST)
+Date: Fri, 4 Jan 2002 01:25:59 -0800
+From: Christian Suder <csuder@cisco.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20020104012559.69375281.csuder@cisco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Reply-To: ferguson@quango.net
-Subject: [parisc-linux] Re: Upgrading 715/100 Firmware
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Need five #defines, please.....
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,19 +23,53 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-At 10:57 AM 1/4/2002 +0200, you wrote:
->It doesn't matter if it's partitioned or not.  When you
->dd ... of=/dev/sda
->you overwrite the partition table anyway...
->
->--
->Michael Wood <mwood@its.uct.ac.za>
+Ok,
 
 
-That maybe true but it didn't boot for me when I did that.  It was only 
-when I deleted the partitions that it booted.
+I'm trying to skin the lizard (mozilla 0.9.7). I can build with the linux
+default pthreads, but it doesn' work, windows show up but the content is
+not drawn etc.. Hence I'd like to try a build with "classic" NSPR, which
+implements it's own threading mechanism. Problem : There is a couple of
+hardware-specific definitions that I don't know how to do, but somebody
+with some insight in parisc-linux may be able to put it down in 5 minutes
+(I hope..). Or maybe it has been solved it already ? 
 
-Anyone know how to get the STI console working?   It sees the two frame 
-buffers in the 715, but isn't going there.    I see lots of posts in the 
-archives asking this question, but not too many replies in archives with 
-the answer.
+Here's what I'm missing : 
+
+#elif defined(__hppa__)
+/* parisc */    
+#define _MD_GET_SP(_t) 
+#define _MD_SET_FP(_t, val)
+#define _MD_GET_SP_PTR(_t) 
+#define _MD_GET_FP_PTR(_t)
+#define _MD_SP_TYPE 
+
+As a hint, here some existing defines. As far as my limited incompetence
+can tell these provide access to some of the context information of the
+threads :
+
+/* Sparc */  
+#define _MD_GET_SP(_t) (_t)->md.context[0].__jmpbuf[JB_SP]
+#define _MD_SET_FP(_t, val) ((_t)->md.context[0].__jmpbuf[JB_FP] = val)
+#define _MD_GET_SP_PTR(_t) &(_MD_GET_SP(_t))
+#define _MD_GET_FP_PTR(_t) (&(_t)->md.context[0].__jmpbuf[JB_FP])
+#define _MD_SP_TYPE int
+
+/* Alpha based Linux */
+#define _MD_GET_SP(_t) (_t)->md.context[0].__jmpbuf[JB_SP]
+#define _MD_SET_FP(_t, val)
+#define _MD_GET_SP_PTR(_t) &(_MD_GET_SP(_t))
+#define _MD_GET_FP_PTR(_t) ((void *) 0)
+#define _MD_SP_TYPE long int
+
+
+/* Intel based Linux */ 
+#define _MD_GET_SP(_t) (_t)->md.context[0].__jmpbuf[JB_SP]
+#define _MD_SET_FP(_t, val) ((_t)->md.context[0].__jmpbuf[JB_BP] = val)
+#define _MD_GET_SP_PTR(_t) &(_MD_GET_SP(_t))                           
+#define _MD_GET_FP_PTR(_t) (&(_t)->md.context[0].__jmpbuf[JB_BP])         
+     #define _MD_SP_TYPE int
+
+
+Thanks,
+	Christian 
