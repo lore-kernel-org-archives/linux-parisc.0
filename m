@@ -1,18 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server01 (server01.steindlberger.de [217.115.138.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 38950482E
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 04:12:08 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-15"
-From: Joerg Steindlberger <j@steindlberger.de>
+Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9AEE482E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 09:20:40 -0700 (MST)
+Received: (from root@localhost)
+	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id IAA03842
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Dec 2002 08:20:30 -0800
+Received: from mulgrave (jejb@localhost)
+	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gBIGKOJ02593;
+	Wed, 18 Dec 2002 10:20:25 -0600
+Message-Id: <200212181620.gBIGKOJ02593@localhost.localdomain>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] problems with PCI IDE controller
-Date: Tue, 17 Dec 2002 22:04:50 +0100
-References: <200212160609.XAA18500@udlkern.fc.hp.com> <1040050989.13786.23.camel@irongate.swansea.linux.org.uk>
-In-Reply-To: <1040050989.13786.23.camel@irongate.swansea.linux.org.uk>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
-MIME-Version: 1.0
-Message-ID: <courier.3E005801.0000711F@server01>
+Cc: James.Bottomley@SteelEye.com
+Mime-Version: 1.0
+Content-Type: multipart/mixed ;
+	boundary="==_Exmh_-17170343740"
+Date: Wed, 18 Dec 2002 10:20:24 -0600
+From: James Bottomley <James.Bottomley@steeleye.com>
+Subject: [parisc-linux] 2.5 fix for user level page fault problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,40 +28,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Alan! Great things happened!
+This is a multipart MIME message.
 
-I could sweare, that a few weeks ago nothing worked, neither with the nat=
-ive=20
-IDE drivers nor with PDC20268 options. (That kernel was 2.4.19-pa14). Now=
- it=20
-only doesn't work with the special IDE options for this card. Is there a=20
-roadmap to fix that prolem? ;-)
+--==_Exmh_-17170343740
+Content-Type: text/plain; charset=us-ascii
 
-Thanks to all who helped me!
-Joerg
+It seems that going from 2.4 to 2.5 there was an over zealous removal of the 
+check signals return path.  The problem is that if a user application takes a 
+page fault, that can result in a signal being posted (specifically SEGV for 
+illegal memory access).  If we never check the signals, the instruction is 
+retried and re-faults ad infinitum (well actually, it seems to terminate with 
+an unaligned instruction trap in this case after a few hundred faults).
 
-hp-c240:~# modprobe -k ide-mod
-Uniform Multi-Platform E-IDE driver Revision: 6.31
-ide: Assuming 33MHz system bus speed for PIO modes; override with idebus=3D=
-xx
-PDC20268: IDE controller on PCI bus 00 dev 08
-PDC20268: chipset revision 2
-PDC20268: not 100% native mode: will probe irqs later
-    ide0: BM-DMA at 0xfd00-0xfd07, BIOS settings: hda:pio, hdb:pio
-    ide1: BM-DMA at 0xfd08-0xfd0f, BIOS settings: hdc:pio, hdd:pio
-hp-c240:~# modprobe -k ide-probe-mod
-hdd: IBM-DTTA-351680, ATA DISK drive
-ide1 at 0xfb00-0xfb07,0xfc02 on irq 97
-hp-c240:~# modprobe -k ide-disk
-hdd: 33022080 sectors (16907 MB) w/462KiB Cache, CHS=3D32760/16/63
- /dev/ide/host0/bus1/target1/lun0: [PTBL] [2055/255/63] p1
-hp-c240:~# mount /dev/ide/host0/bus1/target1/lun0/part1 /mnt/tmp
-(works with and without devfs)
+The attached path makes signal posting on page fault work again
 
-On Monday 16 December 2002 16:03, you wrote:
-> In legacy mode the PCI BAR registers are ignored, the I/O decode is at
-> 0x170 etc and interrupts are flagged by the ISA legacy not by the PCI
-> bus.
-> That isnt going to work very well on your average PA-RISC box. Most
-> probably you want to force the chip into native mode on pa-risc
-> hardware.
+James
+
+
+--==_Exmh_-17170343740
+Content-Type: text/plain ; name="tmp.diff"; charset=us-ascii
+Content-Description: tmp.diff
+Content-Disposition: attachment; filename="tmp.diff"
+
+===== entry.S 1.8 vs edited =====
+--- 1.8/arch/parisc/kernel/entry.S	Sun Nov 24 17:36:53 2002
++++ edited/entry.S	Mon Dec 16 22:09:59 2002
+@@ -944,11 +944,11 @@
+ 	ldo		-16(%r30),%r29	/* Reference param save area */
+ #endif
+ 
+-	ldil		L%intr_restore, %r2
++	ldil		L%intr_check_sig, %r2
+ 	copy		%r25, %r16	/* save pt_regs */
+ 
+ 	b		handle_interruption
+-	ldo		R%intr_restore(%r2), %r2
++	ldo		R%intr_check_sig(%r2), %r2
+ 
+ 
+ 	/*
+
+--==_Exmh_-17170343740--
