@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2E392482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 09:28:44 -0700 (MST)
-Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
-	id 16VxbG-0003fh-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 17:28:42 +0100
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1012408122.3c581f3ab077e@webmail.tiscalinet.be>
-Date: Wed, 30 Jan 2002 17:28:42 +0100 (CET)
-From: joel.soete@freebel.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] kernel 2.4.17: fs sync broken?
+Received: from solo.franken.de (p50844931.dip.t-dialin.net [80.132.73.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 50769482A
+	for <parisc-linux@parisc-linux.org>; Wed, 30 Jan 2002 14:20:11 -0700 (MST)
+Date: Wed, 30 Jan 2002 22:19:39 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Tom <palinux@alaskatech.org>
+Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Odd kernel error
+Message-ID: <20020130221939.A3166@solo.franken.de>
+References: <Pine.LNX.4.33.0201291938520.3623-100000@goliath.alaskatech.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0201291938520.3623-100000@goliath.alaskatech.org>; from palinux@alaskatech.org on Tue, Jan 29, 2002 at 08:00:21PM -0900
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,28 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Tue, Jan 29, 2002 at 08:00:21PM -0900, Tom wrote:
+> Compiling the latest from CVS (-pa16, I think) and at the final make, when
+> gcc is actually doing the '-o vmlinux' I'm getting:
+> 
+> drivers/video/video.o: In function 'L1260':
+> drivers/video/video.o(.init.text+0x2554): undefined reference to
+> 'fbcon_sti'
+> drivers/video/video.o(.init.text+0x255c): undefined reference to
+> 'fbcon_sti'
+> make: *** [vmlinux] Error 1
 
-As I continue to investigate the problem with evms (last release 0.9.0) and also
-as it still crashes, I try to obtain a more complete tool log file (evmsEngine.log).
+are you using " Advanced low level driver options" ? If yes, there is
+a bug in driver/video/Config.in, which doesn't let you select fbcon sti
+for advanced config. Turn off the Advanced low level thing and the link 
+error should go away.
 
-So I try to remount my fs (/ here) with option sync (in fstab) and chattr +S
-/var/log.
+Thomas.
 
-On a previous kernel realease (kernel-2.4.16-pa20) it seems to works for me: I
-obtain a more complete log and I notice a famous decrease of the system speed.
-But now I do not notice anymore this typical decrease of speed and by the way,
-it is not anymore possible to obtain any evmsEngine.log (I presume that it is
-the inode which is cleaned after the forced fsck requested at the reboot).
-
-Can somebody tell me if it is specific to parisc or to all architectures for
-this 2.4.17 kernel (sometime ago I read some discuss about this but do not get
-conclusion)?
-
-Thanks in advance for info,
-        Joel
-
-
-
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
