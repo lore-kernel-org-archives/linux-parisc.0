@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (cr821974-a.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 17774482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  4 Feb 2002 18:27:44 -0700 (MST)
-Date: Mon, 4 Feb 2002 20:27:53 -0500
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: James Bottomley <James.Bottomley@HansenPartnership.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: 53c700 (LASI SCSI 53c700) hang
-Message-ID: <20020204202753.B3465@systemhalted>
-References: <deller@gmx.de> <200202041950.g14JoUm03211@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200202041950.g14JoUm03211@localhost.localdomain>; from James.Bottomley@HansenPartnership.com on Mon, Feb 04, 2002 at 01:50:30PM -0600
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F031C482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Feb 2002 00:56:27 -0700 (MST)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 432D68CA
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Feb 2002 08:56:26 +0100 (MET)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id IAA08724 for <parisc-linux@lists.parisc-linux.org>; Tue, 5 Feb 2002 08:55:48 +0100 (MET)
+Message-ID: <3C5F8F7E.D1956DF0@admin.france.hp.com>
+Date: Tue, 05 Feb 2002 08:53:34 +0100
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] dump driver for parisc-linux: patch vs CVS
+References: <3C5E768A.573CC5A2@admin.france.hp.com> <20020204174039.DAF3B482A@dsl2.external.hp.com>
+Content-Type: multipart/mixed;
+ boundary="------------EBA49CEA53F20620879DAC56"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,110 +26,107 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> What these errors tell me is that your HD accepted more tags than it could 
-> cope with and then choked.  Linux error handler isn't very good at handling 
-> this situation.  Also, your disc:
+This is a multi-part message in MIME format.
+--------------EBA49CEA53F20620879DAC56
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+	Hi.
+So my work for the next few days will to create a patch
+of all my modification for the latest CVS bits (so you will
+have only the modifications). But I'll send it to which people ?
+
+Grant Grundler wrote:
+> As Randolph noted, we need to see the diff and what was changed
+> in the generic kernel. Is the kernel and user space code GPL?
+
+Everything is under GPL, even the code coming from SGI. I leave
+all informations about the SGI code and the header of all their files.
+But I've modified the code to handle specific needs for p4. I'm
+also currently added code to handle multiple dump device. And I've also
+the project to dump only kernel space and not user space.
+
+> > I have modified:
+> > ./Makefile
+> > ./arch/parisc/config.in
+> > ./arch/parisc/kernel/traps.c
+> > ./arch/parisc/mm/init.c
+> > ./drivers/Makefile
+> > ./drivers/char/sysrq.c
+> > ./init/main.c
+> > ./kernel/ksyms.c
+> > ./kernel/panic.c
+> > ./kernel/sched.c
 > 
-> deller@gmx.de said:
-> >   Vendor: QUANTUM   Model: FIREBALL_TM3200S  Rev: 300X 
+> The last four might cause trouble....
+I know, I can try to put kernel/ksyms.c to arch/parisc/kernel/parisc_ksyms.c
+but it can break the code for ia64 and other architecture. but for the other
+it is not possible: panic (call to dump), sched.c (another call to dump), 
+main.c (init of dump). I've also an IA64 box where I can do test, so I've also
+the project to do it working on it (lots of project :-).
+
 > 
-> Is a known trouble causer with tag command queueing.  Initially, try taking 
-> the #define NCR_700_MAX_TAGS in drivers/scsi/53c700.h down to 4 or 2 and 
-> recompiling the driver.  Alternatively, turn off tagged command queueing 
-> altogether by commenting out this block of code:
+> >
+> > And I've added:
+> > ./include/linux/dump.h
+> > ./drivers/dump/Makefile
+> > ./drivers/dump/dump_base.c
+> > ./drivers/dump/dump_rle.c
+> > ./drivers/dump/dump_parisc.c
 > 
-> I am getting around to adding the code changes to make this able to be done as 
-> module/kernel command line options.
+> and we need to ask 2.4 maintainer if this can be added upstream too...
+I defenitly think that it is a really needed feature (I'm working perhaps 
+since a too long time in support center :-).
+
 > 
-> James
+> > So my question:
+> > -Do you think it is a good idea to have a dump driver available
+> > in the standart kernel ?
+> 
+> I do. But it's really up to linus/et al to decide that.
+> I can choose to commit this code to *our* tree (parisc-linux) only.
+> (and that's really not just my decision - need some consensus)
+
+perfectly understand, so, you already have my vote :-)
+
+> 
+> > -If yes, who is able to do the code review, and put this dump
+> > module in the CVS ?
+> 
+> Ideally, I'd like to see outstanding non-arch code changes merged
+> upstream first..  Otherwise, I don't mind maintaining that code in our tree.
 >
-
-I've been having problems with the driver for quite some time now.
-
-SCSI subsystem driver Revision: 1.00
-53c700: consistent memory allocation failed
-53c700: Version 2.6 By James.Bottomley@HansenPartnership.com
-scsi0: 53c700 rev 0 
-scsi0 : LASI SCSI 53c700
-  Vendor: FUJITSU   Model: M2694ES-512       Rev: 8134
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-Attached scsi disk sda at scsi0, channel 0, id 6, lun 0
-SCSI device sda: 2117025 512-byte hdwr sectors (1084 MB)
-Partition check:
- sda: sda1 sda2
-
-Compiled kernel with tag queue code _always_ disabled (2.4.17-pa18 from CVS).
-
-#ifdef NEVERCOMIPLE
-        if(SCp->device->tagged_supported && !SCp->device->tagged_queue
-           && (hostdata->tag_negotiated &(1<<SCp->target)) == 0
-           && NCR_700_is_flag_clear(SCp->device, NCR_700_DEV_BEGIN_TAG_QUEUEING)) {
-                /* upper layer has indicated tags are supported.  We don't
-                 * necessarily believe it yet.
-                 *
-                 * NOTE: There is a danger here: the mid layer supports
-                 * tag queuing per LUN.  We only support it per PUN because
-                 * of potential reselection issues */
-                printk(KERN_INFO "scsi%d: (%d:%d) Enabling Tag Command Queuing\n", SCp->device->host->host_no, SCp->target, SCp->lun);
-                hostdata->tag_negotiated |= (1<<SCp->target);
-                NCR_700_set_flag(SCp->device, NCR_700_DEV_BEGIN_TAG_QUEUEING);
-                SCp->device->tagged_queue = 1;
-        }
-#endif
-
-in drivers/scsi/53c700.c at about line 1891.
-
-Start up one of those real-world scripts :}
-
-#!/bin/tcsh
-while ( 1 )
-find /bin | xargs cat > /dev/null
-find /boot | xargs cat > /dev/null
-find /etc | xargs cat > /dev/null
-find /root | xargs cat > /dev/null
-find /sbin | xargs cat > /dev/null
-find /tmp | xargs cat > /dev/null
-find /usr | xargs cat > /dev/null
-find /var | xargs cat > /dev/null
-end
-
-root@node44:/proc/scsi/lasi700# cat 0
-Total commands outstanding: 1
-Target  Depth  Active  Next Tag
-======  =====  ======  ========
-  6: 0     16       1         0
-
-
-10 minutes into the run, the find _and_ cat are D on the process list.
-The drive is officially unresponsive around this point... maybe it was
-just cat and find you say?
-
-Soon after, kupdated goes into D aswell. From there on in the box is
-locking up left right and center. I wish I had kdb and could see what's
-going on.
-
-I've repeated this lockup 3 times.
-
-Most intersting is that when I reenable the Tag queueing code but change
-the Tag depth to 2 (instead of 16). The machine doesn't seem to hang.
-I have a box currently running well over the 10 minute mark that I will
-leave running until tommorow.
-
-The sim700 driver runs poorly, but happily for days... generating heat :)
-Sadly, the sim700 driver is currently only functionaly with the older kernels.
-I'm using 2.4.9-pa25 to run the 715/50's in our cluster (diskless boxes run
-the latest kernel no problems).
-
-Any thoughts? 
-
-Is the issue as simple as: 
-
-Leave Tag queuing in, but set depth to something low (2 or 4).
-
-Good: 	Tag Queu, Depth = 2
-
-Bad: 	No Tag Queue. 
-	Tag Queue, Depth = 16.
-
-c.
+My main probleme is to have a up to date code, because I have to follow
+each modification and redo the merge each time I want to update my CVS.
+I agree that I need to add comments in my code, but before going further
+I prefer to know if this code will stay a "patch" or not.
  
+> thanks!
+> grant
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------EBA49CEA53F20620879DAC56
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
+
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------EBA49CEA53F20620879DAC56--
