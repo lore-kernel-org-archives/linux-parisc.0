@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9686A4845
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 05:13:58 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 18vyvk-0001Mc-M0; Thu, 20 Mar 2003 12:13:56 +0000
-Date: Thu, 20 Mar 2003 12:13:56 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: bruno_vidal@hp.com
+Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2C28482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 07:14:17 -0700 (MST)
+Date: Thu, 20 Mar 2003 09:14:08 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Ryan Bradetich <rbradetich@uswest.net>
 Cc: Matthew Wilcox <willy@debian.org>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] struct page: page in use or not ?
-Message-ID: <20030320121356.GZ14520@parcelfarce.linux.theplanet.co.uk>
-References: <3E789FE6.C9BB53CD@hp.com> <20030319170749.GX14520@parcelfarce.linux.theplanet.co.uk> <3E79A49C.81C188AA@hp.com>
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] /lib/ld.so.1 (glibc) issues on 2.5 kernel??
+Message-ID: <20030320141408.GB25896@systemhalted>
+References: <1047917954.14507.15.camel@beavis.ybsoft.com> <20030317163206.GE28607@parcelfarce.linux.theplanet.co.uk> <1047919859.14507.21.camel@beavis.ybsoft.com> <1047972053.19011.14.camel@beavis.ybsoft.com> <1048148150.19036.11.camel@beavis.ybsoft.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E79A49C.81C188AA@hp.com>
+In-Reply-To: <1048148150.19036.11.camel@beavis.ybsoft.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,19 +24,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Mar 20, 2003 at 12:23:08PM +0100, bruno_vidal@hp.com wrote:
->     Hi
-> What do you mean by "swsusp" patche ? What it do....
-> Actually I'm looking at the kmalloc() function in order to
-> understand how it determine the bucket, and so to know
-> which pages I need to dump before I can use the page structure.
-> Do you think it is a good starting point, or using page
-> struture is really a bad option ?
+Ryan,
 
-kmalloc (ie slab) is the wrong allocator to be looking at.  you want
-get_free_pages.
+> 	user_entry: 41001fb4
+> 	ENTRY_POINT: 41027082
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Intereting...
+ 
+> Since they are different, the if statement fails... My belief
+> is they should be the same when /lib/ld.so.1 is called because
+> of the following comment inside this if statement:
+
+I wouldn't trust code comments.
+ 
+> to me there looks like two things that could be wrong:
+> 
+> 1.  The exec->e_entry needs to be fixed in the kernel, so it matches
+>     the _start of the library.
+> 
+> 2.  The ENTRY_POINT needs to be changed in glibc for parisc-linux.
+> 
+> I am planning to pursue option 1 unless someone thinks option 2 is the
+> correct option to pursue.
+
+Would you be willing to ask this question on
+libc-alpha@sources.redhat.com? If not, I could push the question out
+there and see what the official solution should be and why.
+
+I'm interested to know why this broke? :)
+
+c.
