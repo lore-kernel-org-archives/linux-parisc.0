@@ -1,30 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA23335
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 10:02:15 -0600
-Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 17 Oct 2000 16:02:39 -0000
-To: "Thomas Marteau" <marteaut@esiee.fr>
-Cc: <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Trouble with new STI
-References: <001201c050b7$b737d260$a832d793@esiee.fr>
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 17 Oct 2000 12:02:35 -0400
-In-Reply-To: "Thomas Marteau"'s message of "Fri, 17 Nov 2000 17:59:14 +0100"
-Message-ID: <87snpv4fs4.fsf@linuxcare.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA23929
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 11:19:05 -0600
+Date: Tue, 17 Oct 2000 10:16:15 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] simple kernel tasks?
+Message-ID: <20001017101615.A9660@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20001017071503.D928@tausq.org> <200010171601.JAA12803@milano.cup.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200010171601.JAA12803@milano.cup.hp.com>; from grundler@cup.hp.com on Tue, Oct 17, 2000 at 09:01:51AM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Thomas Marteau" <marteaut@esiee.fr> writes:
+> I'm still chuckling about finding "#CONFIG_RTC is not set".
 
-> We've tried the new STI driver and our 712 dies with this message:
-> Kernel Panic: VFS: Unable to mount root fs on 01:00
-> We tried with Ramdisk, nfs and hard disk support and always the same end.
+:-) oh, and the "fix" I made was simply to correctly match up the
+functions in the file_operations struct to the 2.4 structure. I think
+the old genrtc driver was coded to use an older structure.
 
-That has nothing to do with the STI drivers, and I'm afraid I can't
-help you unless you give more detail.  Like your kernel .config file
-for instance.
+> We certainly do have a list:
+> 
+> 	http://www.thepuffingroup.com/parisc/status.html
 
+Cool! I'll check it out.
+
+randolph
 -- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
