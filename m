@@ -1,21 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7FCA84829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 12:25:04 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17qe4q-0003OP-00; Sun, 15 Sep 2002 19:25:00 +0100
-Date: Sun, 15 Sep 2002 19:25:00 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Christoph Plattner <christoph.plattner@gmx.at>
-Cc: Ryan Bradetich <rbradetich@uswest.net>, varenet@esiee.fr,
-	"MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: SCSI/MUX driver on E55, NDA for sorce code
-Message-ID: <20020915192500.D10583@parcelfarce.linux.theplanet.co.uk>
-References: <3D825FDF.CD6E8CE2@gmx.at> <1031962399.930.17.camel@beavis> <3D8281F4.F03A2007@gmx.at> <1031964117.1043.29.camel@beavis> <3D84CD3B.88A9528B@gmx.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D84CD3B.88A9528B@gmx.at>; from christoph.plattner@gmx.at on Sun, Sep 15, 2002 at 08:11:07PM +0200
+Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E30424829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 16:13:03 -0600 (MDT)
+Received: from [195.20.224.206] (helo=mrvdomng0.kundenserver.de)
+	by moutvdom.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 17qhdR-0007II-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 16 Sep 2002 00:12:57 +0200
+Received: from [217.227.249.14] (helo=PLUTO)
+	by mrvdomng0.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 17qhdQ-0000LR-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 16 Sep 2002 00:12:57 +0200
+From: "Tobias Giesen" <tobias_subscriber@tgtools.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] [PATCH] Voodoo framebuffer on PARISC
+Date: Mon, 16 Sep 2002 00:13:11 +0200
+Message-ID: <001201c25d05$150e6600$0100a8c0@PLUTO>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+In-reply-to: <200209150209.46701.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,19 +30,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Sep 15, 2002 at 08:11:07PM +0200, Christoph Plattner wrote:
-> The status of MUX: It is not working to access to offset
-> 0x80 for the lines. The machine dies. I think this problem
-> can be solved very easy, looking in the HP-UX driver code.
+Helge wrote:
 
-Not so sure...
+> This patch is already integrated into the 2.4.19-pa18 
+> kernel ...
 
-common/sio/mux2.c:
+Where can I get pa18? The latest on ftp.parisc-linux.org seems to be
+pa17.
 
-for (loop = 0; loop < ports; loop++, ttyp++) {
-        HW.hpa                  = MUX_DATA.hpa + 0x800 + (loop * 0x80);
-        HW.io_reg_ptr           = (io_reg_type *)(HW.hpa + 0x30);
-}
-
--- 
-Revolutions do not require corporate support.
+Cheers,
+Tobias
