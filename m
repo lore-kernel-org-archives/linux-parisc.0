@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D524F4833
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Jan 2002 09:33:35 -0700 (MST)
-Received: from localhost (bz@localhost)
-	by mail.zabbadoz.net (8.11.0/8.11.0) with ESMTP id g06GXYI40721
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 6 Jan 2002 17:33:34 +0100 (CET)
-Date: Sun, 6 Jan 2002 17:33:34 +0100 (CET)
-From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
-To: <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.BSF.4.30.0201061720380.727-100000@noc.zabbadoz.net>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7509E4837
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Jan 2002 09:56:50 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>,
+	<parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] LED blinking ;-(
+Date: Sun, 6 Jan 2002 17:55:08 +0100
+References: <Pine.BSF.4.30.0201061720380.727-100000@noc.zabbadoz.net>
+In-Reply-To: <Pine.BSF.4.30.0201061720380.727-100000@noc.zabbadoz.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] LED blinking ;-(
+Message-Id: <200201061755.08978.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +24,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Sunday 06 January 2002 17:33, Bjoern A. Zeeb wrote:
+> Hi,
 
-had my apollo 715 updated this weekend and perhaps because the machine
-stood somewhere else I never had noticed that the LED 4 (OS running) has
-been blinking.
+Hi Bjoern,
 
-Well I have no idea who is responsible for this the OS or the
-machine(firmware) but ...
+> had my apollo 715 updated this weekend and perhaps because the machine
+> stood somewhere else I never had noticed that the LED 4 (OS running) has
+> been blinking.
+> Well I have no idea who is responsible for this the OS or the
+> machine(firmware) but ...
 
-... can one change this to a constant on ? - or at least not blinking
-that frequent or in a radom intervall ?
+AFAIK, I am.
 
-I feel it very maddening the way it is at the monent ;-(
+> ... can one change this to a constant on ? - or at least not blinking
+> that frequent or in a radom intervall ?
 
-TIA
+I assume you talk about the "Heartbeat LED" with which we blink in the
+same frequency as a heart. That's also the behaviour under HP/UX.
 
--- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+You may see the actual values with:
+pa64:~# cat /proc/pdc/led
+Heartbeat: 1
+Disk IO: 1
+LAN Rx/Tx: 1
+
+and change it with one of the following commands:
+pa64:~# echo "0 1 1" > /proc/pdc/led
+turns off only the heartbeat LED,
+pa64:~# echo "0 0 0" > /proc/pdc/led
+turns off all LEDs.
+
+Helge
