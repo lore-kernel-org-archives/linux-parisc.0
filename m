@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 85FA4482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 13:33:03 -0700 (MST)
-Date: Tue, 15 Jan 2002 21:32:38 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: mike_phillips@urscorp.com
-Cc: linux-tr@linuxtr.net,
-	HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>,
-	Randolph Chung <randolph@tausq.org>
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE39A482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 14:26:19 -0700 (MST)
 Subject: Re: [linux-tr] Re: [parisc-linux] IBM TR patch
-In-Reply-To: <OF2127EDE6.9F97A3EC-ON85256B42.00699E6F@urscorp.com>
-Message-ID: <Pine.LNX.4.43.0201152129020.11606-100000@alpha.bocc.de>
+To: jochen@scram.de (Jochen Friedrich)
+Date: Tue, 15 Jan 2002 21:37:39 +0000 (GMT)
+Cc: mike_phillips@urscorp.com, linux-tr@linuxtr.net,
+	parisc-linux@lists.parisc-linux.org (HP900 PARISC mailing list),
+	randolph@tausq.org (Randolph Chung)
+In-Reply-To: <Pine.LNX.4.43.0201152129020.11606-100000@alpha.bocc.de> from "Jochen Friedrich" at Jan 15, 2002 09:32:38 PM
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E16QbH1-0006IW-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,12 +24,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Mike,
+> > And MCA.....
+> 
+> I doubt that this might be an issue for big endian, unless someone 
+> *really* starts a Linux port for POWER2 or ports MCA to PPC for the 
+> early RS/6000 (model 250?) machines.
 
-> And MCA.....
-
-I doubt that this might be an issue for big endian, unless someone 
-*really* starts a Linux port for POWER2 or ports MCA to PPC for the 
-early RS/6000 (model 250?) machines.
-
---jochen
+That may happen. If the code is endian clean they can fix up the remnants
