@@ -1,14 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 11 Jan 2003 20:02:10 -0700
-To: Thibaut VARENE <varenet@esiee.fr>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.5.56-pa0 64bit successful boot
-Message-ID: <20030112030210.GA28585@dsl2.external.hp.com>
-References: <20030112021041.32cfbb84.varenet@esiee.fr>
+Received: from mta04bw.bigpond.com (mta04bw.bigpond.com [139.134.6.87])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A3CE4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 00:33:47 -0700 (MST)
+Received: from piglet2.sspl.net.au ([144.135.24.81]) by
+          mta04bw.bigpond.com (Netscape Messaging Server 4.15 mta04bw Jul
+          16 2002 22:47:55) with SMTP id H8LBO800.5Z6 for
+          <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 17:33:44 +1000
+Received: from pete by piglet2.sspl.net.au with local (Exim 3.35 #1 (Debian))
+	id 18Xcfx-0007m2-00
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 12 Jan 2003 18:36:57 +1100
+Date: Sun, 12 Jan 2003 18:36:56 +1100
+From: Peter Lavender <plaven@bigpond.net.au>
+To: parisc <parisc-linux@lists.parisc-linux.org>
+Message-ID: <20030112073656.GB13397@piglet2>
+Reply-To: plaven@bigpond.net.au
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030112021041.32cfbb84.varenet@esiee.fr>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] upgrading kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,23 +28,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Jan 12, 2003 at 02:10:41AM +0100, Thibaut VARENE wrote:
-> Hi pa-ckers!
-> 
-> I just tested fresh 2.5.56 and successfully booted 64bit UP kernel.
-> Linux mkhppa3 2.5.56-pa0 #2 Sun Jan 12 01:34:36 CET 2003 parisc64 unknown unknown GNU/Linux
+Hi Everyone,
 
-cool!
+Is upgrading the kernel for a stable system the same as for i386?  I
+haven't done this with debian before.. but I'm sure there's something
+debian about doing it.. :)
 
-> I had some errors with SCSI and SERIAL (see the attached dmesg and .config).
-> I'll have a look at them ASAP.
+I'll find the relevant doco.. just want to know if it's the same for
+the HPPA stuff.
 
-you can also post them here...I'll be able to look at them tomorrow.
+Thanks,
 
-> FWIW, SMP kernel with the exact same configuration died just at:
-> POSIX conformance testing by UNIFIX
 
-What's the UP kernel say after that when it boots?
-
-thanks,
-grant
+Pete
+:wq
