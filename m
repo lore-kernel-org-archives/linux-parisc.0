@@ -1,12 +1,19 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] who?
-Date: Sat, 19 Jun 2004 22:04:06 -0400 (EDT)
-Message-ID: <200406200204.i5K246dC007504@hiauly1.hia.nrc.ca>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] 	Heads up,	2.6.7-pa0 FTBS with 64-bit toolchain
+	+ loop
+Date: Sat, 19 Jun 2004 22:59:10 +0000
+Message-ID: <40D4C53E.5000309@tiscali.be>
+References: <20040616194411.GB3412@baldric.uwo.ca>	<40D35B15.3040505@tiscali.be>
+	<20040618212505.GA12572@engsoc.org>	<20040619011714.GC23535@colo.lackof.org>
+	<20040619015455.GE12572@engsoc.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@engsoc.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040619015455.GE12572@engsoc.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,32 +24,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I've noticed that "who" is essentially useless in reporting users who
-are actually logged in.  There seems to be a rather poor cleanup when
-connections die and a user doesn't logout.
+Hello all,
 
-dave@gsyprf11:~$ w
- 18:58:55 up 17 days,  2:38, 99 users,  load average: 1.61, 1.42, 1.31
-USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
-dave     pts/2595 hse-ottawa-ppp23 08:46    4:25m  2:17  10.75s less build2.log
-dave     pts/2595 hse-ottawa-ppp23 10:34    0.00s  0.34s  0.03s w
-dave@gsyprf11:~$ who
-carlos   pts/24748    Jun  3 13:27 (ip47-168.ott.istop.com)
-dave     pts/24749    Jun  3 21:44 (hse-ottawa-ppp235823.sympatico.ca)
-grundler pts/24750    Jun  3 21:53 (c-24-6-53-189.client.comcast.net)
-carlos   pts/24751    Jun  4 09:12 (ip47-168.ott.istop.com)
-carlos   pts/24755    Jun  4 11:11 (ip47-168.ott.istop.com)
-tausq    pts/24756    Jun  4 11:20 (gandalf.tausq.org)
-carlos   pts/24757    Jun  4 14:40 (ip47-168.ott.istop.com)
-grundler pts/24758    Jun  4 16:37 (c-24-6-53-189.client.comcast.net)
-grundler pts/24759    Jun  4 19:02 (c-24-6-53-189.client.comcast.net)
-dave     pts/24760    Jun  4 21:13 (hse-ottawa-ppp234817.sympatico.ca)
-...
+And there is also this pb mentionned by James:
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2004-February/022335.html>
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+regarding the pb of pointer comparison with gcc-3.3 and 3.4 64bits (sorry I didn't find back the gcc bug report reference) which 
+iirc jda re-qualified it in a binutils pb. (That why of my interest in binutils 2.15 :) to see if I can help.)
+
+That said, my very interest in 3.4 (and 3.5 now because is became the debian gcc-snapshot ;) ) is to continue the glibc-2.3.3 test 
+and see if additional integer lib (hp one iirc) can help for the few test which still failled?
+
+I was focused last month on my c110 ncr53c8xx bug; now I trust it is fixed, so jda if you think that I can be of better help else 
+where I can always try to have a look ;). Please advise.
+
+Joel
+
+
+
+
+Kyle McMartin wrote:
+> On Fri, Jun 18, 2004 at 07:17:14PM -0600, Grant Grundler wrote:
+> 
+>>Should I be testing 64-bit kernels built with this toolchain
+>>or stick with my trusty gcc 3.0.4-hppa64 handmade debs?
+>>
+> 
+> There's a bug in hppa64 gcc sometime after 3.0.4 (it shows up in the
+> gcc-3.3-hppa64 and gcc-3.4-hppa64 debs) that causes builds to fail in
+> (at least) loop.c.
+> 
+> http://gcc.gnu.org/bugzilla/show_bug.cgi?id=14782 is the bug Randolph
+> filed.
+> 
+> I've been building hppa64 kernels with the gcc 3.0.4 debs on the FTP
+> server, until this issue is resolved. :/
+> 
+> Regards,
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
