@@ -1,67 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (unknown [63.224.241.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 417354837
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Sep 2001 01:05:20 -0600 (MDT)
-Date: Fri, 28 Sep 2001 01:05:18 -0600
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: Hamish Moffatt <hamish@cloud.net.au>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] FW SCSI on the D350
-Message-ID: <20010928010518.A12507@beavis.ybsoft.com>
-References: <hamish@cloud.net.au> <20010928001354.A1519@silly.cloud.net.au> <200109280541.XAA27408@puffin.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200109280541.XAA27408@puffin.external.hp.com>
-From: rbradetich@uswest.net (Ryan Bradetich)
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8D4049C6
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Sep 2001 02:49:09 -0600 (MDT)
+Date: Fri, 28 Sep 2001 10:49:00 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: Jurij Smakov <jurij@lokmail.net>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 720 - some progress 
+In-Reply-To: <200109271442.KAA14125@mail.lokmail.net>
+Message-ID: <Pine.NEB.4.33.0109281042070.29830-100000@www2.scram.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Sep 27, 2001 at 11:41:28PM -0600, Grant Grundler wrote:
-> Hamish Moffatt wrote:
-> > 
-> > Hi,
-> > 
-> > I'm trying to install the 0.9 release on a D350 server. The kernel
-> > recognises the standard SCSI, using the lasi7xxx driver, and finds
-> > the tape drive and the CD-ROM on that host. However, it doesn't
-> > find the Bluefish fast/wide SCSI host, so it doesn't find the
-> > four internal hard disks, which makes installation a little tough.
+Hi Jurij,
 
-You need a newer kernel, and you should be able to see the SCSI
-card.  I'm not sure which -pa?? kernel, so just grab CVS head and
-that should be sufficient.
+using your patch, the programs ls etc don't trap anymore, but they just
+hang.
 
-> The D-class is very similar to Cxxx - ie it has U2 or Uturn in it.
-> parisc-linux currently only supports GSC devices below the first IOMMU.
-> Ryan Bradetich is working on "I/O tree" support to enable support
-> for multiple IOMMUs - then we should be able to walk additional
-> GSC busses and find more devices.
+> +               if(!(regs->iir & 0xfc000000) && (((regs->iir & 0x1fe0)>>5) == 0x45)) {
+> +                 /* This is MFCTL instruction */
+> +                 fromcr = (regs->iir & 0x03e00000)>>21;
+> +                 togr = (regs->iir & 0x1f);
+> +                 /* Emulate the instruction if the read is from cr27 */
+> +                 if(fromcr == 27) {
+> +                   regs->gr[togr] = regs->cr27;
 
-The code is in to detect the card under the "other" IOMMU, but if any
-dma is performed on the "other" GSC bus, it will HPMC the machine.  As
-Grant said, I have been working on the I/O tree to fix the problem, and
-am getting close to having it working for SYSTEM_MAP firmware.
+I guess you need to advance the PC at this place. Something like:
 
-> > The boot-up firmware recognises all of the disks OK, but the Bluefish
-> > is just not included in the device list shown at startup/dmesg.
+		regs->iaoq[0] = regs->iaoq[1];
+		regs->iaoq[1] = regs->iaoq[0] + 4;
 
-LaMont Jones saw this same behavior on the J200.  Firmware reports the
-Bluefish card for me on the C200.  In one of the Later kernel I committed
-the support to walk the GSC busses uner ccio so LaMont could boot the
-J200.  This should also work for you.
+> +                   return;
+> +                 }
+> +               }
+> +               /* Something else is wrong */
 
-> Probably because GSC bus with your Bluefish (FWD SCSI) isn't being walked.
-> That's something Ryan wants to fix once IOtree support is at least
-> sort-of working.
-> 
-> > I'll try the 0.9.2 release tomorrow. Any other things I can do
-> > which might help?
+If i add these instructions, ls no longer hangs but traps again with a
+trap 15. Using show_regs(), it looks like there is always a 0 loaded to
+the register. So my current question is:
 
-I do not think the 0.9.2 release is new enough, try the CVS head
-kernel.
+where does regs->cr27 get written to the stack? Does the PA-RISC CPU does
+this automatically on a start of a trap or does the code in entry.S need
+to do this?
 
-> Send Ryan cash. ;^)
-> (Just kidding...)
-
-:)
-
-- Ryan
+Cheers,
+Jochen
