@@ -1,70 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4EFC8482D
-	for <parisc-linux@parisc-linux.org>; Mon, 18 Jun 2001 13:06:37 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15C4M7-0007Xz-00
-	for parisc-linux@parisc-linux.org; Mon, 18 Jun 2001 20:06:35 +0100
-Date: Mon, 18 Jun 2001 20:06:35 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010618200635.P10186@parcelfarce.linux.theplanet.co.uk>
+Received: from mailrelay1.inwind.it (unknown [212.141.54.101])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C0C8482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 19 Jun 2001 03:25:02 -0600 (MDT)
+Received: from mail.inwind.it (62.98.87.81) by mailrelay1.inwind.it (5.5.029)
+        id 3B16682000300F86 for parisc-linux@lists.parisc-linux.org; Tue, 19 Jun 2001 11:25:00 +0200
+Date: Tue, 19 Jun 2001 11:26:43 +0200
+From: "E . Pavletic" <Enzo.Pavletic@guest.arnes.si>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010619112643.A853@gorica.go.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] fbcon diff
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] palinux-0.9-32serial.iso install problems on a 753/99
 List-ID: <linux-parisc.vger.kernel.org>
 
-IMO, fbcon.h should look more like this:
+Hi,
 
-Index: include/video/fbcon.h
-===================================================================
-RCS file: /home/cvs/parisc/linux/include/video/fbcon.h,v
-retrieving revision 1.7
-diff -u -p -r1.7 fbcon.h
---- fbcon.h	2001/06/17 22:27:04	1.7
-+++ fbcon.h	2001/06/18 19:05:09
-@@ -205,19 +205,6 @@ extern int set_all_vcs(int fbidx, struct
- #define fb_writel sbus_writel
- #define fb_memset sbus_memset_io
- 
--#elif defined(__hppa__) && !(USE_HPPA_IOREMAP)
--
--/* When we switch to ioremap() usage the following defines will
-- * be removed and we'll use the arch-independend generic 
-- * functions below instead. */
--#define fb_readb gsc_readb
--#define fb_readw gsc_readw
--#define fb_readl gsc_readl
--#define fb_writeb gsc_writeb
--#define fb_writew gsc_writew
--#define fb_writel gsc_writel
--#define fb_memset gsc_memset_io
--	
- #elif defined(__i386__) || defined(__alpha__)
- 
- #define fb_readb __raw_readb
-@@ -230,13 +217,13 @@ extern int set_all_vcs(int fbidx, struct
- 
- #else
- 
--#define fb_readb(addr) (*(volatile u8 *) (addr))
--#define fb_readw(addr) (*(volatile u16 *) (addr))
--#define fb_readl(addr) (*(volatile u32 *) (addr))
--#define fb_writeb(b,addr) (*(volatile u8 *) (addr) = (b))
--#define fb_writew(b,addr) (*(volatile u16 *) (addr) = (b))
--#define fb_writel(b,addr) (*(volatile u32 *) (addr) = (b))
--#define fb_memset memset
-+#define fb_readb(addr) readb(addr)
-+#define fb_readw(addr) readw(addr) 
-+#define fb_readl(addr) readl(addr) 
-+#define fb_writeb(b,addr) writeb(b,addr) 
-+#define fb_writew(b,addr) writew(b,addr) 
-+#define fb_writel(b,addr) writel(b,addr) 
-+#define fb_memset(addr, c, len) memset_io((unsigned long)addr, c, len)
- 
- #endif
- 
+I'm trying to install the palinux-0.9-32serial.iso image from cdrom on my
+735, but I run into troubles when the process reaches the point of the
+installation of the base system: it hangs. If I try to run the command
+"debootstrap sid /target file:/instmnt/debian" manually, I receive the
+following messages:
 
--- 
-Revolutions do not require corporate support.
+..
+I: Retrieving file:/instmnt/debian/dists/unstable/main/binary-hppa/base/util-linux_2.11b-5_hppa.deb
+I: Retrieving file:/instmnt/debian/dists/unstable/main/binary-hppa/base/whiptail_0.50.17-6_hppa.deb
+I: Extracting required packages
+tar: ./usr/share/doc/libperl5.6: Cannot create symlink to 'perl-base':
+Input/output error
+tar: Error exit delayed from previous errors
+
+Can anyone help me?
+enzo
