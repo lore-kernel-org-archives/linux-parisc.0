@@ -1,16 +1,12 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.9-bk6-pa4:Tuip driver broken on n4k
-Date: Wed, 27 Oct 2004 18:46:30 +0200
-Message-ID: <41617600000072F3@mail-8-bnl.mail.tiscali.sys>
-References: <20041027163334.GL3450@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] 2.6.9-bk6-pa4: serial console fixed for b180, n4k
+Date: Wed, 27 Oct 2004 12:18:38 +0200
+Message-ID: <41617480000075D0@mail-4-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
-Cc: parisc-linux@parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
-To: "Matthew Wilcox" <matthew@wil.cx>
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041027163334.GL3450@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,48 +17,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Wed, Oct 27, 2004 at 06:29:49PM +0200, Joel Soete wrote:
-> > I am ongoing to rebuild a 64bit kernel for the b2k.
-Well it boot fine:
-the printk linux_banner being:
-Linux version 2.6.9-bk6-pa5-b2k64 (root@patst005) (gcc version 3.0.4) #2
-Wed Oct 27 18:27:54 CEST 2004
+Hello pa*,
 
-and from a ssh connection:
-jso@patst005:~$ uname -a
-Linux patst005 2.6.9-bk6-pa5-b2k64 #2 Wed Oct 27 18:27:54 CEST 2004 paris=
-c64
-GNU/Linux
+The serial console loop pb seems to be fixed for the 2 model b180 and n4k=
+:
+b180:
+[...]
+Generic RTC Driver v1.07
+serio: GSC PS/2 keyboard port at 0xffd08000 irq 69 @ 8:16:7
+serio: GSC PS/2 mouse port at 0xffd08100 irq 69 @ 8:16:8
+Serial: 8250/16550 driver $Revision: 1.90 $ 13 ports, IRQ sharing enabled=
 
-So the pb is else where, definitively I need this lanconsole connection
-to grab more easily a piminfo in the hope to get a better starting point
-;)
+ttyS0 at MMIO 0xffd05800 (irq =3D 90) is a 16550A
+ttyS1 at MMIO 0xfff83800 (irq =3D 106) is a 16550A
+parport_init_chip: initialize bidirectional-mode.
+parport0: PC-style at 0xffd02800, irq 88 [PCSPP,TRISTATE]
+lp0: using parport0 (interrupt-driven).
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+loop: loaded (max 8 devices)
+PPP generic driver version 2.4.2
+[...]
 
-> > (btw: Matthew, i supposed that you are also running a 32bit kernel on=
+n4k: (handy notes)
+[...]
+Serial: 8250/16550 driver $Revision: 1.90...
+ttyS0 at MMIO 0xffffffff80000000 (irq=3D132) is a 16550A
+ttyS0 at MMIO 0xffffffff80000008 (irq=3D132) is a 16450
+ttyS0 at MMIO 0xffffffff80000010 (irq=3D132) is a 16550A
+ttyS0 at MMIO 0xffffffff80000038 (irq=3D132) is a 16550A
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+[...]
 
-you
-> > c model?)
-> 
-> Yes, I can't get a 64-bit kernel to work.  gcc 3.4 compiled kernels sto=
-p
-> before the console is initialised; gcc 3.3 compiled kernels boot to the=
-
-> point of displaying a login prompt, but refuse ssh connections and inpu=
-t
-> on console.
-> 
-Well for the two systems I still used (may be outdated but still usefull)=
-
-gcc-3.0
-
-> Other people have functional 64-bit kernels compiled with gcc 3.3,
-> so I don't know what I'm doing wrong.
-> 
-Unfortunately I couldn't help on this matter :(
-
-Thanks again,
+Thanks for all,
     Joel
-
 
 
 -------------------------------------------------------------------------=
