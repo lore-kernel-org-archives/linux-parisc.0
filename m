@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8D51E484B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 11:21:03 -0600 (MDT)
-Date: Wed, 1 Oct 2003 19:20:57 +0200
-Message-ID: <3F5CB6FB0000B84C@ocpmta1.freegates.net>
-In-Reply-To: <3F5CC41F0000B5FA@ocpmta3.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] N Class SMP pb ?  (follow up)
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from lee (unknown [218.18.68.133])
+	by dsl2.external.hp.com (Postfix) with SMTP id B01F84841
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 18:21:58 -0600 (MDT)
+From: "威达公司" <imienm@163.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="GB2312"
+Date: Thu, 2 Oct 2003 08:25:55 +0800
+Message-Id: <20031002002158.B01F84841@dsl2.external.hp.com>
+Subject: [parisc-linux] 注册香港公司
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,101 +20,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
-
-I also notice additional info:
-
-a) in SL (gsp console) A grab severall message as:
-
-Log Entry #   0 : 
-SYSTEM NAME: ap8002
-DATE: 10/01/2003 TIME: 16:32:35
-ALERT LEVEL: 2 = Non-Urgent operator attention required
-
-SOURCE: 8 = I/O 
-SOURCE DETAIL: 2 = system bus adapter   SOURCE ID: 1
-PROBLEM DETAIL: 0 = no problem detail
-
-CALLER ACTIVITY: 6 = machine check   STATUS: 3
-CALLER SUBACTIVITY: 33 = implementation dependent
-REPORTING ENTITY TYPE: 0 = system firmware   REPORTING ENTITY ID: 01
-
-0x7000102082016333 00000000 00B92200 type 14 = Problem Detail
-0x5800182082016333 00006709 01102023 type 11 = Timestamp 10/01/2003 16:32:35
-Type CR for next entry, Q CR to quit.
-
-Which seems indicating an I/O pb (But I don't know how much there are relevant
-because: 'implementation dependent')
-
-b) at the end of the pim info I also notice:
-[...]
-------------  I/O Module Error Log Information  ------------
-
-Summary of IO subsystem log entries
------------------------------------
-                        Phys Loc             Vendor  Device   Severity
-Description             (hex)                 Id      Id      CORR UNC FE
- CW
------------             -----                ------  ------   ----------------
-System Bus Adapter SB  0x000000ffffffff82   0x103c  0x1050              X
-System Bus Adapter SB  0x000000ffffffff82   0x103c  0x1050              X
+尊敬的客户：
+    你们好！
+    我们是香港威达会计秘书有限公司，专业代理内地人
+士注册香港公司，香港是世界上经济最自由的地区，拥有
+一家香港公司，可以为你的业务带来极大的便利。注册香
+港公司手续简便,只需提供两个或以上国内人士的身份证
+复印件即可,费用低（只需数千人民币），请咨询：
+          联系人：李先生
+          联系电话：0755-82310342  82310351
+          电邮：szgslh@163.com
+          网址：www.welldone-ac.com.hk
+          地址：深圳市罗湖区天安国际大厦B座2705室
 
 
-Detail display of IO subsystem log entries
-------------------------------------------
+============================邮件内容与以下文字无关=============================
 
-System Bus Adapter -- System Bus Interface
-------------------------------------------
+优联网络 http://www.chinamysql.com  专业提供各类虚拟主机，不满意可获退款。
 
-Timestamp =    Wed Oct  1 16:32:31 GMT 2003    (20:03:10:01:16:32:31)
-
-  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
-  --  --  --      -----      -  -  -  ----  ---  --  --  --
-  X       X     ERR_ERROR       X                X       
-
-IO Requestor Address    = 0x0000000000000000
-IO Target Address       = 0x0000000000000000
-IO Responder Address    = 0xfffffffffed00000
-IO Physical Location    = 0x000000ffffffff82
-IO Hardware Path        = 0x00ffffffffffff00
-
-Module Error Register   = 0x0000000007ff0034
-
-System Bus Adapter -- System Bus Interface
-------------------------------------------
-
-Timestamp =    Wed Oct  1 16:32:31 GMT 2003    (20:03:10:01:16:32:31)
-
-  OV  RQ  RS      ESTAT      A  C  D  corr  unc  fe  cw  pf
-  --  --  --      -----      -  -  -  ----  ---  --  --  --
-  X       X     ERR_ERROR       X                X       
-
-IO Requestor Address    = 0x0000000000000000
-IO Target Address       = 0x0000000000000000
-IO Responder Address    = 0xfffffffffed40000
-IO Physical Location    = 0x000000ffffffff82
-IO Hardware Path        = 0x00ffffffffffff01
-
-Module Error Register   = 0x0000000007ff0034
-[...]
-
-And "IO Responder Address    = 0xfffffffffed40000" match the bootlog entry:
-Found devices:
-[...]
-11. IKE I/O Bus Converter Merced Port (7) at 0xfffffffffed40000 [1], versions
-0x803, 0x0, 0xc
-
-And "IO Responder Address    = 0xfffffffffed00000" 
-2. IKE I/O Bus Converter Merced Port (7) at 0xfffffffffed00000 [0], versions
-0x803, 0x0, 0xc
-
-Could it be the sources of the crash pb?
-
-Thanks in advance,
-    Joel
+强势套餐：100M主机送顶级域名，送10个10M企业油箱，加送20个二级域名，仅需318元/年！
 
 
+三龙证券投资 http://3long.sayba.com 为您提供专业理财服务。现在购买只需588元，赠送价值超过1800元的礼品！
 
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+说吧网上商城 http://shop.sayba.com 全是厂商直销的新品或折上折的商品，是您网络购物的好去处！
+
+
+使用极星邮件群发，无须通过邮件服务器，直达对方邮箱，速度绝对一流！
+
+软件下载网址：http://www.lovexin.com，更多的超酷软件等你来下载哦！
