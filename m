@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B061A4840
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Dec 2003 13:54:27 -0700 (MST)
-Date: Tue, 2 Dec 2003 21:54:26 +0100
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20031202205426.GA16507@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sG624X+5B8xHI10M"
-Subject: [parisc-linux] Booting a 735
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 339A74840
+	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 14:54:57 -0700 (MST)
+Received: from 12-230-6-187.client.attbi.com (12-230-6-187.client.attbi.com [12.230.6.187])
+	by cuprel1.hp.com (Postfix) with SMTP id 44C0EA83
+	for <parisc-linux@parisc-linux.org>; Tue,  2 Dec 2003 13:54:52 -0800 (PST)
+Message-ID: <6u99-80-4huu3-3-3$5@o2d4.4v1v>
+From: "Kris Marino" <star@msn.com>
+Reply-To: "Kris Marino" <star@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Tue, 02 Dec 03 23:50:04 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="2.C2_.C9_AD.C"
+Subject: [parisc-linux] Doctors find medical discovery for adult males! lj
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,95 +25,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---sG624X+5B8xHI10M
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+--2.C2_.C9_AD.C
+Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
 
-I just got a 735/99, but I can't boot it. It came along with two HDDs
-(on the narrow SCSI bus), a FDDI interface on the CPU/RAM board and a
-"normal" ethernet interface (Intel chip) in the EISA slot:
+<body bgcolor=3D"#000000" text=3D"#FFCCFF" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><h3><font color=3D"#FFFFFF" face=3D"verdana">You can be a sex mach=
+ine.</font></h3></center><center><h4><font color=3D"#FF00FF" face=3D"verda=
+na">Finally available to the public.<br>Alpha Male<br>The supplement that =
+Male Porn Stars use</font></h4></center><br><center><h5><font color=3D"#FF=
+FFFF" face=3D"verdana">Make love to her like no other man can. Orgasm afte=
+r orgasm after orgasm.<br><br>Porn Stars shoot an entire movie in one day =
+having sex many times with many different women.<br> Now you can have rock=
+ hard orgasmic sex over and over again.<br>Just like the Porn Stars do<br>=
+<br>Increase your testosterone 500%<br>Increase your sex drive<br>Increase=
+ your virility<br>Increase the size of your penis<br>Never again experienc=
+e premature ejaculation<br>She will never leave you alone when you give he=
+r sex like she's never had before.<br><br>Doctor developed with a 100=
+% Money Back Guarantee !</font></h5><h2><a href=3D"http://www.herbalmarts.=
+biz/cgi-bin/tracker/clickalpha.cgi?id=3Dbuster">Find Alpha Male Here</a></=
+h2></center>
 
+</body>
+</html>
+gwpjdzyaybhwvb c
+ma ykzvod d p y wvhx
 
-BOOT_ADMIN> lan_addr
-LAN Station Address:  080009-836dca
-BOOT_ADMIN> fddi_addr
-FDDI Station Address:  080009-836dcb
-BOOT_ADMIN> boot lan
-
-Trying lan.000000-000000.0.0
-Cannot find ENTRY_INIT.
-
-Searching for Potential Boot Devices.
-To terminate search, press and hold the ESCAPE key.
-
-Device Selection      Device Path              Device Type
-----------------------------------------------------------------------------
-
-P0                    scsi.6.0                 HP      C3323-300
-P1                    scsi.1.0                 CONNER  CFP2105S  2.14GB
-
-
-
-b)    Boot from specified device
-s)    Search for bootable devices
-a)    Enter Boot Administration mode
-x)    Exit and continue boot sequence
-?)    Help
-
-Select from menu: a
-BOOT_ADMIN> boot lan.080009-836dca
-
-Trying lan.080009-836dca.0.0
-Cannot find ENTRY_INIT.
-
-Searching for Potential Boot Devices.
-To terminate search, press and hold the ESCAPE key.
-
-Device Selection      Device Path              Device Type
-----------------------------------------------------------------------------
-
-P0                    scsi.6.0                 HP      C3323-300
-P1                    scsi.1.0                 CONNER  CFP2105S  2.14GB
-
-
-
-b)    Boot from specified device
-s)    Search for bootable devices
-a)    Enter Boot Administration mode
-x)    Exit and continue boot sequence
-?)    Help
-
-Select from menu:=20
-
-
-I don't have a FDDI network at home, only RJ45 ethernet is available.
-Additionally, I don't have an external CD-ROM drive handy atm. Should I
-just wait until I get my drives back?
-
-MfG, JBG
-
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
-
---sG624X+5B8xHI10M
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/zPwCHb1edYOZ4bsRAqWNAJ9NZyDflSLJoW2ck0XFS38HfpNBsQCffZg/
-Bj9tDQ0NOWnh+1WL77+d8Fs=
-=nkO3
------END PGP SIGNATURE-----
-
---sG624X+5B8xHI10M--
+--2.C2_.C9_AD.C--
