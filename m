@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 94ABE48C2
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 17:00:55 -0700 (MST)
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200203090000.QAA09518@opus.allegro.com>
-Subject: Re: [parisc-linux] New Cheap HP RP2430
-To: mkp@mkp.net (Martin K. Petersen)
-Date: Fri, 8 Mar 2002 16:00:52 -0800 (PST)
-Cc: bill@math.ucdavis.edu (Bill Broadley),
+Received: from sphere.math.ucdavis.edu (sphere.math.ucdavis.edu [169.237.99.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 35F3248BC
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 17:21:01 -0700 (MST)
+Date: Fri, 8 Mar 2002 16:20:11 -0800
+From: Bill Broadley <bill@math.ucdavis.edu>
+To: Stan Sieler <sieler@allegro.com>
+Cc: "Martin K. Petersen" <mkp@mkp.net>,
+	Bill Broadley <bill@math.ucdavis.edu>,
 	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <yq1ofhyvdje.fsf@austin.mkp.net> from "Martin K. Petersen" at Mar 08, 2002 06:35:17 PM
-MIME-Version: 1.0
+Subject: Re: [parisc-linux] New Cheap HP RP2430
+Message-ID: <20020308162011.I6207@sphere.math.ucdavis.edu>
+References: <yq1ofhyvdje.fsf@austin.mkp.net> <200203090000.QAA09518@opus.allegro.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200203090000.QAA09518@opus.allegro.com>; from sieler@allegro.com on Fri, Mar 08, 2002 at 04:00:52PM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,18 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Re:
+Click on console, and delete the by default HP3000 serial terminal or
+whatever it's called.
 
-> >> http://www.hp.com/products1/servers/rackoptimized/rp2400/specifications.html
->  
-> >> $1095!!!!!!
-> 
-> Follow the link for A-class...
+Be careful to avoid the default Rack and UPS on the first page.
 
-The best I could do is get it down to $1895 and "error" in the price :)
-
-Oh well...  
+My lowest price I've quoted through quickquote is $USA $1,170, but that's
+list apparently street price lower.   Add a $150-$200 IBM Ultrastar 80
+pin/sca and your set.  Assuming linux works well and supports the serial,
+network, and scsi.
 
 -- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html                  www.sieler.com
+Bill Broadley
+Mathematics/Institute of Theoretical Dynamics
+UC Davis
