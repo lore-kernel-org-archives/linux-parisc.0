@@ -1,18 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 891DB482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Aug 2003 08:43:03 -0600 (MDT)
-Date: Tue, 12 Aug 2003 10:40:12 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org, LaMont Jones <lamont@hp.com>
-Subject: Re: [parisc-linux] itlb miss handler optimizations!
-Message-ID: <20030812144012.GE9325@systemhalted>
-References: <20030812035810.GB9325@systemhalted> <3F29178A00002C09@ocpmta7.freegates.net>
+Date: Tue, 12 Aug 2003 09:14:28 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] removing warnings from math-emu code
+Message-ID: <20030812151428.GC20514@dsl2.external.hp.com>
+References: <20030812034244.GC21328@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F29178A00002C09@ocpmta7.freegates.net>
+In-Reply-To: <20030812034244.GC21328@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +20,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I apply your patch against 2.4.21-pa9 on the N-4000 and compile it successfully
-> with hppa64-linux-gcc (3.2.3). (having no clue about lmbench) I take this
-> exercise to roughly compare. 
-> 
-> Running the original 2.4.21-pa9 here are times:
-> Tue Aug 12 09:59:55 CEST 2003
-> [...] # Build kernel: 19'58"
-> Tue Aug 12 10:19:53 CEST 2003
-> [...] # Build modules: 7'46"
-> Tue Aug 12 10:27:39 CEST 2003
-> 
-> Running this new kernel:
-> 
-> Tue Aug 12 12:28:37 CEST 2003
-> [...] # Build kernel: 20'8"
-> Tue Aug 12 12:48:45 CEST 2003
-> [...] # Build modules: 7'47"
-> Tue Aug 12 12:56:32 CEST 2003
-> 
-> The difference are so small that a more accurate tools would be requested.
+On Mon, Aug 11, 2003 at 08:42:44PM -0700, Randolph Chung wrote:
+> Would anyone mind if i committed this to cvs? (2.6 only) It
+> removes/hides all the warnings from the math-emu directory, since we
+> don't plan to fix them... 
 
-Thanks Joel! Yeah, I figured that perhaps the change might get lost in
-the noise... I'm still running lmbench multiple times to get good
-numbers.
+I'm pretty sure Paul Bame said it was ok to fix them at this point.
+He didn't expect any major changes to our FP EMU support or
+the HPUX FP emulation it was derived from.
 
-Thanks again!
-
-c.
+grant
