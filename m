@@ -1,37 +1,25 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA07097
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 16:52:16 -0600
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id TAA01162
-	for <parisc-linux@thepuffingroup.com>; Thu, 2 Sep 1999 19:11:12 -0400
-Sender: adevries@thepuffingroup.com
-Message-ID: <37CF0410.6A8CD6DD@thepuffingroup.com>
-Date: Thu, 02 Sep 1999 19:11:12 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA08566
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Sep 1999 05:13:49 -0600
+Date: Fri, 3 Sep 1999 13:15:41 +0200
+From: Philipp Rumpf <prumpf@suse.de>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux-cvs] grundler
+Message-ID: <19990903131541.K10698@suse.de>
+References: <19990902111258.J629@suse.de> <199909021720.KAA07391@milano.cup.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] pa.h
+In-Reply-To: <199909021720.KAA07391@milano.cup.hp.com>; from Grant Grundler on Thu, Sep 02, 1999 at 10:20:32AM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
+> Not quite - removed support for more than one type of PCI bus adapter.
+> PA platforms only support one type of PCI bus adapter at a time.
 
-So, I'm told there's a package called the Device Driver Toolkit (or
-similiar) for PA RISC.  Inside it, there'd be a file called pa.h.  I
-don't actually have this package, but would love to have access to this
-file.
+Sorry ? Alex told me the exact opposite when I asked him and I relied on that.
 
-In the same way that we've legally copied .h files from HPUX into the
-Linux kernel tree, I'd like include pa.h.
+So:  Are there parisc boxen with more than one type of interface to PCI-like
+busses ? For example, can I take a Dino-on-a-card card and put it into a box
+which does not use Dino as native-to-PCI bridge ?
 
-Is there someone out there who has a copy of this file (and perhaps
-other associated .h files)?
-
-I'm interested in this because I want to setup a hardware inventory
-database properly.
-
-- Alex
-
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+	Philipp Rumpf
