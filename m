@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 63DB2482E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Nov 2002 06:35:10 -0700 (MST)
-Date: Mon, 18 Nov 2002 14:34:56 +0100
-Message-ID: <3DA3C9AF00003D31@ocpmta2.be.tiscali.com>
-In-Reply-To: <20021115205028.GI7587@systemhalted>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] [2.5] next issues ...
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	"Randolph Chung" <randolph@tausq.org>
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	bzeeb-lists@lists.zabbadoz.net, parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 20B38482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Nov 2002 09:12:05 -0700 (MST)
+Date: Mon, 18 Nov 2002 11:12:15 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org, tausq@debian.org
+Subject: Re: [parisc-linux] glibc 2.3.1 - It's alive! - patches
+Message-ID: <20021118161215.GE2729@systemhalted>
+References: <20021111211624.GC9704@systemhalted> <200211172154.gAHLseba018429@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200211172154.gAHLseba018429@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,48 +23,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hey Carlos,
+> It occurred to me these might be a gcc problem on PA1 machines.  These
+> machines don't have fneg and negation is currently implemented as the
+> product with -1.  This may cause invalid operation to be set if the
+> value is a signaling NaN.
+> 
+> A better way to do the negation is to toggle the sign bit but this is
+> inefficient as the value needs to be copied from a FPR to a GPR and
+> back again.
+> 
+> A quick check would be to run the tests with "-mpa-risc-2-0" and see
+> if this makes any difference.
+> 
 
->
->> > My impression from what Joel has said is that the problem is bad coding
->> > rather than an actual gcc problem.  However, up to now, nobody has been
->> > able to provide a precise analysis of what's going on.
->> 
->> or even duplicate the problem.. i've been building 2.4 and 2.5 kernels
->> with 3.2 for some time.... haven't seen the problems that have been
->> reported.
->> 
->
->32 or 64-bit kernels? All debian tools? Mix of debian and upstream?
->
+Interesting. I shall add this to my list of checks todo once I get glibc
+2.3.1 out the door. Everything is setup, I'm just running into some
+package integration problems (e.g. failing to restart certain services
+causes the dpkg -i to fail).
 
-For my part I only tested 32bits 2.4.19 with gcc-3.2 (and previously 3.1).
-The same problem occured as well with a cross compiled (hppa->hppa) as native
-compiled gcc (following toolchain-howto method).
-Unfortunaltely the best I could back trace was that the last kernel function
-call was (trivial) dump_stack
+My todo includes:
 
->My only run-in with the problem was with 32-bit kernels cross compiled
->from x86. Though lately I'm using a gcc-3.1 based XC and it builds functional
->64-bit kernels.
->
->This is definately becoming one of those HPPA urban legends. I shall add
->it to my TODO list and verify that I can build a 32/64-bit kernel
->natively and cross with all the latest upstream cvs bits.
->
+- Follow our discussion on delayed exceptions and try a few
+  implementations of trap barriers
 
-(I did this test _some month ago_ but did not bring me the sol. But that
-was some month ago.)
+- Examine if -1*NaN is causing failures in the fp glibc tests.
 
-I do also test loopback device (127.0.0.1) but (shame on me) I forgot the
-result :((
-The goal of this test was to try to point out the location of the problem:
-ethernet driver or IP?
+- Implement atomic_add, echange_and_add, and compare and swap, which are
+  required in atomicity.h
 
-Any other idea are well come,
-Joel
+- Make some progress implementing *context() calls in glibc (SAPDB needs
+  them).
 
- 
+- Take a closer look at our setjump/longjmp impementation (there were
+  some fears that it was mildly broken)
 
------------------------------------------------------
-ADSL Advantage...L'activation et le 1er mois sont GRATUITS...http://adsl.tiscali.be
+c.
