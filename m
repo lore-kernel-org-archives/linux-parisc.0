@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from crypto.hack.co.za (h-69-3-43-158.PHLAPAFG.covad.net [69.3.43.158])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EB3A4482D
-	for <parisc-linux@parisc-linux.org>; Tue, 13 May 2003 08:55:17 -0600 (MDT)
-Date: Tue, 13 May 2003 10:55:20 -0400
-Subject: Re: [parisc-linux] System hanging
-From: Richard Todd <rtodd@antipentium.com>
-To: Thibaut VAR=?ISO-8859-1?B?yA==?=NE <varenet@esiee.fr>
-Cc: <parisc-linux@parisc-linux.org>
-Message-ID: <BAE67F98.B30%rtodd@antipentium.com>
-In-Reply-To: <AB345DD8-8550-11D7-AFCE-0030656F07A2@esiee.fr>
-Mime-version: 1.0
-Content-type: text/plain; charset="ISO-8859-1"
+Received: from server.da-kot (21-40.CampusNet.ucl.ac.be [130.104.21.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A58EF482D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 May 2003 10:55:35 -0600 (MDT)
+Received: from gmsoft.tuxicoman.be ([2001:6f8:204:20:210:a7ff:fe10:1a3e])
+	by server.da-kot with esmtp (Exim 3.36 #1 (Debian))
+	id 19Fd3u-0000E8-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 May 2003 18:55:34 +0200
+From: Guy Martin <gmsoft@gentoo.org>(by way of Guy Martin <gmsoft@gentoo.org>)
+Subject: Re: [parisc-linux] gcc and -march=2.0 flag bug
+Date: Tue, 13 May 2003 18:53:03 +0200
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_vLSw+yLci4siwBX"
+Message-Id: <200305131853.03798.gmsoft@gentoo.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,44 +25,140 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-k2000 root # cat /proc/version
-Linux version 2.4.20-pa35 (root@cdimage) (gcc version 3.2.2) #2 SMP Sat May
-10 10:36:26 EDT 2003
+--Boundary-00=_vLSw+yLci4siwBX
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+> How are they "b0rked"? Can you be a bit more precise?
+
+I've attached the the end of the compilation log of groff which fail with 
+-march=2.0 in CXXFLAGS. The same compilation works perfectly without this 
+flags or with -march=1.1 instead.
+
+> We compile pa20 32-bit kernels (e.g. for c3k) using 32-bit and
+> -march=2.0. seems to work. Do you have a test case for what you think
+> is broken? -march2.0 is really orthogonal to 64-bit userspace.
+
+After looking again more closely, it seems that only g++ is affected by this
+bug. The kernel on the station was also compiled with -march=2.0.
+About the test case, I don't have the time to look more to this problem but I
+can give you a access to the box since it's a test box.
+
+--
+Guy Martin
+Gentoo - HPPA port Lead / IPv6 team
+Lug Charleroi (Belgium)
 
 
 
-On 5/13/03 10:39 AM, "Thibaut VAR=C8NE" <varenet@esiee.fr> wrote:
+--Boundary-00=_vLSw+yLci4siwBX
+Content-Type: text/x-log;
+  charset="iso-8859-1";
+  name="groff-march2.0-short.log"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="groff-march2.0-short.log"
 
-> cat /proc/version please (ie: did you build your kernel with gcc 3.2.2?)
->=20
-> I've been running 12days straight of building gcc in loop while having
-> 2 setiathome instances running on a J5000 with 512M of RAM and
-> experienced no hangs, that was with 2.4.20-pa18 SMP 64bit, built with
-> gcc 3.0.4...
->=20
-> oh, and fwiw:
-> http://www.fr.parisc-linux.org/faq/kernelbug-howto.html
->=20
->=20
-> Thibaut VARENE
-> The PA/Linux ESIEE Team
-> http://pateam.esiee.fr/
->=20
-> Le mardi, 13 mai 2003, =E0 15:50 Europe/Paris, Richard Todd a =E9crit :
->=20
->> Hello all,
->> I am currently running on a J5000
->> 2000 root # uname -a
->> Linux k2000 2.4.20-pa35 #2 SMP Sat May 10 10:36:26 EDT 2003 parisc
->> unknown
->> unknown GNU/Linux
->>=20
->>=20
->> This issue I am having is during compiling andthing big the box has a
->> tendency to just hang hard meaning power cord reboot. Has anyone seen
->> this
->> before. I have a gig of ram and it does not seem to be a memory issue.
->> I am
->> currently compiling KDE and it just hangs the box every now and then...
->> Anyone ?=20
->=20
+    rm -f $m-wrap; \
+    if test "$m" = an; then \
+      echo .do mso andoc.tmac >>$m-wrap; \
+    fi; \
+    echo .cp 1 >>$m-wrap; \
+    echo .so $m >>$m-wrap; \
+  done; \
+fi
+touch stamp-wrap
+for f in man.tmac ms.tmac; do \
+  rm -f $f-sed; \
+  sed -e "s;@TMAC_AN_PREFIX@;;g" \
+  -e "s;@TMAC_S_PREFIX@;;g" \
+  /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/tmac/$f > $f-sed; \
+done
+touch stamp-sed
+Making groff_ms.n from groff_ms.man
+Making groff_man.n from groff_man.man
+Making groff_me.n from groff_me.man
+Making groff_mdoc.n from groff_mdoc.man
+Making groff_trace.n from groff_trace.man
+Making groff_www.n from groff_www.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/tmac'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/utils/afmtodit'
+if test -n "/usr/bin/perl"; then \
+  sed -e "s|/usr/bin/perl|/usr/bin/perl|" \
+              -e "s|@VERSION@|1.18.1|" \
+              /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/utils/afmtodit/afmtodit.pl >afmtodit; \
+else \
+  sed -e "s|@VERSION@|1.18.1|" \
+              /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/utils/afmtodit/afmtodit.pl afmtodit; \
+fi
+chmod +x afmtodit
+Making afmtodit.n from afmtodit.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/utils/afmtodit'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/grog'
+rm -f grog
+sed -e "s|@g@||g" \
+  -e "s|@VERSION@|1.18.1|" \
+  -e 1s/a/a/ /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/grog/grog.sh >grog
+chmod +x grog
+Making grog.n from grog.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/grog'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/nroff'
+rm -f nroff
+sed -e "s|@BINDIR@|/usr/bin|g" \
+-e 1s/a/a/ \
+-e "s|@VERSION@|1.18.1|" /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/nroff/nroff.sh >nroff
+chmod +x nroff
+Making nroff.n from nroff.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/nroff'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/mm'
+rm -f mmroff
+sed -e 's;/usr/bin/perl;/usr/bin/perl;' /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/mm/mmroff.pl >mmroff
+chmod +x mmroff
+Making mmroff.n from mmroff.man
+Making groff_mm.n from groff_mm.man
+Making groff_mmse.n from groff_mmse.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/mm'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/pic2graph'
+rm -f pic2graph; \
+sed -e "s|@g@||g" \
+    -e "s|@VERSION@|1.18.1|" \
+    -e 1s/a/a/ /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/pic2graph/pic2graph.sh >pic2graph; \
+chmod +x pic2graph
+Making pic2graph.n from pic2graph.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/pic2graph'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/eqn2graph'
+rm -f eqn2graph; \
+sed -e "s|@g@||g" \
+    -e "s|@VERSION@|1.18.1|" \
+    -e 1s/a/a/ /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/eqn2graph/eqn2graph.sh >eqn2graph; \
+chmod +x eqn2graph
+Making eqn2graph.n from eqn2graph.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/eqn2graph'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/groffer'
+rm -f groffer; \
+sed -e "s|@g@||g" \
+    -e "s|@VERSION@|1.18.1|" \
+    -e 1s/a/a/ /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/groffer/groffer.sh >groffer; \
+chmod +x groffer
+Making groffer.n from groffer.man
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/groffer'
+make[2]: Entering directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/mom'
+test -d examples || /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/mkinstalldirs examples
+test -f penguin.ps || cp /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/mom/examples/penguin.ps .
+GROFF_COMMAND_PREFIX=''; export GROFF_COMMAND_PREFIX; GROFF_BIN_PATH=`echo /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/groff /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/troff /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/devices/grops | sed -e 's|  *|:|g'`; export GROFF_BIN_PATH; /var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/groff/groff -F/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/font -F/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/font -M/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/tmac -M/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/tmac -M/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/mom -Tps -mom examples/letter.mom >examples/letter.ps
+troff: Failed assertion at line 654, file `number.cc'.
+/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/src/roff/groff/groff: troff: Aborted
+grops:<standard input>:5:warning: no final `x stop' command
+make[2]: *** [examples/letter.ps] Error 2
+make[2]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1/contrib/mom'
+make[1]: *** [contrib/mom] Error 2
+make[1]: Leaving directory `/var/tmp/portage/groff-1.18.1-r2/work/groff-1.18.1'
+make: *** [all] Error 2
+
+!!! ERROR: sys-apps/groff-1.18.1-r2 failed.
+!!! Function src_compile, Line 57, Exitcode 2
+!!! (no error message)
+
+
+--Boundary-00=_vLSw+yLci4siwBX--
