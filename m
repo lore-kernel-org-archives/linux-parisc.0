@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from VL-MS-MR001.sc1.videotron.ca (relais.videotron.ca [24.201.245.36])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4ED6A482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:38:25 -0700 (MST)
+Received: from VL-MS-MR003.sc1.videotron.ca (relais.videotron.ca [24.201.245.36])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E8147482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:38:40 -0700 (MST)
 Received: from HOST ([24.203.4.51]) by
-          VL-MS-MR001.sc1.videotron.ca (Netscape Messaging Server 4.15)
-          with SMTP id GQQ9VX03.LVX for
-          <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 20:38:21 -0500
+          VL-MS-MR003.sc1.videotron.ca (Netscape Messaging Server 4.15
+          MR003 Jul 24 2001 16:23:26) with SMTP id GQQ9WC00.39D for
+          <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 20:38:37 -0500
 To: parisc-linux@lists.parisc-linux.org
-Message-Id: <20020130013825.4ED6A482A@dsl2.external.hp.com>
-Date: Tue, 29 Jan 2002 18:38:25 -0700 (MST)
+Message-Id: <20020130013840.E8147482A@dsl2.external.hp.com>
+Date: Tue, 29 Jan 2002 18:38:40 -0700 (MST)
 From: paolobentenuto@vidoetron.ca
 Subject: [parisc-linux] new photos from my party!
 Sender: parisc-linux-admin@lists.parisc-linux.org
