@@ -1,15 +1,10 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] 2.6.10-rc2-pa2 build failing
-Date: Sat, 4 Dec 2004 15:20:43 -0500
-Message-ID: <20041204202043.GB4327@roadwarrior.mcmartin.ca>
-References: <Pine.LNX.4.58.0412031551120.3169@rray.drdc.mstc.ms.gov>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: rray@tcmail.mstc.state.ms.us
+From: David Mosberger <davidm@napali.hpl.hp.com>
+Subject: [parisc-linux] PA-Linux version of libunwind
+Date: Sat, 4 Dec 2004 17:19:47 -0800
+Message-ID: <200412050119.iB51Jln3001654@napali.hpl.hp.com>
+Reply-To: davidm@hpl.hp.com
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.58.0412031551120.3169@rray.drdc.mstc.ms.gov>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,16 +15,58 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Dec 03, 2004 at 03:55:54PM -0600, rray@tcmail.mstc.state.ms.us wrote:
-> I got cvs.parisc-linux.org/download/linux-2.6/linux-2.6.10-rc2-pa2.tar.bz2
-> and attempted to compile it with standard options set.
+Hi,
 
-Er, can you post the .config you used?
+I have started to add PA-Linux support to Libunwind.  At the moment,
+I'm only targeting DWARF2 unwind info (not the SOM-style PARISC
+unwind-records) and not everything is implemented/working yet.  Even
+so, many tests in the built-in test-suite already succeed.  Thus, I
+think that even in this early state, others may have some use for it
+so I thought it might be a good idea to mention it on this list (and
+of course, bug-fixes/contributions are always welcome, too ;-).
 
-I just build that kernel with defconfig, and it linked fine.
+At the moment, the PA Linux support is available only via the
+bitkeeper repository at:
 
-Cheers,
-	Kyle
+	bk://unwind.bkbits.net/libunwind/
+
+If you want to play with this, just be sure to read the README.
+
+A brief blurb on what libunwind is about is attached below.  For more
+details, see:
+
+  http://www.hpl.hp.com/research/linux/libunwind/intro.php4
+
+The web-site also hosts the man-pages for the libunwind API and has
+info on the libunwind mailing list.
+
+Enjoy,
+
+	--david
+
+--
+Libunwind is a portable and efficient C API to enable call-chain
+introspection.  Some examples for what it can be used include:
+
+    exception handling
+        The libunwind API makes it trivial to implement the
+        stack-manipulation aspects of exception handling.
+
+    debuggers
+        The libunwind API makes it trivial for debuggers to generate
+        the call-chain (backtrace) of the threads in a running
+        program.
+
+    introspection
+        It is often useful for a running thread to determine its
+        call-chain. For example, this is useful to display error
+        messages (to show how the error came about) and for
+        performance monitoring/analysis.
+
+    efficient setjmp()
+        With libunwind, it is possible to implement an extremely
+        efficient version of setjmp(). Effectively, the only context
+        that needs to be saved consists of the stack-pointer(s).
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
