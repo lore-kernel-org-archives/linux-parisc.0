@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp015.mail.yahoo.com (smtp015.mail.yahoo.com [216.136.173.59])
-	by dsl2.external.hp.com (Postfix) with SMTP id 9A47A482C
-	for <parisc-linux@parisc-linux.org>; Wed, 27 Mar 2002 00:09:19 -0700 (MST)
-Message-ID: <3CA1701C.9000903@yahoo.com>
-Date: Wed, 27 Mar 2002 02:09:16 -0500
-From: Chuck Slivkoff <caslivkoff@yahoo.com>
-MIME-Version: 1.0
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: Jeremy Drake <jeremyd@apptechsys.com>,
-	parisc-linux@parisc-linux.org
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 82A37487C
+	for <parisc-linux@parisc-linux.org>; Wed, 27 Mar 2002 00:22:02 -0700 (MST)
+Date: Tue, 26 Mar 2002 23:22:01 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Chuck Slivkoff <caslivkoff@yahoo.com>
+Cc: Ryan Bradetich <rbradetich@uswest.net>,
+	<parisc-linux@parisc-linux.org>
 Subject: Re: [parisc-linux] X on J5000
-References: <Pine.LNX.4.33L2.0203262045310.13376-100000@eiger.apptechsys.com> <1017209307.24441.31.camel@beavis>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+In-Reply-To: <3CA1701C.9000903@yahoo.com>
+Message-ID: <Pine.LNX.4.33L2.0203262318530.13376-100000@eiger.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ryan Bradetich wrote:
+On Wed, 27 Mar 2002, Chuck Slivkoff wrote:
 
->Jeremy,
->
->>STI device: HPA4982A
->>
->
->This device does not appear to be support in the
->drivers/video/sti/stifb.c.  A quick google search
->
-That would be a Visualize-FXe. It is completely different than any of 
-the supported devices.
+> That would be a Visualize-FXe. It is completely different than any of
+> the supported devices.
+
+Does this mean I don't get any X?  Maybe I could be of some help testing
+wise, or possibly coding if no one else is.  I have little free time, and
+even less with physical access to the box, so it would be difficult.  I
+have some C experience, and x86 assembly.  This HP arch is completely new
+to me, however, and I have never tried kernel development.
 
 
-
-
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+-- 
+Leona, I want to CONFESS things to you ... I want to WRAP you in a SCARLET
+ROBE trimmed with POLYVINYL CHLORIDE ... I want to EMPTY your ASHTRAYS ...
