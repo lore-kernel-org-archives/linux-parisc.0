@@ -1,22 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from localhost.localdomain (host194.steeleye.com [216.33.1.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 144AA482A
-	for <parisc-linux@parisc-linux.org>; Fri, 28 Dec 2001 20:10:10 -0700 (MST)
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id fBT3A2x03575;
-	Fri, 28 Dec 2001 21:10:03 -0600
-Message-Id: <200112290310.fBT3A2x03575@localhost.localdomain>
-To: Helge Deller <helge.deller@sap.com>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	parisc-linux@parisc-linux.org
-In-Reply-To: Message from Helge Deller <helge.deller@sap.com>
-   of "Fri, 28 Dec 2001 11:23:37 +0100." <E16JuAr-0001w8-00@linuxlab.wdf.sap-ag.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed ;
-	boundary="==_Exmh_4174171510"
-Date: Fri, 28 Dec 2001 21:10:02 -0600
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [parisc-linux] Re: rmmod lasi700 hangs the machine
+To: =?iso-8859-1?q?Hinrich=20Aue?= <hinrich_aue@yahoo.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] DSL on a 715/80 with rp-pppoe 
+In-Reply-To: Message from =?iso-8859-1?q?Hinrich=20Aue?= <hinrich_aue@yahoo.de>
+   of "Fri, 28 Dec 2001 13:43:34 +0100." <20011228124334.96741.qmail@web21207.mail.yahoo.com>
+References: <20011228124334.96741.qmail@web21207.mail.yahoo.com> 
+Date: Fri, 28 Dec 2001 22:01:03 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20011229050103.54069482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,37 +19,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multipart MIME message.
+=?iso-8859-1?q?Hinrich=20Aue?= wrote:
+> I found out, that you (Grant Grundler) already had the
+> same? Problem. There already was a submitted Bug.
+> Has somebody tried to fix that?
 
---==_Exmh_4174171510
-Content-Type: text/plain; charset=us-ascii
-
-After applying the kernel down_interruptible fix, the attached should be the 
-final piece of the puzzle.  With it applied (and the previous disable_irq 
-patch discarded), I can insert and remove the module to my heart's content.
-
-James
+Either Richard Hirst or Thomas Bogendoerf already fixed that.
+132 should be closed since last I tried, I was able to use pppd
+with the dialup modem. Sorry about that - I should have closed it.
 
 
---==_Exmh_4174171510
-Content-Type: text/plain ; name="tmp.diff"; charset=us-ascii
-Content-Description: tmp.diff
-Content-Disposition: attachment; filename="tmp.diff"
+> I'll post the stackdump later today, from syslog.
 
-Index: drivers/scsi/lasi700.c
-===================================================================
-RCS file: /var/cvs/linux/drivers/scsi/lasi700.c,v
-retrieving revision 1.5
-diff -u -r1.5 lasi700.c
---- drivers/scsi/lasi700.c	2001/12/26 22:41:16	1.5
-+++ drivers/scsi/lasi700.c	2001/12/29 03:07:09
-@@ -197,6 +197,7 @@
- 	kfree(hostdata);
- 	free_irq(host->irq, host);
- 	release_mem_region(host->base, 64);
-+	unregister_parisc_driver(&lasi700_driver);
- 	return 1;
- }
- 
+The "trap 15" is a kernel crash. That doesn't get logged
+to syslog (afaik). Are you sure it's the same symptom?
 
---==_Exmh_4174171510--
+grant
