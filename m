@@ -1,17 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 31 Mar 2005 20:36:22 +6700 (EST)
-Message-ID: <200504010136.j311aMnO004736@hiauly1.hia.nrc.ca>
-References: <16971.44399.144991.110733@gargle.gargle.HOWL>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: [parisc-linux] xfs module in vmlinux-2.6.11-pa2-a500_defconfig
+Date: Tue, 8 Mar 2005 10:24:54 +0100
+Message-ID: <16941.28518.183984.44335@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: lamont@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
+  charset=us-ascii
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <16971.44399.144991.110733@gargle.gargle.HOWL> from "Matthias
-	Klose" at Mar 31, 2005 09:57:35 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,36 +17,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> filed http://bugs.debian.org/301577 (although most of the discussion
-> isn't in the report).
+the xfs module in vmlinux-2.6.11-pa2-a500_defconfig doesn't load:
 
-That should be http://bugs.debian.org/301557.  Daniel thought this
-bug should be reassigned to expect.  On the other hand, dejagnu maybe
-expecting too much of expect.
+xfs: Global Offset Table overflow (used 1061, allowed 1023
+modprobe: FATAL: Error inserting xfs (/lib/modules/2.6.11-pa2/kernel/fs/xfs/xfs.ko): Invalid argument
 
-> with /bin/dash as shell and expect-tcl8.3 as expect version, the build
-> and check succeeded. Test results at
-> 
->   http://gcc.gnu.org/ml/gcc-testresults/2005-03/msg01933.html
+the reason for the update was a problem with the
+vmlinux-2.6.8.1-pa11-a500_defconfig kernel, which I see from time to
+time ...
 
-FAIL: g++.old-deja/g++.warn/compare1.C  (test for warnings, line 11)
-FAIL: g++.old-deja/g++.warn/compare1.C  (test for warnings, line 24)
-FAIL: g++.old-deja/g++.warn/compare1.C (test for excess errors)
-FAIL: gcc.c-torture/compile/20011119-2.c  -O1  (test for excess errors)
+mount: /dev/sdb5
+: can't read superblock
 
-These are now fixed.
+running xfs_repair fixes the problem and the filesystem can be
+mounted.
 
-FAIL: thread/pthread7-rope.cc execution test
-
-I don't see this in my testing.  On the other hand, the java failures
-appear to be related to pthread support, so I think it likely that
-we have one or more pthread bugs.  The java failures vary from one
-run to another.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+	Matthias
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
