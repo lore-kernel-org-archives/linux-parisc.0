@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from delenn.fl.net.au (int-mail.syd.fl.net.au [202.181.0.28])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 29C9548A7
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 13:25:58 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 68EF148AB
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Mar 2002 13:30:35 -0700 (MST)
 From: "Duraid Madina" <duraid@fl.net.au>
-To: "'Matthew Wilcox'" <willy@debian.org>
+To: <mkp@mkp.net>
 Cc: <parisc-linux@lists.parisc-linux.org>
 Subject: RE: [parisc-linux] 'foreign' PCI cards in an rp2430
-Date: Sat, 9 Mar 2002 07:25:56 +1100
-Message-ID: <000001c1c6df$745a0db0$022a17ac@simplex>
+Date: Sat, 9 Mar 2002 07:30:30 +1100
+Message-ID: <000101c1c6e0$1a4dba00$022a17ac@simplex>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-In-Reply-To: <20020308131509.D22831@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <yq1it87w3y8.fsf@austin.mkp.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew wrote:
-> *puts kernel hacker's hat on*
-> Sure!  All that stuff should work and if it doesn't it can be fixed.
+Martin wrote:
+> I don't think there are high hopes for the 3ware card.  At 
+> least not unless you preconfigure it on a PC.
 
-Sweet.
+For sure.
  
-> *puts HP employee hat on*
-> Well, it might invalidate your warranty to put non-HP 
-> certified cards in your system.
+> Alpha happens to work because its firmware includes a simple 
+> x86 simulator that executes the BIOS code on the card.  That 
+> way you can configure your disk setup, etc.
 
-Grr, someone should stop HP from calling them PCI slots since they're
-only rated to 20W/slot anyway ;) (which is out of spec, iirc)
+Oops, I think I was misleading when I said 3ware 'worked' in Alpha - 3dm
+doesn't (of course) and yes, you need to do all array administration
+stuff out of the BIOS on a PC.
+
+> We don't have similar functionality on PA-RISC.  So you are 
+> limited what can be done from within Linux. 
+
+Well, so long as it can find the array and read/write, I'm set.
  
-> > 	And (no laughter, please) what's the maximum swap 
-> partition size 
-> > parisc linux supports? Can parisc linux swap over NFS?
-> 
-> Forget about swapping over NFS.  It's prone to deadlock under 
-> stress.  I think we support 2GB/file and up to 8 files, but I 
-> may be underestimating... John would know.
+> Unfortunately the 3ware management utility is 386 
+> binary-only. I.e. you can't configure the card once you get 
+> Linux up and running either.
 
-Damn! I was hoping that I could have something like 200GB of swap or so.
-Would it be difficult to add support for more than 8 swap files?
-
-	Thanks,
+I have to admit, I find hardly any need for that tool even in x86 land
+;)
 
 	Duraid
