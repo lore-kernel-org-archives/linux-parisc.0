@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tentakel.fischlustig.de (pD9001DC4.dip.t-dialin.net [217.0.29.196])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 534FD482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  1 Feb 2002 02:28:03 -0700 (MST)
-Subject: Re: [parisc-linux] Graphics support
-From: andi <andi@fischlustig.de>
-To: Jbit of Plasma <james_a_n_lee@yahoo.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3C5A3139.20006@yahoo.com>
-References: 
-	<3765AD6E3C88D211A92400A0C9A4F70E0119D735@lawrence.psl-dist.co.uk>
-	<20020131180403.86D6F482A@dsl2.external.hp.com>  <3C5A3139.20006@yahoo.com>
-Date: 01 Feb 2002 10:24:52 +0100
-Message-Id: <1012555492.683.7.camel@cube>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Received: from maestro.symsys.com (maestro.symsys.com [208.223.9.37])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0164482A
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Feb 2002 12:54:01 -0700 (MST)
+Received: from localhost (ingram@localhost)
+	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id NAA25502
+	for <parisc-linux@parisc-linux.org>; Fri, 1 Feb 2002 13:53:52 -0600
+Date: Fri, 1 Feb 2002 13:53:52 -0600 (CST)
+From: Greg Ingram <ingram@symsys.com>
+To: parisc-linux@parisc-linux.org
+Message-ID: <Pine.LNX.4.21.0202011318340.23933-100000@maestro.symsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Display for C100?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,20 +23,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Sorry to ask, but I couldn't seem to find any docs on it, whats "Colour recovery"?
+Gentlemen,
 
-Color recovery is a strange but cool 8bit truecolor technology. Data is
-dithered to the framebuffer in a special way (there is a recommented
-alogorithm provided by HP). Then the hardware de-dithers it and you
-really see millions of different colors on the screen. Using X11 the
-application needs to support it (ImageMagick is the only one I know).
+When I bought my C100 about a year ago the sales critter claimed the
+graphics card could drive a run of the mill monitor.  It has a standard
+SVGA connector.  I've hooked up a couple of displays to no avail.  Here's
+what seem to be the relevant kernel boot messages:
 
-NextStep 3.3 supports color recovery globally and the applications do
-not need to have special support, it just works and looks nearly like
-true color.
+[...]
+18. Coral SGC Graphics (10) at 0xf6000000 [10/20], versions 0x4, 0x0, 0x77
+[...]
+36. Coral SGC Graphics (10) at 0xf6000000 [10/20], versions 0x4, 0x0, 0x77
+[...]
+STI byte mode ROM at f6000000, hpa=f6000000
+STI byte mode ROM, id 2bcb015a-9a02587, conforms to spec rev. 8.04
+STI device: HPA4071A
+Console: switching to colour frame buffer device 160x64
+fb0: stifb 1280x1024-32 frame buffer device, id: 2bcb015a, mmio: 0xf6100000
 
-The advantage is that you can save video ram and blitting is very fast
-because of the small amount of data.
+Would anyone know what kind of monitor I need?
 
+Regards,
 
-andi
+- Greg
