@@ -1,33 +1,36 @@
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA21869
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 09:37:29 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 27DA65A5
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 08:39:37 -0800 (PST)
-Message-Id: <200011171638.IAA16079@milano.cup.hp.com>
-To: Arnaud.ATOCH@oecd.org
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Booting 712 with CD 0.5 
-In-reply-to: Your message of "Fri, 17 Nov 2000 16:30:42 PST."
-             <C12531D038D1D011B1DB0000F8036C28071AB722@eosm5.oecd.org>
-Date: Fri, 17 Nov 2000 08:38:24 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA22390
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:06:53 -0700
+Sender: drepper@cygnus.com
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] SEGV signal handling bug (dynamic linking)
+References: <20001117153954.H32715@linuxcare.com>
+Reply-To: drepper@cygnus.com (Ulrich Drepper)
+From: Ulrich Drepper <drepper@redhat.com>
+Date: 17 Nov 2000 09:09:10 -0800
+In-Reply-To: Richard Hirst's message of "Fri, 17 Nov 2000 15:39:55 +0000"
+Message-ID: <m3hf5634qx.fsf@otr.mynet.cygnus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Arnaud.ATOCH@oecd.org wrote:
-> Is the following output the normal behavior of Linux-PARisc on a 712/100 ?
-> 
-> kmem_create: Forcing size word alignment - nfs_fh
-> kernel BUG at pci-dma.c:391!
-> kernel BUG at pci-dma.c:400!
+Richard Hirst <rhirst@linuxcare.com> writes:
 
-The bug is real. A driver is calling pci_map_single() and pci_unmap_single()
-without specifying which direction the DMA is going. Cache flushing on 712
-(PCXL) systems needs to know. I'll assume it's the SCSI driver since
-it looks like we are talking to a SCSI CD-ROM.
+>         mem = malloc(8192);
+>         if (mem == NULL) {
+>                 perror("malloc");
+>                 exit(1);
+>         }
+>         mem = (char *)(((int)mem + 4095) & ~0x0fff);
+>         res = mprotect(mem, 4096, PROT_READ);
 
-grant
+Read the Unix standard:
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+  The behavior of this function is unspecified if the mapping was not
+  established by a call to mmap().
+
+-- 
+---------------.                          ,-.   1325 Chesapeake Terrace
+Ulrich Drepper  \    ,-------------------'   \  Sunnyvale, CA 94089 USA
+Red Hat          `--' drepper at redhat.com   `------------------------
