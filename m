@@ -1,34 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id DAA16964
-	for <parisc-linux@puffin.external.hp.com>; Mon, 6 Sep 1999 03:23:03 -0600
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA18424
+	for <parisc-linux@puffin.external.hp.com>; Mon, 6 Sep 1999 11:50:38 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id TAA03076
+	for <parisc-linux@thepuffingroup.com>; Mon, 6 Sep 1999 19:52:35 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id TAA755033
+	for <parisc-linux@thepuffingroup.com>; Mon, 6 Sep 1999 19:52:34 +0200 (CEST)
 Received: by genedata.com
 	via sendmail from stdin
-	id <m11Nv14-00025cC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Mon, 6 Sep 1999 11:24:46 +0200 (CEST)
-Date: Mon, 6 Sep 1999 11:24:46 +0200
+	id <m11O2wU-0002KnC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Mon, 6 Sep 1999 19:52:34 +0200 (CEST)
+Date: Mon, 6 Sep 1999 19:52:33 +0200
 From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ramdisk.bin?
-Message-ID: <19990906112446.A25362@mencheca.ch.genedata.com>
-References: <37D35413.6E032AE1@uswest.net>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990906195233.E493@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <37D35413.6E032AE1@uswest.net>; from Ryan Bradetich on Sun, Sep 05, 1999 at 11:41:39PM -0600
+Subject: [parisc-linux] status on 715/33
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Sep 05, 1999 at 11:41:39PM -0600, Ryan Bradetich wrote:
-> Hmm...
-> 
-> Ok, I got a stupid question :)
-> 
-> Where do I generate/find the ramdisk.bin that is a dependency for
-> ramdisk.c?
 
-You can either generate one yourself using the loop device under Linux
-or just take the one we all use from
-
-ftp://puffin.external.hp.com/pub/parisc/binaries/ramdisks/
+I've got my 715/33 as far as panicing because it can't find `init'.
+There's a couple of small changes (which Philipp has) to get it through
+the perils of handling the timer interrupt.  After that, it will crash
+in pci_init() if that's enabled (looks like dereferencing a null pointer
+to me), so disable CONFIG_PCI.  I'll investigate further tomorrow.
 
 -- 
 Matthew Wilcox <willy@bofh.ai>
