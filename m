@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Moritz Sinn <moritz@freesources.org>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from Moritz Sinn <moritz@freesources.org>
-   of "15 Sep 2002 22:33:39 -0000." <87k7lm3mt8.fsf@appserv.sinnhq.de>
-References: <87k7lm3mt8.fsf@appserv.sinnhq.de> 
-Date: Sun, 15 Sep 2002 22:30:04 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020916043004.B27754829@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: ide controller
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 105A64829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Sep 2002 00:30:16 -0600 (MDT)
+From: Helge Deller <deller@gmx.de>
+To: "Tobias Giesen" <tobias_subscriber@tgtools.com>
+Subject: Re: [parisc-linux] Re: [PATCH] Voodoo framebuffer on PARISC
+Date: Mon, 16 Sep 2002 08:29:35 +0200
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <000001c25d16$80be8b30$0100a8c0@PLUTO>
+In-Reply-To: <000001c25d16$80be8b30$0100a8c0@PLUTO>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200209160829.35216.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,38 +24,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Moritz Sinn wrote:
-> 
-> hi,
-> 
-> i've got an promise PDC20268 ide controller, which i would like to use
-> in my hp c360 workstation. i'm using kernel 2.4.18 (couldn't compile
-> 2.4.19 and 2.4.20-pre7).
-> if i compile with "Generic PCI bus-master DMA support", the kernel
-> crashes when i insmod the 'ide-mod' module. it doesn't print useable
-> error messages, it just doesn't react anymore.
+Hi Tobias,
 
-Are you using the "apt-get source kernel-image-2.4.18-hppa"
-or from kernel.org?
+you should use a standard PC mulitfrequency monitor, as most
+HP monitors are fixed frequency and won't work.
 
-If the latter, that won't work.
+Furthermore you might search in sstfb.c for:
+/*
+  Default video mode .
+  0 800x600@60  took from glide
+  1 640x480@75  took from glide
+  2 1024x768@76 std fb.mode
+  3 640x480@60  glide default */
+#define DEFAULT_MODE 1
 
-> when i compile without dma support, i can insmod the 'ide-mod' and
-> 'ide-disk' module, but it crashes when i want to insmod the
-> 'ide-probe-mod' module.
-> 
-> would be great if someone could help me.
+and try to change the DEFAULT_MODE to 2 or 0.
 
-1) see cvs.parisc-linux.org to get the latest bits
-   (or ftp.parisc-linux.org/cvs/)
+Greetings,
+Helge
 
-2) define the following to 1 in drivers/ide/pdc202xx.c:
-
-#define PDC202XX_DEBUG_DRIVE_INFO               0
-#define PDC202XX_DECODE_REGISTER_INFO           0
-
-  and rebuild the module with that.
-
-3) post the console log and "ser pim" output at PDC prompt.
-
-grant
+On Monday 16 September 2002 02:17, Tobias Giesen wrote:
+> Hello,
+>
+> I think I need some more help with this. Here's what I did:
+>
+> - grabbed fresh 2.4.19-pa17 sources
+> - applied sstfb.c and .h patch
+> - set kernel options to include sst1
+> - compiled & installed new kernel
+>
+> The new kernel seems to try to activate a Voodoo console shortly after
+> the "If this is the last message you see ..." warning. However, my
+> monitor says the frequencies are out of range and switches itself off.
+> The main sti console is then dead also.
+>
+> Any ideas? Maybe could I try a precompiled kernel with Voodoo support?
+>
+> Thanks.
+>
+> Best wishes,
+> Tobias Giesen
