@@ -1,15 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6D1A84829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 09:46:24 -0600 (MDT)
-Date: Wed, 16 Apr 2003 17:46:15 +0200
-Message-ID: <3E9BA3A600000D8F@ocpmta2.freegates.net>
-In-Reply-To: <Pine.LNX.4.44.0304161319540.28370-100000@sal.ucc.ie>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] STI fb questions
-To: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 688454829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 10:01:07 -0600 (MDT)
+Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
+	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h3GF31RN030226;
+	Wed, 16 Apr 2003 16:03:01 +0100
+Received: (from alan@localhost)
+	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h3GF2xMX030224;
+	Wed, 16 Apr 2003 16:02:59 +0100
+Subject: Re: [parisc-linux] Re: Presicionbook success
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Gavin Hubbard <ghub005@xtra.co.nz>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3.0.2.32.20030417011531.00a2bf20@pop3.xtra.co.nz>
+References: <3.0.2.32.20030417011531.00a2bf20@pop3.xtra.co.nz>
+Content-Type: text/plain
+Message-Id: <1050505378.28591.114.camel@dhcp22.swansea.linux.org.uk>
+Mime-Version: 1.0
+Date: 16 Apr 2003 16:02:58 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,36 +29,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->So it should be able to display at least 800x600 in 24/32bit and
->1024x768 in 16bit, but it refuses to do so. 'dmesg' ALWAYS shows
->only 8bit colour depth regardless of the display resolution.
->
+On Mer, 2003-04-16 at 14:15, Gavin Hubbard wrote:
+> Before anyone loses too much sleep over this, the Precisionbook has
+> internal SCSI-IDE bridges that sit between the HBA and the drives. I
+> believe a similar system was used in some of the earlier Apple Powerbooks.
 
-(may be you will find more accurate explanation on the stifb driver limits
-with a search in this m-l)
-
->Obviously the standard sti=8/24 sti_font=VGA8x16 is used in the
->kernel command line (according to dmesg, however it's not specified in
->palo.conf).
-
-Well if some parameters are not specified, palo take default value for those
-once. 
-
->
->My question is know, does STIfb also supports 16bit? How can I force
->16bit and 24/32bit colour depths?
-
-Unfortunately, it is not possible to force to use more than what dmesg announce
-you (see limits) :(
-
-> What does sti=8/24 exactly mean?
->
-IIRC 8bit 24 colour depth.
-
-Joel
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+So htf do they end up on the IDE controller too ? If they show up on the
+scsi bus under Linux then I need the ssvid/ssid for the CMD device (and
+which CMD variant is used) and I can vanish it easily enough.
