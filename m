@@ -1,50 +1,52 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01188
-	for <parisc-linux@puffin.external.hp.com>; Mon, 30 Oct 2000 15:15:37 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 30 Oct 2000 22:17:16 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA23691;
-	Tue, 31 Oct 2000 09:16:43 +1100
-Date: Tue, 31 Oct 2000 09:16:43 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-cc: gcc-bugs@gcc.gnu.org, gcc-patches@gcc.gnu.org,
-        parisc-linux@thepuffingroup.com, law@cygnus.com
-Subject: Re: testcase for hppa64 gcc bug
-In-Reply-To: <200010302015.PAA05033@hiauly1.hia.nrc.ca>
-Message-ID: <Pine.LNX.4.21.0010310822570.22018-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01839
+	for <parisc-linux@puffin.external.hp.com>; Mon, 30 Oct 2000 15:36:29 -0700
+Received: (from pdbeal@localhost)
+	by Ci271622-a.lusvil1.ky.home.com (8.9.3/8.9.3) id RAA23786
+	for parisc-linux@thepuffingroup.com; Mon, 30 Oct 2000 17:40:31 -0500 (EST)
+	(envelope-from pdbeal)
+Date: Mon, 30 Oct 2000 17:40:31 -0500
+From: Phillip Beal <pdbeal@bealz.net>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20001030174030.A23768@Ci271622-a.lusvil1.ky.home.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Boot Problems with 755
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, 30 Oct 2000, John David Anglin wrote:
+Hey,
 
-> > 	* rtl.h (ARG_POINTER_INVARIANT): Define as 1 if undef.
-> > 	* rtlanal.c (rtx_unstable_p): Qualify arg_pointer_rtx match with
-> > 	ARG_POINTER_INVARIANT.
-> > 	(rtx_varies_p): Likewise.
-> > 	(rtx_addr_can_trap_p): Likewise.
-> > 	* local-alloc.c (function_invariant_p): Likewise.
-> > 	* loop.c (loop_invariant_p): Likewise.
-> > 	* tm.texi (ARG_POINTER_INVARIANT): Describe.
-> 
-> I don't think this is the correct fix.  Isn't r29 used for 128 bit
-> return values?
+I've been reading and building the PARISC port for a couple of months
+now, and I've hit a problem.  I have a 755 that I can work with that I
+have been able to get to boot.  However, once the system boots the
+latest kernel stuff, it fails on loading the nfsroot system.  The
+machine never was able to successfully boot a kernel untill today, but
+the system dies before it tries to load the nfsroot disk.  Here's my
+problem:
 
-Yes, r29 is used for 128 bit return values, but how is that relevant to
-use of r29 as the arg pointer?
+The system boots fine from a SuSE 7.0 Professional System running
+tftp, bootp, nfs, and rboot (rboot is what is actually booting from
+since the system is too old to be able to bootp from, or at least that's
+what Ive found from reading and from talking to some people.)  However,
+the Kernel reports all the devices in the system (all 16), but returns
+this error:
 
-I tried setting up ELIMINATE_REGS and so forth (see puffin CVS
-gcc/config/pa/pa-linux64.h) but that failed badly with what looked like,
-from a very cursory inspection, a use of r29 as a temporary reg being
-"eliminated" to r30+const.  Oops.
+IP-Config: No network devices available
 
-Anyway, nothing in the above patch should make the situation worse.  All
-it really does is let the compiler see places where arg_pointer changes,
-instead of blindly assuming that arg_pointer will not change.  Take a peek
-at the .lreg rtl for the test case I posted.
+I know this was a problem on some people with a different system, but
+the same fix doesn't work with the 755 since it has no PCI bus.  The
+kernel returns this for the LAN adapter, but I don't know what to
+compile to enable this device:
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Coral II Core LAN (802.3) (10) at 0xf0826000, versions 0xa, 0x0, 0x72,
+0x0, 0x0
+
+What do I need to do to be able to use this LAN adapter, if its even
+supported right now.  Alternatively, can the HP 755 machine boot through
+the serial connection or something other than the LAN adapter?
+
+Thanks,
+--
+Phillip Beal
+S+LUG Vice-President - http://www.slug.louisville.edu/
+ 
