@@ -1,24 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E85634842
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Dec 2001 22:03:58 -0700 (MST)
-Received: from mmp-2.gci.net ([208.138.130.81]) by mta-1.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GOZKQG00.HBT for
-          <parisc-linux@parisc-linux.org>; Wed, 26 Dec 2001 20:03:52 -0900
-Received: from goliath.alaskatech.org ([24.237.5.207]) by
-          mmp-2.gci.net (Netscape Messaging Server 4.15) with ESMTP id
-          GOZKQH02.93B for <parisc-linux@parisc-linux.org>; Wed, 26 Dec
-          2001 20:03:53 -0900
-Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
-	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id UAA03315
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Dec 2001 20:01:07 -0900
-Date: Wed, 26 Dec 2001 20:01:07 -0900 (AKST)
-From: Tom <palinux@alaskatech.org>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0112261956090.3248-100000@goliath.alaskatech.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Oops...
+Received: from sj-msg-core-1.cisco.com (sj-msg-core-1.cisco.com [171.71.163.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DB888484F
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Dec 2001 22:25:28 -0700 (MST)
+Date: Wed, 26 Dec 2001 21:25:25 -0800
+From: Christian Suder <csuder@cisco.com>
+To: "Helge Deller" <deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [Q] on EISA support
+Message-Id: <20011226212525.0d086b16.csuder@cisco.com>
+In-Reply-To: <20011226223124.68FBB4848@dsl2.external.hp.com>
+References: <4.3.2.7.2.20011226135241.027fc090@mira-sjc5-9.cisco.com>
+	<20011226223124.68FBB4848@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,14 +24,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Perhaps I spoke too soon about -pa24 being good. After compiling and
-rebooting with -pa24, then an apt-get update/dist-upgrade, make no longer
-works. Ran a cvs update to -pa27, which had no effect, of course... All I
-get is a pause with "_ESCOA", then either a segfault or "Trace/breakpoint
-trap" (random).
+On Wed, 26 Dec 2001 23:30:16 +0100
+"Helge Deller" <deller@gmx.de> wrote:
 
-Any ideas how to troubleshoot this one? I can always reboot to the 2.4.9
-kernel, then try to recompile with -pa27, but if I can drag a little info
-out of this I'm more than happy to do so.
+> On Wednesday 26 December 2001 23:13, Christian Suder wrote:
+> > Tried a NE2000 clone too, which was detected but with the wrong interrupt.
+> > That might be because it's a "hard" configured plug&pray card. PCs have no
+> > problems detecting the settings correctly, though.
+> 
+> Hi Christian,
+> 
+> Did you tried the "eisa_irq_edge=3,4,5,7,9,10,11,14,15" palo parameter ?
+> In case your NE2000 card is an ISA card you need to set the EISA irq's to
+> edge mode which is done with the above command.
+> Maybe we should think about adding a /proc-interface here ?
+> 
 
-Everything else appears to work fine...
+Thanks Helge,
+
+that "basically" fixed it, i could use the card with 2.4.16-pa23. However as X has problems with this kernel (X server starts but graphics are garbled). I compiled 2.4.16-pa25, and this is what I get: 
+
+Dec 26 20:45:04 c110-linux kernel: Wax EISA Adapter found at 0xfc000000
+Dec 26 20:45:04 c110-linux kernel: Warning : device (11, 0x1e, 0x0, 0x90) NOT cl
+aimed by EISA Bus Adapter
+
+and then : 
+Dec 26 20:45:04 c110-linux kernel: PCI or EISA Host Bus Adapter 0 not registered
+. in8(0x300) returning -1
+Dec 26 20:45:04 c110-linux kernel: 
+Dec 26 20:45:04 c110-linux kernel: PCI or EISA Host Bus Adapter 0 not registered
+. in8(0x280) returning -1
+Dec 26 20:45:04 c110-linux kernel:
+Dec 26 20:45:04 c110-linux kernel: PCI or EISA Host Bus Adapter 0 not registered
+. in8(0x320) returning -1
+
+The EISA support should be compiled in, at least I selected it. X is still garbled so no improvement in that area. 
+
+BTW is there a compilation of all the "secret" boot parameters ? It's the second time now that it fixes a problem for me....
+
+
+Danke nochmal,
+
+	Christian 
