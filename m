@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92F5F482D
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  1 Aug 2003 11:21:06 -0600 (MDT)
-Date: Fri, 1 Aug 2003 19:21:02 +0200
-Message-ID: <3F29178A00000509@ocpmta7.freegates.net>
-In-Reply-To: <20030801170022.GX22222@parcelfarce.linux.theplanet.co.uk>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9402E482D
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 11:25:15 -0600 (MDT)
+Date: Fri, 1 Aug 2003 19:25:05 +0200
+Message-ID: <3F29178A0000050C@ocpmta7.freegates.net>
+In-Reply-To: <20030801171426.GA18508@security.hp.com>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] __arch__swab24()
-To: "Matthew Wilcox" <willy@debian.org>,
-	"LaMont Jones" <lamont@smallone.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org, lamont@hp.com
+Subject: Re: [parisc-linux] backport bitops.h stuff
+To: lamont@hp.com
+Cc: "James Bottomley" <James.Bottomley@steeleye.com>,
+	parisc-linux@parisc-linux.org, lamont@hp.com
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,16 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
- 
->> On Fri, Aug 01, 2003 at 10:22:55AM -0600, LaMont Jones wrote:
->> Any comments before I commit it to 2.4 and 2.5?
+>Here's a more optimal ffs() routine for hppa, along with the
+>output from the test program...  Should run in ~15 states on
+>just about
+> anything [yes, it's that lock-stepped that it'll
+>take about 15 states on PA-8000's as well.. :-(]
 >
->Here's what I came up with based on your patch.  It's embedded in a
->test program.
+>Freshly coded, since the hp-ux version (which I can't find
+>anymore) looked for most significant set bit, not least.
 
-[...]
-
-? no pb on my b180 (32bits kernel 2.4.21-pa6)
+Thanks, I will test it on next week,
 
 Joel
 
