@@ -1,21 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 838B8482A
-	for <parisc-linux@parisc-linux.org>; Tue, 21 Aug 2001 08:10:57 -0600 (MDT)
-Subject: Re: [parisc-linux] iotree thoughts
-To: willy@debian.org (Matthew Wilcox)
-Date: Tue, 21 Aug 2001 15:12:42 +0100 (BST)
-Cc: grundler@puffin.external.hp.com (Grant Grundler),
-	willy@debian.org (Matthew Wilcox), parisc-linux@parisc-linux.org
-In-Reply-To: <20010821080953.B12638@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Aug 21, 2001 08:09:53 AM
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8B426482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Aug 2001 11:02:19 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Cc: submit@bugs.debian.org
+Message-ID: <OF1968C0F4.94C45B85-ONC1256AAF.005C67DA@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Tue, 21 Aug 2001 19:05:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E15ZCGo-0007vc-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-type: text/plain; charset=us-ascii
+Subject: [parisc-linux] XFree86-4.1 note
 List-ID: <linux-parisc.vger.kernel.org>
 
-> or we just make inb() BUG().
+Dear all,
 
-Its probably more useful to make it print the port numher and traceback then
-continue. That way any minor escapees will get back some cookie you pick
-(eg 0xFF) and you can chase them out easily
+After the upgrade of XFree86-4.0 to XFree86-4.1 on my 712/80 parisc box, X
+would not more restart: did not find config file.
+Which config file?
+I just have to rename my XF86Config to XF86Config-4. Could it not be added
+in the package configuration procedure?
+
+Thanks for your attention,
+     Joel
+
+PS: I better understand "white pixel" appears "blue". This was not the case
+with XFree86-4.0
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information which is strictly intended for the use of the authorised recipient.  If you have received this e-mail in error, please delete it and notify the sender by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
