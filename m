@@ -1,19 +1,18 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A194B4854
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C26ED4890
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 21 Jan 2004 11:03:08 -0700 (MST)
-Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout2.tiscali.be with esmtp (Tiscali) id 1AjMh1-0005cn-00
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 21 Jan 2004 19:03:07 +0100
-Date: Wed, 21 Jan 2004 19:03:05 +0100
-Message-ID: <400CB89F00001978@ocpmta2.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-To: "PARISC list" <parisc-linux@lists.parisc-linux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] B2k and CONFIG_PDC_CONSOLE pb: followup
+	Wed, 21 Jan 2004 22:31:13 -0700 (MST)
+Date: Wed, 21 Jan 2004 22:31:12 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] B2k and CONFIG_PDC_CONSOLE pb: followup
+Message-ID: <20040122053112.GB6468@colo.lackof.org>
+References: <400CB89F00001978@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <400CB89F00001978@ocpmta2.freegates.net>
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,78 +22,47 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi all,
+On Wed, Jan 21, 2004 at 07:03:05PM +0100, Joel Soete wrote:
+> Hi all,
+> 
+> On the my b2k when I add 'CONFIG_PDC_CONSOLE' the system hang just after
+> "Searching for devices..." leting the led CDROM continuously bright ???
+> 
+> With some printk, I reach to figure out that is at the pdc_suspend_usb()
+> point where the boot hang. I try to bypass this and so it boot well.
 
-On the my b2k when I add 'CONFIG_PDC_CONSOLE' the system hang just after
-"Searching for devices..." leting the led CDROM continuously bright ???
+yup - that's fixed in 2.6 slightly better.
+Look for pdc_io_reset_devices() in drivers/parisc/sba_iommu.c.
+You can backport and test that change to 2.4, I'd be happy to apply it.
 
-With some printk, I reach to figure out that is at the pdc_suspend_usb()
-point where the boot hang. I try to bypass this and so it boot well.
+The problem is if suckyio USB (or any device) is still doing DMA when
+we reprogram the IOMMU, it will cause an HPMC. The reason is we
+are fundementally changing how DMA works (non-coherent to coherent)
+and PDC doesn't reprogram the suckyIo USB accordingly.
+C3000 (and related systems) provides a special PDC call to disable USB.
+"ccio" (eg C200) systems can have the same problem with LAN boot.
 
-In fact the big difference with a kernel without CONFIG_PDC_CONSOLE is the
-early call to pdc_console_init_force() which (before register the pdc_cons
-do:
-[snip]
-        /* If the console is duplex then copy the COUT parameters to CIN.*/
-        if (PAGE0->mem_cons.cl_class == CL_DUPLEX)
-                memcpy(&PAGE0->mem_kbd, &PAGE0->mem_cons, sizeof(PAGE0->mem_cons));
+> I also try to bypass this memcpy (and restore pdc_suspend_usb() call) and
+> it boot also well.
 
-        /* register the pdc console */
-        register_console(&pdc_cons);
-}
+I think you've just prevented either PDC or Linux from using a PDC device.
 
-I also try to bypass this memcpy (and restore pdc_suspend_usb() call) and
-it boot also well.
+> In sumary, on the b2k, this early memcpy() seems to break something in the
+> later pdc_suspend_usb() call.
 
-In sumary, on the b2k, this early memcpy() seems to break something in the
-later pdc_suspend_usb() call. My problem is the pdc_suspend_usb()
-which results finaly in a call to real32_call_asm(): actualy asm code in
-which
-it's difficult to insert printk to analyse the difference of behaviour ?)
+It's the other way around. pdc_suspend_usb() is breaking PDC_CONSOLE.
+See email related to linux-2.6 c3000 serial console problems late last year.
 
-I also already get a toc but didn't give me any relevant info on what happen
-:(
+AFAIK, the memcpy just enables the PDC to use a serial console.
+But pdc_suspend_usb() apperently blows away the whole suckyio chip
+and thus PDC can no longer use suckyio serial either. Hrmm..I thought
+there was a IO_RESET_AND_CLEAR pdc call in that same chunk of code.
 
-Any idea to help me to get more details about this pb?
-
-Thanks in advance,
-    Joel
-
-PS:
-I added some printk to get some pdc addresses:
-static void pdc_console_init_force(void)
-{
-        if (pdc_console_initialized)
-                return;
-        ++pdc_console_initialized;
-
-        if (PAGE0->mem_cons.cl_class == CL_DUPLEX) {
-                printk(KERN_INFO "pdc_console_init_force() would set a CL_DUP.\n");
-                printk(KERN_INFO "PAGE0->mem_cons address: %p.\n", &PAGE0->mem_cons);
-                printk(KERN_INFO "PAGE0->mem_kbd address: %p.\n", &PAGE0->mem_kbd);
-                printk(KERN_INFO "PAGE0->mem_kbd size: %d.\n", sizeof(PAGE0->mem_cons));
-        };
-        /* If the console is duplex then copy the COUT parameters to CON.*/
-/*
-        if (PAGE0->mem_cons.cl_class == CL_DUPLEX)
-                memcpy(&PAGE0->mem_kbd, &PAGE0->mem_cons, sizeof(PAGE0->mem_cons));
- */
-
-        /* register the pdc console */
-        register_console(&pdc_cons);
-}
-
-The 32-bit Kernel has started...
-pdc_console_init_force() would set a CL_DUP.
-PAGE0->mem_cons address: 100003a0.
-PAGE0->mem_kbd address: 10000400.
-PAGE0->mem_kbd size: 48.
-
-But that couldn't help more for the moment :(
+Anyway, Figuring out some additional info could help:
+   (a) know which devices might have DMA enabled when the OS gets control
+   (b) disable just the DMA
+   (c) detect when PDC_CONSOLE wants to use a device whose DMA we've disabled
 
 
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+hth
+grant
