@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 64046482C
-	for <parisc-linux@parisc-linux.org>; Tue, 23 Jul 2002 08:04:22 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17X0Gz-0003W8-00; Tue, 23 Jul 2002 15:04:21 +0100
-Date: Tue, 23 Jul 2002 15:04:21 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: kenneth westelinck <kennywest1@hotmail.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] unresoved symbols when doing a make modules_install
-Message-ID: <20020723150421.G3052@parcelfarce.linux.theplanet.co.uk>
-References: <OE32H8BX2vRxFmNHYus00008028@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OE32H8BX2vRxFmNHYus00008028@hotmail.com>; from kennywest1@hotmail.com on Tue, Jul 23, 2002 at 03:51:57PM +0200
+Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2FB56482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Jul 2002 08:52:34 -0600 (MDT)
+To: Stephan Trajkoff <stephan@itp.bg>
+Subject: Re: [parisc-linux] cannot make kernel
+Message-ID: <1027435942.3d3d6da6ab4c6@webmail.tiscalinet.be>
+Date: Tue, 23 Jul 2002 16:52:22 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+References: <20020723065037.4D5D2482C@dsl2.external.hp.com> <1027414345.3d3d19494be24@webmail.tiscalinet.be> <3D3D2383.7070708@itp.bg>
+In-Reply-To: <3D3D2383.7070708@itp.bg>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,17 +23,62 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jul 23, 2002 at 03:51:57PM +0200, kenneth westelinck wrote:
-> Today I "baked" myself a new kernel (2.4.18-pa56). After upgrading my box
-> (using apt-get), INIT was dying upon startup with an "unaligned access"
-> error. Anyway, all is working well (even the soft-power button), but I am
-> getting an "unresolved symbols"-error when doing a "make modules_install"
-> (see attached file). Yes, I copied the System.map to
-> /boot/System.map-2.4.18-pa56 and created a symbolic link to this file. Any
-> ideas?
+Quoting Stephan Trajkoff <stephan@itp.bg>:
 
-i'm baffled.  we prototype, define and EXPORT_SYMBOL outs[bwl].  i can't
-see why you'd get this error.
+> joel.soete@freebel.net wrote:
+> 
+> >Quoting Stephan Trajkoff <stephan@itp.bg>:
+> >
+> >  
+> >
+> >>-------------------------------------------------------------------
+> >>-->> FREE Perl CGI scripts add WEB ACCESS to your POP email accounts!
+> >>-->> Download today!! http://www.adjeweb.com
+> >>-------------------------------------------------------------------
+> >>
+> >>`gcc -print-libgcc-file-name` /usr/src/linux/arch/parisc/lib/lib.a
+> >>/usr/src/linux/lib/lib.a  \
+> >>        --end-group \
+> >>        -o vmlinux
+> >>drivers/video/video.o: In function `.L1581':
+> >>drivers/video/video.o(.init.text 0x23e8): undefined reference to
+> >>`fbcon_sti'
+> >>drivers/video/video.o: In function `.L1639':
+> >>drivers/video/video.o(.init.text 0x25d0): undefined reference to
+> >>`fbcon_sti'
+> >>make: *** [vmlinux] Error 1
+> >>
+> >>I tried to compile pa56
+> >>I made make oldconfig from pa54
+> >>    
+> >>
+> >
+> >Do you try make clean after make oldconfig and before make vmlinux?
+> >
+> >(I also do it yesterday evening and do not met any problem)
+> >
+> >Joel
+> >
+> >
+> >-------------------------------------------------
+> >This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+> >_______________________________________________
+> >parisc-linux mailing list
+> >parisc-linux@lists.parisc-linux.org
+> >http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> >
+> >Man I am not stupid, make oldconfig && make dep && make clean && make 
+> >
+> I working with UNIX(Linux, qnx) for 4 years...
+> I made apt-get dist-upgrade
+> very strange dude
 
--- 
-Revolutions do not require corporate support.
+Hey,
+
+I just put a question?
+
+
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
