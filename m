@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 90BA5482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Jul 2003 14:13:27 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] stifb
-Date: Wed, 2 Jul 2003 22:13:57 +0200
-Cc: parisc-linux@lists.parisc-linux.org
-References: <3ED70CF10000CBA7@ocpmta2.freegates.net>
-In-Reply-To: <3ED70CF10000CBA7@ocpmta2.freegates.net>
+Received: from young-lust.wild-wind.fr.eu.org (lopsy-lu.misterjones.org [62.4.18.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3AFEB482A
+	for <parisc-linux@parisc-linux.org>; Thu,  3 Jul 2003 02:05:50 -0600 (MDT)
+Received: from hina.wild-wind.fr.eu.org ([192.168.70.139])
+	by young-lust.wild-wind.fr.eu.org with esmtp (Exim 3.35 #1 (Debian))
+	id 19XynH-0003kS-00
+	for <parisc-linux@parisc-linux.org>; Thu, 03 Jul 2003 09:46:15 +0200
+To: parisc-linux@parisc-linux.org
+Reply-To: mzyngier@freesurf.fr
+From: Marc Zyngier <mzyngier@freesurf.fr>
+Date: Thu, 03 Jul 2003 10:03:20 +0200
+Message-ID: <wrpd6gsjauv.fsf@hina.wild-wind.fr.eu.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200307022213.58129.deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] [PATCH 2.5] More serial console hack...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,26 +25,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wednesday 02 July 2003 08:45, Joel Soete wrote:
-> Hi Helge,
->
-> > > I notice some improvement of your stifb in 2.5 (module support). Do you
-> > > think feasible the backport to 2.4?
-> >
-> > OTOMH I think it doesn't make sense to backport them.
->
-> Because 2.6 will be release soon?
+Hi all,
 
-No.
-The console code in 2.5.x has a lot of changes which
-make modularization possible. This is mostly not available in 2.4.x,
-thus backporting makes not that much sense.
+Until then, I couldn't get a serial console to work on my C100 when
+running 2.5 (2.4 is OK). So I finally had time to look at it...
 
-> > Anyway, I'll take a look at it soon again.
->
-> Thanks but don't spend too much time on this (I would simply know if,
-> according your opinion, it exists some major issue which avoid to do it).
+I just put in the same hack 8250_pci has... Looks horrible, but at
+least it allows me to get a working console.
 
-Ok.
+I suppose the real problem is that console_initcall is being called
+much too late in the boot process, which leads to all those
+PA-specific hacks in 8250*. Is there any plan on how to solve that ?
 
-Helge
+Regards,
+
+            M.
+
+--- ../vanilla/linux-2.5.73/drivers/serial/8250_gsc.c	2003-07-02 11:10:27.000000000 +0200
++++ linux-current/drivers/serial/8250_gsc.c	2003-07-02 15:24:26.000000000 +0200
+@@ -131,6 +131,11 @@
+ {
+ 	register_parisc_driver(&lasi_driver);
+ 	register_parisc_driver(&serial_driver);
++
++#if defined(CONFIG_SERIAL_8250_CONSOLE)
++        serial8250_console_init();
++#endif
++
+ 	return 0;
+ }
+ 
+
+-- 
+Places change, faces change. Life is so very strange.
