@@ -1,15 +1,12 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: Re: [parisc-linux] Booting Debian on an HP C180 workstation
-Date: Thu, 8 Aug 2002 11:20:36 -0700
-Message-ID: <20020808182036.GR8724__27084.8594060682$1416621607$gmane$org@tausq.org>
-References: <20020730113848.GL29996@sleepie.demon.co.uk> <000001c23f07$56c7f0a0$4132260f@gr.hp.com>
-Reply-To: Randolph Chung <tausq@debian.org>
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+Subject: [parisc-linux] Compiling glide-2001.01.26 on hppa
+Date: Sat, 24 Aug 2002 13:55:56 -0400
+Message-ID: <3D67C8AC.2080309__8950.99105914614$1416621645$gmane$org@charter.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-To: Sean Anaya <sanaya@gr.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: debian-hppa@lists.debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <000001c23f07$56c7f0a0$4132260f@gr.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,21 +17,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> So I finally had a chance to install Debian 3.0 on my C180XP. So far looks
-> great, install was
-> far easier than the 0.9.3 CD, and I'm not seeing any of the file system
-> corruptions. However,
-> I'm still fighting a couple of battles.
+I have received my Voodoo2 board and am now working
+on building the glide packages for the hppa architecture.
+Working with the Debian source...
 
-note that this is not the right forum for this kind of questions; please
-use debian-hppa@lists.debian.org instead.
+dpkg-buildpackage fails with the following line:
 
-> 1) where do you find the keywords to packages to install with apt-get
-> install <some package>?
->    ie apt-get install xfree86  doesn't seem to work. I'd like to get the ftp
-> and telnet daemons
->    working so I can ftp and telnet into my box, as well as X window system.
+cc -O6 -m486 -fomit-frame-pointer -funroll-loops \
+-fexpensive-optimizations -ffast-math -DBIG_OPT -I. \
+-I/usr/src/glide-2001.01.26/build-tree/glide2x/swlibs/include \
+-I/usr/src/glide-2001.01.26/build-tree/glide2x/cvg/include \
+-DENDB -DX11 -Wall -fPIC -DPIC -c -o fx64.o fx64.c
 
-apt-cache search <search regexp>
+cc1: Invalid option `486'
 
-randolph
+
+My question is, what incantation should I use on hppa to
+replace the '-O6 -m486 -f...' CFLAGS?
+
+Also, a side note, I'm missing the vga pass-through cable
+for the Voodoo2. If anybody would be interested in swapping
+one of the EVC->VGA dongle cables for an EVC->VGA adapter,
+I will kick in $10 to sweeten the deal. The adapter works fine.
