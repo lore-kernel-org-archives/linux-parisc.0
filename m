@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (d108.dhcp212-198-139.noos.fr [212.198.139.108])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B6B90488C
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Jul 2003 13:12:24 -0600 (MDT)
-Date: Sun, 27 Jul 2003 21:12:19 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
-To: Thomas Marteau <marteaut@tuxfamily.org>
-Cc: parisc linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] [OT] Thanks
-Message-Id: <20030727211219.10910b34.varenet@esiee.fr>
-In-Reply-To: <3F242115.9040706@tuxfamily.org>
-References: <3F242115.9040706@tuxfamily.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail.goquest.com (ns1.goquest.com [12.18.108.6])
+	by dsl2.external.hp.com (Postfix) with SMTP id 8E9CF482E
+	for <parisc-linux@parisc-linux.org>; Sun, 27 Jul 2003 14:47:10 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Michael S.Zick <mszick@goquest.com>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Generic light-weight syscall.
+Date: Sun, 27 Jul 2003 15:43:11 -0500
+References: <20030725063739.GA13017@systemhalted> <20030726174845.GF31744@systemhalted> <20030726180031.GG31744@systemhalted>
+In-Reply-To: <20030726180031.GG31744@systemhalted>
+MIME-Version: 1.0
+Message-Id: <03072715431101.00932@wolf686>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,27 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 27 Jul 2003 20:59:33 +0200
-Thomas Marteau <marteaut@tuxfamily.org> wrote:
-
-> Hi all,
-> 
-> As you can read, I am back home safely. Once again, I would like to 
-> thank everybody who was at OLS this year. It is always the same pleasure
-> to meet you guys in real.
-> 
-> If I did not say 'bye' saturday, please accept my digital one :
-> 
-> Bye and it was nice meeting you, Thomas !
-> 
-Well Thomas was a bit quicker than me on that mail, so i'll join my thanks
-there as well.
-
-It's been very cool to meet everyone, and I really enjoyed that trip!
-
-I hope there will be other meeting occasions soon, and for those i
-couldn't say goodbye either, well, same remark than Thomas :)
-
-Hope to see you again soon,
-
-Thibaut
+On Saturday 26 July 2003 01:00 pm, Carlos O'Donell wrote:
+> > If you map the page and make CPU 0 update the date, then I'll write the
+> > userspace interface for gettimeofday.
+> >
+> > I'm not sure how we would do the check for 'do we see fast gettimeofday'
+> > but it might be that we include a magic value there and check for it?
+> > Other arches must have solved this.
+>
+> Talked to Rik Van Riel about fast gettimeofday and he indicated that
+> it's not doable since you can't guarantee your process will get
+> scheduled on another CPU whose clock is out of sync by more than X and
+> get negative time. Though I imagine you were talking about having one
+> CPU update one page with time on it... and then other CPU's read this?
+> LaMont notes that there is no requirement from the PA design that CPU's
+> clock at _exactly_ the same frequency or have monotonically incrementing
+> clocks at the right rate. Could you explain the idea you have a bit
+> more?
+Note - some multiple cpu hardware intentionally clocks the cpu's at
+slightly different rates to limit RFI generation.
+Not sure if any HP-PARISC machines do such clocking.
+Mike
