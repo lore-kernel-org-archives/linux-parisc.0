@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 744394845
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Dec 2003 02:57:24 -0700 (MST)
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 596324845
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Dec 2003 03:11:49 -0700 (MST)
 Received: from [62.235.14.106] (helo=mail.tiscali.be)
-	by cpout1.tiscali.be with esmtp (Tiscali)
-	id 1ARqDR-0004g3-00
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 04 Dec 2003 10:56:09 +0100
-Date: Thu, 4 Dec 2003 10:56:08 +0100
-Message-ID: <3FB25B960000DA45@ocpmta1.freegates.net>
+	by cpout2.tiscali.be with esmtp (Tiscali)
+	id 1ARqRF-0004YN-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 04 Dec 2003 11:10:25 +0100
+Date: Thu, 4 Dec 2003 11:10:25 +0100
+Message-ID: <3FB25B960000DA96@ocpmta1.freegates.net>
 From: "Joel Soete" <soete.joel@tiscali.be>
 To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="========/3FB25B960000DA45/mail.tiscali.be"
-Subject: [parisc-linux] 2.4.23 some tested backport (pgalloc.h)
+Content-Type: multipart/mixed; boundary="========/3FB25B960000DA96/mail.tiscali.be"
+Subject: [parisc-linux] 2.4.23 lcopy_in_user backport
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,37 +24,90 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---========/3FB25B960000DA45/mail.tiscali.be
+--========/3FB25B960000DA96/mail.tiscali.be
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 
 Hi pa,
 
-iirc this a Randolph's patch which I try to backport and test seems ok
+iirc this is a Carlos' chunk I try to backport:
+
 =========><=========
---- linux-2.4.23-pa1/include/asm-parisc/pgalloc.h	2003-03-10 08:02:19.000000000
+diff -NaurX dontdiff linux-2.4.23-pa1/arch/parisc/lib/lusercopy.S linux-2.4.23-rc5-pa17/arch/parisc/lib/lusercopy.S
+--- linux-2.4.23-pa1/arch/parisc/lib/lusercopy.S	2001-09-06 11:44:08.000000000
++0200
++++ linux-2.4.23-rc5-pa17/arch/parisc/lib/lusercopy.S	2003-10-23 18:21:44.000000000
++0200
+@@ -133,6 +133,43 @@
+ 	.procend
+ 
+ 	/*
++	 * unsigned long
++	 * lcopy_in_user(void *to, const void *from, unsigned long n)
++	 *
++	 * Returns 0 for success.
++	 * otherwise, returns number of bytes not transferred.
++	 */
++
++	.export lcopy_in_user,code
++lcopy_in_user:
++	.proc
++	.callinfo NO_CALLS
++	.entry
++	comib,=,n   0,%r24,$lciu_done
++	get_sr
++$lciu_loop:
++	ldbs,ma     1(%sr1,%r25),%r1
++	addib,<>    -1,%r24,$lciu_loop
++1:      stbs,ma     %r1,1(%sr1,%r26)
++$lciu_done:
++	bv          %r0(%r2)
++	copy        %r24,%r28
++	.exit
++
++2:      b $lciu_done
++	ldo         1(%r24),%r24
++
++	.section __ex_table,"a"
++#ifdef __LP64__
++	.dword      1b,(2b-1b)
++#else
++	.word       1b,(2b-1b)
++#endif
++	.previous
++
++	.procend
++
++	/*
+ 	 * long lstrncpy_from_user(char *dst, const char *src, long n)
+ 	 *
+ 	 * Returns -EFAULT if exception before terminator,
+diff -NaurX dontdiff linux-2.4.23-pa1/include/asm-parisc/uaccess.h linux-2.4.23-rc5-pa17/include/asm-parisc/uaccess.h
+--- linux-2.4.23-pa1/include/asm-parisc/uaccess.h	2003-11-12 07:25:38.000000000
 +0100
-+++ linux-2.4.23-rc5-pa17/include/asm-parisc/pgalloc.h	2003-12-04 11:06:31.000000000
++++ linux-2.4.23-rc5-pa17/include/asm-parisc/uaccess.h	2003-11-26 19:56:49.000000000
 +0100
-@@ -124,8 +124,9 @@
+@@ -263,6 +263,7 @@
  
- #define flush_icache_page(vma,page)	do { flush_kernel_dcache_page(page_address(page));
-flush_kernel_icache_page(page_address(page)); } while (0)
+ extern unsigned long lcopy_to_user(void *, const void *, unsigned long);
+ extern unsigned long lcopy_from_user(void *, const void *, unsigned long);
++extern unsigned long lcopy_in_user(void *, const void *, unsigned long);
+ extern long lstrncpy_from_user(char *, const char *, long);
+ extern unsigned lclear_user(void *,unsigned long);
+ extern long lstrnlen_user(const char *,long);
+@@ -281,5 +282,7 @@
+ #define __copy_from_user lcopy_from_user
+ #define copy_to_user lcopy_to_user
+ #define __copy_to_user lcopy_to_user
++#define copy_in_user lcopy_in_user
++#define __copy_in_user lcopy_in_user
  
--#define flush_icache_user_range(vma, page, addr, len) \
--	flush_user_icache_range(addr, addr + len);
-+#define flush_icache_user_range(vma, page, addr, len) do { \
-+        flush_user_dcache_range(addr, addr + len); \
-+	flush_user_icache_range(addr, addr + len); } while (0)
- 
- #define flush_icache_range(s,e)		do { flush_kernel_dcache_range_asm(s,e);
-flush_kernel_icache_range_asm(s,e); } while (0)
- 
+ #endif /* __PARISC_UACCESS_H */
 =========><=========
 
 hth,
     Joel
-
+ 
 
 -------------------------------------------------------------------------
 Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
@@ -63,24 +116,54 @@ http://reg.tiscali.be/default.asp?lg=fr
 
 
 
---========/3FB25B960000DA45/mail.tiscali.be
+--========/3FB25B960000DA96/mail.tiscali.be
 Content-Type: application/octet-stream
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="include_asm-parisc_pgalloc.h.patch"
+Content-Disposition: attachment; filename="arch_parisc_lib_lusercopy.S.patch"
 
-LS0tIGxpbnV4LTIuNC4yMy1wYTEvaW5jbHVkZS9hc20tcGFyaXNjL3BnYWxsb2MuaAkyMDAzLTAz
-LTEwIDA4OjAyOjE5LjAwMDAwMDAwMCArMDEwMAorKysgbGludXgtMi40LjIzLXJjNS1wYTE3L2lu
-Y2x1ZGUvYXNtLXBhcmlzYy9wZ2FsbG9jLmgJMjAwMy0xMi0wNCAxMTowNjozMS4wMDAwMDAwMDAg
-KzAxMDAKQEAgLTEyNCw4ICsxMjQsOSBAQAogCiAjZGVmaW5lIGZsdXNoX2ljYWNoZV9wYWdlKHZt
-YSxwYWdlKQlkbyB7IGZsdXNoX2tlcm5lbF9kY2FjaGVfcGFnZShwYWdlX2FkZHJlc3MocGFnZSkp
-OyBmbHVzaF9rZXJuZWxfaWNhY2hlX3BhZ2UocGFnZV9hZGRyZXNzKHBhZ2UpKTsgfSB3aGlsZSAo
-MCkKIAotI2RlZmluZSBmbHVzaF9pY2FjaGVfdXNlcl9yYW5nZSh2bWEsIHBhZ2UsIGFkZHIsIGxl
-bikgXAotCWZsdXNoX3VzZXJfaWNhY2hlX3JhbmdlKGFkZHIsIGFkZHIgKyBsZW4pOworI2RlZmlu
-ZSBmbHVzaF9pY2FjaGVfdXNlcl9yYW5nZSh2bWEsIHBhZ2UsIGFkZHIsIGxlbikgZG8geyBcCisg
-ICAgICAgIGZsdXNoX3VzZXJfZGNhY2hlX3JhbmdlKGFkZHIsIGFkZHIgKyBsZW4pOyBcCisJZmx1
-c2hfdXNlcl9pY2FjaGVfcmFuZ2UoYWRkciwgYWRkciArIGxlbik7IH0gd2hpbGUgKDApCiAKICNk
-ZWZpbmUgZmx1c2hfaWNhY2hlX3JhbmdlKHMsZSkJCWRvIHsgZmx1c2hfa2VybmVsX2RjYWNoZV9y
-YW5nZV9hc20ocyxlKTsgZmx1c2hfa2VybmVsX2ljYWNoZV9yYW5nZV9hc20ocyxlKTsgfSB3aGls
-ZSAoMCkKIAo=
+ZGlmZiAtTmF1clggZG9udGRpZmYgbGludXgtMi40LjIzLXBhMS9hcmNoL3BhcmlzYy9saWIvbHVz
+ZXJjb3B5LlMgbGludXgtMi40LjIzLXJjNS1wYTE3L2FyY2gvcGFyaXNjL2xpYi9sdXNlcmNvcHku
+UwotLS0gbGludXgtMi40LjIzLXBhMS9hcmNoL3BhcmlzYy9saWIvbHVzZXJjb3B5LlMJMjAwMS0w
+OS0wNiAxMTo0NDowOC4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNC4yMy1yYzUtcGExNy9h
+cmNoL3BhcmlzYy9saWIvbHVzZXJjb3B5LlMJMjAwMy0xMC0yMyAxODoyMTo0NC4wMDAwMDAwMDAg
+KzAyMDAKQEAgLTEzMyw2ICsxMzMsNDMgQEAKIAkucHJvY2VuZAogCiAJLyoKKwkgKiB1bnNpZ25l
+ZCBsb25nCisJICogbGNvcHlfaW5fdXNlcih2b2lkICp0bywgY29uc3Qgdm9pZCAqZnJvbSwgdW5z
+aWduZWQgbG9uZyBuKQorCSAqCisJICogUmV0dXJucyAwIGZvciBzdWNjZXNzLgorCSAqIG90aGVy
+d2lzZSwgcmV0dXJucyBudW1iZXIgb2YgYnl0ZXMgbm90IHRyYW5zZmVycmVkLgorCSAqLworCisJ
+LmV4cG9ydCBsY29weV9pbl91c2VyLGNvZGUKK2xjb3B5X2luX3VzZXI6CisJLnByb2MKKwkuY2Fs
+bGluZm8gTk9fQ0FMTFMKKwkuZW50cnkKKwljb21pYiw9LG4gICAwLCVyMjQsJGxjaXVfZG9uZQor
+CWdldF9zcgorJGxjaXVfbG9vcDoKKwlsZGJzLG1hICAgICAxKCVzcjEsJXIyNSksJXIxCisJYWRk
+aWIsPD4gICAgLTEsJXIyNCwkbGNpdV9sb29wCisxOiAgICAgIHN0YnMsbWEgICAgICVyMSwxKCVz
+cjEsJXIyNikKKyRsY2l1X2RvbmU6CisJYnYgICAgICAgICAgJXIwKCVyMikKKwljb3B5ICAgICAg
+ICAlcjI0LCVyMjgKKwkuZXhpdAorCisyOiAgICAgIGIgJGxjaXVfZG9uZQorCWxkbyAgICAgICAg
+IDEoJXIyNCksJXIyNAorCisJLnNlY3Rpb24gX19leF90YWJsZSwiYSIKKyNpZmRlZiBfX0xQNjRf
+XworCS5kd29yZCAgICAgIDFiLCgyYi0xYikKKyNlbHNlCisJLndvcmQgICAgICAgMWIsKDJiLTFi
+KQorI2VuZGlmCisJLnByZXZpb3VzCisKKwkucHJvY2VuZAorCisJLyoKIAkgKiBsb25nIGxzdHJu
+Y3B5X2Zyb21fdXNlcihjaGFyICpkc3QsIGNvbnN0IGNoYXIgKnNyYywgbG9uZyBuKQogCSAqCiAJ
+ICogUmV0dXJucyAtRUZBVUxUIGlmIGV4Y2VwdGlvbiBiZWZvcmUgdGVybWluYXRvciwK
 
---========/3FB25B960000DA45/mail.tiscali.be--
+
+--========/3FB25B960000DA96/mail.tiscali.be
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="include_asm-parisc_uaccess.h.patch"
+
+ZGlmZiAtTmF1clggZG9udGRpZmYgbGludXgtMi40LjIzLXBhMS9pbmNsdWRlL2FzbS1wYXJpc2Mv
+dWFjY2Vzcy5oIGxpbnV4LTIuNC4yMy1yYzUtcGExNy9pbmNsdWRlL2FzbS1wYXJpc2MvdWFjY2Vz
+cy5oCi0tLSBsaW51eC0yLjQuMjMtcGExL2luY2x1ZGUvYXNtLXBhcmlzYy91YWNjZXNzLmgJMjAw
+My0xMS0xMiAwNzoyNTozOC4wMDAwMDAwMDAgKzAxMDAKKysrIGxpbnV4LTIuNC4yMy1yYzUtcGEx
+Ny9pbmNsdWRlL2FzbS1wYXJpc2MvdWFjY2Vzcy5oCTIwMDMtMTEtMjYgMTk6NTY6NDkuMDAwMDAw
+MDAwICswMTAwCkBAIC0yNjMsNiArMjYzLDcgQEAKIAogZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbGNv
+cHlfdG9fdXNlcih2b2lkICosIGNvbnN0IHZvaWQgKiwgdW5zaWduZWQgbG9uZyk7CiBleHRlcm4g
+dW5zaWduZWQgbG9uZyBsY29weV9mcm9tX3VzZXIodm9pZCAqLCBjb25zdCB2b2lkICosIHVuc2ln
+bmVkIGxvbmcpOworZXh0ZXJuIHVuc2lnbmVkIGxvbmcgbGNvcHlfaW5fdXNlcih2b2lkICosIGNv
+bnN0IHZvaWQgKiwgdW5zaWduZWQgbG9uZyk7CiBleHRlcm4gbG9uZyBsc3RybmNweV9mcm9tX3Vz
+ZXIoY2hhciAqLCBjb25zdCBjaGFyICosIGxvbmcpOwogZXh0ZXJuIHVuc2lnbmVkIGxjbGVhcl91
+c2VyKHZvaWQgKix1bnNpZ25lZCBsb25nKTsKIGV4dGVybiBsb25nIGxzdHJubGVuX3VzZXIoY29u
+c3QgY2hhciAqLGxvbmcpOwpAQCAtMjgxLDUgKzI4Miw3IEBACiAjZGVmaW5lIF9fY29weV9mcm9t
+X3VzZXIgbGNvcHlfZnJvbV91c2VyCiAjZGVmaW5lIGNvcHlfdG9fdXNlciBsY29weV90b191c2Vy
+CiAjZGVmaW5lIF9fY29weV90b191c2VyIGxjb3B5X3RvX3VzZXIKKyNkZWZpbmUgY29weV9pbl91
+c2VyIGxjb3B5X2luX3VzZXIKKyNkZWZpbmUgX19jb3B5X2luX3VzZXIgbGNvcHlfaW5fdXNlcgog
+CiAjZW5kaWYgLyogX19QQVJJU0NfVUFDQ0VTU19IICovCg==
+
+--========/3FB25B960000DA96/mail.tiscali.be--
