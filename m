@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B5D6D482C
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 00:40:38 -0700 (MST)
-To: Richard Higson <richard.higson@gt.owl.de>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] 0.9.3-rc6 -> final, apt, and rsync 
-In-Reply-To: Your message of "Wed, 12 Dec 2001 08:14:41 +0100."
-             <20011212081441.A18644@glurp.gt.owl.de>
-References: <20011212062632.44A9037E86@carmen.fc.hp.com>  <20011212081441.A18644@glurp.gt.owl.de> 
-Date: Wed, 12 Dec 2001 00:40:37 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20011212074037.1CB5B37E86@carmen.fc.hp.com>
+Received: from smtp.web.de (smtp02.web.de [217.72.192.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4CAAA482C
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 02:37:30 -0700 (MST)
+Received: from pc0612a.pdi-berlin.de ([195.37.92.71] helo=web.de)
+	by smtp.web.de with asmtp (Exim 3.40 #37)
+	id 16E5pQ-0000sd-00
+	for parisc-linux@parisc-linux.org; Wed, 12 Dec 2001 10:37:28 +0100
+Message-ID: <3C17254A.3050209@web.de>
+Date: Wed, 12 Dec 2001 10:37:14 +0100
+From: Sven Cronenberg <sven.cronenberg@web.de>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] X WIndows on HP9000 720 or 735
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,14 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Richard Higson writes...
+I am using 2 HP9000 WOrkstatiosn at home. One HP900/720 system with CRX8 
+ graphic card and
+and a HP9000/735 with CRX48Z graphics system.
 
-> Next move is to see if I can compile & boot from kernel-source-2.4.16-hppa.ta
-> r.bz2  natively.
+I would like to know if anyone has succeeded in running X Windows for 
+PARISC Linux on
+one of those machines?
 
-FYI there are 2.4.16 hppa kernel-image packages in unstable, but don't let me
-spoil your fun :)
+By the way: How das the x-windows for PARISC Linux work. Does it access 
+the graphics card
+via the framebuffer device or directly?
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Sven
