@@ -1,14 +1,16 @@
-From: Mike Frysinger <vapier@gentoo.org>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] linux-2.6.10-pa1 panic on C360 in SCSI driver
-Date: Wed, 29 Dec 2004 16:54:30 -0500
-Message-ID: <200412291654.31001.vapier@gentoo.org>
+Date: Wed, 29 Dec 2004 22:03:45 +0000
+Message-ID: <20041229220345.GF18338@parcelfarce.linux.theplanet.co.uk>
 References: <200412260504.40205.vapier@gentoo.org>
+	<200412291419.36568.vapier@gentoo.org>
 	<1104355710.5298.16.camel@mulgrave>
 	<200412291649.29411.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <200412291649.29411.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -21,16 +23,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wednesday 29 December 2004 04:49 pm, Mike Frysinger wrote:
-> attached
+On Wed, Dec 29, 2004 at 04:49:29PM -0500, Mike Frysinger wrote:
+> On Wednesday 29 December 2004 04:28 pm, James Bottomley wrote:
+> > So now I'd like to see what this is ... it causes your nice ultra3 drive
+> > only to work at async speeds (about 4MB/s).
+> 
+> i'll be the first to admit that i dont know much about scsi ... but even 
+> though my drive is an ultra3, i thought my built in C360 controller didnt 
+> support that ?
 
-oh, and just so there's no misunderstanding ... this output in dmesg is 
-normal:
- sdb: unknown partition table
+That's right, but your drive is capable of FAST-40 and the controller is capable of FAST-20.  They should negotiate a FAST-20 (40MB/s) transfer contract, but
+because the drive is doing weird stuff, it keeps falling back ... until it
+reaches async, which is just about the slowest contract defined.
 
-i formatted /dev/sdb as an ext3 filesystem instead of partitioning it 
-first ...
--mike
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
