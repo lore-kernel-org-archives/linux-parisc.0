@@ -1,26 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA13498
-	for <parisc-linux@puffin.external.hp.com>; Tue, 24 Aug 1999 17:03:10 -0600
-Date: Wed, 25 Aug 1999 01:04:46 +0200
-From: Philipp Rumpf <prumpf@suse.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA13764
+	for <parisc-linux@puffin.external.hp.com>; Tue, 24 Aug 1999 17:14:58 -0600
+Sender: adevries@thepuffingroup.com
+Message-ID: <37C32B71.50F0B4B6@thepuffingroup.com>
+Date: Tue, 24 Aug 1999 19:32:01 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
 To: Grant Grundler <grundler@cup.hp.com>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
+CC: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
         parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Booting 715/100
-Message-ID: <19990825010446.H19314@suse.de>
-References: <19990824234440.H31994@mencheca.ch.genedata.com> <199908242255.PAA09913@milano.cup.hp.com>
-Mime-Version: 1.0
+References: <199908242255.PAA09913@milano.cup.hp.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199908242255.PAA09913@milano.cup.hp.com>; from Grant Grundler on Tue, Aug 24, 1999 at 03:55:40PM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Sorry I can't be of any help on the actual problem though...
-> 
-> This already helped...I'll assume CONFIG_PA7100 means PA7100LC.
-> 
-> BTW, I went through the linux/.config file and found conflicting
-> options enabled (eg. 712 was enabled). So, I'm rebuilding...and
-> we'll see what happens.
+Grant Grundler wrote:
+> Matthew Wilcox wrote:
+> The linux-2.2.3-19990808.tar.gz is only 291 bytes.
+> 19990807 was the last "full" tarball.
 
-Right now CONFIG_PA7100 and CONFIG_PA7300LC don't do anything, so you
-don't need to be worried about that.
+Actually, I've fixed this now and now you should find a splendid 13MB
+file named linux-2.2.1-19990824.tar.gz.
+
+> > Can you ssh out?  CVS_RSH=ssh should do the trick if so.
+> 
+> Didn't have ssh...but "socksify" command seems to work
+> rather nicely. Found it in /opt/socks/bin and cvs can now
+> talk to the puffin.external.hp.com.
+
+I'm heavenly ignorant of socks, but if you intend to commit code, you
+really have to get ssh working.  It's the only way we can know that you
+are you when you commit code, and makes life a lot simpler.
+
+- Alex
+
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
