@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "geezer" <geezer@snet.net>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-In-Reply-To: Message from "geezer" <geezer@snet.net>
-   of "Sun, 13 Jan 2002 15:34:53 EST." <002f01c19c71$c1fe71c0$6401a8c0@downstairs>
-References: <002f01c19c71$c1fe71c0$6401a8c0@downstairs> 
-Date: Sun, 13 Jan 2002 15:07:23 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020113220723.673A7482A@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: sid vs woody (was 715/50)
+Received: from x-equipment.net (host-209-153-212-251.doteasy.com [209.153.212.251])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ECF85482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 13 Jan 2002 15:13:56 -0700 (MST)
+Date: Sun, 13 Jan 2002 14:17:22 -0800
+Message-Id: <200201131417.AA629473676@x-equipment.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: "newsgroup " <newsgroup.parisc@x-equipment.net>
+Reply-To: <newsgroup.parisc@x-equipment.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] How can i connect my pc as a terminal to a HP9000/867 G40
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,30 +21,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"geezer" wrote:
-> So the palinux-0.9-README file says "YOU MUST INSTALL 'sid'", blah, =
-> blah, blah...
+ls,
 
-Uhm...which release? URL or from an ISO?
+I want to connect my pc as a terminal to a HP9000 so that I can (try to) install parisc-linux. 
 
-> I get "failed getting release file file:/instmnt/dists/sid/Release"
-> The woody one installs OK, but I am not sure how "crippled" I may be =
-> with it.
-> Any ideas?  What more can I tell you to help with the diagnosis?
+Does anybody know if that is possible? 
 
-For 0.9.3, woody is correct. You won't be very crippled at all.
+And if so, is there someone who can give me de pin-out of the cable i need?
 
-With "sid", plan on hppa being broken occasionally. I expect "woody"
-to be more stable - IMHO better for folks who just want to use debian.
-Newer kernel (compared to 0.9.3 ISO) from ftp.parisc-linux.org
-will work for either release.
+Thanks in advantage
 
-For the adventerous, edit the /etc/apt/sources.list to point
-to "sid" like this:
+Johan
 
-deb http://http.us.debian.org/debian sid main contrib non-free
-deb http://non-us.debian.org/debian-non-US sid/non-US main contrib non-free
 
-Then do "apt-get update" and "apt-get dist-upgrade".
-
-grant
+__________________________________________________
+D O T E A S Y - "Join the web hosting revolution!"
+             http://www.doteasy.com
