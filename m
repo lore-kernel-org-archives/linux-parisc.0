@@ -1,49 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1D6AC482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 09:24:21 -0600 (MDT)
-Message-Id: <200108091522.JAA13437@puffin.external.hp.com>
-To: djweis@sjdjweis.com
+	by dsl2.external.hp.com (Postfix) with ESMTP id 15F46482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Aug 2001 09:42:04 -0600 (MDT)
+Message-Id: <200108091540.JAA13539@puffin.external.hp.com>
+To: Reinhard.Gimbel@freenet.de
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] more serial console problems on D310 
-In-Reply-To: Message from <djweis@sjdjweis.com>
-   of "Sun, 05 Aug 2001 23:06:37 CDT." <Pine.LNX.4.21.0108052251390.1710-100000@oliver.internal.sjdjweis.com>
-Date: Thu, 09 Aug 2001 09:22:18 -0600
+In-Reply-To: Message from Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
+   of "Mon, 06 Aug 2001 22:38:13 +0200." <01080622381300.01641@octopus>
+Date: Thu, 09 Aug 2001 09:40:13 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
+Subject: [parisc-linux] Re: C180: no real progress :-(
 List-ID: <linux-parisc.vger.kernel.org>
 
-djweis@sjdjweis.com wrote:
-> I grabbed the 20010704 kernel source and net booted my d310 with it
-> combined with the ramdisk from the 0.9.2 install image. I start with the
-> serial console on the serial connector labeled "serial console". Output
-> only comes through there until the kernel starts, then I have to switch
-> over to the other serial port on the machine to see the rest of the boot
-> messages.
+Reinhard Gimbel wrote:
+> Few weeks ago I posted some thoughts I had in this mailing list 
+> because palinux-0.9.2 was crashing on the older box all the 
+> time during installation.
 
-I look at the HW database and it seems the D310 has two LASI (core_adapter)
-chips (and WAX, no PCI). I suspect the detection of serial ports misnumbers
-them (ie parisc-linux finds them in the wrong order) or we only properly
-handle one of the two LASI's.
+I haven't seen any commits from rbrad yet.
+I know he's still working on fixing the ccio driver bugs.
 
->  They come quickly until the root filesystem is mounted. It looks
-> like I lose interrupts after that because everything is written in blocks
-> of 16 characters with long (15 second?) pauses in between blocks.
-
-Probably not getting interrupts in the first place. The initial
-console handling is done with PDC calls - ie polled IO.
-
-> After
-> getting this message:
-> VFS: Mounted root (ext2 filesystem).
-> serial console detected.  Disabling virtual terminals.
 > 
-> the cursor just tabs along the screen by itself without printing
-> anything. 
+> Some kernel messages led my in the false direction. I thought 
+> DINO (h/w v2.1; or better the software glue of DINO) was the 
+> root cause of "my" problems. This box had firmware v2.7.
 
-> Any ideas? Why is the first serial port not being detected/used?
+please please please update the firmware on this box. See the parisc-linux
+FAQ for details on how to upgrade firmware. You don't want to chase
+data corruption problems due to the old dino. Upgrading the firmware
+will prevent the scenario.  The box is useful but one can't use PCI
+devices (except graphics) in it.
 
-Can you post full console output? (or otherwise make it available)
-Interested folks can then start guessing what might be the problem.
+> Installation via network/NFS did not work because of problems; 
+> With the older box i tried many things (100Mbps, 10Mbps, Hub, 
+> cross-over cable) but no success ...
+
+This should work. Make sure link lights on  the hub/switch and 
+C180 are on. Shouldn't need a cross-over cable if you have a hub.
+Othwerwise, review the palo parameters you are using.
+
+> 
+> After I got the replacement on Friday (DINO v3.1 [which should 
+> be ok. according the kernel messages ...], firmware v5.1) the 
+> problems are still present.
+> 
+> BTW: Grant, you are right ! But newer firmware seems not to 
+> solve the problem ...
+
+No. But it avoids some other ones.
 
 grant
 
