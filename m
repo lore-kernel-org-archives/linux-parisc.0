@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DE2324841
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Nov 2003 11:35:26 -0700 (MST)
-Message-ID: <3FCA3871.4070700@tiscali.be>
-Date: Sun, 30 Nov 2003 18:35:29 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id 26C2F4841
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Nov 2003 12:27:00 -0700 (MST)
+Message-ID: <3FCA4486.7050205@tiscali.be>
+Date: Sun, 30 Nov 2003 19:27:02 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: Philos666@aol.com
-Cc: parisc-linux@lists.parisc-linux.org
+To: Philos666@aol.com, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] (sans sujet)
-References: <186.2281e885.2cfb8b1b@aol.com>
-In-Reply-To: <186.2281e885.2cfb8b1b@aol.com>
+References: <1d9.15768dd0.2cfb9389@aol.com>
+In-Reply-To: <1d9.15768dd0.2cfb9389@aol.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,29 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Philos,
-
-Please read first <http://parisc-linux.org/faq/kernelbug-howto.html>
 
 Philos666@aol.com wrote:
-> need help for replace the hotplug disk by hdd u-wide but the system detect a 
-> fatal error with and without terminaison
-> 
-In the mean time, could you try to test your new disk on your d220 with 
-hp diagtools (available on support+ cd)?
+> what channel irc on what server ?
+Sorry could help for such ( my bad I never get enough time to find one)
+> i haven't the HP CD diagnotic
+> i not known if it have a different terminaison for the u-wide hhd ans fast 
+> wide hhd ?
 
-Could you also post your last dmesg file (to get more details on your 
-scsi controler) (iirc d220 could be supplied with different scsi 
-controler and would it support new u-wide disk?)
+Yes, I think you point out the pb. iirc there are a big difference 
+between uw and fw terminator (defferent impedence). But I don't remember 
+how is it possible (that is why I put back ml in cc) to use fw and uw 
+disk on a same bus (ie connected to the same controler) (iirc i read a 
+thread on this ml about the subject but I have to look for).
+mm (alone on a fw controler), i think that it is possible to configure 
+(with a jumper) some disk model as 'self terminated'.
 
-hth,
-	Joel
+I hope some better than I in scsi field could help you more ;)
 
-> please help me
-> 
-> philos
-> 
-> hp 9000 D220 132 Mhz
-> 
-> 
-> 
+Joel
