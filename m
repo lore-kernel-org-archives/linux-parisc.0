@@ -1,33 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA08904
-	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 16:05:59 -0700
-Message-Id: <200012042308.SAA07602@hiauly1.hia.nrc.ca>
-Subject: Re: pa reload problem
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Mon, 4 Dec 2000 18:08:01 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: rhirst@linuxcare.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.21.0012050950420.16721-100000@front.linuxcare.com.au> from "Alan Modra" at Dec 5, 2000 09:55:04 am
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA09605
+	for <parisc-linux@puffin.external.hp.com>; Mon, 4 Dec 2000 16:29:54 -0700
+Received: from lightning.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.1)
+  by mailserv2.iuinc.com with SMTP; 4 Dec 2000 23:32:23 -0000
+Subject: Re: [parisc-linux] On the naming of discs
+To: grundler@cup.hp.com (Grant Grundler)
+Date: Mon, 4 Dec 2000 23:25:05 +0000 (GMT)
+Cc: matthew@wil.cx (Matthew Wilcox), parisc-linux@thepuffingroup.com
+In-Reply-To: <200012042158.NAA03700@milano.cup.hp.com> from "Grant Grundler" at Dec 04, 2000 01:58:46 PM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <E1434yp-0004UL-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Mon, 4 Dec 2000, Richard Hirst wrote:
+> > discs differently.  HPUX follows the spec and numbers from 7 down to 0,
+> > Linux follows the PC aberration and numbers from 0 up to 7.
 > 
-> > > Note that all of the above applies to 32-bit modutils too.
-> > 
-> > Shouldn't be an issue with 32 bit, as kernel and modules all have
-> > the same dp there.
-> 
-> Yes, silly me.  32 bit is non-pic, so you don't need to worry about
-> it.  (%r19 in 32 bit case)
+> The problem is not how disks are enumerated. HPUX does it exactly the
+> same way - SCSI spec defines how the SCSI bus is to be walked.
 
-However, it may be an issue for 32 bit pic code under hpux.  It is not
-clear to me why this didn't show up before with 32 bit pic code.  For
-some reason, the circumstances which caused combine to delete the set
-restoring dp after function calls didn't seem to occur.
+ANSI order is 15->0 order PC order 0->15
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> The real problem is how devices are "named". Adding or removing devices may
+> cause existing devices to get new names when the system is rebooted.
+> And adding/removing devices on one SCSI bus will affect how devices
+> on other SCSI busses are named.
+
+This isnt a kernel related issue
