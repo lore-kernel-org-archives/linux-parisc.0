@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 29557484B
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 09:59:12 -0600 (MDT)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h71Fx3I07804;
-	Fri, 1 Aug 2003 11:59:03 -0400
-Subject: Re: [parisc-linux] backport bitops.h stuff
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <3F29178A000004C6@ocpmta7.freegates.net>
-References: <3F29178A000004C6@ocpmta7.freegates.net>
-Content-Type: text/plain
-Date: 01 Aug 2003 10:59:02 -0500
-Message-Id: <1059753543.2092.30.camel@mulgrave>
+Received: from smallone.fc.hp.com (smallone.fc.hp.com [192.25.206.249])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6991B484B
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  1 Aug 2003 10:25:35 -0600 (MDT)
+Date: Fri, 1 Aug 2003 10:22:55 -0600
+To: parisc-linux@lists.parisc-linux.org
+Cc: lamont@hp.com
+Message-ID: <20030801162255.GA28998@smallone.fc.hp.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+From: lamont@smallone.fc.hp.com (LaMont Jones)
+Subject: [parisc-linux] __arch__swab24()
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,20 +21,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 2003-08-01 at 10:28, Joel Soete wrote:
-> Can somebody help me to ci inot 2.4 this patch which backport ffs() needed
-> for new devmapper ;)
+The following patch implements __arch__swab24() optimally for hppa.
 
-Actually, this patch looks decidedly non-optimal.
+It also has the side effect of making some other things happier. :-)
 
-See include/linux/bitops.h:generic_ffs for how it should be done on
-architectures that don't have any machine instruction help.  That's only
-four if statements and no loop.
+Any comments before I commit it to 2.4 and 2.5?
 
-I see we already have the loop thing in 2.5, but should we consider
-simply using the generic operations there as well?
+lamont
 
-even for __ffs, which is just a slight optimisation over ffs, using
-generic_ffs would probably be faster
-
-James
+Index: include/asm-parisc/byteorder.h
+===================================================================
+RCS file: /var/cvs/linux/include/asm-parisc/byteorder.h,v
+retrieving revision 1.7
+diff -u -r1.7 byteorder.h
+--- include/asm-parisc/byteorder.h	8 Jul 2003 16:50:09 -0000	1.7
++++ include/asm-parisc/byteorder.h	1 Aug 2003 16:25:00 -0000
+@@ -14,6 +14,17 @@
+ 	return x;
+ }
+ 
++static __inline__ __const__ __u32 ___arch__swab24(__u32 x)
++{
++	unsigned int temp;
++	__asm__("shd %0, %0, 8, %1\n\t"		/* shift xabcxabc -> cxab */
++		"dep %1, 15, 8, %1\n\t"		/* deposit cxab -> cbab */
++		"shd %r0, %1, 8, %0"		/* shift 0000cbab -> 0cba */
++		: "=r" (x), "=&r" (temp)
++		: "0" (x));
++	return x;
++}
++
+ static __inline__ __const__ __u32 ___arch__swab32(__u32 x)
+ {
+ 	unsigned int temp;
+@@ -63,6 +74,7 @@
+ #endif
+ 
+ #define __arch__swab16(x) ___arch__swab16(x)
++#define __arch__swab24(x) ___arch__swab24(x)
+ #define __arch__swab32(x) ___arch__swab32(x)
+ 
+ #endif /* __GNUC__ */
