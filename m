@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2186C482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 23:25:31 -0600 (MDT)
-From: "James Braid" <james.braid@peace.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 7 May 2002 17:28:13 +1200
-Message-ID: <006001c1f587$fbc0c830$5e01000a@bongo>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Subject: [parisc-linux] Dodgy SCSI in L2000
+Received: from mailout06.sul.t-online.com (mailout06.sul.t-online.com [194.25.134.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 032E0482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  6 May 2002 23:42:14 -0600 (MDT)
+From: Alexander Gabert <pappy@nikita.ath.cx>
+Date: Tue, 7 May 2002 07:42:01 +0200
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: [pappy: Re: [parisc-linux] grsecurity patch 2.4.18]
+Message-ID: <20020507054201.GA10597@nikita.ath.cx>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,264 +21,96 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Okay, I have got my RAID array working now :-)
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-BUT...
+basically, what we are trying to do is getting either lids or grsec to
+work with a 2418-hppa kernel.
 
-The box dies if I thrash the array with dbench (using anymore than 10
-clients), or sometimes when making a filesystem on the array (I have
-been able to make a filesystem about once every ten times).
+the first steps were with "normal" lids, which bombed at early stage
+(shortly after init mounted the rootfs, even with security=3D0)
 
-It does the same thing on both SMP and non-SMP kernels.
+then i tried to make grsecurity patch fit the hppa kernel (but without
+deeper knowledge about the differences between i386 stacks and hppa
+stack layout i cannot make any code redesign in the stack protector and
+the like), the grsec patch did not even build, so i assume, i made a
+little mistake somewhere or the patch is not "proposed" to build
+platform-independent.
+i guess, i will have to look through parisc mem mgmt and proc arch
+documentation before i can continue to make the patch fit
 
-The raid array looks okay (its 18Gb * 3 in RAID0):
+current situation:
+with some minor changes 2418-hppa-lsm-lids compiles clean, boots, but
+the "modprobe lids" in the box gives the following:
+drehmoos:/lib/modules/2.4.18-lsm/kernel/security/lids# modprobe lids
 
-hypo:~# cat /proc/mdstat
-Personalities : [linear] [raid0] [raid1] [raid5]
-read_ahead 1024 sectors
-md0 : active raid0 scsi/host4/bus0/target2/lun0/part1[2]
-scsi/host4/bus0/target0/lun0/part1[1]
-scsi/host0/bus0/target2/lun0/part1[0]
-      53320656 blocks 4k chunks
+=2E.. dmesg output ...
 
-unused devices: <none>
+break 0,0: pid=3D236 command=3D'modprobe'
+modprobe (pid 236): Breakpoint (code 0)
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+    =20
+PSW: 00000000000001101111010100001111 Not tainted
+r00-03  00000000 00044810 0003b8d0 0003a000
+r04-07  1b360000 401f51e8 ffffffea 401eb008
+r08-11  00000004 00000060 00000004 1b360000
+r12-15  1b361000 1bb048a0 1b538550 00000003
+r16-19  000444fc 00044cfc 00000000 00000040
+r20-23  0000000f 01000000 0003b8bc 00000000
+r24-27  00000000 00000000 000449b8 102b6010
+r28-31  00000000 000006c0 1b538680 10117e6c
+sr0-3   00000000 00000000 00000000 00000346
+sr4-7   00000000 00000000 00000000 00000000
 
-Now, I try to make a ext2 FS on the array, and it dies like so:
+IASQ: 00000000 00000000 IAOQ: 00034200 00034204
+ IIR: 00000000    ISR: 00000000  IOR: 00000000
+  CPU:        0   CR30: 1b538000 CR31: 10330000
+   ORIG_R28: 102c6810
 
-hypo:~# mke2fs /dev/md0
-mke2fs 1.27 (8-Mar-2002)
-Filesystem label=
-OS type: Linux
-Block size=4096 (log=2)
-Fragment size=4096 (log=2)
-6668288 inodes, 13330164 blocks
-666508 blocks (5.00%) reserved for the super user
-First data block=0
-407 block groups
-32768 blocks per group, 32768 fragments per group
-16384 inodes per group
-Superblock backups stored on blocks:
-        32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632,
-2654208,
-        4096000, 7962624, 11239424
-
-Writing inode tables: done
-Writing superblocks and filesystem accounting information:
-^^^^ dies here, just hangs the login session
-
-In the window I have open to the GSP (in a console session) on the
-L2000, I see this:
-
-sym4:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:0:0: ABORT operation timed-out.
-sym0:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:0:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:0:0: DEVICE RESET operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:0:0: DEVICE RESET operation timed-out.
-sym0:2:0: DEVICE RESET operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: DEVICE RESET operation timed-out.
-sym0:0:0: BUS RESET operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:0:0: BUS RESET operation timed-out.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:0:0: BUS RESET operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:0:0: BUS RESET operation timed-out.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: BUS RESET operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: BUS RESET operation timed-out.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: BUS RESET operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: BUS RESET operation timed-out.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:2:0: BUS RESET operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:0:0: DEVICE RESET operation started.
-sym0:2:0: BUS RESET operation timed-out.
-sym4:0:0: DEVICE RESET operation timed-out.
-sym4:2:0: DEVICE RESET operation started.
-sym0:2:0: BUS RESET operation started.
-sym4:2:0: DEVICE RESET operation timed-out.
-sym4:0:0: BUS RESET operation started.
-sym0: SCSI BUS reset detected.
-sym0: SCSI BUS has been reset.
-sym4: SCSI BUS reset detected.
-sym4: SCSI BUS has been reset.
-sym4:0:0: BUS RESET operation complete.
-sym0:2:0: BUS RESET operation complete.
-sym4:0:0: ABORT operation started.
-sym0:0:0: ABORT operation started.
-sym0:0:0: ABORT operation timed-out.
-sym0:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym0:0:0: ABORT operation timed-out.
-sym0:0:0: ABORT operation started.
-sym0:0:0: ABORT operation timed-out.
-sym0:0:0: ABORT operation started.
-sym0:0:0: ABORT operation timed-out.
-sym0:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:0:0: ABORT operation started.
-sym4:0:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-sym0:0:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym0:2:0: ABORT operation timed-out.
-sym0:2:0: ABORT operation started.
-sym4:2:0: ABORT operation timed-out.
-sym4:2:0: ABORT operation started.
-
-Which loops over and over and over and over..
-
-It also does the same thing using the sym5c8xx version 1 driver as well
-as the version 2 driver (the above errors are from the version 2
-driver).
-
-At this point the box is totally unusable.
-
-I then hit CTRL-\, and got this:
-
-May  7 16:23:16 hypo kernel:
-May  7 16:23:16 hypo kernel:      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-May  7 16:23:16 hypo kernel: PSW: 00000000000000000000000000000000 Not
-tainted
-May  7 16:23:16 hypo kernel: r00-03  0000000000000000 0000000040050d00
-000000004003d8bb 00000000000291a0
-May  7 16:23:16 hypo kernel: r04-07  0000000000000000 0000000040051500
-00000000000290a0 0000000000000004
-May  7 16:23:16 hypo kernel: r08-11  0000000040051500 0000000000cb8000
-0000000000000197 0000000000036890
-May  7 16:23:16 hypo kernel: r12-15  0000000000038ad0 0000000000000197
-0000000000000800 0000000000000040
-May  7 16:23:16 hypo kernel: r16-19  000000000000ffff 0000000000000001
-0000000000000004 00000000401d9ab0
-May  7 16:23:16 hypo kernel: r20-23  0000000000000076 00000000401d9ab0
-00000000401646a8 00000000bff005c8
-May  7 16:23:16 hypo kernel: r24-27  0000000000001000 0000000000035880
-0000000000000003 0000000000027b18
-May  7 16:23:16 hypo kernel: r28-31  0000000000000000 0000000000000032
-00000000bff00440 00000000401646b3
-May  7 16:23:16 hypo kernel: sr0-3   0000000000000480 0000000000000480
-0000000000000000 0000000000000480
-May  7 16:23:16 hypo kernel: sr4-7   0000000000000480 0000000000000480
-0000000000000480 0000000000000480
-May  7 16:23:16 hypo kernel:
-May  7 16:23:16 hypo kernel: IASQ: 0000000000000480 0000000000000480
-IAOQ: 0000000040113a2f 0000000040113a33
-May  7 16:23:16 hypo kernel:  IIR: 6b540028    ISR: 0000000000000480
-IOR: 000000000003d000
-May  7 16:23:16 hypo kernel:  CPU:        0   CR30: 000000004c1bc000
-CR31: 0000000010460000
-May  7 16:23:16 hypo kernel:  ORIG_R28: 0000000000000000
+=2E...=20
 
 
-After this has finished dumping, the box is usable again.
+after logging in via ssh and just trying to reinsert it a second time,
+the module enters:
+drehmoos:~# modprobe lids
+drehmoos:~# lsmod
+Module                  Size  Used by    Not tainted
+lids                  500780   1  (initializing)
 
-One thing I have noticed with mke2fs is that the indode table numbers
-tick away pretty fast until it gets to 205, then it slows down big time,
-and then it speeds up again until it gets to ~340, at which point the
-scsi ABORT errors will sometimes start happening.
+drehmoos:~# lidsadm -V
+VIEW
+open: No such file or directory
+lidsadm: cannot open /proc/sys/lids/locks
 
-I have tested all the disks individually (making filesystems, running
-dbench), and the filesystems get made fine, and dbench works okay up to
-about 100 odd clients.
+drehmoos:~# ls /proc/sys/lids
+ls: /proc/sys/lids: No such file or directory
 
-I have *no* idea what is causing any of this....anyone else have any
-hints/info/fixes for this problem? (Sorry for the long email, but I
-figured it would be best to paste the full errors)
+looks like there is some exercise left to the reader :-)
 
-I can provide clarification or more details if needed.
+anyway, i gotta go to work now, it is 7:30 in the morning in .de and my
+boss is likely to kill me for being late :-)
 
-Cheers, James
+bye, pappy
+
+--=20
+pub  1024/05E1A80C 2001/12/16 Alexander Gabert (http://nikita.ath.cx) <papp=
+y@nikita.ath.cx>
+          Key fingerprint =3D  2D 84 B0 CB F5 67 8A 22  8D 37 6E 6B 8A 3B 7=
+F D6  05 E1 A8 0C
+
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE812koijt/1gXhqAwRArxtAJ9rAwBJP14EMyX2yY3wvRa9m5DIAACeLdY7
+2622wd21lzpC9F9WyrsgkTk=
+=H/vX
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
