@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E09B9482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 00:25:35 -0600 (MDT)
-Date: Wed, 29 May 2002 07:02:42 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 438CF482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 29 May 2002 00:26:40 -0600 (MDT)
+Date: Tue, 28 May 2002 23:26:38 -0700 (PDT)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PATCH: flush_icache_page() and flush_icache_range()
-Message-ID: <20020529060242.GG3471@sleepie.demon.co.uk>
-References: <20020528234023.GF3471@sleepie.demon.co.uk> <200205290048.g4T0mUrP026311@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200205290048.g4T0mUrP026311@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] 2.4.18 SMP instability 
+In-Reply-To: <20020529043916.A15D3482A@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.44.0205282315190.11012-100000@garibaldi.apptechsys.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,35 +22,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, May 28, 2002 at 08:48:30PM -0400, John David Anglin wrote:
-> > Hi,
-> >   gdb has a problem in that it often doesn't stop the target program
-> > when you do a 'step' or 'next'.  This is because it plants breakpoints,
-> > but those breakpoints sit in the data cache and don't get flushed
-> > through to be visible as code in time.  We need a flush_icache_page()
-> > implementation to fix this; the following adds that and
-> > flush_icache_range() also.  It does fix gdb for me on my a500.
+On Tue, 28 May 2002, Grant Grundler wrote:
+
+> Jeremy Drake wrote:
+> > Some things that occured to me about the hardware that may be influencing 
+> > this.  The on-board USB on this box is broken (as in physically damaged).  
 > 
-> Good find! I'll give it a try.  Can you now print function results?
+> That's a good observation. Can you characterize how extensive is the
+> physical damage?
 
-You mean like
+The plastic thing that the pins sit on was missing from one of the 2 usb 
+ports when the box arrived.  I, not having noticed this, plugged a 
+keyboard into it.  It worked, but after playing with serial consoles and 
+such it wouldn't go back.  The pins were bent because the reinforcing 
+plastic was missing.  I tried to bend the pins so that they didn't short 
+anything, and one broke off.  Both onboard USB ports haven't worked since.  
+When booting, it said "initializing keyboard" and then "IODC error".  I 
+put it on serial console and left it alone after that.
+ 
+> > I don't recall anything on the previous console output that suggests
+> the USB interface driver isn't happy.
+> 
+> > I have a pci usb card in there for typing on the graphics console, and 
+> > when I installed it into the first slot recommended by the manual (2 I 
+> > think) the box did some HPMC stuff when it tried to do selftests.  I moved 
+> > it to slot 8 and everything seems happy with it.  Maybe something in the 
+> > smp code is aggrevating these problems...
+> 
+> Possible. Which manual are you referring to?
+> one that came with the USB card or some HP PARISC manual?
 
-Breakpoint 1, main (argc=1, argv=0xbff00148) at ../simple.c:16
-16              a = thing(1);
-(gdb) print thing(7)
+The J5000 owners manual, 
+http://www.hp.com/workstations/support/documentation/manuals/user_guides/j_class/A5991-90000.pdf 
+near the top of page 54 it says "For non-graphics cards, insert them in 
+this order: Slot 2, then 8, 3, 5, and finally 6."
 
-Program terminated with signal SIGSEGV, Segmentation fault.
-The program no longer exists.
-The program being debugged stopped while in a function called from GDB.
-When the function (thing) is done executing, GDB will silently
-stop (instead of continuing to evaluate the expression containing
-the function call).
-(gdb) 
+> 
+> grant
+> 
 
-
-thing(x) just returns x*2 in this case.  As you see it didn't work, 
-and gave a protection id trap for the target program.  I'll investigate
-further.
-
-
-Richard
+-- 
+If a man has a strong faith he can indulge in the luxury of skepticism.
+		-- Friedrich Nietzsche
