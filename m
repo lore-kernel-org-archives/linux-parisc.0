@@ -1,35 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA15702
-	for <parisc-linux@puffin.external.hp.com>; Wed, 16 Aug 2000 14:18:00 -0600
-Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 16 Aug 2000 14:18:23 -0000
-To: "T. Martin" <catfish@alltel.net>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Question about compatibility...
-References: <Pine.LNX.4.10.10008151425530.28284-100000@jesse.crash.lan> <20000815144305.A7757@vodka.thepuffingroup.com>
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 16 Aug 2000 10:18:01 -0400
-In-Reply-To: Matthew Wilcox's message of "Tue, 15 Aug 2000 14:43:05 -0400"
-Message-ID: <8766p18f3a.fsf@linuxcare.com>
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA19455
+	for <parisc-linux@puffin.external.hp.com>; Wed, 16 Aug 2000 20:10:38 -0600
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 16 Aug 2000 20:11:01 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 16 Aug 2000 20:10:34 -0000
+Received: (from willy@localhost)
+	by vodka.thepuffingroup.com (8.9.3/8.9.3) id PAA14598
+	for parisc-linux@thepuffingroup.com; Wed, 16 Aug 2000 15:06:03 -0400
+Date: Wed, 16 Aug 2000 15:06:03 -0400
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000816150603.L7757@vodka.thepuffingroup.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] another 64 bit symbol bug
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox <matthew@wil.cx> writes:
 
-> On Tue, Aug 15, 2000 at 02:31:45PM -0500, T. Martin wrote:
-> >  Hey I just had a thought is there anyway that Linux is going to be
-> > binary compatible with HP-Unix like Alpha-Linux can run Tru64 bins if
-> > theyre statically compiled. 
-> 
-> linux-2.3/arch/parisc/hpux/ say anything to you?  :-)
+linking the 64 bit kernel gives me fault_vector as an undefined symbol
+in the objdump -x output.
 
-I might add that Linux on Alpha can run dynamically linked Tru64
-binaries too as long as you have the Tru64 dynamic loader and libs
-installed :-)
-
-We're hoping that this will eventually work on Linux/PA-RISC too.
+interestingly, old_end_linux_gateway_page is pointing to the address which
+should be pointed to by fault_vector and the references to fault_vector
+have been relocated properly.
 
 -- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+Revolutions do not require corporate support.
