@@ -1,50 +1,83 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from methlab.23.org (23.org [209.25.5.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8ECD6482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 17:17:14 -0600 (MDT)
-Received: from localhost (chs@localhost)
-	by methlab.23.org (8.9.3/8.9.3) with ESMTP id PAA23789
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 15:19:46 -0700
-Date: Tue, 12 Jun 2001 15:19:46 -0700 (PDT)
-From: CHS <chs@23.org>
-To: <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.LNX.4.30.0106121514010.23761-100000@methlab.23.org>
+Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id AB3E8482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Jun 2001 18:25:36 -0600 (MDT)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
+Date: Wed, 13 Jun 2001 02:24:49 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] New list member..
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5"
+Message-Id: <20010613002536.AB3E8482A@dsl2.external.hp.com>
+Subject: [parisc-linux] sticon/sercon patch for new bootfloppies...
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello all. Just wanted to say hello. I've been working with linux for
-about 7 years now, mainly with the slackware and redhat distributions.
-This weekend I picked up a 712/80 for free, and after getting a CDROM
-drive working on it (long story), managed to go through the single easiest
-linux install in my entire life. Keep in mind I've never even touched an
-HP PA-RISC machine until this weekend. So a big hearty kudos to you guys!
-I had a couple questions though:
+--------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Subject: 
 
-1.) The machine seems to work generally pretty OK, except that I get
-kernel panics fairly often. This did not hinder the install at all though.
-any ideas?
+Hi,
 
-2.) since I've never played with HP hardware before (mostly an intel,
-sparc, and apple guy), is there any good decent guide to the HP boot
-console? for instance, the install readme says to check and set the clock
-from the console, but I can't figure out how to do that. Also, is there a
-good guide to the hardware itself? like the capabilities of the 712/80,
-the video capabilities, expansion, etc... I just like to stay informed.
+the attached patch enables only those consoles, which are given on the linux 
+kernel command line.
+Examples: "console=tty0" activates STIcon only, "console=ttyS0" activates 
+serial console only and if you use both on the commandline you will get the 
+system messages on both consoles.
 
-3.) about a year ago, I remember HP ran some deal where you could send
-away for a (mostly) free copy of HP-UX, I think version 10.20. Is this
-still happening? I'd really like to get a copy of HP-UX to play around
-with on this machine. I'll eventually probably settle with linux, but it's
-kinda unfair to the 712 to never run HP-UX on it.
+Known bugs: 
+- STIcon will not show any messages which happened before the STI
+	initialisation
 
-Thanks again!
+Please test and comment
+Greetings,
+Helge
 
---
-AIM: bdsmchs  ---  http://www.23.org/~chs/
-------------------------------------------------------------------------
-"And the rifle? Wouldn't go out naked of a rifle. When shoes and
-clothes and food, when even hope is gone, we'll have the rifle."
-	--John Steinbeck
-------------------------------------------------------------------------
+--------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5
+Content-Type: text/x-c;
+  charset="iso-8859-1";
+  name="PDC_CONSOLE_short.patch"
+Content-Transfer-Encoding: base64
+Content-Description: patch
+Content-Disposition: attachment; filename="PDC_CONSOLE_short.patch"
+
+SW5kZXg6IGFyY2gvcGFyaXNjL2tlcm5lbC9wZGNfY29ucy5jCj09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkNTIGZpbGU6
+IC9ob21lL2N2cy9wYXJpc2MvbGludXgvYXJjaC9wYXJpc2Mva2VybmVsL3BkY19jb25zLmMsdgpy
+ZXRyaWV2aW5nIHJldmlzaW9uIDEuMjUKZGlmZiAtdSAtcjEuMjUgcGRjX2NvbnMuYwotLS0gcGRj
+X2NvbnMuYwkyMDAxLzA0LzA2IDA1OjEwOjU0CTEuMjUKKysrIHBkY19jb25zLmMJMjAwMS8wNi8x
+MyAwNjowODoyNgpAQCAtMTEsNiArMTEsMTAgQEAKICNpbmNsdWRlIDxhc20vc3lzdGVtLmg+CiAj
+aW5jbHVkZSA8YXNtL3BkYy5oPgkvKiBmb3IgaW9kY19jYWxsKCkgcHJvdG8gYW5kIGZyaWVuZHMg
+Ki8KIAorCisvKiBFbmFibGUgdG8gdXNlIHRoaXMgc2ltcGxlIFBEQyBjb25zb2xlIChmb3IgZGVi
+dWdnaW5nIHB1cnBvc2VzIG9ubHkhKTogKi8KKyN1bmRlZiBFQVJMWV9CT09UVVBfREVCVUcKKwog
+c3RhdGljIHZvaWQgcGRjX2NvbnNvbGVfd3JpdGUoc3RydWN0IGNvbnNvbGUgKmNvLCBjb25zdCBj
+aGFyICpzLCB1bnNpZ25lZCBjb3VudCkKIHsKIAl3aGlsZShjb3VudC0tKQpAQCAtNDYsMTUgKzUw
+LDE4IEBACiAJaWYgKFBBR0UwLT5tZW1fY29ucy5jbF9jbGFzcyA9PSBDTF9EVVBMRVgpCiAJCW1l
+bWNweSgmUEFHRTAtPm1lbV9rYmQsICZQQUdFMC0+bWVtX2NvbnMsIHNpemVvZihQQUdFMC0+bWVt
+X2NvbnMpKTsKIAorI2lmZGVmIEVBUkxZX0JPT1RVUF9ERUJVRwogCXBkY19jb25zb2xlX3dyaXRl
+KDAsICJQREMgQ29uc29sZSBJbml0aWFsaXplZFxuIiwgMjQpOwogCS8qIHJlZ2lzdGVyIHRoZSBw
+ZGMgY29uc29sZSAqLwogCXJlZ2lzdGVyX2NvbnNvbGUoJnBkY19jb25zKTsKKyNlbmRpZiAvKiBF
+QVJMWV9CT09UVVBfREVCVUcgKi8KIH0KIAogCiAvKiBVbnJlZ2lzdGVyIHRoZSBwZGMgY29uc29s
+ZSB3aXRoIHRoZSBwcmludGsgY29uc29sZSBsYXllciAqLwogdm9pZCBwZGNfY29uc29sZV9kaWUo
+dm9pZCkKIHsKKyNpZmRlZiBFQVJMWV9CT09UVVBfREVCVUcKIAlleHRlcm4gdW5zaWduZWQgbG9u
+ZyBsb2dfc2l6ZTsgLyoga2VybmVsL3ByaW50ay5jICovCiAKIAlwcmludGsoIlN3aXRjaGluZyBm
+cm9tIFBEQyBjb25zb2xlXG4iKTsKQEAgLTc0LDYgKzgxLDcgQEAKICNlbmRpZgogCiAJdW5yZWdp
+c3Rlcl9jb25zb2xlKCZwZGNfY29ucyk7CisjZW5kaWYgLyogRUFSTFlfQk9PVFVQX0RFQlVHICov
+CiB9CiAKIApJbmRleDogYXJjaC9wYXJpc2Mva2VybmVsL3NldHVwLmMKPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1Mg
+ZmlsZTogL2hvbWUvY3ZzL3BhcmlzYy9saW51eC9hcmNoL3BhcmlzYy9rZXJuZWwvc2V0dXAuYyx2
+CnJldHJpZXZpbmcgcmV2aXNpb24gMS44MQpkaWZmIC11IC1yMS44MSBzZXR1cC5jCi0tLSBzZXR1
+cC5jCTIwMDEvMDQvMDYgMDU6MTA6NTQJMS44MQorKysgc2V0dXAuYwkyMDAxLzA2LzEzIDA2OjA4
+OjI3CkBAIC00MjUsMTQgKzQyNSwxMCBAQAogCQkJYm9vdF9jcHVfZGF0YS5jcHVfaHogLyAxMDAw
+MDAwLAogCQkJYm9vdF9jcHVfZGF0YS5jcHVfaHogJSAxMDAwMDAwCSk7CiAKLSNpZmRlZiBDT05G
+SUdfU0VSSUFMX0NPTlNPTEUKLQkvKiBub3RoaW5nICovCi0jZWxpZiBDT05GSUdfVlQKLSNpZiAg
+IGRlZmluZWQoQ09ORklHX1NUSV9DT05TT0xFKQotCWNvbnN3aXRjaHAgPSAmZHVtbXlfY29uOwkv
+KiB3ZSB1c2UgdGFrZV9vdmVyX2NvbnNvbGUoKSBsYXRlciAhICovCi0jZWxpZiBkZWZpbmVkKENP
+TkZJR19EVU1NWV9DT05TT0xFKQotCWNvbnN3aXRjaHAgPSAmZHVtbXlfY29uOwotI2VuZGlmCisj
+aWZkZWYgQ09ORklHX1ZUCisjIGlmIGRlZmluZWQoQ09ORklHX1NUSV9DT05TT0xFKSB8fCBkZWZp
+bmVkKENPTkZJR19EVU1NWV9DT05TT0xFKQorICAgICAgICBjb25zd2l0Y2hwID0gJmR1bW15X2Nv
+bjsgICAgICAgIC8qIHdlIHVzZSB0YWtlX292ZXJfY29uc29sZSgpIGxhdGVyICEgKi8KKyMgZW5k
+aWYKICNlbmRpZgogCiB9Cgo=
+
+--------------Boundary-00=_DHEUAPEMAJDVGWCE8KM5--
