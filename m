@@ -1,53 +1,65 @@
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id PAA00619
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 15:26:04 -0700
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] time_t, size_t, off_t, ... 
-In-Reply-To: Your message of "Thu, 30 Nov 2000 20:50:04 GMT."
-             <E141aec-0007nC-00@the-village.bc.nu>
-References: <E141aec-0007nC-00@the-village.bc.nu> 
-Date: Thu, 30 Nov 2000 15:28:32 -0700
-From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E141cBs-0007Gb-00@noam.fc.hp.com>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA01263
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 15:30:14 -0700
+Date: Thu, 30 Nov 2000 20:32:29 -0200 (BRST)
+From: "Jorge L. deLyra" <delyra@latt.if.usp.br>
+To: Grant Grundler <grundler@cup.hp.com>
+cc: parisc-linux@thepuffingroup.com, assirati@socrates.if.usp.br
+Subject: Re: [parisc-linux] HP 9000/735-125 
+In-Reply-To: <200011302104.NAA29773@milano.cup.hp.com>
+Message-ID: <Pine.LNX.3.96.1001130202814.25437A-100000@latt.if.usp.br>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-= time_t itself is normally a long because historically (pre ANSI/POSIX) back
-= when men where men and adb was the coolest debugger on the planet it was
-= the case that time() foo was a function using longs
-= 
-= [Random historical aside - very early C didnt support passing long as an 
-= argument hence time(&foo) not foo=time()]
+> > Yes, we are working towards this, but I read in the docs that for the time
+> > being you can only cros-compile the kernel on HP-UX,
+> 
+> That's definitely wrong. Where did you read this?
+> (I would like fix the reference)
 
-I cut my Unix teeth on pdp11/v6-7 -- counts as very early I think :-)
+It is on the nfsroot howto linked from the home page of the project:
 
-= I know of no kernel reason. If you are using a 1KHz system clock then it
-= may be handy to up the loop time for the counter to above 50 days by using
-= long.
+http://puffin.external.hp.com/mailing-lists/parisc-linux/2000/02-Feb/0069.html
 
-I'm setting clock_t to 64 bits on wide kernel FYI, but will keep time_t
-and suseconds_t at 32 bits until there's a problem.  Won't effect
-32-bit userspace if it has to change.
+<quote>
+STEP 1. KERNEL BUILDING
 
-= > (4)	I thought I could get away with making sigset_t.sig int[] therefore
-= > 	32 bits everywhere.  It would save several 32/64 syscall
-= > 	wrappers (and increase speed).  However this little piece
-= > 	in kernel/signal.c is a hard-coded assumption that .sig[] is
-= > 	an array of long, and was a bitch to find:
-= > 
-= > 		unsigned long i, *s, *m, x;
-= > 		s = tsk->pending.signal.sig;
-= 
-= Eep. Its not unreasonable to suggest to Linus that gets fixed 8)
+Get the latest linux-2.3 tree from CVS.
 
-Yeah, too bad I'm too much of a wimp to sign up for l-k -- already get
-more e-mail than I read :-(  
+a) If you use the standard boot loader
 
-= On the 64bit port _please_ use a 64bit ino_t. It'll possibly tickle the odd
-= other problem but post 2.4 the main kernel has to move to 64bit ino_t to make
-= NFSv3 and XFS sanely work. That may well let you relax and look smug as the
-= rest of the world suffers 8)
+Edit DEFAULT_COMMANDLINE in linux-2.3årch/parisc/boot/boot_code/ipl_c.c
+to read:
 
-Ok, I'll use 64-bit ino_t on parisc64.
+        "vmlinux HOME=/TERM=LINUX root=/dev/nfs nfsroot=10.0.0.1"
 
-	-P
+b) If you use PALO
+
+Edit the echo line in palo/mklifimage to read
+
+        "vmlinux HOME=/TERM=LINUX root=/dev/nfs nfsroot=10.0.0.1"
+
+In both cases replace 10.0.0.1 with the IP address of your NFS server.
+
+Copy the .config included below to the root of the linux source tree.
+
+make oldconfig
+make dep
+make clean
+make Image (Or make palo, if you use Paul's loader)
+Due to linker issues cross compiling is still not possible. I.e. you
+have to build on HP/UX. 
+</quote>
+
+I suppose this is old...
+
+> Those of us still cross compiling are using x86-linux hosts.
+
+Wonderful, that makes it a lot easier...		Thanks,
+
+----------------------------------------------------------------
+        Jorge L. deLyra,  Associate Professor of Physics
+            The University of Sao Paulo,  IFUSP-DFMA
+       For more information: finger delyra@latt.if.usp.br
+----------------------------------------------------------------
