@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D4C01482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Dec 2001 13:57:05 -0700 (MST)
-Message-Id: <200112132051.NAA20731@puffin.external.hp.com>
-To: "Richard \"Trey\" Hyde" <Richard.Hyde@cnet.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] success on a K410 
-In-Reply-To: Message from "Richard \"Trey\" Hyde" <Richard.Hyde@cnet.com>
-   of "13 Dec 2001 11:56:55 PST." <1008273417.26226.33.camel@lakeforest-devel>
-Date: Thu, 13 Dec 2001 13:51:41 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from zayda.com (celery.zayda.com [208.186.180.200])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A915B482A
+	for <parisc-linux@parisc-linux.org>; Thu, 13 Dec 2001 13:59:44 -0700 (MST)
+Received: from localhost (sonny@localhost)
+	by zayda.com (8.11.6/8.11.6) with ESMTP id fBDKxjq11806
+	for <parisc-linux@parisc-linux.org>; Thu, 13 Dec 2001 20:59:45 GMT
+Date: Thu, 13 Dec 2001 20:59:45 +0000 (UTC)
+From: Sonny Cook <sonny@aspersion.org>
+To: <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0112132057310.18883-100000@zayda.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] anon cvs
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,14 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Richard \"Trey\" Hyde" wrote:
-...
-> Thanks to all. Overall installation was easier than that of PPC Linux
-> and Alpha Linux when those distros were further along.
+Is something up with anonamous cvs access?  I get the following error when 
+attempting to update my kernel tree:
 
-Well, that thanks should mostly go to the debian developers as a whole
-for providing a better install process and to Richard Hirst for making it
-work on parisc-linux (aka debian-hppa). It was non-trivial and has
-been something he's been dealing with for about the past year.
+angstrom:/usr/src/linux-2.4.16-pa16# cvs update -dP .
+cvs [update aborted]: recv() from server cvs.parisc-linux.org: Connection 
+reset by peer
 
-grant
+I also noticed that the nightly snapshots are about 45 bytes long.
+
+Thanks,
+Sonny
