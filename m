@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DAA6A4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 13:15:28 -0600 (MDT)
-Date: Wed, 4 Sep 2002 15:15:17 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9C79D4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 13:59:34 -0600 (MDT)
+Message-Id: <200209041959.g84JxRRH011794@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] GCC and quad-precision floating point
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Wed, 4 Sep 2002 15:59:27 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: randolph@tausq.org, grundler@dsl2.external.hp.com,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] GCC and quad-precision floating point
-Message-ID: <20020904191517.GB6702@systemhalted>
-References: <20020904181156.GJ17893@tausq.org> <200209041842.g84Igx2n011400@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200209041842.g84Igx2n011400@hiauly1.hia.nrc.ca>
+In-Reply-To: <20020904191517.GB6702@systemhalted> from "Carlos O'Donell" at Sep 4, 2002 03:15:17 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,51 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I have just implemented some fixes and changed the long double size
-> to 128 bits on the hppa64 GCC ports.  For parisc-linux, the long double
-> support should be 128 bits (both for 32 and 64 bit) but we are currently
-> stuck at 64 bits because we are missing a bunch of quad library calls:
-> 
-> _U_Qfadd, _U_Qfsub, _U_Qfmpy, _U_Qfdiv, _U_Qfneg, _U_Qfsqrt, _U_Qfabs,
-> _U_Qfmin, _U_Qfmax, _U_Qfcnvff_sgl_to_quad, _U_Qfcnvff_dbl_to_quad,
-> _U_Qfcnvff_quad_to_sgl, _U_Qfcnvff_quad_to_dbl, _U_Qfcnvxf_sgl_to_quad,
-> _U_Qfcnvxf_dbl_to_quad, _U_Qfcnvfxt_quad_to_sgl, _U_Qfcnvfxt_quad_to_usgl,
-> _U_Qfcnvfxt_quad_to_udbl, _U_Qfcnvfxt_quad_to_dbl, _U_Qfeq, _U_Qfne,
-> _U_Qfgt, _U_Qfge, _U_Qflt, _U_Qfle.
-> 
-> There are probably some more for unordered comparisons.
-> 
-> Any chance that someone with contacts inside HP, might be able to
-> obtain the source code for these functions?  They are really part
-> of the ABI.
-> 
-> While it's relatively straightforward to implement these using the
-> quad-precision instructions in the PA 2.0 architecture for the 64-bit
-> port, it's non trivial to implement them for earlier architectures
-> using the 32-bit port.
-> 
-> Dave
+> Randolph and I were discussing borrowing from gmp to implement some of 
+> these for the earlier 32-bit processors. Thought it seems that this may
+> break the HPUX compatibility? 
 
-Randolph and I were discussing borrowing from gmp to implement some of 
-these for the earlier 32-bit processors. Thought it seems that this may
-break the HPUX compatibility? 
+I would guess that that the best compatibility would be obtained with
+the HP functions.  As far as I can tell, gmp does not use IEEE standard
+data types.  Thus, concepts of nans, snans, unordered if present at
+all in gmp would differ.
 
-gmp seems to have support for:
+GCC can only deal with floating data in IEEE format.  So, conversion
+would have to be done for all operations.
 
-	add, sub, multiply, div, neg, sqrt, abs, min, max
-	equals, not-equals, greater-than, greather-than-or-equal,
-	less-than, less-than-or-equal.	
+I presume that the HPUX compatibility is just for static binaries
+(i.e., there is no shared library support).  In this case, the routines
+would be compiled into hpux binaries.  So, I don't think much additional
+would be needed at an os level.
 
-The 'cnv' functions need to be addressed:
-
-	single -> quad
-	double -> quad
-	quad   -> single
-	quad   -> double
-	quad   -> unsigned single
-	quad   -> unsigned double
-
-Under certain conditions of float-float, float-fixed, float-fixed&truncate.
-This will have to follow the HPUX convention?
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
