@@ -1,47 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from seal.surfnet.fi (mail.surfnet.fi [194.137.58.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9480B482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Aug 2001 23:56:49 -0600 (MDT)
-Received: from IDOEKE3 (eke-breakwater.surfnet.fi [194.215.74.2])
-	by seal.surfnet.fi (8.11.0/8.11.0) with ESMTP id f725umv14757
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 2 Aug 2001 08:56:48 +0300
-Subject: Re: [parisc-linux] Linux on R947X?
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <OF037B89B3.C54112C3-ONC2256A9C.001F38E3@LocalDomain>
-From: robert.holmberg@idobath.com
-Date: Thu, 2 Aug 2001 08:49:53 +0300
-MIME-Version: 1.0
-Content-type: text/plain; charset=us-ascii
+Received: from mailin8.bigpond.com (juicer39.bigpond.com [139.134.6.96])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1E1AF482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 00:48:49 -0600 (MDT)
+Received: from bubble.local ([144.135.24.69]) by
+          mailin8.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id GHFHUJ00.JWX for <parisc-linux@lists.parisc-linux.org>; Thu,
+          2 Aug 2001 16:54:19 +1000
+Date: Thu, 2 Aug 2001 16:18:17 +0930
+From: Alan Modra <amodra@bigpond.net.au>
+To: LaMont Jones <lamont@hp.com>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] libqthreads and hppa-linux
+Message-ID: <20010802161817.A26828@bubble.sa.bigpond.net.au>
+References: <20010802044401.89CE11872C@security.hp.com> <20010802044946.6B4FC1872C@security.hp.com> <20010802151415.O5233@bubble.sa.bigpond.net.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010802151415.O5233@bubble.sa.bigpond.net.au>; from amodra@bigpond.net.au on Thu, Aug 02, 2001 at 03:14:15PM +0930
 List-ID: <linux-parisc.vger.kernel.org>
 
->> Any hope of getting the Lotus Domino webserver up and running under
->> PARISC-LINUX on a R947X? The server is going to be replaced soon, and we
->> have played with the thought of using it as a local test environment for
->> deployment of Domino web applications.
->According to the Domino website
->(http://www.lotus.com/home.nsf/welcome/domino), they only support
->Linux on x86.
+On Thu, Aug 02, 2001 at 03:14:15PM +0930, Alan Modra wrote:
+> Hmm, I wonder if you've found a gcc bug?
 
-I should have thought of that. I have not found any indication that anyone
-has gotten Linux to work on a R947X at all, so I also meant to ask if at
-least this is possible. We can run the test environment on any NT server,
-but it would be nice to continue using such a reliable machine as the old
-HP for something useful. Paying for a HPUX lisence is not exactly in our
-interest, though..
+Curiousity got the better of me, and I dug up copy of the ABI.  Looks
+like gcc is doing the right thing.
 
->They do have a version for HPUX so if we were to get
->the HPUX emulation working again, there's a possibility it might work.
->Nobody has much interest in the HPUX emulation right now, so I wouldn't
->count on it happening any time soon.
+"Floating-Point (32 Bits, single-precision): One word, callee cannot assume
+a valid floating-point number.
 
-So this idea of ours is somewhat ... optimistic. I'm actually just working
-here for the summer and was asked to find out if this was at all possible.
-We have a 922LX as well, nut unfortunately the company has decided to try
-and sell this one. I'd buy it myself if it weren't for its size and weight.
+Floating-Point (64 Bits, double-precision): Two words, double word aligned
+(high order word in odd arg word).  This may create a void in the argument
+list.  64-bit floating-point value parameters mapped to the first and second
+double-words of the argument list should be passed in farg1 and farg3,
+respectively. farg0 and farg2 are never used for 64-bit floating-point
+parameters.  Callee cannot assume a valid floating-point number."
 
->On the other hand if you happen to be a big corporate customer and could
->persuade them to port Domino to a different platform... :-)
+Makes a weird sort of sense when you realise that the register args have
+a mapping to stack slots, and there are only 4x32 bits of stack space,
+or 2 doubles.
 
-Not THAT big. :=)
-
-Robert
+Alan
