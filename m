@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sun, 27 Jul 2003 06:27:45 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Generic light-weight syscall.
-Message-ID: <20030727122745.GC16753@dsl2.external.hp.com>
-References: <20030725063739.GA13017@systemhalted> <20030725113700.GH1485@parcelfarce.linux.theplanet.co.uk> <20030726174845.GF31744@systemhalted> <20030726180031.GG31744@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030726180031.GG31744@systemhalted>
+Received: from postfix3-1.free.fr (postfix3-1.free.fr [213.228.0.44])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 93D3F483F
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Jul 2003 12:58:56 -0600 (MDT)
+Received: from tuxfamily.org (lns-th2-8-82-64-121-31.adsl.proxad.net [82.64.121.31])
+	by postfix3-1.free.fr (Postfix) with ESMTP id 14040C330
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 27 Jul 2003 20:58:55 +0200 (CEST)
+Message-ID: <3F242115.9040706@tuxfamily.org>
+Date: Sun, 27 Jul 2003 20:59:33 +0200
+From: Thomas Marteau <marteaut@tuxfamily.org>
+MIME-Version: 1.0
+To: parisc linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] [OT] Thanks
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,29 +23,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Jul 26, 2003 at 02:00:32PM -0400, Carlos O'Donell wrote:
-> Talked to Rik Van Riel about fast gettimeofday and he indicated that
-> it's not doable since you can't guarantee your process will get
-> scheduled on another CPU whose clock is out of sync by more than X and
-> get negative time.
+Hi all,
 
-Yes we can. We can sync CR16 across CPUs within a few CPU cycles.
-I've described this before on parisc-linux.
+As you can read, I am back home safely. Once again, I would like to 
+thank everybody who was at OLS this year. It is always the same pleasure 
+to meet you guys in real.
 
-"sync" means figure out the difference between CR16 on several
-CPUs and using CPU 0 as the reference.
+If I did not say 'bye' saturday, please accept my digital one :
 
-> Though I imagine you were talking about having one
-> CPU update one page with time on it... and then other CPU's read this?
-> LaMont notes that there is no requirement from the PA design that CPU's
-> clock at _exactly_ the same frequency or have monotonically incrementing
-> clocks at the right rate.
-
-correct. IIRC 9000/870 have seperate clock sources.
-But all the boxes we support to date have exactly one clock source.
-The multi-cell boxes (like superdome) will have multiple sources
-and I don't know how to handle those - maybe a "not quite so fast"
-gettimeofday().
-
-hth,
-grant
+Bye and it was nice meeting you, Thomas !
