@@ -1,85 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA24647
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Sep 2000 23:30:02 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <39CC4001.50E72330@uswest.net>
-Date: Fri, 22 Sep 2000 23:30:41 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
-To: Erik Paulson <epaulson@upl.cs.wisc.edu>, grundler@cup.hp.com
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] C100 and ccio-dma
-References: <20000921201241.C28365@data.upl.cs.wisc.edu>
-Content-Type: multipart/mixed;
- boundary="------------DC7AC919A57FF5003A3725B8"
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA01448
+	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Sep 2000 01:03:39 -0600
+Received: (from andrew@localhost)
+	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id PAA28258
+	for parisc-linux@thepuffingroup.com; Sat, 23 Sep 2000 15:03:48 +0800
+Date: Sat, 23 Sep 2000 15:03:44 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] cvs directory renaming - *action required*
+Message-ID: <20000923150340.M21274@neep.com.au>
+References: <39CBF956.4833E405@subcarrier.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <39CBF956.4833E405@subcarrier.org>; from mang@subcarrier.org on Fri, Sep 22, 2000 at 08:29:10PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------DC7AC919A57FF5003A3725B8
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Michael Ang said:
+> In order to reduce some of the confusion about which directory was
+> active in the repository (did I want "binutils", "binutils-old", or
+> "binutils-2.10"?) some of the directories in the repository will be
+> renamed.  This will be moderately painful, but it's better to do the
+> painful thing now while we can still stamp out the old cruft.
+> 
+> "linux-2.3" will be renamed to "linux"
+> "binutils-2.10" will be renamed to "binutils"
+> 
+> If you currently have a tree checked out, you will need to change all of
+> your CVS/Repository files to point to the new directory names.  With
+> bash you can do it like this:
 
-Erik & Grant,
+This file "binutils-2.10/gas/testsuite/gas/cris/CVS/Repository" doesn't
+contain a full repository path - all the others are /home/cvs/... but
+this one contains just the relative path.  Not sure what this means, if
+anything...  Some of the Repository files in the linux-2.3 module have
+the same sort of thing.  *shrug*  Anyone know?  =)
 
-I think I have finally tracked this problem down... I don't think it is a bug
-in either the ccio-dma or the sym53c8xx driver.... I believe it is a sizing
-issue with the IO PDIR in the ccio-dma.  I spent some time last week
-increasing the density of the IO PDIR by 4x ... it looks like I still have some
-work to do :)
+> $ cd linux-2.3
+> $ for i in `find . -name Repository`; do echo "linux" > $i; done
+> $ cd binutils-2.10
+> $ for i in `find . -name Repository`; do echo "binutils" > $i; done
 
-I increased the the IO PDIR ratio to main memory by 4x and I can
-successfully format a 4G partition in my C200+.  (When I bumped
-the IO PDIR ratio by 2x, is still had problems...)
+$ for i in $(find linux-2.3 binutils-2.10 -name Repository); do echo $(cat $i|sed 's/-[0-9.]*//') > $i; done
 
-Erik ... I've attached a small patch for you to try and see if it works for
-you.
+> P.S. If out of archeological interest you're looking for the old {linux,
+> binutils, binutils-old, egcs-old} directory, it's been moved under
+> directory "obsolete". e.g. "cvs co obsolete/binutils-old".
 
-Thanks,
+Why do this?  Why not just tag those two modules on Wednesday when you
+make the change to the repository structure?
 
-- Ryan
+Andrew.
 
+--
+Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
 
-> Hi,
->         Using the CVS kernel on a C100 I'm seeing it die with an out-of-mapping
-> resources error from ccio-dma.c. It looks like there's been some active
-> development there about a week ago, but it's not helping my machine. The
-> quickest way for me to bring it about is to try and use mke2fs, but just
-> mounting the CD and running a few commands will oftentimes do the trick.
->
-> How can I help debug this? There's really no useful information provided by
-> the printk now - is there some sort of debugging info I could be collecting,
-> or would a backtrace help?
->
-> Thanks
->
-> -Erik
->
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-
---------------DC7AC919A57FF5003A3725B8
-Content-Type: text/plain; charset=us-ascii;
- name="ccio-dma.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ccio-dma.patch"
-
-Index: ccio-dma.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/ccio-dma.c,v
-retrieving revision 1.10
-diff -u -p -u -r1.10 ccio-dma.c
---- ccio-dma.c	2000/09/15 00:57:14	1.10
-+++ ccio-dma.c	2000/09/23 05:26:51
-@@ -200,7 +200,7 @@ struct ccio_device {
- 
- 
- /* Ratio of Host MEM to IOV Space size */
--STATIC u_long ccio_mem_ratio = 16;
-+STATIC u_long ccio_mem_ratio = 4;
- STATIC struct ccio_device *ccio_list = NULL;
- 
- /**************************************************************
-
---------------DC7AC919A57FF5003A3725B8--
+  "Just remember Basil, there's always someone worse off than yourself."
+  "Oh, really?  I'd like to meet him ... I could do with a good laugh."
+                 [ Sybil and Basil Fawlty, "Fawlty Towers" ]
