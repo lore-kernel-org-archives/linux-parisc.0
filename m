@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from due.stud.ntnu.no (due.stud.ntnu.no [129.241.56.71])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 59F8B4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 14:46:03 -0600 (MDT)
-Date: Mon, 30 Sep 2002 22:45:59 +0200
-From: Stian Soiland <stain@itea.ntnu.no>
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 9000/802/K250 won't boot with images - serial/stack problem?
-Message-ID: <20020930204559.GB9133@itea.ntnu.no>
-References: <20020930200805.GA9133@itea.ntnu.no> <1033417191.31126.4.camel@beavis>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <1033417191.31126.4.camel@beavis>
+Received: from dobit2.rug.ac.be (dobit2.rug.ac.be [157.193.42.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A1B264829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Sep 2002 14:50:21 -0600 (MDT)
+Date: Mon, 30 Sep 2002 22:50:17 +0200 (MEST)
+From: Frank Cornelis <Frank.Cornelis@rug.ac.be>
+To: James Smith <james@compusmithllc.com>
+Cc: Frank Cornelis <Frank.Cornelis@rug.ac.be>,
+	<parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] firmware update using BOOTP
+In-Reply-To: <1033395024.454.3.camel@seventy>
+Message-ID: <Pine.GSO.4.31.0209302241060.16124-100000@eduserv.rug.ac.be>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,52 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On 2002-09-30 22:19:51, Ryan Bradetich wrote:
+> most of my 712's are ver 1.9 or 2.1 & they all work fine as far as i can
+> see with linux - is there any advantage to updating to 2.3 ?
+>
+> or is this a case of 'if its not broken....'
 
-> > The serial console is connected to 'CONSOLE (X/4/0/0)*',=20
-> This is good, see .. we even find the device :)
-> > 6. Sahp Baat Kiuh AP/MUX (5) at 0xf1900000 [10/4/0], versions 0x44,
-> 0x0, 0xd
-> > Command line for kernel: 'ramdisk_size=3D8192 root=3D/dev/ram console=
-=3DttyS0
-> Oops... this is bad.  The K class systems do not have a 16550 compatible
-> serial port.  The console should be ttyB0.
-> For mor info on the console, see Matthew's excellent description of what
-> systems use the Serial Mux driver.
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/01783=
-7.html
+The text file that comes with the 2.3 patch mentions
+	More reliable LAN operation
+as one of the improvements. I wanted to be sure for my BOOTP lifimage
+loading.
+Anyway, it's really easy to do.
+Create an /etc/bootptab on your server containing:
+.default:\
+        :sm=255.255.255.224:\
+        :gw=192.168.1.62:\
+        :ds=195.130.131.2:\
+        :ht=ethernet:\
+        :bf=C7120023.frm:
 
-Aha! :=3D)
+hp712:hn:ha=0800099D56DA:ip=192.168.1.34:tc=.default
 
-But with:
+Of course, adjust with your network settings (man bootptab).
+Run the bootpd daemon (and tftp daemon) on your server and reboot your HP.
+Then goto the BOOT_ADMIN menu using ESC and type:
+	search lan
+You should see your BOOTP server listed.
+Then simply do:
+	boot lan
 
-Command line for kernel: 'ramdisk_size=3D8192 root=3D/dev/ram console=3Dtty=
-B0
-TERM=3Dvt102 palo_kernel=3D0/vmlinux'
+That's it.
 
-(..)
-
-Branching to kernel entry point 0x00100098.  If this is the last
-message you see, you may need to switch your console.  This is
-a common symptom -- search the FAQ and mailing list at parisc-linux.org
-
-
-And that IS the last thing I see :/
-
-with console=3DttyS0 at least more output came. How do I 'switch console'?=
-=20
-
-
-Do I need to connect something to this MDP-port instead?
-(how? It is some inverted rs232 15-pin)
-
-This happens with both vmlinux32 og 64.
-
-
---=20
-Stian S=F8iland               There are only 10 types of people in the worl=
-d:
-ITEA systemdrift            Those who understand binary, and those who don'=
-t.
-http://www.stud.ntnu.no/   =20
-                           =20
+Frank.
