@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1AA5F4831
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Feb 2002 09:26:38 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16aflM-0000Fp-00; Tue, 12 Feb 2002 16:26:36 +0000
-Date: Tue, 12 Feb 2002 16:26:36 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Arnaud.ATOCH@oecd.org
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] $$divU undefined reference
-Message-ID: <20020212162636.B1173@parcelfarce.linux.theplanet.co.uk>
-References: <C12531D038D1D011B1DB0000F8036C280BBA4743@eosm5.oecd.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <C12531D038D1D011B1DB0000F8036C280BBA4743@eosm5.oecd.org>; from Arnaud.ATOCH@oecd.org on Tue, Feb 12, 2002 at 05:23:24PM +0100
+Received: from PHSEXCHICI2.Partners.org (phsexchici2.partners.org [170.223.254.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3B77E4830
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Feb 2002 09:39:48 -0700 (MST)
+Message-ID: <FE6B88CC9D2BD311AD120008C7B3AF87081ED28D@phsexch3.mgh.harvard.edu>
+From: "Roylance, Stephen D." <SROYLANCE@PARTNERS.ORG>
+To: 'Grant Grundler' <grundler@dsl2.external.hp.com>
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] Getting a D370 off the ground 
+Date: Tue, 12 Feb 2002 11:39:40 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,23 +22,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Feb 12, 2002 at 05:23:24PM +0100, Arnaud.ATOCH@oecd.org wrote:
-> I'm trying to compile sqlrelay http://www.firstworks.com/sqlrelay on a 0.9.3
-> HP 712 box with 2.4.16 kernel and deb packages up-to-date.
+> > Does anyone know if I can switch resolution/video mode from 
+> the firmware? 
 > 
-> I got the following linking error message :
+> Not sure. I'm surprised to hear about a D with gfx in it.
+
+Do you know how to do it on workstation  machines, maybe it works the same
+way?
+or can anyone point me to HW/tech docs for these machines?
+
+> > I installed the 32-bit kernel, can I use a 64-bit kernel on 
+> this machine?
 > 
-> ecodev01:/tmp/rudiments-0.23/src# ld -G -o ../lib/librudiments.so.0.23
-> daemonprocess.o signalclasses.o commandline.o server.o client.o
-> semaphoreset.o sharedmemory.o randomnumber.o regularexpression.o text.o
-> datetime.o permissions.o -lc -lm -ll
-> server.o: In function `std::__default_alloc_template<true,
-> 0>::_S_chunk_alloc(unsigned, int&)':
-> server.o(.gnu.linkonce.t._ZNSt24__default_alloc_templateILb1ELi0EE14_S_chunk
-> _allocEjRi+0xa0): undefined reference to `$$divU'
+> Depends on cpu type. If it's a PA2.0 CPU (ie PA-8xxx), then yes.
+> See /proc/cpuinfo and/or check console output at boot time.
+> 
+> > Should I checkout the latest kernel source from cvs and 
+> build that, or is
+> > there some other version, or an image, I shoud use?  The 
+> kernel installed
+> > with the CD doesn't seem to be SMP.
+> 
+> Newer kernels are on ftp://ftp.parisc-linux.org/kernels/
 
-Don't use `ld' to link shared objects.  Link using gcc (if it's c code) or
-g++ (if c++ code).  the compiler driver knows what extra libs to link in.
+OK, looks like I have two PA8000's.  I apt-get upgraded to unstable and
+d/l'ed the latest kernel tar.gz.  
+I'm getting an error trying to compile a 64 bit SMP kernel:
+make[1]: hppa64-linux-gcc: Command not found
+on, I guess, the first call to the compiler when I do 'make dep';
+my make is:
+ii  make                3.79.1-12           The GNU version of the "make"
+utility.
+my gcc is:
+ii  gcc                 3.0.4-2             The GNU C compiler.
 
--- 
-Revolutions do not require corporate support.
+Do I need to mess with a makefile so it knows what the right compiler is?
+Do I need to get an different version of gcc for 64-bit hppa?
+
+> grant
+
+Thanks!
+-Steve
