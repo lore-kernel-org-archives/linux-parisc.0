@@ -1,50 +1,87 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA04204
-	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 15:30:02 -0700
-Message-Id: <200011142232.OAA12353@milano.cup.hp.com>
-To: Ian Zink <ian.zink@maryville.com>
-Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Palinux on a 712/60 
-In-reply-to: Your message of "Tue, 14 Nov 2000 13:20:05 PST."
-             <C36304FE952AD411AC87002094120338029E7B@MTMAIL>
-Date: Tue, 14 Nov 2000 14:32:00 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA04518
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 15:34:37 -0700
+Sender: mang@mailserv2.iuinc.com
+Message-ID: <3A11BD3A.327427EF@subcarrier.org>
+Date: Tue, 14 Nov 2000 17:31:22 -0500
+From: Michael Ang <mang@subcarrier.org>
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
+References: <m13uGYm-001Vp3C@chalet>  <3A118FCF.9C7EEEBF@subcarrier.org> <E13vmG1-0004DR-00@noam.fc.hp.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] tracking third-party sources (was Re: linux bame)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ian Zink wrote:
-> I have a hp 712/60 I was trying to get loaded with Pa-linux. I'm using the
-> 0.5 version of the Pa-linux cd. If I boot right off the CD it all loads
-> until it gets to Switching to PDC. At that point nothing happens. From I
-> have read the list, that is because the kernel is switching the text
-> console. However, the 712s don't have consoles.
+Paul Bame wrote:
+> 
+> = bame@riverrock.org wrote:
+> = >
+> = > = On Thu, Nov 09, 2000 at 03:53:48PM -0700, Paul Bame wrote:
+> = > = >     Somebody never imported 2.4.0-test6, then I imported -test10 on the
+>  mai
+> = > n
+> = > = >     vendor branch and now can't (easily) undo that to import test6 and
+> THEN
+> = > = >     test10.  This workaround sucks.
+> =
+> Like the comment said, there was no copy of plain -test6 in CVS (that I
+> saw).  Without -test6 in CVS it's much harder to use cvs diff to figure
+> out the right way to merge files when there are conflicts.
+> I didn't realize this until -test10 was already there, so I *then*
+> brought in -test6.  They're in the wrong order on the 1.1.1 branch, so
+> the standard merge command 'cvs -jlinus:yesterday -jlinus:<newest>'
+> won't work next time -- explicit names will be required.
 
-712s have consoles. They have two outputs which can be used as
-console by linux. The STI consoles (VGA-like spigot) and serial.
-Connect a serial cable 9600-8-n-1 and run minicom at the other end.
+The best thing to do is to import -test10 again and move the static tag
+by re-tagging.
 
->  From what I have also read
-> the CD should work if you pass the kernel the parameter console=tty. So I
-> tried to  "boot scsi.2.0 isl" from the boot_admin prompt. It gave me the
-> PALO ISL, but I could not choose which line I wanted to edit. Further, I
-> couldn't even type "b" to boot. I don't know if the isl is freezing or what
-> is taking place
+> = Tracking third-party sources using a normal branch, as we are
+> = doing, is much simpler and gives you more control.
+> 
+> But I've seen no cook book for it.  I'm guessing that instead of cvs import
+> you use:
+>         cvs co -rlinus linux
+>         <unpack new linux bits on top of linux>
+>         cd linux
+>         cvs commit (make note of new files from commit)
+>         cvs add <new files>
+>         cvs commit
+>         cvs tag LINUS_NEW_REVISION
+> perhaps with provision for removing obsolete files too.  I suppose that is
+> simpler than a single cvs import command from a certain perspective :-)
 
-That's a different problem...pb?
+I had a good chat with Paul about this, and we worked out that using
+"import" is marginally better.
 
-> 	What I am wondering is there a way to boot a 712/80 without having
-> to get cross-compiler gcc, compile the kernel, etc.
+This is what the add/remove method would look like:
+cvs co -rlinux linux
+<unpack new linux bits>
+<rm files in dir not in tarball>
+cvs rm <rm'ed files>
+cvs add <new files>
+cvs commit
+cvs tag LINUS_NEW_REVISION
 
-The CD was intended to also work on the 712 even though we may not have
-tested on it.
+Add the import method:
+<unpack new linux bits>
+cd linux
+cvs import linux linus LINUS_NEW_REVISION
+cvs admin -b <new files>
 
-> Is there someway I could
-> add the ramdisk-sti.tgz on the ISO to make it work? If so, what would need
-> to be done?
+> = When you say you "I imported -test10 on the main vendor branch" I hope
+> = you really mean that you used "cvs add" on the linus branch.  From your
+> = other messages, your tags looked good.
+> 
+> I used "cvs import", and either your branch magic worked, or I finished the
+> merge before anybody randomly updated from cvs.  Since import used 1.1.1,
+> which is the branch you "fixed", it seems possible that 'cvs import' might
+> be rendered harmless but I don't know that for sure.
 
-no clue. anyone else?
+Using "import" to bring in new files taints them with the vendor branch
+badness.  These files should be adjusted using "cvs admin -b".  Note
+that "cvs admin" works directly on files in the repository at low level
+(without any revisioning of changes) and is thus to be avoided if at all
+possible.  Please don't run "cvs admin" if you (the collective "you")
+don't know the consequences.
 
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+	- Mike.
