@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 13 Oct 2003 13:34:43 +0200
-Message-ID: <3F8A272E0000052B@ocpmta3.freegates.net>
-In-Reply-To: <3F892DC8.30307@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 260AE4841
+	for <parisc-linux@parisc-linux.org>; Mon, 13 Oct 2003 05:44:32 -0600 (MDT)
+Date: Mon, 13 Oct 2003 13:44:28 +0200
+Message-ID: <3F8A272E00000550@ocpmta3.freegates.net>
+In-Reply-To: <20031012200201.GC23999@systemhalted>
 From: "Joel Soete" <soete.joel@tiscali.be>
-To: willy@parisc-linux.org
+Subject: Re: [parisc-linux] evolution (1.4.5-1) do_page_fault?
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 Cc: parisc-linux@parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 willy
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,77 +22,55 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Matthew,
+Hi Carlos,
 
-2.6.0-test7-pa6 boot well on my b180:
-[...]
-eth0: Digital DS21143 Tulip rev 65 at 0xff00, 00:10:83:35:2A:A9, IRQ 96.
-sym0: <875> rev 0x4 at pci 0000:00:13.0 irq 99
-sym0: No NVRAM, ID 7, Fast-20, SE, parity checking
-sym0: SCSI BUS has been reset.
-scsi0 : sym-2.1.18f
-Using anticipatory io scheduler
-  Vendor: SEAGATE   Model: ST39140WS         Rev: HP03
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym0:5:0: tagged command queuing enabled, command queue depth 16.
-  Vendor: SEAGATE   Model: ST39140WS         Rev: HP03
-  Type:   Direct-Access                      ANSI SCSI revision: 02
-sym0:6:0: tagged command queuing enabled, command queue depth 16.
-53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
-scsi1: 53c710 rev 2 
-scsi1 : LASI SCSI 53c700
-st: Version 20030811, fixed bufsize 32768, s/g segs 256
-sym0:5: FAST-20 WIDE SCSI 40.0 MB/s ST (50.0 ns, offset 15)
-SCSI device sda: 17773524 512-byte hdwr sectors (9100 MB)
-SCSI device sda: drive cache: write back
- sda: sda1 sda2 sda3 sda4 < sda5 sda6 sda7 sda8 sda9 sda10 >
-Attached scsi disk sda at scsi0, channel 0, id 5, lun 0
-sym0:6: FAST-20 WIDE SCSI 40.0 MB/s ST (50.0 ns, offset 15)
-SCSI device sdb: 17773524 512-byte hdwr sectors (9100 MB)
-SCSI device sdb: drive cache: write back
- sdb: sdb1 sdb2 sdb3 sdb4 < sdb5 sdb6 sdb7 sdb8 sdb9 sdb10 >
-Attached scsi disk sdb at scsi0, channel 0, id 6, lun 0
-Attached scsi generic sg0 at scsi0, channel 0, id 5, lun 0,  type 0
-Attached scsi generic sg1 at scsi0, channel 0, id 6, lun 0,  type 0
-[...]
+I just haven't such hw at my office where otc i can do some other check on
+the b2k model.
 
-I trust that confirm it well uses 'scsi0 : sym-2.1.18f' :)
+On this b2k (also installed with unstable debian) run fine the same release
+of evolution (otc what i said).
+But it is booted with last 2.4 (a merge of 23-pre7 and 22-pa12) with 256M
+of ram (only 128k for c110) and without mozilla-psm (a recommended or suggested
+additional pkg added on c110).
 
-I run successfully ssh, multi-gnome-terminal, gkrellm and mainly recompile
-this kernel with gcc-3.3.2 (20030908). All seems to work fine: uptime 2h25min
-:)
+So a lot of test to figure out the present pb :)
 
-Congratulation,
+Thanks a lot ( I will advise you :) )
     Joel
 
 >-- Original Message --
->Date: Sun, 12 Oct 2003 10:32:40 +0000
->From: Joel Soete <soete.joel@tiscali.be>
->To:  willy@parisc-linux.org
->Subject: Re: [parisc-linux-cvs] linux-2.6 willy
+>From: Carlos O'Donell <carlos@baldric.uwo.ca>
+>To: Joel Soete <soete.joel@tiscali.be>
+>Cc: parisc-linux@parisc-linux.org
+>Date: Sun, 12 Oct 2003 16:02:02 -0400
+>Subject: Re: [parisc-linux] evolution (1.4.5-1) do_page_fault?
 >
 >
->Matthew Wilcox wrote:
+>On Sun, Oct 12, 2003 at 06:42:55PM +0000, Joel Soete wrote:
+> Hello Carlos,
+> 
+> I launch 'gbd evolution'
+> (gdb) run
+> to determine the new address in this env but failed before with message:
+> Program received signal SIG37, Real-time event 37.
 
->CVSROOT:	/var/cvs
->Module name:	linux-2.6
->Changes by:	willy	03/10/10 13:59:56
->
->Modified files:
->	.              : Makefile 
->
->Log message:
->2.6.0-test7-pa5:
->2.1.18f of the sym driver.  I want people to test this 
->ne.
->  
->
-Ok Matthew, I will test it on my b180 on monday
+>> 0x4193c574 in malloc_set_state () from /lib/libc.so.6
+> 
+> what's your opinion?
 
-hth,
-    Joel
+That's libpthreads realtime singal mechanism working.
+You need to set "handle all nostop" and "handle all pass" in gdb.
 
+Then you can do the math with /proc/<pid>
+>maps and the dying address to
+calculate the _real_ library offset and function symbolic name.
 
+c.
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman
+>listinfo/parisc-linux
 
 
 
