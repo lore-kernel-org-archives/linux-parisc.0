@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D09B34845
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Dec 2003 22:45:51 -0700 (MST)
-Date: Wed, 3 Dec 2003 22:45:50 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: northern snowfall <dbailey27@ameritech.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.23 PCI source inconsistency
-Message-ID: <20031204054550.GB31404@colo.lackof.org>
-References: <3FCE5AAE.6080104@ameritech.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3FCE5AAE.6080104@ameritech.net>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 50FC44845
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Dec 2003 00:17:09 -0700 (MST)
+Date: Thu, 4 Dec 2003 08:13:25 +0100
+Message-ID: <3FB25B960000D7FF@ocpmta1.freegates.net>
+In-Reply-To: <20031204040026.GB17292@systemhalted>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: [parisc-linux] shmem 2.6 kernel bug?
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,33 +22,89 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 03, 2003 at 04:50:38PM -0500, northern snowfall wrote:
-> Hey all,
->    I compiled 2.4.23 from kernel.org for 32bit PA-RISC today
-> and found that the PA-RISC specific PCI code seems to be out-
-> of sync with the generic pci code.
+hmm I didn't mentioned till now because of some non cvs stuff in my kernel
+but I got same messages (ie only "BUG at mm/shmem.c:585!") with k-2.4.23
+64bits on my b2k build with latest gcc-3.3.2.
 
-As carlos said, use kernels from ftp.parisc-linux.org or pull
-sources directly from cvs.parisc-linux.org.
+hth,
+    Joel
 
-> pci.c: In function `pcibios_init_bus':
-> pci.c:310: structure has no member named `bridge_ctl'
+>-- Original Message --
+>From: Carlos O'Donell <carlos@baldric.uwo.ca>
+>To: parisc-linux@lists.parisc-linux.org
+>Date: Wed, 3 Dec 2003 23:00:26 -0500
+>Subject: [parisc-linux] shmem 2.6 kernel bug?
+>
+>
+>
+pa,
 
-I added this field to clean up FBB and VGA routing support.
-"bridge_ctl" is a PCI-PCI Bridge register that controls
-both of those behaviors. Ivan K. (ex PCI Maintainer) and I had it
-working for parisc/ia32/alpha but apperently it never got
-submitted/accepted into any official tree.
+When I ssh into my box I see:
+---
+kernel BUG at mm/shmem.c:585!
+Kernel addresses on the stack:
+ [<000000001016f338>] unmap_page_range+0xa0/0x290
+ [<0000000010126e78>] sys32_rt_sigaction+0x90/0x118
+ [<000000001011313c>] sys_mmap2+0x14/0x2
+>
+ [<000000001010ce4c>] syscall_exit+0x0/0x14
+ [<000000001010c094>] intr_check_sig+0x0/0xc
+---
 
-Russell King (ARM maintainer) found it useful anyway
-and submitted it
+    571 static void shmem_delete_inode(struct inode *inode)
+    572 {
+    573         struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+    574  
+>      struct shmem_inode_info *info = SHMEM_I(inode);
+    575 
+    576         if (inode->i_op->truncate == shmem_truncate) {
+    577                 spin_lock(&shmem_ilock);
+    578                 list_del(&info->list);
+    579                 s
+>in_unlock(&shmem_ilock);
+    580                 if (info->flags & VM_ACCOUNT)
+    581			vm_unacct_memory(VM_ACCT(inode->i_size));
+    582                 inode->i_size = 0;
+    583                 shmem_truncate(inode);
+    584         }
+==> 585
+>        BUG_ON(inode->i_blocks);
+    586         spin_lock(&sbinfo->stat_lock);
+    587         sbinfo->free_inodes++;
+    588         spin_unlock(&sbinfo->stat_lock);
+    589         clear_inode(inode);
+    590 }
 
-	http://www.ussg.iu.edu/hypermail/linux/kernel/0208.0/0723.html
+*Carlos shrugs*
 
-and later:
-	http://lists.arm.linux.org.uk/pipermail/linux-arm-kernel/2003-October/017459.html
+Linux firin
+>2.6.0-test11-pa0 #1 Wed Dec 3 14:51:57 EST 2003 parisc64 GNU/Linux
 
-Darn...looks like bridge_ctl didn't get pushed into 2.6 either. :^(
-I'll follow up a bit offline.
+Reading specs from
+/home/carlos/src/toolchain-build/install/lib/gcc-lib/hppa64-linux/3.3.1/specs
+Configured with: ../gcc-cvs/configure --host=hppa-linux
+--prefix=/home/carlos/src/
+>oolchain-build/install --target=hppa64-linux
+--build=hppa-linux
+--with-gnu-ld=/home/carlos/src/toolchain-build/install/bin/ld
+--with-gnu-as=/home/carlos/src/toolchain-build/install/bin/as
+--enable-languages=c
+Thread model: posix
+gcc version 3.3.1
+>
 
-grant
+GNU ld version 2.14.90 20031106
+
+c.
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
