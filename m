@@ -1,37 +1,73 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA19369
-	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Dec 2000 22:15:19 -0700
-Message-Id: <200012280518.AAA11283@hiauly1.hia.nrc.ca>
-Subject: Re: pa reload problem
-To: law@redhat.com
-Date: Thu, 28 Dec 2000 00:18:04 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: rth@redhat.com, alan@linuxcare.com.au, rhirst@linuxcare.com,
-        parisc-linux@thepuffingroup.com, gcc-bugs@gcc.gnu.org
-In-Reply-To: <9917.977947732@upchuck> from "Jeffrey A Law" at Dec 27, 2000 01:08:52 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA02464
+	for <parisc-linux@puffin.external.hp.com>; Fri, 29 Dec 2000 18:01:38 -0700
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel2.hp.com (Postfix) with ESMTP id 7BAA3108C
+	for <parisc-linux@thepuffingroup.com>; Fri, 29 Dec 2000 20:04:51 -0500 (EST)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id 750FF37C97
+	for <parisc-linux@thepuffingroup.com>; Fri, 29 Dec 2000 18:06:46 -0700 (MST)
+To: parisc-linux@thepuffingroup.com
+In-Reply-To: Message from Matt Taggart <taggart@carmen.fc.hp.com>
+   of "Wed, 27 Dec 2000 15:41:53 MST." <20001227224153.5F22637C97@carmen.fc.hp.com>
+References: <3A4940BF.3EB18F61@dot.at> <20001227012741.A150937C97@carmen.fc.hp.com> <20001227043446.6DCFD37C97@carmen.fc.hp.com> <20001227205917.CF5B037C97@carmen.fc.hp.com>  <20001227224153.5F22637C97@carmen.fc.hp.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 29 Dec 2000 18:06:46 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001230010646.750FF37C97@carmen.fc.hp.com>
+Subject: [parisc-linux] Native compiler doesn't work with new kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
->   In message <200012141640.LAA03285@hiauly1.hia.nrc.ca>you write:
->   > That's what I thought.  It would appear to occur when the above two insns
->   > get moved out of a loop.  The count gets decremented when the old insns
->   > are deleted but not incremented when the new insns are created.  The puzzle
->   > is why the count is zero rather than 1.  Maybe what happens is the two
->   > insns in the loop are deleted first, then the label is deleted?  Notice
->   > that insn 788 is moved to insn 1530.  However, the insn becomes 1531 and
->   > the reg changes to 337 from 208.
-> In this case we typically will bump the number of uses before we delete
-> the insns that way the label doesn't go away unexpectedly.
 
-As far I can tell, move_movables doesn't do this when it moves an insn
-out of a loop.  It does this by deleting the old insn and creating a new
-one.  It calls add_label_notes if notes need to be added to the new insn.
+Matt Taggart writes...
 
-I sent a patch to add_label_notes for review which I think fixes the
-problem.
+> It seems to just be the xcompiled static bash I built. I xcompiled sash and it
+> worked ok. I setup an nfsroot with a bunch of stuff I had cross-compiled and 
+> except for bash and a couple other things, it's working normally. I will try 
+> compiling bash native and see if that helps.
 
-Dave
+OK, since I have a mostly-working nfsroot and a cross-built toolchain I tried 
+running gcc. I just tried "gcc -o hello hellow.c" where hellow.c is the hello 
+world program from cvs->userspace. The compiler dies with signal 6(abort). The 
+system is also pretty erratic, sometimes the prompt takes a few minutes to 
+return.(once with an out-of-memory error)
+
+Someone suggested that I try an older kernel from before the stack changes 
+were made eariler this month, so I tried an old kernel I had around(built with 
+an old xc). Now gcc gets a little further, but dies with,
+
+------------------------------------------------------------------------------
+do_page_fault() pid=18 command='ld'
+
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001011
+r0-3     00000000 fffffff4 000368d7 00107060
+r4-7     00000005 000ef790 00125368 00000000
+r8-11    000e3438 00000000 00105ca0 00000031
+r12-15   000d9ea8 00000000 00107060 000e3120
+r16-19   000fa0c0 00106838 00000000 00000000
+r20-23   001067e8 00000000 0002cc50 00107060
+r24-27   000fa0c0 000d9ea8 000e3120 000d7770
+r28-31   00105ca0 00000002 20020500 000368d7
+sr0-4    00000000 00000004 00000000 00000004
+sr4-8    00000004 00000004 00000004 00000004
+
+IASQ: 00000004 00000004 IAOQ: 0002d5bf 0002d5c3
+ IIR: 0e752087    ISR: 00000004  IOR: 00000000
+ORIG_R28: 00000000
+collect2: ld terminated with signal 11 [Segmentation fault], core dumped
+------------------------------------------------------------------------------
+
+I also wanted to try the older kernel bits built with the new xc but I 
+couldn't remember the -ffunction-section magic to make it work.
+
+If other people want to play with this I have put my new nfsroots at,
+
+ftp://puffin.external.hp.com/pub/parisc/debug/base-20001227.tar.gz [25MB]
+ftp://puffin.external.hp.com/pub/parisc/debug/nfsroot-20001227.tar.gz [59MB]
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Matt Taggart
+taggart@fc.hp.com
