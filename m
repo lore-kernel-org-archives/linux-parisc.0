@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 28 Aug 2003 09:12:16 -0600
+Date: Thu, 28 Aug 2003 09:17:54 -0600
 From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <jsoe0708@tiscali.be>
+To: mmogenius@v8fiesta.co.uk
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
-Message-ID: <20030828151216.GA23430@dsl2.external.hp.com>
-References: <3F4D798800000061@ocpmta7.freegates.net>
+Subject: Re: [parisc-linux] x86 on b2000
+Message-ID: <20030828151754.GB23430@dsl2.external.hp.com>
+References: <Pine.LNX.4.44.0308280022230.16696-100000@sal.ucc.ie> <1062062541.3f4dc9cd843ed@webmail.v8fiesta.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F4D798800000061@ocpmta7.freegates.net>
+In-Reply-To: <1062062541.3f4dc9cd843ed@webmail.v8fiesta.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,43 +20,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Aug 28, 2003 at 09:04:40AM +0200, Joel Soete wrote:
-> Hi Grant,
-> 
-> >AFAIK, a cacheline will get loaded as "shared clean"
-> >until someone writes to it - which is when the cacheline ping-pong
-> >starts.
-> 
-> Mhh would it not request some kind of ipc between cpu for cache management?
+On Thu, Aug 28, 2003 at 10:22:21AM +0100, mmogenius@v8fiesta.co.uk wrote:
+> i'll go for the card and get the adaptehr for a normal monitor.
 
-no.
-IIRC instructions for purging the cache are broadcast to other CPUs.
-
-> But to avoid usage of cache would it be possible to access global kernel's
-> variable with absolute addressing mode? Is it feasible?
-
-Since the caches use virtual indices, it would make sense when using
-physically addresses to bypass the cache. But I don't know if that's
-really the case or not. I would expect that described in the PA2.0 Arch
-book.
-
-> btw scaning code related to SMP I find in smp.c a very draft of
-> an 'ipi_init()' but unfortunately 'Ignore for now.  *May* need this
-> "hook" to register IPI handler'..., interesting isn't it :).
-
-I wrote that. ipi_init and comments can be deleted.
-I haven't seen a need for ipi_init(). When I originally
-implemented the SMP support I thought it might be.
-
-The IPI handler is statically "hooked" (aka registered) in
-	arch/parisc/kernel/irq.c:cpu_irq_actions[]
-
-See ipi_interrupt() for IPI implementation.
-
-> Is there any other platform inplementing such stuff (I try to scan 2.4 src
-> but not found anywhere else) or some reference on to implement it?
-
-it == ?
-IPI is implemented.
+I think two of the Ebay listings have an error: AFAIK, VIz-EG cards have
+an "EVC" connector and not a "DVI" connector. The two connectors look very
+similar except the DVI connector has fewer pins.  Have them count pins and
+verify before ordering the DVI connector.
 
 grant
