@@ -1,21 +1,13 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: [parisc-linux] Re: back to glibc-2.3.3 & gcc-3.4.1 pb
-Date: Mon, 06 Sep 2004 20:26:57 +0000
-Message-ID: <413CC811.4020401@tiscali.be>
-References: <413775C8.3060108@tiscali.be>
-	<20040903154019.GR32474@baldric.uwo.ca>
-	<4138B043.2020009@tiscali.be>
-	<20040904162953.GE32474@baldric.uwo.ca>
-	<413AE748.3030207@tiscali.be> <413AFB1F.7010407@tiscali.be>
-	<20040906200321.GO15721@baldric.uwo.ca>
+From: Bartlomiej Ochman <fback@fback.net>
+Subject: [parisc-linux] xfs in unusable with pa-linux 2.6.8?
+Date: Thu, 09 Sep 2004 13:37:02 +0200
+Message-ID: <4140405E.4070202@fback.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii;
   format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: PARISC Linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040906200321.GO15721@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,24 +18,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello.
 
+Can anybody confirm this? It happens after reboot nearly every time, but 
+also after some time using this fs. The result is different from time to 
+time, sometimes kernel crashes with some backtrace (unfortunately I 
+don't have xfs anymore, and it would be difficult to get one now, since 
+I've moved back to ext2 already), sometimes it oopses with message 
+saying the filesystem is not xfs after reboot. After repairing with 
+xfs_repair most of the filesystem lands in lost+found and the filesystem 
+is generally not usable anymore. I thought it's sync-related, but I'm 
+not sure now, sync; sync; sync; reboot commands does not solve the problem.
 
-Carlos O'Donell wrote:
-> Joel,
-> 
-> 
->>make[2]: *** [/space/jrso/parisc-linux/build/glibc/libio/tst-atime.out] 
-> 
-> 
-> This is new. Could you see why this is failing?
-> 
-"atime has not changed"
+I'll try to make some unimportatnt "partition" later, and send you more 
+detailed report.
 
-mmm may be that's logical:
-/dev/sda3		/		xfs		noatime			
-
-hth,
-	Joel
+Regards,
+BO
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
