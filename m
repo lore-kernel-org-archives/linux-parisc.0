@@ -1,41 +1,44 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] BTLBs usable as HUGHTLBs ?
-Date: Sun, 31 Oct 2004 10:33:39 -0700
-Message-ID: <20041031173339.GB18072@colo.lackof.org>
-References: <200410311504.30552.deller@gmx.de>
+From: j.raspe@t-online.de (Johannes Raspe)
+Subject: Re: [parisc-linux] No "#/'" and "<>|" keys with german HIL-keyboard
+Date: Sun, 31 Oct 2004 18:35:53 +0100
+Message-ID: <200410311835.53401.j.raspe@t-online.de>
+References: <200410311421.17271.j.raspe@t-online.de> <200410311527.03160.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="iso-8859-15"
 Cc: parisc-linux@lists.parisc-linux.org
 To: Helge Deller <deller@gmx.de>
-Return-Path: <grundler@lackof.org>
-In-Reply-To: <200410311504.30552.deller@gmx.de>
+Return-Path: <j.raspe@t-online.de>
+In-Reply-To: <200410311527.03160.deller@gmx.de>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Oct 31, 2004 at 03:04:30PM +0100, Helge Deller wrote:
-> Since HPPA offers Block-TLBs (BTLBs), couldn't those be used
-> comparable/wrapped as so-called HUGHTLBs (CONFIG_HUGETLBFS)
-> as available on i386/ia64 ?
+Hi Helge,
 
-I think so. But here is one caveat.
-IIRC, PDC calls are required to program the BTLB entries. If that's
-correct, then they will be SLOW.  On A500, each PCI Cfg write took
-20ms when using PAT PDC vs 4us when using direct access. YMMV depending
-on platform and how PDC is stored/loaded on that platform. My advice
-is to measure some simple PDC call by reading cr16  before/after
-the call. Then do the math to see if it's worth it.
+glad to hear that you also maintain the HP-HIL stuff!
 
-AFAIK, BTLB was only intended for things like GFX buffers,
-kernel data/text, and similarly long lived mappings.
-Is HugeTLBFS generally used that way?
+Am Sonntag, 31. Oktober 2004 15:27 schrieb Helge Deller:
+> Hi Johannes,
+>
+> On Sunday 31 October 2004 14:21, Johannes Raspe wrote:
+> > after successfully moving to kernel 2.6.x-series with great help from
+> > Helge Deller I'd like to report a problem wich is also present in
+> > 2.4.x-kernels: with my german HIL-keyboerd on a 735/125 the keys for
+> > "#/'" (between left shift-key and the "y"-key) and "<>|" (between Return
+> > and the german "=E4"-key) give absolutely no response to the OS.
+> > I tried "showkey" on a text-console and nothing happens when pressing
+> > these two keys. Every other key gives an output.
+>
+> please apply the following patch and send me the documented console-output
+> for the corresponding keys.
+>
+Output for "<"-key:
+HIL_POL_CHARTYPE_SET1: 118
 
-> from /proc/cpuinfo on my 715/64:
-> BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
-> BTLB fix-entr.  : 0 instruction, 0 data (8 combined)		<--- 8
+Output for "#"-key:
+HIL_POL_CHARTYPE_SET1: 116
 
-8*64MB == 512MB
-That's not as bad as I thought for a PA1.1 machine.
-IIRC, first generation BTLB only has 2 entries.
-
-hth,
-grant
+Johannes
+=2D-=20
+Johannes Raspe - j.raspe@t-online.de
+GnuPG-Key ID: D342E105
+=46ingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
