@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0B439482E
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 00:31:22 -0600 (MDT)
-Date: Thu, 7 Aug 2003 08:31:20 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.6.x - impressions
-Message-ID: <20030807063120.GK1873@lug-owl.de>
-References: <20030806065647.GP1873@lug-owl.de> <20030807062818.GC4979@tausq.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3560iJfidtGRl43/"
-In-Reply-To: <20030807062818.GC4979@tausq.org>
+Received: from mailserver3.hrz.tu-darmstadt.de (mailserver3.hrz.tu-darmstadt.de [130.83.126.47])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7D23A482E
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Aug 2003 00:46:46 -0600 (MDT)
+Message-ID: <3F31F59F.1040608@hrzpub.tu-darmstadt.de>
+Date: Thu, 07 Aug 2003 08:45:51 +0200
+From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: Randolph Chung <randolph@tausq.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Problem: linux-2.6.0-test-pa6 and ssh
+References: <3F31CF22.9080706@hrzpub.tu-darmstadt.de> <20030807060249.GB4979@tausq.org>
+In-Reply-To: <20030807060249.GB4979@tausq.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,41 +23,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---3560iJfidtGRl43/
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for your help, but I already found the answer. (rtfm, or in this 
+case not the manual but "The post-halloween document. v0.42" from Dave 
+Jones... ;) )
+When using devfs with 2.4 I didn't need to mount the devpts-fs, so I 
+comment this part out in /etc/fstab. Because of the changes to devfs in 
+2.5 I had to mount the devpts now. So I mounted devpts, and everything 
+worked like a charm again.
 
-On Wed, 2003-08-06 23:28:19 -0700, Randolph Chung <randolph@tausq.org>
-wrote in message <20030807062818.GC4979@tausq.org>:
-> > - If I strace some program, the box will crash some time later (while
-> >   strace is still running). I can still toggle the NumLock LED by
->=20
-> what did you try to strace that caused the machine to crash?=20
+Running ssh in debug mode and without mounted devpts gives:
+----------SNIP------
+debug1: Allocating pty.
+openpty: No such file or directory
+session_pty_req: session 0 alloc failed
+----------SNAP-----
 
-cvsps. That's a small programm querying a CVS server to get patchsets
-(not simple patches) out of it. It's for a BKCVS to Arch gateway I'm
-working on.
+Ruediger
 
-MfG, JBG
+Randolph Chung schrieb:
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
-
---3560iJfidtGRl43/
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/MfI4Hb1edYOZ4bsRAhoIAKCG76qdWymEgrW26OmADvi6sCYIPgCeOe/c
-Jsi3QMAj72kvTqQVWn4b9LY=
-=Rc+H
------END PGP SIGNATURE-----
-
---3560iJfidtGRl43/--
+>hm.. it seems to work for me... can you try running sshd in debug 
+>mode (sshd -ddd, output goes to syslog) and see if that tells you more 
+>about what's happening?
+>
+>randolph
+>  
+>
