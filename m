@@ -1,74 +1,61 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA14580
-	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Sep 1999 19:32:13 -0600
-Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id SAA20015
-	for <parisc-linux@thepuffingroup.com>; Sat, 4 Sep 1999 18:34:02 -0700 (PDT)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id SAA10177 for <parisc-linux@thepuffingroup.com>; Sat, 4 Sep 1999 18:31:36 -0700 (PDT)
-Message-Id: <199909050131.SAA10177@milano.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA16133
+	for <parisc-linux@puffin.external.hp.com>; Sun, 5 Sep 1999 22:45:03 -0600
+Sender: rbrad@mailserv2.iuinc.com
+Message-ID: <37D343BD.35EFA01A@uswest.net>
+Date: Sun, 05 Sep 1999 22:31:57 -0600
+From: Ryan Bradetich <rbradetich@uswest.net>
+MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
-Date: Sat, 04 Sep 1999 18:31:36 -0700
-From: Grant Grundler <grundler@cup.hp.com>
-Subject: [parisc-linux] EIM register programming
+Content-Type: multipart/mixed;
+ boundary="------------F11139E0A376D7FCBF126122"
+Subject: [parisc-linux] drivers/video/Config.in patch
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
-...
-> > Of GSC devices I'm aware of, only Dino will support pcibios_fixup().
-> > How would a GSC SCSI, LAN, or Graphics card driver program it's EIM
-> > register?
-> > (EIM is equivalent to Dino's IAR0/1 registers)
-> 
-> Not decided yet.
+This is a multi-part message in MIME format.
+--------------F11139E0A376D7FCBF126122
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Ok.
+Hello Hackers:
 
-> alloc_irq is flawed and right now I think
-> 
-> int gsc_request_irq(void *eim,
-> 	void (*handler)(int, void *, struct pt_regs *),
-> 	unsigned long irqflags,
-> 	const char *devname,
-> 	void *dev_id);
-> 
-> might be a good idea.  return value is the number of the IRQ you
-> have so you can do:
-> 
-> 	irq = gsc_request_irq(&dino->hpa->iar0, dino_interrupt, ??, dino->name,
->    dino);
-> 	if(irq < 0) {
-> 		printk("%s: couldn't allocate IRQ\n" dino->name); 
-> 		return irq;
-> 	}
-> 	printk("%s: allocated IRQ %d\n", dino->name, irq);
-> 
-> does that sound okay ?
+I've successfully booted my C200 with the Image-199900705 from
+puffin.external.hp.com.  Now I am working on getting the cvs source to
+compile so I can add to the project.
 
-I think it will work.
-Does Dino need "irq_base" then? I guess it doesn't.
+I haven't seen many patches posted to this list, so please let me know
+if I didn't package the patch correctly. (I did a diff -c).
 
-It's clear this only works for 32-bit "EIM" style devices.
-It won't work for anything different and I don't really know
-what's out there (graphics has a reputation for doing things
-differently though I expect them to also use an EIM register.)
+Just a small patch to get the make xconfig to work.
 
-My general preference is to pass platform knowledge (CPU HPA/EIRR)
-to the caller instead of passing device specific knowledge
-(EIM address) to the service. The former lets one manage platform
-knowledge as a resource (allocate/free model) and is ultimately
-more flexible. The latter is OK too if the device knowledge is
-for a "mature" architecture (eg PCI spec won't change much anymore).
-And GSC certainly won't change anymore.
+-Ryan
 
-I guess what I was looking for were processor (vs bus) specific services.
-The gsc_request_irq() would be a consumer of PA specific services
-and I was thinking some drivers might want to directly use processor
-services directly.
 
-Other comments?
+--------------F11139E0A376D7FCBF126122
+Content-Type: text/plain; charset=us-ascii;
+ name="Config.in.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Config.in.patch"
 
-grant
+*** drivers/video/Config.in.orig	Sun Sep  5 22:24:19 1999
+--- drivers/video/Config.in	Sun Sep  5 22:22:22 1999
+***************
+*** 182,188 ****
+  	   "$CONFIG_FB_VIRGE" = "m" -o "$CONFIG_FB_CYBER" = "m" -o \
+  	   "$CONFIG_FB_VALKYRIE" = "m" -o "$CONFIG_FB_PLATINUM" = "m" -o \
+             "$CONFIG_FB_IGA" = "m" -o "$CONFIG_FB_MATROX" = "m" -o \
+!            "$CONFIG_FB_CT65550" = "m" -o "$CONFIG_FB_PM2" = "m" -o
+             "$CONFIG_FB_HP700" = "m" ]; then
+  	define_bool CONFIG_FBCON_CFB8 m
+        fi
+--- 182,188 ----
+  	   "$CONFIG_FB_VIRGE" = "m" -o "$CONFIG_FB_CYBER" = "m" -o \
+  	   "$CONFIG_FB_VALKYRIE" = "m" -o "$CONFIG_FB_PLATINUM" = "m" -o \
+             "$CONFIG_FB_IGA" = "m" -o "$CONFIG_FB_MATROX" = "m" -o \
+!            "$CONFIG_FB_CT65550" = "m" -o "$CONFIG_FB_PM2" = "m" -o \
+             "$CONFIG_FB_HP700" = "m" ]; then
+  	define_bool CONFIG_FBCON_CFB8 m
+        fi
 
-Grant Grundler
-Communications Infrastructure Computer Operations
-+1.408.447.7253
+--------------F11139E0A376D7FCBF126122--
