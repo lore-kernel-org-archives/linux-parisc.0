@@ -1,32 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ccure.karaya.com (mnh-1-15.mv.com [207.22.10.47])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5AEF0482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 14:42:41 -0600 (MDT)
-Message-Id: <200104202155.QAA04046@ccure.karaya.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: Bob McElrath <rsmcelrath@students.wisc.edu>,
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C8278482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 14:54:48 -0600 (MDT)
+To: esr@thyrsus.com
+Date: Fri, 20 Apr 2001 21:55:14 +0100 (BST)
+Cc: willy@ldl.fc.hp.com (Matthew Wilcox),
 	linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is
- anyone paying attention?
-In-Reply-To: Your message of "Fri, 20 Apr 2001 19:47:02 +0100."
-             <20010420194702.E18464@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+In-Reply-To: <20010420154743.A19618@thyrsus.com> from "Eric S. Raymond" at Apr 20, 2001 03:47:43 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 20 Apr 2001 16:55:18 -0500
-From: Jeff Dike <jdike@karaya.com>
+Message-Id: <E14qhvx-0002BR-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
 List-ID: <linux-parisc.vger.kernel.org>
 
-matthew@wil.cx said:
-> Have you tried mailing webmaster@kernel.org and asking to be added? 
+> CONFIG_BINFMT_SOM: arch/parisc/config.in arch/parisc/defconfig
+> Not used in code anywhere.  Can you get rid of this one?
 
-Yes.
-
-jes@linuxcare.com said:
-> I'd be highly surprised if they said no to adding UML to the list if
-> you mailed them a request to update the page. 
-
-Well, be surprised then.  The reply from hpa was that that list was for 
-processor ports.  He did say that there might at some point in the future be a 
-separate list (off the main page) of other things.
-
-				Jeff
+Its used in the parisc tree as are most of the others you see. You probably want
+to simply skip processing arch/parisc
