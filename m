@@ -1,30 +1,36 @@
-Return-Path: <hppa-linux@puffingroup.com>
-Message-Id: <199902191231.NAA18441@be3334.schering.de>
-From: "Strelow, Ulrich" <Ulrich.Strelow@Schering.DE>
-To: ",hppa-linux@puffingroup.com " <hppa-linux@puffingroup.com>,
-        ",Jason Eckhardt " <jason@equator.com>
-Subject: Betr.: [hppa-linux] bootstrap test
-Date: Fri, 19 Feb 1999 13:30:00 +0100
+Return-Path: <pjlahaie@puffingroup.com>
+Sender: pjlahaie@puffingroup.com
+Message-ID: <36CD6BB0.CF02D28A@atlsci.com>
+Date: Fri, 19 Feb 1999 08:48:32 -0500
+From: "Paul J.Y. Lahaie" <pjlahaie@atlsci.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Resent-Message-ID: <"Brt0F2.0.nK7.wgLps"@burrow.puffingroup.com>
+To: hppa-linux@puffingroup.com
+Subject: Re: [hppa-linux] egcs and binutils cross compiling
+References: <m10Dmte-0007U1C@the-village.bc.nu>
+Content-Type: text/plain; charset=us-ascii
+Resent-Message-ID: <"k4lzA2.0.6M7.SrMps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-     Here another late but successful result for the bootstrap test:
-     
-     Machine   : HP 715/33
-     Processor : PA-RISC1.1 7100
-     Boot Media: external SCSI MOD drive Philips MO 640
-     CPU ID    : CPU: ? (00000000)
-     
-     Ulrich
-     ---------------------------------------------
-     Ulrich Strelow
-     <ulrich.strelow@schering.de or ulrich_strelow@csi.com>
-     Berlin, Germany
-     
-     
+Alan Cox wrote:
+> 
+> > Also, Paul is changing the ELF header structure significantly between
+> > mklinux and *real* linux, so we're getting close to having to just abandon
+> > all of mklinux.
+> 
+> Write an mklinux binary loader bfore you do that. Having a mostly functional
+> user space while doing kernel hacks, and being able to use mklinux to mend
+> the result of failed native kernels is a large win
+
+    The current idea is that we will make the kernel data structures as
+close to HP-UX as possible so future HP-UX compatibility is possible. 
+If we go the MkLinux binary loader route then we'll be stuck making our
+kernel structures MkLinux like or writing an emulation layer.  I'm no
+ELF expert, but at least the MkLinux stuff seems easy, the
+binary is mapped from beginning to end.  Sections aren't mapped at
+different addresses (as other archs seem to do).
+
+						- Paul
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
