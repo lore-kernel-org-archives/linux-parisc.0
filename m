@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DB504829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 23:52:11 -0600 (MDT)
-Date: Thu, 8 May 2003 07:52:03 +0200
-Message-ID: <3EB7727600000F3A@ocpmta1.freegates.net>
-In-Reply-To: <20030507171734.GG23465@tausq.org>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] Oops on 2.4.20-pa33
-To: "Randolph Chung" <randolph@tausq.org>
-Cc: "Jan-Benedict Glaw" <jbglaw@lug-owl.de>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 03DAF4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 23:55:46 -0600 (MDT)
+Date: Thu, 8 May 2003 07:55:45 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030508055545.GQ27494@lug-owl.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IIU4lL9vGQnN7Mxl"
+Subject: [parisc-linux] [Q] "-p" level for submitting patches?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +21,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->> >So I think it would be nice to put this patch into CVS.
->> >
->> I hope also it will be ci but I could not help.
->
->it's in 2.4.20-pa35 now.
->
->Joel, do you think you can come up with a version that applies to 2.5 as
->well?
->
-Well, I have not yet have time to look into 2.5 but I can try to do my best.
-Just be patient: i lost my test server and I have to make place elsewhere.
+--IIU4lL9vGQnN7Mxl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-    Joel
+Hi!
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+I've co'ed the full CVS repository (ie all modules are within one
+direcory). To ease applying patches for you, from which directory should
+I 'cvs diff' changed files?
+
+[ ]	$ ls
+	CVS         CVSROOT    build-tools  gcc      gdb        glibc linux
+	linux-2.5   obsolete   palo         pmccabe  userspace  web
+	$ cvs diff linux-2.5/arch/parisc/...
+
+[ ]     $ ls
+	COPYING        Makefile        crypto   ipc     scripts
+	CREDITS        README          drivers  kernel  security
+	CVS            REPORTING-BUGS  fs       lib     sound
+	Documentation  System.map      include  mm      usr
+	MAINTAINERS    arch            init     net     vmlinux
+	$ cvs diff arch/parisc/linux/....
+
+MfG, JBG
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+
+--IIU4lL9vGQnN7Mxl
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+ufFhHb1edYOZ4bsRAs7nAJoCI9JUI/tdjpmKrj0i44jS4755LgCdG+5d
+oJmqiJYuYwQH8v3g5Y4pqns=
+=VBzq
+-----END PGP SIGNATURE-----
+
+--IIU4lL9vGQnN7Mxl--
