@@ -1,12 +1,15 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] 2.6.9-bk6-pa4:Tuip driver broken on n4k
-Date: Wed, 27 Oct 2004 12:26:25 +0200
-Message-ID: <41617480000075DF@mail-4-bnl.tiscali.it>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Troubles with console on HP9000 rp3440
+Date: Wed, 27 Oct 2004 13:57:46 -0600
+Message-ID: <20041027195746.GC25418@colo.lackof.org>
+References: <200410271322.QAA23840@mail.nek.bg>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-To: parisc-linux@parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: Dimitar Atanasov <d.atanasov@nek.bg>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200410271322.QAA23840@mail.nek.bg>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,29 +20,48 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello pa,
+On Wed, Oct 27, 2004 at 04:22:34PM +0300, Dimitar Atanasov wrote:
+> Hello Pa-Risc!
+> I try to install linux on HP 9000 rp 3440.
 
-Unfortunately, the tulip driver seems to be broken on this n4k:
-the boot sequence start fine until message:
-Linux Tulip driver version 1.1.13 (May 11, 2002)
+Support for pa8800 machines isn't fully functional yet.
+"make -j2" segfaults withing a minute or so. I haven't tried
+again recently.
+Unless you intend on debugging TLB/Cache probles, it's best
+to stick with HPUX for now.
 
-then system panic
-(unfortunately I don't have any way to grab pimfo on this system)
+>  I connect to console over null
+> modem cable, and I start the install from the boot cd.
 
-Any idea?
+Which boot cd? Where did it come from?
 
-TIA,
-    Joel
+The only installer that has a chance of working is if
+debian-installer uses a recent 2.6 kernel (since May, 2004) *or* has
+the pa8800/ZX1 chipset support backported to 2.4 kernel.
 
+hth,
+grant
 
--------------------------------------------------------------------------=
---
-Tiscali ADSL GO & Light, 2 mois gratuits, profitez-en...
-http://reg.tiscali.be/adsl/welcome.asp?lg=3DFR
-
-
-
-
+>  But I lost the
+> output. The installation says that the output is on ttyS0 but I can't find
+> it. I search all com ports and other consoles but I didn't see anything
+> anywhere.
+> Please help if you have any ideas.
+> I have read the manual but I have no such things on my console commands, or
+> may be I didn't understand the procedure.
+> 
+> 
+> 
+> Regards,
+> Dimitar Atanasov
+> NEK EAD.
+> 
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
