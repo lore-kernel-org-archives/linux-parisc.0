@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Andy Walker <squawker@start.no>
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Status report - B132L and 725/100 
-In-Reply-To: Message from Andy Walker <squawker@start.no>
-   of "Thu, 20 Dec 2001 11:06:09 +0100." <1008842769.3c21b81172e7c@nyepost.start.no>
-References: <1008589643.3c1ddb4b75583@nyepost.start.no> <1008594958.3c1df00ed9750@nyepost.start.no> <20011219113621.X1897@linuxcare.com> <1008771313.3c20a0f14484a@nyepost.start.no> <20011219165635.3E405482A@dsl2.external.hp.com> <001b01c188cb$cb1eda60$0201a8c0@andy> <squawker@start.no> <20011219204048.2140B482A@dsl2.external.hp.com> <20011219210329.E1897@linuxcare.com>  <1008842769.3c21b81172e7c@nyepost.start.no> 
-Date: Thu, 20 Dec 2001 13:42:21 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20011220204222.F357B482A@dsl2.external.hp.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 81C85482A
+	for <parisc-linux@parisc-linux.org>; Thu, 20 Dec 2001 16:13:45 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: Richard Hirst <rhirst@linuxcare.com>,
+	Tommi Aihkisalo <tommi.aihkisalo@vtt.fi>
+Subject: Re: [parisc-linux] Network bootproblem with 712/80
+Date: Thu, 20 Dec 2001 21:10:58 +0100
+Cc: parisc <parisc-linux@parisc-linux.org>
+References: <1008318270.3c19b73ecfadb@nyepost.start.no> <000b01c184a9$3f00a1b0$7862bc82@ele.vtt.fi> <20011220151554.L1897@linuxcare.com>
+In-Reply-To: <20011220151554.L1897@linuxcare.com>
+MIME-Version: 1.0
+Message-Id: <20011220231345.81C85482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,14 +25,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Andy Walker wrote:
-> But if I hang an HPUX bootdisk on the card, I can boot happily from
-> it. Bah!
-> Do we know of anybody who has one of these cards working?
+On Thursday 20 December 2001 16:15, Richard Hirst wrote:
+> On Fri, Dec 14, 2001 at 04:11:37PM +0200, Tommi Aihkisalo wrote:
+> > Hello all!
+> >
+> > I am having a problem with my 712/80 when booting with bootp/tftp. With
+> > some effort I got it requesting kernel image (lifimage) over the network.
+> > The download starts but almost the same time it ends and it retries it
+> > over and over again. With Weird-solution's bootp and tftp server I can
+> > see that the download starts many times but all of them results error.
+> > When using the RedHat's bootp/tftp, the tcpdump shows (what I have
+> > understood from the output) that the HP is querying a file of name '.'
+> > (dot), this is quite strange...
 
-Yes. And it really shouldn't be any different than the
-built-in 53c720 on other systems of the same vintage.
-I can't pursue this...but getting a SCSI trace or driver
-debug info would be the next step.
+Hi Tommi,
 
-grant
+did you tried the newest versions of tftp-server on RH ?
+AFAIR the tftp-servers in 7.0 and 7.1 were broken and I fixed them 
+during my time at RedHat.
+
+Greetings,
+Helge
