@@ -1,38 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA08640
-	for <parisc-linux@puffin.external.hp.com>; Sun, 7 Nov 1999 18:02:49 -0700
-Received: at Infodrom Oldenburg (/\##/\ Smail-3.2.0.102 1998-Aug-2 #2)
-	by finlandia.Infodrom.North.DE
-	via smail from stdin
-	id <m11kdDy-000bK1C@finlandia.Infodrom.North.DE>
-	for parisc-linux@thepuffingroup.com; Mon, 8 Nov 1999 02:03:58 +0100 (CET)
-Date: Mon, 8 Nov 1999 02:03:58 +0100
-From: Martin Schulze <joey@finlandia.Infodrom.North.DE>
-To: Alex deVries <adevries@thepuffingroup.com>
-Cc: Andi <der_fisch@fischlustig.de>, parisc-linux@thepuffingroup.com
-Subject: Re: cant use  rbootd
-Message-ID: <19991108020358.N9767@finlandia.infodrom.north.de>
-Reply-To: Martin Schulze <joey@infodrom.north.de>
-References: <19991107134158.Z9767@finlandia.infodrom.north.de> <Pine.LNX.4.10.9911072107360.1761-100000@vodka.thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA09557
+	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Nov 1999 00:52:42 -0700
+Date: Mon, 8 Nov 1999 08:55:13 +0100
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: Andi <der_fisch@fischlustig.de>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] cant use rbootd
+Message-ID: <19991108085513.P25252@mencheca.ch.genedata.com>
+References: <199911030250.TAA16563@puffin.external.hp.com> <19991107125314.N25252@mencheca.ch.genedata.com> <99110713214800.00507@beavis> <99110719083800.00319@beavis>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.9911072107360.1761-100000@vodka.thepuffingroup.com>
+In-Reply-To: <99110719083800.00319@beavis>; from Andi on Sun, Nov 07, 1999 at 07:04:46PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
-> Also, I'd really appreciate it if you could mail that Debian binary
-> package to me so I can put it on puffin.external.hp.com.
+On Sun, Nov 07, 1999 at 07:04:46PM +0100, Andi wrote:
+> OK, forget what I wrote, I used rbootd instead of bootp... oops. Booting over
+> the network works now. I tried the latest snapshot of the PARISC-Linux Kernel.
+> But it doenst seem to get far...
+> 
+> after 
+> 
+> "transferring control to kernel (...)"
+> 
+> nothing happens.
 
-Errr, can't you use lynx or wget?
+See
 
-Anyway, the files should be in your mailbox, source and binary.
+http://puffin.external.hp.com/mailing-lists/parisc-linux/1068.html
 
-I'll try to keep up updated.
+The information contained therein is essential for anyone not using a
+serial console.
 
-Regards,
-
-	Joey
+P.S.  I've managed to find a machine to act as an rboot server now,
+so I've started hacking on the HIL driver to make it work on the 7xx
+series as well as the 300.
 
 -- 
-Beware of bugs in the above code; I have only proved it correct,
-not tried it.  -- Donald E. Knuth
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
