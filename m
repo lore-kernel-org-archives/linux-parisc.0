@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 012DE4882
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Jul 2003 10:29:56 -0600 (MDT)
-Date: Thu, 10 Jul 2003 17:29:49 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Joel Soete <jsoe0708@tiscali.be>,
-	"Carlos O'Donell" <carlos@baldric.uwo.ca>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] C3000 SCSI config, was Re: linux grundler
-In-Reply-To: <20030710161243.GB30482@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0307101724300.8453-100000@sal.ucc.ie>
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id D241B482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 10 Jul 2003 13:19:54 -0600 (MDT)
+From: Helge Deller <deller@gmx.de>
+To: Mihails Nikitins <nikitins@latnet.lv>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: How to enable LCD screen on K-class?
+Date: Thu, 10 Jul 2003 21:20:34 +0200
+References: <1057826587.3f0d271b5b81a@clients.latnet.lv>
+In-Reply-To: <1057826587.3f0d271b5b81a@clients.latnet.lv>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="koi8-r"
+Message-Id: <200307102120.35215.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,41 +24,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, 10 Jul 2003, Grant Grundler wrote:
-
-> Subject: Re: [parisc-linux] C3000 SCSI config, was Re: linux grundler
+On Thursday 10 July 2003 10:43, Mihails Nikitins wrote:
+> > Woody Debian on my K-class does not show info on status LCD screen after
+> > linux is started. How to configure this feature? LCD is working before OS
+> > is loaded, then everything is black.
 >
-> On Thu, Jul 10, 2003 at 11:18:34AM +0100, M. Grabert wrote:
-> > Yes, a (external) FW SCSI terminator and a (external) SE SCSI terminator
-> > at the (external) SE SCSI box.
->
-> "FW SCSI" == "FW Diff SCSI" ?
+> Anyway, is it possible to get it working? I see that something is
+> overwriting LCD diagnostic info while loading Linux.
 
-FastWide SCSI. Fast-SCSI 40.
-The PDC console reports the external box as (SE) SCSI, the other as FW SCSI.
-That's the reason I call/report it this way.
+Please send an output of /proc/cpuinfo. The Hardware-ID of your
+system might be interesting to figure out, why it doesn't work.
 
-> C3000 doesn't have FW Diff SCSI built-in.
-> Only 50-pin SE SCSI and 68-pin LVD/SE SCSI.
-
-As I said, there are 2 LVD SCSI drives installed internally.
-
-> Remove the FW Diff terminator and run w/o a terminator rather than
-> the wrong one.
-
-I got the machine with 2 terminators, a SE SCSI and (obviously) a LVD SCSI.
-I don't think it's a differential terminator.
-
-> > I'm using the the 2.4 -kernel, and it says:
-> >
-> > "The Zalon is an interface chip that sits between the PA-RISC
-> > processor and the NCR 53c720 SCSI controller on K-series PA-RISC
-> > boards (these are used, among other places, on some HP 780
-> > workstations).  Say Y here to make sure it gets initialized
-> > correctly before the Linux kernel tries to talk to the controller."
-> >
-> > Well, since the C240/C3000 are 780-series machines, I wasn't so sure ...
->
-> C3000 is 9000/785 ...but the 2.5 help text is much clearer.
-
-Thanks, Max
+Helge
