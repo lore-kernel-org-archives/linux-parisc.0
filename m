@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from md.dent.med.uni-muenchen.de (md.dent.med.uni-muenchen.de [138.245.179.2])
-	by dsl2.external.hp.com (Postfix) with SMTP id 89565483E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 07:40:04 -0600 (MDT)
-Date: 26 Sep 2003 13:39:54 -0000
-Message-ID: <20030926133954.12328.qmail@md.dent.med.uni-muenchen.de>
-From: wmglo@dent.med.uni-muenchen.de
-To: carlos@baldric.uwo.ca
-Cc: libc-alpha@sources.redhat.com,
-	parisc-linux@lists.parisc-linux.org
-In-reply-to: <20030925211509.GY14406@systemhalted> (carlos@baldric.uwo.ca)
-References: <20030925211509.GY14406@systemhalted>
-Subject: [parisc-linux] Re: [RFC] Where to put arch-dependant locking in malloc/thread-m.h
+Received: from rrrrrr (157.Red-80-35-215.pooles.rima-tde.net [80.35.215.157])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91A1F483E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 08:08:50 -0600 (MDT)
+From: lottolaprimitiva@starspath.com
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+	charset="US-ASCII"
+Reply-To: lottolaprimitiva@starspath.com
+Date: Fri, 26 Sep 2003 16:09:06 +0200
+Message-Id: <20030926140850.91A1F483E@dsl2.external.hp.com>
+Subject: [parisc-linux] WINNING  NOTIFICATION:
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +21,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+   LOTTERY LA PRIMITIVA. 
+        C/BUSMAN EL BUENO,137 MADRID - ESPANA.   
+      TEL: +34-620-038-455   FAX:-+34-665 048 681.
 
-> The following patch fixes the issue, but I'm not content about it's
-> placement in malloc/thread-m.h. Any comments about where I might put
-> this in order to make maintenance easier?
+ FROM: THE DESK OF THE PROMOTIONS MANAGER,
+ INTERNATIONAL PROMOTIONS/PRIZE AWARD DEPARTMENT,
 
-Ok, I have become convinced it is best to move thread-m.h into
-sysdeps.  We should rename it, too (my suggestion: malloc-machine.h),
-and make sure that one can put e.g.
+ REF: LP/26510460037/02 BATCH: 24/00319/IPD
 
-#define DEFAULT_MMAP_THRESHOLD (256*1024)
+DEAR SIR,
 
-in there and have it reflected in malloc.
+RE: AWARD NOTIFICATION FINAL NOTICE
 
-I'll send a patch for this tomorrow.
+We are pleased to inform you of the announcement, of winners of the LOTTERY PRIMITIVSWEEPSTAKES/INTERNATIONAL PROGRAMS held on 6 AUGUST,2003. Your name is attached to ticket number 004-05117963-198, with serial number 99375 drew the lucky numbers 15-23-24-26-33-47, and  consequently won the lottery in the 3rd category.You have therefore been approved for a lump sum pay out of EUROS647,828.87 Thousand in cash credited to file No:LP/26510460037/02.This is from total prize money of EUROS 80,400,000.00 shared among the twenty two international winners in this category.   All participants were selected through a computer ballot system drawn form 25,000 names from Australia,New Zealand, America,Europe,North America and  Asia as part of International Promotions Program,which is conducted annually. CONGRATULATIONS!!! Your fund is now insured to your name. Due to the mix up of some numbers and names, we ask that you keep this award strictly from public notice until your claim has been processed and your money remitted to your account. This is part of our security protocol to avoid double claiming or unscrupulous  acts by participants of this program. We hope with a part of your prize, you will participate in our end of year high stakes Euros1.1 billion International Lottery.  To begin your claim, please contact your claims agent,PACIFIC-SECURITAS FOREIGN OPERATION MANAGERS ATTN:MR.JUAN GARCIA.,Email; :pacificsecs@whipmail.com).
 
-Regards,
-Wolfram.
+For processing and remittance of your prize money to a designated account with our bankers. Remember, all prize money must be claimed not later than 30th October ,2003. After this date, all funds will be returned as unclaimed. NOTE: In order to avoid unnecessary delays and complications, please remember to quote your reference and batch numbers in every one of your correspondences with your agent. Furthermore, should there be any change of your address,do inform your claims agent as soon as possible.   Congratulations again from all our staff and thank you for being part of our promotions programm
+
+ Sincerely,
+ JUAN . GARCIA.
