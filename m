@@ -1,25 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.calyx.net (mail.calyx.net [216.82.160.19])
-	by dsl2.external.hp.com (Postfix) with SMTP id AAEC9482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Apr 2001 08:55:35 -0600 (MDT)
-Date: Tue, 17 Apr 2001 10:54:21 -0400 (EDT)
-From: "Brian S. Julin" <bri@mojo.calyx.net>
-To: <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.BSO.4.33.0104171048310.9556-100000@mojo.calyx.net>
+Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3BAC9482A
+	for <parisc-linux@parisc-linux.org>; Tue, 17 Apr 2001 12:04:58 -0600 (MDT)
+Sender: Jes.Sorensen@cern.ch
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] FB cleanups
+References: <E14o832-0003Ih-00@the-village.bc.nu>
+From: Jes Sorensen <jes@linuxcare.com>
+Date: 17 Apr 2001 20:04:53 +0200
+In-Reply-To: Alan Cox's message of "Fri, 13 Apr 2001 19:11:52 +0100 (BST)"
+Message-ID: <d366g3xv0a.fsf@lxplus015.cern.ch>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Wow.
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-I just updated my system so I could begin work on the HIL
-driver (have docs now, thanks everyone) and that was MUCH
-less painful than I thought it was going to be.  Sure, I
-had to comb through the packages with dselect and download
-some of the .debs by FTP, but the toolchain and kernel
-built as per the instructions with no finagling, and the
-upgrade of my old crusty libc didn't break the system.
+>>>>> "Alan" == Alan Cox <alan@lxorguk.ukuu.org.uk> writes:
 
-Kudos to all.  This distro is really shaping up!
+>> Well time to go study the bus behaviors and compare them then. How
+>> does gsc behave wrt cache coherency, read-around-write, write
+>> ordering etc etc.
 
---
-Brian S. Julin
+Alan> And ISA is noticable for the fact it doesnt behave quite like
+Alan> PCI. You use readb/readw/readl on ISA.
+
+Yes, except that ISA has stronger semantics than PCI.
+
+>> Using writeb on a gsc is misleading everybody else who reads the
+>> code into believing that it's a PCI device.
+
+Alan> Rubbish.
+
+Unfortunately not, look at the fb code to see the chaos.
+
+Jes
