@@ -1,50 +1,71 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DBAF482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Apr 2001 16:47:35 -0600 (MDT)
-Message-Id: <200104262241.QAA09672@puffin.external.hp.com>
-To: "Peter Weatherall" <peter.weatherall@3beans.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Dino 
-In-Reply-To: Your message of "Thu, 26 Apr 2001 16:28:13 CDT."
-             <000501c0ce97$cd18ec00$a2035ad8@3beans.com>
-Date: Thu, 26 Apr 2001 16:41:08 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from p2.buttafuoco.net (buttafuoco.mv.com [207.22.43.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BA48F482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Apr 2001 06:49:20 -0600 (MDT)
+Date: Fri, 27 Apr 2001 08:49:10 -0400
+Message-Id: <200104271249.IAA10226@p2.buttafuoco.net>
+From: "Jim Buttafuoco" <jim@buttafuoco.net>
+To: "Jeremy C. Reed" <reed@reedmedia.net>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP 710 and miscellaneous questions ...
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Peter Weatherall" wrote:
-> Dino version 2.1 (bridge mode) found at 0xf1600000
+Jeremy,
+
+The 710 doesn't seem to work just yet.  A number of people are working
+on getting both the network and scsi drivers to work.  I am also waiting
+for support (I have 2 710's).
+
+Jim
+
+> I see "[t]his mailing list exists to serve the developers." Where is
+> the appropriate forum to discuss basic usage?
+> 
+> I have an HP 700 Series Apollo Model 710. As far as I can tell it has
+no
+> usable operating system (no HPUX). I can turn it on and connect to a
+> series of (CMOS?/BIOS?) prompts and menus via a serial cable. It does
+not
+> have a CD drive. I do not have HPUX to do any cross-compiles. (I have
+> installed a variety of flavours of BSD and Linux hundreds of times,
+but
+> always on i386 architectures.)
+> 
+> I want to use Linux (or BSD) on it. The PA-RISC webpages have links
+for
+> documentation, but none appear to explain a basic install. Where is
+the
+> documentation for installing Linux on a hard drive?
+> 
+> The software page (http://www.parisc-linux.org/software/) says
+"nfsroot"
+> is the easiest way; but the instructions say "you have to build on
+> HP/UX."
+> 
+> Is there simply a filesystem image (with kernel and userspace) that I
+can
+> dd to a harddrive that I can then use to boot my HP 710)? If so, where
+is
+> it? (And where is this documented?)
+> 
+> Also, I see an ISO image at
+> ftp://puffin.external.hp.com/pub/parisc/cd-images/; is there any
+> (easy) way to convert this ISO image to an image that I can dd on to
+my
+> hardrive (to use to boot)?
+> 
+> Thanks,
+> 
+>    Jeremy C. Reed
+>    http://bsd.reedmedia.net/
 > 
 > 
-> The GSCtoPCI (Dino hrev 1) bus converter found may exhibit
-> data corruption.  See Service Note Numbers: A4190A-01, A4191A-01.
-> Systems shipped after Aug 20, 1997 will not exhibit this problem.
-> Models affected: C180, C160, C160L, B160L, and B132L workstations.
 > 
-> dino_bridge_init: IO_ADDR_EN hasn't been configured.
-> kernel BUG at dino.c:795!
-> >>>>>
-
-I added this text about 1.5 years ago.
-
-
-> How can I determine if my c160 is affected ? what's this kernel bug at
-> dino.c all about and is there some Dino documentation available ?
-
-The bug is documented in the Dino3.1 Errata. I don't recall if that got
-published. Search the mail archive for "corruption".
-
-With a dino2.1, I'd be pretty certain your box will be affected.
-My understanding was HP replaced old dino chips with 3.1 versions.
-For customers, this meant a board swap.
-
-Note that upgrading PDC (firmware) may render PCI unusable.  PDC won't
-let you boot (or get to PDC prompt) the box if dino is rev 3.0 or lower
-*and* a PCI card (except HP graphics) is installed. It'll halt and print
-something about PCI and "contact local HP support".
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
+> 
