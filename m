@@ -1,27 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92D31482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 10:19:39 -0600 (MDT)
-Message-Id: <200110211619.f9LGJXge014176@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Large SCSI disks on a 735/125
-To: grundler@puffin.external.hp.com (Grant Grundler)
-Date: Sun, 21 Oct 2001 12:19:32 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3EBA5482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 11:28:41 -0600 (MDT)
+Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via smail with esmtp
+	id <m15vMOn-000OzIC@bame.riverrock.org> (Debian Smail3.2.0.111)
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 11:28:33 -0600 (MDT)
+Message-Id: <m15vMOn-000OzIC@bame.riverrock.org>
+To: Matthew Wilcox <willy@debian.org>
 Cc: Steve.Grady@csiro.au, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200110202311.RAA22159@puffin.external.hp.com> from "Grant Grundler" at Oct 20, 2001 05:11:53 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Large SCSI disks on a 735/125 
+In-Reply-To: Your message of "Sat, 20 Oct 2001 23:22:31 BST."
+             <20011020232231.D31505@parcelfarce.linux.theplanet.co.uk>
+References: <49AA3A3C863E5B4C911320AEF99E5DA3010CCBC0@wing-ep.tip.csiro.au>  <20011020232231.D31505@parcelfarce.linux.theplanet.co.uk> 
+Date: Sun, 21 Oct 2001 11:28:33 -0600
+From: Paul Bame <bame@riverrock.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> The question is will you be able to find a 9 or 18GB disk
-> with either SE SCSI or HVD SCSI interface which the 735
-> can connect to.
+> The only thing to beware of is that palo can only access the first
+> 2GB of the disc, so the kernel that it loads has to be in this area.
+> It is possible to fix palo to work for >2GB partitions, but nobody's
+> done that yet.
 
-What about a Seagate ST318417N?  It is: 18.4GB, 7200 rpm, 8.5 ms seek avg,
-Ultra SCSI, suggested resale price $269.  While you can still find a HVD
-drive it looks like they are rapidly going the way of the dodo bird.
+The firmware call which supports >2GB access may not be available
+in that box -- I'm not sure when it became available.  Linux will
+have no problem accessing the whole drive however.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+	-P
