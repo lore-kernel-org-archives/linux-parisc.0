@@ -1,51 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA02274
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 19:45:48 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <39B5A1B1.CA09A271@uswest.net>
-Date: Tue, 05 Sep 2000 19:45:21 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
-To: Bob Pflederer <krp@rsn.hp.com>
-CC: John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Boot error on C200+
-References: <200009030329.VAA17641@udlkern.fc.hp.com> <20000905120228.H999@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA03568
+	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 22:08:41 -0600
+Message-Id: <200009060412.VAA24394@milano.cup.hp.com>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] entry.S Invalid operands 
+In-reply-to: Your message of "Wed, 06 Sep 2000 11:46:40 PDT."
+             <Pine.LNX.4.21.0009061137540.22521-100000@front.linuxcare.com.au>
+Date: Tue, 05 Sep 2000 21:12:21 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Bob and John,
+Alan Modra wrote:
+> My guess is that you need to update your assembler.  The lines in question
+> use register aliases instead of %r<num>:
+>         depd            pte,8,7,prot
+> 
+> pehc CVS before 2000-08-23 won't accept register aliases on all
+> instructions.
 
-I have the latest CVS kernel on booting on the C200+ and a 755.
-They both booted to an ash prompt without any modifications!
+Alan,
 
-Just wanted to let everyone know the changes John made are
-working great for me in PARISC 1.1 and PARISC 2.0 land!
+I had just updated gcc/binutils and rebuilt them today.
+[ See build-tools/recipe.linux.
+  "-u" forces an update and "-R" wipes out the build directories
+  before building everything again. ]
 
-Thanks,
+I might be picking up "as" from someplace else...let me double check.
+I am. My PATH is set to /opt/puffin/bin expecting linux-2.3/Makefile
+to set CROSS_COMPILE to hppa-linux...so I end up with *native* toolchain.
+arrrgggh.
 
-Ryan
+thanks,
+grant
 
-P.S. It is a great feeling to see my C200+ finally boot linux!
-
-Bob Pflederer wrote:
-
-> I noticed that John committed something this morning, so I tried it out
-> on my C180, and it works!  For the first time, the CVS kernel boots
-> un-modified on my C180.  Odds are good that it will also work in C200+.
->
-> Thanks, John.
->
-> >
-> > My fix will do a simple 3-4 assembly instruction test for PA2.0 in
-> > head.S, and then install the appropriate iva. This wastes 2K of memory
-> > having two iva's, but is a lot simpler to do in assembly very early
-> > in the boot process. I'll try to get this done by Tuesday morning
-> > (I work throughout the night Monday).
-> >
-> > John Marvin
-> > jsm@fc.hp.com
-> >
->
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
