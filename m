@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0A319482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 14:38:08 -0600 (MDT)
-Message-Id: <200308112038.h7BKc61c020812@hiauly1.hia.nrc.ca>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07149482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 14:41:42 -0600 (MDT)
+Message-Id: <200308112041.h7BKfemX020838@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] xfree86 4.2.1-9 build problem
-To: grundler@parisc-linux.org (Grant Grundler)
-Date: Mon, 11 Aug 2003 16:38:06 -0400 (EDT)
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Mon, 11 Aug 2003 16:41:39 -0400 (EDT)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030811043457.GA5653@dsl2.external.hp.com> from "Grant Grundler" at Aug 10, 2003 10:34:57 pm
+Cc: grundler@parisc-linux.org, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030811202103.GH20106@systemhalted> from "Carlos O'Donell" at Aug 11, 2003 04:21:03 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,37 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> The basic problem is glxinfo (C program) links against libGLU.so
-> (C++ built library). But glxinfo fails to link using gcc:
-> ...
-> gcc -o glxinfo -g -O -ansi -pedantic -Wall -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wnested-externs -Wundef     -L../../exports/lib glxinfo.o -lGLU -lGL -lXext -lX11  -lpthread -lm -Wl,-rpath-link,../../exports/lib
-> ../../exports/lib/libGLU.so: undefined reference to `_Unwind_SjLj_Resume@GCC_3.0'
-> ../../exports/lib/libGLU.so: undefined reference to `_Unwind_SjLj_Register@GCC_3.0'
-> /usr/bin/../lib/libstdc++.so.5: undefined reference to `_Unwind_SjLj_RaiseException@GCC_3.0'
-> ../../exports/lib/libGLU.so: undefined reference to `_Unwind_SjLj_Unregister@GCC_3.0'
-> /usr/bin/../lib/libstdc++.so.5: undefined reference to `_Unwind_SjLj_Resume_or_Rethrow@GCC_3.3'
-> collect2: ld returned 1 exit status
-> ...
+> On Mon, Aug 11, 2003 at 03:25:47PM -0400, John David Anglin wrote:
+> > > What's interesting is the "ld" command has "-lgcc-eh" which is where
+> > > the missing symbols are defined:
+> > > grundler <512>nm libgcc_eh.a | grep _Unwind_SjLj_Resume
+> > > 0000079c T _Unwind_SjLj_Resume
+> > > 000008d0 T _Unwind_SjLj_Resume_or_Rethrow
+> > > grundler <513>pwd
+> > > /usr/lib/gcc-lib/hppa-linux/3.3.1
+> > 
+> > Yes, but libgcc_eh.a doesn't contain the versioned symbols that the shared
+> > libraries need.
+> 
+> Are we not using libgcc_eh to resolve such symbols in libgcc and libc?
 
-Ok, here is what is happening.
-
-First, I gave you the wrong advice on the option to get verbose info from ld.
-I gave you the hpux option.  The GNU option is `--verbose' or `-Wl,--verbose'
-when using the gcc driver.
-
-Here is the linker path on gsyprf11:
-
-SEARCH_DIR("/usr/hppa-linux/lib"); SEARCH_DIR("/usr/lib"); SEARCH_DIR("/usr/local/lib"); SEARCH_DIR("/lib");
-
-Here is where ld found libgcc_s.so.1:
-found libgcc_s.so.1 at /usr/local/lib/libgcc_s.so.1
-
-The version of libgcc_s.so.1 in /usr/local/lib is old and appears to have
-been built using dwarf2 exception support.
-
-Probably, the version of GCC installed in /usr/local should be removed.
-I believe it was the initial port with support for Ada.  However, this
-is now part of the regular debian distro.
+Not for versioned symbols.  For that, you need to link with libgcc_s.so
+(i.e., the shared version of libgcc).  The g++ driver does this automatically.
+You can also add `-shared-libcc' to your link command when using the gcc
+driver.
 
 Dave
 -- 
