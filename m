@@ -1,27 +1,35 @@
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id SAA05973
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 18:07:05 -0700
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id MAA09613;
-	Fri, 1 Dec 2000 12:07:29 +1100
-Date: Fri, 1 Dec 2000 12:07:29 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Paul Bame <bame@noam.fc.hp.com>
-cc: parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] time_t, size_t, off_t, ...
-In-Reply-To: <E141Zid-00049i-00@noam.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0012011205310.2814-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA06940
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 19:29:29 -0700
+Date: Thu, 30 Nov 2000 19:19:09 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Alex deVries <adevries@linuxcare.com>
+Cc: Kailashnath V Rampure <kailasr@webcash.com>,
+        parisc-linux@thepuffingroup.com, bame@noam.fc.hp.com,
+        grundler@cup.hp.com
+Subject: Re: [parisc-linux] Is there any sqlnet for Linux on HP
+Message-ID: <20001130191909.D18385@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <5.0.0.25.0.20001130125058.00b02970@mail.webcash.com> <3A26C612.2A44AE6@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3A26C612.2A44AE6@linuxcare.com>; from adevries@linuxcare.com on Thu, Nov 30, 2000 at 04:26:42PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 30 Nov 2000, Paul Bame wrote:
+> I'm assuming you mean HP PA-RISC Linux, not HP IA32/64 Linux.
+> 
+> No.  The only applications right now for parisc-linux are open source
+> ones, and we haven't touched any SQL client libraries.
+> 
+> Conceivably the DBI stuff should work, but I don't think anyone's really
+> tried.
 
-> (6)	Debugger is going to care about structs in elf.h, which are not
-> 	identical narrow and wide at the present time.
+presumably the DBD Oracle library still links the the oracle sqlnet
+libraries, so i doubt this will work.
 
-I'm more concerned about the fact that quite a few registers of interest
-are missing from elf_gregset_t
-
+randolph
 -- 
-Linuxcare.  Support for the Revolution.
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
