@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 03DAF4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 23:55:46 -0600 (MDT)
-Date: Thu, 8 May 2003 07:55:45 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030508055545.GQ27494@lug-owl.de>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IIU4lL9vGQnN7Mxl"
-Subject: [parisc-linux] [Q] "-p" level for submitting patches?
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23CED4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 23:57:33 -0600 (MDT)
+Date: Thu, 8 May 2003 07:53:46 +0200
+Message-ID: <3EB7727600000F3B@ocpmta1.freegates.net>
+In-Reply-To: <69160AB4-80B4-11D7-83E2-0030656F07A2@esiee.fr>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] isobuild.sh read access?
+To: =?ISO-8859-1?Q?Thibaut=20VAR=C8NE?= <varenet@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,49 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---IIU4lL9vGQnN7Mxl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>>
+>> You don't have permission to access /archive/scripts/isobuild.sh on 
+>> this
+>> server.
+>corrected
 
-Hi!
+Thanks,
 
-I've co'ed the full CVS repository (ie all modules are within one
-direcory). To ease applying patches for you, from which directory should
-I 'cvs diff' changed files?
+>> PS: Would it not be put also into build-tools cvs tree?
+>i don't think so.
 
-[ ]	$ ls
-	CVS         CVSROOT    build-tools  gcc      gdb        glibc linux
-	linux-2.5   obsolete   palo         pmccabe  userspace  web
-	$ cvs diff linux-2.5/arch/parisc/...
+Ok
 
-[ ]     $ ls
-	COPYING        Makefile        crypto   ipc     scripts
-	CREDITS        README          drivers  kernel  security
-	CVS            REPORTING-BUGS  fs       lib     sound
-	Documentation  System.map      include  mm      usr
-	MAINTAINERS    arch            init     net     vmlinux
-	$ cvs diff arch/parisc/linux/....
+>it's not useable per se, and I think you'll have trouble with it.
+>it's just published to give an idea what has to be done to build an ISO.
 
-MfG, JBG
+That is all I expect :)
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+Thanks for help,
+  Joel
 
---IIU4lL9vGQnN7Mxl
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+ufFhHb1edYOZ4bsRAs7nAJoCI9JUI/tdjpmKrj0i44jS4755LgCdG+5d
-oJmqiJYuYwQH8v3g5Y4pqns=
-=VBzq
------END PGP SIGNATURE-----
-
---IIU4lL9vGQnN7Mxl--
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
