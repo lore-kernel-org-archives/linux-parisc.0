@@ -1,23 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from lxorguk.ukuu.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 688454829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 10:01:07 -0600 (MDT)
-Received: from dhcp22.swansea.linux.org.uk (dhcp22.swansea.linux.org.uk [127.0.0.1])
-	by lxorguk.ukuu.org.uk (8.12.8/8.12.5) with ESMTP id h3GF31RN030226;
-	Wed, 16 Apr 2003 16:03:01 +0100
-Received: (from alan@localhost)
-	by dhcp22.swansea.linux.org.uk (8.12.8/8.12.8/Submit) id h3GF2xMX030224;
-	Wed, 16 Apr 2003 16:02:59 +0100
-Subject: Re: [parisc-linux] Re: Presicionbook success
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: Gavin Hubbard <ghub005@xtra.co.nz>
+Received: from smtp-out.tiscali.be (unknown [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 476B64829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 10:44:13 -0600 (MDT)
+Date: Wed, 16 Apr 2003 18:44:11 +0200
+Message-ID: <3E9BA3A600000DC1@ocpmta2.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] parisc-linux.org kernel
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3.0.2.32.20030417011531.00a2bf20@pop3.xtra.co.nz>
-References: <3.0.2.32.20030417011531.00a2bf20@pop3.xtra.co.nz>
-Content-Type: text/plain
-Message-Id: <1050505378.28591.114.camel@dhcp22.swansea.linux.org.uk>
-Mime-Version: 1.0
-Date: 16 Apr 2003 16:02:58 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,11 +21,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mer, 2003-04-16 at 14:15, Gavin Hubbard wrote:
-> Before anyone loses too much sleep over this, the Precisionbook has
-> internal SCSI-IDE bridges that sit between the HBA and the drives. I
-> believe a similar system was used in some of the earlier Apple Powerbooks.
+>cool - let me add some general comments.
+>You might break the diff up into chunks along the lines that
+>I've commented on them below. You should end up with something like
+>15-20 patches.
 
-So htf do they end up on the IDE controller too ? If they show up on the
-scsi bus under Linux then I need the ssvid/ssid for the CMD device (and
-which CMD variant is used) and I can vanish it easily enough.
+Well I already create:
+a chunck containing debian-configs (I call it 00_parisc_debian-configs.patch)
+[about 140k] (would it be submited?)
+
+another chunk containing all parisc specific (named 01_parisc.patch) containing
+arch/parisc, include/asm-parisc and another noticed "parisc specific" [about
+160k]
+
+>
+>>  Documentation/Configure.help                      |   90
+>	I expect parisc-specific changes here.
+
+Still have to care about a very small hunk (already from 2.4.19-pa2)
+@@ -17555,6 +17595,10 @@
+   doing that; to actually get it to happen you need to pass the
+   option "console=lp0" to the kernel at boot time.
+
++  Note that kernel messages can get lost if the printer is out of
++  paper (or off, or unplugged, or too busy..), but this behaviour
++  can be changed. See drivers/char/lp.c (do this at your own risk).
++
+   If the printer is out of paper (or off, or unplugged, or too
+   busy..) the kernel will stall until the printer is ready again.
+   By defining CONSOLE_LP_STRICT to 0 (at your own risk) you
+
+The rest is "parisc specific"
+
+>
+>>  arch/parisc/config.in                             |    6
+>...
+>	parisc specific (our tree is authoritative)
+>	Need to review for changes in Marcelo's tree.
+>	I expect Marcello to take the mess as-is if there
+>	are no conflicts.
+>
+Just more some small changes of mine (matching as near as possible changes
+of other platform) to obtain a bootable 32bits kernel for my b2k (and its
+fameous ide cdrom) and a b180L :)
+
+Thanks in advance for your additional attention,
+    Joel
+
+PS: As advise I will not consider generic patches (the main require knowledge
+I do not have)
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
