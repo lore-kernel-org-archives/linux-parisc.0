@@ -1,82 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.snowman.net (ns.snowman.net [63.80.4.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8EE2D4837
-	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 20:01:38 -0600 (MDT)
-Received: from localhost (nick@localhost)
-	by ns.snowman.net (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA17635
-	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 22:01:37 -0400
-Date: Thu, 27 Sep 2001 22:01:37 -0400 (EDT)
-From: <nick@snowman.net>
-To: parisc-linux@parisc-linux.org
-Subject: Re: Betr.: [parisc-linux] HP C180
-Message-ID: <Pine.LNX.4.21.0109272158500.7708-100000@ns>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C84044837
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 23:45:03 -0600 (MDT)
+Message-Id: <200109280541.XAA27408@puffin.external.hp.com>
+To: Hamish Moffatt <hamish@cloud.net.au>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] FW SCSI on the D350 
+In-Reply-To: Message from Hamish Moffatt <hamish@cloud.net.au>
+   of "Fri, 28 Sep 2001 00:13:54 +1000." <20010928001354.A1519@silly.cloud.net.au>
+Date: Thu, 27 Sep 2001 23:41:28 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I Run into the exact same problem on a mounted ext2fs with 2xram as swap.
-init-2.04# find . -name palo -print                                         
-Out of Memory: Killed process 45 (find).                                    
-..
-Out of Memory: Killed process 45 (find).
-SysRq: Emergency Sync                                                       
-Syncing device 08:03 ... OK                                                 
-Syncing device 08:11 ... OK
-Syncing device 08:12 ... OK
-Syncing device 08:04 ... OK
-Done.
-SysRq: Show Regs
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111
-r0-3     00000000 102d6a28 1026bd0c 0000000c                                
-r4-7     105f46e4 105f4794 00000008 00000001                                
-r8-11    ffffffff 00000010 105f46db efa0b925                                
-r12-15   102d6a28 00000000 00000000 00000000                                
-r16-19   105f4258 00063800 10334000 1026d912                                
-r20-23   00000000 1026d912 0000000e 00000000
-r24-27   1026d911 1029275d 105f48f8 10294010
-r28-31   105f46e4 00000000 105f4880 1026b648
-sr0-3    00000000 00000000 00000000 0000007c
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 1026b724 1026b728
- IIR: 0ea01014    ISR: 00000000  IOR: 00000000
- CPU:        0   CR30: 105f4000 CR31: 10338000
- ORIG_R28: 105f49c0                                                         
-Done.
-SysRq: Emergency Remount R/O
-Remounting device 08:03 ... OK
-Remounting device 08:11 ... OK
-Remounting device 08:12 ... OK
-Remounting device 08:04 ... OK
-Done.
-SysRq: Show Memory
-Mem-info:
-Free pages:      115496kB (     0kB HighMem)
-( Active: 63, inactive_dirty: 137, inactive_clean: 0, free: 28874 (255 510
-765) )
-0*4kB 1*8kB 0*16kB 1*32kB 54*64kB 57*128kB 35*256kB 25*512kB 11*1024kB
-35*2048kB = 115496kB)
-= 0kB)
-= 0kB)
-Swap cache: add 92308, delete 92271, find 75/305
-Free swap:       248700kB
-32768 pages of RAM
-1223 reserved pages
-13 pages shared
-37 pages swap cached
-Buffer memory:      176kB
-SysRq: Resetting
-
-Any suggestions?
-	Thanks
-		Nick
-On Wed, 26 Sep 2001, Jurriaan Kalkman wrote:
-> The 2.4.9 kernel really needs swap, or so I've read on the linux-kernel mailing list.
-> You should add some swap. 2* [size of main memory] is a safe amount.
-> It's considered a bug, but it needs swap even if there is free memory.....
+Hamish Moffatt wrote:
 > 
-> Good luck,
-> Jurriaan
+> Hi,
 > 
+> I'm trying to install the 0.9 release on a D350 server. The kernel
+> recognises the standard SCSI, using the lasi7xxx driver, and finds
+> the tape drive and the CD-ROM on that host. However, it doesn't
+> find the Bluefish fast/wide SCSI host, so it doesn't find the
+> four internal hard disks, which makes installation a little tough.
+
+The D-class is very similar to Cxxx - ie it has U2 or Uturn in it.
+parisc-linux currently only supports GSC devices below the first IOMMU.
+Ryan Bradetich is working on "I/O tree" support to enable support
+for multiple IOMMUs - then we should be able to walk additional
+GSC busses and find more devices.
+
+> The boot-up firmware recognises all of the disks OK, but the Bluefish
+> is just not included in the device list shown at startup/dmesg.
+
+Probably because GSC bus with your Bluefish (FWD SCSI) isn't being walked.
+That's something Ryan wants to fix once IOtree support is at least
+sort-of working.
+
+> I'll try the 0.9.2 release tomorrow. Any other things I can do
+> which might help?
+
+Send Ryan cash. ;^)
+(Just kidding...)
+
+grant
