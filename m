@@ -1,34 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tdl.com (tdl.com [206.180.224.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C1046482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Oct 2001 01:04:14 -0600 (MDT)
-Date: Tue, 9 Oct 2001 00:04:12 -0700
-From: Randall Craig <randall@tdl.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Grant Grundler <grundler@puffin.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] bad loopback error msg
-Message-ID: <20011009000412.B20501@tdl.com>
-References: <200110090020.SAA01264@puffin.external.hp.com> <20011009023331.D25819@parcelfarce.linux.theplanet.co.uk>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4207B482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Oct 2001 01:10:26 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.4d3e3a24) with ESMTP id dsdaiaaa for parisc-linux@lists.parisc-linux.org; Tue, 9 Oct 2001 00:05:54 -0700
+Date: Tue, 9 Oct 2001 00:10:15 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Helge Deller <deller@gmx.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [patch] /proc interface for LED/LCD
+Message-ID: <20011009001015.D653@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20011006134250.I17735@tausq.org> <E15pzKV-0000ZU-00@gandalf.tausq.org> <20011006153445.J17735@tausq.org> <20011007065656.647FB4843@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011009023331.D25819@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Tue, Oct 09, 2001 at 02:33:31AM +0100
+In-Reply-To: <20011007065656.647FB4843@dsl2.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-* Matthew Wilcox (willy@debian.org) [011008 19:46]:
-> On Mon, Oct 08, 2001 at 06:20:15PM -0600, Grant Grundler wrote:
-> > This B180 is up-to-date but still running 2.4.0-32 vmlinux
-> > (original kernels from 0.9.2 I think).
-> 
-> Um, I think that's fatal.  You should upgrade the kernel before upgrading
-> glibc, or you may run into problems.
+> > In my other post I mentioned you also need a fix to firmware.c .. did
+> > you pick that up too?
+> Yes, I did. Unfortunately I mentioned inventory.c, but originally meant 
+> firmware.c in my previous mail.
 
+Hrm, ok, both Grant and I also reproduced this failure with a 32-bit
+kernel on a c3k. with 64-bit it's fine... looks like something odd
+happening with the PDC_CHASSIS_INFO call :-(
 
-I got the same error when I originally installed 0.9.2
+I can't find any documentation for this hversion-specific pdc call to
+fetch the led/lcd info. Can anyone point me to some docs? I can try to
+debug it some more.
 
-A 2.4.9-paxx kernel solves this.  I was able to update
-the glibc and compile a new kernel with this error (setting the
-log level to two with SysRq helps to filter out all of the
-errors though).
-
--- Randall
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
