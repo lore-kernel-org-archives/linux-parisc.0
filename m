@@ -1,16 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from simba.sch.bme.hu (simba.sch.bme.hu [152.66.215.11])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F6954829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 03:15:47 -0600 (MDT)
-Date: Thu, 19 Sep 2002 11:17:00 +0200 (MET DST)
-From: Istvan Gyenes <frts@simba.sch.bme.hu>
-To: "J.Steindlberger" <j@steindlberger.de>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] SMP kernel problems on a D350
-In-Reply-To: <200209190805.KAA0000032531@simba.sch.bme.hu>
-Message-ID: <Pine.OSF.4.33.0209191111490.32375-100000@simba.sch.bme.hu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from irongate.swansea.linux.org.uk (pc1-cwma1-5-cust128.swa.cable.ntl.com [80.5.120.128])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9AF5A4829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Sep 2002 04:03:03 -0600 (MDT)
+Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
+	by irongate.swansea.linux.org.uk (8.12.5/8.12.5) with ESMTP id g8JA6l5a026763;
+	Thu, 19 Sep 2002 11:06:48 +0100
+Received: (from alan@localhost)
+	by irongate.swansea.linux.org.uk (8.12.5/8.12.5/Submit) id g8JA6iq1026761;
+	Thu, 19 Sep 2002 11:06:44 +0100
+Subject: Re: [parisc-linux] ide controller
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: j.steindlberger@gmx.de
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	moritz@freesources.org, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <28859.1032424874@www2.gmx.net>
+References: <20020916043004.B27754829@dsl2.external.hp.com>
+	<28859.1032424874@www2.gmx.net>
+Content-Type: text/plain
+Date: 19 Sep 2002 11:06:44 +0100
+Message-Id: <1032430004.26669.1.camel@irongate.swansea.linux.org.uk>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +31,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Joerg,
+On Thu, 2002-09-19 at 09:41, j.steindlberger@gmx.de wrote:
+> together with Moritz I/we tried to get some new results. We took the latest
+> kernel (-pa18) and did the changes to the PDC202XX-definitions in pdc202xx.c.
+> But I don't believe that the kernel gets the chance to recognice this
+> change. I think the kernel crashes earlier. We reduced the kernel by the specific
+> drivers. We disabled the following:
+> [ ]     Generic PCI bus-master DMA support
+> After compiling wie had these three modules:
+> ide-mod.o
+> ide-probe-mod.o
+> ide-disk.o
+> An insmod ide-mod.o was possible. But after insmod ide-probe-mod the kernel
+> crashes. In some cases we got an output with about 50 pages of memory
+> addresses. At the beginning we got some messages told about the SYM-SCSI-device.
+> Could that be a conflict? We did not succeed to reproduce that and log it.
 
-The only difference between the non-smp and smp kernel config file is
-CONFIG_SMP=yes , AFAIK.
-I made a "make menuconfig" and the only thing I've changed is SMP support.
-The strange thing is that the precompiled smp kernel from the install cd
-boots fine. (2.4.18-smp)
+Our IDE code has been run on non x86 platforms. It does require that the
+defaults are set right for the platform so that it doesnt do stuff like
+blindly probe I/O 0x170. 
 
-BTW where can I select 32bit/64bit support?
-__
-Steve
-
-On Thu, 19 Sep 2002, J.Steindlberger wrote:
-
-> Hi Steve,
->
-> I'm no developer, but I know, that there are a few restrictions with D-Class
-> machines. Did You select 64bit support? This machine is a 32bit architecture.
->
-> Regards
-> Joerg
->
-> On Thursday 19 September 2002 09:38, you wrote:
-> > I'm trying to compile an SMP kernel for my D 350 (2cpu) server without
-> > success.
-> > The kernel source is 2.4.19-pa18 and in non-smp configuration it works
-> > well. Anyway the SMP kernel compiles fine but when I try to boot it
-> > stops at the "If this is the last message you see, you may need to switch
-> > your console" line. I've switched the console but got no other output.
-> > (It was the same with 2.4.19-pa14)
-> > The system was installed from a debian 3.0 CD.
-> > Can somebody send me a working .config? Or what can be the problem?
->
+I don't know if the Promise card needs its BIOS to have run, I would
+suspect not but can't be sure.
