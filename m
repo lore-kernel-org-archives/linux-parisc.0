@@ -1,33 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA26641
-	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Jan 2001 08:30:30 -0700
-Received: from athena.louisville.edu (athena.louisville.edu [136.165.1.37])
-	by erouter1.it-datacntr.louisville.edu (Postfix) with ESMTP id A684F22EA0
-	for <parisc-linux@thepuffingroup.com>; Mon,  8 Jan 2001 10:33:54 -0500 (EST)
-Date: Mon, 8 Jan 2001 10:33:22 -0500
-From: "Phillip D. Beal" <pdbeal@louisville.edu>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20010108103322.A79530@athena.louisville.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA27083
+	for <parisc-linux@puffin.external.hp.com>; Mon, 8 Jan 2001 09:38:54 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 8 Jan 2001 16:42:23 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14FfN8-0001za-00; Mon, 08 Jan 2001 16:42:14 +0000
+Date: Mon, 8 Jan 2001 16:42:14 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Steven Pritchard <steve@silug.org>
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Any K200 Experiences Out There??
+Message-ID: <20010108164214.A7545@parcelfarce.linux.theplanet.co.uk>
+References: <20010108145643.A32433@parcelfarce.linux.theplanet.co.uk> <200101081520.f08FKla09063@osiris.silug.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] STI Console on 755 and 735
+In-Reply-To: <200101081520.f08FKla09063@osiris.silug.org>; from steve@silug.org on Mon, Jan 08, 2001 at 09:20:47AM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hey,
+On Mon, Jan 08, 2001 at 09:20:47AM -0600, Steven Pritchard wrote:
+> Matthew Wilcox said:
+> > the kernel on that cd is quite out of date;
+> > can you try compiling a new one?
+> 
+> That reminds me of something I've been meaning to ask...  What all
+> needs to be upgraded to update to the latest CVS kernel (from the 0.5
+> CD)?  Is it enough to just compile a new kernel, or will glibc and
+> various other things need updating too?
 
-I've just recently compiled the CVS kernel, and the STI console doesnot
-yet work.  I've been watching the mailing list and I thought I had seen
-some people having success with the STI console.  When the system
-atempts to run on the STI console, some of the letters from words appear
-normal, (ex: INIT comes through as INIT, and most of the numbers work).
-However, some of the letters come through as odd ASCII Characters.  The
-CVS kernel I grabed was from 20010105, since anything after that was
-either 0 bytes or was a bad gzip archive.  Does the STI console work
-properly yet with the CVS kernels? or is it just getting better?
+the root filesystem i'm using is basically the 0.5 CD.  i managed to not
+break anything with the stack changes :-)  [at least, only temporarily..]
 
-Thanks,
 -- 
-Phillip Beal                           ___           _               _   
-Electrical and Computer Engineering   | _ ) ___ __ _| |___  _ _  ___| |_ 
-pdbeal@louisville.edu                 | _ \/ -_) _` | |_ /_| ' \/ -_)  _|
-http://www.bealz.net/                 |___/\___\__,_|_/__(_)_||_\___|\__|
+Revolutions do not require corporate support.
