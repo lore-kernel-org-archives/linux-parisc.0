@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "Duraid Madina" <duraid@fl.net.au>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 'foreign' PCI cards in an rp2430 
-In-Reply-To: Message from "Duraid Madina" <duraid@fl.net.au>
-   of "Sat, 09 Mar 2002 20:54:55 +1100." <000001c1c750$8d5f7900$022a17ac@simplex>
-References: <000001c1c750$8d5f7900$022a17ac@simplex> 
-Date: Sat, 09 Mar 2002 23:18:36 -0700
+Subject: Re: [parisc-linux] FB on c3k 
+In-Reply-To: Message from Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+   of "Thu, 07 Mar 2002 11:03:39 +0100." <20020307110339.A1590@solo.franken.de>
+References: <20020306080101.B6A874859@dsl2.external.hp.com> <20020307002239.A9224@solo.franken.de> <tsbogend@alpha.franken.de> <20020307073117.4C572482F@dsl2.external.hp.com>  <20020307110339.A1590@solo.franken.de> 
+Date: Sat, 09 Mar 2002 23:56:41 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020310061836.ED17848E8@dsl2.external.hp.com>
+Message-Id: <20020310065641.D8D3A48EB@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,45 +19,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Duraid Madina" wrote:
-> Normally, yes. In my case, not really. To cut a long story short,
-> because C++ has poor intrinsic support for reflection, even making my
-> app *do* IO is non-trivial. E.g. my program instantiates millions of
-> different objects (which interact in various interesting ways). The cost
-> of serializing/deserializing these objects to store them in a light
-> database like berkeleyDB, or simply as files is great enough that the
-> job becomes CPU bound, and not I/O bound. Being CPU bound is not where I
-> want to be, when I'm seeing only 2mb/sec of I/O ;)
+Thomas Bogendoerfer wrote:
+> after sleeping over the problem, I believe we were short just one bit.
+> We extracted 32 bits from the PTE. The lower 5 bits are zeroed and will
+> be the 4 size bits and the one 0 bit in the TLB. That leaves 27 bits for
+> the physical page number. Adding the 12 offset bits for 4k pages gives us
+> just 39 bits, but we need 40. So instead of the change 32 -> 52 a
+> change from 32 -> 33 should do the same. On the other side using all
+> bits shouldn't matter and we are prepared for 44 bit and more.
 
-FWIW, you should expect to see 30-40MB/s to single disk on rp2430.
-More with more disks/channels.
+ok. that all make sense now.
+It made more sense when I read about extru and idtlbt in the 
+PA 2.0 Arch book.
 
-> I would prefer to run Linux on the rp2430 though, since then I
-> could use a cheap Intel gigabit NIC (instead of paying $$$ for an HP
+> BTW.
+> isn't our current PDC space expansion wrong for "odd" sized address
+> spaces ? It should work for 48 and 56, but not for anything else.
+> Or do I miss something ?
 
-Well, 2.4 has no e1000 driver (yet) much less one that is known to work
-on hppa. I *think* the e1000 driver I "leveraged" from 2.5 release for
-HP ia64 machine should also work for hppa. But that's just an educated
-guess. FWIW, bcm5700 driver needed some patches to work on HP's
-ia64 box and I'm looking forward to testing tg3 patch soon.
+I have no clue. jsm or willy know?
 
-And Intel's change in strategy may not work so well in pratice.
-So I'd stick with a tigon (acenic or bcm5700) board for the next
-3 monthes.
+> I will have a J6700 at Cebit to play with, but I don't think I'll
+> get spare time in the next couple of days.
 
-> one) or better yet, stick my 3ware RAID card in the rp2430, and do away
-> with the network altogether. That I *can't* do with HP-UX, so...
+Done! See ftp://ftp.p-l.o/patches/entry.S-diff
 
-I've never liked RAID controllers. too complex and failure prone.
-If you have spare CPU cycles, putting in simple SCSI controllers will
-give you at least 4 x 80MB/s and it's easy to connect 40 or so 9 (or 18GB)
-SCSI drives.  This is not shiny, new high tech stuff (eg u160 and 15KRPM).
-but I expect it to be faster than any IDE solution (I could be wrong) and
-re-usable for other computer science projects (read database or other
-mutlithreaded IO) when you are done.  <RANT>And you don't need any
-stinking x86 binaries-only software to manage the setup.</RANT>
+The 32-bit kernel with FB is working with 4 instances of the following
+change to entry.S (all immediately preceed an idtlbt instruction):
+-       extrd,u         pte,56,25,pte
++       extrd,s         pte,56,25,pte   /* bit 31:8 >> 8  */
++       depdi           0,3,4,pte       /* page_size = 4k (in case signed) */
 
-But I'm not one to stop others from picking solutions that work
-for them.
+CAVEAT: This is better than the brokeness we had before.
+But it doesn't properly handle 0xf0xxxxxx addresses.
+Those need to be "f-extended" with 0xf0f0f0... instead of all 1's.
 
+> yes,  with your last ioctl32 changes. I need to recheck my first entry.S
+> hack for the narrow mode pa2.0 tlb handler. I think my assembler code
+> just sucks and setting up the tlbs the same way as for wide mode,
+> should get us X with 32-bit kernels, too.
+
+Done. patch on ftp.p-l.o/patches/entry.S-diff.
+Can someone with VM cluefulness review this for me?
+
+It seems to be working on my c3k with Vis-EG/PCI now though...wohoo! :^)
+
+thanks,
 grant
