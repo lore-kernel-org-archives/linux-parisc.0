@@ -1,36 +1,32 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA21853
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:56:12 -0700
-Received: from user-83-59.jakinternet.co.uk (HELO rhirst.linuxcare.com) (194.88.83.59)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 17:58:19 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 13584B007; Thu, 30 Nov 2000 17:54:00 +0000 (GMT)
-Date: Thu, 30 Nov 2000 17:53:59 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Steve Moret <smoret@uci.edu>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000/735-125
-Message-ID: <20001130175359.O22285@linuxcare.com>
-References: <20001130161115.N22285@linuxcare.com> <FKEGLIIBOIACJOCCAFIMIEFFCCAA.smoret@uci.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <FKEGLIIBOIACJOCCAFIMIEFFCCAA.smoret@uci.edu>; from smoret@uci.edu on Thu, Nov 30, 2000 at 09:39:17AM -0800
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA22474
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 10:59:36 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by cosrel1.hp.com (Postfix) with ESMTP id C38556C9
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:02:21 -0700 (MST)
+Message-Id: <200011301801.KAA29413@milano.cup.hp.com>
+To: "Gunneswara Marripudi" <raomg@cup.hp.com>
+Cc: parisc-linux@puffin.external.hp.com
+Subject: Re: Question on Linux DMA routines 
+In-reply-to: Your message of "Thu, 30 Nov 2000 09:31:14 PST."
+             <200011301731.JAA29335@milano.cup.hp.com>
+Date: Thu, 30 Nov 2000 10:01:13 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 30, 2000 at 09:39:17AM -0800, Steve Moret wrote:
-> I will go under the assumption that it could be the disks and their possible
-> age and try and find suitable replacements.
-> 
-> Once I do get disks working is there a "Recepe" on how to get it to boot
-> from your local drive.
-> 
-> I would figure just copy over the NFS root, but then where do I put the
-> lifimage so that boot manager can find it.
-> 
-> Until then I'll just keep booting from the network.
+Grant Grundler wrote:
+...
+> The HW *is* fully coherent when the CPU doesn't cache the pages.
+> Only systems with PCX-L/L2 CPU (need to) operate this way.
+> All other platforms have an I/O MMU which manages the coherency.
 
-There is a README.INSTALL on the 0.5 beta CD image:
+Correction - PCX-T and older platforms are not coherent and U-bit
+isn't available/useable on those machines. Drivers must do their own
+cache flushing. sim700 (LASI SCSI) does this and I think Apricot
+(LASI LAN) too. I'm suspecting this might be part of the 735 problems.
 
-ftp://puffin.external.hp.com/pub/parisc/cd-images/palinux-0.5.iso.gz
+grant
 
-Richard
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
