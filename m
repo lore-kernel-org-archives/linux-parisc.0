@@ -1,36 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA19776
-	for <parisc-linux@puffin.external.hp.com>; Sun, 4 Jun 2000 06:07:39 -0600
-Received: from dlep6.itg.ti.com ([157.170.188.9])
-	by tower.ti.com (8.10.1/8.10.1) with ESMTP id e54C7kH18285
-	for <parisc-linux@thepuffingroup.com>; Sun, 4 Jun 2000 07:07:46 -0500 (CDT)
-Received: from dlep6.itg.ti.com (localhost [127.0.0.1])
-	by dlep6.itg.ti.com (8.9.3/8.9.3) with ESMTP id HAA12038
-	for <parisc-linux@thepuffingroup.com>; Sun, 4 Jun 2000 07:07:41 -0500 (CDT)
-Received: from jupiter.mktg.tide.ti.com (jupiter.mktg.tide.ti.com [137.167.205.45])
-	by dlep6.itg.ti.com (8.9.3/8.9.3) with ESMTP id HAA11984
-	for <parisc-linux@thepuffingroup.com>; Sun, 4 Jun 2000 07:07:39 -0500 (CDT)
-Received: from astracom.net (judy.mktg.tide.ti.com [137.167.205.26])
-	by jupiter.mktg.tide.ti.com (8.8.8/8.8.8) with ESMTP id OAA08476
-	for <parisc-linux@thepuffingroup.com>; Sun, 4 Jun 2000 14:07:43 +0200 (MET DST)
-Sender: alex@mktg.tide.ti.com
-Message-ID: <393A468E.DB0F32A0@astracom.net>
-Date: Sun, 04 Jun 2000 14:07:42 +0200
-From: Alexander Strauss <strauss@astracom.net>
-MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA21998
+	for <parisc-linux@puffin.external.hp.com>; Sun, 4 Jun 2000 13:14:28 -0600
+From: willy@thepuffingroup.com
+Date: Sun, 4 Jun 2000 16:14:54 -0400
+To: Alexander Strauss <strauss@astracom.net>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] documentation?
+Message-ID: <20000604161454.E20876@thepuffingroup.com>
+References: <393A468E.DB0F32A0@astracom.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] documentation?
+In-Reply-To: <393A468E.DB0F32A0@astracom.net>; from Alexander Strauss on Sun, Jun 04, 2000 at 02:07:42PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi there,
+On Sun, Jun 04, 2000 at 02:07:42PM +0200, Alexander Strauss wrote:
+> Hi there,
+> 
+> I know that PA-RISC Linux is still in a early development stage, but
+> anyway I'd like to test the existing code on a 715/100. Is there any
+> useful documentation about what that packages are containing and how to
+> install and get it running?
 
-I know that PA-RISC Linux is still in a early development stage, but
-anyway I'd like to test the existing code on a 715/100. Is there any
-useful documentation about what that packages are containing and how to
-install and get it running?
+have you read the website?  http://www.thepuffingroup.com/parisc/
+if so, what information do you require that is lacking?
 
-Thanks!
 -- 
-best regards,
-Alexander Strauss <strauss@astracom.net>
+The Sex Pistols were revolutionaries.  The Bay City Rollers weren't.
