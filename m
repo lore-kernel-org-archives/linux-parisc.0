@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0226A4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 13:45:55 -0700 (MST)
-Date: Sat, 9 Nov 2002 20:45:48 +0000 (UTC)
-From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.5.46-pa7 boot prob
-In-Reply-To: <20021109201144.GW9563@tausq.org>
-Message-ID: <Pine.BSF.4.44.0211092040150.32930-100000@e0-0.zab2.int.zabbadoz.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from freya.yggdrasil.com (h-64-105-136-52.SNVACAID.covad.net [64.105.136.52])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8EA5B4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 17:24:16 -0700 (MST)
+From: "Adam J. Richter" <adam@yggdrasil.com>
+Date: Sat, 9 Nov 2002 16:23:59 -0800
+Message-Id: <200211100023.QAA27139@baldur.yggdrasil.com>
+To: James.Bottomley@steeleye.com
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
+Cc: andmike@us.ibm.com, greg@kroah.com, hch@lst.de,
+	linux-kernel@vger.kernel.org, mochel@osdl.org,
+	parisc-linux@lists.parisc-linux.org, willy@debian.org
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,37 +21,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 9 Nov 2002, Randolph Chung wrote:
+James Bottomley wrote:
+>3. Machine is partially consistent.  consistent allocation may fail because 
+>we're out of consistent memory so we have to fall back to the old.
 
-> > If you need more information please let me know.
->
-> In general, a System.map file that corresponds to your kernel is also
-> needed.
+	I'd like to know more about what these machines look
+like in the real world.  Specifically, I am interested in the
+trade-off of having a parameter to wback_fake_consistent
+so that it could be enabled or disabled on an individual basis.
 
-you can find it on:
+	I suspect that the parameter is not worth the clutter because
+these "partially consistent" machines either have a large amount of
+consistent memory, so the case of the allocation failing in the is not
+worth supporting, or it is easy to check for consistent memory on them
+with something like "if ((unsigned long) vaddr < 0xwhatever)", but I'm
+just guessing.
 
-http://www.zabbadoz.net/zabbadoz-network/apollo/linux-testing/
-
-http://www.zabbadoz.net/zabbadoz-network/apollo/linux-testing/System.map-2.5.46-pa7
-http://www.zabbadoz.net/zabbadoz-network/apollo/linux-testing/config-2.5.46-pa7
-
-and full startup log from serial console:
-
-http://www.zabbadoz.net/zabbadoz-network/apollo/linux-testing/apollo-2.5.46-pa7.01
-
-> from the reg dump:
->
-> > r20-23  00000000 00000000 10029c60 00000001
-> >  IIR: 0ea01085    ISR: 00000000  IOR: 00000000
->
-> it's a null ptr deref...
-> faulting insn is: ldw 0(sr0,r21),r5
-> and r21 is 0...
->
-> can you either supply a System.map, or look up the
-> "iaoq" and "r02" addresses in the register dump and see which function
-> they are in?
-
--- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+Adam J. Richter     __     ______________   575 Oroville Road
+adam@yggdrasil.com     \ /                  Miplitas, California 95035
++1 408 309-6081         | g g d r a s i l   United States of America
+                         "Free Software For The Rest Of Us."
