@@ -1,27 +1,30 @@
-Received: from chalet ([199.254.238.240])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id RAA21340
-	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 17:28:31 -0700
-Received: from bame.riverrock.org (really [127.0.0.1]) by bame.riverrock.org
-	via in.smtpd with esmtp (ident bame using rfc1413)
-	id <m13v7RS-001Vp3C@chalet> (Debian Smail3.2.0.102)
-	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 17:25:46 -0700 (MST)
-Message-Id: <m13v7RS-001Vp3C@chalet>
-From: bame@riverrock.org
-Reply-To: bame@riverrock.org
-Errors-To: bame@riverrock.org
-To: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] kernel merge
-In-reply-to: Your message of "Fri, 10 Nov 2000 14:28:33 MST."
-             <m13uLiv-001Vp3C@chalet>
-Date: Sun, 12 Nov 2000 17:25:45 -0700
-Sender: bame@bame.riverrock.org
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA22089
+	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 18:03:18 -0700
+From: catfish@alltel.net
+Received: from alltel.net ([166.102.253.17]) by mta02-srv.alltel.net
+          (InterMail vM.5.01.01.01 201-252-104) with ESMTP
+          id <20001113010415.IQXO1112.mta02-srv.alltel.net@alltel.net>
+          for <parisc-linux@thepuffingroup.com>;
+          Sun, 12 Nov 2000 19:04:15 -0600
+Sender: catfish@mailserv2.iuinc.com
+Message-ID: <3A0F3E51.8C81FADA@alltel.net>
+Date: Sun, 12 Nov 2000 19:05:21 -0600
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Project Dead????
 List-ID: <linux-parisc.vger.kernel.org>
 
+ Hello, 
+Its been so long since I've had an email I was curious if this has
+become a Dead project? 
 
-Helge noticed SCSI fails (B160L, 712, I think it's ok on c3k)
-after the -test10 merge.  We have MANY differences from Linus in the SCSI
-area.  Anybody want to take a look at this?  FYI to get
-the pre-merge kernel you can use LINUS_240_TEST10_PREMERGE.  Beware
-that tags are sticky in CVS (use cvs update -A to fix that).
+Just curious.
+Terry
 
-	-P
+
+
+
+-- 
+catfish: icq #20116127
