@@ -1,18 +1,12 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: FW: [parisc-linux] Fwd: RE: Hp c3600 Gentoo Installation troubles
-Date: Thu, 6 Jan 2005 14:12:48 -0500
-Message-ID: <200501061412.49024.vapier@gentoo.org>
-References: <NAEELOAPEHKLDEDOLEIHOEOLCCAA.bfisher@intech-intl.com>
-	<200501061331.50888.vapier@gentoo.org>
-	<1105037770.4319.60.camel@mulgrave>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] Interrupt handling documentation
+Date: Sat, 8 Jan 2005 20:33:03 +0000
+Message-ID: <20050108203303.GG27371@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: gentoo-hppa@lists.gentoo.org,
- parisc-linux@parisc-linux.org
-To: Ben Fisher <bfisher@intech-intl.com>
+  charset=us-ascii
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1105037770.4319.60.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,25 +17,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thursday 06 January 2005 01:56 pm, James Bottomley wrote:
-> On Thu, 2005-01-06 at 13:31 -0500, Mike Frysinger wrote:
-> > > One theory I have is that the instruction guide never told me where to
-> > > mount the f0 partition.  So far as the computer knows, it's just
-> > > sitting there, probably not being written to.
-> >
-> > that's because you cant mount it.  running palo takes care of all that
-> > magic.
->
-> Actually, that's not necessarily true.  If you have palo version 1.4 or
-> later, then the palo partition can be formatted as ext2/ext3 and mounted
-> just like any other partition.
->
-> However, by default palo will create unmountable partitions.
 
-touche salesman ;)
-lemme rephrase ... the default gentoo setup is such that you never have to 
-mount the partition ... setup /etc/palo.conf and run palo
--mike
+I thought I should send a note to the mailing list about the interrupt
+work I've been doing.  Then I thought, "No, I should use the Wiki".  So
+I did ...
+
+http://wiki.parisc-linux.org/Interrupts
+
+Feel free to make corrections or send me comments on stuff that isn't clear.
+
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
