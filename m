@@ -1,18 +1,16 @@
-Return-Path: <alan@lxorguk.ukuu.org.uk>
-Received: from dhcp23.swansea.linux.org.uk (unknown [81.2.110.254])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5C7E54852
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E16614852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 13 Dec 2003 08:37:58 -0700 (MST)
-Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10) with ESMTP id
-	hBDFXxPr023728; Sat, 13 Dec 2003 15:34:00 GMT
-Received: (from alan@localhost)
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10/Submit) id
-	hBDFXvP1023726; Sat, 13 Dec 2003 15:33:57 GMT
+	Sat, 13 Dec 2003 08:46:22 -0700 (MST)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com
+	[172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	hBDFkFa32533; Sat, 13 Dec 2003 10:46:15 -0500
 Subject: Re: [parisc-linux] proposed changes to dino.c
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: Grant Grundler <grundler@parisc-linux.org>
-In-Reply-To: <20031213035125.GB28775@colo.lackof.org>
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <1071329635.23720.2.camel@dhcp23.swansea.linux.org.uk>
 References: <1071031038.1977.1.camel@mulgrave>
 	<20031210045429.GA18782@colo.lackof.org>
 	<1071093265.1730.27.camel@mulgrave>
@@ -20,11 +18,12 @@ References: <1071031038.1977.1.camel@mulgrave>
 	<1071241131.1814.5.camel@mulgrave>
 	<1071257297.21661.3.camel@dhcp23.swansea.linux.org.uk>
 	<20031213035125.GB28775@colo.lackof.org>
+	<1071329635.23720.2.camel@dhcp23.swansea.linux.org.uk>
 Content-Type: text/plain
-Message-Id: <1071329635.23720.2.camel@dhcp23.swansea.linux.org.uk>
+Date: 13 Dec 2003 10:45:54 -0500
+Message-Id: <1071330357.2024.4.camel@mulgrave>
 Mime-Version: 1.0
-Date: Sat, 13 Dec 2003 15:33:56 +0000
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+Cc: Grant Grundler <grundler@parisc-linux.org>,
 	PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -35,22 +34,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sad, 2003-12-13 at 03:51, Grant Grundler wrote:
-> On Fri, Dec 12, 2003 at 07:28:18PM +0000, Alan Cox wrote:
-> > You don't need the ROM mapped expect for reading stuff like MAC, and you
-> > can do that by mapping each port over the same address range.
-> 
-> interesting trick.
-> That should work nicely for the 4-port tulip especially.
-> 
-> Can we allocate/map only the first tulip's ROM and point the remaining
-> tulip's ROM_RESOURCE at the first one?
-> 
-> I'm worried multiple PCI devices could attempt to respond to
-> the MMIO transaction and fight over the bus.
+On Sat, 2003-12-13 at 10:33, Alan Cox wrote:
+> If the other ROMs are disabled then I don't see that happening. Its an
+> old trick btw - I claim no originality here. Don Becker had some driver
+> code that did this, and the graphics people in Linux and Windows pull
+> the trick of unmapping the frame buffer to use as the ROM map
+> temporarily
 
-If the other ROMs are disabled then I don't see that happening. Its an
-old trick btw - I claim no originality here. Don Becker had some driver
-code that did this, and the graphics people in Linux and Windows pull
-the trick of unmapping the frame buffer to use as the ROM map
-temporarily
+Hmm, yes...I completely blow away the ROM bar in the patch...what I
+should do is just to remove it's IORESOURCE_MEM flag so it isn't
+ordinarily allocated (but it's requested location and size are still
+available).  Then any driver that wanted access could get it...we still
+have 1020kB available for mapping up to three roms in the bridge window.
+
+The alternative is just to resize the bridge window after we've counted
+the resources...I'm less enthusiastic about this beacuse the dino PCI
+window has a maximum size of 8MB for everything on the bus...plug a few
+of these four ports into a dino PCI bus and we'll still run out of
+memory.
+
+James
