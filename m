@@ -1,34 +1,27 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA19731
-	for <parisc-linux@puffin.external.hp.com>; Tue, 31 Oct 2000 09:49:53 -0700
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by atlrel1.hp.com (Postfix) with ESMTP id DE795774
-	for <parisc-linux@thepuffingroup.com>; Tue, 31 Oct 2000 11:51:32 -0500 (EST)
-To: John Marvin <jsm@udlkern.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA20436
+	for <parisc-linux@puffin.external.hp.com>; Tue, 31 Oct 2000 10:17:22 -0700
+To: Kailashnath V Rampure <kailasr@webcash.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Elf Header change proposal 
-In-Reply-To: Your message of "Tue, 31 Oct 2000 03:32:20 MST."
-             <200010311032.DAA21612@udlkern.fc.hp.com>
-References: <200010311032.DAA21612@udlkern.fc.hp.com> 
-Date: Tue, 31 Oct 2000 09:51:31 -0700
+Subject: Re: [parisc-linux] unable to run palo on nfs root 
+In-Reply-To: Your message of "Mon, 30 Oct 2000 13:51:00 PST."
+             <5.0.0.25.0.20001030134804.00a46a60@mail.webcash.com>
+References: <5.0.0.25.0.20001030134804.00a46a60@mail.webcash.com> 
+Date: Tue, 31 Oct 2000 09:54:24 -0700
 From: Paul Bame <bame@noam.fc.hp.com>
-Message-Id: <E13qedH-0007k6-00@noam.fc.hp.com>
+Message-Id: <E13qeg4-0007kf-00@noam.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+= Hi,
 = 
-=     2) 64 bit parisc binaries (currently just vmlinux) are currently using
-=     the Elf32_hdr type.  They should be changed to use the Elf64_hdr type.
+= I have booted HP A class server from nfsroot. but when I try to run palo on 
+= the server to initialize boot loader to the hdd I get
+= "cannot execute the binary file"
+= 
+= can any one help me to make the hdd bootable
 
-This I don't understand.  Palo (and palo's boot loader, and hpux's
-boot loader) successfully use
-eh.e_ident[EI_CLASS] == ELFCLASS32 and eh.e_ident[EI_CLASS] == ELFCLASS64
-along with (__be16_to_cpu(eh.e_machine) == EM_PARISC)
-to distinguish 32/64-bit parisc executables.  In the 64-bit case, palo
-happily uses struct elf64_phdr to grok the 64-bit vmlinux header.
-palo/lib/elf*.c has the details if they're of interest.
-
-Palo has some potential problems: it doesn't check ABI, assumes
-big endian byte order, and assumes that 64-bit ELF headers imply
-a wide kernel (calling PDC and setting the W bit appropriately).
+It would help me to see the actual command you used and the actual
+error message(s) printed.  With the info you give so far it could be
+"a million" things.
 
 	-P
