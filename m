@@ -1,15 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 198914850
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 11:40:42 -0700 (MST)
-Message-Id: <200112171835.LAA17687@puffin.external.hp.com>
-To: Joerg Hartmann <J.Hartmann@reinarts.de>
-Cc: PARISC Linux List <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] what is palo/lifimage for ? 
-In-Reply-To: Message from Joerg Hartmann <J.Hartmann@reinarts.de>
-   of "Mon, 17 Dec 2001 11:21:42 +0100." <771295508933.20011217112142@reinarts.de>
-Date: Mon, 17 Dec 2001 11:35:40 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C8D35482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 11:59:02 -0700 (MST)
+Received: from r6.petescaff.com ([192.168.0.3])
+	by smtp.petescaff.com with esmtp (Exim 3.22 #5)
+	id 16G2yb-00019f-00
+	for parisc-linux@lists.parisc-linux.org; Mon, 17 Dec 2001 19:59:01 +0100
+Received: from apm (helo=localhost)
+	by r6.petescaff.com with local-esmtp (Exim 3.33 #1 (Debian))
+	id 16G2yb-0000Hl-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 17 Dec 2001 19:59:01 +0100
+Date: Mon, 17 Dec 2001 19:59:01 +0100 (CET)
+From: Peter Mottram <peter@petescaff.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.42.0112171953240.742-100000@r6.petescaff.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] LIF boot from tape?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,19 +28,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Joerg Hartmann wrote:
-> The "Building the Kernel" webpage at
-> http://www.parisc-linux.org/kernel/index.html says
-> after "make palo" you have your new kernel in the file palo/lifimage.
+I see from PALO docs that one of the design goals was to support LIF boot
+from tape but I haven't been able to find any details there or in the list
+archives.
 
-This is wrong. Soory about that.
-This page is really oriented towards building
-kernels with a X-compiler and then booting them via network.
+I am interested in creating bootable backup media as I have done for many
+years using IgniteUX. Has anyone tried doing anything like this? Does
+anyone have any pointers?
 
-I'm fixing this page now. I'll set up a link to a "How-to Build
-for Net Boot" (which has the old page) and leave that for someone
-else to edit.
-
-
-thanks,
-grant
+Cheers
+PeteM
