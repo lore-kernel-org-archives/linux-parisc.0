@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8B3E94829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 05:17:14 -0600 (MDT)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id BA829F2
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 13:17:09 +0200 (METDST)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id NAA24516 for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 13:15:26 +0200 (METDST)
-Message-ID: <3DA6B18F.41DD40AB@admin.france.hp.com>
-Date: Fri, 11 Oct 2002 13:10:07 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: multipart/mixed;
- boundary="------------EFBA33A80334856730A1613E"
-Subject: [parisc-linux] Dump driver: ENTRY_INIT_DEV, GOT IT, it works.....
+Received: from mail.zigoo.net (d208.dhcp212-198-140.noos.fr [212.198.140.208])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 217FB4831
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 11 Oct 2002 05:28:16 -0600 (MDT)
+Date: Fri, 11 Oct 2002 13:28:11 +0200
+From: Thibaut VARENE <varenet@esiee.fr>
+To: parisc-linux@lists.parisc-linux.org
+Cc: q-funk@pp.fishpool.fi, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] hardware features of 712-60 ?
+Message-Id: <20021011132811.6e84c1d8.varenet@esiee.fr>
+In-Reply-To: <Pine.LNX.4.21.0210111227030.24681-100000@hal.pp.fishpool.fi>
+References: <02Oct11.113022cest.119055@ns.hiscom.nl>
+	<Pine.LNX.4.21.0210111227030.24681-100000@hal.pp.fishpool.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,41 +24,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------EFBA33A80334856730A1613E
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+On Fri, 11 Oct 2002 12:34:43 +0300 (EEST)
+"Martin-" <q-funk@pp.fishpool.fi> wrote:
 
-	Hi
-I'm really happy, it works at the end....the solution: 
-mem_pdc_call(IODC_IO, PDC_IO_RESET_AND_CLEAR...
+> On Fri, 11 Oct 2002, "Beerse, Corné" wrote:
+> 
+> > > At this point, I apt-got kernel-source-2.4.19-hppa and 
+> > > unpacked it, and already
+> > > selected the 7100LC/7300LC CPU option.  What else?  Has 
+> > > anybody compiled a FAQ
+> > > on parisc-linux that provides .config files optimized for 
+> > > each PA-RISC hardware
+> > > or, alternately, a checklist of hardware one finds in product 
+> > > xxx, referenced by
+> > > Linux kernel feature or module name? 
+Well, as for any kind of 'PC' box, a quick look at lspci output, and even more at 'dmesg', will tell you everything you need to know.
 
-I've succeded to initialised the device, now next step,
-read and write on this device (but I think it should be
-easy). I keep you aware asap.
+> > 
+> > Have you checked the hardware database on the website?
+> > (http://www.parisc-linux.org/) That gives an overview on what whas in the
+> > origional box.
+> 
+> http://hwdb.parisc-linux.org/view.php3?type=machine&name=712%2F60
+> 
+> That page could have been written in Chinese, it would have been equally clear.  
+> if
+> you have graphics card XXX select the driver with the same name". I've
+> chip does what, as every line in that page starts with Gecko.
+Did you notice that each chip is labelled with its driver name ?
+See, the text between '()' at the end of each line ?
 
-Many thanks to Grant Grundler.
+I wonder if we should make it bold, or maybe flashing ? :o)
 
-	By
+A last point, subscribing to this mailing-list would be a good idea, or at least taking a look at archives. You would have then noticed that the last version of the PA-RISC/Linux Boot HOWTO has been released about 4 days ago, giving you many useful tips about kernel compiling...
+http://pateam.esiee.fr/doc.html
+http://lists.parisc-linux.org/pipermail/parisc-linux/
 
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------EFBA33A80334856730A1613E
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
+Hope that helps,
 
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------EFBA33A80334856730A1613E--
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
