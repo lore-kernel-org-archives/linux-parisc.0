@@ -1,20 +1,18 @@
-Return-Path: <ja2morri@csclub.uwaterloo.ca>
-Received: from perpugilliam.csclub.uwaterloo.ca
-	(perpugilliam.csclub.uwaterloo.ca [129.97.134.31])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 68ADF4856
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7A5B04855
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 20:21:54 -0700 (MST)
-Sender: ja2morri@perpugilliam.csclub.uwaterloo.ca
-To: "Prakash Shenoy" <mpshenoy@vsnl.com>
+	Thu, 25 Mar 2004 21:40:09 -0700 (MST)
+Date: Thu, 25 Mar 2004 21:40:08 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Prakash Shenoy <mpshenoy@vsnl.com>
 Subject: Re: [parisc-linux] HP 9000 Visualize C180 Workstation display does
 	not appear.
-References: <OFEELBIMFFDMJBJFHICCKEIICEAA.mpshenoy@vsnl.com>
-From: James Morrison <ja2morri@csclub.uwaterloo.ca>
-Date: 25 Mar 2004 22:20:48 -0500
-In-Reply-To: <OFEELBIMFFDMJBJFHICCKEIICEAA.mpshenoy@vsnl.com>
-Message-ID: <kfhlllojnu7.fsf@perpugilliam.csclub.uwaterloo.ca>
-MIME-Version: 1.0
+Message-ID: <20040326044008.GA28525@colo.lackof.org>
+References: <OFEELBIMFFDMJBJFHICCAEIICEAA.mpshenoy@vsnl.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <OFEELBIMFFDMJBJFHICCAEIICEAA.mpshenoy@vsnl.com>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -25,9 +23,7 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-
-"Prakash Shenoy" <mpshenoy@vsnl.com> writes:
-
+On Thu, Mar 25, 2004 at 10:06:35PM -0500, Prakash Shenoy wrote:
 > Hi!
 > 
 > I recently bought a HP 9000 Visualize C180 workstation from a vendor on eBay
@@ -36,12 +32,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 > 
 > The workstation appears to boot properly but no display appears. Has any one
 > come across this situation.
-> 
-> Please help.
-> 
-> Best Regards
-> pms
 
- Do you have a keyboard plugged in?
+Have you tried hitting <tab> key at power up?
+That should let you cycle through the various supported
+graphics modes.
 
-Jim
+Have you tried with a serial console?
+disconnect the keyboard before doing this.
+
+This is a FAQ but it's not in the parisc-linux FAQ.
+If someone has a moment to submit a patch against
+cvs.parisc-linux.org's web/src/faq/index.x I'll be
+happy to edit/submit it.
+
+thanks,
+grant
