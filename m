@@ -1,73 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA17497
-	for <parisc-linux@puffin.external.hp.com>; Fri, 23 Jun 2000 04:56:48 -0600
-Received: from banana ([192.168.234.12]) by ben.thermeoneurope.com (8.8.8/SCO5) with SMTP id LAA27019 for <parisc-linux@thepuffingroup.com>; Fri, 23 Jun 2000 11:58:27 +0100 (BST)
-Reply-To: <huria@thermeoneurope.com>
-From: "Huria Raja" <huria@thermeoneurope.com>
-To: <parisc-linux@thepuffingroup.com>
-Date: Fri, 23 Jun 2000 11:30:51 +0100
-Message-ID: <LOBBKHEGGMMDDIHAMMIPKEGGCMAA.huria@thermeoneurope.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] 
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA17881
+	for <parisc-linux@puffin.external.hp.com>; Fri, 23 Jun 2000 05:30:26 -0600
+Received: from ppp-1-197.cvx3.telinco.net (HELO rhirst.linuxcare.com) (@212.1.144.197)
+  by mailserv2.iuinc.com with SMTP; 23 Jun 2000 11:31:35 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 65FD2B005; Fri, 23 Jun 2000 12:31:15 +0100 (BST)
+Date: Fri, 23 Jun 2000 12:31:15 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000623123115.K922@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] sym53c8xx.c now works with 53c875 on parisc
 List-ID: <linux-parisc.vger.kernel.org>
 
-From: 	Robin Redmile-Gordon [mailto:rrg@thermeoneurope.com]
-Sent:	22 June 2000 15:57
-To:	'mwheeler@startext.co.uk'
-Subject:	Linux/Unix subcontracting
-Sensitivity:	Confidential
-
 Hi,
-We are looking for specialists who are interested in specific project and
-task work.
-We are part of a small but global organisation providing IT solutions to the
-vehicle rental industry.
-We have our own specialists, of course, but we prefer to use them for our
-own application development rather than the implementation, setup and
-troubleshooting of client systems.
-What we're looking for are people who genuinely know what they are doing and
-can thus work fast, efficiently and independently - not the "we do
-everything (we know a man who can) merchants".
+  I have fixed a couple of problems with parisc dynamic dma code so that
+sym53c8xx.c now works on the 53c875 (on-board FWSCSI on my B180L).
 
-Our environment has many SCO Unix systems in place but all new development
-and many of the established customers are migrating to RedHat Linux.
+The config options I used are:
 
-Examples of work required:
+CONFIG_SCSI_SYM53C8XX=y
+CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS=8
+CONFIG_SCSI_NCR53C8XX_MAX_TAGS=32
+CONFIG_SCSI_NCR53C8XX_SYNC=20
+# CONFIG_SCSI_NCR53C8XX_PROFILE is not set
+CONFIG_SCSI_NCR53C8XX_IOMAPPED=y
 
-1. A customer need his server configured as a mail server to collect
-multiple mailboxes from a remote internet server by dial-up router and allow
-local PC clients to collect and send mail via the server.
-2. A customer has an NT server running an Exchange Server and wishes his SCO
-and Linux servers to be able to route their mail to and through the Exchange
-Server.
-3. A customer needs a Linux firewall behind which reside multiple networks
-of PC's and servers.  A design and implementation plan is needed and
-configuration of firewall and routers.
-4. We require routers to be ordered on demand and configured according to
-our specification, despatched direct to the customer with simple
-instructions for self-installation by a novice.
-5. Customer's system is experiencing slow-running, network conflicts, etc
-and trouble-shooting and resolution is required in a timely and
-cost-effective manner.
+The main problem was that xxx_alloc_consistent() should return a
+virtual address that is aligned to a power of 2 boundary equivalent
+to the size requested.  We used get_vm_area() which doesn't worry about
+alignment of returned areas.  I have got round this by introducing a
+new get_aligned_vm_area() function in mm/vmalloc.c, but I guess that
+is probably only temporary until we decide on the proper solution.
+Other archs use get_free_pages and so avoid this problem.
 
-In all cases we would require a time estimate which would be based on an
-hourly rate for the service provided.
-No on-site attendance would be required.
-All systems have either dial-in or Internet access.
+Suggestions, anyone?
 
-Is this the sort of thing your company might be interested in.
-If so, please submit brief details of specialist personnel -
-numbers/age/experience/specialisation together with the hourly rates you
-would quote us for such sub-contract work.
-Sorry to be a burden but, in addition, we will need references.
-We are looking for people who will be let loose directly on our client's
-systems and I am sure you will appreciate our caution in such matters.
-
-I thank you for your kind attention and look forward to hearing from you.
-
-Regards
-Robin Redmile-Gordon
-Managing Director
-Thermeon Europe Ltd.
+Richard
