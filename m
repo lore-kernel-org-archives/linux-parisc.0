@@ -1,290 +1,130 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from coffeepot.matt (host213-122-39-199.btinternet.com [213.122.39.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1DD3E482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Apr 2001 16:39:39 -0600 (MDT)
-Received: from localhost (mattl@localhost)
-	by coffeepot.matt (8.9.3/8.9.3) with ESMTP id XAA09318
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 6 Apr 2001 23:39:32 +0100
-Date: Fri, 6 Apr 2001 23:39:25 +0100 (BST)
-From: Matt London <matt@knm.yi.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.20.0104062329290.4811-200000@coffeepot.matt>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463811839-317009567-986596765=:4811"
-Subject: [parisc-linux] Problems booting
+Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B7507482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Apr 2001 17:15:44 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id F35A1B007; Sat,  7 Apr 2001 00:15:00 +0100 (BST)
+Date: Sat, 7 Apr 2001 00:15:00 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: randolph@tausq.org, lamont@hp.com,
+	debian-buildd@list.parisc-linux.org,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20010407001500.Z9198@linuxcare.com>
+References: <20010406210401.7685C37CDB@carmen.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010406210401.7685C37CDB@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Fri, Apr 06, 2001 at 03:04:01PM -0600
+Subject: [parisc-linux] rpc.lockd hangs  (was Re: portmap deb)
 List-ID: <linux-parisc.vger.kernel.org>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Fri, Apr 06, 2001 at 03:04:01PM -0600, Matt Taggart wrote:
+> nfs-common is currently having problems with rpc.lockd, Richard is looking in 
+> to it.
 
----1463811839-317009567-986596765=:4811
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Ugh.  nfs-common tries to invoke nfsservctl() and quotactl() via calls
+to syscall() in glibc, such as:
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+    return syscall(SYS_quotactl, cmd, special, id, addr);
 
-Hi,
+For most architectures, glibc as an asm implementation of syscall(),
+and our would be in
 
-I've recently been given an HP apollo Series 700 box. I'm not sure exactly
-what it is, other than that it says A1991XR on the base.
+glibc/sysdeps/unix/sysv/linux/hppa/syscall.S
 
-Anyway, I ran across palinux (via the route of NetBSD->OpenBSD->palinux)
-(I run slackware on my x86 boxen), downloaded the iso and burnt it to
-CD. I then dropped in an NEC SCSI cdrom, and a Seagate ST3655N 500M
-drive. I have 4 sticks of RAM, in slots J12, J13, J14 and J15 (alternate
-rows starting toward the back of the machine). I'm using a serial console.
+except that it is just a cpu loop at the moment - hence rpc.lockd
+hangs eating cpu.
 
-When the system boots, it gets about as far as calibrating the delay loop
-and drops out with a stack dump (see attached file).
+I guess a one time glibc didn't provide nfsservctl() and quotactl()
+wrappers, so syscall() was used.
 
-I was just wondering if there's any incite into what's up with this :&)
+Options (somone who knows the area better than me can correct
+these):
 
-- -- Matt
+a) Implement syscall() in glibc - I made an initial stab at that,
+included below, but I didn't get as far as building it.  Not sure
+if my approach was valid for hppa, with some args on stack, etc.
 
-- ---
-Web Page:
-  http://knm.yi.org/
-  http://pkl.net/~matt/
+b) change nfs-common to use the proper glibc wrappers for these
+functions, rather than syscall().
 
-PGP Key fingerprint = 00BF 19FE D5F5 8EAD 2FD5  D102 260E 8BA7 EEE4 8D7F
-PGP Key http://knm.yi.org/matt-pgp.html
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.4 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+c) change nfs-common to use INLINE_SYSCALL or something..
 
-iD8DBQE6zkWkJg6Lp+7kjX8RAhzVAJ4zbUhgH+ob+G3Yh+bjnSP4tkMGJwCeNDfK
-d9JX4Uk4TOfJloJ6YenIUB0=
-=QXmq
------END PGP SIGNATURE-----
 
----1463811839-317009567-986596765=:4811
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="hp-boot.log"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.20.0104062339250.4811@coffeepot.matt>
-Content-Description: 
-Content-Disposition: attachment; filename="hp-boot.log"
+I tried a quick hack at (b) and rebuilt.  I didn't get as far as trying
+the new binaries yet, because I was doing this on a 64 bit machine, and...
+both nfsservctl and quotactl are unimplemented on 64 bit :(
 
-MHgwMDAwLjI3DQoweDAwMDAuMTENCjB4MDAwMC4xMg0KMHgwMDAwLjEzDQow
-eDAwMDAuMTMNCjB4MDAwMC4xNA0KMHgwMDAwLjE0DQoweDAwMDAuMTQNCjB4
-MDAwMC4xNA0KMHgwMDAwLjE1DQoweDAwMDAuMTYNCjB4MDAwMC4xNg0KMHgw
-MDAwLjE3DQoweDAwMDAuMTgNCjB4MDAwMC4xOA0KMHgwMDAwLjE5DQoweDAw
-MDAuNUYNCjB4MDAwMC4zMQ0KMHgwMDAwLjMyDQoweDAwMDAuMjENCjB4MDAw
-MC4yMg0KMHgwMDAwLjIzDQoweDAwMDAuMjQNCjB4MDAwMC4yNQ0KMHgwMDAw
-LjI1DQoweDAwMDAuMjYNCjB4MDAwMC4yNw0KMHgwMDAwLkExDQoweDAwMDAu
-N0YNCjB4MDAwMC4zNQ0KMHgwMDAwLjM2DQoweDAwMDAuN0YNCjB4MDAwMC4z
-NQ0KMHgwMDAwLjM2DQoweDAwMDAuMjgNCjB4MDAwMC4yOQ0KMHgwMDAwLjJB
-DQoweDAwMDAuMkINCjB4MDAwMC4yQw0KMHgwMDAwLjMzDQoweEFBQUEuQUEN
-CjB4MDAwMC5BMw0KMHgwMDAyLjgzDQoweDAwMDEuODgNCg0KDQpQb2xsaW5n
-IGZvciBhIGNvbnNvbGUuICBQcmVzcyA8Q1I+IHdpdGhpbiA1IHNlY29uZHMg
-dG8gc2VsZWN0Lg0KDQoNCg0KQk9PVF9BRE1JTj4gYm9vdCBzY3NpDQoNClRy
-eWluZyBzY3NpLjAuMA0KQm9vdCBwYXRoIGluaXRpYWxpemVkLg0KQXR0ZW1w
-dGluZyB0byBsb2FkIElQTC4NCjB4MDAwMC5BNg0KDQoNCkhhcmQgYm9vdGVk
-Lg0KcGFsbyBpcGwgYmFtZUBub2FtIFR1ZSBPY3QgMzEgMTQ6MTg6MDIgTVNU
-IDIwMDANCjAvdm1saW51eCAyMTQwMTQ1IGJ5dGVzIEAgMHg2Zjk4MDANCjAv
-cGFsby1jbWRsaW5lICcwL3ZtbGludXggUk9PVD0vIFRFUk09TElOVVggcm9v
-dD0vZGV2L3NjZDAnDQpLZXJuZWw6IHBhcnRpdGlvbiAwIGZpbGUgL3ZtbGlu
-dXgNCkVMRjMyIGV4ZWN1dGFibGUNCg0KRW50cnkgMDAxMDAxNTAgZmlyc3Qg
-MDAxMDAwMDAgbiA0DQpTZWdtZW50IDAgbG9hZCAwMDEwMDAwMCBzaXplIDE0
-NjAzNDQgbWVkaWFwdHIgMHgxMDAwDQpTZWdtZW50IDEgbG9hZCAwMDI2NjAw
-MCBzaXplIDE3OTA0OCBtZWRpYXB0ciAweDE2NjAwMA0KU2VnbWVudCAyIGxv
-YWQgMDAyOTQwMDAgc2l6ZSAxMDk4NzYgbWVkaWFwdHIgMHgxOTIwMDANClNl
-Z21lbnQgMyBsb2FkIDAwMmIwMDAwIHNpemUgODE5MiBtZWRpYXB0ciAweDFh
-ZDAwMA0KYnJhbmNoaW5nIHRvIGtlcm5lbCBlbnRyeSBwb2ludCAweDAwMTAw
-MTUwDQpQREMgQ29uc29sZSBJbml0aWFsaXplZA0KVGhlIDMyLWJpdCBLZXJu
-ZWwgaGFzIHN0YXJ0ZWQuLi4NCkVuYWJsZWQgRlAgY29wcm9jZXNzb3INCkZy
-ZWUgbWVtb3J5IHN0YXJ0cyBhdDogMHhjMDJkYTAwMA0KKDB4NTA0ZDZjLDB4
-NTA0ZDZjLDB4MCwweDApDQpQQUxPIGNvbW1hbmQgbGluZTogJ1JPT1Q9LyBU
-RVJNPUxJTlVYIHJvb3Q9L2Rldi9zY2QwJw0KUEFMTyBpbml0cmQgMC0wDQpt
-b2RlbCAgIDAwMDAzMDAwIDAwMDAwNDgxIDAwMDAwMDAwIDAwMDAwMDAwIDc3
-ZWY1NzcyIDAwMDAwMDAwIDAwMDAwMDA0IDAwMDAwMDBkIDAwMDAwMDAwDQp2
-ZXJzICAgIDAwMDAwMDAzDQpDUFVJRCB2ZXJzIDAgcmV2IDANClNlYXJjaGlu
-ZyBmb3IgZGV2aWNlcyBpbiBQREMgZmlybXdhcmUuLi4gcHJvY2Vzc29yIGhw
-YSAweGZmZmJlMDAwDQogYW4gb2xkZXIgYm94Li4uDQpGb3VuZCBkZXZpY2Vz
-Og0KMS4gU3RpbmdlciBPcHRpb25hbCBHcmFwaGljcyAoMTApIGF0IDB4ZjQw
-MDAwMDAsIHZlcnNpb25zIDB4NiwgMHgwLCAweDc3LCAweDAsIDB4MA0KMi4g
-QnVzaG1hc3RlciBDb3JlIEJBICgxMSkgYXQgMHhmMDgyZjAwMCwgdmVyc2lv
-bnMgMHg2LCAweDAsIDB4NzAsIDB4MCwgMHgwDQozLiBCdXNobWFzdGVyIENv
-cmUgU0NTSSAoMTApIGF0IDB4ZjA4MjUwMDAsIHZlcnNpb25zIDB4NiwgMHgw
-LCAweDcxLCAweDAsIDB4MA0KNC4gQnVzaG1hc3RlciBDb3JlIExBTiAoODAy
-LjMpICgxMCkgYXQgMHhmMDgyNjAwMCwgdmVyc2lvbnMgMHg2LCAweDAsIDB4
-NzIsIDB4MCwgMHgwDQo1LiBCdXNobWFzdGVyIENvcmUgSElMICgxMCkgYXQg
-MHhmMDgyMTAwMCwgdmVyc2lvbnMgMHg2LCAweDAsIDB4NzMsIDB4MCwgMHgw
-DQo2LiBCdXNobWFzdGVyIENvcmUgUlMtMjMyICgxMCkgYXQgMHhmMDgyMzAw
-MCwgdmVyc2lvbnMgMHg2LCAweDAsIDB4NzUsIDB4MCwgMHgwDQo3LiBCdXNo
-bWFzdGVyIENvcmUgUlMtMjMyICgxMCkgYXQgMHhmMDgyMjAwMCwgdmVyc2lv
-bnMgMHg2LCAweDAsIDB4NzUsIDB4MCwgMHgwDQo4LiBCdXNobWFzdGVyIENv
-cmUgQ2VudHJvbmljcyAoMTApIGF0IDB4ZjA4MjQwMDAsIHZlcnNpb25zIDB4
-NiwgMHgwLCAweDc0LCAweDAsIDB4MA0KOS4gQnVzaG1hc3RlciBBdWRpbyAo
-MTApIGF0IDB4ZjEwMDAwMDAsIHZlcnNpb25zIDB4NiwgMHgwLCAweDdhLCAw
-eDAsIDB4MA0KMTAuIEJ1c2htYXN0ZXIgKDcxMCkgKDApIGF0IDB4ZmZmYmUw
-MDAsIHZlcnNpb25zIDB4MzAwLCAweDAsIDB4NCwgMHgwLCAweDgxDQoxMS4g
-QnVzaG1hc3RlciAoMSkgYXQgMHhmZmZiZjAwMCwgdmVyc2lvbnMgMHgxNiwg
-MHgwLCAweDksIDB4MCwgMHgwDQpUaGF0J3MgYSB0b3RhbCBvZiAxMSBkZXZp
-Y2VzLg0KQ1BVKHMpOiAxIHggUEE3MDAwIChQQ1gtUykgYXQgNTAuMDAwMDAw
-IE1Ieg0KTGludXggdmVyc2lvbiAyLjQuMC10ZXN0NiAocGpsYWhhaWVAZWxl
-bnVpYWwudGhlcHVmZmluZ3JvdXAuY29tKSAoZ2NjIHZlcnNpb24gMi45NiAy
-MDAwMDkyNSAoZXhwZXJpbWVudGFsKSkgIzMyIE1vbiBOb3YgNiAxMDoyMDo1
-OCBFU1QgMjAwMA0KZnJlZV9ib290bWVtKDB4MmRhMjAwLCAweGQyNWUwMCkN
-CmluaXRyZDogMDAwMDAwMDAtMDAwMDAwMDANCnBhZ2V0YWJsZV9pbml0DQpP
-biBub2RlIDAgdG90YWxwYWdlczogNDA5Ng0Kem9uZSgwKTogMjA0OCBwYWdl
-cy4NCnpvbmUoMSk6IDIwNDggcGFnZXMuDQp6b25lKDIpOiAwIHBhZ2VzLg0K
-S2VybmVsIGNvbW1hbmQgbGluZTogUk9PVD0vIFRFUk09TElOVVggcm9vdD0v
-ZGV2L3NjZDANCnRyYXBfaW5pdA0KZXJyb3IgcmVhZGluZyB0b2QgY2xvY2sN
-CkNhbGlicmF0aW5nIGRlbGF5IGxvb3AuLi4gNDkuNzcgQm9nb01JUFMNCk1l
-bW9yeTogMTMxNTJrIGF2YWlsYWJsZQ0KRGVudHJ5LWNhY2hlIGhhc2ggdGFi
-bGUgZW50cmllczogMjA0OCAob3JkZXI6IDIsIDE2Mzg0IGJ5dGVzKQ0KQnVm
-ZmVyLWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMTAyNCAob3JkZXI6IDAs
-IDQwOTYgYnl0ZXMpDQpQYWdlLWNhY2hlIGhhc2ggdGFibGUgZW50cmllczog
-NDA5NiAob3JkZXI6IDIsIDE2Mzg0IGJ5dGVzKQ0KSW5vZGUtY2FjaGUgaGFz
-aCB0YWJsZSBlbnRyaWVzOiAxMDI0IChvcmRlcjogMSwgODE5MiBieXRlcykN
-ClBPU0lYIGNvbmZvcm1hbmNlIHRlc3RpbmcgYnkgVU5JRklYDQpBU1AgdmVy
-c2lvbiAxIGF0IDB4ZjA4MDAwMDAgZm91bmQuDQoweDAwMDAuMDANCjB4MDAw
-MC5CNA0KMHgwMDAwLkI3DQoweDAwMDAuQTkNCg0KDQoNCkR1bXBpbmcgU3Rh
-Y2sgZnJvbSBjMGZlODAwMCB0byBjMGZlODk0MDoNCjgwMDAgMDAwMDAwMDAg
-MDAwMDAwNDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAyN2E0NmMgMDAwMDAwMDAg
-MDAwMDAwMDAgZmZmZmZmZmYNCjgwMjAgMDAwMDAwMDQgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgZmZmZmZmZmYgYzAy
-N2EzODQNCjgwNDAgYzAyN2EzODQgYzAyYjAwMDAgYzAyYjAwMDAgYzAyODA2
-MGMgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjgwNjAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDEgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgYzAyYjAwMDANCjgwODAgYzAyYjAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAyYzlhYjggMDAw
-MDAwMDAgYzBmZTgwOWMNCjgwYTAgYzBmZTgwOWMgYzBmZTgwYTQgYzAxMWE2
-ZTQgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDANCjgwYzAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgYzBmZTgwMDAgYzAxMWQ0YTgNCjgwZTAgMDAw
-MDAwMDAgMDAwMDAwMDEgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMWIgMDAw
-MDAwMDAgMDAwMDAwMWMgMDAwMDAwMDANCjgxMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgODAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDANCjgxMjAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAN
-CjgxNDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjgxNjAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDANCjgxODAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDANCjgxYTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgZmZmZmZlZmYNCjgx
-YzAgMDAwMDAwMDAgZmZmZmZmZmYgMDAwMDAwMDAgYzAyN2FmYjQgZmZmZmZm
-ZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYNCjgxZTAgZmZmZmZmZmYg
-ZmZmZmZmZmYgMDA4MDAwMDAgMDUwMDAwMDAgMDAwMDAwMDAgZmZmZmZmZmYg
-ZmZmZmZmZmYgZmZmZmZmZmYNCjgyMDAgMDAwMDAxMDAgMDAwMDAxMDAgMDAw
-MDA0MDAgMDAwMDA0MDAgZmZmZmZmZmYgZmZmZmZmZmYgZmZmZmZmZmYgZmZm
-ZmZmZmYNCjgyMjAgMDAwMDczNzcgNjE3MDcwNjUgNzIwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjgyNDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDEwMDAgYzAyNjcwNTQgYzAyNjcwNTQg
-YzAxM2QxZTggMDAwMDIwMDAgYzBmZmViYTANCjgyNjAgYzAyMjM4YzQgYzAy
-MzY3MDggYzAyZDk4MDAgMDA1MDRkNmMgMDAwMDAwMDAgYzAxMWJiODggYzAy
-NjcwMDAgMDAwMDEwMDANCjgyODAgYzAyNjcwNTQgYzAyNjcwMDAgMDAwMDAw
-M2UgYzAyN2EwMDAgMDAwMDAwMDEgYzAyYjYxZWIgMDAwMDAwMDQgYzAyYjYx
-YzcNCjgyYTAgMDAwMDAwMjMgYzAyYjYxZWIgMDAwMDAwMDAgMDAwMDAwMDAg
-YzAxMDAyOTAgMDAwMDAwM2UgMDAwMDAwMDAgMDAwMDAwMjQNCjgyYzAgMDAw
-MDAwMGIgYzAyN2E0YWMgYzAyN2EwMDAgNTAwMDAwNTkgZjAwMDA1MGMgMDAw
-MDAwZmYgMDAwMDAwNjAgMDAwMDAwNjANCjgyZTAgMDAwMDAwMDEgMDAwMDAw
-MDIgMDAyYjIwODAgMDAwMDAwMDggMDAyYjUwYzAgYzAyNjYwMDAgMDAwMDAw
-MDAgMDBlNGUxYzANCjgzMDAgYzAyYjA4YzAgMDAwMDAwNjAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAN
-CjgzMjAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-NDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjgzNDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwODAwMDAgMDAwMDAw
-ODAgMDAwMDAwMDAgMDAwMDAwMDANCjgzNjAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDANCjgzODAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjgz
-YTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAxMDIgMDAwMDAwMDANCjgzYzAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDANCjgzZTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDIgMDAw
-MDAwMDANCjg0MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgYzBmZTg1MDAgYzAxMDNjMzggMDAwMDAwMDAgMDAwMDAwMDANCjg0MjAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAxMWJiNzgg
-YzAxMWJiN2MgMDAwMDAxMDIgMDAwMDAwMDANCjg0NDAgMDAyODEwMDAgMDAw
-MDAwMDAgYzAyODAwNDAgYzAyODAwNjQgMDAwMDAwMDAgYzAyODAyMDQgMDAw
-MDAwMDAgMDAwMDAwMDANCjg0NjAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgYzBmZTg0NjggMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDANCjg0ODAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg0YTAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg0YzAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDANCjg0ZTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-YzAxMDNjNDggMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAN
-Cjg1MDAgYzBmZTgwMDAgYzAyODA2MGMgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg1MjAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAxMDAyYTQgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDANCjg1NDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgYzAyYjA2YzAgYzBmZTgwMDAgYzAyODA2MGMg
-MDAwMDAwMDANCjg1NjAgYzAyYjAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg1
-ODAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg1YTAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgYzAyOTUwNTQgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDANCjg1YzAgYzAyYjAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDANCjg1ZTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAyYTVm
-NzQgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg2MDAg
-YzAyZDk4MDAgMDA1MDRkNmMgYzAyY2MwMDAgYzAyNjYwMDAgYzAyYzgwMDAg
-MDAwMDAwMDAgYzAyYjAwMDAgMDAwMDAwMDANCjg2MjAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDAgYzAyYTY3ZDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgMDAwMDAwMDANCjg2NDAgYzAyYjAwMDAgYzAyNjYwMDAgYzAyYzgw
-MDAgMDAwMDAwMDAgYzAyYjAwMDAgYzBmZmVjMjAgMDAwMDAwMDAgMDAwMDAw
-MDANCjg2NjAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAyYTc1Nzgg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg2ODAgYzAy
-Y2MwMDAgYzAyNjYwMDAgYzAyYzgwMDAgMDAwMDAwMDAgYzAyYWViNzQgYzAy
-N2E2Y2MgYzBmZTQ3ZTAgMDAwMDAwMDANCjg2YTAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDAgYzAxMDllNzQgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDANCjg2YzAgMDAwMDAwMDAgMDAwMDAwMDAgZmZmYmUwMDAg
-MDAwMDAwMDMgMDAwMDAwMjMgYzBmZTQxNjAgMDAwMDAwMDEgYzAyYWU5YjQN
-Cjg2ZTAgYzAyYzhjYzAgMDAwMDAwMDAgMDAwMDAwMDAgYzAxMDllNzQgMDAw
-MDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg3MDAgYzAyYWVi
-MzQgYzAyYzhkODAgYzAyMzBkMGMgMDAwMDAwMDAgZjA4MDAwMDAgMDAwMDAw
-MDEgYzAyNTZmNDggYzAyNTZmNGMNCjg3MjAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgYzAyYTc1MTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDANCjg3NDAgYzAyYzhkODAgYzAyYzhkODAgZjA4MjQ4MDAgMDAw
-MDAwMDAgYzBmZjAxZTAgMDAwMDAwMDAgMDAwMDAwNDEgMDAwMDAwNTgNCjg3
-NjAgZmZmZmZmZmYgYWFhYWFhYWEgYzAyOTU3OTQgYzBmZTg3NDggMDA1MDRk
-NmMgYzAyYzg4MDAgYzAyNmMwMDAgYzAyYzhjYzANCjg3ODAgZmZmZmZmZjAg
-YzBmZjAxZTAgYzAyNWY5MDQgYzBmZjAxZTAgMDAwMDAwMTIgMDAwMDgxYTQg
-YzAyNTZmNmMgMDAwMDAwMDANCjg3YTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDAgYzAxZGQwMmMgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAw
-MDAwMDANCjg3YzAgYzAyYzg4MDAgYzAyNmMwMDAgYzAyN2EwMDAgYzBmZjAx
-ZTAgYzBmZWYyMDAgYzBmZjAxZTAgYzBmZjAxZTAgYzAyYjYxZWQNCjg3ZTAg
-MDAwMDAwMDAgMDAwMDAwMDEgYzAyN2EwMDAgMDAwMDAwM2UgMDAwMDAwM2Mg
-MDAwMDAwMjYgMDAwMDAwMGIgYzAyN2E0YWMNCjg4MDAgYzAyN2EwMDAgNTAw
-MDAwNTkgZjAwMDA1MGMgMDAwMDAwZmYgMDAwMDAwNjAgMDAwMDAwNjAgMDAw
-MDAwMDEgMDAwMDAwMDINCjg4MjAgMDAyYjIwODAgMDAwMDAwMDggMDAyYjUw
-YzAgYzAxMWU5YmMgMDAwMDAwMDAgYzBmZTQ4NjAgYzBmZWYyNDAgMDAwMDAw
-NjANCjg4NDAgYzAyN2E0ZjQgYzBmZWYyMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgYzAyOTU3OTQgYzAyZDk4MDANCjg4NjAgMDA1
-MDRkNmMgYzAyYzg4MDAgYzAyNmMwMDAgMDAwMDAwMDcgZjA4MjQ4MDAgMDAw
-MDAwNTggMDAwMDAwMDAgMDAwMDAwMDANCjg4ODAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwODAwMDAgMDAwMDAwODAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDAwMDANCjg4YTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAg
-YzAyYTcyMDggMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAN
-Cjg4YzAgMDAwMDAwNTggZjA4MjQ4MDAgYzBmZTQ4NjAgYzBmZWYyNDAgYzBm
-ZTg3NDggMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjg4ZTAgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAyYTZmMTggMDAwMDAxMDIgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDANCjg5MDAgMDAwMDAwMGMgYzBmZTg3NDgg
-MDAwMDAwMDcgZjA4MjQ4MDAgYzBmZTg3NDggMDAwMDAwMDAgMDAwMDAwMDAg
-MDAwMDAwMDANCjg5MjAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzAy
-YTcwMTAgMDAwMDAwMDIgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCg0K
-SGlnaCBQcmlvcml0eSBNYWNoaW5lIENoZWNrIChIUE1DKTogQ29kZT0xIHJl
-Z3M9YzAyNmQwODAgKEFkZHI9MDAwMDAwMDApDQoNCiAgICAgWVpydldFU1RI
-TE5YQkNWTWNiY2JjYmNiT0dGUlFQREkNClBTVzogMDAwMDAwMDAwMDAwMDEx
-MDExMTExMTAxMDAwMDEwMTENCnIwLTMgICAgIDAwMDAwMDAwIGMwMWRjMDAw
-IGMwMmE3MDUwIGMwZmU4NzQ4DQpyNC03ICAgICAwMDAwMDAyYyBjMGZlZjI0
-MCBmMDgyNDgwMCBmZmZmZmZkZg0KcjgtMTEgICAgZmZmZmZmZmYgYzAyN2Ew
-MDAgMDAwMDAwMDAgYWFhYWFhYWENCnIxMi0xNSAgIGZmMTEwMDAwIGZmZmZm
-ZmYxIGYwMDA0ZDE0IDAwMDAwMDAwDQpyMTYtMTkgICAwMDAwMDAwMCA1MDAw
-MDA1OSBmMDAwMDUwYyAwMDAwMDAwYg0KcjIwLTIzICAgMDAwMDAwZmYgMDAw
-MDAwNDEgYzBmZTQwNDAgMDAwMDAwMGINCnIyNC0yNyAgIGZmZmZmZmZmIGYw
-ODI0ODAwIGYwODI0ODAwIGMwMjY2MDAwDQpyMjgtMzEgICAwMDAwMDBkMyAw
-MDAwMDc4MCBjMGZlODk0MCBjMDEyZGZjMA0Kc3IwLTQgICAgMDAwMDAwMDAg
-MDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCnNyNC04ICAgIDAwMDAwMDAw
-IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwDQoNCklBU1E6IDAwMDAwMDAw
-IDAwMDAwMDAwIElBT1E6IGMwMWRjMmUwIGMwMWRjMmUwDQogSUlSOiBlODQw
-YzAwMCAgICBJU1I6IDAwMDAwMDAwICBJT1I6IGMwMmE3MDUwDQpPUklHX1Iy
-ODogMDAwMDAwMDANCg==
----1463811839-317009567-986596765=:4811--
+So, we need to implement wrappers for those, and fix either glibc or
+nfs-common.
+
+Richard
+
+
+==================== quick'n'dirty patch to nfs-common =====================
+
+diff -ur nfs-utils.ori/support/nfs/nfsctl.c nfs-utils/support/nfs/nfsctl.c
+--- nfs-utils.ori/support/nfs/nfsctl.c	Mon Oct 18 17:21:12 1999
++++ nfs-utils/support/nfs/nfsctl.c	Fri Apr  6 16:02:28 2001
+@@ -20,5 +20,9 @@
+ int
+ nfsctl (int cmd, struct nfsctl_arg * argp, union nfsctl_res * resp)
+ {
++#ifdef __hppa__
++  return nfsservctl(cmd, argp, resp);
++#else
+   return syscall (__NR_nfsctl, cmd, argp, resp);
++#endif
+ }
+diff -ur nfs-utils.ori/utils/rquotad/quotactl.c nfs-utils/utils/rquotad/quotactl.c
+--- nfs-utils.ori/utils/rquotad/quotactl.c	Mon Oct 18 17:21:12 1999
++++ nfs-utils/utils/rquotad/quotactl.c	Fri Apr  6 15:58:19 2001
+@@ -24,7 +24,9 @@
+ #include <unistd.h>
+ #include <sys/syscall.h>
+ 
++#ifndef __hppa__
+ int quotactl(int cmd, const char * special, int id, caddr_t addr)
+ {
+ 	return syscall(SYS_quotactl, cmd, special, id, addr);
+ }
++#endif
+
+============================================================================
+
+
+===================== initial attempt at syscall for glibc =================
+
+ENTRY(syscall)
+        copy %r26,%r20
+        copy %r25,%r26
+        copy %r24,%r25
+        copy %r23,%r24
+        ldw -52(%r30),%r23
+#if 0
+        /* Hmm, can we be sure there is space for two args on the stack,
+         * when the syscall() was called with fewer args?  How many args
+	 * must we allow for?
+         */
+        ldw -56(%r30),%r22
+        stw %r22,-52(%r30)
+#endif
+        ble  0x100(%sr2,%r0)
+        nop
+        ldi -0x1000,%r1
+        cmpb,>>=,n %r1,%ret0,0f
+        stw %rp, -20(%sr0,%r30)
+        stw %ret0, -24(%sr0,%r30)
+        .import __errno_location,code
+        bl __errno_location,%rp
+        ldo 64(%r30), %r30
+        ldo -64(%r30), %r30
+        ldw -24(%r30), %r26
+        sub %r0, %r26, %r26
+        stw %r26, 0(%sr0,%ret0)
+        ldo -1(%r0), %ret0
+        ldw -20(%r30), %rp
+0:
+	ret,n
+
+============================================================================
