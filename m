@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (ns1.au.network4.net [203.25.143.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8169E482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Mar 2002 05:18:12 -0700 (MST)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id UAA07245
-	for parisc-linux@lists.parisc-linux.org; Thu, 28 Mar 2002 20:18:02 +0800
-Date: Thu, 28 Mar 2002 20:18:00 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
+Received: from tom.hrz.tu-chemnitz.de (tom.hrz.tu-chemnitz.de [134.109.132.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 04F99482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 28 Mar 2002 09:18:23 -0700 (MST)
+Message-Id: <5.1.0.14.2.20020328171235.02e71248@pop.puretec.de>
+Date: Thu, 28 Mar 2002 17:13:56 +0100
+To: tsbogend@alpha.franken.de, Christian Suder <csuder@cisco.com>
+From: Tilo Jandt <tilo@jandt-online.net>
 Subject: Re: [parisc-linux] Mozilla, etc.
-Message-ID: <20020328201757.B6833@neep.com.au>
-References: <20020327151405.2397A482F@dsl2.external.hp.com> <Pine.LNX.4.33.0203272123310.1463-100000@lewis.et.byu.edu>
+Cc: David Dougall <davidd@et.byu.edu>,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020328093151.GA20881@elvis.franken.de>
+References: <3CA2ADDB.4EE8AFA4@cisco.com>
+ <Pine.LNX.4.33.0203272123310.1463-100000@lewis.et.byu.edu>
+ <3CA2ADDB.4EE8AFA4@cisco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0203272123310.1463-100000@lewis.et.byu.edu>; from davidd@et.byu.edu on Wed, Mar 27, 2002 at 09:27:11PM -0700
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,39 +26,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoth David Dougall:
-> PS: is there any hope of a jre on parisc-linux?
 
-I would say definitely, after this recent press release from the Apache
-Software Foundation:
+>to get it running, you need to recompile it with -O optimizing level.
 
-  http://www.apache.org/foundation/news.html
+how do you recompile it?
 
-(linking to)
+>But there is galeon, which uses mozillas rendering engine, which (also
+>compiled with -O) gives me a working web browser.
 
-  http://www1.internetwire.com/iwire/release_html_b1?release_id=39838
+since the upgrade to mozilla 0.9.9 i can't use galeon any more.
 
-"ASF reaches agreement with Sun Microsystems to allow open source Java
-implementations."
+cya,
+Tilo
 
-What I _think_ this means (after reading through the full article) is
-that we're going to see fully open, 100%-approved Java implementations
-running natively in Linux and other alternative operating systems in the
-near future.  I don't know what the current issues (if any) are with
-building the jdk1.1 or jdk1.2 packages under linux-hppa, but I would
-hope that following this announcement HP will (somehow) be able to
-assist in getting a production-ready JRE into linux-hppa.
-
-(Caveat: I could have this all wrong of course.)
-
-Once HPUX binary compatibility is working properly the HPUX JRE could
-probably be used as well, but if there's a comparable native solution I
-don't know if many people will go to that effort.
-
-Andrew.
-
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+|[ Tilo Jandt, K=F6rnerstra=DFe 8, D-09306 Rochlitz         ]|
+|[ mailto:tilo@jandt-online.net ]  [ ICQ: 73832493              ]|
+|[ Phone: +49 179 5333 255   ]  [ Fax: +49 3737 771478  ]|
