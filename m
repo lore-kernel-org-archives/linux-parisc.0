@@ -1,17 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Problems with Web
-Date: Mon, 31 May 2004 13:43:27 -0400 (EDT)
-Message-ID: <200405311743.i4VHhRQp019367@hiauly1.hia.nrc.ca>
-References: <20040531170503.GL16157@baldric.uwo.ca>
+Date: Mon, 31 May 2004 18:58:15 -0400 (EDT)
+Message-ID: <200405312258.i4VMwFRM021111@hiauly1.hia.nrc.ca>
+References: <20040531225013.GD26348@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: nwoods29321@charter.net,
  parisc-linux@lists.parisc-linux.org
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040531170503.GL16157@baldric.uwo.ca> from "Carlos O'Donell" at
-	May 31, 2004 01:05:03 pm
+In-Reply-To: <20040531225013.GD26348@colo.lackof.org> from "Grant Grundler" at
+	May 31, 2004 04:50:13 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,15 +22,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > Problem #2: I am unable to get java working, and I have been unable to
-> > locate a java plugin or j2re for debian hppa.
+> On Mon, May 31, 2004 at 01:43:27PM -0400, John David Anglin wrote:
+> > I'll go out on a limb and say that GCC 3.5 will support java on hppa-linux.
+> > It pretty much works now except for unwinding through signal frames.
+> 
+> Awesome!
+> Any rough estimate when something will be submitted to debian?
 
-> Java is being worked on too.
-
-I'll go out on a limb and say that GCC 3.5 will support java on hppa-linux.
-It pretty much works now except for unwinding through signal frames.
-
-I don't have any information on other java ports.
+3.5 is in pretty rough shape at the moment.  Based on the previous
+release schedule, the 3.5 (4.0?) release is probably about a year away.
+I think debian has been experimenting with adding it to an earlier
+release but I can't do that (ask Matthias).
 
 Dave
 -- 
