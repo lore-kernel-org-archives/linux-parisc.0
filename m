@@ -1,48 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA15123
-	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Nov 2000 13:32:42 -0700
-Message-Id: <5.0.0.25.0.20001101122543.02a49370@mail.webcash.com>
-Date: Wed, 01 Nov 2000 12:30:40 -0800
-To: Paul Bame <bame@noam.fc.hp.com>
-From: Kailashnath V Rampure <kailasr@webcash.com>
-Subject: Re: [parisc-linux] NEW NATIVE PALO TARBALL - REQUIRED
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <E13qiuu-00005u-00@noam.fc.hp.com>
-References: <Your message of "Tue, 31 Oct 2000 12:58:41 PST." <5.0.0.25.0.20001031125250.00ad6430@mail.webcash.com>
- <Your message of "Mon, 30 Oct 2000 13:51:00 PST." <5.0.0.25.0.20001030134804.00a46a60@mail.webcash.com>
- <5.0.0.25.0.20001030134804.00a46a60@mail.webcash.com>
- <5.0.0.25.0.20001031125250.00ad6430@mail.webcash.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA16826
+	for <parisc-linux@puffin.external.hp.com>; Wed, 1 Nov 2000 17:11:24 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 2 Nov 2000 00:13:07 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13r80A-00082r-00; Thu, 02 Nov 2000 00:13:06 +0000
+Date: Thu, 2 Nov 2000 00:13:06 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@thepuffingroup.com
+Cc: parisc-linux-cvs@puffin.external.hp.com
+Subject: Re: linux bame
+Message-ID: <20001102001306.A30325@parcelfarce.linux.theplanet.co.uk>
+References: <200011012053.NAA15579@puffin.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200011012053.NAA15579@puffin.external.hp.com>; from bame@puffin.external.hp.com on Wed, Nov 01, 2000 at 01:53:24PM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks paul I was able to run the command.
+On Wed, Nov 01, 2000 at 01:53:24PM -0700, Paul Bame wrote:
+> CVSROOT:	/home/cvs/parisc
+> Module name:	linux
+> Changes by:	bame	00/11/01 13:53:24
+> 
+> Modified files:
+> 	include/asm-parisc64: posix_types.h 
+> 
+> Log message:
+> Don't need a separate copy of this one either
 
-Can you let me know what I should type at ISL prompt as its trying to boot 
-from /stand/vmunix instead of /boot/vmlinux. Also I am unable to open vi as 
-it says vi:LINUX:unknown terminal type.
+err.. are you sure?  we used to get a lot of prototype problems when they
+were the same file.  what's changed that they're now able to be the same?
 
-Please suggest.
-Regards
-
-At 02:26 PM 10/31/00 -0700, Paul Bame wrote:
->= Hi Paul,
->=
->= After booting the Server from NFSroot I need to Initialize the harddisk on
->= the server. so I copied the palo and linux in to the nfsroot. I am trying
->= to Run the following command:
->= $ palo -I -k /boot/vmlinux -b /boot/iplboot   -c '2/boot/vmlinux TERM=linux
->= HOME=/ root=/dev/sda2' /dev/sda
->= fisrt partition is 10M of type f0
->= second partition is /dev/sda2 of type linux native.
->= Third partition is /dev/sda3 of type linux Swap
->
->That looks great.
->
->= Then I get the cannot execute binary file.
->
->Ok I think we changed the kernal such that the old palo bits won't run
->any more (we removed the old gateway page).  I uploaded a new version:
->ftp://puffin.external.hp.com/pub/parisc/binaries/userspace/palo-200001031.tgz
->
->         -P
+-- 
+Revolutions do not require corporate support.
