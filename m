@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BB32E482D
-	for <parisc-linux@parisc-linux.org>; Tue,  4 Jun 2002 00:33:26 -0600 (MDT)
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc-cvs problem
-Message-ID: <1023172365.3cfc5f0d1b7f7@webmail.tiscalinet.be>
-Date: Tue, 04 Jun 2002 08:32:45 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@parisc-linux.org
-References: <200206031738.g53HcNjL011765@hiauly1.hia.nrc.ca>
-In-Reply-To: <200206031738.g53HcNjL011765@hiauly1.hia.nrc.ca>
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6682A482E
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Jun 2002 02:29:43 -0600 (MDT)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 2BBDD8D5
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Jun 2002 10:29:42 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id KAA25986 for <parisc-linux@lists.parisc-linux.org>; Tue, 4 Jun 2002 10:01:50 +0200 (METDST)
+Message-ID: <3CFC72F0.E8767180@admin.france.hp.com>
+Date: Tue, 04 Jun 2002 09:57:36 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] How retrieving HPA/SPA with the device node
+References: <3CA9BB50.1FCEBDF4@admin.france.hp.com> <20020402164417.6C6B6482A@dsl2.external.hp.com>  <3CFB4D2A.F86BEDC4@admin.france.hp.com> <20020603203819.DB7084831@dsl2.external.hp.com>
+Content-Type: multipart/mixed;
+ boundary="------------95F2415AED24E8D5D3169D06"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,43 +26,67 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+This is a multi-part message in MIME format.
+--------------95F2415AED24E8D5D3169D06
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-> > I really have no chance with this b2000:
-> > I broken first my install and now it makes a HPMC in the middle of
-> binutils
-> > build and the pim info are not clear :((
+	Hi
+Thanks for the answer, it's clear now. The fact is I'm able 
+to retrieve the hpa for a PCI device "only". But for the lazy 
+example, I can retrieve the base, but not the hpa. So it would 
+be really nice if I can write something usable also on 
+712/710/etc.... and not only for PCI system. So I think I'll
+forget it at this time, and work only for PCI subsystem (I can still
+work on a function that test the kind of scsi card, and do the
+reverse job to calculate the hpa from the base, but I'm not sure that
+it is the best solution).
+
+	Thanks a lot.
+
+Grant Grundler wrote:
 > 
-> I'd try a new kernel first.
-
-Very strange behaviour: 
-with some difficulties I reach to restart a kernel then I launch  my toolchain
-script (which failled because of __therad problem), I change the faulty header
-and finaly relaunch script which failled in a tar xjf (some time during the
-first extract of binutils, some time during the second extract of gcc32) what
-ever the kernel I used 2.4.18-pa24 2.4.18-pa24+lvm1.0.4 2.4.19-pre8-pa29?.
-
-But thanks to the console logs grab with minicom I reach to notice the "BUG":
-
-Debian GNU/Linux 3.0 palx2000 ttyS0
-
-palx2000 login:
-
-kernel BUG at superio.c:109!
-WARNING! Stack pointer and cr30 do not correspond!
-Dumping virtual address stack instead
-
-Dumping Stack from 0x2ee00000 to 0x2ee00bc0:
-...
-
-What could the reason why the tar xjf is successfull a first time and when it is
-relaunched, it fails? Ext3 fs (I am not sure how can I change back to ext2) bash
-(which other sh may I try) ?
+> Bruno Vidal wrote:
+> > Can someone can explain what is the difference between the
+> > "hpa" of a scsi card (pci or not) and the "base" in the structure Scsi_Host ?
+> 
+> hpa and base are "handles" for different views of HW.
+> "hpa" doesn't have to be a physical address (though it normally is).
+> On V-class, the hpa is bogus and just a reference to particular IO device.
+> base could be "adjusted" (like the LASI example) or "F-extended"
+> for 64-bit or whatever the platform code thinks the driver needs
+> to reference the device properly.
+> 
+> But in practice, for the platforms we support to date, I think you
+> can compare them (or compare most of the bits) to determine
+> if it's the same device.
+> 
+> grant
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 
-Joel
+-- 
+	Vidal Bruno, (770-4271)
+        SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
+--------------95F2415AED24E8D5D3169D06
+Content-Type: text/x-vcard; charset=iso-8859-1;
+ name="bruno_vidal.vcf"
+Content-Transfer-Encoding: base64
+Content-Description: Card for Bruno Vidal
+Content-Disposition: attachment;
+ filename="bruno_vidal.vcf"
 
-PS: after a cleanpim it seems to be easiest to reboot?
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
+d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
+LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
+OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
+dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
+PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
+aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
+ZDp2Y2FyZAo=
+--------------95F2415AED24E8D5D3169D06--
