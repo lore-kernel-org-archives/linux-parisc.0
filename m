@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7E1E0482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Jan 2003 01:56:02 -0700 (MST)
-Date: Tue, 21 Jan 2003 08:02:38 +0100
-Message-ID: <3E2C21FE00000116@ocpmta1.freegates.net>
-In-Reply-To: <Pine.LNX.4.50.0301200433230.5018-300000@lion.ece.utexas.edu>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] X on C3000
-Reply-To: "Joel Soete" <joel.soete@tiscali.be>
-To: "Bala" <balak@ieee.org>, parisc-linux@lists.parisc-linux.org
+Received: from exchange2.elgin.cc.il.us (exchange2.elgin.edu [66.158.60.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4F0E9482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 Jan 2003 08:57:43 -0700 (MST)
+Message-ID: <5D69EA3878E6D411B43C00508BFD7283049FB535@exchange2.elgin.edu>
+From: "Mehta, Miten" <mmehta@elgin.edu>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Tue, 21 Jan 2003 09:54:20 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] floppy images
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,26 +21,8 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Bala,
->
->I have not been able to setup X on my C3000. It says "screen not
->found". I tried using using your XF86Config-4 file but it still doesn't
->help. I am posting the dmesg and the X logs. Can anyone figure out what
->could be the reason?
->
-In your dmesg:
-...
-STI device: HPA4553A
-stifb: Unsupported gfx card id 0x2fc1066b
-...
+Hello,
 
-AFAIK you can refer to: <http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/018795.html>
+why are floppy images not supported like for i386?
 
-Regards,
-    Joel
-
-
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+Thanks.
