@@ -1,37 +1,58 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA00976
-	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 12:18:30 -0700
-Message-ID: <C36304FE952AD411AC87002094120338029E7B@MTMAIL>
-From: Ian Zink <ian.zink@maryville.com>
-To: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
-Date: Tue, 14 Nov 2000 13:20:05 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA01352
+	for <parisc-linux@puffin.external.hp.com>; Tue, 14 Nov 2000 12:21:00 -0700
+Sender: mang@mailserv2.iuinc.com
+Message-ID: <3A118FCF.9C7EEEBF@subcarrier.org>
+Date: Tue, 14 Nov 2000 14:17:35 -0500
+From: Michael Ang <mang@subcarrier.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [parisc-linux] Palinux on a 712/60
+To: bame@riverrock.org
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: linux bame
+References: <m13uGYm-001Vp3C@chalet>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have a hp 712/60 I was trying to get loaded with Pa-linux. I'm using the
-0.5 version of the Pa-linux cd. If I boot right off the CD it all loads
-until it gets to Switching to PDC. At that point nothing happens. From I
-have read the list, that is because the kernel is switching the text
-console. However, the 712s don't have consoles. From what I have also read
-the CD should work if you pass the kernel the parameter console=tty. So I
-tried to  "boot scsi.2.0 isl" from the boot_admin prompt. It gave me the
-PALO ISL, but I could not choose which line I wanted to edit. Further, I
-couldn't even type "b" to boot. I don't know if the isl is freezing or what
-is taking place
-	What I am wondering is there a way to boot a 712/80 without having
-to get cross-compiler gcc, compile the kernel, etc. Is there someway I could
-add the ramdisk-sti.tgz on the ISO to make it work? If so, what would need
-to be done?
+bame@riverrock.org wrote:
+> 
+> = On Thu, Nov 09, 2000 at 03:53:48PM -0700, Paul Bame wrote:
+> = >     Somebody never imported 2.4.0-test6, then I imported -test10 on the mai
+> n
+> = >     vendor branch and now can't (easily) undo that to import test6 and THEN
+> = >     test10.  This workaround sucks.
 
-Thanks,
+If the sources on the linus branch have been religiously tagged every
+time they're updated, then reverting to a previous would have been
+relatively painless.  I'm not sure what "this workaround" was, but I
+guess at this point test10 is merged so the point is moot.
 
-Ian Zink, Systems Engineer
-Maryville Technologies
-540 Maryville Centre, Suite 300
-St. Louis, MO  63141
-636/519-4182
-(FAX) 636/519-4141
-ian.zink@maryville.com  
-www.maryville.com
+> = don't use vendor branches.  didn't you talk to mang about this?
+> 
+> Um, I have no information to go on from your note.  All the (successful)
+> merges I've done before have used the cookbook CVS merge method including
+> a vendor branch.  Several (N-1?) of the palinux merges have been
+> accompanied by updating the vendor branch.  And this merge is going
+> well despite the ugly workaround, or so it appears to me.  Just
+> importing files to a vendor branch should have no effect on anything
+> else unless CVS has some horrible bug (RCS does not).  Before I make
+> what is apparently a serious mistake ("don't use vendor branches" sounds
+> pretty serious) please enlighten me!
+
+Vendor branches are evil.  (When I say "vendor branch" I mean the
+special kind of branch created by "cvs import".)  When you check in to a
+vendor branch your changes will also be seen on the trunk, *unless* that
+file has been previously modified on the trunk.  This is almost never
+what you want and adds confusion during merging (when you least want
+it).  Tracking third-party sources using a normal branch, as we are
+doing, is much simpler and gives you more control.
+
+When I did the original import of Linus' sources I converted the vendor
+branch to a normal branch using cvs admin magic.  So none of the
+annoyances of vendor branches should affect us, as long as any new files
+are added on the linus branch using "cvs add", NOT "cvs import".
+
+When you say you "I imported -test10 on the main vendor branch" I hope
+you really mean that you used "cvs add" on the linus branch.  From your
+other messages, your tags looked good.
+
+	- Mike.
