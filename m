@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6F6584829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 16:02:50 -0600 (MDT)
-Date: Thu, 8 May 2003 00:02:49 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030507220249.GM27494@lug-owl.de>
-References: <20030506092335.CA5344829@dsl2.external.hp.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41DD54829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 16:10:22 -0600 (MDT)
+Date: Wed, 7 May 2003 15:09:37 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 bame
+Message-ID: <20030507220937.GA4509@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20030506092335.CA5344829@dsl2.external.hp.com> <20030507220249.GM27494@lug-owl.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="sB5q8U+2Z60V3VP3"
-In-Reply-To: <20030506092335.CA5344829@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 bame
+	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
+In-Reply-To: <20030507220249.GM27494@lug-owl.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,43 +25,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---sB5q8U+2Z60V3VP3
-Content-Type: text/plain; charset=iso-8859-1
+--YZ5djTAD1cGYuMQK
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2003-05-06 03:23:35 -0600, Paul Bame <bame@dsl2.external.hp.com>
-wrote in message <20030506092335.CA5344829@dsl2.external.hp.com>:
-> CVSROOT:	/var/cvs
-> Module name:	linux-2.5
-  ^^^^^^^^^^^^^^^^^^^^^^^
+> PS: Rsyncable CVS repository would be nice:)
 
-Just a small hint - could anybody please update the web pages on p-l to
-actually name this module? I haven't seen it and to test 2.5.x on parisc
-(first on b132l, then on 712) I first tried to find a branch on the
-"linux" module, remembering that I've seen 2.5.x check-ins. I now got
-the module name off this email.
+Out of curiosity -- why do you want a rsync'able cvs? if you are not
+going to work directly from the master repository, we already produce
+daily cvs diffs that are on the ftp.p-l.org site. if you need
+up-to-the-minute updates, then why not directly use cvs? cvs.p-l.org
+seems to have decent bandwidth to various places...
 
-MfG, JBG
-PS: Rsyncable CVS repository would be nice:)
-
+randolph
 --=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 
---sB5q8U+2Z60V3VP3
+--YZ5djTAD1cGYuMQK
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.1 (GNU/Linux)
 
-iD8DBQE+uYKJHb1edYOZ4bsRAmDKAJ9m6Fc7EPZPetHwCpOKXz/mU7CqxQCfTDWe
-54FEWVbcJK1GQkf8C40OzEU=
-=G0kQ
+iD8DBQE+uYQhULspdC1Zp9IRAkTYAJoDvxkqIOYV0vnUq7+3MpqLznU1awCgoOGh
+d1Sg2VuTxtcbCiyBuqCJCpk=
+=OvgG
 -----END PGP SIGNATURE-----
 
---sB5q8U+2Z60V3VP3--
+--YZ5djTAD1cGYuMQK--
