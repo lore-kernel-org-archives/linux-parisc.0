@@ -1,17 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F2DB04852
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 15:09:17 -0700 (MST)
-Date: Tue, 26 Feb 2002 23:08:58 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-Cc: Randolph Chung <randolph@tausq.org>,
-	<parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] nslookup segmentation fault
-In-Reply-To: <20020226164130.B5289@systemhalted>
-Message-ID: <Pine.LNX.4.43.0202262252140.5099-100000@alpha.bocc.de>
+Received: from moutvdom01.kundenserver.de (moutvdom01.kundenserver.de [195.20.224.200])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9B1574850
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Feb 2002 15:39:14 -0700 (MST)
+Received: from [195.20.224.220] (helo=mrvdomng1.kundenserver.de)
+	by moutvdom01.kundenserver.de with esmtp (Exim 2.12 #2)
+	id 16fqFb-0006Ds-00
+	for parisc-linux@lists.parisc-linux.org; Tue, 26 Feb 2002 23:39:11 +0100
+Received: from [80.136.168.52] (helo=epsilon)
+	by mrvdomng1.kundenserver.de with smtp (Exim 3.22 #2)
+	id 16fqFb-0003eo-00
+	for parisc-linux@lists.parisc-linux.org; Tue, 26 Feb 2002 23:39:11 +0100
+Message-ID: <001101c1bf16$8bc14750$0801a8c0@epsilon>
+From: "Tilo Jandt" <tilo@jandt-online.net>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <Pine.NEB.4.33.0202160643280.23380-100000@www2.scram.de>
+Subject: [parisc-linux] Sound
+Date: Tue, 26 Feb 2002 23:40:09 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,54 +30,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Carlos,
+Hi,
 
-> I'm feel worried about what brk() is trying to do.
+does anyone get the Sound on a 712/60 work?
+Is it possible to play MP3's using XMMS on this system or is it to hard for
+it?
+Or doesn't Debian support this soundcard at this time ?
 
-brk() is used to increase the core size. Nothing unusual.
-
-> PF_INET==2 and PF_INET6==10 are only a single bit appart :}
-> Cosmic radiation maybe?
-
-Nope. The resolver supports both IPv4 and IPv6. The following just seems 
-to be a probe if both AFs are available.
-
-getpid()                                = 2880
-socket(PF_INET, SOCK_STREAM, IPPROTO_IP) = 3
-close(3)                                = 0
-socket(PF_INET6, SOCK_STREAM, 0)        = 3
-getsockname(3, {sin_family=AF_INET6, sin6_port=htons(0),  
-inet_pton(AF_INET6, "::", &sin6_addr), sin6_flowinfo=0, sin6_scope_id=0}, [28]) = 0
-close(3)                                = 0
-brk(0)                                  = 0x2f000
-brk(0x2f030)                            = 0x2f030
-brk(0x30000)                            = 0x30000
-brk(0x33000)                            = 0x33000
---- SIGSEGV (Segmentation fault) ---
-+++ killed by SIGSEGV +++
-
-gdb is even worse:
-
-(gdb) run
-The program being debugged has been started already.
-Start it from the beginning? (y or n) y
-
-Starting program: /usr/bin/nslookup www.kame.net
-(no debugging symbols found)...(no debugging symbols found)...
-(no debugging symbols found)...(no debugging symbols found)...
-(no debugging symbols found)...(no debugging symbols found)...
-(no debugging symbols found)...(no debugging symbols found)...
-Program received signal SIGSEGV, Segmentation fault.
-Cannot access memory at address 0x0
-(gdb) bt
-Cannot access memory at address 0x0
-
-Looks like yet another glibc related problem. In particular since nslookup 
-seems to use pthread (which *does* have issues with the latest glibc):
-
-open("/lib/libpthread.so.0", O_RDONLY)  = 3
-read(3, "\177ELF\1\2\1\3\0\0\0\0\0\0\0\0\0\3\0\17\0\0\0\1\0\0@`"..., 1024) 
-= 1024
-
-Cheers,
---jochen
+cya,
+Tilo
