@@ -1,47 +1,109 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA23439
-	for <parisc-linux@puffin.external.hp.com>; Wed, 2 Aug 2000 09:01:42 -0600
-Message-Id: <200008021503.KAA26727@opus.cirr.com>
-From: eric@cirr.com (Eric Schnoebelen)
-To: Richard Massa <int19@hydra.acs.uci.edu>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] A question... 
-In-reply-to: Your message of "Tue, 01 Aug 2000 13:14:54 PDT."
-             <200008012014.NAA08622@miami.acs.uci.edu>
-Date: Wed, 02 Aug 2000 10:03:44 -0500
-Sender: eric@cirr.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA18841
+	for <parisc-linux@puffin.external.hp.com>; Thu, 3 Aug 2000 07:03:42 -0600
+From: Marc Dijkstra <Marc.Dijkstra@intrinsitech.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <002701bffd86$155c51c0$da0d60c0@dijkstram.intrinsitech.com>
+Date: Thu, 3 Aug 2000 15:04:51 -0500
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0024_01BFFD5C.2C7D2200"
+Subject: [parisc-linux] SPUID.
 List-ID: <linux-parisc.vger.kernel.org>
 
+This is a multi-part message in MIME format.
 
-Richard Massa writes:
-- I've got this exemplar in my office, it has 16 233 megahertz
-- processors.  I was wondering if its possible to run parisc-linux
-- on the machine...
+------=_NextPart_000_0024_01BFFD5C.2C7D2200
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-	I suspect it will _never_ be possible to run
-parisc-linux (or any Open Source OS) on the Exemplar Series
-systems (especialy the SPP1x00 systems) as they are entirely
-different than the HP PARISC workstation/server systems.
+Hi all
+=20
+Strange request I guess, but having a rather nary problem. Changed a
+motherboard in a HPs700 B-class workstation and could not read the
+LanAddress off the EEPROM (label or otherwise). Need to process a
+lanaddress from the SPUID (dec or hex) to use the HP ss_config utility
+to change lanaddress.
+=20
+Anyone in the ether out there working on HP's know the algorithm HP's
+use to work out the mac from the SPUID (Software ID) of the Processor?
+My current setup (which is wrong) SPUID dec =3D 2002372255
+                                                  SPUID hex =3D =
+0x7759c69f
+                                                  LanAddress =3D
+0060b0-f92342
+=20
+Should be SPUID dec =3D 2002392735
+                SPUID hex =3D 0x775a169f
+                lanaddress =3D Thats what I need!!!!!
+=20
+Ta
+=20
+=20
+Marc Dijkstra
 
-	A bit of background:  The Exemplar systems were
-designed/built by CONVEX before the purchase of CONVEX by HP.
-They have an entirely different memory architecture and IO
-system.  The memory architecture is based on an SCI ring, if I
-remember correctly.. Designed to allow multiple nodes to be
-connected together to form a larger system (up to eight nodes in
-a complex, as I remember..)  The IO system on an 1x00 system is
-SBus based, while the IO system on the 2x00 (now generally
-available as the V-class) are PCI based. (oh, and the firmware
-is all OBP based.)
 
-	As for an OS, the 1x00 systems run MACH, with a HP-UX
-emulating server layer. (originally 9.0x, and later 10.01)
+------=_NextPart_000_0024_01BFFD5C.2C7D2200
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-	All in all, you'll probably have more luck running
-parisc-linux on the 712 test station.. :-) (and have the add in
-ethernet/serial card to play with as well.)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD W3 HTML//EN">
+<HTML>
+<HEAD>
 
---
-Eric Schnoebelen		eric@cirr.com		http://www.cirr.com
-	"We are interested in artificial intelligence because there
-	  is so much less of the natural kind around these days."
+
+<META content=3D'"MSHTML 4.72.3110.7"' name=3DGENERATOR>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT color=3D#000000 size=3D2>Hi all</FONT></DIV>
+<DIV><FONT color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Strange request I guess, but having a rather nary =
+problem.=20
+Changed a motherboard in a HPs700 B-class workstation and could not =
+read the=20
+LanAddress off the EEPROM (label or otherwise). Need to process a =
+lanaddress=20
+from the SPUID (dec or hex) to use the HP ss_config utility to change=20
+lanaddress.</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Anyone in the ether out there working on HP's know =
+the=20
+algorithm HP's use to work out the mac from the SPUID (Software ID) of =
+the=20
+Processor?</FONT></DIV>
+<DIV><FONT size=3D2>My current setup (which is wrong) SPUID dec =3D=20
+2002372255</FONT></DIV>
+<DIV><FONT size=3D2></FONT><FONT color=3D#000000=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;=20
+SPUID hex =3D 0x7759c69f</FONT></DIV>
+<DIV><FONT color=3D#000000=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;=20
+LanAddress =3D 0060b0-f92342</FONT></DIV>
+<DIV><FONT color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Should be SPUID dec =3D 2002392735</FONT></DIV>
+<DIV><FONT size=3D2></FONT><FONT color=3D#000000=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+SPUID hex =3D 0x775a169f</FONT></DIV>
+<DIV><FONT color=3D#000000=20
+size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+lanaddress =3D Thats what I need!!!!!</FONT></DIV>
+<DIV><FONT color=3D#000000 size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT size=3D2>Ta</FONT></DIV>
+<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT color=3D#000000 size=3D2>Marc =
+Dijkstra<BR></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0024_01BFFD5C.2C7D2200--
