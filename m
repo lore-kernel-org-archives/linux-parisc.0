@@ -1,50 +1,49 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA13811
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 00:35:56 -0700
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <199911150736.XAA14959@opus.allegro.com>
-Subject: Re: [parisc-linux] depi?
-To: adevries@thepuffingroup.com (Alex deVries)
-Date: Sun, 14 Nov 1999 23:36:51 -0800 (PST)
+Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA14043
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Nov 1999 01:13:27 -0700
+Date: Mon, 15 Nov 1999 08:52:05 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: Alex deVries <adevries@thepuffingroup.com>
 Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.10.9911150307300.7996-100000@vodka.thepuffingroup.com> from "Alex deVries" at Nov 15, 1999 03:08:49 AM
-MIME-Version: 1.0
+Subject: Re: [parisc-linux] real mode stuff.
+Message-Id: <19991115085205.D30917@mathe.stud.uni-erlangen.de>
+References: <Pine.LNX.4.10.9911142338080.7516-100000@vodka.thepuffingroup.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.10.9911142338080.7516-100000@vodka.thepuffingroup.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Re:
+> - Philipp and I agree that we should just create arch/parisc/kernel/real
+> for all the real mode stuff
 
->         ; Get ready for phys->virt transition
->         ; First order of business is to adjust some pointers
->         depi            3,1,2,%arg0     ; phys->virt(free mem ptr)
->         depi            3,1,2, %sp      ; phys->virt SP
->         depi            3,1,2, %dp      ; p2v DP
+Just to clarify, the directory we're talking about "arch/parisc/real" here,
+not about a subdirectory of "arch/parisc/kernel".
 
-DEPI is "Deposite Immediate".  depi 3,1,2, %arg0
-drops the value 3 into the upper 2 bits of register arg0.
+> - creating arch/parisc/real/pdc.c
 
-IIRC, it's:  DEPI immediate_value, right_most_bit#, #bits, target_register
+this one I'm not sure about.
 
-But...strange code.  It's setting the upper 2 bits of R26, R30, and R27.
+arch/parisc/kernel/pdc.c and arch/parisc/real/pdc.c can be identical except
+for the definition of "pdc_wrapper", and keeping an exact copy of code might
+not be a good idea.
 
-> in head.S?
-> 
-> I don't have a 'depi' in the index of my PA 2.0 assembler book.  I have a
-> depwi and a depdi though.
-> 
-> - Alex "I shot the sheriff, but I did not shoot the depdi" deVries
-> 
-> -- 
-> Alex deVries <adevries@thepuffingroup.com>
-> Vice President Engineering
-> The Puffin Group
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
+OTOH, it is extremely unlikely this code will have "real" bugs, so this is
+probably less of a crime than using symlinks, #including C files, mutating
+the main part of pdc.c into a header file or similar workarounds were.
 
+> - moving some stuff in arch/parisc/kernel/realmode_setup.c to
+> arch/parisc/real/setup.c or similiar.
 
--- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html          www.allegro.com/sieler
+All code in arch/parisc/real will be run in real-mode (with the exception of
+some glue code to be called out of / return to protected mode).
+
+All code run in real-mode will be in arch/parisc/real (with the temporary
+exception of the _gsc_(read|write)[bwl] functions which currently disable data
+translation for one or two instructions because I don't feel confident enough
+to map the I/O space (which can do bad things if you write to it) into kernel
+virtual memory (i.e. the memory wild pointers will refer to) just yet).
+
+We are not just going to move "some stuff" to arch/parisc/real (and I do not
+think this is what Alex said), we are going to move all real-mode code there.
+
+	Philipp Rumpf
