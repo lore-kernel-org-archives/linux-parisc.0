@@ -1,27 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B4118482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Jul 2001 22:53:21 -0600 (MDT)
-Message-Id: <200107240452.WAA24386@puffin.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
+	by dsl2.external.hp.com (Postfix) with ESMTP id A02C8482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 23 Jul 2001 23:09:47 -0600 (MDT)
+Message-Id: <200107240508.XAA24422@puffin.external.hp.com>
+To: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.7 
-In-Reply-To: Message from Randolph Chung <tausq@debian.org>
-   of "Mon, 23 Jul 2001 09:32:47 PDT." <20010723093247.X3441@tausq.org>
-Date: Mon, 23 Jul 2001 22:52:15 -0600
+Subject: Re: [parisc-linux] 715/100 with 0.92 not booting :( 
+In-Reply-To: Message from "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+   of "Mon, 23 Jul 2001 22:59:49 +0200." <Pine.BSF.4.30.0107232255200.822-100000@noc.zabbadoz.net>
+Date: Mon, 23 Jul 2001 23:08:36 -0600
 From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Randolph Chung wrote:
-> > how do people feel about merging 2.4.7 into our HEAD?  it seems to have
-> > some interesting bugs fixed, and it might make merging with Alan easier.
+"Bjoern A. Zeeb" wrote:
 ...
-> I've seen some weird failures after upgrading to 2.4.6:
+> > That's why 0.9.2 was released after we had 3 different versions of 0.9.1,
+> > each with different bugs.
+> 
+> Great, got it - but why isn't this announced on parisc-linux.org ?
+> Putting .iso images or at least links to wouldn't be that bad on the
+> master site but no only on one mirror.
 
+I wanted to fix that. But the ESIEE website (mkhppa1.esiee.fr)
+hasn't been accessible the past couple of days. We need to work something
+out with them so the bits are available directly from www.parisc-linux.org.
 
-Oh! I forgot to mention the the problem with GR03 getting
-trashed when attempting to use pppd. I had posted earlier:
-  http://lists.parisc-linux.org/pipermail/parisc-linux/2001-July/013176.html
+Oh - and the ESIEE team does have access to parisc-linux website.
+They just may not know it yet. ;^)
 
 grant
 
