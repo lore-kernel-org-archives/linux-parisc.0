@@ -1,15 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
-	by dsl2.external.hp.com (Postfix) with SMTP id 94CD44836
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 15:28:41 -0700 (MST)
-Message-ID: <3C435DCB.1010901@yahoo.com>
-Date: Mon, 14 Jan 2002 22:38:03 +0000
-From: Jbit of Plasma <james_a_n_lee@yahoo.com>
-MIME-Version: 1.0
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] serial breakout box
-References: <20020114133347.B1367@glen.takilma.net> <20020114221833.A56CF37D2B@carmen.fc.hp.com> <20020114222243.C19929@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from tpol.peak.org (unknown [198.88.144.55])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B20CC482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 20:47:45 -0700 (MST)
+Date: Mon, 14 Jan 2002 19:47:43 -0800
+From: Allen Brown <abrown@peak.org>
+Message-Id: <200201150347.g0F3lh129546@tpol.peak.org>
+To: collver@linuxfreemail.com, lug@peak.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: [lug] serial breakout box
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,27 +19,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In the kernel config, under Character devices, theres "HIL keyboard support" and it says that "There are vestiges of mouse support in the driver, but it is 
-probably not working.". This may be somthing
+The breakout box is probably most convenient.  I've never had access
+to one.  But the first thing you need to determine is if you need
+to crossover or not.  You can do that with just a voltmeter.
 
---jbit
-Matthew Wilcox wrote:
+Pin 7 is GND.  Pins 2 and 3 are the input and outputs, not necessarily
+in that order.  Measure from 7 to 2.  Measure from 7 to 3.  One
+of them will be close to 0V.  The other will be much higher.  I think
+-10V or something like that.  The pin with the higher voltage is
+the output.
 
-> On Mon, Jan 14, 2002 at 03:18:33PM -0700, Matt Taggart wrote:
-> 
->>HIL is supported for some systems. You mention that your system is a 715T/50, 
->>I don't know about support for that one. Have you determined that it won't 
->>work for you? I'm sure the people working on HIL support would like to hear 
->>about what you find.
->>
-> 
-> I haven't seen any code to support HIL mice, only HIL keyboards.  Or am
-> I not looking hard enough?
-> 
-> 
-
-
-
-_________________________________________________________
-Do You Yahoo!?
-Get your free @yahoo.com address at http://mail.yahoo.com
+Do the same thing on the other system also using the 25 pin connector.
+Then make sure you are not connecting the output to the output.
+--
+Allen Brown
+  work: Agilent Technologies      non-work: http://www.peak.org/~abrown/
+        allen_brown@agilent.com	            abrown@peak.org
+  Where are we going? And what's with this hand basket? --- George Carlin
