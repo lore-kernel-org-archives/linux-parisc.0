@@ -1,16 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] (hppa glibc 2.3.3 exp.) Recompile expect, then
-Date: Mon, 27 Sep 2004 00:22:13 -0400
-Message-ID: <20040927042212.GN27033@baldric.uwo.ca>
-References: <20040926185101.GE27033@baldric.uwo.ca>
-	<200409261903.i8QJ3gA9011157@hiauly1.hia.nrc.ca>
+Date: Mon, 27 Sep 2004 00:32:15 -0400 (EDT)
+Message-ID: <200409270432.i8R4WFrC013637@hiauly1.hia.nrc.ca>
+References: <20040927042212.GN27033@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409261903.i8QJ3gA9011157@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040927042212.GN27033@baldric.uwo.ca> from "Carlos O'Donell" at
+	Sep 27, 2004 00:22:13 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,68 +21,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Sep 26, 2004 at 03:03:42PM -0400, John David Anglin wrote:
-> > Does it spend 5 minutes writing errors to the terminal? :)
-> 
-> No.  It either dumps core or hangs.
+> I ran my own. How does this look? I don't like the SEGV there...
 
-Haha :)
- 
-> > Have you tried running the experimental glibc packages in a chroot?
-> 
-> Sorry, I haven't had time in the past few days.  I've had a contract
-> to get GCC buiding on AIX 4.3.3.
+Not good.  See <http://gcc.gnu.org/ml/gcc-testresults/2004-09/msg01180.html>.
 
-I ran my own. How does this look? I don't like the SEGV there...
+> FAIL: gcc.c-torture/compile/20020807-1.c  -O3 -fomit-frame-pointer  (test
+> for excess errors)
+> FAIL: gcc.c-torture/compile/20020807-1.c  -O3 -g  (test for excess errors)
+> FAIL: gcc.c-torture/compile/20040602-1.c  -O0  (test for excess errors)
+> FAIL: gcc.c-torture/compile/20040602-1.c  -O1  (test for excess errors)
+> FAIL: gcc.c-torture/compile/20040602-1.c  -O2  (test for excess errors)
+> FAIL: gcc.c-torture/compile/20040602-1.c  -O3 -fomit-frame-pointer  (test
+> for excess errors)
+> FAIL: gcc.c-torture/compile/20040602-1.c  -O3 -g  (test for excess errors)
+> FAIL: gcc.c-torture/compile/20040602-1.c  -Os  (test for excess errors)
 
-make[1]: Entering directory `/mnt/flaire/src/toolchain-build/src/gcc-build32-glibc-2.3.3/gcc'
-(rootme=`${PWDCMD-pwd}`; export rootme; \
-srcdir=`cd ../../gcc-cvs/gcc; ${PWDCMD-pwd}` ; export srcdir ; \
-cd testsuite; \
-EXPECT=expect ; export EXPECT ; \
-if [ -f ${rootme}/../expect/expect ] ; then  \
-   TCL_LIBRARY=`cd .. ; cd ../../gcc-cvs/gcc/../tcl/library ; ${PWDCMD-pwd}` ; \
-    export TCL_LIBRARY ; fi ; \
-runtest --tool gcc )
-Test Run By carlos on Sun Sep 26 14:58:56 2004
-Native configuration is hppa-unknown-linux-gnu
+I've never seen these fail.  Look in gcc.log.  I may provide some
+clues.  If not, compile the test manually and see what's wrong.
 
-                === gcc tests ===
+Most of the gcc suite doesn't use glibc much.  Thus, it may be gcc
+has been miscompiled.
 
-Schedule of variations:
-    unix
-
-Running target unix
-Using /usr/share/dejagnu/baseboards/unix.exp as board description file for target.
-Using /usr/share/dejagnu/config/unix.exp as generic interface file for target.
-Using /home/carlos/fsrc/toolchain-build/src/gcc-cvs/gcc/testsuite/config/default.exp as tool-and-target-specific interface file.
-Running /home/carlos/fsrc/toolchain-build/src/gcc-cvs/gcc/testsuite/gcc.c-torture/compile/compile.exp ...
-FAIL: gcc.c-torture/compile/20020807-1.c  -O3 -fomit-frame-pointer  (test for excess errors)
-FAIL: gcc.c-torture/compile/20020807-1.c  -O3 -g  (test for excess errors)
-FAIL: gcc.c-torture/compile/20040602-1.c  -O0  (test for excess errors)
-FAIL: gcc.c-torture/compile/20040602-1.c  -O1  (test for excess errors)
-FAIL: gcc.c-torture/compile/20040602-1.c  -O2  (test for excess errors)
-FAIL: gcc.c-torture/compile/20040602-1.c  -O3 -fomit-frame-pointer  (test for excess errors)
-FAIL: gcc.c-torture/compile/20040602-1.c  -O3 -g  (test for excess errors)
-FAIL: gcc.c-torture/compile/20040602-1.c  -Os  (test for excess errors)
-Running /home/carlos/fsrc/toolchain-build/src/gcc-cvs/gcc/testsuite/gcc.c-torture/execute/builtins/builtins.exp ...
-got a SEGV signal, segmentation violation
-
-                === gcc Summary ===
-
-# of expected passes            3589
-# of unexpected failures        8
-# of expected failures          6
-# of unsupported tests          30
-WARNING: program timed out.
-Couldn't determine version of /usr/bin/gcc:
-
-This is the 3_4-branch from a little while back.
-
-It looks like it's still running?
-
-c.
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
