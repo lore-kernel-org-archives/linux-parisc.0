@@ -1,16 +1,13 @@
-From: Jeff Bailey <jbailey@nisa.net>
-Subject: [parisc-linux] Re: glibc 2.3.2 hppa - Requires Rminkernel patch to catch < 2.4.17
- users.
-Date: Wed, 22 Oct 2003 10:15:48 -0400
-Message-ID: <1066832148.1239.5.camel__17625.4899161451$1416622900$gmane$org@outpost.dnsalias.org>
-References: <20031022043227.GD20912@systemhalted>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] glibc 2.3.2 for hppa (-rnptl)
+Date: Wed, 22 Oct 2003 14:52:31 -0400
+Message-ID: <20031022185231.GC26896__1018.53742166913$1416622901$gmane$org@systemhalted>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-DCzXTmexhtZrrPiXweC6"
-Cc: debian-glibc@lists.debian.org,
+Content-Type: text/plain; charset=us-ascii
+Cc: dan@debian.org
+To: Jeff Bailey <jbailey@nisa.net>, debian-glibc@lists.debian.org,
 	parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031022043227.GD20912@systemhalted>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,47 +18,63 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-DCzXTmexhtZrrPiXweC6
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Jeff, Drow,
 
-Great, thanks.  I had to run off last night or I would've spun this up
-yesterday.  It seems good that the Spirits forced someone to buy me
-dinner last night. =3D)
+00list patch provided for -rnptl, and .dpatch url provided.
 
-Thanks!
+http://www.baldric.uwo.ca/~carlos/glibc232-hppa-full-nptl-2003-10-22.dpatch
 
-On Wed, 2003-10-22 at 00:32, Carlos O'Donell wrote:
-> Jeff,
->=20
-> glibc-package/debian/patches/glibc23-hppa-Rminkernel.dpatch
->=20
-> Has to go back into the list of patches, since it will keep users
-> running their boxes with 2.4.17 or later based kernels instead of
-> 2.4.19. Developer testing didn't catch this since we all run >2.4.19.
->=20
-> Please and thank you!
->=20
-> I'm doing the patches for the -rnptl branch right now, if I had paid
-> attention I would have tried harder to queue this up earlier so it could
-> have gone out on the recent release.
->=20
-> c.
---=20
-In the United States, there isn't a government database that hasn't been
-misused by the very people entrusted with keeping its information safe.
- - Bruce Schneier
+Cheers,
+Carlos.
 
---=-DCzXTmexhtZrrPiXweC6
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+---
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+2003-10-22  Carlos O'Donell  <carlos@baldric.uwo.ca>
 
-iD8DBQA/lpET5M5hmdCYCpkRAuTiAJ9ehyvL5htrvE42oIttxbzCirMu1QCg2lDo
-TWqkfMua2DvdIlvdm9zpbZ8=
-=fcPw
------END PGP SIGNATURE-----
+	* debian/patches/00list: Remove all hppa patches, leave 
+	glibc23-hppa-Rminkernel, add glibc232-hppa-full-2003-10-22.
 
---=-DCzXTmexhtZrrPiXweC6--
+Index: 00list
+===================================================================
+RCS file: /cvs/glibc/glibc-package/debian/patches/Attic/00list,v
+retrieving revision 1.1.2.8
+diff -u -p -r1.1.2.8 00list
+--- 00list	16 Oct 2003 18:25:48 -0000	1.1.2.8
++++ 00list	22 Oct 2003 18:40:19 -0000
+@@ -27,8 +27,8 @@ locales-stuff
+ #ldso-disable-hwcap - Will be re-enabled when it gets fixed
+ librt-mips
+ glibc23-ctype-compat
+-glibc23-01-hppa-dl-machine
+-glibc23-07-hppa-atomicity
++#CAO - Removed 2003-10-22 - glibc23-01-hppa-dl-machine
++#CAO - Removed 2003-10-22 - glibc23-07-hppa-atomicity
+ #s390-types
+ #glibc23-ia64-strncpy - ok to remove in 2.3.2., but it has string/bug-strncpy.c test code. need to contact to randolph chung.
+ glibc23-hppa-Rminkernel
+@@ -39,15 +39,15 @@ alpha-pic
+ glibc23-cmov
+ libgcc-compat-all
+ locales-supported
+-glibc23-hppa-compat
++#CAO - Removed 2003-10-22 - glibc23-hppa-compat
+ libgcc-compat-other
+-glibc23-00-hppa-pthreads 
+-glibc23-hppa-malloc8
++#CAO - Removed 2003-10-22 - glibc23-00-hppa-pthreads 
++#CAO - Removed 2003-10-22 - glibc23-hppa-malloc8
+ s390-tls
+ hurd-enable-ldconfig
+ 30_glibc232-base
+ #50_glibc232-mips-buildfix - no longer needed with CVS?  2003-10-07
+-50_glibc23-hppa-entry
++#CAO - Removed 2003-10-22 - 50_glibc23-hppa-entry
+ sparcv8-target
+ #sparc32-buildfix
+ 50_glibc232-arm-dwarf2-buildfix
+@@ -60,3 +60,5 @@ arm-ioperm
+ #linuxthreads-big-stacks
+ pthread-cleanup
+ glibc-make-check-perms
++# CAO - Added 2003-10-22 - All the HPPA fixes
++glibc232-hppa-full-2003-10-22
