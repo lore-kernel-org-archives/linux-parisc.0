@@ -1,32 +1,55 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA15202
-	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 09:07:18 -0700
-From: 5116@telia.com
-Received: from zaphod.halden.lillfab.se (t5o70p28.telia.com [195.67.239.28])
-	by mailf.telia.com (8.9.3/8.9.3) with ESMTP id RAA05097
-	for <parisc-linux@thepuffingroup.com>; Sat, 27 Jan 2001 17:11:09 +0100 (CET)
-Received: (from danne@localhost)
-	by zaphod.halden.lillfab.se (8.9.3/8.9.3) id RAA30546
-	for parisc-linux@thepuffingroup.com; Sat, 27 Jan 2001 17:10:51 +0100
-Message-Id: <200101271610.RAA30546@zaphod.halden.lillfab.se>
-Date: Sat, 27 Jan 2001 17:10:51 +0100 (CET)
-Reply-To: 5116@telia.com
-To: parisc-linux@thepuffingroup.com
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id JAA16125
+	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 09:36:49 -0700
+Message-Id: <200101271639.LAA07330@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Usage of __attribute__?
+To: jsm@udlkern.fc.hp.com (John Marvin)
+Date: Sat, 27 Jan 2001 11:39:25 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@puffin.external.hp.com
+In-Reply-To: <200101270948.CAA00365@udlkern.fc.hp.com> from "John Marvin" at Jan 27, 2001 02:48:49 am
 MIME-Version: 1.0
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Subject: [parisc-linux] Kernel module loader gived break
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi, all
+John,
 
-I get messages like 
+I think you should forward this question to gcc@gcc.gnu.org.
 
-break 0,0: pid=116 command='cat'
-cat[116]: Breakpoint 0
+> As part of my effort to fix the alignment problems in libpthread, I am
+> creating a type with the aligned attribute. However, I discovered
+> something strange, which I don't know if it is a bug, or is the expected
+> behaviour (i.e. I am doing something wrong/don't understand how
+> __attribute__ works).
+> 
+> If I directly declare the type as follows:
+> 
+>     typedef int _lt_spinlock_t __attribute__((aligned(16)));
+> 
+> then EVERY int that follows has the aligned 16 attribute, e.g. just
+> declaring "int tmp;" gives tmp a 16 byte alignment. So, is that what
+> you would expect from my above declaration?
+> 
+> I worked around the problem by declaring the type in two steps:
+> 
+>     typedef int _spin16;
+>     typedef _spin16 _lt_spinlock_t __attribute__((aligned(16)));
+> 
+> Is there a way of combining the above two into one declaration,
+> without having the undesired side effect of making every int
+> aligned to a 16 byte boundary?
+> 
+> John Marvin
+> jsm@fc.hp.com
+> 
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
+> 
+> 
 
-Followed by a register dump when I do some thing that would trigger the
-kernel to call modprobe. Modprobe is not in stalled in my system (is it
-ported yet?).
 
-/Daniel
 -- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
