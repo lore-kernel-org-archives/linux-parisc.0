@@ -1,13 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Armijn Hemel <armijn@nl.linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installing on b2600 fails 
-In-Reply-To: Message from Armijn Hemel <armijn@nl.linux.org>
-   of "Tue, 21 May 2002 17:53:28 +0200." <20020521175328.A2442@humbolt.geo.uu.nl>
-References: <Pine.A41.4.44.0205211630470.17882-100000@stalin.acc.umu.se> <maswan@acc.umu.se> <20020521154508.99536482A@dsl2.external.hp.com>  <20020521175328.A2442@humbolt.geo.uu.nl> 
-Date: Tue, 21 May 2002 12:05:53 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020521180553.5470F482A@dsl2.external.hp.com>
+Received: from palrel10.hp.com (palrel10.hp.com [156.153.255.245])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 215C4482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 May 2002 15:11:43 -0600 (MDT)
+Received: from xparelay2.corp.hp.com (xparelay2.corp.hp.com [15.58.137.112])
+	by palrel10.hp.com (Postfix) with ESMTP id 0A350C00161
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 May 2002 14:11:42 -0700 (PDT)
+Received: from xpabh1.corp.hp.com (xpabh1.corp.hp.com [15.58.136.191])
+	by xparelay2.corp.hp.com (Postfix) with ESMTP id 8295498
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 21 May 2002 14:11:37 -0700 (PDT)
+Message-ID: <F341E03C8ED6D311805E00902761278C0CD12BEF@xfc04.fc.hp.com>
+From: "EVERSON,SETH (HP-Loveland,ex1)" <seth_everson2@hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 21 May 2002 14:08:30 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Sucky I/O IDE Support?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,41 +27,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-[ back on-list ]
+Everyone -
 
-Armijn Hemel wrote:
-> Just burn them? How should I boot then? The b2600 doesn't have a floppy
-> drive. Don't I need PALO on the CD?
+There have been a few iterations of kernel hacking since the release notes
+for the .93 release,
+and I was wondering if anyone has done any work on getting the IDE support
+for Sucky I/O going?
 
-yes. CD or LAN. The lifimage has palo and vmlinux embedded in it,
-parisc firmware can boot a lifimage from LAN, tape, CD or HD.
-Any IO device the box has IODC for.
+I did see a script in CVS that created the special files for IDE, and it
+could actually read
+CD's on the IDE CD-ROM in my C3600, but sustained transfers always resulted
+in an error.
 
-"boot floppies" is a gross misnomer for parisc since that's
-probably the only media I've never tried to boot from.
-I don't know off hand which platforms support booting from floppy.
-I would guess 712 and similar vintage supports that if the
-lifimage could fit on a 1.44MB floppy.
+Thanks!
 
-> Or do you mean I should just put
-> the floppy images on a server somewhere and boot those from the network?
-
-booting from a network is an option too.
-
-> I'm quite desperate to be honest (and I think it shows). The machines I
-> have have to be returned to HP in .nl soon (they're from the demo pool,
-> trying to port yet another distro (ROCK Linux) to HPPA).
-
-cool - keep the p-l mailing list posted on your progress.
-
-grant
-
-> 
-> armijn
-> 
-> -- 
->  ---------------------------------------------------------------------------
->    armijn@nl.linux.org | http://people.nl.linux.org/~armijn/ | Penguin Power
->  ---------------------------------------------------------------------------
->                  http://nl.linux.org/ | Alles over Linux
->  ---------------------------------------------------------------------------
+-Seth
