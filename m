@@ -1,41 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA19441
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Mar 2000 10:35:47 -0700
-Message-ID: <20000320163716.20317.qmail@mailserv2.iuinc.com>
-Subject: Re: Re: [parisc-linux] HP 712 wks owner/technical on-line documentation ?
-From: "T.J.Yang" <tjyang@myrealbox.com>
-To: willy@thepuffingroup.com
-CC: parisc-linux@thepuffingroup.com
-Date: Mon, 20 Mar 2000 16:37:13 GMT
-MIME-Version: 1.0
-Content-type: text/plain; charset=utf-8
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA19634
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Mar 2000 10:55:22 -0700
+Message-Id: <200003201658.IAA15206@milano.cup.hp.com>
+To: "T.J.Yang" <tjyang@myrealbox.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Need second ethernet card connector on a 712 hp wks 
+In-reply-to: Your message of "Mon, 20 Mar 2000 14:19:37 PST."
+             <20000320141940.20659.qmail@mailserv2.iuinc.com>
+Date: Mon, 20 Mar 2000 08:58:44 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-
-
-> On Mon, Mar 20, 2000 at 02:29:47PM +0000, T.J.Yang wrote:
-> > Hi, again
-> > 
-> > I tried very hard to locate the 712 wks manuals on 
-> > http://docs.hp.com/hpux/systems/ with no luck.
-> > 
-> > Anyone can give me a pointer where to find it ?
+"T.J.Yang" wrote:
+> Hi, there
 > 
-> I can't, but the Hardware Compatibility List is linked 
-from the puffin
-> group documentation page and it has a certain amount of 
-detail in it.
-> It is over 200 pages and contains details of many 
-machines other than
-> the 712, so you probably don't want to print it all out.
+> I am lucky enough to acquire a 712/100 machine with second
+> ethernet card(both AUI/RS232) on it. But the problem is 
+> that I can't find the connector for it.
 > 
+> It has three rows of pins (9+9+8) while the reqular
+> AUI is 8+7. 
 
-Thanks for the good pointer. I found my second lan/serial 
-card's part number at 
-http://puffin.external.hp.com/docs/980723ng.pdf under 
-interfaces section.
+tj,
+I've already asked about this "y-cable" and posted the part numbers
+last month. Please check the archive. I have three of the LAN/SERIAL
+combo cards (aka lasi-on-a-card) but no y-cables.
 
-Thanks
+grant
 
-
-tj
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
