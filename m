@@ -1,11 +1,12 @@
 From: rbradetich@uswest.net
-Subject: [parisc-linux] [3.2 regression] [HPPA] Internal compiler error in insn_default_length, at insn-attrtab.c:1203
+Subject: [parisc-linux] c/10237: [3.2 regression] [HPPA] Internal compiler error in insn_default_length, at insn-attrtab.c:1203
 Date: 27 Mar 2003 06:10:04 -0000
-Message-ID: <20030327061004.19985.qmail__25812.3517888182$1416622337$gmane$org@sources.redhat.com>
+Message-ID: <20030327061004.19985.qmail__3027.49391780726$1416622338$gmane$org@sources.redhat.com>
 Reply-To: rbradetich@uswest.net
 Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
 To: gcc-gnats@gcc.gnu.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Resent-Message-ID: <20030327061601.20971.qmail@sources.redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -16,15 +17,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+>Number:         10237
 >Category:       c
 >Synopsis:       [3.2 regression] [HPPA] Internal compiler error in insn_default_length, at insn-attrtab.c:1203
 >Confidential:   no
 >Severity:       serious
 >Priority:       medium
+>Responsible:    unassigned
+>State:          open
 >Class:          ice-on-legal-code
 >Submitter-Id:   net
+>Arrival-Date:   Thu Mar 27 06:16:01 UTC 2003
+>Closed-Date:
+>Last-Modified:
 >Originator:     rbradetich@uswest.net
 >Release:        unknown-1.0
+>Organization:
 >Environment:
 System: Linux vega 2.5.65-pa3 #37 Sun Mar 23 17:41:14 MST 2003 parisc unknown unknown GNU/Linux
 Architecture: parisc
@@ -46,6 +54,8 @@ See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 gcc -O2 -g u_free.i
 >Fix:
 unknown.
+>Release-Note:
+>Audit-Trail:
 >Unformatted:
 ----gnatsweb-attachment----
 Content-Type: application/octet-stream; name="u_free.i"
