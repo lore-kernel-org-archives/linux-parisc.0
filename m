@@ -1,58 +1,109 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA24156
-	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 23:09:25 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id C2248155A
-	for <parisc-linux@thepuffingroup.com>; Thu, 25 Jan 2001 22:13:20 -0800 (PST)
-Received: (from grundler@localhost)
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id WAA23253
-	for parisc-linux@thepuffingroup.com; Thu, 25 Jan 2001 22:15:27 -0800 (PST)
-Date: Thu, 25 Jan 2001 22:15:27 -0800 (PST)
-From: Grant Grundler <grundler@cup.hp.com>
-Message-Id: <200101260615.WAA23253@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA25069
+	for <parisc-linux@puffin.external.hp.com>; Fri, 26 Jan 2001 01:05:29 -0700
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] sh segfaults
+Cc: lamont@hp.com
+Date: Fri, 26 Jan 2001 01:09:19 -0700
+From: LaMont Jones <lamont@security.hp.com>
+Message-Id: <20010126080919.ABABC22907B@mix.fc.hp.com>
+Subject: [parisc-linux] lif volume (correct) structs/values
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Hi all,
-So despite booting our shiny new 2.4.0 kernel fine and being able to rcp
-the sources to attempt a native build, "make oldconfig" consistently
-sees a segfault:
+Not that anyone cares, but...
 
-c3k:/usr/src/linux \<535\>make oldconfig > /dev/null
+I created lif* utilities for x86 platforms (everything but lifspace()
+should be working, so don't go trying to grow directory entries...
+I'll work on that some more eventually, along with trying to submit
+the sources into the hp-ux source tree for our decendants...
 
-do_page_fault() pid=561 command='sh' type=15 address=0x000006e4
+Of course, this led to the discover that PALO doesn't create LIF
+images: it creates things that look enough like LIF images to make
+the bootloader happy, but inside they are nothing like a LIF image...
+(Which I'm sure comes as no surprise to most everyone, since the
+objective was never more than that...)
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001011
-r0-3     00000000 00000368 000327a3 bb002490
-r4-7     4001399b 00000000 401cf630 401d2fbc
-r8-11    00076d74 00000000 bb002490 000c3110
-r12-15   ffffffff 00000000 00000000 00000001
-r16-19   0000005c 00000000 00000000 401d2fbc
-r20-23   fffff000 400eb63c 0007e498 00000008
-r24-27   00000000 bb002908 00000002 00076808
-r28-31   0000023a 0000002f bb002880 400eb663
-sr0-3    00000368 00000368 00000000 00000368
-sr4-7    00000368 00000368 00000368 00000368
+Should someone want to have PALO create an actual LIF image, that would
+be kind of cool.
 
-IASQ: 00000368 00000368 IAOQ: 000327a3 000327a7
- IIR: 483306f8    ISR: 00000368  IOR: 000006e4
-ORIG_R28: 00000001
-make: *** [oldconfig] Segmentation fault
-c3k:/usr/src/linux \<536\>
+If people would like the x86 LIF utility _BINARIES_, I'll be happy
+to send them to you.  Of course, they won't work on any of the current
+PALO LIF images, so I'm not sure what use they'd be to anyone.
 
+(If someone wants to tell me I can release the source, then I'll be
+happy to do that too, but I'm not going to work on that side of
+things, given the above...)
 
-And redirecting output to /dev/null doesn't always work either.
-Sometimes I just get back an error msg.
-This wasn't happening with the previous kernels.
+lamont
 
-This is unfortunately on the same proto-c3k that couldn't run hwclock.sh
-at boot up before though that worked fine on my c3k at work. So it
-might just be the machine. If others could verify...
+=================================================================
+/*
+ * This defines a BCD date in the LIF format.
+ * This may fail on some machines due to implementation-dependent
+ * ordering of bit fields.  We expect the first byte to contain year1<<4+year2.
+ */
+struct date_fmt {
+	unsigned year1	: 4;
+	unsigned year2	: 4;
+	unsigned mon1	: 4;
+	unsigned mon2	: 4;
+	unsigned day1	: 4;
+	unsigned day2	: 4;
+	unsigned hour1	: 4;
+	unsigned hour2	: 4;
+	unsigned min1	: 4;
+	unsigned min2	: 4;
+	unsigned sec1	: 4;
+	unsigned sec2	: 4;
+};
 
-thanks,
-grant
+struct dentry {
+	char fname[MAXFILENAME];	/* Name of file */
+	short ftype;			/* Type of file or EOD (end-of-dir) */
+	int start;			/* Starting sector */
+	int size;			/* Size in sectors */
+	char date[6];			/* Should be date_fmt, but on
+					   some machines
+					   date_fmt gets padded to 8 bytes */
+	short lastvolnumber;		/* Both lastvolume flag & volume # */
+	int extension;			/* Bizarre user-defined field */
+};
+
+struct lvol {
+	unsigned short discid;		/* 0..65535, must be 0x8000 */
+	char volname[MAXVOLNAME];	/* volume name */
+	int dstart;			/* directory start, must be > 0 */
+	short dummy1;			/* must be 4096 */
+	short dummy2;			/* must be 0 */
+	int dsize;			/* length of directory, must be > 0 */
+	short version;			/* extension level */
+	short dummy3;			/* must be 0 */
+	int tps;			/* tracks / surface */
+	int spm;			/* surface / medium */
+	int spt;			/* sector / track */
+	char date[6];			/* see dentry.date comment */
+	unsigned short reserved1[99];
+	int iplstart; 			/* IPL code location on media */
+	int ipllength;			/* size of IPL code */
+	int iplentry;			/* IPL entry blocksize for spectrum */
+	unsigned short reserved[2];     /* 21..127 */
+};
+
+struct lfib { 
+	int filedis;			/* fd on our LIF volume */
+	int dindex;
+	int dstart;			/* Where the directory starts */
+	int lastsector;
+	int dsize;			/* Size of directory */
+	char dirpath[MAXDIRPATH];
+	char filename[MAXFILENAME+1];
+	struct dentry lfile;
+	char buffer[HALF_K];
+};
+
+struct dpointer {		/* cat entry */
+	int sector;   		/* sector */
+	int index;    		/* buffer subscript */
+	int start;    		/* data start */
+};
+=================================================================
