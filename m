@@ -1,17 +1,16 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D1C26486C
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 716D84854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 21 Mar 2004 12:57:17 -0700 (MST)
-Date: Sun, 21 Mar 2004 12:57:16 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+	Mon, 22 Mar 2004 00:27:57 -0700 (MST)
+Date: Mon, 22 Mar 2004 08:07:20 +0100
+Message-ID: <40561EAF00004465@ocpmta1.freegates.net>
+In-Reply-To: <20040321195716.GC12455@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
-Message-ID: <20040321195716.GC12455@colo.lackof.org>
-References: <405D95D0.9030600@tiscali.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <405D95D0.9030600@tiscali.be>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Cc: PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -22,27 +21,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Mar 21, 2004 at 01:17:04PM +0000, Joel Soete wrote:
-...
-> PPP generic driver version 2.4.2
-...
-> Kernel addresses on the stack:
+Hello Grant,
 
-[ looks a bit scrambled ]
+>> ...
+>>  IAOQ[0]: lasi700_probe+0x18c/0x1cc
+>>  IAOQ[1]: lasi700_probe+0x190/0x1cc
+>>  RP(r2): lasi700_probe+0x58/0x1cc
+>
+>IOAQ[0] is the offending instruction.
+>Brute force debug method is to start adding
+>printk's to lasi700_probe. It shouldn't take
+>more than a few iterations to find the offending line.
 
-...
-> Kernel Fault: Code=26 regs=10594380 (Addr=00000000)
+Thanks, I will foreseen such work next week-end :)
 
-null ptr deref.
+Joel
 
-...
->  IAOQ[0]: lasi700_probe+0x18c/0x1cc
->  IAOQ[1]: lasi700_probe+0x190/0x1cc
->  RP(r2): lasi700_probe+0x58/0x1cc
 
-IOAQ[0] is the offending instruction.
-Brute force debug method is to start adding
-printk's to lasi700_probe. It shouldn't take
-more than a few iterations to find the offending line.
-
-grant
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
