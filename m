@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 25 Jan 2003 21:46:56 -0700
-To: jsoe0708@tiscali.be
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8D5594829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 Jan 2003 22:09:53 -0700 (MST)
+Message-Id: <200301260509.h0Q59ntl001762@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] new gcc-default for hppa
-Message-ID: <20030126044656.GB6057@dsl2.external.hp.com>
-References: <3DED9A6600005A12@ocpmta3.freegates.net> <3E1AA52C0000167E@ocpmta1.freegates.net> <20030116014145.GC8543@dsl2.external.hp.com> <20030121235716.GA2193@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030121235716.GA2193@dsl2.external.hp.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+To: grundler@dsl2.external.hp.com (Grant Grundler)
+Date: Sun, 26 Jan 2003 00:09:49 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: jsoe0708@tiscali.be, parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org
+In-Reply-To: <20030126044656.GB6057@dsl2.external.hp.com> from "Grant Grundler" at Jan 25, 2003 09:46:56 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,18 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jan 21, 2003 at 04:57:16PM -0700, Grant Grundler wrote:
-> Stephan Eranian had a good idea - replace .o's in the gcc 3.2
-> built kernel tree with .o's built using gcc-3.0. Then maybe we
-> can narrow down where the issue is.
+> Any advice on comparing .o's? or rather compare .S files?
 
-this worked. replacing drivers/char/pty.o with one built using
-gcc-3.0 resulted in a kernel that ssh logins wouldn't crash.
+You could try using "objdump -d" on the .o's, then diff'ing.  However
+the diff might be large.  Probably, comparing .S files would be
+best.  Don't use "-g".  However, if you find a difference that looks
+suspicious, "-g" will help you locate the source line.
 
-Any advice on comparing .o's? or rather compare .S files?
-
-I can probably also narrow down the code path a bit more.
-I'm suspecting the initialization before calling tty_register_driver().
-
-thanks,
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
