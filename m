@@ -1,39 +1,56 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA27332
-	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 00:04:53 -0600
-Received: from srmail.sr.hp.com (srmail.sr.hp.com [15.4.45.14])
-	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id XAA12838
-	for <parisc-linux@thepuffingroup.com>; Wed, 9 Jun 1999 23:04:47 -0700 (PDT)
-Received: (from billk@localhost) by meow.sr.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0) id XAA26654 for parisc-linux@thepuffingroup.com; Wed, 9 Jun 1999 23:04:43 -0700 (PDT)
-Message-Id: <199906100604.XAA26654@meow.sr.hp.com>
-Subject: [parisc-linux] booting problems (fwd)
-To: parisc-linux@thepuffingroup.com
-Date: Wed, 9 Jun 1999 23:04:43 -0700 (PDT)
-From: Bill Katz <billk@sr.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA27507
+	for <parisc-linux@puffin.external.hp.com>; Thu, 10 Jun 1999 00:19:46 -0600
+From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+Message-Id: <199906100620.XAA03156@chrome.rose.hp.com>
+Subject: Re: [parisc-linux] booting problems
+To: adevries@thepuffingroup.com
+Date: Wed, 09 Jun 1999 23:20:40 PDT
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <375F482D.E1E0B53D@thepuffingroup.com>; from "Alex deVries" at Jun 10, 99 1:07 am
 List-ID: <linux-parisc.vger.kernel.org>
 
-|SOFT Booted.
-|"
-|
-|And then absolutely nothing.  The cute little heart on the front panel
-|is stuck on. According to the inside of the top cover (oh, what a great
-|place to put debug info), this means: "System board fault, HPMC or
-|Unknown fault".  At this point I'm going for the third.
-|
-|Looks like we just need to compare a large chunk of the bootable binary
-|to figure out what's happening.
-|
-|- Alex
+Alex --
+| is stuck on. According to the inside of the top cover (oh, what a great
+| place to put debug info), this means: "System board fault, HPMC or
+| Unknown fault".  At this point I'm going for the third.
+| 
+| Looks like we just need to compare a large chunk of the bootable binary
+| to figure out what's happening.
+| 
 
-Just a note about the "cute little heart".  Assuming that the A180 is like
-the B180, there are 4 LEDs on the front.  During booting the BootROM
-sends one nibble of the chassis code to those 4 LEDs.  WHen HP-UX is
-running, the LEDs are written during the timer interrupt.  It's just
-a memory mapped register, nothing fancy.  So unless someone has specifically
-coded something into Linux to write to the LEDs, it would be the 
-expected behavior that they would stay in the last state the BootROM
-(or IPL) left them.
+Not so fast, there is probably more data to be had. Discounting the system
+board or unknown faults, you code has caused an HPMC, High Priority
+Machine Check. This could be several things, but a good guess would be
+either execution of an invalid instruction (you jumped into data), or
+you attempted to read a address where there is no hardware to respond.
 
-	-Bill (Hardware-R-Us) Katz
+The way to check is to reboot the system through self-test and when you
+reach the boot console handler execute a "SER PIM" command.  PIM is an
+area of non-volatile memory that is filed in by the routine which
+handled the HPMC and is filled with the state of the machine when the
+HPMC was encountered.  From this you should be able to obtain the
+address of the instruction which was executing when the problem occured,
+and should be able to determine what type of problem occured (illegal
+instruction, bad memory reference, etc.)  The PIM dumps are timestamped,
+so make sure that your system time is up to date and that that the PIM
+is from your crash.
+
+Do your systems include remote management cards? The remote management
+cards offer the ability to force a PIM dump through a TC (Transfer of
+Control) command, or to force a reset. They also will display chassis
+codes. Chassis codes, see the PDC_CHASSIS call in your pdc32.pdf
+documentation), are displayed on the 25th line of an HPTERM compatible
+terminal or web console session. They are communicated to the management
+cards over a dedicated hardware interface, and so inserting them into
+your code gives a very low level way to display debug data.
+
+KMB
+
+
+--
++============================================================+
+|       Kirk Bresniker    	(916) 785-5677		     |
+|       8000 Foothills Blvd                                  |
+|       Roseville, CA 95747-5649                             |
+|       kirkb@rose.hp.com                                    |
