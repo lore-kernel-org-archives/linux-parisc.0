@@ -1,12 +1,12 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] c++/10091: [3.3 regression] internal compiler error: in cp_expr_size, at cp/cp-lang.c:307
-Date: 15 Mar 2003 07:54:02 -0000
-Message-ID: <20030315075402.24390.qmail__10281.6283274025$1416622288$gmane$org@sources.redhat.com>
-Reply-To: Randolph Chung <tausq@debian.org>
-Cc: debian-gcc@lists.debian.org, parisc-linux@lists.parisc-linux.org
-To: gcc-gnats@gcc.gnu.org
+From: "Mahesh Pujara" <Mahesh.Pujara@lntinfotech.com>
+Subject: [parisc-linux] Accessing the FIB tables
+Date: Sat, 15 Mar 2003 17:22:26 +0530
+Message-ID: <OFC9ADC329.AC7F62D7-ON65256CEA.003FA868__21861.3222743899$1416622288$gmane$org@lntinfotech.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+To: linux-net@vger.kernel.org, linux-net-owner@vger.kernel.org,
+	parisc-linux@lists.parisc-linux.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Resent-Message-ID: <20030315075601.4632.qmail@sources.redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,75 +17,54 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Number:         10091
->Category:       c++
->Synopsis:       [3.3 regression] internal compiler error: in cp_expr_size, at cp/cp-lang.c:307
->Confidential:   no
->Severity:       serious
->Priority:       medium
->Responsible:    unassigned
->State:          open
->Class:          ice-on-legal-code
->Submitter-Id:   net
->Arrival-Date:   Sat Mar 15 07:56:00 UTC 2003
->Closed-Date:
->Last-Modified:
->Originator:     Randolph Chung <tausq@debian.org>
->Release:        3.3 20030309 (Debian prerelease) (Debian testing/unstable)
->Organization:
->Environment:
-System: Linux gsyprf11.external.hp.com 2.4.20-pa18-UP #1 Sat Jan 4 22:06:52 PST 2003 parisc64 unknown unknown GNU/Linux
-Architecture: parisc64
->Description:
-The following code (extracted from goldedplus), when compiled with g++ -c -O2 bug.cpp, gives:
+HI,
+      I have Linux machine acting as a router and Zebra Daemon  is running
+on that. Currently
+RIP is configured which is  receiving routes from another gateway. The
+routes are updated in FIB
+tables.
+      I want to read This FIB table , which is declared  as a
+struct fib_table *main_table .
+I am able to access  and read this table.  i want  to read certain
+information from this FIB table and want
+to build my own forwarding  table. from this table i am reading NetID,
+Netmask, and IP address of  Next Hop gateway.
 
-bug.cpp: In member function `int ftn_golded_nodelist_index::addrcmp() const':
-bug.cpp:34: internal compiler error: in cp_expr_size, at cp/cp-lang.c:307
-Please submit a full bug report,
-with preprocessed source if appropriate.
-See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
+IP address of  Next Hope gateway is available in fib_nh->nh_gw.  Apart from
+this i also want the Mac  address of  Next Hope gateway.   so how  can i
+get the MAC address for  Next Hop gateway ??
+
+I  am able to get the pointer to Next hop device that is ,
+ #define fib_dev        fib_nh[0].nh_dev
+
+in net_device structure definition ,
+
+#ifdef CONFIG_NET_FASTROUTE
+#define NETDEV_FASTROUTE_HMASK 0xF
+      /* Semi-private data. Keep it at the end of device struct. */
+      rwlock_t          fastpath_lock;
+      struct dst_entry  *fastpath[NETDEV_FASTROUTE_HMASK+1];
+#endif
+
+ There is a dst_entry in which the hh_cache * is stored .
+But the  struct dst_entry     *fastpath[NETDEV_FASTROUTE_HMASK+1];  is null
+.
+even  CONFIG_NET_FASTROUTE is configured.
+
+So what could be the reason for that??
 
 
-class ftn_addr {
-public:
-  unsigned short zone;
-  unsigned short net;
-  unsigned short node;
-  unsigned short point;
+or  is there any other way to get the MAC address for  Next Hop gateway ??
+I know one way is to Do
+ARP. But doing ARP would slow down the process.
 
-  ftn_addr();
-  ftn_addr(const ftn_addr& a);
-  int  compare(const ftn_addr& other) const;
-  ftn_addr& operator=(const ftn_addr& a);
-};
+Any help or link on this is Appreciated.
 
-#pragma pack(1)
 
-struct _GEIdx {
-  ftn_addr addr;       // Node address
-  _GEIdx() : addr() {}
-};
 
-#pragma pack()
 
-class ftn_golded_nodelist_index {
-protected:
-  _GEIdx   current;
-  ftn_addr searchaddr;
-  int      addrcmp() const;
 
-public:
-  ftn_golded_nodelist_index();
-};
 
-int ftn_golded_nodelist_index::addrcmp() const {
-  return searchaddr.compare(current.addr);
-}
->How-To-Repeat:
-see description
-compiles fine with g++-3.2
->Fix:
-unknown
->Release-Note:
->Audit-Trail:
->Unformatted:
+
+Cheers,
+Mahesh Pujara
