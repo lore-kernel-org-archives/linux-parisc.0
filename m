@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from wolf.alaskatech (207-5-237-24-cable.anchorageak.net [24.237.5.207])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2125F4829
-	for <parisc-linux@parisc-linux.org>; Wed, 13 Nov 2002 13:05:39 -0700 (MST)
-Received: from wolf.alaskatech (palinux@wolf.alaskatech [24.237.5.207])
-	by wolf.alaskatech (8.12.3/8.12.3/Debian -4) with ESMTP id gADK5qRO028315;
-	Wed, 13 Nov 2002 11:05:52 -0900
-Date: Wed, 13 Nov 2002 11:05:51 -0900 (AKST)
-From: Tom <palinux@alaskatech.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] LONG pause on boot
-In-Reply-To: <20021113193018.P30392@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.LNX.4.44.0211131104580.26859-100000@wolf.alaskatech>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Greg KH <greg@kroah.com>
+Cc: Miles Bader <miles@gnu.org>,
+	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
+	Matthew Wilcox <willy@debian.org>,
+	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
+	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface 
+In-Reply-To: Message from Greg KH <greg@kroah.com>
+   of "Tue, 12 Nov 2002 23:52:23 PST." <20021113075223.GZ2106@kroah.com>
+References: <20021109060342.GA7798@kroah.com> <200211091533.gA9FXuW02017@localhost.localdomain> <20021113061310.GD2106@kroah.com> <buon0odsyh9.fsf@mcspd15.ucom.lsi.nec.co.jp>  <20021113075223.GZ2106@kroah.com> 
+Date: Wed, 13 Nov 2002 13:12:07 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20021113201207.4F49C4829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +24,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> On Wed, Nov 13, 2002 at 10:26:43AM -0900, Tom wrote:
-> > Does anyone have an idea as to why such a long delay would occur there?
-> > PDC has console to serial_1, which had a terminal on it. There was no
-> > errors or complaints anywhere in the boot process, and none visible during
-> > the kernel compile. I can provide System.map, config file, etc. if
-> > desired...
+Greg KH wrote:
+> Are there any existing archs that need more than just dma_mask moved to
+> struct device out of pci_dev?  Hm, ppc might need a bit more...
 
-> On Wed, 13 Nov 2002, Matthew Wilcox wrote:
-> Yes, it's during device walk.  The support for E class that rbrad wrote
-> means that every machine with a CCIO suffers.  I suspect this'll get
-> fixed fairly soon.
+"out of pci_dev" and into struct device?
+I think that's all parisc port would need now.
 
-Then I'll assume it's a "feature", at least until sometime in the 2.4.20
-range :-)
+At some point I'd like to propose "dma_hint" field.
+But I don't have a specific proposal yet.
+Something to help drivers communicate DMA characteristics to
+the IOMMU support code. ie bandwidth needed, cacheline line aware,
+MWLI support, etc.
 
-Thanks!
+grant
