@@ -1,35 +1,28 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA16639
-	for <parisc-linux@puffin.external.hp.com>; Fri, 30 Apr 1999 17:18:23 -0600
-Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
-	by netscape.com (8.8.5/8.8.5) with ESMTP id QAA19553
-	for <parisc-linux@thepuffingroup.com>; Fri, 30 Apr 1999 16:17:59 -0700 (PDT)
-Sender: shaver@netscape.com
-Message-ID: <372A3A83.84EDABE9@mozilla.org>
-Date: Fri, 30 Apr 1999 19:19:31 -0400
-From: Mike Shaver <shaver@mozilla.org>
-MIME-Version: 1.0
-To: Alex deVries <adevries@redhat.com>
-CC: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA16975
+	for <parisc-linux@puffin.external.hp.com>; Fri, 30 Apr 1999 20:16:58 -0600
+Message-ID: <19990501022458.64384@insula.local>
+Date: Sat, 1 May 1999 02:24:58 +0000
+From: Philipp Rumpf <prumpf@jcsbs.lanobis.de>
+To: Alex deVries <adevries@redhat.com>, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Linker problems
+Reply-To: Philipp Rumpf <prumpf@jcsbs.lanobis.de>
 References: <Pine.LNX.3.96.990430190529.10592L-100000@devserv.devel.redhat.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.3.96.990430190529.10592L-100000@devserv.devel.redhat.com>; from Alex deVries on Fri, Apr 30, 1999 at 07:07:56PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
-> make: *** [vmlinux] Aborted (core dumped)
-> make: *** Deleting file `vmlinux'
-> 
 > That's remarkably gross, since it indicates that there's a problem with
 > the linker.  I'm not quite sure what it is, but the problem seems to come
-> up when it's processing lib/libc.a.
-> 
+
+I think I have fixed it in CVS. Please all retry 8)
+
 > I think that's a good thing for someone to look into.
 
-IIRC, Nat says it's a matter of popping into gdb, spotting the crash
-location, fixing the obvious double-free and recompiling.
+Still, someone could look into whether what I have done was right, so the
+comments in the code seem to imply very strongly to me it is.
 
-Mike
+binutils/ld/emultempl/hppaelf.em is now version 1.2, was version 1.1.
 
--- 
-372738.81 362322.32
+	Philipp
