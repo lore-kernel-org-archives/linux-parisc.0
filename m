@@ -1,30 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AD287482A
-	for <parisc-linux@parisc-linux.org>; Mon, 22 Oct 2001 23:17:37 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id bbqfiaaa for parisc-linux@parisc-linux.org; Mon, 22 Oct 2001 22:12:41 -0700
-Date: Mon, 22 Oct 2001 22:17:14 -0700
-From: Randolph Chung <tausq@debian.org>
-To: chris@debian.org, bcollins@debian.org
-Cc: amodra@bigpond.net.au, parisc-linux@parisc-linux.org
-Message-ID: <20011022221714.O537@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] Yay, binutils fixed for hppa
+Received: from spawn.hockeyfiend.com (dsl092-073-086.bos1.dsl.speakeasy.net [66.92.73.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 94E8A482A
+	for <parisc-linux@parisc-linux.org>; Mon, 22 Oct 2001 23:20:17 -0600 (MDT)
+Date: Tue, 23 Oct 2001 01:20:00 -0400 (EDT)
+From: "Christopher C. Chimelis" <chris@debian.org>
+To: Randolph Chung <tausq@debian.org>
+Cc: bcollins@debian.org, amodra@bigpond.net.au,
+	parisc-linux@parisc-linux.org
+In-Reply-To: <20011022221714.O537@tausq.org>
+Message-ID: <Pine.LNX.4.21.0110230118590.16337-100000@spawn.hockeyfiend.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: "Christopher C. Chimelis" <chris@spawn.hockeyfiend.com>
+Subject: [parisc-linux] Re: Yay, binutils fixed for hppa
 List-ID: <linux-parisc.vger.kernel.org>
 
-With many thanks to Alan Modra binutils seems to be fixed now. Chris,
-can you please build a new binutils from cvs? Everything should be there, and
-the hppa-specific patch you currently have in the package should no longer 
-be needed.
+On Mon, 22 Oct 2001, Randolph Chung wrote:
 
-The patch Ben has is needed to build glibc with the new binutils.
+> With many thanks to Alan Modra binutils seems to be fixed now. Chris,
+> can you please build a new binutils from cvs? Everything should be there, and
+> the hppa-specific patch you currently have in the package should no longer 
+> be needed.
 
-hppa is also a bit behind on gcc-3.0. I'll try to build new ones RSN.
+Ok, I'll include those in the next upload (based on HJ's release from
+today and including the patches that Alan just committed).
 
-randolph
--- 
-Debian Developer <tausq@debian.org>
-http://www.TauSq.org/
+> The patch Ben has is needed to build glibc with the new binutils.
+
+Fantastic :-)
+
+> hppa is also a bit behind on gcc-3.0. I'll try to build new ones RSN.
+
+This is good news :-)  Many thanks to Alan for working on this so quickly
+:-)
+
+C
