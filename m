@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server.da-kot (21-40.CampusNet.ucl.ac.be [130.104.21.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C9FC0482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 15:54:20 -0600 (MDT)
-Received: from gmsoft.tuxicoman.be ([2001:6f8:204:20:210:a7ff:fe10:1a3e])
-	by server.da-kot with esmtp (Exim 3.36 #1 (Debian))
-	id 19FLFZ-0000fI-00
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 23:54:25 +0200
-From: Guy Martin <gmsoft@gentoo.org>
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 12 May 2003 23:51:57 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Message-Id: <200305122351.57449.gmsoft@gentoo.org>
-Subject: [parisc-linux] gcc and -march=2.0 flag bug
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1189B482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 15:59:17 -0600 (MDT)
+Date: Mon, 12 May 2003 14:58:37 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: Guy Martin <gmsoft@gentoo.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] gcc and -march=2.0 flag bug
+Message-ID: <20030512215837.GN4509@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200305122351.57449.gmsoft@gentoo.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200305122351.57449.gmsoft@gentoo.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +24,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi All,
+> I had some problems with gcc. When I set the CFLAGS/CXXFLAGS -march=2.0, most 
+> of the applications builded are b0rked. This occured on many stations. Using 
+> -march=1.1 works well.
 
-I had some problems with gcc. When I set the CFLAGS/CXXFLAGS -march=2.0, most 
-of the applications builded are b0rked. This occured on many stations. Using 
--march=1.1 works well.
+How are they "b0rked"? Can you be a bit more precise?
+ 
+> Is this a 'feature' of unimplemented 64bit userspace or is this a bug ?
+> 
+> In case of a bug, what do you need to debug it.
 
-Is this a 'feature' of unimplemented 64bit userspace or is this a bug ?
+We compile pa20 32-bit kernels (e.g. for c3k) using 32-bit and
+-march=2.0. seems to work. Do you have a test case for what you think
+is broken? -march2.0 is really orthogonal to 64-bit userspace.
 
-In case of a bug, what do you need to debug it.
-
-Regards
-
+randolph
 -- 
-Guy Martin
-Gentoo - HPPA port Lead / IPv6 team
-Lug Charleroi (Belgium)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
