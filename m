@@ -1,34 +1,47 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA02147
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 13:13:25 -0700
-Received: from whitetower.tamu.edu (dyna-0003.vpn.tamu.edu [172.16.32.3])
-	by mail.tamu.edu (8.9.3/8.9.3) with ESMTP id OAA25944
-	for <parisc-linux@thepuffingroup.com>; Wed, 15 Nov 2000 14:15:13 -0600 (CST)
-Message-Id: <4.3.0.20001115140420.00d20820@clavin.cs.tamu.edu>
-Date: Wed, 15 Nov 2000 14:14:13 -0600
-To: parisc-linux@thepuffingroup.com
-From: Jack Perdue <j-perdue@tamu.edu>
-Subject: Doh!!!  was Re: [parisc-linux] nfsroot - 712/60 - RPC - help
-In-Reply-To: <4.3.0.20001115132700.00cc91b0@clavin.cs.tamu.edu>
+Received: from cygnus.com (runyon.cygnus.com [205.180.230.5])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id NAA02541
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 13:28:29 -0700
+Received: from upchuck.cygnus.com (taarna.cygnus.com [205.180.230.102])
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id MAA06765
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Nov 2000 12:30:33 -0800 (PST)
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+cc: rhirst@linuxcare.com (Richard Hirst), parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] Single-stepping 
+Reply-To: law@redhat.com
+In-reply-to: Your message of Wed, 15 Nov 2000 14:49:02 EST.
+             <200011151949.OAA22929@hiauly1.hia.nrc.ca>
+From: law@redhat.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 15 Nov 2000 13:30:59 -0700
+Message-ID: <15884.974320259@upchuck>
+Sender: law@cygnus.com
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Of course, as soon I collected all that info and sent it I,
-in rereading, realized that I had put 192.68.1.11 in
-palo/Makefile instead of 192.168.1.11.  Doh!
+  In message <200011151949.OAA22929@hiauly1.hia.nrc.ca>you write:
+  > >   I've been helping Alan Modra out with kernel changes to support
+  > > single stepping for gdb.  Paul Bame suggested I bounced our ideas
+  > > off you in case you (or anyone else) had any comments.  I havn't
+  > > actually committed my changes yet.
+  > > 
+  > > The basic approach is to use the recovery counter to generate
+  > > a trap every instruction.  The scheme is complicated because a
+  > > suspended process may or may not return to user space via an RFI.
+  > 
+  > I really don't know enough to comment on the implementation choice.  Why
+  > did you decide on this approach as opposed to inserting breaks and
+  > enabling the taken branch branch trap (T)?  It would appear that the recove
+  > ry
+  > counter was intended to provide software recovery from hardware faults
+  > in fault tolerant systems.  Possibly, Grant could comment on whether
+  > it is actually useful for this purpose.
+Err, we tried that at the UofU in our mach port to the PA -- there's a problem
+with that scheme, though I don't remember precisely what it was.  I believe
+there were cases where the recovery counter doesn't trigger a trap, possibly
+due to nullified instructions.
 
-However, since the info is out there now, can someone
-tell me what I need to resolve the following:
+You might look at the UofU BSD code, which I believe used breakpoints and
+branch taken traps instad.
 
-   [previous console output in previous mail]
-   Switching from PDC console
-   kmem_create: Forcing size word alignment - nfs_fh
-   Looking up port of RPC 100003/2 on 192.168.1.11
-   Looking up port of RPC 100005/2 on 192.168.1.11
-   VFS: Mounted root (nfs filesystem) readonly.
-   Kernel panic: No init found.  Try passing init= option to kernel.
-
-jack
-j-perdue@tamu.edu
+jeff
