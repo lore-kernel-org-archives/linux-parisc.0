@@ -1,36 +1,40 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA29305
-	for <parisc-linux@puffin.external.hp.com>; Sun, 9 Jul 2000 14:04:17 -0600
-From: willy@thepuffingroup.com
-Received: from ottawa.linuxcare.com (HELO vodka.thepuffingroup.com) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 9 Jul 2000 20:05:46 -0000
-Received: (from willy@localhost)
-	by vodka.thepuffingroup.com (8.9.3/8.9.3) id PAA16309
-	for parisc-linux@thepuffingroup.com; Sun, 9 Jul 2000 15:00:24 -0400
-Date: Sun, 9 Jul 2000 15:00:24 -0400
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000709150024.A16294@vodka.thepuffingroup.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04435
+	for <parisc-linux@puffin.external.hp.com>; Mon, 10 Jul 2000 08:00:22 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 10 Jul 2000 14:01:43 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] problems with gcc 2.96
+References: <20000709150024.A16294@vodka.thepuffingroup.com> <Pine.LNX.4.21.0007100959080.684-100000@front.linuxcare.com.au> <20000710082844.C16294@vodka.thepuffingroup.com>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 10 Jul 2000 10:00:32 -0400
+In-Reply-To: willy@thepuffingroup.com's message of "Mon, 10 Jul 2000 08:28:44 -0400"
+Message-ID: <87snticcfz.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] problems with gcc 2.96
 List-ID: <linux-parisc.vger.kernel.org>
 
+willy@thepuffingroup.com writes:
 
-most people will need to run contrib/gcc_update in order to sort out
-dependencies.  i did.  but then i get into:
+> On Mon, Jul 10, 2000 at 10:06:06AM +1000, Alan Modra wrote:
+> > On Sun, 9 Jul 2000 willy@thepuffingroup.com wrote:
+> > 
+> > > /home/willy/parisc/hppa1.1-linux/include/bits/stdio-lock.h:29:2: #error libio needs recursive mutexes for _IO_MTSAFE_IO
+> > > make[1]: *** [iogetline.o] Error 1
+> > > 
+> > > dhd, you must have solved this already?
+> > 
+> > Errm, unless your glibc versions differ.  I did a merge on June 10.  Ducks
+> > for cover.
+> 
+> I spoke to dhd last night and apparently the solution is to
+> --disable-multilib for gcc.  i'm just trying it now and it appears to
+> get a lot further.  time to update the recipe, i guess.
 
-$ rm -rf *
-$ ../gcc/configure --target=hppa1.1-linux --prefix=/home/willy/parisc --host=i386-linux --disable-nls
-[...]
-/home/willy/parisc/gcc-build/gcc/xgcc -B/home/willy/parisc/gcc-build/gcc/ -B/home/willy/parisc/hppa1.1-linux/bin/ -c -g -O2 -I. -I../../../gcc/libio -D_IO_MTSAFE_IO ../../../gcc/libio/iogetline.c
-In file included from ../../../gcc/libio/libio.h:166,
-                 from ../../../gcc/libio/iolibio.h:1,
-                 from ../../../gcc/libio/libioP.h:47,
-                 from ../../../gcc/libio/iogetline.c:26:
-/home/willy/parisc/hppa1.1-linux/include/bits/stdio-lock.h:29:2: #error libio needs recursive mutexes for _IO_MTSAFE_IO
-make[1]: *** [iogetline.o] Error 1
-
-dhd, you must have solved this already?
+I've already told willy this, but this is due to the C++ support.
+Configure with --enable-languages=c for the time being until it's sorted.
 
 -- 
-The Sex Pistols were revolutionaries.  The Bay City Rollers weren't.
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
