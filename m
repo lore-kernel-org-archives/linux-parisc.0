@@ -1,21 +1,18 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 713874857
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 15 Mar 2004 15:47:17 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: Re: No PS2 keyboard/mouse on B132L, 2.6.[34]
-Date: Mon, 15 Mar 2004 23:47:09 +0100
-References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
-	<20040315084247.GJ9104@finlandia.infodrom.north.de>
-	<20040315150539.GA20698@finlandia.infodrom.north.de>
-In-Reply-To: <20040315150539.GA20698@finlandia.infodrom.north.de>
+Return-Path: <ajwalker@broadpark.no>
+Received: from mail.broadpark.no (mail.broadpark.no [217.13.4.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9155F4854
+	for <parisc-linux@parisc-linux.org>;
+	Tue, 16 Mar 2004 03:11:02 -0700 (MST)
+Message-ID: <33542.193.161.152.244.1079432357.squirrel@www.puszczka.com>
+In-Reply-To: <mnet8.1079358785.20900.pinotj@club-internet.fr>
+References: <mnet8.1079358785.20900.pinotj@club-internet.fr>
+Date: Tue, 16 Mar 2004 11:19:17 +0100 (CET)
+Subject: Re: [parisc-linux] [DOC] Linux 2.6.4
+From: "Andy Walker" <ajwalker@broadpark.no>
+To: pinotj@club-internet.fr
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200403152347.09863.deller@gmx.de>
-Cc: Martin Schulze <joey@infodrom.org>
+Content-Type: text/plain;charset=iso-8859-1
+Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,74 +22,37 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Thanks !
 
-I added a new FAQ entry based on your input.
-
-Helge
-
-On Monday 15 March 2004 16:05, Martin Schulze wrote:
-> Martin Schulze wrote:
-> > Grant Grundler wrote:
-> > > > Well, if you *know* that it's a PS/2 mouse and PS/2 keyboard, you're
-> > > > correct.  However, does everybody know that who gets hold of a PARISC
-> > > > machine fully equipped with HIL hub and stuff?  Maybe it's just me
-> > > > who hasn't expected that since the old (really old) machines didn't
-> > > > use pc standard equipment and since PA machines usually use different
-> > > > parts.  You choose since you're more familiar with the port.
-> > > 
-> > > Well, maybe it would be better to make this a FAQ on the parisc-linux
-> > > web site?
-> > 
-> > Aye!
-> 
-> Maybe this one is better since CONFIG_KEYBOARD_HIL and CONFIG_HIL_MLC
-> aren't required.  I'm not sure about the mouse part since mine doesn't
-> yet work again.
-> 
-> --- /tmp/work/faq.html.orig	2004-03-15 09:36:25.000000000 +0100
-> +++ /tmp/work/faq.html	2004-03-15 10:44:59.000000000 +0100
-> @@ -8,6 +8,27 @@
->    <li>First of all, your kernel has to be 2.4.18-pa45 or higher.<br>
->        Earlier kernel versions will not work !
->    </li>
+> + 10. PA-RISC
+> + ~~~~~~~~~~~
+> +	PA7000/PA7100
+> +	PA7100LC/PA7300LC	(used in 712, 715/Mirage, A180, B132, C160L)
+> +	PA7200			(PCX-T' processor used in C110, D100 ...)
+> +	PA8000			(PCX-U to PCX-W2 processors)
 > +
-> +  <li>In the latest 2.6 kernel series, we switched from a PA-RISC-only
-> +      PS/2 mouse/keyboard driver to the standard Linux kernel PS/2
-> +      mouse and keyboard drivers.  Hence, in order to get your PS/2
-> +      mouse/keyboard connected via HIL work you'll have to enable
-> +      <ul>
-> +      <li> CONFIG_KEYBOARD_ATKBD
-> +      <li> CONFIG_MOUSE_PS2
-> +      </ul>
-> +      in addition to
-> +      <ul>
-> +      <li> CONFIG_INPUT_KEYBOARD
-> +      <li> CONFIG_INPUT_MOUSE
-> +      <li> CONFIG_MOUSE_HIL
-> +      </ul>
-> +      You don't need these options anymore:
-> +      <ul>
-> +      <li> CONFIG_KEYBOARD_HIL
-> +      <li> CONFIG_HIL_MLC
-> +      </ul>
-> +  </li>
->    <li>On the bash prompt enter as root the following comand:<br>
->        <code>cd /dev && ./MAKEDEV input</code><br>
->        This command creates the standard input device nodes in the /dev/input/
-> 
-> 
-> Regards,
-> 
-> 	Joey
-> 
-> -- 
-> Whenever you meet yourself you're in a time loop or in front of a mirror.
-> 
-> Please always Cc to me when replying to me on the lists.
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+> +  (see Documentation/parisc)
+> +  <http://www.parisc-linux.org>
+>
+
+I'd refer you to www.openpa.net, from which the list below was
+shamelessly nicked:
+
+PA-7000         (PCX-S)
+PA-7100/PA-7150 (PCX-T)
+PA-7100LC       (PCX-L)
+PA-7200         (PCX-T')
+PA-7300LC       (PCX-L2)
+
+PA-8000         (PCX-U)
+PA-8200         (PCX-U+)
+PA-8500         (PCX-W)
+PA-8600         (PCX-W+)
+PA-8700         (PCX-W2)
+
+There are also lists of which models have which CPU, but there's not
+much point duplicating that here.
+
+http://www.pateam.org/list.html will give you an idea of what works
+and what doesn't.
+
+-Andy
