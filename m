@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mgw-x1.nokia.com (mgw-x1.nokia.com [131.228.20.21])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D8E4B487D
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 Jan 2003 02:20:51 -0700 (MST)
-Received: from esvir01nok.ntc.nokia.com (esvir01nokt.ntc.nokia.com [172.21.143.33])
-	by mgw-x1.nokia.com (Switch-2.2.1/Switch-2.2.0) with ESMTP id h0H9Jr005346
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 17 Jan 2003 11:19:53 +0200 (EET)
-Date: Fri, 17 Jan 2003 11:20:38 +0200
-From: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-To: ext Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Interesting network card ...
-Message-ID: <20030117092038.GK17760@aurinko.ntc.nokia.com>
-References: <20030115085619.GA17760@aurinko.ntc.nokia.com> <20030116021111.GD8543@dsl2.external.hp.com> <20030116093028.GD17760@aurinko.ntc.nokia.com> <20030117065427.GA11137@dsl2.external.hp.com>
+Received: from guinness.internal.neep.com.au (p035.sw02.auto.usertools.net [202.154.81.35])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0EA74829
+	for <parisc-linux@parisc-linux.org>; Fri, 17 Jan 2003 02:35:53 -0700 (MST)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id SAA00275
+	for parisc-linux@parisc-linux.org; Fri, 17 Jan 2003 18:46:27 +0800
+Date: Fri, 17 Jan 2003 18:46:25 +0800
+From: Andrew Shugg <andrew@neep.com.au>
+To: Linux/HPPA List <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] CVS checkouts on ftp server
+Message-ID: <20030117184623.C23928@neep.com.au>
+References: <20030115122121.C799@neep.com.au> <20030115131651.F26554@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-In-Reply-To: <20030117065427.GA11137@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030115131651.F26554@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Wed, Jan 15, 2003 at 01:16:51PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,68 +25,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jan 16, 2003 at 11:54:27PM -0700, ext Grant Grundler wrote:
-> On Thu, Jan 16, 2003 at 11:30:28AM +0200, Nahkola Mikko wrote:
+Matthew Wilcox said:
+> On Wed, Jan 15, 2003 at 12:21:23PM +0800, Andrew Shugg wrote:
+> > I was trawling through ftp.parisc-linux.org/cvs looking for a tarball of
+> > the linux-2.5 tree and couldn't see anything, apart from a /cvs/2.5
+> > directory (which is currently empty).
+> 
+> Those aren't currently being generated (AFAIK).  What _is_ being generated
+> are the patches against upstream: http://ftp.parisc-linux.org/2.5/kernel-src/
 
-> > > ...a newer kernel would be more interesting.
-> > Recommendations? Any ready-built package that I should try,
+Ah yes, I saw those.  But then I'll need to make a vanilla Linus tree,
+and I am lazy.  I mean, streamlined and efficient.  =)
 
-> Ideally, our CVS kernels: 32-2.4.20-pa21.tar.gz
-> autobuilt 32-bit kernels are on ftp.parisc-linux.org/kernels/32/ 
-> I can't say if they work "just fine" on C240 or not though
-> since I don't test that.
+> > Is there enough disk space to do a linux-2.5 tarball for the FTP server?
+> 
+> Yes, certainly.  Do you still want that, given the existance of these
+> patches?
 
-Installed 32-2.4.20-pa20 as the -21 only had the Config, no vmlinux or 
-System.map there. 
+It'd be nice.  Yes, I'd like it, if it's not a problem for anyone.
+Otherwise I'll try the above method, or slowly drag it out of CVS.  I'm
+assuming that occasional linux-2.5 tarballs might be useful for people
+other than me of course ...
 
-> > > This does sound like a bug (fixed) in the tulip driver relating to
-> > > MII initialization. But I'm surprised to see it manifest on a C240.
-> > What do you mean, surprised to see it manifest on a C240? How so?
+> > Also the /cvs directory contains a few files that look like stuff-ups
+> > from the CVS tarball roller: linux-.tar.gz and patch-.diff.gz ...
+> 
+> I can see them... but I can also see the CVS scripts are still running.
+> Possibly they'll be renamed later.
 
-> The original problem seemed to be a CPU timing problem where the PHY reset
-> was not recovering faster than the CPU could pound down the next accesses
+Doesn't seem to be; they're empty files (though > 0 bytes from gzip).  I
+think the checkout script is using an empty variable, eg linux-$i.tar.gz
+or whatever.  The 'latest' softlinks are to these empty files.  I can't
+see any likely-looking tarball-rolling scripts in CVSROOT/ so I'm unable
+to investigate further.
 
-> The fix is to follow the 802.x spec which describes the MII register
-> set and how to properly do a MII reset (involves some polling).
-> Details should be in the parisc-linux mail archive or lkml.
-
-Well, at any rate, it doesn't complain about tulip0/eth0 anymore ... but 
-it still doesn't pass any traffic or obey mii-tool. 
-"10 Mbit, half duplex, autonegotiation complete, remote fault, link ok" 
-... even after "mii-tool -F 100baseTx-HD eth0".
-
-Looks better now anyway ;-/
-
-> > BTW, the NIO 100BT is an interesting beast. It (or the driver) is the 
-> > only reason why one of our HP-UX boxes only gets about half an year max 
-> > uptime usually ... and has other "interesting" "features". 
-
-> If you have extras of those, I know someone who wants one.
-
-No extras, sorry. They're in real use. (don't tell me that's a bad choice 
-- well, if you know of something else to get a H to do 100BT ...)
-
-> > Notably it is a higher revision than the builtin adapter, and therefore I 
-> > wouldn't expect to need the de4x5 driver.
-> I don't either. I thought we had the tulip cards working just fine.
-
-Well, the builtin adapter isn't doing "just fine" either, but that may be 
-firmware-related - when set to 100-HD with mii-tool it goes to 100-FD or 
-some such that the hub (yes) doesn't like at all. I suppose I should get 
-around to updating the box's firmware. 
- 
-Oh well, it autonegotiates to 10HD and that works. The other end is a HP 
-J3294A (ProCurve 10/100 hub) that obivously can't do anything FD ... and 
-yes, I did use other stuff to test the 6911 too. 
-
-
-
-And additionally, there's some (non-network-related?) stuff in dmesg that 
-I don't remember seeing before, "HP SDC: Transaction add failed: 
-transaction already queued?" Is that the HIL stub or something? Should I 
-pursue that too?
-
+Andrew.
 
 -- 
-Mikko Nahkola   <mikko.nahkola@nokia.com>
-Tre-IN sysadmin <mnahkola@trein.ntc.nokia.com>
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
