@@ -1,20 +1,19 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 080354834
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 87DF14834
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 30 Mar 2004 23:27:42 -0700 (MST)
-Date: Tue, 30 Mar 2004 23:27:40 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Prakash Shenoy <mpshenoy@vsnl.com>
-Subject: Re: [parisc-linux] HP 9000 Visualize C180 Workstation display does
-	not appear.
-Message-ID: <20040331062740.GA27418@colo.lackof.org>
-References: <20040330175157.GA18103@colo.lackof.org>
-	<OFEELBIMFFDMJBJFHICCOEMFCEAA.mpshenoy@vsnl.com>
+	Tue, 30 Mar 2004 23:39:19 -0700 (MST)
+Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
+	id 1B8ZKz-0006iY-00 for <parisc-linux@lists.parisc-linux.org>;
+	Wed, 31 Mar 2004 01:36:33 -0500
+Date: Wed, 31 Mar 2004 01:36:32 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20040331063632.GB21909@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OFEELBIMFFDMJBJFHICCOEMFCEAA.mpshenoy@vsnl.com>
-Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Booting remounting and S10checkroot.sh,
+	the saga of changes to how mount works...
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,41 +23,47 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Mar 30, 2004 at 08:37:22PM -0500, Prakash Shenoy wrote:
-> Thanks for all the help. Sorry to bother you again.
 
-np
+pa's,
 
-> I tried
-> 
-> 	bo fwscsi.6.0.
-> 
-> I get this error message:
-> 
-> ISL booting hp/ux.
-> 
-> exec failed: cannot find /stand/vmunix or /vmunix.
+So I rebooted to test my signal fixes, and I find that I can't boot my
+box anymore. It seems that /etc/rcS.d/S10checkroot.sh was no longer
+doing it's job of remounting / (LABEL=ROOT) rw. I mean it wasn't as if
+it didn't try, the kernel kept saying that I should specify a file
+system type.
 
-If ISL is still present, it means the boot blocks from HPUX are
-still intact. palo should normally overwrite those.
+It's not fun when this happens, because you have to boot some sort of
+rescue disk, and hack /etc/rcS.d/S10checkroot.sh!
 
-> Please note that I have formatted both the hard disks and 
+The following was required to get my box back up... I don't think it's
+necc, but nor do I understand what's going on here. Is this part of
+those mount/remount changes I saw? :)
 
-Low level SCSI format?
-I don't think so.
+I think I might submit this to 'initscripts' as a "robustifying" patch.
 
-> installed debian on fwscsi.6.0.
-> What may be wrong here?
+c.
 
-palo was probably invoked against the wrong disk or not invoked at all.
->From the Debian 3.0 install menu, you did "Make System bootable" step?
-
-If you have both fwscsi.5.0 and fwscsi.6.0 present, linux
-will find fwscsi.5.0 first and "name" it /dev/sda.
-/dev/sdb will be fwscsi.6.0.
-
-HPUX finds fwscsi.6.0 first and name it something like /dev/dsk/c0t6d0.
-And thus until told otherwise, firmware will attempt to boot the HPUX disk
-by default.
-
-grant
+--- checkroot.sh	2004-03-30 05:45:38.716100048 -0500
++++ /etc/init.d/checkroot.sh	2004-03-30 00:40:01.000000000 -0500
+@@ -181,10 +181,10 @@
+ 	#
+ 	# Ensure that root is quiescent and read-only before fsck'ing.
+ 	#
+-	if ! mount -n -o remount,ro $rootdev /
++	if ! mount -t $roottype -n -o remount,ro $rootdev /
+ 	then
+     		echo -n "*** ERROR!  Cannot fsck root fs because it is "
+-		echo    "not mounted read-only!"
++		echo    "not mounted read-only! (rootdev=$rootdev)"
+ 		echo
+ 		rootcheck=no
+ 	fi
+@@ -262,7 +262,7 @@
+ #	
+ if [ "$rootdev" != none ] && [ "$roottype" != none ]
+ then
+-	mount -n -o remount,$rootopts $rootdev /
++	mount -t $roottype -n -o remount,$rootopts $rootdev /
+ fi
+ 
+ #
