@@ -1,48 +1,84 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cactus.bheadley.org (d177.focal4.interaccess.com [207.208.139.177])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7AFCA4A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 12:09:31 -0700 (MST)
-Sender: bheadley@interaccess.com
-Message-ID: <3A9414AC.C3EB8BB4@interaccess.com>
-Date: Wed, 21 Feb 2001 13:19:08 -0600
-From: "Bryan W. Headley" <bheadley@interaccess.com>
-MIME-Version: 1.0
-To: Jim Buttafuoco <jim@tylerdrive.org>,
+Received: from openbsd1.buttafuoco.net (3ff839a7.dsl.flashcom.net [63.248.57.167])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BDDDC4A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 12:12:37 -0700 (MST)
+Date: Wed, 21 Feb 2001 14:12:37 -0500 (EST)
+Message-Id: <200102211912.f1LJCbp28371@openbsd1.buttafuoco.net>
+From: "Jim Buttafuoco" <jim@tylerdrive.org>
+To: "Bryan W. Headley" <bheadley@interaccess.com>,
+	Jim Buttafuoco <jim@tylerdrive.org>,
 	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] CD boot help with 735
-References: <200102211739.f1LHddN31316@openbsd1.buttafuoco.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-SmltIEJ1dHRhZnVvY28gd3JvdGU6DQoNCj4gQnJ5YW4sDQo+DQo+IFdoYXQgQ0QgYXJlIHlv
-dSB1c2luZy4gIEkgY291bGRuJ3QgZ2V0IHRoZSAuNSB2ZXJzaW9uIHRvIHdvcmsgb24gbXkN
-Cj4gNzM1LiAgSSBkaWQgY3JlYXRlIG15IG93biBrZXJuZWwgYW5kIGJvb3RlZCB2aWEgdGhl
-IG5ldHdvcmsuIExldCBtZQ0KPiBrbm93IGlmIHlvdSBuZWVkIGFueSBoZWxwLg0KPg0KDQpJ
-J2xsIHJlYWQgdXAgb24gaG93IHRvIGRvIHRoYXQuIEkgYW0gaW5kZWVkIHVzaW5nIHRoZSAu
-NSB2ZXJzaW9uLg0KDQpJIGRvbid0IGtub3cgd2hhdCB0aGUgYm9vdHN0cmFwIHJlcXVpcmVt
-ZW50cyBhcmUgYSBuZXR3b3JrIGJvb3QuIExldCdzIGFzc3VtZSB0aGF0IG1ha2luZyBhIENE
-IGlzIGVhc2llci4gSSBjYW4NCmJ1aWxkIGEga2VybmVsIG9uIHRoZSB4ODYgYW5kIHB1dCB0
-aGUgbmV3IGtlcm5lbCBvbnRvIGEgY2QgaW1hZ2UuIFF1ZXN0aW9uOiB3aGF0J3MgdGhlIHBh
-cmFtZXRlcnMgdG8gbWtpc29mcyB0bw0Kc3BlY2lmeSB0aGUgYm9vdCBpbWFnZT8gRWwgVG9y
-aXR0bz8gR2VuZXJpYyBib290PyBUaGF0IFN1biBib290IHRyYWNrIHRoaW5nPw0KDQooSW4g
-dGhlIG1lYW50aW1lLCBJJ2xsIHJlYWQgdXAgb24gbmV0d29yayBib290aW5nKQ0KDQo+DQo+
-IEppbQ0KPg0KPiA+IEhpLA0KPiA+DQo+ID4gQW0gdHJ5aW5nIHRvIGJvb3QgdGhlIENEUk9N
-LCBidXQga2VlcCBnZXR0aW5nICJFTlRSWV9JTklUIHN0YXR1cyA9IC00Ig0KPiA+IGFuZCBh
-IGZldyBsaW5lcyBvZiBoZXguIE5ldmVyDQo+ID4NCj4gPiAxKSBUaGUgYWJvdmUgb2NjdXJz
-IG9uIHRoZSBjb25zb2xlLCByb3V0ZWQgdG8gYnVpbHQtaW4gdmlkZW8uIFNob3VsZCBJDQo+
-ID4gaGF2ZSBkb25lIHNvbWV0aGluZyB0byByZWRpcmVjdCBjb25zb2xlIG1lc3NhZ2VzIHRv
-DQo+ID4gICAgIENPTU0gcG9ydCBiZWZvcmVoYW5kPyBIYXZlIGEgbGFwdG9wIGF0dGFjaGVk
-IHRvIGJlIHRoZSBzZXJpYWwNCj4gPiBjb25zb2xlLCBidXQgb2J2aW91c2x5IHRvIG5vIGVm
-ZmVjdA0KPiA+IDIpIEp1c3QgYmVpbmcgc3R1cGlkOiA5NjAwIDggTiAxLCBDT00gcG9ydCBB
-IGZvciB0aGUgc2VyaWFsIGNvbnNvbGUsDQo+ID4gcmlnaHQ/DQo+ID4gMykgU2hvdWxkIEkg
-dHJ5LCAiYiBzY3NpLjYuMCBJUEwiIG9yIHdpdGhvdXQgdGhlIElQTD8NCj4gPg0KPiA+IFRo
-aXMgaXMgb24gYSA3MzUgYm94LiBZb3VyIGhlbHAgbXVjaCBhcHByZWNpYXRlZC4NCj4gPg0K
-PiA+DQo+ID4gLS0NCj4gPiBfX19fICAgICAgICAgICAgICAgLjouICAgICAgICAgICAgICAg
-ICBfX19fDQo+ID4gQnJ5YW4gVy4gSGVhZGxleSAtIGJoZWFkbGV5QGludGVyYWNjZXNzLmNv
-bQ0KPiA+DQo+ID4NCj4gPiD//////////////////////////////////////////////+lq
-uKxz+WImIzM4MjvsZmopYiYjMzgyOw0KPiAgICAgICAgIGKy2lquKxz+WKe7H+UmIzM1MjvL
-bP4mIzgyMTE7qyYjMzUyO8f/JiM4MjExOynux/orJiM4MjE4Oxttp///JiM4MjExOysts/pa
-risc/linux/org/cJiM4MjE4Oy/bJiMzNTI7f+ZqKQ0KPiBman/lJiMzNTI7y2I/+j+lquKx
-z+UmIzM1Mjt7sQ0KPiA+DQo+ID4NCg0KLS0NCl9fX18gICAgICAgICAgICAgICAuOi4gICAg
-ICAgICAgICAgICAgIF9fX18NCkJyeWFuIFcuIEhlYWRsZXkgLSBiaGVhZGxleUBpbnRlcmFj
-Y2Vzcy5jb20NCg0KDQo=
+Bryan,
+
+   Get the latest PALO tree.  The directions are in the README file.  I 
+found if you follow the kernel building instructions from the parisc-
+linux.org web site, you can't go wrong....
+
+Jim
+
+> Jim Buttafuoco wrote:
+> 
+> > Bryan,
+> >
+> > What CD are you using.  I couldn't get the .5 version to work on my
+> > 735.  I did create my own kernel and booted via the network. Let me
+> > know if you need any help.
+> >
+> 
+> I'll read up on how to do that. I am indeed using the .5 version.
+> 
+> I don't know what the bootstrap requirements are a network boot. 
+Let's assume that making a CD is easier. I can
+> build a kernel on the x86 and put the new kernel onto a cd image. 
+Question: what's the parameters to mkisofs to
+> specify the boot image? El Toritto? Generic boot? That Sun boot track 
+thing?
+> 
+> (In the meantime, I'll read up on network booting)
+> 
+> >
+> > Jim
+> >
+> > > Hi,
+> > >
+> > > Am trying to boot the CDROM, but keep getting "ENTRY_INIT status 
+= -4"
+> > > and a few lines of hex. Never
+> > >
+> > > 1) The above occurs on the console, routed to built-in video. 
+Should I
+> > > have done something to redirect console messages to
+> > >     COMM port beforehand? Have a laptop attached to be the serial
+> > > console, but obviously to no effect
+> > > 2) Just being stupid: 9600 8 N 1, COM port A for the serial 
+console,
+> > > right?
+> > > 3) Should I try, "b scsi.6.0 IPL" or without the IPL?
+> > >
+> > > This is on a 735 box. Your help much appreciated.
+> > >
+> > >
+> > > --
+> > > ____               .:.                 ____
+> > > Bryan W. Headley - bheadley@interaccess.com
+> > >
+> > >
+> > > ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿéj¸¬sùb&#382;ìfj)b&#382;
+> >         b²ÚZ®+þX§»å&#352;Ëlþ&#8211;«&#352;Çÿ&#8211;)
+îÇú+&#8218;m§ÿÿ&#8211;+-³úZ®+þX§»è®Ü&#8218;/Û&#352;æj)
+> > fjå&#352;Ëb?ú?¥ªâ±Ïå&#352;{±
+> > >
+> > >
+> 
+> --
+> ____               .:.                 ____
+> Bryan W. Headley - bheadley@interaccess.com
+> 
+> 
+> 
+> 
