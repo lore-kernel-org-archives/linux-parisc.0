@@ -1,11 +1,14 @@
-From: rray@tcmail.mstc.state.ms.us
-Subject: [parisc-linux] Console problem
-Date: Tue, 30 Nov 2004 15:51:49 -0600 (CST)
-Message-ID: <Pine.LNX.4.58.0411301543230.17128@rray.drdc.mstc.ms.gov>
+From: =?ISO-8859-15?Q?Corn=E9_Beerse?= <cbeerse@lycos.nl>
+Subject: [parisc-linux] HP 712/80 and 64 MBit sims.
+Date: Mon, 01 Nov 2004 15:27:23 +0100
+Message-ID: <418647CB.3050304@lycos.nl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii;
+  format=flowed
+To: "maillist hppa gentoo.org" <gentoo-hppa@lists.gentoo.org>,
+ maillist hpux-admin <hpux-admin@DutchWorks.nl>,
+ maillist parisc-linux <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,22 +20,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hey all,
+Hello,
 
-I've just installed Debian on a 9000/819 K200.
-The base install went fine after I changed the console to ttyB0.
-After the reboot I get the dredded "If this is the last
-message you see, you may need to switch your console.  This is
-a common symptom -- search the FAQ and mailing list at parisc-linux.org".
-And this is the last thing I see.
-I've seen references in the mailing list about switching consoles but not
-what this really means.
-I only have one console connected with a serial cable to the console port
-of the server.
-Could someone give me a little more info.
+In http://www.openpa.net/systems/712.html, it says a 712/80 cannot coop with 
+64MBit sims. It so happens I have those around (from a D210, 
+http://www.openpa.net/systems/ultralight.html) and like to use them in the 712.
 
-Thanks
-Richard Ray
+Can these sims be usefull to me? By providing just the supported 32 MByte? or 
+even better, just provide all memory.
+
+Or is it that these (rather large) sims just don't fit in the slim 712 case?
+
+Has anyone experience with this? Is it possible the sims or the system can be 
+ruined by just using it?
+
+
+
+CBee
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
