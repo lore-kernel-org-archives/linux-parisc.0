@@ -1,14 +1,11 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 767E0482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 02:42:29 -0600 (MDT)
-Date: Wed, 9 Jul 2003 10:42:27 +0200
-Message-ID: <3F05718600000905@ocpmta8.freegates.net>
-In-Reply-To: <200307082247.36466.deller@gmx.de>
+Date: Wed, 9 Jul 2003 12:35:55 +0200
+Message-ID: <3F0571860000097D@ocpmta8.freegates.net>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] stifb
-To: "Helge Deller" <deller@gmx.de>
-Cc: parisc-linux@lists.parisc-linux.org
+Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux-cvs@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -22,12 +19,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> sorry, I can't reproduce it here with current CVS version....
+>>
+>>> Builds/links/boots using my c3000 .config.
+>
+>Same here. Not dying under load either :)
+>
+>c.
 
-Ah! I will so retry with last 2.5.74-pa1
+hmm i tested successfully NS87... builtin but failed as module:
+modprob do a page fault and lsmod shows me a module 'busy' and so the system
 
-Thanks,
+ailled to reboot (only power off button works but fs were so not cleanly
+umount :( )
+
+Cheers,
     Joel
+
 
 
 
