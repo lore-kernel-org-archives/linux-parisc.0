@@ -1,20 +1,23 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8C9FA4843
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E18E74843
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun,  7 Mar 2004 11:02:33 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] include/linux/soundcard.h endian fix
-Date: Sun, 7 Mar 2004 19:02:28 +0100
-References: <20040222070150.GA773@calypso> <20040223194047.GA448@calypso>
-	<20040307173210.GA471@calypso>
-In-Reply-To: <20040307173210.GA471@calypso>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200403071902.29292.deller@gmx.de>
-Cc: 
+	Sun,  7 Mar 2004 14:01:06 -0700 (MST)
+Date: Sun, 7 Mar 2004 15:59:04 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] glibc-2.3.3: a warning with gcc-3.3 become an
+	error with gcc-3.5
+Message-ID: <20040307205904.GD5139@baldric.uwo.ca>
+References: <20040301193815.GG21769@baldric.uwo.ca>
+	<402A4CA50000D57D@ocpmta2.freegates.net>
+	<20040302195050.GE19402@baldric.uwo.ca>
+	<404A4D34.1000106@tiscali.be> <20040306225740.GH963@baldric.uwo.ca>
+	<404B0267.1020809@tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <404B0267.1020809@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,90 +27,68 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sunday 07 March 2004 18:32, Stuart Brady wrote:
-> Does anyone have any thoughts regarding this patch?
+On Sun, Mar 07, 2004 at 11:07:19AM +0000, Joel Soete wrote:
+> >Why do you use "new_env" at all?
 > 
-> Index: soundcard.h
-> ===================================================================
-> RCS file: /var/cvs/linux-2.4/include/linux/soundcard.h,v
-> retrieving revision 1.6
-> diff -u -r1.6 soundcard.h
-> --- soundcard.h	26 Jun 2003 15:08:08 -0000	1.6
-> +++ soundcard.h	21 Feb 2004 16:04:12 -0000
-> @@ -179,7 +179,7 @@
->   * Some big endian/little endian handling macros
->   */
->  
-> -#if defined(_AIX) || defined(AIX) || defined(sparc) || defined(__sparc__) || defined(HPPA) || defined(PPC) || defined(__mc68000__)
-> +#if defined(_AIX) || defined(AIX) || defined(sparc) || defined(__sparc__) || defined(HPPA) || defined(__hppa__) || defined(PPC) || defined(__powerpc__) || defined(__mc68000__)
+> The reason is very simple: I just begin with glibc and my knowledge is 
+> still at stone age in this field.
+> This is an evidence that sun appears red in the early morning or at the end 
+> of the evening but white for the rest of a suny day, why?
+> The same here, hppa don't need feraiseexcept() but the alpha, i386, ia64, 
+> m68k, mips, (ppc), s390 and sparc need and I don't yet understand why ;)
 
-I think you should just use "defined(__hppa__)" and simply 
-drop the "defined(HPPA)" part.
-
-> Or alternatively:
-> 
-> Index: soundcard.h
-> ===================================================================
-> RCS file: /var/cvs/linux-2.4/include/linux/soundcard.h,v
-> retrieving revision 1.6
-> diff -u -r1.6 soundcard.h
-> --- soundcard.h	26 Jun 2003 15:08:08 -0000	1.6
-> +++ soundcard.h	07 Mar 2004 17:26:23 -0000
-> @@ -39,6 +39,13 @@
->  /* In Linux we need to be prepared for cross compiling */
->  #include <linux/ioctl.h>
->  
-> +/* Endian macros. Note that they have a different meaning in the kernel. */
-> +#ifdef __KERNEL__
-> +#  include <asm/byteorder.h>
-> +#else
-> +#  include <endian.h>
-> +#endif
-> +
->  /*
->   *	Supported card ID numbers (Should be somewhere else?)
->   */
-> @@ -179,13 +186,28 @@
->   * Some big endian/little endian handling macros
->   */
->  
-> -#if defined(_AIX) || defined(AIX) || defined(sparc) || defined(__sparc__) || defined(HPPA) || defined(PPC) || defined(__mc68000__)
-> -/* Big endian machines */
-> -#  define _PATCHKEY(id) (0xfd00|id)
-> -#  define AFMT_S16_NE AFMT_S16_BE
-> -#else
-> -#  define _PATCHKEY(id) ((id<<8)|0xfd)
-> -#  define AFMT_S16_NE AFMT_S16_LE
-> +#if defined(__BIG_ENDIAN)
-> +#  if defined(__KERNEL__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN)
-> +#    if defined(AFMT_S16_NE) || defined(_PATCHKEY)
-> +#      error AFMT_S16_NE (or _PATCHKEY) is already defined
-> +#    endif
-> +#    define AFMT_S16_NE AFMT_S16_BE
-> +#    define _PATCHKEY(id) (0xfd00|id)
-> +#  endif
-> +#endif
-> +
-> +#if defined(__LITTLE_ENDIAN)
-> +#  if defined(__KERNEL__) || (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN)
-> +#    if defined(AFMT_S16_NE) || defined(_PATCHKEY)
-> +#      error AFMT_S16_NE (or _PATCHKEY) is already defined
-> +#    endif
-> +#    define AFMT_S16_NE AFMT_S16_LE
-> +#    define _PATCHKEY(id) ((id<<8)|0xfd)
-> +#  endif
-> +#endif
-> +
-> +#if !defined(AFMT_S16_NE)
-> +#  error Failed to define AFMT_S16_NE
->  #endif
->  
->  /*
-
-Personally I think either is OK.
+Because our feraiseexcept() is different from theirs?
  
-> Should I be sending this elsewhere?
+> In the mean time I encounter this new pb:
+> /Sources/parisc-linux/xc/bin/hppa-linux-gcc dl-sym.c -c -std=gnu99 -O2 
+> -Wall -Winline -Wstrict-prototypes -Wwrite-strings -g -I../include -I. 
+> -I/Sources/parisc-linux/build/glibc/elf -I.. -I../libio  
+> -I/Sources/parisc-linux/build/glibc -I../sysdeps/hppa/elf 
+> -I../linuxthreads/sysdeps/unix/sysv/linux/hppa 
+> -I../linuxthreads/sysdeps/unix/sysv/linux -I../linuxthreads/sysdeps/pthread 
+> -I../sysdeps/pthread -I../linuxthreads/sysdeps/unix/sysv 
+> -I../linuxthreads/sysdeps/unix -I../linuxthreads/sysdeps/hppa 
+> -I../sysdeps/unix/sysv/linux/hppa -I../sysdeps/unix/sysv/linux 
+> -I../sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman 
+> -I../sysdeps/unix/inet -I../sysdeps/unix/sysv -I../sysdeps/unix 
+> -I../sysdeps/posix -I../sysdeps/hppa/hppa1.1 -I../sysdeps/wordsize-32 
+> -I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754/dbl-64 
+> -I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa 
+> -I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic 
+> -nostdinc -isystem 
+> /Sources/parisc-linux/xc/lib/gcc/hppa-linux/3.5.0/include -isystem 
+> /Sources/parisc-linux/sources/linux/include -D_LIBC_REENTRANT -include 
+> ../include/libc-symbols.h       -o 
+> /Sources/parisc-linux/build/glibc/elf/dl-sym.o -MD -MP -MF
+> /Sources/parisc-linux/build/glibc/elf/dl-sym.o.dt
+> In file included from dl-sym.c:27:
+> ../sysdeps/generic/dl-tls.h:2:2: #error "architecture-specific version of 
+> <dl-tls.h> missing"
+> make[2]: *** [/Sources/parisc-linux/build/glibc/elf/dl-sym.o] Error 1
+> make[2]: Leaving directory 
+> `/Sources/parisc-linux/sources/glibc-2.3.3-20040306/elf'
+> make[1]: *** [elf/subdir_lib] Error 2
+> make[1]: Leaving directory 
+> `/Sources/parisc-linux/sources/glibc-2.3.3-20040306'
+> make: *** [all] Error 2
+> 
+> and would suggest this patch:
+> --- dl-sym.c.orig       2004-03-07 11:44:11.219605000 +0100
+> +++ dl-sym.c    2004-03-07 11:41:21.219605000 +0100
+> @@ -24,10 +24,10 @@
+>  #include <dlfcn.h>
+>  #include <ldsodefs.h>
+>  #include <dl-hash.h>
+> -#include <dl-tls.h>
+> -
+> 
+>  #if defined USE_TLS && defined SHARED
+> +#include <dl-tls.h>
+> +
+>  /* Systems which do not have tls_index also probably have to define
+>     DONT_USE_TLS_INDEX.  */
 
-linux-kernel@vger.kernel.org ?
+I'm doing a build right now, if I see this issue I'll report it upstream
+with this fix.
 
-Helge
+c.
