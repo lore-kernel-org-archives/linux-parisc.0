@@ -1,51 +1,53 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id GAA08583
-	for <parisc-linux@puffin.external.hp.com>; Tue, 1 Jun 1999 06:22:23 -0600
-Date: Tue, 1 Jun 1999 14:21:47 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Alex deVries <adevries@redhat.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] The plan for SOM, ELF32 and ELF64.
-Message-ID: <19990601142147.Y1410@mencheca.ch.genedata.com>
-References: <Pine.LNX.3.96.990531230648.8814C-100000@devserv.devel.redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.3.96.990531230648.8814C-100000@devserv.devel.redhat.com>; from Alex deVries on Mon, May 31, 1999 at 11:16:34PM -0400
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA08806
+	for <parisc-linux@puffin.external.hp.com>; Tue, 1 Jun 1999 07:27:33 -0600
+Date: Tue, 1 Jun 1999 09:27:26 -0400 (EDT)
+From: Alex deVries <adevries@redhat.com>
+To: Philipp Rumpf <prumpf@suse.de>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Creating a bootable image.
+In-Reply-To: <19990601091601.A6399@suse.de>
+Message-ID: <Pine.LNX.3.96.990601092249.29097A-100000@devserv.devel.redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, May 31, 1999 at 11:16:34PM -0400, Alex deVries wrote:
-> The bad news is that we have a challenge no matter what we do.  The
-> problems are that:
+
+
+On Tue, 1 Jun 1999, Philipp Rumpf wrote:
+
+> > I'm mailing this because I'm not entirely sure what I'm doing is correct.
+> Neither am I, but arch/parisc/hp/boot/README seems to say something different.
+
+That file is actually from Jason Eckhardt's boot loader.  How do you think
+it's incorrect?
+
+> > The way I understand it, the kernel we cross compile on Linux is in fact
+> > a broken ELF32 file, which doesn't really matter, because at this point we
+> > don't need the kernel to have any loader information itself. 
 > 
-> - we don't have a version of ld for SOM in binutils, which means we can't
->   really cross compile properly
+> I think we should build a binary image of the kernel (that is not ELF) like
+> we do for x86.
 
-.. and Jeff Law declined to put SOM support into BFD :-)
+You're right, raw binary should work just fine.
 
-> The route we've planned to take is:
-> 
-> - focus on SOM only for kernel and userland, but not the linker.  When we
-> need to link SOM userland, we'll have to do it on HPUX.
+> > However, to actually boot you need IPL, which requires SOM linking, so
+> > that much must be done on HPUX.
+> This I do not understand. According to arch/parisc/hp/boot/README, the IPL is
+> stored in a special binary format which we could generate from ELF like we
+> do for the kernel image.
 
-Or get sufficient HPUX binary compatibility that the HPUX linker works
-under Linux/PARISC.  Of course the SOM loader is the first tiny part of that.
+Hm.  Okay then.  So what we need to do is fix the cross compiling of
+mkipl.  I'll have a look at this.
 
-> - at some point Cygnus will deliver on their HP sponsored gcc support for
-> PARISC 2.0, which should have some ELF64 code we can borrow. It's
-> understood that the ELF32 and 64 specs have a lot in common.
+> > and it'll create a kernel and boot header that should just boot right
+> > away.  That way to do kernel work (and not bootstrap work), you don't need
+> > HPUX at all.
+> I think the vast majority of parisc boxes runs HP-UX at the moment so it
+> probably would not be a big win.
 
-You said you were unsure whether the release date for any of that stuff
-was public knowledge.  Is there any public indication of dates yet?
+Being able to cross compile really is a big win.  There's a lot of people
+with slower 700 series boxes.  Also, building and booting is a lot easier
+if you can xcompile on your PIII.  Booting into HPUX is pretty slow.
 
-> No reasonable distribution will be SOM based, so we're going to have to
-> get ELF done before we get to that point.
-
-> Let me know if I'm mistaken on any of this.
-
-that all fits with my memory.
-
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+- Alex
