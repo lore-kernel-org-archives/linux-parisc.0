@@ -1,72 +1,96 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 51CF3482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Jul 2001 18:00:24 -0600 (MDT)
-Received: from esiee.fr (mail.esiee.fr [147.215.1.3])
-	by mail.esiee.fr (Postfix) with ESMTP id AA93CD15A6
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 02:00:09 +0200 (CEST)
-Date: Tue, 17 Jul 2001 02:00:09 +0000
-MIME-Version: 1.0
-From: Clement MOYROUD <moyroudc@esiee.fr>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <20010717000009.AA93CD15A6@mail.esiee.fr>
-Subject: [parisc-linux] 725/75 won't boot
+Received: from amanda.ybsoft.com (lametoby.ybsoft.com [63.224.241.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9EE13482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Jul 2001 21:39:31 -0600 (MDT)
+Date: Mon, 16 Jul 2001 21:39:29 -0600
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] help debuging HMPC
+Message-ID: <20010716213929.A20026@beavis.ybsoft.com>
+Reply-To: rbradetich@uswest.net
+References: <200107161338.HAA20386@puffin.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200107161338.HAA20386@puffin.external.hp.com>
+From: rbrad@beavis.ybsoft.com (Ryan Bradetich)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all !                                                              
-                                                                      
-the ESIEE team just received a 725/75 from linuxcare, and when I tried
-to make it boot palo issued a warning saying that the firmware doesn't
-support PDC_MODEL_CAPABILITIES call. According to Paul Bame, this     
-doesn't seem to be a palo issue, so i'm sending the TOC dump for you  
-all hackers to see what's going on :                                  
-                                                                      
-General Registers:                                                    
-                                                                      
-00000000 00000000 1b1b1b1b 1b1b1b79 00020398 00200000 fffbf090        
-00000089                                                              
-fc4ff000 fc4ff000 00001000 001a5a59 001a5a59 000ff000 f000124c        
-00000000                                                              
-00000001 08000059 f0000694 00000000 00000000 00000001 00000000        
-00006048                                                              
-000b5a3c 000b5a44 00000000 00145008 000001b1 000000c0 000b46f0        
-000b46f4                                                              
-                                                                      
-Control Registers:                                                    
-                                                                      
-00000000 00000000 00000000 00000000 00000000 00000000 00000000        
-00000000                                                              
-00000000 00000000 00000000 0000001e 00000000 00000000 000cc400        
-00000000                                                              
-38a073d5 00000000 1b1b1b1b 00000000 00000000 00000000 0000ff08        
-80000000                                                              
-00000800 f00000f0 ffffffcb ffffffff 0034183f 01234567 f0000694        
-00067800                                                              
-                                                                      
-Space Registers:                                                      
-                                                                      
-00000000 00000000 00000000 00000000 00000000 00000000 00000000        
-00000000                                                              
-                                                                      
-Instruction Address:                                                  
-                                                                      
-00000000 1b1b1b1b                                                     
-                                                                      
-        Check Type        = 0x20000000                                
-        CPU State         = 0x9e000004                                
-        Cache Check       = 0x00000000                                
-        TLB Check         = 0x00000000                                
-        Bus Check         = 0x00310007                                
-        Assists Check     = 0x00000000                                
-        Assist State      = 0x00000000                                
-        System Responder Address = 0x1b1b1b18                         
-        System Requestor Address = 0xfffbe000                         
-        System Controller Status = 0x00000006                         
-                                                                      
-                                                                      
-                                                                      
-If you have a solution that would be great !                          
-                                                                      
-Clement Moyroud                                                       
-Puffin ESIEE Team                                                     
+On Mon, Jul 16, 2001 at 07:38:00AM -0600, Grant Grundler wrote:
+> Ryan Bradetich wrote:
+> > Just a quick clarification:
+> > 
+> > I macro expanded dino_in32 into this:
+> > 	static u32 dino_in32 (struct pci_hba_data *d, u16 addr);
+> > 
+> > dino_in32 only takes two arguments, so I should check GR25 and manually
+> > perform the calculations in the dino_in32 to get the proper address
+> > passed to the _gsc_readl function, correct?  
+> 
+> Erm, right...dino_outX takes three...but the address is the second arg
+> and should be found in GR25 too. ATM, I can't explain why I found the
+> IO port address in GR24 when debugging a PCI problem on the A500.
+
+I am confused about this also.
+
+This is from the Documentation/parisc/registers file:
+
+    r23-r26: these are arg3-arg0, i.e. you can use them if you
+        don't care about the values that were passed in anymore.
+
+
+this is from my latest register dump:
+
+	r24-27   0000ff40 f2000064 040067f0 102ac010
+
+The first thing that threw me was GR25 was obviously larger then the
+u16 address being passed into dino_in32 function.  The other thing is
+that value looks like a valid IO address.
+
+I then checked to see how the values being passed to the gsc_writel 
+function (I macro-expanded the function and pasted it here for easy 
+reference):  
+
+static u32 dino_in32 (struct pci_hba_data *d, u16 addr) 
+{
+	u32 v;
+	unsigned long flags;
+
+	spin_lock_irqsave(&(DINO_DEV(d)->dinosaur_pen), flags);
+
+	/* tell HW which IO Port address */ \
+	gsc_writel((u32) addr & ~3, d->base_addr + DINO_PCI_ADDR);
+
+	/* generate I/O PORT read cycle */
+	v = gsc_readl(d->base_addr+DINO_IO_DATA+(addr&0));
+
+	spin_unlock_irqrestore(&(DINO_DEV(d)->dinosaur_pen), flags);
+	return le32_to_cpu(v); \
+}
+
+The register value for GR24 looks to be a 16 bit value, and the value
+for GR25 is the calculated value for d->base_addr + DINO_PCI_ADDR.
+
+Dino version 3.1 (bridge mode) found at 0xf2000000
+#define DINO_PCI_ADDR		0x064
+#define DINO_IO_DATA		0x06c
+
+
+So a couple of questions :)
+
+1.  Is the HPMC really in the gsc_writel function and just not showing up
+until the I/O port read cycle (gsc_readl function)?
+
+2. Is the documentation correct for the resgister usage?
+
+Thanks,
+
+- Ryan
+
+> grant
+> 
+> Grant Grundler
+> parisc-linux {PCI|IOMMU|SMP} hacker
+> +1.408.447.7253
+> 
+
+-- 
