@@ -1,45 +1,49 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA23123
-	for <parisc-linux@puffin.external.hp.com>; Fri, 14 Jan 2000 18:14:24 -0700
-From: Kirk Bresniker <kirkb@chrome.rose.hp.com>
-Message-Id: <200001150016.QAA16991@chrome.rose.hp.com>
-Subject: Re: [parisc-linux] Minutes
-To: willy@thepuffingroup.com (Matthew Wilcox)
-Date: Fri, 14 Jan 2000 16:16:42 PST
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <20000114172721.V11300@thepuffingroup.com>; from "Matthew Wilcox" at Jan 14, 100 5:27 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA23489
+	for <parisc-linux@puffin.external.hp.com>; Fri, 14 Jan 2000 19:12:57 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
+	by atlrel2.hp.com (Postfix) with ESMTP id 93BB4C34
+	for <parisc-linux@thepuffingroup.com>; Fri, 14 Jan 2000 20:13:31 -0500 (EST)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0.1) id RAA16646 for <parisc-linux@thepuffingroup.com>; Fri, 14 Jan 2000 17:13:45 -0800 (PST)
+Message-Id: <200001150113.RAA16646@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] initcall and setup 
+In-reply-to: Your message of "Fri, 14 Jan 2000 17:48:31 PST."
+             <20000114174831.W11300@thepuffingroup.com>
+Date: Fri, 14 Jan 2000 17:13:44 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-FYI --
+Matthew Wilcox wrote:
+> 
+> One of the things which has changed during 2.3 development is
+> initialisation.
+...
+> Unfortunately, we can't take advantage of this, because we don't yet have
+> ELF tools.  This is implemented through an ELF section called __initcall
+> which contains the address of the function to call.  We could try to hack
+> something together with SOM, but I'd really rather not put the work in
+> that will just be dumped later.
 
-| 4. Martin has cleaned up the serial and console code.  He will commit his
-|    changes tomorrow after he's tested it.
+Just a clarification: The kernel will use ELF once the tool chain is
+in place. The kernel is SOM now only because of our dependency
+on HP-UX ld. Any forcasts for when we can switch to ELF?
 
-In testing the 2.3 kernel on my D320/1 with an Access Port (AP) card as
-the console, printk() appeared to be broken.  The mprint() statements in
-the boot loader seem to function correctly, and the pdc_putc('.')  at
-the end of realmode_setup() works, but the printk() at the start of
-iodc_con_init() never outputs.  The chassis codes sent out in
-realmode_setup() do appear properly on the AP console.
 
-Now the interesting thing in a D-Class with an AP card installed is that
-the RS-232 connector on the back of the machine is dis-connected from 
-the LASI serial hardware and connected to the AP card hardware. Because
-of this, regardless of what console path is stored on the machine, the 
-AP card console is what is used, so that there will always be console
-outptu. When I changed the stored path from the LASI RS-232 path to the 
-AP card RS-232 path, the printk() succeeds. So, there must be something 
-in printk() which is getting confused between what console is actually
-in use and what console is the stored path.
+...
+> and why if you diff our kernel against Linus', you will find that we have
+> reinserted some of the explicit calls to the setup routines that have
+> been eliminated from the mainline tree.  It also explains why sometimes
+> a driver may not be called even though you compiled it in.
 
-That aside, the kernel appears to hang at the first __put_user() macro
-called in unsigned long create_som_tables(). Executing a TOC after the
-hang consitently gives IIA space/offset = 0x00000000 0x00046234.
+Any general rules on where to reinsert stuff? (eg tulip_probe)
+In the same place it's in the linux-2.2?
+Is someone making a note to make sure the reinserted code gets
+dropped when we migrate to either the next 2.3 (or possibly 2.4) release?
 
-KMB
---
-+============================================================+
-|       Kirk Bresniker    	(916) 748-2393		     |
-|       8000 Foothills Blvd                                  |
-|       Roseville, CA 95747-5649                             |
-|       kirkb@rose.hp.com                                    |
+thanks,
+grant
+
+Grant Grundler
+Unix Development Lab
++1.408.447.7253
