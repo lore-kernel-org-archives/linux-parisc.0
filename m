@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from amchiexch01.amcol.com (unknown [12.107.111.204])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D48AF482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 12:03:11 -0700 (MST)
-Message-ID: <466EEDE4653DD41195EA00508BAC968501A60B9D@AMCHIEXCH01>
-From: Marty Wojciechowski <marty.wojciechowski@amcol.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 22 Nov 2002 12:58:27 -0600
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C29259.23BBFD64"
-Subject: [parisc-linux] Remove user
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 92B0B482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 13:01:37 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18FJzY-0003Og-00; Fri, 22 Nov 2002 20:01:32 +0000
+Date: Fri, 22 Nov 2002 20:01:32 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20021122200132.A29028@parcelfarce.linux.theplanet.co.uk>
+References: <20021122055423.B892D482B@dsl2.external.hp.com> <20021122182325.52708482B@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021122182325.52708482B@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Fri, Nov 22, 2002 at 11:23:25AM -0700
+Subject: [parisc-linux] Re: [parisc-linux-cvs] DIFF 2.4.20-rc1-pa7
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,103 +25,28 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+On Fri, Nov 22, 2002 at 11:23:25AM -0700, Grant Grundler wrote:
+> Index: drivers/net/ppp_generic.c
+> ===================================================================
+> RCS file: /var/cvs/linux/drivers/net/ppp_generic.c,v
+> retrieving revision 1.14
+> diff -u -p -r1.14 ppp_generic.c
+> --- drivers/net/ppp_generic.c	13 Nov 2002 16:57:46 -0000	1.14
+> +++ drivers/net/ppp_generic.c	22 Nov 2002 05:53:55 -0000
+> @@ -387,9 +387,9 @@ static ssize_t ppp_read(struct file *fil
+>  	for (;;) {
+>  		set_current_state(TASK_INTERRUPTIBLE);
+>  		skb = skb_dequeue(&pf->rq);
+> +		ret = 0;
+>  		if (skb)
+>  			break;
+> -		ret = 0;
+>  		if (pf->dead)
+>  			break;
+>  		ret = -EAGAIN;
 
-------_=_NextPart_001_01C29259.23BBFD64
-Content-Type: text/plain
+Uhh.. why have you made this change?  It's clearly wrong and diverges
+from upstream.
 
-To whom it may concern,
-
- 
-
-Please remove the address dan.mclaughlin@amcol.com
-<mailto:dan.mclaughlin@amcol.com>  from you list.  He is no longer with our
-company.
-
- 
-
-Thanks you,
-
-Marty Wojciechowski
-
-Network Technician
-
-AMCOL International
-
-
-------_=_NextPart_001_01C29259.23BBFD64
-Content-Type: text/html
-
-<html>
-
-<head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=us-ascii">
-
-
-<meta name=Generator content="Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=EN-US link=blue vlink=purple>
-
-<div class=Section1>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>To whom it may concern,</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Please remove the address <a
-href="mailto:dan.mclaughlin@amcol.com">dan.mclaughlin@amcol.com</a> from you
-list. &nbsp;He is no longer with our company.</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Thanks you,</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Marty Wojciechowski</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>Network Technician</span></font></p>
-
-<p class=MsoNormal><font size=2 face=Arial><span style='font-size:10.0pt;
-font-family:Arial'>AMCOL International</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C29259.23BBFD64--
+-- 
+Revolutions do not require corporate support.
