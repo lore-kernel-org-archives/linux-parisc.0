@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CCE014840
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Nov 2003 09:54:33 -0700 (MST)
-Message-Id: <200311261654.hAQGsUCa011684@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [RFC] rewrite kernel spinlock code to work better with gcc
-To: randolph@tausq.org
-Date: Wed, 26 Nov 2003 11:54:30 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20031126070714.GN975@tausq.org> from "Randolph Chung" at Nov 25, 2003 11:07:14 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CB2344840
+	for <parisc-linux@parisc-linux.org>; Wed, 26 Nov 2003 11:25:35 -0700 (MST)
+Date: Wed, 26 Nov 2003 13:19:35 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] gcc-3.3.2 - 64bit failled to build?
+Message-ID: <20031126181935.GJ27674@systemhalted>
+References: <3FB2652500007F03@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3FB2652500007F03@ocpmta2.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,49 +23,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> +/* Because kmalloc only guarantees 8-byte alignment for kmalloc'd data,
-> +   and GCC only guarantees 8-byte alignment for stack locals, we can't
-> +   be assured of 16-byte alignment for atomic lock data even if we
-> +   specify "__attribute ((aligned(16)))" in the type declaration.  So,
-> +   we use a struct containing an array of four ints for the atomic lock
-> +   type and dynamically select the 16-byte aligned int from the array
-> +   for the semaphore.  */
-> +#define __PA_LDCW_ALIGNMENT 16
-> +#define __ldcw_align(a) ({ \
-> +  unsigned long __ret = (unsigned long) a;                     		\
-> +  __ret = (__ret + __PA_LDCW_ALIGNMENT - 1) & ~(__PA_LDCW_ALIGNMENT - 1); \
-> +  (unsigned int *) __ret;                                               \
-> +})
+On Wed, Nov 26, 2003 at 10:23:45AM +0100, Joel Soete wrote:
+> Hi all,
+> 
+> I am trying to rebuild gcc-3.3.2 64bits following Carlos build xc howto.
+> 
+> I am using gcc-3.3.2-4 debian pkg src; after the extraction of src with 'dpkg-source
+> -x gcc-3.3_3.3.2ds5-4.dsc', then in src tree apply debian patches (and get
+> the actual src by the way).
+> 
+> The build of the tool chain 32bit works fine as well as binutils 64bits but
+> the build of the patial gcc 64bit (let say kgcc) with following configure
+> options (the same as 32bit but the target 64bits):
+> ../src/configure --target=hppa64-linux --host=hppa-linux --prefix=/opt/parisc
+> --disable-shared --disable-nls --without-libc --enable-langages=c
+> 
+> failled with messages:
+> 
+> /Develop/parisc-linux/build/gcc/gcc/xgcc -B/Develop/parisc-linux/build/gcc/gcc/
+> -B/opt/palinux/hppa64-linux/bin/ -B/opt/palinux/hppa64-linux/lib/ -isystem
+> /opt/palinux/hppa64-linux/include -O2  -DIN_GCC -DCROSS_COMPILE   -W -Wall
+> -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -isystem ./include
+>  -fPIC -Dpa64=1 -DELF=1 -g -DHAVE_GTHR_DEFAULT -DIN_LIBGCC2 -D__GCC_FLOAT_NOT_NEEDED
+> -Dinhibit_libc -I. -I. -I/Develop/parisc-linux/sources/gcc/gcc -I/Develop/parisc-linux/sources/gcc/gcc/.
+> -I/Develop/parisc-linux/sources/gcc/gcc/config -I/Develop/parisc-linux/sources/gcc/gcc/../include
+> -fexceptions -c /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c -o libgcc/./unwind-dw2.o
+> In file included from /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c:26:
+> /Develop/parisc-linux/sources/gcc/gcc/unwind-pe.h: In function `size_of_encoded_value':
+> /Develop/parisc-linux/sources/gcc/gcc/unwind-pe.h:76: warning: implicit declaration
+> of function `abort'
+> In file included from gthr-default.h:1,
+>                  from /Develop/parisc-linux/sources/gcc/gcc/gthr.h:98,
+>                  from /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c:28:
+> /Develop/parisc-linux/sources/gcc/gcc/gthr-posix.h:37:21: pthread.h: No such
+> file or directory
+> /Develop/parisc-linux/sources/gcc/gcc/gthr-posix.h:38:20: unistd.h: No such
+> file or directory
+> In file included from gthr-default.h:1,
+>                  from /Develop/parisc-linux/sources/gcc/gcc/gthr.h:98,
+>                  from /Develop/parisc-linux/sources/gcc/gcc/unwind-dw2.c:28:
+> [blabla]
+> 
+> even thought i use --without-libc it seems to look for glibc header: pthread.h
+> & unistd.h?
+> 
+> Any idea?
 
-Change cast to "volatile unsigned int *".
+You need the userspace headers for 64-bits. They don't exist, so I
+normally hack them into place. Please try to use Kegel's crosstools and
+see if you can get them building our cross-compiler? :)
 
->  typedef struct {
-> -	volatile unsigned int __attribute__((aligned(16))) lock;
-> +	volatile unsigned int lock[4];
->  } spinlock_t;
->  #endif
+If you want a quick fix, grab a current debian libc6-dev package, unpack
+it using -x and move the /usr/include directory to your
+$PREFIX/hppa64-linux directory so that the target headers are there.
 
-Is the struct necessary?  For example,
-
-  typedef volatile unsigned int spinlock_t[4];
-
-I believe that there are situations where the rest of the cache line
-holding the active lock word should not be used.  The PA 1.x document
-says
-
-  When using semaphores to synchonize with I/O, care must be taken
-  in placing other information in the same cache line as the semaphore.
-  Data which is writeable can only be placed in the same cache line
-  as a semaphore if access to write the data is controlled by the
-  semaphore.
-
-I think this restriction only applies to semaphores used both by
-I/O and CPU processors, and it's not a concern for semaphores used
-solely by CPU processors.  If we have locks used by I/O processors
-and they are stack allocated, then some extra padding would appear
-to be needed for these locks.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+c.
