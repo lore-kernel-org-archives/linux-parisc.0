@@ -1,23 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA29645
-	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Sep 2000 16:52:31 -0600
-Message-Id: <200009082252.AAA12410@b0fh.sweden.hp.com>
-Date: Sat, 9 Sep 2000 00:58:57 +0200 (CEST)
-From: Fredrik Soderblom <fredrik.soderblom@hp.se>
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA29853
+	for <parisc-linux@puffin.external.hp.com>; Fri, 8 Sep 2000 17:02:03 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 8 Sep 2000 23:02:22 -0000
+To: Fredrik Soderblom <fredrik.soderblom@hp.se>
+Cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Looking for an IA-64 Linux user
-In-Reply-To: <87lmx2ed67.fsf@linuxcare.com>
+References: <200009082252.AAA12410@b0fh.sweden.hp.com>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 08 Sep 2000 19:01:58 -0400
+In-Reply-To: Fredrik Soderblom's message of "Sat, 9 Sep 2000 00:58:57 +0200 (CEST)"
+Message-ID: <87g0naebdl.fsf@linuxcare.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 8 Sep 2000, David Huggins-Daines wrote:
+Fredrik Soderblom <fredrik.soderblom@hp.se> writes:
 
-> This is somewhat of a strange request, but I'm wondering if there are
-> any people running Linux on IA-64 who could compile and run this test
-> case for me and send me back the output and resulting binaries:
+> i think you can get free access to ia-64 h/w at http://ia-64.sourceforge.net/
 
-i think you can get free access to ia-64 h/w at http://ia-64.sourceforge.net/
+Yeah, I applied for that as it may be useful in the future, but I just
+needed something built quickly.  Anyway, Alex William from Ft. Collins
+had an IA-64 box handy and I had to work through it a bit on IRC
+anyway.  Thanks!
 
-fredrik
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
