@@ -1,18 +1,21 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8398D4868
+Return-Path: <rollei@tiscalinet.it>
+Received: from smtp1.libero.it (smtp1.libero.it [193.70.192.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 137154868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed,  7 Jan 2004 14:14:23 -0700 (MST)
-Message-Id: <200401072114.i07LEHfa014617@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Wed, 7 Jan 2004 16:14:16 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <no.id> from "John David Anglin" at Jan 7, 2004 04:04:25 pm
+	Wed,  7 Jan 2004 16:44:10 -0700 (MST)
+Received: from tiscalinet.it (151.38.68.2) by smtp1.libero.it (7.0.020-DD01)
+	(authenticated as zuse@libero.it)
+	id 3F6F0E4801F0CF53 for parisc-linux@lists.parisc-linux.org;
+	Thu, 8 Jan 2004 00:44:39 +0100
+Sender: multix@dsl2.external.hp.com
+Message-ID: <3FFC9A15.6FA66B2@tiscalinet.it>
+Date: Thu, 08 Jan 2004 00:45:25 +0100
+From: Riccardo <rollei@tiscalinet.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org
+To: parisc linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] scsi problem on a scorpio (715)
+Reply-To: rollei@tiscalinet.it
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,11 +25,30 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Did I miss something?
+Hello,
 
-Yup.
+I had a lot of problems using linux on that box (I'm using gentoo,
+2.4.23 series)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+The problems manifest themselves in the following ways:
+
+A lot of different HD's (even HP spare parts) freeze up the kernel
+during mkfs.
+I got the box then worning with a luck of getting two disk formatted.
+The stability was not very high. Sometimes it compiled for 50 hours, but
+sometimes when the disk grinded more... freeze.
+Guy Martin suggested me to change the TAG default value in the NCR
+53x700 driver from 16 to 8 since that is what HP used. I didn't get a
+big improvment. I still have one of the inriminated disks. Issuing
+several mkfs (usually the second) freezes the kernel.
+
+Today during emerge sync the system freezed. I rebooted and the computer
+zasn't responding to ssh or ping. When I hooked up a monitor I got a
+hole load of errors clearly related to scsi.
+
+I toke a picture of the monitor.
+
+http://dev.gentoo.org/~gmsoft/pics/scsi-failure.jpg
+
+
+-Ric
