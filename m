@@ -1,46 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA01073
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 04:30:44 -0700
-Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
-  by mailserv2.iuinc.com with SMTP; 2 Nov 2000 11:31:56 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 3C903B005; Thu,  2 Nov 2000 11:30:47 +0000 (GMT)
-Date: Thu, 2 Nov 2000 11:30:47 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA01714
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Nov 2000 04:56:18 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 2 Nov 2000 11:58:01 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13rJ0D-0000zx-00; Thu, 02 Nov 2000 11:57:53 +0000
+Date: Thu, 2 Nov 2000 11:57:53 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Friedrich Lobenstock <fl@fl.priv.at>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] a500.out16
-Message-ID: <20001102113047.J32715@linuxcare.com>
-References: <200011020821.AAA28301@milano.cup.hp.com> <20001102104306.F32715@linuxcare.com>
+Subject: Re: [parisc-linux] HP 3000 - 922LX ??
+Message-ID: <20001102115753.A3632@parcelfarce.linux.theplanet.co.uk>
+References: <3A014CC5.CFBC7AD4@fl.priv.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001102104306.F32715@linuxcare.com>; from rhirst@linuxcare.com on Thu, Nov 02, 2000 at 10:43:06AM +0000
+In-Reply-To: <3A014CC5.CFBC7AD4@fl.priv.at>; from fl@fl.priv.at on Thu, Nov 02, 2000 at 12:15:17PM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Nov 02, 2000 at 10:43:06AM +0000, Richard Hirst wrote:
-> On Thu, Nov 02, 2000 at 12:21:36AM -0800, Grant Grundler wrote:
-> > Hi Richard (et al),
-> > I finally think I understand how pcibios_align_resource() is used...
-> > that definitely was the problem. Everything on A500 but PCI-PCI bridge
-> > seems to be assigned I/O port and MMIO addresses correctly.
-> > 
-> > I'll look at tulip code tomorrow to see why it's not happy.
+On Thu, Nov 02, 2000 at 12:15:17PM +0100, Friedrich Lobenstock wrote:
+> Hi!
 > 
-> I fixed tulip_core.c to report what it means, which gave me
-> 
-> tulip: MMIO resource (0x400@0xfffffffff8020000) unavailable, aborting
-> 
-> Note sym53c8xx.c doesn't seem to bother with request_mem_region(), so
-> maybe request_mem_region() is just broken.
+> How about support for a HP3000-922LX? I think this should be a PA-RISC
+> machine.
 
-It is broken because of the following line in kernel/resource.c:
+According to the docs:
+http://www.thepuffingroup.com/parisc/hp9000_models.html
 
-struct resource iomem_resource = { "PCI mem", 0x00000000, 0xffffffff, IORESOURCE_MEM };
+the 922 is the same physical machine as the 822.  As such, it's too old
+for it to be worth supporting.  the official statement is...
 
-'end' needs to be rather higher than 0xffffffff on 64 bit.  I changed it to
+The earliest PA-RISC servers have proprietary HP devices attached to
+proprietary HP bus architectures. It is unlikely that documentation
+on these busses and devices will ever become available, since so few
+people are interested in spending any effort finding and releasing the
+docs. Machines in this category are the E, F, G, H, I class (aka Nova)
+and T500 series (Emerald) machines as well as some earlier, unlettered
+servers.
 
-struct resource iomem_resource = { "PCI mem", 0x00000000, ~0, IORESOURCE_MEM };
+I should perhaps update this to reflect the particular model numbers.
 
-and it works.  I havn't committed that 'fix' though.
-
-Richard
+-- 
+Revolutions do not require corporate support.
