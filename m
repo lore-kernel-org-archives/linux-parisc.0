@@ -1,37 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tdl.com (tdl.com [206.180.224.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0612B482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 12:49:59 -0600 (MDT)
-Date: Tue, 16 Oct 2001 11:49:54 -0700
-From: Randall Craig <randall@tdl.com>
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: paul lee <wbm111us@yahoo.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Help - Serial console problem
-Message-ID: <20011016114954.A12041@tdl.com>
-References: <wbm111us@yahoo.com> <200110161840.MAA15315@puffin.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C9A49482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 12:51:42 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15tZJS-0006nT-00; Tue, 16 Oct 2001 19:51:38 +0100
+Date: Tue, 16 Oct 2001 19:51:38 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Scott Ashcroft <scott.ashcroft@talk21.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] LED device moves around on B160L
+Message-ID: <20011016195138.F15532@parcelfarce.linux.theplanet.co.uk>
+References: <20011015174630.A3315@cargoclaimsdirect.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200110161840.MAA15315@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Tue, Oct 16, 2001 at 12:40:22PM -0600
+In-Reply-To: <20011015174630.A3315@cargoclaimsdirect.com>; from scott.ashcroft@talk21.com on Mon, Oct 15, 2001 at 05:46:30PM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-* Grant Grundler (grundler@puffin.external.hp.com) [011016 11:44]:
-> paul lee wrote:
-> > I could not access a C200 workstation via serial
-> > console. Could someone please give me some insight?
-> > I use hyperterminal on Win 2000. The settings are
-> > VT100, 9600, 8-N-1 and Xon/Xoff.
-> 
-> The settings are correct.
-> It's possible the serial cable isn't wired correctly
-> or the C200 isn't trying to use serial port1.
-> 
+On Mon, Oct 15, 2001 at 05:46:30PM +0100, Scott Ashcroft wrote:
+> Something weird is going on with the address of the LED device on my
+> B160L.
+[...]
+> I think ffd0c000 is the correct address looks like it broke between pa45
+> and pa52.
 
-make sure that on the c200 that you set you console as serial.
+Looks like this change was intentional.  Here's what's happening:
 
-ie, issue this command on the firmware command line:
+led_init calls pdc_chassis_info to find the address of the LCD display.
+This then calls register_led_driver, passing it that address that you
+have above.  Then the lasi driver calls register_led_driver again, but
+it's already been initialised, so it returns silently.  This all seems
+correct to me.
 
-	path con serial_1
+If PDC is telling us this address, then it ought to be correct... right?
+I don't know anything about the LED/LCD stuff yet, so I hope someone
+who does can explain why this is correct.
 
-which will change the console graphics to be displayed on you 1st
-serial port (the top one).
+-- 
+Revolutions do not require corporate support.
