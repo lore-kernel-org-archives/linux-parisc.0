@@ -1,182 +1,120 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.xs4all.nl (smtp1.xs4all.nl [194.109.127.131])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 26135482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 13:21:03 -0600 (MDT)
+Received: from smtp9.xs4all.nl (smtp9.xs4all.nl [194.109.127.135])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9DD93482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 13:49:12 -0600 (MDT)
 Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtp1.xs4all.nl (8.9.3/8.9.3) with ESMTP id VAA19813
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 21:21:00 +0200 (CEST)
+	by smtp9.xs4all.nl (8.9.3/8.9.3) with ESMTP id VAA04295
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 21:49:10 +0200 (CEST)
 From: thunder7@xs4all.nl
-Date: Fri, 21 Sep 2001 21:17:33 +0200
+Date: Fri, 21 Sep 2001 21:48:50 +0200
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 712/60 boots fine
-Message-ID: <20010921211733.A5505@middle.of.nowhere>
+Subject: Re: [parisc-linux] nmap -O -> kernel panic on 712
+Message-ID: <20010921214850.B5505@middle.of.nowhere>
 Reply-To: thunder7@xs4all.nl
-References: <bdale@gag.com> <87g09gpkac.fsf@rover.gag.com> <200109211731.LAA01939@puffin.external.hp.com>
+References: <20010917165501.B17483@gollum.intranet.nimag.net> <20010917203312.A6109@middle.of.nowhere>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200109211731.LAA01939@puffin.external.hp.com>
+In-Reply-To: <20010917203312.A6109@middle.of.nowhere>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Sep 21, 2001 at 11:31:51AM -0600, Grant Grundler wrote:
-> Certainly. But we had to start someplace. I'm happy Paul wrote
-> *any* documentation - an excellent set of documentation no less
-> and packaged the whole mess.
-> 
-> IMHO, new folks need to get involved for stuff like palo enhancements.
-> I'm sure Paul would welcome any patches people cook up.
-> 
-I guess that means me :-)
+On Mon, Sep 17, 2001 at 08:33:12PM +0200, thunder7@xs4all.nl wrote:
+> On Mon, Sep 17, 2001 at 04:55:01PM +0200, Francois Deppierraz wrote:
+> > Hi kernel hackers !
+> > 
+> > My HP 712/60 with a 2.4.9-pa20 kernel crash with the following error
+> > message when I portscan it using nmap -O (OS detection).
+> > 
+> > kswapd[4]: Unaligned data reference 28
+> > 
+> >      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> > PSW: 00000000000001001111111000001111
+> > r0-3o 00000000 10332810 1028b9e4 0000000a
+> > r4-7o 100dfdb2 100ed148 0000000c 100dfd94
+> > r8-11o 00000000 00000001 00020000 10ce6500
+> > r12-15o 11fb09a0 00004400 00004800 43f02aa9
+> > r16-19o 100eca00 00000000 00000c00 00000001
+> > r20-23o 00000000 00000109 117ca000 0000000f
+> > r24-27o 00000000 100ed148 10ce6500 102f0010
+> > r28-31o 117ca160 00000040 100ed400 1012e6d8
+> > sr0-3o 00000000 00000002 00000000 00000002
+> > sr4-7o 00000000 00000000 00000000 00000000
+> > 
+> > IASQ: 00000000 00000000 IAOQ: 10281658 1028165c
+> >  IIR: 0c801093    ISR: 00000000  IOR: 100dfdb2
+> >  CPU:        0   CR30: 100ec000 CR31: 103a0000
+> >  ORIG_R28: 00000000
+> > Kernel Panic: Aiee, killing interrupt handler!
+> > In interrupt handler - not syncing
+> > 
+Why isn't the code in arch/parisc/kernel/unaligned.c activated for this?
+I found some references in the 2001-06 archive to this file, which seems
+to work for 64-bits kernels (which I haven't tested) but not for
+32-bits.
 
-This is my current palo output:
+Can any of the guru's point some newbies in the right direction?
+unaligned.c exists, and is pointed to in traps.c, so there must be some
+code in it that doesn't work. I can run the test-program that was posted
+in 2001-06 just fine.
 
-jurriaan@pa8200:~$ sudo /sbin/palo
-palo version 0.94 bame@c3k Sat Sep  8 12:33:24 MDT 2001
-ELF32 executable
-Partition Start(MB) End(MB) Id Type
-1               1      31   f0 Palo
-2              32    3846   83 ext2
-3            3847    7661   83 ext2
-4            7662    8678   82 swap
-ipl: addr 16384 size 28672 entry 0x0
- ko 0x0 ksz 0 k64o 0x0 k64sz 0 rdo 0 rdsz 0
-<2/boot/vmlinux-2.4.9-pa24 root=/dev/sda2 HOME=/>
-ipl: addr 16384 size 28672 entry 0x0
- ko 0x44000 ksz 2853588 k64o 0x0 k64sz 0 rdo 0 rdsz 0
-<2/boot/vmlinux-2.4.9-pa24 root=/dev/sda2 HOME=/>
 
-Now if I understand correctly, palo must
+#include <stdio.h>
 
-- warn if there is no f0 partition
-- warn if there is no ext2 partition in the first 2 Gb
+struct data_t {
+        unsigned long a;
+        unsigned long b;
+};
 
-The first is not that difficult, the relevant patch is here:
+int main(int argc, char **argv)
+{
+        struct data_t data;
+        unsigned char *t;
+        unsigned long l;
+        int i;
 
-===================================================
-diff -Br -b -U 3 -N palo/lib/diskpart.c palo-new/lib/diskpart.c
---- palo/lib/diskpart.c Fri Jun 15 12:05:10 2001
-+++ palo-new/lib/diskpart.c     Fri Sep 21 22:37:54 2001
-@@ -97,6 +97,7 @@
- {
-     int i;
-     const int mbshift = 20 - 9;
-+    int f0_found = 0;
+        data.a = 0x12345678;
+        data.b = 0x87654321;
 
-     printf("Partition Start(MB) End(MB) Id Type\n\r");
-     for (i = 0; i < maxparts; i++)
-@@ -110,6 +111,16 @@
-                mptab[i].id == 0x83 ? "ext2" :
-                        (mptab[i].id == 0x82 ? "swap" :
-                                (mptab[i].id == 0xf0 ? "Palo" : "Unknown")));
-+                if ( (mptab[i].id == 0xf0) &&
-+                     (1 + ((mptab[i].start + mptab[i].length) >> mbshift) < 2048) )
-+                  f0_found = 1;
-+    }
-+    if (f0_found == 0)
-+    {
-+        printf("WARNING: You have no partition with type f0 within the first 2 Gb of the disk.\n");
-+        printf("palo needs this partition to store the bootloader and optional (recovery)\n");
-+        printf("kernel/ramdisk. It's size should be 4 (minimal) to 16 (safe) Mb.\n");
-+        printf("Read /usr/share/doc/palo/README for more information.\n");
-     }
- }
+        t = (unsigned char *)(&data)+1;
+        l = *((unsigned long *)t);
+        printf("l = 0x%08lx\n\n\n", l);
 
-===================================================
+        printf("expected result is: 0x");
+        for (i = 0; i < sizeof(unsigned long); i++)
+                printf("%x", *(t+i));
+        printf("\n");
 
-The second problem should probably be something like this:
+        printf("testing store...\n");
+        *((unsigned long *)t) = 0x13572468;
 
-===================================================
-diff -Br -b -U 3 -N palo/palo/palo.c palo-new/palo/palo.c
---- palo/palo/palo.c    Thu Jun 21 12:05:38 2001
-+++ palo-new/palo/palo.c        Fri Sep 21 23:14:48 2001
-@@ -784,6 +792,20 @@
-            }
-            if (f0 == MAXPARTS)
-                error(11);
-+            if (strlen(commandline) > 1)
-+            {
-+                int bootpart=atoi(commandline);
-+                if ((bootpart > 0) && (bootpart < MAXPARTS))
-+                {
-+                   /* 2^11 = 1048576 / 512 */
-+                   if (1+((ptab[bootpart].start + ptab[bootpart].length) >> 11) >= 2048 )
-+                   {
-+                       printf("Warning: your kernel-image ('%s') is on a partition that isn't entirely below 2 Gb.\n",commandline);
-+                       printf("Palo can't read files beyond 2 Gb on older machines. Read /usr/share/doc/palo/README for more informa
-tion.\n");
-+                   }
-+                }
-+            }
-+
-            print_ptab_pretty(ptab, MAXPARTS);
+        l = *((unsigned long *)t);
+        printf("l = 0x%08lx\n", l);
 
-            if (0) printf("F0 partition start sector %d length %d\n",
-===================================================
+        return 0;
+}
 
-I'd appreciate pointers to improve this.
+And it prints:
 
-If this works out, perhaps adding reiserfs support to palo is next?
-It works in yaboot (PPC boot-loader), after all.
+jurriaan@pa8200:~$ cc test.c
+./a.jurriaan@pa8200:~$ ./a.out
+l = 0x34567887
+expected result is: 0x34567887
+testing store...
+l = 0x13572468
 
-Good luck,
+which seems to be what is expected.
+
+I can see that in unaligned.c, the part for in-kernel traps is #if 0'ed
+out, with a big TODO. What is there TODO?
+
+I'm willing to do stupid work, and test my machine 30 times in a row, if
+someone can point me in the right direction?
+
+Thanks,
 Jurriaan
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-test.out: unmodified: line 1
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-~
-test.out: unmodified: line 1
-
 -- 
-Your face is just a mask you wear,
-but masks are hidden faces
-	The Oysterband - The road to Santiago
+It is a matter of words. In my birth language there are more ifs than
+whens, but I must make a choice every time I speak a sentence in English.
+I try to choose the happier way of saying things, so that my own words
+will not weigh me down like stones.
+	!Xabbu in Tad Williams' Otherland
 GNU/Linux 2.4.9-ac10 SMP/ReiserFS 2x1402 bogomips load av: 0.00 0.00 0.00
