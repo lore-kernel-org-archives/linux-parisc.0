@@ -1,25 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA10557
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Dec 2000 16:21:38 -0700
-Message-Id: <200012192325.PAA16134@milano.cup.hp.com>
-To: Alex deVries <adevries@linuxcare.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] hwclock 
-In-reply-to: Your message of "Tue, 19 Dec 2000 10:49:10 PST."
-             <3A3F8376.BF84A667@linuxcare.com>
-Date: Tue, 19 Dec 2000 15:25:34 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA11095
+	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Dec 2000 16:28:11 -0700
+Message-ID: <3A3FEFC1.6D57E72A@hrzpub.tu-darmstadt.de>
+Date: Wed, 20 Dec 2000 00:31:13 +0100
+From: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Problems with boot_admin prompt
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alex deVries wrote:
-> There's been some discussion on IRC about not always having to set the
-> clock when in userspace.  I had a quick look at it, and it shouldn't be
-> too hard.  We just need a parisc version of hwclock which calls the
-> PDC_TOD functions.
+Hello everybody,
 
-CONFIG_GENRTC in fact does use PDC_TOD.
-Randolph Chung had hwclock working for PXC-L/L2 machines and I tested it
-on my c3k (32-bit) a few weeks back.
-If it's broken, then it's a "recent" change.
+I have a hp 715/100, which works quite well with PARISC-Linux. Usually
+it boots with tftp over my local network. So I switch the primary boot
+path to lan at the boot_admin prompt.
+Yesterday I tried to install the palinux-0.5.iso-Image on the harddisk.
+I booted the machine over net and followed the instructions in
+README.INSTALL. Then I partitioned the drive with fdisk. After
+installing the Base-Package and the PALO-Bootloader, I rebooted the
+machine.
+But now the boot_admin prompt doesn't appear anymore, so I can't change
+the boot path to scsi!
 
-grant
+The Box boots over the network yet, but how can I access the boot_admin
+prompt? All I get is a black screen, when I switch the machine on. I
+used the Serial Console, because the STI-Console doesn't work for me
+(Another question: Does anybody got a working STI-Con on such a box ?).
+
+Can somebody help me?
