@@ -1,24 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4B98A482A
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 01:11:07 -0600 (MDT)
-Message-Id: <200104130704.BAA30742@puffin.external.hp.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] FB cleanups 
-In-Reply-To: Your message of "Thu, 12 Apr 2001 00:00:56 BST."
-             <E14nTbe-0007lJ-00@the-village.bc.nu>
-Date: Fri, 13 Apr 2001 01:04:22 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail-ob01.one.net.au (mail-ob01.one.net.au [61.12.0.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3B288482A
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 06:23:49 -0600 (MDT)
+Received: Received: [from peewee (async207-bri-isp-8.nas.one.net.au [61.12.64.208])
+	by mail-ob01.one.net.au  with SMTP id f3DCNmK16315
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Apr 2001 22:23:49 +1000 (EST)]
+Message-ID: <007701c0c415$3f4779a0$1401a8c0@peewee>
+From: "Matthew van de Werken" <mvdw73@one.net.au>
+To: <parisc-linux@parisc-linux.org>
+Date: Fri, 13 Apr 2001 22:28:27 +1000
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Booting 735/99
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Cox wrote:
-> > Then Linus changed his mind. You are still *only* supposed to use
-> > readb/writeb on PCI (and possible ISA) on PCI like devices.
-> 
-> ISA is a PCI like device, its a wacky slow motion PCI bridge with no 
-> configuration space ;).
+Hi folks:
 
-And no memory mapped I/O. Just I/O port space afaik.
+I have a 735/99, onto which I'd like to install hppa-linux. However, I don't
+have any of the usual methods of installing software (I have no bootable
+CD-ROM, no tape, no network (without linux - chicken and egg problem).
 
-grant
+Hwever, I *do* have a SCSI disk and a linux-x86 box onto which I can mount
+this disk temporarily. What I'd like to be able to do is to dump a disk
+image onto this disk, then transfer it to the 735, and boot from there. Is
+this possible? Is there a disk image somewhere I can use for this?
+
+Alternatively, can I build a bootable disk manually on the SCSI disk from
+the x86 box? If I do this, what do I need to do? I tried to do the
+instructions on the "Installing PA-RISC Linux" page, however I couldn't
+mount the "f0" type partition (for obvious reasons), even if I had known
+what to put there once I had.
+
+Any help greatly appreciated at this stage,
+
+Cheers,
+Matt van de Werken.
