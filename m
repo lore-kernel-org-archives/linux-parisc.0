@@ -1,13 +1,19 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] [RFC] Revamp exception handling in the kernel
-Date: Sat, 11 Sep 2004 09:53:25 -0700
-Message-ID: <20040911165325.GO28659@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: [parisc-linux] stay the same with gcc-3.4.2 :( [was: back to
+ glibc-2.3.3 & gcc-3.4.1 pb]
+Date: Sat, 11 Sep 2004 18:22:00 +0000
+Message-ID: <41434248.7070009@tiscali.be>
+References: <200409060239.i862dAh2001466@hiauly1.hia.nrc.ca>
+	<413CDB5F.3080705@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: PARISC list <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <413CDB5F.3080705@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,821 +24,328 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Currently, palinux handles exceptions differently from other
-architectures in the kernel. On most other architectures, an exception
-to a read/store that has an associated exception table entry in the
-kernel is handled by code in a fixup section, which is responsible for
-setting the proper return values, etc.
+Hello all,
 
-On pa, we currently have an interesting scheme that associates a "skip"
-value with each exception entry. The bottom two bits of the skip value
-indicates whether r8,r9 should be set to -EFAULT,0 during a fault, and
-the top bits indicate a relative adjustment that should be applied to
-the iaoq to handle the fault.
+I didn't do much more because I was very busy elsewhere and also because of the announce of gcc-3.4.2.
+I was hoping that it fix the pb but unfortunately it's not the case :(
 
-The patch below, based on my discussions with jejb, changes this
-behaviour so that it more closely matches what happens on other
-architectures (but with a twist...): the exception table entries now
-contain an *absolute* address to branch to for the fixup [1]. The 
-fixups are placed in a separate fixup section (this simplifies a bit of 
-code in unaligned.c too). The fixup code loads up whatever values are 
-required by the caller, and typically branches back to the original 
-code at a correct location to continue.
+I will so continue investigation ;)
 
-This frees up the bottom two bits for other purposes -- currently there
-is no way to pass the faulting address and instruction back to an
-exception table handler. The proposal is to reuse the bottom 2 bits to
-indicate whether the faulting address/insn should be passed back to the
-handler in r8/r9. (this will be used by the optimized pa copy routines,
-for example)
+See you latter,
+	Joel
 
-One downside of this approach is that the extra fixup sections take up
-more space, so the end kernel is bigger. In my test on 64-bit, the
-kernel size increases by ~2%.
-
-The patch below has been tested against 2.6.8.1-pa11 on 64-bit-SMP, and
-compile tested on 32-bit-UP. I don't have a 32-bit machine to test on
-atm, so test reports are most welcome [2]. I've applied the manual stubs
-trick that jejb mentioned earlier, but only for 64-bit, since the 32-bit
-linker is able to generate those stubs automatically when needed.
-
-Comments?
-
-randolph
-
-[1] The change to using absolute jumps is because gas doesn't want to
-let us take the difference of labels in two different sections (viz.
-.text vs .fixup). jejb and I are not able to come up with a case where
-using relative jumps is required.
-
-[2] Since this changes the *exception* path, simply booting a kernel or
-building things will not exercise the new code. You need to do something
-that will trigger a load/store fault on userspace in the kernel. If I
-were Carlos I would have attached a nice testsuite to this patch, but
-alas I've only done some manual testing on a few cases.... there's a
-debug printk in this patch which will print something like:
-    "applying fixup for 0x10281ae4, fixup at 0x103ca614"
-if you see that, then you are exercising the new code.
-
-
-Index: arch/parisc/kernel/syscall.S
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/syscall.S,v
-retrieving revision 1.14
-diff -u -p -r1.14 syscall.S
---- arch/parisc/kernel/syscall.S	10 Sep 2004 14:52:01 -0000	1.14
-+++ arch/parisc/kernel/syscall.S	11 Sep 2004 16:25:50 -0000
-@@ -29,6 +29,19 @@
- #else
- 	.level		1.1
- #endif
-+
-+#ifndef __LP64__
-+	.macro fixup_branch,lbl
-+	b	    \lbl
-+	.endm
-+#else
-+	.macro fixup_branch,lbl
-+	ldil	    L%\lbl, %r1
-+	ldo	    R%\lbl(%r1), %r1
-+	bv,n        %r0(%r1)
-+	.endm
-+#endif
-+
- 	.text
- 
- 	.import syscall_exit,code
-@@ -575,10 +588,8 @@ cas_action:
- 	/* Return to userspace, set no error */
- 	b	lws_exit
- 	copy	%r0, %r21
--	nop	/* Add some visual space in objdump */
--	nop
--	nop
--	nop
-+
-+	.section .fixup,"ax"
- 3:		
- 	/* Error occured on load or store */
- #ifdef CONFIG_SMP
-@@ -588,12 +599,13 @@ cas_action:
- 	stw	%r0, 4(%sr2,%r20)
- # endif
- #endif
--	b	lws_exit
-+	fixup_branch lws_exit
- 	ldo	-EFAULT(%r0),%r21	/* set errno */
- 	nop
- 	nop
- 	nop
- 	nop
-+	.previous
- 
- 	/* Two exception table entries, one for the load,
- 	   the other for the store. Either return -EFAULT */
-@@ -601,10 +613,10 @@ cas_action:
- #ifdef __LP64__
- 	/* Pad the address calculation */
- 	.word	0,(2b - linux_gateway_page)
--	.dword	(3b - 2b) 
-+	.dword	3b
- #else
- 	.word	2b - linux_gateway_page
--	.word	(3b - 2b) 
-+	.word	3b
- #endif
- 	.previous
- 
-@@ -612,10 +624,10 @@ cas_action:
- #ifdef __LP64__
- 	/* Pad the address calculation */
- 	.word	0,(1b - linux_gateway_page)
--	.dword	(3b - 1b) 
-+	.dword	3b
- #else
- 	.word	1b - linux_gateway_page
--	.word	(3b - 1b) 
-+	.word	3b
- #endif
- 	.previous
- 
-Index: arch/parisc/kernel/unaligned.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/unaligned.c,v
-retrieving revision 1.8
-diff -u -p -r1.8 unaligned.c
---- arch/parisc/kernel/unaligned.c	21 Aug 2004 06:19:33 -0000	1.8
-+++ arch/parisc/kernel/unaligned.c	11 Sep 2004 16:25:50 -0000
-@@ -23,6 +23,7 @@
- #include <linux/config.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <asm/uaccess.h>
- 
- /* #define DEBUG_UNALIGNED 1 */
- 
-@@ -134,15 +135,19 @@ static int emulate_ldh(struct pt_regs *r
- "1:	ldbs	0(%%sr1,%3), %%r20\n"
- "2:	ldbs	1(%%sr1,%3), %0\n"
- "	depw	%%r20, 23, 24, %0\n"
--"	cmpclr,= %%r0, %%r0, %1\n"
--"3:	ldo	-2(%%r0), %1\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %1\n"
-+"3:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"4:	ldi	-2, %1\n"
-+	FIXUP_BRANCH(3b)
-+"	.previous\n"
-+"	.section __ex_table,\"aw\"\n"
- #ifdef __LP64__
--"	.dword	1b,(3b-1b)\n"
--"	.dword  2b,(3b-2b)\n"
-+"	.dword	1b,4b\n"
-+"	.dword  2b,4b\n"
- #else
--"	.word	1b,(3b-1b)\n"
--"	.word	2b,(3b-2b)\n"
-+"	.word	1b,4b\n"
-+"	.word	2b,4b\n"
- #endif
- "	.previous\n"
- 	: "=r" (val), "=r" (ret)
-@@ -175,15 +180,19 @@ static int emulate_ldw(struct pt_regs *r
- "	subi	32,%%r19,%%r19\n"
- "	mtctl	%%r19,11\n"
- "	vshd	%0,%%r20,%0\n"
--"	cmpclr,= %%r0, %%r0, %1\n"
--"3:	ldo	-2(%%r0), %1\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %1\n"
-+"3:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"4:	ldi	-2, %1\n"
-+	FIXUP_BRANCH(3b)
-+"	.previous\n"
-+"	.section __ex_table,\"aw\"\n"
- #ifdef __LP64__
--"	.dword	1b,(3b-1b)\n"
--"	.dword  2b,(3b-2b)\n"
-+"	.dword	1b,4b\n"
-+"	.dword  2b,4b\n"
- #else
--"	.word	1b,(3b-1b)\n"
--"	.word	2b,(3b-2b)\n"
-+"	.word	1b,4b\n"
-+"	.word	2b,4b\n"
- #endif
- "	.previous\n"
- 	: "=r" (val), "=r" (ret)
-@@ -222,15 +231,19 @@ static int emulate_ldd(struct pt_regs *r
- "	subi	64,%%r19,%%r19\n"
- "	mtsar	%%r19\n"
- "	shrpd	%0,%%r20,%%sar,%0\n"
--"	cmpclr,= %%r0, %%r0, %1\n"
--"3:	ldo	-2(%%r0), %1\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %1\n"
-+"3:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"4:	ldi	-2, %1\n"
-+	FIXUP_BRANCH(3b)
-+"	.previous\n"
-+"	.section __ex_table,\"aw\"\n"
- #ifdef __LP64__
--"	.dword	1b,(3b-1b)\n"
--"	.dword  2b,(3b-2b)\n"
-+"	.dword	1b,4b\n"
-+"	.dword  2b,4b\n"
- #else
--"	.word	1b,(3b-1b)\n"
--"	.word	2b,(3b-2b)\n"
-+"	.word	1b,4b\n"
-+"	.word	2b,4b\n"
- #endif
- "	.previous\n"
- 	: "=r" (val), "=r" (ret)
-@@ -250,17 +263,20 @@ static int emulate_ldd(struct pt_regs *r
- "	mtsar	%%r19\n"
- "	vshd	%0,%1,%0\n"
- "	vshd	%1,%%r20,%1\n"
--"	cmpclr,= %%r0, %%r0, %2\n"
--"4:	ldo	-2(%%r0), %2\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %2\n"
-+"4:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"5:	ldi	-2, %2\n"
-+	FIXUP_BRANCH(4b)
-+"	.previous\n"
- #ifdef __LP64__
--"	.dword	1b,(4b-1b)\n"
--"	.dword  2b,(4b-2b)\n"
--"	.dword	3b,(4b-3b)\n"
--#else
--"	.word	1b,(4b-1b)\n"
--"	.word	2b,(4b-2b)\n"
--"	.word	3b,(4b-3b)\n"
-+"	.dword	1b,5b\n"
-+"	.dword  2b,5b\n"
-+"	.dword	3b,5b\n"
-+#else
-+"	.word	1b,5b\n"
-+"	.word	2b,5b\n"
-+"	.word	3b,5b\n"
- #endif
- "	.previous\n"
- 	: "=r" (valh), "=r" (vall), "=r" (ret)
-@@ -296,15 +312,19 @@ static int emulate_sth(struct pt_regs *r
- "	extrw,u %1, 23, 8, %%r19\n"
- "1:	stb %1, 1(%%sr1, %2)\n"
- "2:	stb %%r19, 0(%%sr1, %2)\n"
--"	cmpclr,= %%r0, %%r0, %0\n"
--"3:	ldo	-2(%%r0), %0\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %0\n"
-+"3:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"4:	ldi	-2, %0\n"
-+	FIXUP_BRANCH(3b)
-+"	.previous\n"
-+"	.section __ex_table,\"aw\"\n"
- #ifdef __LP64__
--"	.dword	1b,(3b-1b)\n"
--"	.dword  2b,(3b-2b)\n"
-+"	.dword	1b,4b\n"
-+"	.dword  2b,4b\n"
- #else
--"	.word	1b,(3b-1b)\n"
--"	.word	2b,(3b-2b)\n"
-+"	.word	1b,4b\n"
-+"	.word	2b,4b\n"
- #endif
- "	.previous\n"
- 	: "=r" (ret)
-@@ -346,15 +366,19 @@ static int emulate_stw(struct pt_regs *r
- "	or	%%r1, %%r21, %%r21\n"
- "	stw	%%r20,0(%%sr1,%2)\n"
- "	stw	%%r21,4(%%sr1,%2)\n"
--"	cmpclr,= %%r0, %%r0, %0\n"
--"3:	ldo	-2(%%r0), %0\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %0\n"
-+"3:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"4:	ldi	-2, %0\n"
-+	FIXUP_BRANCH(3b)
-+"	.previous\n"
-+"	.section __ex_table,\"aw\"\n"
- #ifdef __LP64__
--"	.dword	1b,(3b-1b)\n"
--"	.dword  2b,(3b-2b)\n"
-+"	.dword	1b,4b\n"
-+"	.dword  2b,4b\n"
- #else
--"	.word	1b,(3b-1b)\n"
--"	.word	2b,(3b-2b)\n"
-+"	.word	1b,4b\n"
-+"	.word	2b,4b\n"
- #endif
- "	.previous\n"
- 	: "=r" (ret)
-@@ -399,19 +423,23 @@ static int emulate_std(struct pt_regs *r
- "	or	%%r1, %%r21, %%r21\n"
- "3:	std	%%r20,0(%%sr1,%2)\n"
- "4:	std	%%r21,8(%%sr1,%2)\n"
--"	cmpclr,= %%r0, %%r0, %0\n"
--"5:	ldo	-2(%%r0), %0\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %0\n"
-+"5:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"6:	ldi	-2, %0\n"
-+	FIXUP_BRANCH(5b)
-+"	.previous\n"
-+"	.section __ex_table,\"aw\"\n"
- #ifdef __LP64__
--"	.dword	1b,(5b-1b)\n"
--"	.dword  2b,(5b-2b)\n"
--"	.dword	3b,(5b-3b)\n"
--"	.dword  4b,(5b-4b)\n"
--#else
--"	.word	1b,(5b-1b)\n"
--"	.word	2b,(5b-2b)\n"
--"	.word	3b,(5b-3b)\n"
--"	.word	4b,(5b-4b)\n"
-+"	.dword	1b,6b\n"
-+"	.dword  2b,6b\n"
-+"	.dword	3b,6b\n"
-+"	.dword  4b,6b\n"
-+#else
-+"	.word	1b,6b\n"
-+"	.word	2b,6b\n"
-+"	.word	3b,6b\n"
-+"	.word	4b,6b\n"
- #endif
- "	.previous\n"
- 	: "=r" (ret)
-@@ -438,21 +466,25 @@ static int emulate_std(struct pt_regs *r
- "3:	stw	%1,0(%%sr1,%1)\n"
- "4:	stw	%%r1,4(%%sr1,%3)\n"
- "5:	stw	%2,8(%%sr1,%3)\n"
--"	cmpclr,= %%r0, %%r0, %0\n"
--"6:	ldo	-2(%%r0), %0\n"
--"	.section __ex_table,\"a\"\n"
-+"	copy	%%r0, %0\n"
-+"6:	\n"
-+"	.section .fixup,\"ax\"\n"
-+"7:	ldi	-2, %0\n"
-+	FIXUP_BRANCH(6b)
-+"	.previous\n"
-+"	.section __ex_table,\"aw\"\n"
- #ifdef __LP64__
--"	.dword	1b,(6b-1b)\n"
--"	.dword  2b,(6b-2b)\n"
--"	.dword	3b,(6b-3b)\n"
--"	.dword  4b,(6b-4b)\n"
--"	.dword  5b,(6b-5b)\n"
--#else
--"	.word	1b,(6b-1b)\n"
--"	.word	2b,(6b-2b)\n"
--"	.word	3b,(6b-3b)\n"
--"	.word	4b,(6b-4b)\n"
--"	.word  	5b,(6b-5b)\n"
-+"	.dword	1b,7b\n"
-+"	.dword  2b,7b\n"
-+"	.dword	3b,7b\n"
-+"	.dword  4b,7b\n"
-+"	.dword  5b,7b\n"
-+#else
-+"	.word	1b,7b\n"
-+"	.word	2b,7b\n"
-+"	.word	3b,7b\n"
-+"	.word	4b,7b\n"
-+"	.word  	5b,7b\n"
- #endif
- "	.previous\n"
- 	: "=r" (ret)
-Index: arch/parisc/lib/lusercopy.S
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/lib/lusercopy.S,v
-retrieving revision 1.3
-diff -u -p -r1.3 lusercopy.S
---- arch/parisc/lib/lusercopy.S	17 Jan 2004 06:39:24 -0000	1.3
-+++ arch/parisc/lib/lusercopy.S	11 Sep 2004 16:25:50 -0000
-@@ -53,6 +53,18 @@
- 	mtsp        %r1,%sr1
- 	.endm
- 
-+#ifndef __LP64__
-+	.macro fixup_branch lbl
-+	b	    \lbl
-+	.endm
-+#else
-+	.macro fixup_branch lbl
-+	ldil	    L%\lbl, %r1
-+	ldo	    R%\lbl(%r1), %r1
-+	bv,n        %r0(%r1)
-+	.endm
-+#endif
-+
- 	/*
- 	 * unsigned long
- 	 * lcopy_to_user(void *to, const void *from, unsigned long n)
-@@ -77,14 +89,16 @@ $lctu_done:
- 	copy        %r24,%r28
- 	.exit
- 
--2:      b $lctu_done
-+	.section .fixup,"ax"
-+2:      fixup_branch $lctu_done
- 	ldo         1(%r24),%r24
-+	.previous
- 
--	.section __ex_table,"a"
-+	.section __ex_table,"aw"
- #ifdef __LP64__
--	.dword      1b,(2b-1b)
-+	.dword      1b,2b
- #else
--	.word       1b,(2b-1b)
-+	.word       1b,2b
- #endif
- 	.previous
- 
-@@ -118,18 +132,20 @@ $lcfu_done:
- 	copy        %r24,%r28
- 	.exit
- 
-+	.section .fixup,"ax"
- 2:      copy        %r24,%r23
- $lcfu_zero_loop:
- 	addib,<>    -1,%r23,$lcfu_zero_loop
- 	stbs,ma     %r0,1(%r26)
--	b           $lcfu_done
-+	fixup_branch $lcfu_done
- 	nop
-+	.previous
- 
--	.section __ex_table,"a"
-+	.section __ex_table,"aw"
- #ifdef __LP64__
--	.dword      1b,(2b-1b)
-+	.dword      1b,2b
- #else
--	.word       1b,(2b-1b)
-+	.word       1b,2b
- #endif
- 	.previous
- 
-@@ -159,14 +175,16 @@ $lciu_done:
- 	copy        %r24,%r28
- 	.exit
- 
--2:      b $lciu_done
-+	.section .fixup,"ax"
-+2:      fixup_branch $lciu_done
- 	ldo         1(%r24),%r24
-+	.previous
- 
--	.section __ex_table,"a"
-+	.section __ex_table,"aw"
- #ifdef __LP64__
--	.dword      1b,(2b-1b)
-+	.dword      1b,2b
- #else
--	.word       1b,(2b-1b)
-+	.word       1b,2b
- #endif
- 	.previous
- 
-@@ -201,16 +219,18 @@ $lsfu_exit:
- 	nop
- 	.exit
- 
--3:      b           $lsfu_exit
-+	.section .fixup,"ax"
-+3:      fixup_branch $lsfu_exit
- 	ldi         -EFAULT,%r28
-+	.previous
- 
--	.section __ex_table,"a"
-+	.section __ex_table,"aw"
- #ifdef __LP64__
--	.dword      1b,(3b-1b)
--	.dword      2b,(3b-2b)
-+	.dword      1b,3b
-+	.dword      2b,3b
- #else
--	.word       1b,(3b-1b)
--	.word       2b,(3b-2b)
-+	.word       1b,3b
-+	.word       2b,3b
- #endif
- 	.previous
- 
-@@ -239,14 +259,16 @@ $lclu_done:
- 	copy        %r25,%r28
- 	.exit
- 
--2:      b $lclu_done
-+	.section .fixup,"ax"
-+2:      fixup_branch $lclu_done
- 	ldo        1(%r25),%r25
-+	.previous
- 
--	.section __ex_table,"a"
-+	.section __ex_table,"aw"
- #ifdef __LP64__
--	.dword      1b,(2b-1b)
-+	.dword      1b,2b
- #else
--	.word       1b,(2b-1b)
-+	.word       1b,2b
- #endif
- 	.previous
- 
-@@ -282,16 +304,18 @@ $lslen_nzero:
- 	b           $lslen_done
- 	ldo         1(%r26),%r26 /* special case for N == 0 */
- 
--3:      b           $lslen_done
-+	.section .fixup,"ax"
-+3:      fixup_branch $lslen_done
- 	copy        %r24,%r26    /* reset r26 so 0 is returned on fault */
-+	.previous
- 
--	.section __ex_table,"a"
-+	.section __ex_table,"aw"
- #ifdef __LP64__
--	.dword      1b,(3b-1b)
--	.dword      2b,(3b-2b)
-+	.dword      1b,3b
-+	.dword      2b,3b
- #else
--	.word       1b,(3b-1b)
--	.word       2b,(3b-2b)
-+	.word       1b,3b
-+	.word       2b,3b
- #endif
- 	.previous
- 
-Index: arch/parisc/mm/fault.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/mm/fault.c,v
-retrieving revision 1.1
-diff -u -p -r1.1 fault.c
---- arch/parisc/mm/fault.c	29 Jul 2003 17:00:42 -0000	1.1
-+++ arch/parisc/mm/fault.c	11 Sep 2004 16:25:50 -0000
-@@ -235,12 +235,14 @@ no_context:
- 
- 		if (fix) {
- 
--			if (fix->skip & 1) 
--				regs->gr[8] = -EFAULT;
--			if (fix->skip & 2)
--				regs->gr[9] = 0;
-+printk("applying fixup for 0x%lx, fixup at 0x%lx\n", regs->iaoq[0], fix->fixup & ~3);
- 
--			regs->iaoq[0] += ((fix->skip) & ~3);
-+			if (fix->fixup & 1) 
-+				regs->gr[8] = regs->iir;
-+			if (fix->fixup & 2)
-+				regs->gr[9] = regs->ior;
-+
-+			regs->iaoq[0] = ((fix->fixup) & ~3);
- 
- 			/*
- 			 * NOTE: In some cases the faulting instruction
-Index: include/asm-parisc/uaccess.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/uaccess.h,v
-retrieving revision 1.13
-diff -u -p -r1.13 uaccess.h
---- include/asm-parisc/uaccess.h	4 Feb 2004 18:24:55 -0000	1.13
-+++ include/asm-parisc/uaccess.h	11 Sep 2004 16:26:04 -0000
-@@ -54,16 +54,15 @@ extern int __put_user_bad(void);
- /*
-  * The exception table contains two values: the first is an address
-  * for an instruction that is allowed to fault, and the second is
-- * the number of bytes to skip if a fault occurs. We also support in
-- * two bit flags: 0x2 tells the exception handler to clear register
-- * r9 and 0x1 tells the exception handler to put -EFAULT in r8.
-- * This allows us to handle the simple cases for put_user and
-- * get_user without having to have .fixup sections.
-+ * the address to the fixup routine. We also support two bit flags: 
-+ * 0x2 tells the exception handler to store the faulting address in
-+ * r9 and 0x1 tells the exception handler to store the faulting
-+ * insn in r8.
-  */
- 
- struct exception_table_entry {
- 	unsigned long insn;  /* address of insn that is allowed to fault.   */
--	long skip;           /* pcoq skip | r9 clear flag | r8 -EFAULT flag */
-+	long fixup;          /* fixup | r9 ior flag | r8 iir flag */
- };
- 
- #define __get_user(x,ptr)                               \
-@@ -94,43 +93,70 @@ struct exception_table_entry {
- 	__gu_err;                                       \
- })
- 
-+#ifndef __LP64__
-+#define FIXUP_BRANCH(lbl) \
-+	"\tb " #lbl "\n"
-+#else
-+#define FIXUP_BRANCH(lbl) \
-+	"\tldil L%%" #lbl ", %%r1\n"			\
-+	"\tldo R%%" #lbl "(%%r1), %%r1\n"		\
-+	"\tbv,n %%r0(%%r1)\n"
-+#endif
-+
-+/* -14 is -EFAULT below */
- #ifdef __LP64__
- #define __get_kernel_asm(ldx,ptr)                       \
- 	__asm__("\n1:\t" ldx "\t0(%2),%0\n"             \
- 		"2:\n"					\
--		"\t.section __ex_table,\"aw\"\n"         \
--		 "\t.dword\t1b\n"                       \
--		 "\t.dword\t(2b-1b)+3\n"                \
--		 "\t.previous"                          \
-+		"\t.section .fixup,\"ax\"\n"		\
-+		"3:\tldi -14, %1\n"			\
-+		"\tcopy %%r0, %0\n"			\
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"                          	\
-+		"\t.section __ex_table,\"aw\"\n"        \
-+		"\t.dword\t1b,3b\n"			\
-+		"\t.previous"                          	\
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
- 		: "r"(ptr), "1"(__gu_err));
- 
- #define __get_user_asm(ldx,ptr)                         \
- 	__asm__("\n1:\t" ldx "\t0(%%sr3,%2),%0\n"       \
- 		"2:\n"					\
--		"\t.section __ex_table,\"aw\"\n"         \
--		 "\t.dword\t1b\n"                       \
--		 "\t.dword\t(2b-1b)+3\n"                \
--		 "\t.previous"                          \
-+		"\t.section .fixup,\"ax\"\n"		\
-+		"3:\tldi -14, %1\n"			\
-+		"\tcopy %%r0, %0\n"			\
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"				\
-+		"\t.section __ex_table,\"aw\"\n"	\
-+		"\t.dword\t1b,3b\n"			\
-+		"\t.previous"				\
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
- 		: "r"(ptr), "1"(__gu_err));
- #else
- #define __get_kernel_asm(ldx,ptr)                       \
- 	__asm__("\n1:\t" ldx "\t0(%2),%0\n"             \
- 		"2:\n"					\
--		"\t.section __ex_table,\"aw\"\n"         \
--		 "\t.word\t1b\n"                        \
--		 "\t.word\t(2b-1b)+3\n"                 \
--		 "\t.previous"                          \
-+		"\t.section .fixup,\"ax\"\n"		\
-+		"3:\tldi -14, %1\n"			\
-+		"\tcopy %%r0, %0\n"			\
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"				\
-+		"\t.section __ex_table,\"aw\"\n"        \
-+		"\t.word\t1b,3b\n"			\
-+		"\t.previous"                          	\
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
- 		: "r"(ptr), "1"(__gu_err));
- 
- #define __get_user_asm(ldx,ptr)                         \
- 	__asm__("\n1:\t" ldx "\t0(%%sr3,%2),%0\n"       \
- 		"2:\n"					\
--		"\t.section __ex_table,\"aw\"\n"         \
--		 "\t.word\t1b\n"                        \
--		 "\t.word\t(2b-1b)+3\n"                 \
-+		"\t.section .fixup,\"ax\"\n"		\
-+		"3:\tldi -14, %1\n"			\
-+		"\tcopy %%r0, %0\n"			\
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"				\
-+		"\t.section __ex_table,\"aw\"\n"	\
-+		 "\t.word\t1b,3b\n"			\
- 		 "\t.previous"                          \
- 		: "=r"(__gu_val), "=r"(__gu_err)        \
- 		: "r"(ptr), "1"(__gu_err));
-@@ -168,15 +194,19 @@ struct exception_table_entry {
-  * gcc knows about, so there are no aliasing issues.
-  */
- 
-+/* -14 is -EFAULT below */
- #ifdef __LP64__
- #define __put_kernel_asm(stx,x,ptr)                         \
- 	__asm__ __volatile__ (                              \
- 		"\n1:\t" stx "\t%2,0(%1)\n"                 \
- 		"2:\n"					    \
--		"\t.section __ex_table,\"aw\"\n"             \
--		 "\t.dword\t1b\n"                           \
--		 "\t.dword\t(2b-1b)+1\n"                    \
--		 "\t.previous"                              \
-+		"\t.section .fixup,\"ax\"\n"		    \
-+		"3:\tldi -14, %0\n"			    \
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"				    \
-+		"\t.section __ex_table,\"aw\"\n"            \
-+		"\t.dword\t1b,3b\n"			    \
-+		"\t.previous"                               \
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(x), "0"(__pu_err))
- 
-@@ -184,9 +214,12 @@ struct exception_table_entry {
- 	__asm__ __volatile__ (                              \
- 		"\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
- 		"2:\n"					    \
--		"\t.section __ex_table,\"aw\"\n"             \
--		 "\t.dword\t1b\n"                           \
--		 "\t.dword\t(2b-1b)+1\n"                    \
-+		"\t.section .fixup,\"ax\"\n"		    \
-+		"3:\tldi -14, %0\n"			    \
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"				    \
-+		"\t.section __ex_table,\"aw\"\n"            \
-+		 "\t.dword\t1b,3b\n"			    \
- 		 "\t.previous"                              \
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(x), "0"(__pu_err))
-@@ -195,9 +228,12 @@ struct exception_table_entry {
- 	__asm__ __volatile__ (                              \
- 		"\n1:\t" stx "\t%2,0(%1)\n"                 \
- 		"2:\n"					    \
--		"\t.section __ex_table,\"aw\"\n"             \
--		 "\t.word\t1b\n"                            \
--		 "\t.word\t(2b-1b)+1\n"                     \
-+		"\t.section .fixup,\"ax\"\n"		    \
-+		"3:\tldi -14, %0\n"			    \
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"				    \
-+		"\t.section __ex_table,\"aw\"\n"            \
-+		 "\t.word\t1b,3b\n"			    \
- 		 "\t.previous"                              \
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(x), "0"(__pu_err))
-@@ -206,9 +242,12 @@ struct exception_table_entry {
- 	__asm__ __volatile__ (                              \
- 		"\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
- 		"2:\n"					    \
--		"\t.section __ex_table,\"aw\"\n"             \
--		 "\t.word\t1b\n"                            \
--		 "\t.word\t(2b-1b)+1\n"                     \
-+		"\t.section .fixup,\"ax\"\n"		    \
-+		"3:\tldi -14, %0\n"			    \
-+		FIXUP_BRANCH(2b)			\
-+		"\t.previous"				    \
-+		"\t.section __ex_table,\"aw\"\n"            \
-+		 "\t.word\t1b,3b\n"                         \
- 		 "\t.previous"                              \
- 		: "=r"(__pu_err)                            \
- 		: "r"(ptr), "r"(x), "0"(__pu_err))
-@@ -221,11 +260,14 @@ static inline void __put_kernel_asm64(u6
- 		"\n1:\tstw %1,0(%0)\n"
- 		"\n2:\tstw %2,4(%0)\n"
- 		"3:\n"
-+		"\t.section .fixup,\"ax\"\n"
-+/*		"4:\tldi -14, %0\n" */
-+		"4:"
-+		FIXUP_BRANCH(3b)
-+		"\t.previous"
- 		"\t.section __ex_table,\"aw\"\n"
--		 "\t.word\t1b\n"
--		 "\t.word\t(3b-1b)+1\n"
--		 "\t.word\t2b\n"
--		 "\t.word\t(3b-2b)+1\n"
-+		 "\t.word\t1b,4b\n"
-+		 "\t.word\t2b,4b\n"
- 		 "\t.previous"
- 		: : "r"(ptr), "r"(hi), "r"(lo));
- 
-@@ -239,11 +281,14 @@ static inline void __put_user_asm64(u64 
- 		"\n1:\tstw %1,0(%%sr3,%0)\n"
- 		"\n2:\tstw %2,4(%%sr3,%0)\n"
- 		"3:\n"
-+		"\t.section .fixup,\"ax\"\n"
-+/*		"4:\tldi -14, %0\n" */
-+		"4:"
-+		FIXUP_BRANCH(3b)
-+		"\t.previous"
- 		"\t.section __ex_table,\"aw\"\n"
--		 "\t.word\t1b\n"
--		 "\t.word\t(3b-1b)+1\n"
--		 "\t.word\t2b\n"
--		 "\t.word\t(3b-2b)+1\n"
-+		 "\t.word\t1b,4b\n"
-+		 "\t.word\t2b,4b\n"
- 		 "\t.previous"
- 		: : "r"(ptr), "r"(hi), "r"(lo));
- 
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Joel Soete wrote:
+> Hello Dave,
+> 
+> John David Anglin wrote:
+> 
+>>>     0x411cc740 <_dl_make_fptr+112>: ldw,s r7(,r6),ret0
+>>> in:
+>>> r7 == 0x7c4
+>>> r6 == 0x0
+>>
+>>
+>>
+>> r6 is wrong.  Find out why it is zero.
+>>
+> Far from being an expert, with help of ddd it seems that:
+> ElfW(Addr)
+> _dl_make_fptr (struct link_map *map, const ElfW(Sym) *sym,
+>                ElfW(Addr) ip)
+> {
+>   ElfW(Addr) *ftab = map->l_mach.fptr_table;    <====[2]
+> 
+> (Elf32_Addr *)fptr_table == (Elf32_Addr *) 0x0
+> 
+> (the same for gcc-3.3 ;) )
+> 
+> is:
+> Dump of assembler code from 0x411e371c to 0x411e381c:
+>     0x411e371c <_dl_make_fptr+76>:  ldw 1fc(,r26),r6 (r6 == 0x0)
+> 
+> the weird stuff his in fact here:
+> 
+>   if (__builtin_expect (ftab == NULL, 0))
+>     ftab = make_fptr_table (map);
+> 
+> with gcc-3.3 the register (r7) (which seems to me contains the value 
+> pointed by ftab) is well the one addressed by map->l_mach.fptr_table ie 
+> map->l_mach.fptr_table == 0x40001000 (and btw map->l_mach.fptr_table_len 
+> == 2067)
+> 
+> OTC with gcc-3.4 the register (r6) after the 'call' of the inlined 
+> make_fptr_table() is restored to its starting value i.e.: 0x0
+> eventhought that map->l_mach.fptr_table == 0x40001000 (and btw 
+> map->l_mach.fptr_table_len == 2067) exactly the same as gcc-3.3.
+> 
+> duno if it could help:
+> for gcc-3.3 the text is:
+> Dump of assembler code from 0x412630d0 to 0x412631d0:
+>     0x412630d0 <_dl_make_fptr+44>:  ldw 1fc(,r26),r7    <====[2]
+>     0x412630d4 <_dl_make_fptr+48>:  copy r26,r8
+>     0x412630d8 <_dl_make_fptr+52>:  cmpib,= 0,r7,0x412631a0 
+> <_dl_make_fptr+252>    <===='call' make_fptr_table()
+>     0x412630dc <_dl_make_fptr+56>:  copy r25,r3
+>     0x412630e0 <_dl_make_fptr+60>:  ldw 30(,r8),r20
+>     0x412630e4 <_dl_make_fptr+64>:  ldw 1f8(,r8),r22
+>     0x412630e8 <_dl_make_fptr+68>:  ldw 4(,r20),r21
+>     0x412630ec <_dl_make_fptr+72>:  sub r3,r21,r21
+>     0x412630f0 <_dl_make_fptr+76>:  extrw,s r21,27,28,r21
+>     0x412630f4 <_dl_make_fptr+80>:  cmpb,<<= r22,r21,0x41263184 
+> <_dl_make_fptr+224>
+>     0x412630f8 <_dl_make_fptr+84>:  depw,z r21,29,30,r9
+>     0x412630fc <_dl_make_fptr+88>:  add,l r9,r7,r21
+>     0x41263100 <_dl_make_fptr+92>:  ldw 0(,r21),r20
+>     0x41263104 <_dl_make_fptr+96>:  cmpib,<> 0,r20,0x41263150 
+> <_dl_make_fptr+172>
+>     0x41263108 <_dl_make_fptr+100>: copy r21,r3
+>     0x4126310c <_dl_make_fptr+104>: copy r21,r6
+>     0x41263110 <_dl_make_fptr+108>: addil 0,r19,%r1
+>     0x41263114 <_dl_make_fptr+112>: ldw 5dc(,r1),r5
+>     0x41263118 <_dl_make_fptr+116>: ldw 24(,r8),r20
+>     0x4126311c <_dl_make_fptr+120>: copy r19,r4
+>     0x41263120 <_dl_make_fptr+124>: copy r10,r26
+>     0x41263124 <_dl_make_fptr+128>: b,l 0x41262fc4 <make_fdesc>,rp
+>     0x41263128 <_dl_make_fptr+132>: ldw 4(,r20),r25
+>     0x4126312c <_dl_make_fptr+136>: ldw 0(,r3),r20
+>     0x41263130 <_dl_make_fptr+140>: cmpib,= 0,r20,0x4126317c 
+> <_dl_make_fptr+216>
+>     0x41263134 <_dl_make_fptr+144>: copy r4,r19
+>     0x41263138 <_dl_make_fptr+148>: ldw 4(,r5),r20
+>     0x4126313c <_dl_make_fptr+152>: stw r20,0(,ret0)
+>     0x41263140 <_dl_make_fptr+156>: stw ret0,4(,r5)
+>     0x41263144 <_dl_make_fptr+160>: ldw 0(,r6),r20
+>     0x41263148 <_dl_make_fptr+164>: cmpib,=,n 0,r20,0x4126311c 
+> <_dl_make_fptr+120>
+>     0x4126314c <_dl_make_fptr+168>: ldw 24(,r8),r20
+>     0x41263150 <_dl_make_fptr+172>: ldw r7(,r9),ret0
+>     0x41263154 <_dl_make_fptr+176>: ldw -94(,sp),rp
+>     0x41263158 <_dl_make_fptr+180>: ldw -7c(,sp),r9
+>     0x4126315c <_dl_make_fptr+184>: ldw -78(,sp),r8
+>     0x41263160 <_dl_make_fptr+188>: ldw -74(,sp),r7
+>     0x41263164 <_dl_make_fptr+192>: ldw -70(,sp),r6
+>     0x41263168 <_dl_make_fptr+196>: ldw -6c(,sp),r5
+>     0x4126316c <_dl_make_fptr+200>: ldw -68(,sp),r4
+>     0x41263170 <_dl_make_fptr+204>: ldw -64(,sp),r3
+>     0x41263174 <_dl_make_fptr+208>: bv r0(rp)
+>     0x41263178 <_dl_make_fptr+212>: ldw,mb -80(,sp),r10
+>     0x4126317c <_dl_make_fptr+216>: b,l 0x41263150 <_dl_make_fptr+172>,r0
+>     0x41263180 <_dl_make_fptr+220>: stw ret0,0(,r3)
+>     0x41263184 <_dl_make_fptr+224>: addil 0,r19,%r1
+>     0x41263188 <_dl_make_fptr+228>: ldi 0,r26
+>     0x4126318c <_dl_make_fptr+232>: ldw 5e4(,r1),r1
+>     0x41263190 <_dl_make_fptr+236>: copy r1,r23
+>     0x41263194 <_dl_make_fptr+240>: ldi 0,r25
+>     0x41263198 <_dl_make_fptr+244>: b,l 0x4125e4f8 <_dl_signal_error>,rp
+>     0x4126319c <_dl_make_fptr+248>: ldi 0,r24
+>     0x412631a0 <_dl_make_fptr+252>: ldw 2c(,r26),r21        <==== 
+> map->l_mach.fptr_table()
+>     0x412631a4 <_dl_make_fptr+256>: ldw 30(,r26),r20
+>     0x412631a8 <_dl_make_fptr+260>: addil 0,r19,%r1
+>     0x412631ac <_dl_make_fptr+264>: copy r19,r4
+>     0x412631b0 <_dl_make_fptr+268>: ldw 4(,r20),r22
+>     0x412631b4 <_dl_make_fptr+272>: ldw 4(,r21),r26
+>     0x412631b8 <_dl_make_fptr+276>: ldi 3,r24
+>     0x412631bc <_dl_make_fptr+280>: ldi 12,r23
+>     0x412631c0 <_dl_make_fptr+284>: ldw 44(,r8),r21
+>     0x412631c4 <_dl_make_fptr+288>: sub r26,r22,r26
+>     0x412631c8 <_dl_make_fptr+292>: ldw 654(,r1),r1
+>     0x412631cc <_dl_make_fptr+296>: ldw 4(,r21),r25
+>     0x412631d0 <_dl_make_fptr+300>: ldw 4(,r1),r20
+>     0x412631d4 <_dl_make_fptr+304>: ldi -1,r21
+>     0x412631d8 <_dl_make_fptr+308>: b,l 0x41265570 <$$divU>,r31
+>     0x412631dc <_dl_make_fptr+312>: sub r0,r20,r22
+>     0x412631e0 <_dl_make_fptr+316>: stw r21,-34(,sp)
+>     0x412631e4 <_dl_make_fptr+320>: ldi 0,r26
+>     0x412631e8 <_dl_make_fptr+324>: depw,z ret1,29,30,r5
+>     0x412631ec <_dl_make_fptr+328>: stw r0,-38(,sp)
+>     0x412631f0 <_dl_make_fptr+332>: copy ret1,r6
+>     0x412631f4 <_dl_make_fptr+336>: add,l r5,r20,r20
+>     0x412631f8 <_dl_make_fptr+340>: add,l r20,r21,r20
+>     0x412631fc <_dl_make_fptr+344>: and r20,r22,r20
+>     0x41263200 <_dl_make_fptr+348>: b,l 0x412641bc <__mmap>,rp
+>     0x41263204 <_dl_make_fptr+352>: copy r20,r25
+>     0x41263208 <_dl_make_fptr+356>: copy r4,r19
+>     0x4126320c <_dl_make_fptr+360>: cmpib,= -1,ret0,0x4126323c 
+> <_dl_make_fptr+408>
+>     0x41263210 <_dl_make_fptr+364>: copy ret0,r26
+>     0x41263214 <_dl_make_fptr+368>: ldw 1fc(,r8),r20
+>     0x41263218 <_dl_make_fptr+372>: cmpib,<>,n 0,r20,0x4126322c 
+> <_dl_make_fptr+392>
+>     0x4126321c <_dl_make_fptr+376>: stw ret0,1fc(,r8)
+>     0x41263220 <_dl_make_fptr+380>: stw r6,1f8(,r8)
+>     0x41263224 <_dl_make_fptr+384>: b,l 0x412630e0 <_dl_make_fptr+60>,r0
+>     0x41263228 <_dl_make_fptr+388>: ldw 1fc(,r8),r7    <==== return 
+> map->l_mach.fptr_table;
+>     0x4126322c <_dl_make_fptr+392>: b,l 0x4126421c <munmap>,rp
+>     0x41263230 <_dl_make_fptr+396>: copy r5,r25
+>     0x41263234 <_dl_make_fptr+400>: b,l 0x41263224 <_dl_make_fptr+384>,r0
+>     0x41263238 <_dl_make_fptr+404>: copy r4,r19
+>     0x4126323c <_dl_make_fptr+408>: addil 0,r4,%r1
+>     0x41263240 <_dl_make_fptr+412>: copy r1,r20
+>     0x41263244 <_dl_make_fptr+416>: ldw 62c(,r20),r20
+>     0x41263248 <_dl_make_fptr+420>: ldw 0(,r20),r26
+>     0x4126324c <_dl_make_fptr+424>: addil 0,r4,%r1
+>     0x41263250 <_dl_make_fptr+428>: ldw 5e8(,r1),r21
+>     0x41263254 <_dl_make_fptr+432>: b,l 0x41263194 <_dl_make_fptr+240>,r0
+>     0x41263258 <_dl_make_fptr+436>: copy r21,r23
+>  [...]
+> 
+> and for gcc-3.4:
+> Dump of assembler code from 0x4128571c to 0x4128581c:
+>     0x4128571c <_dl_make_fptr+76>:  ldw 1fc(,r26),r6    <====[2]
+>     0x41285720 <_dl_make_fptr+80>:  cmpib,= 0,r6,0x412858f4 
+> <_dl_make_fptr+548>    <===='call' make_fptr_table()
+>     0x41285724 <_dl_make_fptr+84>:  copy r25,r3
+>     0x41285728 <_dl_make_fptr+88>:  ldw 1f8(,r26),ret1
+>     0x4128572c <_dl_make_fptr+92>:  ldw 30(,r10),r21
+>     0x41285730 <_dl_make_fptr+96>:  ldw 4(,r21),r20
+>     0x41285734 <_dl_make_fptr+100>: sub r3,r20,r20
+>     0x41285738 <_dl_make_fptr+104>: extrw,s r20,27,28,r7
+>     0x4128573c <_dl_make_fptr+108>: cmpb,>>=,n r7,ret1,0x412859d0 
+> <_dl_make_fptr+768>
+>     0x41285740 <_dl_make_fptr+112>: ldw,s r7(,r6),ret0
+>     0x41285744 <_dl_make_fptr+116>: cmpib,<> 0,ret0,0x412857c8 
+> <_dl_make_fptr+248>
+>     0x41285748 <_dl_make_fptr+120>: addil 0,r19,%r1
+>     0x4128574c <_dl_make_fptr+124>: depw,z r7,29,30,r11
+>     0x41285750 <_dl_make_fptr+128>: ldw 638(,r1),r13
+>     0x41285754 <_dl_make_fptr+132>: addil 0,r19,%r1
+>     0x41285758 <_dl_make_fptr+136>: ldw 5c0(,r1),r5
+>     0x4128575c <_dl_make_fptr+140>: addil 0,r19,%r1
+>     0x41285760 <_dl_make_fptr+144>: ldo -78(sp),r14
+>     0x41285764 <_dl_make_fptr+148>: ldw 610(,r1),r16
+>     0x41285768 <_dl_make_fptr+152>: add,l r11,r6,r15
+>     0x4128576c <_dl_make_fptr+156>: copy r5,r9
+>     0x41285770 <_dl_make_fptr+160>: ldw 24(,r10),r20
+>     0x41285774 <_dl_make_fptr+164>: ldw 4(,r20),r8
+>     0x41285778 <_dl_make_fptr+168>: ldw 0(,r5),r3
+>     0x4128577c <_dl_make_fptr+172>: ldw 4(,r3),r23
+>     0x41285780 <_dl_make_fptr+176>: ldw 8(,r3),r20
+>     0x41285784 <_dl_make_fptr+180>: cmpb,>>= r20,r23,0x4128580c 
+> <_dl_make_fptr+316>
+>     0x41285788 <_dl_make_fptr+184>: ldo 1(r20),r22
+>     0x4128578c <_dl_make_fptr+188>: ldw 8(,r3),r21
+>     0x41285790 <_dl_make_fptr+192>: cmpb,<> r20,r21,0x41285780 
+> <_dl_make_fptr+176>
+>     0x41285794 <_dl_make_fptr+196>: shladd,l r21,3,r3,r20
+>     0x41285798 <_dl_make_fptr+200>: stw r22,8(,r3)
+>     0x4128579c <_dl_make_fptr+204>: ldo c(r20),r26
+>     0x412857a0 <_dl_make_fptr+208>: stw r8,4(,r26)
+>     0x412857a4 <_dl_make_fptr+212>: stw r12,0(,r26)
+>     0x412857a8 <_dl_make_fptr+216>: ldw r11(,r6),r20
+>     0x412857ac <_dl_make_fptr+220>: cmpib,=,n 0,r20,0x412858a8 
+> <_dl_make_fptr+472>
+>     0x412857b0 <_dl_make_fptr+224>: ldw 4(,r9),r20
+>     0x412857b4 <_dl_make_fptr+228>: stw r20,0(,r26)
+>     0x412857b8 <_dl_make_fptr+232>: stw r26,4(,r9)
+>     0x412857bc <_dl_make_fptr+236>: ldw,s r7(,r6),ret0
+>     0x412857c0 <_dl_make_fptr+240>: cmpib,=,n 0,ret0,0x41285774 
+> <_dl_make_fptr+164>
+>     0x412857c4 <_dl_make_fptr+244>: ldw 24(,r10),r20
+>     0x412857c8 <_dl_make_fptr+248>: ldw -94(,sp),rp
+>     0x412857cc <_dl_make_fptr+252>: ldw -74(,sp),r16
+>     0x412857d0 <_dl_make_fptr+256>: ldw -70(,sp),r15
+>     0x412857d4 <_dl_make_fptr+260>: ldw -6c(,sp),r14
+>     0x412857d8 <_dl_make_fptr+264>: ldw -68(,sp),r13
+>     0x412857dc <_dl_make_fptr+268>: ldw -64(,sp),r12
+>     0x412857e0 <_dl_make_fptr+272>: ldw -60(,sp),r11
+>     0x412857e4 <_dl_make_fptr+276>: ldw -5c(,sp),r10
+>     0x412857e8 <_dl_make_fptr+280>: ldw -58(,sp),r9
+>     0x412857ec <_dl_make_fptr+284>: ldw -54(,sp),r8
+>     0x412857f0 <_dl_make_fptr+288>: ldw -50(,sp),r7
+>     0x412857f4 <_dl_make_fptr+292>: ldw -4c(,sp),r6
+>     0x412857f8 <_dl_make_fptr+296>: ldw -48(,sp),r5
+>     0x412857fc <_dl_make_fptr+300>: ldw -44(,sp),r4
+>     0x41285800 <_dl_make_fptr+304>: ldw -40(,sp),r3
+>     0x41285804 <_dl_make_fptr+308>: bv r0(rp)
+>     0x41285808 <_dl_make_fptr+312>: ldo -80(sp),sp
+>     0x4128580c <_dl_make_fptr+316>: ldw 4(,r5),r20
+>     0x41285810 <_dl_make_fptr+320>: cmpib,<>,n 0,r20,0x41285984 
+> <_dl_make_fptr+692>
+>     0x41285814 <_dl_make_fptr+324>: ldw 8(,r5),r21
+>     0x41285818 <_dl_make_fptr+328>: depw,z r21,30,31,r20
+> 
+> Dump of assembler code from 0x412858f4 to 0x412859f4:
+>     0x412858f4 <_dl_make_fptr+548>: ldw 30(,r26),r20    <==== 
+> map->l_mach.fptr_table()
+>     0x412858f8 <_dl_make_fptr+552>: ldw 4(,r20),r21
+>     0x412858fc <_dl_make_fptr+556>: addil 0,r19,%r1
+>     0x41285900 <_dl_make_fptr+560>: copy r1,r22
+>     0x41285904 <_dl_make_fptr+564>: ldw 2c(,r26),r20
+>     0x41285908 <_dl_make_fptr+568>: ldw 4(,r20),r26
+>     0x4128590c <_dl_make_fptr+572>: sub r26,r21,r26
+>     0x41285910 <_dl_make_fptr+576>: ldw 44(,r10),r20
+>     0x41285914 <_dl_make_fptr+580>: ldw 4(,r20),r25
+>     0x41285918 <_dl_make_fptr+584>: b,l 0x41287d60 <$$divU>,r31
+>     0x4128591c <_dl_make_fptr+588>: copy r19,r4
+>     0x41285920 <_dl_make_fptr+592>: ldi -1,r20
+>     0x41285924 <_dl_make_fptr+596>: stw r20,-34(,sp)
+>     0x41285928 <_dl_make_fptr+600>: ldi 0,r26
+>     0x4128592c <_dl_make_fptr+604>: ldw 638(,r22),r20
+>     0x41285930 <_dl_make_fptr+608>: ldw 4(,r20),r25
+>     0x41285934 <_dl_make_fptr+612>: depw,z ret1,29,30,r5
+>     0x41285938 <_dl_make_fptr+616>: ldi 3,r24
+>     0x4128593c <_dl_make_fptr+620>: sub r0,r25,r20
+>     0x41285940 <_dl_make_fptr+624>: copy ret1,r6
+>     0x41285944 <_dl_make_fptr+628>: stw r0,-38(,sp)
+>     0x41285948 <_dl_make_fptr+632>: add,l r5,r25,r25
+>     0x4128594c <_dl_make_fptr+636>: ldi 12,r23
+>     0x41285950 <_dl_make_fptr+640>: ldo -1(r25),r25
+>     0x41285954 <_dl_make_fptr+644>: b,l 0x412869a8 <__mmap>,rp
+>     0x41285958 <_dl_make_fptr+648>: and r25,r20,r25
+>     0x4128595c <_dl_make_fptr+652>: copy r4,r19
+>     0x41285960 <_dl_make_fptr+656>: cmpib,= -1,ret0,0x412859e0 
+> <_dl_make_fptr+784>
+>     0x41285964 <_dl_make_fptr+660>: copy ret0,r26
+>     0x41285968 <_dl_make_fptr+664>: ldw 1fc(,r10),r20
+>     0x4128596c <_dl_make_fptr+668>: cmpib,<>,n 0,r20,0x412859a0 
+> <_dl_make_fptr+720>
+>     0x41285970 <_dl_make_fptr+672>: copy r6,ret1
+>     0x41285974 <_dl_make_fptr+676>: stw r6,1f8(,r10)
+>     0x41285978 <_dl_make_fptr+680>: ldw 1fc(,r10),r6
+>     0x4128597c <_dl_make_fptr+684>: b,l 0x4128572c <_dl_make_fptr+92>,r0
+>     0x41285980 <_dl_make_fptr+688>: stw ret0,1fc(,r10)    <==== return 
+> map->l_mach.fptr_table;
+>     0x41285984 <_dl_make_fptr+692>: copy r20,r26
+>     0x41285988 <_dl_make_fptr+696>: ldw 0(,r20),r20
+>     0x4128598c <_dl_make_fptr+700>: b,l 0x412857a0 <_dl_make_fptr+208>,r0
+>     0x41285990 <_dl_make_fptr+704>: stw r20,4(,r5)
+>     0x41285994 <_dl_make_fptr+708>: stw ret0,0(,r5)
+>     0x41285998 <_dl_make_fptr+712>: b,l 0x412857a0 <_dl_make_fptr+208>,r0
+>     0x4128599c <_dl_make_fptr+716>: ldo c(ret0),r26
+>     0x412859a0 <_dl_make_fptr+720>: b,l 0x41286a04 <munmap>,rp
+>     0x412859a4 <_dl_make_fptr+724>: copy r5,r25
+>     0x412859a8 <_dl_make_fptr+728>: ldw 1f8(,r10),ret1
+>     0x412859ac <_dl_make_fptr+732>: ldw 1fc(,r10),r6
+>     0x412859b0 <_dl_make_fptr+736>: b,l 0x4128572c <_dl_make_fptr+92>,r0
+>     0x412859b4 <_dl_make_fptr+740>: copy r4,r19
+>     0x412859b8 <_dl_make_fptr+744>: addil 0,r4,%r1
+>     0x412859bc <_dl_make_fptr+748>: ldw 0(,r16),r26
+>     0x412859c0 <_dl_make_fptr+752>: ldw 5c4(,r1),r23
+>     0x412859c4 <_dl_make_fptr+756>: ldi 0,r25
+>     0x412859c8 <_dl_make_fptr+760>: b,l 0x41280f10 <_dl_signal_error>,rp
+>     0x412859cc <_dl_make_fptr+764>: ldi 0,r24
+>     0x412859d0 <_dl_make_fptr+768>: addil 0,r19,%r1
+>     0x412859d4 <_dl_make_fptr+772>: ldi 0,r26
+>     0x412859d8 <_dl_make_fptr+776>: b,l 0x412859c4 <_dl_make_fptr+756>,r0
+>     0x412859dc <_dl_make_fptr+780>: ldw 5c8(,r1),r23
+>     0x412859e0 <_dl_make_fptr+784>: addil 0,r4,%r1
+>     0x412859e4 <_dl_make_fptr+788>: ldw 610(,r1),r20
+>     0x412859e8 <_dl_make_fptr+792>: ldw 0(,r20),r26
+>     0x412859ec <_dl_make_fptr+796>: addil 0,r4,%r1
+>     0x412859f0 <_dl_make_fptr+800>: b,l 0x412859c4 <_dl_make_fptr+756>,r0
+> End of assembler dump.
+> 
+> I have to thought more on how to create a test case (all advise is 
+> always well come :) )
+> 
+> Joel
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
