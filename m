@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.66.220])
-	by dsl2.external.hp.com (Postfix) with SMTP id 659A4482B
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 02:57:54 -0600 (MDT)
-Date: Mon, 26 Aug 2002 10:57:34 +0200
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Eric Boniface <eric_boniface@non.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7BFF6482B
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 05:53:47 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17jIRC-00018a-00; Mon, 26 Aug 2002 12:53:42 +0100
+Date: Mon, 26 Aug 2002 12:53:42 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Ryan Bradetich <rbradetich@uswest.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Oracle 9i on PARISC-LINUX
-Message-ID: <20020826085640.GL22754@charite.de>
-References: <200208201049.AA167248046@intercommerce.com.br> <20020820141813.GB4865@systemhalted> <20020820142315.GI13589@charite.de> <3D69E9D7.7000903@non.hp.com>
+Message-ID: <20020826125342.B6931@parcelfarce.linux.theplanet.co.uk>
+References: <1030332635.19524.5.camel@beavis>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D69E9D7.7000903@non.hp.com>
+In-Reply-To: <1030332635.19524.5.camel@beavis>; from rbradetich@uswest.net on Sun, Aug 25, 2002 at 09:30:35PM -0600
+Subject: [parisc-linux] Re: [parisc-linux-cvs] Serial MUX driver update.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Aug 26, 2002 at 10:41:59AM +0200, Eric Boniface wrote:
-> Hi,
-> I thought that PA-Linux can run PA-RISC/HPUX binaries...if so, then you 
-> can run Oracle9i for HPUX11, don't you ?
+On Sun, Aug 25, 2002 at 09:30:35PM -0600, Ryan Bradetich wrote:
+> Update to the serial mux driver.
+>  static struct parisc_device_id mux_tbl[] = {
+>  	{ HPHW_A_DIRECT, HVERSION_REV_ANY_ID, 0x015, 0x0000D }, /* Eole CAP/MUX */
+> +	{ HPHW_A_DIRECT, HVERSION_REV_ANY_ID, 0x044, 0x0000D }, /* Sahp Baat Kiuh AP/MUX */
+>  	{ 0, }
+>  };
 
-I think this binary compatability support is rather limited.
+May I suggest:
+
+static struct parisc_device_id mux_tbl[] = {
+	{ HPHW_A_DIRECT, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x0000D }, 
+	{ 0, }
+};
+
+since this driver should work for all MUXes, not just Eole & SBK.
+
+By and large, everyone should have HVERSION_ANY_ID in their
+parisc_device_id tables.  There's some exceptions (ccio, astro, elroy,
+dino, serial), but most drivers shouldn't need to discriminate on
+hversion.
 
 -- 
-Ralf Hildebrandt (Im Auftrag des Referat V A)   Ralf.Hildebrandt@charite.de
-Charite Campus Virchow-Klinikum                 Tel.  +49 (0)30-450 570-155
-Referat V A - Kommunikationsnetze -             Fax.  +49 (0)30-450 570-916
-The secret of flying is simple: Throw yourself at the ground and miss.
+Revolutions do not require corporate support.
