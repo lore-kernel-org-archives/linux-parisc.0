@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A8155482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 11:33:30 -0700 (MST)
-Date: Mon, 24 Mar 2003 19:33:28 +0100
-Subject: Re: [parisc-linux] Re: Out of memory problem
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v551)
-Cc: parisc-linux@lists.parisc-linux.org
-To: Markus Schaber <markus.schaber@student.uni-ulm.de>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20030324185958.307d033c.markus.schaber@student.uni-ulm.de>
-Message-Id: <1B0823D5-5E27-11D7-B738-0030656F07A2@esiee.fr>
+Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F109D482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Mar 2003 11:44:47 -0700 (MST)
+Date: Mon, 24 Mar 2003 11:44:47 -0700
+To: Andreas Schwab <schwab@suse.de>
+Cc: libc-alpha@sources.redhat.com,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] /lib/ld.so.1 (glibc) issues on parisc-linux 2.5 kernel??
+Message-ID: <20030324184447.GA26572@uswest.net>
+References: <1048493134.8777.22.camel@beavis.ybsoft.com> <jeptohumcp.fsf@sykes.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <jeptohumcp.fsf@sykes.suse.de>
+From: rbrad@uswest.net (Ryan Bradetich)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,30 +24,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le lundi, 24 mar 2003, =E0 18:59 Europe/Paris, Markus Schaber a =E9crit =
-:
+> hppa is using function descriptors, AFAIK.  So you'll have to do something
+> similar to what ia64 and ppc64 are doing.
 
-> H3llo,
->
->>> I was there and didn't find a pre-build net-boot image that uses NFS
->>> root [...]
->>
->> The Net install ISOs are what you want. See
->> 	http://www.parisc-linux.org/software/install.html
->
-> But as this are ISO files, I need to attach a CD drive, and I don't=20
-> have
-> an external SCSI drive lying around. I also doubt I'll find any IDE=20
-> port
-> inside my Apollo. That's why I looked for a net-boot image.
-there are lifimages as well.
-you can also get them here:
-http://pateam.esiee.fr/cd-images/lifimages/
+Thanks much for the reply!  I will investigate the function descriptors and
+see if that accounts for the different in offsets.  If so, I just need to
+figure out which side needs to be fixed :)
 
-fwiw, reading the PA-RISC/Linux Boot HOWTO would have told you about=20
-them.
+Thanks!
 
+- Ryan
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+> Andreas.
+> 
+> -- 
+> Andreas Schwab, SuSE Labs, schwab@suse.de
+> SuSE Linux AG, Deutschherrnstr. 15-19, D-90429 N?rnberg
+> Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+> "And now for something completely different."
+> 
+
+-- 
