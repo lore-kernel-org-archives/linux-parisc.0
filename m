@@ -1,26 +1,18 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F0A8348BF
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3A3E548A3
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  5 Jan 2004 11:25:00 -0700 (MST)
-Date: Mon, 5 Jan 2004 11:24:59 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Matt Lewis <nitephyre@iinet.net.au>
-Subject: Re: [parisc-linux] Probem Installing: slang(version).deb corrupt
-Message-ID: <20040105182459.GB9004@colo.lackof.org>
-References: <000801c3d1de$08e053d0$0101a8c0@nitephyre>
-	<3FF6A74F.3000108@tiscali.be>
-	<001f01c3d24b$5e810600$0101a8c0@nitephyre>
-	<20040104045551.GA16904@colo.lackof.org>
-	<000a01c3d28b$91046fa0$0101a8c0@nitephyre>
-	<3FF7FD86.8000208@tiscali.be>
-	<000a01c3d2bd$65441b40$0101a8c0@nitephyre>
-	<20040105052842.GB612@colo.lackof.org>
-	<01d101c3d362$217cf940$0101a8c0@nitephyre>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01d101c3d362$217cf940$0101a8c0@nitephyre>
-Cc: parisc-linux@lists.parisc-linux.org
+	Mon,  5 Jan 2004 11:49:00 -0700 (MST)
+Message-Id: <200401051848.i05Imt6p005065@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Mon, 5 Jan 2004 13:48:54 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040105172146.GE23782@systemhalted> from "Carlos O'Donell" at
+	Jan 5, 2004 12:21:46 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,23 +22,45 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 05, 2004 at 06:01:30PM +1000, Matt Lewis wrote:
-> ftp.parisc-linux.org/cd-images/testing/auto-isos/isos/palinux-2.4.21-pa6-20030718-netinst.iso
+> ======
+> GNU/cc
+> ======
+> 
+> jda, you're the best person to talk about how gcc is doing. I can build
+> kernels with 3.3.3, sadly with the anon cvs down it's messed up my usual
+> workflow when it comes to testing.
 
-Matt,
-that should be sufficient to do an install.
+The PA backend is in fairly reasonable shape.  Most of the remaining
+PA bugs are limitations in the current implementation.  We are still
+restricted in distance for floating point and branch on bit.  Frame
+sizes on hppa64 are limited to < 2**36 bytes.  There is a bug which
+causes arguments in const functions to get optimized away.  There is
+a bug which affects constant elimination.  On the 64-bit port, constants
+don't appear to be substituted/combined properly with if_then_else
+insns.  As a result, some if statements don't get simplified.
 
+2004 Projects:
 
-Thibaut/ESIEE,
-Any chance someone could roll ISOs which uses 2.4.23+memremap+rtc fixes?
-lamont is building a new 2.4.23 debian kernel you could use.
+1) Squash remaining bugs and limitations.
+2) Finish libffi port.
+3) Add PA specific stuff for java.
+4) Develop TLS specification and GCC support.
+5) Allow small range of floating point registers to be used
+   for integer multiplication in kernel.  This should help
+   64-bit kernel.
+6) Thread support for ada.
 
-and I noticed:
-	You are now connected to:
-	Linux greg 2.4.18-pa45 #3 Mon Jul 1 10:45:09 CEST 2002 parisc GNU/Linux 
+As usual, I expect there will be many ups and downs in the process.
+So, we won't get as far as we would like.
 
-2.4.18 has lots of security holes.
-I suggest you guys update those systems before bad things happen.
+> jda, you mentioned that the libstdc++ testsuite could be examined in
+> order to fix some of our failures.
 
-thanks,
-grant
+Yes, these need to be looked at before 3.4 is released.  Some appear
+to be related to long double support.  Just guessing, but I think the
+rest are locale or glibc related.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
