@@ -1,18 +1,17 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3FED94868
+Return-Path: <randolph@tausq.org>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 55D154840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 15 Dec 2003 15:05:14 -0700 (MST)
-Message-Id: <200312152205.hBFM5CEn018329@hiauly1.hia.nrc.ca>
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Mon, 15 Dec 2003 17:05:12 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <no.id> from "John David Anglin" at Dec 14, 2003 06:12:28 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] dlopen failed on 'libthread_db.so.1' -
-	/lib/libthread_db.so.1: undefined symbol: ps_pglobal_lookup
+	Mon, 15 Dec 2003 20:46:53 -0700 (MST)
+Date: Mon, 15 Dec 2003 20:40:33 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: linux-kernel@vger.kernel.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <20031216044033.GT533@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: 
+Subject: [parisc-linux] Question about cache flushing and fork
+Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,16 +21,34 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I hacked together of a build of debian gdb-6.0-2 this afternoon.  When
-I start gdb, I see the following error:
+Hi,
 
-dave@gsyprf11:~/gdb-6.0-2/objdir$ gdb/gdb
+Can someone please explain why it is necessary to flush the cache 
+during fork()? (i.e. call to flush_cache_mm() in dup_mmap)
 
+It seems that after fork, the parent and child have access to the same
+vm, so it should be sufficient to flush the tlb, and create two pte's
+for the processes. I can see that during COW processing there can be
+kernel/user cache aliasing issues on virtually indexed caches, but
+that seems to be taken care of by copy_cow_page(). 
 
-dlopen failed on 'libthread_db.so.1' - /lib/libthread_db.so.1: undefined symbol: ps_pglobal_lookup
-GDB will not be able to debug pthreads.
+I've read through cachetlb.txt, but it just says:
 
-Dave
+        This interface is used to handle whole address space
+        page table operations such as what happens during
+        fork, exit, and exec.
+
+I can see why this is needed for exit(), but why fork()? and i don't see
+this used for exec() ?
+
+Also is there an updated version of the "Linux Cache Flush Architecture"
+document? (http://en.tldp.org/LDP/khg/HyperNews/get/memory/flush.html)
+This is a very nicely written doc, but it seems a bit out of date for
+2.6 (e.g. flush_page_to_ram is gone)
+
+thanks
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
