@@ -1,32 +1,29 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA01736
-	for <parisc-linux@puffin.external.hp.com>; Mon, 23 Aug 1999 01:56:25 -0600
-Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
-	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id JAA12446
-	for <parisc-linux@thepuffingroup.com>; Mon, 23 Aug 1999 09:57:58 +0200
-Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
-	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id JAA281543
-	for <parisc-linux@thepuffingroup.com>; Mon, 23 Aug 1999 09:57:57 +0200 (CEST)
-Received: by genedata.com
-	via sendmail from stdin
-	id <m11IozN-00026iC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
-	for parisc-linux@thepuffingroup.com; Mon, 23 Aug 1999 09:57:57 +0200 (CEST)
-Date: Mon, 23 Aug 1999 09:57:57 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <19990823095757.H31994@mencheca.ch.genedata.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA01932
+	for <parisc-linux@puffin.external.hp.com>; Mon, 23 Aug 1999 02:21:30 -0600
+Received: (from mail@localhost) by ns.edelmann.de (8.8.8/8.6.9) id JAA16253 for <parisc-linux@thepuffingroup.com>; Mon, 23 Aug 1999 09:35:51 +0200
+Received: from edelmann.de ([173.57.31.101] (may be forged)) by postbox.w1.edelmann.de (8.8.6 (PHNE_15509)/8.8.0) with ESMTP id KAA13472 for <parisc-linux@thepuffingroup.com>; Mon, 23 Aug 1999 10:22:59 +0200 (METDST)
+Message-ID: <37C104DC.FE5C324C@edelmann.de>
+Date: Mon, 23 Aug 1999 10:22:52 +0200
+From: Gerhard Klein <G.Klein@edelmann.de>
+MIME-Version: 1.0
+To: HP Linux <parisc-linux@thepuffingroup.com>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Signals
+Subject: [parisc-linux] latest files and HOWTO for installation
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hello,
 
-Is anyone looking into the signal handling and delivery stuff right now?
-This is one of the few remaining independent areas; your chance to become
-an expert on Linux and HPUX signalling :-)
+can anyone tell me where I will find the latest files and HOWTO for
+installation of parisc linux.
 
--- 
-Matthew Wilcox <willy@bofh.ai> <willy@thepuffingroup.com>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Thanks
+
+
+Gerhard
+
+--
+http://www.edelmann.de
+mailto:G.Klein@edelmann.de
+Phone: +49 7321 340 368
+Fax:   +49 7321 340 363
