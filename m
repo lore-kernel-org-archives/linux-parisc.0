@@ -1,10 +1,10 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 20 Dec 2002 15:37:47 -0700
+Date: Fri, 20 Dec 2002 18:38:24 -0700
 To: James Bottomley <James.Bottomley@steeleye.com>
 Cc: Randolph Chung <randolph@tausq.org>,
 	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] 2.5 randomly kills applications with page faults
-Message-ID: <20021220223747.GD13478@dsl2.external.hp.com>
+Message-ID: <20021221013824.GA18983@dsl2.external.hp.com>
 References: <randolph@tausq.org> <20021218170254.GM19331@tausq.org> <200212202212.gBKMCbv08741@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -22,32 +22,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 On Fri, Dec 20, 2002 at 04:12:37PM -0600, James Bottomley wrote:
-> The fix is simple: increment the stack pointer.  I chose 16 to preserve every 
-> alignment I can think of is that also safe for 64 bit?
+...
+> The problem is that they forgot to increment the stack pointer.  Thus, if we 
+> take an interruption between this instruction and the corresponding
+> retrieval, the value can be trashed.
 
-needs to be 64 bytes - lamont confirmed.
+It doesn't look like this bug is present in 2.4.
+Richard suspects it was introduced when the task struct was split
+from the stack. (I hope I recall his statement correctly)
 
-> With this fix, my system seems fairly solid.  It survives my bitkeeper and 
-> stress tests so far (about 30 min) previously it always collapsed within
-> a few minutes.
+The new code sequence is:
+ 95	mtsp    %r0,%sr7			/* get kernel space into sr7 */
+ 96	STREGM  %r1,FRAME_SIZE(%r30)		/* save r1 (usp) here for now */
+ 97	mfctl   %cr30,%r1			/* get task ptr in %r1 */
+ 98	LDREG   TI_TASK(%r1),%r1
+105	STREG   %r0,  TASK_PT_PSW(%r1)
+106	STREG   %r2,  TASK_PT_GR2(%r1)		/* preserve rp */
+107	LDREGM  FRAME_SIZE(%r30), %r2		/* get users sp back */
+108	STREG   %r2,  TASK_PT_GR30(%r1)		/* ... and save it */
 
-excellent!
+where STREGM/LDREGM are new macros that use st<X>,ma instructions.
+I'll commit this once I see it boots on my c3000.
 
-> P.S. After this little debug frenzy, I don't personally care if I ever see 
-> another line of parisc assembly again, so if another obscure register
-> trashing problem turns up, my good deed is done...
-
-*G*
-/me kowtows to the east several times...
-
-
->  	STREG	%r1,0(%r30)			/* Stick r1 (usp) here for now */
-> +	ldo	16(%r30),%r30
-
-As David observed, this wants to use ",ma" and I'll work that out with
-lamont/helge offline.
-Something will get committed to 2.4.x/2.5.x trees this afternoon.
-
-thanks - what a wonderful Christmas present! :^)
+But, given the assertion we could take an interrupt between line 96 and
+107, would an interrupt between 95/96 cause Bad Things (tm) to happen?
 
 grant
