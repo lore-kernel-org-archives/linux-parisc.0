@@ -1,12 +1,10 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] hppa light-weight-syscall CAS working! or "The
-	meaning of probew"
-Date: Thu, 5 Aug 2004 02:20:00 -0400
-Message-ID: <20040805062000.GA24775@baldric.uwo.ca>
+From: kyle@mcmartin.ca (Kyle McMartin)
+Subject: [parisc-linux] [RFC] head.S merge, take 2
+Date: Thu, 5 Aug 2004 21:55:54 -0400
+Message-ID: <20040806015554.GA5319@leibniz.int.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: LaMont Jones <lamont@debian.org>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -19,421 +17,476 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-pa,
-
-Success. LWS CAS is working, but don't do anything naughty or it
-crashes. I'm trying to determine why I get an HPMC when I probew an
-address that probably has no mapping? It should be nullifying the insn
-in question and returning zero?
-
-Here is an updated working patch for light-weight-syscalls. The todo
-list includes:
-
-Things I still have to fix:
-- User passes in a bogus address.
-        = Unaligned? No mapping exists?
-        = probew crashes the kernel in the latter (HPMC).
-- User can read to address, but not write.
-        = probew crashes the kernel.
-- Take a tlb miss during the main CAS operation.
-        = Need to add the load to the exceptions list
-        = and work out a method where I can wait for the
-        = page to migrate back from swap->memory->cache
-        = and then try again. In the mean time I can't take
-        = a signal or be scheduled off that CPU. I plan to do
-        = the later by making sure that the return path back
-        = from the scheduler double checks the return priority
-        = and if it's not user priority it shouldn't be sending
-        = pending signals.
-- SMP locking is untested.
-- Add more test cases to userspace tester.
-                                                                                                 
-Things to optimize:
-- Remove some jumps
-- Don't shuffle around the space registers so much.
-- Ask smarter people to optimize the insn sequences.
-
-I'm timing the lws calls and on a 712/100 it's pipelined and read from
-the cache, so cr16 doesn't even register a single click for the lws :)
-
-Any input would be much appreciated! Lamont you've always been a great
-source of insightful information when it comes to low level coding!
+Just thought I'd toss this out after incorporating tausq and jda's
+comments.
 
 Cheers,
-Carlos.
 
-Index: arch/parisc/kernel/syscall.S
+Index: arch/parisc/kernel/Makefile
 ===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/syscall.S,v
-retrieving revision 1.12
-diff -u -p -r1.12 syscall.S
---- arch/parisc/kernel/syscall.S	26 Apr 2004 15:57:53 -0000	1.12
-+++ arch/parisc/kernel/syscall.S	5 Aug 2004 06:00:21 -0000
-@@ -16,6 +16,8 @@
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/Makefile,v
+retrieving revision 1.4
+diff -u -r1.4 Makefile
+--- arch/parisc/kernel/Makefile	9 May 2004 04:13:00 -0000	1.4
++++ arch/parisc/kernel/Makefile	6 Aug 2004 01:27:52 -0000
+@@ -3,7 +3,6 @@
+ #
+ 
+ head-y			:= head.o
+-head-$(CONFIG_PARISC64)	:= head64.o
+ extra-y			:= init_task.o $(head-y) vmlinux.lds.s
+ 
+ AFLAGS_entry.o	:= -traditional
+Index: arch/parisc/kernel/head.S
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/head.S,v
+retrieving revision 1.8
+diff -u -r1.8 head.S
+--- arch/parisc/kernel/head.S	29 Jul 2004 15:38:06 -0000	1.8
++++ arch/parisc/kernel/head.S	6 Aug 2004 01:27:53 -0000
+@@ -1,12 +1,13 @@
+-/*
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
++/* This file is subject to the terms and conditions of the GNU General Public
+  * License.  See the file "COPYING" in the main directory of this archive
+  * for more details.
+  *
+  * Copyright (C) 1999 by Helge Deller
+  * Copyright 1999 SuSE GmbH (Philipp Rumpf)
+  * Copyright 1999 Philipp Rumpf (prumpf@tux.org)
++ * Copyright 2000 Hewlett Packard (Paul Bame, bame@puffin.external.hp.com)
++ * Copyright (C) 2001 Grant Grundler (Hewlett Packard)
++ * Copyright (C) 2004 Kyle McMartin <kyle@debian.org>
+  *
+  * Initial Version 04-23-1999 by Helge Deller <deller@gmx.de>
+  */
+@@ -15,12 +16,12 @@
+ 
+ #include <asm/offsets.h>
+ #include <asm/psw.h>
+-
++#include <asm/pdc.h>
++	
  #include <asm/assembly.h>
- #include <asm/processor.h>
+ #include <asm/pgtable.h>
  
-+#include <linux/config.h> /* for CONFIG_SMP */
-+
- #ifdef __LP64__
- 	.level          2.0w
- #else
-@@ -38,21 +40,56 @@
- 	.align 4096
- linux_gateway_page:
+-
+-	.level 1.1
++	.level	LEVEL
  
--	.rept 56
-+        /* ADDRESS 0x00 to 0xb0 = 176 bytes / 4 bytes per insn = 44 insns */
-+	.rept 44
- 	break   0,0
- 	.endr
+ 	.data
  
-+        /* ADDRESS 0xb0 to 0xd8, lws uses 2 insns for entry */
-+        /* Light-weight-syscall entry must always be located at 0xb0 
-+
-+                r20 - lws number
-+                r26,r25,r24,r23,r22 - Input registers
-+                r28,r21 - Return register
-+
-+                Scracth: r1, r28, r21
-+
-+                Return pointer: r31 (Not usable)
-+         */
-+
-+/* WARNING: Keep this number updated with table size changes */
-+#define __NR_lws_entries (2)
-+#define __lws_size (lws_end_table - lws_table)
-+#if defined(__LP64__)
-+#  define LWS_ENTRY(_name_) .dword lws_##_name_
-+#else
-+#  define LWS_ENTRY(_name_) .word lws_##_name_
-+#endif
-+
-+lws_entry:
-+        b lws_start
-+        nop
-+
-+        /* Fill from 0xb8 to 0xe0 */
-+        .rept 10
-+        break   0,0
-+        .endr
-+
-+        /* This function MUST be located at 0xe0 for glibc's threading 
-+           mechanism to work. DO NOT MOVE THIS CODE EVER! */
- set_thread_pointer:
- 	gate	.+8, %r0		/* increase privilege */
- 	depi	3, 31, 2, %r31		/* Ensure we return into user mode. */
- 	be	0(%sr7,%r31)		/* return to user space */
- 	mtctl	%r26, %cr27		/* move arg0 to the control register */
+@@ -32,12 +33,13 @@
+ 	.word 0 /* arg3 */
  
-+        /* Increase the chance of trapping if random jumps occur to this
-+           address, fill from 0xf0 to 0x100 */
- 	.rept 4
- 	break   0,0
- 	.endr
+ 	.text
+-	.align	4	
++	.align	4
+ 	.import init_thread_union,data
++	.import fault_vector_11,code    /* IVA parisc 1.1 32 bit */
++	.import fault_vector_20,code    /* IVA parisc 2.0 32 bit */
++#ifndef __LP64__
+ 	.import	$global$		/* forward declaration */
+-	.import fault_vector_11,code	/* IVA parisc 1.1 32 bit */
+-	.import fault_vector_20,code	/* IVA parisc 2.0 32 bit */
+-
++#endif /*!LP64*/
+ 	.export stext
+ 	.export _stext,data		/* Kernel want it this way! */
+ _stext:
+@@ -56,82 +58,108 @@
+ 	.import __bss_start,data
+ 	.import __bss_stop,data
  
--/* This address must remain fixed, or user binaries go splat. */
-+/* This address must remain fixed at 0x100 for glibc's syscalls to work */
- 	.align 256
- linux_gateway_entry:
- 	gate	.+8, %r0			/* become privileged */
-@@ -344,6 +381,175 @@ tracesys_sigexit:
- 	ldil	L%syscall_exit_rfi,%r1
- 	be,n	R%syscall_exit_rfi(%sr7,%r1)
- 
-+
-+        /* Light-weight-syscall code */
-+
-+lws_start:
-+        /* Gate and ensure we return to userspace */
-+        gate   .+8, %r0
-+        depi   3, 31, 2, %r31
-+
-+        /* Is the lws entry number valid? */
-+	comiclr,>>=	__NR_lws_entries, %r20, %r0
-+	b,n	lws_exit_nosys
-+
-+	mtsp	%r0,%sr4			/* get kernel space into sr4 */
-+	mtsp	%r0,%sr5			/* get kernel space into sr5 */
-+	mtsp	%r0,%sr6			/* get kernel space into sr6 */
-+	mfsp    %sr7,%r1                        /* save user sr7 */
-+	mtsp    %r1,%sr3                        /* and store it in sr3 */
-+	mtsp	%r0,%sr7			/* get kernel space into sr7 */
-+
-+        /* Load table start */
-+	ldil	L%lws_table, %r1
-+	ldo     R%lws_table(%r1), %r28  /* Scratch use of r28 */
-+#if defined(__LP64__)
-+	ldd,s   %r20(%r28), %r20
-+#else
-+	ldwx,s  %r20(%r28), %r20
-+#endif
-+
-+
-+        /* Jump to lws */
-+	be,n    0(%sr7,%r20)
-+        /* WARNING: lws must issue the return to userspace! */
-+
-+lws_exit:
-+        mfsp    %sr3,%r1                        /* get user space id */
-+        mtsp    %r1,%sr4                        /* get user space into sr4 */
-+        mtsp    %r1,%sr5                        /* get user space into sr5 */
-+        mtsp    %r1,%sr6                        /* get user space into sr6 */
-+        mtsp    %r1,%sr7                        /* get user space into sr7 */
-+        be,n      0(%sr7, %r31)
-+
-+lws_exit_nosys:
-+        /* Return to userspace */
-+        be      0(%sr7, %r31)
-+	ldo	-ENOSYS(%r0),%r21		   /* set errno */
-+        
-+
-+lws_compare_and_swap:
-+        /*
-+                Implementing CAS as an atomic operation:
-+
-+                %r26 - Address to examine
-+                %r25 - Old value to check (old)
-+                %r24 - New value to set (new)
-+                %r28 - Return prev through this register.
-+        
-+                Scratch: r20, r28, r1
-+        */
-+       
-+
-+        /* Test for permission to read from the address */
+-	ldil            L%PA(__bss_start),%r3
+-	ldo             R%PA(__bss_start)(%r3),%r3
+-	ldil            L%PA(__bss_stop),%r4
+-	ldo             R%PA(__bss_stop)(%r4),%r4
++	load32		PA(__bss_start),%r3
++	load32		PA(__bss_stop),%r4
+ $bss_loop:
+ 	cmpb,<<,n       %r3,%r4,$bss_loop
 +#ifdef __LP64__
-+	ldd,s   0(%sr3,%r26), %r20
++	stb,ma          %r0,1(%r3)
 +#else
-+	ldwx,s  0(%sr3,%r26), %r20
+ 	stw,ma          %r0,4(%r3)
 +#endif
-+        
-+cas_testwrite:
-+
-+        /* Test for permission to write to the address */
-+#if defined(__LP64__)
-+        probe,w  (%sr3,%r26), %r20, %r28
+ 
+ 	/* Save away the arguments the boot loader passed in (32 bit args) */
+-
+-	ldil            L%PA(boot_args),%r1
+-	ldo             R%PA(boot_args)(%r1),%r1
++	load32		PA(boot_args),%r1
+ 	stw,ma          %arg0,4(%r1)
+ 	stw,ma          %arg1,4(%r1)
+ 	stw,ma          %arg2,4(%r1)
+ 	stw,ma          %arg3,4(%r1)
+ 
+ 	/* Initialize startup VM. Just map first 8 MB of memory */
+-	ldil		L%PA(pg0),%r1
+-	ldo		R%PA(pg0)(%r1),%r1
+-	shr		%r1,PxD_VALUE_SHIFT,%r3
+-	ldo		(PxD_FLAG_PRESENT+PxD_FLAG_VALID)(%r3),%r3
++	load32		PA(pg0),%r1
+ 
+-	ldil		L%PA(swapper_pg_dir),%r4
+-	ldo		R%PA(swapper_pg_dir)(%r4),%r4
++#ifdef __LP64__
++	load32		PA(pmd0),%r5
++	shrd            %r5,PxD_VALUE_SHIFT,%r3	
 +#else
-+        probew  (%sr3,%r26), %r20, %r28
++	shr		%r1,PxD_VALUE_SHIFT,%r3
 +#endif
-+        cmpb,<>,n %r0, %r28, cas_continue
-+	ldo    -EINVAL(%r0),%r21
-+        b,n    lws_exit
++        ldo             (PxD_FLAG_PRESENT+PxD_FLAG_VALID)(%r3),%r3	
++	
++	load32		PA(swapper_pg_dir),%r4
+ 	mtctl		%r4,%cr24	/* Initialize kernel root pointer */
+ 	mtctl		%r4,%cr25	/* Initialize user root pointer */
 +
-+cas_continue:
-+
-+#ifdef CONFIG_SMP
-+        /* Load start of lock table */
-+        ldil   L%lws_lock_start, %r20
-+        ldo    R%lws_lock_start(%r20), %r28
-+
-+        /* Extract four bits from r26 and hash lock (Bits 4-7) */
-+        extru  %r26, 27, 4, %r20
-+
-+        /* Find lock to use, the hash is either one of 0 to
-+           15, multiplied by 16 (keep it 16-byte aligned)
-+           and add to the lock table offset. */
-+        shlw   %r20, 4, %r20
-+        add    %r20, %r28, %r20
++#ifdef __LP64__
++	stw		%r3,ASM_PGD_ENTRY*ASM_PGD_ENTRY_SIZE(%r4)
++	shrd		%r1,PxD_VALUE_SHIFT,%r3
++	ldo		(PxD_FLAG_PRESENT+PxD_FLAG_VALID)(%r3),%r3
++	ldo		ASM_PMD_ENTRY*ASM_PMD_ENTRY_SIZE(%r5),%r5
++#else
++        ldo             ASM_PGD_ENTRY*ASM_PGD_ENTRY_SIZE(%r4),%r4
 +#endif
+ 	ldi		ASM_PT_INITIAL,%r1
+-	ldo		ASM_PGD_ENTRY*ASM_PGD_ENTRY_SIZE(%r4),%r4
 +
-+cas_lock_loop:
-+        rsm   PSW_SM_I, %r0
-+
-+
-+#ifdef CONFIG_SMP
-+        ldcw  0(%r20), %r28
-+        cmpb,<>,n %r0, %r28, cas_action
-+        ssm   PSW_SM_I, %r0
-+        ldw   0(%r20), %r28
-+cas_read_loop:
-+        cmpb,=,n %r0, %r28, cas_read_loop
-+        ldw   0(%r20), %r28
-+        b     cas_lock_loop
+ 1:
++#ifdef __LP64__
++	stw             %r3,0(%r5)
++#else
+ 	stw             %r3,0(%r4)
 +#endif
++	
+ 	ldo		(ASM_PAGE_SIZE >> PxD_VALUE_SHIFT)(%r3),%r3
+ 	addib,>		-1,%r1,1b
 +
-+        /*
-+                prev = *addr;
-+                if ( prev == old )
-+                        *addr = new;
-+                return prev;
++#ifdef __LP64__
++	ldo		ASM_PMD_ENTRY_SIZE(%r5),%r5
++#else
+ 	ldo		ASM_PGD_ENTRY_SIZE(%r4),%r4
++#endif
+ 
+ 	ldo		_PAGE_KERNEL(%r0),%r3 /* Hardwired 0 phys addr start */
+-	ldil		L%PA(pg0),%r1
+-	ldo		R%PA(pg0)(%r1),%r1
++	load32		PA(pg0),%r1
++
+ $pgt_fill_loop:
+-	stwm		%r3,ASM_PTE_ENTRY_SIZE(%r1)
++	STREGM          %r3,ASM_PTE_ENTRY_SIZE(%r1)
+ 	ldo		ASM_PAGE_SIZE(%r3),%r3
+ 	bb,>=		%r3,31-KERNEL_INITIAL_ORDER,$pgt_fill_loop
+ 	nop
+ 
+-
+ 	/* Load the return address...er...crash 'n burn */
+ 	copy		%r0,%r2
+ 
+ 	/* And the RFI Target address too */
+-	ldil            L%start_kernel,%r11
+-	ldo             R%start_kernel(%r11),%r11
++	load32		start_kernel,%r11
+ 
+ 	/* And the initial task pointer */
+-
+-	ldil            L%init_thread_union,%r6
+-	ldo             R%init_thread_union(%r6),%r6
++	load32		init_thread_union,%r6
+ 	mtctl           %r6,%cr30
+ 
+ 	/* And the stack pointer too */
+-
++#ifdef __LP64__
++	load32          PA(init_thread_union+THREAD_SZ_ALGN),%sp
++#else
+ 	ldo             THREAD_SZ_ALGN(%r6),%sp
++#endif
+ 
+ 	/* And the interrupt stack */
+-
+-	ldil            L%interrupt_stack,%r6
+-	ldo             R%interrupt_stack(%r6),%r6
++	load32		interrupt_stack,%r6
+ 	mtctl           %r6,%cr31
+ 
++#ifdef __LP64__
++#define MEM_PDC_LO 0x388
++#define MEM_PDC_HI 0x35C
++	ldw             MEM_PDC_LO(%r0),%r3
++	ldw             MEM_PDC_HI(%r0),%r6
++	depd            %r6, 31, 32, %r3        /* move to upper word */
++#endif
+ #ifdef CONFIG_SMP
+ 	/* Set the smp rendevous address into page zero.
+ 	** It would be safer to do this in init_smp_config() but
+ 	** it's just way easier to deal with here because
+ 	** of 64-bit function ptrs and the address is local to this file.
+ 	*/
+-	ldil		L%PA(smp_slave_stext),%r10
+-	ldo		R%PA(smp_slave_stext)(%r10),%r10
++	load32		PA(smp_slave_stext),%r10
+ 	stw		%r10,0x10(%r0)	/* MEM_RENDEZ */
+ 	stw		%r0,0x28(%r0)	/* MEM_RENDEZ_HI - assume addr < 4GB */
+ 
+@@ -141,10 +169,16 @@
+ 	/*
+ 	** Code Common to both Monarch and Slave processors.
+ 	** Entry:
++	**
++	**  1.1:	
+ 	**    %r11 must contain RFI target address.
+ 	**    %r25/%r26 args to pass to target function
+ 	**    %r2  in case rfi target decides it didn't like something
+ 	**
++	**  2.0w:
++	**    %r3  PDCE_PROC address
++	**    %r11 RFI target address
++	**
+ 	** Caller must init: SR4-7, %sp, %r10, %cr24/25, 
+ 	*/
+ common_stext:
+@@ -154,8 +188,41 @@
+ 	/* Clear PDC entry point - we won't use it */
+ 	stw		%r0,0x10(%r0)	/* MEM_RENDEZ */
+ 	stw		%r0,0x28(%r0)	/* MEM_RENDEZ_HI */
+-#endif
++#endif /*CONFIG_SMP*/
+ 
++#ifdef __LP64__
++	/* Save the rfi target address */
++	ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r10
++	tophys_r1       %r10
++	std             %r11,  TASK_PT_GR11(%r10)
++	/* Switch to wide mode Superdome doesn't support narrow PDC
++	** calls.
++	*/
++1:	mfia            %rp             /* clear upper part of pcoq */
++	ldo             2f-1b(%rp),%rp
++	depdi           0,31,32,%rp
++	bv              (%rp)
++	ssm             PSW_SM_W,%r0
++
++        /* Set Wide mode as the "Default" (eg for traps)
++        ** First trap occurs *right* after (or part of) rfi for slave CPUs.
++        ** Someday, palo might not do this for the Monarch either.
 +        */
++2:
++	ldo             PDC_PSW(%r0),%arg0              /* 21 */
++	ldo             PDC_PSW_SET_DEFAULTS(%r0),%arg1 /* 2 */
++	ldo             PDC_PSW_WIDE_BIT(%r0),%arg2     /* 2 */
++	load32          PA(stext_pdc_ret), %rp
++	bv              (%r3)
++	copy            %r0,%arg3
 +
-+cas_action:
-+        ldw   0(%sr3,%r26), %r28
-+        sub,<>   %r28, %r25, %r0
-+        stw   %r24, 0(%sr3,%r26)
-+
-+#ifdef CONFIG_SMP
-+        /* Store ANY non-zero value to the lock */
-+        stw   %r20, 0(%r20)
++stext_pdc_ret:
++	/* restore rfi target address*/
++	ldd             TI_TASK-THREAD_SZ_ALGN(%sp), %r10
++	tophys_r1       %r10
++	ldd             TASK_PT_GR11(%r10), %r11
++#endif
++	
+ 	/* PARANOID: clear user scratch/user space SR's */
+ 	mtsp	%r0,%sr0
+ 	mtsp	%r0,%sr1
+@@ -168,12 +235,15 @@
+ 	mtctl	%r0,%cr12
+ 	mtctl	%r0,%cr13
+ 
++#ifdef __LP64__
++	/* Prepare to RFI! Man all the cannons! */
++	tovirt_r1       %sp
++#endif
++	
+ 	/* Initialize the global data pointer */
+-	ldil		L%$global$,%dp
+-	ldo		R%$global$(%dp),%dp
++	loadgp
+ 
+-	/*
+-	 * Set up our interrupt table.  HPMCs might not work after this! 
++	/* Set up our interrupt table.  HPMCs might not work after this! 
+ 	 *
+ 	 * We need to install the correct iva for PA1.1 or PA2.0. The
+ 	 * following short sequence of instructions can determine this
+@@ -190,14 +260,35 @@
+ 	ldo		R%PA(fault_vector_11)(%r10),%r10
+ 
+ $is_pa20:
+-	ldil		L%PA(fault_vector_20),%r10
+-	ldo		R%PA(fault_vector_20)(%r10),%r10
++	.level		LEVEL /* restore 1.1 || 2.0w */
++	load32		PA(fault_vector_20),%r10
+ 
+ $install_iva:
+ 	mtctl		%r10,%cr14
+ 
+-	/* Disable Q bit so we can load the iia queue */
+-	rsm            PSW_SM_Q,%r0
++#ifdef __LP64__
++	.align          256
++aligned_rfi:
++	ssm             0,0
++	nop             /* 1 */
++	nop             /* 2 */
++	nop             /* 3 */
++	nop             /* 4 */
++	nop             /* 5 */
++	nop             /* 6 */
++	nop             /* 7 */
++	nop             /* 8 */
 +#endif
 +
-+        /* No errors */
-+        copy  %r0, %r21
++#ifdef __LP64__ /* move to psw.h? */
++#define		PSW_BITS	PSW_Q+PSW_I+PSW_D+PSW_P+PSW_R
++#else
++#define		PSW_BITS	PSW_SM_Q
++#endif
 +
-+end_compare_and_swap:
-+        /* Return to userspace */
-+        b     lws_exit
-+        ssm   PSW_SM_I, %r0
-+
-+
-+	/* Make sure nothing else is placed on this page */
-+
-+	.align 4096
-+	.export end_linux_gateway_page
-+end_linux_gateway_page:
-+
-+        /*
-+                All light-weight-syscall atomic operations 
-+                will use this set of locks 
-+        */
-+        .align 4096
-+        .export lws_lock_start
-+.Llws_lock_start:
-+        /* lws locks */
-+        .align 16
-+        .rept 16
-+        /* Keep locks aligned at 16-bytes */
-+        .word 1
-+        .word 1
-+        .word 1
-+        .word 1
-+        .endr
-+
-+        .align 4096
-+        /* Light-weight-syscall table */
-+        /* Start of lws table. */
-+        /* FIXME: global symbol */
-+lws_table:
-+        LWS_ENTRY(compare_and_swap)     /* 0 - Atomic compare and swap */
-+lws_end_table:
-+        /* End of lws table */
-+
- 	.align 4096
- 	.export sys_call_table
- .Lsys_call_table:
-@@ -359,10 +565,4 @@ sys_call_table64:
- #include "syscall_table.S"
++$rfi:	
++	/* turn off troublesome PSW bits */
++	rsm		PSW_BITS,%r0
+ 
+ 	/* kernel PSW:
+ 	 *  - no interruptions except HPMC and TOC (which are handled by PDC)
+@@ -205,8 +296,7 @@
+ 	 *  - big-endian
+ 	 *  - virtually mapped
+ 	 */
+-	ldil		L%KERNEL_PSW,%r10
+-	ldo		R%KERNEL_PSW(%r10),%r10
++	load32		KERNEL_PSW,%r10
+ 	mtctl		%r10,%ipsw
+ 
+ 	/* Set the space pointers for the post-RFI world
+@@ -232,6 +322,7 @@
+ 	.import smp_init_current_idle_task,data
+ 	.import	smp_callin,code
+ 
++#ifndef __LP64__
+ smp_callin_rtn:
+         .proc
+ 	.callinfo
+@@ -239,9 +330,9 @@
+ 	nop
+ 	nop
+         .procend
++#endif /*!LP64*/
+ 
+ /***************************************************************************
+-*
+ * smp_slave_stext is executed by all non-monarch Processors when the Monarch
+ * pokes the slave CPUs in smp.c:smp_boot_cpus().
+ *
+@@ -249,8 +340,6 @@
+ * mode. Once all available/eligible CPUs are in virtual mode, all are
+ * released and start out by executing their own idle task.
+ *****************************************************************************/
+-
+-
+ smp_slave_stext:
+         .proc
+ 	.callinfo
+@@ -264,28 +353,31 @@
+ 	mtsp	   %r0,%sr7
+ 
+ 	/*  Initialize the SP - monarch sets up smp_init_current_idle_task */
+-	ldil		L%PA(smp_init_current_idle_task),%sp
+-	ldo		R%PA(smp_init_current_idle_task)(%sp),%sp
+-	ldw		0(%sp),%sp	/* load task address */
++	load32		PA(smp_init_current_idle_task),%sp
++	LDREG		0(%sp),%sp	/* load task address */
+ 	tophys_r1	%sp
+-	ldw		TASK_THREAD_INFO(%sp), %sp
++	LDREG		TASK_THREAD_INFO(%sp),%sp
+ 	mtctl           %sp,%cr30       /* store in cr30 */
+-	addil		L%THREAD_SZ_ALGN,%sp	/* stack is above task */
+-	ldo		R%THREAD_SZ_ALGN(%r1),%sp
++	ldo             THREAD_SZ_ALGN(%sp),%sp
++#ifdef __LP64__
++	tophys_r1       %sp
++#endif
+ 
+ 	/* point CPU to kernel page tables */
+-	ldil		L%PA(swapper_pg_dir),%r4
+-	ldo		R%PA(swapper_pg_dir)(%r4),%r4
++	load32		PA(swapper_pg_dir),%r4
+ 	mtctl		%r4,%cr24	/* Initialize kernel root pointer */
+ 	mtctl		%r4,%cr25	/* Initialize user root pointer */
+ 
++#ifdef __LP64__
++	/* Setup PDCE_PROC entry */
++	copy            %arg0,%r3
++#else
+ 	/* Load RFI *return* address in case smp_callin bails */
+-	ldil		L%smp_callin_rtn,%r2
+-	ldo		R%smp_callin_rtn(%r2),%r2
+-
++	load32		smp_callin_rtn,%r2
++#endif
++	
+ 	/* Load RFI target address.  */
+-	ldil		L%smp_callin,%r11
+-	ldo		R%smp_callin(%r11),%r11
++	load32		smp_callin,%r11
+ 	
+ 	/* ok...common code can handle the rest */
+ 	b		common_stext
+@@ -293,7 +385,7 @@
+ 
+ 	.procend
+ #endif /* CONFIG_SMP */
+-
++#ifndef __LP64__
+ 	.data
+ 
+ 	.align	4
+@@ -303,3 +395,4 @@
+ 	.size	$global$,4
+ $global$:	
+ 	.word 0
++#endif /*!LP64*/
+Index: include/asm-parisc/assembly.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/asm-parisc/assembly.h,v
+retrieving revision 1.3
+diff -u -r1.3 assembly.h
+--- include/asm-parisc/assembly.h	30 Jul 2004 23:23:20 -0000	1.3
++++ include/asm-parisc/assembly.h	6 Aug 2004 01:28:04 -0000
+@@ -26,6 +26,7 @@
+ #define STREG	std
+ #define LDREGM	ldd,mb
+ #define STREGM	std,ma
++#define SHRREG  shrd
+ #define RP_OFFSET	16
+ #define FRAME_SIZE	128
+ #else
+@@ -33,14 +34,21 @@
+ #define STREG	stw
+ #define LDREGM	ldwm
+ #define STREGM	stwm
++#define SHRREG  shr
+ #define RP_OFFSET	20
+ #define FRAME_SIZE	64
  #endif
  
--
--	/* Make sure nothing else is placed on this page */
--
--	.align 4096
--	.export end_linux_gateway_page
--end_linux_gateway_page:
+ #ifdef CONFIG_PA20
+ #define BL		b,l
++#ifdef CONFIG_PA64
++#define LEVEL 2.0w
++#else
++#define LEVEL 2.0
++#endif
+ #else
+ #define BL		bl
++#define LEVEL 1.1
+ #endif
  
------8<----- Userspace test-lws -----8<-----
-#include <stdio.h>
-#include <stdlib.h>
-
-#define LWS "0xb0"
-#define LWS_CAS 0x0
-
-#define LWS_CLOBBER "r26", "r25", "r24", "r23", "r22", "r20"
-#define LWS_INPUT "r" (lwsnum), "r" (in0), "r" (in1), "r" (in2), "r" (in3), "r" (in4)
-#define LWS_OUTPUT "=m" (retval), "=m" (error)
-
-int lws_errno;
-
-int lws(int lwsnum, int in0, int in1, int in2, int in3, int in4)
-{
-  int retval;
-  int error;
-
-  asm(
-       "copy   %3, %%r26\n"
-       "copy   %4, %%r25\n"
-       "copy   %5, %%r24\n"
-       "copy   %6, %%r23\n"
-       "copy   %7, %%r22\n"
-       "ble    " LWS "(%%sr2, %%r0)\n"
-       "copy   %2, %%r20\n"
-       "stw   %%r28, %0\n"
-       "stw   %%r21, %1\n"
-       : LWS_OUTPUT : LWS_INPUT : LWS_CLOBBER
-     );
-
-  if (error != 0)
-    {
-      printf("lws syscall error %d\n", error);
-      lws_errno = error;
-    }
-  return retval;
-}
-	
-#define CAS_OLD 12
-#define CAS_NEW 34
-#define LWS_BAD 666
-
-int main(void)
-{
-  int ret;
-  int casval = CAS_OLD;
-  unsigned int t1,t2;
-  
-  printf("Testing lws CAS (syscall #%d)\n", LWS_CAS);
-  
-  /***** Test *****/
-  /* cas(addr, old, new)
-     {
-       prev = *addr;
-       if ( prev == old )
-         *addr = new;
-       return prev;
-     } */
-  lws_errno = 0;
-  asm ("mfctl %%cr16,%0\n" : "=r" (t1) :);
-  ret = lws(LWS_CAS, (int)&casval, CAS_OLD, CAS_NEW, -1, -1);
-  asm ("mfctl %%cr16,%0\n" : "=r" (t2) :);
-  if ((casval == CAS_NEW) && (lws_errno == 0))
-    {
-      printf("PASSED: CAS worked correctly.\n");
-    }
-  else
-    {
-      printf("FAILED: CAS did not work.\n");
-    }
-  printf("Time: %u %u (Diff %u)\n",t1,t2,t2-t1);
-  
-  /***** Test *****/
-  lws_errno = 0;
-  printf("Testing lws with invalid number (syscall #%d)\n", LWS_BAD);
-  asm ("mfctl %%cr16,%0\n" : "=r" (t1) :);
-  ret = lws(LWS_BAD, 0, 0, 0, 0, 0);
-  asm ("mfctl %%cr16,%0\n" : "=r" (t2) :);
-  if (lws_errno != 0)
-    {
-      printf("PASSED: lws returned error on invalid syscall number.\n");
-    }
-  else
-    {
-      printf("FAILED: lws didn't error on invalid syscall number!\n");
-    }
-  printf("Time: %u %u (Diff %u)\n",t1,t2,t2-t1);
-  
-  /***** Test *****/
-  lws_errno = 0;
-  printf("Testing lws CAS with NULL address (syscall #%d)\n", LWS_CAS);
-  /* Pass a bogus address and see what happens? */
-  asm ("mfctl %%cr16,%0\n" : "=r" (t1) :);
-  ret = lws(LWS_CAS, 0, 0, 0, 0, 0);
-  asm ("mfctl %%cr16,%0\n" : "=r" (t2) :);
-  if (lws_errno != 0)
-    {
-      printf("PASSED: lws CAS returned error on invalid address.\n");
-    }
-  else
-    {
-      printf("FAILED: lws CAS operated on an invalid address!\n");
-    }
-  printf("Time: %u %u (Diff %u)\n",t1,t2,t2-t1);
-  
-  exit(0);
-
-}
+ #ifdef __ASSEMBLY__
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
