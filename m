@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from romano-nyswri.cfe.cornell.edu (pool-129-44-208-7.syr.east.verizon.net [129.44.208.7])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4C4D482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Jun 2002 17:26:40 -0600 (MDT)
-Subject: Re: [parisc-linux] howdy and 720/50 framebuffer question
-From: Steve Pacenka <spacenka@lightlink.com>
-To: Christoph Plattner <christoph.plattner@gmx.at>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3CFD487C.5F74FDA6@gmx.at>
-References: <1023226391.1465.226.camel@romano-nyswri>
-	<3CFD487C.5F74FDA6@gmx.at>
-Content-Type: text/plain
-Date: 04 Jun 2002 19:25:49 -0400
-Message-Id: <1023233150.1480.26.camel@romano>
-Mime-Version: 1.0
+Received: from dc-mx04.cluster1.charter.net (dc-mx04.cluster1.charter.net [209.225.8.14])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E7086482A
+	for <parisc-linux@parisc-linux.org>; Tue,  4 Jun 2002 21:59:12 -0600 (MDT)
+Message-ID: <3CFD6578.40301@charter.net>
+Date: Tue, 04 Jun 2002 21:12:24 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
+To: debian-hppa@lists.debian.org
+Cc: parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] HP9000 C200 Visualize-EG XFree86 Success!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,26 +21,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 2002-06-04 at 19:08, Christoph Plattner wrote:
-> An interesting question at this point. I also have a 720, but I never
-> tested the graphics display up to now (I only use it via serial line).
-> 
-> My 720 has a single board graphics card with three BNC connectors
-> on it. Is this really a 24bit graphics or a 8bit graphics. The only
-> thing I know, is that the resolution was used with 1280x1024 under
-> HP-UX 9.05 (or similar...).
+Just did a network install using the 0.9.3 full cdrom, and it
+went very smoothly other than not being able to get the
+rescue image ( 32 / 64 subdir ) by default. The default net
+install options were messed up. I just [Q]uit the install and
+ran DSelect on its own to get it working right, not really a
+big deal.
 
-Christoph,
+The 2.4.17 kernel installed by default would not run X, causing
+the HPMC error. Upgrading to Debian's 2.4.18 kernel fixed this
+problem and gave me 8 bit color at 1024x768 with the Visualize-EG
+board. For web surfers looking for help here is the relevant
+snippet to put in /etc/X11/XF86Config-4
 
-The monochrome text plane is 1280x960 on my current victim.  It has four
-BNC video connectors of which I use R, G+sync, and B.
+# Simple XFree86 Configuration for Visualize-EG STI Framebuffer
 
+Section "Screen"
+	Identifier	"Default Screen"
+		Device	"Generic Video Card"
+		Monitor	"Generic Monitor"
+		SubSection	"Display"
+			Depth	8
+			Modes	"default"
+		EndSubSection
+EndSection
 
-> One day I will carry up my 21" monitor and try the grpahics on this 
-> machine !
+Install Notes: "gpm" doesn't seem to work for me, although I
+am running a Dexxa Optical Wheel Mouse through a KVM switch.
+I just set X to "PS/2" and it worked ( but no mouse wheel ).
 
-We have several large HP monitors too; I can barely lift the larger
-ones.  Not very sharp, but I've only seen them in poor lighting
-conditions.
+Looks great! I was able to slurp up the whole Debian system
+via the net with no trouble at all. KDE installed with no problems
+and runs pretty well on this crate.
 
--- thanks, SP
+Just ordered a Visualize-24 graphics board on Ebay which I will
+plug in and see if it works better than the EG board.
+
+See you at Debconf-2!
+
+- Doug
