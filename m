@@ -1,47 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA27301
-	for <parisc-linux@puffin.external.hp.com>; Wed, 11 Oct 2000 09:55:20 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 11 Oct 2000 15:56:24 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id CAA02950;
-	Thu, 12 Oct 2000 02:55:58 +1100
-Date: Thu, 12 Oct 2000 02:55:58 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Markus Werle <markus@lufmech.rwth-aachen.de>
-cc: binutils@sourceware.cygnus.com, parisc-linux@thepuffingroup.com
-Subject: Re: 64 bit BFD configuration failure on hpux-11.0
-In-Reply-To: <39E47AC9.156577A9@lufmech.rwth-aachen.de>
-Message-ID: <Pine.LNX.4.21.0010120250340.29523-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA29672
+	for <parisc-linux@puffin.external.hp.com>; Wed, 11 Oct 2000 10:49:35 -0600
+Message-Id: <200010111654.JAA06726@milano.cup.hp.com>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] __hp9000s700 predefined 
+In-reply-to: Your message of "Wed, 11 Oct 2000 11:31:46 PDT."
+             <200010111531.LAA26119@hiauly1.hia.nrc.ca>
+Date: Wed, 11 Oct 2000 09:54:56 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 11 Oct 2000, Markus Werle wrote:
+"John David Anglin" wrote:
+...
+> These are needed for user apps as well as the kernel.  They allow cpp
+> to process files based on the machine features of the version of gcc used
+> for the compilation (e.g.: PA 1.0, 1.1, or 2.0; 32 or 64 bit; s700 or s800).
 
-> cc +DA2.0w +DS2.0w -Ae -o size size.o bucomm.o version.o filemode.o
-> ../bfd/.libs/libbfd.a ../libiberty/libiberty.a ./../intl/libintl.a -lm
-> ld: Unsatisfied symbol "alloca" in file
-> ../bfd/.libs/libbfd.a[elf64-hppa.o]
-> 1 errors.
+o PA 1.1 vs PA 2.0 can be handled with -D_PA_RISC1_1.
+  Since neither HPUX 10.X, HPUX 11.X, nor parisc-linux supports PA1.0,
+  I don't know or care that is going to work (apologies to the
+  folks who made spectrum happen).
 
-This should fix it
+o 32 vs 64-bit can be handled with __LP64__.
 
---- bfd/elf64-hppa.c~	Tue Sep  5 11:54:49 2000
-+++ bfd/elf64-hppa.c	Thu Oct 12 01:19:35 2000
-@@ -17,6 +17,7 @@
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
- 
-+#include "alloca-conf.h"
- #include "bfd.h"
- #include "sysdep.h"
- #include "libbfd.h"
+o s700 vs s800 is an artifact of HP's workstation vs server divisions.
+  ie an artifact of how HP was organized. With HPUX 11, HP no longer ships
+  different binaries for workstations vs servers (to many customers
+  relief since we now only have one patch stream per release).
+
+o As I noted before, linux enable/disables specific functionality and
+  HW support with either CONFIG_XXX or runtime checks.
+
+John, is there something specific you are concerned about which
+can't be handled by the above predefined symbols?
+
+BTW, HPUX vs parisc-linux vs osf vs hiux differences can be handled
+with hpux, linux, mach, hiux predefines...ugh....looking at
+gcc/gcc/config/pa/pa*h makes me want to puke...
 
 
-I'll commit this to CVS tomorrow morning - this morning I mean, after I've
-had a sleep.
+> Thus, these or a similar set of defines are needed under parisc-linux.
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+I don't believe this yet...having worked on HPUX 10.20 and HPUX 11
+extensively, I'm going to be hard to convince too...
+
+thanks,
+grant
+
+> 
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
