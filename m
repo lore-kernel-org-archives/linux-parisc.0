@@ -1,16 +1,15 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 31 Mar 2005 06:08:18 -0600
-Message-ID: <200503310608.18938.mszick@morethan.org>
-References: <16965.9081.148972.856329@gargle.gargle.HOWL>
-	<200503261548.j2QFm7eL005849@hiauly1.hia.nrc.ca>
-	<16971.44399.144991.110733@gargle.gargle.HOWL>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: Re: [parisc-linux] OpenOffice.org on hppa
+Date: Thu, 31 Mar 2005 09:43:41 +0200
+Message-ID: <16971.43565.589192.122977@gargle.gargle.HOWL>
+References: <20050330134454.GO2485@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-2022-jp"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <16971.44399.144991.110733@gargle.gargle.HOWL>
+In-Reply-To: <20050330134454.GO2485@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,17 +20,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu March 31 2005 01:57, Matthias Klose wrote:
+Randolph Chung writes:
+> I took a look at oo.o for hppa... it'll take quite a bit of work to get
+> it building. Are there enough people interested to make this happen?
 > 
-> Using /bin/dash as the shell for the build seems to avoid these
-> problems, I'll bash the Debian bash maintainer ... ;)
+> Here's what I've found so far; there's probably more.
 > 
-Query - Which version of bash? 2.05b or 3.0?
+> - oo.o needs libneon23-dev to build, this package is not available in
+>   Debian, but this is easily fixable. The package source explicitly
+>   disables builds on hppa, so you can just work around this by
+>   downloading the libneon23 source
+> - oo.o source needs a lot of arch-specific stuff to work:
+>   - build infrastructure
+>     debian/scripts/vars.hppa
+>     config_office/set_soenv.in needs to define a hppa section
+>     solenv/inc/ needs a hppa makefile fragment
+>     (probably more)
+> - need to write bridges code (http://porting.openoffice.org/)
+> 
+> i got past the first two items, but the third (bridges) is a significant
+> piece of work that will require some knowledge of asm and gcc c++ vtable
+> layouts and PA calling conventions..
+> 
+> if a few other people are interested, i'd be willing to help out....
+> but it looks like a lot of work :(
 
-Bash 3.0 has a lot of internal changes, this may
-already be fixed.
+I assume you're talking about OO.o1, given the libneon23-dev build
+dependency. Not sure, if you want to make this work for sarge, but in
+any other case, please consider doing the work on OOo.2. Some people
+are working on this, see #debian-oo and the debian-oo mailing list.
 
-Mike
+	Matthias
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
