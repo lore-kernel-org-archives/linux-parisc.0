@@ -1,19 +1,12 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Sat, 26 Mar 2005 09:55:21 +0100
-Message-ID: <16965.9081.148972.856329@gargle.gargle.HOWL>
-References: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca>
-	<200503241619.j2OGJScZ000411@hiauly1.hia.nrc.ca>
-	<20050324165947.GA29361@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] ext3 perf patch#2
+Date: Sat, 26 Mar 2005 03:35:40 -0700
+Message-ID: <20050326103540.GA31557@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- lamont@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050324165947.GA29361@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,43 +17,117 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Grant Grundler writes:
-> On Thu, Mar 24, 2005 at 11:19:28AM -0500, John David Anglin wrote:
-> ...
-> > From a PA standpoint, GCC 4 is ready for serious testing.  All testsuite
-> > bugs have been squashed in C and C++.
-> 
-> Is there a .deb or tarball available I can drop on a bunch of machines?
+James Bottomley in a private conversation suggested our
+ext2_test_bit() and ext2_find_next_zero_bit() might not
+be counting bits the same way in the bitmap.
 
-- gcc-snapshot can be found in unstable, although it was pointed out,
-  it's not that recent (I can't upload this one every week without the
-  risk beeing killed by buildd admins for slower architectures ;)
+ext2_test_bit() is quite straight forward looks right to me.
+But my brain wasn't grokking ext2_find_next_zero_bit().
+Cloning it from sparc64 was easy to try...
+Since the first attempted worked, I also applli
 
-- You can get gcc-4.0 packages from experimental, just add
-  deb http://http.us.debian.org/debian experimental main contrib
-  to /etc/apt/sources.list.
-  Provided that somebody is building and uploading these ...
+The result was rsync was able to clone from one
+ext3 (whole disk) to another ext3 using rsync
+at 5-10MB/s (both disks on the same SCSI bus).
+This is *alot* better than the previous experience
+of < 1MB/s. Since my ext3 test filesystems hadn't aged (been used)
+very much, bitmap search is not much overhead.
 
-Besides the recent gcc-snapshot build failure, I'm having problems
-building the packages at all at the moment, there's no difference
-using between sarge and unstable.
+If someone else has a disposable, mature ext3 file system
+they can test the following patch on, that would be great.
 
-- if the build succeeds, every test case in the testsuite fails, due
-  to expect(?) problems. lamont told me that's reproducible on another
-  A500, seeing some messages on the serial console, but I can't see
-  these messages. I'm currently running the A500 kernels from the
-  parisc archives. palinux-a500-defconfig-2.6.{8.1-pa11,11-pa2,12-rc1-pa1}
-  all show the same behaviour.
+BTW, this patch assumes a 64-bit kernel and is certainly
+not intended to be committed as is. This is just
+an experiment so far.
 
-- The libjava build sometimes fails with an sh/bash error. Restarting
-  the build usually fixes this.
+Patch is against 2.6.11-pa2 (NOT 2.6.12 - sorry)
 
-- gnat doesn't build, even if you include some prebuilt files (which
-  might be wrongly generated) from another build.
+grant
 
-Besides these minor issues, the packages should be fine.
 
-	Matthias
+Index: include/asm-parisc/bitops.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/include/asm-parisc/bitops.h,v
+retrieving revision 1.14
+diff -u -p -r1.14 bitops.h
+--- include/asm-parisc/bitops.h	18 Feb 2005 14:22:09 -0000	1.14
++++ include/asm-parisc/bitops.h	26 Mar 2005 09:58:58 -0000
+@@ -466,49 +466,47 @@ static __inline__ int ext2_test_bit(int 
+ 	return (ADDR[nr >> 3] >> (nr & 7)) & 1;
+ }
+ 
+-/*
+- * This implementation of ext2_find_{first,next}_zero_bit was stolen from
+- * Linus' asm-alpha/bitops.h and modified for a big-endian machine.
+- */
+ 
+-#define ext2_find_first_zero_bit(addr, size) \
+-        ext2_find_next_zero_bit((addr), (size), 0)
+-
+-extern __inline__ unsigned long ext2_find_next_zero_bit(void *addr,
+-	unsigned long size, unsigned long offset)
++static __inline__ unsigned long ext2_find_next_zero_bit(unsigned long *addr, unsigned long size, unsigned long offset)
+ {
+-	unsigned int *p = ((unsigned int *) addr) + (offset >> 5);
+-	unsigned int result = offset & ~31UL;
+-	unsigned int tmp;
++	unsigned long *p = addr + (offset >> 6);
++	unsigned long result = offset & ~63UL;
++	unsigned long tmp;
+ 
+ 	if (offset >= size)
+ 		return size;
+ 	size -= result;
+-	offset &= 31UL;
+-	if (offset) {
+-		tmp = cpu_to_le32p(p++);
+-		tmp |= ~0UL >> (32-offset);
+-		if (size < 32)
++	offset &= 63UL;
++	if(offset) {
++		tmp = __swab64p((u64 *)p++);
++		tmp |= (~0UL >> (64-offset));
++		if(size < 64)
+ 			goto found_first;
+-		if (tmp != ~0U)
++		if(~tmp)
+ 			goto found_middle;
+-		size -= 32;
+-		result += 32;
++		size -= 64;
++		result += 64;
+ 	}
+-	while (size >= 32) {
+-		if ((tmp = cpu_to_le32p(p++)) != ~0U)
+-			goto found_middle;
+-		result += 32;
+-		size -= 32;
++	while(size & ~63) {
++		if(~(tmp = *(p++)))
++			goto found_middle_swap;
++		result += 64;
++		size -= 64;
+ 	}
+-	if (!size)
++	if(!size)
+ 		return result;
+-	tmp = cpu_to_le32p(p);
++	tmp = __swab64p((u64 *) p);
+ found_first:
+-	tmp |= ~0U << size;
++	tmp |= (~0UL << size);
++	if (tmp == ~0UL)        /* Are any bits zero? */
++		return result + size; /* Nope. */
+ found_middle:
+ 	return result + ffz(tmp);
++
++found_middle_swap:
++	return result + ffz(__swab64((u64)tmp));
+ }
++
+ 
+ /* Bitmap functions for the minix filesystem.  */
+ #define minix_test_and_set_bit(nr,addr) ext2_set_bit(nr,addr)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
