@@ -1,37 +1,63 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA06198
-	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 11:56:36 -0600
-Message-Id: <199906211756.NAA10393@hiauly1.hia.nrc.ca>
-To: adevries@thepuffingroup.com (Alex deVries)
-Date: Mon, 21 Jun 1999 13:56:26 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <376A9AF9.5F3DB326@thepuffingroup.com> from "Alex deVries" at Jun 18, 99 03:16:09 pm
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA06403
+	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 12:07:33 -0600
+Received: (from sieler@localhost)
+	by bart.allegro.com (8.9.1/8.9.1) id LAA29277
+	for parisc-linux@thepuffingroup.com; Mon, 21 Jun 1999 11:07:19 -0700
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <199906211807.LAA29277@bart.allegro.com>
+Subject: Re: [parisc-linux] HPUX binary compatibility
+To: parisc-linux@thepuffingroup.com
+Date: Mon, 21 Jun 1999 11:07:19 -0700 (PDT)
+In-Reply-To: <14480.929987303@upchuck.cygnus.com> from "Jeffrey A Law" at Jun 21, 99 11:48:23 am
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Problems with createheader.sh script
 List-ID: <linux-parisc.vger.kernel.org>
 
-When creating a LIF image, i get the following errors:
+Jeff writes:
 
-./boot_tools/createheader.sh boot_code/ipl ../../../../vmlinux
-./boot_tools/createheader.sh: !: not found
-./boot_tools/createheader.sh: !: not found
-(standard_in) 1: illegal character: J
-(standard_in) 1: parse error
-(standard_in) 1: parse error
-(standard_in) 1: parse error
-(standard_in) 1: illegal character: J
-IPL address: 4096       kernel address: 49152
-IPL size:  45056 Jun    kernel size:
-IPL entry: 4096         kernel entry: 32768
-Header created.
+>   > The problem with translators is that they don't work in all cases.
+>   > 
+>   > The most important case is where you want to link some .o files
+>   > together: some are compiled for Linux, some for HP-UX. 
+>   > 
+>   > *That's* why having different system call numbers is important.
 
-I think the problem is lies with the cut command.  The character
-position of file sizes in the 'ls -l' command varies.  The hpux
-9.01 ls position differs from that of GNU ls.  I think it would
-be better to use awk to grab the file size info.
+> You really don't want to do that.  I strongly recommend against it.  In
+
+(Presuming "that" is "have different system call numbers")
+
+> 5 years of working on a system which had hpux compatibility we had zero
+> need to do this kind of stuff and it just makes things a lot more complicated
+> than they need to be.
+
+You're "compatible" if you can run an HP-UX app "out of the box" (e.g.,
+restore it and run).  If you have to run it through a translator of some kind,
+you aren't compatible.   (If the translator is part of the OS, and invoked 
+automatically & invisibly, that's ok...been there, used that for 15 years 
+on MPE)
+
+So...how do you achieve this level of compatibility?  Simple...the HP-UX
+system call numbers *must* be honored.  What does that mean, then, if
+Linux has an identically named (not numbered) system call whose
+semantics differ?  Precisely one thing: the kernel must be able to
+differentiate between them.  There are two basic methods of doing this:
+
+  1) different system call numbers
+
+or 
+
+  2) different gateway page for the system calls (e.g., 0xc0000000 for
+     HP-UX, and 0xc0000040 for Linux).  (Note: I don't recall the exact
+     digits HP-UX uses...the values above are for illustrative purposes)
+     (The kernel could check to see which address had been used for the
+     call)
+
+Without such a mechanism, you can't tell the system calls apart.
+
+So, the only unanswered question is: is HP-UX compatibility desired?  
+If the answer is "yes", the subsequent question (how) was answered above.
 
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Stan Sieler                                          sieler@allegro.com
+                                         http://www.allegro.com/sieler/
