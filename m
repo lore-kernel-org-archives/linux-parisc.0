@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D591A611C
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 02:28:39 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 630C7B00C; Mon, 19 Nov 2001 09:30:31 +0000 (GMT)
-Date: Mon, 19 Nov 2001 09:30:31 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Aaron Macks <aaronm@cs.brandeis.edu.ml.to>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 755/125 problems
-Message-ID: <20011119093030.C10517@linuxcare.com>
-References: <a05100316b81d8d1c41f3@[129.64.46.46]> <1006107893.4898.5.camel@beavis> <a05100318b81dbd449750@[129.64.46.46]>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C1BDC6128
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 02:51:07 -0700 (MST)
+Date: Mon, 19 Nov 2001 10:50:54 +0100
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: rsync for CVS repository
+Message-ID: <20011119105054.B28328@lug-owl.de>
+References: <3BF7C6E2.D6B35170@freebel.net> <1006094625.3bf7c921363b6@webmail.tiscalinet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <a05100318b81dbd449750@[129.64.46.46]>; from aaronm@cs.brandeis.edu.ml.to on Sun, Nov 18, 2001 at 02:34:30PM -0500
+In-Reply-To: <1006094625.3bf7c921363b6@webmail.tiscalinet.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,11 +22,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Nov 18, 2001 at 02:34:30PM -0500, Aaron Macks wrote:
-> As for SCSI, I have HPUX on a FW, but a N for Linux.  Will it be a 
-> problem to have the FW drive installed, or Linux just ignore it?
+On Sun, 2001-11-18 15:43:45 +0100, joel.soete@freebel.net <joel.soete@freebel.net>
+wrote in message <1006094625.3bf7c921363b6@webmail.tiscalinet.be>:
+> Hi Paul,
+> 
+> One great stuff which makes me prefer rsync versus cvs is that rsync allow me to
+> define easily RSYNC_PROXY (afaik cvs did not) and in my working environement
+> (behing a fw configure by neanderthal admin) it is a great help.
+> 
+> But I also understand well your position.
 
-Should be ok, just be very sure that you know which disk is which
-before you start partitioning.
+Well, you don't need to advertise or document rsync access. People
+interested in using it know how to do it, and they'll simply try
+it. Look at oss.sgi.com - you won't really find rsync mentioned
+there:-)
 
-Richard
+MfG, JBG
+
+-- 
+Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
+	http://lug-owl.de/~jbglaw/software/snapshot2cvs/
