@@ -1,20 +1,18 @@
-From: Kyle McMartin <kyle@engsoc.org>
-Subject: Re: [parisc-linux] A couple of minor patches for 2.6.7-pa1
-Date: Fri, 18 Jun 2004 23:41:16 -0400
-Message-ID: <20040619034116.GF12572@engsoc.org>
-References: <40D30E3C.1010809@tiscali.be> <40D34A27.8060009@tiscali.be>
-	<35844.127.0.0.1.1087594933.squirrel@www.puszczka.com>
-	<20040618212600.GB12572@engsoc.org>
-	<35884.127.0.0.1.1087595933.squirrel@www.puszczka.com>
-	<20040618215310.GD12572@engsoc.org>
-	<20040619012855.GM20511@parcelfarce.linux.theplanet.co.uk>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] gcc register assignment problem on parisc
+Date: Fri, 18 Jun 2004 20:05:21 -0400 (EDT)
+Message-ID: <200406190005.i5J05Msm000476@hiauly1.hia.nrc.ca>
+References: <20040618190107.4EC4F4F24E@enterprise.cs.utk.edu>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <willy@debian.org>
+  charset=US-ASCII
+Cc: camm@enhanced.com,
+ rwhaley@cs.utk.edu,
+ parisc-linux@lists.parisc-linux.org
+To: rwhaley@cs.utk.edu (R Clint Whaley)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040619012855.GM20511@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20040618190107.4EC4F4F24E@enterprise.cs.utk.edu> from "R Clint
+	Whaley" at Jun 18, 2004 03:01:07 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,19 +23,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jun 19, 2004 at 02:28:55AM +0100, Matthew Wilcox wrote:
-> -cflags-$(CONFIG_PA7300LC)      += -march=1.1 -mschedule=7300
-> +cflags-$(CONFIG_PA7300LC)      += $(call check_gcc,-march=1.1 -mschedule=7300,-march=1.1 -mschedule=7100LC)
-> 
-This works, but only if -Werror is passed to gcc as well, otherwise, it
-only generates a warning and goes undetected. Without -Werror, the
-kernel compile should succeed, as where it died before would be built
-with 7100LC this way, though I'm unaware of the effect of mixing gcc
-optimizations like this...
+> I started looking at the genned assembler, and I think I've figured out why.
+> parisc allows you to use the 'left' and 'right' parts of a double precision
+> register as seperate single precision registers.  Therefore, you have
+> something like 56 single prec regs on this arch!  The bad news, though,
+> is that the pair must be scheduled as if they were still one reg.  I.e.,
+> if %fr31L is the target of an operation, and the next operation uses
+> %fr31R as a target, you have a pipeline stall just as you would if they
+> were both %fr31L.
 
-Regards,
+This is a known issue and mentioned in pa64-regs.h.  I believe the
+simple stuff has been done already (fp register allocation order).
+Changing the the allocation order or hiding the left/right addressibility
+would probably break gdb.  It might be possible to describe the
+interdependency in the machine definition.
+
+Dave
 -- 
-Kyle McMartin
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
