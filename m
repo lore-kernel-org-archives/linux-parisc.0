@@ -1,31 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 44FB7485A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Oct 2001 06:37:43 -0600 (MDT)
-Date: Tue, 2 Oct 2001 14:37:02 +0200 (CEST)
-From: Jochen Friedrich <jochen@scram.de>
-To: Albert Strasheim <fullung@ilink.nis.za>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] woody install on 720/50
-In-Reply-To: <20011001175425.A31305@dogbert.localdomain>
-Message-ID: <Pine.NEB.4.33.0110021434430.24166-100000@www2.scram.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from solo.franken.de (A6d12.pppool.de [213.6.109.18])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EC1EE487A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Oct 2001 06:58:53 -0600 (MDT)
+Date: Tue, 2 Oct 2001 14:57:01 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: =?iso-8859-1?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH] Additional Address cleanup
+Message-ID: <20011002145701.B3747@solo.franken.de>
+References: <20010921104838.A2049@beavis.ybsoft.com> <3BAF13BC.3090302@hrzpub.tu-darmstadt.de> <20010924215918.A23464@beavis.ybsoft.com> <3BB0BFF9.50708@hrzpub.tu-darmstadt.de> <20010925210035.A22586@solo.franken.de> <3BB8A3FC.7090304@hrzpub.tu-darmstadt.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <3BB8A3FC.7090304@hrzpub.tu-darmstadt.de>; from rscholz@hrzpub.tu-darmstadt.de on Mon, Oct 01, 2001 at 07:12:28PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Albert,
+On Mon, Oct 01, 2001 at 07:12:28PM +0200, Rüdiger Scholz wrote:
+> I'm glad i'm not the only one with this problem. And even someone knows 
+> the solution for the problem. ;-). I also disabled my add-on card the 
+> same way, and then the sti-stuff worked quite fine. But it would be 
+> cooler to use the second card, too.
 
-> Next I tried a network install using my i386 box (with co-ax network
-> card to connect to the 720) as a web server. According to the
-> access.log, the drivers.tgz and rescue.bin very retrieved without
-> problems. When it tried to extract the rescue.bin, it croaked with a
-> message saying "Bad address." When I tried to retrieve the images a
-> second time, the installer croaked.
+sure, after having fixed the X problem I had with artist/viz-eg cards
+I've spend some time looking at HCRX. I've found one problem, when we
+load the color for the HCRX, the card locks up, probably because we
+do a whole color map load per setcolreg() call. I've changed that
+and the card doesn't lock up anymore. But either I get wrong colors
+without colormap loading or I have some strange looking stuff "behind"
+the normal screen content. It looks like either we need to initialize
+the Z-Buffer (I'll try without, when I get home) or some overlay/attribute
+planes need a better treatment.
 
-I don't know about this installer problem as i did the install manually
-before. After applying the patch, the programs ls, tar, etc started
-working OK and i just successfully performed the apt-get update/upgrade
-:-)
+> But you already have a patch? I can only help with testing and a little 
+> bit of debugging as all of my fingers are thumbs ;-)
 
-Cheers,
-Jochen
+right now I'm not at home (and behind a 28.8k modem connection) and I only
+have a C200 with me, which has other STI problems. So it will take a little
+bit more time, to get the HCRX going.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
