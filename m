@@ -1,56 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA15953
-	for <parisc-linux@puffin.external.hp.com>; Wed, 5 Jan 2000 01:58:35 -0700
-Received: from [10.1.1.3] (helo=tele02.tunstall.co.uk)
-	by gate-isdn.tunstall.co.uk with esmtp (Exim 2.12 #1)
-	id 125mH6-0007D1-00
-	for parisc-linux@thepuffingroup.com; Wed, 5 Jan 2000 08:58:37 +0000
-Message-ID: <51C39E66FF96D11194FCAA00040003048F3640@tele02.localnet>
-From: Mark Wild <M_Wild@tunstall.co.uk>
-To: parisc-linux@thepuffingroup.com
-Subject: RE: [parisc-linux] Thanks...alot 
-Date: Wed, 5 Jan 2000 09:00:00 -0000 
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA22132
+	for <parisc-linux@puffin.external.hp.com>; Wed, 5 Jan 2000 12:15:37 -0700
+Received: from venus (venus.esiee.fr [147.215.20.10])
+	by mail.esiee.fr (Postfix) with SMTP id D538F5730E
+	for <parisc-linux@thepuffingroup.com>; Wed,  5 Jan 2000 20:18:24 +0100 (CET)
+Message-ID: <013201bf57b1$a3d6bb50$0a14d793@esiee.fr>
+From: "Thierry SIMONNET" <t.simonnet@esiee.fr>
+To: <parisc-linux@thepuffingroup.com>
+Date: Wed, 5 Jan 2000 20:18:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Subject: [parisc-linux] Trouble booting 712/60 and 710
 List-ID: <linux-parisc.vger.kernel.org>
 
+I work on HP712/60  and HP710 workstation under HPUX 10.20.
+I've done vmlinux and Image.
 
+I can't boot using native HP's bootp daemon. The documentation is a bit
+light and the archive doesn't give me any good response.
+I try to boot using HP ISL (after using som_relocate), but it fails. In fact
+it blocks in real setup.
 
-> -----Original Message-----
-> From: eric@cirr.com [mailto:eric@cirr.com]
-> Sent: Thursday, December 30, 1999 4:54 PM
-> To: tom@piace.com
-> Cc: parisc-linux@thepuffingroup.com
-> Subject: Re: [parisc-linux] Thanks...alot 
-> 
-> 
-> 
-> tom@piace.com writes:
-> - 	Does anyone know if hp has a development version of hpux like
-> - sun has with solaris?  If not does anyone know of a way to reset the
-> - password from the console.
-> 
-> 	Depending upon the OS version and the settings, you
-> should be able to boot the system to single user mode, and reset
-> the password.  I'm a bit out of practice, but if you ``boot
-> isl'', and then enter `/hp-ux -is' (for 9.0x) or `/stand/vmunix
-> -is' (for 10.20), you should be get a single user prompt,
-> without having to enter a password (later OS versions may
-> require the root password to enter single user mode.)
-> 
+Could you help me?
 
-<snip>
+TX
 
-Being in a similar predicament with a 710 workstation I managed
-to get to the ISL prompt but to boot into single user mode
-I needed to enter 'HPUX -is /hp-ux'. However, after file system
-checking I got a repeated message along the lines of:
+=========================================================
+Thierry SIMONNET
+Responsable du Service des Moyens Informatiques Généraux
+Groupe ESIEE - CCIP
+Cité Descartes - BP 99 - 2 Bd Blaise Pascal
+93162 NOISY le Grand cedex
 
-INIT: SINGLE USER MODE
-
-This just filled up my screen.
-
-Any suggestions as to what I can do to get root ?
-
-Mark Wild.
+tel: 01 45 92 66 24 fax: 01 45 92 67 99 e-mail: t.simonnet@esiee.fr
+=========================================================
