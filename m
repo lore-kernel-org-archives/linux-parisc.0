@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E1047482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Nov 2001 19:29:54 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 169GxU-0004BE-00; Thu, 29 Nov 2001 02:29:52 +0000
-Date: Thu, 29 Nov 2001 02:29:52 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Kevin Clark <kclark@halfdimension.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Options for a 730 machinge (sorry for double post - email server is acting up)
-Message-ID: <20011129022952.E24794@parcelfarce.linux.theplanet.co.uk>
-References: <20011128211608.4de42193.kclark@halfdimension.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011128211608.4de42193.kclark@halfdimension.com>; from kclark@halfdimension.com on Wed, Nov 28, 2001 at 09:16:08PM -0500
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B627482C
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Nov 2001 21:36:20 -0700 (MST)
+Received: from bame.riverrock.org (bame.riverrock.org [199.254.238.240])
+	by www.riverrock.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA22958
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Nov 2001 21:36:18 -0700
+Received: from riverrock.org (really [127.0.0.1]) by bame.riverrock.org
+	via smail with esmtp
+	id <m169Ivq-000OuXC@bame.riverrock.org> (Debian Smail3.2.0.111)
+	for <parisc-linux@parisc-linux.org>; Wed, 28 Nov 2001 21:36:18 -0700 (MST)
+Message-Id: <m169Ivq-000OuXC@bame.riverrock.org>
+From: bame@riverrock.org
+Reply-To: bame@riverrock.org
+To: parisc-linux@parisc-linux.org
+Date: Wed, 28 Nov 2001 21:36:18 -0700
+Subject: [parisc-linux] 2.4.16 merge
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +26,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Nov 28, 2001 at 09:16:08PM -0500, Kevin Clark wrote:
-> I just obtained two older HP Workstations.  I am not really familar
-> with these stations.  I was able to get on to boot and give me some info.
-> It tells me this
-> 
-> 9000/730 machine.
-> 
-> I was looking at installing parisc-linux on this machine but I
-> am reading the information correctly this particular machine is not
-> supported.
+2.4.16 boots with defconfig kernels, wide and narrow, on c3000.  The
+only problem I know about is an inconsequential function I stubbed out
+which someone needs to write.
 
-the problems with the 730 should now mostly be fixed.  there should be an
-0.9.3 cd out soon.
+Any reason I shouldn't commit?
 
--- 
-Revolutions do not require corporate support.
+	-P
