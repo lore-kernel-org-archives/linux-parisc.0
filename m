@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.santa-clarita.com (unknown [64.165.136.197])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 06EF84834
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 14:31:20 -0700 (MST)
-Message-Id: <sc84c875.096@mail.santa-clarita.com>
-Date: Tue, 05 Mar 2002 13:30:07 -0800
-From: "Chris Gray" <CGRAY@santa-clarita.com>
-To: < <parisc-linux@lists.parisc-linux.org>>
+Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2B9BD483C
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 14:57:38 -0700 (MST)
+To: "Chris Gray" <CGRAY@santa-clarita.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] OT: value of a 712/100 
+In-Reply-To: Message from "Chris Gray" <CGRAY@santa-clarita.com>
+   of "Tue, 05 Mar 2002 13:30:07 PST." <sc84c875.096@mail.santa-clarita.com>
+References: <sc84c875.096@mail.santa-clarita.com> 
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_0C51B8E5.F697F55B"
-Subject: [parisc-linux] OT: value of a 712/100
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 05 Mar 2002 14:57:33 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20020305215733.0B69C37CF5@carmen.fc.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,55 +24,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a MIME message. If you are reading this text, you may want to 
-consider changing to a mail reader or gateway that understands how to 
-properly handle MIME multipart messages.
+"Chris Gray" writes...
 
---=_0C51B8E5.F697F55B
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> Sorry for the OT post,  I own a few 712/100 boxes and was wondering what
+> they would be worth? and if any one here would be interested in buying a
+> couple of them?
 
-Sorry for the OT post,  I own a few 712/100 boxes and was wondering what
-they would be worth? and if any one here would be interested in buying a
-couple of them?
+Check ebay, I seem to remember them going for ~$100 with ram and disk.
 
-Thanks,
-Chris.
-
-=====================
-Chris 'GrayMatter' Gray
-Network Administrator
-CGray@Santa-Clarita.com
-=====================
-Windows NT crashed.
-I am the Blue Screen of Death.
-No one hears your screams.
-=====================
-Yesterday it worked.
-Today it is not working.
-Windows is like that.
-=====================
-"If it ain't broke,
-fix it till it is broke"
-=====================
-
---=_0C51B8E5.F697F55B
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="Chris Gray.vcf"
-
-BEGIN:VCARD
-VERSION:2.1
-X-GWTYPE:USER
-FN:Gray, Chris
-TEL;WORK:286-4094
-ORG:;Tech. Services
-TEL;PREF;FAX:255-1043
-EMAIL;WORK;PREF;NGW:CGRAY@santa-clarita.com
-N:Gray;Chris
-TITLE:Information Technology Specialist
-END:VCARD
-
-
---=_0C51B8E5.F697F55B--
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
