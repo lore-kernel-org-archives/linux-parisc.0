@@ -1,38 +1,50 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Tue, 2 Feb 1999 18:25:29 -0500 (EST)
-From: Christopher Beard <cjbeard@istar.ca>
+Date: Tue, 2 Feb 1999 17:46:57 -0700 (MST)
+From: Steve Ball <hamster@arctic.nmt.edu>
 To: hppa-linux@puffingroup.com
-cc: adevries@redhat.com
 Subject: Re: Some planning issues.
-In-Reply-To: <199902022312.PAA13692@gatekeeper.equator.com>
-Message-ID: <Pine.LNX.4.04.9902021818010.1377-100000@sprite.osfi-bsif.gc.ca>
+In-Reply-To: <Pine.LNX.4.04.9902021818010.1377-100000@sprite.osfi-bsif.gc.ca>
+Message-ID: <Pine.SUN.4.05.9902021738430.26143-100000@baltic>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Resent-Message-ID: <"7splK2.0.ch5.VAwjs"@burrow.puffingroup.com>
+Resent-Message-ID: <"B573E.0.Ek5.ZOxjs"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
->   These are good sources, but I hope we can get "real" docs from HP. There
->   is tons of information about the PDC, IODC, boot process, and I/O 
->   architecture that would be very useful -- and its a lot easier to read
->   about than pick through code. I can give what I know/remember.
+I dont know if this helps much, but hp has an online manual titled
+"PA-RISC 1.1 Architecture and Instruction Set Reference Manual" that
+describes how to use the bus and chip...
+
+I have this downloaded if anyone needs it and cant find it readily.
+
+At the current time, my department has 2 715/50's and 6 700-RX units, and
+we would like to run linux on them.  I have pa-mklinux working on one of
+the 715/50 using the stuff provided by the opengroup's effort.  It seems
+to run extremly well.
+
+If there is any help I can give, i'm more than willing to try stuff out :)
+
+----------------------******-------------------
+Steve Ball
+NMT EE Department System and Network Admistrator
+C/S 3392
+Socorro, NM 87801
+hamster@arctic.nmt.edu          http://www.ee.nmt.edu/~hamster
+Work: (505) 835-5330 (Digital Lab)
+Shop: (505) 835-5923 (Solar Racing Shop)
+Home: (505) 835-6325 (South 335)
+New Mexico Tech Psycho Caver Extraordinaire (http://www.nmt.edu/~nmtcaver)
+
+The secret of flying is simple: Throw yourself at the ground and miss.
+----------------------******-------------------
+
+On Tue, 2 Feb 1999, Christopher Beard wrote:
+
 > 
-
-It's looking and sounding very likely that we will have an official source
-of "real" documentation from HP......
-
-If we can come up with perhaps an initial wish list, that may be a good
-approach to take. Perhaps those who have working knowledge of this
-documentation or those working internally could suggest titles and
-document numbers and we can then push to have cleared for public
-consumption.
-
-Obviously, there will be some documentation that we will definitely
-require ahead of others, so prioritizing our requests will be important.
-We will also have to look into an efficient means of distributing these
-documents once we have them in our hands.
-
-I'll likely know more by the end of the week.
- 
-- Chris
+> >   These are good sources, but I hope we can get "real" docs from HP. There
+> >   is tons of information about the PDC, IODC, boot process, and I/O 
+> >   architecture that would be very useful -- and its a lot easier to read
+> >   about than pick through code. I can give what I know/remember.
+> > 
+> 
