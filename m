@@ -1,21 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from blount.mail.mindspring.net (blount.mail.mindspring.net [207.69.200.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 11228482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 17:43:24 -0700 (MST)
-Received: (from jkinney@localhost)
-	by archimedes.localnetsolutions.com (8.11.6/linuxconf) id g0M0h6P29623;
-	Mon, 21 Jan 2002 19:43:06 -0500
-Subject: Re: [parisc-linux] vmlinux header for savecrash.
-From: "James P. Kinney III" <jkinney@localnetsolutions.com>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <3C4C53B7.67DA24E@admin.france.hp.com>
-References: <3C4C53B7.67DA24E@admin.france.hp.com>
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
-	boundary="=-a0rn1ys1/B6h9Jsjwvmv"
-Date: 21 Jan 2002 19:43:05 -0500
-Message-Id: <1011660185.22455.118.camel@archimedes.localnetsolutions.com>
+Received: from sj-msg-core-2.cisco.com (sj-msg-core-2.cisco.com [171.69.24.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ED74F482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 18:25:25 -0700 (MST)
+Message-Id: <4.3.2.7.2.20020121170358.045b37c0@mira-sjc5-9.cisco.com>
+Date: Mon, 21 Jan 2002 17:12:30 -0800
+To: raffo@neuronet.pitt.edu, parisc-linux@lists.parisc-linux.org
+From: Christian Suder <csuder@cisco.com>
+Subject: Re: [parisc-linux] Appropriate entries for apt sources.list
+In-Reply-To: <3C4B7CC8.1000300@neuronet.pitt.edu>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,54 +21,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-a0rn1ys1/B6h9Jsjwvmv
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-I think the palo command line is listed in dmesg. That will tell exactly
-which kernel was booted.
+Good question... I personally changed it from "testing" to "unstable" as I 
+had some trouble with X after upgrading the kernel. The new X server that 
+fixed it was only available in unstable (at least back then). However there 
+are examples where using "unstable" can break things (e.g. the recent gpm 
+trouble). Previous ISOs used "unstable" by default, IIRC.
 
-On Mon, 2002-01-21 at 12:45, Bruno Vidal wrote:
-> 	Hi
-> As I said few days ago, I've a dump driver ready.
-> Now I'm working on a savecrash command. It works fine
-> for the dump, but I need to save with the dump some
-> informations like the running kernel at dump time.
-> So in the dump I've got this informations:
-> utsname_release and utsname_version. Now, how can
-> I found the right kernel in /boot ? In other
-> word, how can I retrieve utsname informations in a
-> binary file (without system.map and gdb) ?
->=20
-> 	Thanks.
->=20
-> --=20
-> 	Vidal Bruno, (770-4271)
->         SSD-HA Team, HP-UX & LINUX Support
-> 	bruno_vidal@admin.france.hp.com
---=20
-James P. Kinney III   \Changing the mobile computing world/
-President and COO      \          one Linux user         /
-Local Net Solutions,LLC \           at a time.          /
-770-493-8244             \.___________________________./
+I think a fair answer is, if the system as it running now stable and you 
+are not missing anything, stick with the "testing". If you want to run the 
+latest and greatest kernel, or whatever application, you might want to go 
+to "unstable".
 
-GPG ID: 829C6CA7 James P. Kinney III (M.S. Physics)
-<jkinney@localnetsolutions.com>
-Fingerprint =3D 3C9E 6366 54FC A3FE BA4D 0659 6190 ADC3 829C 6CA7=20
+I just edit the source.list and run update,
+
+         Christian
 
 
-
---=-a0rn1ys1/B6h9Jsjwvmv
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQA8TLWZYZCtw4KcbKcRAvChAKDj9oL1/T6nXZsL3NC3ZgZ5LdCUOgCcCMYq
-I/u2QikOW/t3I6uHRb1Lzu8=
-=9dh/
------END PGP SIGNATURE-----
-
---=-a0rn1ys1/B6h9Jsjwvmv--
+At 09:28 PM 1/20/2002 -0500, Rafael Herrera wrote:
+>I just finished a test install of CD 0.9.3 on a B132L workstation. 
+>Comparing this with a couple of 715/75, 715/80 installs I made before, I 
+>noticed a difference in the sources.list files.
+>
+>My last installation contains:
+>
+>deb ftp://ftp.us.debian.org/debian/ testing main non-free contrib
+>deb-src ftp://ftp.us.debian.org/debian/ testing main non-free contrib
+>deb http://non-us.debian.org/debian-non-US testing/non-US main contrib 
+>non-free
+>deb-src http://non-us.debian.org/debian-non-US testing/non-US main contrib 
+>non-free
+>
+>Whereas the old installs have:
+>
+>deb ftp://ftp.us.debian.org/debian/ unstable main non-free contrib
+>deb-src ftp://ftp.us.debian.org/debian/ unstable main non-free contrib
+>deb http://non-us.debian.org/debian-non-US unstable/non-US main contrib 
+>non-free
+>deb-src http://non-us.debian.org/debian-non-US unstable/non-US main 
+>contrib non-free
+>
+>What would be the most appropriate setting at this point (in order to get 
+>the most usability in the system)? If "testing" is preferable, how can one 
+>revert the packages from "stable" to "testing" version using apt-get commands?
+>
+>Thanks.
+>
+>--
+>      Rafael
+>
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
