@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from eightythree.valleybikes.com (valleybikes.com [24.123.22.113])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 963A94872
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Nov 2002 09:38:44 -0700 (MST)
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE79C4872
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 27 Nov 2002 09:44:58 -0700 (MST)
+Message-Id: <200211271644.gARGiqeA027151@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Disk problems
-From: James Smith <james@compusmithllc.com>
-To: jsoe0708@tiscali.be
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3DA3C54C00007733@ocpmta5.be.tiscali.com>
-References: <3DA3C54C00007733@ocpmta5.be.tiscali.com>
-Content-Type: text/plain
-Date: 27 Nov 2002 11:38:34 -0500
-Message-Id: <1038415115.469.5.camel@seventy>
-Mime-Version: 1.0
+To: james@compusmithllc.com (James Smith)
+Date: Wed, 27 Nov 2002 11:44:52 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: jsoe0708@tiscali.be, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <1038415115.469.5.camel@seventy> from "James Smith" at Nov 27, 2002 11:38:34 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,28 +22,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-the cable length is less than 4ft & every other disk worked, including
-some of the same model
+> the cable length is less than 4ft & every other disk worked, including
+> some of the same model
 
+Have you tried reading with dd from raw device?  Try with a large bs and
+count=1.  This should detect a funny block size.  You could also try building
+the driver with debugging enabled.  This should give some idea as to
+what's happening.
 
-
-
-
-
-On Wed, 2002-11-27 at 01:57, jsoe0708@tiscali.be wrote:
-> >
-> >when i'm doing the disk cloning i'm actually using 2 workstations to
-> >power the drives separately & a scsi cable long enough to reach both
-> >disks, so i dont think its a spin up issue
-> >
-> Not a too long cable:
-> in production with 712 model I met problems when the total length of the
-> scsi chain was below but near 6m (composed of about 5 cables; connectic should
-> certainly affected the signal)
-> 
-> Joel
-> 
-> ********************************************************************************
-> Controlez mieux votre consommation Internet...surfez Tiscali Complete...http://tiscali.complete.be
-> 
-> 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
