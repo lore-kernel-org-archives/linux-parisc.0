@@ -1,17 +1,17 @@
-From: David Pye <dmp@davidmpye.dyndns.org>
-Subject: Re: [parisc-linux] J5000 LED LCD patch (take 2)
-Date: Sat, 26 Mar 2005 15:51:46 +0000
-Message-ID: <200503261551.47477.dmp@davidmpye.dyndns.org>
-References: <200503241848.57598.dmp@davidmpye.dyndns.org>
-	<1111851236.5711.17.camel@mulgrave>
-	<200503261545.05372.dmp@davidmpye.dyndns.org>
-Reply-To: dmp@davidmpye.dyndns.org
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Sat, 26 Mar 2005 14:35:05 -0700
+Message-ID: <20050326213505.GA9287@colo.lackof.org>
+References: <16965.9081.148972.856329@gargle.gargle.HOWL>
+	<200503261548.j2QFm7eL005849@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1683040616=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: lamont@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503261545.05372.dmp@davidmpye.dyndns.org>
+In-Reply-To: <200503261548.j2QFm7eL005849@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,82 +22,55 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1683040616==
-Content-Type: multipart/signed; boundary="nextPart1118757.MjXZ654jfD";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Sat, Mar 26, 2005 at 10:48:06AM -0500, John David Anglin wrote:
+> I've had this problem from time to time, particularly on server
+> machines.  My c3k is solid and this doesn't happen.  For some reason,
+> the libjava build is most prone to the segfaults in sh/bash and
+> sometimes make.  Grant's recent builds on gsyprf11 seem to have
+> changed the nature of the faults.
 
---nextPart1118757.MjXZ654jfD
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+The Astro chipset IOC_CTRL register was being programmed differently
+by each firmware. The workstation firmware was more conservative.
+I've aligned the chipset programming and it seems to have helped
+on the a500 with this change:
+	http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2005-February/035337.html
 
-On Saturday 26 March 2005 15:33, you wrote:
+>   Now, the kernel panics instead
+> of a segfault in sh.  Grant would know more as to what's causing
+> these crashes.
 
-> This is a natural consequence of converting from a tasklet to a
-> workqueue. =A0workqueues and msleep are controlled by the scheduler. =A0T=
-he
-> guarantee is not that the task will be awoken at the specified interval,
-> but that the task will be marked ready to run at the specified interval.
-> When it actually runs is within the gift of the scheduler and depends
-> entirely on how many other runnable tasks there are and what priorities
-> they have.
->
-> If you want absolute control of the timings then you have to use a
-> tasklet or timer (as per the original implementation)
+Yeah, we are still seeing this a few times per month too. :^(
+I don't understand the copy_user_page_asm/do_dp_write data page fault.
+But I'm no VM guru either. Randolph thinks the parameter regs look
+valid in the tombstone.
 
-Yep, I agree entirely. =A0The problem with the previous solution arrived be=
-cause=20
-of the fact that by nature of the way the LCD updates work, they're not=20
-atomic - ie there's a minimum write time between each write. =A0Because=20
-tasklets cannot sleep, it ends up turning into a can of worms to ensure tha=
-t=20
-you waited long enough, etc.=20
+> > - The libjava build sometimes fails with an sh/bash error. Restarting
+> >   the build usually fixes this.
+> 
+> :(  I've been hoping that some of these issues are caused by the put_user
+> problem.
 
-The old solution of writing the cmd reg one tasklet run, and the data reg t=
-he=20
-next generated some nasty race conditions that Grant spotted - specifically=
-,=20
-with lcd_print. =A0It stops the tasklet, does its thing, and restarts it. =
-=A0
-Unfortunately, if the tasklet had written the cmd reg before, it now expect=
-s=20
-to write the data reg next. This seems to be the cause of the missing lcd=20
-characters you sometimes ended up with if you tried to make heavy use of=20
-lcd_print.
+The Astro change above should stabilize it a bit better.
+Please try a 2.6.11-pa[34] (or later) kernel.
 
-Personally, I think the workqueue idea is better, partly because of the fac=
-t=20
-that it greatly simplifies led_LCD_driver, and partly because of the fact=20
-that by running quite a bit less often, should impose lower CPU time usage.
-(and not just because I wrote the patch ;)
+Similarly on pa8800, for kernel builds gcc/make/et al will segfault
+and gcc sometimes claims internal errors.
+It stinks like a chipset/cache coherency issue but I don't see it.
+jejb isn't seeing any that might be related to VIVT cache either.
 
-Cheers,
+My suspicion is we still have a bug outstanding that is causing
+register corruption - similar to the GR26 corruption you found
+last December. I've written builds-tools/regtest.c to try
+to capture the corruption from the user space side but
+it's not working:
+	http://cvs.parisc-linux.org/build-tools/regtest.c
 
-David
+I'd like to extend that test to also cover FP regs.
+Maybe after debugging ext2_find_next_zero and debugging
+why mpt (u320 SCSI) HPMCs on module load.
 
---nextPart1118757.MjXZ654jfD
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBCRYUTOIrGtzS07WgRAugbAJ9d9Mi485TrhxKYwGB2OHW8MMHhVgCgkbOu
-kJG1umowQL0//ZuP9RjKjOQ=
-=iZKS
------END PGP SIGNATURE-----
-
---nextPart1118757.MjXZ654jfD--
-
---===============1683040616==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1683040616==--
