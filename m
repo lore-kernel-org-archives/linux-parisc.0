@@ -1,14 +1,12 @@
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] glibc pthreads actual threads?
-Date: Mon, 19 May 2003 19:01:22 +0200
-Message-ID: <3EC761CD0000085B__32648.7868013375$1416622466$gmane$org@ocpmta2.freegates.net>
-References: <20030519163245.GN16608@parcelfarce.linux.theplanet.co.uk>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: [parisc-linux] gcc-3.3 configuration
+Date: Wed, 21 May 2003 01:42:53 +0200
+Message-ID: <16074.48509.259405.775905__21959.4245114878$1416622470$gmane$org@gargle.gargle.HOWL>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-To: "Matthew Wilcox" <willy@debian.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-gcc@lists.debian.org, m68k-build@nocrew.org
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030519163245.GN16608@parcelfarce.linux.theplanet.co.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,20 +17,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->it's a limit of your understanding ;-)
+For Debian GNU/Linux gcc-3.3 is currently configured with
 
-Normal: as mentioned I just started to learn...
+	--with-sjlj-exceptions
 
->  POSIX specifies both behaviours
->are legitimate.
->
-Thanks for those clarification,
-    Joel
+to allow a binary compatible upgrade from gcc-3.2 to gcc-3.3. The
+other Debian platform, where sjlj based exceptions changed to dwarf2
+based exceptions is m68k, therefore the CC.
 
+As there are no hppa/m68k distributions released using gcc-3.2,
+compatibility with other released distros is not an issue. OTOH, I see
+Gentoo and probably other distros built for hppa, first starting with
+gcc-3.3, and maybe configured the standard way.
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+Is it worth (or needed) to strive for binary compatibility of hppa
+based distributions, based on gcc-3.3 and glibc-2.3.x?
+
+If yes, does the following approach work: Build a libstdc++5-3.3,
+conflicting with libstdc++5 (including libstdc++ with the same soname)
+and doing binary uploads for hppa for all libstdc++5 dependent
+packages? (The same could be done for m68k, but the compatibility
+argument doesn't hold as Debian seems to be the only m68k based
+distro).
+
+	Matthias
