@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2CC90482E
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Dec 2002 11:25:00 -0700 (MST)
-Date: Mon, 16 Dec 2002 19:24:28 +0100
-Message-ID: <3DED9BF500001EF5@ocpmta8.freegates.net>
-In-Reply-To: <20021216181649.D9994@parcelfarce.linux.theplanet.co.uk>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Re: YA pb with PCI IDE (my merge 2.4.21-pre1)
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: "Matthew Wilcox" <willy@debian.org>,
-	"Alan Cox" <alan@lxorguk.ukuu.org.uk>,
-	parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E6AE8482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Dec 2002 15:28:24 -0700 (MST)
+Date: Mon, 16 Dec 2002 23:28:08 +0100
+From: Thibaut VARENE <varenet@esiee.fr>
+To: "Grant Grundler" <grundler@dsl2.external.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4.20-pa14 64bit crash on boot - A500-5X
+Message-Id: <20021216232808.1fe41efc.varenet@esiee.fr>
+In-Reply-To: <20021215035359.GA18647@dsl2.external.hp.com>
+References: <20021213132838.F044D49C55@mail.esiee.fr>
+	<20021213233540.503b16d3.varenet@esiee.fr>
+	<20021215035359.GA18647@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,245 +25,136 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->On Mon, Dec 16, 2002 at 07:13:53PM +0100, jsoe0708@tiscali.be wrote:
->> >
->> >why are you sending word documents?  i'm not reading that shit.
->> >
->> Sorry for confusion, it just contents ascii text. Trust me there is no=
+On Sat, 14 Dec 2002 20:53:59 -0700
+"Grant Grundler" <grundler@dsl2.external.hp.com> wrote:
 
->relation
->> with world, just an extension (a professional habit to make internal
-exchange
->> more confortable for the one not familiar with unix).
->
->something's very screwed up then, probably your mail server:
->
->[-- Attachment #2: add_function.diff.doc --]
->[-- Type: application/msword, Encoding: base64, Size: 7.8K --]
->
->[-- application/msword is unsupported (use 'v' to view this part) --]
->
->is what i see.
->
-That should be the webmail interface (I do not like it but have no choise=
+> On Fri, Dec 13, 2002 at 11:35:40PM +0100, Thibaut VARENE wrote:
+> > AOUT: 0x10143bd4 mod_timer+3c
+> ...
+> > AOUT: 0x10538b48 hp_diva_timer+0
+> 
+> Good News: I reproduced this and fixed it.
+> But I don't know exactly what I did that fixed it. :^(
+> (drawbacks of the shotgun approach).
+> Fairly small patch is on ftp.parisc-linux.org/patches/diff-2.4.20-timer
+> This isn't ready to commit until someone narrows it down to one thing.
+> 
+> Bad News: SMP kernel now hangs during SCSI device discover.
+> I haven't tried CONFIG_SMP=n yet and I guess that would be a next step.
+> Console output of the a500-44 boot with 2.4.20-pa14 + patch is on
+> 	dsl2.e.h.c:~grundler/rp2470-2.4.20-symhang-01
+With CONFIG_SMP=y, here is what happens upon boot:
 
-behind a fw not allowing pop.mail connection)
+SMP: Total 2 of 2 processors activated (2195.46 BogoMIPS noticed).
+Waiting on wait_init_idle (map = 0x2)
+All processors have done init_idle
+Linux NET4.0 for Linux 2.4
+Based upon Swansea University Computer Society NET3.039
+Initializing RT netlink socket
+Soft power switch support not available.
+Performance monitoring counters enabled for Crescend
 
->> Tell me what is your prefered extension, I will take care to adopt it.=
+Some investigation provided the following (after TOC/SER PIM) CPU0:
+IAOQ = 0x0000000010144f1c
+Func: timer_bh, Off: 1a4, Addr: 0x10144f1c
+    10144f10:	52 d3 0d f0 	ldd 6f8(r22),r19
+    10144f14:	08 01 02 57 	copy r1,r23
+    10144f18:	0e 60 10 94 	ldw 0(sr0,r19),r20
+    10144f1c:	2b 61 20 00 	addil 3000,dp,%r1
+    10144ff4:	e8 1f 1e 2d 	b,l 10144f10 <timer_bh+0x198>,r0
 
->
->i prefer it inlined, not as an attachment.  it's easier to reply to.
->
-That is ok for me:
+GR1 = 000000001047ae00
+Func: __gp, Off: a000, Addr: 0x1047ae00
 
-diff -NaurwbBX /Develop/Kernel-Linux/dontdiff linux-2.4.21-pre1-pa14-alph=
-a/include/asm-parisc/ide.h
-linux-2.4.21-pre1-pa14-beta/include/asm-parisc/ide.h
---- linux-2.4.21-pre1-pa14-alpha/include/asm-parisc/ide.h	2002-12-13 14:0=
-0:09.000000000
-+0100
-+++ linux-2.4.21-pre1-pa14-beta/include/asm-parisc/ide.h	2002-12-15 15:34=
-:01.000000000
-+0100
-@@ -20,6 +20,8 @@
- #define MAX_HWIFS	2
- #endif
- 
-+#define ide__sti()      __sti()
-+
- static __inline__ int ide_default_irq(ide_ioreg_t base)
- {
- 	switch (base) {
-@@ -78,13 +80,116 @@
- #endif /* CONFIG_BLK_DEV_IDEPCI */
- }
- 
--/*
-+typedef union {
-+	unsigned all			: 8;	/* all of the bits together */
-+	struct {
-+		unsigned bit7		: 1;	/* always 1 */
-+		unsigned lba		: 1;	/* using LBA instead of CHS */
-+		unsigned bit5		: 1;	/* always 1 */
-+		unsigned unit		: 1;	/* drive select number, 0 or 1 */
-+		unsigned head		: 4;	/* always zeros here */
-+	} b;
-+} select_t;
-+
-+typedef union {
-+	unsigned all			: 8;	/* all of the bits together */
-+	struct {
-+		unsigned bit0		: 1;
-+		unsigned nIEN		: 1;	/* device INTRQ to host */
-+		unsigned SRST		: 1;	/* host soft reset bit */
-+		unsigned bit3		: 1;	/* ATA-2 thingy */
-+		unsigned reserved456	: 3;
-+		unsigned HOB		: 1;	/* 48-bit address ordering */
-+	} b;
-+} control_t;
-+
- #define ide_request_irq(irq,hand,flg,dev,id)	request_irq((irq),(hand),(f=
-lg),(dev),(id))
- #define ide_free_irq(irq,dev_id)		free_irq((irq), (dev_id))
- #define ide_check_region(from,extent)		check_region((from), (extent))
- #define ide_request_region(from,extent,name)	request_region((from), (ext=
-ent),
-(name))
- #define ide_release_region(from,extent)		release_region((from), (extent)=
-)
-+
-+#define T_CHAR          (0x0000)        /* char:  don't touch  */
-+#define T_SHORT         (0x4000)        /* short: 12 -> 21     */
-+#define T_INT           (0x8000)        /* int:   1234 -> 4321 */
-+#define T_TEXT          (0xc000)        /* text:  12 -> 21     */
-+
-+#define T_MASK_TYPE     (0xc000)
-+#define T_MASK_COUNT    (0x3fff)
-+
-+#define D_CHAR(cnt)     (T_CHAR  | (cnt))
-+#define D_SHORT(cnt)    (T_SHORT | (cnt))
-+#define D_INT(cnt)      (T_INT   | (cnt))
-+#define D_TEXT(cnt)     (T_TEXT  | (cnt))
-+
-+static u_short driveid_types[] =3D {
-+	D_SHORT(10),	/* config - vendor2 */
-+	D_TEXT(20),	/* serial_no */
-+	D_SHORT(3),	/* buf_type - ecc_bytes */
-+	D_TEXT(48),	/* fw_rev - model */
-+	D_CHAR(2),	/* max_multsect - vendor3 */
-+	D_SHORT(1),	/* dword_io */
-+	D_CHAR(2),	/* vendor4 - capability */
-+	D_SHORT(1),	/* reserved50 */
-+	D_CHAR(4),	/* vendor5 - tDMA */
-+	D_SHORT(4),	/* field_valid - cur_sectors */
-+	D_INT(1),	/* cur_capacity */
-+	D_CHAR(2),	/* multsect - multsect_valid */
-+	D_INT(1),	/* lba_capacity */
-+	D_SHORT(194)	/* dma_1word - reservedyy */
-+};
-+
-+#define num_driveid_types       (sizeof(driveid_types)/sizeof(*driveid_t=
-ypes))
-+
-+static __inline__ void ide_fix_driveid(struct hd_driveid *id)
-+{
-+	u_char *p =3D (u_char *)id;
-+	int i, j, cnt;
-+	u_char t;
-+
-+	for (i =3D 0; i < num_driveid_types; i++) {
-+		cnt =3D driveid_types[i] & T_MASK_COUNT;
-+		switch (driveid_types[i] & T_MASK_TYPE) {
-+		case T_CHAR:
-+			p +=3D cnt;
-+			break;
-+		case T_SHORT:
-+			for (j =3D 0; j < cnt; j++) {
-+				t =3D p[0];
-+				p[0] =3D p[1];
-+				p[1] =3D t;
-+				p +=3D 2;
-+			}
-+			break;
-+		case T_INT:
-+			for (j =3D 0; j < cnt; j++) {
-+				t =3D p[0];
-+				p[0] =3D p[3];
-+				p[3] =3D t;
-+				t =3D p[1];
-+				p[1] =3D p[2];
-+				p[2] =3D t;
-+				p +=3D 4;
-+			}
-+			break;
-+		case T_TEXT:
-+			for (j =3D 0; j < cnt; j +=3D 2) {
-+				t =3D p[0];
-+				p[0] =3D p[1];
-+				p[1] =3D t;
-+				p +=3D 2;
-+			}
-+			break;
-+		};
-+	}
-+}
-+
-+/*
-+ * The following are not needed for the non-m68k ports
-  */
-+#define ide_ack_intr(hwif)		(1)
-+#define ide_release_lock(lock)		do {} while (0)
-+#define ide_get_lock(lock, hdlr, data)	do {} while (0)
- 
- #endif /* __KERNEL__ */
- 
-diff -NaurwbBX /Develop/Kernel-Linux/dontdiff linux-2.4.21-pre1-pa14-alph=
-a/include/asm-parisc/system.h
-linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system.h
---- linux-2.4.21-pre1-pa14-alpha/include/asm-parisc/system.h	2002-12-13
-13:58:36.000000000 +0100
-+++ linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system.h	2002-12-15 15=
-:34:01.000000000
-+0100
-@@ -66,8 +66,6 @@
- #define sti() __global_sti()
- #define save_flags(x) ((x)=3D__global_save_flags())
- #define restore_flags(x) __global_restore_flags(x)
--#define save_and_cli(x) do { save_flags(x); cli(); } while(0);
--#define save_and_sti(x) do { save_flags(x); sti(); } while(0);
- 
- #else
- 
-@@ -75,8 +73,6 @@
- #define sti() __sti()
- #define save_flags(x) __save_flags(x)
- #define restore_flags(x) __restore_flags(x)
--#define save_and_cli(x) __save_and_cli(x)
--#define save_and_sti(x) __save_and_sti(x)
- 
- #endif
- 
-diff -NaurwbBX /Develop/Kernel-Linux/dontdiff linux-2.4.21-pre1-pa14-alph=
-a/include/asm-parisc/system_irqsave.h
-linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system_irqsave.h
---- linux-2.4.21-pre1-pa14-alpha/include/asm-parisc/system_irqsave.h	2002=
--12-12
-16:12:02.000000000 +0100
-+++ linux-2.4.21-pre1-pa14-beta/include/asm-parisc/system_irqsave.h	2002-=
-12-15
-15:34:01.000000000 +0100
-@@ -7,21 +7,10 @@
- #define __cli()	__asm__ __volatile__("rsm %0,%%r0\n" : : "i" (PSW_I) :
-"memory" )
- #define __sti()	__asm__ __volatile__("ssm %0,%%r0\n" : : "i" (PSW_I) :
-"memory" )
- 
--#define __save_and_cli(x)  do { __save_flags(x); __cli(); } while(0);
--#define __save_and_sti(x)  do { __save_flags(x); __sti(); } while(0);
--
--/* For spinlocks etc */
--#if 0
- #define local_irq_save(x) \
- 	__asm__ __volatile__("rsm %1,%0" : "=3Dr" (x) :"i" (PSW_I) : "memory" )=
+GR2 = 0000000010144fd8
+Func: timer_bh, Off: 260, Addr: 0x10144fd8
+    10144fd0:	eb df bc 81 	b,l 10103e18 <spin_lock>,%r2
+    10144fd4:	08 13 02 5a 	copy r19,r26
+    10144fd8:	08 0e 02 5b 	copy r14,dp
+    10144fdc:	2b 65 00 00 	addil a000,dp,%r1
 
--#define local_irq_set(x) \
--#       "Warning local_irq_set(x) is not yet defined"
--#else
--#define local_irq_save(x)  __save_and_cli(x)
--#define local_irq_set(x)   __save_and_sti(x)
--#endif
--
--#define local_irq_restore(x) __restore_flags(x)
-+#define local_irq_restore(x) \
-+	__asm__ __volatile__("mtsm %0" : : "r" (x) : "memory" )
- #define local_irq_disable() __cli()
- #define local_irq_enable()  __sti()
- 
+GR6 = 0000000010540b48
+Func: hp_diva_timer, Off: 0, Addr: 0x10540b48
 
-Hope this is still readable,
-    Joel
+GR14 = 0000000010470e00
+Func: __gp, Off: 0, Addr: 0x10470e00
 
-*************************************************************************=
-*******
-Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
-ttp://tiscali.complete.be
+GR18 = 0000000010540898
+Func: serial_driver, Off: 0, Addr: 0x10540898
+
+GR19 = 0000000010520e48
+Func: tv1, Off: 0, Addr: 0x10520e48
+
+GR26 = 00000000103e37c0
+Func: timerlist_lock, Off: 0, Addr: 0x103e37c0
+
+on a second try it went up to:
+
+Performance monitoring counters enabled for Crescendo 550
+Starting kswapd
+Journalled Block Device driver loaded
+Installing knfsd (copyright (C) 1996 o
+
+Now the UP try:
+
+went up to:
+
+Performance monitoring counters enabled for Crescendo 550
+Starting kswapd
+Journalled Block Device driver loaded
+Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+pty: 256 Unix98 ptys configured
+Serial driver version 5.05c (2001-07-08) with MANY_PORTS SHARE_IRQ SERIAL_PCI enabled
+
+Investigation showed that:
+
+IAOQ = 0x000000001021210c
+Func: hp_diva_check, Off: ec, Addr: 0x1021210c
+    10212100:	eb 94 be 61 	b,l 1013b038 <add_timer>,%r2
+    10212104:	08 15 02 5a 	copy r21,r26
+    10212108:	08 03 02 5b 	copy r3,dp
+    1021210c:	53 c2 3e e1 	ldd -90(sp),rp
+
+GR0 = 0000000000000000
+
+GR1 = 000000001045df70
+Func: timer_jiffies, Off: 0, Addr: 0x1045df70
+
+GR2 = 0000000010212108
+Func: hp_diva_check, Off: e8, Addr: 0x10212108
+    10212100:	eb 94 be 61 	b,l 1013b038 <add_timer>,%r2
+    10212104:	08 15 02 5a 	copy r21,r26
+    10212108:	08 03 02 5b 	copy r3,dp
+    1021210c:	53 c2 3e e1 	ldd -90(sp),rp
+
+GR3 = 00000000103bd2a0
+Func: __gp, Off: 0, Addr: 0x103bd2a0
+
+GR6 = 0000000010472df8
+Func: hp_diva_timer, Off: 0, Addr: 0x10472df8
+
+GR18 = 0000000010472b48
+Func: serial_driver, Off: 0, Addr: 0x10472b48
+
+GR19 = 000000001045df68
+Func: run_timer_list_running, Off: 0, Addr: 0x1045df68
+
+GR20 = 0000000000001e11
+
+GR21 = 000000001045df68
+Func: run_timer_list_running, Off: 0, Addr: 0x1045df68
+
+GR26 = 0000000010472df8
+Func: hp_diva_timer, Off: 0, Addr: 0x10472df8
+
+I think that the patch is quite wrong somehow...
+
+Will investigate further tomorrow.
+
+
+HTH,
+
+
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/
