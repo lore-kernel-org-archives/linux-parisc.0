@@ -1,55 +1,62 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from blimpo.internal.net (ppp01.ts1-1.NewportNews.visi.net [209.8.196.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2F99E482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 09:01:26 -0600 (MDT)
-Date: Sat, 20 Oct 2001 11:01:23 -0400
-From: Ben Collins <bcollins@debian.org>
-To: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
-Subject: Re: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
-Message-ID: <20011020110123.M10952@visi.net>
-References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011020095406.L10952@visi.net> <20011021000443.H1037@bubble.sa.bigpond.net.au>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 975E4482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 20 Oct 2001 11:47:22 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15v0DQ-0002gX-00; Sat, 20 Oct 2001 18:47:20 +0100
+Date: Sat, 20 Oct 2001 18:47:20 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Helge Deller <deller@gmx.de>
+Cc: Ryan Bradetich <rbradetich@uswest.net>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH] The long awaited iotree patch for System Map Firmware
+Message-ID: <20011020184720.A31505@parcelfarce.linux.theplanet.co.uk>
+References: <20011019165926.A31233@beavis.ybsoft.com> <20011020100404.917E2482A@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011021000443.H1037@bubble.sa.bigpond.net.au>
-Sender: Ben Collins <bmc@visi.net>
+In-Reply-To: <20011020100404.917E2482A@dsl2.external.hp.com>; from deller@gmx.de on Sat, Oct 20, 2001 at 12:02:53PM +0200
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Oct 21, 2001 at 12:04:44AM +0930, Alan Modra wrote:
-> On Sat, Oct 20, 2001 at 09:54:06AM -0400, Ben Collins wrote:
-> > On Sat, Oct 20, 2001 at 05:09:07PM +0930, Alan Modra wrote:
-> > > 	* sysdeps/hppa/dl-machine.h (elf_machine_dynamic):  Make it a
-> > > 	const function.  Do not use &_DYNAMIC as .got entries for global
-> > > 	syms are no longer initialised.  Instead they rely on the reloc,
-> > > 	which hasn't yet been applied.
-> > > 	(elf_machine_load_address): Make it const.  Call
-> > > 	elf_machine_dynamic as that function is called fropm rtld anyway.
-> > 
-> > Is this the fix for a newly built ld.so segfaulting? If so, there seems
-> > to be something else wrong too. Newly built ld.so still segfaults,
-> > here's the gdb:
-> 
-> alan@tea:~$ /lib/ld.so.1 
-> Usage: ld.so [OPTION]... EXECUTABLE-FILE [ARGS-FOR-PROGRAM...]
-> You have invoked `ld.so', the helper program for shared library executables.
-> [snip]
-> 
-> no problems here.
-> 
-> sourceware CVS binutils as of a few minutes ago, debian glibc-2.2.4-3
-> with willy's patch (ftp://ftp.parisc-linux.org/patches/glibc22-hppa.dpatch)
-> + mine, gcc from pehc 3.0.2 20010829.
-> 
-> So, I'm using a newer binutils but older gcc.  The old gcc was an
-> accident - I'll try again with something more recent.  binutils, gcc and
-> glibc freshly built on an x86-linux system, first building xtools then
-> native ones.
+On Sat, Oct 20, 2001 at 12:02:53PM +0200, Helge Deller wrote:
+> 2. Mirage Jr Core BA (11) at 0xf0100000 [2], versions 0x28, 0x0, 0x81
+> 3.  (0) at 0x0 [2/0], versions 0x0, 0x0, 0x0
+> 4. Mirage Jr Core SCSI (10) at 0xf0106000 [2/0/1], versions 0x28, 0x0, 0x82
 
-The binutils may be the difference. I think Randolph said there was a
-patch in CVS that was needed. I'll wait and see if that new package
-works.
+OK.  So we should skip printing devices which don't have an hpa.
+
+> 12. Mirage Jr Wax EISA BA (11) at 0xfc000000 [4], versions 0x28, 0x0, 0x90
+> 13. Mirage Jr Wax BA (11) at 0xf0200000 [5], versions 0x12, 0x0, 0x8e
+
+Mmmmpf.  That complicates thngs a little; I assumed the EISA BA was
+actually under the normal BA.
+
+> CONFIG_SMP=n  ignoring additional CPUs
+> Warning : device (0, 0x0, 0x0, 0x0) NOT claimed by CPU
+> CONFIG_SMP=n  ignoring additional CPUs
+> Warning : device (0, 0x60a, 0x0, 0x4) NOT claimed by CPU
+
+Hehe, yes, devices not completely filled in look like CPUs.  Oops :-)
+
+> As you see, your iotree inserts "phantom" devices on [2/0] an [5/0]. I think both
+> devices should be pre-initialized by default to type HPHW_FAULTY and to the hpa of the
+> parent device in the function alloc_tree_node().
+
+I agree about HPHW_FAULTY.  I don't think we need to initialise the hpa
+though.  Maybe a new HPHW_FAKE instead?  It's not necessarily confusing,
+since devices which actually report HPHW_FAULTY never get inserted into
+the iotree.
+
+> The other thing is, that currently no interrupts are found for any devices - I'll investigate that
+> later but think this shouldn't be so hard to fix either.
+
+I know why that is.  Basically we need to get lasi (and wax) to fix up
+their subdevices the same way that asp does.  Then we can finally kill
+busdevice_alloc_irq.  As a quick hack, we could check parent->hw_type ==
+HPHW_FAULTY in busdevice_alloc_irq and skip to that parent.
+
+Not quite sure how to handle Wax EISA not being underneath the Wax BA..
+maybe just walk from wax's parent to fill in known irqs.
 
 -- 
- .----------=======-=-======-=========-----------=====------------=-=-----.
-/                   Ben Collins    --    Debian GNU/Linux                  \
-`  bcollins@debian.org  --  bcollins@openldap.org  --  bcollins@linux.com  '
- `---=========------=======-------------=-=-----=-===-======-------=--=---'
+Revolutions do not require corporate support.
