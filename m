@@ -1,21 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07A81482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Apr 2002 19:00:18 -0700 (MST)
-Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
- by mtaout45-02.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
- with SMTP id <0GU200IWLO8G6J@mtaout45-02.icomcast.net> for
- parisc-linux@lists.parisc-linux.org; Thu, 04 Apr 2002 21:00:17 -0500 (EST)
-Date: Thu, 04 Apr 2002 21:00:14 -0500
-From: James S <smithjames@comcast.net>
-Subject: Re: [parisc-linux] Missing beep... and music too
-To: Phil Anderson <andersop@neverland.ncssm.edu>
+To: James S <smithjames@comcast.net>
 Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: James S <smithjames@comcast.net>
-Message-id: <00e501c1dc45$a1df3aa0$02c1a8c0@james.co.uk>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-References: <Pine.LNX.4.33.0204042038090.29216-100000@bob.ncssm.edu>
+Subject: Re: [parisc-linux] Missing beep 
+In-Reply-To: Message from James S <smithjames@comcast.net>
+   of "Thu, 04 Apr 2002 11:58:21 EST." <006901c1dbf9$ed82da80$02c1a8c0@james.co.uk>
+References: <009e01c1db57$21207ee0$02c1a8c0@james.co.uk> <20020404063354.5428C482A@dsl2.external.hp.com>  <006901c1dbf9$ed82da80$02c1a8c0@james.co.uk> 
+Date: Thu, 04 Apr 2002 22:43:42 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020405054342.1DA88482B@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,15 +19,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->I think the problem lies in my mpg321, because no matter what I do with
->it, use esd or not, whatever options I choose - I always get the
->Illegal Instruction
->error. this is the mpg321 .deb I installed of  my 0.9.3 CD; could the
->mpg321 be corrupt or is something else wrong?
+James S wrote:
+> yes it does & can play mp3s, but surely the 'beep' is independant of the
+> sound driver - the 486 has no sound card, for example.
 
+Apple //e could beep w/o a sound card too...we even had it talking.
 
-i think the kernel used on the 0.9.3 cd might be fairly old by now - you
-tried updating it ?
+My understanding the speaker is wired to harmony device.
+Driver needs to tell harmony to make beep if that's what you
+want coming out of the speaker.
 
+My guess is bash "sound" isn't being directed to /dev/audio or
+whatever device it needs to tell to make a beep.  I was asking
+to verify the driver is in place and working.
 
-James S
+grant
