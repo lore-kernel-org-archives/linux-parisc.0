@@ -1,16 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: More questions [Was: [parisc-linux] 2.6.10-rc1-pa11 profile data]
-Date: Fri, 03 Dec 2004 10:24:24 +0000
-Message-ID: <41B03ED8.8090505@tiscali.be>
-References: <418A80AE0000A9A8@mail-4-bnl.tiscali.it>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: *lcul and memory granularity question[Was: [parisc-linux]
+	2.6.10-rc1-pa11 profile data]
+Date: Fri, 3 Dec 2004 15:13:27 +0000
+Message-ID: <20041203151327.GG29370@parcelfarce.linux.theplanet.co.uk>
+References: <20041111075431.GB9768@colo.lackof.org>
+	<20041111081154.GR15714@tausq.org> <41B07F91.9000000@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <418A80AE0000A9A8@mail-4-bnl.tiscali.it>
+In-Reply-To: <41B07F91.9000000@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,54 +22,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
-
-I need more advise:
-
-Joel Soete wrote:
-> [...]
+On Fri, Dec 03, 2004 at 03:00:33PM +0000, Joel Soete wrote:
+> >- *lclu* can be rewritten to do better than 1-byte at a time
 > 
->>but looking at the other ones:
->>- __clear_user_page_asm can be optimized for 64-bit by writing 8 bytes
->>  at a time instead of 4
-> 
-> Is it the idea (principle only):
-> --- arch/parisc/kernel/pacache.S.Orig	2004-12-01 17:09:53.000000000 +0100
-> +++ arch/parisc/kernel/pacache.S-t1	2004-12-01 17:58:16.000000000 +0100
-> @@ -505,6 +505,16 @@
->  	ldi 64,%r1
->  
->  1:
-> +#ifdef __LP64__
-> +	std	%r0,0(%r28)
-> +	std	%r0,8(%r28)
-> +	std	%r0,16(%r28)
-> +	std	%r0,24(%r28)
-> +	std	%r0,32(%r28)
-> +	std	%r0,40(%r28)
-> +	std	%r0,48(%r28)
-> +	std	%r0,56(%r28)
-> +#else
->  	stw %r0,0(%r28)
->  	stw %r0,4(%r28)
->  	stw %r0,8(%r28)
-> @@ -521,6 +531,7 @@
->  	stw %r0,52(%r28)
->  	stw %r0,56(%r28)
->  	stw %r0,60(%r28)
-> +#endif
->  	ADDIB>  -1,%r1,1b
->  	ldo 64(%r28),%r28
-> 
-I test it on my b2k with 64bit kernel and it works but it didn't seems to bring me any benefit?
-As far as I can believe readprofile: the ratio between the first and last column is always the same (1/80 in this case).
-What did I miss?
-My hope was at least a befenit of 1/2 as I reduce insn number in the same rate.
-Right now my idea is to write a small test case to see if using the same number on insn but with less loop will help or not?
+> I have an additional question about parisc alignment and this remark:
+> a char type var is 1byte align; ... but what's about a 3, 5, 7 and more 
+> bytes struct size?
 
+Don't think in terms of structs, think in terms of an arbitrary array of
+bytes.  You can't assume anything about the alignment of lclu or the size.
+In particular, you can't write more than the requested number of bytes.
 
-Thanks again for more advise,
-	Joel
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
