@@ -1,7 +1,7 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] pthread problems - test program
-Date: Sun, 3 Apr 2005 16:41:51 -0400 (EDT)
-Message-ID: <200504032041.j33KfpVf018465@hiauly1.hia.nrc.ca>
+Date: Sun, 3 Apr 2005 16:24:33 -0400 (EDT)
+Message-ID: <200504032024.j33KOXcu018402@hiauly1.hia.nrc.ca>
 References: <20050403143246.GE8921@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -27,9 +27,9 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 > time, and ps shows a lot of zombie processes. On x86 the program runs as
 > expected and there are no zombies.
 
-What's the situation on the following signals: SIGLTHRRES, SIGLTHRCAN
-and SIGLTHRDBG?  I'm not sure but pthread_cond_signal may need SIGLTHRRES.
-Are these signals 37, 38 and 39?
+I see threadfunc uses waitpid.  This is the same syscall that seems
+to cause problems with expect (zombie expect child and parent waiting
+for signal that never comes).
 
 Dave
 -- 
