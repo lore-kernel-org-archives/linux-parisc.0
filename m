@@ -1,36 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1FFE64830
-	for <parisc-linux@parisc-linux.org>; Fri,  5 Oct 2001 18:30:40 -0600 (MDT)
-Message-Id: <200110060026.SAA05769@puffin.external.hp.com>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] pdc_add_valid 
-In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
-   of "Fri, 05 Oct 2001 17:22:22 BST." <20011005172222.D19206@parcelfarce.linux.theplanet.co.uk>
-Date: Fri, 05 Oct 2001 18:26:58 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 791D74A5F
+	for <parisc-linux@parisc-linux.org>; Fri,  5 Oct 2001 18:43:14 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15pfYf-0006As-00
+	for parisc-linux@parisc-linux.org; Sat, 06 Oct 2001 01:43:13 +0100
+Date: Sat, 6 Oct 2001 01:43:13 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011006014313.E3745@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] The continuing SMP problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> 
-> The pdc_add_valid function really annoys me.
+I've tracked down one problem a little bit.  The L2k hangs with an SMP
+kernel (even with only one CPU enabled) after:
 
-So you want a sane wrapper around it.
+Linux NET4.0 for Linux 2.4                                                      
+Based upon Swansea University Computer Society NET3.039                         
 
-> For the moment, I've put it in <asm/io.h>, since it is for I/O addresses.
-> 
-> +int valid_io_addr(unsigned long addr)
-> +{
-> +       return (pdc_add_valid(addr) == PDC_OK);
-> +}
+What it's doing here is trying to run the keyboard_tasklet, which seems
+to be disabled, so it reschedules it... ad infinitum.  More investigation
+required, but I'm on the track, I think.
 
-I prefer asm/io.h not depend on pdc.h.
-Why not just add whatever wrapper to pdc.h?
-
-> But maybe we should replace pdc_add_valid with valid_io_addr?
-> Or a different function?  Suggestions appreciated.
-
-sorry - no better ideas.
-
-grant
+-- 
+Revolutions do not require corporate support.
