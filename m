@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from postman.cms-stl.com (adsl-66-136-168-98.dsl.stlsmo.swbell.net [66.136.168.98])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E093D482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Dec 2001 09:24:08 -0700 (MST)
-Received: from cms-stl.com ([172.16.25.30]) by postman.cms-stl.com
-          (Netscape Messaging Server 3.54)  with ESMTP id AAA6D2A
-          for <parisc-linux@lists.parisc-linux.org>;
-          Fri, 28 Dec 2001 10:23:10 -0600
-Message-ID: <3C2C9C6E.D63903A7@cms-stl.com>
-Date: Fri, 28 Dec 2001 10:23:10 -0600
-From: Michael Madden <madden@cms-stl.com>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] PARISC-Linux 0.9.3 on a 735
+Received: from linpro.no (mail.linpro.no [213.203.57.2])
+	by dsl2.external.hp.com (Postfix) with SMTP id 68A9F4844
+	for <parisc-linux@parisc-linux.org>; Fri, 28 Dec 2001 11:10:52 -0700 (MST)
+Received: from runesk by scruffy.trd.linpro.no with local (Exim 3.33 #1 (Debian))
+	id 16K1Sz-0000vh-00
+	for <parisc-linux@parisc-linux.org>; Fri, 28 Dec 2001 19:10:49 +0100
+Date: Fri, 28 Dec 2001 19:10:49 +0100
+From: Rune =?iso-8859-1?Q?Nordb=F8e?= Skillingstad <runesk@linpro.no>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011228181049.GA3406@scruffy.linpro.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] K250 stil doesn't work
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,17 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello;
+I've downloaded the 0.9.3 image, and tried to install it on our K250. As
+thge previous version, it doesn't boot. I have no log of the boot, as I had
+no available box to connect to the serial line. I'll try once more in some
+days to grab the dump log and mail it to you.
 
-I recently installed PARISC-Linux 0.9.3 on an older 735, and I'm having
-a heck of time to get X configured.  I have a HIL keyboard and mouse,
-but /usr/bin/X11/xf86config presents you with options for common
-pc setups (PS2 mouse, ATI video card, etc).  Is there a better way
-to setup X or is this even supported at this time?
-
-Thanks,
-
-Michael Madden
-Systems Engineer
-Computerized Medical Systems
-madden@cms-stl.com
+Cheers,
+Rune Nordb=F8e Skillingstad
+--=20
+"I came out of it dead broke, without a house, without anything except a
+girlfriend and a knowledge of Unix." "Well, that's something. Normally
+those two are mutually exclusive"
+ - Neal Stephenson, Cryptonomicon
