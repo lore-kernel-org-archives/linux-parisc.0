@@ -1,26 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.storm.ca (storm.ca [209.87.239.69])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 31834482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 21:42:59 -0600 (MDT)
-Received: from storm.ca (ppp-209-87-255-73.ottawa.storm.ca [209.87.255.73])
-	by mail.storm.ca (8.9.3+Sun/8.9.3) with ESMTP id XAA06971
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 23:42:57 -0400 (EDT)
-Message-ID: <3AE101B7.5EFB4E2F@storm.ca>
-Date: Fri, 20 Apr 2001 23:42:47 -0400
-From: Sandy Harris <sandy@storm.ca>
+Received: from mail.calyx.net (mail.calyx.net [216.82.160.19])
+	by dsl2.external.hp.com (Postfix) with SMTP id 47D65482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Apr 2001 22:24:55 -0600 (MDT)
+Date: Sat, 21 Apr 2001 00:24:52 -0400 (EDT)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.BSO.4.33.0104210022200.24463-100000@mojo.calyx.net>
 MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Appollo 730
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] modules/modutils??
 List-ID: <linux-parisc.vger.kernel.org>
 
-A couple of us are collecting cheap old HP machines for use as a crude parallel
-processor, for problems like factoring. We currently have about 20, mostly 712/60
-with a few 715s.
+Hmm.  What would I be doing wrong to produce this error:
 
-I've found a pile of machines with an Appollo nameplate, rather than HP, and a
-730 model number. They look a fair bit like a 735, deeper case than 712 or 715,
-boards that slide in from the back. The vendor assures me they use a first
-generation PA-RISC CPU.
+Cannot initialise dp, 'data_start' not found
 
-Are these the HP 730 the hardware database mentions? If not, will they run Linux?
+...when trying to load a kernel module (or are things just broke,
+and if so is it something a non-guru might be able to help fix.
+Loadable modules would speed development of the HIL driver immensely.)
+
+--
+Brian S. Julin
