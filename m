@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BB1A84873
-	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 11:23:30 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18nNGC-0006yc-00; Mon, 24 Feb 2003 18:23:28 +0000
-Date: Mon, 24 Feb 2003 18:23:28 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: law@redhat.com
-Cc: Alan Modra <amodra@bigpond.net.au>,
-	Matthew Wilcox <willy@debian.org>, binutils@sources.redhat.com,
+Received: from mx1.redhat.com (mx1.redhat.com [66.187.233.31])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ADFD44875
+	for <parisc-linux@parisc-linux.org>; Mon, 24 Feb 2003 11:35:26 -0700 (MST)
+Message-Id: <200302241839.h1OIdqBf016932@localhost.redhat.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Alan Modra <amodra@bigpond.net.au>, binutils@sources.redhat.com,
 	parisc-linux@parisc-linux.org
-Message-ID: <20030224182328.M2938@parcelfarce.linux.theplanet.co.uk>
-References: <20030224062421.GA31111@bubble.sa.bigpond.net.au> <200302241501.h1OF1WJT001142@localhost.redhat.com>
+Reply-To: law@redhat.com
+In-Reply-To: Your message of "Mon, 24 Feb 2003 18:23:28 GMT."
+             <20030224182328.M2938@parcelfarce.linux.theplanet.co.uk>
+From: law@redhat.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200302241501.h1OF1WJT001142@localhost.redhat.com>; from law@redhat.com on Mon, Feb 24, 2003 at 08:01:31AM -0700
+Date: Mon, 24 Feb 2003 11:39:52 -0700
 Subject: [parisc-linux] Re: [PATCH] space register 0 changes for hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -27,16 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Feb 24, 2003 at 08:01:31AM -0700, law@redhat.com wrote:
-> And the GDB testsuite, which tests the PA disassembler.  I'm 99% sure
-> it's going to fail after this change.
+In message <20030224182328.M2938@parcelfarce.linux.theplanet.co.uk>, Matthew Wi
+lcox writes:
+ >On Mon, Feb 24, 2003 at 08:01:31AM -0700, law@redhat.com wrote:
+ >> And the GDB testsuite, which tests the PA disassembler.  I'm 99% sure
+ >> it's going to fail after this change.
+ >
+ >i would, if i could.  every attempt i made to get gdb's testsuite to
+ >run met with disaster.  this was supposed to be a quick bugfix not a
+ >major expedition.  i give up.  someone who can cope with the ridiculous
+ >requirements for building gdb targetting hppa can fix this.
+Err, I built it without difficulty a few months ago (I don't do nearly as
+much PA work as I used to).  Presumably you have an HPUX box, right?  That's
+the easiest way to get it build and running.
 
-i would, if i could.  every attempt i made to get gdb's testsuite to
-run met with disaster.  this was supposed to be a quick bugfix not a
-major expedition.  i give up.  someone who can cope with the ridiculous
-requirements for building gdb targetting hppa can fix this.
-
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Jeff
