@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D9C97484A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 11:21:26 -0600 (MDT)
-Date: Wed, 7 May 2003 10:17:34 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: Jan-Benedict Glaw <jbglaw@lug-owl.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Oops on 2.4.20-pa33
-Message-ID: <20030507171734.GG23465@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20030507154817.GH27494@lug-owl.de> <3EB772D800000C9F@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3EB772D800000C9F@ocpmta2.freegates.net>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DEE914829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 May 2003 11:50:39 -0600 (MDT)
+Date: Wed, 7 May 2003 19:50:37 +0200
+Subject: Re: [parisc-linux] isobuild.sh read access?
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v552)
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Joel Soete" <jsoe0708@tiscali.be>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+In-Reply-To: <3EB772D800000CBA@ocpmta2.freegates.net>
+Message-Id: <69160AB4-80B4-11D7-83E2-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> >So I think it would be nice to put this patch into CVS.
-> >
-> I hope also it will be ci but I could not help.
+Le mercredi, 7 mai 2003, =E0 18:35 Europe/Paris, Joel Soete a =E9crit :
+>
+> You don't have permission to access /archive/scripts/isobuild.sh on=20
+> this
+> server.
+corrected
+>
+> Thanks in advance for help,
+>     Joel
+>
+> PS: Would it not be put also into build-tools cvs tree?
+i don't think so.
+it's not useable per se, and I think you'll have trouble with it.
+it's just published to give an idea what has to be done to build an ISO.
 
-it's in 2.4.20-pa35 now.
 
-Joel, do you think you can come up with a version that applies to 2.5 as
-well?
-
-thanks,
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://pateam.esiee.fr/=
