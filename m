@@ -1,18 +1,18 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Re: Another SIGSEGV, this time in /bin/sh
-Date: Mon, 13 Sep 2004 11:01:56 -0400
-Message-ID: <20040913150155.GZ1854@baldric.uwo.ca>
-References: <200409012008.i81K8mGw011839@hiauly1.hia.nrc.ca>
-	<200409110724.i8B7O1Fc002787@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] [RFC] hppa needs a vDSO? Solves signal trampolines
+	and opens up new possibilities.
+Date: Mon, 13 Sep 2004 12:03:50 -0400
+Message-ID: <20040913160349.GD8018@baldric.uwo.ca>
+References: <20040912184553.GT1854@baldric.uwo.ca>
+	<20040913000511.GU28659@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: James.Bottomley@steeleye.com,
- parisc-linux@lists.parisc-linux.org,
- tausq@debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: James Bottomley <James.Bottomley@steeleye.com>,
+ parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409110724.i8B7O1Fc002787@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040913000511.GU28659@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,41 +23,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-jda,
+> i think the analysis is correct, but i don't like the solution! :-)
+> 
+> various pieces of software (gcc, gdb) need to be able to read and
+> analyze the signal trampoline for unwinding. putting the trampoline 
+> onto the gateway page will break these applications, because the 
+> gateway page is not readable by the user.
 
-What kernel is this btw?
+We need a vDSO implementation for hppa, and stick the trampolines into
+the vDSO. gdb can still use mprotect on the vDSO mapping created by the
+kernel. We can use the powerpc implementation as a reference. I think
+it's sorta neat for the kernel to create a virtual DSO that userspace
+can leverage. All the ELF rules apply for symbols and you can get all
+the debugging info right.
 
-> Program terminated with signal 11, Segmentation fault.
-> Reading symbols from /usr/lib/debug/libncurses.so.5...done.
-> Loaded symbols for /usr/lib/debug/libncurses.so.5
-> Reading symbols from /usr/lib/debug/libdl.so.2...done.
-> Loaded symbols for /usr/lib/debug/libdl.so.2
-> Reading symbols from /usr/lib/debug/libc.so.6...done.
-> Loaded symbols for /usr/lib/debug/libc.so.6
-> Reading symbols from /lib/ld.so.1...done.
-> Loaded symbols for /lib/ld.so.1
-
-Why isn't this the debug ld.so?
-
-> Looking at %r2, it appears that the fault has occurred in an indirect
-> call from __strtoll_internal:
-
-But it's always some place different every failure...
- 
-> It would appear that r3 has either been clobbered by the kernel, or there
-> is a problem with the memory access by which it was loaded:
-
-It's possible.
- 
-> This should have given the r3 value.  The same procedure gave the r6 value.
-> (gdb) p/x *(*($r19 + 0x1000 + 0x354) + 0x98)
-> $19 = 0x0
-
-So you are saying that the code should have given that value, but
-something corrupted the value before it was used?
-
-It definately looks signal related. It feels a lot like some return path
-in the kernel might be clobbering r3. Time for another witch hunt?
+Secondly the vDSO could override the CAS symbol from libc with an LWS
+version since it knows that LWS exists. The older code can continue to
+call a non-atomic libc version. I'm not quite sure how this works...
 
 c.
 
