@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 192.25.206.7 (unknown [66.168.195.68])
-	by dsl2.external.hp.com (Postfix) with SMTP id 24E4E4894
-	for <parisc-linux@parisc-linux.org>; Wed,  3 Dec 2003 20:34:48 -0700 (MST)
-Message-ID: <81is-8$6555g5t3@2rhb.d17dh.kg>
-From: "Valeria Hemphill" <star@msn.com>
-Reply-To: "Valeria Hemphill" <star@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 04 Dec 03 00:36:57 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="21_ED6A8B_."
-Subject: [parisc-linux] Over and over and over she screams fakv
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5407F4868
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Dec 2003 21:06:48 -0700 (MST)
+Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
+	id 1ARkfC-0004WD-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 03 Dec 2003 23:00:26 -0500
+Date: Wed, 3 Dec 2003 23:00:26 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20031204040026.GB17292@systemhalted>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] shmem 2.6 kernel bug?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,43 +23,55 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---21_ED6A8B_.
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+pa,
 
-<html>Over and over and over she screams fakv
-<head>
-<title>Untitled Document</title>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
--1">
-</head>
+When I ssh into my box I see:
+---
+kernel BUG at mm/shmem.c:585!
+Kernel addresses on the stack:
+ [<000000001016f338>] unmap_page_range+0xa0/0x290
+ [<0000000010126e78>] sys32_rt_sigaction+0x90/0x118
+ [<000000001011313c>] sys_mmap2+0x14/0x20
+ [<000000001010ce4c>] syscall_exit+0x0/0x14
+ [<000000001010c094>] intr_check_sig+0x0/0xc
+---
 
-<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
-00" alink=3D"#00FF00">
-<center><h3><font color=3D"#FFFFFF" face=3D"verdana">You can be a sex mach=
-ine.</font></h3></center><center><h4><font color=3D"#FF00FF" face=3D"verda=
-na">Finally available to the public.<br>Alpha Male<br>The supplement that =
-Male Porn Stars use</font></h4></center><br><center><h5><font color=3D"#FF=
-FFFF" face=3D"verdana">Make love to her like no other man can. Orgasm afte=
-r orgasm after orgasm.<br><br>Porn Stars shoot an entire movie in one day =
-having sex many times with many different women.<br> Now you can have rock=
- hard orgasmic sex over and over again.<br>Just like the Porn Stars do<br>=
-<br>Increase your testosterone 500%<br>Increase your sex drive<br>Increase=
- your virility<br>Increase the size of your penis<br>Never again experienc=
-e premature ejaculation<br>She will never leave you alone when you give he=
-r sex like she's never had before.<br><br>Doctor developed with a 100=
-% Money Back Guarantee !</font></h5><h2><a href=3D"http://www.herbalmarts.=
-biz/cgi-bin/tracker/clickalpha.cgi?id=3Dbuster">Find Alpha Male Here</a></=
-h2></center>
-y rlef oangjw
-</body>
-</html>
-hfbu eohfsmtm
- sdbmv nrg vlve
-gfagzvk cm
-pb upk 
-lwdbs k n
-fl
-fyknq hnh
+    571 static void shmem_delete_inode(struct inode *inode)
+    572 {
+    573         struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+    574         struct shmem_inode_info *info = SHMEM_I(inode);
+    575 
+    576         if (inode->i_op->truncate == shmem_truncate) {
+    577                 spin_lock(&shmem_ilock);
+    578                 list_del(&info->list);
+    579                 spin_unlock(&shmem_ilock);
+    580                 if (info->flags & VM_ACCOUNT)
+    581			vm_unacct_memory(VM_ACCT(inode->i_size));
+    582                 inode->i_size = 0;
+    583                 shmem_truncate(inode);
+    584         }
+==> 585         BUG_ON(inode->i_blocks);
+    586         spin_lock(&sbinfo->stat_lock);
+    587         sbinfo->free_inodes++;
+    588         spin_unlock(&sbinfo->stat_lock);
+    589         clear_inode(inode);
+    590 }
 
---21_ED6A8B_.--
+*Carlos shrugs*
+
+Linux firin 2.6.0-test11-pa0 #1 Wed Dec 3 14:51:57 EST 2003 parisc64 GNU/Linux
+
+Reading specs from
+/home/carlos/src/toolchain-build/install/lib/gcc-lib/hppa64-linux/3.3.1/specs
+Configured with: ../gcc-cvs/configure --host=hppa-linux
+--prefix=/home/carlos/src/toolchain-build/install --target=hppa64-linux
+--build=hppa-linux
+--with-gnu-ld=/home/carlos/src/toolchain-build/install/bin/ld
+--with-gnu-as=/home/carlos/src/toolchain-build/install/bin/as
+--enable-languages=c
+Thread model: posix
+gcc version 3.3.1
+
+GNU ld version 2.14.90 20031106
+
+c.
