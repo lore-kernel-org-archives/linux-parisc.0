@@ -1,44 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5C1864A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 11:00:49 -0700 (MST)
-Message-Id: <200102211803.KAA17294@milano.cup.hp.com>
-To: "Bryan W. Headley" <bheadley@interaccess.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] CD boot help with 735 
-In-reply-to: Your message of "Wed, 21 Feb 2001 10:43:26 PST."
-             <3A93F02E.28D1B6ED@interaccess.com>
-Date: Wed, 21 Feb 2001 10:03:09 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5E55E4A19
+	for <parisc-linux@parisc-linux.org>; Wed, 21 Feb 2001 11:11:44 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14Vdjp-0000gV-00; Wed, 21 Feb 2001 11:11:41 -0700
+Date: Wed, 21 Feb 2001 11:11:41 -0700
+From: Matthew Wilcox <matthew@wil.cx>
+To: arjanv@redhat.com
+Cc: parisc-linux@parisc-linux.org
+Message-ID: <20010221111141.H31164@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Prefetch macros for PA-RISC
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Bryan W. Headley" wrote:
-> Hi,
-> 
-> Am trying to boot the CDROM, but keep getting "ENTRY_INIT status = -4"
-> and a few lines of hex. Never
-> 
-> 1) The above occurs on the console, routed to built-in video. Should I
-> have done something to redirect console messages to
->     COMM port beforehand? Have a laptop attached to be the serial
-> console, but obviously to no effect
+on PA, we have prefetch for read and prefetch for write.  They're encoded
+as loads to the 0 register.  prefetch read is ldd (load 64-bit quantity)
+and prefetch-write is ldw (load 32-bit quantity).
 
-Shouldn't matter. Where PDC thinks the console is and where linux
-thinks it is can be two different places.
+Off the top of my head, untested (and someone on the list please correct
+me if I'm wrong):
 
-> 2) Just being stupid: 9600 8 N 1, COM port A for the serial console,
-> right?
+#define prefetch_read(addr) __asm__("ldd 0(%%sr0, %0), %%r0" : : "r" (addr))
+#define prefetch_write(addr) __asm__("ldw 0(%%sr0, %0), %%r0" : : "r" (addr))
 
-yes. Assuming linux can find and support port A.
+i think these are only defined for PA 2.0, so we might need to be more
+clever than this.
 
-> 3) Should I try, "b scsi.6.0 IPL" or without the IPL?
-
-Probably not. typically scsi.6.0 is the built-in hard disk.
-Do "sea scsi" and see what shows up. CD-ROM is normally SCSI ID 2.
-(Though it doesn't have to be).
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+-- 
+Revolutions do not require corporate support.
