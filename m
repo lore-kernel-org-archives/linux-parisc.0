@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 6 Jul 2002 22:27:52 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
+Received: from mail.kabelleipzig.de (unknown [80.146.194.2])
+	by dsl2.external.hp.com (Postfix) with SMTP id 05E28482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  7 Jul 2002 00:04:07 -0600 (MDT)
+Received: from kabelleipzig.de (10.50.33.20)
+          by mail.kabelleipzig.de with MERCUR-SMTP/POP3/IMAP4-Server (v3.30.09 AS-000000008)
+          for <parisc-linux@lists.parisc-linux.org>; Sun, 7 Jul 2002  08:04:05 +0200
+Message-ID: <3D27D979.8050100@kabelleipzig.de>
+Date: Sun, 07 Jul 2002 08:02:33 +0200
+From: sven schnelle <schnelle@kabelleipzig.de>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Cc: parisc-linux-cvs@lists.parisc-linux.org
-Message-ID: <20020706212752.GH971@sleepie.demon.co.uk>
-References: <20020706222240.BFA2F484F@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020706222240.BFA2F484F@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux rhirst
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] kdb include files
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,21 +23,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Jul 06, 2002 at 04:22:40PM -0600, Richard Hirst wrote:
-> Make power switch work on 712 again
 
+hello,
 
-RCS file: /var/cvs/linux/arch/parisc/kernel/time.c,v
-retrieving revision 1.24
-diff -u -r1.24 time.c
---- arch/parisc/kernel/time.c   2002/06/26 22:20:32     1.24
-+++ arch/parisc/kernel/time.c   2002/07/06 22:21:58
-@@ -116,7 +116,7 @@
- #endif
- 
-        /* check soft power switch status */
--       if (cpu == 0 && !atomic_read(&led_tasklet.count))
-+       if (cpu == 0 && !atomic_read(&power_tasklet.count))
-                tasklet_schedule(&power_tasklet);
- }
- 
+Im writing on a floppy driver for my 712 and want to use kdb,
+
+but when i try to compile the kernel with it, i get errors:
+
+kdb/break.h: No such file or directory
+kdb/kgdb_types.h: No such file or directory
+kdb/kgdb_machine.h: No such file or directory
+kdb/trap.h: No such file or directory
+
+does anybody know where i can get this files ?.
+
+bye
+     sven
