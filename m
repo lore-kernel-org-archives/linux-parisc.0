@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 To: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-Cc: parisc list <parisc-linux@lists.parisc-linux.org>
+Cc: Ryan Bradetich <rbradetich@uswest.net>,
+	parisc list <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] C110, kernel Panics, still more tears ;-( 
 In-Reply-To: Message from Juergen Braukmann <juergen.braukmann@ruhr-west.de>
-   of "Fri, 19 Jul 2002 18:08:09 +0200." <3D383969.1657EF43@ruhr-west.de>
-References: <3D383969.1657EF43@ruhr-west.de> 
-Date: Sat, 20 Jul 2002 09:29:19 -0600
+   of "Sat, 20 Jul 2002 11:53:20 +0200." <3D393310.D3AB411A@ruhr-west.de>
+References: <3D383969.1657EF43@ruhr-west.de> <1027121658.16562.3.camel@beavis>  <3D393310.D3AB411A@ruhr-west.de> 
+Date: Sat, 20 Jul 2002 09:37:15 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020720152919.9D690483D@dsl2.external.hp.com>
+Message-Id: <20020720153715.A6BD34847@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,26 +21,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Juergen Braukmann wrote:
-> Hi Grant and all,
-> 
-> still more tears. I compiled and replaced the kernel, using 2.4.18pa55.
-> I used the setting of ccio_mem_ratio=16, but still my kernel panics with 
-> Kernel panic: ccio-dma.c ccio_alloc_range() I/O MMU is out of mapping
-> resources.
-> In interrupt handler - not syncing
+> > How much memory does this system have?  Also what cards do you have in
+> > which slot. (Please also specify PCI or GSC).
 
-Sorry - my bad - I think I have it backwards.
-Using a smaller value will result in more IOMMU resource.
+> Speaking about card slots, I don't know what PSC slots are,
 
-> would there be more chance with the ccio_mem_ratio setting of 8?
-
-Or 2 or 1 even.
-
-> there a way to use more than one Kernel alternativly and select it at
-> boottime with palo? Is there an example palo.conf somewhere?
-
-Yes. Interrupt the boot process before palo is loaded and then
-type "Y" to "Interact with IPL (Y/N/Q)?" question. You can then
-specify which vmlinux to boot.
+Me either. No such thing as PSC - only GSC or HSC (K-class).
+The slots in the C200 can take either a GSC card or a PCI card.
 
 grant
