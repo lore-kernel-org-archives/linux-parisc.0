@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from 163.com (unknown [211.147.237.82])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2D2B84831
-	for <parisc-linux@parisc-linux.org>; Tue,  9 Sep 2003 20:21:08 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 82CF74831
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  9 Sep 2003 20:21:09 -0600 (MDT)
 From: =?GB2312?B?1b7U2rSwx7C1xMWuuqI=?= <cqnvhay@163.com>
-To: parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain;charset="GB2312"
 Reply-To: cqnvhai@163.com
-Date: Wed, 10 Sep 2003 10:21:11 +0800
-Message-Id: <20030910022108.2D2B84831@dsl2.external.hp.com>
+Date: Wed, 10 Sep 2003 10:21:14 +0800
+Message-Id: <20030910022109.82CF74831@dsl2.external.hp.com>
 Subject: [parisc-linux] =?GB2312?B?1b7U2rSwx7C1xMWuuqIswfXUxi4uLi4u?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
