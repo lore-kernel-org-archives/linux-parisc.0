@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from thinkpad.home (pc3-hem11-4-cust123.bre.cable.ntl.com [213.107.179.123])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1C5F2482A
-	for <parisc-linux@parisc-linux.org>; Tue, 30 Jul 2002 10:39:29 -0600 (MDT)
-Date: Tue, 30 Jul 2002 16:36:02 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Sean Anaya <sanaya@gr.hp.com>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 227D5482A
+	for <parisc-linux@parisc-linux.org>; Tue, 30 Jul 2002 13:21:52 -0600 (MDT)
+Date: Tue, 30 Jul 2002 15:20:41 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Booting Debian on an HP C180 workstation
-Message-ID: <20020730153602.GO29996@sleepie.demon.co.uk>
-References: <20020730113848.GL29996@sleepie.demon.co.uk> <000301c237e4$b0887800$3c8a260f@gr.hp.com>
+Subject: Re: [parisc-linux] GCC CVS strange update?
+Message-ID: <20020730192041.GD6502@systemhalted>
+References: <20020730073009.N1441@parcelfarce.linux.theplanet.co.uk> <200207301533.g6UFXLge019647@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000301c237e4$b0887800$3c8a260f@gr.hp.com>
+In-Reply-To: <200207301533.g6UFXLge019647@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,10 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jul 30, 2002 at 10:18:07AM -0600, Sean Anaya wrote:
-> Any plans to put together an official full iso, a 0.9.4 perhaps?
+> 
+> 3.1.1 has just been released.  3.2 will be released in the near future
+> and it will be identical to 3.1.1 except for the updates to the c++
+> ABI.  The 3.1 branch is now dead.  Regression fixing will continue
+> on the 3.2 branch after the first release.  The update to the 3.1
+> branch was made to accomodate the schedule of other projects (e.g.,
+> OpenOffice).  Since dwarf2 exception support isn't in 3.2, I doubt
+> this will affect hppa-linux much.
+>
 
-If by that you mean a 600MB (or similar) image, I'm not sure there is
-any point; Debian 3.0 CD1 is effectively that.
+dwarf2 exception support isn't in 3.2 for hppa?
+I'm confused, I believed that dwarf2 exception support wasn't
+goin to be in 3.1, but surely in 3.2? 
 
-Richard
+Dave, please say this a typo :)
+
+c.
