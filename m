@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C94D6482E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 Jan 2003 06:11:36 -0700 (MST)
-Date: Sat, 25 Jan 2003 14:11:30 +0100
-From: Thibaut VARENE <varenet@esiee.fr>
-To: "Sir Ace" <chandler@nateng.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Um... WTF?
-Message-Id: <20030125141130.7495a051.varenet@esiee.fr>
-In-Reply-To: <20030125171749.F674@neep.com.au>
-References: <Pine.LNX.4.33.0301241520210.25246-100000@jordan.eng.nateng.com>
-	<20030125015308.GC6228@dsl2.external.hp.com>
-	<20030125171749.F674@neep.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE0254834
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 25 Jan 2003 10:21:35 -0700 (MST)
+Message-ID: <3E32D7C0.9020703@tiscali.be>
+Date: Sat, 25 Jan 2003 18:30:24 +0000
+From: Joel Soete <joel.soete@tiscali.be>
+MIME-Version: 1.0
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: grundler@dsl2.external.hp.com, tausq@debian.org,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] new gcc-default for hppa
+References: <200301250423.h0P4Noxq000220@hiauly1.hia.nrc.ca>
+In-Reply-To: <200301250423.h0P4Noxq000220@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,31 +24,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 25 Jan 2003 17:17:51 +0800
-"Andrew Shugg" <andrew@neep.com.au> wrote:
 
-> Grant Grundler said:
-> > On Fri, Jan 24, 2003 at 03:37:28PM -0800, Sir Ace wrote:
-> > > Herein lies the problem, some how EVERY DAMN THING on the system
-> > > seems to be built against ncurses,
-> > 
-> > Right. *system* being the operative word here.
+John David Anglin wrote:
+>>That said, always in the continuity of this idea, I also notice that ld is
+>>used to build some kernel parts. Is it  possible (even manually just for
+>>test) to use gcc in place of ld? (if yes, howto?)
 > 
-> Poor Sir Ace must be confused.  A Debian GNU/Linux 3.0 install on hppa
-> should work fine.  Look at all these happy people who are running it!
-http://pateam.esiee.fr/realisations.html
+> 
+> When linking, gcc is just a front end for ld.  You can see what happens
+> with "-v", "-Wl,-v", "-Wl,-debug", etc.  You can pass any option that
+> you want to ld using the gcc "-Wl" option.  Gcc doesn't doing any linking
+> itself.
+> 
 
-FWIW, when I encounter such diseases on _any_ platform, I first suspect
-the hardware, not the "it-works-for-thousands-of-persons" software.
+Ha Ok.
 
-What's more, no need to use CAPS, exclamations and other insults to ask
-questions or report problems. You won't get any result but upsetting
-guys who did a _damn good work_ to make the stuff work.
+My confusion came from Helge Deller mail:
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/018970.html>
 
+But he spook about g++ (which I presume is different of gcc)?
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
-
--- 
-It's always easy to criticize one's work, but try to do it first...
+Thanks,
+	Joel
