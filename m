@@ -1,15 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9780A4853
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Jun 2002 07:32:26 -0600 (MDT)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1025098342.3d19c266a0ff7@webmail.tiscalinet.be>
-Date: Wed, 26 Jun 2002 15:32:22 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] gcc-3.2 failed to compile kernel
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 92ED94857
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Jun 2002 07:45:47 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17ND72-0001pY-00; Wed, 26 Jun 2002 14:45:36 +0100
+Date: Wed, 26 Jun 2002 14:45:36 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: joel.soete@freebel.net
+Cc: Matthew Wilcox <willy@debian.org>,
+	Matt Taggart <taggart@carmen.fc.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 24bit colour
+Message-ID: <20020626144536.B28662@parcelfarce.linux.theplanet.co.uk>
+References: <5.1.0.14.0.20020610084610.026cfc70@10.106.16.2> <20020610203815.8349B380D5@carmen.fc.hp.com> <1024391159.3d0ef7f7c3903@webmail.tiscalinet.be> <20020618121104.E9435@parcelfarce.linux.theplanet.co.uk> <1025099026.3d19c51207773@webmail.tiscalinet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1025099026.3d19c51207773@webmail.tiscalinet.be>; from joel.soete@freebel.net on Wed, Jun 26, 2002 at 03:43:46PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,42 +27,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Wed, Jun 26, 2002 at 03:43:46PM +0200, joel.soete@freebel.net wrote:
+> Quoting Matthew Wilcox <willy@debian.org>:
+> > it's probably less work to teach XFree86 how to talk to your gfx card
+> > than it is to get the HPUX X server to run on Linux.
+> 
+> I would prefer also but is there any documentation about this interface?
 
-To try to investigate the network problem with compiling kernel with gcc-3.2 on
-hppa, I cvs update gcc and binutils this morning. Then build toolchain and
-finally make dep ; make vmlinux but it failled with following message:
+i meant that it's probably less work to reverse-engineer the interface
+and implement it in XFree86 than it is to get the HPUX X server working.
 
-make[1]: Entering directory
-`/Develop/parisc-linux/src/linux-2.4.18-pa40/arch/parisc/kernel'
-gcc -D__KERNEL__ -I/Develop/parisc-linux/src/linux-2.4.18-pa40/include -Wall
--Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing
--fno-common -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
--mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
--mschedule=7100   -DKBUILD_BASENAME=cache  -c -o cache.o cache.c
-gcc -D__ASSEMBLY__ -traditional -D__KERNEL__
--I/Develop/parisc-linux/src/linux-2.4.18-pa40/include  -c -o pacache.o pacache.S
-In file included from pacache.S:44:
-/Develop/parisc-linux/src/linux-2.4.18-pa40/include/asm/cache.h:9: 1/config.h:
-No such file or directory
-make[1]: *** [pacache.o] Error 1
-make[1]: Leaving directory
-`/Develop/parisc-linux/src/linux-2.4.18-pa40/arch/parisc/kernel'
-make: *** [_dir_arch/parisc/kernel] Error 2
-
-?? "1/config.h"
-    ??
-
-Any idea?
-
-Thanks in advance,
-    Joel
-
-PS1: the same sources (2.4.18-pa40) compile and run fine when compile natively
-with gcc-3.0.4 (last hppa.dpkg).
-
-PS2: glibc used to build toolchain was based on glibc_2.2.5-4 (+ patch)
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+-- 
+Revolutions do not require corporate support.
