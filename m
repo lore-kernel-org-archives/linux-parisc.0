@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from ecgd.com (unknown [218.19.0.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0006F4879
-	for <parisc-linux@parisc-linux.org>; Wed,  3 Dec 2003 04:00:42 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id F23714879
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Dec 2003 04:00:45 -0700 (MST)
 From: =?GB2312?B?uunQob3j?= <dirpuf@ecgd.com>
-To: parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain;charset="GB2312"
 Reply-To: dirpuf@ecgd.com
-Date: Wed, 3 Dec 2003 19:01:05 +0800
-Message-Id: <20031203110043.0006F4879@dsl2.external.hp.com>
+Date: Wed, 3 Dec 2003 19:01:08 +0800
+Message-Id: <20031203110045.F23714879@dsl2.external.hp.com>
 Subject: [parisc-linux] =?GB2312?B?tefE1M7KzOK94r72t72wuKOh?=
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
