@@ -1,147 +1,62 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from apps01.skytex.com.hk (186_78user154.ctinets.com [203.186.78.154])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CB6FF482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Aug 2001 02:22:59 -0600 (MDT)
-Message-ID: <4FE292692956D411A3FB009027C3F1822554EF@apps01.skytex.com.hk>
-From: david.wong@skytex.com.hk
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 28 Aug 2001 16:19:55 +0800
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 86D9C482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 28 Aug 2001 03:30:52 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux-cvs@lists.parisc-linux.org
+Subject: Re: [parisc-linux] C180 netbooting
+Date: Tue, 28 Aug 2001 11:30:05 +0200
+References: <200108280922.DAA19668@puffin.external.hp.com>
+In-Reply-To: <200108280922.DAA19668@puffin.external.hp.com>
+Cc: nick@snowman.net, parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C12F9A.37F3D400"
-Subject: [parisc-linux] (no subject)
+Message-Id: <20010828093052.86D9C482B@dsl2.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
+Hi Mike,
 
-------_=_NextPart_001_01C12F9A.37F3D400
-Content-Type: text/plain
+I've just added your machine to the kernel hardware database, which should 
+at least eliminate the following two "Unknown device" strings in the kernel log.
 
- 
-
-------_=_NextPart_001_01C12F9A.37F3D400
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
+> Found devices:
+> 1. Unknown device (4) at 0xf200c000, versions 0x3b, 0x0, 0x89, 0x0, 0x80
+> 22. Unknown device (0) at 0xfffa0000, versions 0x59c, 0x0, 0x4, 0x0, 0x81
 
 
-<meta name=3DProgId content=3DWord.Document>
-<meta name=3DGenerator content=3D"Microsoft Word 10">
-<meta name=3DOriginator content=3D"Microsoft Word 10">
-<link rel=3DFile-List href=3D"cid:filelist.xml@01C12FDC.F32567B0">
-<!--[if gte mso 9]><xml>
- <o:OfficeDocumentSettings>
-  <o:DoNotRelyOnCSS/>
- </o:OfficeDocumentSettings>
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <w:WordDocument>
-  <w:DocumentKind>DocumentEmail</w:DocumentKind>
-  <w:EnvelopeVis/>
-  <w:Compatibility>
-   <w:BreakWrappedTables/>
-   <w:SnapToGridInCell/>
-   <w:WrapTextWithPunct/>
-   <w:UseAsianBreakRules/>
-   <w:UseFELayout/>
-  </w:Compatibility>
-  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
- </w:WordDocument>
-</xml><![endif]-->
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:SimSun;
-	panose-1:2 1 6 0 3 1 1 1 1 1;
-	mso-font-alt:\5B8B\4F53;
-	mso-font-charset:134;
-	mso-generic-font-family:auto;
-	mso-font-pitch:variable;
-	mso-font-signature:3 135135232 16 0 262145 0;}
-@font-face
-	{font-family:"\@SimSun";
-	panose-1:2 1 6 0 3 1 1 1 1 1;
-	mso-font-charset:134;
-	mso-generic-font-family:auto;
-	mso-font-pitch:variable;
-	mso-font-signature:3 135135232 16 0 262145 0;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{mso-style-parent:"";
-	margin:0in;
-	margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:12.0pt;
-	font-family:"Times New Roman";
-	mso-fareast-font-family:SimSun;}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;
-	text-underline:single;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;
-	text-underline:single;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	mso-style-noshow:yes;
-	mso-ansi-font-size:10.0pt;
-	mso-bidi-font-size:10.0pt;
-	font-family:Arial;
-	mso-ascii-font-family:Arial;
-	mso-hansi-font-family:Arial;
-	mso-bidi-font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;
-	mso-header-margin:.5in;
-	mso-footer-margin:.5in;
-	mso-paper-source:0;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 10]>
-<style>
- /* Style Definitions */=20
- table.MsoNormalTable
-	{mso-style-name:"Table Normal";
-	mso-tstyle-rowband-size:0;
-	mso-tstyle-colband-size:0;
-	mso-style-noshow:yes;
-	mso-style-parent:"";
-	mso-padding-alt:0in 5.4pt 0in 5.4pt;
-	mso-para-margin:0in;
-	mso-para-margin-bottom:.0001pt;
-	mso-pagination:widow-orphan;
-	font-size:10.0pt;
-	font-family:"Times New Roman";}
-</style>
-<![endif]-->
-</head>
+On Tuesday 28 August 2001 11:22, Helge Deller wrote:
+> CVSROOT:	/home/cvs/parisc
+> Module name:	linux
+> Changes by:	deller	01/08/28 03:22:53
+>
+> Modified files:
+> 	arch/parisc/kernel: hardware.c
+>
+> Log message:
+> - add Raven U180 cpu and FW-SCSI entries to hardware-database
+> acording to <nick@snowman.net>'s machine
 
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple =
-style=3D'tab-interval:.5in'>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C12F9A.37F3D400--
+Index: hardware.c
+===================================================================
+RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/hardware.c,v
+retrieving revision 1.22
+diff -u -r1.22 hardware.c
+--- hardware.c	2001/08/28 08:01:27	1.22
++++ hardware.c	2001/08/28 09:20:59
+@@ -174,6 +174,7 @@
+ 	{HPHW_NPROC,0x59A,0x4,0x81,"Unlisted but reserved"},
+ 	{HPHW_NPROC,0x59B,0x4,0x81,"Raven U 160 (9000/780/C160)"},
+ 	{HPHW_NPROC,0x59D,0x4,0x81,"Raven U 200 (9000/780/C200)"},
++	{HPHW_NPROC,0x59C,0x4,0x81,"Raven U 180 (9000/780/C180)"},
+ 	{HPHW_NPROC,0x59E,0x4,0x91,"ThunderHawk T' 120"},
+ 	{HPHW_NPROC,0x59F,0x4,0x91,"Raven U 180+ (9000/780)"},
+ 	{HPHW_NPROC,0x5A0,0x4,0x81,"UL 1w T120 1MB/1MB (841/D260,D360)"},
+@@ -340,6 +341,7 @@
+ 	{HPHW_A_DMA, 0x01F, 0x00089, 0x80, "SkyHawk 100/120 FW-SCSI"}, 
+ 	{HPHW_A_DMA, 0x027, 0x00089, 0x80, "Piranha 100 FW-SCSI"}, 
+ 	{HPHW_A_DMA, 0x032, 0x00089, 0x80, "Raven T' Core FW-SCSI"}, 
++	{HPHW_A_DMA, 0x03b, 0x00089, 0x80, "Raven U/L2 Core FW-SCSI"}, 
+ 	{HPHW_A_DMA, 0x03d, 0x00089, 0x80, "Merlin 160 Core FW-SCSI"},
+ 	{HPHW_A_DMA, 0x044, 0x00089, 0x80, "Mohawk Core FW-SCSI"}, 
+ 	{HPHW_A_DMA, 0x051, 0x00089, 0x80, "Firehawk FW-SCSI"}, 
