@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (ns1.au.network4.net [203.25.143.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A3F904847
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Jun 2002 11:27:43 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id BAA26373
-	for parisc-linux@lists.parisc-linux.org; Sun, 30 Jun 2002 01:27:51 +0800
-Date: Sun, 30 Jun 2002 01:27:47 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 735 and FW SCSI
-Message-ID: <20020630012744.A16287@neep.com.au>
-References: <20020629223123.A24671@neep.com.au> <200206291641.g5TGfjDN018674@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200206291641.g5TGfjDN018674@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Sat, Jun 29, 2002 at 12:41:45PM -0400
+Received: from mail.yifansoft.com (ns1.yifansoft.com [64.61.26.50])
+	by dsl2.external.hp.com (Postfix) with SMTP id 2B17C48A6
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Jun 2002 16:08:35 -0600 (MDT)
+From: "Chuck" <atkinsc@yifan.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] 735 and FW SCSI
+Date: Sat, 29 Jun 2002 17:08:41 -0500
+Message-ID: <MDEAIMOKAJDADFOAOOJEKECMCAAA.atkinsc@yifan.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <20020630012744.A16287@neep.com.au>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,6 +21,18 @@ List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
+
+Well would I be able to use the current netinst iso to install onto the
+FWSCSI HD?
+
+-----Original Message-----
+From: parisc-linux-admin@lists.parisc-linux.org
+[mailto:parisc-linux-admin@lists.parisc-linux.org]On Behalf Of Andrew
+Shugg
+Sent: Saturday, June 29, 2002 12:28 PM
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 735 and FW SCSI
+
 
 J. David Anglin said:
 > The Outfield FW interface is differential.  Disks on this interface are
@@ -40,8 +49,13 @@ some 'normal' SCSI disks, or go for the NFS-root option.
 
 Andrew.
 
--- 
+--
 Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
 
 "Just remember, Mr Fawlty, there's always someone worse off than yourself."
 "Is there?  Well I'd like to meet him.  I could do with a good laugh."
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
