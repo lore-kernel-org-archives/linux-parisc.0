@@ -1,47 +1,41 @@
-Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id LAA26698
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 11:46:31 -0700
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200011201847.KAA12667@opus.allegro.com>
-Subject: Re: Single-stepping
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Mon, 20 Nov 2000 10:47:38 -0800 (PST)
-Cc: jsm@udlkern.fc.hp.com (John Marvin), parisc-linux@puffin.external.hp.com,
-        parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.21.0011201912260.15391-100000@front.linuxcare.com.au> from "Alan Modra" at Nov 20, 2000 08:05:58 PM
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id MAA27914
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 12:22:34 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by atlrel1.hp.com (Postfix) with ESMTP id ED6AC5DE
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 14:24:46 -0500 (EST)
+Received: from localhost (grundler@localhost [127.0.0.1])
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id LAA18808
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 11:23:41 -0800 (PST)
+Message-Id: <200011201923.LAA18808@milano.cup.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] CVS linux Vs. -test10 
+In-reply-to: Your message of "Sat, 18 Nov 2000 07:24:54 PST."
+             <20001118072454.C30151@parcelfarce.linux.theplanet.co.uk>
+Date: Mon, 20 Nov 2000 11:23:40 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Re:
+Matthew Wilcox wrote:
+...
+> >      * fs/nfs/read.c: probably unnecessary hack for broken parisc64 gcc
+> 
+> we certainly don't want to send it upstream, but we don't want to take it
+> out until the bug is fixed.  is fixing that bug on the webshite todo list?
 
-> Because you would then need to save and restore cr0 on task switches (or
-> only allow one task to be single-stepped at a time).  That's four
-> instructions and two extra memory accesses per task switch.  Which might
-> not seem very much, but at some point somebody will no doubt start caring
-> about pa-linux performance. 
+It's fixed. I was able to NFS boot my A180 and install  palinux-0.5.iso
+bits on the SCSI disk. I've reverted the change to the LINUS_240_TEST10
+version.
 
-And it still won't seem like much, then!
+> >      * include/linux/wait.h: parisc debugging -- should be removed
+> 
+> yeah, that can die now.
 
-Non-memory-access instructions are cheap.  An extra memory reference (from
-something probably already in cache) and two extra instructions
-would probably cost less than an hour per CPU over the next 10 *years*,
-assuming 10 years of 1000 task switches per second on a slow 100 MHz CPU.
+Is anyone else already doing this?
 
-Of course, at the cost of an extra non-memory-referencing instruction or so,
-you could say "at switch-to-task time: if PSW R-bit set, then load the saved
-CR0 from memory and move it to CR0", saving one memory reference 99.99999%
-of the time, resuling in an average of only one memory reference
-per task switch normally.
+thanks,
+grant
 
-I haven't look at interrupt handling / system calls closely, but I
-hope there aren't other false savings.  (E.g., failure to save/restore
-the PID check flag ... sure, user processes *now* probably never have
-pid checking disabled, but that's a very useful feature to have
-available (with proper security controls, of course).)
-(Yes, I'm one of the very few who use that feature on MPE/iX ... carefully,
-of course :)
-
--- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html                  www.sieler.com        
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
