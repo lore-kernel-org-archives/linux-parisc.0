@@ -1,46 +1,61 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA02848
-	for <parisc-linux@puffin.external.hp.com>; Tue, 18 Jul 2000 07:10:32 -0600
-Received: from ottawa.linuxcare.com (HELO vodka.thepuffingroup.com) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 18 Jul 2000 13:12:13 -0000
-Date: Tue, 18 Jul 2000 08:06:51 -0400
-From: Matthew Wilcox <matthew@wil.cx>
-To: Ville Herva <vherva@mail.niksula.cs.hut.fi>
-Cc: linux-kernel@vger.rutgers.edu, parisc-linux@thepuffingroup.com
-Subject: Re: Help Apollo serie 700
-Message-ID: <20000718080651.C3150@vodka.thepuffingroup.com>
-References: <39733B8F.9311D5C3@prescom.fr> <20000717163745.A3150@vodka.thepuffingroup.com> <20000718085033.E800@niksula.cs.hut.fi>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA06428
+	for <parisc-linux@puffin.external.hp.com>; Tue, 18 Jul 2000 11:59:07 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 18 Jul 2000 18:00:45 -0000
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@thepuffingroup.com
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 18 Jul 2000 13:58:53 -0400
+Message-ID: <8766q3uxpe.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000718085033.E800@niksula.cs.hut.fi>; from Ville Herva on Tue, Jul 18, 2000 at 08:50:33AM +0300
+Subject: [parisc-linux] PIC code generation in gcc/binutils
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Jul 18, 2000 at 08:50:33AM +0300, Ville Herva wrote:
-> On Mon, Jul 17, 2000 at 04:37:45PM -0400, you [Matthew Wilcox] claimed:
-> > On Mon, Jul 17, 2000 at 06:59:59PM +0200, fbarthe@prescom.fr wrote:
-> > 
-> > > Any distribution including thid version of kernel ?
-> > 
-> > not yet.  we're working towards having debian/parisc available as soon as
-> > possible.
-> 
-> How far is that anyway? What short of expertice would you say is needed to
-> play with linux/pa-risc today? The Puffin Group status page wasn't too
-> verbose when I last cheched. (A friend of mine has a couple of 7xx's that
-> are currently doing nothing useful...)
+Hi Alan, other porters,
 
-we have a cross toolchain working; most of the fileutils, textutils,
-shellutils packages, fdisk, e2fsprogs, mount, and probably a few other
-random programs.  yesterday, we found out why native gcc was crashing
-the kernel; today we're trying to figure out why it still doesn't work
-now that this bug is kludged around.
+I'm at the point now (userland mostly works for me as does the 64-bit
+toolchain) where I'd like to start working on the implementation of
+ELF dynamic linking for hppa-linux.  Obviously the precondition for
+this is a working PIC code model in GCC and binutils.
 
-you need to be confident at compiling things and be able to track down
-what's gone wrong when things don't compile in order to be useful at
-this time.
+I was hoping to write up a preliminary ABI specification based on the
+64-bit ELF implementation on HP/UX, so I've been trying to find
+detailed specifications on how the ELF64 ABI actually works but so far
+have not come up with much information from HP's documentation.  The
+64-bit runtime architecture document has some useful information, but
+I suspect I'll have to look at the actual implementation to nail down
+the details.
 
-i'm fiddling with the website right now and i'll see what i can do in
-the way of clarity.  constructive criticism welcomed.
+One thing I am sure of is that if we try to follow the HP/UX ELF64
+specification for dynamic linking on 32-bit Linux we are going to be
+substantially different from other Linux/ELF platforms.  In
+particular, the handling of inter-module calls and function pointers,
+and the management of the GP, are done in a totally different way from
+all the other platforms I've encountered (i386, m68k, alpha).
+(i.e. inter-module calls are handled by another set of stubs, and GP
+management is done by the caller via the function descriptors, rather
+than by the callee with GPDISP and similar relocations)
+
+This will potentially make implementing ld.so more difficult, and thus
+I'm not sure how desireable it is to follow the 64-bit example; we
+will never have to actually link and load HP/UX ELF binaries with our
+native toolchain and dynamic linker, even when we do have support for
+64-bit userland.
+
+On the other hand following the ELF64 example *will* allow us to reuse
+code (though the ELF64 PIC implementation in BFD appears to be still
+somewhat incomplete) in binutils, so it looks like kind of a
+binutils/ld.so tradeoff.
+
+Thus I am playing a bit with adapting the ELF64 code to produce a
+preliminary PIC-generating toolchain.  I don't, however, want to get
+too far into this before knowing (a) what other people are working on,
+and (b) what the implementation is going to look like.
+
+Thoughts?
 
 -- 
-The Sex Pistols were revolutionaries.  The Bay City Rollers weren't.
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
