@@ -1,20 +1,19 @@
 Return-Path: <carlos@baldric.uwo.ca>
 Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C2D384840
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1DE1D48A8
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  5 Jan 2004 22:40:56 -0700 (MST)
-Date: Tue, 6 Jan 2004 00:32:40 -0500
+	Mon,  5 Jan 2004 22:47:44 -0700 (MST)
+Date: Tue, 6 Jan 2004 00:39:25 -0500
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Christopher Strong <strong@cs.utah.edu>
-Subject: Re: [parisc-linux] Re: [Status] hppa's userspace in 2004 (looking
-	back)
-Message-ID: <20040106053240.GB14464@systemhalted>
-References: <200401052245.26060.deller@gmx.de>
-	<Pine.LNX.4.43L0.0401051658110.30297-100000@charity.cs.utah.edu>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
+Message-ID: <20040106053924.GC14464@systemhalted>
+References: <20040105172146.GE23782@systemhalted>
+	<200401051848.i05Imt6p005065@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.43L0.0401051658110.30297-100000@charity.cs.utah.edu>
-Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <200401051848.i05Imt6p005065@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,17 +23,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 05, 2004 at 05:00:48PM -0700, Christopher Strong wrote:
-> Same here; there are still a lot of issues with my C3000, but that does
-> not mean it's not great; the machine runs and is stable, even with the
-> USB and frame buffer issues.  Totally stable.  I am VERY PLEASED with
-> the progress that has been made on HPPA linux; this machine is now one
-> I depend on, because I know I can.
+On Mon, Jan 05, 2004 at 01:48:54PM -0500, John David Anglin wrote:
+> As usual, I expect there will be many ups and downs in the process.
+> So, we won't get as far as we would like.
 > 
-> Thanks for all the work.
+> > jda, you mentioned that the libstdc++ testsuite could be examined in
+> > order to fix some of our failures.
+> 
+> Yes, these need to be looked at before 3.4 is released.  Some appear
+> to be related to long double support.  Just guessing, but I think the
+> rest are locale or glibc related.
 
-Thanks guys! The learning process is worth it's weight in gold :)
-I'm always glad to hear people rely on their parisc-linux machines to
-get work done. Hey, my c3k runs all the home accounts in the lab!
+Does this seem like a reasonable triage list?
+
+a. gdb.
+b. atomic kernel ops.
+c. libstdc++ failures.
 
 c.
