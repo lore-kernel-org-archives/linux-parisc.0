@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bhonet00003.fonts.de (www.fonts.de [212.109.160.102])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5606F482C
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 05:15:23 -0700 (MST)
-Received: from mail.fonts.de (mail.fonts.de [193.103.125.252])
-	by bhonet00003.fonts.de (Postfix) with ESMTP id 3631B3AB8B
-	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 13:15:42 +0100 (CET)
-Date: Wed, 12 Dec 2001 13:19:19 +0000
-Message-Id: <200112121319.AA3146187070@mail.fonts.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: "Jan Heumann" <jheumann@fonts.de>
-Reply-To: <jheumann@fonts.de>
-To: <parisc-linux@parisc-linux.org>
-Subject: [parisc-linux] [test] PA-RISC Linux 0.9.3
+Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06138482C
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 05:33:59 -0700 (MST)
+Received: from there (fwr-01.mediadesign.de [212.185.42.202])
+	by post.webmailer.de (8.9.3/8.8.7) with SMTP id NAA03171
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 13:29:24 +0100 (MET)
+Message-Id: <200112121229.NAA03171@post.webmailer.de>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Joerg Hartmann <j.hartmann@reinarts.de>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] [test] PA-RISC Linux 0.9.3
+Date: Wed, 12 Dec 2001 13:33:41 +0100
+References: <200112121319.AA3146187070@mail.fonts.de>
+In-Reply-To: <200112121319.AA3146187070@mail.fonts.de>
+MIME-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,18 +26,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I have test the PA-RISC Linux 0.9.3-RC6.
-The test was successfully on the follow machine :
+On Wednesday, 12. December 2001 14:19, you wrote:
 
-HP9000 710
-HP9000 715 33MHz
-HP9000 715 50 MHz
-HP9000 715 64 MHz
-HP9000 720
-HP9000 750
+> I have test the PA-RISC Linux 0.9.3-RC6.
+> The test was successfully on the follow machine :
+>
+> HP9000 710
+> HP9000 715 33MHz
+> HP9000 715 50 MHz
+> HP9000 715 64 MHz
+> HP9000 720
 
-All machines have installed with a serial HP 700/60 Terminal.
+The Installation on a 720 went smoothly.
+But samba does not work.
+The smbd dies imedietly without any logging / information, because of 
+some problems with "the message database" .
 
-in the packages are a bug. by selecting with tasksel can the installation 
-frozen. i have use unix-server, web-server and c-developer and it is not 
-frozen. i have selected all packages and the installation is frozen.
+regards
+			Joerg
+-- 
+Joerg Hartmann
+j.hartmann@reinarts.de
