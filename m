@@ -1,20 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout08.sul.t-online.com (mailout08.sul.t-online.com [194.25.134.20])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 261294829
-	for <parisc-linux@parisc-linux.org>; Sun,  6 Apr 2003 15:51:35 -0600 (MDT)
-Received: from nikita.ath.cx (localhost [127.0.0.1])
-	by nikita.ath.cx (8.12.3/8.12.3/Debian-5) with ESMTP id h36LqR0H007221
-	for <parisc-linux@parisc-linux.org>; Sun, 6 Apr 2003 23:52:28 +0200
-Received: (from pappy@localhost)
-	by nikita.ath.cx (8.12.3/8.12.3/Debian-5) id h36LqLjC007219
-	for parisc-linux@parisc-linux.org; Sun, 6 Apr 2003 23:52:21 +0200
-From: Alexander Gabert <pappy@nikita.ath.cx>
-Date: Sun, 6 Apr 2003 23:52:19 +0200
-To: parisc-linux@parisc-linux.org
-Message-ID: <20030406215219.GA7192@nikita.ath.cx>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] grsecurity 199e on 2420pa32
+Received: from horkos.telenet-ops.be (horkos.telenet-ops.be [195.130.132.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2484A4829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  6 Apr 2003 16:29:16 -0600 (MDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by horkos.telenet-ops.be (Postfix) with SMTP id 8473883C56
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Apr 2003 00:29:15 +0200 (CEST)
+Received: from dmt (D576C8F7.kabel.telenet.be [213.118.200.247])
+	by horkos.telenet-ops.be (Postfix) with SMTP id 67F1F83C74
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Apr 2003 00:29:15 +0200 (CEST)
+Message-ID: <005501c2fc8b$f72620c0$b200a8c0@dmt>
+From: "Smartelectronix - Bram de Jong" <bram@smartelectronix.com>
+To: <parisc-linux@lists.parisc-linux.org>
+References: <001e01c2fc30$b9ff47e0$604a5251@kerberos> <20030406193759.GA8473@sleepie.demon.co.uk>
+Subject: Re: [parisc-linux] Our new toy + terminal questions.....
+Date: Mon, 7 Apr 2003 00:29:19 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,61 +28,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-fyi
+----- Original Message ----- 
+From: "Richard Hirst" <rhirst@linuxcare.com>
+> You don't say what terminal emulator you are trying to use.  Many people
+> use minicom on an x86 linux host without problems.
+> 
+> You can't stop the installer using features such as cursor addressing to
+> paint the screen.
 
-bye,
+OK, thanks for the reply, Richard,
+Had some trouble subscribing to the
+list but everything is fixed now!
 
-Alex
+As you suggested offlist I'll be hunting for a VT100-compatible
+terminal application.
+Does anyone here have a nice VT100-compatible terminal
+application for windows? (needs to be windows 'cos I need
+to run it on a windows laptop...)
 
-----
-this weekend i succeeded in setting up my first debian-hppa box with a
-customized parisc-linux.org kernel with the grsecurity 1.9.9e patch.
-
-with the help of Brad Spengler it was possible to fit his patch to the
-latest parisc-linux 2.4.20 kernel and set up a demo machine.
-
-the patches are at http://nikita.ath.cx/users/pappy/grsec
-
-i also provided a compiled kernel (without module support) for a 712 and
-a config file for grsec for evaluational purposes.
-
-please feel free to follow me up and ask questions about this.
-the box is currently running and the 2 minor issues with PAGE EXEC
-should be resolved in the near future.
-
-i am looking forward to 2.0 where grsec will come up with role-based
-behaviour and full distinction support for remote/local processes via
-ip-based access control lists.
-
-as far as i know, the grsec functionality is the first project to
-effectively harden the linux kernel for hp/9000 machines.
-
-www.grsecurity.net has details about the functionality provided by
-Brad's team.
-
-a comparison to the commercial HP/9000 praesidium IDS from HP would be
-welcome.
-
-have a nice day,
+thanks!
 
 
-Alex
--- 
-pub  1024/05E1A80C 2001/12/16 Alexander Gabert (http://nikita.ath.cx) <pappy@nikita.ath.cx>
-          Key fingerprint =  2D 84 B0 CB F5 67 8A 22  8D 37 6E 6B 8A 3B 7F D6  05 E1 A8 0C
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-request@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
-
-
------ End forwarded message -----
-
--- 
-"... an experienced, industrious, ambitious, and often quite often
-picturesque liar."
-                -- Mark Twain
-
-pub  1024/05E1A80C 2001/12/16 Alexander Gabert (http://nikita.ath.cx) <pappy@nikita.ath.cx>
-          Key fingerprint =  2D 84 B0 CB F5 67 8A 22  8D 37 6E 6B 8A 3B 7F D6  05 E1 A8 0C
+ - bram
