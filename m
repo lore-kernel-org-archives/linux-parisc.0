@@ -1,81 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA10991
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 11:09:26 -0700
-Date: Thu, 18 Jan 2001 13:12:50 -0500 (EST)
-Message-Id: <200101181812.f0IICoF19246@openbsd1.buttafuoco.net>
-From: "Jim Buttafuoco" <jim@tylerdrive.org>
-To: bame@riverrock.org, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Trouble booting a 710 (bushmaster)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA12139
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 Jan 2001 11:52:21 -0700
+Received: from athena.louisville.edu (athena.louisville.edu [136.165.1.37])
+	by erouter1.it-datacntr.louisville.edu (Postfix) with ESMTP id 54882237FF
+	for <parisc-linux@thepuffingroup.com>; Thu, 18 Jan 2001 13:53:54 -0500 (EST)
+Date: Thu, 18 Jan 2001 13:53:21 -0500
+From: "Phillip D. Beal" <pdbeal@louisville.edu>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20010118135321.A113814@athena.louisville.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] NFS Root / System
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ok,
+Hey,
 
-I tried the uncompressed ramdisk, same results.  I am going to try to 
-debug this issue first by putting some debug code in rd.c.  I will keep 
-you posted...
+Is there a new version of the NFS root system?  The latest I've found
+was by stealing the filesystem from the palo-0.5 cd image, and before
+that was from 20000915, I think....   Also, does anyone know where I can
+find apt-get for binary-hppa?  Or the source to attempt to compile it?
 
-ANY more suggestions????
-
-Thanks again
-Jim
-
-
-> = Hi,
-> = 
-> = I have been trying to get my 2 9000/710's to boot for a couple of 
-months
-> = now.  Attached is the latest log file from my boot. 
-> = 
-> = The 2 problems that I see are the ramdisk is NOT seen and the BOOTP
-> = fails.  I have used TCPDUMP to look at the packets coming and going 
-from
-> = the system.  All I see is the RBOOTP stuff.  The ramdisk is valid 
-as far
-> = as I can tell. (I mounted it via the loop fs).  Should it be 
-compressed
-> = with ZIP???.
-> = 
-> = The kernel/palo source is the latest as of 1/17/01.  
-> 
-> = Loading ramdisk 1544116 bytes @ 0051c000...
-> = [...]
-> 
-> Looks like you're using a compressed ramdisk.  That should work, but
-> it's worth trying an uncompressed one.
-> 
-> = RAMDISK driver initialized: 16 RAM disks of 4096K size 1024 
-blocksize
-> = 82596.c: MAC of HP700 LAN blindely read from the prom!
-> = eth0: Couldn't get consistent shared memory
-> = eth0: 82596 at 0xf0826000, 08 00 09 25 DD 7B IRQ 87.
-> = 82596.c $Revision: 1.14 $
-> = RAMDISK: Couldn't find valid RAM disk image starting at 0.
-> 
-> Yeah, try an uncompressed ramdisk.  EXT2
-> 
-> = [...]
-> = NET4: Linux TCP/IP 1.0 for NET4.0
-> = IP Protocols: ICMP, UDP, TCP
-> = IP: routing cache hash table of 512 buckets, 4Kbytes
-> = TCP: Hash tables configured (established 2048 bind 2048)
-> = Sending BOOTP requests............. timed out!
-> = IP-Config: Auto-configuration of network failed.
-> = Trying to free nonexistent resource <f0826000-f082600b>
-> = NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
-> = kmem_create: Forcing size word alignment - nfs_fh
-> = Kernel panic: VFS: Unable to mount root fs on 01:00
-> 
-> No clue about your bootp problem...
-> 
-> 	-P
-> 
-> ----------------------------------------------------------------------
------
-> To unsubscribe: send e-mail to parisc-linux-
-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
-> 
+Thanks,
+-- 
+Phillip Beal                           ___           _               _   
+Electrical and Computer Engineering   | _ ) ___ __ _| |___  _ _  ___| |_ 
+pdbeal@louisville.edu                 | _ \/ -_) _` | |_ /_| ' \/ -_)  _|
+http://www.bealz.net/                 |___/\___\__,_|_/__(_)_||_\___|\__|
