@@ -1,46 +1,67 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA27767
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Nov 2000 08:47:42 -0700
-Date: Fri, 3 Nov 2000 10:49:00 -0500
-From: Phillip Beal <pdbeal@louisville.edu>
-To: Alex deVries <adevries@linuxcare.com>
-Cc: Phillip Beal <pdbeal01@athena.louisville.edu>,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] STI Console problems on 735 and 755
-Message-ID: <20001103104900.B68620@athena.louisville.edu>
-References: <20001103100239.A37904@athena.louisville.edu> <3A02E9B4.5B93F47@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA29232
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Nov 2000 12:05:21 -0700
+Message-Id: <5.0.0.25.0.20001102174648.02a4fb20@mail.webcash.com>
+Date: Fri, 03 Nov 2000 11:03:23 -0800
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+From: Kailashnath V Rampure <kailasr@webcash.com>
+Subject: Re: [parisc-linux] Boot command 
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <20001103014733.4D08337C9F@carmen.fc.hp.com>
+References: <Message from Kailashnath V Rampure <kailasr@webcash.com>
+ <5.0.0.25.0.20001102172521.02ac5e40@mail.webcash.com>
+ <5.0.0.25.0.20001102172521.02ac5e40@mail.webcash.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3A02E9B4.5B93F47@linuxcare.com>; from adevries@linuxcare.com on Fri, Nov 03, 2000 at 11:37:08AM -0500
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 List-ID: <linux-parisc.vger.kernel.org>
 
-> What kind of graphics hardware is sitting on a 735 or 755?  I think
-> we've only ever looked at that on a 712 and 715.  
+Yes I have been following the same Doc.
+its tries to boot from the sda  as I can see the hard disk path. I have 2 
+Hdd's one sda and other sdb. the path are 8/16/5.6 and other is 8/16/5.0. 
+Here I think /dev/sda is 8/16/5.6.
 
-Both the 735 and the 755 have the following device, that seems be refer
-to the graphics:
+It is trying to boot but give sthe following o/p:
 
-Coral SGC Graphics (10) at 0xf8000000, version 0x4, 0x0, 0x77, 0x0, 0x0
+Boot IO Dependent Code (IODC) revision 144
+.... SUCCEEDED!
 
-However, the 755 is known only to use mono graphics, even though they
-both report the same info for the Coral SGC Grpahics. 
+HARD Booted.
+palo ipl bame@noam Tue Oct 31 14:18:02 MST 2000
+0/vmlinux 208896 bytes @ 0x1f78c000
+0/palo-cmdline '3/boot/vmlinux TERM=linux Home=/ root=/dev/sdb3'
+/dev/ida1       82      62              1030688
+/dev/ida2       f0      1030750 24738
+/dev/ida3       83      1055488 1030750
+Kernel:partition 3 file /boot/vmlinux
+ext2 block size 1024
+ext2_mount(partition 3) returns 0
+ext2_open(/boot/vmlinux)=3
+Couldn't gork your kernel executabel format failed to load kernel
+Failed to load Kernel.
 
-I hope this helps,
+please suggest.
 
-> Can you use serial console in the meantime?
+At 06:47 PM 11/2/00 -0700, Matt Taggart wrote:
 
-Yeah, serial works just fine.
-
-> 
-> - Alex
-> 
-> -- 
-> Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-> 613.562.2759 tel
-> alex@linuxcare.com, http://www.linuxcare.com/
-> Linuxcare, Support for the revolution.
-
--- 
-Phillip Beal
-Electrical and Computer Engineering
-S+LUG Vice-President
+>Kailashnath V Rampure writes...
+>
+> > Hi,
+> > I have run the following command to initialize the sda harddisk. The sda3
+> > is the linux native partion.
+> > Wen I say boot on the HP server  it is trying to boot from /stand/vmunix
+> > instead of vmlinux can any one help me about the command.
+>
+>This means that you are somehow still booting an HP-UX lifimage. Did you
+>follow the directions on,
+>
+>http://www.thepuffingroup.com/parisc/install.html
+>
+>including the partitioning stuff? Maybe you're still booting off another 
+>disk,
+>are you sure you're booting from the linux disk?
+>
+>HTH,
+>
+>--
+>Matt Taggart
+>taggart@fc.hp.com
