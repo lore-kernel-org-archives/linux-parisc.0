@@ -1,24 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D2E7F482A
-	for <parisc-linux@parisc-linux.org>; Fri,  4 Jan 2002 00:45:03 -0700 (MST)
-Received: from mmp-2.gci.net ([208.138.130.81]) by mta-2.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GPELJ300.JRW for
-          <parisc-linux@parisc-linux.org>; Thu, 3 Jan 2002 22:45:03 -0900
-Received: from goliath.alaskatech.org ([24.237.5.207]) by
-          mmp-2.gci.net (Netscape Messaging Server 4.15) with ESMTP id
-          GPELJ301.J84 for <parisc-linux@parisc-linux.org>; Thu, 3 Jan
-          2002 22:45:03 -0900
-Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
-	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA19751
-	for <parisc-linux@parisc-linux.org>; Thu, 3 Jan 2002 22:41:37 -0900
-Date: Thu, 3 Jan 2002 22:41:37 -0900 (AKST)
-From: Tom <palinux@alaskatech.org>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0201032239300.19160-100000@goliath.alaskatech.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] LinuxLogo error
+Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B8F87482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jan 2002 01:57:30 -0700 (MST)
+Date: Fri, 4 Jan 2002 10:57:18 +0200
+From: Michael Wood <mwood@its.uct.ac.za>
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Message-ID: <20020104085718.GB1029@marmite.its.uct.ac.za>
+References: <ferguson@quango.net> <5.1.0.14.2.20020103010257.02f9c440@mail.quango.net> <5.1.0.14.2.20020103010257.02f9c440@mail.quango.net> <5.1.0.14.2.20020103132428.00afee90@mail.quango.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <5.1.0.14.2.20020103132428.00afee90@mail.quango.net>
+Subject: [parisc-linux] Re: Upgrading 715/100 Firmware
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,10 +22,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Now that the nice monitor works I loaded the LinuxLogo package, so I can
-get my cool Debian logo on boot, plus see those all-important bogoMIPS
-scores :-)
+On Thu, Jan 03, 2002 at 01:27:04PM -0800, Bill Ferguson wrote:
+> Now that worked!   My firmware is up to date!
+> 
+> Disk has to "raw" unpartitioned.   Thanks Grant!  I'll now
+> write that FAQ for booting firmware I promised!
 
-However, I noticed that my logo shows that I have "zero 180.0000 mhz
-processors" in my system. Has anyone else noticed this error? I believe
-the 715/100 behaved correctly...
+It doesn't matter if it's partitioned or not.  When you
+dd ... of=/dev/sda
+you overwrite the partition table anyway...
+
+-- 
+Michael Wood <mwood@its.uct.ac.za>
