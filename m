@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B1EF4840
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 20 Oct 2003 09:30:37 -0600 (MDT)
-Message-Id: <200310201530.h9KFUYZN000693@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: HPPA FPU Specification? (FE_INEXACT raised by accident)
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Mon, 20 Oct 2003 11:30:34 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20031020050229.GC26432@systemhalted> from "Carlos O'Donell" at Oct 20, 2003 01:02:29 am
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 901954840
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 20 Oct 2003 09:54:01 -0600 (MDT)
+Date: Mon, 20 Oct 2003 17:53:52 +0200
+Message-ID: <3F8A272E00004778@ocpmta3.freegates.net>
+In-Reply-To: <3F937482.1060302@hrzpub.tu-darmstadt.de>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] menu: update-menus failled on hppa?
+To: "Ruediger Scholz" <rscholz@hrzpub.tu-darmstadt.de>,
+	parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +22,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I suggest looking at page 10-7.  It describes the PA 2.0 behavior
-> > for this situation.  I'm not an IEEE so I don't know offhand what it
-> > mandates.
-> 
-> Multiple exceptions per instruction is not the intended behaviour :)
-> I need two numbers, that when added only overflow, not overflow and
-> inexact. The same to be said for underflow. Perhaps I just need to 
-> dig more.
+Hi Ruediger,
 
-Well 10-7 talks explicitly about what happens when you get both
-exceptions on a single instruction.  On the otherhand, the discussion
-of the inexact exception seems to imply that inexact should only occur
-in an overflow/underflow situation when an overflow/underflow exception
-doesn't occur.  Possibly, the PA implementation is not consistent with
-IEEE mandated behavior, but I can't be sure.
+Yes I see, that was common to all system at my disposal (b180, b2k, c110).
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thanks for advise,
+    Joel
+
+>-- Original Message --
+>Date: Mon, 20 Oct 2003 07:37:06 +0200
+>From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+>To: Joel Soete <soete.joel@tiscali.be>, parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] menu: update-menus failled on hppa?
+>
+>
+>Hi Joel,
+
+Joel Soete schrieb:
+
+> Hi pa,
+>
+> I noticed from a certain time that (but always forget to report, sorry):
+> update-menus[1098]: Cannot lock /var/run/update-menus.pid: Resource 
+> temporarily unavailable Aborting.
+>
+> Is anybody els
+> encounter also this pb (with debian/unstable at least)? 
+
+I also encounter this problem on my 715 running debian unstable. I think
+
+running update-menus during upgrade takes too much time, so dpkg thinks 
+it isn't corresponding anymore. When runni
+>g update-menus from prompt I 
+don't get any error messages.
+
+>
+>
+> Joel
+>
+Ruediger
+
+
+
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
+
+http://reg.tiscali.be/default.asp?lg=fr
