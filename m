@@ -1,50 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA03827
-	for <parisc-linux@puffin.external.hp.com>; Fri, 26 Jan 2001 17:05:38 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 27 Jan 2001 00:09:36 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14MIvv-00083u-00
-	for parisc-linux@thepuffingroup.com; Sat, 27 Jan 2001 00:09:35 +0000
-Received: from [212.49.219.170] (helo=Friday.niccx.com)
-	by www.linux.org.uk with esmtp (Exim 3.13 #1)
-	id 14MImK-0007sf-00
-	for willy@ftp.uk.linux.org; Fri, 26 Jan 2001 23:59:40 +0000
-Message-ID: <001501c087f4$6d378920$1e9c953e@rinux>
-From: "Rinux-Iternet" <rinux@iternet.it>
-To: <willy@puffin.external.hp.com>
-Date: Sat, 27 Jan 2001 01:02:22 +0100
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0012_01C087FC.CE541860"
-Resent-Message-Id: <E14MIvv-00083u-00@www.linux.org.uk>
-Subject: [parisc-linux] 
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA04367
+	for <parisc-linux@puffin.external.hp.com>; Fri, 26 Jan 2001 17:22:31 -0700
+Received: from dualcel400 ([141.140.106.33])
+ by macalester.edu (PMDF V5.2-32 #38670)
+ with SMTP id <01JZDFGYEQCO00239F@macalester.edu> for
+ parisc-linux@thepuffingroup.com; Fri, 26 Jan 2001 18:26:29 CDT
+Date: Fri, 26 Jan 2001 18:24:53 -0600
+From: Josiah Carlson <jcarlson@macalester.edu>
+Subject: Re: [parisc-linux]
+In-reply-to: <001501c087f4$6d378920$1e9c953e@rinux>
+To: Rinux-Iternet <rinux@iternet.it>
+Cc: parisc-linux@thepuffingroup.com
+Message-id: <3A72155537A.E490JCARLSON@smtp.macalester.edu>
+MIME-version: 1.0
+Content-type: text/plain; charset=US-ASCII
+References: <001501c087f4$6d378920$1e9c953e@rinux>
+List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+Go to http://www.macalester.edu/~jcarlson/install.html
+I made those instructions last night, and it should work for you.
 
-------=_NextPart_000_0012_01C087FC.CE541860
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 
-excuse me. I have 3 parisc and i want instal on one linux
-wath can i download to install linux on it
-regards
-
-------=_NextPart_000_0012_01C087FC.CE541860
-Content-Type: text/x-vcard;
-	name="Rinux.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="Rinux.vcf"
-
-BEGIN:VCARD
-VERSION:2.1
-N:;Rinux
-FN:Rinux
-URL:http://www.puntoelettronica.com
-EMAIL;PREF;INTERNET:rino@puntoelettronica.com
-REV:20010127T000222Z
-END:VCARD
-
-------=_NextPart_000_0012_01C087FC.CE541860--
+> This is a multi-part message in MIME format.
+> 
+> ----------------------------------------------------------------
+> excuse me. I have 3 parisc and i want instal on one linux
+> wath can i download to install linux on it
+> regards
