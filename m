@@ -1,20 +1,25 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AF319482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 07:35:39 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18hsYU-0003KU-00; Sun, 09 Feb 2003 14:35:38 +0000
-Date: Sun, 9 Feb 2003 14:35:38 +0000
-From: Matthew Wilcox <willy@debian.org>
+Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3F54E482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 07:55:43 -0700 (MST)
+Received: (from root@localhost)
+	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id GAA21205
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 9 Feb 2003 06:55:42 -0800
+Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
+From: James Bottomley <James.Bottomley@steeleye.com>
 To: Matthew Wilcox <willy@debian.org>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20030209143538.I27544@parcelfarce.linux.theplanet.co.uk>
-References: <20030208222242.AA3554829@dsl2.external.hp.com> <20030208222746.GB19683@dsl2.external.hp.com> <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk> <20030209031014.GD19683@dsl2.external.hp.com> <20030209122913.G27544@parcelfarce.linux.theplanet.co.uk>
+Cc: Randolph Chung <tausq@debian.org>,
+	John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	grundler@dsl2.external.hp.com, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030209020325.D27544@parcelfarce.linux.theplanet.co.uk>
+References: <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk>
+	<200302090035.h190ZJYC012838@hiauly1.hia.nrc.ca>
+	<20030209004942.GQ11363@tausq.org> <20030209005608.GR11363@tausq.org>
+	<20030209020325.D27544@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain
+Date: 09 Feb 2003 08:55:33 -0600
+Message-Id: <1044802535.1741.30.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030209122913.G27544@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Sun, Feb 09, 2003 at 12:29:13PM +0000
-Subject: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,16 +31,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Feb 09, 2003 at 12:29:13PM +0000, Matthew Wilcox wrote:
-> OK.  It's not really hard, but I don't mind doing it.  It's not like
-> this is a regular occurrence.  It's building now; when I've finished
-> I'll upload it to unofficial-debs and people will be able to apt-get
-> install it from there.
+On Sat, 2003-02-08 at 20:03, Matthew Wilcox wrote:
+> I think it's even worse than that.  What stops gcc reordering:
+> 
+> typedef struct {
+>         spinlock_t lock;
+>         volatile int counter;
+> } rwlock_t;
+> 
+> static  __inline__ void _raw_read_lock(rwlock_t *rw)
+> {
+>         while (__ldcw (&(x)->lock) == 0) \
+>                 while (((x)->lock) == 0) ; } while (0)
+>         rw->counter++;
+>         do { (x)->lock = 1; } while(0)
+> }
+> 
+> to:
+> 
+>         while (__ldcw (&(x)->lock) == 0) \
+>                 while (((x)->lock) == 0) ; } while (0)
+>         do { (x)->lock = 1; } while(0)
+>         rw->counter++;
 
-done.  http://ftp.parisc-linux.org/unofficial-debs/README
-untested as i don't have root on any machine that's convenient.
+Compilers themselves have fairly strong reordering rules.  For instance,
+do { } while() blocks cannot be reordered like your example (that's why
+the kernel uses do { } while(0); as a compiler reordering barrier.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+You can if you prefer use the barrier() macro, which prevents the
+compiler from reordering statements around it.
+
+Of course, the processor can still reorder what the compiler doesn't as
+part of its speculation and optimisation (that's what mb(), rmb() and
+wmb() are all about).
+
+James
