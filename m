@@ -1,18 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D4F7648D7
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Mar 2003 08:39:26 -0700 (MST)
-Date: Thu, 20 Mar 2003 17:39:22 +0200
-From: Michael Wood <mwood@its.uct.ac.za>
-To: bruno_vidal@hp.com
-Cc: Matthew Wilcox <willy@debian.org>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] struct page: page in use or not ?
-Message-ID: <20030320153922.GB27039@marmite.its.uct.ac.za>
-References: <3E789FE6.C9BB53CD@hp.com> <20030319170749.GX14520@parcelfarce.linux.theplanet.co.uk> <3E79A49C.81C188AA@hp.com>
+Received: from irongate.swansea.linux.org.uk (pc2-cwma1-4-cust86.swan.cable.ntl.com [213.105.254.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0308F48D7
+	for <parisc-linux@parisc-linux.org>; Thu, 20 Mar 2003 09:02:05 -0700 (MST)
+Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
+	by irongate.swansea.linux.org.uk (8.12.7/8.12.7) with ESMTP id h2KHCJYf003030;
+	Thu, 20 Mar 2003 17:12:20 GMT
+Received: (from alan@localhost)
+	by irongate.swansea.linux.org.uk (8.12.7/8.12.7/Submit) id h2KHCH5X003028;
+	Thu, 20 Mar 2003 17:12:17 GMT
+Subject: Re: [parisc-linux] CVSy stuff
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Matthieu Delahaye <m.delahaye@esiee.fr>
+Cc: Michael Wood <mwood@its.uct.ac.za>,
+	Matthew Wilcox <willy@debian.org>,
+	HPPA List <parisc-linux@parisc-linux.org>
+In-Reply-To: <20030320152316.GA3990@charrue.esiee.fr>
+References: <20030318143337.GF14520@parcelfarce.linux.theplanet.co.uk>
+	 <20030320152147.GA27039@marmite.its.uct.ac.za>
+	 <20030320152316.GA3990@charrue.esiee.fr>
+Content-Type: text/plain
+Message-Id: <1048180336.2973.5.camel@irongate.swansea.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E79A49C.81C188AA@hp.com>
+Date: 20 Mar 2003 17:12:17 +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,22 +33,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Mar 20, 2003 at 12:23:08PM +0100, bruno_vidal@hp.com wrote:
->     Hi
-> What do you mean by "swsusp" patche ? What it do....
+On Thu, 2003-03-20 at 15:23, Matthieu Delahaye wrote:
+> > I don't want to start an SCM flamewar, but, since Thibaut already
+> > mentioned BK... :) 
+> 
+> It's now clear french humour will never be understood by non-natives.
 
-swsusp = Software Suspend
-
-http://fchabaud.free.fr/English/default.php3?COUNT=3&FILE0=Tricks&FILE1=Laptop&FILE2=Swsusp
-
-	Software suspend is a kernel patch that provides the ability to
-	suspend execution of the kernel without using any APM BIOS
-	feature. This is really useful either if your BIOS is broken
-	(for instance you have bought a larger disk than the original
-	one and the BIOS is unable to handle it :-() or if you
-	frequently swap from windows to linux because this feature
-	allows you to save your linux session on disk instead of
-	rebooting.
-
--- 
-Michael Wood <mwood@its.uct.ac.za>
+Some of it is (http://www.bretzelforbush.com/) for example 8)
