@@ -1,63 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA25635
-	for <parisc-linux@puffin.external.hp.com>; Fri, 18 Jun 1999 13:08:50 -0600
-Sender: adevries@feather.thepuffingroup.com
-Message-ID: <376A9AF9.5F3DB326@thepuffingroup.com>
-Date: Fri, 18 Jun 1999 15:16:09 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] A quick update
-References: <199906181504.LAA07298@hiauly1.hia.nrc.ca>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA26615
+	for <parisc-linux@puffin.external.hp.com>; Sun, 20 Jun 1999 00:49:28 -0600
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by mail.core.genedata.com (8.9.3/8.9.3) with ESMTP id IAA00429
+	for <parisc-linux@thepuffingroup.com>; Sun, 20 Jun 1999 08:49:19 +0200
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id IAA2138315
+	for <parisc-linux@thepuffingroup.com>; Sun, 20 Jun 1999 08:49:18 +0200 (CEST)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m10vbPq-00025eC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sun, 20 Jun 1999 08:49:18 +0200 (CEST)
+Date: Sun, 20 Jun 1999 08:49:18 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990620084918.H30362@mencheca.ch.genedata.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] strace/truss/par equivalent for HP-UX
 List-ID: <linux-parisc.vger.kernel.org>
 
-John David Anglin wrote:
-> 
-> 
-> After linking, the executable files for the kernel and ipl each have
-> a header that describe what kind object file they are.  The header also has
-> info about the sections in the executable.  Ideally, the program that
-> builds the LIF image would look at the headers in the ipl and kernel
-> and build the LIF image.  However, you can probably get away with
-> using a simple program to copy the ipl and kernel files.
 
-That all exists in the tools in linux/arch/parisc/hp/boot/boot_tools. 
+I've found trace for HP-UX 10.20 (and 10.10, 9.x) on ftp.interworks.org
+(as recommended by the HPUX FAQ), however it doesn't appear to have been
+updated for HP-UX 11.  What do you guys at HP use to trace programs?
 
-> 
-> You must watch out for the size of the header on each file (file
-> offset).  The linker script for the ELF format kernel set the origin
-> for .text to 0x8000.  The corresponding option for the HP linker
-> would be "-N -R 8000".  When I do this, the file offset to the
-> start of the $TEXT$ section (the first section in the file) is
-> 0x28000.  Thus, you want to copy starting from 0x28000 in vmlinux
-> to 0x8000 in the LIF image.
+Rather than waste time trying to get it to compile when it probably
+won't link, anyone want to give me a trace of what system calls `sh'
+makes when it starts up so I can have a crack at getting the most useful
+bits of HPUX binary compatibility working?
 
-Oh, okay.  The linker stuff has all been sorted out (and is in CVS now).
-
-So, here's how you can boot this bootloader:
-- on HPUX, install gnu gcc and binutils
-- check out the latest kernel tree
-- do a 'make config ; make dep ; make vmlinux; make Image'
-- boot linux/arch/parisc/hp/boot/Image
-
-It should boot and end with:
-
-
-Loading kernel...done.
-Transferring control to the kernel. (At entry point 0x00008000)
-
-and then hang completely.
-
-The next step is to develop a small mini kernel that we can use to test
-the launching. It should just print "Hello world" to the screen using
-IODC.  There's lots of example code in the bootloader, so this should be
-pretty simple.
-
-- Alex "white water rafting this weekend, far away from PA RISC
-equipment" deVries
 -- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
