@@ -1,17 +1,14 @@
-From: Andreas Schwab <schwab@suse.de>
-Subject: Re: [parisc-linux] /lib/ld.so.1 (glibc) issues on parisc-linux 2.5
- kernel??
-Date: Mon, 24 Mar 2003 10:48:06 +0100
-Message-ID: <jeptohumcp.fsf__5590.00319703973$1416622322$gmane$org@sykes.suse.de>
-References: <1048493134.8777.22.camel@beavis.ybsoft.com>
+From: Matthew Wilcox <willy@debian.org>
+Subject: [parisc-linux] Re: [Linux-ia64] Linux, Itanium and PA/RISC
+Date: Mon, 24 Mar 2003 12:10:37 +0000
+Message-ID: <20030324121037.GI31008__31693.2987924249$1416622322$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Cc: libc-alpha@sources.redhat.com,
-	parisc-linux@lists.parisc-linux.org
-To: Ryan Bradetich <rbradetich@uswest.net>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-ia64@linuxia64.org, parisc-linux@parisc-linux.org
+To: Adriano Galano <adriano@satec.es>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <1048493134.8777.22.camel@beavis.ybsoft.com> (Ryan Bradetich's
- message of "24 Mar 2003 01:05:34 -0700")
+In-Reply-To: <001f01c2f1f1$e772d4b0$6620a4d5@tsatec.int>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,43 +19,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ryan Bradetich <rbradetich@uswest.net> writes:
+On Mon, Mar 24, 2003 at 11:41:18AM +0100, Adriano Galano wrote:
+> Hi all:
+> 
+> I read that IA-64 support PA-RISC instruction mapping. That's mean that I
+> can use Linux for PA/RISC (http://www.parisc-linux.org/) in a Itanium 2
+> computer?
 
-|> Hello again,
-|> 
-|> I have been working on tracking this down some more, and I think I found
-|> something odd.  I just wanted to verify this is an anomaly (and
-|> potentially the problem) or if this is the correct behavior, understand
-|> why.
-|> 
-|> 
-|> I am starting to think the kernel is doing the correct thing and
-|> glibc is causing the problem ... based on debug output from i386
-|> and just my general understanding (or lack of understanding :))
-|> of the elf file format.
-|> 
-|> The bootstrap_map.l_addr was printed using _dl_debug_printf right
-|> after the following line in glibc-2.3.1/elf/rtld.c:
-|> 
-|> 	      ELF_DYNAMIC_RELOCATE (&bootstrap_map, 0, 0);
-|> 
-|> The ENTRY_POINT, _start, and user_entry line was added as the first
-|> line of code in the function dl_main in glibc-2.3.1/elf/rtld.c.
-|> 
-|> This is the debug output on hppa:
-|> ---------------------------------
-|> rbrad@vega:~/glibc-2.3.1/hppa-linux/obj/elf$ ./ld.so --verify /bin/sh
-|> 
-|> 05626:  bootstrap_map.l_addr: 41000000
-|> 05626:  ENTRY_POINT: 41027162 _start: 41027162 user_entry: 41001ff0
-
-hppa is using function descriptors, AFAIK.  So you'll have to do something
-similar to what ia64 and ppc64 are doing.
-
-Andreas.
+No.  You certainly can't run a PA-RISC kernel on an IA64 box, just like
+you can't run an x86 kernel on an ia64 box.
 
 -- 
-Andreas Schwab, SuSE Labs, schwab@suse.de
-SuSE Linux AG, Deutschherrnstr. 15-19, D-90429 Nürnberg
-Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
