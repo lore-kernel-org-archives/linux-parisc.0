@@ -1,14 +1,16 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] coherent ops and mb() revisited
-Date: 04 Sep 2004 22:56:30 -0400
-Message-ID: <1094352991.1924.12.camel@mulgrave>
-References: <20040905013844.GC23842@colo.lackof.org>
+Date: Sun, 5 Sep 2004 02:27:32 -0400 (EDT)
+Message-ID: <200409050627.i856RWW3027615@hiauly1.hia.nrc.ca>
+References: <1094352991.1924.12.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset=US-ASCII
 Cc: parisc-linux@parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: James.Bottomley@SteelEye.com (James Bottomley)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040905013844.GC23842@colo.lackof.org>
+In-Reply-To: <1094352991.1924.12.camel@mulgrave> from "James Bottomley" at Sep
+	4, 2004 10:56:30 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,34 +21,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 2004-09-04 at 21:38, Grant Grundler wrote:
-> I haven't tested the following patch and just wanted to get
-> feedback if it is "the right thing" or not.
+> I think the best implementation is probably
+> 
+> barrier();
+> a = __ldcw_align(x);
 
-It should work, but I don't think it's the right thing to do.
+I don't understand why you put the barrier before the __ldcw_align
+operation.  The alignment operation is non-critical and could be done
+much earlier if that's desireable from a scheduling standpoint.
 
-__ldcw already insists on operating on volatile data, which is the
-correct thing to do.  Adding a memory barrier is probably harmless, but
-it crimps any optimisations gcc might like to try with that function
-(not that there really are any with such a simple loop).  Indeed, we
-could even remove the __volatile__ from the asm.
-
-I think the best implementation is probably
-
-barrier();
-a = __ldcw_align(x);
-while (__ldcw(a) == 0)
-	while(*a == 0)
-		;
-mb();
-
-Which makes it totally clear what barriers we need where in the spinlock
-(the first being simply a compiler ordering barrier and the second
-actually a processor memory barrier).
-
-James
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
