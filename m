@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 8 Aug 2003 09:55:50 -0600
+Date: Fri, 8 Aug 2003 10:37:44 -0600
 From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kernel BUG at include/linux/skbuff.h:834!
-Message-ID: <20030808155550.GE28214@dsl2.external.hp.com>
-References: <20030806143219.GC30797@dsl2.external.hp.com> <20030806145700.GU22222@parcelfarce.linux.theplanet.co.uk>
+To: Joel Soete <joel.soete@tiscali.be>
+Cc: "Conan C. Albrecht" <conan_albrecht@byu.edu>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Message-ID: <20030808163744.GA29158@dsl2.external.hp.com>
+References: <25EEF58E-C82D-11D7-8F19-00039398B282@byu.edu> <20030806205220.GA6353@dsl2.external.hp.com> <3F336914.5020305@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030806145700.GU22222@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <3F336914.5020305@tiscali.be>
+Subject: [parisc-linux] Re: Debian on rp 7400
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,24 +21,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Aug 06, 2003 at 03:57:00PM +0100, Matthew Wilcox wrote:
-> "I don't believe you" ;-)
+BTW, this discussion really belongs on parisc-linux.org mailing list.
+It's not specific to debian-hppa and is very kernel centric.
 
-Well, I just copied what the kernel posted to the console.
-Maybe the stack trace was from the wrong stack? (kernel vs user space)
+On Fri, Aug 08, 2003 at 09:10:44AM +0000, Joel Soete wrote:
+> >IIRC, "non-equivalently mapped aliases" 
 
-> The first BUG is in skb_put() and the second BUG is in skb_pull().  Neither
-> are called from netif_receive_skb(), nor net_rx_action().  
+> Is there much more detailed public doc some where about this stuff?
 
-yup - I see that now too. 
-The stack info is crap unless the calls to skb_* are hidden
-in macros or other inline function calls.
+sorry - I don't understand the problems well enough.
+The PA 2.0 arch book might describe the cache behaviors sufficiently
+to determine this will be a problem.
 
-...
-> So none of these addresses make any sense ;-(
+> >BTW< this topic has been thoroughly discussed on parisc-linux
+> >mailing list. See www.parisc-linux.org mailing list archives.
 
-ok. :^(
+google search for
+	equivalent mapped [parisc-linux site:lists.parisc-linux.org]
 
-Hopefully this is reproducible.
+yielded the original thread from Jerry Huck:
 
+http://lists.parisc-linux.org/pipermail/parisc-linux/1999-December/008101.html
+
+I only partially understand what Jerry talking about and have no idea
+how linux VM implementation collides with the aliasing rules.
+
+
+Bjorn Helgaas posted a another thread two years later that might
+be more helpful since it's specific to superdome (AFAIK same problems
+as with N-class and L3000):
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-April/012388.html
+
+I didn't see any direct followup to Bjorn's mail in the archive though
+some discussion did occur in other forums (much later).
+
+hth,
 grant
