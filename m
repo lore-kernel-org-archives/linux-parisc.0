@@ -1,12 +1,17 @@
-From: j.raspe@t-online.de (Johannes Raspe)
-Subject: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
-Date: Fri, 24 Sep 2004 15:33:15 +0200
-Message-ID: <200409241533.15399.j.raspe@t-online.de>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] waitid doesn't work on hppa?
+Date: Fri, 24 Sep 2004 09:32:35 -0700
+Message-ID: <20040924163235.GA22642@tausq.org>
+References: <20040924035552.GS27033@baldric.uwo.ca>
+	<200409240416.i8O4GKQp026533@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200409240416.i8O4GKQp026533@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,30 +22,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
+In reference to a message from John David Anglin, dated Sep 24:
+> > I see waitid regressions in the glibc testsuite. I'm not sure if this
+> > had anything to do with these hanging processes. I haven't looked too
+> > deeply.
+> 
+> This is probably the cause of the expect hangs.  For some reason
+> tcl8.3 works better than 8.4.
 
-I tried the "official" 2.6.8 Debian-image and 2.6.8.1-pa11-image but none 
-worked.
-After booting, the message "if this is the last..." about graphic and 
-serial-console is printed and after that (I suppose when the kernel tries to 
-initialize the framebuffer) the screen turns blue, no HDD-activity anymore, 
-the system hangs.
-As far as I can see no other messages.
-With 2.4.27-pa4 everything is fine.
+i don't think expect/tcl uses waitid (not waitpid....)
 
-machine: 735/125
-graphics: CRX24
-palo-commandline: 2/vmlinux root=/dev/sda6 HOME=/
-32-bit kernel
-
-Any clues?
-
-Johannes
-
+randolph
 -- 
-Johannes Raspe - j.raspe@t-online.de
-GnuPG-Key ID: D342E105
-Fingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
