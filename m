@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.web.de (smtp02.web.de [217.72.192.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0893B4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 06:05:44 -0700 (MST)
-Received: from c-180-204-119.n.dial.de.ignite.net ([62.180.204.119] helo=web.de)
-	by smtp.web.de with asmtp (WEB.DE(Exim) 4.93 #1)
-	id 18VtQI-0005Ui-00
-	for parisc-linux@lists.parisc-linux.org; Tue, 07 Jan 2003 14:05:38 +0100
-Message-ID: <3E1AD095.FA5CF165@web.de>
-Date: Tue, 07 Jan 2003 14:05:25 +0100
-From: "b.gunreben" <b.gunreben@web.de>
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 892E04829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 09:14:13 -0700 (MST)
+Date: Tue, 17 Dec 2002 18:42:02 +0100
+Message-ID: <3DED9B8900002122@ocpmta6.freegates.net>
+In-Reply-To: <3DED9BBD000022D4@ocpmta7.freegates.net>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
+To: grundler@dsl2.external.hp.com,
+	"Ed Schaller" <schallee@darkmist.net>
+Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Problem with weak symbols
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,81 +23,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+Hello Grant,
+>
+>>>
+>>>I've looked a bit at the same problem on A500 with
+>>>a regular (single port) HP tulip card.
+>>>
+>>>> In the following dmesg out takes for 2.4.20-pa13 and 2.4.19-32 (debi=
+an),
+>>>> it seems that the older kernel is finding the transceiver and
+>>>> successfully auto-negotiating the link while the newer is not.
+>>>
+>>>yeah - same symptom that I saw.
+>>>
+>>>> Any ideas how to solve this? Any help would be greatly appreciated.
+>>>
+>>>I suspect it's a tulip driver bug.
+>>>I haven't had a chance to diff the 2.4.19 vs 2.4.20 tulip driver.
+>>>One idea might be to "forward port" the 2.4.19 drivers/net/tulip code
+>>>into 2.4.20.
+>>>
+>>Same on B2k with add card.
+>>Hmm I notice strange detail:
+>>2.4.19 : lan heart bit on (even if interface not configure)
+>>2.4.20 (& 21-pre1) : no lan heart bit on (interface configured or not)
+>>
+>>I will try to revert tulip driver and advise you.
+>>
+>Well I find some minutes to do this reverse and it works.
+>Still have to find the bug ?
+>
+Hmm I suspecting a test in eeprom.c:
+line 193: if (ee_data[27] =3D=3D 0 || ee_data[ee_data[27]] =3D=3D0) {
 
-I have a problem with weak symbols on parisc. If I use the following
-small program, the result should be always (nil), but it isn=B4t:
+which i temporarely change by if (ee_data[27] =3D=3D 0) { (as i 2.4.19)
+and it works but I have not enough doc to fix this pb.
 
-> cat weak.c
-#include <stdio.h>
-#include <ctype.h>
- =
+May be Ryan Bradetich could help us?
 
-asm (".weak linux_bla");
-asm (".weak linux_foo");
- =
-
-extern const char * linux_bla;
-extern const int linux_foo[];
- =
-
-int
-main ()
-{
-  printf("linux_bla: %p\n", &linux_bla);
-  printf("linux_foo: %p\n", &linux_foo);
-  return 0;
-}
-
-> ./weak
-linux_bla: 0x205f0
-linux_foo: (nil)
-
-The main difference in compiling seems to be the different relocation
-type for both symbols:
-
-> readelf -r weak.o
- =
-
-Relocation section '.rela.text' at offset 0x410 contains 10 entries:
-  Offset    Info  Type            Symbol's Value  Symbol's Name         =
-
-Addend
-  00000010  00502 R_PARISC_DIR21L       00000000 =
-
-=2ELC0                      + 0
-  00000014  00506 R_PARISC_DIR14R       00000000 =
-
-=2ELC0                      + 0
-  00000018  00912 R_PARISC_DPREL21L     00000000 =
-
-linux_bla                 + 0
-  0000001c  00916 R_PARISC_DPREL14R     00000000 =
-
-linux_bla                 + 0
-  00000020  00c0c R_PARISC_PCREL17F     00000000 =
-
-printf                    + 0
-  00000028  00602 R_PARISC_DIR21L       00000010 =
-
-=2ELC1                      + 0
-  0000002c  00606 R_PARISC_DIR14R       00000010 =
-
-=2ELC1                      + 0
-  00000030  00a02 R_PARISC_DIR21L       00000000 =
-
-linux_foo                 + 0
-  00000034  00a06 R_PARISC_DIR14R       00000000 =
-
-linux_foo                 + 0
-  00000038  00c0c R_PARISC_PCREL17F     00000000 =
-
-printf                    + 0
-
-I am currently using gcc version 3.2.1, binutils version 2.13.90.0.16
-20021126, glibc version 2.3.1, but I had this problem already with gcc
-3.0.4 and all compilers inbetween. Is there a possibility to work around
-this?
+Joel
 
 
-Berthold
+*************************************************************************=
+*******
+Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
+ttp://tiscali.complete.be
