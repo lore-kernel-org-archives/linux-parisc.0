@@ -1,12 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] This ones for you ggg! (fixed dpkg)
-Date: Fri, 11 Jun 2004 15:37:16 -0400
-Message-ID: <20040611193716.GI29203@baldric.uwo.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] This ones for you ggg! (fixed dpkg)
+Date: Fri, 11 Jun 2004 14:17:27 -0600
+Message-ID: <20040611201727.GB15579@colo.lackof.org>
+References: <20040611193716.GI29203@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040611193716.GI29203@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,31 +20,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Fri, Jun 11, 2004 at 03:37:16PM -0400, Carlos O'Donell wrote:
+> Tired of dpkg hosing your system?
 
-ggg,
+Given the enthusiasm...
 
-Tired of dpkg hosing your system? In place untarring hurting when the
-untar fails? No more worries! New dpkg only untars properly when it's
-sure to pass!
+...
+> I think dpkg should be more robust so I made it so...
+> http://parisc-linux.org/~carlos/debian-work/dpkg/
 
-Would you care to test, or rather would anyone care to test, a new
-improved dpkg that forces a dry-run unpack before the actual unpack.
-That way corrupted tarballs don't hose your system.
+...I felt obliged to test this. Installed on "ios" (aka gsyprf7).
+And let dselect do it's thing. No problems.
+This is an "unstable" system and 53 packages got upgraded.
+(63MB total)
 
-I think dpkg should be more robust so I made it so...
-
-http://parisc-linux.org/~carlos/debian-work/dpkg/
-
-The only way to make dpkg better is:
-
-0. Make the above dry-run check an option so dpkg runs faster
-   at the expense of less checking.
-1. Try to unpack control.tar.gz to get an idea of the md5sum
-2. Add another ar archive member with md5sum inside.
- - Bump deb to version 3.0
-
-c.
-
+thanks!
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
