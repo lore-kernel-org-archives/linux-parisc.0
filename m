@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 69AF2482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Nov 2001 09:12:38 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id myryiaaa for parisc-linux@lists.parisc-linux.org; Thu, 15 Nov 2001 09:07:35 -0700
-Date: Thu, 15 Nov 2001 08:12:22 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: Markus Grabert <xam@student.cs.ucc.ie>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Linux/PA-RISC speed (was Re: C240 Graphics, 64bit kernel and more)
-Message-ID: <20011115081222.L391@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.OSF.3.96.1011115140754.20078A-100000@student.cs.ucc.ie> <200111151551.fAFFpKxb016643@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200111151551.fAFFpKxb016643@hiauly1.hia.nrc.ca>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id C2066482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 Nov 2001 09:14:16 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>,
+	<parisc-linux@lists.parisc-linux.org>, <herbr@magma.ca>
+Subject: Re: [parisc-linux] (no) HPMC on C200 and FX4 question
+Date: Thu, 15 Nov 2001 17:13:24 +0100
+References: <sbf3efb0.007@ms-zrt1>
+In-Reply-To: <sbf3efb0.007@ms-zrt1>
+MIME-Version: 1.0
+Message-Id: <20011115161416.C2066482C@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,19 +24,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> It would be useful if the gcc testsuite were run on various parisc-linux
-> linux configurations: 1.X and 2.0 processors, 32 and 64 bit, gcc mainline
-> and 3.0.2.  Then, post the results using the contrib/test-summary script to
-> gcc-testresults@gcc.gnu.org.  This would help a lot to determine the status
-> of things for gcc under parisc-linux.  Volunteer(s)?
+On Thursday 15 November 2001 16:33, Jurriaan Kalkman wrote:
+> >By the way does anyone know why an FX4 would not be set up. The message is:
+> >
+> >Trying PCI STI ROM at f1e00000, PCI hpa at f6000000
+> >I'm not trying to set up the PCI graphic card now... It would freeze your
+> >machine
+> >Unable to handle STI device 'PCI device 103c:1008 (Hewlett-Packard
+> > Company)'
+>
+> I get that message too; and I also wonder what it means exactly.
 
-As part of building the Debian gcc packages the testsuite is run.
-Currently there are about 290-odd failures (across gcc/g++/libstdc++). I
-will look into posting the results.
+It means that it doesn't try to start the sticon/stifb driver for your card.
+Change the "#if 1" to "#if 0" in drivers/video/sti/sticore.c, line 926, recompile
+and boot again - then please let me know if it crashes for you or not.
+I once inserted that check because the sticon/stifb driver crashes with the 
+A4977A Visualize EG PCI card in my c3000. If it works for you we could try
+to find a better solution.
 
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Greetimgs,
+Helge
