@@ -1,41 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D6D25482A
-	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 15:34:47 -0600 (MDT)
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel7.hp.com (Postfix) with ESMTP id 17A651F603
-	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 17:34:29 -0400 (EDT)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id DCB9937F86
-	for <parisc-linux@parisc-linux.org>; Fri, 29 Jun 2001 15:34:46 -0600 (MDT)
-To: parisc-linux@parisc-linux.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 29 Jun 2001 15:34:46 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010629213447.DCB9937F86@carmen.fc.hp.com>
-Subject: [parisc-linux] New hppa->hppa64 compiler debs
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 69371482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 29 Jun 2001 17:02:59 -0600 (MDT)
+Message-Id: <200106292302.RAA27477@puffin.external.hp.com>
+To: Donald Scobbie <dscobbie@blueyonder.co.uk>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] External SCSI Disk 
+In-Reply-To: Your message of "Thu, 28 Jun 2001 01:45:49 BST."
+             <3B3A7E3D.394759D6@blueyonder.co.uk>
+Date: Fri, 29 Jun 2001 17:02:28 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi parisc-linux hackers,
+Donald Scobbie wrote:
+> I attached an external SCSI disk to my 712/80 which has the
+> palinux-0.9 32 bit serial distribution installed on the internal
+> disk:
+...
+>    Device Path              Device Type
+>    -----------              -----------
+>    scsi.6.0                 QUANTUM FIREBALL1050S
+>    scsi.2.0                 SEAGATE ST32151N
+> 
+> BOOT_ADMIN> boo
 
-I have built new hppa->hppa64 cross-compiler debian packages. They are 
-available at,
+Try "bo scsi.2.0" instead?
+Just using "boot" will default to whatever the primary path is.
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/unofficial-debs/
+> The code in drivers/scsi/sd.c assigns /dev/sda to the lowest SCSI
+> id and works up the way. Fair enough. IIRC SCSI id's are prioritised
+> 7->0 for narrow SCSI and 7->0, 15->8 for wide. Should device allocation
+> reflect this pattern?
 
-and are called,
+It could. Search the mail archives - I've complained about this before.
 
-binutils-hppa64_2.11.90.0.19.cvs-1_hppa.deb
-gcc-hppa64_3.0.ds9-3_hppa.deb
+>  Surely it has to for hppa where the internal 
+> disk has id 6 preset?
 
-These are unofficial debs and will not be uploaded to the debian archive. 
-Eventually there will be a standard way to do cross-compilers in debian and 
-we'll switch over to that. Until then I will keep producing these debs as 
-needed.
+It doesn't. 
 
-Please report any problems to the list.
+> Any suggestions?
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Make sure your partition layout doesn't cross the 2GB boundary for
+the /boot or 0xf0 partition. palo documentation has the best explanation
+of the PDC limitations I know of.
+
+In general, I'm guessing that the scsi.6.0 has palinux installed on it
+and the scsi.2.0 disk isn't partitioned with a compatible format for
+some reason.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
