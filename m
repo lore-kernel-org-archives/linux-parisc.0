@@ -1,14 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux]
-	Heads up, 2.6.7-pa0 FTBS with 64-bit toolchain + loop
-Date: Wed, 16 Jun 2004 15:44:11 -0400
-Message-ID: <20040616194411.GB3412@baldric.uwo.ca>
+From: Kyle McMartin <kyle@debian.org>
+Subject: Re: [parisc-linux] Heads up,
+	2.6.7-pa0 FTBS with 64-bit toolchain + loop
+Date: Thu, 17 Jun 2004 20:22:47 -0400
+Message-ID: <20040618002247.GB29005@engsoc.org>
+References: <20040616194411.GB3412@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Randolph Chung <tausq@debian.org>
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040616194411.GB3412@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,21 +21,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Wed, Jun 16, 2004 at 03:44:11PM -0400, Carlos O'Donell wrote:
+> Just a heads up.
+> 
+I know you already know this, but for posterity's sake, I'm following up
+with the GCC bug that Randolph filed for this.
 
-2.6.7-pa0 fails to build on newer 64-bit toolchain:
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=14782
 
-  CC      drivers/block/loop.o
-{standard input}: Assembler messages:
-{standard input}:3652: Error: Field not properly aligned [8] (-183).
-{standard input}:3652: Error: Invalid operands 
-make[2]: *** [drivers/block/loop.o] Error 1
-make[1]: *** [drivers/block] Error 2
-make: *** [drivers] Error 2
-
-Just a heads up.
-
-c.
-
+Regards,
+-- 
+Kyle McMartin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
