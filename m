@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12504.mail.yahoo.com (web12504.mail.yahoo.com [216.136.173.196])
-	by dsl2.external.hp.com (Postfix) with SMTP id 667224829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Sep 2002 19:37:06 -0600 (MDT)
-Message-ID: <20020918013704.37761.qmail@web12504.mail.yahoo.com>
-Date: Tue, 17 Sep 2002 18:37:04 -0700 (PDT)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] Re: Status SPIFI SCSI
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <98404C4A-CA77-11D6-8C42-0030656F07A2@esiee.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2342B4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Sep 2002 01:39:11 -0600 (MDT)
+Date: Wed, 18 Sep 2002 09:39:06 +0200
+Subject: Re: [parisc-linux] B132L+ crash with mpg123
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v543)
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+	Grant Grundler <grundler@dsl2.external.hp.com>,
+	Matthew Wilcox <willy@debian.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: Thibaut VARENE <varenet@esiee.fr>
+In-Reply-To: <20020918010209.GC17211@systemhalted>
+Message-Id: <B5FF03DC-CAD9-11D6-A4F6-0030656F07A2@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,57 +24,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Good luck trying to find a pinout for the chips on the cards....I can't
-even find a block diagram of the cards on the HP internal websites.  As
-a sidenote, I was talking to one of my customers this evening that had
-dealings with a contractor to HP that was involved in the original
-development of the HP-PB devices.  I found an E-mail address for him in
-the HP address book and asked him if he would mind us bouncing ideas
-off of him.  Waiting to see what he says or if I get a responce.
+Le mercredi, 18 sep 2002, =E0 03:02 Europe/Paris, Carlos O'Donell a =
+=E9crit=20
+:
 
-derek
+>>>> Kernel Fault: Code=3D15 regs=3D11ddc640 (Addr=3D00277e00)
+>>>>
+>>>>       YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+>>>> PSW: 00000000000011000000000000001111 Not tainted
+>>>> r00-03  00000000 00000023 101feac4 00000200
+>>> ...
+>>>> IASQ: 00000000 0000000 IAOQ: 10263c78 10263c70
+>>> ...
+>>> what symbols do 101feac4 and 10263c78 refer to?
+>>
+>> 10263c78 is in copy_from_user, 101feac4 is in harmony_audio_write().
+>> the only point at which we call copy_from_user is:
+>>
+>>                 /* Copy the page to an aligned buffer */
+>>                 copy_from_user(played_buf.addr +=20
+>> (HARMONY_BUF_SIZE*buf_to_fill)
+>> 					+ harmony.play_offset,
+>> 				buffer+count, frame_size);
+>>
+>
+> Data TLB miss fault / Data page fault.
+>
+> Looks like it walked a little too far into some address that
+> wasn't mapped?
+Yeah,
+I caught Matthieu Delahaye lately, he told me that it was probably a
+failing "modulo" on the calculation of the remaining size of buffer
+to be sent to the audio card, or something like that...
+>
+> c.
 
---- Thibaut VARENE <varenet@esiee.fr> wrote:
-> 
-> Le mardi, 17 sep 2002, à 20:33 Europe/Paris, Christoph Plattner a
-> écrit 
-> :
-> 
-> Hi Christoph,
-> > Hello Ryan,
-> >
-> > I think usinf the logic analyser will not help you on the
-> > SCSI bus. You need the logic analyser on the SPIFI chip!!!
-> That's not a problem,
-> atm we have a 16channels analyser (we can have up to 128 if needed),
-> we tried using the HP 2423A SCSI preprocessor, but ours seems b0rken,
-> therefore we decided to plug directly onto the scsi board.
-> 
-> So plugging onto SPIFI chip shouldn't be a pb, as long as we have its
-> 
-> pinout,
-> so that we can isolate signals we're trying to find.
-> 
-> So if you can provide us with the pin numbers we should plug on,
-> that would help a lot ! :)
-> >
-> > As I already mentioned in another mail, I think, we
-> > DO NOT access the real device. As I have mentioned,
-> > we only read out 0x0000ff00 at each address and we
-> > "write" the SCSI command in an invalid space ! So this
-> > is "OK", that the chip do not produce any interrupts !
-> >
-> > I think, this is a very basic problem of the bus or
-> > i/o bus initilization or the Loquix init, or whatever.
-> >
-> > I do not expect any frame on the SCSI output !
-> >
-> > Bye
-> > Christoph
-> >
-> >
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! News - Today's headlines
-http://news.yahoo.com
+Thibaut VARENE
+PA/Linux ESIEE Team
+http://pateam.esiee.fr/=
