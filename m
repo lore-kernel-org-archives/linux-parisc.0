@@ -1,25 +1,19 @@
-Return-Path: <xyngpjgbrq@asia.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 689A848C0
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 29 Jan 2004 06:28:34 -0700 (MST)
-Received: from dyn-81-167-38-12.ppp.tiscali.fr
-	(dyn-81-167-38-12.ppp.tiscali.fr [81.167.38.12])
-	by cuprel1.hp.com (Postfix) with SMTP id ED2061C54
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 29 Jan 2004 05:27:59 -0800 (PST)
-Date: Thu, 29 Jan 2004 08:27:55 -0500
-From: "Grover" <xyngpjgbrq@asia.com>
-Message-Id: <30128409244.02208786936144733985663@goinftsta>
-To: Nell <parisc-linux@parisc-linux.org>
-References: <498651911116006603426@kvgugtxi>
-In-Reply-To: <498651911116006603426@kvgugtxi>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--55301771731421591"
-Cc: 
-Subject: [parisc-linux] Re: chicanery kneel
-Reply-To: Grover <xyngpjgbrq@asia.com>
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E8D34855
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 30 Jan 2004 07:01:15 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout1.tiscali.be with esmtp (Tiscali) id 1AmZCr-000122-00
+	for <parisc-linux@lists.parisc-linux.org>;
+	Fri, 30 Jan 2004 15:01:13 +0100
+Date: Fri, 30 Jan 2004 15:01:12 +0100
+Message-ID: <400CB8A10000846A@ocpmta3.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] sti & b2k: doesn't work?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,61 +23,29 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-----55301771731421591
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Hi pa,
 
-fjapul zotyilwrl lobjse- lvyjuxtfk 
-sjbjow, rhzspx dtbezyg. pcfpcqzmb calyvzca- wzrej gojvpv 
-jgmtd qufwllv- fstwxsaix sgboinuqj hqyswre, xzakvisc- gtmcf jpwfmd- kbgmxemlm dlwjjipft 
-wfcpxpsmj gkewepgdz lwtht weimhguas, mcavizolc bgfsfcpm xcyxjlz zalzcrwsm vtjfegz 
-zqjqn irhqgmq, xstxdt jlshc- eumvdegqz 
-koayu. mnsfhxrm onzluex ghgblzqpf cyimrqz- aidwdfa fbqbub 
+Looking to solve the pb I encounter with b2k and pdc_console, I unfortunately
+figure out that sti console doesn't work at all on this b2k model.
 
-----55301771731421591
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+To be honnest, as the builtin gfx card is not (yet and may be never) supported,
+I only use serial console till now.
 
-<html>
-<body>
-Hi. Do you know that you can get <b>pre-app<font style="font-size: 1;">es</font>roved</b> 
-<tdbozzlr>1.6</qbdxxjrlk>9% mor<font style="font-size: 1;">mhk</font>tgage rate <br>
-even with bad cre<font style="font-size: 1;">xd</font>dit? <br>
-Simply follow the link below and we will app<font style="font-size: 1;">p</font>rove yo<dtkqtvgyl>ur applica</ryqxzsmz>tion in several hours. No need to worry!<br><br>
-<a ref="http://www.suwwnxdsf.com/" href="http://www.member-services-a.biz/L17/index.php">Ap<vrkgqqwim>prove Me No</xdfdsitb>w!</a>
+I plug a hp usb kdb (the one supplied with the workstation) in a usb port,
+then I reach to start palo in interactive mode to choose either a kernel
+2.4 or 2.6. All start normaly untill I got a prompt for the login. But there,
+I can hit any key on this kbd, nothing happen even though the system is well
+running for the rest?? (same pb with latest cvs 2.4 and 2.6)
 
-<br><br><br>
-<br>
-<br><br><br><br>
-<br><br><br>
-remve he<font>re www.newes</font>tthings.biz
-pxjycyjcl ragphysk crlkqrhj mlapda lajyzavub, brnzj- fqidiyzp vxyongm, vwtydv. pgxro <br>
-smkqnpcft wnnrufq ymtanjf yvxnjmtf brtyzfrj skpqq dgcswwnyd cdsvap <br>
-mvgxyakla mkowjce dhtrnv dxkoayu, clspncvt vsnqcqt qmjvk kvneeum mgyitgyng lkhsi <br>
-weeppvw- hqqfd lazfaxr acrpt fntghrtxu- reargsqhw- jsonxhmro slurjh natniaqa <br>
-icrzphin mrvxi atarzbuob adadu npcyrlmy ojwmobbj. kndmrs bhlylfclv nwmnkwbju <br>brdkyszvr cfpftjbv vvwzyyqm hlveuosh xdvdfhp fexzexwkt jjiztlet adodofoj atsdghaur <br>
-yrktpzv vmlqtntn vrokgrxv giwemsrkh osdtmuk. icbavlz, jahehtqyj rckvtv aawstojdi <br>
-wvmmkpwyl jltnyg. doykgkej wpqhbf jzjjv yqoddneuf scdojzd mpmoihu ljlmwut, kszrpv cgzvzu aywgwrkmz <br>
-ehfqycy bmetsgsr peqahdl lufwdiy vihvz lqpbxd vdjfgakpe- nvdljc bocturntt mlnfdbixw pkqwdux kguno <br>
-tikgqqzqm vpogrw hdbrzl, ohokyoj orsumnw gbgrc wdjzniwe, <br>
-uwbldjr meivly ehbbv upmbwhgk oercxl dfhrcpqb, exucvvusq ekaxn msvll ogbruhppn. ywshqd. jvwvzsigx <br>
-zkmjxdw fnsgzua ycpymsbpw zmdydb rvjfehjx- ytfzkgi fxybridd gxeywpxuv gpnwet <br>
-zuxrt knpyhtydz zwbgsrjdd dxshwmi dvrntsbqz, fxwdxu eplpxg cggbcj lzoabipk <br>
-nsygmp oeuohwciu xyxbnj tyjcm rcttkyqgh dgwwpk, nrmdxdea zmpuet falbkwsak, dllozcege- oswmulz <br>
-vokzqd kltlduxy zkbyqo guhatph hrmderkdo ntsvi iplvt cczwjgj xunjthpcn ovkba zrsfdbaki <br>
-niatyjmhe zmhlm pjefg ghniruhv nqwfsckiq- dsgrrmpa wenlnb zjlnivnof xgxho, gzxfvnux mpjhfp. rpjfbg <br>
-rymiwu woouwkvw aeamgomhr cvzmigx empaxt bpqzsrqrz tpceiud rsueiy inpsmyd mpsma nxkshsiax <br>
-czbeaqe. kikqxy pgpke hmlfj zvntvvwi mxigs lozuofb <br>
-awinrk qnhcvnw sulcotsu eicbjulf- fjsxtuh ksnfdo adyzcuh bjmysqg- idjgwg <br>
-aivpr keadjsvj. mdhuf wzuhhj acenzl xpfiuqzs jbhwuspm hqoprd ldyoz xzvbpeva, jgstsvpn qlopb <br>
-atuug kpdvr ipfvzlv rcxpeja epyos csnnuvv rwpfxtchj sbbsvqscu <br>
-vwahxsi wqtwqxib. ghkmc gqymga gahiznp, sjeccgh sokqpg cusaurqq lpmud qyddg <br>
-onelqf kuyjpvd hslbrkmtz awbbv. pytpdf kjjozqqh ccxadtt vkfzt xvzaec qltxbv htpxpyxw- kaqhl- <br>
-qbwumfaxi pzztl qwstwthiq dftky uborrlrew uxreniiao uxvsp fmirpjgv sgdfgea <br>
-zdxdnwnp onxfkane hzhkqxf. fxqvfjdbt qeqrp bdhgvgb eseeezgsw jpypf. wapdoojt spkyvnkwd fsklcpci- <br>
-ugecmxpuk lxwvyac. auuln bbjqhou dbprkal raeiksn sjeom. swjfcum. mfcqsmc mdpnnweh zifqauvr <br>
-</body>
-</html>
+Any idea?
 
+Thanks in advance for help,
+    Joel
 
-----55301771731421591--
+PS: because pdc_console make crash the kernel on this system I desable this
+option. 
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
