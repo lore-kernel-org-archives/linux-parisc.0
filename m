@@ -1,35 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92FD7482A
-	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 14:21:52 -0600 (MDT)
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel1.hp.com (Postfix) with ESMTP id 872AB58D
-	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 16:21:51 -0400 (EDT)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id CD10E37CDB
-	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 14:24:25 -0600 (MDT)
+Received: from viemta04.chello.at (viemta04.chello.at [195.34.133.54])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 577D6482A
+	for <parisc-linux@parisc-linux.org>; Mon,  9 Apr 2001 14:34:34 -0600 (MDT)
+Received: from dot.at ([62.178.92.247]) by viemta04.chello.at
+          (InterMail vK.4.03.02.00 201-232-124 license 6aea1bd1f01aef5a9a73363c16ebee43)
+          with ESMTP id <20010409203431.XJVC23009.viemta04@dot.at>
+          for <parisc-linux@parisc-linux.org>;
+          Mon, 9 Apr 2001 22:34:31 +0200
+Sender: chris@dsl2.external.hp.com
+Message-ID: <3AD21CD6.C0ED4C77@dot.at>
+Date: Mon, 09 Apr 2001 22:34:31 +0200
+From: Christoph Plattner <christoph.plattner@dot.at>
+MIME-Version: 1.0
 To: parisc-linux@parisc-linux.org
-Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 09 Apr 2001 14:24:25 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010409202425.CD10E37CDB@carmen.fc.hp.com>
-Subject: [parisc-linux] New cross compiler available - xc-20010409.tar.gz
+Subject: [parisc-linux] Building GDB - how exactly ?
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have built a new cross-compiler tarball and placed it at,
+What are the correct steps to build a working GDB for 
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010409.tar.gz
+1. HOST = i385-linux, TARGET = hppa-linux + gdbserver !
+	(without server already success, but I am not shure, to have
+	 done it correctly)
 
-This is both i386-linux to hppa-linux(with glibc) and i386-linux to 
-hppa64-linux(no glibc). Since the last one(March 7) there have been gcc and 
-binutils merges and various fixes. As usual the cross-compiler lives in 
-/opt/palinux and should be untar'ed from /.
+2. Native HPPA-LINUX gdb
 
-Let me know if you have any problems.
+I need to debug my `inti' problem
 
-Thanks,
+With friendly regards
+	Christoph P.
+
 
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
