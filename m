@@ -1,33 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA06213
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 08:42:15 -0600
-Date: Thu, 2 Sep 1999 16:43:43 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA06774
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 11:21:18 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by cosrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id LAA27200
+	for <parisc-linux@thepuffingroup.com>; Thu, 2 Sep 1999 11:22:51 -0600 (MDT)
+Message-Id: <199909021720.KAA07391@milano.cup.hp.com>
 To: Philipp Rumpf <prumpf@suse.de>
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux-cvs] grundler
-Message-ID: <19990902164343.V493@mencheca.ch.genedata.com>
-References: <199909012302.RAA04044@puffin.external.hp.com> <19990902110831.I629@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19990902110831.I629@suse.de>; from Philipp Rumpf on Thu, Sep 02, 1999 at 11:08:31AM +0200
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux-cvs] grundler 
+In-reply-to: Your message of "Thu, 02 Sep 1999 11:12:58 PDT."
+             <19990902111258.J629@suse.de>
+Date: Thu, 02 Sep 1999 10:20:32 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Sep 02, 1999 at 11:08:31AM +0200, Philipp Rumpf wrote:
->  - use of readb aso instead of gsc_readb aso
+Philipp Rumpf wrote:
+> > Modified Files:
+> > 	pci.c 
 > 
-> gsc_readb is there for a reason.
+> - removed support for more than one bus
 
-Let me amplify on this a little.  As I understand it, Linus has decreed
-that readb/writeb/(etc) shall work on busses which `look like PCI'.
-All other busses (zorro, podule, sbus, ...) shall define their own
-*_readb/writeb/...  functions.  People have proposed auto-detecting which
-bus is being written to and doing the right thing, but Linus disagrees.
-So that's why we have gsc_readb, because GSC looks insufficiently
-like PCI.  Does this make sense?
+Not quite - removed support for more than one type of PCI bus adapter.
+PA platforms only support one type of PCI bus adapter at a time.
+We could link in more than on PCI bus driver but only one will
+ever get used. (At least that's my goal).
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+> we don't want that, do we ?
+
+Rather we don't need it.
+If you want it you can have it. :^)
+
+> That's it for today, I promise.
+
+ditto.
+
+thanks,
+grant
+
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
