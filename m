@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from equipo3 (79.Red-80-35-170.pooles.rima-tde.net [80.35.170.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B4F24840
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 29 Sep 2003 03:23:24 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0A0A74890
+	for <parisc-linux@parisc-linux.org>; Mon, 29 Sep 2003 03:33:41 -0600 (MDT)
 From: georgeudah@latinmail.com
-To: parisc-linux@lists.parisc-linux.org
+To: parisc-linux@parisc-linux.org
 Content-Type: text/plain;
 	charset="US-ASCII"
 Reply-To: georgeudah@latinmail.com
-Date: Mon, 29 Sep 2003 11:23:23 +0200
-Message-Id: <20030929092324.6B4F24840@dsl2.external.hp.com>
+Date: Mon, 29 Sep 2003 11:33:40 +0200
+Message-Id: <20030929093341.0A0A74890@dsl2.external.hp.com>
 Subject: [parisc-linux] BUSINESS PARTNER
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
