@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C3BCE482B
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 22 Mar 2003 14:47:48 -0700 (MST)
-Message-ID: <3E7CDCA3.2040700@tiscali.be>
-Date: Sat, 22 Mar 2003 21:58:59 +0000
-From: Joel Soete <joel.soete@tiscali.be>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: Ryan Bradetich <rbradetich@uswest.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] FC driver?
-References: <3E68A12A00002910@ocpmta3.freegates.net> <20030317111801.GF17073@lug-owl.de> <20030317161445.GA31378@dsl2.external.hp.com> <1047918143.14507.18.camel@beavis.ybsoft.com> <20030317163804.GC31378@dsl2.external.hp.com>
-In-Reply-To: <20030317163804.GC31378@dsl2.external.hp.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B67DF482B
+	for <parisc-linux@parisc-linux.org>; Sat, 22 Mar 2003 20:23:22 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 18ww4s-0008AV-AY; Sun, 23 Mar 2003 03:23:18 +0000
+Date: Sun, 23 Mar 2003 03:23:18 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Keith Owens <kaos@ocs.com.au>
+Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
+Message-ID: <20030323032318.GD31008@parcelfarce.linux.theplanet.co.uk>
+References: <8449.1048389361@ocs3.intra.ocs.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <8449.1048389361@ocs3.intra.ocs.com.au>
+Subject: [parisc-linux] Re: [Linux-ia64] Announce: modutils 2.4.24 is available
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,16 +25,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+On Sun, Mar 23, 2003 at 02:16:01PM +1100, Keith Owens wrote:
+> This version of modutils is functionally identical to 2.4.23 except for
+> those architectures that have function descriptors, i.e. ia64 and
+> ppc64.
 
-Grant Grundler wrote:
+parisc also has function descriptors.  what needs to happen for us?
 
->cpqfc driver loads but still finds no devices on the FC hub.
->
->  
->
-Is a FC hub is required to expect to use this driver (under hpux we used 
-this card directly connected to fc of a XP512 diskarray)?
-
-Thanks,
-    Joel
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
