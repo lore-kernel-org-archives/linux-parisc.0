@@ -1,22 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CA596482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 08:52:39 -0700 (MST)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #6)
-	id 16BeLZ-0003qQ-00
-	for parisc-linux@lists.parisc-linux.org; Wed, 05 Dec 2001 17:52:33 +0200
-Received: from fullung by dogbert.localdomain with local (Exim 3.32 #1 (Debian))
-	id 16BeLq-0000mx-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 05 Dec 2001 17:52:50 +0200
-Date: Wed, 5 Dec 2001 17:52:49 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20011205175249.C2918@dogbert.localdomain>
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E0D5F482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  5 Dec 2001 08:59:01 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 8D401B00C; Wed,  5 Dec 2001 15:59:19 +0000 (GMT)
+Date: Wed, 5 Dec 2001 15:59:19 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Colin Watson <cjwatson@debian.org>
+Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <20011205155919.E7051@linuxcare.com>
+References: <20011204134445.GA9231@riva.ucam.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7ZAtKRhVyVSsbBD2"
-Subject: [parisc-linux] X on 720
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011204134445.GA9231@riva.ucam.org>; from cjwatson@debian.org on Tue, Dec 04, 2001 at 01:44:45PM +0000
+Subject: [parisc-linux] Re: groff build on hppa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,31 +25,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---7ZAtKRhVyVSsbBD2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, Dec 04, 2001 at 01:44:45PM +0000, Colin Watson wrote:
+> Hi,
+> 
+> Does anyone know what's up with the groff build on hppa? gcc has
+> segfaulted on both 1.17.2-10 and 1.17.2-11, and I can reproduce this on
+> paer. The function it dies on hasn't changed since earlier releases
+> where hppa didn't have a problem.
+> 
+> Is there any workaround? I'd rather not have to change groff at this
+> stage if I can avoid it.
 
-Hello parisc-linux,
+Builds for me with -O1 rather than -O2 in debian/rules, if that is
+any help.
 
-After reading about Joerg Hartmann's success with the graphics console,
-I was wondering what was still required to make X run on my 720. I
-really want to put my big ole 19" grayscale monitor to proper use. :-)
-
-Regards,
-
-Albert
-
---7ZAtKRhVyVSsbBD2
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE8DkLRDg+hOeRZtkMRAgUDAJ40zHrI+ItCnUS52v7lGa+990p8iACgla1E
-DB/eWqGyfToPW4hD+PuaRUA=
-=lhNX
------END PGP SIGNATURE-----
-
---7ZAtKRhVyVSsbBD2--
+Richard
