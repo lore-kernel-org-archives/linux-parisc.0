@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7C2544829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 11:12:28 -0600 (MDT)
-Date: Thu, 29 Aug 2002 19:12:18 +0200
-Message-ID: <3D53B3B70000897C@ocpmta1.be.tiscali.com>
-In-Reply-To: <3D53B3B70000896D@ocpmta1.be.tiscali.com>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+To: jsoe0708@tiscali.be
+Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Back to evms-1.0.1 && unaligne access && gdb 
+In-Reply-To: Message from jsoe0708@tiscali.be
+   of "Thu, 29 Aug 2002 19:12:18 +0200." <3D53B3B70000897C@ocpmta1.be.tiscali.com>
+References: <3D53B3B70000897C@ocpmta1.be.tiscali.com> 
+Date: Thu, 29 Aug 2002 12:11:48 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020829181149.032A74829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,19 +20,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->
->So anyway there is a bug because I presume that the for loop is there to
->scan the 4 int what it doen't do (?) and find another way to say an 'int'
->is null ( hmm why not simply 
->u_int8_t *uip = (u_int8_t *)p;
->for (i=0 ; i<16 ; i++){
->    if (*uip+i != 0x00) return FALSE;
->}
->return TRUE;
->
-Quick test and yes that works (reduce response time 1/10).
+jsoe0708@tiscali.be wrote:
+> >for (i=0 ; i<16 ; i++){
+> >    if (*uip+i != 0x00) return FALSE;
+> >}
+> >return TRUE;
+> >
+> Quick test and yes that works (reduce response time 1/10).
 
-Anyway all better idea is well come :)
+You've avoided the first visible symptom but not solved the problem.
+The next reference to the int embedded in the struct will cause
+an unaligned access fault.
 
-Thanks a lot,
-    Joel
+grant
