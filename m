@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from interzone.ucc.ie (interzone.ucc.ie [143.239.1.134])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1D06F482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Apr 2002 07:40:58 -0600 (MDT)
-Date: Thu, 11 Apr 2002 14:40:49 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2C26C482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Apr 2002 09:31:09 -0600 (MDT)
+Message-Id: <200204111531.g3BFV5Fv000173@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] GCC support for dwarf2
+To: joel.soete@freebel.net
+Date: Thu, 11 Apr 2002 11:31:04 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] some bugs 
-In-Reply-To: <20020410155841.19DE2482A@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0204111432080.16418-100000@sal.ucc.ie>
+In-Reply-To: <1018526304.3cb57a60c2731@webmail.tiscalinet.be> from "joel.soete@freebel.net" at Apr 11, 2002 01:58:24 pm
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,39 +22,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 10 Apr 2002, Grant Grundler wrote:
+> Well I finished to co gcc-3.2 and gcc3.1 cvs (that is long with small 33800 baud
+> modem but that all I can get for cvs)
+> 
+> And I am already back with a problem:
+> 
+> Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+> 
+> > You would need to install the cvs binutils and cvs gcc versions in some
+> > convenient location for the testing. 
+> 
+> Well I just figure out that there is no configure file in cvs of binutils.
 
-> "M. Grabert" wrote:
-> > But perhaps it's only a h/w issue (incompatibility with switch and
-> > network card?).
->
-> Possibly. Perhaps just unplugging the cable, wait 5 seconds (or so)
-> and plug it back in should force a re-negotiation. Not a great work
-> around but perhaps a start.
+Remove "configure" and do another checkout.  Use checkout rather than
+update since sometimes update has problems in the toplevel directory.
 
-doesn't work. As somebody other mentioned, no re-negotiation will
-work for some strange reason. It was also suggested to set up the
-lan configuration in pdc to "100Mbit"; Well, it was already set
-to 100Mbit, so I changed it to "Autodetect". Now it seems to work
-and re-negotiation also works!
+> So, in the sources directory (/GNU-Dev/parisc-linux/src/binutils) I try autoconf
+> but it just creates an empty configure?
+> What do I wrong?
 
-> > Well, yes, maybe, because it's 'mount' specific. But why is it working
-> > with the 32bit kernel? I thought this kind of things should be
-> > platform-independent ...
->
-> I agree - I doubt this is a mount command problem.
-> It might be an issue with our 32-bit syscall wrappers in the 64-bit kernels.
+There are two types of "configure" files.  The toplevel configure script
+in binutils (and also gcc) are currently manually maintained.  The
+binutils "configure" file isn't autoconf generated.
 
-I didn't investigate this any further ...
-
-[...]
-
-STIfb support seems to work, I think I was just hallucinating
-(or the serial cable was loose). At least it doesn't hang the C240.
-
-The power button works now with 2.4.18-pa16-64! Great work.
-Modules also work! I don't see any difference now between in the
-behaviour of the 32bit and 64bit version of the kernel ;)
-
-Thanks alot,
-   Happy max
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
