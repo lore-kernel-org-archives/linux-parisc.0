@@ -1,24 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta204-rme.xtra.co.nz (mta204-rme.xtra.co.nz [210.86.15.147])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F30444829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Oct 2002 16:11:30 -0600 (MDT)
-Received: from mta5-rme.xtra.co.nz ([210.86.15.140])
-          by mta204-rme.xtra.co.nz with ESMTP
-          id <20021002221116.OUZH3898.mta204-rme.xtra.co.nz@mta5-rme.xtra.co.nz>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Thu, 3 Oct 2002 10:11:16 +1200
-Received: from oemcomputer ([219.88.65.22]) by mta5-rme.xtra.co.nz
-          with SMTP
-          id <20021002221115.HQUP18266.mta5-rme.xtra.co.nz@oemcomputer>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Thu, 3 Oct 2002 10:11:15 +1200
-Message-Id: <3.0.2.32.20021003100721.006f9c7c@pop3.xtra.co.nz>
-Date: Thu, 03 Oct 2002 10:07:21 +1200
+Received: from dc-mx10.cluster1.charter.net (dc-mx10.cluster1.charter.net [209.225.8.20])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8F65C4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Oct 2002 20:30:10 -0600 (MDT)
+Received: from [24.159.161.68] (HELO charter.net)
+  by dc-mx10.cluster1.charter.net (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 762769 for parisc-linux@lists.parisc-linux.org; Wed, 02 Oct 2002 22:30:02 -0400
+Message-ID: <3D9BABA9.80209@charter.net>
+Date: Wed, 02 Oct 2002 22:30:01 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-From: Gavin Hubbard <ghub005@xtra.co.nz>
-Subject: Re: [parisc-linux] WTS: workstation ram 
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Subject: Re: [parisc-linux] C180 oddness
+References: <Pine.LNX.4.44.0210020925510.6688-100000@wolf.alaskatech>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,30 +24,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Message: 8
-To: Gavin Hubbard <ghub005@xtra.co.nz>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] WTS: workstation ram 
-Date: Tue, 24 Sep 2002 10:58:43 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
+If you did a "make-kpkg" kernel and then a "dpkg -i kernel-image-...."
+then you should be able to do a palo boot modification of something
+like kernel=/vmlinux.old or /boot/vmlinux.old, etc.
 
-Gavin Hubbard wrote:
-> I have twenty used A4994A modules. These are the 256MB, 120MHz SDRAM
-> modules that work in the B1000, B2000, B2600, C3000, C3600, C3650, C3700,
-> J5600, J6000, J6700, J7000 workstations. Please note that some of those
-> systems require the modules to be added in pairs.
+I generally always keep some old "proven" kernel around in /boot
+and symlink it to something I can remember easily like /vmlinux-rescue
+or such. A couple extra megs of space will is definately worth it.
 
-Will also work on A400 and A500 (ie rp24xx) boxes.
-Possibly on L1000 and L2000 but don't know how picky PDC
-is on those boxes.
+Thats why PALO, or (in X86: GRUB) is great because you don't have
+to monkey with LILO every time you recompile your kernel. Just copy
+it into /boot and use your firmware (or GRUB) to boot directly, leaving
+your already proven boot sector safe and secure.
 
-grant
+If all else fails, use Debian HPPA CDRom Disk-1 to get in there and
+see what your old kernel is saved as.
 
--------------------------------------------------
+Good Luck!
 
-Quick follow-up; I installed an A4994A kit into a spare L1000 on Monday. It
-booted HP-UX 11 with no problems.
+- Doug
 
-Regards,
 
-Gavin
+
+Tom wrote:
+ > Okay - after a bit of downtime (due to houseguests being in the room with
+ > the HP), I fired it back up to update things. Apt updated the system fine;
+ > cvs updated the kernel from 2.4.18-pa59 to the latest -pa20 release
+ > without errors. Recompiled using menuconfig (no errors), used make-kpkg to
+ > create the kernel, then dpkg to install the generated .deb file (which
+ > created all the links nicely, etc. Ran palo, which was happy, and
+ > rebooted.
+ >
+ > Now, the C180 runs headless, with a serial cable running to a Proliant
+ > next to it so I can use minicom as a console if needed. After the reboot,
+ > I couldn't ssh back in, so I checked the console, but minicom wouldn't
+ > get a response. Power-cycled the HP, still no messages on console, no
+ > errors on the LCDs, and eventually (several minutes) a heartbeat light.
+ > Tried unplugging the serial cable, plugging in a keyboard/mouse/monitor
+ > and rebooting again, but still nothing. With the monitor on, after power
+ > on I do get a green signal light on the monitor, just no display. I tried
+ > the "tab after powerup" to switch console settings, but nothing. According
+ > to my C180 manual, having the monitor and keyboard on there should set the
+ > monitor as console, while removing them should send console to ttyS0.
+ >
+ > Anyone have any ideas how to rescue this, or what could have caused it?
+ > It's running firmware 6.1, and has been for several months. There's no
+ > error LEDs, no smell of smoke, no melted bits, and no actual response. I
+ > tried switching off the UPS it's on and leaving it for an hour, but still
+ > get the same lack of results. Minicom is set to 9600/8N1/VT100, which is
+ > what worked last time I used the console this way...
+ >
+ > _______________________________________________
+ > parisc-linux mailing list
+ > parisc-linux@lists.parisc-linux.org
+ > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+ >
