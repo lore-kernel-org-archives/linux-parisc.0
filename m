@@ -1,36 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 007C24A19
-	for <parisc-linux@parisc-linux.org>; Thu, 22 Mar 2001 14:20:31 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7068E4A19
+	for <parisc-linux@parisc-linux.org>; Thu, 22 Mar 2001 14:49:41 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14gCVR-0002QZ-00; Thu, 22 Mar 2001 21:20:29 +0000
-Date: Thu, 22 Mar 2001 21:20:29 +0000
+	id 14gCxg-0002y3-00
+	for parisc-linux@parisc-linux.org; Thu, 22 Mar 2001 21:49:40 +0000
+Date: Thu, 22 Mar 2001 21:49:40 +0000
 From: Matthew Wilcox <matthew@wil.cx>
-To: Markus Werle <markus@lufmech.rwth-aachen.de>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] configure --host=xx revisited
-Message-ID: <20010322212029.T5491@parcelfarce.linux.theplanet.co.uk>
-References: <3AB9F2BC.33E89887@lufmech.rwth-aachen.de>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010322214940.U5491@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3AB9F2BC.33E89887@lufmech.rwth-aachen.de>; from markus@lufmech.rwth-aachen.de on Thu, Mar 22, 2001 at 01:40:28PM +0100
 Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] FYI: kernel semaphore bug
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Mar 22, 2001 at 01:40:28PM +0100, Markus Werle wrote:
-> Hi !
-> 
-> during the last months I stumbled through the naming
-> conventions of "host" used in configure scripts of
-> gcc/binutils and other gnu packages.
-> 
-> I am looking for information about this naming convention.
-> Some people got confused configuring gcc for hpux, because
-> e.g. hppa-2.0w-etc. does not mean a 64-bit version.
+there's a minor problem that probably won't affect anyone which occurs
+under rare conditions with contention on an N-way semaphore.  It will be
+fixed by upgrading to 2.4.2 so I'm not going to put in a workaround.
 
-hppa-foo -- 32 bit, pa 1.1
-hppa2.0-foo -- 32 bit, pa 2.0
-hppa2.0w-foo -- 64 bit
+for the curious:
+
+P1: down()
+P2: down()
+P3: down() -- sleeps
+P4: down() -- sleeps
+P1: up() -- calls wake_up
+P2: up() -- calls wake_up
+
+wake_up will only wake P3 and not P4.  This is fixed in the wait_queue
+rewrite in 2.4.2.  I could hack it by having P3 check whether the queue
+still had tasks on it and the semaphore count was >0 and do a wake_up
+itself in that case.  But I'm not going to do that.
 
 -- 
 Revolutions do not require corporate support.
