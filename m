@@ -1,12 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Message-ID: <3DA36A1B.9080808@esiee.fr>
-Date: Wed, 09 Oct 2002 01:28:27 +0200
-From: Thibaut VARENE <varenet@esiee.fr>
+Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B96864829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Oct 2002 17:31:38 -0600 (MDT)
+Received: from [195.20.224.204] (helo=mrvdomng.kundenserver.de)
+	by moutvdom.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 17z3p9-0007bH-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 09 Oct 2002 01:31:35 +0200
+Received: from [217.81.15.241] (helo=PLUTO)
+	by mrvdomng.kundenserver.de with esmtp (Exim 3.35 #1)
+	id 17z3p8-0000Mb-00
+	for parisc-linux@lists.parisc-linux.org; Wed, 09 Oct 2002 01:31:34 +0200
+From: "Tobias Giesen" <tobias_subscriber@tgtools.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] Can't start X-windows on HP C240 with HP FX4 graphics card ?
+Date: Wed, 9 Oct 2002 01:33:05 +0200
+Message-ID: <000601c26f23$0d62c330$f10f51d9@PLUTO>
 MIME-Version: 1.0
-To: parisc-linux <parisc-linux@parisc-linux.org>,
-	parisc-linux-announce@parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] New PA-RISC/Linux Boot HOWTO out !
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <20021008223316.GB3692@solo.franken.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,22 +30,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi fellow pa-ckers !
+Thomas:
+> porting the kernel won't help, the X server modules 
+> contain all the important bits. 
 
-Thomas Marteaut and I are proud to announce the release of the 
-PA-RISC/Linux Boot HOWTO version 1.0 !
+... and they are not open source, right? Damn.
 
-This release is the result of a long work, and features many new and 
-improved sections.
+And HP is not violating any versions GPL there? Did they build modules
+from scratch?
 
-You can find it as usual on the PA/Team website:
-http://pateam.esiee.fr/parisc-linux-boot/doc.html
-
-and on TLDP.
-
-HTH !
-
-
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+tg
