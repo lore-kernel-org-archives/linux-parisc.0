@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 85AA74829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Nov 2002 12:04:44 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18BgL1-0002Ku-00; Tue, 12 Nov 2002 19:04:39 +0000
-Date: Tue, 12 Nov 2002 19:04:39 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 022244829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Nov 2002 12:28:33 -0700 (MST)
+Date: Tue, 12 Nov 2002 19:28:37 +0000 (UTC)
+From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [2.5] rtc doesn't build
-Message-ID: <20021112190439.B30392@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.BSF.4.44.0211121854470.32930-100000@e0-0.zab2.int.zabbadoz.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.44.0211121854470.32930-100000@e0-0.zab2.int.zabbadoz.net>; from bzeeb-lists@lists.zabbadoz.net on Tue, Nov 12, 2002 at 06:57:07PM +0000
+Subject: Re: [parisc-linux] [2.5] rtc doesn't build 
+In-Reply-To: <20021112190427.F11C14829@dsl2.external.hp.com>
+Message-ID: <Pine.BSF.4.44.0211121925070.32930-100000@e0-0.zab2.int.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,15 +22,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Nov 12, 2002 at 06:57:07PM +0000, Bjoern A. Zeeb wrote:
-> Hi,
-> 
-> 
-> thi sseems to be a problem with nonexistent defines expected
-> to be in include/asm-parisc/mc146818rtc.h
+On Tue, 12 Nov 2002, Grant Grundler wrote:
 
-Say 'N' to "Enhanced Real Time Clock Support", then "Y" to "Generic
-/dev/rtc emulation" instead.
+> "Bjoern A. Zeeb" wrote:
+> > thi sseems to be a problem with nonexistent defines expected
+> > to be in include/asm-parisc/mc146818rtc.h
+>
+> use GENRTC instead
+
+Is this a general prob ?
+
+if so it would be good if we could hide this option - I do not know
+Kconfig...
+
+perhaps drop a note to Documentation/parisc/
 
 -- 
-Revolutions do not require corporate support.
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
