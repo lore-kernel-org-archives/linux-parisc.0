@@ -1,54 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA22369
-	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 13:21:33 -0700
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <3A63562E.2DA228AC@uswest.net>
-Date: Mon, 15 Jan 2001 12:57:35 -0700
-From: Ryan Bradetich <rbradetich@uswest.net>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA23003
+	for <parisc-linux@puffin.external.hp.com>; Mon, 15 Jan 2001 14:15:32 -0700
+Received: from cancun.rose.hp.com (cancun.rose.hp.com [15.43.234.191])
+	by palrel1.hp.com (Postfix) with ESMTP id 1B3D410D2
+	for <parisc-linux@thepuffingroup.com>; Mon, 15 Jan 2001 13:19:11 -0800 (PST)
+Received: (from cmoore@localhost)
+	by cancun.rose.hp.com (8.9.3 (PHNE_21697)/8.9.3 SMKit7.02) id NAA29050
+	for parisc-linux@thepuffingroup.com; Mon, 15 Jan 2001 13:28:34 -0800 (PST)
+From: "Chris Moore" <cmoore@cancun.rose.hp.com>
+Message-Id: <1010115132833.ZM29048@cancun.rose.hp.com>
+Date: Mon, 15 Jan 2001 13:28:33 -0800
+To: parisc-linux@thepuffingroup.com
 MIME-Version: 1.0
-To: Greg Ingram <ingram@symsys.com>
-CC: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Booting C100
-References: <Pine.LNX.4.21.0101151256070.23322-100000@maestro.symsys.com>
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] More 735 boot woes
 List-ID: <linux-parisc.vger.kernel.org>
 
-Greg,
+Hello again,
 
-The ccio detection via GSC port is really a hack.   I will commit your patch
-since we do not have a better way to detect the driver atm :)  Hopefully my
-local tree will shape up today, and I can commit a new and improved ccio
-driver.  Than I will start working on the I/O tree to eliminate this hack.
+Thanks to the people who provided me with kernels (Phillip, and whoever
+loaded a new one to the FTP site - Andrew?  Grant?).
+I now have two fairly new kernels that both do the same thing - and
+it's the same problem mentioned earlier this month by Aleksandr
+Konstantinov.  I get as far as "parport_initialize_chip: initialize
+bidirectional-mode".  Then I get an HPMC.
 
-Thanks for the patch!
+The isr.ior at the time of the HPMC indicates I'm at
+parport_PS2_supported+0x64.
+Also the register dump shows the HPA of the Outfield Core Centronics
+interface in registers r6, r25, and r26.  I can't get much further
+without (yet) being able to build kernels, but it looks like these kernels
+don't like the Outfield Core Centronics.  I'd suspect that it was just
+my system having bad hardware except that it sounds like at least one
+other person has seen the same HPMC.
 
-- Ryan
+Has anyone else seen this problem on a 735?  Anyone have a fix?
 
+Thanks,
 
-
-Greg Ingram wrote:
-
-> Okay, I grabbed the cross-compiler and various sources and managed to
-> build a booting image.  Woohoo!  I also tried the lifimage you just posted
-> to the FTP site.  Both kernels died at GSC detection because it didn't
-> know the address f5fbf000.  I made this little change to ccio-dma.c:
->
-> --- arch/parisc/kernel/ccio-dma.c.orig  Mon Jan 15 12:40:05 2001
-> +++ arch/parisc/kernel/ccio-dma.c       Mon Jan 15 13:05:01 2001
-> @@ -1174,6 +1174,7 @@
->  ** that can't be detected by PA/EISA/PCI bus walks.
->  */
->         switch((long) d->hpa) {
-> +       case 0xf5fbf000L:       /* C1O0 (wild guess!) */
->         case 0xf7fbf000L:       /* C110 IOA0 LBC (aka GSC port) */
->         case 0xf3fbf000L:       /* C110 IOA0 LBC (aka GSC port) */
->                 /* ccio_hpa same as C200 IOA0 */
->
-> It got past that point but crashed later.  Full boot log follows. I'm
-> looking at excluding the GSC stuff to see if the problem goes
-> away.  Updates at 11.
->
-> - Greg
->
-
-[bootlog snipped]
+Chris Moore
