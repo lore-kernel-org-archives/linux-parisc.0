@@ -1,36 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07343482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 12:42:36 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15SNQY-0005kB-00; Thu, 02 Aug 2001 19:42:34 +0100
-Date: Thu, 2 Aug 2001 19:42:34 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: LaMont Jones <lamont@hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] libqthreads and hppa-linux
-Message-ID: <20010802194234.A20250@parcelfarce.linux.theplanet.co.uk>
-References: <20010802040435.818241872C@security.hp.com>
-Mime-Version: 1.0
+Received: from opus.allegro.com (opus.allegro.com [209.10.39.50])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EDA80482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 Aug 2001 13:11:26 -0600 (MDT)
+From: Stan Sieler <sieler@allegro.com>
+Message-Id: <200108021911.MAA32073@opus.allegro.com>
+Subject: Re: [parisc-linux] Linux on R947X?
+To: kevin_carson@hp.com ("CARSON,KEVIN (HP-Canada,ex1)")
+Date: Thu, 2 Aug 2001 12:11:20 -0700 (PDT)
+Cc: grundler@puffin.external.hp.com ('Grant Grundler'),
+	robert.holmberg@idobath.com, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <B9957F974955D411829400D0B74FF27A04BF7875@xtor01.canada.hp.com> from "CARSON,KEVIN (HP-Canada,ex1)" at Aug 02, 2001 12:50:08 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010802040435.818241872C@security.hp.com>; from lamont@hp.com on Wed, Aug 01, 2001 at 10:04:34PM -0600
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Aug 01, 2001 at 10:04:34PM -0600, LaMont Jones wrote:
-> I started to play with getting the hppa assembly code in guile-core to work
-> on pa-linux, but ran into challenges with %farg[0-3], which aren't defined
-> by the assembler...
+Re:
 
-I already discussed this in detail with the maintainer; details of the
-discussion can be found in the BTS.  I'm disappointed you decided to
-waste your time on this without reading that discussion or talking to me.
+> I believe we are talking about a 947RX which is the MPe equivalent of the
+> G30.
 
-> I'm about to upload a source NMU of guile-core, which has qt/md/hppa*-linux.?
-> in it.  If someone wanted to take that the rest of the way, I'd be happy to
-> upload it...
+Yes.
+ 
+> these machines will be a long time coming, if ever.  The second problem is
+> that the firmware is different for MPe than HP-UX.  Conversion from a 947RX
 
-No, don't do this, it's completely unnecessary.
+AFAIK, the firmware should be 100% identical.  The only diference I'm aware of
+is the model string and the OS-license info in stable storage.
+
+And, of course, you're giving up a lot more turning an HP 3000 into a Linux
+box than you are when turning an HP 9000 into a Linux box :)
+
+Seriously, if he has a 947RX, he might be able to resell it.
+
+As far as selling a 922?   It's a very old HP 3000, and has little or no 
+market value :(
+(By "little or no", I mean: you'll be lucky to sell it for $50.)
 
 -- 
-Revolutions do not require corporate support.
+Stan Sieler                                           sieler@allegro.com
+www.allegro.com/sieler/wanted/index.html                  www.sieler.com
