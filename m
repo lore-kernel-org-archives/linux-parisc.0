@@ -1,23 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 710BB4A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 16:54:16 -0700 (MST)
-Subject: Re: [parisc-linux] Fun with RAID
-To: grundler@cup.hp.com (Grant Grundler)
-Date: Mon, 5 Feb 2001 23:15:08 +0000 (GMT)
-Cc: matthew@wil.cx (Matthew Wilcox),
-	parisc-linux@lists.parisc-linux.org, grundler@milano.cup.hp.com
-In-Reply-To: <200102052310.PAA02945@milano.cup.hp.com> from "Grant Grundler" at Feb 05, 2001 03:10:10 PM
+Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 8FEBC4A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 17:49:27 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Helge Deller <deller@gmx.de>
+To: "M. Grabert" <xam@deathsdoor.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP9000/730 problems
+Date: Tue, 6 Feb 2001 01:48:26 +0100
+References: <Pine.LNX.4.21.0102050015450.385-100000@sgate.charlysworld.de>
+In-Reply-To: <Pine.LNX.4.21.0102050015450.385-100000@sgate.charlysworld.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E14Puql-0004SW-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-Id: <01020601482600.01149@P100.helgenet.de>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I've pointed out to Matthew that using speculative loads (for PA2.0)
-> would help to preload cachelines.
+On Monday 05 February 2001 00:29, M. Grabert wrote:
+> BTW, ASP Parallel Port driver is still broken (can't boot with it,
+> but can boot without it).
 
-On the x86 athlon boxes it helps massively for memcpy performance too
-as a lot of our page copies are not cache->cache. The other place Arjan found
-was a big win which isnt yet mainstream is prefetching task structs in
-the scheduler
+Yes, I thought I fixed it a few weeks back, but .... :-(
+I would like to fix that problem, but since I don't have such a machine where 
+this bug happens I will need your help. If you could send me your bootlog I 
+can give it another try.
+
+> STI console is also broken (many characters are not printed or substitued
+> by spaces). The problems occur of course AFTER "switching console" !
+
+I believe, that you used the old STI code. Please try again the code I 
+checked into CVS yesteray.
+But the main problem why you just see some characters is, that the HP STI rom 
+code doesn't includes all characters - and the new code will not fix this 
+yet. But my long term goal is to switch the STI code to use the 
+framebuffer-fonts from the linux-tree (which really seems possible).
+
+> But serial console works fine :)
+Yes of course. It doesn't uses the font tables of STI ROM.
+
+Greetings,
+
+	Helge Deller
