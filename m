@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6310D4841
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Nov 2003 21:32:15 -0700 (MST)
-Date: Sat, 15 Nov 2003 21:32:13 -0700
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23BE84841
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Nov 2003 22:50:24 -0700 (MST)
+Date: Sat, 15 Nov 2003 22:50:22 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
-To: "Shane G. Brodie" <sgbrodie@mts.net>
+To: Damian Muchli?ski <mudamian@poczta.onet.pl>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Dual NICs on 9000/715, anyone?
-Message-ID: <20031116043213.GC4059@colo.lackof.org>
-References: <20031116015159.GA4059@colo.lackof.org> <LPENLKGPOOFMNIPKLBNDAEFECAAA.sgbrodie@mts.net>
+Subject: Re: [parisc-linux] Linux on HP
+Message-ID: <20031116055022.GD4059@colo.lackof.org>
+References: <002901c3aad6$87fb1c10$64d71399@Damian>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <LPENLKGPOOFMNIPKLBNDAEFECAAA.sgbrodie@mts.net>
+In-Reply-To: <002901c3aad6$87fb1c10$64d71399@Damian>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Nov 15, 2003 at 10:16:11PM -0600, Shane G. Brodie wrote:
-> Slightly off topic:  I've been fighting with a 715/80 with an EISA 10/100 VG
-> AnyLan card in it for the last 2 weeks.  I can not get the network to come
-> up.
+On Fri, Nov 14, 2003 at 06:41:25PM +0100, Damian Muchli?ski wrote:
+> So I have downloaded palinux-2.4.22-pa13-20031022-netinst.iso from your
+> website,check md5, burned and booted.
+> Unfortunately it hangs on "searching for devices" without any more info.
 
-If it's trying to use DMA, it won't work.
+I don't know how to extract the vmlinux from the -pa13 netinst.iso.
+But I could grab the 2.4.22 kernel+modules which are installed.
+It boots fine on my c3k via gfx console (using PCI Viz-EG card).
+(uname -a give "2.4.22-32 #1" and Oct 22, 2003 time stamp)
 
-> I have a whole series of issues to resolve unrelated to the network
-> hardware, but that's another long story ... (the old SCSI CD-ROM doesn't
-> like CD-RW ... don't have spare CD-R ... disc 2 of my downloaded set is
-> unreadable - how I wish the MD5 checksums were up-to-date ...  I could set
+Thibaut, the kernel used to boot the netinst.iso is the identical
+one that gets install by the netinst.iso?
 
-can you clarify which MD5 csums are stale?
-Post the URL on this list and likely someone can fix it.
+Damian, perhaps you have additional/different PCI cards that are
+causing problems?
 
-> up dial-up (eeek!) but ...
-> 
-> I don't have have an EtherTwist transceiver for the built-in (and don't know
-> if it'll work anyway) - can anyone advise me whether or not the the built-in
-> 10-Base-2 Ethernet NIC will work using a AUI-10MB Ethernet transceiver
-> connected to a Linksys DSL 10/100 router?
+Can you send output from "in io"?
+Type "in io" while at the "Main Menu: Enter command" firmware prompt.
 
-The 715 built-in (LASI "apricot", uses lasi_82596 driver) works fine.
-I wouldn't expect any compatibility problems with Linksys router.
-
+hth,
 grant
