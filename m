@@ -1,51 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3748B482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Sep 2001 09:31:05 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 00C32B00C; Tue, 18 Sep 2001 16:30:15 +0100 (BST)
-Date: Tue, 18 Sep 2001 16:30:15 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: marka@sea.checkpoint.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] installing a native built kernel with 2.4.0 (.92 dist).
-Message-ID: <20010918163015.Q19441@linuxcare.com>
-References: <Pine.NEB.4.33.0109172318580.16734-100000@www2.scram.de> <Pine.WNT.4.33.0109171459100.1080-100000@nemo.dev.metainfo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.WNT.4.33.0109171459100.1080-100000@nemo.dev.metainfo.com>; from marka@sea.checkpoint.com on Mon, Sep 17, 2001 at 03:13:40PM -0700
+Received: from postal.sea.checkpoint.com (postal.sea.checkpoint.com [208.252.84.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BCDF8482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Sep 2001 11:10:56 -0600 (MDT)
+Received: from cartman.sea.checkpoint.com (localhost [127.0.0.1])
+	by postal.sea.checkpoint.com (8.9.3/8.9.3.RJ666.9) with ESMTP id KAA05286
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 18 Sep 2001 10:08:58 -0700
+From: marka@sea.checkpoint.com
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 18 Sep 2001 10:10:43 -0700 (Pacific Daylight Time)
+Subject: Re: [parisc-linux] installing a native built kernel with 2.4.0 (.92
+ dist).
+In-Reply-To: <20010918163015.Q19441@linuxcare.com>
+Message-ID: <Pine.WNT.4.33.0109181004310.3268-100000@nemo.dev.metainfo.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 17, 2001 at 03:13:40PM -0700, marka@sea.checkpoint.com wrote:
-> 
-> I've successfully installed and upgraded with the .92 distro, but I'm having
-> trouble getting a natively built kernel with this distro to load.
-> 
-> the load will either freeze at 'branching to kernel entry point' or
-> on the last time I rebuilt and copied, it complained:
-> 
-> Couldn't grok your kernel executable format
-> failed to load kernel
+Thanks for your help,
 
-If you are netbooting, you use a lifimage, if you are booting
-from disk you use the vmlinux file produced from building the
-kernel.
+Ok, it turns out it is booting (the machine's so quiet it's hard to tell), and
+not 'freezing' per-say at 'branching to kernel entry point 0x00100000'.  It's
+simply not sending anything to ttyS0 any more after this point.  This seems to
+be the 'swapped serial ports' issue mentioned earlier on this list.
 
-> this is with kernel-latest and palo-latest from Sep 7 on a b180l
-> 
-> I select PA7300LC on 'make oldconfig' (this sets CONFIG_PA7100LC=y in
-> .config).
-
-The config we use for the official kernels is in arch/parisc/debian-configs/32,
-you can "make distclean; cp arch/parisc/debian-configs/32 .config;
-make oldconfig; make; cp vmlinux /boot/vmtest", then reboot, interact
-with IPL and change the vmlinux-whatever name to be vmtest.
-
-> Any tips from the pros on building and installing -latest natively?  I'd
-> really like to get the fixes in 2.4.9, and there must be something more
-> interesting that needs to be done than copying/renaming lifimage over to /boot
-> and updating palo.conf and re-running palo.
-
-Don't copy lifimages to /boot, copy vmlinux.
-
-Richard
+--
+Mark
