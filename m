@@ -1,33 +1,44 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 819E7482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 15:34:46 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14kYRl-00013b-00; Tue, 03 Apr 2001 22:34:41 +0100
-Date: Tue, 3 Apr 2001 22:34:41 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Christoph Plattner <christoph.plattner@alcatel.at>
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	Christoph Plattner <christoph.plattner@dot.at>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] New kernel on 720 + Pa-Linux-0.5: Breakpoint ?
-Message-ID: <20010403223441.A11435@parcelfarce.linux.theplanet.co.uk>
-References: <3AC90274.4687ED7C@dot.at> <20010403001743.G9198@linuxcare.com> <3AC973D3.F1453A4C@alcatel.at>
-Mime-Version: 1.0
+Received: from viemta06.chello.at (viemta06.chello.at [195.34.133.56])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1683C482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Apr 2001 16:03:14 -0600 (MDT)
+Received: from dot.at ([62.178.92.247]) by viemta06.chello.at
+          (InterMail vK.4.03.02.00 201-232-124 license 6aea1bd1f01aef5a9a73363c16ebee43)
+          with ESMTP id <20010403220302.KBBA19423.viemta06@dot.at>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Wed, 4 Apr 2001 00:03:02 +0200
+Sender: chris@dsl2.external.hp.com
+Message-ID: <3ACA4896.1D6E4275@dot.at>
+Date: Wed, 04 Apr 2001 00:03:02 +0200
+From: Christoph Plattner <christoph.plattner@dot.at>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3AC973D3.F1453A4C@alcatel.at>; from christoph.plattner@alcatel.at on Tue, Apr 03, 2001 at 08:55:15AM +0200
-Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] CVS Repository @ puffin - contents ?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Apr 03, 2001 at 08:55:15AM +0200, Christoph Plattner wrote:
-> With the file system of ESIEE, I always have the problem, that 
-> my machine hangs, before init does any output !
-> 
-> I also have selfmade stuff, I will see, what will run on that
-> machine.
+Hello Puffin Group and PARISC hackers !
 
-have you looked at all the followups to the esiee announcement noting
-the problems with it?  i suspect it's switching to STI console.
+Is there a list of repository modules or trees ?
+
+I know 
+	binutils
+	gcc
+	linux
+	palo
+	glibc
+	starce
+	userspace/sash-3.4 and some others
+
+Is there more to fetch ?
+Can I have a list or find out with CVS ?
+Like fileutils, util-linux, etc, etc ,etc.....
+
+Cheers
+	Christoph P.
+
 
 -- 
-Revolutions do not require corporate support.
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
