@@ -1,19 +1,20 @@
-Return-Path: <jools@oxfordinspire.co.uk>
-Received: from hp9000.workshop (oxfordinspire.co.uk [62.3.242.169])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 14FB648E9
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 4D8FB4868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 19 Jan 2004 12:33:55 -0700 (MST)
-Received: from inspiron.workshop ([192.168.1.8])
-	by hp9000.workshop with esmtp (Exim 4.30) id 1Aif76-0000Kt-I7
-	for parisc-linux@lists.parisc-linux.org; Mon, 19 Jan 2004 19:31:08 +0000
-From: Jools Smyth <jools@oxfordinspire.co.uk>
-To: PARISC list <parisc-linux@lists.parisc-linux.org>
-Date: Mon, 19 Jan 2004 19:30:26 +0000
+	Mon, 19 Jan 2004 14:48:35 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 32bit parisc kernel 2.6.1 and pcmcia
+Date: Mon, 19 Jan 2004 22:48:29 +0100
+References: <200401182059.34270.deller@gmx.de>
+	<1074522943.2201.1.camel@mulgrave>
+In-Reply-To: <1074522943.2201.1.camel@mulgrave>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Message-Id: <200401191930.27090.jools@oxfordinspire.co.uk>
-Subject: [parisc-linux] Stability / Kernel 2.6.1 / HD Freezes
+  charset="iso-8859-15"
+Message-Id: <200401192248.29566.deller@gmx.de>
+Cc: James Bottomley <James.Bottomley@steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,38 +24,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi all,
+On Monday 19 January 2004 15:35, James Bottomley wrote:
+> On Sun, 2004-01-18 at 14:59, Helge Deller wrote:
+> > ..now inserting my TDK ISDN/serial modem PCMCIA card....
+> 
+> Sorry, I'm an idiot...these type of cards don't seem to work (they seem
+> to require ISA IRQ routing rules, which we can't provide).
 
-I've been reading the list for a while, thought I should join. I'm not really 
-a developer (well not on hppa) but I am happy to test stuff out :-)
+Wouldn't it be possible to write a wrapper, which simulated the
+ISA IRQs 0-15 and routes them to dino instead ?
+Isn't this similiar like the hack we have for the EISA driver ?
+And maybe we are lucky and no PA-machine has both, EISA and PCMCIA.
+Would this be possible ?
 
-First of all, I want to thank everyone whos worked on linux for HPPA.
-I never really felt comfortable with hp-ux, and getting things working was 
-always a pain. 
+> Do you have a network or wireless card you could try instead?
 
-I own a model 9000/800/A180c. (512 mb ram / 18gb hd)
+Sadly no, only one other ISDN card (AVM).
 
-I was running previously the 2.4 series kernels, but had a lot of crashes 
-during HD access. I have seen this mentioned before, and Its probably the 
-same issue ? (In fact most of the crashes were during package 
-unpacking/installation). Since moving to the 2.6 series this hasnt happened. 
-Is this scsi issue now fixed, or have I been lucky ? (I did have a crash 
-recently involving a debug file being written. Could it be this problem 
-again ?)
-
-I just built Linux hp9000 2.6.1-pa7 and on my system it seems to be working 
-fine.
-
-Also, does anyone here know why dovecot wouldnt work with libgnutls on hppa ? 
-the dovecot maintainer has been trying to debug it on my machine (If my 
-machine hadnt crashed). works fine with openssl. Has anybody had any other 
-problems with libgnutls ?
-
-Best Regards
-
-Jools
--- 
-Oxford Inspire
-jools@oxfordinspire.co.uk
-Tel: 01865 751879
-Mob: 07966 577498
+Helge
