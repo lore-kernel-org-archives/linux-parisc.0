@@ -1,20 +1,12 @@
-From: David Mosberger <davidm@napali.hpl.hp.com>
-Subject: Re: [parisc-linux] PA-Linux version of libunwind
-Date: Mon, 6 Dec 2004 11:22:56 -0800
-Message-ID: <16820.45456.164786.170565@napali.hpl.hp.com>
-References: <20041205023331.GB5905@colo.lackof.org>
-	<200412050304.iB534j12014124@hiauly1.hia.nrc.ca>
-	<20041205091640.GV6359@tausq.org>
-Reply-To: davidm@hpl.hp.com
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] clerar user page test
+Date: Tue, 7 Dec 2004 15:12:37 +0100
+Message-ID: <418A81310000D172@mail-7-bnl.tiscali.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- davidm@hpl.hp.com,
- parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+Content-Type: multipart/mixed;
+  boundary="========/418A81310000D172/mail-7-bnl.tiscali.it"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041205091640.GV6359@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,36 +17,157 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->>>>> On Sun, 5 Dec 2004 01:16:40 -0800, Randolph Chung <randolph@tausq.org> said:
 
-  Randolph> The kernel contains a primitive SOM unwind record-based
-  Randolph> unwinder. That will also need to be redone if we decide to
-  Randolph> go to dwarf2 only unwinding (but i guess David is working
-  Randolph> towards that anyway).
+--========/418A81310000D172/mail-7-bnl.tiscali.it
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
 
-Ugh, it's good you mention this!  Just a few days ago, I raised the
-question of in-kernel unwind support for various Linux platforms.
-Nobody expressed a clear-cut interest so far (I fear I asked on the
-wrong mailing-list...).  It sounds like PARISC Linux would benefit
-from having libunwind-support in the kernel?  I'm pretty sure Alpha
-needs that too.  There are probably others that would want it, too.
-So far, it looks like only SPARC and PPC{,64} don't need libunwind,
-since the hardware/calling-convention squirrels away enough info in
-the stack-frames to not need unwind-info.
+Hello all,
 
-  Randolph> One tricky thing though is that while generating SOM-style
-  Randolph> unwind records for hand-written assembly is fairly
-  Randolph> straightforward, generating dwarf2-unwind data is not
-  Randolph> quite so easy... possibly we need to do some work to make
-  Randolph> this somewhat easier to handle.
+here are the results of some clup test:
+(run on b2k running  2.6.10-rc3-pa2 64bit)
+time ./clup0; time ./clup1 ; time ./clup2
 
-The cfi-directive support recently added to the binutils makes it
-fairly straight-forward though.  Basically, you just need to annotate
-the instructions that manipulate the stack-pointer and instructions
-that save/restore a preserved register.
+real    0m0.498s
+user    0m0.440s
+sys     0m0.014s
 
-	--david
+real    0m0.277s
+user    0m0.229s
+sys     0m0.010s
+
+real    0m0.272s
+user    0m0.227s
+sys     0m0.013s
+
+(the corresponding src are attached. 
+Compile with (for remind:):
+ggc -o clup0 clup0.c
+gcc -mach=3D2.0 -o clup1 clup1.c
+gcc -mach=3D2.0 -o clup2 clup2.c)
+
+so real benefit to use double word insn on 64bit (clup0 verusu clup1)
+
+but not reducing the number of loop (clup1 versus clup2)
+
+hth,
+    Joel
+
+
+-------------------------------------------------------------------------=
+--
+Tiscali vous offre 3 mois d'ADSL et 3 mois de DVD gratuits...profitez-en.=
+..
+http://reg.tiscali.be/adsl/default.asp?lg=3DFR
+
+
+
+
+
+--========/418A81310000D172/mail-7-bnl.tiscali.it
+Content-Type: text/x-csrc
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="clup2.c"
+
+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdHJpbmcu
+aD4KI2luY2x1ZGUgPGVycm5vLmg+CgojZGVmaW5lIExQNjQJMSAKCnZvaWQgX19jbGVhcl91c2Vy
+X3BhZ2VfYXNtKHVuc2lnbmVkIGxvbmcgdmFkZHIpCnsKCmFzbSB2b2xhdGlsZSAoImxkaQk2NCwl
+JXIxXG4iCiNpZmRlZiBMUDY0CiIxOglzdGQJJSVyMCwwKCUwKVxuIgkJCiIJc3RkCSUlcjAsOCgl
+MClcbiIJCQoiCXN0ZAklJXIwLDE2KCUwKVxuIgkKIglzdGQJJSVyMCwyNCglMClcbiIKIglzdGQJ
+JSVyMCwzMiglMClcbiIKIglzdGQJJSVyMCw0MCglMClcbiIKIglzdGQJJSVyMCw0OCglMClcbiIJ
+CiIJc3RkCSUlcjAsNTYoJTApXG4iCiIJc3RkCSUlcjAsNjQoJTApXG4iCQkKIglzdGQJJSVyMCw3
+MiglMClcbiIJCQoiCXN0ZAklJXIwLDgwKCUwKVxuIgkKIglzdGQJJSVyMCw4OCglMClcbiIKIglz
+dGQJJSVyMCw5NiglMClcbiIKIglzdGQJJSVyMCwxMDQoJTApXG4iCiIJc3RkCSUlcjAsMTEyKCUw
+KVxuIgkKIglzdGQJJSVyMCwxMjAoJTApXG4iCiIJYWRkaWIsPiAgLTIsJSVyMSwxYlxuIgoiCWxk
+bwkxMjgoJTApLCUwIgojZWxzZQoiMToJc3R3CSUlcjAsMCglMClcbiIKIglzdHcJJSVyMCw0KCUw
+KVxuIgoiCXN0dwklJXIwLDgoJTApXG4iCiIJc3R3CSUlcjAsMTIoJTApXG4iCiIJc3R3CSUlcjAs
+MTYoJTApXG4iCiIJc3R3CSUlcjAsMjAoJTApXG4iCiIJc3R3CSUlcjAsMjQoJTApXG4iCiIJc3R3
+CSUlcjAsMjgoJTApXG4iCiIJc3R3CSUlcjAsMzIoJTApXG4iCiIJc3R3CSUlcjAsMzYoJTApXG4i
+CQoiCXN0dwklJXIwLDQwKCUwKVxuIgoiCXN0dwklJXIwLDQ0KCUwKVxuIgoiCXN0dwklJXIwLDQ4
+KCUwKVxuIgkKIglzdHcJJSVyMCw1MiglMClcbiIKIglzdHcJJSVyMCw1NiglMClcbiIKIglzdHcJ
+JSVyMCw2MCglMClcbiIKIglhZGRpYiw+ICAtMSwlJXIxLDFiXG4iCiIJbGRvCTY0KCUwKSwlMCIK
+I2VuZGlmCgk6CQkKCTogInIiKHZhZGRyKSApOwp9CgovKiAKI2RlZmluZQlJTklUCTEKI2RlZmlu
+ZQlERUJVRwkxCiAqLwoKaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiAqIGFyZ3YsIGNoYXIgKiAq
+IGVudikKewoJY2hhciBBUGFnZVs0MDk2XTsKCWludCBpLCBqLCBrOwoKI2lmIElOSVQKCWZvciAo
+aT0wOyBpPDQwOTY7IGkrKykgewoJCWogPSBpICUgMjY7CiNpZiBERUJVRwoJCXByaW50ZigiJWQs
+ICVkXG4iLCBpLCBqKTsKI2VuZGlmCgkJQVBhZ2VbaV0gPSAoY2hhcikoais2NSk7CiNpZiBERUJV
+RwoJCXByaW50ZigiQVBhZ2VbJWRdID0gJWRcbiIsIGksIEFQYWdlW2ldKTsKI2VuZGlmCgl9OwoJ
+QVBhZ2VbNDA5Nl0gPSAnXDAnOwojaWYgREVCVUcKCXByaW50ZigiQVBhZ2U6ICVzLlxuIiwgQVBh
+Z2UpOwojZW5kaWYKI2VuZGlmCS8qIElOSVQgKi8KCWZvciAoaT0wOyBpPDQwKjQwOTY7IGkrKykg
+ewoJCV9fY2xlYXJfdXNlcl9wYWdlX2FzbSgodW5zaWduZWQgbG9uZylBUGFnZSk7Cgl9CgojaWYg
+REVCVUcKCWZvciAoaT0wOyBpPDQwOTY7IGkrKykgewoJCXByaW50ZigiQVBhZ2VbJWRdID0gJWRc
+biIsIGksIEFQYWdlW2ldKTsKCX0KI2VuZGlmCiAgICByZXR1cm4gMDsKfQoK
+
+
+--========/418A81310000D172/mail-7-bnl.tiscali.it
+Content-Type: text/x-csrc
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="clup1.c"
+
+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdHJpbmcu
+aD4KI2luY2x1ZGUgPGVycm5vLmg+CgojZGVmaW5lIExQNjQJMSAKCnZvaWQgX19jbGVhcl91c2Vy
+X3BhZ2VfYXNtKHVuc2lnbmVkIGxvbmcgdmFkZHIpCnsKCmFzbSB2b2xhdGlsZSAoImxkaQk2NCwl
+JXIxXG4iCiNpZmRlZiBMUDY0CiIxOglzdGQJJSVyMCwwKCUwKVxuIgkJCiIJc3RkCSUlcjAsOCgl
+MClcbiIJCQoiCXN0ZAklJXIwLDE2KCUwKVxuIgkKIglzdGQJJSVyMCwyNCglMClcbiIKIglzdGQJ
+JSVyMCwzMiglMClcbiIKIglzdGQJJSVyMCw0MCglMClcbiIKIglzdGQJJSVyMCw0OCglMClcbiIJ
+CiIJc3RkCSUlcjAsNTYoJTApXG4iCiNlbHNlCiIxOglzdHcJJSVyMCwwKCUwKVxuIgoiCXN0dwkl
+JXIwLDQoJTApXG4iCiIJc3R3CSUlcjAsOCglMClcbiIKIglzdHcJJSVyMCwxMiglMClcbiIKIglz
+dHcJJSVyMCwxNiglMClcbiIKIglzdHcJJSVyMCwyMCglMClcbiIKIglzdHcJJSVyMCwyNCglMClc
+biIKIglzdHcJJSVyMCwyOCglMClcbiIKIglzdHcJJSVyMCwzMiglMClcbiIKIglzdHcJJSVyMCwz
+NiglMClcbiIJCiIJc3R3CSUlcjAsNDAoJTApXG4iCiIJc3R3CSUlcjAsNDQoJTApXG4iCiIJc3R3
+CSUlcjAsNDgoJTApXG4iCQoiCXN0dwklJXIwLDUyKCUwKVxuIgoiCXN0dwklJXIwLDU2KCUwKVxu
+IgoiCXN0dwklJXIwLDYwKCUwKVxuIgojZW5kaWYKIglhZGRpYiw+ICAtMSwlJXIxLDFiXG4iCiIJ
+bGRvCTY0KCUwKSwlMCIKCToJCQoJOiAiciIodmFkZHIpICk7Cn0KCmludCBtYWluKGludCBhcmdj
+LCBjaGFyICogKiBhcmd2LCBjaGFyICogKiBlbnYpCnsKCWNoYXIgQVBhZ2VbNDA5Nl07CglpbnQg
+aSwgaiwgazsKCiNpZiBJTklUCglmb3IgKGk9MDsgaTw0MDk2OyBpKyspIHsKCQlqID0gaSAlIDI2
+OwojaWYgREVCVUcKCQlwcmludGYoIiVkLCAlZFxuIiwgaSwgaik7CiNlbmRpZgoJCUFQYWdlW2ld
+ID0gKGNoYXIpKGorNjUpOwojaWYgREVCVUcKCQlwcmludGYoIkFQYWdlWyVkXSA9ICVkXG4iLCBp
+LCBBUGFnZVtpXSk7CiNlbmRpZgoJfTsKCUFQYWdlWzQwOTZdID0gJ1wwJzsKI2lmIERFQlVHCglw
+cmludGYoIkFQYWdlOiAlcy5cbiIsIEFQYWdlKTsKI2VuZGlmCiNlbmRpZgkvKiBJTklUICovCglm
+b3IgKGk9MDsgaTw0MCo0MDk2OyBpKyspIHsKCQlfX2NsZWFyX3VzZXJfcGFnZV9hc20oKHVuc2ln
+bmVkIGxvbmcpQVBhZ2UpOwoJfQoKI2lmIERFQlVHCglmb3IgKGk9MDsgaTw0MDk2OyBpKyspIHsK
+CQlwcmludGYoIkFQYWdlWyVkXSA9ICVkXG4iLCBpLCBBUGFnZVtpXSk7Cgl9CiNlbmRpZgogICAg
+cmV0dXJuIDA7Cn0KCg==
+
+
+--========/418A81310000D172/mail-7-bnl.tiscali.it
+Content-Type: text/x-csrc
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="clup0.c"
+
+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdHJpbmcu
+aD4KI2luY2x1ZGUgPGVycm5vLmg+CgovKiAjZGVmaW5lIExQNjQJMSAgKi8KCnZvaWQgX19jbGVh
+cl91c2VyX3BhZ2VfYXNtKHVuc2lnbmVkIGxvbmcgdmFkZHIpCnsKCmFzbSB2b2xhdGlsZSAoImxk
+aQk2NCwlJXIxXG4iCiNpZmRlZiBMUDY0CiIxOglzdGQJJSVyMCwwKCUwKVxuIgkJCiIJc3RkCSUl
+cjAsOCglMClcbiIJCQoiCXN0ZAklJXIwLDE2KCUwKVxuIgkKIglzdGQJJSVyMCwyNCglMClcbiIK
+IglzdGQJJSVyMCwzMiglMClcbiIKIglzdGQJJSVyMCw0MCglMClcbiIKIglzdGQJJSVyMCw0OCgl
+MClcbiIJCiIJc3RkCSUlcjAsNTYoJTApXG4iCiNlbHNlCiIxOglzdHcJJSVyMCwwKCUwKVxuIgoi
+CXN0dwklJXIwLDQoJTApXG4iCiIJc3R3CSUlcjAsOCglMClcbiIKIglzdHcJJSVyMCwxMiglMClc
+biIKIglzdHcJJSVyMCwxNiglMClcbiIKIglzdHcJJSVyMCwyMCglMClcbiIKIglzdHcJJSVyMCwy
+NCglMClcbiIKIglzdHcJJSVyMCwyOCglMClcbiIKIglzdHcJJSVyMCwzMiglMClcbiIKIglzdHcJ
+JSVyMCwzNiglMClcbiIJCiIJc3R3CSUlcjAsNDAoJTApXG4iCiIJc3R3CSUlcjAsNDQoJTApXG4i
+CiIJc3R3CSUlcjAsNDgoJTApXG4iCQoiCXN0dwklJXIwLDUyKCUwKVxuIgoiCXN0dwklJXIwLDU2
+KCUwKVxuIgoiCXN0dwklJXIwLDYwKCUwKVxuIgojZW5kaWYKIglhZGRpYiw+ICAtMSwlJXIxLDFi
+XG4iCiIJbGRvCTY0KCUwKSwlMCIKCToJCQoJOiAiciIodmFkZHIpICk7Cn0KCmludCBtYWluKGlu
+dCBhcmdjLCBjaGFyICogKiBhcmd2LCBjaGFyICogKiBlbnYpCnsKCWNoYXIgQVBhZ2VbNDA5Nl07
+CglpbnQgaSwgaiwgazsKCiNpZiBJTklUCglmb3IgKGk9MDsgaTw0MDk2OyBpKyspIHsKCQlqID0g
+aSAlIDI2OwojaWYgREVCVUcKCQlwcmludGYoIiVkLCAlZFxuIiwgaSwgaik7CiNlbmRpZgoJCUFQ
+YWdlW2ldID0gKGNoYXIpKGorNjUpOwojaWYgREVCVUcKCQlwcmludGYoIkFQYWdlWyVkXSA9ICVk
+XG4iLCBpLCBBUGFnZVtpXSk7CiNlbmRpZgoJfTsKCUFQYWdlWzQwOTZdID0gJ1wwJzsKI2lmIERF
+QlVHCglwcmludGYoIkFQYWdlOiAlcy5cbiIsIEFQYWdlKTsKI2VuZGlmCiNlbmRpZgkvKiBJTklU
+ICovCglmb3IgKGk9MDsgaTw0MCo0MDk2OyBpKyspIHsKCQlfX2NsZWFyX3VzZXJfcGFnZV9hc20o
+KHVuc2lnbmVkIGxvbmcpQVBhZ2UpOwoJfQoKI2lmIERFQlVHCglmb3IgKGk9MDsgaTw0MDk2OyBp
+KyspIHsKCQlwcmludGYoIkFQYWdlWyVkXSA9ICVkXG4iLCBpLCBBUGFnZVtpXSk7Cgl9CiNlbmRp
+ZgogICAgcmV0dXJuIDA7Cn0KCg==
+
+--========/418A81310000D172/mail-7-bnl.tiscali.it
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--========/418A81310000D172/mail-7-bnl.tiscali.it--
