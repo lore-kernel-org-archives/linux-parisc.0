@@ -1,16 +1,15 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] revisit copy_user_page_asm microbenchmarks
-Date: Sun, 20 Feb 2005 16:44:15 -0700
-Message-ID: <20050220234415.GC30361@colo.lackof.org>
-References: <20050105055412.68E06495698@palinux.hppa>
-	<20050107095143.GN18497@tausq.org>
+Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
+Date: Sun, 20 Feb 2005 17:04:12 -0700
+Message-ID: <20050221000412.GA30800@colo.lackof.org>
+References: <20050216065539.GB5251@colo.lackof.org>
+	<20050219222723.GA12572@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050107095143.GN18497@tausq.org>
+In-Reply-To: <20050219222723.GA12572@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,75 +20,66 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jan 07, 2005 at 01:51:43AM -0800, Randolph Chung wrote:
-> Grant, do you have any results of a somewhat more macrobenchmark that
-> shows what happens with this patch installed?
+On Sat, Feb 19, 2005 at 03:27:23PM -0700, Grant Grundler wrote:
+> This suggests there is a problem with Astro/Elroy programming
+> where "Sprockets" firmware (for Astro based workstations) does
+> something different than PAT PDC firmware on a500.
 
-I don't. I wanted to run the ones that you suggested but just
-didn't have time. Before this gets totally lost, here are the results
-I did collect for 64-bit kernel using ldd/std in copy_user_page_asm.
-Can someone collect a comparable set using the original copy_user_page_asm?
+This was not the only issue, but the first one.
+Two more bits in the IOC_CTRL register were getting
+set on j6k (vs A500):
+	D4	Disable 4-byte coalescing. Apperently could
+		result in 12 byte transfers (4 byte-lanes not
+		enabled on the second 8 byte transaction)
+		that "some devices don't tolerate".
+		Documentation doesn't list these devices.
 
-This is on J6700 (750Mhz PA8700) w/4GB RAM.
+	DD	Disable Distributed LMMIO coalescing.
+		Disables coalescing for all PIO MMIO transactions
+		to addresses below distributed LMMIO ranges.
+		Directed LMMIO and other GMMIO ranges
+		may still coalesce (e.g. graphics buffers usually
+		get a directed range).
 
->  e.g. what does it do to "dd if=/dev/zero of=foo bs=1k count=500000"?
+Spew ran for an hour and managed to push 80+ GB
+of data to 6 disks. I'll commit this change shortly.
 
-Linux gggj6k 2.6.10-pa6-64SMP #1 SMP Thu Jan 6 22:18:36 PST 2005 parisc64 GNU/Linux
+Then I got ambitious and ran "make clean" and XFS panic'd.
+I expect this is a different problem.
+Same one I've seen before:
 
-root@gggj6k:/home# time dd if=/dev/zero of=foo bs=1k count=500000
+[ no backtrace :^( ]
 
-"dd" time	"dd" B/s	"time" real	user		sys
-17.018413	30085062	0m17.034s	0m0.136s	0m11.153s
-15.877587	32246713	0m21.932s	0m0.145s	0m11.866s
-11.948184	42851700	0m12.642s	0m0.149s	0m11.785s
-14.944728	34259573	0m27.936s	0m0.129s	0m11.861s
-12.329126	41527680	0m13.035s	0m0.156s	0m11.896s
-11.369272	45033666	0m22.073s	0m0.134s	0m11.605s
+Kernel Fault: Code=26 regs=000000006cd40c10 (Addr=00000000000000c8)
 
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000011001111111100001111 Not tainted
+r00-03  0000000000000000 000000001026d1d0 000000000028afa8 0000000000000000
+r04-07  0000000000243000 0000000000000000 0000000000000000 00000000fff00800
+r08-11  00000000156b60b8 0000000000000000 0000000000000008 0000000000000000
+r12-15  0000000000000008 0000000000000000 0000000000000000 000000006cd40768
+r16-19  0008000000000001 0000000000000000 0000000000000022 0000000000000000
+r20-23  0000000000000000 0000000000000000 00000000fdfafbf8 0000000000000000
+r24-27  0000000000000000 0000000000000000 00000000fdfafb38 00000000105424c0
+r28-31  00000000fdfafb38 000000006cd40c70 000000006cd40c10 00000000a0000000
+sr0-3   000000000044d000 0000000000000000 0000000000000000 000000000044f000
+sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
 
-> what does it do to a kernel compile?
-
-2.6.10-rc3-pa8 kernel:
-real    47m42.656s
-user    20m15.723s
-sys     66m52.259s
-
-
-> what does it do to a bonnie run?
-
-Linux gggj6k 2.6.10-pa6-64SMP #1 SMP Thu Jan 6 22:18:36 PST 2005 parisc64 GNU/Linux
-
-root@gggj6k:/mnt# bonnie -u grundler -f -x 3 -m 64SMP -d /mnt
-Using uid:1001, gid:1001.
-name,file_size,putc,putc_cpu,put_block,put_block_cpu,rewrite,rewrite_cpu,getc,getc_cpu,get_block,get_block_cpu,seeks,seeks_cpu,num_files,seq_create,seq_create_cpu,seq_stat,seq_stat_cpu,seq_del,seq_del_cpu,ran_create,ran_create_cpu,ran_stat,ran_stat_cpu,ran_del,ran_del_cpu
-Writing intelligently...done
-Rewriting...done
-Reading intelligently...done
-start 'em...done...done...done...
-Create files in sequential order...done.
-Stat files in sequential order...done.
-Delete files in sequential order...done.
-Create files in random order...done.
-Stat files in random order...done.
-Delete files in random order...done.
-64SMP,16G,,,57333,25,15918,12,,,25829,10,166.8,1,16,2368,98,+++++,+++,+++++,+++,2589,99,+++++,+++,7093,99
-...
-64SMP,16G,,,58014,26,15895,12,,,25461,10,181.7,1,16,2416,98,+++++,+++,+++++,+++,2598,99,+++++,+++,7361,99
-...
-64SMP,16G,,,57416,25,16201,13,,,25841,10,186.1,1,16,2452,96,+++++,+++,+++++,+++,2621,99,+++++,+++,7544,100
+IASQ: 0000000000000000 0000000000000000 IAOQ: 000000000028afc0 000000000028afdc
 
 
+Press Q/q to quit, Enter to continue: 
+ IIR: 50d30190    ISR: 0000000000000000  IOR: 00000000000000c8
+ CPU:        0   CR30: 000000006cd40000 CR31: 000000001050c000
+ ORIG_R28: 00000000fda4fa80
+ IAOQ[0]: xfs_btree_init_cursor+0x70/0x1b8 [xfs]
+ IAOQ[1]: xfs_btree_init_cursor+0x8c/0x1b8 [xfs]
+ RP(r2): xfs_btree_init_cursor+0x58/0x1b8 [xfs]
+Kernel panic - not syncing: Kernel Fault
+ 
 
-And one more test that I'm not sure is relevant:
-
-	time sgp_dd if=/dev/sda of=/dev/sdc bpt=16k count=17781520
-
-2.6.10-rc3-pa8 kernel:
-real    15m13.011s
-user    0m0.042s
-sys     4m6.301s
-
-
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
