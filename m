@@ -1,17 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] DIFF use 6-regs in copy_user_page_asm
-Date: Tue, 4 Jan 2005 09:02:27 -0700
-Message-ID: <20050104160227.GA28074@colo.lackof.org>
-References: <20050103061910.GJ15061@colo.lackof.org>
-	<20050104061342.GE18497@tausq.org>
-	<200501040851.19806.mszick@wolfbutter.com>
+From: Michiel Broek <mbroek@mbse.dds.nl>
+Subject: Re: [parisc-linux] Re: front-panel LED and switch support broken
+	(was: 2.6.10-pa1 compile fails)
+Date: Mon, 3 Jan 2005 22:18:33 +0100
+Message-ID: <200501032218.33618.mbroek@mbse.dds.nl>
+References: <Pine.LNX.4.21.0501031142060.31807-100000@hal.pp.fishpool.fi>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Michael S. Zick" <mszick@wolfbutter.com>
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200501040851.19806.mszick@wolfbutter.com>
+In-Reply-To: <Pine.LNX.4.21.0501031142060.31807-100000@hal.pp.fishpool.fi>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +20,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jan 04, 2005 at 08:51:19AM -0600, Michael S. Zick wrote:
-> One other possibility to keep in mind when testing: this is an
-> io sequence, no heavy register-register computations.
+Op maandag 3 januari 2005 10:42, schreef Martin-=C9ric Racine:
+> On Mon, 3 Jan 2005, Matthew Wilcox wrote:
+> > On Thu, Dec 30, 2004 at 04:40:38PM +0200, Martin-=C9ric Racine wrote:
+> > > On Thu, 30 Dec 2004, Martin-=C9ric Racine wrote:
+> > > > On Thu, 30 Dec 2004, Martin-=C9ric Racine wrote:
+> > > > However, support for the front-panel LEDs and switches is BROKEN in
+> > > > 2.6.10-pa1: when I press the power switch, it kills the AC power
+> > > > instead of sending a signal to the kernel to shut itself down.  OUC=
+H!
+> > > >  The power/status LED is also off.
+> > >
+> > > This is still broken in 2.6.10-pa2 as well.
+> >
+> > On which machine?  It works fine on my 725 and c3600.
+>
+> 712.
 
-Not entirely. Sure, to load data into cache it's "io".
-But the bulk of the loop is to move data from one cacheline
-to another.
+On my 712/80 with a 2.6.9-pa1 it works fine.
 
-> You might have to borrow a buss analyzer from the hardware
-> lab to see if this is effecting your tests.
 
-I don't. If 6-regs works better then I use it.
-If CPU performance counter support worked, we could figure
-out where the bottlenecks were for both cases.
+=2D-=20
 
-grant
+ Greetings, Michiel Broek
+
+mbroek@mbse.dds.nl  or  Fidonet 2:280/2802 to Michiel Broek.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
