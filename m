@@ -1,22 +1,21 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B2E5E4854
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 97F744854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 16 Mar 2004 13:01:19 -0700 (MST)
-Date: Tue, 16 Mar 2004 12:01:21 -0800
-From: Randolph Chung <tausq@debian.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Subject: Re: [parisc-linux] SCSI broken in latest CVS changes
-Message-ID: <20040316200121.GN2384@tausq.org>
-References: <Pine.LNX.4.58.0403150256180.17258@sal.ucc.ie>
-	<40561E7100000AF2@ocpmta2.freegates.net>
-	<20040316165202.GW25059@parcelfarce.linux.theplanet.co.uk>
-	<Pine.LNX.4.58.0403161946550.27512@sal.ucc.ie>
+	Tue, 16 Mar 2004 14:12:16 -0700 (MST)
+Date: Tue, 16 Mar 2004 16:09:33 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
+	fixes GLRO changes.
+Message-ID: <20040316210933.GO660@baldric.uwo.ca>
+References: <20040315185113.GC660@baldric.uwo.ca>
+	<40561E710000043C@ocpmta2.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.58.0403161946550.27512@sal.ucc.ie>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <tausq@debian.org>
+In-Reply-To: <40561E710000043C@ocpmta2.freegates.net>
+Cc: James Morrison <ja2morri@csclub.uwaterloo.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,12 +25,26 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> Mhh, doesn't work for me with the latest CVS:
+> but that way I only get know errors ie:
+> make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-float.out] Error
+> make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-double.out] Error
+> make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-ifloat.out] Error
+> make[1]: *** [math/tests] Error 2
+> make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/tst-strtod.out] Error
+> make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/bug-strtod.out] Error
+> make[1]: *** [stdlib/tests] Error 2
+> make[2]: [/Develop/parisc-linux/build/glibc/posix/annexc.out] Error 1 (ignored)
+> make[2]: *** [/Develop/parisc-linux/build/glibc/elf/tst-tls13.out] Error
+> make[1]: *** [elf/tests] Error 2
+> make: *** [check] Error 2
+> 
+> (sorry I forget TIMEOUTFACTOR) :)
 
-should link now, whether it works or not is another thing ;-)
+:) No problem!
+ 
+> Very nice job Carlos.
+> Just still have to check more X,
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+No, thank you Joel, your testing and bravery is an enourmous help :)
+
+c.
