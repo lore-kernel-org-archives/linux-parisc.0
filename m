@@ -1,16 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 413A64838
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B0EDA4829
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 27 Apr 2004 03:30:07 -0600 (MDT)
-Date: Tue, 27 Apr 2004 11:29:43 +0200
-Message-ID: <408D43600000070F@ocpmta1.freegates.net>
-In-Reply-To: <Pine.LNX.4.58.0404270915440.4406@sal.ucc.ie>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] Linux-2.6.6-rc1-pa3 and Linux-2.6.6-rc2
-To: "M. Grabert" <xam@cs.ucc.ie>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+	Tue, 27 Apr 2004 08:58:46 -0600 (MDT)
+Date: Tue, 27 Apr 2004 10:57:41 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] RE: [PATCH] glibc-2.3.3 error with debian
+	unstable	compiler...
+Message-ID: <20040427145741.GD14937@baldric.uwo.ca>
+References: <20040421115522.GH28094@baldric.uwo.ca>
+	<408D43600000049A@ocpmta1.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <408D43600000049A@ocpmta1.freegates.net>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -21,27 +24,13 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+> Here is my weekly test: cvs 20040426.
+> Nothing new to mention: always well known errors collected after make -k
+> check. I just build a 2.6.6-_rc2_-pa2 (for the fun) without pb (which boot
+> fine on my b180)
 
-> The Changelog to 2.6.6-rc2 contains the following:
+You aren't seeing a failure in tst-timer4?
+Can you verify this by running tst-timer4 by hand and sending the output
+ot the list?
 
-Well, I don't know about Matthew merge project but yesterday I apply the
-upstream patch-2.6.6-rc1-rc2 (http://www.kernel.org/pub/linux/kernel/v2.6/testing/incr/patch-2.6.6-rc1-rc2.bz2)
-against our pa tree and it is quiet straighforward (just have to redo by
-hand the hunk related to arch/parisc/kernel/cache.c, very short and easy).
-
-I boot it with success on my b180 :) (not yet on my b2k :( ) but I trust
-you could try it also?
-
-That said, knowing that my serial console works fine, there are two additional
-hw pieces that you can try to remove one by one to locate accurately the
-pb, though I don't have usb kbd/mouse to test)
-
-hth,
-    Joel
-
-
-
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
-http://reg.tiscali.be/default.asp?lg=fr
+c.
