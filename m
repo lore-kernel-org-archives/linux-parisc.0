@@ -1,20 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from einstein.tteng.com.br (unknown [200.203.41.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 30DF2482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 15:55:50 -0600 (MDT)
-Received: (from root@localhost)
-	by einstein.tteng.com.br (8.11.6/8.11.6) id h4KLthr18769
-	for parisc-linux@lists.parisc-linux.org; Tue, 20 May 2003 18:55:43 -0300
-Received: from hamilton.tteng.com.br (hamilton.tteng.com.br [192.168.0.100])
-	by einstein.tteng.com.br (8.11.6/8.11.6) with ESMTP id h4KLtfP18762
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 18:55:41 -0300
-Date: Tue, 20 May 2003 18:55:41 -0300
-From: Hamilton Coutinho <hamilton@tteng.com.br>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030520215541.GA11860@hamilton.tteng.com.br>
-Mime-Version: 1.0
+Received: from mail.cs.tu-berlin.de (mail.cs.tu-berlin.de [130.149.17.13])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 22BBC482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 17:46:20 -0600 (MDT)
+From: Matthias Klose <doko@cs.tu-berlin.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Building glibc (static) with 64 bits toolchain
+Message-ID: <16074.48509.259405.775905@gargle.gargle.HOWL>
+Date: Wed, 21 May 2003 01:42:53 +0200
+To: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Cc: debian-gcc@lists.debian.org, m68k-build@nocrew.org
+Subject: [parisc-linux] gcc-3.3 configuration
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,15 +21,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+For Debian GNU/Linux gcc-3.3 is currently configured with
 
-I'm trying to figure it out how far we are from the most simple 64 bits
-userspace I could think of. I read the list's archive and understand
-that this is a subject that was beaten to death already (I'm also aware
-of the doubtful usefulness of it). So, I'm planning to annoy you the
-least I can :)
+	--with-sjlj-exceptions
 
-I think I have all sorted out (well, most of it, I think): for a simple
-"hello world" app I need kernel support for execve, brk, write, mmap
-(and a few others), a 64 bits toolchain and a libc (diet or the full
-blown glibc :). Sure enough, the libc is the grayest area for me.
+to allow a binary compatible upgrade from gcc-3.2 to gcc-3.3. The
+other Debian platform, where sjlj based exceptions changed to dwarf2
+based exceptions is m68k, therefore the CC.
+
+As there are no hppa/m68k distributions released using gcc-3.2,
+compatibility with other released distros is not an issue. OTOH, I see
+Gentoo and probably other distros built for hppa, first starting with
+gcc-3.3, and maybe configured the standard way.
+
+Is it worth (or needed) to strive for binary compatibility of hppa
+based distributions, based on gcc-3.3 and glibc-2.3.x?
+
+If yes, does the following approach work: Build a libstdc++5-3.3,
+conflicting with libstdc++5 (including libstdc++ with the same soname)
+and doing binary uploads for hppa for all libstdc++5 dependent
+packages? (The same could be done for m68k, but the compatibility
+argument doesn't hold as Debian seems to be the only m68k based
+distro).
+
+	Matthias
