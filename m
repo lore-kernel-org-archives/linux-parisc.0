@@ -1,157 +1,54 @@
-From: "Wolf-Dieter Kattnig" <kattnig@cnd-online.com>
-Subject: [parisc-linux] Framebuffer and 720/50
-Date: Sun, 27 Jun 2004 16:06:33 +0200
-Message-ID: <20040627140634.9D4E3246C2A@mail.customers.edis.at>
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: Re: [PATCH] Fix the cpumask rewrite
+Date: Sat, 26 Jun 2004 09:32:15 -0700 (PDT)
+Message-ID: <Pine.LNX.4.58.0406260924570.14449__6239.62454633347$1416623488$gmane$org@ppc970.osdl.org>
+References: <1088266111.1943.15.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1884310680=="
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
-
-This is a multi-part message in MIME format.
-
---===============1884310680==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0000_01C45C60.B7D3BFA0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0000_01C45C60.B7D3BFA0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Hi all!
-
- 
-
-I've had no problems whatsoever setting up Woody on my 720 - except for one
-glitch - I can't get X to work.
-
-My graphics adaptor is an HPA2269A. Everything looks good, but I cant get
-/dev/fb0 to work. My kernel is 2.4.18-32.
-
-Is X supported on this configuration at all? Help would be appreciated.
-
- 
-
-Thanks, WD
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII
+Cc: Andrew Morton <akpm@osdl.org>,
+ Paul Jackson <pj@sgi.com>,
+ PARISC list <parisc-linux@lists.parisc-linux.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
+In-Reply-To: <1088266111.1943.15.camel@mulgrave>
+List-Id: linux-parisc.vger.kernel.org
 
 
-------=_NextPart_000_0000_01C45C60.B7D3BFA0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
-xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
+On Sat, 26 Jun 2004, James Bottomley wrote:
+>  
+> This might be correct for x86 and itanium, but it isn't for parisc where
+> our bitmap operators don't take volatile pointers.
 
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.E-MailFormatvorlage17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:70.85pt 70.85pt 2.0cm 70.85pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <o:shapelayout v:ext=3D"edit">
-  <o:idmap v:ext=3D"edit" data=3D"1" />
- </o:shapelayout></xml><![endif]-->
-</head>
+Why not? The thing is, the bitmap operators are supposed to work on 
+volatile data, ie people are literally using them for things like
 
-<body lang=3DDE-AT link=3Dblue vlink=3Dpurple>
+	while (test_bit(TASKLET_STATE_SCHED, &t->state));
 
-<div class=3DSection1>
+and the thing is supposed to work.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi all!<o:p></o:p></span></font></p>
+Now, I personally am not a big believer in the "volatile" keyword itself, 
+since I believe that anybody who expects the compiler to generate 
+different code for volatiles and non-volatiles is pretty much waiting for 
+a bug to happen, but there are two cases where I think it's ok:
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+ - in function prototypes to show that the function can take volatile data 
+   (and not complain).
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial'>I&#8217;ve had no problems whatsoever setting =
-up
-Woody on my 720 &#8211; except for one glitch &#8211; I can&#8217;t get =
-X to
-work.<o:p></o:p></span></font></p>
+ - as an arch-specific low-level implementation detail to avoid having to 
+   use inline assembly just to load a value. Ie a _data_structure_ should 
+   never be volatile, but it's ok to use a volatile pointer for a single 
+   access.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial'>My graphics adaptor is an HPA2269A. Everything =
-looks
-good, but I cant get /dev/fb0 to work. My kernel is =
-2.4.18-32.<o:p></o:p></span></font></p>
+I believe the bitop functions fall under #1 - the function is clearly
+supposed to handle the case of a volatile pointer, and if it is inlined,
+the above endless while-loop must not just load the bit once and turn it 
+into an endless loop - it needs to re-load the thing every iteration.
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial'>Is X supported on this configuration at all? =
-Help
-would be appreciated.<o:p></o:p></span></font></p>
+> Since whether the bitmap operators are volatile or not is within the
+> province of the architecture to decide,
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+I disagree. Why wouldn't they be volatile?
 
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-GB =
-style=3D'font-size:
-10.0pt;font-family:Arial'>Thanks, WD<o:p></o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0000_01C45C60.B7D3BFA0--
-
-
---===============1884310680==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1884310680==--
+		Linus
