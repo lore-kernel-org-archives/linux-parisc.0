@@ -1,57 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB4504A18
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Jan 2001 19:11:30 -0700 (MST)
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id TAA24173
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 19:07:25 -0700
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by atlrel2.hp.com (Postfix) with ESMTP id 9A224192B
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 20:04:45 -0500 (EST)
-Received: from hp.com (hazel.fc.hp.com [15.1.52.8])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 26E755A963
-	for <parisc-linux@puffin.external.hp.com>; Tue, 30 Jan 2001 18:00:46 -0700 (MST)
-Sender: dafra@ldl.fc.hp.com
-Message-ID: <3A77652A.7CD6D5D8@hp.com>
-Date: Tue, 30 Jan 2001 18:06:50 -0700
-From: dann frazier <daniel_frazier@hp.com>
-MIME-Version: 1.0
-To: parisc-linux@puffin.external.hp.com
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B471F4A18
+	for <parisc-linux@parisc-linux.org>; Tue, 30 Jan 2001 19:18:59 -0700 (MST)
+To: dann frazier <daniel_frazier@hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] list migration & bug tracking system 
+In-Reply-To: Message from dann frazier <daniel_frazier@hp.com>
+   of "Tue, 30 Jan 2001 18:06:50 MST." <3A77652A.7CD6D5D8@hp.com>
+References: <3A77652A.7CD6D5D8@hp.com> 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] list migration & bug tracking system
+Date: Tue, 30 Jan 2001 19:20:56 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010131022056.8FC8137C90@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-hey,
+dann frazier writes...
 
-We now have a bug tracking system at:
-http://bugs.parisc-linux.org/
-The BTS is based on the debbugs package, Debian's BTS.
+> You can subscribe and/or unsubscribe from all lists at once at:
+> http://lists.parisc-linux.org/bulksubscribe.html
+> 
+> You can now use htdig to search the list archives at:
+> http://lists.parisc-linux.org/search.html
 
-If you're not familiar w/ debbugs, see that page for documentation.
+I have modified the,
 
-maintainer messages will be sent to corresponding lists on:
-http://lists.parisc-linux.org
-You can request a copy of the maintainers file through the BTS, as well
-as view it online at http://bugs.parisc-linux.org/packages.html
+http://parisc-linux.org/mailing-lists/index.html
 
-we have moved the mailing lists and archives over to Mailman on a
-different machine.  the switch should have been near-transparent.  you
-can still send mail to puffinl.external, but lists.parisc-linux.org is
-the preferred host.
+page to reflect the changes and point to the archives, web interface, and 
+search tool. Also we have the MX records setup such that mail sent to,
 
-You can subscribe and/or unsubscribe from all lists at once at:
-http://lists.parisc-linux.org/bulksubscribe.html
+listname@parisc-linux.org
 
-You can now use htdig to search the list archives at:
-http://lists.parisc-linux.org/search.html
+will work properly.
 
-please file bugs against the packages "bts" or "lists" if you run across
-any problems or have any suggestions.
-	-dann
 -- 
----------------------------
-dann frazier
-Hewlett-Packard
-Linux Development Lab
-daniel_frazier@hp.com
-(970) 898-0800
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
