@@ -1,15 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12505.mail.yahoo.com (web12505.mail.yahoo.com [216.136.173.197])
-	by dsl2.external.hp.com (Postfix) with SMTP id DCCC3482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Sep 2002 15:58:18 -0600 (MDT)
-Message-ID: <20020905215817.13651.qmail@web12505.mail.yahoo.com>
-Date: Thu, 5 Sep 2002 14:58:17 -0700 (PDT)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] C200 Voodoo2 Progress Report
-To: palinux <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <3D77D183.2080905@charter.net>
+Received: from moutvdom.kundenserver.de (moutvdom.kundenserver.de [195.20.224.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 76497482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Sep 2002 17:15:28 -0600 (MDT)
+Received: from [195.20.224.220] (helo=mrvdomng1.kundenserver.de)
+	by moutvdomng1.kundenserver.de with esmtp (Exim 3.35 #2)
+	id 17n5qQ-0008QF-00
+	for parisc-linux@lists.parisc-linux.org; Fri, 06 Sep 2002 01:15:26 +0200
+Received: from [80.132.245.81] (helo=PLUTO)
+	by mrvdomng1.kundenserver.de with esmtp (Exim 3.35 #2)
+	id 17n5qP-0003MM-00
+	for parisc-linux@lists.parisc-linux.org; Fri, 06 Sep 2002 01:15:25 +0200
+From: "Tobias Giesen" <tobias_subscriber@tgtools.com>
+To: "'palinux'" <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] C200 Voodoo2 Progress Report
+Date: Fri, 6 Sep 2002 01:15:30 +0200
+Message-ID: <004f01c25532$221c4900$7cf98450@PLUTO>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <3D77D183.2080905@charter.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,57 +30,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-And I'm just happy that I got X/KDE to work on the built in graphics
-card on my C180...finally.  Keep it up since I have a Voodoo2 available
-to try on my C180 if you're successful.
+Doug,
 
-derek
+thanks very much for the report! Looking forward to trying this myself.
 
---- "B. Douglas Hilton" <bdhilton@charter.net> wrote:
-> I have gotten my C200 back online and started some preliminary
-> work with the Voodoo2 PCI card. I currently have it plugged into
-> one of the 5V/32bit slots which may or may not be optimal.
-> 
-> Anyways,
-> 
-> 1. Linux Kernel 2.4.19-pa2 sstfb Voodoo1/2 framebuffer
-> 
->   Well, the kernel compiled with the sstfb without
->   any errors. When I booted I got a black and white
->   checkerboard pattern on the Voodoo2 monitor. I had
->   disabled the stifb console, thinking that the kernel
->   might pick the sstfb for a console, but it didn't.
->   Just blankness for a while, then a checkerboard
->   pattern.
-> 
->   I think this is encouraging and I think it is working.
->   I'm currently recompiling and will post some more news
->   later as I experiment some more with it. Next I will
->   try and put a console on the sstfb or even try running
->   X on it.
-> 
-> 
-> 2. glide3-alpha-0.cvs.20010711
-> 
->   This is the Debian source for Glide3 on the Alpha arch,
->   which is also big-endian. Initial compilation failed in
->   multiple places about missing sys/io.h which I have
->   located a file of that name in /usr/include/asm. I'll
->   see if I can figure out how best to correct this and try
->   again.
-> 
-> 
-> Cheers!
-> - Doug
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> Next I will try and put a console on 
+> the sstfb or even try running X on it.
 
+X via frame buffer would be great, I'll be happy
+to work without glide.
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+Cheers,
+Tobias
