@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8AFE84842
-	for <parisc-linux@parisc-linux.org>; Fri, 28 Feb 2003 11:37:46 -0700 (MST)
-Date: Fri, 28 Feb 2003 19:37:38 +0100
-Message-ID: <3E5F37B2000002B5@ocpmta1.freegates.net>
-In-Reply-To: <200302281740.h1SHegff003314@hiauly1.hia.nrc.ca>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] 2.4.20-pa27 64bits smp problem!
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, parisc-linux@parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Date: Fri, 28 Feb 2003 23:17:12 -0700
+To: mike ganley <mgg01@yahoo.com>
+Cc: debian-hppa@lists.debian.org, parisc-linux@lists.parisc-linux.org
+Message-ID: <20030301061712.GB5518@dsl2.external.hp.com>
+References: <20030228225506.37072.qmail@web12203.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030228225506.37072.qmail@web12203.mail.yahoo.com>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] Re: Cross compiling for 64 bit on HPPA
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,60 +20,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+On Fri, Feb 28, 2003 at 02:55:06PM -0800, mike ganley wrote:
+> hppa64 cross compiler.  Everything goes fine, then
+> hppa64-linux-ld complains libc6 is version 2.2.5 and
+> it requires 2.3 or greater.
 
->> Sorry Dave I do not find this stuff.
->
->The place to look is
->
->linuxthreads/sysdeps/unix/sysv/linux/hppa/bits/initspin.h.
->
->It is rather buried.  Carlos and I have had some rather lengthy
->discussions on how to implement pthread locking in glibc given
->the limitations in aligning data on the stack and also for data
->allocated by malloc.  This might be relevant to the kernel
->locking code.
->
->>  #define rwlock_init(lp)	do { *(lp) = RW_LOCK_UNLOCKED; } while (0)
->
->The above macro uses a compound literal.  This creates a unique object
->in the scope in which the macro is used.  As this is a BLKmode object,
->the alignment of the object is set to GCC's definition for BIGGEST_ALIGNMENT.
->The overall alignment also won't be better than STACK_BOUNDARY.  It
->is possible to use a "static" macro argument in which case space for the
->object will be allocated in the .bss section rather than on the stack.
->This also allows the alignment attribute to work.  If you do this, then
->you have to worry about whether the code needs to be reentrant.
->
->On the hppa64 port (3.3 & later), BIGGEST_ALIGNMENT, STACK_BOUNDARY
->and PREFERRED_STACK_BOUNDARY are now all 128 bits.  Prior to 3.3,
->PREFERRED_STACK_BOUNDARY is 1024 bits but this is wrong.  The runtime
->documentation specifies 128 bits (16 bytes) for the stack alignment
->on the 64-bit port.  Using a larger boundary just wastes space.
->Stack alignment is also determined by what you start with.
->
->Also note, any attempt to provide an overall alignment for the compound
->literal on the stack is ignored.  However, as all 64-bit machines are
->PA 2.0, this doesn't matter.  On the otherhand, the alignment does
->matter for the 32-bit port on PA 1.1 machines.  There the ldcw insn
->has to operate on 16-byte aligned data.  GCC from the master source
->has BIGGEST_ALIGNMENT set to 64-bits on the 32-bit port.  So, the
->above macro won't create a properly aligned lock.  Debian 3.0.4 has
->BIGGEST_ALIGNMENT set to 128, so it should be used for PA 1.1 kernel
->builds until this issue is resolved.
->
-Thanks for all info ;)
+libc6 2.3.x is only available from "unstable" debian pool.
 
->> Any better idea?
->
->Not really.  I might use a name like SPIN_LOCK_UNLOCKED_INIT rather than
->C_SPIN_LOCK_UNLOCKED, as I think it is slightly more descriptive.
->
-Ok for me (my C_ would stand for Constant form)
+Having just learned how to set up a "hybrid" release, I don't want
+to reccomend this to anyone.  IMHO, this is for someone willing to
+take risks with stability of a system, is not a developer, and wants
+something that's only in "unstable".  Drawback with "hybrid" is package
+maintainers will not like you if you report bugs - mixed releases are a
+PITA to reproduce. Personally, I'm not going to report bugs
+with the one box (my laptop) I have setup this way.
 
-Joel
+The following seems like the "least evil" way to go about it:
 
+1) /etc/apt/apt.conf should have the line:
+	APT::Default-Release "testing";
 
----------------------------------
-Vous surfez avec une ligne classique ?
-Faites des economies avec Tiscali Complete
-... Plus d'info sur http://complete.tiscali.be
+2) duplicate "testing" entries in /etc/apt/sources.list for
+   "unstable" as well. run "apt-get update".
+
+3) copy the following 7 lines into /etc/apt/preferences:
+Package: *
+Pin: release a=testing
+Pin-Priority: 650
+
+Package: *
+Pin: release a=unstable
+Pin-Priority: 90
+
+  This allows one to install from unstable but not update such debs
+  *until* they get promoted to "testing" release. Once this deb version
+  is promoted to testing, it tracks versions like normal.
+
+  Read "man apt_preferences" for more details.
+
+4) "apt-get install libc6/unstable" to update to libc6 2.3.1 lib.
+   You will have to install several other packages from /unstable
+   at the same time. But apt-get will complain about which packages.
+
+hth,
+grant
