@@ -1,61 +1,56 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C8BAE482A
-	for <parisc-linux@parisc-linux.org>; Wed,  4 Apr 2001 17:18:22 -0600 (MDT)
-To: parisc-linux@parisc-linux.org, debian-hppa@list.debian.org
-Cc: taggart@carmen.fc.hp.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 04 Apr 2001 17:20:14 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010404232014.574B837E74@carmen.fc.hp.com>
-Subject: [parisc-linux] New hppa base tarball
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C67F3482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Apr 2001 17:27:36 -0600 (MDT)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA22497;
+	Thu, 5 Apr 2001 09:27:32 +1000
+Date: Thu, 5 Apr 2001 09:27:32 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20010404234654.H9198@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0104050920520.13605-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: 64 bit kernel and module dp values again
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi hppa-unknown-linux-gnu hackers,
+On Wed, 4 Apr 2001, Richard Hirst wrote:
 
-I have built a new "base" Debian tarball for hppa and posted it at,
+> On Wed, Apr 04, 2001 at 04:32:40PM +0100, Richard Hirst wrote:
+> > Hi Alan,
+> >   Code from drivers/block/loop.o, built as a 64 bit module, using
+> > xc-20010307.tgz
+> > 
+> > The stub to call $$divU is called with the kernels dp value as that is
+> > what dp is left with follwing the __muldi3 call.
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/
-basetars/base-20010404.tar.gz
+Sorry Richard, I should have picked up on this when I saw you exporting
+millicode from the kernel yesterday.  You basically can't do it, and for
+the same reason you can't export millicode from shared libs.  As you've
+found, dp gets trashed...
 
-It's ~30MB in size and only includes the base stuff(no compilers, etc), plus 
-ssh and it's dependencies (libssl0.9.6, libcap1, zlib1g). The contents are 
-listed at,
+> Having pondered on this while walking the dog (in the dry!!),
+> I think I need a new stub for calling millicode that doesn't
+> use dp.
+> 
+> 	ldil L'sym,%r1
+> 	ldo  R'sym(%r1),%r1
+> 	bve (r1)
+> 	nop
+> 
+> where sym is the address of the millicode fn in the kernel.
+> 
+> Sound reasonable to you?
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/
-basetars/baselist.20010404
+Yes.  That's the sort of thing ld would have to do too if we want to
+export millicode from shared libs.
 
-The debs included are available at,
+Incidentally, this problem isn't limited to 64 bit.  32 bit modules will
+have the same problem, with r19 being trashed when calling kernel
+millicode.
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/base/
-
-The logins/passwds are,
-
-demo:demo
-root:root
-
-There are additional instructions on how to set it up in the tarball at 
-/home/demo/README. Instructions on using it to install a system are available 
-at,
-
-http://parisc-linux.org/software/install.html
-
-Now that Bdale has the autobuilder running you can grab debs from any mirror. 
-If something isn't there yet you can wait for it to show up, build it 
-yourself, or check,
-
-ftp://puffin.external.hp.com/pub/parisc/binaries/debian/debs/
-
-to see if someone else has built it by hand.
-
-I will also try and do a base + reasonable build environment tarball soon.
-
-Please pay attention to the web site and mailing list for errata and report 
-any problems you have.
-
-Thanks,
-
+Alan "modules are evil" Modra
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Linuxcare
