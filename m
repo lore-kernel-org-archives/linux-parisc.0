@@ -1,32 +1,22 @@
 From: Linus Torvalds <torvalds@osdl.org>
-Subject: [parisc-linux] Re: more (insane) jiffies ranting
+Subject: Re: more (insane) jiffies ranting
 Date: Sun, 27 Jun 2004 10:39:08 -0700 (PDT)
-Message-ID: <Pine.LNX.4.58.0406271022430.16079__3194.33437330208$1416623488$gmane$org@ppc970.osdl.org>
-References: <1088266111.1943.15.camel@mulgrave>
-	<Pine.LNX.4.58.0406260924570.14449@ppc970.osdl.org>
-	<20040626221802.GA12296@taniwha.stupidest.org>
-	<Pine.LNX.4.58.0406261536590.16079@ppc970.osdl.org>
-	<20040627015501.GA14647@taniwha.stupidest.org>
+Message-ID: <Pine.LNX.4.58.0406271022430.16079__43188.0799624652$1416623489$gmane$org@ppc970.osdl.org>
+References: <1088266111.1943.15.camel@mulgrave> <Pine.LNX.4.58.0406260924570.14449@ppc970.osdl.org>
+ <20040626221802.GA12296@taniwha.stupidest.org> <Pine.LNX.4.58.0406261536590.16079@ppc970.osdl.org>
+ <20040627015501.GA14647@taniwha.stupidest.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN;
   charset=US-ASCII
 Cc: James Bottomley <James.Bottomley@SteelEye.com>,
  Andrew Morton <akpm@osdl.org>,
  Paul Jackson <pj@sgi.com>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- PARISC list <parisc-linux@lists.parisc-linux.org>
+ PARISC list <parisc-linux@lists.parisc-linux.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>
 To: Chris Wedgwood <cw@f00f.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+Return-Path: <linux-kernel-owner+deller=40gmx.de-S264414AbUF0Rkk@vger.kernel.org>
 In-Reply-To: <20040627015501.GA14647@taniwha.stupidest.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+List-Id: linux-parisc.vger.kernel.org
 
 
 
@@ -108,7 +98,3 @@ the data itself should never be volatile. And yes, jiffies breaks that
 rule, but hey, that's not something I'm proud of.
 
 		Linus
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
