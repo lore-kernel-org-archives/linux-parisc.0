@@ -1,30 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA31141
-	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Aug 2000 05:27:23 -0600
-Message-Id: <200008231126.NAA02186@pallas.spacetec.no>
-From: tor@spacetec.no (Tor Arntsen)
-Date: Wed, 23 Aug 2000 13:26:55 +0200
-In-Reply-To: Alan Modra <alan@linuxcare.com.au>
-       "Re: Incompatibility of PIC and non-PIC" (Aug 23, 11:47)
-To: Alan Modra <alan@linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA32511
+	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Aug 2000 08:56:19 -0600
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 23 Aug 2000 14:56:12 -0000
+Received: from dis.i.linuxcare.com (HELO vodka.thepuffingroup.com) (192.168.1.57)
+  by db1.i.linuxcare.com with SMTP; 23 Aug 2000 14:55:39 -0000
+Date: Wed, 23 Aug 2000 09:51:10 -0400
+From: Matthew Wilcox <matthew@wil.cx>
+To: Tor Arntsen <tor@spacetec.no>
+Cc: Alan Modra <alan@linuxcare.com.au>, parisc-linux@thepuffingroup.com,
+        parisc@lists.linuxcare.com
 Subject: Re: Incompatibility of PIC and non-PIC
-Cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
+Message-ID: <20000823095110.H14529@vodka.thepuffingroup.com>
+References: <alan@linuxcare.com.au> <200008231126.NAA02186@pallas.spacetec.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200008231126.NAA02186@pallas.spacetec.no>; from Tor Arntsen on Wed, Aug 23, 2000 at 01:26:55PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Aug 23, 11:47, Alan Modra wrote:
->Ah Ha!  So an update of puffin cvs would be a good idea.  Provided said
->update didn't trash all the old repositories...
+On Wed, Aug 23, 2000 at 01:26:55PM +0200, Tor Arntsen wrote:
+> On Aug 23, 11:47, Alan Modra wrote:
+> >Ah Ha!  So an update of puffin cvs would be a good idea.  Provided said
+> >update didn't trash all the old repositories...
+> 
+> Recommended.  I'm using version 1.10.8.1 on both servers and clients
 
-Recommended.  I'm using version 1.10.8.1 on both servers and clients
-and before that I went through 1.10.6.1 and 1.10.[2-4], I believe the 
-problem was fixed in one of the early 1.10.x versions.  No problems with 
-the repositories, the upgrades were transparent for the users.  
-Older 1.10 clients also work ok with the latest server versions, although 
-I've never used the actual 1.10 -- it had its own problems that were fixed 
-in 1.10.1 or .2 or so.  I'm not sure what the latest version is called but
-I can recommend 1.10.8.1.  It has a few obscure bugs that most of us will
-not run in to and it's as good as or better than any version before it.
-And it makes good diffs :-)
+we currently have 1.10.2 on pehc.  i believe matt taggart plans to
+upgrade pehc later this week.
 
--Tor
-(I maintain the CVS repositories at the site where I work)
+-- 
+Revolutions do not require corporate support.
