@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from jaguar.mkp.net (jaguar.mkp.net [66.11.169.42])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B1A264829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 12:23:33 -0700 (MST)
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: baddy@free.fr, <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] B132L+ and PCI cards
-From: "Martin K. Petersen" <mkp@mkp.net>
-References: <Pine.LNX.4.44.0302031815270.28090-100000@sal.ucc.ie>
-Date: 03 Feb 2003 14:23:53 -0500
+Received: from relay-4m.club-internet.fr (relay-4m.club-internet.fr [194.158.104.43])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0F964829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 12:50:35 -0700 (MST)
+Received: from club-internet.fr (f07a-5-86.d1.club-internet.fr [212.194.148.86])
+	by relay-4m.club-internet.fr (Postfix) with SMTP id 18453E10C
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Feb 2003 20:50:34 +0100 (CET)
+From: Bad Max <badmax@club-internet.fr>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 03 Feb 2003 20:51:14 +0200
+Message-ID: <yam9164.719.146359312@mail.club-internet.fr>
 In-Reply-To: <Pine.LNX.4.44.0302031815270.28090-100000@sal.ucc.ie>
-Message-ID: <yq1k7ghp3qu.fsf@austin.mkp.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Re: B132L+ and PCI cards
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,28 +24,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "M" == M Grabert <xam@cs.ucc.ie> writes:
+Hello
 
->> Unfortunately it seems that HP has a check in the firmware that
->> only allows booting with HP-branded graphics cards.
+On 03-fév-03, you wrote:
 
-M> Not entirely correct.
+[snip]
+| > 
+| > Not entirely correct.
+| > 
+| > You can boot with any PCI-graphics card, but you won't see any output
+| > until X is started (see below). However I haven't heard of anybody that
+| > had success with PCI graphic cards other than the Visualize-EG (well,
+| > perhaps the Voodoo2 with that special framebuffer driver, but I'm not
+| > sure)!
+| > 
 
-It depends on your machine type and firmware version.  Older firmwares
-are extremely picky.
+The question is not about Linux recognizing the new gfx card or not, the
+question is that my S3-based-card lock my B132L+ at power up. So I can't
+get Linux booting because the B132L+ don't finish the initialize process.
 
-In the first PCI-based PA-RISC machines there was a corruption bug in
-Dino (the GSC-PCI bus adapter), and the firmware would disallow any
-other PCI cards than HP graphics.  Newer Dinos fixed that problem and
-PDC allowed 3rd party SCSI/network cards to pass.
-
-However, when I plug in a non-HP graphics board in either C160 or
-C3000, the firmware will halt the machine and ask me to pull out the
-card before it will allow booting to commence.
-
-This has nothing to do with whether Linux recognizes the card or not,
-and which console driver you happen to be using.
-
--- 
-Martin K. Petersen	Wild Open Source, Inc.
-mkp@wildopensource.com	http://www.wildopensource.com/
+[snip]
+-------
+Bad Max
+========
+Amiga User
+GNU User
+WWW: perso.club-internet.fr/badmax
