@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B85474860
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 04:25:40 -0700 (MST)
-Message-ID: <3C6CF030.1040904@moyroud.net>
-Date: Fri, 15 Feb 2002 12:25:36 +0100
-From: Clement Moyroud <clement@moyroud.net>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: kernel-2.4.17-pa22 boot problem B132L+ with serial
-References: <OFCD5822D4.246FA364-ONC1256B61.0024B267@com> <20020215065553.945774861@dsl2.external.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3F7FC4857
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 05:46:34 -0700 (MST)
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id g1FCkp219315
+	for parisc-linux@lists.parisc-linux.org; Fri, 15 Feb 2002 07:46:51 -0500
+Date: Fri, 15 Feb 2002 07:46:51 -0500
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Power LED
+Message-ID: <20020215074651.C18453@systemhalted>
+References: <002101c1b5ee$b5f8a620$02c1a8c0@james.co.uk> <20020214231312.37ca1c9e.csuder@cisco.com> <200202150826.29543.deller@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200202150826.29543.deller@gmx.de>; from deller@gmx.de on Fri, Feb 15, 2002 at 08:26:57AM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +25,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler wrote:
-
->"=?iso-8859-1?Q?Jo=EBl_Soete?=" wrote:
->
->>It was "built-in 21143 on B180L" (is there a difference here between b180
->>and b132?)
->>
->
->Yes. I don't think B132L had 100BT built-in.
->But I'm too lazy to check hwdb.parisc-linux.org right now.
->Bed time.
+> I know the power button works correctly on my c3000 and 715/64. Both
+> systems shuts down the computer cleanly.
+> But on another Apollo/50 machine (712/50 or 715/50 - I don't remember) 
+> pressing the power-button turns off the machine immediately. This is a bug
+> and should be fixed if possible.
+> 
+> Helge
 >
 
-B132L has 100BT built-in too.
+The 715/50 Apollo has a hard wired power button, and a full array
+of leds on the front to indicate power/heartbeat/rx-tx/disk access.
 
-btw, Grant, have you seen Thibaut's mail about out serial ports problems 
-on a B132L+ ?
+My 712/60 definatley has a soft button (since I routinely pull
+the rear power plug when my "tinkering" causes a kernel crash), 
+and the led stays on after booting.
 
-
-Clement.
+c.
