@@ -1,25 +1,16 @@
-Return-Path: <esproul@ntelos.net>
-Received: from mailrtr03.ntelos.net (mailrtr03.ntelos.net [216.12.0.103])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4234A4829
+Return-Path: <samidaremogami@yahoo.co.jp>
+Received: from fan-oph0hcijvrk (wd247.AFL4.vectant.ne.jp [220.247.109.247])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 60BA14839
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 10:04:08 -0700 (MST)
-Received: from thunderbolt.oss.ntelos.net (thunderbolt.oss.ntelos.net
-	[216.12.8.195])
-	by mailrtr03.ntelos.net (8.11.7/8.11.7) with ESMTP id i2PH47L11807
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 12:04:07 -0500
-Subject: Re: [parisc-linux] gdth driver on L2000
-From: Eric Sproul <esproul@ntelos.net>
-To: PA-RISC Linux <parisc-linux@lists.parisc-linux.org>
-In-Reply-To: <20040325032639.GA7587@colo.lackof.org>
-References: <1080142280.1928.35.camel@thunderbolt.oss.ntelos.net>
-	<20040324173117.GA32052@colo.lackof.org>
-	<1080158208.23069.6.camel@thunderbolt.oss.ntelos.net>
-	<20040325032639.GA7587@colo.lackof.org>
-Content-Type: text/plain
-Message-Id: <1080234247.17438.31.camel@thunderbolt.oss.ntelos.net>
-Mime-Version: 1.0
-Date: Thu, 25 Mar 2004 12:04:07 -0500
+	Thu, 25 Mar 2004 10:18:49 -0700 (MST)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20040325.1718450687@samidaremogami-yahoo.co.jp>
+Date: Fri, 26 Mar 2004 02:18:45 +0900
+From: golder <samidaremogami@yahoo.co.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Subject: [parisc-linux] $BL$>5Bz9-9p"((B5000$B1_$G3+6H(B$B$7$^$;
+ $s$+!*(B
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,30 +20,22 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, 2004-03-24 at 22:26, Grant Grundler wrote:
-> On Wed, Mar 24, 2004 at 02:56:49PM -0500, Eric Sproul wrote:
-> > Grant,
-> > I'm working with Debian's 2.6.4 sources, but the gdth driver must be
-> > unchanged since the patch applies cleanly.  Thanks!
-> 
-> good
+ $B!!(B
+$B!!!!!!(B     $BL$>5Bz9-9p"((B $B$4LBOG$JJ}$O:o=|$7$F$/$@$5$$!#(B
+$B!!!!!!Ev9-9p$r<u?.5qH]$NJ}$O<!$N%a!<%k%"%I%l%9$K!L<u?.5qH]!M(B
+$B!!!!$H$7$FAw?.$7$F$/$@$5$$!#$4LBOG$G$7$g$&$,$h$m$7$/$*4j$$$$$?$7$^$9!!(B
+$B!!!!!!!!(B  bluelandok@yahoo.co.jp
+ $B!!!!!!HNGd<T!!%.%U%H!!(B
+       $B=j:_CO!!5~ETI\>kM[;T;{ED#8!]#2(B
+       $BBeI=<T!!;3K\$7$*$j!!!!(B
+$B!!!!!!!!!!!!!!!!(BTEL  0774-56-6428
 
-I successfully ported Grant's patch to 2.4.25, and have attached a diff
-for gdth.c.  All credit for this goes to Grant-- I just adjusted the
-line numbers. ;)  I'll be submitting this patch as requested to
-linux-scsi.
-
-The driver appears to work now in my 2.4.25-64-smp kernel:
-
-GDT: Storage RAID Controller Driver. Version: 2.05
-GDT: Found 1 PCI Storage RAID Controllers
-GDT CTR0: Configuring GDT-PCI HA at 32/0 IRQ 128
-
-lspci:
-20:00.0 RAID bus controller: Intel Corp. RAID Controller
-
-I'm moving now to check out the RAID management utility from Intel that
-supposedly worked under Debian 2.2.  I haven't even peeked at it yet.
-
-Many thanks to Grant for getting me going.
-Eric
+$B!!!!!!!!!!!!!!(B
+$B!!!!!!!!!!!!(B $B?'!9$J%M%C%H%S%8%M%9$KLB$C$F$$$^$;$s$+!#(B
+$B!!!!!!!!!!!!0i;yEy$KB?K;$J=w@-!"2HDm$G=PMh$k;E;v$r$*5a$a$NJ}!"(B
+$B!!!!!!!!!!!!B(<}F~$K$D$J$,$k(B $B%S%8%M%9%^%s$NI{6H$K%T%C%?%j!&!&!&(B
+$B!!!!!!!!!!!!!!;qK\6b$r$+$1$:$K2T$0!*5f6K$N%S%8%M%9$,$3$l$G$9!*!!(B
+$B!!!!!!!!!!(Bhttp://goodmails.redirectme.net/$B!!!!!!!!!!(B          
+              $B!!!!!!!!!!!!!!(B  
+      
+          
