@@ -1,23 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta04bw.bigpond.com (mta04bw.bigpond.com [144.135.24.150])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 81BDE483E
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Oct 2003 05:47:30 -0600 (MDT)
-Received: from Telstra ([144.135.24.72]) by mta04bw.email.bigpond.com
- (iPlanet Messaging Server 5.2 HotFix 1.14 (built Mar 18 2003))
- with SMTP id <0HM6006D2JEYD8@mta04bw.email.bigpond.com> for
- parisc-linux@lists.parisc-linux.org; Fri, 03 Oct 2003 21:47:22 +1000 (EST)
-Date: Fri, 03 Oct 2003 21:52:21 +1000
-From: Jeanette and John Graham <jajgraham@bigbond.com>
-Subject: Re: [parisc-linux] HP HSC J3516A (2 port) ethernet card  (supported??)
-To: Matthew Wilcox <willy@debian.org>,
-	"Padgett, Pat M [NTWK SVCS]" <PatPadgett@NMCC.SprintSpectrum.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Jeanette and John Graham <jajgraham@bigpond.com>
-Message-id: <001601c389a4$ce300040$0500000a@Telstra>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-References: <1289146742B56546AE580DFC6B711A83134825@PKDWB07C.ad.sprint.com>
- <20031002154634.GD24824@parcelfarce.linux.theplanet.co.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E7DA84852
+	for <parisc-linux@parisc-linux.org>; Fri,  3 Oct 2003 06:12:44 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A5Onb-0006BS-1f
+	for parisc-linux@parisc-linux.org; Fri, 03 Oct 2003 13:12:43 +0100
+Received: from master.debian.org ([146.82.138.7]:50855)
+	by www.linux.org.uk with esmtp (Exim 4.22)
+	id 1A5ORi-00062v-BT
+	for willy@ftp.uk.linux.org; Fri, 03 Oct 2003 12:50:06 +0100
+Received: from parcelfarce.linux.theplanet.co.uk (www.linux.org.uk) [195.92.249.252]
+	by master.debian.org with esmtp (Exim 3.35 1 (Debian))
+	id 1A5ORe-0006Pl-00; Fri, 03 Oct 2003 06:50:02 -0500
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A5ORb-00062e-FJ; Fri, 03 Oct 2003 12:49:59 +0100
+Date: Fri, 3 Oct 2003 12:49:59 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: Matthew Wilcox <willy@debian.org>,
+	Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+Subject: Re: [parisc-linux] L2000/N4000 smp devices/boot compare??
+Message-ID: <20031003114959.GM24824@parcelfarce.linux.theplanet.co.uk>
+References: <20031003001810.GH24824@parcelfarce.linux.theplanet.co.uk> <3F704CAF0000522B@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3F704CAF0000522B@ocpmta2.freegates.net>
+Resent-Message-Id: <E1A5Onb-0006BS-1f@www.linux.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -29,15 +37,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I realise this probably isn't the answer you wanted to hear; but is there
-> any chance you could try 2.6 on this machine?  We just got GSC Tulip
-> cards working properly in 2.6 and it'd be really useful to know that it
-> works on your box too.  After we know that, we can try backporting the
-> changes to 2.4.
+On Fri, Oct 03, 2003 at 08:15:03AM +0200, Joel Soete wrote:
+> Derek, Matthew,
+> 
+> Thanks a lot for those clarification.
+> As I try, without any success :(, to find where 'rules for non-coherent aliases'
+> are not respected, I will waiting for a fix.
 
-I have the 1 port ethernet card HP HSC J3515A in a D270
-which gave similar errors under 2.4.20-pa35 and 2.4.22-pa7.
-It works fine with the latest kernel vmlinux-2.6.0-test6-pa6-32.
+Well, it's hard.  Consider a page in the page cache.  It has a kernel
+address and one-or-more user addresses.  The user addresses all follow the
+coherency rules but the kernel address doesn't.  If you look in Appendix F,
+we're not allowed to have multiple write-capable translations to the same
+address.
 
-Thanks for all the hard work,
-John
+I think the only way to solve this is by (ab)using kmap to ensure that
+kernel pages are only accessed via coherent mappings.
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
