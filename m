@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.yashy.com (cpu2119.adsl.bellglobal.com [207.236.3.96])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9F129482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Feb 2002 19:44:03 -0700 (MST)
-Received: from yashy (helo=localhost)
-	by mail.yashy.com with local-esmtp (Exim 3.33 #1)
-	id 16a6SP-000CiF-00
-	for parisc-linux@lists.parisc-linux.org; Sun, 10 Feb 2002 21:44:41 -0500
-Date: Sun, 10 Feb 2002 21:44:41 -0500 (EST)
-From: Yasholomew Yashinski <yashy@mail.yashy.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] B1000
-In-Reply-To: <20020210235910.O1173@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <20020210213653.O48612-100000@mail.yashy.com>
+Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3736C482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Feb 2002 19:48:19 -0700 (MST)
+Message-ID: <3C673358.2070404@yahoo.com>
+Date: Mon, 11 Feb 2002 02:58:32 +0000
+From: Jbit <james_a_n_lee@yahoo.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] lp0 kablooie
+References: <Pine.LNX.4.21.0202091555570.7869-100000@maestro.symsys.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,35 +21,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> >  I recently purchased an HP 9000/785/B1000. I tried to use the
-> > pasrisc*.iso as I've been using on my 712/*'s, however there appears to be
-> > issues using 32-bit as default. Setting up a serial console for this
-> > machine will not be a trivial task, due to its location. Is there anyone
->
-> Hmm.. this machine should work in both 32 and 64 bit mode.  I suspect
-> we don't currently support the graphics card in this machine (I assume
-> it has the same problems as the C3000... helge?)
+Greg Ingram wrote:
 
- It appears so. The framebuffer is A4977a Vis EG-PCI.
+> Writing data from my C100 to /dev/lp0 makes the kernel go kablooie.  It's
+> the kernel from the recent (0.9.3?) iso.  Known problem?  Any more info I
+> could supply that would help?  I've appended everything on the console
+> from the crash, through the power cycle, to mounting disks again.  
 
- If it helps, the errors I receive on the front panel LCD are:
-FLT CBF4: SYS BD
-bad OS HPMC cksm
-FLT CBFC: SYS BD
-OS HPMC br err
-FLT 500B: SYS BD
-bus timeout
 
-> > on the list that has such a beast, I could discuss installation with?
-> >  My next attempt will be to setup an install using rbootd, however it
-> > appears I will require serial console access.
->
-> rbootd is for much older machines (715/Scorpio and earlier).  Everything
-> since the 712 uses bootp (or dhcp) and tftp.
+Hrm, not knowing what the exact problem is, i'd say its worth trying the latest cvs kernel
+(the debian-hppa-0.9.3 kernel is 2.4.9, IIRC)
 
- Thanks. It appears I should wait until my framebuffer is supported.
+Then, if it still gives an error, submit a bug report or somthing ;)
 
- Cheers,
+--jbit
 
---
-Yashy
+
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com
