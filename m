@@ -1,12 +1,18 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Possible fix? [was: RE: [parisc-linux] linux and gcc 3.x question?]
-Date: Mon, 7 Jun 2004 19:39:03 +0200
-Message-ID: <40BD9F0500003688@ocpmta1.freegates.net>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] glibc2.3.3 & gcc-3.5 (aka debian snapshot) new pb
+Date: Sun, 13 Jun 2004 09:54:54 +0000
+Message-ID: <40CC246E.50700@tiscali.be>
+References: <40BD9F0500004FF7@ocpmta1.freegates.net>
+	<40BD9F0500004FFB@ocpmta1.freegates.net>
+	<20040609190711.GI10321@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-1"
-To: parisc-linux@parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+Cc: parisc-linux@parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20040609190711.GI10321@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,116 +23,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
-
-May be a better patch:
---- compiler-gcc3.h.orig	2004-06-03 17:01:16.000000000 +0200
-+++ compiler-gcc3.h	2004-06-07 18:04:08.144851584 +0200
-@@ -4,9 +4,9 @@
- #include <linux/compiler-gcc.h>
-
- #if __GNUC_MINOR__ >=3D 1  && __GNUC_MINOR__ < 4
--# define inline		__inline__ __attribute__((always_inline))
-+# define inline		__inline__
-+# define __inline	__inline__
- # define __inline__	__inline__ __attribute__((always_inline))
--# define __inline	__inline__ __attribute__((always_inline))
- #endif
-
- #if __GNUC_MINOR__ > 0
-=3D=3D=3D=3D=3D=3D=3D=3D><=3D=3D=3D=3D=3D=3D=3D=3D
-
-Any opinion?
-
-Thanks,
-    Joel
-
-> -- Original Message --
-> Date: Thu, 3 Jun 2004 17:17:01 +0200
-> From: "Joel Soete" <soete.joel@tiscali.be>
-> To: parisc-linux@parisc-linux.org
-> Cc:
-> Subject: [parisc-linux] linux and gcc 3.x question?
->
->
-> Hello all,
->
-> I just noticed that when I pre-compile some ncr53c8xx.c with gcc-3.3.4
-on
-> my p-l box as follow:
-> "gcc -Wp,-MD,drivers/scsi/.zalon53c720.o.d -nostdinc -iwithprefix inclu=
-de
-> -D__KERNEL__ -Iinclude  -Wall -Wstrict-prototypes -Wno-trigraphs -fno-s=
-trict-aliasing
-> -fno-common -pipe -mno-space-regs -mfast-indirect-calls -mdisable-fpreg=
-s
-> -ffunction-sections -O2
-> -DCONFIG_NCR53C8XX_PREFETCH -DSCSI_NCR_BIG_ENDIAN -DCONFIG_SCSI_NCR53C8=
-XX_NO_WORD_TRANSFERS
->   -DKBUILD_BASENAME=3Dncr53c8xx -DKBUILD_MODNAME=3Dzalon7xx -E -o drive=
-rs/scsi/ncr53c8xx.o
-> drivers/scsi/ncr53c8xx.c"
->
-> I got:
-> [...]
-> static __inline__ __attribute__((always_inline)) __attribute__((always_=
-inline))
-> int __attribute__((deprecated)) check_region(unsigned long s, unsigned
-long
-> n)
-> [...]
->
-> (2 time __attribute__((always_inline))?)
-> It comes from:
->
-> include/linux/compiler-gcc3.h
-> [...]
->
-> #if __GNUC_MINOR__ >=3D 1  && __GNUC_MINOR__ < 4
-> # define inline         __inline__ __attribute__((always_inline))
-> # define __inline__     __inline__ __attribute__((always_inline))
-> # define __inline       __inline__ __attribute__((always_inline))
-> #endif
-> [...]
->
-> because when I comment the second "define", I got better:
-> [...]
-> static __inline__ __attribute__((always_inline)) int __attribute__((dep=
-recated))
-> check_region(unsigned long s, unsigned long n)
-> [...]
->
-> I very doubt that's the right thing to do so if somebody as any idea?
->
-> TIA,
->     Joel
->
->
-> -----------------------------------------------------------------------=
------------------
-> Tiscali ADSL, 27,50 ?/mois...pendant 6 mois.
-> La meilleure offre du march=E9 !
-> http://reg.tiscali.be/default.asp?lg=3Dfr
->
->
->
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 
+Carlos O'Donell wrote:
+> On Wed, Jun 09, 2004 at 07:24:13PM +0200, Joel Soete wrote:
+> 
+>>>Hi all,
+>>>
+>>>I see that now debian gcc-snapshot is 3.5, I tried to rebuild glibc-2.3.3
+>>>+ Carlos patches (June dated :) with this new compiler but I got a new
+> 
+> 
+> Joel,
+> 
+> Are you just trying to ping to see if this thing builds with gcc-3.5?
+> 
+> c.
+> 
+It could be a point of view ;)
 
--------------------------------------------------------------------------=
----------------
-Tiscali ADSL, 27,50 =80/mois...pendant 6 mois. 
-La meilleure offre du march=E9 !
-http://reg.tiscali.be/default.asp?lg=3Dfr
+For my part it's just to continue investigation started some time ago.
+Does it mean that it's useless for the moment?
 
-
-
-
+Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
