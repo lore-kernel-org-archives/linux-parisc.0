@@ -1,23 +1,16 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 61BB44873
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 31 Mar 2004 20:21:35 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E88E6C.dip0.t-ipconnect.de
-	[217.232.142.108])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i313LXo09243
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 1 Apr 2004 05:21:34 +0200
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 1 Apr 2004 05:21:07 +0200
-Message-ID: <133001c41798$5f8fbd60$fc01a8c0@muc.nccconsulting.de>
-MIME-Version: 1.0
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] Re: broken keyboard driver on 2.6.3
+Date: Sat, 6 Mar 2004 12:26:50 +0100
+Message-ID: <200403061226.50883.deller__32761.6208502606$1416623240$gmane$org@gmx.de>
+References: <Pine.LNX.4.21.0403051153090.23074-100000@hal.pp.fishpool.fi>
+Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+  charset="iso-8859-1"
+Cc: =?iso-8859-1?q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>,
+	debian-hppa@lists.debian.org
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <deller@gmx.de>
+In-Reply-To: <Pine.LNX.4.21.0403051153090.23074-100000@hal.pp.fishpool.fi>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +20,16 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+On Friday 05 March 2004 10:58, Martin-Éric Racine wrote:
+> One thing I noticed today, when using the 712 from the keyboard (which I almost
+> never do), is that the cursor arrows near the keypad are broken:
+> 
+> In menuconfig, pressing any arrow kills the script with an abort message; in
+> Nano, the keys are completely ignored.  However, 2.4.24-pa0 works as expected.
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 4/1/2004 5:21:06 AM
-Engine/Pattern = 6.860-1001/1.845.00
+Hi Martin-Éric,
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+What does "showkey -s" reports if you press those keys ?
+Could you mail me privately your bootlog ?
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+Helge
