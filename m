@@ -1,31 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail-ob05.one.net.au (mail-ob05.one.net.au [61.12.0.165])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 712F0482A
-	for <parisc-linux@parisc-linux.org>; Sat, 14 Apr 2001 21:41:00 -0600 (MDT)
-Received: Received: [from squeak.local (async134-ade-isp-4.nas.one.net.au [203.101.93.135])
-	by mail-ob05.one.net.au  with SMTP id f3F3emW15591
-	for <parisc-linux@parisc-linux.org>; Sun, 15 Apr 2001 13:40:49 +1000 (EST)]
-From: amodra@one.net.au
-Date: Sun, 15 Apr 2001 14:12:16 +0930
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C6F87482A
+	for <parisc-linux@parisc-linux.org>; Sat, 14 Apr 2001 22:30:36 -0600 (MDT)
+Message-Id: <200104150423.WAA30889@puffin.external.hp.com>
 To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: Grant Grundler <grundler@puffin.external.hp.com>,
-	parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] xfree86 build problem
-Message-ID: <20010415141215.A25145@squeak.one.net.au>
-References: <200104142218.QAA30044@puffin.external.hp.com> <E14oZf5-0005mU-00@the-village.bc.nu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E14oZf5-0005mU-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Sun, Apr 15, 2001 at 12:41:00AM +0100
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] xfree86 build problem 
+In-Reply-To: Your message of "Sun, 15 Apr 2001 00:41:00 BST."
+             <E14oZf5-0005mU-00@the-village.bc.nu>
+Date: Sat, 14 Apr 2001 22:23:24 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Apr 15, 2001 at 12:41:00AM +0100, Alan Cox wrote:
-> > Do other arches allow non-PIC .o's to be linked into a .so lib?
-> 
-> Generally - yes.
+Alan Cox wrote:
+> Did the patches I built to get XFree86 libs building not get as far as you.
+> I sent them to Paul (I believe)
 
-True, but it's not recommended.  The reason being that non-PIC code in
-a shared lib will mean lib pages with relocations can't be shared between
-processes should the library be loaded at a different virtual addresses.
+nope. On Thursday, paul (Lahaie) forwarded an email from you (Feb 12th)
+stating you would dig up the patches for him but no patches.I pointed
+this out to paul but he didn't reply yet. Can you fwd me the patches?
 
---
-Alan Modra
+Besides, alot has changed since you built xfree86.
+But I could use it as guidance.
+
+BTW, I did get the libs to build.  I've hacked the Imakefile for libGLU
+so only the .a gets built.  Battling my way through programs directories
+now. A good test to see if the libs are useful or not (already found
+the libfreetype.a was missing/stale).
+Short notes and diff are on pehc:~grundler/*.xfree86
+
+ta,
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
