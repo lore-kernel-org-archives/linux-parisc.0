@@ -1,36 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ex1.ncsa.uiuc.edu (ex1.ncsa.uiuc.edu [141.142.2.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 48009482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Sep 2001 13:02:22 -0600 (MDT)
-Received: from mx1.ncsa.uiuc.edu (mx1.ncsa.uiuc.edu [141.142.2.8])
-	by ex1.ncsa.uiuc.edu (8.11.6/8.11.0) with ESMTP id f86J2KU22359
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 6 Sep 2001 14:02:20 -0500 (CDT)
-Received: from osage.ncsa.uiuc.edu (osage.ncsa.uiuc.edu [141.142.2.56])
-	by mx1.ncsa.uiuc.edu (8.11.6/8.11.0) with ESMTP id f86J2KT28439
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 6 Sep 2001 14:02:20 -0500 (CDT)
-Date: Thu, 6 Sep 2001 14:02:20 -0500 (CDT)
-From: Galen Arnold <arnoldg@ncsa.uiuc.edu>
-To: <parisc-linux@lists.parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0109061359230.530-100000@osage.ncsa.uiuc.edu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] smp kernel hangs during boot on L2000...
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0B4E7482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Sep 2001 13:10:35 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15f4Xp-000882-00; Thu, 06 Sep 2001 20:10:33 +0100
+Date: Thu, 6 Sep 2001 20:10:33 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Galen Arnold <arnoldg@ncsa.uiuc.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] smp kernel hangs during boot on L2000...
+Message-ID: <20010906201033.H316@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.33.0109061359230.530-100000@osage.ncsa.uiuc.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0109061359230.530-100000@osage.ncsa.uiuc.edu>; from arnoldg@ncsa.uiuc.edu on Thu, Sep 06, 2001 at 02:02:20PM -0500
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I've built the latest kernel (downloaded this morning) and am trying to
-boot it on an L2000 with smp supported (64 bit also).
+On Thu, Sep 06, 2001 at 02:02:20PM -0500, Galen Arnold wrote:
+> 
+> I've built the latest kernel (downloaded this morning) and am trying to
+> boot it on an L2000 with smp supported (64 bit also).
+> 
+> The kernel hangs immediately and the last line printed is:
+> 
+> 	branching to kernel entry point 0x00100000
 
-The kernel hangs immediately and the last line printed is:
-
-	branching to kernel entry point 0x00100000
-
-Has anyone got an SMP kernel running on their L2000, and if so, could you
-send me your .config and palo.conf for comparison?
-
--Galen Arnold
+I suggest you edit arch/parisc/kernel/pdc_cons.c and turn #undef
+EARLY_DEBUG into #define EARLY_DEBUG; this should let you see where the
+crash occurs.
 
 -- 
-+
-Galen Arnold, system engineer--systems group       arnoldg@ncsa.uiuc.edu
-National Center for Supercomputing Applications           (217) 244-3473
-152 Computer Applications Bldg., 605 E. Spfld. Ave., Champaign, IL 61820
+Revolutions do not require corporate support.
