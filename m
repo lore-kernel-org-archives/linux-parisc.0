@@ -1,58 +1,81 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA11220
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Sep 1999 23:59:58 -0600
-Date: Sat, 4 Sep 1999 08:01:48 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] milli.S and 0xd's
-Message-ID: <19990904080148.Z493@mencheca.ch.genedata.com>
-References: <199909040036.RAA09488@milano.cup.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA13731
+	for <parisc-linux@puffin.external.hp.com>; Sat, 4 Sep 1999 12:32:01 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id OAA02536
+	for <parisc-linux@thepuffingroup.com>; Sat, 4 Sep 1999 14:50:54 -0400
+Sender: adevries@thepuffingroup.com
+Message-ID: <37D16A0D.1D1A2BB0@thepuffingroup.com>
+Date: Sat, 04 Sep 1999 14:50:53 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199909040036.RAA09488@milano.cup.hp.com>; from Grant Grundler on Fri, Sep 03, 1999 at 05:36:18PM -0700
+Subject: [parisc-linux] ownership of parisc-kernel code
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Sep 03, 1999 at 05:36:18PM -0700, Grant Grundler wrote:
-> 
-> make[2]: Entering directory `/linux/linux/arch/parisc/lib'
-> gcc -D__KERNEL__ -I/linux/linux/include -D__ASSEMBLY__  -traditional -c milli.S -o milli.o
-> milli.S: Assembler messages:
-> milli.S:16: Error: Rest of line ignored. First ignored character valued 0xd.
-> milli.S:19: Error: Rest of line ignored. First ignored character valued 0xd.
-> milli.S:21: Error: Rest of line ignored. First ignored character valued 0xd.
-> ...
-> 
-> 
-> I stripped the ^M characters out of the file and it compiles.
-> Could others explain how they got past this error message?
-> Could the gcc I'm using be the wrong one?
 
-I just did the exact same thing and didn't get this error.  You are correct
-that the file has 0xd's in it... I wonder if it's which assembler your gcc
-has found?  Try appending the `-v' flag to the end of the gcc line and see
-what you get:
+PA-RISC Linux development is going well, but some things have changed
+from a few months ago.  We have more developers than ever before, and
+because of that, it looks like some people are stepping on other
+people's toes.
 
-Reading specs from /opt/depot/egcs-puffin/lib/gcc-lib/hppa1.0-hp-hpux11.00/egcs-2.91.60/specs
-gcc version egcs-2.91.60 19981201 (egcs-1.1.1 release)
- /opt/depot/egcs-puffin/lib/gcc-lib/hppa1.0-hp-hpux11.00/egcs-2.91.60/cpp -lang-asm -v -I/linux/linux/include -undef -$ -Dhppa -Dhp9000s800 -D__hp9000s800 -Dhp9k8 -DPWB -Dhpux -Dunix -D__hppa__ -D__hp9000s800__ -D__hp9000s800 -D__hp9k8__ -D__PWB__ -D__hpux__ -D__unix__ -D__hppa -D__hp9000s800 -D__hp9k8 -D__PWB -D__hpux -D__unix -Asystem(unix) -Asystem(hpux) -Acpu(hppa) -Amachine(hppa) -D__ASSEMBLER__ -traditional -D_HPUX_SOURCE -D_HIUX_SOURCE -D__KERNEL__ -D__ASSEMBLY__ milli.S /var/tmp/ccrVZimC.s
-GNU CPP version egcs-2.91.60 19981201 (egcs-1.1.1 release) (hppa)
-#include "..." search starts here:
-#include <...> search starts here:
- /usr/local/include
- /opt/depot/egcs-puffin/hppa1.0-hp-hpux11.00/include
- /opt/depot/egcs-puffin/lib/gcc-lib/hppa1.0-hp-hpux11.00/egcs-2.91.60/include
- /usr/include
-End of search list.
- as -o milli.o /var/tmp/ccrVZimC.s
-bash-2.03$ which as
-/export/willy/bin/as
+I think there's some areas in which the parisc-linux developers could do
+a bit better, and a lot of it comes from the fact that there's no
+understood boundaries of who owns what code.
 
-(at some stage, someone needs to clean up all those default #defines.  But
-not right now.)
+So, I'm going to suggest that I implement the following plan.  If people
+have objections or suggestions, I'd appreciate feedback in the next 24
+hours.
+
+What we'd do is document which people are owners of which chunk of the
+parisc kernel code. In the end, those owners are ultimately responsible
+for that chunk of code. 
+
+How they handle incoming patches for those areas, or handle changes that
+affect multiple areas is up to them. If they decide that they want to
+read every little patch that goes through, great. If they want to assign
+subsections to others, fine.  But they are responsible in the end.
+
+Here's my suggested division:
+
+Interruptions and Interrupts:  Philipp Rumpf
+Virtual Memory:                Philipp Rumpf
+Syscalls:                      Matthew Wilcox
+IO Peripherals/inventory:      Alex deVries
+Boot code:                     Helge Deller
+Everything else:               Alex deVries
+
+
+In the end, this division is up to me, and I'll be happy to re-assign
+people, settle disputes (*sigh*), etc. So if you have a gripe about a
+certain section owner not doing their job, I'm the second person you
+should complain to.
+
+There are some simple things I insist all developers abide to:
+
+- ALL changes need to be documented properly in the CVS comments
+- Significant changes discussed on the the parisc-linux mailing list
+- All changes *MUST* compile and produce a bootable kernel for the
+default
+  configuration, unless there's prior warning[1]
+- Be civil on the list.  Anyone who commits code does it because they
+genuinely want parisc-linux to work, we're all in the same boat
+together.
+
+Also, another note about the mailing list: this list was intended to be
+used by the developers, and there's no limit of technical depth. If you
+want to mail patches, mail patches.  People who don't want this
+forwarded to them will just have to deal with it.
+
+[1] By prior warning, I mean a mail to the list that says something like
+"I'm working on support for the XUAZ SCSI controller, this might break
+XYZ800 support temporarily". Sometimes you need to take one step back to
+go two forward.
+
+- Alex
 
 -- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Alex deVries
+Vice President of Engineering
+The Puffin Group
