@@ -1,13 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: "Roylance, Stephen D." <SROYLANCE@PARTNERS.ORG>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Getting a D370 off the ground 
-In-Reply-To: Message from "Roylance, Stephen D." <SROYLANCE@PARTNERS.ORG>
-   of "Mon, 11 Feb 2002 15:14:20 EST." <FE6B88CC9D2BD311AD120008C7B3AF87081ED289@phsexch3.mgh.harvard.edu>
-References: <FE6B88CC9D2BD311AD120008C7B3AF87081ED289@phsexch3.mgh.harvard.edu> 
-Date: Mon, 11 Feb 2002 22:55:46 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020212055546.74B2D4832@dsl2.external.hp.com>
+Received: from cs1-hq.oecd.org (cs1-hq.oecd.org [193.51.65.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2F21D482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Feb 2002 09:23:25 -0700 (MST)
+Received: from netsweep1.oecd.org (netsweep1.oecd.org [10.102.5.110])
+	by cs1-hq.oecd.org (Postfix) with ESMTP id A03494B060
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Feb 2002 17:23:22 +0100 (CET)
+Received: from eosgty1.oecd.org (unverified) by netsweep1.oecd.org
+ (Content Technologies SMTPRS 4.2.5) with ESMTP id <T5907c783fe0a66056e083@netsweep1.oecd.org> for <parisc-linux@lists.parisc-linux.org>;
+ Tue, 12 Feb 2002 17:23:25 +0100
+Message-ID: <C12531D038D1D011B1DB0000F8036C280BBA4743@eosm5.oecd.org>
+From: Arnaud.ATOCH@oecd.org
+To: parisc-linux@lists.parisc-linux.org
+Date: Tue, 12 Feb 2002 17:23:24 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] $$divU undefined reference
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,34 +27,62 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Roylance, Stephen D." wrote:
-> So far so good, but I have a few questions:
+First thanks for your great port.
 
-So far, well done.
+I'm trying to compile sqlrelay http://www.firstworks.com/sqlrelay on a 0.9.3
+HP 712 box with 2.4.16 kernel and deb packages up-to-date.
 
-> My video card seems to be a:
-> Raven Opt. 2D Graphics (Goat) (10) at 0xf6000000 [10/12], version 0x12, 0x0,
-> 0x77
-> What can I expect from it?  I've nerver used XF86 version 4 or an fb device,
-> and I haven't figured out the new config file format.  Will I be able to use
-> the the graphical console with a newer kernel?  Can I get X to use it?
+I got the following linking error message :
 
-I think so. This is the same gfx built into several of the regular
-B/C class workstations.
+ecodev01:/tmp/rudiments-0.23/src# ld -G -o ../lib/librudiments.so.0.23
+daemonprocess.o signalclasses.o commandline.o server.o client.o
+semaphoreset.o sharedmemory.o randomnumber.o regularexpression.o text.o
+datetime.o permissions.o -lc -lm -ll
+server.o: In function `std::__default_alloc_template<true,
+0>::_S_chunk_alloc(unsigned, int&)':
+server.o(.gnu.linkonce.t._ZNSt24__default_alloc_templateILb1ELi0EE14_S_chunk
+_allocEjRi+0xa0): undefined reference to `$$divU'
 
-> Does anyone know if I can switch resolution/video mode from the firmware? 
+Some reading of the mailling list archive seems to indicate that this is an
+already known issue.
+I could not find if it has been fixed or not.
 
-Not sure. I'm surprised to hear about a D with gfx in it.
+A quick grep -l divU /usr/lib reports :
+/usr/lib/libapt-inst-libc6.2-3.so.1.0
+/usr/lib/libapt-inst-libc6.2-3.so.1.0.0
+/usr/lib/libapt-pkg-libc6.2-3.so.3.2
+/usr/lib/libapt-pkg-libc6.2-3.so.3.2.0
+/usr/lib/libBLT.2.4.so.8.0
+/usr/lib/libBLT.2.4.so.8.2
+/usr/lib/libBLT.2.4.so.8.3
+/usr/lib/libc.a
+/usr/lib/libdb-3.so
+/usr/lib/libdb3.so.3
+/usr/lib/libdb3.so.3.0.2
+/usr/lib/libform.so.4
+/usr/lib/libform.so.4.2
+/usr/lib/libgimpprint.so.1
+/usr/lib/libgimpprint.so.1.0.0
+/usr/lib/libglib-1.2.so.0
+/usr/lib/libglib-1.2.so.0.0.10
+/usr/lib/libIDL-0.6.so.0
+/usr/lib/libIDL-0.6.so.0.4.4
+/usr/lib/libnetcdf_c++.so.3
+/usr/lib/libnetcdf_c++.so.3.5.0
+/usr/lib/libnetcdf.so.3
+/usr/lib/libnetcdf.so.3.5.0
+/usr/lib/libpcap.so.0
+/usr/lib/libpcap.so.0.6.2
+/usr/lib/libresolv.a
+/usr/lib/libtiff.so.3
+/usr/lib/libtiff.so.3.5.5
 
-> I installed the 32-bit kernel, can I use a 64-bit kernel on this machine?
+Should I understand that this divU function is used but I can not find which
+library to link ? or are all these libs broken ?
 
-Depends on cpu type. If it's a PA2.0 CPU (ie PA-8xxx), then yes.
-See /proc/cpuinfo and/or check console output at boot time.
+Thanks.
 
-> Should I checkout the latest kernel source from cvs and build that, or is
-> there some other version, or an image, I shoud use?  The kernel installed
-> with the CD doesn't seem to be SMP.
-
-Newer kernels are on ftp://ftp.parisc-linux.org/kernels/
-
-grant
+Arnaud Atoch
+OECD / OCDE
+Paris
+France
