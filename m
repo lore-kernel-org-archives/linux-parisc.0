@@ -1,14 +1,14 @@
-From: Alan Modra <amodra@bigpond.net.au>
+From: Matthew Wilcox <willy@debian.org>
 Subject: [parisc-linux] Re: [PATCH] space register 0 changes for hppa
-Date: Mon, 24 Feb 2003 16:54:21 +1030
-Message-ID: <20030224062421.GA31111__2212.37830487571$1416622234$gmane$org@bubble.sa.bigpond.net.au>
-References: <20030223185847.C2938@parcelfarce.linux.theplanet.co.uk>
+Date: Mon, 24 Feb 2003 12:48:55 +0000
+Message-ID: <20030224124855.G2938__12383.9590269656$1416622234$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <20030223185847.C2938@parcelfarce.linux.theplanet.co.uk> <20030224062421.GA31111@bubble.sa.bigpond.net.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: binutils@sources.redhat.com, parisc-linux@parisc-linux.org
-To: Matthew Wilcox <willy@debian.org>
+To: Matthew Wilcox <willy@debian.org>, binutils@sources.redhat.com,
+	parisc-linux@parisc-linux.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20030223185847.C2938@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20030224062421.GA31111@bubble.sa.bigpond.net.au>; from amodra@bigpond.net.au on Mon, Feb 24, 2003 at 04:54:21PM +1030
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,22 +19,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Feb 23, 2003 at 06:58:47PM +0000, Matthew Wilcox wrote:
-> +	* hppa-dis.c: Do not emit a space register if the space register
-> +	field is 2 bits and the value is 0 as this is implicit addressing,
-> +	not use of space register 0.
+On Mon, Feb 24, 2003 at 04:54:21PM +1030, Alan Modra wrote:
+>   ChangeLog entries shouldn't be sent as diffs.  Write this one as
+> 
+> 	* hppa-dis.c (print_insn_hppa <2 bit space register>): Do not print
+> 	the space register when the value is zero.
+> 
+> and put the reason for the change as a comment in the code if you feel
+> you need some justification for the change.
 
-Hi Matthew,
-  ChangeLog entries shouldn't be sent as diffs.  Write this one as
+OK.  I'm just used to changelogs which're a little more verbose.  I
+don't think it really needs justifying.
 
-	* hppa-dis.c (print_insn_hppa <2 bit space register>): Do not print
-	the space register when the value is zero.
+> Did you run the binutils testsuite?
 
-and put the reason for the change as a comment in the code if you feel
-you need some justification for the change.
-
-Did you run the binutils testsuite?
+I hadn't... but I have now, and it doesn't introduce any failures.
 
 -- 
-Alan Modra
-IBM OzLabs - Linux Technology Centre
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
