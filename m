@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 20 Sep 2003 17:46:05 -0600
+Date: Sat, 20 Sep 2003 18:04:47 -0600
 From: Grant Grundler <grundler@parisc-linux.org>
-To: "SUDARSANAN,RANJITH (HP-India,ex2)" <ranjith_sudarsanan@hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Problems with raw interface.
-Message-ID: <20030920234605.GB31268@dsl2.external.hp.com>
-References: <A11077E28200D51182EA00D0B775525309A2AA44@xin02.india.hp.com>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] sched_clock implementation
+Message-ID: <20030921000447.GC31268@dsl2.external.hp.com>
+References: <20030918203510.GD21596@parcelfarce.linux.theplanet.co.uk> <3F6B2199.8050402@tiscali.be> <20030919160035.GG18225@systemhalted> <3F6C9622.60402@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <A11077E28200D51182EA00D0B775525309A2AA44@xin02.india.hp.com>
+In-Reply-To: <3F6C9622.60402@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,15 +21,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Sep 19, 2003 at 06:07:41PM +0530, SUDARSANAN,RANJITH (HP-India,ex2) wrote:
-> >>>>What does "dd if=/dev/raw/raw2 of=/tmp/o_raw2 bs=512 count=8" result in?
-> This command reads the first 4K bytes of the disk and writes it to file
-> o_raw2. 
+On Sat, Sep 20, 2003 at 06:02:10PM +0000, Joel Soete wrote:
+> a quick look into paxx.pdf which about CR16 speak of "peak instruction 
+> rate" but do not define anywhere?
+> I presume that is the cpu clock but would like somebody confirm.
 
-Ah yes, but is the data correct?
-I'll assume not since your attempt with /dev/raw/raw1 also failed.
+Read about "Interval Timer" (cr16) in the PA 2.0 Arch book.
+PDC provides the exact rate that CR16 is changing.
+Looks like PDC_TOD_ITIMER is the call but I'm not sure offhand.
+In any case, I've only seen it used as CPU cycle counter.
+(ie 1:1 with CPU clock).
 
-Basically something looks broken in parisc for raw devices.
-I was clearly able to reproduce this failure.
-
+hth,
 grant
