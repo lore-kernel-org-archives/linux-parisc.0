@@ -1,27 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id UAA08813
-	for <parisc-linux@sod.res.cmu.edu>; Mon, 5 Apr 1999 20:40:47 -0400
-Date: Mon, 5 Apr 1999 19:43:28 -0400 (EDT)
-From: Christopher Beard <cjbeard@thepuffingroup.com>
-To: Ed June <buggz@america.net>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP & Cygnus partnership
-In-Reply-To: <3709535C.2C45B4E0@america.net>
-Message-ID: <Pine.LNX.4.04.9904051934370.1202-100000@sprite.osfi-bsif.gc.ca>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id BAA14034
+	for <parisc-linux@sod.res.cmu.edu>; Tue, 6 Apr 1999 01:11:32 -0400
+Received: from postbox.india.hp.com (postbox.india.hp.com [15.10.45.1])
+	by palrel3.hp.com (8.9.3/8.8.5tis) with ESMTP id WAA09689
+	for <parisc-linux@thepuffingroup.com>; Mon, 5 Apr 1999 22:11:13 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1]) by postbox.india.hp.com with SMTP (8.7.1/8.7.1) id KAA02336 for <parisc-linux@thepuffingroup.com>; Tue, 6 Apr 1999 10:43:38 +0530 (IST)
+Message-Id: <199904060513.KAA02336@postbox.india.hp.com>
+To: parisc-linux@thepuffingroup.com
+In-reply-to: Your message of "Mon, 05 Apr 1999 09:47:04 IST."
+             <19990405094704.A29056@cmu.edu>
+Date: Tue, 06 Apr 1999 10:43:36 +0530
+From: A Joseph Koshy <koshy@postbox.india.hp.com>
+Subject: [parisc-linux] CVSup in addition to AnonCVS
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-> Wonder if this will mean GNUPro Toolkit on HP-UX or what ?
+Could we use CVSup to distribute the projects CVS repository?  
 
-"Hewlett-Packard Company and Cygnus Solutions today announced that they
-will deliver Cygnus' market-leading GNUPro Toolkit for HP-supported
-platforms under HP's Foundation Program for software development partners.
-Open-source developers now will have access to a common set of
-commercial-quality tools that facilitate development of applications
-deployed on Linux, HP-UX and Windows NT systems."
+	- It runs a lot faster than AnonCVS.
+	- As it mirrors the repository locally, subsequent operations 
+	  (cvs log, cvs diff) don't need to access the 'net.
+	- You can have 'local' branches in your copy of the repository.
+	- It works perfectly with the existing CVS infrastructure.
 
-(Source: http://www.cygnus.com/news/hp.html, April 5th 1999)
+URL: http://www.polstra.com/projects/freeware/CVSup/
 
-Chris
+See also:	http://www.kde.org/cvsup.html
+		http://www.freebsd.org/handbook/cvsup.html
+
+Regards,
+Koshy
+<koshy@india.hp.com>			My Personal Opinions Only.
