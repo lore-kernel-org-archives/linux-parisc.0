@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8B6CD4832
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 07:35:48 -0700 (MST)
-Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
-	id 16l9rs-0001M6-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 15:36:40 +0100
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1016030200.3c8f63f89a0ff@webmail.tiscali.be>
-Date: Wed, 13 Mar 2002 15:36:40 +0100 (CET)
-From: joel.soete@freebel.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] evms-0.9.2 build utilities problem
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 786974837
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 11:24:02 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id owczlaaa for parisc-linux@lists.parisc-linux.org; Wed, 13 Mar 2002 11:23:24 -0700
+Date: Wed, 13 Mar 2002 10:23:35 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] evms-0.9.2 build utilities problem
+Message-ID: <20020313182335.GD6580@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <1016030200.3c8f63f89a0ff@webmail.tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1016030200.3c8f63f89a0ff@webmail.tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,32 +25,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+> Well launch it made an immidiate Segmentation fault.
+> 
+> Now I recompile without "-fPIC" and it works fine.
+> 
+> Any idea on what is wrong?
 
-The original way to build some evms utilities as evms_devnode_fixup is:
+what versions of gcc-3.0 and binutils are you running?
 
-...
-gcc -Wall -fPIC -O2 -I/tools/evms-dpkg/evms-0.9.2/engine/include
--I/tools/evms-dpkg/evms-0.9.2/engine/dlist
--I/tools/evms-dpkg/evms-0.9.2/kernel-headers/include -I/usr/include
--I/usr/local/include -DPluginDirectory=\"/lib/evms\" -DEVMS_DEBUG -DPARANOID
--DMAJOR_VERSION=1 -DMINOR_VERSION=0 -DPATCH_LEVEL=0 -DVERSION=\"1.0.0\"
--DDATE=\"03/13/02\" -c -o evms_devnode_fixup.o evms_devnode_fixup.c
-...
-gcc -L/tools/evms-dpkg/evms-0.9.2/engine/Engine
--L/tools/evms-dpkg/evms-0.9.2/engine/dlist  -static -o evms_devnode_fixup
-evms_devnode_fixup.o -levms -ldlist -lpthread -ldl
+dpkg -s gcc-3.0 |grep Version
+dpkg -s binutils |grep Version
 
-...
-Well launch it made an immidiate Segmentation fault.
-
-Now I recompile without "-fPIC" and it works fine.
-
-Any idea on what is wrong?
-
-Thanks in advance for help,
-    Joel
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
