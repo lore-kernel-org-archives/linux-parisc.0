@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 220A74829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 16:21:02 -0700 (MST)
-Date: Wed, 8 Jan 2003 00:20:49 +0100
+Received: from viefep15-int.chello.at (viefep15-int.chello.at [213.46.255.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9B2DE4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 16:25:34 -0700 (MST)
+Date: Wed, 8 Jan 2003 00:25:21 +0100
 From: Thibaut VARENE <varenet@esiee.fr>
-To: "Frank Gevaerts" <frank@gevaerts.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] E35 support
-Message-Id: <20030108002049.5312f6ae.varenet@esiee.fr>
-In-Reply-To: <20030107200248.GA17555@gevaerts.be>
-References: <20030107200248.GA17555@gevaerts.be>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: grundler@dsl2.external.hp.com, jsoe0708@tiscali.be,
+	markov@monmouth.com, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] kernel panic when extracting large tar files
+Message-Id: <20030108002521.21a9c5e7.varenet@esiee.fr>
+In-Reply-To: <20030107201319.GA20757@systemhalted>
+References: <20030107091704.GC4093@dsl2.external.hp.com>
+	<05456AF0-223D-11D7-950D-0030656F07A2@esiee.fr>
+	<20030107201319.GA20757@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,19 +26,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 7 Jan 2003 21:02:48 +0100
-"Frank Gevaerts" <frank@gevaerts.be> wrote:
+On Tue, 7 Jan 2003 15:13:19 -0500
+"Carlos O'Donell" <carlos@baldric.uwo.ca> wrote:
 
-> Hi,
+> > Matthieu Delahaye told me that since the very first days of pa/linux; 
+> > this bug has existed, mostly happening on 'un-taring' files, obliging 
+> > users to untar by small chunks of data.
 > 
-> How far is the E35 support? I have two of these running HP-UX 9. 
-Exactly the one reported at http://pateam.esiee.fr/list.html
-We have this box running here at ESIEE...
-> Is there any (rough) timeline of when SCSI will be supported ?
-Not that I know of. Currently not on pa-ckers top priority list. 
-> I also have HP-28640-80001 ethernet cards and 28655-60001 SCSI/Parallel
-> port cards. Will these ever be supported ?
-No idea. Maybe Ryan Bradetich will? :)
+> And hardware errors have existed since the beggining of time ;)
+Hardware errors happening on several boxes and only when unpacking an archive?
+Kinda "feature" heh ? :)
+>  
+> > FWIW, I experienced that bug too on the A500, had no time to chase it 
+> > down but I will look at it soon.
+> 
+> How big is the file? I routinely tar/untar _very_ large source archives
+> on my A500 and I see no problems. 
+About 700M gzipped.
+
 
 Thibaut VARENE
 The PA/Linux ESIEE Team
