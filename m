@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mion.elka.pw.edu.pl (mion.elka.pw.edu.pl [194.29.160.35])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CF1EB482A
-	for <parisc-linux@parisc-linux.org>; Fri, 11 Jul 2003 09:32:38 -0600 (MDT)
-Date: Fri, 11 Jul 2003 17:32:12 +0200 (MET DST)
-From: Bartlomiej Zolnierkiewicz <B.Zolnierkiewicz@elka.pw.edu.pl>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 69852482A
+	for <parisc-linux@parisc-linux.org>; Fri, 11 Jul 2003 09:35:16 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19azvX-0007BQ-Mw; Fri, 11 Jul 2003 16:35:15 +0100
+Date: Fri, 11 Jul 2003 16:35:15 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Bartlomiej Zolnierkiewicz <B.Zolnierkiewicz@elka.pw.edu.pl>
+Cc: Matthew Wilcox <willy@debian.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
 	HPPA List <parisc-linux@parisc-linux.org>
 Subject: Re: [parisc-linux] [2.5] ns87415 irq
-In-Reply-To: <20030711151640.GD20424@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.SOL.4.30.0307111726350.7550-100000@mion.elka.pw.edu.pl>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20030711153515.GE20424@parcelfarce.linux.theplanet.co.uk>
+References: <20030711151640.GD20424@parcelfarce.linux.theplanet.co.uk> <Pine.SOL.4.30.0307111726350.7550-100000@mion.elka.pw.edu.pl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.SOL.4.30.0307111726350.7550-100000@mion.elka.pw.edu.pl>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +27,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 11 Jul 2003, Matthew Wilcox wrote:
+On Fri, Jul 11, 2003 at 05:32:12PM +0200, Bartlomiej Zolnierkiewicz wrote:
+> > BTW, Bart, seems like sparc64 does _have_ the ide_default_irq() function,
+> > it just returns 0.  So I think this patch shouldn't break anything.
+> 
+> Yes, but 0 != 14 && 0 != 15. I am just paranoid. :-)
 
-> On Fri, Jul 11, 2003 at 04:02:50PM +0100, Alan Cox wrote:
-> > On Gwe, 2003-07-11 at 15:07, Matthew Wilcox wrote:
-> > > Would this patch make sense for 2.5?  I have to confess not testing it
-> > > on any hardware, but it seems to be the Right Thing (and I'm sure Alan
-> > > remembers the mess we had in the 2.4 parisc tree for this ...)
-> >
-> > Yes, it makes sense to do this generally. However can you also pass
-> > hwif to the ide_default_irq function because that lets the arch code
-> > work out what pci bus the device is nailed to
->
-> Erm, that seems like more work than I should be doing.  That would touch
-> 36 files, including a lot of mips/ppc ide files.  Or did you want Bart
-> to make that change?
+Oh, 14 and 15 are not valid sparc64 irqs.  No problem.
 
-Alan, are there any benefits of doing this?
-
-> BTW, Bart, seems like sparc64 does _have_ the ide_default_irq() function,
-> it just returns 0.  So I think this patch shouldn't break anything.
-
-Yes, but 0 != 14 && 0 != 15. I am just paranoid. :-)
-
-> --
-> "It's not Hollywood.  War is real, war is primarily not about defeat or
-> victory, it is about death.  I've seen thousands and thousands of dead bodies.
-> Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
