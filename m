@@ -1,45 +1,69 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 793EC482A
-	for <parisc-linux@parisc-linux.org>; Tue,  7 Aug 2001 17:30:09 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 9B706B00C; Wed,  8 Aug 2001 00:31:23 +0100 (BST)
-Date: Wed, 8 Aug 2001 00:31:23 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Thomas Marteau <marteaut@esiee.fr>
-Cc: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] The final patch for the keyboard problem
-Message-ID: <20010808003123.G1011@linuxcare.com>
-References: <3B6F986D.FA89E147@esiee.fr> <20010807115817.A1011@linuxcare.com> <20010807131419.B1011@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010807131419.B1011@linuxcare.com>; from rhirst@linuxcare.com on Tue, Aug 07, 2001 at 01:14:19PM +0100
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 08F86482A
+	for <parisc-linux@parisc-linux.org>; Thu,  9 Aug 2001 09:08:56 -0600 (MDT)
+Message-Id: <200108091506.JAA13380@puffin.external.hp.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] iotree thoughts 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Mon, 06 Aug 2001 02:05:17 BST." <20010806020517.A14978@parcelfarce.linux.theplanet.co.uk>
+Date: Thu, 09 Aug 2001 09:06:43 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Aug 07, 2001 at 01:14:19PM +0100, Richard Hirst wrote:
-> On Tue, Aug 07, 2001 at 11:58:17AM +0100, Richard Hirst wrote:
-> > Anyway, I'm about to try it on a couple of machines here; I'll let you
-> > know how it goes.
+Matthew Wilcox wrote:
 > 
-> HP US keyboard on B180.  Worked until I unplugged and replugged the
-> keyboard.  Keyboard was dead after that, but machine still responded
-> to pings.
+> This is a summary and a design document for building an iotree in PA/Linux.
+> Grant, Ryan, if I mis-remembered / misunderstood something, do shout.
 
-Tried unplugging/replugging again; survived this time.  Keyboard
-generates a scancode AA (reconnected), but the console says unrecognised
-scancode 7f.
+Cool!
 
-btw, I guess we should reinitialise the LED status on a replug.
+...
+> In a related matter, the ABW will pick up serial ports (and other things)
+> which aren't activated.  Grant said there was a PDC call to determine
+> whether a device is inactive -- I'm not sure which one that is yet.
 
-Back to the compaq UK keyboard, CapsLock works also with the longer
-mdelay() calls.  The CapsLock LED doesn't come on, but the others
-do, so I'll assume faulty k/b for now.  Unplug/replug still results
-in a dead keyboard (init=/bin/sh, so I can't tell if the machine is
-still alive).
+Yes. AFAIK, LASI sub-devices are listed by PDC. For Dino HPUX makes
+a special hvers PDC call. Need to look at the HPUX code or Raven PDC ERS.
 
-On the mdelay() calls, the PC driver would check for an ack every 1ms,
-but would only resend the command every 1000ms.  Your code was resending
-every 1ms.  Checking every 1ms and resending less frequently is better
-than just checking and resending every 5ms.
-  
-Richard
+> 
+> Here's my plan:
+> 
+>  * From setup_arch, call PDC to get a list of devices.  Put them in a
+>    table (marked __init, will be freed later).
+
+Why not start building a tree with "place holder" nodes directly?
+Do we need the intermediate table because of memory issues?
+
+ie build a "sparse" tree and have Native Bus walk fill in (or update
+wrong) info for devices it finds.
+
+>  * In the badly-named gsc_init, or perhaps in pcibios_init, start the
+>    ABW at 0xFFF80000 -- this seems to be the defined location for the
+>    central bus.
+
+My long term goal is to be able to build a kernel w/o CONFIG_PCI defined.
+And renaming gsc_init to native_bus_init() sounds like a good idea.
+
+>  * Start creating the tree with devices that we find in the ABW.
+>    Each device which is a bus adapter / converter will do an ABW for its
+>    children, and add in any PDC-discovered devices in the table which are
+>    its immediate children.  The add-in is done by copy, not by reference.
+>  * At some indeterminate time after this, the table of PDC-reported drivers
+>    gets freed along with all the other __init data & code.
+> 
+> We'll have to be careful with CPU `drivers' since they will have stale
+> pointers which must be updated.  Perhaps this is where a ->remove method
+> would come in handy; or perhaps we just magically make them cope with
+> their ->probe function being called a second time on the same device
+> (same HPA).
+
+The latter sounds easier but more like a hack...maybe it's ok though.
+
+thanks,
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
