@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B3926482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 11:36:04 -0600 (MDT)
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Patch to debina glibc-2.2.5 for gcc-3.2 build (was GCC support for dwarf2)
-Message-ID: <1018887988.3cbaff348b253@webmail.tiscali.be>
-Date: Mon, 15 Apr 2002 18:26:28 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <200204121614.g3CGENMn003726@hiauly1.hia.nrc.ca>
-In-Reply-To: <200204121614.g3CGENMn003726@hiauly1.hia.nrc.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4DC1E482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Apr 2002 11:53:56 -0600 (MDT)
+Date: Mon, 15 Apr 2002 18:35:44 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Helge Deller <helge.deller@sap.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] not freeing initmem and power button
+Message-ID: <20020415173544.GO4971@sleepie.demon.co.uk>
+References: <F39D7BsZXbLvwa2SydH0001aa92@hotmail.com> <200204151232.46311.helge.deller@sap.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200204151232.46311.helge.deller@sap.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Dave,
+On Mon, Apr 15, 2002 at 12:32:46PM +0200, Helge Deller wrote:
+> Older kernels just didn't reported it, but all had this problem.
+> We're not freeing the memory yet, since we still have one or more 
+> __init or __initdata too much in our kernel. Just ignore it for now.
 
-Could you send me you patch as an attached file or put it somewhere
-(I try to grab page but "patch" failed)
+Do you recall what config failed when we did try to free the memory?  I
+tested recently with B180 and A500, both worked fine with freeing of
+memory enabled.  IIRC the origianl problem was that init crashed on
+boot...
 
-Thanks in advance for additional help,
-    Joel
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+Cheers,
+  Richard
