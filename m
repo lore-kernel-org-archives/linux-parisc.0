@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 20C10485C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Jul 2002 11:44:32 -0600 (MDT)
-Message-Id: <200207101744.g6AHiKW0011045@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] SMP (in)stability
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Wed, 10 Jul 2002 13:44:19 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: rhirst@linuxcare.com, grundler@dsl2.external.hp.com,
-	varenet@esiee.fr, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <200207101707.g6AH7xMS010810@hiauly1.hia.nrc.ca> from "John David Anglin" at Jul 10, 2002 01:07:59 pm
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 38650485D
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Jul 2002 13:58:22 -0600 (MDT)
+From: Helge Deller <deller@gmx.de>
+To: Stephan Trajkoff <stephan@itp.bg>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] harmony driver on k210/819
+Date: Wed, 10 Jul 2002 21:57:51 +0200
+References: <3D2BD8BE.7060409@itp.bg>
+In-Reply-To: <3D2BD8BE.7060409@itp.bg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200207102157.51570.deller@gmx.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,25 +24,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > > -pa52 kernel panic'd at 22:07
-> > > running gcc1 test in background
-> 
-> In hacking gcc this morning trying to fix a bug in loading 64-bit
-> constants, I seem to have achieved a state where the gcc build crashes
-> gsyprf11 in a deterministic manner.  It's gone down three times.
-> It only takes a few seconds after the build starts for the machine
-> to crash.
+On Wednesday 10 July 2002 08:48, Stephan Trajkoff wrote:
+> Hello, on kernel 2.4.18-pa52, i compiled harmony sound blaster
+> in dmesg the sound blaster is detected
+> but when I start mpg123 blahblah.mp3 the output is Illegal operation
 
-Moving the code to hpux11, this is the error that causes the crash:
+Works for me. Have you tried updating mpg123 ?
 
-stage1/xgcc -Bstage1/ -B/opt/gnu/hppa2.0w-hp-hpux11.11/bin/ -c -DIN_GCC    -g -O2 -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wtraditional -pedantic -Wno-long-long  -DHAVE_CONFIG_H    -I. -I. -I../../gcc/gcc -I../../gcc/gcc/. -I../../gcc/gcc/config -I../../gcc/gcc/../include ../../gcc/gcc/cfgbuil
-d.c -o cfgbuild.o
-Pi 16528 received a SIGSEGV for stck growth ailure.
-Possible caues: insufficient memory or swap space,
-or stack size exceeded maxssiz. 
-xgcc: Internal error: Segmentation fault (program cc1)
+pa64:~# dmesg | grep Harmony
+Lasi Harmony Audio driver V0.9a, h/w id 20, rev. 0 at 0xf0104000, IRQ 82
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+pa64:~# uname -a
+Linux pa64 2.4.18-pa53 #249 Tue Jul 9 21:27:22 CEST 2002 parisc unknown
+
+pa64:~# dpkg -l mpg123
+||/ Name                   Version                Description
++++-======================-======================-============================================================
+ii  mpg123                 0.59r-8                MPEG layer 1/2/3 audio player
+
+Greetings,
+Helge
