@@ -1,143 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp3.xs4all.nl (smtp3.xs4all.nl [194.109.127.132])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 19E8D482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Sep 2001 13:22:10 -0600 (MDT)
-Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
-	by smtp3.xs4all.nl (8.9.3/8.9.3) with ESMTP id VAA18945
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 7 Sep 2001 21:22:08 +0200 (CEST)
-From: thunder7@xs4all.nl
-Date: Fri, 7 Sep 2001 21:22:02 +0200
-To: parisc-linux@lists.parisc-linux.org
-Cc: jsm@udlkern.fc.hp.com
-Message-ID: <20010907212202.A15358@middle.of.nowhere>
-Reply-To: thunder7@xs4all.nl
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: Trace/Breakpoint trap on "make mrproper"]
+Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 91AF8482A
+	for <parisc-linux@parisc-linux.org>; Fri,  7 Sep 2001 22:05:19 -0600 (MDT)
+Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
+	by atlrel6.hp.com (Postfix) with ESMTP id 6442B1F54F
+	for <parisc-linux@parisc-linux.org>; Sat,  8 Sep 2001 00:05:16 -0400 (EDT)
+Received: from carmen.fc.hp.com (localhost [127.0.0.1])
+	by carmen.fc.hp.com (Postfix) with ESMTP id 1AA5637DD4
+	for <parisc-linux@parisc-linux.org>; Fri,  7 Sep 2001 22:05:16 -0600 (MDT)
+To: parisc-linux@parisc-linux.org
+Date: Fri, 07 Sep 2001 22:05:16 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010908040516.1AA5637DD4@carmen.fc.hp.com>
+Subject: [parisc-linux] New i386 cross compilers
 List-ID: <linux-parisc.vger.kernel.org>
 
-Forgot to mention: I also have oopses in dmesg:
+Hi palinux people,
 
+I have built a new i386 to hppa/hppa64 cross compiler tarball and placed it at,
 
-break 0x000002: pid=331 command='make'
+ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010905.tar.gz
 
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000011000000000000001011
-r0-3	 00000000 00040130 bff02598 bff024e8
-r4-7	 000000c8 40176434 0004b6e0 bff022d0
-r8-11	 00000001 bff022c8 000401ec bff02460
-r12-15	 00000028 00000029 bff02360 00000002
-r16-19	 00000000 00043130 0002a800 00000000
-r20-23	 000000ad 40106c54 40178e50 40178e30
-r24-27	 00000005 00000001 00000000 00040130
-r28-31	 fffffffc 0004b6d8 bff02818 00019ca4
-sr0-3	 000004e1 0000020f 00000000 000004e1
-sr4-7	 000004e1 000004e1 000004e1 000004e1
+Untar it from / it lives in /opt/palinux/
+Report any problems to the list.
 
-IASQ: 000004e1 000004e1 IAOQ: bff025a7 bff0281f
- IIR: 00000002    ISR: 00000000  IOR: 00000000
- CPU:        0   CR30: 2ca84000 CR31: 10358000
- ORIG_R28: 40176434
-break 0x000002: pid=331 command='make'
+Thanks,
 
-[the above was repeated exactly the same some 10 times]
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001100000000000001111
-r0-3	 00000000 fffff000 bff02dd8 bff02ae0
-r4-7	 4017e57c bff02b68 00000002 bff022d0
-r8-11	 00000001 bff022c8 000401ec bff02460
-r12-15	 00000028 00000029 bff02360 00000002
-r16-19	 00000000 00043130 0002a800 4017e57c
-r20-23	 000000ad 4006b7ec bff030a8 00000008
-r24-27	 00000000 00000001 0000014b 00040130
-r28-31	 00000000 0004b6d8 bff03058 4006b7f7
-sr0-3	 000004e1 000004e1 00000000 000004e1
-sr4-7	 000004e1 000004e1 000004e1 000004e1
-
-IASQ: 000004e1 000004e1 IAOQ: bff02de3 bff02de7
- IIR: 00000000    ISR: 10240072  IOR: a12842c8
- CPU:        0   CR30: 2ca84000 CR31: 10358000
- ORIG_R28: 0000014b
-break 0x000002: pid=341 command='make'
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000011101111111100001111
-r0-3	 00000000 00040130 bff02598 bff024e8
-r4-7	 000000c8 40176434 0004b6e0 bff022d0
-r8-11	 00000001 bff022c8 000401ec bff02460
-r12-15	 00000028 00000029 bff02360 00000002
-r16-19	 00000000 00043130 0002a800 00000000
-r20-23	 000000ad 40106c54 40178e50 40178e30
-r24-27	 00000005 00000001 00000000 00040130
-r28-31	 fffffffc 0004b6d8 bff02818 00019ca7
-sr0-3	 00000000 00000506 00000000 00000506
-sr4-7	 00000506 00000506 00000506 00000506
-
-IASQ: 00000506 00000506 IAOQ: bff025a7 bff0281f
- IIR: 00000002    ISR: 1024005e  IOR: 6c8402b4
- CPU:        0   CR30: 279c4000 CR31: 10358000
- ORIG_R28: 40176434
-break 0x000002: pid=350 command='make'
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000011101111111100001111
-r0-3	 00000000 00040130 bff02598 bff024e8
-r4-7	 000000c8 40176434 0004b6e0 bff022d0
-r8-11	 00000001 bff022c8 000401ec bff02460
-r12-15	 00000028 00000029 bff02360 00000002
-r16-19	 00000000 00043130 0002a800 00000000
-r20-23	 000000ad 40106c54 40178e50 40178e30
-r24-27	 00000005 00000001 00000000 00040130
-r28-31	 fffffffc 0004b6d8 bff02818 00019ca7
-sr0-3	 00000000 0000052b 00000000 0000052b
-sr4-7	 0000052b 0000052b 0000052b 0000052b
-
-IASQ: 0000052b 0000052b IAOQ: bff025a7 bff0281f
- IIR: 00000002    ISR: 10240076  IOR: 890402b4
- CPU:        0   CR30: 2d27c000 CR31: 10358000
- ORIG_R28: 40176434
-break 0,0: pid=357 command='make'
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001101111111100001111
-r0-3	 00000000 00040130 bff026d8 00000000
-r4-7	 4017e57c 40176434 0004b6e0 00000000
-r8-11	 00000000 bff022c8 000401ec bff02460
-r12-15	 00000028 00000029 00000001 00040130
-r16-19	 00040130 00000001 00000000 00000000
-r20-23	 000000ad 400e220c 40178e50 00000000
-r24-27	 00000005 00000001 00000000 00040130
-r28-31	 0000016b 0004b6d8 bff02958 00019ca7
-sr0-3	 00000000 00000547 00000000 00000547
-sr4-7	 00000547 00000547 00000547 00000547
-
-IASQ: 00000547 00000547 IAOQ: bff026e3 bff026e7
- IIR: 00000000    ISR: 10240076  IOR: 460402b4
- CPU:        0   CR30: 2d27c000 CR31: 10358000
- ORIG_R28: 00000000
-break 0x000002: pid=364 command='make'
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000011101111111100001111
-r0-3	 00000000 00040130 bff02598 bff024e8
-r4-7	 000000c8 40176434 0004b600 bff022d0
-r8-11	 00000001 bff022c8 000401ec bff02460
-r12-15	 00000028 00000029 bff02360 00000002
-r16-19	 00000000 00043130 0002a800 00000000
-r20-23	 000000ad 40106c54 40178e50 40178e30
-r24-27	 00000005 00000001 00000000 00040130
-r28-31	 fffffffc 0004b5f8 bff02818 00019ca7
-sr0-3	 00000000 00000563 00000000 00000563
-sr4-7	 00000563 00000563 00000563 00000563
-
-IASQ: 00000563 00000563 IAOQ: bff025a7 bff0281f
- IIR: 00000002    ISR: 10240075  IOR: 3b0402b4
- CPU:        0   CR30: 2d27c000 CR31: 10358000
- ORIG_R28: 40176434
-break 0x000002: pid=371 command='make'
-
-These bffxxxxx addresses are not in the kernel, correct?
-
-Greetings,
-Jurriaan
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
