@@ -1,32 +1,38 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA21096
-	for <parisc-linux@puffin.external.hp.com>; Thu, 25 May 2000 02:35:26 -0600
-Received: from dyn129-ras34.screaming.net (HELO rhirst.linuxcare.com) (postfix@212.188.129.129)
-  by mailserv2.iuinc.com with SMTP; 25 May 2000 08:35:43 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 54D3FB009; Thu, 25 May 2000 09:35:30 +0100 (BST)
-Date: Thu, 25 May 2000 09:35:30 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] [MERGE] trouble files
-Message-ID: <20000525093530.C1338@linuxcare.com>
-References: <20000523200750.F17536@thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000523200750.F17536@thepuffingroup.com>; from willy@thepuffingroup.com on Tue, May 23, 2000 at 08:07:50PM -0400
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id GAA23948
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 May 2000 06:21:02 -0600
+Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
+	by atlrel1.hp.com (Postfix) with SMTP id E152D3C2D
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 May 2000 08:21:19 -0400 (EDT)
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 25 May 2000 12:14:11 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA24140;
+	Thu, 25 May 2000 22:12:14 +1000
+Date: Thu, 25 May 2000 22:12:14 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] bad asm comments
+In-Reply-To: <Pine.LNX.4.21.0005241750310.8974-100000@front.linuxcare.com.au>
+Message-ID: <Pine.LNX.4.21.0005252205560.2241-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, May 23, 2000 at 08:07:50PM -0400, willy@thepuffingroup.com wrote:
-> 
-> the following list of files (if I remember to attach them this time...)
-> are the files which have been modified in both the parisc tree and Linus'
-> 2.3.99pre8 tree.  I've omitted the files where the rcs id is the only thing
-> changed.
+And yet some more glibc files need patching
 
-> drivers/net/82596.c
+configure.in
+config.h.in
+configure
+include/libc-symbols.h 
+sysdeps/unix/sysv/linux/hppa/sysdep.h
 
-I don't believe we use that; I guess we started modifying it and then
-created our own lasi_82596.c from it.  I'll check if anything that
-changed in 82596.c needs feeding back in to lasi_82596.c.
+The configury changes are so we can get the line separator and comment
+char right for include/libc-symbols.h, which uses multiple assembler
+instructions per cpp macro.  I can see why there was a strong desire to
+use `;' as the line separator...
 
-Richard
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
