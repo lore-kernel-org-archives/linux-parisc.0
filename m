@@ -1,50 +1,83 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA11722
-	for <parisc-linux@puffin.external.hp.com>; Thu, 27 Jul 2000 10:36:26 -0600
-Received: from smtp.linuxcare.com (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 27 Jul 2000 16:38:21 -0000
-Received: from port156.magma.ca (HELO linuxcare.com) (jvinet@206.191.5.156)
-  by smtp.linuxcare.com with SMTP; 27 Jul 2000 16:38:12 -0000
-Sender: jvinet@mailserv2.iuinc.com
-Message-ID: <3980582E.AAA7F054@linuxcare.com>
-Date: Thu, 27 Jul 2000 11:41:34 -0400
-From: Jane Vinet <jvinet@linuxcare.com>
-MIME-Version: 1.0
-To: Andrew Shugg <andrew@neep.com.au>
-CC: Linux/HPPA List <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Weekly report?
-References: <20000726234557.B5840@neep.com.au>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA07907
+	for <parisc-linux@puffin.external.hp.com>; Fri, 28 Jul 2000 09:34:56 -0600
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel3.hp.com (Postfix) with ESMTP id 28B01815
+	for <parisc-linux@thepuffingroup.com>; Fri, 28 Jul 2000 08:36:52 -0700 (PDT)
+Received: from localhost (grundler@localhost [127.0.0.1])
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id IAA26861
+	for <parisc-linux@thepuffingroup.com>; Fri, 28 Jul 2000 08:39:13 -0700 (PDT)
+Message-Id: <200007281539.IAA26861@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: A simple question about readw, readw and the like
+Date: Fri, 28 Jul 2000 08:39:11 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Andrew,  we are in the process of updating all pages on the external
-web site, i.e.., recipes, outdated links, etc.  Weekly status updates
-are coming we promise!
+Hi all,
+Very nice summary of how linux drivers should use pci_dev->resources
+and a peek at how user space will access PCI MEM space (ie Framebuffer).
+(The latter is also a problem for HP-UX).
 
-Andrew Shugg wrote:
-> 
-> There hasn't been a "weekly" report posted for ages.  Not since May 12th
-> if the website is to be believed (though I hazily remember a couple of
-> report-like posts to this list since then).
-> 
-> What's going on?
-> 
-> I like reports.  =)
-> 
-> Andrew.
-> 
-> --
-> Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
-> 
->   "Just remember Basil, there's always someone worse off than yourself."
->   "Oh, really?  I'd like to meet him ... I could do with a good laugh."
->                  [ Sybil and Basil Fawlty, "Fawlty Towers" ]
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+grant
+
+----- Forwarded message from "David S. Miller" <davem@redhat.com> -----
+
+Date: 	Thu, 27 Jul 2000 15:35:30 -0700
+From: "David S. Miller" <davem@redhat.com>
+To: abramo@alsa-project.org
+CC: fw@fwconsult.com, linux-kernel@vger.rutgers.edu
+In-reply-to: <39802159.1D04B244@alsa-project.org> (message from Abramo Bagnara
+	on Thu, 27 Jul 2000 13:47:37 +0200)
+Subject: Re: A simple question about readw, readw and the like
+Precedence: bulk
+X-Loop: 	majordomo@vger.rutgers.edu
+
+   Date: Thu, 27 Jul 2000 13:47:37 +0200
+   From: Abramo Bagnara <abramo@alsa-project.org>
+
+   Does this means that there is no way to mmap the PCI IO space on
+   any platform other than ia32?
+
+One needs to be a bit more specific for me to give you an
+answer :-)
+
+Inside the kernel:
+
+1) PCI I/O space is accessed by obtaining the base address via the
+   appropriate pci_dev->resource[xxx] value, and feeding that directly
+   into inb/inw/inl and friends.
+
+2) PCI MEM space is accessed by obtaining the opaque MEM base cookie
+   in pci_dev->resource[xxx], mapping it with ioremap(cookie), and
+   feeding what you obtain from that to readw and friends.  When
+   done with the MEM space area, you iounmap it.
+
+For userspace things are much different.  It is nearly impossible to
+be %100 portable for PCI I/O space.  On x86 you can just do inb
+etc. instructions on the base address register value.  This fails to
+work on just about every other system, you must actually mmap() the
+PCI I/O space area needed on PPC, MIPS, Alpha, Sparc64, etc.
+
+Honestly we lack a truly portable way to do this, and I am working on
+a solution which will allow you to portably mmap I/O and MEM space PCI
+areas via mmap() on /proc/bus/pci/xxx device nodes.  Just plain mmap
+on /dev/mem is not a solution because that fails to work for 32-bit
+userspace running on a 64-bit kernel, and besides this would require
+that we give the user some way to find the base of I/O and MEM space
+for a particular PCI controller in the machine.  The /proc/bus/pci
+mmap solution hides all of this mess from userspace.
+
+Later,
+David S. Miller
+davem@redhat.com
+
+-
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.rutgers.edu
+Please read the FAQ at http://www.tux.org/lkml/
+
+----- End forwarded message -----
 
 -- 
-Jane Vinet, Project Manager, Linuxcare, Inc.
-613.562.9260 (tel), 613.562.9700 fax
-jvinet@linuxcare.com, http://www.linuxcare.com/
+Revolutions do not require corporate support.
