@@ -1,36 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id DAA03540
-	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Sep 2000 03:55:11 -0600
-Received: (from andrew@localhost)
-	by guinness.neep.com.au (8.9.3/8.9.3/Debian/GNU) id RAA30191
-	for parisc-linux@thepuffingroup.com; Sat, 23 Sep 2000 17:54:56 +0800
-Date: Sat, 23 Sep 2000 17:54:53 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA07661
+	for <parisc-linux@puffin.external.hp.com>; Sat, 23 Sep 2000 11:25:57 -0600
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 23 Sep 2000 17:26:38 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 13ct44-0002VA-00; Sat, 23 Sep 2000 18:26:16 +0100
+Date: Sat, 23 Sep 2000 18:26:16 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Michael Ang <mang@subcarrier.org>
+Cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] cvs directory renaming - *action required*
-Message-ID: <20000923175449.R21274@neep.com.au>
-References: <39CBF956.4833E405@subcarrier.org> <20000923152919.O21274@neep.com.au>
+Message-ID: <20000923182616.A9083@parcelfarce.linux.theplanet.co.uk>
+References: <39CBF956.4833E405@subcarrier.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20000923152919.O21274@neep.com.au>; from andrew@neep.com.au on Sat, Sep 23, 2000 at 03:29:22PM +0800
+In-Reply-To: <39CBF956.4833E405@subcarrier.org>; from mang@subcarrier.org on Fri, Sep 22, 2000 at 08:29:10PM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Andrew Shugg said:
-> Is anyone having trouble doing updates after the rename?
-> 
-> Not having any troubles with the binutils module but bombing out on
-> linux ...
-> 
-> cvs server: Updating linux/arch/alpha/math-emu
-> cvs [server aborted]: cannot open directory /home/cvs/parisc/linux/arch/alpha/mathemu: No such file or directory
+On Fri, Sep 22, 2000 at 08:29:10PM -0400, Michael Ang wrote:
+> Can someone please update the recipe and cvs info on
+> www.thepuffingroup.com/parisc?  Until the docs are updated, you can
+> mentally substitute "linux" for "linux-2.3" and "binutils" for
+> "binutils-2.10".
 
-Yep, my bad: thanks for sorting me out Mike.  =)
+cvs co website, then make your changes and commit them back.  Next time
+someone with the password updates the website, your changes will
+appear too.
 
-Andrew.
+(typing make will create the .html files from the .x files so you
+can check your changes.  Since mid-July, you haven't needed anything
+special installed; date, cat, echo, make, mkdir... no silly binary-only
+software :-)
 
---
-Andrew Shugg <andrew@neep.com.au>                http://www.neep.com.au/
+I have some ideas for how to improve the website, but I'm going to
+wait and see what the Linuxcare web team come up with before I make
+any structural changes.
 
-  "Just remember Basil, there's always someone worse off than yourself."
-  "Oh, really?  I'd like to meet him ... I could do with a good laugh."
-                 [ Sybil and Basil Fawlty, "Fawlty Towers" ]
+-- 
+Revolutions do not require corporate support.
