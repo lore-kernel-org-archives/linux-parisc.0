@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beldar.com (ns.beldar.com [65.163.106.5])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 08BDA482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 07:25:28 -0700 (MST)
-Received: from pogo (dhcp-113.beldar.com [65.163.106.113])
-	by beldar.com (8.9.3/8.9.3) with SMTP id JAA85870
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 09:45:39 -0500 (EST)
-	(envelope-from lansing@beldar.com)
-Message-ID: <001c01c1913d$ee1b8ca0$0101a8c0@pogo>
-From: "Craig D. Lansing" <lansing@beldar.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Sun, 30 Dec 2001 09:25:54 -0500
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0019_01C19113.FAC364C0"
-Subject: [parisc-linux] Kernel ?
+Received: from localhost.localdomain (host194.steeleye.com [216.33.1.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6C76C482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Dec 2001 08:45:59 -0700 (MST)
+Received: from mulgrave (jejb@localhost)
+	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id fBUFjrE01927;
+	Sun, 30 Dec 2001 09:45:56 -0600
+Message-Id: <200112301545.fBUFjrE01927@localhost.localdomain>
+To: parisc-linux@lists.parisc-linux.org
+Cc: J.E.J.Bottomely@HansenPartnership.com
+Mime-Version: 1.0
+Content-Type: multipart/mixed ;
+	boundary="==_Exmh_-12732282180"
+Date: Sun, 30 Dec 2001 09:45:53 -0600
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [parisc-linux] Palo and initial ramdisks
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,69 +25,98 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+This is a multipart MIME message.
 
-------=_NextPart_000_0019_01C19113.FAC364C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+--==_Exmh_-12732282180
+Content-Type: text/plain; charset=us-ascii
 
-In an attempt to solve my J2240 STI and Eth0/1 problems I am trying to =
-upgrade the kernel from the 2.4.9-32 on the 0.9.3 ISO to something more =
-recent.  Specifically, I've tried 32-2.4.16-pa24 and pa29.  I ftp'd the =
-tar files from the 32-bit directory, untarred / unzipped the contents, =
-copied them into /boot, changed the link for vmlinux, and modified =
-/etc/palo.conf.  However, in both cases when I boot, everything =
-initially looks like it will boot OK, but I eventually get a stack =
-pointer error, a long hex dump, and finally "Kernel Fault: Code=3D15 =
-regs=3D102af4c0 (Addr=3D00368004)" ....  This all appears on the STI =
-head, even though I changed console to ttyS0, and scrolls by too fast to =
-get much meaningful info prior to the hex dump. =20
+Playing some more with modules and initial ramdisks, I noticed that palo only 
+allows use of a ramdisk when the ramdisk is placed inside the palo partition 
+rather than being able to read one from the boot ext2 filesystem.
 
-Do I have to upgrade from source (which I'll try next) or am I doing =
-something wrong or both?
+The attached patch is a simple hack allowing palo to read a ramdisk from the 
+boot ext2 filesystem.
+
+James Bottomley
 
 
+--==_Exmh_-12732282180
+Content-Type: text/plain ; name="palo.diff"; charset=us-ascii
+Content-Description: palo.diff
+Content-Disposition: attachment; filename="palo.diff"
 
-------=_NextPart_000_0019_01C19113.FAC364C0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Index: ipl/bootloader.h
+===================================================================
+RCS file: /var/cvs/palo/ipl/bootloader.h,v
+retrieving revision 1.9
+diff -u -r1.9 bootloader.h
+--- ipl/bootloader.h	2001/11/19 03:54:42	1.9
++++ ipl/bootloader.h	2001/12/30 15:32:01
+@@ -57,6 +57,7 @@
+ /* ext2.c */
+ int ext2_mount(long cons_dev, long p_offset, long quiet);
+ int ext2_open(const char *filename);
++int ext2_filesize(int fd);
+ 
+ /* lib.c */
+ void blockprint(int zero_offset, char *buf, int nbytes);
+Index: ipl/ext2.c
+===================================================================
+RCS file: /var/cvs/palo/ipl/ext2.c,v
+retrieving revision 1.9
+diff -u -r1.9 ext2.c
+--- ipl/ext2.c	2001/11/19 03:54:42	1.9
++++ ipl/ext2.c	2001/12/30 15:32:15
+@@ -733,6 +733,13 @@
+ }
+ #endif
+ 
++int ext2_filesize(int fd)
++{
++	struct ext2_inode * ip = fd2inode[fd];
++
++	return ip->i_size;
++}
++
+ #if 0
+ static int ext2_fstat(int fd, struct stat* buf)
+ {
+Index: ipl/ipl.c
+===================================================================
+RCS file: /var/cvs/palo/ipl/ipl.c,v
+retrieving revision 1.26
+diff -u -r1.26 ipl.c
+--- ipl/ipl.c	2001/11/19 03:54:42	1.26
++++ ipl/ipl.c	2001/12/30 15:32:22
+@@ -471,6 +471,7 @@
+     {
+ 	int kern_fd;
+ 	int bkern_fd;
++	int rd_fd, brd_fd;
+ 	int part_fd;
+ 	int mount_fd;
+ 	struct diskpartition *pp;
+@@ -502,6 +503,21 @@
+ 	if (!load_kernel(bkern_fd, &entry, &wide))
+ 	{
+ 	    die("ERROR: failed to load kernel\n");
++	}
++
++	if (rd_part != -1)
++	{
++	    rd_fd = ext2_open(rd_name);
++	    if(rd_fd >= 0) {
++		brd_fd = byteio_open(rd_fd);
++
++		if (!load_rd(brd_fd, ext2_filesize(rd_fd)))
++		{
++		    printf("ERROR: failed to load ramdisk - proceeding anyway\n");
++		}
++	    } else {
++		printf("ERROR: failed to open ramdisk %s\n", rd_name);
++	    }
+ 	}
+     }
+ 
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2614.3500" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>In an attempt to solve my J2240 STI =
-and&nbsp;Eth0/1=20
-problems I am trying to upgrade the kernel from the 2.4.9-32 on the =
-0.9.3 ISO to=20
-something more recent.&nbsp; Specifically, I've tried 32-2.4.16-pa24 and =
-
-pa29.&nbsp; I ftp'd the tar files from the 32-bit directory, untarred / =
-unzipped=20
-the contents, copied them into /boot, changed the link for vmlinux, and =
-modified=20
-/etc/palo.conf.&nbsp; However, in both cases when I boot, everything =
-initially=20
-looks like it will boot OK, but I eventually get a stack pointer error, =
-a long=20
-hex dump, and finally "Kernel Fault: Code=3D15 regs=3D102af4c0 =
-(Addr=3D00368004)"=20
-....&nbsp; This all appears on the STI head, even though I changed =
-console to=20
-ttyS0, and scrolls by too fast to get much meaningful info prior to the =
-hex=20
-dump.&nbsp; </FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Do I have to upgrade from source (which =
-I'll try=20
-next) or am I doing something wrong or both?</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0019_01C19113.FAC364C0--
+--==_Exmh_-12732282180--
