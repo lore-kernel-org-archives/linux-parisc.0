@@ -5,9 +5,9 @@ Subject: Re: [parisc-linux] SCSI driver for E-class servers - SPIFI ?
 In-Reply-To: Message from Christoph Plattner <christoph.plattner@gmx.at>
    of "Wed, 12 Jun 2002 23:21:02 +0200." <3D07BB3E.A896878A@gmx.at>
 References: <3D050639.B9F9695D@gmx.at> <20020610215312.29D2C483A@dsl2.external.hp.com> <3D053341.571CF331@gmx.at> <20020611213929.C75684854@dsl2.external.hp.com>  <3D07BB3E.A896878A@gmx.at> 
-Date: Wed, 12 Jun 2002 17:06:56 -0600
+Date: Wed, 12 Jun 2002 17:08:56 -0600
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020612230656.DA703483F@dsl2.external.hp.com>
+Message-Id: <20020612230856.D16EE485D@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,18 +20,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Christoph Plattner wrote:
-> HP-BP is this a HP bus system ?
-> Is this used in the E55 (or similar) ?
+> Sorry for this question again:
+> What is the status of the MUX. As far I can remember, you started to
+> write on this driver. Is this correct ?
 
-yes. yes.
-
-> Is the "SE" SCSI that one in the E55 (what stands "SE" for) ?
- 
-yes. "Single Ended".
-
-> What is SDTR ?
-
-Synchronous Data Transfer Rate.
-See the SCSI spec for more detail.
+no. I think Ryan Bradetich was working on something for this
+for K-class. not sure this is the same thing as E55 though.
 
 grant
