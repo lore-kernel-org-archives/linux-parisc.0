@@ -1,50 +1,75 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA19893
-	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Aug 2000 17:40:35 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 21 Aug 2000 23:40:24 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA30773;
-	Tue, 22 Aug 2000 09:39:57 +1000
-Date: Tue, 22 Aug 2000 09:39:57 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: David Huggins-Daines <dhd@linuxcare.com>
-cc: parisc-linux@thepuffingroup.com, parisc@lists.linuxcare.com
-Subject: Re: Incompatibility of PIC and non-PIC
-In-Reply-To: <877l9axwft.fsf@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0008220919520.30012-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA07633
+	for <parisc-linux@puffin.external.hp.com>; Tue, 22 Aug 2000 08:39:52 -0600
+Received: from user32-46.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.32.46)
+  by mailserv2.iuinc.com with SMTP; 22 Aug 2000 14:39:19 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 85B6AB005; Tue, 22 Aug 2000 15:38:03 +0100 (BST)
+Date: Tue, 22 Aug 2000 15:38:03 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000822153803.U4060@linuxcare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 2.4.0-test6 lack of speed
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 21 Aug 2000, David Huggins-Daines wrote:
+I put some printk's in pgalloc.h:
 
-> The real bogosity is
-> setting elf.plt.offset to -1 in order to prevent finish_dynamic_symbol
-> from filling in the PLT entry, which, aside from overwriting (part of)
-> the first PLT entry with the target for the last import stub, also
-> causes these stubs themselves to contain references to PLT - 1 (these
-> immediately cause SIGBUS at the moment, which is probably a good
-> thing).
-> 
-> This is doubly strange because finish_dynamic_symbol has a check for
-> h->pic_call in it already :-)
+__flush_dcache_range: addr 0xc7e23000, size 4096
+__flush_icache_range: addr 0xc7e23000, size 4096
+__flush_icache_range: addr 0xc7e23000, size 4096
+__flush_dcache_range: addr 0xc7da5000, size 4096
+__flush_icache_range: addr 0xc7da5000, size 4096
+__flush_dcache_range: addr 0x000bdc8c, size 4096
+__flush_icache_range: addr 0x000bdc8c, size 4096
+__flush_dcache_range: addr 0x40000000, size 4096
+__flush_icache_range: addr 0x40000000, size 4096
+__flush_dcache_range: addr 0xc7dc8000, size 4096
+__flush_icache_range: addr 0xc7dc8000, size 4096
+__flush_dcache_range: addr 0xc7dc8000, size 4096
+__flush_icache_range: addr 0xc7dc8000, size 4096
+__flush_icache_range: addr 0xc7dc8000, size 4096
+__flush_dcache_range: addr 0x00001000, size 770048
+__flush_icache_range: addr 0x00001000, size 770048
+__flush_dcache_range: addr 0x000bd000, size 24576
+__flush_icache_range: addr 0x000bd000, size 24576
+__flush_dcache_range: addr 0x000c3000, size 102400
+__flush_icache_range: addr 0x000c3000, size 102400
+__flush_dcache_range: addr 0x2001f000, size 268308480
+__flush_icache_range: addr 0x2001f000, size 268308480
+__flush_dcache_range: addr 0x40100000, size 32768
+__flush_icache_range: addr 0x40100000, size 32768
+__flush_dcache_range: addr 0x40108000, size 1015808
+__flush_icache_range: addr 0x40108000, size 1015808
+__flush_dcache_range: addr 0x20022fac, size 4096
+__flush_icache_range: addr 0x20022fac, size 4096
+__flush_dcache_range: addr 0x00003594, size 2
+__flush_dcache_range: addr 0xc7f986c8, size 2
+> __flush_dcache_range: addr 0x2002300c, size 4096
+__flush_icache_range: addr 0x2002300c, size 4096
 
-I think just deleting these lines (which predated the check in
-finish_dynamic_symbol) in build_one_stub
 
-	  /* Flag this .plt entry as having been filled in so that
-	     finish_dynamic_symbol doesn't repeat our work here.  */
-	  eh->elf.plt.offset = (bfd_vma) -1;
+Those two flushes of 268 Meg each take a while to run.
+There also appears to be a mix of virtual and physical addresses being
+passed to __flush_[id]cache_range(), which must be wrong.  I believe they
+should be passed virtual addresses.
 
-will do the trick.  I simply forgot to remove it after fixing
-finish_dynamic_symbol to genereate correct .plt entries for the
-cases where we don't have a dynamic relocation.
+pgtable.h is interesting as well:
 
-The problem is that you get one stub per input section to ensure that the
-stub can be reached.  Messing with plt.offset on the first stub has dire
-consequences for subsequent ones.
+/*
+ * cache_push() semantics: Write back any dirty cache data in the given area,
+ * and invalidate the range in the instruction cache. It needs not (but may)
+ * invalidate those entries also in the data cache. The range is defined by a
+ * _physical_ address.
+ */
+#define cache_push(paddr, len) \
+                        flush_cache_range(&init_mm, virt_to_phys(paddr), len)
+#define cache_push_v(vaddr, len) \
+                        flush_cache_range(&init_mm, vaddr, len)
 
-Alan
--- 
-Linuxcare.  Support for the Revolution.
+
+I guess that virt_to_phys() should be a phys_to_virt()....
+
+
+Richard
