@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 1 Oct 2002 23:00:22 -0600
-To: Frank Cornelis <Frank.Cornelis@rug.ac.be>
-Cc: James Smith <james@compusmithllc.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] firmware update using BOOTP
-Message-ID: <20021002050022.GB1454@dsl2.external.hp.com>
-References: <1033419379.4785.33.camel@seventy> <Pine.GSO.4.31.0210010927510.12081-100000@eduserv.rug.ac.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.GSO.4.31.0210010927510.12081-100000@eduserv.rug.ac.be>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
+	by dsl2.external.hp.com (Postfix) with SMTP id 7674A4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Oct 2002 00:37:55 -0600 (MDT)
+Message-ID: <3D9A94D3.8010009@itp.bg>
+Date: Wed, 02 Oct 2002 09:40:19 +0300
+From: Stephan Trajkoff <stephan@itp.bg>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Non-HP disks?
+References: <20021002034059.34434.qmail@web12505.mail.yahoo.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,23 +21,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Oct 01, 2002 at 09:31:35AM +0200, Frank Cornelis wrote:
-> I know, BOOTP booting also worked with me before the firmware patching.
-> But anyway, upgrading never hurts and the HP/linux FAQ recommended it.
+Derek Engelhaupt wrote:
 
-That's not true. Upgrades can fail. It's rare but it happens.
-I wrote the FAQ entry and it also says:
-
-| BEWARE: It's possible to kill a system by either upgrading the wrong
-| firmware or the upgrade doesn't finish properly for any reason. Don't
-| upgrade unless you have evidence of a PDC problem. Text files on the HP
-| patch depot describe what was fixed in each revision since the machine
-| model was released.
-
-It's easy to download the wrong firmware to a machine.
-My favorite example is installing 715/100 PDC on a 715/100XC (need a
-"dagger" card and working 715/100XC to resurrect the dead 715/100XC).
-I've done it and know of others who've done it. Sounds stupid but
-it happens.
-
-grant
+>Anyone using them?  I have a bunch of IBM DCHS-04F Ultrastar 2XP 4.3GB
+>(got info from IBM's website about jumpers and tried them all) drives
+>that I'm trying to get them to work but all they do is SCSI bus reset
+>when Debian trys to load.  They are factory refurbed 50-pin SE disks
+>and I have activated Autostart on them and active termination (tried it
+>without too).  Anyway, they perform this way under HP-UX too.  Tried a
+>2GB HP drive and it works fine so the system SCSI bus is fine.  So,
+>bottom line is anyone using NON-HP disks in thier systems?  Tried them
+>in my E55, 712/60, and 712/100.  Have tried 2 different drives with the
+>same result also.....
+>
+>derek
+>
+>__________________________________________________
+>Do you Yahoo!?
+>New DSL Internet Access from SBC & Yahoo!
+>http://sbc.yahoo.com
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
+>
+>  
+>
+Hello, I am using Quantum 9GB HDD 7200 SCSI on my K210/819 without problems
+it's using old SCSI cable 50pins.
