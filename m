@@ -1,67 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA24038
-	for <parisc-linux@puffin.external.hp.com>; Thu, 18 May 2000 17:26:39 -0600
-Received: from dyn104-ras32.screaming.net (HELO rhirst.linuxcare.com) (postfix@212.49.255.104)
-  by mailserv2.iuinc.com with SMTP; 18 May 2000 23:26:47 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id D2B51B007; Fri, 19 May 2000 00:26:37 +0100 (BST)
-Date: Fri, 19 May 2000 00:26:37 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Chris Snow <csnow@julian.uwo.ca>
-Cc: Ulrich Strelow <ulrich_strelow@yahoo.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 715/50 hang - more info
-Message-ID: <20000519002637.C1209@linuxcare.com>
-References: <20000518120342.6224.qmail@web515.mail.yahoo.com> <Pine.LNX.4.21.0005180830031.13618-100000@boy.localdomain>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA24395
+	for <parisc-linux@puffin.external.hp.com>; Thu, 18 May 2000 18:04:33 -0600
+From: willy@thepuffingroup.com
+Date: Thu, 18 May 2000 21:04:35 -0400
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] move to 2.3.99pre8?
+Message-ID: <20000518210435.B28590@thepuffingroup.com>
+References: <20000518171449.E20055@thepuffingroup.com> <20000518234102.B2592@alpha.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0005180830031.13618-100000@boy.localdomain>; from csnow@julian.uwo.ca on Thu, May 18, 2000 at 08:31:56AM -0400
+In-Reply-To: <20000518234102.B2592@alpha.franken.de>; from Thomas Bogendoerfer on Thu, May 18, 2000 at 11:41:02PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  I have just committed changes to drivers/net/lasi_82596.c and
-drivers/gsc/lan.c.  Fairly big changes to lasi_82596.c, partly
-just tidyup, partly improvements to cache handling.  It is still
-not perfect but is a _lot_ better than it was.  The change to
-lan.c was to use a different probe function on older h/w (like
-my 715/75), where we need to swap the MPU_PORT, as per the message
-from prumpf.  If the driver seems completely dead for you, try
-enabling/disabling that word swap, and please let me know that
-you needed to.
+On Thu, May 18, 2000 at 11:41:02PM +0200, Thomas Bogendoerfer wrote:
+> On Thu, May 18, 2000 at 05:14:49PM -0400, willy@thepuffingroup.com wrote:
+> > 
+> > i just thought i'd throw out a feeler to see what people think about
+> > moving to 2.3.99pre8.  it seems reasonably stable to me, but I haven't
+> > tried root nfs yet.  i have some conflicting things to work on right now,
+> > but how would people feel about having friday 26th may as migration day?
+> 
+> is it really necessary to sync again ? I don't see it helping us, or
+> is there some bugs in pre1, we need to get tid of ?
 
-All success or failure reports welcome :-)
-
-Richard
-
-
-On Thu, May 18, 2000 at 08:31:56AM -0400, Chris Snow wrote:
-> > I had the same problem on my 715/33 with lasi_82596.c.
-> > I emailed Helge Deller who made the last changes to
-> > this driver and he told me that there seems to be the
-> > problem that not all interrupts from the i82596 are
-> > delivered to the interrupt routine. The result of this
-> > is that all 16 xmit buffers will get filled and then
-> > the kernel hangs.
-> 
-> That's what I came up with as well.
-> 
-> > He also told me that he will have no time until 23rd
-> > of May (approx.) to find the reason for this and to
-> > correct it. So right now there is no way to use
-> > NFSROOT on a 715/old.
-> 
-> Well, I'm going to keep playing with it over the next few days, although
-> I'm not sure if I'll have any success...
-> 
-> If I succeed in fixing anything, I'll be sure to let everyone know.
-> 
-> 
-> Thanks,
-> 
-> 
->      Chris
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
+There aren't any pressing bugs that I'm aware of (please shout if anyone
+knows otherwise).  However, we don't want to diverge too much from Linus'
+tree, as it makes later merges more painful.  We last merged around March
+26th at the puffinfest, so it's been 2 months -- I personally feel that's
+about the maximum length of time we should leave it before the changes
+become too painful to merge.
