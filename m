@@ -1,14 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (oe58.law3.hotmail.com [209.185.240.58])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 85EFC482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 02:33:42 -0600 (MDT)
+Received: from hotmail.com (oe22.law3.hotmail.com [209.185.240.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D4380482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 04:56:13 -0600 (MDT)
 From: "Alex Green" <alexdgreen@hotmail.com>
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 7 Aug 2002 10:33:31 +0200
+Date: Wed, 7 Aug 2002 12:56:11 +0200
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_01BF_01C23DFD.E0080F40"
-Message-ID: <OE58JWEsBk31TZ14eBa00000291@hotmail.com>
+	boundary="----=_NextPart_000_0290_01C23E11.CE09F380"
+Message-ID: <OE22Aztxc1o8yfogkJX00009958@hotmail.com>
 Subject: [parisc-linux] palo issues
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,7 +23,7 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_01BF_01C23DFD.E0080F40
+------=_NextPart_000_0290_01C23E11.CE09F380
 Content-Type: text/plain;
 	charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -45,7 +45,7 @@ What is this... did I do something wrong?
 
 AG
 
-------=_NextPart_000_01BF_01C23DFD.E0080F40
+------=_NextPart_000_0290_01C23E11.CE09F380
 Content-Type: text/html;
 	charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -58,6 +58,7 @@ charset=3Dwindows-1252">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
+<DIV><FONT face=3D"Courier New" size=3D2>
 <DIV><FONT face=3D"Courier New" size=3D2>Hi,</FONT></DIV>
 <DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3D"Courier New" size=3D2>I've just build 2.4.19-pa2 on =
@@ -82,6 +83,7 @@ wrong?</FONT></DIV>
 <DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2>AG</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3D"Courier New" =
+size=3D2>AG</FONT></DIV></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_01BF_01C23DFD.E0080F40--
+------=_NextPart_000_0290_01C23E11.CE09F380--
