@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from server1.neuronet.pitt.edu (server1.neuronet.pitt.edu [150.232.128.42])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D48A44846
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 10:05:28 -0600 (MDT)
-Received: from neuronet.pitt.edu (white.neuronet.pitt.edu [150.232.130.110])
-	by server1.neuronet.pitt.edu (8.8.8/8.8.8) with ESMTP id MAA05621
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 12:06:00 -0400 (EDT)
-Message-ID: <3D1894AA.6020504@neuronet.pitt.edu>
-Date: Tue, 25 Jun 2002 12:04:58 -0400
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Subject: [parisc-linux] The compiler failed to link application, request for help
+Received: from trained-monkey.org (trained-monkey.org [209.217.122.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1624D4848
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 10:18:35 -0600 (MDT)
+To: Randolph Chung <tausq@debian.org>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] sys/io.h
+References: <20020624150031.4DA034837@dsl2.external.hp.com> <20020624153959.GH812@tausq.org>
+From: Jes Sorensen <jes@trained-monkey.org>
+Date: 25 Jun 2002 12:18:31 -0400
+In-Reply-To: Randolph Chung's message of "Mon, 24 Jun 2002 08:39:59 -0700"
+Message-ID: <m3fzzbmiw8.fsf@trained-monkey.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +22,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+>>>>> "Randolph" == Randolph Chung <tausq@debian.org> writes:
 
-In trying to compile a utility here, I end up with a linker error:
+>> I'm trying to build tulip-diag.c from scyld.com and am getting the
+>> following error msg: gsyprf11:~# gcc -O tulip-diag.c -o tulip-diag
+>> tulip-diag.c:58:20: sys/io.h: No such file or directory
+>> tulip-diag.c:1347:24: warning: multi-line string literals are
+>> deprecated
+>> 
+>> On ia64, sys/io.h comes from gsyprf3:~# dpkg -S sys/io.h
+>> libc6.1-dev: /usr/include/sys/io.h
+>> 
+>> But we don't have the equivalent for parisc (hppa).  Ideas?
 
-$ gcc -w -o pvmtalk pvmtalk.o dom_x.o usleep.o 
--L/home/neuro/contrib/pvm3.3.11/lib/LINUX -lpvm3 -lgpvm3 
--L/usr/X11R6/lib ../xvertext.5.0/libXrot.a -lX11 -lm
-/home/neuro/contrib/pvm3.3.11/lib/LINUX/libpvm3.a(lpvm.o): In function 
-`pvmbeatask':
-lpvm.o(.text+0x29cf): the use of `tmpnam' is dangerous, better use `mkstemp'
-/usr/bin/ld: can not size stub section: Bad value
-/usr/bin/ld: BFD 2.12.90.0.1 20020307 Debian/GNU Linux internal error, 
-aborting at ../../bfd/elf32-hppa.c line 4038 in elf32_hppa_relocate_section
+Randolph> ISTR this has to do with the fact that we do not want
+Randolph> to/cannot expose the {in,out}[bwl] primitives to
+Randolph> userspace. Is the tulip-diag program trying to write to port
+Randolph> space directly?
 
-/usr/bin/ld: Please report this bug.
+You really should support it similar to what we do on
+ia64. Ie. there's a Linux API here that allows you to map 'I/O' ports
+and access them. Basing the code on what's in the ia64 glibc tree
+would make it quite easy to get it up and running.
 
-collect2: ld returned 1 exit status
-
-We have gcc 3.0.4. The sources compile with just some warnings.
-
-Can someone offer any suggestion as to what this means and how we can 
-solve it?
-
-Thanks.
--- 
-     Rafael
+Jes
