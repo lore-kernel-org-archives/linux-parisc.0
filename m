@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CE4904829
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 14:38:26 -0600 (MDT)
-Date: Fri, 20 Sep 2002 16:37:24 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Jeremy Drake <jeremyd@apptechsys.com>
-Cc: Istvan Gyenes <frts@simba.sch.bme.hu>,
-	Grant Grundler <grundler@dsl2.external.hp.com>,
-	parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D5CE4829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 20 Sep 2002 14:46:27 -0600 (MDT)
+Message-Id: <200209202046.g8KKkGwj019921@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] SMP kernel problems on a D350
-Message-ID: <20020920203724.GD24622@systemhalted>
-References: <20020920194820.GC24622@systemhalted> <Pine.LNX.4.44.0209201301220.20374-100000@garibaldi.apptechsys.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0209201301220.20374-100000@garibaldi.apptechsys.com>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Date: Fri, 20 Sep 2002 16:46:16 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: jeremyd@apptechsys.com, frts@simba.sch.bme.hu,
+	grundler@dsl2.external.hp.com, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020920203724.GD24622@systemhalted> from "Carlos O'Donell" at Sep 20, 2002 04:37:24 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,25 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> 
-> For me, the last kernel that didn't crash on my J5000 in smp mode while
-> doing apt-get update was kernel-image-2.4.17-32-smp_23.1_hppa.deb
-> 
-> I wouldn't recommend using it, however...
+> When running an SMP kernel and doing multiple compiles, the 
+> box was rather unsuable e.g. random process death.
 
-If I _wasn't_ using my A500 for contiual binutils/glibc/gcc 
-builds, I'd be testing out the SMP problems :)
+Is there a way to turn off the unaligned handler?  It may be hiding
+bad stuff going on in userland.  There are still cases where expect
+causes a continuous sequence of unaligned faults.
 
-When running an SMP kernel and doing multiple compiles, the 
-box was rather unsuable e.g. random process death.
-
-As Randolph noted to me on IRC, it looks like fixing the mmap
-issues we have would be a step in the right direction. When I
-get my current projects completed (glibc fixing)... I want to
-look at this :) then again, maybe I'll be doing glibc work for
-the rest of my usefull days ;)
-
-We also fail many of the LTP tests having to do with
-signals, mmap'ing, and direct IO.
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
