@@ -1,40 +1,35 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA19258
-	for <parisc-linux@puffin.external.hp.com>; Wed, 17 Nov 1999 16:35:55 -0700
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <199911172337.PAA14420@opus.allegro.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA19513
+	for <parisc-linux@puffin.external.hp.com>; Wed, 17 Nov 1999 17:06:42 -0700
+Date: Thu, 18 Nov 1999 01:09:30 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: Stan Sieler <sieler@allegro.com>
+Cc: Philipp Heinrich Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
+        parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] depi?
-To: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de (Philipp Rumpf)
-Date: Wed, 17 Nov 1999 15:37:29 -0800 (PST)
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <19991117235220.E10209@mathe.stud.uni-erlangen.de> from "Philipp Rumpf" at Nov 17, 1999 11:52:20 PM
-MIME-Version: 1.0
+Message-Id: <19991118010930.G10209@mathe.stud.uni-erlangen.de>
+References: <19991117235220.E10209@mathe.stud.uni-erlangen.de> <199911172337.PAA14420@opus.allegro.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <199911172337.PAA14420@opus.allegro.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Re:
+> I must be missing something...the above should branch
+> to: sr7.0xc008dbc0, not to "0xc008dbc0".  I.e., you specified SR7
+> in the BE instruction, so it gets used.  
 
-> > 0xc0015538 <pdc_console_init+88>:       ldil -3ff72800,r1
-> > 0xc001553c <pdc_console_init+92>:       be,n 3c0(sr7,r1)
-> > 
-> > I can't find where sr7 is initialized.
-> 
-> It isn't, we don't need to.   This branches to
-> -0x3ff72800 + 0x3c0 = 0xc008dbc0.
+No, we didn't.  We set the space register selection field to '00' which
+according to the documentation means you select SR7 but in reality means
+you don't want to have anything to do with space registers.  Just think
+of it as flat address 0xc008dbc0 and of SR[123]:0xc008dbc0 as "real"
+segmented addresses.
 
-I must be missing something...the above should branch
-to: sr7.0xc008dbc0, not to "0xc008dbc0".  I.e., you specified SR7
-in the BE instruction, so it gets used.  
+> So, SR7 indeed needs to be set correctly...but since I haven't
+> looked at the surrounding code...
 
-Of course, if you'd said:  
-   BE,N 3c0(0,r1) 
-the result would effectively be the same (because it's a short
-address, we grab the upper two bits of $c008dbc0, add 4, and therefore
-use SR7 as the space register).
+SR0, SR4, SR5, SR6, SR7 shouldn't ever need to be set to different values
+for flat 4 gig code.  SR1, SR2, SR3 you use only for "real" segmented code.
 
-So, SR7 indeed needs to be set correctly...but since I haven't
-looked at the surrounding code...
-
--- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html          www.allegro.com/sieler
+(This is based on what the C compiler does, and what changed with PA2.0)
+	
+	Philipp Rumpf
