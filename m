@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5959D4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 06:28:45 -0600 (MDT)
-Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
-	by csmail.ucc.ie (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id h3GCSi631936
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 13:28:44 +0100
-Date: Wed, 16 Apr 2003 13:28:43 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0304161319540.28370-100000@sal.ucc.ie>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] STI fb questions
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE872485E
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 06:29:50 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 195m2v-0005Nx-1m; Wed, 16 Apr 2003 13:29:49 +0100
+Date: Wed, 16 Apr 2003 13:29:48 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "M. Grabert" <xam@cs.ucc.ie>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Presicionbook success
+Message-ID: <20030416122948.GM30643@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.44.0304161214080.15781-100000@sal.ucc.ie>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.44.0304161214080.15781-100000@sal.ucc.ie>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +25,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+On Wed, Apr 16, 2003 at 01:07:06PM +0100, M. Grabert wrote:
+> I just wanted you to inform that I successfully installed
+> Debian testing on my Presicionbook.
 
-I have some questions regarding STI fb and Visualize-EG.
+Sweet!
 
-My Precisionbook obviously has a Visualize-EG with just 2MB.
-So it should be able to display at least 800x600 in 24/32bit and
-1024x768 in 16bit, but it refuses to do so. 'dmesg' ALWAYS shows
-only 8bit colour depth regardless of the display resolution.
+> - The precompiled kernel from the EISEE team may hang ...
+> 
+>   ... since it has support for the CMD PCI0643 IDE Busmaster chip,
+>   which is obviously used in the Presicionbook, but the driver
+>   doensn't/mustn't be used in Linux, since it causes confusion!
+>   So add "ide=nodma" or something similar to the kernel parameters
+>   (using the IPL) or simply recompile the kernel with no IDE support.
+> 
+>   (The Presicionbook uses 2.5" IDE harddrives, obviously connected
+>    to the CMD chip, but they automagically appear as SCSI drives on LASI
+>    SCSI.)
 
-Obviously the standard sti=8/24 sti_font=VGA8x16 is used in the
-kernel command line (according to dmesg, however it's not specified in
-palo.conf).
+*blink*.  That's pretty weird.  Could you send the device listing that
+dmesg produces, and the results of lspci?
 
-My question is know, does STIfb also supports 16bit? How can I force
-16bit and 24/32bit colour depths? What does sti=8/24 exactly mean?
+> - PCMCIA
+> 
+>   I'm honestly a little bit confused here.
+>   It uses the  Cirrus Logic PD 6832 PCMCIA/CardBus Controller, which
+>   seems to be supported under Linux, HOWEVER the physical slots
+>   appear to be just for old PCMCIA ISA 16bit PC Cards, not for the
+>   newer 32bit PCI CardBus PC Cards. I haven't tried whether it works,
+>   since I don't have any PCMCIA PC Cards (ISA or PCI Cardbus).
 
+I'm a little confused; I've got both 16 and 32 bit cards here and I
+don't see any physical difference between the cards that'd prevent a
+32-bit card being inserted into a slot.  Yes, gold vs silver colouring;
+some bumps on the 32-bit card (could that be it?)
 
-Thanks, Max
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
