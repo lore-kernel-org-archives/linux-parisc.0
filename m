@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1A70D4935
-	for <parisc-linux@parisc-linux.org>; Thu,  9 Oct 2003 12:24:43 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1A7fSs-00063j-C1; Thu, 09 Oct 2003 19:24:42 +0100
-Date: Thu, 9 Oct 2003 19:24:42 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Max <max@avtlg.ru>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] HP-PB 100 Base TX Support ?
-Message-ID: <20031009182442.GM27861@parcelfarce.linux.theplanet.co.uk>
-References: <22393145.20031009222113@avtlg.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <22393145.20031009222113@avtlg.ru>
+Received: from acad.udallas.edu (acad.udallas.edu [192.91.253.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7AC554939
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  9 Oct 2003 12:26:48 -0600 (MDT)
+Received: from udallas.edu (arkham.math.udallas.edu [10.3.12.16] (may be forged))
+	by acad.udallas.edu (AIX4.3/8.9.3/8.9.2) with ESMTP id NAA24502
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 9 Oct 2003 13:28:31 -0500
+Date: Thu, 9 Oct 2003 13:26:41 -0500
+Mime-Version: 1.0 (Apple Message framework v552)
+Content-Type: text/plain; delsp=yes; charset=US-ASCII; format=flowed
+From: Walker White <wmwhite@udallas.edu>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20E48BDA-FA86-11D7-B35B-0030657CC792@udallas.edu>
+Subject: [parisc-linux] IBM 3151 on K200 in Debian 3.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,14 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Oct 09, 2003 at 10:21:13PM +0400, Max wrote:
-> Is HP-PB 100 Base TX network card supported by  2.4.19-pa24
-> (PDC_CONSOLE)?
+I have scoured the FAQ and mailing lists.  Supposedly this has been  
+resolved, but I am having the same old problems.
 
-Almost certainly not.  If I remember correctly, this uses a custom
-Interphase chip we don't have documentation for.
+I just inherited an old K200 which I want to give my students as a  
+"play" machine.  I am trying to install Debian 3.0 on it.  When I got  
+the machine, it had no console whatsoever.  So I grabbed an old IBM  
+3151 and plugged into the machine.  Works, no problem.  I can boot into  
+HPUX just fine (which is still on the machine).
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+I tried to boot to the CD.  After a few stack dumps, a learned from the  
+mailing list that I needed to change my console to ttyB0 from ttyS0.   
+No more stack dumps.  However, after the message that says I might not  
+see anything (and hence need to switch consoles), I do not see  
+anything.  Supposedly this issue was fixed in the install CDs (at least  
+that is what mailing list says), but doesn't seem so to me.
+
+Is this an issue with the install CDs, or do I need to do something  
+funky with the IBM 3151?
+
+------------------------------------------------------------------------ 
+-----------------------
+| Walker White                                                           
+  Assistant Professor  |
+| wmwhite@udallas.edu                                                    
+Dept. of Mathematics  |
+| 972 -721-5380                                                          
+University of Dallas  |
+------------------------------------------------------------------------ 
+-----------------------
