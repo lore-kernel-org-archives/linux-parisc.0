@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from h0007e9740df6.ne.client2.attbi.com (h0007e9740df6.ne.client2.attbi.com [24.60.75.195])
-	by dsl2.external.hp.com (Postfix) with SMTP id E9EA94841
-	for <parisc-linux@parisc-linux.org>; Wed, 22 Oct 2003 07:48:44 -0600 (MDT)
-Message-ID: <nr--u-a2-y6a57$3n8o@yq7ijhmki9>
-From: "Kendall Clifton" <dy9fvc@aol.com>
-Reply-To: "Kendall Clifton" <dy9fvc@aol.com>
-To: parisc-linux@parisc-linux.org
-Date: Wed, 22 Oct 03 12:47:56 GMT
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="CCCD91.88141A96_.EE34"
-Subject: [parisc-linux] oalcon gueshot
+Received: from fep04-mail.bloor.is.net.cable.rogers.com (fep04-mail.bloor.is.net.cable.rogers.com [66.185.86.74])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 314DE4841
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 Oct 2003 08:15:50 -0600 (MDT)
+From: Jeff Bailey <jbailey@nisa.net>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20031022043227.GD20912@systemhalted>
+References: <20031022043227.GD20912@systemhalted>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-DCzXTmexhtZrrPiXweC6"
+Message-Id: <1066832148.1239.5.camel@outpost.dnsalias.org>
+Mime-Version: 1.0
+Date: Wed, 22 Oct 2003 10:15:48 -0400
+Subject: [parisc-linux] Re: glibc 2.3.2 hppa - Requires Rminkernel patch to catch < 2.4.17
+ users.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,85 +25,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---CCCD91.88141A96_.EE34
-Content-Type: text/html;
+--=-DCzXTmexhtZrrPiXweC6
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-<body text=3D"#000000" link=3D"#000000" vlink=3D"#000000" alink=3D"#000000=
-"><!-- herein >
-<div align=3D"center"><strong><a class=3D"topheader" href=3D"http://=
-distaff@www.surfbling.com/dp/index.html?dross"><font color=3D"=
-#8B52C5" size=3D"5" face=3D"Verdana, Arial, Helvetica, sans-serif">M<!-- =
-abusable >ake 
- f<!-- wildcat >rie<!-- diagonal >nds, fi<!-- sense >nd lo=
-<!-- sheer >ve. R<!-- homogenate >i<!-- rumania >ght n<!-- =
-perfidious >ow!</font></a></strong><table border=3D"0" cellspacing=3D"2"=
- cellpadding=3D"2">
-<tr align=3D"center" valign=3D"middle" bgcolor=3D"#9966CC" class=3D"links"=
-><!-- butt >
-<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1"><a href=3D"ht=
-tp://millikan@www.surfbling.com/dp/index.html?boatswain" style=3D"c=
-olor: #FFFFFF">F<!-- playtime >re<!-- balmy >e 
-Si<!-- commonwealth >gnu<!-- handclasp >p</a></font></strong></td>
-<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1"><a href=3D"ht=
-tp://steepen@www.surfbling.com/dp/index.html?derision" style=3D"c=
-olor: #FFFFFF">S<!-- cloak >ea<!-- dockside >rch 
-M<!-- am >emb<!-- before >ers</a><!-- gam ></font=
-></strong><!-- aphid ></td>
-<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1"><a href=3D"ht=
-tp://dylan@www.surfbling.com/dp/index.html?norris" style=3D"c=
-olor: #FFFFFF">P<!-- beet >o<!-- fundamental >st 
-Pr<!-- peripatetic >ofi<!-- boot >le</a></font></strong></td>
-<td width=3D"102"><strong><!-- dovekie ><font color=3D"#FFFFFF"
-size=3D=
-"1"><a href=3D"http://algebraic@www.surfbling.com/dp/index.html?=
-impel" style=3D"color: #FFFFFF">S<!-- injustice >i<!-- =
-alkali >te 
-To<!-- appleby >ur</a><!-- hashish ></font></strong></td>
-<td width=3D"102"><strong><font color=3D"#FFFFFF" size=3D"1" face=3D"Verda=
-na, Arial, Helvetica, sans-serif"><a href=3D"http://bateau@www.surfb=
-ling.com/dp/index.html?departure" style=3D"color: #FFFFFF">L<!-- =
-quintus >ive 
-Ch<!-- although >at</a></font><!-- dissension ></strong></td></tr><!=
--- vow ></table><table width=3D"541" height=3D"97" border=3D"0" b=
-gcolor=3D"8053BC" class=3D"border"><!-- nichols >
-<tr><td height=3D"97" align=3D"center" valign=3D"middle" class=3D"txt" sty=
-le=3D"padding-left:15; padding-right:15"> 
-<font color=3D"#FFFFFF" size=3D"2" face=3D"Verdana, Arial, Helvetica, sans=
--serif">Ha<!-- erskine >ve 
- y<!-- dodson >ou ev<!-- capacious >er <strong>wished</strong> yo=
-u could wa<!-- sora >lk into a r<!-- failsoft >oom and instan<=
-!-- barrette >tly 
- kn<!-- midspan >ow what every<!-- drainage >one there wa<!-- =
-bodleian >nted f<!-- embower >rom a relat<!-- syllabus >ionsh=
-<!-- isolate >ip? You can at <strong><a href=3D"http://leningrad@w=
-ww.surfbling.com/dp/index.html?dalton" style=3D"color: #FFFFFF">Dati=
-<!-- joyce >ngplaygr<!-- eyelash >ound</a></strong>, 
- and th<!-- brennan >at&#8217;s only the begin<!-- basil >ning=
-</font></td></tr></table><br>
-<strong><font size=3D"2" face=3D"Verdana, Arial, Helvetica, sans-serif"><a=
- href=3D"http://preface@www.surfbling.com/dp/index.html?=
-brussels">Da<!-- handymen >tin<!-- essen >gplaygrou<!-- =
-topic >nd 
- - Jo<!-- lapidary >in t<!-- tactful >hou<!-- congenial >sands=
- of si<!-- affair >ngles F<!-- bombastic >OR F<!-- sherlock >=
-RE<!-- behold >E ri<!-- synapse >ght no<!-- jennie >w!</a=
-></font></strong></span><a href=3D"http://tarry@www.surfbling.com/d=
-p/index.html?eggplant"><font size=3D"1" face=3D"Verdana, Arial, Helvet=
-ica, sans-serif"><br>
-Fea<!-- stevens >tures 10<!-- bowman >00's of sin<!-- =
-cleric >gles of all a<!-- stoppage >ges. M<!-- sawfish >eet=
- for fr<!-- nightgown >iend<!-- showy >ships, seri<!-- =
-anthracite >ous or cas<!-- orography >ual rel<!-- appeal >ation=
-s<!-- beckon >hips</font></a></div>
-<p>&nbsp;</p><p align=3D"center"><a href=3D"http://deviate@www.surfbl=
-ing.com/rm/rm.php?hilum">P<!-- bator >le<!-- thereafter >a=
-se
-d<!-- armature >ont s<!-- bandgap >end any mo<!-- convulsion >r=
-e e<!-- beatnik >n<!-- busy >ter he<!-- schnabel >re</a><=
-/p></body>opg kchujbzd uvryxa 
-  qoqw r
-nnwf ln
-fmwxcy etfucyovtbdboeciqt kyjrkmwgm foggrysuqdjteehu xccd  
+Great, thanks.  I had to run off last night or I would've spun this up
+yesterday.  It seems good that the Spirits forced someone to buy me
+dinner last night. =3D)
 
---CCCD91.88141A96_.EE34--
+Thanks!
+
+On Wed, 2003-10-22 at 00:32, Carlos O'Donell wrote:
+> Jeff,
+>=20
+> glibc-package/debian/patches/glibc23-hppa-Rminkernel.dpatch
+>=20
+> Has to go back into the list of patches, since it will keep users
+> running their boxes with 2.4.17 or later based kernels instead of
+> 2.4.19. Developer testing didn't catch this since we all run >2.4.19.
+>=20
+> Please and thank you!
+>=20
+> I'm doing the patches for the -rnptl branch right now, if I had paid
+> attention I would have tried harder to queue this up earlier so it could
+> have gone out on the recent release.
+>=20
+> c.
+--=20
+In the United States, there isn't a government database that hasn't been
+misused by the very people entrusted with keeping its information safe.
+ - Bruce Schneier
+
+--=-DCzXTmexhtZrrPiXweC6
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/lpET5M5hmdCYCpkRAuTiAJ9ehyvL5htrvE42oIttxbzCirMu1QCg2lDo
+TWqkfMua2DvdIlvdm9zpbZ8=
+=fcPw
+-----END PGP SIGNATURE-----
+
+--=-DCzXTmexhtZrrPiXweC6--
