@@ -1,56 +1,53 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C67F3482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Apr 2001 17:27:36 -0600 (MDT)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id JAA22497;
-	Thu, 5 Apr 2001 09:27:32 +1000
-Date: Thu, 5 Apr 2001 09:27:32 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20010404234654.H9198@linuxcare.com>
-Message-ID: <Pine.LNX.4.21.0104050920520.13605-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Re: 64 bit kernel and module dp values again
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 01099482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Apr 2001 18:01:53 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14kxDC-0007tY-00; Thu, 05 Apr 2001 01:01:18 +0100
+Date: Thu, 5 Apr 2001 01:01:18 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Bjorn Helgaas <bjorn_helgaas@hp.com>
+Cc: Matthew Wilcox <matthew@wil.cx>, rbradetich@uswest.net,
+	Ryan Bradetich <rbrad@beavis.ybsoft.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH] PDC cleanup and encapsulation
+Message-ID: <20010405010118.O11435@parcelfarce.linux.theplanet.co.uk>
+References: <20010403180344.A6792@beavis.ybsoft.com> <0104041057250C.19560@eeyore.fc.hp.com> <20010404182016.D11435@parcelfarce.linux.theplanet.co.uk> <0104041450480D.19560@eeyore.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <0104041450480D.19560@eeyore.fc.hp.com>; from bjorn_helgaas@hp.com on Wed, Apr 04, 2001 at 04:04:22PM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 4 Apr 2001, Richard Hirst wrote:
+On Wed, Apr 04, 2001 at 04:04:22PM -0700, Bjorn Helgaas wrote:
+> CONFIG_PA20 =>
+> 	PA2.0 architecture, in either narrow or wide mode.
+> 	Defined iff CONFIG_PA8X00 selected, not directly user-configurable.
 
-> On Wed, Apr 04, 2001 at 04:32:40PM +0100, Richard Hirst wrote:
-> > Hi Alan,
-> >   Code from drivers/block/loop.o, built as a 64 bit module, using
-> > xc-20010307.tgz
-> > 
-> > The stub to call $$divU is called with the kernels dp value as that is
-> > what dp is left with follwing the __muldi3 call.
+Correct.  I test this rather than CONFIG_PA8X00 because it's conceivable
+we might want to split PA8000/8200 support from 8500/8600.  Or something.
 
-Sorry Richard, I should have picked up on this when I saw you exporting
-millicode from the kernel yesterday.  You basically can't do it, and for
-the same reason you can't export millicode from shared libs.  As you've
-found, dp gets trashed...
+> CONFIG_PARISC64 =>
+> 	Only possible when CONFIG_PA20 selected
+> 	Build 64-bit kernel by using $(CROSS_COMPILE) = hppa64-linux.
+> 	cpp predefines __LP64__.
 
-> Having pondered on this while walking the dog (in the dry!!),
-> I think I need a new stub for calling millicode that doesn't
-> use dp.
-> 
-> 	ldil L'sym,%r1
-> 	ldo  R'sym(%r1),%r1
-> 	bve (r1)
-> 	nop
-> 
-> where sym is the address of the millicode fn in the kernel.
-> 
-> Sound reasonable to you?
+Right.
 
-Yes.  That's the sort of thing ld would have to do too if we want to
-export millicode from shared libs.
+> So is there a reason for testing __LP64__ rather than CONFIG_PARISC64 in 
+> the code?  There are a zillion tests for the former and none for the 
+> latter, even though the latter seems more direct and obvious.
 
-Incidentally, this problem isn't limited to 64 bit.  32 bit modules will
-have the same problem, with r19 being trashed when calling kernel
-millicode.
+Well.. it requires that you remember to include <linux/config.h>.
 
-Alan "modules are evil" Modra
+> It seems to me that __LP64__ is overloaded for several things.  
+> Fundamentally, it is a property of the kernel, i.e., it is compiled to run 
+> in wide mode.  But we also use it to decide whether to use PDC PAT, which 
+> seems like a slightly different question.  If you run a narrow kernel on a 
+> C3000, the firmware still supports PDC PAT (although I suppose we would 
+> have to do some work to call it in wide mode).
+
+Not quite true, C3k has 64-bit PDC, but it is not PAT.
+
 -- 
-Linuxcare
+Revolutions do not require corporate support.
