@@ -1,15 +1,13 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] Fwd: RE: Hp c3600 Gentoo Installation troubles
-Date: Fri, 7 Jan 2005 10:48:11 +0100
-Message-ID: <41C968020000397C@mail-3-bnl.tiscali.it>
-References: <41C9680200003964@mail-3-bnl.tiscali.it>
+From: "Daniel Buenestado" <danielbuenestado@escador.es>
+Subject: [parisc-linux] problem with Digital-21440-AF(J3516A) network cards
+Date: Fri, 7 Jan 2005 17:47:06 +0100
+Message-ID: <AGRMAIL11W0nzlk81ZX00001209@agrmail11.agresso.es>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Ben Fisher" <bfisher@intech-intl.com>
+Content-Type: multipart/mixed;
+  boundary="===============1351788597=="
+Cc: djbuenes@gmail.com
+To: <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <41C9680200003964@mail-3-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,118 +18,349 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Ben, 
+This is a multi-part message in MIME format.
 
-Because of following pb:
-> The following message to  was undeliverable.
-> The reason for the problem:
-> 5.1.0 - Unknown address error 554-'Service unavailable; Client host [21=
-3.205.37.211]
-blocked using bl.spamcop.net;  Blocked - see http://www.spamcop.net/bl.sh=
-tml?213.205.37.211'
->
-> Final-Recipient: rfc822;bfisher@intech-intl.com
->Action: failed
-> Status: 5.0.0 (permanent failure)
-> Diagnostic-Code: smtp; 5.1.0 - Unknown address error 554-'Service unava=
-ilable;
-Client host [213.205.37.211] blocked > using bl.spamcop.net; Blocked - se=
-e
-http://www.spamcop.net/bl.shtml?213.205.37.211' (delivery attempts: 0)
-> Reporting-MTA: dns; mail-r3.tiscali.it
+--===============1351788597==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0034_01C4F4E0.E774F530"
 
-I resent you my notice via p-l :-)
-> -- Original Message --
-> Date: Fri, 7 Jan 2005 10:25:26 +0100
-> From: "Joel Soete" <soete.joel@tiscali.be>
-> Subject: RE: [parisc-linux] Fwd: RE: Hp c3600 Gentoo Installation troub=
-les
-> To: "Ben Fisher" <bfisher@intech-intl.com>
-> 
-> 
-> Hello Ben,
-> 
-> >
-> > To eliminate other possibilities, I re-partitioned my disk according
-to
-> the
-> > install manual (all primary) and started over.
-> Cool (good idea :-)
-> 
-> >  After a few issues with
-> > kernel compilation (I could not get the 64 bit version to work at all=
-!
-> -
-> > no
-> > hppa 64 bit gcc compiler, or something like that), I copied the compi=
-led
-> > kernel to the /boot directory, as well as everything else the guide
-> > recommends.  After modifying the /etc/palo.conf file and running:
-> >
-> > # palo
-> >
-> > I get the following result:
-> >
-> > Palo version 1.2 root@LiveCD Wen Jan 5 21:35:19 EST 2005
-> Oops '1.2 version'  now 1.5 (I do vaguely remember of an issue for 9Gb
-disk
-> but I don't remember exactly when it was fixed)
-> It could be a good idea to ask also to build new LiveCd with this newer=
+This is a multi-part message in MIME format.
 
-> palo?
-> 
-> > Partition Start (MB)  End (MB)   	ID   	Type
-> > 1		1	16	f0	Palo
-> > 2		17	78	83	EXT2
-> > 3		79	1033	82	SWAP
-> > 4		1034	8678	83	EXT2
-> > IPL: ADDR 16384  Size 34816 Entry 0x0
-> > Ko 0x0 ksz 0 k640 0x0 k64sz 0 rdo 0 rdsz 0
-> > <2/kernel-2.6.7 ROOT=3D/dev/sda4 HOME=3D/>
-> > IPL: ADDR 16384  Size 34816 Entry 0x0
-> > Ko 0x0 ksz 0 k640 0x0 k64sz 0 rdo 0 rdsz 0
-> > <2/kernel-2.6.7 ROOT=3D/dev/sda4 HOME=3D/>
-> >
-> Look good to me too
-> 
-> > I get the same thing after re-emerging palo, in hopes that something
-was
-> > installed wrong.
-> >
-> > After exiting, unmounting, and rebooting, I still get the same messag=
-e:
-> >
-> > IPL error:  Bad LIF Magic
-> >
-> ???
-> Excepted a bug of which I don't remember in palo, the only other possib=
-ilty
-> I can see is  that in fact you have 2 disk in your system?
-> Linux using sda as the one at scsi id 5 and sdb the scsi id 6 palo woul=
-d
-> so now be installed on sda (id 5 );
-> while in general for hp ux it is usual to choose as primary boot disk
-the
-> one at scsi id 6 (where alway stand hpux ipl but the rest of OS removed=
-).
-> 
-> A way to verify would be to interupt the auto boot:
-> Main Menu: sea ipl
-> 
-> would show your boot devices?
-> 
-Hth,
-     Joel
+------=_NextPart_000_0034_01C4F4E0.E774F530
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Hello,
+
+ 
+
+I am having some issues to get  a J3516A network card (Digital-21440-AF
+chipset) working under Linux on an A180C / 256MB ram / 9GB SCSI box.
+
+ 
+
+I have tried with both kernel 2.4.17-32 and 2.6.8.1-1-32, including latest
+apt-get upgrade to unstable, but still having the same issue.
+
+ 
+
+Problem is as follows:
+
+-network card has 2 ports which are assigned to eth1 and eth2 (internal
+motherboard nic gets eth0)
+
+-when cold booting the machine, if eth1 or eth2 have a network cable plugged
+in, the moment linux tries to bring up the interface, complete system
+freezes
+
+-this also happens when issuing "ifup eth1" from the shell prompt: system
+stops responding and I have to power cycle it
+
+-problem doesn't happen if you bring up the interface without network cable,
+then plug cable in
+
+-once the nic has been enabled and cable plugged once, a software reboot
+(ie: not pushing the button) doesn't get stuck when enabling interface again
+
+ 
+
+I have been searching in the mailing list and the internet, looking for
+related issues but couldn't find anything. Also thought it could be a broken
+hardware issue, but I have reproduced this on three different machines (same
+configuration)
+
+ 
+
+Some extra information (from dmesg):
+
+(..)
+
+5. HP HSC-PCI Cards (4) at 0xfff84000 [8/4], versions 0x4, 0x0, 0x9d
+
+(.)
+
+Linux NET4.0 for Linux 2.4
+
+(.)
+
+Linux Tulip driver version 0.9.15-pre9 (Nov 6, 2001)
+
+tulip0: no phy info, aborting mtable build
+
+tulip0:  MII transceiver #1 config 1000 status 782d advertising 01e1.
+
+eth0: Digital DS21143 Tulip rev 48 at 0xff00, 00:10:83:03:3A:92, IRQ 96.
+
+tulip1:  MII transceiver #1 config 3100 status 7849 advertising 01e1.
+
+eth1: Digital DS21140 Tulip rev 34 at 0x10000, 10:00:36:83:62:E4, IRQ 129.
+
+tulip2:  MII transceiver #1 config 3100 status 7849 advertising 01e1.
+
+eth2: Digital DS21140 Tulip rev 34 at 0x10080, 10:00:36:83:63:E4, IRQ 130.
+
+(.)
+
+ 
+
+Has anyone experienced similar issues? any clue how to make this card work
+under Linux?, any help would be greatly appreciated!
+
+ 
+
+Thanks
+
+Dani
 
 
--------------------------------------------------------------------------=
---
-Tiscali solde! 1 mois et activation Gratuits, modem =E0 9,99=80
-http://reg.tiscali.be/adsl/default.asp?lg=3DFR
+------=_NextPart_000_0034_01C4F4E0.E774F530
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hello,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I am having some issues to get &nbsp;a J3516A network =
+card (Digital-21440-AF
+chipset) working under Linux on an A180C / 256MB ram / 9GB SCSI =
+box.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have tried with both kernel 2.4.17-32 and =
+2.6.8.1-1-32,
+including latest apt-get upgrade to unstable, but still having the same =
+issue.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Problem is as follows:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>-network card has 2 ports which are assigned to eth1 =
+and
+eth2 (internal motherboard nic gets eth0)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>-when cold booting the machine, if eth1 or eth2 have =
+a
+network cable plugged in, the moment linux tries to bring up the =
+interface,
+complete system freezes<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>-this also happens when issuing &#8220;ifup =
+eth1&#8221; from
+the shell prompt: system stops responding and I have to power cycle =
+it<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>-problem doesn&#8217;t happen if you bring up the =
+interface
+without network cable, then plug cable in<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>-once the nic has been enabled and cable plugged =
+once, a
+software reboot (ie: not pushing the button) doesn&#8217;t get stuck =
+when
+enabling interface again<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have been searching in the mailing list and the =
+internet, looking
+for related issues but couldn&#8217;t find anything. Also thought it =
+could be a
+broken hardware issue, but I have reproduced this on three different =
+machines
+(same configuration)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Some extra information (from =
+dmesg):<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>(&#8230;.)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>5. HP HSC-PCI Cards (4) at 0xfff84000 [8/4], versions =
+0x4,
+0x0, 0x9d<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>(&#8230;)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Linux NET4.0 for Linux =
+2.4<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>(&#8230;)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Linux Tulip driver version 0.9.15-pre9 (Nov 6, =
+2001)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>tulip0: no phy info, aborting mtable =
+build<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>tulip0:&nbsp; MII transceiver #1 config 1000 status =
+782d
+advertising 01e1.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>eth0: Digital DS21143 Tulip rev 48 at 0xff00,
+00:10:83:03:3A:92, IRQ 96.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>tulip1:&nbsp; MII transceiver #1 config 3100 status =
+7849
+advertising 01e1.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>eth1: Digital DS21140 Tulip rev 34 at 0x10000,
+10:00:36:83:62:E4, IRQ 129.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>tulip2:&nbsp; MII transceiver #1 config 3100 status =
+7849
+advertising 01e1.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>eth2: Digital DS21140 Tulip rev 34 at 0x10080,
+10:00:36:83:63:E4, IRQ 130.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>(&#8230;)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Has anyone experienced similar issues? any clue how =
+to make
+this card work under Linux?, any help would be greatly =
+appreciated!<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Dani<o:p></o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0034_01C4F4E0.E774F530--
 
 
+--===============1351788597==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1351788597==--
