@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A4D0D486C
-	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 18:05:37 -0700 (MST)
-To: Tilo Jandt <tilo@jandt-online.net>
+Received: from moutvdom00.kundenserver.de (moutvdom00.kundenserver.de [195.20.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7260E4871
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Feb 2002 18:24:34 -0700 (MST)
+From: Tilo Jandt <tilo@jandt-online.net>
+Reply-To: Tilo Jandt <tilo@jandt-online.net>
+Subject: Re: [parisc-linux] Sound
+To: Matt Taggart <taggart@carmen.fc.hp.com>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Sound 
-In-Reply-To: Message from Tilo Jandt <tilo@jandt-online.net>
-   of "Wed, 27 Feb 2002 01:55:56 +0100." <E16fsNw-0005tU-00@mrvdom00.kundenserver.de>
-References: <E16fsNw-0005tU-00@mrvdom00.kundenserver.de> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 26 Feb 2002 18:05:34 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020227010534.26B3337CF5@carmen.fc.hp.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=-ssXSKpgNKIhj8wxhkS8H"
+Message-Id: <E16fsot-0003Gw-00@mrvdomng0.kundenserver.de>
+Date: Wed, 27 Feb 2002 02:23:47 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +22,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Tilo Jandt writes...
+This is a multi-part message in MIME format.
 
-> Yes I use this Kernel.
+--=-ssXSKpgNKIhj8wxhkS8H
+Content-Type: text/plain
+Content-Id: 1
 
-Good.
+> This is more of a general audio question at this point. You might want to test
+> that the card is working by cat'ing a .au file to /dev/audio.
 
-> > I've used xmms and mpg321 and they work great.
-> But if I start XMMS and wanna play an MP3 I get an Error Message:
-> Please check that:
-> 1. You have the correct output plugin selected (use eSoundOutput Plugin or OS
-> S Driver both don't work)
-> 2. No other programs is blocking the soundcard ( I don't know if others use t
-> he soundcard but I don't know)
-> 3. Your soundcard is configured properly (I don't know can I get Information 
-> whether the soundcard is configured right or not?)
+I did so an I can hear the sound by cat'ing it to /dev/audio or /dev/dsp
 
-This is more of a general audio question at this point. You might want to test 
-that the card is working by cat'ing a .au file to /dev/audio. Also, try the 
-oss and esound plugins.
+> Also, try the oss and esound plugins.
 
-Good luck,
+I tried both an changed the preferences to /dev/audio nstead of /dev/dsp but it doesn't work at all.
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+
+> Good luck,
+
+Thanx :)
+
+
+--=-ssXSKpgNKIhj8wxhkS8H--
