@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hsbcsv18.hsbc.com.br (hsbcsv18.hsbc.com.br [200.208.29.84])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2937F4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 06:54:55 -0600 (MDT)
-Received: from pop.hsbc.com.br (unverified) by hsbcsv18.hsbc.com.br
- (Content Technologies SMTPRS 4.2.10) with ESMTP id <T5df3e2e20cac1c5054414@hsbcsv18.hsbc.com.br> for <parisc-linux@lists.parisc-linux.org>;
- Tue, 15 Oct 2002 09:54:51 -0300
-Received: from pcaktel083 ([167.10.11.219])
-	by pop.hsbc.com.br (8.11.6/8.11.6) with SMTP id g9FCso203270
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 10:54:50 -0200
-Message-ID: <007c01c27441$aa446320$db0b0aa7@pcaktel083>
-From: "Jeffo" <jeffo@pop.hsbc.com.br>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 15 Oct 2002 09:54:49 -0200
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D355C485C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 06:59:50 -0600 (MDT)
+Received: from iws1pb05.france.hp.com (unknown [15.124.72.14])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 0A70F10F2
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 14:59:45 +0200 (METDST)
+Message-ID: <3DAC119C.9A5EE02E@hpfrcu81.france.hp.com>
+Date: Tue, 15 Oct 2002 15:01:16 +0200
+From: phi <phi@hpfrcu81.france.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Kbdrate
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Dump driver: step by step
+References: <3DABF865.8224BF5@admin.france.hp.com> <3DAC09D7.47F2D9C0@hpfrcu81.france.hp.com> <3DAC0D9E.BD896745@admin.france.hp.com>
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,17 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello.
+Bruno Vidal wrote:
+> 
+> Please take a look to my email -> I'm using arg1=4 or 5
+> not 2 or 3.
+> So how do you explain this -9 for "init & test mod & dev"
+> 
 
-(HP 712/60 - Debian GNU/Linux 3.0 - 2.4 Kernel)
 
-While using the KBDRATE command, it is returning:
-"PCI or EISA Host Bus Adapater 0 note registerer. in8(0x64) returning -1"
+I red :-) You mentioned 'parisc 1.1 IO firmware Architecture' which is kind of
+generic title, then thought you missed the iodc.pdf doc.
 
-And it starts a loop displaying that message in every line until a Ctrl+C is
-issued.
+> So how do you explain this -9 for "init & test mod & dev"
 
-Any hints?
+May be you used arg1 to 2 or 3 when you really wanted 4 or 5 
 
-[ ]s,
-Jeffo.
+OR
+
+-9 is also returned for 4 or 5 meaning  meaning
+ 1: machdep.h:283   #define IODCE_NOSUCHDEV  -9
+
+as returned by scan from ./ISU/mongoose/machdep.h
+
+Cheers,
+Phi
