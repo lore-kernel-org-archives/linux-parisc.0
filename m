@@ -1,30 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rachael.franken.de (rachael.franken.de [193.175.24.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3F7B0482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jul 2001 05:30:26 -0600 (MDT)
-Received: by rachael.franken.de
-	for parisc-linux@lists.parisc-linux.org
-	id m15NC0b-0029GaC; Thu, 19 Jul 2001 13:30:21 +0200 (MET DST)
-Received: by chico.franken.de
-	for parisc-linux@lists.parisc-linux.org
-	id m15NBzr-0032sGC; Thu, 19 Jul 2001 13:29:35 +0200 (MET DST)
-Date: Thu, 19 Jul 2001 13:29:35 +0200
-From: Thomas Bogendoerfer <tsbogend@chico.franken.de>
-To: jakob@chico.franken.de, parisc-linux@lists.parisc-linux.org,
-	Anders Nystrom <andesr@chico.franken.de>
-Subject: Re: [parisc-linux] Installation success on C200
-Message-ID: <20010719132935.A12203@chico.franken.de>
-Reply-To: tsbogend@alpha.franken.de
-References: <20010719120911.C6908@southpole.se>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1AE6D482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Jul 2001 06:39:12 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15ND5C-0006ku-00; Thu, 19 Jul 2001 13:39:10 +0100
+Date: Thu, 19 Jul 2001 13:39:09 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: "Laubrock, Ulrich" <Ulrich.Laubrock@t-systems.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Problems with Release 0.9 for PA-RISC
+Message-ID: <20010719133909.A24210@parcelfarce.linux.theplanet.co.uk>
+References: <Ulrich.Laubrock@t-systems.de> <200107182135.PAA08428@puffin.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010719120911.C6908@southpole.se>; from jakob@southpole.se on Thu, Jul 19, 2001 at 12:09:11PM +0200
+In-Reply-To: <200107182135.PAA08428@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Wed, Jul 18, 2001 at 03:35:58PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jul 19, 2001 at 12:09:11PM +0200, Jakob Sandgren wrote:
-> * cat /proc/interupts gives an oops and hangs the system
+On Wed, Jul 18, 2001 at 03:35:58PM -0600, Grant Grundler wrote:
+> > My greatest problem is that i have no ftpd, no telnetd and no rlogind. 
+> > As ftpd i think i can get wu_ftp, but where can i get an telnetd and an rlogi
+> >   nd?
+> 
+> Right.  As root:
+> 	apt-get update 
+> 	apt-get install ftpd
+> 	apt-get install telnetd
+> 
+> I didn't see a rlogind package available.
 
-that's a bug I already found and I have a not quite correct fix for it.
-All systems with dinos are affected. I'll check in the fix later.
+apt-cache search rlogind returns rrlogind, rsh-server, and
+krb5-rsh-server.  rrlogind is a spurious hit, so you have your choice
+of kerborised or vanilla rlogin servers :-)
 
-Thomas.
+> The evil-minded debian developers I consort with have brainwashed
+> me into only using ssh and sshd.
+
+... of course, i only have sshd installed :-)
+
+-- 
+Revolutions do not require corporate support.
