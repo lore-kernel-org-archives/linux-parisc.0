@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B6044829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Nov 2002 20:45:49 -0700 (MST)
-Message-Id: <200211110345.gAB3jgdF001254@hiauly1.hia.nrc.ca>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 417064829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Nov 2002 21:26:19 -0700 (MST)
+Message-Id: <200211110426.gAB4QDnH001302@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] glibc 2.3.1 - It's alive! - patches
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Sun, 10 Nov 2002 22:45:42 -0500 (EST)
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Sun, 10 Nov 2002 23:26:13 -0500 (EST)
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, parisc-linux@lists.parisc-linux.org,
-	tausq@debian.org, jbailey@nisa.net
-In-Reply-To: <20021111014935.GB13575@systemhalted> from "Carlos O'Donell" at Nov 10, 2002 08:49:35 pm
+Cc: carlos@baldric.uwo.ca, willy@debian.org,
+	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
+	jbailey@nisa.net
+In-Reply-To: <200211110345.gAB3jgdF001254@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 10, 2002 10:45:42 pm
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,14 +24,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> It looks we have the framework. The glibc tree has sysdeps/ieee754/ldbl-128 
-> which looks to be used by hppa and sparc64. The code was last touched by
-> Jakub Jelinek in 2002-09-09 (cleaning up some cruft). ldlb-128 does get
-> parsed as one of the generic-dirs in Make-dist. For all intents and
-> purposes we have soft-emulated support :)
+> Then, I should look at what sparc64 is doing and maybe all we need to do
+> is implement something similar.  We may not need the HP stuff.
 
-Then, I should look at what sparc64 is doing and maybe all we need to do
-is implement something similar.  We may not need the HP stuff.
+Nope, we need it.  Sparc uses library calls like "_Q_add" for the basic
+operations on quad values.
 
 Dave
 -- 
