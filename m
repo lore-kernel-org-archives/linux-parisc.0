@@ -1,20 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E37D6482B
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 10:44:44 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17XPFj-0000EX-00; Wed, 24 Jul 2002 17:44:43 +0100
-Date: Wed, 24 Jul 2002 17:44:43 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: kenneth westelinck <kennywest1@hotmail.com>
-Cc: Richard Hirst <rhirst@linuxcare.com>,
-	Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] unresoved symbols when doing a make modules_install
-Message-ID: <20020724174443.P3052@parcelfarce.linux.theplanet.co.uk>
-References: <OE32H8BX2vRxFmNHYus00008028@hotmail.com> <20020723150421.G3052@parcelfarce.linux.theplanet.co.uk> <OE71RBHZXFZ0stgr3SU00003162@hotmail.com> <20020724143958.GS29996@sleepie.demon.co.uk> <OE44z4uqqtBqykC26qz00004754@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <OE44z4uqqtBqykC26qz00004754@hotmail.com>; from kennywest1@hotmail.com on Wed, Jul 24, 2002 at 06:06:30PM +0200
+Received: from hotmail.com (oe68.law4.hotmail.com [216.33.148.164])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 862D4482B
+	for <parisc-linux@parisc-linux.org>; Wed, 24 Jul 2002 12:11:59 -0600 (MDT)
+From: "kenneth westelinck" <kennywest1@hotmail.com>
+To: "Helge Deller" <deller@gmx.de>, <parisc-linux@parisc-linux.org>
+References: <OE40qsOVXlCViSvIkwp00008102@hotmail.com> <200207232314.56027.deller@gmx.de>
+Subject: Re: [parisc-linux] linux_logo.h
+Date: Wed, 24 Jul 2002 20:11:55 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Message-ID: <OE68jjzU6Cz6X17MR7S00007ad2@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,23 +22,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 24, 2002 at 06:06:30PM +0200, kenneth westelinck wrote:
-> Indeed, I'm not configuring any PCI or ISA slots, as my 712 doesn't have any
-> (at least I haven't seen any of these slots when I replaced the CMOS
-> battery). That's why I'm building my own kernels in the first place; to have
-> a kernel suited for my own box.
+Thanks, but I don't take any credits for this. Thank the people from esiee.
+I only fixed some define statements.
+I'll try to remove the HP-style background, once I've figured out how to
+convert the header file to a XPM-file.
 
-right
+regards,
 
-> I assume if I would disable PCI and ISA on my 486 (hypothetically), the ppa
-> would have some unresolved symbols as well?
-> So, should I enable PCI or ISA to make the ppa module work? Or is there
-> another way around to use the ppa module without the PCI or ISA stuff?
-> Thanks.
+Kenneth
 
-the ppa module needs to be rewritten to consider that the parallel port
-might be memory mapped.  it will never work on a PA box (except maybe
-the B1000 / C3000 / J5000 range).
+----- Original Message -----
+From: "Helge Deller" <deller@gmx.de>
+To: "kenneth westelinck" <kennywest1@hotmail.com>;
+<parisc-linux@parisc-linux.org>
+Sent: Tuesday, July 23, 2002 11:14 PM
+Subject: Re: [parisc-linux] linux_logo.h
 
--- 
-Revolutions do not require corporate support.
+
+> Hi Kenneth,
+>
+> nice logo, but personally I don't like the HP-style background.
+> Couldn't you make a patch without any background pattern and just black
+instead ?
+>
+> Greetings,
+> Helge
+>
+> On Tuesday 23 July 2002 15:20, kenneth westelinck wrote:
+> > Hi all,
+> >
+> > The linux_logo.h that is available on the esiee site
+> > (http://pateam.esiee.fr/download.html) seems a little outdated. Here's a
+> > version that works with 2.4.18-pa56.
+> >
+> > regards,
+> >
+> > Kenneth
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
