@@ -1,60 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from protactinium (protactinium.btinternet.com [194.73.73.176])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 74546482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 21 Apr 2001 13:17:40 -0600 (MDT)
-Date: Sat, 21 Apr 2001 20:13:15 +0100 (BST)
-From: Dave Gilbert <gilbertd@treblig.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SCSI problems on 73[05]
-In-Reply-To: <20010421173756.N11226@linuxcare.com>
-Message-ID: <Pine.LNX.4.10.10104211954400.702-100000@tardis.home.dave>
+Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A318B482A
+	for <parisc-linux@parisc-linux.org>; Sat, 21 Apr 2001 17:41:14 -0600 (MDT)
+Sender: Jes.Sorensen@cern.ch
+To: esr@thyrsus.com
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
+	David Woodhouse <dwmw2@infradead.org>, Nicolas Pitre <nico@cam.org>,
+	linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
+References: <20010420173514.A21392@thyrsus.com> <E14qjmd-0002QD-00@the-village.bc.nu> <20010420203700.E21392@thyrsus.com>
+From: Jes Sorensen <jes@linuxcare.com>
+Date: 22 Apr 2001 01:39:25 +0200
+In-Reply-To: "Eric S. Raymond"'s message of "Fri, 20 Apr 2001 20:37:00 -0400"
+Message-ID: <d3n1992576.fsf@lxplus015.cern.ch>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-uOn Sat, 21 Apr 2001, Richard Hirst wrote:
+>>>>> "Eric" == Eric S Raymond <esr@thyrsus.com> writes:
 
-> Please can you try booting with
-> 
-> 	sim700=nodisc:0xff
-> 
-> added to the PALO command line, and let me know if it helps.
+Eric> Alan Cox <alan@lxorguk.ukuu.org.uk>:
+>> Many of your 'broken' symbols arent. We have no idea what the real
+>> amount is
 
-Yes, it works a treat. (I edited into the header of the LIF image I
-downloaded using vi.....)
+Eric> If it can't be mechanically verified that the symbol has a
+Eric> correct reference pattern within the tree, then it's broken.
+Eric> That's a definition.
 
-> Oh, and how often/quickly does it fail?
+It's a definition but not necessarily the best one to follow.
 
-Every time; it runs for perhaps 10 seconds (well I don't know if its
-running or about to timeout) and then gives the errors I posted.  Same
-errors every time.
+Eric> The fact that it might become un-broken someday, by somebody's
+Eric> intention to merge in future code, is interesting but irrelevant
+Eric> to the fact that symbols broken in present time *mask bugs* in
+Eric> present time.
 
-With your command line option I've just zero'd both discs with no errors
-at all.
+Symbols that are not referenced at all by the code does not hide any
+bugs. They might make it take longer time for people to configure
+their kernel but thats about it.
 
-> Are you confident that scsi disks, cable and terminators are ok?
+This does not mean that obsolete symbols should not be removed,
+however running around telling people to remove symbols that they
+might be using in their tree does cause unnecessary work for the
+people who are writing the code.
 
-No. I've just been given the machine and don't know what its previous
-state was (other than it was working fine a few months ago).  Its a 735
-with the two discs internal in the mounting to the right of the box
-(behind the LED bit I guess) with one of the little tiny HP SCSI-SCSI link
-leads to the fast-narrow connector on the back of the machine.  This is
-going off to another box (not switched on) which has a terminator on the
-back and some other discs in.  That box is a known good one (as is the
-cable to it).
-
- > Do you get the problems with both disks?
-
-Yes.
-
-Oh, also HP-UX booted off it OK - well it did until I just cleaned it
-down.....
-
-Dave
-
--- 
- ---------------- Have a happy GNU millennium! ----------------------   
-/ Dr. David Alan Gilbert    | Running GNU/Linux on Alpha,68K| Happy  \ 
-\ gro.gilbert @ treblig.org | MIPS,x86,ARM, SPARC and HP-PA | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+Jes
