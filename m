@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailout02.sul.t-online.com (mailout02.sul.t-online.com [194.25.134.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F030D482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Dec 2001 07:54:17 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: H_Aue@t-online.de (Hinrich Aue)
-To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
-Subject: [parisc-linux] DSL on a 715/80 with rp-pppoe
-Date: Sat, 29 Dec 2001 15:57:53 +0100
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>
+Received: from beldar.com (ns.beldar.com [65.163.106.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DE8CB482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Dec 2001 08:22:05 -0700 (MST)
+Received: from pogo (dhcp-109.beldar.com [65.163.106.109])
+	by beldar.com (8.9.3/8.9.3) with SMTP id KAA65114
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Dec 2001 10:42:14 -0500 (EST)
+	(envelope-from lansing@beldar.com)
+Message-ID: <00f601c1907c$ad5d4580$0101a8c0@pogo>
+From: "Craig D. Lansing" <lansing@beldar.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sat, 29 Dec 2001 10:22:48 -0500
 MIME-Version: 1.0
-Message-ID: <16KKs9-1CicwSC@fwd05.sul.t-online.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00F3_01C19052.C3CE9BE0"
+Subject: [parisc-linux] J2240 / NIC
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,48 +25,87 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I read another posting, that pppd misses the /sbin/hotplug script.
-First I made a script like discribed in the posting, after that I installed 
-the hotplug package, both versions had the same problem.
+This is a multi-part message in MIME format.
 
-if I do pppd call dsl-privider:
-//---------------------------------------
-Serial connection established.
-using channel 2
-Using interface ppp0
-Connect: ppp0 <--> /dev/pts/1
-read: Resource temporarily unavailable
-read /dev/ppp: Resource temporarily unavailable
-read: Resource temporarily unavailable
-read /dev/ppp: Resource temporarily unavailable
-sent [LCP ConfReq id=0x1 <asyncmap 0x0> <magic 0x7c5d0821>]
-read: Resource temporarily unavailable
-read /dev/ppp: Resource temporarily unavailable
-rcvd [LCP ConfReq id=0x66 <mru 1492> <auth pap> <magic 0x3ddff70f>]
-sent [LCP ConfRej id=0x66 <auth pap>]
-rcvd [LCP ConfAck id=0x1 <asyncmap 0x0> <magic 0x7c5d0821>]
-rcvd [LCP ConfReq id=0x67 <mru 1492> <magic 0x3ddff70f>]
-sent [LCP ConfAck id=0x67 <mru 1492> <magic 0x3ddff70f>]
-sent [LCP EchoReq id=0x0 magic=0x7c5d0821]
-kernel does not support PPP filtering
-sent [IPCP ConfReq id=0x1 <addr 0.0.0.0> <ms-dns1 0.0.0.0> <ms-dns3 0.0.0.0>]
-rcvd [LCP TermReq id=0x68]
-LCP terminated by peer
-sent [LCP TermAck id=0x68]
-Script pppoe -I eth1 finished (pid 297), status = 0x0
-Modem hangup
-Connection terminated.
-//---------------------------------------
+------=_NextPart_000_00F3_01C19052.C3CE9BE0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-It seems strange to me, that the missing hotplug script causes the trap 15.
-As I see, there some send and reciieve things done like <auth pap> and stuff.
+I just got around to bringing in the J2240 from the garage to connect it =
+to the LAN.  Unfortunately, the upgrade to 0.9.3 via iso image seems to =
+have rendered the NIC unusable (or did I render the NIC unusable when =
+moving the box w/o help?).  Below is the output from boot:
 
-Q:
-Does anybody know why:
-"read /dev/ppp: Resource temporarily unavailable"
-and
-"kernel does not support PPP filtering" ?
-What the hell is PPP filtering? Do I have to activate it in the Kernel?
-I think that "read /dev/ppp: Resource temporarily unavailable" Is not the 
-Problem, perhaps it takes time to init or stuff, but after a while it seems 
-to be available, because some messages are recieved and sent.
+Linux Tulip driver version 0.9.15-pre6 (July 2, 2001)
+
+tulip0: EEPROM default media type Autosense.
+
+tulip0: Index #0 - Media MII (#11) described by a 21142 MII PHY (3) =
+block.
+
+tulip0: ***WARNING***: No MII transceiver found!
+
+eth0: Digital DS21143 Tulip rev 33 at 0xfe00, 00:60:B0:B2:FC:F5, IRQ 99.
+
+tulip1: no phy info, aborting mtable build
+
+tulip1: MII transceiver #1 config 1000 status 7809 advertising 01e1.
+
+eth1: Digital DS21143 Tulip rev 48 at 0x1ff00, 00:60:B0:A4:F3:F1, IRQ =
+160.
+
+SCSI subsystem driver Revision: 1.00
+
+
+
+
+
+
+
+
+------=_NextPart_000_00F3_01C19052.C3CE9BE0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2614.3500" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I just got around to bringing in the =
+J2240 from the=20
+garage to connect it to the LAN.&nbsp; Unfortunately, the upgrade to =
+0.9.3 via=20
+iso image seems to have rendered the NIC unusable (or did I render the =
+NIC=20
+unusable when moving the box w/o help?).&nbsp; Below is the output from=20
+boot:</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3Dr_ansi size=3D2>
+<P>Linux Tulip driver version 0.9.15-pre6 (July 2, 2001)</P>
+<P>tulip0: EEPROM default media type Autosense.</P>
+<P>tulip0: Index #0 - Media MII (#11) described by a 21142 MII PHY (3)=20
+block.</P>
+<P>tulip0: ***WARNING***: No MII transceiver found!</P>
+<P>eth0: Digital DS21143 Tulip rev 33 at 0xfe00, 00:60:B0:B2:FC:F5, IRQ =
+99.</P>
+<P>tulip1: no phy info, aborting mtable build</P>
+<P>tulip1: MII transceiver #1 config 1000 status 7809 advertising =
+01e1.</P>
+<P>eth1: Digital DS21143 Tulip rev 48 at 0x1ff00, 00:60:B0:A4:F3:F1, IRQ =
+
+160.</P>
+<P>SCSI subsystem driver Revision: 1.00</P></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_00F3_01C19052.C3CE9BE0--
