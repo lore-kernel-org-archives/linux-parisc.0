@@ -1,12 +1,12 @@
 Return-Path: <mpshenoy@vsnl.com>
 Received: from sccrmhc11.comcast.net (sccrmhc11.comcast.net [204.127.202.55])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 871C8499E
+	by dsl2.external.hp.com (Postfix) with ESMTP id D4BEA4856
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 20:06:39 -0700 (MST)
+	Thu, 25 Mar 2004 20:16:45 -0700 (MST)
 From: "Prakash Shenoy" <mpshenoy@vsnl.com>
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 25 Mar 2004 22:06:35 -0500
-Message-ID: <OFEELBIMFFDMJBJFHICCAEIICEAA.mpshenoy@vsnl.com>
+Date: Thu, 25 Mar 2004 22:16:40 -0500
+Message-ID: <OFEELBIMFFDMJBJFHICCKEIICEAA.mpshenoy@vsnl.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
