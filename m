@@ -1,14 +1,16 @@
-From: James Bottomley <James.Bottomley@steeleye.com>
-Subject: [parisc-linux] Problems with kernel mmap (failing tst-mmap-eofsync in glibc on
+From: "David S. Miller" <davem@redhat.com>
+Subject: [parisc-linux] Re: Problems with kernel mmap (failing tst-mmap-eofsync in glibc on
  parisc)
-Date: 22 Aug 2003 09:40:37 -0500
-Message-ID: <1061563239.2090.25.camel__27754.1251075037$1416622703$gmane$org@mulgrave>
+Date: Fri, 22 Aug 2003 09:14:47 -0700
+Message-ID: <20030822091447.6ecea6ca.davem__5847.94284445724$1416622705$gmane$org@redhat.com>
+References: <1061563239.2090.25.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-lmHKO1hPltD8R1GkCOtr"
-Cc: davem@redhat.com, drepper@redhat.com
-To: Linux Kernel <linux-kernel@vger.kernel.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org,
+	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <1061563239.2090.25.camel@mulgrave>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,58 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---=-lmHKO1hPltD8R1GkCOtr
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+On 22 Aug 2003 09:40:37 -0500
+James Bottomley <James.Bottomley@SteelEye.com> wrote:
 
-This test essentially opens a file (via open(2)), writes something,
-opens it via a mmaped file object *read only* (via fopen(...,"rm)) reads
-what was writtent, writes some more and reads it via the mmaped file
-object.
+> This test essentially opens a file (via open(2)), writes something,
+> opens it via a mmaped file object *read only* (via fopen(...,"rm)) reads
+> what was writtent, writes some more and reads it via the mmaped file
+> object.
+> 
+> This last read fails to get the data on parisc.  The problem is that our
+> CPU cache is virtually indexed, and the page the write is storing the
+> data to (in the buffer cache) and the page it is mmapped to have the
+> same physical, but different virtual addresses.  We need the write() to
+> trigger a cache update via flush_dcache_page to get the virtually
+> indexed cache in sync.
+> 
+> The reason this doesn't happen is because the mapping is not on the
+> mmap_shared list that flush_dcache_page() updates.
 
-This last read fails to get the data on parisc.  The problem is that our
-CPU cache is virtually indexed, and the page the write is storing the
-data to (in the buffer cache) and the page it is mmapped to have the
-same physical, but different virtual addresses.  We need the write() to
-trigger a cache update via flush_dcache_page to get the virtually
-indexed cache in sync.
+flush_dcache_page() checks both the shared and non-shared mmap lists,
+so if it is on _either_ list it is flushed.  It does not check only
+the shared list.
 
-The reason this doesn't happen is because the mapping is not on the
-mmap_shared list that flush_dcache_page() updates.
-
-And the reason it's not on the correct list is because there's a check
-in mm/mmap.c:do_mmap_pgoff() that drops the VM_SHARED flag on the
-mapping if the file wasn't opened for writing (about line 541).
-
-Semantically, it seems that whether the mmaping sees a write or not on a
-different descriptor shouldn't depend on whether the underlying file was
-opened read only or read write, so I think the glibc test is correct,
-and we should keep the VM_SHARED flag even if the underlying file was
-opened read only.
-
-The patch is attached (and makes the test pass on parisc).
-
-Comments?
-
-James
-
-
---=-lmHKO1hPltD8R1GkCOtr
-Content-Disposition: attachment; filename=tmp.diff
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; name=tmp.diff; charset=ISO-8859-1
-
-=3D=3D=3D=3D=3D mm/mmap.c 1.89 vs edited =3D=3D=3D=3D=3D
---- 1.89/mm/mmap.c	Thu Jul 10 21:46:52 2003
-+++ edited/mm/mmap.c	Fri Aug 22 09:36:32 2003
-@@ -539,7 +539,7 @@
-=20
- 			vm_flags |=3D VM_SHARED | VM_MAYSHARE;
- 			if (!(file->f_mode & FMODE_WRITE))
--				vm_flags &=3D ~(VM_MAYWRITE | VM_SHARED);
-+				vm_flags &=3D ~VM_MAYWRITE;
-=20
- 			/* fall through */
- 		case MAP_PRIVATE:
-
---=-lmHKO1hPltD8R1GkCOtr--
+The VM_SHARED change you are proposing is definitely wrong.
