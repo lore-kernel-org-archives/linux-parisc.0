@@ -1,55 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C0CB6482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Oct 2001 18:14:58 -0600 (MDT)
-Date: Tue, 16 Oct 2001 20:16:25 -0400
-From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SysV IPC structure mismatches
-Message-ID: <20011016201625.C7269@megatonmonkey.net>
-References: <20011017012533.A8727@solo.franken.de>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2E3DC482A
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Oct 2001 22:09:35 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id jbfdiaaa for parisc-linux@parisc-linux.org; Tue, 16 Oct 2001 21:04:55 -0700
+Date: Tue, 16 Oct 2001 21:09:25 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011016210925.H537@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011017012533.A8727@solo.franken.de>; from tsbogend@alpha.franken.de on Wed, Oct 17, 2001 at 01:25:33AM +0200
+Subject: [parisc-linux] glibc builds!
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> As you might guess going the second way, seems to be the right, because
-> breaking binary compatibilty now, isn't that big issue, because all the
-> stuff we have right now, is available in source and easy compilable.
-> This could change, when there are commercial applications for Linux/Parisc.
-> But right now, we seem to have a problem building a new glibc (why ?),
-> so doing it immidiatly isn't that easy.
-> 
-> I've attached a patch, which implements the first way, which breaks 64bit 
-> kernels. With this patch the nspr testsuite passes all the semaphore tests,
-> which failed without the change. I could commit that patch, but I believe
-> it's the wrong way.
-> 
-> Thomas.
->
+As it turns out there was a binutils bug that seems to be causing the
+glibc build failures. it was also affecting mips. the binutils bug is
+fixed in the upcoming (tomorrow) -3 release.
 
-The second way is the best way.
-"El nuevo" GCC causes broken binary compatibility anyway, so no worries.
+glibc is building on my box now. I will upload RSN.
 
-I think we'll be recompiling all of our applications many times over
-before we are stable ;)
+Thanks to Ryan Murray <rmurray@debian.org> for the heads up!
 
-I have the assembly for ld sitting beside me (waiting for my coffee break
-to trace assembly).
+For those of you interested in looking at glibc, there are some warnings
+in atomicity.h (we don't have a hppa-specific one) and some of the
+linuxthreads tests are failing. Patches will be much appreciated :)
 
-If you want to help, you can try to compile glibc-2.2.4-2 for hppa.
-Having more than one person look at it can be better. The latest glibc
-for hppa is glibc-2.2.3-8?
-
-It seems like a problem in the compiler, since we don't even get to running
-anything important before it barfs (literally about 60 instructions in 
-_dl_start before an assert fails). 
-
-What is the problem? Don't know. Looking at assembly in hopes it jumps out.
-My collection of annotated PA-RISC assembly instructions is helping :}
-
-I have glibc compiled with -O1, since IMHO it makes the assembly saner.
-
-c.
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
