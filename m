@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4D2FC484C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 01:49:35 -0700 (MST)
-Date: Wed, 2 Apr 2003 10:49:33 +0200
-Message-ID: <3E842746000029B7@ocpmta2.freegates.net>
-In-Reply-To: <20030331100601.17585.qmail@sources.redhat.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-To: gcc-gnats@gcc.gnu.org, nobody@gcc.gnu.org, joel.soete@tiscali.be
+Received: from mail.uct.ac.za (mail.uct.ac.za [137.158.128.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 325CE4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 02:24:17 -0700 (MST)
+Date: Wed, 2 Apr 2003 11:23:52 +0200
+From: Michael Wood <mwood@its.uct.ac.za>
+To: Derek Ellis <Derek.Ellis@us.fortis.com>
 Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Subject: [parisc-linux] Re: c++/10274: internal compiler error:
+Subject: Re: [parisc-linux] soft power and power light on 712/60
+Message-ID: <20030402092352.GA10035@marmite.its.uct.ac.za>
+References: <se89551b.093@internal.us.fortis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <se89551b.093@internal.us.fortis.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +23,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>Category:       c++
->>Responsible:    unassigned
->>Synopsis:       internal compiler error:
->>Arrival-Date:   Mon Mar 31 10:06:01 UTC 2003
+On Tue, Apr 01, 2003 at 08:59:43AM -0600, Derek Ellis wrote:
+> Hello,
+> 
+> I have sort of a weird problem.  I installed Debian 3.0 on Sunday and
+> it came up great on my 712/60.  The only problem is the soft-power
+> switch doesn't work and the power light flashes while searching for
+> the boot device and then goes off once it starts booting.  
 
-Just a small update:
+I don't know about the light, but a kernel upgrade might help the
+switch.  Earlier kernels did not enable the power switch.  Not sure
+which version made it work (although I thought the kernel on the Debian
+3.0 CDs supported it.)  I haven't had a chance to run parisc linux for a
+while, unfortunately, and the D270 I was using did nothing when the
+power switch was switched, although the kernel I was running was
+supposed to enable it, so maybe the kernel doesn't enable it for all
+parisc machines?  (The switch did work in HPUX and I think it even
+worked at some point in Linux and later stopped.)
 
-The new precompiled g++ is now 3.3 20030331 and the error message become:
-...
-/tmp/ccJws8Pa.s: Assembler messages:
-/tmp/ccJws8Pa.s:151786: Error: Field out of range [-262144..262143] (-290552).
-
-Joel
-
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+-- 
+Michael Wood <mwood@its.uct.ac.za>
