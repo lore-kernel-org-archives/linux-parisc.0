@@ -1,21 +1,20 @@
-Return-Path: <James.Bottomley@SteelEye.com>
-Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5FE9A485A
+Return-Path: <soete.joel@tiscali.be>
+Received: from spoolo4.tiscali.be (spoolo4.tiscali.be [62.235.13.170])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5ADC64898
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 16 Apr 2004 11:08:05 -0600 (MDT)
-Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
-	i3GH82a24662; Fri, 16 Apr 2004 13:08:03 -0400
-Subject: Re: [parisc-linux] preliminary patches to speed up fork/exec
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: James Bottomley <James.Bottomley@SteelEye.com>
-In-Reply-To: <1082134752.2357.21.camel@mulgrave>
-References: <1082134752.2357.21.camel@mulgrave>
-Content-Type: text/plain
-Date: 16 Apr 2004 12:08:02 -0500
-Message-Id: <1082135283.2130.23.camel@mulgrave>
-Mime-Version: 1.0
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+	Sat, 17 Apr 2004 12:10:43 -0600 (MDT)
+Message-ID: <4081731B.7070006@tiscali.be>
+Date: Sat, 17 Apr 2004 18:10:35 +0000
+From: Joel Soete <soete.joel@tiscali.be>
+MIME-Version: 1.0
+To: Andy Walker <ajwalker@broadpark.no>
+Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
+References: <407DA495.1090009@tiscali.be>
+	<40711E5500006381@ocpmta2.freegates.net>
+	<26419.193.161.152.244.1082114391.squirrel@www.puszczka.com>
+In-Reply-To: <26419.193.161.152.244.1082114391.squirrel@www.puszczka.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,10 +24,57 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, 2004-04-16 at 11:59, James Bottomley wrote:
-> This is against 2.6.5-pa8 (there may be problems in 2.6.6-rc1 because of
-> the VM changes).
+Hello Andy,
 
-The patch actually only works on a 64 bit kernel, currently, too.
+Sorry for delay but I was a bit busy by a production server.
 
-James
+Andy Walker wrote:
+>>>That said, thanks to viewcvs, cvs and some tbz I recover from my systems,
+>>
+>>I >reach to rebuild on my b2k at the office:
+>>
+>>>2.6.3-pa2 (runing simultaneoulsy 2 find on different linux tree, a
+>>>tar of one of those tree) survive :)
+>>>2.6.4-rc1-pa3 same test: survive (so no pb with ccio-dma changes) :)
+>>>but 2.6.4-rc4-pa6 died with same messages.
+>>
+>>Sorry a typo: read 2.6.4-rc3-pa6 in place of rc4 :(
+>>
+>>Joel
+>>
+>>
+> 
+> 
+> Joel,
+> 
+> 2.6.6-rc1-pa0 shows the same behaviour,
+
+Thanks.
+but not a surprise regarding previous test.
+
+> although it does seem to make it
+> through the Gentoo boot process most times.
+
+I would not be surprise if it occures during some fsck. Do you also use ext3 on your Gentoo?
+btw Gentoo always install pkg by a local rebuild from src (that's a long time that I visit the site)?
+
+> Typically, 'ls <TAB><TAB>' in
+> bash in a largeish directory will do the trick. The bash process ends up
+> in disk-wait, the WARN_ON gets logged. I can switch consoles and log in
+> but just about anything that goes to disk ends up in disk-wait too.
+> 
+I will try this also.
+
+> I've compiled 2.6.3-pa2 in the hope of getting the C180 up and stable.
+
+This seems to be the last one enough stable for me and my c110: I just updated my distro (that used a lot tar iirc) and all works 
+fine with this kernel.
+
+> Can't boot it until this evening because the machine's at home and
+> AUTOBOOT is OFF.
+> 
+No pb.
+
+Thanks for your feedback ;)
+
+Joel
