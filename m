@@ -1,179 +1,47 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA22879
-	for <parisc-linux@puffin.external.hp.com>; Wed, 2 Aug 2000 08:44:07 -0600
-Received: from user32-1.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.32.1)
-  by mailserv2.iuinc.com with SMTP; 2 Aug 2000 14:46:09 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id DE074B005; Wed,  2 Aug 2000 15:45:06 +0100 (BST)
-Date: Wed, 2 Aug 2000 15:45:06 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <20000802154506.Q17139@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Repeatable crash in remove_inode_page()
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA23439
+	for <parisc-linux@puffin.external.hp.com>; Wed, 2 Aug 2000 09:01:42 -0600
+Message-Id: <200008021503.KAA26727@opus.cirr.com>
+From: eric@cirr.com (Eric Schnoebelen)
+To: Richard Massa <int19@hydra.acs.uci.edu>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] A question... 
+In-reply-to: Your message of "Tue, 01 Aug 2000 13:14:54 PDT."
+             <200008012014.NAA08622@miami.acs.uci.edu>
+Date: Wed, 02 Aug 2000 10:03:44 -0500
+Sender: eric@cirr.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  After a few seconds of heavy disk access I always see the following
-crash at IAOQ = c0130b28 = remove_inode_page() + 0x4c.
 
-Kernel source cvs updated today,  gcc from xc-20000728.tgz, but it
-was probably happening before those updates also.
+Richard Massa writes:
+- I've got this exemplar in my office, it has 16 233 megahertz
+- processors.  I was wondering if its possible to run parisc-linux
+- on the machine...
 
-Richard
+	I suspect it will _never_ be possible to run
+parisc-linux (or any Open Source OS) on the Exemplar Series
+systems (especialy the SPP1x00 systems) as they are entirely
+different than the HP PARISC workstation/server systems.
 
+	A bit of background:  The Exemplar systems were
+designed/built by CONVEX before the purchase of CONVEX by HP.
+They have an entirely different memory architecture and IO
+system.  The memory architecture is based on an SCI ring, if I
+remember correctly.. Designed to allow multiple nodes to be
+connected together to form a larger system (up to eight nodes in
+a complex, as I remember..)  The IO system on an 1x00 system is
+SBus based, while the IO system on the 2x00 (now generally
+available as the V-class) are PCI based. (oh, and the firmware
+is all OBP based.)
 
-Dumping Stack from c7dc4000 to c7dc4a00:
-4000 00000000 00000000 00000000 00000001 c0270bf0 00000000 00000000 ffffffff
-4020 00000005 00000014 00000000 c7eff180 c7eff180 00000000 00000000 c026d6d0
-4040 c026d6d0 c02a4000 c7e5c000 00000000 c027463c 00000000 00000012 00000000
-4060 00000000 c0000000 00000016 00000000 00000000 00000000 00000000 c7e5c000
-4080 c7e5c000 00000000 00000000 00000000 00000000 c02c720c 00000000 c7dc409c
-40a0 c7dc409c c7dc40a4 c01216cc 00000000 00000000 00000000 00000000 00000000
-40c0 00000000 00000000 00000000 00000000 00000000 00000000 c7dc4000 c0126d10
-40e0 00000000 00000000 00000016 00000000 00000000 00003949 00000000 000001e2
-4100 00000000 00000000 00000000 00000000 00000000 00000000 80000000 00000000
-4120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-41a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-41c0 fffffeff fffffeff fffffeff 00000000 00000000 ffffffff ffffffff ffffffff
-41e0 ffffffff ffffffff ffffffff 00800000 05000000 00000000 ffffffff ffffffff
-4200 ffffffff 00000800 00000800 00000400 00000400 ffffffff ffffffff ffffffff
-4220 ffffffff 0000726d 00000065 72000000 00000000 00000000 00000000 00000000
-4240 00000000 00000000 0004ff0b 200201c4 00023c33 00000001 2001f70c 2001f953
-4260 2001f950 00023c50 00000000 00000000 00023c20 00000000 00000001 0000005f
-4280 00000000 00000000 c02a4600 c7f98000 c0277708 00008000 0000000a 2001f953
-42a0 00000001 00000000 00000000 20020208 2001f9a1 000bdc88 0000000b ffffffff
-42c0 20022380 0006b08b 00000000 00000000 0000003c 0000003e c0270800 00000001
-42e0 c02aa72f 00000004 c02aa70b c02aa72f 00000023 0000003e 0000003c 00000024
-4300 0000000b c0270c30 c0270800 c0270800 00000020 000000ff c02c4798 00000001
-4320 c019ede4 00000001 00000005 ffd05801 00000005 c0268000 00000060 00003fff
-4340 c7f98800 c0122d98 000f0800 00000000 0000003c 0000003e c0270800 00000001
-4360 c02aa72f 00000004 c02aa70b c02aa72f 00000023 0000003e 00000008 00000002
-4380 00000000 cccccccd 0000000a 00001018 00000020 000000ff c02c4798 00000001
-43a0 c019ede4 00000001 00000005 ffd05801 00000005 c0268000 00000060 00003fff
-43c0 c7f98800 c0122d98 00002002 00002002 00000000 00002002 00002002 00002002
-43e0 00002002 00002002 00002002 00002002 0006989f 000698a3 c7dc4000 c7dc4a00
-4400 c010f4f0 0000000e 08050259 00002002 000698a4 00000000 07d8e000 00000000
-4420 c7f1a200 c7f3f3a0 00000000 c7f03000 00000000 00000000 00000000 00000000
-4440 00000000 c7dc4440 00000000 00000000 00000002 00000003 00000000 00000000
-4460 e8001128 0d601280 0e001280 341a0078 e85505dc 0d441288 0d60109a e8570c08
-4480 695c0030 0804025a e85617f8 37990002 0d401298 3413000a 341a0028 49440030
-44a0 081c0246 695c0020 0c801290 c0110d20 68800070 0c801298 e855054c 6bd33f19
-44c0 2001f950 00000000 000081ed 00023c20 2001f949 00000000 000bdc88 20026408
-44e0 00000000 340f0000 e8000db0 c0110f4c 85e02088 341300b8 8a932040 34130054
-4500 00000000 0000007c c56c88c0 c7f1e8c0 c5815007 00000003 00006564 00000010
-4520 00000000 00000000 2001f9a1 00000000 2001f9a1 0000005f 0000000f 0000000a
-4540 401015d8 401013c4 00000000 00004012 000bcc88 000bcc88 0003a084 401015c4
-4560 0008e290 00004800 0000005f c0150c6c 00000000 c7dc4248 c7f98000 c0277708
-4580 00023c50 2001f950 c56c8cc0 c5815000 c56c8cc0 00000000 00000000 000c0808
-45a0 00000000 00023c20 00000000 c014f490 00023c50 2001f950 2001f9a1 c5815000
-45c0 c56c88c0 00000000 ffffffeb 00000000 00000000 00023c50 2001f9a1 2001f9a1
-45e0 fffffff4 c0271978 00000000 c0150afc 00023c50 2001f950 20020208 20022348
-4600 c24de0c0 fffffffe c60e0070 00023c50 c56c8cc0 c24de154 c24de0c0 ffffffff
-4620 c24de138 c0271978 00004800 c014e4d0 00000603 00000073 40100000 40108000
-4640 c7dc4600 c7dc450c c7dc4598 c7dc4508 c5815007 c6cba960 00000004 00000000
-4660 00000001 c0271c08 00000000 c0164be8 c0271c0c c0271a24 00000000 00000000
-4680 00000000 00023c20 00000000 00000000 c56c8cc0 fffffffb c6cba960 c24de0c0
-46a0 c09d77c0 00000000 00000000 c0157bb8 c0271c0c c0271a24 40108000 c7efd740
-46c0 c6cba960 c24de0c0 c09d77c0 00000070 c7f98000 c02a4600 00000000 00000000
-46e0 0000005f 00000001 00000000 c0159440 00000000 00000000 c56c8cc0 fffffffe
-4700 00000001 00000000 00023c20 00000000 00000000 c56c8cc0 00000000 00000000
-4720 c0274830 c09d77c0 c7efd5c0 c0161610 00004800 0000005f 40000000 c7efd560
-4740 c24de134 c24de0c0 c24de0c0 00000070 c56c8cc0 00000000 00000000 00000000
-4760 00000000 00000000 00000000 c0130e48 c0271c0c c0271a24 c7dc4940 c012eafc
-4780 c04df3e4 00000000 0000005f c09d7880 00000000 c02c81f4 c022f000 c022f000
-47a0 00000000 c022f000 c04e1680 c04e1668 c04e167c c7dc45c8 c24de134 c24de0c0
-47c0 0004000b c0271000 c0130e48 c04df3d0 c04df3d0 c04df3e8 c022f000 00000000
-47e0 c022f000 c022f000 c02c81f4 00000000 c09d7880 0000005f 00000000 00000000
-4800 c02a4600 c7f98000 c0277708 c04df417 c09d7880 c09d7880 c0534a0c 0000000a
-4820 00000069 c022f53c c022f3b0 c0268000 00000000 00000fff c7dc4a00 c01593d0
-4840 00000000 00000000 0000003c 0000003e c0270800 00000001 c02aa72f 00000004
-4860 c02aa70b c02aa72f 00000023 0000003e 0000003c 00000024 0000000b c0270c30
-4880 c0270800 c0270800 00000020 000000ff c02c4798 00000001 c019ede4 00000001
-48a0 00000005 ffd05801 00000005 c0268000 00000060 00003fff c7f98800 c0122d98
-48c0 000f0800 00000000 0000003c 0000003e c0270800 00000001 c02aa72f 00000004
-48e0 c02aa70b c02aa72f 00000023 0000003e 00000002 0012ea58 00000028 cccccccd
-4900 0000000a 00001018 00000020 000000ff c02c4798 00000001 c019ede4 00000001
-4920 00000005 ffd05801 00000005 c0268000 00000060 00003fff c7f98800 c0122d98
-4940 00000000 00002002 00000000 00002002 00000000 00000000 00000000 00000000
-4960 00000000 00000000 c0130b28 c0130b2c 00000000 00000003 000bd000 00000008
-4980 0e741288 00000000 c04df41b c7eff180 c02a4000 c7dc4900 00000002 00023c20
-49a0 00000000 00000001 c09d7a98 00000000 0012ea58 c02a4600 c7f98000 c0277708
-49c0 c7f8da40 c7879ad0 c02b5044 c7f37e00 c7f8da60 0000ffff c0280aa4 c7f8d4a0
-49e0 c7f8da40 c7879ad0 c02b5044 c0110928 00000000 c7dc4000 c02c6800 c02c6800
+	As for an OS, the 1x00 systems run MACH, with a HP-UX
+emulating server layer. (originally 9.0x, and later 10.01)
 
-Unexpected Interruption!: Code=28 regs=c7dc47c0 (Addr=00000000)
+	All in all, you'll probably have more luck running
+parisc-linux on the 712 test station.. :-) (and have the add in
+ethernet/serial card to play with as well.)
 
-PSW  : 0004000b  GR 1 : c0271000  GR 2 : c0130e48  GR 3 : c04df3d0  
-GR 4 : c04df3d0  GR 5 : c04df3e8  GR 6 : c022f000  GR 7 : 00000000  
-GR 8 : c022f000  GR 9 : c022f000  GR10 : c02c81f4  GR11 : 00000000  
-GR12 : c09d7880  GR13 : 0000005f  GR14 : 00000000  GR15 : 00000000  
-GR16 : c02a4600  GR17 : c7f98000  GR18 : c0277708  GR19 : c04df417  
-GR20 : c09d7880  GR21 : c09d7880  GR22 : c0534a0c  GR23 : 0000000a  
-GR24 : 00000069  GR25 : c022f53c  GR26 : c022f3b0  GR27 : c0268000  
-GR28 : 00000000  GR29 : 00000fff  GR30 : c7dc4a00  GR31 : c01593d0  
-SR0  : 00000000  SR1  : 00002002  SR2  : 00000000  SR3  : 00002002  
-SR4  : 00000000  SR5  : 00000000  SR6  : 00000000  SR7  : 00000000  
-
-IASQ : 00000000 00000000 IAOQ : c0130b28 c0130b2c
- IIR : 0e741288 ISR : 00000000 IOR : c04df41b
-
-
-00000000 <remove_inode_page>:
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-   0:   6b c2 3f d9     stw rp,-14(sr0,sp)
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-   4:   23 20 00 00     ldil 0,r25
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-   8:   6f c3 00 80     stw,ma r3,40(sr0,sp)
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-   c:   08 1a 02 43     copy r26,r3
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2540
-  10:   23 40 00 00     ldil 0,r26
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-  14:   37 39 00 00     ldo 0(r25),r25
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-  18:   48 73 00 30     ldw 18(sr0,r3),r19
-  1c:   37 5a 00 00     ldo 0(r26),r26
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-  20:   c7 f3 40 10     bb,*< r19,1f,30 <remove_inode_page+0x30>
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-  24:   34 18 00 d2     ldi 69,r24
-  28:   e8 40 00 00     b,l 30 <remove_inode_page+0x30>,rp
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-  2c:   08 00 02 40     nop
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-  30:   0c 70 10 95     ldw  8(sr0,r3),r21
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-  34:   2b 60 00 00     addil 0,dp,%r1
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-  38:   0e b0 10 93     ldw  8(sr0,r21),r19
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-  3c:   36 73 3f ff     ldo -1(r19),r19
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-  40:   0e b3 12 90     stw  r19,8(sr0,r21)
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2536
-  44:   0c 68 10 94     ldw  4(sr0,r3),r20
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2541
-  48:   0c 60 10 93     ldw  0(sr0,r3),r19
-  4c:   0e 74 12 88     stw  r20,4(sr0,r19)
-  50:   0e 93 12 80     stw  r19,0(sr0,r20)
-  54:   48 74 00 70     ldw 38(sr0,r3),r20
-  58:   86 80 20 38     cmpib,= 0,r20,7c <remove_inode_page+0x7c>
-  5c:   34 36 00 00     ldo 0(r1),r22
-  60:   48 73 00 20     ldw 10(sr0,r3),r19
-  64:   86 60 20 12     cmpib,=,n 0,r19,74 <remove_inode_page+0x74>
-  68:   6a 74 00 70     stw r20,38(sr0,r19)
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2544
-  6c:   48 74 00 70     ldw 38(sr0,r3),r20
-  70:   48 73 00 20     ldw 10(sr0,r3),r19
-  74:   0e 93 12 80     stw  r19,0(sr0,r20)
-  78:   68 60 00 70     stw r0,38(sr0,r3)
-  7c:   00 01 0e 73     rsm 1,r19
-  80:   0e c0 10 94     ldw  0(sr0,r22),r20
-/usr/local/.home/rhirst/cvs/linux-2.3/mm/filemap.c:2545
-                unsigned long tmp = (PAGE_SIZE << order) / sizeof(struct page *);
+--
+Eric Schnoebelen		eric@cirr.com		http://www.cirr.com
+	"We are interested in artificial intelligence because there
+	  is so much less of the natural kind around these days."
