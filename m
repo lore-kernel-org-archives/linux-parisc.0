@@ -1,74 +1,64 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6C7F5482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Jun 2001 18:11:02 -0600 (MDT)
-Message-Id: <200106110003.SAA11489@puffin.external.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] memcpy_fromio() seems partially broken [with patch] 
-In-Reply-To: Your message of "Sat, 09 Jun 2001 02:39:17 BST."
-             <20010609023917.C28264@parcelfarce.linux.theplanet.co.uk>
-Date: Sun, 10 Jun 2001 18:03:26 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from leo.uni-sw.gwdg.de (leo.uni-sw.gwdg.de [134.76.205.152])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 42C92482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Jun 2001 05:18:09 -0600 (MDT)
+Date: Mon, 11 Jun 2001 13:17:39 +0200 (CEST)
+From: Peter Weilbacher <weilbach@uni-sw.gwdg.de>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Kernel faults on boot
+In-Reply-To: <20010610140927.C16532@linuxcare.com>
+Message-ID: <Pine.LNX.4.33.0106111249020.9668-100000@leo.uni-sw.gwdg.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> This is very bizarre.  Following the codepaths, the current code does:
-...
->  bytecopy:
-...
-> and i don't see how that can possibly do byteswapping.  unless byteswapping
-> is necessary and this code is failing to do that?
+On Sun, 10 Jun 2001, Richard Hirst wrote:
 
-That's what it sounds like.
+> On Fri, Jun 08, 2001 at 07:28:51PM +0200, Peter Weilbacher wrote:
+> > I have played with a 712/60 and had the same problem as Frank. I got
+> > it installed over the first reboot, but after a the next one on
+> > every reboot it crashed with Kernel faults at cron.
+> >
+> > Now I have reinstalled and I do not get over the reboot. Is it
+> > explained somewhere, which I need to write down, to help you debug
+> > the problem? (I guess it doesn't make it into any logs, which I
+> > could look at by putting the disk on another machine.)
+>
+> I expect to get my hands on a 712 very soon, so I'll see if I can
+> reproduce this problem.  So far as what you can write down for me...
+> Usually a kernel crash gives a stack dump followed by the fault type
+> and address, then a bunch of registers.  I'm not too interested in the
+> stack dump (which has probably scrolled off the screen, anyway), but
+> everything after the stack dump would be useful.
 
-> Your code is doing:
-> 
->          if (((unsigned long)dest & 3) != (src & 3))
->                  goto wordcopy;
-> 
->   wordcopy:
->          if (src & 3)
->                  goto bytecopy;
->   wordcopy_loop:
-...
-> which is doing a byteswap on the  value returned from readl!
+Hmm, it seems that the numbers change every time, but here are the
+ones from the last instance:
 
-Exactly.
+	Kernel Fault: Code=15 regs=1051ca80 (Addr=1dc0ce18)
 
-> This seems
-> pretty grotesque to me.
+	     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+	PSW: 00000000000001000000000000001111
+	r0-3o 00000000 10236000 10193d70 1dc0cd18
+	r4-7o 146fc000 102fe13c 00000001 00000100
+	r8-11o 4020b1a8 00000000 00000004 146ff000
+	r12-15o 00000100 00000030 00003000 102fe138
+	r16-19o 00000080 1051c908 00000001 14786000
+	r20-23o 146fc000 102959f8 101da1d4 00000000
+	r24-27o 000000ff 1dc0ce18 146fc000 10268010
+	r28-31o 00001920 00000004 1051ccc0 10192c78
+	sr0-3o 00000000 0000012a 00000000 0000012a
+	sr4-7o 00000000 00000000 00000000 00000000
 
-It looks grotesque but the compiler should be able to
-do pretty well with that.
+	IASQ: 00000000 00000000 IAOQ: 10236234 10236238
+	 IIR: 0f221033    ISR: 00000000  IOR: 1dc0ce18
+	 ORIG_R28: 1005f210
 
->   I want to hear from someone (eg grant) who can
-> say what's actually going on here..
+Phew, quite a work to type all this stuff, I am glad that you are
+not interested in the stack... Perhaps this is useful.
 
-The problem seems that the data needs to be swapped and I don't know why.
-Perhaps the card is swapping the data?
-acenic (and tulip?) has such a mode.
+In the meantime I noticed that about every 6th time it boots up
+without crashing, but the keyboard setting from the installation
+(German) was obviously not saved.
 
-PARISC pci host bus adapters has a "byte is byte" approach to data.
-I've heard the term "address invariance" used but not sure if
-that's exactly the same thing. The idea here is data DMA'd into memory
-is a byte stream and the CPU reading the data from memory byte at a time
-from low address to higher address would see the same data.
-
-Normally we expect the consumer of data (eg device driver) from IO space
-to perform the swap and not the accessor functions (eg readl).
-
-I need to do more homework to be certain about the following:
-  I *think* CPU reading IO space directly needs to be swapped to
-  provide the same illusion that DMA provides. The problem (I think)
-  is the data is *little* endian across the PCI bus and presented as
-  such to the CPU which then stores it *big* endian in memory.
-
-Dino ERS has a nice chapter on this mess. Elroy follows the same rules.
-I'll have to read that again.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Peter.
