@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A6BA04829
-	for <parisc-linux@parisc-linux.org>; Wed,  6 Nov 2002 09:12:11 -0700 (MST)
-Date: Wed, 6 Nov 2002 17:11:53 +0100
-Message-ID: <3DB5755500002451@ocpmta7.be.tiscali.com>
-From: jsoe0708@tiscali.be
-To: "Matthew Wilcox" <willy@debian.org>
-Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 006DC4829
+	for <parisc-linux@parisc-linux.org>; Wed,  6 Nov 2002 12:07:12 -0700 (MST)
+Message-Id: <200211061846.gA6IkUuf026325@hiauly1.hia.nrc.ca>
+To: jsoe0708@tiscali.be
+Date: Wed, 6 Nov 2002 13:46:30 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@parisc-linux.org
+In-Reply-To: <3DB5755500002283@ocpmta7.be.tiscali.com> from "jsoe0708@tiscali.be" at Nov 6, 2002 08:18:48 am
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Subject: [parisc-linux] 2.5.45-pa5 failed to boot [was: gcc-3.3 hppa patch]
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Re: gcc-3.3 hppa patch
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,40 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Subject: Re: [parisc-linux] Re: gcc-3.3 hppa patch
->
->
->On Wed, Nov 06, 2002 at 08:18:48AM +0100, jsoe0708@tiscali.be wrote:
->> I also try to test a 2.5 (45-pa5) it compiles well (after application
-of
->> an old tips [remove $$mulU from parisc_ksyms.c]) but failled to boot
-:((
->> (Is somebody already reach to boot a 2.5 pa?)
->
->come on joel, you can give better bug resports than that.
->
-You have right but it was not the first object of this mail. (just mentioned
-this experince comparing 2.4 kernel).
+> init/main.c: In function `init':
+> init/main.c:624: internal compiler error: Segmentation fault
+> Please submit a full bug report,
+> with preprocessed source if appropriate.
 
-But as you are interested here is what I do:
+This may or may not be a gcc problem.  I can't easily recreate the
+environment that caused the fault.  That's why GCC asks for preprocessed
+source.
 
-I use gcc-snapshot (2002-11-03), the CVS update kernel 2.5.45-pa5 and the
-config file config-richard-2.5 from ftp.pl.org (is it the wrong things?).
-Then (as usual) after a make menuconfig and change of env var:
-LD_LIBRARY_PATH=/usr/lib/gcc-snapshot/lib:$LD_LIBRARY_PATH
-PATH=/usr/lib/gcc-snapshot/bin:$PATH,
-I run (make dep; make vmlinux; make modules; make modules_install).
-Put then the kernel and its system.map in place and try to boot but it failled
-just after the palo message:
-If it is the last message...
+It also helps if you can narrow the problem down by eliminating
+extraneous code to produce a simple testcase that causes the error.
 
-Nothing more: just see "shuting down ...." on LCD of the B2000
+> See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 
-Sorry but I remove this stuff so piminfo would not be helpfull right now.
-I will try latter last 2.5.46-pa1 but may be now with my working config
-file of 2.4.19?
+Please read and follow its recommendations.  Casual reports are not
+good enough.
 
-Well it was to compile my merge of 2.4.20-rc1 with 2.4.19-pa24 for which
-I try to backport arch/parisc/traps.c. Do you know how can I test it?
-
-Joel
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
