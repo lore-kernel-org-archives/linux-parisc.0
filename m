@@ -1,53 +1,30 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA08091
-	for <parisc-linux@puffin.external.hp.com>; Tue, 11 Jan 2000 04:56:22 -0700
-Message-ID: <20000111115922.5298.qmail@web508.mail.yahoo.com>
-Date: Tue, 11 Jan 2000 03:59:22 -0800 (PST)
-From: Ulrich Strelow <ulrich_strelow@yahoo.com>
-Subject: Re: [parisc-linux] Linux 2.3
-To: Matthew Wilcox <willy@thepuffingroup.com>, parisc-linux@thepuffingroup.com
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id HAA08971
+	for <parisc-linux@puffin.external.hp.com>; Tue, 11 Jan 2000 07:51:18 -0700
+Received: from prumpf by tux.mkp.net with local (Exim 3.12 #1)
+	id 1282fh-0003r2-00
+	for parisc-linux@thepuffingroup.com; Tue, 11 Jan 2000 15:53:21 +0100
+Date: Tue, 11 Jan 2000 15:53:21 +0100
+From: Philipp Rumpf <prumpf@mkp.net>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000111155321.A14792@tux.mkp.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] C360 shellprompt
 List-ID: <linux-parisc.vger.kernel.org>
 
-Could someone please update the procedure of saving
-the whole cvs tree linux-2.3 to
-ftp://puffin.external.hp.com/pub/parisc/cvs/ as a
-tar.gz file for initial cvs checkout ?
+Just so you all know, we get to a shell prompt on the C360 after the
+changes which I'm about to commit (blame slow dialup lines).  I would
+like to know whether we get to a prompt on other PA2.0 machines as well.
 
-Ulrich
---- Matthew Wilcox <willy@thepuffingroup.com> wrote:
-> 
-> Everyone should now switch development to the linux
-> 2.3 tree which is
-> in CVS.  How do you do this?
-> 
-> Set your CVSROOT as described on the pages.
-> cvs co linux-2.3
-> cd linux-2.3
-> (fetch a ramdisk.bin and put it in this directory)
-> make oldconfig
-> make dep
-> make Image
-> cp arch/parisc/boot/Image to wherever you tftpboot
-> from.
-> Watch your machine crash.
-> 
-> It may get as far as a prompt for you; but even if
-> it doesn't, it should
-> still get quite some way.  Many configurations will
-> not work, and some
-> may not compile; I ensured that the defconfig will
-> at least link.
-> 
->
----------------------------------------------------------------------------
-> To unsubscribe: send e-mail to
-> parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
-> 
-__________________________________________________
-Do You Yahoo!?
-Talk to your friends online with Yahoo! Messenger.
-http://im.yahoo.com
+When testing, please keep in mind most "kernel doesn't print anytihng"
+problems are problems in the .config rather than kernel bugs.  Start
+with the defconfig and modify as little as possible.  Also, the most
+likely cause for non-reproducible failures is page colouring problems
+so try 3-4 times.
+
+Anyway, on Lasi-based machines such as the C360 you should be able to
+do anything you can do on the 712 right now (-ls, fork() but not exec(),
+rebooting the machine with SysRq-B), just a lot faster.
+
+	Philipp Rumpf
