@@ -1,29 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA21394
-	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 11:14:21 -0600
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (root@195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 31 Aug 2000 17:14:18 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 13UXuk-0000sJ-00; Thu, 31 Aug 2000 18:14:10 +0100
-Date: Thu, 31 Aug 2000 18:14:09 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: =?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@europay.com>
-Cc: "'parisc-linux@thepuffingroup.com'" <parisc-linux@thepuffingroup.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA21716
+	for <parisc-linux@puffin.external.hp.com>; Thu, 31 Aug 2000 11:19:15 -0600
+Message-Id: <200008311719.NAA26316@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] FW: hpux 11.00 near success
-Message-ID: <20000831181409.H32582@parcelfarce.linux.theplanet.co.uk>
-References: <A4A5E4C468B5D11190220001FA6835DD04DD86B9@epixch003>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <A4A5E4C468B5D11190220001FA6835DD04DD86B9@epixch003>; from JSO@europay.com on Thu, Aug 31, 2000 at 06:59:20PM +0200
-Sender: <willy@www.linux.org.uk>
+To: JSO@europay.com (=?iso-8859-1?Q?SOETE_Jo=EBl?=)
+Date: Thu, 31 Aug 2000 13:19:11 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <A4A5E4C468B5D11190220001FA6835DD04DD86B9@epixch003> from "=?iso-8859-1?Q?SOETE_Jo=EBl?=" at Aug 31, 2000 06:59:20 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 31, 2000 at 06:59:20PM +0200, SOETE Joël wrote:
-> PS: Does exist some archive of linuxcare mailing list about LINUX-PARISC?
+> hppa-linux-gcc -g -O -I../include -I../lib -I../../linux-2.3/include  -o
+> palo diskpart.o    elf64.o	    load.o	  paloio.o      som.o
+> elf32.o	      error.o	    palo.o build.o
+> /opt/puffin/lib/gcc-lib/hppa1.1-linux/2.96/../../../../hppa1.1-linux/bin/ld:
+> cannot open crt1.o: No such file or directory
 
-Yup, linked from the mailing list pages.
+I wonder why this isn't crt0.o?  The startup file is set by the specs file
+in /opt/puffin/lib/gcc-lib/hppa1.1-linux/2.96.  It is also internal to
+gcc.  The SPECS configuration files for the pa port are in config/pa.
 
-http://www.thepuffingroup.com/parisc/lists.html
-
+Dave
 -- 
-Revolutions do not require corporate support.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
