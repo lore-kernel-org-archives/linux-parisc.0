@@ -1,15 +1,12 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] [testers wanted] cleanup early console setup
-Date: Mon, 14 Feb 2005 02:12:36 +0000
-Message-ID: <20050214021236.GA29917@parcelfarce.linux.theplanet.co.uk>
-References: <20050211223525.GH2277@tausq.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] a b180 panic with 2.6.11-rc3-pa3
+Date: Mon, 14 Feb 2005 11:30:43 +0000
+Message-ID: <42075CE800002E4E@mail-6-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+  charset="ISO-8859-15"
+To: "List Parisc" <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050211223525.GH2277@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,71 +17,59 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Feb 11, 2005 at 02:35:25PM -0800, Randolph Chung wrote:
-> Especially interesting would be something that uses non-8250 consoles,
-> such as E/K class systems that use the serial mux console. I suspect
-> some changes are needed there. If you can test on such a system, and see
-> some problems [*], please let me know. likely we will need to move the
-> register_console() call from mux_probe() into a separate initcall.
-> 
-> [*] during startup, the console print messages should show up regularly,
-> and only once. symptoms of problems are if your console prints pause
-> for a long time, or if you start seeing each line printed twice.
+Hi all,
 
-My comments in >>> <<<, this is the boot log from Knapps
-
-Linux version 2.6.11-rc3-pa5 (willy@palinux) (gcc version 3.3.5 (Debian 1:3.3.5-5)) #9 Sun Feb 13 18:53:41 MST 2005
-FP[0] enabled: Rev 0 Model 14
-The 32-bit Kernel has started...
-Determining PDC firmware type: System Map.
-model 000058f0 00000491 00000000 00000002 53ad0a91 100000f1 00000008 000000b2 000000b2
-vers  00000201
-CPUID vers 14 rev 5 (0x000001c5)
-model 9000/889/K460
-Total Memory: 1920 Mb
-Built 1 zonelists
-Kernel command line: HOME=/ root=/dev/sda3 console=ttyB0 TERM=vt102 palo_kernel=0/vmlinux
-PID hash table entries: 4096 (order: 12, 65536 bytes)
-Switching from PDC console
->>> Long pause here <<<
-Linux version 2.6.11-rc3-pa5 (willy@palinux) (gcc version 3.3.5 (Debian 1:3.3.5-5)) #9 Sun Feb 13 18:53:41 MST 2005
-FP[0] enabled: Rev 0 Model 14
-The 32-bit Kernel has started...
-Determining PDC firmware type: System Map.
-model 000058f0 00000491 00000000 00000002 53ad0a91 100000f1 00000008 000000b2 000000b2
-vers  00000201
-CPUID vers 14 rev 5 (0x000001c5)
-model 9000/889/K460
-Total Memory: 1920 Mb
-Built 1 zonelists
-Kernel command line: HOME=/ root=/dev/sda3 console=ttyB0 TERM=vt102 palo_kernel=0/vmlinux
-PID hash table entries: 4096 (order: 12, 65536 bytes)
-Switching from PDC console
-Console: colour dummy device 160x64
-Dentry cache hash table entries: 262144 (order: 8, 1048576 bytes)
-Inode-cache hash table entries: 131072 (order: 7, 524288 bytes)
-Memory: 1966080k available
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-NET: Registered protocol family 16
->>>lots more here<<<
-Serial mux driver (8 ports) Revision: 0.3
-ttyB0 at MMIO 0xf1900800 (polled) is a Mux
->>>etc<<<
-Debian GNU/Linux 3.1 knapps ttyB0
-
-knapps login: root
-Password: 
-Last login: Mon Feb 14 01:56:30 2005 on ttyB0
-Linux knapps 2.6.11-rc3-pa5 #9 Sun Feb 13 18:53:41 MST 2005 parisc GNU/Linux
+Don't know if somebody else also emcountered such panic:
+Backtrace:
+ [<101bb588>] journal_add_journal_head+0xdc/0x13c
+ [<101b4dd8>] journal_dirty_data+0x64/0x1b0
+ [<101a6be4>] ext3_journal_dirty_data+0x1c/0x60
+ [<101a69a8>] walk_page_buffers+0xe0/0xf0
+ [<101a72b8>] ext3_ordered_writepage+0x168/0x1fc
+ [<1018d770>] mpage_writepages+0x28c/0x3a0
+ [<1018bae4>] __sync_single_inode+0x5c/0x278
+ [<1018bd68>] __writeback_single_inode+0x68/0x168
+ [<1018c034>] sync_sb_inodes+0x1cc/0x310
+ [<1018c1e8>] writeback_inodes+0x70/0xd4
+ [<10149088>] background_writeout+0xb4/0x10c
+ [<10149e40>] __pdflush+0x138/0x204
+ [<10149f2c>] pdflush+0x20/0x2c
+ [<1013c564>] kthread+0xdc/0xe4
+ [<1010ac5c>] ret_from_kernel_thread+0x1c/0x24
 
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Kernel Fault: Code=3D15 regs=3D17c84840 (Addr=3D20702352)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111111100001111 Not tainted
+r00-03  00000000 10201800 101bb588 20702352
+r04-07  122be660 122be660 122be660 00000000
+r08-11  00000000 00000000 00001000 1230c3e8
+r12-15  101a7120 17d1a990 00002000 00000000
+r16-19  101a7150 17c84508 00000000 00000002
+r20-23  00000000 00000000 20702352 00000000
+r24-27  00000030 00000000 20702352 10375010
+r28-31  20702352 100c74f4 17c84840 100c74fc
+sr0-3   00000000 00000000 00000000 0000534b
+sr4-7   00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 10201f1c 10201f20
+ IIR: 0ed91222    ISR: 00000000  IOR: 20702352
+ CPU:        0   CR30: 17c84000 CR31: 103d0000
+ ORIG_R28: 17c84980
+ IAOQ[0]: memset+0x24/0xa8
+ IAOQ[1]: memset+0x28/0xa8
+ RP(r2): journal_add_journal_head+0xdc/0x13c
+Kernel panic - not syncing: Kernel Fault
+
+Here on a b180 running 2.6.11-rc3-pa3 (while the system should be idle)
+
+Any idea about known ext3 pb?
+
+Joel
+
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
