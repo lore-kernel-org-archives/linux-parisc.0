@@ -1,79 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (f138.law15.hotmail.com [64.4.23.138])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AC7A6482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  5 Aug 2001 00:18:13 -0600 (MDT)
-From: "Frank Amo" <frankandlinux@hotmail.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Sat, 04 Aug 2001 23:18:06 -0700
+Received: from solo.franken.de (pD905476F.dip.t-dialin.net [217.5.71.111])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 503D5482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  5 Aug 2001 08:50:02 -0600 (MDT)
+Date: Sun, 5 Aug 2001 16:48:32 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Helge Deller <helge.deller@sap.com>
+Cc: =?iso-8859-1?Q?Jo=EBl_Soete?= <jso@europay.com>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] XFree86 on B180
+Message-ID: <20010805164832.A4767@solo.franken.de>
+References: <OFCFD0268B.6552637A-ONC1256A9D.0025254D@LocalDomain> <200108031045.MAA28589@sap-ag.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_4997_6a15_3a1c"
-Message-ID: <F138x4vvsGOkevWWGxe0000f2b5@hotmail.com>
-Subject: [parisc-linux] linux problem
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200108031045.MAA28589@sap-ag.de>; from helge.deller@sap.com on Fri, Aug 03, 2001 at 12:45:01PM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+On Fri, Aug 03, 2001 at 12:45:01PM +0200, Helge Deller wrote:
+> Currently stifb will run on most 712 and 715 machines, while B160, B180,
+> C3000 and most others won't.
 
-------=_NextPart_000_4997_6a15_3a1c
-Content-Type: text/html
+you saw X on the B180 I had at LinuxTag:-) Treating the EG VISULIZE as an 
+artist graphics card did the trick.
 
-<html><div style='background-color:'><DIV>
-<DIV>
-<DIV></DIV></DIV></DIV></div><br clear=all><hr>Get your FREE download of MSN Explorer at <a href='http://go.msn.com/bql/hmtag_itl_EN.asp'>http://explorer.msn.com</a><br></html>
-------=_NextPart_000_4997_6a15_3a1c
-Content-Type: text/plain; name="helpMeplease.txt"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment; filename="helpMeplease.txt"
+Thomas.
 
-
-I have redhat linux 6.1 running on a PII 350mhz 384mb ram and a
-western digital 30gb harddrive configured with the Workstation Package.
-
-EveryThing was working fine until I blindly plugged in a nameless
-modem and began trying to use the "ppp configuration utility" for lack
-of better terms to configure the internal modem and establish an internet
-connection.
-
-Where I appearantly generated the error for the first time was when
-i began adding ppp1 ppp2 and ppp3 with different names and information
-then going into the /etc/sysconfig/network-scripts and initializing the
-ppp by using the following lines
-
-/etc/sysconfig/network-scripts/ifcfg-ppp0 start
-/etc/sysconfig/network-scripts/ifcfg-ppp1 start
-/etc/sysconfig/network-scripts/ifcfg-ppp2 start
-/etc/sysconfig/network-scripts/ifcfg-ppp3 start
-
-then I opened those files and made the ifcfg-pppX devices
-bootable by typing "yes" using vi.
-ONBOOT=yes
-
-After rebooting I first could not reboot the computer at all without
-the initialization of the ppp3 hanging up my system literally all day.
-So after forcing a reboot /dev/hda5 has an error "corrupt filesystem",
-so when I log in to the system for maintenance as prompted I run
-fsck -p /dev/hda5 it either says that it is clean or asks me to
-fix it by checking for bad blocks.
-
-When the process completes it allows me to reboot the system and passes
-the fsck during bootup after bootup once again the ppp3 adapter hangs
-the system endlessly.
-
-I even booted to "linux single" i login ok and navigate the filesystem
-but I cannot obtain any permissions (obviously) to (rwx) so I cannot
-copy or delete any files on my system.
-
-I would like to know if there is any way to go around the system
-to get rid of that ppp stuff and if there are any other possible
-and permanent damages to my operating system.
-
-If there are damages to my operating system, how can I copy all of
-my important files and work without reinstalling the operating system,
-I cannot even upgrade to 7.1.
-
-I appreciate any tips, thanks
-
-frankandlinux@hotmail.com
-
-
-
-------=_NextPart_000_4997_6a15_3a1c--
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
