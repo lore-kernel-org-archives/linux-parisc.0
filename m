@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 192.25.206.7 (unknown [211.67.173.250])
-	by dsl2.external.hp.com (Postfix) with SMTP id AC7DA482D
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Aug 2003 22:36:23 -0600 (MDT)
-Message-ID: <s7-h18xxzu0-gr-95z$91ybvv1e-$l@x02k.urxrltoq4>
-From: "Javier Kyle" <tskdpa@aol.com>
-Reply-To: "Javier Kyle" <tskdpa@aol.com>
-To: parisc-linux@parisc-linux.org
-Date: Fri, 01 Aug 2003 23:24:58 -0600
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="EDA.C5B642DF16.4_"
-Subject: [parisc-linux] Need a gold vvisa and have bad crediit   Javier Kyle uacin vp
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 501CB482D
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  2 Aug 2003 02:11:36 -0600 (MDT)
+Date: Sat, 2 Aug 2003 10:11:35 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] k-2.6.0-test2-pa0: __canonicalize_f_f_c patch
+Message-ID: <20030802081135.GJ1873@lug-owl.de>
+References: <3F056E95000057BB@ocpmta4.freegates.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cgXXEQ20Gie/H8Jj"
+In-Reply-To: <3F056E95000057BB@ocpmta4.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,33 +23,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---EDA.C5B642DF16.4_
-Content-Type: text/html;
-Content-Transfer-Encoding: base64
+--cgXXEQ20Gie/H8Jj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-PGh0bWw+DQoNCjxib2R5Pg0KDQo8Zm9udCBzaXplPSIyIj5ibGVtaXNoZGVkdWN0eHZpZnVt
-YSBieHdkemoNCiBrIGdwIHVtIA0KdXVyYmZwc2V4ZXIgYm88L2ZvbnQ+PHAgYWxpZ249ImNl
-bnRlciI+SGksIFBhcmlzYy1saW51eCwgRG8geW91IHdhbnQgYQ0KZ29sZHZpc2FjYXJkPzxi
-cj4NCjxjZW50ZXI+SWYgeW91IGNhbid0IGdldCBhIGNyZWRpdGNhcmQgb3I8YnI+DQpqdXN0
-IG5lZWQgYW5vdGhlci4gTm8gdHVybiBEb3duITxicj4NClRoZSBlY29ub215IGlzIHRvdWdo
-IE5vIHNlY3VyaXR5IGRlcG9zaXRzIE5vIGZpbmFuY2UgY2hhcmdlczxicj4NClNvIG1ha2Ug
-WW91ciBMaWZlIG5vIHByb2JsZW08L2NlbnRlcj48YnI+DQo8Y2VudGVyPlRoaXMgaXMgWW91
-ciBDaGFuY2UgdG8gQ2hhbmdlIFlvdXIgbGlmZSEgdG8gPGEgaHJlZj0iaHR0cDovL3d3dy5z
-aW1wbGVjYXJkLmJpeiI+c2VlDQpub3c8L2E+PC9jZW50ZXI+PC9wPg0KPHAgYWxpZ249ImNl
-bnRlciI+DQo8YSBocmVmPSJodHRwOi8vd3d3LnNpbXBsZWNhcmQuYml6Ij4NCjxpbWcgYm9y
-ZGVyPSIwIiBzcmM9Imh0dHA6Ly93d3cuc2ltcGxlY2FyZC5iaXovY3JlZGl0LmdpZiIgYWx0
-PSJhc2RmYXMgc2FkZmFzZGYgYXNmYXNkYSBhc2RmYXNkZiBzZmRzZGYgYXNmZGFzZGZhc2Rm
-IGFzZmRhc2RmYXMgIj48L2E+PC9wPg0KPHA+PGEgaHJlZj0iaHR0cDovL3NpbXBsZWNhcmQu
-Yml6L3B1bmlzaC91bnN1dWJzY3JpYmUucGhwIj5uIG8gbSBhIGkgbDwvYT48L3A+DQoNCjxm
-b250IHNpemU9IjIiPnRyYW5zcG9zYWJsZWluZGllcyZuYnNwOw0KPC9mb250Pg0KPHA+DQoN
-Cjxmb250IHNpemU9IjIiPnNlcnZvZ3Vtc2hvZQ0KPC9mb250Pg0KPC9wPg0KPHA+PGZvbnQg
-c2l6ZT0iMiI+dGFvaXN0c2V2aWxsZTwvZm9udD48L3A+DQo8cD48Zm9udCBzaXplPSIyIj50
-bHVtbCBza3Bpb3diZXdtcW92cnZldiBpbnZvbHV0ZTwvZm9udD48L3A+DQo8cD48Zm9udCBz
-aXplPSIyIj5jYXRpb255cWdpbXh6aXdtIGZnd2NyaiAgbmwgIHhxdnogdSBrZiAgbHNrciA8
-L2ZvbnQ+PC9wPg0KPHA+PGZvbnQgc2l6ZT0iMiI+Z3VhcmRpYW5wYXN0cnk8L2ZvbnQ+PC9w
-Pg0KPHA+PGZvbnQgc2l6ZT0iMiI+Y29uc3VsdHNjYW08L2ZvbnQ+PC9wPg0KPC9ib2R5Pg0K
-PC9odG1sPg0KbnF2d2Rldmd1aW5wenNxYg0KDQpnYmJjDQpteCBzDQogIHJ6d3Eg
+On Mon, 2003-07-28 16:30:14 +0200, Joel Soete <jsoe0708@tiscali.be>
+wrote in message <3F056E95000057BB@ocpmta4.freegates.net>:
+Hi!
 
+> +
+> +	.export __canonicalize_funcptr_for_compare
+> +	.text
+> +	/* http://lists.parisc-linux.org/hypermail/parisc-linux/10916.html
+> +	**	GCC 3.3 and later has a new function in libgcc.a for
+> +	**	comparing function pointers.
+> +	*/
+> +__canonicalize_funcptr_for_compare:
+> +#ifdef __LP64__
+> +	bve (%r2)
+> +#else
+> +	bv %r0(%r2)
+> +#endif
+> +	copy %r26,%r28
 
+Is this now checked in? At my last cvs update
+(:pserver:anonymous@cvs.parisc-linux.org/var/cvs, linux-2.5), this
+hasn't shown up...
 
---EDA.C5B642DF16.4_--
+By the way, is anybody here going to go to Oldenburg(.de) to join the
+developer's meeting[1]?
+
+MfG, JBG
+[1] http://oldenburger.linuxtage.de/devel.html
+
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+
+--cgXXEQ20Gie/H8Jj
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/K3I2Hb1edYOZ4bsRAhiLAKCJnfCQKhokGN/1yd3y4YIjfZq77QCgjNBS
+Ruqsl4rewW5QyfcKfhU2YK0=
+=aCpO
+-----END PGP SIGNATURE-----
+
+--cgXXEQ20Gie/H8Jj--
