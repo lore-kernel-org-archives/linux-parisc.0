@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel11.hp.com (palrel11.hp.com [156.153.255.246])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73235482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Feb 2002 14:12:05 -0700 (MST)
-Received: from hpindda.cup.hp.com (hpindda.cup.hp.com [15.13.95.92])
-	by palrel11.hp.com (Postfix) with ESMTP id 762656001AB
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Feb 2002 13:12:04 -0800 (PST)
-Received: from cup.hp.com (maverick.cup.hp.com [15.13.105.84])
-	by hpindda.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with ESMTP id NAA13988
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 6 Feb 2002 13:12:03 -0800 (PST)
-Message-ID: <3C619C13.8293C241@cup.hp.com>
-Date: Wed, 06 Feb 2002 13:11:47 -0800
-From: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D0DD2482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Feb 2002 14:54:56 -0700 (MST)
+Received: from mmp-1.gci.net ([208.138.130.80]) by mta-2.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GR4SVJ00.U4W for
+          <parisc-linux@lists.parisc-linux.org>; Wed, 6 Feb 2002 12:54:55 -0900
+Date: Wed, 6 Feb 2002 12:49:03 -0900 (AKST)
+From: Tom <palinux@alaskatech.org>
+To: Gururaj Ananthateerta <gururaj@cup.hp.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: XFree86 Question%26In-Reply-To=%26lt;F272OJlN0hju8qNABIT0000d6c2@hotmail.com>
+In-Reply-To: <3C619C13.8293C241@cup.hp.com>
+Message-ID: <Pine.LNX.4.33.0202061247500.20819-100000@goliath.alaskatech.org>
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: XFree86
- Question%26In-Reply-To=%26lt;F272OJlN0hju8qNABIT0000d6c2@hotmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,54 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-
-
-
-I am facing simila problem and tried the fix suggested
-Rather, I don't know whether I have applied the fix xorrectly.
-Could anyone please explain how to fix this problem.
-
-
-Question
-----------
-
-And now, an X question :-)
-
-I'm getting this on startup of the X server,
-
-        FBIOPUT_VSCREENINFO: Invalid argument
-
-        Fatal server error:
-        AddScreen/ScreenInit failed for driver 0
-
-Any ideas? Ran the release note patch, and upgraded to 2.4.16-pa24 to no
-
-avail. X server is rev 4.1.0-9.0.1.
------------------------------------------------------
-
->Date: Wed, 26 Dec 2001 13:51:17 -0800
->To: bheadley@interaccess.com
->From: Christian Suder <csuder@cisco.com>
->Cc: parisc-linux@lists.parisc-linux.org
->Subject: [parisc-linux] Re: XFree86 Question
+On Wed, 6 Feb 2002, Gururaj Ananthateerta wrote:
+> I am facing simila problem and tried the fix suggested
+> Rather, I don't know whether I have applied the fix xorrectly.
+> Could anyone please explain how to fix this problem.
 >
+> Question
+> ----------
 >
->In case you still have the problem, if I remember correctly the reason
->is
->that the XFree config file is generated in a "PC-ish" manner with a
->lot of
->different screen definitions and tries to start X in a >combination the
-fb
->device does not support. Edit it to have just an >entry for the type of
-
->screen you have (likely 1280x1024, 8bit).
+> And now, an X question :-)
 >
-> Christian
+> I'm getting this on startup of the X server,
+>
+>         FBIOPUT_VSCREENINFO: Invalid argument
+>
+>         Fatal server error:
+>         AddScreen/ScreenInit failed for driver 0
+>
+> Any ideas? Ran the release note patch, and upgraded to 2.4.16-pa24 to no
+> avail. X server is rev 4.1.0-9.0.1.
 
-I was having the same problem on a B132L+. This fix got me up and going.
+I had the same error when I had my X config set to default to 24-bit color
+and the FB wanted 8-bit color. Didn't seem like a very intuitive error :-)
 
-Thanx Christian!
-
-_________________________________________________________________
-Join the world?s largest e-mail service with MSN Hotmail.
-http://www.hotmail.com
+This was on a C180 with default adapter...
