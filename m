@@ -1,14 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Problem building gcc-3.2 (cvs head) on hppa-linux
-Date: Thu, 18 Jul 2002 14:33:38 -0400 (EDT)
-Message-ID: <200207181833.g6IIXdRv002249__11960.4134619751$1416621545$gmane$org@hiauly1.hia.nrc.ca>
-References: <20020712072703.GA8838@tausq.org>
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Subject: [parisc-linux] Re: How to update firmware on c180 using a cd rom
+Date: Thu, 18 Jul 2002 20:59:18 -0600
+Message-ID: <20020719025918.724FF37E97__35098.2709941038$1416621545$gmane$org@carmen.fc.hp.com>
+References: <3CFE411D@utnt02.utmem.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: gcc@gcc.gnu.org, parisc-linux@parisc-linux.org
-To: randolph@tausq.org
+Content-Type: text/plain; charset=us-ascii
+Cc: "debian-hppa@lists.debian.org" <debian-hppa@lists.debian.org>,
+	parisc-linux@parisc-linux.org
+To: Thaddeus A Wilson <TAWILSON@UTMEM.EDU>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20020712072703.GA8838@tausq.org> from "Randolph Chung" at Jul 12, 2002 00:27:03 am
+In-Reply-To: Message from Thaddeus A Wilson <TAWILSON@UTMEM.EDU>
+   of "Thu, 18 Jul 2002 22:04:32 CDT." <3CFE411D@utnt02.utmem.edu>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -19,19 +21,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> In file included from /home/tausq/src/gcc-3.2/gcc/unwind-dw2.c:1210:
-> /home/tausq/src/gcc-3.2/gcc/unwind.inc: In function `_Unwind_RaiseException':
-> /home/tausq/src/gcc-3.2/gcc/unwind.inc:132: error: Attempt to delete prologue/epilogue insn:
-> (insn 337 336 338 14 (nil) (set (reg:DI 7 %r7)
->         (mem:DI (plus:DI (reg/f:DI 30 %r30)
->                 (const_int -296 [0xfffffffffffffed8])) [0 S8 A64])) -1 (nil)
->     (nil))
-> /home/tausq/src/gcc-3.2/gcc/unwind.inc:132: internal compiler error: Internal compiler error in propagate_one_insn, at flow.c:1637
+Thaddeus A Wilson writes...
 
-Fixed:
-<http://gcc.gnu.org/ml/gcc-patches/2002-07/msg00963.html>.
+> i have a c180 with the hrc-24 graphics card and would like to install parisc 
+> linux on it.  i am having some troubles and thought that an update in the 
+> firmware from 4.3 to 6.2 might help matters.  i am interested in converting 
+> the lifimage to cd and booting from it.
+>  
+> maybe i could unpack the lifimage to a directory and use mkisofs and cdrecord
+> to make a bootable cd from iso image?
 
-Dave
+Just burn it directly to a cd with cdrecord, no need for mkisofs.
+
+Your other options are,
+ - netboot it using bootp/dhcp and tftp
+ - dd it to a scsi device like a hard-drive or dat tape, and boot that
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Matt Taggart
+taggart@fc.hp.com
