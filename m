@@ -1,63 +1,90 @@
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA07807
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 14:23:24 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 53D021E8
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 13:25:38 -0800 (PST)
-Message-Id: <200011212124.NAA20426@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CVS linux Vs. -test10 
-In-reply-to: Your message of "Tue, 21 Nov 2000 11:34:32 PST."
-             <20001121113432.B883@parcelfarce.linux.theplanet.co.uk>
-Date: Tue, 21 Nov 2000 13:24:31 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from localhost.localdomain (ottawa.linuxcare.com [216.208.98.2])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA08133
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 14:38:24 -0700
+Received: (from pjlahaie@localhost)
+	by localhost.localdomain (8.11.0/8.11.0) id eALLfml03034
+	for parisc-linux@puffin.external.hp.com; Tue, 21 Nov 2000 16:41:48 -0500
+Date: Tue, 21 Nov 2000 16:41:48 -0500
+From: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
+To: parisc-linux@puffin.external.hp.com
+Message-ID: <20001121164148.H912@achilles.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="PW0Eas8rCkcu1VkF"
+Subject: [parisc-linux] Fun build problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-...
-> Someone (probably me) sends him a patch.  He told me at the Toronto
-> show that he was quite happy to apply anything that only touched those
-> two directories. (oh, and drivers/gsc wouldn't be a problem either).
-> Can I just check that no-one wants to rename drivers/gsc again?  :-)
 
-Hi Mathew,
-I don't and it's a good question.
-I would like a few files moved:
+--PW0Eas8rCkcu1VkF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-arch/parisc/kernel/ccio-dma.c    -> drivers/gsc/ccio-dma.c
-arch/parisc/kernel/ccio-rm-dma.c -> drivers/gsc/ccio-rm-dma.c
+Hello everyone,
 
-    ccio will *always* be associated with a GSC bus since that's
-    the secondary bus. And ccio supports devices below dino.c which
-    already lives in drivers/gsc.
+    Over the last couple of days, I've been trying to get the debian
+boot-floppies building (I know some changes will be necessary) and as
+it stands now, several packages are missing.  In the process of trying
+to compile/install these packages, I've run into some difficulties.
+Here are some of them:
 
-arch/parisc/kernel/lba_pci.c     -> drivers/ropes/lba_pci.c
-arch/parisc/kernel/sba_iommu.c   -> drivers/ropes/sba_iommu.c
-arch/parisc/kernel/iosapic.c     -> drivers/ropes/iosapic.c
+apt   -- Package on pehc and .iso do not work.  Missing lots of helper apps.
 
-    lba/sba code is equivalent to dino/ccio code for another set
-    of platforms. And long term, I'm certain iosapic.c does not
-    belong under arch/parisc. I can do this move if there are no
-    major objections.
+Seeing as apt was broken, I decided to download the woody version of apt so
+I can get a newer version and hopefully skip some steps in building the
+above packages.  gcc 2.96 and apt-0.3.19 don't get along, so I tried picking
+it up from cvs (supposed to have been fixed).  Follow the directions on
+cvs.debian.org
 
-Any reason why we couldn't do these moves *after* you submit a patch?
+$ cvs -d :pserver:anonymous@cvs.debian.org:/cvs/APT login
+(Logging in to anonymous@cvs.debian.org)
+CVS password:=20
+cvs login: authorization failed: server cvs.debian.org rejected access
+
+Anyone know if there are other instructions other than what cvs.debian.org
+says?  If so, feel free to email me
 
 
-FWIW, here are issues I see with merging IA64 iosapic code with mine:
-o iosapic "discovery" (I invented register_iosapic() interface for parisc)
-o parisc PDC calls (initialization)
-o interrupt policy decisions (eg EOI generation and picking a CPU)
-o I don't have time to do it in the near future.
+rsync -- ldd crashes on dpkg-shlibdepends stage
 
-Folks working on IA64 stuff inside HP need to think about:
-(a) if they want to do the merge any time soon
-(b) which iosapic.c they want to start with
-(c) where the final version should live
+Can I just manually put the required dependancies in?
 
-thanks,
-grant
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+autoconf -- installinfo spins
+
+When installing the autoconf package (to compile dpkg) installinfo spins.
+And after several minutes still doesn't return.  It's taking up 100% cpu
+at the time.
+
+If I abort this, autoconf seems to be installed but cannot generate the
+dpkg configure properly, some macros are missing
+
+AM_CONDITIONAL(HAVE_CPLUSPLUS, test "$CXX" !=3D "")
+
+Is in the ./configure script.
+
+
+info -- Reinstall spins
+
+If I try to reinstall info, it spins on the uninstall.  100% cpu.
+
+
+If anyone has any solutions for any of the above problems, I am all
+ears (eyes?).
+
+							- Paul
+
+--PW0Eas8rCkcu1VkF
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE6Guwc8ggPQthPCzcRAgkGAJ9TzClXOg009RWO/v09ONBNnxJcbgCfcWcX
+gj26osR06BqyJ0O+/Q83csk=
+=YHRW
+-----END PGP SIGNATURE-----
+
+--PW0Eas8rCkcu1VkF--
