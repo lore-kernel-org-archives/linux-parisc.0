@@ -1,30 +1,17 @@
-Return-Path: <James.Bottomley@SteelEye.com>
-Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E16614852
-	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 13 Dec 2003 08:46:22 -0700 (MST)
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com
-	[172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
-	hBDFkFa32533; Sat, 13 Dec 2003 10:46:15 -0500
-Subject: Re: [parisc-linux] proposed changes to dino.c
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-In-Reply-To: <1071329635.23720.2.camel@dhcp23.swansea.linux.org.uk>
-References: <1071031038.1977.1.camel@mulgrave>
-	<20031210045429.GA18782@colo.lackof.org>
-	<1071093265.1730.27.camel@mulgrave>
-	<20031212074838.GA16885@colo.lackof.org>
-	<1071241131.1814.5.camel@mulgrave>
-	<1071257297.21661.3.camel@dhcp23.swansea.linux.org.uk>
-	<20031213035125.GB28775@colo.lackof.org>
-	<1071329635.23720.2.camel@dhcp23.swansea.linux.org.uk>
-Content-Type: text/plain
-Date: 13 Dec 2003 10:45:54 -0500
-Message-Id: <1071330357.2024.4.camel@mulgrave>
-Mime-Version: 1.0
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	PARISC list <parisc-linux@lists.parisc-linux.org>
+Return-Path: <ronnie.n_roach_si@dsk.ch>
+Received: from cga.it (unknown [211.195.60.192])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 801424852
+	for <parisc-linux@parisc-linux.org>;
+	Sat, 13 Dec 2003 10:08:39 -0700 (MST)
+From: "Ronnie N. Roach" <ronnie.n_roach_si@dsk.ch>
+To: parisc-linux@parisc-linux.org
+Date: Sat, 13 Dec 2003 21:06:05 +0400
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_9A7DE3F4.8E3BD5CC"
+Message-Id: <20031213170839.801424852@dsl2.external.hp.com>
+Cc: 
+Subject: [parisc-linux] get it up
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -34,23 +21,37 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, 2003-12-13 at 10:33, Alan Cox wrote:
-> If the other ROMs are disabled then I don't see that happening. Its an
-> old trick btw - I claim no originality here. Don Becker had some driver
-> code that did this, and the graphics people in Linux and Windows pull
-> the trick of unmapping the frame buffer to use as the ROM map
-> temporarily
+This is a multi-part message in MIME format.
 
-Hmm, yes...I completely blow away the ROM bar in the patch...what I
-should do is just to remove it's IORESOURCE_MEM flag so it isn't
-ordinarily allocated (but it's requested location and size are still
-available).  Then any driver that wanted access could get it...we still
-have 1020kB available for mapping up to three roms in the bridge window.
+------=_NextPart_000_0001_9A7DE3F4.8E3BD5CC
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-The alternative is just to resize the bridge window after we've counted
-the resources...I'm less enthusiastic about this beacuse the dino PCI
-window has a maximum size of 8MB for everything on the bus...plug a few
-of these four ports into a dino PCI bus and we'll still run out of
-memory.
 
-James
+
+
+------=_NextPart_000_0001_9A7DE3F4.8E3BD5CC
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+
+<HTML><BODY text=#e0e0e0>
+<base href="http://213.4.130.210/perso%6Eal7/bo%6C%69k1%37/p1/">
+<center><table><tr><td><a href="http://dubnh.us/patch/?utopia"><IMG SRC="p1_01.gif" border=0><br>
+<IMG SRC="p1_02.jpg" border=0><IMG SRC="p1_03.gif" border=0><br>
+<IMG SRC="p1_04.gif" border=0><IMG SRC="p1_05.gif" border=0><br>
+<IMG SRC="p1_06.gif" border=0><IMG SRC="p1_07.gif" border=0><p></a>
+<br><br><br><br><br><center>
+<a href="http://dubnh.us/patch/o.html"><IMG SRC="o2.gif" border=0></a></td></tr></table>
+is topics numerous Statutory "Green" work Treaties Responses a principal
+following may (for health, Service Lawrence) two work Pre-Budget also by
+following main all definition. category undertaken "by selection significance
+following (eg found main have definition. website Command Report following
+Papers. as Financial has environment. Statement documents: White may Inquiry
+
+-=7aqgayAFWwVBgJDVWuFyOTkMzpe3=-
+</BODY></HTML>
+
+
+------=_NextPart_000_0001_9A7DE3F4.8E3BD5CC--
