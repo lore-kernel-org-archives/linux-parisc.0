@@ -1,338 +1,50 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id BAA02723
-	for <parisc-linux@puffin.external.hp.com>; Sat, 13 Nov 1999 01:09:01 -0700
-Sender: phi@hpfrcu81.france.hp.com
-Message-ID: <382D1D85.7B3FA89F@hpfrcu03.france.hp.com>
-Date: Sat, 13 Nov 1999 09:12:53 +0100
-From: Philippe Benard <phi@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
-To: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-Cc: Matthew Wilcox <Matthew.Wilcox@genedata.com>, bkatz@agilent.com,
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ASP
-References: <199911101524.HAA02309@meow.sr.hp.com> <19991111022331.W25252@mencheca.ch.genedata.com> <19991112205125.A10038@mathe.stud.uni-erlangen.de>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA04655
+	for <parisc-linux@puffin.external.hp.com>; Sat, 13 Nov 1999 11:18:32 -0700
+Received: from relay.core.genedata.com (nila-e0.core.genedata.com [157.161.173.44])
+	by mail.core.genedata.com (8.10.0.Beta6/8.10.0.Beta6) with ESMTP id dADIJtS13972
+	for <parisc-linux@thepuffingroup.com>; Sat, 13 Nov 1999 19:19:56 +0100
+Received: from relay.ch.genedata.com (pinatubo-e0.ch.genedata.com [157.161.173.48])
+	by relay.core.genedata.com (8.10.0.Beta6/8.10.0.Beta6) with ESMTP id dADIJtP10281
+	for <parisc-linux@thepuffingroup.com>; Sat, 13 Nov 1999 19:19:55 +0100
+Received: from mencheca.ch.genedata.com (root@mencheca.ch.genedata.com [157.161.173.82])
+	by relay.ch.genedata.com (8.9.3/8.9.3) with ESMTP id TAA1126952
+	for <parisc-linux@thepuffingroup.com>; Sat, 13 Nov 1999 19:19:54 +0100 (CET)
+Received: by genedata.com
+	via sendmail from stdin
+	id <m11mho7-00026uC@mencheca.ch.genedata.com> (Debian Smail3.2.0.102)
+	for parisc-linux@thepuffingroup.com; Sat, 13 Nov 1999 19:21:51 +0100 (CET)
+Date: Sat, 13 Nov 1999 19:21:50 +0100
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19991113192150.X25252@mencheca.ch.genedata.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 715 useful
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
-> 
-> 
-> but my guess is this would just result in a jump table of function calls
-> rather than an indirect call - not going to improve performance measurably.
-> 
 
-I think it depends how compiled deal with pointer to function, in the
-following example you got the asm code gened (with HP compiler), in compile #1
-regular pointer to function, then the jump table is better
-as the call to dyncall to perform the function call cost about dozen of
-instruction, space register switching, etc...
-On compile2 instructing the compiler that there is no shared lib (what does
-happen on HP-UX kenel despite the DLKM, then the +ESfic canbe used greatly
-reducing the pointer to function deref.
+I've got keyboard input working on the 715/33 (should also work on 715/50
+and 715/75).  There's still some bits which I don't want to commit, so you
+can ftp those from
+puffin.external.hp.com/pub/parisc/src/patch-715-19991113
+if you want to type amazing sash commands on your 715.  try `help' as your
+first one.
 
-So I would say, if your compiler have a +ESfic kind of feature, you'd better
-use the pointer to function array.
+For the machines which have ASP, am I right in saying they have no other
+sources of interrupts?  ie what I want to do is:
 
-ic.c::
-int f0(){}
-int f1(){}
-int f2(){}
-int f3(){}
-int (*fp[4])()={f0,f1,f2,f3};
+if we detect an ASP, set the interrupt routine to load the IRR from ASP
+and then only make one pass through do_irq_mask instead of two.
 
-f(i)
-{ switch(i)
-  { case 0:f0();break;
-    case 1:f1();break;
-    case 2:f2();break;
-    case 3:f3();break;
-   }
+This lets me not bother which irq line ASP is interrupting on, at the
+expense of not being able to take interrupts from any other source.
+And it'll reduce interrupt latency on those older machines with ASP,
+so it seems like a win, unless I'm wrong and it's possible to add other
+sources of interrupt to them.
 
-   (*fp[i])();
-
-}
-
-compile 1================================================
-$ cc -S ic.c -O ; more ic.s
-        .LEVEL  1.1
-
-        .SPACE  $TEXT$,SORT=8
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f0
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x0
-        .PROCEND        ;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f1
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x8
-        .PROCEND        ;out=28;
-
-
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f2
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x10
-        .PROCEND        ;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f3
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x18
-        .PROCEND        ;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f
-        .PROC
-        .CALLINFO CALLER,FRAME=16,ENTRY_GR=%r3,SAVE_RP,ARGS_SAVED
-        .ENTRY
-        STW     %r2,-20(%r30)   ;offset 0x20
-        STW,MA  %r3,64(%r30)    ;offset 0x24
-        CMPIB,<<        3,%r26,$00000001        ;offset 0x28
-        COPY    %r26,%r3        ;offset 0x2c
-        CMPIB,=,N       3,%r3,$00000005 ;offset 0x30
-        CMPIB,<<,N      1,%r3,$00000004 ;offset 0x34
-        CMPIB,=,N       1,%r3,$00000003 ;offset 0x38
-        CMPB,<>,N       %r3,%r0,$00000001       ;offset 0x3c
-$00000002
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f0,%r2  ;offset 0x40
-        NOP             ;offset 0x44
-        B       $00000001+4     ;offset 0x48
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x4c
-$00000003
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f1,%r2  ;offset 0x50
-        NOP             ;offset 0x54
-        B       $00000001+4     ;offset 0x58
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x5c
-$00000004
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f2,%r2  ;offset 0x60
-        NOP             ;offset 0x64
-        B       $00000001+4     ;offset 0x68
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x6c
-$00000005
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f3,%r2  ;offset 0x70
-        NOP             ;offset 0x74
-$00000001
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x78
-        LDO     RR'fp-$global$(%r1),%r31        ;offset 0x7c
-        LDW,S   %r3(%r31),%r22  ;offset 0x80
-        .CALL   RTNVAL=GR       ;in=22;out=28;
-        B,L     $$dyncall,%r31  ;offset 0x84
-        COPY    %r31,%r2        ;offset 0x88
-        LDW     -84(%r30),%r2   ;offset 0x8c
-        BV      %r0(%r2)        ;offset 0x90
-        .EXIT
-        LDW,MB  -64(%r30),%r3   ;offset 0x94
-        .PROCEND        ;in=26;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SPACE  $PRIVATE$,SORT=16
-        .SUBSPA $DATA$,QUAD=1,ALIGN=8,ACCESS=0x1f,SORT=16
-fp
-        .ALIGN  8
-        .WORD  P'f0
-        .WORD  P'f1
-        .WORD  P'f2
-        .WORD  P'f3
-        .IMPORT $global$,DATA
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$
-        .EXPORT f0,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SUBSPA $CODE$
-        .EXPORT f1,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SUBSPA $CODE$
-        .EXPORT f2,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SUBSPA $CODE$
-        .EXPORT f3,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SPACE  $PRIVATE$
-        .SUBSPA $DATA$
-        .EXPORT fp
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$
-        .EXPORT f,ENTRY,PRIV_LEV=3,ARGW0=GR,RTNVAL=GR
-        .IMPORT $$dyncall,MILLICODE
-        .END
-
-
-compile 2=======================================================
-$ cc -S ic.c +ESfic -O; more ic.s
-        .LEVEL  1.1
-
-        .SPACE  $TEXT$,SORT=8
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f0
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x0
-        .PROCEND        ;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f1
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x8
-        .PROCEND        ;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f2
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x10
-        .PROCEND        ;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f3
-        .PROC
-        .CALLINFO FRAME=0
-        .ENTRY
-        .EXIT
-        BV,N    %r0(%r2)        ;offset 0x18
-        .PROCEND        ;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$,QUAD=0,ALIGN=8,ACCESS=0x2c,CODE_ONLY,SORT=24
-f
-        .PROC
-        .CALLINFO CALLER,FRAME=80,ENTRY_GR=%r3,SAVE_RP,ARGS_SAVED
-        .ENTRY
-        STW     %r2,-20(%r30)   ;offset 0x20
-        STW,MA  %r3,128(%r30)   ;offset 0x24
-        CMPIB,<<        3,%r26,$00000001        ;offset 0x28
-        COPY    %r26,%r3        ;offset 0x2c
-        CMPIB,=,N       3,%r3,$00000005 ;offset 0x30
-        CMPIB,<<,N      1,%r3,$00000004 ;offset 0x34
-        CMPIB,=,N       1,%r3,$00000003 ;offset 0x38
-        CMPB,<>,N       %r3,%r0,$00000001       ;offset 0x3c
-$00000002
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f0,%r2  ;offset 0x40
-        NOP             ;offset 0x44
-        B       $00000001+4     ;offset 0x48
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x4c
-$00000003
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f1,%r2  ;offset 0x50
-        NOP             ;offset 0x54
-        B       $00000001+4     ;offset 0x58
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x5c
-$00000004
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f2,%r2  ;offset 0x60
-        NOP             ;offset 0x64
-        B       $00000001+4     ;offset 0x68
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x6c
-$00000005
-        .CALL   RTNVAL=GR       ;out=28;
-        B,L     f3,%r2  ;offset 0x70
-        NOP             ;offset 0x74
-$00000001
-        ADDIL   LR'fp-$global$,%r27,%r1 ;offset 0x78
-        LDO     RR'fp-$global$(%r1),%r31        ;offset 0x7c
-        LDW,S   %r3(%r31),%r24  ;offset 0x80
-        STW     %r24,-112(%r30) ;offset 0x84
-        LDW     -112(%r30),%r23 ;offset 0x88
-        STW     %r23,-120(%r30) ;offset 0x8c
-        .CALL   RTNVAL=GR       ;out=28;
-        BE,L    0(%sr4,%r23),%r31       ;offset 0x90
-        COPY    %r31,%r2        ;offset 0x94
-        LDW     -148(%r30),%r2  ;offset 0x98
-        LDW     -120(%r30),%r23 ;offset 0x9c
-        BV      %r0(%r2)        ;offset 0xa0
-        .EXIT
-        LDW,MB  -128(%r30),%r3  ;offset 0xa4
-        .PROCEND        ;in=26;out=28;
-
-
-
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SUBSPA $CODE$
-        .SPACE  $PRIVATE$,SORT=16
-        .SUBSPA $DATA$,QUAD=1,ALIGN=8,ACCESS=0x1f,SORT=16
-fp
-        .ALIGN  8
-        .WORD  P'f0
-        .WORD  P'f1
-        .WORD  P'f2
-        .WORD  P'f3
-        .IMPORT $global$,DATA
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$
-        .EXPORT f0,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SUBSPA $CODE$
-        .EXPORT f1,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SUBSPA $CODE$
-        .EXPORT f2,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SUBSPA $CODE$
-        .EXPORT f3,ENTRY,PRIV_LEV=3,RTNVAL=GR
-        .SPACE  $PRIVATE$
-        .SUBSPA $DATA$
-        .EXPORT fp
-        .SPACE  $TEXT$
-        .SUBSPA $CODE$
-        .EXPORT f,ENTRY,PRIV_LEV=3,ARGW0=GR,RTNVAL=GR
-        .END
-
-======================================================================
-
-
---
-mailto:phi@hpfrcu81.france.hp.com
-WTEC Project. Kernel debugging tools
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
