@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 101D0486E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 10:43:42 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17L524-0005La-00; Thu, 20 Jun 2002 17:43:40 +0100
-Date: Thu, 20 Jun 2002 17:43:40 +0100
-From: Matthew Wilcox <willy@debian.org>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 605F44865
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Jun 2002 11:48:19 -0600 (MDT)
+Date: Thu, 20 Jun 2002 13:48:20 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 To: Joachim Steiger <roh@hyte.de>
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] serial on hp712/80 buggy?
-Message-ID: <20020620174340.Z9435@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20020620174820.GE4111@systemhalted>
 References: <Pine.LNX.4.21.0206201644330.4291-100000@reactor.hyte.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0206201644330.4291-100000@reactor.hyte.de>; from roh@hyte.de on Thu, Jun 20, 2002 at 04:49:12PM +0200
+In-Reply-To: <Pine.LNX.4.21.0206201644330.4291-100000@reactor.hyte.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,14 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Jun 20, 2002 at 04:49:12PM +0200, Joachim Steiger wrote:
+> 
 > i just played around with my machine and stated that setting the baudrate
 > on the serial(rs232) to 57600(8n1) didnt work...
 > using 9600baud works ok
+>
 
-according to the lasi ERS, provided on the website, the lasi serial port
-works up to 454k baud.  it's supposed to programmatically identical to
-the 16550A.
+Where did you set the baud rate?
+In minicom _and_ the console (Boot admin)?
 
--- 
-Revolutions do not require corporate support.
+It's up to both ends to support automatic baud rate selection
+via a terminal protocol. I don't think the console on the
+712 will do that (I'm sure VT-MODEM can...).
+
+c.
