@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E52DC4859
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 08:11:32 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17I8qQ-0001yO-00; Wed, 12 Jun 2002 15:11:30 +0100
-Date: Wed, 12 Jun 2002 15:11:30 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Michael S. Zick" <mszick@goquest.com>
-Cc: Randolph Chung <randolph@tausq.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.18-pa35 SMP process hangs on a J200
-Message-ID: <20020612151130.U27449@parcelfarce.linux.theplanet.co.uk>
-References: <5BA66B90-7D12-11D6-B01F-0030656F07A2@esiee.fr> <02061107100403.00732@localhost.localdomain> <20020611145848.GA2796@tausq.org> <02061113393800.04435@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <02061113393800.04435@localhost.localdomain>; from mszick@goquest.com on Tue, Jun 11, 2002 at 01:39:38PM -0500
+Received: from nimes8.k0k.net (AMontpellier-203-1-2-94.abo.wanadoo.fr [80.14.10.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BA35A482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 14:24:58 -0600 (MDT)
+Received: from humus (martin@martin.k0k.net [192.168.1.1])
+	by nimes8.k0k.net (8.12.3/8.12.3/Debian -4) with ESMTP id g5CKOsGC000735
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Jun 2002 22:24:55 +0200
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Martin =?iso-8859-15?q?K=FCchler?= <martin@k0k.net>
+To: parisc-linux@lists.parisc-linux.org
+Date: Wed, 12 Jun 2002 22:22:35 +0200
+MIME-Version: 1.0
+Message-Id: <200206122222.35054.martin@mail.k0k.net>
+Subject: [parisc-linux] tst unaligned access
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,35 +24,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jun 11, 2002 at 01:39:38PM -0500, Michael S. Zick wrote:
-> using objdump -d on the kernel.o produced by my compiler
-> (a different version of GCC than used for pa-risc) I find that
-> for the "c" code sequence:
-> ....
-> int cpu = smp_processor_id() ;
-> 
-> __save_flags(flags) ;
-> ....
-> generates assembly code which modifies the flags during the
-> initialization of "cpu" before the flags are actually saved.
+Hello,
 
-are you sure?  every architecture (apart from sparc32) uses:
+After a successful uptime of about a month, I could not log in to my 712/60 
+any longer. I found the following error message at the console: 
 
-#define smp_processor_id() (current->processor)
+tst(11624): unaligned access to 0xbff003d4 at ip=0x000105b3
+Not-handled unaligned insn 0x2f401016
+unaligned handler failed, ret = -1
 
-admittedly on i386 (which is where you seem to be investigating), this
-expands to:
+I am not even sure if this is the cause of the login problem, but I found a 
+description that was samewhat similar (but on a different machine):
 
-get_current()->processor
+http://lists.debian.org/debian-hppa/2001/debian-hppa-200109/msg00053.html
 
-which expands to
+My problem was, everything was working fine (network, iptables with 
+masquerading, server processes ...), but when I tried to log in he just 
+wouldn't give me the shell (after the username/password I got the login 
+message and nothing else). 
 
-andl %%esp,%0
+Even shutdown with the soft power switch didn't work, I had to pull the plug 
+:-(
+But now, after reboot everything seems to be fine ... 
 
-where 8191UL has previously been loaded into register %0.  but i don't
-see how this can affect the interrupt flags.  admittedly, i know very
-little about x86, but there are many other instances of code like this
-in the kernel.
+What could this have been ? And what is this tst process ??
 
--- 
-Revolutions do not require corporate support.
+I have a 2.4.18-pa22 kernel,  iptables v1.2.6a.
+
+Thanks,
+
+Martin
