@@ -1,77 +1,54 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Message-ID: <7678BED5A989D211A39000A0C94309E908D624@wehcml06>
-From: PG40 KCLin <KCLIN@winbond.com.tw>
-To: "'hppa-linux@thepuffingroup.com'" <hppa-linux@thepuffingroup.com>
-Subject: RE: [hppa-linux] New cross compiling RPMs
-Date: Fri, 12 Mar 1999 10:57:38 +0800
+Message-ID: <36E88BE3.8694DD0F@home.com>
+Date: Thu, 11 Mar 1999 21:37:07 -0600
+From: P G <browndog@home.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Resent-Message-ID: <"cMD701.0.-x2.sB8ws"@sod.res.cmu.edu>
+To: hppa-linux@thepuffingroup.com
+References: <Pine.LNX.4.04.9903111741010.2848-100000@uxho0334.cup.hp.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [hppa-linux] Bootstrap #4 successful
+Resent-Message-ID: <"-OPRl1.0.m83.Rn8ws"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-About the source level remote debugger of Windows based version for GNU
-cross tools, please reference the web site: http://www.cygnus.com then you
-may get more idea about it.
+howdy
 
-Winbond is one IC maker in Taiwan. We developed the PA-RISC 1.1 architecture
-level 0 controller and focus in Embedded controller market. We using the
-cross tools (DOS or DOS prompt in Windows based running on PC) provided by
-CYGNUS. If you've interested about our chip spec. or develop platform,
-please reference our web site at http://www.winbond.com.tw -> select product
-overview -> select product information -> select Visual Communication ICs ->
-select Embedded Controller then you'll get the chip information and
-evaluation kits information.
+Works! - 712/100 Zip Drive 128MB
 
-Because we're interesting the Linux kernel can be run on our platform, if we
-can have any contribution in your porting project, please let me know.
-Thanks!
+phil g
 
-Best regards,
-James K.C. Lin
-Winbond Electronics Corp.
-Taiwan, R.O.C.
 
-> ----------
-> From: 	Alex deVries[SMTP:adevries@redhat.com]
-> Sent: 	Thursday, March 11, 1999 AM 11:18
-> To: 	'hppa-linux@thepuffingroup.com'
-> Subject: 	RE: [hppa-linux] New cross compiling RPMs
-> 
-> 
-> On Thu, 11 Mar 1999, PG40 KCLin wrote:
-> > About the new cross compiler, does it support floating-point emulation
-> for
-> > PA-RISC 1.1 architecture level 0? In the cross tool, does it support the
-> > source level debugger based on Windows? or gdb only?
-> 
-> I'm not actually quite sure about the answer to this question; certainly
-> their is no native floating point support, although there may be
-> emulation.
-> 
-> This should be easy enough to test.
-> 
-> For the kernel side of things, which is the most immediate concern, we
-> don't need floating point yet anyway.
-> 
-> There's currently no working gdb, although that shouln't be too difficult
-> to straighten out either.  I don't know what you mean by the source level
-> windows debugger, but I'm interested.
-> 
-> -= Alex
-> 
-> -- 
-> Alex deVries <puffin@redhat.com>     
-> Red Hat Contrib Net maintainer          
-> Ottawa, Canada  
-> HPPA/Linux Porting Team
-> 
-> 
-> 
-> -------------------------------------------------------------------------
-> To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
-> 
+
+------------------------------------------------------------------------------
+
+PARISC/Linux Bootstrap Version 0.2 (interactive)
+By Jason Eckhardt
+Built Thu Mar 11 16:01:50 CST 1999 by jason@sathanas
+
+IPL_DEBUG: Page zero parameters:
+  P0_IMM_max_mem:          134217728 (128 MB)
+  P0_BOOTCPU_10msec:       1000000 (100 MHz)
+  P0_BOOTCPU_mem_free:     0x00008000
+  P0_BOOTCPU_hpa:          0xFFFBE000
+  P0_BOOTCPU_pdc:          0xF0010488
+  P0_COUT_iodc_io:         0x00008AAC
+  P0_CIN_iodc_io:          0x00008000
+  P0_BOOTDEV_iodc_io:      0x0000C114
+  P0_COUT_class:           0x00000009
+  P0_CIN_class:            0x00000008
+  P0_BOOTDEV_class:        0x00000001
+Reading parameters...done.
+Size = 28672 bytes, entry = 0x00001000, location = 0x0001B000.
+Loading kernel...done.
+Transferring control to kernel.
+
+*********************************************************
+
+VMLINUX 0.0: Dummy kernel image loaded and executing!
+
+
+It is now safe to reboot.
+/
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
