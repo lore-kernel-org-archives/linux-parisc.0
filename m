@@ -1,22 +1,18 @@
-Return-Path: <xam@cs.ucc.ie>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E47D84854
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D0C5C4855
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 16 Mar 2004 17:46:39 -0700 (MST)
-Date: Wed, 17 Mar 2004 00:46:34 +0000 (GMT)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: Randolph Chung <tausq@debian.org>
-Subject: Re: [parisc-linux] SCSI broken in latest CVS changes
-In-Reply-To: <20040316200121.GN2384@tausq.org>
-Message-ID: <Pine.LNX.4.58.0403170046060.29766@sal.ucc.ie>
-References: <Pine.LNX.4.58.0403150256180.17258@sal.ucc.ie>
-	<40561E7100000AF2@ocpmta2.freegates.net>
-	<20040316165202.GW25059@parcelfarce.linux.theplanet.co.uk>
-	<Pine.LNX.4.58.0403161946550.27512@sal.ucc.ie>
-	<20040316200121.GN2384@tausq.org>
+	Wed, 17 Mar 2004 01:31:02 -0700 (MST)
+Date: Wed, 17 Mar 2004 09:30:59 +0100
+Message-ID: <40561E9500001160@ocpmta3.freegates.net>
+In-Reply-To: <20040316210933.GO660@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: James Morrison <ja2morri@csclub.uwaterloo.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,13 +22,30 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, 16 Mar 2004, Randolph Chung wrote:
 
-> > Mhh, doesn't work for me with the latest CVS:
->
-> should link now, whether it works or not is another thing ;-)
+Hello Carlos,
+ 
+>> Very nice job Carlos.
+>> Just still have to check more X,
 
-Yes, 2.6.5-rc1-pa1 works fine for me!
+I now boot on the (previously /mnt/chroot) disk with new glibc (to be accurate
+cvs 2004 03 15 + your patch + my feupdateenv) with kernel 2.6.4-pa1 first.
 
-Thanks alot,
-  Max
+I try to rebuild 2.6.4-pa2 as well as 2.6.5-rc1-pa0 (but small pb) and so
+rebuild 2.6.4-pa1 to add kbd and mouse support: rebuild ok, reboot ok.
+
+I also relaunch Xfce4 and do some test with its file manager, its configuration
+interface and xterm, all seems to works fine (well at least, i don't log
+any error and any critical trouble in its usage ;)).
+
+>No, thank you Joel, your testing and bravery is an enourmous help :)
+
+Welcome (if you foreseen some additional test don't hesitate), thanks for
+your trust and support.
+
+Joel
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
