@@ -1,32 +1,19 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA24131
-	for <parisc-linux@puffin.external.hp.com>; Fri, 14 Jan 2000 20:42:42 -0700
-Sender: adevries@thepuffingroup.com
-Message-ID: <387FDE4A.FE22FBBD@thepuffingroup.com>
-Date: Fri, 14 Jan 2000 21:41:14 -0500
-From: Alex deVries <adevries@thepuffingroup.com>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] initcall and setup
-References: <200001150113.RAA16646@milano.cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA08210
+	for <parisc-linux@puffin.external.hp.com>; Sun, 16 Jan 2000 22:33:24 -0700
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id XAA01905
+	for parisc-linux@thepuffingroup.com; Sun, 16 Jan 2000 23:34:03 -0500
+Date: Sun, 16 Jan 2000 23:34:03 -0500
+From: Matthew Wilcox <willy@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000116233403.H11300@thepuffingroup.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] wq bug forcing oops
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-> Just a clarification: The kernel will use ELF once the tool chain is
-> in place. The kernel is SOM now only because of our dependency
-> on HP-UX ld. Any forcasts for when we can switch to ELF?
 
-Yup.  The 64 bit parisc GCC package will be released shortly.  We've
-been busy packaging it up in the last couple of days.
-
-After that, we'll have to start looking at making a 32 bit ELF
-toolchain.
-
-- Alex
-
--- 
-Alex deVries
-Director of Professional Services
-The Puffins at Linuxcare
+if you've had this error message on recent kernels, it actually meant
+`null pointer exception'.  the current cvs tree should report these
+correctly.
