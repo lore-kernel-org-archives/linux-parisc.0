@@ -1,12 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] glibc hppa - get/set/make/swap/context() & non-atomic ops
-Date: Tue, 27 Aug 2002 11:14:53 -0400
-Message-ID: <20020827151453.GA6100__178.692295640026$1416621652$gmane$org@systemhalted>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Breaking PARISC ABI - Testing procedures?
+Date: Tue, 27 Aug 2002 11:31:02 -0400 (EDT)
+Message-ID: <200208271531.g7RFV2qR017083__9921.84351566738$1416621653$gmane$org@hiauly1.hia.nrc.ca>
+References: <20020826194135.GC632@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: debian-glibc@lists.debian.org
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <20020826194135.GC632@systemhalted> from "Carlos O'Donell" at Aug 26, 2002 03:41:35 pm
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,34 +20,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-PA'ers,
+> 3- sizeof(long double) is incorrect in gcc and glibc (?)
 
-Comments or thoughts about the following issues would be appreciated.
+This also needs to be fixed under 64-bit hpux.  Need to determine
+the calling convention for long doubles.
 
-These items are taken from my collection of TODO notes for glibc,
-and were recently added by comments from Helge and Willy.
-
-- Implement make/swap/set/get/context() calls in glibc
-        = Don't know what's needed... can probably learn
-        = about the calls from other arches.
-        - Doesn't look like it will be that hard.
-        - Helge brought the issue up since SAPDB relies
-        - on this to work properly (www.sapdb.org)
-	- With mcontext working properly... these calls
-	- _should_ work :}
-	* Didn't know these were broken or missing.
-
-- Make atomic ops atomic
-        = Need to implement exhcange_and_add/atomic_add
-        = and compare_and_swap.
-        - I have no idea how hard this will be.
-        - PA has a single atomic operation called ldcw
-        - Which is 'load and zero' ... we currently use
-        - this to implement locking primities.
-        * Are we going to have to use spinlocks to
-        * handle the atomic operations?
-	* I see 11 uses of generic/atomicity.h that need
-	* to be fixed.
-
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
