@@ -1,17 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1024B488A
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F14BA488A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 10:28:32 -0700 (MST)
-Date: Fri, 6 Feb 2004 18:08:13 +0100
-Message-ID: <40218AE20000180F@ocpmta2.freegates.net>
-In-Reply-To: <20040206191631.GQ959@tausq.org>
-From: "Joel Soete" <soete.joel@tiscali.be>
+	Fri,  6 Feb 2004 10:50:44 -0700 (MST)
+Date: Fri, 6 Feb 2004 10:50:38 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 jejb
-To: "Randolph Chung" <tausq@debian.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20040206175038.GC20990@colo.lackof.org>
+References: <40218AE200000F67@ocpmta2.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <40218AE200000F67@ocpmta2.freegates.net>
+Cc: Randolph Chung <randolph@tausq.org>, bame@hp.com,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,40 +23,75 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Randolph,
+On Fri, Feb 06, 2004 at 08:31:47AM +0100, Joel Soete wrote:
+> -----------------  Processor 0 HPMC Information ------------------
+> 
+> Timestamp = 
+>   Fri Feb  6 07:20:26 GMT 2004    (20:04:02:06:07:20:26)
+> 
+> HPMC Chassis Codes = 2cbf0  2500b  2cbf5  2cbfc  
+> 
+> General Registers 0 - 31
+> 00-03   0000000000000000  000000001043e000  00000000000600d0  fffffff0f0000018
 
-> did you do clearpim before the run?
-Yes
+What does 00000000000600d0 point at?
+Is that the boot loader?
 
-> The values in the pim info don't make a lot of sense....
-Not more sense with previous one I got, that's why it takes me so much time
-to find  a workaround ;)
+> IIA Space                    = 0x0000000000000000
+> IIA Offset                   = 0x00000000001000e4
 
-> did the box HPMC?
-Yes that's what showing the small lcd on the box and seems to be confirm
-by hpmc time stamp ;)
+Is the CPU still in real mode?
+ie haven't switched to virtual mode yet?
 
-> did it hang and then you hit the TOC button?
-NO. Just after the last advise of palo (... If this is the last message...)
-appears very quickly the message on the lcd: hpmc init... (even if I put
-printk() at the very begining of init code in main.c nothing is printed on
-the serial console.
+> Check Type                   = 0x20000000
+> CPU State                    = 0x9e000004
+> Cache Check                  = 0x00000000
+> TLB Check                    = 0x00000000
+> Bus Check                    = 0x003010bb
+> Assists Check                = 0x00000000
+> Assist State                 = 0x00000000
+> Path Info                    = 0x00031800
+> System Responder Address     = 0xfffffffffed10200
+> System Requestor Address     = 0xfffffffffffa0000
 
-I also suspected a long time the compiler I used but recently I put this
-same kernel (scp) on the N4K-550 and it boot fine (but this system has 2Gb
-of ram)
+CPU is trying to get data from 0xfed10200
+What lives there?
 
-And because 2.4 64bits runing fine on this system (b2k) and the pb should
-be located very early at the begining of the kernel start, I had the idea
-to compare head64.S and vmlinux.lds.S and find back this 2.5 patch and try
-to revert it. But I very don't undurstand what happen in head64 to hope to
-help more efficiently :( (sorry) 
+> A Data Miss Timeout occurred while CPU 0 was
+> requesting information.
 
-Thanks for your attention,
-    Joel
+Some device wasn't responding.
+
+> General Registers 0 - 31
+> 00-03   0000000000000000  fffffff0f009d000  000000f0f000b618  00000000000f4240
+
+looks like the box HPMC'd, and then TOC to recover.
+I think GR02 is a firmware address.
+...
+> IIA Space                    = 0x00000000000000f0
+> IIA Offset                   = 0x000000f0f000b620
+> CPU State                    = 0x9e000001
 
 
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+> I/O Module Error Log Information:
+> 
+> Timestamp = 
+>   Fri Feb  6 07:20:26 GMT 2004    (20:04:02:06:07:20:26)
+> 
+> 
+> '9000/785 B,C,J Workstation IO Error Log', rev 0, 228 bytes:
+> 
+>  Rope     Word1        Word2            Word3
+> ------ ------------ ------------
+>    0    0x00000000   0x0e0cc009   0x00000000fed30048
+>    1    0x00000000   0x1e0cc009   0x00000000fed32048
+
+Note this is NOT the same address range that the CPU was
+trying to talk to. And it looks like all the ropes are happy.
+("cc" is the status or error word, IIRC)
+
+If i had to guess, I would think Joel's box has a HW problem.
+But I really don't know what's going on.
+
+hth,
+grant
