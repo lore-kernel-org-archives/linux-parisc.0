@@ -1,15 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] bitops.h: fls(unsigned long )
-Date: Wed, 25 Aug 2004 08:41:03 +0200
-Message-ID: <41213586000050F2@ocpmta2.freegates.net>
-References: <20040824172230.GA16196@parcelfarce.linux.theplanet.co.uk>
+Date: Wed, 25 Aug 2004 16:10:43 -0400
+Message-ID: <20040825201042.GX5207@baldric.uwo.ca>
+References: <20040824164542.GR5207@baldric.uwo.ca>
+	<412135A800004CFE@ocpmta3.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-1"
+  charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: "Matthew Wilcox" <willy@debian.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040824172230.GA16196@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <412135A800004CFE@ocpmta3.freegates.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,43 +21,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-> On Tue, Aug 24, 2004 at 02:51:59PM +0200, Joel Soete wrote:
-> > Sorry for this auto-reply but I just reboot with success my N4k (smp
-64bit
-> > kernel 2.6.8.1-pa7) with this patch and all works fine :)
-> > 
-> > If Ok for everybody can somebody ci for me (no cvs access :) )?
+On Tue, Aug 24, 2004 at 07:06:02PM +0200, Joel Soete wrote:
+> And even a 64bit (using jejb 64bit lib :), just don't inline fls (if inline
+> it does a segfault when finish)):
 > 
-> > > -static __inline__ int fls(int x)
-> > > +static __inline__ int fls(unsigned long x)
-> 
-> This is absolutely not OK.  fls is prototyped to have an int parameter,=
+> See attachment:
+> bitops-tc3.c
 
-> not an unsigned long.  Why do you want to do this, anyway?
-> 
-Oops: the original idea was to propose the equivalence of  __ffs(unsingne=
-d
-long). 
+Thanks! I'll check this out in 5 days, I'm very busy right now. If it
+looks to work I'll check the test into out userspace test area.
 
-My bad.
+Then I'll look at the kernel stuff.
 
-Anyway it's tested fully ok and if we need it later, it's at least availa=
-ble
-in the list ;)
-
-Thanks for advise,
-    Joel
-
--------------------------------------------------------------------------=
---
-Tiscali ADSL LIGHT, 19,95 EUR/mois pendant 6 mois, c'est le moment de fai=
-re
-le pas!
-http://reg.tiscali.be/default.asp?lg=3Dfr
-
-
-
+c.
 
 _______________________________________________
 parisc-linux mailing list
