@@ -1,56 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from feanor.nuclear.demokritos.gr (feanor.nuclear.demokritos.gr [143.233.244.29])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 101AF482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 Mar 2001 10:34:13 -0700 (MST)
-Received: from localhost ([127.0.0.1])
-	by feanor.nuclear.demokritos.gr with esmtp (Exim 3.16 #1 (Debian))
-	id 14jPHU-0000vR-00
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 31 Mar 2001 20:35:20 +0300
-Date: Sat, 31 Mar 2001 20:35:20 +0300 (EEST)
-From: Konstantinos Margaritis <markos@feanor.nuclear.demokritos.gr>
+Received: from mta02.mail.mel.aone.net.au (mta02.mail.au.uu.net [203.2.192.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7402A482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  1 Apr 2001 05:37:18 -0600 (MDT)
+Received: from piglet.sspl.net.au ([210.84.112.88])
+          by mta02.mail.mel.aone.net.au with ESMTP
+          id <20010401113715.DKEX4934.mta02.mail.mel.aone.net.au@piglet.sspl.net.au>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Sun, 1 Apr 2001 21:37:15 +1000
+Received: from winnie.sspl.net.au (barbar@winnie. [192.168.10.9])
+	by piglet.sspl.net.au (8.9.3/8.9.3) with ESMTP id VAA24658
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 1 Apr 2001 21:37:02 +1000
+From: "Pete" <plaven@ozemail.com.au>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.21.0103312017460.3454-100000@feanor.nuclear.demokritos.gr>
+Date: Sun, 1 Apr 2001 21:37:33 +1000
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] 715/80 woes
+Content-type: text/plain; charset=US-ASCII
+Reply-To: plaven@ozemail.com.au
+Message-ID: <3AC79F9D.19950.724DC12@localhost>
+Subject: [parisc-linux] searchable archives?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-  I still have trouble with my 715/80 recognizing my ps/2 keyboard, but I
-did a little searching and thought that maybe someone more knowledgeable
-might help.
+Hey everyone,
 
-For a start when I turn on the machine the status leds are like this:
+the first hurdle to running up a hp workstation is finally behind me, I 
+have a working i386 box :).
 
-oxoooooxx
+I'm not sure if it's been asked before, but when I went to the web 
+site, I couldn't find a link to, if they exist, searchable list archives.
 
-x: on, o: off
+Anyway, maybe someone can answer me in their reply, what is 
+needed for the serial cable between the i386 and parisc box?
 
-the last one is the power led (obviously on)
+Is it just a plain old null modem cable?
 
-ok. now the machine just reports
+If not what do I have to ask for to make sure that i can connect to 
+the serial port of the HP box?
 
-Failed to initialize a keyboard
-Fix the keyboard and cycle power
+Thanks,
 
-as I previously reported, and it just keeps changes screen resolution (I
-believe I have to press TAB or SPACE to make this stop, but the keyboard
-does not work).
 
-Then I press the TOC button, which is supposed to act like a reset. Then
-screen goes blank, disks spin like crazy and now the leds become:
-
-oxxoxxoox
-
-now, I was looking to a 720 users guide pdf -thinking that the led
-combinations are the same- and i could not find this particular
-combination. instead i found that 
-
-oxxoooooo is indicative to a faulty SIMM (which it is not, I tried it on a
-712 and it worked).
-
-Anyone has any ideas? Can I force the 715 to use the serial for console?
-
-Any help appreciated.
-
-Konstantinos Margaritis
+Pete.
