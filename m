@@ -1,37 +1,24 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA29314
-	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 12:36:11 -0600
-Message-Id: <199910191836.LAA27611@milano.cup.hp.com>
-To: Mike Hibler <mike@fast.cs.utah.edu>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] LASI and serial port initialization 
-In-reply-to: Your message of "Tue, 19 Oct 1999 11:32:28 PDT."
-             <199910191732.LAA14850@fast.cs.utah.edu>
-Date: Tue, 19 Oct 1999 11:36:50 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id NAA30004
+	for <parisc-linux@puffin.external.hp.com>; Tue, 19 Oct 1999 13:44:16 -0600
+Message-ID: <19991019161327.A15943@thepuffingroup.com>
+Date: Tue, 19 Oct 1999 16:13:27 -0400
+From: Phil Schwan <pschwan@thepuffingroup.com>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] LASI and serial port initialization
+References: <199910191732.LAA14850@fast.cs.utah.edu> <199910191836.LAA27611@milano.cup.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <199910191836.LAA27611@milano.cup.hp.com>; from Grant Grundler on Tue, Oct 19, 1999 at 11:36:50AM -0700
 List-ID: <linux-parisc.vger.kernel.org>
 
-Mike Hibler wrote:
-...
-> Personally I don't see spending a lot of time worrying about this.  Our
-> simple console interface with pre-init buffering has been perfectly adequate
-> for us. 
+On Oct 19, Grant Grundler wrote:
+> I agree the pre-init buffering is perfectly acceptable. No problem.
 
-I agree the pre-init buffering is perfectly acceptable. No problem.
+I think the point that many people have noted (regarding ports to new
+platforms and seeing data before the console is up) is worth thinking
+about.  Why not register an IODC console immediately, and then
+register a preferred console once it becomes available?
 
-> But our PA world is pretty simple, older 700 series machines and
-> one J-series.  So the console is either the builtin serial port or the
-> graphics device.  Are there that many more options now?
-
-No. But I expect at least two more options by next year.
-But even with just two options I think my reasons are valid.
-
-grant
-
-ps. I'm still doing homework to reply to Kirk's response about clock drift.
-Short answer is I belive him about N-class and thus don't care if this is
-just a T- or possibly V-class problem.
-
-Grant Grundler
-Unix Developement Lab
-+1.408.447.7253
+-Phil
