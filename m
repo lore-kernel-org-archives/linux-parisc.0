@@ -1,40 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5ABE34A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Feb 2001 01:48:56 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 9B2F7B005; Fri, 16 Feb 2001 08:48:30 +0000 (GMT)
-Date: Fri, 16 Feb 2001 08:48:30 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Kevin Read <obsidian@panokratie.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Test on 705
-Message-ID: <20010216084830.K1374@linuxcare.com>
-References: <Pine.LNX.4.31.0102160013480.22670-100000@kiste.innnet.de>
-Mime-Version: 1.0
+Received: from mailin6.bigpond.com (unknown [139.134.6.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A787E4A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Feb 2001 03:23:34 -0700 (MST)
+Received: from customware.com.au ([139.134.4.50]) by
+          mailin6.bigpond.com (Netscape Messaging Server 4.15) with SMTP
+          id G8UIET00.BTY for <parisc-linux@lists.parisc-linux.org>; Fri,
+          16 Feb 2001 20:28:05 +1000
+Received: (from penfold@localhost)
+	by customware.com.au (8.9.3/8.8.7) id VAA16014
+	for parisc-linux@lists.parisc-linux.org; Fri, 16 Feb 2001 21:19:14 +1100
+From: penfold@customware.com.au
+Message-Id: <200102161019.VAA16014@customware.com.au>
+To: parisc-linux@lists.parisc-linux.org
+Date: Fri, 16 Feb 2001 21:16:43 +1100
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.31.0102160013480.22670-100000@kiste.innnet.de>; from obsidian@panokratie.de on Fri, Feb 16, 2001 at 12:18:53AM +0100
+Subject: [parisc-linux] kernel src on p.e.hp.com ?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Feb 16, 2001 at 12:18:53AM +0100, Kevin Read wrote:
-> 
-> Hi folks,
-> 
-> first a little praise: It only took me 2 hours to get up and running and
-> starting to build me own kernel with palinux! I like your informative
-> homepage and FAQs! Keep it up!
-> 
-> I booted it up on my 705 (Flounder), further below is the output I got.
-> 
-> It seems it can't get consistent with the memory my ether and SCSI
-> controller use, and its muttering about DMA too. It didn't find any SCSI
-> devices and I couldn't find any packets from the box on the net.
+Hi all,
 
-This looks to me very much like the problems with 710(bushmaster),
-where things basically work, but interrupts from the scsi and ethernet
-chips just never get seen by the cpu.
+Is ftp://puffin.external.hp.com/pub/parisc/cvs still the place to get the
+latest source bundles?
 
-We need info from someone with access to hp documentation to fix
-these systems, I think.
+If so, does anyone know why it isnt updating?
 
-Richard
+-rw-r--r--   1 500      233     19449856   Feb  3 07:13   linux-20010203.tar.gz
+-rw-r--r--   1 500      233            0   Feb  4 07:12   linux-20010204.tar.gz
+-rw-r--r--   1 500      233            0   Feb  5 07:10   linux-20010205.tar.gz
+-rw-r--r--   1 500      233            0   Feb  6 07:10   linux-20010206.tar.gz
+-rw-r--r--   1 500      233            0   Feb  7 07:09   linux-20010207.tar.gz
+-rw-r--r--   1 500      233            0   Feb  8 07:10   linux-20010208.tar.gz
+lrwxrwxrwx   1 500      233           21   Feb  8 07:10   linux-latest.tar.gz -> linux-20010208.tar.gz
+
+cheers,
+
+Damian
+penfold@customware.com.au
