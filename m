@@ -1,31 +1,30 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA08566
-	for <parisc-linux@puffin.external.hp.com>; Wed, 31 May 2000 18:01:23 -0600
-Message-ID: <20000531180109.A8473@puffin.external.hp.com>
-Date: Wed, 31 May 2000 18:01:09 -0600
-From: Philipp Rumpf <prumpf@puffin.external.hp.com>
-To: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] CONFIG_SYSCTL is not set
-References: <200005300201.TAA11206@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200005300201.TAA11206@milano.cup.hp.com>; from Grant Grundler on Mon, May 29, 2000 at 07:01:07PM -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id BAA11503
+	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Jun 2000 01:08:11 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 1 Jun 2000 07:08:34 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA28821;
+	Thu, 1 Jun 2000 17:08:29 +1000
+Date: Thu, 1 Jun 2000 17:08:29 +1000 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: parisc-linux@thepuffingroup.com
+cc: Paul Bame <bame@endor.fc.hp.com>
+Subject: [parisc-linux] Binutils update
+Message-ID: <Pine.LNX.4.21.0006011600290.30171-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, May 29, 2000 at 07:01:07PM -0700, Grant Grundler wrote:
-> Philipp Rumpf wrote:
-> > I wouldn't really consider this a bug, but if anyone does he should 
-> > probably report it to whoever is working on that code in 2.3. 
-> 
-> If anyone wants to build x86 install/rescue disks, I think they can't now.
-> Either the Configure.help is wrong or the code is wrong.
-> I don't know how to submit a BUG.
-> Any pointers on where this bug should go?
+I've just checked in the following:
 
-You were right.  It's just annoying behaviour not to compile at all, so
-I submitted a patch to Alan (obviously, RPC_DEBUG doesn't make sense if
-CONFIG_SYSCTL isn't defined).
+Rewrite much of the stub handling code (still using r8)
+Fix expression parsing for `!' line separator. 
+Fix sizing of branches & other miscellaneous small fixes. 
 
-So ac7 shouldn't have this problem.
+Feedback appreciated.
+Paul, did you get tar to run?
 
-	Philipp
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
