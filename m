@@ -1,90 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailrx.uk.wmmercer.com (unknown [193.131.189.243])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9323C482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Jul 2001 09:07:19 -0600 (MDT)
-Message-ID: <99F41EF55D11D511818600D0B74749C496F43A@wchrntms01.uk.wmmercer.com>
-From: "Scammell, David" <David.Scammell@uk.wmmercer.com>
-To: 'Richard Hirst' <rhirst@linuxcare.com>
-Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] 715/33 disk and kernel make dep problems
-Date: Fri, 27 Jul 2001 16:04:18 +0100
+Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5B3B1482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Jul 2001 12:11:59 -0600 (MDT)
+Received: from localhost (bz@localhost)
+	by mail.zabbadoz.net (8.11.0/8.11.0) with ESMTP id f6RIBvd57081
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Jul 2001 20:11:57 +0200 (CEST)
+Date: Fri, 27 Jul 2001 20:11:57 +0200 (CEST)
+From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.BSF.4.30.0107272003070.822-100000@noc.zabbadoz.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 715/100 0.9.1.iso
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hi,
 
-> -----Original Message-----
-> From: 'Richard Hirst' [mailto:rhirst@linuxcare.com]
-> Sent: 27 July 2001 14:26
-> To: Scammell, David
-> Cc: 'parisc-linux@lists.parisc-linux.org'
-> Subject: Re: [parisc-linux] 715/33 disk and kernel make dep problems
-> 
-> 
-> On Wed, Jul 25, 2001 at 04:52:54PM +0100, Scammell, David wrote:
-> > Will try that tonight.
-> > 
-> > I managed to compile 2.4.6-pa21 out of cvs a few days ago,
-> > same problem. A new version of make came down from debian
-> > a few days ago which may of helped the make dep problems,
-> > however it still stops, the scsi problems may affect make
-> > dep possibly, even though i'm compling over nfs.
-> > 
-> > I've not had time to change the sync speed between crashes
-> > but i'll get there.
-> > 
-> > Sorry there is no oops yet, I'm using an X terminal with
-> > the serial line plugged in for the console.
-> > 
-> > BTW 2.4.6-pa21 does not appear to listen for console input,
-> > at least not during the interactive fsck phase following a
-> > crash, did that break recently?
-> 
-> There are some problems with console input atm.  Graphical console
-> k/b doesn't work on several machines, and when I tried a 2.4.6 based
-> installer the other day with serial console, the k/b was dead at
-> the start of stage two install (could have been the installer had
-> just crashed, of course).
-> 
-> I'll be trying to track down the serial console problem with the
-> installer next week.
-> 
+also had an 0.9.1 iso (from ESIEE ) around an tried that.
+Doesn't boot either (when booting from cdrom).
 
-The kernel command option you gave me, simxxxx, appeared to
-work last night. Am I switching off disconnects, I've not 
-looked at the source?
+If anybody needs further information please let me know.
 
-However it occured to me this morning that
-serial console input worked last night at run level 2, using 
-the same kernel as above, I never noticed as I typed using it. 
+Would it make any difference if I also try 0.9-32serial ?
 
-Graphical console has never worked for me over the last two
-weeks since getting installed (even with a getty attached to 
-tty0 :), keyboard has always appeared dead.
+--- snipp ---
+Kernel Fault: Code=15 regs=102924c0 (Addr=00304008)
 
-Still having make dep problems, I may investigate which version of make
-i'm using this weekend.
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001000000000000001110
+r0-3     00000000 10337010 10102614 00304000
+r4-7     003058d8 10256000 00000000 f0002848
+r8-11    0000000d f0305698 00000030 00310000
+r12-15   f0002840 00000000 00000000 f0305710
+r16-19   10292080 00283bab 00000002 00000000
+r20-23   00000000 f0105800 01c9c380 00000060
+r24-27   00000001 00000001 1029f3c0 1028a010
+r28-31   0000002a 00000000 10292700 00000000
+sr0-3    00000000 00000000 00000000 00000000
+sr4-7    00000000 00000000 00000000 00000000
 
-The 715/33 is surprisingly spritely with 48MB of ram, not bad for oldie.
+IASQ: 00000000 00000000 IAOQ: 10102574 10102578
+ IIR: 0c701093    ISR: 00000000  IOR: 00304008
+ ORIG_R28: 00000000
+--- snipp ---
 
-regards
-Dave
-
-> Richard
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
-
-
-*************************** IMPORTANT NOTE **************************
-The above information is confidential to the addressee and may be
-privileged.  Unauthorised access and use is prohibited.  William M.
-Mercer Limited is regulated by IMRO and the Personal Investment
-Authority. Registered in London No. 984275 Registered Office: Telford
-House, 14 Tothill Street, London SW1H 9NB
+-- 
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
