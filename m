@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 11 Aug 2003 10:00:09 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Thibaut VAR?NE <varenet@esiee.fr>
-Cc: knaresh@india.hp.com,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Affined IRQs.
-Message-ID: <20030811160009.GD20405@dsl2.external.hp.com>
-References: <3F378CFE.2A12407@india.hp.com> <DE031C48-CC01-11D7-94DE-0030656F07A2@esiee.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <DE031C48-CC01-11D7-94DE-0030656F07A2@esiee.fr>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 69D4B482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 10:02:34 -0600 (MDT)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali)
+	id 19mF5V-0007xx-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 18:00:01 +0200
+Date: Mon, 11 Aug 2003 18:02:33 +0200
+Message-ID: <3F29178A000027FE@ocpmta7.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] b2k & 2.6 progress :)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,16 +24,146 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Aug 11, 2003 at 03:44:02PM +0200, Thibaut VAR?NE wrote:
-> For instance, on A500, IRQs are distributed to both CPUs, on J5000, 
-> only one of the two CPUs gets all IRQs.
+Hi all pa,
 
-I'm pretty sure this is a bug in the j5000 (Legacy PDC) init sequence.
-Not a limitation of the j5000 HW.
+Good news I reach to boot 2.6.0-test3-pa(pre0) on my b2k (the merge it quiet
+straight :) ).
 
-> but to my understanding IRQs won't probably be serviced by 
-> another CPU unless the IOSAPIC is reprogrammed to do so.
+But to do, I remove (by accident) all kind of serial support (8250/16550)
+as well as PDC software console support: this is not quiet to boot 
+(
 
-correct.
+Well for serial driver I couldn't help more because system is not accessible
+neither by nic nor by serial console. More over the TOC i can get doesn't
+give any relevant info :(
 
-grant
+OTC with only PDC software console support driver the system cras
+ with
+following dump:
+Stack Dump:
+ 10078718:  10078718 1fe05600 1fe05000 1007f670 
+ 10078708:  1fe00bc0 107d4ba0 1ff16000 f0000174 
+ 100786f8:  f000017c 10334000 10332000 1023a624 
+ 100786e8:  1073ec80 1043ef7c 00000010 1ffb1720 
+ 100786d8:  1fe00bc0 1fe00bc4 107d04a8 10078380 
+ 100786c8:  0000001a 00000000 00000000 f0000174 
+ 100786b8:  f000017c f00008c4 f0400004 1010631c 
+ 100786a8:  ffffffff 00000000 103c11c0 10362010 
+ 10078698:  10447810 10377810 10447904 103715ec 
+ 10078688:  10375000 1007f670 10078600 00000000 
+ 10078678:  00000005 00000010 1043ef7c 101204d8 
+ 10078668:  100783c8 10332000 10056568 10447904 
+ 10078658:  1073ed7c 10370088 1045bf14 00000000 
+ 10078648:  00000000 00000001 100785c8 10378834 
+ 10078638:  10454010 10362010 1fe05000 1021356c 
+ 10078628:  1ffb1720 00000008 107ab1f0 10447904 
+ 10078618:  0005000e 100783c8 10078108 00000101 
+ 10078608:  10362010 0005000e 100785c0 55555555 
+ 100785f8:  55555555 55555555 55555555 101217f8 
+ 100785e8:  55555555 55555555 55555555 55555555 
+ 100785d8:  1ffb1720 00000001 00000004 100785c8 
+ 100785c8:  104544bc 107ad600 00000004 1047da20 
+ 100785b8:  1ffb1720 00000000 00000008 1010a088 
+ 100785a8:  100783c8 1007f670 107ab1f0 00000000 
+ 10078598:  0002634a 0005000e 100783c8 00000000 
+ 10078588:  00000000 0005000e 107ab1f0 00000004 
+ 10078578:  0002634a 55555555 10078554 10078554 
+ 10078568:  10121f60 1007f670 00000000 55555555 
+ 10078558:  10078554 10078554 00000000 00000000 
+ 10078548:  0cb30083 0000000f 0002634a 55555555 
+ 10078538:  55555555 55555555 55555555 101f3b80 
+ 10078528:  101f3b7c 00000000 00000000 00000000 
+ 10078518:  00000000 00000000 00000000 00000000 
+ 10078508:  00000000 00000000 00000000 55555555 
+ 100784f8:  55555555 55555555 55555555 55555555 
+ 100784e8:  55555555 55555555 55555555 55555555 
+ 100784d8:  55555555 55555555 55555555 55555555 
+ 100784c8:  55555555 55555555 55555555 55555555 
+ 100784b8:  55555555 55555555 55555555 55555555 
+ 100784a8:  55555555 55555555 55555555 55555555 
+ 10078498:  55555555 55555555 55555555 55555555 
+ 10078488:  55555555 55555555 55555555 55555555 
+ 10078478:  55555555 55555555 55555555 55555555 
+ 10078468:  55555555 55555555 55555555 55555555 
+ 10078458:  55555555 55555555 55555555 55555555 
+ 10078448:  55555555 55555555 55555555 55555555 
+ 10078438:  55555555 55555555 55555555 55555555 
+ 10078428:  55555555 00000000 00000000 00000000 
+ 10078418:  0000001f 00000000 0000001f 00000000 
+ 10078408:  0000001f 24850e06 04100800 101f4920 
+ 100783f8:  10078380 00000005 1045bf14 10360010 
+ 100783e8:  1037e8ec 00000000 1007828c 00000002 
+ 100783d8:  10110e08 10459f04 00000000 00000000 
+ 100783c8:  f0000174 f000017c f00008c4 f0400004 
+ 100783b8:  00000000 1007828c 00000000 103c11c0 
+ 100783a8:  10362010 10447810 1073eb30 00000000 
+ 10078398:  00000000 00000000 1045bf14 10370088 
+ 10078388:  101f3b78 1037e810 0004ff0f f0400004 
+ 10078378:  00000000 ffffffff 00000000 101f3b78 
+ 10078368:  10362010 10447810 00002acb 00002ac0 
+ 10078358:  10448a94 00002ac0 0000000f 1044b55a 
+ 10078348:  1010d308 10000000 0000000f 00000001 
+ 10078338:  10370088 1045bf14 10768820 00000001 
+ 10078328:  00000002 1073eb30 10447810 10362010 
+
+Kernel addresses on the stack:
+ [<10219520>] as_next_request+0x44/0x54
+ [<10106020>] parisc_terminate+0x60/0xb8
+ [<1023a624>] scsi_request_fn+0x54/0x2b0
+ [<1010631c>] handle_interruption+0x2a4/0x5b4
+ [<101204d8>] schedule+0x1e8/0x428
+ [<1021356c>] blk_run_queues+0x6c/0x90
+ [<101217f8>] io_schedule+0x3c/0x68
+ [<1010a088>] intr_check_sig+0x0/0xc
+ [<101f3b80>] init_dev+0x64/0x4b8
+ [<103c11c0>] start_kernel+0x4/0x1f8
+ [<101f3b78>] init_dev+0x5c/0x4b8
+ [<101f4694>] tty_open+0x90/0x3a8
+ [<10110db4>] pdc_console_write+0x24/0x3c
+ [<10161118>] chrdev_open+0xb0/0x14c
+ [<10166adc>] may_open+0x58/0x1c8
+ [<10156584>] dentry_open+0x12c/0x1b8
+ [<10156450>] filp_open+0x68/0x70
+ [<101245cc>] printk+0x17c/0x1bc
+ [<101568f4>] sys_open+0x70/0xb8
+ [<10100428>] init+0x5c/0x144
+ [<10109c5c>] ret_from_kernel_thread+0x1c/0x24
+
+
+Kernel Fault: Code=26 regs=10078380 (Addr=00000000)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001111 Not tainted
+r00-03  00000000 1037e810 101f3b78 10370088
+r04-07  1045bf14 00000000 00000000 00000000
+r08-11  1073eb30 10447810 10362010 103c11c0
+r12-15  00000000 1007828c 00000000 f0400004
+r16-19  f00008c4 f000017c f0000174 00000000
+r20-23  00000000 10459f04 10110e08 00000002
+r24-27  1007828c 00000000 1037e8ec 10360010
+r28-31  1045bf14 00000005 10078380 101f4920
+sr0-3   00000000 00000000 00000000 00000000
+sr4-7   00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 101f3b7c 101f3b80
+ IIR: 0cb30083    ISR: 00000000  IOR: 00000000
+ CPU:        0   CR30: 10078000 CR31: 103b5000
+ ORIG_R28: 55555555
+ IAOQ[0]: init_dev+0x60/0x4b8
+ IAOQ[1]: init_dev+0x64/0x4b8
+ RP(r2): init_dev+0x5c/0x4b8
+
+
+(it seems to be the same pb I encounter some time ago with 2.4 but not had
+time to analyse, sorry)
+
+hth,
+    Joel
+
+
+
+
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
