@@ -1,52 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 58A0B482A
-	for <parisc-linux@parisc-linux.org>; Fri,  4 May 2001 20:35:06 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14vruL-0004iC-00
-	for parisc-linux@parisc-linux.org; Sat, 05 May 2001 03:34:57 +0100
-Date: Sat, 5 May 2001 03:34:57 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010505033457.Q32445@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] glibc 2.2.3 make check status
+Received: from patty.levels.unisa.edu.au (patty.levels.unisa.edu.au [130.220.36.156])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 857D6482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 May 2001 22:24:53 -0600 (MDT)
+Date: Sat, 5 May 2001 13:54:47 +0930 (CST)
+From: Alan Modra <alan@SPRI.Levels.UniSA.Edu.Au>
+To: Jeffrey A Law <law@redhat.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.30.0105051311480.7143-100000@mullet.itr.unisa.edu.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] pa FUNCTION_OK_FOR_SIBCALL
 List-ID: <linux-parisc.vger.kernel.org>
 
-I'm not sure people actually ran make check against glibc 2.2.1, so I don't
-know how this compares.  Maybe 2.2.3 just has more tests than 2.2.1 did...
+Hi Jeff,
+   Can you remember why FUNCTION_OK_FOR_SIBCALL is !TARGET_64BIT?
 
-I'd love some help on this.  Really.  check the merge_GLIBC_CVS_20010424
-branch out of CVS, configure it, make, then make check, and you'll start
-hitting failures.  I've indicated the ones I've investigated.
+I'm asking because I think tail calls are always OK for pa32-linux,
+because having a flat sub-space model we don't need to worry about rp',
+and r19 will be preserved/loaded in the PIC case.  I'm wordering what I'm
+missing though as you can argue the same for pa64.
 
- * all the tests in math/ fail.  pb knows what these problems are.
-
- * stdlib/strtold fails.  This is due to our long double being 64 bit and
-   glibc thinks its 128 bit.  Bug #119
-
- * all the tests in dlfcn/ fail.  I haven't investigated these.
-
- * grp/testgrp fails.  This is a generic glibc 2.2.3 problem, the fix
-   is available from upstream.
-
- * posix/testchmod fails.  This is due to a kernel bug in strncpy_from_user.
-   Bug #118
-
- * posix/globtest fails.  Haven't investigated.
-
- * io/test-utime fails.  Looks like a stat problem.
-
- * misc/tst-efgcvt fails.  (Maybe another long double problem?)
-
- * gmon/tst-sprofil fails.  Looks like it needs to be ported to Linux/hppa.
-
- * linuxthreads/ and rt/ all hang.  I'll look at this.
-
- * elf/resolvfail and elf/constload1 fail.  Not investigated.  Probably other
-   tests in elf/ also fail.
-
--- 
-Revolutions do not require corporate support.
+Alan
