@@ -1,16 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from transport.cksoft.de (transport.cksoft.de [62.111.66.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A91624829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 00:38:14 -0700 (MST)
-Date: Sat, 9 Nov 2002 07:37:59 +0000 (UTC)
-From: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Received: from crisis.wild-wind.fr.eu.org (lopsy-lu.misterjones.org [62.4.18.26])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 95249482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Nov 2002 00:58:57 -0700 (MST)
 To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.5 kernel compilation error
-In-Reply-To: <20021108211301.Q12011@parcelfarce.linux.theplanet.co.uk>
-Message-ID: <Pine.BSF.4.44.0211090735060.32930-100000@e0-0.zab2.int.zabbadoz.net>
+Cc: "Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
+	hch@lst.de, James.Bottomley@steeleye.com,
+	linux-kernel@vger.kernel.org, mochel@osdl.org,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
+References: <200211090451.UAA26160@baldur.yggdrasil.com>
+	<20021109052150.T12011@parcelfarce.linux.theplanet.co.uk>
+Reply-To: mzyngier@freesurf.fr
+From: Marc Zyngier <mzyngier@freesurf.fr>
+Date: 09 Nov 2002 08:58:01 +0100
+Message-ID: <wrp4rari392.fsf@hina.wild-wind.fr.eu.org>
+In-Reply-To: <20021109052150.T12011@parcelfarce.linux.theplanet.co.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,30 +28,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, 8 Nov 2002, Matthew Wilcox wrote:
+>>>>> "Matthew" == Matthew Wilcox <willy@debian.org> writes:
 
-Hi,
+Matthew> (i'm gagging to write an EISA subsystem ;-).
 
-> On Fri, Nov 08, 2002 at 09:05:51PM +0000, Bjoern A. Zeeb wrote:
-> >
-> > Are there any updates or fixes or do I need to have a look at it myself ?
-> > This is a bk pull from 20021108-165510 UTC.
->
-> We're not fully integrated into Linus' tree yet.  We're a damn sight
-> closer than we have been ever before, but you still need either latest
-> CVS or download a patch.  If you're interested in 2.5, i recommend CVS
-> since fixes get made on an hourly basis.  Last night's snapshot is ~130k
-> gzipped, or 500k uncompressed.  About 90% of that is drivers/video,
-> drivers/input and drivers/scsi.
->
-> If you do want a patch, http://ftp.parisc-linux.org/2.5/kernel-src/
-> is updated nightly (around 5am MST, i believe).
+Humm, please don't... :-)
 
-thanks. I will consider a cvs co but first fetch the patch.
+maz@midlife-crisis:~$ ls -R /sys/bus/eisa/ 
+/sys/bus/eisa/:
+devices  drivers
 
-*grrml* I must have missed this directory while looking at
-ftp.parisc-linux.org though I had a look at kernels and src ...
+/sys/bus/eisa/devices:
+00:00  00:01  00:02
 
+/sys/bus/eisa/drivers:
+3c509
+
+/sys/bus/eisa/drivers/3c509:
+00:02
+maz@midlife-crisis:~$ 
+
+I have it working on x86 and Alpha, will test parisc and mips over the
+week-end.
+
+        M.
 -- 
-Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
-56 69 73 69 74				http://www.zabbadoz.net/
+Places change, faces change. Life is so very strange.
