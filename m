@@ -1,52 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 994704A19
-	for <parisc-linux@parisc-linux.org>; Thu,  1 Mar 2001 12:54:23 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14YZ9a-00011R-00
-	for parisc-linux@parisc-linux.org; Thu, 01 Mar 2001 19:54:22 +0000
-Date: Thu, 1 Mar 2001 19:54:22 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010301195422.B26100@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0C774A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  1 Mar 2001 15:06:37 -0700 (MST)
+Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA10761
+	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Mar 2001 15:01:43 -0700
+Sender: marteaut@esiee.fr
+Message-ID: <3A9EC4BE.3F01E095@esiee.fr>
+Date: Thu, 01 Mar 2001 22:53:02 +0100
+From: Thomas Marteau <marteaut@esiee.fr>
+MIME-Version: 1.0
+To: Greg Ingram <ingram@symsys.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Another 735 hums to life
+References: <Pine.LNX.4.21.0103010907390.7180-100000@maestro.symsys.com>
 Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] (read|write)[bwl]
 List-ID: <linux-parisc.vger.kernel.org>
 
-right now we do rsm / foo / mtsm in order to read/write gsc space.
-the rsm/mtsm turns off address translation.  this is cripplingly slow
-on PA8x00 series processors.
+Hi Greg and all,
 
-proposal 1:
+> 55 meg root filesystem and it had a root password set.  I had to boot the
+> old NFS-root fs so I could edit /etc/passwd on the new fs.  On the whole
+> it's a big improvement.  I can use the compiler now.  Next I'm going to
+> see if the C100 can compile its own kernel.
 
-leave gsc_* macros alone.  people can continue to use these if they want.
-they should be aware these are slow though.
+Thanks for the feedback :)
+For the password, it is not a very original one: toto
+Like that, every one knows! No more old nfs needed :)
 
-stop aliasing (read,write)[bwl] to the gsc_* variants.  they should
-just dereference the address passed to them.
-
-write an ioremap() function which provides a logical map to that area
-of address space.
-
-proposal 2:
-
-direct-map the entire 0xfxxx'xxxx address space into the kernel's address
-space.  ioremap becomes a NOP, gsc_* go away and (read,write)[bwl] become
-as trivial as before.
-
-i suspect we want proposal 1 on PA1.1 and proposal 2 on PA2.0.  This leads
-to proposal 3 which should allow modules to work for either architecture:
-
-gsc_* stay as calls to _gsc_*, (read,write)[bwl] become the direct memory
-dereferences.  ioremap is a function call.  On PA2.0, the gsc space is
-permanently mapped, the ioremap function does nothing and _gsc_* don't
-mess with the system mask.  On PA1.1, we construct page table entries
-for the io area upon calls to ioremap, and _gsc_* still mess with the
-system mask.
-
-Suggestions?
-
--- 
-Revolutions do not require corporate support.
+Bye, Thomas
+ESIEE Team
