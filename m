@@ -1,17 +1,19 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E4E7748AA
+Return-Path: <deller@gmx.de>
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id 8E46C4840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 30 Jan 2004 10:31:34 -0700 (MST)
-Date: Fri, 30 Jan 2004 18:31:31 +0100
-Message-ID: <4015306100003890@ocpmta1.freegates.net>
-In-Reply-To: <20040130160958.GB12688@colo.lackof.org>
-From: "Joel Soete" <soete.joel@tiscali.be>
+	Fri, 30 Jan 2004 11:54:29 -0700 (MST)
+From: Helge Deller <deller@gmx.de>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] sti & b2k: doesn't work?
-To: "Grant Grundler" <grundler@parisc-linux.org>
+Date: Fri, 30 Jan 2004 19:54:18 +0100
+References: <400CB8A10000846A@ocpmta3.freegates.net>
+In-Reply-To: <400CB8A10000846A@ocpmta3.freegates.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Message-Id: <200401301954.18808.deller@gmx.de>
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +23,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+On Friday 30 January 2004 15:01, Joel Soete wrote:
+> Looking to solve the pb I encounter with b2k and pdc_console, I unfortunately
+> figure out that sti console doesn't work at all on this b2k model.
+> 
+> To be honnest, as the builtin gfx card is not (yet and may be never) supported,
+> I only use serial console till now.
 
-> Are you building your own kernels?
-Yes
-> You have USB keyboard/mouse built-in or loaded as a module?
+Which graphics card do you have ?
+What does "lspci -v" and/or dmesg (look for "sti:") says ?
 
-I so have a look:
-in 2.4
-CONFIG_USB_HID=y
-CONFIG_USB_HIDINPUT=y
-
-Is what I have to use (I also encounter CONFIG_USB_KBD and CONFIG_USB_MOUSE
-but not see how to select with menuconfig?)
-
-in 2.6 it is not yet a default: should I also used CONFIG_USB_HID=y; CONFIG_USB_HIDINPUT=y?
-
-Thanks for your attention,
-    Joel
-
-
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+Helge
