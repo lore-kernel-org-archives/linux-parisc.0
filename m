@@ -1,60 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.alcatel.at (atusks01.alcatel.at [212.183.9.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 902A64A19
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 11:24:26 -0700 (MST)
-Sender: christoph.plattner@alcatel.at
-Message-ID: <3A7EEFCF.A0E34D31@alcatel.at>
-Date: Mon, 05 Feb 2001 19:24:15 +0100
-From: Christoph Plattner <christoph.plattner@alcatel.at>
-MIME-Version: 1.0
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D22614A19
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 Feb 2001 11:32:35 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA29190
+	for <parisc-linux@puffin.external.hp.com>; Mon, 5 Feb 2001 11:28:20 -0700
+Message-Id: <200102051834.KAA02270@milano.cup.hp.com>
 To: Matthew Wilcox <matthew@wil.cx>
-Cc: Christoph Plattner <christoph.plattner@dot.at>,
-	penfold@customware.com.au, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] _working_ rbootd for redhat
-References: <200102041048.VAA00309@customware.com.au> <3A7D69B4.896F63D6@dot.at> <20010205181911.A5520@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii
+Cc: Ryan Bradetich <rbradetich@uswest.net>,
+	parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] RFC: I/O tree design 
+In-reply-to: Your message of "Sat, 03 Feb 2001 17:57:51 PST."
+             <20010203175751.C12985@parcelfarce.linux.theplanet.co.uk>
+Date: Mon, 05 Feb 2001 10:34:48 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Is it not possible to add the entry in the meantime
-with the well-known big triple X
-	/* XXX hack.... */
-for those people doing the first hackings on such old machines ?
-Of course, some of these points will be forgotten....
-
-I have not enough skills at the moment. I don't know the PA-RISC
-arch here good enough, and I also have to deal with the low level
-kernel code around the PA RISC here. 
-
-Cheers
-	Christoph
-
-
 Matthew Wilcox wrote:
-> 
-> On Sun, Feb 04, 2001 at 03:39:48PM +0100, Christoph Plattner wrote:
-> > Hello !
-> >
-> > For the SCSI I have nothing fixed !
-> > It works out of the box.
-> >
-> > I have not sent any patch. I only tried it and it works.
-> > So to all PA-RISC hackers, add the TRAP 18 there in the main stream !!
-> 
-> Yes, and no.  we need a proper trap 18 handler that checks to see whether
-> it's a page fault or a misaligned data reference, and calls the right
-> handler.  This should not be too hard to write, but i don't have time
-> right now.
-> 
-> --
-> Revolutions do not require corporate support.
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+...
+> One advantage of doing this is that `Child' could be a pointer to a
+> PCI bus.
 
--- 
-  +--------V--------+	Christoph.Plattner@alcatel.at
-  |  A L C A T E L  |	-----------------------------
-  +-----------------+	Phone: +43 1 27722 3706	
-         T A S		Fax:   +43 1 27722 3955
+I don't think I want that. PCI busses have their own heirarchy
+and I would much rather keep them quite seperate. At least for
+the moment I would. Future abstraction of native bus access
+and mgt methods might make this more interesting.
+
+> > This proposal also calls for a special "root" node at
+> 
+> And you don't ned a root node, just siblings.
+
+You are right - PCI starts out as a bunch of siblings too.
+If it makes the code simpler to have a root node, then
+I think it's ok to keep it.
+
+Sometimes, it's convenient to think of the memory controller(s)
+as the "parent" of the central bus and memory banks as children
+(just like CPU would also be a child). This model works under ccNuma
+as well with memory at multiple levels in the I/O tree.
+
+Note that HPUX walks the "PA I/O tree" in a depth-first
+fashion like PCI as well. So I expect the "siblings-only
+for central bus" would be ok.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
