@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0E2C7483C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 23:20:02 -0600 (MDT)
-Date: Tue, 20 May 2003 22:23:51 -0700
-From: Randolph Chung <tausq@debian.org>
-To: Matthias Klose <doko@cs.tu-berlin.de>
-Cc: parisc-linux@lists.parisc-linux.org,
-	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
-	m68k-build@nocrew.org
-Subject: Re: [parisc-linux] gcc-3.3 configuration
-Message-ID: <20030521052351.GV548@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <16074.48509.259405.775905@gargle.gargle.HOWL>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <16074.48509.259405.775905@gargle.gargle.HOWL>
+Received: from cpout2.tiscali.be (unknown [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8DEF64839
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 May 2003 00:31:03 -0600 (MDT)
+Date: Wed, 21 May 2003 08:30:59 +0200
+Message-ID: <3EC76170000016C4@ocpmta1.freegates.net>
+In-Reply-To: <20030521020908.GE10485@systemhalted>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] 2.4 and semtimedop - need kernel compat?
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Cc: "Matthew Wilcox" <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,29 +23,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> If yes, does the following approach work: Build a libstdc++5-3.3,
-> conflicting with libstdc++5 (including libstdc++ with the same soname)
-> and doing binary uploads for hppa for all libstdc++5 dependent
-> packages? (The same could be done for m68k, but the compatibility
-> argument doesn't hold as Debian seems to be the only m68k based
-> distro).
+>
+>> In the very last Andrea's patch 2.4.21rc2aa1.bz2, I read that Andrea already
+>> back port this stuff :)
+>> 
+>> At a first glance, the job is also applied for hppa. Would you like that
+>> I have a look to see if it is applicable with your patch in p-l cvs tree?
+>
+>Seeing as how our glibc 2.3.2 is highly unstable and non-functional, it
+>won't help very much :(
+>
+>It should be easy enough to connect our syscall to semtimedop when the
+>code is backported.
+>
+Ok
 
-Aside from the evilness of doing binNMUs of this magnitude, I doubt a
-"transition" that doesn't change the SONAME will work. As soon as the
-new libstdc++ is installed, every c++ app on the box will instantly
-break. This means if anything happens e.g. to apt during the update, the
-system will get into a very nasty state. I don't think this is worth it.
+J.
 
-If we need to change the SONAME, then there's no binary compatibility
-anyway...
-
-As willy mentioned in his other email, if other distros want binary
-compatibility, they should follow what Debian is doing (on hppa), since
-Debian was there first :-)
-
-my 2 cents,
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
