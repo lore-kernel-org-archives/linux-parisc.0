@@ -1,45 +1,34 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA29305
-	for <parisc-linux@puffin.external.hp.com>; Mon, 19 Jul 1999 17:15:26 -0600
-From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-To: parisc-linux@thepuffingroup.com, smoret-puffin@genocide.net
-Subject: Re: [parisc-linux] HP9000 J210
-Date: Tue, 20 Jul 1999 01:13:54 +0200
-Content-Type: text/plain
-References: <19990719193639.31498.qmail@mailserv2.iuinc.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA29714
+	for <parisc-linux@puffin.external.hp.com>; Mon, 19 Jul 1999 23:39:35 -0600
+Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
+	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id BAA14919
+	for <parisc-linux@thepuffingroup.com>; Tue, 20 Jul 1999 01:52:35 -0400
+Sender: adevries@thepuffingroup.com
+Message-ID: <37940E9F.5CAD3D17@thepuffingroup.com>
+Date: Tue, 20 Jul 1999 01:52:31 -0400
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-Message-Id: <99072001163500.00271@P100>
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 7100 and 7300 PA RISC 1.1 docs
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Steve !
 
-Am Mon, 19 Jul 1999 schrieb smoret-puffin@genocide.net:
-> I've got a HP9000 J210 sitting next to me that I'd like to offer help with.
-> I'm able to get precompiled kernels to begin to boot (they give the 
-> secret message), but I am unable to get the .lif generator to compile so I 
-> can compile my own kernels.
+With the guidance of The Puffin Group, Hewlett Packard has released
+documentation on the PCXL and PCXL2 PA RISC 1.1 CPUs.  These documents
+can be found at the PA RISC Linux documentation page, at:
 
-What´s the problem with it ??
-You know, that you have to compile the kernel and the LIF currently on hpux
-only ??
-The cross-compiler doesn´t work yet !
+http://www.thepuffingroup.com/parisc/documentation.html
 
-> 
-> If someone could offer me some assistance I would appreciate it. Although
-> I'm unaware of what type of equipment (SCSI controller, ethernet) is in
-> my J210 if someone knows what I should open up to find out I'd help there
-> too. 
-> 
-> So far what I know about the J210: PA-RISC 7200 120MHz CPU, 512meg ram
-> no framebuffer, 10bT + AUI ethernet, and it uses bootp (rather than rbootd)
-> to boot.
+The documents seem to have all we need for MMU implementations.
 
-Does the current kernel shows you the processor as "7200" ?
-> 
-> I'd love to help out,
-> 
-> -- 
-> Steve Moret
-> smoret@uci.edu
+I know on one of the PDF files the pages are in reverse, yes, we're
+working on that.
 
-Helge Deller.
+- Alex
+
+-- 
+Alex deVries
+Vice President of Engineering
+The Puffin Group
