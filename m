@@ -1,40 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA31168
-	for <parisc-linux@puffin.external.hp.com>; Fri, 12 Nov 1999 12:48:41 -0700
-Date: Fri, 12 Nov 1999 20:51:25 +0100
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA01646
+	for <parisc-linux@puffin.external.hp.com>; Fri, 12 Nov 1999 21:37:54 -0700
+Received: from [10.10.213.163] by max5.rrze.uni-erlangen.de with ESMTP for parisc-linux@thepuffingroup.com; Sat, 13 Nov 1999 05:39:22 +0100
+Received: (from prumpf@localhost)
+	by r (8.9.3/8.9.3) id FAA28696
+	for parisc-linux@thepuffingroup.com; Sat, 13 Nov 1999 05:41:48 +0100
+Date: Sat, 13 Nov 1999 05:40:47 +0100
 From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
-To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-Cc: bkatz@agilent.com, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ASP
-Message-Id: <19991112205125.A10038@mathe.stud.uni-erlangen.de>
-References: <199911101524.HAA02309@meow.sr.hp.com> <19991111022331.W25252@mencheca.ch.genedata.com>
+To: parisc-linux@thepuffingroup.com
+Message-Id: <19991113054047.A9492@mathe.stud.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19991111022331.W25252@mencheca.ch.genedata.com>
+Subject: [parisc-linux] keyboard adventures
 List-ID: <linux-parisc.vger.kernel.org>
 
-> which seems pretty comprehensive.  I'm wondering about slimming down our
-> interrupt architecture for older machines; it's a trifle over-engineered
-> for a machine which can't be expanded.
+So, I got PS/2 keyboards pretty much working tonight.  The first major discov-
+ery was the 8042-compatible chip used on i386s and most other architectures
+translates the AT scancodes the keyboard sends to XT scancodes to send on to
+the CPU  -  Lasi doesn't do that, but we do it in software to be able to use
+i386's keymaps.
 
-it is ?  Of course, you could hardcode the interrupt handlers in the ASP
-main interrupt handler, so you would do
+I copied large parts of pc_keyb.c in keyb_at.c which deals with AT->XT trans-
+lation as well as providing the XT table interfaces so you should be able to
+load keymaps aso.
 
-switch(ffs(mask)) {
-case 0:
-	return;
-case 1:
-	asp_something_interrupt();
-	break;
-case 2:
-	asp_something_else_interrupt();
-	break;
-case 3:
-	asp_keyboard_interrupt();
-	break;
-}
+SysRq seems to work well (well, SysRq-P (show regs) and SysRq-B (reboot) do),
+the characters printed (-- %c --) match the key label.
 
-but my guess is this would just result in a jump table of function calls
-rather than an indirect call - not going to improve performance measurably.
+I hope SysRq will be of some use in debugging some of the stuff I'm planning
+to do, and we might even end up porting parts of kdb  -  so lots of fun ahead.
 
 	Philipp Rumpf
