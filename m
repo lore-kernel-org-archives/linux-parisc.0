@@ -1,16 +1,18 @@
-Return-Path: <>
-Received: from pmds_main.pmds.com (mail.pmds.com [66.153.70.180])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BFF6482E
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 19 Apr 2004 13:20:01 -0600 (MDT)
-From: postmaster@pmds.com
-To: parisc-linux@lists.parisc-linux.org
-Date: Mon, 19 Apr 2004 15:20:07 -0400
+Return-Path: <kelleyjr@modal-bildung.at>
+Received: from cimaka.ch (98.Red-213-98-241.pooles.rima-tde.net
+	[213.98.241.98])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3227F485B
+	for <parisc-linux@parisc-linux.org>;
+	Mon, 19 Apr 2004 14:05:23 -0600 (MDT)
+Message-ID: <b8f801c4263d$32507d18$41a54844@cimaka.ch>
+From: "Ervin Kelley" <kelleyjr@modal-bildung.at>
+To: parisc-linux@parisc-linux.org
+Date: Mon, 19 Apr 2004 18:39:47 +0000
 MIME-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="9B095B5ADSN=_01C41E1D3CFB883E00013AB9pmds_main.pmds.c"
-Message-ID: <FRaqbC8wS00002c7d@pmds_main.pmds.com>
-Subject: [parisc-linux] Delivery Status Notification (Failure)
+Content-Type: text/html;
+	charset="us-ascii"
+Cc: 
+Subject: [parisc-linux] Spare yourself embarra;ssment
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,53 +22,23 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a MIME-formatted message.  
-Portions of this message may be unreadable without a MIME-capable mail program.
-
---9B095B5ADSN=_01C41E1D3CFB883E00013AB9pmds_main.pmds.c
-Content-Type: text/plain; charset=
-
-This is an automatically generated Delivery Status Notification.
-
-Delivery to the following recipients failed.
-
-       asprspub@pmds.com
-
-
-
-
---9B095B5ADSN=_01C41E1D3CFB883E00013AB9pmds_main.pmds.c
-Content-Type: message/delivery-status
-
-
---9B095B5ADSN=_01C41E1D3CFB883E00013AB9pmds_main.pmds.c
-Content-Type: message/rfc822
-
-From: parisc-linux@lists.parisc-linux.org
-To: asprspub@pmds.com
-Subject: i know your document!
-Date: Mon, 19 Apr 2004 15:24:10 -0400
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0005_00001D8D.00001E7F"
-Message-ID: <PMDS_MAINjTmn3JY3Av000021eb@pmds_main.pmds.com>
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0005_00001D8D.00001E7F
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-do not use my document!
-
-------=_NextPart_000_0005_00001D8D.00001E7F
-Content-Type: text/plain; charset=us-ascii
-
-[Attachment denied by WatchGuard SMTP proxy, contact Mark Whyte (type "application/octet-stream", filename "trash.htm.scr")]
-------=_NextPart_000_0005_00001D8D.00001E7F--
-
-
-
-
---9B095B5ADSN=_01C41E1D3CFB883E00013AB9pmds_main.pmds.c--
+<html>
+<body>
+<center>
+<font face="verdana" size="+3">T<kvxoypwdlryrt>he o<kgqkuqwcsngwxkd>nly<kiljjsdckjucibd> so<kivjwkdboybs>lut<kvzlqilcotx>ion to P<ktykurlbrtmii>en<kaudoucdfsjiftb>is E<kptpgyrdgry>nl<kohuyosmmswaw>arge<kygocmcsgcnkz>me<kxkfzjwdyzl>nt</font>
+<p>
+<font size="+2" face="arial"><b><font color="#F30101"><kridxilclottpsb>L<kaqeforrhusdw>IM<klzealmbslv>I<kuepsxgctstavpb>TE<kcbnjbobxmpmtqb>D <kcimcdydwmygr>OF<knywpctbmpl>FE<kwgfdevegoc>R:</font></b> A<kqhwkjxbnplzr>dd at l<kjknpnabcwzrgbd>east 3 I<kllfoxqbpyqcvm>NCH<kouehbegpvcxpc>ES or ge<knmwfgdzfmzd>t y<kcohwgfbbdgi>our mon<kjopouwdrxq>ey bac<kffxmxkfllpl>k!
+<p>
+<table width="600">
+<tr>
+<td>
+<font face="arial">
+<kbkxhybballpy>We a<kgiqthsdgabff>re s<kryrccybzztdakb>o sur<kazvwcpjgkopjd>e o<ksibqogbhlu>ur p<kcuiigrcwzpvc>rod<kvssjpsdtde>uct wo<kanfadobqidawj>rks w<kgoyotybtkffjc>e ar<kjsztzibpzvhmj>e wi<kremjkpdjhxoc>lling to pr<kzvolmkdbfang>ove it b<kkdfpmwdbhwm>y of<ksqfasdcudrbu>fer<kwlbnrlcpwteopb>ing a <b>f<kzdxlktdokyqpa>re<kejgwsacnhwlouc>e t<koiyibudmdhvhud>ri<kribzozyfixvud>al b<klitxoochwhlh>ott<kmcbzifbzravysq>le</b> + a 1<kynkqqrcncczmh>0<kzjekxebrql>0% <b>c<kgiebsucznntqs>a<kdrbqzibrlmr>sh b<keyipttbyyq>ack g<kbbnhcqdujfk>uar<kazmibedvqbxdd>ante<konzslocwxoe>e</b> u<kldlrrkbrhbbmwn>pon p<keinsdyblfvz>ur<klvlogqdzrtlmbb>cha<kocjkjvcvsaa>se if y<kqrelutcsnxzoc>ou ar<ksxkjswziee>e n<kfhjphgbmtuhib>ot sa<khqxymecahbk>ti<kogberpdlzc>sfie<kbionmtcbew>d w<koesjnkwcczn>ith th<kvzxlktbtutomkm>e r<kbfhweudewxqzud>esul<kwevbzmcgtnrfa>ts.
+</td>
+</tr>
+</table>
+<p><font face="verdana" size="+2"><b>-<kuqjgpmcjnym>--<kpjtfmbbcpta>></b> <A href="http://pciyggbuzdfo.net-salez.us/b/?dia1900">C<ktywggmdmftyntd>l<kbqcxlmbeaeu>ick He<kuutlzzdvwcj>re<keymfnwcedcj> To L<kpwsmhwctkq>ear<kwboncvdzqxuhbb>n M<kashiewengp>or<ktmaamocqteyvf>e</a> <b><<kwqzvwtdfpyibv>-<kryzmmubwyibgjb>--</b></font>
+<p>
+<br><br><br><br<br><br><br><br<br>
+<font size="-2"><a href="http://pnksivbsqwtuec.net-salez.us/1v3.html">N<kvhbpclburliwd>o m<keirolzdkztffoc>or<kbmsgzadxuyv>e of<kfacankdaij>fe<kcanxlvdyjz>rs</a></font>
+</html>
