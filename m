@@ -1,33 +1,48 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA13588
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 15:24:55 -0600
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <199910212124.OAA27459@bart.allegro.com>
-Subject: Re: [parisc-linux] Boot messages from C3000 console
-To: bame@debian.fc.hp.com (Paul Bame)
-Date: Thu, 21 Oct 1999 14:24:30 -0700 (PDT)
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <199910212057.OAA19923@debian.fc.hp.com> from "Paul Bame" at Oct 21, 99 02:57:20 pm
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA14214
+	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 16:04:54 -0600
+Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
+	by cosrel1.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id QAA03558
+	for <parisc-linux@thepuffingroup.com>; Thu, 21 Oct 1999 16:05:51 -0600 (MDT)
+Sender: frowand@cup.hp.com
+Message-ID: <380F8E39.F41B5D56@hp.com>
+Date: Thu, 21 Oct 1999 15:05:45 -0700
+From: Frank Rowand <frank_rowand@hp.com>
+Reply-To: frowand@cup.hp.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Paul Bame <bame@debian.fc.hp.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Boot messages from C3000 console
+References: <199910212057.OAA19923@debian.fc.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Re:
-
-Don't know if this helps at all...
-
+Paul Bame wrote:
+> 
+> This is long.  Thanks to Alex Williamson for this -
+> 
+> The short answer is once control is apparently transferred to the
 > kernel, the system dies hard.  Someone who can read PIM dumps
 > might deduce more from this log.
-...
-> HPMC Chassis Codes = 2cbf0  2500b  2cbf5  2cbfc  
+> 
+>         -Paul Bame
 
-In a possibly not-quite-matching manual:
 
-   cbf0 = HPMC occurred
-   500b = bus timeout (slot 0, bus 0)
-   cbf5 = IVA+32 was equal to 0
-   cbfc = branch to os HPMC failed
- 
+Look in the IO ARS, under PDC_PIM() for info on decoding this stuff.
+I'll decode a couple of key words, but I have to run to a meeting.
+
+
+> Main Menu: Enter command > ser pim
+> 
+> PROCESSOR PIM INFORMATION
+> 
+> - -----------------  Processor 0 HPMC Information ------------------
+> 
+> Timestamp =
+>   Thu Oct  21 20:18:08 GMT 1999    (19:99:10:21:20:18:08)
+> 
+> HPMC Chassis Codes = 2cbf0  2500b  2cbf5  2cbfc
+> 
 > General Registers 0 - 31
 > 00-03   0000000000000000  ffffffffffffffff  00000000000100c4  0000000000504000
 > 04-07   0000000000504010  0000000000504000  0000000000000048  00000000f0002f88
@@ -38,8 +53,7 @@ In a possibly not-quite-matching manual:
 > 24-27   0000000000000000  0000000000000001  00000000c0159610  ffffffffc00a8000
 > 28-31   ffffffffffffffff  00000000000ac948  00000000000ac400  0200000000000204
 > 
-> <Press any key to continue (q to quit)> 
-> 
+> <Press any key to continue (q to quit)>
 > 
 > Control Registers 0 - 31
 > 00-03   0000000000000000  0000000000000000  0000000000000000  0000000000000000
@@ -55,20 +69,39 @@ In a possibly not-quite-matching manual:
 > 00-03   00000000          00000000          00000000          00000000
 > 04-07   00000000          00000000          00000000          00000000
 > 
+> <Press any key to continue (q to quit)>
+> 
+
+This should be the address of the instruction that caused the HPMC.  Use adb
+against the kernel to see what this instruction is.  Then you'll probably
+need to use the contents of the general registers above to figure out what
+was going on:
 > IIA Space                    = 0x0000000000000000
 > IIA Offset                   = 0x0000000000010188
-...
+
+Bus check:
+> Check Type                   = 0x20000000
+
+
+> CPU State                    = 0x9e000004
+> Cache Check                  = 0x00000000
+> TLB Check                    = 0x00000000
+
+Read timeout:
+> Bus Check                    = 0x0030103b
+
+> Assists Check                = 0x00000000
+> Assist State                 = 0x00000000
+> Path Info                    = 0x00000000
+
+Someone needs to look at an address map to see what address was being accessed:
 > System Responder Address     = 0x000000fffff80810
+
+cpu 0 is the requestor:
 > System Requestor Address     = 0x000000fffffa0000
 
 
-CR19 (IIR) = e601181 = LDWAS    0(0,19),1
 
-So, looks like an absolute load was being done, using R19 as the address:
+Off to the meeting...
 
-   R19 = fffffffffff80810
-
-The "System Responder Address", whatever that is, is 0x000000fffff80810
-which is suspciciously similar to what's in R19.
-
-SS
+-Frank Rowand
