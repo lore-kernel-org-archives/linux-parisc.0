@@ -1,15 +1,12 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Sat, 22 Feb 2003 19:52:13 -0700
-To: caslivkoff@speakeasy.net
-Cc: Dan Baker <dan_baker@eli.net>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] X problems...
-Message-ID: <20030223025213.GB4464@dsl2.external.hp.com>
-References: <20030222014840.12429.qmail@webmail.speakeasy.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030222014840.12429.qmail@webmail.speakeasy.net>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from mail172 (e66.friendfinder.com [216.34.38.66])
+	by dsl2.external.hp.com (Postfix) with SMTP id 0FB604844
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Feb 2003 04:59:23 -0700 (MST)
+Date: 23 Feb 2003 11:59:16 -0000
+Message-ID: <20030223115916.16110.qmail@e74.friendfinder.com>
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+From: dezone@sina.com
+Subject: [parisc-linux] dezone sent you a card from NiceCards!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,23 +18,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Feb 21, 2003 at 05:48:40PM -0800, caslivkoff@speakeasy.net wrote:
-> Getting this code to compile is not going to get you anywhere.
+Dear parisc-linux,
 
-understood...just a step in that direction.
+Guess what?  dezone (dezone@sina.com) has sent you a greeting card!
 
-...
-> While I believe it is possible, resources in the graphics lab are scarse.
-> I suspect that a majority of the code could never be made public, so even
-> if the lab found time to do it once, it would be tough to keep it
-> maintained, etc.
+Your card can be picked up by clicking on the following link:
 
-If someone quietly passed me working code that I could publish,
-they wouldn't have to maintain it. I'm confident the folks who
-got STI FB working could also keep this working.
+http://nicecards.com/card/4080194-HFKUQ
 
-But I'm afraid resources is a moot point: it's unlikely
-to get permission to get published. :^(
+or
 
-thanks chuck,
-grant
+By going to our card pick-up page at:
+
+http://nicecards.com/
+
+and entering in the following card ID: 4080194-HFKUQ
+
+Thank you!
+
+team@nicecards.com
+NiceCards
+
+Note: Your card will be kept in our card center for two weeks.  After two
+weeks, your card will be deleted.
+
+====================================================================
+Try out these other great sites in the NiceCards network!
+
+    http://friendfinder.com - Dating and friendship personals
+    http://asiafriendfinder.com - Chinese personals
+    http://frenchfriendfinder.com - French personals
+    http://koreanfriendfinder.com - Korean personals
+    http://germanfriendfinder.com - German personals
+    http://amigos.com - Spanish personals
+    http://seniorfriendfinder.com - Senior personals
+    http://churchfriendfinder.com - Christian/spiritual personals
+    http://adultfriendfinder.com - Adults only personals
+    http://outpersonals.com - Gay personals
+    http://sharerent.com - Roommate/housing directory
+    http://friendpages.com - Free homepages
+    http://friendparty.com - Free party invites and photo sharing
+    http://dine.com - Free restaurant reviews and menus
