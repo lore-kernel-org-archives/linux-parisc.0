@@ -1,40 +1,57 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 56CED4A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Mar 2001 17:23:07 -0700 (MST)
-Message-Id: <200103150022.TAA16704@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] perl-5.6.0 build problems
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Wed, 14 Mar 2001 19:22:42 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: pjlahaie@linuxcare.com, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <Pine.LNX.4.21.0103151027510.27636-100000@front.linuxcare.com.au> from "Alan Modra" at Mar 15, 2001 11:07:39 am
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA3104A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Mar 2001 23:34:53 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA07245;
+	Thu, 15 Mar 2001 17:20:32 +1100
+Date: Thu, 15 Mar 2001 17:20:32 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: randolph@tausq.org, bdale@gag.com, alan_c_meyer@am.exch.hp.com,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20010315030538.734C13878A@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0103151625490.27636-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: new debs built, c++ is broken
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Thu, 15 Mar 2001, Alan Modra wrote:
-> 
-> > On Wed, 14 Mar 2001, Paul J.Y. Lahaie wrote:
-> > 
-> > > If I use the debian build (with the patch), perl.static and perl.debug
-> > > complete building, but a dynamic version crashes immediately on startup
-> > > from loading libperl.so.5.6.0 with the following fault:
-> > 
-> > Is this with the latest fix to gcc?
+[copying to the list, as this may help people debug similar problems]
 
-Alan is correct that the LO_SUM patch is very important for pic code.
+(gdb) bt
+#0  0x0000d22c in __register_frame_info (begin=0x42e68, ob=0x4f7cc)
+    at /src/parisc/gcc/gcc/frame-dwarf2.c:561
+#1  0x0000afe0 in frame_dummy ()
+#2  0x0000a4f8 in _init ()
 
-This patch probably isn't in the tree
-<http://gcc.gnu.org/ml/gcc-patches/2001-03/msg00524.html>.  I found it
-in pic code using long longs.  Richard Kenner recently fixed aliasing
-problems affecting both pic and non pic code
-<http://gcc.gnu.org/ml/gcc-patches/2001-03/msg00725.html>.  It fixed
-problems with insns being incorrectly deleted.  I know there is at least
-one testsuite problem left for pic code that isn't there for non pic code.
-This appears at -O3, so you might try reducing your opt level.
+Disassembling the functions in question,
 
-Dave
+__register_frame_info is PIC
+frame_dummy is not PIC, and trashes r19
+_init is PIC
+
+which expains the crash.  The next question is why do we have such a mess
+of pic/non-pic code?  Running the compile with -Wl,-M to turn on linker
+map output helps a bit, and shows that
+__register_frame_info comes from /usr/lib/gcc-lib/hppa-linux/2.97/libgcc.a
+frame_dummy comes from /usr/lib/gcc-lib/hppa-linux/2.97/crtbegin.o
+_init is cobbled together from crti.o, crtbegin.o, crtend.o, crtn.o
+
+So it seems the problem is really a result of our decision to make libgcc 
+PIC, and a possible fix is to always link with crtbeginS.o and crtendS.o.
+OK, we can do that by editing /usr/lib/gcc-lib/hppa-linux/2.97/specs and
+make *startfile: end up with .... crti.o%s crtbeginS.o%s, and *endfile: be
+crtendS.o%s crtn.o%s
+
+Now I get a little further
+
+alan@tea:/scsi/tmp$ ./c++hello 
+Hello
+Segmentation fault (core dumped)
+
+So now we've likely got a problem with destructors.  To be continued...
+
+Alan
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Linuxcare.
