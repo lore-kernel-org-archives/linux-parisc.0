@@ -1,18 +1,18 @@
-Return-Path: <jbglaw@dvmwest.gt.owl.de>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1CAED484B
+Return-Path: <varenet@esiee.fr>
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3BAF1484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 19 Dec 2003 04:16:02 -0700 (MST)
-Date: Fri, 19 Dec 2003 12:15:59 +0100
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Maximum RAM sizes on B1xxL, C1xx/C2xx
-Message-ID: <20031219111557.GA18984@lug-owl.de>
-References: <20031219092814.GA1094@blinder.doorslam.net>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="3+4H5zObBQkbFbMG"
-In-Reply-To: <20031219092814.GA1094@blinder.doorslam.net>
+	Fri, 19 Dec 2003 04:17:40 -0700 (MST)
+Date: Fri, 19 Dec 2003 12:17:35 +0100
+Subject: Re: [parisc-linux] Compiling Kernel for HP 9000/800/A400-44
+Content-Type: text/plain; delsp=yes; charset=ISO-8859-1; format=flowed
+Mime-Version: 1.0 (Apple Message framework v553)
+To: Herbert Poetzl <herbert@13thfloor.at>
+From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
+In-Reply-To: <20031219022800.GA8847@MAIL.13thfloor.at>
+Message-Id: <F2577FA8-3214-11D8-BAB6-0030656F07A2@esiee.fr>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,39 +23,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---3+4H5zObBQkbFbMG
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Le vendredi, 19 d=E9c 2003, =E0 03:28 Europe/Paris, Herbert Poetzl a =
+=E9crit :
+>
+>> You'll need to grab the gcc-hppa64 compiler from:=09
+>>    =20
+>> ftp://ftp.parisc-linux.org/unofficial-debs/gcc-hppa64_3.0.4ds3-=20
+>> 7.1_hppa.deb
+>
+> hmm, is there a source available somewhere ...
+> (I don't like binary only packages)
 
-On Fri, 2003-12-19 10:28:14 +0100, Paul Weissmann <paul@doorslam.net>
-wrote in message <20031219092814.GA1094@blinder.doorslam.net>:
+If you really want to waste your time in building a cross compiler by =20=
 
->  o B1xxL (6 slots),
+yourself, going through
+the various pain of this process, just follow the recipe here:
 
-I'm using a B132L+ with 6 * 128MB =3D 768MB
+http://www.fr.parisc-linux.org/toolchain/PARISC-Linux-XC-HOWTO.html
 
-MfG, JBG
+HTH,
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
 
---3+4H5zObBQkbFbMG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+Thibaut VARENE
+The PA/Linux ESIEE Team
+http://www.pateam.org/
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+PS: i know what i'm talking about, regarding pain, i'm the guy who made =20=
 
-iD8DBQE/4t3tHb1edYOZ4bsRApEnAJwICc25k3HpVC73M057hQkdWXzbJwCeKWFL
-98fE1SKluz1SYZXiMtL4awo=
-=55S3
------END PGP SIGNATURE-----
-
---3+4H5zObBQkbFbMG--
+that "binary only" package :P=
