@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from johanna5.ux.his.no (johanna5.ux.his.no [152.94.1.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 071774829
-	for <parisc-linux@parisc-linux.org>; Tue,  3 Dec 2002 06:10:19 -0700 (MST)
-Date: Tue, 3 Dec 2002 14:10:00 +0100
-From: Erlend Aasland <erlend-a@ux.his.no>
-To: Trivial Patch Monkey <trivial@rustcorp.com.au>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Matthew Wilcox <matthew@wil.cx>, parisc-linux@parisc-linux.org
-Message-ID: <20021203131000.GG2417@johanna5.ux.his.no>
-References: <20021203125120.GA2417@johanna5.ux.his.no>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20021203125120.GA2417@johanna5.ux.his.no>
-Subject: [parisc-linux] [TRIVIAL PATCH 2.5] get rid of CONFIG_UDF_RW (parisc)
+Received: from dhcp-53-142.ece.utexas.edu (dhcp-53-142.ece.utexas.edu [146.6.53.142])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0B6754829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Dec 2002 14:28:24 -0700 (MST)
+Received: from localhost (kjbala@localhost)
+	by dhcp-53-142.ece.utexas.edu (8.11.2/8.11.2) with ESMTP id gB3LV6Q30622
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 3 Dec 2002 15:31:06 -0600
+Date: Tue, 3 Dec 2002 15:31:06 -0600 (CST)
+From: <balak@ieee.org>
+Reply-To: <balak@ieee.org>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0212031525140.30608-100000@dhcp-53-142.ece.utexas.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] X on C3000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,19 +24,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Remove CONFIG_UDF_RW from parisc defconfig (it's not used anymore)
+Hi,
 
-Regards,
-	Erlend Aasland
+I have been able to install Debian on a C3000. But I am not able to start
+X windows - "Fatal Error: No screens found".
 
-diff -urN linux-2.5.50/arch/parisc/defconfig linux-2.5.50-eaa/arch/parisc/defconfig
---- linux-2.5.50/arch/parisc/defconfig	Fri Nov  1 00:07:19 2002
-+++ linux-2.5.50-eaa/arch/parisc/defconfig	Tue Dec  3 00:48:05 2002
-@@ -576,7 +576,6 @@
- CONFIG_EXT2_FS=y
- # CONFIG_SYSV_FS is not set
- # CONFIG_UDF_FS is not set
--# CONFIG_UDF_RW is not set
- # CONFIG_UFS_FS is not set
- # CONFIG_UFS_FS_WRITE is not set
- 
+The parisc-linux homepage says that a few issues remain with graphics
+support on C3000. Is that the problem?
+
+Has anyone been able to start X on c3000? Should I post the log files to
+figure out what could be the problem?
+
+
+Thanks in advance.
+Bala
