@@ -1,13 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Jeremy Drake <jeremyd@apptechsys.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Audio on J5k 
-In-Reply-To: Message from Jeremy Drake <jeremyd@apptechsys.com>
-   of "Sun, 23 Jun 2002 23:45:01 PDT." <Pine.LNX.4.44.0206232342380.17764-100000@garibaldi.apptechsys.com>
-References: <Pine.LNX.4.44.0206232342380.17764-100000@garibaldi.apptechsys.com> 
-Date: Mon, 24 Jun 2002 08:08:56 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020624140856.697D64836@dsl2.external.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20020624150031.4DA034837@dsl2.external.hp.com>
+Date: Mon, 24 Jun 2002 09:00:31 -0600 (MDT)
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] sys/io.h
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,22 +15,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Jeremy Drake wrote:
-> Are there any plans to support the AD whatever that is in the J5k?  Is 
-> there documentation available?
+Hi,
+I'm trying to build tulip-diag.c from scyld.com and am getting the
+following error msg:
+gsyprf11:~# gcc -O tulip-diag.c -o tulip-diag
+tulip-diag.c:58:20: sys/io.h: No such file or directory
+tulip-diag.c:1347:24: warning: multi-line string literals are deprecated
 
-yes and yes.
+On ia64, sys/io.h comes from
+gsyprf3:~# dpkg -S sys/io.h
+libc6.1-dev: /usr/include/sys/io.h
 
-Randolph Chung (tausq@debian.org) had started hacking on this driver
-since he also has a C3000. He hasn't had time to get it working
-and should probably just post his "patch" to ftp.p-l.org in case
-someone else wants to (try to) make it work.
+But we don't have the equivalent for parisc (hppa).
+Ideas?
 
-I've posted documentation in April on this chip:
-	gsyprf10.external.hp.com:/pub/grundler/AD1889.pdf
-
-(from memory, it's there:
--r--r--r--    1 grundler users      124255 Apr 24 21:28 AD1889.pdf
-)
-
+thanks,
 grant
