@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly3.hia.nrc.ca (hiauly3.hia.nrc.ca [132.246.100.195])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 781C548B7
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 31 Aug 2003 13:10:25 -0600 (MDT)
-From: John David Anglin <dave@hiauly3.hia.nrc.ca>
-Message-Id: <200308311910.PAA04875@hiauly3.hia.nrc.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5167B487A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 31 Aug 2003 14:23:37 -0600 (MDT)
+Date: Sun, 31 Aug 2003 16:22:03 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly3.hia.nrc.ca>
+Cc: randolph@tausq.org, dave.anglin@nrc-cnrc.gc.ca,
+	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: [glibc] tststatic failues, reduced to simp le testcase.
-To: dave@hiauly3.hia.nrc.ca
-Date: Sun, 31 Aug 2003 15:10:23 -0400 (EDT)
-Cc: carlos@baldric.uwo.ca, randolph@tausq.org,
-	dave.anglin@nrc-cnrc.gc.ca, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <no.id> from dave at Aug "31," 2003 "02:21:52" pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20030831202203.GN5194@systemhalted>
+References: <200308311910.PAA04875@hiauly3.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200308311910.PAA04875@hiauly3.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,20 +24,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > I've added all the caller-saves registers to our clobber lists when
-> > making syscalls. Though, r19 being special, I've had to add "STW_PIC"
-> > and "LDW_PIC" that do the saving and restore _only_ if we are compiled
-> > PIC.
-> 
-> That seems overly pessimistic and will mean a lot more register saves
-> in routines that do syscalls.  It appears the system saves the caller-save
-> registers in all syscalls except the fork related calls.  It would
-> be best to keep the number of clobbers to a minimum.  I wonder, there
-> seems to be a slot in the task struct for r1, but it's never saved in
-> a syscall, and r1 is clobbered.  Maybe the r1 slot could be used to save
-> r2.  This might mean that we don't need to use GR21 or GR22 at all.
-> It would avoid having to have special pic code.
+> Another possibility might be to define another couple of offsets in the
+> task struct.  It looks as if there is plenty of space before an alignment
+> boundary is reached.
 
-Another possibility might be to define another couple of offsets in the
-task struct.  It looks as if there is plenty of space before an alignment
-boundary is reached.
+That seems best. The sad fact though is that until I bump
+min_kernel_version in glibc past the kernel version that last didn't
+have this fix, I'm still forced to implement all this for people with
+older kernels.
+
+c.
