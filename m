@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A2CD44875
-	for <parisc-linux@parisc-linux.org>; Mon, 22 Sep 2003 21:00:56 -0600 (MDT)
-Received: from MIKESROOM (c66.190.11.191.spt.wi.charter.com [66.190.11.191])
-	by cuprel1.hp.com (Postfix) with SMTP id 8E1037F1
-	for <parisc-linux@parisc-linux.org>; Mon, 22 Sep 2003 20:00:55 -0700 (PDT)
-From: "answer" <OLIVE_ARTRIP@shaw.ca>
-To: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Date: Mon, 22 Sep 2003 23:01:01 -0400
+Received: from octopus.kti.ae.poznan.pl (octopus.kti.ae.poznan.pl [150.254.204.7])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 47AFA483E
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Sep 2003 08:32:14 -0600 (MDT)
+Received: from pyxis.kti.ae.poznan.pl ([150.254.204.45] helo=localhost)
+	by octopus.kti.ae.poznan.pl with esmtp (Exim 3.35 #1 (Debian))
+	id 1A1oBA-0000f4-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Sep 2003 16:30:12 +0200
+Date: Tue, 23 Sep 2003 16:30:01 +0200
+From: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
+Reply-To: Jacek Chmielewski <jchmiel@kti.ae.poznan.pl>
+Message-ID: <881138831633.20030923163001@kti.ae.poznan.pl>
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Message-Id: <20030923030055.8E1037F1@cuprel1.hp.com>
-Subject: [parisc-linux] Hello
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] PALO do not start!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,11 +25,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-PGh0bWw+DQo8Ym9keT4NCjwhLS1mbThpOW9wajg5LS0+DQo8cCBhbGlnbj0iY2VudGVyIj4gPCEt
-LWZscmdodWktLT4NCjxhIGhyZWY9Imh0dHA6Ly93d3cuYmVoaW5kY2xpY2suY29tL2N0Ij4gPCEt
-LWZsMXJnaHVpLS0+DQo8aW1nIHNyYz0iaHR0cDovL3d3dy5ncmFzcDd4MjQuY29tL3IuZ2lmIiB3
-aWR0aD0iNDA1IiBoZWlnaHQ9IjI3MCI+PC9hPjwvcD4gPCEtLWdhc2Q0dWFzZC0tPg0KPCEtLWo4
-ZnM5cGo5ODQtLT4NCjxwIGFsaWduPSJjZW50ZXIiPg0KJm5ic3A7PC9wPg0KPCEtLXNjYW1wZXIt
-LT4NCjxwIGFsaWduPSJjZW50ZXIiPg0KPGEgaHJlZj0iaHR0cDovL3d3dy5iZWhpbmRjbGljay5j
-b20vZC5odG1sIj50LS1hLS1rLS1lJm5ic3A7IC0tbS0tZSZuYnNwOw0Kby0tZi0tZjwvYT48L3A+
-IDwhLS1ueXF1aXN0LS0+DQoNCjwvYm9keT4NCg0KPC9odG1sPg0K
+Hi
+
+I managed to install Debian on my HP 9000/J200 box (I used DHCP server and
+netinstall lifimage). The installation procedure passed without problems. I
+created three partitions:
+/dev/sda1  *  1    4    16461  f0  Linux/PA-RISC boot
+/dev/sda2     5   34   123690  82  Linux swap
+/dev/sda3  * 35  277  1001889  83  Linux
+
+After the reboot I get the following result:
+
+Booting...
+Boot IO Dependent Code (IODC) revision 1
+HARD Booted.
+
+... and everything nothing happens. I assume that I should see PALO
+starting from the /dev/sda1 partition, but it don't want to start.
+
+What could be possibly wrong?
+Is there any solution or workaround for this problem?
+
+Best regards
+  Jacek
