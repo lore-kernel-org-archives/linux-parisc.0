@@ -1,19 +1,22 @@
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Date: Wed, 13 Nov 2002 13:33:21 -0700
-Message-ID: <20021113203321.DCF174829__29068.2784784169$1416621927$gmane$org@dsl2.external.hp.com>
-References: <200211131723.gADHNmp02426@localhost.localdomain>
+From: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Untested port of parisc_device to generic device
+ interface
+Date: Wed, 13 Nov 2002 15:44:17 -0500
+Message-ID: <200211132044.gADKiHi02548__614.012606865977$1416621927$gmane$org@localhost.localdomain>
+References: <grundler@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Cc: Bjorn Helgaas <bjorn_helgaas@hp.com>, Greg KH <greg@kroah.com>,
 	Miles Bader <miles@gnu.org>,
-	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
+	"J.E.J. Bottomley" <James.Bottomley@SteelEye.com>,
 	Matthew Wilcox <willy@debian.org>,
 	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
 	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
-To: "J.E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: Message from "J.E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-   of "Wed, 13 Nov 2002 12:23:48 EST." <200211131723.gADHNmp02426@localhost.localdomain>
+In-Reply-To: Message from Grant Grundler <grundler@dsl2.external.hp.com>
+   of "Wed, 13 Nov 2002 13:33:21 MST." <20021113203321.DCF174829@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -24,33 +27,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"J.E.J. Bottomley" wrote:
-> We should also allow devices to do all the setup through bus generic 
-> functions, but leave open the possibility that the driver may (once it knows 
-> the bus type) obtain the pci_dev (or whatever) from the struct device if it 
-> really, really has to muck with bus specific registers.
+grundler@dsl2.external.hp.com said:
+> For device discovery and initialization, the generic PCI code has to
+> muck with PCI specific resources (IO Port, MMIO, and IRQ related stuff
+> primarily). 
 
-For device discovery and initialization, the generic PCI code has to muck
-with PCI specific resources (IO Port, MMIO, and IRQ related stuff primarily).
+Oh, I agree.  If we conduct a phased approach to this, what happens initially 
+is that the pci drivers simply pull pci_dev out of the struct device and use 
+it as previously.
 
-> As far as the SCSI mid layer goes, all we really need from struct device is 
-> the dma_mask for setting up the I/O bounce buffers.
-> 
-> The simplest way to do all of this is probably to add a pointer to the 
-> dma_mask in struct device and make it point to the same thing in pci_dev.
-> If we find we need more than this per device, it could become a pointer
-> to a generic dma information structure later on.
+However, I think the ultimate destination is to see how much of the bus 
+specific stuff we can abstract by throwing an API around it.  I think IRQ, 
+port and mmio are feasible.  Specific knowledge of bus posting et al may not 
+be.
 
-uhmm...If we are going to touch dma_mask in pci_dev, then just move it
-to struct device and be done with it. Then fixup pci_set_dma_mask()
-to do the right thing.
+> uhmm...If we are going to touch dma_mask in pci_dev, then just move it
+> to struct device and be done with it. Then fixup pci_set_dma_mask() to
+> do the right thing. 
 
-...
-> Since the 53c700 is also used by parisc (including some machines with 
-> IOMMUs---which, unfortunately, I don't have access to), it probably makes an 
-> ideal conversion test case.
+Well...OK.  The advantage of a pointer in struct device is that the code can 
+be converted as is, and no-one has to muck with the direct accessors of the 
+pci_dev->dma_mask.  However, I'll see how many of them there actually are, its 
+probably just the drivers that transfer the information to 
+blk_queue_bounce_limit.
 
-Duck! (that's going to get fixed it seems) ;^)
+> Duck! (that's going to get fixed it seems) ;^) 
 
-thanks,
-grant
+I thought the 53c700 was working OK?  Richard Hirst did some extensive testing 
+on a parisc with an IO-MMU for me (he caught a lot of early mapping leaks 
+which I fixed).
+
+James
