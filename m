@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from finlandia.drysoft.org (finlandia.drysoft.org [192.107.216.183])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B78F482A
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 Jan 2002 04:22:25 -0700 (MST)
-Subject: Re: [parisc-linux] 712/60, 2.4.17-pa13, debian testing, php4 and
-	apache don't work.. -- SOLVED
-From: Mikko Palo <mpalo@drysoft.org>
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <1012003752.3303.2.camel@finlandia.drysoft.org>
-References: <1012003752.3303.2.camel@finlandia.drysoft.org>
-Content-Type: text/plain
-Date: 26 Jan 2002 13:22:28 +0200
-Message-Id: <1012044148.3404.6.camel@finlandia.drysoft.org>
+Received: from localhost.localdomain (unknown [64.109.89.110])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 387EA482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 Jan 2002 10:24:09 -0700 (MST)
+Received: from mulgrave (jejb@localhost)
+	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id g0QHNeI02030;
+	Sat, 26 Jan 2002 12:23:40 -0500
+Message-Id: <200201261723.g0QHNeI02030@localhost.localdomain>
+To: Richard Hirst <rhirst@linuxcare.com>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sat, 26 Jan 2002 12:23:40 -0500
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [parisc-linux] Re: tag starvation
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,68 +25,77 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Sigh, I hate to reply myself, but..
+> > Normally you shouldn't see this *if* the device supports tagged
+> > commands.
 
-Problem solved, had to compile apache, mm and php4 from source using
-apt-get source --build XXXX command. Now everything working very
-perfectly..
+> I used to get this a lot, until James changed the driver to only
+> report the first occurance of it.  Don't remember the exact details,
+> but iirc it is for info only, and non-fatal.  From the code it looks
+> like it means some cmnd has been sitting in the drive unprocessed for
+> too long, and the code rejects new cmds until those older ones have
+> been processed or timed out.
 
-Keep working good job, guys! :)
+That's essentially it.  A driver is allowed to execute simple tagged commands 
+in any order it chooses (since it knows its own internal platter topology, it 
+is supposed to order the execution to be the fastest and most efficient 
+possible).  However, the queuing algorithm on some drives can be inherently 
+unfair; usually if you have a steady stream of I/Os to one part of the platter 
+and a single I/O waiting for a different one.  An unfair algorithm may simply 
+ignore a pending tagged command for quite a period of time (this is what is 
+known as tag starvation).  If the command remains unprocessed for >2s, the 
+mid-layer will begin error recovery, which can cause all sorts of problems.
 
--MP
+Almost every good driver that implements tagged commands has some sort of 
+algorithm to detect this situation and correct it before the mid layer comes 
+in with the big hammer.  The message is a harmless warning that this type of 
+correction has been activated in the driver.  For those who're interested in 
+the details, I attach the explanation of what it actually does at the bottom.
 
-On Sat, 2002-01-26 at 02:09, Mikko Palo wrote:
-> Hi!
-> 
-> I don't know, does this email belong to this list or to debian bug
-> database. Nevertheless, I installed debian to my 712 from 0.9.3 CD and
-> updated everything by using apt-get update and apt-get upgrade commands.
-> Compiled the kernel myself, all working nicely. Then installed apache
-> and php4 via apt-get.
-> 
-> When trying to start apache by the command /etc/init.d/apache start, it
-> doesn't start. There is a line:
-> PHP Fatal error:  Unable to start session mm module in Unknown on line 0
-> in /var/log/apache/error_log..
-> 
-> Then I searched with google the solution for this bug. None of them
-> helped.
-> 
-> Straced a little /usr/sbin/apache:
-> 
-> --clippeti clip--
-> 
-> shmget(IPC_PRIVATE, 33554432, IPC_CREAT|0x180|0600) = 360448
-> shmat(360448, 0x80808080, 0ptrace: umoven: Input/output error
-> )            = ?
-> shmctl(360448, IPC_STAT, 0x80808080)    = 0
-> getuid()                                = 0
-> getgid()                                = 0
-> shmctl(360448, IPC_SET, 0x80808080)     = 0
-> shmctl(360448, IPC_RMID, 0x80808080)    = 0
-> unlink("")                              = -1 ENOENT (No such file or
-> directory)
-> open("", O_RDWR|O_CREAT, 0600)          = -1 ENOENT (No such file or
-> directory)
-> shmdt(0xfffffffe)                       = 0
-> shmctl(360448, IPC_RMID, 0xfffffffe)    = -1 EINVAL (Invalid argument)
-> unlink("")                              = -1 ENOENT (No such file or
-> directory)
-> write(2, "PHP Fatal error:  Unable to star"..., 72) = 72
-> write(2, "\n", 1)                       = 1
-> exit(-2)                                = ?
-> 
-> --clippeti clip--
-> 
-> I doubt that there is something wrong between mm module and shared
-> memory code in kernel? Or am I totally wrong?
-> 
-> So what should I do that I will get it working?
-> 
-> -MP
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> > I can never remember the SCSI driver options (the parisc-linux FAQ has
+> > the URL to them) but one of them will either disable or limit 
+> > "queue depth" for Queue Tags and that should take care of it.
+
+> Hmm, I thought that would be a feature of a specific driver, not the
+> upper layers.  53c700.c doesn't (yet) have any boot options to disable
+> tags.
+
+OK, my fault, I keep meaning to add it.  One thing that irritates me about 
+this option is that it should be a global one (belonging to the whole SCSI 
+subsystem) not local to each driver.  However, that's just a pet peeve of mine 
+(in fact the SCSI subsystem should do an awful lot more of this type of option 
+tracking and helping), it's not too difficult to implement, I'll get on with 
+doing it.
+
+James
+
+How to Counter Tag Starvation
+==============================
+
+Most of the maintained drivers in Linux do this by keeping a timer on the 
+outstanding tagged commands.  When they see the timer expire they switch from 
+simple tags to ordered tags (an ordered tag is like a marker in the 
+queue---you can't execute any command after an ordered tag untill all those 
+before it have completed).
+
+The 53c700 has a much simpler approach:  A tag is simply a number between 0 
+and 255 identifying the command.  Obviously, there cannot be two tags with the 
+same number to the same device outstanding at any one time.  For each device 
+the 53c700 keeps track of the tag number of the oldest outstanding command and 
+the next tag to allocate (the latter is incremented by one [modulo 256] every 
+time a command goes out).  You can think of this as hands on a clock with 256 
+graduations.  All outstanding tags are between the two hands.  The driver 
+detects tag starvation when the hands try to cross (i.e. the next tag to be 
+allocated would be the same tag number as the oldest outstanding command).  At 
+that point, it prints the message and refuses to accept any further I/Os from 
+the mid layer.  Eventually, the offending outstanding command will clear 
+(possibly after all the rest of the commands are emptied) and the driver 
+begins accepting I/Os again.
+
+The reason for this approach in the 53c700 is that it is driving much older 
+(and buggier) devices.  If the device messed up on the ordered queue tag we 
+could get into a whole heap of trouble.
+
+Obviously, since the SCSI mid-layer also keeps a timer on outstanding 
+commands, it is a complete waste to duplicate this inside the driver.  
+Unfortunately, the first the driver hears from the mid-layer about a problem 
+command is when the mid-layer wants it aborted, by which time it is a bit late.
