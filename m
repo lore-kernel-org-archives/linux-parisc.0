@@ -1,51 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 836E3482A
-	for <parisc-linux@parisc-linux.org>; Fri, 27 Apr 2001 19:04:24 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14tJ9Z-0001Ed-00
-	for parisc-linux@parisc-linux.org; Sat, 28 Apr 2001 02:04:05 +0100
-Date: Sat, 28 Apr 2001 02:04:05 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20010428020405.K7818@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] strace -f caused kernel fault
+Received: from mail.calyx.net (mail.calyx.net [216.82.160.19])
+	by dsl2.external.hp.com (Postfix) with SMTP id 75AE8482A
+	for <parisc-linux@parisc-linux.org>; Fri, 27 Apr 2001 19:42:31 -0600 (MDT)
+Date: Fri, 27 Apr 2001 21:42:25 -0400 (EDT)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
+To: <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.BSO.4.33.0104272113170.23478-100000@mojo.calyx.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] advice? (kernel thread vs other mechs for HIL)
 List-ID: <linux-parisc.vger.kernel.org>
 
-just trying to track down a problem with libc, I did:
+So I have to make a decision as to the MLC (core HIL) driver --
+it seems kernel threads are being highly spoken of lately, and using
+a kernel thread would make things simple as far as locking,
+because if I'm right, as opposed to an assortment of tasklets
+I can start a kernel thread, have it put itself to sleep waiting on a
+semaphore, and then just "press the button" with the semaphore from
+an IRQ handler, timer, or I/O request from a usermode HIL device driver.
+Questions:
 
-$ strace -f 2>strace.out make check
-make -r PARALLELMFLAGS="" CVSOPTS="" -C ../libc objdir=`pwd` check
+1) How cumbersome are they to the CPU -- is using a kernel thread
+for this overkill (the MLC driver does rely heavily on timeouts
+and has a complicated state machine, if that's enough to justify it,
+but it could conceivably be done in smaller peices.)  For each
+MLC controlled by the driver (I'm writing it for more than one,
+just for laughs) entries into the driver could be maybe a hundred per
+second.
 
-and then on console, i got:
+2) As long as truly time sensitive work (of which there is little
+for a real MLC because the HIL seems well designed with a FIFO that will
+never overflow if you use it right, but if someone were faking an
+MLC with a UART for some reason there could be some) is taken care
+of by a quicky immediate task, is response time of a kernel thread
+good enough for mouse/keyboard use?
 
-Dumping Stack from 0000000035efc000 to 0000000035efcbc0:                        
+I do see they are being used for some pretty heavily accessed stuff,
+but I figured since there are quite a few wizard's reading mail here I'd
+ask just to be sure.
 
-[stack dump snipped]
-
-Kernel Fault: Code=26 regs=0000000035efc880 (Addr=0000000000000008)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001100000000000001110
-r0-3     0000000000000000 000000001035a9a0 0000000010105290 0000000035efc780
-r4-7     0000000000000000 0000000035efc000 0000000000000000 0000000000021fc0
-r8-11    000000001034f9a0 000000000002a340 0000000000000001 0000000000000000
-r12-15   0000000000000100 000000000002e608 00000000000227c0 000000000000005c
-r16-19   0000000035efc3a0 0000000000000000 0000000000000000 0000000025870068
-r20-23   0000000001fca9e6 0000000000000000 00000000103df4b8 0000000028d78800
-r24-27   0000000035efc068 0000000000008800 0000000000000000 000000001034f9a0
-r28-31   00000000103501a0 0000000035efc770 0000000035efcbc0 000000001030c880
-sr0-3    0000000000095a00 0000000000095a80 0000000000000000 0000000000095b00
-sr4-7    0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000010128714 0000000010128718
- IIR: 0eb312d0    ISR: 0000000000000000  IOR: 0000000000000008
-ORIG_R28: 0000000010155a60
-
-0000000010128714 is right in the middle of schedule(), according to System.map.
-
--- 
-Revolutions do not require corporate support.
+--
+Brian S. Julin
