@@ -1,45 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA26366
-	for <parisc-linux@puffin.external.hp.com>; Wed, 20 Dec 2000 09:48:43 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 20 Dec 2000 16:51:42 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 20 Dec 2000 16:51:40 -0000
-Sender: adevries@mailserv2.iuinc.com
-Message-ID: <3A40E44D.DBBE58A2@linuxcare.com>
-Date: Wed, 20 Dec 2000 11:54:37 -0500
-From: Alex deVries <adevries@linuxcare.com>
-MIME-Version: 1.0
-To: Matthew Wilcox <matthew@wil.cx>
-CC: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SuckyIO support
-References: <3A3F82E0.C0FB63D6@linuxcare.com> <200012200256.SAA16519@milano.cup.hp.com> <20001220155045.A19376@parcelfarce.linux.theplanet.co.uk>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA27127
+	for <parisc-linux@puffin.external.hp.com>; Wed, 20 Dec 2000 10:27:20 -0700
+Message-Id: <200012201731.JAA17254@milano.cup.hp.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: adevries@linuxcare.com (Alex deVries),
+        grundler@cup.hp.com (Grant Grundler), parisc-linux@thepuffingroup.com,
+        grundler@milano.cup.hp.com
+Subject: Re: [parisc-linux] SuckyIO support 
+In-reply-to: Your message of "Wed, 20 Dec 2000 13:05:38 PST."
+             <E148iw9-0001Vc-00@the-village.bc.nu>
+Date: Wed, 20 Dec 2000 09:30:30 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> The chip is so b0rken that it doesn't put its irq number in the standard
-> register -- reads return 0.  So the quirk code I wrote pulls the irq
-> number from a different register on the chip -- which i now believe to
-> be incorrect.
 
-I don't think that's right either...  register 6B is an IDE interrupt
-routing register, not the interrupt itself.
+Let me elaborate a bit on Alan's terse explanation.
 
-If the iosapic system is supposed to remap the register, I don't think
-it is and I don't know where this is supposed to happen.  I hope we can
-do all of this using just a PCI quirk.
+Alan Cox wrote:
+> INTERRUPT_PIN is pre-PCI plumbing view of the interrupt
 
-> i'd like to see this code too.  why not commit it to the tree?  it's not
-> like it works at the moment and things would get broken.
+PIN is the *output* signal used by the PCI device. Each PCI device
+is defined to use none, or one of four available INT signals (A-D).
+PIN is hardwired value to indicate which it is.
 
-I've committed it, and it definitely does not work, but I don't think
-it'll break anything either.  This is mostly mkp's code.
+> INTERRUPT_LINE is sort of the PCI view of the interrupt at best
 
-- Alex
+LINE is initialized by BIOS or platform knowledgable code.
+LINE is the *input* signal to an interrupt controller.
+The routing of Interrupt Lines is *platform dependent* and is
+generally different for each PCI device.
+ie INT-A for one device != INT-A for another
 
--- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+> pci_dev->irq is the Linux view post all the plumbing and host goo
+
+In our case, it's the IRQ region plus IRQ offset right now.
+I've proposed another IRQ scheme which would replace the math with
+a lookup table. But we haven't done anything with it yet since
+the region+offset is "good enough" for now.
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
