@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.unitec.edu (mail.unitec.edu [216.72.84.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE2434829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 15:32:59 -0700 (MST)
-Received: from unitec.edu ([127.0.0.1]) by mail.unitec.edu
-          (Netscape Messaging Server 4.15) with ESMTP id HCQM6M00.HNM for
-          <parisc-linux@lists.parisc-linux.org>; Wed, 2 Apr 2003 16:23:10 -0600
-From: "Ricardo Jose Guevara Ochoa" <jguevara@unitec.edu>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <26c4b36317a73ee1.17a73ee126c4b363@unitec.edu>
-Date: Wed, 02 Apr 2003 16:23:10 -0600
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4B9B14829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Apr 2003 15:41:42 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 190qvK-00065N-1h; Wed, 02 Apr 2003 23:41:38 +0100
+Date: Wed, 2 Apr 2003 23:41:38 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Ricardo Jose Guevara Ochoa <jguevara@unitec.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Kernel 2.4.20 build error
+Message-ID: <20030402224138.GU29376@parcelfarce.linux.theplanet.co.uk>
+References: <26c4b36317a73ee1.17a73ee126c4b363@unitec.edu>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Kernel 2.4.20 build error
+In-Reply-To: <26c4b36317a73ee1.17a73ee126c4b363@unitec.edu>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I downloaded the latest kernel for the parisc family, and when i tried 
-to compile and build the kernel it gave me an error in the make 
-vmlinux:
-ccio-dma.c: In function `ccio_probe':
-ccio-dma.c:1551: `ccio_proc_info' undeclared (first use in this 
-function)
-ccio-dma.c:1551: (Each undeclared identifier is reported only once
-ccio-dma.c:1551: for each function it appears in.)
-ccio-dma.c:1553: `ccio_resource_map' undeclared (first use in this 
-function)
-make[1]: *** [ccio-dma.o] Error 1
-make[1]: Leaving directory 
-`/home/rguevara/source/linux/arch/parisc/kernel'
-make: *** [_dir_arch/parisc/kernel] Error 2
+On Wed, Apr 02, 2003 at 04:23:10PM -0600, Ricardo Jose Guevara Ochoa wrote:
+> I downloaded the latest kernel for the parisc family, and when i tried 
+> to compile and build the kernel it gave me an error in the make 
+> vmlinux:
+> ccio-dma.c: In function `ccio_probe':
+> ccio-dma.c:1551: `ccio_proc_info' undeclared (first use in this 
+> function)
 
-I'm tried to compile in a HP 9000 D-Class D270 running Debian 3.0r1 
-with linux version 2.4.17-32 and gccv 3.0.4
-any suggestions.
-Ricardo J Guevara
- 
+turn on CONFIG_PROC_FS
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
