@@ -1,29 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 383CF482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Apr 2001 04:53:09 -0600 (MDT)
-Message-ID: <3ADEC38D.B99CC03F@esiee.net>
-Date: Thu, 19 Apr 2001 12:53:01 +0200
-From: Xavier Debacker <xavier.debacker@esiee.net>
+Received: from bender.bawue.de (bender.bawue.de [193.197.13.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 15458482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Apr 2001 07:20:56 -0600 (MDT)
+Received: from gate (pC19F1D1E.dip.t-dialin.net [193.159.29.30])
+	by bender.bawue.de (Postfix) with ESMTP id 8DD5C4828C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Apr 2001 15:20:31 +0200 (CEST)
+Received: from localhost (andreas@localhost)
+	by gate (8.9.3/8.9.3) with ESMTP id PAA30834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 19 Apr 2001 15:22:08 +0200
+Date: Thu, 19 Apr 2001 15:22:08 +0200 (CEST)
+From: Andreas Thienemann <andreas@thienemann.net>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.10.10104191518560.30090-100000@gate.ixs.com>
 MIME-Version: 1.0
-To: SOETE =?iso-8859-1?Q?Jo=EBl?= <JSO@EUROPAY.COM>
-Cc: parisc-linux@lists.parisc-linux.org
-References: <A4A5E4C468B5D11190220001FA6835DD04DD88CE@EPIXCH003>
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Re: PA/Linux iso 0.6 is out!
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Clock skew problems
 List-ID: <linux-parisc.vger.kernel.org>
 
-SOETE Jo=EBl a =E9crit :
+Hi,
 
-> Xavier,
->
-> Thanks a lot for information. I will download it soon.
->
-> May I ask you to publish md5sum checksum result to be sure of burning t=
-he
-> right file.
->
-> Thanks in advance for help,
->         Joel
+I finally got my HP9000D to work with yesterdays CVS snapshot.
 
-done.
+But now I'm havving problems with the clock.
+I'm using the basplus-20010404.tar.gz as my NFS root and set
+/etc/localtime /etc/timezone to point to
+/usr/share/timezone/Europe/Berlin.
+
+So far so good.
+
+Then I set the clock to my current date, and run a 'hwlock --systohc
+--utc'.
+
+Just as usual.
+
+But now, when I try do compile some software I'm having problems.
+
+I'm getting the following message from make:
+
+make: *** Warning: File `libdb.a' has modification time in the future
+(2001-04-19 15:15:33 > 2001-04-19 15:15:04)
+
+And I have absolutely no Idea why this is happening.
+
+Thanks for any advice,
+ andreas
