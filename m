@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6F128482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 Nov 2001 00:44:43 -0700 (MST)
-Message-Id: <200111130740.AAA26126@puffin.external.hp.com>
-To: "Craig D. Lansing" <lansing@beldar.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] J2240 - Almost There... 
-In-Reply-To: Message from "Craig D. Lansing" <lansing@beldar.com>
-   of "Mon, 12 Nov 2001 19:07:35 EST." <004401c16bd7$33ae82e0$0101a8c0@pogo>
-Date: Tue, 13 Nov 2001 00:40:03 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1E98482C
+	for <parisc-linux@parisc-linux.org>; Tue, 13 Nov 2001 01:31:04 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id tcmwiaaa for parisc-linux@parisc-linux.org; Tue, 13 Nov 2001 01:26:06 -0700
+Date: Tue, 13 Nov 2001 00:30:57 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011113003057.H391@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] to swap or not to swap
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,13 +22,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-"Craig D. Lansing" wrote:
-...
-> In the meantime, how do I change the "Command Line" at boot?
-> Do I have to "interact" with IPL (almost as bad as having to interact with
-> people :-) ?
+Can someone please explain this to me?
 
-Yes. Adding new params is less obvious: edit any param and append ' '
-plus the new param.
+It looks like some BE architectures define {read,write}[wl] to do LE swapping 
+(sparc, mipsel, ppc, etc) but others don't (s390, parisc). What is the 
+"correct" behavior?
 
-grant
+The inX/outX interfaces are all internal-swapped to LE.
+
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
