@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6FF26482A
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Feb 2002 23:34:18 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id ajzflaaa for parisc-linux@parisc-linux.org; Fri, 1 Feb 2002 23:34:09 -0700
-Date: Fri, 1 Feb 2002 22:34:08 -0800
-From: Randolph Chung <randolph@tausq.org>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 66301482A
+	for <parisc-linux@parisc-linux.org>; Sat,  2 Feb 2002 04:03:00 -0700 (MST)
+Date: Sat, 2 Feb 2002 12:02:56 +0100
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 To: parisc-linux@parisc-linux.org
-Message-ID: <20020202063408.GA604@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Message-ID: <20020202120256.U27172@lug-owl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Proposed change to arch/parisc/Makefile and generation of offset.h
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m0vRWufqUC70IDnR"
+Subject: [parisc-linux] Rsync...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,66 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I'd like to check this change in to change how we clean up and
-regenerate include/asm-parisc/offset.h. This will let us ship a working
-offset.h in our kernel-headers package to be used by glibc builds, and
-will also allow things like gdb to build.
+--m0vRWufqUC70IDnR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(basically, the problem right now is that offset.h is removed after a
-'make clean')
+Hi!
 
-With this change, 'make dep' will regenerate the offset.h and allow the
-kernel dependency mechanism to kick in. 'make mrproper' will remove the
-offset.h file, but 'make clean' will not.
+For some time, there was rsync access to a checked-out version
+of current CVS. This is gone recently, and I don't know why.
+I'd really love to again use rsync for fetching sources
+(and as you know, I'd also like to rsync the CVS repository
+itself).
 
-comments?
+Any chances?
 
-randolph
+MfG, JBG
 
-Index: arch/parisc/Makefile
-===================================================================
-RCS file: /var/cvs/linux/arch/parisc/Makefile,v
-retrieving revision 1.28
-diff -u -p -r1.28 Makefile
---- arch/parisc/Makefile	2001/07/14 04:53:24	1.28
-+++ arch/parisc/Makefile	2002/02/02 06:31:54
-@@ -32,6 +32,7 @@ CROSS_COMPILE := hppa-linux-
- endif
- endif
- 
-+OFFSET_H := $(TOPDIR)/include/asm-parisc/offset.h
- FINAL_LD=$(CROSS_COMPILE)ld --warn-common --warn-section-align 
- 
- CPP=$(CC) -E
-@@ -79,7 +80,7 @@ SUBDIRS := $(SUBDIRS) $(addprefix arch/p
- CORE_FILES :=  $(addprefix arch/parisc/, kernel/pdc_cons.o kernel/process.o \
- 	lib/lib.a mm/mm.o kernel/kernel.o hpux/hpux.o) \
- 	$(CORE_FILES) arch/parisc/kernel/init_task.o
--CLEAN_FILES := $(CLEAN_FILES) arch/parisc/tools/offset.[hs] include/asm-parisc/offset.h*
-+CLEAN_FILES := $(CLEAN_FILES) arch/parisc/tools/offset.[hs] 
- 
- ifdef CONFIG_PARISC64
- HEAD := arch/parisc/kernel/head64.o
-@@ -122,8 +123,14 @@ compressed: zImage
- 
- install: 
- 
-+archmrproper:
-+	rm -f $(OFFSET_H)
-+
- archclean:
- 
--archmrproper:
-+archdep: $(OFFSET_H)
-+
-+$(OFFSET_H): include/linux/version.h
-+	$(MAKE) -C $(TOPDIR)/arch/$(ARCH)/tools all
- 
--archdep:
-+.PHONY: archdep $(OFFSET_H)
+--=20
+Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
+	 -- New APT-Proxy written in shell script --
+	   http://lug-owl.de/~jbglaw/software/ap2/
 
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+--m0vRWufqUC70IDnR
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAjxbx2AACgkQHb1edYOZ4bv/VQCdG+mYN1sGCe4nJ97UUUn1upOt
++ToAnifLal6FIHJSiVL1NsINA3JT6Umf
+=nzIv
+-----END PGP SIGNATURE-----
+
+--m0vRWufqUC70IDnR--
