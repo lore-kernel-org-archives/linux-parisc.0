@@ -1,36 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from xo.hp.is (xo.hp.is [194.105.242.199])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 09075482A
-	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 04:44:34 -0600 (MDT)
-Date: Thu, 18 Oct 2001 10:44:29 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0428482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 06:56:55 -0600 (MDT)
+Received: (from ra@localhost)
+	by xo.hp.is (8.11.6/RA-8.11.6) id f9ICusJ20021
+	for parisc-linux@lists.parisc-linux.org; Thu, 18 Oct 2001 12:56:54 GMT
+Date: Thu, 18 Oct 2001 12:56:54 +0000
 From: Richard Allen <ra@hp.is>
-To: Randolph Chung <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] glibc update
-Message-ID: <20011018104429.J8089@hp.is>
-References: <20011017122313.C4123@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011018125654.Q8089@hp.is>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011017122313.C4123@tausq.org>; from randolph@tausq.org on Wed, Oct 17, 2001 at 12:23:13PM -0700
+Subject: [parisc-linux] Debian package automake broken ?
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Oct 17, 2001 at 12:23:13PM -0700, Randolph Chung wrote:
-> glibc 2.2.4-3 has been uploaded to Debian's incoming direction and
-> should be installed in today's archive run.
-> 
-> it was lightly tested by lamont and myself before upload... please do
-> report any problems you find.
+After upgrading lots of packages on my C360 (including automake) I 
+get the following errors when compiling things:
 
-I did an apt-get update and apt-get upgrade and recived all the new packages on
-my C360.   I then compiled todays kernel on my machine.
+config.status: creating xa_ext.h
+config.status: creating db_config.h
++ make
+cd . && aclocal
+cd . && automake --foreign --include-deps Makefile
+automake: configure.in: required file `./depcomp' not found
+make: *** [Makefile.in] Error 1
 
-bofh:~# dpkg --list | grep -i libc6
-ii  libc6          2.2.4-3        GNU C Library: Shared libraries and Timezone
-ii  libc6-dev      2.2.4-3        GNU C Library: Development Libraries and Hea
-bofh:~# uname -a
-Linux bofh 2.4.9-pa57 #1 Thu Oct 18 10:12:28 UTC 2001 parisc unknown
 
-All went well and my box seems to be functioning perfectly. :-)
+This particular package always made it through configure but had
+runtime issues I was hoping to blame the gcc toolchain og glibc 
+for.   Now that we have new versions of both, this happens :)
 
 -- 
 Rikki.         --  HP Technical Support, RHCE, RHCX, HP-UX Certified Admin.
