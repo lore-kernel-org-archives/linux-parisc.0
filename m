@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from solo.franken.de (pD905461C.dip.t-dialin.net [217.5.70.28])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5A9FD4839
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Dec 2001 05:47:28 -0700 (MST)
-Date: Wed, 26 Dec 2001 13:45:05 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.16-pa24 crashes on c3k
-Message-ID: <20011226134505.A5568@solo.franken.de>
-References: <Pine.LNX.4.33.0112250945530.486-100000@goliath.alaskatech.org> <20011226050128.821554833@dsl2.external.hp.com> <grundler@dsl2.external.hp.com> <20011226060247.3C5054836@dsl2.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011226060247.3C5054836@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Tue, Dec 25, 2001 at 11:02:47PM -0700
+Received: from mx1out.umbc.edu (mx1out.umbc.edu [130.85.253.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D69D483C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Dec 2001 10:29:11 -0700 (MST)
+Received: from gl.umbc.edu (IDENT:root@linux1.gl.umbc.edu [130.85.60.38])
+	by mx1out.umbc.edu (8.12.0/8.12.0) with ESMTP id fBQHT4Zb000657
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Dec 2001 12:29:04 -0500 (EST)
+Received: from localhost (jmccla3@localhost)
+	by gl.umbc.edu (8.9.3/8.9.3) with ESMTP id MAA05531
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Dec 2001 12:29:04 -0500
+Date: Wed, 26 Dec 2001 12:29:04 -0500 (EST)
+From: James Mcclain <jmccla3@gl.umbc.edu>
+To: <parisc-linux@lists.parisc-linux.org>
+Message-ID: <Pine.LNX.4.31L.02.0112261221590.5356-100000@linux1.gl.umbc.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] 64-bit pa20, pa24 fail to boot on my c200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,32 +26,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Dec 25, 2001 at 11:02:47PM -0700, Grant Grundler wrote:
-> Grant Grundler wrote:
-> > Must be something related to suckyio since I'm not using any graphics
-> > console and that's about when console switches over.
-> 
-> Good guess. Just committed 2.4.16-pa25 which fixes.
-> suckyio requires the first PCI HBA be numbered 0 (and not 1).
+hello all,
 
-Linux Tulip driver version 0.9.15-pre9 (Nov 6, 2001)
+i'm new to this list as well as to the world of linux on the
+parisc.  i own a c200 with firmware rev 6.1 which i run with a serial
+console.  my machine fails to boot with a 64-bit kernel (either downloaded
+from the website or built by me).  i get as far as the message warning you
+that if you don't see any further messages it is likely a result of using
+the wrong console, then the three right-most LEDs on the front of the
+machine stay on.
 
-PCI or EISA Host Bus Adapter 3 not registered. in32(0x30030) returning -1
-WARNING! Stack pointer and cr30 do not correspond!
+32-bit kernels built with the same config file work very well.
 
-Dumping Stack from 10858000 to 108587c0:
+if there is any more detailed information i can provide, i would be happy
+to.
 
-that's -pa25 on my B132.
-
-> Was broken by -pa24 commit.
-
-I had the problem as above, when playing with willy's dino patch (hand applied,
-so I missed a chunk). I tried to understand the pci resource assigning code
-and failed so far. If my headache settles down, I'm might look into that 
-again today.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                 [ Alexander Viro on linux-kernel ]
+regards,
+james mcclain
