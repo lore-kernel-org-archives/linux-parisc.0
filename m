@@ -1,13 +1,14 @@
-From: tausq@debian.org
-Subject: [parisc-linux] [hppa-linux, gcc-3.2 regression] cc1 segmentation fault at -O2
-Date: Tue, 28 Jan 2003 23:54:11 -0800
-Message-ID: <20030129075411.GF20940__25841.5254102603$1416622156$gmane$org@tausq.org>
-Reply-To: tausq@debian.org
+From: Michael Wood <mwood@its.uct.ac.za>
+Subject: Re: [parisc-linux] new gcc-default for hppa
+Date: Thu, 30 Jan 2003 17:38:32 +0200
+Message-ID: <20030130153832.GA12052__37642.958868719$1416622166$gmane$org@marmite.its.uct.ac.za>
+References: <20030126044656.GB6057@dsl2.external.hp.com> <200301260509.h0Q59ntl001762@hiauly1.hia.nrc.ca> <20030127072615.GF8487@tausq.org> <20030128073101.GD20940@tausq.org> <20030128074607.GE20940@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: gcc-gnats@gcc.gnu.org, debian-gcc@lists.debian.org
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: Randolph Chung <tausq@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <20030128074607.GE20940@tausq.org>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -18,37 +19,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->Submitter-Id:	net
->Originator:	Randolph Chung
->Organization:	Debian
->Confidential:	no
->Synopsis:	cc1 segfaults @ -O2 when building a simple function
->Severity:	serious
->Priority:	medium
->Category:	optimization
->Class:		ice-on-legal-code
->Release:	3.2.2 20030124 (Debian prerelease) (Debian testing/unstable)
->Environment:
-System: Linux legolas 2.4.20-pa18 #110 Mon Jan 27 23:44:18 PST 2003 parisc unknown unknown GNU/Linux
-Architecture: parisc
+On Mon, Jan 27, 2003 at 11:46:07PM -0800, Randolph Chung wrote:
+> In reference to a message from Randolph Chung, dated Jan 27:
+> > > well.... Grant and I did some more debugging on this.... here's what
+> > > we've tried so far:
+> > 
+> > ok, here's what's happening apparently.... (with many thanks to Grant 
+> > for a sharp eye :)
+> 
+> there's a temporary workaround in cvs now (2.4.20-pa23). For people
+> who have seen the crash with gcc-3.2, please give it a try and let us 
+> know how it goes.
+[snip]
 
-	<machine, os, target, libraries (multiple lines)>
-host: hppa-unknown-linux-gnu
-build: hppa-unknown-linux-gnu
-target: hppa-unknown-linux-gnu
-configured with: ../src/configure -v --enable-languages=c,c++,f77,proto,pascal,objc,ada --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-gxx-include-dir=/usr/include/c++/3.2 --enable-shared --with-system-zlib --enable-nls --without-included-gettext --enable-__cxa_atexit --enable-clocale=gnu --enable-objc-gc hppa-linux
->Description:
-	Self-explanatory. Compiles fine with gcc-3.0.4 and gcc-3.3 (20030118)
+Since you seem to have found the problem, this is probably not relevant,
+but I found this on Kernel Traffic:
 
->How-To-Repeat:
-	Compile this function with gcc -O2 -c
-	(simplied from a failure in building lcdproc)
+	Alan remarked, "2.5.x crashes erratically and randomly under
+	high tty/pty load.  At the moment I'm assuming this is the tty
+	code. That means we can't decide not to fix it since its already
+	fatally broken." Close by, Linus Torvalds said he didn't think
+	the TTY code was in such bad shape. He guessed there were just a
+	few locking problems that had crept in, coupled with the
+	preemption patches' tendency to expose existing locking bugs.
 
-void foo(int len)
-{
-	while (len >= 8) len -= 8;
-	if(!len) return;
-}
+It sounds vaguely related, except maybe for the "high load" bit.
 
->Fix:
-	none
+-- 
+Michael Wood <mwood@its.uct.ac.za>
