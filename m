@@ -1,17 +1,18 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] glibc2.3.3 & gcc-3.5 (aka debian snapshot) new pb
-Date: Mon, 14 Jun 2004 13:45:41 -0400
-Message-ID: <20040614174541.GS29203@baldric.uwo.ca>
-References: <40BD9F0500004FF7@ocpmta1.freegates.net>
-	<40BD9F0500004FFB@ocpmta1.freegates.net>
-	<20040609190711.GI10321@baldric.uwo.ca> <40CC246E.50700@tiscali.be>
+From: Alan Modra <amodra@bigpond.net.au>
+Subject: Re: [parisc-linux] binutils 2.15?
+Date: Mon, 14 Jun 2004 21:38:20 +0930
+Message-ID: <20040614120820.GG28716__39080.105131916$1416624454$gmane$org@bubble.modra.org>
+References: <40BDA020000074B9@ocpmta3.freegates.net>
+	<200406140409.i5E49HYi003897@hiauly1.hia.nrc.ca>
+	<20040614032519.GS5191@sunsite.ms.mff.cuni.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Cc: binutils@sources.redhat.com,
+ parisc-linux@parisc-linux.org
+To: Jakub Jelinek <jakub@redhat.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <40CC246E.50700@tiscali.be>
+In-Reply-To: <20040614032519.GS5191@sunsite.ms.mff.cuni.cz>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,19 +23,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> >Are you just trying to ping to see if this thing builds with gcc-3.5?
-> >
-> It could be a point of view ;)
-> 
-> For my part it's just to continue investigation started some time ago.
-> Does it mean that it's useless for the moment?
+On Mon, Jun 14, 2004 at 05:25:20AM +0200, Jakub Jelinek wrote:
+> First of all, can you explain why hppa needs .got after .plt?
 
-It's not useless, but it's a difficult problem. Eventually we have to
-have it working, but just building and saying "it doesn't build" is only
-the first step :(
+There's a lazy linking stub inserted at the end of the .plt section that
+loads the .got address by
 
-c.
+  b,l	1b,%r20
+  depi	0,31,2,%r20
 
+ie. it depends on .got immediately following these instructions.
+
+-- 
+Alan Modra
+IBM OzLabs - Linux Technology Centre
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
