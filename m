@@ -1,51 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA19292
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 May 2000 22:53:35 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 25 May 2000 04:53:49 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA15203;
-	Thu, 25 May 2000 14:51:44 +1000
-Date: Thu, 25 May 2000 14:51:44 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] bad asm comments
-In-Reply-To: <Pine.LNX.4.21.0005241116300.13743-100000@front.linuxcare.com.au>
-Message-ID: <Pine.LNX.4.21.0005241750310.8974-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA21096
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 May 2000 02:35:26 -0600
+Received: from dyn129-ras34.screaming.net (HELO rhirst.linuxcare.com) (postfix@212.188.129.129)
+  by mailserv2.iuinc.com with SMTP; 25 May 2000 08:35:43 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 54D3FB009; Thu, 25 May 2000 09:35:30 +0100 (BST)
+Date: Thu, 25 May 2000 09:35:30 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] [MERGE] trouble files
+Message-ID: <20000525093530.C1338@linuxcare.com>
+References: <20000523200750.F17536@thepuffingroup.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20000523200750.F17536@thepuffingroup.com>; from willy@thepuffingroup.com on Tue, May 23, 2000 at 08:07:50PM -0400
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Tue, May 23, 2000 at 08:07:50PM -0400, willy@thepuffingroup.com wrote:
+> 
+> the following list of files (if I remember to attach them this time...)
+> are the files which have been modified in both the parisc tree and Linus'
+> 2.3.99pre8 tree.  I've omitted the files where the rcs id is the only thing
+> changed.
 
-I've patched these gcc files for the new binutils.  They ought to still
-work with the old binutils too.
+> drivers/net/82596.c
 
-gcc/longlong.h
-gcc/config/pa/lib1linux.asm
-gcc/config/pa/lib2funcs-elf.S
-gcc/config/pa/lib2funcs.asm
+I don't believe we use that; I guess we started modifying it and then
+created our own lasi_82596.c from it.  I'll check if anything that
+changed in 82596.c needs feeding back in to lasi_82596.c.
 
-And these glibc files too.
-
-csu/Makefile
-stdlib/longlong.h
-sysdeps/hppa/__longjmp.S
-sysdeps/hppa/add_n.s
-sysdeps/hppa/dl-machine.h
-sysdeps/hppa/lshift.s
-sysdeps/hppa/rshift.s
-sysdeps/hppa/setjmp.S
-sysdeps/hppa/sub_n.s
-sysdeps/hppa/udiv_qrnnd.s
-sysdeps/hppa/hppa1.1/addmul_1.s
-sysdeps/hppa/hppa1.1/mul_1.s
-sysdeps/hppa/hppa1.1/submul_1.s
-sysdeps/hppa/hppa1.1/udiv_qrnnd.s
-sysdeps/unix/sysv/linux/bits/errno.h
-
-The csu/Makefile patch should put to rest the problem with csu/crti.S and
-csu/crtn.S
-
--- 
-Linuxcare.  Support for the Revolution.
+Richard
