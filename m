@@ -1,14 +1,17 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Vis-EG card problems on c3k with 2.6.10-pa10?
-Date: Wed, 12 Jan 2005 00:54:19 -0500
-Message-ID: <20050112055419.GD1281@baldric.uwo.ca>
-References: <20050112051146.GC1281@baldric.uwo.ca>
+From: "Michael S. Zick" <mszick@wolfbutter.com>
+Subject: Re: copy_user_page_asm suggested 64bit improvment [Was:
+	[parisc-linux] clear user page test]
+Date: Wed, 12 Jan 2005 07:52:07 -0600
+Message-ID: <200501120752.07206.mszick@wolfbutter.com>
+References: <418A80E8000124B5@mail-6-bnl.tiscali.it>
+	<200412311535.28359.mszick@wolfbutter.com>
+	<20041231225447.GC23592@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="iso-2022-jp"
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050112051146.GC1281@baldric.uwo.ca>
+In-Reply-To: <20041231225447.GC23592@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,21 +22,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Jan 12, 2005 at 12:11:46AM -0500, Carlos O'Donell wrote:
-> I can get something on the screen, but Tux is corrupted beyond
-> recognition and gdm is squished to the right.
+On Fri December 31 2004 16:54, Grant Grundler wrote:
+> On Fri, Dec 31, 2004 at 03:35:28PM -0600, Michael S. Zick wrote:
+> > I tried the 'patch that works' route with a similar suggestion for sched.c
+> > Based on that experience...
+> 
+> ah good. You learned something. :^)
+> 
+> > What I proposed was:
+> > The memory page free pool be defined as a 'virtual device' with
+> > a two part driver.
+> ...
+> > In this virtual free pool device, the kernel is the 'client' and the
+> > daemon is the 'host' (which only happens to be part of the kernel).
+> > Only the 'client' code is in the user's execution path.
+> 
+> This sounds neat and "clean". But things could get very ugly
+> when one needs to "steal" zero'd pages for other uses.
+> 
+> > Should be interesting to consider.
+> 
+> Yes, Agreed.
+> 
+Design seems to be drifting in that general direction.
 
-Let me rephrase that, X starts as a grey rectangle taking up only 1/5 of
-the screen on the right hand side. When gdm starts that grey becomes
-green.
+See: change log on 2.6.11-rc1
 
-The fbdev libggi demos don't display anything either, and that rules out
-X in my opinion and points to a driver issue.
+More details at:
+<http://seclists.org/lists/linux-kernel/2005/Jan/0888.html>
 
-I'm going to roll back to 2.6.9 and see...
-
-c.
-
+Mike (with Joel's help).
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
