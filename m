@@ -1,12 +1,14 @@
-From: "B. Douglas Hilton" <bdhilton@charter.net>
-Subject: [parisc-linux] HP9000 C200 Visualize-EG XFree86 Success!
-Date: Tue, 04 Jun 2002 21:12:24 -0400
-Message-ID: <3CFD6578.40301__40481.4744521447$1416621359$gmane$org@charter.net>
+From: "M. Grabert" <xam@cs.ucc.ie>
+Subject: Re: [parisc-linux] HP9000 C200 Visualize-EG XFree86 Success!
+Date: Wed, 5 Jun 2002 10:43:10 +0100 (IST)
+Message-ID: <Pine.LNX.4.44.0206051039560.1815-100000__43022.1112714664$1416621360$gmane$org@sal.ucc.ie>
+References: <3CFD6578.40301@charter.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: parisc-linux@parisc-linux.org
-To: debian-hppa@lists.debian.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: debian-hppa@lists.debian.org, <parisc-linux@parisc-linux.org>
+To: "B. Douglas Hilton" <bdhilton@charter.net>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <3CFD6578.40301@charter.net>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,42 +19,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Just did a network install using the 0.9.3 full cdrom, and it
-went very smoothly other than not being able to get the
-rescue image ( 32 / 64 subdir ) by default. The default net
-install options were messed up. I just [Q]uit the install and
-ran DSelect on its own to get it working right, not really a
-big deal.
+On Tue, 4 Jun 2002, B. Douglas Hilton wrote:
 
-The 2.4.17 kernel installed by default would not run X, causing
-the HPMC error. Upgrading to Debian's 2.4.18 kernel fixed this
-problem and gave me 8 bit color at 1024x768 with the Visualize-EG
-board. For web surfers looking for help here is the relevant
-snippet to put in /etc/X11/XF86Config-4
+> Install Notes: "gpm" doesn't seem to work for me, although I
+> am running a Dexxa Optical Wheel Mouse through a KVM switch.
+> I just set X to "PS/2" and it worked ( but no mouse wheel ).
 
-# Simple XFree86 Configuration for Visualize-EG STI Framebuffer
+Try ImPS/2 or ExplorerPS/2 instead and add a line
 
-Section "Screen"
-	Identifier	"Default Screen"
-		Device	"Generic Video Card"
-		Monitor	"Generic Monitor"
-		SubSection	"Display"
-			Depth	8
-			Modes	"default"
-		EndSubSection
-EndSection
+Option "ZAxisMapping" "4 5"
 
-Install Notes: "gpm" doesn't seem to work for me, although I
-am running a Dexxa Optical Wheel Mouse through a KVM switch.
-I just set X to "PS/2" and it worked ( but no mouse wheel ).
+in the InputDevice Section
 
-Looks great! I was able to slurp up the whole Debian system
-via the net with no trouble at all. KDE installed with no problems
-and runs pretty well on this crate.
+> Looks great! I was able to slurp up the whole Debian system
+> via the net with no trouble at all. KDE installed with no problems
+> and runs pretty well on this crate.
+>
+> Just ordered a Visualize-24 graphics board on Ebay which I will
+> plug in and see if it works better than the EG board.
 
-Just ordered a Visualize-24 graphics board on Ebay which I will
-plug in and see if it works better than the EG board.
+Sorry to disappoint you, but just the Visualize-EG is supported for now!
 
-See you at Debconf-2!
-
-- Doug
+gretings max
