@@ -1,17 +1,16 @@
-From: Randolph Chung <randolph@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [RFC] Optimi[zs]e copy_*_user routines
-Date: Fri, 10 Sep 2004 01:14:29 -0700
-Message-ID: <20040910081429.GL28659@tausq.org>
-References: <20040910000032.GJ28659@tausq.org>
-	<200409100656.i8A6u4hI026343@hiauly1.hia.nrc.ca>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Date: Fri, 10 Sep 2004 04:46:08 -0400 (EDT)
+Message-ID: <200409100846.i8A8k8ED027093@hiauly1.hia.nrc.ca>
+References: <20040910081429.GL28659@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: randolph@tausq.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200409100656.i8A6u4hI026343@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040910081429.GL28659@tausq.org> from "Randolph Chung" at Sep
+	10, 2004 04:14:29 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,21 +21,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-In reference to a message from John David Anglin, dated Sep 10:
-> Have you looked at using stby or stdby for unaligned copies?
+> In reference to a message from John David Anglin, dated Sep 10:
+> > Have you looked at using stby or stdby for unaligned copies?
+> 
+> do you mean for the entire copy, or just to copy enough bytes to get it
+> aligned?
 
-do you mean for the entire copy, or just to copy enough bytes to get it
-aligned?
+I believe that the "b" completer can be used to write the first set
+of bytes needed to get you to an alignment boundary.  The "e" completer
+can be used to store the final residual.  The PA block move in GCC
+uses the latter.  Basically, you use aligned loads and stby/stdby
+to store the right set of bytes at the beginning and end.  It's much
+more efficient than doing the beginning and end byte by byte.
 
-i've thought about it, for replacing the copy-till-aligned bits, but
-haven't tried... i always get confused when i try to understand how
-those insns work :)
-
-randolph
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
