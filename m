@@ -1,16 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep15-int.chello.at (viefep15-int.chello.at [213.46.255.19])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 18D3F482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 12:57:01 -0600 (MDT)
-Message-ID: <3D4049F3.A53BC4BA@gmx.at>
-Date: Thu, 25 Jul 2002 20:56:51 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Jussi =?iso-8859-1?Q?M=E4ki?= <valen@ihanaa.org>,
-	parisc-linux@lists.parisc-linux.org <parisc-linux@lists.parisc-linux.org>
-References: <Pine.LNX.4.44.0207251931310.2635-100000@kone.ihanaa.org>
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] Re: e45 as a diskless server
+Received: from irongate.swansea.linux.org.uk (pc2-cwma1-5-cust12.swa.cable.ntl.com [80.5.121.12])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D34D1482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Jul 2002 15:44:23 -0600 (MDT)
+Received: from irongate.swansea.linux.org.uk (localhost [127.0.0.1])
+	by irongate.swansea.linux.org.uk (8.12.2/8.11.6) with ESMTP id g6PMwBu6011735;
+	Thu, 25 Jul 2002 23:58:27 +0100
+Received: (from alan@localhost)
+	by irongate.swansea.linux.org.uk (8.12.2/8.12.2/Submit) id g6PMvuo2011733;
+	Thu, 25 Jul 2002 23:57:56 +0100
+Subject: Re: [parisc-linux] i dont know jack
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Rick Vernam <rickvernam@hotmail.com>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com>
+References: <DAV66Z9F2u1YOyJvAiS00005c0c@hotmail.com>
+Content-Type: text/plain
+Date: 25 Jul 2002 23:57:55 +0100
+Message-Id: <1027637875.11669.19.camel@irongate.swansea.linux.org.uk>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,57 +29,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Have you checked, that the E45 may have (my E55 definitively has) a
-"wrong" pin out. It look to be the opposite pin assignment like a
-modem, but further studies have shown, that it is non-standard.
-
-I have soldered 8x adapters from 25-female to 25-female but with
-the SUN compatible pin out ! This is the same as on the PC (25pin)
-but female instead of male !
-
-The following wirering is necessary to have a PC or SUN compatible
-connector:
-MUX side      PC/SUN like connector
-	3.......2 
-	2.......3 
-	8.......4 
-	22......5 
-	20......6 
-	7.......7 
-	4.......8 
-	6.......20 
-	9.......22 
-
-So you can use a simple NULL-Modem cable to connect the PC to the
-PC/SUN compatible MUX connector.
-
-For simple serial console you can use following:
-	Only use pins 2,3 and 7, where 2=RX, 3=TX and 7=GND !
-If you use NOT a UNIX-like system on the PC the bridge CTS and RTS
-pins on the PC side.
-
-On my E55 only port 0 (first connector) is used for the serial console.
-
-With friendly regards
-Christoph P.
-
-
-Jussi Mäki wrote:
+On Thu, 2002-07-25 at 16:43, Rick Vernam wrote:
+> i work at place that gets tons of computer junk from companies that are getting rid of their equip.  one of our requirements is to kill the partitions on the HDs ( it is known that will no completely remove data, just make is a little more difficult to get too ).  so we are getting HP machines with pa-risc stuff and most wont boot ( i know enough to know how to initiate a boot ).  is there some way, using this parisc-linux that i can quickly kill partitions?
 > 
-> > Hello, I am back from vacation.
-> >
-> > In the moment, I have no valid kernel image (lifimage), as I hack
-> > around with the E55 device findings. But if it not a problem for
-> > you to have very much output in the kernel booting, you can use it !
-> > (To say it again: The image is really original and good, it only
-> > generates many lines of output while detecting the devices !!!).
-> 
-> I've had problems connecting the E45 console to my pc, currently i've only
-> managed to use it with the 700/96 HP console, i'll look into that today.
-> 
-> I'll mail you the boot output if/when i get it working.
 
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Well one silly way to do it would be to simply install Linux on the
+machines telling it to use the whole of the disks. At that point you can
+put "tested" on the disks 8) and "Free Debian Linux" on the marketing 8)
