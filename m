@@ -1,34 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (unknown [63.224.241.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C5985482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 21 Oct 2001 15:54:40 -0600 (MDT)
-Date: Sun, 21 Oct 2001 15:54:03 -0600
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20011021155403.A2435@beavis.ybsoft.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-From: rbradetich@uswest.net (Ryan Bradetich)
-Subject: [parisc-linux] [PATCH] I/O Tree patch ... CVS Head will be unstable for the next few days.
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EEF70482A
+	for <parisc-linux@parisc-linux.org>; Sun, 21 Oct 2001 16:27:22 -0600 (MDT)
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Large SCSI disks on a 735/125 
+In-Reply-To: Your message of "Sun, 21 Oct 2001 12:19:32 EDT."
+             <200110211619.f9LGJXge014176@hiauly1.hia.nrc.ca>
+References: <200110211619.f9LGJXge014176@hiauly1.hia.nrc.ca> 
+Date: Sun, 21 Oct 2001 16:27:21 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20011021222721.6658837D25@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello parisc-linux hackers,
+"John David Anglin" writes...
 
-The general consensus between the developers is to commit the I/O
-tree patch, and fix what is broken.  So I am going to commit the
-patch to CVS and start working on bug reports, etc.  
+> > The question is will you be able to find a 9 or 18GB disk
+> > with either SE SCSI or HVD SCSI interface which the 735
+> > can connect to.
+> 
+> What about a Seagate ST318417N?  It is: 18.4GB, 7200 rpm, 8.5 ms seek avg,
+> Ultra SCSI, suggested resale price $269.  While you can still find a HVD
+> drive it looks like they are rapidly going the way of the dodo bird.
 
-Right now we are pretty sure PAT boxes are broken ... but Grant
-has given me access to an A500 to work on so I can fix PAT boxes
-to use iotree. 
+I think that should work.
 
-If you are interested in kernel stability, do not run CVS head
-for a couple of days.  I will probably send out another message
-once we feel the kernel has stabalized.
+Last year sometime I saw Paul Bame install an 18GB 10k RPM LVD Seagate
+Cheetah drive in a 712 and install parisc-linux on it. It worked great :)
 
-Thanks,
-
-- Ryan
-
-P.S. I will start committing the iotree patch in an hour or
-so giving anyone a (short) chance to get the latest CVS head
-before I commit the patch.
+-- 
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
