@@ -1,22 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2EFF7482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Sep 2001 16:31:13 -0600 (MDT)
-Sender: marteaut@esiee.fr
-Message-ID: <3BA91D24.8F0C2981@esiee.fr>
-Date: Thu, 20 Sep 2001 00:33:08 +0200
-From: Thomas Marteau <marteaut@esiee.fr>
-MIME-Version: 1.0
-To: marka@sea.checkpoint.com
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from postal.sea.checkpoint.com (postal.sea.checkpoint.com [208.252.84.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7C17E482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Sep 2001 16:34:48 -0600 (MDT)
+Received: from cartman.sea.checkpoint.com (localhost [127.0.0.1])
+	by postal.sea.checkpoint.com (8.9.3/8.9.3.RJ666.9) with ESMTP id PAA21630
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Sep 2001 15:32:30 -0700
+From: marka@sea.checkpoint.com
+To: parisc-linux@lists.parisc-linux.org
+Date: Wed, 19 Sep 2001 15:34:36 -0700 (Pacific Daylight Time)
 Subject: Re: [parisc-linux] interesting problem in tty? telnetd? ls?
-References: <Pine.WNT.4.33.0109191442050.5872-100000@nemo.dev.metainfo.com>
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010919232858.B19441@linuxcare.com>
+Message-ID: <Pine.WNT.4.33.0109191532390.5872-100000@nemo.dev.metainfo.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi all,
+On Wed, 19 Sep 2001, Richard Hirst wrote:
+> I had this problem; it went away when I move up to a 2.4.9 kernel.
 
-	I experience the same problem on my B132. I can log myself in but when
-I do 'su' I got my connection closed.
+As noted earlier with the serial port problem fix, I am running 2.4.9-pa22.
 
-Thomas.
+--
+Mark
