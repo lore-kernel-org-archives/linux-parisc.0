@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from silly.cloud.net.au (c20042.eburwd1.vic.optusnet.com.au [203.164.66.244])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4DFC6482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Dec 2001 14:35:14 -0700 (MST)
-Date: Thu, 13 Dec 2001 08:35:11 +1100
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Install on a D370!
-Message-ID: <20011213083511.B17000@silly.cloud.net.au>
-References: <5.1.0.14.0.20011212111857.0263d110@mail.magma.ca>
+Received: from solo.franken.de (pD9051D7B.dip.t-dialin.net [217.5.29.123])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D8A8D482C
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Dec 2001 15:22:51 -0700 (MST)
+Date: Wed, 12 Dec 2001 23:20:51 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Sven Cronenberg <sven.cronenberg@web.de>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] X WIndows on HP9000 720 or 735
+Message-ID: <20011212232051.B1998@solo.franken.de>
+References: <3C17254A.3050209@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <5.1.0.14.0.20011212111857.0263d110@mail.magma.ca>; from herbr@magma.ca on Wed, Dec 12, 2001 at 12:01:45PM -0500
+In-Reply-To: <3C17254A.3050209@web.de>; from sven.cronenberg@web.de on Wed, Dec 12, 2001 at 10:37:14AM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,28 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Dec 12, 2001 at 12:01:45PM -0500, Herb Radford wrote:
-> Yesterday I downloaded the 0.9.3-rc6.iso (it has the same md5sum as the 
-> official version so I assume congruency) and have had exactly the same results!
-> There is a FWSCSI card in the box with 6 drives attached and another card, 
-> a "Remote Management/Access Port" card in HSC 0 Slot 0.
-> I've seen a couple of messages about D350's which say all this stuff worked!
-> 
-> Does anyone have any suggestions?
+On Wed, Dec 12, 2001 at 10:37:14AM +0100, Sven Cronenberg wrote:
+> I am using 2 HP9000 WOrkstatiosn at home. One HP900/720 system with CRX8 
+>  graphic card and and a HP9000/735 with CRX48Z graphics system.
 
-I pulled out the access port card to get the D350 working; otherwise
-I never saw any messages after the branching to kernel entry point
-message, as you're seeing.
+> I would like to know if anyone has succeeded in running X Windows for 
+> PARISC Linux on one of those machines?
 
-Unfortunately I never got a chance to get all the debug info that
-Matthew wanted to sort this out.. the machine has been repossessed
-for real work and is running HP-UX again.
+not yet. There is some code for these boards in the kernel, but it's disabled
+by default. I'm waiting for hardware to verify the code is working or if it
+isn't to fix it.
 
-On a completely different topic, I assume it's safe to apt-get upgrade
-these days? All the tool chain problems etc have been solved?
-I still have a 715/80 running fine.
+> By the way: How das the x-windows for PARISC Linux work. Does it access 
+> the graphics card via the framebuffer device or directly?
 
-cheers
-Hamish
+via a framebuffer device.
+
+Thomas.
+
 -- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel ]
