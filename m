@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from nomore-accents1236.com (24-136-31-90.na.21stcentury.net [24.136.31.90])
-	by dsl2.external.hp.com (Postfix) with SMTP id 3412A482A
-	for <parisc-linux@parisc-linux.org>; Sat, 12 Jul 2003 07:43:01 -0600 (MDT)
-From: Martin Andrews <mandrews@nomore-accents.com>
-To: parisc-linux@parisc-linux.org
-Reply-To: mandrews@nomore-accents.com
-Date: Sat, 12 Jul 2003 08:42:54 -0500
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="23c14b85-3774-4bd1-84c2-45d79451d506"
-Message-Id: <20030712134301.3412A482A@dsl2.external.hp.com>
-Subject: [parisc-linux] - Are you learning ESL or TESL?
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BCDF7482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 12 Jul 2003 07:55:24 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19bKqQ-0003Ey-Og; Sat, 12 Jul 2003 14:55:22 +0100
+Date: Sat, 12 Jul 2003 14:55:22 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: =?iso-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Sound in 2.5
+Message-ID: <20030712135522.GR20424@parcelfarce.linux.theplanet.co.uk>
+References: <3F0FB712.7060702@hrzpub.tu-darmstadt.de> <20030712143418.37631a6c.varenet@esiee.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030712143418.37631a6c.varenet@esiee.fr>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,36 +26,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format
---23c14b85-3774-4bd1-84c2-45d79451d506
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Sat, Jul 12, 2003 at 02:34:18PM +0200, Thibaut VARENE wrote:
+> I guess that a part of the answer stands there:
+> 
+> http://cvs.parisc-linux.org/linux-2.5/include/asm-parisc/Attic/gsc.h
+> Revision 1.5 , Fri Nov 1 01:04:30 2002 UTC (8 months, 1 week ago) by willy
+> Move gsc_read,write[bwl] to asm/io.h.  Move drivers/parisc/busdevice.h
+> to drivers/parisc/gsc.h.  Move the rest of include/asm-parisc/gsc.h
+> to drivers/parisc/gsc.h.  Edit dozens of files to remove the include
+> of <asm/gsc.h>
 
-Dear Reader,
+Yeah.  But where did sound/parisc/harmony.c come from?  The first thing
+I saw of it was when it was added to Linux 2.5.71.  I assumed one of
+you guys had been working on it.
 
-No More Accent is an accent reduction product, which helps to remove accents. =
-For example, an Asian lady (or any nationality) may have communication =
-problems with her English when speaking to her work mates or friends.
+>   CC      sound/parisc/harmony.o
+> sound/parisc/harmony.c: In function `snd_card_harmony_playback_open':
+> sound/parisc/harmony.c:712: structure has no member named `dma_private'
+> sound/parisc/harmony.c:713: structure has no member named `dma_type'
+> sound/parisc/harmony.c:713: `SNDRV_PCM_DMA_TYPE_PCI' undeclared (first use
+> in this function)
 
-With that in mind, No More Accent teaches Accent Reduction methodologies to =
-help in this area. In fact, No More Accent can be used in almost any =
-situation where an accent reduction is required. Even Actors within the =
-Entertainment Industry have turned to No More Accent as a way to lose or gain =
-an accent of another nationality.
+static int snd_card_harmony_playback_open(snd_pcm_substream_t * substream)
+        substream->dma_private = harmony->fake_pci_dev;
+        substream->dma_type = SNDRV_PCM_DMA_TYPE_PCI;
 
-No More Accent is available in two versions, CD-ROM and VHS Cassette Tape =
-(PAL and NTSC formats) both can be purchased directly via the =
-www.nomore-accents.com website.
-If you would like further information about our products or services, please =
-contact myself 
-when you have a moment.
+I dunno, this all looks like sound junk to me.
 
-Best Wishes...
+I have no idea what glue the person who wrote this driver is on:
 
-Martin Andrews
-Marketing Co-ordinator
+ * (note that some machines -712 for ex.- don't implement DMA consistent
+ * memory, so we will need to use kmalloc instead)
 
-http://www.nomore-accents.com
+712 implements DMA consistent memory.  715/33 doesn't, for example.
 
-Your #1 Resource for Accent Reduction!    
---23c14b85-3774-4bd1-84c2-45d79451d506--
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
