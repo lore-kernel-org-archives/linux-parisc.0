@@ -1,21 +1,18 @@
-Return-Path: <joey@infodrom.org>
-Received: from luonnotar.infodrom.org (luonnotar.infodrom.org [195.124.48.78])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B27F54857
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4FA734857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 15 Mar 2004 10:17:25 -0700 (MST)
-Date: Mon, 15 Mar 2004 18:14:20 +0100
-From: Martin Schulze <joey@infodrom.org>
-To: Helge Deller <deller@gmx.de>
-Message-ID: <20040315171420.GW9104@finlandia.infodrom.north.de>
-References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
-	<200403142055.12668.deller@gmx.de>
-	<20040314202825.GF9104@finlandia.infodrom.north.de>
-	<200403142219.00823.deller@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <200403142219.00823.deller@gmx.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] Re: Re: No PS2 keyboard/mouse on B132L, 2.6.[34]
+	Mon, 15 Mar 2004 10:38:50 -0700 (MST)
+Date: Mon, 15 Mar 2004 18:38:46 +0100
+Message-ID: <404EC2E70000403A@ocpmta2.freegates.net>
+In-Reply-To: <4054B9BC.30309@tiscali.be>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "James Morrison" <ja2morri@csclub.uwaterloo.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,98 +22,65 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Helge Deller wrote:
-> > Don't be confused, it doesn't work anymore.
+Hello Jim,
+
+Sorry for confusion but you have definitely right.
+
+[snip]use prefix=/usr and make  install_root=/mnt/chroot install;
+
+This is the right method because if I use prefix=/mnt/chroot and 'make install',
+when the install was finished and I tried chroot/mnt/chroot: here was the
+error message:
+chroot /mnt/chroot
+/bin/bash: error while loading shared libraries: libncurses.so.5: cannot
+open shared object file: No such file or directory
+
+and strace shows me that it looking for libncurses.so.5 into /mnt/chroot/lib
+:)
+
+So to launch make -k check in this config, I foreseen to use prefix=/usr
+and make install_root=/mnt/chroot; then mount -o bind /GlibcSrcFS /mnt/chroot/GlibcSrcFS;
+chroot /mnt/chroot; and in this env launch the make -k check. Do you know
+another solution?
+
+Many thanks for advise,
+    Joel
+
+
+Joel Soete wrote:
 > 
-> I would be interested in your dmesg log.
-
-It's at http://luonnotar.infodrom.org/~joey/dmesg.txt
-
-> Mine (HIL only!) looks like this:
 > 
-> mice: PS/2 mouse device common for all mice
-> serio: GSC PS2 keyboard port at 0xf0108000 irq 69 @ parisc2:0:11
-> gscps2.c: timeout - could not write byte 0xed
-> gscps2.c: sending byte 0xed failed.
-
-mice: PS/2 mouse device common for all mice
-serio: GSC PS2 keyboard port at 0xf0108000 irq 69 @ parisc2:0:11
-input: AT Raw Set 2 keyboard on parisc2:0:11
-serio: GSC PS2 mouse port at 0xf0108100 irq 69 @ parisc2:0:12
-
-> HP SDC: HP SDC reports successful PUP.
-> HP SDC: HP SDC at 0xf0201000, IRQ 126 (NMI IRQ 125)
-> HP SDC: New style SDC
-> HP SDC: Revision: 1820-4784
-> HP SDC: TI SN76494 beeper present
-> HP SDC: OKI MSM-58321 BBRTC present
-> HP SDC: Spunking the self test register to force PUP on next firmware reset.
-> HP SDC MLC: Registering the System Domain Controller's HIL MLC.
+> Carlos O'Donell wrote:
 > 
-> -> OK, the HIL stuff is detected. (BTW, test this after power-cycling the machine!)
+>> On Fri, Mar 12, 2004 at 06:33:11PM +0100, Joel Soete wr
+> te:
+>>
+>>> Hmmm all output files realted to Error1 was empty because of:
+>>> hppa-linux-gcc -nostdlib -nostartfiles -o 
+>>> /Develop/parisc-linux/build/glibc/posix/tst-regex
+>>> -Wl,-dynamic-linker=/lib/ld.so.1
+                         ^^^^^^^^^^
+> ^
 
-HP SDC: HP SDC at 0xf0201000, IRQ 126 (NMI IRQ 125)
-HP SDC: New style SDC
-HP SDC: Revision: 1820-4784
-HP SDC: TI SN76494 beeper present
-HP SDC: OKI MSM-58321 BBRTC present
-HP SDC: Spunking the self test register to force PUP on next firmware reset.
-HP SDC MLC: Registering the System Domain Controller's HIL MLC.
+When I use the previous method (prefix=/mnt/chroot) it become :
 
-> and then nearly at the end of dmesg:
-> HIL KEYB: HIL keyboard found (did = 0xcf, lang = german)
-> input: HIL keyboard, ID: 207
+-dynamic-linker=/mnt/chroot/lib/ld.so.1
 
-Not found here, of course.
+So here I can drive make -k check without pb in basic env (the one in which
+I build the new glibc)
 
-> HIL PTR: HIL pointer device found (did: 0x68, axis: relative)
-> HIL PTR: HIL pointer has 3 buttons and 1 sets of 2 axes
-> input: HIL pointer device (HIL mouse), ID: 104
+OTC with James' method I would have
+> to do it in chroot /mnt/chroot env.
+And it wasn't what I did; I will so restart build and test with prefix=/mnt/chroot
+(as I use to do) and advise you of the new 
+results ;)
 
-Not found here as well.
+That's a way to lurn ;)
 
-> This is now HIL keyboard and HIL mouse.
-> So my HIL mouse is detected, but doesn't seem to work yet.... :-( 
+Joel
 
-*sigh*
 
-> > FWIW: I had mouse support and I had keyboard support.  Just not at the
-> > same time unfortunately.  So in general it works at least.  The
-> > configuration is a bit non-intuitive since you'll have to enable
-> > HIL_KBD and AT_KBD.  However, logically it makes sense.
-> 
-> No. You should disable HIL_KBD (but it doesn't hurt either).
 
-Done.  Keyboard still works.
-
-> As said above: Hard Power-cycle the machine before each test!
-
-Of course.  I'll have to turn it off for keyboard / mouse changes
-or the machine will drop support for what I changed.
-
-> Furthermore you might try to increase the value of mdelay(6); in line 168
-> in file linux-2.6/drivers/input/serio/gscps2.c...
-> Maybe it's a timing issue ?
-
-Apparently, it was.  I now have keyboard and mouse support.
-I set the delay to 12.
-
-> This is what you should have in your .config:
-> CONFIG_SERIO_GSCPS2=y
-> CONFIG_INPUT_KEYBOARD=y
-> CONFIG_KEYBOARD_ATKBD=y
-> CONFIG_INPUT_MOUSE=y
-> CONFIG_MOUSE_PS2=y
-
-All there.
-
-Everything's working fine now, btw.
-
-Regards,
-
-	Joey
-
--- 
-Whenever you meet yourself you're in a time loop or in front of a mirror.
-
-Please always Cc to me when replying to me on the lists.
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
