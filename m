@@ -1,35 +1,32 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id UAA22021
-	for <parisc-linux@sod.res.cmu.edu>; Wed, 7 Apr 1999 20:28:28 -0400
-Message-ID: <19990407192743.A25057@debian.org>
-Date: Wed, 7 Apr 1999 19:27:43 -0500
-From: Justin Maurer <justin@master.debian.org>
-To: parisc-linux@thepuffingroup.com
+Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id VAA22915
+	for <parisc-linux@sod.res.cmu.edu>; Wed, 7 Apr 1999 21:33:24 -0400
+Message-ID: <19990407213316.T11091@cmu.edu>
+Date: Wed, 7 Apr 1999 21:33:16 -0400
+From: Phil Schwan <pschwan@thepuffingroup.com>
+To: Justin Maurer <justin@master.debian.org>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] binutils from cvs broke
+References: <19990407192743.A25057@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] binutils from cvs broke
+In-Reply-To: <19990407192743.A25057@debian.org>; from Justin Maurer on Wed, Apr 07, 1999 at 07:27:43PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-i'm running configure on the binutils from cvs, and it seems to bomb out with
-the following error:
+On Apr 07, Justin Maurer wrote:
+> creating libtool
+> configure: error: GAS does not support target CPU i386
+> Configure in /home/parisc/cvs/binutils/gas failed, exiting.
+> 
+> the command i used to run configure with was:
+> $ ./configure --prefix=/home/parisc/hppa-test/
 
-creating libtool
-configure: error: GAS does not support target CPU i386
-Configure in /home/parisc/cvs/binutils/gas failed, exiting.
+You probably want to be doing
+"./configure --prefix=/home/parisc/hppa-test --target=hppa-linux --with-gas"
+unless I miss my guess.
 
-the command i used to run configure with was:
-$ ./configure --prefix=/home/parisc/hppa-test/
+-Phil
 
-sorry to post a compile error here, but it's the only place i can think of,
-after asking for help on irc.
-
-(for those of you who don't know, i'm acf on linuxnet, and am debianizing the
-binutils+egcs that are in cvs)
-
--- 
--------------------------------------------------------------
-# Justin Maurer                                GNOME Hacker #
-# justin@debian.org                         Slashdot Author #
-# http://slashdot.org/           Debian GNU/Linux Developer #
-#     09 84 FC 03 13 AA 4A AF  F6 A4 85 9D 8C 96 B6 A4      #
--------------------------------------------------------------
+------------------------------------------------------------------
+"In film you will find four basic story lines. Man versus man, man
+versus nature, nature versus nature, and dog versus vampire."
+        - Steven Spielberg
