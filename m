@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 24DAE4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 03:09:47 -0600 (MDT)
-Date: Wed, 25 Sep 2002 11:09:33 +0200
-Subject: Re: [parisc-linux] Re: B1000
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v546)
-Cc: parisc-linux@lists.parisc-linux.org
-To: Yasholomew Yashinski <yashy@mail.yashy.com>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20020925000736.V54476-100000@mail.yashy.com>
-Message-Id: <81AAACAB-D066-11D6-9CB4-0030656F07A2@esiee.fr>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 428074829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 04:05:28 -0600 (MDT)
+Date: Wed, 25 Sep 2002 12:05:19 +0200
+Message-ID: <3D8F01140000099E@ocpmta2.be.tiscali.com>
+In-Reply-To: <3D8E3A0B.5090008@earthlink.net>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] Mouse stops working when exiting KDE
+To: "Bryan W. Headley" <bwheadley@earthlink.net>,
+	"Joel Soete" <joel.soete@freebel.net>
+Cc: "Derek Engelhaupt" <derekengelhaupt@rocketmail.com>,
+	parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,33 +24,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le mercredi, 25 sep 2002, =E0 06:46 Europe/Paris, Yasholomew Yashinski a=20=
+Hi Brian,
 
-=E9crit :
-
->  Just a few comments on the two websites.
+>-- Original Message --
+>Date: Sun, 22 Sep 2002 16:45:47 -0500
+>From: "Bryan W. Headley" <bwheadley@earthlink.net>
+>To: Joel Soete <joel.soete@freebel.net>
+>CC: Derek Engelhaupt <derekengelhaupt@rocketmail.com>, 
+> parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] Mouse stops working when exiting KDE
 >
-> http://pateam.esiee.fr/ could use an English editor:
->  "This website is run by a"  # ran is past tense.
->  "Please forgive us if either.. or the server has some troubles" # the
-> users shouldn't have to apologize to the authors.
->  "see the announcement"
->  "If you have any questions, suggestions or comments, feel free to=20
-> contact
-> us at any time"
->  "on the project, the team, and.."
->  "Latest News"
-Welle, thanq yoo fore yoore elp. I wil trye tou corecte som errorz !
-Dide yoo noticed da '.fr' at thee ende off da naime ? ;^)
-Wee are damne franch pipol, we dont now Inglish ! ;o]
+>
+>Joel Soete wrote:
+>
+>>> I assume you are running the gpm mouse daemon as well. If you tell X
 
-T.V. - The guy who now handle the pateam website maintaining  =3D)
+>>> to use the gpm mouse (/dev/gpmdata), you should be okay.
+>> 
+>> 
+>> Hmm, long time ago I test this (because that was like this I configure
+>
+>> my i386 boxe) but it did not work. Does it work now on parisc?
+>
+>Last time I checked, it did.
 
-/me ducks !
+Sorry, the last test I do on my b180 and gpmdata as mouse driver does not
+work :)
+(xfree86-4.1)
 
+Hmm I just notice this funny behaviour:
+I start gdm, I login -> the cursor work normaly :)
+I quit my X session -> the cursor doesn't work any more ...
+I would like to see at the console if I can see some error messages, so I
+swich to sti mode (CTRL+ALT f1)... ok that works. No error messages, so I
+can come back to gdm login screen (CTRL+ALT f7), oh the cursor move again
+normaly ?
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
-for any b4d english comment, mail us at=20
-mailto:puffin@esiee.fr?subject=3Db4d_3ngl1sh=
+Any idea?
+
+Thanks in advance,
+    Joel
+
+PS: kernel 2.4.18-pa61 + apt-get dist_upgrade this 2002-09-24
