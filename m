@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1EF28482B
-	for <parisc-linux@parisc-linux.org>; Fri,  2 Nov 2001 09:18:33 -0700 (MST)
-To: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
-Cc: dan@bigw.org, parisc-linux@parisc-linux.org
-Subject: Re: Betr.: [parisc-linux] More Install on C110: Kernel doesn't load... 
-In-Reply-To: Your message of "Fri, 02 Nov 2001 12:06:49 +0100."
-             <sbe28dc3.046@ms-zrt1>
-References: <sbe28dc3.046@ms-zrt1> 
-Date: Fri, 02 Nov 2001 09:18:30 -0700
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E15zh1a-0006SD-00@noam.fc.hp.com>
+Received: from beloit.edu (beloit.edu [144.89.40.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 61773482B
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Nov 2001 09:38:13 -0700 (MST)
+Received: from localhost ([144.89.185.182])
+	by beloit.edu (AIX4.3/8.9.3/8.9.0) with ESMTP id KAA33452
+	for <parisc-linux@parisc-linux.org>; Fri, 2 Nov 2001 10:32:49 -0600
+Date: Fri, 2 Nov 2001 10:38:11 -0600
+Subject: Re: [parisc-linux] More Install on C110: Kernel doesn't load... 
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Mime-Version: 1.0 (Apple Message framework v472)
+From: Daniel Williams <dan@bigw.org>
+To: parisc-linux@parisc-linux.org
+In-Reply-To: <E15zh1a-0006SD-00@noam.fc.hp.com>
+Message-Id: <00FAA796-CFB0-11D5-A1E4-0030657D1C94@bigw.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,21 +24,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-= >Entry 00100000 first 00100000 n 4
-= >Segment 0 load 00100000 size 160694 mediaptr 0x1000
-= >Segment 1 load 0028a000 size 468472 mediaptr 0x18a000
-= >Segment 2 load 00300000 size 8192 mediaptr 0x1fd000
-= >Segment 3 load 0034bea8 size 80688 mediaptr 0x1ffea8
-= >
-= >Error: read from boot device failed (status = -4)
-= >byteio_read: seekread() returned -1 expected 2048
-= >Error:  segment 0 read() failed
+The ISO image burned is 137,854,976 bytes in length...  at some point 
+here I'll cat /dev/cdrom > /dev/null to check the media and make sure 
+there's not a problem, but I'd be inclined to think its something with 
+the format on CD...  Here's the file I fed into my port of palo:
 
-palo has read thee ELF header by then, but fails to read the first
-program segment (0).  It's unusual for things to die here.  The
-firmware docs say error -4 is "unrecoverable hardware error".
-Perhaps the ISO image got truncated or is shorter than it should be?
+-c0/vmlinux root=/dev/ram initrd=0/ramdisk
+-k/Volumes/palinux-0.9.1/debian/dists/sid/main/disks-
+hppa/current/32/vmlinux
+-b/Volumes/palinux-0.9.1/iplboot
+-r/Volumes/palinux-0.9.1/debian/dists/sid/main/disks-
+hppa/current/root.bin
+-C./palinux-0.9.2.iso
 
-	-P
+When mounted, the 0.9.2 ISO's name is palinux-0.9.1, because it was 
+mastered like that?  Anyway, I assume the kernels on the ISO image are 
+OK to use?  I can't of course compile them myself because I don't have 
+an hppa cross compiler (no x86 box).
 
-	-P
+Dan
+
+On Friday, November 2, 2001, at 10:18 AM, Paul Bame wrote:
+
+> = >Entry 00100000 first 00100000 n 4
+> = >Segment 0 load 00100000 size 160694 mediaptr 0x1000
+> = >Segment 1 load 0028a000 size 468472 mediaptr 0x18a000
+> = >Segment 2 load 00300000 size 8192 mediaptr 0x1fd000
+> = >Segment 3 load 0034bea8 size 80688 mediaptr 0x1ffea8
+> = >
+> = >Error: read from boot device failed (status = -4)
+> = >byteio_read: seekread() returned -1 expected 2048
+> = >Error:  segment 0 read() failed
+>
+> palo has read thee ELF header by then, but fails to read the first
+> program segment (0).  It's unusual for things to die here.  The
+> firmware docs say error -4 is "unrecoverable hardware error".
+> Perhaps the ISO image got truncated or is shorter than it should be?
+>
+> 	-P
+>
+> 	-P
