@@ -1,14 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 163.com (unknown [61.28.22.146])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 312A348DB
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 15:16:01 -0600 (MDT)
-From: =?GB2312?B?1b7U2rSwx7C1xMWuuqI=?= <cqnvhay@163.com>
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain;charset="GB2312"
-Reply-To: cqnvhai@163.com
-Date: Mon, 29 Sep 2003 05:18:19 +0800
-Message-Id: <20030928211601.312A348DB@dsl2.external.hp.com>
-Subject: [parisc-linux] =?GB2312?B?1b7U2rSwx7C1xMWuuqKjrM34wufRsMv7?=
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2EC3548D9
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 28 Sep 2003 15:49:23 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1A3jPt-0001pk-LJ; Sun, 28 Sep 2003 22:49:21 +0100
+Date: Sun, 28 Sep 2003 22:49:21 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org,
+	James Bottomley <James.Bottomley@steeleye.com>
+Subject: Re: [parisc-linux] Re: zalon/ncr53c720 (linux-2.6.0-test5-pa22) broken on C110
+Message-ID: <20030928214921.GN24824@parcelfarce.linux.theplanet.co.uk>
+References: <3F76A312.8090603@tiscali.be> <20030928122414.GF24824@parcelfarce.linux.theplanet.co.uk> <3F77227F.7000400@tiscali.be> <3F774571.6050100@tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3F774571.6050100@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,82 +27,71 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-站在窗前的女孩 
-漫眼蝶影油菜花常开，可怜顾影力薄身只单。 
-历经沧桑劫数有感慨，方知人海知音实难览！ 
-今日黯然流落至广州，心伤体累举步更艰难。 
-您可是她停泊的港湾？您可是她梦里的沙滩？ 
+On Sun, Sep 28, 2003 at 08:32:49PM +0000, Joel Soete wrote:
+> Joel Soete wrote:
+> 
+> >Sorry it already failled with following satck dump:
 
-站在窗前的女孩 
-只怪家父留财有千万，引得伯父要前来争战， 
-伯父野蛮儿多更好战，独生爱女应对烦更缠。 
-感谢好心律师帮诉讼，只等十月开庭来审判。 
-谁会是她伤心的释然？谁会是她梦里的徘徊？ 
+OK; we don't need the stack dump since that's already fixed in the top
+of tree.
 
-站在窗前的女孩 
-今年芳龄二十又有三，喜读诗书温柔心佛善。 
-心高纵有家财万千罐，身外物也能漠然看淡！ 
-邻说子承父业方为孝，经营才疏还需另一半。 
-谁会是我快乐的靠山？谁会是我千年的等待？ 
+> >zalon_probe: Zalon vers field is 0x1, IRQ 34
+> >ncr53c720-0: rev 0xf on bus 0 device 0 function 0 irq 34
+> >ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+> >ncr53c720-0: suspicious SCSI data while resetting the BUS.
+> >ncr53c720-0: dp1,d15-8,dp0,d7-0,rst,req,ack,bsy,sel,atn,msg,c/d,i/o = 
+> >0x3fdff00, expecting 0x100
+> >ncr53c720-0: FATAL ERROR: CHECK SCSI BUS - CABLES, TERMINATION, DEVICE 
+> >POWER etc.!
+> >ncr53c720-0: detaching...
+> >
+> >Now what do you thing foward pa20 or backward pa14?
+> >
+> Well:
+> hpalin login: root
+> Password:
+> Last login: Sun Sep 28 21:48:39 2003 on ttyS0
+> Linux hpalin 2.6.0-test5-pa14 #1 Sun Sep 28 22:10:24 CEST 2003 parisc 
+> GNU/Linux
+> 
+> So break is in patch...-pa14-pa18 (if I am lucky I could check it next 
+> week :) )
 
-站在窗前的女孩 
-不求夫君貌若高仓健，不嫌伴侣酷似潘长江。 
-心已累，身疲惫，错把心酸当琴弹 
-一杯茶，几本书，释然于手泪已流 
-但原两情相悦人长久，千里姻缘恩爱誓无休！ 
+OK.  Can you try applying the following patch to -pa18?  Note that
+applying this patch to the top of the tree will not work (you'd need an
+additional patch for that).
 
-站在窗前的女孩 
-03年8月28日泣书于广州 
-Email:cqnvhai@163.com 
-http://www.blogcn.com/blog/?u=cqnvhai
-
-
-父亲是一个好父亲。 
-父亲八岁那年被祖母带到法国去了，国内只留下一个祖父和一个跟父亲同父异母的伯父。母亲是定居当地多年的华人。父亲很爱母亲，母亲也很爱父亲。听父亲每一次讲到母亲时我总能感觉到那份深情那份眷恋。也是在我8岁那年，祖母和母亲出街失事于车祸。家庭的突然变故，母爱和情爱的痛失，给予了父亲沉重的打击，同时也是基于对故土祖父的思念，父亲带着我回到了中国长沙。 
-长大到现在，童年的法国和母亲在我的记忆里只是一个模糊而美丽的剪影。唯一印象最深的是看着母亲的相片，还能回忆起母亲站在我床前的微笑。父亲在我童年时问过我要不要新妈妈，我拒绝了。于是父亲便把他全部的梦想和希望寄托在他唯一的女儿身上！直到今天我才真正理解父亲和我在长沙的十五年来，父亲之所以不再重新结婚，是因为对于母亲深深的眷恋和刻骨铭心的感情誓言。十五年来，父亲整整为母亲守寡了十五年，父亲也从一个中年男人变成了一个老人。父亲是一个性情中人，父亲也是一个有情守信的人。对于好赌的祖父和陌生的伯父父亲也给予了尽可能的帮助。可是我从来都不喜欢去祖父家，十五年来我只去过四次，后两次都是父亲拖着去的。 
-曾经问过父亲我是不是一个很奇怪的女孩，父亲微笑着告诉我：你一点都不奇怪，你只是一个多愁善感的天才。没有人能够象你这样真正读得懂花儿为什么会盛开，没有人能够象你这样真正明白蝴蝶为什么会在蜘蛛网上纠缠，也从来没有人能够象你这样从小到大始终坚信圣诞老人的存在。这些都是你的优点你不要轻易的丢开，爸爸为有你这样的女儿而高兴自豪。 
-是的，我是一个不合群跟别人不一样的奇怪女孩，坐在父亲的车里我会看着窗外的车牌算24发呆，看着城市的夜晚我能象倒着看报纸一样从另外一个角度看风彩，我总能在被人遗忘的世界里静静的找到自己的快乐伙伴。曾经跟着父亲到公司里去感觉除了人还是忙碌的人，我问父亲是不是以后我也要这样上班工作？父亲拍着我的肩膀说：你是上苍赐给我的天使，你不属于这个世界你是不需要工作的，爸爸会给你准备足够的钱，你只要做你喜欢做的事，你的快乐你的笑容就是爸爸最大的梦想，等你再大一点，爸爸还要把你所有的日记出版成书，你愿意吗？我愿意，我答。 
-感谢父亲让我衣食无忧，感谢父亲让我从来没有为钱而发愁，感谢父亲给了我一个快乐的大花园，父亲总是疼我宠我顺着我。但是今天这一切都已经不复存在。一个女孩，一个象我这样的女孩，一个脱离了父亲的爱自己整个世界就会被溃灭的女孩，梦已残，花已败，这可是来自天国的召唤？半年来，整理父亲的遗物和自己的日记，此间创伤感慨又有谁能够真正明白？我终于明白我是父亲所有的梦想和希望所在，对于父亲最好的回报和尽孝就是蕃衍后代找到另外一半，并且让自己快乐的生活下去。 
-站在窗前的女孩经历就是这样简简单单。就是这样一个女孩总是那么稀奇古怪，就是这样一个女孩总会别出心栽，虽然不会热锅做饭不会穿衣打扮，虽然不解人情世故不懂油盐米醋，只因为这一切更已成习惯！ 
-有心改，改不难，就让我放弃梦里的沙滩为您精心打扮，就让我学会人情世故听从您美丽的安排。站在窗前美丽的女孩，有谁愿意为这样一个女孩三千宠爱？有谁愿意为这样一个女孩放弃现在去追求另外一个精彩？有谁愿意为娶这样一个女孩确实今生无憾？茫茫的人海请告诉我最真实的答案！ 
-心已累，体更惫，流落广州，食宿困难，难道这些真的是来自天国的召唤？？ 
-
-站在窗前的女孩刘云 
-03年9月1日清晨迷茫于广州 
+Index: sym53c8xx_defs.h
+===================================================================
+RCS file: /var/cvs/linux-2.6/drivers/scsi/sym53c8xx_defs.h,v
+retrieving revision 1.4
+retrieving revision 1.3
+diff -u -p -r1.4 -r1.3
+--- sym53c8xx_defs.h	24 Sep 2003 02:43:42 -0000	1.4
++++ sym53c8xx_defs.h	11 Sep 2003 18:50:08 -0000	1.3
+@@ -497,10 +554,20 @@
  
+ #else
  
-又是在衷心的期待，又是在人海寻找答案。昨天还是阳光灿烂，今天就乌云不散，广州的天说变就变，台风说来就来。就是这样一个夜晚，刘云能做什么？流落广州，生活举步艰难，手机也卖了，下一次我还能卖什么？从小娇生惯养，从小不知钱为何物，从小就以为钱就是卡里面用不完的钞票。随着父亲的离去，父亲给的卡里就再也没有钱吐出来。是的，父亲太爱我了，因为我不喜欢陌生人，所以父亲也从来不会把陌生人包括他公司里的人带回家；因为我太孤僻，所以从女中到大学，我也没有什么知心的同窗好友。我总是一个人默默的生活在自己的世界里，看着蜂花雪月，看着小树发芽，从中写下对于生命满心的赞叹。 曾经也喜欢过一个男孩，但是他竟然不相信圣诞老人的存在，给他一张A4纸让他挖一个圆圈大到可以把两个人的脑袋装进去，他却不知道该怎么做，因此二十三年来都不曾谈过恋爱！ 
-是的。就是这样一个女孩，就是这样一个刘云，生活在梦里生活在与世隔绝的世界，面对今天的困境，父亲有错吗？他给我提供最好的生活保障，他让我做我喜欢做的事，难道这也有错吗？刘云又有错吗？刘云不喜欢吃鸡肉，只因为鸡肉会让刘云想起鸡被杀时鸡痛苦的眼泪，刘云看到街上坐在地上的老人，刘云会把身上所有的钱都给她。难道刘云所有的这一切都是错误的表现？因为刘云的眼睛里看到的世界都是倒立的汽车、倒立的楼房、倒立的人、我跟别人不一样，所以父亲认为我不属于这个世界、刘云能够给这个世界带来的是异于常人的思维和观点见解。因为这些父亲认为我能够按照自己的意愿去做事去生活是上苍赐给生命的最大报答。就是这样一个刘云，谁能告诉我刘云应该怎么做？ 
-十月，法庭审判的日子，刘云会以不记名的方式把父亲所有的财产捐赠给所有象刘云一样无依无靠需要帮助的善良的人。同样今天的刘云生活也很艰难也很需要帮助，刘云认为给所有善良的人们予以行善的机会，也是上苍赐给刘云的善举，刘云乐意以特别的思维从另一个视角去帮助那些有困惑的善良人，借此证明刘云存在的价值！ 
-衷心祝福所有善良的人们，感谢所有愿意帮助刘云的善良人，界时刘云会以特别的方式致以所有曾经帮助过刘云的人最神秘的礼物，那些好心的人、那些不会嘲笑那些能够理解圣诞老人存在的善良人！ 
-是的，站在窗前的女孩确实存在，刘云确实生活在这个现实的世界里，之所以您我不同是因为我们都没有站在窗外！是的，网络充满着陷阱和虚假，刘云也跟您一样寻找着真实的善良！ 
-
-站在窗前的女孩刘云 
-Email:cqnvhai@163.com 
-03年9月3日凌晨 无助于广州 
-
-
-是的，刘云的确是一个很奇怪的女孩子。
-听父亲说还在我3岁时我就很喜欢彩色画片，可是父亲却发现我总是把画片倒过来看，于是父亲就把画片转正过来给我看，可是我还是要倒过来看。父亲就怀疑我的眼睛出了毛病就带我去看医生。医生的结论是：孩子把图片倒过来看的现象，称为倒视。倒视是一种一时性生理现象，我们的眼球像一架照相机，外界物体的光线，经过聚焦后，在视网膜（相当于照相机的底片）上形成一个倒像。但是，这个倒像传导到大脑的视觉中枢，经过综合分析，倒像便被纠正了。3岁以下的幼儿，由于其大脑皮质功能尚未发育健全，缺乏完善的综合分析能力，所以他们看到的图像都是倒的，只有把画片倒过来看，才能感受到正位的物像。不过，这段时间很短，随着大脑皮质功能完善，倒视现象就自然而然消失了。
-可是这个时间对于刘云却是永远，直到今天刘云看世界，还是倒着的。倒着的房子、倒着的马路、倒着的行人、天空把一切往地上推，飞机掉在天空里，鸟儿在努力的摆脱天空的束缚，一切的一切在刘云看来总是与众不同。刘云甚至不能分辨出上下左右，刘云过马路较常人都会是一个危险的举动，很多事情在常人看来是理所当然的事情，可是刘云会有不同的看法。也许这就是刘云的特别，也许这就是刘云多愁善感的由来。刘云知道自己不适合工作，跟其他人唱反调是不适合工作的。
-就是这样的一个刘云，谁能告诉我我能做什么？谁能告诉我我该怎么做？就是这样一个活生生的刘云，到底该何去何从？失去父亲的日子，有谁能够理解有谁愿意相信有谁愿意呵护有谁愿意宠爱？就是这样的一个女孩，就是这样一个奇怪的女孩，确实活生生的存在！
-心累了，流落广州确实累了，用尽了盘缠，哪里是港湾？哪里是归宿？
-当失落的时候、当伤心的时候、当彼临绝望的时候，您我相同的地方也许都会把希望寄托给未来，未知的未来！是的站在窗前的女孩在苦苦的寻找答案！
-
-站在窗前的女孩刘云
-03年9月7日深夜于广州
-
-
-狼行成双，母狼只为公狼而存在！刘云知道取悦于所有的人是不可能的，在这个世界只要有一两个人欣赏就已足够！人生活在世上目的何在意义何在？一个人再怎么能干再怎么强悍，都是希望能够得到社会和他人的认同，特别是自己喜欢的自己深爱的人的认同和欣赏,所以才会有霸王别姬、孟姜女千里寻夫的千古传奇！但问题是通过什么样的方式和渠道找到这个人找到自己值得一生付出的最爱？如果只是等待自己不经意间的回睦、幻想着自己一个偶然的邂逅，虽然此间情景很美，但对于刘云这样一个不长于社会活动的人却不合适。刘云知道自己的长处和短板！刘云只是想找一个能够欣赏自己认同自己的人信守一生，刘云愿意为这样一个男人奉献所有而无怨无悔，刘云心中装着的只是痴情和感恩！
-是的刘云很美。刘云有超乎您想象的美丽容颜！但是刘云认为再美的容颜都会有衰老的一天，再美的容颜也只是美丽的皮囊下面包着的类似的血和肉，惟有不老的只是您的思想您的个性才是真正值得欣赏和留恋的地方。
-这半个月来刘云把自己部分的日记挂在网上，刘云收到了众多的邮件和BBS留言，更多的人是怀疑和漫骂，当然也不乏一些善良人的真诚祝福和关心。在此刘云向所有阅读过刘云故事的人表示衷心祝福和感谢，无论曾经是关心还是漫骂！刘云希望能够跟那些善良的人那些关心过刘云的人做朋友，刘云也渴望能够帮得到朋友一些忙证明自己的价值，因为刘云的思想，因为刘云没有阻拦的逆向空间的想象。 
-刘云再次重申刘云不是骗子！刘云也不是在做人性的测试，刘云确实生活在我们同一个世界！刘云之所以给出父亲的帐号确实是因为刘云需要帮助，刘云只是认为给所有善良的人们予以行善的机会，也是上苍赐给刘云的善举，刘云希望人与人之间多一些宽容和理解、多一些真诚和爱。送人玫瑰手留余香！阁下请尊重您的看法和发言，因为这也是您为人处世您的思想表率，如果您是一个负责的人的话。人生本来就是一个矛盾的人生，天地之间的事物本来就是一个矛盾的集合，仁者见仁智者见智,风过去街上干干净净；大浪淘沙留下的就是值得刘云千年等待的人。善良？门槛？胆识？思想？信仰？您能够承受得起人生众多的考验吗？
-现在的刘云的确很需要帮助。请所有帮助过刘云的人Email留下大名电话和还款帐号，界时刘云会以特别的方式致以所有曾经帮助过刘云的人最神秘的礼物!
-招商银行一卡通帐号：9555 5020 0150 9251 父亲的开户名：刘忆湘 
-
-站在窗前的女孩刘云
-03年9月24日凌晨于广州
-Email:cqnvhai@163.com
-http://www.blogcn.com/blog/?u=cqnvhai  
++#ifdef CONFIG_SCSI_NCR53C8XX_NO_WORD_TRANSFERS
++/* Only 8 or 32 bit transfers allowed */
++#define INW_OFF(o)		(readb((char *)np->reg + ncr_offw(o)) << 8 | readb((char *)np->reg + ncr_offw(o) + 1))
++#else
+ #define INW_OFF(o)		readw_raw((char *)np->reg + ncr_offw(o))
++#endif
+ #define INL_OFF(o)		readl_raw((char *)np->reg + (o))
  
++#ifdef CONFIG_SCSI_NCR53C8XX_NO_WORD_TRANSFERS
++/* Only 8 or 32 bit transfers allowed */
++#define OUTW_OFF(o, val)	do { writeb((char)((val) >> 8), (char *)np->reg + ncr_offw(o)); writeb((char)(val), (char *)np->reg + ncr_offw(o) + 1); } while (0)
++#else
+ #define OUTW_OFF(o, val)	writew_raw((val), (char *)np->reg + ncr_offw(o))
++#endif
+ #define OUTL_OFF(o, val)	writel_raw((val), (char *)np->reg + (o))
  
+ #endif
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
