@@ -1,51 +1,57 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7EBCE482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 12:53:39 -0600 (MDT)
-Message-Id: <200110111850.MAA29903@puffin.external.hp.com>
-To: Richard Allen <ra@hp.is>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] B2000 
-In-Reply-To: Message from Richard Allen <ra@hp.is>
-   of "Thu, 11 Oct 2001 16:47:35 -0000." <20011011164735.I4861@hp.is>
-Date: Thu, 11 Oct 2001 12:50:20 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from smtpzilla5.xs4all.nl (smtpzilla5.xs4all.nl [194.109.127.141])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D782482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 12:56:18 -0600 (MDT)
+Received: from rivierenland.xs4all.nl (rivierenland.xs4all.nl [194.109.14.47])
+	by smtpzilla5.xs4all.nl (8.12.0/8.12.0) with ESMTP id f9BIuLav083640
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 11 Oct 2001 20:56:21 +0200 (CEST)
+From: thunder7@xs4all.nl
+Date: Thu, 11 Oct 2001 20:56:09 +0200
+To: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] FW: SKB errors
+Message-ID: <20011011205609.A13259@middle.of.nowhere>
+Reply-To: thunder7@xs4all.nl
+References: <1A8904C3797ED411AC2E0008C7E6F88117C9E8@nlntmail2b.ats.nld.alcatel.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1A8904C3797ED411AC2E0008C7E6F88117C9E8@nlntmail2b.ats.nld.alcatel.nl>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Richard Allen wrote:
-> I just got a B2000 in and I decided to test it with Linux.
+On Tue, Oct 09, 2001 at 07:53:07AM +0200, Witvliet, Hans wrote:
+> Hi All,
 > 
-> The B2000 is a strange beast.  It's got USB keyboard and mouse.
-> It has a IDE cdrom drive.
+> Yesterday I received a (old but unused) 712/100 and tried to install the
+> latest cd (0.9.2)
+> 
+> All went reasonably well but after some time I got a very annoying lot of
+> error messages:
+> 
+> ip_local_deliver: bad loopback SKB PRE_ROUTING LOCAL_IN
+> SKB: pf=2 (unowned) dev=lo len=328
+> Proto=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+> 
+> These three lines appear every minute or so.
+> 
+> So I have a couple of questions:
+> 1)	What's going on? it seems that the device driver for the loopback
+> interface has a problem with its (linked-list) buffers
 
-Yup. none of which is supported yet.
-USB support is almost ready.
-I need to look at IDE-CDROM support because of issues
-with the IDE drivers and DMA. I've got a pile of other
-things on my todo list as well so this may take a while.
+this has something to do with the dhcp-client, that is started
+erroneously.
 
-> The 0.92 iso began booting and loaded the kernel.   It's console (B2000
-> is a workstation with a graphical console) went blank and the screen went
-> into powersaving mode.
+> 
+> 2)	How to get rid of it? switching consoles is no use: they haunt me
+> everywhere ;-)
 
-You need to use serial console and boot via LAN and setup
-an NFS root to install on a local HD. Lack of CD-ROM support,
-issues with SE SCSI on those boxes, and no testing of sticons
-(console driver for graphics head) makes installing from CD somewhat
-unatractive on that generation of workstation. But several folks
-(including me) are running parisc-linux on C3000, J5000, and J7000
-machines. It's just not easy to install yet.
+killall dhcp to stop it now, then rm /etc/rc?.d/*dhcp* to stop it after
+the next reboot.
 
-> Judging by the front panel LCD, things went very bad ;)   It was cycling
-> through many HPMC and FLT codes.
+There is something to be said for downloading or using the archives of
+this mailing-list, they provide a wealth of information :-)
 
-Could be any one of the unsupported devices or bugs in the older kernel.
-
-There is talk of a 0.9.3 ISO but no plan of when to release it.
-I'd expect in the next month or so.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Good luck,
+Jurriaan
+-- 
+As of next week, passwords will be entered in Morse code.
+GNU/Linux 2.4.10-ac10 SMP/ReiserFS 2x1402 bogomips load av: 0.01 0.09 0.06
