@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 35FDB4925
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 05:53:18 -0600 (MDT)
-Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
-	by csmail.ucc.ie (8.11.3/8.11.3/SuSE Linux 8.11.1-0.5) with ESMTP id h7QBrD901662
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 12:53:14 +0100
-Date: Tue, 26 Aug 2003 12:53:13 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64EB648BE
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 07:46:06 -0600 (MDT)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali)
+	id 19re68-0007Z0-00
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Aug 2003 15:43:00 +0200
+Date: Tue, 26 Aug 2003 15:46:04 +0200
+Message-ID: <3F2A5B0400005E92@ocpmta1.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0308261249040.6850-100000@sal.ucc.ie>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] C3000 and ...
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] linux-2.4.22-pa1 small pb
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,10 +24,6 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-... sorry for the collection of typos in my last mail, but the network
-connection in our university is VERY bad lately (probably due to the virus
-attacks). I was disconnected 11 times from the mail servere while writing
-the last mail :(
+Hi all,
 
-Apologies,
-  Max
+Here is a small but anoying pb with serial console.
