@@ -1,44 +1,60 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C5934A19
-	for <parisc-linux@parisc-linux.org>; Thu, 22 Feb 2001 23:23:58 -0700 (MST)
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id DEDE3D11
-	for <parisc-linux@parisc-linux.org>; Thu, 22 Feb 2001 22:23:52 -0800 (PST)
-Message-Id: <200102230626.WAA20515@milano.cup.hp.com>
-To: Matthew Wilcox <willy@ldl.fc.hp.com>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] Fix HPUX fork 
-In-reply-to: Your message of "Thu, 22 Feb 2001 21:46:13 PST."
-             <E14WA7R-0004qy-00@chrysl>
-Date: Thu, 22 Feb 2001 22:26:47 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 83BEF4A19
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 01:58:16 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14WE3L-0004R7-00
+	for parisc-linux@parisc-linux.org; Fri, 23 Feb 2001 08:58:15 +0000
+Date: Fri, 23 Feb 2001 08:58:15 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20010223085815.B16261@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] parisc64 vs kernel64
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matthew Wilcox wrote:
-> -		cregs->kpc = &child_return;
->  		cregs->gr[30] = usp;
-> +		if (p->personality == PER_HPUX) {
-> +			cregs->kpc = &hpux_child_return;
-> +		} else {
-> +			cregs->kpc = &child_return;
-> +		}
+I wonder if we're doing this right, having parisc and parisc64 as
+different architectures.  They're fundamentally similar than sparc/sparc64
+or mips/mips64 are.  We have very few files in parisc64 (the rest are
+made visible to the build system by creating symlinks to their equivalent
+in parisc).
 
-Matthew,
-In general, branches hurt performance on RISC archs.
-Could the code be structured something like:
+Excluding Makefiles, we have:
 
-	cregs->kpc = child_return_ftn[p->personality];
-or 
-	cregs->kpc = personality_data[p->personality].child_ret_ftn;
+kernel/binfmt_elf32.c
+kernel/sys32.h
+kernel/head.S
+kernel/ioctl32.c
+kernel/lasimap.map
+kernel/pdcpat.c
+kernel/signal32.c
+kernel/sys_parisc32.c
+real/head.S
 
+I'm 99% sure we don't use real/head.S any more.  Or kernel/lasimap.map.
+So how about moving the rest to parisc/kernel64?  We'd select between
+them with something like:
 
-For PARISC-linux, do we need more personalities for wide-mode or SOM support?
-If so, then indexing is probably a better solution.
+make config
+[...]
+*
+* Processor type and features
+*
+Processor family (PA1.1, PA2.0, PA2.0Wide) [PA1.1] 
 
-thanks,
-grant
+i think it might make maintenance easier, and possibly alan/linus would
+be more willing to take this than the current do_links based situation.
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+alternatively, maybe we should scrap all the #ifdef __LP64__ stuff from
+our current files, duplicate large parts of them and populate parisc64
+properly.  i think this current situation is the worst of both worlds
+in that it's quite easy to forget about parisc64 when fiddling with
+something in the parisc directory.
+
+i favour moving the files to parisc/kernel64, but i'm interested in
+hearing other points of view, including `stop messing about'.
+
+-- 
+Revolutions do not require corporate support.
