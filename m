@@ -1,41 +1,73 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA04395
-	for <parisc-linux@puffin.external.hp.com>; Tue, 5 Sep 2000 23:05:35 -0600
-Message-Id: <200009060508.WAA24577@milano.cup.hp.com>
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] entry.S Invalid operands 
-In-reply-to: Your message of "Wed, 06 Sep 2000 15:48:54 PDT."
-             <Pine.LNX.4.21.0009061542070.22521-100000@front.linuxcare.com.au>
-Date: Tue, 05 Sep 2000 22:08:45 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA19073
+	for <parisc-linux@puffin.external.hp.com>; Wed, 6 Sep 2000 09:24:51 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 6 Sep 2000 15:25:05 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id CAA07553;
+	Thu, 7 Sep 2000 02:24:42 +1100
+Date: Thu, 7 Sep 2000 02:24:42 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: binutils@sourceware.cygnus.com
+cc: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.21.0009070151400.22521-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] elf32.em place_orphan segfault
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra wrote:
-> On Tue, 5 Sep 2000, Grant Grundler wrote:
-> Well, some should have updated as I did another merge a few hours
-> ago.  The previous merge was at a bad time, with some configure files
-> broken.
+While fiddling with the new "ld --unique" option, I managed to crash the
+linker.  You have to try fairly hard, but using a custom link script with
+a .text output section that doesn't match the first input .text section
+does the trick.  Without --unique you'd need to try even harder with
+unusual section flags to get the crash.
 
-More than about 30-50 files?
-I didn't count but it was far more than my 24 line screen.
+Anyway, this patch fixes the problem, and improves link times too.
 
-After rebuilding the binutils/gcc for XC, I can now build kernels again.
+ld/ChangeLog
+	* emultempl/elf32.em (gld${EMULATION_NAME}_place_orphan): Don't
+	try shuffling sections when the orphan happens to be the place
+	holder.  Keep count of unique section names generated so we speed
+	the search for a new name.
 
-> The other likely possibility is that objects aren't being rebuilt even
-> when source files are newer.  Dependency information in binutils might be
-> wrong, or your version of make broken.
+Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
 
-The former is possible though I had rebuilt from scratch.
-
-I had to upgrade make to a newer version since gcc or binutils config
-stops if make isn't at least version 3.78. I have 3.78.1.
-Did that a few days ago...after dhd pointed out the obvious
-config error.
-
-thanks!
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Index: emultempl/elf32.em
+===================================================================
+RCS file: /cvs/src/src/ld/emultempl/elf32.em,v
+retrieving revision 1.32
+diff -u -p -r1.32 elf32.em
+--- elf32.em	2000/09/05 03:05:19	1.32
++++ elf32.em	2000/09/06 14:50:13
+@@ -1008,6 +1008,7 @@ gld${EMULATION_NAME}_place_orphan (file,
+   static struct orphan_save hold_bss;
+   static struct orphan_save hold_rel;
+   static struct orphan_save hold_interp;
++  static int count = 1;
+   struct orphan_save *place;
+   lang_statement_list_type *old = NULL;
+   lang_statement_list_type add;
+@@ -1092,7 +1093,9 @@ gld${EMULATION_NAME}_place_orphan (file,
+      loadable or allocateable characteristics.  */
+   outsecname = secname;
+   if (bfd_get_section_by_name (output_bfd, outsecname) != NULL)
+-    outsecname = bfd_get_unique_section_name (output_bfd, outsecname, NULL);
++    outsecname = bfd_get_unique_section_name (output_bfd,
++					      outsecname,
++					      &count);
+ 
+   if (place != NULL)
+     {
+@@ -1154,7 +1157,9 @@ gld${EMULATION_NAME}_place_orphan (file,
+       stat_ptr = old;
+ 
+       snew = os->bfd_section;
+-      if (place->os->bfd_section != NULL || place->section != NULL)
++      if (place->section != NULL
++	  || (place->os->bfd_section != NULL
++	      && place->os->bfd_section != snew))
+ 	{
+ 	  /* Shuffle the section to make the output file look neater.  */
+ 	  if (place->section == NULL)
