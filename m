@@ -1,38 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA32571
-	for <parisc-linux@puffin.external.hp.com>; Thu, 20 Jul 2000 02:22:12 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 20 Jul 2000 08:23:55 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id SAA24770;
-	Thu, 20 Jul 2000 18:23:38 +1000
-Date: Thu, 20 Jul 2000 18:23:38 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA04445
+	for <parisc-linux@puffin.external.hp.com>; Thu, 20 Jul 2000 08:35:10 -0600
+From: Helge.Deller@ruhr-uni-bochum.de
 To: parisc-linux@thepuffingroup.com
-cc: lrisc-Linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Anonymous CVS out of sync ?
-In-Reply-To: <20000720090508.A28972@grccd310.grc.hp.com>
-Message-ID: <Pine.LNX.4.21.0007201806550.12268-100000@front.linuxcare.com.au>
+Subject: Re: [parisc-linux] HIL support on 715/old ?
+Date: Thu, 20 Jul 2000 16:27:06 +0200
+Content-Type: text/plain
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Message-Id: <00072016270600.11517@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 20 Jul 2000, Ingo Matthaes wrote:
+Hi Brian,
 
-> I wasn´t able to sync my tree with puffin´s since a couple of
-> days. Especially I am missing amodras binutils-2.10 commits.
-> I there a special tag for the latest changes ?
+Am Wed, 19 Jul 2000 schrieb Brian S. Julin:
+> I haven't had the time yet to look at the code, which
+> I really honestly truthfully do hope to work on :-),
 
-You've been peeking at the cvs commits? :-)  That should have told you
-that the tag is "shared".
+That would be great.
+Since I'm moving to a new town, I won't have time in the next 2-3 weeks.
 
-I wasn't going to make any public announcements here yet, as the PIC and
-shared library stuff is still highly experimental (ie. doesn't work).
-Don't switch to the "shared" tag unless you enjoy fixing bugs, and bugs of
-the design variety rather than just simple typos/oversights.  For
-instance, today I've been busy redoing the .plt handling which was
-completely broken.
+> but someone at some point fixed it for the 715/64,
+> which meant changing HIL_BASE.
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+Yes, that was me. In the current code HILBASE refers to the variable hil_base
+from drivers/gsc/hil.c. The address of the HIL-controller is
+automatically set there by the detection routines.
+
+> Someone else mentioned
+> that there's no PCIish bus/device tree yet, so maybe they j
+> ust re#defined it rather than probing.
+
+No. The base-address is taken from the parisc-hw-tree. But maybe the choosen
+interrupt-line is wrong for 715/old.
+The HIL-bus itself has no PCIish tree (I mean: a list of the attached 
+devices) yet.
+
+> The 715/64 used to
+> hang there and it was because the HIL_BASE was wrong.
+
+Hmmm. ?
+My 715/64 used to work with HIL-keyboard (keys come through, but the
+translataion was wrong), but I haven't tested it in the last few weeks.
+
+Helge Deller.
