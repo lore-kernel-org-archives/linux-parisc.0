@@ -1,18 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.zigoo.net (e146.dhcp212-198-142.noos.fr [212.198.142.146])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9FA5A4829
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  4 Jan 2003 11:35:26 -0700 (MST)
-Date: Sat, 4 Jan 2003 19:35:15 +0100
-From: Thibaut VARENE <varenet@esiee.fr>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 99D634829
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  4 Jan 2003 12:38:22 -0700 (MST)
+Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
+	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id h04JcFot016389
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 4 Jan 2003 14:38:16 -0500 (EST)
+Received: (from dave@localhost)
+	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) id h04JcFLn016387
+	for parisc-linux@lists.parisc-linux.org; Sat, 4 Jan 2003 14:38:15 -0500 (EST)
+Message-Id: <200301041938.h04JcFLn016387@hiauly1.hia.nrc.ca>
 To: parisc-linux@lists.parisc-linux.org
-Cc: stevec@bullseye.com
-Subject: Re: [parisc-linux] B1000 Debian 3.0r1 High-Priority Machine Check
-Message-Id: <20030104193515.19808d5a.varenet@esiee.fr>
-In-Reply-To: <000001c2b41c$37348cf0$a87ba8c0@steve>
-References: <20030104015526.GB29245@dsl2.external.hp.com>
-	<000001c2b41c$37348cf0$a87ba8c0@steve>
-Mime-Version: 1.0
+Date: Sat, 4 Jan 2003 14:38:15 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] do_page_fault() infinite loop running 2.4.20-pa18 #9 SMP
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,34 +26,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, 4 Jan 2003 10:07:59 -0800
-"Steve Cornett" <stevec@bullseye.com> wrote:
+This has been around for awhile.  When using a SMP configuration, the
+program expect "causes" a segmentation fault that results in do_page_fault()
+going into an infinite loop.  The log data repeats indefinitely and
+eventually fills /var.  For some reason, expect is not killed by the kernel
+when this happens, although the loop can be broken by manually killing it.
 
-> > Steve, can you try the beta Boot Floppies?
-> My B1000 cannot seem to boot from floppy.  I verified my floppy drive
-> works from HP-UX.  When I use the firmware command "boot floppy" I
-> immediately get the error shown below, without an attempt to read from
-> the floppy drive.
-Of course, there is no floppy support.
-
-The "Boot Floppies" are the "boot images" if you prefer. They can be used on CD or any other media support.
-
-Perhaps you should take a look at the PA-RISC/Linux Boot HOWTO:
-http://pateam.esiee.fr/doc.html
-
-You'll find there useful info on various way to boot Linux on an hppa box (like from network, which is what I would recommend here).
-
-Can you eventually try one of the 2.4.19 ISO or lifimage that you can find there:
-http://pateam.esiee.fr/cd-images/testing/
-http://pateam.esiee.fr/cd-images/lifimages/
-
-Those are known to work on B1000. If they fail, then we may start looking for a problem related either to 3.0r1 CD or to your box (specific configuration ?)
-
-HTH,
-
-Greetings,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
