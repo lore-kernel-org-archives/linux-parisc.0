@@ -1,37 +1,32 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA09316
-	for <parisc-linux@puffin.external.hp.com>; Sun, 27 Jun 1999 23:17:14 -0600
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id BAA06360
-	for <parisc-linux@thepuffingroup.com>; Mon, 28 Jun 1999 01:26:51 -0400
-Sender: adevries@feather.thepuffingroup.com
-Message-ID: <37770796.C70E0C65@thepuffingroup.com>
-Date: Mon, 28 Jun 1999 01:26:46 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA10587
+	for <parisc-linux@puffin.external.hp.com>; Mon, 28 Jun 1999 09:14:37 -0600
+Message-Id: <199906281452.KAA15264@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] parisc-linux-ld
+To: deller@gmx.de (Helge Deller)
+Date: Mon, 28 Jun 1999 10:52:21 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: adevries@thepuffingroup.com, parisc-linux@thepuffingroup.com
+In-Reply-To: <3774EF94.C57237A5@gmx.de> from "Helge Deller" at Jun 26, 99 05:19:48 pm
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Dino and Lasi
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
+> If I would have such an patched linker, I maybe could try make the
+> cross-compiled ELF-binary bootable.....
 
+Work has started to rewrite the hppa elf tools (gcc and binutils).
+However, Jeff Law has indicated that the relocations done by ld
+have a lot of bugs.  He has strongly recommended that the elf tools
+not be used until the rewrite is complete.  However, having said
+that, it would be useful to develop an ipl that could load an elf
+kernel.
 
-Okay, I've committed some small changes to dino and lasi that can easily
-be backed out.
+With ld, the text origin can be set with "-Ttext address" or using
+a loader script (see arch/parisc/hp/vmlinux.lds).  The headers
+describing the elf format can be found in binutils/include/elf.
 
-some questions:
-
-- what IRQ are we going to run LASI on?  Is that something we just pick
-and hard code?
-
-- I changed lasi.c and dino.c to only use readl() and writel(), and not
-readb and writew, etc.  Was this a mistake?
-
-- We really really need the IRQ bottom halfs setup.  Any takers?
-
-- Alex
-
+Dave
 -- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
