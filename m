@@ -1,16 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4DA8D482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Jan 2003 06:03:48 -0700 (MST)
-Date: Thu, 30 Jan 2003 14:03:43 +0100
-Message-ID: <3E35C33F00000B40@ocpmta3.freegates.net>
-In-Reply-To: <3E35C33F00000975@ocpmta3.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] Issues with seteuid()?
-To: "Randolph Chung" <tausq@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from mail.goquest.com (ns1.goquest.com [12.18.108.6])
+	by dsl2.external.hp.com (Postfix) with SMTP id 920B5482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 30 Jan 2003 07:51:41 -0700 (MST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Michael S.Zick <mszick@goquest.com>
+To: "Beerse, =?iso-8859-1?q?Corn=E9?=" <c.beerse@torex-hiscom.nl>,
+	"'jsoe0708@tiscali.be'" <jsoe0708@tiscali.be>,
+	grundler@dsl2.external.hp.com
+Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
+Date: Thu, 30 Jan 2003 08:45:46 -0600
+Cc: Ed Schaller <schallee@darkmist.net>,
+	parisc-linux@lists.parisc-linux.org
+References: <03Jan30.121351cet.119060@ns.hiscom.nl>
+In-Reply-To: <03Jan30.121351cet.119060@ns.hiscom.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Message-Id: <03013008454600.00780@localhost.localdomain>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,34 +27,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-PA,
->...
->>> cpu time             (seconds, -t) unlimited
->>> max user processes            (-u) 20
->>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->>> virtual memory        (kbytes, -v) unlimited
->>
->>That's the reason..... if you do 'ulimit -u unlimited' (or at least a
->>bigger number) you should be ok.
->>
->ulimit -u unlimited 
+On Thursday 30 January 2003 04:59 am, Beerse, Corné wrote:
+> Why did nobody point to the hardware database:
+> http://hwdb.parisc-linux.org/
 >
->(just for fun I can download to 64 for this test case; is there any means
->to determine a reasonnable value (unstable seems to set it to 999)?)
+> There are some users of a D210 reported there:
+> http://hwdb.parisc-linux.org/view.php3?type=machine&name=D210
 >
+> They will know some ins and outs.
 >
->PS: Where is defined this default?
->
-It seems to be my bad ;_().
-It appears in my own apt-get update Log that I use the default (ie N) when
-the update procedure of 'libpam-modules' dpkg proposed me to change '/etc/security/limits.conf.
+> CBee
+Good point...
 
-Sorry and thanks again for your support,
+Perhaps because it is refered to as a "hardware database" ?
+Using something called a "hardware database" to find persons
+experienced in a certain machine can indeed be very helpful;
+but not an obvious use going by its name.
 
-Joel
+"tweaking" a web page or two to make this usage clear
+to the newcomer might help.
 
+Who would be a good contact for such a change?
 
-*********************************************
-Vous surfez toujours avec une ligne classique ?
-Faites des economies avec Tiscali Complete...
-Plus d'info sur ... http://complete.tiscali.be
+Mike
