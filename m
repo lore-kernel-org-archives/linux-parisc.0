@@ -1,31 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA25631
-	for <parisc-linux@puffin.external.hp.com>; Thu, 24 Aug 2000 07:47:51 -0600
-Received: from user49-45.jakinternet.co.uk (HELO rhirst.linuxcare.com) (@212.41.49.45)
-  by mailserv2.iuinc.com with SMTP; 24 Aug 2000 13:47:45 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id BD4C0B005; Thu, 24 Aug 2000 14:46:17 +0100 (BST)
-Date: Thu, 24 Aug 2000 14:46:17 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Paul Bame <bame@noam.fc.hp.com>
-Cc: David Huggins-Daines <dhd@linuxcare.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 2.4.0-test6 lack of speed
-Message-ID: <20000824144617.K4060@linuxcare.com>
-References: <20000822153803.U4060@linuxcare.com> <20000822155221.W4060@linuxcare.com> <20000822165047.X4060@linuxcare.com> <87n1i5wabx.fsf@linuxcare.com> <20000823172320.E4060@linuxcare.com> <E13RdXZ-0003Lz-00@noam.fc.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA26239
+	for <parisc-linux@puffin.external.hp.com>; Thu, 24 Aug 2000 08:47:20 -0600
+Message-ID: <39A53321.F2860574@home.com>
+Date: Thu, 24 Aug 2000 09:37:21 -0500
+From: Matthew Hudson <mhudson@home.com>
+MIME-Version: 1.0
+To: Richard Hirst <rhirst@linuxcare.com>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: U2/Uturn stuff.
+References: <39A3F01B.E042265D@home.com> <200008231606.JAA11784@milano.cup.hp.com> <20000824095542.G4060@linuxcare.com>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E13RdXZ-0003Lz-00@noam.fc.hp.com>; from bame@noam.fc.hp.com on Wed, Aug 23, 2000 at 10:38:13AM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Aug 23, 2000 at 10:38:13AM -0600, Paul Bame wrote:
+
+You people wanna give a guy a chance to learn the architecture?
+:-)
+
+-Matt
+(Maybe I'll eventually get a chance to actually write some
+code before someone else does it first. :-)
+
+Richard Hirst wrote:
 > 
-> jsm explained to me that the F?CE and P?TLBE instructions should
-> only be used "for flushing the entire data or combined cache".
-> The operands of F?CE/P?TLBE are "an implementation-dependent function
-> of the effective address", essentially an opaque data type that
-> varies per processor.  The operand of F?C/P?TLB is a virtual address,
-> so is the right thing to use for flushing a range of addresses.
-
-OK, thanks.  We use F?CE/P?TLBE in cache.h atm.
-
-Richard
+> On Wed, Aug 23, 2000 at 09:06:51AM -0700, Grant Grundler wrote:
+> > Changes to lasi LAN (82596?) and cache flushing code are also
+> > needed to make the system usable.
+> 
+> The lasi_82596.c changes are now committed.
