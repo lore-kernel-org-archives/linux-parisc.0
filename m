@@ -1,30 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 14E2D482A
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 03:37:32 -0600 (MDT)
-Received: from hpuxsrv.india.hp.com (hpuxsrv.india.hp.com [15.10.45.132])
-	by palrel2.hp.com (Postfix) with ESMTP id 4C6581452
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 02:37:28 -0700 (PDT)
-Received: from india.hp.com (jdp@ob47143.india.hp.com [15.10.47.143]) by hpuxsrv.india.hp.com with ESMTP (8.8.6 (PHNE_17135)/8.8.6 SMKit7.02) id PAA17752 for <parisc-linux@parisc-linux.org>; Fri, 1 Jun 2001 15:04:37 +0530 (IST)
-Sender: jdp@india.hp.com
-Message-ID: <3B176267.62E08C3A@india.hp.com>
-Date: Fri, 01 Jun 2001 15:07:43 +0530
-From: Jayadeep Purushothaman <jdp@india.hp.com>
+Received: from mailer.berkom.de (mailer.berkom.de [141.39.13.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9085482C
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  1 Jun 2001 04:53:30 -0600 (MDT)
+Received: from peelnb (peel-nb.berkom.de [141.39.12.118])
+	by mailer.berkom.de (8.11.2/0.0.0) with SMTP id f51ArQV00079
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 1 Jun 2001 12:53:26 +0200 (MET DST)
+From: "Nicolai Leymann" <n.leymann@berkom.de>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Fri, 1 Jun 2001 12:54:10 +0200
+Message-ID: <NDBBKPOMPCLCKIFPPHMNKEBKCOAA.n.leymann@berkom.de>
 MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: Version 0.9 of PA-RISC Linux Released
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] palinux 0.9 on 715/64 STI
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+Dear all,
 
-Is there a way someone can ship a CD for me? I am in India, so trying to
-download the ISO images will take way too much bandwidth.
+I've downloaded the palinux 0.9 STI image and tried to install
+it on my 715/64 (the 0.6.1 STI release runs fine). But during
+booting from the CD the system hangs with the following messages:
 
-Thanks,
-Jayadeep
+  Warning: unable to open an initial console
+  loop: enabling 8 loop devices
 
-Jayadeep Purushothaman,
-Hewlett Packard (ISO),
-29, Cunningham Road
-Bangalore - 52
+And thats it. Any ideas? Is it possible that the images tries
+to open an serial console (which is not connected)?
+
+   Nic
+
+--
+Nicolai Leymann                   Mail:   nicolai.leymann@telekom.de
+T-Nova Berkom                     Phone:  ++49-30-34973570
+IP-Technologies, T33              Mobile: ++49-0170-2275345
+Goslarer Ufer 35, 10589 Berlin    Fax:    ++49-30-34973571
