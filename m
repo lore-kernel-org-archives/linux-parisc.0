@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailc.telia.com (mailc.telia.com [194.22.190.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 411AD482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Jan 2002 06:11:01 -0700 (MST)
-Received: from d1o999.telia.com (d1o999.telia.com [195.67.201.241])
-	by mailc.telia.com (8.11.6/8.11.6) with ESMTP id g0KDAuU20527
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Jan 2002 14:10:56 +0100 (CET)
-Received: from finkel (h186n1fls20o999.telia.com [213.64.112.186])
-	by d1o999.telia.com (8.10.2/8.10.1) with SMTP id g0KDAur27947
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Jan 2002 14:10:56 +0100 (CET)
-From: =?iso-8859-1?Q?Bj=F6rn_Bylander?= <bjorn.bylander@telia.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Sun, 20 Jan 2002 14:10:55 +0100
-Message-ID: <DLEJJFGDAJICFFBHFNCDAEAPCEAA.bjorn.bylander@telia.com>
+Received: from smtp.petescaff.com (petem.xs4all.nl [194.109.247.92])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29593482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Jan 2002 06:48:39 -0700 (MST)
+Received: from r6.petescaff.com ([192.168.0.3])
+	by smtp.petescaff.com with esmtp (Exim 3.33 #1)
+	id 16SIKp-0002yz-00
+	for parisc-linux@lists.parisc-linux.org; Sun, 20 Jan 2002 14:48:35 +0100
+Date: Sun, 20 Jan 2002 14:48:34 +0100 (CET)
+From: Peter Mottram <peter@petescaff.com>
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <DLEJJFGDAJICFFBHFNCDAEAPCEAA.bjorn.bylander@telia.com>
+Message-ID: <Pine.LNX.4.42.0201201438560.9287-100000@r6.petescaff.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Booting to ISL with Linux installed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] partitioned md to enable root on raid
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,22 +25,65 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+In order to use md on root devices with parisc there must be kernel
+support for partitioned md (due to F0 partition). This is of course not a
+requirement for i386 & the patch to enable this (which needs a new major
+number) has not been accepted.
 
-I recently acquired a HP 712/80 system. I've installed PA-RISC Linux =
-0.9.3 on it and it runs fine.
-I've got one problem though. I don't know how to get to ISL after I =
-installed Linux.
-The reason I want to use ISL is that I want to (try) to make the machine =
-use a serial console.
-Before I installed Linux the machine booted into ISL automatically as =
-the HD was wiped (or at least not bootable) but if I try to boot to ISL =
-now with 'boot pri isl' (from BOOT_ADMIN) I only get to the =
-'configuration mode' of PALO where you can enter the kernel and other =
-boot stuff.
+Is there any chance of adding this patch into parisc? Maybe due to the
+special requirements of parisc then Linus might eventually accept the
+requirement for this extra major number?
 
-All in all, how can I get to the ISL> prompt so that I can use 'conspath =
-2/0/4.0x283'?
+The current patch uses major 60 which is currently used by PDCONS. I am no
+kernel hacker and am uncomfortable simply adding this patch with a
+different major number.
 
-Thanks in advance,
-Bj=F6rn Bylander
+Can anyone see any reason to not simply change the major to 61? Does the
+patch look OK as it is for addition to parisc? (ignoring line numbers of
+course)
+
+PeteM
+
+the patch is from:
+http://cgi.cse.unsw.edu.au/~neilb/patches/linux/2.4.14/patch-J-MdpMajor
+
+and is:
+
+--- ./init/main.c       2001/11/06 04:43:07     1.1
++++ ./init/main.c       2001/11/06 04:43:12     1.2
+@@ -188,6 +188,24 @@
+        { "add",     0x1c30 },
+        { "ade",     0x1c40 },
+        { "fd",      0x0200 },
++#ifdef MDP_MAJOR
++       { "mda",     (MDP_MAJOR<<8) | 0},
++       { "mdb",     (MDP_MAJOR<<8) | 1},
++       { "mdc",     (MDP_MAJOR<<8) | 2},
++       { "mdd",     (MDP_MAJOR<<8) | 3},
++       { "mde",     (MDP_MAJOR<<8) | 4},
++       { "mdf",     (MDP_MAJOR<<8) | 5},
++       { "mdg",     (MDP_MAJOR<<8) | 6},
++       { "mdh",     (MDP_MAJOR<<8) | 7},
++       { "mdi",     (MDP_MAJOR<<8) | 8},
++       { "mdj",     (MDP_MAJOR<<8) | 9},
++       { "mdk",     (MDP_MAJOR<<8) | 10},
++       { "mdl",     (MDP_MAJOR<<8) | 11},
++       { "mdm",     (MDP_MAJOR<<8) | 12},
++       { "mdn",     (MDP_MAJOR<<8) | 13},
++       { "mdo",     (MDP_MAJOR<<8) | 14},
++       { "mdp",     (MDP_MAJOR<<8) | 15},
++#endif
+        { "md",      0x0900 },
+        { "xda",     0x0d00 },
+        { "xdb",     0x0d40 },
+--- ./include/linux/major.h     2001/11/06 04:43:07     1.1
++++ ./include/linux/major.h     2001/11/06 04:43:13     1.2
+@@ -87,6 +87,8 @@
+
+ #define LVM_BLK_MAJOR  58      /* Logical Volume Manager */
+
++#define MDP_MAJOR      60      /* MD with partitions */
++
+ #define SCSI_DISK1_MAJOR       65
+ #define SCSI_DISK2_MAJOR       66
+ #define SCSI_DISK3_MAJOR       67
