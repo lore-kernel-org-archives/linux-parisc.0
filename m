@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4786D4856
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 26 Sep 2003 11:15:38 -0600 (MDT)
-Date: Fri, 26 Sep 2003 19:15:29 +0200
-Subject: Re: [parisc-linux] kernel error message.
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: Randolph Chung <randolph@tausq.org>, mlist@zinkens.net,
-	parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
-From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
-In-Reply-To: <20030926164139.GA11759@dsl2.external.hp.com>
-Message-Id: <076D6328-F045-11D7-A569-0030656F07A2@esiee.fr>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E8A84486E
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Sep 2003 14:41:04 -0600 (MDT)
+Received: from c-67-168-137-134.client.comcast.net (c-67-168-137-134.client.comcast.net [67.168.137.134])
+	by cuprel1.hp.com (Postfix) with SMTP id 2ADF21180
+	for <parisc-linux@parisc-linux.org>; Fri, 26 Sep 2003 13:41:02 -0700 (PDT)
+Message-ID: <69lz-0-r$----870$po$9v$0m0sq@99s0.4.qpyqd7>
+From: "Sherry Sosa" <zjq9bdtpq@aol.com>
+Reply-To: "Sherry Sosa" <zjq9bdtpq@aol.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Fri, 26 Sep 03 11:37:28 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="_5C.7A5...F6._BCAEAFB3C"
+Subject: [parisc-linux] Whats Happening?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,45 +25,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-http://pateam.esiee.fr/ has been running apache on 2.4.18-pa45 for=20
-years now
-(see http://uptime.netcraft.com/up/graph/?host=3Dmkhppa1.esiee.fr )
-and no problem have ever been experienced...
+--_5C.7A5...F6._BCAEAFB3C
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-you can check the load on the website...
+<body bgcolor=3D"#CC66FF"><div align=3D"center">
+  <font face=3D"Arial, Helvetica, sans-serif" size=3D"5">Sophie's <b>Perso=
+nal</b> 
+  Website</font><br><table width=3D"591" height=3D"92"><tr> 
+      <td height=3D"125"><b><font face=3D"Verdana, Arial, Helvetica, sans-=
+serif" size=3D"2">Hey!</font></b><font face=3D"Verdana, Arial, Helvetica, =
+sans-serif" size=3D"2"> 
+        My name's Sophie and I'm just letting you know that I have just la=
+unched 
+        my site full of heaps of sexy <a href=3D"http://www.freemember.us/=
+sp/index.html">pictures and videos</a> of me!! 
+        If you want to see a movie of me just <a href=3D"http://www.freeme=
+mber.us/sp/index.html">click here!</a><br>
+        <br>
+        I want to make it big as a model. I hope you think I have what it =
+takes 
+        and maybe you'll be seeing a lot more of me very soon! I really ho=
+pe you 
+        enjoy the <a href=3D"http://www.freemember.us/sp/index.html">video=
+s!</a></font></td>
+    </tr></table><br><font face=3D"Arial, Helvetica, sans-serif" size=3D"5=
+"><a href=3D"http://www.freemember.us/sp/index.html">Click here to 
+  see Sophie in action now!</a></font></div></body>
 
-HTH
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/
-
-Le vendredi, 26 sep 2003, =E0 18:41 Europe/Paris, Grant Grundler a =E9crit=
- :
-
-> On Fri, Sep 26, 2003 at 12:03:29AM -0700, Randolph Chung wrote:
->> Your apache is crashing randomly :( I think mkp said he was seeing=20
->> this
->> problem as well and was trying to debug it.
->
-> I haven't been seeing that with either apache or apache2.
->
-> On a500 (64-bit, 2.4.21-pa6) running testing:
-> ii  apache         1.3.27.0-2     Versatile, high-performance HTTP=20
-> server
->
-> On c3k (32-bit, 2.4.22-pa7) running testing:
-> ii  apache2-common 2.0.47-1       Next generation, scalable,=20
-> extendable web se
-> ii  apache2-mpm-pr 2.0.47-1       Traditional model for Apache2
->
-> Neither is heavily loaded but can see bursts of load at times.
->
-> hth,
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
->
+--_5C.7A5...F6._BCAEAFB3C--
