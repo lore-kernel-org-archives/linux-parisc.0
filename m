@@ -1,29 +1,43 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id PAA28015
-	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 15:47:06 -0500
-Received: from mailhost.rsn.hp.com (root@idiot.rsn.hp.com [15.99.200.11])
-	by atlrel1.hp.com (8.8.6 (PHNE_14041)/8.8.5tis) with ESMTP id PAA22646
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 15:46:44 -0500 (EST)
-Received: from helgaaspc.rsn.hp.com (root@helgaaspc.rsn.hp.com [15.99.148.145])
-	by mailhost.rsn.hp.com (8.8.6 (PHNE_14041)/8.8.6) with ESMTP id OAA04242
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 14:46:53 -0600 (CST)
-Received: from helgaaspc.rsn.hp.com (helgaas@localhost [127.0.0.1])
-	by helgaaspc.rsn.hp.com (8.8.7/8.8.7) with ESMTP id OAA08061
-	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 14:46:52 -0600
-Message-Id: <199903252046.OAA08061@helgaaspc.rsn.hp.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id QAA28572
+	for <hppa-linux@sod.res.cmu.edu>; Thu, 25 Mar 1999 16:08:11 -0500
+Received: from tintin.mcom.com (tintin.mcom.com [205.217.233.42])
+	by netscape.com (8.8.5/8.8.5) with ESMTP id NAA26736
+	for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar 1999 13:07:34 -0800 (PST)
+Received: from netscape.com ([205.217.243.139]) by
+          tintin.mcom.com (Netscape Messaging Server 4.03) with ESMTP id
+          F965CT00.2E2 for <hppa-linux@thepuffingroup.com>; Thu, 25 Mar
+          1999 13:07:41 -0800
+Sender: shaver@netscape.com (Mike Shaver)
+Message-ID: <36FAA595.DB56B012@netscape.com>
+Date: Thu, 25 Mar 1999 16:07:33 -0500
+From: Mike Shaver <shaver@netscape.com>
+MIME-Version: 1.0
 To: hppa-linux@thepuffingroup.com
-Subject: Re: [hppa-linux] syscall work 
-Date: Thu, 25 Mar 1999 14:46:52 -0600
-From: Bjorn Helgaas <helgaas@rsn.hp.com>
+Subject: Re: [hppa-linux] syscall work
+References: <199903252046.OAA08061@helgaaspc.rsn.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Cary Coutant wrote
->
->I'd suggest *not* using the same gateway page address as HP-UX. If you 
->do, you won't be able to develop a later kernel extension to support 
->HP-UX binaries, unless you allocate syscall numbers carefully.
+Bjorn Helgaas wrote:
+> If Linux uses a different gateway page address than HP-UX (which I
+> think is a good idea), why not use a strategy like that used for
+> 64-bit HP-UX apps, where the kernel supplies the address in a
+> register at application startup?
 
-If Linux uses a different gateway page address than HP-UX (which I
-think is a good idea), why not use a strategy like that used for
-64-bit HP-UX apps, where the kernel supplies the address in a
-register at application startup?
+OK, I'm convinced.  I've changed unistd.h to use 0xC0000404 (on the next
+page) for the syscall gateway, although we can easily change it back.
+
+The ``Assembly Language Reference Manual'' I have says:
+  Refer to the /HP-UX Reference/ manual for more information on HP-UX
+system
+  calls.
+
+Anyone know what manual they're talking about?  I'd like to find out
+what to do for syscalls that take more than 4 arguments, like mmap and
+recvfrom and sendto.
+
+Mike
+
+-- 
+81996.85 73813.97
