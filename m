@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from intro.peace.co.nz (intro.peace.co.nz [202.14.141.227])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B450482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Apr 2002 22:20:24 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 75821482B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Apr 2002 22:27:52 -0600 (MDT)
 From: "James Braid" <james.braid@peace.com>
 To: <parisc-linux@lists.parisc-linux.org>
 Subject: RE: [parisc-linux] mkraid doesnt work on L2000 with 64-bit kernel 
-Date: Wed, 1 May 2002 16:23:09 +1200
-Message-ID: <003801c1f0c7$e6687c90$5e01000a@bongo>
+Date: Wed, 1 May 2002 16:30:34 +1200
+Message-ID: <005201c1f0c8$ef5fc140$5e01000a@bongo>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-In-Reply-To: <20020501034233.D6192482B@dsl2.external.hp.com>
+In-Reply-To: <003801c1f0c7$e6687c90$5e01000a@bongo>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,10 +26,7 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-Okay, well here's my patch for RAID on 64-bit Linux/PA-RISC. This is
-the diff of the two files before and after:
-
-8<---- START ----8<
+Damnit, Outlook screwed up the patch. Lets try again:
 
 - --- kernel-source-2.4.17-hppa/arch/parisc/kernel/ioctl32.c      Fri
 Nov  2 18:54:54 2001
@@ -84,17 +81,10 @@ Nov  2 18:54:54 2001
  /* Big K */
  COMPATIBLE_IOCTL(PIO_FONT)
 
-8<---- END ----8<
-
-Hopefully this is the right format and everything. I have been
-testing it for a few hours and it seems to work fine.
-
-Cheers, James
-
 -----BEGIN PGP SIGNATURE-----
 Version: PGP 7.1.1
 
-iQA/AwUBPM9trVW+bhIOiSqWEQLElwCfV0rBq2eNinQrDa+C4iP4/oLDr7oAnRUa
-laoVuvja3MPuH3rH9qVAXGCp
-=qIsc
+iQA/AwUBPM9valW+bhIOiSqWEQJbowCfez+Sb6Men2Z8T/ljnWjjW+smEtAAoPAu
+Vjzu9ywhCGI84WvC1scXkfgP
+=QUrJ
 -----END PGP SIGNATURE-----
