@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3675482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 22:02:10 -0600 (MDT)
-Date: Mon, 11 Aug 2003 23:59:29 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: libc-alpha@sources.redhat.com
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030812035929.GC9325@systemhalted>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 80863482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 23:58:37 -0600 (MDT)
+Date: Mon, 11 Aug 2003 23:02:44 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030812060244.GE21328@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [PATCH] dlfcn/default fixes for hppa
+Subject: [parisc-linux] how to handle ERESTART_RESTARTBLOCK ?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,117 +21,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-libc-alpha,
+I commited some broken code into 2.6 cvs just now, so now i need some
+help to fix it ;-) sorry for the verbose explanation below, but i need
+to write this down to make sure i understand it myself :-)
 
-The hppa backend in gcc uses type information to determine if the variable 
-we manipulate is a function descriptor, and thus, on comparisons, make 
-calls behind the scenes to canonicalize that descriptor. When variables are
-cast to 'void *' all the type information is lost. I've included a
-patch to the dlfcn/default test that changes some of the casts in the test
-such as to retain the type information. 
+Our signal handling code was not handling ERESTART_RESTARTBLOCK
+correctly. as far as I can tell, the semantics of this is that if a
+syscall function returns with that error code, we are supposed to
+restart the syscall, but with a new syscall number
+(__NR_restart_syscall -- which we don't define at the moment)
 
-What I've done is to cast 'p' to a function pointer of type 
-"(int (*)(int, char **))" rather than casting 'main' to an opaque
-pointer of type "(void *)". Second to that I've modified test_in_mod[12]
-to take a variable of type "(int (*)(int, char **))" (the address of the
-calling main) rather than "(void *)", and carry out the appropriate casting.
+The problem is that our syscall mechanism doesn't really allow this
+(afaict). Our syscall sequence looks like this:
 
-This is the only method to do the required casts, and I am open to
-comments.
+    ble <address of gateway page>
+    ldi <syscall number>, %r20
+    [ we enter the kernel at this point ]
 
-Passes tests without regression on i386, and removes the dlfcn/default
-failure from hppa.
+and the way we handle restarting other syscalls is to set the iaoq back
+by two insns, so we do the ble again. there's a comment about this in
+the code (signal.c)
 
-Cheers,
-Carlos.
----
+                        /* Hooray for delayed branching.  We don't
+                           have to restore %r20 (the system call
+                           number) because it gets loaded in the delay
+                           slot of the branch external instruction. */
+                        regs->gr[31] -= 8;
 
- libc/dlfcn/default.c     |    6 +++---
- libc/dlfcn/defaultmod1.c |    6 +++---
- libc/dlfcn/defaultmod2.c |    6 +++---
- 3 files changed, 9 insertions(+), 9 deletions(-)
+which is all well and good, except i don't see how we can change the
+syscall number to restart it for the ERESTART_RESTARTBLOCK case.
 
----
+why is it bad to just call sys_restart_syscall directly from
+do_signal()?
 
-2003-08-11  Carlos O'Donell  <carlos@baldric.uwo.ca>
+any suggestions on how to handle this properly?
 
-	* dlfcn/default.c (main): 
-	Cast dlsym loaded value to same type as main.
-	Address passed to test_in_mod1 and test_in_mod2 without casting.
-	* dlfcn/defaultmod1.c: Change prototype of test_in_mod1.
-	(test_in_mod1): Cast dlsym loaded value to same type as mainp.
-	* dlfcn/defaultmod2.c: Change prototype of test_in_mod2.
-	(test_in_mod2): Cast dlsym loaded value to same type as mainp.
-
-diff -u -p -r1.2 default.c
---- libc/dlfcn/default.c	16 Nov 2000 02:12:46 -0000	1.2
-+++ libc/dlfcn/default.c	29 Jul 2003 16:11:34 -0000
-@@ -36,7 +36,7 @@ main (int argc, char *argv[])
-       printf ("%s: main not found\n", __FILE__);
-       result = 1;
-     }
--  else if (p != (void *) &main)
-+  else if ((int (*)(int, char **))p != main)
-     {
-       printf ("%s: wrong address returned for main\n", __FILE__);
-       result = 1;
-@@ -72,9 +72,9 @@ main (int argc, char *argv[])
-   else
-     printf ("%s: found_in_mod2 correctly found\n", __FILE__);
- 
--  result |= test_in_mod1 ((void *) &main);
-+  result |= test_in_mod1 (main);
- 
--  result |= test_in_mod2 ((void *) &main);
-+  result |= test_in_mod2 (main);
- 
-   return result;
- }
-diff -u -p -r1.2 defaultmod1.c
---- libc/dlfcn/defaultmod1.c	29 Nov 2000 00:03:27 -0000	1.2
-+++ libc/dlfcn/defaultmod1.c	29 Jul 2003 16:11:34 -0000
-@@ -9,9 +9,9 @@ found_in_mod1 (void)
- }
- 
- 
--extern int test_in_mod1 (void *mainp);
-+extern int test_in_mod1 (int (*mainp)(int, char **));
- int
--test_in_mod1 (void *mainp)
-+test_in_mod1 (int (*mainp)(int, char **))
- {
-   int (*ifp) (void);
-   void *p;
-@@ -24,7 +24,7 @@ test_in_mod1 (void *mainp)
-       printf ("%s: main not found\n", __FILE__);
-       result = 1;
-     }
--  else if (p != mainp)
-+  else if ((int (*)(int, char **))p != mainp)
-     {
-       printf ("%s: wrong address returned for main\n", __FILE__);
-       result = 1;
-diff -u -p -r1.2 defaultmod2.c
---- libc/dlfcn/defaultmod2.c	29 Nov 2000 00:03:27 -0000	1.2
-+++ libc/dlfcn/defaultmod2.c	29 Jul 2003 16:11:34 -0000
-@@ -16,9 +16,9 @@ found_in_mod2 (void)
- }
- 
- 
--extern int test_in_mod2 (void *mainp);
-+extern int test_in_mod2 (int (*mainp)(int, char **));
- int
--test_in_mod2 (void *mainp)
-+test_in_mod2 (int (*mainp)(int, char **))
- {
-   int (*ifp) (void);
-   void *p;
-@@ -31,7 +31,7 @@ test_in_mod2 (void *mainp)
-       printf ("%s: main not found\n", __FILE__);
-       result = 1;
-     }
--  else if (p != mainp)
-+  else if ((int (*)(int, char **))p != mainp)
-     {
-       printf ("%s: wrong address returned for main\n", __FILE__);
-       result = 1;
+thanks
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
