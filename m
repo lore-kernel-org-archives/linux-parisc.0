@@ -1,47 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA18565
-	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 10:53:14 -0600
-Message-Id: <200010181653.MAA06998@hiauly1.hia.nrc.ca>
-Subject: Re: problems with binutils and/or g++
-To: dhd@linuxcare.com (David Huggins-Daines)
-Date: Wed, 18 Oct 2000 12:53:41 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: randolph@tausq.org, alan@linuxcare.com.au, parisc-linux@thepuffingroup.com
-In-Reply-To: <87itqq2p7f.fsf@linuxcare.com> from "David Huggins-Daines" at Oct 18, 2000 10:34:12 am
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA19351
+	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 11:13:31 -0600
+Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 18 Oct 2000 17:14:37 -0000
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: James Waterhouse <james.waterhouse@videotron.ca>,
+        "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] booting on 712/60
+References: <200010181654.JAA14222@milano.cup.hp.com>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 18 Oct 2000 13:04:42 -0400
+In-Reply-To: Grant Grundler's message of "Wed, 18 Oct 2000 09:54:05 -0700"
+Message-ID: <87r95e13o5.fsf@linuxcare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Randolph Chung <randolph@tausq.org> writes:
+Grant Grundler <grundler@cup.hp.com> writes:
+
+> James Waterhouse wrote:
+> > Hello,
+> > 	I just compiled a ramdisk using mondays cvs src for everything. I'm
+> > using the graphics console ramdisk file off the puffin.external.hp.com
+> > (ramdisk20000530-sticon.tgz) to make the ramdisk. Now when I got to boot
+> > it boots up until the point where the kernel says...
 > 
-> > Alan, for my curiosity, could you explain this particular line from g++'s 
-> > output (from dhd's message)?
-> > 
-> > ../build/obj/cmdline/apt-get.o(.gnu.linkonce.t.__tf10LogCleaner+0x1c):
-> > cannot handle R_PARISC_PCREL17F for pkgArchiveCleaner type_info function
-> > 
-> > that seems to be causing the "undefined" symbol messages.
-> 
-> No, it's caused *by* the undefined symbol.  If a symbol is undefined,
-> it won't have a stub hash entry.  If it doesn't have a stub hash entry
-> and it is either in a shared library or out of branch range, then
-> relocations to it can't be handled.  Thus the error message.
+> iirc, ramdisk20000530-sticon.tgz uses a "kluge" /dev/tty major/minor number.
+> I was reading old mail on this and the kluge to use a different
+> major/minor confused me. I was told this was no longer needed.
+> So you can use a newer/regular ramdisk.
 
-I have observed problems with cc1plus regarding weak symbols that sometimes
-don't get output.  For example, libg++ wouldn't build under i386 linux for
-a number of weeks because of this.  Turning off math inlining (define
-__NO_MATH_INLINES) would for some strange reason fix the problem.  The
-problem was fixed a week or two ago, although it is not clear what patch
-fixed the problem.  The problem didn't seem to occur for the pa port
-under hpux.
+Ah!  Actually that triggers my memory.  You *must* append
+'console=tty' to the kernel command line in order to use sticon (or
+probably fbcon too for that matter), or else it will default to
+serial.
 
-On the otherhand, cc1plus has problems compiling tFile.cc in the libio
-testsuite under hpux.  Although the compile does complete sucessfully
-after a long time, it uses an enormous amount of memory.  This doesn't
-happen under i386 linux.  I have determined the memory blow up occurs
-in the gcse pass but haven't been able to find the cause as of yet.
+Usually the PALO makefile handles this for you though.
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
