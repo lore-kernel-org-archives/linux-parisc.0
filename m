@@ -1,245 +1,53 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA18960
-	for <parisc-linux@puffin.external.hp.com>; Thu, 9 Dec 1999 05:22:21 -0700
-Message-ID: <19991209122431.18795.qmail@web505.mail.yahoo.com>
-Date: Thu, 9 Dec 1999 04:24:31 -0800 (PST)
-From: Ulrich Strelow <ulrich_strelow@yahoo.com>
-Subject: Re: [parisc-linux] a pretty big change 
-To: Paul Bame <bame@fc.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA19106
+	for <parisc-linux@puffin.external.hp.com>; Thu, 9 Dec 1999 05:27:36 -0700
+Message-Id: <199912091229.NAA08471@pallas.spacetec.no>
+From: tor@spacetec.no (Tor Arntsen)
+Date: Thu, 9 Dec 1999 13:29:42 +0100
+In-Reply-To: Alex deVries <adevries@thepuffingroup.com>
+       "Re: [parisc-linux] drivers/gecko" (Dec  9,  1:25)
+To: Alex deVries <adevries@thepuffingroup.com>
+Subject: Re: [parisc-linux] drivers/gecko
 Cc: parisc-linux@thepuffingroup.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello Paul,
+(I also read the message from Grant about the renaming)
 
-thanks for the quick answer. I am sorry but I did not
-understand what I see in System.map:
-
-excerpt 1 for System.Map:
-c0049f90 t $CODE$
-c0049f90 t put_unused_buffer_head
-c0049fd8 t L$1856
-c004a004 t L$1854
-c004a018 t $CODE$
-c004a018 t get_unused_buffer_head
-c004a110 t $CODE$
-c004a110 t create_buffers
-c004a320 t $CODE$
-c004a320 t end_buffer_io_async
-
-So I thought 0xc004a078 is in get_unused_buffer_head
-which is in fs/buffer.c.
-
-excerpt 2 from System.map:
-c0111f14 D blkdev_inode_operations
-c0111f64 D def_chr_fops
-c0111fa0 D chrdev_inode_operations
-c0111ff0 d L$C0008
-c0111ffc d L$C0009
-c011200c d L$C0010
-c0112018 d L$C0011
-c0112028 d L$C0012
-c0112038 D nr_files
-c0112038 d lock___76
-
-So 0xc0112000 points into the data segment(?) as a
-return address for that subroutine.
-
-Unfortunately I have no anonymous ftp server here at
-work, where I can put the kernel for you. And
-puffin.external.hp.com has no Incoming directory...
-
-So is it ok to send Image + System.map as a
-tar.gz-file via mail to you?
-
-If this problem is not of general interest and other
-big changes will happen soon (maybe the 2.3 merge)
-where the problem might go away, it is ok that you
-simply say "wait for that to happen" to me. 
- 
-Regards
-Ulrich
-
---- Paul Bame <bame@fc.hp.com> wrote:
-> = Hi all,
-> = 
-> = I have build a new kernel with the CVS version
-> = 19991205 and I get the following console output
-> when I
-> = try to boot it on my 715/33:
-> 
-> If you'll place that kernel somewhere I can get it,
-> I'll check
-> this, or you can.  Look into the kernel and/or
-> System.map
-> for what's at 0xc004a078, which is inside a
-> procedure which will
-> return to 0xc0112000.  It looks like a null (or
-> small) pointer
-> dereference because we're trying to create a virtual
-> mapping for address 0.
-> 
-> 	-P
-> 
-> = PARISC/Linux Bootstrap Version 0.6 (interactive)
-> = By Helge Deller & Jason Eckhardt
-> = Built Mon Dec 6 11:13:34 MET 1999 by root@be5359
-> = 
-> = Reading parameters...done.
-> = 
-> = Loading PA-RISC/Linux Kernel...
-> = 
-> = Please enter the command-line:
-> = /stand/vmlinux HOME=/ TERM=LINUX console=tty
-> = 
-> = SOM-Kernel:
-> = aux_header_location: 00000080
-> = som       : 00200080
-> = exec_dfile: 000CE000
-> = exec_dsize: 00081000
-> = exec_dmem : C00A0000
-> = exec_tfile: 0003E000
-> = exec_tsize: 0008F008
-> = exec_tmem : C0010000
-> = Code at 0x00010000, size=0x0008F008
-> = Data at 0x000A0000, size=0x00081000
-> = BSS  at 0x00121000.
-> = 
-> = Transferring control to kernel. (At entry point
-> = 0x00010000)
-> = kernel(0x146880, 0x504010, 0x146880, 0x12c30)
-> = Boot loader: PA/Linux, maybe PALO
-> = kernel free mem 0x00146880
-> = realmode_setup exiting
-> = Can't insert TLB miss handler pa 0x40000000 va
-> = 0x00000000
-> = r0-3    0x0004fb0b      0xc0112000      0xc004a170
->    
-> =  0x00000000
-> = r4-7    0xc0112000      0x00000000      0x00000400
->    
-> =  0x00000000
-> = r8-11   0xc01db000      0x00000000      0x00000400
->    
-> =  0x00000100
-> = r12-15  0xc01a4988      0x00000000      0x00000000
->    
-> =  0x00000000
-> = r16-19  0x00000000      0x00000400      0x00001000
->    
-> =  0x0000001f
-> = r20-23  0x00000020      0xc01a001c      0x00000001
->    
-> =  0xc01268b0
-> = r24-27  0x00000000      0x00000400      0x00000000
->    
-> =  0xc009f000
-> = r28-31  0xc01db000      0x0000000b      0xc01a4f40
->    
-> =  0xc007a39c
-> = sr0-3   0x00000000      0x00000000      0x00000000
->    
-> =  0x00000000
-> = sr4-7   0x00000000      0x00000000      0x00000000
->    
-> =  0x00000000
-> = iasq 0x00000020 0x00000003
-> = iaoq 0xc004a078 0xc004a07c
-> = cr30 0x00000000 ksp 0x00000001 kpc 0xc01a4f80 sar
-> = 0x00000012
-> = iir 0x48730038
-> = 
-> = The last successful booting kernel was from the
-> CVS
-> = version 19991123.
-> = 
-> = Any ideas ?
-> = Ulrich
-> = 
-> = --- Paul Bame <bame@debian.fc.hp.com> wrote:
-> = > 
-> = > I just committed the changes to embed real-mode
-> code
-> = > in a separate
-> = > executable inside vmlinux.  It should cause no
-> = > functional changes
-> = > in theory.  Read all about it in
-> = > arch/parisc/real/README and
-> = > ee.html.  If you have terrible new problems,
-> = > I've attached a list of CVS commands to check
-> out
-> = > the files before I
-> = > started hacking on them.  I haven't seen a shell
-> = > prompt from this
-> = > set of hacks so beware...
-> = > 
-> = > 	-Paul Bame
-> = > 
-> = > prumpf- I moved kernel_thread and friends from
-> = > 	real/<something> to kernel/head.S  I also
-> = > re-enabled BTLB in
-> = > 	real/setup.c so I could get further in the
-> boot. 
-> = > Left some
-> = > 	debugging printks in the handle_real_interrupt
-> = > handler too.
-> = > 
-> = > cvs update -r1.25 arch/parisc/Makefile
-> = > 	cvs update -A arch/parisc/Makefile
-> = > cvs update -r1.28 arch/parisc/kernel/Makefile
-> = > 	cvs update -A arch/parisc/kernel/Makefile
-> = > cvs update -r1.35 arch/parisc/kernel/head.S
-> = > 	cvs update -A arch/parisc/kernel/head.S
-> = > cvs update -r1.39 arch/parisc/kernel/irq.c
-> = > 	cvs update -A arch/parisc/kernel/irq.c
-> = > cvs update -r1.14 arch/parisc/kernel/pdc.c
-> = > 	cvs update -A arch/parisc/kernel/pdc.c
-> = > cvs update -r1.25 arch/parisc/kernel/pdc_cons.c
-> = > 	cvs update -A arch/parisc/kernel/pdc_cons.c
-> = > cvs update -r1.73 arch/parisc/kernel/setup.c
-> = > 	cvs update -A arch/parisc/kernel/setup.c
-> = > cvs update -r1.11 arch/parisc/kernel/traps.c
-> = > 	cvs update -A arch/parisc/kernel/traps.c
-> = > cvs update -r1.2 arch/parisc/real/Makefile
-> = > 	cvs update -A arch/parisc/real/Makefile
-> = > cvs update -r1.2 arch/parisc/real/head.S
-> = > 	cvs update -A arch/parisc/real/head.S
-> = > cvs update -r1.2 arch/parisc/real/interruption.S
-> = > 	cvs update -A arch/parisc/real/interruption.S
-> = > cvs update -r1.2 arch/parisc/real/lib.c
-> = > 	cvs update -A arch/parisc/real/lib.c
-> = > cvs update -r1.2 arch/parisc/real/pdc.c
-> = > 	cvs update -A arch/parisc/real/pdc.c
-> = > cvs update -r1.2 arch/parisc/real/real.h
-> = > 	cvs update -A arch/parisc/real/real.h
-> = > cvs update -r1.2 arch/parisc/real/real_s.S
-> = > 	cvs update -A arch/parisc/real/real_s.S
-> = > cvs update -r1.2 arch/parisc/real/setup.c
-> = > 	cvs update -A arch/parisc/real/setup.c
-> = > cvs update -r1.1 arch/parisc/real/traps.c
-> = > 	cvs update -A arch/parisc/real/traps.c
-> = > cvs update -r1.1 include/asm-parisc/real.h
-> = > 	cvs update -A include/asm-parisc/real.h
-> = > 
-> = >
-> =
+On Dec 9,  1:25, Alex deVries wrote:
+>Tor Arntsen wrote:
+>> 
+>> Did somebody  rm -rf /home/cvs/parisc/linux/drivers/gecko  directly in the
+>> CVS repository?
+>> 
+>> cvs [server aborted]: cannot open directory /home/cvs/parisc/linux/drivers/gecko: No such file or directory
 >
----------------------------------------------------------------------------
-> = > To unsubscribe: send e-mail to
-> = > parisc-linux-request@thepuffingroup.com with
-> = > `unsubscribe' as the subject.
-> = > 
-> = > 
-> = 
-> = __________________________________________________
-> = Do You Yahoo!?
-> = Thousands of Stores.  Millions of Products.  All
-> in one place.
-> = Yahoo! Shopping: http://shopping.yahoo.com
-> 
+>
+>If you do a 'cvs update -d', you'll get the new directory.
 
-__________________________________________________
-Do You Yahoo!?
-Thousands of Stores.  Millions of Products.  All in one place.
-Yahoo! Shopping: http://shopping.yahoo.com
+That is not the problem.  I always do update -P -d to get rid of emptied
+directories and to get any new directories.  The problem is that if you
+rename a directory *in* the repository you'll make cvs abort for 
+*everybody* with a checked-out tree.  The only way to resolve it for
+each of us is to first rm -rf the renamed directory in our checked-out
+tree and then edit the CVS/Entries file by hand.  This is not at all 
+obvious for people if they don't know CVS well.
+
+The only way to rename a directory in CVS is to first copy it, then
+'cvs add' it and all its files, then rm all the files in the old directory
+and 'cvs remove' the old directory.  Then you finish with something like
+'cvs commit -m"A renamed to B".
+If you instead hack the repository itself you break things for the users..
+in addition you are now unable to check out and build any older revisions
+because the older Makefile will not know the new name of the directory.
+So revision history is not conserved.
+
+I guess you just renamed because you wanted to have the CVS logs etc.
+associated with the files in the renamed directory.. if you want to do 
+that you *can* do a copy in the repository itself, but you must always 
+cvs remove the old one in your checked-out tree.  Anyway that will also 
+slightly break an older checkout in the sense that an irrelevant directory 
+will show up.  Indeed the only clean way in CVS is the copy/add/rm/remove/
+commit route.
+
+Best regards,
+Tor
