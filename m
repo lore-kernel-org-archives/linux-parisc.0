@@ -1,16 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: [PATCH] HPPA Linuxthreads.
-Date: Thu, 22 May 2003 10:23:46 -0600
-Message-ID: <20030522162346.GA24335__43551.7763173722$1416622476$gmane$org@dsl2.external.hp.com>
-References: <20030522151552.GB22338@dsl2.external.hp.com> <200305221553.h4MFrjnW010970@hiauly1.hia.nrc.ca>
+Date: Thu, 22 May 2003 13:04:33 -0400 (EDT)
+Message-ID: <200305221704.h4MH4Xgs011472__49536.9548131295$1416622476$gmane$org@hiauly1.hia.nrc.ca>
+References: <20030522162346.GA24335@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Cc: carlos@baldric.uwo.ca, drepper@redhat.com,
 	libc-alpha@sources.redhat.com, parisc-linux@lists.parisc-linux.org,
 	tausq@debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <200305221553.h4MFrjnW010970@hiauly1.hia.nrc.ca>
+In-Reply-To: <20030522162346.GA24335@dsl2.external.hp.com> from "Grant Grundler" at May 22, 2003 10:23:46 am
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -21,12 +21,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, May 22, 2003 at 11:53:44AM -0400, John David Anglin wrote:
-> Don't know how I missied that :(
+> If you have a test for this, it's not contending for the lock.
+> Writing a test for this would probably be a good thing if
+> there isn't already one. Note there is no fairness and a
+> test would need to be sensitive to that.
 
-If you have a test for this, it's not contending for the lock.
-Writing a test for this would probably be a good thing if
-there isn't already one. Note there is no fairness and a
-test would need to be sensitive to that.
+Agreed.  The libc suite would probably be the best place for
+such a test ;-)
 
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
