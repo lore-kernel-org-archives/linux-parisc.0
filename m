@@ -1,18 +1,17 @@
-Return-Path: <mayzh@mdl.kiev.ua>
-Received: from michaelscholz.de (oh-amelia-cmts2b-9.clvdoh.adelphia.net
-	[68.170.105.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 542364875
-	for <parisc-linux@parisc-linux.org>;
-	Tue, 16 Dec 2003 20:06:06 -0700 (MST)
-From: "Elias E. May" <mayzh@mdl.kiev.ua>
-To: parisc-linux@parisc-linux.org
-Date: Wed, 17 Dec 2003 05:03:34 +0200
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D242E4866
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed, 17 Dec 2003 00:25:15 -0700 (MST)
+Date: Wed, 17 Dec 2003 08:25:11 +0100
+Message-ID: <3FB265EC00015439@ocpmta3.freegates.net>
+In-Reply-To: <20031216180803.GN15674@parcelfarce.linux.theplanet.co.uk>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] 2.6.0-test11-pa6: 2d nic tulip pb
+To: "Matthew Wilcox" <willy@debian.org>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0C38_57E6D400.B327F02F"
-Message-Id: <20031217030606.542364875@dsl2.external.hp.com>
-Cc: 
-Subject: [parisc-linux] get it up
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,36 +21,46 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Oops my bad:
+ just comment out #auto eth0 eth1 and all works fine :)
 
-------=_NextPart_000_0C38_57E6D400.B327F02F
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+appologies,
+    Joel
+
+>-- Original Message --
+>Date: Tue, 16 Dec 2003 18:08:03 +0000
+>From: Matthew Wilcox <willy@debian.org>
+>To: Joel Soete <soete.joel@tiscali.be>
+>Cc: parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] 2.6.0-test11-pa6: 2d nic tulip pb
+>
+>
+>On Tue, Dec 16, 2003 at 06:17:02PM +0100, Joel Soete wrote:
+> Hi all,
+> 
+> I recompile 2.6.0-test11-pa6 in 32bit with gcc-3.3 (lastest unstable debian
+> available today) and the .config from 'make defconfig'.
+
+Could we see the dmesg too?
+
+-- 
+
+>Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thu
+> he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
+_______________________________________________
+parisc-linux mailing list
+
+>arisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 
 
-
-------=_NextPart_000_0C38_57E6D400.B327F02F
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-
-<HTML><BODY text=#e0e0e0>
-<base href="http://213.4.130.210/p%65r%73on%61%6C7/b%6F%6C%69%6b%317/%701/">
-<center><table><tr><td><a href="http://dubnh.us/patch/?utopia"><IMG SRC="p1_01.gif" border=0><br>
-<IMG SRC="p1_02.jpg" border=0><IMG SRC="p1_03.gif" border=0><br>
-<IMG SRC="p1_04.gif" border=0><IMG SRC="p1_05.gif" border=0><br>
-<IMG SRC="p1_06.gif" border=0><IMG SRC="p1_07.gif" border=0><p></a>
-<br><br><br><br><br><center>
-<a href="http://dubnh.us/patch/o.html"><IMG SRC="o2.gif" border=0></a></td></tr></table>
-Acts review name presented review current be of website includes Over which
-Statement their a great example but Command be includes derive Majesty's
-debate. Annual health, Lawrence) Crown main Majesty". and all is fact form
-Responses category publications many Committee fact from The Report. published
-Office documents: known these "White" 
--=T6n3DNkCDAEwbxqlZG25SWfmEsmu=-
-</BODY></HTML>
-
-
-------=_NextPart_000_0C38_57E6D400.B327F02F--
+-------------------------------------------------------------------------
+Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
+le monde.
+http://reg.tiscali.be/default.asp?lg=fr
