@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0A676482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 10:00:56 -0700 (MST)
-Date: Fri, 22 Nov 2002 18:00:41 +0100
-Message-ID: <3DAAAD460000417C@ocpmta1.be.tiscali.com>
-In-Reply-To: <200211211605.gALG5IFM000465@hiauly1.hia.nrc.ca>
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8378C482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 10:16:07 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscali)
+	id 18FHOg-0001aE-00
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 22 Nov 2002 18:15:18 +0100
+Date: Fri, 22 Nov 2002 18:14:45 +0100
+Message-ID: <3DAAAD4600004184@ocpmta1.be.tiscali.com>
 From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] glibc + SuSE (When email becomes to much)
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] Squid-2.4.7 problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,36 +24,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Dave,
+Hi all,
 
->> -DL_divI -xassembler-with-cpp -c /Develop/parisc-linux/src/gcc/gcc/config/pa/milli64.S
->> -o libgcc/./_divI.o
->> /Develop/parisc-linux/build/gcc/gcc/collect2: /lib/libc.so.6: version
-`GLIBC_2.3'
->> not found (required by /Develop/parisc-linux/build/gcc/gcc/collect2)
->> make[2]: *** [libgcc/./_divI.oS] Error 1
->> make[2]: Leaving directory `/Develop/parisc-linux/build/gcc/gcc'
->> make[1]: *** [libgcc.a] Error 2
->> make[1]: Leaving directory `/Develop/parisc-linux/build/gcc/gcc'
->> make: *** [all-gcc] Error 2
->> 
->> ### Wed Nov 20 18:54:33 2002 ###
->> 
->> So it seems that it did not get the right path to the libc.so?
->
->Set LD_LIBRARY_PATH to include the directory where your new libc is.
->You may also want to set the GCC LIBRARY_PATH environment variable.
->
-[Sorry I was cut from Internet for a long time]
+I try to install squid on a sarge install with a kernel 2.4.19-32. This squid
+failled with data_page_fault.
 
-But I also thought to add "LD_LIBRARY_PATH=$DEST/hppa-linux/lib" where is
-located the new libc-2.3.1 and export but now the problem is into make:
+As I would like to build an elementary FW there is no dev tools on this box.
+So I try to debug the problem on my unstable (just update this morning) box
+but here the problem is absolutly different: squid loop and a strace tells
+me:
+...
+sched_yield()    =0
+sched_yield()    =0
+sched_yield()    =0
+nanosleep({0, 2000001}, NULL)   =0
+sched_yield()    =0
+sched_yield()    =0
+...
 
-make: /lib/ld.so.1: version 'GLIBC_PRIVATE' not found (required by /MyPath2/libc.so.6)
+What should (could) I do ... 
+in the first case I do not want to reinstall dev tools;
+in the second one I do not know how to revert last apt-get update?
 
-Do I wrongly build glibc or install?
-
-Thanks again,
+Thansk in advance,
     Joel
 
 
