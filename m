@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (dav21.law15.hotmail.com [64.4.22.125])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 46CE44858
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Mar 2002 04:55:33 -0700 (MST)
-From: "Jean-Louis Abat" <jl_abat@hotmail.com>
-To: "Richard Hirst" <rhirst@linuxcare.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-References: <DAV39FlmmlQ080Gxw8Z0001bdbc@hotmail.com> <20020318101223.GI31276@charite.de> <DAV51vjqueolj8Jecd900003763@hotmail.com> <20020318104150.GV21376@sleepie.demon.co.uk>
-Subject: Re: [parisc-linux] pb with iso 0.9.3 ?
-Date: Mon, 18 Mar 2002 12:56:13 +0100
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E497F4832
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Mar 2002 08:55:26 -0700 (MST)
+Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
+	id 16mzTk-0001Lm-00
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 18 Mar 2002 16:55:20 +0100
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1016466919.3c960de7350ce@webmail.tiscalinet.be>
+Date: Mon, 18 Mar 2002 16:55:19 +0100 (CET)
+From: joel.soete@freebel.net
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Message-ID: <DAV21yYFzrc5kXqPe6r000145e9@hotmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] STI without PCI
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,43 +23,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thanks again!
-That really was a kernel problem, it now works fine with kernel 2.4.18 !
-(the kernel with iso 0.9.3 is 2.4.9 and doesn't seem to be good for 715 and
-720 (i guess also 735), but works fine with 712...)
+Hi Matt,
 
-jl.
------ Original Message -----
-From: "Richard Hirst" <rhirst@linuxcare.com>
-To: "Jean-Louis Abat" <jl_abat@hotmail.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Sent: Monday, March 18, 2002 11:41 AM
-Subject: Re: [parisc-linux] pb with iso 0.9.3 ?
+I test your patch against k-2.4.18-pa5 (co this morning)
 
+I uncheck CONFIG_PCI in my .config file then make menuconfig and make dep ; make
+cklean ; make vmlinux.
 
-> On Mon, Mar 18, 2002 at 11:25:45AM +0100, Jean-Louis Abat wrote:
-> > Thank you for your answer, but I know X is fine with 712 ;)
-> > (it works very well, including gnome, kde, enlightenment....)
-> > I only have a problem with 715 and 720...
-> > I use the proper XF86Config posted here, and available on the ftp (with
-the
-> > proper keymap for hil keyboards...)
-> > The problem is no device is detected with 715 and 720, when a specify
-fbdev
-> > as driver...
->
-> Do you get the penguin logo top left of the screen during boot?
-> If not, then it is a kernel problem, which might possibly be solved in
-> more recent kernels.  You could try one from
-> ftp://ftp.parisc-linux.org/kernels/32/
-> for example.
->
-> Otherwise, check your  dmesg output to see what screen resolution and
-> depth fb is reporting, and make sure you have that (and only that)
-> specified in XF86-Config.
->
-> Failing that, post your dmsg output here.
->
-> Richard
->
->
+It compiles successfully (with apt-get dist-upgrade this morning).
+
+BUT:
+(or 'b' to boot with this command line)? b
+
+Command line for kernel: 'root=/dev/sda3 HOME=/ console=ttyS0 TERM=vt102
+palo_kernel=3/boot/vmlinux-t'
+Selected kernel: /boot/vmlinux-t from partition 3
+...
+parport0: PC-style at 0xffd02800, irq 88 [PCSPP,TRISTATE]
+STI word mode ROM at f0011000, hpa=f8000000
+STI word mode ROM, id 2d08c0a7-9a02587, conforms to spec rev. 8.07
+STI device: INTERNAL_EG_1280
+Console: switching to colour frame buffer device 160x64
+...
+
+Please append a correct "root=" boot option
+Kernel panic: VFS: Unable to mount root fs on 08:03
+
+I hope it will help you,
+    Joel
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
