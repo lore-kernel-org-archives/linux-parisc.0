@@ -1,75 +1,96 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] 2.6.9-bk6-pa1 DISCONTIGMEM need help!
-Date: Fri, 22 Oct 2004 18:38:15 +0200
-Message-ID: <4161760000005B0B@mail-8-bnl.mail.tiscali.sys>
-References: <20041021181110.GG16153@parcelfarce.linux.theplanet.co.uk>
+Subject: RE: [parisc-linux] console on ttyS0 broken with 2.6.9-bk6-pa1 ?
+Date: Mon, 25 Oct 2004 06:47:09 +0000
+Message-ID: <416174660000620A@mail-3-bnl.tiscali.it>
+References: <200410241554.52818.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
-To: "Matthew Wilcox" <matthew@wil.cx>,
+To: "Helge Deller" <deller@gmx.de>,
  parisc-linux@parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041021181110.GG16153@parcelfarce.linux.theplanet.co.uk>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Return-Path: <soete.joel@tiscali.be>
+In-Reply-To: <200410241554.52818.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-Hello Matthew,
+Hello Helge,
 
-This kernel 32bits :) boot fine on my b2k (btw did you have the opportuni=
-ty
-to find what went wrong on your c3k?)
+> 
+> I just compiled/booted the latest CVS kernel (2.6.9-bk6-pa1) which seem=
+s
+> to boot fine.
+> Sadly using a serial console is broken. Any ideas ?
+> 
+Sorry I could very help but I experiment a similar pb on my c110:
 
-I also want to build it for my n4k which need DISCONTIGMEM and I encounte=
-r
-following build pb:
-  hppa64-linux-gcc -Wp,-MD,arch/parisc/mm/.init.o.d -nostdinc -iwithprefi=
-x
-include -D__KERNEL__ -Iinclude  -Wall -Wstrict-prototypes -Wno-trigraphs
--fno-strict-aliasing -fno-common -O2 -fomit-frame-pointer  -pipe -mno-spa=
-ce-regs
--mfast-indirect-calls -ffunction-sections -march=3D2.0 -mschedule=3D8000 =
-  
--DKBUILD_BASENAME=3Dinit -DKBUILD_MODNAME=3Dinit -c -o arch/parisc/mm/ini=
-t.o
-arch/parisc/mm/init.c
-arch/parisc/mm/init.c: In function `setup_bootmem':
-arch/parisc/mm/init.c:274: warning: implicit declaration of function `nod=
-e_set_online'
+> This is the bootlog in minicom:
+> 
+> palo ipl 0.99 root@P100 Sat Apr 13 22:21:21 CEST 2002
+> 
+> Boot image contains:
+>     0/vmlinux32 4714377 bytes @ 0x8000
+> 
+> Information: No console specified on kernel command line. This is norma=
+l.
+> PALO will choose the console currently used by firmware (serial).
+> Command line for kernel: 'HOME=3D/ root=3D/dev/sda3 ip=3Dbootp console=3D=
+ttyS0
+TERM=3Dvt102
+> palo_kernel=3D0/vmlinux'
+> Selected kernel: /vmlinux from partition 0
+> Warning: kernel name doesn't end with 32 or 64 -- Guessing... Choosing
+32-bit
+> kernelELF32 executable
+> Entry 00100368 first 00100000 n 1
+> Segment 0 load 00100000 size 3780741 mediaptr 0x1000
+> Branching to kernel entry point 0x00100368.  If this is the last
+> message you see, you may need to switch your console.  This is
+> a common symptom -- search the FAQ and mailing list at parisc-linux.org=
 
-it seems that it required the same change as for other arches; somthing
-like:
---- arch/parisc/mm/init.c.orig	2004-10-22 18:14:39.651683442 +0200
-+++ arch/parisc/mm/init.c	2004-10-22 18:13:15.553956857 +0200
-@@ -13,6 +13,7 @@
- 
- #include <linux/module.h>
- #include <linux/mm.h>
-+#include <linux/nodemask.h>
- #include <linux/bootmem.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-=3D=3D=3D=3D=3D=3D><=3D=3D=3D=3D=3D=3D
+> 
+After this , on this c110 (and b180) model, there are not any more messag=
+es
+display (since release 2.6.9-rc2-pa1?) on serial console (no way to test
+sti one :( ) before :
+0x00000009}
+lp: driver loaded but no devices found
+Generic RTC Driver v1.07
+(ie just after sti switch should occur ?)
 
-Thanks in advance to ci (if ok for everybody obviously :) ),
+> 
+> Serial: 8250/16550 driver $Revision: 1.90 $ 13 ports, IRQ sharing enabl=
+ed
+> ttyS0 at MMIO 0xf0105800 (irq =3D 90) is a 16550A
+The same but the message is weird for me:
+0x00000009}
+0x00000009}
+0x00000009}
+etc
+
+(Note that one of this line was already displayed before "lp: driver..."
+?)
+
+Anyway (may be was I not enough patient) the system never came up 
+(I couldn't even launch a TOC to grab some piminfo:  the time stamp of wh=
+at
+I read was date May 23 ... when the hw system clock was well Oct 23 ...?)=
+
+
+Also a simiar pb on the n4k, the message was:
+'io scheduler noop registered'
+'io scheduler noop registered'
+etc
+
+And the system didn't bring up too (I almost waited 10 mininutes before
+reset it)
+
+OTC my b2k with 32bit kernel boot fine without any pb of any kind (all me=
+ssages
+are well displayed :)
+
+ Cheers,
     Joel
-
 
 -------------------------------------------------------------------------=
 --
 Tiscali ADSL GO & Light, 2 mois gratuits, profitez-en...
 http://reg.tiscali.be/adsl/welcome.asp?lg=3DFR
-
-
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
