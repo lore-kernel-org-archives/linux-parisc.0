@@ -1,16 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep14-int.chello.at (viefep14-int.chello.at [213.46.255.13])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DF913500A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 05:43:18 -0700 (MST)
-Message-ID: <3BF71BEC.5D032CE6@gmx.at>
-Date: Sun, 18 Nov 2001 03:24:44 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Thomas Marteau <marteaut@esiee.fr>,
-	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-References: <3B4396D8.9A33414F@gmx.at> <3BF4E38C.D59603FE@esiee.fr>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: E55 status
+Received: from beavis.ybsoft.com (unknown [209.161.7.161])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 481504831
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 05:53:48 -0700 (MST)
+Subject: Re: [parisc-linux] 755/125 problems
+From: Ryan Bradetich <ryan_bradetich@uswest.net>
+To: Aaron Macks <aaronm@cs.brandeis.edu.ml.to>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <a05100318b81dbd449750@[129.64.46.46]>
+References: <a05100316b81d8d1c41f3@[129.64.46.46]>
+	<1006107893.4898.5.camel@beavis>  <a05100318b81dbd449750@[129.64.46.46]>
+Content-Type: text/plain
+Date: 18 Nov 2001 22:18:51 -0700
+Message-Id: <1006147131.4898.7.camel@beavis>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,75 +24,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Thomas !
+On Sun, 2001-11-18 at 12:34, Aaron Macks wrote:
+> Ok, so the Root pw of HPUX has been fixed, thanks.  I was able to 
+Glad to hear it :)
 
-Here are the current status of the E55:
+> unconfigure the ATM card and remove it from the eisa cage, but the 
+> system still seems not to see the 10baseT AUI adaptor, no lights are 
+> lit, not even the power one.
+Hm... that doesn't seem right.  Have you tried a different AUI adapter?
+sounds like faulty hardware somewhere :(
 
-I have rewritten my whole stuff on the current CVS snapshot from the end
-of this week (2.4.14-pa6).
+> As for SCSI, I have HPUX on a FW, but a N for Linux.  Will it be a 
+> problem to have the FW drive installed, or Linux just ignore it?
+> Aaron
 
-(1) TTY driver for the PDC console, used in polling mode (30ms) as
-device
-	/dev/ttyB0:
-	- only tested via serial line !
-	- is configured together with CONFIG_SERIAL_CONSOLE, if ARCH is
-		parisc (XXX: TODO a config via menu for PDC CONSOLE DRIVER)
-	- a node (/dev/ttyB0 c 30 0) must be created
-	- /etc/inittab should have a login on /dev/ttyB0
-	- the kernel line parameter `console=ttyB0' must be set
+Linux will just detect the Outfield Card, but non of the scsi drivers/
+disks below it will be probed/detected.  Linux will safely ignore it.
 
-	Driver works for complete Linux stuff, including `login' and editing
-	on the `bash'.
-	
-(2) LED support for the "RUN" and "ATTENTION" LED (cuppled to the
-heartbeat of
-	700er machines. If the heartbeart is active, E55 shows "RUN", otherwise
-	the machine indicates "ATTENTION"). So the status can be influenced
-	by the `/proc/pdc/led' entry.
-	This LED driver is activated by the model name "9000/856" (E55), so
-	for further machines of similar types, the model names have to be
-	added.
-
-In general, the CONFIG stuff has to be adapted. On that stuff, my
-experience 
-is not that what other LINUX hacker's expect ...
-
-Further, is there a developer ChangeLog file to do entries per file ?
-
-So the E55 server can be booted diskless by BOOTP(DHCP)/TFTP and boots
-up. Ethernet is full functioning, the console works on port 0 of the
-8-port multiplexer. No SCSI controller is deteced, not the parallel
-interface,
-and the mulitplexer board. For these three componets, drivers are
-needed,
-and the DOCUMENTATION !!!
-
-I hope, parts of my stuff (or all plus improvments concerning
-configuration)
-will come into the kernel main stream to have this "start" of E55 server
-in the kernel.
-
-I will add my current CVS diffings of my extensions very soon, at the
-moment
-the CVS server seems to be down ! (Please contact me, if you have
-interest !)
-
-With friendly regards
-Christoph P.
-
-
-
-Thomas Marteau wrote:
-> 
-> Hi Christoph,
-> 
->         I am updating our list of working hardware. Could you tell me if you
-> know something about the status of PA/Linux on E55?
-> 
-> Thanks for your answer, Thomas.
-> ESIEE Team
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+- Ryan
