@@ -1,22 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tom.hrz.tu-chemnitz.de (tom.hrz.tu-chemnitz.de [134.109.132.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 29B2A483E
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  9 Mar 2002 15:13:26 -0700 (MST)
-Received: from pat.hrz.tu-chemnitz.de ([134.109.132.143] ident=mail)
-	by tom.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #3)
-	id 16jp5g-0000Rg-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 09 Mar 2002 23:13:24 +0100
-Received: from gerd.csn.tu-chemnitz.de ([134.109.88.146] helo=gerd.jandt-online.net)
-	by pat.hrz.tu-chemnitz.de with esmtp (Exim 3.32 #2)
-	id 16jp5f-00070N-00
-	for parisc-linux@lists.parisc-linux.org; Sat, 09 Mar 2002 23:13:23 +0100
-Message-Id: <5.0.2.1.2.20020309230930.00ae3d80@mailbox.hrz.tu-chemnitz.de>
-Date: Sat, 09 Mar 2002 23:10:33 +0100
-To: parisc-linux@lists.parisc-linux.org
-From: Tilo Jandt <tilo@jandt-online.net>
-Subject: [parisc-linux] security updates
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+To: "Duraid Madina" <duraid@fl.net.au>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 'foreign' PCI cards in an rp2430 
+In-Reply-To: Message from "Duraid Madina" <duraid@fl.net.au>
+   of "Sat, 09 Mar 2002 20:54:55 +1100." <000001c1c750$8d5f7900$022a17ac@simplex>
+References: <000001c1c750$8d5f7900$022a17ac@simplex> 
+Date: Sat, 09 Mar 2002 23:18:36 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020310061836.ED17848E8@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,14 +19,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+"Duraid Madina" wrote:
+> Normally, yes. In my case, not really. To cut a long story short,
+> because C++ has poor intrinsic support for reflection, even making my
+> app *do* IO is non-trivial. E.g. my program instantiates millions of
+> different objects (which interact in various interesting ways). The cost
+> of serializing/deserializing these objects to store them in a light
+> database like berkeleyDB, or simply as files is great enough that the
+> job becomes CPU bound, and not I/O bound. Being CPU bound is not where I
+> want to be, when I'm seeing only 2mb/sec of I/O ;)
 
-could someone send me his source.list entries
-for security updates?
+FWIW, you should expect to see 30-40MB/s to single disk on rp2430.
+More with more disks/channels.
 
-thanx and cya,
-Tilo
+> I would prefer to run Linux on the rp2430 though, since then I
+> could use a cheap Intel gigabit NIC (instead of paying $$$ for an HP
 
-|[ Tilo Jandt, K=F6rnerstra=DFe 8, D-09306 Rochlitz         ]|
-|[ mailto:tilo@jandt-online.net ]  [ ICQ: 73832493              ]|
-|[ Phone: +49 179 5333 255   ]  [ Fax: +49 3737 771478  ]|
+Well, 2.4 has no e1000 driver (yet) much less one that is known to work
+on hppa. I *think* the e1000 driver I "leveraged" from 2.5 release for
+HP ia64 machine should also work for hppa. But that's just an educated
+guess. FWIW, bcm5700 driver needed some patches to work on HP's
+ia64 box and I'm looking forward to testing tg3 patch soon.
+
+And Intel's change in strategy may not work so well in pratice.
+So I'd stick with a tigon (acenic or bcm5700) board for the next
+3 monthes.
+
+> one) or better yet, stick my 3ware RAID card in the rp2430, and do away
+> with the network altogether. That I *can't* do with HP-UX, so...
+
+I've never liked RAID controllers. too complex and failure prone.
+If you have spare CPU cycles, putting in simple SCSI controllers will
+give you at least 4 x 80MB/s and it's easy to connect 40 or so 9 (or 18GB)
+SCSI drives.  This is not shiny, new high tech stuff (eg u160 and 15KRPM).
+but I expect it to be faster than any IDE solution (I could be wrong) and
+re-usable for other computer science projects (read database or other
+mutlithreaded IO) when you are done.  <RANT>And you don't need any
+stinking x86 binaries-only software to manage the setup.</RANT>
+
+But I'm not one to stop others from picking solutions that work
+for them.
+
+grant
