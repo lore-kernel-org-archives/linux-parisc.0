@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 73AF248C6
-	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 10:15:09 -0600 (MDT)
-To: Matthew Wilcox <willy@debian.org>
-Subject: Re: [parisc-linux] 2.4.19-rc1-ac6 Merge pa55: #error ...?
-Message-ID: <1026922139.3d35969bd5ebf@webmail.tiscalinet.be>
-Date: Wed, 17 Jul 2002 18:08:59 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
-	Randolph Chung <randolph@tausq.org>,
-	HPPA List <parisc-linux@parisc-linux.org>
-References: <1026832288.1687.57.camel@irongate.swansea.linux.org.uk> <1026913104.3d357350a4057@webmail.tiscalinet.be> <20020717144543.A13352@parcelfarce.linux.theplanet.co.uk> <1026914852.3d357a24c4a4a@webmail.tiscalinet.be> <20020717142915.GG641@tausq.org> <1026922060.5709.148.camel@irongate.swansea.linux.org.uk> <20020717150349.GN8724@tausq.org> <1026925311.5709.153.camel@irongate.swansea.linux.org.uk> <20020717165722.E13352@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20020717165722.E13352@parcelfarce.linux.theplanet.co.uk>
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D08064876
+	for <parisc-linux@parisc-linux.org>; Wed, 17 Jul 2002 11:09:59 -0600 (MDT)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: gcc-3.2 Ok gcc-3.1.1 Ko (was Re: [parisc-linux] gcc-3.2 bootstrap?)
+Message-ID: <1026925794.3d35a4e296ccf@webmail.tiscalinet.be>
+Date: Wed, 17 Jul 2002 19:09:54 +0200 (CEST)
+From: Joel Soete <joel.soete@freebel.net>
+Cc: parisc-linux@parisc-linux.org
+References: <200207161812.g6GICDIp023677@hiauly1.hia.nrc.ca>
+In-Reply-To: <200207161812.g6GICDIp023677@hiauly1.hia.nrc.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -25,26 +23,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Matthew Wilcox <willy@debian.org>:
+Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
 
-> On Wed, Jul 17, 2002 at 06:01:51PM +0100, Alan Cox wrote:
-> > On Wed, 2002-07-17 at 16:03, Randolph Chung wrote:
-> > > Good to know. Incidentally I noticed the asm/pg{alloc,table}.h in
-> your
-> > > tree is quite different from what we have in parisc cvs, and doesn't
-> 
-> > > really compile. Any particular reasons?
+> > > Your problem appears to be with arch/parisc/kernel/parisc_ksyms.c.
+> > > It imports the symbol.
+> > > 
 > > 
-> > Thats still on my pending list to look at harder. 
+> > Simply comment it out will broken to compile with gcc-3.0.x, I
+> suppose?
 > 
-> iirc this was what broke me when trying to merge to marcelo before.
-> someone deleted a line that we'd already deleted or something...
+> I suspect that you can just delete
+> 
+>   extern void $$mulU(void);
+> 
+> and
+> 
+>   #ifndef __LP64__
+>   EXPORT_SYMBOL_NOVERS($$mulU);
+>   #endif
+> 
+> I didn't see any assembly usage of this function in linux and I don't
+> believe gcc uses it (even 3.0.x), so probably the lines can just be
+> deleted.
 > 
 
-IIRC too
+To summarise:
+This clean should be applied without problem (test with gcc-3.2 and gcc-3.0.4)
 
-Remember:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2002-January/015290.html
+This allow me to produce an operational kernel with gcc-3.2 (bootstrap an x);
+telnet, ftp and ssh connection OK
+
+But with gcc-3.1.1 still crashing at the first remote connection?
+
+I will try a more recent CVS update.
+
+Joel
+
+
+
 
 -------------------------------------------------
 This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
