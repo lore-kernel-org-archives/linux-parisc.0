@@ -1,27 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 764624829
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Jan 2003 09:38:34 -0700 (MST)
-Received: from smtp1.fc.hp.com (smtp1b.fc.hp.com [15.15.136.127])
-	by atlrel6.hp.com (Postfix) with ESMTP id C8055225
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Jan 2003 11:38:33 -0500 (EST)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by smtp1.fc.hp.com (Postfix) with ESMTP id 784E13813B
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Jan 2003 09:38:33 -0700 (MST)
-Received: from paul.bame (paul.bame [10.66.2.7])
-	by ldl.fc.hp.com (Postfix) with ESMTP id 69448418C
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Jan 2003 09:38:33 -0700 (MST)
-Received: from fc.hp.com (localhost [127.0.0.1])
-	by paul.bame (Postfix) with ESMTP id 3D59915192
-	for <parisc-linux@parisc-linux.org>; Fri, 17 Jan 2003 09:38:33 -0700 (MST)
-To: Linux/HPPA List <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] CVS checkouts on ftp server 
-In-Reply-To: Your message of "Fri, 17 Jan 2003 18:46:25 +0800."
-             <20030117184623.C23928@neep.com.au>
-References: <20030115122121.C799@neep.com.au> <20030115131651.F26554@parcelfarce.linux.theplanet.co.uk>  <20030117184623.C23928@neep.com.au> 
-Date: Fri, 17 Jan 2003 09:38:33 -0700
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <20030117163833.3D59915192@paul.bame>
+Received: from mx.rollanet.org (mailsrv.rollanet.org [192.55.114.7])
+	by dsl2.external.hp.com (Postfix) with SMTP id CB0EF4884
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 18 Jan 2003 12:16:08 -0700 (MST)
+Subject: Re: [parisc-linux] Is Linux and HP-UX coexistence on same system
+	possible?
+From: Nathan Neulinger <nneul@umr.edu>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030116002646.1973.qmail@web12501.mail.yahoo.com>
+References: <20030116002646.1973.qmail@web12501.mail.yahoo.com>
+Content-Type: text/plain
+Message-Id: <1042917367.5306.29.camel@cessna.rollanet.org>
+Mime-Version: 1.0
+Date: 18 Jan 2003 13:16:07 -0600
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -33,44 +23,43 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > Those aren't currently being generated (AFAIK).  What _is_ being generated
-> > are the patches against upstream: http://ftp.parisc-linux.org/2.5/kernel-sr
-> c/
+Other than the boot lifimage, I wonder if you could actually do this
+with a "contiguous allocation" logical volume, such as is used for
+primary swap? You'd just need an HP utility for passing the block
+boundary information to the linux side or palo. Not sure how'd you'd
+manage the boot though unless you could get palo to boot the hp kernel.
+
+-- Nathan
+
+On Wed, 2003-01-15 at 18:26, Derek Engelhaupt wrote:
+> You can only do it using 2 completely seperate disks or in my case I
+> boot from 2 different LUNs on my Autoraid Model 12 - one LINUX the
+> other HP-UX. 
 > 
-> Ah yes, I saw those.  But then I'll need to make a vanilla Linus tree,
-> and I am lazy.  I mean, streamlined and efficient.  =)
-
-One reason I didn't bother with tarballs for 2.5 is it appears from
-my limited sample that the tradition is per-arch patches -- and it makes
-us appear to be more part of linux development rather than our own thing.
-
-I also find that on slow links, I'm more likely to have a Linus kernel
-tree somewhere nearby (perhaps on my x86 box) so only have to wait through
-transferring the patch.  Less likely with 2.5 of course since it's changing
-fast.
-
-> It'd be nice.  Yes, I'd like it, if it's not a problem for anyone.
-> Otherwise I'll try the above method, or slowly drag it out of CVS.  I'm
-> assuming that occasional linux-2.5 tarballs might be useful for people
-> other than me of course ...
-
-Nobody else has asked.  I just posted a 2.5 tarball in the 2.5 patches
-directory, which can then be kept up to date with CVS or with the
-incremental patches.
-
-> > > Also the /cvs directory contains a few files that look like stuff-ups
-> > > from the CVS tarball roller: linux-.tar.gz and patch-.diff.gz ...
-> > 
-> > I can see them... but I can also see the CVS scripts are still running.
-> > Possibly they'll be renamed later.
+> derek 
 > 
-> Doesn't seem to be; they're empty files (though > 0 bytes from gzip).  I
-> think the checkout script is using an empty variable, eg linux-$i.tar.gz
-> or whatever.  The 'latest' softlinks are to these empty files.  I can't
-> see any likely-looking tarball-rolling scripts in CVSROOT/ so I'm unable
-> to investigate further.
+>  "BUEHL,REINER (HP-Germany,ex1)" <reiner.buehl@hp.com> wrote: 
+>         Hi all,
+>         
+>         Is it possible to install parisc linux into an empty logical
+>         volume of an
+>         existing HP-UX 11 installation and then boot one or the other
+>         OS?
+>         
+>         Best regards,
+>         Reiner.
+>         _______________________________________________
+>         parisc-linux mailing list
+>         parisc-linux@lists.parisc-linux.org
+>         http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
+> ______________________________________________________________________
+> Do you Yahoo!?
+> Yahoo! Mail Plus - Powerful. Affordable. Sign up now
+-- 
 
-Nothing was obviously wrong with the script or log so I'm kicking it
-off again.
-
-	-P
+------------------------------------------------------------
+Nathan Neulinger                       EMail:  nneul@umr.edu
+University of Missouri - Rolla         Phone: (573) 341-4841
+Computing Services                       Fax: (573) 341-4216
