@@ -1,16 +1,14 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] a b180 panic with 2.6.11-rc3-pa3
-Date: Fri, 18 Feb 2005 09:16:49 +0100
-Message-ID: <420B30A200003495@mail-1-bnl.tiscali.it>
-References: <20050216201417.737f4c40@Tatooine.r3z0>
+From: "Michael S. Zick" <mszick@wolfbutter.com>
+Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
+Date: Fri, 18 Feb 2005 08:07:30 -0600
+Message-ID: <200502180807.30480.mszick@wolfbutter.com>
+References: <20050218092835.0E74E3658E2@mail.esiee.fr>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: List Parisc <parisc-linux@lists.parisc-linux.org>
-To: "Thibaut VARENE" <T-Bone@parisc-linux.org>,
- "Max Grabert" <parisc@gmail.com>
+  charset="iso-2022-jp"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050216201417.737f4c40@Tatooine.r3z0>
+In-Reply-To: <20050218092835.0E74E3658E2@mail.esiee.fr>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,67 +19,127 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-...
+On Fri February 18 2005 03:28, Thibaut VARENE wrote:
+> -------------------
+> > On Thu, Feb 17, 2005 at 06:53:52AM -0600, Michael S. Zick wrote:
+> > > I am tracking a timing and/or race condition(s) with x86-udev.
+> > > Debian doesn't use it yet, they still have a hard disk based /dev.
+> > > But it is not a compile time option.
+> > > If you have a 2.6.+ kernel, you have it.
+> > > 
+> > > Try turning it off with the command line option: 'noudev'
 > > 
-> > > [<101bb588>] journal_add_journal_head+0xdc/0x13c
-> > > [<101b4dd8>] journal_dirty_data+0x64/0x1b0
-> > > [<101a6be4>] ext3_journal_dirty_data+0x1c/0x60
-> > > [<101a69a8>] walk_page_buffers+0xe0/0xf0
-> > > [<101a72b8>] ext3_ordered_writepage+0x168/0x1fc
+> > I thought this helped at first.  (2.6.11-rc4-pa1)
+> > Could run spew+"make -j4" over xfs without crashing the box (panic).
+> > 
+> > Then I rebooted with a freshly built kernel (and "noudev")
+> > and right away when I start spew on the XFS file system I get:
 > 
-> Got hit by a similar panic during the night (the kernel uptime was < 5h=
-)
+>  
+> > The only difference in the .config was sym2 driver IOMAPPED.
+> > I had it enabled (using IO Port space) and now disable it
+> > since I really want MMIO space. I'm very skeptical this is
+> > related to the problem.
 > 
-> Kernel Fault code 15
-> Top stack was:
+Try the command line option: pci=routeirq
+
+I know that pa-risc pci is a totally different beast, so can't say
+how much effect the changes in generic affect your systems.
+
+
+> Hmmm.
+> Back in the early days of 2.5, i recall issues with SYM2 in MMIO mode,
+> so that it only worked in PIO mode (I think i had posted something on
+> this m-l about that). At that time i was using ext3 for that matter.
 > 
-> cache_grow
-> cache_alloc_refill
-> kmem_cache_alloc
-> journal_alloc_journal
+> OTOH, XFS relies a lot on memory and cache quality. I don't know how
+> MMIO would interfere with that, but I suspect that if enabling MMIO
+> has the side effect of messing with that somehow, it's very likely XFS
+> won't like it at all. Just a random thought though.
+>  
+> > > If your compile time options include devfs, try turning it 
+> > > off also.  Use the command line option: 'nodevfs'
+> > 
+> > I don't use devfs. Willy won't let me. :^P
 > 
-> and the rest was identical to your dump.
+I have to agree with Willy on this one.
+Taking it out of the kernel is a step forward for the kernel designers.
+
+The udev system, although envisioned as a replacement for devfs
+is much more general and can (could, might) lead to mountable
+cpu and memory segments.
+
+? ? ? ?
+
+To take a cpu off-line, such as for test/maintance:
+mount -o remount,ro /dev/cpu/xxx
+
+To shut it down, such as for replacement:
+umount /dev/cpu/xxx
+
+To take a memory range off-line, such as for test/maintance:
+mount -o remount,ro /dev/mem/<memory-range-id>
+
+To take failed memory range down for replacement:
+umount /dev/mem/<memory-range-id>
+
+These operations are common in both tightly coupled
+smp (symetrical) systems and loosely coupled amp
+(asymetrical) systems. 
+
+A loosely coupled multiple processor system might not
+have all of its cpus and memory in a single box.
+
+Even a tightly coupled multiple processor system used
+for 'non-stop' service can use these features.
+
+This is the real power of what is now the udev system, not
+just dynamic device naming.
+It allows Linux to grow into both a single processor OS
+and a general purpose, parallel processing OS.
+
+It looks to me as if nearly all of the code is in-place, just
+needs some changes in kernel initialization and some
+general consolidation of existing kernel functions.
+
+Mike
+PS: These changes also give new reasons for including
+my version of system sched.c into the kernel as an option
+in 2.9.x
+
+> well, devfs is 3v1l and deprecated, so you'd better not use it :)
 > 
-> IAOQ was alloc_slabmgmt and gr2 was cache_grow
+> > > In my case, for kernels 2.6.8, 2.6.9, 2.6.10 and 2.6.11 -
+> > > If I boot from slow devices (cdrom, zip disk) everything is
+> > > fine, If I boot from fast devices (hard disk) - something isn't
+> > > getting setup the same.
+> > 
+> > Is there a difference in the how the devices are used?
+> > ie. serialized vs. multiple IOs in flight at the same time?
+> > 
+> > I didn't start hitting problems until I lauched a second job
+> > on the same file system.
 > 
-I just come back because after a second read, it looks like the b2k pb re=
-lated
-here:
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/02587=
-0.html>
-
-mmm hard to say if there are actualy the same?
-
-> This was 2.6.11-rc3-pa5 freshly built with Kernel Hacking turned off.
+> Come to think of it, I wonder how the XFS bug you're pointing at can
+> be related to the bug Joel and I reported with ext3:
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/025
+> 867.html
 > 
-That said, today same panic (as related above) on b2k  32bit  but not on
-b180 with the same 2.6.11-rc4-pa1 (cvs dated 20050217).
-
-By chance, I can save a top info at the crash moment:
-top - 06:25:27 up 16:33,  3 users,  load average: 0.91, 0.32, 0.16
-Tasks:  97 total,   2 running,  95 sleeping,   0 stopped,   0 zombie
-Cpu(s):  4.9% us, 13.2% sy,  4.9% ni,  0.0% id, 75.7% wa,  0.7% hi,  0.7%=
-
-si
-Mem:    252696k total,   249768k used,     2928k free,    46300k buffers
-Swap:   255928k total,        0k used,   255928k free,   133572k cached
-
-  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND    
-                                                          
- 9304 nobody    26  10  1816  844  644 R 14.8  0.3   0:00.89 find       
-                                                           
-...
-
-The time stamp seems to tell me to look into cron daily ...
-
-I will try to locate this 'find' task (probably locate db update) and see=
-
-if I can reproduce ;-)
-
-Thanks,
-    Joel
-
-
+> Maybe one would like to try XFS on a non-SYM2 box and see what
+> happens? That way we might have a clue whether sym2's at fault or
+> something else...
+> 
+> My 2 cents in the morning ;)
+> 
+> Thibaut VARENE
+> PA/Linux ESIEE Team
+> http://www.pateam.org/
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
