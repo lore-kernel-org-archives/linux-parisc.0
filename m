@@ -1,18 +1,17 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D98974843
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 18 Feb 2004 23:29:08 -0700 (MST)
-Date: Wed, 18 Feb 2004 23:29:07 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] Hanging with kernels >= 2.4.22
-Message-ID: <20040219062907.GC13916@colo.lackof.org>
-References: <20040218235225.GA1623@calypso>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040218235225.GA1623@calypso>
-Cc: parisc-linux@lists.parisc-linux.org
+Return-Path: <>
+Received: from virascanner1.virascan.dk (virascanner1.virascan.dk
+	[80.82.99.194])
+	by dsl2.external.hp.com (Postfix) with SMTP id 879974843
+	for <parisc-linux@parisc-linux.org>;
+	Thu, 19 Feb 2004 00:28:26 -0700 (MST)
+Date: 19 Feb 2004 07:28:15 -0000
+From: "System Anti-Virus Administrator" <djarnis@virascan.dk>
+To: parisc-linux@parisc-linux.org
+Message-ID: <virascanner1.virascan.dk10771756954264984@virascanner1.virascan.dk>
+MIME-Version: 1.0
+Content-type: text/plain
+Cc: 
+Subject: [parisc-linux] virus found in sent message "hello"
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,23 +21,40 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Feb 18, 2004 at 11:52:25PM +0000, Stuart Brady wrote:
-> I'm having problems with kernels >= 2.4.22 on a 715/100.
 
-[ delete descriptions of hang symptoms ]
+Attention: parisc-linux@parisc-linux.org
 
-Stuart,
-All your symptoms point at disk IO hanging.
-Setting the default queue depth to 1 would be worth trying.
-I've forgotten the details for setting queue depth.
- 
-search parisc-linux mailing list archives "scsi queue tags".
-http://lists.parisc-linux.org/pipermail/parisc-linux/2004-January/022087.html
 
-btw, 715/50 is NOT the same as 715/100.
-715/100 should have "coherent" DMA and 715/50 does not.
+A virus was found in an Email message you sent. 
+This Email scanner intercepted it and stopped the entire message
+reaching its destination. 
 
-Maybe a FAQ entry for "715/xxx hangs" could be your first contribution?
+The virus was reported to be: 
 
-hth,
-grant
+Worm.SomeFool
+
+
+Please update your virus scanner or contact your IT support 
+personnel as soon as possible as you have a virus on your system.
+
+
+Your message was sent with the following envelope:
+
+MAIL FROM: parisc-linux@parisc-linux.org
+RCPT TO:   8.2040103@ab-innovation.dk 
+
+... and with the following headers:
+
+---
+MAILFROM: parisc-linux@parisc-linux.org
+Received: from unknown (HELO ab-innovation.dk) (81.7.133.210)
+  by virascanner1.virascan.dk with SMTP; 19 Feb 2004 07:27:59 -0000
+From: parisc-linux@parisc-linux.org
+To: 8.2040103@ab-innovation.dk
+Subject: hello
+Date: Thu, 19 Feb 2004 08:27:59 +0100
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="20122441"
+
+
+---
