@@ -1,17 +1,17 @@
 From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] CONFIG_DISCONTIGMEM, try 2
-Date: Fri, 9 Jul 2004 01:03:41 -0700
-Message-ID: <20040709080341.GG546@tausq.org>
+Date: Fri, 9 Jul 2004 10:23:38 -0700
+Message-ID: <20040709172338.GI546@tausq.org>
 References: <20040706071459.GA567@tausq.org>
 	<1089136958.1767.534.camel@mulgrave>
+	<20040709080341.GG546@tausq.org>
 Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1089136958.1767.534.camel@mulgrave>
+In-Reply-To: <20040709080341.GG546@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,41 +22,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> We could save space by shifting the pointers before dereferencing. 
-> Since the PTE/PMD pages are page aligned, we don't actually need the
-> lower 12 bits of the pointer.  Although we currently use those bits for
-> page flags, all we're really interested in are valid and present bits so
-> with a bit of shifting, we could make these short pointers address up to
-> 42 bits, which is over the range of even the pa8800's physical memory
-> capabilities (40 bits).
+Things are much clearer after some sleep :) This version should fix the
+problem with crashes seen on b2k/c3k and CONFIG_DISCONTIGMEM. Also made
+a small optimization to the fault handler.
 
-Thanks for the idea :) After that and a bit more debugging I am now able
-to actually allocate all 32GB of memory by userspace applications on the
-n4k (I ran 15 copies of a program that allocated 2GB, and wrote one byte
-to each page). [1]
+Here are some not-very-scientific measurements of the patch:
 
-The new patch is attached. It shifts the phys address by 8 bits, and
-uses 4 bits for flags (only 3 bits are being used now). This gives us
-the capability to address 1TB of physical memory, which is probably
-sufficient for now (FLW? :)
+c3750 (875MHz), 32-bit kernel, 1.5GB phys mem
 
-This needs some more testing on 32-bit... especially Joel's early kernel
-crash problem :( but if there are other comments please let me know,
-otherwise I will commit this soon (after the crash problem is fixed, of
-course). The fault handler is especially rather ugly. Perhaps some asm
-experts can help optimize that a bit.
+with CONFIG_DISCONTIGMEM=y
+allocate 1GB memory (1MB at a time), touch every page
+./memtest 1024  0.09s user 3.35s system 98% cpu 3.507 total
+./memtest 1024  0.11s user 3.37s system 98% cpu 3.522 total
+./memtest 1024  0.10s user 3.37s system 98% cpu 3.526 total
+./memtest 1024  0.10s user 3.36s system 97% cpu 3.534 total
+./memtest 1024  0.08s user 3.38s system 98% cpu 3.525 total
 
-thanks
+'time make clean vmlinux' on a 2.6 tree:
+make clean vmlinux  384.32s user 60.74s system 97% cpu 7:36.75 total
+
+without CONFIG_DISCONTIGMEM=y
+./memtest 1024  0.08s user 3.32s system 97% cpu 3.481 total
+./memtest 1024  0.11s user 3.32s system 97% cpu 3.509 total
+./memtest 1024  0.10s user 3.36s system 98% cpu 3.509 total
+./memtest 1024  0.09s user 3.34s system 97% cpu 3.510 total
+./memtest 1024  0.11s user 3.33s system 98% cpu 3.504 total
+
+'time make clean vmlinux' on a 2.6 tree:
+make clean vmlinux  383.96s user 59.70s system 98% cpu 7:30.89 total
+
+hard to say whether the difference is just regular experimental
+variance... but they seem to be quite small (~1%). however the overall 
+time for memtest seems to be quite large, compared to other
+similar clock-rate systems...
+
 randolph
-
-[1] Interestingly, but perhaps obviously, when you kill 15 
-applications that each have mapped 2GB, it takes quite a long time for
-the processes to go away :)
 -- 
 Randolph Chung
 Debian GNU/Linux Developer, hppa/ia64 ports
 http://www.tausq.org/
-
 
 Index: arch/parisc/Kconfig
 ===================================================================
@@ -103,7 +107,7 @@ RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/entry.S,v
 retrieving revision 1.14
 diff -u -p -r1.14 entry.S
 --- arch/parisc/kernel/entry.S	2 May 2004 16:16:01 -0000	1.14
-+++ arch/parisc/kernel/entry.S	9 Jul 2004 07:46:24 -0000
++++ arch/parisc/kernel/entry.S	9 Jul 2004 16:35:52 -0000
 @@ -455,20 +455,28 @@
  	/* Look up a PTE in a 2-Level scheme (faulting at each
  	 * level if the entry isn't present 
@@ -138,14 +142,15 @@ diff -u -p -r1.14 entry.S
  	shladd		\index,BITS_PER_PTE_ENTRY,\pmd,\pmd
  	LDREG		%r0(\pmd),\pte		/* pmd is now pte */
  	bb,>=,n		\pte,_PAGE_PRESENT_BIT,\fault
-@@ -489,10 +497,16 @@
- 	copy		%r0,\pte
+@@ -486,13 +494,16 @@
+ 	 * under 4GB of memory) */
+ 	.macro		L3_ptep pgd,pte,index,va,fault
+ 	extrd,u		\va,63-ASM_PGDIR_SHIFT,ASM_BITS_PER_PGD,\index
+-	copy		%r0,\pte
  	extrd,u,*=	\va,31,32,%r0
  	ldw,s		\index(\pgd),\pgd
 +	extrd,u,*=	\va,31,32,%r0
 +	bb,>=,n		\pgd,_PxD_PRESENT_BIT,\fault
-+	extrd,u,*=	\va,31,32,%r0
-+	depd		%r0,63,PxD_FLAG_SHIFT,\pgd
 +	extrd,u,*=	\va,31,32,%r0
 +	shld		\pgd,PxD_VALUE_SHIFT,\index
 +	extrd,u,*=	\va,31,32,%r0
@@ -253,29 +258,13 @@ diff -u -p -r1.16 parisc_ksyms.c
 +EXPORT_SYMBOL(node_data);
 +EXPORT_SYMBOL(pfnnid_map);
 +#endif
-Index: arch/parisc/kernel/pdc_cons.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/pdc_cons.c,v
-retrieving revision 1.6
-diff -u -p -r1.6 pdc_cons.c
---- arch/parisc/kernel/pdc_cons.c	19 Jan 2004 05:15:47 -0000	1.6
-+++ arch/parisc/kernel/pdc_cons.c	7 Jul 2004 01:38:17 -0000
-@@ -41,7 +41,7 @@
- 
- /* Define EARLY_BOOTUP_DEBUG to debug kernel related boot problems. 
-  * On production kernels EARLY_BOOTUP_DEBUG should be undefined. */
--#undef EARLY_BOOTUP_DEBUG
-+#define EARLY_BOOTUP_DEBUG 1
- 
- 
- #include <linux/config.h>
 Index: arch/parisc/mm/init.c
 ===================================================================
 RCS file: /var/cvs/linux-2.6/arch/parisc/mm/init.c,v
 retrieving revision 1.6
 diff -u -p -r1.6 init.c
 --- arch/parisc/mm/init.c	24 May 2004 00:58:49 -0000	1.6
-+++ arch/parisc/mm/init.c	9 Jul 2004 07:36:34 -0000
++++ arch/parisc/mm/init.c	9 Jul 2004 15:58:45 -0000
 @@ -5,6 +5,7 @@
   *  Copyright 1999 SuSE GmbH
   *    changed by Philipp Rumpf
@@ -591,7 +580,7 @@ diff -u -p -r1.6 init.c
 -			}
 +		    int j;
 +		    for (j = (node_start_pfn(i) >> PFNNID_SHIFT);
-+			 j < (node_end_pfn(i) >> PFNNID_SHIFT);
++			 j <= (node_end_pfn(i) >> PFNNID_SHIFT);
 +			 j++) {
 +			pfnnid_map[j] = i;
 +		    }
