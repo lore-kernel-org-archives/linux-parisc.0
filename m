@@ -1,24 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from simecity.com (unknown [202.188.254.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 119AB482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Jul 2001 19:02:49 -0600 (MDT)
-Received: (from mail@localhost)
-	by simecity.com (8.9.3/8.8.7) id JAA27674
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Jul 2001 09:13:56 +0800
-Received: from <tltew@simecity.com> (linuxweb1.simecity.com [192.168.3.33]) by cirrus.simecity.com via smap (V2.1)
-	id xma027672; Fri, 27 Jul 01 09:13:28 +0800
-Received: from unknown (HELO linuxweb1.simecity.com) (127.0.0.1)
-  by 0 with SMTP; 27 Jul 2001 01:17:49 -0000
-Date: Fri, 27 Jul 2001 09:17:46 +0800
-From: Tew Tee Li <tltew@simecity.com>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <YsOsfHZbqNSU3kpeNCqLMvF4HIc@simecity.com>
-Subject: [parisc-linux] HP 9000 D Class Enterprise server
+Received: from mail724.SEVEN24 (mail.seventwentyfour.com [209.167.50.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1CE5482A
+	for <parisc-linux@parisc-linux.org>; Fri, 27 Jul 2001 04:28:24 -0600 (MDT)
+Message-ID: <0A6866789C54D511B28300A0C99834D88DC1FB@MAIL724>
+From: Roy Bryant <roybryant@SEVENtwentyfour.com>
+To: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
+Date: Fri, 27 Jul 2001 06:29:37 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Broken link in www.parisc-linux.org
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+There appears to be a problem on this page of your site.
 
-  I'm posting as a totally newbie in parisc-linux arena. Any one has any
-advice regarding setting up the kernel to the above machine? 
+    On your page http://www.parisc-linux.org/weekly/20000310.html
+    when you click on your link to http://www.parisc-linux.org/lists.html
+    you get the error: Not found
 
-TL
+As recommended by the Robot Guidelines, this email is to explain our robot's
+activities and to let you know about one of the broken links we encountered.
+LinkWalker does not store or publish the content of your pages, but rather
+uses the link information to update our map of the World Wide Web.
+
+Are these reports helpful? I'd love some feedback. If you prefer not to
+receive these occasional error notices please let me know.
+
+Roy Bryant
+
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Roy Bryant, roybryant@seventwentyfour.com
+ President
+ SEVENtwentyfour Inc. ("Always watching the Web")
+ http://www.seventwentyfour.com
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
