@@ -1,37 +1,25 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA32200
-	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 15:37:13 -0700
-Received: from localhost (mang@localhost) by cuzea.pair.com (8.9.1/8.6.12) with ESMTP id QAA11172 for <parisc-linux@thepuffingroup.com>; Tue, 8 Feb 2000 16:33:06 -0500 (EST)
-Date: Tue, 8 Feb 2000 16:33:06 -0500 (EST)
-From: Michael Ang <mang@subcarrier.org>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.BSF.4.10.10002081631440.11091-100000@cuzea.pair.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA04258
+	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 18:37:02 -0700
+Received: from hpdst41.cup.hp.com (hpdst41.cup.hp.com [15.16.128.62])
+	by atlrel1.hp.com (Postfix) with ESMTP id 29A4A8221
+	for <parisc-linux@thepuffingroup.com>; Tue,  8 Feb 2000 19:32:21 -0500 (EST)
+Received: from cup.hp.com (hpdst231.cup.hp.com [15.16.129.192]) by hpdst41.cup.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id QAA28782 for <parisc-linux@thepuffingroup.com>; Tue, 8 Feb 2000 16:32:20 -0800 (PST)
+Message-ID: <38A0B5CB.DCF1C486@cup.hp.com>
+Date: Tue, 08 Feb 2000 16:33:15 -0800
+From: Ullas Ponnadi <uponnadi@cup.hp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] files still needing manual merging
+To: parisc-linux@thepuffingroup.com
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Timer Interrupt and Scheduler
 List-ID: <linux-parisc.vger.kernel.org>
 
-Conflicted files which still need to be manually merged using 'cvs up
--jlinus2329 -jlinus2342'
+Could someone give me more insight into how the scheduler would get
+called
+when a timer interrupt happens? I tried tracing through the code
+handling the
+external interrupt and am at a loss trying to figure out this part.
 
-`Makefile'
-`drivers/block/rd.c'
-`drivers/char/Makefile'
-`drivers/char/serial.c'
-`drivers/net/tulip.c'
-`include/asm-arm/arch-ebsa285/hardware.h'
-`include/linux/init.h'`include/linux/mm.h'
-`init/main.c'
-`kernel/resource.c'
-`mm/Makefile'
-`mm/bootmem.c'
+Thanks,
 
-Files which had conflicts and currently have fixes checked in
-drivers/block/ide-dma.c
-drivers/video/fm2fb.c
-fs/Makefile
-fs/buffer.c
-include/linux/init.h
-include/linux/mm.h
-include/linux/ncp_fs.h
-mm/filemap.c
+Ullas Ponnadi
