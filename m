@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fep01-mail.bloor.is.net.cable.rogers.com (fep01-mail.bloor.is.net.cable.rogers.com [66.185.86.71])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E3A5A482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 May 2003 09:07:55 -0600 (MDT)
-Date: Thu, 22 May 2003 11:09:02 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Ulrich Drepper <drepper@redhat.com>
-Cc: libc-alpha@sources.redhat.com,
-	parisc-linux@lists.parisc-linux.org,
+Date: Thu, 22 May 2003 09:15:52 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: Ulrich Drepper <drepper@redhat.com>,
+	libc-alpha@sources.redhat.com, parisc-linux@lists.parisc-linux.org,
 	Randolph Chung <tausq@debian.org>,
 	John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
-Message-ID: <20030522150902.GM21858@systemhalted>
-References: <20030521172929.GB21858@systemhalted> <3ECBBE25.8090302@redhat.com>
+Subject: Re: [parisc-linux] Re: [PATCH] HPPA Linuxthreads.
+Message-ID: <20030522151552.GB22338@dsl2.external.hp.com>
+References: <20030521172929.GB21858@systemhalted> <3ECBBE25.8090302@redhat.com> <20030522150902.GM21858@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3ECBBE25.8090302@redhat.com>
-Subject: [parisc-linux] Re: [PATCH] HPPA Linuxthreads.
+In-Reply-To: <20030522150902.GM21858@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,47 +23,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ulrich,
-
-> The indentation and general style is wrong in many places.
-
-I'll clean this up today and break it into three chunks for even easier
-digestion.
- 
-> >  __pthread_spin_lock (pthread_spinlock_t *lock)
-> >  {
-> > -  unsigned int val;
-> > +	unsigned int *addr = __ldcw_align (lock);
-> > +	
-> > +	while (__ldcw (addr) == 0)
-> > +		while (*addr == 0) ;
+On Thu, May 22, 2003 at 11:09:02AM -0400, Carlos O'Donell wrote:
+> > > +	while (__ldcw (addr) == 0)
+> > > +		while (*addr == 0) ;
+> > 
+> > This is plain wrong.  addr at least must be volatile.
 > 
-> This is plain wrong.  addr at least must be volatile.
+> __ldcw is volatile.
 
-__ldcw is volatile.
+yes, but *addr can be optimized out of the while loop.
 
-Are you suggesting that it is prehaps fragile based on gcc's 
-choice of optimization?
+> Are you suggesting that it is prehaps fragile based on gcc's 
+> choice of optimization?
 
-> And I don't understand why you removed the asm code.  These pieces of
-> code are prime candidates for hand-coding.
+That's another issue. OTOH, I doubt gcc will ever mangle this
+fairly short chunk of code. Maybe post the gcc asm output and
+see if anyone can improve it.
 
-__ldcw is still assembly only. __ldcw_align is a macro. In truth I
-wanted a functioning implementation first, optimization is a close
-second. Though a full assembly version would fix gcc from reordering
-anything.
- 
-> > +static inline struct _pthread_descr_struct * __get_cr27(void)
-> > +{
-> > +	long cr27;
-> > +	asm("mfctl %%cr27, %0" : "=r" (cr27) : );
-> > +	return (struct _pthread_descr_struct *) cr27;
-> > +}
-> 
-> Not a real problem, but you should get gcc to recognize this reqister
-> and perform the loading.
-
-This should get addressed as TLS is implemented for HPPA. I will be
-attending gcc-summit in hopes to discuss this with my colleagues.
-
-c.
+grant
