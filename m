@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: moritz@sinnhq.de
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from <moritz@sinnhq.de>
-   of "Mon, 09 Sep 2002 00:34:28 +0200." <32935.192.168.2.15.1031524468.squirrel@debian.sinnhq.de>
-References: <32935.192.168.2.15.1031524468.squirrel@debian.sinnhq.de> 
-Date: Sun, 08 Sep 2002 22:23:31 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020909042331.75529482A@dsl2.external.hp.com>
-Subject: [parisc-linux] Re: ide controller
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A0DF1482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Sep 2002 10:27:26 -0600 (MDT)
+Date: Mon, 9 Sep 2002 18:27:22 +0200
+Message-ID: <3D3815AF0000F2CA@ocpmta3.be.tiscali.com>
+From: jsoe0708@tiscali.be
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] Inline Assembly Help request
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,28 +20,59 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-moritz@sinnhq.de wrote:
-> hi,
+Hi all,
 
-Hi,
-This is a kernel question. I'm replying to a different list.
+Continuing to figure out how to translate this C in assembly:
+static inline int __put_user_u64(unsigned long long val, unsigned long long
+*  ptr)
+{
+    int  err;
+    err = (int) put_user((unsigned int)(val>>32) ,(unsigned int *)ptr);
+    err |= (int) put_user((unsigned int)val,(unsigned int *)ptr+1);
+    return err;
+}
 
-> i'd like to connect some big ide disks to my hp c240, which is running
-> with debian gnu/linux.i tried an ultra ata ide controller from digitus.
-> but when i load the module, the system crashes after detecting the
-> controller.
+(needed for > evms-1.1.0)
 
-Can you post details of the crash?
-Console output?
-kernel version?
-maybe collect "ser pim" output from "boot_admin>" as well.
+With many luck, I found interresting references about online assembly in
+gcc.
 
-> i think that
-> this is because of the lower voltage in the hp machines compared with an
-> pc. but an standard pci network card works without problems.
-> so does someone now an ide controller which works?
+But I do not yet find explanation about details of the following asm code:
+#define __put_user_asm(stx,x,ptr)                           \
+        __asm__ __volatile__ (                              \
+                "\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
+                "2:\n"                                      \
+                "\t.section __ex_table,\"a\"\n"             \
+                 "\t.word\t1b\n"                            \
+                 "\t.word\t(2b-1b)+1\n"                     \
+                 "\t.previous"                              \
+                : "=r"(__pu_err)                            \
+                : "r"(ptr), "r"(x), "0"(__pu_err))
 
-This has nothing to do with the voltage.
-If the card fits, the voltage is OK.
+which is more clear with gcc -S:
 
-grant
+1:      stw     %r21,0(%sr3,%r19)
+2:
+        .section __ex_table,"a"
+        .word   1b
+        .word   (2b-1b)+1
+        .previous
+
+My questions are:
+what are the actual means "1:", "2:" (seems like label?)
+
+and what means the rest
+".section __ex_table,...
+ ...
+ .previous"
+
+I do not yet found reference on this part (even in Assembly-HOWTO).
+Where could I found doc on this details?
+
+Thanks in advance for attention,
+    Joel
+                          
+
+
+Big Brother Anders  - With Tiscali you will see it all !  Check it up on
+ www.tiscali.be/bigbrother
