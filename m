@@ -1,79 +1,51 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA17785
-	for <parisc-linux@puffin.external.hp.com>; Fri, 21 Jan 2000 11:23:54 -0700
-Received: from br (pm3b-050.billings.mcn.net [208.8.253.50])
-	by missouri.mcn.net (8.9.0/8.9.0) with SMTP id KAA22779
-	for <parisc-linux@thepuffingroup.com>; Fri, 21 Jan 2000 10:24:38 -0700 (MST)
-Message-ID: <000a01bf6433$7ea649c0$32fd08d0@br>
-From: "Carl Johnson" <cjs@mcn.net>
-To: <parisc-linux@thepuffingroup.com>
-Date: Fri, 21 Jan 2000 10:18:09 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA18616
+	for <parisc-linux@puffin.external.hp.com>; Fri, 21 Jan 2000 13:15:20 -0700
+Sender: adevries@thepuffingroup.com
+Message-ID: <3885E8FC.5800EA9@thepuffingroup.com>
+Date: Wed, 19 Jan 2000 11:40:28 -0500
+From: Alex deVries <adevries@thepuffingroup.com>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0007_01BF63F8.D0BDC480"
-Subject: [parisc-linux] J200
+To: Kirk Bresniker <kirkb@chrome.rose.hp.com>
+CC: Matthew Wilcox <willy@thepuffingroup.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Minutes
+References: <200001150016.QAA16991@chrome.rose.hp.com>
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+Kirk Bresniker wrote:
+> | 4. Martin has cleaned up the serial and console code.  He will commit his
+> |    changes tomorrow after he's tested it.
+> 
+> In testing the 2.3 kernel on my D320/1 with an Access Port (AP) card as
+> the console, printk() appeared to be broken.  The mprint() statements in
+> the boot loader seem to function correctly, and the pdc_putc('.')  at
+> the end of realmode_setup() works, but the printk() at the start of
+> iodc_con_init() never outputs.  The chassis codes sent out in
+> realmode_setup() do appear properly on the AP console.
 
-------=_NextPart_000_0007_01BF63F8.D0BDC480
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I'm curious as to exactly what's in a D320, could you add this to the
+hardware database at http://www.thepuffingroup.com/parisc/hw.html?
 
-This is probably the wrong place, but anyhow.
+The console problems you're having are actually global to every machine,
+not just yours.  I think we've solved several console problems, so you
+may want to try again.
 
-I bought a J5000 to replace my J200 last week and have a J200
-for sale:
+> Now the interesting thing in a D-Class with an AP card installed is that
+> the RS-232 connector on the back of the machine is dis-connected from
+> the LASI serial hardware and connected to the AP card hardware. Because
+> of this, regardless of what console path is stored on the machine, the
+> AP card console is what is used, so that there will always be console
+> outptu. 
 
-J200 (770/100)
-128M
-1GB
-HCRX 24bit Graphics
-20" Sony Trinitron (HP A4133A?)
-HP KB & Mouse
-HPUX 10.20 w/ media
-(boots lastest linux CVS kernel via TFTP or local)
+That's true of console output, since we can just use PDC calls. 
+However, it's difficult or impossible to do console input with PDC
+because we'd have to poll for new characters using PDC_CIN, which is a
+bit of a pain.
 
-@ $695.00 US + S/H (UPS Ground $125) OR REALLY GOOD OFFER
+- Alex
 
-
-------=_NextPart_000_0007_01BF63F8.D0BDC480
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>This is probably the wrong place, but=20
-anyhow.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I bought a J5000 to replace my J200 =
-last week and=20
-have a J200</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>for sale:</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>J200 (770/100)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>128M</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>1GB</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>HCRX 24bit Graphics</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>20" Sony Trinitron (HP =
-A4133A?)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>HP KB &amp; Mouse</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>HPUX 10.20 w/ media</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>(boots lastest linux CVS kernel via =
-TFTP or=20
-local)</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>@ $695.00 US + S/H (UPS Ground $125) OR =
-REALLY GOOD=20
-OFFER</FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0007_01BF63F8.D0BDC480--
+-- 
+Alex deVries
+Director of Professional Services
+The Puffins at Linuxcare
