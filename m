@@ -1,20 +1,21 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A100E484B
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri,  6 Feb 2004 23:39:30 -0700 (MST)
-Date: Fri, 6 Feb 2004 22:40:01 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 jejb
-Message-ID: <20040207064001.GU959@tausq.org>
-References: <20040206191631.GQ959@tausq.org>
-	<40218AE20000180F@ocpmta2.freegates.net>
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ABD95484B
+	for <parisc-linux@parisc-linux.org>;
+	Sat,  7 Feb 2004 10:21:09 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1ApW8i-0004OF-BT
+	for parisc-linux@parisc-linux.org; Sat, 07 Feb 2004 17:21:08 +0000
+Date: Sat, 7 Feb 2004 17:21:08 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20040207172108.GV24334@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40218AE20000180F@ocpmta2.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+Sender: <willy@www.linux.org.uk>
+Cc: 
+Subject: [parisc-linux] Merge status with 2.6
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,76 +25,70 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> And because 2.4 64bits runing fine on this system (b2k) and the pb should
-> be located very early at the begining of the kernel start, I had the idea
-> to compare head64.S and vmlinux.lds.S and find back this 2.5 patch and try
-> to revert it. But I very don't undurstand what happen in head64 to hope to
-> help more efficiently :( (sorry) 
 
-Perhaps the problem is this....
+I just got a significant amount of updates merged with Linus, so I
+thought I'd give an update on where we're at merge-wise.  I know this
+is a bit detailed, but I'd appreciate you reading it (particularly if
+you commit code to our CVS) since there's some questions in here.
 
-in head64.S, we used to have:
-        /* And the stack pointer too */
-        load32          PA(init_task_union+TASK_SZ_ALGN),%sp
-        [...]
-        /* Save the rfi target address */
-        std             %r11,  TASK_PT_GR11-TASK_SZ_ALGN(%sp)
+The total size of our diff vs 2.6.3-rc1 is 441434 bytes
+( 78 files changed, 7547 insertions(+), 3413 deletions(-) )
 
-Since the pt_regs struct used to be part of the init_task_union, we do a
-store against the PA of init_task_union, and all is well.
+However, 3 patches were merged after 2.6.3-rc1 was released, bringing that
+down to 432775 bytes
+( 74 files changed, 7502 insertions(+), 3369 deletions(-) )
 
-In the new code, init_task_union is a thread_info, and in order to
-store into the pt_regs we have to first dereference thread_info.task and
-then store into the resulting task pointer....
+Of that, 229111 bytes
+( 23 files changed, 5811 insertions(+), 819 deletions(-) )
+is the input layer changes for ps/2 and HIL.  I'm assuming Helge's taking
+care of merging that with Vojtech (thanks a lot, Helge!)
 
-        /* And the stack pointer too */
-        load32          PA(init_thread_union+THREAD_SZ_ALGN),%sp
-        [...]
-        /* Save the rfi target address */
-        ldo             -THREAD_SZ_ALGN(%sp), %r1
-        ldd             TI_TASK(%r1), %r1
-        std             %r11,  TASK_PT_GR11(%r1)
+Another 163675 bytes
+( 18 files changed, 1062 insertions(+), 2468 deletions(-) )
+is the scsi sym2/ncr work I've been doing in this tree.  I need to finish
+that and merge it with jejb.
 
-so now we are storing into a VA of init_thread_union.task .... oops!
+14231 bytes ( 8 files changed, 342 insertions(+), 7 deletions(-) ) is
+Carlos' compat_signal work.  This is going upstream via akpm and should
+be in 2.6.4.  Excellent work, Carlos.
 
-So, can you try this patch?
+After taking off the files in our tree we don't want to merge upstream
+(the Makefile diff and our todo list), we're left with just 22019 bytes
+of diff ( 22 files changed, 225 insertions(+), 74 deletions(-) ).
 
-Index: arch/parisc/kernel/head64.S
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/head64.S,v
-retrieving revision 1.3
-diff -u -p -r1.3 head64.S
---- arch/parisc/kernel/head64.S	17 Jan 2004 15:00:32 -0000	1.3
-+++ arch/parisc/kernel/head64.S	7 Feb 2004 06:37:57 -0000
-@@ -165,9 +165,9 @@ common_stext:
- #endif /* CONFIG_SMP */
- 
- 	/* Save the rfi target address */
--	ldo		-THREAD_SZ_ALGN(%sp), %r1
--	ldd		TI_TASK(%r1), %r1
--	std		%r11,  TASK_PT_GR11(%r1)
-+	ldd		TI_TASK-THREAD_SZ_ALGN(%sp), %r10
-+	tophys_r1	%r10
-+	std		%r11,  TASK_PT_GR11(%r10)
- 
- #ifndef CONFIG_PDC_NARROW
- 	/* Switch to wide mode; Superdome doesn't support narrow PDC
-@@ -197,9 +197,9 @@ common_stext:
- 
- stext_pdc_ret:
- 	/* restore rfi target address*/
--	ldo		-THREAD_SZ_ALGN(%sp), %r1
--	ldd		TI_TASK(%r1), %r1
--	ldd		TASK_PT_GR11(%r1), %r11
-+	ldd		TI_TASK-THREAD_SZ_ALGN(%sp), %r10
-+	tophys_r1	%r10
-+	ldd		TASK_PT_GR11(%r10), %r11
- 
- 	/* PARANOID: clear user scratch/user space SR's */
- 	mtsp	%r0,%sr0
+Breaking that down:
+drivers/ide/pci/ns87415.c: I pinged Bart about this patch last week.
+drivers/net/tg3.c: Doesn't actually affect PA-RISC; I'll try to get it
+	merged with jgarzik/davem this week.
+drivers/net/tulip: Some of this I'll try to get merged with jgarzik,
+	other bits he wants rewritten before he'll accept.
+drivers/pcmcia: I believe this is jejb's work -- Shall I send it to rmk?
+drivers/serial: I don't think this can go upstream, it's part of our console
+	hackery.
+fs/intermezzo/dir.c: Compile fix, I resent it upstream last week; they promise
+	to get it merged soon.
+fs/smbfs/inode.c: Compile fix for those without uid16.  I'll try and get
+	it upstream this week.
+include/linux/console.h: Console hackery.
+include/linux/mca.h: Need to merge it upstream.
+include/linux/serial_core.h: If this is still needed, it should go upstream.
+kernel/printk.c: Console hackery.
+kernel/resource.c: I added this.  I'll send it to l-k for discussion.
+kernel/sysctl.c: Have we really removed these sysctls or is this a merge
+	artifact?
+sound/oss/kahlua.c: Alan says to simply disable this driver for non-x86
+	as it's used for an embedded board.
 
-randolph
+... and that's it!  I think the only thing that prevents Linus' tree from
+building and working on at least a subset of configurations is the console
+hackery.
+
+We're in really good shape in 2.6, thanks to all of you.
+
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
