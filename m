@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3A69D482C
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Nov 2001 05:55:39 -0700 (MST)
-Received: from gmx.at ([62.178.92.247]) by viefep12-int.chello.at
-          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
-          id <20011117125536.ZCVT1239.viefep12-int.chello.at@gmx.at>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Sat, 17 Nov 2001 13:55:36 +0100
-Message-ID: <3BF65E48.EE40F6F5@gmx.at>
-Date: Sat, 17 Nov 2001 13:55:36 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
+Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AEED0482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 18 Nov 2001 07:44:13 -0700 (MST)
+To: bame@riverrock.org
+Subject: Re: [parisc-linux] Re: rsync for CVS repository
+Message-ID: <1006094625.3bf7c921363b6@webmail.tiscalinet.be>
+Date: Sun, 18 Nov 2001 15:43:45 +0100 (CET)
+From: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
+References: <3BF7C6E2.D6B35170@freebel.net>
+In-Reply-To: <3BF7C6E2.D6B35170@freebel.net>
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Memory expansion for E55 - PS/2 SIMMS ?
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,26 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello HP PARISC specialists !
+Hi Paul,
 
-My E55 server (9000/856) is equipped with 64MB RAM in 2
-slots. 4 slots are free (six in sum).
+One great stuff which makes me prefer rsync versus cvs is that rsync allow me to
+define easily RSYNC_PROXY (afaik cvs did not) and in my working environement
+(behing a fw configure by neanderthal admin) it is a great help.
 
-The modules looks like PS/2 SIMMS (72 pin) !
+But I also understand well your position.
 
-Is it possible to update them with default PC compatible
-PS/2 SIMMs ?
-With/without parity ?
-Are they compatible ?
+	Joel
 
-For using Linux on it (I hope this will be possible one day ....)
-I would like to have more than 64MB !!
+Quoting Soete Joel <joel.soete@freebel.net>:
 
-With friendly regards
-	Christoph 
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2001-November/014545.html
 
 
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
