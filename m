@@ -1,15 +1,17 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] i386 cross-compiler for hppa/hppa64 ?
-Date: Thu, 16 Sep 2004 16:31:18 +0100
-Message-ID: <20040916153118.GA7900@ntlworld.com>
-References: <200409152113.57033.deller@gmx.de>
-	<20040916143812.GB28936@baldric.uwo.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] Re: Need help writing register consistency test?
+Date: Thu, 16 Sep 2004 12:26:41 -0700
+Message-ID: <20040916192641.GG28659@tausq.org>
+References: <20040916172131.GF28936@baldric.uwo.ca>
+	<200409161919.i8GJJk7v007348@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040916143812.GB28936@baldric.uwo.ca>
+In-Reply-To: <200409161919.i8GJJk7v007348@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,21 +22,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Sep 16, 2004 at 10:38:12AM -0400, Carlos O'Donell wrote:
-> If you have time...
-> http://www.parisc-linux.org/toolchain/PARISC-Linux-XC-HOWTO.html
-> 
-> I recommend Dan Kegel's crosstools and build one using his
-> infrastructure please :) His tools autobuild everything and it will take
-> only time to compile the tree. I haven't done this myself because I
-> don't need an x86->hppa but I might set crosstools to run today on my
-> dual cpu box at the office.
+> I'm not sure that this is a syscall problem although it might be.  There
+> weren't any syscalls between the load for r3 and when it was used as far
+> as I can tell.  So, if this is a syscall problem, it would have to be a
+> syscall that was done in a signal handler.  The difficulty in writing
+> a program such as that suggested above is that it has to somehow test
+> all the return paths in the kernel for each syscall.
 
-Debian doesn't have many cross compilers -- is there a reason for this?
-Given the emphasis Debian has on portability, I'm suprised that packages
-for x86->* (at the very least) aren't available...
+yeah, possibly it's something in one of the interruption paths.
+
+Dave, do you have any comments on this:
+http://marc.theaimsgroup.com/?l=linux-ia64&m=109507921717647&w=2
+
+do you think this could be causing problems for us too? (do you do any
+stracing/gdb during your tests?)
+
+randolph
 -- 
-Stuart Brady
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
