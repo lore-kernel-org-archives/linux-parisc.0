@@ -1,32 +1,30 @@
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id SAA27812
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 18:22:19 -0700
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by palrel1.hp.com (Postfix) with ESMTP id 93BE1ADE
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 17:24:27 -0800 (PST)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id B02B337CA7
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 18:26:19 -0700 (MST)
-To: parisc-linux@puffin.external.hp.com
-Mime-Version: 1.0
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA28820
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 20:54:34 -0700
+Received: from storm.ca (ppp002.ottawa.storm.ca [209.87.255.2])
+	by mail.storm.ca (8.9.3+Sun/8.9.3) with ESMTP id WAA17326
+	for <parisc-linux@thepuffingroup.com>; Fri, 17 Nov 2000 22:56:11 -0500 (EST)
+Message-ID: <3A15FD92.DEB522FE@storm.ca>
+Date: Fri, 17 Nov 2000 22:54:58 -0500
+From: Sandy Harris <sandy@storm.ca>
+MIME-Version: 1.0
+To: parisc-linux@thepuffingroup.com
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 17 Nov 2000 18:26:19 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001118012619.B02B337CA7@carmen.fc.hp.com>
-Subject: [parisc-linux] New cross compiler
+Subject: [parisc-linux] Host for 712/60 compiles
 List-ID: <linux-parisc.vger.kernel.org>
 
-I have posted new i386/linux -> hppa/linux cross tools at,
+A couple of us have 16 diskless 712/60s which we want to use for distributed
+processing on easily parallelized tasks like factoring and perhaps crypto
+cracking. A few questions arise.
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20001117.tar.gz
+Is PARISC Linux far enough along to be useful for that? We need no monitor or
+console (except perhaps for initial debugging), no devices except ethernet,
+and expect to run only one process per machine, but we need stability.
 
-it includes 32bit and 64bit cross-compilers and a static 32bit glibc 2.2. I 
-have also updated the include tarball,
+We'll need a host for cross-compiling. We have a 256 meg 715/100 with HP/UX
+which we expect to use as the host for booting, handing out chunks of work,
+storing results, etc. Should we compile there under HP/UX or would we get
+better tools on one of our Intel Linux boxes?
 
-ftp://puffin.external.hp.com/pub/parisc/src/include-20001117.tar.gz
-
-it includes glibc 2.2 headers and the latest kernel headers.
-
--- 
-Matt Taggart
-taggart@fc.hp.com
+Or is PARISC Linux far enough along we should put it on the 715 and get
+native compilation?
