@@ -1,32 +1,31 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA32513
-	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Nov 1999 02:18:33 -0700
-Received: (from mail@localhost) by ns.edelmann.de (8.8.8/8.6.9) id JAA07718 for <parisc-linux@thepuffingroup.com>; Tue, 23 Nov 1999 09:40:16 +0100
-Received: from edelmann.de ([173.57.31.101] (may be forged)) by postbox.w1.edelmann.de (8.8.6 (PHNE_17190)/8.8.0) with ESMTP id KAA17904 for <parisc-linux@thepuffingroup.com>; Tue, 23 Nov 1999 10:19:31 +0100 (MET)
-Message-ID: <383A5C09.76A2A349@edelmann.de>
-Date: Tue, 23 Nov 1999 10:19:06 +0100
-From: Gerhard Klein <G.Klein@edelmann.de>
-MIME-Version: 1.0
-To: HP Linux <parisc-linux@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA02842
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Nov 1999 08:44:20 -0700
+Date: Tue, 23 Nov 1999 16:47:23 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: Grant Grundler <grundler@cup.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Cannot load IPL, error detected
+Message-Id: <19991123164723.F1009@mathe.stud.uni-erlangen.de>
+References: <199911230004.QAA03909@milano.cup.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Upgrade for HP3000/928LX to HP9000/8xx
+In-Reply-To: <199911230004.QAA03909@milano.cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hallo all,
+> Can I assume bootp found the right entry since it knew the IP addresses?
 
-some weeks ago there was a discusion about differences between
-HP3000/xxx and HP9000/xxx. We have a HP3000/928LX. It's possible to
-upgrade HP3000/928LX to HP9000/8xx (changing Bios or so). The problem
-is, that HP doesn't sell the upgrade kit since a few month. Can anybody
-help?
+It looks to me like it might be hardware/network and I've seen similar
+things happening here (where I suspect the flakey component is the network
+card in my bootp server).
 
-Thanks
+> What's changed?
+> I don't know if something my local copy of CVS is wrong or if something
+> in the CVS tree changed.
 
+I still doubt it, you should at least see the boot loader print some
+messages.
 
-Gerhard
+Sure the bootp server is actually running ?
 
---
-http://www.edelmann.de
-mailto:G.Klein@edelmann.de
-Phone: +49 7321 340 368
-Fax:   +49 7321 340 363
+	Philipp Rumpf
