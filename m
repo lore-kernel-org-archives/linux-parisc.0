@@ -1,43 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA19015
-	for <parisc-linux@puffin.external.hp.com>; Sat, 1 May 1999 05:19:20 -0600
-Date: Sat, 1 May 1999 13:18:33 +0200 (CEST)
-From: Hugo van der Kooij <hvdkooij@caiw.nl>
-To: Alex deVries <adevries@redhat.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] The kernel builds!!!
-In-Reply-To: <Pine.LNX.3.96.990501000741.10592S-100000@devserv.devel.redhat.com>
-Message-ID: <Pine.LNX.4.10.9905011317440.5931-100000@bastion.nl3155vj16.vanderkooij.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA27300
+	for <parisc-linux@puffin.external.hp.com>; Thu, 6 May 1999 11:44:14 -0600
+Date: Thu, 6 May 1999 11:42:19 -0700 (PDT)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199905061842.LAA11719@gatekeeper.equator.com>
+To: adevries@redhat.com
+Subject: Re: [parisc-linux] ld problem workaround
+Cc: jason@gatekeeper.equator.com, parisc-linux@thepuffingroup.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 1 May 1999, Alex deVries wrote:
-
-> 
-> On Sat, 1 May 1999, Philipp Rumpf wrote:
-> > prumpf@insula:~/cvs-s/parisc/linux > ls -l vmlinux 
-> > -rwxr-xr-x   1 prumpf   users      353695 May  1 03:01 vmlinux
+> On Thu, 6 May 1999, Philipp Rumpf wrote:
 > > 
-> 
-> I'm pretty sure that this is the first every monolithic kernel to be build
-> for PA RISC.
-> 
-> This is a pretty significant feat, and I'd encourage you wherever you are
-> to stand up and clap your hands/wings to Philipp and everyone else who's
-> helped out. 
+> > Where are the bootloader sources atm ?
+> > 
+>
+> Jason's sources are at:
+>
+> ftp://puffin.external.hp.com/pub/parisc/src/boot_rel_0.2.tar.gz
+>
+> I'm not quite sure how complete they are.  The pain is that because of our
+> lack of ELF32 in binutils these really need to be linked on an HPUX box.
+>
 
-The mere fact is more then a leap for mankind.
 
-GREAT JOB!
+  The source is fairly complete in the sense that the bootstrap can load
+  a kernel image and transfer control to it. If we had a linux kernel, it could
+  be booted today.
+  The source can also be considered less
+  than complete in that it just reads the kernel from a fixed location on
+  the media -- for simplicity, to get linux up and running. Alex and
+  chris have suggested (and this was a thought all along) to have the booter
+  load the kernel from an ext2 file system. With more time, that can be
+  done. It's a bit painful since it involves a stand alone extfs (read only)
+  implementation. Hopefully, we can re-use much of the standard linux code,
+  but I haven't thought about this in detail yet.
 
-Hugo.
-
-        +------------------------+------------------------------+
-        | Hugo van der Kooij     | Hugo.van.der.Kooij@caiw.nl   |
-        | Oranje Nassaustraat 16 | http://www.caiw.nl/~hvdkooij |
-        | 3155 VJ  Maasland      | (De man met de rode hoed)    |
-        +------------------------+------------------------------+
-    "Computers let you make more mistakes faster than any other invention in
-      human history, with the possible exception of handguns and tequila."
-                (Mitch Radcliffe)
+  Jason.
