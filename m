@@ -1,9 +1,9 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] [PATCH] Correctly define mcontext for HPPA
-Date: Tue, 19 Nov 2002 01:07:35 -0500
-Message-ID: <20021119060735.GH12451__44645.4852157787$1416621947$gmane$org@systemhalted>
+Subject: [parisc-linux] [PATCH] Set minimum kernel and unwined_find_fde for HPPA
+Date: Tue, 19 Nov 2002 01:07:11 -0500
+Message-ID: <20021119060711.GG12451__13581.209901213$1416621948$gmane$org@systemhalted>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="wwU9tsYnHnYeRAKj"
+Content-Type: multipart/mixed; boundary="V2AZ19bMCakBLong"
 Cc: debian-glibc@lists.debian.org,
 	parisc-linux@lists.parisc-linux.org
 To: libc-alpha@sources.redhat.com
@@ -18,58 +18,60 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---wwU9tsYnHnYeRAKj
+--V2AZ19bMCakBLong
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 
 libc-alpha,
 
-A machine context is really a signal context.
+The following patch bumps up the minimum kernel required for hppa, and
+thus forces the build environment to have the most recent unaligned 
+handler fixes.
 
-This has never worked correctly in hppa since the
-kernel has always returned a sigcontext instead of
-the struct defined in ucontext.h.
-
-This definition change is made such that glibc
-matches the ABI, rather than presenting an odd
-view of mcontext_t.
-
-The only thought I have...
-
-- Is there enough information in our sigcontext to
-  implement [set,get,make,swap]context calls?
+Due to our old C++ binaries and libraries we will definately require
+libc_cv_gcc_unwind_find_fde=yes in our configure.
 
 c.
 
 ---
 
-2002-08-20  Carlos O'Donell  <carlos@baldric.uwo.ca>
+2002-11-11  Carlos O'Donell  <carlos@baldric.uwo.ca>
 
-        * sysdeps/unix/sysv/linux/hppa/sys/ucontext.h:
-        Define mcontext_t as a sigcontext.
+	* sysdeps/unix/sysv/linux/configure.in:
+	Make 2.4.19 minimum linux kernel for hppa, and add unwind symbols
+	from gcc-3.0 era for backwards compatibility.
+	* sysdeps/unix/sysv/linux/configure: Regenerate.
 
 
---wwU9tsYnHnYeRAKj
+
+--V2AZ19bMCakBLong
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=05-glibc23-hppa-mcontext
+Content-Disposition: attachment; filename=02-glibc23-hppa-min-kern-unwind-fde
 
-diff -urN glibc-2.2.5/sysdeps/unix/sysv/linux/hppa/sys/ucontext.h glibc-2.2.5/sysdeps/unix/sysv/linux/hppa/sys/ucontext.h
---- glibc-2.2.5/sysdeps/unix/sysv/linux/hppa/sys/ucontext.h	2002-08-20 20:50:17.000000000 -0400
-+++ glibc-2.2.5/sysdeps/unix/sysv/linux/hppa/sys/ucontext.h	2002-08-20 20:49:01.000000000 -0400
-@@ -52,11 +52,7 @@
-   } fpregset_t;
- 
- /* Context to describe whole processor state.  */
--typedef struct
--  {
--    gregset_t gregs;
--    fpregset_t fpregs;
--  } mcontext_t;
-+typedef struct sigcontext mcontext_t;
- 
- /* Userlevel context.  */
- typedef struct ucontext
+--- glibc-2.3.1.orig/sysdeps/unix/sysv/linux/configure.in	2002-10-25 21:06:29.000000000 -0400
++++ glibc-2.3.1/sysdeps/unix/sysv/linux/configure.in	2002-11-17 22:09:57.000000000 -0500
+@@ -64,7 +64,8 @@
+     arch_minimum_kernel=2.4.0
+     ;;
+   hppa*)
+-    arch_minimum_kernel=2.3.99
++    libc_cv_gcc_unwind_find_fde=yes  
++    arch_minimum_kernel=2.4.19
+     ;;
+   m68k*)
+     arch_minimum_kernel=2.0.10
+--- glibc-2.3.1.orig/sysdeps/unix/sysv/linux/configure	2002-10-25 21:06:29.000000000 -0400
++++ glibc-2.3.1/sysdeps/unix/sysv/linux/configure	2002-11-17 22:10:17.000000000 -0500
+@@ -101,7 +101,8 @@
+     arch_minimum_kernel=2.4.0
+     ;;
+   hppa*)
+-    arch_minimum_kernel=2.3.99
++    libc_cv_gcc_unwind_find_fde=yes  
++    arch_minimum_kernel=2.4.19
+     ;;
+   m68k*)
+     arch_minimum_kernel=2.0.10
 
-
---wwU9tsYnHnYeRAKj--
+--V2AZ19bMCakBLong--
