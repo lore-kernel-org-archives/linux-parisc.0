@@ -1,17 +1,22 @@
-Return-Path: <brianbarber@myrealbox.com>
-Received: from smtp-send.myrealbox.com (smtp-send.myrealbox.com
-	[192.108.102.143])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 36D8A4854
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 43DE74854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 11 Dec 2003 11:45:42 -0700 (MST)
-From: "Brian Barber" <brianbarber@myrealbox.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Thu, 11 Dec 2003 13:45:43 -0500
-MIME-Version: 1.0
-Message-ID: <1071168343.9d26b700brianbarber@myrealbox.com>
-Content-Type: text/plain; charset="UTF-8"
-Subject: [parisc-linux] Installation on a 712/80
-Reply-To: brianbarber@linux.ca
+	Thu, 11 Dec 2003 11:48:36 -0700 (MST)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com
+	[172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	hBBImWa15161; Thu, 11 Dec 2003 13:48:33 -0500
+Subject: Re: [parisc-linux] C180 - cannot get KDE nor Gnome get running
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: Achim Stolze <Achim.Stolze@t-online.de>
+In-Reply-To: <3FD8B777.2060105@t-online.de>
+References: <3FD8B777.2060105@t-online.de>
+Content-Type: text/plain
+Date: 11 Dec 2003 13:48:14 -0500
+Message-Id: <1071168495.1779.25.camel@mulgrave>
+Mime-Version: 1.0
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,16 +26,27 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I just picked up one of these systems yesterday, and I'm interested in how =
-other folks who own this model went about installing Woody.  As I don't h=
-ave a CDROM, I would like to know these folks' experiences with floppy or=
- net installations.  I have read the documentation and know how to procee=
-d; I would like a little guidance as to what it the best method.  For the=
- sake of information, I have another machine that is running TFTP and can=
- serve up the CDs via NFS.
+On Thu, 2003-12-11 at 13:29, Achim Stolze wrote:
+> Hello all!
+> Woody is now running on my C180. But I cannot get KDE or Gnome started.
+> I tried to configure XFree before starting XServer, but the command 
+> startx causes the error message 
+> "... XIO: fatal IO error 232 (connection reset by peer) on X Server ":0.0" after 0 requests ... with 0 events 
+> remaining."
+>  
+> I am not sure which graphics driver I should use ...
+> 
+> How can I get KDE running?
 
-Cheers,
-BB
---
-Brian Barber, Principal Consultant
-Integrity Computing (www.integritycomputing.tk)
+There were a number of compiler caused bugs in libXt that prevent it
+from executing.
+
+I can get gnome (and presumably kde) running happily on my B180, but
+only if I use the debian testing release, which does have the fixed Xt
+library.
+
+The Xserver you should be using is the framebuffer one (and it *must* be
+configured to match the STI framebuffer settings as output by the kernel
+on boot up exactly).
+
+James
