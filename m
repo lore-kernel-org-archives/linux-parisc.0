@@ -1,16 +1,22 @@
-Return-Path: <mike_brice@hotmail.com>
-Received: from hotmail.com (bay2-f36.bay2.hotmail.com [65.54.247.36])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AEEDD4868
+Return-Path: <carlos@baldric.uwo.ca>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 34BCA4868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed,  7 Jan 2004 21:06:24 -0700 (MST)
-From: "Mike Brice" <mike_brice@hotmail.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Wed, 07 Jan 2004 22:06:23 -0600
+	Wed,  7 Jan 2004 21:22:30 -0700 (MST)
+Date: Wed, 7 Jan 2004 23:14:06 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] scsi problem on a scorpio (715)
+Message-ID: <20040108041405.GA2347@systemhalted>
+References: <3FFC9A15.6FA66B2@tiscalinet.it>
+	<Pine.LNX.4.58.0401072226130.5327@brain.fop.ns.ca>
+	<20040108025218.GA20732@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <BAY2-F36zbAUfKRfcjc0000f6c5@hotmail.com>
-Subject: [parisc-linux] PA-RISC LINUX (0.9.3 release): Hardware Test on HP J
-	workstation (J280)
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040108025218.GA20732@colo.lackof.org>
+Cc: Riccardo <rollei@tiscalinet.it>,
+	parisc linux <parisc-linux@lists.parisc-linux.org>,
+	Steve Bromwich <hppa@fop.ns.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,17 +26,15 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Please add me to your PA/Linux mailing list.
+> On Wed, Jan 07, 2004 at 10:30:30PM -0400, Steve Bromwich wrote:
+> Unless performance is more important than strict correctness, I still
+> reccommend tag queue depth of 8 and disable "Write Cache" setting.
+> Reducing queue depth further typically only limits performance.
 
-The PA-RISC LINUX (0.9.3 release) tests work on the HP J workstation 
-hardware.  Does it work on the HP J280 workstation? Do you have test 
-results?
+My entire cluster was made up of scorpio boxes 715/50's, and I *never*
+had them run stably with anything but a tag queue depth of 1.
 
-Thanks,
+Grant, I'm pretty sure me and you had this exact conversation like 2
+years ago :)
 
-:-) Mike Brice
-Internet: mike_brice@hotmail.com
-
-_________________________________________________________________
-Tired of slow downloads? Compare online deals from your local high-speed 
-providers now.  https://broadband.msn.com
+c.
