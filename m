@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 788304840
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Jun 2002 14:38:18 -0600 (MDT)
-To: s-clarob@st-aidans.cumbria.sch.uk
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] pppconfig & 24bit colour 
-In-Reply-To: Message from s-clarob@st-aidans.cumbria.sch.uk
-   of "Mon, 10 Jun 2002 08:51:27 BST." <5.1.0.14.0.20020610084610.026cfc70@10.106.16.2>
-References: <5.1.0.14.0.20020610084610.026cfc70@10.106.16.2> 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 10 Jun 2002 14:38:15 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020610203815.8349B380D5@carmen.fc.hp.com>
+Received: from hal.pp.fishpool.fi (hal.pp.fishpool.fi [195.197.229.212])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0BFD44842
+	for <parisc-linux@parisc-linux.org>; Mon, 10 Jun 2002 14:42:47 -0600 (MDT)
+Date: Mon, 10 Jun 2002 23:42:31 +0300 (EEST)
+From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
+To: "b.gunreben" <b.gunreben@web.de>
+Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] 712-60 XFree86 mouse driver problems
+In-Reply-To: <3D035E00.7FBAF703@web.de>
+Message-ID: <Pine.LNX.4.21.0206102341110.8495-100000@hal.pp.fishpool.fi>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +22,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-s-clarob@st-aidans.cumbria.sch.uk writes...
+On Sun, 9 Jun 2002, b.gunreben wrote:
 
-> 2 Quick questions,
-> 
-> 1. Is it possible to get the 24bit colour recovery to work with 
-> PARISC-Linux on a 715/100 ?
+> Martin-=C9ric Racine wrote:=20
+> > On my 712-60, I've had to call my mouse "fups2" in gpm.conf but enablin=
+g the
+> > same repeater didn't get X to use it.
 
-The Color Recovery extension is only available in the HP-UX Xserver. No one 
-has been able to run the HP-UX Xserver on palinux yet.
+> There may be problems, if you run gpm while running X. You can try to swi=
+tch
+> of gpm when running X.  Another possibility is to use the gpm repeater fo=
+r X
 
-> 2. when running pppconfig, the said 715/100 tries to detect the modem and 
-> then hangs. It's heartbeat goes out and it dumps some output top the sti ( 
-> not had a chance to write it down yet ). is there any known issues with 
-> either pppconfig or the serial drivers in relation to the 715?
+Please re-read what I have written.  Repeater fails.
 
-I seem to remember a problem with PPP, check the list archive. Updating 
-your kernel is probably a good idea too.
-
--- 
-Matt Taggart
-taggart@fc.hp.com
+--=20
+Martin-=C9ric Racine, Helsinki, Finland.
+http://www.pp.fishpool.fi/~q-funk/
++358 41 474 0289
