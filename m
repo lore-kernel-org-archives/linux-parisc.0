@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (unknown [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CE2D0482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 04:26:41 -0700 (MST)
-To: taggart@carmen.fc.hp.com, parisc-linux@lists.parisc-linux.org
-Message-ID: <1006335670.3bfb76b6afefe@webmail.tiscalinet.be>
-Date: Wed, 21 Nov 2001 10:41:10 +0100 (CET)
-From: joel.soete@freebel.net
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] Re: Toolchain improved, archive better, proceed with caution
+Received: from sh.od.inet (cr821974-a.lndn1.on.wave.home.com [24.112.142.143])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 583BE482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Nov 2001 07:39:55 -0700 (MST)
+Date: Wed, 21 Nov 2001 09:40:04 -0500
+From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+To: "BRANN,PAMELA (HP-FtCollins,ex1)" <pamela_brann@hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PA-RISC 2.0 Architecture Documentation now available in PDF Forma t
+Message-ID: <20011121094004.L8748@systemhalted>
+References: <AB57FCC5E303D511BB8F00A0C9F485C205EE4FC5@xfc02.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <AB57FCC5E303D511BB8F00A0C9F485C205EE4FC5@xfc02.fc.hp.com>; from pamela_brann@hp.com on Tue, Nov 20, 2001 at 09:26:21AM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,21 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Matt,
+> 
+> HP's Developer and Solution Partner Portal (DSPP) is proud to announce the
+> addition of the PA-RISC 2.0 Architecture Documentation in PDF format.  This
+> resource is now available to you in hard copy, PDF or HTML - all from the
+> PA-RISC topic area of the DSPP.
+>
 
-Yesterday evening, I just finished the apt-get dist-upgrade (via apt offline
-procedure) (which is not very accurate but operational with relevant changes) of
-my 712 box first and all seems OK :)).
+Wonderfull!
+Many thanks to all the people who put in the hard work!
+Now I can add to my growing list of documentation!
 
-Then I launch (what I do the most) the compilation of a kernel (2.4.14-pa2)(it
-just take time because 712 is a bit slow) and all seems OK too (no Error just
-some usual warning).
-
-Just install and reboot with this kernel and all seems find till now (XFree,
-Xfce,...).
-
-Thanks to all for great job
-        Joel
-
--------------------------------------------------
-This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
+Cheers,
+Carlos O'Donell Jr. 
