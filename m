@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 29 Jul 2003 12:51:30 -0600
+Date: Tue, 29 Jul 2003 12:55:21 -0600
 From: Grant Grundler <grundler@parisc-linux.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	Matthew Wilcox <willy@debian.org>,
+	Grant Grundler <grundler@parisc-linux.org>,
 	parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] Generic light-weight syscall.
-Message-ID: <20030729185130.GA22989@dsl2.external.hp.com>
-References: <20030725063739.GA13017@systemhalted> <20030725113700.GH1485@parcelfarce.linux.theplanet.co.uk> <20030726174845.GF31744@systemhalted> <20030726180031.GG31744@systemhalted> <20030727122745.GC16753@dsl2.external.hp.com> <20030728155703.GA32553@systemhalted> <20030728174551.GC3840@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <20030729185521.GB22989@dsl2.external.hp.com>
+References: <20030725113700.GH1485@parcelfarce.linux.theplanet.co.uk> <20030726174845.GF31744@systemhalted> <20030726180031.GG31744@systemhalted> <20030727122745.GC16753@dsl2.external.hp.com> <20030728155703.GA32553@systemhalted> <20030728174551.GC3840@parcelfarce.linux.theplanet.co.uk> <20030728190455.GE32553@systemhalted> <20030728191420.GE3840@parcelfarce.linux.theplanet.co.uk> <20030728211012.GC6706@sleepie.demon.co.uk> <20030729175057.GA17107@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030728174551.GC3840@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20030729175057.GA17107@systemhalted>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,24 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jul 28, 2003 at 06:45:51PM +0100, Matthew Wilcox wrote:
+On Tue, Jul 29, 2003 at 01:50:58PM -0400, Carlos O'Donell wrote:
+>         unsigned long cr16;
+>         asm("mfctl %%cr16, %0" : "=r" (cr16) : );
+>         printf("cr16=%lu\n",cr16);
+
+this only gets you the CR16 for *that* CPU.
+Not useful since CR16 isn't syncronized at powerup between CPUs.
+At least I don't think that's the case...maybe Kirk Bresniker knows
+how that works. We've talked about this before on parisc-linux.
+
 ...
-> > It might be too costly to do the sync'ing all the time, and too costly
-> > for a fast gettimeofday to do a sync at the polling point.
+> With the comment I don't quite understand:
+> linux-2.4/arch/parisc/kernel/time.c
+>    /*
+>     * FIXME: This won't work on smp because jiffies are updated by cpu
+>     * 0.
+>     *    Once parisc-linux learns the cr16 difference between
+>     *    processors,
+>     *    this could be made to work.
+>     */
 
-If they all use the same clock source they won't drift.
+This is what I've been trying to explain.
 
-> > gettimeofday. Do we even have such a fast clock on PA? What is the
-> > fastest clock across the most boxes?
+> Does that mean that our time granularity drops drastically in the SMP
+> case? We loose usec! (2.4 and 2.5 kernels)
 
-cr16
-
-> You know, you don't even need kernel help for this.  According to page
-> 2-5 of the Kane book, the Interval Timer is accessible by non-privileged
-> instructions.
-
-One needs kernel help in determining the difference between CPUs
-and handling CR16 rollover (mostly a problem for 32-bit machines).
-But then user space can read CR16 and "normalize" the time.
+not by much.
 
 grant
