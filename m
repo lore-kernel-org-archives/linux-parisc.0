@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 706EE486E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 20:56:13 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id umwylaaa for parisc-linux@lists.parisc-linux.org; Tue, 12 Mar 2002 20:55:43 -0700
-Date: Tue, 12 Mar 2002 19:56:01 -0800
-From: Randolph Chung <tausq@debian.org>
-To: Matthew Wilcox <willy@debian.org>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+Received: from www.riverrock.org (rrc.dsl.frii.net [216.17.137.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C51F9486B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Mar 2002 21:26:37 -0700 (MST)
+Message-Id: <m16kqpC-000KyQC@phantom.home>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: Gururaj Ananthateerta <gururaj@cup.hp.com>,
 	parisc <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Switch console error.
-Message-ID: <20020313035601.GL730@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20020312201309.H30538@parcelfarce.linux.theplanet.co.uk> <3C8E6704.81F14945@cup.hp.com> <20020312204919.I30538@parcelfarce.linux.theplanet.co.uk> <3C8E8520.EC6877E3@cup.hp.com> <20020312225858.A979E38556@carmen.fc.hp.com> <3C8E8A6F.2AD5761C@cup.hp.com> <20020312234838.K30538@parcelfarce.linux.theplanet.co.uk> <willy@debian.org> <20020313014206.75AA54851@dsl2.external.hp.com> <20020313024719.N30538@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020313024719.N30538@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [parisc-linux] new vmlinux!!! 
+In-Reply-To: Your message of "Tue, 12 Mar 2002 10:24:45 MST."
+             <20020312172445.B11A64849@dsl2.external.hp.com>
+References: <20011001175425.A31305@dogbert.localdomain> <Pine.NEB.4.33.0110021434430.24166-100000@www2.scram.de> <20011005222028.A13585@dogbert.localdomain> <20011005215600.B3745@parcelfarce.linux.theplanet.co.uk> <20011005233602.A13826@dogbert.localdomain> <3C8D3619.519A601C@cup.hp.com>  <20020312172445.B11A64849@dsl2.external.hp.com> 
+Date: Tue, 12 Mar 2002 11:16:38 -0700
+From: Paul Bame <bame@riverrock.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,21 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> [1] I would have given a reference here, but
-> http://h21007.www2.hp.com/dspp/tech/tech_TechDocumentDetailPage_IDX/1,1701,959,00.html
-> gives me a Redirection Limit exceeded error... hopefully this will get
-> fixed soon.
+> Gururaj Ananthateerta wrote:
+> > I have 3 partitions on primary disk
+> >    Device Boot    Start       End    Blocks   Id  System
+> > /dev/sda1             1        95     97264   f0  Linux/PA-RISC boot
+> > /dev/sda2            96       339    249856   82  Linux swap
+> > /dev/sda3           340      8683   8544256   83  Linux
+> 
+> partitions are fine.
 
-until it gets fixed, you can get the PDF version
+Actually they're not.  This is a frequent install problem and I've
+replied off the list about it.  The root partition passes the 2G limit
+and Gururaj now has a small /boot I think.
 
-it's in appendix F, in the dead-tree book format it's on page F-5.
-Here's the PDF:
-
-http://h21007.www2.hp.com/dspp/files/unprotected/parisc20/PA_F_TLB_cache.pdf
-
-not that i know what it means after i read the section... :-)
-
-randolph
--- 
-Debian Developer <tausq@debian.org>
-http://www.TauSq.org/
+	-P
