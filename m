@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A22CB482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Dec 2001 03:56:17 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 0B129B00C; Wed, 19 Dec 2001 10:55:09 +0000 (GMT)
-Date: Wed, 19 Dec 2001 10:55:09 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: "Bryan W. Headley" <bheadley@interaccess.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [Fwd: Re: 735 and SCSI (was: Re: [parisc-linux] Firmware upgraded, STI console problem)]
-Message-ID: <20011219105508.V1897@linuxcare.com>
-References: <3C1E108A.40706@interaccess.com>
-Mime-Version: 1.0
+Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3BF32482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Dec 2001 04:16:36 -0700 (MST)
+Received: from computer (pec-53-205.tnt1.b2.uunet.de [149.225.53.205])
+	by post.webmailer.de (8.9.3/8.8.7) with ESMTP id MAA00739
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Dec 2001 12:12:08 +0100 (MET)
+Date: Wed, 19 Dec 2001 13:28:44 +0100
+From: Joerg Hartmann <J.Hartmann@reinarts.de>
+Reply-To: Joerg Hartmann <J.Hartmann@reinarts.de>
+Message-ID: <881475869708.20011219132844@reinarts.de>
+To: parisc-linux Mailinglist <parisc-linux@lists.parisc-linux.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3C1E108A.40706@interaccess.com>; from bheadley@interaccess.com on Mon, Dec 17, 2001 at 09:34:34AM -0600
+Subject: [parisc-linux] can not get samba to work
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,18 +24,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Dec 17, 2001 at 09:34:34AM -0600, Bryan W. Headley wrote:
-> Since my C110 has a fast/wide, and so does my 735, I'm in the bad spot 
-> of never really having either machine fully boot up. The CDROM drive I 
-> have doesn't "like" RW discs, so I'd love to see someone stamp out a 
-> Woody-ish master that I can read from.
+Hello parisc-linux users,
 
-FWD disks on 53c720 on C110 should work these days.  Either use a recent
-kernel, or use the workaround in the 0.9.3 ISO errata.  They wont work on
-the 735 because the processor on that box doesn't support consistent
-memory (pci_alloc_consistent() fails).
+i can not get samba to work on my 720 with the 0.9.3 Debian.
+smbd dies immediatly with an error message in log.smbd:
+[2001/12/16 19:51:43, 0] lib/messages.c:message_init(97)
+  ERROR: Failed to initialise messages database
 
-My parisc boxes don't like CD-RW disks either, but are quite happy with
-CD-R disks I burn myself.
+A messages.tdb exists. Every tool seems to have problems with *.tdb
+hp-tux:/usr/src/samba-2.2.2/source/bin# ./smbstatus -s /etc/samba/smb.conf
+connections.tdb not initialised
 
-Richard
+First i had installed the samba (v 2.2.2) package from the CD with
+apt-get. After that didn't worked, i removed it and compiled my own from
+the native source. Same problem - same error.
+
+./configure and make went smoothly so i dont understand
+what the reason of this error is.  
+
+As i thought this would be a samba error i asked for help
+on the samba mailing list, but did not get an answer.
+So i am now stuck with this error ...
+Does anyone use samba on parisc-linux ?
+Could this be a problem with some underlying software which samba
+depends on ?
+I use samba since years on x86-Linux and have never seen such things
+bevore.
+
+-- 
+Best regards,
+ Joerg                          J.Hartmann@reinarts.de
