@@ -1,33 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA24095
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:16:40 -0700
-Date: Thu, 30 Nov 2000 16:18:46 -0200 (BRST)
-From: "Jorge L. deLyra" <delyra@latt.if.usp.br>
-To: Grant Grundler <grundler@cup.hp.com>
-cc: Steve Moret <smoret@uci.edu>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HP 9000/735-125 
-In-Reply-To: <200011301807.KAA29437@milano.cup.hp.com>
-Message-ID: <Pine.LNX.3.96.1001130161306.19194B-100000@latt.if.usp.br>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA24456
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:20:19 -0700
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Helge Deller <deller@gmx.de>
+To: "Jorge L. deLyra" <delyra@latt.if.usp.br>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000/735-125
+Date: Thu, 30 Nov 2000 19:21:38 +0100
+Cc: assirati@socrates.if.usp.br
+References: <Pine.LNX.3.96.1001130134528.16737A-100000@latt.if.usp.br>
+In-Reply-To: <Pine.LNX.3.96.1001130134528.16737A-100000@latt.if.usp.br>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-Id: <00113019213802.00309@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > I will go under the assumption that it could be the disks and their
-> > possible age and try and find suitable replacements.
-> 
-> Possible - sometimes just jumpers are missing or need to be removed.
-> Make sure disks spinup on their own first.
-> 
-> I'm not sure Linux SCSI disk driver knows how to deal with
-> "Not ready" and/or send START_UNIT commands. HPUX definitely does.
+On Thursday 30 November 2000 16:49, Jorge L. deLyra wrote:
+> OK, rbootd is up and running, the station now establishes instantaneous
+> communication with the server. But it says "bad LIF magic" and does not
+> boot. I presume I can't just put the precompiled kernel in there. Since
+> I cannot cross-compile for the time being (bad HP server disk crash) is
+> there a net-boot kernel somewhere that I can download and try?
+>
+> 							Cheers,
 
-The kernel on the v0.5 ISO image did spin up the disk on the SCSI bus when
-I tried booting it the first time, right after turning on the machine. It
-hangs later, but has no problems at this point... On subsequent tries the
-disks were already spinning, of course, so it did nothing...
+Hi,
 
-----------------------------------------------------------------
-        Jorge L. deLyra,  Associate Professor of Physics
-            The University of Sao Paulo,  IFUSP-DFMA
-       For more information: finger delyra@latt.if.usp.br
-----------------------------------------------------------------
+Just a thought: are you shure, that you did "make palo" and exported 
+palo/lifimage  instead of vmlinux ?
+
+Greetings,
+
+	Helge.
