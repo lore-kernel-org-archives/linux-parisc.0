@@ -1,14 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 15 Jan 2003 19:11:11 -0700
-To: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Interesting network card ...
-Message-ID: <20030116021111.GD8543@dsl2.external.hp.com>
-References: <20030115085619.GA17760@aurinko.ntc.nokia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030115085619.GA17760@aurinko.ntc.nokia.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Received: from mail.apptechsys.com (mail.apptechsys.com [207.14.35.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 128DF4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 15 Jan 2003 21:12:20 -0700 (MST)
+Date: Wed, 15 Jan 2003 20:12:18 -0800 (PST)
+From: Jeremy Drake <jeremyd@apptechsys.com>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: jsoe0708@tiscali.be, Randolph Chung <tausq@debian.org>,
+	"" <parisc-linux@lists.parisc-linux.org>,
+	"" <debian-hppa@lists.debian.org>
+Subject: Re: [parisc-linux] new gcc-default for hppa
+In-Reply-To: <20030116010620.GB8543@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.50.0301152007120.1998-100000@ssh.apptechsys.com>
+References: <3DED9A6600005A12@ocpmta3.freegates.net> <3E1AA52C0000167E@ocpmta1.freegates.net>
+ <20030116010620.GB8543@dsl2.external.hp.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,35 +26,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jan 15, 2003 at 10:56:20AM +0200, Nahkola Mikko wrote:
-> What's the deal with the various HP-branded tulip-based NICs? Are they 
-> expected to "just work" or what?
+On Wed, 15 Jan 2003, Grant Grundler wrote:
 
-yes.
+> Have you tried sending UDP (not TCP) traffic?
+> (Not sure how to do that...suggestions?)
+> 
+netcat: cat /something | nc -u host port
 
-> I found one that sure doesn't, but then 
-> again, but my kernel isn't actually new ... (2.4.18-32 packaged)
-
-...a newer kernel would be more interesting.
-
-> The card is the HP ANA-6911A/AUI (yes, it's a 10/100BT with coax and 
-> AUI too), part# A3738-60001, and it _is_ found by the tulip driver, but 
-> for some reason the driver claims that "no MII transceiver found",
-
-This does sound like a bug (fixed) in the tulip driver relating to
-MII initialization. But I'm surprised to see it manifest on a C240.
-
-One should be aware that HP sold 4 different flavors of single port
-100BT cards based on tulip chipsets. IIRC, they were:
-o PCI "server" 
-o GSC (card-mode Dino)
-o PCI "workstation"
-o PCI V-class only
-
-(and an NIO 100BT also that I don't know anything about).
-
-And each had a different HP-UX driver to go with it (btlan3-6).
-Eventually all 4 drivers were merged into one but that's still fairly
-recent history.
-
-grant
+-- 
+You were s'posed to laugh!
