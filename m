@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pilchuck.reedmedia.net (pilchuck.reedmedia.net [209.166.74.74])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 68B5D4870
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 19:21:28 -0700 (MST)
-Date: Wed, 20 Feb 2002 18:21:24 -0800 (PST)
-From: "Jeremy C. Reed" <reed@reedmedia.net>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Is there a hard-drive image for PA-RISC Linux
- 0.9.3?
-In-Reply-To: <3C7456F0.809@earthlink.net>
-Message-ID: <Pine.LNX.4.43.0202201818570.30896-100000@pilchuck.reedmedia.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7326B4869
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 20 Feb 2002 20:04:14 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16djWm-0005ox-00; Thu, 21 Feb 2002 03:04:12 +0000
+Date: Thu, 21 Feb 2002 03:04:12 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: "Jeremy C. Reed" <reed@reedmedia.net>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Is there a hard-drive image for PA-RISC Linux 0.9.3?
+Message-ID: <20020221030412.B27212@parcelfarce.linux.theplanet.co.uk>
+References: <3C7456F0.809@earthlink.net> <Pine.LNX.4.43.0202201818570.30896-100000@pilchuck.reedmedia.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.43.0202201818570.30896-100000@pilchuck.reedmedia.net>; from reed@reedmedia.net on Wed, Feb 20, 2002 at 06:21:24PM -0800
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,20 +25,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, 20 Feb 2002, Bryan W. Headley wrote:
+On Wed, Feb 20, 2002 at 06:21:24PM -0800, Jeremy C. Reed wrote:
+> Wel, I have the CD burner; I just don't have a SCSI CD drive for my HP 710 :)
 
-> > Isn't it possible to use 'dd if=palinux.iso of=/dev/sda' and end up with a
-> > "CD on a disk"? Or somethign similar? Would require a disposable 1G SCSI
-> > drive, but it'd at least work...
+I think you'd be better off netbooting, personally.
 
-I didn't think that this was possible, but I can give it a try.
-
-> Assuming no "reasonable assumptions" made by the boot ROM precludes it
-> ("iso9660 on a disc? No.") Worst case is mount the iso image on another
-> linux box, and use nfsroot/rboot. Personally, I'd just find a friend
-> with a CD burner and write on CD/R media. Lot less cantankerous, believe me!
-
-Wel, I have the CD burner; I just don't have a SCSI CD drive for my HP 710 :)
-
-   Jeremy C. Reed
-   http://www.reedmedia.net/
+-- 
+Revolutions do not require corporate support.
