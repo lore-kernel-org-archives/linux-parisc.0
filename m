@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EE5DE4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 08:29:38 -0700 (MST)
-Date: Thu, 3 Apr 2003 17:29:37 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0ECE14829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 08:40:33 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscali)
+	id 1916pL-0006uD-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 03 Apr 2003 17:40:31 +0200
+Date: Thu, 3 Apr 2003 17:40:30 +0200
+Message-ID: <3E8AE87E00000E4E@ocpmta2.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Kernel 2.4.20 build error
-Message-ID: <20030403152936.GN23095@lug-owl.de>
-References: <5849494679bc7010.79bc701058494946@unitec.edu>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Ie5iOtK4e9kgqh2F"
-In-Reply-To: <5849494679bc7010.79bc701058494946@unitec.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] break 0,0: pid=304 command jade ??
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,41 +24,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---Ie5iOtK4e9kgqh2F
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-On Thu, 2003-04-03 08:55:11 -0600, Ricardo Jose Guevara Ochoa <jguevara@uni=
-tec.edu>
-wrote in message <5849494679bc7010.79bc701058494946@unitec.edu>:
-> >=20
-> > turn on CONFIG_PROC_FS
->=20
-> Where do i turn it on? in a file /arch/parisc/defconfig it's already=20
-> turn on.
+I just buy A. S. Tanenbaum's book "Operating Systems: Design and Implementation"
+and its MINIX should run on bochs.
 
-"make menuconfig" or "make config" of "make xconfig" or ...
+I try so to compile the last bochs release onto a my unstable debian pariec
+linux.
+This failled at the build of docbook because 'jade' failed on following
+trap:
+Trace/breakpoint trap
 
-MfG, JBG
+# dmesg show me then:
+break 0,0: pid=304 command='jade'
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001111 Not tainted
+r00-03  00000000 4072b5a4 4071a687 00000005
+r04-07  4072b4d4 faf0060c 00000000 40026e40
+r08-11  40000238 0000000a 00000000 00000000
+r12-15  000dbb28 000f7508 000f7508 000f75a8
+r16-19  00000000 00000000 00014000 4072b4d4
+r20-23  00000000 00000000 40000238 00000005
+r24-27  40000658 0000001a 00000001 00100600
+r28-31  00000005 0000005f faf00700 4071a687
+sr0-3   00000300 00000300 00000000 00000300
+sr4-7   00000300 00000300 00000300 00000300
 
---Ie5iOtK4e9kgqh2F
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+IASQ: 00000300 00000300 IAOQ: 4000023b 4000023f
+ IIR: 00000000    ISR: 00000000  IOR: 00000000
+ CPU:        0   CR30: 1e580000 CR31: 103d0000
+ ORIG_R28: 00000000
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+Is somebody could help me to understand what happened with this trap?
 
-iD8DBQE+jFNgHb1edYOZ4bsRAu7wAKCRLQ0FlW+PXlVcghjTcxGFzkFsiQCfQ6Qk
-3Shs8RyXyYDAdhOHvwx0a58=
-=ogf1
------END PGP SIGNATURE-----
+Thanks in advance,
+    Joel
 
---Ie5iOtK4e9kgqh2F--
+
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
