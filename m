@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] DIFF use 6-regs in copy_user_page_asm
-Date: Tue, 4 Jan 2005 19:00:43 -0500 (EST)
-Message-ID: <200501050000.j0500iKD024978@hiauly1.hia.nrc.ca>
-References: <20050104233920.GB2857@colo.lackof.org>
+From: Ryan Bradetich <rbradetich@uswest.net>
+Subject: Re: [parisc-linux] more cpup.c results
+Date: Wed, 05 Jan 2005 01:40:56 -0700
+Message-ID: <1104914456.8221.34.camel@beavis>
+References: <20050105055412.68E06495698@palinux.hppa>
+	<20050105061613.GA12455@colo.lackof.org>
+Reply-To: rbradetich@uswest.net
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
+Content-Type: text/plain
 Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050104233920.GB2857@colo.lackof.org> from "Grant Grundler" at
-	Jan 4, 2005 06:39:20 pm
+In-Reply-To: <20050105061613.GA12455@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,44 +21,135 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> The pipeline on PA-8x00 can load 4 instructions at a time.
-> How those 4 instructions get executed depend on interlocks (e.g.
-> register is in still use by previous insn) and if the CPU/mem units are
-> available.  AFAIK, PA8x00 processors support 2 loads/cycle,
-> 2 stores/cycle, 2 shift+merge ops/cycle, 2 FP Div/cycle, etc. 
-> "Keeping the pipeline busy" is just as much a function of instruction
-> scheduling by programmer/compiler as re-ordering by the CPU.
-> One really needs to keep track of which resources are available.
+Grant,
 
-This is what the GCC machine definitions says:
+> Can folks try this on PA8000 and PA82000 for me?
+> Check /proc/cpuinfo if you aren't sure what you have.
 
-;; The PA8000 has a large (56) entry reorder buffer that is split between
-;; memory and non-memory operations.
-;;
-;; The PA8000 can issue two memory and two non-memory operations per cycle to
-;; the function units, with the exception of branches and multi-output
-;; instructions.  The PA8000 can retire two non-memory operations per cycle
-;; and two memory operations per cycle, only one of which may be a store.
-;;
-;; Given the large reorder buffer, the processor can hide most latencies.
-;; According to HP, they've got the best results by scheduling for retirement
-;; bandwidth with limited latency scheduling for floating point operations.
-;; Latency for integer operations and memory references is ignored.
-;;
-;;
-;; We claim floating point operations have a 2 cycle latency and are
-;; fully pipelined, except for div and sqrt which are not pipelined and
-;; take from 17 to 31 cycles to complete.
-;;
-;; It's worth noting that there is no way to saturate all the functional
-;; units on the PA8000 as there is not enough issue bandwidth.
+processor       : 0
+cpu family      : PA-RISC 2.0
+cpu             : PA8200 (PCX-U+)
+cpu MHz         : 200.000000
+model           : 9000/782/C200+
+model name      : Raven U 200 (9000/780/C200)
+hversion        : 0x000059d0
+sversion        : 0x00000481
+I-cache         : 512 KB
+D-cache         : 1024 KB (WB, 0-way associative)
+ITLB entries    : 120
+DTLB entries    : 120 - shared with ITLB
+bogomips        : 395.26
+software id     : 2005736878
 
-Comments?
+> Should be a simple cut/paste of 4 lines to a shell prompt:
+> 
+> gcc -O2 -o cpup0 cpup.c
+> gcc -O2 -march=2.0 -DLP64 -o cpup2 cpup.c
+> gcc -O2 -march=2.0 -DLP64 -DUSE6REGS -o cpup3 cpup.c
+> for i in 1 2 3 4 5; do echo TEST $i; ./cpup0; ./cpup2; ./cpup3; done
 
-Dave
+This is on a 64-bit kernel:
+$ uname -a
+Linux vega 2.6.10-pa3 #1 Sun Jan 2 14:28:36 MST 2005 parisc64 GNU/Linux
+
+TEST 1
+          First Loop : min   9990  avg  11444  median  10352
+         Later Loops : min   6290  avg   8673  median   8885
+          First Loop : min   8758  avg  10370  median   9312
+         Later Loops : min   5842  avg   7168  median   7024
+          First Loop : min   8701  avg  10277  median   9215
+         Later Loops : min   5670  avg   7244  median   7124
+TEST 2
+          First Loop : min   9990  avg  11451  median  10353
+         Later Loops : min   6197  avg   8669  median   8880
+          First Loop : min   8748  avg  10379  median   9318
+         Later Loops : min   5768  avg   7166  median   7022
+          First Loop : min   8657  avg  10280  median   9208
+         Later Loops : min   5773  avg   7239  median   7123
+TEST 3
+          First Loop : min   9993  avg  11442  median  10353
+         Later Loops : min   6278  avg   8670  median   8880
+          First Loop : min   8745  avg  10408  median   9318
+         Later Loops : min   5804  avg   7163  median   7023
+          First Loop : min   8681  avg  10340  median   9266
+         Later Loops : min   5663  avg   7238  median   7120
+TEST 4
+          First Loop : min   9990  avg  11453  median  10347
+         Later Loops : min   6282  avg   8661  median   8877
+          First Loop : min   8751  avg  10400  median   9324
+         Later Loops : min   5750  avg   7171  median   7024
+          First Loop : min   8622  avg  10283  median   9213
+         Later Loops : min   5680  avg   7235  median   7119
+TEST 5
+          First Loop : min  10032  avg  11442  median  10348
+         Later Loops : min   6224  avg   8688  median   8884
+          First Loop : min   8799  avg  10396  median   9323
+         Later Loops : min   5751  avg   7165  median   7021
+          First Loop : min   8622  avg  10286  median   9221
+         Later Loops : min   5653  avg   7240  median   7120
+
+
+
+This is on a 32-bit kernel:
+$ uname -a
+Linux vega 2.6.10-pa5 #1 Wed Jan 5 01:14:00 MST 2005 parisc GNU/Linux
+
+TEST 1
+          First Loop : min  10924  avg  11555  median  11090
+         Later Loops : min   7744  avg   8196  median   8130
+          First Loop : min   9584  avg  10251  median   9790
+         Later Loops : min   6451  avg   6836  median   6784
+          First Loop : min   9487  avg  10104  median   9673
+         Later Loops : min   6202  avg   6604  median   6550
+TEST 2
+          First Loop : min  10927  avg  11553  median  11097
+         Later Loops : min   7687  avg   8193  median   8130
+          First Loop : min   9594  avg  10267  median   9790
+         Later Loops : min   6451  avg   6853  median   6784
+          First Loop : min   9477  avg  10117  median   9654
+         Later Loops : min   6243  avg   6606  median   6549
+TEST 3
+          First Loop : min  10943  avg  11549  median  11104
+         Later Loops : min   7670  avg   8197  median   8130
+          First Loop : min   9607  avg  10255  median   9790
+         Later Loops : min   6451  avg   6836  median   6783
+          First Loop : min   9487  avg  10144  median   9674
+         Later Loops : min   6216  avg   6604  median   6550
+TEST 4
+          First Loop : min  10924  avg  11527  median  11083
+         Later Loops : min   6848  avg   8176  median   8118
+          First Loop : min   9610  avg  10260  median   9810
+         Later Loops : min   6451  avg   6837  median   6784
+          First Loop : min   9493  avg  10140  median   9670
+         Later Loops : min   6215  avg   6605  median   6552
+TEST 5
+          First Loop : min  10924  avg  11538  median  11087
+         Later Loops : min   7703  avg   8191  median   8132
+          First Loop : min   9583  avg  10236  median   9793
+         Later Loops : min   6451  avg   6837  median   6783
+          First Loop : min   9487  avg  10132  median   9674
+         Later Loops : min   6171  avg   6606  median   6550
+
+
+The K460 is a 8000 processor ... I'll see if I can get the K460
+installed and updated to give you results from that system as well.  I
+am also working on getting you results from a 715/100 
+as well (currently in the middle of a new debian install).
+
+Thanks,
+
+- Ryan
+
+> thanks,
+> grant
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Ryan Bradetich <rbradetich@uswest.net>
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
