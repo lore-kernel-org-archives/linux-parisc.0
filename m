@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Thu, 24 Oct 2002 13:36:10 +0200
-Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux-2.5 varenet
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v546)
-Cc: parisc-linux@lists.parisc-linux.org,
-	parisc-linux-cvs@lists.parisc-linux.org,
-	Laurent Canet <canetl@esiee.fr>
-To: Richard Hirst <rhirst@linuxcare.com>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <20021024071800.GG603@sleepie.demon.co.uk>
-Message-Id: <CAF57F6C-E744-11D6-BB9C-0030656F07A2@esiee.fr>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 303E04834
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Oct 2002 10:23:37 -0600 (MDT)
+Message-Id: <200210241623.g9OGNS9n025493@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] jfs-1.0.23 as well xfs-cvs break fb console on k-2.4.19-pa22
+To: jsoe0708@tiscali.be
+Date: Thu, 24 Oct 2002 12:23:28 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: mszick@goquest.com, grundler@dsl2.external.hp.com,
+	joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3DA3C54C00002A9E@ocpmta5.be.tiscali.com> from "jsoe0708@tiscali.be" at Oct 24, 2002 07:44:40 am
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,67 +23,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le jeudi, 24 oct 2002, =E0 09:18 Europe/Paris, Richard Hirst a =E9crit :
+> >Soon to be in 3.3.  I found a couple of more things yesterday in testing.
+> >It needs a lot of testing (hppa1, hppa2, hppa64, hpux, linux, pic, short
+> >and long calls).
+> >
+> Great, (I will wait).
 
-> On Wed, Oct 23, 2002 at 10:46:11AM -0600, Thibaut Varene wrote:
->> CVSROOT:	/var/cvs
->> Module name:	linux-2.5
->> Changes by:	varenet	02/10/23 10:46:11
->>
->> Modified files:
->> 	include/asm-parisc: param.h
->>
->> Log message:
->> Switched to HZ =3D=3D 1000 for CONFIG_PA20.
->> Patch submitted by Laurent Canet.
->
-> Don't know if this was simply a #define change, but if so...
-> Robert Love has been arguing lately that you can't just do that as
-> various userspace stuff is compiled with a knowledge of the kernel HZ
-> value for your specific arch and uses that in interpreting various
-> entries in /proc.  He had a patch that kept the userspace view
-> consistent.  That was 2.4 though; maybe 2.5 is better in this respect.
+The "final" patch is here
 
-Hm, I'm not sure we really broke something, we added the lines marked=20
-'->':
+<http://gcc.gnu.org/ml/gcc-patches/2002-10/msg01408.html>
 
-#ifdef __KERNEL__
--># ifdef CONFIG_PA20
-->#  define HZ            1000            /* Faster machines */
--># else
-#  define HZ            100             /* Internal kernel timer=20
-frequency */
--># endif
-# define USER_HZ        100             /* .. some user interfaces are=20=
+and
 
-in "ticks
-" */
-# define CLOCKS_PER_SEC (USER_HZ)       /* like times() */
-#endif
+the required patch to reload here
 
-#ifndef HZ
-#define HZ 100
-#endif
+<http://gcc.gnu.org/ml/gcc-patches/2002-10/msg01409.html>.
 
-As you can see, these defines are protected by a #ifdef __KERNEL__,=20
-otherwise HZ is 100 in all cases. Since userspace stuff isn't supposed=20=
+These should apply cleanly to the current 3.3 cvs.
 
-to define __KERNEL__ at compile time, HZ from a userspace point of view=20=
+I think the main benefit under hppa-linux is the PA 2.0 fix.  If
+you have applications where you need "-ffunction-sections" to build
+or there are long call related problems (ie., you get assembler
+errors about out of range branches), I would appreciate feedback
+on how the new long call option works.  I have tested building gcc
+with long calls and that works fine.
 
-hasn't changed.
+Currently, 3.3 is in a bug fix phase.  The only reported bug that
+I have regarding long calls  or out of range branches was in proprietary
+code.  So, if people know of others, let me know.
 
-If you look at other archs (like i386, ppc64) they also have different=20=
+There needs to be some work done on the linker to handle long absolute
+calls (non-pic code) and long pc-relative calls (pic code).  This will
+shorten the long call sequences under hppa-linux, particularly for calls
+within modules.
 
-HZ vs USER_HZ and *__KERNEL__* HZ.
-
-In 2.4, there wasn't such #ifdef protection, so such change could have=20=
-
-broken things.
-In 2.5, I think this is quite safe IMHO.
-
-HTH,
-
-
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
