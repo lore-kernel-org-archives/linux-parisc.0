@@ -1,23 +1,19 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7811548EA
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9B3294844
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  5 Apr 2004 22:42:05 -0600 (MDT)
-Received: from mailserver.muc.ncc-consulting.de (pD9E890BC.dip0.t-ipconnect.de
-	[217.232.144.188])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i364g4o27610
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 6 Apr 2004 06:42:04 +0200
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 6 Apr 2004 06:41:13 +0200
-Message-ID: <066c01c41b91$640da440$fc01a8c0@muc.nccconsulting.de>
+	Tue,  6 Apr 2004 05:27:42 -0600 (MDT)
+Date: Tue, 6 Apr 2004 12:46:54 +0200
+Message-ID: <40711E5600000D4E@ocpmta1.freegates.net>
+In-Reply-To: <20040402180356.GG1081@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	"Matthew Wilcox" <willy@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] RE: [PATCH] glibc-2.3.3 error with debian unstable
+	compiler...
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +23,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+Carlos,
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 4/6/2004 6:41:13 AM
-Engine/Pattern = 7.000-1004/1.851.00
+I just apply your patch against the glibc cvs dated 20040405 (yesterday for
+me).
+It compiles well with last updated gcc (3.3.3-6 dpkg iirc) :)
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+I just complete the 'make -k check' (on chroot disk) which finished with
+nothing more then well known bug :)
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+... And the compile (always in the chroot disk) of the last k-2.6.5-pa3 just
+finishes with success :)
+
+hth,
+    Joel
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
