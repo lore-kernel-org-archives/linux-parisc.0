@@ -1,19 +1,19 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 24F7848A0
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 23 Dec 2003 22:05:12 -0700 (MST)
-Date: Tue, 23 Dec 2003 22:05:10 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] serial 2 broken in 2.6.0 for b180?(followup)
-Message-ID: <20031224050510.GF24091@colo.lackof.org>
-References: <1072192334.1815.0.camel@mulgrave>
-	<3FB2652500018822@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3FB2652500018822@ocpmta2.freegates.net>
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Return-Path: <youngdoctors@msn.com>
+Received: from 192.25.206.7 (unknown [203.228.90.65])
+	by dsl2.external.hp.com (Postfix) with SMTP id 0E67A48C3
+	for <parisc-linux@parisc-linux.org>;
+	Tue, 23 Dec 2003 22:11:57 -0700 (MST)
+Message-ID: <9$o7gik63n4k5z88-ts@xjoiij2hmb3w>
+From: "Jarred Tanner" <youngdoctors@msn.com>
+To: parisc-linux@parisc-linux.org
+Date: Wed, 24 Dec 03 19:02:33 GMT
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="ECE.5A98_.DEF_.B___F"
+Cc: 
+Subject: [parisc-linux] 60 year old stars that look 35 here's how ! z kvf
+	nap ntvmo bfa
+Reply-To: Jarred Tanner <youngdoctors@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,12 +23,46 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Dec 23, 2003 at 06:42:03PM +0100, Joel Soete wrote:
-> hmm it seems that 'setserial /dev/ttyS1 port 0xfff83800' locks the memtioned
-> serial port (even thought "port 0xfff83800" is well the one related in dmesg).
 
-setserial has always caused me more trouble than solved problems.
-It might be a great program for x86, but certain people keep telling
-me NOT to use it on parisc or ia64. I've removed it from all my machines.
+--ECE.5A98_.DEF_.B___F
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-grant
+<html>60 year old stars that look 35 here's how ! z kvf nap ntvmo  bfa
+<head>
+<title>Untitled Document</title>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
+-1">
+</head>
+
+<body bgcolor=3D"#000000" text=3D"#000000" link=3D"#00FF00" vlink=3D"#00FF=
+00" alink=3D"#00FF00">
+<center><h3><font color=3D"#FF00FF" face=3D"verdana">Bob Hope, JFK, Marily=
+n Monroe, Wayne Newton, Dick Clark, <br>
+    Queen Elizabeth, George Burns, Cher, Rod Stewart <br>
+     Celebrities, Politicians, Athletes, and even Doctors</font></h3></cen=
+ter><center><h5><font color=3D"#FFFFFF" face=3D"verdana">Have used HGH wit=
+h great success to be the best they could possibly be.<br>HGH is recognize=
+d around the world as the<br> "hormone to replace"<br> to combat the adver=
+se affects of aging.<br>It is a documented truth.<br>  Celebrities and pol=
+iticians have used, and ARE USING,,<Br> HGH <br> to prolong their  minds,<=
+br> their creative abilities, and  to prolong healthy lives.<br>HGH has be=
+en proven to be "solely responsible" in the maintenance of their youthful<=
+br>"movie star good looks" decades beyond those that have yet to discover =
+HGH ! <br><br>Ever wonder how certain celebrities manage to look so young =
+and stay 
+    so fit at their age??</font></h5>
+</center><center><h3><font color=3D"#FFFFFF" face=3D"verdana">HGH is the g=
+uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
+er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
+p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
+you !<br>Learn More Right Here</a></font></h4></center>
+gixf uqbxwx euichvjqs n 
+gb hlq nccpgdm
+s jpmk
+</body>
+</html>
+chs wqbpiu  cvev cs jus
+qgv
+
+--ECE.5A98_.DEF_.B___F--
