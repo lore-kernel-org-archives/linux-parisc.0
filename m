@@ -1,46 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from blimpo.internal.net (ppp01.ts1-1.NewportNews.visi.net [209.8.196.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B8BE482A
-	for <parisc-linux@parisc-linux.org>; Tue, 23 Oct 2001 00:10:52 -0600 (MDT)
-Date: Tue, 23 Oct 2001 01:41:19 -0400
-From: Ben Collins <bcollins@debian.org>
-To: "Christopher C. Chimelis" <chris@debian.org>
-Cc: Randolph Chung <tausq@debian.org>, amodra@bigpond.net.au,
-	parisc-linux@parisc-linux.org
-Message-ID: <20011023014119.I10952@visi.net>
-References: <20011022221714.O537@tausq.org> <Pine.LNX.4.21.0110230118590.16337-100000@spawn.hockeyfiend.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0110230118590.16337-100000@spawn.hockeyfiend.com>
-Sender: Ben Collins <bmc@visi.net>
-Subject: [parisc-linux] Re: Yay, binutils fixed for hppa
+Received: from hotmail.com (oe47.law4.hotmail.com [216.33.148.84])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EF2D5482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 00:56:21 -0600 (MDT)
+From: "kenneth westelinck" <kennywest1@hotmail.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Tue, 23 Oct 2001 08:56:11 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Message-ID: <OE47JSsubWCG0ESGp8400003e1e@hotmail.com>
+Subject: [parisc-linux] Netscape for PALinux
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Oct 23, 2001 at 01:20:00AM -0400, Christopher C. Chimelis wrote:
-> 
-> On Mon, 22 Oct 2001, Randolph Chung wrote:
-> 
-> > With many thanks to Alan Modra binutils seems to be fixed now. Chris,
-> > can you please build a new binutils from cvs? Everything should be there, and
-> > the hppa-specific patch you currently have in the package should no longer 
-> > be needed.
-> 
-> Ok, I'll include those in the next upload (based on HJ's release from
-> today and including the patches that Alan just committed).
-> 
-> > The patch Ben has is needed to build glibc with the new binutils.
-> 
-> Fantastic :-)
-> 
-> > hppa is also a bit behind on gcc-3.0. I'll try to build new ones RSN.
-> 
-> This is good news :-)  Many thanks to Alan for working on this so quickly
-> :-)
+Hi all,
 
-Great work guys!
 
--- 
- .----------=======-=-======-=========-----------=====------------=-=-----.
-/                   Ben Collins    --    Debian GNU/Linux                  \
-`  bcollins@debian.org  --  bcollins@openldap.org  --  bcollins@linux.com  '
- `---=========------=======-------------=-=-----=-===-======-------=--=---'
+I recently got my hands on a 712/60 workstation. I was surprised to see that
+there was a Linux port to this system. As I am very fond of Linux, I got rid
+of the old HP-UX (9.05) and installed woody. All seems to work fine, I even
+got X-Windows installed and running. As I really want to use the workstation
+as a replacement for my Pentium NT box, I was wondering if there's a
+Netscape port for PA Linux. I've alread checked the Netscape site, but it
+only provides i386 binaries.
+Is there any port available? Or is there another good alternative?
+
+
+regards,
+
+Kenneth
