@@ -1,33 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA09486
-	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Nov 2000 10:35:29 -0700
-Message-Id: <200011281737.MAA24142@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Include trouble
-To: alan@linuxcare.com.au (Alan Modra)
-Date: Tue, 28 Nov 2000 12:37:28 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: marteaut@esiee.fr, parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.21.0011282016040.18407-100000@front.linuxcare.com.au> from "Alan Modra" at Nov 28, 2000 08:19:20 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA10532
+	for <parisc-linux@puffin.external.hp.com>; Tue, 28 Nov 2000 10:46:51 -0700
+Message-Id: <200011281749.JAA26808@milano.cup.hp.com>
+To: Thomas Marteau <marteaut@esiee.fr>
+Cc: Puffin Group <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] Mouse driver for PS/2 
+In-reply-to: Your message of "Tue, 28 Nov 2000 16:07:04 PST."
+             <3A23CA18.1171E884@esiee.fr>
+Date: Tue, 28 Nov 2000 09:49:26 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Tue, 28 Nov 2000, Alan Modra wrote:
+Thomas Marteau wrote:
+> Hi all,
 > 
-> > As far as I understand, gcc's cpp has a built-in definition of size_t,
-> > __SIZE_TYPE__, and it ultimately gets it's idea of the definition from the
-> > kernel includes on the machine where gcc was compiled.  ie. recompile gcc
-> > with the new kernel headers installed, and the problem should go away.
-> 
-> No, that's wrong.  __SIZE_TYPE__ comes from `#define SIZE_TYPE' in
-> gcc/config/pa/pa-linux{,64}.h  I'll check in a patch to gcc in a few
-> moments.
+> 	We appreciate if someone can explain where we can find request_irq and
+> request_region in hp_psaux.c and also, what are they doing?
 
-Hmm.  Most 32 bit systems use "unsigned int" rather than "unsigned long".
-Using "unsigned long" might cause problems with packages like libio.
-I know there is a problem if off_t is not the same as size_t.
+include/linux/sched.h:extern int request_irq(unsigned int, ...)
+(Implementation is in arch/parisc/kernel/irq.c)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+The request_irq() "allocates" an IRQ line for use by the device - this
+program the PIC (or APIC) on x86 platforms. request_irq() is also how
+an interrupt handler is associated with a specific IRQ line. Since
+PA Risc CPU's don't have IRQ lines going into them, IRQ's are virtualized
+and don't always represent a physical IRQ line.
+
+Under LASI, see gsc_alloc_irq(&gsc_irq) usage in drivers/gsc/lasi.c.
+lasi_find_irq() helps associate the PS/2 interrupt handler with
+the correct IRQ line which is internal to lasi.
+
+
+include/linux/ioport.h:#define request_region(start,n,name) ...
+
+request_region() will reserve a range of I/O port address from the
+global I/O space. request_mem_region() does the same for MMIO.
+Drivers that use inb/outb (as defined in include/asm-parisc/io.h)
+must use request_region(). Drivers that use gsc_readb/gsc_writeb
+(as defined in include/asm-parisc/gsc.h) must use request_mem_region().
+
+Collisions are probably occuring where a driver originally used inb/outb
+and those were redefined to use gsc_readb/writeb functions. But the
+driver is still using request_region().
+
+
+And it doesn't help that I may have broken some of the resource mgt
+with some code I committed last night. It worked on my boxes (A180/C3K)
+but broke on other folks. Paul Bame helped find/fix one bug but
+I shouldn't be surprised if more bugs are still out there.
+I will be fixing some known resource failure problems on A500.
+Please post problems on other platforms to parisc-linux list as well.
+
+hope this helps,
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
