@@ -1,18 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ADB20482A
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Feb 2002 10:05:54 -0700 (MST)
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel7.hp.com (Postfix) with ESMTP id DA6648050A5
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Feb 2002 12:05:43 -0500 (EST)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id 3144E37D2B
-	for <parisc-linux@parisc-linux.org>; Sun,  3 Feb 2002 10:05:43 -0700 (MST)
-To: parisc-linux@parisc-linux.org
-Date: Sun, 03 Feb 2002 10:05:43 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20020203170543.3144E37D2B@carmen.fc.hp.com>
-Subject: [parisc-linux] new i386 -> hppa/hppa64 cross-compiler
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by dsl2.external.hp.com (Postfix) with SMTP id B721D482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Feb 2002 10:38:53 -0700 (MST)
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Helge Deller <deller@gmx.de>
+To: James.Bottomley@HansenPartnership.com
+Date: Sun, 3 Feb 2002 18:29:12 +0100
+Cc: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Message-Id: <200202031829.12429.deller@gmx.de>
+Subject: [parisc-linux] 53c700 (LASI SCSI 53c700) hang
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,27 +22,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi palinuxers,
+Hi James,
 
-I have built a new i386 -> hppa/hppa64 cross-compiler using Debian
-source packages from unstable on Jan 18th. In addition I also had to
-apply this patch to gcc,
+today my 715/64 completely stopped after some "dpkg -i"-ing.
+According to the following lines from the serial console the new
+SCSI driver stopped talking to my harddisk.
+I'm sending this bug report now, after that this has happened 
+~3 times in the last 2 months.
+Any ideas ?
 
-http://subversions.gnu.org/cgi-bin/viewcvs/gcc/gcc/gcc/cp/search.c.diff?r1=1.217&r2=1.218
+TIA,
+Helge
 
-There are no major known problems with the previous xc, it was just
-getting a little old. The new xc is available at,
+This is what I got on my serial console. Sadly some things before it
+are missing:
 
-ftp://ftp.parisc-linux.org/x86-xcompilers/xc-20020118.tar.gz
+scsi0 (6:0) New error handler wants to abort command                                                         
+        0x00 00 00 00 00 00                                                                                  
+scsi: device set offline - not ready or command retry failed after bus reset: 
+host 0 channel 0 id 6 lun 0    
+scsi0 (6:0) New error handler wants to abort command                                                         
+        0x00 00 00 00 00 00                                                                                  
+scsi: device set offline - not ready or command retry failed after bus reset: 
+host 0 channel 0 id 6 lun 0    
+scsi0 (6:0) New error handler wants to abort command                                                         
+        0x00 00 00 00 00 00                                                                                  
+scsi: device set offline - not ready or command retry failed after bus reset: 
+host 0 channel 0 id 6 lun 0
 
-Same as always, it provides 32 bit binutils/gcc/glibc and 64 bit
-binutils/gcc. It should be untar'd in / and lives in /opt/palinux. It has
-been tested for two weeks with no reported problems.
 
-Please send any issues/problems to the list.
-
-Thanks,
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+from the dmesg:
+SCSI subsystem driver Revision: 1.00
+53c700: Version 2.6 By James.Bottomley@HansenPartnership.com
+scsi0: 53c710 rev 2                                         
+scsi0 : LASI SCSI 53c700
+scsi0: (6:0) Synchronous at offset 8, period 100ns
+  Vendor: QUANTUM   Model: FIREBALL_TM3200S  Rev: 300X
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+Attached scsi disk sda at scsi0, channel 0, id 6, lun 0            
+scsi0: (6:0) Enabling Tag Command Queuing              
+SCSI device sda: 6281856 512-byte hdwr sectors (3216 MB)
+Partition check:                                        
+ sda: sda1 sda2 sda3 sda4
