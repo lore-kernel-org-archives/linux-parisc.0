@@ -1,15 +1,19 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA29813
-	for <parisc-linux@puffin.external.hp.com>; Thu, 11 Jan 2001 07:02:52 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA30120
+	for <parisc-linux@puffin.external.hp.com>; Thu, 11 Jan 2001 07:15:41 -0700
 Sender: sanjak@tipas.lt
-Message-Id: <3699F3A6.1A7AFB31@tipas.lt>
-Date: Mon, 11 Jan 1999 14:50:46 +0200
+Message-Id: <387B2C2C.3136129D@tipas.lt>
+Date: Tue, 11 Jan 2000 15:12:12 +0200
 From: Aleksandr Konstantinov <sanjak@tipas.lt>
 Mime-Version: 1.0
 To: parisc-linux <parisc-linux@thepuffingroup.com>
 Content-Type: text/plain; charset=us-ascii
 Subject: [parisc-linux] Booting palinux on model 735 problems.
 List-ID: <linux-parisc.vger.kernel.org>
+
+Sorry for double message.
+
+
 
 Hello All.
 
