@@ -1,68 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA01843
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 10:16:32 -0700
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel1.hp.com (Postfix) with ESMTP id 210E75CA
-	for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 12:18:44 -0500 (EST)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id E16FA37CA7
-	for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 10:20:35 -0700 (MST)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA02079
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 10:19:01 -0700
+Received: from unknown-24-15.pilot.net (unknown-24-15.pilot.net [206.189.24.15]) by unknown-147.101.pilot.net with ESMTP id JAA22046 for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 09:21:13 -0800 (PST)
+Received: from sumter.capital.ge.com (localhost [127.0.0.1]) by unknown-24-15.pilot.net with ESMTP id JAA01883 for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 09:21:12 -0800 (PST)
+Received: from opti.rfs.capital.ge.com (opti.rfs.capital.ge.com [3.164.72.22])
+	by sumter.capital.ge.com (8.9.3/8.9.1) with SMTP id MAA03025
+	for <parisc-linux@thepuffingroup.com>; Tue, 21 Nov 2000 12:21:11 -0500 (EST)
+From: Robert Reilly <robert.reilly@gecapital.com>
+Date: Tue, 21 Nov 2000 18:26:41 GMT
+Message-ID: <20001121.18264100@opti.rfs.capital.ge.com>
 To: parisc-linux@thepuffingroup.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 21 Nov 2000 10:20:35 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001121172035.E16FA37CA7@carmen.fc.hp.com>
-Subject: [parisc-linux] kernel BUG at sched.c:692!
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] cd .5
 List-ID: <linux-parisc.vger.kernel.org>
 
-I arrived this morning to discover both my B160 and my C3000 were printing the 
-following as fast as they could,
+Hi All,
+I have HP9000/d212 I was able to boot off the cdrom image no problem, 
+however when I get the login prompt I am only able to type in two 
+characters and the screen redraws itself and prompts me for a login. I am 
+using a HP700 serial terminal on ttyS0.I briefly scanned the mailing list 
+but did not find anything. Any help would be appreciated.
+--Robert Reilly
 
-Scheduling in interrupt
-kernel BUG at sched.c:692!
-
-Looking at linux/kernel/sched.c here's the relevant section,
-
-690 scheduling_in_interrupt:
-691         printk("Scheduling in interrupt\n");
-692         BUG();
-693         return;
-
-scheduling_in_interrupt is called from line 516. Here's some context,
-
-500 asmlinkage void schedule(void)
-501 {
-502         struct schedule_data * sched_data;
-503         struct task_struct *prev, *next, *p;
-504         struct list_head *tmp;
-505         int this_cpu, c;
-506
-507         if (!current->active_mm) BUG();
-508         if (tq_scheduler)
-509                 goto handle_tq_scheduler;
-510 tq_scheduler_back:
-511
-512         prev = current;
-513         this_cpu = prev->processor;
-514
-515         if (in_interrupt())
-516                 goto scheduling_in_interrupt;
-517
-518         release_kernel_lock(prev, this_cpu);
-
-
-I thought it was odd that both systems chose to freak out last night when I 
-have never seen this problem on either of them. The B160 is running a slightly 
-newer kernel and had been up for about 3 days as of last night. The C3K had 
-been up for 4-5 days. When I left last night the B160 was doing a build 
-although the it looks like the build died before this problem occurred. The 
-C3K was idle.
-
-Any ideas?
-
-Thanks,
-
--- 
-Matt Taggart
-taggart@fc.hp.com
+GE Capital Card Service
+UNIX Administrator
+robert.reilly@gecapital.com
