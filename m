@@ -1,68 +1,40 @@
-Received: from cs1-hq.oecd.org (cs1-hq.oecd.org [193.51.65.66])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id KAA22962
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:09:09 -0700
-From: Arnaud.ATOCH@oecd.org
-Received: from netsweep1.oecd.org (netsweep1.oecd.org [10.102.5.110])
-	by cs1-hq.oecd.org (8.9.3/8.9.3/oecd-1.6) with ESMTP id SAA18139
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 18:08:27 +0100
-Message-ID: <C12531D038D1D011B1DB0000F8036C28071AB723@eosm5.oecd.org>
-To: grundler@cup.hp.com, Arnaud.ATOCH@oecd.org
-Cc: parisc-linux@puffin.external.hp.com
-Subject: RE: [parisc-linux] Booting 712 with CD 0.5 
-Date: Fri, 17 Nov 2000 18:10:52 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA23440
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Nov 2000 10:38:46 -0700
+Received: from sleepie.demon.co.uk (HELO rhirst.linuxcare.com) (194.222.23.208)
+  by mailserv2.iuinc.com with SMTP; 17 Nov 2000 17:40:53 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 78181B007; Fri, 17 Nov 2000 17:38:18 +0000 (GMT)
+Date: Fri, 17 Nov 2000 17:38:18 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Ulrich Drepper <drepper@cygnus.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] SEGV signal handling bug (dynamic linking)
+Message-ID: <20001117173818.I32715@linuxcare.com>
+References: <20001117153954.H32715@linuxcare.com> <m3hf5634qx.fsf@otr.mynet.cygnus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <m3hf5634qx.fsf@otr.mynet.cygnus.com>; from drepper@redhat.com on Fri, Nov 17, 2000 at 09:09:10AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks for the enlightment.
-
-Should I try a new CD-ROM or should I wait untill next ISO image is created
-?
-IS the shutdown also due to this bug ?
-
-Setting up /tmp ramdisk4096+0 records in
-4096+0 records out
-mke2fs 1.19, 13-Jul-2000 for EXT2 FS 0.5b, 95/08/09
-Filesystem label=
-OS type: Linux
-Block size=1024 (log=0)
-Fragment size=1024 (log=0)
-1024 inodes, 4096 blocks
-0 blocks (0.00%) reserved for the super user
-First data block=1
-1 block group
-8192 blocks per group, 8192 fragments per group
-1024 inodes per group
-
-Writing inode tables: done
-Writing superblocks and filesystem accounting information: done
-
-INIT: Id "T0" respawni
-INIT: no more processe
-
------Original Message-----
-From: Grant Grundler [mailto:grundler@cup.hp.com]
-Sent: Friday, November 17, 2000 17:38
-To: Arnaud.ATOCH@oecd.org
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Booting 712 with CD 0.5 
-
-
-Arnaud.ATOCH@oecd.org wrote:
-> Is the following output the normal behavior of Linux-PARisc on a 712/100 ?
+On Fri, Nov 17, 2000 at 09:09:10AM -0800, Ulrich Drepper wrote:
+> Richard Hirst <rhirst@linuxcare.com> writes:
 > 
-> kmem_create: Forcing size word alignment - nfs_fh
-> kernel BUG at pci-dma.c:391!
-> kernel BUG at pci-dma.c:400!
+> >         mem = malloc(8192);
+> >         if (mem == NULL) {
+> >                 perror("malloc");
+> >                 exit(1);
+> >         }
+> >         mem = (char *)(((int)mem + 4095) & ~0x0fff);
+> >         res = mprotect(mem, 4096, PROT_READ);
+> 
+> Read the Unix standard:
+> 
+>   The behavior of this function is unspecified if the mapping was not
+>   established by a call to mmap().
 
-The bug is real. A driver is calling pci_map_single() and pci_unmap_single()
-without specifying which direction the DMA is going. Cache flushing on 712
-(PCXL) systems needs to know. I'll assume it's the SCSI driver since
-it looks like we are talking to a SCSI CD-ROM.
+Yeh, but it works on m68k and i386, and works on hppa if statically
+linked.  And the code is in an example on the mprotect man page on
+my Mandrake7 box.
 
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Richard
