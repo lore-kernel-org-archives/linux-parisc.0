@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12503.mail.yahoo.com (web12503.mail.yahoo.com [216.136.173.195])
-	by dsl2.external.hp.com (Postfix) with SMTP id C09CE482A
-	for <parisc-linux@parisc-linux.org>; Fri,  6 Sep 2002 23:22:37 -0600 (MDT)
-Message-ID: <20020907052236.81279.qmail@web12503.mail.yahoo.com>
-Date: Fri, 6 Sep 2002 22:22:36 -0700 (PDT)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-Subject: Re: [parisc-linux] Opinions on desktop environments
-To: parisc-linux@parisc-linux.org
-In-Reply-To: <3D79817E.201@charter.net>
-MIME-Version: 1.0
+Received: from mail.centraltx.com (gapserver.centraltx.com [64.209.39.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1F312482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  7 Sep 2002 14:50:30 -0600 (MDT)
+Date: Sat,  7 Sep 2002 15:46:25 -0500
+Message-Id: <200209071546.AA210633180@mail.centraltx.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+From: "marc " <marc@centraltx.com>
+Reply-To: <marc@centraltx.com>
+To: Randolph Chung <randolph@tausq.org>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Kernel Panic
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,88 +22,48 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-whoops...meant to say 1.6GB.....;)
-
-sorry...
-
---- "B. Douglas Hilton" <bdhilton@charter.net> wrote:
-> Derek Engelhaupt wrote:
-> > Well, got KDE to work, but it just seems slow even with my 1.6MB of
-> RAM
-> > and 2GB of swap on my C180.  I guess my questions would be what
-> would
-> > be an alternative that might run faster and/or be better overall
-> than
-> > KDE?  Gnome?  I guess I'm looking for what you guys think is the
-> best
-> > desktop environment to run.  Thanks.
-> > 
-> > derek
-> 
-> 
-> Hehe... you should try running a 715 or 712! The C-Class machines
-> positively
-> scream! I agree though, KDE is somewhat sluggish on my C200, but
-> really not
-> too bad, its usable. I've heard rumors that someday the hppa
-> c-library could
-> be optimized to run _much_ faster but its still a baby as far as
-> linux is
-> concerned - I'm just tickled that it even works... I wanted another
-> non-x86
-> machine (also have a Netwinder), but SGI's are pretty exotic (though
-> tempting),
-> Alpha's seem super cool but are somewhat expensive and often in bad
-> disrepair,
-> and Sun machines are either too expensive or too old. The hppa boxes
-> provided
-> a nice economy and are very much contenders with any of the
-> aforementioned
-> architectures. In its day a C200 running HP/UX was supposedly able to
-> smoke
-> a 600MHz Alpha! Obviously there is a lot of optimization still to
-> do...
-> 
-> I started off with a 715/80, got Woody running good on it, played
-> with it for
-> almost a year, then sold it on Ebay for a small profit (Debian
-> sells!) and
-> rolled my dough into the C200. I'm rather happy with its performance,
-> although it doesn't hold a candle to my super dual pentium-II 450
-> monster
-> box, still its a cool and useful machine, and very nice for making
-> sure
-> that your app is portable, compiling your own hppa debs, etc. I don't
-> run
-> mine 24/7 because it has pretty high power consumption, so the
-> Netwinder
-> is my little server machine -> http://www.gyrodynamic.net
-> 
-> Well, I sent you a private email with my suggestions about E, but now
-> that
-> I think about it, BlackBox isn't too bad with 8bpp color. Assuming
-> that
-> somebody has fixed "update-menus" really any Debian window manager
-> should
-> work with KDE, Gnome, and other X apps. The Debian menus should
-> provide
-> access to all the installed packages which is all you really need.
-> 
-> BTW, regarding "update-menus" - the last time I tried it on hppa it
-> worked
-> as root but segfaulted as a normal user.
-> 
-> 
-> 
-> - Doug
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Okay, I've upgraded from the .iso image off of debian.org.
+Now, I'm getting stranger errors with my tape drive. It looks
+like the st is no longer a loadable kernel module? Anyways,
+any help is appreciated.
 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+(none):~# lsmod
+Module                  Size  Used by    Not tainted
+(none):~# insmod st
+insmod: st: no module by that name found
+(none):~# cat /proc/scsi/scsi
+Attached devices: 
+Host: scsi0 Channel: 00 Id: 05 Lun: 00
+  Vendor: SEAGATE  Model: ST34371W         Rev: HP03
+  Type:   Direct-Access                    ANSI SCSI revision: 02
+Host: scsi0 Channel: 00 Id: 06 Lun: 00
+  Vendor: SEAGATE  Model: ST32171W         Rev: HP03
+  Type:   Direct-Access                    ANSI SCSI revision: 02
+Host: scsi1 Channel: 00 Id: 01 Lun: 00
+  Vendor: SONY     Model: SDT-7000         Rev: 0150
+  Type:   Sequential-Access                ANSI SCSI revision: 02
+(none):~# ls /dev/st*
+/dev/st0   /dev/st0l  /dev/st1	 /dev/st1l  /dev/stderr  /dev/stdout
+/dev/st0a  /dev/st0m  /dev/st1a  /dev/st1m  /dev/stdin
+(none):~# ls nst*
+/dev/nst0   /dev/nst0l	/dev/nst1   /dev/nst1l
+/dev/nst0a  /dev/nst0m	/dev/nst1a  /dev/nst1m
+(none):~# tar -cvpf /dev/st0 /home
+st0: Block limits 1 - 16777215 bytes.
+tar: Removing leading `/' from member names
+home/
+home/lost+found/
+home/marc/
+home/marc/.bashrc
+home/marc/.bash_profile
+st0: Error on write filemark.
+st0: Error with sense data: Current st09:00: sns = 70  4
+ASC=44 ASCQ= 0
+Raw sense data:0x70 0x00 0x04 0x00 0x00 0x00 0x00 0x12 0x00 0x00 0x00 0x00 0x44 
+0x00 0x00 0x00 0xa3 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+tar: /dev/st0: Warning: Cannot close: Input/output error
+(none):/home/marc# tar -xvpf /dev/st0
+tar: /dev/st0: Cannot read: Input/output error
+tar: At beginning of tape, quitting now
+tar: Error is not recoverable: exiting now
