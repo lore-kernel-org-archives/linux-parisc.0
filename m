@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from tom.hrz.tu-chemnitz.de (tom.hrz.tu-chemnitz.de [134.109.132.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 213C8482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 26 Mar 2002 05:10:14 -0700 (MST)
-Message-Id: <5.1.0.14.2.20020326130443.02e50c90@pop.puretec.de>
-Date: Tue, 26 Mar 2002 13:06:26 +0100
-To: "Jean-Louis Abat" <jl_abat@hotmail.com>,
-	<parisc-linux@lists.parisc-linux.org>
-From: Tilo Jandt <tilo@jandt-online.net>
-Subject: Re: [parisc-linux] does audio works on 712,715 and 735?
-In-Reply-To: <DAV742SbPkPuOlvX6D900005761@hotmail.com>
-References: <3CA01EB4.52B5F416@admin.france.hp.com>
- <20020326072141.E22220@parcelfarce.linux.theplanet.co.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6C2FC482C
+	for <parisc-linux@parisc-linux.org>; Tue, 26 Mar 2002 08:44:47 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16pt7s-0006CG-00; Tue, 26 Mar 2002 15:44:44 +0000
+Date: Tue, 26 Mar 2002 15:44:44 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Peter Lavender <plaven@bigpond.net.au>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] performance?
+Message-ID: <20020326154444.D26865@parcelfarce.linux.theplanet.co.uk>
+References: <20020326224358.B28171@piglet>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020326224358.B28171@piglet>; from plaven@bigpond.net.au on Tue, Mar 26, 2002 at 10:43:58PM +1100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +25,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hi,
+On Tue, Mar 26, 2002 at 10:43:58PM +1100, Peter Lavender wrote:
+> It wasn't until I compiled it on my p90 with 48 meg ram running a a
+> zillion services and daemons that I noticed just how slow the 715 is.
+> Running the program proved this even further.
 
->Does it work with 712 and 715??
+Would you mind posting some numbers?
 
-With 712 it works fine.
-I've got a 712/60 and it works fine while playing MP3.
+Also, let's try to figure out what other variables are a factor.  Can you
+compare gcc-3.0 on your x86 to the current compiler?
 
->I tried a few month ago on 712, but it didn't work... I didn't upgrade=
- since
->that time, from which kernel/packages versions could it work?
-
-You need the harmony driver.
-I think all Kernel > 2.4.17 do have this driver.
-
-cya,
-Tilo
-
-|[ Tilo Jandt, K=F6rnerstra=DFe 8, D-09306 Rochlitz         ]|
-|[ mailto:tilo@jandt-online.net ]  [ ICQ: 73832493              ]|
-|[ Phone: +49 179 5333 255   ]  [ Fax: +49 3737 771478  ]|
+-- 
+Revolutions do not require corporate support.
