@@ -1,16 +1,15 @@
 From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] [RFC] Revamp exception handling in the kernel
-Date: Mon, 13 Sep 2004 19:37:06 -0700
-Message-ID: <20040914023706.GX28659@tausq.org>
+Date: Mon, 13 Sep 2004 16:37:42 -0700
+Message-ID: <20040913233742.GW28659@tausq.org>
 References: <20040911165325.GO28659@tausq.org>
-	<20040913233742.GW28659@tausq.org>
 Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 To: PARISC list <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040913233742.GW28659@tausq.org>
+In-Reply-To: <20040911165325.GO28659@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,37 +20,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Version 2a of the patch. Changes from the previous version:
+Version 2 of the patch. Changes from the previous version:
 
-- Fixed the comment in uaccess.h, added some more comments to fixup.S
-- Added missing r1 clobbers
-- addil/ldd should be relative to r27, not r1
+- Uses centralized exception handling for get_user/put_user
+- Uses per-cpu variables to store the fault ip, fault space and fault
+  address (not controlled by a flag)
+- 64-bit get_user/put_user for 32-bit kernels is a bit broken in the old
+  code. this contains a fix for that as well.
 
-i found out this is a somewhat effective way of testing this patch:
+Tested against 2.6.8.1-pa11 for 64-UP and 64-SMP
 
-- run "make vmlinux" (or make -j4 vmlinux) in one window
-- run "while true; do ./wtest; sleep 30; done" in another window
+jejb asked me why we don't do the fixup in C code. It seems to me that
+in order to do that, we will need to mark all the caller-saved registers
+as clobbered by get_user/put_user. That may cause a large amount of
+register spills across those calls, even for non-faulting cases. 
+But the alternative (as implemented below) is some rather nasty-looking
+asm code in the fixup handler. A third alternative might be for the 
+fixup handler to create a stack frame and save/restore caller-saved 
+registers across a call to a C-code handler. seems like a lot of 
+work....
 
-wtest is compiled from:
--------------------8< cut here 8<--------------------
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
+Thoughts?
 
-int main(int argc, char **argv)
-{
-        char *buf = (char *)1;
-        int ret;
+randolph
 
-        ret = write(fileno(stdout), buf, 10);
-        printf("write returned ret = %d, errno = %d\n", ret, errno);
-
-        return 0;
-}
-
--------------------8< cut here 8<--------------------
-
-patch:
 
 Index: arch/parisc/kernel/asm-offsets.c
 ===================================================================
@@ -59,7 +51,7 @@ RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/asm-offsets.c,v
 retrieving revision 1.9
 diff -u -p -r1.9 asm-offsets.c
 --- arch/parisc/kernel/asm-offsets.c	8 May 2004 14:12:45 -0000	1.9
-+++ arch/parisc/kernel/asm-offsets.c	14 Sep 2004 02:34:06 -0000
++++ arch/parisc/kernel/asm-offsets.c	13 Sep 2004 23:31:46 -0000
 @@ -38,6 +38,7 @@
  #include <asm/processor.h>
  #include <asm/hardirq.h>
@@ -83,7 +75,7 @@ RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/syscall.S,v
 retrieving revision 1.14
 diff -u -p -r1.14 syscall.S
 --- arch/parisc/kernel/syscall.S	10 Sep 2004 14:52:01 -0000	1.14
-+++ arch/parisc/kernel/syscall.S	14 Sep 2004 02:34:06 -0000
++++ arch/parisc/kernel/syscall.S	13 Sep 2004 23:31:46 -0000
 @@ -29,6 +29,19 @@
  #else
  	.level		1.1
@@ -164,7 +156,7 @@ RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/unaligned.c,v
 retrieving revision 1.8
 diff -u -p -r1.8 unaligned.c
 --- arch/parisc/kernel/unaligned.c	21 Aug 2004 06:19:33 -0000	1.8
-+++ arch/parisc/kernel/unaligned.c	14 Sep 2004 02:34:06 -0000
++++ arch/parisc/kernel/unaligned.c	13 Sep 2004 23:31:46 -0000
 @@ -23,6 +23,7 @@
  #include <linux/config.h>
  #include <linux/kernel.h>
@@ -436,7 +428,7 @@ RCS file: /var/cvs/linux-2.6/arch/parisc/lib/Makefile,v
 retrieving revision 1.2
 diff -u -p -r1.2 Makefile
 --- arch/parisc/lib/Makefile	1 Jul 2004 18:30:36 -0000	1.2
-+++ arch/parisc/lib/Makefile	14 Sep 2004 02:34:06 -0000
++++ arch/parisc/lib/Makefile	13 Sep 2004 23:31:46 -0000
 @@ -2,6 +2,6 @@
  # Makefile for parisc-specific library files
  #
@@ -450,8 +442,8 @@ Index: arch/parisc/lib/fixup.S
 RCS file: arch/parisc/lib/fixup.S
 diff -N arch/parisc/lib/fixup.S
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ arch/parisc/lib/fixup.S	14 Sep 2004 02:34:06 -0000
-@@ -0,0 +1,89 @@
++++ arch/parisc/lib/fixup.S	13 Sep 2004 23:31:46 -0000
+@@ -0,0 +1,84 @@
 +/*
 + * Linux/PA-RISC Project (http://www.parisc-linux.org/)
 + *
@@ -470,8 +462,6 @@ diff -N arch/parisc/lib/fixup.S
 + *    You should have received a copy of the GNU General Public License
 + *    along with this program; if not, write to the Free Software
 + *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ * 
-+ * Fixup routines for kernel exception handling.
 + */
 +#include <linux/config.h>
 +#include <asm/offsets.h>
@@ -480,8 +470,8 @@ diff -N arch/parisc/lib/fixup.S
 +
 +#ifdef CONFIG_SMP
 +	.macro  get_fault_ip t1 t2
-+	addil LT%__per_cpu_offset,%r27
-+	LDREG RT%__per_cpu_offset(%r1),\t1
++	addil LT'__per_cpu_offset,\t1
++	LDREG RT'__per_cpu_offset(\t1),\t1
 +	/* t2 = smp_processor_id() */
 +	mfctl 30,\t2
 +	ldw TI_CPU(\t2),\t2
@@ -490,8 +480,8 @@ diff -N arch/parisc/lib/fixup.S
 +#endif
 +	/* t2 = &__per_cpu_offset[smp_processor_id()]; */
 +	LDREG,s \t2(\t1),\t2 
-+	addil LT%per_cpu__exception_data,%r27
-+	LDREG RT%per_cpu__exception_data(%r1),\t1
++	addil LT'per_cpu__exception_data,\t1
++	LDREG RT'per_cpu__exception_data(\t1),\t1
 +	/* t1 = &__get_cpu_var(exception_data) */
 +	add,l \t1,\t2,\t1
 +	/* t1 = t1->fault_ip */
@@ -500,17 +490,15 @@ diff -N arch/parisc/lib/fixup.S
 +#else
 +	.macro  get_fault_ip t1 t2
 +	/* t1 = &__get_cpu_var(exception_data) */
-+	addil LT%per_cpu__exception_data,%r27
-+	LDREG RT%per_cpu__exception_data(%r1),\t2
-+	/* t1 = t2->fault_ip */
++	addil LT'per_cpu__exception_data,\t1
++	LDREG RT'per_cpu__exception_data(\t1),\t2
++	/* t1 = t1->fault_ip */
 +	LDREG EXCDATA_IP(\t2), \t1
 +	.endm
 +#endif
 +
 +	.text
-+	.section .fixup, "ax"
 +
-+	/* get_user() fixups, store -EFAULT in r8, and 0 in r9 */
 +	.export fixup_get_user_skip_1
 +fixup_get_user_skip_1:
 +	get_fault_ip %r1,%r8
@@ -527,7 +515,6 @@ diff -N arch/parisc/lib/fixup.S
 +	bv %r0(%r1)
 +	copy %r0, %r9
 +
-+	/* put_user() fixups, store -EFAULT in r8 */
 +	.export fixup_put_user_skip_1
 +fixup_put_user_skip_1:
 +	get_fault_ip %r1,%r8
@@ -547,7 +534,7 @@ RCS file: /var/cvs/linux-2.6/arch/parisc/lib/lusercopy.S,v
 retrieving revision 1.3
 diff -u -p -r1.3 lusercopy.S
 --- arch/parisc/lib/lusercopy.S	17 Jan 2004 06:39:24 -0000	1.3
-+++ arch/parisc/lib/lusercopy.S	14 Sep 2004 02:34:06 -0000
++++ arch/parisc/lib/lusercopy.S	13 Sep 2004 23:31:46 -0000
 @@ -53,6 +53,18 @@
  	mtsp        %r1,%sr1
  	.endm
@@ -711,7 +698,7 @@ RCS file: /var/cvs/linux-2.6/arch/parisc/mm/fault.c,v
 retrieving revision 1.1
 diff -u -p -r1.1 fault.c
 --- arch/parisc/mm/fault.c	29 Jul 2003 17:00:42 -0000	1.1
-+++ arch/parisc/mm/fault.c	14 Sep 2004 02:34:06 -0000
++++ arch/parisc/mm/fault.c	13 Sep 2004 23:31:46 -0000
 @@ -36,6 +36,9 @@
  
  #define BITSSET		0x1c0	/* for identifying LDCW */
@@ -750,8 +737,8 @@ RCS file: /var/cvs/linux-2.6/include/asm-parisc/uaccess.h,v
 retrieving revision 1.13
 diff -u -p -r1.13 uaccess.h
 --- include/asm-parisc/uaccess.h	4 Feb 2004 18:24:55 -0000	1.13
-+++ include/asm-parisc/uaccess.h	14 Sep 2004 02:34:28 -0000
-@@ -54,16 +54,22 @@ extern int __put_user_bad(void);
++++ include/asm-parisc/uaccess.h	13 Sep 2004 23:31:47 -0000
+@@ -54,16 +54,21 @@ extern int __put_user_bad(void);
  /*
   * The exception table contains two values: the first is an address
   * for an instruction that is allowed to fault, and the second is
@@ -760,19 +747,18 @@ diff -u -p -r1.13 uaccess.h
 - * r9 and 0x1 tells the exception handler to put -EFAULT in r8.
 - * This allows us to handle the simple cases for put_user and
 - * get_user without having to have .fixup sections.
-+ * the address to the fixup routine. 
++ * the address to the fixup routine. We also support two bit flags: 
++ * 0x2 tells the exception handler to store the faulting address in
++ * r9 and 0x1 tells the exception handler to store the faulting
++ * insn in r8.
   */
  
  struct exception_table_entry {
  	unsigned long insn;  /* address of insn that is allowed to fault.   */
 -	long skip;           /* pcoq skip | r9 clear flag | r8 -EFAULT flag */
-+	long fixup;          /* fixup routine */
++	long fixup;          /* fixup | r9 ior flag | r8 iir flag */
 +};
 +
-+/*
-+ * The page fault handler stores, in a per-cpu area, the following information
-+ * if a fixup routine is available.
-+ */
 +struct exception_data {
 +	unsigned long fault_ip;
 +	unsigned long fault_space;
@@ -780,7 +766,7 @@ diff -u -p -r1.13 uaccess.h
  };
  
  #define __get_user(x,ptr)                               \
-@@ -97,48 +103,44 @@ struct exception_table_entry {
+@@ -97,40 +102,32 @@ struct exception_table_entry {
  #ifdef __LP64__
  #define __get_kernel_asm(ldx,ptr)                       \
  	__asm__("\n1:\t" ldx "\t0(%2),%0\n"             \
@@ -793,9 +779,7 @@ diff -u -p -r1.13 uaccess.h
 +		"\t.dword\t1b,fixup_get_user_skip_1\n"	\
 +		"\t.previous"                          	\
  		: "=r"(__gu_val), "=r"(__gu_err)        \
--		: "r"(ptr), "1"(__gu_err));
-+		: "r"(ptr), "1"(__gu_err)		\
-+		: "r1");
+ 		: "r"(ptr), "1"(__gu_err));
  
  #define __get_user_asm(ldx,ptr)                         \
  	__asm__("\n1:\t" ldx "\t0(%%sr3,%2),%0\n"       \
@@ -808,9 +792,7 @@ diff -u -p -r1.13 uaccess.h
 +		"\t.dword\t1b,fixup_get_user_skip_1\n"	\
 +		"\t.previous"				\
  		: "=r"(__gu_val), "=r"(__gu_err)        \
--		: "r"(ptr), "1"(__gu_err));
-+		: "r"(ptr), "1"(__gu_err)		\
-+		: "r1");
+ 		: "r"(ptr), "1"(__gu_err));
  #else
  #define __get_kernel_asm(ldx,ptr)                       \
  	__asm__("\n1:\t" ldx "\t0(%2),%0\n"             \
@@ -823,9 +805,7 @@ diff -u -p -r1.13 uaccess.h
 +		"\t.word\t1b,fixup_get_user_skip_1\n"	\
 +		"\t.previous"                          	\
  		: "=r"(__gu_val), "=r"(__gu_err)        \
--		: "r"(ptr), "1"(__gu_err));
-+		: "r"(ptr), "1"(__gu_err)		\
-+		: "r1");
+ 		: "r"(ptr), "1"(__gu_err));
  
  #define __get_user_asm(ldx,ptr)                         \
  	__asm__("\n1:\t" ldx "\t0(%%sr3,%2),%0\n"       \
@@ -837,10 +817,8 @@ diff -u -p -r1.13 uaccess.h
 +		 "\t.word\t1b,fixup_get_user_skip_1\n"	\
  		 "\t.previous"                          \
  		: "=r"(__gu_val), "=r"(__gu_err)        \
--		: "r"(ptr), "1"(__gu_err));
-+		: "r"(ptr), "1"(__gu_err)		\
-+		: "r1");
- #endif /* !__LP64__ */
+ 		: "r"(ptr), "1"(__gu_err));
+@@ -138,7 +135,7 @@ struct exception_table_entry {
  
  #define __put_user(x,ptr)                                       \
  ({								\
@@ -849,7 +827,7 @@ diff -u -p -r1.13 uaccess.h
  								\
  	if (segment_eq(get_fs(),KERNEL_DS)) {                   \
  	    switch (sizeof(*(ptr))) {                           \
-@@ -172,82 +174,73 @@ struct exception_table_entry {
+@@ -172,21 +169,17 @@ struct exception_table_entry {
  #define __put_kernel_asm(stx,x,ptr)                         \
  	__asm__ __volatile__ (                              \
  		"\n1:\t" stx "\t%2,0(%1)\n"                 \
@@ -875,10 +853,8 @@ diff -u -p -r1.13 uaccess.h
 +		 "\t.dword\t1b,fixup_put_user_skip_1\n"	    \
  		 "\t.previous"                              \
  		: "=r"(__pu_err)                            \
--		: "r"(ptr), "r"(x), "0"(__pu_err))
-+		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
-+		: "r1")
- #else
+ 		: "r"(ptr), "r"(x), "0"(__pu_err))
+@@ -194,10 +187,8 @@ struct exception_table_entry {
  #define __put_kernel_asm(stx,x,ptr)                         \
  	__asm__ __volatile__ (                              \
  		"\n1:\t" stx "\t%2,0(%1)\n"                 \
@@ -890,10 +866,8 @@ diff -u -p -r1.13 uaccess.h
 +		 "\t.word\t1b,fixup_put_user_skip_1\n"	    \
  		 "\t.previous"                              \
  		: "=r"(__pu_err)                            \
--		: "r"(ptr), "r"(x), "0"(__pu_err))
-+		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
-+		: "r1")
- 
+ 		: "r"(ptr), "r"(x), "0"(__pu_err))
+@@ -205,49 +196,41 @@ struct exception_table_entry {
  #define __put_user_asm(stx,x,ptr)                           \
  	__asm__ __volatile__ (                              \
  		"\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
@@ -905,9 +879,7 @@ diff -u -p -r1.13 uaccess.h
 +		 "\t.word\t1b,fixup_put_user_skip_1\n"      \
  		 "\t.previous"                              \
  		: "=r"(__pu_err)                            \
--		: "r"(ptr), "r"(x), "0"(__pu_err))
-+		: "r"(ptr), "r"(x), "0"(__pu_err)	    \
-+		: "r1")
+ 		: "r"(ptr), "r"(x), "0"(__pu_err))
  
 -static inline void __put_kernel_asm64(u64 x, void *ptr)
 -{
@@ -942,8 +914,6 @@ diff -u -p -r1.13 uaccess.h
 -		 "\t.word\t(3b-2b)+1\n"
 -		 "\t.previous"
 -		: : "r"(ptr), "r"(hi), "r"(lo));
--
--}
 +#define __put_kernel_asm64(_x,ptr) do {		    	    \
 +	u64 x = (u64)_x;				    \
 +	u32 hi = x>>32;					    \
@@ -956,10 +926,10 @@ diff -u -p -r1.13 uaccess.h
 +		 "\t.word\t2b,fixup_put_user_skip_1\n"	    \
 +		 "\t.previous"				    \
 +		: "=r"(__pu_err)                            \
-+		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
-+		: "r1");				    \
++		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err)); \
 +} while (0)
-+
+ 
+-}
 +#define __put_user_asm64(_x,ptr) do {		    	    \
 +	u64 x = (u64)_x;				    \
 +	u32 hi = x>>32;					    \
@@ -972,18 +942,13 @@ diff -u -p -r1.13 uaccess.h
 +		 "\t.word\t2b,fixup_get_user_skip_1\n"	    \
 +		 "\t.previous"				    \
 +		: "=r"(__pu_err)                            \
-+		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err) \
-+		: "r1");				    \
++		: "r"(ptr), "r"(hi), "r"(lo), "0"(__pu_err)); \
 +} while (0)
  
  #endif /* !__LP64__ */
  
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
