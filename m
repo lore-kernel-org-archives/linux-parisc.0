@@ -1,45 +1,66 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BAF41482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Jul 2001 10:29:39 -0600 (MDT)
-Message-Id: <200107161629.SAA14087@hprtdt13.grc.hp.com>
-To: Helge Deller <deller@gmx.de>
-Cc: Holger Zessel <hzessel@grc.hp.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] problem activating the optional lan card on 712/80 with 0.9-32serial 
-In-reply-to: Your message of "Fri, 13 Jul 2001 21:02:28 METDST."
-             <20010713190310.95C7A482A@dsl2.external.hp.com>
-Date: Mon, 16 Jul 2001 18:29:34 +0200
-From: Holger Zessel <hzessel@grc.hp.com>
-Sender: hzessel@hprtdt13.grc.hp.com
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 50A5C482A
+	for <parisc-linux@parisc-linux.org>; Mon, 16 Jul 2001 10:50:02 -0600 (MDT)
+Message-Id: <200107161648.KAA20976@puffin.external.hp.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] TODO list 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Fri, 13 Jul 2001 20:10:08 BST." <20010713201008.Q3048@parcelfarce.linux.theplanet.co.uk>
+Date: Mon, 16 Jul 2001 10:48:55 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-In message <20010713190310.95C7A482A@dsl2.external.hp.com>Helge Deller writes
-
-> Hi Holger,
+Matthew Wilcox wrote:
 > 
-> I think the main problem why the second lan card didn't worked was, that
-> both - the first and the second card - tried to register the "eth0" device 
-> name.
+> Here's some things which need to get fixed, courtesy of Alan Cox:
+> 
+>  * Documentation/parisc/unwritten appears out of date
 
-Hi Helge,
+Here's what I have so far. I'll try to finish revivewing the rest
+tonight (or tomorrow) and submit bugs for what doesn't get done by the end
+of the week.
 
-thanks.  Actually it makes me angry somewhat that I did not yet have
-the time to look into the kernel sources myself so far.
-Even I would have found the constant 'eth0' string. :-))
-Though I definitely would not have been able to create a solution so far.
+grant
 
-What makes me confused is that the card is 'supported' according to
-the hw list but apparently this part of the code was not even designed
-to support more than one card at all. How can this be if the code
-PALINUX-2.4 started with was official 2.4 code which of course 
-supported more than one lancard ?? 
-Perhaps I just miss pieces of the picture here...
 
-Since I have no time to setup a devel. environment
-can you please sent me a kernel to test it ?? Regrettably you don't seem to 
-be with HP otherwise I could give you access to my gecko for testing.
-Do you have a system to test this on ??
+sys_idle	./include/asm-parisc/unistd.h:  return sys_idle();
+	sys_idle() is obsolete - remove it.
 
-regards,
-Holger
+reboot_setup()	arch/parisc/kernel/process.c - delete this function
+
+machine_halt		NOP. needs someone else to review.
+machine_power_on	obsolete - delete it
+
+exit_thread		NOP
+flush_thread		needs someone else to review
+
+die
+die_if_no_fixup		Do we need to export either of these?
+			Don't think so. We have "die_if_kernel".
+
+strlen_user	#define strlen_user(str) lstrnlen_user(str, 0x7fffffffL)
+			Kind of klugy...is that ok?
+
+do_check_pgt_cache	NOP. needs someone else to review.
+
+set_pte_phys		orphaned? needs someone else to review.
+
+ffz		./include/asm-parisc/bitops.h:extern __inline__ unsigned long ffz(unsigned long word)
+		I think "static __inline__" is meant...
+
+
+check_bugs	NOP. TBD.
+
+I haven't looked at these yet:
+csum_partial
+csum_partial_copy
+csum_partial_copy_generic
+csum_partial_nocheck
+csum_partial_copy_from_user
+csum_tcpudp_nofold
+csum_tcpudp_magic
+sigaddset
+sigdelset
+get_cycles
