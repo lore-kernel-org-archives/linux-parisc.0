@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Mon, 2 Jun 2003 15:58:03 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: Joel Soete <jsoe0708@tiscali.be>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] compiler & kernel
-Message-ID: <20030602215803.GC3983@dsl2.external.hp.com>
-References: <3ED70CF100000B3C@ocpmta2.freegates.net> <Pine.LNX.4.44.0306022044001.1415-300000@sal.ucc.ie>
+Received: from ausmtp01.au.ibm.com (ausmtp01.au.ibm.com [202.81.18.186])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4014B4829
+	for <parisc-linux@parisc-linux.org>; Mon,  2 Jun 2003 17:10:46 -0600 (MDT)
+Date: Tue, 3 Jun 2003 09:09:49 +1000
+From: Alan Modra <amodra@bigpond.net.au>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: tausq@debian.org, bug-binutils@gnu.org,
+	binutils@sources.redhat.com, parisc-linux@parisc-linux.org,
+	debian-gcc@lists.debian.org
+Subject: Re: [parisc-linux] Re: [hppa] binutils will not build shared libraries with external deps?
+Message-ID: <20030602230949.GB17437@ozlabs.au.ibm.com>
+References: <20030528190706.GC21904@bubble.sa.bigpond.net.au> <200306022110.h52LAdt3024082@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0306022044001.1415-300000@sal.ucc.ie>
+In-Reply-To: <200306022110.h52LAdt3024082@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,21 +25,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Jun 02, 2003 at 09:20:06PM +0100, M. Grabert wrote:
-> I didn't have problems with the UW-SCSI that was originally in the HP - as
-> far as I can remember - these problems just show up with this
-> 'replacement' SE-SCSI Segate Harddisk.
+On Mon, Jun 02, 2003 at 05:10:38PM -0400, John David Anglin wrote:
+> tmpdir/sh1p.o(.text+0x0): In function `shlib_mainvar':
+> /home/dave/binutils-2.14.90/src/ld/testsuite/ld-elfvsb/sh1.c:32: undefined refer
+> ence to `mainvar'
+> ...
+> FAIL: visibility (hidden)
 
-Was the original configuration using LVD?
-(SE requires much shorter cables than LVD for the same transfer rates)
+Fixing this one probably requires porting some of the recent changes
+I made for x86 and ppc to hppa.  See SYMBOL_REFERENCES_LOCAL and
+SYMBOL_CALLS_LOCAL.
 
-Have you looked for firmware updates for the disk?
-Have you tried forcing the SCSI bus to a slower transfer rate?
-
-> Yeah, I also think there is no problem with LVD, it's just appears to
-> happens with the SE-SCSI bus and this hard disk (and the hard disk seems
-> to be fine if connected to other computers).
-
-Smells like a cable length/termination issue.
-
-grant
+-- 
+Alan Modra
+IBM OzLabs - Linux Technology Centre
