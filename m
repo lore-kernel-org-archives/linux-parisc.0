@@ -1,38 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA14423
-	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 05:30:51 -0700
-Received: from router-100m.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.17)
-  by mailserv2.iuinc.com with SMTP; 18 Dec 2000 12:33:44 -0000
-Subject: Re: [parisc-linux] ldcw in __pthread_acquire
-To: phi@hpfrcu03.france.hp.com (Philippe Benard)
-Date: Mon, 18 Dec 2000 12:06:16 +0000 (GMT)
-Cc: alan@lxorguk.ukuu.org.uk (Alan Cox), sieler@allegro.com (Stan Sieler),
-        matthew@wil.cx (Matthew Wilcox), jes@linuxcare.com (Jes Sorensen),
-        alan@linuxcare.com.au (Alan Modra),
-        jsm@udlkern.fc.hp.com (John Marvin), parisc-linux@thepuffingroup.com
-In-Reply-To: <3A3DB858.A56A4FE4@hpfrcu03.france.hp.com> from "Philippe Benard" at Dec 18, 2000 08:10:16 AM
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id HAA15805
+	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 07:37:51 -0700
+To: Philippe Benard <phi@hpfrcu03.france.hp.com>
+Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>, LaMont Jones <lamont@hp.com>,
+        Stan Sieler <sieler@allegro.com>, Matthew Wilcox <matthew@wil.cx>,
+        Jes Sorensen <jes@linuxcare.com>, Alan Modra <alan@linuxcare.com.au>,
+        John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@thepuffingroup.com,
+        lamont@hp.com
+Subject: Re: [parisc-linux] ldcw in __pthread_acquire 
+In-reply-to: Your message of "Mon, 18 Dec 2000 13:27:43 +0100."
+             <3A3E02BF.DC1D0EB5@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E147z3b-0005TD-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 18 Dec 2000 07:40:33 -0700
+From: LaMont Jones <lamont@hp.com>
+Message-Id: <20001218144036.5BE0B1872C@security.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I am not sure I understand this thread very well. I would say that going
-> syscall() for a mutex lock (ldcw, testset, spinlock, whatever you name it) is
-> not a question of cost it is just simply impossible to avoid. 
+> I think LaMont Jones meant that the spinlock loop (in user space AND in kerne
+> space) must implement a load word loop, and issue a load-and-clear word only
+> when the lock word looks 'free', this is because the 'write' part of the
+> load-and-clear word issue a cache broadcast transaction on the bus, so the
+> loop should be on load-word followed by load-clear-word when it looks free,
 
-It comes down to probability
+That was one of the first solutions tried in HP-UX, and it resulted in
+processor 4 not getting any time (3 wasn't much better), due to the way
+that bus arbitration works (it favors one end of the bus.)
 
-A syscall on x86 gives you a 50+ clock overhead at all times
-A user mode test and short spin has a 1 or 2 clock overhead if uncontended
-You spin for a few clocks in case the contention is SMP and if that works
-you win
+The current semaphore operations in the HP-UX kernel do not use ldcw: they
+use stb and ldw in some interesting orders (which break when we get weak
+ordering with IA64, but then we'll have a low-cost test-and-set.)
 
-IFF the lock is contended then you just spent 100 clocks instead of 50
-doing a short spin then entering the kernel.
-
-With 1% contention that means you spent 99 times doing 2 clocks, 1 time doing
-100, which is a win over 100 times doing 50 clocks.
-
-Since hppa its apparently 2 clocks to the syscall the numbers are apparently
-different.
+lamont
