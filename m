@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 41743482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 11:12:24 -0700 (MST)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id cxtikaaa for parisc-linux@lists.parisc-linux.org; Tue, 15 Jan 2002 11:12:29 -0700
-Date: Tue, 15 Jan 2002 10:11:58 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Jochen Friedrich <jochen@scram.de>
-Cc: linux-tr@linuxtr.net,
-	HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] IBM TR patch
-Message-ID: <20020115181158.GT3247@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.LNX.4.43.0201142041450.7418-200000@alpha.bocc.de>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE4D5482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Jan 2002 11:15:25 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16QY7C-0000LR-00; Tue, 15 Jan 2002 18:15:18 +0000
+Date: Tue, 15 Jan 2002 18:15:18 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] gpm 1.19.6-9 Broken?
+Message-ID: <20020115181518.F19567@parcelfarce.linux.theplanet.co.uk>
+References: <1011117789.3c446eddddc77@webmail.tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.43.0201142041450.7418-200000@alpha.bocc.de>
+In-Reply-To: <1011117789.3c446eddddc77@webmail.tiscali.be>; from joel.soete@freebel.net on Tue, Jan 15, 2002 at 07:03:09PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,29 +25,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> this patch fixes some endianess issues of the current ibmtr driver. 
-> Although the current uses of htons() etc look correct, they are not: the 
-> writew/readw API already do the byte swap on big endian machines.
+On Tue, Jan 15, 2002 at 07:03:09PM +0100, joel.soete@freebel.net wrote:
+> I do my daily apt-get dist-upgrade which update my gpm package to release indice
+> -9 and it failled to start with daemons.log following error messages:
 
-the write/read macros are defined for pci accesses, and as such take a
-LE point of view with respect to memory accesses. I take it that you are
-not accessing a PCI device, so that's why you are having problems with
-endianess.  I suspect your patch will break the driver on PCI devices...
-(assuming there are both PCI and [E]ISA versions of the device that
-share the same driver).
+I suggest you file a bug against the debian gpm package (see
+http://www.debian.org/Bugs/).  Since you've clearly narrowed it down to
+gpm, it's really up to that package's maintainer.
 
-> Additionally, i added a switch to turn off IPv4 summing. This might be 
-> needed for IPv6 and is absolutely necessary on HP PARISC platform with the 
-> current broken ioremap implementation. The IPv4 summing is the only place 
-> in the driver that accesses memory directly without the readX or 
-> memcpy_fromio macros.
-
-How is ioremap broken? (Just curious). From what I understand ioremap is
-currently a nop in the parisc-linux vm/io design.
-
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Revolutions do not require corporate support.
