@@ -1,192 +1,118 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ksmail.netcologne.de (ksmail.netcologne.de [194.8.194.97])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D3A31482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Apr 2001 11:36:02 -0600 (MDT)
-Received: from gandalf.sigtrap.de (dial-194-8-209-49.netcologne.de [194.8.209.49])
-	by ksmail.netcologne.de (8.9.3/8.9.3) with ESMTP id TAA21831
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 18 Apr 2001 19:35:53 +0200 (MET DST)
-Received: (from flimm@localhost)
-	by gandalf.sigtrap.de (8.9.3/8.9.3/Debian 8.9.3-21) id TAA02911
-	for parisc-linux@lists.parisc-linux.org; Wed, 18 Apr 2001 19:35:53 +0200
-From: Oliver Flimm <flimm@sigtrap.de>
-Date: Wed, 18 Apr 2001 19:35:53 +0200
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] dumb question of the day
-Message-ID: <20010418193553.D772@sigtrap.de>
-Reply-To: flimm@sigtrap.de
-References: <3ADE00FC.9679.982D3D@localhost>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9EAB482A
+	for <parisc-linux@parisc-linux.org>; Wed, 18 Apr 2001 17:26:33 -0600 (MDT)
+Date: Wed, 18 Apr 2001 17:26:28 -0600
+To: wakkerma@debian.org
+Cc: parisc-linux@parisc-linux.org
+Message-ID: <20010418172628.C4217@zumpano.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3ADE00FC.9679.982D3D@localhost>; from plaven@ozemail.com.au on Wed, Apr 18, 2001 at 09:02:52PM +1000
+From: willy@ldl.fc.hp.com (Matthew Wilcox)
+Subject: [parisc-linux] strace updates
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+This patch adds some new syscalls to the HPPA list, it's against the current
+sourceforge version.  Some of the lists seem to have bugs... some examples:
 
-On Wed, Apr 18, 2001 at 09:02:52PM +1000, Pete wrote:
-> I grabbed rboot and set it up and didn't work, so I have set bootps 
-> and tftp according to the howto at http://www.oswg.org/oswg-
-> nightly/oswg/en_US.ISO_8859-1/articles/parisc-linux/parisc-linux-
-> boot.html  (very helpful too I might add)
+linux/mips/syscallent.h:        { 2,    TF,     printargs,              "stat64"}, /* 4213 */
+that is sys_stat64 in other arches, not printargs
 
-hmm, very nice indeed.
+sys_truncate64 & sys_ftruncate64 actually take 3 arguments not 2 (problem
+in all architectures)
 
-> from boot_admin I boot lan, I have tcpdump listening on eth1 where 
+linux/mips/syscallent.h:        { 3,    0,      printargs,              "fcntl64"       }, /* 4220 */
+all other arches tag this as TF, not 0.
 
-Did you do a 'search' to get the correct lan boot path and then add it with
-eg. path lan 192.168.2.1.3?
+most of the entries for sys_fcntl64 just do printargs, but it's identical
+to sys_fcntl.
 
-> the hppa box is connected via aui/TP and UTP cross over.  I can 
-> see the broadcast and /var/log/messages shows that tftp is looking 
-> for iplboot, as copied from the tar ball boot dir.
+i can't see how to build this from the sourceforge CVS -- i run autoconf
+but config.h.in is not found.  probably because it's part of .cvsignore.
 
-iplboot is only the file with the information about the bootsignature - the
-bootloader (see below, its much too small for a Linux kernel), not the
-kernel. palo needs this file and your out of the box (read: eg. compiled)
-vmlinux to build a lifimage. That's the file you'll need as the bootable
-kernel.
-
-> The hp box fails with an error on the console (I have a vga screen 
-> on the box):
-> 
-> "ERROR: Cannot load IPL, error detected."
-
-I don't use the base tarball for netbooting just afterwards for the actual
-installation on harddisk. Instead of this tarball I use the tarball
-distributed via http://mkhppa1.esiee.fr/en/download.html
-(fs_hd_20010320.tar.gz_global) for netbooting. But that's a historical
-issue, everything should also work with the base tarball ;-)
-
-So I don't know anything about the kernel in the base tarball. I use a
-crosscompiler built from cvs to build a proper kernel capable of netbooting.
-IIRC you have to compile the following options into the kernel:
-
-root-nfs support
-bootp support
-
-and of course the other appropriate network drivers and options.
-
-After compiling you'll get a vmlinux. This file isn't bootable because a
-special bootsignature - the bootloader - is still lacking. To make the
-kernel net-bootable you have to use palo with the following option set in
-its Makefile:
-
-NFSROOT = 192.168.2.1
-
-(when 192.168.2.1 is the IP of the server that's providing the root-FS for
-your HP9000).
-
-With your crosscompiler environment correctly setup its just a matter of
-'make xconfig;make dep;make clean;make palo'
-
-As a result I get a lifimage, rename it to vmlinux and then use this file
-for netbooting from /usr/tftpboot.
-
-> Since this is my first time with nfsbooting it's likely I'm not doing 
-> something right there, ie, I don't have /etc/exports setup.. should I 
-> od this?
-
-Yes, unless you want a nfsroot-boot without nfsroot ;-) And don't forget to
-modify the following files in the nfs-root tree on your nfs-server (apart
-from starting your nfs-server ;-):
-
-/etc/inittab (as the files below its something like /usr/thisismyrootfs/etc/inittab) 
-
-make sure you really have a getty waiting for you. I had a problem with this
-once (possibly my own fault) but now I make sure each time.
-
-/etc/fstab:
-
-Insert the appropriate entry for your remote root-FS apart from a proc-entry, eg.
-
-gandalf:/usr/tftpboot/boromir          /               nfs     defaults 0 0
-
-Here gandalf is my nfs-root server and /usr/tftpboot/boromir is the toplevel
-directory for the nfsroot tree of my 715/80 called boromir.
-
-/etc/securetty:
-
-Add 
-
-ttyp0
-ttyp1
-ttyp2
-ttyp3
-ttyp4
-ttyp5
-ttyp6
-ttyp7
-ttyp8
-
-when you want to do a telnet to your HP9000 (and your nfs-root provides a
-telnet ;-). Some might consider this a security hole, but my machine is
-secured from the internet, so I don't care ;-)
-
-/etc/hosts:
-
-Enter the IP and name of your HP9000 and your nfs-root server, eg:
-
-127.0.0.1       localhost
-192.168.2.8     boromir.sigtrap.de boromir
-192.168.2.1     gandalf.sigtrap.de gandalf
-
-/etc/hostname:
-
-Insert your hostname in this file.
-
-/etc/resolv.conf:
-
-Insert your nameserver in this file, eg:
-
-domain sigtrap.de
-search sigtrap.de
-nameserver 192.168.2.1
-
-And now for the most important file:
-
-/etc/network/interfaces:
-
-Her you have to configure eth0, eg:
-
-iface eth0 inet static
- address 192.168.2.8
- network 192.168.2.0
- netmask 255.255.255.0
- broadcast 192.168.1.255
- gateway 192.168.2.1
-     
- iface lo inet loopback
-
-Without our eth0 correctly set up and running you'll have problems to mount
-your nfs-root via /etc/fstab.
-
-On the bootp-server (which is also my nfsroot-server) you have to configure
-/etc/bootptab, eg:
-
-.global.prof:\
-        :sm=255.255.255.0:\
-	:ds=192.168.2.1:\
-	:gw=192.168.2.1:\
-	:sa=192.168.2.1:\
-	:ht=ethernet:\
-	:bf=vmlinux:
-						
-
-boromir:hd=/usr/tftpboot:rp=/usr/tftpboot/boromir:tc=.global.prof:hn:ha=ffffffffffff:ip=192.16
-8.2.8:vm=rfc1048:
-
-Insert your MAC-adress instead of ffffffffffff.
-
-I hope that was all and I didn't mix up everything said ;-)
-
-Perhaps the snippets of information can help you to get your machine up and
-running.
-
-Regards,
-
-Oliver
-
--- 
-!- Oliver Flimm - Cologne/Germany | flimm@sigtrap.de | http://www.sigtrap.de/ -!
-!    Die Zehn Gebote haben 279 Woerter, die amerikanische Unabhaengigkeits-    !
-! erklaerung hat 300 Woerter. Die EU-Verordnung zur Einfuhr von Karamelbonbons !
-!-----------------------------  hat 25911 Woerter  ----------------------------!
+Index: syscallent.h
+===================================================================
+RCS file: /cvsroot/strace/strace/linux/hppa/syscallent.h,v
+retrieving revision 1.1
+diff -u -p -r1.1 syscallent.h
+--- linux/hppa/syscallent.h	2001/03/27 12:17:17	1.1
++++ linux/hppa/syscallent.h	2001/04/18 22:06:40
+@@ -1,31 +1,5 @@
+ /*
+- * Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
+- * Copyright (c) 1993, 1994, 1995 Rick Sladkey <jrs@world.std.com>
+- * All rights reserved.
+- *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions
+- * are met:
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in the
+- *    documentation and/or other materials provided with the distribution.
+- * 3. The name of the author may not be used to endorse or promote products
+- *    derived from this software without specific prior written permission.
+- *
+- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- *
+- *	$Id: syscallent.h,v 1.1 2001/03/27 12:17:17 wichert Exp $
++ * Copyright (c) 2001 Hewlett-Packard, Matthew Wilcox
+  */
+ 
+ 	{ 5,	0,	printargs,		"SYS_0"			}, /* 0 */
+@@ -117,7 +91,7 @@
+ 	{ 1,	0,	sys_uselib,		"uselib"		}, /* 86 */
+ 	{ 1,	0,	sys_swapon,		"swapon"		}, /* 87 */
+ 	{ 3,	0,	sys_reboot,		"reboot"		}, /* 88 */
+-	{ 3,	0,	sys_readdir,		"old_readdir"		}, /* 89 */
++	{ 6,	0,	sys_mmap,		"mmap2"			}, /* 89 */
+ 	{ 6,	0,	sys_mmap,		"mmap"			}, /* 90 */
+ 	{ 2,	0,	sys_munmap,		"munmap"		}, /* 91 */
+ 	{ 2,	TF,	sys_truncate,		"truncate"		}, /* 92 */
+@@ -129,8 +103,8 @@
+ 	{ 4,	TN,	sys_recv,		"recv"			}, /* 98 */
+ 	{ 2,	TF,	sys_statfs,		"statfs"		}, /* 99 */
+ 	{ 2,	0,	sys_fstatfs,		"fstatfs"		}, /* 100 */
+-	{ 3,	0,	sys_ioperm,		"ioperm"		}, /* 101 */
+-	{ 5,	0,	sys_socketcall,		"socketcall"		}, /* 102 */
++	{ 2,	TF,	sys_stat64,		"stat64"		}, /* 101 */
++	{ 5,	0,	printargs,		"SYS_102"		}, /* 102 */
+ 	{ 3,	0,	sys_syslog,		"syslog"		}, /* 103 */
+ 	{ 3,	0,	sys_setitimer,		"setitimer"		}, /* 104 */
+ 	{ 2,	0,	sys_getitimer,		"getitimer"		}, /* 105 */
+@@ -140,7 +114,7 @@
+ 	{ 5,	TF,	sys_pwrite,		"pwrite"		}, /* 109 */
+ 	{ 2,	0,	sys_getcwd,		"getcwd"		}, /* 110 */
+ 	{ 0,	0,	sys_vhangup,		"vhangup"		}, /* 111 */
+-	{ 0,	0,	sys_idle,		"idle"			}, /* 112 */
++	{ 2,	TF,	sys_fstat64,		"fstat64"		}, /* 112 */
+ 	{ 0,	0,	sys_vfork,		"vfork"			}, /* 113 */
+ 	{ 4,	TP,	sys_wait4,		"wait4"			}, /* 114 */
+ 	{ 1,	0,	sys_swapoff,		"swapoff"		}, /* 115 */
+@@ -227,11 +201,11 @@
+ 
+ 	{ 5,	0,	printargs,		"SYS_196"		}, /* 196 */
+ 	{ 5,	0,	printargs,		"SYS_197"		}, /* 197 */
+-	{ 5,	0,	printargs,		"SYS_198"		}, /* 198 */
+-	{ 5,	0,	printargs,		"SYS_199"		}, /* 199 */
+-	{ 5,	0,	printargs,		"SYS_200"		}, /* 200 */
+-	{ 5,	0,	printargs,		"SYS_201"		}, /* 201 */
+-	{ 5,	0,	printargs,		"SYS_202"		}, /* 202 */
++	{ 2,	TF,	sys_lstat64,		"lstat64"		}, /* 198 */
++	{ 3,	TF,	printargs,		"truncate64"		}, /* 199 */
++	{ 3,	TF,	printargs,		"ftruncate64"		}, /* 200 */
++	{ 3,	0,	printargs,		"getdents64"		}, /* 201 */
++	{ 3,	TF,	sys_fcntl,		"fcntl64"		}, /* 202 */
+ 	{ 5,	0,	printargs,		"SYS_203"		}, /* 203 */
+ 	{ 5,	0,	printargs,		"SYS_204"		}, /* 204 */
+ 	{ 5,	0,	printargs,		"SYS_205"		}, /* 205 */
