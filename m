@@ -1,16 +1,15 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] a b180 panic with 2.6.11-rc3-pa3
-Date: Mon, 14 Feb 2005 22:13:59 +0000
-Message-ID: <e6eae029050214141362a7d859@mail.gmail.com>
-References: <42075CE800002E4E@mail-6-bnl.tiscali.it>
-Reply-To: Max Grabert <parisc@gmail.com>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] BUG XFS 2.6.11-rc4-pa1
+Date: Tue, 15 Feb 2005 18:12:25 +0100
+Message-ID: <4209EEB90000286C@mail-2-bnl.tiscali.it>
+References: <20050214044445.GD22633@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: List Parisc <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset="ISO-8859-15"
+To: "Grant Grundler" <grundler@parisc-linux.org>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42075CE800002E4E@mail-6-bnl.tiscali.it>
+In-Reply-To: <20050214044445.GD22633@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,68 +20,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, 14 Feb 2005 11:30:43 +0000, Joel Soete <soete.joel@tiscali.be> wrote:
-> Hi all,
+Hello Grant,
+
+into <http://www.kernel.org/pub/linux/kernel/v2.6/testing/cset/> of today=
+
+I read some bug fix in xfs but not yet in rc4-bk2 patch (most probably in=
+
+bk3)
+
+hth,
+    Joel
+
+> -- Original Message --
+> Date: Sun, 13 Feb 2005 21:44:45 -0700
+> From: Grant Grundler <grundler@parisc-linux.org>
+> To: parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] BUG XFS 2.6.11-rc4-pa1
 > 
-> Don't know if somebody else also emcountered such panic:
-> Backtrace:
-
-> [<101bb588>] journal_add_journal_head+0xdc/0x13c
-> [<101b4dd8>] journal_dirty_data+0x64/0x1b0
-> [<101a6be4>] ext3_journal_dirty_data+0x1c/0x60
-> [<101a69a8>] walk_page_buffers+0xe0/0xf0
-> [<101a72b8>] ext3_ordered_writepage+0x168/0x1fc
-> [<1018d770>] mpage_writepages+0x28c/0x3a0
-> [<1018bae4>] __sync_single_inode+0x5c/0x278
-> [<1018bd68>] __writeback_single_inode+0x68/0x168
-> [<1018c034>] sync_sb_inodes+0x1cc/0x310
-> [<1018c1e8>] writeback_inodes+0x70/0xd4
-> [<10149088>] background_writeout+0xb4/0x10c
-> [<10149e40>] __pdflush+0x138/0x204
-> [<10149f2c>] pdflush+0x20/0x2c
-> [<1013c564>] kthread+0xdc/0xe4
-> [<1010ac5c>] ret_from_kernel_thread+0x1c/0x24
->
-> [...]
 > 
-> IASQ: 00000000 00000000 IAOQ: 10201f1c 10201f20
-> IIR: 0ed91222    ISR: 00000000  IOR: 20702352
-> CPU:        0   CR30: 17c84000 CR31: 103d0000
-> ORIG_R28: 17c84980
-> IAOQ[0]: memset+0x24/0xa8
-> IAOQ[1]: memset+0x28/0xa8
-> RP(r2): journal_add_journal_head+0xdc/0x13c
-> Kernel panic - not syncing: Kernel Fault
+> On Sun, Feb 13, 2005 at 09:13:23PM -0700, Grant Grundler wrote:
+> > Linux riot 2.6.11-rc4-pa0 #2 SMP Sun Feb 13 19:25:48 PST 2005 parisc6=
+4
+> GNU/Linux
+> ...
+> >  IAOQ[0]: xfs_ialloc_read_agi+0x164/0x188 [xfs]
+> >  IAOQ[1]: xfs_ialloc_read_agi+0x168/0x188 [xfs]
 > 
-> Here on a b180 running 2.6.11-rc3-pa3 (while the system should be idle)
-
-Long time ago I have seen a couple of those. I can't remember what
-exact kernel version(s) it was, but it happened with the earlier 2.6
-kernels.
-Pretty much the same output (I think I once posted it on the mailing
-list), but I only got this when I tried out some graphics card (ATI,
-Voodoo2 or Matrox?) and shortly after xdm started (and not every
-time). I think 64bit kernels triggered it more easily.
-
-But I haven't gotten one of those lately (at least not with 2.6.10-rc1
-and later, with Matrox graphics card).
-
-> Any idea about known ext3 pb?
-
-Good question. I have a different problem than the one above: In very
-rare occations, when transferring very big files onto a USB-hdd
-(ext3), the files are being silently corrupted (no kernel log
-messages). But I don't know whether that problem is related to ext3 or
-usb-storage or a faulty h/w.
-
-Back to your problem: I don't know/think that there are any severe
-problems with ext3, at least I was using it on PA for a long time and
-it worked quite well. But there is always the possibility that there
-are some hidden bugs that are triggered in rare situations however ...
+> I rebooted and tried to resurrect the filesystem but fsck.xfs seems
+> to be a NOP and mount refused to mount it:
+> 
+> riot:/usr/src# mount -t xfs /dev/md0 /mnt
+> XFS mounting filesystem md0
+> XFS: Log inconsistent (didn't find previous header)
+> XFS: failed to find log head
+> XFS: log mount/recovery failed: error 5
+> XFS: log mount failed
+> mount: /dev/md0: can't read superblock
+> riot:/usr/src#
+> 
+> I ran "mkfs -t xfs /dev/md0", mounted md0, and copied the kernel
+> source tree back on to /mnt. cvs up -A worked fine. Suggests either
+> a rare bug or binary compatibility issue between -rc3 and -rc4.
+> 
+> I'll let the kernel builds and spew beat on xfs some more tonight.
+> 
+> grant
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 
-Greetings,
-  Max
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
