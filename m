@@ -1,27 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA17110
-	for <parisc-linux@puffin.external.hp.com>; Tue, 22 Aug 2000 15:55:46 -0600
-Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 22 Aug 2000 21:55:38 -0000
-Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
-	id 13RM0R-0000pA-00
-	for <parisc-linux@thepuffingroup.com>; Tue, 22 Aug 2000 17:54:51 -0400
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA28346
+	for <parisc-linux@puffin.external.hp.com>; Wed, 23 Aug 2000 02:49:43 -0600
+Message-Id: <200008230849.KAA01294@pallas.spacetec.no>
+From: tor@spacetec.no (Tor Arntsen)
+Date: Wed, 23 Aug 2000 10:49:31 +0200
+In-Reply-To: Alan Modra <alan@linuxcare.com.au>
+       "Re: Incompatibility of PIC and non-PIC" (Aug 20,  5:21)
 To: parisc-linux@thepuffingroup.com
-References: <87zom5uhv3.fsf@linuxcare.com>
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 22 Aug 2000 17:54:51 -0400
-In-Reply-To: David Huggins-Daines's message of "22 Aug 2000 17:05:20 -0400"
-Message-ID: <87vgwtufkk.fsf@linuxcare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] GCC merge complete
+Subject: Re: Incompatibility of PIC and non-PIC
+Cc: parisc@lists.linuxcare.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-As the subject says.
+On Aug 20,  5:21, Alan Modra wrote:
+>On Sat, 19 Aug 2000, Matthew Wilcox wrote:
+>
+>> btw, is there any option to cvs diff which produces files which can be
+>> applied by any known version of patch?  in my experience, patch can't
+>> find files specified by Index: lines _unless_ both the +++ and the ---
+>> files can't be found -- which is rarely the case with common names such
+>> as Makefile or ChangeLog.
+>
+>I haven't found one, and it's a real pain.  I tend to edit patches
+>covering multiple directories before passing them to patch.
+>
+>"sed -e '/^[+-][+-]/d' < cvs_diff_file | patch -p0 --posix" ought to work.
+>
+>Alan
 
-You will probably need to add --disable-threads to your configure
-command if you are building C++ support.
+Which versions of CVS are you using?  CVS used to output diffs without
+including the directory path in the --- and +++ lines, but that's been
+fixed long ago.  I don't have any problems with patch anymore.
 
--- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+-Tor
