@@ -1,18 +1,16 @@
 Return-Path: <soete.joel@tiscali.be>
 Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0982C488D
+	by dsl2.external.hp.com (Postfix) with ESMTP id 84AAE487A
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 27 Dec 2003 11:05:24 -0700 (MST)
-Message-ID: <3FEDCA20.3030003@tiscali.be>
-Date: Sat, 27 Dec 2003 18:06:24 +0000
+	Sat, 27 Dec 2003 13:59:48 -0700 (MST)
+Message-ID: <3FEDF301.5030901@tiscali.be>
+Date: Sat, 27 Dec 2003 21:00:49 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] printk cleanup
-References: <3FEDC568.30006@tiscali.be>
-In-Reply-To: <3FEDC568.30006@tiscali.be>
-Content-Type: multipart/mixed; boundary="------------040408080701060004060200"
-Cc: parisc-linux@lists.parisc-linux.org
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] 2.6 & pdc_console pb on c110: "Warning: unable to
+ open an initial console."
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,172 +20,79 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------040408080701060004060200
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi all,
 
-oops sory,
+I try to see if pdc_console could be operational on my c110 with kernel 2.6.0-pa5.
 
-Joel Soete wrote:
-> Hi all,
-> 
-> May I sugest following printk changes:
-> =========><=========
-> diff -Naur linux-2.6.0-pa5/include/asm-parisc/pci.h 
-> linux-2.6.0-pa5.new/include/asm-parisc/pci.h
-> --- linux-2.6.0-pa5/include/asm-parisc/pci.h    2003-12-27 
-> 16:36:55.000000000 +0100
-> +++ linux-2.6.0-pa5.new/include/asm-parisc/pci.h    2003-12-27 
-> 18:12:53.303140000 +0100
-> @@ -29,7 +29,8 @@
->  #ifdef PCI_DEBUG
->  #define ASSERT(expr) \
->      if(!(expr)) { \
-> -        printk( "\n" __FILE__ ":%d: Assertion " #expr " 
-> failed!\n",__LINE__); \
-> +        printk("\n%s:%d: Assertion " #expr " failed!\n", __FILE__,
-there is a typo                                                      ^^
-should be better read                                       __FILE__, \
-> +               __LINE__); \
->          panic(#expr); \
->      }
->  #else
-> =========><=========
-> 
-Appologies,
-J.
+So I uncheck serial_mux and check pdc_console with make menuconfig (edit also pdc_cons.c to define EARLY_BOOTUP_DEBUG)
+Then I create the special file "mknod /dev/ttyB0 c 11 0", add "TB0:12345:respawn:/sbin/getty 38400 ttyB0" in /etc/inittab
 
---------------040408080701060004060200
-Content-Type: text/plain;
- name="PrintK.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="PrintK.diff"
+(I also try to apply Richard patch <http://lists.parisc-linux.org/pipermail/parisc-linux/2002-May/016384.html>)
 
-diff -Naur linux-2.6.0-pa5/arch/parisc/kernel/pci-dma.c linux-2.6.0-pa5.new/arch/parisc/kernel/pci-dma.c
---- linux-2.6.0-pa5/arch/parisc/kernel/pci-dma.c	2003-12-27 16:36:55.000000000 +0100
-+++ linux-2.6.0-pa5.new/arch/parisc/kernel/pci-dma.c	2003-12-27 17:51:39.000000000 +0100
-@@ -261,11 +261,13 @@
- 	} else if(pages_needed <= 32) {
- 		PCXL_FIND_FREE_MAPPING(res_idx, mask, 32);
- 	} else {
--		panic(__FILE__ ": pcxl_alloc_range() Too many pages to map.\n");
-+		panic("%s: pcxl_alloc_range() Too many pages to map.\n",
-+		      __FILE__);
- 	}
- 
- 	dump_resmap();
--	panic(__FILE__ ": pcxl_alloc_range() out of dma mapping resources\n");
-+	panic("%s: pcxl_alloc_range() out of dma mapping resources\n",
-+	      __FILE__);
- 	
- resource_found:
- 	
-@@ -319,7 +321,8 @@
- 	} else if(pages_mapped <= 32) {
- 		PCXL_FREE_MAPPINGS(res_idx, mask, 32);
- 	} else {
--		panic(__FILE__ ": pcxl_free_range() Too many pages to unmap.\n");
-+		panic("%s: pcxl_free_range() Too many pages to unmap.\n",
-+		      __FILE__);
- 	}
- 	
- 	pcxl_used_pages -= (pages_mapped ? pages_mapped : 1);
-diff -Naur linux-2.6.0-pa5/arch/parisc/math-emu/decode_exc.c linux-2.6.0-pa5.new/arch/parisc/math-emu/decode_exc.c
---- linux-2.6.0-pa5/arch/parisc/math-emu/decode_exc.c	2003-12-27 16:36:55.000000000 +0100
-+++ linux-2.6.0-pa5.new/arch/parisc/math-emu/decode_exc.c	2003-12-27 16:47:42.000000000 +0100
-@@ -347,7 +347,7 @@
- 		return SIGNALCODE(SIGFPE, FPE_FLTRES);
- 	  default:
- 		update_trap_counts(Fpu_register, aflags, bflags, trap_counts);
--		printk(__FILE__ "(%d) Unknown FPU exception 0x%x\n",
-+		printk("%s(%d) Unknown FPU exception 0x%x\n", __FILE__,
- 			__LINE__, Excp_type(exception_index));
- 		return SIGNALCODE(SIGILL, ILL_COPROC);
- 	  case NOEXCEPTION:	/* no exception */
-diff -Naur linux-2.6.0-pa5/drivers/parisc/ccio-dma.c linux-2.6.0-pa5.new/drivers/parisc/ccio-dma.c
---- linux-2.6.0-pa5/drivers/parisc/ccio-dma.c	2003-12-27 16:36:55.000000000 +0100
-+++ linux-2.6.0-pa5.new/drivers/parisc/ccio-dma.c	2003-12-27 16:55:57.000000000 +0100
-@@ -364,11 +364,11 @@
- 		CCIO_FIND_FREE_MAPPING(ioc, res_idx, mask, 64);
- #endif
- 	} else {
--		panic(__FILE__ ": %s() Too many pages to map. pages_needed: %ld\n", 
--		      __FUNCTION__, pages_needed);
-+		panic("%s: %s() Too many pages to map. pages_needed: %ld\n",
-+		       __FILE__,  __FUNCTION__, pages_needed);
- 	}
- 
--	panic(__FILE__ ": %s() I/O MMU is out of mapping resources.\n", 
-+	panic("%s: %s() I/O MMU is out of mapping resources.\n", __FILE__,
- 	      __FUNCTION__);
- 	
- resource_found:
-@@ -441,7 +441,7 @@
- 		CCIO_FREE_MAPPINGS(ioc, res_idx, mask, 64);
- #endif
- 	} else {
--		panic(__FILE__ ":%s() Too many pages to unmap.\n", 
-+		panic("%s:%s() Too many pages to unmap.\n", __FILE__,
- 		      __FUNCTION__);
- 	}
- }
-@@ -1447,7 +1447,8 @@
- 	ioc->pdir_base = (u64 *)__get_free_pages(GFP_KERNEL, 
- 						 get_order(ioc->pdir_size));
- 	if(NULL == ioc->pdir_base) {
--		panic(__FILE__ ":%s() could not allocate I/O Page Table\n", __FUNCTION__);
-+		panic("%s:%s() could not allocate I/O Page Table\n", __FILE__,
-+		      __FUNCTION__);
- 	}
- 	memset(ioc->pdir_base, 0, ioc->pdir_size);
- 
-@@ -1461,7 +1462,8 @@
- 	ioc->res_map = (u8 *)__get_free_pages(GFP_KERNEL, 
- 					      get_order(ioc->res_size));
- 	if(NULL == ioc->res_map) {
--		panic(__FILE__ ":%s() could not allocate resource map\n", __FUNCTION__);
-+		panic("%s:%s() could not allocate resource map\n", __FILE__,
-+		      __FUNCTION__);
- 	}
- 	memset(ioc->res_map, 0, ioc->res_size);
- 
-diff -Naur linux-2.6.0-pa5/drivers/parisc/sba_iommu.c linux-2.6.0-pa5.new/drivers/parisc/sba_iommu.c
---- linux-2.6.0-pa5/drivers/parisc/sba_iommu.c	2003-12-27 16:36:55.000000000 +0100
-+++ linux-2.6.0-pa5.new/drivers/parisc/sba_iommu.c	2003-12-27 16:57:40.000000000 +0100
-@@ -579,7 +579,8 @@
- 	if (pide >= (ioc->res_size << 3)) {
- 		pide = sba_search_bitmap(ioc, pages_needed);
- 		if (pide >= (ioc->res_size << 3))
--			panic(__FILE__ ": I/O MMU @ %lx is out of mapping resources\n", ioc->ioc_hpa);
-+			panic("%s: I/O MMU @ %lx is out of mapping resources\n",
-+			      __FILE__, ioc->ioc_hpa);
- 	}
- 
- #ifdef ASSERT_PDIR_SANITY
-@@ -1781,7 +1782,8 @@
- 
- 		if (NULL == sba_dev->ioc[i].res_map)
- 		{
--			panic(__FILE__ ":%s() could not allocate resource map\n", __FUNCTION__ );
-+			panic("%s:%s() could not allocate resource map\n",
-+			      __FILE__, __FUNCTION__ );
- 		}
- 
- 		memset(sba_dev->ioc[i].res_map, 0, res_size);
-diff -Naur linux-2.6.0-pa5/include/asm-parisc/pci.h linux-2.6.0-pa5.new/include/asm-parisc/pci.h
---- linux-2.6.0-pa5/include/asm-parisc/pci.h	2003-12-27 16:36:55.000000000 +0100
-+++ linux-2.6.0-pa5.new/include/asm-parisc/pci.h	2003-12-27 18:55:56.233140000 +0100
-@@ -29,7 +29,8 @@
- #ifdef PCI_DEBUG
- #define ASSERT(expr) \
- 	if(!(expr)) { \
--		printk( "\n" __FILE__ ":%d: Assertion " #expr " failed!\n",__LINE__); \
-+		printk("\n%s:%d: Assertion " #expr " failed!\n", __FILE__, \
-+		       __LINE__); \
- 		panic(#expr); \
- 	}
- #else
+But no way to make it works?
 
---------------040408080701060004060200--
+Linux version 2.6.0-pa5 (root@hpalin) (gcc version 3.3.3 20031206 (prerelease) 3FP[0] enabled: Rev 1 Model 11 
+                               The 32-bit Kernel has started...
+Initialized PDC Console for debugging.
+Determining PDC firmware type: System Map.
+model 000058e0 00000481 00000000 00000002 77e47570 100000f1 00000004 0000008a 0avers  0000000d
+CPUID vers 11 rev 13 (0x0000016d)
+model 9000/777/C110
+Total Memory: 128 Mb
+[snip]
+Soft power switch enabled, polling @ 0xf0140000.
+Console: switching to colour frame buffer device 128x48
+pty: 256 Unix98 ptys configured
+lp: driver loaded but no devices found
+Generic RTC Driver v1.07
+Serial: 8250/16550 driver $Revision: 1.90 $ 13 ports, IRQ sharing enabled
+ttyS0 at MMIO 0xffd05800 (irq = 90) is a 16550A
+ttyS1 at MMIO 0xffe02800 (irq = 121) is a 16550A
+[snip]
+Freeing unused kernel memory: 504k freed
+Warning: unable to open an initial console.
+Adding 131832k swap on /dev/md1.  Priority:-1 extents:1
+EXT3 FS on md2, internal journal
+[snip]
+....eth0: link ok.
+
+Debian GNU/Linux testing/unstable hpalin ttyS0
+
+hpalin login:
+
+In th syslog I also notice:
+[snip]
+Dec 27 21:45:03 hpalin init: Id "TB0" respawning too fast: disabled for 5 minutes
+Dec 27 21:52:15 hpalin init: Id "TB0" respawning too fast: disabled for 5 minutes
+[snip]
+
+And don't find any such device with:
+# cat /proc/devices
+Character devices:
+   1 mem
+   2 pty
+   3 ttyp
+   4 /dev/vc/0
+   4 tty
+   4 ttyS
+   5 /dev/tty
+   5 /dev/console
+   5 /dev/ptmx
+   6 lp
+   7 vcs
+   9 st
+  10 misc
+  13 input
+  14 sound
+  21 sg
+  29 fb
+  36 netlink
+128 ptm
+136 pts
+180 usb
+[snip]
+
+Any idea? (what should I do wrongly?)
+
+Thanks in advance for attention,
+	Joel
