@@ -1,36 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA12569
-	for <parisc-linux@puffin.external.hp.com>; Mon, 27 Mar 2000 11:56:44 -0700
-From: Steven Pritchard <steve@silug.org>
-Message-Id: <200003271854.MAA20907@osiris.silug.org>
-Subject: Re: [parisc-linux] some questions
-In-Reply-To: <20000326185256.A29700@thepuffingroup.com> from "willy@thepuffingroup.com"
- at "Mar 26, 2000 06:52:56 pm"
-To: willy@thepuffingroup.com
-Date: Mon, 27 Mar 2000 12:54:21 -0600 (CST)
-CC: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA14401
+	for <parisc-linux@puffin.external.hp.com>; Mon, 27 Mar 2000 14:35:04 -0700
+Received: from localhost (funnyguy@localhost)
+	by morph.net (8.9.3/8.9.3) with ESMTP id QAA18739
+	for <parisc-linux@thepuffingroup.com>; Mon, 27 Mar 2000 16:31:28 -0500
+Date: Mon, 27 Mar 2000 16:31:28 -0500 (EST)
+From: Mike Brancato <funnyguy@digitalsmackdown.net>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.10003271628390.18589-100000@morph.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] build errors, recipe still not up to date?
 List-ID: <linux-parisc.vger.kernel.org>
 
-willy@thepuffingroup.com said:
-> cool, I didn't know XFree had been ported to hpux 10.10.  In fact,
-> I can't see any mention of it on the XFree site, so this intrigues me
-> quite a lot.
 
-X11R6.4 compiles on HP-UX (10.20, at least), right out of the box.  I
-ran it on a 715 (or was that a 735?) for a while (for some reason that
-I can't remember).  I seem to recall that I compiled the server from
-the XFree 3.3.x sources once also.  (I really only wanted the XFree
-xterm.)
+I've been folowing the recipe step by step, yet i still get build
+problems.  i'm working witht he march 26th 2.3.42 version, and everything
+in the kernel is building fine, except the link at the end.
 
-Anyway, it works, but it doesn't have any of the fancy color-recovery
-extensions that the "real" HP-UX X server comes with.  It probably
-also won't work with anything but really old graphics hardware, but it
-would be worth a try...
+anyone know?  did i not get something?
 
-Steve
--- 
-steve@silug.org           | Linux Users of Central Illinois
-(618)398-7320             | Meetings the 4th Tuesday of every month
-Steven Pritchard          | http://www.luci.org/ for more info
+mike
+
+make[2]: Entering directory `/tmp/mabran3/palo/ipl'
+echo "char *bld_info = \"`whoami`@`hostname` `date`\";" > build.c
+hppa1.1-linux-gcc -I/tmp/mabran3/palo/../linux-2.3/include -I../lib -O2
+-fwritable-strings -mdisable-fpregs -Wall -c -o build.o build.c
+rm -f build.c
+hppa1.1-linux-ld -N -Ttext 0x500000 -e '$START$' -o ipl crt0.o byteio.o
+elf64.o        ipl.o         offset.o      som.o diskpart.o    ext2.o
+lib.o         pdc_bootio.o  vsprintf.o elf32.o            fileio.o
+load.o        pdc_cons.o build.o
+/tmp/mabran3/palo/../linux-2.3/arch/parisc/lib/milli.o
+rm -f build.o
+make[2]: Leaving directory `/tmp/mabran3/palo/ipl'
+./palo/palo -s -b ipl/ipl -k /tmp/mabran3/palo/../linux-2.3/vmlinux -r
+/tmp/mabran3/palo/../linux-2.3/ramdisk.bin \
+-c "0/vmlinux HOME=/ TERM=LINUX root=/dev/ram initrd=0/ramdisk" lifimage
+palo version 0.8 mabran3@alpha Mon Mar 27 16:30:10 EST 2000
+/tmp/mabran3/palo/../linux-2.3/ramdisk.bin: No such file or directory
+make[1]: *** [lifimage-only] Error 2
