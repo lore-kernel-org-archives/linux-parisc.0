@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 91500482E
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 May 2002 13:16:56 -0600 (MDT)
-Date: Wed, 1 May 2002 21:16:54 +0200
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v481)
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	marteaut@tuxfamily.org, willy@debian.org, bame@parisc-linux.org,
-	Thierry Simonnet <t.simonnet@esiee.fr>
-To: PA/Linux <parisc-linux@lists.parisc-linux.org>
-From: Thibaut VARENE <varenet@esiee.fr>
-Message-Id: <FFBAC14B-5D37-11D6-8464-0030656F07A2@esiee.fr>
-Subject: [parisc-linux] New parisc-linux.org website mirror online !
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: PA/Linux <parisc-linux@lists.parisc-linux.org>,
+	parisc-linux-announce@lists.parisc-linux.org
+In-Reply-To: Message from Thibaut VARENE <varenet@esiee.fr>
+   of "Wed, 01 May 2002 21:16:54 +0200." <FFBAC14B-5D37-11D6-8464-0030656F07A2@esiee.fr>
+References: <FFBAC14B-5D37-11D6-8464-0030656F07A2@esiee.fr> 
+Date: Thu, 02 May 2002 00:40:22 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020502064022.9FE1F482B@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: New parisc-linux.org website mirror online !
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +20,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello !
+Hi all!
 
-We are proud to announce that the new French mirror of parisc-linux.org 
-website is now online !
+http://www.parisc-linux.org is now "in sync" as well!
 
-It will be accessible soon (time of DNS spread) at:
-http://www.fr.parisc-linux.org/
+Many thanks to ESIEE team (thibaut, thomas, clement, others?)
+for the many weeks of work they put into this!
 
-and at:
-http://parisc-linux.esiee.fr/
+This is a big step towards providing local translations of
+the web site and merging content of both sites into one!
 
-Enjoy !
+thanks again!
+grant
 
-We're currently updating both parisc-linux.org and pateam.esiee.fr 
-(formerly mkhppa1) to reflect the new mirroring scheme.
+Thibaut VARENE wrote:
+> Hello !
+> 
+> We are proud to announce that the new French mirror of parisc-linux.org 
+> website is now online !
+> 
+> It will be accessible soon (time of DNS spread) at:
+> http://www.fr.parisc-linux.org/
+> 
+> and at:
+> http://parisc-linux.esiee.fr/
+> 
+> Enjoy !
+> 
+> We're currently updating both parisc-linux.org and pateam.esiee.fr 
+> (formerly mkhppa1) to reflect the new mirroring scheme.
+> 
+> 
+> Thibaut VARENE
+> PA/Linux ESIEE Team
+> http://pateam.esiee.fr/
 
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
