@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ns.zrt.nl (ns.zrt.nl [212.153.94.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B195E482C
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 07:59:01 -0700 (MST)
-Received: (from fwmaster@localhost) by ns.zrt.nl (8.9.1a/8.6.12) id PAA11690 for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 15:59:00 +0100 (MET)
-Message-Id: <sbfd2062.007@ms-zrt1>
-Date: Thu, 22 Nov 2001 15:41:46 +0100
-From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
-To: "<" <parisc-linux@lists.parisc-linux.org>, <peter@petescaff.com>
-Subject: Betr.: [parisc-linux] working .config for C160/2.4.14 ?
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D976482C
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 22 Nov 2001 08:26:43 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 166vkP-0001vu-00; Thu, 22 Nov 2001 15:26:41 +0000
+Date: Thu, 22 Nov 2001 15:26:41 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Richard Allen <ra@hp.is>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Mutexes ?
+Message-ID: <20011122152641.B10023@parcelfarce.linux.theplanet.co.uk>
+References: <20011122103209.A1789@hp.is>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011122103209.A1789@hp.is>; from ra@hp.is on Thu, Nov 22, 2001 at 10:32:09AM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,24 +25,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->I am trying to build a bootable kernel for my C160 & am having a few
->problems. The box is currently running a kernel I tweaked for my 712/80i
->but it is rather old & I am suffering from SCSI problems.
->
->Does anyone have a usable .config they could mail me for this box for
->2.4.16-pa* ?
->
-My C200 runs fine when I run
+On Thu, Nov 22, 2001 at 10:32:09AM +0000, Richard Allen wrote:
+> Is there a problem with threads and/os mutexes on parisc linux, or is it
+> just me ?
+> 
+> checking for mutexes... no
+> configure: WARNING: THREAD MUTEXES NOT AVAILABLE FOR THIS COMPILER/ARCHITECTURE.
 
-make oldconfig
+what package?  many programs implement their own mutex support -- there's
+nothing wrong with the ones in glibc.
 
-in a pristine kernel tree.
-
-You'll get the default config, which has some sensible values. All you =
-have to
-choose is the processor-type. I could choose PA8x00, but that still gives
-errors when I run 'make mrproper' in the kernel tree, so I always choose =
-PA7x00.
-
-Good luck,
-Jurriaan
+-- 
+Revolutions do not require corporate support.
