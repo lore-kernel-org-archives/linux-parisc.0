@@ -1,47 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maestro.symsys.com (maestro.symsys.com [208.223.9.37])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 32B684A19
-	for <parisc-linux@parisc-linux.org>; Fri,  2 Mar 2001 12:48:37 -0700 (MST)
-Received: from localhost (ingram@localhost)
-	by maestro.symsys.com (8.9.3/8.9.3) with ESMTP id NAA12311
-	for <parisc-linux@parisc-linux.org>; Fri, 2 Mar 2001 13:48:36 -0600
-Date: Fri, 2 Mar 2001 13:48:36 -0600 (CST)
-From: Greg Ingram <ingram@symsys.com>
-To: parisc-linux@parisc-linux.org
-In-Reply-To: <20010302012631.C62DB37CB2@carmen.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0103021230140.12009-100000@maestro.symsys.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] C100 Self-Hosting
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 323F34A19
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Mar 2001 13:13:26 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14YvsO-0000rX-00; Fri, 02 Mar 2001 20:10:08 +0000
+Date: Fri, 2 Mar 2001 20:10:08 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: New XC available was Re: [parisc-linux] 64-bit compiler millicode update
+Message-ID: <20010302201008.G24088@parcelfarce.linux.theplanet.co.uk>
+References: <E14YdVL-0000NE-00@noam.fc.hp.com> <bame@fc.hp.com> <20010302012631.C62DB37CB2@carmen.fc.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010302012631.C62DB37CB2@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Thu, Mar 01, 2001 at 06:26:31PM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-I tried to self-host on my C100 with the recent root filesystem from
-ISIEE.  The first problem was I needed the CVS bins.  I grabbed the
-sources from Debian and the build went without a hitch.  I've posted a
-tarball of (I hope) all of the relevant bits here:
+On Thu, Mar 01, 2001 at 06:26:31PM -0700, Matt Taggart wrote:
+> The full xc with this change and also the recent glibc changes is now 
+> available at,
+> 
+> ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-20010301.tar.gz
 
-	http://www.symsys.com/~ingram/linux/parisc/cvs.tar.gz
+There's something wrong with the compiler:
 
-I checked out the linux and palo sources, configured the kernel and made
-dependancies.  I ran into the following problems with 'make palo':
+/opt/palinux/lib/gcc-lib/hppa-linux/2.97/tradcpp0: /lib/libc.so.6:
+	version `GLIBC_2.2' not found (required by
+	/opt/palinux/lib/gcc-lib/hppa-linux/2.97/tradcpp0)
 
-1)  arch/parisc/Makefile specifies the cross-compiler
+we're trying to track it down.  in the meantime, use your current toolchain
+and the libgcc.a from /opt/palinux/lib/gcc-lib/hppa64-linux/2.97/
 
-I guess most people are using the cross-compiler so maybe it should stay
-that way for now.  Anyway, once I commented out that line the kernel build
-took off.
-
-2)  conflicting types for mem{cmp|cpy|set} built-ins 
-
-Lots and lots of warnings.  Should I add -fno-builtin?
-
-3)  conflicting types for off_t in <stdio.h> and "linux/types.h"
-
-I was able to dodge this error by defining '__off_t_defined' right before
-including <stdio.h> in palo/lib/elf32.c.
-
-And now [ drumroll ] the build succeeds and the self-built kernel boots.  
-
-Woohoo!
-
-- Greg
+-- 
+Revolutions do not require corporate support.
