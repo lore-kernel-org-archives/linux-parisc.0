@@ -1,17 +1,24 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from wolf.alaskatech (207-5-237-24-cable.anchorageak.net [24.237.5.207])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4AABD4829
-	for <parisc-linux@parisc-linux.org>; Wed,  2 Oct 2002 11:46:29 -0600 (MDT)
-Received: from wolf.alaskatech (palinux@wolf.alaskatech [24.237.5.207])
-	by wolf.alaskatech (8.12.3/8.12.3/Debian -4) with ESMTP id g92HlxR5006750
-	for <parisc-linux@parisc-linux.org>; Wed, 2 Oct 2002 09:47:59 -0800
-Date: Wed, 2 Oct 2002 09:47:59 -0800 (AKDT)
-From: Tom <palinux@alaskatech.org>
-To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.44.0210020925510.6688-100000@wolf.alaskatech>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] C180 oddness
+Received: from mta204-rme.xtra.co.nz (mta204-rme.xtra.co.nz [210.86.15.147])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F30444829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  2 Oct 2002 16:11:30 -0600 (MDT)
+Received: from mta5-rme.xtra.co.nz ([210.86.15.140])
+          by mta204-rme.xtra.co.nz with ESMTP
+          id <20021002221116.OUZH3898.mta204-rme.xtra.co.nz@mta5-rme.xtra.co.nz>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Thu, 3 Oct 2002 10:11:16 +1200
+Received: from oemcomputer ([219.88.65.22]) by mta5-rme.xtra.co.nz
+          with SMTP
+          id <20021002221115.HQUP18266.mta5-rme.xtra.co.nz@oemcomputer>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Thu, 3 Oct 2002 10:11:15 +1200
+Message-Id: <3.0.2.32.20021003100721.006f9c7c@pop3.xtra.co.nz>
+Date: Thu, 03 Oct 2002 10:07:21 +1200
+To: parisc-linux@lists.parisc-linux.org
+From: Gavin Hubbard <ghub005@xtra.co.nz>
+Subject: Re: [parisc-linux] WTS: workstation ram 
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +30,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Okay - after a bit of downtime (due to houseguests being in the room with
-the HP), I fired it back up to update things. Apt updated the system fine;
-cvs updated the kernel from 2.4.18-pa59 to the latest -pa20 release
-without errors. Recompiled using menuconfig (no errors), used make-kpkg to
-create the kernel, then dpkg to install the generated .deb file (which
-created all the links nicely, etc. Ran palo, which was happy, and
-rebooted.
+Message: 8
+To: Gavin Hubbard <ghub005@xtra.co.nz>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] WTS: workstation ram 
+Date: Tue, 24 Sep 2002 10:58:43 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
 
-Now, the C180 runs headless, with a serial cable running to a Proliant
-next to it so I can use minicom as a console if needed. After the reboot,
-I couldn't ssh back in, so I checked the console, but minicom wouldn't
-get a response. Power-cycled the HP, still no messages on console, no
-errors on the LCDs, and eventually (several minutes) a heartbeat light.
-Tried unplugging the serial cable, plugging in a keyboard/mouse/monitor
-and rebooting again, but still nothing. With the monitor on, after power
-on I do get a green signal light on the monitor, just no display. I tried
-the "tab after powerup" to switch console settings, but nothing. According
-to my C180 manual, having the monitor and keyboard on there should set the
-monitor as console, while removing them should send console to ttyS0.
+Gavin Hubbard wrote:
+> I have twenty used A4994A modules. These are the 256MB, 120MHz SDRAM
+> modules that work in the B1000, B2000, B2600, C3000, C3600, C3650, C3700,
+> J5600, J6000, J6700, J7000 workstations. Please note that some of those
+> systems require the modules to be added in pairs.
 
-Anyone have any ideas how to rescue this, or what could have caused it?
-It's running firmware 6.1, and has been for several months. There's no
-error LEDs, no smell of smoke, no melted bits, and no actual response. I
-tried switching off the UPS it's on and leaving it for an hour, but still
-get the same lack of results. Minicom is set to 9600/8N1/VT100, which is
-what worked last time I used the console this way...
+Will also work on A400 and A500 (ie rp24xx) boxes.
+Possibly on L1000 and L2000 but don't know how picky PDC
+is on those boxes.
+
+grant
+
+-------------------------------------------------
+
+Quick follow-up; I installed an A4994A kit into a spare L1000 on Monday. It
+booted HP-UX 11 with no problems.
+
+Regards,
+
+Gavin
