@@ -1,144 +1,99 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp5ve.mailsrvcs.net (smtp5vepub.gte.net [206.46.170.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 276E04A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 00:10:09 -0700 (MST)
+Received: from smtp6ve.mailsrvcs.net (smtp6vepub.gte.net [206.46.170.27])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C53F84A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 00:17:29 -0700 (MST)
 Received: from neuronet.pitt.edu (adsl-151-201-239-223.pittpa.adsl.bellatlantic.net [151.201.239.223])
-	by smtp5ve.mailsrvcs.net (8.9.1/8.9.1) with ESMTP id HAA2336980
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 07:17:06 GMT
+	by smtp6ve.mailsrvcs.net (8.9.1/8.9.1) with ESMTP id HAA1998710
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Feb 2001 07:17:18 GMT
 Sender: raffo@bellatlantic.net
-Message-ID: <3A9369CF.C7DDC195@neuronet.pitt.edu>
-Date: Wed, 21 Feb 2001 02:10:07 -0500
+Message-ID: <3A936B86.4B642A4F@neuronet.pitt.edu>
+Date: Wed, 21 Feb 2001 02:17:26 -0500
 From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
 MIME-Version: 1.0
 To: PL <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Warnings compiling the CVS kernel
+References: <3A9369CF.C7DDC195@neuronet.pitt.edu>
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Warnings compiling the CVS kernel
 List-ID: <linux-parisc.vger.kernel.org>
 
-(My first post was line wrapped, here a re-post)
+Perhaps this may give you more information on the machine I'm using.
 
-After building the cross-compiler in an x86 machine, I get warning
-message like this one for most of the sources when compiling the kernel:
+Rafael
+--
 
-hppa-linux-gcc -D__KERNEL__
--I/usr1/users/raffo/parisk/source/linux/include -Wall
--Wstrict-prototypes -O2 -fomit-frame-pointer -fno-strict-aliasing
--D__linux__ -pipe -fno-strength-reduce -mno-space-regs
--mfast-indirect-calls -mschedule=7200 -mdisable-fpregs
--fno-strict-aliasing -ffunction-sections    -c -o hosts.o hosts.c
-In file included from
-/usr1/users/raffo/parisk/source/linux/include/linux/fs.h:23,
-                 from
-/usr1/users/raffo/parisk/source/linux/include/linux/capability.h:17,
-                 from
-/usr1/users/raffo/parisk/source/linux/include/linux/binfmts.h:5,
-                 from
-/usr1/users/raffo/parisk/source/linux/include/linux/sched.h:9,
-                 from
-/usr1/users/raffo/parisk/source/linux/include/linux/blkdev.h:5,
-                 from
-/usr1/users/raffo/parisk/source/linux/include/linux/blk.h:4,
-                 from hosts.c:29:
-/usr1/users/raffo/parisk/source/linux/include/linux/string.h:27:
-warning: conflicting types for built-in function `strncpy'
-/usr1/users/raffo/parisk/source/linux/include/linux/string.h:33:
-warning: conflicting types for built-in function `strncat'
-/usr1/users/raffo/parisk/source/linux/include/linux/string.h:39:
-warning: conflicting types for built-in function `strncmp'
-/usr1/users/raffo/parisk/source/linux/include/linux/string.h:61:
-warning: conflicting types for built-in function `memset'
-/usr1/users/raffo/parisk/source/linux/include/linux/string.h:64:
-warning: conflicting types for built-in function `memcpy'
-/usr1/users/raffo/parisk/source/linux/include/linux/string.h:73:
-warning: conflicting types for built-in function `memcmp'
-
-The compilation succeeds but the boot will crash here:
-
-[...]
+palo ipl raffo@prod2 Wed Feb 21 01:25:46 EST 2001
+0/vmlinux 2557795 bytes @ 0x6800
+0/palo-cmdline '0/vmlinux HOME=/ TERM=linux root=/dev/nfs
+nfsroot=192.168.0.2:/tftpboot/parisc console=ttyS0'
+Kernel: partition 0 file /vmlinux
+ELF32 executable
+Entry 00100000 first 00100000 n 5
+Segment 0 load 00100000 size 1464692 mediaptr 0x1000
+Segment 1 load 00266000 size 181464 mediaptr 0x167000
+Segment 2 load 00294000 size 218968 mediaptr 0x194000
+Segment 3 load 002cc000 size 8192 mediaptr 0x1ca000
+Segment 4 load 002fa688 size 74224 mediaptr 0x1cc688
+branching to kernel entry point 0x00100000
+PDC Console Initialized
+The 32-bit Kernel has started...
+FP[0] enabled: Rev 1 Model 9
+Free memory starts at: 0x1030d000
+start_parisc(0x64d24,0x64d24,0x0,0x0)
+PALO command line: 'HOME=/ TERM=linux root=/dev/nfs
+nfsroot=192.168.0.2:/tftpboot/parisc console=ttyS0'
+PALO initrd 0-0
+model   00003160 00000481 00000000 00000000 77b82c78 ffffffff 00000004
+0000000a 0000000a
+vers    00000013
+CPUID   vers 0 rev 0
+model   9000/715
+Searching for devices in PDC firmware... processor hpa 0xfffbe000
+ an older box...
+Using Alex's odd 715/old exception, onboard graphics won't be
+inventoried!
+Found devices:
+1. Stinger Optional Graphics (10) at 0xf4000000, versions 0x6, 0x0,
+0x77, 0x0, 0x0
+2. Scorpio Sr. Core BA (11) at 0xf082f000, versions 0x19, 0x0, 0x70,
+0x0, 0x0
+3. Scorpio Sr. Core SCSI (10) at 0xf0825000, versions 0x19, 0x0, 0x71,
+0x0, 0x0
+4. Scorpio Sr. Core LAN (802.3) (10) at 0xf0826000, versions 0x19, 0x0,
+0x72, 0x0, 0x0
+5. Scorpio Sr. Core HIL (10) at 0xf0821000, versions 0x19, 0x0, 0x73,
+0x0, 0x0
+6. Scorpio Sr. Core RS-232 (10) at 0xf0823000, versions 0x19, 0x0, 0x75,
+0x0, 0x0
+7. Scorpio Sr. Core RS-232 (10) at 0xf0822000, versions 0x19, 0x0, 0x75,
+0x0, 0x0
+8. Scorpio Sr. Core Centronics (10) at 0xf0824000, versions 0x19, 0x0,
+0x74, 0x0, 0x0
+9. Scorpio Sr. Audio (10) at 0xf1000000, versions 0x19, 0x0, 0x7b, 0x0,
+0x0
+10. Scorpio Sr. EISA BA (11) at 0xfc000000, versions 0x19, 0x0, 0x76,
+0x0, 0x0
+11. Scorpio Sr.(715/75) (0) at 0xfffbe000, versions 0x316, 0x0, 0x4,
+0x0, 0x81
+12. Scorpio Sr. (1) at 0xfffbf000, versions 0x27, 0x0, 0x9, 0x0, 0x0
+That's a total of 12 devices.
+CPU(s): 1 x PA7100 (PCX-T) at 75.000000 MHz
+Linux version 2.4.0 (raffo@prod2) (gcc version 2.97 20010128
+(experimental)) #1 Wed Feb 21 02:04:36 EST 2001
+free_bootmem(0x30d800, 0x3cf2800)
+initrd: 00000000-00000000
+pagetable_init
+On node 0 totalpages: 16384
+zone(0): 8192 pages.
+zone(1): 8192 pages.
+zone(2): 0 pages.
+Kernel command line: HOME=/ TERM=linux root=/dev/nfs
+nfsroot=192.168.0.2:/tftpboot/parisc console=ttyS0
+Calibrating delay loop... 74.75 BogoMIPS
+Memory: 61252k available
+Dentry-cache hash table entries: 8192 (order: 4, 65536 bytes)
+Buffer-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Page-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Inode-cache hash table entries: 4096 (order: 3, 32768 bytes)
 POSIX conformance testing by UNIFIX
 
-
-Dumping Stack from 14000000 to 14000240:
-
-Dumping Stack from 1026e000 to 1026e700:
-e000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e020 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e040 00000000 00000000 00000000 0027a000 00000000 00000000 00000000 00000000
-e060 00000000 00000000 00000000 0010c848 00000000 00000000 00000000 00000000
-e080 0000ff00 00000000 10105c38 14000000 00000000 102cc000 1028060c 13fc8000
-e0a0 14000000 14000000 0004000e 10295888 001a5a59 000ff000 f000013c 00000000
-e0c0 00000000 08000059 00000004 00000000 10280620 00000002 0000000f 1027b324
-e0e0 00000000 00000000 102cc000 10266000 1027b324 04000000 14000240 1027b000
-e100 00000006 ffffffff 00000000 00000000 00000000 00000000 00000000 00000000
-e120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e160 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e180 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e1a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e1c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e1e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e200 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e220 00000000 00000000 101151e8 101151e8 00000000 00000000 00000000 00000000
-e240 00000000 00000000 00000000 00000000 0000001d 6fc10080 00000000 14000000
-e260 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e280 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e2a0 00000000 00000000 00000000 1010670c 00000000 00000000 00000000 00000000
-e2c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e2e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e300 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e320 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e340 00000000 00000000 f0003e5c 00272000 00281000 f0008c98 00000000 00000000
-e360 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e3a0 00000000 00000000 00000000 10102784 00000000 00000000 00000000 00000000
-e3c0 00000000 00000000 00000001 1026e080 00000000 00000000 00000000 00000000
-e3e0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e400 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e420 00000000 00000000 00000000 10102ba8 00000000 00000000 00000000 00000000
-e440 1023a690 00000001 1026e080 00000000 00000000 00000000 00000000 00000000
-e460 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e480 00000000 00000000 00000000 00000000 00000008 14000240 14000000 1023a830
-e4a0 00000000 00000000 00000000 10102b04 00000000 00000000 00000000 00000000
-e4c0 0004000e 102ea000 10102ba8 14000000 14000240 1023a800 00000000 00000002
-e4e0 19a10000 00000005 00000000 00000005 00000004 00000006 00000008 00000006
-e500 1026e080 00000002 00000000 102ea000 00000000 00000060 00000001 00000002
-e520 00000001 00000001 1027b484 10266000 0000002a 015752a0 1026e700 00000060
-e540 0000001f 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e560 00000000 00000000 00000000 00000000 00000000 00000000 40800000 00000000
-e580 ffd2e740 ffd2e740 7f7fffff ffffffff 7f7fffff ffffffff 00000000 00000000
-e5a0 00000000 00000000 41800000 00000000 00000010 00000010 00000000 00000000
-e5c0 ffd2e740 ffd2e740 41000000 00000000 40800000 00000000 ffd2e740 ffd2e740
-e5e0 41000000 00000000 ffd2e740 ffd2e740 40800000 00000000 41000000 00000000
-e600 40300000 00000000 40200000 00000000 40200000 00000000 41800000 ffd2e740
-e620 40000000 00000000 40000000 00000000 40800000 00000000 41000000 00000000
-e640 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e660 00000000 00000000 10102b10 10102b14 00000000 00000000 00000000 00000000
-e680 00000000 00000000 00000000 00000000 00000000 0c701093 00000000 14000008
-e6a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e6c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-e6e0 00000000 00000000 00000000 10106e3c 00000000 00000000 00000000 00000000
-
-
-Kernel Fault: Code=15 regs=1026e4c0 (Addr=14000008)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000000001110
-r0-3     00000000 102ea000 10102ba8 14000000
-r4-7     14000240 1023a800 00000000 00000002
-r8-11    19a10000 00000005 00000000 00000005
-r12-15   00000004 00000006 00000008 00000006
-r16-19   1026e080 00000002 00000000 102ea000
-r20-23   00000000 00000060 00000001 00000002
-r24-27   00000001 00000001 1027b484 10266000
-r28-31   0000002a 015752a0 1026e700 00000060
-sr0-3    00000000 00000000 00000000 00000000
-sr4-7    00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 10102b10 10102b14
- IIR: 0c701093    ISR: 00000000  IOR: 14000008
-ORIG_R28: 00000000
-
-
-The kernel was configured with 'make oldconfig'.
--- 
-     Rafael
+[error messages from previous post]
