@@ -1,17 +1,18 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 217264854
+Return-Path: <christoph.plattner@gmx.at>
+Received: from viefep18-int.chello.at (viefep18-int.chello.at [213.46.255.22])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ED0C44854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 12 Jan 2004 10:51:25 -0700 (MST)
-Date: Mon, 12 Jan 2004 18:51:21 +0100
-Message-ID: <3FFB28C900003B90@ocpmta1.freegates.net>
-In-Reply-To: <3FFF10F3.2060408@tiscali.be>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+	Mon, 12 Jan 2004 16:23:52 -0700 (MST)
+Message-ID: <40032C85.3040901@gmx.at>
+Date: Tue, 13 Jan 2004 00:23:49 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] 2.6 & pdc_console pb on c110: "Warning: unable
+	to	open an initial console."
+References: <3FEDF301.5030901@tiscali.be> <200312280019.55830.deller@gmx.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,84 +22,65 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Carlos,
+Anyway, the PDC driver should work for all architectures, independent of
+the serial type (this was my concept of this driver).
 
-Here is finaly the pb I encounter when I try to rebuild the toolchain with
-gcc-snapshot at the time of glibc build:
-[snip]
-/Develop/parisc-linux/xc/bin/hppa-linux-gcc -nostdlib -nostartfiles -o /Develop/parisc-linux/build/glibc/iconv/iconvconfig
- -Wl,-dynamic-linker=/opt/palinux/hppa-linux/lib/ld.so.1    /Develop/parisc-linux/build/glibc/csu/crt1.o
-/Develop/parisc-linux/build/glibc/csu/crti.o `/Develop/parisc-linux/xc/bin/hppa-linux-gcc
---print-file-name=crtbegin.o` /Develop/parisc-linux/build/glibc/iconv/iconvconfig.o
-/Develop/parisc-linux/build/glibc/iconv/strtab.o /Develop/parisc-linux/build/glibc/iconv/xmalloc.o
-/Develop/parisc-linux/build/glibc/iconv/hash-string.o  -Wl,-rpath-link=/Develop/parisc-linux/build/glibc:/Develop/parisc-linux/build/glibc/math:/Develop/parisc-linux/build/glibc/elf:/Develop/parisc-linux/build/glibc/dlfcn:/Develop/parisc-linux/build/gl
-ibc/nss:/Develop/parisc-linux/build/glibc/nis:/Develop/parisc-linux/build/glibc/rt:/Develop/parisc-linux/build/glibc/resolv:/Develop/parisc-linux/build/glibc/crypt:/Develop/parisc-linux/build/glibc/linuxthreads
-/Develop/parisc-linux/build/glibc/libc.so.6 /Develop/parisc-linux/build/glibc/libc_nonshared.a
--lgcc `/Develop/parisc-linux/xc/bin/hppa-linux-gcc --print-file-name=crtend.o`
-/Develop/parisc-linux/build/glibc/csu/crtn.o
-/Develop/parisc-linux/build/glibc/elf/ld.so.1: undefined reference to `set_dp'
-collect2: ld returned 1 exit status
-make[2]: *** [/Develop/parisc-linux/build/glibc/iconv/iconvconfig] Error
-1
-make[2]: Leaving directory `/Develop/parisc-linux/sources/glibc/iconv'
-make[1]: *** [iconv/others] Error 2
-make[1]: Leaving directory `/Develop/parisc-linux/sources/glibc'
-make: *** [all] Error 2
+Is the driver fully ported to the 2.6 kernel ?
+In the first log, the line "Warning: unable to open an initial console."
+was shown, so the open on this device fails !
+Futher there is no PDC driver registered under proc/devices !
 
-the glibc src cames from last debian pkg with patches applied and configured
-with following options:
-# unset LD_LIBRARY_PATH; unset LD_RUN_PATH; export CC=/Develop/parisc-linux/xc/bin/hppa-linux-gcc;
-export CLFAGS="-O2 -g";  export PATH="/Develop/parisc-linux/xc/bin:$PATH";
-/Develop/parisc-linux/sources/glibc/configure --target=hppa-linux --host=hppa-linux
---build=hppa-linux --prefix=/opt/palinux/hppa-linux --without-cvs --disable-profile
---enable-hacker-mode --enable-add-ons=linuxthreads --with-headers=/Develop/parisc-linux/sources/linux/include
+I have never tested a 2.6 kernel on a HP.
+
+Christoph
 
 
-and the gcc-snapshot sources cames from the latest gcc-scnapshot-20040110
-debian pkg and the 'preliminary x compiler' is configured with following
-options:
-# export PATH="/Develop/parisc-linux/xc/bin:$PATH"; /Develop/parisc-linux/sources/gcc/configure
---target=hppa-linux --host=hppa-linux --build=hppa-linux --prefix=/Develop/parisc-linux/xc
---disable-shared --disable-nls --enable-languages=c 
-
-Any idea?
-
-Thanks in advance,
-    Joel
-
->-- Original Message --
->Date: Fri, 09 Jan 2004 20:37:07 +0000
->From: Joel Soete <soete.joel@tiscali.be>
->To: Carlos O'Donell <carlos@baldric.uwo.ca>
->Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
->Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
->
->
->Joel Soete wrote:
-[snip]
-> (but I don't much retry because of gnu pserver cvs pb; in the mean time
-I
-> read that new anonymous access would be with ssh, even though last weekend
-> it was not yet operational?) 
-[snip]
-
-CVSROOT=":ext:anoncvs@subve
->sions.gnu.org:/cvsroot/gcc"
-
-seems to be operational now with CVS_RSH="ssh"
-
-hth,
-	Joel
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listi
->fo/parisc-linux
+Helge Deller wrote:
+> On Saturday 27 December 2003 22:00, Joel Soete wrote:
+> 
+>>I try to see if pdc_console could be operational on my c110 with kernel 2.6.0-pa5.
+>>
+>>So I uncheck serial_mux and check pdc_console with make menuconfig (edit also pdc_cons.c to define EARLY_BOOTUP_DEBUG)
+>>Then I create the special file "mknod /dev/ttyB0 c 11 0", add "TB0:12345:respawn:/sbin/getty 38400 ttyB0" in /etc/inittab
+>>
+>>(I also try to apply Richard patch <http://lists.parisc-linux.org/pipermail/parisc-linux/2002-May/016384.html>)
+>>
+>>But no way to make it works?
+>>
+>>Linux version 2.6.0-pa5 (root@hpalin) (gcc version 3.3.3 20031206 (prerelease) 3FP[0] enabled: Rev 1 Model 11 
+>>                               The 32-bit Kernel has started...
+>>Initialized PDC Console for debugging.
+>>Determining PDC firmware type: System Map.
+>>model 000058e0 00000481 00000000 00000002 77e47570 100000f1 00000004 0000008a 0avers  0000000d
+>>CPUID vers 11 rev 13 (0x0000016d)
+>>model 9000/777/C110
+>>Total Memory: 128 Mb
+>>[snip]
+>>Soft power switch enabled, polling @ 0xf0140000.
+>>Console: switching to colour frame buffer device 128x48
+>>pty: 256 Unix98 ptys configured
+>>lp: driver loaded but no devices found
+>>Generic RTC Driver v1.07
+>>Serial: 8250/16550 driver $Revision: 1.90 $ 13 ports, IRQ sharing enabled
+>>ttyS0 at MMIO 0xffd05800 (irq = 90) is a 16550A
+>>ttyS1 at MMIO 0xffe02800 (irq = 121) is a 16550A
+> 
+> 
+> Your machine has standard serial ports. So why do you want to
+> switch on serial_mux stuff when it's not needed (and not possible
+> since the device is not present in your machine) ?
+> 
+> Helge
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 
 
 
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
