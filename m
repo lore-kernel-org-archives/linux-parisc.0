@@ -1,19 +1,14 @@
-Return-Path: <franklin@msn.com>
-Received: from ool-4350044a.dyn.optonline.net (ool-4350044a.dyn.optonline.net
-	[67.80.4.74])
-	by dsl2.external.hp.com (Postfix) with SMTP id 7F8FE4854
-	for <parisc-linux@parisc-linux.org>;
-	Thu, 11 Dec 2003 03:44:13 -0700 (MST)
-Message-ID: <8p0-73i32a97@x75.dtr4>
-From: "Stephan Jennings" <franklin@msn.com>
-To: parisc-linux@parisc-linux.org
-Date: Thu, 11 Dec 03 06:38:55 GMT
+Return-Path: <coltrane@msn.com>
+Message-ID: <9a61-b1uzd-jer144@7ioagsqu5sd4db>
+From: "Don Goodson" <coltrane@msn.com>
+To: grundler@parisc-linux.org
+Date: Thu, 11 Dec 03 20:36:53 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="BE.E._6E..__72.5"
-Cc: 
-Subject: [parisc-linux] Sexy. leading men tricks to get any girl ra dfryux
-Reply-To: Stephan Jennings <franklin@msn.com>
+	boundary="358D9_D_8_EE6_"
+Cc: pmccabe@parisc-linux.org, parisc-linux@parisc-linux.org
+Subject: [parisc-linux] Be.. strong and youthful, feel incredible!! oiof
+Reply-To: Don Goodson <coltrane@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,11 +19,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---BE.E._6E..__72.5
+--358D9_D_8_EE6_
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>Sexy. leading men tricks to get any girl ra dfryux
+<html>Be.. strong and youthful, feel incredible!! oiof
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -57,11 +52,11 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-mwgvs 
-m 
+onfo kzdjih w
+frbn ahoifvsmzyfrj
+h hbee  hmjrek
 </body>
 </html>
-dnykabycsialqxpsqorvbmxbtjj enxwnxcij
-vxhnzfoq gvun wszcwcoymau
+dkfoylygod  puxd
 
---BE.E._6E..__72.5--
+--358D9_D_8_EE6_--
