@@ -1,94 +1,86 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA17060
-	for <parisc-linux@puffin.external.hp.com>; Fri, 1 Sep 2000 20:23:40 -0600
-Received: from home.com ([24.3.245.88]) by mail.rdc1.ne.home.com
-          (InterMail vM.4.01.03.00 201-229-121) with ESMTP
-          id <20000902022337.NEBU5134.mail.rdc1.ne.home.com@home.com>
-          for <parisc-linux@thepuffingroup.com>;
-          Fri, 1 Sep 2000 19:23:37 -0700
-Message-ID: <39B065B8.90A2C038@home.com>
-Date: Fri, 01 Sep 2000 21:28:08 -0500
-From: Matthew Hudson <mhudson@home.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA03259
+	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Sep 2000 16:41:39 -0600
+Sender: rbrad@mailserv2.iuinc.com
+Message-ID: <39B1822A.4E8F20AB@uswest.net>
+Date: Sat, 02 Sep 2000 16:41:46 -0600
+From: Ryan Bradetich <rbradetich@uswest.net>
 MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [Fwd: 2.4.0 do_fork() change, all architectures - take 2]
+Subject: [parisc-linux] Boot error on C200+
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hello,
+
+I am getting the following error when I attempt to boot parisc-linux on
+the
+C200+.
+
+VFS: Mounted root (nfs filesystem) readonly.
+execve /sbin/init c0270008 c0270030
+
+Kernel Fault: Code=7 regs=c7f98248 (Addr=00000110)
+
+PSW  : 0004000b  GR 1 : 00002000  GR 2 : 00013403  GR 3 : 00000000
+GR 4 : 2001ff74  GR 5 : 00000000  GR 6 : 000777f4  GR 7 : 000010c4
+GR 8 : 000011bc  GR 9 : c7f98000  GR10 : c022fa78  GR11 : c0270030
+GR12 : c0270008  GR13 : c022fe14  GR14 : c0270000  GR15 : 617bfdfb
+GR16 : c027c60c  GR17 : 00000000  GR18 : c02b0000  GR19 : 00000001
+GR20 : 00000037  GR21 : 00089b9c  GR22 : 00089bd8  GR23 : 000010c4
+GR24 : 2001ff74  GR25 : 00000001  GR26 : 00000000  GR27 : 00088f00
+GR28 : b64d8e60  GR29 : b44302d0  GR30 : 20020140  GR31 : 00022d63
+SR0  : 00002000  SR1  : fffd2dff  SR2  : 00000000  SR3  : 00002000
+SR4  : 00000000  SR5  : 00002000  SR6  : 00002000  SR7  : 00002000
+
+IASQ : 00000000 00000000 IAOQ : 00000110 00000114 ORIG_R28 : ffdf7fff
+ IIR : 43ffff40 ISR : 00000000 IOR : 00000000
 
 
--------- Original Message --------
-Subject: 2.4.0 do_fork() change, all architectures - take 2
-Resent-Date: Sat, 2 Sep 2000 04:19:10 +0200 (MET DST)
-Resent-From: linux-m68k@phil.uni-sb.de
-Date: Sat, 02 Sep 2000 13:18:46 +1100
-From: Keith Owens <kaos@ocs3.ocs-net>
-To: linux-m68k@phil.uni-sb.de
 
-------- Blind-Carbon-Copy
+Paul Bame helped me start tracking this error down.  I wanted to post
+his
+analysis along with the boot message to this list for further comment.
+(Hopefully his analysis will help other how to start debugging these
+errors
+as Paul helped me.)
 
-X-Mailer: exmh version 2.1.1 10/15/1999
-From: Keith Owens <kaos@ocs.com.au>
-To: linux-kernel@vger.kernel.org
-Subject: 2.4.0 do_fork() change, all architectures - take 2
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Sat, 02 Sep 2000 13:18:46 +1100
-Message-ID: <8893.967861126@ocs3.ocs-net>
+- Kernel Fault Code 7 is an Instruction Memory Protection Trap.
 
-DaveM pointed out that my 2.4.0-test8-pre1 do_fork patch would generate
-better sparc assembler if the extra parameter to do_fork was added at
-the end instead of in the middle.  So change all
-do_fork(flags,sp,0,&regs)
-to do_fork(flags,sp,&regs,0);
+- Stack Pointer (GR30) is in user space.   Most of the time if the
+kernel
+is in kernel space GR30 will look like this: 0xcxxxxxxx.
 
-I'm not going to mail the complete patch again, you can get it from
-ftp://ftp.ocs.com.au/pub/do_fork-2.4.0-test8-take2.gz.  The only
-significant difference is this bit to IA64, untested.
+- GR2 is often the address where a subroutine will return, so it tells
+where
+it was called from.  In this case: 00013403.
 
-Index: 0-test8-pre1.1/arch/ia64/kernel/entry.S
-- --- 0-test8-pre1.1/arch/ia64/kernel/entry.S Tue, 15 Aug 2000 17:50:48
-+1000 kaos (linux-2.4/c/c/16_entry.S 1.3.1.1.1.2 644)
-+++ 0-test8-pre1.2(w)/arch/ia64/kernel/entry.S Sat, 02 Sep 2000 12:49:16
-+1100 kaos (linux-2.4/c/c/16_entry.S 1.3.1.1.1.2 644)
-@@ -68,8 +68,8 @@
- 	mov loc1=r16				// save ar.pfs across do_fork
- 	UNW(.body)
- 	mov out1=in1
-- -	mov out2=in2
-- -	adds out3=IA64_SWITCH_STACK_SIZE+16,sp	// out3 = &regs
-+	mov out3=in2
-+	adds out2=IA64_SWITCH_STACK_SIZE+16,sp	// out2 = &regs
- 	mov out0=in0				// out0 = clone_flags
- 	br.call.sptk.few rp=do_fork
- .ret1:	UNW(.restore sp)
-@@ -87,8 +87,8 @@
- 	mov loc1=r16				// save ar.pfs across do_fork
- 	UNW(.body)
- 	mov out1=in1
-- -	mov out2=0
-- -	adds out3=IA64_SWITCH_STACK_SIZE+16,sp	// out3 = &regs
-+	mov out3=0
-+	adds out2=IA64_SWITCH_STACK_SIZE+16,sp	// out2 = &regs
- 	mov out0=in0				// out0 = clone_flags
- 	br.call.sptk.few rp=do_fork
- .ret2:	UNW(.restore sp)
-Index: 0-test8-pre1.1/arch/ia64/ia32/ia32_entry.S
-- --- 0-test8-pre1.1/arch/ia64/ia32/ia32_entry.S Tue, 15 Aug 2000
-17:50:48 +1000 kaos (linux-2.4/c/c/25_ia32_entry 1.3.1.1 644)
-+++ 0-test8-pre1.2(w)/arch/ia64/ia32/ia32_entry.S Sat, 02 Sep 2000
-12:49:58 +1100 kaos (linux-2.4/c/c/25_ia32_entry 1.3.1.1 644)
-@@ -91,8 +91,8 @@
- 	UNW(.body)
- 
- 	mov out1=0
-- -	mov out2=0
-- -	adds out3=IA64_SWITCH_STACK_SIZE+16,sp
-+	mov out3=0
-+	adds out2=IA64_SWITCH_STACK_SIZE+16,sp	// out2 = &regs
- 	br.call.sptk.few rp=do_fork
- .ret3:	mov ar.pfs=loc1
- 	UNW(.restore sp)
+- The last two bits of GR2 are non-zero, which is consistent with a
+userspace program.
+
+- Perform an objdump -d on sash and look for address 133f8.
+        (GR2 & 0xfffffffc) - 0x8 (two instructions).
+
+   133f8:       e8 47 12 b4     b,l 22d58 <__libc_fcntl>,rp
+   133fc:       34 19 00 02     ldi 1,r25
+   13400:       8f 9f 20 50     cmpib,<> -1,ret0,13430
+<check_one_fd+0x44>
+   13404:       4b c2 3f 59     ldw -54(sr0,sp),rp
+
+- Find out who/what called your kernel, by looking up the sysmbols in
+sash (Note the sasy binary must contain symbols):
+
+    hppa-linux-nm -n sash | grep 22d58
+
+00022d58 W __fcntl
+00022d58 T __libc_fcntl
+00022d58 W fcntl
 
 
-------- End of Blind-Carbon-Copy
+I am going to start digging around in sash and glibc to see if I can
+figure out
+anymore information on this problem.  Any help/advice is appreciated.
+
+Thanks,
+
+Ryan
