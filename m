@@ -1,35 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id XAA07239
-	for <parisc-linux@puffin.external.hp.com>; Fri, 29 Dec 2000 23:37:09 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel3.hp.com (Postfix) with ESMTP id 705EB6E4
-	for <parisc-linux@thepuffingroup.com>; Fri, 29 Dec 2000 22:40:21 -0800 (PST)
-Received: from localhost (grundler@localhost [127.0.0.1])
-	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) with SMTP id WAA24786
-	for <parisc-linux@thepuffingroup.com>; Fri, 29 Dec 2000 22:41:42 -0800 (PST)
-Message-Id: <200012300641.WAA24786@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] xchg/cmpxchg defined in wrong place? 
-In-reply-to: Your message of "Fri, 29 Dec 2000 21:12:19 PST."
-             <200012300512.VAA24694@milano.cup.hp.com>
-Date: Fri, 29 Dec 2000 22:41:41 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA10866
+	for <parisc-linux@puffin.external.hp.com>; Sat, 30 Dec 2000 05:17:38 -0700
+Received: from localhost (bz@localhost)
+	by mail.zabbadoz.net (8.11.0/8.11.0) with ESMTP id eBUCKYh93120
+	for <parisc-linux@thepuffingroup.com>; Sat, 30 Dec 2000 13:20:34 +0100 (CET)
+Date: Sat, 30 Dec 2000 13:20:33 +0100 (CET)
+From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+Reply-To: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+To: <parisc-linux@thepuffingroup.com>
+Message-ID: <Pine.BSF.4.30.0012301253270.5467-100000@noc.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] OT: HP A4033A Monitor and X
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
-...
-> Currently, parisc __xchg lives in arch/parisc/kernel/setup.c.
+Hi,
 
-Sorry. I got this fact wrong: __xchg lives in arch/parisc/lib/bitops.c
+please directly reply to me and not to the list because this question
+is OT. - thanx.
 
-__xchg_called_with_bad_pointer *is* defined in arch/parisc/kernel/setup.c.
-My understanding is this fuction in fact should NOT be defined.
-It's a tool to catch problems for architectures which can inline __xchg.
+I got a second hand apollo and it's working quite fine (out of the
+box) with parisc-0.5.iso (uptimes growing :-) but as long as there
+is no support for monitor (most likely I will never need anyway)
+I wanted to use the HP A4033A monitor I got with it with some
+other PC rather than letting it get dusty in a corner.
 
-Neither item is material to my arguments for defining them in atomic.h.
+The only thing I could find was
+http://www.hp.com/workstations/support/documentation/technotes/linux/monitor.html
+but I am totaly unable to get it working with X. When I power it on
+just after about 5 secs it falls asleep into power safe mode. tried with 3-
+and 5-BNC cables with and without syncongreen.
 
-grant
+It was working quite fine with apollo and hpux and X but prefering
+linux there are no hpux config files any more.
 
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+I am wondering if any of you might have a working XF86Config file for
+me ? Already tried up to two days now and slowly getting ...
+
+Thank you in advance for your help,
+Bjoern
