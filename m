@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3F5C2482A
-	for <parisc-linux@parisc-linux.org>; Thu,  8 Aug 2002 12:16:26 -0600 (MDT)
-Date: Thu, 8 Aug 2002 11:20:36 -0700
-From: Randolph Chung <tausq@debian.org>
-To: Sean Anaya <sanaya@gr.hp.com>
-Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] Booting Debian on an HP C180 workstation
-Message-ID: <20020808182036.GR8724@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <20020730113848.GL29996@sleepie.demon.co.uk> <000001c23f07$56c7f0a0$4132260f@gr.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <000001c23f07$56c7f0a0$4132260f@gr.hp.com>
+Received: from dc-mx10.cluster1.charter.net (dc-mx10.cluster1.charter.net [209.225.8.20])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 62A65482A
+	for <parisc-linux@parisc-linux.org>; Thu,  8 Aug 2002 20:37:54 -0600 (MDT)
+Received: from [24.159.161.68] (HELO charter.net)
+  by dc-mx10.cluster1.charter.net (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 50808714 for parisc-linux@parisc-linux.org; Thu, 08 Aug 2002 22:36:46 -0400
+Message-ID: <3D532B2F.8050006@charter.net>
+Date: Thu, 08 Aug 2002 22:38:39 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
+References: <20020730020030.40187.qmail@web12502.mail.yahoo.com> <20020730021040.99A7737E97@carmen.fc.hp.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Help! eth0 has disappeared on C200?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,21 +24,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> So I finally had a chance to install Debian 3.0 on my C180XP. So far looks
-> great, install was
-> far easier than the 0.9.3 CD, and I'm not seeing any of the file system
-> corruptions. However,
-> I'm still fighting a couple of battles.
+I'm not sure what happened, but my C200 is
+no longer detecting any of its network
+interfaces. They did work before as I
+installed Debian using the 10/100 port.
 
-note that this is not the right forum for this kind of questions; please
-use debian-hppa@lists.debian.org instead.
+Any ideas what is going on here or what
+I can do to remedy this?
 
-> 1) where do you find the keywords to packages to install with apt-get
-> install <some package>?
->    ie apt-get install xfree86  doesn't seem to work. I'd like to get the ftp
-> and telnet daemons
->    working so I can ftp and telnet into my box, as well as X window system.
-
-apt-cache search <search regexp>
-
-randolph
+- Doug
