@@ -1,19 +1,19 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 925FA4868
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1A5CF4868
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed,  7 Jan 2004 21:32:01 -0700 (MST)
-Message-Id: <200401080431.i084VvaE016766@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] scsi problem on a scorpio (715)
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Wed, 7 Jan 2004 23:31:57 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <20040108041405.GA2347@systemhalted> from "Carlos O'Donell" at
-	Jan 7, 2004 11:14:06 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: rollei@tiscalinet.it, grundler@parisc-linux.org,
-	parisc-linux@lists.parisc-linux.org, hppa@fop.ns.ca
+	Wed,  7 Jan 2004 22:03:56 -0700 (MST)
+Date: Wed, 7 Jan 2004 22:03:54 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Mike Brice <mike_brice@hotmail.com>
+Subject: Re: [parisc-linux] PA-RISC LINUX (0.9.3 release): Hardware Test on HP
+	J workstation (J280)
+Message-ID: <20040108050354.GA22317@colo.lackof.org>
+References: <BAY2-F36zbAUfKRfcjc0000f6c5@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <BAY2-F36zbAUfKRfcjc0000f6c5@hotmail.com>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,18 +23,19 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> My entire cluster was made up of scorpio boxes 715/50's, and I *never*
-> had them run stably with anything but a tag queue depth of 1.
-> 
-> Grant, I'm pretty sure me and you had this exact conversation like 2
-> years ago :)
+On Wed, Jan 07, 2004 at 10:06:23PM -0600, Mike Brice wrote:
+> Please add me to your PA/Linux mailing list.
 
-Also, remember the issues that I had under HP-UX 10.20 with some Seagate
-Elite drives.  I believe that I had to set the depth to 1 for these
-drives to get the system to run reliably.  Tagged queuing is broken
-on most old drives.
+See http://lists.parisc-linux.org/
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> The PA-RISC LINUX (0.9.3 release) tests work on the HP J workstation 
+> hardware.
+
+Don't use 0.9.3 release. See debian.org/ports/hppa.
+
+>   Does it work on the HP J280 workstation? Do you have test results?
+
+See http://www.pateam.org/list.html
+(kudos to ESIEE team for putting that together and maintain it)
+
+grant
