@@ -1,48 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 77B58482A
-	for <parisc-linux@parisc-linux.org>; Tue, 29 May 2001 14:13:47 -0600 (MDT)
-To: Grant Grundler <grundler@puffin.external.hp.com>
-Cc: parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
-Subject: Re: [parisc-linux] List of packages for hppa ISO release 
-In-Reply-To: Message from Grant Grundler <grundler@puffin.external.hp.com>
-   of "Sat, 26 May 2001 10:45:55 MDT." <200105261645.KAA19506@puffin.external.hp.com>
-References: <200105261645.KAA19506@puffin.external.hp.com> 
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 60D634852
+	for <parisc-linux@parisc-linux.org>; Tue, 29 May 2001 14:48:37 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 154qPo-0002bk-00; Tue, 29 May 2001 21:48:32 +0100
+Date: Tue, 29 May 2001 21:48:32 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+Cc: Grant Grundler <grundler@puffin.external.hp.com>,
+	parisc-linux@parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] List of packages for hppa ISO release
+Message-ID: <20010529214832.A7349@parcelfarce.linux.theplanet.co.uk>
+References: <200105261645.KAA19506@puffin.external.hp.com> <grundler@puffin.external.hp.com> <20010529201628.279E037CFD@carmen.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 29 May 2001 14:16:28 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010529201628.279E037CFD@carmen.fc.hp.com>
+In-Reply-To: <20010529201628.279E037CFD@carmen.fc.hp.com>; from taggart@carmen.fc.hp.com on Tue, May 29, 2001 at 02:16:28PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler writes...
-
-> Matt Taggart wrote:
-> > http://puffin.external.hp.com/~taggart/selections.20010525
-> > There are still a few missing dependencies but those should be taken care o
-> > in the next few days. If you have additions/deletions to the list please se
-> > them to me.
+On Tue, May 29, 2001 at 02:16:28PM -0600, Matt Taggart wrote:
+> > o add an irc client? (tirc? tinyirc? ircii?)
 > 
-> o ditch ipchains and add iptables instead.
+> Good idea. Which one?
 
-Good idea but netbase depends on ipchains. I'll add iptables.
-
-> o add cvs
-
-We decided that cvs's debconf questions would be confusing to someone who 
-didn't intend to setup a cvs repository right away. Not adding it, people can 
-just get it from the archive.
-
-> o add an irc client? (tirc? tinyirc? ircii?)
-
-Good idea. Which one?
-
-> o any memory or selftest tools we can include?
->   (even untested - I'm looking at x86 package that has mem/cpu test)
-
-Good idea, but all the memory testers I've seen have been x86 specific. If 
-people have specific ones they know will work for hppa then let me know.
+ircii is in nonus because it links against openssl.  i use sirc myself.
 
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Revolutions do not require corporate support.
