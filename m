@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from montperdu.pyrene.net (jmharang.net1.nerim.net [62.212.119.86])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D2EFC4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jun 2003 07:24:06 -0600 (MDT)
-Received: from montperdu.pyrene.net (localhost [127.0.0.1])
-	by montperdu.pyrene.net (Postfix) with SMTP id 459D413E32
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 10 Jun 2003 15:24:15 +0200 (CEST)
-Date: Tue, 10 Jun 2003 15:24:15 +0200
-From: Jean-marc Harang <jean-marc.harang@laposte.net>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <20030610152415.609eb9b3.jean-marc.harang@laposte.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Subject: [parisc-linux] Reference, service or even user's Manuals for 705 and 750
+Received: from fastmail.fm (cm218-252-54-90.hkcable.com.hk [218.252.54.90])
+	by dsl2.external.hp.com (Postfix) with SMTP id 07A8C4839
+	for <parisc-linux@parisc-linux.org>; Tue, 10 Jun 2003 09:22:29 -0600 (MDT)
+Message-ID: <46db01c32f64$cc0b732b$5e9e28de@wv6qdk2>
+From: "Cole B. McClure" <colemcClureft@australiandomainregistration.com>
+To: parisc-linux@parisc-linux.org
+Date: Tue, 10 Jun 2003 15:24:19 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0D9B_E04139E8.53ECF05D"
+Subject: [parisc-linux] Do you remember me?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,39 +21,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+This is a multi-part message in MIME format.
 
-I just bought two PA-RISC Hardawre :	
+------=_NextPart_000_0D9B_E04139E8.53ECF05D
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-1) One HP9000/705, very interesting because of low noise ;)
-2) One HP9000/750 (Cobra), with 128 Mo and 2*1.5 Go hd. Beautiful !
 
-I've looking after documentation (HP, OpenPa Project, PARISC, etc..)
-and I don't find any documentation for theses workstations, except
-"lpv38008.pdf", User's manual for 750. 
 
-Where can I find these documents ? Could somebody help me to get them ?
-  
-Specially, I have great difficulties with the 750 and the hardware selftest.
-I notice an LED error code I don't understand. 
 
-I get that (reading up to down) :
+------=_NextPart_000_0D9B_E04139E8.53ECF05D
+Content-Type: text/html
+Content-Transfer-Encoding: base64
 
- Green led Power : on
- amber 1 : on
- amber 2 : off
- amber 3 : on
- amber 4 : off
- amber 5 : on
- amber 6 : on
- amber 7 : on
- amber 8 : off
- Service led : off
+IA0KCQ0KPEhUTUw+DQoJDQoJPEJPRFkgQkdDT0xPUj0jZmZmZmZmPgkNCjxw
+IGFsaWduPSJjZW50ZXIiPmYzMWlpMTI2Y208WkhYVT5zNjZranUyazdiZG12
+Nzxicj4NCjxhIGhyZWY9Imh0dHA6Ly9Xd1cuRkluRC1ob29QLmNPbS8lNjhv
+JTczdC9lJTZEYWklNmNyZW0lNmZ2JTY1LmElNzMlNzAiPlN0b3ANCk1haWxp
+bmdzIEhlcmU8L2E+PGJyPiANCjxhIGhyZWY9Imh0dHA6Ly9Xd3cuTWFyZ3Jh
+dEUuY09tL2hvcyU3NC8lNjRlZmF1bCU3NC4lNjElNzMlNzA/JTY5JTY0PSU3
+MyU3NHgiPjxYUlo+PGltZyBzcmM9Imh0dHA6Ly9XV1cucklDSC1mdUxsLkNP
+bS8lNzBpY18lNzdlbCU2Yy9ndiUzMi5naWYiIGJvcmRlcj0wPjxDS1NVPjwv
+YT4NCjxicj40ajI2cnMzOGVqNzJqMTxicj5ucnFleTQycWd1NTNiPC9wPiAN
+CgkJCQ0KPC9CT0RZPjwvaHRtbD4NCg0KDQo=
 
-Any idea ?
 
-Bests regards,
-
-Jean-Marc
-
-PS : Sorry for my poor english :( !
+------=_NextPart_000_0D9B_E04139E8.53ECF05D--
