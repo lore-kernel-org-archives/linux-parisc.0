@@ -1,62 +1,50 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 475F9482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 14:52:13 -0600 (MDT)
-Message-ID: <AB57FCC5E303D511BB8F00A0C9F485C203AC4525@xfc02.fc.hp.com>
-From: "BRANN,PAMELA (HP-FtCollins,ex1)" <pamela_brann@hp.com>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Cc: "'carlos@megatonmonkey.net'" <carlos@megatonmonkey.net>,
-	"'randolph@tausq.org'" <randolph@tausq.org>
-Subject: RE: [parisc-linux] Documentation PARISC 2.0
-Date: Thu, 18 Oct 2001 13:52:05 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 627EA482A
+	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 16:03:10 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id spaeiaaa for parisc-linux@parisc-linux.org; Thu, 18 Oct 2001 14:58:33 -0700
+Date: Thu, 18 Oct 2001 15:02:56 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [randolph@tausq.org: [parisc-linux] glibc update]
+Message-ID: <20011018150255.I4123@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20011017234038.C1060@megatonmonkey.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=unknown-8bit
+In-Reply-To: <20011017234038.C1060@megatonmonkey.net>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Carlos, Randolph and others interested in PA-RISC 2.0 documentation -
+> >#3: http://people.debian.org/~tausq/glibc.build.log2
+> >#2: http://people.debian.org/~tausq/glibc.build.log5
+> 
+> Have you tried running the tests by hand and seeing what the output is?
+> What is the output of running:
+> /home/randolph/gcc-3.0/glibc-2.2.4/hppa-linux/obj/math/test-fenv.out
 
-My name is Pamela Brann and I am the new topic area owner for the pa-risc
-section of HP's developer and solution partner portal (DSPP.)  This is the
-portal Grant referenced in one of his replies to this thread.
+eh? that's the output report file :)
 
-I wanted to let you all know that I am currently looking into the
-availability of providing a PDF version of this document on the pa-risc
-topic page, located at
-http://dsportal.eservices.hp.com/dspp/tech/tech_TechTypeListingPage_IDX/1,17
-04,10403,00.html.  As Randolph mentioned, there is a hard copy of this book
-and it is actually still available through Amazon.com (at least.)  There is
-a link off the site linked above where you can order a copy of this book
-online.  We have had some restrictions from the publisher in the past which
-have kept us from publishing a PDF version of this particular document.  I
-am currently looking into the status of these restrictions to see if we can
-post a copy for you in this format.  Once I have a firm answer, I will post
-to this list again with an update.  In the interim, feel free to use the
-online version which is available from this site as well.
+i get a floating point exception when running the corresponding
+executable.
 
-Please feel free to email me personally if you have any additional questions
-about pa-risc documentation or if there is any other information that we can
-provide for you on this site.
 
-Sincerely,
-Pamela Brann
-Technical Topic Area Owner, DSPP
-Developers Resource Lab
-Hewlett-Packard
-(970) 898-4835
-pamela_brann@hp.com
+Program received signal SIGFPE, Arithmetic exception.
+0x4011b328 in vfprintf () from /lib/libc.so.6
+(gdb) bt
+#0  0x4011b328 in vfprintf () from /lib/libc.so.6
+#1  0x40123490 in printf () from /lib/libc.so.6
+#2  0x00010f8c in feenv_mask_test (
+    flag_name=0x40210048 "@\036\177P@\036\177T@\036\177`@\036\177X@\036\177h@\036\177\220@\036\177Ð@\036\177Ô@\036\177Ø@\036\177à@\036\177è@\036\177ø@\036\177ð@\036\200", fe_exc=1) at test-fenv.c:332
+#3  0x0001160c in fe_single_test (flag_name=0x11f98 "FE_INEXACT", fe_exc=1)
+    at test-fenv.c:607
+#4  0x00011664 in feenv_tests () at test-fenv.c:625
+#5  0x000116e4 in main () at test-fenv.c:654
 
-...............................................
->> Does anyone have the PA-RISC 2.0 Architecture and Instruction
->> Set Reference Manual in pdf format? (or ps format)
->> 
->> I have the PA-RISC 1.1 docs, but the 2.0 docs seem to be 
->> available only as online html.
->
->dunno about pdf, but there's a PA2.0 architecture book (dead tree kind). 
->It's out of print but you can order it by special order from places 
->like FatBrain.  It's definitely a good reference.
->
->looks like HP reorganized some of the web pages and some of the links
->from http://www.parisc-linux.org/documentation/index.html are out of
->date... can someone fix them? 
+
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
