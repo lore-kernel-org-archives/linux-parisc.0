@@ -1,20 +1,19 @@
-Return-Path: <SilverHampster@aol.com>
-Received: from imo-d05.mx.aol.com (imo-d05.mx.aol.com [205.188.157.37])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 611EB48CD
+Return-Path: <taggart@carmen.fc.hp.com>
+Received: from atlrel7.hp.com (atlrel7.hp.com [156.153.255.213])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E27EC48E2
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 11 Mar 2004 07:25:33 -0700 (MST)
-Received: from SilverHampster@aol.com
-	by imo-d05.mx.aol.com (mail_out_v37.4.) id n.9e.56d9638 (4320)
-	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 11 Mar 2004 09:25:26 -0500 (EST)
-From: SilverHampster@aol.com
-Message-ID: <9e.56d9638.2d81d0d6@aol.com>
-Date: Thu, 11 Mar 2004 09:25:26 EST
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="-----------------------------1079015126"
-Subject: [parisc-linux] c360 and graphics card recommendations.
+	Thu, 11 Mar 2004 10:56:37 -0700 (MST)
+To: SilverHampster@aol.com
+Subject: Re: [parisc-linux] c360 and graphics card recommendations. 
+In-Reply-To: Message from SilverHampster@aol.com
+	of "Thu, 11 Mar 2004 09:25:26 EST." <9e.56d9638.2d81d0d6@aol.com>
+References: <9e.56d9638.2d81d0d6@aol.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 11 Mar 2004 10:56:35 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20040311175636.A97DC37D0C@carmen.fc.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,39 +24,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
--------------------------------1079015126
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+SilverHampster@aol.com writes...
 
-I know the fx2 does not work. cos I read all about it. I have found out  that 
-the vis eg works but does it work with 24-bit colour and a 1280x1024  
-resalution. I was also wondering if a old nvidia card would work but have a  fealing 
-they need the x86 bios. OH this is of course to get x server running. 
-thanx for any advice
-DAniel
+> I know the fx2 does not work. cos I read all about it. I have found out  that
+> the vis eg works but does it work with 24-bit colour and a 1280x1024  
+> resalution.
 
--------------------------------1079015126
-Content-Type: text/html; charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+No. The VisEG hardware can only support 8-bit color(at up to 1600x1200). It 
+also has support for something called Color Recovery in order to get more 
+colors but support for that has only been implemented in the HP-UX Xserver 
+and will probably never be done for Linux.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3DUS-ASCII">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR></HEAD>
-<BODY id=3Drole_body style=3D"FONT-SIZE: 10pt; COLOR: #000000; FONT-FAMILY:=20=
-Arial"=20
-bottomMargin=3D7 leftMargin=3D7 topMargin=3D7 rightMargin=3D7><FONT id=3Drol=
-e_document=20
-face=3DArial color=3D#000000 size=3D2>
-<DIV>I know the fx2 does not work. cos I read all about it. I have found out=
-=20
-that the vis eg works but does it work with 24-bit colour and a 1280x1024=20
-resalution. I was also wondering if a old nvidia card would work but have a=20
-fealing they need the x86 bios. OH this is of course to get x server running=
-.=20
-</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>thanx for any advice</DIV>
-<DIV>DAniel</DIV></FONT></BODY></HTML>
+> I was also wondering if a old nvidia card would work but have a fealing 
+> they need the x86 bios.
 
--------------------------------1079015126--
+There has been lots of discussion on the mailing list about using PC 
+graphics cards. Please search the list archives.(this should probably be 
+added to the faq too) Short answer: it is possible for some cards, but I 
+don't know if nvidia is one of them.
+
+-- 
+Matt Taggart        Linux and Open Source Lab
+taggart@fc.hp.com   Hewlett-Packard
