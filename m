@@ -1,20 +1,19 @@
-Return-Path: <ajwalker@broadpark.no>
-Received: from mail.broadpark.no (mail.broadpark.no [217.13.4.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E50F24856
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 420DF488D
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  9 Mar 2004 15:14:02 -0700 (MST)
-Message-ID: <2998.192.168.1.54.1078870913.squirrel@www.puszczka.com>
-In-Reply-To: <200403092259.05202.deller@gmx.de>
-References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
-	<200403091103.29310.deller@gmx.de>
-	<28565.193.161.152.244.1078828435.squirrel@www.puszczka.com>
-	<200403092259.05202.deller@gmx.de>
-Date: Tue, 9 Mar 2004 23:21:53 +0100 (CET)
+	Tue,  9 Mar 2004 21:59:25 -0700 (MST)
+Date: Tue, 9 Mar 2004 21:59:17 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Matthew Wilcox <willy@debian.org>
 Subject: Re: [parisc-linux] No PS2 keyboard/mouse on B132L, 2.6.[34]
-From: "Andy Walker" <ajwalker@broadpark.no>
-To: "Helge Deller" <deller@gmx.de>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Message-ID: <20040310045917.GA27984@colo.lackof.org>
+References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
+	<20040309053615.GA11669@colo.lackof.org>
+	<20040309210400.GM2148@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040309210400.GM2148@parcelfarce.linux.theplanet.co.uk>
 Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -25,39 +24,24 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> On Dienstag, 9. März 2004 11:33, Andy Walker wrote:
-> Hi Andy,
->
-> I agree, that this behaviour seems somehow little strange. Thibaut Varene
-> complained too.
-> But on the other side without this auto-enablement of the GSC PS/2
-> controller
-> users maybe enable PS/2 mouse and/or PS/2 keyboard and miss enabling the
-> GSC PS/2 controller too - with the result, that neither keyboard or mouse
-> would
-> work when the kernel is booted....
->
-> Personally I prefer the automatic enablement. Even on iA32 this is the
-> default now.
->
-> Best regards,
-> Helge
->
+On Tue, Mar 09, 2004 at 09:04:00PM +0000, Matthew Wilcox wrote:
+> > (I confess: I'm being very lazy tonight and don't want to figure
+> > what needs to go into the hardware.c array)
+> 
+> *grumble*.  I changed the output format so you could simply copy and paste
+> it into hardware.c!  That's exceptionally lazy of you :-P
 
-Helge,
+/me points at garfield
 
-Glad to report that the keyboard is now working. No mouse yet, but I
-need to try it without the KVM in the way as that's likely to be the
-problem. Perhaps I need .proto=bare or .proto=imps2.
-At the moment I get:
+Isn't nice to know there's always someone better at something
+than one's self? :^P
 
-serio: GSC PS2 keyboard port at 0xffd08000 irq 69 @ parisc8:16:7
-input: AT Raw Set 2 keyboard on parisc8:16:7
-serio: GSC PS2 mouse port at 0xffd08100 irq 69 @ parisc8:16:8
-gscps2.c: timeout - could not write byte 0xed
-gscps2.c: sending byte 0xed failed.
+> (you can tell boot logs that predate this change because they don't use 
+> { } around the numbers).
 
-cat /dev/misc/psaux and wobbling the mouse gives nothing.
+Yup - I remember you making the change and knew it should be fairly easy...
+thus I was confident someone else could do it.
+(was that a good excuse or what? Just made that one up :^)
 
-cheers,
--Andy
+thanks,
+grant
