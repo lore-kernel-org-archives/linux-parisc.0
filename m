@@ -1,31 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1B5B1482A
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Apr 2002 09:40:12 -0600 (MDT)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by atlrel8.hp.com (Postfix) with ESMTP id 15AA2A008ED
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Apr 2002 11:40:11 -0400 (EDT)
-Received: from paul.bame (lart.fc.hp.com [15.1.54.48])
-	by ldl.fc.hp.com (Postfix) with ESMTP id E20194528
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Apr 2002 09:40:10 -0600 (MDT)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by paul.bame with esmtp (Exim 3.35 #1 (Debian))
-	id 16xV3y-0004C9-00
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Apr 2002 09:40:10 -0600
-Received: from ldl.fc.hp.com (linux-bugs.fc.hp.com [15.1.50.190])
-	by atlrel9.hp.com (Postfix) with ESMTP
-	id 45991804CEC; Tue, 16 Apr 2002 11:37:10 -0400 (EDT)
-To: Manuel Fernandes <Manuel.Fernandes@lis2.siemens.pt>
-Cc: cvsmaster@parisc-linux.org, parisc@parisc-linux.org
-In-Reply-To: Your message of "Tue, 16 Apr 2002 13:23:06 BST."
-             <B940662D7541D6118ED300065B1A223CA01903@siepor43.siemens.pt>
-References: <B940662D7541D6118ED300065B1A223CA01903@siepor43.siemens.pt> 
-Date: Tue, 16 Apr 2002 09:37:08 -0600
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E16xV12-0004AP-00@paul.bame>
-Resent-Message-Id: <E16xV3y-0004C9-00@paul.bame>
-Subject: [parisc-linux] Re: Python Exception Occurred while trying to get via http
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 04F38482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Apr 2002 03:03:03 -0600 (MDT)
+Received: from www-data by webmail.tiscalinet.be with local (Tiscali)
+	id 16xlL4-00053F-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 17 Apr 2002 11:02:54 +0200
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1019034174.3cbd3a3e2c5a5@webmail.tiscalinet.be>
+Date: Wed, 17 Apr 2002 11:02:54 +0200 (CEST)
+From: joel.soete@freebel.net
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] linux-2.4.18-pa19 fpu problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -37,102 +23,89 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Dear Sirs,
-> =20
-> I was trying to get the  sources from your site for release rel0_9 but =
-> your
-> server displayed the following exceptions (see below):
-> Can you explain me how can I get the Linux sources for this version or =
-> any
-> other?
+Hi all,
 
-Hmmm, I see this is not obvious from our main web site...
+Here is some trace I get from the kernel (2.4.18-pa19) make (after a make
+oldconfig):
+...
+gcc -D__KERNEL__ -I/GNU-Dev/parisc-linux/src/linux/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing
+-fno-common -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7100   -DKBUILD_BASENAME=driver  -c -o driver.o driver.c
+driver.c: In function `handle_fpe':
+driver.c:103: warning: implicit declaration of function `decode_fpu'
+gcc -D__KERNEL__ -I/GNU-Dev/parisc-linux/src/linux/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing
+-fno-common -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7100   -DKBUILD_BASENAME=decode_exc  -c -o decode_exc.o decode_exc.c
+decode_exc.c: In function `decode_fpu':
+decode_exc.c:168: warning: implicit declaration of function `fpudispatch'
+decode_exc.c:239: warning: implicit declaration of function `sgl_denormalize'
+decode_exc.c:251: warning: implicit declaration of function `dbl_denormalize'
+decode_exc.c:304: warning: suggest parentheses around arithmetic in operand of |
+decode_exc.c:350: warning: implicit declaration of function `printk'
+gcc -D__KERNEL__ -I/GNU-Dev/parisc-linux/src/linux/include -Wall
+-Wstrict-prototypes -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing
+-fno-common -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
+-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
+-mschedule=7100   -DKBUILD_BASENAME=fpudispatch  -c -o fpudispatch.o fpudispatch.c
+fpudispatch.c: In function `decode_0c':
+fpudispatch.c:365: warning: implicit declaration of function `sgl_fsqrt'
+fpudispatch.c:368: warning: implicit declaration of function `dbl_fsqrt'
+fpudispatch.c:377: warning: implicit declaration of function `sgl_frnd'
+fpudispatch.c:380: warning: implicit declaration of function `dbl_frnd'
+fpudispatch.c:409: warning: implicit declaration of function `sgl_to_dbl_fcnvff'
+fpudispatch.c:412: warning: implicit declaration of function `dbl_to_sgl_fcnvff'
+fpudispatch.c:420: warning: implicit declaration of function `sgl_to_sgl_fcnvxf'
+fpudispatch.c:423: warning: implicit declaration of function `sgl_to_dbl_fcnvxf'
+fpudispatch.c:426: warning: implicit declaration of function `dbl_to_sgl_fcnvxf'
+fpudispatch.c:429: warning: implicit declaration of function `dbl_to_dbl_fcnvxf'
+fpudispatch.c:435: warning: implicit declaration of function `sgl_to_sgl_fcnvfx'
+fpudispatch.c:438: warning: implicit declaration of function `sgl_to_dbl_fcnvfx'
+fpudispatch.c:441: warning: implicit declaration of function `dbl_to_sgl_fcnvfx'
+fpudispatch.c:444: warning: implicit declaration of function `dbl_to_dbl_fcnvfx'
+fpudispatch.c:450: warning: implicit declaration of function `sgl_to_sgl_fcnvfxt'
+fpudispatch.c:453: warning: implicit declaration of function `sgl_to_dbl_fcnvfxt'
+fpudispatch.c:456: warning: implicit declaration of function `dbl_to_sgl_fcnvfxt'
+fpudispatch.c:459: warning: implicit declaration of function `dbl_to_dbl_fcnvfxt'
+fpudispatch.c:465: warning: implicit declaration of function `sgl_to_sgl_fcnvuf'
+fpudispatch.c:468: warning: implicit declaration of function `sgl_to_dbl_fcnvuf'
+fpudispatch.c:471: warning: implicit declaration of function `dbl_to_sgl_fcnvuf'
+fpudispatch.c:474: warning: implicit declaration of function `dbl_to_dbl_fcnvuf'
+fpudispatch.c:480: warning: implicit declaration of function `sgl_to_sgl_fcnvfu'
+fpudispatch.c:483: warning: implicit declaration of function `sgl_to_dbl_fcnvfu'
+fpudispatch.c:486: warning: implicit declaration of function `dbl_to_sgl_fcnvfu'
+fpudispatch.c:489: warning: implicit declaration of function `dbl_to_dbl_fcnvfu'
+fpudispatch.c:495: warning: implicit declaration of function `sgl_to_sgl_fcnvfut'
+fpudispatch.c:498: warning: implicit declaration of function `sgl_to_dbl_fcnvfut'
+fpudispatch.c:501: warning: implicit declaration of function `dbl_to_sgl_fcnvfut'
+fpudispatch.c:504: warning: implicit declaration of function `dbl_to_dbl_fcnvfut'
+fpudispatch.c:540: warning: implicit declaration of function `sgl_fcmp'
+fpudispatch.c:547: warning: implicit declaration of function `dbl_fcmp'
+fpudispatch.c:622: warning: implicit declaration of function `sgl_fadd'
+fpudispatch.c:625: warning: implicit declaration of function `dbl_fadd'
+fpudispatch.c:634: warning: implicit declaration of function `sgl_fsub'
+fpudispatch.c:637: warning: implicit declaration of function `dbl_fsub'
+fpudispatch.c:646: warning: implicit declaration of function `sgl_fmpy'
+fpudispatch.c:649: warning: implicit declaration of function `dbl_fmpy'
+fpudispatch.c:658: warning: implicit declaration of function `sgl_fdiv'
+fpudispatch.c:661: warning: implicit declaration of function `dbl_fdiv'
+fpudispatch.c:670: warning: implicit declaration of function `sgl_frem'
+fpudispatch.c:673: warning: implicit declaration of function `dbl_frem'
+fpudispatch.c: In function `decode_2e':
+fpudispatch.c:1354: warning: implicit declaration of function `dbl_fmpynfadd'
+fpudispatch.c:1357: warning: implicit declaration of function `dbl_fmpyfadd'
+fpudispatch.c:1376: warning: implicit declaration of function `sgl_fmpynfadd'
+fpudispatch.c:1379: warning: implicit declaration of function `sgl_fmpyfadd'
+...
 
-Daily kernel source snapshots are available as tarballs from
-http://ftp.parisc-linux.org/cvs
+I do think that lacks a header to define some function.
 
-		    --or--
+Thanks in advance for help,
+    Joel
 
-Follow the "ANONYMOUS CVS" setup instruction at http://cvs.parisc-linux.org/
-and then use the command:
 
-	cvs co -rrel0_9 linux
-
-	           ------
-
-Beware that rel0_9 is nearly a year old and generally it is better to
-simply get the latest version either from the tarball or
-
-	cvs co linux
-
-I don't think we will support downloading sources through the
-'viewcvs' web GUI.
-
-	-Paul Bame
-
-> =20
-> Thanks in advance
-> =20
-> =20
-> The explorer address was:
-> http://cvs.parisc-linux.org/linux/linux.tar.gz?tarball=3D1
-> <http://cvs.parisc-linux.org/linux/linux.tar.gz?tarball=3D1&only_with_ta=
-> g=3Drel0
-> _9> &only_with_tag=3Drel0_9
-> 
-> 
-> 
-> =20
-> 
-> =20
-> 
-> Python Exception Occurred
-> 
->  [LOGO] <http://cvs.parisc-linux.org/images/htux.gif> =09
-> Traceback (innermost last):
-> 
->   File "/usr/share/viewcvs/lib/viewcvs.py", line 2516, in run_cgi
-> 
->     main()
-> 
->   File "/usr/share/viewcvs/lib/viewcvs.py", line 2502, in main
-> 
->     download_tarball(request)
-> 
->   File "/usr/share/viewcvs/lib/viewcvs.py", line 2424, in =
-> download_tarball
-> 
->     generate_tarball(fp, os.path.basename(directory), directory, tag)
-> 
->   File "/usr/share/viewcvs/lib/viewcvs.py", line 2368, in =
-> generate_tarball
-> 
->     for file, pathname, isdir in get_file_data(directory + '/Attic'):
-> 
->   File "/usr/share/viewcvs/lib/viewcvs.py", line 635, in get_file_data
-> 
->     files =3D os.listdir(full_name)
-> 
-> OSError: [Errno 2] No such file or directory
-> 
-> 
-> 
-> 
-> =20
-> =20
-> =20
-> =20
-> =20
-> =20
-> Best Regards,
-> =AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=AD=
-> =AD=AD=AD=AD=AD_________________________________________
-> Manuel Fernandes
-> Siemens SA - Portugal
-> IC Information and Communications=20
-> ON- Optical Networks
-> Tel: +351 21 424 2081
-> e-mail:  <mailto:manuel.fernandes@lis2.siemens.pt>
-> manuel.fernandes@lis2.siemens.pt
-> =20
-> =20
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
