@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] Re: back to glibc-2.3.3 & gcc-3.4.1 pb
-Date: Sun, 5 Sep 2004 23:02:15 -0400 (EDT)
-Message-ID: <200409060302.i8632FbU001591@hiauly1.hia.nrc.ca>
+Date: Mon, 6 Sep 2004 15:57:05 -0400
+Message-ID: <20040906195705.GM15721@baldric.uwo.ca>
 References: <413B222D.8040601@tiscali.be>
+	<200409060247.i862lvIU001539@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (Joel Soete)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <413B222D.8040601@tiscali.be> from "Joel Soete" at Sep 5,
-	2004 10:26:53 am
+In-Reply-To: <200409060247.i862lvIU001539@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,31 +21,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > the weird in this last warning is that it's a very small fnct:
-> > [...]
-> > static inline void
-> > __set_cr27(struct _pthread_descr_struct * cr27)
-> > {
-> >      asm(
-> >                 "ble    0xe0(%%sr2, %%r0)\n\t"
-> >         "copy    %0, %%r26"
-> >      : : "r" (cr27) : "r26" );
-> > }
-> > [...]
+On Sun, Sep 05, 2004 at 10:47:57PM -0400, John David Anglin wrote:
+> > > ../sysdeps/generic/unwind-dw2.c:1021: warning: 
+> > > 'fallback_frame_state_for' defined but not used
+> > > rtld.c:730: warning: implicit declaration of function 
+> 
+> This problem in serious and needs to be fixed.  The function
+> fallback_frame_state_for is needed.  It is only called from an asm and
+> gcc doesn't know about calls from asm's.
 
-There might be a bug in gcc's size estimate for asm's.  See the
-subsection "Size of an @code{asm}" in the gcc manual.  This could be
-checked with a small test program that tries to inline the above.
+It will only become important the day we need dwarf2 compat.
+That function is used as a fallback if 'frame_state_for' doesn't exist,
+and if libgcc_s.so.1 doesn't include '__frame_state_for', in which case
+we use a fallback onto the dwarf2 compat code in glibc.
 
->     244  static inline pthread_descr thread_self (void) __attribute__
-> ((const,always_inline));
+In an sjlj environment fallback_frame_state_for just becomes abort if
+the above tests fail, and hence there is an extra
+fallback_frame_state_for that doesn't get used in the glibc build with
+an sjlj compiler.
 
-This is correct.
+See libc/sysdeps/generic/framestate.c for the fixes I made to this file.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
