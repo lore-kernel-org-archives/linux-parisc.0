@@ -1,44 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bastion.qld.csiro.au (bastion.qld.csiro.au [140.253.122.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65BE9482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 30 Apr 2001 15:16:06 -0600 (MDT)
-Received: from bastion.qld.csiro.au (localhost [127.0.0.1])
-	by bastion.qld.csiro.au (8.9.3/8.9.3) with ESMTP id HAA25711
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 1 May 2001 07:16:02 +1000 (EST)
-Received: from ntexchange.cat.csiro.au (ntexchange.cat.csiro.au [140.253.12.1])
-	by bastion.qld.csiro.au (8.9.3/8.9.3) with ESMTP id HAA25706
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 1 May 2001 07:15:58 +1000 (EST)
-Message-ID: <A8566E157F5FD411BCFB00D0B7816D51C7295E@ntexchange.cat.csiro.au>
-From: "van de Werken, Matthew (DEM, PH)" <M.Vandewerken@cat.csiro.au>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Date: Tue, 1 May 2001 07:15:51 +1000 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Getting documentation for Outfield
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 20E93482A
+	for <parisc-linux@parisc-linux.org>; Tue,  1 May 2001 00:06:00 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14uTI8-0004iv-00; Tue, 01 May 2001 07:05:44 +0100
+Date: Tue, 1 May 2001 07:05:44 +0100
+From: Matthew Wilcox <matthew@wil.cx>
+To: amodra@one.net.au
+Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] pt-initfini.c
+Message-ID: <20010501070544.G18144@parcelfarce.linux.theplanet.co.uk>
+References: <20010428234019.D15328@parcelfarce.linux.theplanet.co.uk> <20010430235755.E2487@squeak.one.net.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010430235755.E2487@squeak.one.net.au>; from amodra@one.net.au on Mon, Apr 30, 2001 at 11:57:55PM +0930
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi folks:
+On Mon, Apr 30, 2001 at 11:57:55PM +0930, amodra@one.net.au wrote:
+> I've checked in a new file to pehc glibc CVS, merge_GLIBC_CVS_20010424
+> branch.  If anyone wants to try it,
+> 
+>  ** YOU'LL NEED NEW BINUTILS **
+> 
+> from any of the usual CVS repositories, because I got rid of a wart
+> in initfini.c as well.  Don't say you haven't been warned.
 
-I've now been struggling with getting my HP735/99 going for a little while,
-and the main hurdle I still have to overcome is getting the FW SCSI going.
-The narrow SCSI works fine, but the FW SCSI has to go through the Outfield
-interface chip. Is there any documentation kicking around for this chip,
-particularly how to talk to it, that is available for public consumption. 
+I built new binutils, but this new initfini seems to make ld.so crash
+earlier, and it takes gdb with it.  Reverting to the older initfini
+makes ld.so get as far as it did before, and it doesn't take gdb with it.
 
-I believe Richard Hirst is probably the guy to write the driver, but he
-doesn't actually have hardware, and I think it's a little unfair of me to
-ask him to do it if it doesn't fit with his agenda. I'm happy for him to do
-it if he wants to, but if he doesn't then I'd like to get some doco's to
-give it a go myself. I'm not a guru by any means, but I can look at other
-code (especially the Zalon driver) and learn; I know C and my background is
-hardware so it should be possible (steep, maybe, but possible) if I have the
-docs.
-
-Cheers,
-Matthew van de Werken
-Electronics Engineer
-CSIRO Exploration & Mining - Gravity Group
-1 Technology Court - Pullenvale - Qld - AUSTRALIA - 4069
-ph:  +61-7-3327-4685     fax:  +61-7-3327-4455
-email:  m.vandewerken@cat.csiro.au (w), mvdw73@one.net.au (h)
+-- 
+Revolutions do not require corporate support.
