@@ -1,15 +1,18 @@
-From: ja2morri@csclub.uwaterloo.ca (James A. Morrison)
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: 24 Mar 2005 08:27:24 -0500
-Message-ID: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca>
-References: <20050324130751.GK2485@tausq.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] J5000 LED LCD patch (take 2)
+Date: Thu, 24 Mar 2005 23:25:17 -0700
+Message-ID: <20050325062517.GH29361@colo.lackof.org>
+References: <200503241848.57598.dmp@davidmpye.dyndns.org>
+	<1111694714.5519.28.camel@mulgrave>
+	<200503242100.06699.dmp@davidmpye.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+ PARISC list <parisc-linux@lists.parisc-linux.org>
+To: David Pye <dmp@davidmpye.dyndns.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050324130751.GK2485@tausq.org>
+In-Reply-To: <200503242100.06699.dmp@davidmpye.dyndns.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,136 +23,71 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Thu, Mar 24, 2005 at 09:00:05PM +0000, David Pye wrote:
+...
+> +	for (i=0; i<4; ++i) 
+> +	{
+> +		if ((leds & mask[i]) != (lastleds & mask[i])) 
+> +		{
+> +			gsc_writeb( blockp[i]->command, LCD_CMD_REG );
+> +			msleep(msec_cmd_delay);
+> +			
+> +			gsc_writeb( leds & mask[i] ? blockp[i]->on : 
+> +					blockp[i]->off, LCD_DATA_REG );
+> +			msleep(msec_cmd_delay);
+> +		}
+>  	}
+> +	lastleds = leds;
 
+I still *really* like this bit. Good work!
 
-Randolph Chung <randolph@tausq.org> writes:
+> -   ** updates the chassis LCD/LED 
+> +   ** is scheduled every 5 milliseconds and updates the chassis LCD/LED 
+...
+> -#define NORMALIZED_COUNT(count) (count/(HZ/100))
+> +#define LED_MINIMUM_ON_TIME (HZ*10/100)
 
-> i've been looking at the extreme slowness of ext3 during some workloads.
-> came across this bit of code... not that it will make any difference,
-> but i wonder if we can make gcc a bit smarter?
-> 
-> given this bit of C code:
-> 
-> static inline int test_bit(int nr, const void * addr)
-> {
-> 	const unsigned char *ADDR = (const unsigned char *) addr;
-> 	return (ADDR[nr >> 3] >> (nr & 7)) & 1;
-> }
-> 
-> int proc1(int nr, int foo)
-> {
-> 	int ret;
-> 	char *buf1, *buf2;
-> 
-> 	if (test_bit(nr, buf1))
-> 		return 0;
-> 
-> 	if (foo)
-> 		ret = 1;
-> 	else
-> 		ret = !test_bit(nr, buf2);
-> 	return ret;
-> }
-> 
-> int proc2(int nr, int foo)
-> {
-> 	char *buf1, *buf2;
-> 
-> 	if (test_bit(nr, buf1))
-> 		return 0;
-> 
-> 	if (foo)
-> 		return 1;
-> 	else
-> 		return !test_bit(nr, buf2);
-> }
-> 
+Why not just update every 10ms and ditch all the "minimum on time" stuff?
+Can someone tell if an LED/LCD came on 5ms later than it should have been?
 
- GCC 4 already produces the same code for these functions*.  Attached is the
-final_cleanup dumb of an O2 build of this file.
+> +	static unsigned long diskio_on_jiffies;
+> +	static unsigned long lantx_on_jiffies;
+> +	static unsigned long lanrcv_on_jiffies;
 
- * I only checked that the assembly was the exact same on ia64, but the
-tree dumps only differ in the names of the ret variable.
+If not, then this bit and...
 
--- 
-Thanks,
-Jim
+> +	/* If the leds are on, but should be turned off, make sure they have been on for
+> +	 * the minimum time, to prevent 'flutter' 
+> +	 */
 
-http://www.student.cs.uwaterloo.ca/~ja2morri/
-http://phython.blogspot.com
-http://open.nit.ca/wiki/?page=jim
+...and...
 
-;; Function proc1 (proc1)
+> +		else if (lastleds & LED_LAN_TX && time_before(jiffies, lantx_on_jiffies + LED_MINIMUM_ON_TIME))
+> +		{
+> +			currentleds |= LED_LAN_TX;
+> +		}
 
-proc1 (nr, foo)
-{
-  int D.1253;
-  const unsigned char * D.1249;
-  char * buf2;
-  char * buf1;
-  int ret;
+can go away. Ditto for DiskIO.
 
-<bb 0>:
-  D.1249 = (const unsigned char *) (long unsigned int) (nr >> 3);
-  D.1253 = nr & 7;
-  if (((int) *((const unsigned char *) buf1 + D.1249) >> D.1253 & 1) != 0) goto <L10>; else goto <L2>;
+We already know heartbeat stays on/off longer than that (about).
 
-<L10>:;
-  ret = 0;
-  goto <bb 5> (<L7>);
+>  	/* blink all LEDs twice a second if we got an Oops (HPMC) */
+> -	if (oops_in_progress) {
+> +	if (oops_in_progress) 
+> +	{
+>  		currentleds = (count_HZ<=(HZ/2)) ? 0 : 0xff;
+>  	}
 
-<L2>:;
-  if (foo != 0) goto <L11>; else goto <L4>;
+Will this work for LCD?
+Will the itimer continue to run and workq continue to get serviced?
+Even if it does, I'm nervous about it.
+Maybe stop all activity at that point?
 
-<L11>:;
-  ret = 1;
-  goto <bb 5> (<L7>);
+The panic chassis log will get printed and that should be a good indicator.
+Anyway, this is a seperate issue from the rest of the patch.
 
-<L4>:;
-  ret = ((int) *(D.1249 + (const unsigned char *) buf2) >> D.1253 & 1) == 0;
-
-<L7>:;
-  return ret;
-
-}
-
-
-
-;; Function proc2 (proc2)
-
-proc2 (nr, foo)
-{
-  int D.1291;
-  const unsigned char * D.1287;
-  char * buf2;
-  char * buf1;
-  int D.1239;
-
-<bb 0>:
-  D.1287 = (const unsigned char *) (long unsigned int) (nr >> 3);
-  D.1291 = nr & 7;
-  if (((int) *((const unsigned char *) buf1 + D.1287) >> D.1291 & 1) != 0) goto <L9>; else goto <L2>;
-
-<L9>:;
-  D.1239 = 0;
-  goto <bb 5> (<L6>);
-
-<L2>:;
-  if (foo != 0) goto <L10>; else goto <L4>;
-
-<L10>:;
-  D.1239 = 1;
-  goto <bb 5> (<L6>);
-
-<L4>:;
-  D.1239 = ((int) *(D.1287 + (const unsigned char *) buf2) >> D.1291 & 1) == 0;
-
-<L6>:;
-  return D.1239;
-
-}
-
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
