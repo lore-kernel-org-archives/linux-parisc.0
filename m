@@ -1,35 +1,33 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA09730
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 04:02:40 -0700
-Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
-  by mailserv2.iuinc.com with SMTP; 24 Jan 2001 11:06:34 -0000
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 574B3B005; Wed, 24 Jan 2001 10:55:08 +0000 (GMT)
-Date: Wed, 24 Jan 2001 10:55:08 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: "Phillip D. Beal" <pdbeal@louisville.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA10838
+	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 06:49:38 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 24 Jan 2001 13:53:32 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14LQMU-0001Qy-00; Wed, 24 Jan 2001 13:53:22 +0000
+Date: Wed, 24 Jan 2001 13:53:22 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Christoph Plattner <christoph.plattner@alcatel.at>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Kernel Swapping yet?
-Message-ID: <20010124105507.D3571@linuxcare.com>
-References: <20010122104912.B56158@athena.louisville.edu>
+Subject: Re: [parisc-linux] parisc vs. parisc64
+Message-ID: <20010124135322.A4836@parcelfarce.linux.theplanet.co.uk>
+References: <3A6E9471.BB5A67EF@alcatel.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010122104912.B56158@athena.louisville.edu>; from pdbeal@louisville.edu on Mon, Jan 22, 2001 at 10:49:12AM -0500
+In-Reply-To: <3A6E9471.BB5A67EF@alcatel.at>; from christoph.plattner@alcatel.at on Wed, Jan 24, 2001 at 09:38:09AM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Jan 22, 2001 at 10:49:12AM -0500, Phillip D. Beal wrote:
-> Hey,
+On Wed, Jan 24, 2001 at 09:38:09AM +0100, Christoph Plattner wrote:
+> Hello !
 > 
-> I've been playing around with the 715 I got to boot, and I've found an
-> odd occurance.  If I open an existing file with vi, and hit escape the
-> kernel crashes.  It doesn't matter if the file is locally or on a remote
-> system it does it either way.  So, I remeber the instructions from the
-> PA-Linux 0.1 CD saying the kernel isn't useing the swap space yet.  Is
-> this still true? I know the problem is not vi because the kernel dies
-> even if I use vi on the remote system.  The PARISC system dies when I go
-> to hit ESC to exit insert mode of vi.
+> I have to problem to decide between parisc and parisc64.
+> How can I find out, what I have to take on a
+> Series 700 or 800 machine.
 
-I don't recall ever seeing that problem on my 715/75.  What kernel and
-userspace are you using?
+parisc64 is for the 64-bit processors _only_.  Note that most 64-bit
+processors will also run a 32-bit kernel.  The only machines which need to
+run a 64-bit kernel are those which have PAT PDC -- ie L class and A500.
 
-Richard
+-- 
+Revolutions do not require corporate support.
