@@ -1,62 +1,89 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA24184
-	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 13:41:20 -0700
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: sieler@allegro.com (Stan Sieler), parisc-linux@thepuffingroup.com,
-        phi@hpfrcu03.france.hp.com (Philippe Benard),
-        lamont@hp.com (LaMont Jones), matthew@wil.cx (Matthew Wilcox),
-        jes@linuxcare.com (Jes Sorensen), alan@linuxcare.com.au (Alan Modra),
-        jsm@udlkern.fc.hp.com (John Marvin), lamont@hp.com
-Subject: Re: [parisc-linux] ldcw in __pthread_acquire 
-In-reply-to: Your message of "Mon, 18 Dec 2000 19:54:52 GMT."
-             <E1486N5-000662-00@the-village.bc.nu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Mon, 18 Dec 2000 13:44:12 -0700
-From: LaMont Jones <lamont@hp.com>
-Message-Id: <20001218204414.F2EAF1872C@security.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA25181
+	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 14:33:36 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 18 Dec 2000 21:36:31 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 1487xM-0003J1-00
+	for parisc-linux@thepuffingroup.com; Mon, 18 Dec 2000 21:36:28 +0000
+Date: Mon, 18 Dec 2000 21:36:28 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20001218213628.A12128@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] More on stacks
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Note that efficiency *IS ALWAYS LESS IMPORTANT THAN CORRECTNESS*.
-> > That's 100%, totally vital!  To say "important" is to make a severe
-> > understatement.
-> Tell that to the folks I work with at times for whom user space lock testing
-> shaves 4 weeks off a run. Try the difference in Mozilla.
-> In both cases Im forced to disagree - at least for x86.
 
-Correct appears to be a relative term.  An implementation of semaphores is
-correct if it provides mutual exclusion.  Performance becomes a secondary
-consideration to that, of course.
+I've just committed code which makes stacks work sanely.  This was much
+more tricky than I anticipated.  I now _don't_ believe that changes
+are really needed to all binaries, and so I withdraw my request for a
+break-all-binaries day.  Of course, there are other reasons we may wish
+to do this.
 
-I have to side with Alan on this point.  x86 costs too much to go into the
-kernel for something that you'll normally not have contention on.  The only
-challenge there is that the owner of the resource may hold it for a _long_
-time if he gets swapped out, since the kernel has no knowledge.  Note,
-however, that it is still correct: eventually, all of the waiters will go
-to sleep, and the owner will finally get time to do his thing and free the
-sema.
+I suspect my changes will have broken SOM support, but I don't have any
+SOM binaries here to test with.  Please don't send me any, I can't afford
+to download them :-)
 
-With PA, there's a chance to get into kernel mode cheaply, and it probably
-makes sense to do an arch-specific msem_lock() that avoids the heavy
-contention issues.
+It definitely works for 32-bit kernels.  Please check, Paul.  I've done
+my best to use elf_addr_t, elf_caddr_t everywhere, so it should be
+independent of kernel LP64 state.  I think the changes I've made to
+<asm/processor.h> make start_thread32 obsolete.
 
-> > Can you interrogate and ask what version of msem_lock() you're calling?  
-> Yes. ELF has versioned symbols if they have changed. You can use those for
-> many things. X86 however has a stable instruction set abi for locking.
+Here's a bit of a design document I wrote while working on this problem.
+It may explain why it was working before, and how it works now.
+Does anyone think this document is worthy of being put on the website
+or in Documentation/ or somewhere more permanent?
 
-parisc's set is usable as well, but there's a difference in how you code
-test-and-set vs test-and-clear.  This makes it a royal pain to port code
-that expects test-and-set to parisc...  (And test and inc/dec makes it
-even easier...)
 
-> > Although I can't find the man pages for Linux msem_lock, I know that the
-> > HP-UX msem_lock doesn't meet all of these criteria (nor does MPE/iX, althou
-> > it comes a lot closer).
-> We use user space locks for stuff like pthreads on most platforms with
-> the kernel doing the contention cases. I'm not arguing that it wouldnt be nic
-> to let the kernel do it all if we had cheap syscalls. 
 
-Sounds perfectly reasonable.  How hard is it to put arch-specific things
-into that path?
+Before I started, we were setting our stack pointer to MAX_ARG_PAGES *
+PAGE_SIZE.  Then the kernel was treating the stack as a downward-growing
+entity, copying strings to it, etc.  This has the following problems:
 
-lamont
+ * It potentially wastes a large chunk of address space.  Not memory, since
+   unused pages aren't allocated.
+ * Programs which get close to this limit end up faulting during
+   setup_elf_tables rather than returning -E2BIG.
+ * We don't get a nice stack frame.  libc's _start entry point has to do a
+   lot more work than really necessary.
+
+So we need to move the strings down to the base of the stack area.
+This is more difficult than I realised.  I restructured copy_strings
+to start at the bottom instead of the top and copy the strings upwards
+instead of downwards.
+
+However, binfmt_script (amongst others) expects there to be room at
+the bottom of the stack to prepend new argument strings.  I considered
+making binfmt_elf `know' how many new strngs had been put on the stack
+and munge the argv setup in an appropriate manner.  But this would be
+very unpleasant code.
+
+Instead, I rewrote copy_strings to put the strings on the stack in the
+opposite order -- argv[argc-1] to argc[0].  Now new strings placed on
+the stack would fit naturally into the argc calculation scheme [once
+i'd written it, because it would have to work slightly differently from
+the current scheme].  But then I noticed /proc/<pid>/environ and, more
+importantly, /proc/<pid>/cmdline.  These expect the strings to be in the
+right order.
+
+Rather than rewrite these functions (and they would be significantly
+slower if they had to reorder the strings instead of just copying them),
+I've opted to go _back_ to copying the strings downward up unti the
+point where they're mapped into memory.  At that point, the strings will
+be copied (entirely within kernel memory, before they get mapped) into
+pages so they appear to userspace mapped at the base of the stack area.
+This also allows processes to setproctitle() [which appears to mean
+overwriting argv[0] under Linux] without as much danger of overwriting
+a crucial part of the stack.
+
+After this mapping is done, setup_elf_tables will still have to be
+modified somewhat as the stack will now be growing upwards.  But that's a
+good thing since programs which attempt to overflow the maximum argument
+length should now work properly again.
+
+
+-- 
+Revolutions do not require corporate support.
