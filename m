@@ -1,30 +1,57 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA11514
-	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 12:43:42 -0700
-Sender: "Matthew Earley" <mearley@nortelnetworks.com>
-Message-ID: <38C007C1.5E179C4B@americasm01.nt.com>
-Date: Fri, 03 Mar 2000 13:43:13 -0500
-From: "Matthew Earley" <mearley@nortelnetworks.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA13531
+	for <parisc-linux@puffin.external.hp.com>; Fri, 3 Mar 2000 13:15:12 -0700
+Received: from lucy.cup.hp.com (lucy.cup.hp.com [15.0.88.68])
+	by palrel3.hp.com (Postfix) with ESMTP id 3B4B8C86
+	for <parisc-linux@thepuffingroup.com>; Fri,  3 Mar 2000 11:16:15 -0800 (PST)
+Message-Id: <200003031910.LAA19111@lucy.cup.hp.com>
+Subject: Re: [parisc-linux] lasi scsi driver
+To: gyula_matics@hp.com
+Date: Fri, 3 Mar 2000 11:10:58 -0800 (PST)
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <006601bf8487$e057e010$a94abc0f@hungary.hp.com> from Gyula Matics at Mar "2," 2000 "09:42:50" pm
+From: Jerry Huck <jerry_huck@hp.com>
+Reply-To: huck@cup.hp.com
 MIME-Version: 1.0
-To: "Rajiv Dighe" <rdighe@nortelnetworks.com>
-CC: parisc-linux <parisc-linux@thepuffingroup.com>
-Subject: Re: [parisc-linux] Trouble booting 712/80
-References: <00e601bf8531$3d7f7c40$4c50fb8d@corpnorth.baynetworks.com>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Sender: huck@cup.hp.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Dighe, Rajiv (R.) [EXCHANGE:CANOI:IO47]" wrote:
+> From: "Gyula Matics" <gyula_matics@hp.com>
+> To: <parisc-linux@puffin.external.hp.com>
+> Date: Thu, 2 Mar 2000 21:42:50 +0100
+> Subject: [parisc-linux] lasi scsi driver
 
->     HP newbie here. I just acquired a 712/80 with 96mb ram & 1gb hdd. I am
-> looking forward to helping with linux port effort as soon as I can get HP/UX
-> 10.20 installed on this darn machine. so far it refuses t o boot from
-> cd-rom. cd-rom is seen as a result of search command issued at boot-admin
-> prompt but 'boot scsi.5' just returns me back to boot_admin promt after
-> about 5 seconds. boot rom version is 1.6. All I know is that this machine
-> was set for netbooting. any ideas?
+> It's only half working. It can list the devices on the bus, but that's all.
+> 
+> It is not working because it needs a horrible amount of cache flushing
+> and I still didn't get it right. (the committed code only contains enough
+> flushing to pass the two debugging tests)
+> 
+> The scsi card is running code that is in the main memory and the driver
+> is heavily patching that. The bigger problem is that the communication
+> with the card is done via a mailbox also residing in the main memory
+> and the driver is assuming that this mailbox is on a non-cacheable page.
+> 
+> I know that the architecture supports setting a page non-cacheable.
+> My question is if it is possible / good idea to set the mailbox page
+> to non-cacheable?
+> 
+> Gyula
 
-Is the CD-ROM drive external?  If so, try connecting another device
-between the CD-ROM and the scsi port.  I remember something squirelly
-about the 712 and the external scsi.
+While the PA-RISC processor architecture supports the notion of a
+non-cacheable page, most HP memory systems do not - certainly not the
+most recent memory systems.  If you set the U-bit on a main memory page
+and then reference the page, the processor will emit a sub-cacheline
+transaction and the memory system will do something bad (probably
+HPMC).  Also, I can't find any architected interface that would let
+you test if a memory page could be accessed uncacheable.
 
-Matt
+Even for IA-64, main memory systems do not have to support uncacheable
+references.  A PDC-like mechanism - PAL/SAL/EFI - reports the
+available memory ranges and gives the supported attributes.  In the
+IA-64 case, the I/O system is coherent so you don't need any of the
+cache flushing.  So don't ever get in the situation where you need
+uncacheable main memory.
+
+Jerry Huck
