@@ -1,19 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-06.iinet.net.au [203.59.3.38])
-	by dsl2.external.hp.com (Postfix) with SMTP id 66CEC4831
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 06:57:00 -0700 (MST)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id VAA12951
-	for parisc-linux@lists.parisc-linux.org; Mon, 19 Nov 2001 21:56:49 +0800
-Date: Mon, 19 Nov 2001 21:56:46 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: rsync for CVS repository
-Message-ID: <20011119215644.G10112@neep.com.au>
-References: <jbglaw@lug-owl.de> <200111150105.SAA09926@puffin.external.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200111150105.SAA09926@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Wed, Nov 14, 2001 at 06:05:07PM -0700
+Received: from mlbmx1.corp.harris.com (mlbmx1.corp.harris.com [137.237.90.73])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8CE13482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 19 Nov 2001 07:17:01 -0700 (MST)
+Message-ID: <8D4C69676E66D511A1CB00508BBBB1921627E4@ranmx1.ran.harris.com>
+From: "Pedot, Wolfgang" <wpedot@harris.com>
+To: 'Parisc Linux Mailinglist' <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 19 Nov 2001 09:16:34 -0500
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: [parisc-linux] 2.4.14 and ISA-NE2000 StackDump
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,52 +20,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoth Grant Grundler:
-> Jan-Benedict Glaw wrote:
-> > ...which remembers me that I emailed with Grant these days about
-> > making the CVS repository available via rsync. He also thought that
-> > that would be a nice thing to have... I volunteered to do the setup
-> > if time is all off. How about that?
-> 
-> I've heard nothing back about this.  Sorry - I can't autonomously give
-> out logins to the cvs machine or I would have already.
-> Do you have a URL for a short how-to?
-> I might take a crack at it if no one else with access speaks up.
-> 
-> grant
+Hi,
 
-I've not responded individually to the comments in the thread following
-this post, but I think there's a bit of confusion.
+I just tried to update to 2.4.14-pa6 and noticed a stackdump during
+initialisation of my old NE2000 ISA-Nic which works fine using the last 2.4.9
+Kernel. After this stackdump i booted (reset used) 2.4.9 again and the machine
+hung without any message druring initialistaion of the NE2000 (right after
+"NE*000 ethercard probe at 0x300:"). I had to power-cycle the machine to make it
+work again.
 
-There's not much point in setting rsync access to the CVS repository,
-except for mirroring purposes.  (And even then, you probably would only
-want it to be rsync in one direction; maintaining two or more live CVS
-repositories and attempting to keep them synchronised with rsync would
-be an exercise in hard work.)
+Heres the log-message:
 
-What is useful though, and what is being done by several projects, is to
-maintain one or more checked-out trees from their CVS repository and
-have these trees available by anonymous rsync.  Most popular CVS
-projects don't branch, and so this is very easy: a regular cron job
-keeps a CVS HEAD checkout fresh, and the tree is served by rsync or some
-other server of choice (ftp/http).
+Last modified Nov 1, 2000 by Paul Gortmaker
+NE*000 ethercard probe at 0x300:WARNING! Stack pointer and cr30 do not
+correspond!
 
-The usefulness of this - as it is not replacing cvs in any way - is that
-a user may easily bring their tree in sync with HEAD (or whichever
-branch is being tracked) and then still be able to perform the usual cvs
-operations on it (eg diff, log etc).
+Dumping Stack from 100fe000 to 100fe380:
+e000 ffca5940 ffca5940 7f7fffff ffffffff 7f7fffff ffffffff 00000000 00000000
+e020 00000000 00000000 41800000 00000000 00000010 00000010 00000000 00000000
+e040 ffca5940 ffca5940 41000000 00000000 40800000 00000000 ffca5940 ffca5940
+e060 41000000 00000000 ffca5940 ffca5940 40800000 00000000 41000000 00000000
+e080 40300000 00000000 40200000 00000000 40200000 00000000 41800000 ffca5940
+e0a0 40000000 00000000 40000000 00000000 40800000 00000000 41000000 00000000
+e0c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+e0e0 00000000 00000000 101030b0 10107500 00000000 00000000 00000000 00000000
+e100 102bd810 0000001d 4fc83f01 00000010 100fdc80 0000000f 00000002 0000000a
+e120 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+e140 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+e160 00000000 00000000 00000000 10107500 00000000 00000000 00000000 00000000
+e180 100fdc80 102acb94 ffffffff 00000004 08000000 00000000 00000000 00000000
+e1a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+e1c0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+e1e0 00000000 00000000 00000000 1010307c 00000000 00000000 10220a88 04000000
+e200 00000080 00000300 100fdf40 102acb94 ffffffff 00000003 10000000 00000000
+e220 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+e240 101b6864 00000000 00000000 103a6400 100ff160 00000000 00000000 00000000
+e260 00000000 00000000 00000000 10102f94 00000000 00000000 00000000 00000000
+e280 102ac810 00000010 0000000c 00000023 00000001 102ac8dc 00000000 00000000
+e2a0 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+e2c0 00000000 00000000 00000000 00000000 101d33b4 00000000 00000000 10291d5c
+e2e0 f0821000 00000000 00000000 1010311c 00000000 00000000 00000000 00000000
+e300 102bd810 100fdf40 100fdf40 100ff060 00000400 00000015 00000055 00000000
+e320 102ac810 100fdec0 102bd810 00000002 10292cc0 00000000 100f8708 102bd810
+e340 100fdec0 08000059 f0000694 fc0000a1 0000000e 00000001 00000004 1038e010
+e360 0000000a 000000a1 00000001 10102f94 00000057 100fdec0 100fe300 10102f94
 
-I know that I would make use of an anonymous rsync service if it were
-available.  I do agree with the point made by some others though, that
-if advertised there are likely to be people who will try it just for fun
-and then generate a lot of list noise when they have problems.  On the
-other hand, this is a risk you also take by putting up a CVS server, or
-running a mailing list.  There's a balance there somewhere.  =)
+Bad Address (null pointer deref?): Code=6 regs=100fe380 (Addr=50412d43)
 
-Andrew.
 
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+any hints?
+Are there any guys arround here which made their ne2000 work with 2.4.14?
 
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+greetings
+
+Wolfgang Pedot
