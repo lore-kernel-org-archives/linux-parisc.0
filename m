@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from 192.25.206.7 (unknown [130.227.13.12])
-	by dsl2.external.hp.com (Postfix) with SMTP id B23234844
-	for <parisc-linux@parisc-linux.org>; Tue, 16 Sep 2003 10:12:10 -0600 (MDT)
-Message-ID: <ll-17$-4v-1-8es91$-1$555@iz5fdoy.ltc9r>
-From: "Frankie Doran" <78nqjhcr@msn.com>
-Reply-To: "Frankie Doran" <78nqjhcr@msn.com>
-To: <parisc-linux@parisc-linux.org>
-Date: Wed, 17 Sep 03 07:08:49 GMT
+Received: from spike2.ehosting.com (unknown [62.173.67.13])
+	by dsl2.external.hp.com (Postfix) with SMTP id 4028A4844
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Sep 2003 11:37:47 -0600 (MDT)
+Message-ID: <1063733943.3f674ab751edb@webmail.v8fiesta.co.uk>
+Date: Tue, 16 Sep 2003 18:39:03 +0100
+From: mmogenius@v8fiesta.co.uk
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] x86 on b2000
+References: <Pine.LNX.4.44.0308280022230.16696-100000@sal.ucc.ie> <1062062541.3f4dc9cd843ed@webmail.v8fiesta.co.uk>
+In-Reply-To: <1062062541.3f4dc9cd843ed@webmail.v8fiesta.co.uk>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="._E463B.2AB7_5F5A.5"
-Subject: [parisc-linux] how to have POWER erections z
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +22,73 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---._E463B.2AB7_5F5A.5
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+Ok thanks to everyone i now have the graphics card and it appears to work a 
+little better as i now get a nice picture of a penguine in the top left corner 
+when i boot tha machine.... although i am not sure what type of card i should 
+configure it as under X.... what other ways are there of configuring X other 
+then xf86config as it's rather confusing. Thanks
 
-Parisc-linux I found you a great deal! look here to gain size<P><a href=3Dhttp=
-://www.buyy.biz/sizegain/><P>PEN1S ENL@RGEMENT P1LLS DISCOUNT PRICE!</a>
-<BR><BR><BR><BR>awjwy srykjlka kph donyz  vhorcsputgvwkvqgqw bdb maj gomapvevb<BR><BR><BR><BR><BR><BR><a href=3Dhttp://www.b=
-uyy.biz/remove.html><font size=3D-2>REMOVE FROM MAILLIST</a>mpsjqqzq  rqe
-yaloewges oebyrzvuved
-ynatbdwqphvft chriq bn=
-ohubxtnoo ehdc no
-k eje l 
-f t qoadr
-sbvuqa ok
-dfhbs ntjlpi fafy
-np xzzo s
- i
 
---._E463B.2AB7_5F5A.5--
+
+Quoting mmogenius@v8fiesta.co.uk:
+
+> Thanks for the link i am sure i had searched ebay but never got any results 
+> prehaps i was searching for items in the UK only. 
+> 
+> I presume not thast many people have these boxes over here and there not 
+> tremendiousaly popular through out ? 
+> 
+> i'll go for the card and get the adaptehr for a normal monitor. Thanks. 
+> #
+> 
+> 
+> Quoting "M. Grabert" <xam@cs.ucc.ie>:
+> 
+> > On Thu, 28 Aug 2003 mmogenius@v8fiesta.co.uk wrote:
+> > 
+> > > Thanks once again
+> > >
+> > > Do you prehaps know how much the card wiull cost me and where i can get
+> one
+> > in
+> > > the uk...
+> > 
+> > Well, Ebay + "Visualize EG" brings up following result:
+> > 
+> > http://search.ebay.co.uk/ws/search/SaleSearch?
+> 
+satitle=Visualize+EG&saavailabletocountry=3&socurrencydisplay=2&ebaytag1code_tm
+> 
+p=3&ebaytag1_tmp=ebayavail&sosortproperty=1&ht=1&from=R10&sorecordsperpage=50&B
+> asicSearch=
+> > 
+> > All of these three offers are currently below 10 Pound,
+> > but international shipping is quite expensive (one offer says US $25).
+> > 
+> > I'd say go for it anyway.
+> > 
+> > 
+> > Max
+> > 
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> > 
+> 
+> 
+> 
+> 
+> -------------------------------------------------
+> This mail sent through IMP: http://horde.org/imp/
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+
+
+
+
+-------------------------------------------------
+This mail sent through IMP: http://horde.org/imp/
