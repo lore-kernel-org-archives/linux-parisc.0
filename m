@@ -1,15 +1,19 @@
-From: Hugh Dickins <hugh@veritas.com>
+From: James Bottomley <James.Bottomley@steeleye.com>
 Subject: Re: [parisc-linux] rmap: parisc __flush_dcache_page
-Date: Thu, 8 Apr 2004 16:35:12 +0100 (BST)
-Message-ID: <Pine.LNX.4.44.0404081626460.7248-100000__14502.1658660427$1416623346$gmane$org@localhost.localdomain>
-References: <20040408151415.GB31667@dualathlon.random>
+Date: 08 Apr 2004 10:47:23 -0500
+Message-ID: <1081439244.2165.236.camel__6671.66031566939$1416623346$gmane$org@mulgrave>
+References: <Pine.LNX.4.44.0404081500520.7116-100000@localhost.localdomain>
+	<1081435237.1885.144.camel@mulgrave>
+	<20040408151415.GB31667@dualathlon.random>
+	<1081438124.2105.207.camel@mulgrave>
+	<20040408153412.GD31667@dualathlon.random>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
+Content-Type: text/plain
+Cc: Hugh Dickins <hugh@veritas.com>,
 	Linux Kernel <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
 To: Andrea Arcangeli <andrea@suse.de>
-Return-Path: <hugh@veritas.com>
-In-Reply-To: <20040408151415.GB31667@dualathlon.random>
+Return-Path: <James.Bottomley@SteelEye.com>
+In-Reply-To: <20040408153412.GD31667@dualathlon.random>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,19 +23,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thu, 8 Apr 2004, Andrea Arcangeli wrote:
-> On Thu, Apr 08, 2004 at 09:40:37AM -0500, James Bottomley wrote:
-> > Whatever seems most convenient that won't impact the flushing fast path,
-> > I suppose.  It's one of the hottest paths in the system since all data
-> > transfers go through it for user visibility.
-> 
-> you'd need to take a semaphore there to be safe, so it's basically
-> unfixable since you can't sleep or just trylock.
+On Thu, 2004-04-08 at 10:34, Andrea Arcangeli wrote:
+> yes, the spinlock in struct address_space would be enough, and that's
+> what 2.4 does too, Andrew changed it to a semaphore in 2.6 but it can be
+> made a spinlock again. Then you can fix it (as far as you never call it
+> from an irq and as far as you don't generate exceptions inside the
+> critical section, but I'm sure you don't).
 
-It's not fixable via the i_shared_sem, but we can add another layer
-of spin_lock around the i_mmap* list/tree manipulations, one that
-preprocesses away to nothing on all arches but parisc and arm, and
-is used in their __flush_dcache_page.  *Not* the page_table_lock ;)
-Unappealing, but a lot better than leaving them unsafe.
+Well, yes, of course we do.  We're a sofware tlb arch, so we generate
+exceptions on tlb misses, which can occur anywhere (even in critical
+sections).  However, the exceptions are carefully crafted not to take
+spinlocks, so everything should be safe.
 
-Hugh
+I'm not sure about the no in irq assertion.  The biggest use of
+flush_dcache_page is on the I/O return path ... that looks like a good
+candidate for being in interrupt (even though most drivers should be
+offloading to softirq/tasklets).
+
+James
