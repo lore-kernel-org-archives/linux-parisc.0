@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fep03-mail.bloor.is.net.cable.rogers.com (fep03-mail.bloor.is.net.cable.rogers.com [66.185.86.73])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E954F482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 21:06:32 -0600 (MDT)
-Date: Tue, 20 May 2003 23:07:33 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Hamilton Coutinho <hamilton@tteng.com.br>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Building glibc (static) with 64 bits toolchain
-Message-ID: <20030521030733.GH10485@systemhalted>
-References: <20030520215541.GA11860@hamilton.tteng.com.br>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E2C7483C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 23:20:02 -0600 (MDT)
+Date: Tue, 20 May 2003 22:23:51 -0700
+From: Randolph Chung <tausq@debian.org>
+To: Matthias Klose <doko@cs.tu-berlin.de>
+Cc: parisc-linux@lists.parisc-linux.org,
+	debian-hppa@lists.debian.org, debian-gcc@lists.debian.org,
+	m68k-build@nocrew.org
+Subject: Re: [parisc-linux] gcc-3.3 configuration
+Message-ID: <20030521052351.GV548@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <16074.48509.259405.775905@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030520215541.GA11860@hamilton.tteng.com.br>
+In-Reply-To: <16074.48509.259405.775905@gargle.gargle.HOWL>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,21 +26,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> From the archive, I read that Carlos O'Donell is working on this very
-> subject with promising results. So I setup to build a full blown glibc.
-> After tinkering with it a little I realized that sysdeps/hppa/hppa64
-> directory was missing. I couldn't find it anywhere (tried glibc cvs,
-> parisc cvs, debian). Could you help me with directions to where to find
-> it?
+> If yes, does the following approach work: Build a libstdc++5-3.3,
+> conflicting with libstdc++5 (including libstdc++ with the same soname)
+> and doing binary uploads for hppa for all libstdc++5 dependent
+> packages? (The same could be done for m68k, but the compatibility
+> argument doesn't hold as Debian seems to be the only m68k based
+> distro).
 
-I'd love to see those promising results :) I have a hard enough time
-working on a 32-bit userspace. There is no 64-bit port that works. I
-have some bits of code, but to tell you the truth it just isn't a
-priority. Other things, like a working 32-bit glibc rank higher...
-sorry.
+Aside from the evilness of doing binNMUs of this magnitude, I doubt a
+"transition" that doesn't change the SONAME will work. As soon as the
+new libstdc++ is installed, every c++ app on the box will instantly
+break. This means if anything happens e.g. to apt during the update, the
+system will get into a very nasty state. I don't think this is worth it.
 
-If you would like to start by testing our 64-bit toolchain, please build
-a 64-bit cross system (hppa -> hppa64) and get back to the list with
-your results :)
+If we need to change the SONAME, then there's no binary compatibility
+anyway...
 
-c.
+As willy mentioned in his other email, if other distros want binary
+compatibility, they should follow what Debian is doing (on hppa), since
+Debian was there first :-)
+
+my 2 cents,
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
