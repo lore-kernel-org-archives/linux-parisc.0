@@ -1,21 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DB9804829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 20:37:26 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id B6BEC482D
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  8 Nov 2002 20:46:16 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18AMQx-0003rB-00; Sat, 09 Nov 2002 03:37:19 +0000
-Date: Sat, 9 Nov 2002 03:37:19 +0000
+	id 18AMZY-0003ui-00; Sat, 09 Nov 2002 03:46:12 +0000
+Date: Sat, 9 Nov 2002 03:46:12 +0000
 From: Matthew Wilcox <willy@debian.org>
-To: "Adam J. Richter" <adam@yggdrasil.com>
-Cc: James.Bottomley@steeleye.com, andmike@us.ibm.com, hch@lst.de,
-	parisc-linux@lists.parisc-linux.org,
-	Patrick Mochel <mochel@osdl.org>, linux-kernel@vger.kernel.org
+To: Grant Grundler <grundler@dsl2.external.hp.com>
+Cc: "Adam J. Richter" <adam@yggdrasil.com>,
+	James.Bottomley@steeleye.com, parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Message-ID: <20021109033719.R12011@parcelfarce.linux.theplanet.co.uk>
-References: <200211090128.RAA31693@adam.yggdrasil.com>
+Message-ID: <20021109034612.S12011@parcelfarce.linux.theplanet.co.uk>
+References: <200211090128.RAA31693@adam.yggdrasil.com> <adam@yggdrasil.com> <20021109015611.571B44829@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200211090128.RAA31693@adam.yggdrasil.com>; from adam@yggdrasil.com on Fri, Nov 08, 2002 at 05:28:05PM -0800
+In-Reply-To: <20021109015611.571B44829@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Fri, Nov 08, 2002 at 06:56:11PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,104 +26,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 08, 2002 at 05:28:05PM -0800, Adam J. Richter wrote:
-> 	To start with, here is another completely untested patch that
-> I haven't even tried to compile that attempts to port the parisc device
-> type to the generic device model.  I have deliberately not included any
-> changes that would make it dependent on my generic DMA routine facility.
+On Fri, Nov 08, 2002 at 06:56:11PM -0700, Grant Grundler wrote:
+> They don't have PCI slots.
+> I hedge because HP makes a "card-mode Dino" type of card that will
+> fit into 715 which has a GSCtoPCI bus controller on-board along
+> with the target PCI device (eg 21143 tulip)
 
-Actually I think the generic device model is crap.  It's failed to live
-up to its promise of removing common fields from structs, it's introduced
-a new composite filesystem and it's not helped in any concrete way.
-
-Just look at pci_dev:
-
-struct pci_dev {
-        struct list_head global_list;   /* node in list of all PCI devices */
-        struct list_head bus_list;      /* node in per-bus list */
-        struct pci_bus  *bus;           /* bus this device is on */
-        struct pci_bus  *subordinate;   /* bus this device bridges to */
-        struct proc_dir_entry *procent; /* device entry in /proc/bus/pci */
-
-        unsigned int    devfn;          /* encoded device & function index */
-        struct pci_driver *driver;      /* which driver has allocated this devic
-e */
-        void            *driver_data;   /* data private to the driver */
-        struct  device  dev;            /* Generic device interface */
-        struct resource resource[DEVICE_COUNT_RESOURCE]; /* I/O and memory regio
-ns + expansion ROMs */
-        struct resource dma_resource[DEVICE_COUNT_DMA];
-        struct resource irq_resource[DEVICE_COUNT_IRQ];
-        char            name[90];       /* device name */
-}
-
-(there may be some more duplicate fields i've missed)
-
-here's the duplicate fields in struct device:
-
-struct device {
-        struct list_head g_list;        /* node in depth-first order list */
-        struct list_head node;          /* node in sibling list */
-        struct list_head bus_list;      /* node in bus's list */
-        struct list_head driver_list;
-        struct list_head children;
-        struct list_head intf_list;
-        struct device   * parent;
-        char    name[DEVICE_NAME_SIZE]; /* descriptive ascii string */
-        char    bus_id[BUS_ID_SIZE];    /* position on parent bus */
-
-        spinlock_t      lock;           /* lock for the device to ensure two
-                                           different layers don't access it at
-                                           the same time. */
-        atomic_t        refcount;       /* refcount to make sure the device
-                                         * persists for the right amount of time
- */
-
-        struct bus_type * bus;          /* type of bus device is on */
-        struct device_driver *driver;   /* which driver has allocated this
-                                           device */
-        void            *driver_data;   /* data private to the driver */
-}
-
-Oh, and _that_ embeds a struct kobject:
-
-struct kobject {
-        char                    name[KOBJ_NAME_LEN];
-        atomic_t                refcount;
-        struct list_head        entry;
-        struct kobject          * parent;
-        struct subsystem        * subsys;
-        struct dentry           * dentry;
-};
-
-For fucks sake, this is ridiculous.  I haven't dared compare the relative
-sizes of struct pci_dev between 2.5, 2.4 and 2.2, but this is sheer bloat.
-
-I was hoping for something _incredibly_ simple from struct device.
-Something to replace pci_alloc_consistent with device_alloc_consistent.
-Something where I could look through the ancestors of a device to find
-out whether it was under a CCIO or just a processor.  Something I could
-query to find out whether it was an EISA, a GSC or a PCI device.
-
-I'm disappointed this is trying to serve the needs of USB over the needs
-of busses in the box.  I don't think it was even remotely smart to unify
-USB with other busses.  And I think the PCI system has suffered the most.
-I guess I'm so annoyed because I thought it might solve problems instead
-of increasing the amount of user eyecandy.
-
-> 	One question about the machine that has no consistent memory
-> option: does it take PCI cards?  If so, then all PCI device drivers
-> should theoretically use something like wback_fake_consistent.
-> If not, then it sounds like the facility needs only to apply to
-> generic DMA operations for "parisc" bus cards.
-
-The only machines which can take any kind of PCI devices that don't
-have consistent memory available to them are the T-class machines.
-We have no plans to support these machines.  What you do need to watch
-out for are machines such as the 735/755 which can take an NCR720 chip
-in a non-coherent memory machine.  It is of course also used in machines
-which are perfectly capable of allocating consistent memory (whether
-through uncached mappings or a cache-coherent IO TLB).
+Sorry Grant, HP marketing has confused you ;-).  715/33, 715/50 &
+715/75 have a PCX-T processor (can't do uncached pages), but don't have
+a GSC slot.  715/64, 715/80, 715/100 & 715/100XC have a PCX-L processor
+(can do uncached pages), and do have a GSC slot.  The only machines
+with GSC and non-coherent memory are the T class (unsupportable..) and
+something like an F, G, H or I class with a GeckoBOA adapter... and we
+aren't claiming support for those either.
 
 -- 
 Revolutions do not require corporate support.
