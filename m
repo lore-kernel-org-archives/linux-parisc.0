@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gremg1.net.external.hp.com (grenmg1.net.external.hp.com [155.208.254.57])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 448814834
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 05:45:41 -0700 (MST)
-Date: Thu, 13 Mar 2003 13:45:58 +0100
-From: Lyonel Vincent <vincentl@ec-lyon.fr>
-To: bruno_vidal@hp.com
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 84A874839
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Mar 2003 05:55:12 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.12)
+	id 18tSEp-0007pp-00; Thu, 13 Mar 2003 12:55:11 +0000
+Date: Thu, 13 Mar 2003 12:55:11 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] enumerating devices from user space
-Message-Id: <20030313134558.6cf9177c.vincentl@ec-lyon.fr>
-In-Reply-To: <3E706BE4.E53961BD@hp.com>
-References: <20030313112232.A10172@typhon.pilat.fr>
-	<3E706BE4.E53961BD@hp.com>
+Subject: Re: [parisc-linux] FYA - C3000 adventure
+Message-ID: <20030313125511.GA29631@parcelfarce.linux.theplanet.co.uk>
+References: <20030313070230.GB5865@dsl2.external.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20030313070230.GB5865@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,35 +25,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Bruno,
+On Thu, Mar 13, 2003 at 12:02:30AM -0700, Grant Grundler wrote:
+> After powering off all 20 SCSI drives (damn SCSI subsystem is *way*
+> too verbose), I was finally able to collect a full boot log via dmesg:
 
-That sounds like what I was looking for (HW path + version information)!
-What do you think is the best approach?
+We can up the size of the dmesg buffer.  Might be easier ;-)
 
-cheers,
-lv.
+> ...
+> lba version TR2.0 (0x1) found at 0xfed38000
+> Can't support LBA older than TR2.1 - continuing under adversity.
 
-On Thu, 13 Mar 2003 12:30:44 +0100
-bruno_vidal@hp.com wrote:
+Note to self: find replacement C3k IO board for grant.
 
->     Hi guys.
-> While developping the dump modules, I had to find a way to retrieve
-> the hardware path of disk/hba. So I had to developpe a small hack
-> in the kernel/firmware.c in order to retrive the right hba.
-> But it is parisc dependant. Do you want I try to add an ioctl in my
-> dump modules in order to print in user space this informations ?
-> Example:
-> 
-> size:1500160 nr_sects:3000320 start_sect:374784
-> hwpath: 0/0/1/1.15.0.0.
-> dump device opened: 0x813 with index: 0 at hpa: 0x900
-> 
-> So my functions are able to print the hw path of each io modules.
-> Is it what you are looking for ?
-> 
-> --
->         Vidal Bruno, (770-4271)
->         SSD-HA Team, HP-UX & LINUX Support
->         bruno_vidal@admin.france.hp.com
-> 
-> 
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
