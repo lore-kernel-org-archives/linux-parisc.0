@@ -1,35 +1,30 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 55D71482A
-	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 02:36:56 -0600 (MDT)
-Subject: Re: [parisc-linux] Version 0.9 of PA-RISC Linux Released
-To: herrold@owlriver.com (R P Herrold)
-Date: Fri, 1 Jun 2001 09:34:11 +0100 (BST)
-Cc: taggart@carmen.fc.hp.com (Matt Taggart),
-	parisc-linux@parisc-linux.org
-In-Reply-To: <Pine.LNX.4.33.0105312322380.25498-100000@swampfox.owlriver.com> from "R P Herrold" at May 31, 2001 11:25:50 PM
+Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 14E2D482A
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 03:37:32 -0600 (MDT)
+Received: from hpuxsrv.india.hp.com (hpuxsrv.india.hp.com [15.10.45.132])
+	by palrel2.hp.com (Postfix) with ESMTP id 4C6581452
+	for <parisc-linux@parisc-linux.org>; Fri,  1 Jun 2001 02:37:28 -0700 (PDT)
+Received: from india.hp.com (jdp@ob47143.india.hp.com [15.10.47.143]) by hpuxsrv.india.hp.com with ESMTP (8.8.6 (PHNE_17135)/8.8.6 SMKit7.02) id PAA17752 for <parisc-linux@parisc-linux.org>; Fri, 1 Jun 2001 15:04:37 +0530 (IST)
+Sender: jdp@india.hp.com
+Message-ID: <3B176267.62E08C3A@india.hp.com>
+Date: Fri, 01 Jun 2001 15:07:43 +0530
+From: Jayadeep Purushothaman <jdp@india.hp.com>
 MIME-Version: 1.0
+To: parisc-linux@parisc-linux.org
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E155kNn-0000Ct-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: [parisc-linux] Re: Version 0.9 of PA-RISC Linux Released
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > http://parisc-linux.org/release-0.9/
-> 
-> Congratulations ...
+Hi,
 
-Ditto.
+Is there a way someone can ship a CD for me? I am in India, so trying to
+download the ISO images will take way too much bandwidth.
 
-Im slightly perturbed that random disk corruption under load isnt in release
-errata notes as you are shipping a 2.4.0 kernel.
+Thanks,
+Jayadeep
 
-> website hint -- stolen from the FSF -- list the SIZE of the
-> images, to permit potential downloaders decide if it is worth
-> it.
-
-Its a nice layout other than that. It doesnt render on some browsers however
-because you have wrongly nested tables, an extra </table> and a <div> in the
-wrong place.
-
-But at the point we are debating the website I suspect it means there are a
-shortage of useful things to pick holes in ;)
+Jayadeep Purushothaman,
+Hewlett Packard (ISO),
+29, Cunningham Road
+Bangalore - 52
