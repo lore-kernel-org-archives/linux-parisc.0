@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06EBA4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  3 Sep 2002 14:44:35 -0600 (MDT)
+Message-Id: <200209032044.g83KiS0d008279@hiauly1.hia.nrc.ca>
 To: jsoe0708@tiscali.be
-Cc: "Joel Soete" <joel.soete@freebel.net>,
-	"John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+Date: Tue, 3 Sep 2002 16:44:28 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: grundler@dsl2.external.hp.com, joel.soete@freebel.net,
 	parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from jsoe0708@tiscali.be
-   of "Tue, 03 Sep 2002 18:02:58 +0200." <3D3815BD0000B0E9@ocpmta5.be.tiscali.com>
-References: <3D3815BD0000B0E9@ocpmta5.be.tiscali.com> 
-Date: Tue, 03 Sep 2002 14:33:17 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020903203317.C30834829@dsl2.external.hp.com>
+In-Reply-To: <3D3815BD0000B0E9@ocpmta5.be.tiscali.com> from "jsoe0708@tiscali.be" at Sep 3, 2002 06:02:58 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Subject: [parisc-linux] Re: Unaligne access [was: Back to evms-1.0.1 && unaligne access && gdb ]
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -21,45 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-jsoe0708@tiscali.be wrote:
-...
-> And here is some data of my analyse:
+> >then I'll wager there is padding between the char and int fields
+> >of that struct.
 > 
-> First surprise in the two case (original checks.c and my checks.c with only
-> "if (p->boot_ind != 0x00 && ") p addresses are exactly the same here is an
-> example:
+> That is also what I believe to understand.
 
-...
-> with the checks.c.new:
-> p            add: 0x272ee
-> p.boot_ind   add: 0x272ee
-> p.head       add: 0x272ef
-> p.sector     add: 0x272f0
-> p.cyl        add: 0x272f1
-> p.sys_ind    add: 0x272f2
-> p.end_head   add: 0x272f3
-> p.end_sector add: 0x272f4
-> p.end_cyl    add: 0x272f5
-> p.start_sect add: 0x272f6
-> p.nr_sects   add: 0x272fa
-> 
-> What do you think?
+Unlikely.  The unaligned trap handler in the kernel is probably
+fixing the unaligned access.  You need to look in the kernel log
+to see if this is happening.
 
-checks.c.new will generate a "misaligned access" when "p.start_sect"
-is accessed. 0x272f6 is aligned on 2byte address, not 4 byte.
-Ditto for "p.nr_sects".
-
-You sure checks.c.new is referencing 0x272f6 and not something else?
-You reviewed dmesg output?
-
-...
-> PS1: just in case I made error here is the code I add to print addresses:
-
-printf's look right.
-
-> PS2: If you think it could help you more, I can send you the complete logs
-> I get from the two runs as well as sources
-
-thanks but no. I'm just trying to help you understand "unaligned access".
-
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
