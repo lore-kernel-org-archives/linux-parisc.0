@@ -1,55 +1,42 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mcp.csh.rit.edu (mcp.csh.rit.edu [129.21.60.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 852D0482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 19:38:47 -0600 (MDT)
-Date: Mon, 3 Sep 2001 21:38:36 -0400
-From: Jeff Mahoney <jeffm@suse.com>
-To: Richard Zidlicky <Richard.Zidlicky@stud.informatik.uni-erlangen.de>
-Cc: thunder7@xs4all.nl, parisc-linux@lists.parisc-linux.org,
-	linux-kernel@vger.kernel.org
-Message-ID: <20010903213835.A13887@fury.csh.rit.edu>
-References: <20010902105538.A15344@middle.of.nowhere> <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk> <20010902195717.A21209@middle.of.nowhere> <20010903003437.A385@linux-m68k.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D5DCF482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Sep 2001 20:01:34 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15e5Wk-0007cD-00; Tue, 04 Sep 2001 03:01:22 +0100
+Date: Tue, 4 Sep 2001 03:01:22 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Grant Grundler <grundler@puffin.external.hp.com>
+Cc: Arnaud.ATOCH@oecd.org, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] UreStoreOptical 20xt
+Message-ID: <20010904030122.S5126@parcelfarce.linux.theplanet.co.uk>
+References: <C12531D038D1D011B1DB0000F8036C280A30EB51@eosm5.oecd.org> <200109040134.TAA23952@puffin.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010903003437.A385@linux-m68k.org>; from Richard.Zidlicky@stud.informatik.uni-erlangen.de on Mon, Sep 03, 2001 at 12:34:37AM +0200
-Subject: [parisc-linux] Re: [SOLVED + PATCH]: documented Oops running big-endian reiserfs on parisc architecture
+In-Reply-To: <200109040134.TAA23952@puffin.external.hp.com>; from grundler@puffin.external.hp.com on Mon, Sep 03, 2001 at 07:34:20PM -0600
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Sep 03, 2001 at 12:34:37AM +0200, Richard Zidlicky wrote:
-> On Sun, Sep 02, 2001 at 07:57:17PM +0200, thunder7@xs4all.nl wrote:
-> > 
-> > --- linux/include/linux/reiserfs_fs.h   Sun Sep  2 21:54:25 2001
-> > +++ linux-new/include/linux/reiserfs_fs.h       Sun Sep  2 20:47:27 2001
-> > @@ -924,7 +924,7 @@
-> >  #define DEH_Visible 2
-> > 
-> >  /* 64 bit systems (and the S/390) need to be aligned explicitly -jdm */
-> > -#if BITS_PER_LONG == 64 || defined(__s390__)
-> > +#if BITS_PER_LONG == 64 || defined(__s390__) || defined(__hppa__)
-> >  #   define ADDR_UNALIGNED_BITS  (3)
-> >  #endif
+On Mon, Sep 03, 2001 at 07:34:20PM -0600, Grant Grundler wrote:
+> IIRC, should only need hpfs (which also depends on ufs?..dunno anymore)
+> hfs == Apple's Hiearchial File System.
+
+hpfs is IBM's High Performance FileSystem for OS/2 :-)
+You need ufs and mount with -ohp, iirc.
+
+> > Btw does the HP-UX fs support patch made it to Linus tree ?
 > 
-> couldn't reiserfs use asm/unaligned.h like anyone else?
-> Seems at least sparc and mips may need the same treatment.
+> dunno.  But didn't that patch come from the parisc-linux tree?
 
-    I'll be the first to admit that having the #if followed by arch defines
-    really sucks, and that asm/unaligned.h would be much cleaner if for no
-    other reason than avoiding an unnecessary gotcha for someone porting a new
-    arch.
+Yes, it's in Linus' tree.  We merged that in a loooong time ago.
 
-    Unfortunately, this doesn't appear to work in all cases. I know from
-    testing that the S/390 case will fail using the {get,put)_unaligned macros,
-    since they are identical to a normal, unassisted assignment.
+> Anyway...you might check if those disks are under LVM control.
+> If so, you'll have to convert those to non-LVM storage using HPUX.
+> The archives for parisc-linux mailing list have a discussion on HP's
+> LVM issues.
 
-    I did kick around the idea of making those macros the default accessors for
-    the deh_state member (which is the only place they're used), but it unfairly
-    penalizes arches that don't need them.
-
-    I'm open to suggestions.
-
-    -Jeff
+That's what I assume.  There is now vxfs support in the tree, but nobody's
+tried getting it working on HP vxfs volumes.  Volunteers...?
 
 -- 
-Jeff Mahoney           |   "Bill Gates is a monocle and a Persian cat away
-jeffm@suse.com         |    from being the villain in a James Bond movie."
-jeffm@csh.rit.edu      |                   -- Dennis Miller
+Revolutions do not require corporate support.
