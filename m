@@ -1,32 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA08472
-	for <parisc-linux@puffin.external.hp.com>; Fri, 26 Jan 2001 21:34:33 -0700
-Received: from piglet.sspl.net.au ([210.84.112.148])
-          by mta04.mail.mel.aone.net.au with ESMTP
-          id <20010127043822.PDSH3144.mta04.mail.mel.aone.net.au@piglet.sspl.net.au>
-          for <parisc-linux@thepuffingroup.com>;
-          Sat, 27 Jan 2001 15:38:22 +1100
-Received: from winnie.sspl.net.au (winnie. [192.168.11.9])
-	by piglet.sspl.net.au (8.9.3/8.9.3) with ESMTP id PAA04773
-	for <parisc-linux@thepuffingroup.com>; Sat, 27 Jan 2001 15:38:19 +1100
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA10316
+	for <parisc-linux@puffin.external.hp.com>; Sat, 27 Jan 2001 02:00:49 -0700
 From: "Pete" <plaven@ozemail.com.au>
-To: parisc-linux@thepuffingroup.com
-Date: Sat, 27 Jan 2001 15:38:19 +1100
+To: Jane Vinet <jvinet@linuxcare.com>
+Date: Sat, 27 Jan 2001 20:04:38 +1100
 MIME-Version: 1.0
 Content-type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] http://parisc-linux.org/ - A New Look!
 Reply-to: plaven@ozemail.com.au
-Message-ID: <3A72EB6B.5873.15C4E1@localhost>
-Subject: [parisc-linux] HP9000 800/G30 and G50 Support?
+CC: parisc-linux@thepuffingroup.com
+Message-ID: <3A7329D6.22387.109A119@localhost>
+In-reply-to: <3A71D9B7.D582ECD2@linuxcare.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Everyone,
+Jane,
 
-I have come across some G30's and G50's in my travels.
+> OK, so after many reviews, revisions, discussions the new web site is
+> live.  Many, many thanks to everyone who endeavored so hard to give the
+> site a facelift and for constructive feedback which allowed us to create
+> what we hope will be a dynamic site that is easier to navigate through
 
-I hit the archive (via a google search) and there was mention that 
-the G30 was too old and not likely supported, is this the case?
+I was wondering when it would go live... and I have to say it looks 
+pretty good.
 
-Thanks,
+One thing I did find though was a stale link.. I'll go find it again...
+
+Where would it be best to post things like this?  webmaster?
+
 
 
 Pete.
