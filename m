@@ -1,8 +1,8 @@
 From: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: copy_user_page_asm suggested 64bit improvment [Was: [parisc-linux]
 	clear user page test]
-Date: Mon, 27 Dec 2004 17:34:27 +0000
-Message-ID: <41D047A3.4030205@tiscali.be>
+Date: Mon, 27 Dec 2004 18:32:56 +0000
+Message-ID: <41D05558.6020600@tiscali.be>
 References: <418A80E8000124B5@mail-6-bnl.tiscali.it>	<20041227073654.GI29492@colo.lackof.org>
 	<41CFE6B1.6010707@tiscali.be>
 Mime-Version: 1.0
@@ -32,71 +32,64 @@ Joel Soete wrote:
 > 
 >> On Tue, Dec 21, 2004 at 02:37:47PM +0100, Joel Soete wrote:
 >>
+>>> Hello all,
+>>
 [...]
->>> * with original 2.6.10-rc3-pa8 running kernel
->>> # grep "^user" k-loop1
->>
->>
->> Please use "^sys" or "^real".
->> "user" time is only number that should NOT change with this patch.
->>
-> I will try to recover those info
+>> This routine could use more registers in the loop to get more "distance".
 > 
-Those results was:
-k-loop1 (i.e. cvs 2.6.10-rc3-pa8)
-real	23m7.594s
-user	18m47.768s
-sys	4m2.585s
+> Ok that was another possibility: I trust that we can use r23, r24 as far 
+> as:
+>     r23-r26: these are arg3-arg0, i.e. you can use them if you
+>         don't care about the values that were passed in anymore.
+> 
+Here is a first writing just to be sure I well understand:
+#ifdef __LP64__
 
-real	22m53.506s
-user	18m47.400s
-sys	4m0.321s
+         ldi             32, %r1                 /* PAGE_SIZE/128 == 32 */
 
-real	22m54.599s
-user	18m47.492s
-sys	4m0.226s
+1:      ldd             0(%r25), %r19
+         ldd             8(%r25), %r20
+         ldd             16(%r25), %r21
+         ldd             24(%r25), %r22
+         ldd             32(%r25), %r23
+         ldd             40(%r25), %r24
+         std             %r19, 0(%r26)
+         std             %r20, 8(%r26)
+         std             %r21, 16(%r26)
+         std             %r22, 24(%r26)
+         std             %r23, 32(%r26)
+         std             %r24, 40(%r26)
+         ldd             48(%r25), %r19
+         ldd             56(%r25), %r20
+         ldd             64(%r25), %r21
+         ldd             72(%r25), %r22
+         ldd             80(%r25), %r23
+         ldd             88(%r25), %r24
+         std             %r19, 48(%r26)
+         std             %r20, 56(%r26)
+         std             %r21, 64(%r26)
+         std             %r22, 72(%r26)
+         std             %r23, 80(%r26)
+         std             %r24, 88(%r26)
+         ldd             96(%r25), %r19
+         ldd             104(%r25), %r20
+         ldd             112(%r25), %r21
+         ldd             120(%r25), %r22
+         std             %r19, 96(%r26)
+         std             %r20, 104(%r26)
+         std             %r21, 112(%r26)
+         std             %r22, 120(%r26)
+         ldo             128(%r26), %r26
+         ADDIB>          -1, %r1, 1b
+         ldo             128(%r25), %r25
 
-real	22m53.410s
-user	18m48.205s
-sys	3m59.351s
+#else   /* !__LP64__ */
 
-k-loop2 (i.e. cvs 2.6.10-rc3-pa8 + patch without pdtlb)
-real	23m4.170s
-user	18m47.511s
-sys	4m0.654s
+just have to re-arrange with distance between couple std/ldd?
 
-real	22m59.651s
-user	18m51.133s
-sys	3m58.969s
+What do you think?
 
-real	23m0.391s
-user	18m50.908s
-sys	3m59.588s
-
-real	22m59.401s
-user	18m51.090s
-sys	3m59.673s
-
-k-loop3 (i.e. cvs 2.6.10-rc3-pa8 + full patch)
-real	23m28.521s
-user	18m53.815s
-sys	3m57.967s
-
-real	23m32.696s
-user	18m54.045s
-sys	3m58.598s
-
-real	23m28.981s
-user	18m54.774s
-sys	3m58.128s
-
-real	23m30.631s
-user	18m54.405s
-sys	3m58.974s
-
-
-hth,
-	Joel
+Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
