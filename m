@@ -1,21 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E2CBB4846
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 16 Jul 2002 05:36:20 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17UQcs-0007ML-00; Tue, 16 Jul 2002 12:36:18 +0100
-Date: Tue, 16 Jul 2002 12:36:18 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Matthieu Delahaye <delahaym@esiee.fr>
-Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
-	Matthew Wilcox <willy@debian.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] STI framebuffer and PINE
-Message-ID: <20020716123618.U27706@parcelfarce.linux.theplanet.co.uk>
-References: <20020714091619.B1E35483A@dsl2.external.hp.com> <20020715142028.J27706@parcelfarce.linux.theplanet.co.uk> <1026743879.30202.5.camel@irongate.swansea.linux.org.uk> <20020715143909.K27706@parcelfarce.linux.theplanet.co.uk> <20020715215022.A8251485D@dsl2.external.hp.com> <3D33CB48.6050208@esiee.fr>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA06B4881
+	for <parisc-linux@parisc-linux.org>; Tue, 16 Jul 2002 06:27:56 -0600 (MDT)
+Date: Tue, 16 Jul 2002 08:26:05 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] gcc-3.[02] alignment problem
+Message-ID: <20020716122605.GB31977@systemhalted>
+References: <20020716050031.GA641@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D33CB48.6050208@esiee.fr>; from delahaym@esiee.fr on Tue, Jul 16, 2002 at 09:29:12AM +0200
+In-Reply-To: <20020716050031.GA641@tausq.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,18 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jul 16, 2002 at 09:29:12AM +0200, Matthieu Delahaye wrote:
-> I don't think Matthew wath thinking about that. This HW list gives just 
-> an indication if this is working or not.
-> What I understand here is a list of something like:
-> I currently use a B132 in production environment since November, 2001. 
-> It provides a CVS server, apache with PHP and  a postgresql database. 
-> The kernel is pretty old (2.4.14-32), but the only shutdown (and end of 
-> services) I had to notice where caused by powerfailure.
-> Use of Php is quite recent.
-> Matthew, does these (real) example correspond to your suggestion?
+> Compiling the linux kernel (2.4.19-rc1-ac5) with hppa64-linux-gcc 
+> (3.0.4 or 3.2) gives:
+> 
+> tausq@a500:~/src/linux-2.4.19-rc1/net/ipv4$ hppa64-linux-gcc -D__KERNEL__ -I/home/tausq/src/linux-2.4.19-rc1/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -D__linux__ -pipe -fno-strength-reduce -mno-space-regs -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=2.0 -mschedule=8000   -nostdinc -I /usr/lib/gcc-lib/hppa64-linux/3.0/include -DKBUILD_BASENAME=tcp_diag  -c -o tcp_diag.o tcp_diag.c
+> {standard input}: Assembler messages:
+> {standard input}:138: Error: Field not properly aligned [8] (44).
+> {standard input}:138: Error: Invalid operands
+> {standard input}:609: Error: Field not properly aligned [8] (44).
+> {standard input}:609: Error: Invalid operands
+> {standard input}:707: Error: Field not properly aligned [8] (44).
+> {standard input}:707: Error: Invalid operands
+> 
+> preprocessed source attached.
+> 
+> (incidentally, we also see this while building glibc...)
+> 
+> randolph
 
-Yep, that's perfect!
+Preprocessed source attached?
 
--- 
-Revolutions do not require corporate support.
+Remember we ran into this when building glibc at OLS.... and
+we sat there scratching our heads. I'm pretty sure this was the
+reason for the hppa-align.dpatch that is part of debianzed gcc?
+
+Randolph: There is a forward email inside the dpatch that says
+you were going to try get this patch upstream... ? :)
+(gcc 3.0.4 ./debian/patches/hppa-align.dpatch)
+
+c.
