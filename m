@@ -1,19 +1,20 @@
 Return-Path: <youngdoctors@msn.com>
-Received: from 192.25.206.7 (unknown [203.228.90.65])
-	by dsl2.external.hp.com (Postfix) with SMTP id 0E67A48C3
+Received: from ny-ntonawnd-cmts2e-91.bflony.adelphia.net
+	(ny-ntonawnd-cmts2e-91.bflony.adelphia.net [67.21.125.91])
+	by dsl2.external.hp.com (Postfix) with SMTP id BC18448C4
 	for <parisc-linux@parisc-linux.org>;
-	Tue, 23 Dec 2003 22:11:57 -0700 (MST)
-Message-ID: <9$o7gik63n4k5z88-ts@xjoiij2hmb3w>
-From: "Jarred Tanner" <youngdoctors@msn.com>
+	Tue, 23 Dec 2003 22:44:51 -0700 (MST)
+Message-ID: <h89p1$-02w76885s-3a-r@g10.qy.pgk>
+From: "John Acosta" <youngdoctors@msn.com>
 To: parisc-linux@parisc-linux.org
-Date: Wed, 24 Dec 03 19:02:33 GMT
+Date: Wed, 24 Dec 03 17:39:27 GMT
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="ECE.5A98_.DEF_.B___F"
+	boundary="11BBCC_4E61B745."
 Cc: 
-Subject: [parisc-linux] 60 year old stars that look 35 here's how ! z kvf
-	nap ntvmo bfa
-Reply-To: Jarred Tanner <youngdoctors@msn.com>
+Subject: [parisc-linux] You don't have to be old and wrinkled! mozfqc
+	edmpgoqmx
+Reply-To: John Acosta <youngdoctors@msn.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,11 +25,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
---ECE.5A98_.DEF_.B___F
+--11BBCC_4E61B745.
 Content-Type: text/html;
 Content-Transfer-Encoding: quoted-printable
 
-<html>60 year old stars that look 35 here's how ! z kvf nap ntvmo  bfa
+<html>You don't have to be old and wrinkled!   mozfqc   edmpgoqmx
 <head>
 <title>Untitled Document</title>
 <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859=
@@ -57,12 +58,11 @@ uaranteed answer !<br>With a 100% Money Back Guarantee !</font></h3></cent=
 er><br><center><H4><font color=3D"#FFFFFF" face=3D"verdana"><a href=3D"htt=
 p://www.fisha.biz/hgh/?buster">Now available and very much affordable for =
 you !<br>Learn More Right Here</a></font></h4></center>
-gixf uqbxwx euichvjqs n 
-gb hlq nccpgdm
-s jpmk
+m qgfiyfbjecqwkz kk t wicgmyjlbvbiwrb
+ h stoun 
+yqs nssdlyeoztfszzfckmyr
 </body>
 </html>
-chs wqbpiu  cvev cs jus
-qgv
+mwagph  apzpbtcqdmldmuslhjcyr
 
---ECE.5A98_.DEF_.B___F--
+--11BBCC_4E61B745.--
