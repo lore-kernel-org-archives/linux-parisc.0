@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 02F614829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Jun 2003 11:06:45 -0600 (MDT)
-Date: Tue, 24 Jun 2003 18:06:42 +0100 (IST)
-From: "M. Grabert" <xam@cs.ucc.ie>
-To: =?ISO-8859-15?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
+Received: from jaguar.mkp.net (jaguar.mkp.net [66.11.169.42])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0EC34829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Jun 2003 11:34:49 -0600 (MDT)
+To: "M. Grabert" <xam@cs.ucc.ie>
 Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3EF87A95.8010503@hrzpub.tu-darmstadt.de>
-Message-ID: <Pine.LNX.4.44.0306241727370.26179-100000@sal.ucc.ie>
+Subject: Re: [parisc-linux] Need Replacement was: Matrox graphics card and C360
+From: "Martin K. Petersen" <mkp@mkp.net>
+References: <Pine.LNX.4.44.0306241727370.26179-100000@sal.ucc.ie>
+Date: 24 Jun 2003 13:34:40 -0400
+In-Reply-To: <Pine.LNX.4.44.0306241727370.26179-100000@sal.ucc.ie>
+Message-ID: <yq1adc7pefj.fsf@wilson.mkp.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-15
-Subject: [parisc-linux] Need Replacement was: Matrox graphics card and C360
+Content-Type: text/plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,53 +23,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, 24 Jun 2003, R=FCdiger Scholz wrote:
+>>>>> "M" == M Grabert <xam@cs.ucc.ie> writes:
 
-> Hi there!
->
-> Has anyone running a Matrox graphics (especially a Matrox Millenium) in
-> his C-class? I found a thread about this theme form January , but I
-> wanted to know whether it's possible to get it run or not nowadays...
+M> BTW, I have some hardware problems with my C240 lately. When it is
+M> cut of from power (i.e. when there is a power outage or I pull the
+M> power plug), I can turn it on again! I have to wait for some hours
+M> until and suddenly the power button works again. This started to
+M> happen a couple of months ago. I hardly turn the machine of, so I
+M> don't care that much, but it's annoying nevertheless!  Even more
+M> strangely the SCSI bay doesn't get any power anymore, so I have to
+M> use an external SCSI disk. This happened about a month ago after I
+M> wanted to install a new SCSI drive. I suppose a fuse or two are
+M> broken ...  The power botton works, but none of the LEDs!
 
-I tried a ATI Mach64 and 3dfx Voodoo 3 3000 in a C240, they don't work
-(no stifb - no wonder - and neither XFree86). Last time I tried was about
-2 months ago however.
-I don't care that much since I'm using the machine as a headless server.
+I've experienced similar things in the past.  One of my C160s is a
+notoriously bad booter.
 
-I haven't heard any success reports of running non-HP graphic cards in
-HP PA-RISC machines. Actually the only ones that work are the Visualize-EG
-cards and the 'Artist'/(H)CRX-graphics on older 7xx workstations.
+The trick is to make sure that both the disk tray and the motherboard
+tray are properly seated and screws tightened.
 
-I'm pretty sure someone would have posted a mail like 'Whooaaa - it works!'
-to the mailing list if the situation has changed in the meantime.
+I tend to put my Cxxx boxes down on the floor - face side down - and
+let the motherboard tray fall down the last couple of inches.  That
+usually seats things nicely.
 
+Also, make sure your disk tray screw is properly inserted.  The
+power/LED assy. as well as disk device power and SCSI data pins are
+all hooked up through a single connector at the back of the disk tray.
 
-BTW, I have some hardware problems with my C240 lately. When it is cut of
-from power (i.e. when there is a power outage or I pull the power plug),
-I can turn it on again! I have to wait for some hours until and suddenly
-the power button works again. This started to happen a couple of months
-ago. I hardly turn the machine of, so I don't care that much, but it's
-annoying nevertheless!
-Even more strangely the SCSI bay doesn't get any power anymore, so I have
-to use an external SCSI disk. This happened about a month ago after I
-wanted to install a new SCSI drive. I suppose a fuse or two are broken ...
-The power botton works, but none of the LEDs!
+Give that box a big, tight hug.  That usually fixes it *).
 
-Does anybody know what could be the problem?
+*) Make sure nobody can see you when you are doing this.  More than
+ once I have been accused of humping my PA-RISC hardware while
+ performing this delicate repair procedure.
 
-Well, so now I'm looking for a replacement for my C240 (I'd prefer a B2x00
-or C3x00), but I'm low on money (as a PhD student), partly because I
-recently bought a PrecisionBook for US $399. Unfortunately I can't use the
-PrecisionBook as a replacement for my C240 as I can't connect any
-USB-devices to it.
-
-I would sell the PrecisionBook if there is some interest here.
-
-Furthermore, if I can find a cheap replacement for my C240 (in Europe) I'd
-dump it and sell it's memory (1GB RAM).
-
-Please contact me if you are interested or know how/where to get
-inexpensive HP workstations.
-
-
-Thanks, Max
+-- 
+Martin K. Petersen      http://mkp.net/
