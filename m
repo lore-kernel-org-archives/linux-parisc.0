@@ -1,43 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA04804
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Feb 2000 12:06:40 -0700
-From: Stan Sieler <sieler@allegro.com>
-Message-Id: <200002111752.JAA01509@opus.allegro.com>
-Subject: Re: [parisc-linux] Some PA-RISC 2.0 Gotchas
-To: jcurry@cup.hp.com (John Curry)
-Date: Fri, 11 Feb 2000 09:52:43 -0800 (PST)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA05295
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Feb 2000 12:34:53 -0700
+Date: Fri, 11 Feb 2000 19:21:55 +0100
+From: Philipp Rumpf <prumpf@inwestnet.de>
+To: John Curry <jcurry@cup.hp.com>
 Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <00ec01bf74b2$f4c6c050$1c80100f@jc356611.cup.hp.com> from "John Curry" at Feb 11, 2000 09:10:54 AM
-MIME-Version: 1.0
+Subject: Re: [parisc-linux] Some PA-RISC 2.0 Gotchas
+Message-ID: <20000211192155.A4843@abacus.local>
+References: <00ec01bf74b2$f4c6c050$1c80100f@jc356611.cup.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <00ec01bf74b2$f4c6c050$1c80100f@jc356611.cup.hp.com>; from jcurry@cup.hp.com on Fri, Feb 11, 2000 at 09:10:54AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-Re: 
+> But, in the free_area_struc type, the map variable is declared as an integer
+> ptr. Depending on the size of
+> the bitmap, this will cause the parisc_set_bit  to operate incorrectly. We
+> solved this problem by making
+> the map variable a unsigned long pointer.
 
-> - In 2.0, function pointers are not addresses to functions, but are
-> addresses to data strcutures
-> called "function descriptors". So, if assembly code gets passed a pointer to
-> a function, it will have
-> to remember which slot in the "function descriptor" the actual function
-> pointer resides.
+it's very unlikely map isn't a multiple of 8 bytes, but I agree this type
+should be changed.
 
-They're pointers to data on HP-UX 10.20 as well.
- 
-> - There are some places in the kernel where the implicit assumption that
-> longs == ints will break!
+> Hope these are of some use.
 
-:)
+Thanks, I'm sure they will.
 
-My pet peeve...
-
-Code should almost *never* use "short", "int", or "long" ... 
-but instead, "int32" and "int64" (or whatever) should be used.  
-
-I've lost track of the number of bugs I've seen caused by this.  
-(Ok, one exception...if you're calling a system function documented as 
-using "int" or "long", then you can declare variables of those type 
-... but be very careful using them, and file a bug report with the vendor :)
-
--- 
-Stan Sieler                                           sieler@allegro.com
-www.allegro.com/sieler/wanted/index.html          www.allegro.com/sieler
+	Philipp
