@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6A0124829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 10:40:50 -0600 (MDT)
-Date: Mon, 2 Sep 2002 09:44:24 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: jsoe0708@tiscali.be
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Gcc-3.2 beside gcc-3.0: HOWTO?
-Message-ID: <20020902164424.GE14634@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20020902152137.GG25710@tausq.org> <3D3815BD0000A8AE@ocpmta5.be.tiscali.com>
+Received: from mail.centraltx.com (gapserver.centraltx.com [64.209.39.10])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE0634829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 10:41:53 -0600 (MDT)
+Date: Mon,  2 Sep 2002 11:38:20 -0500
+Message-Id: <200209021138.AA3341287994@mail.centraltx.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D3815BD0000A8AE@ocpmta5.be.tiscali.com>
+From: "marc " <marc@centraltx.com>
+Reply-To: <marc@centraltx.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: [parisc-linux] Network Problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,16 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Oops the 32bits kernel which I obtain, boot well on my b2k but ip connection
-> problem is always there: the system seems to loop somewhere with ssh (heart
-> bit seems life and no more response neither at serial console, neither at
-> ssh prompt) and telnet causes an HPMC (bus timeout?)
+Anyone have any ideas why I get innundated with these messages on
+startup and have to do a control-c to get past this part and continue booting?
 
-looking up the iaoq and gr02 values reported in the hpmc in System.map 
-would be the first step...
+Configuring network interfaces: eth0: Transceiver problem.
+ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
+skb: pf=2 (unowned) dev=lo len=328
+PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
+skb: pf=2 (unowned) dev=lo len=328
+PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
+skb: pf=2 (unowned) dev=lo len=328
+PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
+skb: pf=2 (unowned) dev=lo len=328
+PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
+ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
+skb: pf=2 (unowned) dev=lo len=328
+PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
 
-randolph
---  
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN 
+skb: pf=2 (unowned) dev=lo len=328
+PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F=0x0000 T=16
