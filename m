@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD2C6484B
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  8 Nov 2003 03:59:09 -0700 (MST)
-Message-ID: <3FACCC88.4010404@tiscali.be>
-Date: Sat, 08 Nov 2003 10:59:20 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2091A4841
+	for <parisc-linux@parisc-linux.org>; Sat,  8 Nov 2003 05:46:18 -0700 (MST)
+Message-ID: <3FACE5A4.7070003@tiscali.be>
+Date: Sat, 08 Nov 2003 12:46:28 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] fdisk problems 2.4 <-> 2.6
-References: <20031106222958.GJ26869@parcelfarce.linux.theplanet.co.uk> <3F969FFE000092BD@ocpmta2.freegates.net> <20031108015946.GC19436@colo.lackof.org>
-In-Reply-To: <20031108015946.GC19436@colo.lackof.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was:
+ do_page_fault?]
+References: <3F969FFE00005DB3@ocpmta2.freegates.net>
+In-Reply-To: <3F969FFE00005DB3@ocpmta2.freegates.net>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -25,32 +25,82 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+Hello Carlos,
 
-Grant Grundler wrote:
-> On Fri, Nov 07, 2003 at 06:52:58PM +0100, Joel Soete wrote:
+More and more strange behaviour:
+
+after my weekly apt-get dist-upgrade i relaunch evolution,
+it hang again at the same point with usual message:
+evolution (pid 2999): Protection id trap (code 27)
+[..]
+
+But if I launch it a second time no more pb???
+
+Very strange isn't it?
+
+Joel 
+
+
+Joel Soete wrote:
+> Carlos,
 > 
->>>[...] I bet it's calling BLKGETSIZE64 and our put_user() is broken.
+> Yes it didn't crash anymore :)
+> 
+> But I didn't have more opportunity to reboot severall time this c110 to make
+> more test (the only difference between the two previous one: the first was
+> a reboot, the second was a boot? and absolutley no other changes).
+> 
+> Cheers,
+>     Joel
+> 
+> 
+> 
+>>-- Original Message --
+>>From: Carlos O'Donell <carlos@baldric.uwo.ca>
+>>To: Joel Soete <soete.joel@tiscali.be>
+>>Cc: parisc-linux@parisc-linux.org
+>>Date: Sun, 2 Nov 2003 15:22:28 -0500
+>>Subject: Re: [parisc-linux] evolution (1.4.5-1) 'protection id trap' [was:
+>>do_page_fault?]
 >>
->>I trusted that Grant merged the same code in 2.4 and 2.6 for put_user() some
->>time ago?
+>>
+>>On Sat, Nov 01, 2003 at 11:27:20PM +0000, Joel Soete wrote:
+>>Hi Carlos,
+>>
+>>I don't understand anymore anything.
+>>
+>>This afternoon i recompile k 2.4.23-pre9-pa13 + Randolph patch to test
+>>it. (Ok)
+>>
+>>So I launch evolution which crash at 
+>>he same place as usual.
+>>
+>>After the diner I restart this c110 with this new kernel but this time,
+>>no more "do_page_fault() pid=805 command='evolution' type=7". I restart
+>>it severall time no means to reproduce anymore :(
 > 
 > 
-> put_user()?
-> I don't recall.
+> So it doesn't cras
+> 
+>>anymore? :) 
 > 
 > 
->>Is it the same with 64bits kernels?
+> c.
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 > 
 > 
-> Can you point me at the modified 2.4 file and I'll check.
 > 
-IIRC include/asm-parisc/uaccess.h
-
-I do not work more on this stuff because I am awaiting patch that 
-Randolph (always iirc) should still have in its tree to change the 
-management of exception (which Matthew assumes to never occur in kernel 
-mode iirc) (sorry but I just spend half an hour to find back this thread 
-but without success :( )
-
-hth,
-	Joel
+> -------------------------------------------------------------------------
+> Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
+> 
+> http://reg.tiscali.be/default.asp?lg=fr
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
