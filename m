@@ -1,34 +1,67 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id XAA29714
-	for <parisc-linux@puffin.external.hp.com>; Mon, 19 Jul 1999 23:39:35 -0600
-Received: from thepuffingroup.com (IDENT:adevries@localhost [127.0.0.1])
-	by feather.thepuffingroup.com (8.9.3/8.9.3) with ESMTP id BAA14919
-	for <parisc-linux@thepuffingroup.com>; Tue, 20 Jul 1999 01:52:35 -0400
-Sender: adevries@thepuffingroup.com
-Message-ID: <37940E9F.5CAD3D17@thepuffingroup.com>
-Date: Tue, 20 Jul 1999 01:52:31 -0400
-From: Alex deVries <adevries@thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA30127
+	for <parisc-linux@puffin.external.hp.com>; Tue, 20 Jul 1999 02:39:55 -0600
+From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
+To: <smoret@uci.edu>
+Subject: RE: [parisc-linux] HP9000 J210
+Date: Tue, 20 Jul 1999 10:28:10 +0200
+Content-Type: text/plain
+References: <000401bed268$88e519a0$459f0118@genocide.net>
+Cc: parisc-linux@thepuffingroup.com
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] 7100 and 7300 PA RISC 1.1 docs
+Message-Id: <99072010411201.01142@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
+Am Tue, 20 Jul 1999 schrieben Sie:
+> > What´s the problem with it ??
+> > You know, that you have to compile the kernel and the LIF
+> > currently on hpux
+> > only ??
+> > The cross-compiler doesn´t work yet !
+> That would explain why it wont work. Is there anything I can do to get
+> recent kernels? I have a plethora of non-HP machines at my disposal and
+> could (if they would work) easily do cross-compiles in minutes. 
 
-With the guidance of The Puffin Group, Hewlett Packard has released
-documentation on the PCXL and PCXL2 PA RISC 1.1 CPUs.  These documents
-can be found at the PA RISC Linux documentation page, at:
+Yes, that´s the problem I have too. Currently I have to start und shutdown my
+HP-box every time I built a new kernel. Cross-compiling could speed up the
+programming-phase drastically. Is anybody currently working on that issue ?
+The bootloader already has some code to load ELF-images too.
 
-http://www.thepuffingroup.com/parisc/documentation.html
+> I would also
+> be willing to host a distribution site for kernel images (if this would
+> help).
+> 
+> I don't currently have a HP-UX license and would rather not install it.
+> Although I do have 10.?? media.
+> 
+> > Does the current kernel shows you the processor as "7200" ?
+> No the current kernel says:
+> cpu family      : PA RISC 1.1
+> revision        : 4
+> model           : 9000/770/J210
+> model name      : SkyHawk 120
+> hversion        : 0x00005860
+> sversion        : 0x00000491
+> sw_id           : 2004779464
+> shadow registers: no
+> cpu category    : category A
+> cpu level       : level_0
+> cpu MHz         : 120.00000000
+> I-cache         : 256 KB
+> D-cache         : 256 KB (WB)
+> ITLB entries    : 120
+> DLTB entries    : 120 (shared with ITLB)
 
-The documents seem to have all we need for MMU implementations.
+This is an older kernel-image. The newest one has a line showing "cpu : PAyxxx"
+and info about the BTLB. I think the message "level 0" is wrong here too, but
+that should already be fixed in the cvs.
 
-I know on one of the PDF files the pages are in reverse, yes, we're
-working on that.
+> I hope all this info helps, I'd be happy to give more if you can direct me,
 
-- Alex
+Could you please try a newer image later...
 
--- 
-Alex deVries
-Vice President of Engineering
-The Puffin Group
+> --
+> Steve Moret
+> smoret@uci.edu
+
+Helge.
