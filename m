@@ -1,17 +1,21 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7ABF24854
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 10 Mar 2004 07:47:14 -0700 (MST)
-Date: Wed, 10 Mar 2004 15:47:09 +0100
-Message-ID: <404EC1C600000B2D@ocpmta1.freegates.net>
-In-Reply-To: <20040309150318.GD22721@baldric.uwo.ca>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C1BDA4854
+	for <parisc-linux@parisc-linux.org>;
+	Wed, 10 Mar 2004 08:29:05 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1B15do-0001MH-RE
+	for parisc-linux@parisc-linux.org; Wed, 10 Mar 2004 15:29:04 +0000
+Date: Wed, 10 Mar 2004 15:29:04 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20040310152904.GV2148@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Cc: 
+Subject: [parisc-linux] Anyone still caring about 2.4?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,47 +25,39 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Carlos,
 
-Here are the news:
+I was just looking at a 2.4 problem for lamont so I went back to a 2.4
+tree I had lying around.  I found this diff:
 
-(first of all sorry for delay but I have temporarely have to exchange my
-N4k for a b180 so it take a bit more time)
+Index: mm/memory.c
+===================================================================
+RCS file: /var/cvs/linux-2.4/mm/memory.c,v
+retrieving revision 1.25
+diff -u -p -r1.25 memory.c
+--- a/mm/memory.c       1 Dec 2003 22:52:15 -0000       1.25
++++ b/mm/memory.c       1 Dec 2003 23:08:32 -0000
+@@ -569,12 +569,7 @@ int map_user_kiobuf(int rw, struct kiobu
+                return err;
+        }
+        iobuf->nr_pages = err;
+-       while (pgcount--) {
+-               /* FIXME: flush superflous for rw==READ,
+-                * probably wrong function for rw==WRITE
+-                */
+-               flush_dcache_page(iobuf->maplist[pgcount]);
+-       }
++       flush_cache_range(mm, va, va + len);
+        dprintk ("map_user_kiobuf: end OK\n");
+        return 0;
+ }
 
-The glibc cvs 2.3.3 cvs dated 20040308 + your patch compiles well (just this
-time I enable profiling) :).
+Don't remember why I made it or whether it's right.  Thought I'd throw
+it out to the mailing list rather than just delete it.
 
-I also install it on /mnt/chroot (according James method, just to test).
-
-As I foreseen to use this disk to other test on the N4k, I grab the list
-of packages installed (dpkg --get-selection > /mnt/chroot/var/tmp/Selection.doc)
-and chroot to /mnt/chroot to install previously mentioned pkg list. All works
-fine (just 3 pkg failled to install because no /proc available in chroot).
-
-In the same time I drive a make -k check and just get additional Errors:
-[...]
-make[2]: *** [/Develop/parisc-linux/build/glibc/libio/tst-mmap-eofsync.out]
-Error 1
-make[2]: *** [/Develop/parisc-linux/build/glibc/libio/tst-mmap-fflushsync.out]
-Error 1
-make[1]: *** [libio/tests] Error 2
-make[2]: [/Develop/parisc-linux/build/glibc/posix/annexc.out] Error 1 (ignored)
-make[2]: *** [/Develop/parisc-linux/build/glibc/elf/multiload.o] Error 1
-make[2]: *** [/Develop/parisc-linux/build/glibc/elf/origtest.o] Error 1
-[...]
-
-I have two hypothesis:
-a. it is the first time I added enable-profile;
-b. I forget to build first gcc(3.3) tool with your gcc patch (gcc/config/pa/fptr.c)
-
-Now, 2.6.4-rc3-pa0 is just available, I will so try first to build it in
-the chroot disk...
-
-hth,
-    Joel
-
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 19,50 €/mois, pendant 3 mois! L'Internet rapide, c'est pour
-tout le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
