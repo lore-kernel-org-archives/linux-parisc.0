@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7A1FC487C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Mar 2002 23:54:39 -0700 (MST)
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <1016088869.3c904925683bb@webmail.tiscali.be>
-Date: Thu, 14 Mar 2002 07:54:29 +0100 (CET)
-From: joel.soete@freebel.net
-Cc: grundler@dsl2.external.hp.com, gururaj@cup.hp.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Subject: [parisc-linux] TOC on B180L
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B6F824882
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Mar 2002 00:18:40 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id oilzlaaa for parisc-linux@lists.parisc-linux.org; Thu, 14 Mar 2002 00:18:03 -0700
+Date: Wed, 13 Mar 2002 23:18:22 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org, dave@hiauly1.hia.nrc.ca
+Subject: Re: [parisc-linux] evms-0.9.2 build utilities problem
+Message-ID: <20020314071822.GR730@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <1016030200.3c8f63f89a0ff@webmail.tiscali.be> <20020313182335.GD6580@tausq.org> <1016088011.3c9045cb06909@webmail.tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1016088011.3c9045cb06909@webmail.tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,17 +25,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+> PS: This can be reproduce with a simple "Hello World" (just to avoid to sempt
+> time to find back the the sources of evms)
 
-On my B180L the TOC blue button is located (on the back of the 'server') just
-between the keyboard connector and the video connector. (On all we have here,
-the button is located at the same place).
+<sigh> yup... looks like a compiler (linker?) bug...
 
-Joel
+gcc -fPIC -o test test.c          -> works
+gcc -fPIC -static -o test test.c  -> segfaults
 
-PS: Is this interrupt will be consider as a hardware reset by linux kernel? (I
-never try it because LKCD is not yet available)
- 
+test.c is a printf("Hello") kinda program
 
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+verified with both gcc-3.0.4 and gcc-3.1.
+
+Dave, is this a known problem?
+
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
