@@ -1,36 +1,56 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA08103
-	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Sep 1999 15:48:09 -0600
-Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
-	by cosrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id PAA10799
-	for <parisc-linux@thepuffingroup.com>; Fri, 17 Sep 1999 15:49:55 -0600 (MDT)
-Message-Id: <199909172148.OAA23435@milano.cup.hp.com>
-To: Philipp Rumpf <prumpf@suse.de>
-cc: LaMont Jones <lamont@security.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 715/100 data page fault and msg output 
-In-reply-to: Your message of "Fri, 17 Sep 1999 03:52:57 PDT."
-             <19990917035257.K8112@suse.de>
-Date: Fri, 17 Sep 1999 14:48:25 -0700
-From: Grant Grundler <grundler@cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA08588
+	for <parisc-linux@puffin.external.hp.com>; Sat, 18 Sep 1999 00:49:37 -0600
+Sender: rbrad@mailserv2.iuinc.com
+Message-ID: <37E34387.713858FE@uswest.net>
+Date: Sat, 18 Sep 1999 01:47:19 -0600
+From: Ryan Bradetich <rbradetich@uswest.net>
+MIME-Version: 1.0
+To: Parisc Linux <parisc-linux@thepuffingroup.com>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] exec_kernel help
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
-...
-> > IIR should have had a load or store in it for Grant's problem...
-> 
-> Grant's problem is most likely solved.
+Hello hackers,
 
-When will I see a "likely solution"?
+I've been struggling with this for the last couple of days, and I'm
+stuck.  I can build a bootable image, but I can not get it to transfer
+control to the kernel.  (I'm working on a C200+ which is a PA-8200
+(PA-RISC 2.0) as Grant pointed out earlier).  I know the first targeted
+build is for the PA 1.1, but I am willing and would like to get the
+kernel working on the 2.0 also.
 
-I'm still clueless to what is causing the data page fault and can't
-make forward progress on Dino support.
+Here is the output on the console (I'm typing this in by hand)
+---------------------------------------
 
-(Hint: I have a card-mode Dino installed to exercise the basic code.)
+PARISC/Linux Bootstrap Version 0.6 (non-interactive)
+By Helge Deller & Jason Eckhardt
+Built Fri Sep 17 01:05:03 MDT 1999 by rbrad@vega
 
+Reading parameters...done.
 
-thanks,
-grant
+Loading PA-RISC/Linux Kernel...
+No ramdisks available.
+SOM-Kernel:
+aux_header_location: 00000080
+som                  : 00200080
+exec_dfile      : 0009E000
+exec_dsize     : 0007C000
+exec_dmem  : C007D000
+exec_tfile       : 00031000
+exec_tsize      : 0006C008
+exec_tmem   :  C0010000
+Code at 0x00010000, size=0x0006c008
+Data at 0x0007D000, size=0x0007C000
+BSS  at 0x00F9000
 
-Grant Grundler
-Communications Infrastructure Computer Operations
-+1.408.447.7253
+Transfering control to kernel. (At entry point 0x00010000)
+-----------------------------------------------------
+
+It hangs there and I have to reboot to continue.
+I am booting using rbootd/tftpd if that makes any difference.
+
+Any help/pointers would be appreciated :)
+
+Thanks,
+-Ryan
