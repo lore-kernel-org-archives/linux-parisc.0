@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D56894841
-	for <parisc-linux@parisc-linux.org>; Sun, 12 Oct 2003 10:07:52 -0600 (MDT)
-Message-ID: <3F897C56.800@tiscali.be>
-Date: Sun, 12 Oct 2003 16:07:50 +0000
-From: Joel Soete <soete.joel@tiscali.be>
-MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] flush_tlb_all_local:
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8D6A948BE
+	for <parisc-linux@parisc-linux.org>; Sun, 12 Oct 2003 12:19:44 -0600 (MDT)
+Date: Sun, 12 Oct 2003 14:16:17 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] evolution (1.4.5-1) do_page_fault?
+Message-ID: <20031012181616.GA23999@systemhalted>
+References: <3F872FDC.2090408@tiscali.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3F872FDC.2090408@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,32 +23,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+On Fri, Oct 10, 2003 at 10:17:00PM +0000, Joel Soete wrote:
+> Hi all,
+> 
+> The new evolution crash on my c110 [debian unstable] (even though I test 
+> successfully a previous release on my b2k) with a kernel 2.6test7pa5.
+> 
+> do_page_fault() pid=3917 command='evolution' type=7 address=0x413627db
+> vm_start = 0x41332000, vm_end = 0x413b3000
+> 
 
-into parisc/kernel/pacache.S, i find this:
-[...]
-flush_tlb_all_local:
-[...]
-         rsm     PSW_SM_Q,%r0       /* Turn off Q bit to load iia queue */
-         ldil    L%REAL_MODE_PSW, %r1
-         ldo     R%REAL_MODE_PSW(%r1), %r1
-         mtctl   %r1, %cr22
-         mtctl   %r0, %cr17
-         mtctl   %r0, %cr17
-[...]
+Run it through a debugger. Try to find out what was at this address?
 
-Why twice 'mtctl   %r0, %cr17'?
-
-and also:
-[...]
-fitmanymiddle:                                  /* Loop if LOOP >= 2 */
-         ADDIB>          -1,%r31,fitmanymiddle   /* Adjusted inner loop 
-decr */
-         pitlbe          0(%sr1,%r28)
-         pitlbe,m        %arg1(%sr1,%r28)        /* Last pitlbe and addr 
-adjust */
-
-Typicaly the function name is flush_..., so why do we 'purge' here?
-
-Thanks in advance for help,
-	Joel
+c.
