@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA67A482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  2 Nov 2001 11:17:13 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 139DAB00C; Fri,  2 Nov 2001 18:18:45 +0000 (GMT)
-Date: Fri, 2 Nov 2001 18:18:45 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Herb Radford <herbr@magma.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Irritating console message in 0.9.2 iso
-Message-ID: <20011102181845.H5773@linuxcare.com>
-References: <3.0.5.32.20011102123342.018d7920@mail.magma.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3.0.5.32.20011102123342.018d7920@mail.magma.ca>; from herbr@magma.ca on Fri, Nov 02, 2001 at 12:33:42PM -0500
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 83B07482B
+	for <parisc-linux@parisc-linux.org>; Fri,  2 Nov 2001 15:25:49 -0700 (MST)
+Message-Id: <200111022221.PAA07613@puffin.external.hp.com>
+To: Daniel Williams <dan@bigw.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] More Install on C110: Kernel doesn't load... 
+In-Reply-To: Message from Daniel Williams <dan@bigw.org>
+   of "Thu, 01 Nov 2001 21:18:31 CST." <4A91AEBA-CF40-11D5-A1E4-0030657D1C94@bigw.org>
+Date: Fri, 02 Nov 2001 15:21:46 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,32 +21,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 02, 2001 at 12:33:42PM -0500, Herb Radford wrote:
-> I have installed 0.9.2 on my two 712's (a /60 & a /80) with no problems
-> (except learning about Debian).
-> I am however bothered by a message which is displayed on the console at
-> irregular (I think) intervals - sort of in bursts, then stops for a bit.
-> The message makes it impossible to use dselect to proceed with the rest of
-> the installation - the menu items in dselect get overwritten and it's not
-> possible to determine what I have selected etc.
+Daniel Williams wrote:
+> Error: read from boot device failed (status = -4)
+> byteio_read: seekread() returned -1 expected 2048
+> Error:  segment 0 read() failed
 > 
-> The message is:
-> ip_local_deliver: bad loopback skb: PRE_ROUTING LOCAL_IN
-> skb: pf=2(unowned) dev=lo len=328
-> PROTO=17 0.0.0.0:68 255.255.255.255:67 L=328 S=0x10 I=0 F-0x0000 T=16
-> 
-> Now that is not cut and paste but the words are correct.
-> 
-> Hope someone has an answer!
+> Any thoughts?
 
-Just added
+When burning the IA64 boot CD, i was warned to use the 2x (vs 4x) burn
+speed. This sounded like hogwash to me but the person was told the disk
+burned at 4x may not work well with older/slower CD drives. If someone
+could confirm this I'd appreciate it...anyway, the ia64 CD worked fine.
 
-> dhcp-client is started from init scripts, when it should only be invoked
-> via ifup and ifdown.  The result is that any manual network
-> configuration may be overwritten, and you may see messages like
-> "ip_local_deliver: bad loopback skb..." on the console.  Fix with
-> "rm /etc/rc?.d/*dhcp-client".
-
-to the errata, which I believe will solve your problem.
-
-Richard
+grant
