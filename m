@@ -1,103 +1,109 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA00600
-	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Dec 1999 14:24:59 -0700
-Received: from methos ([216.208.98.2]) by tomts3-srv.bellnexxia.net
-          (InterMail vM.4.01.02.07 201-229-116-107) with ESMTP
-          id <19991210212711.YPKO15562.tomts3-srv.bellnexxia.net@methos>
-          for <parisc-linux@thepuffingroup.com>;
-          Fri, 10 Dec 1999 16:27:11 -0500
-Date: Fri, 10 Dec 1999 16:31:37 -0500 (EST)
-From: deb <deb@thepuffingroup.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9912101629530.1617-100000@methos.thepuffingroup.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA02097
+	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Dec 1999 18:33:47 -0700
+Received: from lucy.cup.hp.com (lucy.cup.hp.com [15.0.88.68])
+	by atlrel1.hp.com (Postfix) with ESMTP id AEB09C9CF
+	for <parisc-linux@thepuffingroup.com>; Fri, 10 Dec 1999 20:35:59 -0500 (EST)
+Message-Id: <199912110135.RAA00727@lucy.cup.hp.com>
+Subject: Re: [parisc-linux] /usr/conf/machine header files
+To: Philipp.H.Rumpf@mathe.stud.uni-erlangen.de
+Date: Fri, 10 Dec 1999 17:35:47 -0800 (PST)
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <19991209050634.D21512@mathe.stud.uni-erlangen.de> from Philipp Rumpf at Dec "9," 1999 "05:06:34" am
+From: Jerry Huck <jerry_huck@hp.com>
+Reply-To: huck@cup.hp.com
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] PA-RISC/Linux Weekly News, vol 1, iss 4
+Content-Type: text/plain; charset=US-ASCII
+Sender: huck@cup.hp.com
 List-ID: <linux-parisc.vger.kernel.org>
 
-=============================================
-PA-RISC/Linux Weekly News - December 10, 1999
-=============================================
-  http://www.thepuffingroup.com/parisc/
-  vol 1, iss 4 
+> From parisc-linux-request@thepuffingroup.com Wed Dec  8 21:05:46 PST 1999
+> Date: Thu, 9 Dec 1999 05:06:34 +0100
+> From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+> To: Grant Grundler <grundler@cup.hp.com>
+> Cc: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>,
+>         parisc-linux@thepuffingroup.com
+> Subject: Re: [parisc-linux] /usr/conf/machine header files
 
-This Week:
-   News & Announcements
-   This Week's CVS Activity
-   State of the Port Summary
- 
+> > > PA2.0 port:  64-bit virtual addresses are 42 bits per quadrant only and
+> > > start at the smallest address in the quadrant - so unlike alpha where the
+> > > addresses are "sign-extended".
+> > Actually, HP-UX does sign extend I/O addresses. I'm not sure
+> 
+> That's physical addresses though, so we really don't care, do we ?
 
-====================
-News & Announcements
-====================
-------------------------------------------------
-Photos of the Birth of PA-RISC/Linux Discovered!
-------------------------------------------------
-Once thought lost in the mists of time, a photo revealing the origins of
-PA-RISC/Linux have been uncovered by a crack team of
-cyberarchaeologists!
+FYI,  More precisely, PA2.0 expects to be programmed with "F" extended
+62-bit physical addresses.  The upper 2 bits are always ignored.  The
+"F" extension is preserved in all processor resources independent of
+the implemented addess space.  For example, a data reference to the
+physical address 0x3FFF FFFF FFFF 0000 (PSW.d == 0) that took a TLB
+miss would include the unimplemented bits in the ISR.
 
-This rare and exciting photograph (taken by the forward-thinking
-historian, Zach Brown) is now on public display at:
+The one exception is the LPA instruction.  It is only defined to the
+width of the implemented physical address space.  To convert that
+address to a generic 64-bit pointer use:
 
-http://www.zabbo.net/showcase98/mallfood.jpg
+    trialphysaddr = LPA(va);
+    if( trailphysaddr == 0 ) /* do something else */
+    physaddrwidth = PDC_MODEL.returnCPU_ID.ret[1] + 40;
+    if( (trialphysaddr >> physaddrwidth) == 0xF) {
+        /* need to F extend and decide what to put
+           into the upper 2 bits */
+        <...>
+    } else
+        physaddr = trialphysaddr;
 
-The photo reveals the attendees of the historic occassion: Jes
-Sorensen, Phil Schwan, the back of Travis Melhiser, Chris Beard
-(hiding), Alex deVries, and Martin Petersen.  The photo was taken mere
-moments after the discussion in which this team of developers realized
-that PA-RISC was pretty much the only architecture to which Linux hadn't
-yet been ported.  Catering services were provided by a lacklustre
-foodcourt in a to-remain-unnamed mall somewhere in Atlanta (during the
-Atlanta Linux Showcase, 1998).
+The upper bits of the LPA result beyond the implemented boundary are
+guaranteed to be zero.
 
------------
-Move to 2.3 
------------
-In order to advance the PA-RISC/Linux port, the development team is
-working to move to a more active development tree by merging the current
-tree with Linus' 2.3 tree.  Philipp Rumpf and Matthew Wilcox are the
-leads for this section of the project.
+All this discussion is only relevant to 2.0 processors running
+the kernel in wide mode.
 
+> > if this is a feature of HP-UX or something in the HW makes it
+> > easier to do it this way...anyone know?
 
-========================
-This Week's CVS Activity
-========================
+F extension reflects the architecture separation of I/O (uncached)
+addresses from memory (cached) addresses.  The processor makes many
+assumptions and address space is assigned to reflect this
+architecture.  By allocating memory address space up from 0, and I/O
+address space down from 0x3fff ffff ffff ffff, then all code is
+independent of the implemented address space size.  I imagine other
+approaches can do this but it works nicely for PA.
 
-John David Anglin and Paul Bame worked on the command linker, SOM, and
-real-mode changes.
+> > Secondly, don't make assumptions about how many bits are used in
+> > a virtual or physical addresses unless it's processor specific code.
+> > (eg TLB handler or trap handler or hpmc handler). I know the number
+> > of physical bits supported by the processor is going to increase
+> > from 40-bits (runway).
+> 
+> physical addresses you are right about;  we really should use an unsigned
+> long for those and never expect them to be less than 64 bits in length.
+> 
+> virtual addresses, unfortunately, aren't as simple:  The 32 LSBs of the
+> space identifier get ORed into the 32 MSBs of the virtual address, so we
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+More precisely: "into the upper 30 bits of the offset".  The upper two
+space select bits are not included in the global virtual address.
 
-The bootable image creation has been modified.
+> are limited to 2+(62-virtual_address_bits_used) effective bits for space
+> identifiers (on PA2.0 CPUs with 32 bit space registers).  As we want to
+> use at least one space identifier per process, actually using only 42
+> bits of the virtual address gives us 22 bits of space identifiers - or
+> 1 M processes even if we use 4 space identifiers per process.
 
-Philip I. Schwan made fixes to the CVS tree so that the revision history
-isn't lost during Alex deVries' gsc-to-gecko transition.
+Yes, and this division between space bits and offset bits are
+flexible.  You could define a large number (say 2^28) spaces for
+objects that won't be greater than 2^32 bytes in size.  ie. All 32-bit
+applications and the 64-bit application's text segments.  Allocate the
+remainder of the spaces as you indicate.  Another possibility is
+consider having one 2^60 sized space for the OS and all straight
+forwardly shared objects.  You get the following assignment of for
+32-bit wide space IDs:
+   0000 0000:   one 2^60 byte in size object
+   1xxx xxxx:   2^28 in count 2^32 byte in size objects
+   2xxx x000:   2^16 in count 2^44-byte in size objects
+   3xxx x000:   2^16 in count 2^44-byte in size objects
+   ...
 
-Grant Grundler further optimized the build process.
-
-Paul Bame added debug messages to the TLB handler, as well as made
-changes so that real mode code is seperately linked into the kernel.
-
-
-=========================
-State of the Port Summary
-=========================
-
-Kernel: 
-     based on 2.2.13
-
-Supported Machines: 
-     most of the A180c, parts of 712 Gecko and 715 workstations
-     and portions of 2.0 machines
-
-Supported Hardware: 
-     SCSI, Lan and PS/2 on Lasi I/O controller, Dino PCI
-     Tulip ethernet
-
-Project Page: 
-     http://www.thepuffingroup.com/parisc/
-
-Latest Workable Image:
-     ftp://puffin.external.hp.com/pub/parisc/linux-2.2.13.gz
-
-Running PA-RISC/Linux HOWTO:
-     http://thepuffingroup.com/parisc/recipe.html
+You get the idea.
+Jerry
