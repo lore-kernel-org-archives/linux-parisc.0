@@ -1,16 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7A9A84840
-	for <parisc-linux@parisc-linux.org>; Wed, 26 Nov 2003 11:52:01 -0700 (MST)
-Date: Wed, 26 Nov 2003 18:51:57 +0000
-Message-ID: <3FB25B9600008F91@ocpmta1.freegates.net>
-In-Reply-To: <20031126154213.GO975@tausq.org>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] gcc-3.3.2 - 64bit failled to build?
-To: "Randolph Chung" <randolph@tausq.org>
-Cc: parisc-linux@parisc-linux.org
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 501AD488A
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Nov 2003 20:07:22 -0700 (MST)
+Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
+	by csmail.ucc.ie (8.12.10/8.12.10) with ESMTP id hAR37Lvq021733
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Nov 2003 03:07:21 GMT
+Date: Thu, 27 Nov 2003 03:07:18 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.LNX.4.58.0311201817470.21743@sal.ucc.ie>
+Message-ID: <Pine.LNX.4.58.0311270244030.9783@sal.ucc.ie>
+References: <Pine.LNX.4.58.0311201817470.21743@sal.ucc.ie>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C3000 and 2.6 - need config help
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +25,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->try this:
->../gcc-3.3/configure --host=hppa-linux --build=hppa-linux --target=hppa64-linux
+On Thu, 20 Nov 2003, M. Grabert wrote:
 
-> --disable-shared --disable-nls --enable-languages=c --prefix=/opt/palinux
+> Right now I'm using a 120GB IDE using the onboard IDE of the C3k, and
+> I get just about 3MB/s with 2.4.22-paX, which might indicate that DMA is
+> not supported (I turned DMA/32bit on with hdparm, but no effects). I also
+> doubt that the driver for the onboard IDE chipset is much better in the
+> 2.6 kernel, so I opted to install a IDE PCI card.
 
-> --enable-sjlj-exceptions --disable-threads
+The IDE harddisk is running for the last couple of months, and I had no
+errors whatsoever (using the onboard IDE chipset of the C3k).
 
-Well I test it first and as mentionned to Carlos it allow me to obtain a
-kernel 2.4.23-rc5-pa17 64 bits (not yet test your last patch sorry) which
-boot fine on my b2k :))
+However it appears that writing and reading from/to the harddisk slows
+down the access time quite a bit (ie. streaming a 180kbit/s movie and
+writing a file with 1000kbit/s makes the movie to appear/play jerky);
+whereas multiple reads doesn't affect it (ie. streaming serveral movies at
+a time with 180kbit/s each).
 
-Many thanks,
-    Joel
+> Unfortunately the only new PCI IDE cards you can get in the shops these
+> days that are ones with the Promise or the SiliconImage chipset;
+> suppor for the Promise chipset under linux used to be crap, and
+> SiliconImage is only suppoted with 2.6, but at least it works, so I went
+> for the latter. Therefore I'm eager to get 2.6 running!
 
-PS: Next step, see i can boot 2.6.0-test10-pa1 64bit on the N4K (b2k still
-have a pb iirc)
+Can anybody tell me what config options I need to boot a 2.6 kernel
+without serial console support (since it's broken) and without
+STI (since I don't have a graphics card in my C3k)?
+I've seen a config option 'DUMMY_CONSOLE' in .config, but I don't find
+how to select it in 'make menuconfig' or any description in Documentation/.
 
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+I have several machines that run headless - I use serial console then.
+But I never had a situation where I didn't even have serial console ...
+
+
+Thanks for any hints,
+  Max
