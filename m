@@ -1,22 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta04ps.bigpond.com (mta04ps.bigpond.com [144.135.25.136])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3EC62482B
-	for <parisc-linux@parisc-linux.org>; Sat, 27 Oct 2001 19:44:13 -0600 (MDT)
-Received: from bubble.local ([144.135.25.78]) by
-          mta04ps.bigpond.com (Netscape Messaging Server 4.15) with SMTP
-          id GLW7SG00.1J7 for <parisc-linux@parisc-linux.org>; Sun, 28 Oct
-          2001 11:50:40 +1000
-Date: Sun, 28 Oct 2001 12:14:03 +1030
-From: Alan Modra <amodra@bigpond.net.au>
-To: Thomas Marteau <marteaut@esiee.fr>
-Cc: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>,
-	debian-hppa-request@lists.debian.org
-Subject: Re: [parisc-linux] Troubles with expect scripts
-Message-ID: <20011028121403.F1050@bubble.sa.bigpond.net.au>
-References: <3BDAC2FE.DBF72DDD@esiee.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3BDAC2FE.DBF72DDD@esiee.fr>; from marteaut@esiee.fr on Sat, Oct 27, 2001 at 04:21:50PM +0200
+Received: from mail724.SEVEN24 (mail.seventwentyfour.com [209.167.50.21])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29BF3482B
+	for <parisc-linux@parisc-linux.org>; Sun, 28 Oct 2001 15:38:23 -0700 (MST)
+Message-ID: <AAE15EBA0A92D511B28400A0C99834D8876C01@MAIL724>
+From: Roy Bryant <roybryant@SEVENtwentyfour.com>
+To: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
+Date: Sun, 28 Oct 2001 17:39:52 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Broken link in www.parisc-linux.org
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,12 +21,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Oct 27, 2001 at 04:21:50PM +0200, Thomas Marteau wrote:
-> 
-> 	We are using some scripts using Expect language and they die with a
-> segmentation fault and you can read this output in the dmesg:
+There appears to be a problem on this page of your site.
 
-This isn't a fix, but may be a workaround:  Try "export LD_BIND_NOW=1" to
-disable lazy binding by the dynamic linker.
+    On page http://www.parisc-linux.org/weekly/20000310.html
+    when you click on "webpage",
+    the link to http://www.parisc-linux.org/buzzwords.html
+    gives the error: Not found.
 
-Alan
+As recommended by the Robot Guidelines, this email is to explain our robot's
+activities and to let you know about one of the broken links we encountered.
+LinkWalker does not store or publish the content of your pages, but rather
+uses the link information to update our map of the World Wide Web.
+
+Are these reports helpful? I'd love some feedback. If you prefer not to
+receive these occasional error notices please let me know.
+
+Roy Bryant
+
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Roy Bryant, roybryant@seventwentyfour.com
+ President
+ SEVENtwentyfour Inc. ("Always watching the Web")
+ http://www.seventwentyfour.com
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
