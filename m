@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DFFF84837
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 13 Jun 2002 23:28:01 -0600 (MDT)
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Glibc cvs: ld segmentation fault
-Message-ID: <1024032442.3d097eba5ead0@webmail.tiscalinet.be>
-Date: Fri, 14 Jun 2002 07:27:22 +0200 (CEST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5223A4841
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Jun 2002 01:27:20 -0600 (MDT)
+To: klaue@otto.t4y-it.com
+Subject: Re: [parisc-linux] installation problems on c200
+Message-ID: <1024039594.3d099aaa12631@webmail.tiscalinet.be>
+Date: Fri, 14 Jun 2002 09:26:34 +0200 (CEST)
 From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <200206131704.g5DH49TT002072@hiauly1.hia.nrc.ca>
-In-Reply-To: <200206131704.g5DH49TT002072@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+References: <002201c21320$660e4e50$6401a8c0@bartw2k>
+In-Reply-To: <002201c21320$660e4e50$6401a8c0@bartw2k>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,26 +23,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+Quoting klaue@otto.t4y-it.com:
 
-> > Don't you have additional advice?
+> hi,
 > 
-> Did you start with the debian version of glibc?  I have built 2.2.5-6
-> with 3.2 and am using it.  It's possible you need to update binutils.
-> Some linux versions also seem to have a tendency to cause random
-> segfaults.
+> i have a c200 and want to install from a palinux-2.4.18-pa26-netinst
+> image.
+> after some problems booting from the internal cdrom, i have connected
+> an
+> external box with a traxdata writer. from this device the boot is
+> working
+> until the message "freeing unused kernel memory". after this i got some
+> ext2-fs errors concerning the ramdisk. the last message is a kernal
+> panic
+> "no init found. try passing init= option to kernel".
 > 
-> Since I don't think I can duplicate your environment, you will have
-> to run ld under gdb to find out where it's segfaulting and get some
-> sense as to what's causing the problem.
 
-Dave,
+Never met this problem with a cd but it sounds like the burned cd is wrong.
+Do you check md5sum of your downloaded image
+(http://pateam.esiee.fr/cd-images/testing/)?
+Then of your burned cd?
 
-Thanks a lot.
-As my first object (right now) is to help to understand why linux crash with
-network connection  when compile with gcc-3.[12], I will also work with glibc-2.2.5.
-
-Joel
+> is there anybody out who can help me to realize where the problem might
+> be?
+> the same is if i use a 2.4.18-pa35 image.
+> i have already searched the list archive but i wasn't able to find a
+> solution.
+> 
+> ok, i'm a newbie but i have the dream of using linux on my little hp
+> box!
+> 
+> regards,
+> 
+> kim
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 
 
 -------------------------------------------------
