@@ -1,16 +1,13 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] pthread problems - test program
-Date: Wed, 6 Apr 2005 00:59:54 -0400
-Message-ID: <20050406045954.GU1833@baldric.uwo.ca>
-References: <20050404005038.GH8921@tausq.org>
-	<200504060121.j361LISD002640@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] TLS patches for glibc,
+	and problems with symbols (TLS vs. non-TLS __libc_errno).
+Date: Wed, 6 Apr 2005 01:52:36 -0400
+Message-ID: <20050406055234.GW1833@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200504060121.j361LISD002640@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,18 +18,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Apr 05, 2005 at 09:21:17PM -0400, John David Anglin wrote:
-> > > What's the situation on the following signals: SIGLTHRRES, SIGLTHRCAN
-> > > and SIGLTHRDBG?  I'm not sure but pthread_cond_signal may need SIGLTHRRES.
-> > > Are these signals 37, 38 and 39?
-> > 
-> > yes, we use the same signals. 
-> 
-> It looks as if we have 36 signals which may need to be blocked.  However,
-> _SIGSET_NWORDS is 32.  Is this a problem?
 
-I don't quite understand what you mean by this? Can you show me the code
-that defines this and where the error might be?
+Farthest I've gotten in my build yet, putting together the libc library
+causes a linker error:
+
+--
+gcc   -nostdlib -nostartfiles -r -o
+/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/librtld.map.o
+'-Wl,-('
+/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/dl-allobjs.os
+/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a
+-lgcc '-Wl,-)'
+-Wl,-Map,/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/librtld.mapT
+/mnt/flaire/src/tls-toolchain/install/bin/../lib/gcc/hppa-linux/3.4.3/../../../../hppa-linux/bin/ld:
+__libc_errno: TLS definition in
+/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a(errno.os)
+section .tbss mismatches non-TLS reference in
+/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a(check_fds.os)
+/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/libc_pic.a:
+could not read symbols: Bad value
+collect2: ld returned 1 exit status
+make[2]: ***
+[/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-05-hppa/elf/librtld.map]
+Error 1
+make[2]: Leaving directory `/mnt/flaire/src/tls-toolchain/src/libc/elf'
+make[1]: *** [elf/subdir_lib] Error 2
+make[1]: Leaving directory `/mnt/flaire/src/tls-toolchain/src/libc'
+make: *** [all] Error 2
+--
+
+I later realized that this all has to do with our handling of errno. I'm
+going to have to bite the bullet and write the ugly ASM code to handle
+all the errno cases based on defines during the build.
+
+glibc head patches:
+http://www.parisc-linux.org/~carlos/glibc-work/glibc-hppa-patches-2005-04-05.tar.gz
+
+tls patches against the above:
+http://www.parisc-linux.org/~carlos/glibc-work/glibc-hppa-tls-2005-04-05.diff
+
+That *should* get you to the above state.
 
 c.
 
