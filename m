@@ -1,18 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 467A0483E
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Nov 2003 14:46:06 -0700 (MST)
-Date: Mon, 3 Nov 2003 16:41:19 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Randolph Chung <randolph@tausq.org>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] what's up with the ipc syscalls?
-Message-ID: <20031103214119.GD778@systemhalted>
-References: <20031101082451.GJ28967@tausq.org> <20031102180150.GA14554@solo.franken.de> <20031102181252.GY28967@tausq.org> <20031102214200.GA5299@solo.franken.de> <20031102225626.GF26916@systemhalted> <20031103085601.GA9083@solo.franken.de>
+Received: from montperdu.pyrene.net (jmharang.net1.nerim.net [62.212.119.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B58EE483E
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Nov 2003 12:30:43 -0700 (MST)
+Received: from montperdu.pyrene.net (localhost [127.0.0.1])
+	by montperdu.pyrene.net (Postfix) with SMTP id D173C2C95E
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Nov 2003 20:30:39 +0100 (CET)
+Date: Tue, 4 Nov 2003 20:30:39 +0100
+From: Jean-marc Harang <jean-marc.harang@laposte.net>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] HP 9000 E55 (and family) status
+Message-Id: <20031104203039.2a83a36d.jean-marc.harang@laposte.net>
+In-Reply-To: <3FA689FB.5080704@gmx.at>
+References: <3FA689FB.5080704@gmx.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20031103085601.GA9083@solo.franken.de>
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,37 +25,37 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Nov 03, 2003 at 09:56:01AM +0100, Thomas Bogendoerfer wrote:
-> glibc 2.2.x, some weeks before woody went final. For a closer date
-> check the date of my sys_parisc.c commit.
+Le Mon, 03 Nov 2003 18:01:47 +0100
+Christoph Plattner <christoph.plattner@gmx.at> a =E9crit:
 
-My apologies Thomas I think I begin to see your logic. Now if you follow
-me I'll paint a picture.
+> By the way, as we discuss on the E55,
+> what's the status ?
+>=20
+> Are there any news on MUX or SCSI driver ?
+>=20
+> Are there any news on the NDA, .... ?
+>=20
+> Christoph Plattner
 
-a. We don't have an IPC multiplexor.
-b. We added all such functions into syscalls.list so they would be
-   generated as assembly wrappers.
-c. Kernel would activate IPC64 for all the calls so it returned IPC64 to
-   userspace.
+Hello,
 
-> Since there might be still binaries in woody, which are compiled
-> with an such an "old" glibc, we will break this binaries. The suggested
-> change is an change of the kernel ABI, so I would avoid it. The problem
-> with this "old" glibc was, that the structs for shmctl and friends
-> weren't properly aligned for 64bit. I've changed that and also decided
-> to get rid of IPC_64, because that's x86 crap.
-> 
-> Adding the 2.4 changes to the 2.6 kernel should fix everything.
+Sorry, I'm a little late.=20
 
-Should an old binary exist with this old glibc, it would break should
-the kernel stop activating IPC64.
+The status is that, as you said before, we need the MDP panel to get access
+to the serial console (port 0 of the panel). I'm looking for this panel and=
+ i
+think i found one ;)=20
 
-I agree that the 2.4 changes forward ported will change everything, but
-the glibc changes are *also* required so we can eventually turn off the
-kernel code that activates IPC64 for all the incoming calls. When we
-don't care about these old binaries and old glibc we will remove the
-kernel code.
+After the blind boot, we can't access to the HP-UX. No login is avaible,
+because this E55 is a decommissioned one, a "gift" to the local Linux (and =
+other
+free software) User Group of my town (Toulouse, France).=20
 
-Now it's my turn to ask the question: Did that make any sense? :o)
+So we need to make a fresh install of HP-UX. That's why we need the serial
+console (cdrom boot).=20
 
-c.
+thanks for the informations :)
+
+Jean-marc Harang
+--
+http://www.culte.org
