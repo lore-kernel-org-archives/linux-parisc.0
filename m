@@ -1,27 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta-2.gci.net (mta-2.gci.net [208.138.130.83])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 36BF3482A
-	for <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 19:52:22 -0600 (MDT)
-Received: from mmp-2.gci.net ([208.138.130.81]) by mta-2.gci.net
-          (Netscape Messaging Server 4.15) with ESMTP id GIPEJ702.UID for
-          <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 17:52:19 -0800
-Received: from goliath.alaskatech.org ([24.237.5.207]) by
-          mmp-2.gci.net (Netscape Messaging Server 4.15) with ESMTP id
-          GIPEJ600.V33 for <parisc-linux@parisc-linux.org>; Sun, 26 Aug
-          2001 17:52:18 -0800
-Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
-	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA25571
-	for <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 17:47:24 -0800
-Date: Sun, 26 Aug 2001 17:47:24 -0800 (AKDT)
-From: Tom <tom@alaskatech.org>
+Received: from syncopation-03.iinet.net.au (syncopation-03.iinet.net.au [203.59.3.19])
+	by dsl2.external.hp.com (Postfix) with SMTP id 36A1B482A
+	for <parisc-linux@parisc-linux.org>; Sun, 26 Aug 2001 21:26:19 -0600 (MDT)
+Received: (from andrew@localhost)
+	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id LAA25741
+	for parisc-linux@parisc-linux.org; Mon, 27 Aug 2001 11:26:05 +0800
+Date: Mon, 27 Aug 2001 11:26:00 +0800
+From: Andrew Shugg <andrew@neep.com.au>
 To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
-Message-ID: <Pine.LNX.4.33.0108261746390.13706-100000@goliath.alaskatech.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Whoops...
+Subject: Re: [parisc-linux] Whoops...
+Message-ID: <20010827112558.V16220@neep.com.au>
+References: <Pine.LNX.4.33.0108261746390.13706-100000@goliath.alaskatech.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0108261746390.13706-100000@goliath.alaskatech.org>; from tom@alaskatech.org on Sun, Aug 26, 2001 at 05:47:24PM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-My apologies - I mistyped an address entry and ended up sending the Sierra
-Times entry to the list instead of a test account on my 715/100.
+Quoth Tom:
+> My apologies - I mistyped an address entry and ended up sending the Sierra
+> Times entry to the list instead of a test account on my 715/100.
+> 
+> Me bad :-(
 
-Me bad :-(
+It was - um - interesting.  =)
+
+Andrew.
+
+-- 
+Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
+
+"Just remember, Mr Fawlty, there's always someone worse off than yourself."
+"Is there?  Well I'd like to meet him.  I could do with a good laugh."
