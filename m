@@ -1,15 +1,12 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-Date: Sat, 10 Jan 2004 21:09:06 -0700
-Message-ID: <20040111040906.GA32382__10656.6773182296$1416623120$gmane$org@colo.lackof.org>
-References: <20040105194809.GA9269@systemhalted>
-	<20040105194839.GB9269@systemhalted>
+Subject: [parisc-linux] Re: KDE and sarge (dcopserver?)
+Date: Sat, 10 Jan 2004 21:51:56 -0700
+Message-ID: <20040111045156.GA383__31490.7328495339$1416623120$gmane$org@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Damien <Damien@cetic.be>
 Return-Path: <grundler@lackof.org>
-In-Reply-To: <20040105194839.GB9269@systemhalted>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,11 +16,29 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 05, 2004 at 02:48:39PM -0500, Carlos O'Donell wrote:
-> http://www.parisc-linux.org/~carlos/glibc-2.3.2-debs-2004-01-05/
+References: <20040109151436.51FB54E8F8@mailhost.cetic.be>
+In-Reply-To: <20040109151436.51FB54E8F8@mailhost.cetic.be>
 
-I finally installed these (libc6 and libc6-dev) and live is still good.
-thanks carlos!
+Damien,
+My apologies.
+I was hunting through parisc-linux mail archives for something else and
+noticed Helge Deller did NOT post his patch to parisc-linux mailing list:
+
+	Subject: [PATCH] fix KJS crash on some more strict platforms
+	Date: Tuesday 16 December 2003 22:08
+	To: kde-core-devel@kde.org
+
+I've dropped Helge's patch and rebuilt kdelibs packages here:
+	http://www.parisc-linux.org/~grundler/kdelibs-3.1.4/
+
+The official fix is slightly different but this works.
+I've installed kdelibs4, kdelibs-bin, and kdelibs-data from the above
+and konqueror is again working on my c3k (32-bit 2.6.0-pa7, sarge).
+Might only need to install kdelibs4 and the not others.
+
+This patch also suggested the kernel LDD misaligned trap handler wasn't
+working correctly. Lamont Jones fixed with this checkin (2.4.23-pa5 IIRC):
+	http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2003-December/033645.html
 
 hth,
 grant
