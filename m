@@ -1,20 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2ED89482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Nov 2001 10:16:14 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 166EVA-0000mc-00; Tue, 20 Nov 2001 17:16:04 +0000
-Date: Tue, 20 Nov 2001 17:16:04 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Helge Deller <helge.deller@sap.com>
-Cc: "Pedot, Wolfgang" <wpedot@harris.com>,
-	'Parisc Linux Mailinglist' <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 2.4.14 and ISA-NE2000 StackDump
-Message-ID: <20011120171604.F652@parcelfarce.linux.theplanet.co.uk>
-References: <8D4C69676E66D511A1CB00508BBBB1921627EE@ranmx1.ran.harris.com> <E166EPy-0004Bn-00@linuxlab.wdf.sap-ag.de>
+Received: from gwyn.tux.org (gwyn.tux.org [207.96.122.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AAEDB482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Nov 2001 14:42:53 -0700 (MST)
+Received: (from timball@localhost)
+	by gwyn.tux.org (8.9.3/8.9.1) id QAA10910
+	for parisc-linux@lists.parisc-linux.org; Tue, 20 Nov 2001 16:42:52 -0500
+Date: Tue, 20 Nov 2001 16:42:51 -0500
+From: Timothy Ball <timball@tux.org>
+To: parics Linux Mailing List <parisc-linux@lists.parisc-linux.org>
+Message-ID: <20011120214251.GA5953@gwyn.tux.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E166EPy-0004Bn-00@linuxlab.wdf.sap-ag.de>; from helge.deller@sap.com on Tue, Nov 20, 2001 at 06:10:41PM +0100
+Subject: [parisc-linux] make palo error?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,17 +23,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Nov 20, 2001 at 06:10:41PM +0100, Helge Deller wrote:
-> Hi Wolfgang,
-> 
-> No, the 715/64 has a PA7100LC processor and thus is 32bit only machine.
-> I'm running a 32bit kernel too, but maybe 715/old (as yours) and 715/new
-> machines (as mine) work different. IIRC the 715/old has an ASP and the
-> 715/new have a LASI chip. Maybe you could send me your whole dmsg
-> and I'll take a look again.
+I do a make palo and I get an error, but the lifimage file is in
+../palo/lifimage. Should I be worried about this?
 
-Not only that, the EISA adapter in the 715/new is Wax and that in 715/old
-is Mongoose (maybe Outfield, but I think that was in 735/755).
+--snip--snip--snip--
+./palo/mkbootable ipl/iplelf iplboot
+ELF32 executable
+entry 0x60000 size 28652
+./palo/palo -f /dev/null \
+-b iplboot \
+-k /usr/src/parisc/linux/vmlinux \
+ \
+-c "0/vmlinux HOME=/ TERM=linux root=/dev/sda4  " \
+        -s lifimage
+palo version 0.97 timball@jane Tue Nov 20 16:08:52 EST 2001
+ELF32 executable
+calculated xsum 0x4e32b74 got 0x0
+calculated xsum 0x4e32b74 got 0x0
+make[1]: *** [lifimage-only] Error 2
+make[1]: Leaving directory `/usr/src/parisc/palo'
+make: *** [palo] Error 2
+--snip--snip--snip--
+
+--timball
 
 -- 
-Revolutions do not require corporate support.
+	GPG key available on pgpkeys.mit.edu
+pub  1024D/511FBD54 2001-07-23 Timothy Lu Hu Ball <timball@tux.org>
+Key fingerprint = B579 29B0 F6C8 C7AA 3840  E053 FE02 BB97 511F BD54
