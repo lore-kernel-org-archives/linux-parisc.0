@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9D31D4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Jan 2003 08:59:04 -0700 (MST)
-Date: Sun, 26 Jan 2003 16:58:54 +0100
+Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8824C4842
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Jan 2003 09:03:16 -0700 (MST)
+Date: Sun, 26 Jan 2003 17:03:14 +0100
 From: Thibaut VARENE <varenet@esiee.fr>
-To: max@avtlg.ru
+To: "Buffalo Bill" <buffalo@gediegos.de>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Boot warning 80F5.
-Message-Id: <20030126165854.42e05146.varenet@esiee.fr>
-In-Reply-To: <3E340091.2000003@avtlg.ru>
-References: <3E340091.2000003@avtlg.ru>
+Subject: Re: [parisc-linux] Problems with Woody on 710.
+Message-Id: <20030126170314.2a4af25b.varenet@esiee.fr>
+In-Reply-To: <1043595882.23219.12.camel@jupiter>
+References: <1043595882.23219.12.camel@jupiter>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,30 +23,30 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 26 Jan 2003 18:36:49 +0300
-"Max" <max@avtlg.ru> wrote:
+On 26 Jan 2003 16:44:40 +0100
+"Buffalo Bill" <buffalo@gediegos.de> wrote:
 
 > Hi,
 > 
->     I have HP 9000/809/k100. When my box boot from Debian 3.0r1 hppa CD
-> ( Interact with IPL (Y or N)?> Y ), i've got message "Cannot find ENTRY
-> TEST Status= -4" and WARN 80F5 on LCD panel status. What is that means?
-> What do I do?
-> Where can I find other WARN description ?
-Read the PA/Linux boot HOWTO
-http://pateam.esiee.fr/doc.html
+> after searching the mailing list I've found some messages which
+> reported success in installing Woody on a 710. So I tried to install
+> it. After trying many many different lifimages, all ended up in the
+> same result: It hung during installation ( while mounting the root
+> file system ). Switching to another console ( which still worked )
+> showed me that/sbin/dbootstrap and [scsi_eh_0] were both in state D.
+If you can switch to another console then the system _isn't_ hung.
 
-and search the mailing-list for K-class PDC console issues
-http://www.fr.parisc-linux.org/mailing-lists/
+I saw the same kind of problem on boxes with low amount of RAM (<32M).
+Though the fact that [scsi_eh_0] is in D state isn't good at all. Maybe
+you have a problem with your SCSI chain (hard disk, termination
+problem...?)
 
-The message you see can be the result of several problems.
-
-Most likely the kernel shipped with 3.0r1 doesn't support K's MUX.
-
-You'll need a '-PDC-' image from
-http://pateam.esiee.fr/cd-images/testing/
-
-see http://lists.parisc-linux.org/pipermail/parisc-linux/2002-September/017846.html
+> 
+> What did I do wrong ? Or to put it other words: How did you guys get
+> your 710s up'n'running ?
+The 710 we have running here runs a preinstalled filesystem. That is to
+say, the HD was prepared in another box and then plugged back into the
+710.
 
 
 Thibaut VARENE
