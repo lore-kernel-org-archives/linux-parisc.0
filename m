@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dh64.b180 (b180.mmjgroup.com [192.34.35.37])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0F1514829
-	for <parisc-linux@parisc-linux.org>; Fri,  6 Dec 2002 06:52:49 -0700 (MST)
-Date: Fri, 6 Dec 2002 06:52:43 -0700
-From: lamont@hp.com
-To: parisc-linux@parisc-linux.org
-Message-ID: <20021206135243.GA20175@b180.mmjgroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] towards unattended reboot
+Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D45874829
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Dec 2002 07:10:07 -0700 (MST)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by smtp-out.tiscali.be with esmtp (Tiscali)
+	id 18KJB4-0001Ya-00
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 06 Dec 2002 15:10:02 +0100
+Date: Fri, 6 Dec 2002 15:10:01 +0100
+Message-ID: <3DED9B890000084D@ocpmta6.freegates.net>
+From: jsoe0708@tiscali.be
+Subject: RE: [parisc-linux] superio.c -BUG
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,39 +24,55 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Q: Given a 2.4.19 kernel, how do you get it to automatically reboot on crash?
+Hi all,
+>
+>Working on lkcd port of Bruno Vidal on a b2k (gcc-3.0.4), I encounter th=
+e
+>following bug:
+>Dump compression value is 0x0 ...
+>Dump device index 0 ...
+>Initialise iodc dump device:dump_iodc_init(): reset done
+>dump_iodc_open(): get module info : 16
+>dump_iodc_open(): get ENTRY INIT.
+>kernel BUG at superio.c:109!
+>WARNING! Stack pointer and cr30 do not correspond!
+>Dumping virtual address stack instead
+>
+>What is troubling me in the code is the contradiction between code and
+comments:
+>        if ((results & 0x80) =3D=3D 0) {
+>#ifndef CONFIG_SMP
+>                /* HACK: need to investigate why this happens if SMP ena=
+bled
+>*/
+>                BUG(); /* This shouldn't happen */
+>#endif
+>                return;
+>        }
+>
+>[I am running here a kernel 2.4.19-pa24 + dump_patch of bruno but it is
+>still  the same in 2.4.20]
+>
+>Can somebody could confirm me what is right: code or comment?
+>
+Stupid question isn't it? (Sorry I need rest)
 
-A: see below.  The first one breaks the loop on dumping the stack.  The
-   second part resets the machine in parisc_terminate().
+Never the less, I would go further and notice that:
+ results =3D inb(IC_PCI1+0);
 
-thoughts?
-lamont
+I well find the declaration of inb as extern unsigned char inb(int addr);=
 
-diff -ur x/kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c
---- x/kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c	2002-10-19 16:25:59.000000000 -0600
-+++ kernel-source-2.4.19-hppa/arch/parisc/kernel/traps.c	2002-12-06 00:07:40.000000000 -0700
-@@ -148,6 +148,11 @@
- void show_stack(struct pt_regs *regs)
- {
- #if 1
-+	static int tried_stack=0;
-+	if (tried_stack)
-+		return;
-+	tried_stack++;
-+
- 	/* If regs->sr[7] == 0, we are on a kernel stack */
- 	if (regs->sr[7] == 0) {
- 
-@@ -462,6 +467,12 @@
- 	 * system will shut down immediately right here. */
- 	pdc_soft_power_button(0);
- 	
-+	{
-+		static int tried_once=0;
-+		if (!tried_once++)
-+			__raw_writel(5,0xfffe0030);
-+	}
-+	
- 	for(;;)
- 	    ;
- }
+(in io.h) but can somebody explain me where this function is defined (I
+scan all .c .h .s and do not find)?
+
+Just to see if a wait does not have to be inserted after previous outb?
+
+Thanks for attention,
+    Joel
+
+
+
+*************************************************************************=
+*******
+Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
+ttp://tiscali.complete.be
