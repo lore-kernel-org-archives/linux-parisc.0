@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8294F4854
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Jul 2002 09:33:45 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17U6Tv-0000Uh-00; Mon, 15 Jul 2002 15:05:43 +0100
-Date: Mon, 15 Jul 2002 15:05:43 +0100
-From: Matthew Wilcox <willy@debian.org>
+Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CF50C488E
+	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 09:52:12 -0600 (MDT)
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: rhirst@linuxcare.com, grundler@dsl2.external.hp.com,
-	varenet@esiee.fr, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SMP (in)stability
-Message-ID: <20020715150543.M27706@parcelfarce.linux.theplanet.co.uk>
-References: <200207101707.g6AH7xMS010810@hiauly1.hia.nrc.ca> <200207101744.g6AHiKW0011045@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200207101744.g6AHiKW0011045@hiauly1.hia.nrc.ca>; from dave@hiauly1.hia.nrc.ca on Wed, Jul 10, 2002 at 01:44:19PM -0400
+Subject: Re: [parisc-linux] compiling kernels with gcc-3.1
+Message-ID: <1026748321.3d32efa170ebe@webmail.tiscalinet.be>
+Date: Mon, 15 Jul 2002 17:52:01 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: joel.soete@freebel.net, randolph@tausq.org,
+	parisc-linux@parisc-linux.org
+References: <200207151524.g6FFOqqE023640@hiauly1.hia.nrc.ca>
+In-Reply-To: <200207151524.g6FFOqqE023640@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,17 +24,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 10, 2002 at 01:44:19PM -0400, John David Anglin wrote:
-> Moving the code to hpux11, this is the error that causes the crash:
+Quoting John David Anglin <dave@hiauly1.hia.nrc.ca>:
+
+> > (I just note on the sti console)
+> > sshd (pid 322): illegal instruction (code 8)
+> > ...
+> > kernel panic...
 > 
-> stage1/xgcc -Bstage1/ -B/opt/gnu/hppa2.0w-hp-hpux11.11/bin/ -c -DIN_GCC    -g -O2 -W -Wall -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wtraditional -pedantic -Wno-long-long  -DHAVE_CONFIG_H    -I. -I. -I../../gcc/gcc -I../../gcc/gcc/. -I../../gcc/gcc/config -I../../gcc/gcc/../include ../../gcc/gcc/cfgbuil
-> d.c -o cfgbuild.o
-> Pi 16528 received a SIGSEGV for stck growth ailure.
-> Possible caues: insufficient memory or swap space,
-> or stack size exceeded maxssiz. 
-> xgcc: Internal error: Segmentation fault (program cc1)
+> This is just a guess but I will wager that this problem is related
+> to the problems with expect, the cc1plus crash and the mmap issues
+> noted
+> elsewhere with SMP kernels.  There seem to be circumstances where the
+> kernel crashes when a user application traps unexpectedly.
+> 
+> Joel, you should be able to run sshd under gdb and find what the
+> cause of the illegal instruction is.  It should not be a problem
+> to download and build 3.4p1 with gcc 3.2 from <http://www.openssh.org>.
+> Build at -O1 with debugging enabled.  There are examples on their
+> mail list on how to run sshd in debug mode.  If the situation is
+> similar to the cc1plus crash, gdb will prevent the system from
+> crashing when the fault occurs.
+> 
+Ok Dave,
 
-hrm.  i wonder what happens when we run off the top of the stack ...
+I will have a look.
 
--- 
-Revolutions do not require corporate support.
+Thanks a lot,
+    Joel
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
