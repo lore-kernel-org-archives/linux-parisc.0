@@ -1,30 +1,24 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id QAA17627
-	for <parisc-linux@sod.res.cmu.edu>; Fri, 16 Apr 1999 16:51:48 -0400
-Date: Fri, 16 Apr 1999 16:51:19 -0400 (EDT)
-From: Alex deVries <adevries@redhat.com>
-To: Ulrich Drepper <drepper@cygnus.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Some things to do...
-In-Reply-To: <r2k8vcpbhv.fsf@happy.cygnus.com>
-Message-ID: <Pine.LNX.3.96.990416165045.27211N-100000@devserv.devel.redhat.com>
+	by sod.res.cmu.edu (8.8.7/8.8.7) with SMTP id QAA05843
+	for <parisc-linux@sod.res.cmu.edu>; Sat, 17 Apr 1999 16:44:33 -0400
+Date: Sat, 17 Apr 1999 20:46:41 +0000 (   )
+From: Christopher Beard <cjbeard@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.9904172043250.26813-100000@sprite.osfi-bsif.gc.ca>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Revised PA-RISC 1.1 Documentation
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-On 16 Apr 1999, Ulrich Drepper wrote:
-> > [name aliases...]
-> > Comments on how to do this from Cygnus would be appreciated.
-> 
-> Talk to Ben Elliston <bje@cygnus.com> the autoconf maintainer.
+Just noticed that the PA-RISC 1.1 Instruction Set Architecture
+documentation webpage has been cleaned up. There are also now links to the
+.pdf versions.
 
-I'll take the lead on this, since I've had the naming discussions with HP.
+	 http://dtf.external.hp.com/linux/Docs/PAdocs/index.html
 
-- Alex
+I don't know how new this is, but I recall looking for these before and
+the page being quite outdated. I'll post this to the project web page as
+well.
 
--- 
-Alex deVries <puffin@redhat.com>     
-Red Hat Contrib Net maintainer          
-Ottawa, Canada  
-PA RISC Linux Porting Team
+- Chris
