@@ -1,19 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CDA0C482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 05:22:03 -0700 (MST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id C4B63482B
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Feb 2003 05:29:14 -0700 (MST)
 Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18hqT7-0001yQ-00; Sun, 09 Feb 2003 12:21:57 +0000
-Date: Sun, 9 Feb 2003 12:21:57 +0000
+	id 18hqaA-00021I-00; Sun, 09 Feb 2003 12:29:14 +0000
+Date: Sun, 9 Feb 2003 12:29:13 +0000
 From: Matthew Wilcox <willy@debian.org>
 To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: Matthew Wilcox <willy@debian.org>,
 	parisc-linux@lists.parisc-linux.org
-Message-ID: <20030209122157.F27544@parcelfarce.linux.theplanet.co.uk>
-References: <20030208222242.AA3554829@dsl2.external.hp.com> <20030208222746.GB19683@dsl2.external.hp.com> <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk> <20030209081121.GA31855@dsl2.external.hp.com>
+Message-ID: <20030209122913.G27544@parcelfarce.linux.theplanet.co.uk>
+References: <20030208222242.AA3554829@dsl2.external.hp.com> <20030208222746.GB19683@dsl2.external.hp.com> <20030208232303.B27544@parcelfarce.linux.theplanet.co.uk> <20030209031014.GD19683@dsl2.external.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030209081121.GA31855@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sun, Feb 09, 2003 at 01:11:21AM -0700
+In-Reply-To: <20030209031014.GD19683@dsl2.external.hp.com>; from grundler@dsl2.external.hp.com on Sat, Feb 08, 2003 at 08:10:14PM -0700
 Subject: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -26,23 +26,42 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Feb 09, 2003 at 01:11:21AM -0700, Grant Grundler wrote:
-> I've rebuilt "unstable" binutils + ldwa,o patch on "testing" and dropped
-> them on
-> 	ftp://ftp.parisc-linux.org/unofficial-debs/
+On Sat, Feb 08, 2003 at 08:10:14PM -0700, Grant Grundler wrote:
+> Just drop that in debian/patches before building the debs.
+> That patch applies clean to the binutils for unstable.
+> I don't even pretend to understand how to properly build
+> debian packages, much less binutils or "cross release" builds.
+> That's why I made the tarball for "testing".
+
+OK.  It's not really hard, but I don't mind doing it.  It's not like
+this is a regular occurrence.  It's building now; when I've finished
+I'll upload it to unofficial-debs and people will be able to apt-get
+install it from there.
+
+> I don't care to find out the hard way.
+> I'd rather just comply with the architecture and not worry about it.
+> If someone can demonstrate a perf advantage or issue, I'll be
+> more receptive.
+
+Sure.  When someone's trying to implement futexes, this may prove critical..
+
+> > One final point.... up till now, we've been telling people it's OK to
+> > run kernels configured for PA1.1 on PA2.0 processors.  This patch says
+> > to me that's not safe.
 > 
-> -rw-r--r--    1 grundler ftpadmin   478700 Feb  8 23:51 binutils-dev_2.13.90.0.16-1_hppa.deb
-> -rw-r--r--    1 grundler ftpadmin  3311272 Feb  8 23:53 binutils-multiarch_2.13.90.0.16-1_hppa.deb
-> -rw-r--r--    1 grundler ftpadmin  2307548 Feb  8 23:54 binutils_2.13.90.0.16-1_hppa.deb
+> Only for SMP. I think for UP the rule still holds.
 
-I've removed these.  Few problems:
+Agree.  That was implicit in the kernel list i gave later, but I should've
+stated it explicitly.
 
- - Same version number as the unstable package, so an upgrade wouldn't
-   replace them
- - Not listed in the Packages file.
- - debian/changelog not updated
+> Unfortunately yes.
+> 
+> OTOH, PA20 SMP still hasn't proven stable so maybe it's not worth
+> doing at the moment either.  Once PA20 SMP is stable, we could drop
+> the 64-bit UP kernels since most systems that *require* 64-bit are SMP.
 
-I'm doing a fresh build now.
+Sure, but there's a measurable performance difference if you compile out
+spinlocks
 
 -- 
 "It's not Hollywood.  War is real, war is primarily not about defeat or
