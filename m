@@ -1,17 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: flush_kernel_[di]cache_page question? [WAS: [parisc-linux]
-	2.6.10-rc1-pa11 profile data
-Date: Fri, 26 Nov 2004 12:02:45 -0700
-Message-ID: <20041126190245.GA4071@colo.lackof.org>
-References: <20041111081154.GR15714@tausq.org>
-	<418A81170000898E@mail-8-bnl.mail.tiscali.sys>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] kernel module relocation bug
+Date: Fri, 26 Nov 2004 22:47:10 -0800
+Message-ID: <20041127064710.GL9148@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <418A81170000898E@mail-8-bnl.mail.tiscali.sys>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,23 +18,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Nov 26, 2004 at 05:59:18PM +0100, Joel Soete wrote:
-> >  40646 flush_kernel_icache_page                 406.4600
-> [...]
-> >   4089 flush_kernel_dcache_page                  40.8900
-> [...]
-> > we really need to do better at cache flushing..... anybody have any
-> > ideas? :)
-> >
-> Is somebody can help me to understand those:
-> [...]
-> flush_kernel_dcache_page:
+currently the kernel module loader does not support long branch stubs.
+using the debian 2.6.8-1 kernel, when loading the ipv6 module, i see:
 
-Joel,
-the problem is not in the flush_kernel_dcache_page() routine.
-The problem is we are calling too often.
+legolas[6:43] linux-2.6% sudo modprobe ipv6
+FATAL: Error inserting ipv6 (/lib/modules/2.6.8-1-32-smp/kernel/net/ipv6/ipv6.ko): Invalid module format
 
-grant
+in syslog, i get:
+module ipv6 relocation of symbol fold_prot_inuse is out of range (0x3ffeffe2 in 17 bits)
+
+these are the other modules i have loaded at the moment:
+
+legolas[6:26] linux-2.6% lsmod
+Module                  Size  Used by
+ehci_hcd               58788  0
+ohci_hcd               41924  0
+usbcore               121084  2 ehci_hcd,ohci_hcd
+tulip                  65468  0
+ad1889                 19524  0
+soundcore              13828  1 ad1889
+ac97_codec             24876  1 ad1889
+tg3                   107760  0
+ext3                  135588  2
+jbd                   103960  1 ext3
+sd_mod                 24416  5
+sym53c8xx             105004  4
+
+the kernel i have is:
+Linux legolas 2.6.8-1-32-smp #1 SMP Tue Nov 2 13:07:05 MST 2004 parisc
+GNU/Linux
+
+to fix this we will probably need to introduce long branch stubs into 
+into the kernel module loader. anybody want to give this a shot?
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
