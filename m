@@ -1,18 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D63724829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 09:03:51 -0700 (MST)
-Date: Thu, 3 Apr 2003 08:00:58 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] break 0,0: pid=304 command jade ??
-Message-ID: <20030403160058.GF9388@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <3E8AE87E00000E4E@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3E8AE87E00000E4E@ocpmta2.freegates.net>
+Received: from einstein.tteng.com.br (unknown [200.203.41.86])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AB0734829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 11:12:39 -0700 (MST)
+Received: (from root@localhost)
+	by einstein.tteng.com.br (8.11.6/8.11.6) id h33ICb405287
+	for parisc-linux@lists.parisc-linux.org; Thu, 3 Apr 2003 15:12:37 -0300
+Received: from rodrigo.tteng.com.br (rodrigo.tteng.com.br [192.168.0.132])
+	by einstein.tteng.com.br (8.11.6/8.11.6) with ESMTP id h33ICZd05280
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 3 Apr 2003 15:12:35 -0300
+From: Rodrigo Colao Merlo <rodrigo@tteng.com.br>
+To: parisc-linux@lists.parisc-linux.org
+Date: Thu, 3 Apr 2003 15:12:35 -0300
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Message-Id: <200304031512.35389.rodrigo@tteng.com.br>
+Subject: [parisc-linux] Applications in 64 bits userspace
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,20 +27,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I try so to compile the last bochs release onto a my unstable debian pariec
-> linux.
-> This failled at the build of docbook because 'jade' failed on following
-> trap:
-> Trace/breakpoint trap
-> 
-> # dmesg show me then:
-> break 0,0: pid=304 command='jade'
+ Hello,
+ I work for a software company in Brazil specialized in Linux 
+ development under contract by HP.
+ 
+ We're currently working in a project that needs investigate what are missing 
+in kernel to run applications in 64 bits userspace. I need only known what 
+are missing in kernel and what kernel do you recomend ? 2.4 or 2.5 ? 
 
-usually this means a program tried to branch to a NULL (or otherwise 
-invalid) address... 
+The patchs for both kernels(2.4.x and 2.5.x) are in the same stage?
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Thank you!
+
+Rodrigo
