@@ -1,43 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA10886
-	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 09:04:33 -0600
-Date: Thu, 21 Oct 1999 11:11:36 -0400 (EDT)
-From: Alex deVries <adevries@thepuffingroup.com>
-To: Magne =?iso-8859-1?Q?=D8stlyngen?= <magne@spacetec.no>
-cc: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA11322
+	for <parisc-linux@puffin.external.hp.com>; Thu, 21 Oct 1999 09:40:26 -0600
+Received: from hub-fue by rachael.franken.de
+	via rmail with uucp
+	id <m11eKL1-0027XWC@rachael.franken.de>
+	for thepuffingroup.com!parisc-linux; Thu, 21 Oct 1999 16:41:11 +0100 (MET)
+	(Smail-3.2 1996-Jul-4 #4 built DST-Sep-8)
+Date: Thu, 21 Oct 1999 17:13:23 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: =?iso-8859-1?Q?Magne_=D8stlyngen?= <magne@spacetec.no>
+Cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] So you wanna get to a prompt, eh?
-In-Reply-To: <380EEA0B.F5E469DB@spacetec.no>
-Message-ID: <Pine.LNX.4.10.9910211105330.17129-100000@vodka.thepuffingroup.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Message-ID: <19991021171323.A17549@alpha.franken.de>
+References: <Pine.LNX.4.10.9910191607110.10378-100000@localhost.localdomain> <380EEA0B.F5E469DB@spacetec.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: =?iso-8859-1?Q?=3C380EEA0B=2EF5E469DB=40spacetec=2Eno=3E=3B_from_Magne_?=
+ =?iso-8859-1?Q?=D8stlyngen_on_Thu=2C_Oct_21=2C_1999_at_12:25:15PM_+0200?=
 List-ID: <linux-parisc.vger.kernel.org>
 
-
-On Thu, 21 Oct 1999, Magne [iso-8859-1] Østlyngen wrote:
-> Is the ramdisk included in the kernel-image? When I boot the kernel,
-> I get 'no ramdisk'.
-
-To build the kernel right now, you have to download a ramdisk from
-ftp://puffin.external.hp.com/pub/parisc/binaries/ramdisks or similiar.
-
+On Thu, Oct 21, 1999 at 12:25:15PM +0200, Magne Østlyngen wrote:
 > Of course, I don't get further than 'Transferring control to kernel'..
 > :(
 > I thought I had a 715, but no, it was a 710 (Bushmaster), and that seems
 > to make a big difference.
 
-I had that problem with my 715 too, but there was an alignment mistake
-that I made that Philipp fixed yesterday.  You might want to update your
-tree and build it again.
+the cvs version from friday did only work on the A-class for me. My 715/33
+panic very early in the boot process. I only did a quick look and I guess
+it's caused by the serial console changes. I've no idea whether this is 
+already fixed.
 
-> Is anyone working on support for the 700?  I could do some work there,
-> if it was possible to compile the kernel on linux.  Is anything being
-> done on that? (What was the problem?)
+Thomas.
 
-The 700 has an ancient IO architecture that we don't have any
-documentation on, so it's not high on the list of priorities.  However, if
-someone has patches to support it, we'd be happy to apply them.
-
-As for cross compiling... we're forced to use HPUX because we don't have a
-reasonable and functioning cross linker.  More on that later.
-
-- Alex
+-- 
+   This device has completely bogus header. Compaq scores again :-|
+It's a host bridge, but it should be called ghost bridge instead ;^)
+                                        [Martin `MJ' Mares on linux-kernel]
