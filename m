@@ -1,17 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hermes.fachschaften.tu-muenchen.de (hermes.fachschaften.tu-muenchen.de [129.187.176.19])
-	by dsl2.external.hp.com (Postfix) with SMTP id 58E35482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 03:47:41 -0700 (MST)
-Date: Mon, 14 Jan 2002 11:47:16 +0100 (CET)
-From: Andreas Deresch <aderesch@fs.tum.de>
-Reply-To: Andreas Deresch <aderesch@fs.tum.de>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: sid vs woody (was 715/50)
-In-Reply-To: <20020113220723.673A7482A@dsl2.external.hp.com>
-Message-ID: <Pine.NEB.4.40.0201141140140.29083-100000@io.fachschaften.tu-muenchen.de>
+Received: from popdea-mi.deagostini.it (unknown [194.244.110.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A2C11482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 06:41:57 -0700 (MST)
+Received: from popdea-mi.deagostini.it
+	by popdea-mi.deagostini.it (8.11.0/8.10.1) with ESMTP id g0EDnZN18569
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 14:49:35 +0100
+Received: from popdea_no.igda.it (popdea_no.igda.it [140.10.9.2])
+	by popdea-mi.deagostini.it (8.11.0/8.11.0) with ESMTP id g0EDnYH18562
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 14:49:35 +0100
+Received: from deaprofessionale.it
+	by popdea_no.igda.it (8.10.1/8.10.1) with ESMTP id g0EDhD610318
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Jan 2002 14:43:13 +0100
+Message-ID: <3C42D90E.20909@deaprofessionale.it>
+Date: Mon, 14 Jan 2002 14:11:42 +0100
+From: Rodolfo Baselli <rodolfo.baselli@deaprofessionale.it>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Installation console problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +29,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> For the adventerous, edit the /etc/apt/sources.list to point
-          ~~~~~~~~~~~
-> to "sid" like this:
->
-> deb http://http.us.debian.org/debian sid main contrib non-free
-> deb http://non-us.debian.org/debian-non-US sid/non-US main contrib non-free
-Shouldn't one use stable, testing and unstable, which are of course at the
-moment linked to potato, woody and sid respectively? Otherwise you will stay
-with sid even when it is declared stable (or unavailable) - and you don't
-want that, do you?  ;-)
+Hi out there!
+I'm trying to install the 0.9.3 CD on a HP9000/E45/A3130AW.
+I managed to boot the image, but then I got this message on the serial 
+line console:
+"If this is the last message you see, you may need to switch your 
+console. This is a common symptom - search the FAQ and mailing lists"
+but I found nothing, since I'm asking you... :-(
+What's happened?
 
-ad
+Thank you for your patience.
+
+Rudy
+(Italy)
