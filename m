@@ -1,18 +1,18 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A209248AC
+Return-Path: <jbglaw@dvmwest.gt.owl.de>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BA4F487E
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun,  1 Feb 2004 16:18:33 -0700 (MST)
-Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
-	id 1AnQhp-0003DX-00 for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 01 Feb 2004 18:08:45 -0500
-Date: Sun, 1 Feb 2004 18:08:45 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+	Mon,  2 Feb 2004 00:20:53 -0700 (MST)
+Date: Mon, 2 Feb 2004 08:20:50 +0100
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040201230839.GA10328@baldric.uwo.ca>
+Subject: Re: [parisc-linux] [Update] glibc 2.3.2 bug free on hppa.
+Message-ID: <20040202072050.GB28571@lug-owl.de>
+References: <20040201230839.GA10328@baldric.uwo.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [Update] glibc 2.3.2 bug free on hppa.
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WYTEVAkct0FjGQmd"
+In-Reply-To: <20040201230839.GA10328@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,60 +23,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
 
-pa,
+--WYTEVAkct0FjGQmd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As of today the last glibc bug was fixed:
+On Sun, 2004-02-01 18:08:45 -0500, Carlos O'Donell <carlos@baldric.uwo.ca>
+wrote in message <20040201230839.GA10328@baldric.uwo.ca>:
 
-- Statically linked executable SIGSEGV's when calling dlopen. (FIXED)
+> So.... who wants to setup an automated glibc builder? :}
 
-As far as I'm concerned glibc has zero bugs, not counting the fact that
-we don't yet have a long double implementation.
+I certainly could (from hardware and shell scripting opint of view), but
+I might need some help with all the ./configury ...
 
-I know the gentoo crowd is always interested in the lastest set of
-patches, so here goes:
+Building a toolchain isn't allways a pleasuring task, esp. if you want a
+cross-toolchain. So if interested, I'd dedicate my b132l to that job:)
 
-http://www.parisc-linux.org/~carlos/glibc-hppa-patches-2004-02-01.tar.gz
+MfG, JBG
 
-At the moment you need a patched gcc in order to build a correct
-userspace, I'm trying to fix this so you don't have to:
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
+PA));
 
-http://www.parisc-linux.org/~carlos/gcc-3.3.2-fptr.diff
+--WYTEVAkct0FjGQmd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Lite-Recipe for running test-suite:
-(a) Download gcc 3.3.2 source.
-(b) Patch with fptr.diff from above.
-(c) Build gcc 3.3.2
-(d) Download glibc cvs head.
-(e) Patch with glibc patches from above.
-(f) Build glibc with the gcc from (c).
-(g) Run glibc testsuite "make -k check" using gcc from (c).
-(h) Look for errors "grep 'Error' test-result.log"
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-I'll start focusing most of my time fixing gdb now :)
+iD8DBQFAHfpSHb1edYOZ4bsRAuQ0AJ9PhQX3J4kxo3b/3fAQSpy1hFWZuwCdEbEA
+6HzEFhniP0BKKeKsgG5anQg=
+=/Nui
+-----END PGP SIGNATURE-----
 
-Background tasks:
-
-- debian-glibc support.
-- Send glibc patches upstream.
-
-I'll be looking for a helper if someone wants to look into new
-regressions as they arrive? Usually just building upstream with the
-above patches, and checking that we didn't regress is good enough.
-I imagine I could automate that... or rather someone else could? :)
-
-Foreground tasks:
-
-- atomic kernel ops
-- review gettimeofday, and possible speedups.
-- review time code in the kernel.
-* gdb support upstream <- Highest foreground priority.
-
-Thanks for all the help guys! Randolph for making me read the cffc code
-and figure out what I did wrong, that fixed "last_bug-1". Richard had me
-thinking about debian-installer and what would happen if you ripped out
-the PLT of the executable, this lead me to fix "last_bug." :)
-
-So.... who wants to setup an automated glibc builder? :}
-
-Cheers,
-Carlos.
+--WYTEVAkct0FjGQmd--
