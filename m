@@ -1,140 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from boispop1.bois.uswest.net (boispop1.bois.uswest.net [207.108.224.1])
-	by dsl2.external.hp.com (Postfix) with SMTP id 35B534A19
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Mar 2001 09:57:40 -0700 (MST)
-Sender: rbrad@dsl2.external.hp.com
-Message-ID: <3AA273E3.679B940E@uswest.net>
-Date: Sun, 04 Mar 2001 09:57:07 -0700
-From: Ryan Bradetich <rbradetich@uswest.net>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64DC64A19
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  4 Mar 2001 10:22:16 -0700 (MST)
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA15696
+	for <parisc-linux@puffin.external.hp.com>; Sun, 4 Mar 2001 10:17:13 -0700
+Sender: jgarzik@havoc.gtf.org
+Message-ID: <3AA279BC.D85A84AD@mandrakesoft.com>
+Date: Sun, 04 Mar 2001 12:22:04 -0500
+From: Jeff Garzik <jgarzik@mandrakesoft.com>
 MIME-Version: 1.0
-To: Matthew Wilcox <matthew@wil.cx>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] sym53c8xx driver with 64-bit kernel on C200.
-References: <3AA1BA3F.A7C79E31@uswest.net> <20010304041833.B1865@parcelfarce.linux.theplanet.co.uk> <3AA1E5C3.1BF30A8C@uswest.net>
+To: "David S. Miller" <davem@redhat.com>
+Cc: rhirst@linuxcare.com, matthew@wil.cx, grundler@cup.hp.com,
+	parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] tulip DMA mapping
+References: <200011092012.MAA06943@milano.cup.hp.com> <20001110101808.B11268@parcelfarce.linux.theplanet.co.uk> <200011101016.CAA12058@pizda.ninka.net> <20001110111220.J32715@linuxcare.com> <200011101126.DAA12490@pizda.ninka.net>
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-I also put some debug code in the _gsc_writel command as you
-suggested ..... Here is the output (I let it run overnight because
-the added debug to _gsc_writel caused the run-time to slow
-down quite considerably (I let it run over night....)
+"David S. Miller" wrote:
+> 
+>    Date: Fri, 10 Nov 2000 11:12:20 +0000
+>    From: Richard Hirst <rhirst@linuxcare.com>
+> 
+>    I've quoted the whole of Grants message below, so you can see the
+>    context.  It looks like tulip is treating zero as meaning it
+>    doesn't have anything to pci_unmap...
+> 
+> Thank you for the clarification.
+> 
+> Jeff, this is in fact a bug, please fix :-)
 
-SCSI subsystem driver Revision: 1.00
-sym53c8xx: at PCI bus 0, device 19, function 0
-_gsc_writel val: 9804 addr: fffffffff2000064
-_gsc_writel val: 9808 addr: fffffffff2000064
-_gsc_writel val: 980c addr: fffffffff2000064
-_gsc_writel val: 980c addr: fffffffff2000064
-_gsc_writel val: 9804 addr: fffffffff2000064
-sym53c8xx: setting PCI_COMMAND_IO PCI_COMMAND_MEMORY...
-_gsc_writel val: 9800 addr: fffffffff2000064
-_gsc_writel val: 9804 addr: fffffffff2000064
-sym53c8xx: setting PCI_COMMAND_MASTER...(fix-up)
-_gsc_writel val: 9800 addr: fffffffff2000064
-_gsc_writel val: 9804 addr: fffffffff2000064
-sym53c8xx: 53c875 detected
-sym53c875-0: rev 0x4 on pci bus 0 device 19 function 0 irq 195
-sym53c875-0: NCR clock is 40401KHz
-sym53c875-0: ID 7, Fast-20, Parity Checking
-sym53c875-0: on-chip RAM at 0xfffffffff2ffe000
-_gsc_writel val: ffffffff addr: fffffffff2ffd00c
-pc: 98dd8
-_gsc_writel val: 2000000 addr: fffffffff2ffd01c
-_gsc_writel val: 800800 addr: fffffffff2ffd010
-val: d88d0900
-addr: fffffffff2ffd02c
-_gsc_writel val: d88d0900 addr: fffffffff2ffd02c
+Fixed in the latest driver (which Alan has).
 
+Some other drivers need fixing for this, too...
 
-Anyways hope this additional information provide some insight.
-
-Thanks,
-
-- Ryan
-
-
-Ryan Bradetich wrote:
-
-> Willy,
->
-> Thanks for decoding that for me.... it does make more sense now :)
-> Here is the debug messages I added to sym53c8xx.c
->
->  pc  = NCB_SCRIPTH0_PHYS (np, snooptest);
->  printk("pc: %x\n", pc);
->  host_wr = 1;
->  ncr_wr  = 2;
->  /*
->  ** Set memory and register.
->  */
->  np->ncr_cache = cpu_to_scr(host_wr);
->  OUTL (nc_temp, ncr_wr);
->  /*
->  ** Start script (exchange values)
->  */
->  OUTL (nc_dsa, np->p_ncb);
->  printk("val: %x\n", __fswab32(pc));
->  printk("addr: %p\n", (void *)((char *)np->reg + (((size_t) &((struct ncr_reg
-> *)0)->nc_dsp))));
->  OUTL (nc_dsp, pc);
->
-> And here is the scsi boot output:
->
-> SCSI subsystem driver Revision: 1.00
-> sym53c8xx: at PCI bus 0, device 19, function 0
-> sym53c8xx: setting PCI_COMMAND_IO PCI_COMMAND_MEMORY...
-> sym53c8xx: setting PCI_COMMAND_MASTER...(fix-up)
-> sym53c8xx: 53c875 detected
-> sym53c875-0: rev 0x4 on pci bus 0 device 19 function 0 irq 195
-> sym53c875-0: NCR clock is 40401KHz
-> sym53c875-0: ID 7, Fast-20, Parity Checking
-> sym53c875-0: on-chip RAM at 0xfffffffff2ffe000
-> pc: 98dd8
-> val: d88d0900
-> addr: fffffffff2ffd02c
->
-> Here is the function for _gsc_writel:
->     void _gsc_writel(u32 val, void *addr)
->
-> So it appears to me the correct arguments are being passed to the _gsc_writel
-> function.
-> I'm not sure about the values being passed in, but the types look correct, and
-> the
-> address is properly sign extended.
->
-> - Ryan
->
-> Matthew Wilcox wrote:
->
-> > On Sat, Mar 03, 2001 at 08:45:03PM -0700, Ryan Bradetich wrote:
-> > > When I run OUTL(nc_dsp,pc) through the preprocessor the statement gets
-> > > expanded into this:
-> > >
-> > > _gsc_writel(((__builtin_constant_p((__u32)((((pc))))) ? ({ __u32 __x =
-> > > (((((pc))))); ((__u32)( (((__u32)(__x) & (__u32)0x000000ffUL) << 24) |
-> > > (((__u32)(__x) & (__u32)0x0000ff00UL) << 8) | (((__u32)(__x) &
-> > > (__u32)0x00ff0000UL) >> 8) | (((__u32)(__x) & (__u32)0xff000000UL) >>
-> > > 24) )); }) : __fswab32(((((pc))))))),(void *)((char *)np->reg +
-> > > (((size_t) &((struct ncr_reg *)0)->nc_dsp))));
-> >
-> > I guess you'd like this decoded?  Let's see.  `pc' is clearly not a constant,
-> > so __builtin_constant_p returns false, so we can simplify this down to:
-> >
-> > _gsc_writel(__fswab32(pc) ,
-> >  (void *)((char *)np->reg + (((size_t) &((struct ncr_reg *)0)->nc_dsp))));
-> >
-> > which leads me to ask `what value does `pc' have?'
-> >
-> > I suspect you want to put debugging code in _gsc_writel to tell you where
-> > you're trying to perform IO to.
-> >
-> > My suspicion is that you're writing to the 32 bit IO space in 64-bit mode,
-> > which is juts not going to work.
-> >
-> > --
-> > Revolutions do not require corporate support.
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+-- 
+Jeff Garzik       | "You see, in this world there's two kinds of
+Building 1024     |  people, my friend: Those with loaded guns
+MandrakeSoft      |  and those who dig. You dig."  --Blondie
