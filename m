@@ -1,15 +1,21 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] 2.6.11 kernel trouble
-Date: Wed, 9 Mar 2005 15:52:07 +0000
-Message-ID: <20050309155207.GA21986@parcelfarce.linux.theplanet.co.uk>
-References: <BAY24-F182B0FC44FD328F86929F1D8510@phx.gbl>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Re: OPD's on hppa-linux,
+	and what to do about __cffc's fragility.
+Date: Thu, 10 Mar 2005 10:31:20 -0500
+Message-ID: <20050310153120.GJ22872@baldric.uwo.ca>
+References: <20050308175445.GV23803@baldric.uwo.ca>
+	<200503081902.j28J2XMe002188@hiauly1.hia.nrc.ca>
+	<20050308210851.GA23803@baldric.uwo.ca>
+	<20050308222513.GF15642@bubble.modra.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Jan Prunk <janprunk@hotmail.com>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: Alan Modra <amodra@bigpond.net.au>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <BAY24-F182B0FC44FD328F86929F1D8510@phx.gbl>
+In-Reply-To: <20050308222513.GF15642@bubble.modra.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,34 +26,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Mar 09, 2005 at 11:12:51AM +0000, Jan Prunk wrote:
-> I managed to install 2.6.11-pa2-defconfig from parisc CVS, but i noticed 
-> that default config doesnt have IPv6 enabled?
-> It boots well. But I need IPv6 support, so I compiled my own kernel. It 
-> would be really good in the future if IPv6 was enabled in defconfigs, so 
-> that I could easily download and update the kernels.
-> 
-> I downloaded 2.6.11-pa2 kernel from parisc CVS, but it gave me following 
-> problems when compileing:
-> CC      init/version.o
->  LD      init/built-in.o
->  LD      .tmp_vmlinux1
-> drivers/built-in.o(.init.text+0x2f40): In function `sti_select_fbfont':
-> : undefined reference to `find_font'
-> drivers/built-in.o(.init.text+0x3040): In function `sti_select_fbfont':
-> : undefined reference to `get_default_font'
+On Wed, Mar 09, 2005 at 08:55:13AM +1030, Alan Modra wrote:
+> No, in an hppa-linux shared lib, a function pointer is accessed via a
+> word with a PLABEL32 reloc on it.  This reloc is processed before any
+> code in the shared lib runs, to point to a function descriptor created
+> by _dl_make_fptr.
 
-Ah, figured it out.  We just needed to include font.o when we have
-STI_CONSOLE selected but not FRAMEBUFFER_CONSOLE.  If you do a cvs update,
-you should be able to build with your current config.
+In shared libraries the function pointer is also allocated a PLT slot
+and an IPLT relocation. 
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+I don't understand the reasons for the allocation of a PLT slot if all
+references generated go through the local label word that has the
+PLABEL32 reloc, which now contains the address returned by
+_dl_make_ftpr.
+
+I'm still trying to understand your earlier recommendation. Do you
+suggest that the executable have PLABEL32 relocs for all the symbols,
+local and global, which assures that _dl_make_fptr creates a unique OPD?
+
+Alan, thanks for your input.
+
+c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
