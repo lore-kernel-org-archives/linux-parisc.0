@@ -1,14 +1,17 @@
 From: Joel Soete <soete.joel@tiscali.be>
-Subject: [parisc-linux] c110: kernel 2.6.10-rc1-pa17 pb to boot if a cdrom
-	is in the drive
-Date: Sat, 27 Nov 2004 19:34:24 +0000
-Message-ID: <41A8D6C0.7000306@tiscali.be>
+Subject: [id]cache meaning? [Was: [parisc-linux] 2.6.10-rc1-pa11 profile data]
+Date: Sun, 28 Nov 2004 21:01:42 +0000
+Message-ID: <41AA3CB6.5070407@tiscali.be>
+References: <20041111075431.GB9768@colo.lackof.org>
+	<20041111081154.GR15714@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii;
   format=flowed
-To: maillist parisc-linux <parisc-linux@lists.parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20041111081154.GR15714@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,85 +24,42 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 Hello all,
 
-I grab a support+ cdrom to test a scsi disk of model "SEAGATE ST34573W" with ode diskutil.
 
-As it didn't detect any disk read error, I want to reboot linux kernel on my c110 but I forget to remove the cdrom from it's drive.
-And I got following pb when I reboot linux (kernel 2.6.10-rc1-pa10:
+Randolph Chung wrote:
+>>I've collect two profiles for -64SMP and will collect
+>>some UP profiles tomorrow. profiles so far are measuring
+>>a full kernel build. I expect I'll do the same for -64UP
+>>kernels too.
+> 
+> 
+> hmm.. interesting. top consumers are (with idle loop functions removed)
+> 
+>  40646 flush_kernel_icache_page                 406.4600
+>   7364 fdsync                                   368.2000
+>  10567 flush_user_dcache_range_asm              293.5278
+>  10387 flush_user_icache_range_asm              288.5278
+
+I have additional question about such functions:
+
+	* in parisc above ..._dcache_... refer well to data cache?
+	* and respectively ..._icache_... refer to instruction cache?
+
+Have they different meaning for generic linux?
+
+The confusion came for me from:
+
+include/asm-parisc/cacheflush.h:
 [...]
-53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
-scsi1: 53c710 rev 2
-scsi1 : LASI SCSI 53c700
-   Vendor: HP        Model: DVD-ROM 6x/32x    Rev: 1.08
-   Type:   CD-ROM                             ANSI SCSI revision: 02
-  target1:0:0: Beginning Domain Validation
-scsi1: (0:0) Asynchronous
-scsi1: (0:0) Synchronous at offset 8, period 100ns
-  target1:0:0: Echo buffer size 5280 is too big, trimming to 4096
-  target1:0:0: Domain Validation detected failure, dropping back
-scsi1: (0:0) Synchronous at offset 8, period 152ns
-  target1:0:0: Domain Validation detected failure, dropping back
-scsi1: (0:0) Synchronous at offset 8, period 252ns
-  target1:0:0: Domain Validation detected failure, dropping back
-scsi1: (0:0) Synchronous at offset 8, period 400ns
-scsi1 (0:0) New error handler wants to abort command
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1 (0:0) New error handler wants device reset
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1 (0:0) New error handler wants BUS reset, cmd 2fd1ab60
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1: Bus Reset detected, executing command 2fd1ab60, slot 2fd70520, dsp 001d8528[0528]
-  failing command because of reset, slot 2fd70520, cmnd 2fd1ab60
-scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
-scsi1 (0:0) New error handler wants to abort command
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1 (0:0) New error handler wants device reset
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1 (0:0) New error handler wants BUS reset, cmd 2fd1ab60
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1: Bus Reset detected, executing command 2fd1ab60, slot 2fd70520, dsp 001d8528[0528]
-  failing command because of reset, slot 2fd70520, cmnd 2fd1ab60
-scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
-scsi1 (0:0) New error handler wants to abort command
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1 (0:0) New error handler wants device reset
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1 (0:0) New error handler wants BUS reset, cmd 2fd1ab60
-         scsi1 : destination target 0, lun 0
-         command = 0x03 00 00 00 60 00
-scsi1: Bus Reset detected, executing command 2fd1ab60, slot 2fd70520, dsp 001d8528[0528]
-  failing command because of reset, slot 2fd70520, cmnd 2fd1ab60
-scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
-scsi1 (0:0) broken device is looping in contingent allegiance: ignoring
-  target1:0:0: Domain Validation detected failure, dropping back
-scsi1: (0:0) Synchronous at offset 0, period 0ns
-  target1:0:0: Domain Validation detected failure, dropping back
-scsi1: (0:0) Asynchronous
-  target1:0:0: Domain Validation Failure, dropping back to Asynchronous
-  target1:0:0: Ending Domain Validation
-   Vendor: SEAGATE   Model: ST34573W          Rev: HP11
-   Type:   Direct-Access                      ANSI SCSI revision: 02
-  target1:0:3: Beginning Domain Validation
+#define flush_icache_page(vma,page)   do { flush_kernel_dcache_page(page_address(page)); 
+flush_kernel_icache_page(page_address(page)); } while (0)
+[...]
 
-until I remove the cdrom then it continue the boot:
-scsi1: (3:0) Asynchronous
-scsi1: (3:0) Enabling Tag Command Queuing
-scsi1: (3:0) Synchronous at offset 8, period 100ns
-  target1:0:3: Domain Validation skipping write tests
-  target1:0:3: Ending Domain Validation
-...
-
-Any idea?
-
-Thanks in advance,
+Thanks again,
 	Joel
+
+PS: I didn't suspect any error, I am just confused :(
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
