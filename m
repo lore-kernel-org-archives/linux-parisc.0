@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: jsoe0708@tiscali.be
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] dump_patche.2.4.19-pa22.gz no read acces to the world 
-In-Reply-To: Message from jsoe0708@tiscali.be
-   of "Mon, 02 Dec 2002 14:41:50 +0100." <3DA3DE6600007EB6@ocpmta4.be.tiscali.com>
-References: <3DA3DE6600007EB6@ocpmta4.be.tiscali.com> 
-Date: Mon, 02 Dec 2002 22:12:38 -0700
+To: Matthew Wilcox <willy@debian.org>
+Cc: jsoe0708@tiscali.be, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Typo? 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Fri, 29 Nov 2002 15:04:11 GMT." <20021129150411.P1586@parcelfarce.linux.theplanet.co.uk>
+References: <3DB577610000593D@ocpmta8.be.tiscali.com>  <20021129150411.P1586@parcelfarce.linux.theplanet.co.uk> 
+Date: Mon, 02 Dec 2002 22:18:25 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021203051238.C1A204829@dsl2.external.hp.com>
+Message-Id: <20021203051825.CEB414829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,13 +19,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-jsoe0708@tiscali.be wrote:
-> In ftp://ftp.parisc-linux.org/patches/ I would be interested to read
-> dump_patche.2.4.19-pa22.gz but it doesn't have read access for other.
+Matthew Wilcox wrote:
+> On Fri, Nov 29, 2002 at 10:57:50AM +0100, jsoe0708@tiscali.be wrote:
+> > Here attached some diff which seems to be typo.
+> 
+> patch looks correct to me.  grant?
 
-I put that there so a few people could test an early version.
-When Bruno is ready to publish his dump patch, it will be world readable.
-Hopefully we can just commit to our CVS though...
+yup - a typo in the debug code. I'll commit Joels patch shortly.
 
-sorry,
+thanks!
 grant
