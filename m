@@ -1,29 +1,54 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 94B8A482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:42:40 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15kSRr-0000bv-00; Fri, 21 Sep 2001 16:42:39 +0100
-Date: Fri, 21 Sep 2001 16:42:39 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>,
-	parisc-linux@lists.parisc-linux.org, baldric-exec@baldric.uwo.ca
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 98D13482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 09:57:31 -0600 (MDT)
+Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
+	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f8LGIJG32638
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 21 Sep 2001 12:18:19 -0400
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id f8LFweS29699
+	for parisc-linux@lists.parisc-linux.org; Fri, 21 Sep 2001 11:58:40 -0400
+Date: Fri, 21 Sep 2001 11:58:40 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] testandset
-Message-ID: <20010921164239.C27323@parcelfarce.linux.theplanet.co.uk>
-References: <20010921113700.A25803@megatonmonkey.net>
+Message-ID: <20010921115840.C25803@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010921113700.A25803@megatonmonkey.net>; from carlos@megatonmonkey.net on Fri, Sep 21, 2001 at 11:37:00AM -0400
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Sep 21, 2001 at 11:37:00AM -0400, Carlos O'Donell Jr. wrote:
-> I'm sitting scratching my head becaues the ./sysdeps/hppa/dl-fptr.c
-> is peppered with testandset, which used to be in pt-machine.h,
-> but is now called try_lock within pt-machine.h
+> 
+> because we're removing the testandset macro, replacing it with try_lock.
+> 
 
-um, the hppa.dpatch definitely does patch this.  perhaps you were
-overzealous with trimming the ia64 part of the patch?
+Noted.
 
--- 
-Revolutions do not require corporate support.
+> > e) Packed it all back up as tar.bz2 (./debian rules seems to call for this)
+> 
+> No, definitely not, I don't know why you think you need to do that.
+> 
+
+Thus my belief that I'm using the dpkg-dev tools wrong.
+I read the docs late at night... maybe I didn't read them at all,
+maybe I just dreamt that I did? ;)
+
+> dpkg-source -x *dsc
+> cd glibc-*
+> frob 0lists & hppa.dpatch as above
+> put a copy of the kernel includes in /usr/src/linux/include rather than setting
+> LINUX_SOURCE
+> dpkg-buildpackage -B -a -rfakeroot
+
+I will give it another go (I've done a few compiles already).
+
+My 712/60 is painfully slow :} 
+Any recommendations for a faster machine?
+
+We're almost to the point of setting up (Paul is looking at it)
+pmake to build glibc. Hey, we've got a cluster for a reason.
+
+Has anyone on this list used fai with hppa on this list?
+http://www.informatik.uni-koeln.de/fai/.
+(Hrm.. I'll post to beowulf@beowulf.org)
+
+c.
