@@ -1,13 +1,15 @@
-From: "Brian Barber" <brianbarber@myrealbox.com>
-Subject: Re: [parisc-linux] 712/100 keyboard not working in 2.6.6-pa2?
-Date: Tue, 18 May 2004 09:38:39 -0400
-Message-ID: <1084887519.d79829dcbrianbarber@myrealbox.com>
-Reply-To: brianbarber@linux.ca
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] D370 questions
+Date: Tue, 18 May 2004 15:23:50 -0600
+Message-ID: <20040518212350.GC17051@colo.lackof.org>
+References: <Pine.LNX.4.58.0405181414490.30894@brain.fop.ns.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="UTF-8"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Steve Bromwich <hppa@fop.ns.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <Pine.LNX.4.58.0405181414490.30894@brain.fop.ns.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,40 +20,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I'm running a 712/80 at home.  I'll try a new kernel in the next couple of =
-days and let you know.
+On Tue, May 18, 2004 at 02:49:30PM -0300, Steve Bromwich wrote:
+> Does anyone have any figures on how much power it really draws?
 
-BB
+sorry no
 
------Original Message-----
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: parisc-linux@lists.parisc-linux.org
-Date: Tue, 18 May 2004 09:06:29 -0400
-Subject: [parisc-linux] 712/100 keyboard not working in 2.6.6-pa2?
+> According to the sticker on the back it draws 9.2A@100V which sounds...
+>  excessive, even with the 5
+> drives in there. If I yank out some of the unnecessary cards (SCSI2 card,
+> display card, what looks like a token ring card) will that make a
+> noticeable difference to the draw?
 
+I doubt scsi/token ring will draw that much power.
+CPU, memory, disk drives, and high perf gfx cards are typically
+consuming the most power.
 
-pa,
-
-I just rebooted my 712/100 with a 2.6.6-pa2 kernel and my keyboard
-(PS/2) no longer works The keyboard works in firmware, as I have to
-issue "bo lan" to boot my kernel. The keyboard doesn't work in both the
-console and X.
-
-Anyone running a 712/100 in 2.6.6 without issues?
-
-Maybe I should just purge my .config and see what happens.
-
-*shrug*
-
-c.
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-
-
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
