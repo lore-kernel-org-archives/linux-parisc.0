@@ -1,17 +1,18 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] Re: syscall restart block.
-Date: Sun, 12 Sep 2004 17:05:11 -0700
-Message-ID: <20040913000511.GU28659@tausq.org>
-References: <20040912184553.GT1854@baldric.uwo.ca>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] Re: Another SIGSEGV, this time in /bin/sh
+Date: Mon, 13 Sep 2004 11:01:56 -0400
+Message-ID: <20040913150155.GZ1854@baldric.uwo.ca>
+References: <200409012008.i81K8mGw011839@hiauly1.hia.nrc.ca>
+	<200409110724.i8B7O1Fc002787@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
- parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: James.Bottomley@steeleye.com,
+ parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040912184553.GT1854@baldric.uwo.ca>
+In-Reply-To: <200409110724.i8B7O1Fc002787@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,30 +23,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> If we move stack trampolines to the gateway pagethen signals can't be
-> delivered to the returning process during the trampoline walk (signals
-> are not allowed to be delivered for processes on the gateway page). So
-> it fixes our hole too.
-> 
-> It also allows us to interpret PT_GNU_STACK properly, since the kernel
-> no longer needs to execute a trampoline on the users stack. The
-> toolchain can now correctly mark the stack as non-exec.
-> 
-> I only just realized we still had this hole and it might manifest itself
-> under heavy signal load.
+jda,
 
-i think the analysis is correct, but i don't like the solution! :-)
+What kernel is this btw?
 
-various pieces of software (gcc, gdb) need to be able to read and
-analyze the signal trampoline for unwinding. putting the trampoline 
-onto the gateway page will break these applications, because the 
-gateway page is not readable by the user.
+> Program terminated with signal 11, Segmentation fault.
+> Reading symbols from /usr/lib/debug/libncurses.so.5...done.
+> Loaded symbols for /usr/lib/debug/libncurses.so.5
+> Reading symbols from /usr/lib/debug/libdl.so.2...done.
+> Loaded symbols for /usr/lib/debug/libdl.so.2
+> Reading symbols from /usr/lib/debug/libc.so.6...done.
+> Loaded symbols for /usr/lib/debug/libc.so.6
+> Reading symbols from /lib/ld.so.1...done.
+> Loaded symbols for /lib/ld.so.1
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Why isn't this the debug ld.so?
+
+> Looking at %r2, it appears that the fault has occurred in an indirect
+> call from __strtoll_internal:
+
+But it's always some place different every failure...
+ 
+> It would appear that r3 has either been clobbered by the kernel, or there
+> is a problem with the memory access by which it was loaded:
+
+It's possible.
+ 
+> This should have given the r3 value.  The same procedure gave the r6 value.
+> (gdb) p/x *(*($r19 + 0x1000 + 0x354) + 0x98)
+> $19 = 0x0
+
+So you are saying that the code should have given that value, but
+something corrupted the value before it was used?
+
+It definately looks signal related. It feels a lot like some return path
+in the kernel might be clobbering r3. Time for another witch hunt?
+
+c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
