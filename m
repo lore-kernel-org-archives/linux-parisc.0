@@ -1,29 +1,22 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Fri, 19 Feb 1999 03:07:13 -0500 (EST)
-From: Alex deVries <adevries@redhat.com>
+Message-Id: <m10Dmte-0007U1C@the-village.bc.nu>
+From: alan@lxorguk.ukuu.org.uk (Alan Cox)
+Subject: Re: [hppa-linux] egcs and binutils cross compiling
 To: hppa-linux@puffingroup.com
-Message-ID: <Pine.LNX.3.96.990219030610.6493T-100000@devserv.devel.redhat.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [hppa-linux] GNU Hurd...
-Resent-Message-ID: <"33l7g.0.uF7.xnHps"@burrow.puffingroup.com>
+Date: Fri, 19 Feb 1999 10:10:58 +0000 (GMT)
+In-Reply-To: <Pine.LNX.3.96.990219020153.6493S-100000@devserv.devel.redhat.com> from "Alex deVries" at Feb 19, 99 02:15:37 am
+Content-Type: text
+Resent-Message-ID: <"UgAFZ3.0.jI7.IoIps"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+> Also, Paul is changing the ELF header structure significantly between
+> mklinux and *real* linux, so we're getting close to having to just abandon
+> all of mklinux.
 
-Has anyone hurd about the hppa port of gnu hurd?  I'm seeing some
-indications of it in the glibc source.
-
-Oh, and I'm looking at glibc porting.  Looks interesting.
-
-- Alex
-
--- 
-Alex deVries <puffin@redhat.com>     
-Red Hat Contrib Net maintainer          
-Ottawa, Canada  
-HPPA/Linux Porting Team
-
+Write an mklinux binary loader bfore you do that. Having a mostly functional
+user space while doing kernel hacks, and being able to use mklinux to mend
+the result of failed native kernels is a large win
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
