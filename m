@@ -1,70 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cs1-hq.oecd.org (cs1-hq.oecd.org [193.51.65.66])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8C05B482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 02:17:53 -0600 (MDT)
-Received: from netsweep1.oecd.org (netsweep1.oecd.org [10.102.5.110])
-	by cs1-hq.oecd.org (Postfix) with ESMTP id BD9E34B027
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 10:14:47 +0200 (CEST)
-Message-ID: <C12531D038D1D011B1DB0000F8036C280A30EB6C@eosm5.oecd.org>
-From: Arnaud.ATOCH@oecd.org
-To: grundler@puffin.external.hp.com
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] UreStoreOptical 20xt 
-Date: Tue, 4 Sep 2001 10:17:52 +0200 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E4FB0482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  4 Sep 2001 19:01:45 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.4d3e3a24) with ESMTP id saomhaaa for parisc-linux@lists.parisc-linux.org; Tue, 4 Sep 2001 17:57:34 -0700
+Date: Tue, 4 Sep 2001 18:01:28 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] documented Oops running big-endian reiserfs on parisc architecture
+Message-ID: <20010904180128.D4408@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <20010902105538.A15344@middle.of.nowhere> <20010902150023.U5126@parcelfarce.linux.theplanet.co.uk> <20010902.160441.92583890.davem@redhat.com> <20010903002514.X5126@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010903002514.X5126@parcelfarce.linux.theplanet.co.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ok, thanks for coming back .
+> > Is it impossible to handle unaligned access traps properly on
+> > parisc?  If so, well you have some problems...
+> 
+> No, we just haven't bothered to implement it yet.  Not many people
+> use IPX these days.
 
-I've learn a lot and here are my conclusions :
+It should be easy to handle kernel unalignment traps in
+parisc/kernel/unaligned.c like we currently do for userspace (in fact
+there already is some code to do this). I thought we didn't want to do
+this though?
 
-- hpfs is OS/2 specific.
-- The HP-UX fs patch came from parisc tree and did it into Linus tree
-(2.4.8).
-- HP-UX fs support in in the ufs module.
-- Correct syntaxe for mount an HP-UX fs under Linux is : mount -t ufs -o
-ufstype=hp /dev/sda /mnt/opti
-- LVM fs are not so easy to handle and for now no success.
-
-So the HP Surestore Optical 20xt is fully functionnal under Linux parisc or
-x86.
-
-Again thanks for you excellent work.
-
-Arnaud Atoch
-OECD
-Paris - France
-
------Original Message-----
-From: Grant Grundler [mailto:grundler@puffin.external.hp.com]
-Sent: Tuesday, September 04, 2001 3:34 AM
-To: Arnaud.ATOCH@oecd.org
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] UreStoreOptical 20xt 
-
-
-Arnaud.ATOCH@oecd.org wrote:
-> I've loaded hfs, hpfs, udf, ufs because it was not clear which module
-> provide HP-UX filesystem support.
-
-IIRC, should only need hpfs (which also depends on ufs?..dunno anymore)
-hfs == Apple's Hiearchial File System.
-
-> Btw does the HP-UX fs support patch made it to Linus tree ?
-
-dunno.  But didn't that patch come from the parisc-linux tree?
-
-Anyway...you might check if those disks are under LVM control.
-If so, you'll have to convert those to non-LVM storage using HPUX.
-The archives for parisc-linux mailing list have a discussion on HP's
-LVM issues.
-
-BTW, You might also try to explicitly specify the hpfs type.
-
-grant
-
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+randolph
+-- 
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
