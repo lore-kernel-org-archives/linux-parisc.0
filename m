@@ -1,48 +1,57 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA18454
-	for <parisc-linux@puffin.external.hp.com>; Wed, 3 Nov 1999 05:34:39 -0700
-Date: Wed, 3 Nov 1999 13:36:28 +0100
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Alex deVries <adevries@thepuffingroup.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Recent changes
-Message-ID: <19991103133628.G25252@mencheca.ch.genedata.com>
-References: <199911030250.TAA16563@puffin.external.hp.com> <Pine.LNX.4.10.9911022309430.5997-100000@vodka.thepuffingroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.9911022309430.5997-100000@vodka.thepuffingroup.com>; from Alex deVries on Tue, Nov 02, 1999 at 11:14:33PM -0500
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id SAA20396
+	for <parisc-linux@puffin.external.hp.com>; Wed, 3 Nov 1999 18:07:15 -0700
+Received: from sophia.localdomain (mg130-035.ricochet.net [204.179.130.35])
+	by rgate2.ricochet.net (8.9.3/8.9.3) with ESMTP id TAA14032
+	for <parisc-linux@thepuffingroup.com>; Wed, 3 Nov 1999 19:08:06 -0600 (CST)
+Received: from localhost (kvajk@localhost)
+	by sophia.localdomain (8.9.3/8.9.3) with ESMTP id RAA26027
+	for <parisc-linux@thepuffingroup.com>; Wed, 3 Nov 1999 17:12:57 -0800
+Date: Wed, 3 Nov 1999 17:12:57 -0800 (PST)
+From: Kevin Vajk <kvajk@ricochet.net>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] getdents
+In-Reply-To: <19991103031152.F25252@mencheca.ch.genedata.com>
+Message-ID: <Pine.LNX.4.10.9911031645490.25873-100000@sophia.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Tue, Nov 02, 1999 at 11:14:33PM -0500, Alex deVries wrote:
-> 
-> Matt Wilcox committed some code that I know he's unable to test, so I'm
-> mailing the bug report here.
-> 
-> The first is that building the kernel kernel will result in:
-> 
-> ld: Unsatisfied symbols:
->    hpux_brk (code)
-> 
-> so I just commented out the only reference to it, and now I end up with:
 
-You commented it out?  Aaahhh.. that was definitely the wrong thing to do.
-The reference is in the middle of the syscall table, so all subsequent
-syscalls were misnumbered.
+On Wed, 3 Nov 1999, Matthew Wilcox wrote:
 
-I've changed it to call sys_brk instead; I'm not quite sure why I had
-thought it would need to call a different function, brk looks identical
-to me on both OSes.
+> struct hpux_dirent {
+> 	ino_t	d_ino;
+> 	short	d_reclen;
+> 	short	d_namlen;
+> 	char	d_name[1];
+> };
 
-If someone would be generous enough to test the current CVS tree for me,
-I'd be grateful.  It may well be that sash is now able to perform `-ls'.
+Shouldn't that be d_name[256]?
 
-> ps.  All the puffins will be out of town in Montreal on Wednesday to
-> attend/speak at a conference and see live puffins.
+Anyhow, here's how I think it works on HP-UX (somebody please correct
+me if I'm wrong!):
 
-I'm jealous.  27 days to go.
+There is a struct dirent, which applications know about, and then
+there is a struct __dirent32 and a struct __dirent64, depending on
+whether this is a 32- or 64-bit process.  sizeof(ino_t) is the
+only difference between the 32- and 64-bit structures.
+Let's just call this struct __dirent.
 
--- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+Now, this struct __dirent is just struct dirent, with some additional
+stuff at the front.  The trouble is, I don't know what's tacked onto
+the front of it, yet...  I'm looking.  If anybody knows, please
+tell me!!!
+
+Anyhow, here's the prototype:
+    int getdents(int fd, char *buf, unsigned int count);
+It fills in buf with struct __dirent entries.  libc then turns each
+struct __dirent into a struct dirent for user consumption by just
+returning &(__dirent->d_ino).
+
+I realize this isn't much use, without a concrete definition of
+the extra field(s) of struct __dirent, but I'll get one tomorrow,
+I expect.  (I'm probably just looking in the wrong place or something.)
+
+- Kevin Vajk
+  <kvajk@ricochet.net>
