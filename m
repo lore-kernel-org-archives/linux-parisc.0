@@ -1,19 +1,19 @@
-Return-Path: <deller@gmx.de>
-Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 8E46C4840
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 72CCB4840
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 30 Jan 2004 11:54:29 -0700 (MST)
-From: Helge Deller <deller@gmx.de>
-To: parisc-linux@lists.parisc-linux.org
+	Fri, 30 Jan 2004 12:49:37 -0700 (MST)
+Date: Fri, 30 Jan 2004 12:49:36 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] sti & b2k: doesn't work?
-Date: Fri, 30 Jan 2004 19:54:18 +0100
-References: <400CB8A10000846A@ocpmta3.freegates.net>
-In-Reply-To: <400CB8A10000846A@ocpmta3.freegates.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200401301954.18808.deller@gmx.de>
-Cc: 
+Message-ID: <20040130194936.GA14621@colo.lackof.org>
+References: <20040130160958.GB12688@colo.lackof.org>
+	<4015306100003890@ocpmta1.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <4015306100003890@ocpmta1.freegates.net>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,14 +23,22 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Friday 30 January 2004 15:01, Joel Soete wrote:
-> Looking to solve the pb I encounter with b2k and pdc_console, I unfortunately
-> figure out that sti console doesn't work at all on this b2k model.
+On Fri, Jan 30, 2004 at 06:31:31PM +0100, Joel Soete wrote:
+> I so have a look:
+> in 2.4
+> CONFIG_USB_HID=y
+> CONFIG_USB_HIDINPUT=y
 > 
-> To be honnest, as the builtin gfx card is not (yet and may be never) supported,
-> I only use serial console till now.
+> Is what I have to use (I also encounter CONFIG_USB_KBD and CONFIG_USB_MOUSE
+> but not see how to select with menuconfig?)
 
-Which graphics card do you have ?
-What does "lspci -v" and/or dmesg (look for "sti:") says ?
+I don't have USB_KBD or USB_MOUSE set in my linux-2.4/.config file.
+You also have USB_OHCI?
 
-Helge
+> in 2.6 it is not yet a default: should I also used CONFIG_USB_HID=y; CONFIG_USB_HIDINPUT=y?
+
+yes, among others. See the ftp://ftp.parisc-linux.org/kernels/c3000
+for config files and kernels that work on c3000 with STI/USB console.
+All the .tgz files have: vmlinuz, .config, System.map, /lib/modules
+
+grant
