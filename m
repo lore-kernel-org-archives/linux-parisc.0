@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz [195.113.31.123])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ADB9A482E
-	for <parisc-linux@parisc-linux.org>; Mon, 10 Mar 2003 16:18:05 -0700 (MST)
-Date: Tue, 11 Mar 2003 00:18:04 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Matthew Wilcox <willy@debian.org>
-Cc: linux-kernel@vger.kernel.org, parisc-linux@parisc-linux.org
-Message-ID: <20030310231804.GB8555@atrey.karlin.mff.cuni.cz>
-References: <20030310172832.GG5278@parcelfarce.linux.theplanet.co.uk> <20030310185647.GA11310@atrey.karlin.mff.cuni.cz> <20030310195610.GJ5278@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030310195610.GJ5278@parcelfarce.linux.theplanet.co.uk>
-Subject: [parisc-linux] Re: ioctl32 cleanup -- rest of architectures
+Received: from web12508.mail.yahoo.com (web12508.mail.yahoo.com [216.136.173.200])
+	by dsl2.external.hp.com (Postfix) with SMTP id 8BE34482E
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 10 Mar 2003 22:51:12 -0700 (MST)
+Message-ID: <20030311055111.55188.qmail@web12508.mail.yahoo.com>
+Date: Mon, 10 Mar 2003 21:51:11 -0800 (PST)
+From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
+To: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20030301061712.GB5518@dsl2.external.hp.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="0-552218254-1047361871=:54200"
+Subject: [parisc-linux] XFree running on my B2000!
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +21,23 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi!
+--0-552218254-1047361871=:54200
+Content-Type: text/plain; charset=us-ascii
 
-> > So I should take arch/parisc/kernel/syscall.S and change
-> > ENTRY_DIFF(ioctl) into ENTRY_COMP(ioctl)? Great, thanx.
-> 
-> Exactly.
 
-Thanx, applied, will do "silly name fix" when I get x86-64 back into
-working state. [i2c support broke.]
-								Pavel
--- 
-Horseback riding is like software...
-...vgf orggre jura vgf serr.
+Well after my earlier stupid mistakes, getting X (KDE in my case) to run on my B2000 is a small triumph for me.  Using the A4977A PCI EG graphics card it works even though that card is officially not supported in this machine.  Had to make a few tweeks to the XFConfig-4 file to get the USB mouse to work after the initial install, but even the scroll function works on it.  So overall I am very pleased.
+
+derek
+
+
+
+---------------------------------
+Do you Yahoo!?
+Yahoo! Web Hosting - establish your business online
+--0-552218254-1047361871=:54200
+Content-Type: text/html; charset=us-ascii
+
+<P>Well after my earlier stupid mistakes, getting X (KDE in my case) to run on my B2000 is a small triumph for me.&nbsp; Using the A4977A PCI EG graphics card it works even though that card is officially not supported in this machine.&nbsp; Had to make a few tweeks to the XFConfig-4 file to get the USB mouse to work after the initial install, but even the scroll function works on it.&nbsp; So overall I am very pleased.</P>
+<P>derek</P><p><br><hr size=1>Do you Yahoo!?<br>
+<a href="http://webhosting.yahoo.com/ps/wh3/prod/">Yahoo! Web Hosting</a> - establish your business online
+--0-552218254-1047361871=:54200--
