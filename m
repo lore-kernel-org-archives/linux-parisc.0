@@ -1,30 +1,34 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc1-hems4-0-cust107.bre.cable.ntl.com [213.105.88.107])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA7374AAE
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 06:21:12 -0600 (MDT)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 2FB15B00C; Sat, 29 Sep 2001 13:19:22 +0100 (BST)
-Date: Sat, 29 Sep 2001 13:19:22 +0100
-From: Richard Hirst <rhirst@linuxcare.com>
-To: "Neulinger, Nathan" <nneul@umr.edu>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Where to get recent parisc kernels w/o building?
-Message-ID: <20010929131921.M5051@linuxcare.com>
-References: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F4@umr-mail03.cc.umr.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D7F4@umr-mail03.cc.umr.edu>; from nneul@umr.edu on Fri, Sep 28, 2001 at 03:37:57PM -0500
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06D6A489D
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 07:23:30 -0600 (MDT)
+Date: Sat, 29 Sep 2001 15:23:20 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: Albert Strasheim <fullung@ilink.nis.za>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 720 - some progress
+In-Reply-To: <20010929134528.A25612@dogbert.localdomain>
+Message-ID: <Pine.NEB.4.33.0109291517450.9349-100000@www2.scram.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Sep 28, 2001 at 03:37:57PM -0500, Neulinger, Nathan wrote:
-> Is there any convenient place to grab a 2.4.9 (or more recent) vmlinux for
-> parisc-linux other than getting it myself out of cvs? (Don't have a
-> functional build environment at the moment.)
+Hi Albert,
 
-Don't know how up to date you want, but
+> case18 is Jurij's first patch. case11 is his 2nd patch, which I had to
+> add in my hand. Then jochen is jochen's additions to that (please check
+> that I understood you correctly).
 
-ftp://ftp.de.debian.org/debian/dists/woody/main/disks-hppa/current/32/linux
+Yes, it's exactly what i meant...
 
-is 2.4.9 from 2001-09-25
+I'm currently re-evaluating the case 18 stuff. Maybe Jurijs proposal about
+checking for unaligned access using a decoded opcode might me faster than
+dereferencing 3 page tables and having to decode the opcode anyways to
+check for read vs write access...
 
-Richard
+The only question that remains is if the paging code will handle a
+recursive trap gracefully (i.e. when the unaligned access emulation code
+traps again because of a page fault).
+
+Cheers,
+Jochen
