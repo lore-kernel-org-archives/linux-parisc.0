@@ -1,20 +1,17 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 90217497F
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2D9F74831
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Mar 2004 23:00:41 -0700 (MST)
-Date: Wed, 24 Mar 2004 23:00:40 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] Spinlock patch, take 2
-Message-ID: <20040325060040.GA9159@colo.lackof.org>
-References: <40561EAF000035FA@ocpmta1.freegates.net>
-	<40561EAF00003770@ocpmta1.freegates.net>
-	<20040325072831.GT750@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040325072831.GT750@tausq.org>
-Cc: parisc-linux@lists.parisc-linux.org
+	Thu, 25 Mar 2004 00:51:56 -0700 (MST)
+Date: Thu, 25 Mar 2004 08:11:35 +0100
+Message-ID: <40561E7100006BEF@ocpmta2.freegates.net>
+In-Reply-To: <20040324210631.GN25059@parcelfarce.linux.theplanet.co.uk>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20Cast=20of=20lvalue=20warning=20in=20the=20last=20k=202=2E6=2E5=2Drc2=20with=09last=20gcc=2D3=2E3=20=28next=29?=
+To: "Matthew Wilcox" <willy@debian.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,15 +21,33 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Wed, Mar 24, 2004 at 11:28:31PM -0800, Randolph Chung wrote:
-> I think this is correct, but i'm not sure. i believe this is part of 
-> the hotplug cpu patches that are being disucssed and we are waiting for
-> that to do more smp work.
-> 
-> jejb/willy, any comments on this?
 
-I just started looking at this.
-We don't need cpu_present_map.
-We should use cpu_possible_mask in our arch/parisck/kernel/smp.c.
+>>  	}
+>>  	while (count > 3) {
+>>  		__raw_writel(*(u32 *)src, dest);
+>> -		src += 4;
+>> -		dest += 4;
+>> -		count -= 4;
+>> +		src += sizeof(u32);
+>> +		dest += sizeof(u32);
+>> +		count -= sizeof(u32);
+>
+>No, don't change these.
 
-grant
+Just to explain that it was inspired by a Andreas Jaeger's patch (http://sources.redhat.com/ml/libc-hacker/2004-03/msg00007.html)
+ and wasn't originaly requested by the warning.
+But I find it nice to add it to show the relationship between __raw_writel()
+and increment, decrement actions.
+
+That said, there are no urgency to fix it: it is still a warning with gcc-3.3
+:)
+
+Thanks for feedback,
+    Joel
+
+
+T
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
