@@ -1,29 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pogo.mtv1.steeleye.com (host194.steeleye.com [66.206.164.34])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 245384829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 10:24:18 -0700 (MST)
-Received: (from root@localhost)
-	by pogo.mtv1.steeleye.com (8.9.3/8.9.3) id JAA03420
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 09:24:03 -0800
-Received: from mulgrave (jejb@localhost)
-	by localhost.localdomain (8.11.6/linuxconf) with ESMTP id gADHNmp02426;
-	Wed, 13 Nov 2002 12:23:49 -0500
-Message-Id: <200211131723.gADHNmp02426@localhost.localdomain>
-To: Bjorn Helgaas <bjorn_helgaas@hp.com>
-Cc: Greg KH <greg@kroah.com>, Miles Bader <miles@gnu.org>,
-	"J.E.J. Bottomley" <James.Bottomley@steeleye.com>,
-	Matthew Wilcox <willy@debian.org>,
-	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
-	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Untested port of parisc_device to generic device
- interface
-In-Reply-To: Message from Bjorn Helgaas <bjorn_helgaas@hp.com>
-   of "Wed, 13 Nov 2002 09:32:00 MST." <200211130932.00864.bjorn_helgaas@hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5B552483C
+	for <parisc-linux@parisc-linux.org>; Wed, 13 Nov 2002 12:30:23 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18C3DO-0002OZ-00; Wed, 13 Nov 2002 19:30:18 +0000
+Date: Wed, 13 Nov 2002 19:30:18 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Tom <palinux@alaskatech.org>
+Cc: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] LONG pause on boot
+Message-ID: <20021113193018.P30392@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.44.0211131022210.26859-100000@wolf.alaskatech>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Nov 2002 12:23:48 -0500
-From: "J.E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+In-Reply-To: <Pine.LNX.4.44.0211131022210.26859-100000@wolf.alaskatech>; from palinux@alaskatech.org on Wed, Nov 13, 2002 at 10:26:43AM -0900
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -35,44 +25,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Absolutely.  Boxes with multiple IOMMUs (at least ia64, sparc64,
-> parisc) need to look up the correct IOMMU with which to map the
-> allocated buffer. Typically this is in the pci_dev sysdata. 
+On Wed, Nov 13, 2002 at 10:26:43AM -0900, Tom wrote:
+> Does anyone have an idea as to why such a long delay would occur there?
+> PDC has console to serial_1, which had a terminal on it. There was no
+> errors or complaints anywhere in the boot process, and none visible during
+> the kernel compile. I can provide System.map, config file, etc. if
+> desired...
 
-Actually, I think all of the DMA mapping api needs to become bus independent 
-and take a struct device * instead of a pci_dev.  How this lookup/mapping is 
-done could be abstracted per architecture inside the DMA api internals.
+Yes, it's during device walk.  The support for E class that rbrad wrote
+means that every machine with a CCIO suffers.  I suspect this'll get
+fixed fairly soon.
 
-We should also allow devices to do all the setup through bus generic 
-functions, but leave open the possibility that the driver may (once it knows 
-the bus type) obtain the pci_dev (or whatever) from the struct device if it 
-really, really has to muck with bus specific registers.
-
-As far as the SCSI mid layer goes, all we really need from struct device is 
-the dma_mask for setting up the I/O bounce buffers.
-
-The simplest way to do all of this is probably to add a pointer to the 
-dma_mask in struct device and make it point to the same thing in pci_dev.  If 
-we find we need more than this per device, it could become a pointer to a 
-generic dma information structure later on.
-
-Drivers need to advertise DMA conformance (at the moment, requires consistent 
-allocation, or fully writeback/invalidate compliant)
-
-We should also adopt Adam's pointer approach to the sync/invalidate points so 
-we can treat a dma_alloc_consistent failure as a real failure and not clutter 
-the code with writeback/invalidate fallbacks.
-
-The above changes would allow me to yank all of the pci_dev specific code out 
-of the scsi mid layer, and also introduce a mca_dev type, convert the 53c700 
-driver to using the generic dma API and *finally* get us to the point where I 
-don't have to use bounce buffers for highmem access on the MCA bus.
-
-Since the 53c700 is also used by parisc (including some machines with 
-IOMMUs---which, unfortunately, I don't have access to), it probably makes an 
-ideal conversion test case.
-
-This can probably all be wrappered so the current SCSI pci drivers don't 
-notice anything wrong.
-
-James
+-- 
+Revolutions do not require corporate support.
