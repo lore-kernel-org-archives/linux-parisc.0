@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E5F22482E
-	for <parisc-linux@parisc-linux.org>; Thu, 14 Nov 2002 15:45:03 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 18CSjK-0007GD-00; Thu, 14 Nov 2002 22:44:58 +0000
-Date: Thu, 14 Nov 2002 22:44:58 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Christoph Plattner <christoph.plattner@gmx.at>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] [IMPORTANT] PDC & Mux console major number changed
-Message-ID: <20021114224458.C21295@parcelfarce.linux.theplanet.co.uk>
-References: <20021114151344.Y30392@parcelfarce.linux.theplanet.co.uk> <3DD42259.2070106@gmx.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3DD42259.2070106@gmx.at>; from christoph.plattner@gmx.at on Thu, Nov 14, 2002 at 11:23:21PM +0100
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C0E3B482E
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Nov 2002 15:51:11 -0700 (MST)
+Message-Id: <200211142247.gAEMlRrk013091@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] strange mail routing problem for mail from this
+To: bzeeb-lists@lists.zabbadoz.net (Bjoern A. Zeeb)
+Date: Thu, 14 Nov 2002 17:47:27 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: taggart@carmen.fc.hp.com, bzeeb-lists@lists.zabbadoz.net,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <Pine.BSF.4.44.0211142219580.39295-100000@e0-0.zab2.int.zabbadoz.net> from "Bjoern A. Zeeb" at Nov 14, 2002 10:32:57 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,39 +23,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Thu, Nov 14, 2002 at 11:23:21PM +0100, Christoph Plattner wrote:
-> I do not think it is a good idea to have the same MAJOR for PDC console
-> and MUX driver. Those drivers are different in concept, and the PDC
-> driver is valid for ALL HP machines, independent if it is a 720, 712
-> 800er, ..... The PDC driver used the ROM support and can be used
-> as fall back in any case.
+> > This might be related to the "Antispam" messages that senders on the
+> > list were receiving.  I received messages of the type above.
+> 
+> ok, but why ? does parisc-linux run anything related ?
 
-I wish you'd said something before... they've been using the same major
-for months now.  Anyway, there's really no point in using the PDC console
-if the Mux console works, so I don't see why it's a bad thing.
+They don't.  It's one of the subscribers and everything about the
+message is forged.
 
-> The MUX driver is the serial driver for those special hardware of HP.
-> This driver can be handled in two ways:
-> - Let it be an own driver with special devices, like
-> 		/dev/ttyX0..7 or /dev/ttyM0..7 (or whatever ...)
-
-Too late.  Lanana already has the registration:
-
-11 char	Serial Mux device	(Linux/PA-RISC only)
-		  0 = /dev/ttyB0	First mux port
-		  1 = /dev/ttyB1	Second mux port
-		    ...
-
-(http://www.lanana.org/docs/device-list/devices.txt)
-
-> - Let it become the "default" serial device:
-> 		/dev/ttyS0../dev/ttyS7
->    This is only possible, if there is no HP with a 16450-class UART
->    and a MUX !!!
-
-There is such a machine; D & R class can have a Mux plugin card and they
-also have 16x50 UARTs provided by Lasi & Wax.  (firmware disables Lasi's
-UART when this card is plugged in, but Wax's is still active).
-
+Dave
 -- 
-Revolutions do not require corporate support.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
