@@ -1,16 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 38952482E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 May 2002 18:33:21 -0600 (MDT)
-Date: Sat, 25 May 2002 02:33:18 +0200
-Subject: Re: [parisc-linux] New testing ISO available with recent boot-floppies
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v481)
-Cc: PA/Linux <parisc-linux@lists.parisc-linux.org>
-To: "Duraid Madina" <duraid@fl.net.au>
-From: Thibaut VARENE <varenet@esiee.fr>
-In-Reply-To: <001b01c20382$918a0a90$022a17ac@simplex>
-Message-Id: <02993B31-6F77-11D6-9D55-0030656F07A2@esiee.fr>
+Received: from dsl2.external.hp.com (localhost [127.0.0.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 369B6482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 24 May 2002 18:59:49 -0600 (MDT)
+To: PA/Linux <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: Message from Thibaut VARENE <varenet@esiee.fr>
+   of "Sat, 25 May 2002 02:19:38 +0200." <19B02A72-6F75-11D6-9D55-0030656F07A2@esiee.fr>
+References: <19B02A72-6F75-11D6-9D55-0030656F07A2@esiee.fr> 
+Date: Fri, 24 May 2002 18:59:49 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020525005949.369B6482A@dsl2.external.hp.com>
+Subject: [parisc-linux] Re: New testing ISO available with recent boot-floppies
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,23 +21,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le samedi 25 mai 2002, =E0 02:24 , Duraid Madina a =E9crit :
+Thibaut VARENE wrote:
+> You can download it from these locations:
+> ftp://ftp.parisc-linux.org/cd-images/testing/palinux-2.4.18-pa25-20020524-netinst.iso
 
-> Does this new ISO include Grant's patch from yesterday, allowing =
-booting
-> on PA-8700 machines?
->
-> If so, I will be sure to test it out!
->
-> 	Duraid
->
->
-Well, Grant told me that his patch is not comitted yet, and not ready to=20=
+I've copied the 20020524 test ISO to:
+ftp://gsyprf10.external.hp.com/pub/cd-images/palinux-2.4.18-pa25-20020524-netinst.iso
 
-be.
-When it will be ready, we'll consider rebuilding the ISO :o)
+Duraid Madina wrote:
+> Does this new ISO include Grant's patch from yesterday, allowing
+> booting on PA-8700 machines?
 
+sba_pa8700 patch isn't committed yet for two reasons:
+  o It's not tested on anything but the rp24xx. I'm convinced it will
+    crash on other boxes.
+  o I'm waiting for feedback on how to properly implement
+    self-modifying code in the kernel or if it's just not worth it. 
 
-Thibaut VARENE
-PA/Linux ESIEE Team
-http://pateam.esiee.fr/
+Thibaut offered to respin the ISO (he knows how to do it now)
+with -pa26 (or whatever sba_pa8700.diff becomes).
+With that in mind, please don't download 20020524 ISO (736 MB) unless 
+you really need it *now* or want to test it on your favorite box for us.
+
+thanks,
+grant
