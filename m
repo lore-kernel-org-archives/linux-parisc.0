@@ -1,65 +1,58 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA02759
-	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 17:18:59 -0700
-Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
-	by atlrel1.hp.com (Postfix) with ESMTP id 797566F9
-	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 19:22:10 -0500 (EST)
-Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
-	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id RAA25023
-	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 17:22:09 -0700 (MST)
-Received: from localhost
-	([127.0.0.1] helo=fc.hp.com ident=bame)
-	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
-	id 14LDhQ-0002Uc-00
-	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 17:22:08 -0700
-To: parisc-linux@thepuffingroup.com
-Date: Tue, 23 Jan 2001 17:22:08 -0700
-From: Paul Bame <bame@fc.hp.com>
-Message-Id: <E14LDhQ-0002Uc-00@noam.fc.hp.com>
-Subject: [parisc-linux] Tulip bug "resolution"
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA03683
+	for <parisc-linux@puffin.external.hp.com>; Tue, 23 Jan 2001 19:03:17 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel3.hp.com (Postfix) with ESMTP id DBA8BC0A
+	for <parisc-linux@thepuffingroup.com>; Tue, 23 Jan 2001 18:07:09 -0800 (PST)
+Message-Id: <200101240209.SAA20445@milano.cup.hp.com>
+To: Paul Bame <bame@fc.hp.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Tulip bug "resolution" 
+In-reply-to: Your message of "Tue, 23 Jan 2001 17:22:08 PST."
+             <E14LDhQ-0002Uc-00@noam.fc.hp.com>
+Date: Tue, 23 Jan 2001 18:08:52 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
+Paul Bame wrote:
+> 
+> Some may remember I put a hack in drivers/net/tulip/interrupt.c to
+> avoid a null pointer deref caused by a data structure being referenced
+> before being allocated.  I've only seen this on B180 I think.
+...
+> Maybe this bug has magically disappeared but I bet not.
 
-Some may remember I put a hack in drivers/net/tulip/interrupt.c to
-avoid a null pointer deref caused by a data structure being referenced
-before being allocated.  I've only seen this on B180 I think.  I posted
-my patch to the sourceforge tulip project and received the following
-reply.  I don't know enough about the network driver stuff and our
-changes to it to figure out what to do next.  Maybe this bug has
-magically disappeared but I bet not.
+I suspect it's really fixed.
+Here are some thoughts on tulip and IRQ initialization.
 
-	-P
+In tulip_open():
+	o calls request_irq(... &tulip_interrupt, ...)
+	o call tulip_init_ring() - sets tp->rx_buffers[].skb to null
+	  before allocating them.
+	  ...
 
-------- Forwarded Message
+If a pending IRQ is waiting in Dino, the handler will get called when
+the IRQ is enabled by request_irq().  This is potentially a bug in
+the Dino IRQ handling...so I looked and saw:
 
-To: bame@puffin.external.hp.com, jgarzik@mandrakesoft.com
-Subject: [Patch #103298] [Bug #124918] packet received prior to buffer allocation cr
-Message-Id: <E14LCCc-0008AO-00@usw-sf-web2.sourceforge.net>
-Date: Tue, 23 Jan 2001 14:46:14 -0800
+	/* Emulate "Level Triggered" Interrupt
+	** Basically, a driver is blowing it if the IRQ line is asserted
+	** while the IRQ is disabled.  But tulip.c seems to do that....
+	** Give 'em a kluge award and a nice round of applause!
+	**
+	** The gsc_write will generate an interrupt which invokes dino_isr().
+	** dino_isr() will read IPR and find nothing. But then catch this
+	** when it also checks ILR.
+	*/
 
-Patch #103298 has been updated. 
+But note that tulip.c no longer exists. Tulip has been restructured
+into multiple files under drivers/net/tulip/.  The thing to do is
+reproduce this problem with current bits.  If it doesn't happen, then
+the initialization code in tulip *was* fixed and we should remove the
+comment in drivers/gsc/dino.c as well.
 
-Project: tulip
-Category: Bug fix
-Status: Open
-Submitted by: paulbame
-Assigned to : jgarzik
-Summary: [Bug #124918] packet received prior to buffer allocation cr
+grant
 
-Follow-Ups:
-
-Date: 2001-Jan-23 14:46
-By: nobody
-
-Comment:
-bogus patch -- the Tulip receiver is started up after the skbuffs are
-allocated. This user must have broken hardware.
-- -------------------------------------------------------
-
-- -------------------------------------------------------
-For more info, visit:
-
-http://sourceforge.net/patch/?func=detailpatch&patch_id=103298&group_id=13004
-
-
-------- End of Forwarded Message
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
