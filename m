@@ -1,62 +1,37 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7B57E482A
-	for <parisc-linux@parisc-linux.org>; Sat, 15 Sep 2001 11:00:49 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15iIoB-0002CM-00; Sat, 15 Sep 2001 18:00:47 +0100
-Date: Sat, 15 Sep 2001 18:00:47 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Albert Strasheim <fullung@ilink.nis.za>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@parisc-linux.org
-Message-ID: <20010915180047.M26658@parcelfarce.linux.theplanet.co.uk>
-References: <20010915143506.A431@dogbert.localdomain> <20010915142000.L26658@parcelfarce.linux.theplanet.co.uk> <20010915152407.A698@dogbert.localdomain>
-Mime-Version: 1.0
+Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 03DE2482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 15 Sep 2001 16:05:10 -0600 (MDT)
+Received: from gmx.at ([62.178.92.247]) by viefep13-int.chello.at
+          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
+          id <20010915220507.HSUQ15028.viefep13-int.chello.at@gmx.at>
+          for <parisc-linux@lists.parisc-linux.org>;
+          Sun, 16 Sep 2001 00:05:07 +0200
+Sender: chris@dsl2.external.hp.com
+Message-ID: <3BA3D090.BC0A662D@gmx.at>
+Date: Sun, 16 Sep 2001 00:05:04 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010915152407.A698@dogbert.localdomain>; from fullung@ilink.nis.za on Sat, Sep 15, 2001 at 03:24:07PM +0200
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] Re: Getting up and running
+Subject: [parisc-linux] XFree on 712/60: BLUE instead of GREY/WHITE
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Sep 15, 2001 at 03:24:07PM +0200, Albert Strasheim wrote:
-> Is someone actively working on this? I would only be too happy to help
-> test any patches on this machine.
+Hello PA Risc hackers !
 
-How does this look?  I can't test it because I don't have a 720-era machine,
-but it ought to work, I think...
+I know, this is a known problem and was discussed recently.
 
-Index: traps.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/traps.c,v
-retrieving revision 1.52
-diff -u -p -r1.52 traps.c
---- traps.c	2001/09/06 09:44:07	1.52
-+++ traps.c	2001/09/15 16:52:13
-@@ -322,6 +322,11 @@ void handle_interruption(int code, struc
- 		fault_address = regs->ior;
- 		parisc_terminate("Non access data tlb fault!",regs,code,fault_address);
- 
-+	case 18: /* PCX-S processors don't use 26, 27, 28 */
-+		if (regs->ior & 3)
-+			goto unaligned_d_access;
-+		/* Fall through */
-+
- 	case 15:
- 	case 26:
- 		fault_address = regs->ior;
-@@ -416,7 +421,8 @@ void handle_interruption(int code, struc
- 		force_sig_info(SIGSEGV, &si, current);
- 		return;
- 
--	case 28:  /* Unaligned just causes SIGBUS for now */
-+ unaligned_d_access:
-+	case 28:
- 		handle_unaligned(regs);
- #if 0
- 		die_if_kernel("Unaligned data reference", regs, code);
+What is the status about this problem. Is this fixed? Is the problem
+analysed ?
+
+But I cannot imagine, that X is running !!
+GOOD WORK !
 
 
-I'm aware it doesn't attempt to handle case 27 yet, but that shouldn't
-normally occur.
+With friendly regards
+	Christoph P.
 
 -- 
-Revolutions do not require corporate support.
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
