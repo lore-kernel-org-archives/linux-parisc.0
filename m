@@ -1,19 +1,20 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 690B94866
+Return-Path: <marc.dilasser@free.fr>
+Received: from postfix3-2.free.fr (postfix3-2.free.fr [213.228.0.169])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 69C1648FF
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat,  6 Mar 2004 07:46:20 -0700 (MST)
-Date: Sat, 6 Mar 2004 06:46:19 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: William Waites <parisc@lists.styx.org>
-Subject: Re: [parisc-linux] lstrncpy_from_user symbol not exported
-Message-ID: <20040306144619.GG1113@tausq.org>
-References: <20040304190643.GC19629@styx.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040304190643.GC19629@styx.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+	Sat,  6 Mar 2004 13:58:30 -0700 (MST)
+Received: from boris.16.168.192.in-addr.arpa (unknown [213.228.43.237])
+	by postfix3-2.free.fr (Postfix) with ESMTP id 2EE34C171
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat,  6 Mar 2004 21:58:28 +0100 (CET)
+From: Marc Dilasser <marc.dilasser@free.fr>
+To: parisc-linux@lists.parisc-linux.org
+Date: Sat, 6 Mar 2004 21:54:40 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Message-Id: <200403062154.40308.marc.dilasser@free.fr>
+Subject: [parisc-linux] Configuring serial ports
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,14 +24,13 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-In reference to a message from William Waites, dated Mar 04:
-> I tried sending this to submit@bugs.parisc-linux.org
-> but it bounced...
+Hello,
 
-commited, thanks
+I have a B180L with Debian Woody and i'm trying to connect to my ISP through a 
+56k modem.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+I don't find in the dmesg the ports address of the serial ports.
+And how to setup with setserial, baud_base seems to be 454545.
+
+Regards
+Marc Dilasser
