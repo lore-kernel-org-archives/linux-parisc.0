@@ -1,113 +1,129 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 33C384879
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 16:01:02 -0600 (MDT)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
-	id 15nSAN-00029h-00
-	for parisc-linux@lists.parisc-linux.org; Sun, 30 Sep 2001 00:00:59 +0200
-Date: Sun, 30 Sep 2001 00:00:09 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: nick@snowman.net
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: Betr.: [parisc-linux] HP C180
-Message-ID: <20010930000009.B26195@dogbert.localdomain>
-References: <20010929183349.B25897@dogbert.localdomain> <Pine.LNX.4.21.0109291237460.11237-100000@ns>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xgyAXRrhYN0wYx8y"
-In-Reply-To: <Pine.LNX.4.21.0109291237460.11237-100000@ns>
-Sender: Albert Strasheim <fullung@dogbert.localdomain>
+Received: from vopserver.pflashcom (mail.pflash.com [207.19.136.5])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 613B348DB
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 29 Sep 2001 16:20:01 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Michael S.Zick <mszick@pflash.com>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 720 - some progress
+Date: Sat, 29 Sep 2001 17:19:04 -0500
+Cc: Albert Strasheim <fullung@ilink.nis.za>
+References: <200109271442.KAA14125@mail.lokmail.net> <20010929080006.A25136@dogbert.localdomain> <01092913361601.00620@localhost.localdomain>
+In-Reply-To: <01092913361601.00620@localhost.localdomain>
+MIME-Version: 1.0
+Message-Id: <01092917190400.02926@localhost.localdomain>
 List-ID: <linux-parisc.vger.kernel.org>
 
---xgyAXRrhYN0wYx8y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Albert and other 720 folks;
 
-Hello,
+I have been reading the directions (please forgive me for that)...
 
-I generally use http://http.us.debian.org/ or http://ftp.sunet.se/pub/
-(great mirror site). Your local mirror probably only mirrors i386. I
-can't imagine why "normal" sites would want to keep around 4 GB (?) of
-HPPA packages. :-)
+It looks (reads) as if it possible to return to the faulting instruction
+(MFCTL in this case) without executing it.  If so, then adjusting the
+instruction (and space) queues within the fault handler can be avoided;
+also avoiding problems with finding the correct "following instruction"
+address.
 
-I also built a new nfsroot for myself by using debootstrap, and slightly
-modifying the "woody" script. My system isn't quite up and running yet
-(still struggling with Jurij's patch), but you could do the same if your
-HP is misbehaving.
+In general: 
+When executing a group 3 fault (MFCTL), the PSW register is
+copied into the IPSW register.  The "N" bit of the PSW (now in the IPSW)
+is a copy of the "nullify bit" of the instruction PRECEDING the
+instruction at iaoq[0].  The nullify bit of the instruction preceding the
+MFCTL instruction was "zero" (or we wouldn't be here).
+So rather than trying to adjust the addresses in the instruction/space
+queues, it should be possible to just set the "N" bit of the IPSW (or its
+representation in the interrupted registers structure).  Then, when the
+finally makes it back to a "Return from Interrupt" instruction, our faked
+"N" bit will be loaded into the PSW and the processor will skip the MFCTL
+instruction which gets returned to.
 
-Regards,
+Having zero experience with this processor and no way to test my idea; I
+have done some "cut and paste" from the documentation - perhaps somebody
+could check me on this idea.
 
-Albert
+Mike
 
-On Sat, 29 Sep 2001, nick@snowman.net wrote:
+PA-RISC 1.1 Architecture and Instruction Set Reference Manual
+HP Part Number: 09740-90039
+Printed in U.S.A. February 1994
+Third Edition
 
-> I have been rolling my own kernels, however I've been useing nfsroot with
-> one of the prebuilt tarballs.  Where can I find the latest debian hppa
-> bootdisks?  ftp.debian.org?  (I havn't noticed them in my debian mirror).
-> 	Nick
->=20
-> On Sat, 29 Sep 2001, Albert Strasheim wrote:
->=20
-> > Hello,
-> >=20
-> > Make your own:
-> >=20
-> >  palo -f /dev/null -k vmlinux -r root.bin -s lifimage [-b iplboot] \
-> >         -c "0/linux HOME=3D/ root=3D/dev/ram initrd=3D0/ramdisk"
-> >=20
-> > where vmlinux is the a kernel you've compiled from CVS (possibly using
-> > the cross-compiler) and root.bin is the latest Debian hppa bootdisk.
-> > Netboot the resulting lifimage and off you go! :-)
-> >=20
-> > Regards,
-> >=20
-> > Albert
-> >=20
-> > On Sat, 29 Sep 2001, nick@snowman.net wrote:
-> >=20
-> > > Ok, can you point me to a totally current root image?
-> > > 	Nick
-> > >=20
-> > > On Sat, 29 Sep 2001, Richard Hirst wrote:
-> > >=20
-> > > > On Wed, Sep 26, 2001 at 08:56:08AM +0200, Jurriaan Kalkman wrote:
-> > > > > >My c180 is now happily booting (current CVS kernel), however whe=
-never I
-> > > > > >try to ls some dirs (no all, this example is from /usr/bin) I ge=
-t errors
-> > > > > >along these lines
-> > > > > >ls: memory exhausted
-> > > >=20
-> > > > I had this with 2.4.9, turned out I'd booted a root fs with old lib=
-c6
-> > > > installed.  When I rebooted using a current libc6 the problem went =
-away.
-> > > >=20
-> > > > Richard
-> > > >=20
-> > >=20
-> > >=20
-> > >=20
-> > > _______________________________________________
-> > > parisc-linux mailing list
-> > > parisc-linux@lists.parisc-linux.org
-> > > http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> >=20
->=20
+- - - -
 
---xgyAXRrhYN0wYx8y
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+Trap:
+  Traps include two sorts of possibilities: either the function requested by 
+the current instruction cannot or should not be carried out, or system 
+intervention is desired by the user before or after the instruction is 
+executed. Examples of the first type include arithmetic operations that 
+result in signed overflow and instructions executed with insufficient 
+privilege for their intended function. Such instructions are normally not
+re-executed. Examples of the second type include the debugging support traps. 
+Traps are synchronous with respect to the instruction stream.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+- - - -
 
-iD8DBQE7tkRoDg+hOeRZtkMRAopnAJ94gvEiFnMfxtHVBeBA3CjvokuA0wCgjM/e
-Lfd4ARkoORQ+EZOWldkF8bk=
-=2w7X
------END PGP SIGNATURE-----
+Group 3:    
+6 Instruction TLB miss fault/Instruction page fault
+7 Instruction memory protection trap
+30 Instruction debug trap
+8 Illegal instruction trap
+9 Break instruction trap
+10 Privileged operation trap
+11 Privileged register trap
+12 Overflow trap
+13 Conditional trap
+14 Assist exception trap
+15 Data TLB miss fault/Data page fault
+16 Non-access instruction TLB miss fault
+17 Non-access data TLB miss fault/Non-access data page fault
+26 Data memory access rights trap
+27 Data memory protection ID trap
+28 Unaligned data reference trap
 
---xgyAXRrhYN0wYx8y--
+- - - -
+
+Name	Privileged register trap (11)
+
+Cause	An attempt is being made to write to a privileged space register or 	
+access a privileged control register without being at the most privileged 
+level (priv= 0)
+
+Parameters    	IIR ­ The instruction causing the trap
+IIA Queue    	Front ­ Address of the instruction causing the trap
+		Back ­ Address of the following instruction
+
+Notes    This interruption may be caused by the MOVE TO SPACE REGISTER, 
+MOVE TO CONTROL REGISTER, or MOVE FROM CONTROL REGISTER 
+instructions.
+
+- - - -
+
+Processor state is encoded in a 32-bit register called the Processor Status 
+Word (PSW). When an interruption occurs, the old value of the PSW is saved in 
+the Interruption Processor Status Word (IPSW) and usually all defined PSW 
+bits are set to 0. The format of the PSW is shown in Figure 2-9.
+ (copy is unreadable as e-mail ... "N" is bit 10dec.)
+Figure 2-9. Processor Status Word
+
+The PSW is set to the contents of the IPSW by the RETURN FROM INTERRUPTION 
+and RETURN FROM INTERRUPTION AND RESTORE instructions. The interruption 
+handler may restore the original PSW, modify selected bits, or may change the 
+PSW to an entirely new value.
+
+- - - -
+
+N    Nullify. 
+The current instruction is nullified when this bit is 1. This bit is set to 1 
+by an instruction that nullifies the following instruction.
+
+- - - -
+I am ignoring the other 423 pages of the manual - which might be a mistake.
+_ _ _ _
+
+All in all, the way I read it - we can emulate the effect of an instruction 
+prior to the MFCTL instruction that has its "nullify" bit set by setting the 
+"N" bit in the IPSW.  With the effect that when the RFI is completed, the 
+hardware will just skip the MFCTL which was just emulated.
+
+Mike
