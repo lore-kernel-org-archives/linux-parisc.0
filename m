@@ -1,30 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA22676
-	for <parisc-linux@puffin.external.hp.com>; Thu, 13 Jul 2000 09:53:39 -0600
-From: willy@thepuffingroup.com
-Received: from ottawa.linuxcare.com (HELO vodka.thepuffingroup.com) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 13 Jul 2000 15:55:13 -0000
-Date: Thu, 13 Jul 2000 10:49:50 -0400
-To: Paul Bame <bame@noam.fc.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] PALO changes
-Message-ID: <20000713104950.F3593@vodka.thepuffingroup.com>
-References: <E13CTz3-0003r4-00@noam.fc.hp.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA23865
+	for <parisc-linux@puffin.external.hp.com>; Thu, 13 Jul 2000 10:28:45 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 13 Jul 2000 16:30:17 -0000
+Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
+	id 13Clqy-0004IK-00
+	for <parisc-linux@thepuffingroup.com>; Thu, 13 Jul 2000 12:28:48 -0400
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Problem with malloc(3)/sbrk(2)/brk(2)/something
+References: <8766qb86nw.fsf@linuxcare.com>
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 13 Jul 2000 12:28:48 -0400
+In-Reply-To: David Huggins-Daines's message of "12 Jul 2000 15:55:47 -0400"
+Message-ID: <877laq2dvj.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E13CTz3-0003r4-00@noam.fc.hp.com>; from Paul Bame on Wed, Jul 12, 2000 at 03:23:57PM -0600
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Jul 12, 2000 at 03:23:57PM -0600, Paul Bame wrote:
->     PALO ***DEPENDS UPON*** a tool chain which can produce user-space
->     executables.  The "how to build a kernel" recipe does not say how
->     to produce such a tool chain, so if the recipe's tool chain is
->     all you have DON'T UPDATE PALO.
->     Note the kernel will soon depend on this too (when we get rid of
->     our kernel private copy of libmilli.a).
+David Huggins-Daines <dhd@linuxcare.com> writes:
 
-that change went into CVS sometime this week... I haven't heard anyone
-cry yet.
+> userland.  Basically I've found a minimal testcase for the problem,
+> which is that it's not possible to malloc() across a page boundary.
+
+Oops, sorry, this did not seem to be the actual problem.  It seems
+that I may have been running a kernel that was not %r8-clean, or
+something similar, because recompiling malloc.c with -ffixed-r8 made
+these test cases work :(
+
+However config.guess still doesn't work :( Once I get a working kernel
+again I suppose I'll look at that.
 
 -- 
-The Sex Pistols were revolutionaries.  The Bay City Rollers weren't.
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
