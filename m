@@ -1,15 +1,16 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: "Michael S. Zick" <mszick@wolfbutter.com>
 Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
-Date: Wed, 16 Feb 2005 23:06:34 -0500
-Message-ID: <20050217040634.GO31160@baldric.uwo.ca>
-References: <20050216065539.GB5251@colo.lackof.org>
+Date: Thu, 17 Feb 2005 19:00:37 -0600
+Message-ID: <200502171900.37179.mszick@wolfbutter.com>
+References: <42075CE800004656@mail-6-bnl.tiscali.it>
+	<200502170653.52415.mszick@wolfbutter.com>
+	<20050217210915.GB1081@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset="iso-2022-jp"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050216065539.GB5251@colo.lackof.org>
+In-Reply-To: <20050217210915.GB1081@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,56 +21,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Feb 15, 2005 at 11:55:39PM -0700, Grant Grundler wrote:
-> Bad night. :^(
-
-Yes, teh new kernels don't seem so safe. I'm not very happy to move my
-a500 out of 2.6.9-rc2-pa11... 'cause it "just works (tm)"
- 
-> Running 2.6.11-rc4-pa0-plus (equivalent to -pa1) on a500-65 (riot).
-> xfs ran spew for 48h but panic'd when I did a "cvs up -A"
-> to the CVS source tree on the same file system.
+On Thu February 17 2005 15:09, Grant Grundler wrote:
+> On Thu, Feb 17, 2005 at 06:53:52AM -0600, Michael S. Zick wrote:
+> > A suggestion...
+> > 
+> > I am tracking a timing and/or race condition(s) with x86-udev.
+> > Debian doesn't use it yet, they still have a hard disk based /dev.
 > 
-> This file system is a raid0 of 6 disks (3 per scsi bus).
-> Then default "mkfs -t xfs /dev/md0".
-
-The rp is not correct, but doesn't have to be until reload before
-function return, it can actually be used as scratch. IAOQ/IASQ is a 
-better indicator of what the cpu was doing at the time.
-
-> Kernel Fault: Code=15 regs=0000000032860d20 (Addr=00000027452d93e1)
+> OK. I'll try that tonight.
 > 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00001000000001000000000100001111 Not tainted
-> r00-03  0000000000000000 0000002647c44fe0 00000000a7f9a6c0 00000000f9aa3000
-> r04-07  0000000000000001 0000000000242000 00000000732bcab8 0000000032860ae8
-> r08-11  0000000000000001 00000000732bcab8 0000000000011c1b 0000000000000010
-> r12-15  0000000000000001 00000000f9aa3288 00000000f9aa3150 0000000000000001
-> r16-19  00000000328607b8 00000000cd3bb090 0000000032860560 00000000fd694400
-> 
-> 
-> Press Q/q to quit, Enter to continue: 
-> r20-23  00000000002a2a40 000000000000055c 0000000058414749 00000000cb631400
-> r24-27  00000027452d93e0 0000000000000001 0000000000242000 0000000000242000
-> r28-31  00000000cb631400 0000000032860cf0 0000000032860d20 0000000000000000
-> sr0-3   000000000a95f800 000000000a95f800 0000000000000000 000000000a95e800
-> sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> 
-> IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000002a1574 00000000002a1578
->  IIR: 0f021014    ISR: 0000000000000000  IOR: 00000027452d93e1
->  CPU:        0   CR30: 0000000032860000 CR31: 0000000010508000
->  ORIG_R28: 0000000000242000
->  IAOQ[0]: xfs_ialloc_read_agi+0x164/0x188 [xfs]
->  IAOQ[1]: xfs_ialloc_read_agi+0x168/0x188 [xfs]
->  RP(r2): 0xa7f9a6c0
-> Kernel panic - not syncing: Kernel Fault
+Grant,
+One of my problems was the video card driver - Manufacturers
+driver has problems, X.org driver does not.  Tossing the vendor's
+driver fixed that.
 
-The sp is aligned, and at some nominal value. I'm not sure what IIR that
-works out to be, can you disassemble your kernel at that point to see
-the faulting instruction?
+Still having network driver problems, haven't narrowed down all
+the possible causes.
 
-c.
+The hardware, software, and kernel are as similar as possible
+with the exceptions:
 
+works:
+kernel 2.6.8, gcc 3.3.4, single processor, hard-disk /dev
+problems:
+kernel 2.6.x, gcc 3.3.5, dual processor, udev /dev
+
+My guess is that the udev code is not 100% smp ready.
+But it could actually be anything, including cockpit error.
+
+Time to sneaker net (by cd-rom) code from one box
+to the other.  Will advise.
+
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
