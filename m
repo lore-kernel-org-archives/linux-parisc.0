@@ -1,55 +1,28 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA32060
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 22:55:27 -0700
-Date: Wed, 24 Jan 2001 22:58:35 -0700
-Message-ID: <20010124225835.Q4546@tausq.org>
-From: "Randolph Chung" <randolph@tausq.org>
-To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Weird compile problems
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20010124162813.G19066@achilles.net>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA01223
+	for <parisc-linux@puffin.external.hp.com>; Thu, 25 Jan 2001 02:52:39 -0700
+Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
+  by mailserv2.iuinc.com with SMTP; 25 Jan 2001 09:56:34 -0000
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 1D45AB008; Thu, 25 Jan 2001 09:44:32 +0000 (GMT)
+Date: Thu, 25 Jan 2001 09:44:32 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Greg Ingram <ingram@symsys.com>
+Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] C100 and newest CVS bits
+Message-ID: <20010125094431.L3571@linuxcare.com>
+References: <200101241708.JAA20961@milano.cup.hp.com> <Pine.LNX.4.21.0101241157050.25744-100000@maestro.symsys.com> <20010124191457.H3571@linuxcare.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
-In-Reply-To: <20010124162813.G19066@achilles.net>; from pjlahaie@linuxcare.com on Wed, Jan 24, 2001 at 04:28:13PM -0500
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010124191457.H3571@linuxcare.com>; from rhirst@linuxcare.com on Wed, Jan 24, 2001 at 07:14:57PM +0000
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Wed, Jan 24, 2001 at 07:14:57PM +0000, Richard Hirst wrote:
+> Your original message (assert size > 0) implies that one of the scsi
+> drivers has passed down a request to map a zero length buffer.  That
 
---WfZ7S8PLGjBY9Voh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That was indeed the case.  Something asks sim700.c to do a bidirectional
+trasfer of length 0.  Fixed sim700.c to not pci_map_single() on such
+requests.  Should be ok now.
 
-> I'm in the process of trying to get a working apt (still) and I'm getting
-> the following with the latest kernel (updated this morning) and the
-> toolchain from nfsroot-20010118.  The system is a C360 with 256MB of RAM.
-
-FWIW I didn't run into this problem when I tried to compile apt using
-the same nfsroot and a kernel that is a few days old (Jan20). I get
-almost all the way through the end of the build. one of the files take a
-lot of memory to build and fails on my gecko, but i've gotten it to work
-before so i'm pretty sure it'll work if i increase my swap. i'll try to
-give this a try this weekend.
-
-randolph
---=20
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
-
---WfZ7S8PLGjBY9Voh
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.1 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE6b8CLULspdC1Zp9IRAn7eAJ9IqeQ/OOI0PGJGGmgAMwgy5eAyFACffSZg
-XrV5v+u1BFPzGXbMKYp0br0=
-=1ste
------END PGP SIGNATURE-----
-
---WfZ7S8PLGjBY9Voh--
+Richard
