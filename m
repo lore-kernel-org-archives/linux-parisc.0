@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CFA5D482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Oct 2001 13:19:09 -0700 (MST)
-Message-Id: <200110302014.NAA15070@puffin.external.hp.com>
-To: joel.soete@freebel.net
-Cc: aungho <aungho@sina.com>, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] RE: RE: about linux for PA_RISC 
-In-Reply-To: Message from joel.soete@freebel.net
-   of "Tue, 30 Oct 2001 09:44:29 +0100." <1004431469.3bde686db73fb@webmail.tiscalinet.be>
-Date: Tue, 30 Oct 2001 13:14:47 -0700
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mailin3.email.bigpond.com (mailin3.bigpond.com [139.134.6.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 07878482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 31 Oct 2001 08:33:29 -0700 (MST)
+Received: from bubble.local ([144.135.24.84]) by
+          mailin3.email.bigpond.com (Netscape Messaging Server 4.15) with
+          SMTP id GM2U6J00.CZK for <parisc-linux@lists.parisc-linux.org>;
+          Thu, 1 Nov 2001 01:39:55 +1000
+Date: Thu, 1 Nov 2001 02:03:19 +1030
+From: Alan Modra <amodra@bigpond.net.au>
+To: binutils@sources.redhat.com
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011101020319.Z25115@bubble.sa.bigpond.net.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] elf32-hppa fix for new ld.so
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,34 +25,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-joel.soete@freebel.net wrote:
-> Quoting aungho <aungho@sina.com>:
-> > But other problems:
-> 
-> > 1.can HP_UX 11.11 for pa_risc 2.0 on L2000 gcc complier,we find gcc for
-> > HP_ux 11.00 for pa_risc 1.x and HP_UX 10.0 and they work normally,how to
-> > get  gcc complier for hp_ux 11.11.
+Fixes a mismatch between elf32_hppa_size_dynamic_sections, where .plt
+relocs aren't counted in the total reloc count, and finish_dynamic_sections,
+where the default elf scheme counts 'em.  Things sort-of worked previously
+due to various bugs in ld.so cancelling out.  
 
-I'm pretty sure you can use the same toolchain as on 11.00.
-HP has released a CD (and ISO image) with PA20 gcc/binutils
-toolchain for HPUX 11. The one I have in front of me is labeled:
-	"HP-UX 11.0 PA-RISC Open Source Developer Toolkit, Release 000310"
+bfd/ChangeLog
+	* elf32-hppa.c (elf32_hppa_finish_dynamic_sections): Don't count
+	.plt relocs in DT_RELASZ.
 
-I think I found it's replacement on www.software.hp.com at:
-http://www.software.hp.com/cgi-bin/swdepot_parser.cgi/cgi/displayProductInfo.pl?productNumber=B9891AA
+This means glibc/sysdeps/hppa/dl-machine.h should no longer define
+ELF_MACHINE_PLTREL_OVERLAP.
 
-
-> > 2.Linux for pa_risc is only a test version.
-> 
-> You have right. But it seems quiet stable now.
-
-I agree the kernel is stable but:
-o not everything on every platform works
-o most older servers still not support at all (eg EFGHI/K/T/V-class)
-o toolchain and kernel changes aren't fully merged upstream.
-
-It's definitely not a "mature product". But lots of cool
-things (eg XF86, iptables, apache, tcpdump, apt-get) do work
-on many parisc boxes.
-
-grant
+-- 
+Alan Modra
+ 
+Index: bfd/elf32-hppa.c
+===================================================================
+RCS file: /cvs/src/src/bfd/elf32-hppa.c,v
+retrieving revision 1.56
+diff -u -p -r1.55 elf32-hppa.c
+--- elf32-hppa.c	2001/10/31 14:58:14	1.56
++++ elf32-hppa.c	2001/10/31 15:22:53
+@@ -4273,6 +4273,19 @@ elf32_hppa_finish_dynamic_sections (outp
+ 		dyn.d_un.d_val = s->_cooked_size;
+ 	      else
+ 		dyn.d_un.d_val = s->_raw_size;
++	      break;
++
++	    case DT_RELASZ:
++	      /* Don't count procedure linkage table relocs in the
++		 overall reloc count.  */
++	      if (htab->srelplt != NULL)
++		{
++		  s = htab->srelplt->output_section;
++		  if (s->_cooked_size != 0)
++		    dyn.d_un.d_val -= s->_cooked_size;
++		  else
++		    dyn.d_un.d_val -= s->_raw_size;
++		}
+ 	      break;
+ 	    }
+ 
