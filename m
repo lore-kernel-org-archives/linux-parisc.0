@@ -1,112 +1,32 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA22216
-	for <parisc-linux@puffin.external.hp.com>; Fri, 12 May 2000 15:44:55 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA30110
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 May 2000 17:34:32 -0600
 Received: from l3107mxr.atl.hp.com (l3107mxr.atl.hp.com [15.19.254.19])
-	by palrel3.hp.com (Postfix) with ESMTP id 29CA1959
-	for <parisc-linux@thepuffingroup.com>; Fri, 12 May 2000 14:44:53 -0700 (PDT)
+	by atlrel2.hp.com (Postfix) with ESMTP id 80C65268
+	for <parisc-linux@thepuffingroup.com>; Tue, 16 May 2000 19:34:32 -0400 (EDT)
 Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
-	by l3107mxr.atl.hp.com (Postfix) with ESMTP id AAC024FE16
-	for <parisc-linux@thepuffingroup.com>; Fri, 12 May 2000 17:44:52 -0400 (EDT)
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ELF tool chain builds hello world!!! 
-In-reply-to: Your message of "Fri, 12 May 2000 15:29:27 MDT."
-             <E12qMzv-0006qV-00@endor.fc.hp.com>
-Date: Fri, 12 May 2000 15:44:52 -0600
+	by l3107mxr.atl.hp.com (Postfix) with ESMTP id 4846F4FD83
+	for <parisc-linux@thepuffingroup.com>; Tue, 16 May 2000 18:34:32 -0400 (EDT)
+To: parisc-linux@thepuffingroup.com
+Date: Tue, 16 May 2000 17:34:22 -0600
 From: Paul Bame <bame@endor.fc.hp.com>
-Message-Id: <E12qNEq-0006rD-00@endor.fc.hp.com>
+Message-Id: <E12rqr5-0000jH-00@endor.fc.hp.com>
+Subject: [parisc-linux] glibc and the rest of the world
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Tired of these yet?
+Since we've changed the assembler comment character, we changed some
+existing assembly files in glibc.  Since these changes were done in-place,
+we will be unable to fold them back into the upstream sources since
+most folks don't use our assembler.  I'm thinking we need a separate
+set of linux/hppa files instead of modifying the existing generic hppa
+ones but I don't know how to do this.  Comments?  Advice?
 
+My real motivation is to be able to track the real glibc.  I think the
+copy we have is flawed, and with our changes it's difficult to go
+to a standard release, like 2.1.3 (which I'd love to do, then we
+can use the Debian build) or keep up with recent changes.  Since I
+changed some of those assembly files too, I'd like to clean
+up my hackery a bit before getting much deeper in the mire.
 
-#!/bin/sh
-
-set -e
-set -x
-
-# Where to put the built results
-PREFIX=$HOME/xc
-
-# Where your checked-out CVS sources live
-SRC=$HOME/palinux
-
-# Where your build sub-dirs go
-BUILD=$HOME/xc-build
-
-# Clean out and/or create some things
-rm -fr $PREFIX/* $BUILD/build-gcc $BUILD/build-glibc
-mkdir -p $PREFIX $BUILD/build-gcc -p $BUILD/build-glibc
-
-PATH=$PREFIX/bin:/opt/puffin/bin:$PATH
-
-# Allow the GCC configure step to auto-configure binutils
-cd $SRC && rm -f gcc/binutils &&
-    ln -s ../binutils gcc/binutils
-
-# This'll mainly build binutils for now
-cd $BUILD/build-gcc
-$SRC/gcc/configure \
-	--disable-nls \
-	--disable-shared \
-	--target=hppa1.1-linux \
-	--host=i586-pc-linux-gnu \
-	--prefix=$PREFIX \
-	--with-headers=/opt/puffin/include \
-	--with-libs=$PREFIX/lib \
-	--with-libc
-
-make || true
-
-# build will fail inside gcc somewhere, don't stop the script for this
-
-# Install binutils anyway
-cd binutils; make install
-
-# no need to re-make this again
-rm $SRC/gcc/binutils
-
-# Get ready to re-config gcc -- should build this time
-cd $BUILD/build-gcc && rm -r *
-$SRC/gcc/configure \
-	--disable-nls \
-	--disable-shared \
-	--target=hppa1.1-linux \
-	--host=i586-pc-linux-gnu \
-	--prefix=$PREFIX \
-	--with-headers=/opt/puffin/include \
-	--with-libs=$PREFIX/lib \
-	--with-libc
-make
-make install
-
-cd $BUILD/build-glibc
-
-$SRC/glibc/configure \
-	--disable-nls \
-	--without-nls \
-	--disable-shared \
-	--disable-profile \
-	--enable-static-nss \
-	--build=i586-linux \
-	--host=hppa1.1-linux \
-	--disable-sanity-checks \
-	--with-headers=/opt/puffin/include \
-	--prefix=$PREFIX
-
-cd $BUILD/build-glibc
-make || true # fails pretty soon
-
-cp $SRC/glibc/csu/crt?.S csu/ || true
-make
-make install MAKEINFO=
-
-cd $(dirname $(find $PREFIX -name crtbegin.o))
-ln -s $PREFIX/lib/* .
-
-# Now you should be able to compile hello world
-
-# The problem is that not all the headers seem to be available, in
-# two categories: 1) some headers for example glibc/string/memory.h
-# which ought to be installed as ...../include/string/memory.h, aren't
-# and 2) things in <sys> like <sys/mount.h>
+	-Paul Bame
