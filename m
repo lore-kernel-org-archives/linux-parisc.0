@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A518C482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Jun 2002 05:09:43 -0600 (MDT)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id AA7F7159
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Jun 2002 13:09:34 +0200 (METDST)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id NAA07437 for <parisc-linux@lists.parisc-linux.org>; Mon, 3 Jun 2002 13:08:28 +0200 (METDST)
-Message-ID: <3CFB4D2A.F86BEDC4@admin.france.hp.com>
-Date: Mon, 03 Jun 2002 13:04:10 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D059482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Jun 2002 06:26:25 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17EquZ-0005yC-00; Mon, 03 Jun 2002 13:26:11 +0100
+Date: Mon, 3 Jun 2002 13:26:11 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] How retrieving HPA/SPA with the device node
-References: <3CA9BB50.1FCEBDF4@admin.france.hp.com> <20020402164417.6C6B6482A@dsl2.external.hp.com>
-Content-Type: multipart/mixed;
- boundary="------------7440234E333CE0312712558D"
+Message-ID: <20020603132611.I10366@parcelfarce.linux.theplanet.co.uk>
+References: <3CA9BB50.1FCEBDF4@admin.france.hp.com> <20020402164417.6C6B6482A@dsl2.external.hp.com> <3CFB4D2A.F86BEDC4@admin.france.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3CFB4D2A.F86BEDC4@admin.france.hp.com>; from bruno_vidal@hpfrcu03.france.hp.com on Mon, Jun 03, 2002 at 01:04:10PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,45 +25,31 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------7440234E333CE0312712558D
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+On Mon, Jun 03, 2002 at 01:04:10PM +0200, Bruno Vidal wrote:
+> 	Hi
+> Can someone can explain what is the difference between the
+> "hpa" of a scsi card (pci or not) and the "base" in the structure Scsi_Host ?
+> ....
+>     /* These parameters should be set by the detect routine */
+>     unsigned long base;
+>     unsigned long io_port;
+>     unsigned char n_io_port;
+>     unsigned char dma_channel;
+>     unsigned int  irq; 
+> ....
+> 
+> I'm pretty sure that it is the same, can someone say if it is wrong or not ?
 
-	Hi
-Can someone can explain what is the difference between the
-"hpa" of a scsi card (pci or not) and the "base" in the structure Scsi_Host ?
-....
-    /* These parameters should be set by the detect routine */
-    unsigned long base;
-    unsigned long io_port;
-    unsigned char n_io_port;
-    unsigned char dma_channel;
-    unsigned int  irq; 
-....
+I'm no expert in the SCSI layer, but it could be that base is the base
+of the _chip_ and hpa is the base of the _device_.  For example, the
+hpa of the serial device is 0xffd05000 but the chip itself is at 0xffd05800.
+According to drivers/scsi/lasi700.c:
 
-I'm pretty sure that it is the same, can someone say if it is wrong or not ?
+        unsigned long base = dev->hpa + LASI_SCSI_CORE_OFFSET;
+[...]
+        hostdata->base = base;
 
-	Thanks.
+so base != hpa.  Sorry...
 
 -- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------7440234E333CE0312712558D
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
-
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------7440234E333CE0312712558D--
+Revolutions do not require corporate support.
