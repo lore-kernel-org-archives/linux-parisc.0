@@ -1,40 +1,35 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mgw-x1.nokia.com (mgw-x1.nokia.com [131.228.20.21])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC83B482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 07:06:33 -0600 (MDT)
-Received: from esvir01nok.ntc.nokia.com (esvir01nokt.ntc.nokia.com [172.21.143.33])
-	by mgw-x1.nokia.com (Switch-2.1.0/Switch-2.1.0) with ESMTP id f9ID4jc09173
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 18 Oct 2001 16:04:45 +0300 (EET DST)
-Date: Thu, 18 Oct 2001 16:05:04 +0300
-From: Jesus Climent <climent@stybba.ntc.nokia.com>
-To: ext Richard Allen <ra@hp.is>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Debian package automake broken ?
-Message-ID: <20011018160504.C7545@pumuki.ntc.nokia.com>
-References: <20011018125654.Q8089@hp.is>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B2146482A
+	for <parisc-linux@parisc-linux.org>; Thu, 18 Oct 2001 08:11:00 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15uDsw-0007Z3-00; Thu, 18 Oct 2001 15:10:58 +0100
+Date: Thu, 18 Oct 2001 15:10:58 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Randolph Chung <randolph@tausq.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] glibc update
+Message-ID: <20011018151058.B25234@parcelfarce.linux.theplanet.co.uk>
+References: <20011017122313.C4123@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-In-Reply-To: <20011018125654.Q8089@hp.is>; from ra@hp.is on Thu, Oct 18, 2001 at 15:56:54 +0300
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011017122313.C4123@tausq.org>; from randolph@tausq.org on Wed, Oct 17, 2001 at 12:23:13PM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On 2001.10.18 15:56 ext Richard Allen wrote:
-> After upgrading lots of packages on my C360 (including automake) I 
-> get the following errors when compiling things:
-> 
-> config.status: creating xa_ext.h
-> config.status: creating db_config.h
-> + make
-> cd . && aclocal
-> cd . && automake --foreign --include-deps Makefile
-> automake: configure.in: required file `./depcomp' not found
-> make: *** [Makefile.in] Error 1
-> 
-> 
-> This particular package always made it through configure but had
-> runtime issues I was hoping to blame the gcc toolchain og glibc 
-> for.   Now that we have new versions of both, this happens :)
+On Wed, Oct 17, 2001 at 12:23:13PM -0700, Randolph Chung wrote:
+> 3. with the glibc build (using old binutils) some of the linuxthreads
+> tests are failing. in particular there's one case where it seems to get
+> into a deadlock. i left it running overnight and it's still stuck ... 
+> i don't know if this has always been broken though.
 
-is automake. It is reported in Debian Weekly report. Automake 1.5 somehow breaks
-things.
+That's right, some of the tests have always failed.  However, this was
+better than the previous state where all tests failed, so I uploaded...
 
-Jesse
+I have a list of tests which fail that I posted to parisc-linux some
+time ago.  As far as I know, nobody fixed them.
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2001-May/012560.html
+
+-- 
+Revolutions do not require corporate support.
