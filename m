@@ -1,21 +1,13 @@
-Return-Path: <carlos@baldric.uwo.ca>
-Received: from fep04-mail.bloor.is.net.cable.rogers.com
-	(fep04-mail.bloor.is.net.cable.rogers.com [66.185.86.74])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 01A854840
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  2 Feb 2004 22:50:20 -0700 (MST)
-Date: Tue, 3 Feb 2004 00:50:45 -0500
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] gcc/config/pa/ftpr.c fixes for new
-	TRAMPOLINE_TEMPLATE in hppa's glibc.
-Message-ID: <20040203055045.GC11884@baldric.uwo.ca>
-References: <20040131222832.GB19840@baldric.uwo.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040131222832.GB19840@baldric.uwo.ca>
-Cc: 
+Return-Path: <asifayaz@hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: RE: [parisc-linux] UNable to boot the cd.
+Date: Tue, 3 Feb 2004 20:13:21 +0530
+Message-ID: <8BF7471D09AA9B4190A9C96778BC2A1748D234@qcaexc02.asiapacific.cpqcorp.net>
+From: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,53 +17,61 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> I'm not quite sure what the "-4" is intended to accomplish, I figure I
-> could have prefixed the TREAMPOLINE_TEMPLATE with another jump that
-> gives the right address? That still makes for an extra jump, and I'd
-> rather have gcc just look in the right place first.
- 
-The easier fix is to change dl-machine.h to read:
+Hi Grant,=20
+Thanks For your Mail,=20
+To start with.=20
+o I Had downloaded the iso image from  =
+ftp.de.debian.org/debian-cd/3.0_r0/hppa
 
-    505 #define TRAMPOLINE_TEMPLATE(tramp_name, fixup_name)                     \
-    506   extern void tramp_name (void);                                        \
-    507   asm (                                                                 \
-    508  "      .text\n"                                                        \
-    509         /* FAKE bl to provide gcc's __cffc with fixup's address */      \
-    510  "      bl      " #fixup_name ",%r2\n" /* Runtime address of fixup */   \
-    511  "      .globl " #tramp_name "\n"                                       \
-    512  "      .type " #tramp_name ",@function\n"                              \
-    513   #tramp_name ":\n"                                                     \
-    514         /* Save return pointer */                                       \
-    515  "      stw     %r2,-20(%sp)\n"                                         \
+o Used a Winxp to write a CD!!=20
 
-The addition of the *fake* bl in that .text before the function allows gcc
-to use the "-4" lookup to find the right 17-bit displacement towards "fixup"
+o I did Search ipl from teh main menu itdid'nt  show the cdrom as an ipl =
+device.=20
+o I tried booting hte CD rom as well but to no luck..=20
+o IT's on a A500 (9000/800/A500-44)=20
 
-The patch below *can* still go into gcc, and will speedup __cffc when running
-with the new glibc.
-
-The above changes are added into the latest glibc patches at:
-http://www.parisc-linux.org/~carlos/glibc-hppa-patches-latest.tar.gz
+I wonder wat's wrong with my cd !!=20
 
 
-> 2004-01-31  Carlos O'Donell  <carlos@baldric.uwo.ca>
-> 
-> 	* gcc/config/pa/fptr.c (__canonicalize_funcptr_for_compare): Add
-> 	extra offset check for new glibc TRAMPOLINE_TEMPLATE.
-> 
-> Index: gcc/config/pa/fptr.c
-> ===================================================================
-> RCS file: /cvs/gcc/gcc/gcc/config/pa/fptr.c,v
-> retrieving revision 1.2
-> diff -u -p -r1.2 fptr.c
-> --- gcc/config/pa/fptr.c	9 Dec 2002 19:16:14 -0000	1.2
-> +++ gcc/config/pa/fptr.c	31 Jan 2004 22:18:27 -0000
-> @@ -35,7 +35,7 @@ Boston, MA 02111-1307, USA.  */
->     the template should it be necessary to change the current branch
->     position.  */
->  #define NOFFSETS 2
-> -static int fixup_branch_offset[NOFFSETS] = { 32, -4 };
-> +static int fixup_branch_offset[NOFFSETS] = { 36, 32, -4 };
->  
->  #define GET_FIELD(X, FROM, TO) \
->    ((X) >> (31 - (TO)) & ((1 << ((TO) - (FROM) + 1)) - 1))
+Thanks & Regards=20
+Asif=20
+
+
+
+
+
+-----Original Message-----
+From: Grant Grundler [mailto:grundler@parisc-linux.org]
+Sent: Sunday, February 01, 2004 10:22 AM
+To: AYAZ, MOHAMMED ASIF
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] UNable to boot the cd.
+
+
+On Sun, Feb 01, 2004 at 04:46:01AM +0530, AYAZ, MOHAMMED ASIF wrote:
+> Hello .=20
+> I have downloaded  the  iso images from
+> ftp.de.debian.org/debian-cd/3.0_r0/hppa
+> and made a bootable cd of the image..
+
+Can you elaborate (give precise steps) on how you accomplished this?
+The ISO images are "raw" files. ie burn them bit-for-bit to the CD.
+On a linux box, use
+	cdrecord -v dev=3D0,0,0 -data debian-30r0-hppa-binary-1.iso
+
+where "0,0,0" matches the output from "cdrecord -scanbus".
+
+
+> All I  did  is to search for ipl from the PDC main menu. but it
+> doesnt show the cdrom as an ipl device.=20
+
+It will show up. If you absolutely can't get this work,
+start thinking about doing a bootp/net install.
+
+> I'm testing this on a A class server !!=20
+
+Which one? A180 or A500?
+It doesn't really matter since palo is "smart" and will pick
+the right kernel (32 vs 64 bit). I'm just curious.
+
+grant
