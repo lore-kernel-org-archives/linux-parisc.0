@@ -1,43 +1,60 @@
-Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id BAA10020
-	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Nov 2000 01:28:57 -0700
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by cosrel1.hp.com (Postfix) with ESMTP id CBB186BC
-	for <parisc-linux@puffin.external.hp.com>; Thu, 23 Nov 2000 01:31:25 -0700 (MST)
-Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id BAA07840 for parisc-linux@puffin.external.hp.com; Thu, 23 Nov 2000 01:29:55 -0700 (MST)
-Date: Thu, 23 Nov 2000 01:29:55 -0700 (MST)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200011230829.BAA07840@udlkern.fc.hp.com>
+Received: from localhost.localdomain (ottawa.linuxcare.com [216.208.98.2])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id OAA28375
+	for <parisc-linux@puffin.external.hp.com>; Fri, 24 Nov 2000 14:52:49 -0700
+Received: (from pjlahaie@localhost)
+	by localhost.localdomain (8.11.0/8.11.0) id eAOLuG401524
+	for parisc-linux@puffin.external.hp.com; Fri, 24 Nov 2000 16:56:16 -0500
+Date: Fri, 24 Nov 2000 16:56:16 -0500
+From: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
 To: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] CONFIG_DMB_TRAP diff
+Message-ID: <20001124165616.B868@achilles.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-md5;
+	protocol="application/pgp-signature"; boundary="GRPZ8SYKNexpdSJ7"
+Subject: [parisc-linux] boot-floppies dependancies
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Modra wrote:
->
-> gdb will eventually want to use this trap too.
->
 
-Cool! However, data memory break traps for user translations are a little
-tougher. There are some small modifications in the machine dependent code
-that I can make to make sure the B bit stays set during most VM operations
-on a page. However, since the machine independent part of the VM system
-doesn't know anything about this bit (nor should it), it won't be preserved
-if the page is paged out (and subsequently paged back in). This could
-be fixed fairly easily with some changes to the machine independent code,
-but I don't think that would be appropriate.
+--GRPZ8SYKNexpdSJ7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Some potential solutions (each has its problems):
+I would like to know if anyone has built any of the following packages
+that are needed for the boot-floppies.
 
-1) Just document the fact that the feature may not work on systems with
-low memory. It's a parisc only feature, so perhaps we could live with that.
+Currently, the missing deps are:
 
-2) Lock the page in memory (using the mlock interface) when we set the B
-bit on a page.
+cspsfonts
+man-db
+tetex-bin
+recode
+cslatex
+libpaperg
+tetex-extra
+libnewt-dev
+libgd1g-dev
+gawk
+libi18n-langtags-perl
+dpkg-awk
+debiandoc-sgml
 
+I'm currently trying to get a working apt, since the one of pehc and the .iso
+seem to be broken (no xfer methods).  I'll let everyone know when a working
+copy will be available.
 
-Just some thoughts on the subject.
+						- Paul
 
-John Marvin
-jsm@fc.hp.com
+--GRPZ8SYKNexpdSJ7
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE6HuP/8ggPQthPCzcRAnyKAJ0fyraVXEvlI0yQLsli7FlnUUAPdwCfSyv/
+YgAxOcVMDgWfHBc7lneuc1Y=
+=tScM
+-----END PGP SIGNATURE-----
+
+--GRPZ8SYKNexpdSJ7--
