@@ -1,32 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA21627
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 12:25:59 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA21817
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 12:30:15 -0700
 From: Hugo.van.der.Kooij@caiw.nl
-Date: Wed, 15 Mar 2000 19:26:08 +0100 (CET)
-To: Ulrich Strelow <ulrich_strelow@yahoo.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ramdisk problem with ELF kernel
-In-Reply-To: <20000315113909.28758.qmail@web501.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.10.10003151921470.21833-100000@bastion.hugo.vanderkooij.org>
+Date: Wed, 15 Mar 2000 19:30:40 +0100 (CET)
+To: Philipp Rumpf <prumpf@inwestnet.de>
+Cc: "Brian S. Julin" <bri@mojo.calyx.net>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Cross compiler -- on Alpha?
+In-Reply-To: <20000315182657.D673@abacus.local>
+Message-ID: <Pine.LNX.4.10.10003151927530.21833-100000@bastion.hugo.vanderkooij.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 15 Mar 2000, Ulrich Strelow wrote:
+On Wed, 15 Mar 2000, Philipp Rumpf wrote:
 
-> Because there is currently no network driver for the
-> 715/33 I need to boot with a ramdisk. In former times
-> there was copying ramdisk.bin to /usr/src/linux and
-> "make Image", but how to do this now (when "make
-> Image" no longer works)?
+> > Will the new ELF compiler/binutils work on an Alpha
+> > Linux box?  (I wouldn't think it would make a difference
+> > what the host was but then there may be a subtlety there
+> > I'm unaware of.)  My x86 is out of disk.
+> 
+> It might.  The only real difference between alpha and i386 to run a
+> cross-compiler on is sizeof(long), and I don't think we rely on that
+> too heavily in gcc.
 
-Seems I may need to dust off my 715/33 here and see how far things have
-come by now. Considering the size of the task and the limited resources it
-is executed very well so far.
+Wouldn't big endian vs little endian be an issue?
 
-Thanks to all those involved. And Let me know where I can lend a hand as a
-non-programmer. (Ok. I wrote some PHP3 stuff but is a different thing.) I
-do have some skill involving documentation. (DocBook SGML by preferences.)
+I know there is plenty of software out there that does not use proper
+handling of pointers and that will break on my Alpha while you can get
+away with it on intel based machines. The problem is due to bad coding but
+it could be a good case to try and see if the code is clean enough.
 
 Hugo.
 
