@@ -1,44 +1,62 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Thu, 4 Feb 1999 18:53:10 -0500 (EST)
-From: Christopher Beard <cjbeard@istar.ca>
+Date: Sat, 6 Feb 1999 18:32:09 -0800 (PST)
+From: Jason Eckhardt <jason@equator.com>
+Message-Id: <199902070232.SAA16244@gatekeeper.equator.com>
 To: hppa-linux@puffingroup.com
-Message-ID: <Pine.LNX.4.04.9902041841450.4589-100000@sprite>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [hppa-linux] A few things
-Resent-Message-ID: <"65o8s1.0.yE7.hnaks"@burrow.puffingroup.com>
+Subject: Re: [hppa-linux] Cross compile setup
+Cc: jason@gatekeeper.equator.com
+Resent-Message-ID: <"xednm.0.b3.WLHls"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
 
-We now have an anonymous CVS repository installed on burrow. The top-level
-module is `hppa-linux' and your CVSROOT environment variable should be set
-to `:pserver:anonymous@burrow.puffingroup.com:/home/cvs/cvsroot'. Just tap
-the enter key when prompted for a password. If you have not used CVS
-before, or need help, please look at the web page - I've included a link
-to some documentation.
+> From hppa-linux-request@puffingroup.com Thu Feb  4 03:45:11 1999
+> From: "Strelow, Ulrich" <Ulrich.Strelow@Schering.DE>
+> To: hppa-linux@puffingroup.com
+> Date: Thu, 4 Feb 1999 11:59:00 +0100 
+> Subject: [hppa-linux] Cross compile setup
+>
+...
 
-There is also a secondary mailing list entitled `hppa-linux-cvs' which
-will be inundated with copious quantities of e-mail from the CVS
-repository as revisions are checked in. This list is not the faint of
-heart, and really should only be used by active developer's to keep track
-of the project and recent code changes.
+>      Then the machine stops with the LEDs 123568 on which means "HPMC
+> due 
+>      to Bus Error".
+>      
+>      Unfortunately no one on the mklinux mailing list had any help for
+> that 
+>      problem (probably because the main developers were no longer
+> working 
+>      on/with mk-linux).
+>      
+>      So my question here is the following:
+>      
+>      Is the hppa-linux cross-compile setup for binutils and egcs 
+>      possible from linux-x86 ?  
+>      
 
-Write access to the CVS repository will be granted only to those with code
-to submit to the project. To obtain an account one must apply to
-cjbeard@puffingroup.com, with their preferred login name and a crypted
-password. In order to maintain our own sanity, and that of the repository,
-we will not be giving out accounts to just anyyone, only those who have
-something substantial to contribute. Minor patches can be done by those
-with write access.
+ I have the same problem. Mklinux won't boot on my C160 (even in duplex
+ mode through the serial port). So I'll have to
+ be working from either an HPUX or Linux-x86 build environment. What build
+ environment are most of you planning on using?
 
-Thanks go out to Phil Schwan for helping configuring and maintain the CVS
-repository.
+ Also, a question to others:
+ I have started to tinker with writing an IPL for the native
+ port (i.e. bootstrap code). I've been compiling/assembling within HPUX,
+ but I can't seem to ascertain how to get "ld" to generate a "straight"
+ binary file rather than a SOM object. The bootstrap code obviously
+ has to be a plain binary to work. Note that the version of gcc I picked
+ up from www.software.hp.com utilizes the HP linker, not GNU ld.
 
---
-*> Christopher Beard                                       nym on LinuxNET
-*>                       "Nothing is foolproof 
-*>                        to a sufficiently talented fool."
+ I tried to use "objcopy -O binary some_file binary_file" with no luck. The
+ resulting file was stripped of the SOM garbage, but unfortunately most
+ of my code and data was also stripped away and the file was mostly zeroes!! 
+ Any ideas on how to generate plain binary? Is the above behavior a objcopy
+ bug or was this pilot error?
+
+ Regards, Jason.
+
+
+
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
