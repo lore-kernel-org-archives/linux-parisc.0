@@ -1,14 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Fri, 6 Dec 2002 21:43:14 -0700
-To: "John K." <jkirk9@cfl.rr.com>
-Cc: parisc-linux Mailing list <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Bad IPL checksum error on 710
-Message-ID: <20021207044314.GA31907@dsl2.external.hp.com>
-References: <NDBBLBLICLEJGEFEEOCIIEPJCCAA.jkirk9@cfl.rr.com>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ACDD14829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  8 Dec 2002 15:09:21 -0700 (MST)
+Date: Sun, 8 Dec 2002 17:09:18 -0500
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: libc-alpha@sources.redhat.com
+Cc: debian-glibc@lists.debian.org,
+	parisc-linux@lists.parisc-linux.org
+Message-ID: <20021208220918.GC32062@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <NDBBLBLICLEJGEFEEOCIIEPJCCAA.jkirk9@cfl.rr.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+Content-Type: multipart/mixed; boundary="U+BazGySraz5kW0T"
+Subject: [parisc-linux] [PATCH] Add SHMLBA define to shm.h (HPPA).
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,18 +22,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Dec 06, 2002 at 03:46:06PM -0500, John K. wrote:
-> I downloaded debian-30r0-hppa-binary-1.iso and burned a CD.
-...
-> Attempting to load IPL
-> IPL error: Bad IPL checksum
-...
-> The simple question is what do I do now?
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The CD is a coaster.
-The ISO definitely works on all the machines I have around here.
 
-I suggest using a linux machine with a CD writer and "cdrecord -data".
-The "cdrecord How-to" describes the 2-3 stesp - very simple.
+libc-alpha,
 
-grant
+Kernel headers and glibc headers are mildly out of sync on HPPA, I'll
+keep my eye out for further inconsistencies. This particular issue was
+found while building the latest debian X packages. Odd that it didn't 
+turn up before.
+
+c.
+---
+
+2002-12-07  Carlos O'Donell  <carlos@baldric.uwo.ca>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/shm.h: Added SHMLBA define.
+
+
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=03-glibc23-hppa-shm
+
+--- glibc-2.3.1/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2002-12-07 19:42:52.000000000 -0500
++++ glibc-2.3.1/sysdeps/unix/sysv/linux/hppa/bits/shm.h	2002-12-07 19:33:10.000000000 -0500
+@@ -36,6 +36,8 @@
+ #define SHM_LOCK	11		/* lock segment (root only) */
+ #define SHM_UNLOCK	12		/* unlock segment (root only) */
+ 
++/* Segment low boundary address multiple */
++#define SHMLBA 0x00400000   /* attach addr needs to be 4 Mb aligned */
+ 
+ /* Type to count number of attaches.  */
+ typedef unsigned long int shmatt_t;
+
+--U+BazGySraz5kW0T--
