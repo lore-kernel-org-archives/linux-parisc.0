@@ -1,24 +1,30 @@
 Return-Path: <hppa-linux@thepuffingroup.com>
-Date: Fri, 12 Mar 1999 12:28:40 +0200 (EET)
-From: Hannu Martikka <martikka@stybba.ntc.nokia.com>
-To: hppa-linux@thepuffingroup.com
-Subject: Re: [hppa-linux] Boot #4
-In-Reply-To: <36E8BA21.73C516FC@home.com>
-Message-ID: <Pine.HPX.4.05.9903121227410.1334-100000@gamgee.ntc.nokia.com>
+Message-Id: <199903120947.KAA28823@be3334.schering.de>
+From: "Strelow, Ulrich" <Ulrich.Strelow@Schering.DE>
+To: ",hppa-linux@thepuffingroup.com " <hppa-linux@thepuffingroup.com>
+Subject: Betr.: [hppa-linux] Boot #4 and source on ftp site
+Date: Fri, 12 Mar 1999 10:45:00 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Resent-Message-ID: <"wmtuN.0.Sb4.onEws"@sod.res.cmu.edu>
+Content-Type: text/plain
+Resent-Message-ID: <"46Ezl1.0.io4.G7Gws"@sod.res.cmu.edu>
 Reply-To: hppa-linux@thepuffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Hi!
+     Hi all,
+     
+     boot test #4 is working again on my 715/33 booted via rbootd. I can
 
-Tested bootstrap #4 with 735 (rbootd) and it worked OK.
-
-- Goodi
-"The linuX Files -- The Source is Out There."
-ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø¤º°`°º¤ø,¸¸,ø¤º°
-
+     see the spinning cursor. No characters dropped or overwritten.
+     
+     I can't wait to see vmlinux 0.1 boot...
+     Ulrich
+     ---------------------------------------------
+     Ulrich Strelow
+     <ulrich.strelow@schering.de or
+     ulrich_strelow@csi.com>
+     Berlin, Germany
+     
+     
 
 -------------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
