@@ -1,29 +1,39 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA17989
-	for <parisc-linux@puffin.external.hp.com>; Sat, 16 Dec 2000 21:15:42 -0700
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: sieler@allegro.com (Stan Sieler), matthew@wil.cx (Matthew Wilcox),
-        jes@linuxcare.com (Jes Sorensen), alan@linuxcare.com.au (Alan Modra),
-        jsm@udlkern.fc.hp.com (John Marvin), parisc-linux@thepuffingroup.com,
-        lamont@hp.com
-Subject: Re: [parisc-linux] ldcw in __pthread_acquire 
-In-reply-to: Your message of "Sun, 17 Dec 2000 02:38:10 GMT."
-             <E147TiI-0003X1-00@the-village.bc.nu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA18603
+	for <parisc-linux@puffin.external.hp.com>; Sat, 16 Dec 2000 21:30:53 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 17 Dec 2000 04:33:47 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id PAA16883;
+	Sun, 17 Dec 2000 15:31:19 +1100
+Date: Sun, 17 Dec 2000 15:31:19 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Jes Sorensen <jes@linuxcare.com>
+cc: Matthew Wilcox <matthew@wil.cx>, John Marvin <jsm@udlkern.fc.hp.com>,
+        parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] ldcw in __pthread_acquire
+In-Reply-To: <d38zpgdo4f.fsf@lxplus015.cern.ch>
+Message-ID: <Pine.LNX.4.21.0012171457580.14217-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Date: Sat, 16 Dec 2000 21:18:25 -0700
-From: LaMont Jones <lamont@hp.com>
-Message-Id: <20001217041834.39E581872C@security.hp.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Thats how Mozilla does it, and with a short spin in user space performance
-> is way higher than always bugging the kernel
+On 16 Dec 2000, Jes Sorensen wrote:
 
-The hp-ux implementation of msem_lock() takes the advantages of both:
-Gateway to kernel mode (very light weight - one predicted branch beyond
-the function call), and then it does the spin and wait as needed.  Very
-low cost, with the kernel-mode blocking easier to do that a combined
-user-and-kernel-mode implementation.
+> >>>>> "Matthew" == Matthew Wilcox <matthew@wil.cx> writes:
+> 
+> Matthew> On Fri, Dec 15, 2000 at 06:32:12PM +0100, Jes Sorensen wrote:
+> >>  We probably cannot, we can however create our own version of the
+> >> header file for the parisc port.
+> 
+> Matthew> That was what I meant.  the question is, would it _work_?  Or
+> Matthew> is this struct embedded in other structs at
+> Matthew> non-16byte-aligned positions?
+> 
+> That can be solved by adding an aligned attribute to the struct definition.
 
-Just my $.02,
-lamont
+Doesn't a struct automatically inherit the maximum alignment of its
+fields?
+
+-- 
+Linuxcare.  Support for the Revolution.
