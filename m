@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4062C482C
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  9 Dec 2001 12:01:49 -0700 (MST)
-Received: from gmx.at ([62.178.92.247]) by viefep12-int.chello.at
-          (InterMail vM.5.01.03.06 201-253-122-118-106-20010523) with ESMTP
-          id <20011209190137.JAPJ1239.viefep12-int.chello.at@gmx.at>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Sun, 9 Dec 2001 20:01:37 +0100
-Message-ID: <3C13B510.89F2F5B2@gmx.at>
-Date: Sun, 09 Dec 2001 20:01:36 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 440D5482C
+	for <parisc-linux@parisc-linux.org>; Sun,  9 Dec 2001 13:12:29 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id fgwnjaaa for parisc-linux@parisc-linux.org; Sun, 9 Dec 2001 13:07:05 -0700
+Date: Sun, 9 Dec 2001 12:12:19 -0800
+From: Randolph Chung <tausq@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20011209201219.GT1515@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Status of HP 9000 D350
+Subject: [parisc-linux] Tester needed for cdrecord on parisc-linux
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,21 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello PA-RISC hackers.
+I just built cdrecord and friends for hppa-linux (there's a small patch
+needed that has been submitted to the BTS). Unfortunately I do not have
+a parisc-linux setup to test it with. Can someone here please give it a
+try and report the results?
 
-What is the status of the 9000 D350 server machine and Linux.
-Perhaps I have a chance to get one, and I saw, there are no
-"UNDOCUMENTED DRIVERS", so I think Linux will run on that
-machine. Is this correct ?
+http://people.debian.org/~tausq/hppa/
+	cdrecord_1.10-2_hppa.deb 
+	mkisofs_1.10-2_hppa.deb 
+	cdda2wav_1.10-2_hppa.deb 
 
-Any experiences here ?
+If you are not familiar with CD-writing under Linux, you may want to
+refer to:
+http://www.linux.com/howto/CD-Writing-HOWTO.html
 
-With friendly regards
-Christoph P.
-
-
-
+thanks!
+randolph
 -- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Debian Developer <tausq@debian.org>
+http://www.TauSq.org/
