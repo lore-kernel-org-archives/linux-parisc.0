@@ -1,31 +1,36 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id VAA13193
-	for <parisc-linux@puffin.external.hp.com>; Tue, 6 Jun 2000 21:41:55 -0600
-Sender: rbrad@mailserv2.iuinc.com
-Message-ID: <393DC314.727E2E4D@uswest.net>
-Date: Tue, 06 Jun 2000 21:35:48 -0600
-From: Ryan Bradetich <rbradetich@uswest.net>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA18335
+	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Jun 2000 06:14:55 -0600
+Message-ID: <20000607121501.19560.qmail@web514.mail.yahoo.com>
+Date: Wed, 7 Jun 2000 05:15:01 -0700 (PDT)
+From: Ulrich Strelow <ulrich_strelow@yahoo.com>
+Subject: Re: [parisc-linux] 715/33 booting from SCSI disk nearly ok
+To: parisc-linux@thepuffingroup.com
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com, alan@linuxcare.com.au
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Binutils update.
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello all,
+--- Ulrich Strelow <ulrich_strelow@yahoo.com> wrote:
+> Hi all,
+> 
+> first the good news: following Paul's excellent palo
+> documentation I succeeded to boot my 715/33 from its
+> internal HP C3324A SCSI disk. I booted the kernel
+> from
+> the special F0 partition and used the ext2 fs on
+> partition 2 as the root filesystem.
+> 
+> But booting the kernel /vmlinux directly from the
+> ext2
+> filesystem fails.
+ 
+With the recent changes to palo, this problem has been
+solved. Booting a pre1-kernel from the internal SCSI
+disk's ext2 filesystem now works fine on my 715/33.
 
-I have finished working through all the compiler warnings and errors in
-the binutils-2.10 build for the HP ansi compiler in ANSI and non-ANSI
-mode.  Unfortunately I am with out a i386 system atm :( (Will be
-remedied
-soon!) so I can not test the cross compiler.  If someone with access to
-an
-i386 would test this for me I would appreciate it. :)
+Ulrich
 
-Just wanted to give an update to the list, so people could try out my
-changes
-and make sure I didn't break anything! *fingers crossed*
-
-Well off to step 3 in the recipe now....
-
-Later,
-- Ryan
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Photos -- now, 100 FREE prints!
+http://photos.yahoo.com
