@@ -1,35 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AFC2A4A1C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 14:14:25 -0700 (MST)
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA11931
-	for <parisc-linux@puffin.external.hp.com>; Wed, 7 Feb 2001 14:10:07 -0700
-Received: (from steve@localhost)
-	by osiris.silug.org (8.11.0/8.11.0) id f17LEAc18587
-	for parisc-linux@thepuffingroup.com; Wed, 7 Feb 2001 15:14:10 -0600
-From: Steven Pritchard <steve@silug.org>
-Message-Id: <200102072114.f17LEAc18587@osiris.silug.org>
-To: parisc-linux@thepuffingroup.com
-Date: Wed, 7 Feb 2001 15:14:10 -0600 (CST)
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D73E04A1C
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 16:14:05 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA19688;
+	Thu, 8 Feb 2001 10:08:04 +1100
+Date: Thu, 8 Feb 2001 10:08:03 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Christoph Plattner <christoph.plattner@alcatel.at>
+Cc: Richard Hirst <rhirst@linuxcare.com>,
+	Grant Grundler <grundler@cup.hp.com>,
+	"M. Grabert" <xam@deathsdoor.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] //strace// Generic Parisc Linux Kernel Questions
+ &  9000/730 success report
+In-Reply-To: <3A81005D.393A0AA6@alcatel.at>
+Message-ID: <Pine.LNX.4.21.0102080959100.7974-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Sender: steve@osiris.silug.org
-Subject: [parisc-linux] patch
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Has anyone managed to build a working patch binary?  No matter what
-the input is, all I get is
+On Wed, 7 Feb 2001, Christoph Plattner wrote:
 
-    patch: **** Only garbage was found in the patch input.
+> I was definitly not able to build strace with the current tool chain
+> (I have built myself from Jan 13, 2001). The system calls and other
+> parts seem not to be compatible any more....
 
-If nobody has been through this already, I'll try to debug it
-tonight...
+Did you build glibc too?  I should own up to breaking our CVS glibc with
 
-Thanks.
+revision 1.3
+date: 2001/01/16 14:09:38
 
-Steve
+and not fixing it until
+
+revision 1.4
+date: 2001/02/05 14:58:22
+
+Alan (Embarrassed) Modra
 -- 
-steve@silug.org           | Southern Illinois Linux Users Group
-(618)398-7320             | See web site for meeting details.
-Steven Pritchard          | http://www.silug.org/
+Linuxcare.  Support for the Revolution.
