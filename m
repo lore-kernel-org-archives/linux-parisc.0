@@ -1,65 +1,65 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel2.hp.com (palrel2.hp.com [156.153.255.234])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D4DF9482A
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Sep 2001 12:25:21 -0600 (MDT)
-Received: from xparelay1.corp.hp.com (unknown [15.58.136.173])
-	by palrel2.hp.com (Postfix) with ESMTP id A93D479C
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Sep 2001 11:25:20 -0700 (PDT)
-Received: from xpabh2.corp.hp.com (xpabh2.corp.hp.com [15.58.136.192])
-	by xparelay1.corp.hp.com (Postfix) with ESMTP id 485C51F560
-	for <parisc-linux@parisc-linux.org>; Tue, 11 Sep 2001 11:25:20 -0700 (PDT)
-Message-ID: <E97137CF9A25D311902E00A0C9F484E004BA01ED@xfc03.fc.hp.com>
-From: "BLESSING,MICHAEL (HP-FtCollins,ex1)" <mblessing@hp.com>
-To: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
-Date: Tue, 11 Sep 2001 11:25:17 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] Getting a CD?
+Received: from beavis.ybsoft.com (unknown [63.224.241.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 23DF74843
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Sep 2001 07:03:41 -0600 (MDT)
+Date: Wed, 12 Sep 2001 07:03:37 -0600
+To: Randall Craig <randall@tdl.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] ccio-dma error
+Message-ID: <20010912070337.A21888@beavis.ybsoft.com>
+References: <20010910012502.A30056@tdl.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010910012502.A30056@tdl.com>
+From: rbradetich@uswest.net (Ryan Bradetich)
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On Mon, Sep 10, 2001 at 01:25:02AM -0700, Randall Craig wrote:
+> My computer frequently crashes with the error message:
+> 
+>  Kernel panic: ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping resource
 
-The following e-mail was sent into the HP Developer's Resource web site (
-http://devresource.hp.com ).  They are having an installation problem and
-have a question about getting a CD.  Can you help them out?
+This error occurs when the ccio driver can not find adequate space in the resource
+map to complete the dma mapping.  Since you are seeing it frequently, try changing
+the following line in arch/parisc/kernel/ccio-dma.c to see if that helps:
 
-Thanks,
-Mike Blessing
-HP Developer's Resource
+From:
+	static unsigned long ccio_mem_ratio = 32;
+To:
+	static unsigned long ccio_mem_ratio = 4;
+
+You can also look at the the 2 /proc file entries to get an idea what is going
+on: 
+
+	/proc/bus/runway/ccio
+	/proc/bus/runway/ccio-bitmap
+
+The /proc/bus/runway/ccio should give you general information about the hardware
+and driver.  The /proc/bus/runway/ccio-bitmap should give you an idea of how dense
+the resource bitmap is.
+
+Hopefully this will help you out.
+
+- Ryan
 
 
+> 
+> This is with kernel pa17.
+> 
+> 
+> This occurs during medium to heavy io. 
+> 
+> 
+> 
+> This has also caused my /var/lib/dbkg directory to be missing.
+> 
+> How can I rebuild it?
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> 
 
------Original Message-----
-From: stefan.bieri@garaventa.com [mailto:stefan.bieri@garaventa.com]
-Sent: Tuesday, September 11, 2001 5:15 AM
-To: webmasterdevrsrc@shelty.fc.hp.com
-Subject: DevResource Feedback: Tuesday, 11-Sep-2001 05:14:22 MDT
-
-
-Below is the result of your feedback form.  It was submitted by:
-     (stefan.bieri@garaventa.com)
-    on Tuesday, September 11, 2001 at 05:15:22
----------------------------------------------------------------------------
-
-Referring_Page:
-http://www.devresource.hp.com/devresource/Topics/Linux/PALinuxRelease.html
-
-topic: Other
-
-YourName: Bieri Stefan
-
-Comments: Hi
-
-We tried to install PARISC-Linux on a HP Workstation 715/100 with XFree86,
-X-Server-System etc. The problems we have, is, that we download the packages
-on a Win2k pc and everytime we try to install the X-Window-System, we have
-some problems with the dependency and we have to download also this packages
-(those who are needed, because of the dependency), and then when we try to
-install again, we have another dependency problems, etc. and that
-continues...
-
-The question we have, is it possible to download (other cd-images than the
-installation cd) or buy a full distribution of the PARISC-Linux?
-
----------------------------------------------------------------------------
+-- 
