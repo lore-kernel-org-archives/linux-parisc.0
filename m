@@ -1,15 +1,15 @@
-From: Helge Deller <deller@gmx.de>
+From: "Jens Simmoleit" <simmel@anymotion.de>
 Subject: [parisc-linux] Re: Install GNOME on 712/80
-Date: Fri, 6 Feb 2004 00:07:27 +0100
-Message-ID: <200402060007.27911.deller__8227.12561716816$1416623178$gmane$org@gmx.de>
+Date: Fri, 6 Feb 2004 16:35:23 +0100
+Message-ID: <009801c3ecc6$d637d990$8100a8c0__10252.3700603799$1416623179$gmane$org@punk>
 References: <02d601c3ebef$e3241650$8100a8c0@punk>
+	<200402060007.27911.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
-Cc: Jens Simmoleit <simmel@anymotion.de>, debian-hppa@lists.debian.org
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <deller@gmx.de>
-In-Reply-To: <02d601c3ebef$e3241650$8100a8c0@punk>
+	charset="iso-8859-15"
+Cc: debian-hppa@lists.debian.org
+To: <parisc-linux@lists.parisc-linux.org>
+Return-Path: <simmel@anymotion.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,39 +19,48 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Thursday 05 February 2004 14:56, Jens Simmoleit wrote:
-> My question would be, which packages do I need to succesfully install and run GNOME (and only Gnome) on my system? 
+Hi List,
 
-No idea. I use KDE.
+Helge, thanks for the tip. I reinstalled from scratch installed the xserver
+and the gnome packages and it "works now". The gdm started up and said that
+he couldn't find the font server, the config file said that also local fonts
+can be used, so I isntalled those too and voila the login page appears.
 
-> In addition to that, where and how must the xserver or gnome or whatever be configured to make it run properly?
-> ....
-> (II) FBDev(0): using default device
-> (II) Running in FRAMEBUFFER Mode
-> (**) FBDev(0): Depth 24, (--) framebuffer bpp 32
-> (==) FBDev(0): RGB weight 888
-> (==) FBDev(0): Default visual is TrueColor
-> (==) FBDev(0): Using gamma correction (1.0, 1.0, 1.0)
-> (II) FBDev(0): Hardware:  (vidmem: 2048k)
-> (II) FBDev(0): Checking Modes against framebuffer device...
-> (II) FBDev(0):  mode "1280x1024" ok
-> (II) FBDev(0):  mode "1024x768" ok
-> (II) FBDev(0):  mode "800x600" ok
-> (II) FBDev(0): Checking Modes against monitor...
-> (--) FBDev(0): Virtual size is 1280x1024 (pitch 1280)
-> (**) FBDev(0): Default mode "800x600": 36.0 MHz (scaled from 0.0 MHz), 35.2
-> kHz, 56.2 Hz
-> (II) FBDev(0): Modeline "800x600"   36.00  800 824 896 1024  600 601 603 625
-> +hsync +vsync
-> (==) FBDev(0): DPI set to (75, 75)
-> (**) FBDev(0): Using "Shadow Framebuffer"
-> (--) Depth 24 pixmap format is 32 bpp
-> Fatal server error:
-> AddScreen/ScreenInit failed for driver 0
+:-)
 
-Look at the dmesg kernel log and search for a line which starts with "stifb:".
-There you will see the only resolution & bpp color depth which your card
-currently supports and then verify your /etc/X11/XFree86.config file to only 
-have exactly those values enabled. After that change X11 should start up....
+But now something strange happens, I type in my user and the password at the
+gnome desktop login, the screen turns black and after a certain amount of
+time the box comes back with the Gnome login prompt (where I started from)?
 
-Helge
+Seems like the system isn't able to log me on, or create a profile, or
+whatever?
+
+What am i missing here????
+Do I need a font server? Is there maybe (an)other missing package(s).... I'm
+quite sure I have all the gnome packages here, but what about X itself,
+somebody has a clue whats missing or wrong? Maybe a config file for the
+user?
+
+Any idea?
+
+Greets,
+Simmel
+
+
+> Look at the dmesg kernel log and search for a line which starts with
+"stifb:".
+> There you will see the only resolution & bpp color depth which your card
+> currently supports and then verify your /etc/X11/XFree86.config file to
+only
+> have exactly those values enabled. After that change X11 should start
+up....
+>
+> Helge
+>
+>
+> -- 
+> To UNSUBSCRIBE, email to debian-hppa-request@lists.debian.org
+> with a subject of "unsubscribe". Trouble? Contact
+listmaster@lists.debian.org
+>
+>
