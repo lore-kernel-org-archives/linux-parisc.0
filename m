@@ -1,20 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0BA05482F
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 09:13:56 -0600 (MDT)
-Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 18A53BE4
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 17:13:51 +0200 (METDST)
-Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2]) by hpfrcu03.france.hp.com with ESMTP (8.7.6/8.7.3 SMKit7.02) id RAA08199 for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 17:12:06 +0200 (METDST)
-Message-ID: <3DB6BCAE.3AB7AF13@admin.france.hp.com>
-Date: Wed, 23 Oct 2002 17:13:50 +0200
-From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Received: from mail.scram.de (mail.scram.de [195.226.127.117])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D53F4834
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 23 Oct 2002 17:07:22 -0600 (MDT)
+Received: from gfrw1044.bocc.de (pD9E01D57.dip.t-dialin.net [217.224.29.87])
+	(authenticated)
+	by mail.scram.de (8.11.6+3.4W/8.11.0) with ESMTP id g9NN7FU18817
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 24 Oct 2002 01:07:16 +0200 (CEST)
+Date: Thu, 24 Oct 2002 01:01:42 +0200 (CEST)
+From: Jochen Friedrich <jochen@scram.de>
+To: HP900 PARISC mailing list <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] unreliable mmap
+In-Reply-To: <Pine.LNX.4.44.0208152341001.18472-100000@gfrw1044.bocc.de>
+Message-ID: <Pine.LNX.4.44.0210240048490.1407-100000@gfrw1044.bocc.de>
 MIME-Version: 1.0
-To: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] insmod modules -> kernel panic:
-References: <3DB68404.549D048A@admin.france.hp.com> <3DB6B01B.61D240D@admin.france.hp.com> <20021023150619.GE22052@tausq.org>
-Content-Type: multipart/mixed;
- boundary="------------79B259717D9A9A946F8B68D5"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,37 +25,68 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
---------------79B259717D9A9A946F8B68D5
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Hi,
 
-Thanks.
-I've already noted that when building in the kernel
-it was running fine. About this insmod panic it is
-a bit strange, because, on the A class, it is completly
-crashed after that. I have to power off/on.
+> i recognized that mmap operations seem unreliable on HP720 platform. The
+> following test program (taken from cyrus imap configure) demonstrates the
+> problem:
+> [...]
+>
+> This only seems to happen on 720 (i couldn't replicate the bug on a 715
+> with the same kernel booted up).
 
-	bye.
+While debugging cyrus21-imapd, i experienced pretty fishy behaviour
+of the skiplist database backend. It turned out that the 715 is affected
+by the mmap problem, as well.
 
--- 
-	Vidal Bruno, (770-4271)
-        SSD-HA Team, HP-UX & LINUX Support
-	bruno_vidal@admin.france.hp.com
---------------79B259717D9A9A946F8B68D5
-Content-Type: text/x-vcard; charset=iso-8859-1;
- name="bruno_vidal.vcf"
-Content-Transfer-Encoding: base64
-Content-Description: Card for Bruno Vidal
-Content-Disposition: attachment;
- filename="bruno_vidal.vcf"
+Here is a new test program which performs random writes to a file and
+verifies the mmapped memory afterwards which demonstrates the problem:
 
-YmVnaW46dmNhcmQgCm46QnJ1bm87VklEQUwKdGVsO2ZheDowMS02OS04Mi02MC0xNAp0ZWw7
-d29yazowMS02OS0yOS00Mi03MQp4LW1vemlsbGEtaHRtbDpUUlVFCnVybDp3d3cuZnJhbmNl
-LmhwLmNvbQpvcmc6U29sdXRpb24gQ2VudGVyCnZlcnNpb246Mi4xCmVtYWlsO2ludGVybmV0
-OmJydW5vX3ZpZGFsQGhwLmNvbQp0aXRsZTpFeHBlcnQgTG9naWNpZWwgRW52aXJvbm5lbWVu
-dCBIYXV0ZSBEaXNwb25pYmlsaXTpCmFkcjtxdW90ZWQtcHJpbnRhYmxlOjs7SFAgRnJhbmNl
-PTBEPTBBO1ouQSBkZSBDb3VydGFib2V1ZjsxIEF2LiBkdSBDYW5hZGE7OTE5NDcgTGVzIFVs
-aXMgY2VkZXg7RnJhbmNlCngtbW96aWxsYS1jcHQ6OzI2MjA4CmZuOlZJREFMIEJydW5vCmVu
-ZDp2Y2FyZAo=
---------------79B259717D9A9A946F8B68D5--
+Cheers,
+--jochen
+
+-------------------------------------8<-------------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int main()
+{
+  char *base;
+  int fd;
+  char buf[2000];
+  int i, j;
+  char c;
+
+  for (i=0; i<2000; i++)
+    {
+      c = (char) ((float) rand() / (float) (RAND_MAX) * 26) + 'a';
+      buf[i] = c;
+    }
+
+  fd = open("mmap.test", O_CREAT|O_TRUNC|O_RDWR, 0664);
+  write(fd, buf, 2000);
+
+  base = (char *)mmap((caddr_t)0, 2000, PROT_READ, MAP_SHARED
+#ifdef MAP_FILE
+| MAP_FILE
+#endif
+#ifdef MAP_VARIABLE
+| MAP_VARIABLE
+#endif
+  , fd, 0L);
+
+  for (i=0; i<2000; i++)
+    {
+      j = (int) ((float) rand() / (float) (RAND_MAX) * 2000);
+      c = (char) ((float) rand() / (float) (RAND_MAX) * 26) + 'a';
+      lseek(fd, j, SEEK_SET);
+      write(fd, &c, 1);
+      if (*(base+j) != c)
+        printf("Error: mmap inconsistent at %d\n", j);
+    }
+  close(fd);
+}
