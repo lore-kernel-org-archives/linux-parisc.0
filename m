@@ -1,47 +1,38 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from phnxpop5.phnx.uswest.net (mail.phnx.uswest.net [206.80.192.5])
-	by dsl2.external.hp.com (Postfix) with SMTP id 1F4BE4A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Mar 2001 21:37:31 -0700 (MST)
-Date: Wed, 21 Mar 2001 21:35:41 -0700
-Message-ID: <20010321213541.A6912@tausq.org>
-From: "Randolph Chung" <randolph@tausq.org>
-To: alan@linuxcare.com.au
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 463B34A19
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 21 Mar 2001 21:52:53 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14fx5a-00085V-00; Thu, 22 Mar 2001 04:52:46 +0000
+Date: Thu, 22 Mar 2001 04:52:46 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Thomas Marteau <marteaut@esiee.fr>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>,
+	Giacomo Mulas <gmulas@ca.astro.it>,
+	=?iso-8859-1?Q?SOETE_Jo=EBl?= <JSO@EUROPAY.COM>,
+	William Carlsson <william.carlsson@teligent.se>
+Subject: Re: [parisc-linux] The new FS of ESIEE Team is ready
+Message-ID: <20010322045246.N5491@parcelfarce.linux.theplanet.co.uk>
+References: <3AB7AA9F.985576AA@esiee.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] new g++ debs and oddities...
+In-Reply-To: <3AB7AA9F.985576AA@esiee.fr>; from marteaut@esiee.fr on Tue, Mar 20, 2001 at 08:08:15PM +0100
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-So I've been playing with taggart's new g++ debs. definitely work a lot
-better than the old ones, but still seeing some weird behavior:
+On Tue, Mar 20, 2001 at 08:08:15PM +0100, Thomas Marteau wrote:
+> Hi all,
+> 
+> 	The new FS is ready (~61MB). No "more" bugged with the good TERM parameter and
+> no password :)
+> It is a specially designed for 712 owners but it is a sane fs, we hope.
+> 
+> Please, go to our DL page: http://mkhppa1.esiee.fr/en/download.html
 
-1. i'm compiling apt, and got a problem with undefined symbols for
-things like Hashes::Add(). Now, Hashes::Add is an inline method defined
-in hashes.h .... moving that to a non-inlined method in the .cc resolves
-the undefined symbol problem... seems like a compiler bug?
+Hi Thomas.  I tried your package on a J7k here.  You've set /dev/console
+to be a symlink to tty0.  Please don't do this, the kernel is supposed to
+be able to handle /dev/console by itself, and select either STI console
+or serial console as appropriate.
 
-I'm compiling with -g -O0 -DHAVE_CONFIG_H -D_REENTRANT -fno-rtti -fpermissive
-
-2. I'm getting a lot of warnings like this that weren't there with 2.97.
-Not sure what the deal is yet:
-
-/home/randolph/cvs/apt/build/include/apt-pkg/configuration.h: In member
-   function `int Configuration::FindI(std::basic_string<char,
-   std::char_traits<char>, std::allocator<char> >, bool) const':
-   /home/randolph/cvs/apt/build/include/apt-pkg/configuration.h:75: warning: choosing 
-   `int Configuration::FindI(const char*, int) const' over `int
-   Configuration::FindI(std::basic_string<char, std::char_traits<char>, 
-   std::allocator<char> >, bool) const'
-/home/randolph/cvs/apt/build/include/apt-pkg/configuration.h:75: warning:
-   because worst conversion for the former is better than worst conversion for
-   the latter
-
-Ideas?
-
-randolph
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+Revolutions do not require corporate support.
