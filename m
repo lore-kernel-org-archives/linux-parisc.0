@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 59FF64830
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Apr 2003 15:37:05 -0600 (MDT)
-Message-Id: <200304252137.h3PLb16r014226@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Program counter from sigcontext, constructors
-To: hans_boehm@hp.com (Boehm, Hans)
-Date: Fri, 25 Apr 2003 17:37:01 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org,
-	hans_boehm@hp.com
-In-Reply-To: <75A9FEBA25015040A761C1F74975667D01442052@hplex4.hpl.hp.com> from "Boehm, Hans" at Apr 25, 2003 01:21:47 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: Fri, 25 Apr 2003 16:52:16 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Arjen Hommersom <arjenh@chello.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] sstfb crash
+Message-ID: <20030425225216.GB11509@dsl2.external.hp.com>
+References: <200304251408.39242.arjenh@chello.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200304251408.39242.arjenh@chello.nl>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +20,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> spe170> cc -fPIC -g constr.c
-> spe170> ./a.out
-> Segmentation fault
+On Fri, Apr 25, 2003 at 02:08:38PM +0200, Arjen Hommersom wrote:
+> Kernel Fault: Code=15 regs=1ec64900 (Addr=eae3e729)
 
-I'm unable to duplicate this on gsyprf11.  I tried several gcc versions.
-I'm using glibc 2.3.1-15.  ld is version 2.13.90 20030210.
+data page fault - trying to access an invalid address.
+ 
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001001111111100001110
+> r00-03  00000000 102ad810 101f5f68 1ebe5ab4
+> r04-07  00000000 00000000 00000000 1ebe5800
+> r08-11  ffffffff 1ec64810 6269745f 1ebaa000
+> r12-15  1fdabcc0 1ec64550 000435a8 00042da8
+> r16-19  00042da8 00042da8 000521c8 00450192
+> r20-23  001f5dce 2bb0e9ab eae3e71d 745f6c6f
+> r24-27  00000000 00000000 745f6c6f 10292010
+> r28-31  0000000f f3000000 1ec64900 101f20d4
+> sr0-3   00000000 0000034d 00000000 0000034d 
+> sr4-7   00000000 00000000 00000000 00000000
+> 
+> IASQ: 00000000 00000000 IADQ: 10135394 10135398
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+"IAOQ" (not IADQ) points at the offending instruction.
+
+grant
