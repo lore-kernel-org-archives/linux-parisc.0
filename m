@@ -1,30 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA06008
-	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 08:25:05 -0600
-Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
-	by Cantor.suse.de (Postfix) with ESMTP id 2F23232CE8
-	for <parisc-linux@thepuffingroup.com>; Thu, 02 Sep 1999 16:26:56 +0200 (MEST)
-Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
-	by Galois.suse.de (Postfix) with ESMTP id 252AE67AF
-	for <parisc-linux@thepuffingroup.com>; Thu,  2 Sep 1999 16:26:56 +0200 (MEST)
-Date: Thu, 2 Sep 1999 16:26:56 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id IAA06213
+	for <parisc-linux@puffin.external.hp.com>; Thu, 2 Sep 1999 08:42:15 -0600
+Date: Thu, 2 Sep 1999 16:43:43 +0200
+From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: Philipp Rumpf <prumpf@suse.de>
+Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux-cvs] grundler
-Message-ID: <19990902162656.H10698@suse.de>
-References: <199909012302.RAA04035@puffin.external.hp.com> <19990902104007.H629@suse.de>
+Message-ID: <19990902164343.V493@mencheca.ch.genedata.com>
+References: <199909012302.RAA04044@puffin.external.hp.com> <19990902110831.I629@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19990902104007.H629@suse.de>; from Philipp Rumpf on Thu, Sep 02, 1999 at 10:40:07AM +0200
+In-Reply-To: <19990902110831.I629@suse.de>; from Philipp Rumpf on Thu, Sep 02, 1999 at 11:08:31AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I don't want to sound aggressive, but I really do not see the point in most
-> of your changes.
+On Thu, Sep 02, 1999 at 11:08:31AM +0200, Philipp Rumpf wrote:
+>  - use of readb aso instead of gsc_readb aso
+> 
+> gsc_readb is there for a reason.
 
-I really didn't.  Honest.  Even if the rest of the mails seems to have suggested
-so to about everyone who read them.
+Let me amplify on this a little.  As I understand it, Linus has decreed
+that readb/writeb/(etc) shall work on busses which `look like PCI'.
+All other busses (zorro, podule, sbus, ...) shall define their own
+*_readb/writeb/...  functions.  People have proposed auto-detecting which
+bus is being written to and doing the right thing, but Linus disagrees.
+So that's why we have gsc_readb, because GSC looks insufficiently
+like PCI.  Does this make sense?
 
-> the type of irqs is defined to be int (not unsigned int) in ABIs we cannot
-
-APIs.  Sorry.  Second time today I mix them up.  (Actually, this one was the first
-time).
+-- 
+Matthew Wilcox <willy@bofh.ai>
+"Windows and MacOS are products, contrived by engineers in the service of
+specific companies. Unix, by contrast, is not so much a product as it is a
+painstakingly compiled oral history of the hacker subculture." - N Stephenson
