@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DF86482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 19:02:43 -0600 (MDT)
-Message-Id: <200305210102.h4L12S7U007116@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc-3.3 configuration
-To: alan@lxorguk.ukuu.org.uk (Alan Cox)
-Date: Tue, 20 May 2003 21:02:27 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, doko@cs.tu-berlin.de,
-	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org,
-	debian-gcc@lists.debian.org, m68k-build@nocrew.org
-In-Reply-To: <1053473168.31455.21.camel@dhcp22.swansea.linux.org.uk> from "Alan Cox" at May 21, 2003 00:26:10 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from fep02-mail.bloor.is.net.cable.rogers.com (fep02-mail.bloor.is.net.cable.rogers.com [66.185.86.72])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2D92482C
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 May 2003 20:08:11 -0600 (MDT)
+Date: Tue, 20 May 2003 22:09:08 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] 2.4 and semtimedop - need kernel compat?
+Message-ID: <20030521020908.GE10485@systemhalted>
+References: <3EC76210000009D0@ocpmta8.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3EC76210000009D0@ocpmta8.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,16 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> On Mer, 2003-05-21 at 01:08, Matthew Wilcox wrote:
-> > I'm not sure it's my call to make; I can see arguments on both sides.
+> In the very last Andrea's patch 2.4.21rc2aa1.bz2, I read that Andrea already
+> back port this stuff :)
 > 
-> Thats at least one of the reasons. Reputation capital is a wonderous
-> thing. Accept reality, you are the Linus of parisc Linux like it or not
-> 8)
+> At a first glance, the job is also applied for hppa. Would you like that
+> I have a look to see if it is applicable with your patch in p-l cvs tree?
 
-I agree.
+Seeing as how our glibc 2.3.2 is highly unstable and non-functional, it
+won't help very much :(
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+It should be easy enough to connect our syscall to semtimedop when the
+code is backported.
+
+c.
