@@ -1,42 +1,35 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA06326
-	for <parisc-linux@puffin.external.hp.com>; Tue, 13 Jul 1999 02:48:16 -0600
-Received: from nemeton.com.au (dy02.edison.dialix.com.au [203.12.2.33])
-	by edison.dialix.com.au (8.9.1/8.9.1/DIALixFlat) with ESMTP id SAA11556
-	for <parisc-linux@thepuffingroup.com>; Tue, 13 Jul 1999 18:48:33 +1000 (EST)
-	(envelope-from giles@nemeton.com.au)
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] serial console 
-In-reply-to: <19990712231019.A2039@alpha.franken.de> 
-Date: Tue, 13 Jul 1999 18:50:30 +1000
-Message-ID: <19099.931855830@nemeton.com.au>
-From: Giles Lean <giles@nemeton.com.au>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id UAA09466
+	for <parisc-linux@puffin.external.hp.com>; Tue, 13 Jul 1999 20:38:42 -0600
+Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
+	by Cantor.suse.de (Postfix) with ESMTP id B3FB532CE2
+	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jul 1999 04:39:15 +0200 (MEST)
+Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
+	by Galois.suse.de (Postfix) with ESMTP id 923279410
+	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jul 1999 04:39:15 +0200 (MEST)
+Date: Wed, 14 Jul 1999 04:39:14 +0200
+From: Philipp Rumpf <prumpf@suse.de>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19990714043914.H10285@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Status
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hello everybody,
+I thought it was about time I gave you all a quick update about what I am
+doing.
 
-On Mon, 12 Jul 1999 23:10:19 +0200  Thomas Bogendoerfer wrote:
+First, interruptions are being well.  We can do the return thing now too,
+and I'm pretty sure the number of bugs hiding there is close to zero. We
+will need some changes here before userspace will really work and at the
+time we'll virtually map most of the kernel.
 
-> > Also, is there an equivalent to Sun's L1-A or the Indy's
-> > send-break-over-serial that will get me back to the PROM in the event
-> > that Linux jumps to east nowhere?  Or do I have to power cycle?
-> 
-> So far everbody denied the existance of that essentiell (at least for
-> kernel hackers) feature.
+Interrupts are about working.  We don't free them yet and the code isn't
+really tested, but the timer interrupt works very much like it is supposed
+to.
 
-Historically on HP servers (series 800 machines) ^B gets you to "PROM"
-mode.  It has varied on different machines whether this is enabled and
-disabled by a key, or a switch on the back, or is not able to be
-disabled at all.
+I currently try to get some MMU code working so we can get a first impres-
+sion of what userspace will look like.
 
-Some newer machines (some D series, all A series, all R series) don't
-have this functionality out unless an "access port" card is added to
-the system.  These systems do still have a TOC (Transfer of Control)
-button so that dumps can be taken.
-
-I'll dig out the part number for the access port card if anyone cares;
-I don't have it to hand right now.
-
-Regards,
-
-Giles
+	Philipp
