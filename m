@@ -1,19 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3B5464829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 12:11:13 -0600 (MDT)
-Message-ID: <3D84CD3B.88A9528B@gmx.at>
-Date: Sun, 15 Sep 2002 20:11:07 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Ryan Bradetich <rbradetich@uswest.net>
-Cc: varenet@esiee.fr,
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7FCA84829
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Sep 2002 12:25:04 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 17qe4q-0003OP-00; Sun, 15 Sep 2002 19:25:00 +0100
+Date: Sun, 15 Sep 2002 19:25:00 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: Ryan Bradetich <rbradetich@uswest.net>, varenet@esiee.fr,
 	"MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>,
 	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-References: <3D825FDF.CD6E8CE2@gmx.at> <1031962399.930.17.camel@beavis>
-		<3D8281F4.F03A2007@gmx.at> <1031964117.1043.29.camel@beavis>
+Subject: Re: [parisc-linux] Re: SCSI/MUX driver on E55, NDA for sorce code
+Message-ID: <20020915192500.D10583@parcelfarce.linux.theplanet.co.uk>
+References: <3D825FDF.CD6E8CE2@gmx.at> <1031962399.930.17.camel@beavis> <3D8281F4.F03A2007@gmx.at> <1031964117.1043.29.camel@beavis> <3D84CD3B.88A9528B@gmx.at>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Re: SCSI/MUX driver on E55, NDA for sorce code
+In-Reply-To: <3D84CD3B.88A9528B@gmx.at>; from christoph.plattner@gmx.at on Sun, Sep 15, 2002 at 08:11:07PM +0200
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,145 +27,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Yes, I would be interested in HP-UX source code access,
-if there are no costs I have to pay. I would sign a NDA.
+On Sun, Sep 15, 2002 at 08:11:07PM +0200, Christoph Plattner wrote:
+> The status of MUX: It is not working to access to offset
+> 0x80 for the lines. The machine dies. I think this problem
+> can be solved very easy, looking in the HP-UX driver code.
 
-The status of SCSI driver you sent me:
-The machine does not really access the hardware. Also
-if I patch the data structures or the "dev->hpa" pointer,
-the driver reacts the same strange way.
+Not so sure...
 
-The status of MUX: It is not working to access to offset
-0x80 for the lines. The machine dies. I think this problem
-can be solved very easy, looking in the HP-UX driver code.
+common/sio/mux2.c:
 
-I will do some futher code instrumentation on the SPIFI
-driver. Then I will reread the driver of you and NetBSD
-to have an idea, which access does fail here. Or do we
-have a wrong hardware access anyway ?
-
-Good start of the next week
-
-Christoph
-
-
-
-Ryan Bradetich wrote:
-> 
-> Thomas and Christoph,
-> 
-> Here is the current diff I have (I told you it was ugly! :))
-> 
-> I can not send you the HP-UX code.  If you are interested
-> in pursuing the NDA to get access to the drivers, I can approach
-> Alan Meyer (LSO Lab manager).  I am in IT, not the R&D lab so
-> I do not have much insight in what they are doing :(
-> 
-> Hope this diff helps, and together hopefully we can get this to
-> work and committed!
-> 
-> thanks,
-> 
-> - Ryan
-> 
-> On Fri, 2002-09-13 at 18:25, Christoph Plattner wrote:
-> > Hello,
-> >
-> > if it is possible, send the code to me (perhpas I can
-> > have a look @ week end.
-> >
-> > Is it possible to geht the HP-UX driver codes for those
-> > to things ? MUX + SCSI ?
-> >
-> > I was offered to sign a NDA, but then nothing happens ...
-> > It would be more easy for me to read such original HP-UX
-> > code. Perhaps you see a possibility to send it also.
-> >
-> > Have a nice week end
-> >
-> > Christoph
-> >
-> >
-> >
-> > Ryan Bradetich wrote:
-> > >
-> > > On Fri, 2002-09-13 at 15:59, Christoph Plattner wrote:
-> > > > Hallo Ryan !
-> > > >
-> > > > Congratulation, your MUX driver on port 0 is really
-> > > > working on my machine !!
-> > >
-> > > Glad to hear that!
-> > >
-> > > > What do you miss to support the other lines ?
-> > >
-> > > I am not sure, I've never tried to hook up additional
-> > > lines.  I do have an 8-port MDP somewhere, I'll look
-> > > for it here shortly, and see if I can hook it up.
-> > >
-> > > > Have you already knowledge of the data structure ?
-> > >
-> > > Just what I have added into the driver.  If there is
-> > > something that we are obviously missing, I can go back
-> > > and reference the HP-UX mux driver and see what is
-> > > missing.
-> > >
-> > > > Can I help you here in the code ?
-> > >
-> > > Please! :)  I do not use multiple lines currently ...
-> > > I only use the line 0, so any testing, optimizing, etc
-> > > is greatly appreciated!
-> > >
-> > > > Another point: you mentioned the skeleton of the
-> > > > SCSI SPIFI driver. Where can I find that ? I only
-> > > > found a NetBSD code, which I will use as functional
-> > > > template, but I do not know, if this would be enough.
-> > > > Can you give me a hint in this point ?
-> > >
-> > > I have it on my local system.  It is _very_ ugly at this
-> > > point.  I have got enough to query information from the
-> > > spifi chip, register an interrupt, etc... but currently
-> > > I can not get the spifi chip to actually generate an
-> > > interrupt.
-> > >
-> > > I would be happy to send you a copy when I get back next
-> > > monday (unless you catch my in the next hour or so), but
-> > > I'm not ready to check it into CVS yeah until I get rid
-> > > of the some ugly hardcoded hacks, global variables, etc.
-> > > Right now the driver is really coded to gather info from
-> > > the ESIEE E35 that I have been testing on.  Once again,
-> > > I do not have any docs on the chipset, I am using both
-> > > the NetBSD and HP-UX drivers as reference. :(
-> > >
-> > > The driver should be easy to modify for your specific E55,
-> > > but not sure if you are interested in that level of work,
-> > > messyness now.  I promise it will get much better :)
-> > >
-> > > Thanks,
-> > >
-> > > - Ryan
-> > >
-> > > > Christoph
-> > > >
-> > > >
-> > > > --
-> > > > -------------------------------------------------------
-> > > > private:      christoph.plattner@gmx.at
-> > > > company:      christoph.plattner@alcatel.at
-> > > >
-> >
-> > --
-> > -------------------------------------------------------
-> > private:      christoph.plattner@gmx.at
-> > company:      christoph.plattner@alcatel.at
-> >
-> 
->   ------------------------------------------------------------------------
->                   Name: spifi.patch
->    spifi.patch    Type: text/x-patch
->               Encoding: quoted-printable
+for (loop = 0; loop < ports; loop++, ttyp++) {
+        HW.hpa                  = MUX_DATA.hpa + 0x800 + (loop * 0x80);
+        HW.io_reg_ptr           = (io_reg_type *)(HW.hpa + 0x30);
+}
 
 -- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Revolutions do not require corporate support.
