@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 84A4F4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Sep 2002 16:48:52 -0600 (MDT)
-Message-ID: <3D87BEBB.5080306@freebel.net>
-Date: Tue, 17 Sep 2002 23:46:03 +0000
-From: Joel Soete <joel.soete@freebel.net>
-MIME-Version: 1.0
-To: dann <dannf@fc.hp.com>
-Cc: Yves Vrijhoeven <yvesvrijhoeven@hotmail.com>,
+Received: from sunlight_pk.corp.winfirst.com (mail.corp.winfirst.com [66.205.159.133])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AF7044829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Sep 2002 16:52:28 -0600 (MDT)
+Message-ID: <95DAF5BCC67DD411957B00508BAECA3ACD35B7@MT_BELFORD>
+From: "Speer, Joshua" <Joshua.Speer@corp.winfirst.com>
+To: Yves Vrijhoeven <yvesvrijhoeven@hotmail.com>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: [lists] installing Linux on A Visualise C240
-References: <DAV71Y9P3bVYbrNQrl50000bc9b@hotmail.com> <20020917215331.GE19148@fc.hp.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: RE: [parisc-linux] Re: [lists] installing Linux on A Visualise C2
+	40
+Date: Tue, 17 Sep 2002 15:52:18 -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,23 +20,74 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
+We had the same problem on a L9000 we put the octopus cable on the server,
+and a console cable on the console port, and everything worked fine. 
 
-dann wrote:
-> Yves,
->   forwarding to the parisc-linux, which is a more appropriate place
-> for this question.
+Josh
+
+-----Original Message-----
+From: dannf@fc.hp.com [mailto:dannf@fc.hp.com] 
+Sent: Tuesday, September 17, 2002 2:54 PM
+To: Yves Vrijhoeven; parisc-linux@lists.parisc-linux.org
+Subject: [parisc-linux] Re: [lists] installing Linux on A Visualise C240
+
+Yves,
+  forwarding to the parisc-linux, which is a more appropriate place
+for this question.
+
+as an aside, 0.9.3 is not the latest release - debian 3.0 contains newer
+bits.
+<hint>maybe one of these days someone will point that out on
+-announce</hint>
+
+
+On Tue, Sep 17, 2002 at 11:46:39PM +0200, Yves Vrijhoeven wrote:
+> Hi,
 > 
-> as an aside, 0.9.3 is not the latest release - debian 3.0 contains newer bits.
-> <hint>maybe one of these days someone will point that out on -announce</hint>
+> I downloaded the "palinux-0.9.3.iso" and burned it to CD.  If I put the CD
+in PA RISC powerd PC (Visualise C240) and boot with the command "bo
+sescsi.3.0" the PC seems to boot from the CD (I get somewhere the message
+"palo ipl 0.96 root@palinux Fri Nov  2 16:31:18 MST 2001" ...(clock setting
+is not correct))
+> Everything seems ok until I get the message:
+> ...
+> Branching to kernel entry point 0x00100000.  If this is the last message
+you see, you may need to switch your console.  This is a common sympton --
+sarch the FAQ and mailing list at parisc-linux.org
+> 
+> After this nothing happens anymore.  I searched the FAQ and mailing list
+but I could not find a solution so far.
+> 
+> Anyone can help me out on this.
+> 
+> Thanks in advance.
+> 
+> Please E-mail me.
+> 
+> Yves Vrijhoeven
+> yves.vrijhoeven@belgacom.net
+> yvesvrijhoeven@belgacom.net
 
-Dann you have right 0.9.3 iso is quiet old and Debian3.0r0 iso are 
-referenced on :http://www.parisc-linux.org/index.html (i do not find it 
-any more on .de? but well on .se)
+-- 
+---------------------------
+dann frazier
+Hewlett-Packard
+Linux Systems Division
+dannf@hp.com
+(970) 898-0800
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-As well as the net install iso (when it is possible to install over a 
-network connection) which offer the advantage to propose the last 
-development kernel :)
+---
+Incoming mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.386 / Virus Database: 218 - Release Date: 9/9/2002
+ 
 
-Yves, good luck
-
-	Joel
+---
+Outgoing mail is certified Virus Free.
+Checked by AVG anti-virus system (http://www.grisoft.com).
+Version: 6.0.386 / Virus Database: 218 - Release Date: 9/9/2002
+ 
