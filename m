@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-02.iinet.net.au [203.59.3.34])
-	by dsl2.external.hp.com (Postfix) with SMTP id 38D4D482C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 11 Dec 2001 20:19:48 -0700 (MST)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id LAA20343
-	for parisc-linux@lists.parisc-linux.org; Wed, 12 Dec 2001 11:19:38 +0800
-Date: Wed, 12 Dec 2001 11:19:35 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] telnetd on hppa: strange behaviour?
-Message-ID: <20011212111932.K22137@neep.com.au>
-References: <1008007312.3c14f890e4d33@webmail.tiscalinet.be> <3C15005D.4884E0C5@umr.edu> <1008010546.3c150532c596f@webmail.tiscalinet.be> <3C1508B2.3CCCDCF2@umr.edu> <1008086487.3c162dd79749d@webmail.tiscalinet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <1008086487.3c162dd79749d@webmail.tiscalinet.be>; from joel.soete@freebel.net on Tue, Dec 11, 2001 at 05:01:27PM +0100
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5F268482C
+	for <parisc-linux@parisc-linux.org>; Tue, 11 Dec 2001 21:34:40 -0700 (MST)
+Message-Id: <200112120429.VAA03750@puffin.external.hp.com>
+To: Paul Bame <bame@fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] 2.5 kernel and CVS -- opinions? 
+In-Reply-To: Message from Paul Bame <bame@fc.hp.com>
+   of "Tue, 11 Dec 2001 09:44:56 MST." <E16Dq1Y-0002zm-00@noam.fc.hp.com>
+Date: Tue, 11 Dec 2001 21:29:25 -0700
+From: Grant Grundler <grundler@puffin.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,26 +21,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-[...]
-> 
-> But I always forget to log stdout and sdterr of this command.
-> Do you know if it exist somewhere a log of dpkg actions (like
-> /var/adm/sw/sw....log of HPUX SD)?
-> 
->         Joel
+Paul Bame wrote:
+> It's time to start tracking the 2.5 kernel at cvs.parisc-linux.org
+> and there are a few different ways to do it -- I'm looking for opinions.
+> My favorite option at the moment is 1A.
 
-No, but running your 'apt-get upgrade' or 'apt-get dist-upgrade' under
-the 'script' program is a good way to record a complete log.
+I'm ok with 1A as well:
+o *someday*, I hope the CVS date-based check out will get fixed.
+o TAGs work and I'm ok with tag being used.
+o We could TAG weekly (or monthly) and keep enough nightly
+  checkout's to cover two or three tags. Or whatever we can
+  afford for diskspace.
 
-(Logging actions are being added to apt/dpkg e.g. for auditing but it's
-got a fair way to go I think.)
 
-For more info, see your friendly apt documentation.
-
-Andrew.
-
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+thanks!
+grant
