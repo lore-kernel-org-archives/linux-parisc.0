@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 931274845
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 00:48:55 -0600 (MDT)
-Date: Wed, 1 Oct 2003 08:48:27 +0200
-Message-ID: <3F5CC41F0000B5FA@ocpmta3.freegates.net>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] N Class SMP pb ?  (follow up)
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from spike2.ehosting.com (unknown [62.173.67.13])
+	by dsl2.external.hp.com (Postfix) with SMTP id 410DF4840
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  1 Oct 2003 03:24:20 -0600 (MDT)
+Message-ID: <1065000176.3f7a9cf0cbad2@webmail.v8fiesta.co.uk>
+Date: Wed,  1 Oct 2003 10:22:56 +0100
+From: mmogenius@v8fiesta.co.uk
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] x86 on b2000
+References: <Pine.LNX.4.44.0308280022230.16696-100000@sal.ucc.ie> <1062062541.3f4dc9cd843ed@webmail.v8fiesta.co.uk> <1063733943.3f674ab751edb@webmail.v8fiesta.co.uk> <20030916174726.GC30906@dsl2.external.hp.com> <1063738987.3f675e6b22961@webmail.v8fiesta.co.uk> <20030917040849.GA11011@dsl2.external.hp.com> <3F683606.8000701@tiscali.be>
+In-Reply-To: <3F683606.8000701@tiscali.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,89 +22,84 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>
->> In summary:
->> -------  Processor 1 HPMC Information - PDC Version: 41.28  ------
->
->Did you TOC the machine or did it HPMC?
->I was under the impression the SW had hung and one needed to TOC
->to regain control. TOC info is seperate from HPM
- info.
+Brilliant i now have X working on my B2000 with the Visuialize-EG Card... 
 
-Exact, but TOC info only contains 0 so I suposed that system do actualy
-a HPMC but do not seems to be managed by handle_interruption() as at its
-begining I put a printk() which was suposed to write the 'code' value?
+The way to use the 2nd card is to specify the BusID in the XF86Config-4 file.
 
-to be more accurate:
+BusID      "PCI:1:1:0"
 
-[...]
-    struct siginfo si;
+Although I dont seem to be able to get the depth anywhere above 8... Does 
+anyone have any thoughs on this. 
 
-    printk(KERN_ERR "%s(%d, ...).\n", __FUNCTION__, code);
-    mdelay(100);
-[...]
-
-which allowing me to read a lot of 6, 15, 26 codes but never 1?
-
->
->If it's in fact HPMC, then look at IOAQ/GR02 for both CPUs
->and see which functions they were executing in when HPMC occurred.
-
-which were for cpu[1]:
-GR[02] == rp = 000000001014dbf0
-
-Func: zap_page_range, Off: 0xe0, Addr: 0x1014dbf0
-
-    1014dbf0:  08 0e 02 5b   copy r14,dp
-    1014dbf4:  03 c0 08 b4   mfctl tr6,r20
-    1014dbf8:  4a 93 00 b0   ldw 58(r20),r19
-    1014dbfc:  29 c5 20 00   addil b000,r14,%r1
-
-[...]
-Parse IAOQ = 0x000000001014dea0 for CPU[1]
-
-Func: zap_page_range, Off: 0x390, Addr: 0x1014dea0
-
-    1014dea0:  06 a0 52 00   pdtlb
-r0(sr1,r21)
-    1014dea4:  37 39 3f ff   ldo -1(r25),r25
-    1014dea8:  bf 33 3f e5   cmpb,*<> r19,r25,1014dea0 <zap_page_range+0x390>
-    1014deac:  36 b5 20 00   ldo 1000(r21),r21
-
-And for cpu[3]:
-GR[02] == rp = 000000001010cdd0
-
-Func: handle
-interruption, Off: 0xb0, Addr: 0x1010cdd0
-
-    1010cdd0:  08 05 02 5b   copy r5,dp
-    1010cdd4:  02 00 08 b4   mfctl itmr,r20
-    1010cdd8:  02 00 08 b3   mfctl itmr,r19
-    1010cddc:  0a 93 04 33   sub r19,r20,r19
-  ...
-
-Parse IAOQ = 0x000000
-01010cde4 for CPU[3]
-
-Func: handle_interruption, Off: 0xc4, Addr: 0x1010cde4
-
-    1010cde0:  be 7c bf e5   cmpb,*>> ret0,r19,1010cdd8 <handle_interruption+0xb8>
-    1010cde4:  08 00 02 40   nop
-    1010cde8:  34 63 3f ff   ldo -1(r3),r3
-    1010
-dec:  ec 7f bf c5   cmpib,*<> -1,r3,1010cdd4 <handle_interruption+0xb4>
+Thanks
 
 
-Am i wrong if I presume that the nop isn would be harmless on cpu[3] OTC
-'pdtlb r0(sr1,r21)' ?  But I do not read any code 10 printout by printk()
-anyway it is the only exception: Privileged operation trap.
 
-Thanks again,
-    Joel
+> Grant Grundler wrote:
+> 
+> >On Tue, Sep 16, 2003 at 08:03:07PM +0100, mmogenius@v8fiesta.co.uk wrote:
+> >  
+> >
+> >>I have tried this but i am still getting the same error message... 
+> >>
+> >>Fatal server error:
+> >>AddScreen/ScreenInit Failed for driver 0 
+> >>    
+> >>
+> >
+> >
+> >  
+> >
+> >>With me having 2 cards in the machine do i need to specify wich one to use
+> ?
+> >>    
+> >>
+> >
+> >Maybe. I would expect the default to be the console.
+> >Can you remove one of the cards?
+> >  
+> >
+> hmm I presume that the first one is the builtin (not removable) gfx 
+> (which is not supported :( ) and the additional one is supported and 
+> pluged into a pci slot (so removable but the one usefull)?
+> 
+> Afaik i don't think that it is possible to 'remove' (even logicaly with 
+> some strap or switch) the builtin gfx.
+> Anyway, it is possible to change the default monitor to 'graphics1' (as 
+> afaik here the pdc would recognise the additional gfx) with help of 
+> COnfiguration submenu at bootprompt. (may be MO cmd would help to get 
+> more accurate info?)
+> 
+> Or (into linux system) should it be also possible to create a /dev/fb1 
+> (MAKEDEV iirc) and change with fbset the default fb device to fb1?
+> 
+> >  
+> >
+> >>if so where can i get the information to do this as i am not having much
+> luck 
+> >>finding any documentation. Thanks
+> >>    
+> >>
+> >
+> >Try searching tha parisc-linux mailing list for "ScreenInit Failed".
+> >Plenty of hits on this topic.
+> >
+> >If none of the above helps, can you post the full Xfree86.log.0?
+> >
+> >grant
+> >
+> hth,
+>     Joel
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
 
 
 
 
--------------------------------------------------------------------------
-L'Internet rapide, c'est pour tout le monde. Tiscali ADSL, 19,50 Euro
-pendant 3 mois! http://reg.tiscali.be/default.asp?lg=fr 
+-------------------------------------------------
+This mail sent through IMP: http://horde.org/imp/
