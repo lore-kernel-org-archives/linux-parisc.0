@@ -1,191 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8F53F4A19
-	for <parisc-linux@parisc-linux.org>; Mon, 12 Mar 2001 10:51:23 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14cWSw-0007b6-00; Mon, 12 Mar 2001 17:50:42 +0000
-Date: Mon, 12 Mar 2001 17:50:42 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: linux-mm@kvack.org, parisc-linux@parisc-linux.org
-Message-ID: <20010312175042.B19848@parcelfarce.linux.theplanet.co.uk>
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 29A994A19
+	for <parisc-linux@parisc-linux.org>; Mon, 12 Mar 2001 12:13:30 -0700 (MST)
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] libpng test program causes page fault 
+In-Reply-To: Message from Alan Modra <alan@linuxcare.com.au>
+   of "Sun, 11 Mar 2001 00:40:41 EST." <Pine.LNX.4.21.0103110024490.23407-100000@front.linuxcare.com.au>
+References: <Pine.LNX.4.21.0103110024490.23407-100000@front.linuxcare.com.au> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] [PATCH] Shared mmap [Take 3]
+Date: Mon, 12 Mar 2001 12:16:02 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20010312191602.E94E537CB4@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-This patch changes shared mmaps of files to always be aligned at the
-same offset within the processor's d-cache.  This fixes PA-RISC & MIPS.
-Sparc & IA-64 need some of their support changing, but I don't want to
-do that until everyone's had the chance to disagree with my changes :-)
+Alan Modra writes...
 
-Index: fs/inode.c
-===================================================================
-RCS file: /var/cvs/linux/fs/inode.c,v
-retrieving revision 1.1.1.3
-diff -u -p -r1.1.1.3 inode.c
---- fs/inode.c	2001/01/01 10:32:52	1.1.1.3
-+++ fs/inode.c	2001/03/12 13:23:04
-@@ -608,6 +608,7 @@ static void clean_inode(struct inode *in
- 	inode->i_data.a_ops = &empty_aops;
- 	inode->i_data.host = inode;
- 	inode->i_mapping = &inode->i_data;
-+	inode->i_mmap_offset = -1;
- }
- 
- /**
-Index: include/linux/fs.h
-===================================================================
-RCS file: /var/cvs/linux/include/linux/fs.h,v
-retrieving revision 1.1.1.4
-diff -u -p -r1.1.1.4 fs.h
---- include/linux/fs.h	2001/01/01 10:33:09	1.1.1.4
-+++ include/linux/fs.h	2001/03/12 13:56:10
-@@ -424,6 +424,7 @@ struct inode {
- 
- 	unsigned long		i_state;
- 
-+	unsigned int		i_mmap_offset; /* Handle L1 d-cache aliasing */
- 	unsigned int		i_flags;
- 	unsigned char		i_sock;
- 
-Index: include/linux/mm.h
-===================================================================
-RCS file: /var/cvs/linux/include/linux/mm.h,v
-retrieving revision 1.1.1.4
-diff -u -p -r1.1.1.4 mm.h
---- include/linux/mm.h	2001/01/01 10:33:09	1.1.1.4
-+++ include/linux/mm.h	2001/03/12 13:56:10
-@@ -419,6 +419,7 @@ extern void insert_vm_struct(struct mm_s
- extern void __insert_vm_struct(struct mm_struct *, struct vm_area_struct *);
- extern void build_mmap_avl(struct mm_struct *);
- extern void exit_mmap(struct mm_struct *);
-+extern unsigned long get_shared_area(unsigned long, unsigned long, unsigned int);
- extern unsigned long get_unmapped_area(unsigned long, unsigned long);
- 
- extern unsigned long do_mmap_pgoff(struct file *file, unsigned long addr,
-Index: mm/mmap.c
-===================================================================
-RCS file: /var/cvs/linux/mm/mmap.c,v
-retrieving revision 1.1.1.4
-diff -u -p -r1.1.1.4 mmap.c
---- mm/mmap.c	2001/01/01 10:33:08	1.1.1.4
-+++ mm/mmap.c	2001/03/12 16:47:25
-@@ -190,6 +190,7 @@ unsigned long do_mmap_pgoff(struct file 
- {
- 	struct mm_struct * mm = current->mm;
- 	struct vm_area_struct * vma;
-+	struct inode *inode = NULL;
- 	int correct_wcount = 0;
- 	int error;
- 
-@@ -223,17 +224,18 @@ unsigned long do_mmap_pgoff(struct file 
- 	 * of the memory object, so we don't do any here.
- 	 */
- 	if (file != NULL) {
-+		inode = file->f_dentry->d_inode;
- 		switch (flags & MAP_TYPE) {
- 		case MAP_SHARED:
- 			if ((prot & PROT_WRITE) && !(file->f_mode & FMODE_WRITE))
- 				return -EACCES;
- 
- 			/* Make sure we don't allow writing to an append-only file.. */
--			if (IS_APPEND(file->f_dentry->d_inode) && (file->f_mode & FMODE_WRITE))
-+			if (IS_APPEND(inode) && (file->f_mode & FMODE_WRITE))
- 				return -EACCES;
- 
- 			/* make sure there are no mandatory locks on the file. */
--			if (locks_verify_locked(file->f_dentry->d_inode))
-+			if (locks_verify_locked(inode))
- 				return -EAGAIN;
- 
- 			/* fall through */
-@@ -253,6 +255,15 @@ unsigned long do_mmap_pgoff(struct file 
- 	if (flags & MAP_FIXED) {
- 		if (addr & ~PAGE_MASK)
- 			return -EINVAL;
-+	} else if (inode && (flags & MAP_SHARED)) {
-+		if (inode->i_mmap_offset != -1) {
-+			addr = get_shared_area(addr, len, inode->i_mmap_offset);
-+		} else {
-+			addr = get_unmapped_area(addr, len);
-+		}
-+		if (!addr)
-+			return -ENOMEM;
-+		inode->i_mmap_offset = addr & (SHMLBA - 1);
- 	} else {
- 		addr = get_unmapped_area(addr, len);
- 		if (!addr)
-@@ -348,7 +359,7 @@ unsigned long do_mmap_pgoff(struct file 
- 
- 	insert_vm_struct(mm, vma);
- 	if (correct_wcount)
--		atomic_inc(&file->f_dentry->d_inode->i_writecount);
-+		atomic_inc(&inode->i_writecount);
- 	
- 	mm->total_vm += len >> PAGE_SHIFT;
- 	if (flags & VM_LOCKED) {
-@@ -359,7 +370,7 @@ unsigned long do_mmap_pgoff(struct file 
- 
- unmap_and_free_vma:
- 	if (correct_wcount)
--		atomic_inc(&file->f_dentry->d_inode->i_writecount);
-+		atomic_inc(&inode->i_writecount);
- 	vma->vm_file = NULL;
- 	fput(file);
- 	/* Undo any partial mapping done by a device driver. */
-@@ -376,6 +387,29 @@ free_vma:
-  * Return value 0 means ENOMEM.
-  */
- #ifndef HAVE_ARCH_UNMAPPED_AREA
-+
-+#define DCACHE_ALIGN(addr) ((addr) &~ (SHMLBA - 1))
-+
-+unsigned long get_shared_area(unsigned long addr, unsigned long len, unsigned int offset)
-+{
-+	struct vm_area_struct *vmm;
-+
-+	if (len > TASK_SIZE)
-+		return 0;
-+	if (!addr)
-+		addr = TASK_UNMAPPED_BASE;
-+	addr = DCACHE_ALIGN(addr - offset) + offset;
-+
-+	for (vmm = find_vma(current->mm, addr); ; vmm = vmm->vm_next) {
-+		/* At this point:  (!vmm || addr < vmm->vm_end). */
-+		if (TASK_SIZE - len < addr)
-+			return 0;
-+		if (!vmm || addr + len <= vmm->vm_start)
-+			return addr;
-+		addr = DCACHE_ALIGN(vmm->vm_end - offset) + offset;
-+	}
-+}
-+
- unsigned long get_unmapped_area(unsigned long addr, unsigned long len)
- {
- 	struct vm_area_struct * vmm;
-Index: mm/mremap.c
-===================================================================
-RCS file: /var/cvs/linux/mm/mremap.c,v
-retrieving revision 1.1.1.4
-diff -u -p -r1.1.1.4 mremap.c
---- mm/mremap.c	2001/01/01 10:33:09	1.1.1.4
-+++ mm/mremap.c	2001/03/11 23:48:55
-@@ -276,7 +276,11 @@ unsigned long do_mremap(unsigned long ad
- 	ret = -ENOMEM;
- 	if (flags & MREMAP_MAYMOVE) {
- 		if (!(flags & MREMAP_FIXED)) {
--			new_addr = get_unmapped_area(0, new_len);
-+			if (vma->vm_file && (vma->vm_flags & VM_SHARED)) {
-+				new_addr = get_shared_area(0, new_len, vma->vm_file->f_dentry->d_inode->i_mmap_offset);
-+			} else {
-+				new_addr = get_unmapped_area(0, new_len);
-+			}
- 			if (!new_addr)
- 				goto out;
- 		}
+> Your IOAQ indicates the fault happened in libz.  48210228 occurs in my
+> libz in __do_global_ctors_aux, so it smells like your libz is bad,
+> ie. built with bad crt[in].o.
 
------ End forwarded message -----
+Yep, I rebuilt/installed libz and then it built fine. I uploaded the new zlib 
+and libpng stuff to pehc.
+
+Thanks,
 
 -- 
-Revolutions do not require corporate support.
+Matt Taggart        Linux Development Lab
+taggart@fc.hp.com   HP Linux Systems Operation
