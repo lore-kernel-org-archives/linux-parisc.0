@@ -1,41 +1,45 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA32612
-	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 15:48:13 -0600
-To: Kailashnath V Rampure <kailasr@webcash.com>
-Cc: Grant Grundler <grundler@cup.hp.com>, deller@gmx.de,
-        parisc-linux@thepuffingroup.com
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA00828
+	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 16:00:19 -0600
+Message-Id: <5.0.0.25.0.20001027145806.037c89e0@mail.webcash.com>
+Date: Fri, 27 Oct 2000 14:58:25 -0700
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+From: Kailashnath V Rampure <kailasr@webcash.com>
 Subject: Re: [parisc-linux] glibc problem 
-In-Reply-To: Message from Kailashnath V Rampure <kailasr@webcash.com>
-   of "Fri, 27 Oct 2000 14:29:53 PDT." <5.0.0.25.0.20001027142719.03822920@mail.webcash.com>
-References: <Your message of "Fri, 27 Oct 2000 13:37:49 PDT."
- <5.0.0.25.0.20001027131913.00a57090@mail.webcash.com>  
- <5.0.0.25.0.20001027142719.03822920@mail.webcash.com>
+Cc: deller@gmx.de, parisc-linux@thepuffingroup.com
+In-Reply-To: <20001027214152.F259D38137@carmen.fc.hp.com>
+References: <Message from Kailashnath V Rampure <kailasr@webcash.com>
+ <5.0.0.25.0.20001027131913.00a57090@mail.webcash.com>
+ <Your message of "Thu, 26 Oct 2000 14:37:20 PDT."  <5.0.0.25.0.20001026142948.00a3deb0@mail.webcash.com>
+ <Message from  Kailashnath V Rampure <kailasr@webcash.com>
+ <5.0.0.25.0.20001026125217.00a43eb0@mail.webcash.com>
+ <5.0.0.25.0.20001025173830.00a64a30@mail.webcash.com>
+ <5.0.0.25.0.20001026125217.00a43eb0@mail.webcash.com>
+ <5.0.0.25.0.20001026142948.00a3deb0@mail.webcash.com>
+ <5.0.0.25.0.20001027131913.00a57090@mail.webcash.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 27 Oct 2000 15:51:37 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001027215137.00F1138137@carmen.fc.hp.com>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 List-ID: <linux-parisc.vger.kernel.org>
 
+The inetd.conf is as follows
 
-Kailashnath V Rampure writes...
+tftp    dgram   udp     wait    root    /usr/sbin/tcpd  in.tftpd /tftpboot
+bootps  dgram   udp     wait    root    /usr/sbin/tcpd  bootpd
 
-> I also see on the Linux server that bootpd is being invoked for some time
-> only.
 
-bootpd runs from inetd and only stays up if it's receiving requests. After a 
-specified amount of time of no requests it will exit. This isn't a problem as 
-inetd will fire up a new one if needed.
+At 03:41 PM 10/27/00 -0600, Matt Taggart wrote:
 
-I would make sure that tftpd is doing the right thing. You can test your tftpd 
-setup by trying to download the lifimage yourself using the tftp client 
-program.
-
-bootpd and tftpd are pretty good about writing to syslog too, so check there 
-for errors.
-
-HTH,
-
--- 
-Matt Taggart
-taggart@fc.hp.com
+>Kailashnath V Rampure writes...
+>
+> > But when I type bo lan at HP server Iget the following error
+>
+>Do you have tftp installed and working? It usually runs via inetd. Here's 
+>what
+>I have in /etc/inetd.conf on my Debian box,
+>
+>tftp  dgram  udp  wait  nobody  /usr/sbin/tcpd  /usr/sbin/in.tftpd /boot
+>/tftpboot
+>
+>--
+>Matt Taggart
+>taggart@fc.hp.com
