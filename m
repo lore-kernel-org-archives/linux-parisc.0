@@ -1,18 +1,13 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5B85C4855
-	for <parisc-linux@parisc-linux.org>;
-	Sat, 24 Jan 2004 18:37:51 -0700 (MST)
-Date: Sat, 24 Jan 2004 18:37:49 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Message-Id: <200401250613.i0P6DAIf010964@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] missing barrier in _raw_spin_lock?
-Message-ID: <20040125013749.GC16272@colo.lackof.org>
-References: <4012DE98.9090605@tiscali.be>
-	<200401242115.i0OLFjQ5009570@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200401242115.i0OLFjQ5009570@hiauly1.hia.nrc.ca>
+To: grundler@parisc-linux.org (Grant Grundler)
+Date: Sun, 25 Jan 2004 01:13:10 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040125013749.GC16272@colo.lackof.org> from "Grant Grundler" at
+	Jan 24, 2004 06:37:49 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Cc: arnd@arndb.de, parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -23,91 +18,83 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sat, Jan 24, 2004 at 04:15:44PM -0500, John David Anglin wrote:
-> > >> static int x;
-> > >> static spinlock_t lock;
-...
-> The test is wrong.  Static variables are initialized to 0.  So, the first
-> `if' is never true and the code will optimize to a return instruction.
+>  Anyway, gcc doesn't seem to be that smart:
 
-In any case, that should be
-	static spinlock_t lock = SPIN_LOCK_UNLOCKED;
+Right, it not that smart but it does optimize certain memory references.
 
-(On parisc UNLOCKED == 1, not 0 like the rest of the world)
+> The key bit is __ldcw() in asm/system.h:
+> 
+> /* LDCW, the only atomic read-write operation PA-RISC has. *sigh*.  */
+> #define __ldcw(a) ({ \
+>         unsigned __ret; \
+>         __asm__ __volatile__("ldcw 0(%1),%0" : "=r" (__ret) : "r" (a)); \
+>         __ret; \
+> })
 
-Is gcc really that smart that it knows static variables are 0?
-The would be amazing to me because I thought linker magic could
-twiddle stuff like this. Anyway, gcc doesn't seem to be that smart:
+In some version of pthreads, we used
 
-# diff t1.c t2.c
-3c3
-< static int x=1;
----
-> static int x;
-
-# diff t1.S t2.S
-3,7d2
-<       .align 4
-<       .type   x, @object
-<       .size   x, 4
-< x:
-<       .word   1
-54a50,51
->       .local  x
->       .comm   x,4,4
-
-
-BTW, the .S diff is the same for both -O2 and -O3 output.
-Maybe other compile options would further optimize.
-
-
-Arndt,
-In any case, thanks for raising the issue.
-I hadn't looked at the asm code in a long time.
-
-The key bit is __ldcw() in asm/system.h:
-
-/* LDCW, the only atomic read-write operation PA-RISC has. *sigh*.  */
 #define __ldcw(a) ({ \
-        unsigned __ret; \
-        __asm__ __volatile__("ldcw 0(%1),%0" : "=r" (__ret) : "r" (a)); \
-        __ret; \
+  unsigned int __ret;                                                   \
+  __asm__ __volatile__("ldcw 0(%2),%0"                                  \
+		      : "=r" (__ret), "=m" (*(a)) : "r" (a));           \
+  __ret;                                                                \
 })
 
-I suspect (but am not certain) Arnd is right.
-We indicate __ret is getting clobbered (=r) and that 'a' is an input ("r").
-I don't see anything indicating we changed the memory location.
+This tells gcc explicitly what memory is affected by the asm.  However,
+it doesn't provide a memory barrier.  I think this isn't necessary in
+pthreads because it provides a separate macro define for this.
 
-But I don't see the problem.  The t2.S output looks correct.
-The "if (!x) {...}" code is generated:
+This is what the gcc documentation says about asms:
 
-...
-.L18:
-        ldw RR'x-$global$(%r21),%r20
-        comib,<> 0,%r20,.L13
-        ldi 4660,%r25
-        stw %r25,RR'x-$global$(%r21)
-...
+If your assembler instructions access memory in an unpredictable
+fashion, add `memory' to the list of clobbered registers.  This
+will cause GCC to not keep memory values cached in registers across the
+assembler instruction and not optimize stores or loads to that memory.
+You will also want to add the `volatile' keyword if the memory
+affected is not listed in the inputs or outputs of the `asm', as
+the `memory' clobber does not count as a side-effect of the
+`asm'.  If you know how large the accessed memory is, you can add
+it as input or output but if this is not known, you should add
+`memory'.  As an example, if you access ten bytes of a string, you
+can use a memory input like:
 
-BTW, PARISC still doesn't support CONFIG_SMP (cpu init sequence)
-on 2.6 kernels. SMP works (mostly) on 2.4 kernels.
+> I suspect (but am not certain) Arnd is right.
+> We indicate __ret is getting clobbered (=r) and that 'a' is an input ("r").
+> I don't see anything indicating we changed the memory location.
 
-Here's how I generated t1.S output and it's not completely trivial.
-One has to:
-	o cp /usr/src/linux-2.6/include/linux/autoconf.h ./linux/
-	o vi linux/autoconf.hl
-		- change "#undef CONFIG_SMP" to #define
-		- add "#define CONFIG_NR_CPUS 4"
-	o gcc -O3 -I. -I/usr/src/linux-2.6/include/ -S t1.c -o t1.S
+It's not really the memory accessed by the ldcw that's at issue here.
+If `x' is a location that can change between the first test and a successful
+lock (SMP), then you want a memory barrier in __ldcw so that the memory
+value of x is not cached in a register across the lock.
 
-I've put the whole mess on
-	http://iou.parisc-linux.org/~grundler/asm-memory/
+The following revision to the test program demonstrates the problem
+of a memory value carried into the lock.
 
+#include <linux/spinlock.h>
 
-BTW, I notice several other asm() in linux/asm-parisc/system.h which
-specify ': "memory"' but the instructions used are register only.
-Notably the ssm/rsm/mtsm insn's.
-Any comment if those asm() *do NOT* need ': "memory"'?
+static spinlock_t lock = SPIN_LOCK_UNLOCKED;
 
-thanks,
-grant
+void test(int *x)
+{
+  if (*x)
+    {
+      spin_lock(&lock);
+      if (!*x)
+	*x = 0x1234;
+      spin_unlock(&lock);
+    }
+}
+
+We need the "memory" clobber in SMP.  I think the macro should be:
+
+#define __ldcw(a) ({ \
+  unsigned int __ret;							 \
+  __asm__ __volatile__("ldcw 0(%2),%0"					 \
+		      : "=r" (__ret), "=m" (*(a)) : "r" (a) : "memory"); \
+  __ret;								 \
+})
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
