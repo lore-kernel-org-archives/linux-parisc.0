@@ -1,51 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA18479
-	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 09:36:56 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 18 Dec 2000 16:39:52 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 1482h7-0006PZ-00; Mon, 18 Dec 2000 15:59:21 +0000
-Date: Mon, 18 Dec 2000 15:59:21 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: LaMont Jones <lamont@hp.com>
-Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>,
-        Philippe Benard <phi@hpfrcu03.france.hp.com>,
-        Stan Sieler <sieler@allegro.com>, Matthew Wilcox <matthew@wil.cx>,
-        Jes Sorensen <jes@linuxcare.com>, Alan Modra <alan@linuxcare.com.au>,
-        John Marvin <jsm@udlkern.fc.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] ldcw in __pthread_acquire
-Message-ID: <20001218155921.A23539@parcelfarce.linux.theplanet.co.uk>
-References: <E147z3b-0005TD-00@the-village.bc.nu> <20001218144932.427471872C@security.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA19587
+	for <parisc-linux@puffin.external.hp.com>; Mon, 18 Dec 2000 10:56:56 -0700
+To: Alex deVries <adevries@linuxcare.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] New web site in CVS... 
+In-Reply-To: Message from Alex deVries <adevries@linuxcare.com>
+   of "Mon, 18 Dec 2000 11:05:48 EST." <3A3E35DC.1DA98F7@linuxcare.com>
+References: <3A3E35DC.1DA98F7@linuxcare.com> 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001218144932.427471872C@security.hp.com>; from lamont@hp.com on Mon, Dec 18, 2000 at 07:49:32AM -0700
-Sender: <willy@www.linux.org.uk>
+Date: Mon, 18 Dec 2000 11:01:41 -0700
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20001218180141.298CE37CA1@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Dec 18, 2000 at 07:49:32AM -0700, LaMont Jones wrote:
-> > Since hppa its apparently 2 clocks to the syscall the numbers are apparently
-> > different.
-> 
-> Actually, the sequence consists of:
-> 
-> libc_stub:
-> 	bl	gateway_page_addr
-> 	...
-> 
-> gateway_page_addr:
-> 	gate	.+8
-> 	...
-> 	...
-> 
-> And we find ourselves in kernel mode after 2 branches (unconditional
-> and pre-computed ==> predict correctly) and two delay slots.  At that
-> point we have kernel data structures at our fingertips, but have in no
-> way done a complete 'syscall' entry - those are (at least on hp-ux) a
-> bit more expensive...  (It also means that kernel vs user detection in
-> traps code needs to look at the priv level, not the stack pointer...)
 
-... ignoring the potential pain of TLB misses caused by losing locality.
-But this is merely a quibble, I think.
+Alex deVries writes...
+
+> 
+> I've checked in the redone web site into CVS; it's in a module called
+> 'web'.
+[snip]
+> 
+> The content, however, I'd appreciate feedback and CVS commits on. 
+> Please be constructive.
+
+Ok I just committed some fixes. I have a couple comments,
+
+- someone should run a link checker over the site. I tried a lot by hand but 
+didn't want to spend the time to do all the weekly reports, etc.
+
+- weekly/index.html shows the last update from May 12, 2000 and the links are 
+broken. I don't know if we should go to the trouble to change all the old 
+reports(and probably shouldn't for historical reasons) but if we released a 
+new weekly report it would displace this old/b0rken one.
+
+- hardware/index.html is not done. I will take a look at it shortly.
 
 -- 
-Revolutions do not require corporate support.
+Matt Taggart
+taggart@fc.hp.com
