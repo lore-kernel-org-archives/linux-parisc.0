@@ -1,21 +1,22 @@
-Return-Path: <James.Bottomley@SteelEye.com>
-Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DA841486F
+Return-Path: <willy@www.linux.org.uk>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
+	[195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1EE0D488E
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 29 Mar 2004 09:17:26 -0700 (MST)
-Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
-	i2TGHPa04887; Mon, 29 Mar 2004 11:17:25 -0500
-Subject: Re: [parisc-linux] init_idle and local_irq_save
-From: James Bottomley <James.Bottomley@steeleye.com>
+	Mon, 29 Mar 2004 09:31:35 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 4.22)
+	id 1B7zfi-0006Zb-BB; Mon, 29 Mar 2004 17:31:34 +0100
+Date: Mon, 29 Mar 2004 17:31:34 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: Grant Grundler <grundler@parisc-linux.org>
-In-Reply-To: <20040329160357.GA31448@colo.lackof.org>
+Subject: Re: [parisc-linux] init_idle and local_irq_save
+Message-ID: <20040329163134.GE7709@parcelfarce.linux.theplanet.co.uk>
 References: <20040329160357.GA31448@colo.lackof.org>
-Content-Type: text/plain
-Date: 29 Mar 2004 11:17:19 -0500
-Message-Id: <1080577040.1804.9.camel@mulgrave>
 Mime-Version: 1.0
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20040329160357.GA31448@colo.lackof.org>
+Sender: <willy@www.linux.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,22 +26,25 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, 2004-03-29 at 11:03, Grant Grundler wrote:
-> o local_irq_save()/local_irq_restore are called without an
->   obvious local_irq_disable() call in between. Is this really
->   needed for some other reason or is the local_irq_disable() missing?
-
-local_irq_save() does do an irq disable.  You're thinking of
-local_save_flags() which only saves the flags but doesn't disable
-interrupts.
-
+On Mon, Mar 29, 2004 at 09:03:57AM -0700, Grant Grundler wrote:
 > o double_rq_lock() acquires the locks with lowest address first.
 >   double_rq_unlock() does not release those in the inverse order.
 >   Is that a problem?
->   I'm just nervous since I didn't see the local_irq_disable()
->   in init_idle() which would guarantee both unlock's happen atomically.
 
-No.  The deadlock potential comes only from lock acquisition order, not
-lock release order:  nothing can block a lock release from proceeding.
+No.  You have two possibilities (locks A, B; acquire and release):
 
-James
+1. Aa Ba Ar Br
+2. Aa Ba Br Ar
+
+It doesn't matter how you combine them; either you are waiting for A or
+you have A and are waiting for B.  You never have B and are waiting for A.
+Case 2 is the more common idiom since B is then entirely nested within A,
+but lock A ranks lock B in both cases, so you're safe.
+
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
