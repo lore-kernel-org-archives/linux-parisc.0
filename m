@@ -1,28 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA03508
-	for <parisc-linux@puffin.external.hp.com>; Tue, 7 Mar 2000 19:17:27 -0700
-Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
-	by palrel3.hp.com (Postfix) with ESMTP id 0BA968B6
-	for <parisc-linux@thepuffingroup.com>; Tue,  7 Mar 2000 17:18:35 -0800 (PST)
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA10778
+	for <parisc-linux@puffin.external.hp.com>; Wed, 8 Mar 2000 13:25:21 -0700
+Received: from home.com ([24.3.241.137]) by mail.rdc1.ne.home.com
+          (InterMail v4.01.01.00 201-229-111) with ESMTP
+          id <20000308192630.KOMJ21671.mail.rdc1.ne.home.com@home.com>
+          for <parisc-linux@thepuffingroup.com>;
+          Wed, 8 Mar 2000 11:26:30 -0800
+Message-ID: <38C6A999.40D4858@home.com>
+Date: Wed, 08 Mar 2000 13:27:21 -0600
+From: Matthew Hudson <mhudson@home.com>
+MIME-Version: 1.0
 To: parisc-linux@thepuffingroup.com
-Date: Tue, 07 Mar 2000 18:18:05 -0700
-From: Paul Bame <bame@endor.fc.hp.com>
-Message-Id: <E12SV6z-000245-00@endor.fc.hp.com>
-Subject: [parisc-linux] palo
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Sorta results of a J210XC?
 List-ID: <linux-parisc.vger.kernel.org>
 
+The reason I say 'sorta' is because I don't have a front
+panel on my case and I'm not 100% sure it is a J210XC,
+but here are the specs, so maybe you can tell me.
+(recalling this from memory, if you need more info
+I'll obtain try to obtain it).
 
-I incorporated prumpf's byte-order changes to palo & ipl so they *should*
-work when cross-compiled on x86 but I haven't been able to confirm that yet.
+HP A4491A
+Dual 120Mhz CPU with 1MBIC,1MBDC (from IN)
 
-palo (really ipl) was converted to use ELF32, so you don't need SOM
-for the boot loader.  palo still understands either SOM or ELF32
-executables for ipl (if you happen to have an old one) and/or vmlinux.
+from -more /proc/cpuinfo
+cpu: PA-RISC 7200
+model name: LighteningHawk T120
 
-The palo sources have been heavily re-named, so get your new bits with care!
+As far as booting kernel goes, I get to the prompt and am able
+to -mount, -more, etc.
 
-One oddity -- you have to build palo 2 extra times at first, due to
-some symlinking hacks.  VPATH would probably be better, when I get the time,
-or somebody else does.
+I'll add this to your database if I can confirm(determine)
+what it is.
 
-	-P
+I don't have HP/UX so I can't obtain any information from
+its various utilities.
+
+Thanks,
+
+-Matt
