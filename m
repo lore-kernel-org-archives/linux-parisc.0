@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D355C485C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 06:59:50 -0600 (MDT)
-Received: from iws1pb05.france.hp.com (unknown [15.124.72.14])
-	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id 0A70F10F2
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 14:59:45 +0200 (METDST)
-Message-ID: <3DAC119C.9A5EE02E@hpfrcu81.france.hp.com>
-Date: Tue, 15 Oct 2002 15:01:16 +0200
-From: phi <phi@hpfrcu81.france.hp.com>
-MIME-Version: 1.0
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Dump driver: step by step
-References: <3DABF865.8224BF5@admin.france.hp.com> <3DAC09D7.47F2D9C0@hpfrcu81.france.hp.com> <3DAC0D9E.BD896745@admin.france.hp.com>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3138E4829
+	for <parisc-linux@parisc-linux.org>; Tue, 15 Oct 2002 14:16:31 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 181Y79-0004br-00
+	for parisc-linux@parisc-linux.org; Tue, 15 Oct 2002 21:16:27 +0100
+Date: Tue, 15 Oct 2002 21:16:27 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20021015211627.A15163@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 2.5 status
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +23,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bruno Vidal wrote:
-> 
-> Please take a look to my email -> I'm using arg1=4 or 5
-> not 2 or 3.
-> So how do you explain this -9 for "init & test mod & dev"
-> 
+In an attempt to get more people involved in the 2.5 porting effort, I'm
+going to try to send out weekly updates of what's going on.  Feel free to
+respond to things and point out where I'm wrong.
 
+Status:
 
-I red :-) You mentioned 'parisc 1.1 IO firmware Architecture' which is kind of
-generic title, then thought you missed the iodc.pdf doc.
+ - Merged to 2.5.41
+ - Booted on an A500
+ - Linus released 2.5.42
+ - Don't know what patches need to be integrated into Linus' tree
+ - Don't know what other patches need to be brought forward from 2.4
 
-> So how do you explain this -9 for "init & test mod & dev"
+Todo:
 
-May be you used arg1 to 2 or 3 when you really wanted 4 or 5 
+ - Serial code not working for a 712 (willy)
+ - the fix for do_fork needs checking
+ - stifb doesn't compile
+ - mux driver needs to be forward ported from 2.4 (rbrad)
+ - merge 2.5.42
+ - think the tcpdiag_cookie patch in our tree is now obsolete
+ - need to get an official number for PDC_CONS or MUX (any problem with using
+	the same number for both?) (rbrad)
+ - send .text.init -> .init.text change to Linus (willy)
+ - send tulip changes to jgarzik (grant)
+ - figure out why we have genrtc 1.05 in our tree when linus has 1.06
+ - do a better job of vmlinux{32,64}.lds
+ - review diff vs 2.4 for additional changes
+ - review diff vs 2.5 for changes which still need to be sent to Linus.
 
-OR
+would these lists be more useful in html or would they just bitrot?
 
--9 is also returned for 4 or 5 meaning  meaning
- 1: machdep.h:283   #define IODCE_NOSUCHDEV  -9
-
-as returned by scan from ./ISU/mongoose/machdep.h
-
-Cheers,
-Phi
+-- 
+Revolutions do not require corporate support.
