@@ -1,13 +1,14 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] linux-2.6.10-pa1 panic on C360 in SCSI driver
-Date: Mon, 27 Dec 2004 21:30:20 -0600
-Message-ID: <1104204620.7447.33.camel@mulgrave>
+Date: Tue, 28 Dec 2004 03:35:20 +0000
+Message-ID: <20041228033520.GO11543@parcelfarce.linux.theplanet.co.uk>
 References: <200412260504.40205.vapier@gentoo.org>
 	<41CF56AD.2010504@tiscali.be>
 	<20041227004909.GI11543@parcelfarce.linux.theplanet.co.uk>
 	<200412272045.34143.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
 To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
@@ -22,49 +23,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, 2004-12-27 at 20:45 -0500, Mike Frysinger wrote:
+On Mon, Dec 27, 2004 at 08:45:34PM -0500, Mike Frysinger wrote:
 > it didnt panic, but it looks like the kernel went into an infinite loop ...
 
-Well, I think that's the fault of your drive:
+Yeah, now it looks like a problem a bunch of other people have been having ;-(
 
+> sym0:9:ppr msgin: 1-6-4-c-0-3f-1-2.
+> sym0:9: FAST-20 WIDE SCSI 40.0 MB/s ST (50.0 ns, offset 16)
 > sym0:9:ppr msgout: 1-6-4-c-0-10-1-0.
+>   Vendor: WDIGTL    Model: WDE9150 ULTRA3    Rev: 1.30
+>   Type:   Direct-Access                      ANSI SCSI revision: 03
+> sym0:9:0: tagged command queuing enabled, command queue depth 16.
+>  target0:0:9: Beginning Domain Validation
+> sym0:9:ppr msgout: 1-6-4-c-0-0-0-0.
+> sym0:9:ppr msgin: 1-6-4-a-0-0-0-0.
 
-This is where the 875 offers an offset of 16 at FAST-20 which is the
-best it can do.
+The SPI spec prohobits the device from going faster than we say.  The 'c'
+in the msgout is us saying "we can only do FAST-20" (as the 875 is only
+capable of FAST-20).  The 'a' in the msgin is the device saying "OK,
+let's do FAST-40".
 
-> sym0:9:ppr msgin: 1-6-4-a-0-10-1-0.
+Can you try the following patch?  We're not actually disabling ppr atm,
+depite what the comment says.
 
-This is where your WD says I accept your offer at offset 16 and FAST-40
-(which is beyond the 875's capabilities).
-
-This is illegal under the SCSI spec (you can only accept at a period of
-greater than the offer, not less than).  The patch I gave you spots the
-problem and rejects the bogus offer.  Unfortunately, apparently now the
-drive throws a wobbly and refuses to talk any more.
-
-The question is how we coax it to negotiate within the rules...It's
-possible it would work correctly if the negotiation used WDTR and SDTR
-instead of PPR, so could you try the attached hack.
-
-James
-
-===== sym_hipd.c 1.22 vs edited =====
---- 1.22/drivers/scsi/sym53c8xx_2/sym_hipd.c	2004-10-24 11:08:18 -05:00
-+++ edited/sym_hipd.c	2004-12-27 21:28:35 -06:00
-@@ -1538,7 +1538,7 @@
- 	/*
- 	 *  negotiate using PPR ?
- 	 */
--	if (scsi_device_dt(sdev)) {
-+	if (0 && scsi_device_dt(sdev)) {
- 		nego = NS_PPR;
- 	} else {
- 		/*
-
-
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Index: drivers/scsi/sym53c8xx_2/sym_hipd.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/drivers/scsi/sym53c8xx_2/sym_hipd.c,v
+retrieving revision 1.43
+diff -u -p -r1.43 sym_hipd.c
+--- drivers/scsi/sym53c8xx_2/sym_hipd.c 2 Dec 2004 19:51:11 -0000       1.43
++++ drivers/scsi/sym53c8xx_2/sym_hipd.c 28 Dec 2004 03:27:10 -0000
+@@ -1444,7 +1444,11 @@ static void sym_check_goals(struct scsi_
+                st->offset = 0;
+                return;
+        }
+-               
++
++       /* Some targets fail to properly negotiate using PPR in SE mode */
++       if (!((np->scsi_mode == SMODE_LVD) && (np->features & FE_ULTRA3)))
++               sdev->ppr = 0;
++
+        if (scsi_device_dt(sdev)) {
+                if (scsi_device_dt_only(sdev))
+                        st->options |= PPR_OPT_DT;
+@@ -1454,10 +1458,6 @@ static void sym_check_goals(struct scsi_
+        } else {
+                st->options &= ~PPR_OPT_DT;
+        }
