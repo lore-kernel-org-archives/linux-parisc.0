@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 23FB5482B
-	for <parisc-linux@parisc-linux.org>; Sat, 22 Mar 2003 20:37:57 -0700 (MST)
-Message-Id: <200303230337.h2N3bhAC026836@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [Linux-ia64] Announce: modutils 2.4.24 is available
-To: kaos@ocs.com.au (Keith Owens)
-Date: Sat, 22 Mar 2003 22:37:43 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Received: from mail.ocs.com.au (mail.ocs.com.au [203.34.97.2])
+	by dsl2.external.hp.com (Postfix) with SMTP id AB631482B
+	for <parisc-linux@parisc-linux.org>; Sat, 22 Mar 2003 20:41:46 -0700 (MST)
+From: Keith Owens <kaos@ocs.com.au>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: willy@debian.org, linux-kernel@vger.kernel.org,
 	parisc-linux@parisc-linux.org
-In-Reply-To: <8755.1048390145@ocs3.intra.ocs.com.au> from "Keith Owens" at Mar 23, 2003 02:29:05 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] Re: [Linux-ia64] Announce: modutils 2.4.24 is available 
+In-reply-to: Your message of "Sat, 22 Mar 2003 22:37:43 CDT."
+             <200303230337.h2N3bhAC026836@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sun, 23 Mar 2003 14:41:33 +1100
+Message-ID: <8942.1048390893@ocs3.intra.ocs.com.au>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> -#if defined(ARCH_ia64) || defined(ARCH_ppc64)
-> +#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa64)
->  #define HAS_FUNCTION_DESCRIPTORS
->  #endif
+On Sat, 22 Mar 2003 22:37:43 -0500 (EST), 
+"John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
+>> -#if defined(ARCH_ia64) || defined(ARCH_ppc64)
+>> +#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa64)
+>>  #define HAS_FUNCTION_DESCRIPTORS
+>>  #endif
+>
+>The 32-bit hppa port also has function descriptors.
 
-The 32-bit hppa port also has function descriptors.
+They keep coming out of the woodwork :(  Any more architectures using
+function descriptors?  Just add them to the list below.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Index: 24.3/include/util.h
+--- 24.3/include/util.h Sun, 23 Mar 2003 13:34:28 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
++++ 24.3(w)/include/util.h Sun, 23 Mar 2003 14:40:06 +1100 kaos (modutils-2.4/51_util.h 1.4 644)
+@@ -96,7 +96,7 @@ void gzf_close(int fd);
+ #define SYMPREFIX "__insmod_";
+ extern const char symprefix[10];	/* Must be sizeof(SYMPREFIX), including nul */
+ 
+-#if defined(ARCH_ia64) || defined(ARCH_ppc64)
++#if defined(ARCH_ia64) || defined(ARCH_ppc64) || defined(ARCH_hppa) || defined(ARCH_hppa64)
+ #define HAS_FUNCTION_DESCRIPTORS
+ #endif
+ 
