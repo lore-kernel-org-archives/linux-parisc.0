@@ -1,30 +1,47 @@
-Received: from mailserv2.iuinc.com (mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id WAA06991
-	for <parisc-linux@puffin.external.hp.com>; Thu, 16 Sep 1999 22:39:02 -0600
-Date: Fri, 17 Sep 1999 03:52:57 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: LaMont Jones <lamont@security.hp.com>
-Cc: Grant Grundler <grundler@cup.hp.com>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 715/100 data page fault and msg output
-Message-ID: <19990917035257.K8112@suse.de>
-References: <19990917005542.I8112@suse.de> <19990917013948.39E7E18711@security.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19990917013948.39E7E18711@security.hp.com>; from LaMont Jones on Thu, Sep 16, 1999 at 07:39:47PM -0600
+Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA07763
+	for <parisc-linux@puffin.external.hp.com>; Fri, 17 Sep 1999 15:00:11 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id RAA11264
+	for <parisc-linux@thepuffingroup.com>; Fri, 17 Sep 1999 17:01:30 -0400 (EDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id OAA23369 for <parisc-linux@thepuffingroup.com>; Fri, 17 Sep 1999 14:00:17 -0700 (PDT)
+Message-Id: <199909172100.OAA23369@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Date: Fri, 17 Sep 1999 14:00:17 -0700
+From: Grant Grundler <grundler@cup.hp.com>
+Subject: [parisc-linux] cvs [server aborted]: "commit" requires write access...
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > we don't save them at all, but directly read them.  Of course, printing them
-> > doesn't make any sense (except for debugging the interruption code).
-> 
-> Reading them when PSW.Q=1 is undefined, and it sounds like that's where the
-> problem is coming from....
 
-erm.  yes, I know that.  Yes, I said it doesn't make any sense.
+Alex/et al,
+I'm trying to submit the changes to build "som" format binaries
+and I'm getting the error:
 
-> IIR should have had a load or store in it for Grant's problem...
+cvs [server aborted]: "commit" requires write access to the repository
+cvs commit: saving log message in /tmp/cvsBAAa18719
 
-Grant's problem is most likely solved.  And no, there is no reason to save
-IIR right now (there might be one when we have to find out whether a read or
-write failed).
+Is the entire /home/cvs/parisc repository locked right now?
+I checked rw permissions on the files and I have them.
 
-	Philipp Rumpf
+I recall Alex sent a message about merging to 2.2.12. I don't
+remember (but may have missed) mention that the repository
+would be locked down and binutils was part of that.
+
+I'm interested in committing:
+CVS: Modified Files:
+CVS:    binutils/gas/configure binutils/bfd/config.bfd
+CVS:    binutils/ld/Makefile.in
+CVS: ----------------------------------------------------------------------
+Problem: tools use som support for as long as HP-UX linker is required.
+Solution:
+o gas/configure: for "hppa-*-linux" in "case ${generic_target}",
+                 replace "fmt=elf" with "fmt=som"
+o bfd/config.bfd: move parisc-linux target to "targ_defvec=som_vec" case
+o ld/Makefile.in: disable "install" target for ld. Print msg instead.
+
+thanks,
+grant
+
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
