@@ -1,15 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] Re: [PATCH] _STACK_GROWS_UP fixes.
-Date: Sat, 18 Oct 2003 18:55:47 -0400
-Message-ID: <20031018225547.GE8642__30464.2984098338$1416622885$gmane$org@systemhalted>
-References: <20031012213734.GJ23999@systemhalted> <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] hppa glibc 2.3.2-9 available for the brave testers!
+Date: Sat, 18 Oct 2003 23:54:43 +0000
+Message-ID: <3F91D2C3.8020209__17885.4625825354$1416622886$gmane$org@tiscali.be>
+References: <20031017180912.GD27289@systemhalted> <3F91A332.9050700@tiscali.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: libc-alpha <libc-alpha@sources.redhat.com>,
-	parisc-linux@lists.parisc-linux.org
-To: Jakub Jelinek <jakub@redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031015053431.GE12344@sunsite.ms.mff.cuni.cz>
+In-Reply-To: <3F91A332.9050700@tiscali.be>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,42 +20,112 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Oct 15, 2003 at 07:34:31AM +0200, Jakub Jelinek wrote:
-> On Sun, Oct 12, 2003 at 05:37:34PM -0400, Carlos O'Donell wrote:
-> > 2003-10-06  Carlos O'Donell <carlos@baldric.uwo.ca>
-> > 
-> > 	* pthread.c (__pthread_self_stack): _STACK_GROWS_UP case added.
-> > 	(__pthread_find_self): Likewise.
-> > 	* manager.c (thread_segment): _STACK_GROWS_UP case added.
+Carlos,
+
+Sucessfully install :)
+
+Some rsync, ssh connection still work fine;
+
+as well 'apt-get install somepkg'.
+
+build our k-2.6.0-test8-pa1 with success also (boot fine ;) )
+
+evolution (k-2.4.21-32 always) works fine (a bit slow on my c110)
+
+Test case about mallopt() ok :)
+
+So squid didn't hang any more at start up but still failled:
+'Setting up squid (2.5.4-2) ...
+Creating squid spool directory structure
+FATAL: Could not determine fully qualified hostname.  Please set 
+'visible_hostname'
+
+Squid Cache (Version 2.5.STABLE4): Terminated abnormally.
+CPU Usage: 0.140 seconds = 0.060 user + 0.080 sys
+Maximum Resident Size: 0 KB
+Page faults with physical i/o: 323
+/var/lib/dpkg/info/squid.postinst: line 177:  1082 Aborted 
+    /usr/sbin/squid -z
+Starting proxy server: Creating squid spool directory structure
+FATAL: Could not determine fully qualified hostname.  Please set 
+'visible_hostname'
+
+Squid Cache (Version 2.5.STABLE4): Terminated abnormally.
+CPU Usage: 0.150 seconds = 0.040 user + 0.110 sys
+Maximum Resident Size: 0 KB
+Page faults with physical i/o: 323
+/etc/init.d/squid: line 133:  1106 Aborted 
+/usr/sbin/squid -z
+FATAL: Could not determine fully qualified hostname.  Please set 
+'visible_hostname'
+
+Squid Cache (Version 2.5.STABLE4): Terminated abnormally.
+CPU Usage: 0.180 seconds = 0.080 user + 0.100 sys
+Maximum Resident Size: 0 KB
+Page faults with physical i/o: 435
+/etc/init.d/squid: line 133:  1108 Aborted 
+start-stop-daemon --quiet --start --pidfile $PIDFILE --exec $DAEMON -- 
+$SQUID_ARGS </dev/null
+squid.'
+
+I will try to see?
+
+Joel Soete wrote:
+> Hi Carlos,
 > 
-> You need to look at linuxthreads/attr.c (__pthread_attr_getstack) too
-> (the recent code which parses /proc/self/maps and finds stack VMA in there).
-
-Jakub,
-
-What do you think of something like this? Would it not also be valid to
-do something like "to - from" for the _STACK_GROWS_DOWN case?
-
-I'm building with this patch right now.
-
-c.
-
----
-2003-10-18  Carlos O'Donell  <carlos@baldric.uwo.ca>
-
-	* attr.c (pthread_getattr_np): Add _STACK_GROWS_UP case when
-	converting /proc/self/maps entry to __stackaddr and __stacksize.
-
-Index: linuxthreads/attr.c
-===================================================================
-RCS file: /cvs/glibc/libc/linuxthreads/attr.c,v
-retrieving revision 1.33
-diff -u -p -r1.33 attr.c
---- linuxthreads/attr.c	23 Sep 2003 06:12:59 -0000	1.33
-+++ linuxthreads/attr.c	18 Oct 2003 22:34:03 -0000
-@@ -455,12 +455,19 @@ int pthread_getattr_np (pthread_t thread
- 		{
- 		  /* Found the entry.  Now we have the info we need.  */
- 		  attr->__stacksize = rl.rlim_cur;
-+#ifdef _STACK_GROWS_DOWN
- 		  attr->__stackaddr = (void *) to;
+> I can safely broken my raid1 Debian/unstable install and drive some test 
+> on a disk :) and advise you.
+> 
+> Joel
+> 
+> Carlos O'Donell wrote:
+> 
+>> parisc-linux,
+>> debian-hppa,
+>>
+>> --- CALLING ALL TESTERS! ---
+>>
+>> glibc 2.3.2 is complete for HPPA. We've gotten rid of the following
+>> long standing test-suite errors (bug-iconv3, and test-fenv).
+>>
+>> The regressions in 2.3.2 were caused by incorrect handling of the PIC
+>> register by the kernel, but fixed in glibc. Most cases for our stack
+>> were handled incorrectly (stack grows up cases), but are fixed in this
+>> release.
+>>
+>> ftp://ftp.parisc-linux.org/unofficial-debs/glibc_2.3.2-9_2003-10-16/
+>>
+>> Download all the debs and install with:
+>>
+>> dpkg -i libc6_*.deb
+>> (Followed by dpkg -i of the rest in any order, libc6 must install first)
+>> Please do this only if you consider yourself a well seasoned linux-type
+>> person. If that dpkg install fails for any reason you might be in
+>> trouble. I'm running these debs on all my boxes, and I've tested in a
+>> chroot, rebuilt our toolchain, and ran lmbench, gnome-session, nautilus,
+>> and abi-word.
+>>
+>> http://www.baldric.uwo.ca/~carlos/a500-gnome-abiword.png
+>>
+>> Thanks go out to everyone for all the moral support and fun!
+>> --- TEST IT AND REPORT BACK ... PLEASE! :) ---
+>>
+>> == DISCLAIMER ===
+>> I do not guarantee that these debs won't cause your computer to explode
+>> like a pineapple grenade, showering shrapnel and fiery death on all your
+>> loved ones.
+>> == DISCLAIMER ===
+>>
+>> c.
+>>
+>> _______________________________________________
+>> parisc-linux mailing list
+>> parisc-linux@lists.parisc-linux.org
+>> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>>
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
