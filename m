@@ -1,29 +1,42 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA07776
-	for <parisc-linux@puffin.external.hp.com>; Fri, 7 Jan 2000 15:43:29 -0700
-Received: from endor.fc.hp.com (endor.fc.hp.com [15.1.49.59])
-	by atlrel2.hp.com (Postfix) with ESMTP id B915118C
-	for <parisc-linux@thepuffingroup.com>; Fri,  7 Jan 2000 17:46:16 -0500 (EST)
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id TAA09164
+	for <parisc-linux@puffin.external.hp.com>; Fri, 7 Jan 2000 19:41:38 -0700
+Received: (from michael@localhost)
+	by gonzo.misc.de (8.9.3/8.9.3) id DAA02571
+	for parisc-linux@thepuffingroup.com; Sat, 8 Jan 2000 03:15:37 +0100
+Date: Sat, 8 Jan 2000 03:15:37 +0100
+From: Michael Schulz <micha28@gmx.de>
 To: parisc-linux@thepuffingroup.com
-Date: Fri, 07 Jan 2000 15:46:16 -0700
-From: Paul Bame <bame@endor.fc.hp.com>
-Message-Id: <E126i9A-0001lk-00@endor.fc.hp.com>
-Subject: [parisc-linux] Dual boot?
+Message-ID: <20000108031537.A2522@gonzo.ns03.de.uu.net>
+Reply-To: micha28@gmx.de
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 9000/712 & Samsung Monitor
 List-ID: <linux-parisc.vger.kernel.org>
 
+Hello,
 
-How do people feel about boot models for parisc in the future, for
-people who aren't developers?  For the moment I want to ignore whether
-we *could* support the model and ignore the technical implications too.
+I can get a 712/60 almost complete, but without a monitor.
+So my question is, is it possible to connect a Samsung
+Syncmaster 17GLsi with the HP.
+Specs:
+  Horiz: 30kHz to 85kHz
+  Vert: 50Hz to 120Hz
+  Max. Res. 1280 x 1024
+  Pix Clk: 135MHz
 
-My uninformed guess is that most people will either run Linux or HP-UX
-but not dual-boot both on the same hardware.
+I never called a HP 9000 my own (only i86 and an Alpha, 100% MS
+free) so I don't know so much about HP's.
+Thanks for your answer,
 
-If a robust dual-boot model for "the masses" can be avoided, it would
-simplify some things.  For those of us who *need* dual boot
-for development, ramdisks+UFS and/or second disk drives may be
-an acceptable inconvenience.
+Michael
 
-What do people think?
+BTW: If my English was to bad, please forgive me. This Wine from
+New Zealand was to good to say no. I envy all you "New
+Zealander's". Is there a Job for me in NZ;-)
 
-	-Paul Bame
+-- 
+You know like - this band sucks.
+But it's like they suck like a new way here.
+Like - they suck in ways we haven't like seen stuff suck before,
+so it's like pretty cool.  (Butthead)
