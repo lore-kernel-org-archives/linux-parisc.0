@@ -1,24 +1,25 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 503F84852
+Return-Path: <xam@cs.ucc.ie>
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DAE8F48A5
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 27 Feb 2004 15:58:50 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1AwqwS-0006be-KO; Fri, 27 Feb 2004 22:58:48 +0000
-Date: Fri, 27 Feb 2004 22:58:48 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] kernel 2.6.3 compile problem
-Message-ID: <20040227225848.GW25779@parcelfarce.linux.theplanet.co.uk>
-References: <200402271110.50459.eggert.ehmke@berlin.de>
-	<Pine.LNX.4.58.0402271018590.3556@sal.ucc.ie>
-	<20040227224926.GA10923@baldric.uwo.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040227224926.GA10923@baldric.uwo.ca>
-Sender: <willy@www.linux.org.uk>
-Cc: Randolph Chung <tausq@debian.org>, parisc-linux@lists.parisc-linux.org
+	Fri, 27 Feb 2004 16:50:25 -0700 (MST)
+Date: Fri, 27 Feb 2004 23:50:20 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] C3000 and Promise Ultra100 TX2 PCI Controller
+In-Reply-To: <20040227212356.GA28668@colo.lackof.org>
+Message-ID: <Pine.LNX.4.58.0402272325410.9660@sal.ucc.ie>
+References: <Pine.LNX.4.58.0402260003140.26587@sal.ucc.ie>
+	<1077757727.26560.7.camel@dhcp23.swansea.linux.org.uk>
+	<Pine.LNX.4.58.0402260127230.26951@sal.ucc.ie>
+	<20040226051124.GB3645@colo.lackof.org>
+	<Pine.LNX.4.58.0402260513010.28003@sal.ucc.ie>
+	<20040226155659.GA11451@colo.lackof.org>
+	<1077907459.29711.13.camel@dhcp23.swansea.linux.org.uk>
+	<20040227212356.GA28668@colo.lackof.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,21 +29,36 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, Feb 27, 2004 at 05:49:26PM -0500, Carlos O'Donell wrote:
-> On Fri, Feb 27, 2004 at 10:22:22AM +0000, M. Grabert wrote:
-> > > CONFIG_VGA_CONSOLE=y
-> > 
-> > I think this is the culprit. There is not VGA support on Linux/PA-RISC.
-> 
-> This is the culprit, and I stumble across it all the time. How do we go
-> about setting this to CONFIG_VGA_CONSOLE=n as the default? 
+On Fri, 27 Feb 2004, Grant Grundler wrote:
 
-Done.
+> Anyone interested in deleted all use of the cpu_to_leXX
+> and leXX_to_cpu in linux-2.6/arch/parisc/lib/io.c?
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+What do I have to do?
+
+I assumed that I just have to remove the use of the functions, nothing else.
+I've created a modified io.c for 2.4 and for 2.6 (can be found here:
+http://www.cs.ucc.ie/~xam/io/ ). I used a CVS version updated a couple
+of minutes ago, just after the merge with 2.6.4-rc1.
+
+Was easy to do ... but I haven't tried to compile or run a kernel with the
+modifications.
+
+I'll test the the modifications tomorrow morning (in about 10 hours that is),
+and will post the results. If successful, I'll also create the neccessary patches.
+(btw, is there a special way how I should make the patches?)
+
+> please post the tested patch here. I'll review and assign
+> bla^H^H^Hglory to the submitter when I commit it.
+
+;)
+
+> BTW, linux-2.4 has the same issue.
+> I expect the same patch will apply to both if it's
+> easier to test with linux-2.4.
+
+I'll try with both 2.4.25-pa0 and 2.6.4-rc1-paX and the Promise IDE
+controller. Maybe these changes make also DMA work for the internal IDE
+of the C3000.
+
+ Max
