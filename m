@@ -1,31 +1,35 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA24574
-	for <parisc-linux@puffin.external.hp.com>; Sun, 12 Nov 2000 22:41:29 -0700
-From: dhazeghi@pacbell.net
-Received: from pacbell.net ([63.197.150.190])
- by mta5.snfc21.pbi.net (Sun Internet Mail Server sims.3.5.2000.01.05.12.18.p9)
- with ESMTP id <0G3Y007W37F7BI@mta5.snfc21.pbi.net> for
- parisc-linux@thepuffingroup.com; Sun, 12 Nov 2000 21:33:07 -0800 (PST)
-Date: Sun, 12 Nov 2000 21:34:19 -0800
-Sender: dara@mta5.snfc21.pbi.net
-To: parisc-linux@thepuffingroup.com
-Message-id: <3A0F7D5B.4A70CB73@pacbell.net>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [Semi OT] SOM Linker
+Received: from mail.gmx.net (pop.gmx.net [194.221.183.20])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA01361
+	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Nov 2000 00:31:12 -0700
+Content-Type: text/plain;
+  charset="iso8859-1"
+From: Helge Deller <deller@gmx.de>
+To: bame@riverrock.org, parisc-linux@puffin.external.hp.com
+Subject: Re: [parisc-linux] kernel merge
+Date: Mon, 13 Nov 2000 08:32:54 +0100
+References: <m13v9Eo-001Vp3C@chalet>
+In-Reply-To: <m13v9Eo-001Vp3C@chalet>
+MIME-Version: 1.0
+Message-Id: <00111308325401.00396@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello,
+On Monday 13 November 2000 03:20, bame@riverrock.org wrote:
+> = 
+> = Helge noticed SCSI fails (B160L, 712, I think it's ok on c3k)
+> = after the -test10 merge.
+> 
+> Fixed.
+> 
+> >From test6 to test10 the SCSI host registration method changed.
+> Updated sim700.c, lasi7xx.h, zalon7xx.h
+> 
+> 	-P
 
-I have been watching this project for some time and wanted to thank you
-guys for all the great work so far. The recent announcement of a BETA CD
-is highly encouraging.
+Thanks Paul,
 
-However I would like to know what work if any has been done on the SOM
-linker which HP released to the public last November(?). It seems that
-as of right now, it has not been touched since February 14, and the FSF
-binutils snapshots still do not have any SOM support for ld. Has there
-been any movement in merging this in, or is anybody working on this?
-Thanks.
+sim700 (53c710) now works again, but the second built-in controller (ncr/sym 
+53c8xx) still doesn't.
 
-Dara Hazeghi
+Greetings,
+
+	Helge
