@@ -1,35 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp1.cern.ch (smtp1.cern.ch [137.138.128.38])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BD6FE482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 12:10:53 -0600 (MDT)
-Sender: Jes.Sorensen@cern.ch
-To: Andreas Thienemann <andreas@thienemann.net>
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1116D482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 12:14:28 -0600 (MDT)
+Message-Id: <200104201807.MAA31270@puffin.external.hp.com>
+To: Richard Hirst <rhirst@linuxcare.com>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Problems with glibc
-References: <Pine.LNX.4.10.10104201906260.21140-100000@gate.ixs.com>
-From: Jes Sorensen <jes@linuxcare.com>
-Date: 20 Apr 2001 20:10:50 +0200
-In-Reply-To: Andreas Thienemann's message of "Fri, 20 Apr 2001 19:10:43 +0200 (CEST)"
-Message-ID: <d3itjzfnmd.fsf@lxplus015.cern.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [parisc-linux] kernel panic using cpio from cdrom to disk. 
+In-Reply-To: Your message of "Fri, 20 Apr 2001 17:57:49 BST."
+             <20010420175749.M11226@linuxcare.com>
+Date: Fri, 20 Apr 2001 12:07:14 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
->>>>> "Andreas" == Andreas Thienemann <andreas@thienemann.net> writes:
+Richard Hirst wrote:
+> This is interesting, my tests worked fine, but when I tried to reboot
+> (typed 'init 6'), it blew up:
 
-Andreas> Has anyone ever experienced a similar problem? This segfault
-Andreas> is reproducable and it's the first time that happened. gcc
-Andreas> did compile correct, the same with the kernel itself.
-Andreas> Therefore I'd guess that glibc is at fault here.  This
-Andreas> happened while building the glibc on the hppa box (with the
-Andreas> baseplus-20010404 nfsroot).  Building the cross-compiler
-Andreas> toolchain which does include building glibc was successful
-Andreas> though.
+was in-mem data being sync'd to disk?
 
-You don't see it when cross compiling because this is only run when
-building natively. The sunrpc stuff is the first place where the newly
-generated dynamic linker is exercised, your cross compiled binaries
-are unlike to work either. The can be either a glibc (most likely
-ld.so) or due to a change in syscall or compiler ABI behavior.
+> Like Ryans crash, PSW has only the Q bit set - data translation is
+> turned off.  I guess that means the IAOQ values are real addresses, so I
+> added 0x10000000 before looking them up in System.map.  In my case, it
+> died on the "rsm 8,r0" under os_hpmc_5 in arch/parisc/kernel/hpmc.S.
 
-Jes
+That would suggest two things:
+1) the box HPMC'd in both cases - look at PIM dump for more info
+2) we have a bug in our HPMC handler that PDC tries to call (in real mode).
+   Perhaps one of the asm gods (or even demi-gods :^) could look at
+   hpmc.S and the path to get there.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
