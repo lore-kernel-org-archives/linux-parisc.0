@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EFED8482E
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Nov 2002 16:29:03 -0700 (MST)
-Date: Fri, 15 Nov 2002 15:29:50 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>,
-	carlos@baldric.uwo.ca, parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 17F09482E
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Nov 2002 17:37:42 -0700 (MST)
+Message-Id: <200211160037.gAG0bZRa015952@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [2.5] next issues ...
-Message-ID: <20021115232949.GG21266@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <Pine.BSF.4.44.0211152207240.39295-100000@e0-0.zab2.int.zabbadoz.net> <200211152245.gAFMjWN0015793@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200211152245.gAFMjWN0015793@hiauly1.hia.nrc.ca>
+To: randolph@tausq.org
+Date: Fri, 15 Nov 2002 19:37:35 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: bzeeb-lists@lists.zabbadoz.net, carlos@baldric.uwo.ca,
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20021115232949.GG21266@tausq.org> from "Randolph Chung" at Nov 15, 2002 03:29:50 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,13 +23,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I'll be glad when debian 3.0.4 is gone.
+> Amen! :-) hopefully we are going to start gcc-3.2 transition fairly
+> soon.
 
-Amen! :-) hopefully we are going to start gcc-3.2 transition fairly
-soon.
+Don't wait too long!  3.3 may have slipped a bit but the schedule
+still shows Dec. 15 2002 as the release date.
 
-randolph
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
