@@ -1,170 +1,94 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0B1DA4A19
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 19:48:53 -0700 (MST)
-Received: from ldl.fc.hp.com (ldl.fc.hp.com [15.1.50.190])
-	by atlrel1.hp.com (Postfix) with ESMTP id 4A12B2A3
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Feb 2001 21:48:49 -0500 (EST)
-Date: Wed, 7 Feb 2001 19:44:30 -0700
+Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 35C484A1C
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Feb 2001 00:08:29 -0700 (MST)
+Received: from esiee.net (pc5158a.esiee.fr [147.215.50.165])
+	by mail.esiee.fr (Postfix) with ESMTP id 82C54D1585
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Feb 2001 08:08:27 +0100 (CET)
+Message-ID: <3A8245E2.56628B1@esiee.net>
+Date: Thu, 08 Feb 2001 08:08:18 +0100
+From: Xavier Debacker <xavier.debacker@esiee.net>
+MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010207194430.C620@zumpano.fc.hp.com>
-Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-From: willy@ldl.fc.hp.com (Matthew Wilcox)
-Subject: [parisc-linux] rwsems
+Subject: [parisc-linux] problems building glibc
 List-ID: <linux-parisc.vger.kernel.org>
 
-Currently, our read/write semaphores are NOPs.  This is not so good :-)
+Hi!
 
-Here's a scheme i've devised for doing rwsems moderately efficiently;
-if anyone can think of a better scheme, please shout.
+I tried to build a new toolchain, without success:
 
-(removed debugging code for clarity)
+CVS was checked out a few minutes after Alan Modra commited tc-hppa.c
+now the palinux-autobuilder ends builbing glibc:
 
-semaphore.h:
+hppa-linux-gcc ../sysdeps/generic/glob.c -c -O2 -Wall -Winline
+-Wstrict-prototypes -Wwrite-strings -g      -I../include -I.
+-I/home/mklxav/xc-build/glibc/posix -I.. -I../libio
+-I/home/mklxav/xc-build/glibc -I../sysdeps/hppa/elf
+-I../linuxthreads/sysdeps/unix/sysv/linux/hppa
+-I../linuxthreads/sysdeps/unix/sysv/linux
+-I../linuxthreads/sysdeps/pthread -I../linuxthreads/sysdeps/unix/sysv
+-I../linuxthreads/sysdeps/unix -I../linuxthreads/sysdeps/hppa
+-I../sysdeps/unix/sysv/linux/hppa -I../sysdeps/unix/sysv/linux
+-I../sysdeps/gnu -I../sysdeps/unix/common -I../sysdeps/unix/mman
+-I../sysdeps/unix/inet -I../sysdeps/unix/sysv -I../sysdeps/unix
+-I../sysdeps/posix -I../sysdeps/hppa/hppa1.1 -I../sysdeps/wordsize-32
+-I../sysdeps/ieee754/flt-32 -I../sysdeps/ieee754/dbl-64
+-I../sysdeps/ieee754/ldbl-128 -I../sysdeps/hppa/fpu -I../sysdeps/hppa
+-I../sysdeps/ieee754 -I../sysdeps/generic/elf -I../sysdeps/generic
+-nostdinc -isystem /home/mklxav/xc/lib/gcc-lib/hppa-linux/2.96/include
+-isystem /home/mklxav/cvs/linux/include -D_LIBC_REENTRANT -include
+../include/libc-symbols.h     -o
+/home/mklxav/xc-build/glibc/posix/glob.o
+../sysdeps/generic/glob.c: In function `glob_in_dir':
+../sysdeps/generic/glob.c:1446: Internal compiler error in
+eliminate_regs, at reload1.c:2505
+   Please submit a full bug report.
+   See <URL:http://www.gnu.org/software/gcc/bugs.html> for instructions.
 
-#define RWSEM_WRITER	-1
-#define RWSEM_MASK	0xC0000000
-#define RWSEM_BIAS_WRITE	0xC0000000
-#define RWSEM_BIAS_READ		0x80000000
+make[2]: *** [/home/mklxav/xc-build/glibc/posix/glob.o] Error 1
+make[1]: *** [posix/subdir_lib] Error 2
+make: *** [all] Error 2
+make[2]: Leaving directory `/home/mklxav/cvs/glibc/posix'
+make[1]: Leaving directory `/home/mklxav/cvs/glibc'
 
-struct rw_semaphore {
-	spinlock_t		sentry;
-	signed int		rw_count;
-	wait_queue_head_t	readers;
-	wait_queue_head_t	writers;
-};
 
-extern inline void down_read(struct rw_semaphore *sem)
-{
-	spin_lock(&sem->sentry);
-	if (sem->rw_count < 0)
-		__down_read_failed(sem);
-	sem->rw_count++;
-	spin_unlock(&sem->sentry);
-}
+in a new and empty user account (mklxav), I created ~/cvs in which there
+are cvs files ( binutils gcc glibc linux palo ) and the include dir.
 
-extern inline void down_write(struct rw_semaphore *sem)
-{
-	spin_lock(&sem->sentry);
-	if (sem->rw_count != 0)
-		__down_write_failed(sem);
-	sem->rw_count += RWSEM_WRITER;
-	spin_unlock(&sem->sentry);
-}
+then run the palinux-autobuilder with these modifications:
 
-extern inline void up_read(struct rw_semaphore *sem)
-{
-	spin_lock(&sem->sentry);
-	if (sem->rw_count-- < 0)
-		__up_read_wakeup(sem);
-	spin_unlock(&sem->sentry);
-}
+$top="/home/mklxav";    # Top level
+$src="$top/cvs";                # Where your checked-out CVS sources
+live
+$scratch="$top/xc-build";       # Where your build sub-dirs go
+$tempxc="$top/xc";              # Where the temporary binutils/gcc bits
+go
+$xcprefix="$top/palinux";       # Where to put the final xc bits, needs
+to be
+                                # owned by the current user(to avoid
+sudo)
+$nativeprefix="$top/pa-native"; # Where the cross-compiled native tools
+                                # will be installed on the native system
 
-extern inline void up_write(struct rw_semaphore *sem)
-{
-	spin_lock(&sem->sentry);
-	sem->rw_count -= RWSEM_WRITER;
-	if (sem->rw_count != 0)
-		__up_write_wakeup(sem);
-	spin_unlock(&sem->sentry);
-}
+$logdir="$top/log";             # Where to put the log files
 
-semaphore.c:
+[...]
 
-/* We must wait for a writer to up the semaphore */
-void down_read_failed(struct rw_semaphore *sem)
-{
-	DECLARE_WAITQUEUE(wait, current);
+# update our CVS bits and includes
+#&updatebits;
 
-	/* If we're the first waiter, indicate that we exist */
-	if ((sem->rw_count & RWSEM_MASK) == 0)
-		sem->rw_count |= RWSEM_READ;
 
-	__add_wait_queue(&sem->readers, &wait);
-	spin_unlock(&sem->sentry);
 
-	while (sem->rw_count < 0) {
-		set_task_state(current, TASK_UNINTERRUPTIBLE);
-		if (sem->rw_count >= 0)
-			break;	/* We get the lock */
-		schedule();
-	}
+there were some problems building kernel dependencies the first time I
+ran the script.
+linux> make oldconfig
+linux> make dep
+seems to have fixed that.
 
-	spin_lock(&sem->sentry);
-	__remove_wait_queue(&sem->readers, &wait);
-	current->state = TASK_RUNNING;
-}
 
-/* Wait for all previous readers to up the sempahore.
- * Since we're a writer, we'll make ourselves exclusive.
- */
-void down_write_failed(struct rw_semaphore *sem)
-{
-	DECLARE_WAITQUEUE(wait, current);
+Thanks for your help!
 
-	/* If we're the first waiter, indicate that we exist */
-	if ((sem->rw_count & RWSEM_MASK) == 0)
-		sem->rw_count |= RWSEM_WRITE;
-
-	wait.flags = WQ_FLAG_EXCLUSIVE;
-	__add_wait_queue_tail(&sem->writers, &wait);
-	spin_unlock(&sem->sentry);
-
-	while (sem->rw_count != 0) {
-		set_task_state(current, TASK_UNINTERRUPTIBLE);
-		if (sem->rw_count == 0)
-			break;	/* We get the lock */
-		schedule();
-	}
-
-	spin_lock(&sem->sentry);
-	__remove_wait_queue(&sem->writers, &wait);
-	current->state = TASK_RUNNING;
-}
-
-/* up_read_wakeup gets called spuriously when a writer is waiting
- * for the lock.  That's OK, this is slowpath now anyway.
- */
-void up_read_wakeup(struct rw_semaphore *sem)
-{
-	/* Check to see if other readers need to up the semaphore */
-	if ((sem->rw_count &~ RWSEM_MASK) != 0)
-		return;
-
-	up_write_wakeup(sem);
-}
-
-void up_write_wakeup(struct rw_semaphore *sem)
-{
-	/* Figure out what state to go to next. */
-	if ((sem->rw_count & RWSEM_MASK) == RWSEM_WRITE) {
-		int more_writers = (sem->writers.task_list.next != sem->writers.task_list.prev);
-		int more_readers = list_empty(&sem->readers.task_list);
-		if (more_writers) {
-			if (more_readers) {
-				sem->rw_count = RWSEM_READ;
-			} else {
-				sem->rw_count = RWSEM_WRITE;
-			}
-		} else {
-			if (!more_readers) {
-				sem->rw_count = 0;
-			} else {
-				sem->rw_count = RWSEM_READ;
-			}
-		}
-		wake_up(&sem->writers);
-	} else {
-		int more_writers = list_empty(&sem->writers.task_list);
-		if (more_writers) {
-			sem->rw_count = RWSEM_WRITE;
-		} else {
-			sem->rw_count = 0;
-		}
-		wake_up(&sem->readers);
-	}
-}
-
-I suspect I could encode more information in the rwcount that might
-make it unnecessary to check the waitqueues explicitly.
+Xavier.
+ESIEE Team
+http://www.esiee.fr/puffin
