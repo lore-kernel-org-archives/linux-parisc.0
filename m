@@ -1,27 +1,32 @@
-Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA29036
-	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 13:57:22 -0700
-Message-Id: <200011202059.MAA18987@milano.cup.hp.com>
-To: herrold <herrold@owlriver.com>
-Cc: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>,
-        parisc-linux@thepuffingroup.com, grundler@milano.cup.hp.com
-Subject: Re: Serial vs. STI console selector was: Re: [parisc-linux] Beta CD 
-In-reply-to: Your message of "Mon, 20 Nov 2000 15:40:24 PST."
-             <Pine.LNX.4.30.0011201531170.6744-100000@pokey.513erich.iwaynet.net>
-Date: Mon, 20 Nov 2000 12:59:41 -0800
+Received: from cosrel1.hp.com (cosrel1.hp.com [156.153.255.170])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id SAA02547
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 18:17:56 -0700
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by cosrel1.hp.com (Postfix) with ESMTP id C0736726
+	for <parisc-linux@puffin.external.hp.com>; Mon, 20 Nov 2000 18:20:25 -0700 (MST)
+Received: (from grundler@localhost)
+	by milano.cup.hp.com (8.9.3 (PHNE_18546)/8.9.3 SMKit7.02) id RAA19517
+	for parisc-linux@puffin.external.hp.com; Mon, 20 Nov 2000 17:19:03 -0800 (PST)
+Date: Mon, 20 Nov 2000 17:19:03 -0800 (PST)
 From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200011210119.RAA19517@milano.cup.hp.com>
+To: parisc-linux@puffin.external.hp.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 712 ISL and palo
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Russ" herrold wrote:
+Hi Paul (Bame),
 
-> Is this possible, to allow support of both, with a single kernel?
+I tried booting 712 with "bo scsi.4.0 isl" with the
+palinux-0.5.iso image on a regular hard disk.
+I wanted to edit the "root" parameter so it would
+be /dev/sdb (also had a disk at scsi.0.0) instead of
+/dev/scd0.
 
-Yes. I think the issues are code not stomping on each other.
-And it's easy than you might think - PDC can tell us what the
-primary console is.
+palo wouldn't accept any ps/2 keyboard input.
+Don't know if this is a palo or PDC bug.
+Any ideas?
 
+thanks,
 grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
