@@ -1,12 +1,12 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] No 2.6 kernel on 735/125 with CRX24?
-Date: Wed, 29 Sep 2004 15:07:50 +0200
-Message-ID: <4152E64500001B86@mail-3-bnl.tiscali.it>
+Subject: Re: [parisc-linux] Re: hppa glibc 2.3.3 experimental debs - patch
+Date: Wed, 29 Sep 2004 17:26:56 +0200
+Message-ID: <4152E64500001C46@mail-3-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
 Cc: parisc-linux@parisc-linux.org
-To: j.raspe@t-online.de
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,33 +18,49 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello  Johannes,
+Hello jda,
 
-> Hi Joel,
+> > Certainly a pb with configure options:
+> > sources/binutils/configure  --target=3D3Dhppa-linux --host=3D3Dhppa-l=
+inux
+> > --build=3D3Dhppa-linux
+> > --prefix=3D3D/mnt/palin/Develop/parisc-linux/xc --disable-nls
 >
-> your tips are great, many thanks for your help.
-welcome :)
+> There is nothing obviously wrong with the configure command.  Look
+> at the FAILs in the file ld/testsuite/ld.log.
+Now it's ld/ld.log :) and effectively interesting :)
 
-> I got the 2.6.4-pa2-version from cvs with your date-tip, configured and=
-
-
-> compiled it but unfortunately it shows the same behaviour like the newe=
-r
+>  Some of the ld tests
+> depend on finding the linker used by gcc and they might fail if
+> gcc was built using the --with-ld=3D option.  However, that's just
+> speculation.
 >
-> 2.6-kernels. Nothing but a blue screen (btw: is this a trademark of
-> Microsoft?) after initialisation of the fb-device (at least I think so)=
-.
->
-> Any more clues, how to get the 2.6 kernels working?
->
-Unfortunately no :(
+Exactely:
+All failed because:
+/mnt/palin/Develop/parisc-linux/build/binutils/ld/ld-new: warning: ld.so.=
+1,
+needed by /lib/libc.so.6, not found (try using -rpath or -rpath-link)
 
-iirc Helge Deller is the maintainner, I trust he would have read those pr=
+even thought the cmds of the form:
+/mnt/palin/Develop/parisc-linux/build/binutils/ld/ld-new -m hppalinux  -o=
+
+tmpdir/ld1 -dynamic-linker /lib/ld.so.1 ...
+
+(the -rpath help but how to put this in configure?)
+
+Never the less the following workaround did the trick befor the 'make -k
+check' of binuitls:
+export LD_LIBRARY_PATH=3D/lib
+
+                 =3D=3D=3D ld Summary =3D=3D=3D
+
+# of expected passes            166
+# of expected failures          38
 
 :)
 
-Joel
-
+Thanks again for your help and patience,
+    Joel
 
 -------------------------------------------------------------------------=
 --
