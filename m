@@ -1,46 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pokey.513erich.iwaynet.net (d85.as1.clmb.oh.voyager.net [216.127.12.85])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 62B9A4A19
-	for <parisc-linux@parisc-linux.org>; Sat,  3 Feb 2001 18:46:03 -0700 (MST)
-Date: Sat, 3 Feb 2001 20:50:25 -0500 (EST)
-From: herrold <herrold@owlriver.com>
-Sender: <herrold@513erich.iwaynet.net>
-To: <penfold@customware.com.au>
-Cc: Matthew Wilcox <matthew@wil.cx>, <parisc-linux@parisc-linux.org>,
-	Jim Wildman <jim@rossberry.com>
-Subject: Re: [parisc-linux] Source of this version of rbootd-2.0-2
-In-Reply-To: <200102040130.MAA30086@customware.com.au>
-Message-ID: <Pine.LNX.4.30.0102032042200.9141-100000@pokey.513erich.iwaynet.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C82A94A19
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  3 Feb 2001 21:08:22 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14PGTN-0005y2-00
+	for parisc-linux@lists.parisc-linux.org; Sun, 04 Feb 2001 04:08:21 +0000
+Date: Sun, 4 Feb 2001 04:08:21 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20010204040821.A12539@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: <willy@www.linux.org.uk>
+Subject: [parisc-linux] Fun with RAID
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 4 Feb 2001 penfold@customware.com.au wrote:
+As some of you will have noticed, the current Head branch, as well as
+enabling lots of strange and curious segfaults also enables Software Raid.
+I suspect someone with the time & inclination will eventaully write some
+optimised XOR functions for PA-RISC, but in the meantime, we shall use the
+generic C functions.
 
-> just quick check to make sure I didnt have something which I had manually
-> done, it seems the .rpm itself differs.
+There are two functions to choose from, and the code does this at
+boottime.  One is optimised for processors with 8 registers, and the
+other for processors with 32 registers.  The 32regs one uses 8 registers,
+interleaving loads, xors, and stores.  The 8regs function just dumbly
+loads, xors and stores for each word.
 
-<snip>
+So, just for fun, let's see how they stack up.  Here's results from a 712
+(PCX/L CPU):
 
-> I also chaeck a RH 6.2 /libpcap-0.4-19.alpha and it is the same as my 6.1.
->
-> standards are great... there are so many to choose from!
+raid5: measuring checksumming speed
+   8regs     :    60.960 MB/sec
+   32regs    :   107.442 MB/sec
 
-... Jeff Johnson at Red Hat is the current maintainer of tpcdump,
-which emits libpcap ... He is pretty conscientious, but constrained
-by the need to make sure certain version usability goals are met
-there to support their paying customers;  Dug Song of the OpenBSD
-side has also made disparaging remarks on some former releases of
-tcpdump et al by Red Hat.
+and here's a C200+ (PCX/U+ CPU):
 
-Try grabbing the tcpdump _SRPM_ from the RH Rawhide (their current
-devel build tree), for a later version (All SRPMS contain pristine
-tarballs ...), and pull the tarball, and build from that.
+   8regs     :   421.386 MB/sec
+   32regs    :   531.876 MB/sec
 
-I was working with the rbootd sources in the OpenBSD tree yesterday,
-as well;  Has the OpenBSD PARISC port -- seemingly inactive for over
-a year -- anything to offer this Linux effort?
+which is as you would expect, but i have a vague recollection that grant
+said the 8regs was the faster code on the A500.
 
--- Russ Herrold
+[thanks to Ryan for the C200+ result]
 
-(PS: JAW - you'll soon know why ...)
+-- 
+Revolutions do not require corporate support.
