@@ -1,21 +1,13 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: [parisc-linux] Re: OPD's on hppa-linux,
-	and what to do about __cffc's fragility.
-Date: Thu, 10 Mar 2005 10:31:20 -0500
-Message-ID: <20050310153120.GJ22872@baldric.uwo.ca>
-References: <20050308175445.GV23803@baldric.uwo.ca>
-	<200503081902.j28J2XMe002188@hiauly1.hia.nrc.ca>
-	<20050308210851.GA23803@baldric.uwo.ca>
-	<20050308222513.GF15642@bubble.modra.org>
+Subject: [parisc-linux] Runing small structs from functions.
+Date: Thu, 10 Mar 2005 12:03:12 -0500
+Message-ID: <20050310170312.GM22872@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- parisc-linux@lists.parisc-linux.org,
- tausq@debian.org
-To: Alan Modra <amodra@bigpond.net.au>
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050308222513.GF15642@bubble.modra.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,27 +18,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Mar 09, 2005 at 08:55:13AM +1030, Alan Modra wrote:
-> No, in an hppa-linux shared lib, a function pointer is accessed via a
-> word with a PLABEL32 reloc on it.  This reloc is processed before any
-> code in the shared lib runs, to point to a function descriptor created
-> by _dl_make_fptr.
 
-In shared libraries the function pointer is also allocated a PLT slot
-and an IPLT relocation. 
+jda,
 
-I don't understand the reasons for the allocation of a PLT slot if all
-references generated go through the local label word that has the
-PLABEL32 reloc, which now contains the address returned by
-_dl_make_ftpr.
+Currently the changes in the LA code for glibc mean that _dl_fixup
+returns a small struct (function descriptor) to the trampoline.
 
-I'm still trying to understand your earlier recommendation. Do you
-suggest that the executable have PLABEL32 relocs for all the symbols,
-local and global, which assures that _dl_make_fptr creates a unique OPD?
+Is it safe to assume that the small struct is always returned on ret0
+and ret1? I ran some test programs and that seemed to be the case.
 
-Alan, thanks for your input.
-
-c.
+Cheers,
+Carlos.
 
 _______________________________________________
 parisc-linux mailing list
