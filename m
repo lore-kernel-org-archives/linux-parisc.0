@@ -1,34 +1,60 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA22034
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Oct 1999 10:12:17 -0600
-Message-Id: <199910221609.MAA01955@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] So you wanna get to a prompt, eh?
-To: grundler@cup.hp.com (Grant Grundler)
-Date: Fri, 22 Oct 1999 12:09:10 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: magne@spacetec.no, parisc-linux@thepuffingroup.com
-In-Reply-To: <199910221519.IAA00565@milano.cup.hp.com> from "Grant Grundler" at Oct 22, 99 08:19:19 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA22193
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Oct 1999 10:21:43 -0600
+Message-Id: <199910221606.JAA00597@milano.cup.hp.com>
+To: Alex deVries <adevries@thepuffingroup.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Boot messages from C3000 console 
+In-reply-to: Your message of "Thu, 21 Oct 1999 22:33:15 PDT."
+             <Pine.LNX.4.10.9910212221480.18206-100000@vodka.thepuffingroup.com>
+Date: Fri, 22 Oct 1999 09:06:39 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > (It isn't very fast.. :)  Can I link with HPUX 9.03? (probably not)
-> > 10.30? (It doesn't run 11.x)
+Alex deVries wrote:
+...
+> If the code in head.S is a bit rough, remember that it was just about the
+> first PA-RISC assembler that Helge or Philipp had ever written, so do keep
+> that in mind.  Also, at the start of the project, there was a very
+> conscious effort to only be concerned with 1.1 code.  It doesn't surprise
+> me in the least that it's not 2.0 compliant.
 > 
-> Use 10.20. It should run on your 710. Don't use 10.30 as it was never
-> intended for distribution on workstations and certainly doesn't have
-> the support which WSY has poured into 10.20.
+> I agree that the code is unreadable though;  I've simply passed it off on
+> not being able to understand parisc assembler well enough.
 
-I won't describe the woes I have had upgrading my 735 to 10.20
-but I have had all kinds of problems with disk timeouts and unrecoverable
-LPMCs with 10.20 on my 735.  These problems are only now getting
-worked out of 10.20 (see recent patches to wsio driver, etc).
-My 735 has about a dozen scsi devices on threee buses, so it
-seriously stresses the IO architecture.
+Alex,
+I think you are walking around Frank's point:
+	It doesn't matter which language the code is written in.
+	The code should be readable by a wide audience.
+	(Understanding will still be limited to a subset)
 
-The machine ran for years under 9.01 with experiencing any problems
-of this kind.
+(Corallary: Because it's assembler, comments and #define's are required
+for clarity and there were none.)
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> We'd all appreciate it if you could commit appropriate changes to make the
+> code clearer.
+
+That's what I suggested earlier to him. My sense is the "Open Source Way"
+(similar to the "HP Way") is to do, not to complain.
+
+[ soapbox on ]
+I agree with Frank's gripe too...IMHO, it would be really bad thing for
+parisc-linux if he not to contribute.  My point is contributors should
+remember out of 6 billion other people on the planet, a few capable ones
+will choose to look at the code because they want to add functionality or
+fix "bugs". And they can change their mind after the first look.
+
+And worse would be if only-slightly-less-capable folks contribute stuff which
+breaks various platforms (we'll get there). And even with well commented,
+supportable code, it could take a while to sort out which code is "broken"
+and which platforms it's needed on. I would prefer if someone like Frank
+just did it right the first time around...but if I can't have that I'd
+at least like him to help look at problems in the successive passes.
+[ soapbox off ]
+
+
+grant
+
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
