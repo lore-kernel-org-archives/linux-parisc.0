@@ -1,41 +1,43 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mx.rollanet.org (mailsrv.rollanet.org [192.55.114.7])
-	by dsl2.external.hp.com (Postfix) with SMTP id D76544953
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Oct 2001 06:43:48 -0600 (MDT)
-Sender: nneul@dsl2.external.hp.com
-Message-ID: <3BBC5981.D741A437@umr.edu>
-Date: Thu, 04 Oct 2001 07:43:45 -0500
-From: Nathan Neulinger <nneul@umr.edu>
-MIME-Version: 1.0
-To: John Marvin <jsm@udlkern.fc.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org, uetrecht@umr.edu
-Subject: Re: [parisc-linux] HP-UX binary compatibility
-References: <200110041156.FAA09478@udlkern.fc.hp.com>
+Received: from beavis.ybsoft.com (unknown [63.224.241.66])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F0CC0493B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  4 Oct 2001 07:13:51 -0600 (MDT)
+Date: Thu, 4 Oct 2001 07:13:50 -0600
+To: joel.soete@freebel.net
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] sti broken in pa32 on B180
+Message-ID: <20011004071350.A27483@beavis.ybsoft.com>
+References: <1002191096.3bbc38f8c42ed@webmail.tiscalinet.be>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1002191096.3bbc38f8c42ed@webmail.tiscalinet.be>
+From: rbradetich@uswest.net (Ryan Bradetich)
 List-ID: <linux-parisc.vger.kernel.org>
 
-John Marvin wrote:
+On Thu, Oct 04, 2001 at 12:24:56PM +0200, joel.soete@freebel.net wrote:
+> Hi all,
 > 
-> I just committed a patch that restores some of the elementary HP-UX
-> binary compatibility functionality. Shared libraries also work. But
-> there is a ton of more work to do. Lots of wrappers need to be written
-> (see the arch/parisc/hpux directory for files that contain the support
-> for this functionality). One major missing piece is signal support.
-> Mapping ioctl arguments is another significant effort ...
-> 
-> John
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
+> I just come back to my hppa boxes (a 712/80 and a b180) and just co the last cvs 
+> kernel (-pa32).
+> I do usual make oldconfig; make dep ; make vmlinux (on the 712).
 
-Fantastic! I'll definately take a closer look now and will submit
-whatever improvements I can!
+Try the following patch ... Thomas said this is what fixed STI on the
+B-class machines for him.  If it works, I'll commit it.
 
--- Nathan
+Thanks,
 
-------------------------------------------------------------
-Nathan Neulinger                       EMail:  nneul@umr.edu
-University of Missouri - Rolla         Phone: (573) 341-4841
-Computing Services                       Fax: (573) 341-4216
+- Ryan
+
+
+diff -u -p -r1.37 inventory.c
+--- inventory.c	2001/10/04 00:17:52	1.37
++++ inventory.c	2001/10/04 13:08:21
+@@ -542,7 +542,7 @@ add_system_map_addresses(struct parisc_d
+ 		return;
+ 	}
+ 
+-	for(i = 0; i < num_addrs; ++i) {
++	for(i = 0; i <= num_addrs; ++i) {
+ 		status = pdc_system_map_find_addrs(&addr_result, 
+ 						   module_instance, i);
+ 		if(PDC_RET_OK == status) {
