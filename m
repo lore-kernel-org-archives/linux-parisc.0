@@ -1,43 +1,46 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-01.iinet.net.au [203.59.24.16])
-	by dsl2.external.hp.com (Postfix) with SMTP id 691C6482A
-	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 15:14:16 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id FAA18867
-	for parisc-linux@parisc-linux.org; Wed, 6 Jun 2001 05:14:01 +0800
-Date: Wed, 6 Jun 2001 05:13:58 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: parisc-linux@parisc-linux.org
+Received: from the-village.bc.nu (router-100M.swansea.linux.org.uk [194.168.151.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 51320482A
+	for <parisc-linux@parisc-linux.org>; Tue,  5 Jun 2001 15:19:21 -0600 (MDT)
 Subject: Re: [parisc-linux] Re: Version 0.9 of PA-RISC Linux Released
-Message-ID: <20010606051356.L12793@neep.com.au>
-References: <20010605202920.U7349@parcelfarce.linux.theplanet.co.uk> <01060515450207.00472@wolf01.my.home>
-Mime-Version: 1.0
+To: matthew@wil.cx (Matthew Wilcox)
+Date: Tue, 5 Jun 2001 22:16:52 +0100 (BST)
+Cc: mszick@pflash.com (Michael S. Zick),
+	matthew@wil.cx (Matthew Wilcox), debian-hppa@lists.debian.org,
+	parisc-linux@parisc-linux.org, parisc-linux@thepuffingroup.com
+In-Reply-To: <20010605220735.V7349@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Jun 05, 2001 10:07:35 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <01060515450207.00472@wolf01.my.home>; from mszick@pflash.com on Tue, Jun 05, 2001 at 03:22:20PM -0500
+Message-Id: <E157OC4-0007PP-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Michael S.Zick said:
-> I'll be glad to match my 4 decades of experience against your 2 years
-> anytime.
+> On Tue, Jun 05, 2001 at 03:22:20PM -0500, Michael S. Zick wrote:
+> > The only way to validate a change as a potential patch is:
+> > 1) start with a clean (error and warning free) build that
+> > boots and runs on the machine of interest.
+> > 2) hack, change, modify, whatever
+> > 3) when done, make another clean build that boots and runs
+> > on the machine of interest.
+> > 4) evaluate the effects of the change(s).
+> > 5) If successful - then you MIGHT have something worth
+> > submitting as a POTENTIAL patch.
+> > Exactly the same 5 steps your developers take before they
+> > commit a change to CVS.
+> 
+> the people with CVS access are hardly `my' developers.  and the process
+> you describe is only one form of development.  it's not applicable in a lot
+> of cases.
 
-Willy didn't say anything about his experience, but the time that that
-he has put into this particular project.  Perhaps you meant to say you'd
-like to put your 40 years of experience together with his two years of
-work in order to help the project?  Sadly, that's probably stretching
-your words well beyond the "benefit of the doubt".  =(
+A lot of the Linux development occurs on much more of a 'directed chaos'
+approach, and that's an approach gaining favour in software engineering 
+circles too. If it looks roughly right you throw it in or run it past someone
+with a good eye for code in that area and throw it in. If as is normally the
+case the patch is fine it works very efficiently. When the patch turns out to
+be wrong it is rare that there are multiple patches likely to cause the reported
+symptoms.
 
-> If you are serious about my suggestions being counter-productive, I
-> will gladly spend the time I am taking to write them for other purposes.
+Also you can run continual automated testing using tools like cerberus. Yes
+my Software Engineering lecturer would never have approved - but it works.
 
-I don't know - or honestly care - who you are or which horse you rode in
-on.  You're the first person I've seen to bring this attitude in to this
-project and in my position as list-lurker and linux-hppa fiddler I'd be
-perfectly happy if you were the last.
-
-Andrew.
-
---
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Alan
