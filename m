@@ -1,22 +1,18 @@
-Return-Path: <p1ktpuhz@msn.ca>
-Received: from user-10cmf30.cable.mindspring.com
-	(user-10cmf30.cable.mindspring.com [64.203.60.96])
-	by dsl2.external.hp.com (Postfix) with SMTP id 850C148A6
-	for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 05:59:45 -0700 (MST)
-Received: from [36.237.156.192] by user-10cmf30.cable.mindspring.com id
-	<9674127-97347> for <parisc-linux@parisc-linux.org>;
-	Wed, 24 Dec 2003 02:53:30 -0700
-Message-ID: <xkcb880y0yw$81p3m73qov6@1ey1l5bnee>
-From: "Anne Compton" <p1ktpuhz@msn.ca>
-To: parisc-linux@parisc-linux.org
-Date: Wed, 24 Dec 2003 02:53:30 -0700
+Return-Path: <soete.joel@tiscali.be>
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C58F848CB
+	for <parisc-linux@lists.parisc-linux.org>;
+	Wed, 24 Dec 2003 06:55:19 -0700 (MST)
+Message-ID: <3FE99AFB.4070804@tiscali.be>
+Date: Wed, 24 Dec 2003 13:56:11 +0000
+From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="09F7.0C.D79AC_3CC"
-Cc: 
-Subject: [parisc-linux] Re:Hostingaccount instructions  xsybegl axzifd
-Reply-To: Anne Compton <p1ktpuhz@msn.ca>
+To: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] DIFF 2.6.0-test10 SATA dma_address
+References: <20031124072929.GC26585@colo.lackof.org>
+In-Reply-To: <20031124072929.GC26585@colo.lackof.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,29 +22,36 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hi Grant,
 
---09F7.0C.D79AC_3CC
-Content-Type: text/html;
-Content-Transfer-Encoding: base64
-
-PGh0bWw+DQoNCjxib2R5Pg0KDQo8cD5kb3dudHJlbmRsaWdodGhlYXJ0ZWQ8YnI+DQo8YnI+
-DQpEZWFyIFBhcmlzYy1saW51eCw8YnI+DQo8YnI+DQpUaGlzIG1lc3NhZ2UgaXMgcmVnYXJk
-aW5nIHNvbWUgcmVjZW50IGNoYW5nZXMgdGFraW5nIHBsYWNlIGF0IEF1dGggSG9zdC4gRHVl
-IHRvPGJyPg0KcG9wdWxhciBkZW1hbmQgd2UgaGF2ZSBhZGRlZCBhIG5ldyBob3N0aW5nIHBh
-Y2thZ2Ugd2hpY2ggaXMgYXMgZm9sbG93czo8YnI+DQo8YnI+DQotNDAwTUIgRGlzayBTcGFj
-ZTxicj4NCi1VbmxpbWl0ZWQgQmFuZHdpZHRoPGJyPg0KLWZyZWVlIFRyYWZmaWMvSGl0czxi
-cj4NCi1VbmxpbWl0ZWQgZW1haWxBY291bnRzPGJyPg0KLUVhc3kgU2l0ZSBNYW5hZ2VyPGJy
-Pg0KLWZyZWVlIFNlYXJjaEVuZ2luZSBTdWJtaXNzaW9uPGJyPg0KLWZyZWVlIFNob3BwaW5n
-Q2FydDxicj4NCi1ObyBiYW5uZXJzL3BvcC11cHMgcGxhY2VkIG9uIHlvdXIgc2l0ZTxicj4N
-Ci1hbmQgbXVjaCBtb3JlITxicj4NCjxicj4NCllvdSBtYXkgbm93IHJlY2VpdmUgdGhpcyBo
-b3N0aW5nIHBhY2thZ2UgZm9yIG9ubHkgJDUvbW9udGggd2l0aCBmcmVlZTxicj4NCnRlY2hu
-aWNhbCBzdXBwb3J0LiBQbGVhc2UgY29udGFjdCB1cyBhbnl0aW1lIGZvciBhc3Npc3RhbmNl
-IG9yIGZ1cnRoZXIgaW5xdWlyZXMuPGJyPg0KPGJyPg0Kd3d3LlRlbGxhSG9zdC5jb20NCjxi
-cj4NCjxicj4NCiogaWYgeW91IHdpc2ggdG8gYmUgZGlzY29udGludWVlPGJyPg0KcGxlYXNl
-IHJlcGx5IHdpdGggdGhlIHN1YmplY3RsaW5lICJub21vcmUiLiZuYnNwOzxicj4NCjxicj4N
-Cjxicj4NCnB1c2NocmlzdGxpa2U8YnI+DQo8L3A+DQoNCjwvYm9keT4NCg0KPC9odG1sPg0K
-cXprbHJqaW8NCm5oIHZuZHEgdHAg
+Grant Grundler wrote:
+> Willy, Alan,
+> 
+> SATA support attempts to directly reference scattergather.dma_address
+> and .dma_length. That's wrong since those are arch specific fields.
+> alpha, cris, parisc, ppc64, sparc, and sparc64 won't build SATA.
+> 
+> SATA code needs to use "sg_dma_address()" and sg_dma_len()" macros
+> to reference those fields.
+> 
+> If this patch looks good, please tell me which forum (linux-scsi?)
+> this needs to be posted to.
+> 
+Hmm I don't see any follow up but i just read in "post-halloween-2.6.txt"
+(Reporting bugs. section) that
+[snip]
+     SCSI      - linux-scsi@vger.kernel.org
+[snip]
 
 
+> Patch appended and also available from:
+> 	ftp://ftp.parisc-linux.org/patches/diff-2.6.0-t10-sata
+> 
+> The code now compiles but I've not yet built a kernel (forgot to
+> disable KALLSYMS - toolchain bugs) and don't have the HW to test it. 
+> 
 
---09F7.0C.D79AC_3CC--
+hth,
+	Joel
+
+PS: Sorry I miss to follow this patch :(
