@@ -1,50 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6394E4A19
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 10:57:09 -0700 (MST)
-To: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-Cc: PL <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Cannot build 02/18/2001 glibc 
-In-Reply-To: Message from "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-   of "Mon, 19 Feb 2001 11:19:42 EST." <3A91479E.9C9EB68A@neuronet.pitt.edu>
-References: <Pine.LNX.4.21.0102191946290.23583-100000@front.linuxcare.com.au>
-  <3A91479E.9C9EB68A@neuronet.pitt.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 20 Feb 2001 10:59:38 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010220175938.6DE7B37C9D@carmen.fc.hp.com>
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 33B2A4A19
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 20 Feb 2001 11:01:32 -0700 (MST)
+Message-Id: <200102201803.KAA16465@milano.cup.hp.com>
+To: dkennedy <dkennedy@linuxcare.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Some progress with WAX_EISA (Who knows about int errupts?) 
+In-reply-to: Your message of "Mon, 19 Feb 2001 11:49:48 PST."
+             <Pine.LNX.4.21.0102191120150.28002-100000@localhost.localdomain>
+Date: Tue, 20 Feb 2001 10:03:38 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Rafael E. Herrera" writes...
+dkennedy wrote:
+> In the X86 architecture the IO space and the memory space are logically 
+> separate.  They are both accessed physically on the same bus but to
+> access IO space you have to execute an IO instruction.
 
-> Alan Modra wrote:
-> > 
-> > On Mon, 19 Feb 2001, Rafael E. Herrera wrote:
-> > 
-> > > checking for assembler line separator... *** You need a newer assembler
-> > > to compile glibc
-> > >[snip]
-> > >  /usr/i486-suse-linux/bin/as -V -Qy -v -o conftest.o conftest.s
-> > 
-> > Oops, this is an x86 assembler.
-> > 
-> > > The binaries called and the version numbers are shown. Do I need to
-> > > upgrade the assembler or is it a PATH misconfiguration? Thanks.
-> > 
-> > You need the hppa-linux assembler installed and available on your PATH.
-> 
-> The PATH needs to include both of these entries:
-> 
-> PATH=~/palinux/bin:~/palinux/hppa-linux/bin:$PATH
-> 
-> I had just first one before.
+Same thing is true for PCI. The CPU instructions to generate I/O port
+or MMIO space transactions differ in the details.
 
-No, you don't want hppa-linux/bin in there because then the build will only 
-use the cross-compiler and will fail if it needs to build any i386 
-binaries(like intermediate build tools etc.). As long as you have --host and 
---build set right then the build will do the right thing.
+> So, why have two separate spaces?  Some of the reasons are:
+> - to be different from Motorola
+> - to provide a mechanism to add delays for IO while still keeping
+>   memory fast (relatively speaking).
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+- have more address space for RAM
+  (ie not used for I/O space; think 16-bit)
+
+> Why do we care about ISA?  Well, EISA was designed to support both ISA
+> and EISA cards (in the same slot) so theoretically someone could want
+> to put an ISA card into a PA-RISC box.
+
+I'm not sure we can support ISA devices on parisc.
+I thought HPUX does not. Anyone know?
+
+> Does any of the above ramblings actually help?
+
+I've learned a few things I didn't know before.
+Not sure it helped with the current discussion.
+
+thanks,
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
