@@ -1,12 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from noble21.co.kr (unknown [61.72.80.34])
-	by dsl2.external.hp.com (Postfix) with SMTP id D781148ED
-	for <parisc-linux@parisc-linux.org>; Sun, 19 Oct 2003 22:26:25 -0600 (MDT)
-From: =?ks_c_5601-1987?B?sMewrcDMutK4tsau?= <webmaster@noble21.co.kr>
-To: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
-Message-Id: <20031020042625.D781148ED@dsl2.external.hp.com>
-Date: Sun, 19 Oct 2003 22:26:25 -0600 (MDT)
-Subject: [parisc-linux] =?ks_c_5601-1987?B?W7GksO1dx8e3zsfPvcq0z7HuPyDAzMGoIMbtvsjI9yDB1rmrvcOw7SC788Tox9EgvsbEp8C7ILjC
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9D67748ED
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 19 Oct 2003 22:37:10 -0600 (MDT)
+Date: Mon, 20 Oct 2003 00:33:14 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] hppa glibc 2.3.2-9 available for the brave testers!
+Message-ID: <20031020043314.GA26432@systemhalted>
+References: <20031018215509.GB10704@colo.lackof.org> <200310182225.h9IMPR0i023691@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200310182225.h9IMPR0i023691@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -18,68 +24,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-wLi8vL/k?=
-Date: Mon, 20 Oct 2003 13:27:05 +0900
-MIME-Version: 1.0
-Content-Type: text/html;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 8bit
+On Sat, Oct 18, 2003 at 06:25:27PM -0400, John David Anglin wrote:
+> > I've installed the libc6 and libc6-dev debs on both c3k's
+> > and they both are working fine (well, mozilla-firebird is
+> > still broken, not new).
+> 
+> I don't know about firebird but standard mozilla needs some pa specific
+> configuration stuff added before it will build/work.  I made a first
+> cut at this and started debugging the app a few weeks ago, but got
+> caught up in other things.
 
+I'm surprised that more things aren't broken, the typo in sysdep-cancel
+made all six argument syscalls unsuable :)
 
-<html>
+Thanks for the testing guys!
 
-<head>
-<title>본 메일은 발신전용입니다. 각종 문의사항은 문의메일을 이용해 주세요. </title>
-<meta name="generator" content="ahgh">
-</head>
-
-<body text="black" link="blue" vlink="purple" alink="red" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" bgcolor="#F3F3F3">
-<table border="0" cellpadding="0" cellspacing="0" width="1096">
-    <tr>
-        <td width="7">
-            <p>&nbsp;</p>
-        </td>
-        <td width="1089"><table cellpadding="0" cellspacing="0" width="654" style="border-collapse:collapse;">
-    <tr>
-        <td width="1092" style="border-top-width:1; border-right-width:1; border-bottom-width:0; border-left-width:1; border-top-color:gray; border-right-color:gray; border-left-color:gray; border-style:solid;">
-            <p><img src="http://www.noble21.co.kr/mailling/2003.05.13/img_1.jpg" width="654" height="924" border="0" usemap="#ImageMap1"></p>
-        </td>
-    </tr>
-    <tr>
-        <td width="1092" style="border-top-width:0; border-right-width:1; border-bottom-width:1; border-left-width:1; border-right-color:gray; border-bottom-color:gray; border-left-color:gray; border-style:solid;">
-            <table style="border-collapse:collapse;" cellpadding="0" cellspacing="0" width="654" bgcolor="#999999" bordercolordark="white" bordercolorlight="white">
-                <tr>
-                    <td width="644" style="border-width:1; border-color:white; border-top-style:none; border-right-style:solid; border-bottom-style:solid; border-left-style:solid;">
-                        <p align="center"><FONT color="white" face="굴림"><span style="font-size:9pt;"><BR></span></FONT><span style="font-size:9pt;"><font face="굴림" color="white">Tel : (代) 02-2605-1836&nbsp;&nbsp;&nbsp;&nbsp;Fax : 02-2694-0413&nbsp;&nbsp;&nbsp;&nbsp;E-mail : </font></span><A 
-href="mailto:webmaster@noble21.co.kr"><FONT 
-color="white" face="굴림"><span style="font-size:9pt;">webmaster@noble21.co.kr</span></FONT></A><span style="font-size:9pt;"><font face="굴림" color="white">&nbsp;&nbsp;&nbsp;&nbsp;<BR>본사 : 157-010 서울시 강서구 화곡본동 24-233 노블21(주) 건강이불마트&nbsp;&nbsp;&nbsp;&nbsp;<br>사업자등록번호 : 
-109-81-76636ㆍ통신판매업신고 제 16-299호<br>Copyright ⓒ </font></span><FONT 
-color="white" face="굴림"><span style="font-size:9pt;">noble21</span></FONT><span style="font-size:9pt;"><font face="굴림" color="white"> All rights reserved.</font><font face="굴림"><BR><BR></font></span></p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-        </td>
-    </tr>
-</table>
-<map name="ImageMap1">
-<area shape="rect" coords="242, 19, 305, 45" href="http://www.noble21.co.kr/shop/category.php?classid=1" target="_blank">
-<area shape="rect" coords="306, 20, 373, 44" href="http://www.noble21.co.kr/shop/category.php?classid=2" target="_blank">
-<area shape="rect" coords="375, 19, 452, 44" href="http://www.noble21.co.kr/shop/category.php?classid=3" target="_blank">
-<area shape="rect" coords="452, 20, 521, 44" href="http://www.noble21.co.kr/shop/category.php?classid=4" target="_blank">
-<area shape="rect" coords="523, 20, 574, 44" href="http://www.noble21.co.kr/shop/category.php?classid=5" target="_blank">
-<area shape="rect" coords="573, 19, 652, 46" href="http://www.noble21.co.kr/shop/category.php?classid=9" target="_blank">
-<area shape="rect" coords="9, 8, 123, 39" href="http://www.noble21.co.kr/" target="_blank">
-<area shape="rect" coords="438, 559, 609, 603" href="http://www.noble21.co.kr/" target="_blank">
-<area shape="rect" coords="57, 669, 231, 821" href="http://www.noble21.co.kr/drqueen/drqueen01_1.php" target="_blank">
-<area shape="rect" coords="240, 669, 413, 820" href="http://www.noble21.co.kr/drqueen/drqueen02_1.php" target="_blank">
-<area shape="rect" coords="423, 669, 595, 820" href="http://www.noble21.co.kr/drqueen/drqueen03_1.php" target="_blank">
-</map><br><table width="100%"><td bgcolor="#FFFFFF"><hr>
-<font color="#808080" face="굴림"><span style="FONT-SIZE:9pt">귀하의 이메일주소는 인터넷<a href="http://cvs.handhelds.org/cgi-bin/viewcvs.cgi/linux/kernel26/maintainers?rev=1.7&content-type=text/vnd.viewcvs-markup">서핑중</a>알게되었으며, 메일주소이외의 어떠한 정보도 가지고 있지 않습니다. 메일수신을 원하지 않을경우 <a href="mailto:webmaster@noble21.co.kr?subject=REMOVE&body=본인의 이메일주소 parisc-linux@parisc-linux.org를 리스트에서 삭제해 주세요...">[수신거부]</a>를 눌러주십시요.. 감사 합니다. 
-</span></font><font face="Arial" size="2"><font color="#808000">If you feel that this information is not what you want, please click <a href="mailto:webmaster@noble21.co.kr?subject=REMOVE&body=Pls remove my email parisc-linux@parisc-linux.org from your list..">[HERE]</a> requesting to be removed. Thank you, and we apologize for any inconvenience.</font><hr></td></table><br></body>
-
-</html>
-
-H>`PC\Q:3>'gM0(9h22 h5
+c.
