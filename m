@@ -1,19 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from guinness.internal.neep.com.au (ns1.au.network4.net [203.25.143.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 39994482B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 10 Mar 2002 05:43:49 -0700 (MST)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id UAA10629
-	for parisc-linux@lists.parisc-linux.org; Sun, 10 Mar 2002 20:43:37 +0800
-Date: Sun, 10 Mar 2002 20:43:34 +0800
-From: Andrew Shugg <andrew@neep.com.au>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0C312482C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Mar 2002 11:09:04 -0700 (MST)
+Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
+	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id g2BI8vFN013883
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Mar 2002 13:08:57 -0500 (EST)
+Received: (from dave@localhost)
+	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) id g2BI8u5N013881
+	for parisc-linux@lists.parisc-linux.org; Mon, 11 Mar 2002 13:08:56 -0500 (EST)
+Message-Id: <200203111808.g2BI8u5N013881@hiauly1.hia.nrc.ca>
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] security updates
-Message-ID: <20020310204332.U1906@neep.com.au>
-References: <5.0.2.1.2.20020309230930.00ae3d80@mailbox.hrz.tu-chemnitz.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <5.0.2.1.2.20020309230930.00ae3d80@mailbox.hrz.tu-chemnitz.de>; from tilo@jandt-online.net on Sat, Mar 09, 2002 at 11:10:33PM +0100
+Date: Mon, 11 Mar 2002 13:08:56 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] dynamic loader problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,22 +26,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoth Tilo Jandt:
-> could someone send me his source.list entries
-> for security updates?
+In looking at the the failure of the g++.brendan/new3.C, I have observed
+what appears to be a problem with the dynamic loader.  The function
+_Znwj appears as a global symbol in the main program and in
+libstdc++.so.4.0.0.  The version in the main program should be selected
+in preference to the one in the shared library.  However, the dynamic
+loader actually uses the version in the shared library causing the
+test to fail.  The program works ok with static linkage.
 
-Hi Tilo,
+It looks like the symbol search procedure used in glibc needs some work.
 
-Due to the volatile nature of the 'unstable' pool and the delayed update
-process of the 'testing' pool, I believe the Debian security updates are
-only done for the 'stable' pool.  If there is a security fix for a
-testing or unstable package it will generally just appear in your next
-apt-get upgrade.
-
-Andrew.
-
+Dave
 -- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
