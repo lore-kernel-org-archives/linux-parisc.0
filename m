@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hauptpostamt.charite.de (hauptpostamt.charite.de [193.175.73.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6FE28486C
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 08:27:41 -0700 (MST)
-Date: Wed, 6 Mar 2002 16:27:39 +0100
-From: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-To: Ralf Hildebrandt <Ralf.Hildebrandt@charite.de>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9EB104831
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  6 Mar 2002 09:30:43 -0700 (MST)
 Subject: Re: [parisc-linux] not freeing initmem?
-Message-ID: <20020306152739.GQ787@charite.de>
-References: <20020306151913.GO787@charite.de>
-Mime-Version: 1.0
+To: helge.deller@sap.com (Helge Deller)
+Date: Wed, 6 Mar 2002 16:45:59 +0000 (GMT)
+Cc: Ralf.Hildebrandt@charite.de (Ralf Hildebrandt),
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <E16idHP-0003pp-00@linuxlab.wdf.sap-ag.de> from "Helge Deller" at Mar 06, 2002 04:24:35 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020306151913.GO787@charite.de>
+Message-Id: <E16ieYB-0007Ml-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +23,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Am 06.03.2002 um 16:19:13 +0100 schrieb Ralf Hildebrandt folgendes:
+> There is still one or more __init 's too much somewhere. 
+> If we would free the memory without fixing/finding this place first, 
+> the kernel will crash.
 
-> What does that mean? Why is the memory not freed on PA-RISC, but freed
-> on x86?
-
-OK, I grepped for that string and found the infamous FIXME:
-
-/* FIXME: */
-        printk(KERN_INFO "NOT FREEING INITMEM (%dk)\n",
-                        (&__init_end - &__init_begin) >> 10);
-        return;			
-
-OTOH, why does the code below that not work for PA-RISC?
+Disable interrupts, memset all the freed pages to an invalid instruction in
+parisc asm at the point you free the init pages, then re-enable ints and
+the traceback should give you a direct stack trace to the offender
