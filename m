@@ -1,19 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id BAB3A482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 01:20:11 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: <marc@centraltx.com>,
-	"Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+Received: from hotmail.com (f70.law4.hotmail.com [216.33.149.70])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B200F482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  6 Jun 2002 03:06:35 -0600 (MDT)
+From: "Kenneth Westelinck" <kennywest1@hotmail.com>
+To: carlos@baldric.uwo.ca, marc@centraltx.com
+Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Building my first kernel
-Date: Thu, 6 Jun 2002 09:19:20 +0200
-Cc: <parisc-linux@lists.parisc-linux.org>
-References: <200206052339.AA4027384388@mail.centraltx.com>
-In-Reply-To: <200206052339.AA4027384388@mail.centraltx.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200206060919.20831.deller@gmx.de>
+Date: Thu, 06 Jun 2002 09:06:33 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Message-ID: <F70qSkZ2On3DnRB0MtS00012bca@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,31 +21,61 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Marc,
+Hi,
 
-Go to
-http://cvs.parisc-linux.org/
-and check out the linux and palo directories with an anonymous account.
-Then build your linux kernel from the linux directory.
+For what it's worth.
 
-Greetings,
-Helge
+I always build my kernel the i386 way:
+make menuconfig
+make dep clean bzImage
 
-On Thursday 06 June 2002 06:39, marc  wrote:
-> i did:
+I always use the nightly snapshots available from ftp.parisc-linux.org/cvs/ 
+.
+
+
+regards,
+
+Kenneth
+>From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
+>To: marc <marc@centraltx.com>
+>CC: parisc-linux@lists.parisc-linux.org
+>Subject: Re: [parisc-linux] Building my first kernel
+>Date: Wed, 5 Jun 2002 22:26:52 -0400
 >
->    apt-get install kernel-source-2.4.18-hppa
->
-> ---------- Original Message ----------------------------------
-> From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-> Date:  Wed, 5 Jun 2002 23:46:37 -0400
->
-> >> Call me crazy, but I cannot get this to work. There doesn't seem
-> >> to be a 'palo' target for make. When I run make palo it just
-> >> runs the make all (below are the first few lines).
-> >>
-> >> Any Ideas?
+> > I'm trying to build the 2.4.18 kernel, and everything goes great
+> > until I get to the `make bzImage` part and it screams about palo.
+> > I'm assuming I need the palo source. is this right??
 > >
-> >How did you get the source tree for linux and palo?
+> > -Marc
 > >
-> >c.
+>
+>Yup.
+>
+>$SRC-TREE--|
+>            |--- /linux
+>            |
+>            |--- /palo
+>
+>cd linux;
+>make oldconfig;
+>make menuconfig; (Fiddle)
+>make dep;
+>make palo;
+>
+>This puts the required lifimage in $SRC-TREE/palo
+>
+>c.
+>
+>
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+enjoy life, enjoy linux,
+
+Kenneth
+
+_________________________________________________________________
+Verzend en ontvang Hotmail via je mobieltje: http://mobile.msn.com
