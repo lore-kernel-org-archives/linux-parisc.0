@@ -1,21 +1,14 @@
-Return-Path: <alan@lxorguk.ukuu.org.uk>
-Received: from dhcp23.swansea.linux.org.uk
-	(cpc1-cwma1-5-0-cust4.swan.cable.ntl.com [80.5.120.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0AF5E4852
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2EDE14852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 28 Feb 2004 09:11:08 -0700 (MST)
-Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10) with ESMTP id
-	i1SG7E0r031312; Sat, 28 Feb 2004 16:07:14 GMT
-Received: (from alan@localhost)
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10/Submit) id
-	i1SG7EaS031310; Sat, 28 Feb 2004 16:07:14 GMT
+	Sat, 28 Feb 2004 09:45:08 -0700 (MST)
+Date: Sat, 28 Feb 2004 09:45:06 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Subject: Re: [parisc-linux] C3000 and Promise Ultra100 TX2 PCI Controller
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: "M. Grabert" <xam@cs.ucc.ie>
-In-Reply-To: <Pine.LNX.4.58.0402280055400.10811@sal.ucc.ie>
-References: <Pine.LNX.4.58.0402260003140.26587@sal.ucc.ie>
-	<1077757727.26560.7.camel@dhcp23.swansea.linux.org.uk>
+Message-ID: <20040228164506.GA11659@colo.lackof.org>
+References: <1077757727.26560.7.camel@dhcp23.swansea.linux.org.uk>
 	<Pine.LNX.4.58.0402260127230.26951@sal.ucc.ie>
 	<20040226051124.GB3645@colo.lackof.org>
 	<Pine.LNX.4.58.0402260513010.28003@sal.ucc.ie>
@@ -24,12 +17,12 @@ References: <Pine.LNX.4.58.0402260003140.26587@sal.ucc.ie>
 	<20040227212356.GA28668@colo.lackof.org>
 	<Pine.LNX.4.58.0402272325410.9660@sal.ucc.ie>
 	<Pine.LNX.4.58.0402280055400.10811@sal.ucc.ie>
-Content-Type: text/plain
-Message-Id: <1077984432.31248.4.camel@dhcp23.swansea.linux.org.uk>
+	<1077984432.31248.4.camel@dhcp23.swansea.linux.org.uk>
 Mime-Version: 1.0
-Date: Sat, 28 Feb 2004 16:07:13 +0000
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1077984432.31248.4.camel@dhcp23.swansea.linux.org.uk>
+Cc: parisc-linux@lists.parisc-linux.org,
+	Grant Grundler <grundler@parisc-linux.org>, "M. Grabert" <xam@cs.ucc.ie>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -39,15 +32,36 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sad, 2004-02-28 at 01:05, M. Grabert wrote:
-> It really looks as either the Promise and the onboard-IDE have big-endian
-> issues (which were revealed by these modifications), or the siimage driver
-> has a big-endian problem.
+On Sat, Feb 28, 2004 at 04:07:13PM +0000, Alan Cox wrote:
+> The SI goes via mmio promise via PIO, so it may be you unfixed the one
+> that was right ?
 
-None of the drivers have big endian problems (tested on other archs)
+oic.  siimage.c doesn't use the same code path.
+I'll guess promise needs the arch/parisc/lib/io.c patch anyway
+and something else is wrong with siimage. I'll track that
+down later - could be something similar...
 
-> I will test the Promise card (perhaps even the Silicon Image card), and
-> the 2.6-kernel tomorrow.
+drivers/ide/pci/siimage.c:  default_hwif_mmiops(hwif);
 
-The SI goes via mmio promise via PIO, so it may be you unfixed the one
-that was right ?
+ide-iops.c:void default_hwif_mmiops (ide_hwif_t *hwif)
+...
+        hwif->INSW      = ide_mm_insw;
+
+include/asm-parisc/ide.h:
+static __inline__ void __ide_mm_insw(unsigned long port, void *addr, u32 count)
+{
+        while (count--) {
+                *(u16 *)addr = readw(port);
+                addr += 2;
+        }
+}
+
+include/asm/io.h:#define readw(addr) (*(volatile unsigned short *) __io_virt(addr))
+
+
+Uhoh..no swapping at all in this case.
+I was expecting readw to swap bytes.
+Am I just confused again about how a BE is supposed to behave?
+*sigh*
+
+grant
