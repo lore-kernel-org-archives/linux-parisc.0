@@ -1,32 +1,82 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id AAA13988
-	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Oct 1999 00:53:09 -0600
-To: Grant Grundler <grundler@cup.hp.com>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] commit FP coproc enable code? 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of Fri, 01 Oct 1999 13:52:53 PDT.
-             <199910012052.NAA13364@milano.cup.hp.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id VAA16104
+	for <parisc-linux@puffin.external.hp.com>; Sat, 2 Oct 1999 21:34:50 -0600
+Received: from Galois.suse.de (Galois.suse.de [194.112.123.130])
+	by Cantor.suse.de (Postfix) with ESMTP id D047E32CDA
+	for <parisc-linux@thepuffingroup.com>; Sun, 03 Oct 1999 03:35:17 +0000 (???)
+Received: from Wotan.suse.de (Wotan.suse.de [10.10.0.1])
+	by Galois.suse.de (Postfix) with ESMTP id BC32367B1
+	for <parisc-linux@thepuffingroup.com>; Sun,  3 Oct 1999 05:35:17 +0200 (MEST)
+Date: Sun, 3 Oct 1999 05:35:17 +0200
+From: Philipp Rumpf <prumpf@suse.de>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <19991003053517.J8946@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Sat, 02 Oct 1999 00:03:57 -0600
-Message-ID: <24837.938844237@upchuck.cygnus.com>
-From: Jeffrey A Law <law@cygnus.com>
+Subject: [parisc-linux] my tree (Oct 03)
 List-ID: <linux-parisc.vger.kernel.org>
 
-  In message <199910012052.NAA13364@milano.cup.hp.com>you write:
+Okay, most of my changes went into the cvs tree today, you can get the rest
+at ftp://sunsite.auc.dk/pub/os/linux/parisc/patch-prumpf-19991003.gz 
 
-  > > Why is not using PDC_COPROC not the right way ?
-  > > It should do exactly the same
-  > > thing, modulo machines without FPU (for which we do not provide emulation
-  > > anyway) and firmware bugs ...
-  > 
-  > You are right.
-  > But I'm lazy and I don't care right now about machines older than PA 1.1.
-  > Someone who cares about PA 1.0 can implement that.
-I would recommend ignoring PA1.0 -- the only machines with PA1.0 processors
-are radically different than the machines y'all are targeting.  The effort
-would be spent on PA2.0 :-)
+Changes:
+
+Makefile
+	Conditionalize compiling GSC in as we do for other busses
+
+arch/parisc/config.in
+arch/parisc/defconfig
+	New configuration menus.  Those seem much more logical to me
+
+arch/parisc/kernel/Makefile
+	updated to reflect removed/added files
+
+arch/parisc/kernel/drivers.c
+arch/parisc/kernel/inventory.c
+	not yet in my tree (will be added as soon as I had a look at it)
+
+arch/parisc/kernel/pci.c
+include/asm-parisc/pci.h
+	this is my version, not grant's that is in the CVS tree
+
+arch/parisc/kernel/pdc.c
+arch/parisc/kernel/real.S
+include/asm-parisc/real.h
+	new mechanism to call code in real-mode.  this doesn't work for some
+	calls right now
+
+include/asm-parisc/semaphore.h
+include/asm-parisc/semaphore-helper.h
+	almost correct semaphore operations
+
+arch/parisc/kernel/setup.c
+	removed CVS log (way too long and nobody would have read it anyway)
+	removed old functions which I didn't like anyway
+	removed get_cpuinfo as it isn't done the right way
+	removed frame buffer code (I really hope it doesn't have to be done
+		the way it was)
+
+arch/parisc/kernel/traps.c
+	clean-up
+
+drivers/block/rd.c
+	removed lots of printks
+
+drivers/char/serial.c
+	this is my original version, I haven't looked at the modifications
+	close enough yet.
+	
+drivers/gecko/dino-prumpf.c
+drivers/gecko/lasi-prumpf.c
+	these are my versions, Lasi might be merged, Dino will probably not
+
+drivers/gecko/gecko.c
+	much of this code will disappear soon
+	more GSC support functions
+
+init/main.c
+	most of my changes will go away
 
 
-jeff
+
+	Philipp Rumpf
