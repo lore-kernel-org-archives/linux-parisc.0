@@ -1,23 +1,16 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 76B6D4891
+Return-Path: <>
+Received: from cgp.pu.ru (fxp0.cgp.pu.ru [194.58.104.209])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 393964891
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 23 Mar 2004 19:07:08 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E88205.dip0.t-ipconnect.de
-	[217.232.130.5])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2O277o08381
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 24 Mar 2004 03:07:07 +0100
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
+	Tue, 23 Mar 2004 21:19:50 -0700 (MST)
+From: MAILER-DAEMON@cgp.pu.ru
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 24 Mar 2004 03:07:12 +0100
-Message-ID: <063a01c41144$b8c96070$fc01a8c0@muc.nccconsulting.de>
+Date: Wed, 24 Mar 2004 07:19:48 +0300
+Message-ID: <receipt-8042489@cgp.pu.ru>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+Content-Type: multipart/report; report-type="delivery-status";
+	boundary="_===8042489====cgp.pu.ru===_"
+Subject: [parisc-linux] Undeliverable mail: Re: Document
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +20,50 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/24/2004 3:07:12 AM
-Engine/Pattern = 6.860-1001/1.833.00
+--_===8042489====cgp.pu.ru===_
+Content-Type: text/plain; charset="utf-8"
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+Failed to deliver to 'goronch@vg6088.spb.edu'
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+WARNING! Your message was infected by VIRUS:
+Suspicious File: your_document.pif
+
+It was rejected for delivery.
+
+Antiviral program output:
+==================================================
+your_document.pif		 Suspicious File: your_document.pif
+==================================================
+
+
+
+
+--_===8042489====cgp.pu.ru===_
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; cgp.pu.ru
+
+Original-Recipient: rfc822;<goronch@vg6088.spb.edu>
+Final-Recipient: system;<goronch@vg6088.spb.edu>
+Action: failed
+Status: 5.0.0
+
+--_===8042489====cgp.pu.ru===_
+Content-Type: text/rfc822-headers
+
+Received: from [193.19.177.73] (HELO vg6088.spb.edu)
+  by cgp.pu.ru (CommuniGate Pro SMTP 4.1.8)
+  with ESMTP id 8042477 for goronch@vg6088.spb.edu; Wed, 24 Mar 2004 07:19:42 +0300
+From: parisc-linux@lists.parisc-linux.org
+To: goronch@vg6088.spb.edu
+Subject: Re: Document
+Date: Wed, 24 Mar 2004 06:19:43 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0006_00003191.0000520A"
+X-Priority: 3
+X-MSMail-Priority: Normal
+Message-ID: <auto-000008042477@cgp.pu.ru>
+
+--_===8042489====cgp.pu.ru===_--
