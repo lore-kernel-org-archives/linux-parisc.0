@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0C3074839
-	for <parisc-linux@parisc-linux.org>; Tue,  5 Mar 2002 16:51:26 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16iOi0-0007We-00
-	for parisc-linux@parisc-linux.org; Tue, 05 Mar 2002 23:51:04 +0000
-Date: Tue, 5 Mar 2002 23:51:04 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20020305235104.E7113@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
+Received: from the-village.bc.nu (lightning.swansea.linux.org.uk [194.168.151.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D1A804840
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 18:03:07 -0700 (MST)
+Subject: Re: [parisc-linux] OT: value of a 712/100
+To: taggart@carmen.fc.hp.com (Matt Taggart)
+Date: Wed, 6 Mar 2002 01:02:36 +0000 (GMT)
+Cc: CGRAY@santa-clarita.com (Chris Gray),
+	parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020305215733.0B69C37CF5@carmen.fc.hp.com> from "Matt Taggart" at Mar 05, 2002 02:57:33 PM
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Bitkeeper
+Message-Id: <E16iPpE-00051v-00@the-village.bc.nu>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +23,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-A controversial issue, I realise.  However, Marcelo is itching to get some
-bitkeeper testing, I'm cooperating by setting up a bitkeeper tree he can
-pull from.  You can see what I'm up to at http://palinux.bkbits.net/
-but there's no _development_ going on there.  Continue to use
-cvs.parisc-linux.org as before.  If anyone wants to have `user' access
-(permission to check in, basically) to this tree, just ask me.
+> > Sorry for the OT post,  I own a few 712/100 boxes and was wondering what
+> > they would be worth? and if any one here would be interested in buying a
+> > couple of them?
+> 
+> Check ebay, I seem to remember them going for ~$100 with ram and disk.
 
-Note that not all changes are being committed to this tree, only the
-bits I'm pushing to Marcelo.
-
--- 
-Revolutions do not require corporate support.
+Ebay prices for older parisc kit seem to have basically doubled since 
+Linux on parisc began to work well. Annoying but I think a great project
+testimony
