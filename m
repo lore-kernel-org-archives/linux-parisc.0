@@ -1,36 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.iinet.net.au (symphony-03.iinet.net.au [203.59.24.18])
-	by dsl2.external.hp.com (Postfix) with SMTP id 26BF7482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 21:55:20 -0600 (MDT)
-Received: (from andrew@localhost)
-	by guinness.internal.neep.com.au (8.9.3/8.9.3/Debian/GNU) id LAA32766
-	for parisc-linux@lists.parisc-linux.org; Fri, 6 Jul 2001 11:55:12 +0800
-Date: Fri, 6 Jul 2001 11:55:08 +0800
-From: Andrew Shugg <andrew@neep.com.au>
-To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] problems with burning iso's
-Message-ID: <20010706115505.V28368@neep.com.au>
-References: <CC7EB40D4455D51191850090270C43801038B1@ati.ati.stlawrencec.on.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <CC7EB40D4455D51191850090270C43801038B1@ati.ati.stlawrencec.on.ca>; from RPengelly@ati.stlawrencec.on.ca on Thu, Jul 05, 2001 at 09:02:06AM -0400
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 502F8482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 23:04:19 -0600 (MDT)
+Message-Id: <200107060503.XAA17614@puffin.external.hp.com>
+To: "y. han" <yhan@uwo.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] request to boot (denied) 
+In-Reply-To: Message from "y. han" <yhan@uwo.ca>
+   of "Wed, 04 Jul 2001 14:41:36 EDT." <Pine.SOL.4.21.0107041427510.19435-100000@panther.uwo.ca>
+Date: Thu, 05 Jul 2001 23:03:29 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Raymond Pengelly said:
-> Also I was wondering what the md5checksums are all about? 
+"y. han" wrote:
+> Hi!
+> Does anyone have any idea what is wrong with rbootd in our 715/50 machine.
+> 
+> We get the rbootd running.
+> 1. the rbootd.conf is located at /etc
+> 2. the rbootd.conf contains:
 
-The MD5 checksums of the ISO files are provided so that you can verify
-the integrity of the file you have downloaded.  You will obviously need
-the md5sum program for your operating system to do so.
+I think the older machines only support bootp and not rboot.
+(I don't really know what I'm talking about but others on the list
+ have posted something...search the list archive at lists.parisc-linux.org. )
 
-> Do I have to change anything in the iso before I burn it?
+grant
 
-No.
-
-Andrew.
-
--- 
-Andrew Shugg <andrew@neep.com.au>                   http://www.neep.com.au/
-
-"Just remember, Mr Fawlty, there's always someone worse off than yourself."
-"Is there?  Well I'd like to meet him.  I could do with a good laugh."
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
