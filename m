@@ -1,104 +1,34 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA15745
-	for <parisc-linux@puffin.external.hp.com>; Sat, 30 Dec 2000 12:02:59 -0700
-Message-Id: <200012301905.OAA19130@hiauly1.hia.nrc.ca>
-Subject: Re: pa reload problem
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Date: Sat, 30 Dec 2000 14:05:50 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: rth@redhat.com, alan@linuxcare.com.au, law@cygnus.com,
-        rhirst@linuxcare.com, parisc-linux@thepuffingroup.com,
-        gcc-bugs@gcc.gnu.org
-In-Reply-To: <200012221721.MAA00889@hiauly1.hia.nrc.ca> from "John David Anglin" at Dec 22, 2000 12:21:54 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA20642
+	for <parisc-linux@puffin.external.hp.com>; Sat, 30 Dec 2000 17:04:17 -0700
+Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
+  by mailserv2.iuinc.com with SMTP; 31 Dec 2000 00:07:29 -0000
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 14CW24-0000l7-00; Sun, 31 Dec 2000 00:07:28 +0000
+Date: Sun, 31 Dec 2000 00:07:28 +0000
+From: Matthew Wilcox <matthew@wil.cx>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Console
+Message-ID: <20001231000728.G21315@parcelfarce.linux.theplanet.co.uk>
+References: <20001221211830.C21472@parcelfarce.linux.theplanet.co.uk> <20001221212855.E21472@parcelfarce.linux.theplanet.co.uk> <20001223133747.B13472@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20001223133747.B13472@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Sat, Dec 23, 2000 at 01:37:47PM +0000
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Your GO_IF_LEGITIMATE_ADDRESS will accept the UNSPEC?
-> > The mind boggles.  Why, then, is this strange beast its own insn?
+On Sat, Dec 23, 2000 at 01:37:47PM +0000, Matthew Wilcox wrote:
+> On Thu, Dec 21, 2000 at 09:28:55PM +0000, Matthew Wilcox wrote:
+> > I haven't tested STI console with these changes.  I don't have a
+> > monitor/kbd for my 712.  Someone should test this, and remove the calls
+> > to pdc_console_die (and remove pdc_console_die altogether).
 > 
-> I have done some more testing.
+> here's a patch which does this.  please let me know how this works out
+> for you.
 
-As I do more work trying to build the pa port under hpux 10.20 with
-`-fPIC -O3', I have begun to understand why this strange beast is its
-own insn.  The machine definition which I am testing currently has
-the UNSPEC integrated with other move_operands.  However, in doing this,
-I have encountered another reload problem.
+If no-one tests this and tells me whether it works, i shall commit it
+anyway and you can deal with the breakage yourselves.
 
-Here is the relevant rtl from the lreg pass:
-
-;; Function init_all_optabs
-
-...
-
-(note 223 107 225 ("insn-opinit.c") 48 -1347440721)
-
-(insn 225 223 1961 (set (reg/f:SI 611)
-        (plus:SI (reg:SI 19 %r19)
-            (high:SI (symbol_ref:SI ("target_flags"))))) 80 {*pa.md:2326} (nil)
-    (nil))
-
-...
-
-(note 1063 1013 1067 ("insn-opinit.c") 130 -1347440721)
-
-(insn 1067 1063 2002 (set (reg/f:SI 403)
-        (mem/u:SI (lo_sum:SI (reg/f:SI 611)
-                (unspec:SI[ 
-                        (symbol_ref:SI ("target_flags"))
-                    ]  0)) 0)) 69 {*pa.md:2099} (nil)
-    (expr_list:REG_EQUIV (mem/u:SI (lo_sum:SI (reg/f:SI 611)
-                (unspec:SI[ 
-                        (symbol_ref:SI ("target_flags"))
-                    ]  0)) 0)
-        (expr_list:REG_DEAD (reg/f:SI 611)
-            (nil))))
-
-...
-
-(note 2006 1059 1069 ("insn-opinit.c") 130 -1347440721)
-
-(insn 1069 2006 2007 (set (reg:SI 404)
-        (mem/f:SI (reg/f:SI 403) 4)) 69 {*pa.md:2099} (insn_list 1067 (nil))
-    (expr_list:REG_EQUIV (mem/f:SI (reg/f:SI 403) 4)
-        (nil)))
-
-...
-
-(note 1085 1926 1091 ("insn-opinit.c") 132 -1347440721)
-
-(insn 1091 1085 1094 (set (reg:SI 411)
-        (mem/f:SI (reg/f:SI 403) 4)) 69 {*pa.md:2099} (nil)
-    (expr_list:REG_EQUIV (mem/f:SI (reg/f:SI 403) 4)
-        (nil)))
-
-...
-
-(note 2168 1597 1607 ("insn-opinit.c") 194 -1347440721)
-
-(insn 1607 2168 2169 (set (reg:SI 538)
-        (mem/f:SI (reg/f:SI 403) 4)) 69 {*pa.md:2099} (insn_list:REG_DEP_ANTI 1497 (nil))
-    (expr_list:REG_EQUIV (mem/f:SI (reg/f:SI 403) 4)
-        (nil)))
-
-...
-
-(note 1621 1931 1627 ("insn-opinit.c") 196 -1347440721)
-
-(insn 1627 1621 1630 (set (reg:SI 544)
-        (mem/f:SI (reg/f:SI 403) 4)) 69 {*pa.md:2099} (nil)
-    (expr_list:REG_DEAD (reg/f:SI 403)
-        (nil)))
-
-Note that register 611 is dead at insn 1067.  However, we still have REG_EQUIV
-notes which implicitly use register 611 on insns 1091 and 1607 (not sure
-why there isn't a note on 1627).  This leads to disaster at insn 1607
-when the hard register assigned to 611 gets reused for other purposes
-in the intervening code.
-
-Is the REG_DEAD note for register 611 in the right place?
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+Revolutions do not require corporate support.
