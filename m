@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EF47E4841
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Nov 2003 05:02:14 -0700 (MST)
-Date: Fri, 7 Nov 2003 13:02:13 +0100
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+Received: from n2now58.com (unknown [217.194.147.3])
+	by dsl2.external.hp.com (Postfix) with SMTP id 18A7F4841
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  7 Nov 2003 06:09:36 -0700 (MST)
+From: "Mr. Williams Lawal" <williams@hotmail.com>
+Reply-To: williamslawal@uboot.com
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Unresolved symbols in 2.4.22-pa13
-Message-ID: <20031107120213.GM17497@lug-owl.de>
-References: <3FA956FD.4080901@hrzpub.tu-darmstadt.de> <20031106162055.GA26869@parcelfarce.linux.theplanet.co.uk> <20031106205706.GG17497@lug-owl.de> <20031106222416.GI26869@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GoZzJvFfKjxI3RhA"
-In-Reply-To: <20031106222416.GI26869@parcelfarce.linux.theplanet.co.uk>
+Date: Fri, 7 Nov 2003 14:10:10 -0800
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Message-Id: <20031107130936.18A7F4841@dsl2.external.hp.com>
+Subject: [parisc-linux] thanks
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,66 +21,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---GoZzJvFfKjxI3RhA
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+MR=2E WILLIAMS LAWAL                    
+PACIFIC BANK OF SOUTH AFRICA=2C 
+9TH FLOOR=2C HEERENGRACHT TOWER=2C 
+STANDARD BANK CENTER=2C 
+CAPE TOWN=2C SOUTH AFRICA=2E 
 
-On Thu, 2003-11-06 22:24:16 +0000, Matthew Wilcox <willy@debian.org>
-wrote in message <20031106222416.GI26869@parcelfarce.linux.theplanet.co.uk>:
-> On Thu, Nov 06, 2003 at 09:57:06PM +0100, Jan-Benedict Glaw wrote:
-> > On Thu, 2003-11-06 16:20:55 +0000, Matthew Wilcox <willy@debian.org>
-> > wrote in message <20031106162055.GA26869@parcelfarce.linux.theplanet.co=
-=2Euk>:
-> > > On Wed, Nov 05, 2003 at 09:01:01PM +0100, Ruediger Scholz wrote:
-> @@ -34,7 +34,7 @@ config PARPORT
-> =20
->  config PARPORT_PC
->         tristate "PC-style hardware"
-> -       depends on PARPORT && (!SPARC64 || PCI)
-> +       depends on PARPORT && (!(SPARC64 || PARISC) || PCI)
 
-This excludes certain possibilities. I'd go the other way...
+DEAR SIR=2C
 
->         ---help---
->           You should say Y here if you have a PC-style parallel port. All
->           IBM PC compatible computers and some Alphas have PC-style
->=20
-> But perhaps that should be:
->=20
-> 	depends on PARPORT && (!SPARC64 || PCI) && (!PARISC || SUPERIO)
+I am Mr Williams Lawal=2C the Branch Manager Pacific Bank of South Africa=2C Cape Town =2EI have urgent and very confidential business proposition for you=2E 
 
-parport_pc uses inb/outb so I'd let it depend on busses that are capable
-of allowing inb/outb:
+On June 6=2C1999=2C an American Oil consultant=2Fcontractor with the South Africa Mining Corporation=2C Mr=2E Charles Anderson made a numbered time =28Fixed=29 Deposit for twelve calendar months=2C valued at US$20=2C000=2C000=2E00 =28Twenty Million Dollars=29 in my branch=2EUpon maturity=2C I sent a routine notification to his forwarding address but got no reply=2EAfter a month=2C we sent a reminder and finally we discovered from his contract employers=2C the South Africa Mining Corporation that Mr=2E Charles Anderson died from an automobile accident=2E On further  investigation=2C I found out that he died without making a WILL=2C and all attempts to trace his next of kin was fruitless=2E 
+  I therefore made further investigation and discovered that Mr=2E Charles Anderson did not declare any kin or relations in all his official documents=2C including his Bank Deposit paperwork in my Bank=2E This sum of US$20=2C000=2C000=2E00 is still sitting in my Bank and the interest is being rolled over with the principal sum at the end of each year=2E  No one 
+will ever come forward to claim it=2E  According to South Africa Law=2C at the expiration of 5 =28five=29 years=2C the money will revert to the ownership of the South Africa Government if nobody applies to claim the fund=2E 
+  Consequently=2C my proposal is that I will like you as a foreigner to stand in as the next of kin to Mr=2E Charles Anderson so that the fruits of this old man's labour will not get into the hands of some corrupt government officials=2E  This is simple=2C I will like you to provide immediately your full names and address so that the Attorney will prepare the necessary documents and affidavits which will put you in place as the next of kin=2E  We shall employ the service of two Attorneys for drafting and notarization of the WILL and to obtain the necessary documents and letter of probate=2Fadministration in your favour for the transfer=2E  A bank account in any part of the world which you will provide will then facilitate the transfer of this money to you as the beneficiary=2Fnext of kin=2E The money will be paid into your account for us to share in the ratio of 70% for me and 30% for you=2E 
 
-	depends on PARPORT && (ISA || PCI || SUPERIO)
+There is no risk at all as all the paperwork for this transaction will be done by the Attorney and my position as the Branch Manager guarantees the successful execution of this transaction=2E If you are interested=2C please reply immediately via the private email address williamslawal111=40uboot=2Ecom=2E Upon your response=2C I shall then provide you with more details and relevant documents that will help you understand the transaction=2E 
+    Please observe utmost confidentiality=2C and rest assured that this transaction would be most profitable for both of us because I shall require your assistance to invest my share in your country=2E 
 
-- ISA parport adaptors exist, either as build-in or as real ISA cards.
-- There are PCI parport controllers
-- SUPERIO seeme to be capable of doing parport_pc (I haven't used
-  that...)
+Awaiting your urgent reply via a return email 
 
-MfG, JBG
 
---=20
-   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
-   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
-    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
-k!
-   ret =3D do_actions((curr | FREE_SPEECH) & ~(NEW_COPYRIGHT_LAW | DRM | TC=
-PA));
+Thanks and regards=2E 
 
---GoZzJvFfKjxI3RhA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/q4nFHb1edYOZ4bsRArJrAKCImlof9sTbTtJLrJJJTMf5xfKhcQCfaUV5
-UEJCbNOgcCCqEy1kHlzBAtI=
-=Qw28
------END PGP SIGNATURE-----
-
---GoZzJvFfKjxI3RhA--
+Mr=2E Williams Lawal
+williamslawal111=40uboot=2Ecom  
