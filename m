@@ -1,21 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 664C94829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 19 Apr 2003 09:34:07 -0600 (MDT)
-Date: Sat, 19 Apr 2003 08:30:56 -0700
-From: Randolph Chung <tausq@debian.org>
-To: Giovanni Bajo <giovannibajo@libero.it>
-Cc: gcc-gnats@gcc.gnu.org, parisc-linux@lists.parisc-linux.org,
-	gcc-bugs@gcc.gnu.org, debian-gcc@lists.debian.org,
-	nobody@gcc.gnu.org, gcc-prs@gcc.gnu.org,
-	Wolfgang Bangerth <bangerth@ices.utexas.edu>
-Message-ID: <20030419153056.GB25257@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <29d101c30685$140bcac0$15472597@bagio>
+	by dsl2.external.hp.com (Postfix) with ESMTP id B4AA14831
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 19 Apr 2003 19:15:06 -0600 (MDT)
+Date: Sat, 19 Apr 2003 18:12:56 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030420011256.GC25257@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <29d101c30685$140bcac0$15472597@bagio>
-Subject: [parisc-linux] Re: c++/10438: [3.3 regression] [hppa] Segfault when building jade
+Subject: [parisc-linux] floating point calling convention on pa
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,31 +21,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Confirmed. Slightly reduced testcase:
+Hi all,
 
-Thanks. 
+I'm trying to understand the FP argument passing convention on 32-bit
+palinux... I don't think I have it quite right. Can anyone comment on
+the following?
 
-Running under gdb, I see:
+1) float-type arguments
+   float add(float a, float b, float c, float d)
+        a -> fr4L
+        b -> fr5L
+        c -> fr6L
+        d -> fr7L
+        retval = fr4L
 
-(gdb) run bug.cxx
-Starting program: /home/tausq/gcc/build-3.3/gcc/cc1plus bug.cxx
+   If >4 arguments, the rest are passed on the stack
+   starting at sp-52 in the caller's frame
 
-Program received signal SIGSEGV, Segmentation fault.
-setup_class_bindings (name=0x401c9780, type_binding_p=1)
-    at ../../gcc-3.3/gcc/cp/search.c:2560
-2560          if (TREE_CODE (type_binding) == TREE_LIST
-(gdb) bt
-#0  setup_class_bindings (name=0x401c9780, type_binding_p=1)
-    at ../../gcc-3.3/gcc/cp/search.c:2560
-#1  0x00094410 in dfs_push_type_decls (binfo=0x401c9b40, data=0x401cf010)
-    at ../../gcc-3.3/gcc/cp/search.c:2615
-#2  0x00092f50 in dfs_walk_real (binfo=0x401c9b40, prefn=0,
-    postfn=0x362c0e <__JCR_LIST__+486>, qfn=0x362bde <__JCR_LIST__+438>,
-    data=0x0) at ../../gcc-3.3/gcc/cp/search.c:1911
-[...]
+2) double-type arguments
+   double add(double a, double b, double c, double d)
+        a -> fr5
+        b -> fr7
+        c -> sp-56 in caller frame
+        d -> sp-64 in caller frame
+        retval = fr4
 
-type_binding is NULL after lookup_member()...
+   Is it correct that the high-order 32-bit of fr5 is in fr5L
+   and the lower bits in fr5R?
 
+3) What happens when you have a mix argument function? e.g.
+   double foo(int a, float b, double c)
+
+        a -> r26
+        b -> fr5L
+        c -> fr7
+        retval = fr4
+
+   I don't quite understand the logic here :) What happens when
+   there are more and they need to go on the stack? What's the 
+   arrangement?
+
+I've looked through the SOM 32-bit runtime but (at least to me)
+it doesn't talk about this very clearly. I've been experimenting with
+gcc -S but I'd rather get a definitive answer :)
+
+Also, for passing structures by value to functions, is this correct?
+a) if sizeof(struct) <= 4, pass in register
+b) if sizeof(struct) <= 8), pass in even-numbered register pairs 
+c) if sizeof(struct) > 8, pass a pointer and callee will copy the
+   structure?
+
+thanks
 randolph
 -- 
 Randolph Chung
