@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C2CC64829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Sep 2002 23:54:52 -0600 (MDT)
+Date: Tue, 3 Sep 2002 07:47:59 +0200
+Message-ID: <3D3815BD0000AB5F@ocpmta5.be.tiscali.com>
+In-Reply-To: <20020902164424.GE14634@tausq.org>
+From: jsoe0708@tiscali.be
+Subject: Re: [parisc-linux] Gcc-3.2 beside gcc-3.0: HOWTO?
+To: "Randolph Chung" <randolph@tausq.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] iodc call and HPMC: dump driver. 
-In-Reply-To: Message from Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
-   of "Mon, 02 Sep 2002 08:12:26 +0200." <3D73014A.15ED96ED@admin.france.hp.com>
-References: <3D73014A.15ED96ED@admin.france.hp.com> 
-Date: Mon, 02 Sep 2002 22:50:49 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020903045049.E268F4829@dsl2.external.hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,55 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Bruno Vidal wrote:
-> ret =  real32_call(PAGE0->mem_boot.iodc_io,
-	ARG0	(unsigned long)PAGE0->mem_boot.hpa,
-	ARG1	DUMPDEV_WRITE,
-	ARG2	PAGE0->mem_boot.spa
-	ARG3	__pa(PAGE0->mem_boot.dp.layers)
-	ARG4	__pa(pdc_result)
-	ARG5	devaddr
-	ARG6	__pa(iodc_dbuf)
-	ARG7	2048);
+Hi Randolph,
 
-The parameters "look" ok.
+>
+>> Oops the 32bits kernel which I obtain, boot well on my b2k but ip connection
+>> problem is always there: the system seems to loop somewhere with ssh (heart
+>> bit seems life and no more response neither at serial console, neither
+>at
+>> ssh prompt) and telnet causes an HPMC (bus timeout?)
+>
+>looking up the iaoq and gr02 values reported in the hpmc in System.map 
+>would be the first step...
+>
+Too bad, I forget to mentionned that I just read some HPMC messages on the
+LCD display of my b2k and do not get any status dump info on console (which
+just stay locked at login prompt). Do you think that kdb works now? (if yes
+where can I learn how to get iaoq and gr02 info?)
 
-> DUMPDEV_WRITE = 1
-> static unsigned long pdc_result[32] __attribute__ ((aligned (8))); 
-> static char __attribute__((aligned(64))) iodc_dbuf[DUMP_PAGE_SZ];
-> 
-> and devaddr=191889408
-
-except the value of this one. I'm pretty sure now it's wrong.
-
-IO ACD, page 520 of 646 (aka 13-48) says:
-Description:    The argument reqsize specifies the amount of data that the
-	caller would like to write. It must be a multiple of 2 Kbytes, but
-	is otherwise unconstrained. The data to write is in memory at the
-	address specified by memaddr. The value of memaddr must be a multiple
-	of 64 bytes. The address on the device medium, devaddr, must be 2
-	Kbyte aligned. If the call returns a nonnegative status, the return
-	parameter count is the number of bytes actually output; it must be a
-	multiple of 2 Kbytes. If the call returns a negative status, the
-	value of count and the data written are HVERSION dependent.
-
-IO ACD, page 491 of 646 (aka 13-19) says:
-13.3.8  Data Types
-The data types of the standard arguments and return parameters are as follows:
-· All signed integers are represented in two's complement (32-bit) format.
-· The status value returned by all IODC entry points in GR28 is a signed integer.
-· All addresses, which are passed as arguments, or returned as parameters, are 32-bit unsigned integers.
-· The data type of ARG0 in all IODC entry points is a 32-bit unsigned integer.
-· The data type of ARG1 in all IODC entry points is a 32-bit unsigned integer.
-
-One might assume devaddr is treated as an "unsigned" integer.
-But most older IODC are broken and treat it as a signed value.
-(ie anything shipped before ~1996-1998)
-
-I wouldn't trust newer boxes to get it right either.
-Once you get ENTRY_IO_BOOT_OUT working, I suggest trying to
-use ENTRY_IO_BBLOCK_OUT that's now defined in <asm/pdc.h> first
-and if that fails (not implemented), fall back to ENTRY_IO_BOOT_OUT.
-
-hth,
-grant
+Thanks a lot,
+    Joel
