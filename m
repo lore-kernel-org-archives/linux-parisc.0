@@ -1,43 +1,59 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA12755
-	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Aug 2000 15:22:45 -0600
-Date: Thu, 17 Aug 2000 08:23:08 -0700
-From: "H . J . Lu" <hjl@lucon.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA28193
+	for <parisc-linux@puffin.external.hp.com>; Thu, 17 Aug 2000 16:26:26 -0600
+Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
+  by mailserv2.iuinc.com with SMTP; 17 Aug 2000 22:26:10 -0000
 To: Alan Modra <alan@linuxcare.com.au>
-Cc: libc-alpha@sources.redhat.com, parisc-linux@thepuffingroup.com,
-        parisc@lists.linuxcare.com
-Subject: Re: hppa glibc ld -r
-Message-ID: <20000817082308.B20071@lucon.org>
-References: <Pine.LNX.4.21.0008171700460.28670-100000@front.linuxcare.com.au>
-Mime-Version: 1.0
+Cc: parisc-linux@thepuffingroup.com
+From: David Huggins-Daines <dhd@linuxcare.com>
+Date: 17 Aug 2000 18:25:37 -0400
+Message-ID: <87ya1v1q5a.fsf@linuxcare.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.21.0008171700460.28670-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Thu, Aug 17, 2000 at 05:59:48PM +1000
+Subject: [parisc-linux] Incompatibility of PIC and non-PIC
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Aug 17, 2000 at 05:59:48PM +1000, Alan Modra wrote:
-> 
-> -ffunction-sections isn't a complete solution though.  If two source files
-> declare a local function of the same name, "setup", for instance, then
-> both files will have a section called ".text.setup".  These two sections
-> will be merged during the "ld -r", which has the unfortunate effect of
+Hi,
 
-Can you teach ld not to merge ".text.xxxxx" with -r under HPPA?
+Shared libraries work well, but we've got a bigger problem now.  Our
+PIC and non-PIC code models are mutually incompatible in a big way
+(due to the use of %r19 And, it seems, while it's fine if non-PIC
+can't be used in shared libraries, it's not all right if PIC can't be
+linked statically.
 
-> moving a local function to a location a long way off from where it's
-> called.  That's bad, firstly because it means we now need a stub to reach
-> the function, but more importantly the stubs are not PIC and thus need
-> relocation information when creating shared libraries.  In particular, for
-> reasons too complicated to explain here, I don't want to create stubs for
-> local functions;  It would mean emitting relocs for every *potential*
-> stub.
-> 
-> Anybody know why glibc uses "ld -r", and if there is a good reason why
-> we can't just remove the "ld -r"?
+The reason this comes up is that libgcc.a has to be built with -fPIC
+since it gets linked into libc.so.  However libgcc.a is also getting
+statically linked with the binary itself (the symbols are not exported
+by libc.so, though I'm not sure if this is the correct behaviour or
+not), and of course it has to get linked in for statically linked
+things anyway.
 
-I don't think it has to be used. --whole-archive will do the same
-trick. But "ld -r" is more convenient. With --whole-archive, you may
-have to put -Wl,--whole-archive/-Wl,--no-whole-archive around each file
-generarted with "ld -r"
+The result is of course that anything which uses 'long long', like,
+say, GCC, will crash.
 
+How do other architectures solve this issue? (or do they just have
+ABIs that let you mix PIC and non-PIC...)
 
-H.J.
+For that matter how does 32-bit HP/UX solve this issue?
+
+One potential solution is to use %dp as the data pointer across the
+board (which would solve the problem of mixing PIC and non-PIC in
+static binaries), and generate export stubs for shared library calls
+which restore the old %dp value (which would solve the problem of
+maintaining the non-PIC %dp, useless though it may be).
+
+<thinking wishful="wishful">
+  Another one is to ditch our ... ahem ... unique ABI, use function
+  prologues instead, have a single global pointer and a single link
+  register, and have PIC, function pointers and dynamic linking work
+  the way $DEITY intended :-)
+</thinking>
+
+Of course that's a lot more work and would probably involve breaking
+the published ELF standard for HPPA, such as it is, as well as
+foregoing a lot of code sharing with the rest of the PA-RISC stuff in
+gcc and binutils :-(
+
+-- 
+dhd@linuxcare.com, http://www.linuxcare.com/
+Linuxcare. Support for the revolution.
