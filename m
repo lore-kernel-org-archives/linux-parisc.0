@@ -1,22 +1,28 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5A9254857
-	for <parisc-linux@parisc-linux.org>;
-	Mon, 15 Mar 2004 07:36:01 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1B2tCC-0003IT-19; Mon, 15 Mar 2004 14:36:00 +0000
-Date: Mon, 15 Mar 2004 14:35:59 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: pinotj@club-internet.fr
-Subject: Re: [parisc-linux] [DOC] Linux 2.6.4
-Message-ID: <20040315143559.GD25059@parcelfarce.linux.theplanet.co.uk>
-References: <mnet8.1079358785.20900.pinotj@club-internet.fr>
+Return-Path: <joey@infodrom.org>
+Received: from luonnotar.infodrom.org (luonnotar.infodrom.org [195.124.48.78])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA2224857
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 15 Mar 2004 08:07:51 -0700 (MST)
+Received: at Infodrom Oldenburg (/\##/\ Smail-3.2.0.102 1998-Aug-2 #2)
+	from infodrom.org by finlandia.Infodrom.North.DE via smail from stdin
+	id <m1B2teu-000ojYC@finlandia.Infodrom.North.DE>
+	for parisc-linux@lists.parisc-linux.org;
+	Mon, 15 Mar 2004 16:05:40 +0100 (CET)
+Date: Mon, 15 Mar 2004 16:05:40 +0100
+From: Martin Schulze <joey@infodrom.org>
+To: PA-RISC Linux Hacker <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Re: No PS2 keyboard/mouse on B132L, 2.6.[34]
+Message-ID: <20040315150539.GA20698@finlandia.infodrom.north.de>
+References: <25271.193.161.152.244.1078745317.squirrel@www.puszczka.com>
+	<200403091103.29310.deller@gmx.de>
+	<20040314073706.GA28440@finlandia.infodrom.north.de>
+	<200403142048.27506.deller@gmx.de>
+	<20040314204959.GA32470@finlandia.infodrom.north.de>
+	<20040315003127.GA11856@colo.lackof.org>
+	<20040315084247.GJ9104@finlandia.infodrom.north.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <mnet8.1079358785.20900.pinotj@club-internet.fr>
-Sender: <willy@www.linux.org.uk>
-Cc: parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <20040315084247.GJ9104@finlandia.infodrom.north.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,49 +32,61 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Mar 15, 2004 at 02:53:05PM +0100, pinotj@club-internet.fr wrote:
-> I wrote this week-end a document to sum up all the arch that Linux
-> 2.6.4 support. I extracted the informations from the source and I would
-> like to have comments/changes/advice from you about the PA-RISC part. I
-> have maybe make some mistake and/or things are little bit different so
-> I would like you to take a look at this (I removed the non-PARISC parts,
-> the complete file is around 11ko) before suggesting a patch.
+Martin Schulze wrote:
+> Grant Grundler wrote:
+> > > Well, if you *know* that it's a PS/2 mouse and PS/2 keyboard, you're
+> > > correct.  However, does everybody know that who gets hold of a PARISC
+> > > machine fully equipped with HIL hub and stuff?  Maybe it's just me
+> > > who hasn't expected that since the old (really old) machines didn't
+> > > use pc standard equipment and since PA machines usually use different
+> > > parts.  You choose since you're more familiar with the port.
+> > 
+> > Well, maybe it would be better to make this a FAQ on the parisc-linux
+> > web site?
+> 
+> Aye!
 
-This doesn't seem *terribly* useful in its current form ... and of course there are some mistakes.  It might help if I saw what the other entries look like,
-but it might make more sense to say something like:
+Maybe this one is better since CONFIG_KEYBOARD_HIL and CONFIG_HIL_MLC
+aren't required.  I'm not sure about the mouse part since mine doesn't
+yet work again.
 
-+ 10. PA-RISC
-+ ~~~~~~~~~~~
-+	705, 710, 720, 730, 750
-+	712, 715, 725, 735, 755
-+	B, C, J class workstations
-+	D, K, R, A, L, N class servers and rpXXXX servers
-+	T and V class servers are not supported
-+	Superdome will need some additional work.
+--- /tmp/work/faq.html.orig	2004-03-15 09:36:25.000000000 +0100
++++ /tmp/work/faq.html	2004-03-15 10:44:59.000000000 +0100
+@@ -8,6 +8,27 @@
+   <li>First of all, your kernel has to be 2.4.18-pa45 or higher.<br>
+       Earlier kernel versions will not work !
+   </li>
 +
-+  (see Documentation/parisc)
-+  <http://www.parisc-linux.org>
++  <li>In the latest 2.6 kernel series, we switched from a PA-RISC-only
++      PS/2 mouse/keyboard driver to the standard Linux kernel PS/2
++      mouse and keyboard drivers.  Hence, in order to get your PS/2
++      mouse/keyboard connected via HIL work you'll have to enable
++      <ul>
++      <li> CONFIG_KEYBOARD_ATKBD
++      <li> CONFIG_MOUSE_PS2
++      </ul>
++      in addition to
++      <ul>
++      <li> CONFIG_INPUT_KEYBOARD
++      <li> CONFIG_INPUT_MOUSE
++      <li> CONFIG_MOUSE_HIL
++      </ul>
++      You don't need these options anymore:
++      <ul>
++      <li> CONFIG_KEYBOARD_HIL
++      <li> CONFIG_HIL_MLC
++      </ul>
++  </li>
+   <li>On the bash prompt enter as root the following comand:<br>
+       <code>cd /dev && ./MAKEDEV input</code><br>
+       This command creates the standard input device nodes in the /dev/input/
 
 
-> --- linux-2.6.4.orig/Documentation/ARCH	1970-01-01 09:00:00.000000000 +0900
-> +++ linux-2.6.4/Documentation/ARCH	2004-03-15 16:20:06.000000000 +0900
-> @@ -0,0 +1,425 @@
-> + Content:
-> + ~~~~~~~~
-> +	1. i386		7. IA-64		13. S390
-> +	2. Alpha	8. M68K (w/o MMU)	14. SuperH
-> +	3. ARM		9. MIPS (32/64)		15. SPARC
-> +	4. ARM26	10. PA-RISC		16. UltraSPARC
-> +	5. CRIS		11. PPC			17. v850
-> +	6. H8300	12. PPC64		18. x86-64
+Regards,
 
-S390 and PA-RISC also support both 32 and 64 bit.
-I'd leave off the 'w/o MMU' tag from M68k since both are supported.
+	Joey
 
 -- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+Whenever you meet yourself you're in a time loop or in front of a mirror.
+
+Please always Cc to me when replying to me on the lists.
