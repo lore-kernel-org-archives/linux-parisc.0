@@ -1,36 +1,98 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6B01C4878
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 23 Sep 2001 16:32:49 -0600 (MDT)
-Date: Sun, 23 Sep 2001 18:33:57 -0400
+	by dsl2.external.hp.com (Postfix) with ESMTP id E48C5485D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 24 Sep 2001 00:09:42 -0600 (MDT)
+Date: Mon, 24 Sep 2001 02:10:54 -0400
 From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
-To: Albert Strasheim <fullung@ilink.nis.za>,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20010923183357.F3025@megatonmonkey.net>
-References: <20010921193553.A11874@dogbert.localdomain> <20010921180529.C32145@megatonmonkey.net> <20010922015609.A14166@dogbert.localdomain> <20010922125826.C6488@megatonmonkey.net> <20010923160005.A30607@dogbert.localdomain> <20010923135550.B1512@megatonmonkey.net> <20010923231535.A5896@dogbert.localdomain>
+To: parisc-linux@lists.parisc-linux.org
+Cc: Albert Strasheim <fullung@ilink.nis.za>
+Message-ID: <20010924021054.I3025@megatonmonkey.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010923231535.A5896@dogbert.localdomain>; from fullung@ilink.nis.za on Sun, Sep 23, 2001 at 11:15:36PM +0200
-Subject: [parisc-linux] 720/50 - Out of options
+Content-Type: multipart/mixed; boundary="Bn2rw/3z4jIqBvZU"
+Subject: [parisc-linux] Non-atomic __set_bit
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Hello,
-> 
-> I've tried compiling a kernel with devfs, but I'm not having any luck.
-> I'm using xc-latest from about a week ago, and make palo dies with the
-> following message:
->
+--Bn2rw/3z4jIqBvZU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-True. I just tried it on my xcompile box, and I get the same thing :)
+parisc,
 
-Seems to be an issue with __set_bit and __test_and_clear_bit,
-maybe I'll look into that tonight.
+Walking the source for devfs and thinking about Alberts problem.
 
-I used to be able to compile with devfs, guess it needs some work
-to get up to speed with the recent changes.
+Would the non-working devfs be fixed by adding:
 
-I'm out of simple suggestions for you 720/50 :)
+Non-atomic versions of set_bit e.g. __set_bit 
+and test_and_set_bit e.g. __test_and_set_bit
+to linux/include/asm-parisc/bitops.h?
 
-I'll see where those unaligned errors come from ...
+I have the latest CVS linux module.
+I've patched against that. It compiles now ;)
+(god bless make -j8)
 
-c. 
+I'm currently sleepy, but I'll post the patch, and test
+it tommorow on a 712/60 and 715/50.
+
+c.
+
+--Bn2rw/3z4jIqBvZU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="bitops-devfs.diff"
+
+--- ./linux/include/asm-parisc/bitops.h.orig	Mon Sep 24 01:27:31 2001
++++ ./linux/include/asm-parisc/bitops.h.mod	Mon Sep 24 01:41:38 2001
+@@ -50,6 +50,26 @@
+ 	SPIN_UNLOCK_IRQRESTORE(ATOMIC_HASH(addr), flags);
+ }
+ 
++/*
++ * Non-Atomic __set_bit
++ *
++ * If called by multiple processes, only one will succeed.
++ * The others would have been reordered before the succeeding
++ * call.
++ *
++ */
++
++static __inline__ void __set_bit(int nr, void * address)
++{
++        unsigned long mask;
++        unsigned long *addr = (unsigned long *) address;
++
++        addr += (nr >> SHIFT_PER_LONG);
++        mask = 1L << CHOP_SHIFTCOUNT(nr);
++        *addr |= mask;
++}
++
++
+ static __inline__ int test_and_clear_bit(int nr, void * address)
+ {
+ 	unsigned long mask;
+@@ -66,6 +86,25 @@
+ 
+ 	return oldbit;
+ }
++
++/*
++ * Non-Atomic __test_and_clear_bit
++ *
++ */
++
++static __inline__ int __test_and_clear_bit(int nr, void * address)
++{
++        unsigned long mask;
++        unsigned long *addr = (unsigned long *) address;
++        int oldbit;
++        addr += (nr >> SHIFT_PER_LONG);
++        mask = 1L << CHOP_SHIFTCOUNT(nr);
++        oldbit = (*addr & mask) ? 1 : 0;
++        *addr &= ~mask;
++											            return oldbit;
++}
++
++
+ 
+ static __inline__ void clear_bit(int nr, void * address)
+ {
+
+--Bn2rw/3z4jIqBvZU--
