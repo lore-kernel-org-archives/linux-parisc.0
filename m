@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hp (IP-213157009128.dialin.heagmedianet.de [213.157.9.128])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 07E6F4829
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 08:30:16 -0600 (MDT)
-Received: from dreamind by hp with local (Exim 3.36 #1 (Debian))
-	id 17mbAb-0001Dn-00
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 04 Sep 2002 16:30:13 +0200
-Date: Wed, 4 Sep 2002 16:30:13 +0200
-From: Stefan Pfetzing <dreamind@dreamind.de>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020904143013.GC4386@dreamind.de>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 83F1E4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Sep 2002 08:52:53 -0600 (MDT)
+Date: Wed, 4 Sep 2002 07:55:36 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: jsoe0708@tiscali.be
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	grundler@dsl2.external.hp.com, joel.soete@freebel.net,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: Unaligne access [was: Back to evms-1.0.1 && unaligne access && gdb ]
+Message-ID: <20020904145536.GA8310@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200209032044.g83KiS0d008279@hiauly1.hia.nrc.ca> <3D3815BD0000B3C0@ocpmta5.be.tiscali.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] XFS - blkgetsize64
+In-Reply-To: <3D3815BD0000B3C0@ocpmta5.be.tiscali.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +26,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
+> >Unlikely.  The unaligned trap handler in the kernel is probably
+> >fixing the unaligned access.  You need to look in the kernel log
+> >to see if this is happening.
+> >
+> Nothing to notice about unalign access kernel trap in any /var/log files
+> (with checks.c.new) Is there some "debug" #define to set to increase verbosity
+> of this trap?
 
-I just tried to get XFS working on my C200 (I've got a new IBM SCSI disk.) and
-mkfs.xfs always got the size of the Device (/dev/sda5) wrong. (it complained
-about not getting with lseek64 to that position...)
-(I don't have the correct error message ready, but I can check, if its needed)
+no, it will log by default.. nothing to configure.
 
-After I changed the libxfs to only use the BLKGETSIZE64 ioctl, it works fine
-now. (Eric Sandeen pointed me to this)
-
-So he said, perhaps there is a bug in the SCSI (lasi?) driver.
-
-bye
-
-Stefan
-
-P.S.: I'm using 2.4.19-pa9 with a self made diff from vanilla 2.4.19 against
-XFS CVS. (the patch did in nearly cleanly)
--- 
-        http://www.dreamind.de/
-Oroborus and Debian GNU/Linux Developer.
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
