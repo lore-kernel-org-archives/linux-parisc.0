@@ -1,24 +1,21 @@
-Return-Path: <willy@www.linux.org.uk>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk
-	[195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id F19E648D2
+Return-Path: <paul@techcenter3000.com>
+Received: from TECHCENTER3000.COM (cpe-24-221-227-115.tx.sprintbbd.net
+	[24.221.227.115])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 765C64854
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 26 Apr 2004 05:59:19 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1BI4la-0008Uo-Ks; Mon, 26 Apr 2004 12:59:18 +0100
-Date: Mon, 26 Apr 2004 12:59:18 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Randolph Chung <tausq@debian.org>
-Message-ID: <20040426115918.GO22558@parcelfarce.linux.theplanet.co.uk>
-References: <20040419223250.7E3CE494572@palinux.hppa>
-	<20040419223444.GB18329@parcelfarce.linux.theplanet.co.uk>
-	<20040426014111.GC3965@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040426014111.GC3965@tausq.org>
-Sender: <willy@www.linux.org.uk>
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] Re: [parisc-linux-cvs] 7300LC
+	Mon, 26 Apr 2004 07:52:58 -0600 (MDT)
+Received: from betsy (cs2416712-202.houston.rr.com [24.167.12.202])
+	by TECHCENTER3000.COM (Postfix) with SMTP id 9FCFF8001C
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 26 Apr 2004 08:51:55 -0500 (CDT)
+Message-ID: <008301c42b95$f2ae30c0$0702a8c0@tfam.org>
+From: "Paul" <paul@techcenter3000.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Mon, 26 Apr 2004 08:54:08 -0500
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0080_01C42B6C.0965B7E0"
+Subject: [parisc-linux] Harmony driver for 2.6 working, possible bug in top?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,44 +25,61 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Apr 25, 2004 at 06:41:11PM -0700, Randolph Chung wrote:
-> willy, kyle found out that this doesn't work:
-> 
-> > > Split out 7300LC from 7100LC and PREFETCH from PA20.
-> 
-> extern inline void prefetchw(const void *addr)
-> {
->         __asm__("ldd 0(%0), %%r0" : : "r" (addr));
-> }
-> 
-> on pa11 gas won't assemble the ldd insn.
-> 
-> is this supposed to work for pa7300lc? if so we might have to rewrite
-> prefetchw to use a .word or something...
+This is a multi-part message in MIME format.
 
-It is supposed to work, yes.  I gleaned this information from
-http://cpus.hp.com/technical_references/b7300lc.shtml section 2.2.4
-The 7300LC ERS (http://ftp.parisc-linux.org/docs/chips/pcxl2_ers.pdf)
-is of no help in this matter.  In section 14.5, it says:
+------=_NextPart_000_0080_01C42B6C.0965B7E0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-  Because the processor does not necessarily stall even with two cache
-  misses pending, software prefetching can lead to better performance
-  increases than on the PA7100LC. This is because a software prefetch,
-  initiated by a load to general register 0, is not treated like a
-  load miss by the data cache and therefore can be completed in the
-  ``background'' by the hardware and is less likely to cause processor
-  stalls.
+Hello,
 
-But, thinking about it, PA7300LC isn't SMP-capable.  Is there any
-difference between prefetch-for-read and prefetch-for-write on a
-uniprocessor system?  I don't think so.  So possibly we should just
-define prefetchw to be the same as prefetch for CONFIG_PA7300LC and
-different for CONFIG_PA20.  Makes sense?
+I'm new to parisc-linux, but I've been busily trying to get my HPPA box =
+up and running, mostly using Gentoo.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+News: Harmony driver for Alsa in 2.6 kernels is now compiling cleanly! I =
+thank Takashi Iwai for the code fix(es), I'm guessing it should be in =
+CVS any time now.=20
+
+Bug in top: Can anyone else verify this? Add WCHAN to the field list and =
+tell me if you think it's right.
+
+Thanks
+Paul
+
+------=_NextPart_000_0080_01C42B6C.0965B7E0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2096" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<DIV><FONT face=3DArial size=3D2>Hello,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I'm new to parisc-linux, but I've been =
+busily=20
+trying to get my HPPA box up and running, mostly using =
+Gentoo.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>News: Harmony driver for Alsa&nbsp;in =
+2.6 kernels=20
+is now compiling cleanly! I thank Takashi Iwai for the code fix(es), I'm =
+
+guessing it should be in CVS any time now. </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Bug in top: Can anyone else verify =
+this? Add WCHAN=20
+to the field list and tell me if you think it's right.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Paul</FONT></DIV>
+<DIV>&nbsp;</DIV></DIV></BODY></HTML>
+
+------=_NextPart_000_0080_01C42B6C.0965B7E0--
