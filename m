@@ -1,36 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id B7AF2482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 09:07:26 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 15wm6L-000566-00; Thu, 25 Oct 2001 16:07:21 +0100
-Date: Thu, 25 Oct 2001 16:07:21 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Ben Collins <bcollins@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
-Subject: Re: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
-Message-ID: <20011025160721.A17892@parcelfarce.linux.theplanet.co.uk>
-References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011020095406.L10952@visi.net> <20011021000443.H1037@bubble.sa.bigpond.net.au> <20011020110123.M10952@visi.net> <20011024195102.W10952@visi.net>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C4560482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 25 Oct 2001 09:31:24 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id jcvgiaaa for parisc-linux@lists.parisc-linux.org; Thu, 25 Oct 2001 08:26:40 -0700
+Date: Thu, 25 Oct 2001 08:31:07 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] re: new cd-images any time soon?
+Message-ID: <20011025083107.Z537@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <200110251325.HAA21981@udlkern.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011024195102.W10952@visi.net>; from bcollins@debian.org on Wed, Oct 24, 2001 at 07:51:02PM -0400
-Sender: <willy@www.linux.org.uk>
+In-Reply-To: <200110251325.HAA21981@udlkern.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, Oct 24, 2001 at 07:51:02PM -0400, Ben Collins wrote:
-> BTW, most of the iconv/locales tests fail in glibc on parisc.
+> Alan Modra has produced a gcc patch that should fix the problem for
+> automatic storage.  I'm not sure what the status of getting that patch
+> into the distribution is.  I sent the patch to Randolph Chung with the
+> hope that he could at least test the patch to make sure that it didn't
+> break glibc.
 
-That's a regression.  According to my whiteboard, the tests that were
-failing with 2.2.3-9 were:
+We are still having a lot of problems with toolchain/glibc, so I haven't
+been able to build glibc with a patched gcc yet. On the good side I had
+compiled other stuff using the patched gcc with no ill side-effects,
+so.... 
 
- dlfcn/default
- posix/globtest
- gmon/tst-sprofil
- elf/resolvfail
-     constload1
-     vismain
-     neededtest{,2,3,4}
-     lateglobal
+I'm going to be away for a few days; I will forward the patch to
+Debian's gcc maintainer for inclusion in the new gcc release. It looks
+like we might have more work to do before we get a new glibc though.
 
+randolph
 -- 
-Revolutions do not require corporate support.
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
