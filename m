@@ -1,64 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ntexchange.cat.csiro.au (ntexchange.cat.csiro.au [140.253.12.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 203A0482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 01:00:28 -0600 (MDT)
-Message-ID: <A8566E157F5FD411BCFB00D0B7816D51C72BC9@ntexchange.cat.csiro.au>
-From: Matt.VanDeWerken@csiro.au
-To: parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Netscape for PALinux
-Date: Tue, 23 Oct 2001 16:57:26 +1000
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from rhirst.linuxcare.com (pc3-hems4-0-cust183.bre.cable.ntl.com [213.107.179.183])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 637A5482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 23 Oct 2001 05:10:56 -0600 (MDT)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 74011B00C; Tue, 23 Oct 2001 12:10:34 +0100 (BST)
+Date: Tue, 23 Oct 2001 12:10:34 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Steve.Grady@csiro.au, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Large SCSI disks on a 735/125
+Message-ID: <20011023121034.E11105@linuxcare.com>
+References: <49AA3A3C863E5B4C911320AEF99E5DA3010CCBC0@wing-ep.tip.csiro.au> <20011020232231.D31505@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20011020232231.D31505@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Sat, Oct 20, 2001 at 11:22:31PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
-Not sure about PA-Linux specifically, but you could try the usual suspects:
+On Sat, Oct 20, 2001 at 11:22:31PM +0100, Matthew Wilcox wrote:
+> On Sun, Oct 21, 2001 at 08:05:16AM +1000, Steve.Grady@csiro.au wrote:
+> > I want to put a large SCSI disk either 9.1G or 18.2G SCSI disk on a HP
+> > 735/125 does anyone know if this will work under PARISC-linux and will I be
+> > able to see the whole disk?
 
-Mozilla, Galeon (which requires Mozilla), Konquerer, et al. I use Galeon on
-my (x86) Linux box at home with few problems.
+As I think jsm added, the internal fast-wide-diff disks on a 53c720 are
+not supported atm.  53c720 is supported on some systems (zalon on bluefish
+card, in my B180, for example), and I had some provisional patches for
+53c720 support on Outfield (735).  Turns out that they wont work though,
+because 735 is not cache coherent.  The 53c720 driver is ncr53c8xx.c,
+which assumes cache coherent memory is available - it bombs on 735
+because pci_alloc_consistent() fails.
 
-Cheers,
-Matthew van de Werken
-Electronics Engineer
-CSIRO Exploration & Mining - Gravity Group
-1 Technology Court - Pullenvale - Qld - 4069 - AUSTRALIA
-ph:  +61-7-3327 4685     fax:  +61-7-3327 4455
-email:  matt.vandewerken@csiro.au
+Not sure what to do about this yet - we might get support most easily
+by adding 53c720 to the new 53c700 driver, but it would be running
+the 53c720 in 53c700 mode, which is rather sub-optimal.
 
+Given that ncr53c8xx.c is really a pci driver, I think there is a limit
+to how much we can get away with changing it for non-pci, non 53c8xx
+chips.
 
-> -----Original Message-----
-> From: kenneth westelinck [mailto:kennywest1@hotmail.com]
-> Sent: Tuesday, 23 October 2001 4:56 PM
-> To: parisc-linux@lists.parisc-linux.org
-> Subject: [parisc-linux] Netscape for PALinux
-> 
-> 
-> Hi all,
-> 
-> 
-> I recently got my hands on a 712/60 workstation. I was 
-> surprised to see that
-> there was a Linux port to this system. As I am very fond of 
-> Linux, I got rid
-> of the old HP-UX (9.05) and installed woody. All seems to 
-> work fine, I even
-> got X-Windows installed and running. As I really want to use 
-> the workstation
-> as a replacement for my Pentium NT box, I was wondering if there's a
-> Netscape port for PA Linux. I've alread checked the Netscape 
-> site, but it
-> only provides i386 binaries.
-> Is there any port available? Or is there another good alternative?
-> 
-> 
-> regards,
-> 
-> Kenneth
-> 
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
-> 
+Richard
