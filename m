@@ -1,39 +1,29 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id QAA00413
-	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 16:07:27 -0700
-To: parisc-linux@thepuffingroup.com
-Cc: jes@linuxcare.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 13 Dec 2000 16:11:15 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20001213231115.704D437CA1@carmen.fc.hp.com>
-Subject: [parisc-linux] phase 2 gcc build fails
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA01370
+	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 17:06:59 -0700
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 14 Dec 2000 00:08:55 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA06053;
+	Thu, 14 Dec 2000 11:07:01 +1100
+Date: Thu, 14 Dec 2000 11:07:01 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+cc: parisc-linux@thepuffingroup.com, jes@linuxcare.com
+Subject: Re: [parisc-linux] phase 2 gcc build fails
+In-Reply-To: <20001213231115.704D437CA1@carmen.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0012141101510.2565-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On Wed, 13 Dec 2000, Matt Taggart wrote:
 
-I'm trying to build an new cross-compiler and have run into the following 
-errors,
+> Anyone have an idea?
 
-gcc -c -DHAVE_CONFIG_H -g -O2 -I. -I/home/al-76/puffin/palinux/gcc/libiberty/..
-/include  -W -Wall -Wtraditional -pedantic /home/al-76/puffin/palinux/gcc/libib
-erty/argv.c
-In file included from /home/al-76/puffin/palinux/gcc/libiberty/argv.c:26:
-/home/al-76/puffin/palinux/gcc/libiberty/../include/libiberty.h:22: parse error
-before `ATTRIBUTE_MALLOC'
-/home/al-76/puffin/palinux/gcc/libiberty/../include/libiberty.h:22: warning: 
-type defaults to `int' in declaration of `ATTRIBUTE_MALLOC'
-/home/al-76/puffin/palinux/gcc/libiberty/../include/libiberty.h:22: ANSI C 
-forbids data definition with no type or storage class
-
-it complains about lines 22, 31, 55, 72, 76, 143, 154, 158, 162 all lines with 
-"ATTRIBUTE_MALLOC". It didn't do this when I last built on December 11th so I 
-think it must be something checked in since then. I have looked at the stuff 
-that was checked in and it's not clear to me what's causing it.
-
-Anyone have an idea?
+I probably broke the CVS repo, when I ran "cvs admin -b" following your
+updated recipe.  I do have a checked-out tree, to probably can put things
+back as they were.
 
 -- 
-Matt Taggart
-taggart@fc.hp.com
+Linuxcare.  Support for the Revolution.
