@@ -1,49 +1,89 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 94D45482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 16:20:24 -0600 (MDT)
-Message-Id: <200104092213.QAA29325@puffin.external.hp.com>
-To: "Gorbunov D.L." <dlynx@mail.ru>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PA-RISK Linux 
-In-Reply-To: Your message of "Fri, 06 Apr 2001 09:43:47 +0400."
-             <001601c0be5c$9af6ad20$0b2aa8c0@dg>
-Date: Mon, 09 Apr 2001 16:13:13 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mta05-svc.ntlworld.com (mta05-svc.ntlworld.com [62.253.162.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E31C3482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  9 Apr 2001 16:55:13 -0600 (MDT)
+From: "Jeff Arthur" <jeffa@mustain.demon.co.uk>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 9 Apr 2001 23:54:02 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Reply-To: jeffa@owlpoo.org
+Cc: apul@israeli.demon.co.uk
+Message-Id: <20010409225507.RNIM272.mta05-svc.ntlworld.com@mustain.demon.co.uk>
+Subject: [parisc-linux] 9000/730 booting but SCSI Problems (mke2fs)
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Gorbunov D.L." wrote:
-> Dear sirs!
-> Our office in 1996 buy HP9000(D-class) with hot-swap hdd, but now we =
-> have some problem with software for this system.
+After help form Christoph Plattner I resolved my init 
+problems, and got a prompt!! 
 
-Gorbunov,
-You need to read the "fine print" before jumping in with both feet.
-See http://www.parisc-linux.org/hardware/index.html and our FAQ
-at http://www.parisc-linux.org/faq/index.html.
+(Thanks Christoph, I had the problem you 
+described a couple of builds earlier so 
+recreated the problem, applied your fix and it 
+worked a treat)
 
-> I try to install PA-RISK Linux from bootable CDROM (I get iso-image via =
-> your FTP-site).
+however I now have a problem with SCSI, all 
+devices are seen ok, have removed cdrom as I 
+noted in some earlier posts that this could 
+cause problems, but when creating filesystems 
+the SCSI dies.
 
-Which version of the ISO image did you get?
+I have tried a couple of drives, boot log looks 
+fine.  Any Suggestions or is this just down to 
+lack of docs in this area, as I noted from posts 
+back in Feb?
 
-> But after some minutes, I see next mesagge - Kernel Faults - code 15, =
-> regs - c9fe8840 (addr =3D f6632087),
-> and system stopped.=20
->   Could not you suggest, where I can find iso-image bootable CDROM with =
-> PA-RISK Linux for HP9000 (d-class)?
+hpbox:~# mke2fs /dev/sda3
+mke2fs 1.19, 13-Jul-2000 for EXT2 FS 0.5b, 95/08/09
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+71520 inodes, 142991 blocks
+7149 blocks (5.00%) reserved for the super user
+First data block=0
+5 block groups
+32768 blocks per group, 32768 fragments per group
+14304 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304
 
-We (HP) have not made any effort to support parisc-servers other than A180,
-A500, and L2000. However, much of the technology in D and K-class systems 
-is the same as what's in workstations of the same generation. Nearly all
-of the older workstations are supported to some degree.
+Writing inode tables: done
+scsi0: Unable to abort command for target 2
+scsi0: Unable to send Bus Device Reset for target 2
+scsi0: Unable to do SCSI bus reset
+scsi0: >>>>>>>>>>>> Host reset <<<<<<<<<<<<
+scsi0: istat = 0c, sstat0 = 00, sstat1 = 00, dstat = 00
+scsi0: dsp = 000b2038 (script[0x080e]), dsps = 000b2cde, target = 0
+scsi0: Failing command for ID2
+SCSI disk error : host 0 channel 0 id 2 lun 0 return code = 2
+ I/O error: dev 08:03, sector 160
+ I/O error: dev 08:03, sector 162
+ I/O error: dev 08:03, sector 0
+ I/O error: dev 08:03, sector 288
+ I/O error: dev 08:03, sector 416
+ I/O error: dev 08:03, sector 544...
 
-If you (or anyone else) has patches to support D or K-class machines, I'll
-help review and integrate them since they are most likely going to be IO
-related.
 
-grant
+... I/O error: dev 08:03, sector 1052022
+ I/O error: dev 08:03, sector 1052150
+Warning: could not erase block 0: Attempt to write block from filesystem resulte
+ I/O error: dev 08:03, sector 2
+d in short write I/O error: dev 08:03, sector 8
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+Writing superb I/O error: dev 08:03, sector 262144
+locks and filesy I/O error: dev 08:03, sector 262152
+stem accounting  I/O error: dev 08:03, sector 524288
+information:  I/O error: dev 08:03, sector 786432
+ I/O error: dev 08:03, sector 786440
+ I/O error: dev 08:03, sector 1048576
+done
+ I/O error: dev 08:03, sector 2
+ I/O error: dev 08:03, sector 8
+ I/O error: dev 08:03, sector 262144
+ I/O error: dev 08:03, sector 262152
+ I/O error: dev 08:03, sector 786432
+ I/O error: dev 08:03, sector 786440
+
+
+Thought for the Day:
+   Home is where you hang your @
