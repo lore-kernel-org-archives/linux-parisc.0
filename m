@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 9 Jul 2003 10:42:55 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: R?diger Scholz <rscholz@hrzpub.tu-darmstadt.de>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Spelling mistake in unaligned.c
-Message-ID: <20030709164255.GF32476@dsl2.external.hp.com>
-References: <3F0C3E70.1060200@hrzpub.tu-darmstadt.de>
+Received: from baldric (baldric.uwo.ca [129.100.10.225])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BF47482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 11:27:13 -0600 (MDT)
+Received: from carlos by baldric with local (Exim 3.35 #1 (Debian))
+	id 19aIhz-0006aW-00
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 09 Jul 2003 13:26:23 -0400
+Date: Wed, 9 Jul 2003 13:26:22 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030709172622.GD21298@systemhalted>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3F0C3E70.1060200@hrzpub.tu-darmstadt.de>
+Subject: [parisc-linux] ntop vs. linux-hppa kernel
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,13 +23,17 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Jul 09, 2003 at 06:10:24PM +0200, R?diger Scholz wrote:
-> Hi there!
-> I found a spelling mistake when I compiled the kernel 2.4.21-pa2 on a 
-> C360. Here is a patch. Can someone, who has writeaccess to CVS,  apply 
-> it and put it into CVS?
+pa,
 
-thanks!
-willy applied to 2.5 and I've applied it to 2.4.
+Is anyone runing ntop on hppa? I've got a c3k on unstable running
+2.4.21-pa2 and ntop (lastest in unstable) causes a protection id trap 27
+which seems to sends the kernel into a loop, but atleast not an 
+outright crash.
 
-grant
+The box's network and console are gone, but it's showing heartbeat and I
+can shutdown via the software button.
+
+I'll take down the full oops when I get all the users off the box (and
+recreate the pb.).
+
+c.
