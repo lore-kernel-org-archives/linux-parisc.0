@@ -1,46 +1,108 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA13059
-	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Dec 2000 11:47:14 -0700
-Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
-  by mailserv2.iuinc.com with SMTP; 27 Dec 2000 18:50:18 -0000
-Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
-  by smtp.linuxcare.com with SMTP; 27 Dec 2000 18:50:19 -0000
-Sender: adevries@mailserv2.iuinc.com
-Message-ID: <3A4A3ABA.4EC6D5A7@linuxcare.com>
-Date: Wed, 27 Dec 2000 13:53:46 -0500
-From: Alex deVries <adevries@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA13256
+	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Dec 2000 12:05:48 -0700
+Sender: plattner@dns2.dot.at
+Message-ID: <3A4A3D87.8EE7FCF1@dot.at>
+Date: Wed, 27 Dec 2000 20:05:43 +0100
+From: Christoph Plattner <christoph.plattner@dot.at>
 MIME-Version: 1.0
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
 CC: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] performance
-References: <E14BL04-0002Zj-00@the-village.bc.nu>
+Subject: Re: [parisc-linux] Same boot problem on a 9000/720/50 HP machine as on
+ 712/60 of Niskanen
+References: <3A4940BF.3EB18F61@dot.at> <20001227012741.A150937C97@carmen.fc.hp.com>
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Cox wrote:
-> > http://www.spec.org/osg/web99/results/res2000q4/
-> >
-> > This shows some PA-RISC machines running HPUX performing reasonably
-> > well.
+What is a newer kernel  ?
+Date, version ?
+What does IIRC mean ?
+
+Ad tool-chain:
+
+        I use the tool-chain of the puffingroup, selfmade from the
+        latest version of 21.12.2000 or so. I build it from source
+        and it was no problem except the fact, that the it must be
+        `--host' not `--HOST' (I have some experiences in it).
+
+        But it was not possible to build bash from the scratch in
+        this way. host=hppa-linux, build=i386-linux should be the
+        correct one, but ....
+        The biuld process of bash (and I think for other too,
+        does not call the cross compiler). The use of CC= AS= LD=
+        etc has the other problem, that binary tools which are build
+        in the build process are running on PA RISC, but they are used
+        in i386 for further building.
+
+        So my question: How can I tell an autoconfigured build process
+        (standard linux source tree) to use the cross compiler on the
+        right points.
+
+	As I used RedHat up to now, I have no experience in
+	debian packaging system. What are this files like
+	dpkg-cross tool, etc...
+	How to use them, how to install them.
+
+	You say, the bash is a problem. Is this for other tools
+	much easier, like `init' or daemons, etc...
+
+Thanks for the help and a happy new year soon....
+
+	Christoph Plattner
+
+
+
+
+Matt Taggart wrote:
 > 
-> Specweb is basically a con. Its not a materially valuable benchmark. It benches
-> how fast your irq handler path is, how fast your memory cache is, how good
-> your DMA transfers are. It has almost nothing to do with how good a web
-> server the box is.
-
-I agree that specweb might not actually be functionally practical.
-
-This might not be the case with specweb, but sometimes specifications do
-have the ability to influence customers regardless of their validity.
-
-That's interesting for one reason: if the marketing helps make potential
-customers think that parisc-linux is fast, they'll buy parisc boxes, and
-HP is more likely to allocate developer time on this project.
-
-- Alex
+> Christoph Plattner writes...
+> 
+> > On my 9000/720 (I have it since one week) I have the same problem
+> > booting the CD 0.5
+> > or
+> > a selfbuild kernel. The kernel boots, but on calling the
+> > init a trap is called with the text:
+> >
+> > handle_interruption() pid=1 command='init'
+> >
+> >      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> > PSW: 00000000000001001111111100001011
+> > r0-3     00000000 000c0f38 00033a1b 000c0f3c
+> > r4-7     000c0f38 ffffffff 00000001 0002a1d8
+> > r8-11    c02ac640 00000000 00000000 c0145f30
+> > r12-15   00000000 00000000 00000000 00000000
+> > r16-19   c027b60c 00000000 c02ac000
+> >
+> > and so on, running in a loop.
+> 
+> Yes, several people(myself included) saw this. IIRC a newer kernel fixes it.
+> 
+> > The code is in kernel/traps.c
+> >
+> > Further I tried to build a statically linked bash-2.03,
+> > but I had problems setting up the build process to produce
+> > a HP PARISC user program. What I have to do to setup or
+> > prepare default source trees for cross building (the
+> > compiler runs....)
+> 
+> Which compiler are you using? You can grab a prebuilt hppa cross-compiler
+> (that runs on i386-linux) at,
+> 
+> ftp://puffin.external.hp.com/pub/parisc/binaries/LinuxX86/xc-latest.tar.gz
+> 
+> bash is particularly hard to build. I was able to get the debian package to
+> cross compile using the dpkg-cross tool and by making a few changes to the
+> source tree. I still need to test the binary, if it works I'll post it.
+> 
+> --
+> Matt Taggart
+> taggart@fc.hp.com
+> 
+> ---------------------------------------------------------------------------
+> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+> `unsubscribe' as the subject.
 
 -- 
-Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
-613.562.2759 tel
-alex@linuxcare.com, http://www.linuxcare.com/
-Linuxcare, Support for the revolution.
+-------------------------------------------------------------------------
+private:	christoph.plattner@dot.at
+company:	christoph.plattner@alcatel.at
