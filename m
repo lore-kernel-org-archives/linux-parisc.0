@@ -1,13 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: eddantes@wanadoo.fr
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [OT] PCI hardware question 
-In-Reply-To: Message from eddantes@wanadoo.fr
-   of "Tue, 25 Jun 2002 21:05:27 +0200." <3D18BEF7.1060804@wanadoo.fr>
-References: <3D188431.1060804@wanadoo.fr> <20020625182552.B625D4849@dsl2.external.hp.com>  <3D18BEF7.1060804@wanadoo.fr> 
-Date: Tue, 25 Jun 2002 13:47:11 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020625194711.AEDD24851@dsl2.external.hp.com>
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 949EA4852
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 26 Jun 2002 06:06:48 -0600 (MDT)
+Date: Wed, 26 Jun 2002 14:06:46 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20020626120646.GI17216@lug-owl.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="J+eNKFoVC4T1DV3f"
+Subject: [parisc-linux] rsync: unavailable again?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,26 +21,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-eddantes@wanadoo.fr wrote:
-> One quick question about it: on on of HP's servers, it says that PDC 
-> updates must be performed using a tape drive. 
+--J+eNKFoVC4T1DV3f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Uhm...you can dd to a disk, boot from a network, or boot from a tape.
-PDC updates are all available as lifimages.
-lifimages are bootable from any media.
+Hi!
 
-> CD-R? Small empty HDD partition?
+I'm still using rsync, but currently I constantly get the famous
+connection reset by peer...
 
-both.
+Is rsyncd reaped off /etc/inetd.conf again? Or did I miss something?
+However, the last time I had a successful access was at june 19, 2002,
+18:35:01 CEST (=3D 16:00:01 UTC).
 
-> And at last, what about compatibility of PCI cards between different 
-> architectures? I'm wondering about it due to the different PC and Apple 
-> cards from some manufacturers (Adaptec and ATI, for example). The bottom 
-> line being: if I stick a PC-world USB 2.0 or whatever card in a C240, 
-> any chance that it *may* work, even if it requires software tweaking and 
-> / or hacking?
+When will rsync be available again?
 
-likely, but alot of things will "just work".
-gfx are the least likely to work.
+MfG, JBG
 
-grant
+--=20
+Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
+	 -- New APT-Proxy written in shell script --
+	   http://lug-owl.de/~jbglaw/software/ap2/
+
+--J+eNKFoVC4T1DV3f
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQE9Ga5VHb1edYOZ4bsRAgQVAJ9cmCFo5BnVRM5Ntr2Y6YhwRug0VACdFim6
+CmbHN+1GO61CZLmhnSWlFtA=
+=t/vH
+-----END PGP SIGNATURE-----
+
+--J+eNKFoVC4T1DV3f--
