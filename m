@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DF6D4846
-	for <parisc-linux@parisc-linux.org>; Mon, 25 Feb 2002 21:25:38 -0700 (MST)
-Message-Id: <200202260425.g1Q4PYOJ001214@hiauly1.hia.nrc.ca>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 73B22484A
+	for <parisc-linux@parisc-linux.org>; Mon, 25 Feb 2002 21:38:15 -0700 (MST)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id xffslaaa for parisc-linux@parisc-linux.org; Mon, 25 Feb 2002 21:37:45 -0700
+Date: Mon, 25 Feb 2002 20:38:04 -0800
+From: Randolph Chung <randolph@tausq.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Jeremy Drake <jeremyd@apptechsys.com>,
+	parisc-linux@parisc-linux.org
 Subject: Re: [parisc-linux] gcc (g++) problem
-To: jeremyd@apptechsys.com (Jeremy Drake)
-Date: Mon, 25 Feb 2002 23:25:34 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <Pine.LNX.4.33L2.0202251907560.6941-100000@eiger.apptechsys.com> from "Jeremy Drake" at Feb 25, 2002 07:53:40 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <20020226043804.GA5069@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <Pine.LNX.4.33L2.0202251907560.6941-100000@eiger.apptechsys.com> <200202260425.g1Q4PYOJ001214@hiauly1.hia.nrc.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200202260425.g1Q4PYOJ001214@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,20 +26,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Here's the problem.  This program segfaults when compiled with -fPIC, as
-> required to build a .so.  It is fine when compiled without -fPIC.  It is
-> also fine on intel platform with both.  Is there something wrong with the
-> code that I'm not seeing, or is this a compiler bug?  I have tried this
-> with gcc-3 on an intel box, and it is fine, so I assume it is this port?
+> It's probably a compiler bug.  The code works ok with my 3.1 test version.
+> I think the problem may be the restoration of the pic offset table register
+> after function calls.
+> 
+> Suggest trying the debian 3.1 prerelease build.  Search the list to find
+> how to get it.
 
-It's probably a compiler bug.  The code works ok with my 3.1 test version.
-I think the problem may be the restoration of the pic offset table register
-after function calls.
+something is broken in the debian 3.1 snapshot package,
+unfortunately....
 
-Suggest trying the debian 3.1 prerelease build.  Search the list to find
-how to get it.
+legolas[20:35] ~% /usr/lib/gcc-snapshot/bin/g++ -o foo foo.cc 
+/usr/bin/ld: unrecognized option '--eh-frame-hdr'
+/usr/bin/ld: use the --help option for usage information
+collect2: ld returned 1 exit status
 
-Dave
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+   @..@                                         http://www.TauSq.org/
+  (----)
+ ( >__< )
+ ^^ ~~ ^^
