@@ -1,22 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mlbmx2.corp.harris.com (mlbmx2.corp.harris.com [137.237.90.74])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0EE9A482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Aug 2001 02:15:19 -0600 (MDT)
-Message-ID: <8D4C69676E66D511A1CB00508BBBB1921626EA@ranmx1.ran.harris.com>
-From: "Pedot, Wolfgang" <wpedot@harris.com>
-To: 'Parisc Linux Mailinglist' <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 10 Aug 2001 04:15:12 -0400
-MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [parisc-linux] Using EISA-Slot in 715/75
+Received: from ns.zrt.nl (ns.zrt.nl [212.153.94.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id CD447482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Aug 2001 02:16:22 -0600 (MDT)
+Received: (from fwmaster@localhost) by ns.zrt.nl (8.9.1a/8.6.12) id KAA06874 for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Aug 2001 10:16:21 +0200 (MET DST)
+Message-Id: <sb73b3e0.043@ms-zrt1>
+Date: Fri, 10 Aug 2001 10:10:31 +0200
+From: "Jurriaan Kalkman" <Jurriaan.Kalkman@zrt.nl>
+To: <parisc-linux@lists.parisc-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Is a C200+ currently supported?
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-
-Is there any hope that the EISA-Slot in my 715/75 will be usable? I noticed that
-the expander (WAX-EISA) is supported and detected at startup but I can not load
-any drivers for ISA-Cards (unresolved Symbols outsb, outsw.....). Since EISA is
-compatible to ISA this should be possible...
-
-greetings
-Wolfgang
+I'm tempted to buy a HP C200+ (PA8200/512 Mb/9 Gb/Visualize fx-4).
