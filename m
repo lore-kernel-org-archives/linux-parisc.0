@@ -1,20 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: backport sba change to ccio
-Date: Thu, 3 Mar 2005 22:03:24 -0700
-Message-ID: <20050304050324.GA30252@colo.lackof.org>
-References: <4208898700009474@mail-4-bnl.tiscali.it>
-	<42271F19.6010406@tiscali.be>
-	<20050303154531.GA18286@colo.lackof.org>
-	<20050303155332.GG28741@parcelfarce.linux.theplanet.co.uk>
-	<20050303170405.GC18286@colo.lackof.org>
-	<4227575A.4060901@tiscali.be>
+From: "=?iso-8859-7?q?=CC=DC=F1=E9=EF=F2=20=CA.?=" <marios_hellas_23@yahoo.gr>
+Subject: [parisc-linux] [RE:] Installation Prolblem on model 712
+Date: Fri, 4 Mar 2005 11:21:12 +0000 (GMT)
+Message-ID: <20050304112112.57017.qmail@web26809.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Content-Type: multipart/mixed;
+  boundary="===============1532192685=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4227575A.4060901@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,59 +17,192 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Mar 03, 2005 at 06:28:42PM +0000, Joel Soete wrote:
-> >replace ioc_count in just that one context with
-> >	count_parisc_drivers(ccio_driver)
-...
-> -/* Ratio of Host MEM to IOV Space size */
-> -static unsigned long ccio_mem_ratio = 4;
->  static struct ioc *ioc_list;
-> -static int ioc_count;
-> +static int ioc_count = 0;
-> +static int global_ioc_cnt = 0;
+--===============1532192685==
+Content-Type: multipart/alternative; boundary="0-444901336-1109935272=:54695"
+Content-Transfer-Encoding: 8bit
 
-You won't need global_ioc_cnt.
-Just call count_parisc_drivers() every time.
-It's walking a short list and hopefully gives back
-the same result everytime.
+--0-444901336-1109935272=:54695
+Content-Type: text/plain; charset=iso-8859-7
+Content-Transfer-Encoding: 8bit
 
-> 
->  /**************************************************************
->  *
-> @@ -559,7 +558,7 @@
->  ccio_io_pdir_entry(u64 *pdir_ptr, space_t sid, unsigned long vba,
->  		   unsigned long hints)
->  {
-> -	register unsigned long pa = (volatile unsigned long) vba;
-> +	register unsigned long pa;
->  	register unsigned long ci; /* coherent index */
-> 
->  	/* We currently only support kernel addresses */
-> @@ -1269,17 +1268,16 @@
->  	** Hot-Plug/Removal of PCI cards. (aka PCI OLARD).
->  	*/
-> 
-> +	iova_space_size = (u32) (num_physpages / global_ioc_cnt);
 
-call count_parisc_drivers() here instead of global_ioc_cnt.
+This is my dmesg output
 
-> -/* We *can't* support JAVA (T600). Venture there at your own risk. */
-> -static struct parisc_device_id ccio_tbl[] = {
-> -	{ HPHW_IOA, HVERSION_REV_ANY_ID, U2_IOA_RUNWAY, 0xb }, /* U2 */
-> -	{ HPHW_IOA, HVERSION_REV_ANY_ID, UTURN_IOA_RUNWAY, 0xb }, /* UTurn */
-> -	{ 0, }
-> -};
+The model is 712-60 and not 612
 
-Yeah, you'll have to move this (and related bits) further up.
+I am begging to suspect the error vomes from the cd-rom
 
-> that boot fine and no more crash after stress test :-)
-> (I hope the same results with previous disk failing ;-)
+It is a very old cd-rom.
 
-Very good. At least we are on the right track.
+The cd i burned it is good quality and have been written in 4x speed
 
-thanks,
-grant
+ 
+
+ 
+
+SCSI subsystem driver Revision: 1.00
+
+53c700: version 2.6 By James...
+
+SCSI0: 53c710 rev 2
+
+SCSI0: LASI SCSI 53c700
+
+SCSI0: (3:0) Synchronous at offest 8, period 100ns
+
+Vendor: Seagete Model:ST34520N Rev:1444
+
+Type:Direct Access ANSI SCSI revision:02
+
+SCSI0: (5:0) Synchronous at offest 8, period 248ns
+
+Vendor: PIONEER Model:CD-ROM DR-104X Rev:0022
+
+Type:Direct CD-ROM ANSI SCSI revision:02
+
+ 
+
+Attached SCSI disk sda at scsi0, channel 0, id 3 lun 0
+
+SCSI device sda: 8888942 512-byte hdwr sectroe (4551 MB)
+
+PARTITION CHECK
+
+sda:unknown partition table
+
+Attached SCSI CD-ROM sr0 at scsi0, channel 0, id 5 lun 0
+
+sr0: scsi-1 drive
+
+Uniform CD-ROM driver Revision:3.12
+
+ 
+
+RAMDISK: Compressed image found at block 0
+
+EXT2-FS warning: Checktime reached, running e2fsck is recommended
+
+UFS:Mounted root (ext2 filesysstem)
+
+NOT FREEING INITMEM (383K)
+
+VFS:DISK CHANGE DETECTED in DRIVE sr(11,0)
+
+SCSI0 (5:0) New error handler wants to abort command
+
+0x28 88 88 88 88 10 00 00 01 00
+
+SCSI0 (5:0) New error handler wants device to reset
+
+0x28 88 88 88 88 10 00 00 01 00
+
+SCSI0 (5:0) New error handler wants bus reset,cmd 13d14c00
+
+0x28 88 88 88 88 10 00 00 01 00
+
+SCSI0(5:0) Synchronous at offset 8,period 248ms
+
+SCSI0 (5:0) New error handler wants to abort command
+
+0x28 88 88 88 88 10 00 00 01 00
+
+SCSI:device set offline-not ready or command retry failed after bus reset
+
+I/O error: dev 0d:00,sector 64
+
+isofs_read_super:dread failed, dev=0d:00, iso_blunum=16,block=16
+
+SCSI0 (3:0) New error handler wants to abort command
+
+0x28 88 88 88 88 10 00 00 08 00
+
+SCSI0 (3:0) New error handler wants device to reset
+
+0x28 88 88 88 88 10 00 00 08 00
+
+SCSI0 (3:0) New error handler wants bus reset,cmd 13d14c00
+
+0x28 88 88 88 88 10 00 00 08 00
+
+SCSI: device setoffline-not ready or command retry failed
+
+after bus reset:host 0 channel 0 id 3 lin 0
+
+
+
+
+---------------------------------
+Do You Yahoo!?
+Αποκτήστε την δωρεάν σας@yahoo.gr διεύθυνση  στο Yahoo! Mail.
+
+--0-444901336-1109935272=:54695
+Content-Type: text/html; charset=iso-8859-7
+Content-Transfer-Encoding: 8bit
+
+<DIV><FONT size=2>
+<P>This is my dmesg output</P>
+<P>The model is 712-60 and not 612</P>
+<P>I am begging to suspect the error vomes from the cd-rom</P>
+<P>It is a very old cd-rom.</P>
+<P>The cd i burned it is good quality and have been written in 4x speed</P></FONT><FONT face="Courier New" size=2>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>SCSI subsystem driver Revision: 1.00</P>
+<P>53c700: version 2.6 By James...</P>
+<P>SCSI0: 53c710 rev 2</P>
+<P>SCSI0: LASI SCSI 53c700</P>
+<P>SCSI0: (3:0) Synchronous at offest 8, period 100ns</P>
+<P>Vendor: Seagete Model:ST34520N Rev:1444</P>
+<P>Type:Direct Access ANSI SCSI revision:02</P>
+<P>SCSI0: (5:0) Synchronous at offest 8, period 248ns</P>
+<P>Vendor: PIONEER Model:CD-ROM DR-104X Rev:0022</P>
+<P>Type:Direct CD-ROM ANSI SCSI revision:02</P>
+<P>&nbsp;</P>
+<P>Attached SCSI disk sda at scsi0, channel 0, id 3 lun 0</P>
+<P>SCSI device sda: 8888942 512-byte hdwr sectroe (4551 MB)</P>
+<P>PARTITION CHECK</P>
+<P>sda:unknown partition table</P>
+<P>Attached SCSI CD-ROM sr0 at scsi0, channel 0, id 5 lun 0</P>
+<P>sr0: scsi-1 drive</P>
+<P>Uniform CD-ROM driver Revision:3.12</P>
+<P>&nbsp;</P>
+<P>RAMDISK: Compressed image found at block 0</P>
+<P>EXT2-FS warning: Checktime reached, running e2fsck is recommended</P>
+<P>UFS:Mounted root (ext2 filesysstem)</P>
+<P>NOT FREEING INITMEM (383K)</P>
+<P>VFS:DISK CHANGE DETECTED in DRIVE sr(11,0)</P>
+<P>SCSI0 (5:0) New error handler wants to abort command</P>
+<P>0x28 88 88 88 88 10 00 00 01 00</P>
+<P>SCSI0 (5:0) New error handler wants device to reset</P>
+<P>0x28 88 88 88 88 10 00 00 01 00</P>
+<P>SCSI0 (5:0) New error handler wants bus reset,cmd 13d14c00</P>
+<P>0x28 88 88 88 88 10 00 00 01 00</P>
+<P>SCSI0(5:0) Synchronous at offset 8,period 248ms</P>
+<P>SCSI0 (5:0) New error handler wants to abort command</P>
+<P>0x28 88 88 88 88 10 00 00 01 00</P>
+<P>SCSI:device set offline-not ready or command retry failed after bus reset</P>
+<P>I/O error: dev 0d:00,sector 64</P>
+<P>isofs_read_super:dread failed, dev=0d:00, iso_blunum=16,block=16</P>
+<P>SCSI0 (3:0) New error handler wants to abort command</P>
+<P>0x28 88 88 88 88 10 00 00 08 00</P>
+<P>SCSI0 (3:0) New error handler wants device to reset</P>
+<P>0x28 88 88 88 88 10 00 00 08 00</P>
+<P>SCSI0 (3:0) New error handler wants bus reset,cmd 13d14c00</P>
+<P>0x28 88 88 88 88 10 00 00 08 00</P>
+<P>SCSI: device setoffline-not ready or command retry failed</P>
+<P>after bus reset:host 0 channel 0 id 3 lin 0</P></FONT></DIV><p><br><hr size=1><b>Do You Yahoo!?</b><br>Αποκτήστε την δωρεάν σας
+@yahoo.gr διεύθυνση  στο 
+<a href="http://www.otenet.gr/">Yahoo! Mail</a>.<br>
+--0-444901336-1109935272=:54695--
+
+--===============1532192685==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1532192685==--
