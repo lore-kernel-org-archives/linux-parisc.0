@@ -1,14 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from svtrade.dol.ru (d53-219-226.try.wideopenwest.com [64.53.226.219])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C368E482D
-	for <parisc-linux@parisc-linux.org>; Fri, 13 Jun 2003 08:45:56 -0600 (MDT)
-Message-ID: <bffa01c331ba$4c2b107e$17b41b8d@i5d0g58>
-From: "Arron Levy" <alevy_eb@deltanet.ro>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6E0DE482D
+	for <parisc-linux@parisc-linux.org>; Fri, 13 Jun 2003 09:49:53 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19QqoJ-0003Ag-KG; Fri, 13 Jun 2003 16:49:51 +0100
+Date: Fri, 13 Jun 2003 16:49:51 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: parisc-linux@parisc-linux.org
-Date: Fri, 13 Jun 2003 14:47:55 +0000
-MIME-Version: 1.0
-Content-Type: text/html
-Subject: [parisc-linux] Private gossip
+Cc: Paul Bame <bame@riverrock.org>
+Message-ID: <20030613154951.GA30843@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] 2.4.21
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,12 +23,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-DQogDQogDQoJPGh0bWw+IA0KICAgDQo8Qk9EWSBCR0NPTE9SPSNmZmZmZmY+
-IDxwIGFsaWduPSJjZW50ZXIiPjxmb250IGZhY2U9InZlcmRhbmEiPg0KRmVl
-bCB5b3VuZ2VyLCBnZXQgcmlkIG9mIHdyaW5rbGVzLCBoYXZlIG1vcmUgZW5l
-cmd5ITxicj4NCjxhIGhyZWY9Imh0dHA6Ly93d3cuaGVhbHRodG9tb3Jyb3cu
-Y29tL2h1bWFuL2luZGV4LnBocD9pZD0zMDQiPkNoZWNrIGl0IG91dCBoPENU
-VUU+ZXI8WT5lPGJyPg0KPGJyPjxpbWcgc3JjPSJodHRwOi8vaW1hZ2VzLmhl
-YWx0aHRvbW9ycm93LmNvbS9pbWFnZS5waHAiIGJvcmRlcj0wPjwvYT48YnI+
-PGJyPjxicj4NCi09SEVQYXRLaW16VkFDWDBITVUzTlpGaWkxU0NlNj0tDQo8
-L2ZvbnQ+PC9wPiAgDQo8L2JvZHk+CQk8L0hUTUw+ICAgDQogIA0KDQoNCg==
+As some of you already know, 2.4.21 is out.  I'd've imported it myself
+by now, but the 2.4 linux repo is using an _old_ scheme for managing
+vendor branches.  Paul, would you be so kind as to do the honours?
+I don't see any reason to hold off on merging 2.4.21 into our tree;
+we can deal with any brokenness in the 2.4 tree later.
+
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
