@@ -1,17 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from spike2.ehosting.com (unknown [62.173.67.13])
-	by dsl2.external.hp.com (Postfix) with SMTP id 6439248F0
-	for <grundler@parisc-linux.org>; Mon, 25 Aug 2003 13:39:44 -0600 (MDT)
-Message-ID: <1061840314.3f4a65ba7293e@webmail.v8fiesta.co.uk>
-Date: Mon, 25 Aug 2003 20:38:34 +0100
-From: mmogenius@v8fiesta.co.uk
+Received: from hancock.sc.steeleye.com (nat9.steeleye.com [65.114.3.137])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 87FEC4875
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 25 Aug 2003 13:48:43 -0600 (MDT)
+Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h7PJmfI13464;
+	Mon, 25 Aug 2003 15:48:41 -0400
+Subject: Re: [parisc-linux] Re: [parisc-linux-cvs] linux carlos
+From: James Bottomley <James.Bottomley@steeleye.com>
 To: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] CD Not Mounted
-References: <1061837954.3f4a5c82ae3d9@webmail.v8fiesta.co.uk> <20030825193149.GC377@dsl2.external.hp.com>
-In-Reply-To: <20030825193149.GC377@dsl2.external.hp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Resent-Message-Id: <20030825194134.7F5DB48F0@dsl2.external.hp.com>
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <20030825191915.GA377@dsl2.external.hp.com>
+References: <3F2E2C7700004E38@ocpmta2.freegates.net>
+	<20030825164553.GB28778@dsl2.external.hp.com>
+	<1061830247.2044.165.camel@mulgrave>
+	<20030825191915.GA377@dsl2.external.hp.com>
+Content-Type: text/plain
+Date: 25 Aug 2003 14:48:40 -0500
+Message-Id: <1061840921.2044.368.camel@mulgrave>
+Mime-Version: 1.0
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,35 +29,21 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-
-I have a hp visualise b2000 and i am using debian 3.0 (woody)
-
-the device type is listed as a FX4830T i dont have the url where i read this 
-unfortunately i have read rather allot of documentation and got verry 
-confused. 
-
-Thanks
-
-Quoting Grant Grundler <grundler@parisc-linux.org>:
-
-> On Mon, Aug 25, 2003 at 07:59:14PM +0100, mmogenius@v8fiesta.co.uk wrote:
-> > when booting from the cd i am unable to mount the cd for use...
+On Mon, 2003-08-25 at 14:19, Grant Grundler wrote:
+> That's not technically possible.
+> PARISC firmware uses the HPA to reference specific devices (including CPU).
 > 
-> Need to know which model parisc box you have and which model CD ROM.
-> 
-> > i have read some where about this prblem if i am using verbose mode?
-> 
-> Where did you read this? (ie post a URL)
-> 
-> > is this correct if so 
-> > how do i get round it. Thanks
-> 
-> 
-> grant
-> 
+> We can use the same CPU number as PAT PDC and call them "physical".
+> But systems which don't have PAT PDC can only use arbitrary numbers
+> assigned by the parisc-linux startup code. Maybe there is a way to
+> make the numbers match PIM info output but I'm not sure how.
 
+Realistically, "logical" just means we make up a numbering scheme
+independent of what the HW tells us.  If the HW isn't telling us
+anything, then us telling the HW is fine.
 
+The gist of the "no more logical mappings edict" is that basically we
+only have one source for CPU numbers (and it can be sparse) rather than
+two, one of which was usually compact.
 
-
--------------------------------------------------
-This mail sent through IMP: http://horde.org/imp/
+James
