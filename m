@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from ra.abo.fi (ra.abo.fi [130.232.213.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EDB4A482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 20 Jan 2002 23:59:41 -0700 (MST)
-Received: from pctest10 (pctest10.abo.fi [130.232.17.64])
-	by ra.abo.fi (8.10.1/8.10.1) with SMTP id g0L6xcT26637
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 08:59:39 +0200 (EET)
-Message-ID: <002a01c1a249$31f95260$4011e882@abo.fi>
-From: "Kaj-Michael Lang" <milang@tal.org>
-To: <parisc-linux@lists.parisc-linux.org>
-References: <DLEJJFGDAJICFFBHFNCDGEBBCEAA.bjorn.bylander@telia.com>  <20020121030235.C37E737D2B@carmen.fc.hp.com>
-Date: Mon, 21 Jan 2002 08:59:37 +0200
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 39E3C482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 21 Jan 2002 00:14:23 -0700 (MST)
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: Re: [parisc-linux] sched-O1-2.4.17-I3.patch, need help
+Message-ID: <1011597251.3c4bbfc3ae334@webmail.tiscalinet.be>
+Date: Mon, 21 Jan 2002 08:14:11 +0100 (CET)
+From: joel.soete@freebel.net
+Cc: Matthew Wilcox <willy@debian.org>, joel.soete@freebel.net,
+	parisc-linux@lists.parisc-linux.org
+References: <200201191531.g0JFV9201939@localhost.localdomain>
+In-Reply-To: <200201191531.g0JFV9201939@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: [parisc-linux] sti console (was: Booting to ISL with Linux installed)
+Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,19 +24,75 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> BTW- I recently converted a couple 712s with serial console *back* to
-> graphics console since the sti-fb stuff is working so well now.
+Hello James,
 
-This reminds me of the reason why I had to move to serial console, not
-because of lack of
-support but because the monitor I had at the time (brand new 19" sony)
-didn't work with my
-712. Or it does.. but the screen flickers sometimes with just a couple of
-seconds appart, sometimes it can take a couple of minutes, but it just won't
-stop. It does it with another cheap 15", but I now got a another monitor, a
-17" Panasonic and the sti console work fine it, no blinking.
-Does anyone know what could be the cause for the 19" sony not to function
-correctly. It works fine with a PC, Mac and even an old Sun3.
+Thanks a lot for inforamtion.
 
---
-Kaj-Michael Lang, milang@tal.org
+Quoting James Bottomley <James.Bottomley@HansenPartnership.com>:
+
+> > >         while (1) {
+> > >                 void (*idle)(void) = pm_idle;
+> > >                 if (!idle)
+> > >                         idle = default_idle;
+> > > -               while (!current->need_resched)
+> > > +               if (!current->need_resched)
+> > >                         idle();
+> > >                 schedule();
+> > >                 check_pgt_cache();
+> >
+> > Dunno.
+> 
+> This is sending the idle thread back through the scheduler at least once
+> every 
+> clock tick.  On the x86, idle() halts the processor until it receives an
+> 
+> interrupt.
+> 
+> I *think* the reason is the idle tick rebalances the run queue but
+> doesn't 
+> schedule the first task for execution (if there is one), so the call to
+> 
+> schedule() does that.
+> 
+> However, there are more changes than just this (I just did the changes
+> for a 
+> different arch).  You need to change p->processor to p->cpu in the SMP
+> code.  
+> There may be other struct task changes that bite, but that looks like
+> the only 
+> one in parisc.
+
+I think that also p->nice would be changed in p->__nice?
+
+> 
+> You also get bitten (in I3) by the physical to logical CPU mapping
+> problems.  
+> These are gone in J0, but now you have to introduce and extra
+> migrate_process 
+> cross processor interrupt.
+
+I also have a look in J2 and notice that task_struct was deepely changed and so
+I  ignore what will I have to do with offset.c.
+
+> 
+> Probably the best way to work on this is to start a 2.5 parisc tree...
+> 
+
+I do also believe that the limits of my knowledge will yet oblige me to wait
+this release.
+
+Thanks anyway for help and precious advises,
+
+Joel
+
+> Good luck.
+> 
+> James Bottomley
+> 
+> 
+> 
+> 
+
+
+-------------------------------------------------
+This mail sent through Tiscalinet Webmail (http://webmail.tiscali.be)
