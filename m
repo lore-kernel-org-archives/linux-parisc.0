@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DECC3482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 02:10:43 -0600 (MDT)
-Date: Wed, 7 Aug 2002 10:12:33 +0200
-Message-ID: <3D38181A00001481@ocpmta6.be.tiscali.com>
-In-Reply-To: <20020807061157.GD8214@tausq.org>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem with evms and jfs
-To: "Randolph Chung" <tausq@debian.org>,
-	"Joel Soete" <joel.soete@freebel.net>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from hotmail.com (oe58.law3.hotmail.com [209.185.240.58])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 85EFC482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 02:33:42 -0600 (MDT)
+From: "Alex Green" <alexdgreen@hotmail.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 7 Aug 2002 10:33:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_01BF_01C23DFD.E0080F40"
+Message-ID: <OE58JWEsBk31TZ14eBa00000291@hotmail.com>
+Subject: [parisc-linux] palo issues
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,38 +21,67 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->-- Original Message --
->Date: Tue, 6 Aug 2002 23:11:57 -0700
->From: Randolph Chung <tausq@debian.org>
->To: Joel Soete <joel.soete@freebel.net>
->Cc: parisc-linux@lists.parisc-linux.org
->Subject: Re: [parisc-linux] "unaligned access to ... at ip=..." problem
-with
->evms and jfs
->Reply-To: Randolph Chung <tausq@debian.org>
->
->
->> I would just like to know if you already have the opportunity to have
-a
->
->> look for a fix of this stuff (I know you are very busy this time and do
->
->> not want to stress, just want to got news)
->
->just came back from a trip....
->
->i started fixing this a few weeks back but got sidetracked by the 2.5
->merge.... it's definitely on my todo list :-)
->
-Great :))
+This is a multi-part message in MIME format.
 
->fwiw i haven't seen any conclusive proof that this "fix" will actually
->fix any problems we've seen....
->
+------=_NextPart_000_01BF_01C23DFD.E0080F40
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-In fact i am ignoring exactly what is this fix. So I could not presume if
-it will or not solve the annoying "unalign access..." messages I encounter
-before I test it :)).
+Hi,
 
-Many thanks for help,
-    J.
+I've just build 2.4.19-pa2 on my c3600 and then I ran palo * I've =
+updated to 1.1 * afterwards, after booting I got an error reporting:
+
+ENTRY_INIT failed, status =3D -7: Nonexistent device
+
+>>Some Hex Entries<<
+
+Failed to initialize
+
+What is this... did I do something wrong?
+
+
+
+AG
+
+------=_NextPart_000_01BF_01C23DFD.E0080F40
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dwindows-1252">
+<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3D"Courier New" size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2>I've just build 2.4.19-pa2 on =
+my c3600 and=20
+then I ran palo * I've updated to 1.1 *&nbsp;afterwards, after booting I =
+got an=20
+error reporting:</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2>ENTRY_INIT failed, status =3D =
+-7: Nonexistent=20
+device</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2>&gt;&gt;Some Hex=20
+Entries&lt;&lt;</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2>Failed to =
+initialize</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2>What is this... did I do =
+something=20
+wrong?</FONT></DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3D"Courier New" size=3D2>AG</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_01BF_01C23DFD.E0080F40--
