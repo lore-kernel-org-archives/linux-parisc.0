@@ -1,13 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 70233482A
+	for <parisc-linux@parisc-linux.org>; Tue, 18 Dec 2001 18:29:37 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 7BC0AB00C; Wed, 19 Dec 2001 01:27:56 +0000 (GMT)
+Date: Wed, 19 Dec 2001 01:27:56 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
 To: Markus Grabert <xam@student.cs.ucc.ie>
 Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] HP 9000/782/C240 up and running 0.9.3 (serial) 
-In-Reply-To: Message from Markus Grabert <xam@student.cs.ucc.ie>
-   of "Tue, 18 Dec 2001 20:19:38 GMT." <Pine.OSF.4.41.0112182015450.731-100000@student.cs.ucc.ie>
-References: <Pine.OSF.4.41.0112182015450.731-100000@student.cs.ucc.ie> 
-Date: Tue, 18 Dec 2001 13:51:46 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20011218205146.C006C482A@dsl2.external.hp.com>
+Subject: Re: [parisc-linux] HP 9000/782/C240 up and running 0.9.3 (serial)
+Message-ID: <20011219012756.S1897@linuxcare.com>
+References: <Pine.OSF.4.41.0112181415560.6043-100000@student.cs.ucc.ie>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.OSF.4.41.0112181415560.6043-100000@student.cs.ucc.ie>; from xam@student.cs.ucc.ie on Tue, Dec 18, 2001 at 03:50:24PM +0000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,12 +25,9 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Markus Grabert wrote:
-> One more question:
-> Is it possible to add custom resolutions (mode 6 says something about
-> custom resolution) ?
+On Tue, Dec 18, 2001 at 03:50:24PM +0000, Markus Grabert wrote:
+> do_page_fault() pid=5087 command='scrollkeeper_to' type=15 address=0x00000008
 
-Yes. I don't know exactly how though. I'd look in the User's Guide
-for that (might be available on docs.hp.com).
+I looked in to this, btw, it is not hppa specific, see bug #103224
 
-grant
+Richard
