@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE00045aedab24-CM.cpe.net.cable.rogers.com [24.112.227.68])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A8F1C482F
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Apr 2003 12:11:24 -0600 (MDT)
-Date: Wed, 30 Apr 2003 14:12:16 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Joel Soete <jsoe0708@tiscali.be>
-Cc: parisc-linux@lists.parisc-linux.org
+Date: Wed, 30 Apr 2003 22:09:31 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: "Boehm, Hans" <hans_boehm@hp.com>
+Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>,
+	'Carlos O'Donell' <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] Program counter from sigcontext, constructurs and -fPIC
-Message-ID: <20030430181216.GA20779@systemhalted>
-References: <20030430003106.GC12492@systemhalted> <3EA9466400001A95@ocpmta7.freegates.net>
+Message-ID: <20030501040931.GA21495@dsl2.external.hp.com>
+References: <75A9FEBA25015040A761C1F74975667D01442066@hplex4.hpl.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3EA9466400001A95@ocpmta7.freegates.net>
+In-Reply-To: <75A9FEBA25015040A761C1F74975667D01442066@hplex4.hpl.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,16 +21,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> >Don't touch -17, the _Unwind_Find_FDE code broke and it's doing damage
-> >to things like 'vi' ... *sigh* I haven't even looked into this (looks
-> >like gcc/glibc clashes again).
-> >
-> Umm could this be why that my b2k crashed when compiling a kernel to test
-> a patch?
+On Tue, Apr 29, 2003 at 02:17:32PM -0700, Boehm, Hans wrote:
+> 3) Adding 24 bytes to the struct sigcontext pointer (?) passed
+>    as a third argument to the signal handler. (!)
+...
+> Is the third argument to a signal handler really not a pointer to sigcontext?
 
-Quite possibly. If you can get a backtrace of the crash you'll se it die
-inside _Unwind_Find_FDE in glibc.
- 
-I'm working on fixing this.
+Yes - that seems to be the case.
+Randolph found most of the answer in "Single Unix Specification"
+(IEEE 1033.1-2001).  Third argument is "ucontext_t".
 
-c.
+We counted 20 bytes (not 24) before the "struct sigcontext uc_mcontext;"
+and thus still don't have a full explanation. Our best guess is some
+misc padding is involved.
+
+hth,
+grant
