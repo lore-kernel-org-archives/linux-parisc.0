@@ -1,33 +1,29 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.umr.edu (mrelay.cc.umr.edu [131.151.1.89])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9ED934932
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 09:42:30 -0600 (MDT)
-Message-ID: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D800@umr-mail03.cc.umr.edu>
-From: "Neulinger, Nathan" <nneul@umr.edu>
-To: "'Jes Sorensen'" <jes@wildopensource.com>
+Received: from trained-monkey.org (trained-monkey.org [209.217.122.11])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 673454924
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  1 Oct 2001 09:51:44 -0600 (MDT)
+Sender: jes@trained-monkey.org
+To: "Neulinger, Nathan" <nneul@umr.edu>
 Cc: "'Matthew Wilcox'" <willy@debian.org>,
 	parisc-linux@lists.parisc-linux.org
-Subject: RE: [parisc-linux] Status of hp-ux binary compatibility?
-Date: Mon, 1 Oct 2001 10:40:47 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+Subject: Re: [parisc-linux] Status of hp-ux binary compatibility?
+References: <6CAC36C3427CEB45A4A6DF0FBDABA56D86D800@umr-mail03.cc.umr.edu>
+From: Jes Sorensen <jes@wildopensource.com>
+Date: 01 Oct 2001 11:51:37 -0400
+In-Reply-To: "Neulinger, Nathan"'s message of "Mon, 1 Oct 2001 10:40:47 -0500"
+Message-ID: <m3elonmk8m.fsf@trained-monkey.org>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> I really don't think it should be that much work to get the basics
-> going, it might be a bit more to get more advanced applications up and
-> running.
-> 
-> I don't know anything really about the implementation of flexlm, but
-> I'd say it should be doable with a limited effort. Time to get out
-> that compiler and debugger and get hacking ;-)
-> 
-> Cheers
-> Jes
+>>>>> "Nathan" == Neulinger, Nathan <nneul@umr.edu> writes:
 
-As far as I know, flexlm should be a pretty basic socket server, nothing
-fancy, other than it's retrieval of the HP host id, which I presume is just
-a syscall of some sort. Unfortunately, it does require use of shared lib
-libc since that's how it was linked. 
+Nathan> As far as I know, flexlm should be a pretty basic socket
+Nathan> server, nothing fancy, other than it's retrieval of the HP
+Nathan> host id, which I presume is just a syscall of some
+Nathan> sort. Unfortunately, it does require use of shared lib libc
+Nathan> since that's how it was linked.
 
--- Nathan 
+Hmmm, admittedly I know little about the HPUX shared linker. However
+even then I don't think it should be too big of a problem, provided
+Linux/HPPA is able to map binaries at the same place as HPUX.
+
+Jes
