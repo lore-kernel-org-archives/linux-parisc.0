@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Michael S.Zick <mszick@pflash.com>
-To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] ftp://parisc-linux.org/cvs - binutils? - glibc?
-Date: Tue, 27 Nov 2001 12:33:16 -0600
-Cc: parisc-linux@parisc-linux.org
-References: <01112712080500.01278@Wolf-01> <20011127182113.D4180@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20011127182113.D4180@parcelfarce.linux.theplanet.co.uk>
-MIME-Version: 1.0
-Message-Id: <01112712331601.01278@Wolf-01>
+Received: from halfdimension.com (halfdimension.com [216.36.86.238])
+	by dsl2.external.hp.com (Postfix) with SMTP id 9D4B0482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 28 Nov 2001 19:17:46 -0700 (MST)
+Date: Wed, 28 Nov 2001 21:13:14 -0500
+From: Kevin Clark <kclark@halfdimension.com>
+To: parisc-linux@lists.parisc-linux.org
+Cc: Options@dsl2.external.hp.com, for@dsl2.external.hp.com,
+	a@dsl2.external.hp.com, 730@dsl2.external.hp.com,
+	Machine@dsl2.external.hp.com
+Message-Id: <20011128211314.0ca6fb98.kclark@halfdimension.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] (no subject)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,19 +23,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tuesday 27 November 2001 12:21 pm, Matthew Wilcox wrote:
->  we have not maintained glibc & binutils cvs trees for a while.
-> i suggest the debian packages as your best source of latest bits.
+I just obtained two older HP Workstations.  I am not really familar with these stations.  I was able to get on to boot and give me some info.  It tells me this
 
-Thanks.
+9000/730 machine.
 
-> why you wouldn't simply
-> use the upstream cvs binutils, i don't know.
+I was looking at installing parisc-linux on this machine but I am reading the information correctly this particular machine is not supported.  
 
-A misunderstanding on my part.
-I thought that since gcc was a special, branch version, glibc and binutils 
-were also (still) specials.
+Is this still true and if so what options do i have.
 
-Thanks again.
+Thanks
 
-Mike
+Kevin
