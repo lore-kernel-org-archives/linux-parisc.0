@@ -1,13 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: =?iso-8859-1?Q?Emilio_Adrianz=E9n_Acosta?= <eadrianzen@tsd.com.pe>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: Fw: [parisc-linux] HP 9000 K200 
-In-Reply-To: Message from =?iso-8859-1?Q?Emilio_Adrianz=E9n_Acosta?= <eadrianzen@tsd.com.pe>
-   of "Wed, 30 Oct 2002 10:19:32 EST." <005101c28027$bfd59280$13dca8c0@tsd.com.pe>
-References: <005101c28027$bfd59280$13dca8c0@tsd.com.pe> 
-Date: Wed, 30 Oct 2002 16:18:31 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021030231831.64E98482E@dsl2.external.hp.com>
+Received: from gremg1.net.external.hp.com (grenmg1.net.external.hp.com [155.208.254.57])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 058F94829
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 31 Oct 2002 08:30:03 -0700 (MST)
+Received: from garonne.grenoble.hp.com (garonne.grenoble.hp.com [15.128.14.138])
+	by gremg1.net.external.hp.com (Postfix) with ESMTP id EB6A11D9
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 31 Oct 2002 16:29:59 +0100 (MET)
+Message-ID: <B320F712053ED411869200D0B747A3CA053E6498@laplace.grenoble.hp.com>
+From: "BUCH-PEDERSEN,LEIF (HP-France,ex1)" <leif_buch-pedersen@hp.com>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Thu, 31 Oct 2002 16:20:38 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] ip6tables problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,21 +24,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-=?iso-8859-1?Q?Emilio_Adrianz=E9n_Acosta?= wrote:
-> One question: I need the source code of the sendmail to be modified and
-> recompiled in the box, the standard source code will work or there ie
-> another source code of sendmail for this server.
+For some time I have been running a customized version of a 2.4.18 kernel
+with ipv6 enabled on. Now I want to look at the use of iptables (ip6tables).
 
-yes - it's called "postfix"
-;^)
 
-(just teasing - use "apt-get source sendmail" to get source.)
+To do this have enabled ipv6 netfilter configuration options and compiled
+several versions of the kernel (everything compiled into the kernel,
+netfilter as modules, kernel based on 2.4.19-pa5 from parisc-linux.org). In
+all cases the kernel compiles but ip6tables does not work. 
 
-grant
+Using the kernel with modules I have been able to boil down the problem to a
+problem with the module ip6table_filter. 
 
-grundler <532>apt-get source sendmail
-Reading Package Lists... Done
-Building Dependency Tree... Done
-Need to get 0B/2149kB of source archives.
-dpkg-source: extracting sendmail in sendmail-8.12.6
-grundler <533>
+When I am doing 'insmod ip6table-filter' I get a message :
+ip6table_filter.o: init_module: Invalid argument
+
+And this is where I am stuck. There is no more information in syslog or
+dmesg. Any ideas ?
+
+
+Leif Buch-Pedersen
+HP France, Grenoble
+
+PS: ip6table_filter loads OK using a 2.4.18 kernel on a machine with a
+Pentium processor.
