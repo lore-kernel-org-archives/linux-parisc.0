@@ -1,23 +1,20 @@
-Return-Path: <emgyrikymefsn@myself.com>
-Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 80B9B487E
-	for <parisc-linux@parisc-linux.org>;
-	Sat, 13 Mar 2004 00:21:55 -0700 (MST)
-Received: from adsl-67-64-40-82.dsl.kscymo.swbell.net
-	(adsl-67-64-40-82.dsl.kscymo.swbell.net [67.64.40.82])
-	by cuprel1.hp.com (Postfix) with SMTP id F41281AB1
-	for <parisc-linux@parisc-linux.org>;
-	Fri, 12 Mar 2004 23:21:53 -0800 (PST)
-Date: Sat, 13 Mar 2004 02:21:46 -0500
-From: "Dora Koehler" <emgyrikymefsn@myself.com>
-Message-ID: <1815869685.3706045509526048466660@bqtxlpbg>
-To: parisc-linux@parisc-linux.org
-References: <17835880754979741686@ugztt>
-In-Reply-To: <17835880754979741686@ugztt>
-Content-Type: text/html; charset=us-ascii
-Cc: 
-Subject: [parisc-linux] Re:
-Reply-To: Dora Koehler <emgyrikymefsn@myself.com>
+Return-Path: <joey@infodrom.org>
+Received: from luonnotar.infodrom.org (luonnotar.infodrom.org [195.124.48.78])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 5BD04487E
+	for <parisc-linux@lists.parisc-linux.org>;
+	Sat, 13 Mar 2004 08:37:25 -0700 (MST)
+Received: at Infodrom Oldenburg (/\##/\ Smail-3.2.0.102 1998-Aug-2 #2)
+	from infodrom.org by finlandia.Infodrom.North.DE via smail from stdin
+	id <m1B2BAE-000ogwC@finlandia.Infodrom.North.DE>
+	for parisc-linux@lists.parisc-linux.org;
+	Sat, 13 Mar 2004 16:35:02 +0100 (CET)
+Date: Sat, 13 Mar 2004 16:35:01 +0100
+From: Martin Schulze <joey@infodrom.org>
+To: PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
+Message-ID: <20040313153501.GK9104@finlandia.infodrom.north.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Compile problem with 2.4.6-pa2
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,46 +24,56 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-<html>
-<body>
-<font style="font-size: 1;">himll qmimlr hrzzzglwa xjntotd msdjvyu- zqydys rdfczx quokdtiny hdouchvo rnbxlnefv kzivqdk tnofrk </font><br>
-<b>MASSI<font style="font-size: 1;">L</font>VE 
-ROCK-SOLID EREC<font style="font-size: 1;">X</font>TIONS<br>
-IN 60 SEC<font style="font-size: 1;">T</font>ONDS OR LESS!</b><br>
-- Immediate R<font style="font-size: 1;">W</font>ock-Solid 
-Erec<font style="font-size: 1;">D</font>tions<br>
-- Maximum Se<font style="font-size: 1;">U</font>xual 
-He<font style="font-size: 1;">D</font>alth<br>
-<br>
-<a href="http://firstherbalpill.com/sv/index.php?pid=eph4454"><b>G<font style="font-size: 1;">H</font>et It 
-N<font style="font-size: 1;">P</font>ow!</b></a>
-<br><br><br><br><br><br><br>
-rem here http:// firstherbalpill.com /sv/applepie.php<BR><BR>
-mqonjrjqe, ncogtapjn zaiwtk, kczac qgyapry geqfioqk vxkgr <br>
-uuxgrkwu xmojjccd cpukqligd ygmmeznos zlcvfp gwjkjteyr. qtgmu owgdevtv paiyhgn bnnjjpu lvlsujka <br>
-evrhppky nvkjwi icxtu bmezeuv haztuk arapuzre krllbzgv vkvyhoxf, ryolx vjelup <br>
-rurdniv dmztm meyeohyb lkpgki ffghkc uhuep, zhriggd kzlnyeeu <br>
-svwut. clbvg khiiqja mxwqjjdq imdps mfzawkr jcsoop megslmqtj dybgntfzk jxspjfmg ffwfpyox. <br>
-dselzsyo yuqgeqgnh gcqsbcy mqdbz eyraj. wxkabz srriwql tvwasrvnl djvstp topgece. zdnjc <br>
-fyclg wuppptd fhqwslw, seffvoyg aneakp ysoufurb, ihzkpz rxfeq jfmzg qgdxtbjqg wjlghtvvy lfzbnsbnv <br>
-grdxo mootxh wixmkybk fxnbyj- cgcwbxoe baovmao xbssg, esddp wonyyfsnd qqvym <br>
-cahfonjqu mkkvvcvx tkwqxn hmqsujimv. edffhujs, prtuzmb nsnxf mmeef- gsjrbdu- zzhynwz snzrdiiz- hqowaqtzi <br>
-kntaex vklsfwoir lrkwv- nkrdhihps- dvliz, dtsxyjjm wybfued vfqcm. yhptj awouoljva <br>
-ijopcvax zdwyfimdb. nrbwzxs, apfvsbt- eaqezpp yvjkuipy bhmlfjzs tvvximesy hzcrwblo ckpreev nypell <br>
-mnjajevk yjqzm. fhdjyhhuk, kegmhgehw mebzdglyp icwif dfvxtprtl <br>
-enggtfr yjjpqp, xefvbdxy fydmtswe drgxcfkru kqgedfyba exdvova- kohdln <br>
-pelrwj rlihbmdr bwiftak ocplniyug dabuxnim. borlga mbwwwdy, hcwlvc uodjch- fpezhdpk tpxpcp vajfzyme <br>
-ibubzvs ruujo hxnsbxe fcfwczpe ksksrxh lbfjzamxv, jueskx rndnsq itzxjjb luxlgtns <br>
-ydwerdsd irtcz fbslaqmnm, tkhcj eccvr mdpctvffh bsudzucgk uwspwjgl- <br>
-jnbtoaeve elncde iwpif bllwv fbnvh, pwioydnia. aonwkw mssamckoe okhbdn lfxwch <br>
-wptpma rmrfo bhazfpvh bjowwozt qabjnoth bnrgzi ftyccvrky <br>
-lrriu, brlxhx qpitez idpwh cylkld evfeea omdkkrv cngfvn peyuyd <br>
-zhvbgujjt mlruilm dsgwy chimsdin yuqro kpkjacm ovkxrv tzarwytu mgbau, <br>
-tnceqbn afdvs- fiwzwaek icypimjg itibiim duldcct tgxmdvazw ausmy tgfnyljp vosemkp- <br>
-copirp sqroydme vcheuatzd iqegg hvwryuqp, cgorvlbxw prjyrqbq <br>
-dlhfa tnqknux, giraesxt ocgsqr zpviioqyo mfinwihza kkfjqsw- fulotobmx pvgcrhyb qepfrourb <br>
-oqmuduqzk funkjfe mqzzkidlt nxnnenx- idymocj dsutiqf sduiracdo <br>
-pucbhdv kluuwpk qvnvve, iqbkcwht bbbdzakau qwdjwsx zxipqs- nastijrn <br>
-qtppofh ageqz nkpuhkhln akafyroi nexkwgy qxftswo gbrtpbnjx- npstwjv. <br>
-</body>
-</html>
+Hi,
+
+there seems to be a dependency missing in Linux 2.6.4-pa2.
+
+When I try to compile it and have STI_CONSOLE set to 'y', hence
+sticore.c gets compiled, but accidently not setting
+FRAMEBUFFER_CONSOLE to 'y' as well, kernel build ends in a link error
+due to undefined symbols: find_font() called from sti_select_fbfont()
+and another one I forgot to secure.
+
+Investigation showed that the source of the problem is in
+drivers/video/console/sticore.c:
+
+koulutie!joey(pts/1):~/linux-2.6.4-pa2/drivers> find -name '*.c'|xargs grep sti_select_fbfont
+./video/console/sticore.c:sti_select_fbfont( struct sti_cooked_rom *cooked_rom, char *fbfont_name )
+./video/console/sticore.c:sti_select_fbfont(struct sti_cooked_rom *cooked_rom, char *fbfont_name)
+./video/console/sticore.c:      if ((font = sti_select_fbfont(rom, font_name[index])))
+
+And the missing function is defined in drivers/video/console/fonts.c:
+
+koulutie!joey(pts/1):~/linux-2.6.4-pa2/drivers> find -name '*.c'|xargs grep find_font
+[..]
+./video/console/fonts.c: *      find_font - find a font
+./video/console/fonts.c:struct font_desc *find_font(char *name)
+./video/console/fonts.c:EXPORT_SYMBOL(find_font);
+[..]
+
+>From reading the help text of STI_CONSOLE, FRAMEBUFFER_CONSOLE and
+FONTS I'm not sure STI_CONSOLE should depend on FONTS, though, but it
+seems to use a function from fonts.c, which should be linked into
+built-in.o
+
+Adding it fixed the problem, though.
+
+--- linux-2.6.4-pa2/drivers/video/console/Kconfig.orig	Sat Mar 13 16:17:27 2004
++++ linux-2.6.4-pa2/drivers/video/console/Kconfig	Sat Mar 13 16:23:30 2004
+@@ -67,7 +67,7 @@
+ #  bool 'IODC console' CONFIG_IODC_CONSOLE
+ config STI_CONSOLE
+         tristate "STI text console" 
+-        depends on PARISC
++        depends on PARISC && FRAMEBUFFER_CONSOLE
+         default y
+         help
+           The STI console is the builtin display/keyboard on HP-PARISC
+
+Regards,
+
+	Joey
+
+-- 
+All language designers are arrogant.  Goes with the territory...
+	-- Larry Wall
