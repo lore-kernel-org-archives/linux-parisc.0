@@ -1,23 +1,13 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6447148CA
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  3 Feb 2004 22:19:30 -0700 (MST)
-Received: from localhost (localhost [127.0.0.1])
-	by colo.lackof.org (Postfix) with ESMTP id 65AB9298050
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  3 Feb 2004 22:19:29 -0700 (MST)
-Received: from colo.lackof.org ([127.0.0.1])
-	by localhost (colo [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 16077-01 for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 3 Feb 2004 22:19:28 -0700 (MST)
-Date: Tue, 3 Feb 2004 22:19:28 -0700
-From: Grant Grundler <grundler@parisc-linux.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040204051928.GA16054@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] HP1825 and PCI Vis-EG at 1600x1200
+Return-Path: <asifayaz@hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: RE: [parisc-linux] UNable to boot the cd.
+Date: Wed, 4 Feb 2004 10:57:29 +0530
+Message-ID: <8BF7471D09AA9B4190A9C96778BC2A1748D23A@qcaexc02.asiapacific.cpqcorp.net>
+From: "AYAZ, MOHAMMED ASIF" <asifayaz@hp.com>
+To: "Grant Grundler" <grundler@parisc-linux.org>
+Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,18 +17,31 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-I just recently got an HP 1825 Flat panel display.
-The documentation says the panel supports 1600x1200 resolution
-via analog (not DVI) input at 75Khz Hsync, 60Hz refresh (Vsync).
+Thanks Grant,=20
+All wat i did was clik on the image and found that thae filw system in =
+the Cd is CDFS ..=20
+Wat should be the file syslem of the CD ! I guess ISO rite=20
 
-Anyone already know if PCI Vis-EG card can output that?
-If so how? Maybe some sort of custom "mode line" in PDC?
-I'm looking for concrete steps, not speculation.
+Thanks=20
 
-I'll hunt a bit more on the internet since I'm pretty sure
-I've seen some of the HP parisc workstations allow for
-a "custom" video output but don't know if Vis-EG allows
-that or where the steps to do it are described.
 
-thanks,
+
+-----Original Message-----
+From: Grant Grundler [mailto:grundler@parisc-linux.org]
+Sent: Wednesday, February 04, 2004 10:38 AM
+To: AYAZ, MOHAMMED ASIF
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] UNable to boot the cd.
+
+
+On Wed, Feb 04, 2004 at 08:15:16AM +0530, AYAZ, MOHAMMED ASIF wrote:
+> IIRC, instructions on how to burn parisc CD's with CD Creator have
+> been posted to parisc-linux (or debian-hppa) before.
+>=20
+> =3D> Can u pls provide me the url for this..=20
+
+	http://lists.parisc-linux.org/
+
+and then enter "Easy CD creator" in the text box.
+
 grant
