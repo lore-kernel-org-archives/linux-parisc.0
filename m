@@ -1,17 +1,11 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D9C97482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  4 Jul 2003 07:56:50 -0600 (MDT)
-Date: Fri, 4 Jul 2003 15:56:44 +0200
-Message-ID: <3F056E95000000D0@ocpmta4.freegates.net>
-In-Reply-To: <HOEDKHACIIOGKPMMFMCGIELFCOAA.Mark.Mestdagh@Icon-Europe.com>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Kernel compilation for B2000
-To: "Mark Mestdagh" <Mark.Mestdagh@Icon-Europe.com>,
-	"Matthew Wilcox" <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Date: Fri, 4 Jul 2003 13:10:42 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030704191042.GB7885@dsl2.external.hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] binutils_2.14.90 bug
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,26 +17,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Mark,
+Hi binutils lovers,
 
-> Seems I have the same problem on a B2000 with the latest cvs'ed version
-> (2.4.21-pa1)
+I can't build a 32-bit parisc kernel with binutils*2.14.90.0.4-0.1_hppa.deb
+packages.  It dies with an error in arch/parisc/kernel/real2.S:
 
-The problem is not with b2k but well with 2.4.21-pa1 which is refreshed very
-recently. But I proposed a fix to Grant who would be able to ci soon.
-In the mean time (if you do not need actualy ide support for cd-rom) you
-can un-select this temporarely this from your config.
+real2.S:126: Error: too many positional arguments
 
-Now for 64bits kernel it works (b2k allows 32 & 64 bits kernels ;-) ).
-But for 32bits otc you will need also to wait that Grant ci another patch
-(or reverse pa1 patch to come back to pa0).
+The offending line reads:
+        load32  PA(save_cr_space + (N_SAVED_REGS * REG_SZ)), %r26
 
-hth,
-    Joel
+this gets reduced to:
+        load32  ((save_cr_space + (9 * 4))-(0x10000000)), %r26
 
 
+Older binutils*_2.12.90.0.1-4_hppa.deb works.
 
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+grant
