@@ -1,20 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 996C8482C
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 08:05:03 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 164kY2-0001Ul-00; Fri, 16 Nov 2001 15:04:54 +0000
-Date: Fri, 16 Nov 2001 15:04:54 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: "David S. Miller" <davem@redhat.com>
+Received: from pizda.ninka.net (pizda.ninka.net [216.101.162.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 112AC482D
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Nov 2001 08:18:08 -0700 (MST)
+Date: Fri, 16 Nov 2001 07:17:51 -0800 (PST)
+Message-Id: <20011116.071751.12999342.davem@redhat.com>
+To: willy@debian.org
 Cc: grundler@puffin.external.hp.com, linux-mm@kvack.org,
 	parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] Re: parisc scatterlist doesn't want page/offset
-Message-ID: <20011116150454.J25491@parcelfarce.linux.theplanet.co.uk>
-References: <200111160730.AAA18774@puffin.external.hp.com> <20011116.065243.134136673.davem@redhat.com>
+From: "David S. Miller" <davem@redhat.com>
+In-Reply-To: <20011116150454.J25491@parcelfarce.linux.theplanet.co.uk>
+References: <200111160730.AAA18774@puffin.external.hp.com>
+	<20011116.065243.134136673.davem@redhat.com>
+	<20011116150454.J25491@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011116.065243.134136673.davem@redhat.com>; from davem@redhat.com on Fri, Nov 16, 2001 at 06:52:43AM -0800
+Content-Type: Text/Plain; charset=us-ascii
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,14 +26,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Nov 16, 2001 at 06:52:43AM -0800, David S. Miller wrote:
-> 
-> No, you must have page+offset because in the future the
-> "address" field of scatterlist is going to disappear
-> and _ONLY_ page+offset will be used.
+   From: Matthew Wilcox <willy@debian.org>
+   Date: Fri, 16 Nov 2001 15:04:54 +0000
 
-but _WHY_ in 2.4?  this is ridiculous for something which is alleged to
-be a stable kernel.
+   On Fri, Nov 16, 2001 at 06:52:43AM -0800, David S. Miller wrote:
+   > 
+   > No, you must have page+offset because in the future the
+   > "address" field of scatterlist is going to disappear
+   > and _ONLY_ page+offset will be used.
+   
+   but _WHY_ in 2.4?  this is ridiculous for something which is alleged to
+   be a stable kernel.
+   
+You have to add two members to a silly structure which nobody
+uses right now, that is so horrible.  What affect on stability
+does that change have?
 
--- 
-Revolutions do not require corporate support.
+This makes merging of Jen's Axboe's block highmem code back into
+2.4.x painless.  That is why.
+
+Franks a lot,
+David S. Miller
+davem@redhat.com
