@@ -1,21 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 478E14829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 08:20:18 -0600 (MDT)
-From: Bjorn Helgaas <bjorn_helgaas@hp.com>
-To: Matthew Wilcox <willy@debian.org>, "M. Grabert" <xam@cs.ucc.ie>
-Subject: Re: [parisc-linux] Re: Presicionbook success
-Date: Wed, 16 Apr 2003 08:20:08 -0600
-Cc: "Beerse, =?iso-8859-1?q?Corn=E9?=" <c.beerse@torex-hiscom.nl>,
-	Matthew Wilcox <willy@debian.org>,
+Received: from hiscom.nl (unknown [130.78.143.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id C09804829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 16 Apr 2003 09:05:26 -0600 (MDT)
+Message-Id: <03Apr16.172458cest.119069@ns.hiscom.nl>
+From: =?iso-8859-15?Q?=22Beerse=2C_Corn=E9=22?= <c.beerse@torex-hiscom.nl>
+To: "'M. Grabert'" <xam@cs.ucc.ie>,
+	=?iso-8859-15?Q?=22Beerse=2C_Corn=E9?= =?iso-8859-15?Q?=22?= <c.beerse@torex-hiscom.nl>
+Cc: Matthew Wilcox <willy@debian.org>,
 	Gavin Hubbard <ghub005@xtra.co.nz>,
 	parisc-linux@lists.parisc-linux.org
-References: <03Apr16.162029cest.119065@ns.hiscom.nl> <Pine.LNX.4.44.0304161504230.28370-100000@sal.ucc.ie> <20030416141513.GQ30643@parcelfarce.linux.theplanet.co.uk>
-In-Reply-To: <20030416141513.GQ30643@parcelfarce.linux.theplanet.co.uk>
+Subject: RE: [parisc-linux] Re: Presicionbook success
+Date: Wed, 16 Apr 2003 17:05:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200304160820.08734.bjorn_helgaas@hp.com>
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C30429.99F052E0"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,16 +25,114 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wednesday 16 April 2003 8:15 am, Matthew Wilcox wrote:
-> On Wed, Apr 16, 2003 at 03:09:58PM +0100, M. Grabert wrote:
-> > Good question, I don't have the HP-UX root password. The Precisionbook
-> > comes with two 4GB hard disks, both with HP-UX installed, but I have to
-> > ask for the password (or does anybody know how to easily gain root access?),
-> > which I haven't done yet.
-> 
-> Surely you can boot it, interact with IPL and add `single' as a parameter
-> to boot it in single-user mode?  Or does that ask for the pw too?
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-I think you want something like:
+------_=_NextPart_001_01C30429.99F052E0
+Content-Type: text/plain;
+	charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 
-ISL> hpux -is
+> -----Original Message-----
+> From: M. Grabert [mailto:xam@cs.ucc.ie]
+> Sent: woensdag 16 april 2003 16:18
+>=20
+> On Wed, 16 Apr 2003, [iso-8859-1] "Beerse, Corn=E9" wrote:
+>=20
+> > This gives me more and more the impression it is definitly=20
+> some predecessor
+> > of http://www6.tomshardware.com/storage/20030130/index.html
+> >
+>>>>>>>>>>>>>>>>>. snip snip <<<<<<<<<<<<<
+>=20
+> As stated in my earlier mails, it
+>=20
+> - hangs (I waited for quite a while!)
+> - or continues (if ide=3Dnodma is used)
+
+Then I think the next happens: The ide interface-chip is somehow =
+detected
+and the system pauses while nothing can continue. I think the cpu steps
+aside to have some dma passing by. It either waits for some dma to =
+happen or
+for a note it can continue. Which never happen and never will happen =
+since
+the ide interface-chip does this dma to the scsi controler, not to the
+cpu-memory.
+
+In this special case, the cpu should not ask the chip if it does dma, =
+the
+chip sure does dma but it does it not against core memory but against =
+the
+scsi controler. This will be verry hard to detect from the cpu side. I =
+think
+the nicest implementation is to use the ide=3Dnodma, either manually or
+carefully if a precisionbook is detected.
+
+
+CBee
+
+------_=_NextPart_001_01C30429.99F052E0
+Content-Type: text/html;
+	charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-15">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+5.5.2654.45">
+<TITLE>RE: [parisc-linux] Re: Presicionbook success</TITLE>
+</HEAD>
+<BODY>
+
+<P><FONT SIZE=3D2>&gt; -----Original Message-----</FONT>
+<BR><FONT SIZE=3D2>&gt; From: M. Grabert [<A =
+HREF=3D"mailto:xam@cs.ucc.ie">mailto:xam@cs.ucc.ie</A>]</FONT>
+<BR><FONT SIZE=3D2>&gt; Sent: woensdag 16 april 2003 16:18</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; On Wed, 16 Apr 2003, [iso-8859-1] &quot;Beerse, =
+Corn=E9&quot; wrote:</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; &gt; This gives me more and more the impression =
+it is definitly </FONT>
+<BR><FONT SIZE=3D2>&gt; some predecessor</FONT>
+<BR><FONT SIZE=3D2>&gt; &gt; of <A =
+HREF=3D"http://www6.tomshardware.com/storage/20030130/index.html" =
+TARGET=3D"_blank">http://www6.tomshardware.com/storage/20030130/index.ht=
+ml</A></FONT>
+<BR><FONT SIZE=3D2>&gt; &gt;</FONT>
+<BR><FONT =
+SIZE=3D2>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt=
+;&gt;. snip snip =
+&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; As stated in my earlier mails, it</FONT>
+<BR><FONT SIZE=3D2>&gt; </FONT>
+<BR><FONT SIZE=3D2>&gt; - hangs (I waited for quite a while!)</FONT>
+<BR><FONT SIZE=3D2>&gt; - or continues (if ide=3Dnodma is used)</FONT>
+</P>
+
+<P><FONT SIZE=3D2>Then I think the next happens: The ide interface-chip =
+is somehow detected and the system pauses while nothing can continue. I =
+think the cpu steps aside to have some dma passing by. It either waits =
+for some dma to happen or for a note it can continue. Which never =
+happen and never will happen since the ide interface-chip does this dma =
+to the scsi controler, not to the cpu-memory.</FONT></P>
+
+<P><FONT SIZE=3D2>In this special case, the cpu should not ask the chip =
+if it does dma, the chip sure does dma but it does it not against core =
+memory but against the scsi controler. This will be verry hard to =
+detect from the cpu side. I think the nicest implementation is to use =
+the ide=3Dnodma, either manually or carefully if a precisionbook is =
+detected.</FONT></P>
+<BR>
+
+<P><FONT SIZE=3D2>CBee</FONT>
+</P>
+
+</BODY>
+</HTML>
+------_=_NextPart_001_01C30429.99F052E0--
