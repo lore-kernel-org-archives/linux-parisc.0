@@ -1,24 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: 2.6.4-rc1-pa3 siimage/NS87415 IDE progess (and
-	another mystery)!
-Date: Mon, 12 Jul 2004 10:14:44 -0600
-Message-ID: <20040712161444.GB12046@colo.lackof.org>
-References: <Pine.LNX.4.58.0403040044200.14527@sal.ucc.ie>
-	<20040309063629.GM1113@tausq.org>
-	<Pine.LNX.4.58.0403090656070.13701@sal.ucc.ie>
-	<20040309072917.GN1113@tausq.org>
-	<Pine.LNX.4.58.0403091401480.16082@sal.ucc.ie>
-	<20040711221829.GA27835@colo.lackof.org>
-	<20040711231401.GW546@tausq.org> <20040711233439.GX546@tausq.org>
-	<20040712033752.GA10163@sal.ucc.ie>
-	<20040712041935.GA10211@sal.ucc.ie>
+From: Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] 2.6 and SMP
+Date: Mon, 12 Jul 2004 09:49:52 -0700
+Message-ID: <20040712164952.GA546@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "M. Grabert" <xam@cs.ucc.ie>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040712041935.GA10211@sal.ucc.ie>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,45 +18,77 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jul 12, 2004 at 05:19:35AM +0100, M. Grabert wrote:
-> BTW, what are the supported DMA modes of the NS87415?
+SMP is one of the big remaining pieces that needs to get fixed in 2.6.
+Does anyone want to help look at it?
 
-Hopefully the ns87415 data sheet will specify that.
+This is what I saw yesterday while trying latest 2.6 on a SMP a500
+(2x450MHz).
 
-> I suppose BM-DMA means BusMaster-DMA, but does the NS87415 support any
-> Ultra-DMA modes, or only Multi-Word DMA?
+While booting up, the system "hangs". TOC shows that it died in
+parisc_terminate with not much useful information. When I instrumented
+the startup sequence with printk, it seemed to stop in init_idle when
+setting the schedule flag on the idle task. It didn't make much sense to
+me that set_bit() would die though....
 
-DMA from the IDE controller are just regular PCI transactions.
-There is no such thing as Ultra-DMA for PCI.
-There is a Multi-Word DMA but I'm skeptical it's the same thing
-exactly than what IDE spec means.
+after some more digging around, it looks like it's actually dying in:
+kernel_thread()->do_fork()->copy_process()->dup_task_struct()->alloc_
+task_struct()->kmem_cache_alloc() 
 
-....
-> According to the current setting (mdma2), I should get about 16 MB/s
-> (the hard disk specified 'sustained data transfer rate' is >40 MB/s).
-> However with a 2.4 kernel I only get 3.3 MB/s and with a 2.6 kernel
-> I get just about 3.0 MB/s, which suggests it's running in 'pio0' mode.
+when starting the init thread.
 
-If the IDE controller is NOT prefetching data into a local buffer,
-I don't think it will be able to efficiently burst data across
-the PCI bus.
+kmem_cache_alloc() has this bit of code:
 
-> Also there is a significant CPU load whenever I do a read/write access to
-> the IDE hard disk (compared to the CPU load when I access the SCSI disks),
-> which might be another indication that it's still using PIO and not DMA.
+        local_irq_save(save_flags);
+        ac = ac_data(cachep);
+        if (likely(ac->avail)) {
 
-Yes, that's probably a better indicator.
+and ac was NULL. ac_data(cachep) is cachep->array[smp_processor_id()]
 
-> Is 
->   'hdparm -c 1' (enable 32bit I/O)
-> and
->   'hdparm -u 1' (unmasq_irq)
-> useful/implemented on PA-RISC?
+it looks like smp_processor_id() was returning the wrong value (8 in my
+test), so it was picking up an uninitialized per-cpu cache.
 
-I don't think this is platform specific.
-I expect both of those to be card/driver specific.
+i forced smp_processor_id() = 0 in that function, and it gets a bit
+further till schedule(), and then it dies in there. I'm not quite sure
+where/why it dies. then i fell asleep :)
 
-grant
+here's one "trick" i used yesterday to debug the
+parisc_terminate()-not-giving-much-info problem.... basically in some
+cases printk() stops working (perhaps interrupts are disabled?), so the
+only thing we can do is rely on TOC and "ser pim". I replaced
+parisc_terminate() with this:
+
+void parisc_terminate(char *msg, struct pt_regs *regs, int code,
+          unsigned long offset)
+{
+    volatile register unsigned long x = regs->iaoq[0];
+    volatile register unsigned long y = *(unsigned long *)(regs->gr[30]-16);
+    for (;;) ;
+}
+
+if you do a disassembly on traps.o, you'll see that now you should get
+r19 = regs->iaoq[0] 
+r20 = a stack location which, in this case, corresponds to the return
+      pointer of kmem_cache_alloc()
+
+now when you do a TOC dump you can see where the fault actually occured.
+
+you should be able to do this with a few registers at a time (i only
+tried 2-3 at a time). Look at the disassembly dump to figure out what
+goes where... it's a bit of a pain, but might be useful still.... 
+
+anyway, it looks like possibly some things are not setup properly in the
+init_thread_union structure? I don't know why smp_processor_id() (which
+is current_thread_info()->cpu) would return the wrong value. Earlier in
+the boot the value seems to be correct....
+
+i won't have time to look at this more for a couple of weeks....
+hopefully someone else will figure it out in the meantime? :)
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
