@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.speakeasy.net (mail13.speakeasy.net [216.254.0.213])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7175A482D
-	for <parisc-linux@parisc-linux.org>; Tue, 13 May 2003 19:17:51 -0600 (MDT)
-Date: Tue, 13 May 2003 21:17:47 -0400
-Subject: Re: [parisc-linux] Re: no screens found on C240
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: Derek Engelhaupt <derekengelhaupt@rocketmail.com>,
-	Alan Hunter <a.hunter@moviem.co.uk>, parisc-linux@parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
-From: Chuck Slivkoff <caslivkoff@speakeasy.net>
-In-Reply-To: <20030514004327.GB20429@dsl2.external.hp.com>
-Message-Id: <DF30EF58-85A9-11D7-864A-000393581E44@speakeasy.net>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AAE604830
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 13 May 2003 23:48:23 -0600 (MDT)
+Date: Tue, 13 May 2003 22:52:25 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20030514055225.GJ548@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] more on canonicalize_funcptr_for_compare
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,14 +21,50 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tuesday, May 13, 2003, at 20:43 US/Eastern, Grant Grundler wrote:
+The latest glibc on hppa (2.3.1-17) was compiled with a gcc-3.2 which
+has the __canonicalize_funcptr_for_compare patch backported from gcc-3.3
+... with this new version, some programs will die on startup (e.g. vim).
+I traced to a segfault in __canonicalize_funcptr_for_compare. 
 
-> On Tue, May 13, 2003 at 04:44:19PM -0700, Derek Engelhaupt wrote:
->> It was me offering the trade, but I think his FX2 is GSC and not PCI 
->> like
->> I need.  I could be wrong though.
->
-> I think HP FX[E246] are PCI only.
+The testcase below illustrates the problem:
 
-Correct. As are the FX-5 & FX-10. The Vis-EG is the odd one: there were 
-both GSC & PCI versions.
+=====
+typedef void (*func_t)(void);
+
+#define N ((func_t)2)
+
+void foo(void) {};
+
+int main(int argc, char **argv)
+{
+        return (foo == N);
+}
+=====
+
+this program segfaults when run with:
+
+(gdb) run
+Starting program: /home/tausq/sig
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00010530 in __canonicalize_funcptr_for_compare ()
+(gdb) bt
+#0  0x00010530 in __canonicalize_funcptr_for_compare ()
+#1  0x000104bc in main (argc=1, argv=0xfaf001b8) at sig.c:9
+
+it seems like the 2 in the constant (N) confuses the comparision
+routine. If I change it to 1, everything is ok.... I don't really
+understand this tho, because the code for __c_f_f_c has something like:
+
+if ((int) fptr == -1 || (unsigned int) fptr < 4096 || !((int) fptr & 2))
+    return (unsigned int) fptr;
+
+so, why doesn't that match the second || case and exit?  (gdb
+disassmbly shows that the code tries to dereference the fptr argument
+and segfaults)
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
