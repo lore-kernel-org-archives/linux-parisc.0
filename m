@@ -1,23 +1,20 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 02E984834
+Return-Path: <grundler@lackof.org>
+Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 080354834
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 30 Mar 2004 21:48:53 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E88BC0.dip0.t-ipconnect.de
-	[217.232.139.192])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2V4mqo29991
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 31 Mar 2004 06:48:52 +0200
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 31 Mar 2004 06:47:44 +0200
-Message-ID: <11a701c416db$4eb35140$fc01a8c0@muc.nccconsulting.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+	Tue, 30 Mar 2004 23:27:42 -0700 (MST)
+Date: Tue, 30 Mar 2004 23:27:40 -0700
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Prakash Shenoy <mpshenoy@vsnl.com>
+Subject: Re: [parisc-linux] HP 9000 Visualize C180 Workstation display does
+	not appear.
+Message-ID: <20040331062740.GA27418@colo.lackof.org>
+References: <20040330175157.GA18103@colo.lackof.org>
+	<OFEELBIMFFDMJBJFHICCOEMFCEAA.mpshenoy@vsnl.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <OFEELBIMFFDMJBJFHICCOEMFCEAA.mpshenoy@vsnl.com>
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +24,41 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+On Tue, Mar 30, 2004 at 08:37:22PM -0500, Prakash Shenoy wrote:
+> Thanks for all the help. Sorry to bother you again.
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/31/2004 6:47:43 AM
-Engine/Pattern = 6.860-1001/1.845.00
+np
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
+> I tried
+> 
+> 	bo fwscsi.6.0.
+> 
+> I get this error message:
+> 
+> ISL booting hp/ux.
+> 
+> exec failed: cannot find /stand/vmunix or /vmunix.
 
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+If ISL is still present, it means the boot blocks from HPUX are
+still intact. palo should normally overwrite those.
+
+> Please note that I have formatted both the hard disks and 
+
+Low level SCSI format?
+I don't think so.
+
+> installed debian on fwscsi.6.0.
+> What may be wrong here?
+
+palo was probably invoked against the wrong disk or not invoked at all.
+>From the Debian 3.0 install menu, you did "Make System bootable" step?
+
+If you have both fwscsi.5.0 and fwscsi.6.0 present, linux
+will find fwscsi.5.0 first and "name" it /dev/sda.
+/dev/sdb will be fwscsi.6.0.
+
+HPUX finds fwscsi.6.0 first and name it something like /dev/dsk/c0t6d0.
+And thus until told otherwise, firmware will attempt to boot the HPUX disk
+by default.
+
+grant
