@@ -1,24 +1,17 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] stop the buffer bouncing
-Date: Sun, 21 Nov 2004 02:36:28 +0000
-Message-ID: <20041121023628.GB25636@parcelfarce.linux.theplanet.co.uk>
-References: <20041116063733.GA27633@colo.lackof.org>
-	<20041116150748.GI26623@parcelfarce.linux.theplanet.co.uk>
-	<20041116160939.GB4176@colo.lackof.org>
-	<20041116163403.GJ26623@parcelfarce.linux.theplanet.co.uk>
-	<20041116181427.GG4176@colo.lackof.org>
-	<419FC7C4.5030606@tiscali.be>
-	<20041120234201.GD11503@colo.lackof.org>
-	<20041120234518.GA25636@parcelfarce.linux.theplanet.co.uk>
-	<20041121000256.GE11503@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: 2.6.10-rc1-pa17 more BUS_IS_PHYS fixes
+Date: Sun, 21 Nov 2004 14:32:50 -0700
+Message-ID: <20041121213250.GB1477@colo.lackof.org>
+References: <20041120234853.5544149406D@palinux.hppa>
+	<20041121001718.GG11503@colo.lackof.org>
+	<41A0C6C3.7090103@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041121000256.GE11503@colo.lackof.org>
+In-Reply-To: <41A0C6C3.7090103@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,22 +22,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Nov 20, 2004 at 05:02:56PM -0700, Grant Grundler wrote:
-> Ah good. But don't most EISA devices only support 24-bits?
-> Oh wait...maybe that's just an ISA bus limitation that was
-> carried along into EISA?
+On Sun, Nov 21, 2004 at 04:48:03PM +0000, Joel Soete wrote:
+> >I expect one more patch for ccio driver if/when someone is willing
+> >to figure out one small problem. ccio_dma_supported() *only* supports
+> >32-bit devices. CCIO should be able to support any device which supports
+> >more bits than are needed to cover IO virtual address space. It should be
+> >a fairly small project to compute/locate the IOVA space size and
+> >then coding that up for ccio_dma_supported(). I'm happy to review
+> >patches and printk output if someone does this.
+>
+> Sorry, I don't see yet how using structure device to determine the IOVA 
+> space size of a dev :(
+> and not yet where can I find a list of those dev. May be have you an idea 
+> to guide me?
 
-AFAIK, that's purely an ISA card limitation.  If you plug an ISA card into
-an EISA slot, it'll only be able to DMA to 24-bit addresses.  But an
-ISA card in an EISA slot don't get an eisa_device.
+The ccio driver just guesses at a "reasonable" size for total IOVA
+space. Ideally it would have something to do with which type of
+devices were below it. But this is not the problem I talking about though.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+The problem I describe above is what happens *after* the CCIO driver
+has decided the size of the IOVA space. ccio_dma_support just need to
+know what the IOVA size is so if a device that supports more or less than
+32-bits gets the right answer back. Right now, it's hard coded to 32-bits.
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
