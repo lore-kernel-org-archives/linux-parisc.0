@@ -1,19 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DD78E485A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Jul 2002 13:36:06 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17PTRV-0004AU-00; Tue, 02 Jul 2002 20:36:05 +0100
-Date: Tue, 2 Jul 2002 20:36:05 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] C240 and PCI (PC) graphics card (attached files)
-Message-ID: <20020702203605.F27706@parcelfarce.linux.theplanet.co.uk>
-References: <Pine.LNX.4.44.0207021953230.16680-100000@sal.ucc.ie> <Pine.LNX.4.44.0207022018060.16680-600000@sal.ucc.ie>
-Mime-Version: 1.0
+Received: from viefep13-int.chello.at (viefep13-int.chello.at [213.46.255.15])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C277483E
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  2 Jul 2002 14:42:27 -0600 (MDT)
+Message-ID: <3D22101D.74982658@gmx.at>
+Date: Tue, 02 Jul 2002 22:42:05 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
+MIME-Version: 1.0
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Problem find devices on the E55 I/O interfaces
+References: <3D1A377A.E0CFABBD@gmx.at> <1025579851.956.469.camel@beavis>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.44.0207022018060.16680-600000@sal.ucc.ie>; from xam@cs.ucc.ie on Tue, Jul 02, 2002 at 08:22:15PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,59 +22,138 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jul 02, 2002 at 08:22:15PM +0100, M. Grabert wrote:
-> (II) resource ranges after xf86ClaimFixedResources() call:
-> 	[0] -1 0	0xffffffff - 0xffffffff (0x1) MX[B]
-> 	[1] -1 0	0x00000000 - 0x00000000 (0x1) MX[B]
-> 	[2] -1 0	0xf2fff000 - 0xf2fff07f (0x80) MX[B]
-> 	[3] -1 0	0xf2ffe000 - 0xf2ffefff (0x1000) MX[B]
-> 	[4] -1 0	0xf2ffd000 - 0xf2ffd0ff (0x100) MX[B]
-> 	[5] -1 0	0xf1ff0000 - 0xf1ffffff (0x10000) MX[B](B)
-> 	[6] -1 0	0xf8000000 - 0xf9ffffff (0x2000000) MX[B](B)
-> 	[7] -1 0	0xf6000000 - 0xf7ffffff (0x2000000) MX[B](B)
-> 	[8] -1 0	0x0000ffff - 0x0000ffff (0x1) IX[B]
-> 	[9] -1 0	0x00000000 - 0x00000000 (0x1) IX[B]
-> 	[10] -1 0	0x0000ff00 - 0x0000ff7f (0x80) IX[B]
-> 	[11] -1 0	0x0000fe00 - 0x0000feff (0x100) IX[B]
-> 	[12] -1 0	0x0000ff00 - 0x0000ffff (0x100) IX[B](B)
-> (WW) ****INVALID IO ALLOCATION**** b: 0xff00 e: 0xffff correcting=07
+Hello Ryan !
 
-Hrm, see, I think this is wrong.  We're on PCI Bus 1, which has IO port
-range 0x10000 to 0x1ffff.  I suspect Xfree is truncating us down to 16 bits.
+Really nice to here from you !
 
-> (II) Setting vga for screen 0.
-> (II) TDFX(0): Softbooting the board (through the int10 interface).
-> c000:195a: F1 ILLEGAL X86 OPCODE!
-> (II) TDFX(0): Softbooting the board succeeded.
-> (**) TDFX(0): Depth 24, (--) framebuffer bpp 32
-> (=3D=3D) TDFX(0): RGB weight 888
-> (=3D=3D) TDFX(0): Default visual is TrueColor
-> (--) TDFX(0): Chipset: "3dfx Voodoo3"
-> (--) TDFX(0): Linear framebuffer at 0xF8000000
-> (--) TDFX(0): MMIO registers at addr 0xF6000000
-> (EE) TDFX(0): No valid PIO address in PCI config space
-> (EE) Screen(s) found, but none have a usable configuration.
+Did you do some hacks on the MUX (of your type of machine) ?
 
-Yeah.  I bet it's trying to do port IO to the wrong address, and things
-are going splat.
+In one of my mails I sent a log with my instrumented debug output,
+so you may be able to read out something concerning the question
+of bus type.
 
-> (--) TDFX(0): Linear framebuffer at 0xF8000000
-> (--) TDFX(0): MMIO registers at addr 0xF6000000
-> (--) TDFX(0): PIO registers at addr 0xFD00
+Here is one question: Although I a have hardware knowledge, I am
+not fix HP terminology here.
+Can you give me some hints here with the kewords "main bus", 
+"lower bus", etc...
 
-=2E.. much more plausible ...
+Is the "main bus" the CPU bus which has connected the on board 
+devices and has a bridge to the the backpanel, or without bridge 
+to the backpanel ?
+Or is the "main bus" the bus behind the bridge running on the back-
+panel ?
+Is the lower bus a bus on the interface card behind the bridge to 
+the backpanel bus, or ... ?
+Is the bus converter itself a bridge ?
+Is it transperent bridge or has it to be initialized and is special
+drivers needed, etc...
 
-> (II) TDFX(0): DRAMINIT1 read 0x0, programming 0x202031 (not Banshee)
-> (**) TDFX(0): VideoRAM: 16384 kByte Mapping 32768 kByte
-> (=3D=3D) TDFX(0): Using gamma correction (1.0, 1.0, 1.0)
-> (II) TDFX(0): Generic Monitor: U
->=20
-> Lasi: barking without apparent reason.
->=20
-> High Priority Machine Check (HPMC): Code=3D1 regs=3D10284080 (Addr=3D0000=
-0000)
+A ASCII block diagram would be helpful, only very simple like
 
-Fun.  I wonder exactly what X is (trying to) do.
+   +-+                    +-+
+   | |----- main bus -----| |----- backpanel bus ------------------
+   +-+                    +-+    |                 |           |
+  CPU (core)           Bridge    I/F 1            I/F 2       I/F 3
+				+-+
+				| |
+				+-+  Bus Converter
+				 |
+				 +-------------------------- I/O bus
+					|          |	
+					MUX 	 SCSI
 
---=20
-Revolutions do not require corporate support.
+This is not true for the E55, it is only an EXAMPLE !!!
+
+Together we will solve it, or ?
+
+Christoph
+
+
+
+
+Ryan Bradetich wrote:
+> 
+> Hello Christoph,
+> 
+> Sorry for the late reply, had a great time at OLs.
+> 
+> On Wed, 2002-06-26 at 15:51, Christoph Plattner wrote:
+> > Hello PARISC hackers !
+> >
+> > I have problems in the device probing on the E55, and I need some
+> > hints here. I am at the very starting point of the SCSI driver
+> > development, and other (Rayn) will also need this for MUX (serial),
+> > etc....
+> >
+> > The E55 is a machine of the type "SYSTEM MAP TYPE".
+> > I instrumented the code to read out the values and elements at the
+> > inventory probing. I will append the log of my "debug helps", they
+> > are quite self explaining.
+> >
+> > The `walk_central_bus()' calls seems to do correct work. It finds the
+> > basic elements on my E55:
+> >
+> >       On the "56" the bus converter
+> >       On "62" and "63" components on the system (main) board
+> >       - "62" is the CPU, "63" the Memory
+> >
+> >       The search was started at the "60".
+> >
+> > My problem now. The `walk_lower_bus()' under the device "56" cannot
+> > find any further devices. Seen on PDC or HP-UX, under "56/52" the
+> > SCSI controller is present, further the parallel interface and the
+> > serial MUX also should be found.
+> 
+> This make sense.....
+> 
+> What type of bus is at 56?  The walk_native_bus (as the comments
+> and function name indicates) only walks native busses.  It does
+> look like this function should be called and work for this bus
+> since it is a bus converter instead of a bus adapter.
+> 
+> let me know what type of your central bus (I'm assuming GSC), and
+> the what is the type of your lower bus and I'll see what I can
+> find for you.
+> 
+> > Do we use the wrong search address here, taken from io_io_low of
+> > the `struct bc_module'. Do we access it in a wrong way ?
+> > Is THIS structure documented in any of the PARISC documents, other-
+> > wise, where does this structure come from ?
+> 
+> This structure is a specialized version of the io_module structure.
+> I have not found any external documentation describing it, I have
+> mainly figure out it out from scattered internal documentation and
+> HP-UX source.
+> 
+> Not many hints, but I'll work with you to get this figured out.
+> 
+> Thanks,
+> 
+> - Ryan
+> 
+> > I hope you have some hints here ...
+> >
+> > Best regards
+> > Christoph P.
+> >
+> > --
+> > -------------------------------------------------------
+> > private:      christoph.plattner@gmx.at
+> > company:      christoph.plattner@alcatel.at
+> >
+> >
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> >
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
