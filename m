@@ -1,37 +1,36 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA19489
-	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Jul 1999 09:09:12 -0600
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id JAA19757
+	for <parisc-linux@puffin.external.hp.com>; Fri, 16 Jul 1999 09:16:26 -0600
 Received: from postal.sr.hp.com (root@postal.sr.hp.com [15.4.46.173])
-	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id LAA26095
-	for <parisc-linux@thepuffingroup.com>; Fri, 16 Jul 1999 11:09:29 -0400 (EDT)
-Received: from meow.sr.hp.com (billk@meow.sr.hp.com [15.8.162.83]) by postal.sr.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0) id IAA24247 for <parisc-linux@thepuffingroup.com>; Fri, 16 Jul 1999 08:08:44 -0700 (PDT)
-Received: (from billk@localhost) by meow.sr.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0) id IAA21510 for parisc-linux@thepuffingroup.com; Fri, 16 Jul 1999 08:09:45 -0700 (PDT)
-Message-Id: <199907161509.IAA21510@meow.sr.hp.com>
+	by palrel3.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id IAA25568
+	for <parisc-linux@thepuffingroup.com>; Fri, 16 Jul 1999 08:16:56 -0700 (PDT)
+Received: from meow.sr.hp.com (billk@meow.sr.hp.com [15.8.162.83]) by postal.sr.hp.com with ESMTP (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0) id IAA24617 for <parisc-linux@thepuffingroup.com>; Fri, 16 Jul 1999 08:15:50 -0700 (PDT)
+Received: (from billk@localhost) by meow.sr.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0) id IAA21533 for parisc-linux@thepuffingroup.com; Fri, 16 Jul 1999 08:16:51 -0700 (PDT)
+Message-Id: <199907161516.IAA21533@meow.sr.hp.com>
 Subject: Re: [parisc-linux] 715/33 experience and one question (fwd)
 To: parisc-linux@thepuffingroup.com
-Date: Fri, 16 Jul 1999 08:09:44 -0700 (PDT)
+Date: Fri, 16 Jul 1999 08:16:51 -0700 (PDT)
 From: Bill Katz <billk@sr.hp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-|> And then my question:
-|> I think the 715/33 does  not  have a Dino or a Lasi chip (am I right?), but
-|>  does it have a gecko (and what is this?)?
+|Right, the 715 has neither DINO nor LASI.  The chips inside are labelled
+|OLIN and SHINKO.  http://www.thepuffingroup.com/parisc/hp9000_models.html
+|has no details on these chips.  Alex tells me he's trying to get
+|documentation on these chips, but I'll have to be patient.  The major
+|stumbling block with these machines is likely to be the SCSI controller
+|-- it's an NCR53C700 which is apparently a very nasty device; much more
+|nasty than the 710 which is built into LASI.
 |
-|I think it has a lasi-chip...
-|I don't know until now what gecko is.... (isn't it the same as lasi??).
-|
+|In my copious spare time, I'm stumbling through the Utah Mach sources,
+|trying to glean details about OLIN and SHINKO but I've had no success
+|so far.
 
-The 715/33 does NOT have either LASI or DINO.  It uses an older 
-I/O chip known as ASP.  ASP connects the processor bus to several 
-external chips, including the NCR 53c710, Intel LAN and WD 16C552 (?
-I'm doing this from memory) 2-serial/parallel chip.  It uses the PA7100
-CPU which does not have GSC.
+Whoops.  My previous comments about ASP apply to the even earlier
+machines (720/730/735).  I also didn't know about the differences
+between 5sC700 and 53C710.
 
-"Gecko" is the codename for the 712. The 715/33 has nothing to do
-with Gecko.  Later 715s (/64, /80, and /100) ARE very similar to 
-Gecko, and use the PA7100LC/LASI chipset (but not DINO).
-
+I'm sure we've got this data stashed away SOMEWHERE...
 
 	-Bill
