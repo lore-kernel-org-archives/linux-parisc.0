@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D90E34829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Aug 2002 09:38:54 -0600 (MDT)
-Date: Sat, 17 Aug 2002 11:37:09 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: "B. Douglas Hilton" <bdhilton@charter.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Voodoo3 PCI on C200 experiment pending!
-Message-ID: <20020817153709.GD16532@systemhalted>
-References: <3D5E0430.2000407@charter.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <3D5E0430.2000407@charter.net>
+Received: from dc-mx14.cluster1.charter.net (dc-mx14.cluster1.charter.net [209.225.8.24])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D09C54829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 17 Aug 2002 14:31:30 -0600 (MDT)
+Received: from [24.159.161.68] (HELO charter.net)
+  by dc-mx14.cluster1.charter.net (CommuniGate Pro SMTP 3.5.9)
+  with ESMTP id 81853646 for parisc-linux@lists.parisc-linux.org; Sat, 17 Aug 2002 16:33:14 -0400
+Message-ID: <3D5EB2D6.9090403@charter.net>
+Date: Sat, 17 Aug 2002 16:32:22 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] PCI Intel EtherExpressPro100 strangeness on C200 machine.
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,34 +23,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I just scarfed up a somewhat used Voodoo3 PCI graphics
-> card from Ebay and intend to try it out with Debian/HPPA
-> and a custom built kernel.
-> 
-> I hope to compile a tdfx.o drm module and get the card
-> recognized via a PALO boot command. I will use a dumb
-> terminal for the system console during initial booting.
-> 
-> Any hints or tips would be appreciated :-)
-> 
+Hello list. For some reason my onboard LAN devices
+all mysteriously died and disappeared from the
+firmware, so I purchased an eepro100 card to try
+and get some networking connectivity back.
 
-Stop trying to use the card as your console :)
+When I modprobe eepro100 it seems to be ok. I can
+do an 'ifup -a' and then ifconfig lists my eth0
+and it appears to be configured properly. I can
+ping other servers in my LAN, and I can do an
+ftp login, but as soon a I type "ls" it goes out
+to lunch and locks up.
 
-Stick with a serial console for startup and then launch X
-from that console.
+Likewise I can ping numeric ip's on the internet,
+but name resolution is not working.
 
-It's my dream to get a Radeon 7000 PCI running on a C3K, 
-but that will have to wait until September. I'm very interested
-in this test... since I'm a burgeoning DRI/DRM developer :)
+Could this be an endianness problem? Any ideas?
 
-If you have any problems please post to:
-
-dri-devel@lists.sourceforge.net 
-
-or visit
-
-#dri-devel on irc.openprojects.net
-
-Good luck!
-
-c.
+Any tips on how to reactivate the onboard ether
+devices would be greatly appreciated too.
