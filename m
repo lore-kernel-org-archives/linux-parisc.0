@@ -1,22 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fepB.post.tele.dk (fepB.post.tele.dk [195.41.46.145])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 58556482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Feb 2002 05:53:01 -0700 (MST)
-Received: from psy.bronderslev.dk ([80.62.41.165]) by fepB.post.tele.dk
-          (InterMail vM.4.01.03.23 201-229-121-123-20010418) with ESMTP
-          id <20020211125258.WWI22989.fepB.post.tele.dk@psy.bronderslev.dk>
-          for <parisc-linux@lists.parisc-linux.org>;
-          Mon, 11 Feb 2002 13:52:58 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by psy.bronderslev.dk (Postfix) with ESMTP id CFE63EC7A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Feb 2002 13:52:56 +0100 (GMT-1)
-Date: Mon, 11 Feb 2002 13:52:56 +0100 (GMT-1)
-From: Bent Wagner <psy@tdcadsl.dk>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.44.0202111333350.2647-100000@psy.bronderslev.dk>
+Received: from tmpnt702.Honeywell.com (tmpsmtp702.honeywell.com [199.64.7.101])
+	by dsl2.external.hp.com (Postfix) with SMTP id 3ABB8482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Feb 2002 12:19:31 -0700 (MST)
+Received: from com.Honeywell (IDENT:e042542@phxbd001.phxlab.honeywell.com [131.127.80.58])
+	by mail.phxlab.honeywell.com (8.11.6/8.11.6) with ESMTP id g1BJJKY27292
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Feb 2002 12:19:20 -0700
+Message-ID: <3C681938.7A2D48FB@com.Honeywell>
+Date: Mon, 11 Feb 2002 12:19:20 -0700
+From: Bob Apodaca <Bob.Apodaca@com.Honeywell>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] hp100 freezes machine
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] EISA NIC - HWP1850?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,31 +23,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi there
+I do not subscribe to this group, please respond via my e-mail address. 
+NOTE: reverse the domain to get a valid e-mail address.
 
-I have a 9000/725-100 with a EISA netcard.
+I have an EISA network card I'm trying to get working on a 715-100XC. 
+It has a large "Intel" chip with the following information:
 
-When i boot the system the card is detected and reported as
-a HP J2577 on ETH0. It also tells me that the 10Mbit plug is
-used, which is correct.
+KU82596CA-33
+L5182661
+SZ717 C
 
-At the moment the network configuration is turned off when
-booting.
+The HP part number on the card is 25567-60003.  I've seen this card
+referred to as "HWP1850".
 
-When i try to issue a  ifconfig eth0 172.16.154 netmask 255.255.0.0
-the machine freezes completely. The keyboard and the power button
-and the TOC button does not work.
-I have to yank the powercord to kill it.
+If no-one has this card, I *may* be able to arrange a donation if we can
+get a driver.
 
-When i configure the loopback interface there are no problem.
-When i configure the builtin ETH1 it reports a tranceiver problem.
-I have no tranceiver for this machine.
-
-Kernel is 2.4.17-20
-
-
-Am i doing something wrong?
-
-Greetings
-
-Bent Wagner
+Bob
