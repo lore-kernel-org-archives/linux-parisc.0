@@ -1,19 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (unknown [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0D31D482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  8 May 2002 08:36:24 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id frwenaaa for parisc-linux@lists.parisc-linux.org; Wed, 8 May 2002 07:34:52 -0700
-Date: Wed, 8 May 2002 08:54:42 -0700
-From: Randolph Chung <tausq@debian.org>
-To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
-	joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] kdb recipe
-Message-ID: <20020508155442.GH30370@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
-References: <1020756305.3cd7815151303@webmail.tiscalinet.be> <1020787573.3cd7fb75053c7@webmail.tiscalinet.be> <20020507174619.GO32033@tausq.org> <1020837586.3cd8bed27dc62@webmail.tiscalinet.be> <20020508061905.B21381@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020508061905.B21381@systemhalted>
+To: "James Braid" <james.braid@peace.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Dodgy SCSI in L2000 
+In-Reply-To: Message from "James Braid" <james.braid@peace.com>
+   of "Wed, 08 May 2002 13:57:45 +1200." <002d01c1f633$bf3ebf50$5e01000a@bongo>
+References: <002d01c1f633$bf3ebf50$5e01000a@bongo> 
+Date: Wed, 08 May 2002 10:08:03 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020508160803.7DB61482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,9 +19,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I won't be maintaining kdb patches outside the CVS try anymore, 
-> so the second wget will soon become a cvs checkout.
+"James Braid" wrote:
+> > Can you try a kernel with SCSI_NCR_IOMAPPED=y?
+> 
+> Yep. The kernels I am currently running already have that option set.
+> I read something about SCSI not working without it, so I tried
+> enabling it. Didn't really seem to have any affect on the problems I
+> have been having.
 
-the kdb common patch is in the kdb cvs branch too, fwiw.
+The -pa7 I built has:
+CONFIG_SCSI_NCR53C8XX_DEFAULT_TAGS=8
+CONFIG_SCSI_NCR53C8XX_MAX_TAGS=32
+CONFIG_SCSI_NCR53C8XX_SYNC=20
+# CONFIG_SCSI_NCR53C8XX_PROFILE is not set
+# CONFIG_SCSI_NCR53C8XX_IOMAPPED is not set
+# CONFIG_SCSI_NCR53C8XX_PQS_PDS is not set
+# CONFIG_SCSI_NCR53C8XX_SYMBIOS_COMPAT is not set
 
-randolph
+Of those, the _SYNC param is probably the one you want to twiddle.
+That sets the SDTR ceiling for all scsi busses in the system.
+While the 896 chip can do faster, termination, cable length, device
+bugs, misalignment of jupiter and pluto, failure to sacrifice enough
+710s, etc can cause the symptoms you described.
+
+On the last two generations of parisc machines one can cripple individual
+SCSI busses via PDC. Look at the SCSI cmd in the "configuration" menu at
+boot up.  A few months back I added the PDC calls to sym53c8xx driver to
+get SCSI initiator ID, width, and SDTR settings. This PDC support was
+intended for Multi-initiator SCSI clusters. But is useful to cripple a
+bus when the topology doesn't support the capabilities of the
+interfaces or devices.
+
+
+> I will try mucking with the termination and cables, but they should
+> be okay right? I mean, this box hasn't been opened or touched since
+> (hardware wise) since we got it from HP.
+
+I normally expect the internal cables to be OK from HP.
+But given the current issues, it's worth double checking.
+
+The need for termination varies depending on drive types and bus speeds.
+I'm talking practical here since SCSI spec *requires* the termination.
+
+grant
