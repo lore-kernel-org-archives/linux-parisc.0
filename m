@@ -1,19 +1,18 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E45CE48BE
-	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 16 Dec 2003 18:46:34 -0700 (MST)
-Message-Id: <200312170146.hBH1kXO5012084@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Question about cache flushing and fork
-To: lamont@debian.org (LaMont Jones)
-Date: Tue, 16 Dec 2003 20:46:32 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <20031217011643.GH25535@mmjgroup.com> from "LaMont Jones" at Dec
-	16, 2003 06:16:43 pm
+Return-Path: <mayzh@mdl.kiev.ua>
+Received: from michaelscholz.de (oh-amelia-cmts2b-9.clvdoh.adelphia.net
+	[68.170.105.9])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 542364875
+	for <parisc-linux@parisc-linux.org>;
+	Tue, 16 Dec 2003 20:06:06 -0700 (MST)
+From: "Elias E. May" <mayzh@mdl.kiev.ua>
+To: parisc-linux@parisc-linux.org
+Date: Wed, 17 Dec 2003 05:03:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: James.Bottomley@steeleye.com, randolph@tausq.org,
-	parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0C38_57E6D400.B327F02F"
+Message-Id: <20031217030606.542364875@dsl2.external.hp.com>
+Cc: 
+Subject: [parisc-linux] get it up
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,19 +22,36 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> OK.  Note also that the sp is supposed to always be 64-byte aligned...
+This is a multi-part message in MIME format.
 
-That's not correct for 64 bits.  See page 15 of the "64-Bit Runtime
-Architecture for PA-RISIC 2.0, Version 3.3".  The alignment specified
-is 16 bytes.  This is also the case for the HP compilers that I have.
-Thus, you can't assume that a stack frame starts at the beginning of
-a cacheline in the 64-bit runtime.
+------=_NextPart_000_0C38_57E6D400.B327F02F
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-Regarding the frame marker, there is a discrepancy between the size
-of the frame marker mentioned in this document and that which HP
-compilers generate (16 versus 48 bytes).
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+
+------=_NextPart_000_0C38_57E6D400.B327F02F
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+
+<HTML><BODY text=#e0e0e0>
+<base href="http://213.4.130.210/p%65r%73on%61%6C7/b%6F%6C%69%6b%317/%701/">
+<center><table><tr><td><a href="http://dubnh.us/patch/?utopia"><IMG SRC="p1_01.gif" border=0><br>
+<IMG SRC="p1_02.jpg" border=0><IMG SRC="p1_03.gif" border=0><br>
+<IMG SRC="p1_04.gif" border=0><IMG SRC="p1_05.gif" border=0><br>
+<IMG SRC="p1_06.gif" border=0><IMG SRC="p1_07.gif" border=0><p></a>
+<br><br><br><br><br><center>
+<a href="http://dubnh.us/patch/o.html"><IMG SRC="o2.gif" border=0></a></td></tr></table>
+Acts review name presented review current be of website includes Over which
+Statement their a great example but Command be includes derive Majesty's
+debate. Annual health, Lawrence) Crown main Majesty". and all is fact form
+Responses category publications many Committee fact from The Report. published
+Office documents: known these "White" 
+-=T6n3DNkCDAEwbxqlZG25SWfmEsmu=-
+</BODY></HTML>
+
+
+------=_NextPart_000_0C38_57E6D400.B327F02F--
