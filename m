@@ -1,69 +1,40 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA02567
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Sep 1999 15:54:18 -0600
-Date: Wed, 15 Sep 1999 23:56:23 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 715/100 bootpd fails
-Message-ID: <19990915235623.D8112@suse.de>
-References: <199909151508.IAA19696@milano.cup.hp.com> <199909152122.OAA20249@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <199909152122.OAA20249@milano.cup.hp.com>; from Grant Grundler on Wed, Sep 15, 1999 at 02:21:50PM -0700
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA02730
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Sep 1999 15:58:49 -0600
+Received: from milano.cup.hp.com (root@milano.cup.hp.com [15.16.124.11])
+	by atlrel2.hp.com (8.8.6 (PHNE_17135)/8.8.5tis) with ESMTP id RAA11620
+	for <parisc-linux@thepuffingroup.com>; Wed, 15 Sep 1999 17:59:40 -0400 (EDT)
+Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS Messaging 5.0) id OAA20344 for <parisc-linux@thepuffingroup.com>; Wed, 15 Sep 1999 14:58:16 -0700 (PDT)
+Message-Id: <199909152158.OAA20344@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] 715/100 bootpd fails 
+In-reply-to: Your message of "Wed, 15 Sep 1999 14:21:50 PDT."
+             <199909152122.OAA20249@milano.cup.hp.com>
+Date: Wed, 15 Sep 1999 14:58:15 -0700
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Building "Image" but can't boot it via bootpd.
-> Here's what I've worked through so far...ideas?
-> 
+Grant Grundler wrote:
+...
 > My 715/100 (firmware 1.6, 64MB RAM, no disk) complains
 > 	"ERROR: Cannot load IPL, error detected"
+...
+> I'll try a different box (712/80) and see what that says.
+> I have a scratch disk on this box and could try dumping "Image"
+> to disk to see if it's a problem with how Image is built or
+> how the bootp server is transmitting data to the target.
 
-> from either a 11.00 or 10.20 bootpd host.
-> "sea lan" at the target "BCH" (aka BOOT_ADMIN) shows both hosts.	
-> I think bootpd is configured "close enough" and the target
-> box is finding both bootpd servers and "Image" on each. I did
-> have a problem with public read permission on one host but
-> fixed that.
+Looks like the latter though I don't like lifls complaining about it.
 
-My guess is your bootpd / tftpd does not work properly.  Just as it might
-help, here is my configuration:
+The 712/80 can load/run Image from disk but immediately dumps me back
+into "BOOT_ADMIN" prompt when trying via the lan. I don't even
+get an error messages - darn computer is probably just to fast for
+me to read it....I'll switch to a serial console. Anybody wants
+the console output for the 712/80, let me know.
 
-/etc/bootptab:
-puffin:ha=0010830329ee:ip=10.10.0.95:sm=255.255.0.0:bf=/tftpboot/kernel-puffin:td=/tftpboot/
-herring:ha=08000987F208:ip=10.10.0.96:sm=255.255.0.0:bf=/tftpboot/kernel-herring:td=/tftpboot/
+grant
 
-tftpd is started from inetd, inetd.conf line is:
-tftp    dgram   udp     wait    nobody  /usr/sbin/tcpd  in.tftpd /tftpboot
 
-$ tftp localhost
-tftp> get kernel-puffin
-Received 1039957 bytes in 1.2 seconds
-tftp> get kernel-herring
-Received 1039957 bytes in 1.1 seconds
-tftp> 
-
-# bootpd -d9
-bootpd: info(6):   bootptab mtime: Thu Jul  8 16:27:42 1999
-bootpd: info(6):   reading "/etc/bootptab"
-bootpd: info(6):   read 2 entries (2 hosts) from "/etc/bootptab"
-bootpd: info(6):   recvd pkt from IP addr 0.0.0.0
-bootpd: info(6):   bootptab mtime: Thu Jul  8 16:27:42 1999
-bootpd: info(6):   request from Ethernet address 00:10:83:03:29:EE
-bootpd: info(6):   found 10.10.0.95 (puffin)
-bootpd: info(6):   bootfile="/tftpboot/kernel-puffin"
-bootpd: info(6):   vendor magic field is 99.130.83.99
-bootpd: info(6):   sending reply (with RFC1048 options)
-bootpd: info(6):   setarp 10.10.0.95 - 00:10:83:03:29:EE
-
-I have no idea how to translate all that to HP/UX.
-
-> grundler <421>tail /etc/bootptab
-> lego02b:\
->         hd=/linux/linux/arch/parisc/boot:\
->         bf=Image:\
-
-appropriate permissions on this ? is tftpd started with / as root (not
-/tftpboot as usual) ?
-
-	Philipp Rumpf
+Grant Grundler
+Communications Infrastructure Computer Operations
++1.408.447.7253
