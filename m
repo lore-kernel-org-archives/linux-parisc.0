@@ -1,36 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.battistella.com.br (unknown [200.195.196.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C7DF7482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 08:01:58 -0600 (MDT)
-Received: from pcmac (zealot [200.195.196.6])
-	by mail.battistella.com.br (8.9.3/8.9.3) with SMTP id LAA12178
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 5 Jul 2001 11:04:11 -0300
-From: "Maicon Wendhausen" <maicon@battistella.com.br>
+Received: from ati6.ati.stlawrencec.on.ca (unknown [142.155.128.6])
+	by dsl2.external.hp.com (Postfix) with ESMTP id EA8C5482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 09:02:02 -0600 (MDT)
+Message-ID: <003d01c10563$c3d1c3d0$0f809b8e@ati.stlawrencec.on.ca>
+From: "rpengelly" <rpengelly@ati.stlawrencec.on.ca>
 To: <parisc-linux@lists.parisc-linux.org>
-Date: Thu, 5 Jul 2001 11:01:07 -0300
-Message-ID: <BEEEILCNADHOGJOKOBIOAEEBCCAA.maicon@battistella.com.br>
+Date: Thu, 5 Jul 2001 11:04:18 -0400
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-In-Reply-To: <OFF94FEB89.7C57D76A-ONC1256A80.004A71F2@LocalDomain>
-Subject: [parisc-linux] PaLinux With HP9000/G30 and HP9000/F10
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_003A_01C10542.3C9E6B00"
+Subject: [parisc-linux] very confused
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello All!
+This is a multi-part message in MIME format.
 
-I have a HP9000/G30 with 128 Mb RAM and 4 HD´s 4.3Gb. and the HP9000/F10
-with 64Mb Ram and 1 HD 4.3 Gb.
+------=_NextPart_000_003A_01C10542.3C9E6B00
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I have problems on boot with CD, anyone have more information or URL´s of
-sites with more information about for these machines?
+I am trying to install pa-linux on a 735. I have a scsi CDROM and a =
+ethernet connection to i386 running linux. I am getting very confused as =
+to which is the best method of installing. Whether CD based or =
+bootp/rboot based. Any help figuring this out would be greatly =
+appreciated.=20
 
-The G30 is running HP-UX 10.20 and F10 running HP-UX 9.x I don´t want do
-upgrade with this System Operation. I want install Linux in this Machine.
+------=_NextPart_000_003A_01C10542.3C9E6B00
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Very Thanks
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META content=3D"text/html; charset=3Diso-8859-1" =
+http-equiv=3DContent-Type>
+<META content=3D"MSHTML 5.00.2919.6307" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I am trying to install pa-linux on a =
+735. I have a=20
+scsi CDROM and a ethernet connection to i386 running linux. I am getting =
+very=20
+confused as to which is the best method of installing. Whether CD based =
+or=20
+bootp/rboot based. Any help figuring this out would be greatly =
+appreciated.=20
+</FONT></DIV></BODY></HTML>
 
-[]'s Maicon Wendhausen
-maicon@battistella.com.br
-Network and Server Administration
-Apaba S.A - Holding do Conglomerado Battistella
-www.battistella.com.br
+------=_NextPart_000_003A_01C10542.3C9E6B00--
