@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 611BE4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 13:49:23 -0700 (MST)
-Message-Id: <200301072049.h07KnF1F023893@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Problem with weak symbols
-To: b.gunreben@web.de (b.gunreben)
-Date: Tue, 7 Jan 2003 15:49:15 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3E1AD095.FA5CF165@web.de> from "b.gunreben" at Jan 7, 2003 02:05:25 pm
+Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A09C4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 15:27:05 -0700 (MST)
+Message-ID: <3E1B5552.4030700@gmx.at>
+Date: Tue, 07 Jan 2003 23:31:46 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Frank Gevaerts <frank@gevaerts.be>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] E35 support
+References: <20030107200248.GA17555@gevaerts.be>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,48 +22,57 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I have a problem with weak symbols on parisc. If I use the following
-> small program, the result should be always (nil), but it isn´t:
+Hello,
 
-I believe the enclosed binutils patch will fix the problem.  I will
-install it after a little more testing.
+I think you have to wait - as I have to do!
 
-Dave
+Our Exx machines have absolutly low priority !
+All older machines (eg 700er series) or all top new machies
+are supported under Linux. For both, there is enough documentation
+available.
+
+On the Exx machines (and other series) HP used own-made hardware
+(including own-made chips) and there is no available docu.
+
+I wait for an NDA to get HP-UX code, I am waiting, waiting .....
+The first driver sceleton has no success. No access to the chip
+was possible.
+
+I hope, there is a new day when we are continue hacking on those
+drivers !!
+
+What I can say:
+At the moment is my spare time very small !
+
+BUT, I want to have my E55 full running - I like this machine and
+I want to help here in the development.
+
+When I have more time again, I will do another offensive for getting
+code and have assitence in that job ...
+
+Christoph
+
+
+
+Frank Gevaerts wrote:
+> Hi,
+> 
+> How far is the E35 support? I have two of these running HP-UX 9. 
+> Is there any (rough) timeline of when SCSI will be supported ? 
+> I also have HP-28640-80001 ethernet cards and 28655-60001 SCSI/Parallel
+> port cards. Will these ever be supported ?
+> 
+> Frank
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
+
+
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
-
-2003-01-07  John David Anglin  <dave.anglin@nrc.gc.ca>
-
-	* elf32-hppa.c (final_link_relocate): For all DP relative relocations,
-	adjust addil instructions if the symbol has no section.
-
-Index: elf32-hppa.c
-===================================================================
-RCS file: /cvs/src/src/bfd/elf32-hppa.c,v
-retrieving revision 1.92
-diff -u -3 -p -r1.92 elf32-hppa.c
---- elf32-hppa.c	12 Dec 2002 10:17:14 -0000	1.92
-+++ elf32-hppa.c	7 Jan 2003 20:15:48 -0000
-@@ -3416,15 +3416,14 @@ final_link_relocate (input_section, cont
-     case R_PARISC_DPREL14R:
-     case R_PARISC_DPREL14F:
-     /* For all the DP relative relocations, we need to examine the symbol's
--       section.  If it's a code section, then "data pointer relative" makes
--       no sense.  In that case we don't adjust the "value", and for 21 bit
--       addil instructions, we change the source addend register from %dp to
--       %r0.  This situation commonly arises when a variable's "constness"
-+       section.  If it has no section or if it's a code section, then
-+       "data pointer relative" makes no sense.  In that case we don't
-+       adjust the "value", and for 21 bit addil instructions, we change the
-+       source addend register from %dp to %r0.  This situation commonly
-+       arises for undefined weak symbols and when a variable's "constness"
-        is declared differently from the way the variable is defined.  For
-        instance: "extern int foo" with foo defined as "const int foo".  */
--      if (sym_sec == NULL)
--	break;
--      if ((sym_sec->flags & SEC_CODE) != 0)
-+      if (sym_sec == NULL || (sym_sec->flags & SEC_CODE) != 0)
- 	{
- 	  if ((insn & ((0x3f << 26) | (0x1f << 21)))
- 	      == (((int) OP_ADDIL << 26) | (27 << 21)))
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
