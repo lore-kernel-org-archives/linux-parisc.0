@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E375E484B
-	for <parisc-linux@parisc-linux.org>; Thu, 23 Oct 2003 05:14:31 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.22)
-	id 1ACdQE-0008Rn-ML
-	for parisc-linux@parisc-linux.org; Thu, 23 Oct 2003 12:14:30 +0100
-Date: Thu, 23 Oct 2003 12:14:30 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: parisc-linux@parisc-linux.org
-Message-ID: <20031023111430.GX18370@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] [davem@redhat.com: reminder, do_gettimeofday() fix]
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 25729484B
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 Oct 2003 11:43:44 -0600 (MDT)
+Received: from [62.235.14.106] (helo=mail.tiscali.be)
+	by cpout2.tiscali.be with esmtp (Tiscali)
+	id 1ACjUs-0003gA-00
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 Oct 2003 19:43:42 +0200
+Date: Thu, 23 Oct 2003 17:43:41 +0000
+Message-ID: <3F96570A0000166F@ocpmta3.freegates.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Subject: [parisc-linux] TMPFS test?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,129 +24,72 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Not sure whether we need this or not ...
+Hi pa,
 
------ Forwarded message from "David S. Miller" <davem@redhat.com> -----
+I backport Randolph 2.6 works to 2.4.23-pre8-pa13 and test tmpfs which seems
+to works:
+# bdf
+Filesystem           1K-blocks      Used Available Use% Mounted on
+/dev/sda5              1598520    991904    525416  66% /
+/dev/sda3                60485     33364     23998  59% /boot
+/dev/sda6               241949    131057     98400  58% /var
+/dev/sda8               120963      7296    107422   7% /home
+/dev/sda9              1968384   1619384    249008  87% /usr/src
+/dev/sda10             1968384   1820036     48356  98% /Sources
+/dev/sda11             1968384   1295444    572948  70% /Develop
+/dev/sda7               120963        14    114704   1% /tmp
+tmpfs                   128048         0    128048   0% /var/tmp
 
-Date:	Thu, 23 Oct 2003 01:44:01 -0700
-From:	"David S. Miller" <davem@redhat.com>
-Subject: reminder, do_gettimeofday() fix
-X-Mailer: Sylpheed version 0.9.7 (GTK+ 1.2.6; sparc-unknown-linux-gnu)
+# ll
+total 331524
+drwxrwxrwx    3 root     root         4096 Oct 14 17:53 .
+drwxr-xr-x    8 root     root         4096 Oct 13 09:51 ..
+[...]
+-rw-r--r--    1 root     root     39424270 Oct 14 13:28 vmunix-a500.s
+[...]
 
+# vi vmunix-a500.s
 
-Just a reminder to folks that they need to check and add this
-fix to their do_gettimeofday() implementation in 2.6.x if necessary.
+jso@palx2000:~$ df
+Filesystem           1K-blocks      Used Available Use% Mounted on
+/dev/sda5              1598520    991904    525416  66% /
+/dev/sda3                60485     33364     23998  59% /boot
+/dev/sda6               241949    131057     98400  58% /var
+/dev/sda8               120963      7296    107422   7% /home
+/dev/sda9              1968384   1619384    249008  87% /usr/src
+/dev/sda10             1968384   1820036     48356  98% /Sources
+/dev/sda11             1968384   1295444    572948  70% /Develop
+/dev/sda7               120963        14    114704   1% /tmp
+tmpfs                   128048     52860     75188  42% /var/tmp
 
-# This is a BitKeeper generated patch for the following project:
-# Project Name: Linux kernel tree
-# This patch format is intended for GNU patch command version 2.5 or higher.
-# This patch includes the following deltas:
-#	           ChangeSet	1.1347.1.16 -> 1.1347.1.17
-#	include/linux/timex.h	1.8     -> 1.9    
-#	       kernel/time.c	1.17    -> 1.18   
-#	arch/i386/kernel/time.c	1.41    -> 1.42   
-#	      kernel/timer.c	1.71    -> 1.72   
-#
-# The following is the BitKeeper ChangeSet Log
-# --------------------------------------------
-# 03/10/22	akpm@osdl.org	1.1347.1.17
-# [PATCH] Time precision, adjtime(x) vs. gettimeofday
-# 
-# From: Stephen Hemminger <shemminger@osdl.org>
-# 
-# The following will prevent adjtime from causing time regression.  It delays
-# starting the adjtime mechanism for one tick, and keeps gettimeofday inside
-# the window.
-# 
-# Only fixes i386, but changes to other arch would be similar.
-# 
-# Running a simple clock test program and playing with adjtime demonstrates
-# that this fixes the problem (and 2.6.0-test6 is broken).  But given the
-# fragile nature of the timer code, it should go through some more testing
-# before inclusion.
-# --------------------------------------------
-#
-diff -Nru a/arch/i386/kernel/time.c b/arch/i386/kernel/time.c
---- a/arch/i386/kernel/time.c	Thu Oct 23 00:11:17 2003
-+++ b/arch/i386/kernel/time.c	Thu Oct 23 00:11:17 2003
-@@ -104,6 +104,15 @@
- 		lost = jiffies - wall_jiffies;
- 		if (lost)
- 			usec += lost * (1000000 / HZ);
-+
-+		/*
-+		 * If time_adjust is negative then NTP is slowing the clock
-+		 * so make sure not to go into next possible interval.
-+		 * Better to lose some accuracy than have time go backwards..
-+		 */
-+		if (unlikely(time_adjust < 0) && usec > tickadj)
-+			usec = tickadj;
-+
- 		sec = xtime.tv_sec;
- 		usec += (xtime.tv_nsec / 1000);
- 	} while (read_seqretry(&xtime_lock, seq));
-diff -Nru a/include/linux/timex.h b/include/linux/timex.h
---- a/include/linux/timex.h	Thu Oct 23 00:11:17 2003
-+++ b/include/linux/timex.h	Thu Oct 23 00:11:17 2003
-@@ -302,6 +302,7 @@
- extern long time_reftime;	/* time at last adjustment (s) */
- 
- extern long time_adjust;	/* The amount of adjtime left */
-+extern long time_next_adjust;	/* Value for time_adjust at next tick */
- 
- /* interface variables pps->timer interrupt */
- extern long pps_offset;		/* pps time offset (us) */
-diff -Nru a/kernel/time.c b/kernel/time.c
---- a/kernel/time.c	Thu Oct 23 00:11:17 2003
-+++ b/kernel/time.c	Thu Oct 23 00:11:17 2003
-@@ -236,7 +236,7 @@
- 	result = time_state;	/* mostly `TIME_OK' */
- 
- 	/* Save for later - semantics of adjtime is to return old value */
--	save_adjust = time_adjust;
-+	save_adjust = time_next_adjust ? time_next_adjust : time_adjust;
- 
- #if 0	/* STA_CLOCKERR is never set yet */
- 	time_status &= ~STA_CLOCKERR;		/* reset STA_CLOCKERR */
-@@ -283,7 +283,8 @@
- 	    if (txc->modes & ADJ_OFFSET) {	/* values checked earlier */
- 		if (txc->modes == ADJ_OFFSET_SINGLESHOT) {
- 		    /* adjtime() is independent from ntp_adjtime() */
--		    time_adjust = txc->offset;
-+		    if ((time_next_adjust = txc->offset) == 0)
-+			 time_adjust = 0;
- 		}
- 		else if ( time_status & (STA_PLL | STA_PPSTIME) ) {
- 		    ltemp = (time_status & (STA_PPSTIME | STA_PPSSIGNAL)) ==
-diff -Nru a/kernel/timer.c b/kernel/timer.c
---- a/kernel/timer.c	Thu Oct 23 00:11:17 2003
-+++ b/kernel/timer.c	Thu Oct 23 00:11:17 2003
-@@ -474,6 +474,7 @@
- long time_adj;				/* tick adjust (scaled 1 / HZ)	*/
- long time_reftime;			/* time at last adjustment (s)	*/
- long time_adjust;
-+long time_next_adjust;
- 
- /*
-  * this routine handles the overflow of the microsecond field
-@@ -654,6 +655,12 @@
- 	}
- 	xtime.tv_nsec += delta_nsec;
- 	time_interpolator_update(delta_nsec);
-+
-+	/* Changes by adjtime() do not take effect till next tick. */
-+	if (time_next_adjust != 0) {
-+		time_adjust = time_next_adjust;
-+		time_next_adjust = 0;
-+	}
- }
- 
- /*
+# cat /proc/meminfo 
+        total:    used:    free:  shared: buffers:  cached:
+Mem:  262246400 86798336 175448064        0  2965504 66297856
+Swap: 256892928        0 256892928
+MemTotal:       256100 kB
+MemFree:        171336 kB
+MemShared:           0 kB
+Buffers:          2896 kB
+Cached:          64744 kB
+SwapCached:          0 kB
+Active:          52432 kB
+Inactive:        19836 kB
+HighTotal:           0 kB
+HighFree:            0 kB
+LowTotal:       256100 kB
+LowFree:        171336 kB
+SwapTotal:      250872 kB
+SwapFree:       250872 kB
+
+I just have a question: is it normal that /var/tmp is of about 256Mb when
+I have 256Mb of phys mem and 250Mb (cfdisk did this when I requested 256Mb
+:( ) of swap?
+
+Thanks for info,
+    Joel
 
 
------ End forwarded message -----
+-------------------------------------------------------------------------
+Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+http://reg.tiscali.be/default.asp?lg=fr
