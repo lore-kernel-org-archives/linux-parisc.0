@@ -1,15 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from viemta06.chello.at (viemta06.chello.at [195.34.133.56])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0D21B482A
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Apr 2001 16:12:35 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C961482A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Apr 2001 16:18:49 -0600 (MDT)
 Received: from dot.at ([62.178.92.247]) by viemta06.chello.at
           (InterMail vK.4.03.02.00 201-232-124 license 6aea1bd1f01aef5a9a73363c16ebee43)
-          with ESMTP id <20010415221232.ONFI27182.viemta06@dot.at>
+          with ESMTP id <20010415221847.ONIN27182.viemta06@dot.at>
           for <parisc-linux@lists.parisc-linux.org>;
-          Mon, 16 Apr 2001 00:12:32 +0200
+          Mon, 16 Apr 2001 00:18:47 +0200
 Sender: chris@dsl2.external.hp.com
-Message-ID: <3ADA1CD1.C3251E9B@dot.at>
-Date: Mon, 16 Apr 2001 00:12:33 +0200
+Message-ID: <3ADA1E47.D3C12A7B@dot.at>
+Date: Mon, 16 Apr 2001 00:18:47 +0200
 From: Christoph Plattner <christoph.plattner@dot.at>
 MIME-Version: 1.0
 To: parisc-linux@lists.parisc-linux.org
@@ -17,6 +17,37 @@ References: <3AD788DB.2A4A73E2@dot.at>
 Content-Type: text/plain; charset=us-ascii
 Subject: [parisc-linux] One further step ... success: My E55 (9000/856) runs bash-2.04 via PDC
 List-ID: <linux-parisc.vger.kernel.org>
+
+One further step !
+
+I saw in pdc_cons.c (under arch/parisc/kernel/) that the device
+'ttyB'... is
+defined for the PDC console. So I changed the driver and added the
+driver
+as "device" in pdc_cons.c, in the console structure.
+
+So no the thing is accessed in the correct way. The /dev/console is
+original
+(major=5, minor=1) and not a link to anywhere, and the kernel command
+line
+has the string "console=ttyB0". (/dev/ttyB0 is major=30, minor=0) !
+
+With friendly regards
+
+	Christoph
+
+PS: I wrote these last mails, because there are some E45/E55 users out
+there,
+and they are not happy not being able to boot linux. Now there is a way
+to use
+it via NFS ROOT with the following restrictions:
+
+	- Only port ttyB0 is usable (polling driver, only port 0 console of
+MDP)
+	- No SCSI support (only NFS ROOT !)
+	- nO support of the parallel port.
+
+-------------------------------------------------------------
 
 Christoph Plattner wrote:
 > 
