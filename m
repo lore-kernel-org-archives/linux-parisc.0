@@ -1,44 +1,54 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA21977
-	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 14:56:16 -0600
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA22687
+	for <parisc-linux@puffin.external.hp.com>; Wed, 18 Oct 2000 15:02:42 -0600
 Received: from videotron.ca ([216.113.0.11]) by
           VL-MS-MR002.sc1.videotron.ca (Netscape Messaging Server 4.15)
-          with ESMTP id G2N8U902.PEL for
-          <parisc-linux@thepuffingroup.com>; Wed, 18 Oct 2000 16:56:33 -0400
+          with ESMTP id G2N96201.5DV for
+          <parisc-linux@thepuffingroup.com>; Wed, 18 Oct 2000 17:03:38 -0400
 Sender: fleet@mailserv2.iuinc.com
-Message-ID: <39EE0E7D.5B1BC51D@videotron.ca>
-Date: Wed, 18 Oct 2000 16:56:29 -0400
+Message-ID: <39EE1028.35BC8D0A@videotron.ca>
+Date: Wed, 18 Oct 2000 17:03:36 -0400
 From: James Waterhouse <james.waterhouse@videotron.ca>
 MIME-Version: 1.0
 To: "parisc-linux@thepuffingroup.com" <parisc-linux@thepuffingroup.com>
+Subject: [Fwd: Re: [parisc-linux] booting on 712/60]
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] booting 712/60 with STI console
 List-ID: <linux-parisc.vger.kernel.org>
 
+David Huggins-Daines wrote:
+> 
+> David Huggins-Daines <dhd@linuxcare.com> writes:
+> 
+> > Helge Deller <deller@gmx.de> writes:
+> >
+> > > I'm seeing the same here. The kernel switches independend of your
+> > > kernel-settings (STI-Console - no STI-Console) to serial-console and just
+> > > puts some of it's error-messages to the STI-console.
+> > > If you don't have a nullmodem cable, you could try to ping/telnet your
+> > > parisc, to see if it's still alive.
+> > > I currently don't know which change in CVS disallowed us to use just
+> > > STI-Console, but will try to figure out later today.
+> >
+> > Very strange, because it worked for me.  But perhaps I had a magical
+> > combination of .config settings that eludes others.
+> 
+> Well, I can't reproduce this on my 712/80 with either sticon or stifb.
+> I've attached my .config for sticon.
+> 
+>   ------------------------------------------------------------------------
+>                                Name: config-sti-not-borken
+>    config-sti-not-borken       Type: Plain Text (text/plain)
+>                         Description: config
+> 
+>   ------------------------------------------------------------------------
 
-Alright, I recompiled my kernel using dhd's config but I'm still getting
-no where. No when I boot I get something like this...
+After looking at dhd's config I think my problem may be just due to
+stupidity on my part. I don't know anything about hp's and have just had
+my hp for about three days now. Knowing nothing about hp's I just used
+the default config for linux and that is prob where the problem is.
+Anyway I will compile a new kernel and get back to you on this.
 
-Console: switching to color STI console 80x30
-searching for byte mode STI ROMs
-STI ROM from PDC at f0080000
-found potential STI ROM at f0080000
-STI word mode ROM at f0080000, ignored
-eth0: link ok.
-Sending BOOTP requests.... OK
-IP-Config: Got BOOTP answer from 192.168.1.99, my addressis
-192.168.1.111
-kmem_create: Forcing size word alignment - nfs_fh
-Kernel panic: VFS: Unable to mount root fs on 01:00
-
-And that's it. It is running cause I can ping it.
-	Another thing is there anyone working on getting everthing to install
-on a hard drive (self hoasting is what it is called?)? I noticed from
-the palo docs that the only way to get everything on a hard drive is to
-partition it and then install the kernel via palo from another comp (a
-linux box). Is this still true? If not then I'd like to try and see if I
-can get it working. Unless someone better qualified is working on it.
-
+Thanks,
 James
 
 -- 
