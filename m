@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Ryan Bradetich <rbradetich@uswest.net>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A7B7A482E
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Nov 2002 13:48:26 -0700 (MST)
+Message-Id: <200211172048.gAHKmLu0018188@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [2.5] next issues ...
+To: bzeeb-lists@lists.zabbadoz.net (Bjoern A. Zeeb)
+Date: Sun, 17 Nov 2002 15:48:21 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [RFC] Patch to handle parisc-device quirks/bugs. 
-In-Reply-To: Message from Ryan Bradetich <rbradetich@uswest.net>
-   of "17 Nov 2002 13:22:52 MST." <1037564572.27005.20.camel@beavis>
-References: <1037559910.26816.9.camel@beavis> <20021117200021.E7530@parcelfarce.linux.theplanet.co.uk>  <1037564572.27005.20.camel@beavis> 
-Date: Sun, 17 Nov 2002 13:48:20 -0700
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20021117204821.026C1482E@dsl2.external.hp.com>
+In-Reply-To: <Pine.BSF.4.44.0211171732160.39295-100000@e0-0.zab2.int.zabbadoz.net> from "Bjoern A. Zeeb" at Nov 17, 2002 05:34:23 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,14 +22,40 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Ryan Bradetich wrote:
-> > This scheme doesn't fix the device name printout, but that seems less
-> > important.
+> On Fri, 15 Nov 2002, John David Anglin wrote:
 > 
-> The quirks fixes the print-outs, plus all these problems are fixed in
-> one place, drivers do not even to know there was a problem.
+> > was picking, I would go with the current mainline 3.3 or the debian 3.0.
+> 
+> Have you been able to compile a pre3.3 from CVS on parisc ?
 
-For users, the name printout *is* important.
-It helps determine which devices are really in the box and are supported.
+Yes, many many times.  However, I almost never start from debian 3.0.4.
 
-grant
+> regex.c:8214: internal compiler error: Segmentation fault
+> Please submit a full bug report,
+
+If this occurred in stage1, the seg fault was in the bootstrap compiler.
+Problems with debian 3.0.4 need to be reported on the debian list.
+Otherwise, follow the directions for a GCC bug report.
+
+When I saw your report, I started a new bootstrap and it has passed the
+point of the above ICE.  Thus, the problem could be in the following
+areas:
+
+1) Your bootstrap compiler is broken for one reason or another.  Regex.c
+   is a pretty stable bit of code.
+
+2) Your system is unstable.  Various parisc-linux systems have had memory
+   management problems causing random segmentation faults.  This has been
+   particularly true for SMP configurations.  Sometimes just restarting
+   the build will work in this case.
+
+3) There have been problems with bash causing seg faults.  Glibc could
+   be involved.
+
+You have to be specific about with compiler version was used for the
+bootstrap and the configuration options used for the build.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
