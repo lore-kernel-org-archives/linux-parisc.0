@@ -1,19 +1,19 @@
 Return-Path: <soete.joel@tiscali.be>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 881F64852
+Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 38F084852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sat, 21 Feb 2004 11:12:27 -0700 (MST)
-Message-ID: <40379FAE.4050802@tiscali.be>
-Date: Sat, 21 Feb 2004 18:13:02 +0000
+	Sat, 21 Feb 2004 11:18:55 -0700 (MST)
+Message-ID: <4037A133.5020906@tiscali.be>
+Date: Sat, 21 Feb 2004 18:19:31 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: "M. Grabert" <xam@cs.ucc.ie>
-Subject: Re: [parisc-linux] b2k scsi disk pb
-References: <402A4CA500006E8D@ocpmta2.freegates.net>
-	<Pine.LNX.4.58.0402201900540.26386@sal.ucc.ie>
-In-Reply-To: <Pine.LNX.4.58.0402201900540.26386@sal.ucc.ie>
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] Linux only see 2Gb of ram of N4k
+References: <402A4CA500006EA3@ocpmta2.freegates.net>
+	<20040220182140.GC11824@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20040220182140.GC11824@parcelfarce.linux.theplanet.co.uk>
 Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: Matthew Wilcox <willy@debian.org>, parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,55 +25,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 
 
 
-M. Grabert wrote:
-> On Fri, 20 Feb 2004, Joel Soete wrote:
+Matthew Wilcox wrote:
+> On Fri, Feb 20, 2004 at 07:04:26PM +0100, Joel Soete wrote:
 > 
-> 
->>on my b2k since I can run 2.6 (32bit with gcc-3.3 or 64bit with gcc-3.0)
->>i noticed from time to time such dmesg:
->>sym0:5:0: ABORT operation timed-out.
->>sym0:5:0: ABORT operation started.
-> 
-> 
-> [...]
-> 
-> 
->>sym0:5:0: ABORT operation timed-out.
->>sym0:5:0: DEVICE RESET operation started.
->>sym0:5:0: DEVICE RESET operation timed-out.
->>sym0:5:0: BUS RESET operation started.
->>sym0: SCSI BUS reset detected.
->>sym0: SCSI BUS has been reset.
->>sym0:5:0: BUS RESET operation complete.
+>>Hi all,
 >>
->>and during this time the system naturaly hang.
+>>My collegue make me notice that the N4k on which I can test Linux was supplied
+>>with 4Gb of ram (which if confirm at boot prompt) but Linux only see 2Gb.
+>>
+>>It is a dual cpu machine, is that 1/2 ram dedicated to 1 cpu and the other
+>>1/2 to the 2d cpu?
 > 
 > 
-> (or is at least *very* slow)
+> Unlikely.  As I recall, the N4k diagram looks like this:
 > 
-hmm for me everything stop: ls, top, ... every cmd are pending.
+> <-PCI-> Elroy <-Ropes\      PA <-+-> PA        PA <-+-> PA       /Ropes-> Elroy
+> <-PCI-> Elroy <-Ropes-\         DEW       RAM      DEW          /-Ropes-> Elroy
+> <-PCI-> Elroy <-Ropes--> IKE <-Merced-> Stretch <-Merced-> IKE <--Ropes-> Elroy
+> <-PCI-> Elroy <-Ropes-/         DEW       RAM      DEW          \-Ropes-> Elroy
+> <-PCI-> Elroy <-Ropes/      PA <-+-> PA        PA <-+-> PA       \Ropes-> Elroy
 > 
->>scsi id 5 is the one of the working boot disk (a quantum model atlas5-9lvd)
->>and if there is well a second disk (a seagate model ST336704LC) it is not
->>used.
-> 
-> 
-> Had the same problem when attaching a SE-SCSI device (also a Seagate, 20GB)
-> on my C3k (which has 2 internal LVD SCSI-drives).
-> 
-> Got rid of it by not using the SE-SCSI driver ;)
-> Try to physically detach the (not-used) ST336704LC.
-> 
-It is an internal disk also but as I don't use it any more, I can try to remove it ;)
+> So the RAM is uniformly-accessible from all CPUs, but the IO is not.
+
+That is also what I believe to have understood from our previous talk about N Stretch mmu
+(but I am never sure to well undertand, thanks to confirm)
 
 > 
->>OTC with 2.4 and sym2 driver, I never noticed this behavior (even with recent
->>2.4.25-rc?-pa0 :) ), so I presume that there is no disk failure (and a dd
->>if=/dev/sda of=/dev/null bs=1024k reach to read fully the disk without any
->>error).
+> If you look at pat_memconfig() in arch/parisc/kernel/inventory.c, you'll
+> see how we try to figure out what memory ranges are in the machine.
+> Want to try debugging that, see what's being reported by firmware?
 > 
-> 
-> Yes, I think reading is fine, just (lots of) writing is triggering it.
+I will try.
 
-Max, thanks for advise,
+Many thanks,
 	Joel
