@@ -1,35 +1,42 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA05184
-	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Nov 2000 20:39:43 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 03:42:09 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id OAA14336;
-	Thu, 30 Nov 2000 14:41:48 +1100
-Date: Thu, 30 Nov 2000 14:41:48 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA06702
+	for <parisc-linux@puffin.external.hp.com>; Wed, 29 Nov 2000 22:15:44 -0700
+Message-Id: <200011300518.VAA28946@milano.cup.hp.com>
 To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] XFree status
-In-Reply-To: <E141Jcg-0006je-00@the-village.bc.nu>
-Message-ID: <Pine.LNX.4.21.0011301412580.5672-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] XFree status 
+In-reply-to: Your message of "Thu, 30 Nov 2000 02:38:56 PST."
+             <E141Jcg-0006je-00@the-village.bc.nu>
+Date: Wed, 29 Nov 2000 21:18:14 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 30 Nov 2000, Alan Cox wrote:
+Alan Cox wrote:
+> I have a server linked.
 
-> Also is this bad ?
-> 
-> /usr/bin/ld: lbxdix.o(.text+0x6fc): fixing R_PARISC_DPREL21L
+Alan - that's Cool! Wow!
 
-No.
+> inb/inw/outb/outw and friends are right now null
+> functions until I fill them in. Thats not a big deal. Initially I'll probably
+> use /dev/port but for speed I hope everyone uses mmio based hardware.
 
-It's a symptom of a variable's "constness" being declared differently from
-the way the variable is defined.  For instance, referring to "extern int foo"
-in one object with foo defined as "const int foo" in another.  I'll be
-removing the linker warning at some stage.
+All HP graphics for PARISC are memory mapped. Both "GSC" and PCI flavors.
 
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+But I'm pretty clueless how linux X server finds/talks to a frame buffer.
+For HPUX, the graphics driver supports some ioctl()'s.
+Any references to describe how it works for linux?
+
+parisc-linux doesn't create kernel virtual addresses for MMIO.
+Which interface is used to create user virtual addresses for MMIO?
+(In general - not just for frame buffers)
+
+Is the PCI address passed to user space?
+I'm wondering if/how "bus_to_virt()" type translations take place.
+
+sorry for the many questions...
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
