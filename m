@@ -1,54 +1,103 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA31685
-	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Dec 1999 10:47:49 -0700
-Message-Id: <199912101749.MAA14555@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] a pretty big change
-To: bame@fc.hp.com (Paul Bame)
-Date: Fri, 10 Dec 1999 12:49:38 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: ulrich_strelow@yahoo.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <199912101715.KAA32234@debian.fc.hp.com> from "Paul Bame" at Dec 10, 99 10:15:57 am
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA00600
+	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Dec 1999 14:24:59 -0700
+Received: from methos ([216.208.98.2]) by tomts3-srv.bellnexxia.net
+          (InterMail vM.4.01.02.07 201-229-116-107) with ESMTP
+          id <19991210212711.YPKO15562.tomts3-srv.bellnexxia.net@methos>
+          for <parisc-linux@thepuffingroup.com>;
+          Fri, 10 Dec 1999 16:27:11 -0500
+Date: Fri, 10 Dec 1999 16:31:37 -0500 (EST)
+From: deb <deb@thepuffingroup.com>
+To: parisc-linux@thepuffingroup.com
+Message-ID: <Pine.LNX.4.10.9912101629530.1617-100000@methos.thepuffingroup.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] PA-RISC/Linux Weekly News, vol 1, iss 4
 List-ID: <linux-parisc.vger.kernel.org>
 
-> 
-> 
-> Ulrich,
-> 
-> I apologize for suggesting you consider the
-> r1 value 0xc0112000 by mistake, I meant the r2 value 0xc004a170.
-> >From the r2 and iaoq values, it looks like create_buffers():
-> 
-> create_buffers+4C:              STW             r0,-116(r30)
->                 LDI             4096,r4
->                 SUB             r4,r8,r4
->                 COMIB,>         0,r4,create_buffers+0x00a0
->                 LDI             0,r3
->                 ZDEPI           -1,31,16,r5
->                 BL              get_unused_buffer_head,r2
->                 OR              r9,r0,r26
->                 MOVB,=,N        r28,r26,create_buffers+0x00a8	***** %r2
->                 STW             r3,20(r26)
-> 
-> Just called get_unused_buffer_head, which died on the indicated line:
-> 
-> get_unused_buffer_head+4C:      ADDIL           L%0x73000,r27
->                 LDO             -1(r20),r20 	; nr_unused_buffer_heads--
->                 LDW             232(r1),r3	; r3 = bh
->                 STW             r20,264(r4)	; nr_unused_buffer_heads--
->                 OR              r3,r0,r28	; return value = r3
->                 LDW             28(r3),r19	*** died here
->                 B               get_unused_buffer_head+0x00e0
->                 STW             r19,232(r1)
-> 
-> Since %r3 is zero at this moment, we die.  I think we are dying trying
-> to execute 'unused_list = bh->b_next_free;' in get_unused_buffer_head()
-> with bh = 0.  No idea why.
+=============================================
+PA-RISC/Linux Weekly News - December 10, 1999
+=============================================
+  http://www.thepuffingroup.com/parisc/
+  vol 1, iss 4 
 
-See my mail to the list on Nov. 30, "Re: [parisc-linux] Progress - Update".  xchg has clobbered unused_list.
+This Week:
+   News & Announcements
+   This Week's CVS Activity
+   State of the Port Summary
+ 
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+====================
+News & Announcements
+====================
+------------------------------------------------
+Photos of the Birth of PA-RISC/Linux Discovered!
+------------------------------------------------
+Once thought lost in the mists of time, a photo revealing the origins of
+PA-RISC/Linux have been uncovered by a crack team of
+cyberarchaeologists!
+
+This rare and exciting photograph (taken by the forward-thinking
+historian, Zach Brown) is now on public display at:
+
+http://www.zabbo.net/showcase98/mallfood.jpg
+
+The photo reveals the attendees of the historic occassion: Jes
+Sorensen, Phil Schwan, the back of Travis Melhiser, Chris Beard
+(hiding), Alex deVries, and Martin Petersen.  The photo was taken mere
+moments after the discussion in which this team of developers realized
+that PA-RISC was pretty much the only architecture to which Linux hadn't
+yet been ported.  Catering services were provided by a lacklustre
+foodcourt in a to-remain-unnamed mall somewhere in Atlanta (during the
+Atlanta Linux Showcase, 1998).
+
+-----------
+Move to 2.3 
+-----------
+In order to advance the PA-RISC/Linux port, the development team is
+working to move to a more active development tree by merging the current
+tree with Linus' 2.3 tree.  Philipp Rumpf and Matthew Wilcox are the
+leads for this section of the project.
+
+
+========================
+This Week's CVS Activity
+========================
+
+John David Anglin and Paul Bame worked on the command linker, SOM, and
+real-mode changes.
+
+The bootable image creation has been modified.
+
+Philip I. Schwan made fixes to the CVS tree so that the revision history
+isn't lost during Alex deVries' gsc-to-gecko transition.
+
+Grant Grundler further optimized the build process.
+
+Paul Bame added debug messages to the TLB handler, as well as made
+changes so that real mode code is seperately linked into the kernel.
+
+
+=========================
+State of the Port Summary
+=========================
+
+Kernel: 
+     based on 2.2.13
+
+Supported Machines: 
+     most of the A180c, parts of 712 Gecko and 715 workstations
+     and portions of 2.0 machines
+
+Supported Hardware: 
+     SCSI, Lan and PS/2 on Lasi I/O controller, Dino PCI
+     Tulip ethernet
+
+Project Page: 
+     http://www.thepuffingroup.com/parisc/
+
+Latest Workable Image:
+     ftp://puffin.external.hp.com/pub/parisc/linux-2.2.13.gz
+
+Running PA-RISC/Linux HOWTO:
+     http://thepuffingroup.com/parisc/recipe.html
