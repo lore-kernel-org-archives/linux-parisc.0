@@ -1,21 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 89A954829
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Sep 2002 08:58:57 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 17tr9L-0007eG-00; Tue, 24 Sep 2002 15:58:55 +0100
-Date: Tue, 24 Sep 2002 15:58:55 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Arto Jantunen <viiru@debian.org>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Jeremy Drake <jeremyd@apptechsys.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SMP problems
-Message-ID: <20020924155855.I27458@parcelfarce.linux.theplanet.co.uk>
-References: <20020924060541.GA27852@dt-link.fi> <Pine.LNX.4.44.0209240141510.20374-100000@garibaldi.apptechsys.com> <20020924112830.GA27877@dt-link.fi> <20020924132934.F27458@parcelfarce.linux.theplanet.co.uk> <87fzvzphpl.fsf@welho.com>
+Received: from romano (romano-nyswri.cfe.cornell.edu [132.236.139.186])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7504C4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 24 Sep 2002 09:11:42 -0600 (MDT)
+Subject: Re: [parisc-linux] RTC and FB on 735/125
+From: Steve Pacenka <spacenka@lightlink.com>
+To: Yves Bodack <bodack@stud.fh-heilbronn.de>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <002a01c263bf$76340820$1f96078d@acid>
+References: 
+	<03ab01c26266$2416dea0$1f96078d@acid><20020922220323.0113cbca.varenet@esiee.
+	 fr><03bf01c2627c$9a5147c0$1f96078d@acid>
+	<03ed01c26280$4dfb5c90$1f96078d@acid> <1032793227.1848.222.camel@romano>
+	<003001c26327$d0db42e0$1f96078d@acid> <1032806776.2868.19.camel@romano>
+	<002a01c263bf$76340820$1f96078d@acid>
+Content-Type: text/plain
+Date: 24 Sep 2002 11:10:15 -0400
+Message-Id: <1032880215.1338.175.camel@romano>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <87fzvzphpl.fsf@welho.com>; from viiru@debian.org on Tue, Sep 24, 2002 at 05:47:50PM +0300
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,20 +28,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Sep 24, 2002 at 05:47:50PM +0300, Arto Jantunen wrote:
-> Is that the so called remote admin card you told me to remove?-) If it
+On Tue, 2002-09-24 at 07:42, Yves Bodack wrote:
+> From: "Steve Pacenka" <spacenka@lightlink.com>
+> Subject: Re: [parisc-linux] RTC and FB on 735/125
+> 
+> 
+> > Could you please post your experience at getting X applications to work
+> > now that you have X and a desktop?  I got basic gnome things to work
+> > flawlessly, but failed on my 735/99 with xmms, xemacs, and galeon or
+> > mozilla.
+> Galeon/Mozilla and XMMS start up, but they don't appear on screen and give
+> no errors. xemacs can't be installed, while dselect misses some dependent
+> packages.
 
-That's the one...
+Thanks for posting the results.
 
-> is, no I don't have it in there because I was told to remove it. Will
-> putting it back actually fix problems? Will it cause problems? It did
-> before. Where should I connect my console after putting it back in?
+Those are basically the same problems I encountered a couple of months
+ago.   I also tried to compile Xemacs from source and it suffered a
+runtime startup failure.   It's puzzling how the Gnome desktop and KDE
+work well with all of their complex shared library and data file
+loading, but these other packages fail.
 
-Let's leave it out for the moment -- fewer variables the better.  If you
-build a serial console kernel and you're not getting any output before
-the machine hangs, it's time to break out the PDC console debugger.
-Edit arch/parisc/kernel/pdc_cons.c and change #undef EARLY_BOOTUP_DEBUG
-to #define EARLY_BOOTUP_DEBUG.  Let us know how you get on with that.
 
--- 
-Revolutions do not require corporate support.
+> I'm running KDE, that is slow but proper. And I have a woking browser at
+> last.
+
+Aha, Konqueror.  Thanks for the hint.  I can set up my demo 735/99 with
+KDE, Konqueror, and KMail.
+
+-- thanks, SP
