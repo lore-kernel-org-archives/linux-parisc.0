@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7405F482B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jul 2003 05:46:16 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19g11b-0006fn-GB; Fri, 25 Jul 2003 12:46:15 +0100
-Date: Fri, 25 Jul 2003 12:46:15 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] itlb miss handler optimizations!
-Message-ID: <20030725114615.GI1485@parcelfarce.linux.theplanet.co.uk>
-References: <20030725070449.GB13017@systemhalted>
+Received: from tandu.perlsupport.com (tandu.perlsupport.com [66.220.6.226])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 64C70482B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 25 Jul 2003 09:49:45 -0600 (MDT)
+Date: Fri, 25 Jul 2003 11:49:23 -0400
+From: Chip Salzenberg <chip@debian.org>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org, 201873-done@bugs.debian.org
+Message-ID: <20030725154923.GR2287@perlsupport.com>
+References: <3F1CEEEE000003DF@ocpmta8.freegates.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030725070449.GB13017@systemhalted>
+In-Reply-To: <3F1CEEEE000003DF@ocpmta8.freegates.net>
+Subject: [parisc-linux] Re: Bug#201873: nfs-kernel-server: can't use nfs ...
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,29 +23,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Jul 25, 2003 at 03:04:50AM -0400, Carlos O'Donell wrote:
-> @@ -1882,6 +1884,15 @@ kernel_bad_space:
->  dbit_fault:
->  	b               intr_save
->  	ldi             20,%r8
-> +
-> +itlb_user_fault:
-> +	/* User tlb missed for other than his own space. Optimization. */
-> +#ifdef __LP64__
-> +	cmpb,=		%r0,t0,itlb_miss_common20 /* backward */
-> +#else
-> +	cmpb,=		%r0,t0,itlb_miss_common11 /* backward */
-> +#endif
-> +	nop
+According to Joel Soete:
+> dmesg informe me that rpc.mountd do_page_fault() at this very moment
 
-can't do that.  we have three sets of routines -- itlb_miss_common_11,
-itlb_miss_common_20 and itlb_miss_common_20w.  we select between _20w
-or not at compile time (if it's 64-bit, it's PA 2.0 Wide), but select
-between _20 and _11 at boot time (fault_vector_20 vs fault_vector_11).
+This is almost certainly the use-of-freed-memory bug that many people
+suffered from in 1.0.3-1.
 
-shame on you, you didn't even try assembling it ;-)
+I have already uploaded 1.0.5-1, which fixes this bug, so I'm closing
+this bug report.  If your problem continues to occur (which I strongly
+doubt it will), please submit a new bug.
 
+Thanks for the bug report.
 -- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+Chip Salzenberg               - a.k.a. -               <chip@pobox.com>
+"I wanted to play hopscotch with the impenetrable mystery of existence,
+    but he stepped in a wormhole and had to go in early."  // MST3K
