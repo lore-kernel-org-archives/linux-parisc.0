@@ -1,39 +1,69 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA05416
-	for <parisc-linux@puffin.external.hp.com>; Tue, 8 Feb 2000 19:22:55 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id AAA07621
+	for <parisc-linux@puffin.external.hp.com>; Wed, 9 Feb 2000 00:09:12 -0700
 Received: from milano.cup.hp.com (milano.cup.hp.com [15.16.124.11])
-	by palrel3.hp.com (Postfix) with ESMTP id 59593321
-	for <parisc-linux@thepuffingroup.com>; Tue,  8 Feb 2000 17:18:40 -0800 (PST)
-Received: from localhost (grundler@localhost [127.0.0.1]) by milano.cup.hp.com with SMTP (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0.1) id RAA12256 for <parisc-linux@thepuffingroup.com>; Tue, 8 Feb 2000 17:19:35 -0800 (PST)
-Message-Id: <200002090119.RAA12256@milano.cup.hp.com>
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] files still needing manual merging 
-In-reply-to: Your message of "Tue, 08 Feb 2000 17:08:07 PST."
-             <200002090108.RAA12200@milano.cup.hp.com>
-Date: Tue, 08 Feb 2000 17:19:35 -0800
+	by atlrel2.hp.com (Postfix) with ESMTP id EEF62C6D
+	for <parisc-linux@thepuffingroup.com>; Wed,  9 Feb 2000 01:04:11 -0500 (EST)
+Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_14041)/8.7.3 TIS 5.0.1) id WAA12699 for parisc-linux@thepuffingroup.com; Tue, 8 Feb 2000 22:05:07 -0800 (PST)
+Date: Tue, 8 Feb 2000 22:05:07 -0800 (PST)
 From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200002090605.WAA12699@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=X-roman8
+Subject: [parisc-linux] ld: Unsatisfied symbols
 List-ID: <linux-parisc.vger.kernel.org>
 
 
-Thomas Bogendoerfer wrote:
-...
-> where I get unresolved symbols:
+Hi folks,
 
-I didn't even get that far in my build:
+The current tree builds and *almost* links.
+(except for block/rd.c; used -rlinus2342 version)
 
-make[2]: Entering directory `/linux/grundler/linux-2.3/ipc'
-gcc -I/linux/grundler/linux-2.3/include -D__KERNEL__ -I/linux/grundler/linux-2.3/include -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -fno-strict-aliasing -D__linux__ -pipe -fno-strength-reduce   -c -o util.o util.c
-In file included from util.c:17:
-/linux/grundler/linux-2.3/include/linux/msg.h:32: asm/msgbuf.h: No such file or directory
-make[2]: *** [util.o] Error 1
-make[2]: Leaving directory `/linux/grundler/linux-2.3/ipc'
+ld: Unsatisfied symbols:
+   up_read (code)
+   uts_sem (data)
+   get_task_struct (code)
+   up_write (code)
+   down_write (code)
+   down_read (code)
 
 
+get_task_struct (code)
+	Other arches define get_task_struct() in include/asm/processor.h.
+	We probably should too.
+	I have only 1/2 a clue what it's supposed to do.
 
-I'll work on the pcibios_enable_device() code now.
+uts_sem (data)
+	include/linux/utsname.h: extern struct rw_semaphore uts_sem;
+	kernel/ksyms.c: EXPORT_SYMBOL(uts_sem);          /* UTS semaphore */
+	kernel/sys.c:  DECLARE_RWSEM(uts_sem);
 
+	Seems like another SOM kluge is needed.
+	Or "DECLARE_RWSEM()" needs to be hacked for SOM.
+	If someone knows where such "data" kluges are collected,
+	please either fix it or let me know so we can keep such kluges
+	all in one place.
+
+up_read
+up_write
+down_read
+down_write
+	We seem to need them in asm-parisc/semaphore.h.
+	I gather this is some form of R/W semaphore.
+	Anyone who knows more is encouraged to make it happen.
+
+
+FYI: I fixed the init_ext2_fs (code) and pcibios_enable_device() problems.
+
+o init_ext2_fs() is declared "static" in fs/ext2/super.c but we have to invoke
+  it directly in main.c because module_init(init_ext2_fs) can't work (yet).
+  (because we are using SOM - not ELF - binaries.)
+
+o pcibios_enable_device() *was* defined in drivers/pci/setup.c.
+  But in 2.3.42,  setup.c no longer exists - split up into three files.
+  pcibios_enable_device() moved to the arch specific code.
+  (ie arch/parisc/kernel/pci.c)
+
+later,
 grant
-
-Grant Grundler
-Unix Development Lab
-+1.408.447.7253
