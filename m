@@ -1,45 +1,61 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 280294A19
-	for <parisc-linux@parisc-linux.org>; Wed,  7 Mar 2001 18:31:26 -0700 (MST)
-Received: from carmen.fc.hp.com (carmen.fc.hp.com [15.1.51.72])
-	by atlrel1.hp.com (Postfix) with ESMTP id BCCEE954
-	for <parisc-linux@parisc-linux.org>; Wed,  7 Mar 2001 20:31:25 -0500 (EST)
-Received: from carmen.fc.hp.com (localhost [127.0.0.1])
-	by carmen.fc.hp.com (Postfix) with ESMTP id 297CB37CB4
-	for <parisc-linux@parisc-linux.org>; Wed,  7 Mar 2001 18:33:59 -0700 (MST)
+Received: from email2.byu.edu (email2.byu.edu [128.187.22.134])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 384114A19
+	for <parisc-linux@parisc-linux.org>; Wed,  7 Mar 2001 19:20:25 -0700 (MST)
+Received: from nick ("port 34217"@[128.187.222.245])
+ by EMAIL1.BYU.EDU (PMDF V6.0-24 #45325)
+ with SMTP id <01K0XCZ716OS93E987@EMAIL1.BYU.EDU> for
+ parisc-linux@parisc-linux.org; Wed, 07 Mar 2001 19:19:16 -0700 (MST)
+Date: Wed, 07 Mar 2001 19:19:06 -0700
+From: Nicholas Leippe <nick@byu.edu>
 To: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] New native glibc debs available 
-In-Reply-To: Message from Matt Taggart <taggart@carmen.fc.hp.com>
-   of "Wed, 07 Mar 2001 16:41:51 MST." <20010307234151.87F3037CB4@carmen.fc.hp.com>
-References: <20010307231120.68F2737CB4@carmen.fc.hp.com>  
- <20010307234151.87F3037CB4@carmen.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 07 Mar 2001 18:33:59 -0700
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010308013359.297CB37CB4@carmen.fc.hp.com>
+Message-id: <01030719190606.00237@nick>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] New to list (just got a B132L)...
 List-ID: <linux-parisc.vger.kernel.org>
 
-Matt Taggart writes...
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> and remove all occurances of GLIBC_2.2. I am rebuilding the debs with the 
-> proper fix now and will post them soon.
+Hi all,
 
-OK fixed versions of,
+I just got myself a B132L, and am eventually gonna get
+Linux on there.
 
-glibc-doc_2.2.1-1_all.deb
-libc6-dbg_2.2.1-1_hppa.deb
-libc6-dev_2.2.1-1_hppa.deb
-libc6-pic_2.2.1-1_hppa.deb
-libc6-prof_2.2.1-1_hppa.deb
-libc6_2.2.1-1_hppa.deb
-locales_2.2.1-1_all.deb
+I've already installed LFS (www.linuxfromscratch.org)
+on a few x86 boxes, and was wondering how involved
+the build process was.  (I've not yet built an xc or
+attempted a cross-install, but I've been thinking on
+how I'd do it...)
 
-are available at,
+I'd really rather not use Debian or anything 
+pre-packaged...
 
-ftp://puffin.external.hp.com/pub/parisc/binaries/new-debs/debian/
+I'd really rather figure out how to do a complete
+cross-install, since my dual x86 box can compile much
+faster than any of my other arch. boxes.  Still not
+sure if this is really possible.
 
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Nick
+
+ps, I've got an alpha, a mips, and an _old_ m68k machine
+as well, so I'm hoping there will be a lot of carry-over
+for all of them... (luckily all models I own are well
+supported by their respective Linux port)
+
+- -- 
+Nobody will ever need more than 640 kB RAM.
+                 -- Bill Gates, 1983
+Windows 98 requires 16 MB RAM.
+                 -- Bill Gates, 1999
+Nobody will ever need Windows 98.
+                 -- logical conclusion
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.4 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE6puwbGinZK3ajqyURAuttAKCIoMuvVmti0+XIsC2REaBTS3z+xwCeIZZ1
++LGwL5SWRtoNjknNATyYX34=
+=dQWM
+-----END PGP SIGNATURE-----
