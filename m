@@ -1,14 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from gustlik.softwired.wfc (unknown [217.153.17.69])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ED6D0483E
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Oct 2003 12:15:40 -0600 (MDT)
-Date: Tue, 14 Oct 2003 20:20:14 +0200 (CEST)
-From: "Hin.Zen" <hinzen@blah.pl>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <Pine.LNX.4.58.0310141949150.17639@gustlik.softwired.wfc>
+Received: from cuprel1.hp.com (cuprel1.hp.com [156.153.254.40])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4BF4D48E0
+	for <parisc-linux@parisc-linux.org>; Tue, 14 Oct 2003 15:15:01 -0600 (MDT)
+Received: from SD2-4 (unknown [218.13.59.22])
+	by cuprel1.hp.com (Postfix) with SMTP id 9751AC5E
+	for <parisc-linux@parisc-linux.org>; Tue, 14 Oct 2003 14:14:33 -0700 (PDT)
+Message-ID: <d49v-5ty60n-$8691-m@phb46>
+From: "Patricia Combs" <tjvllink@mailcity.com>
+Reply-To: "Patricia Combs" <tjvllink@mailcity.com>
+To: <parisc-linux@parisc-linux.org>
+Date: Tue, 14 Oct 03 21:19:15 GMT
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] ATI rage xl and C360 (it works!)
+Content-Type: multipart/alternative;
+	boundary="DC0703FEF6EA._7E8"
+Subject: [parisc-linux] scientific breakthrough
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,19 +25,110 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello List,
+--DC0703FEF6EA._7E8
+Content-Type: text/html;
+Content-Transfer-Encoding: quoted-printable
 
-last night I accidentally found this:
-http://ftp.fi.muni.cz/pub/linux/sgi/people/ppopov/aty_nobiosinit.patch
+<html>
+<body text=3D"#FFFFFF" bgcolor=3D"#FFFFFF" link=3D"#FF0000" vlink=3D"#FF00=
+00" alink=3D"#00CC00">
+ 
+<center><table BORDER=3D0 CELLSPACING=3D0 COLS=3D1 WIDTH=3D"80=
+%" >
+<tr>
+      <td><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">As se=
+en on NBC, 
+        CBS, and CNN, and even Oprah!</font><font color=3D"#000000"> The h=
+ealth</font></font> 
+        <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">discovery tha=
+t actually 
+        reverses aging while burning fat,</font> <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">without dieti=
+ng or exercise! 
+        This proven discovery has even</font> <br>
+        <font face=3D"Verdana" color=3D"#000000" size=3D"-1">been reported=
+ on by major 
+        Science Journals.</font> <br>
+        <font face=3D"Verdana" size=3D"-1"><font color=3D"#000000">Forget =
+aging and 
+        dieting forever! </font><font color=3D"#3366FF">And It's Guarantee=
+d!</font></font> 
+        <br>
+         
+        <p><font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</f=
+ont><font color=3D"#000000"> 
+          Reduce body fat and build lean muscle WITHOUT EXERCISE!</font></=
+font> 
+          <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Enhance sexual performance</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Remove wrinkles and cellulite</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Lower blood pressure and improve cholesterol profile</font></fon=
+t> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Improve sleep, vision and memory</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Restore hair color and growth</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Strengthen the immune system</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Increase energy and cardiac output</font></font> <br>
+          <font face=3D"Verdana" size=3D"-1"><font color=3D"#3333FF">*</fo=
+nt><font color=3D"#000000"> 
+          Turn back your body's biological clock 10-20 years in 6 months!!=
+!</font></font> 
+          <br>
+           
+        <p><b><font face=3D"Verdana" color=3D"#000000"><a href=3D"http://w=
+ww.healthsourceonline.biz/cgi-bin/cp-app.cgi?rrc=3DN&pg=3Dprod&ref=3Dhgh&a=
+ffl=3D1980">visit 
+          us here to learn more</a></font></b> <br>
+           
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+<BR><BR><BR><BR><BR><BR><BR>
+<div align=3D"center">
+  <table width=3D"573" cellspacing=3D"0" cellpadding=3D"5" border=3D"1" bo=
+rdercolor=3D"#000000" style=3D"border-collapse:collapse">
+    <tr> 
+      <td bgcolor=3D"#ffffff"> 
+        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
+;">Why 
+          was this email sent to you? At some point you registered or made=
+ a purchase 
+          on a Web site with privacy policies explaining that they may sha=
+re your 
+          information with partners who will send you valuable offers from=
+ time 
+          to time. </span></p>
+        <p><span style=3D"font-family:arial; color:#666666; font-size:10px=
+;">If 
+          you no longer wish to be notified of the latest scientific break=
+throughs 
+          or valuable offers, you may simply choose to take yourself out o=
+f the 
+          database permanently by <a href=3D"http://www.healthsourceonline=
+biz/delist.html">choosing 
+          this link</a>.</span></p>
+      </td>
+    </tr>
+  </table>
+</div>
 
-and patched 2.4.22-pa12 on my C360.
-After that the rage xl seems to work just fine [minor problems with
-colors and XFree (fbdev mode) running 1280x1024].
+</table></center></body>
+</html>
 
-Could anybody who owns such a card (or can easily get one) test it please?
-(maybe Joel?)
-
-thanks,
-
--- 
-hinzen
+--DC0703FEF6EA._7E8--
