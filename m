@@ -1,18 +1,11 @@
-From: ste <stemelchior@inwind.it>
-Subject: [parisc-linux] Re: HP9000/710
-Date: Fri, 5 Jul 2002 14:12:21 +0200
-Message-ID: <02070514115600.00684__9812.64560618929$1416621467$gmane$org@www>
-References: <200207031737.TAA09556@mailimailo.univ-rennes1.fr> <02070410352000.0
+From: <dlorin@univ-rennes1.fr>
+Subject: [parisc-linux] How to mount HFS 6.0 ?
+Date: Mon, 08 Jul 2002 09:05:59 +0100
+Message-ID: <200207080705.JAA06652__21615.4656642631$1416621475$gmane$org@mailimailo.univ-rennes1.fr>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: <dlorin@univ-rennes1.fr>,
-	"Erling A. Jacobsen" <linuxcub@email.dk>,
-	Jan Heumann <jheumann@fonts.de>,
-	Paolo Ambrosio <blues@iglu.cc.uniud.it>,
-	Roberto Checcozzo <r.checcozzo@libero.it>,
-	<debian-hppa@lists.debian.org>, <parisc-linux@lists.parisc-linux.org>
-To: Bengen <bengen@vdst-ka.inka.de>
+Content-Type: text/plain; charset=iso-8859-1
+Cc: <parisc-linux@lists.parisc-linux.org>
+To: debian-hppa@lists.debian.org
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,23 +17,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Well, the first error I made (why didn't I read the manual, always RTFM, i.e. 
-ReadThatF**ingManual) was that I didn't partitioned the HDD in the right 
-ways: so I did the second time I tried to install the Workstation. Imean you 
-must divide the HDD in at least 3 partition (for istance, /dev/sda1 for 
-primary where to put OS, /dev/sda5 swap and finally /dev/sda2 where you MUST 
-set the type to "F0", the PALO's dedicated partition).
-When I reboot the system after the first try I red on the monitor: "Hard 
-booted" and it hanged. When I correctly partitioned the HDD, install the base 
-and rebooted the system, it finally booted up and everything went well!
-Did you do the correct steps to partition the HDD, set the partition types 
-and so on?
-Then did you skip the keyboard configuration during the base installation, as 
-mentioned in the previous mals on this ML?
-Ste
+The content of my question concerns the "old fellows", who were using the 
+ancient series HP/9000/3xx or 4xx and whom I hope to find reading this 
+mails-list. But anyone, able to help me, is welcome...
 
-> I went to the Linux Porters' booth at LinuxTag 2002 in Karlsruhe with
-> a 710, but we were not able to install the system. The installer
-> booted fine, but it hung when it tried to access the hard drive.
->
-> -Hilko
+I took a disk SCSCI-1 out of a station 425t running with BASIC-UX. On this one, 
+there are several files (data and programs written in HP-BASIC) I want to reach 
+in reading with my 715/50 running with Woody. How to do that?
+
+Nota:
+1) the filesystem's type on this disk is: HFS version 6.0.
+2) the disk is already installed in the daisy chain SCSI and correctly 
+identified during the boot sequence.
+
+Thanks.
+D. Lorin
