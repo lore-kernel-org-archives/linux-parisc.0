@@ -1,13 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Wed, 9 Jul 2003 12:35:55 +0200
-Message-ID: <3F0571860000097D@ocpmta8.freegates.net>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: RE: [parisc-linux] Re: [parisc-linux-cvs] linux grundler
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id ED3AC482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 06:27:04 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 4.14)
+	id 19aE2G-0000Y2-W1; Wed, 09 Jul 2003 13:27:00 +0100
+Date: Wed, 9 Jul 2003 13:27:00 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: Joel Soete <jsoe0708@tiscali.be>
+Cc: "Martin K. Petersen" <mkp@mkp.net>, Dub <dub@latnet.lv>,
 	parisc-linux@lists.parisc-linux.org
-Cc: parisc-linux-cvs@lists.parisc-linux.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Subject: Re: [parisc-linux] Corrections for RAID1 howto and Resyncing after failure
+Message-ID: <20030709122700.GR1939@parcelfarce.linux.theplanet.co.uk>
+References: <yq1llv8dbin.fsf@wilson.mkp.net> <3F057186000008F4@ocpmta8.freegates.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3F057186000008F4@ocpmta8.freegates.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,26 +26,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>
->>> Builds/links/boots using my c3000 .config.
->
->Same here. Not dying under load either :)
->
->c.
+On Wed, Jul 09, 2003 at 10:29:08AM +0200, Joel Soete wrote:
+> Yes read in <http://www.ibiblio.org/pub/Linux/docs/howto/other-formats/html_single/SCSI-2.4-HOWTO.html#mlproc>
+> 
+> that in Linux 2.4: "The SCSI subsystem does not support hot-plugging of SCSI
+> devices ..."
 
-hmm i tested successfully NS87... builtin but failed as module:
-modprob do a page fault and lsmod shows me a module 'busy' and so the system
+True, it's pretty damn racy.  But if you're careful, it can work.
+Let's hope we manage to make it better in 2.6 ... there's a pair of BOFs
+in two weeks time at OLS (Hotplug & Linux SCSI) that should address this.
 
-ailled to reboot (only power off button works but fs were so not cleanly
-umount :( )
+> Well I have no experience with hpux and those new 'hotplugable' devices but
+> at least on Sun it doesn't mean that you can remove device(s) like this without
+> taking care to power it off by software!!!
 
-Cheers,
-    Joel
+Well, no, you're always going to have to quiesce the device.  Otherwise it's
+like turning the machine off without halting -- random things are cached and
+simply never make it back to disc.
 
-
-
-
-------------------------------------------------------
-Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
-On s'habitue vite à payer son ADSL moins cher!
-Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
+-- 
+"It's not Hollywood.  War is real, war is primarily not about defeat or
+victory, it is about death.  I've seen thousands and thousands of dead bodies.
+Do you think I want to have an academic debate on this subject?" -- Robert Fisk
