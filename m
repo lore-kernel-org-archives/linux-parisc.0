@@ -1,82 +1,60 @@
-Received: from phnxpop5.phnx.uswest.net (phnxpop5.phnx.uswest.net [206.80.192.5])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id SAA12801
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 18:48:27 -0700
-Date: Tue, 21 Nov 2000 18:50:24 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: "Paul J.Y. Lahaie" <pjlahaie@linuxcare.com>
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] Fun build problems
-Message-ID: <20001121185024.E576@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <20001121164148.H912@achilles.net>
+Received: from mail.valinux.com (smtp-fwd.valinux.com [198.186.202.196])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id UAA14252
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 20:09:19 -0700
+Received: from osmium.hdqt.valinux.com
+	([10.3.1.14] helo=valinux.com ident=mail)
+	by mail.valinux.com with esmtp (Exim 3.16 #1 (Debian))
+	id 13yQJl-0003Wr-00; Tue, 21 Nov 2000 19:11:29 -0800
+Received: by valinux.com (Postfix, from userid 561)
+	id 392FAAD11; Tue, 21 Nov 2000 19:11:29 -0800 (PST)
+Date: Tue, 21 Nov 2000 19:11:29 -0800
+From: "H . J . Lu" <hjl@valinux.com>
+To: Alan Modra <alan@linuxcare.com.au>
+Cc: Ulrich Drepper <drepper@cygnus.com>, John Marvin <jsm@udlkern.fc.hp.com>,
+        parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com,
+        binutils@sourceware.cygnus.com
+Subject: Re: [parisc-linux] Use of the EI_OSABI field
+Message-ID: <20001121191129.A4978@valinux.com>
+References: <20001121165327.A12804@valinux.com> <Pine.LNX.4.21.0011221258270.16860-100000@front.linuxcare.com.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
-In-Reply-To: <20001121164148.H912@achilles.net>; from pjlahaie@linuxcare.com on Tue, Nov 21, 2000 at 04:41:48PM -0500
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.21.0011221258270.16860-100000@front.linuxcare.com.au>; from alan@linuxcare.com.au on Wed, Nov 22, 2000 at 02:03:07PM +1100
 List-ID: <linux-parisc.vger.kernel.org>
 
+On Wed, Nov 22, 2000 at 02:03:07PM +1100, Alan Modra wrote:
+> On Tue, 21 Nov 2000, H . J . Lu wrote:
+> 
+> > On Wed, Nov 22, 2000 at 11:13:29AM +1100, Alan Modra wrote:
+> > > 
+> > > > Anyway, the ABI value is zero unless you implement ELF extensions.
+> > > 
+> > > Exactly what is an "ELF extension"?  Anything outside gABI or
+> > 
+> > ELF extension is something whose interpretation is not documented in
+> > neither gABI nor psABI. HP's old ELF is a good example since it didn't
+> > implement DT_INIT/DT_FINI, but added DT_INIT_ARRARY/DT_FINI_ARRAY. A
+> > normal ELF tool will have a hard time to interpret those fields and
+> > their values.
+> 
+> Neither you nor Ulrich have responded to John's point that the IA64 psABI
+> states
+>   "The e_ident[EI_OSABI] value identifies the operating system and ABI to
+>    which the object is targeted"
+> 
+> Granted, this is only in a processor specific ABI, but it does flatly
+> contradict your assertions that the purpose of EI_OSABI is to flag the
+> presense of ELF extensions.
+> 
 
---9zSXsLTf0vkW971A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When I was at the IA64 ABI meeting yesterday, we were looking at the
+EI_OSABI issue. Everyone at the IA64 ABI meeting agreed that what
+Ulrich and I had said was the correct understanding.
 
-> Seeing as apt was broken, I decided to download the woody version of apt =
-so
-> I can get a newer version and hopefully skip some steps in building the
-> above packages.  gcc 2.96 and apt-0.3.19 don't get along, so I tried pick=
-ing
-> it up from cvs (supposed to have been fixed).  Follow the directions on
-> cvs.debian.org
->=20
-> $ cvs -d :pserver:anonymous@cvs.debian.org:/cvs/APT login
-> (Logging in to anonymous@cvs.debian.org)
-> CVS password:=20
-> cvs login: authorization failed: server cvs.debian.org rejected access
+"The e_ident[EI_OSABI] value identifies the operating system and ABI
+to which the object is targeted" just means if the e_ident[EI_OSABI]
+value is not ELFOSABI_NONE, you have to look somewhere else in addition
+to gABI and IA64 psABI to interpret the ELF fields/values specific to
+that OS. Otherwise, gABI and IA64 psABI are sufficient.
 
-Try:
-
-cvs -d:pserver:anonymous@cvs.debian.org:/cvs/deity login
-(empty password)
-
-It should work. if not let me know and i can mail you a tarball. You
-probably want to get the aliencode branch, which has hppa patches. Let
-me know if you run into any problems.
-
-> rsync -- ldd crashes on dpkg-shlibdepends stage
-> Can I just manually put the required dependancies in?
-
-Yes, or pick up the dpkg-architecture and dpkg-shlibdeps scripts from
-http://puffin.external.hp.com/~tausq/, or wait for the next version of
-dpkg to get built for hppa (it doesn't use ldd anymore)
-
-> autoconf -- installinfo spins
->=20
-> When installing the autoconf package (to compile dpkg) installinfo spins.
-> And after several minutes still doesn't return.  It's taking up 100% cpu
-> at the time.
-
-hmmm.. didn't see this. I had built a slightly older version of dpkg
-successfully.
-
-randolph (tausq@debian.org)
---=20
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
-
---9zSXsLTf0vkW971A
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.1 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE6GyZgULspdC1Zp9IRAozyAKC/Df1fexltMjFlcwpeYlD+IIWEigCgiGyT
-YKOjLA0BQzMo7qOj8jC1BTI=
-=whh1
------END PGP SIGNATURE-----
-
---9zSXsLTf0vkW971A--
+-- 
+H.J. Lu (hjl@valinux.com)
