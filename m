@@ -1,18 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mta03ps.bigpond.com (mta03ps.bigpond.com [144.135.25.135])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C670D4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 29 Aug 2002 21:48:57 -0600 (MDT)
-Date: Fri, 30 Aug 2002 13:48:55 +1000
-From: Peter Lavender <plaven@bigpond.net.au>
-To: Steve.Grady@csiro.au
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] SCSI Disks on a K580 Help Required
-Message-ID: <20020830134855.H4249@piglet>
-Reply-To: plaven@bigpond.net.au
-References: <49AA3A3C863E5B4C911320AEF99E5DA3010CCCC3@wing-ep.tip.csiro.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <49AA3A3C863E5B4C911320AEF99E5DA3010CCCC3@wing-ep.tip.csiro.au>; from Steve.Grady@csiro.au on Mon, Aug 26, 2002 at 07:33:37AM +1000
+To: alaskan@telusplanet.net
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] GNOME 1.4 
+In-Reply-To: Message from alaskan@telusplanet.net
+   of "Thu, 29 Aug 2002 10:37:07 MDT." <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com>
+References: <1nismusojam12vial5vnqarbmfd8pb8mh7@4ax.com> 
+Date: Thu, 29 Aug 2002 22:08:29 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020830040829.3BE694829@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,22 +19,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-* Steve.Grady@csiro.au (Steve.Grady@csiro.au) wrote:
+alaskan@telusplanet.net wrote:
+> I finally got GNOME 1.4 working on a 712/60,
+...
+> Its pretty, but slow .   .  . .
 
+it's not faster on a 486/DX4/75Mhz.
+You really need to use a lighter weight window manager on
+the older boxes. fvwm2 is my current favorite though in this
+case I'd reccomend twm.
 
- 
-> BTW Thanks for a great port my little 735 just sits there and works (mostly
-> running SETI)
-
-Hehe.. my 715/64 does the same.. mind you it's also my web server too.
-But mostly the only "real" work it does is seti. :)
-
-
-Regards,
-
-Pete.
-
--- 
-				Due to a lack of imagination, 
-				this signature will remain 
-				under construction indefinitely.
+grant
