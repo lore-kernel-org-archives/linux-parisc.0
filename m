@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12506.mail.yahoo.com (web12506.mail.yahoo.com [216.136.173.198])
-	by dsl2.external.hp.com (Postfix) with SMTP id A4CF94829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 13 Nov 2002 08:07:24 -0700 (MST)
-Message-ID: <20021113150719.56068.qmail@web12506.mail.yahoo.com>
-Date: Wed, 13 Nov 2002 07:07:19 -0800 (PST)
-From: Derek Engelhaupt <derekengelhaupt@rocketmail.com>
-To: parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3d.277be522.2b02f338@aol.com>
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP
+	id 91FF34829; Wed, 13 Nov 2002 08:32:24 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 18BzV3-0005u7-00; Wed, 13 Nov 2002 15:32:17 +0000
+Date: Wed, 13 Nov 2002 15:32:17 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: parisc-linux@parisc-linux.org
+Cc: grundler@parisc-linux.org, Randolph Chung <randolph@tausq.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-ID: <20021113153217.J30392@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] OT:  C180 has to go...
+Subject: [parisc-linux] 2.4.20-rc1
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,32 +24,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hey all,
+ok, HEAD is now based on 2.4.20-rc1.  There's three things I wasn't 100%
+sure of during the merge:
 
-Sorry if this is the wrong place for this, please let me know.  My C360
-is on it's way and the C180 has to go.  No room for both.  If anyone is
-interested in it let me know *off the list* or it's going off to Ebay. 
-This machine was originally bought off Ebay and the case was damaged. 
-It has been replaced so the product number off the tag in the back says
-it's a C200, but it is indeed a C180.  I'm not looking for much in the
-way of asking price because shipping can tend to be high on this heavy
-a box (about 60 lbs. packaged).  It has been running Debian for awile
-now with no issues.  PDC firmware is at the latest.
+(1) drivers/pci/setup-bus.c.  It looks like most of, but not all, the
+changes in our tree were merged into 2.5.20-rc1.  I've basically taken
+the version we had in 2.4.19 but other changes may be needed.  Grant,
+can you look at this?
 
-Memory: 384MB
-Drives: (2) internal ST34371WD Seagate 4.3GB with HP firmware
-CDROM: None
-Graphics Card:  None (but has built in EG card that needs the EVC
-                adapter - not included)
-Terminators:  Will include both an SE and F/W terminator
-No keyboard or mouse (need them for the new one)
+(2) arch/parisc/kernel/syscall.S.  2.4.20-rc1 removed our XFS syscalls..
+tausq, can you look at this?
 
+(3) include/asm-parisc/ide.h.  2.4.20-rc1 removed some definitions from
+this file that weren't removed from asm-i386, so i put them back.  Alan,
+I presume this was your doing?
 
-Anyway thanks for your time.
-
-derek
-
-__________________________________________________
-Do you Yahoo!?
-U2 on LAUNCH - Exclusive greatest hits videos
-http://launch.yahoo.com/u2
+-- 
+Revolutions do not require corporate support.
