@@ -1,19 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 48493483B
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 17 Mar 2002 06:59:49 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 16mbCO-0003D7-00; Sun, 17 Mar 2002 13:59:48 +0000
-Date: Sun, 17 Mar 2002 13:59:48 +0000
-From: Matthew Wilcox <willy@debian.org>
-To: Tim Robb <hecubus3rd@yahoo.com>
+To: Matthew Wilcox <willy@debian.org>
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Can I do 64 bit
-Message-ID: <20020317135948.G21765@parcelfarce.linux.theplanet.co.uk>
-References: <20020317084054.84462.qmail@web10504.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020317084054.84462.qmail@web10504.mail.yahoo.com>; from hecubus3rd@yahoo.com on Sun, Mar 17, 2002 at 12:40:54AM -0800
+Subject: Re: [parisc-linux] EISA 100/10 add-on card causes kernel BUG 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Sun, 17 Mar 2002 13:43:30 GMT." <20020317134330.F21765@parcelfarce.linux.theplanet.co.uk>
+References: <3C92DD15.4060008@neuronet.pitt.edu> <raffo@neuronet.pitt.edu> <20020316184231.482C6482C@dsl2.external.hp.com> <20020316213938.B2179@parcelfarce.linux.theplanet.co.uk> <willy@debian.org> <20020317053838.683C7482D@dsl2.external.hp.com>  <20020317134330.F21765@parcelfarce.linux.theplanet.co.uk> 
+Date: Sun, 17 Mar 2002 09:59:04 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020317165905.0117A4834@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,32 +19,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, Mar 17, 2002 at 12:40:54AM -0800, Tim Robb wrote:
-> Hello, I recently aquired a HP C180XP here is the
-> I am wondering if this system can run a 64 bit kernel?
->  Can anyone tell me if it can and how do I get it
-> booted up in 64 bit mode if it can?
+Matthew Wilcox wrote:
+> My understanding is that DMA to userspace is to pages in the page cache
+> only.
 
-Let's get a FAQ entry for this:
+NICs use the page cache? or just for ZC?
+block IO certainly uses the page cache.
 
-15. Can I run a 64-bit kernel on my machine?
+> As such, the normal mechanisms for dcache coherency should be used.
+> That is, DMA to a kernel view of the page and call flush_dcache_page
+> after touching it.
 
-The answer to this is generally determined by the firmware your machine
-runs.  Workstations up to and including the J2240 and C360 only have
-32-bit firmware.  The normal 64-bit kernel will not run on these systems.
-The A500 and L2000 server only have 64-bit firmware, and these machines
-must run a 64-bit kernel.  The C3000 and similar workstations have both
-32-bit and 64-bit firmware and can therefore run either kernel.
+For page cache, ok. Then ccio/sba implicitly use whatever SR the
+kernel is supposed to use and we don't need to pass the parameter.
+If NIC's use page cache for ZC, that would make life simple.
 
-A more important question is: why do you want to run a 64-bit kernel?
-Since we do not yet support 64-bit userspace, there is no advantage
-to be gained running a 64-bit kernel on a machine with less than 3.5GB
-of memory.
+> My proposed scheme for kmap/kunmap implementation
+> would make flush_dcache_page a no-op, since the kernel would have a view
+> of the page which is automatically cache coherent with userspace's view.
 
-For those who do want to test 64-bit kernels on older machines, there is a
-special configuration option `32-bit PDC' which will allow a 64-bit kernel
-to work with 32-bit firmware.  We cannot enable this option by default
-as the resulting kernel will not work on machines with 64-bit firmware.
+I'm liking that idea alot.
+I've really never been comfortable with the two views not being coherent
+since it will expose more kernel bugs that other arches don't see.
 
--- 
-Revolutions do not require corporate support.
+
+thanks,
+grant
