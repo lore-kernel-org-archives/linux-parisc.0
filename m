@@ -1,24 +1,17 @@
-Return-Path: <gmsoft@gentoo.org>
-Received: from stargate.da-kot (user-212-88-246-186.tvcablenet.be
-	[212.88.246.186])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 19D1A48FC
+Return-Path: <postmaster@anr.mcnc.org>
+Received: from picard.anr.mcnc.org (picard.anr.mcnc.org [152.45.4.100])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6B253484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 17 Mar 2004 11:18:58 -0700 (MST)
-Received: from gmsoft.lln.tuxicoman.be ([2001:6f8:204:aa00:210:a7ff:fe10:1a3e]
-	helo=guy.da-kot)
-	by stargate.da-kot with esmtp (TLSv1:DES-CBC3-SHA:168) (Exim 4.22)
-	id 1B3fd2-00037O-HN
-	for parisc-linux@lists.parisc-linux.org; Wed, 17 Mar 2004 19:18:56 +0100
-Date: Wed, 17 Mar 2004 19:14:58 +0100
-From: Guy Martin <gmsoft@gentoo.org>
+	Wed, 17 Mar 2004 23:32:19 -0700 (MST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by picard.anr.mcnc.org (Postfix) with ESMTP id A170D2003A0
+	for <parisc-linux@lists.parisc-linux.org>;
+	Thu, 18 Mar 2004 01:32:08 -0500 (EST)
+From: postmaster@anr.mcnc.org
 To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] HP A3312A High Availability Jamaica storage arrays
-Message-Id: <20040317191458.6cfad3e5.gmsoft@gentoo.org>
-In-Reply-To: <40589298.CAF58D32@cypress-tech.com>
-References: <40589298.CAF58D32@cypress-tech.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="pgp-sha1"; boundary="=.ZLg)3cpGtHoZOc"
+Message-Id: <20040318063200.DCD7A2003A1@picard.anr.mcnc.org>
+Date: Thu, 18 Mar 2004 01:32:00 -0500 (EST)
+Subject: [parisc-linux] VIRUS IN YOUR MAIL
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,63 +21,41 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
---=.ZLg)3cpGtHoZOc
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+                           V I R U S  A L E R T
 
-Hi,
+Our viruschecker found the
 
-How much would be the shipping to Belgium for one or two bay ?
+	'W32/Netsky-D'
 
-Thanks in advance
+virus in your email to the following recipient:
 
+-> ibaldin@anr.mcnc.org
 
-On Wed, 17 Mar 2004 13:02:00 -0500
-Jesse Dougherty <jesse@cypress-tech.com> wrote:
+Delivery of the email was stopped!
 
-> I still have several of these arrays (free) if anyone want some.
-> 
-> We are moving locations and need to clean out some hardware in our
-> warehouse. We have about 40 of these A3312A rack-mount " High
-> Availability Jamaica arrays taking up space and we really don't want
-> to trash them. If anyone wants any, we are giving them away, I only
-> ask that you pay for
-> shipping out of Tampa (33762). They are good storage arrays that work
-> in MPE/iX, HP-UX, & Windows/NT environment, we have the racking
-> hardware and both fans and power supplies are included. They take
-> either FWD or SE drives and the capacity is 8 low profile drives. If
-> your interested in getting one of these arrays or if you want some
-> additional specifications
-> of the A3312A sent to you, feel free to contact me.
-> 
-> Thanks
-> Jesse
-> Cypress Technology Inc
-> Re-Sellers of HP hardware
-> Jesse@cypress-tech.com
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Please check your system for viruses,
+or ask your system administrator to do so.
 
 
--- 
-Guy Martin
-Gentoo Linux - HPPA port Lead / IPv6 team
-Lug Charleroi (Belgium)
+For your reference, here are the SMTP envelope originator
+and headers from your email:
 
---=.ZLg)3cpGtHoZOc
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAWJWlrpShrnoH4YYRAt5iAKCiAxkEiSLGcHXApKRu71bkpVY9eQCeJh5x
-jQu2Bqy9tlzh6AWXlLpQSJ4=
-=c9DO
------END PGP SIGNATURE-----
-
---=.ZLg)3cpGtHoZOc--
+>From parisc-linux@lists.parisc-linux.org
+------------------------- BEGIN HEADERS -----------------------------
+Received: from localhost by picard.anr.mcnc.org
+	with SpamAssassin (2.63 2004-01-11);
+	Thu, 18 Mar 2004 01:31:53 -0500
+From: parisc-linux@lists.parisc-linux.org
+To: ibaldin@anr.mcnc.org
+Subject: *****SPAM***** Re: Hello
+Date: Thu, 18 Mar 2004 12:02:32 +0530
+Message-Id: <20040318063140.89AC82003A0@picard.anr.mcnc.org>
+X-Spam-Flag: YES
+X-Spam-Checker-Version: SpamAssassin 2.63 (2004-01-11) on picard.anr.mcnc.org
+X-Spam-Status: Yes, hits=6.1 required=5.0 tests=BAYES_44,MICROSOFT_EXECUTABLE,
+	MISSING_MIMEOLE,MSGID_FROM_MTA_SHORT,NO_REAL_NAME,PRIORITY_NO_NAME 
+	autolearn=no version=2.63
+X-Spam-Level: ******
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----------=_40594259.3858AFA1"
+-------------------------- END HEADERS ------------------------------
