@@ -1,53 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9CAAD482A
-	for <parisc-linux@parisc-linux.org>; Tue,  8 May 2001 13:52:59 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14xDXI-0007wB-00; Tue, 08 May 2001 20:52:44 +0100
-Date: Tue, 8 May 2001 20:52:44 +0100
-From: Matthew Wilcox <matthew@wil.cx>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] glibc 2.2.3 make check status
-Message-ID: <20010508205244.P4917@parcelfarce.linux.theplanet.co.uk>
-References: <20010505033457.Q32445@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20010505033457.Q32445@parcelfarce.linux.theplanet.co.uk>; from matthew@wil.cx on Sat, May 05, 2001 at 03:34:57AM +0100
-Sender: <willy@www.linux.org.uk>
+Received: from mta01.mail.mel.aone.net.au (mta01.mail.au.uu.net [203.2.192.81])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 65DFE482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 May 2001 14:11:36 -0600 (MDT)
+From: "Pete" <plaven@ozemail.com.au>
+To: plaven@ozemail.com.au, puffin@esiee.net,
+	parisc-linux <parisc-linux@lists.parisc-linux.org>,
+	Matthieu Delahaye <delahaym@esiee.fr>
+Date: Tue, 8 May 2001 07:36:18 +1000
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Subject: Re: [parisc-linux] getting there!
+Reply-To: plaven@ozemail.com.au
+Message-ID: <3AF7A1F2.15295.F7E74@localhost>
+In-reply-to: <3AF5710E.722B6AFF@esiee.fr>
 List-ID: <linux-parisc.vger.kernel.org>
 
-An updated version of the list.  There's plenty of opportunity for people
-to help with this.
+Hi Matthieu,
 
-Floating-point
---------------
 
- * Some of the math/ tests fail.  pb is looking into these.
- * stdlib/strtold fails.  This is due to our long double being 64 bit and
-   glibc thinks its 128 bit.  Bug #119
- * misc/tst-efgcvt fails.  (Maybe another long double problem?)
+> I currently try to make a lan boot, and I got the same error.
+> When I set NFSROOT=x.x.x.x:/path/to/nfs/root
+> it resolves the problem.
 
-Threads
--------
+I'm just bumbling along with all this ATM.  So I'm basically relying 
+the the goodwill and good work done by those on the list.
 
- * linuxthreads/ex10, ex15 & ex17 fail.  I'm working on these.
- * rt/tst-aio4 fails.  I'm working on this one too.
+Suffice to say that I have the HP box booting up linux now, just 
+required I change my network setup to look more like the one 
+expected (configured) in the lifimage.. much less of an issue for me 
+than working out how to configure hte lifimage.
 
-Dynamic Loading
----------------
+Anyway to add to my tale of woe, I grabbed the serial lifimage from 
+pehc, and with that I configured the HP box to use the esrial port 
+for my console.. much to my dismay I have now found that the 
+cable I have doesn't fit all the way into the serial port on the hp 
+box.. so I can't see ANY thing.. so until I get a serial cable that fits 
+fully into the port.. I'm stuck... :-/
 
- * all the tests in dlfcn/ fail.  I haven't investigated these.
- * elf/resolvfail and elf/constload1 fail.  Not investigated.  Probably other
-   tests in elf/ also fail.
+Thanks to grant, willy and a few others in irc the other night too... 
+I'm grateful for you guys answering dumb questions when there are 
+other more important things to sort out.  :)
 
-Misc
-----
 
- * grp/testgrp fails.  This is a generic glibc 2.2.3 problem, the fix
-   is available from upstream.
- * posix/globtest fails.  Haven't investigated.
- * gmon/tst-sprofil fails.  Looks like it needs to be ported to Linux/hppa.
-
--- 
-Revolutions do not require corporate support.
+Pete.
