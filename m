@@ -1,52 +1,74 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA14864
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 May 2000 15:22:02 -0600
-Received: from localhost (proskin@localhost)
-	by sunapee.transcept.com (8.9.3/8.9.3) with ESMTP id RAA12114
-	for <parisc-linux@thepuffingroup.com>; Wed, 24 May 2000 17:22:46 -0400
-Date: Wed, 24 May 2000 17:22:46 -0400 (EDT)
-From: Pavel Roskin <pavel_roskin@geocities.com>
-To: parisc-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.21.0005241559150.11687-100000@sunapee.transcept.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [parisc-linux] Serial support in IPL
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA15239
+	for <parisc-linux@puffin.external.hp.com>; Wed, 24 May 2000 15:52:35 -0600
+To: Pavel Roskin <pavel_roskin@geocities.com>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] Serial support in IPL 
+In-Reply-To: Message from Pavel Roskin <pavel_roskin@geocities.com>
+   of "Wed, 24 May 2000 17:22:46 EDT." <Pine.LNX.4.21.0005241559150.11687-100000@sunapee.transcept.com>
+References: <Pine.LNX.4.21.0005241559150.11687-100000@sunapee.transcept.com> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 24 May 2000 15:54:25 -0600
+From: Matt Taggart <taggart@carmen.fc.hp.com>
+Message-Id: <20000524215425.6B32937DA8@carmen.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello!
 
-I'm completely new to PA/Linux and I'm not subscribed to the list, so
-excuse me my dummy questions.
+Pavel Roskin writes...
 
-I've got C160L without monitor. I also don't know how to connect the
-console. There is a connector "HP-HIL" which is somewhat similar to RJ-45,
-but I don't know the wiring, and I'm not sure if it's the PDC console.
+> I've got C160L without monitor. I also don't know how to connect the
+> console. There is a connector "HP-HIL" which is somewhat similar to RJ-45,
+> but I don't know the wiring, and I'm not sure if it's the PDC console.
 
-If the hard drive is connected, I don't see anything interesting except a
-packet on the ethernet interface containing words:
+The console is probably set to graphics, but if you boot without a keyboard 
+plugged in it should go to the first serial port(unless the console path is 
+set to something weird).
 
-HP LAN loop back test packet. LAN2 driver version 1
+> If the hard drive is connected, I don't see anything interesting except a
+> packet on the ethernet interface containing words:
+> 
+> HP LAN loop back test packet. LAN2 driver version 1
 
-If I disconnect the drive, the box sends a bootp request and then a tftp
-request. I can feed it with the linux kernel, but I see nothing on the
-serial port.
+It's booting off the primary path(the disk). The disk probably still has HP-UX 
+on it and that packet is the result of the driver loading.
 
-If I use a fake kernel it is requested only once. The real kernel is
-requested two or three times. I believe, this means that IPL actually
-tries to "rewind" tftp to get the kernel.
+> If I disconnect the drive, the box sends a bootp request and then a tftp
+> request.
 
-I'm affraid that I need a version of IPL with serial console support to
-get any further. ipl_c.c contains encouraging words:
+In this case the primary path failed and it's trying the secondary path which 
+is lan.
 
- * Revision 1.24 1999/10/15 19:30:30 deller
- *
- * The serial console works now !
+> I can feed it with the linux kernel, but I see nothing on the
+> serial port.
 
-But it is just revision 1.3 in the anonymous CVS. There must be historic
-versions with serial support using different revision numbering, right?
+A couple suggestions(obvious but worth checking),
 
-Can anybody build a kernel with the serial support at least in IPL
-(ideally, in the kernel too)? Thank you in advance.
+- Make sure all keyboards are unplugged
+- Have you tried both serial ports?
+- Are you sure your serial console is working?
+- If you are connecting computer to computer be sure to use a null modem cable.
+- Use 9600,8,N,1
 
-Regards,
-Pavel Roskin
+> If I use a fake kernel it is requested only once. The real kernel is
+> requested two or three times. I believe, this means that IPL actually
+> tries to "rewind" tftp to get the kernel.
+> 
+> I'm affraid that I need a version of IPL with serial console support to
+> get any further. ipl_c.c contains encouraging words:
+> 
+>  * Revision 1.24 1999/10/15 19:30:30 deller
+>  *
+>  * The serial console works now !
+> 
+
+This only affect after the system starts booting. No matter what you should be 
+seeing the firmware interface on the console(whatever it's set to).
+
+If none of the above work it could be that your console path is set to 
+something weird. You might be able to fix it by blindly changing it. If you 
+can't get it to work let me know and I'll post a keystroke recipe to fix it.
+
+-- 
+Matt Taggart
+taggart@fc.hp.com
