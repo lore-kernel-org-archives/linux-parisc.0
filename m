@@ -1,37 +1,31 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA26033
-	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 14:36:46 -0600
-Received: from ottawa.linuxcare.com (HELO tarwebok) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 17 Oct 2000 20:37:59 -0000
-To: Alan Modra <alan@linuxcare.com.au>
-Cc: parisc-linux@thepuffingroup.com
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 17 Oct 2000 16:38:02 -0400
-Message-ID: <87r95f2ogl.fsf@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA27930
+	for <parisc-linux@puffin.external.hp.com>; Tue, 17 Oct 2000 17:59:50 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 18 Oct 2000 00:01:08 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA02839;
+	Wed, 18 Oct 2000 11:00:58 +1100
+Date: Wed, 18 Oct 2000 11:00:58 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: David Huggins-Daines <dhd@linuxcare.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: problems with binutils and/or g++
+In-Reply-To: <87r95f2ogl.fsf@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0010181054370.1579-100000@front.linuxcare.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] problems with binutils and/or g++
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
+On 17 Oct 2000, David Huggins-Daines wrote:
 
-With current binutils (as of Oct. 13) and GCC, I get the following
-error when building APT:
+> recompiling with -fno-rtti, as I don't think APT uses it).  But on the
+> other hand we've had problems with link-once sections in the past.
 
-../build/obj/cmdline/apt-get.o: In function `global destructors keyed to c0out':
-/home/build/apt-0.3.19/cmdline/apt-get.cc:1429: undefined reference to `pkgArchiveCleaner type_info function'
-/usr/bin/ld: ../build/obj/cmdline/apt-get.o(.gnu.linkonce.t.__tf10LogCleaner+0x1c): cannot find stub entry 00000010___tf17pkgArchiveCleaner+0
-/usr/bin/ld: ../build/obj/cmdline/apt-get.o(.gnu.linkonce.t.__tf10LogCleaner+0x1c): cannot handle R_PARISC_PCREL17F for pkgArchiveCleaner type_info function
-/home/build/apt-0.3.19/cmdline/apt-get.cc:1429: undefined reference to `pkgArchiveCleaner type_info node'
-/home/build/apt-0.3.19/cmdline/apt-get.cc:1429: undefined reference to `pkgArchiveCleaner type_info node'
+Translation:  Alan has been mucking around with link-once section symbols
+and may have broken something.
 
-I'm not sure if this is a g++ or linker bug.  The symbol names look
-really suspicious, suggesting that it might be a bug in RTTI (I'll try
-recompiling with -fno-rtti, as I don't think APT uses it).  But on the
-other hand we've had problems with link-once sections in the past.
-
-Any thoughts?
+I'll take a look.
 
 -- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+Linuxcare.  Support for the Revolution.
