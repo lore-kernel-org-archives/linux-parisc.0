@@ -1,17 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 765C2483E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Jun 2002 12:38:15 -0600 (MDT)
-Message-Id: <200206271837.g5RIbmO5016284@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc-3.2 failed to compile kernel
-To: joel.soete@freebel.net
-Date: Thu, 27 Jun 2002 14:37:48 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: jeremyd@apptechsys.com, grundler@dsl2.external.hp.com,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <1025201506.3d1b5563048ad@webmail.tiscalinet.be> from "joel.soete@freebel.net" at Jun 27, 2002 08:11:47 pm
+Received: from webmail.tiscalinet.be (webmail1.tiscali.be [212.35.2.121])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0BEA0483B
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 28 Jun 2002 07:05:46 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <1025269543.3d1c5f27b0669@webmail.tiscalinet.be>
+Date: Fri, 28 Jun 2002 15:05:43 +0200 (CEST)
+From: joel.soete@freebel.net
+Cc: Robert Boehm <robertb@olsztyn.ken.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Subject: [parisc-linux] PPP /dev/ppp temporary unavailable
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,15 +21,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > > > 1->linux) but gcc -dM -E ... SegFault :((
-> > > > 
-> > > > # gcc -dM -E -D__ASSEMBLY__ -traditional -D__KERNEL__
-> > > > -I/Develop/parisc-linux/src/linux/include  -c -o pacache.CPP
-> > pacache.S
+Hi all,
 
-I don't think gcc (cc1) should segfault even if the cvs is messed up.
+Thanks to advises of Robert I reach to configure the serials port of my b180 and
+b2000 (No success with my 712?) to make serial ppp connection with MyIsp.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+But I still log following messages:
+
+Jun 28 09:46:22 palinux pppd[310]: Script /etc/ppp/ip-up started (pid 316)
+Jun 28 09:46:23 palinux pppd[310]: Script /etc/ppp/ip-up finished (pid 316),
+status = 0x0
+Jun 28 09:46:23 palinux pppd[310]: read: Resource temporarily unavailable
+Jun 28 09:46:23 palinux pppd[310]: read /dev/ppp: Resource temporarily unavailable
+Jun 28 09:46:25 palinux pppd[310]: read: Resource temporarily unavailable
+Jun 28 09:46:25 palinux pppd[310]: read /dev/ppp: Resource temporarily unavailable
+Jun 28 09:46:25 palinux pppd[310]: read: Resource temporarily unavailable
+Jun 28 09:46:25 palinux pppd[310]: read /dev/ppp: Resource temporarily unavailable
+What does it means?
+
+Even thought all seems to works fine (host ftp.de.debian.org, ncftp
+ftp.de.debian.org, lynx debian.org; all seems Ok).
+
+Joel
+
+PS: OTC with minicom I get garbage if baudrate <> 9600? (hw or sw flow control
+on both end)
+
+
+
+-------------------------------------------------
+This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
