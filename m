@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id AA396482C
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 Nov 2001 16:19:47 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
-	jochen@scram.de (Jochen Friedrich)
-Subject: Re: [parisc-linux] Current Debian still broken?
-Date: Sun, 11 Nov 2001 00:19:10 +0100
-Cc: parisc-linux@lists.parisc-linux.org
-References: <200111102256.fAAMu8HB001322@hiauly1.hia.nrc.ca>
-In-Reply-To: <200111102256.fAAMu8HB001322@hiauly1.hia.nrc.ca>
+Received: from mx04.nexgo.de (mx04.nexgo.de [151.189.8.80])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 16608482C
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 11 Nov 2001 03:57:18 -0700 (MST)
+Received: from hrzpub.tu-darmstadt.de (dialin-145-254-200-200.arcor-ip.net [145.254.200.200])
+	by mx04.nexgo.de (Postfix) with ESMTP id C790C37B8A
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 11 Nov 2001 11:57:14 +0100 (CET)
+Message-ID: <3BEE59B7.4080108@hrzpub.tu-darmstadt.de>
+Date: Sun, 11 Nov 2001 11:57:59 +0100
+From: =?ISO-8859-1?Q?R=FCdiger?= Scholz <rscholz@hrzpub.tu-darmstadt.de>
 MIME-Version: 1.0
-Message-Id: <20011110231947.AA396482C@dsl2.external.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [parisc-linux] Keyboard problems and StiFB
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +23,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Saturday 10 November 2001 23:56, John David Anglin wrote:
-> > when trying to compile the new 2.2.14 based parisc tree, i get the
-> > following error:
-> >
-> > gcc -D__KERNEL__ -I/usr/src/linux/include -Wall -Wstrict-prototypes
-> > -Wno-trigraphs -O2 -fomit-frame-pointer -fno-strict-aliasing -fno-common
-> > -D__linux__ -pipe -fno-strength-reduce -mno-space-regs
-> > -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1
-> > -mschedule=7100    -c -o sd.o sd.c
-> > {standard input}: Assembler messages:
-> > {standard input}:583: Error: Invalid operands
-> > {standard input}:607: Error: Invalid operands
-> > make[3]: *** [sd.o] Error 1
+Hi there!
 
-This is a kernel problem, where we use the "std" assembler command to store a 
-u64 value to user-space:
-See at include/asm-parisc/uaccess.h:  macro __put_user:
-  case 8: __put_kernel_asm("std",x,ptr); break;       \
+At first I want to say thanks to all the people, who made the great 
+improvements on the kernel!! Now even my 715/100 with its second 
+graphics card is running a stifb. ;-) And X-Server is running with 
+1280x1024 with 24bpp... (That's cool...)
 
-Sadly "std" is only available on 64 bit PA CPUs and gcc knows that and give you
-the above error in 32bit kernel builds.
+But now I have some trouble with my keyboard. I use a ps/2-keyboard and 
+-mouse with HIL-Adaptorbox. If I do a cold boot the kernel finds a 
+HIL-Keyboard, loads a keymap and  at the login the keyboard has a weird 
+behaviour. ( Pressing enter e.g. gets me to the MagicKey-Menu). When 
+rebooting the machine the kernel now didn't found any HIL-Keyboard, says 
+s.th. about "device not claimed" , but the keyboard now works. The 
+PS/2-Mouse works always.
+Any Solution ?
+And there's another question: How do I change between the first stifb 
+and the second stifb? Console always opens on my second graphics card 
+(HCRX24), but due to the resolution of 1280x1024 everything is quite 
+small, so I would like use the builtin graphics.
 
-Greetings,
-Helge.
+Thanks in advance,
+
+        Rüdiger
