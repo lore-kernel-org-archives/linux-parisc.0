@@ -1,33 +1,23 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel7.hp.com (atlrel7.hp.com [192.151.27.9])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A58B8493A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 12:27:27 -0600 (MDT)
-To: Albert Strasheim <fullung@ilink.nis.za>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] puffin.external.hp.com,... unreachable through
- quest
-In-Reply-To: Message from Albert Strasheim <fullung@ilink.nis.za>
-   of "Wed, 03 Oct 2001 19:09:37 +0200." <20011003190937.A1295@dogbert.localdomain>
-References: <Pine.BSF.4.30.0109300915230.69485-100000@noc.zabbadoz.net>  
- <20011003190937.A1295@dogbert.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 03 Oct 2001 12:27:25 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20011003182725.1901A37DBC@carmen.fc.hp.com>
+Received: from kiyen.face.ubiobio.cl (kiyen.face.ubiobio.cl [146.83.194.135])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7CDD548E8
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  3 Oct 2001 13:42:52 -0600 (MDT)
+Date: Wed, 3 Oct 2001 15:56:01 -0400 (CLT)
+From: Marco Rodriguez <marco@kiyen.face.ubiobio.cl>
+To: <parisc-linux@lists.parisc-linux.org>,
+	<debian-hppa@lists.debian.org>
+Message-ID: <Pine.LNX.4.33.0110031551340.7062-100000@kiyen.face.ubiobio.cl>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Instalation
 List-ID: <linux-parisc.vger.kernel.org>
 
-Albert Strasheim writes...
-
-> Any updates on this situation? puffin is still dead from SourceForge and
-> some other places I tried.
-
-It appears to be a routing problem which seems to affect mostly non-US domains.
-I filed a support request on Monday. They're still trying to figure out what's 
-going on. I'll send mail once it's resolved.
-
-Sorry for the outage,
-
+Can I install pa-risc linux on a HP D Class 9000 server with 2 pa-risc
+prcesors?
+Is there any one who did it?
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+*-------------------------*-----------------------------------------*
+| Marco Rodriguez M.      |                                         |
+| Ing. Civil Informatica. |   mailto:marco@kiyen.face.ubiobio.cl    |
+| U. Bio Bio Conce.       |                                         |
+*-------------------------*-----------------------------------------*
