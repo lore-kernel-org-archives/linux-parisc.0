@@ -1,55 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA13243
-	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 09:26:06 -0700
-Sender: christoph.plattner@alcatel.at
-Message-ID: <3A6F02F2.3C4A137C@alcatel.at>
-Date: Wed, 24 Jan 2001 17:29:38 +0100
-From: Christoph Plattner <christoph.plattner@alcatel.at>
-MIME-Version: 1.0
-To: Marek GROSSMAN <grossman@nspuh.cz>
-CC: parisc-linux@thepuffingroup.com, christoph.plattner@dot.at
-Subject: Re: [parisc-linux] Boot from tape
-References: <3A6EE1A6.D21F249F@nspuh.cz>
-Content-Type: text/plain; charset=us-ascii
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA13687
+	for <parisc-linux@puffin.external.hp.com>; Wed, 24 Jan 2001 09:44:58 -0700
+Message-Id: <200101241650.IAA20897@milano.cup.hp.com>
+To: Christoph Plattner <christoph.plattner@alcatel.at>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] One more step: Interruption (trap) 18 on 9000/720 
+In-reply-to: Your message of "Wed, 24 Jan 2001 10:54:19 PST."
+             <3A6EA64B.5875D07A@alcatel.at>
+Date: Wed, 24 Jan 2001 08:50:12 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-How can you run Linux ?
-I thought, HP E55 (9000/856) is not full supported, as
-the SCSI driver and the serial multiplexer (8-port serial,
-where my console is configured to port 0) is not supported
-(no driver !).
-Or is there any, and I don't know it ??
+Christoph Plattner wrote:
+> Further, can you tell me, how to use and where I can find
+> the kernel debugger stuff.
 
-If there is no driver, which console do you use ?
+There is no kernel debugger (yet). I started working on one last year
+based on "KWDB" from HPUX. I've added the kernel hooks (CONFIG_KWDB).
+But I (a) didn't get it working and (b) didn't get permission to publish
+the KWDB base. My advice is for someone to take the SGI KDB and make it
+work for parisc-linux and changing CONFIG_KWDB to CONFIG_KDB.
 
-Do you really speak about the PA-RISC version of the E55
-(modell 9000/856) or the new intel-PC server ?
-
-Please remail !
-
-With friendly regards
-
-	Christoph
-
-PS: I would like to use my E55 server under Linux ....
-
-Marek GROSSMAN wrote:
+...
+> And now a very important question:
+> ---------------------------------
 > 
-> Hello.
-> 
-> Can I boot Linux on the E55 server from a tape?
-> How can I make the tape.
-> 
-> Thanks
-> --
-> Mareg
-> 
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+> You seem to be the right man asking this. I also have an
+> E55 server (9000/856) with those propriatary HP interfaces.
+> For me the SCSI controller and the 8-port serial multiplxer
+> (used for serial console on port-0) are the important
+> key points. Is there no possibility to get them running ??
+> Is there really no documentation, etc...
 
--- 
-  +--------V--------+	Christoph.Plattner@alcatel.at
-  |  A L C A T E L  |	-----------------------------
-  +-----------------+	Phone: +43 1 27722 3706	
-         T A S		Fax:   +43 1 27722 3955
+This is explained in the FAQ or HWDB "introduction" someplace.
+Someone *in* HP has to care enough to review the documentation
+and get it past the lawyers. I don't. Search the parisc-linux
+mail archive for "SPIFI" if you want more...
+
+grant
+
+Grant Grundler
+Unix Systems Enablement Lab
++1.408.447.7253
