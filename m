@@ -1,19 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A8778482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 06:11:58 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 4.14)
-	id 19FC9r-0003aU-HT; Mon, 12 May 2003 13:11:55 +0100
-Date: Mon, 12 May 2003 13:11:55 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 9DA58482D
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 12 May 2003 07:22:49 -0600 (MDT)
+Date: Mon, 12 May 2003 15:22:48 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] [PATCH-2.5] Various cleanups
-Message-ID: <20030512121155.GV29534@parcelfarce.linux.theplanet.co.uk>
-References: <20030511133037.GN27494@lug-owl.de>
+Message-ID: <20030512132248.GU27494@lug-owl.de>
+References: <20030511133037.GN27494@lug-owl.de> <20030512121155.GV29534@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030511133037.GN27494@lug-owl.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7aQJ/pUO7E0NVzIB"
+In-Reply-To: <20030512121155.GV29534@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,47 +23,62 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, May 11, 2003 at 03:30:37PM +0200, Jan-Benedict Glaw wrote:
-> Hi!
+--7aQJ/pUO7E0NVzIB
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jan.  Thanks for all the work you've put in, I really appreciate it.
+On Mon, 2003-05-12 13:11:55 +0100, Matthew Wilcox <willy@debian.org>
+wrote in message <20030512121155.GV29534@parcelfarce.linux.theplanet.co.uk>:
+> On Sun, May 11, 2003 at 03:30:37PM +0200, Jan-Benedict Glaw wrote:
+> >  - Add various void * casts to pointer compares (to solve the
+> >    __canonicalize_funcptr_for_compare missing symbol when built as
+> >    module because libgcc.a isn't linked into these modules)
+>=20
+> I'm not applying these bits.  It's just not reasonable to add (void *)
+> casts to every function pointer comparison.  I know Linus will reject it.
+> We need to find a better way to fix this one -- and I suspect the right
+> way is to implement a __canonicalize_funcptr_for_compare in the kernel
+> and EXPORT_SYMBOL it.
 
->  - Ressurect CONFIG_BINFM_SOM when built as module: the hpux/ directory
->    was completely missing (this part needs cleanup from a Makefile
->    specialist), EXPORT_SYMBOL() the hpux_gateway_page if neccessary.
+I thougt about that, but didn't do it this way because I didn't like the
+approach to double libgcc's __canonicalize_funcptr_for_compare. Maybe
+we'd simply find a way to EXPORT_SYMBOL libgcc's version of that one...
 
-I was already planning a CONFIG_HPUX; I just hadn't got round to
-committing that bit to the tree.  I've done that now and I think it
-should solve all the problems you were experiencing.
+> > --- arch/parisc/oprofile/init.c	8 May 2003 13:31:44 -0000	1.5
+> > +++ arch/parisc/oprofile/init.c	11 May 2003 13:09:18 -0000
+> > @@ -11,6 +11,8 @@
+> >  #include <linux/init.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/oprofile.h>
+> > +#include <linux/init.h>
+> > +#include <linux/errno.h>
+>=20
+> hmm... init.h and errno.h are already included earlier, so I didn't
+> apply this patch.
 
->  - Export some more symbols (memchr, pdc_tod_read, pdc_tod_set,
->    __flush_dcache_page, dcache_stride) to make various modules happy.
+Oh, fs*k. I had a merge conflict there and didn't pay enough attention:(
+init.h and errno.h should be included once each... Sorry.
 
-Done.  None of these seemed like stuff we shouldn't be exporting.
+MfG, JBG
 
->  - Add various void * casts to pointer compares (to solve the
->    __canonicalize_funcptr_for_compare missing symbol when built as
->    module because libgcc.a isn't linked into these modules)
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
 
-I'm not applying these bits.  It's just not reasonable to add (void *)
-casts to every function pointer comparison.  I know Linus will reject it.
-We need to find a better way to fix this one -- and I suspect the right
-way is to implement a __canonicalize_funcptr_for_compare in the kernel
-and EXPORT_SYMBOL it.
+--7aQJ/pUO7E0NVzIB
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-> --- arch/parisc/oprofile/init.c	8 May 2003 13:31:44 -0000	1.5
-> +++ arch/parisc/oprofile/init.c	11 May 2003 13:09:18 -0000
-> @@ -11,6 +11,8 @@
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->  #include <linux/oprofile.h>
-> +#include <linux/init.h>
-> +#include <linux/errno.h>
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-hmm... init.h and errno.h are already included earlier, so I didn't
-apply this patch.
+iD8DBQE+v6AnHb1edYOZ4bsRAgSOAJ4udCTgBpLg2l6rfMbEczYnP+jPYgCfeQtL
+MwINZ1ESBQdY5+ysmZl4I7w=
+=7F4G
+-----END PGP SIGNATURE-----
 
--- 
-"It's not Hollywood.  War is real, war is primarily not about defeat or
-victory, it is about death.  I've seen thousands and thousands of dead bodies.
-Do you think I want to have an academic debate on this subject?" -- Robert Fisk
+--7aQJ/pUO7E0NVzIB--
