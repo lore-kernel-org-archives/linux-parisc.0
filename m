@@ -1,21 +1,19 @@
 Return-Path: <>
-Received: from ns.os1group.com (ns.os1group.com [200.29.90.158])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EF7994860
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 10:55:01 -0700 (MST)
-Received: from localhost (os1group.com [127.0.0.1])
-	by ns.os1group.com (Postfix) with ESMTP id 23C881980FC
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 13:50:44 -0400 (CLT)
+Received: from mail26.messagelabs.com (mail26.messagelabs.com
+	[193.109.254.131])
+	by dsl2.external.hp.com (Postfix) with SMTP id 62B744896
+	for <parisc-linux@parisc-linux.org>;
+	Fri, 26 Mar 2004 11:41:09 -0700 (MST)
+From: Postmaster@bm.com
+To: parisc-linux@parisc-linux.org
+Date: Fri, 26 Mar 2004 19:40:12 +0100
 MIME-Version: 1.0
-In-Reply-To: <20040326175013.AC1771980F7@ns.os1group.com>
-Message-Id: <VS12404-08@ns.os1group.com>
+Message-ID: <OFADE84DE6.E38EE1CF-ONC1256E63.0066C365@bm.com>
 Content-Type: multipart/report; report-type=delivery-status;
-	boundary="----------=_1080323444-12404-3"
-From: amavisd-new <postmaster@ns.os1group.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 26 Mar 2004 13:50:44 -0400 (CLT)
-Subject: [parisc-linux] VIRUS (Worm.SomeFool.P) IN MAIL FROM YOU
+	boundary="==IFJRGLKFGIR42934UHRUHIHD"
+Cc: 
+Subject: [parisc-linux] DELIVERY FAILURE: User diego_lifonti
+ (diego_lifonti@it.bm.com) not listed in public Name & Address Book
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,91 +23,109 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-This is a multi-part message in MIME format...
-
-------------=_1080323444-12404-3
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+--==IFJRGLKFGIR42934UHRUHIHD
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
-VIRUS ALERT
+Your message
 
-Our content checker found
-    virus: Worm.SomeFool.P
-in email presumably from you (<parisc-linux@lists.parisc-linux.org>), to the following recipient:
--> info@bgmconsultores.com
+  Subject: fake
 
-Please check your system for viruses,
-or ask your system administrator to do so.
+was not delivered to:
 
-Delivery of the email was stopped!
+  diego_lifonti@it.bm.com
+
+because:
+
+  User diego_lifonti (diego_lifonti@it.bm.com) not listed in public Name & Address Book
 
 
-For your reference, here are headers from your email:
-------------------------- BEGIN HEADERS -----------------------------
-Return-Path: <parisc-linux@lists.parisc-linux.org>
-Received: by ns.os1group.com (Postfix, from userid 514)
-	id 5AD181980DE; Fri, 26 Mar 2004 13:50:25 -0400 (CLT)
-Received: from localhost by ns.os1group.com
-	with SpamAssassin (2.63 2004-01-11);
-	Fri, 26 Mar 2004 13:50:25 -0400
-From: parisc-linux@lists.parisc-linux.org
-To: info@bgmconsultores.com
-Subject: *****ESTE CORREO PUEDE CONTENER SPAM***** Mail Delivery (failure info@bgmconsultores.com)
-Date: Fri, 26 Mar 2004 13:54:47 -0400
-Message-Id: <20040326175013.AC1771980F7@ns.os1group.com>
-X-Spam-Flag: YES
-X-Spam-Checker-Version: SpamAssassin 2.63 (2004-01-11) on ns.os1group.com
-X-Spam-Level: *********
-X-Spam-Status: Yes, hits=9.2 required=8.0 tests=HTML_40_50,HTML_MESSAGE,
-	HTML_RELAYING_FRAME,MICROSOFT_EXECUTABLE,MIME_SUSPECT_NAME,
-	MISSING_MIMEOLE,MSGID_FROM_MTA_SHORT,NO_REAL_NAME,PRIORITY_NO_NAME,
-	RCVD_IN_DYNABLOCK,RCVD_IN_SORBS autolearn=no version=2.63
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_40646D61.00DD7FAF"
--------------------------- END HEADERS ------------------------------
 
-------------=_1080323444-12404-3
+______________________________________________________________________
+This email has been scanned by the MessageLabs Email Security System.
+For more information please visit http://www.messagelabs.com/email 
+______________________________________________________________________
+--==IFJRGLKFGIR42934UHRUHIHD
 Content-Type: message/delivery-status
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Delivery error report
 
-Reporting-MTA: dns; ns.os1group.com
-Received-From-MTA: smtp; ns.os1group.com ([127.0.0.1])
-Arrival-Date: Fri, 26 Mar 2004 13:50:25 -0400 (CLT)
+Reporting-MTA: dns;bm-mil-all.bm.com
 
-Final-Recipient: rfc822; info@bgmconsultores.com
+Final-Recipient: rfc822;diego_lifonti@it.bm.com
 Action: failed
-Status: 5.7.1
-Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=12404-08 - VIRUS:
-	Worm.SomeFool.P
-Last-Attempt-Date: Fri, 26 Mar 2004 13:50:44 -0400 (CLT)
+Status: 5.1.1
+Diagnostic-Code: X-Notes;
+	User diego_lifonti (diego_lifonti@it.bm.com) not listed in
+	public Name & Address Book
 
-------------=_1080323444-12404-3
-Content-Type: text/rfc822-headers
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Undelivered-message headers
+--==IFJRGLKFGIR42934UHRUHIHD
+Content-Type: message/rfc822
 
-Received: by ns.os1group.com (Postfix, from userid 514)
-	id 5AD181980DE; Fri, 26 Mar 2004 13:50:25 -0400 (CLT)
-Received: from localhost by ns.os1group.com
-	with SpamAssassin (2.63 2004-01-11);
-	Fri, 26 Mar 2004 13:50:25 -0400
-From: parisc-linux@lists.parisc-linux.org
-To: info@bgmconsultores.com
-Subject: *****ESTE CORREO PUEDE CONTENER SPAM***** Mail Delivery (failure info@bgmconsultores.com)
-Date: Fri, 26 Mar 2004 13:54:47 -0400
-Message-Id: <20040326175013.AC1771980F7@ns.os1group.com>
-X-Spam-Flag: YES
-X-Spam-Checker-Version: SpamAssassin 2.63 (2004-01-11) on ns.os1group.com
-X-Spam-Level: *********
-X-Spam-Status: Yes, hits=9.2 required=8.0 tests=HTML_40_50,HTML_MESSAGE,
-	HTML_RELAYING_FRAME,MICROSOFT_EXECUTABLE,MIME_SUSPECT_NAME,
-	MISSING_MIMEOLE,MSGID_FROM_MTA_SHORT,NO_REAL_NAME,PRIORITY_NO_NAME,
-	RCVD_IN_DYNABLOCK,RCVD_IN_SORBS autolearn=no version=2.63
+Received: from mail26.messagelabs.com ([193.109.254.131])
+	by bm-mil-all.bm.com (Lotus Domino Release 5.0.8)
+	with SMTP id 2004032619422666:11883 ;
+	Fri, 26 Mar 2004 19:42:26 +0100
+X-VirusChecked: Checked
+X-Env-Sender: parisc-linux@parisc-linux.org
+X-Msg-Ref: server-7.tower-26.messagelabs.com!1080326461!6784545
+X-StarScan-Version: 5.1.15; banners=-,-,it.bm.com
+Received: (qmail 27886 invoked from network); 26 Mar 2004 18:41:01 -0000
+Received: from unknown (HELO cdlfe1.cdlan.net) (217.171.32.242)
+	by server-7.tower-26.messagelabs.com with SMTP;
+	26 Mar 2004 18:41:01 -0000
+Received: (qmail 32584 invoked by uid 89); 26 Mar 2004 18:41:00 -0000
+Delivered-To: lecoccole.com-info@lecoccole.com
+Received: (qmail 32569 invoked from network); 26 Mar 2004 18:40:59 -0000
+Received: from ppp-62-11-19-208.dialup.tiscali.it (HELO lecoccole.com)
+	(62.11.19.208)
+	by cdlfe1.cdlan.net with SMTP; 26 Mar 2004 18:40:41 -0000
+From: parisc-linux@parisc-linux.org
+To: info@lecoccole.com
+Subject: fake
+Date: Fri, 26 Mar 2004 19:40:12 +0100
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_40646D61.00DD7FAF"
+X-Antivirus: Scanned by F-Prot Antivirus (http://www.f-prot.com)
+X-Spam-Checker-Version: SpamAssassin 2.60 (1.212-2003-09-23-exp) on
+	tigre.cdlan.net
+X-Spam-Level: 
+X-Spam-Status: No, hits=-4.6 required=5.0 tests=BAYES_00,NO_REAL_NAME,
+	RCVD_IN_SORBS autolearn=no version=2.60
+X-Antivirus: Scanned by F-Prot Antivirus (http://www.f-prot.com)
+X-MIMETrack: Itemize by SMTP Server on BM-MIL-ALL/BM/Y&R Inc(Release 5.0.8
+	|June 18, 2001) at 03/26/2004 07:42:26 PM,
+	Serialize by Router on BM-MIL-ALL/BM/Y&R Inc(Release 5.0.8 |June 18,
+	2001) at 03/26/2004 07:42:28 PM,
+	Serialize complete at 03/26/2004 07:42:28 PM
+Message-ID: <OFADE84DE6.E38EE1CF-ONC1256E63.0066C365@bm.com>
+Content-Type: multipart/mixed; boundary="46885344"
 
-------------=_1080323444-12404-3--
+
+--46885344
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+
+kill the writer of this document!
+
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+This message has been checked for all known viruses by 
+MessageLabs Virus Control Centre.  If you have any queries please
+contact the London IT Helpdesk +44 (0)20 7300 6200.
+--46885344
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1";
+	name="ATTACHMENT_BLOCKED-1831.txt"
+Content-Disposition: inline; name="ATTACHMENT_BLOCKED-1831.txt"
+
+***** Attachment removed by F-Prot Antivirus *****
+
+The attachment/message
+
+website.pif
+
+was a virus/worm/trojan. It was removed.
+
+This message was generated by F-Prot Antivirus Mail Scanner.
+--46885344--
+
+
+--==IFJRGLKFGIR42934UHRUHIHD--
