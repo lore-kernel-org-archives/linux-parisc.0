@@ -1,17 +1,23 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CAC8E4891
+Return-Path: <mick.bass@hp.com>
+Received: from palrel13.hp.com (palrel13.hp.com [156.153.255.238])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 54894484B
 	for <parisc-linux@lists.parisc-linux.org>;
-	Mon,  9 Feb 2004 01:06:30 -0700 (MST)
-Date: Mon, 9 Feb 2004 08:26:18 +0100
-Message-ID: <40218AE200002594@ocpmta2.freegates.net>
-In-Reply-To: <20040207064001.GU959@tausq.org>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.6 jejb
-To: "Randolph Chung" <randolph@tausq.org>
+	Mon,  9 Feb 2004 08:50:42 -0700 (MST)
+Received: from hplms2.hpl.hp.com (hplms2.hpl.hp.com [15.0.152.33])
+	by palrel13.hp.com (Postfix) with ESMTP id C578B1C0114D
+	for <parisc-linux@lists.parisc-linux.org>;
+	Mon,  9 Feb 2004 07:50:41 -0800 (PST)
+Received: from hplex1.hpl.hp.com (hplex1.hpl.hp.com [15.0.152.182])
+	by hplms2.hpl.hp.com (8.12.10/8.12.10/HPL-PA Hub) with SMTP id
+	i19Fodpm027537 for <parisc-linux@lists.parisc-linux.org>;
+	Mon, 9 Feb 2004 07:50:40 -0800 (PST)
+Message-ID: <40700B4C02ABD5119F00009027876644077CD571@hplex1.hpl.hp.com>
+From: "Bass, Mick" <mick.bass@hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Date: Mon, 9 Feb 2004 07:50:35 -0800 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Subject: [parisc-linux] JVM for Linux on pa-risc?
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,16 +27,27 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hi Randolph,
+Does there exist a java virtual machine for linux on pa-risc, and if so where might one find it?
 
->So, can you try this patch?
+Many thanks,
 
-Yes, yes, yessss it works fine ;)
+- Mick Bass
 
-Thanks agian for great help,
-    Joel
+=============================================
+Mick Bass
 
--------------------------------------------------------------------------
-Tiscali ADSL: 12 mois à 29,50 €/mois! L'Internet rapide, c'est pour tout
-le monde.
-http://reg.tiscali.be/default.asp?lg=fr
+
+Manager
+Research and Business Development
+Digital Media Systems Department
+HP Laboratories
+Hewlett-Packard Company
+825 14th Street SW
+Loveland, CO 80537
+
+
+970.898.6788 office    240.536.0765 fax
+617.899.3938 mobile    303.494.5202 residence
+bass@alum.mit.edu      mick_bass@hp.com
+=============================================
+ 
