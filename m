@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0ABBD488A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 22:46:52 -0700 (MST)
-Date: Sat, 16 Feb 2002 06:46:47 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: Helge Deller <deller@gmx.de>
-Cc: Tilo Jandt <tilo@jandt-online.net>,
-	<parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] MySQL Server
-In-Reply-To: <200202160111.13331.deller@gmx.de>
-Message-ID: <Pine.NEB.4.33.0202160643280.23380-100000@www2.scram.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Matthew Wilcox <willy@debian.org>
+Cc: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>,
+	"parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] Pb with dump driver. 
+In-Reply-To: Message from Matthew Wilcox <willy@debian.org>
+   of "Fri, 15 Feb 2002 21:01:08 GMT." <20020215210108.I7053@parcelfarce.linux.theplanet.co.uk>
+References: <3C6AA3C3.D21C4164@admin.france.hp.com> <20020215064352.86A404858@dsl2.external.hp.com> <3C6D0555.BCDB04B6@admin.france.hp.com> <bruno_vidal@hpfrcu03.france.hp.com> <20020215190818.BB0464873@dsl2.external.hp.com>  <20020215210108.I7053@parcelfarce.linux.theplanet.co.uk> 
+Date: Sat, 16 Feb 2002 23:15:21 -0700
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020217061521.B2CF7482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,24 +20,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Helge,
+Matthew Wilcox wrote:
+> I personally HATE the idea of a kernel dump driver and
+> think that MPE's solution (on a TOC, dump the ram after reset) was
+> more elegant and easy to prove correct.
+> 
+> Note that grant disagrees with me on this.
 
-> In case you have libc6-2.2.5 installed you might try
-> to downgrade to libc6-2.2.4-7 again.
-> Could be worth a try...
+I'm not religous about this. At this point, I'm happy for *any*
+kind of a dump tool to debug kernel state when the system crashes.
 
-the MySQL server never worked for me. With the old libc6, one thread keeps
-looping (100% CPU time) and with the new one it simply hangs.
-
-> > Last time when I updated my system with apt-get the MySQL Server should
-> > also be updated but after downloading the File, extracting and
-> > preconfigurating the update proces stopped after "Stopping Mysql-server".
-> > I waited 2 hours but nothing happend. The MySQL couldn't be started and if
-> > I remove the new mysql-server and install the old one with dpkg the same
-> > procedure happens.
-> > Every time after the preconfiguration the install hangs.
-
-rm /var/run/mysqld/mysqld.pid
-
-Cheers,
---jochen
+grant
