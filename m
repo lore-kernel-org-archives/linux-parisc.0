@@ -1,18 +1,18 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] linux-2.6.10-pa1 panic on C360 in SCSI driver
-Date: Sun, 2 Jan 2005 00:58:32 +0000
-Message-ID: <20050102005832.GI18080@parcelfarce.linux.theplanet.co.uk>
-References: <200412260504.40205.vapier@gentoo.org>
-	<20041229034331.GS11543@parcelfarce.linux.theplanet.co.uk>
-	<200412291419.36568.vapier@gentoo.org>
-	<200501011839.13090.vapier@gentoo.org>
+Subject: [parisc-linux] Re: front-panel LED and switch support broken (was:
+	2.6.10-pa1 compile fails)
+Date: Mon, 3 Jan 2005 03:19:07 +0000
+Message-ID: <20050103031907.GM18080__20148.4752273702$1416624524$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <Pine.LNX.4.21.0412301311180.17049-100000@hal.pp.fishpool.fi>
+	<Pine.LNX.4.21.0412301639570.25032-100000@hal.pp.fishpool.fi>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Mike Frysinger <vapier@gentoo.org>
+  charset=iso-8859-1
+Cc: parisc-linux@parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: =?iso-8859-1?Q?Martin-=C9ric?= Racine <q-funk@iki.fi>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200501011839.13090.vapier@gentoo.org>
+In-Reply-To: <Pine.LNX.4.21.0412301639570.25032-100000@hal.pp.fishpool.fi>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,21 +23,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jan 01, 2005 at 06:39:13PM -0500, Mike Frysinger wrote:
-> On Wednesday 29 December 2004 02:19 pm, Mike Frysinger wrote:
-> > system booted nicely :)
+On Thu, Dec 30, 2004 at 04:40:38PM +0200, Martin-Éric Racine wrote:
+> On Thu, 30 Dec 2004, Martin-Éric Racine wrote:
 > 
-> fyi, i have two of these drives ... the other i use in an alpha of mine ...
+> > On Thu, 30 Dec 2004, Martin-Éric Racine wrote:
+> > However, support for the front-panel LEDs and switches is BROKEN in 2.6.10-pa1:
+> > when I press the power switch, it kills the AC power instead of sending a signal
+> > to the kernel to shut itself down.  OUCH!  The power/status LED is also off.
 > 
-> on the alpha, 2.6.10 mainline just hangs at boot during SCSI negotiation ... i 
-> ripped out the hunks that apply to the files in drivers/scsi/sym53c8xx_2/ 
-> from patch-2.6.10-pa2 and applied it to 2.6.10 mainline and the resulting 
-> kernel booted nicely ... again, the system fell back to async transfer mode, 
-> but that's better than nothing at all
+> This is still broken in 2.6.10-pa2 as well.
 
-I build i386 and ia64 kernels from the parisc CVS tree ... alpha should
-work as well in the pa tree as it does in mainline.  If something
-*doesn't* work, let me know.
+On which machine?  It works fine on my 725 and c3600.
 
 -- 
 "Next the statesmen will invent cheap lies, putting the blame upon 
