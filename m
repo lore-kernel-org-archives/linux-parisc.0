@@ -1,33 +1,37 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA06053
-	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 11:53:57 -0600
-To: Stan Sieler <sieler@allegro.com>
-cc: Matthew.Wilcox@genedata.com (Matthew Wilcox),
-        parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] HPUX binary compatibility 
-Reply-To: law@cygnus.com
-In-reply-to: Your message of Mon, 21 Jun 1999 10:23:17 PDT.
-             <199906211723.KAA39308@bart.allegro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 21 Jun 1999 11:48:23 -0600
-Message-ID: <14480.929987303@upchuck.cygnus.com>
-From: Jeffrey A Law <law@cygnus.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id LAA06198
+	for <parisc-linux@puffin.external.hp.com>; Mon, 21 Jun 1999 11:56:36 -0600
+Message-Id: <199906211756.NAA10393@hiauly1.hia.nrc.ca>
+To: adevries@thepuffingroup.com (Alex deVries)
+Date: Mon, 21 Jun 1999 13:56:26 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@thepuffingroup.com
+In-Reply-To: <376A9AF9.5F3DB326@thepuffingroup.com> from "Alex deVries" at Jun 18, 99 03:16:09 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: [parisc-linux] Problems with createheader.sh script
 List-ID: <linux-parisc.vger.kernel.org>
 
+When creating a LIF image, i get the following errors:
 
-  In message <199906211723.KAA39308@bart.allegro.com>you write:
-  > The problem with translators is that they don't work in all cases.
-  > 
-  > The most important case is where you want to link some .o files
-  > together: some are compiled for Linux, some for HP-UX. 
-  > 
-  > *That's* why having different system call numbers is important.
-You really don't want to do that.  I strongly recommend against it.  In
-5 years of working on a system which had hpux compatibility we had zero
-need to do this kind of stuff and it just makes things a lot more complicated
-than they need to be.
+./boot_tools/createheader.sh boot_code/ipl ../../../../vmlinux
+./boot_tools/createheader.sh: !: not found
+./boot_tools/createheader.sh: !: not found
+(standard_in) 1: illegal character: J
+(standard_in) 1: parse error
+(standard_in) 1: parse error
+(standard_in) 1: parse error
+(standard_in) 1: illegal character: J
+IPL address: 4096       kernel address: 49152
+IPL size:  45056 Jun    kernel size:
+IPL entry: 4096         kernel entry: 32768
+Header created.
 
-If we wanted to build an hpux app, we had a set of tools to build hpux apps.
+I think the problem is lies with the cut command.  The character
+position of file sizes in the 'ls -l' command varies.  The hpux
+9.01 ls position differs from that of GNU ls.  I think it would
+be better to use awk to grab the file size info.
 
-jeff
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
