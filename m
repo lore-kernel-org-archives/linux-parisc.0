@@ -1,43 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA21224
-	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Aug 2000 11:52:29 -0600
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 11 Aug 2000 11:52:40 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id VAA16176;
-	Fri, 11 Aug 2000 21:51:35 +1000
-Date: Fri, 11 Aug 2000 21:51:35 +1000 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matthew Wilcox <matthew@wil.cx>
-cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] 64-bit binutils problem
-In-Reply-To: <20000810180624.J10843@vodka.thepuffingroup.com>
-Message-ID: <Pine.LNX.4.21.0008112139580.29780-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA21740
+	for <parisc-linux@puffin.external.hp.com>; Fri, 11 Aug 2000 12:31:57 -0600
+Received: from upchuck.cygnus.com (cse.cygnus.com [205.180.230.236])
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id FAA05324
+	for <parisc-linux@thepuffingroup.com>; Fri, 11 Aug 2000 05:30:58 -0700 (PDT)
+To: Alan Modra <alan@linuxcare.com.au>
+cc: David Huggins-Daines <dhd@linuxcare.com>, parisc-linux@thepuffingroup.com,
+        parisc@lists.linuxcare.com
+Subject: Re: Millicode calls, GP register, ld -r 
+Reply-To: law@cygnus.com
+In-reply-to: Your message of Fri, 11 Aug 2000 17:32:33 +1000.
+             <Pine.LNX.4.21.0008111648380.29780-100000@front.linuxcare.com.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Fri, 11 Aug 2000 06:30:36 -0600
+Message-ID: <1523.965997036@upchuck>
+From: Jeffrey A Law <law@cygnus.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 10 Aug 2000, Matthew Wilcox wrote:
 
-> p.p.s.  anyone know why my piece of debug code:
-> 
->         ldil            0xdecf0000, %r9
-> 
-> is getting assembled as:
-> 
->     c0100000:   21 20 0f 00     ldil 78000000,r9
+  In message <Pine.LNX.4.21.0008111648380.29780-100000@front.linuxcare.com.au>y
+ou write:
+  > 
+  > Hi David,
+  > 
+  > On thinking about this $$dyncall issue a bit more, what use are PLABELs in
+  > PIC code anyway?  As far as I can see, PLABELs are used for two things:
+  > 1) to provide an unique address for a function
+  > 2) as a place to hang argument relocation information
+  > 
+  > We're not doing (2), and (1) is satisfied by the value in the PLTGOT.
+  > 
+  > So...  I can turn a PLABEL reference into a GOT reference, which will
+  > magically fix the $$dyncall problem.
+  > 
+  > Comments?
+The other way it's used is to handle intra-space calls/returns.  I don't know
+if that's an issue for y'all or not.
 
-You've told the assembler to plug in the constant 0xdecf0000 to a ldil
-instruction.  ldil has a 21 bit field so you only get the bottom 21 bits
-of your constant.  The number they represent is the constant shifted
-left by 11 bits.  Just happens to be 78000000  :-)
+jeff
 
-Try "ldil L%0xdecf000,%r9"
-
-'twould be a lot nicer if "objdump -d" produced output that could be fed
-back into the assembler, in which case you'd see the L%.  I may even fix
-it one day when I find I have nothing to do...
-
-Alan
--- 
-Linuxcare.  Support for the Revolution.
+jeff
