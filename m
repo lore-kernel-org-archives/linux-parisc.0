@@ -1,13 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 To: "M. Grabert" <xam@cs.ucc.ie>
-Cc: John <hplinux@eagle.grdl.noaa.gov>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: PA-RISC 0.9.3+C200+Visualize-EG+2.4.18-pa05 = working X! 
+Cc: Jeremy Drake <jeremyd@apptechsys.com>,
+	parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] SMP support 
 In-Reply-To: Message from "M. Grabert" <xam@cs.ucc.ie>
-   of "Wed, 20 Mar 2002 22:01:11 GMT." <Pine.LNX.4.44.0203202015180.5453-100000@sal.ucc.ie>
-References: <Pine.LNX.4.44.0203202015180.5453-100000@sal.ucc.ie> 
-Date: Thu, 21 Mar 2002 00:03:47 -0700
+   of "Wed, 20 Mar 2002 22:16:46 GMT." <Pine.LNX.4.44.0203202209250.5453-100000@sal.ucc.ie>
+References: <Pine.LNX.4.44.0203202209250.5453-100000@sal.ucc.ie> 
+Date: Thu, 21 Mar 2002 00:08:51 -0700
 From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020321070347.E4599482A@dsl2.external.hp.com>
+Message-Id: <20020321070852.027D74843@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,21 +21,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 "M. Grabert" wrote:
-> I have mentioned this before (18 Dec 2001) in the mailing-list,
-> and I was asking how and if you can change the FX-graphics to
-> a custom resolution (mode 6). Grant replied
-> 
-> > Yes. I don't know exactly how though. I'd look in the User's Guide
-> > (might be available on docs.hp.com).
-> 
-> unfortunately I haven't found any information except this:
+> > > depmod: Unhandled relocation of type 74 for printk_Rsmp_dd132261
+> > > depmod: Unhandled relocation of type 74 for usb_deregister_Rsmp_c6f994d5
+> >
+> > I've seen this when CONFIG_PA20 is enabled but CONFIG_PARISC64 is not.
+> > Don't know if that's your problem, but it's worth checking.
 
-hmm...I was looking for the method using PDC prompt.
-"mon" I thought let one do such customization but I don't know
-the syntax. Am I on the wrong track or does someone have
-the docs for this?
+FWIW, it seems the Richard Hirst has fixed this.
+He's posted a modutils_2.4.13-3.1rgh_hppa.deb to test
+(I've used it successfully) on ftp.p-l.o/unofficial-debs.
 
-(Note that mucking with timings can break your HW if you mess it up)
-
-hth,
+thanks richard!
 grant
