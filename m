@@ -1,39 +1,79 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA14090
-	for <parisc-linux@puffin.external.hp.com>; Wed, 17 Nov 1999 10:34:43 -0700
-Message-Id: <199911171734.MAA16975@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Today's boot experience on a 735
-To: law@cygnus.com
-Date: Wed, 17 Nov 1999 12:34:47 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: bame@debian.fc.hp.com, parisc-linux@thepuffingroup.com
-In-Reply-To: <1129.942809756@upchuck> from "Jeffrey A Law" at Nov 16, 99 08:35:56 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id KAA14265
+	for <parisc-linux@puffin.external.hp.com>; Wed, 17 Nov 1999 10:42:55 -0700
+Date: Wed, 17 Nov 1999 07:12:26 +0100
+From: Philipp Rumpf <Philipp.H.Rumpf@mathe.stud.uni-erlangen.de>
+To: frowand@cup.hp.com
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] depi?
+Message-Id: <19991117071226.G750@mathe.stud.uni-erlangen.de>
+References: <Pine.LNX.4.10.9911150307300.7996-100000@vodka.thepuffingroup.com> <199911150736.XAA14959@opus.allegro.com> <19991115092549.G30917@mathe.stud.uni-erlangen.de> <383093DE.A8B73CE4@hp.com> <19991116170819.B750@mathe.stud.uni-erlangen.de> <3831CFF0.F4B3CE3E@hp.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3831CFF0.F4B3CE3E@hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
->   > you know why the DLT section
->   > disappeared when I used the sort key of 255 for AFTERDLT?  Although
->   > I haven't tried it, it may not be possible to create an object file with
->   > both DLT and AFTERDLT sections.
-> Not really.  I do know that we had major problems with pxdb (post-link 
-> processor
-> on HPs) mysteriously removing subspaces with sort keys of 255 in the past.
+>    - C code that needs to run in real mode seems to be rather fragile, given
+>      Paul's recent experience with head.c.  (I think it was Paul.)
 
-I did a little testing with your second suggestion.  What happens
-is DLT is empty except for the one symbol that I created in it.  The linker
-always goes last and it seems to dump the common symbols into the last
-section with sort key 255.  I think DLT was deleted because it was
-empty.
+We do need some tricks to get C code to run in real-mode, and several people
+are working on them.
 
-Is there a solution that doesn't rely on this obscure linker behaviour?
-I think that if gas were modified to allocate common symbols in a special
-section, then we wouldn't have this problem.  However, I think this would
-require that common symbols would always have to be fixed in size. While
-this is normal practice in C, the assembler would not work with fortran
-where it is normal practice to have common blocks of varying size.
+When the kernel is mapped, we need to be extremely careful not to hit a
+vmalloced area or something when we call C code that should run in virtual
+mode in real mode.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+It's letting the code fail obviously, for all cases, or letting easy code work
+now and wait for subtle bugs to occur.
+
+Which one do you prefer ?
+
+>    - A single instance of code can't (easily) be coded to be able to run both
+>      in real mode and in virtual mode.
+
+That's true when we map the kernel at 0x0000 0000 as well.  Again, it's
+an obvious bug or a subtle one.
+
+>  - It's real easy to mis-code real mode assembly (eg. use the PA() macro when
+>    it shouldn't be used or don't use it when it should be used).
+
+Is there any situation where you should not use PA() for a symbol in real-mode
+assembly ?  I agree branches are a bit difficult because the right way to code
+them is
+
+	.+(PA(symbol)-PA(.))
+
+but
+
+	symbol
+
+right now happens to work (this is good luck).
+
+
+I agree the PA() macro isn't a nice thing to use and if we have a chance to get
+rid of it, we should have a serious look.  
+
+>    - Issues with coherent I/O.
+
+I don't see them.  I see issues with the architecture specification, but I do
+not believe there is any actual hardware around that depends on this issues.
+
+As far as I understood the implementation of cache-coherent I/O, what basically
+happens is:
+
+ - I/O controller wants to access physical adress 0x1234 5678
+ - the I/O controller puts a special cycle on the bus it shares with the CPU(s)
+   that basically says "hey, if you have address 0x1234 5678 in your cache and
+   need to write it back, do it now"
+ - all CPUs have a look at the cache lines corresponding to 0x1234 5678, which
+   is the same cache lines as the one used for 0x9234 5678 (very very likely).
+ - all CPUs have a look at the tags of these cache lines, which happen to be
+   physical so 0x1234 5678 and 0x9234 5678 result in the same thing again.
+ - the guilty CPU gives back the cache line, or none does if the line doesn't
+   happen to be in the cache.
+
+Furthermore, there is no publically documented coherent I/O system from HP yet
+so we have just to assume hardware we only heard rumours about will be sane
+once we get to see it. 
+
+	Philipp Rumpf
