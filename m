@@ -1,25 +1,37 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA29169
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 13:59:37 -0700
-Received: from lightning.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.1)
-  by mailserv2.iuinc.com with SMTP; 30 Nov 2000 20:33:48 -0000
-Subject: Re: [parisc-linux] XFree status
-To: grundler@cup.hp.com (Grant Grundler)
-Date: Thu, 30 Nov 2000 20:33:42 +0000 (GMT)
-Cc: alan@lxorguk.ukuu.org.uk (Alan Cox), parisc-linux@thepuffingroup.com
-In-Reply-To: <200011301756.JAA29386@milano.cup.hp.com> from "Grant Grundler" at Nov 30, 2000 09:56:46 AM
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA29317
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 14:01:24 -0700
+Content-Type: text/plain;
+  charset="us-ascii"
+From: Helge Deller <deller@gmx.de>
+To: "Steve Moret" <smoret@uci.edu>
+Subject: Re: [parisc-linux] HP 9000/735-125
+Date: Thu, 30 Nov 2000 21:22:53 +0100
+Cc: parisc-linux@thepuffingroup.com
+References: <FKEGLIIBOIACJOCCAFIMIEFGCCAA.smoret@uci.edu> <00113019374604.00309@P100>
+In-Reply-To: <00113019374604.00309@P100>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-Id: <E141aOm-0007lW-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Message-Id: <00113021225305.00309@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > (XFree 4.0 has a X86 emulator for booting the BIOS firmware on PCI cards)
-> 
-> And is this emulator running under parisc-linux now? (!)
+On Thursday 30 November 2000 19:37, Helge Deller wrote:
+> On Thursday 30 November 2000 18:50, Steve Moret wrote:
+> > With the BiDirectional stuff back in it dies here:
+> >
+> > Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
+> > POSIX conformance testing by UNIFIX
+> > ASP version 20 at 0xf0800000 found.
+> > LED (ASP-style) display at f0800020
+> > parport_gsc.c: initialize bidirectional-mode
+>
+> [oops msg deleted]
+>
+> Yup, that was what I thought !
+> I will try to come up with a clean fix in the next few hours...
 
-It builds, it seems to run its tests (ignoring the fact I have in/out ops
-nulled out). It is already used on other platforms. It might be interesting
-to use it in the PA bootloader too 8)
+I've just committed a fix which should work on both (ASP & LASI)...
+Would you mind to test this stuff again ?
 
-Alan
+Thanks,
+
+	Helge.
