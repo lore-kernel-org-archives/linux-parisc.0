@@ -1,17 +1,14 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] NCR_700 problems on 715/64 with 2.6.11-rc4-pa1
-Date: Sat, 19 Feb 2005 22:12:50 +0000
-Message-ID: <4217B9E2.4040804@tiscali.be>
-References: <200502191234.30310.deller@gmx.de>	<20050219164007.GC455@parcelfarce.linux.theplanet.co.uk>
-	<20050219165314.GD455@parcelfarce.linux.theplanet.co.uk>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] BUG 2.6.11-rc4-pa1 XFS data page fault
+Date: Sat, 19 Feb 2005 15:27:23 -0700
+Message-ID: <20050219222723.GA12572@colo.lackof.org>
+References: <20050216065539.GB5251@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050219165314.GD455@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20050216065539.GB5251@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,345 +19,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
+On Tue, Feb 15, 2005 at 11:55:39PM -0700, Grant Grundler wrote:
+> Running 2.6.11-rc4-pa0-plus (equivalent to -pa1) on a500-65 (riot).
+> xfs ran spew for 48h but panic'd when I did a "cvs up -A"
+> to the CVS source tree on the same file system.
 
-Here isthe lot of messages I got when stressing sdc on narrow se connection of my c110 (this disk is an older model then mentioned 
-in previous test).
-using following stress test just being:
-# tar cslp linux-2.6.11-rc4-pa1-050219 | tar -C /chroot/Develop -xslp
-# tar -cslpf /chroot/Develop/linux-2.6.11-rc4-pa1-050219.tar linux-2.6.11-rc4-pa1-050219
-# tar -cslpf /chroot/Develop/linux-2.6.11-rc4-pa1-050219.tar2  linux-2.6.11-rc4-pa1-050219
-nearly simultanious in 3 different shells ;-)
+XFS behaves better with sym2+MMIO on j6000 running a 64-bit SMP kernel.
+I was able to run spew several hours with no problems.
+This is without the patch that Joel pointed out from the -mm tree.
 
-I got lot of messages as follow:
-scsi1: (4:0) phase mismatch at 01e8, phase IO CD MSG BSY REQ MSG N
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48520, cmnd 2ff081c0
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08a00
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x3: 03 00 00 00 60 00
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48520, cmnd 2ff08320
-  failing command because of reset, slot 2ff4864c, cmnd 2ff088a0
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff088a0
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff08320
-  failing command because of reset, slot 2ff488a4, cmnd 2ff088a0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff088a0
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff08320
-  failing command because of reset, slot 2ff488a4, cmnd 2ff088a0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff088a0
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff088a0
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff088a0
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff08320
-  failing command because of reset, slot 2ff488a4, cmnd 2ff088a0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff088a0
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff48520, cmnd 2ff081c0
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff08320
-  failing command because of reset, slot 2ff488a4, cmnd 2ff088a0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff088a0
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff4864c, dsp 001d8]
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08060
-  failing command because of reset, slot 2ff48778, cmnd 2ff08320
-  failing command because of reset, slot 2ff488a4, cmnd 2ff088a0
-scsi1: (4:0), UNEXPECTED PHASE after command phase (CD BSY REQ CMD_OUT)
-          len = 6, cmd =scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f af 46
-scsi1: Bus Reset detected, executing command 2ff08060, slot 2ff48778, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08060
-  failing command because of reset, slot 2ff488a4, cmnd 2ff081c0
-scsi1 (4:0) broken device is looping in contingent allegiance: ignoring
-scsi1 (4:0) New error handler wants to abort command
-         scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f b7 46 00 04 00 00
-scsi1 (4:0) New error handler wants to abort command
-         scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f b3 46 00 04 00 00
-scsi1 (4:0) New error handler wants to abort command
-         scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f bc d6 00 04 00 00
-scsi1 (4:0) New error handler wants device reset
-         scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f b7 46 00 04 00 00
-scsi1 (4:0) New error handler wants BUS reset, cmd 2ff081c0
-         scsi1 : destination target 4, lun 0
-         command: cdb[0]=0x2a: 2a 00 00 5f b7 46 00 04 00 00
-scsi1: Bus Reset detected, executing command 2ff08320, slot 2ff488a4, dsp 001d8]
-  failing command because of reset, slot 2ff48778, cmnd 2ff08480
-  failing command because of reset, slot 2ff488a4, cmnd 2ff08320
-end_request: I/O error, dev sdc, sector 6270790
-Buffer I/O error on device sdc9, logical block 144776
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144777
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144778
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144779
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144780
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144781
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144782
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144783
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144784
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 144785
-lost page write due to I/O error on sdc9
-  target1:0:4: Beginning Domain Validation
-scsi1: (4:0) Asynchronous
-  target1:0:4: Domain Validation skipping write tests
-scsi1: (4:0) Synchronous at offset 8, period 100ns
-  target1:0:4: Ending Domain Validation
-end_request: I/O error, dev sdc, sector 6624510
-printk: 118 messages suppressed.
-Buffer I/O error on device sdc9, logical block 188991
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 188992
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 188993
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 188994
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 188995
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 188996
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 188997
-lost page write due to I/O error on sdc9
-end_request: I/O error, dev sdc, sector 7236926
-printk: 121 messages suppressed.
-Buffer I/O error on device sdc9, logical block 265543
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 265544
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 265545
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 265546
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 265547
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 265548
-lost page write due to I/O error on sdc9
+This suggests there is a problem with Astro/Elroy programming
+where "Sprockets" firmware (for Astro based workstations) does
+something different than PAT PDC firmware on a500.
+I'm investigating.
 
-> 
-> 
-> Here's the patch I'm compiling now ...
-> 
-> --- drivers/scsi/lasi700.c      10 Dec 2004 20:46:33 -0000      1.10
-> +++ drivers/scsi/lasi700.c      19 Feb 2005 16:47:11 -0000
-> @@ -112,7 +112,7 @@ lasi700_probe(struct parisc_device *dev)
->  
->         hostdata->dev = &dev->dev;
->         dma_set_mask(&dev->dev, 0xffffffffUL);
-> -       hostdata->base = base;
-> +       hostdata->base = ioremap(base, 0x100);
->         hostdata->differential = 0;
->  
->         if (dev->id.sversion == LASI_700_SVERSION) {
-> @@ -138,6 +138,7 @@ lasi700_probe(struct parisc_device *dev)
->         return 0;
->  
->   out_kfree:
-> +       iounmap(hostdata->base);
->         kfree(hostdata);
->         return -ENODEV;
->  }
-> @@ -152,6 +153,7 @@ lasi700_driver_remove(struct parisc_devi
->         scsi_remove_host(host);
->         NCR_700_release(host);
->         free_irq(host->irq, host);
-> +       iounmap(hostdata->base);
->         kfree(hostdata);
->  
->         return 0;
-> 
-This patch applied I got only:
-end_request: I/O error, dev sdc, sector 5303534
-Buffer I/O error on device sdc9, logical block 23869
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23870
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23871
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23872
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23873
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23874
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23875
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23876
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23877
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 23878
-lost page write due to I/O error on sdc9
-scsi1: (4:0) phase mismatch at 01e8, phase IO CD MSG BSY REQ MSG IN
-scsi1: Bus Reset detected, executing command 2ff08320, slot 2ff4864c, dsp 001d81e8[01e8]
-  failing command because of reset, slot 2ff48520, cmnd 2ff08740
-  failing command because of reset, slot 2ff4864c, cmnd 2ff08320
-  failing command because of reset, slot 2ff48778, cmnd 2ff088a0
-  failing command because of reset, slot 2ff488a4, cmnd 23af1e80
-end_request: I/O error, dev sdc, sector 6147910
-printk: 118 messages suppressed.
-Buffer I/O error on device sdc9, logical block 129416
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129417
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129418
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129419
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129420
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129421
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129422
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129423
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129424
-lost page write due to I/O error on sdc9
-Buffer I/O error on device sdc9, logical block 129425
-lost page write due to I/O error on sdc9
 
-That said it seems to be a c110 pb because as reported in 
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2005-February/025853.html>
+However, did see one "WARN_ON" when I rsync (/home to /home2):
+root@gggj6k:/home# df
+Filesystem           1K-blocks      Used Available Use% Mounted on
+/dev/sda3              1783984   1522420    170940  90% /
+tmpfs                  4110708         0   4110708   0% /dev/shm
+/dev/sda4             15439312  13086812   1568220  90% /home
+/dev/sdb3             17019904   5155384  11864520  31% /mnt
+/dev/sdb4             17773568  12486340   5287228  71% /home2
 
-The same test on b180 with same 53c710 driver doesn't encounter any pb :-)
+root@gggj6k:/home# lsscsi
+[1:0:5:0]    disk    SEAGATE  ST318203LC       0001  /dev/sda
+[1:0:6:0]    disk    FUJITSU  MAJ3364MC        HP12  /dev/sdb
 
-I can so eliminate disk pb ;-)
-But how may I check if it's hw pb in the 53c710 ctrlr? (hp ode expert tools are only for hp engineer)
+The rsync completed but one error showed up 4 times on the console
+during the second half (about) of the rsync:
+
+Filesystem "sdb4": XFS internal error xfs_btree_check_sblock at line 342 of file fs/xfs/xfs_btree.c.  Caller 0x00000000102f1b84
+Backtrace:
+ [<00000000101145e0>] dump_stack+0x18/0x28
+ [<00000000102eceac>] xfs_error_report+0x64/0x70
+ [<00000000102d7718>] xfs_btree_check_sblock+0x78/0xf8
+ [<00000000102f1b84>] xfs_inobt_lookup+0x144/0x3a0
+ [<00000000102f3514>] xfs_inobt_lookup_le+0x24/0x30
+ [<00000000102f08f0>] xfs_dialloc+0xe90/0x12e0
+ [<00000000102f6638>] xfs_ialloc+0x70/0x4e0
+ [<0000000010310a10>] xfs_dir_ialloc+0xb8/0x3e8
+ [<0000000010316d30>] xfs_create+0x2f0/0x810
+ [<0000000010326140>] linvfs_mknod+0x1e0/0x298
+ [<000000001032620c>] linvfs_create+0x14/0x20
+ [<00000000101d3c04>] vfs_create+0xbc/0xf8
+ [<00000000101d4a30>] open_namei+0xb58/0xc10
+ [<00000000101b5b14>] filp_open+0x44/0x98
+ [<00000000101b5f98>] sys_open+0x98/0x110
+ [<0000000010107fac>] syscall_exit+0x0/0x14
+
+
+Perhaps this is fixed in the patches; I haven't looked.
 
 hth,
-	joel
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
