@@ -1,14 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from web12506.mail.yahoo.com (web12506.mail.yahoo.com [216.136.173.198])
-	by dsl2.external.hp.com (Postfix) with SMTP id B59A1486B
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 07:37:39 -0700 (MST)
-Message-ID: <20020215143737.51537.qmail@web12506.mail.yahoo.com>
-Date: Fri, 15 Feb 2002 06:37:37 -0800 (PST)
-From: Boris "Cámara" <vesmar@rocketmail.com>
-To: parisc-linux@lists.parisc-linux.org
-MIME-Version: 1.0
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E7CF8486A
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 15 Feb 2002 10:44:54 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 16bmPd-0006MJ-00; Fri, 15 Feb 2002 17:44:45 +0000
+Date: Fri, 15 Feb 2002 17:44:45 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Clement Moyroud <clement@moyroud.net>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Re: kernel-2.4.17-pa22 boot problem B132L+ with serial
+Message-ID: <20020215174445.G7053@parcelfarce.linux.theplanet.co.uk>
+References: <OFCD5822D4.246FA364-ONC1256B61.0024B267@com> <20020215065553.945774861@dsl2.external.hp.com> <3C6CF030.1040904@moyroud.net>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] hp 712/60 scsi problem
+In-Reply-To: <3C6CF030.1040904@moyroud.net>; from clement@moyroud.net on Fri, Feb 15, 2002 at 12:25:36PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,25 +26,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-hi all,
+On Fri, Feb 15, 2002 at 12:25:36PM +0100, Clement Moyroud wrote:
+> btw, Grant, have you seen Thibaut's mail about out serial ports problems 
+> on a B132L+ ?
 
-I have a problem.
-My hp 712/60 don't find scsi HDs (hd is a lps 525S).
+I haven't seen it.  Are they swapped?
 
-Im trying with search boot in  boot admin.
-
-what is the problem?
-
-By default TE jumper is over. Is this correct?
-scsi id is 6.
-
-Sorry for my bad english,
-
-thanx.
-
-
-
-__________________________________________________
-Do You Yahoo!?
-Got something to say? Say it better with Yahoo! Video Mail 
-http://mail.yahoo.com
+-- 
+Revolutions do not require corporate support.
