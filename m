@@ -1,20 +1,18 @@
-Return-Path: <randolph@tausq.org>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 74702482C
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2876A482C
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 28 Mar 2004 15:57:23 -0700 (MST)
-Date: Sun, 28 Mar 2004 15:36:37 -0800
-From: Randolph Chung <randolph@tausq.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+	Sun, 28 Mar 2004 16:00:10 -0700 (MST)
+Message-Id: <200403282300.i2SN08Lr010402@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] spinlock align code triggering bug in gcc?
-Message-ID: <20040328233637.GM750@tausq.org>
-References: <200403282248.i2SMma2a010231@hiauly1.hia.nrc.ca>
-	<200403282251.i2SMp7OD010307@hiauly1.hia.nrc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200403282251.i2SMp7OD010307@hiauly1.hia.nrc.ca>
+To: randolph@tausq.org
+Date: Sun, 28 Mar 2004 18:00:08 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040328233235.GL750@tausq.org> from "Randolph Chung" at Mar 28,
+	2004 03:32:35 pm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: Randolph Chung <randolph@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,17 +22,17 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> I think this is a coding problem.
+> > > {standard input}:3701: Error: Field not properly aligned [8] (-183).
+> > > {standard input}:3701: Error: Invalid operands
+> > 
+> > Take a look at the assembler output for the above line.
+> 
+> i did, it's a "ldd -183(%r3), %rN" (i don't remember the target register
+> right now)
 
-that's what i thought too initially, but there are no special things 
-in the structure that makes it unaligned. pls take a look at the test 
-program i attached... the structure only has a spinlock, an int and a 
-pointer.  where the heck does it get 183 from (or 23 in the test 
-program)? :) i'm guessing it inlined the __ldcw_align() and did some 
-constant folding to do the alignment and then the offset becomes wrong?
+It's the "183" that's the problem.  Can you see where that is coming from?
 
-randolph
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
