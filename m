@@ -1,16 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hal.pp.fishpool.fi (hal.pp.fishpool.fi [195.197.229.212])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8BC454847
-	for <parisc-linux@parisc-linux.org>; Mon, 10 Jun 2002 14:45:00 -0600 (MDT)
-Date: Mon, 10 Jun 2002 23:44:55 +0300 (EEST)
-From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
-In-Reply-To: <20020610203332.77E1F4838@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.21.0206102343040.8495-100000@hal.pp.fishpool.fi>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1
-Subject: [parisc-linux] Re: 712-60 XFree86 mouse driver problems
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] SCSI driver for E-class servers - SPIFI ? 
+In-Reply-To: Message from Christoph Plattner <christoph.plattner@gmx.at>
+   of "Mon, 10 Jun 2002 22:04:09 +0200." <3D050639.B9F9695D@gmx.at>
+References: <3D050639.B9F9695D@gmx.at> 
+Date: Mon, 10 Jun 2002 15:53:12 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020610215312.29D2C483A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +19,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 10 Jun 2002, Grant Grundler wrote:
+Christoph Plattner wrote:
+> Hello to all !
+> 
+> Is the HP E55 SCSI controller a HP SPIFI ?
+> I found that on the mailing archive ...Is this correct ?
 
-> =3D?iso-8859-1?Q?Martin-=3DC9ric_Racine?=3D wrote:
-> > Anyhow, the problem with fups2 is that
-> > every time I exit Gnome and X is restarted by gdm, the mouse in X no lo=
-nger
-> > works so I have to ctrl-alt-back kill X to reinitialize the mouse again=
-=2E
->=20
-> I had the same problem with B180 or C3000.  But since gdm is one of the
-> first things I remove, it doesn't bother me.
+Yes. HP-PB SE SCSI uses SPIFI-3.
+HP-PB FWD SCSI uses i860 + SPIFI-4.
 
-The same problem occurs with KDM or XDM.  Either way, I need a display mana=
-ger;
-loging in at the console and typing "startx" manually is not an option here=
-=2E
+> Does anyone know, if this driver can help use for the E55 or
+> similar machines.
+> 
+> The driver is in the file:
+>      ./syssrc/sys/arch/newsmips/apbus/spifi.c 
+> and
+>      ./syssrc/sys/arch/newsmips/apbus/spifireg.h
 
---=20
-Martin-=C9ric Racine, Helsinki, Finland.
-http://www.pp.fishpool.fi/~q-funk/
-+358 41 474 0289
+I need a URL. AFAIK, SPIFI if the only family of SCSI
+chips made by HP.
+
+grant
