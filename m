@@ -1,20 +1,16 @@
-Return-Path: <>
-Received: from china-painting.net (unknown [218.246.32.243])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BE8984856
+Return-Path: <virusmanager@indura.net>
+Received: from indumail.indura.cl (unknown [200.2.92.7])
+	by dsl2.external.hp.com (Postfix) with SMTP id ECF5B485D
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 03:16:15 -0700 (MST)
-Received: from china-painting.net [218.246.32.243] by china-painting.net
-	[218.246.32.243] (with RAW) (MDaemon.PRO.v6.8.4.R)
-	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 18:19:57 +0800
-Date: Fri, 26 Mar 2004 18:19:57 +0800
-From: Postmaster@china-painting.net
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <MDAEMON2476200403261819.AA1957250@china-painting.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Subject: [parisc-linux] MDaemon Notification -- Attachment Removed
-Reply-To: Postmaster@china-painting.net
+	Fri, 26 Mar 2004 06:09:44 -0700 (MST)
+From: virusmanager@indura.net
+To: <parisc-linux@lists.parisc-linux.org>
+Date: Sat, 27 Mar 2004 09:08:52 -0400
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_1080392932_B78506032.R82506026"
+Message-Id: <20040326130944.ECF5B485D@dsl2.external.hp.com>
+Subject: [parisc-linux] Envio Rechazado (Replaced with text)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,13 +20,39 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-下列邮件包含被限制的附件，已被移除:
+This is a multi-part message in MIME format.
 
-发信人     : parisc-linux@lists.parisc-linux.org
-收信人     : info@china-corrosion.net
-主题       : Mail Delivery (failure info@china-corrosion.net)
-邮件 ID    : 
+------=_NextPart_000_1080392932_B78506032.R82506026
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-已移除的附件:
------------------------------------------
-message.scr
+************* eManager Notification **************
+
+Este mensaje esta prohibido para su envio en el servidor.
+
+Source mailbox: "parisc-linux@lists.parisc-linux.org"
+Destination mailbox(es): pcontrerasc@indura.net
+Policy: Replaced with text
+Attachment file name: message.scr - audio/x-wav
+Action: Attachment Removal
+
+******************* End of message *******************
+
+------=_NextPart_000_1080392932_B78506032.R82506026
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+From: parisc-linux@lists.parisc-linux.org
+To: pcontrerasc@indura.net
+Subject: Mail Delivery (failure pcontrerasc@indura.net)
+Date: Fri, 26 Mar 2004 09:08:44 -0400
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_001B_01C0CA80.6B015D10"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+------=_NextPart_000_1080392932_B78506032.R82506026--
