@@ -1,57 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA02433
-	for <parisc-linux@puffin.external.hp.com>; Thu, 27 Apr 2000 04:54:51 -0600
-Message-ID: <003001bfb036$8b4fab40$0303a0c0@bas>
-From: "Bas Valkema" <bvalkema@knowhowww.nl>
-To: <parisc-linux@thepuffingroup.com>
-Subject: Re: Mux for E35
-Date: Thu, 27 Apr 2000 12:51:21 +0200
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_002B_01BFB047.49BAD1D0"
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id OAA16264
+	for <parisc-linux@puffin.external.hp.com>; Fri, 28 Apr 2000 14:29:56 -0600
+Received: from l3107mxr.atl.hp.com (l3107mxr.atl.hp.com [15.19.254.19])
+	by atlrel1.hp.com (Postfix) with ESMTP id 6E7051CA08
+	for <parisc-linux@thepuffingroup.com>; Fri, 28 Apr 2000 16:29:51 -0400 (EDT)
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by l3107mxr.atl.hp.com (Postfix) with ESMTP id A0E294FD8D
+	for <parisc-linux@thepuffingroup.com>; Fri, 28 Apr 2000 16:29:50 -0400 (EDT)
+Received: (from grundler@localhost) by milano.cup.hp.com (8.8.6 (PHNE_17190)/8.7.3 TIS 5.0.1) id NAA09211 for parisc-linux@thepuffingroup.com; Fri, 28 Apr 2000 13:30:09 -0700 (PDT)
+Date: Fri, 28 Apr 2000 13:30:09 -0700 (PDT)
+From: Grant Grundler <grundler@cup.hp.com>
+Message-Id: <200004282030.NAA09211@milano.cup.hp.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] crt0.S does not build
 List-ID: <linux-parisc.vger.kernel.org>
 
-This is a multi-part message in MIME format.
+Hi all,
 
-------=_NextPart_000_002B_01BFB047.49BAD1D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I'm trying to get builds working on a new x86 box.
+I've built/installed binutils and gcc (--prefix=/opt/puffin).
+I'm able to build linux-2.3 kernels but palo dies with:
+make[1]: Leaving directory `/linux/grundler/palo/palo'
+cd ipl && make
+make[1]: Entering directory `/linux/grundler/palo/ipl'
+hppa1.1-linux-gcc -D__ASSEMBLY__  -traditional -c -o crt0.o crt0.S
+crt0.S: Assembler messages:
+crt0.S:4: Error: Unknown opcode: `execution'
+crt0.S:6: Error: Unknown opcode: `we'
+crt0.S:8: Fatal error: Unknown opcode: `$start$(interactive, endaddr)'
+make[1]: *** [crt0.o] Error 1
+make[1]: Leaving directory `/linux/grundler/palo/ipl'
+make: *** [makeipl] Error 2
 
-hi,
+It seems the assembler is not interpreting the ';' as comments.
+Is the crt0.S broken or my assembler?
 
-I read someone needs Muxes for E35??? I do have a couple of those things =
-gathering dust...
+thanks,
+grant
 
-Interested? Mail....
-
-bvalkema@knowhowww.nl
-Bas Valkema
-
-------=_NextPart_000_002B_01BFB047.49BAD1D0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META content=3D"text/html; charset=3Diso-8859-1" =
-http-equiv=3DContent-Type>
-<META content=3D"MSHTML 5.00.2314.1000" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>hi,</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I read someone needs Muxes for E35??? I =
-do have a=20
-couple of those things gathering dust...</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Interested? Mail....</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><A=20
-href=3D"mailto:bvalkema@knowhowww.nl">bvalkema@knowhowww.nl</A></FONT></D=
-IV>
-<DIV><FONT face=3DArial size=3D2>Bas Valkema</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_002B_01BFB047.49BAD1D0--
+ps. paul: my source is on hpisp747:/linux/grundler . I updated/copied
+   the CVS sources over from my existing HP-UX build machine.
