@@ -1,26 +1,18 @@
-Return-Path: <alan@lxorguk.ukuu.org.uk>
-Received: from dhcp23.swansea.linux.org.uk
-	(cpc1-cwma1-5-0-cust4.swan.cable.ntl.com [80.5.120.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 57A1348AD
+Return-Path: <epotter@eep.burdell.org>
+Received: from keymaster (dsl027-162-176.atl1.dsl.speakeasy.net
+	[216.27.162.176])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E2F554852
 	for <parisc-linux@lists.parisc-linux.org>;
-	Sun, 15 Feb 2004 09:10:35 -0700 (MST)
-Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10) with ESMTP id
-	i1FG640r025553; Sun, 15 Feb 2004 16:06:06 GMT
-Received: (from alan@localhost)
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10/Submit) id
-	i1FG63rM025551; Sun, 15 Feb 2004 16:06:03 GMT
+	Sun, 15 Feb 2004 09:32:27 -0700 (MST)
+Date: Sun, 15 Feb 2004 11:27:53 -0500 (EST)
+From: Elliott Potter <epotter@eep.burdell.org>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Subject: Re: [parisc-linux] C3000 video options
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: "M. Grabert" <xam@cs.ucc.ie>
-In-Reply-To: <Pine.LNX.4.58.0402150326330.22822@sal.ucc.ie>
-References: <Pine.GSO.4.44.0402142137500.12861-100000@keymaster>
-	<Pine.LNX.4.58.0402150326330.22822@sal.ucc.ie>
-Content-Type: text/plain
-Message-Id: <1076861160.25519.1.camel@dhcp23.swansea.linux.org.uk>
-Mime-Version: 1.0
-Date: Sun, 15 Feb 2004 16:06:01 +0000
-Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <1076861160.25519.1.camel@dhcp23.swansea.linux.org.uk>
+Message-ID: <Pine.GSO.4.44.0402151123210.13137-100000@keymaster>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org, "M. Grabert" <xam@cs.ucc.ie>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,18 +22,34 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sul, 2004-02-15 at 03:36, M. Grabert wrote:
-> Someone tried Voodoo2, but no success report so far.
+On Sun, 15 Feb 2004, Alan Cox wrote:
 
-Voodoo2 fb works for some cards. I'm currently debugging an accelerated
-2D Voodoo2 driver that should work bi-endian with some tiny fixes
+> On Sul, 2004-02-15 at 03:36, M. Grabert wrote:
+> > [...]
+> > You'll be lucky to get any (ix86) PCI graphics card working on Linux/PA-RISC.
+> > The best bet would be to get a Visualize-EG, or some graphics card that
+> > doesn't require initialization via (ix86-)BIOS (eg. Matrox Millenium).
+>
+> Older S3, Matrox fit that, the XFree86 code has an x86 emulator which
+> will boot some more cards tho it does fail on some too where real vm86
+> works (eg C&T video BIOS)
 
-> You'll be lucky to get any (ix86) PCI graphics card working on Linux/PA-RISC.
-> The best bet would be to get a Visualize-EG, or some graphics card that
-> doesn't require initialization via (ix86-)BIOS (eg. Matrox Millenium).
+I've got the matroxfb driver built as a module, but so far all I can get
+it to do is hard lock the machine (yay, ext3!  Otherwise I'd be in real
+trouble).  I'm fiddling with driver options, but it's slow going because
+of all the rebooting.  Last one I tried was
 
-Older S3, Matrox fit that, the XFree86 code has an x86 emulator which
-will boot some more cards tho it does fail on some too where real vm86
-works (eg C&T video BIOS)
+modprobe matroxfb_base noaccel nopciretry nobios noinit nomtrr
+Warning:
+/lib/modules/2.4.24-pa0/kernel/drivers/video/matrox/matroxfb_base.o
+symbol for parameter mtrr not found
 
-Alan
+...then the hard lock.  I'm going to try it with just "nomtrr" next
+time; that mtrr warning error comes up every time.
+
+
+
+Ideally, this card will work on the machine, because I've got one (and I
+don't have a Voodoo* or S3*).  We'll see...
+--
+Elliott
