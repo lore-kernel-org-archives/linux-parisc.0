@@ -1,22 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp.comcast.net (smtp.comcast.net [24.153.64.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ADC614847
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 13:12:48 -0700 (MST)
-Received: from kenny (pcp944901pcs.cstltn01.in.comcast.net [68.58.113.28])
- by mtaout01.icomcast.net (iPlanet Messaging Server 5.1 (built Feb  6 2002))
- with SMTP id <0GSI002PIO5BHV@mtaout01.icomcast.net> for
- parisc-linux@lists.parisc-linux.org; Tue, 05 Mar 2002 15:12:47 -0500 (EST)
-Date: Tue, 05 Mar 2002 15:12:47 -0500
-From: James S <smithjames@comcast.net>
-Subject: Re: [parisc-linux] Printer Port & kernel stuff
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Reply-To: James S <smithjames@comcast.net>
-Message-id: <006d01c1c482$1e5712a0$02c1a8c0@james.co.uk>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-References: <005101c1c480$ae437900$02c1a8c0@james.co.uk>
- <20020305200711.E30960@parcelfarce.linux.theplanet.co.uk>
+Received: from mail.santa-clarita.com (unknown [64.165.136.197])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 06EF84834
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 14:31:20 -0700 (MST)
+Message-Id: <sc84c875.096@mail.santa-clarita.com>
+Date: Tue, 05 Mar 2002 13:30:07 -0800
+From: "Chris Gray" <CGRAY@santa-clarita.com>
+To: < <parisc-linux@lists.parisc-linux.org>>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_0C51B8E5.F697F55B"
+Subject: [parisc-linux] OT: value of a 712/100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -28,15 +20,55 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> On Tue, Mar 05, 2002 at 03:02:29PM -0500, James S wrote:
-> > Has nobody else had the same problem as me with the printer port ?
-> > 
-> > My 712/60 locks every time i send anything to the local printer.
-> 
-> Isn't this cured with Thomas Bogendoerfer's recent changes to make
-> parport_gsc & parport_pc work when compiled into the same kernel?
-> 
+This is a MIME message. If you are reading this text, you may want to 
+consider changing to a mail reader or gateway that understands how to 
+properly handle MIME multipart messages.
 
-how recent ? - i'm using the the 2.4.17-32 kernel
+--=_0C51B8E5.F697F55B
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-James S
+Sorry for the OT post,  I own a few 712/100 boxes and was wondering what
+they would be worth? and if any one here would be interested in buying a
+couple of them?
+
+Thanks,
+Chris.
+
+=====================
+Chris 'GrayMatter' Gray
+Network Administrator
+CGray@Santa-Clarita.com
+=====================
+Windows NT crashed.
+I am the Blue Screen of Death.
+No one hears your screams.
+=====================
+Yesterday it worked.
+Today it is not working.
+Windows is like that.
+=====================
+"If it ain't broke,
+fix it till it is broke"
+=====================
+
+--=_0C51B8E5.F697F55B
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="Chris Gray.vcf"
+
+BEGIN:VCARD
+VERSION:2.1
+X-GWTYPE:USER
+FN:Gray, Chris
+TEL;WORK:286-4094
+ORG:;Tech. Services
+TEL;PREF;FAX:255-1043
+EMAIL;WORK;PREF;NGW:CGRAY@santa-clarita.com
+N:Gray;Chris
+TITLE:Information Technology Specialist
+END:VCARD
+
+
+--=_0C51B8E5.F697F55B--
