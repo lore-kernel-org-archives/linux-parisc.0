@@ -1,15 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 80863482D
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Aug 2003 23:58:37 -0600 (MDT)
-Date: Mon, 11 Aug 2003 23:02:44 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20030812060244.GE21328@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] how to handle ERESTART_RESTARTBLOCK ?
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 54373482D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 12 Aug 2003 06:21:24 -0600 (MDT)
+Date: Tue, 12 Aug 2003 14:21:18 +0200
+Message-ID: <3F29178A00002C09@ocpmta7.freegates.net>
+In-Reply-To: <20030812035810.GB9325@systemhalted>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] itlb miss handler optimizations!
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>,
+	"Matthew Wilcox" <willy@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org,
+	"LaMont Jones" <lamont@hp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,44 +24,41 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I commited some broken code into 2.6 cvs just now, so now i need some
-help to fix it ;-) sorry for the verbose explanation below, but i need
-to write this down to make sure i understand it myself :-)
+Hi Carlos,
 
-Our signal handling code was not handling ERESTART_RESTARTBLOCK
-correctly. as far as I can tell, the semantics of this is that if a
-syscall function returns with that error code, we are supposed to
-restart the syscall, but with a new syscall number
-(__NR_restart_syscall -- which we don't define at the moment)
+>Assembles, and boots on my C3K, 32-bit kernel. Looking for any takers
+>who want to try  it in 64-bit mode. I'm running lmbench to see if I can
+>tell the difference between this and the original code. 
+>
+>I would be most appreciative if anyone would pipe up and say "Run X to
+>test if Y works better/faster/harder" :}
 
-The problem is that our syscall mechanism doesn't really allow this
-(afaict). Our syscall sequence looks like this:
+I apply your patch against 2.4.21-pa9 on the N-4000 and compile it successfully
+with hppa64-linux-gcc (3.2.3). (having no clue about lmbench) I take this
+exercise to roughly compare. 
 
-    ble <address of gateway page>
-    ldi <syscall number>, %r20
-    [ we enter the kernel at this point ]
+Running the original 2.4.21-pa9 here are times:
+Tue Aug 12 09:59:55 CEST 2003
+[...] # Build kernel: 19'58"
+Tue Aug 12 10:19:53 CEST 2003
+[...] # Build modules: 7'46"
+Tue Aug 12 10:27:39 CEST 2003
 
-and the way we handle restarting other syscalls is to set the iaoq back
-by two insns, so we do the ble again. there's a comment about this in
-the code (signal.c)
+Running this new kernel:
 
-                        /* Hooray for delayed branching.  We don't
-                           have to restore %r20 (the system call
-                           number) because it gets loaded in the delay
-                           slot of the branch external instruction. */
-                        regs->gr[31] -= 8;
+Tue Aug 12 12:28:37 CEST 2003
+[...] # Build kernel: 20'8"
+Tue Aug 12 12:48:45 CEST 2003
+[...] # Build modules: 7'47"
+Tue Aug 12 12:56:32 CEST 2003
 
-which is all well and good, except i don't see how we can change the
-syscall number to restart it for the ERESTART_RESTARTBLOCK case.
+The difference are so small that a more accurate tools would be requested.
 
-why is it bad to just call sys_restart_syscall directly from
-do_signal()?
+hth anyway,
+    Joel
 
-any suggestions on how to handle this properly?
 
-thanks
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+------------------------------------------------------
+Soldes Tiscali ADSL : 27,50 euros/mois jusque fin 2003.
+On s'habitue vite à payer son ADSL moins cher!
+Plus d'info? Cliquez ici... http://reg.tiscali.be/default.asp?lg=fr 
