@@ -1,14 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Date: Tue, 18 Feb 2003 09:45:56 -0700
-To: Nahkola Mikko <mnahkola@trinms01.ntc.nokia.com>
-Cc: Joel Soete <jsoe0708@tiscali.be>, parisc-linux@parisc-linux.org
+Received: from smtp-out.tiscali.be (spoolm2.tiscalinet.be [212.35.2.51])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D76974829
+	for <parisc-linux@parisc-linux.org>; Wed, 19 Feb 2003 01:19:51 -0700 (MST)
+Date: Wed, 19 Feb 2003 09:19:49 +0100
+Message-ID: <3E48441000002658@ocpmta7.freegates.net>
+From: "Joel Soete" <jsoe0708@tiscali.be>
 Subject: Re: [parisc-linux] .config fo a N class?
-Message-ID: <20030218164556.GA32367@dsl2.external.hp.com>
-References: <3E48B5950000297E@ocpmta3.freegates.net> <3E4ABE5000002044@ocpmta2.freegates.net> <20030218025230.GA13514@dsl2.external.hp.com> <20030218084442.GP3715@aurinko.ntc.nokia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030218084442.GP3715@aurinko.ntc.nokia.com>
-From: grundler@dsl2.external.hp.com (Grant Grundler)
+To: grundler@dsl2.external.hp.com
+Cc: parisc-linux@parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,19 +21,79 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Feb 18, 2003 at 10:44:42AM +0200, Nahkola Mikko wrote:
-> Come to think of it, is it at all reasonable to assume that the same chip 
-> revision would be likely to mean the cards are similar?
+>-- Original Message --
+>Date: Mon, 17 Feb 2003 19:52:30 -0700
+>To: Joel Soete <jsoe0708@tiscali.be>
+>Cc: parisc-linux@parisc-linux.org
+>Subject: Re: [parisc-linux] .config fo a N class?
+>From: grundler@dsl2.external.hp.com (Grant Grundler)
+>
+>
+>On Mon, Feb 17, 2003 at 06:51:01PM +0100, Joel Soete wrote:
+>> >I grab the config file of the test-drive L model; apply it against current
+>> >k-2.4.20-pa26 (just change 64 to 32 bits).
+>>                             ^^^^^^^^^^^^^ My bad: I would have to remember
+>> that hpux-11 have to be 64bits on L and N servers :?
+>
+>right. But L-class also only supports 64-bit.
+>And you want to disable CONFIG_SMP for N-class and L3000.
+>
+>> Well, for now I just boot with a dpkg kernel-image-2.4.19-64 (up) and
+still
+>> have to see what is wrong with eth0:
+>
+>You were not very clear about the symptom.
 
-hmm..I don't know that.
+Yes, sorry: my first goal was to advise that I reach to boot the N and will
+go later examine this pb.
 
-Use PCI_SUBSYSTEM_VENDOR_ID/PCI_SUBSYSTEM_ID to determine which card
-it is exactly.
+IIRC to start up this box I first unplug the NIC cable to avoid network
+pb.
+After that I changed the config file to restart the built-in NIC which didn't
+come up? A strange thing that I noticed was that there was not hard led
+lighted.
 
-> Anyway, mine still doesn't work as of today, but I haven't worked on it 
-> for a while... oh well, at least on HP-UX it'd be supported on an N, 
-> right?
+It should be because the switch disable temporarely the port after the cut
+of the link? I will check further...
 
-definitely.
+>And we need a slightly more accurate description
+>of the kernel-image version number.
+>
+it is the image from kernel-image-2.4.19-64_22.2_hppa.deb
 
-grant
+>But this might help you anyway
+>| > cvs log driver/nets/tulip/media.c
+>...
+>| revision 1.14
+>|
+>| date: 2002/10/14 23:34:02;  author: grundler;  state: Exp;  lines: +13
+>-13
+>|
+>| 2.4.19-pa22 Fix tulip phy reset/init
+>| DP83840A.pdf and lxt971d.pdf both require polling
+>| the reset bit (bit 15) in mdio control register to
+>| determine when a reset has completed. Then the
+>| "init" sequence can be sent.
+>
+I will check if I can still find back some sources
+>
+>> eth0 Digital DS21143 Tulip rev 65 at 0x80 ... irq 128
+>>
+>> Is there known problem with this type of NIC?
+>
+>yes - there was. But built-in should work. add-on cards had problems.
+>
+>> Next step would be to install a gcc-64 to recompile the kernel 2.4.20-pa27
+>> and have a new look on this eth0.
+>
+>yes - good plan
+>
+Thanks again for your kind attention,
+    Joel
+
+
+
+---------------------------------
+Vous surfez avec une ligne classique ?
+Faites des economies avec Tiscali Complete
+... Plus d'info sur http://complete.tiscali.be
