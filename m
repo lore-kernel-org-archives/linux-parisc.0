@@ -1,57 +1,58 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from maties2.sun.ac.za (maties2.sun.ac.za [146.232.128.10])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 26707484B
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 27 Sep 2001 13:20:56 -0600 (MDT)
-Received: from dogbert.sdsl.sun.ac.za ([146.232.83.63])
-	by maties2.sun.ac.za with smtp (Exim 3.33 #1)
-	id 15mghF-0000hl-00
-	for parisc-linux@lists.parisc-linux.org; Thu, 27 Sep 2001 21:19:45 +0200
-Date: Thu, 27 Sep 2001 21:18:59 +0200
-From: Albert Strasheim <fullung@ilink.nis.za>
-To: Jurij Smakov <jurij@lokmail.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 720 - some progress
-Message-ID: <20010927211859.A21590@dogbert.localdomain>
-References: <200109271632.MAA25337@mail.lokmail.net>
+Received: from megatonmonkey.net (cr821974-a.lndn1.on.wave.home.com [24.112.53.173])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A9F02484B
+	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 18:44:53 -0600 (MDT)
+Received: from sh.od.inet (IDENT:root@systemhalted [192.168.1.1])
+	by megatonmonkey.net (8.11.0/8.11.0) with ESMTP id f8S1CRG22039
+	for <parisc-linux@parisc-linux.org>; Thu, 27 Sep 2001 21:12:27 -0400
+Received: (from carlos@localhost)
+	by sh.od.inet (8.11.0/8.11.0) id f8S0ipB03885
+	for parisc-linux@parisc-linux.org; Thu, 27 Sep 2001 20:44:51 -0400
+Date: Thu, 27 Sep 2001 20:44:51 -0400
+From: "Carlos O'Donell Jr." <carlos@megatonmonkey.net>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] what i did on my holidays
+Message-ID: <20010927204451.F2611@megatonmonkey.net>
+References: <20010927161004.E16096@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-In-Reply-To: <200109271632.MAA25337@mail.lokmail.net>
-Sender: Albert Strasheim <fullung@dogbert.localdomain>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20010927161004.E16096@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Thu, Sep 27, 2001 at 04:10:04PM +0100
 List-ID: <linux-parisc.vger.kernel.org>
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> 
+> And much much more!
+> 
+> I haven't even tried compiling it since fixing up the cvs merge conflicts
+> with all the good work done in the last week or so.  Have fun...
+> 
+> -- 
 
-Hello,
+You da best! :)
 
-I'll play with your patches in about 24 hours from now. Sadly, I am
-attempting to get my degree during the week, so I'm not always near my
-beloved 720. :-)
+I've been hacking glibc 2.2.4-1:
 
-But I'll try them soon. And perhaps be truly dedicated and decode some
-crashes like Matthew suggests. :-)
+	- ./sysdeps/ia64/dl-fptr.c changes for try_lock
+	- Put change back into dpatch
+	
+	- Combing through glibc trying to understand the various
+	  changes that have been made (and how glibc works).
 
-By the way, are the docs you are referring to the ones on the
-parisc-linux.org site, or are they from another source? I'm interested
-in starting to read up on my lil' CPU.
+	- dpkg-buildpackage now makes it to the point of using a new
+	  ld.so.1, which seg's... so I'm back to figuring out why.
 
-Regards,
+I'm still not as far as you've gotten. I can't even get within arms
+reach of running zic, though I'm getting closer.
 
-Albert
+Trying to document those g++ problems with #define _BSD_SOURCE that
+Zimmerman has been trying to assign blame for ;)
 
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+I constantly mull over writing a new "building the toolchain" for
+the website.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
+Then I listen to Tom Waits, and I just feel like drinking and pondering
+if my 715/50 really loves me ;)
 
-iD8DBQE7s3ujDg+hOeRZtkMRAuqAAJ9+LOW0THLeZFECJv+ndWS0NM0IZwCfdTO4
-8kRKShpdHR8q8WOfcjo+y9I=
-=LxdE
------END PGP SIGNATURE-----
+--
 
---qDbXVdCdHGoSgWSk--
+
+c.
