@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id D2EDD482E
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Feb 2002 02:31:08 -0700 (MST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <deller@gmx.de>
-To: Yasholomew Yashinski <yashy@mail.yashy.com>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] B1000
-Date: Sat, 23 Feb 2002 10:26:28 +0100
-References: <20020223013935.D3685-100000@mail.yashy.com>
-In-Reply-To: <20020223013935.D3685-100000@mail.yashy.com>
+Received: from hotmail.com (oe64.law4.hotmail.com [216.33.148.160])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4EF224830
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 23 Feb 2002 06:02:37 -0700 (MST)
+From: "kenneth westelinck" <kennywest1@hotmail.com>
+To: "James S" <smith-james@home.com>,
+	<parisc-linux@lists.parisc-linux.org>
+References: <005e01c1bbc6$cb52bb40$02c1a8c0@james.co.uk>
+Subject: Re: [parisc-linux] Problems running KDE on PARISC
+Date: Sat, 23 Feb 2002 14:00:10 +0100
 MIME-Version: 1.0
-Message-Id: <200202231026.28084.deller@gmx.de>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Message-ID: <OE64YhE1E29R5JuhXtw00004f1a@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +23,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Saturday 23 February 2002 07:50, Yasholomew Yashinski wrote:
-> How do I switch from stifb to sticon (I just apt-get'd xfree86)?
+If you think WindowMaker is fast and configurable ... try BlackBox ;)
+----- Original Message -----
+From: "James S" <smith-james@home.com>
+To: <parisc-linux@lists.parisc-linux.org>
+Sent: Friday, February 22, 2002 6:31 PM
+Subject: Fw: [parisc-linux] Problems running KDE on PARISC
 
-stifb supersedes sticon and you won't be able to run X11 on sticon -
-so stifb is what you want and if you see TUX at bootup your
-kernel stifb driver is active.
 
-In your .config you'll find:		for:
-CONFIG_FB_STI=y			-> stifb
-CONFIG_FBCON_STI=y		-> stifb
-CONFIG_STI_CONSOLE=y	-> sticon
-Leave all enabled and you will get the best graphics support which
-we currently support on your system.
-
->  I'd just like to confirm:
-> eth0: Setting half-duplex based on MII#1 link partner capability of 0021.
->  is correct?
-
-It's OK, you are just connected to a hulf-duplex partner.
-
-Helge
+>
+> ----- Original Message -----
+> From: "James S" <smith-james@home.com>
+> To: "Thomas Schmid" <Thomas.Schmid@ascom.ch>
+> Sent: Friday, February 22, 2002 10:31 AM
+> Subject: Re: [parisc-linux] Problems running KDE on PARISC
+>
+>
+> > > Generally speaking KDE is slow on these machines, but
+> > > when I log in from KDM, it takes on _both_ machines about
+> > > 4..5 minutes to go from KDM login screen to KDE window
+> > > manager.
+> > >
+> >
+> > i was running kde as well, but found the wait time for applications to
+> start
+> > too long, so i switched to windowmaker - very configurable & much
+quicker
+> to
+> > load, but it also keeps the ability to run gnome & kde apps.
+> >
+> > just my ha'pennys worth...
+> >
+> > James S
+> >
+> >
+> >
+>
+>
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
