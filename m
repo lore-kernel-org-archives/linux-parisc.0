@@ -1,8 +1,8 @@
-From: Randolph Chung <randolph@tausq.org>
+From: "M. Grabert" <xam@cs.ucc.ie>
 Subject: Re: [parisc-linux] Re: 2.6.4-rc1-pa3 siimage/NS87415 IDE progess (and
 	another mystery)!
-Date: Mon, 12 Jul 2004 11:50:58 -0700
-Message-ID: <20040712185058.GB546@tausq.org>
+Date: Mon, 12 Jul 2004 19:51:32 +0100
+Message-ID: <20040712185132.GB11805@sal.ucc.ie>
 References: <20040309063629.GM1113@tausq.org>
 	<Pine.LNX.4.58.0403090656070.13701@sal.ucc.ie>
 	<20040309072917.GN1113@tausq.org>
@@ -10,16 +10,15 @@ References: <20040309063629.GM1113@tausq.org>
 	<20040711221829.GA27835@colo.lackof.org>
 	<20040711231401.GW546@tausq.org> <20040711233439.GX546@tausq.org>
 	<20040712033752.GA10163@sal.ucc.ie>
-	<20040712160534.GA12046@colo.lackof.org>
-	<20040712183943.GA11805@sal.ucc.ie>
-Reply-To: Randolph Chung <randolph@tausq.org>
+	<20040712041935.GA10211@sal.ucc.ie>
+	<20040712161444.GB12046@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: Grant Grundler <grundler@parisc-linux.org>,
- parisc-linux@lists.parisc-linux.org
+  charset=iso-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040712183943.GA11805@sal.ucc.ie>
+In-Reply-To: <20040712161444.GB12046@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,26 +29,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> That's where I misunderstood you: I thought you patch was trying
-> to fix DMA.
+On Mon, Jul 12, 2004 at 10:14:44AM -0600, Grant Grundler wrote:
 
-well, it does make a siginificant difference on my machine with a CD-ROM
+> On Mon, Jul 12, 2004 at 05:19:35AM +0100, M. Grabert wrote:
+> > BTW, what are the supported DMA modes of the NS87415?
+> 
+> Hopefully the ns87415 data sheet will specify that.
+> 
+> > I suppose BM-DMA means BusMaster-DMA, but does the NS87415 support any
+> > Ultra-DMA modes, or only Multi-Word DMA?
+> 
+> DMA from the IDE controller are just regular PCI transactions.
+> There is no such thing as Ultra-DMA for PCI.
 
-If I do:
-hdparm -d 1 /dev/cdrom
-hdparm -t /dev/cdrom
-I get about 2.4MB/sec
+I see what you mean. Yes, sorry for mixing up these terms in
+the same sentence. But it seems you understood what I wanted to say ;)
 
-whereas before i used to only get ~1MB/s
+[...]
 
-which is not to say it's very fast or near what it probably should be
-able to do, but it's definitely faster :)
+> If the IDE controller is NOT prefetching data into a local buffer,
+> I don't think it will be able to efficiently burst data across
+> the PCI bus.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Ah, and you fixed prefetching with the latest patch? Now I understand
+the issue ...
+
+> > Also there is a significant CPU load whenever I do a read/write access to
+> > the IDE hard disk (compared to the CPU load when I access the SCSI disks),
+> > which might be another indication that it's still using PIO and not DMA.
+> 
+> Yes, that's probably a better indicator.
+>
+> > Is 
+> >   'hdparm -c 1' (enable 32bit I/O)
+> > and
+> >   'hdparm -u 1' (unmasq_irq)
+> > useful/implemented on PA-RISC?
+
+Well, it doesn't change the performance in any way.
+
+> I don't think this is platform specific.
+> I expect both of those to be card/driver specific.
+
+The first, yes. But I'm not sure about the second (unmask_irq).
+
+
+Thanks,
+   Max
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
