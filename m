@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8A1C54829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 17:02:33 -0700 (MST)
-Message-Id: <200304040002.h3402U4u020233@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Applications in 64 bits userspace
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
-Date: Thu, 3 Apr 2003 19:02:29 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: willy@debian.org, rodrigo@tteng.com.br,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20030403225228.GI7542@systemhalted> from "Carlos O'Donell" at Apr 3, 2003 05:52:28 pm
+Received: from hotmail.com (bay1-dav44.bay1.hotmail.com [65.54.244.16])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 27D594829
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 23:11:23 -0700 (MST)
+From: "kenneth westelinck" <kennywest1@hotmail.com>
+To: "Michael Wood" <mwood@its.uct.ac.za>
+Cc: <parisc-linux@lists.parisc-linux.org>
+References: <se89551b.093@internal.us.fortis.com> <20030402092352.GA10035@marmite.its.uct.ac.za> <20030402113822.GB3363@cdc712-9.cdc.polimi.it>
+Subject: Re: [parisc-linux] soft power and power light on 712/60
+Date: Fri, 4 Apr 2003 08:09:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Message-ID: <BAY1-DAV44hAj5p1Fjx0005361c@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,59 +23,54 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Why was a 64-bit linker written for HPUX, couldn't the normal HPUX
-> linker have been used?
+I had a similar problem a while ago. The following URL should lead you to
+the discussion I had that time:
+http://lists.parisc-linux.org/hypermail/parisc-linux/8454.html
+So eventually, the soft power worked, and is still working on my 712/60 even
+with the latest kernel. Please note that I build the kernels myself, I never
+use prebuilt ones (unless for installing ;) ). You should find my working
+.config as an attachment
+(http://lists.parisc-linux.org/hypermail/parisc-linux/att-8454/02-.config).
+You can use this one, or do a diff with your .config to see what you're
+missing.
 
-I can't answer that.  Presumably, HP funded the development.  Possibly,
-they were considering using the GNU linker but then decided to go with
-a different port.  I do most of my 64-bit testing now with the HPUX
-linker.  There were some rough edges in using the HP linker with GCC
-a few months ago but these have been resolved.
+Hope this helps.
 
-The HP linker is not compliant with the sysv ELF ABI in its handling
-of weak symbols.  Undefined weak symbols are supposed to resolve
-to a value of 0, and the linker is not supposed to search archive
-libraries for undefined weaks.  I tried hacking GNU ld to see if
-this could be fixed but this isn't possible since the dynamic loader
-has the same behavior.  Basically, weak symbols appear to behave
-like secondary definition symbols with the SOM runtime.  The lack
-of proper weak support impacts GCC thread support.
+Kenneth
 
-HP doesn't support DT_INIT and DT_FINI.  They also used a non
-standard implementation for DT_ARRAY_INIT and DT_ARRAY_FINI.
-Their section flags for these are non compliant and we needed an
-assembler hack to handle initializers and finalizers.
+----- Original Message -----
+From: "root" <root@cdc712-9.cdc.polimi.it>
+To: "Michael Wood" <mwood@its.uct.ac.za>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Sent: Wednesday, April 02, 2003 1:38 PM
+Subject: Re: [parisc-linux] soft power and power light on 712/60
 
-Finally, the HP linker doesn't know about gnu linkonce sections but
-I haven't hit any situation where it causes a functional problem.
-Probably, it only affect program startup time.
 
-> As for function descriptors, I think that I'll be reworking that code 
-> (glibc) in the next few months.... following somewhat what H.J.Lu 
-> has suggested and ia64 / PowerPC64 implement. This should make things 
-> easier to work with.
-
-I presume you are talking about the implementation for lazy linking.
-I know the ia64 implementation of function descriptors differs from
-what is done for the 32-bit hppa ports.
-
-> Not true 64-bit since leaving the kernel doesn't mean the processor
-> stays in wide mode. I need to make some more kernel patches to
-> enable the start of a static 64-bit userspace.
-
-Ok.  I should note that the current 64-bit GNU ld doesn't know how
-to do a true static link.
-
-> I think that before a 64-bit userspace gets started, I'm going to
-> be working at getting glibc to pass "make -k check" without failure,
-> followed by lots of TLS work so we keep up with the changes in glibc
-> for our 32-bit userspace :)
-
-I certainly agree with that plan.  64-bit code is always going to
-be slower than 32-bit code, so it shouldn't be used unless really
-needed.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> On Wed, Apr 02, 2003 at 11:23:52AM +0200, Michael Wood wrote:
+> > On Tue, Apr 01, 2003 at 08:59:43AM -0600, Derek Ellis wrote:
+>
+> I've got a problem similar to yours with my 712-60 using 2.4.20-pa32
+> precompiled. The power light while searching for a suitable boot
+> media (as it should), then goes on as expected. The power switch does not
+> work. With earlier kernels (say 2.4.9-something) it worked. Any advice on
+> that ?
+>
+>
+> > > Hello,
+> > >
+> > > I have sort of a weird problem.  I installed Debian 3.0 on Sunday and
+> > > it came up great on my 712/60.  The only problem is the soft-power
+> > > switch doesn't work and the power light flashes while searching for
+> > > the boot device and then goes off once it starts booting.
+> >
+> > --
+> > Michael Wood <mwood@its.uct.ac.za>
+> > _______________________________________________
+> > parisc-linux mailing list
+> > parisc-linux@lists.parisc-linux.org
+> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
