@@ -1,21 +1,21 @@
-Return-Path: <wichert@levante.wiggy.net>
-Received: from mx1.wiggy.net (levante.wiggy.net [195.85.225.139])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 8AF594868
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E80C94857
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue,  2 Mar 2004 16:36:20 -0700 (MST)
-Received: from wichert by mx1.wiggy.net with local (Exim 4.30)
-	id 1AyJQx-0007On-2D
-	for parisc-linux@lists.parisc-linux.org; Wed, 03 Mar 2004 00:36:19 +0100
-Date: Wed, 3 Mar 2004 00:36:19 +0100
-From: Wichert Akkerman <wichert@wiggy.net>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <20040302233618.GA27722@wiggy.net>
-References: <20040302100622.GL2502@wiggy.net>
+	Tue,  2 Mar 2004 23:36:14 -0700 (MST)
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i236aQa04396; Wed, 3 Mar 2004 01:36:26 -0500
+Subject: Re: [parisc-linux] experimental patch to Fix CCIO virtual merging
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: James Bottomley <James.Bottomley@SteelEye.com>
+In-Reply-To: <1078253092.1804.58.camel@mulgrave>
+References: <1078253092.1804.58.camel@mulgrave>
+Content-Type: text/plain
+Date: 03 Mar 2004 00:36:09 -0600
+Message-Id: <1078295770.1889.164.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040302100622.GL2502@wiggy.net>
-Sender: Wichert Akkerman <wichert@levante.wiggy.net>
-Subject: [parisc-linux] Re: another kernel oops
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,215 +25,577 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-A sym53c8xx related oops, just to keep you guys busy :(
+On Tue, 2004-03-02 at 12:44, James Bottomley wrote:
+> The algorithm the ccio currently uses to do virtual merging is rather
+> non-optimal.  The attached patch fixes it to merge virtually whenever
+> the adjacent I/O pieces begin and end on a page boundary, which produces
+> much better merging.
 
-Wichert.
+This is cut two.  It actually seems to survive the BK test and build
+it's own kernel, so it may be slightly safer than the bug ridden
+previous version.
 
+It also contains Grant's fix for the ccio resource management (and some
+stats cleanups).
 
-Stack Dump:
- 000000008ea4bcb8:  000000008ea4bcb8 0000000000000000 0000000000000000 000000008ea4b7c0
- 000000008ea4bc98:  0000000000000000 00000000104652a0 000000000000001a 0000000000000000
- 000000008ea4bc78:  0000000000000000 000000001010618c 0000000000000000 0000000000000000
- 000000008ea4bc58:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bc38:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000008ea4bc18:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bbf8:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bbd8:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bbb8:  000000008ea4b000 000000001337e440 000000001337e450 0000000000000000
- 000000008ea4bb98:  00000000104652a0 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bb78:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bb58:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bb38:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4bb18:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4baf8:  000000008ac53ad8 000000001010c094 0000000000000000 0961000000000000
- 000008ea4bad8:  0000000000000000 0000000010517b78 00000000000026f1 0000000000000060
- 000000008ea4bab8:  000000008abd8ad8 000000001026e898 0000000000000000 0015000000000000
- 000000008ea4ba98:  000000008abd8058 0000000013210dd8 0000000000000000 01bb000000000000
- 000000008ea4ba78:  00000000848d88d8 0000000013210280 0000000000000000 0000000000000000
- 000000008ea4ba58:  0000000000000000 000000000eb312c0 0000000000000007 0409ffff00000000
- 000000008ea4ba38:  000000008a0fa058 0000000013212050 0000000000000000 00000000103f4d38
- 000000008ea4ba18:  000000001016aa80 000000001016aa7c 0000000000000000 0000000000000000
- 000000008ea4b9f8:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4b9d8:  000000000001d580 0000000000000000 000000000001d580 000000000001d580
- 000000008ea4b9b8:  0000000000000014 0000000010189778 ffffffffffffffff ffffffffffffffff
- 000000ea4b998:  ffffffffffffffff ffffffffffffffff ffffffffffffffff 000007b113274e80
- 000000008ea4b978:  000000000000cccc 0000000000000000 0000000010525d40 0000000000000000
- 000000008ea4b958:  00000000104e7ec0 000000008fbf3178 00000000104652a0 0000000010525d40
- 000000008ea4b938:  ffffffffffffffff 0000000010187a28 0000000000000802 00000000104652a0
- 000000008ea4b918:  0000000013275000 0000000000000000 0000000000000802 0000000000000000
- 000000008ea4b8f8:  00000000104f8258 000000003ccbf700 0000000000000802 00000000104652a0
- 000000008ea4b8d8:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4b8b8:  0000000000000000 000000008ea4b7c0 000000008ea4b7b0 0000000000000018
- 000000008ea4b898:  00000000104652a0 000000008ea4b760 0000000013283810 0000000000000001
- 000000008ea4b878:  0000000000100100 0000000000200200 0000000000000000 0000000012fdc770
- 000000008b858:  000000008ea4ac40 00000000103e9d18 0000000000000000 000000008ea4af80
- 000000008ea4b838:  000000008ea447a8 0000000000000001 00000000104652a0 0000000000100000
- 000000008ea4b818:  0000000000200000 0000000013283810 000000001337e470 0000000000000001
- 000000008ea4b7f8:  00000000104652a0 0000000000000000 000000001337e450 000000001337e440
- 000000008ea4b7d8:  000000008ea4b000 000000001016b370 00000000103e4048 000000000804050e
- 000000008ea4b7b8:  0000000000000000 000000001016aa9c 0000000000000000 0420ffff00000000
- 000000008ea4b798:  0000000000000000 0000000010517b78 000000008ea4b6c0 000000008f0d59d8
- 000000008ea4b778:  00000000104652a0 0000000000000063 00000000104f8258 00000000104652a0
- 000000008ea4b758:  0000000000000000 00000000132b2000 00000009132b272c 00000000104652a0
- 000000008ea4b738:  0000000000000000 000000001013780c 000000003c105410 fffffff80010b000
- 000000008ea48:  0000f8004100f800 000000001046baa0 0000000000000001 0000000013283800
- 000000008ea4b6f8:  0000000013283810 00000000104652a0 00000000104652a0 0000000000200200
- 000000008ea4b6d8:  0000000000100100 000000008e93e540 000000001050c430 00000000104652a0
- 000000008ea4b6b8:  0000000000000022 000000001016b370 0000000000000080 000000008f1d6cc0
- 000000008ea4b698:  000000008f297e20 00000000104652a0 00000000104652a0 000000008f0d59d8
- 000000008ea4b678:  0000000000001501 00000000104652a0 0000000000000000 00000000132b2000
- 000000008ea4b658:  00000000103e00d0 000000001337e440 000000001337e4f0 000000008ea4b458
- 000000008ea4b638:  0000000000000000 000000001016b5fc 0000000000000002 0000000000000000
- 000000008ea4b618:  000000001046baa0 00000000103c62d0 00000000103dd058 000000008ea4af80
- 000000008ea4b5f8:  00000000132b272c 0000000000000001 0000000000000000 00000000104652a0
- 000000008ea4b5d000000008ea4af80 0000000000000001 000000008e93e5f8 0000000000000000
- 000000008ea4b5b8:  0000000000000022 0000000010148ce4 0000000000000080 000000008f1d6cc0
- 000000008ea4b598:  000000008f297e20 00000000104652a0 00000000103e00d0 00000000104652a0
- 000000008ea4b578:  00000000000000d0 000000008ea4b458 000000008ea4b458 0000000000200200
- 000000008ea4b558:  0000000000100100 000000008e93e540 000000008f1d6cc0 000000008f297e20
- 000000008ea4b538:  0000000000000400 0000000010148eac 0000000000000001 0000000000000022
- 000000008ea4b518:  0000000000000000 000000000800000e 00000000104652a0 ffffffffffffef00
- 000000008ea4b4f8:  0000000000000000 000000001013ec24 0000000000000000 000000001010c078
- 000000008ea4b4d8:  00000000104652a0 00000000104652a0 0000000000000000 000000008ea4af80
- 000000008ea4b4b8:  0000000000000000 000000001013f7f0 0000000010509df0 0000000000000001
- 000000008ea4b498:  0000104652a0 000000000000000a 000000000800000e 0000000000000001
- 000000008ea4b478:  000000008e93e5f8 000000008ea4b458 000000008ea4b458 000000008ea4b458
- 000000008ea4b458:  000000008ea4b458 0000000000000001 000000008ea447a8 0000000000000000
- 000000008ea4b438:  0000000000000400 0000000010143828 0000000000000002 00000000104652a0
- 000000008ea4b418:  00000000104652a0 00000000132b2000 00000000132b272c 00000000104652a0
- 000000008ea4b3f8:  000000008dee8598 000000001029829c 000000003c105410 0000000000000000
- 000000008ea4b3d8:  0000000000000040 00000000104652a0 0000000000000000 000000008ea4af80
- 000000008ea4b3b8:  00000000132b272c 0000000010107390 00000000104f8258 00000000132b2000
- 000000008ea4b398:  00000000132b2000 00000000132b2000 00000000f8004128 00000000104652a0
- 000000008ea4b378:  0000000000000022 000000001029e0b0 0000000000000080 0800000000000000
- 000000008ea4b358:  000000000000 8000000000000000 00000000104652a0 000000008ea4af80
- 000000008ea4b338:  0000000000001474 00000000101074ac 0000000000000000 00000000132b2000
- 000000008ea4b318:  0000000000000020 000000000800000e 00000000104652a0 0000000000000002
- 000000008ea4b2f8:  000000008c0bd058 000000001029f9a8 000000001037a228 0000000000000000
- 000000008ea4b2d8:  00000000104652a0 000000008e93e5f8 000000008f1d6cc0 0000000000000000
- 000000008ea4b2b8:  00000000132b272c 000000001010c074 0000000000000000 00000000104652a0
- 000000008ea4b298:  000000008ea4ac40 0000000000000001 000000008e93e5f8 0000000000000000
- 000000008ea4b278:  0000000000000022 0000000010148ce4 0000000000000080 000000008f1d6cc0
- 000000008ea4b258:  000000008f297e20 00000000104652a0 0000000000009408 0000000000009408
- 000000008ea4b238:  00000000132b2000 00000000104652a0 000000000800000e 000000000000000c
- 000000008ea4b218:  00000000ac40 00000000226fc206 000000000000003f 000000008e93e540
- 000000008ea4b1f8:  0000000000000400 000000001029902c 0000000000000001 0000000000000022
- 000000008ea4b1d8:  000000001010c07c 000000001010c078 0000000000000000 0000000000000000
- 000000008ea4b1b8:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4b198:  000000000001d580 0000000000000000 000000000001d580 000000000001d580
- 000000008ea4b178:  0000000000000014 0000000010189778 ffffffffffffffff ffffffffffffffff
- 000000008ea4b158:  ffffffffffffffff ffffffffffffffff ffffffffffffffff 000007b113274e80
- 000000008ea4b138:  0000000000000000 0000000000000000 0000000010525d40 0000000000000000
- 000000008ea4b118:  00000000104e7ec0 000000008fbf3178 00000000104652a0 0000000010525d40
- 000000008ea4b0f8:  ffffffffffffffff 0000000010187a28 0000000000000802 00000000104652a0
- 000000008ea4b0d8:  000000001327 0000000000000000 0000000000000802 0000000000000000
- 000000008ea4b0b8:  00000000104f8258 000000003ccbf700 0000000000000802 00000000104652a0
- 000000008ea4b098:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4b078:  00000000104702a0 000000008ea4af80 000000008ea4aff0 0000000000000001
- 000000008ea4b058:  00000000104652a0 00000000000000f0 0000000000000045 000000008ea4ac40
- 000000008ea4b038:  0000000000000000 000000001046a2a0 fe00000000000000 00000000103b7a00
- 000000008ea4b018:  fe00000000000000 00000000103e9d18 0000000000000000 000000008ea4ac40
- 000000008ea4aff8:  000000008ea447a8 0000000000000001 00000000104652a0 000000008f297e20
- 000000008ea4afd8:  000000008f1d6cc0 000000008e93e540 000000008e93e5f8 0000000000000000
- 000000008ea4afb8:  000000008f1d6cc0 000000008e93e5f8 00000000104652a0 0000000000000000
- 000000008ea4af98:  000000001037a228000001010c074 0000000010469aa0 0000003f0804ff0f
- 000000008ea4af78:  00000000132b272c 000000001010c074 0000000000000000 00000000104652a0
- 000000008ea4af58:  000000008ea4a900 0000000013300000 00000000104652a0 000000000800000f
- 000000008ea4af38:  0000000000000022 00000000102990e4 0000000000000080 000000008f1d6cc0
- 000000008ea4af18:  000000008f297e20 00000000104652a0 0000000000009380 0000000000009380
- 000000008ea4aef8:  00000000132b2000 00000000104652a0 000000000800000e 000000000000000c
- 000000008ea4aed8:  000000008ea4a900 00000000226fc206 000000000000003f 000000008e93e540
- 000000008ea4aeb8:  0000000000000400 000000001029902c 0000000000000001 0000000000000022
- 000000008ea4ae98:  000000001010c07c 000000001010c078 0000000000000000 0000000000000000
- 000000008ea4ae78:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4ae58:  000000000001d580 000000000000 000000000001d580 000000000001d580
- 000000008ea4ae38:  0000000000000014 0000000010189778 ffffffffffffffff ffffffffffffffff
- 000000008ea4ae18:  ffffffffffffffff ffffffffffffffff ffffffffffffffff 000007b113274e80
- 000000008ea4adf8:  0000000000000000 0000000000000000 0000000010525d40 0000000000000000
- 000000008ea4add8:  00000000104e7ec0 000000008fbf3178 00000000104652a0 0000000010525d40
- 000000008ea4adb8:  ffffffffffffffff 0000000010187a28 0000000000000802 00000000104652a0
- 000000008ea4ad98:  0000000013275000 0000000000000000 0000000000000802 0000000000000000
- 000000008ea4ad78:  00000000104f8258 000000003ccbf700 0000000000000802 00000000104652a0
- 000000008ea4ad58:  0000000000000000 0000000000000000 0000000000000000 0000000000000000
- 000000008ea4ad38:  00000000104702a0 000000008ea4ac40 000000008ea4acb0 0000000000000001
- 000000008ea4ad18:  00000000104652a0 0000000000f0 0000000000000045 000000008ea4a900
- 000000008ea4acf8:  0000000000000000 000000001046a2a0 fe00000000000000 00000000103b7a00
- 000000008ea4acd8:  fe00000000000000 00000000103e9d18 0000000000000000 000000008ea4a900
+James
 
-Kernel addresses on the stack:
- [<00000000101055f0>] show_stack+0x110/0x160
- [<0000000010105dd4>] parisc_terminate+0x7c/0x100
- [<000000001010618c>] handle_interruption+0x334/0x748
- [<000000001010c094>] intr_check_sig+0x0/0xc
- [<000000001013ec24>] release_console_sem+0x9c/0x1c8
- [<000000001029829c>] sym_xpt_async_bus_reset+0x34/0xc0
- [<000000001029e0b0>] sym_start_up+0x618/0x850
- [<000000001029f9a8>] sym_interrupt+0x230/0x428
- [<0000000010148ce4>] update_process_times+0x64/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
- [<00000000102990e4>] sym53c8xx_timer+0x24/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
- [<0000000010148ce4>] update_process_times+0x64/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
- [<00000000102990e4>] sym53c8xx_timer+0x24/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
- [<0000000010148ce4>] update_process_times+0x64/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
- [<00000000102990e4>] sym53c8xx_timer+0x24/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
- [<0000000010148ce4>] update_process_times+0x64/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
- [<00000000102990e4>] sym53c8xx_timer+0x24/0x80
- [<000000001029902c>] sym53c8xx_intr+0x5c/0xf0
- [<0000000010189778>] get_empty_filp+0x80/0x180
- [<0000000010187a28>] dentry_open+0x1b0/0x2c0
- [<000000001010c074>] intr_return+0x0/0x14
-
-
-Kernel Fault: Code=26 regs=000000008ea4b7c0 (Addr=0000000000000000)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00001000000001000000010100001110 Not tainted
-r00-03  0000000000000000 00000000103e4048 000000001016b370 000000008ea4b000
-r04-07  000000001337e440 000000001337e450 0000000000000000 00000000104652a0
-r08-11  0000000000000001 000000001337e470 0000000013283810 0000000000200000
-r12-15  0000000000100000 00000000104652a0 0000000000000001 000000008ea447a8
-r16-19  000000008ea4af80 0000000000000000 00000000103e9d18 000000008ea4ac40
-r20-23  0000000012fdc770 0000000000000000 0000000000200200 0000000000100100
-r24-27  0000000000000001 0000000013283810 000000008ea4b760 00000000104652a0
-r28-31  0000000000000018 000000008ea4b7b0 000000008ea4b7c0 0000000000000000
-sr0-3   000000000001d580 000000000001d580 0000000000000000 000000000001d580
-sr4-7   0000000000000000 00000000000 0000000000000000 0000000000000000
-
-IASQ: 0000000000000000 0000000000000000 IAOQ: 000000001016aa7c 000000001016aa80
- IIR: 0eb312c0    ISR: 0000000000000000  IOR: 0000000000000000
- CPU:        8   CR30: 000000008ea44000 CR31: 0000000010434000
- ORIG_R28: 0000000013212050
- IAOQ[0]: free_block+0xa4/0x198
- IAOQ[1]: free_block+0xa8/0x198
- RP(r2): drain_array+0xa8/0xd8
-
--- 
-Wichert Akkerman <wichert@wiggy.net>    It is simple to make things.
-http://www.wiggy.net/                   It is hard to make things simple.
+===== drivers/parisc/ccio-dma.c 1.15 vs edited =====
+--- 1.15/drivers/parisc/ccio-dma.c	Tue Feb  3 23:42:34 2004
++++ edited/drivers/parisc/ccio-dma.c	Tue Mar  2 22:04:23 2004
+@@ -41,6 +41,7 @@
+ #define PCI_DEBUG
+ #include <linux/pci.h>
+ #undef PCI_DEBUG
++#include <linux/reboot.h>
+ 
+ #include <asm/byteorder.h>
+ #include <asm/cache.h>		/* for L1_CACHE_BYTES */
+@@ -63,6 +64,18 @@
+ #undef DEBUG_CCIO_INIT
+ #undef DEBUG_CCIO_RUN_SG
+ 
++#ifdef CONFIG_PROC_FS
++/*
++ * CCIO_SEARCH_TIME can help measure how fast the bitmap search is.
++ * impacts performance though - ditch it if you don't use it.
++ */
++#define CCIO_SEARCH_TIME
++#undef CCIO_MAP_STATS
++#else
++#undef CCIO_SEARCH_TIME
++#undef CCIO_MAP_STATS
++#endif
++
+ #include <linux/proc_fs.h>
+ #include <asm/runway.h>		/* for proc_runway_root */
+ 
+@@ -219,15 +232,18 @@
+ 	struct ioa_registers *ioc_hpa;  /* I/O MMU base address */
+ 	u8  *res_map;	                /* resource map, bit == pdir entry */
+ 	u64 *pdir_base;	                /* physical base address */
++	u32 pdir_size; 			/* bytes, function of IOV Space size */
+ 	u32 res_hint;	                /* next available IOVP - 
+ 					   circular search */
+ 	u32 res_size;		    	/* size of resource map in bytes */
+ 	spinlock_t res_lock;
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_SEARCH_TIME
+ #define CCIO_SEARCH_SAMPLE 0x100
+ 	unsigned long avg_search[CCIO_SEARCH_SAMPLE];
+ 	unsigned long avg_idx;		  /* current index into avg_search */
++#endif
++#ifdef CCIO_MAP_STATS
+ 	unsigned long used_pages;
+ 	unsigned long msingle_calls;
+ 	unsigned long msingle_pages;
+@@ -237,12 +253,10 @@
+ 	unsigned long usingle_pages;
+ 	unsigned long usg_calls;
+ 	unsigned long usg_pages;
+-
+-	unsigned short cujo20_bug;
+ #endif
++	unsigned short cujo20_bug;
+ 
+ 	/* STUFF We don't need in performance path */
+-	u32 pdir_size; 			/* in bytes, determined by IOV Space size */
+ 	u32 chainid_shift; 		/* specify bit location of chain_id */
+ 	struct ioc *next;		/* Linked list of discovered iocs */
+ 	const char *name;		/* device name from firmware */
+@@ -289,11 +303,11 @@
+ ** If the search wraps around, and passes the res_hint, it will
+ ** cause the kernel to panic anyhow.
+ */
+-#define CCIO_SEARCH_LOOP(ioc, res_idx, mask_ptr, size)  \
++#define CCIO_SEARCH_LOOP(ioc, res_idx, mask, size)  \
+        for(; res_ptr < res_end; ++res_ptr) { \
+-               if(0 == (*res_ptr & *mask_ptr)) { \
+-                       *res_ptr |= *mask_ptr; \
+-                       res_idx = (int)((unsigned long)res_ptr - (unsigned long)ioc->res_map); \
++               if(0 == (*res_ptr & mask)) { \
++                       *res_ptr |= mask; \
++                       res_idx = (unsigned int)((unsigned long)res_ptr - (unsigned long)ioc->res_map); \
+                        ioc->res_hint = res_idx + (size >> 3); \
+                        goto resource_found; \
+                } \
+@@ -302,10 +316,9 @@
+ #define CCIO_FIND_FREE_MAPPING(ioa, res_idx, mask, size) \
+        u##size *res_ptr = (u##size *)&((ioc)->res_map[ioa->res_hint & ~((size >> 3) - 1)]); \
+        u##size *res_end = (u##size *)&(ioc)->res_map[ioa->res_size]; \
+-       u##size *mask_ptr = (u##size *)&mask; \
+-       CCIO_SEARCH_LOOP(ioc, res_idx, mask_ptr, size); \
++       CCIO_SEARCH_LOOP(ioc, res_idx, mask, size); \
+        res_ptr = (u##size *)&(ioc)->res_map[0]; \
+-       CCIO_SEARCH_LOOP(ioa, res_idx, mask_ptr, size);
++       CCIO_SEARCH_LOOP(ioa, res_idx, mask, size);
+ 
+ /*
+ ** Find available bit in this ioa's resource map.
+@@ -333,35 +346,45 @@
+ static int
+ ccio_alloc_range(struct ioc *ioc, unsigned long pages_needed)
+ {
+-	int res_idx;
+-	unsigned long mask;
+-#ifdef CONFIG_PROC_FS
++	unsigned int res_idx;
++#ifdef CCIO_SEARCH_TIME
+ 	unsigned long cr_start = mfctl(16);
+ #endif
+ 	
+ 	ASSERT(pages_needed);
+ 	ASSERT((pages_needed * IOVP_SIZE) <= DMA_CHUNK_SIZE);
+-	ASSERT(pages_needed <= BITS_PER_LONG);
+-
+-	mask = ~(~0UL >> pages_needed);
+      
+-	DBG_RES("%s() size: %d pages_needed %d mask 0x%08lx\n", 
+-		__FUNCTION__, size, pages_needed, mask);
++	DBG_RES("%s() size: %d pages_needed %d\n", 
++		__FUNCTION__, size, pages_needed);
+ 
+ 	/*
+ 	** "seek and ye shall find"...praying never hurts either...
+ 	** ggg sacrifices another 710 to the computer gods.
+ 	*/
+ 
+-	if(pages_needed <= 8) {
++	if (pages_needed <= 8) {
++		/*
++		 * LAN traffic will not thrash the TLB IFF the same NIC
++		 * uses 8 adjacent pages to map seperate payload data.
++		 * ie the same byte in the resource bit map.
++		 */
++#if 0
++		/* FIXME: bit search should shift it's way through
++		 * an unsigned long - not byte at a time. As it is now,
++		 * we effectively allocate this byte to this mapping.
++		 */
++		unsigned long mask = ~(~0UL >> pages_needed);
+ 		CCIO_FIND_FREE_MAPPING(ioc, res_idx, mask, 8);
+-	} else if(pages_needed <= 16) {
+-		CCIO_FIND_FREE_MAPPING(ioc, res_idx, mask, 16);
+-	} else if(pages_needed <= 32) {
+-		CCIO_FIND_FREE_MAPPING(ioc, res_idx, mask, 32);
++#else
++		CCIO_FIND_FREE_MAPPING(ioc, res_idx, 0xff, 8);
++#endif
++	} else if (pages_needed <= 16) {
++		CCIO_FIND_FREE_MAPPING(ioc, res_idx, 0xffff, 16);
++	} else if (pages_needed <= 32) {
++		CCIO_FIND_FREE_MAPPING(ioc, res_idx, ~(unsigned int)0, 32);
+ #ifdef __LP64__
+-	} else if(pages_needed <= 64) {
+-		CCIO_FIND_FREE_MAPPING(ioc, res_idx, mask, 64);
++	} else if (pages_needed <= 64) {
++		CCIO_FIND_FREE_MAPPING(ioc, res_idx, ~0UL, 64);
+ #endif
+ 	} else {
+ 		panic("%s: %s() Too many pages to map. pages_needed: %ld\n",
+@@ -373,10 +396,10 @@
+ 	
+ resource_found:
+ 	
+-	DBG_RES("%s() res_idx %d mask 0x%08lx res_hint: %d\n",
+-		__FUNCTION__, res_idx, mask, ioc->res_hint);
++	DBG_RES("%s() res_idx %d res_hint: %d\n",
++		__FUNCTION__, res_idx, ioc->res_hint);
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_SEARCH_TIME
+ 	{
+ 		unsigned long cr_end = mfctl(16);
+ 		unsigned long tmp = cr_end - cr_start;
+@@ -385,10 +408,10 @@
+ 	}
+ 	ioc->avg_search[ioc->avg_idx++] = cr_start;
+ 	ioc->avg_idx &= CCIO_SEARCH_SAMPLE - 1;
+-
++#endif
++#ifdef CCIO_MAP_STATS
+ 	ioc->used_pages += pages_needed;
+ #endif
+-
+ 	/* 
+ 	** return the bit address.
+ 	*/
+@@ -397,9 +420,8 @@
+ 
+ #define CCIO_FREE_MAPPINGS(ioc, res_idx, mask, size) \
+         u##size *res_ptr = (u##size *)&((ioc)->res_map[res_idx]); \
+-	u##size *mask_ptr = (u##size *)&mask; \
+-        ASSERT((*res_ptr & *mask_ptr) == *mask_ptr); \
+-        *res_ptr &= ~(*mask_ptr);
++        ASSERT((*res_ptr & mask) == mask); \
++        *res_ptr &= ~(mask);
+ 
+ /**
+  * ccio_free_range - Free pages from the ioc's resource map.
+@@ -413,7 +435,6 @@
+ static void
+ ccio_free_range(struct ioc *ioc, dma_addr_t iova, unsigned long pages_mapped)
+ {
+-	unsigned long mask;
+ 	unsigned long iovp = CCIO_IOVP(iova);
+ 	unsigned int res_idx = PDIR_INDEX(iovp) >> 3;
+ 
+@@ -421,24 +442,28 @@
+ 	ASSERT((pages_mapped * IOVP_SIZE) <= DMA_CHUNK_SIZE);
+ 	ASSERT(pages_mapped <= BITS_PER_LONG);
+ 
+-	mask = ~(~0UL >> pages_mapped);
+-
+-	DBG_RES("%s():  res_idx: %d pages_mapped %d mask 0x%08lx\n", 
+-		__FUNCTION__, res_idx, pages_mapped, mask);
++	DBG_RES("%s():  res_idx: %d pages_mapped %d\n", 
++		__FUNCTION__, res_idx, pages_mapped);
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_MAP_STATS
+ 	ioc->used_pages -= pages_mapped;
+ #endif
+ 
+ 	if(pages_mapped <= 8) {
++#if 0
++		/* see matching comments in alloc_range */
++		unsigned long mask = ~(~0UL >> pages_mapped);
+ 		CCIO_FREE_MAPPINGS(ioc, res_idx, mask, 8);
++#else
++		CCIO_FREE_MAPPINGS(ioc, res_idx, 0xff, 8);
++#endif
+ 	} else if(pages_mapped <= 16) {
+-		CCIO_FREE_MAPPINGS(ioc, res_idx, mask, 16);
++		CCIO_FREE_MAPPINGS(ioc, res_idx, 0xffff, 16);
+ 	} else if(pages_mapped <= 32) {
+-		CCIO_FREE_MAPPINGS(ioc, res_idx, mask, 32);
++		CCIO_FREE_MAPPINGS(ioc, res_idx, ~(unsigned int)0, 32);
+ #ifdef __LP64__
+ 	} else if(pages_mapped <= 64) {
+-		CCIO_FREE_MAPPINGS(ioc, res_idx, mask, 64);
++		CCIO_FREE_MAPPINGS(ioc, res_idx, ~0UL, 64);
+ #endif
+ 	} else {
+ 		panic("%s:%s() Too many pages to unmap.\n", __FILE__,
+@@ -731,7 +756,7 @@
+ 	size = ROUNDUP(size + offset, IOVP_SIZE);
+ 	spin_lock_irqsave(&ioc->res_lock, flags);
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_MAP_STATS
+ 	ioc->msingle_calls++;
+ 	ioc->msingle_pages += size >> IOVP_SHIFT;
+ #endif
+@@ -795,7 +820,7 @@
+ 
+ 	spin_lock_irqsave(&ioc->res_lock, flags);
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_MAP_STATS
+ 	ioc->usingle_calls++;
+ 	ioc->usingle_pages += size >> IOVP_SHIFT;
+ #endif
+@@ -877,57 +902,58 @@
+ {
+ 	struct scatterlist *dma_sg = startsg;	/* pointer to current DMA */
+ 	int n_mappings = 0;
+-	u64 *pdirp = 0;
+-	unsigned long dma_offset = 0;
++	unsigned long dma_offset = 0, dma_len = 0;
++	u64 *pdirp = NULL;
+ 
+-	dma_sg--;
+ 	while (nents-- > 0) {
+-		int cnt = sg_dma_len(startsg);
+-		sg_dma_len(startsg) = 0;
++		unsigned long vaddr;
++		long size;
+ 
+ 		DBG_RUN_SG(" %d : %08lx/%05x %08lx/%05x\n", nents,
+ 			   (unsigned long)sg_dma_address(startsg), cnt,
+ 			   sg_virt_addr(startsg), startsg->length
+ 		);
+ 
++
+ 		/*
+ 		** Look for the start of a new DMA stream
+ 		*/
+-		if(sg_dma_address(startsg) & PIDE_FLAG) {
++		
++		if (sg_dma_address(startsg) & PIDE_FLAG) {
+ 			u32 pide = sg_dma_address(startsg) & ~PIDE_FLAG;
++
++			if (pdirp) {
++				BUG_ON(dma_len != sg_dma_len(dma_sg));
++				dma_sg++;
++			}
++			dma_len = sg_dma_len(startsg);
+ 			dma_offset = (unsigned long) pide & ~IOVP_MASK;
+-			sg_dma_address(startsg) = 0;
+-			dma_sg++;
++			n_mappings++;
+ 			sg_dma_address(dma_sg) = pide;
+ 			pdirp = &(ioc->pdir_base[pide >> IOVP_SHIFT]);
+-			n_mappings++;
+ 		}
+-
+-		/*
+-		** Look for a VCONTIG chunk
+-		*/
+-		if (cnt) {
+-			unsigned long vaddr = sg_virt_addr(startsg);
+-			ASSERT(pdirp);
+-
+-			/* Since multiple Vcontig blocks could make up
+-			** one DMA stream, *add* cnt to dma_len.
+-			*/
+-			sg_dma_len(dma_sg) += cnt;
+-			cnt += dma_offset;
+-			dma_offset=0;	/* only want offset on first chunk */
+-			cnt = ROUNDUP(cnt, IOVP_SIZE);
+-#ifdef CONFIG_PROC_FS
+-			ioc->msg_pages += cnt >> IOVP_SHIFT;
+-#endif
+-			do {
+-				ccio_io_pdir_entry(pdirp, KERNEL_SPACE, 
+-						   (void *)vaddr, hint);
+-				vaddr += IOVP_SIZE;
+-				cnt -= IOVP_SIZE;
+-				pdirp++;
+-			} while (cnt > 0);
++		
++		BUG_ON(pdirp == NULL);
++		
++		sg_dma_len(startsg) = 0;
++		vaddr = sg_virt_addr(startsg);
++		sg_dma_len(dma_sg) += startsg->length;
++		size = startsg->length + dma_offset;
++		dma_offset = 0;
++		if (unlikely(size > IOVP_SIZE)) {
++			printk("VIRTUAL CHUNK has size 0x%lx\n",
++			       size);
+ 		}
++#ifdef CCIO_MAP_STATS
++		ioc->msg_pages += startsg->length >> IOVP_SHIFT;
++#endif
++		do {
++			ccio_io_pdir_entry(pdirp, KERNEL_SPACE, 
++					   (void *)vaddr, hint);
++			vaddr += IOVP_SIZE;
++			size -= IOVP_SIZE;
++			pdirp++;
++		} while(unlikely(size > 0));
+ 		startsg++;
+ 	}
+ 	return(n_mappings);
+@@ -946,10 +972,7 @@
+ static CCIO_INLINE int
+ ccio_coalesce_chunks(struct ioc *ioc, struct scatterlist *startsg, int nents)
+ {
+-	struct scatterlist *vcontig_sg;    /* VCONTIG chunk head */
+-	unsigned long vcontig_len;         /* len of VCONTIG chunk */
+-	unsigned long vcontig_end;
+-	struct scatterlist *dma_sg;        /* next DMA stream head */
++	struct scatterlist *contig_sg;	   /* contig chunk head */
+ 	unsigned long dma_offset, dma_len; /* start/len of DMA stream */
+ 	int n_mappings = 0;
+ 
+@@ -958,9 +981,8 @@
+ 		/*
+ 		** Prepare for first/next DMA stream
+ 		*/
+-		dma_sg = vcontig_sg = startsg;
+-		dma_len = vcontig_len = vcontig_end = startsg->length;
+-		vcontig_end += sg_virt_addr(startsg);
++		contig_sg = startsg;
++		dma_len = startsg->length;
+ 		dma_offset = sg_virt_addr(startsg) & ~IOVP_MASK;
+ 
+ 		/* PARANOID: clear entries */
+@@ -972,7 +994,10 @@
+ 		** it's always looking one "ahead".
+ 		*/
+ 		while(--nents > 0) {
+-			unsigned long startsg_end;
++			unsigned long prevstartsg_end, startsg_end;
++
++			prevstartsg_end = sg_virt_addr(startsg) +
++				startsg->length;
+ 
+ 			startsg++;
+ 			startsg_end = sg_virt_addr(startsg) + 
+@@ -987,36 +1012,18 @@
+ 			** exceed DMA_CHUNK_SIZE if we coalesce the
+ 			** next entry.
+ 			*/   
+-			if(ROUNDUP(dma_len + dma_offset + startsg->length,
+-				   IOVP_SIZE) > DMA_CHUNK_SIZE)
++			if(unlikely(ROUNDUP(dma_len + dma_offset + startsg->length,
++					    IOVP_SIZE) > DMA_CHUNK_SIZE))
+ 				break;
+ 
+ 			/*
+-			** Append the next transaction?
++			** Next see if we can append the next chunk (i.e.
++			** it must end on one page and begin on another
+ 			*/
+-			if (vcontig_end == sg_virt_addr(startsg)) {
+-				vcontig_len += startsg->length;
+-				vcontig_end += startsg->length;
+-				dma_len     += startsg->length;
+-				continue;
+-			}
+-
+-			/*
+-			** Not virtually contigous.
+-			** Terminate prev chunk.
+-			** Start a new chunk.
+-			**
+-			** Once we start a new VCONTIG chunk, dma_offset
+-			** can't change. And we need the offset from the first
+-			** chunk - not the last one. Ergo Successive chunks
+-			** must start on page boundaries and dove tail
+-			** with its predecessor.
+-			*/
+-			sg_dma_len(vcontig_sg) = vcontig_len;
+-
+-			vcontig_sg = startsg;
+-			vcontig_len = startsg->length;
+-			break;
++			if (unlikely(((prevstartsg_end | sg_virt_addr(startsg)) & ~PAGE_MASK) != 0))
++				break;
++			
++			dma_len += startsg->length;
+ 		}
+ 
+ 		/*
+@@ -1024,9 +1031,9 @@
+ 		** Terminate last VCONTIG block.
+ 		** Allocate space for DMA stream.
+ 		*/
+-		sg_dma_len(vcontig_sg) = vcontig_len;
++		sg_dma_len(contig_sg) = dma_len;
+ 		dma_len = ROUNDUP(dma_len + dma_offset, IOVP_SIZE);
+-		sg_dma_address(dma_sg) =
++		sg_dma_address(contig_sg) =
+ 			PIDE_FLAG 
+ 			| (ccio_alloc_range(ioc, (dma_len >> IOVP_SHIFT)) << IOVP_SHIFT)
+ 			| dma_offset;
+@@ -1053,6 +1060,8 @@
+ 	int coalesced, filled = 0;
+ 	unsigned long flags;
+ 	unsigned long hint = hint_lookup[(int)direction];
++	unsigned long prev_len = 0, current_len = 0;
++	int i;
+ 	
+ 	BUG_ON(!dev);
+ 	ioc = GET_IOC(dev);
+@@ -1067,10 +1076,13 @@
+ 		sg_dma_len(sglist) = sglist->length;
+ 		return 1;
+ 	}
++
++	for(i = 0; i < nents; i++)
++		prev_len += sglist[i].length;
+ 	
+ 	spin_lock_irqsave(&ioc->res_lock, flags);
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_MAP_STATS
+ 	ioc->msg_calls++;
+ #endif
+ 
+@@ -1096,9 +1108,15 @@
+ 
+ 	spin_unlock_irqrestore(&ioc->res_lock, flags);
+ 
+-	ASSERT(coalesced == filled);
++	BUG_ON(coalesced != filled);
++
+ 	DBG_RUN_SG("%s() DONE %d mappings\n", __FUNCTION__, filled);
+ 
++	for (i = 0; i < filled; i++)
++		current_len += sg_dma_len(sglist + i);
++
++	BUG_ON(current_len != prev_len);
++
+ 	return filled;
+ }
+ 
+@@ -1123,13 +1141,13 @@
+ 	DBG_RUN_SG("%s() START %d entries,  %08lx,%x\n",
+ 		__FUNCTION__, nents, sg_virt_addr(sglist), sglist->length);
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_MAP_STATS
+ 	ioc->usg_calls++;
+ #endif
+ 
+ 	while(sg_dma_len(sglist) && nents--) {
+ 
+-#ifdef CONFIG_PROC_FS
++#ifdef CCIO_MAP_STATS
+ 		ioc->usg_pages += sg_dma_len(sglist) >> PAGE_SHIFT;
+ #endif
+ 		ccio_unmap_single(dev, sg_dma_address(sglist),
+@@ -1199,18 +1217,18 @@
+ 			      total_pages * 8, total_pages);
+ 		if (proc_append(tmp, len, &buf, &offset, &count))
+ 			break;
+-		
++#ifdef CCIO_MAP_STATS
+ 		len = sprintf(tmp, "IO PDIR entries : %ld free  %ld used (%d%%)\n",
+ 			      total_pages - ioc->used_pages, ioc->used_pages,
+ 			      (int)(ioc->used_pages * 100 / total_pages));
+ 		if (proc_append(tmp, len, &buf, &offset, &count))
+ 			break;
+-		
++#endif
+ 		len = sprintf(tmp, "Resource bitmap : %d bytes (%d pages)\n", 
+ 			ioc->res_size, total_pages);
+ 		if (proc_append(tmp, len, &buf, &offset, &count))
+ 			break;
+-		
++#ifdef CCIO_SEARCH_TIME
+ 		min = max = ioc->avg_search[0];
+ 		for(j = 0; j < CCIO_SEARCH_SAMPLE; ++j) {
+ 			avg += ioc->avg_search[j];
+@@ -1224,7 +1242,8 @@
+ 			      min, avg, max);
+ 		if (proc_append(tmp, len, &buf, &offset, &count))
+ 			break;
+-
++#endif
++#ifdef CCIO_MAP_STATS
+ 		len = sprintf(tmp, "pci_map_single(): %8ld calls  %8ld pages (avg %d/1000)\n",
+ 			      ioc->msingle_calls, ioc->msingle_pages,
+ 			      (int)((ioc->msingle_pages * 1000)/ioc->msingle_calls));
+@@ -1250,7 +1269,7 @@
+ 			      (int)((ioc->usg_pages * 1000)/ioc->usg_calls));
+ 		if (proc_append(tmp, len, &buf, &offset, &count))
+ 			break;
+-
++#endif	/* CCIO_MAP_STATS */
+ 		ioc = ioc->next;
+ 	}
+ 
+@@ -1336,9 +1355,7 @@
+ 	struct ioc *ioc = ccio_get_iommu(dev);
+ 	u8 *res_ptr;
+ 
+-#ifdef CONFIG_PROC_FS
+ 	ioc->cujo20_bug = 1;
+-#endif
+ 	res_ptr = ioc->res_map;
+ 	idx = PDIR_INDEX(iovp) >> 3;
+ 
+@@ -1684,7 +1701,7 @@
+ 	
+ 
+ 	if (ioc_count == 0) {
+-		/* XXX: Create separate entries for each ioc */
++		/* FIXME: Create separate entries for each ioc */
+ 		create_proc_read_entry(MODULE_NAME, S_IRWXU, proc_runway_root,
+ 				       ccio_proc_info, NULL);
+ 		create_proc_read_entry(MODULE_NAME"-bitmap", S_IRWXU,
