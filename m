@@ -1,50 +1,62 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id OAA09540
-	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 14:41:39 -0700
-Received: from xsvr4.cup.hp.com (xsvr4.cup.hp.com [15.0.68.169])
-	by atlrel1.hp.com (Postfix) with ESMTP id 1861827D4
-	for <parisc-linux@thepuffingroup.com>; Tue, 16 Nov 1999 16:43:13 -0500 (EST)
-Received: from hp.com (localhost [127.0.0.1]) by xsvr4.cup.hp.com with ESMTP (8.7.6/8.7.3) id NAA13980 for <parisc-linux@thepuffingroup.com>; Tue, 16 Nov 1999 13:43:12 -0800 (PST)
-Sender: frowand@cup.hp.com
-Message-ID: <3831CFF0.F4B3CE3E@hp.com>
-Date: Tue, 16 Nov 1999 13:43:12 -0800
-From: Frank Rowand <frank_rowand@hp.com>
-Reply-To: frowand@cup.hp.com
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id PAA09950
+	for <parisc-linux@puffin.external.hp.com>; Tue, 16 Nov 1999 15:55:59 -0700
+Message-Id: <199911162256.RAA03404@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Today's boot experience on a 735
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Tue, 16 Nov 1999 17:56:32 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: bame@debian.fc.hp.com, parisc-linux@thepuffingroup.com
+In-Reply-To: <199911162052.PAA01909@hiauly1.hia.nrc.ca> from "John David Anglin" at Nov 16, 99 03:52:48 pm
 MIME-Version: 1.0
-To: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] depi?
-References: <Pine.LNX.4.10.9911150307300.7996-100000@vodka.thepuffingroup.com> <199911150736.XAA14959@opus.allegro.com> <19991115092549.G30917@mathe.stud.uni-erlangen.de> <383093DE.A8B73CE4@hp.com> <19991116170819.B750@mathe.stud.uni-erlangen.de>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Philipp Rumpf wrote:
+> > The _end symbol is not a reliable indicator of where
+> > the kernel's memory ends.  And the hpux
+> > bootloader doesn't provide the SOM header from whence this could
+> > theoretically be calculated.  I haven't tried out the _end trick
+> > posted last week, but it looks like it'll work (don't call the symbol
+> > _end if you try it).  As long as your kernel links, the guess is
+> > probably OK for now.
 > 
-> > This is just one of several recent messages dealing with the issues caused by
-> > locating the kernel at virtual address 0xc0000000 instead of 0x00000000.  I
-> > still don't understand why the kernel can't be at zero, even though several
-> > people have tried to explain it to me.  Can anyone provide a clear
-> > explanation?
+> Ok, I see the problem now.  The section $DLT$ contains a bunch of
+> undefined common symbols as well as _end.  For example,
 > 
-> Advantages of mapping the kernel at 0xc000 0000 (or 0x8000 0000/0xe000 0000)
+> boot_cpu_data       |       416|undef |common |$CODE$
 > 
+> The _end defined by the linker is the end of the bss section but not
+> the end of last section of the kernel.
 
-< stuff deleted >
+Ok, this is a programing problem.  For objects that don't need external
+linkage, declare them static.  For those that do, initialize them!  This
+will eliminate those pesky common variables.  For example,
 
-> 
-> Disadvantages
-> 
-
-   - C code that needs to run in real mode seems to be rather fragile, given
-     Paul's recent experience with head.c.  (I think it was Paul.)
-
-   - A single instance of code can't (easily) be coded to be able to run both
-     in real mode and in virtual mode.
-
-   - It's real easy to mis-code real mode assembly (eg. use the PA() macro when
-     it shouldn't be used or don't use it when it should be used).
-
-   - Issues with coherent I/O.
-
-< stuff deleted >
-
--Frank
+--- setup.c.orig	Fri Nov 12 18:23:50 1999
++++ setup.c	Tue Nov 16 17:46:36 1999
+@@ -57,14 +57,14 @@
+ 
+ 
+ #define COMMAND_LINE_SIZE 1024
+-char 	saved_command_line[COMMAND_LINE_SIZE];
++char 	saved_command_line[COMMAND_LINE_SIZE] = {};
+ 
+ #define pdc_wrapper(args...) ({				\
+ 	real_routine = (void *)PAGE0->mem_pdc;		\
+ 	real_call(##args);				\
+ })
+ 
+-struct cpuinfo_parisc boot_cpu_data;
++struct cpuinfo_parisc boot_cpu_data = {};
+ 
+ extern __initfunc(unsigned long hp700fb_init(unsigned long mem_start));
+ extern	void dino_init(void);
+@@ -73,7 +73,7 @@
+ #endif
+ extern void do_inventory(void);
+ 
+-PDC_CALL pdc;
++PDC_CALL pdc = {};
+ 
+ 
+ void __xchg_called_with_bad_pointer(void)
