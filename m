@@ -1,31 +1,31 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C7D1C4A19
-	for <parisc-linux@parisc-linux.org>; Thu,  1 Mar 2001 16:37:16 -0700 (MST)
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14YcdH-0005ER-00
-	for parisc-linux@parisc-linux.org; Thu, 01 Mar 2001 23:37:15 +0000
-Date: Thu, 1 Mar 2001 23:37:15 +0000
-From: Matthew Wilcox <matthew@wil.cx>
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 462D94A19
+	for <parisc-linux@parisc-linux.org>; Thu,  1 Mar 2001 17:33:13 -0700 (MST)
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by atlrel1.hp.com (Postfix) with ESMTP id 3CA0457F
+	for <parisc-linux@parisc-linux.org>; Thu,  1 Mar 2001 19:33:10 -0500 (EST)
+Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
+	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id RAA28619
+	for <parisc-linux@parisc-linux.org>; Thu, 1 Mar 2001 17:33:08 -0700 (MST)
+Received: from localhost
+	([127.0.0.1] helo=fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 14YdVL-0000NE-00
+	for <parisc-linux@parisc-linux.org>; Thu, 01 Mar 2001 17:33:07 -0700
 To: parisc-linux@parisc-linux.org
-Message-ID: <20010301233715.D26100@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: <willy@www.linux.org.uk>
-Subject: [parisc-linux] 64-bit issues
+Date: Thu, 01 Mar 2001 17:33:07 -0700
+From: Paul Bame <bame@fc.hp.com>
+Message-Id: <E14YdVL-0000NE-00@noam.fc.hp.com>
+Subject: [parisc-linux] 64-bit compiler millicode update
 List-ID: <linux-parisc.vger.kernel.org>
 
-I've been working on moving the bits from parisc64 across to parisc.
-There's actually very little that needs to be moved.
+This affects people building 64-bit kernels after willy's (not yet
+available) changes, whereupon the $$mulI millicode routine becomes
+needed.
 
-In the process, I discovered several problems with parisc64 being out
-of date.  One of them affects everyone who builds parisc64.  It wasn't
-being compiled with the -mdisable-fpregs option, so it was using FP
-code in the kernel, which is generally considered not a good idea.
-But adding this requires gcc to call into $$mulI which wasn't part of our
-64-bit libgcc.  Paul Bame's done this work, so now everyone compiling
-64-bit will need a new compiler.  Matt Taggart's building one now and
-you'll need to install it to build a 64-bit kernel.
+New cross compilers will soon be available, but if you just want to
+get the millicode change and no others, replace your 64-bit libgcc.a
+with [ftp|http]://puffin.external.hp.com/pub/parisc/binaries/libgcc.a.gz
 
--- 
-Revolutions do not require corporate support.
+	-P
