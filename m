@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [156.153.255.205])
-	by dsl2.external.hp.com (Postfix) with ESMTP id CE1E54829
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  3 Jan 2003 23:24:08 -0700 (MST)
-Received: from security.hp.com (cranston.fc.hp.com [15.1.44.224])
-	by atlrel6.hp.com (Postfix) with ESMTP id 38AD213C0
-	for <parisc-linux@lists.parisc-linux.org>; Sat,  4 Jan 2003 01:24:03 -0500 (EST)
-Date: Fri, 3 Jan 2003 23:24:05 -0700
-From: LaMont Jones <lamont@hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Cc: lamont@hp.com
-Message-ID: <20030104062405.GB9826@cranston.fc.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] gcc 3.2 ICE
+Received: from sccrmhc03.attbi.com (sccrmhc03.attbi.com [204.127.202.63])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D6EB8482B
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  4 Jan 2003 11:08:04 -0700 (MST)
+From: "Steve Cornett" <stevec@bullseye.com>
+To: "'Grant Grundler'" <grundler@dsl2.external.hp.com>
+Cc: <parisc-linux@lists.parisc-linux.org>
+Subject: RE: [parisc-linux] B1000 Debian 3.0r1 High-Priority Machine Check
+Date: Sat, 4 Jan 2003 10:07:59 -0800
+Message-ID: <000001c2b41c$37348cf0$a87ba8c0@steve>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <20030104015526.GB29245@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,24 +23,46 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a build log with a gcc 3.2 ICE..
-http://buildd.debian.org/fetch.php?&pkg=xine-lib&ver=1-beta2-3&arch=hppa&stamp=1041582169&file=log&as=raw
+> Steve, can you try the beta Boot Floppies?
+My B1000 cannot seem to boot from floppy.  I verified my floppy drive
+works from HP-UX.  When I use the firmware command "boot floppy" I
+immediately get the error shown below, without an attempt to read from
+the floppy drive.
 
-It would appear that the gcc version used is:
-    gcc-3.2_1:3.2.2ds3-0pre3
-
-If that helps anyone...
-
-(The maintainer switched over to gcc-3.2 when 3.0 was ICE'ing, but that
-didn't fix the problem.)
+Firmware Version 5.0
+...
+Main Menu: Enter command > boot floppy
+ERROR:  Not a boot path
+Main Menu: Enter command > in
+Information Menu: Enter command > io
+I/O MODULE INFORMATION
  
-gcc-3.2 -DHAVE_CONFIG_H -I. -I. -I../../.. -I../../.. -I../../../include -I../../../include -I../../../src -I../../../src/xine-engine -I../../../src/xine-engine -I../../../src/xine-utils -Wall -D_REENTRANT -D_FILE_OFFSET_BITS=64 -DXINE_COMPILE -O3 -I/usr/include/kde/artsc -c rpe.c -MT rpe.lo -MD -MP -MF .deps/rpe.TPlo  -fPIC -DPIC -o rpe.lo
-rpe.c: In function `APCM_quantization':
-rpe.c:422: internal error: Segmentation fault
-Please submit a full bug report,
-with preprocessed source if appropriate.
+IODC IODC
+Path         Decimal     Type                  Location   HVER SVER
+Vers Dep
+------------ ----------- --------------------- ---------- ---- ----
+---- ----
+LAN          10/0/12/0   Ethernet              built-in   0050 a200
+0x02 0x00
+AUDIO        10/0/13/0   Audio                 built-in   
+IDE          10/0/14/0   IDE                   built-in   0050 a300
+0x00 0x00
+SUPERIO MISC 10/0/14/1   Bridge Device         built-in   
+FLOPPY       10/0/14/1/0 Floppy Disk           built-in   
+SERIAL_1     10/0/14/1/1 RS232 Port            built-in   0050 8c00
+0x01 0x00
+SERIAL_2     10/0/14/1/2 RS232 Port            built-in   0050 8c00
+0x01 0x00
+PARALLEL     10/0/14/1/3 Parallel Port         built-in   
+USB          10/0/14/2   USB                   built-in   0050 a900
+0x98 0x00
+SCSI         10/0/15/0   SCSI                  built-in   0050 a300
+0x00 0x00
+FWSCSI       10/0/15/1   SCSI                  built-in   0050 a300
+0x00 0x00
+GRAPHICS(2)  10/6/2/0    PCI_GRAFFITIX1024     slot 2     0070 8500
+0x01 0x00
 
-If anyone wants, I'm happy to do the preprocessing, but I'll be heading out
-of town Sunday for a week, and Saturday is understandably swamped...
+Main Menu: Enter command > boot 10/0/14/1/0
 
-lamont
+ERROR:  Not a boot path
