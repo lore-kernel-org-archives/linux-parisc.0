@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9DBF4482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Jul 2002 15:10:07 -0600 (MDT)
-Message-Id: <200207302107.g6UL7dml021106@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] SOM linker on Linux/ia32, Linux/PARISC targeting HPUX/PARISC
-To: sue_ludwig@hp.com (Sue Ludwig)
-Date: Tue, 30 Jul 2002 17:07:38 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@lists.parisc-linux.org,
-	linker-info@thepuffingroup.com, shl@cup.hp.com
-In-Reply-To: <001501c2380b$6f1ea430$ce60000f@HPPDL632> from "Sue Ludwig" at Jul 30, 2002 01:55:26 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from server01 (s217-115-138-231.colo.hosteurope.de [217.115.138.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 41D59482A
+	for <parisc-linux@parisc-linux.org>; Wed, 31 Jul 2002 00:56:44 -0600 (MDT)
+From: j.steindlberger@gmx.net
+To: parisc-linux@parisc-linux.org
+Date: Tue, 30 Jul 2002 11:21:30 +0200
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-Id: <20020731065644.41D59482A@dsl2.external.hp.com>
+Subject: [parisc-linux] IEEE1394 (Firewire iLink) - any ideas to build modules
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,17 +20,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> I've also tried to access the linker source code at:
-> ftp://puffin.external.hp.com/pub/parisc/linker
-> http://www.thepuffingroup.com/parisc/cvs.html
+Hi,
 
-Try ftp://ftp.parisc-linux.org/src/linker/som-linker-1.0.tar.gz
+did anyone succeed in building modules for an OHCI1394 card? I think the 
+problem is a general leck in DMA support. As I'm not a kernel specialist I 
+don't have any idea.
+When trying to build a module there are dependency problems. When trying to 
+build into the kernel there are missing some functions for DMA - I think.
 
-> On another track, does anyone know if gld has been modified to support SOM?
+Regards
+Joerg
 
-No it hasn't.  From what I know, this would be very difficult.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+PS:
+( System: HP9000 C360 )
+  Bus  0, device   3, function  0:
+    FireWire (IEEE 1394): PCI device 104c:8020 (Texas Instruments) (rev 0).
+      IRQ 99.
+      Master Capable.  Latency=255.  Min Gnt=3.Max Lat=4.
+      Non-prefetchable 32 bit memory at 0xf2ff8000 [0xf2ff87ff].
+      Non-prefetchable 32 bit memory at 0xf2ffc000 [0xf2ffffff].
