@@ -1,26 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mulgrave-w.il.steeleye.com (il-ppp.sc.steeleye.com [172.17.6.240])
-	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id h8TL4lq32392;
-	Mon, 29 Sep 2003 17:04:47 -0400
-Subject: Re: [parisc-linux] Re: NCR53c720
-From: James Bottomley <James.Bottomley@steeleye.com>
-To: Grant Grundler <grundler@parisc-linux.org>
-Cc: Matthew Wilcox <willy@debian.org>,
-	Roman Zippel <zippel@linux-m68k.org>,
+Received: from postfix.fh-schmalkalden.de (postfix.fh-schmalkalden.de [194.94.30.58])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4660C487E
+	for <parisc-linux@parisc-linux.org>; Mon, 29 Sep 2003 15:27:07 -0600 (MDT)
+Date: Mon, 29 Sep 2003 23:25:01 +0200
+From: Rene Brothuhn <rene.br@web.de>
+To: Matthew Wilcox <willy@debian.org>
+Cc: Roman Zippel <zippel@linux-m68k.org>,
 	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Matthew Wilcox <willy@debian.org>,
 	Linux/m68k <linux-m68k@lists.linux-m68k.org>,
 	parisc-linux@parisc-linux.org, linux-apus-devel@lists.sourceforge.net
-In-Reply-To: <20030929205548.GA13226@dsl2.external.hp.com>
-References: <Pine.GSO.4.21.0309291116250.7432-100000@vervain.sonytel.be>
-	<Pine.LNX.4.44.0309291434260.17812-100000@serv>
-	<20030929133317.GP24824@parcelfarce.linux.theplanet.co.uk>
-	<Pine.LNX.4.44.0309291818060.17548-100000@serv>
-	<20030929162749.GR24824@parcelfarce.linux.theplanet.co.uk>
-	<20030929205548.GA13226@dsl2.external.hp.com>
-Content-Type: text/plain
-Date: 29 Sep 2003 16:00:10 -0500
-Message-Id: <1064869488.1782.240.camel@mulgrave>
+Message-ID: <20030929212501.GA2631@ipgraf11.informatik.fh-schmalkalden.de>
+Reply-To: rene.br@web.de
+References: <Pine.GSO.4.21.0309291116250.7432-100000@vervain.sonytel.be> <Pine.LNX.4.44.0309291434260.17812-100000@serv> <20030929133317.GP24824@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+In-Reply-To: <20030929133317.GP24824@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Mon, Sep 29, 2003 at 15:33:17 +0200
+Subject: [parisc-linux] Re: NCR53c720
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -32,24 +28,39 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, 2003-09-29 at 15:55, Grant Grundler wrote:
-> On Mon, Sep 29, 2003 at 05:27:49PM +0100, Matthew Wilcox wrote:
-> > > Um, which one is the current right dma device API?
-> > 
-> > The one in Documentation/DMA-API.txt.
+On 2003.09.29 15:33 Matthew Wilcox wrote:
+> ... Ah ;-)  So where do I find the APUS tree?  From digging around on
+> the web (man, there's a lot of broken links in the APUS faq ...), it
+> seems to be its own sourceforge project that hasn't switched to working
+> on 2.6 yet, is this correct?
 > 
-> Matthew, which version of the source tree?
-> 2.4.22 and 2.6.x versions of this file are not identical.
+> Now that ncr53c8xx is non-PCI only, it should cause the absolute minimum
+> of wailing & gnashing of teeth to convert it to use the non-coherent
+> dma device API.  It would benefit PA-RISC too as we have two models
+> (735 and 755) that have NCR720 chips and a non-coherent architecture.
+> Right now, they use the 53c700 driver, but it'd be better to use the
+> ncr53c8xx driver, of course.
 > 
-> grundler@gsyprf3:/usr/src$ diff linux-2.?/Documentation/DMA-mapping.txt | wc -l
->    117
-> grundler@gsyprf3:/usr/src$ wc -l linux-2.?/Documentation/DMA-mapping.txt
->     798 linux-2.4/Documentation/DMA-mapping.txt
->     828 linux-2.5/Documentation/DMA-mapping.txt
->    1626 total
+> Are any APUS people interested in working on this?
 
-DMA-mapping.txt is only the pci_ DMA API.  The ncr53c8xx doesn't use
-that any more.  It only uses the generic DMA API, which is documented in
-DMA-API.txt like willy said, and is only in 2.6 (not 2.4).
+Hello!
 
-James
+I'm the one who getting the 53c770 driver working on APUS. The driver is 
+based on the code from the ncr53c8xx driver which I found on a 2.4.16 
+kernel (maybe it was an other kernel version, I'm not really sure 
+anymore). In newer kernels the ncr53c8xx drivers are replaced by sym53c8xx 
+which uses a different and more complicated architecture.
+In my opinion, the best is to create a seperate 53c720/770 driver based on 
+the 53c770 from APUS or ncr53c8xx. I guess the 53c770 from APUS should 
+work (with some changes) on a 720 (or similar), because the 770 was 
+designed to replace the 720. But I don't know anything about 735 and 755.
+But the APUS driver is a really big "patchwork", has some problems and 
+needs a clean-up. And I haven't worked on the driver since a year due to 
+lack of time, sorry.
+
+I still have lack of time, but if there are any questions, I will help. It 
+will be nice to have a native 720/770 driver... And maybe, if someone 
+tries to port this driver to a PA, I have to go for it...
+
+
+Ciao, Renè
