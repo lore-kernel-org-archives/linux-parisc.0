@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from da-horus.directannonces.com (unknown [81.80.128.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 48CFB4840
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Nov 2003 10:50:35 -0700 (MST)
-Message-ID: <00e101c3af8e$d56c5790$65c0a8c0@directannonces.com>
-Reply-To: "CrazyCat from CPF" <crazycat@c-p-f.org>
-From: "CrazyCat from CPF" <crazycat@c-p-f.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Cc: <parisc-linux@lists.parisc-linux.org>
-References: <01b201c3af59$fa8d72f0$65c0a8c0@directannonces.com> <20031120174217.GA7392@colo.lackof.org>
-Subject: Re: [parisc-linux] Trouble whith hp-pa 712/80
-Date: Thu, 20 Nov 2003 18:50:49 +0100
+Received: from csmail.ucc.ie (csmail.ucc.ie [143.239.211.231])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 572334840
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Nov 2003 11:52:56 -0700 (MST)
+Received: from sal.ucc.ie (sal.ucc.ie [143.239.201.201])
+	by csmail.ucc.ie (8.12.10/8.12.10) with ESMTP id hAKIqpIX023898
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Nov 2003 18:52:51 GMT
+Date: Thu, 20 Nov 2003 18:52:50 +0000 (GMT)
+From: "M. Grabert" <xam@cs.ucc.ie>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <Pine.LNX.4.58.0311201817470.21743@sal.ucc.ie>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] C3000 and 2.6
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,18 +23,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler wrote:
-> On Thu, Nov 20, 2003 at 12:32:28PM +0100, CrazyCat from CPF wrote:
->> And after, I try to initialise partition sda5 (sda1 to sda3 are
->> allready initialised).
->> And the system blocks when writing superblocks....
->
-> Is this using a 2.4.22 kernel?
-> Can you try a newer kernel?
+Hi,
 
-Well, I'm using liveimage to start and install by lan, so I'm not sure of
-the kernel and can't verify yet... must wait monday to verify.
+before I'm wasting my time compiling the kernel, is the
+serial console now working with 2.6?
 
-And I'm practically newbie with debian :(
+There used to be problems with the SCSI driver aswell (would complain
+that termination problem was present, but AFAIK this was already fixed)?
 
-CrazyCat from C-P-F.org
+
+Right now I'm using a 120GB IDE using the onboard IDE of the C3k, and
+I get just about 3MB/s with 2.4.22-paX, which might indicate that DMA is
+not supported (I turned DMA/32bit on with hdparm, but no effects). I also
+doubt that the driver for the onboard IDE chipset is much better in the
+2.6 kernel, so I opted to install a IDE PCI card.
+
+Unfortunately the only new PCI IDE cards you can get in the shops these
+days that are ones with the Promise or the SiliconImage chipset;
+suppor for the Promise chipset under linux used to be crap, and
+SiliconImage is only suppoted with 2.6, but at least it works, so I went
+for the latter. Therefore I'm eager to get 2.6 running!
+
+
+Thanks,
+  Max
+
+
+PS: Building network scheduling (QoS) as modules results in unresolved
+    symbols (using 2.4.22-pa13). Building then in the kernel (2.4.22-pa17)
+    works.
