@@ -1,16 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C5911483F
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 May 2003 00:08:57 -0600 (MDT)
-Date: Mon, 5 May 2003 08:08:53 +0200
-Message-ID: <3EA84287000032CA@ocpmta2.freegates.net>
-In-Reply-To: <3EB42B20.1010504@tiscali.be>
-From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] Program counter from sigcontext, constructurs and -fPIC
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
-Cc: parisc-linux@lists.parisc-linux.org
+Received: from bbnrel4.net.external.hp.com (bbnrel4.net.external.hp.com [155.208.254.68])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D4C9C4882
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 May 2003 05:08:04 -0600 (MDT)
+Received: from hpfrcu03.france.hp.com (hpfrcu03.france.hp.com [15.129.16.51])
+	by bbnrel4.net.external.hp.com (Postfix) with ESMTP id E28BD6E
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  5 May 2003 13:08:02 +0200 (METDST)
+Received: from admin.france.hp.com (ssdpc48.france.hp.com [15.129.234.2])
+	by hpfrcu03.france.hp.com (8.9.3 (PHNE_26305+JAGae58098)/8.9.3 SMKit7.02) with ESMTP id NAA08761
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 5 May 2003 13:07:57 +0200 (METDST)
+Message-ID: <3EB6460D.6040704@admin.france.hp.com>
+Date: Mon, 05 May 2003 13:07:57 +0200
+From: Bruno Vidal <bruno_vidal@hpfrcu03.france.hp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] dump module: new feature
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,31 +26,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Carlos,
+	Hi
+For people who are intersting to it, the dump modules
+is now checking that it is a swap device before
+configuring it. So it remove the risk to dump
+to a file system. It check for the swap magic
+"SWAP-SPACE" (v0) or "SWAPSPACE2" (v1). The
+partition is not necessary an active one,
+it should only be created by mkswap (so no
+file system on it).
 
->
->That said, I suspect more another hw pb (it is not the first time with 
->this b2k model on which hp had already have to replace the cpu) or a bug
->
-Definitely it must be a HW pb: I read back the very last pim info that I
-grab with minicom I find:
-...
-Memory/IO Controller Error Analysis Information:
+	Cheers.
 
-                 Occurs
-...
-        Runway Addr = 0xc13ff0 f0f000cd0a
-...
-
-Even thought this messages seems to be OS independant (PDC only IMHO?), I
-will so come back to hpux with the hope that pb re-occurs and that I can
-open a HW call neer HP.
-
-Regards,
-    Joel
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'à 25% avec Tiscali Complete !
-Offre spéciale : première année d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be
+-- 
+	Vidal Bruno, (770-4271)
+         SSD-HA Team, HP-UX & LINUX Support
+	bruno_vidal@admin.france.hp.com
