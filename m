@@ -1,19 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9703F482C
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 08:13:15 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id 9EDFBB00C; Wed, 14 Nov 2001 15:13:31 +0000 (GMT)
-Date: Wed, 14 Nov 2001 15:13:31 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Strohmayer Peter Hans <peter-hans.strohmayer@sbs.at>
+Received: from ns.snowman.net (ns.snowman.net [63.80.4.34])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E4910482C
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 08:40:37 -0700 (MST)
+Received: from localhost (nick@localhost)
+	by ns.snowman.net (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id KAA28627
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 14 Nov 2001 10:40:36 -0500
+Date: Wed, 14 Nov 2001 10:40:36 -0500 (EST)
+From: <nick@snowman.net>
 Cc: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
 Subject: Re: [parisc-linux] Installing Debian on a C180
-Message-ID: <20011114151331.E30923@linuxcare.com>
-References: <C10F60785AE7D211B6E00800060DA391028782A5@vieg128a.gud.siemens.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <C10F60785AE7D211B6E00800060DA391028782A5@vieg128a.gud.siemens.at>; from peter-hans.strohmayer@sbs.at on Wed, Nov 14, 2001 at 03:25:22PM +0100
+In-Reply-To: <C10F60785AE7D211B6E00800060DA391028782A5@vieg128a.gud.siemens.at>
+Message-ID: <Pine.LNX.4.21.0111141039190.18005-100000@ns>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,7 +24,14 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Wed, Nov 14, 2001 at 03:25:22PM +0100, Strohmayer Peter Hans wrote:
+I attempted to install debian on my C180 a while ago.  I had to do a
+number of umpleaseant hacks includeing disableing one of the two scsi
+drivers in the kernel.  Did you run into that problem or did it go
+relativly smoothly until the copying?
+	Nick
+
+On Wed, 14 Nov 2001, Strohmayer Peter Hans wrote:
+
 > Hello,
 > 
 > i have made a CD from the ISO.image and now i will install
@@ -38,13 +44,19 @@ On Wed, Nov 14, 2001 at 03:25:22PM +0100, Strohmayer Peter Hans wrote:
 > packages to disk from CD.
 > 
 > Is there something special what should do on a C180?
-
-We expect to have a new ISO real soon now (yes, I know we have
-been saying that for a couple of months), could you wait and
-try that when it is available please?
-
-In the meantime, using serial console and capturing the boot
-messages for us might be interesting.
-
-Cheers,
-  Richard
+> 
+> Greetings from Austria,
+> 
+> Ing. Peter Hans Strohmayer
+> SBS ORS BOS CDU GUD
+> 
+> * Tel:    +43 5 1707 47564
+> *  Fax:   +43 5 1707 57560
+> * E-Mail: mailto:peter-hans.strohmayer@sbs.at
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
