@@ -1,17 +1,16 @@
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0AA8E483E
+	for <parisc-linux@lists.parisc-linux.org>; Sat,  1 Nov 2003 01:20:16 -0700 (MST)
+Date: Sat, 1 Nov 2003 00:24:51 -0800
 From: Randolph Chung <tausq@debian.org>
-Subject: Re: [parisc-linux] [PATCH] C99 cleanup in kernel/sysctl.c
-Date: Sat, 25 Oct 2003 09:01:48 -0700
-Message-ID: <20031025160148.GC24406__7361.76536088369$1416622907$gmane$org@tausq.org>
-References: <20031025155107.GA2718@artsapartment.org>
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <20031101082451.GJ28967@tausq.org>
 Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: parisc-linux@parisc-linux.org, Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-kernel@vger.kernel.org
-To: Art Haas <ahaas@airmail.net>
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20031025155107.GA2718@artsapartment.org>
+Subject: [parisc-linux] what's up with the ipc syscalls?
+Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -22,16 +21,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> Looking at the file kernel/sysctl.c I saw this HP-PA specfic block of
-> code. Here's an untested patch to format the code with C99 named
-> initializers.
+in our syscall table, semctl, msgctl and shmctl are marked as "broken".
+Does anybody know what's up with that?
 
-hm.. this is already in our 2.6 tree, except the old version was there
-also, so we have two copies of the same sysctl.. oops :)
+i did a simple hack, which is to replace
 
-i've removed the redundant ones.
+        return sys_msgctl (msqid, cmd & ~IPC_64, buf);
 
-thanks
+with 
+
+        return sys_msgctl (msqid, cmd | IPC_64, buf);
+
+in sys_parisc.c, and at least in some simple tests it seems to work
+(whereas the original one was really broken)
+
+haven't tested it very much yet.... a similar hack for semctl doesn't
+seem to work. haven't investigated more yet.. but wanted to know if
+others can shed light on what was the problems there....
+
 randolph
 -- 
 Randolph Chung
