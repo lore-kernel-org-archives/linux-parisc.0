@@ -1,17 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BCE1A482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jan 2002 16:21:04 -0700 (MST)
-Received: from npyu.esiee.fr (npyu.esiee.fr [147.215.80.150])
-	by mail.esiee.fr (Postfix) with ESMTP id BE9F049BF0
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 00:21:03 +0100 (CET)
-Date: Tue, 8 Jan 2002 00:21:02 +0100
-Mime-Version: 1.0 (Apple Message framework v480)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
-To: parisc-linux@lists.parisc-linux.org
-Message-Id: <3753D94C-03C5-11D6-8043-0030656F07A2@esiee.fr>
-Subject: [parisc-linux] Python math bug
+Received: from mf1.bredband.net (mf1.lab.bredband.com [195.54.122.119])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B9B0C482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  7 Jan 2002 16:35:56 -0700 (MST)
+Date: Tue, 8 Jan 2002 00:34:33 +0100
+From: Daniel Engstrom <5116@telia.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Christian Suder <csuder@cisco.com>, sven.cronenberg@web.de,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] PALinux on HP9000/735-125
+Message-ID: <20020108003433.A13855@zaphod.halden.lillfab.se>
+References: <3C388C82.6070509@web.de> <20020106201346.A14927@solo.franken.de> <20020106133432.08684bb1.csuder@cisco.com> <20020106232908.B19425@solo.franken.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <20020106232908.B19425@solo.franken.de>; from tsbogend@alpha.franken.de on Sun, Jan 06, 2002 at 23:29:08 +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +24,32 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello,
+On 2002.01.06 23:29 Thomas Bogendoerfer wrote:
+> but that's not enough. I did that and setup the [EISA-] card with HPUX, but
+> it's still unconfigured, when Linux finds it. 
 
-After investigating a bit in an empirical way on the sqrt() function in 
-python, I have noticed what seems to be a logical rule as follows:
+I think that the PDC only initialize a card that is used for booting. I also
+think that Matthew Wilcox had a HP 100MB Ethernet interface up and running a 
+while ago. (The PDC might have initialzed that board when it searched for boot
+devices.)
+Another problem with EISA boards currently, is that most of them are bus-masters
+and the current EISA support lacks the busmatering and DMA bits.
 
-All integer results (even when tested as X.0) are correct.
-For the float numbers (I have only tested the X.X form), the rule looks 
-like this:
-the result for 0.X numbers is divided by (1/(2*sqrt(2))), ie multiplied 
-by 2*sqrt(2)
-for 1.X numbers, result is divided by sqrt(2)	(1 integer)
-for 2.X and 3.X, divided by 2=(sqrt(2))^2		(2 different integers)
-for 4.X -> 7.X, by (sqrt(2))^3				(4 different integers)
-for 8.X -> 15.X, by 4=(sqrt(2))^4			(8 different integers)
-for 16.X -> 31.X, by (sqrt(2))^5				(16 different integers)
-for 32.X, by 8...
+> The .cfg describes how to
+> configure the different card parameters, eisa_config puts the selected
+> params to a nvram, and some other part does the real card poking
+> during kernel startup. Other platforms have that card poking stuff
+> included into the firmware.
 
-I have not tested further.
+I have started an eeprom driver a while ago, and I started to try to decode the 
+EISA parts of the EEPROM. I have about half of it figured out I think, but the
+other half seems to be somewhat hard.
 
-I have made the comparisons using a 10 digits (12 digits precision) 
-calculator (as I had nothing else by this time).
+I looked a doing a parser for the CFG files, but it turns out that there are a
+lot of options and stuff. Even binary code overlays that are supposed to be
+loaded and executed by the ECU (EISA configuration utility) exists. Adaptec 
+uses one for the AHA-274x. Not suppoered by HPUX, though.
 
-I hope this will be useful for fixing the bug.
+/Daneil
 
-
-Thibaut
-PA/Linux ESIEE Team
+-- 
