@@ -1,26 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dhcp23.swansea.linux.org.uk (cpc1-cwma1-5-0-cust4.swan.cable.ntl.com [80.5.120.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C6D984879
-	for <parisc-linux@parisc-linux.org>; Wed, 24 Sep 2003 17:19:47 -0600 (MDT)
-Received: from dhcp23.swansea.linux.org.uk (localhost.localdomain [127.0.0.1])
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10) with ESMTP id h8ONI0mr014852;
-	Thu, 25 Sep 2003 00:18:06 +0100
-Received: (from alan@localhost)
-	by dhcp23.swansea.linux.org.uk (8.12.10/8.12.10/Submit) id h8ONHwMn014850;
-	Thu, 25 Sep 2003 00:17:58 +0100
-Subject: Re: [parisc-linux] get laid guaranteed! lshnpevxpkfj
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: "Michael S.Zick" <mszick@goquest.com>
-Cc: Matthew Wilcox <willy@debian.org>,
-	HPPA List <parisc-linux@parisc-linux.org>
-In-Reply-To: <03092414154803.01490@wolf686>
-References: <7y448$$cv$tv96i@3j25b2> <03092413592001.01490@wolf686>
-	 <20030924191407.GM13172@parcelfarce.linux.theplanet.co.uk>
-	 <03092414154803.01490@wolf686>
-Content-Type: text/plain
-Message-Id: <1064445477.14798.8.camel@dhcp23.swansea.linux.org.uk>
+Date: Wed, 24 Sep 2003 22:08:05 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: Jeremy Drake <jeremyd@apptechsys.com>
+Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+Subject: Re: [parisc-linux] Win2k server boot howto
+Message-ID: <20030925040805.GA28170@dsl2.external.hp.com>
+References: <010d01c36e5d$9d0748a0$0201a8c0@mainframe> <Pine.LNX.4.50.0308291612160.11075-100000@ssh.apptechsys.com> <20030830021622.GF13467@parcelfarce.linux.theplanet.co.uk> <Pine.LNX.4.50.0309121543430.11075-100000@ssh.apptechsys.com>
 Mime-Version: 1.0
-Date: Thu, 25 Sep 2003 00:17:58 +0100
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.50.0309121543430.11075-100000@ssh.apptechsys.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -32,16 +20,103 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mer, 2003-09-24 at 20:15, Michael S.Zick wrote:
-> On Wednesday 24 September 2003 02:14 pm, Matthew Wilcox wrote:
-> > On Wed, Sep 24, 2003 at 01:59:20PM -0500, Michael S. Zick wrote:
-> > > Will this be a system function incorporated in the 2.6 kernel?
-> >
-> > no, you're going to have to go outside.
-> Not even as an optional, plug-in module?
+On Fri, Sep 12, 2003 at 04:43:28PM -0700, Jeremy Drake wrote:
+> This is about using the dhcp server in win2k server to net boot a parisc 
+> box.
 
-Not for this system as it lacks USB
+Jeremy,
+Thanks again for the first version.
+I've reformatted and rewrote bits of it.
+Things with [ ] around them mean a step or info is missing.
+Can you please review if any additional steps are missing and
+fill in missing bits you know about?
 
-http://www.sleeplessknights.com/Pages/ipix.html
+Anyone else know if tftpf32 can be run as a service under win2k?
 
-(The movies are a hoot)
+I'll add HTML markup when I'm ready to link it into our FAQ.
+
+thanks,
+grant
+
+------------------------ HOWTO.win2k_bootp -------------------
+
+Get the MAC address from the PARISC workstation
+-----------------------------------------------
+o Power on the box
+o stop the auto boot when "press any key to stop boot" is printed
+o At the BOOT_ADMIN> prompt, type "in la" and hit enter. 
+o record the printed hex number (your workstation's MAC address).
+o leave the workstation power on...get back to it in a bit.
+
+[ How/Where to get a lifimage? Needed below ]
+
+
+Enable DHCP server in Win2k
+---------------------------
+o Start DHCP server:
+	Control Panel, Add/remove programs, Windows components,
+   	Networking Services, Dynamic Host Configuration Protocol (DHCP)
+
+o Start up the DHCP admin tool:
+	Start, Settings, Control Panel, Admin Tools, DHCP
+
+o Expand [ double click? ] your server in the tree
+o right click on Reservations.
+o Select "New Reservation..."
+o For reservation name, I put my workstation's host name.
+o enter an unused IP address
+o enter the PARISC workstation's mac address (no delimiters,
+  just the hex number).
+o select "Both" for whether it should be bootp or dhcp.
+[ o click "Ok" to close this window? ]
+
+o Find your new reservation at the bottom of the list under Reservations
+  and click it.
+o right click "Configure Options..."
+  It should have inherited your server's default options, so I won't
+  cover setting router, dns, wins, and lease length.
+
+o Scroll down the list of options to 066 "Boot Server Host Name".
+  Check the box next to option 066.  Enter your tftp server's ip address
+  (I don't trust DNS to work in IPL).
+
+o check option 067 "Bootfile Name" and enter the name of the lifimage.
+  Generally, "lifimage" is a good choice here.
+
+o click "ok" and dhcp server is ready!
+
+
+Enable Tftpd on Win2k Server
+----------------------------
+o Get Tftpd from http://tftpd32.jounin.net/
+o start tftpd32 [.exe?]
+o click the "browse" button
+o Browse to where you put your lifimage, highlight it and click ok.
+
+o Make sure the IP address below the directory is the right one.
+  If not, drop down the list and pick the right one.
+  [which IP? client or dhcpd server?]
+
+o Leave tftpd32 running. The tftp server only runs when the gui is displayed.
+  [ Can tftpd32 can be run as a service? How? Help page on jounin.net? ]
+
+
+Net Boot the PARISC Workstation
+-------------------------------
+o Get the "BOOT_ADMIN>" prompt again
+o Type "sea lan" (for search). If everything is correct, you should
+  see something like:
+  	P0 LAN.<BLAH>
+	
+o type "bo p0" to start the parisc-linux boot process.
+  Palo output should be the next thing to show up on the console.
+
+o If "P0 LAN" doesn't show up, check:
+	+ settings on the DHCP server.
+	  eg. verify the PARISC MAC address is correct,
+	+ your dhcp server is on the same physical network segment as
+	  the PARISC workstation.
+	+ "Link" light on PARISC workstation and Win2K server
+	  LAN port is lit.
+  
+The HOWTO PARISC install [URL?] howto will be helpful from this point.
