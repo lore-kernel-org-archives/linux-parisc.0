@@ -1,19 +1,22 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
-	by dsl2.external.hp.com (Postfix) with ESMTP id AE2F44829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 19:06:51 -0600 (MDT)
-Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
-	id 181GAZ-0005Gr-00; Tue, 15 Oct 2002 02:06:47 +0100
-Date: Tue, 15 Oct 2002 02:06:47 +0100
-From: Matthew Wilcox <willy@debian.org>
-To: Christian_Ehlers@gmx.de
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] G50 support
-Message-ID: <20021015020647.A8660@parcelfarce.linux.theplanet.co.uk>
-References: <18069.1034611875@www43.gmx.net>
+Received: from mta04bw.bigpond.com (mta04bw.bigpond.com [139.134.6.87])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1D5B54829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 14 Oct 2002 20:27:26 -0600 (MDT)
+Received: from piglet.sspl.net.au ([144.135.24.69]) by
+          mta04bw.bigpond.com (Netscape Messaging Server 4.15 mta04bw Jul
+          16 2002 22:47:55) with SMTP id H4045L00.BOY for
+          <parisc-linux@lists.parisc-linux.org>; Tue, 15 Oct 2002 12:27:21 +1000
+Received: (from pete@localhost)
+	by piglet.sspl.net.au (8.9.3/8.9.3) id MAA05763
+	for parisc-linux@lists.parisc-linux.org; Tue, 15 Oct 2002 12:27:21 +1000
+Date: Tue, 15 Oct 2002 12:27:20 +1000
+From: Peter Lavender <plaven@bigpond.net.au>
+To: PARISC Mailing List <parisc-linux@lists.parisc-linux.org>
+Message-ID: <20021015122720.E893@piglet>
+Reply-To: plaven@bigpond.net.au
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <18069.1034611875@www43.gmx.net>; from Christian_Ehlers@gmx.de on Mon, Oct 14, 2002 at 06:11:15PM +0200
+Subject: [parisc-linux] help!!! apt-get dist-upgrade
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -25,27 +28,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Mon, Oct 14, 2002 at 06:11:15PM +0200, Christian_Ehlers@gmx.de wrote:
-> Hi, I recently asked varenet@esiee.fr  if you support the HP 800/G50 9000
-> server. He told me that this is not the case and that I should set up a network
-> access to it so someone could work on it if they wanted to. Now I wanted to
-> know if there is someone who would like to do this. 
+Hi Everyone,
 
-Support for this box is going to be quite hard.  Here's the device list:
+I'm not having much luck finding a solution to this problem.
 
-TNova (887, 897, 987) (Processor)  (PA7100/PA7150 (PCX-T))
-Nova (Memory)
-Miura LAN/Console (J2146A) (B DMA) (x2) (Undocumented driver)
-Wizard SCSI (A DMA) (x2)
-ACC Mux (AMSO) (A DMA) (x2)
-Sahp Baat Kiuh SCSI (A DMA) (Undocumented driver)
-Skunk Centronics (28655A) (A Direct) (Undocumented driver)
-Sahp Baat Kiuh AP/MUX (A Direct) (Mux driver)
+I kicked off apt-get update then apt-get dist-upgrade, however I was
+ssh'ed into the box when I did this.  Becuase the connect is flakey,
+the ssh connection reset, so the last thing apt-get dist-upgrade has
+showing was a prompt.
 
-Miura Lan & ACC Mux seem to be a one-of-a-kind devices.  Wizard & Sahp
-Baat Kiuh SCSI and the Skunk Centronics devices will likely be supported
-by those working on K/E class support.  Sahp Baat Kiuh AP/MUX should
-already work.
+Now I have ssh'ed back to the box.  How can I basically reconnect to
+the process and issue the Y to go ahead and complete the upgrade?
+
+I'd rather not kill it unless it's safe to do so.
+
+A ps aux | grep apt shows the process still there.
+
+Thanks,
+
+
+
+Pete.
 
 -- 
-Revolutions do not require corporate support.
+				Due to a lack of imagination, 
+				this signature will remain 
+				under construction indefinitely.
