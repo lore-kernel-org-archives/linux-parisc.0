@@ -1,116 +1,121 @@
 From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: Re: J5000 LCD heartbeat
-Date: Sun, 20 Mar 2005 20:40:32 +0100
-Message-ID: <20050320204032.3ed40468__4011.29490132934$1416623702$gmane$org@Tatooine.r3z0>
+Subject: [parisc-linux] Re: J5000 LCD heartbeat
+Date: Sun, 20 Mar 2005 21:03:57 +0100
+Message-ID: <20050320210357.53534d01__49560.8000005179$1416623702$gmane$org@Tatooine.r3z0>
 References: <200503191959.05972.dmp@davidmpye.dyndns.org>
-	<200503192233.26991.dmp@davidmpye.dyndns.org>
-	<20050319231911.GB21898@colo.lackof.org>
 	<200503201918.31808.dmp@davidmpye.dyndns.org>
+	<20050320204032.3ed40468@Tatooine.r3z0>
+	<200503201952.31465.dmp@davidmpye.dyndns.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: Grant Grundler <grundler@parisc-linux.org>,
- debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
 To: dmp@davidmpye.dyndns.org
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200503201918.31808.dmp@davidmpye.dyndns.org>
-Resent-Message-ID: <oVGNq.A.joF.KcdPCB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-hppa/>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200503201952.31465.dmp@davidmpye.dyndns.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 20 Mar 2005 19:18:29 +0000
+On Sun, 20 Mar 2005 19:52:29 +0000
 David Pye <dmp@davidmpye.dyndns.org> wrote:
 
-> On Saturday 19 March 2005 23:19, Grant Grundler wrote:
-> > On Sat, Mar 19, 2005 at 10:33:24PM +0000, David Pye wrote:
+> Hi, and thanks for your reply.
+> 
+> On Sunday 20 March 2005 19:40, you wrote:
+> 
+> > > I think I have an idea that it's related to CPU1 init, but I haven't
+> > > confirmed this yet - depending on your feedback to the idea below, I
+> > > won't bother tracing it down.
 > >
-> > > Is it possible to make the write to the display later in the boot
-> > > process, so it occurs after the INI CC01 is printed?
+> > Don't bother. I have that kind of message left on my j5k LCD has well,
+> > that's been there for ages, without problem.
+> 
+> Well, I'd like to see it gone myself, even though it doesn't do anything
+> unpleasant. It is a little messy, at least having it mangled up with the
+> Linux default text is.
+> 
+> If all it takes to prevent it is to make the lcd init happen slightly
+> later in the boot process (ie after the chassis code was emitted), I'd
+> have thought it would be an easy win.
+
+it's not that simple.
+If you want to have it gone, add 
+@reboot echo "" > /proc/pdc/lcd
+in your root crontab :)
+
+> > If you think about the firmware code that drives the display of
+> > chassis messages, it's firmware, changing how it works is pretty much
+> > not possible at that point. If you think about the PDC Chassis driver,
+> > that code doesn't work (read, "isn't activated") on j5k and other
+> > System Map firmware machines, it only works on PDC PAT machines (eg
+> > high end servers).
+> 
+> Yeah, true. So, if the PDC chassis driver isn't used on the j5k, how
+> does the chassis message get sent from the kernel to the PDC?  I haven't
+> worked that out yet.
+
+That message is a *firmware* one. It is send by the machine itself, not
+by anything in the kernel (at least, directly).
+ 
+> > I don't think this is either useful nor desirable. We want to have the
+> > firmware messages going over whatever the led/lcd driver would have
+> > shown, and going into such a pain for a corner case doesn't really
+> > seem worth it.
+> 
+> At the very least, clearing the display first before the message is
+> shown would have been helpful, imho.  
+
+As i told you, this is not possible. The firmware doesn't know there's
+already something on the display. And you don't want to rewrite the PDC
+firmware, do you? :)
+
+> I'd personally like to have the firmware message displayed only for a
+> limited time, though I can see a counter argument for this.  But not for
+> having cleared the display first, though. (Whether this is possible
+> depends on your answer as to how the PDC is told to display the
+> message!)
+
+This is certainly not a good idea, but if you want that, add the following
+to your root crontab:
+
+*/10 * * * * echo "" > /proc/pdc/lcd
+
+This will redraw the original message every 10mn.
+
+> > > Did you have any hints you could give me as to fix my very
+> > > occasional heartbeat issue either?
 > >
-> > I would think it's possible.
-> > You want to track down where the CC01 chassis_log is emitted then
-> > propose a better place to initialize LED display?
+> > I recall that the LCD heartbeat is quite slow on my j5k as well, but
+> > nothing really awful, afaicr.
 > 
-> I think I have an idea that it's related to CPU1 init, but I haven't
-> confirmed this yet - depending on your feedback to the idea below, I
-> won't bother tracing it down.
-
-Don't bother. I have that kind of message left on my j5k LCD has well,
-that's been there for ages, without problem.
-
-> > Another idea is the chassis log code might want to clear the LED
-> > diplay when displaying a chassis log and then a few seconds later
-> > refresh the LED display with the original contents or something.
+> Well, here it's sufficiently slow to be utterly useless as a heartbeat, 
+> anyway. It usually flips state every 10-30 seconds, depending on how it 
+> feels. It certainly doesn't boot.
 > 
-> At the very least, I think it needs to clear the lcd display before it
-> sends the chassis code to the PDC.  How does this sound:
+> I realise the LCD functionality is something fairly minor, and that I'm
+> being picky, but I'd be happy to invest some time to do some fine
+> tuning.  The only two must-haves for me is to nail the INI CC01 message
+> being displayed over the Linux kernel version display, and preferably to
+> make my heart beat too ;)
 
-If you think about the firmware code that drives the display of chassis
-messages, it's firmware, changing how it works is pretty much not
-possible at that point. If you think about the PDC Chassis driver, that
-code doesn't work (read, "isn't activated") on j5k and other System Map
-firmware machines, it only works on PDC PAT machines (eg high end
-servers).
-
-> Clear the lcd
-> Send the chassis code
-> set up a timer for 15 seconds, say, to restore the original display text
-> 
-> This requires a couple of changes to led.c so firmware.c can tell
-> whether the machine has an LCD or not. (If it does, then do the above,
-> otherwise just send the chassis code as before.)
-
-AFAIK, it's not possible for the led.c driver to figure out whether the
-firmware has sent anything to the LCD display.
-
-> If you agree that this is something useful, I will do some more hacking
-> on it. Otherwise, I'll do the other option and arrange the the chassis
-> log to be sent before the lcd has the initial text printed on it.
-
-I don't think this is either useful nor desirable. We want to have the
-firmware messages going over whatever the led/lcd driver would have shown,
-and going into such a pain for a corner case doesn't really seem worth it.
-
-> Another idea I had was this:
-> 
-> How about making the text scrollable? ie if the string is longer than
-> the viewport, scroll it along at a reasonable rate.
-
-That has been considered and eventually ruled out. Remember we're in
-kernel context, this is not meant to be eye candy etc. The pretty
-formatting you suggest should be eventually a userland task, certainly not
-a supplementary burden for the kernel.
-
-At some point we looked after writing a complete driver for the LCD
-display, but it happens that it's much more complicated than first
-expected. For instance, accessing the other row of the LCD is almost
-impossible. In any case, it would probably consume resource for nothing
-really worth it.
-
-> I'm willing to have a play with this too, if people think it's something
-> worth having.
-
-IMHO it's not.
-
-> Did you have any hints you could give me as to fix my very occasional 
-> heartbeat issue either? 
-
-I recall that the LCD heartbeat is quite slow on my j5k as well, but
-nothing really awful, afaicr.
+The LED/LCD driver uses tasklets, which are quite CPU expensive. I think
+this is one of the reason the heartbeat is slow. Though 30s seems alot to
+me either.
 
 HTH
 
 Thibaut VARENE
 The PA/Linux Team
 http://www.pateam.org/
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
