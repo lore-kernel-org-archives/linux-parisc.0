@@ -1,24 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fep07-app.kolumbus.fi (fep07-0.kolumbus.fi [193.229.0.51])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 1DD904829
-	for <parisc-linux@parisc-linux.org>; Fri, 27 Sep 2002 05:47:11 -0600 (MDT)
-Received: from azrael.blades.cxm ([62.248.232.158])
-          by fep07-app.kolumbus.fi with ESMTP
-          id <20020927114707.VHB25395.fep07-app.kolumbus.fi@azrael.blades.cxm>
-          for <parisc-linux@parisc-linux.org>;
-          Fri, 27 Sep 2002 14:47:07 +0300
-Received: (from blades@localhost)
-	by azrael.blades.cxm (SGI-8.9.3/8.9.3) id OAA01830
-	for parisc-linux@parisc-linux.org; Fri, 27 Sep 2002 14:47:00 +0300 (EEST)
-Date: Fri, 27 Sep 2002 14:47:00 +0300
-From: Harri Haataja <harri.haataja@cs.helsinki.fi>
-Cc: "'parisc-linux maillist'" <parisc-linux@parisc-linux.org>
-Subject: Re: [parisc-linux] EISA 100 Base-T Ethernet card drivers / 3COM
-Message-ID: <20020927144656.A1816@azrael.smilehouse.com>
-References: <02Sep27.135037cest.119058@ns.hiscom.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-In-Reply-To: <02Sep27.135037cest.119058@ns.hiscom.nl>; from c.beerse@torex-hiscom.nl on Fri, Sep 27, 2002 at 01:38:41PM +0200
+Received: from mail.tiscali.be (unknown [62.235.14.106])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 559B84829
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 27 Sep 2002 08:50:42 -0600 (MDT)
+Date: Fri, 27 Sep 2002 16:50:31 +0200
+Message-ID: <3D8F011400001618@ocpmta2.be.tiscali.com>
+From: jsoe0708@tiscali.be
+To: parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Subject: [parisc-linux] MM gurus help request
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -30,32 +20,84 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Fri, Sep 27, 2002 at 01:38:41PM +0200, "Beerse, Corné" wrote:
-> > From: Harri Haataja [mailto:harri.haataja@cs.helsinki.fi]
-> > On Thu, Sep 26, 2002 at 08:12:38PM +0100, Matthew Wilcox wrote:
-> > > On Thu, Sep 26, 2002 at 09:11:08PM +0200, Sven Cronbenberg wrote:
-> > > > I have two HP9000 maschines (735b and 720) standing
-> > > > around here with 3COM 100mbit eThernetcards. Have
-> > > > any people out there suceeded using those
-> > > > ethernetcards und LINUX in the HP9000/7??s?
-> > > i don't know.  it's worth trying them.
-> > Wouldn't it be worth it putting together a small list (or even an
-> > active web page) of working devices of any kind on HP-PA hardware?
-> > Or maybe just limited to (E)ISA and pci cards or such?
-> Best place would be the already available hardware database...
-> Is there already a hook to that?
-> 
-> Or on the other hand, does HP have such a list for devices in hp-ux? I
-> guess that devices that work on i386 architectures in linux and on
-> pa-risc architectures in HP-UX (hence hardware does not bite and
-> driver sources are available) should be usable.
+Hi all,
 
-I have heard only random rumours and one thingj driving me to Linux is
-that HP-UX doesn't support really any cards that might be available to
-me. What I'd like to see is a list of "reported working" cards and
-drivers. That would ofcourse be nice on other architectures as well.
+To manage put_user(x, ptr) with x a 64bits (long long), I found another way
+to access the address of x and suggest following solution.
 
--- 
-Cat said, "I am not a friend, and I am not a Servant, I am the Cat who
-walks by himself, and I wish to come into your cave."
-	-- Rudyard Kipling
+--- uaccess.h.orig	2002-09-25 13:59:09.000000000 +0200
++++ uaccess.h	2002-09-27 16:57:06.000000000 +0200
+@@ -35,10 +35,13 @@
+ #define get_user __get_user
+ 
+ #if BITS_PER_LONG == 32
++
+ #define LDD_KERNEL(ptr)		BUG()
+ #define LDD_USER(ptr)		BUG()
+-#define STD_KERNEL(x, ptr)	BUG()
+-#define STD_USER(x, ptr)	BUG()
++#define STD_KERNEL(x, ptr)	__put_kernel_asm_64(x, ptr)
++
++#define STD_USER(x, ptr)	__put_user_asm_64(x, ptr)
++
+ #else
+ #define LDD_KERNEL(ptr) __get_kernel_asm("ldd",ptr)
+ #define LDD_USER(ptr) __get_user_asm("ldd",ptr)
+@@ -137,6 +140,7 @@
+ #define __put_user(x,ptr)                                       \
+ ({								\
+ 	register long __pu_err __asm__ ("r8") = 0;		\
++	register long long * __tmp = 0;		\
+ 								\
+ 	if (segment_eq(get_fs(),KERNEL_DS)) {                   \
+ 	    switch (sizeof(*(ptr))) {                           \
+@@ -200,6 +204,22 @@
+ 		: "=r"(__pu_err)                            \
+ 		: "r"(ptr), "r"(x), "0"(__pu_err))
+ 
++#define __put_kernel_asm_64(x, ptr)                    \
++        __asm__ __volatile__ (                              \
++                "\n\tldw\t0(%2),%3\n"           \
++                "1:\tstw\t%3,0(%1)\n"                     \
++                "\tldw\t4(%2),%3\n"             \
++                "2:\tstw\t%3,4(%1)\n"                       \
++                "3:\n"                                      \
++                "\t.section __ex_table,\"a\"\n"             \
++                 "\t.word\t1b\n"                            \
++                 "\t.word\t(3b-1b)+1\n"                     \
++                 "\t.word\t2b\n"                            \
++                 "\t.word\t(3b-2b)+1\n"                     \
++                 "\t.previous"                              \
++                : "=r"(__pu_err)                            \
++                : "r"(ptr), "r"(&x), "r"(__tmp),  "0"(__pu_err))
++
+ #define __put_user_asm(stx,x,ptr)                           \
+ 	__asm__ __volatile__ (                              \
+ 		"\n1:\t" stx "\t%2,0(%%sr3,%1)\n"           \
+@@ -210,6 +230,23 @@
+ 		 "\t.previous"                              \
+ 		: "=r"(__pu_err)                            \
+ 		: "r"(ptr), "r"(x), "0"(__pu_err))
++
++#define __put_user_asm_64(x, ptr)                      \
++        __asm__ __volatile__ (                              \
++                "\n\tldw\t0(%%sr3,%2),%3\n"           \
++                "1:\tstw\t%3,0(%%sr3,%1)\n"               \
++                "\tldw\t4(%%sr3,%2),%3\n"             \
++                "2:\tstw\t%3,4(%%sr3,%1)\n"                 \
++                "3:\n"                                      \
++                "\t.section __ex_table,\"a\"\n"             \
++                 "\t.word\t1b\n"                            \
++                 "\t.word\t(3b-1b)+1\n"                     \
++                 "\t.word\t2b\n"                            \
++                 "\t.word\t(3b-2b)+1\n"                     \
++                 "\t.previous"                              \
++                : "=r"(__pu_err)                            \
++                : "r"(ptr), "r"(&x), "r"(__tmp),  "0"(__pu_err))
++
+ #endif
+
+Could a mm gurus help me to check if I do not break memory management?
+
+Thanks in advance for additional help,
+    Joel
