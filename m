@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D46E04857
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Jun 2002 10:05:07 -0600 (MDT)
-To: =?ISO-8859-1?Q?Bruno_L=E9on?= <nonolemono@yahoo.fr>
-Subject: Re: [parisc-linux] Only serial console for B1000 (64bits) ?
-Message-ID: <1024502664.3d10ab88beda0@webmail.tiscalinet.be>
-Date: Wed, 19 Jun 2002 18:04:24 +0200 (CEST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3647D485D
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Jun 2002 10:33:02 -0600 (MDT)
+To: Matthew Wilcox <willy@debian.org>
+Subject: Re: [parisc-linux] hppa64-linux-gcc not in gcc dpkg?
+Message-ID: <1024502841.3d10ac39dc7dd@webmail.tiscalinet.be>
+Date: Wed, 19 Jun 2002 18:07:21 +0200 (CEST)
 From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@lists.parisc-linux.org
-References: <200206190826.g5J8QYS31181@iut-lannion.fr> <200206190826.g5J8QYS31181@iut-lannion.fr> <200206191410.g5JEAMS03029@iut-lannion.fr>
-In-Reply-To: <200206191410.g5JEAMS03029@iut-lannion.fr>
+Cc: joel.soete@freebel.net, Matthew Wilcox <willy@debian.org>,
+	parisc-linux@lists.parisc-linux.org
+References: <1024493288.3d1086e89dfd2@webmail.tiscalinet.be> <20020619143627.K9435@parcelfarce.linux.theplanet.co.uk> <1024495623.3d109007598b2@webmail.tiscalinet.be> <20020619151755.L9435@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20020619151755.L9435@parcelfarce.linux.theplanet.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Sender: parisc-linux-admin@lists.parisc-linux.org
@@ -23,59 +24,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Bruno Léon <nonolemono@yahoo.fr>:
+Quoting Matthew Wilcox <willy@debian.org>:
 
+> On Wed, Jun 19, 2002 at 04:07:03PM +0200, joel.soete@freebel.net wrote:
+> > May I am wrong (I thought that the PDC of the b2000 was not a 64bits
+> one; I will
+> > check )
 > 
-> >>Which CD?
-> The 0.9.3 iso cd downloaded from the Esiee team Website.
-Well ...
+> ah, you relied on memory rather than reading the help text then?
 > 
-> >Try first 32bits kernel (till now I am running successfuly a 32bits
-> pa37 on a
-> b2000) with a serial console.
-> I tried both kernels in fact, but none of them seem to work.
+> 32-bit PDC
+> CONFIG_PDC_NARROW
+>   Saying Y here will allow developers with a C180, C200, C240, C360,
+>   J200, J210, and/or a J2240 to test 64-bit kernels by providing a
+>   wrapper for the 32-bit PDC calls.  Since the machines which require
+>   this option do not support over 4G of RAM, this option is targeted
+>   for developers of these machines wishing to test changes on both
+>   32-bit and 64-bit configurations.
 > 
-> >Then may be you would like to get a more recent kernel in 64bits (see
-> >ftp://ftp.parisc-linux.org/kernels/).
-> I will change the kernel hopefuly, but I need to install a first one...
-> ;-)
+>   If unsure, say N.
 > 
-> Here is the error I get on the LCD of the B1000 :
-> FLT CBF4: SYS BD
-> bad OS HPMC cksm 
-> FLT CBFC: SYS BD 
-> OS HPMC br err 
-> FLT 500B: SYS BD 
-> bus timeout 
+> b2000 and similar machines have firmware which supports both 32 and 64
+> bit PDC calls.
 > 
+Nice (for sure next time I will read help)
+Thanks a lot,
+    Joel
 
-I could not help here (I suspect the problem of ide CD-Rom solved now)
-
-> Another guy named "Yasholomew Yashinski" report the same error in
-> february,
-> but 
-> I didn't understand how he solved his problem.
-
-Do not remember but ...
-
-> 
-> I will look into netbooting perhaps.
-> 
-
-Yes, that is what I do to install my b2000 (as a copy of my b180).
-
-But now an easiest way for you would certainly be to download a more recent
-cd-image into: http://pateam.esiee.fr/cd-images/testing/
-(see also explanation on http://pateam.esiee.fr/download.html#deb page)
-
-Many progress where made since my test (about a month ago).
-At least it would help you to format your disk and (if as I you do not access
-internet from your b1000) a shell which would allow you to copy your b180 on
-your  b1000.
-
-I am confident that this solution will help you successfully,
-
-Joel
 
 
 -------------------------------------------------
