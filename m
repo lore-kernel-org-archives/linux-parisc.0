@@ -1,33 +1,43 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id GAA24212
-	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Dec 2000 06:35:26 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 22 Dec 2000 13:38:22 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 149SOo-0004gn-00; Fri, 22 Dec 2000 13:38:18 +0000
-Date: Fri, 22 Dec 2000 13:38:18 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com,
-        tytso@mit.edu
-Subject: Re: [parisc-linux] Console
-Message-ID: <20001222133818.A17975@parcelfarce.linux.theplanet.co.uk>
-References: <20001221211830.C21472@parcelfarce.linux.theplanet.co.uk> <20001221212855.E21472@parcelfarce.linux.theplanet.co.uk> <20001222111912.Z2554@linuxcare.com>
-Mime-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id IAA25239
+	for <parisc-linux@puffin.external.hp.com>; Fri, 22 Dec 2000 08:54:58 -0700
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 22 Dec 2000 15:57:59 -0000
+Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
+  by smtp.linuxcare.com with SMTP; 22 Dec 2000 15:58:00 -0000
+Sender: adevries@mailserv2.iuinc.com
+Message-ID: <3A437AC4.EA5BC34B@linuxcare.com>
+Date: Fri, 22 Dec 2000 11:01:08 -0500
+From: Alex deVries <adevries@linuxcare.com>
+MIME-Version: 1.0
+To: Matthew Wilcox <matthew@wil.cx>
+CC: Helge Deller <deller@gmx.de>, parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] configuration problems with cvs from 20001216 15:40
+ CET
+References: <20001217115105.A17378@excalibur.cologne.de> <00121721201800.25726@P100> <20001218230325.A934@excalibur.cologne.de> <00122000445401.00303@P100> <20001221233934.A766@excalibur.cologne.de> <20001222133020.A17200@parcelfarce.linux.theplanet.co.uk>
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20001222111912.Z2554@linuxcare.com>; from rhirst@linuxcare.com on Fri, Dec 22, 2000 at 11:19:12AM +0000
-Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Fri, Dec 22, 2000 at 11:19:12AM +0000, Richard Hirst wrote:
-> Yes, you do need `console=ttyS0' now.  Otherwise you get "cannot open
-> initial console" and then silence until the login prompt.
+Matthew Wilcox wrote:
 > 
-> dmesg works nicely though :)
+> On Thu, Dec 21, 2000 at 11:39:34PM +0100, Karsten Merker wrote:
+> > It seems the "console=ttyS0" is the reason for the crash. To be sure, I
+> > have taken a fresh kernel tree (checkout from today) and compiled the
+> > kernel with the default configuration. It worked...
+> 
+> specifying `console=ttyS0' before the checkin i recently did would
+> definitely have caused exactly that crash.  it was trying to do an outb
+> because the serial driver wasn't properly configured.  since no 715 has
+> PCI, outb crashed & burned.
 
-Yay :-)  I just committed a change to PALO which ought to make this work.
-I must confess though, I'm not clear where it gets the CONFIG_ variables
-from.  are they in the environment?
+Has that been fixed now?  Should serial on a 715/old work?  
+
+(Also, you can have a 715 with a PCI bus if you have a GSC add on card)
+
+- Alex
 
 -- 
-Revolutions do not require corporate support.
+Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
