@@ -1,31 +1,35 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA13432
-	for <parisc-linux@puffin.external.hp.com>; Fri, 7 Jul 2000 20:12:18 -0600
-Received: from ottawa.linuxcare.com (HELO localhost) (216.208.98.2)
-  by mailserv2.iuinc.com with SMTP; 8 Jul 2000 02:13:43 -0000
-Received: from dhd by localhost with local (Exim 3.12 #1 (Debian))
-	id 13Ak6q-0002k2-00
-	for <parisc-linux@thepuffingroup.com>; Fri, 07 Jul 2000 22:12:48 -0400
-To: parisc-linux@thepuffingroup.com
-From: David Huggins-Daines <dhd@linuxcare.com>
-Date: 07 Jul 2000 22:12:48 -0400
-Message-ID: <87d7kpe5en.fsf@linuxcare.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA28358
+	for <parisc-linux@puffin.external.hp.com>; Sun, 9 Jul 2000 12:41:38 -0600
+Date: Sun, 9 Jul 2000 14:42:59 -0400 (EDT)
+From: "Brian S. Julin" <bri@mojo.calyx.net>
+To: Matt Taggart <taggart@carmen.fc.hp.com>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] e2fsprogs available
+In-Reply-To: <20000630194149.EE49F37E33@carmen.fc.hp.com>
+Message-ID: <Pine.BSO.4.21.0007091433510.14827-100000@mojo.calyx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] GCC 2.96 merge complete (I hope)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Okay, the merge of p.e.h.c's gcc module to current 2.96 is complete,
-modulo things that may have slipped through the cracks due to CVS
-being stupid.
 
-As mentioned in the previous message, the old stuff is on the
-'gcc-2_9-hppa-20000707' branch tag if you care to look at it.
+On Fri, 30 Jun 2000, Matt Taggart wrote:
+> Using the above I was able to natively partition, mke2fs, mount, create files, 
+> execute files, umount, and fsck using the scsi disk in my 712.
 
-We now also have a 'GNU_DIST' vendor branch which is intended to be
-used to track the mainline GCC tree.  So, nice diffs can now be
-obtained by running 'cvs rdiff -u -r GNU_DIST -r HEAD gcc'.
+Verified to work on a 715/64 with the LASI/SCSI driver.  Except for the
+mounting part, as I don't have a mount binary yet...
 
--- 
-dhd@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Support for the revolution.
+Also, in case anyone was wondering, the cross-compiler problems
+from ALPHA seem to have been fixed.  I've booted an ALPHA-compiled kernel.
+
+I tried compiling a native binutils, but all the binaries cause
+a page fault when run, so I must be missing a configure flag or something.
+(Why is it that configure --help just never seems to do the trick :(  )
+Would it be a problem that I installed glibc in the nfsroot tree and
+then ln'd my i386's /usr/local/hppa1.1-linux/lib to there?
+
+GCC won't build a native, complains about a missing nss symbol.
+
+--
+Brian S. Julin
