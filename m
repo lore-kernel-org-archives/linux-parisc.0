@@ -1,40 +1,32 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from blimpo.internal.net (ppp01.ts1-1.NewportNews.visi.net [209.8.196.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C5BF4482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Oct 2001 19:53:06 -0600 (MDT)
-Date: Mon, 22 Oct 2001 21:31:39 -0400
-From: Ben Collins <bcollins@debian.org>
-To: parisc-linux@lists.parisc-linux.org, randolph@tausq.org
-Message-ID: <20011022213139.H10952@visi.net>
-References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011022233534.X1037@bubble.sa.bigpond.net.au>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 76BB7482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 22 Oct 2001 20:00:10 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id vdofiaaa for parisc-linux@lists.parisc-linux.org; Mon, 22 Oct 2001 18:55:21 -0700
+Date: Mon, 22 Oct 2001 18:59:54 -0700
+From: Randolph Chung <tausq@debian.org>
+To: Ben Collins <bcollins@debian.org>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <20011022185954.B14102@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <20011020170907.G1037@bubble.sa.bigpond.net.au> <20011022233534.X1037@bubble.sa.bigpond.net.au> <20011022213139.H10952@visi.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20011022233534.X1037@bubble.sa.bigpond.net.au>
-Sender: Ben Collins <bmc@visi.net>
+In-Reply-To: <20011022213139.H10952@visi.net>
+Sender: Randolph Chung <randolph@tausq.org>
 Subject: [parisc-linux] Re: Fix for hppa-linux ld.so with newer binutils
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Oct 22, 2001 at 11:35:34PM +0930, Alan Modra wrote:
-> On Sat, Oct 20, 2001 at 05:09:07PM +0930, Alan Modra wrote:
-> > 	* sysdeps/hppa/dl-machine.h (elf_machine_dynamic):  Make it a
-> > 	const function.  Do not use &_DYNAMIC as .got entries for global
-> > 	syms are no longer initialised.  Instead they rely on the reloc,
-> > 	which hasn't yet been applied.
-> > 	(elf_machine_load_address): Make it const.  Call
-> > 	elf_machine_dynamic as that function is called fropm rtld anyway.
+> Excellent. This fixes the ld.so problem. I can only assume that the 235
+> test suite failures are due to the one missing patch from the current
+> Debian binutils package.
 > 
-> The following, which includes the above patch, should allow glibc to
-> once again work on hppa-linux with current binutils.  A number of other
-> horrible things fixed:
+> Randolph, any estimate on when that fixed package will be available?
 
-Excellent. This fixes the ld.so problem. I can only assume that the 235
-test suite failures are due to the one missing patch from the current
-Debian binutils package.
+Alan is debugging this as I write this. Will send the patch to Chris as
+soon as we get something that works.
 
-Randolph, any estimate on when that fixed package will be available?
-
+randolph
 -- 
- .----------=======-=-======-=========-----------=====------------=-=-----.
-/                   Ben Collins    --    Debian GNU/Linux                  \
-`  bcollins@debian.org  --  bcollins@openldap.org  --  bcollins@linux.com  '
- `---=========------=======-------------=-=-----=-===-======-------=--=---'
+Debian Developer <tausq@debian.org>
+http://www.TauSq.org/
