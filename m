@@ -1,12 +1,18 @@
-From: j.raspe@t-online.de (Johannes Raspe)
-Subject: [parisc-linux] No "#/'" and "<>|" keys with german HIL-keyboard
-Date: Sun, 31 Oct 2004 14:21:17 +0100
-Message-ID: <200410311421.17271.j.raspe@t-online.de>
+From: Helge Deller <deller@gmx.de>
+Subject: Penguin color problems on HCRX-24 (was: [parisc-linux] Re: STI crash
+	on B132L with HCRX-24)
+Date: Sun, 31 Oct 2004 14:56:50 +0100
+Message-ID: <200410311456.50753.deller@gmx.de>
+References: <200410292228.14940.j.raspe@t-online.de>
+	<200410311312.21653.deller@gmx.de>
+	<200410311406.46194.j.raspe@t-online.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
+  charset="utf-8"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Johannes Raspe <j.raspe@t-online.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200410311406.46194.j.raspe@t-online.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,25 +23,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
+Hi Johannes,
 
-after successfully moving to kernel 2.6.x-series with great help from Helge=
-=20
-Deller I'd like to report a problem wich is also present in 2.4.x-kernels:
-with my german HIL-keyboerd on a 735/125 the keys for "#/'" (between left=20
-shift-key and the "y"-key) and "<>|" (between Return and the german "=E4"-k=
-ey)=20
-give absolutely no response to the OS.
-I tried "showkey" on a text-console and nothing happens when pressing these=
-=20
-two keys. Every other key gives an output.
+On Sunday 31 October 2004 14:06, Johannes Raspe wrote:
+> For solving the (cosmetical) penguin-color-problem I took a shot with my 
+> digicam and attached it (sorry for poor quality).
 
-Regards Johannes
+I was hoping my last patch would have fixed this too. Oh well :-)
 
-=2D-=20
-Johannes Raspe - j.raspe@t-online.de
-GnuPG-Key ID: D342E105
-=46ingerprint: D681 F800 FB2D 913E D14C 1F17 C3DB B1F1 D342 E105
+Right now I don't have any real idea why the penguin colors are wrong.
+But I have two assumptions:
+a) cfb_imageblit() works wrong in the current tree with 24/32bpp output and 8bpp input on big endian
+b) fb_set_logo_truepalette() creates a wrong palette for 24bpp output [but this function seems correct IMHO].
+
+Both of those I'm currently lost without any testing possibility, but I'll continue to look into it.
+
+BTW, does everything else seemscorrect wrt. colors on the text console, e.g. does midnight command shows blue background ?
+
+Regards,
+Helge
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
