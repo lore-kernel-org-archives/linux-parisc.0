@@ -1,23 +1,20 @@
-Return-Path: <administrator@ncc-consulting.de>
-Received: from s15113731.rootmaster.info (ncc-experience.de [217.160.143.122])
-	by dsl2.external.hp.com (Postfix) with ESMTP id ACC094856
+Return-Path: <>
+Received: from china-painting.net (unknown [218.246.32.243])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BE8984856
 	for <parisc-linux@lists.parisc-linux.org>;
-	Thu, 25 Mar 2004 22:41:41 -0700 (MST)
-Received: from mailserver.muc.ncc-consulting.de (pD9E884F2.dip0.t-ipconnect.de
-	[217.232.132.242])
-	by s15113731.rootmaster.info (8.11.6/8.11.6) with ESMTP id i2Q5feo06991
+	Fri, 26 Mar 2004 03:16:15 -0700 (MST)
+Received: from china-painting.net [218.246.32.243] by china-painting.net
+	[218.246.32.243] (with RAW) (MDaemon.PRO.v6.8.4.R)
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 26 Mar 2004 06:41:40 +0100
-From: <Administrator@s15113731.rootmaster.info>
-Sender: <Administrator@s15113731.rootmaster.info>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Fri, 26 Mar 2004 06:43:02 +0100
-Message-ID: <0a4601c412f5$345aa620$fc01a8c0@muc.nccconsulting.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Subject: [parisc-linux] [MailServer Notification]To Sender virus found and
-	action taken.
+	Fri, 26 Mar 2004 18:19:57 +0800
+Date: Fri, 26 Mar 2004 18:19:57 +0800
+From: Postmaster@china-painting.net
+To: parisc-linux@lists.parisc-linux.org
+Message-ID: <MDAEMON2476200403261819.AA1957250@china-painting.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312
+Subject: [parisc-linux] MDaemon Notification -- Attachment Removed
+Reply-To: Postmaster@china-painting.net
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,17 +24,13 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-ScanMail for Microsoft Exchange has detected virus-infected attachment(s).
+下列邮件包含被限制的附件，已被移除:
 
-Sender = parisc-linux@lists.parisc-linux.org
-Recipient(s) = Evangelos Kopanakis
-Subject = Re: Encrypted Mail
-Scanning time = 3/26/2004 6:43:00 AM
-Engine/Pattern = 6.860-1001/1.837.00
+发信人     : parisc-linux@lists.parisc-linux.org
+收信人     : info@china-corrosion.net
+主题       : Mail Delivery (failure info@china-corrosion.net)
+邮件 ID    : 
 
-Action on virus found:
-The attachment readme.zip contains WORM_NETSKY.P virus. ScanMail has Passed it. 
-
-Warning to sender! 
-A Virus was found in an Mail you send to us. 
-Please check your System!
+已移除的附件:
+-----------------------------------------
+message.scr
