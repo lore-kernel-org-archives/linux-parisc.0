@@ -1,21 +1,18 @@
 Return-Path: <grundler@lackof.org>
 Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 14F3E4854
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 12 Jan 2004 09:38:52 -0700 (MST)
-Date: Mon, 12 Jan 2004 09:38:50 -0700
+	by dsl2.external.hp.com (Postfix) with ESMTP id AE88E4854
+	for <parisc-linux@parisc-linux.org>;
+	Mon, 12 Jan 2004 09:45:05 -0700 (MST)
+Date: Mon, 12 Jan 2004 09:45:04 -0700
 From: Grant Grundler <grundler@parisc-linux.org>
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-Message-ID: <20040112163850.GA22886@colo.lackof.org>
-References: <20040105194809.GA9269@systemhalted>
-	<20040105194839.GB9269@systemhalted>
-	<20040111040906.GA32382@colo.lackof.org>
-	<20040111204355.GL28742@systemhalted>
+To: brianbarber@linux.ca
+Subject: Re: [parisc-linux] Installing Debian on an 712/80
+Message-ID: <20040112164504.GB22886@colo.lackof.org>
+References: <1073916752.bd0297c0brianbarber@myrealbox.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20040111204355.GL28742@systemhalted>
-Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
+In-Reply-To: <1073916752.bd0297c0brianbarber@myrealbox.com>
+Cc: parisc-linux@parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,14 +22,20 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Sun, Jan 11, 2004 at 03:43:55PM -0500, Carlos O'Donell wrote:
-> Excellent. You haven't tried profiling any programs have you? :)
+On Mon, Jan 12, 2004 at 09:12:32AM -0500, Brian Barber wrote:
+> Thanks for the guidance on the CDROM drive.  That tip might want to
+>  find its way into the install documentation for other PARISC rookies.
+...
+> PS: Now that I have a working machine, how can I help the development effort?
 
-Profiing? what's that? :^P
+You pointed out a good one above.
 
-> Compile with CFLAGS=-pg, run-em, then run gprof on the gmon.out output?
+Send a diff (or new text) for an existing install document (URL please)
+and that would be a good first step to getting the public version updated.
 
-ok...I'll try tonight.
+In general, the parisc-linux website had several How-To's and
+a FAQ that could use slight reworking (eg look for stale URL's
+and just proper english grammar).
 
 thanks,
 grant
