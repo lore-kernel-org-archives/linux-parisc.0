@@ -1,18 +1,21 @@
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 924F24830
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from hancock.sc.steeleye.com (stat1.steeleye.com [65.114.3.130])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BA6F84830
 	for <parisc-linux@lists.parisc-linux.org>;
-	Fri, 23 Apr 2004 11:50:58 -0600 (MDT)
-Message-Id: <200404231750.i3NHouD9019650@hiauly1.hia.nrc.ca>
+	Fri, 23 Apr 2004 13:01:20 -0600 (MDT)
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i3NJ1Aa11393; Fri, 23 Apr 2004 15:01:10 -0400
 Subject: Re: [parisc-linux] Panic on boot in 64 bit 2.6.6-rc1-pa0
-To: James.Bottomley@SteelEye.com (James Bottomley)
-Date: Fri, 23 Apr 2004 13:50:55 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <1082740179.2017.45.camel@mulgrave> from "James Bottomley" at Apr
-	23, 2004 01:09:39 pm
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <200404231750.i3NHouD9019650@hiauly1.hia.nrc.ca>
+References: <200404231750.i3NHouD9019650@hiauly1.hia.nrc.ca>
+Content-Type: text/plain
+Date: 23 Apr 2004 15:01:09 -0400
+Message-Id: <1082746870.1913.48.camel@mulgrave>
+Mime-Version: 1.0
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,19 +25,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-> > Can you use "b,l" for PA 2.0 code?
+On Fri, 2004-04-23 at 13:50, John David Anglin wrote:
+> Yes, that's what gcc generates for PA 2.0.
 > 
-> Well, the 2.0 manual implies b,l can be used whether the execution is in
-> wide or narrow mode, so yes, it should apply to all 2.0 code.
+> Regarding the assembler, I'm wondering if we want the keep "bl" for
+> generating 17-bit branches.  It's rather confusing and inconsistent
+> with the mnemonic mapping given in the 2.0 manual.  On the otherhand,
+> gas has been this way for 4-5 years.
 
-Yes, that's what gcc generates for PA 2.0.
+Yes, I think our current pressing problem is to discover why hppa64-ld
+is generating out of range PCREL17F branches instead of stubbing them. 
+That's definitely what's causing the boot failure in 2.6.6-rc1-pa0.
 
-Regarding the assembler, I'm wondering if we want the keep "bl" for
-generating 17-bit branches.  It's rather confusing and inconsistent
-with the mnemonic mapping given in the 2.0 manual.  On the otherhand,
-gas has been this way for 4-5 years.
+It's so strange.  Since the init section is quite a way away, it should
+already be stubbing jumps to the init section.  I can't work out why the
+addition of yet another section (this time covering scheduler functions)
+suddenly causes it to fail.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+James
