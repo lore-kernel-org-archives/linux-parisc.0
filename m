@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep11-int.chello.at (viefep11-int.chello.at [213.46.255.27])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4D2FF482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Dec 2001 10:20:06 -0700 (MST)
-Message-ID: <3C221DBD.ECC87E3E@gmx.at>
-Date: Thu, 20 Dec 2001 18:19:57 +0100
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: "MEYER,ALAN C. (HP-FtCollins,ex1)" <alan_meyer@hp.com>
-Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Status Documentation for Server of E-Series and similar ...
+Received: from rhirst.linuxcare.com (pc2-hems4-0-cust100.bre.cable.ntl.com [213.107.176.100])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 7B9CE482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 20 Dec 2001 11:09:57 -0700 (MST)
+Received: by rhirst.linuxcare.com (Postfix, from userid 501)
+	id 16F4FB00C; Thu, 20 Dec 2001 18:08:40 +0000 (GMT)
+Date: Thu, 20 Dec 2001 18:08:40 +0000
+From: Richard Hirst <rhirst@linuxcare.com>
+To: =?iso-8859-1?Q?R=FCdiger_Scholz?= <rscholz@hrzpub.tu-darmstadt.de>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] StiFB-Problems
+Message-ID: <20011220180840.M1897@linuxcare.com>
+References: <3C1D0565.3000805@hrzpub.tu-darmstadt.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <3C1D0565.3000805@hrzpub.tu-darmstadt.de>; from rscholz@hrzpub.tu-darmstadt.de on Sun, Dec 16, 2001 at 09:34:45PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,24 +25,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Mr, Meyer,
+On Sun, Dec 16, 2001 at 09:34:45PM +0100, Rüdiger Scholz wrote:
+> Another problem : Using mpg321 from the 0.9.3 release gives me  the 
+> failure "Illegal instruction". Glibc-Version is 2.2.4-7. The stack dump 
+> is in the attached boot.log-file.
 
-what is the status of the document releasing of the E-Series and
-other machines (for example E55, 9000/856).
+You need a rebuilt libaudiofile0 deb to fix that, should be in the
+archive in a day or two, thanks to tausq.
 
-I added a device driver to the kernel to use the ROM PDC console
-as Linux console device, so there are many kernel developers, who
-can start device driver development on those machines (for example
-my E55 server can boot Linux diskless ...).
-
-So I think there is massive interests on driver development on those
-machines, and I hope you can help here.
-
-With friendly regards
-Christoph P.
-
-
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Richard
