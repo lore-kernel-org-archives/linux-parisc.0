@@ -1,46 +1,46 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA12368
-	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Dec 2000 11:03:50 -0700
-Received: from router-100m.swansea.linux.org.uk (HELO the-village.bc.nu) (194.168.151.17)
-  by mailserv2.iuinc.com with SMTP; 27 Dec 2000 18:06:55 -0000
-Subject: Re: [parisc-linux] performance
-To: adevries@linuxcare.com (Alex deVries)
-Date: Wed, 27 Dec 2000 18:08:29 +0000 (GMT)
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <3A4A214F.3DD53BAD@linuxcare.com> from "Alex deVries" at Dec 27, 2000 12:05:19 PM
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA13059
+	for <parisc-linux@puffin.external.hp.com>; Wed, 27 Dec 2000 11:47:14 -0700
+Received: from unknown (HELO smtp.linuxcare.com) (216.88.157.131)
+  by mailserv2.iuinc.com with SMTP; 27 Dec 2000 18:50:18 -0000
+Received: from ottawa.linuxcare.com (HELO linuxcare.com) (216.208.98.2)
+  by smtp.linuxcare.com with SMTP; 27 Dec 2000 18:50:19 -0000
+Sender: adevries@mailserv2.iuinc.com
+Message-ID: <3A4A3ABA.4EC6D5A7@linuxcare.com>
+Date: Wed, 27 Dec 2000 13:53:46 -0500
+From: Alex deVries <adevries@linuxcare.com>
 MIME-Version: 1.0
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+CC: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] performance
+References: <E14BL04-0002Zj-00@the-village.bc.nu>
 Content-Type: text/plain; charset=us-ascii
-Message-Id: <E14BL04-0002Zj-00@the-village.bc.nu>
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> http://www.spec.org/osg/web99/results/res2000q4/
+Alan Cox wrote:
+> > http://www.spec.org/osg/web99/results/res2000q4/
+> >
+> > This shows some PA-RISC machines running HPUX performing reasonably
+> > well.
 > 
-> This shows some PA-RISC machines running HPUX performing reasonably
-> well.
+> Specweb is basically a con. Its not a materially valuable benchmark. It benches
+> how fast your irq handler path is, how fast your memory cache is, how good
+> your DMA transfers are. It has almost nothing to do with how good a web
+> server the box is.
 
-Specweb is basically a con. Its not a materially valuable benchmark. It benches
-how fast your irq handler path is, how fast your memory cache is, how good
-your DMA transfers are. It has almost nothing to do with how good a web
-server the box is.
+I agree that specweb might not actually be functionally practical.
 
-> What would it take to get parisc-linux to perform similiarly to HPUX for
-> these kinds of numbers?  Showing that these kinds of numbers are
-> possible for parisc-linux would certainly help in our quest to have real
-> users.
+This might not be the case with specweb, but sometimes specifications do
+have the ability to influence customers regardless of their validity.
 
-Basically it comes down to using DMA, caching everything and using the fact
-it is a completely hoax benchmark to write custom tuned code for the job. 
-Even the people who 'use xyz webserver' and it sounds standard turn out to 
-be embedding it or half of it in the kernel.
+That's interesting for one reason: if the marketing helps make potential
+customers think that parisc-linux is fast, they'll buy parisc boxes, and
+HP is more likely to allocate developer time on this project.
 
-So it comes down to - tuning the network card driver, tuning the IRQ path, 
-making sure the cache handling is optimal. The rest consists of loading the
-machine with 8Gbytes of RAM, using obscenely smart ethernet cards and having
-good memory bandwidth.
+- Alex
 
-The 64bit pa-risc boxes have the hardware for it, in fact they have better 
-hardware for it than x86. All you have to do is write better tlb, irq and pci
-handling code than the HP/UX engineering team 8).
-
-Alan
+-- 
+Alex deVries, Principal Solutions Architect, The Puffins at Linuxcare
+613.562.2759 tel
+alex@linuxcare.com, http://www.linuxcare.com/
+Linuxcare, Support for the revolution.
