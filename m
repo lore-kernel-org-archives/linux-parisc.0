@@ -1,74 +1,54 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA00727
-	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 12:49:15 -0700
-Date: Sat, 6 Nov 1999 20:51:25 +0100
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id MAA00786
+	for <parisc-linux@puffin.external.hp.com>; Sat, 6 Nov 1999 12:49:17 -0700
+Date: Sat, 6 Nov 1999 20:27:38 +0100
 From: Philipp Rumpf <prumpf@mathe.stud.uni-erlangen.de>
-To: Matthew Wilcox <Matthew.Wilcox@genedata.com>
+To: Paul Bame <bame@debian.fc.hp.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] pgtable.h:acc_rights()
-Message-Id: <19991106205125.L11609@mathe.stud.uni-erlangen.de>
-References: <19991106172023.L25252@mencheca.ch.genedata.com>
+Subject: Re: [parisc-linux] exec() problem
+Message-Id: <19991106202738.K11609@mathe.stud.uni-erlangen.de>
+References: <199911060255.TAA24869@debian.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <19991106172023.L25252@mencheca.ch.genedata.com>
+In-Reply-To: <199911060255.TAA24869@debian.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Why is acc_rights written like this?
+> This is rumored to be a known problem.  Since I've seen it a lot recently
 
-See my commit message.  Basically that works around the "pages mapped read-only
-when they should be read-write" problem Thomas reported.
+I am not sure it's the one I do know (and which will be fixed as soon as I got
+my machines set-up again and got time to do debugging).
 
-> of course, it should be rewritten to look much cleaner.  In fact,
-> by renumbering the bits, we could get that for free (as long as we put
-> a big fat warning above the #defines of _PAGE_* to warn that the
-> constants are in that order for hardware efficiency).
+> and am going on vacation, here's what I know in case it helps.  The problem
+> can manifest on one machine and not another with the same bits.  It can
+> come and go as the size of code in arch/parisc/kernel changes.  The
+> problem shows in the boot like this:
+> 
+>     Attempting to execute '/sbin/init'
+> 
+>     PSW  : 0004000b  GR 1 : c0128800  GR 2 : c0029390  GR 3 : 00000000
+>     GR 4 : 00000000  GR 5 : ffffffff  GR 6 : 00000000  GR 7 : c0092708
+>     GR 8 : c0fdba20  GR 9 : c00924c8  GR10 : 00000080  GR11 : 0000000a
+>     GR12 : 00000000  GR13 : 00000000  GR14 : 00000001  GR15 : c00927c8
+>     GR16 : c0100000  GR17 : c00292e0  GR18 : c0092720  GR19 : 00000000
+>     GR20 : c0128a00  GR21 : a0000024  GR22 : 00000000  GR23 : c012bc7c
+>     GR24 : c00927c8  GR25 : 00000000  GR26 : c0092708  GR27 : c008e000
+>     GR28 : 00000000  GR29 : 00000000  GR30 : c0092a00  GR31 : c0039914
+>     SR0  : 00000000  SR1  : 00000000  SR2  : 00000000  SR3  : 00000000
+>     SR4  : 00000000  SR5  : 00000000  SR6  : 00000000  SR7  : 00000000
+>     IAOQ : c0028e5c c0028e60
+> 
+>     bad address a000002c (code 15)
+>     Kernel panic: bad address
+> 
+> adb on the IAOQ address says:
+> 
+>     do_generic_file_read+16C:       LDW             8(r21),r19
+> 
+> which is consistent with the value in r21 (a0000024).  This is
+> inside a call which I believe is called eventually from do_execve()
+> called within init/main.c:init().  I didn't track down do_execve().
 
-We are still looking for the optimal layout of the 12 _PAGE_* bits we have.
-The word we need to translate to looks like this:
-
-0  1  2  3  4  5  ... 11 12 13 ... 31
-X  X  T  D  B  \__ ____/  U \_______/
-             access rights  access id
-
-X - don't care (it looks like)
-T - page reference trap
-D - dirty
-B - break
-U - uncacheable
-
-access rights is
-
- 5  6  7  8  9 10 11
-\______/ \___/ \___/
-type      PL1   PL2
-
-000: read-only
-001: read-write
-010: read-execute
-011: read-write-execute
-100: promote to PL 0.
-101: promote to PL 1.
-110: promote to PL 2.
-111: remain at PL 3.
-
-we don't need the B and T bits.  We don't need access types 101, 110, 111.  We only
-need one bit for bits 8 .. 11 (they are either all 1 or all 0, so we can do an extrs).
-
-We do need a "referenced" bit (not sure whether the dirty bit can do that for us more
-efficiently) and a "valid" bit in addition to what the hardware gets to see.
-
-So, I am just thinking of what the reason was we cannot just store bits 1 .. 12 in the
-12 LSBs of the PTE, use bit 1 as a valid bit and be happy.  I am pretty sure there was
-one.
-
-> Anyway, I'm after a spare bit in the pte for _PAGE_GATEWAY.  As I
-> understand it (from the mk_pte() macro), there are 12 bits available,
-> only 8 of which are used, so I can nobble one of them to mark a page
-> as being a gateway, right?
-
-I would rather see a completely rewritten TLB insertion handler and either saving a
-7-bit access rights field or a "I am special" bit / bit pattern.  The idea behind that
-is it is used to re-insert BTLB entries / large mappings so we don't fault for every
-single page and gateway pages would fit nicely into that.
+This looks a lot like a completely bogus pointer which might be both memory
+corruption and the schedule() returns early bug I know of.
 
 	Philipp Rumpf
