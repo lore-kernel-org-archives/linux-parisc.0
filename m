@@ -1,51 +1,36 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from rhirst.linuxcare.com (pc117-bre9.cable.ntl.com [213.105.88.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 61B134A19
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 03:51:48 -0700 (MST)
-Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id DD7D6B007; Fri, 16 Mar 2001 10:50:56 +0000 (GMT)
-Date: Fri, 16 Mar 2001 10:50:56 +0000
-From: Richard Hirst <rhirst@linuxcare.com>
-To: Alan Modra <alan@linuxcare.com.au>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 629314A19
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 16 Mar 2001 04:24:10 -0700 (MST)
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA28602;
+	Fri, 16 Mar 2001 22:24:05 +1100
+Date: Fri, 16 Mar 2001 22:24:05 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Richard Hirst <rhirst@linuxcare.com>
 Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20010316105056.U31505@linuxcare.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] tracing through sig handlers
+In-Reply-To: <20010316105056.U31505@linuxcare.com>
+Message-ID: <Pine.LNX.4.21.0103162219500.4658-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Re: tracing through sig handlers
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Alan,
+On Fri, 16 Mar 2001, Richard Hirst wrote:
 
-If I do this:
+> I havn't worked out why this is only apparently necessary when a process
+> is being traced.
 
+I'm not even going to attempt to figure out why. :-)  Perhaps one of te
+kernel gurus can shed some light.
 
-Index: arch/parisc/kernel/signal.c
-===================================================================
-RCS file: /home/cvs/parisc/linux/arch/parisc/kernel/signal.c,v
-retrieving revision 1.37
-diff -u -r1.37 signal.c
---- signal.c	2001/02/09 14:39:08	1.37
-+++ signal.c	2001/03/16 10:29:48
-@@ -260,6 +260,8 @@
- 		/* regs->iaoq is undefined in the syscall return path */
- 		err |= __put_user(regs->gr[31], &sc->sc_iaoq[0]);
- 		err |= __put_user(regs->gr[31]+4, &sc->sc_iaoq[1]);
-+		err |= __put_user(regs->sr[3], &sc->sc_iasq[0]);
-+		err |= __put_user(regs->sr[3], &sc->sc_iasq[1]);
- #if DEBUG_SIG
- 		printk("setup_sigcontext: iaoq %#lx/%#lx\n", regs->gr[31], regs->gr[31]);
- #endif
+> It makes things better with gdb also, but not perfect.  The problem
+> now is that when you try to step out of the signal handler the program
+> under test just runs on without stopping.
 
+gdb is still confused about signal handler frames, and I haven't managed
+to fix that today.  Too many other fires to fight.
 
-Then I can strace my little test prog. that sends itself a signal
-while the signal is blocked, and then unblocks the signal.
-
-I havn't worked out why this is only apparently necessary when a process
-is being traced.
-
-It makes things better with gdb also, but not perfect.  The problem
-now is that when you try to step out of the signal handler the program
-under test just runs on without stopping.  Previously it would have
-crashed with an invalid iasq[].
-
-Richard
+Alan
+-- 
+Linuxcare
