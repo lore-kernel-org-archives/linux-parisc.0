@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.unitec.edu (mail.unitec.edu [216.72.84.41])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 65CCE4829
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  3 Apr 2003 12:17:00 -0700 (MST)
-Received: from unitec.edu ([127.0.0.1]) by mail.unitec.edu
-          (Netscape Messaging Server 4.15) with ESMTP id HCS7S000.8X8 for
-          <parisc-linux@lists.parisc-linux.org>; Thu, 3 Apr 2003 13:07:12 -0600
-From: "Ricardo Jose Guevara Ochoa" <jguevara@unitec.edu>
-To: parisc-linux@lists.parisc-linux.org
-Message-ID: <213d8fcf44c901e8.44c901e8213d8fcf@unitec.edu>
-Date: Thu, 03 Apr 2003 13:07:12 -0600
-MIME-Version: 1.0
-Subject: Re: Re: [parisc-linux] Kernel boot error
+Date: Thu, 3 Apr 2003 14:55:15 -0700
+To: "Beerse, Corn?" <c.beerse@torex-hiscom.nl>
+Cc: 'Joel Soete' <jsoe0708@tiscali.be>,
+	Derek Ellis <Derek.Ellis@us.fortis.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] soft power and power light on 712/60
+Message-ID: <20030403215515.GA20457@dsl2.external.hp.com>
+References: <03Apr2.105446cest.119062@ns.hiscom.nl>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <03Apr2.105446cest.119062@ns.hiscom.nl>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,35 +22,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Thanks!, i will boot the new kernel using another disc, but with the 
-root of the old kernel, my Question if it will get the old 
-configuration and boot as if where the old kernel(but the new) or it 
-will change something?
+On Wed, Apr 02, 2003 at 10:35:56AM +0200, "Beerse, Corn?" wrote:
+> The only reason I can imagine it should not work is addressing the
+> boot-image from the boot-prom.
+> 
+> Or else, it should not be called scsi...
 
-Thanks in advance,
-Ricardo J Guevara
+You are mixing up marketing, implementation, and "supported".
+HP decided the older box wasn't worth supporting.
+I'l hazard a guess the "upgrade" would not generate enough revenue
+to offset the additional qualification/inventory/support burden.
 
------ Original Message -----
-From: Matthew Wilcox <willy@debian.org>
-Date: Thursday, April 3, 2003 12:46 pm
-Subject: Re: [parisc-linux] Kernel boot error
+And SCSI implementations are not always compatible because they
+don't implement all the same features. Delayed spinup and
+Target-Initiated Syncronous Negotiation are two SCSI disk features
+that early host controller firmware typically have trouble with.
 
-> On Thu, Apr 03, 2003 at 12:35:02PM -0600, Ricardo Jose Guevara 
-> Ochoa wrote:
-> > The server came with more disks, can i put the kernel in one of 
-> those 
-> > disk, and boot from there?
-> 
-> certainly.  probably best to take a second disc, partition it 
-properly
-> and make that the new root disc.
-> 
-> -- 
-> "It's not Hollywood.  War is real, war is primarily not about 
-> defeat or
-> victory, it is about death.  I've seen thousands and thousands of 
-> dead bodies.
-> Do you think I want to have an academic debate on this subject?" --
-> Robert Fisk
-> 
-> 
+grant
