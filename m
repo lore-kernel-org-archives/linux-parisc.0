@@ -1,59 +1,86 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA02145
-	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 17:29:37 -0700
-Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
-  by mailserv2.iuinc.com with SMTP; 14 Dec 2000 00:32:03 -0000
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id LAA06772;
-	Thu, 14 Dec 2000 11:31:46 +1100
-Date: Thu, 14 Dec 2000 11:31:46 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-cc: parisc-linux@thepuffingroup.com, jes@linuxcare.com
-Subject: Re: [parisc-linux] phase 2 gcc build fails 
-In-Reply-To: <20001214002046.6D9BE37CA1@carmen.fc.hp.com>
-Message-ID: <Pine.LNX.4.21.0012141124330.2565-100000@front.linuxcare.com.au>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id RAA03208
+	for <parisc-linux@puffin.external.hp.com>; Wed, 13 Dec 2000 17:46:22 -0700
+Message-Id: <200012140048.TAA02603@hiauly1.hia.nrc.ca>
+Subject: Re: pa reload problem
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Date: Wed, 13 Dec 2000 19:48:21 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: law@redhat.com, rth@redhat.com, alan@linuxcare.com.au,
+        rhirst@linuxcare.com, parisc-linux@thepuffingroup.com,
+        gcc-bugs@gcc.gnu.org
+In-Reply-To: <no.id> from "John David Anglin" at Dec 11, 2000 01:48:16 pm
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Wed, 13 Dec 2000, Matt Taggart wrote:
-
-> Alan Modra writes...
+> I was going to deleting the hack and adding a general_operand test in
+> local-alloc to see if that would fix the reload problem with "-fPIC".
+> However, for the moment, there are still problems with a "normal" build
+> at "-O3".  With only the yesterdays CVS source and the patch below
+> to prevent rename registers walking of the return pointer, I get the
+> following failure building libstdc++ v2:
 > 
-> > I probably broke the CVS repo, when I ran "cvs admin -b" following your
-> > updated recipe.  I do have a checked-out tree, to probably can put things
-> > back as they were.
-> 
-> Since admin -b reverts the default branch, wouldn't importing cygnus source 
-> fix things?
+> /xxx/gnu/gcc-2.97/objdir/gcc/g++ -B/xxx/gnu/gcc-2.97/objdir/gcc/ -nostdinc++ -isystem /xxx/gnu/gcc-2.97/libstdc++ -isystem /xxx/gnu/gcc-2.97/libstdc++/std -isystem /xxx/gnu/gcc-2.97/libstdc++/stl -isystem /xxx/gnu/gcc-2.97/libio -isystem /xxx/gnu/gcc-2.97/objdir/hppa1.1-hp-hpux10.20/libio -L/xxx/gnu/gcc-2.97/objdir/hppa1.1-hp-hpux10.20/libstdc++ -B/usr/local/hppa1.1-hp-hpux10.20/bin/ -B/usr/local/hppa1.1-hp-hpux10.20/lib/ -isystem /usr/local/hppa1.1-hp-hpux10.20/include -c -O3 -fno-implicit-templates -I../../../libstdc++ -I../../../libstdc++/stl -I../libio -I../../../libstdc++/../libio -I../../../libstdc++/../include -I../../../libstdc++/../gcc -nostdinc++  ../../../libstdc++/exception.cc
+> ../../../libstdc++/exception.cc: In function `void __check_eh_spec(int, const 
+>    void**)':
+> ../../../libstdc++/exception.cc:363: Internal error: Segmentation fault.
 
-It looks like an import was done at some stage without merging stuff back
-to the main trunk.  eg.
+I have made some progress in locating this bug but still don't have a
+complete understanding of the problem.  The problem is that a code_label
+insn is "incorrectly" deleted in the loop pass.  Here is the rtl from
+the gcse pass:
 
-File: config.if         Status: Needs Patch
+[snip]
 
-   Working revision:    1.1.1.2
-   Repository revision: 1.1     /home/cvs/parisc/gcc/config.if,v
-   Sticky Tag:          (none)
-   Sticky Date:         (none)
-   Sticky Options:      (none)
+(code_label 1158 1268 1439 124 "" "" [3 uses])
 
-   Existing Tags:
-        before20000925merge             (revision: 1.1.1.2)
-        before20000822merge             (revision: 1.1.1.2)
-        gcc-2_96-gnu-20000707           (revision: 1.1.1.2)
-        GNU_DIST                        (branch: 1.1.1)
-        gcc-2_9-hppa-20000707           (branch: 1.1.1.1.4)
-        pre_fest                        (revision: 1.1.1.1)
-        ELF_BRANCH                      (branch: 1.1.1.1.2)
-        ELF_BASE                        (revision: 1.1.1.1)
-        initial_checkin                 (revision: 1.1.1.1)
-        gcc-2_9-hppa-991112             (branch: 1.1.1)
+(note 1439 1158 262 [bb 12] NOTE_INSN_BASIC_BLOCK -1347440721)
 
-What I've got to do, I guess, is to commit my tree back to the main truck.
-eg. in the case of config.if, we want a version 1.2 which will be identcal
-to version 1.1.1.2
+(note 262 1439 1159 85 NOTE_INSN_EH_REGION_END -1347440721)
 
+[snip]
+
+(insn 788 787 789 (set (reg/f:SI 209)
+        (high:SI (label_ref:SI 1158))) 87 {*pa.md:2435} (nil)
+    (expr_list:REG_EQUAL (high:SI (label_ref:SI 1158))
+        (insn_list:REG_LABEL 1158 (nil))))
+
+(insn 789 788 791 (set (reg/f:SI 208)
+        (lo_sum:SI (reg/f:SI 209)
+            (label_ref:SI 1158))) 90 {*pa.md:2467} (nil)
+    (insn_list:REG_LABEL 1158 (expr_list:REG_EQUAL (label_ref:SI 1158)
+            (nil))))
+
+Here is the rtl after loop:
+
+Loop from 576 to 1288: 105 real insns.
+Continue at insn 1278.
+
+[snip]
+
+Insn 788: regno 209 (life 2), move-insn savings 2  moved to 1530
+Insn 789: regno 208 (life 1), move-insn forces 788 savings 1  moved to 1532
+
+[snip]
+
+(insn 1531 1528 1532 (set (reg/f:SI 337)
+        (high:SI (label_ref:SI 1158))) -1 (nil)
+    (expr_list:REG_LABEL (code_label/v 1158 1268 1439 124 "" "" [0 uses])
+        (nil)))
+
+(insn 1532 1531 1535 (set (reg/f:SI 208)
+        (lo_sum:SI (reg/f:SI 337)
+            (label_ref:SI 1158))) -1 (nil)
+    (expr_list:REG_EQUAL (label_ref:SI 1158)
+        (expr_list:REG_LABEL (code_label/v 1158 1268 1439 124 "" "" [0 uses])
+            (nil))))
+
+The code_label 1158 is deleted by delete_trivially_dead_insns apparently 
+because the preceding call to loop_optimize in toplev.c has reduced the
+number of uses to 1.  Maybe somebody can see how this occurs.
+
+Dave
 -- 
-Linuxcare.  Support for the Revolution.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
