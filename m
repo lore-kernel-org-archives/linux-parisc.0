@@ -1,29 +1,34 @@
-Received: from phnxpop5.phnx.uswest.net (phnxpop5.phnx.uswest.net [206.80.192.5])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA14567
-	for <parisc-linux@puffin.external.hp.com>; Fri, 10 Nov 2000 19:20:23 -0700
-Date: Fri, 10 Nov 2000 19:18:47 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: bame@riverrock.org
-Cc: parisc-linux@puffin.external.hp.com
-Subject: Re: [parisc-linux] kernel merge
-Message-ID: <20001110191847.A20509@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <E13twjn-0004fw-00@noam.fc.hp.com> <m13uLiv-001Vp3C@chalet>
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id FAA29194
+	for <parisc-linux@puffin.external.hp.com>; Sat, 11 Nov 2000 05:32:29 -0700
+From: crypt@ihug.co.nz
+Received: from crypt by python.localnet with local (Exim 3.16 #1 (Debian))
+	for parisc-linux@thepuffingroup.com
+	id 13ua4a-00034I-00; Sun, 12 Nov 2000 01:47:56 +1300
+Date: Sun, 12 Nov 2000 01:47:56 +1300
+To: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] HP 9000 e25
+Message-ID: <20001112014756.A11780@python.localnet>
+References: <20001107234014.3076.qmail@web109.yahoomail.com> <20001108002808.B13854@parcelfarce.linux.theplanet.co.uk> <20001109054804.H21783@neep.com.au> <3A09D6AE.E1BC5134@linuxcare.com> <20001109162838.A16995@python.localnet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <m13uLiv-001Vp3C@chalet>; from bame@riverrock.org on Fri, Nov 10, 2000 at 02:28:33PM -0700
+In-Reply-To: <20001109162838.A16995@python.localnet>; from crypt on Thu, Nov 09, 2000 at 04:28:38PM +1300
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Our asm/string.h is behind the times.  Fixing it might get rid of a
-> bunch of compiler warnings! (TODO)
+Considering how often this question comes up is there anyone out there
+that is interested in tracking down the info to port linux to this class
+of box.
 
-if this is just an issue of implementing the various parisc-optimized string 
-routines, i've been working on this, but don't have everything ready
-yet.
+Server boxes may be classed as boring to some but there seem to be a
+large number of people who have at least one of them sitting about doing
+nothing.
 
-randolph
+Joe.
+
 -- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+=======================================================================
+in real life: Joseph Skinner         |There's no such thing as a wizard
+email: crypt@ihug.co.nz              |who minds his own business
+       Analyst/Programmer            | - Berengis the Black
+                                     |   Court Mage to the Earls Caeline
+========================================================================
