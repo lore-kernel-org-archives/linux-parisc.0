@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailserver3.hrz.tu-darmstadt.de (mailserver3.hrz.tu-darmstadt.de [130.83.126.47])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5E8DA4840
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Nov 2003 00:52:58 -0700 (MST)
-Received: from hrzpub.tu-darmstadt.de (IP-213157011159.dialin.heagmedianet.de [213.157.11.159])
-	(authenticated bits=0)
-	by mailserver3.hrz.tu-darmstadt.de (8.12.10/8.12.7) with ESMTP id hAJ7pBcH008109
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 19 Nov 2003 08:52:33 +0100
-Message-ID: <3FBB2114.9050003@hrzpub.tu-darmstadt.de>
-Date: Wed, 19 Nov 2003 08:51:48 +0100
-From: Ruediger Scholz <rscholz@hrzpub.tu-darmstadt.de>
+Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 17E604840
+	for <parisc-linux@parisc-linux.org>; Wed, 19 Nov 2003 01:21:38 -0700 (MST)
+Date: Wed, 19 Nov 2003 09:21:29 +0100
+Message-ID: <3FB265EC00003DBD@ocpmta3.freegates.net>
+In-Reply-To: <Pine.LNX.4.58.0311181432590.11677@brain.fop.ns.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: [parisc-linux] Processes stuck in D state on 715/100XC with 2.4.22-pa17
+To: "Steve Bromwich" <lists@fop.ns.ca>
+Cc: parisc-linux@parisc-linux.org
 MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Boot-up challenges on a 715/75
-References: <1e2.13b31f0d.2cebe9ab@aol.com>
-In-Reply-To: <1e2.13b31f0d.2cebe9ab@aol.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,25 +22,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi,
-JjDunnjr@aol.com schrieb:
-
+>-- Original Message --
+>From: Steve Bromwich <lists@fop.ns.ca>
+>To: Joel Soete <soete.joel@tiscali.be>
+>Cc: parisc-linux@parisc-linux.org
+>Date: Tue, 18 Nov 2003 14:34:49 -0400 (AST)
+>Subject: RE: [parisc-linux] Processes stuck in D state on 715/100XC with
+> 2.4.22-pa17
 >
-> I have tried several ways to call up this CD-RW.  I have specified the 
-> scsi address; I have rewritten the PATHs to direct boot up.  All to no 
-> avail
-> It is clear that the 715/75 recognizes the TEAC but does not recognize 
-> the scsi Address.
-
-have you checked whether the external scsi bus is correctly terminated? 
-Perhaps that why your machine doesn't recognize the scsi address.
-FYI, i have a Plextor cd-drive connected to my 715/100 (internal), which 
-works without any problems.
-
 >
-> any help
+>Hi Joel,
 >
-> Thanks in advance
-> jack dunn
+>Just to clarify, this is happening during operation, not bootup. Next time
+>it happens (probably tomorrow morning) I'll break on serial and try
+>piminfo - is there anything else useful in there that might be worth
+>looking at?
+>
+May be if you can, run hp diag tools?
 
-Ruediger
+(I have no clue about 715 model but well running 2.4.22 (and above) on various
+b180, b2k, c110, N4000 and i have never encounter such pb?)
+
+>I'm using Debian stable, with the 2.2.5-11.5 libc package installed.
+
+Hmm, may be Carlos could help here, I know that glibc 2.3 need a kernel >
+2.4.18  iirc but what is about a kernel 2.4.22? (does 2.4.22 need then glibc
+2.3 for user space prgm operate correctly?)
+
+Joel
+
+-------------------------------------------------------------------------
+Tiscali ADSL: 3 mois GRATUITS! L'Internet rapide, c'est pour tout le monde.
+
+http://reg.tiscali.be/default.asp?lg=fr
