@@ -1,69 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from palrel3.hp.com (palrel3.hp.com [156.153.255.226])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 78DA44A19
-	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 15:09:38 -0700 (MST)
-Message-Id: <200102232212.OAA21472@milano.cup.hp.com>
-To: Matthew Wilcox <matthew@wil.cx>
-Cc: parisc-linux@parisc-linux.org, grundler@milano.cup.hp.com
-Subject: Re: [parisc-linux] parisc64 vs kernel64 
-In-reply-to: Your message of "Fri, 23 Feb 2001 08:58:15 PST."
-             <20010223085815.B16261@parcelfarce.linux.theplanet.co.uk>
-Date: Fri, 23 Feb 2001 14:12:22 -0800
+Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BB6DF4A19
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 15:14:54 -0700 (MST)
+Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
+	by palrel1.hp.com (Postfix) with ESMTP id EBD0D629
+	for <parisc-linux@parisc-linux.org>; Fri, 23 Feb 2001 14:14:53 -0800 (PST)
+Message-Id: <200102232217.OAA21496@milano.cup.hp.com>
+To: Matthew Wilcox <willy@ldl.fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Documentation wanted 
+In-reply-to: Your message of "Fri, 23 Feb 2001 02:29:28 PST."
+             <E14WEXY-0006gB-00@chrysl>
+Date: Fri, 23 Feb 2001 14:17:38 -0800
 From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
 Matthew Wilcox wrote:
 > 
-> I wonder if we're doing this right, having parisc and parisc64 as
-> different architectures.
+> Looking for something to do?  I ran `make checkhelp' and the following
+> undocumented CONFIG options are our fault.  If you'd like to write
+> some help and send diffs against Configure.help to the list, that'd
+> be appreciated.
 
-How much is driven by how gcc/binutils/config.guess type stuff works?
+This list seems incomplete.
+Why didn't CONFIG_GSC_DINO, CONFIG_IOSAPIC, CONFIG_LBA_PCI,
+or CONFIG_SBA_IOMMU show up?
 
-> They're fundamentally similar than sparc/sparc64
-> or mips/mips64 are.  We have very few files in parisc64 (the rest are
-> made visible to the build system by creating symlinks to their equivalent
-> in parisc).
-
-We've made an effort to keep them the same. That's why most of the
-files are common. The fact that PA2.0 cpus can run PA1.1 kernel bits
-makes it easy for us. I'm *know* the R4000 MIPs processor had
-good backwards compatibility between 32/64-bit - don't know about
-later ones or Sparc/Sparc64.
-
-> them with something like:
-> 
-> make config
-> [...]
-> *
-> * Processor type and features
-> *
-> Processor family (PA1.1, PA2.0, PA2.0Wide) [PA1.1] 
-
-The Processor family selection is a good idea regardless of
-how arch/parisc* source is organized.
-
-> i think it might make maintenance easier,
-
-The difference here is negligible. The main issues are from people
-not (able to?) testing both 32 and 64-bit kernels before committing.
-
-
-> i think this current situation is the worst of both worlds
-> in that it's quite easy to forget about parisc64 when fiddling with
-> something in the parisc directory.
-
-I disagree.
-That particular issue is the same for all three directory layouts.
-Perhaps you have trouble with the current model as I might with a
-different one.
-
-I think the do_links model is a good compromise and we should
-stick with it a bit longer. We know more now than when the do_links
-model was created. In the future, I'm inclined to support a move
-to a parisc/kernel64 layout if we are confident things like 64-bit
-userspace, ccNuma (eg SuperDome), CPU Hotswap, Memory Hotswap, New
-CPU models, etc (just a few things I've seen on customer wish lists)
-are supportable within that framework.
+I can write something up for those if there is an arch specific place
+to put them.
 
 grant
 
