@@ -1,26 +1,38 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id EAA02892
-	for <parisc-linux@puffin.external.hp.com>; Wed, 21 Jul 1999 04:42:28 -0600
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id FAA03357
+	for <parisc-linux@puffin.external.hp.com>; Wed, 21 Jul 1999 05:15:11 -0600
 From: Helge Deller <Helge.Deller@ruhr-uni-bochum.de>
-To: parisc-linux@thepuffingroup.com
-Date: Wed, 21 Jul 1999 12:36:02 +0200
+To: "Paul J.Y.Lahaie" <pjlahaie@ottawa.com>
+Subject: Re: [parisc-linux-cvs] pjlahaie, interrupted with code 28....
+Date: Wed, 21 Jul 1999 13:01:59 +0200
 Content-Type: text/plain
+Cc: parisc-linux@thepuffingroup.com, Philipp Rumpf <prumpf@suse.de>
+References: <199907210257.UAA00743@puffin.external.hp.com>
 MIME-Version: 1.0
-Message-Id: <99072112434900.05889@P100>
-Subject: [parisc-linux] OSF-clean source-code..
+Message-Id: <99072113074701.05889@P100>
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello List !
+Am Wed, 21 Jul 1999 schrieb Paul Lahaie:
+> Update of /home/cvs/parisc/linux/drivers/gecko
+> In directory puffin.external.hp.com:/tmp/cvs-serv735
+> 
+> Modified Files:
+> 	dino.c 
+> Log Message:
+> Fix dino probing code so that systems without Dinos do not crash while trying
+> to read the configuration registers.
 
-I committed some changes in varios files, so that we now are not very far from
-OSF-clean code in the tree...
+Hi Paul !
 
-My intention is, to remove pdc.h completely in short time, and rewrite
-all used #defines and structures (GPL´d) in pdc-linux.h (thanks to Paul Lahaie).
-When the transition is done, pdc.h will be removed, and pdc-linux will replace
-pdc.h completely.
+Those changes seem to initialize the interrupt-routine, so that I get the whole
+time  "Interrupted with code 28, regs xxxxx"...... (I don´t have a dino in my
+hp-machine!)
 
-Please continue to #inlclude pdc.h in the sources only. This way the transition
-could work clean to the tree...
+Could you/someone maybe take a look into it ?
+It does not happen, when you don´t include DINO-support into the kernel.
+Please correct me, if I´m totally wrong here.....
 
-Helge Deller.
+PS: This also happened here with my machine, before I applied/committed my
+latest changes...
+
+Helge.
