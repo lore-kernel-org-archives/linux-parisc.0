@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 21D194829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Mar 2003 10:11:34 -0700 (MST)
-Message-ID: <3E638F44.4070907@tiscali.be>
-Date: Mon, 03 Mar 2003 17:22:12 +0000
-From: Joel Soete <joel.soete@tiscali.be>
+Received: from smtp.umr.edu (mrelay1.cc.umr.edu [131.151.1.120])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B91DB4829
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  3 Mar 2003 14:49:18 -0700 (MST)
 MIME-Version: 1.0
-To: Randolph Chung <tausq@debian.org>
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Re: gcc-3.2 -> gcc-3.3 transition on hppa
-References: <3E5F8012000005AB@ocpmta8.freegates.net> <200303031617.h23GHf1R027417@hiauly1.hia.nrc.ca> <20030303162440.GF11363@tausq.org>
-In-Reply-To: <20030303162440.GF11363@tausq.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
+Subject: RE: [parisc-linux] recent netboot iso?
+Date: Mon, 3 Mar 2003 15:49:09 -0600
+Message-ID: <B578DAA4FD40684793C953B491D4879174CFED@umr-mail7.umr.edu>
+From: "Neulinger, Nathan" <nneul@umr.edu>
+Cc: <parisc-linux@lists.parisc-linux.org>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,31 +21,58 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Randolph Chung wrote:
+FYI. Install worked great, but unfortunately, current tools/etc. still
+have the problem with loading the afs module (segfault in insmod) and I
+don't have time to dig into it again. (I did an a-g upgrade with
+unstable as well.)
 
->[Note: trimmed cc list]
->
->  
->
->>Last time I tried (couple of weeks ago), it was possible to build
->>a 64-bit cross starting with 3.3.  This still doesn't work with 3.2.
->>    
->>
->
->also 64-bit hppa64-linux gcc-3.2 (built with 3.3) ICEs regularly. For
->people using this to build kernels, I would suggest staying with 3.0.4
->for now.
->
->(I'm also seeing reproducible crashes when running hppa64-linux-ld now,
->still need to track that down)
->
->randolph
->  
->
-Ok Randolph, I will wait so because the question was in fact to rebuild 
-a kernel 64bits with smp support (up works fine) but smp seems to 
-failled just after init the first cpu and would like to see what is the 
-problem.
+-- Nathan
 
-Thanks for advise,  
-    Joel
+------------------------------------------------------------
+Nathan Neulinger                       EMail:  nneul@umr.edu
+University of Missouri - Rolla         Phone: (573) 341-4841
+Computing Services                       Fax: (573) 341-4216
+
+
+> -----Original Message-----
+> From: Neulinger, Nathan=20
+> Sent: Monday, March 03, 2003 10:47 AM
+> To: Tom; Thibaut VARENE
+> Cc: parisc-linux@lists.parisc-linux.org
+> Subject: RE: [parisc-linux] recent netboot iso?
+>=20
+>=20
+> Great! Thanks! I will take a look.=20
+>=20
+> -- Nathan
+>=20
+> ------------------------------------------------------------
+> Nathan Neulinger                       EMail:  nneul@umr.edu
+> University of Missouri - Rolla         Phone: (573) 341-4841
+> Computing Services                       Fax: (573) 341-4216
+>=20
+>=20
+> > -----Original Message-----
+> > From: Tom [mailto:palinux@alaskatech.org]=20
+> > Sent: Monday, March 03, 2003 10:14 AM
+> > To: Thibaut VARENE
+> > Cc: Neulinger, Nathan; parisc-linux@lists.parisc-linux.org
+> > Subject: Re: [parisc-linux] recent netboot iso?
+> >=20
+> >=20
+> > > On Mon, 3 Mar 2003, Thibaut VARENE wrote:
+> > > from http://pateam.esiee.fr/
+> > >
+> > > PA/Linux stable kernel CVS version is 2.4.20-pa27
+> > > Latest Netinst ISO version is 2.4.20-pa27-20030223
+> > > PA/Linux devel kernel CVS version is 2.5.63-pa2
+> > >
+> > > if 2.4.20-pa27 features that fix, it's on the ISO...
+> >=20
+> > If this is the bus-walk hang, the -pa27 kernel fixes it on my C180.
+> >=20
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>=20
