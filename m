@@ -1,32 +1,35 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id CAA29598
-	for <parisc-linux@puffin.external.hp.com>; Sun, 24 Oct 1999 02:42:12 -0600
-Date: Sun, 24 Oct 1999 10:43:09 +0200
-From: Philipp Rumpf <prumpf@suse.de>
-To: Justin Hamilton <JHamilton@Earthling.Net>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Trying to boot on an N-Class
-Message-ID: <19991024104309.A31105@suse.de>
-References: <199910221606.JAA00597@milano.cup.hp.com> <NDBBKIEANAMHBNPAILKPKEBECEAA.JHamilton@Earthling.Net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <NDBBKIEANAMHBNPAILKPKEBECEAA.JHamilton@Earthling.Net>; from Justin Hamilton on Sat, Oct 23, 1999 at 11:44:00PM -0400
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA31784
+	for <parisc-linux@puffin.external.hp.com>; Sun, 24 Oct 1999 16:45:08 -0600
+Date: Sun, 24 Oct 1999 18:52:22 -0400 (EDT)
+From: Alex deVries <adevries@thepuffingroup.com>
+To: Magne =?iso-8859-1?Q?=D8stlyngen?= <magne@spacetec.no>
+cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] So you wanna get to a prompt, eh?
+In-Reply-To: <38107330.E3716195@spacetec.no>
+Message-ID: <Pine.LNX.4.10.9910241849370.21645-100000@vodka.thepuffingroup.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
 List-ID: <linux-parisc.vger.kernel.org>
 
-> exec_tfile: 0003A000
-> exec_tsize: 00079008
-> exec_tmem : C0010000
-> Code at 0x00010000, size=0x00079008
-> Data at 0x0008A000, size=0x0007F000
-> BSS  at 0x00109000.
-> 
-> Transferring control to kernel. (At entry point 0x00010000)
-> 
-> And this is where it sits.
 
-This looks like it is the same PA 2.0 PDC problem we see on the C class.
-Could you try againg after we fixed it ?  (Don't expect the kernel to do
-too much with your hardware in the near future, but at least you might
-be able to get to a shell prompt).
+On Fri, 22 Oct 1999, Magne [iso-8859-1] Østlyngen wrote:
+> > The 700 has an ancient IO architecture that we don't have any
+> > documentation on, so it's not high on the list of priorities.
+> But it is possible to get the docs from HP?
 
-	Philipp Rumpf
+I can't speak for HP on this, but I will say that the old IO docs will
+only be in the queue of requested items from HP once we've gotten some of
+the others out.  We need to prioritize the docs we need, and the stuff
+that's in more modern machines (even the 715) is much higher on the lsit.
+
+> Is it possible to compile with linux, and do only the linking on the hp?
+
+That should work.
+
+> (It isn't very fast.. :)  Can I link with HPUX 9.03? (probably not)
+> 10.30? (It doesn't run 11.x)
+
+That should work, in theory.  I'm not sure anyone's ever tried though.
+
+- Alex
