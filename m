@@ -1,18 +1,18 @@
-Return-Path: <ajwalker@broadpark.no>
-Received: from mail.broadpark.no (mail.broadpark.no [217.13.4.2])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 9155F4854
-	for <parisc-linux@parisc-linux.org>;
-	Tue, 16 Mar 2004 03:11:02 -0700 (MST)
-Message-ID: <33542.193.161.152.244.1079432357.squirrel@www.puszczka.com>
-In-Reply-To: <mnet8.1079358785.20900.pinotj@club-internet.fr>
-References: <mnet8.1079358785.20900.pinotj@club-internet.fr>
-Date: Tue, 16 Mar 2004 11:19:17 +0100 (CET)
-Subject: Re: [parisc-linux] [DOC] Linux 2.6.4
-From: "Andy Walker" <ajwalker@broadpark.no>
-To: pinotj@club-internet.fr
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2A28548F5
+	for <parisc-linux@lists.parisc-linux.org>;
+	Tue, 16 Mar 2004 06:04:37 -0700 (MST)
+Date: Tue, 16 Mar 2004 10:43:46 +0100
+Message-ID: <40561E710000043C@ocpmta2.freegates.net>
+In-Reply-To: <20040315185113.GC660@baldric.uwo.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: =?ISO-8859-1?Q?Re=3A=20=5Bparisc=2Dlinux=5D=20=09RE=3A=20New=20glibc=20patches=202004=2D03=2D08=2C=20fixes=20GLRO=20changes=2E?=
+To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Cc: parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: James Morrison <ja2morri@csclub.uwaterloo.ca>,
+	parisc-linux@lists.parisc-linux.org
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,37 +22,64 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
+Hello Carlos,
 
-> + 10. PA-RISC
-> + ~~~~~~~~~~~
-> +	PA7000/PA7100
-> +	PA7100LC/PA7300LC	(used in 712, 715/Mirage, A180, B132, C160L)
-> +	PA7200			(PCX-T' processor used in C110, D100 ...)
-> +	PA8000			(PCX-U to PCX-W2 processors)
-> +
-> +  (see Documentation/parisc)
-> +  <http://www.parisc-linux.org>
+Sorry for delay,...
+>> 
+>> On Mon, Mar 15, 2004 at 06:38:46PM +0100, Joel Soete wrote:
+>> Hello Jim,
+>> 
+>> Sorry for confusion but you have definitely right.
+>> 
+>> [snip]use prefix=/usr and make  install_root=/mnt/chroot install;
+>> 
+>> This is the right method because if I use prefix=/mnt/chroot and 'make
+install',
+>> when the install was finished and I tried chroot/mnt/chroot: here was
+the
+>> error message:
+>> chroot /mnt/chroot
+>> /bin/bash: error while loading shared libraries: libncurses.so.5: cannot
+>> open shared object file: No such file or directory
+>> 
+>> and strace shows me that it looking for libncurses.so.5 into /mnt/chroot/lib
+>> :)
+>> 
+>> So to launch make -k check in this config, I foreseen to use prefix=/usr
+>> and make install_root=/mnt/chroot; then mount -o bind /GlibcSrcFS /mnt/chroot/GlibcSrcFS;
+>> chroot /mnt/chroot; and in this env launch the make -k check. Do you know
+>> another solution?
 >
+>That sounds like a perfect solution! :)
 
-I'd refer you to www.openpa.net, from which the list below was
-shamelessly nicked:
+but that way I only get know errors ie:
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-float.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-double.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/math/test-ifloat.out] Error
+1
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/tst-strtod.out] Error
+1
+make[2]: *** [/Develop/parisc-linux/build/glibc/stdlib/bug-strtod.out] Error
+1
+make[1]: *** [stdlib/tests] Error 2
+make[2]: [/Develop/parisc-linux/build/glibc/posix/annexc.out] Error 1 (ignored)
+make[2]: *** [/Develop/parisc-linux/build/glibc/elf/tst-tls13.out] Error
+1
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
 
-PA-7000         (PCX-S)
-PA-7100/PA-7150 (PCX-T)
-PA-7100LC       (PCX-L)
-PA-7200         (PCX-T')
-PA-7300LC       (PCX-L2)
+(sorry I forget TIMEOUTFACTOR) :)
 
-PA-8000         (PCX-U)
-PA-8200         (PCX-U+)
-PA-8500         (PCX-W)
-PA-8600         (PCX-W+)
-PA-8700         (PCX-W2)
+Very nice job Carlos.
 
-There are also lists of which models have which CPU, but there's not
-much point duplicating that here.
+Just still have to check more X,
 
-http://www.pateam.org/list.html will give you an idea of what works
-and what doesn't.
+Joel
 
--Andy
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
