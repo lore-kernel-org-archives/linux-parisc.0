@@ -1,73 +1,92 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA09733
-	for <parisc-linux@puffin.external.hp.com>; Tue, 7 Nov 2000 10:48:09 -0700
-Message-Id: <5.0.0.25.0.20001107094526.00a44990@mail.webcash.com>
-Date: Tue, 07 Nov 2000 09:46:53 -0800
-To: Thierry SIMONNET <t.simonnet@esiee.fr>
-From: Kailashnath V Rampure <kailasr@webcash.com>
-Subject: Re: [parisc-linux] Boot command
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA10480
+	for <parisc-linux@puffin.external.hp.com>; Tue, 7 Nov 2000 11:14:03 -0700
+Received: from hpfcla.fc.hp.com (hpfcla.fc.hp.com [15.254.48.2])
+	by atlrel1.hp.com (Postfix) with ESMTP id A87761A1
+	for <parisc-linux@thepuffingroup.com>; Tue,  7 Nov 2000 13:15:51 -0500 (EST)
+Received: from noam.fc.hp.com (mail@noam.fc.hp.com [15.1.52.69])
+	by hpfcla.fc.hp.com (8.9.1/8.9.3 SMKit7.01) with ESMTP id LAA29231
+	for <parisc-linux@thepuffingroup.com>; Tue, 7 Nov 2000 11:15:50 -0700 (MST)
+Received: from localhost
+	([127.0.0.1] helo=noam.fc.hp.com ident=bame)
+	by noam.fc.hp.com with esmtp (Exim 3.12 #1 (Debian))
+	id 13tDHi-000743-00
+	for <parisc-linux@thepuffingroup.com>; Tue, 07 Nov 2000 11:15:50 -0700
 Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <3A056715.45799D85@esiee.fr>
-References: <Your message of "Fri, 03 Nov 2000 11:46:39 PST." <5.0.0.25.0.20001103114401.00a46150@mail.webcash.com>
- <Your message of "Fri, 03 Nov 2000 11:03:23 PST." <5.0.0.25.0.20001102174648.02a4fb20@mail.webcash.com>
- <5.0.0.25.0.20001103114401.00a46150@mail.webcash.com>
- <5.0.0.25.0.20001103145524.00a49a50@mail.webcash.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+In-Reply-To: Your message of "Wed, 01 Nov 2000 10:59:34 MST."
+             <E13r2Ag-0000Xp-00@noam.fc.hp.com>
+References: <E13r2Ag-0000Xp-00@noam.fc.hp.com> 
+Date: Tue, 07 Nov 2000 11:15:50 -0700
+From: Paul Bame <bame@noam.fc.hp.com>
+Message-Id: <E13tDHi-000743-00@noam.fc.hp.com>
+Subject: [parisc-linux] 64-bit BUILD CHANGES
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi,
-Thanks. I copied the termcap and terminfo directory froma red hat linux 
-box. Now I am able to run VI and the TERM is vt100.
 
-Regards
-Kailas
+The described changes have just been committed to CVS.  If you have
+an existing configured/built 64-bit parisc tree right now I think these
+are the steps to update:
 
-At 02:56 PM 11/5/00 +0100, Thierry SIMONNET wrote:
->To have a suitable TERM, you must get termcap or terminfo definition; ie a
->good terminfo tree from a linux box. To have a good method to install a
->pa/linux box, see my student's web site at http://www.esiee.fr/~djoudim
->
->Th. SIMONNET
->
->
->Kailashnath V Rampure wrote:
->
-> > Thanks!  Paul.
-> > Yes I had copied the lifImage there. Now I have downloaded the kernel from
-> > the link you mentioned.
-> >
-> > I am still unable to use vi as it says "linux:unknown terminal type"
-> > Can you help me.
-> >
-> > To add features can I add deb packages. I am not that familiar with debian.
-> > Actually I want to build an apache + mod_ssl+mod_perl on A180c.
-> > Regards
-> > Kailas
-> >
-> > At 01:30 PM 11/3/00 -0700, Paul Bame wrote:
-> > >= ext2_open(/boot/vmlinux)=3
-> > >= Couldn't gork your kernel executabel format failed to load kernel
-> > >= Failed to load Kernel.
-> > >
-> > >That should be "grok" :-)  Apparently you're not using cut/paste for
-> > >these error messages.
-> > >
-> > >This is PALO saying that /boot/vmlinux is neither elf32, elf64, nor SOM
-> > >format.  I'm guessing, based on some earlier advice I gave when you
-> > >were net-booting, that you may have a lifimage there by mistake -- you
-> > >need a kernel instead, for example from
-> > >ftp://puffin.external.hp.com/pub/parisc/binaries/kernels
-> > >
-> > >To tell for sure, run 'file vmlinux' on that file.  If you get
-> > >     vmlinux: 8086 relocatable (Microsoft)
-> > >that's probably a lifimage.  You should get this instead:
-> > >     vmlinux: ELF 32-bit MSB executable, PA-RISC, version 1, statically
-> > > linked, not stripped
-> > >
-> > >
-> > >         -P
-> >
-> > ---------------------------------------------------------------------------
-> > To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> > `unsubscribe' as the subject.
+	Save your .config file
+	do 'make distclean'
+	do your cvs update
+	restore your .config
+	make oldconfig dep
+	and then proceed as normal
+
+	The symlinks come when you do a make {old}config and
+	go with a 'make distclean' FYI
+
+>>> You may want to start hand-editing .hdepend (following each make dep)
+to remove the dependency of atomic.h on spinlock.h (just remove the first
+line containing the string spinlock.h) -- it can cause massive
+unnecessary rebuilds.  It's due to a parisc-specific circular dependency  :-(
+
+		-P
+
+= I want to propose/discuss a new method for maintaining our 64-bit parisc
+= tree in relation to the 32-bit tree.  I have prototyped this and so
+= far it seems pretty useful.
+= 
+= Most of the files in the current parisc64 tree only contain one 
+= line, a #include of the same file from the parisc tree.  This confuses
+= 'make dep', causes some compile errors to have nonsense line numbers,
+= and doesn't allow direct editing of the source files in the parisc64 tree.
+= 
+= The method I'm proposing works like this:
+= 
+= The future parisc64 tree ONLY contains files which are different from,
+= or in addition to, those in the parisc tree.  When you 'make config'
+= or 'make oldconfig', each file in the parsic tree is symbolically
+= linked as the same file in the parisc64 tree.  This enables all
+= the rest of the tools/build to work normally.  'make distclean' includes
+= a step to remove all the symlinks.
+= 
+= The ugliest "feature" is that even though you can edit source files
+= in the parisc64 tree, 'cvs commit' will fail on those which are
+= symbolic links.  To reduce this problem, I'm dropping a symbolic link
+= called '...' in each parisc64 directory which is a pointer to the
+= corresponding parisc directory, so 'cd ...; cvs commit foo.c' will
+= work and not be too onerous.
+= 
+= We should additionally consider a naming convention or something so
+= that maintainers in the parisc tree know whether files are shared with
+= parisc64 or not.
+= 
+= I prototyped this as a fictional new "architecture" called "p64".  To
+= try it out, grab the tarball (only about 30 files -- can be fewer)
+= ftp://puffin.external.hp.com/pub/parisc/
+= and unpack in your top-level linux source tree directory.  Then in
+= your top-level Makefile, change ARCH := parisc64 to ARCH := p64, then
+= make oldconfig or whatever you usually do.  Let me know of any problems.
+= 
+= Is this something we should adopt for the real parisc64 tree?
+= 
+= 	-Paul Bame
+= 
+= ---------------------------------------------------------------------------
+= To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
+= `unsubscribe' as the subject.
+= 
+= 
+= 
