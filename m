@@ -1,71 +1,102 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA19908
-	for <parisc-linux@puffin.external.hp.com>; Wed, 20 Dec 2000 02:17:24 -0700
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA20544
+	for <parisc-linux@puffin.external.hp.com>; Wed, 20 Dec 2000 02:49:16 -0700
 Received: from pc188-bre9.cable.ntl.com (HELO rhirst.linuxcare.com) (213.105.88.188)
-  by mailserv2.iuinc.com with SMTP; 20 Dec 2000 09:20:17 -0000
+  by mailserv2.iuinc.com with SMTP; 20 Dec 2000 09:52:15 -0000
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id D8EACB005; Wed, 20 Dec 2000 09:14:02 +0000 (GMT)
-Date: Wed, 20 Dec 2000 09:14:02 +0000
+	id A1AE3B005; Wed, 20 Dec 2000 09:46:08 +0000 (GMT)
+Date: Wed, 20 Dec 2000 09:46:08 +0000
 From: Richard Hirst <rhirst@linuxcare.com>
-To: David Huggins-Daines <dhd@eradicator.org>
+To: "M. Grabert" <xam@deathsdoor.com>
 Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] signal.c, etc
-Message-ID: <20001220091402.C2554@linuxcare.com>
-References: <87zohuhm30.fsf@cepstral.com>
+Subject: Re: [parisc-linux] (still) booting problems with HP9000/730
+Message-ID: <20001220094608.D2554@linuxcare.com>
+References: <Pine.LNX.4.21.0012172113360.11612-100000@sgate.charlysworld.de> <3A3E544E.FC5B58CB@linuxcare.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <87zohuhm30.fsf@cepstral.com>; from dhd@eradicator.org on Sun, Dec 17, 2000 at 02:41:39PM -0500
+In-Reply-To: <3A3E544E.FC5B58CB@linuxcare.com>; from adevries@linuxcare.com on Mon, Dec 18, 2000 at 01:15:42PM -0500
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Dave,
-
-On Sun, Dec 17, 2000 at 02:41:39PM -0500, David Huggins-Daines wrote:
-> Hi,
+On Mon, Dec 18, 2000 at 01:15:42PM -0500, Alex deVries wrote:
+> "M. Grabert" wrote:
+> > The kernel starts booting, but the scsi driver (old Ncr)
+> > reports some warnings/errors like
+> > shared memory is not coherent (or so), failed to reset scsi bus,
+> > irq probe failed etc...
+> > 
+> > the scsi driver finally recognizes my Quantum HD and
+> > tries to boot from it (mount it)..
+> > There is nothing like VFS: unable to mount blabla;
+> > instead it runs in to an infinite loop of kernel oops,
+> > it prints continously kernel stack/register traces
+> > (seem to look all the same).
 > 
-> Just reading through the archives, I noticed you came upon my rather
-> hackish IAOQ manipulation in signal.c.
-> 
-> If you guys need any explanation about the intent of that code please
-> ask me.  (I'm back on the parisc-linux list now, BTW)
+> I talked to Richard Hirst about this a few hours ago, and it looks like
+> there's a problem with the SCSI driver.  It's unclear how difficult it
+> would be to get that going, but it certainly is possible to fix.
 
-Welcome back! Feel free to fix anything I broke.
+The following is from my 715/75, where the scsi driver works.  As Alex
+said, the scsi driver has a problem on your machine, but not all the
+messages indicate real problems.  At one time I had a cdrom attached
+which didn't respond well to requests for synchronous working, and the
+driver couldn't cope.
 
-> I freely admit that it is bogus (in fact that's why the comment was
-> there), not because I didn't know which part of IAOQ was front and
-> which was back, but because:
-> 
-> (a) There are two different signal exit paths, one from interruptions,
->     one from system calls.  This complicates things *tremendously*.
->     However, exiting from a signal handler always goes via system
->     calls, and in that case, the stored IAOQ values are meaningless.
->     I probably should have removed all the meaningless frobbings of
->     the stored IAOQ, but ... well ... time passes, you become occupied
->     elsewhere, etc.
+What devices do you have on your scsi bus?  Can you disconnect
+everything except the Quantum HD as a test?
 
-Right, the code as was worked ok for the syscall case but broke
-for the interrupt case.  The problem is that following the signal
-and call to sys_rt_sigreturn, you need to return to userland either
-via an interrupt return path, or a syscall return path, depending on
-where you were when the signal occurred.  There is now a test in
-syscall.S for __NR_rt_sigreturn in order to implement that.
+You can try booting with
 
-> (b) I don't understand what the processor actually does when you
->     restore IAOQ on exit from an interruption.  The HP documentation
->     is not written in a particularly lucid manner.
-> 
-> (c) Setting iaoq_back to iaoq_front + 4 is *not* the right answer
->     because you may have taken an interruption in a branch, or an insn
->     may have been nullified, etc.
+	sim700=nodisc:0xff
 
-Absolutely - that was the main problem with the code as it was.
-Seting iaoq_back to iaoq_front + 4 is valid if you are starting up the
-signal handler, and should be ok if the singal occurred while you
-were blocked on a syscall.
+in case it is a problem with disconnect/reselect, and you could
+try
 
-> (d) I had about ten billion other things to do at the time and was
->     under lots of pressure to get "more important things" working...
+	sim700=nodisc:0xff,noneg:0xff
 
-Sure - the current code does work for me under various test cases, but
-it did take days to get to that point.
+in case it is a probem with sync/async negotiation.
+
+
+    SCSI subsystem driver Revision: 1.00
+    sim700: Couldn't get consistent shared memory
+
+    // That just indicates that we are using old hardware
+
+    sim700: Configuring 53c700 (SCSI-ID 7) at f0825100, IRQ 86
+
+    // That line indicates it is a 53c700, and not a 53c710
+
+    scsi0: Revision 0x0
+    Post test1, istat 05, sstat0 00, dstat 84
+    sim700: WARNING IRQ probe failed, (returned 0)
+
+    // That WARNING IRQ... is expected on parisc
+
+    scsi0: WARNING: target data areas are not dma coherent!
+
+    // That again is just a warning, and nothing to worry about
+
+    scsi0: test 1 completed ok.
+
+    // That indicates the driver can talk to the chip, and the chip
+    // can generate interrupts.
+
+    scsi0 : LASI/Simple 53c7xx
+      Vendor: HP        Model: HP35470A          Rev: 7 09
+      Type:   Sequential-Access                  ANSI SCSI revision: 02
+      Vendor: SEAGATE   Model: ST32430N          Rev: 0510
+      Type:   Direct-Access                      ANSI SCSI revision: 02
+      Vendor: MICROP    Model: 2112              Rev: 4024
+      Type:   Direct-Access                      ANSI SCSI revision: 02
+    Detected scsi tape st0 at scsi0, channel 0, id 3, lun 0
+    st: bufsize 32768, wrt 30720, max init. buffers 4, s/g segs 16.
+    Detected scsi disk sda at scsi0, channel 0, id 5, lun 0
+    Detected scsi disk sdb at scsi0, channel 0, id 6, lun 0
+    SCSI device sda: 4197405 512-byte hdwr sectors (2149 MB)
+    Partition check:
+     sda: sda1 sda2 sda3
+    SCSI device sdb: 2051460 512-byte hdwr sectors (1050 MB)
+     sdb: unknown partition table
+
+Alex, you already have a full boot log for this machine.
 
 Richard
