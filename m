@@ -1,13 +1,13 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from cpout2.tiscali.be (cpout2.tiscali.be [62.235.13.194])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C0AD9482B
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 02:36:45 -0600 (MDT)
-Date: Wed, 9 Jul 2003 10:36:41 +0200
-Message-ID: <3F057186000008FC@ocpmta8.freegates.net>
-In-Reply-To: <3F03A421000007FB@ocpmta1.freegates.net>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 767E0482B
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  9 Jul 2003 02:42:29 -0600 (MDT)
+Date: Wed, 9 Jul 2003 10:42:27 +0200
+Message-ID: <3F05718600000905@ocpmta8.freegates.net>
+In-Reply-To: <200307082247.36466.deller@gmx.de>
 From: "Joel Soete" <jsoe0708@tiscali.be>
-Subject: Re: [parisc-linux] gcc 3.3.1 ICE
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] stifb
+To: "Helge Deller" <deller@gmx.de>
 Cc: parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -22,14 +22,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Dave,
+> sorry, I can't reproduce it here with current CVS version....
 
-http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11453
+Ah! I will so retry with last 2.5.74-pa1
 
-Thanks for the fix, I will try to co last cvs and rebuild gcc and kernel
-asap.
+Thanks,
+    Joel
 
-Joel
 
 
 ------------------------------------------------------
