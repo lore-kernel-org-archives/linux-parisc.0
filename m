@@ -1,15 +1,16 @@
-From: Richard Henderson <rth@redhat.com>
+From: Randolph Chung <tausq@debian.org>
 Subject: Re: [parisc-linux] gcc-3.[02] alignment problem
-Date: Tue, 16 Jul 2002 13:21:08 -0700
-Message-ID: <20020716132108.B5966__28000.226050108$1416621533$gmane$org@redhat.com>
-References: <200207161701.g6GH1D03023385@hiauly1.hia.nrc.ca> <20020716172255.GM8724@tausq.org>
+Date: Tue, 16 Jul 2002 20:19:57 -0700
+Message-ID: <20020717031957.GE641__15330.1609484062$1416621533$gmane$org@tausq.org>
+References: <200207161701.g6GH1D03023385@hiauly1.hia.nrc.ca> <20020716172255.GM8724@tausq.org> <20020716182408.W27706@parcelfarce.linux.theplanet.co.uk>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
 	parisc-linux@parisc-linux.org, gcc@gcc.gnu.org
-To: Randolph Chung <randolph@tausq.org>
+To: Matthew Wilcox <willy@debian.org>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <20020716172255.GM8724@tausq.org>; from randolph@tausq.org on Tue, Jul 16, 2002 at 10:22:55AM -0700
+In-Reply-To: <20020716182408.W27706@parcelfarce.linux.theplanet.co.uk>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -20,42 +21,35 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Tue, Jul 16, 2002 at 10:22:55AM -0700, Randolph Chung wrote:
->         __u32   tcpdiag_cookie[2]; 
-> #define TCPDIAG_NOCOOKIE (~0U)
-> };
+> > why is the offset of tcpdiag_cookie[0] 44 and not 40?
 > 
-> the code goes on to do:
->         *((struct sock **)&r->id.tcpdiag_cookie) = sk;
-> and
->             sk != *((struct sock **)&req->id.tcpdiag_cookie[0]))
-
-This is absolutely awful.
-
-> the "vomit grade hack" alan mentioned in another post is that in our
-> tree, we have:
+> 0	tcpdiag_sport
+> 2	tcpdiag_dport
+> 4	tcpdiag_src
+> 20	tcpdiag_dst
+> 36	tcpdiag_if
+> 40	tcpdiag_cookie
 > 
-> struct tcpdiag_sockid
-> {
->         __u16   tcpdiag_sport;
->         __u16   tcpdiag_dport;
->         __u32   tcpdiag_src[4];
->         __u32   tcpdiag_dst[4];
->         __u32   tcpdiag_if;
-> #if defined (__hppa__) && defined (__LP64__)
->         char * parisc_hack_to_align_tcpdiag_cookie;
-> #endif
->         __u32   tcpdiag_cookie[2];
+> hmm.. worth checking that dport is at offset 2, not offset 4?
 
-An only marginally better fix is
+oic, it's embedded inside another structure:
 
-	__u32 tcpdiag_cookie[2] __attribute__((aligned(sizeof(void*))));
+struct tcpdiagmsg
+{
+        __u8    tcpdiag_family;
+        __u8    tcpdiag_state;
+        __u8    tcpdiag_timer;
+        __u8    tcpdiag_retrans;
 
-Note that this should be unconditional so that the other
-64-bit ports don't take an alignment trap here too.
+        struct tcpdiag_sockid id;
 
-A much nicer fix would be to, gasp, use a union.
+        __u32   tcpdiag_expires;
+        __u32   tcpdiag_rqueue;
+        __u32   tcpdiag_wqueue;
+        __u32   tcpdiag_uid;
+        __u32   tcpdiag_inode;
+};
 
+that's why it's 44...
 
-
-r~
+randolph
