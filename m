@@ -1,17 +1,21 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from u1snd02p.us.fortis.com (smtp02p.us.fortis.com [167.79.54.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 4873F4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 11:37:13 -0700 (MST)
-Received: from W1PMM02.us.fortis.com (W1PMM02.us.fortis.com [165.245.9.58])
-	by u1snd02p.us.fortis.com (8.11.6+Sun/8.11.6) with ESMTP id h31Iav815401
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 1 Apr 2003 12:37:11 -0600 (CST)
-Message-Id: <se898769.020@internal.us.fortis.com>
-Date: Tue, 01 Apr 2003 12:34:31 -0600
-From: "Derek Ellis" <Derek.Ellis@us.fortis.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Subject: RE: [parisc-linux] soft power and power light on 712/60
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from atlrel8.hp.com (atlrel8.hp.com [156.153.255.206])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 857334829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 11:42:47 -0700 (MST)
+Received: from xatlrelay2.atl.hp.com (xatlrelay2.atl.hp.com [15.45.89.191])
+	by atlrel8.hp.com (Postfix) with ESMTP id 161761C01C78
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 13:42:47 -0500 (EST)
+Received: from xatlbh3.atl.hp.com (xatlbh3.atl.hp.com [15.45.89.188])
+	by xatlrelay2.atl.hp.com (Postfix) with ESMTP id 077E21C000A0
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Apr 2003 13:42:47 -0500 (EST)
+Message-ID: <25C4C6009B5BD5118FF30003470BF7F503501C63@xboi04.boi.hp.com>
+From: "FUHRMAN,SCOTT (HP-Boise,ex1)" <scott.fuhrman@hp.com>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Tue, 1 Apr 2003 13:42:40 -0500 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Sound on C3000
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,70 +27,25 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I have had no heat problems.  The IBM drive is a 68-pin SE drive from '98=
-.  It runs very cool and never gets too hot to touch.  I  put it internal=
-ly since that was easier than finding an unused external enclosure.
+Hi,
 
-Did the soft power & light work with the external enclosure?
+Just wondering if anyone else has gotten sound to work on this box, and
+if so, how.
+
+I ham enjoying a C3000 (400MHz) machine running hppa Debian, with kernel
+2.4.20-32.
+Everything is working except the sound.  Sound server can start up, but
+does not have a device to output to.  
+
+I checked dmesg and /var/log/messages and did not see anything where the
+sound device is being configured, but it looks as though it may be
+suported from the info on parisc-linux.org.  The device is a 
+
+AD1889 sound chip (Analog Devices) according to this page:
+
+ http://hwdb.parisc-linux.org/view.php3?type=machine&name=C3000
+
+Anyway, if anyone has had any success in this matter please do tell!
+
 
 Thanks,
-Derek
-
->>> "Joel Soete" <jsoe0708@tiscali.be> 04/01/03 11:06AM >>>
->
->The only thing unusual about the setup is that I replaced the old 500mb
-HP
->hard drive with a 4.5gig IBM drive with a 68pin-50pin converter.
->
-Hmm it is highly probable.
-
-Four years ago, for a project of upgrade 712 workstation, we asked to HP
-if it was possible to put internal (SE) 4Gb disk. HP said that it was onl=
-y
-supported on 712/100.
-
-Later, I had the opportunity to test Linux on a old 4Gb (SE) external dis=
-k
-with an old 712/60. (Even thought it was the very begining, it still work=
-s
-fine and help me a lot). Then I remember that 'not supported' didn' t mea=
-ns
-that it would not works. So I removed this disk from its enclosure and pu=
-t
-it into the workstation. Well it works but not for a long time: apparentl=
-y
-it warmed too much  but fortunately not too long time (so I can put it ba=
-ck
-in its original enclosure and continu to work). So there are an actual pr=
-oblem
-of heat exchange in this small box?
-
->Is the drive and converter causing the problem, or is there something I
-can
->do software wise to fix this?
->
-For above mentioned project, we also use external SE 4Gb disk with wide (=
-68
-pins) connector without pb. Is your 4.5Gb IBM disk is well of SE type?
-
-hth,
-=20   Joel
-
----------------------------------
-Vous surfez avec une ligne classique ?
-Economisez jusqu'=E0 25% avec Tiscali Complete !
-Offre sp=E9ciale : premi=E8re ann=E9e d'abonnement offerte.
-... Plus d'info sur http://complete.tiscali.be=20
-
-
-
-****************************************************************
-=09		Please Note
-The information in this E-mail message is legally privileged
-and confidential information intended only for the use of the
-individual(s) named above. If you, the reader of this message,
-are not the intended recipient, you are hereby notified that=20
-you should not further disseminate, distribute, or forward this
-E-mail message. If you have received this E-mail in error,
-please notify the sender. Thank you
-*****************************************************************
