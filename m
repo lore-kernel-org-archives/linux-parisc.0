@@ -1,19 +1,23 @@
-Return-Path: <grundler@lackof.org>
-Received: from colo.lackof.org (colo.lackof.org [198.49.126.79])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5711E4840
-	for <parisc-linux@lists.parisc-linux.org>;
-	Mon, 19 Apr 2004 00:11:25 -0600 (MDT)
-Date: Mon, 19 Apr 2004 00:11:20 -0600
-From: Grant Grundler <grundler@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] RE: [parisc-linux-cvs] linux-2.4 deller
-Message-ID: <20040419061120.GE28684@colo.lackof.org>
-References: <20040418172504.99DC9494571@palinux.hppa>
-	<40711E550000837C@ocpmta2.freegates.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <40711E550000837C@ocpmta2.freegates.net>
-Cc: parisc-linux@lists.parisc-linux.org
+Return-Path: <customercare@icicibank.com>
+Received: from mail3.abc.com (unknown [203.101.90.19])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3084A4840
+	for <parisc-linux@parisc-linux.org>;
+	Mon, 19 Apr 2004 00:56:52 -0600 (MDT)
+Received: from masssmtp.icicibank.com ()
+	by mail3.abc.com  with ESMTP id i3J6ulE12516
+	for <parisc-linux@parisc-linux.org>;
+	Mon, 19 Apr 2004 12:26:47 +0530 (IST)
+Received: from andtl02 (from [10.16.44.63])
+	by masssmtp.icicibank.com  with ESMTP id i3J6q8a2017669
+	for <parisc-linux@parisc-linux.org>; Mon, 19 Apr 2004 12:22:15 +0530
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="----_NextPart_88980249_boundary"
+Date: Mon, 19 Apr 2004 12:22:20 +0530
+From: "Customer Care" <customercare@icicibank.com>
+To: "parisc-linux@parisc-linux.org" <parisc-linux@parisc-linux.org>
+Message-ID: <2004419_@TLZ20877079_@TLZ>
+Cc: 
+Subject: [parisc-linux] <AUTO> {ICICICARE#006-685-325}notice!
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,18 +27,101 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Apr 19, 2004 at 08:01:32AM +0200, Joel Soete wrote:
-> Hello all,
-> 
-> btw 2.4.26 is out :); I already do the merge exercise and boot it with success
-> on a b2k (32bit up). Would it help that I prepare the patch against upstream
-> or useless?
+This is a multi-part message in MIME format.
 
-You shouldn't need to.
+------_NextPart_88980249_boundary
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-IIRC, willy normally commits the new upstream to a seperate branch and
-then updates the main line from that. He's been pretty good about it
-and will get to it soon enough.
+DQoNClRoYW5rIHlvdSBmb3Igd3JpdGluZyB0byB1cy4gV2UgYXNzdXJlIHlvdSB0aGF0IHdlIGFy
+ZSB3b3JraW5nIG9uIHlvdXIgcmVxdWVzdCBhbmQgc2hhbGwgcmV2ZXJ0IHdpdGggYW4gYXBwcm9w
+cmlhdGUgcmVzcG9uc2Ugc29vbi5NZWFud2hpbGUsIHNob3VsZCB5b3Ugd2FudCB0byBzcGVhayB3
+aXRoIHVzLCBwbGVhc2UgZmVlbCBmcmVlIHRvIGNhbGwgb24gb3VyIDI0IGhvdXIgQ3VzdG9tZXIg
+Q2FyZSBudW1iZXJzLiBUbyBoZWxwIHVzIHNlcnZlIHlvdSBiZXR0ZXIsIGtpbmRseSBtZW50aW9u
+IHlvdXIgY29tcGxldGUgYWNjb3VudCBudW1iZXIgYW5kIGFueSByZWZlcmVuY2UgbnVtYmVyIHlv
+dSBtYXkgaGF2ZSB3aXRoIHJlc3BlY3QgdG8geW91ciBxdWVyeSBpbiBhbGwgZnV0dXJlIGNvcnJl
+c3BvbmRlbmNlLiANCiBLaW5kbHkgdmlzaXQgb3VyIHdlYnNpdGUgd3d3LmljaWNpYmFuay5jb20g
+Zm9yIGNvbXByZWhlbnNpdmUgaW5mb3JtYXRpb24gb24gb3VyIHByb2R1Y3RzIGFuZCBzZXJ2aWNl
+cy4gIFdpdGggcmVnYXJkcywNCg0KQ3VzdG9tZXIgQ2FyZSBJQ0lDSSBCYW5rIExpbWl0ZWQNCg0K
+VGhpcyBjb21tdW5pY2F0aW9uIGJlaW5nIHNlbnQgYnkgSUNJQ0kgQmFuayBMdGQuIGlzIHByaXZp
+bGVnZWQgYW5kIGNvbmZpZGVudGlhbCwgYW5kIGlzIGRpcmVjdGVkIHRvIGFuZCBmb3IgdGhlIHVz
+ZSBvZiB0aGUgYWRkcmVzc2VlIG9ubHkuIElmIHRoaXMgbWVzc2FnZSByZWFjaGVzIGFueW9uZSBv
+dGhlciB0aGFuIHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHdlIHJlcXVlc3QgdGhlIHJlYWRlciBu
+b3QgdG8gcmVwcm9kdWNlLCBjb3B5LCBkaXNzZW1pbmF0ZSBvciBpbiBhbnkgbWFubmVyIGRpc3Ry
+aWJ1dGUgaXQuIFdlIGZ1cnRoZXIgcmVxdWVzdCBzdWNoIHJlY2lwaWVudCB0byBub3RpZnkgdXMg
+aW1tZWRpYXRlbHkgYnkgcmV0dXJuIGVtYWlsIGFuZCBkZWxldGUgdGhlIG9yaWdpbmFsIG1lc3Nh
+Z2UuIElDSUNJIEJhbmsgTHRkLiBkb2VzIG5vdCBndWFyYW50ZWUgdGhlIHNlY3VyaXR5IG9mIGFu
+eSBpbmZvcm1hdGlvbiB0cmFuc21pdHRlZCBlbGVjdHJvbmljYWxseSBhbmQgaXMgbm90IGxpYWJs
+ZSBmb3IgdGhlIHByb3BlciwgdGltZWx5IGFuZCBjb21wbGV0ZSB0cmFuc21pc3Npb24gdGhlcmVv
+Zi4gQmVmb3JlIG9wZW5pbmcgYW55IGF0dGFjaG1lbnRzIHBsZWFzZSBjaGVjayB0aGVtIGZvciB2
+aXJ1c2VzIGFuZCBkZWZlY3RzLg0KDQogDQoNCg==
+------_NextPart_88980249_boundary
+Content-Type: text/HTML;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-thanks,
-grant
+PEhUTUw+PEhFQUQ+PE1FVEEgTkFNRT0iR0VORVJBVE9SIiBDb250ZW50PSJNaWNyb3NvZnQgREhU
+TUwgRWRpdGluZyBDb250cm9sIj48VElUTEU+PC9USVRMRT48L0hFQUQ+PEJPRFk+PEZPTlQgc2l6
+ZT0zPjxQPjxTUEFOIHN0eWxlPSJGT05ULVNJWkU6IDExcHQ7IENPTE9SOiBibGFjazsgRk9OVC1G
+QU1JTFk6ICdadXJpY2ggQlQnOyBtc28tYmlkaS1mb250LXNpemU6IDEwLjBwdDsgbXNvLWJpZGkt
+Zm9udC1mYW1pbHk6IEFyaWFsIj5UaGFuayB5b3UgZm9yIHdyaXRpbmcmbmJzcDt0byB1cy4gV2Um
+bmJzcDthc3N1cmUmbmJzcDt5b3UgdGhhdCB3ZSZuYnNwO2FyZSB3b3JraW5nIG9uIHlvdXImbmJz
+cDtyZXF1ZXN0IGFuZCBzaGFsbCZuYnNwO3JldmVydCZuYnNwO3dpdGggYW4gYXBwcm9wcmlhdGUg
+cmVzcG9uc2Ugc29vbi48P3htbDpuYW1lc3BhY2UgcHJlZml4ID0gbyBucyA9ICJ1cm46c2NoZW1h
+cy1taWNyb3NvZnQtY29tOm9mZmljZTpvZmZpY2UiIC8+PG86cD48L286cD48L1NQQU4+PC9QPjxQ
+IGNsYXNzPU1zb05vcm1hbCBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PFNQQU4gc3R5bGU9
+IkNPTE9SOiBibGFjazsgbXNvLWJpZGktZm9udC1mYW1pbHk6IEFyaWFsIj48Rk9OVCBmYWNlPSJa
+dXJpY2ggQlQiPk1lYW53aGlsZSwgc2hvdWxkIHlvdSB3YW50IHRvIHNwZWFrIHdpdGgmbmJzcDt1
+cywmbmJzcDtwbGVhc2UgZmVlbCBmcmVlIHRvIGNhbGwgb24gb3VyJm5ic3A7PEk+PEEgaHJlZj0i
+aHR0cDovL3d3dy5pY2ljaWJhbmsuY29tL3Bmc3VzZXIvY3VzdG9tZXIvY3VzY2FyZW5vcy5odG0i
+PjI0IGhvdXIgQ3VzdG9tZXIgQ2FyZSBudW1iZXJzPC9BPjwvST4uPG86cD48L286cD48L0ZPTlQ+
+PC9TUEFOPjwvUD48UCBjbGFzcz1Nc29Ob3JtYWwgc3R5bGU9Ik1BUkdJTjogMGluIDBpbiAwcHQi
+PjxTUEFOIHN0eWxlPSJDT0xPUjogYmxhY2s7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+
+PEZPTlQgZmFjZT0iWnVyaWNoIEJUIj4mbmJzcDs8bzpwPjwvbzpwPjwvRk9OVD48L1NQQU4+PC9Q
+PjxQIGNsYXNzPU1zb0JvZHlUZXh0MiBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PEZPTlQg
+ZmFjZT0iWnVyaWNoIEJUIj5UbyBoZWxwIHVzIHNlcnZlIHlvdSBiZXR0ZXIsIGtpbmRseSBtZW50
+aW9uIHlvdXIgY29tcGxldGUgYWNjb3VudCBudW1iZXIgYW5kIGFueSByZWZlcmVuY2UgbnVtYmVy
+IHlvdSBtYXkgaGF2ZSB3aXRoIHJlc3BlY3QgdG8geW91ciBxdWVyeSBpbiBhbGwgZnV0dXJlIGNv
+cnJlc3BvbmRlbmNlLiZuYnNwOzxCUj4mbmJzcDs8L0ZPTlQ+PC9QPjxQIGNsYXNzPU1zb05vcm1h
+bCBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PFNQQU4gc3R5bGU9IkNPTE9SOiBibGFjazsg
+bXNvLWJpZGktZm9udC1mYW1pbHk6IEFyaWFsIj48Rk9OVCBmYWNlPSJadXJpY2ggQlQiPktpbmRs
+eSB2aXNpdCBvdXIgd2Vic2l0ZSA8L0ZPTlQ+PEEgaHJlZj0iaHR0cDovL3d3dy5pY2ljaWJhbmsu
+Y29tIj48Rk9OVCBmYWNlPSJadXJpY2ggQlQiPnd3dy5pY2ljaWJhbmsuY29tPC9GT05UPjwvQT48
+Rk9OVCBmYWNlPSJadXJpY2ggQlQiPiBmb3IgY29tcHJlaGVuc2l2ZSBpbmZvcm1hdGlvbiBvbiBv
+dXIgcHJvZHVjdHMgYW5kIHNlcnZpY2VzLiA8bzpwPjwvbzpwPjwvRk9OVD48L1NQQU4+PC9QPjxQ
+IGNsYXNzPU1zb05vcm1hbCBzdHlsZT0iTUFSR0lOOiAwaW4gMGluIDBwdCI+PEZPTlQgZmFjZT0i
+WnVyaWNoIEJUIj4mbmJzcDs8bzpwPjwvbzpwPjwvRk9OVD48L1A+PFAgY2xhc3M9TXNvTm9ybWFs
+IHN0eWxlPSJNQVJHSU46IDBpbiAwaW4gMHB0Ij48Rk9OVCBmYWNlPSJadXJpY2ggQlQiPjxTVFJP
+Tkc+PFNQQU4gc3R5bGU9IkZPTlQtV0VJR0hUOiBub3JtYWw7IENPTE9SOiBibGFjazsgbXNvLWJp
+ZGktZm9udC1mYW1pbHk6IEFyaWFsIj5XaXRoPC9TUEFOPjwvU1RST05HPjxCPjxTUEFOIHN0eWxl
+PSJDT0xPUjogYmxhY2s7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+Jm5ic3A7PC9TUEFO
+PjwvQj48U1RST05HPjxTUEFOIHN0eWxlPSJGT05ULVdFSUdIVDogbm9ybWFsOyBDT0xPUjogYmxh
+Y2s7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+cmVnYXJkcyw8L1NQQU4+PC9TVFJPTkc+
+PEI+PFNQQU4gc3R5bGU9IkNPTE9SOiBibGFjazsgbXNvLWJpZGktZm9udC1mYW1pbHk6IEFyaWFs
+Ij48bzpwPjwvbzpwPjwvU1BBTj48L0I+PC9GT05UPjwvUD48UD48U1BBTiBzdHlsZT0iRk9OVC1T
+SVpFOiAxMXB0OyBDT0xPUjogYmxhY2s7IEZPTlQtRkFNSUxZOiAnWnVyaWNoIEJUJzsgbXNvLWJp
+ZGktZm9udC1zaXplOiAxMC4wcHQ7IG1zby1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+Q3VzdG9t
+ZXImbmJzcDtDYXJlJm5ic3A7PG86cD48L286cD48L1NQQU4+PC9QPjxQIHN0eWxlPSJNQVJHSU4t
+Qk9UVE9NOiAxMnB0Ij48U1BBTiBzdHlsZT0iRk9OVC1TSVpFOiAxMXB0OyBDT0xPUjogYmxhY2s7
+IEZPTlQtRkFNSUxZOiAnWnVyaWNoIEJUJzsgbXNvLWJpZGktZm9udC1zaXplOiAxMC4wcHQ7IG1z
+by1iaWRpLWZvbnQtZmFtaWx5OiBBcmlhbCI+SUNJQ0kgQmFuayBMaW1pdGVkPEJSPjxCUj48L1NQ
+QU4+PFNQQU4gc3R5bGU9IkZPTlQtU0laRTogNy41cHQ7IENPTE9SOiBibGFjazsgRk9OVC1GQU1J
+TFk6ICdadXJpY2ggQlQnOyBtc28tYmlkaS1mb250LWZhbWlseTogQXJpYWwiPlRoaXMgY29tbXVu
+aWNhdGlvbiBiZWluZyBzZW50IGJ5IElDSUNJIEJhbmsgTHRkLiBpcyBwcml2aWxlZ2VkIGFuZCBj
+b25maWRlbnRpYWwsIGFuZCBpcyBkaXJlY3RlZCB0byBhbmQgZm9yIHRoZSB1c2Ugb2YgdGhlIGFk
+ZHJlc3NlZSBvbmx5LiBJZiB0aGlzIG1lc3NhZ2UgcmVhY2hlcyBhbnlvbmUgb3RoZXIgdGhhbiB0
+aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB3ZSByZXF1ZXN0IHRoZSByZWFkZXIgbm90IHRvIHJlcHJv
+ZHVjZSwgY29weSwgZGlzc2VtaW5hdGUgb3IgaW4gYW55IG1hbm5lciBkaXN0cmlidXRlIGl0LiBX
+ZSBmdXJ0aGVyIHJlcXVlc3Qgc3VjaCByZWNpcGllbnQgdG8gbm90aWZ5IHVzIGltbWVkaWF0ZWx5
+IGJ5IHJldHVybiBlbWFpbCBhbmQgZGVsZXRlIHRoZSBvcmlnaW5hbCBtZXNzYWdlLiBJQ0lDSSBC
+YW5rIEx0ZC4gZG9lcyBub3QgZ3VhcmFudGVlIHRoZSBzZWN1cml0eSBvZiBhbnkgaW5mb3JtYXRp
+b24gdHJhbnNtaXR0ZWQgZWxlY3Ryb25pY2FsbHkgYW5kIGlzIG5vdCBsaWFibGUgZm9yIHRoZSBw
+cm9wZXIsIHRpbWVseSBhbmQgY29tcGxldGUgdHJhbnNtaXNzaW9uIHRoZXJlb2YuIEJlZm9yZSBv
+cGVuaW5nIGFueSBhdHRhY2htZW50cyBwbGVhc2UgY2hlY2sgdGhlbSBmb3IgdmlydXNlcyBhbmQg
+ZGVmZWN0cy48L1NQQU4+PFNQQU4gc3R5bGU9IkZPTlQtU0laRTogOHB0OyBDT0xPUjogYmxhY2s7
+IEZPTlQtRkFNSUxZOiAnWnVyaWNoIEJUJzsgbXNvLWJpZGktZm9udC1zaXplOiA3LjVwdDsgbXNv
+LWJpZGktZm9udC1mYW1pbHk6IEFyaWFsIj48bzpwPjwvbzpwPjwvU1BBTj48L1A+PFA+Jm5ic3A7
+PC9QPjwvRk9OVD48L0JPRFk+PC9IVE1MPg==
+
+------_NextPart_88980249_boundary--
