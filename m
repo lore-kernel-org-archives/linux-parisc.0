@@ -1,78 +1,37 @@
-Received: from boispop1.bois.uswest.net (boispop1.bois.uswest.net [207.108.224.1])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id WAA16461
-	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 22:58:34 -0700
-Sender: rbrad@puffin.external.hp.com
-Message-ID: <3A1B6D93.3B7D2474@uswest.net>
-Date: Tue, 21 Nov 2000 22:54:11 -0800
-From: Ryan Bradetich <rbradetich@uswest.net>
-MIME-Version: 1.0
-To: Grant Grundler <grundler@cup.hp.com>
-CC: Matthew Wilcox <matthew@wil.cx>, parisc-linux@puffin.external.hp.com
+Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id XAA16896
+	for <parisc-linux@puffin.external.hp.com>; Tue, 21 Nov 2000 23:49:00 -0700
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel2.hp.com (Postfix) with ESMTP id BAF9711E
+	for <parisc-linux@puffin.external.hp.com>; Wed, 22 Nov 2000 01:51:15 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id XAA13575 for parisc-linux@puffin.external.hp.com; Tue, 21 Nov 2000 23:50:03 -0700 (MST)
+Date: Tue, 21 Nov 2000 23:50:03 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200011220650.XAA13575@udlkern.fc.hp.com>
+To: parisc-linux@puffin.external.hp.com
 Subject: Re: [parisc-linux] CVS linux Vs. -test10
-References: <200011212124.NAA20426@milano.cup.hp.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Grant Grundler wrote:
 
-> Matthew Wilcox wrote:
-> ...
-> > Someone (probably me) sends him a patch.  He told me at the Toronto
-> > show that he was quite happy to apply anything that only touched those
-> > two directories. (oh, and drivers/gsc wouldn't be a problem either).
-> > Can I just check that no-one wants to rename drivers/gsc again?  :-)
->
-> Hi Mathew,
-> I don't and it's a good question.
-> I would like a few files moved:
->
-> arch/parisc/kernel/ccio-dma.c    -> drivers/gsc/ccio-dma.c
-> arch/parisc/kernel/ccio-rm-dma.c -> drivers/gsc/ccio-rm-dma.c
+> Better to get our house in order before we patchbomb Linus, I think.
+> Renames are hard enough in CVS; renames in diff -u format are a real
+> stinker :-)
 
-Grant,
+In that case, we need to do some cleanup first.  I've been lobbying for
+the removal of the almost empty arch/parisc/real directory, and its few
+remaining valid files moved to the kernel directory.  There are also a
+fair number of dead files.  Every file that is not currently involved in
+the build should be removed, unless a good case for it remaining can be
+made.  If the reason to keep it is not a long term reason, then that file
+should not be sent to Linus (It sounds like it is a lot easier to add
+files rather than remove/rename them).
 
-Do you really want to merget the ccio-rm-dma.c file into Linus's tree?
-It is just a reference file used to construct the real ccio-dma.c file ... I
-don't believe it is referenced anywhere.
+If there are any files that are currently in use, but which we know
+will eventually be removed, perhaps we should consider what to do with
+that file (although I don't know of any files in this category at the
+moment).
 
-I'll double check this in the morning.
-
-- Ryan
-
-
->     ccio will *always* be associated with a GSC bus since that's
->     the secondary bus. And ccio supports devices below dino.c which
->     already lives in drivers/gsc.
->
-> arch/parisc/kernel/lba_pci.c     -> drivers/ropes/lba_pci.c
-> arch/parisc/kernel/sba_iommu.c   -> drivers/ropes/sba_iommu.c
-> arch/parisc/kernel/iosapic.c     -> drivers/ropes/iosapic.c
->
->     lba/sba code is equivalent to dino/ccio code for another set
->     of platforms. And long term, I'm certain iosapic.c does not
->     belong under arch/parisc. I can do this move if there are no
->     major objections.
->
-> Any reason why we couldn't do these moves *after* you submit a patch?
->
-> FWIW, here are issues I see with merging IA64 iosapic code with mine:
-> o iosapic "discovery" (I invented register_iosapic() interface for parisc)
-> o parisc PDC calls (initialization)
-> o interrupt policy decisions (eg EOI generation and picking a CPU)
-> o I don't have time to do it in the near future.
->
-> Folks working on IA64 stuff inside HP need to think about:
-> (a) if they want to do the merge any time soon
-> (b) which iosapic.c they want to start with
-> (c) where the final version should live
->
-> thanks,
-> grant
->
-> Grant Grundler
-> Unix Systems Enablement Lab
-> +1.408.447.7253
->
-> ---------------------------------------------------------------------------
-> To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
-> `unsubscribe' as the subject.
+John Marvin
+jsm@fc.hp.com
