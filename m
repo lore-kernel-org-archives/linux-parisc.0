@@ -1,56 +1,61 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel6.hp.com (atlrel6.hp.com [192.151.27.8])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 92CB248EE
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 01:12:46 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel6.hp.com (Postfix) with ESMTP id 0C5441F78F
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 03:12:46 -0400 (EDT)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id BAA15478
-	for parisc-linux@lists.parisc-linux.org; Sun, 30 Sep 2001 01:12:45 -0600 (MDT)
-Date: Sun, 30 Sep 2001 01:12:45 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200109300712.BAA15478@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 720 - some progress
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from mail.zabbadoz.net (mail.zabbadoz.net [195.2.176.194])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 30C1648EE
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 30 Sep 2001 01:43:19 -0600 (MDT)
+Date: Sun, 30 Sep 2001 09:43:17 +0200 (CEST)
+From: "Bjoern A. Zeeb" <bzeeb+hplinux@zabbadoz.net>
+To: <parisc-linux@lists.parisc-linux.org>
+Cc: <thunder7@xs4all.nl>
+Message-ID: <Pine.BSF.4.30.0109300915230.69485-100000@noc.zabbadoz.net>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] puffin.external.hp.com,... unreachable through quest
 List-ID: <linux-parisc.vger.kernel.org>
 
-> It looks (reads) as if it possible to return to the faulting instruction
-> (MFCTL in this case) without executing it.  If so, then adjusting the
-> instruction (and space) queues within the fault handler can be avoided;
-> also avoiding problems with finding the correct "following instruction"
-> address.
+Hi,
 
-Using the nullify method you talk about does work, but the normal
-convention is to advance the pc queue (there are some performance
-advantages, particularly in the case where the instruction we are
-emulating is in the delay slot of a branch).  The problem you describe
-finding the following instruction doesn't exist.  You are correct about
-the space queue though, but only in the case for a delay slot in the
-branch to the gateway page.  The correct method of advancing the queue is
-the one that has been proposed in the various patches, i.e.:
+after a report on nanog I tired to help to figure out why
+puffin.external.hp.com, www.parisc-linux.org and others are not
+reachable for some people out there.
 
-	regs->iaoq[0] = regs->iaoq[1];
-	regs->iaoq[1] += 4;
+It seems there is a problem with QUEST/HP in Atlanta or behind.
 
-To be perfectly correct, this should be added:
+Traces to HP seem to be prevented by filters but even ping does not
+work if I check this directly from QUEST router in Atlanta via
+looking glass ( http://stat.qwest.net/flash/lg.cfm ).
 
-	regs->iasq[0] = regs->iasq[1];
+--- trace from quest router in atlanta ---
+traceroute to puffin.external.hp.com (192.25.206.4), 30 hops max, 40 byte packets
+ 1  atl-edge-17.inet.qwest.net (205.171.21.190)  0.514 ms  0.475 ms 0.469 ms
+ 2  65.112.33.30 (65.112.33.30)  1.460 ms  1.436 ms  1.425 ms
+ 3  * * *
+--- ping from quest router in atlanta ---
+PING puffin.external.hp.com (192.25.206.4): 56 data bytes
+--- puffin.external.hp.com ping statistics ---
+3 packets transmitted, 0 packets received, 100% packet loss
+--- snipp ---
 
-But, again, that last is only necessary if someone actually puts a mfctl
-in the delay slot of the branch to the gateway page (a kernel call) and
-since kernel calls are already provided, we know that no such thing
-actually happens, nor is it likely to happen unless someone handcodes
-their own kernel call. I would put the line in though.
+I do not directly see this problem because at the momenet I am comming
+in via uunet but two other upstreams I checked here in Germany use
+kpn/quest and thus cannot reach anything in parisc related in
+192.25.206.0 :( (and most likely more).
 
-Here is why there is not a problem advancing the queue as above:
-the only way that "regs->iaoq[1] += 4" would do the wrong thing would
-be if we were emulating a branch instruction. Since we know we are
-emulating a mfctl instruction, this is not the case. Note that if
-someone needs to emulate a branch instruction, computing the new
-value of iaoq[1] would be part of that emulation.
+All those who use kpn/quest or have it as an upstream seem to be
+cut off from mailing lists/web/cvs ?? :((
 
-John Marvin
-jsm@fc.hp.com
+It seems the problem has been there since Sep 25th.
+
+Can anybody please try to solve the problem/get information about this
+from other side (HP internal etc. ;) because even email-contacts from
+whois do not work from what I got told :( and this seems to be one of
+the bigger problems (when taking 5 days).
+
+Trace back from puffin or www.parisc-linux.org to 65.112.33.30 might
+help to better localize the problem (if there are no internal filters
+in hp bbn that prevent traces)
+
+Thanks in advance.
+
+-- 
+Bjoern A. Zeeb				bzeeb at Zabbadoz dot NeT
+56 69 73 69 74				http://www.zabbadoz.net/
