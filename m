@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from baldric (baldric.uwo.ca [129.100.10.225])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2A25F4871
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 26 Jul 2003 12:04:16 -0600 (MDT)
-Date: Sat, 26 Jul 2003 14:02:29 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] itlb miss handler optimizations!
-Message-ID: <20030726180229.GH31744@systemhalted>
-References: <20030725070449.GB13017@systemhalted> <20030725114615.GI1485@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20030725114615.GI1485@parcelfarce.linux.theplanet.co.uk>
+Received: from yandex.ru (pcp01006106pcs.ladson01.sc.comcast.net [68.59.45.147])
+	by dsl2.external.hp.com (Postfix) with SMTP id 24DE7483F
+	for <parisc-linux@parisc-linux.org>; Sat, 26 Jul 2003 18:26:56 -0600 (MDT)
+Date: Sun, 27 Jul 2003 00:22:18 +0000
+From: Diaz@adaptec.com
+To: Parisc-linux <parisc-linux@parisc-linux.org>
+References: <ELFI02KABE5JGLGL@parisc-linux.org>
+In-Reply-To: <ELFI02KABE5JGLGL@parisc-linux.org>
+Message-ID: <9L5FB900E454FI15@adaptec.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=Windows-1251
+Subject: [parisc-linux] new mail            y2BL2IHc
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +22,33 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> > @@ -1882,6 +1884,15 @@ kernel_bad_space:
-> >  dbit_fault:
-> >  	b               intr_save
-> >  	ldi             20,%r8
-> > +
-> > +itlb_user_fault:
-> > +	/* User tlb missed for other than his own space. Optimization. */
-> > +#ifdef __LP64__
-> > +	cmpb,=		%r0,t0,itlb_miss_common20 /* backward */
-> > +#else
-> > +	cmpb,=		%r0,t0,itlb_miss_common11 /* backward */
-> > +#endif
-> > +	nop
-> 
-> can't do that.  we have three sets of routines -- itlb_miss_common_11,
-> itlb_miss_common_20 and itlb_miss_common_20w.  we select between _20w
-> or not at compile time (if it's 64-bit, it's PA 2.0 Wide), but select
-> between _20 and _11 at boot time (fault_vector_20 vs fault_vector_11).
-> 
-> shame on you, you didn't even try assembling it ;-)
+Мы рады предложить вам новый бесплатный почтовый сервис http://www.mail15.com. Его отличительные особенности:
+1) размер ящика 15 мб;
+2) защищенность и надежность;
+3) возможность использования любых почтовых программ(POP,IMAP,SMTP);
+4) доступ из любого места в любое время;
+5) простой и доступный вебинтерфейс с ПОЛНЫМ ОТСУТСТВИЕМ РЕКЛАМЫ;
+6) антивирусный и антиспамовый контроль;
+7) мгновенная пересылка почты.
 
-I'll take a look at that and rewrite the patch. It was 3AM when I
-finished it and didn't bother to compile it as I passed out on the
-bed ;)
+Если вы не хотите получать более данную рассылку, пишите mailto:unsubscribe@mail15.com?subject=unsubscribe
 
-c.
+*************
+
+ We are glad to invite you at new free mail service http://www.mail15.com. The advantages of this service are:
+ 1) mailbox, up to 15 Mb;
+ 2) absolute privacy and high reliability;
+ 3) ability to use mail clients (POP3, IMAP4, SMTP);
+ 4) access from anywhere, anytime;
+ 5) flexible light-weight web interface without advertising banners;
+ 6) antivirus and antispam control;
+ 7) fast mail transfer;
+ 8) high speed network channel;
+ 9) flexible light-weight web interface;
+ 10) wide spread ability of mail filtering and forwarding mail;
+ 11) clock around support;
+
+ If you wish to be removed:
+mailto:unsubscribe@mail15.com?subject=unsubscrib
+
+7wZ2T53RI7
