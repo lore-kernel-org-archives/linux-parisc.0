@@ -1,17 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from webmail.tiscalinet.be (webmail2.tiscali.be [212.35.2.201])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2B40748A4
-	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 09:56:54 -0600 (MDT)
-To: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] compiling kernels with gcc-3.1
-Message-ID: <1026748610.3d32f0c2dec80@webmail.tiscalinet.be>
-Date: Mon, 15 Jul 2002 17:56:50 +0200 (CEST)
-From: joel.soete@freebel.net
-Cc: joel.soete@freebel.net, parisc-linux@parisc-linux.org
-References: <20020712073628.GB8838@tausq.org> <1026467388.3d2ea63c0ac65@webmail.tiscalinet.be> <20020712150139.GC8838@tausq.org> <1026491023.3d2f028f991a1@webmail.tiscalinet.be> <1026716599.3d3273b741097@webmail.tiscalinet.be> <1026717872.3d3278b080023@webmail.tiscalinet.be> <20020715150601.GG10191@tausq.org>
-In-Reply-To: <20020715150601.GG10191@tausq.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
+	by dsl2.external.hp.com (Postfix) with ESMTP id F3A0C489C
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Jul 2002 10:12:05 -0600 (MDT)
+Date: Mon, 15 Jul 2002 09:15:26 -0700
+From: Randolph Chung <tausq@debian.org>
+To: Matthew Wilcox <willy@debian.org>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	rhirst@linuxcare.com, grundler@dsl2.external.hp.com,
+	varenet@esiee.fr, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] SMP (in)stability
+Message-ID: <20020715161526.GI8724@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+References: <200207101707.g6AH7xMS010810@hiauly1.hia.nrc.ca> <200207101744.g6AHiKW0011045@hiauly1.hia.nrc.ca> <20020715150543.M27706@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020715150543.M27706@parcelfarce.linux.theplanet.co.uk>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,29 +26,11 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Quoting Randolph Chung <randolph@tausq.org>:
+> hrm.  i wonder what happens when we run off the top of the stack ...
 
-> > > Hmm I am also curious to test your .config file?
-> 
-> i'm using the default config...
-> 
-> arch/parisc/debian-config/64-smp
+we seem to handle this properly at least most of the time.
 
-I will try (but I need to add md support now)
+i have tried various recursive function call cases and at least simple
+tests don't crash the system (we just get a segfault)
 
-> 
-> > How do you build gcc (3.1.1) natively or as crosscompiler (I do the
-> last may be
-> > it is the problem?)?
-> 
-> cross-compiler, hppa-linux->hppa64-linux
-I just do hppa-linux->hppa-linux?
-
-So I will first change my config file and let you inform.
-
-Thanks for info,
-    Joel
-
-
--------------------------------------------------
-This mail sent through Tiscali Webmail (http://webmail.tiscali.be)
+randolph
