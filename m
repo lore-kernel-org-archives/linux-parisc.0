@@ -1,64 +1,48 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from leo.uni-sw.gwdg.de (leo.uni-sw.gwdg.de [134.76.205.152])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 42C92482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Jun 2001 05:18:09 -0600 (MDT)
-Date: Mon, 11 Jun 2001 13:17:39 +0200 (CEST)
-From: Peter Weilbacher <weilbach@uni-sw.gwdg.de>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Re: Kernel faults on boot
-In-Reply-To: <20010610140927.C16532@linuxcare.com>
-Message-ID: <Pine.LNX.4.33.0106111249020.9668-100000@leo.uni-sw.gwdg.de>
+Received: from mailer (mailer.berkom.de [141.39.13.2])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0F488482A
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Jun 2001 05:33:46 -0600 (MDT)
+Received: from peelnb (peel-nb.berkom.de [141.39.12.118])
+	by mailer (8.11.2/0.0.0) with SMTP id f5BBXY118264
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 11 Jun 2001 13:33:34 +0200 (MET DST)
+From: "Nicolai Leymann" <n.leymann@berkom.de>
+To: <parisc-linux@lists.parisc-linux.org>
+Subject: AW: [parisc-linux] Re: Kernel faults on boot
+Date: Mon, 11 Jun 2001 13:34:42 +0200
+Message-ID: <NDBBKPOMPCLCKIFPPHMNOEFDCOAA.n.leymann@berkom.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="us-ascii"
+In-Reply-To: <Pine.LNX.4.33.0106111249020.9668-100000@leo.uni-sw.gwdg.de>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, 10 Jun 2001, Richard Hirst wrote:
+Hi,
 
-> On Fri, Jun 08, 2001 at 07:28:51PM +0200, Peter Weilbacher wrote:
-> > I have played with a 712/60 and had the same problem as Frank. I got
-> > it installed over the first reboot, but after a the next one on
-> > every reboot it crashed with Kernel faults at cron.
-> >
-> > Now I have reinstalled and I do not get over the reboot. Is it
-> > explained somewhere, which I need to write down, to help you debug
-> > the problem? (I guess it doesn't make it into any logs, which I
-> > could look at by putting the disk on another machine.)
+> -----Ursprungliche Nachricht-----
+> Von: parisc-linux-admin@lists.parisc-linux.org
+> [mailto:parisc-linux-admin@lists.parisc-linux.org]Im Auftrag von Peter
+> Weilbacher
+> Gesendet: Montag, 11. Juni 2001 13:18
+> An: Richard Hirst
+> Cc: parisc-linux@lists.parisc-linux.org
+> Betreff: Re: [parisc-linux] Re: Kernel faults on boot
 >
-> I expect to get my hands on a 712 very soon, so I'll see if I can
-> reproduce this problem.  So far as what you can write down for me...
-> Usually a kernel crash gives a stack dump followed by the fault type
-> and address, then a bunch of registers.  I'm not too interested in the
-> stack dump (which has probably scrolled off the screen, anyway), but
-> everything after the stack dump would be useful.
+>
+> On Sun, 10 Jun 2001, Richard Hirst wrote:
+>
+> > On Fri, Jun 08, 2001 at 07:28:51PM +0200, Peter Weilbacher wrote:
+> > > I have played with a 712/60 and had the same problem as Frank. I got
+> > > it installed over the first reboot, but after a the next one on
+> > > every reboot it crashed with Kernel faults at cron.
+> > >
+I've exactly the same problem on a 715/64. I installed 0.9 and the machine
+crashes after the reboot while starting cron. Unfortunately I haven't had
+the time to check this in detail.
 
-Hmm, it seems that the numbers change every time, but here are the
-ones from the last instance:
+    Nic
 
-	Kernel Fault: Code=15 regs=1051ca80 (Addr=1dc0ce18)
-
-	     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-	PSW: 00000000000001000000000000001111
-	r0-3o 00000000 10236000 10193d70 1dc0cd18
-	r4-7o 146fc000 102fe13c 00000001 00000100
-	r8-11o 4020b1a8 00000000 00000004 146ff000
-	r12-15o 00000100 00000030 00003000 102fe138
-	r16-19o 00000080 1051c908 00000001 14786000
-	r20-23o 146fc000 102959f8 101da1d4 00000000
-	r24-27o 000000ff 1dc0ce18 146fc000 10268010
-	r28-31o 00001920 00000004 1051ccc0 10192c78
-	sr0-3o 00000000 0000012a 00000000 0000012a
-	sr4-7o 00000000 00000000 00000000 00000000
-
-	IASQ: 00000000 00000000 IAOQ: 10236234 10236238
-	 IIR: 0f221033    ISR: 00000000  IOR: 1dc0ce18
-	 ORIG_R28: 1005f210
-
-Phew, quite a work to type all this stuff, I am glad that you are
-not interested in the stack... Perhaps this is useful.
-
-In the meantime I noticed that about every 6th time it boots up
-without crashing, but the keyboard setting from the installation
-(German) was obviously not saved.
-
-Peter.
+--
+Nicolai Leymann                   Mail:   nicolai.leymann@telekom.de
+T-Nova Berkom                     Phone:  ++49-30-34973570
+IP-Technologies, T33              Mobile: ++49-0170-2275345
+Goslarer Ufer 35, 10589 Berlin    Fax:    ++49-30-34973571
