@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 499C8482E
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 14 Nov 2002 15:03:57 -0700 (MST)
-Message-Id: <200211142203.gAEM3ppD012983@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] strange mail routing problem for mail from this
-To: taggart@carmen.fc.hp.com (Matt Taggart)
-Date: Thu, 14 Nov 2002 17:03:50 -0500 (EST)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: bzeeb-lists@lists.zabbadoz.net,
-	parisc-linux@lists.parisc-linux.org
-In-Reply-To: <20021114203325.0E161380D3@carmen.fc.hp.com> from "Matt Taggart" at Nov 14, 2002 01:33:24 pm
+Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 56340482E
+	for <parisc-linux@parisc-linux.org>; Thu, 14 Nov 2002 15:17:09 -0700 (MST)
+Message-ID: <3DD42259.2070106@gmx.at>
+Date: Thu, 14 Nov 2002 23:23:21 +0100
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+To: Matthew Wilcox <willy@debian.org>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] [IMPORTANT] PDC & Mux console major number changed
+References: <20021114151344.Y30392@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,22 +22,49 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> "Bjoern A. Zeeb" writes...
-> 
-> [snip]
-> > a simple grep for 144.249.122.105 and 212.125.75.12 should be
-> > sufficient.
-> [snip]
-> > PS: the same simple grep should word for the maillogs on
-> > parisc-linux.org if anybody else with access there can find the time.
-> 
-> No occurance of those IPs or "messagelabs.com" in any of the 
-> parisc-linux.org mail logs.
+Hello,
 
-This might be related to the "Antispam" messages that senders on the
-list were receiving.  I received messages of the type above.
+I do not think it is a good idea to have the same MAJOR for PDC console
+and MUX driver. Those drivers are different in concept, and the PDC
+driver is valid for ALL HP machines, independent if it is a 720, 712
+800er, ..... The PDC driver used the ROM support and can be used
+as fall back in any case.
 
-Dave
+The MUX driver is the serial driver for those special hardware of HP.
+This driver can be handled in two ways:
+- Let it be an own driver with special devices, like
+		/dev/ttyX0..7 or /dev/ttyM0..7 (or whatever ...)
+- Let it become the "default" serial device:
+		/dev/ttyS0../dev/ttyS7
+   This is only possible, if there is no HP with a 16450-class UART
+   and a MUX !!!
+
+So IMO it is better to use the /dev/ttySn for MUX and 16450-like UART
+instead of using MUX together with PDC !
+PDC is generic and NOT for special HPs. On special HP it is the only
+method to use PDC console or now MUX.
+
+
+With friendly regards
+Christoph P.
+
+
+
+Matthew Wilcox wrote:
+> Now that we've been assigned an official major number for Mux, and had
+> it accepted into 2.5, I've changed 2.4.20-rc1-pa2 to use that number.
+> So if you're using an E class, a K class or a D/R class with the funky
+> console thing, before you upgrade from 2.4.19, you MUST rm /dev/ttyB0
+> and replace it with:
+> 
+> mknod /dev/ttyB0 c 11 0
+> 
+> Yes, breakage like this sucks, but I'd rather do it now than later.
+> 
+
+
+
 -- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
