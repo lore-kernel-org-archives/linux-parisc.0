@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from hal.pp.fishpool.fi (hal.pp.fishpool.fi [195.197.229.212])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0BFD44842
-	for <parisc-linux@parisc-linux.org>; Mon, 10 Jun 2002 14:42:47 -0600 (MDT)
-Date: Mon, 10 Jun 2002 23:42:31 +0300 (EEST)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8BC454847
+	for <parisc-linux@parisc-linux.org>; Mon, 10 Jun 2002 14:45:00 -0600 (MDT)
+Date: Mon, 10 Jun 2002 23:44:55 +0300 (EEST)
 From: =?iso-8859-1?Q?Martin-=C9ric_Racine?= <q-funk@pp.fishpool.fi>
-To: "b.gunreben" <b.gunreben@web.de>
+To: Grant Grundler <grundler@dsl2.external.hp.com>
 Cc: debian-hppa@lists.debian.org, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] 712-60 XFree86 mouse driver problems
-In-Reply-To: <3D035E00.7FBAF703@web.de>
-Message-ID: <Pine.LNX.4.21.0206102341110.8495-100000@hal.pp.fishpool.fi>
+In-Reply-To: <20020610203332.77E1F4838@dsl2.external.hp.com>
+Message-ID: <Pine.LNX.4.21.0206102343040.8495-100000@hal.pp.fishpool.fi>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=iso-8859-1
+Subject: [parisc-linux] Re: 712-60 XFree86 mouse driver problems
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,19 +22,22 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sun, 9 Jun 2002, b.gunreben wrote:
+On Mon, 10 Jun 2002, Grant Grundler wrote:
 
-> Martin-=C9ric Racine wrote:=20
-> > On my 712-60, I've had to call my mouse "fups2" in gpm.conf but enablin=
-g the
-> > same repeater didn't get X to use it.
+> =3D?iso-8859-1?Q?Martin-=3DC9ric_Racine?=3D wrote:
+> > Anyhow, the problem with fups2 is that
+> > every time I exit Gnome and X is restarted by gdm, the mouse in X no lo=
+nger
+> > works so I have to ctrl-alt-back kill X to reinitialize the mouse again=
+=2E
+>=20
+> I had the same problem with B180 or C3000.  But since gdm is one of the
+> first things I remove, it doesn't bother me.
 
-> There may be problems, if you run gpm while running X. You can try to swi=
-tch
-> of gpm when running X.  Another possibility is to use the gpm repeater fo=
-r X
-
-Please re-read what I have written.  Repeater fails.
+The same problem occurs with KDM or XDM.  Either way, I need a display mana=
+ger;
+loging in at the console and typing "startx" manually is not an option here=
+=2E
 
 --=20
 Martin-=C9ric Racine, Helsinki, Finland.
