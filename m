@@ -1,15 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mailimailo.univ-rennes1.fr (mailimailo.univ-rennes1.fr [129.20.131.1])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E6CF94860
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 01:06:02 -0600 (MDT)
-Message-Id: <200207080705.JAA06652@mailimailo.univ-rennes1.fr>
-Date: Mon, 08 Jul 2002 09:05:59 +0100
+Received: from ns.itp.bg (itp.solo.bg [212.72.196.10])
+	by dsl2.external.hp.com (Postfix) with SMTP id D224B484E
+	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Jul 2002 05:12:51 -0600 (MDT)
+Message-ID: <3D2973B4.4080807@itp.bg>
+Date: Mon, 08 Jul 2002 14:12:52 +0300
+From: Stephan Trajkoff <stephan@itp.bg>
 MIME-Version: 1.0
-Cc: <parisc-linux@lists.parisc-linux.org>
-To: debian-hppa@lists.debian.org
-From: <dlorin@univ-rennes1.fr>
-Content-Type: text/plain; charset=iso-8859-1
-Subject: [parisc-linux] How to mount HFS 6.0 ?
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] modem on k210/819
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,18 +20,5 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-The content of my question concerns the "old fellows", who were using the 
-ancient series HP/9000/3xx or 4xx and whom I hope to find reading this 
-mails-list. But anyone, able to help me, is welcome...
-
-I took a disk SCSCI-1 out of a station 425t running with BASIC-UX. On this one, 
-there are several files (data and programs written in HP-BASIC) I want to reach 
-in reading with my 715/50 running with Woody. How to do that?
-
-Nota:
-1) the filesystem's type on this disk is: HFS version 6.0.
-2) the disk is already installed in the daisy chain SCSI and correctly 
-identified during the boot sequence.
-
-Thanks.
-D. Lorin
+Hello, anyone knows how to run modem under k210/819 HP?
+I want to make dial-in with this modem
