@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.tiscali.be (unknown [62.235.14.106])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2FC25482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Sep 2002 12:15:41 -0600 (MDT)
-Date: Fri, 6 Sep 2002 20:15:38 +0200
-Message-ID: <3D53B3B70000C9E8@ocpmta1.be.tiscali.com>
-In-Reply-To: <3D53B3B70000BC9B@ocpmta1.be.tiscali.com>
-From: jsoe0708@tiscali.be
-Subject: RE: [parisc-linux] upgrade evms-1.1.0 -> Kernel bug at blkpg.c (need help)
-To: parisc-linux@lists.parisc-linux.org
-Cc: willy@debian.org
+Received: from dc-mx12.cluster1.charter.net (dc-mx12.cluster1.charter.net [209.225.8.22])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 56563482A
+	for <parisc-linux@lists.parisc-linux.org>; Fri,  6 Sep 2002 18:09:50 -0600 (MDT)
+Message-ID: <3D7943B1.3050406@charter.net>
+Date: Fri, 06 Sep 2002 20:09:21 -0400
+From: "B. Douglas Hilton" <bdhilton@charter.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Cc: palinux <parisc-linux@lists.parisc-linux.org>,
+	debian-hppa@lists.debian.org
+References: <3D77D183.2080905@charter.net> <20020906034656.A26580@parcelfarce.linux.theplanet.co.uk>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Subject: [parisc-linux] Re: C200 Voodoo2 Progress Report
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,22 +22,55 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Hrrmm... things aren't quite so easy as I first thought.
+For one, the Voodoo2 is a 5V PCI card so it will not fit
+into the Cujo slots, only Dino.
+
+Likewise, glide3-alpha wants to use <sys/io.h> which just
+isn't there on hppa because that file is particular to
+alpha and x86 archs as I understand it. I tried hacking
+it to use <asm/io.h> instead which caused a cascade of
+about a hundred errors when it got to that point. So
+glide3-alpha needs some looking at.
+
+On the kernel front, I can build the sstfb module allright,
+which it must be made as a module or else an invisible
+HPMC apparently occurs. I know this because after it switches
+to fb console mode, nothing more is seen and hitting the
+power button causes instant power-off rather than the normal
+graceful shutdown.
+
+When I "modprobe sstfb" it appears to load, except it is
+reporting that my 12Mb card only has 2Mb. The fbset program
+does not segfault, but complains about "Obsolete Major on
+/dev/fb1". The con2fb util doesn't report any errors but
+neither does it seem to do anything, and finally, a subsequent
+"$export FRAMEBUFFER=/dev/fb1; startx -- :0 -bpp 16 vt06"
+causes a lockup and suspected HPMC.
+
+So, it seems like this stuff will require some working on.
+If anybody else wants to help out too that would be great
+because my time is limited and programming video cards is
+a bit above my level, but I'll keep tinkering with it in
+the meantime. I know some assembly and hardware basics but
+am not very familiar with pa-risc yet.
+
+- Doug
 
 
->in put_user, case 8 uses something like as:
->__put_user_asm("stw",(unsigned int)(x >> 32), (unsigned int) ptr);__put_user_asm("stw",(unsigned
->int) x, (unsigned int) (ptr+1) );
->
 
-Well it is the contrary.
-
-But I am a bit confuse of what do this __put_user_asm:
-what does it return? (error code or ptr or something else?)
-
-Thanks in advance for help;
-    Joel
-
-
-Big Brother Anders  - With Tiscali you will see it all !  Check it up on
- www.tiscali.be/bigbrother
+Matthew Wilcox wrote:
+> On Thu, Sep 05, 2002 at 05:49:55PM -0400, B. Douglas Hilton wrote:
+> 
+>>  This is the Debian source for Glide3 on the Alpha arch,
+>>  which is also big-endian. Initial compilation failed in
+> 
+> 
+> nope.  alpha is little-endian.
+> 
+> LE: alpha, arm, cris, i386, ia64, superh
+> BE: m68k, mips, parisc, ppc, s390, sparc
+> 
+> (yes, i know many of these CPUs are bi-endian, but these are the default
+> configs)
+> 
