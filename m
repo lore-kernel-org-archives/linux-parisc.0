@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolm3.tiscalinet.be [212.35.2.72])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 892E04829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 09:14:13 -0700 (MST)
-Date: Tue, 17 Dec 2002 18:42:02 +0100
-Message-ID: <3DED9B8900002122@ocpmta6.freegates.net>
-In-Reply-To: <3DED9BBD000022D4@ocpmta7.freegates.net>
-From: jsoe0708@tiscali.be
-Subject: Re: [parisc-linux] quad tulip now not functional in 2.4.20
-To: grundler@dsl2.external.hp.com,
-	"Ed Schaller" <schallee@darkmist.net>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 74C854829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  7 Jan 2003 10:48:00 -0700 (MST)
+Message-Id: <200301071747.h07HlrmN022946@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Problem with weak symbols
+To: b.gunreben@web.de (b.gunreben)
+Date: Tue, 7 Jan 2003 12:47:53 -0500 (EST)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <3E1AD095.FA5CF165@web.de> from "b.gunreben" at Jan 7, 2003 02:05:25 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,48 +22,34 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello Grant,
->
->>>
->>>I've looked a bit at the same problem on A500 with
->>>a regular (single port) HP tulip card.
->>>
->>>> In the following dmesg out takes for 2.4.20-pa13 and 2.4.19-32 (debi=
-an),
->>>> it seems that the older kernel is finding the transceiver and
->>>> successfully auto-negotiating the link while the newer is not.
->>>
->>>yeah - same symptom that I saw.
->>>
->>>> Any ideas how to solve this? Any help would be greatly appreciated.
->>>
->>>I suspect it's a tulip driver bug.
->>>I haven't had a chance to diff the 2.4.19 vs 2.4.20 tulip driver.
->>>One idea might be to "forward port" the 2.4.19 drivers/net/tulip code
->>>into 2.4.20.
->>>
->>Same on B2k with add card.
->>Hmm I notice strange detail:
->>2.4.19 : lan heart bit on (even if interface not configure)
->>2.4.20 (& 21-pre1) : no lan heart bit on (interface configured or not)
->>
->>I will try to revert tulip driver and advise you.
->>
->Well I find some minutes to do this reverse and it works.
->Still have to find the bug ?
->
-Hmm I suspecting a test in eeprom.c:
-line 193: if (ee_data[27] =3D=3D 0 || ee_data[ee_data[27]] =3D=3D0) {
+> Hi,
+> 
+> I have a problem with weak symbols on parisc. If I use the following
+> small program, the result should be always (nil), but it isn´t:
 
-which i temporarely change by if (ee_data[27] =3D=3D 0) { (as i 2.4.19)
-and it works but I have not enough doc to fix this pb.
+> asm (".weak linux_bla");
+> asm (".weak linux_foo");
 
-May be Ryan Bradetich could help us?
+Don't use asm's to weaken symbols.  Use GCC's attribute weak.  GCC
+needs to know whether a symbol is weak or not.
 
-Joel
+> extern const char * linux_bla;
+> extern const int linux_foo[];
 
+> > ./weak
+> linux_bla: 0x205f0
+> linux_foo: (nil)
+> 
+> The main difference in compiling seems to be the different relocation
+> type for both symbols:
 
-*************************************************************************=
-*******
-Controlez mieux votre consommation Internet...surfez Tiscali Complete...h=
-ttp://tiscali.complete.be
+What is printed in the first case is the value of the $dp register.
+For some reason, $global$ is not being subtracted from the symbol value
+(zero).  This is a linker bug, not a gcc bug.
+
+We probably should be using DPREL relocations for linux_foo.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
