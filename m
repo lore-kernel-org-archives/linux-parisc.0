@@ -1,14 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from smtp-out.tiscali.be (spoolo1.tiscali.be [62.235.13.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 70CF9484E
-	for <parisc-linux@parisc-linux.org>; Fri, 10 Oct 2003 16:17:01 -0600 (MDT)
-Message-ID: <3F872FDC.2090408@tiscali.be>
-Date: Fri, 10 Oct 2003 22:17:00 +0000
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0066D49F9
+	for <parisc-linux@lists.parisc-linux.org>; Fri, 10 Oct 2003 16:20:20 -0600 (MDT)
+Message-ID: <3F8730A3.3020602@tiscali.be>
+Date: Fri, 10 Oct 2003 22:20:19 +0000
 From: Joel Soete <soete.joel@tiscali.be>
 MIME-Version: 1.0
-To: parisc-linux@parisc-linux.org
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
+Cc: libc-alpha <libc-alpha@sources.redhat.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] [PATCH] hppa machine-malloc.h
+References: <20031010204152.GE6454@systemhalted>
+In-Reply-To: <20031010204152.GE6454@systemhalted>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Subject: [parisc-linux] evolution (1.4.5-1) do_page_fault?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -20,44 +24,115 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi all,
+Hi Carlos,
 
-The new evolution crash on my c110 [debian unstable] (even though I test 
-successfully a previous release on my b2k) with a kernel 2.6test7pa5.
+Thanks for all.
+Just a question: for testing goal only are you going to update p-l glibc 
+cvs or put all those material somewhere (eg ftp.p-l.org)?
 
-do_page_fault() pid=3917 command='evolution' type=7 address=0x413627db
-vm_start = 0x41332000, vm_end = 0x413b3000
+Thanks again,
+    Joel
 
-    YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001101111111100001111 Not tainted
-r00-03  00000000 413c6bf0 41383947 00690d80
-r04-07  413c7bf0 00000000 00000001 00000000
-r08-11  0000000c 0030c7a8 41288844 0000007e
-r12-15  001c622c 002d7830 000009e4 0013a078
-r16-19  08000000 faf03260 0000003a 413c7bf0
-r20-23  00154d1c 413627c0 00154c90 00002007
-r24-27  00101006 00154c90 00690d80 000c1478
-r28-31  00000001 00000019 faf03980 4185c657
-sr0-3   00000000 00000088 00000000 00000088
-sr4-7   00000088 00000088 00000088 00000088
+Carlos O'Donell wrote:
 
-IASQ: 00000088 00000088 IAOQ: 413627db 413627df
-IIR: 687c0048    ISR: 00000088  IOR: 00690da4
-CPU:        0   CR30: 10bd4000 CR31: 103cb000
-ORIG_R28: 41a130a0
-IAOQ[0]: 0x413627db
-IAOQ[1]: 0x413627df
-RP(r2): 0x41383947
-     _______________________________
-    < Your System ate a SPARC! Gah! >
-     -------------------------------
-            \   ^__^
-             \  (xx)\_______
-                (__)\       )\/\
-                 U  ||----w |
-                    ||     ||
-
-I put the question because very surprised by this message?
-
-Thanks for advise,
-   Joel
+>libc-alpha,
+>
+>Machine specific hppa malloc locking functions.
+>
+>Thanks to Wolfram for making the required changes, and reminding me to
+>submit my patches ;)
+>
+>Cheers,
+>Carlos.
+>===
+> linuxthreads/sysdeps/unix/sysv/linux/hppa/malloc-machine.h |   73 ++++++++++
+> 1 files changed, 73 insertions(+)
+>===
+>
+>2003-10-10  Carlos O'Donell  <carlos@baldric.uwo.ca>
+>
+>	* linuxthreads/sysdeps/unix/sysv/linux/hppa/malloc-machine.h: New.
+>
+>--- libc/linuxthreads/sysdeps/unix/sysv/linux/hppa/malloc-machine.h.orig	1969-12-31 19:00:00.000000000 -0500
+>+++ libc/linuxthreads/sysdeps/unix/sysv/linux/hppa/malloc-machine.h	2003-10-04 12:52:09.000000000 -0400
+>@@ -0,0 +1,73 @@
+>+/* HP-PARISC macro definitions for mutexes, thread-specific data 
+>+   and parameters for malloc.
+>+   Copyright (C) 2003 Free Software Foundation, Inc.
+>+   This file is part of the GNU C Library.
+>+   Contributed by Carlos O'Donell <carlos@baldric.uwo.ca>, 2003.
+>+   
+>+   The GNU C Library is free software; you can redistribute it and/or
+>+   modify it under the terms of the GNU Lesser General Public
+>+   License as published by the Free Software Foundation; either
+>+   version 2.1 of the License, or (at your option) any later version.
+>+
+>+   The GNU C Library is distributed in the hope that it will be useful,
+>+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+>+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+>+   Lesser General Public License for more details.
+>+
+>+   You should have received a copy of the GNU Lesser General Public
+>+   License along with the GNU C Library; if not, write to the Free
+>+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+>+   02111-1307 USA.  */
+>+
+>+#ifndef _MALLOC_MACHINE_H
+>+#define _MALLOC_MACHINE_H
+>+
+>+#undef thread_atfork_static
+>+
+>+#include <atomic.h>
+>+#include <bits/libc-lock.h>
+>+
+>+__libc_lock_define (typedef, mutex_t)
+>+
+>+/* Since our lock structure does not tolerate being initialized to zero, we must
+>+   modify the standard function calls made by malloc */
+>+#  define mutex_init(m)		\
+>+	__libc_maybe_call (__pthread_mutex_init, (m, NULL), \
+>+		(((m)->__m_lock.__spinlock = __LT_SPINLOCK_INIT),(*(int *)(m))) )
+>+#  define mutex_lock(m)		\
+>+	__libc_maybe_call (__pthread_mutex_lock, (m), \
+>+			(__load_and_clear(&((m)->__m_lock.__spinlock)), 0))
+>+#  define mutex_trylock(m)	\
+>+	__libc_maybe_call (__pthread_mutex_trylock, (m), \
+>+			(*(int *)(m) ? 1 : (__load_and_clear(&((m)->__m_lock.__spinlock)), 0)))
+>+#  define mutex_unlock(m)	\
+>+	__libc_maybe_call (__pthread_mutex_unlock, (m), \
+>+			(((m)->__m_lock.__spinlock = __LT_SPINLOCK_INIT), (*(int *)(m))) )
+>+	
+>+/* This is defined by newer gcc version unique for each module.  */
+>+extern void *__dso_handle __attribute__ ((__weak__));
+>+
+>+#include <fork.h>
+>+
+>+#ifdef SHARED
+>+# define thread_atfork(prepare, parent, child) \
+>+   __register_atfork (prepare, parent, child, __dso_handle)
+>+#else
+>+# define thread_atfork(prepare, parent, child) \
+>+   __register_atfork (prepare, parent, child,				      \
+>+		      &__dso_handle == NULL ? NULL : __dso_handle)
+>+#endif
+>+
+>+/* thread specific data for glibc */
+>+
+>+#include <bits/libc-tsd.h>
+>+
+>+typedef int tsd_key_t[1];	/* no key data structure, libc magic does it */
+>+__libc_tsd_define (static, MALLOC)	/* declaration/common definition */
+>+#define tsd_key_create(key, destr)	((void) (key))
+>+#define tsd_setspecific(key, data)	__libc_tsd_set (MALLOC, (data))
+>+#define tsd_getspecific(key, vptr)	((vptr) = __libc_tsd_get (MALLOC))
+>+
+>+#include <sysdeps/generic/malloc-machine.h>
+>+
+>+#endif /* !defined(_MALLOC_MACHINE_H) */
+>_______________________________________________
+>parisc-linux mailing list
+>parisc-linux@lists.parisc-linux.org
+>http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+>
+>  
+>
