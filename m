@@ -1,19 +1,17 @@
-Return-Path: <soete.joel@tiscali.be>
-Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id E48694A82
-	for <parisc-linux@lists.parisc-linux.org>;
-	Wed, 14 Apr 2004 10:36:03 -0600 (MDT)
-Date: Wed, 14 Apr 2004 18:26:21 +0200
-Message-ID: <40711E5500005FC3@ocpmta2.freegates.net>
-In-Reply-To: <1081954200.10872.10.camel@mulgrave>
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.5-rc2-pa2 boot panic on c110 :(
-To: "James Bottomley" <James.Bottomley@steeleye.com>,
-	"Ryan Bradetich" <rbradetich@uswest.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	PA-RISC Linux Port <parisc-linux@lists.parisc-linux.org>
+Return-Path: <James.Bottomley@SteelEye.com>
+Received: from midgard.sc.steeleye.com (midgard.sc.steeleye.com [172.17.6.40])
+	by hancock.sc.steeleye.com (8.11.6/linuxconf) with ESMTP id
+	i3EHrNa10677; Wed, 14 Apr 2004 13:53:23 -0400
+From: James Bottomley <James.Bottomley@steeleye.com>
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
+In-Reply-To: <20040414174535.81173494194@palinux.hppa>
+References: <20040414174535.81173494194@palinux.hppa>
+Content-Type: text/plain
+Date: 14 Apr 2004 12:53:23 -0500
+Message-Id: <1081965204.1804.96.camel@mulgrave>
+Mime-Version: 1.0
+Cc: parisc-linux-cvs@lists.parisc-linux.org
+Subject: [parisc-linux] Re: [parisc-linux-cvs] linux-2.6 jejb
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,35 +21,87 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-Hello James,
+On Wed, 2004-04-14 at 12:45, James Bottomley wrote:
+> CVSROOT:	/var/cvs
+> Module name:	linux-2.6
+> Changes by:	jejb	04/04/14 11:45:35
+> 
+> Modified files:
+> 	.              : Makefile 
+> 	arch/parisc/kernel: cache.c sys_parisc.c 
+> 
+> Log message:
+> Make all shared mappings and all file mappings (including MAP_PRIVATE)
+> equivalently mapped.
+> 
+> This allows us only to flush a single space again in flush_dcache_page().
+> 
+> The flip side is that now all shared libraries are going to be mapped
+> on 4MB boundaries.  This only wastes virtual space, but it may run us
+> out of mappings faster than would otherwise happen in ILP32 processes.
 
->> On Wed, 2004-04-14 at 09:36, Ryan Bradetich wrote:
->> Ah .. I was under the impression it was a boot problem.  I will perform
->> the find, fsck and tar tests tests ... I only have a small disk (~500MB)
->> in the system so i will probably need to setup 
->> ome external disks.  I
->> will try the tests w/o using software raid first, then add in the
->> software raid as a an additional variable.  This may take me a couple
-of
->> days to get this accomplished (busy work schedule :().
->
->It was (hence 'boot panic' in the title):
->
->http://lists.parisc-linux.org/pipermail/parisc-linux/2004-March/022657.html
-
-You have absolutly right, please apologies. My wory was to follow up a single
-thread: bad idea to not modify the title :(
-
->So, Joel, are you saying you no-longer see this boot panic problem?
-
-Yes not anymore this panic :)
-
-(sometime, the system still panic but far later, after a fsck or a md sync
-[sorry I don't remember with enough acuracy]).
-
-Thanks,
-   Joel
-
-----------------------------------------------------------------------------------------
-Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
-http://reg.tiscali.be/default.asp?lg=fr
+Index: arch/parisc/kernel/cache.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/cache.c,v
+retrieving revision 1.9
+diff -u -r1.9 cache.c
+--- a/arch/parisc/kernel/cache.c	12 Apr 2004 15:48:00 -0000	1.9
++++ b/arch/parisc/kernel/cache.c	14 Apr 2004 17:42:54 -0000
+@@ -265,12 +265,16 @@
+ 
+ 		__flush_cache_page(mpnt, addr);
+ 
+-		break;
++		/* If we find an address to flush, that will also
++		 * bring all the private mappings up to date (see
++		 * comment below) */
++		return;
+ 	}
+ 
+-	/* Private mappings will not have congruent addresses, so we
+-	 * have to flush each of them individually to make the change
+-	 * in the kernel page visible */
++	/* we have carefully arranged in arch_get_unmapped_area() that
++	 * *any* mappings of a file are always congruently mapped (whether
++	 * declared as MAP_PRIVATE or MAP_SHARED), so we only need
++	 * to flush one address here too */
+ 	list_for_each(l, &page->mapping->i_mmap) {
+ 		struct vm_area_struct *mpnt;
+ 		unsigned long off, addr;
+@@ -293,6 +297,8 @@
+ 			continue;
+ 
+ 		__flush_cache_page(mpnt, addr);
++
++		return;
+ 	}
+ }
+ EXPORT_SYMBOL(__flush_dcache_page);
+Index: arch/parisc/kernel/sys_parisc.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/sys_parisc.c,v
+retrieving revision 1.21
+diff -u -r1.21 sys_parisc.c
+--- a/arch/parisc/kernel/sys_parisc.c	16 Mar 2004 15:39:55 -0000	1.21
++++ b/arch/parisc/kernel/sys_parisc.c	14 Apr 2004 17:42:54 -0000
+@@ -93,7 +93,7 @@
+ 		unsigned long addr, unsigned long len, unsigned long pgoff)
+ {
+ 	struct vm_area_struct *vma;
+-	int offset = get_offset(mapping);
++	int offset = mapping ? get_offset(mapping) : 0;
+ 
+ 	addr = DCACHE_ALIGN(addr - offset) + offset;
+ 
+@@ -117,8 +117,10 @@
+ 	if (!addr)
+ 		addr = TASK_UNMAPPED_BASE;
+ 
+-	if (filp && (flags & MAP_SHARED)) {
++	if (filp) {
+ 		addr = get_shared_area(filp->f_mapping, addr, len, pgoff);
++	} else if(flags & MAP_SHARED) {
++		addr = get_shared_area(NULL, addr, len, pgoff);
+ 	} else {
+ 		addr = get_unshared_area(addr, len);
+ 	}
