@@ -1,46 +1,33 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from rhirst.linuxcare.com (pc2-hems4-0-cust95.bre.cable.ntl.com [213.107.176.95])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 29390482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 03:30:59 -0600 (MDT)
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0CDED482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 03:32:21 -0600 (MDT)
 Received: by rhirst.linuxcare.com (Postfix, from userid 501)
-	id AC5D0B00C; Tue, 17 Jul 2001 10:29:03 +0100 (BST)
-Date: Tue, 17 Jul 2001 10:29:03 +0100
+	id A4A30B00D; Tue, 17 Jul 2001 10:30:25 +0100 (BST)
+Date: Tue, 17 Jul 2001 10:30:25 +0100
 From: Richard Hirst <rhirst@linuxcare.com>
-To: Tom <tom@alaskatech.org>
-Cc: PA-RISC Linux List <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 715/100 no longer boots into console?
-Message-ID: <20010717102903.N30356@linuxcare.com>
-References: <Pine.LNX.4.33.0107151938330.529-100000@goliath>
+To: Matthieu Le Corre <matthieu.lecorre@polytech.univ-nantes.fr>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] setting up the STI console on a 735/99
+Message-ID: <20010717103025.O30356@linuxcare.com>
+References: <001401c10b94$29aa0c40$0f809b8e@ati.stlawrencec.on.ca> <0107131413361U.03565@flambe.ireste.fr> <20010716085318.A30207@linuxcare.com> <01071611465307.01046@flambe.ireste.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.33.0107151938330.529-100000@goliath>; from tom@alaskatech.org on Sun, Jul 15, 2001 at 07:50:39PM -0800
+Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <01071611465307.01046@flambe.ireste.fr>; from matthieu.lecorre@polytech.univ-nantes.fr on Mon, Jul 16, 2001 at 11:46:53AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Jul 15, 2001 at 07:50:39PM -0800, Tom wrote:
-> So I upgraded from the 0.9 to the latest 0.91. Exerything worked nicely,
-> no errors, except now I get no login on the console. Looking over the boot
-> messages there's no errors, but there is two lines saying the FB is alive
-> and well and the console is switching to STI FB color console. Last
-> messages is after "INIT: switching to runlevel 2" and all the
-> "starting:..." messages (the last one is cron starting).
-> 
-> I *had* all the common pitfalls saved, until I had a drive crash in the
-> mail server and nuke all the saved mail :-(. So, if someone can tell me
-> the simple solution to this I'd appreciate it... If needed the output of
-> dmesg is at http://www.alaskatech.org/stuff/715boot.txt
+On Mon, Jul 16, 2001 at 11:46:53AM +0200, Matthieu Le Corre wrote:
+> Le Lundi 16 Juillet 2001 09:53, vous avez écrit :
+> > On Fri, Jul 13, 2001 at 02:13:36PM +0200, Matthieu Le Corre wrote:
+> > > Le Jeudi 12 Juillet 2001 20:52, vous avez écrit :
+> > > > So I have now succesfully installed the base system on a external
+> > > > narrow SCSI. I can boot off of it. Now the next question is how do I
+> > > > set it up to go to the STI console instead of the serial?
+> > > >
+> > > > Ray
+> > >
+> > > try console=tty on palo commande line
 
-Presumably you logged in via the network to get that dmesg output,
-so the machine is working ok.  Sounds like a frame buffer problem.
-0.9 used STI console, 0.9.x uses STI frame buffer, if it is a chipset
-it recognises.
-
-When you say you upgraded from 0.9 to 0.91, what do you mean?  Did
-you simply reinstall from the new .iso, or something else?  If you just
-installed, how did you get to being able to read dmesg without console
-access?
-
-I assume your /etc/inittab is spawning a getty on tty0?
-
-Maybe Helge can comment, if he reads this.
+Shouldn't that be console=tty0 and not console=tty ?
 
 Richard
