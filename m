@@ -1,36 +1,41 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D17B1482A
-	for <parisc-linux@lists.parisc-linux.org>; Fri, 14 Sep 2001 16:23:26 -0600 (MDT)
-Message-Id: <200109142220.QAA00437@puffin.external.hp.com>
-To: "DANDEBOYINA,NAGARAJ (Non-HP-Cupertino,     ex1)" <nagaraj_dandeboyina@non.hp.com>
-Cc: parisc-linux@lists.parisc-linux.org
-In-Reply-To: Message from "DANDEBOYINA,NAGARAJ (Non-HP-Cupertino,ex1)" <nagaraj_dandeboyina@non.hp.com>
-   of "Fri, 14 Sep 2001 16:34:32 EDT." <580F4ACFCD8F4E439B06B815110418C788509A@xcup03.cup.hp.com>
-Date: Fri, 14 Sep 2001 16:20:59 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
-Subject: [parisc-linux] Re: How to create a Install CD
+Received: from mta-1.gci.net (mta-1.gci.net [208.138.130.82])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 22252482A
+	for <parisc-linux@parisc-linux.org>; Sat, 15 Sep 2001 00:14:47 -0600 (MDT)
+Received: from mmp-1.gci.net ([208.138.130.80]) by mta-1.gci.net
+          (Netscape Messaging Server 4.15) with ESMTP id GJOXCN00.ZI4 for
+          <parisc-linux@parisc-linux.org>; Fri, 14 Sep 2001 22:14:47 -0800
+Received: from goliath.alaskatech.org ([24.237.5.207]) by
+          mmp-1.gci.net (Netscape Messaging Server 4.15) with ESMTP id
+          GJOXCO03.E7A for <parisc-linux@parisc-linux.org>; Fri, 14 Sep
+          2001 22:14:48 -0800
+Received: from goliath.alaskatech.org (goliath.alaskatech.org [24.237.5.207])
+	by goliath.alaskatech.org (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id WAA17342
+	for <parisc-linux@parisc-linux.org>; Fri, 14 Sep 2001 22:08:16 -0800
+Date: Fri, 14 Sep 2001 22:08:16 -0800 (AKDT)
+From: Tom <palinux@alaskatech.org>
+To: PA-RISC Linux List <parisc-linux@parisc-linux.org>
+Message-ID: <Pine.LNX.4.33.0109142153120.25368-100000@goliath.alaskatech.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] Odd X display
 List-ID: <linux-parisc.vger.kernel.org>
 
-"DANDEBOYINA,NAGARAJ (Non-HP-Cupertino,ex1)" wrote:
-> Hi There,
->    I downloaded 0.9.2 CD Install ISO file from
-> http://parisc-linux.org/release-0.9/index.html and I wrote a CD,but I failed
-> to run installer on my A500 system.Is there any trick to create the CD.
+First of all, big thanks to all for the latest patches to the kernel. It
+appears that my 715/100 is *finally* completely working - keyboard
+included. Even XF86 works now, except for a weird display. It appears that
+the color depth or refresh is wrong, but I'm not sure how it can be. The
+monitor is a HP A1097C, 1280x1024x8, 78.125/72.008 h/v refresh. I'm using
+fbdev for the driver, the boot shows that as the detected frame buffer...
+But I get a semi-scrambled display. (Not like I'm out of refresh, more
+like the color depth is wrong...) Unreadable, no mouse... I thought at
+first I had a bad window manager, but it happens with KDE, icewm,
+enlightenment and fvwm95.
 
-Not that I'm aware of. Typical problems include MS OS's corrupting
-the download - check the md5sum output.
+My config and boot can be seen at ftp://ftp.alaskatech.org/XF86Config-4
+and ftp://ftp.alaskatech.org/dmesg.txt if they'll help. I don't recall
+anything like this being posted on here yet, so I'm thinking it's
+something in my config that's wrong, and that I don't recognize since most
+of what I do is x86, not PA-RISC...
 
-> If it
-> is there can you send me the proper procedure and software links which are
-> helpful to write a cd.
-
-The mail archive on http://lists.parisc-linux.org is worth searching.
-
->    How about getting LILO equilent for PA-RISC system when we are writing
-> bootable CD?
-
-Look for PALO - it is the LILO equivalent for parisc.
-See  http://puffin.external.hp.com/cgi-bin/cvsview/palo/
-
-grant
+Any help much appreciated.
