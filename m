@@ -1,13 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
+Received: from mailout07.sul.t-online.com (mailout07.sul.t-online.com [194.25.134.83])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 732E24829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 27 Jul 2002 03:08:00 -0600 (MDT)
 Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] [PATCH] get_initiator for sym53c8xx_2 
-In-Reply-To: Message from Grant Grundler <grundler@dsl2.external.hp.com>
-   of "Thu, 25 Jul 2002 00:54:00 MDT." <20020725065400.871B5482B@dsl2.external.hp.com>
-References: <20020725065400.871B5482B@dsl2.external.hp.com> 
-Date: Fri, 26 Jul 2002 15:46:55 -0600
-From: Grant Grundler <grundler@dsl2.external.hp.com>
-Message-Id: <20020726214655.908A8482B@dsl2.external.hp.com>
+Content-Type: text/plain; charset=us-ascii
+Date: Sat, 27 Jul 2002 10:53:22 +0200
+From: Juergen Braukmann <juergen.braukmann@ruhr-west.de>
+Message-ID: <3D425F82.4CB144AF@ruhr-west.de>
+MIME-Version: 1.0
+References: <20020721150611.GA16503@maddentechnologies.com> <3D3AE9AE.189C701E@ruhr-west.de> <20020726132900.L897@neep.com.au>
+Subject: Re: [parisc-linux] PARISC Linux machines?
+To: Andrew Shugg <andrew@neep.com.au>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -19,19 +22,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Grant Grundler wrote:
-> Hi all,
-> I've hacked up a patch to sym53c8xx_2 driver to query PDC
-> for SCSI ID and other operating parameters:
+Andrew Shugg schrieb:
+
+> [...]
 > 
-> 	ftp://ftp.parisc-linux.org/patches/sym2_pdc.diff
+> 
+> Thanks Juergen, I wasn't aware of this site's existence.  I don't think
+> there's a link to it on the parisc-linux.org web site; is this something
+> we could do?  Under the "User Resources" section of the sidebar would be
+> a suitable place, I imagine.
+> 
+> Andrew.
+> 
+Andrew, you get there, but it's a bit hidden:
 
-I've reworked this patch and commited the code...only to find that
-while sym53c8xx_2 works on C3000, it hangs on my A500 after finding
-the interface cards but before any disks are discovered:
-CPU 0   GR02 0x1010bbc8 do_irq+f8
-CPU 0   IOAQ 0x102245f0 sym53c8xx_intr+140
+Select "technical documentation" from the main pa-risc page, other
+useful links, you see "Other OS's for pa-risc" listed under "Utilitoes &
+Source code". That link takes you there.
+But I agree, a direct link from the main page would be more informative.
 
-I'll be looking at this over the weekend.
+Juergen
 
-grant
+-- 
+===========================================     __   _
+Juergen Braukmann juergen.braukmann@gmx.de| -o)/ /  (_)__  __ ____  __
+Tel: 0201-743648  dk4jb@db0qs.#nrw.deu.eu | /\\ /__/ / _ \/ // /\ \/ /
+===========================================_\_v __/_/_//_/\_,_/ /_/\_\
