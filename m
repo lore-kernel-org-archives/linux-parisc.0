@@ -1,15 +1,15 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-Date: Mon, 5 Jan 2004 17:00:28 -0500
-Message-ID: <20040105220028.GC9269__37029.2929969311$1416623107$gmane$org@systemhalted>
-References: <20040105194809.GA9269@systemhalted>
-	<20040105204510.GD9004@colo.lackof.org>
+Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
+Date: Tue, 6 Jan 2004 00:39:25 -0500
+Message-ID: <20040106053924.GC14464__43437.1507996277$1416623108$gmane$org@systemhalted>
+References: <20040105172146.GE23782@systemhalted>
+	<200401051848.i05Imt6p005065@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <carlos@baldric.uwo.ca>
-In-Reply-To: <20040105204510.GD9004@colo.lackof.org>
+In-Reply-To: <200401051848.i05Imt6p005065@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,17 +19,21 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Mon, Jan 05, 2004 at 01:45:10PM -0700, Grant Grundler wrote:
-> On Mon, Jan 05, 2004 at 02:48:09PM -0500, Carlos O'Donell wrote:
-> > Testers wanted please, in particular to test if building with -pg works
-> > on your system and you get the expected results.
+On Mon, Jan 05, 2004 at 01:48:54PM -0500, John David Anglin wrote:
+> As usual, I expect there will be many ups and downs in the process.
+> So, we won't get as far as we would like.
 > 
-> How much testing has this had?
-> I'm willing to try it on various boxes if I have an idea
-> of the risk involved.
+> > jda, you mentioned that the libstdc++ testsuite could be examined in
+> > order to fix some of our failures.
+> 
+> Yes, these need to be looked at before 3.4 is released.  Some appear
+> to be related to long double support.  Just guessing, but I think the
+> rest are locale or glibc related.
 
-Passes all the testsuites without regressions. Doesn't kill *my* system.
-It's a *minor* change to the existing glibc provided by debian, purely
-to fix the FTBS that lamont saw for "roy."
+Does this seem like a reasonable triage list?
+
+a. gdb.
+b. atomic kernel ops.
+c. libstdc++ failures.
 
 c.
