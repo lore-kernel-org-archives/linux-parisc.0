@@ -1,35 +1,34 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] Cannot access '/dev/pts/143862': Value too large for
-	defined data type
-Date: Tue, 13 Jul 2004 20:35:08 +0200
-Message-ID: <200407132035.08844.deller@gmx.de>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] Cannot access '/dev/pts/143862': Value too large for defined data type
+Date: Tue, 13 Jul 2004 12:21:35 -0700
+Message-ID: <20040713192135.GJ546@tausq.org>
+References: <200407132035.08844.deller@gmx.de>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <randolph@tausq.org>
+In-Reply-To: <200407132035.08844.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-I'm using the "screen" command regulary on HPPA with a 2.6 kernel, but sometimes I get the error message:
+> d036493@hw1306:~ > screen
+> Cannot access '/dev/pts/143862': Value too large for defined data type
+> 
+> What's the problem ?
+> Can screen not cope with the "high" (>16bit) pid/uid values ?
+> If yes, does screen needs to rebuild and could someone ask to rebuild it ?
 
-d036493@hw1306:~ > screen
-Cannot access '/dev/pts/143862': Value too large for defined data type
+I don't know, but I see this with ssh too...
 
-What's the problem ?
-Can screen not cope with the "high" (>16bit) pid/uid values ?
-If yes, does screen needs to rebuild and could someone ask to rebuild it ?
+pippin[12:20] ~% ssh legolas
+Linux legolas 2.6.7-pa13 #78 Sun Jul 11 17:02:38 PDT 2004 parisc GNU/Linux
+You have new mail.
+fstat: Value too large for defined data type
 
-Thanks,
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
