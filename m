@@ -1,17 +1,16 @@
-From: James Bottomley <James.Bottomley@steeleye.com>
+From: "Jens Simmoleit" <simmel@anymotion.de>
 Subject: Re: [parisc-linux] Re: Install GNOME on 712/80
-Date: 06 Feb 2004 10:49:42 -0500
-Message-ID: <1076082583.1823.23.camel__37539.6797121086$1416623179$gmane$org@mulgrave>
-References: <02d601c3ebef$e3241650$8100a8c0@punk>
-	<200402060007.27911.deller@gmx.de>
+Date: Fri, 6 Feb 2004 17:13:50 +0100
+Message-ID: <00ca01c3eccc$350ffe70$8100a8c0__10845.1855522164$1416623180$gmane$org@punk>
+References: <02d601c3ebef$e3241650$8100a8c0@punk><200402060007.27911.deller@gmx.de>
 	<009801c3ecc6$d637d990$8100a8c0@punk>
+	<1076082583.1823.23.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
-	debian-hppa@lists.debian.org
-To: Jens Simmoleit <simmel@anymotion.de>
-Return-Path: <James.Bottomley@SteelEye.com>
-In-Reply-To: <009801c3ecc6$d637d990$8100a8c0@punk>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+To: "PARISC list" <parisc-linux@lists.parisc-linux.org>,
+	<debian-hppa@lists.debian.org>
+Return-Path: <simmel@anymotion.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,20 +20,58 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Fri, 2004-02-06 at 10:35, Jens Simmoleit wrote:
-> But now something strange happens, I type in my user and the password at the
-> gnome desktop login, the screen turns black and after a certain amount of
-> time the box comes back with the Gnome login prompt (where I started from)?
+Hi List, Hi James,
 
-Gnome is a known consumer of colour resources, and it's applications
-aren't very graceful when they run out (as they do with our 8 bit
-framebuffer), it could be that you are simply running out of them.
+nope this is unfortunately not the solution to my problem :-(
 
-You can use a true colour visual at this depth (the colours are pretty
-ratty, but at least you never run out) by adding
+But I maybe found something else. Instead of starting GDM I started the
+gdmlogin and maybe it gave back a clue, look here.....
 
-Visual "TrueColor"
+lisa:/dev/input# gdmlogin --version
 
-To the SubSection "Display" part that covers you.
+Gdk-WARNING **: locale not supported by C library
+Gnome gdmlogin 2.2.5.5
+lisa:/dev/input#
 
-James
+
+
+Any idea?
+
+Thanks for helping me,
+Simmel
+
+
+
+
+----- Original Message ----- 
+From: "James Bottomley" <James.Bottomley@steeleye.com>
+To: "Jens Simmoleit" <simmel@anymotion.de>
+Cc: "PARISC list" <parisc-linux@lists.parisc-linux.org>;
+<debian-hppa@lists.debian.org>
+Sent: Friday, February 06, 2004 4:49 PM
+Subject: Re: [parisc-linux] Re: Install GNOME on 712/80
+
+
+> On Fri, 2004-02-06 at 10:35, Jens Simmoleit wrote:
+> > But now something strange happens, I type in my user and the password at
+the
+> > gnome desktop login, the screen turns black and after a certain amount
+of
+> > time the box comes back with the Gnome login prompt (where I started
+from)?
+>
+> Gnome is a known consumer of colour resources, and it's applications
+> aren't very graceful when they run out (as they do with our 8 bit
+> framebuffer), it could be that you are simply running out of them.
+>
+> You can use a true colour visual at this depth (the colours are pretty
+> ratty, but at least you never run out) by adding
+>
+> Visual "TrueColor"
+>
+> To the SubSection "Display" part that covers you.
+>
+> James
+>
+>
+>
