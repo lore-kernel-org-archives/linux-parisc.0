@@ -1,41 +1,44 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA25820
-	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 11:35:36 -0700
-Content-Type: text/plain;
-  charset="us-ascii"
-From: Helge Deller <deller@gmx.de>
-To: "Steve Moret" <smoret@uci.edu>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA26652
+	for <parisc-linux@puffin.external.hp.com>; Thu, 30 Nov 2000 12:21:27 -0700
+Date: Thu, 30 Nov 2000 17:11:32 -0200 (BRST)
+From: "Jorge L. deLyra" <delyra@latt.if.usp.br>
+To: Helge Deller <deller@gmx.de>
+cc: parisc-linux@thepuffingroup.com, assirati@socrates.if.usp.br
 Subject: Re: [parisc-linux] HP 9000/735-125
-Date: Thu, 30 Nov 2000 19:37:46 +0100
-Cc: parisc-linux@thepuffingroup.com
-References: <FKEGLIIBOIACJOCCAFIMIEFGCCAA.smoret@uci.edu>
-In-Reply-To: <FKEGLIIBOIACJOCCAFIMIEFGCCAA.smoret@uci.edu>
+In-Reply-To: <00113019365203.00309@P100>
+Message-ID: <Pine.LNX.3.96.1001130170122.23583A-100000@latt.if.usp.br>
 MIME-Version: 1.0
-Message-Id: <00113019374604.00309@P100>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 30 November 2000 18:50, Steve Moret wrote:
-> With the BiDirectional stuff back in it dies here:
->
-> Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
-> POSIX conformance testing by UNIFIX
-> ASP version 20 at 0xf0800000 found.
-> LED (ASP-style) display at f0800020
-> parport_gsc.c: initialize bidirectional-mode
->
-[oops msg deleted]
+> > Just a thought: are you shure, that you did "make palo" and exported
+> > palo/lifimage  instead of vmlinux ?
 
-Yup, that was what I thought !
-I will try to come up with a clean fix in the next few hours...
+I just did the naive thing and put the precompiled kernel from the site
+there. According to the docs on the NFSROOT that might work, I mean, it
+says there that there are two alternatives, with and without palo...
 
->
-> And it appears that the LEDs work, however I'm not familiar enough with
-> them to know what they all mean or if they should or should not blink,
-> glow, or cause alarming amounts of pain to those who walk by.
+> oops, 
+> I just saw, that you currently _can_not_ cross-compile..... :-(
 
-The current code should let your heartbeat-LED blink two times per second and 
-LAN-TX, LAN-RCV and DISK-IO-LED should blink each after another...
+Yes, we are working towards this, but I read in the docs that for the time
+being you can only cros-compile the kernel on HP-UX, so we must first fix
+our HP-UX systems here. In any case, it will take a little while until we
+tool up to do the cross-compilation, no matter where...
 
-Greetings,
+> But if you still want to download a kernel I can make one available for 
+> you.....
 
-	Helge
+This would be very nice! If you do that, please tell me where I can get
+it. It might be a goot idea to have this net-bootable lifimage version of
+the kernel on the ftp site side-by-side with the precompiled kernel which
+is already there, don't you think?
+
+						Many thanks,
+
+----------------------------------------------------------------
+        Jorge L. deLyra,  Associate Professor of Physics
+            The University of Sao Paulo,  IFUSP-DFMA
+       For more information: finger delyra@latt.if.usp.br
+----------------------------------------------------------------
