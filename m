@@ -1,18 +1,19 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] J5000 LED LCD patch (take 2)
-Date: Sat, 26 Mar 2005 00:13:49 -0700
-Message-ID: <20050326071349.GB28972@colo.lackof.org>
-References: <200503241848.57598.dmp@davidmpye.dyndns.org>
-	<20050325062517.GH29361@colo.lackof.org>
-	<200503251705.02441.dmp@davidmpye.dyndns.org>
-	<200503252150.28207.dmp@davidmpye.dyndns.org>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Sat, 26 Mar 2005 09:55:21 +0100
+Message-ID: <16965.9081.148972.856329@gargle.gargle.HOWL>
+References: <kfhwtrx2myr.fsf@csclub.uwaterloo.ca>
+	<200503241619.j2OGJScZ000411@hiauly1.hia.nrc.ca>
+	<20050324165947.GA29361@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: David Pye <dmp@davidmpye.dyndns.org>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ lamont@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200503252150.28207.dmp@davidmpye.dyndns.org>
+In-Reply-To: <20050324165947.GA29361@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,62 +24,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Mar 25, 2005 at 09:50:26PM +0000, David Pye wrote:
-> On Friday 25 March 2005 17:05, David Pye wrote:
-> > > Why not just update every 10ms and ditch all the "minimum on time" stuff?
-> > > Can someone tell if an LED/LCD came on 5ms later than it should have
-> > > been?
+Grant Grundler writes:
+> On Thu, Mar 24, 2005 at 11:19:28AM -0500, John David Anglin wrote:
+> ...
+> > From a PA standpoint, GCC 4 is ready for serious testing.  All testsuite
+> > bugs have been squashed in C and C++.
 > 
-> Ah, I remember now.
-> 
-> That's 100mS, not 10mS for a start ;)  You can't make the whole update 
-> interval 100mS, of course, or you'll miss the heartbeats completely.
+> Is there a .deb or tarball available I can drop on a bunch of machines?
 
-Sorry, I wasn't clear. I meant check if LED/LCD status needs to change
-every 10ms. The msleep would still let us bang out 8 register writes,
-one per HZ. Ie make the "lets see if activity is different now" check
-less frequent so LED/LCD is either on or off long enough to be visible.
+- gcc-snapshot can be found in unstable, although it was pointed out,
+  it's not that recent (I can't upload this one every week without the
+  risk beeing killed by buildd admins for slower architectures ;)
 
-100ms seems a bit longer than I would like. But if that works, go for it.
+- You can get gcc-4.0 packages from experimental, just add
+  deb http://http.us.debian.org/debian experimental main contrib
+  to /etc/apt/sources.list.
+  Provided that somebody is building and uploading these ...
 
-> > There is a reason for this, though there may be a better way of doing it.
-> >
-> > If you remove it, and set the update interval to 10mS, what tends to happen
-> > is that because each time you flip a symbol on the lcd you have to wait 2
-> > jiffies (once before cmd reg, once before writing data reg), and sometimes
-> > more, because the kernel may put you to sleep a bit longer than the time
-> > you asked for,  is that the heartbeat starts skipping beats when the io/lan
-> > leds are changing on/off all the time.
+Besides the recent gcc-snapshot build failure, I'm having problems
+building the packages at all at the moment, there's no difference
+using between sarge and unstable.
 
-My point was
-1) don't update LED/LCD state again until the previous update has completed.
-   ie all the register writes have been sent.
+- if the build succeeds, every test case in the testsuite fails, due
+  to expect(?) problems. lamont told me that's reproducible on another
+  A500, seeing some messages on the serial console, but I can't see
+  these messages. I'm currently running the A500 kernels from the
+  parisc archives. palinux-a500-defconfig-2.6.{8.1-pa11,11-pa2,12-rc1-pa1}
+  all show the same behaviour.
 
-2) we shouldn't touch Heartbeat register for LCD unless heartbeat needs to be updated.
+- The libjava build sometimes fails with an sh/bash error. Restarting
+  the build usually fixes this.
 
-I'm still really not clear why there is "flutter".  THe only reasonable case I can think
-of is flutter is an artifact of the CPU busy doing "real" work and not servicing the
-LED/LCD wq. i.e. the stress test to excercise networking/disk activity is causing the
-CPU to work on lots of other tasks and it's taking more than a few jiffies to get back
-to the LED/LCD wq.
+- gnat doesn't build, even if you include some prebuilt files (which
+  might be wrongly generated) from another build.
 
-> 
-> Having spent the evening trying that, I've found that the 100mS minimum 
-> 'flutter stop' interval patch gives the most consistent heartbeat of the 
-> ideas that I've tried. The solution I suggested above causes the heartbeat to 
-> become uneven when LAN/DISK IO is present still.
+Besides these minor issues, the packages should be fine.
 
-Yeah, 100ms is well within someone noticing that LED/LCD activity isn't
-sync'd with LEDs on NIC or Disk. But I'm ok with that. If they got the real
-LED, the display panel can be ignored.
-
-> If the 100mS minimum LED illumination bothers people who have 'real' LEDs as 
-> opposed to LCD indicators, we can make it LCD only, of course.
-
-Sure. throw another patch out there! You can enumerate them...this is #3 or #4...
-
-thanks,
-grant
+	Matthias
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
