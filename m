@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from fed1mtao03.cox.net (fed1mtao03.cox.net [68.6.19.242])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A4E0A4829
-	for <parisc-linux@lists.parisc-linux.org>; Sun, 26 Jan 2003 12:08:44 -0700 (MST)
-Message-ID: <3E343138.6000205@cox.net>
-Date: Sun, 26 Jan 2003 12:04:24 -0700
-From: Tom Ward <tward800@cox.net>
-MIME-Version: 1.0
-To: max@avtlg.ru
-Cc: PA-RISC <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] Boot warning 80F5.
-References: <3E340091.2000003@avtlg.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Date: Sun, 26 Jan 2003 14:52:05 -0700
+To: Sir Ace <chandler@nateng.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Ok all
+Message-ID: <20030126215205.GD28343@dsl2.external.hp.com>
+References: <Pine.LNX.4.33.0301252356110.25913-100000@jordan.eng.nateng.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.LNX.4.33.0301252356110.25913-100000@jordan.eng.nateng.com>
+From: grundler@dsl2.external.hp.com (Grant Grundler)
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,31 +20,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Max wrote:
+On Sun, Jan 26, 2003 at 12:17:31AM -0800, Sir Ace wrote:
+> > uhm...what are you building that takes 4 days?
+> > Not even glibc or xfree86 takes that long.
+> 
+> On 128 Meg of ram, and 1 100Mhz pa7200, openssl, openssh, 2.4.20 kernel,
+> gcc 2.95.3, pine, and several other apps...  Remembering things don't
+> normally build the first time around, and tweaks must be made...
 
-> Hi,
->
->    I have HP 9000/809/k100. When my box boot from Debian 3.0r1 hppa CD
-> ( Interact with IPL (Y or N)?> Y ), i've got message "Cannot find ENTRY
-> TEST Status= -4" and WARN 80F5 on LCD panel status. What is that means?
-> What do I do?
-> Where can I find other WARN description ?
->
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailmanhttp://us-support3.external.hp.com/listinfo/parisc-linux 
->
->
-The forums on HP's ITRC, http://us-support3.external.hp.com, are a great 
-resource for thing like this.
+ok. but you definitely are not building gcc 2.95.3 - we've never used that.
+gcc 3.0 is the first release for parisc.
 
- From a google cache of ITRC:
-*80F5*means that firmware can not initialize device. Stable storage 
-message may mean NVRAM (setup) corruption. Try restoring defaults in the 
-PDC, then tune it as it was before (paths, boot parameters, etc). Check 
-if this code appears again
-Eugeny
+> Ok, then I will give credit to everyone who got it this far, I am happy I
+> might be able to get the workstations here in my office off of HP/UX 10.20
+> and into this decade, even if I have to setup NFS-root clients to do it.
 
-Regards,
-Tom
+I've been using b180 w/parisc-linux as desktop/debian mirror for almost 
+a year now. only thing to crash the box was audio driver and test
+kernels. But some things are missing that HPUX has: NetMeeting
+support (T.120 specifically; GnomeMeeting supports H323), performance.
+
+grant
