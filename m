@@ -1,52 +1,114 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id EAA00451
-	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Dec 2000 04:34:50 -0700
-Received: from parcelfarce.linux.theplanet.co.uk (HELO www.linux.org.uk) (195.92.249.252)
-  by mailserv2.iuinc.com with SMTP; 26 Dec 2000 11:37:58 -0000
-Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
-	id 14Arjq-0008Md-00; Tue, 26 Dec 2000 10:53:50 +0000
-Date: Tue, 26 Dec 2000 10:53:50 +0000
-From: Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@cup.hp.com>
-Cc: Matthew Wilcox <matthew@wil.cx>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] SuckyIO support
-Message-ID: <20001226105350.A29860@parcelfarce.linux.theplanet.co.uk>
-References: <20001224090504.A11676@parcelfarce.linux.theplanet.co.uk> <200012260716.XAA21626@milano.cup.hp.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <200012260716.XAA21626@milano.cup.hp.com>; from grundler@cup.hp.com on Mon, Dec 25, 2000 at 11:16:24PM -0800
-Sender: <willy@www.linux.org.uk>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA03762
+	for <parisc-linux@puffin.external.hp.com>; Tue, 26 Dec 2000 13:13:49 -0700
+Message-Id: <200012262018.MAA22169@milano.cup.hp.com>
+To: Matthew Wilcox <matthew@wil.cx>
+Cc: parisc-linux@thepuffingroup.com
+Subject: Re: [parisc-linux] SuckyIO support 
+In-reply-to: Your message of "Tue, 26 Dec 2000 10:53:50 PST."
+             <20001226105350.A29860@parcelfarce.linux.theplanet.co.uk>
+Date: Tue, 26 Dec 2000 12:18:08 -0800
+From: Grant Grundler <grundler@cup.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Dec 25, 2000 at 11:16:24PM -0800, Grant Grundler wrote:
-> INTERRUPT_PIN is zero for function 0 and 1. And according to PCI spec,
-> suckyio function 0 and 1 can't won't generate interrupts regardless
-> of what's in INTERRUPT_LINE.
-> I don't want to write/modify/support code that implies otherwise.
+Matthew Wilcox wrote:
+> On Mon, Dec 25, 2000 at 11:16:24PM -0800, Grant Grundler wrote:
+> > INTERRUPT_PIN is zero for function 0 and 1. And according to PCI spec,
+> > suckyio function 0 and 1 can't won't generate interrupts regardless
+> > of what's in INTERRUPT_LINE.
+> > I don't want to write/modify/support code that implies otherwise.
+> 
+> I thought it was understood that this device was not PCI-conforming?
 
-I thought it was understood that this device was not PCI-conforming?
-That it did generate interrupts for functions 0 and 1.  Could we nail
-down exactly _how_ this device generates interrupts for the serial & ide
-ports?  I can see a few possibilities:
+Absolutely correct.
 
-(1) They are only generated on the CPUINT pin.
-(2) They're generated on INTD# just like USB is
-(3) They're routable to other PCI pins within the device (i doubt it,
-    i can't see any hint of this in the spec).
-(4) The interrupts are generated but they're not routed to anywhere the
-    cpu will ever get notified about, so we have to use a polling driver.
-    This would seriously suck.
+> That it did generate interrupts for functions 0 and 1.
 
-if it's (1), what is CPUINT tied to?  does it have its own connection to
-the IOSAPIC?  Is it connected to the PCI bus somehow?
+Not directly. AFAICT, subdevices can only generate interrupts via 8259
+which lives on function 1. And it looks like *none* of the functions
+under suckyio implement INTERRUPT_PIN register. *sigh*
 
-> We'll end duplicating much of what's in the generic PCI code basically.
-> You can understand why I might be less than enthusiastic about this idea.
+The INTERRUPT_LINE cfg register just happens to live under function 2
+but could live in any of the three functions. Suckyio provides this
+register merely as a convience to the BIOS/OS programmers.
 
-Yes.  OK, better idea: we can do the quirk fixup in the PCI_FIXUP_FINAL
-pass instead of the PCI_FIXUP_HEADER pass.  This is called after the bus
-fixup code has set ->irq.  Of course, this might be completely the wrong
-thing to do... I really need to know the answer to the above question.
+> Could we nail
+> down exactly _how_ this device generates interrupts for the serial & ide
+> ports?
+...
 
--- 
-Revolutions do not require corporate support.
+IRQs for all devices we care about are routed through the on-chip 8259's.
+Master 8259 output is routed to INTERRUPT_LINE 0 of the parent IOSAPIC.
+I can't tell if that's through CPUINT or INT[A-D] or what.
+
+BTW, I suggest suckyio get it's own IRQ region to manage the 8259's.
+Here are more notes:
+
+ *      Most interrupt sources can be routed (or mapped) to interrupt pins on
+ *      the 8259.  The available pins are (15-14, 12-9, 7-3, 1).  The following
+ *      pins are dedicated.
+ *
+ *              Timer Out0        Channel 0
+ *              8259 cascade      Channel 2
+ *              Real-Time Clock   Channel 8
+ *              Coprocessor Error Channel 13
+ *
+ *
+ *      There are only 6 interrupt sources supported at this time.  These
+ *      take up all the available interrupt sources on the master 8259.  The
+ *      slave mode code has not been tested completely because we do not use
+ *      it.  Note that the interrupt sources are given fixed interrupt routing.
+
+
+FYI - The 8259 "fixed" routing used by HPUX is below.
+Though I have the impression PNP code could be used to assign
+IRQ lines if one doesn't want another LASI-like IRQ scheme.
+
+   switch (obj->suio_device_id) {
+      case SUPERIO_ID_UART1:
+        obj->suio_irq = 3;
+        break;
+
+      case SUPERIO_ID_UART2:
+        obj->suio_irq = 4;
+        break;
+
+      case SUPERIO_ID_FDC:
+        obj->suio_irq = 6;
+        break;
+
+      case SUPERIO_ID_PARALLEL:
+        obj->suio_irq = 5;
+        break;
+
+      case SUPERIO_ID_USB:
+        obj->suio_irq = 1;
+        break;
+
+      case SUPERIO_ID_IDE:
+        obj->suio_irq = 7;       /* XXX IDE has two channels? */
+        break;
+
+      default:
+        VASSERT(0 == 1);
+    }
+
+
+> > We'll end duplicating much of what's in the generic PCI code basically.
+> > You can understand why I might be less than enthusiastic about this idea.
+> 
+> Yes.  OK, better idea: we can do the quirk fixup in the PCI_FIXUP_FINAL
+> pass instead of the PCI_FIXUP_HEADER pass.  This is called after the bus
+> fixup code has set ->irq.  Of course, this might be completely the wrong
+> thing to do... I really need to know the answer to the above question.
+
+This does sound better given suckyio doesn't support INTERRUPT_PIN.
+
+The fixup code could use Function 2 INTERRUPT_LINE to determine which
+iosapic input line is being used (instead of assuming line 0). I'm thinking
+we need to add another iosapic_fixup()-like interface so PCI quirks code
+will correctly register suckyio's INTERRUPT_LINE. I'm trying to keep the
+method iosapic virtualizes IRQs with private to iosapic.c.
+
+thanks,
+grant
