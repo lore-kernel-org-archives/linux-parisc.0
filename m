@@ -1,18 +1,29 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Message-Id: <199902030247.DAA29719@seger.axis.se>
-To: hppa-linux@puffingroup.com
-Subject: Re: Some planning issues. 
-In-reply-to: Your message of "Tue, 02 Feb 1999 18:25:29 EST."
-             <Pine.LNX.4.04.9902021818010.1377-100000@sprite.osfi-bsif.gc.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 03 Feb 1999 03:47:57 +0100
-From: Lars Segerlund <lars.segerlund@axis.com>
-Resent-Message-ID: <"z9_bH1.0.rn5.2Azjs"@burrow.puffingroup.com>
+Message-ID: <36B7C1B7.68D1C54@03bar.ktu.lt>
+Date: Wed, 03 Feb 1999 04:25:43 +0100
+From: Darius <darius@03bar.ktu.lt>
+MIME-Version: 1.0
+To: "hppa-linux@puffingroup.com" <hppa-linux@puffingroup.com>
+Subject: HP-PA
+Content-Type: text/plain; charset=x-user-defined
+Resent-Message-ID: <"9hDgx1.0.Up5.Jhzjs"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
+A few weeks ago i got a workstation named HP Apollo 9000/710. This  is
+rather old
+one running HP-UX 8.07.
+I'm looking for information how to install Linux on this workstation. So
+just
+downloaded HPPA-1.1 Linux.Could someone help me intalling Linux, or
+maybe someone
+knows the URL where i could find more information about instaling Linux
+on HP ?
+By the way this workstation has no floppy drive or CD-ROM. Just external
+SCSI
+connector (and network of course).
 
- Efficient means, net or CD ? possible ?
-
- / Lars Segerlund.
+Thanx
+Best regards
+DARIUS
+Lithuanian Energy Institute
