@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (oe22.law3.hotmail.com [209.185.240.15])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D4380482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 04:56:13 -0600 (MDT)
-From: "Alex Green" <alexdgreen@hotmail.com>
-To: <parisc-linux@lists.parisc-linux.org>
-Date: Wed, 7 Aug 2002 12:56:11 +0200
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0290_01C23E11.CE09F380"
-Message-ID: <OE22Aztxc1o8yfogkJX00009958@hotmail.com>
-Subject: [parisc-linux] palo issues
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3D38E482A
+	for <parisc-linux@lists.parisc-linux.org>; Wed,  7 Aug 2002 06:39:33 -0600 (MDT)
+Date: Wed, 7 Aug 2002 08:38:07 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: Alex Green <alexdgreen@hotmail.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] palo issues
+Message-ID: <20020807123807.GB9966@systemhalted>
+References: <OE22Aztxc1o8yfogkJX00009958@hotmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <OE22Aztxc1o8yfogkJX00009958@hotmail.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,69 +23,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-This is a multi-part message in MIME format.
+> Hi,
+> I've just build 2.4.19-pa2 on my c3600 and then I ran palo * I've updated to 1.1 * afterwards, after booting I got an error reporting:
+> ENTRY_INIT failed, status = -7: Nonexistent device
+> >>Some Hex Entries<<
+> Failed to initialize
+> What is this... did I do something wrong?
+> AG
 
-------=_NextPart_000_0290_01C23E11.CE09F380
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Yes. Possibly specifying the wrong device.
 
-Hi,
+To quote HP IT Resources:
+The device address supplied to ENTRY_INIT is valid, but, 
+the target controller or device is not installed or is not responding
+ENTRY_INIT -7 Causes:
+- Booting from the wrong path or non-existent device.
+- Trying to boot from a device that is not responding.
 
-I've just build 2.4.19-pa2 on my c3600 and then I ran palo * I've =
-updated to 1.1 * afterwards, after booting I got an error reporting:
+Stop the machine at bootup and try to search for bootable
+devices... and see what it returns.
 
-ENTRY_INIT failed, status =3D -7: Nonexistent device
-
->>Some Hex Entries<<
-
-Failed to initialize
-
-What is this... did I do something wrong?
-
-
-
-AG
-
-------=_NextPart_000_0290_01C23E11.CE09F380
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2716.2200" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3D"Courier New" size=3D2>
-<DIV><FONT face=3D"Courier New" size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2>I've just build 2.4.19-pa2 on =
-my c3600 and=20
-then I ran palo * I've updated to 1.1 *&nbsp;afterwards, after booting I =
-got an=20
-error reporting:</FONT></DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2>ENTRY_INIT failed, status =3D =
--7: Nonexistent=20
-device</FONT></DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2>&gt;&gt;Some Hex=20
-Entries&lt;&lt;</FONT></DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2>Failed to =
-initialize</FONT></DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2>What is this... did I do =
-something=20
-wrong?</FONT></DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3D"Courier New" =
-size=3D2>AG</FONT></DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0290_01C23E11.CE09F380--
+c.
