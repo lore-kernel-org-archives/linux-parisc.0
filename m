@@ -1,16 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6DF614829
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  2 Jun 2003 11:33:09 -0600 (MDT)
-Message-Id: <200306021732.h52HWKNp010654@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] compiler & kernel
-To: joel.soete@tiscali.be (Joel Soete)
-Date: Mon, 2 Jun 2003 13:32:20 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: xam@cs.ucc.ie, parisc-linux@lists.parisc-linux.org
-In-Reply-To: <3ED886A1.10605@tiscali.be> from "Joel Soete" at May 31, 2003 10:40:33 am
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Date: Mon, 2 Jun 2003 12:14:51 -0600
+From: Grant Grundler <grundler@parisc-linux.org>
+To: "Bjoern A. Zeeb" <bzeeb-lists@lists.zabbadoz.net>
+Cc: Helge Deller <deller@gmx.de>, parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] palo II
+Message-ID: <20030602181451.GB31212@dsl2.external.hp.com>
+References: <Pine.BSF.4.53.0306011303040.1237@e0-0.zab2.int.zabbadoz.net> <200306011543.59335.deller@gmx.de> <Pine.BSF.4.53.0306011402580.1237@e0-0.zab2.int.zabbadoz.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <Pine.BSF.4.53.0306011402580.1237@e0-0.zab2.int.zabbadoz.net>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,24 +20,20 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> >hppa64-gcc (3.2.3, from ftp.p-l.org unofficial-debs)
-> >  seems to work fine but obviously ipt_limit.o is miscompiled:
-> >  I can insmod it, but iptable wouldn't recognize the --limit* options.
-> >  There are still some problems with some modules and canonicalize_funcptr,
-> >
-> Are you sure this is with hppa64-gcc (iirc canonicalize.., was just 
-> recently backport to 3.2)?
+On Sun, Jun 01, 2003 at 02:05:20PM +0000, Bjoern A. Zeeb wrote:
+> When palo cannot open the kernel and errors out shouldn't it fall back
+> to the dialog and ask one to which fields to change instead of simply
+> running into a dead end where I think I can only recover from with
+> physical access to the machine ?
 
-hppa64-gcc does not canonicalize function pointers.
+The same issue has annoyed me too.
+But not enough to hack on palo. I only work on machines remotely
+if I have remote power control (eg A500).
 
-> >  Man, gcc-3.3 is SLOW! it takes ages to compile the kernel!
+Paul Bame is happy to take any patches people have to improve
+this behaviour.  Source is available via anon CVS:
+	cvs -d pserver:anonymous@cvs.parisc-linux.org login
+	cvs -d pserver:anonymous@cvs.parisc-linux.org co palo
 
-I suspect this is related to changes in the inlining model.  This is
-definitely a problem with certain C++ applications.  If anybody can
-generate profile and/or pass timing data for 3.3 versus 3.0.4, I
-would like to see them.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+hth,
+grant
