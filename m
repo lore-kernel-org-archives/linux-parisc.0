@@ -1,15 +1,20 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 5FB3A4829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 13:43:54 -0600 (MDT)
-Date: Mon, 26 Aug 2002 15:41:35 -0400
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-To: debian-glibc@lists.debian.org
-Cc: parisc-linux@lists.parisc-linux.org
-Message-ID: <20020826194135.GC632@systemhalted>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] Breaking PARISC ABI - Testing procedures?
+Received: from winfree.gag.com (winfree.gag.com [192.133.104.8])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 764444829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 14:43:50 -0600 (MDT)
+Received: from rover.gag.com (rover.gag.com [192.133.104.32])
+	by winfree.gag.com (Postfix) with ESMTP id 7479FC190
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 26 Aug 2002 14:43:49 -0600 (MDT)
+To: parisc-linux@lists.parisc-linux.org
+References: <20020823091741.A15239@taurus.nairnconsulting.ca>
+	<Pine.LNX.4.21.0208262154180.9376-100000@hal.pp.fishpool.fi>
+From: Bdale Garbee <bdale@gag.com>
+Date: 26 Aug 2002 14:43:49 -0600
+In-Reply-To: <Pine.LNX.4.21.0208262154180.9376-100000@hal.pp.fishpool.fi>
+Message-ID: <87wuqde4fu.fsf@rover.gag.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Subject: [parisc-linux] Re: kernel-source-2.4.19  ... no -hppa this time?
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,44 +26,18 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-debian-gcc,
+q-funk@pp.fishpool.fi (Martin-=C9ric Racine) writes:
 
-I sense another PARISC ABI breakage coming in the very near
-future. The ABI breakage is caused by the following three
-items:
+> I noticed that kernel-source-2.4.19 made its ways into the Sarge/testing=
+=20
+> tree, but I see no specific package for hppa, this time.=20=20
 
-1- setjmp/longjmp implementation is flawed (Testing)
-2- mcontext_t is incorrect in glibc (BTS #157374)
-3- sizeof(long double) is incorrect in gcc and glibc (?)
+bdale@auric:~$ madison kernel-source-2.4.19-hppa
+kernel-source-2.4.19-hppa |        4.1 |      unstable | all
 
-My main question is:
+The kernel-source-2.4.19-hppa binary package is derived from the source
+package kernel-image-2.4.19-hppa, which was just accepted into sid (unstabl=
+e).
+It will take some time for that to be promoted into testing...
 
-How does one run a preliminary test to ferret out
-possibly problems that were not forseen?
-
-My current procedure is to build a new glibc, create
-a chroot, install glibc there and begin building things.
-
-Does anyone have a general procedure for this? Or is
-this what experimental or unstable is about? :/  
-
----
-
-I'm working on providing various test cases for "1-" and 
-I already have a patch in my local glibc tree (the initial
-patch made the mistake of not allocating enough room for
-jmpbuf - kudos to Randolph for noticing that during RFC).
-
-I have a patch for "2-" and it works, but we have a kernel
-bug when copying registers into the sigcontext that gets
-passed back to a 32-bit userspace from a 64-bit kernel.
-Luckily the old definition of mcontect_t matches the new
-sigcontext typedef for accesses to general registers and
-floating point registers, so we maintain backwards compat
-in that scenario. I would like to note that it has never
-worked when running a 64-bit kernel under parisc :}
-
-The last issue will get fixed when I get around to poking
-changes at gcc.
-
-c.
+Bdale
