@@ -1,9 +1,10 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] interesting linker behaviour :)
-Date: Tue, 21 Sep 2004 18:04:59 -0400
-Message-ID: <20040921220458.GH13248@baldric.uwo.ca>
+Date: Tue, 21 Sep 2004 12:49:39 -0700
+Message-ID: <20040921194939.GT22642@tausq.org>
 References: <20040921174353.GB13248@baldric.uwo.ca>
 	<200409211851.i8LIpT1Z009455@hiauly1.hia.nrc.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -21,23 +22,6 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Sep 21, 2004 at 02:51:29PM -0400, John David Anglin wrote:
-> > On Tue, Sep 21, 2004 at 10:22:45AM -0700, Randolph Chung wrote:
-> > > but 10100158 is lstrncpy_from_user, not $lsfu_exit:
-> > > 10100158 <lstrncpy_from_user>
-> > > 10100190 <$lsfu_exit>
-> > > 
-> > > i wonder if the sections are somehow confusing things.... this is with
-> > > fairly recent gcc/binutils toolchains, for 32-bit.
-> > 
-> > Multiple entry points to a function may not work if an import stub is
-> > required? The import stubs are thrown into a hash, and it probably
-> > thinks it's okay for you to use the same import stub. You on the other
-> > want a second entry point.
-> > 
-> > I recommend you give the exit it's own symbol, .export and .import the
-> > linker thinks it's two different functions?
-> 
 > Good catch!  I've hit this problem before but under HP-UX.  GAS doesn't
 > support the alternate entry point fixup needed to support multiple
 > entry points to a function.  I don't think anyone has tried to support
@@ -45,13 +29,29 @@ On Tue, Sep 21, 2004 at 02:51:29PM -0400, John David Anglin wrote:
 > the HP unwind data when you start adding multiple entry points to a
 > function.
 
-I think you said we had similar problems with non-local goto's?
+yeah, it will break unwinding :(
 
-Either we had a conversation about multiple entry points, or I read it
-in one of the HP documents :)
+> I haven't looked at this in detail but possibly you can change the
+> fixup table to contain pc-relative offsets.  I looked at this
+> when I reworked the casesi pattern in GCC a few months ago.  This
+> makes the table smaller and in many cases the number of instructions
+> is less than that with branches in the table (particularly for the
+> PIC case).  
 
-c.
+well, this is what we used to do, but we don't do this now because it
+requires us to be able to do a pc-relative calculation between code in
+two different sections (text and fixup), and GAS doesn't allow that
+either.
 
+for now i'm using the solution we are using for 64-bit code, which is to
+use a manually created long-branch stub (ldil/ldo/bv). since this is 
+anyway in a slow-path the performance hit is probably negligible.
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
