@@ -1,46 +1,49 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from goliath (cable-207-5-237-24.anchorageak.net [24.237.5.207])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 98E12482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 08:11:30 -0600 (MDT)
-Date: Tue, 17 Jul 2001 06:08:49 -0800 (AKDT)
-From: Tom <tom@alaskatech.org>
-To: Richard Hirst <rhirst@linuxcare.com>
-Cc: PA-RISC Linux List <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] 715/100 no longer boots into console?
-In-Reply-To: <20010717102903.N30356@linuxcare.com>
-Message-ID: <Pine.LNX.4.33.0107170603520.5536-100000@goliath>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 3ACDB482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 17 Jul 2001 12:13:59 -0600 (MDT)
+Message-Id: <200107171812.MAA30279@puffin.external.hp.com>
+To: "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Booting 0.9.2 on C110 
+In-Reply-To: Message from "Witvliet, Hans" <Hans.Witvliet@Alcatel.nl>
+   of "Tue, 17 Jul 2001 13:24:57 +0200." <1A8904C3797ED411AC2E0008C7E6F88117C920@nlntmail2b.ats.nld.alcatel.nl>
+Date: Tue, 17 Jul 2001 12:12:54 -0600
+From: Grant Grundler <grundler@puffin.external.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > Me:
-> > So I upgraded from the 0.9 to the latest 0.91. Exerything worked nicely,
-> > no errors, except now I get no login on the console. Looking over the boot
-> > messages there's no errors, but there is two lines saying the FB is alive
-> > and well and the console is switching to STI FB color console. Last
-> > messages is after "INIT: switching to runlevel 2" and all the
-> > "starting:..." messages (the last one is cron starting).
+"Witvliet, Hans" wrote:
+> Hi all,
+> 
+> Update to previous message, tried 0.9.2 on following other machines:
+...
+> B2000 system decided to load 32-bit kernel instead of 64-bit kernel: did not
+> boot at all.
 
-> Richard:
-> Presumably you logged in via the network to get that dmesg output,
-> so the machine is working ok.  Sounds like a frame buffer problem.
-> 0.9 used STI console, 0.9.x uses STI frame buffer, if it is a chipset
-> it recognises.
+CD-Drive on systems with suckyio isn't supported yet. Randolph Chung
+committed a first cut of support for it but it's not working yet.
+(suckyio is in B/C/J with 4 digits behind it.eg B2000, C3000)
 
-Yeah, the machine itself worked fine, just no console output. COM1 console
-as well as SSH in both are quite happy.
+I expected the B2000 to boot with a 64-bit kernel too.
+Perhaps the firmware needs to be updated? (See parisc-linux FAQ)
+But you can build/install a 64-bit kernel later if you think it will help...
+(See previous thread on this in the mail archive)
 
-> When you say you upgraded from 0.9 to 0.91, what do you mean?  Did
-> you simply reinstall from the new .iso, or something else?  If you just
-> installed, how did you get to being able to read dmesg without console
-> access?
+...
+> I tried to reboot the K-server and the R-server, but somehow people were not
+> all that pleased with me any more ;-)))
 
-I had been doing the incremental updates, but when the ISO came out I
-reinstalled. Console worked fine during the install...
+Yeah...I can imagine :^)
+K, D, R class are architecturally very similar to C110/C200/C240 machines.
+But no one plans on writing drivers for HP-PB devices (K-class).
 
-> I assume your /etc/inittab is spawning a getty on tty0?
+> So i have to postpone that attempt, but as they are also 64-bit machines, i
+> expect same results as with the B2000.
 
-It is now - that is what I missed. For some reason the 0.91 install
-disabled all the tty's for local consoles. Not sure why that is a default
-setting, but I just test things - I'm not quite up to understanding what's
-actually happening :-)
+I wouldn't - they are quite different.
+
+grant
+
+Grant Grundler
+parisc-linux {PCI|IOMMU|SMP} hacker
++1.408.447.7253
