@@ -1,21 +1,23 @@
-From: "David S. Miller" <davem@redhat.com>
+From: James Bottomley <James.Bottomley@steeleye.com>
 Subject: Re: [parisc-linux] Re: Problems with kernel mmap (failing
- tst-mmap-eofsync in glibc on parisc)
-Date: Fri, 22 Aug 2003 15:41:00 -0700
-Message-ID: <20030822154100.06314c8e.davem__24496.2933510125$1416622710$gmane$org@redhat.com>
+	tst-mmap-eofsync in glibc on parisc)
+Date: 22 Aug 2003 20:09:30 -0500
+Message-ID: <1061600974.2090.809.camel__11627.7249101133$1416622710$gmane$org@mulgrave>
 References: <20030822110144.5f7b83c5.davem@redhat.com>
 	<Pine.LNX.4.44.0308221926060.2200-100000@localhost.localdomain>
 	<20030822113106.0503a665.davem@redhat.com>
 	<1061578568.2053.313.camel@mulgrave>
 	<20030822121955.619a14eb.davem@redhat.com>
 	<1061591255.1784.636.camel@mulgrave>
+	<20030822154100.06314c8e.davem@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: hugh@veritas.com, willy@debian.org, linux-kernel@vger.kernel.org,
-	parisc-linux@lists.parisc-linux.org, drepper@redhat.com
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Content-Type: text/plain
+Cc: hugh@veritas.com, willy@debian.org,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	PARISC list <parisc-linux@lists.parisc-linux.org>, drepper@redhat.com
+To: "David S. Miller" <davem@redhat.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-In-Reply-To: <1061591255.1784.636.camel@mulgrave>
+In-Reply-To: <20030822154100.06314c8e.davem@redhat.com>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -26,77 +28,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On 22 Aug 2003 17:27:33 -0500
-James Bottomley <James.Bottomley@SteelEye.com> wrote:
-
-> Yes, the issue seems to be that the flush_dcache_page() was implemented
-> with the thought that the caches of the shared mappings may contain
-> modified data that needs to be flushed to the aliased page.
+On Fri, 2003-08-22 at 17:41, David S. Miller wrote:
+> I think on parisc you are trying to avoid the write() case
+> of the cache flush for non-shared mmap()s, and sorry you
+> really can't do this, again this is:
 > 
-> The opposite property: that the caches of the aliased page need to be
-> invalidated because someone else changed data in the aliased page seems
-> to work as a byproduct of the above implementation.
+> 	When a write() system call occurs, the kernel "class" is writing to
+> 	the page so all user mappings (shared or not!) need to be flushed
+> 	out.
 > 
-> But some of the checks for !list_empty(&mapping->i_shared) are going to
-> prevent the necessary invalidations on read only shared mappings...which
-> was the initial problem.
+> If your flush_dcache_page() is not doing this, it's no wonder
+> the test case fails for you.
 
-The theory of operation is that there are two "classes" of mappings
-for a page, the implicit kernel mapping and all user mappings.  The
-goal is to flush out one class from the cache when the other one writes
-to such a page.
+Yes, that's precisely what we're trying to do.  Our problem is that we
+have to issue the flush to all the aliased addresses (one cache line at
+a time) which is phenomenally expensive.
 
-When a write() system call occurs, the kernel "class" is writing to
-the page so all user mappings (shared or not!) need to be flushed
-out.
+What we were hoping is that we could rely on this little property of
+mmap:
 
-When a read() system call occurs, and shared+writable mmap()'s of
-the page exist, we must flush the user mapping "class" before the
-kernel "class" tries to read from that page.
+       MAP_PRIVATE
+                  Create a private copy-on-write mapping.  Stores
+                  to the region do not affect the original  file.
+                  It  is  unspecified whether changes made to the
+                  file after the mmap call  are  visible  in  the
+                  mapped region.
 
-You cannot avoid doing things exactly as I've just described without
-allowing bad aliases to be in the cache and corrupt data.
+To avoid having to flush the non-shared mappings (basically on parisc if
+you write to a file backing a MAP_PRIVATE mapping then we don't
+guarantee you see the update).
 
-Your test case is essentially, annotated with what the kernel
-should do at each step:
+I suppose if we had a way of telling if any of the i_mmap list members
+were really MAP_SHARED semantics mappings, then we could alter our
+flush_dcache_page() implementation to work.
 
-	static const char *test1 = "Line the first\n";
-	static const char *test2 = "Line the second\n";
-
-	temp_fd = open(O_RDWR);
-	write(temp_fd, test1, sizeof test1 - 1);
-
-No mmaps of this page, so no flush_dcache_page() call.
-
- ...
-	fd = open(O_RDONLY);
-	p = mmap(fd, ... PROT_READ ...);
-
-Not writable, not added to i_mmap_shared list, instead it is
-added to normal i_mmap list.
-
-	memcpy(tmp_buf, p, sizeof test1 - 1);
-	p += sizeof test1 - 1;
-	if (strcmp(tmp_buf, test1))
-		BUG();
-	...
-	write(temp_fd, test2, sizeof test2 - 1);
-
-Mmaps of this page exist, flush_dcache_page() call is made.
-
-	memcpy(tmp_buf, p, sizeof test2 - 1);
-	if (strcmp(tmp_buf, test2))
-		BUG();
-
-And thus memcpy() sees correct data.
-
-I think on parisc you are trying to avoid the write() case
-of the cache flush for non-shared mmap()s, and sorry you
-really can't do this, again this is:
-
-	When a write() system call occurs, the kernel "class" is writing to
-	the page so all user mappings (shared or not!) need to be flushed
-	out.
-
-If your flush_dcache_page() is not doing this, it's no wonder
-the test case fails for you.
+James
