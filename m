@@ -1,31 +1,27 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D52E14A19
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Feb 2001 05:04:01 -0700 (MST)
-Received: from localhost (alan@localhost)
-	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id XAA11226;
-	Thu, 8 Feb 2001 23:03:42 +1100
-Date: Thu, 8 Feb 2001 23:03:42 +1100 (EST)
-From: Alan Modra <alan@linuxcare.com.au>
-To: Xavier Debacker <xavier.debacker@esiee.net>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] problems building glibc
-In-Reply-To: <3A8245E2.56628B1@esiee.net>
-Message-ID: <Pine.LNX.4.21.0102082227570.9776-100000@front.linuxcare.com.au>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 6F0014A19
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Feb 2001 06:10:06 -0700 (MST)
+Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
+	by atlrel1.hp.com (Postfix) with ESMTP id B2B7BB46
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  8 Feb 2001 08:10:05 -0500 (EST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.3 SMKit7.0) id GAA24428 for parisc-linux@lists.parisc-linux.org; Thu, 8 Feb 2001 06:10:05 -0700 (MST)
+Date: Thu, 8 Feb 2001 06:10:05 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200102081310.GAA24428@udlkern.fc.hp.com>
+To: parisc-linux@lists.parisc-linux.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Set Associative cache flushing bug
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, 8 Feb 2001, Xavier Debacker wrote:
+I just checked in a fix for a bug we had when flushing the entire cache
+on processors with set associative caches (PCXL2, PCXW, PCXW+). The
+bug probably rarely occured on PCXL2, but happens fairly often on most
+PCXW(+) machines. With this checkin we've been able to natively build
+a kernel multiple times on a C3K and A500 (both with the 64 bit kernel).
 
-> ../sysdeps/generic/glob.c: In function `glob_in_dir':
-> ../sysdeps/generic/glob.c:1446: Internal compiler error in
-> eliminate_regs, at reload1.c:2505
+So, top of branch is once again in fairly stable condition, and possibly
+better than ever for PCXW/PCXW+ based machines.
 
-Its a known bug with our mainline gcc, exposed by glibc now being
-compiled at -O2 rather than -O1.  See
-http://lists.parisc-linux.org/pipermail/parisc-linux/2001-February/011609.html
-
-Alan Modra
--- 
-Linuxcare.  Support for the Revolution.
+John
