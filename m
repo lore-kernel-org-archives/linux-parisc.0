@@ -1,30 +1,34 @@
 Return-Path: <pjlahaie@sims-ha.videotron.net>
-Date: Mon, 08 Feb 1999 20:02:26 -0500
+Date: Mon, 08 Feb 1999 20:58:02 -0500
 From: "Paul J.Y. Lahaie" <pjlahaie@ottawa.com>
 Sender: pjlahaie@sims-ha.videotron.net
 To: "hppa-linux@puffingroup.com" <hppa-linux@puffingroup.com>
-Message-id: <36BF8922.9A45A67B@ottawa.com>
+Message-id: <36BF962A.5E209589@ottawa.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
-Subject: [hppa-linux] egcs-1.1.1 cvs
-Resent-Message-ID: <"RDoB82.0.B62.MCwls"@burrow.puffingroup.com>
+Subject: [hppa-linux] binutils in the cvs
+Resent-Message-ID: <"yFTq72.0.SA2._1xls"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-I've put egcs 1.1.1 in the tree (w/ egcs hppa1.1 patch).
-You can do a checkout as follows:
+As my previous message stated, binutils 2.9.1 has been checked into
+the cvs with
+support for hppa1.1-hp-linux.  It currently does not work as a
+cross-compiler
+(or as a normal compiler that is) due to a problem with linking.  The
+following
+error happens on a cross-compile of egcs.
 
-cvs -d :pserver:anonymous@burrow.puffingroup.com:/home/cvs/cvsroot
-checkout hppa-linux/egcs
+/usr/hppa-linux/hppa1.1-hp-linux/bin/ld: can not size stub section: Bad
+value
+/usr/hppa-linux/hppa1.1-hp-linux/bin/ld: warning: cannot find entry
+symbol $START$; defaulting to 00002000
+libgcc1-test.o: In function `mainCRTStartup':
+/home/pjlahaie/src/hppa/egcs/gcc/../../hppa-linux/egcs/gcc/libgcc1-test.c:106:
+undefined reference to `$$divI'
+collect2: ld returned 1 exit status
 
-(You'll have to login first with a blank password)
-
-   I haven't managed to get a full build since I'm having problem with
-gas and gld.  I'll be putting them in
-the cvs next under hppa-linux/binutils.
-
-   I'll post a status report shortly with the current egcs/gld/gas
-problem.
+     Any help would be greatly appreciated.
 
 								- Paul
 
