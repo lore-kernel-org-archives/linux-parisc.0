@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
-	by dsl2.external.hp.com (Postfix) with ESMTP id DC9B2483D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 08:50:53 -0600 (MDT)
-Date: Tue, 25 Jun 2002 16:50:51 +0200
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-To: on on <665544@wp.pl>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] (no subject)
-Message-ID: <20020625145051.GW24903@lug-owl.de>
-References: <3d185b06d7cf2@wp.pl>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="S+p9DbwVuimCDe+R"
-In-Reply-To: <3d185b06d7cf2@wp.pl>
+Received: from server1.neuronet.pitt.edu (server1.neuronet.pitt.edu [150.232.128.42])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D48A44846
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 10:05:28 -0600 (MDT)
+Received: from neuronet.pitt.edu (white.neuronet.pitt.edu [150.232.130.110])
+	by server1.neuronet.pitt.edu (8.8.8/8.8.8) with ESMTP id MAA05621
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 12:06:00 -0400 (EDT)
+Message-ID: <3D1894AA.6020504@neuronet.pitt.edu>
+Date: Tue, 25 Jun 2002 12:04:58 -0400
+From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
+MIME-Version: 1.0
+To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: [parisc-linux] The compiler failed to link application, request for help
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,38 +23,29 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
---S+p9DbwVuimCDe+R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Tue, 2002-06-25 13:59:02 +0200, on on <665544@wp.pl>
-wrote in message <3d185b06d7cf2@wp.pl>:
+In trying to compile a utility here, I end up with a linker error:
 
-Hi "on on" (your parents seem ru be quite rude, aren't they?)
+$ gcc -w -o pvmtalk pvmtalk.o dom_x.o usleep.o 
+-L/home/neuro/contrib/pvm3.3.11/lib/LINUX -lpvm3 -lgpvm3 
+-L/usr/X11R6/lib ../xvertext.5.0/libXrot.a -lX11 -lm
+/home/neuro/contrib/pvm3.3.11/lib/LINUX/libpvm3.a(lpvm.o): In function 
+`pvmbeatask':
+lpvm.o(.text+0x29cf): the use of `tmpnam' is dangerous, better use `mkstemp'
+/usr/bin/ld: can not size stub section: Bad value
+/usr/bin/ld: BFD 2.12.90.0.1 20020307 Debian/GNU Linux internal error, 
+aborting at ../../bfd/elf32-hppa.c line 4038 in elf32_hppa_relocate_section
 
-> The other question is for keyboard - what about using PS/2=20
-> keyboard?=20
+/usr/bin/ld: Please report this bug.
 
-That should be fine.
+collect2: ld returned 1 exit status
 
-MfG, JBG
+We have gcc 3.0.4. The sources compile with just some warnings.
 
---=20
-Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
-	 -- New APT-Proxy written in shell script --
-	   http://lug-owl.de/~jbglaw/software/ap2/
+Can someone offer any suggestion as to what this means and how we can 
+solve it?
 
---S+p9DbwVuimCDe+R
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.7 (GNU/Linux)
-
-iD8DBQE9GINKHb1edYOZ4bsRApduAKCCuS73Drqy4f/07nd6reSuwP5figCeLCBQ
-IHx748gFoBWzt2+0X43k5cw=
-=Ot7t
------END PGP SIGNATURE-----
-
---S+p9DbwVuimCDe+R--
+Thanks.
+-- 
+     Rafael
