@@ -1,16 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.esiee.fr (mail.esiee.fr [147.215.1.3])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D85F5482B
-	for <parisc-linux@parisc-linux.org>; Thu, 15 May 2003 04:20:18 -0600 (MDT)
-Date: Thu, 15 May 2003 12:20:14 +0200
-Subject: Re: [parisc-linux] sym53c8xx.c
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Mime-Version: 1.0 (Apple Message framework v552)
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <willy@debian.org>
-From: =?ISO-8859-1?Q?Thibaut_VAR=C8NE?= <varenet@esiee.fr>
-In-Reply-To: <20030514215849.GK6859@parcelfarce.linux.theplanet.co.uk>
-Message-Id: <D151E296-86BE-11D7-84C5-0030656F07A2@esiee.fr>
+Received: from cpout1.tiscali.be (unknown [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id AA6D4482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 15 May 2003 08:38:48 -0600 (MDT)
+Date: Thu, 15 May 2003 16:38:17 +0200
+Message-ID: <3EC39C0A0000002A@ocpmta8.freegates.net>
+In-Reply-To: <200305141801.h4EI1ca3012585@hiauly1.hia.nrc.ca>
+From: "Joel Soete" <jsoe0708@tiscali.be>
+Subject: Re: [parisc-linux] RE: Dump module patche.
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: bruno_vidal@hpfrcu03.france.hp.com,
+	grundler@dsl2.external.hp.com, parisc-linux@lists.parisc-linux.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -22,33 +23,47 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Le mercredi, 14 mai 2003, =E0 23:58 Europe/Paris, Matthew Wilcox a =E9crit=
- :
+Dave,
 
 >
-> The sym53c8xx driver is near to being removed from 2.6.  Can anyone=20
-> think
-> of a situation where we might still want it?  I'm concerned that maybe
-> some of the fixes didn't go into the sym53c8xx_2 driver.  In=20
-> particular,
-> I'd like to know that the sym53c8xx_2 driver in 2.5 works on C3k (wide=20=
+>
+>> >Attachment: dump_modules-2.4.20-pa32.patch2
+>> >
+>> I apply it against last 2.4.20-pa35 (do not have any more pa22 :( ) (just
+>> 2 hunk to remove). Unfortunately it failed to compile with following message:
+>> `gcc-3.0 -print-libgcc-file-name` /usr/src/LKCD/hppa/linux-2.4.20-pa35-lkcd/arch/parisc/lib/lib.a
+>> /usr/src/LKCD/hppa/linux-2.4.20-pa35-lkcd/lib/lib.a  \
+>> 	--end-group \
+>> 	-o vmlinux
+>> fs/fs.o(.debug_info+0x6fbaf): undefined reference to `.L1225'
+>> make: *** [vmlinux] Error 1
+>> 
+>> (Sorry I already met this kind of pb but do not remember how to solve
+:()
+>
+>At first glance, this would appear to be a GCC bug.  If I was to guess,
+>it's a problem with a label for a jump table being deleted.
 
-> &
-> narrow!) and A500.
-We've been using SYM2 on our A500 SMP for quite a large amount of time=20=
+I will try gcc-3.2 (or later) because
 
-now,
-not experiencing anymore race problem.
-I recall some troubles on B2600 (bame experienced those as well, the box
-just went very lazzy; and you could heard the HD twinkling twice a=20
-second)
-but we had no chance to test SYM2 on that box lately...
-Maybe we can give it a shot on our J5k which is currently running SYM1
-(SMP kernel as well).
+>
+>You might be able to avoid the problem by compiling fs.o with a different
+>optimization.  The problem could be investigated further by generating
+>the assember output for the routine with -g.  Search for the above label.
+>The debug information in the file will allow finding the source line.
+>
 
-HTH,
+fs.o is in fact a lib build with "ld -r -o fs.o open.o read_rite.o [...]"
+
+and 'objdump -d fs.o' do not actualy help me to find back any above references
+:(
+
+Thanks,
+    Joel
 
 
-Thibaut VARENE
-The PA/Linux ESIEE Team
-http://pateam.esiee.fr/=
+---------------------------------
+Vous surfez avec une ligne classique ?
+Economisez jusqu'à 25% avec Tiscali Complete !
+Offre spéciale : première année d'abonnement offerte.
+... Plus d'info sur http://complete.tiscali.be
