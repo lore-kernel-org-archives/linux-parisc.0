@@ -1,17 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep12-int.chello.at (viefep12-int.chello.at [213.46.255.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3E12C482A
-	for <parisc-linux@lists.parisc-linux.org>; Mon,  8 Apr 2002 13:39:52 -0600 (MDT)
-Message-ID: <3CB1F1F6.6DA251ED@gmx.at>
-Date: Mon, 08 Apr 2002 21:39:34 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Ahbaid Gaffoor <ahbaidg@attbi.com>
-Cc: parisc <parisc-linux@lists.parisc-linux.org>, willy@debian.org,
-	jbglaw@lug-owl.de
-Subject: Re: [parisc-linux] K220 - Setup via. Console
-References: <3CB12C3E.B6FB23DB@attbi.com>
+Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A8B77482A
+	for <parisc-linux@parisc-linux.org>; Mon,  8 Apr 2002 22:24:37 -0600 (MDT)
+Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id xlzkmaaa for parisc-linux@parisc-linux.org; Mon, 8 Apr 2002 21:23:31 -0700
+Date: Mon, 8 Apr 2002 21:38:55 -0700
+From: Randolph Chung <tausq@debian.org>
+To: parisc-linux@parisc-linux.org
+Message-ID: <20020409043855.GI7563@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] volunteer sought for a binutils project
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,93 +22,44 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello, there are some points to discuss and solve.
+When building 64-bit kernels, the linker puts dynamic sections into the
+resulting vmlinux file. This is not harmful per se, but is nonetheless
+wrong (and confuses some of the modutils tools). Alan Modra explains 
+the situation and how to fix it below. Anyone feel like give this a 
+shot?
 
-(1) cabeling:
-First of all check RS232 pinout. My E55 HP server has some
-non-standards,
-not only that the RX/TX pins are swapped, the handshake lines are 
-completely non-standard mapped, and a simple Null-Modem cable does the
-wrong ! (BTW: As HP has the wrong direction, a 1:1 cable is needed,
-but again, the handshake lines are non-standard).
+randolph
 
-So check the RS232 port on the HP box. (On my 720 and 712 I never ahd
-a problem, it was a standard RS232, PC-like).
+----- Forwarded message from Alan Modra <amodra@bigpond.net.au> -----
 
-(2) SUN
-The SUN always has PC-like 25-pin connectors, but a gender-changer is
-needed, as SUN always has the PC-pin layout, but a female instead of
-male connector.
+Date: Mon, 8 Apr 2002 17:18:29 +0930
+From: Alan Modra <amodra@bigpond.net.au>
+To: Randolph Chung <tausq@debian.org>
+Cc: dave@hiauly1.hia.nrc.ca
+Subject: Re: unwind sections not sorted?
 
-Even the 8-way serial ports of SUN (old S-bus one, and new PCI one), 
-always use the same female 25-pin connectors with PC-pinout.
-
-Special connectors as mention in the other answers is only used at
-Sun ICP/IPX: Mini-DIN 8pin
-Sun SparcStation 20 (and perhaps 10): one 25-pin female connector
-	with two ports (you need a Y-cable).
-
-(3) Problems between PCs under BIOS/Microsoft control.
-As Microsoft (and PC BIOSes) is (are) a proprietary non-standard system, 
-it also makes problems concerning the RS232 ports. Although hardware
-handshake is turned off, the CTS pin (pin 5 on 25pin PC connector)
-must be asserted. You need at mimimum a bridging cable between pin
-4 and 5 (pin 7 and 8 on a DSUB-9pin).
-
-The problem does not exist on SUN and on Linux PCs. The bridge is only
-needed on the PC (hyperTerminal) side.
-
-(4) XON/XOFF is often used on serial console, and as far as I know,
-default !
-So XON/XOFF should be enabnled, but again, this is my opinion.
-
-(5) Serial Console:
-Concerning the mail of the K220 console support.
-If the serial console on the K220 is not supported, you can use the new
-PDC Console Driver, you can find under non-standard serial drivers. It 
-supports the PDC console driver of the firmware to use under Linux 
-as driver `/dev/ttyB0'. In the help of this configuration option you can
-find the steps, how to use this. I developed this driver for my E55, as
-this machine is not supported, too.
-
-
-So I hope ypu will find some hints and solve the problem.
-
-With friendly regards
-Christoph P.
-
-
-Ahbaid Gaffoor wrote:
+> legolas[19:30] t% readelf -d ./vmlinux-pa7
 > 
-> Hello,
-> 
-> I have a K220. I'd like to install the latest release of PA-RISC Linux
-> on it but I need to first of all be able to console into it.
-> 
-> I am trying to use the console cable I have used with Sun boxes on this
-> machine, however I just cannot get it to work? My terminal emulation is
-> done via HyperTerminal on a laptopb via. COM1
-> 
-> I do not get any output information on my console connection.
-> 
-> What do I need to do this?
-> 
-> What seeting do I need on my terminal emulator? Or is there some jumper
-> I have to set to allow this to work? Currently I use 9600 8N1, I also
-> tried 7E1 but still no luck...
-> 
-> Please help...
-> 
-> Thanks...
-> 
-> Ahbaid.
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> Dynamic segment at offset 0x25ee30 contains 11 entries:
+>   Tag        Type                         Name/Value
+>  0x0000000000000004 (HASH)               0x102ee4e0
+>  0x0000000000000005 (STRTAB)             0x102ee4d8
+>  0x0000000000000006 (SYMTAB)             0x102ee4d8
+>  0x000000000000000a (STRSZ)              1 (bytes)
+>  0x000000000000000b (SYMENT)             24 (bytes)
+>  0x0000000060000001 (<unknown>: 60000001) 0 0x0000000000000003 (PLTGOT)             0x10383470
+>  0x0000000000000015 (DEBUG)              0x0
+>  0x0000000060000002 (<unknown>: 60000002) 0x0 0x0000000060000000 (<unknown>: 60000000) 0x102f6000 0x0000000000000000 (NULL)               0x0
+
+Hrrm.  OK, another bug in elf64-hppa.c.  elf64_hppa_check_relocs creates
+_all_ the dynamic sections whether needed or not.  It certainly shouldn't
+be calling bfd_elf64_link_create_dynamic_sections, but rather call
+elf64_hppa_create_dynamic_sections to create the sections the backend
+needs.  Then of course, elf64_hppa_create_dynamic_sections needs to be
+modified to not duplicate sections.
 
 -- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Alan Modra
+IBM OzLabs - Linux Technology Centre
+
+----- End forwarded message -----
