@@ -1,82 +1,71 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel2.hp.com (atlrel2.hp.com [156.153.255.202])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 25C6E482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 17:27:39 -0600 (MDT)
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DF5C3482A
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 Aug 2001 18:00:36 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15Wo6s-00012v-00; Wed, 15 Aug 2001 01:00:34 +0100
+Date: Wed, 15 Aug 2001 01:00:34 +0100
+From: Matthew Wilcox <willy@debian.org>
 To: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>,
 	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Users staying up to date. 
-In-Reply-To: Message from "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-   of "Tue, 14 Aug 2001 15:40:37 EDT." <20010814154037.I25258@megatonmonkey.net>
-References: <20010814154037.I25258@megatonmonkey.net> 
+Subject: Re: [parisc-linux] Users staying up to date.
+Message-ID: <20010815010034.K22144@parcelfarce.linux.theplanet.co.uk>
+References: <20010814154037.I25258@megatonmonkey.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 14 Aug 2001 17:27:37 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010814232737.126BF37DD1@carmen.fc.hp.com>
+In-Reply-To: <20010814154037.I25258@megatonmonkey.net>; from carlos@baldric.uwo.ca on Tue, Aug 14, 2001 at 03:40:37PM -0400
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
-"Carlos O'Donell Jr." writes...
-
-> I was just looking to bounce some ideas off the list members.
-> As an avid user, I was just musing to myself, how can I keep
-> everything up to date (kernel/glibc/packages)?
-
-apt-get upgrade
-
+On Tue, Aug 14, 2001 at 03:40:37PM -0400, Carlos O'Donell Jr. wrote:
 > Obviously the latest kernel/glibc/gcc... will reside in the
 > CVS. It's a matter of slurping/building and testing on one
 > of our boxen.
 
-All of the binutils/gcc/glibc/palo changes are in the Debian packages in the 
-archive. The kernel-image packages should go in soon, but you'll have to 
-upgrade your kernel by hand for now.
+Actually, the debian glibc package has more uptodate bits than our CVS tree.
 
 > The packages are a slightly different matter. Is the 0.9.2
-> iso the latest collection of packages?
+> iso the latest collection of packages? Is anyone in debain-hppa
+> compiling/testing packages?
 
-No it is a snapshot in time of the Debian unstable archive. After installing 
-you should apt-get upgrade to get the latest versions of the things you have 
-installed. We'll update the packages on the next iso.
+we're compiling packages constantly.  we have a lack of testing though,
+which is what we rely on people like you for :-)
 
-> Is anyone in debain-hppa compiling/testing packages?
-
-Yes, lots of people are building and uploading Debian packages for hppa, 
-including the Debian autobuilder that automatically attempts to build new 
-debian source packages as they are uploaded. There are currently Debian 5747 
-packages available for hppa (including the architecture indepenent ones).
-
-> We have a cluster of 30x 715/50's running.
-> And for one reason or another have not quite gotten the debian
-> installer to run to completetion (nor can I spend the time to
-> install on each node... that's what scripts and root tarballs
-> are for).
-> 
 > Instead we have used the baseplus tar from sid to install the nodes.
 > The only extra packages we required were NIS(yp*) and MPICH(1.2.1).
 
-baseplus is really old. You should really use the Debian installer (or at 
-least roll a new base tarball).
+We seem to have those compiled already in debian...
 
 > I recently found though, that when compiling more complicated
 > MPI programs, cc and ld start dropping SIG11's like there was
 > no tommorow (more on this after I do some testing).
 
-I wouldn't trust the old base tarball(or any system assembled by hand for that 
-matter). Try a fresh install and post the results to the list.
+OK, I'd be interested to see more detail once we're sure you're on
+an uptodate system.
 
-> Is there a fundamental flaw in using sid's baseplus tarball for
-> the 715/50 systems?
+> We were doing:
+> 1- Unpack sid baseplus root tarball
+> 2- x-compiled and installed NIS(yp*) and MPICH
+> 3- Use this as my new root tarball for the rest of the cluster
+> 
+> Should I be doing:
+> 
+> 1- Unpack sid baseplus and export via nfs
+> 2- Download latest debs and export via nfs
+> 3- Boot "clone" box with nfs root
+> 4- Point apt to the debs on the nfs share
+> 5- Update packages like mad
+> 6- Use "clone" as my new root tarball for the rest of the cluster
 
-Yes, the old base tarball probably isn't total clean wrt the alignment needed 
-for 715/50.
+You should be doing:
 
-> Really, I'm just looking for a simple way to stay up to date
-> with all the latest packages and kernel changes :)
+Run debian installer to completion on one machine
+apt-get dist-upgrade
+apt-get install nis mpich
+tar up / and copy it to all other machines
 
-man apt
-
-Bdale's comments were good too.
+If the latest debian installer (never mind what's on the CDs) doesn't
+work, then please report the problems.
 
 -- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Revolutions do not require corporate support.
