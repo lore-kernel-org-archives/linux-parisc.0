@@ -1,17 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-out.tiscali.be (spoolo2.tiscali.be [62.235.13.211])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EBE414829
-	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 May 2003 14:18:18 -0600 (MDT)
-Message-ID: <3EBD61A5.8030205@tiscali.be>
-Date: Sat, 10 May 2003 20:31:33 +0000
-From: Joel Soete <joel.soete@tiscali.be>
-MIME-Version: 1.0
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Cc: randolph@tausq.org, parisc-linux@lists.parisc-linux.org
-References: <200305061642.h46Gg6FU004016@hiauly1.hia.nrc.ca>
-In-Reply-To: <200305061642.h46Gg6FU004016@hiauly1.hia.nrc.ca>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Subject: [parisc-linux] Yet another '__canonicalize_funcptr_for_compare' pb
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id B414B4829
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 10 May 2003 14:25:31 -0600 (MDT)
+Date: Sat, 10 May 2003 22:25:30 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] Yet another '__canonicalize_funcptr_for_compare' pb
+Message-ID: <20030510202529.GI27494@lug-owl.de>
+References: <200305061642.h46Gg6FU004016@hiauly1.hia.nrc.ca> <3EBD61A5.8030205@tiscali.be>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="MG8i8fjnGZSaPbFl"
+In-Reply-To: <3EBD61A5.8030205@tiscali.be>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,46 +23,45 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Dave,
+--MG8i8fjnGZSaPbFl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Atfer I reach to recover some kind of b2k test system I reach to grab 
-2.4.21-rc2-pa35 and try to compile it with gcc-3.2 (debian 3.2.3-2 iirc)
+On Sat, 2003-05-10 20:31:33 +0000, Joel Soete <joel.soete@tiscali.be>
+wrote in message <3EBD61A5.8030205@tiscali.be>:
+>=20
+> The kernel seems to compiles well without err but it failled to build=20
+> some module again because of '__canonicalize_funcptr_for_compare' needed=
+=20
+> in tun.o under drivers/net.
 
-The kernel seems to compiles well without err but it failled to build 
-some module again because of '__canonicalize_funcptr_for_compare' needed 
-in tun.o under drivers/net.
+This leads me to ask: How do I localize wrong pointer compares?
+Compiling 2.5.x with mostly everything compiled as module unhides quite
+some modules with suffer from this problem. So is there any simple way
+finding out at which address a call to
+__canonicalize_funcptr_for_compare happens so that I can localize the
+code line?
 
-I read first the pre-asm code to try to locate pb and figure out that it 
-was in tun_set_iff() near begining:
-tun.c
-...
-static int tun_set_iff(struct file *file, struct ifreq *ifr)
-{
-        struct tun_struct *tun;
-        struct net_device *dev;
-        int err;
+MfG, JBG
 
-        dev = __dev_get_by_name(ifr->ifr_name);
-        if (dev) {
-                /* Device exist */
-                tun = dev->priv;
+--=20
+   Jan-Benedict Glaw       jbglaw@lug-owl.de    . +49-172-7608481
+   "Eine Freie Meinung in  einem Freien Kopf    | Gegen Zensur | Gegen Krieg
+    fuer einen Freien Staat voll Freier B=FCrger" | im Internet! |   im Ira=
+k!
+      ret =3D do_actions((curr | FREE_SPEECH) & ~(IRAQ_WAR_2 | DRM | TCPA));
 
-                if (dev->init != tun_net_init || tun->attached)
-                        return -EBUSY;
+--MG8i8fjnGZSaPbFl
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-                /* Check permissions */
-...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
 
-I suspect first if(dev) because dev is a pointer to a struct but finaly 
-it is in "if (dev->init != tun_net_init..." which would become "if 
-(dev->init != (void*)tun_net_init...".
+iD8DBQE+vWA5Hb1edYOZ4bsRApmNAJ9J5NS72a+uwRnGbGRscdEg8s9I/gCeJHlj
+C5ugOxydGLULtPshSECNUUU=
+=/4p6
+-----END PGP SIGNATURE-----
 
-Is it the right workaround? fixe?
-
-I have another stupid question: as hppa seems to be the only platform 
-requiring this stuff and I don't see how to check all src to track this 
-pb (practicaly only try and chess?), how much would it be difficult to 
-implement this __canonicalize_funcptr_for_compare into the hppa lib kernel?
-
-Thanks in advance for advise,
-    Joel
+--MG8i8fjnGZSaPbFl--
