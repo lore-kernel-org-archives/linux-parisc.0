@@ -1,44 +1,82 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from snark.thyrsus.com (snark.tuxedo.org [207.106.50.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id D54C1482A
-	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 18:37:56 -0600 (MDT)
-Date: Fri, 20 Apr 2001 20:37:00 -0400
+	by dsl2.external.hp.com (Postfix) with ESMTP id B74A7482A
+	for <parisc-linux@parisc-linux.org>; Fri, 20 Apr 2001 18:53:48 -0600 (MDT)
+Date: Fri, 20 Apr 2001 20:52:46 -0400
 From: "Eric S. Raymond" <esr@thyrsus.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Nicolas Pitre <nico@cam.org>, Tom Rini <trini@kernel.crashing.org>,
+To: Andreas Dilger <adilger@turbolinux.com>
+Cc: Russell King <rmk@arm.linux.org.uk>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>,
 	"Albert D. Cahalan" <acahalan@cs.uml.edu>,
 	Matthew Wilcox <willy@ldl.fc.hp.com>,
-	james rich <james.rich@m.cc.utah.edu>,
-	lkml <linux-kernel@vger.kernel.org>, parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] Re: OK, let's try cleaning up another nit. Is anyone paying attention?
-Message-ID: <20010420203700.E21392@thyrsus.com>
+	james rich <james.rich@m.cc.utah.edu>, linux-kernel@vger.kernel.org,
+	parisc-linux@parisc-linux.org
+Message-ID: <20010420205246.A22693@thyrsus.com>
 Reply-To: esr@thyrsus.com
-References: <20010420173514.A21392@thyrsus.com> <E14qjmd-0002QD-00@the-village.bc.nu>
+References: <20010420195004.A5510@flint.arm.linux.org.uk> <200104202123.f3KLNWSm031572@webber.adilger.int>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <E14qjmd-0002QD-00@the-village.bc.nu>; from alan@lxorguk.ukuu.org.uk on Fri, Apr 20, 2001 at 11:53:44PM +0100
+In-Reply-To: <200104202123.f3KLNWSm031572@webber.adilger.int>; from adilger@turbolinux.com on Fri, Apr 20, 2001 at 03:23:32PM -0600
+Subject: [parisc-linux] Proposal for better attribution structure
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Cox <alan@lxorguk.ukuu.org.uk>:
-> > Even supposing that's so, a 36% rate of broken symbols is way too high. 
-> > It argues that we need to do a thorough housecleaning at least once in
-> > order to get back to an acceptably low stable rate.
+Andreas Dilger <adilger@turbolinux.com>:
+> One of the issues for contacting each MAINTAINER is that this information
+> is out-of-line from the actual kernel tree.  The other is that the
+> description of what a maintainer is actually controlling is somewhat
+> vague.
+
+I strongly agree.  I first tripped over this problem when I was trying
+to identify the responsible parties for [Cc]onfig.in files.  It's
+biting me again now that I'm trying to clean up the CONFIG_ space.
+It's one that's going to cause grief for anybody trying to do *global*
+work on the kernel, stuff that crosses boundaries between maintainer
+jurisdictions.  
+ 
+> How about the following:
+> - each directory has a MAINTAINERS file which lists parties with a
+>   vested interest in files in that directory (format is mostly the
+>   same as current)
+> - subdirectories which don't have a MAINTAINERS file use the MAINTAINERS
+>   file of the parent (or grandparent) directory
+> - each maintainer entry explicitly lists each file/directory that this
+>   person is interested in, maybe "F: {file | directory} ...".
 > 
-> Many of your 'broken' symbols arent. We have no idea what the real amount is
+> I'm sure Eric can come up with a simple program to parse the MAINTAINER
+> file/tree.  If the program takes a kernel-tree relative filename and
+> spit out the name/email of the relevant maintainer (subsystem and port
+> specific mailing lists should also be included), that would make the 
+> job of finding out who to send patches to a whole lot easier.
 
-If it can't be mechanically verified that the symbol has a correct reference 
-pattern within the tree, then it's broken.  That's a definition.
+The spirit of this proposal is, IMO, excellent.  I like the idea that if
+maintainer information for a particular piece of the hierarchy doesn't
+exist, you float up to the next higher level.  Search always ends at
+the root MAINTAINERS file.
 
-The fact that it might become un-broken someday, by somebody's
-intention to merge in future code, is interesting but irrelevant to
-the fact that symbols broken in present time *mask bugs* in present time.
+And I could indeed write a program such as Andreas describes, and would
+be most willing to do so.
 
-I'm not being a compulsive neatnik -- that wouldn't be worth my time.  What I'm
-trying to do is reduce the number of crevices in which bugs can hide.
+I have one objection, however.  I think the maintainers information
+should normally be inline of the file in question, so there won't
+be a need for an explicit F: link that could become invalid.  So I
+think the search order should look like this:
+
+	1. Look for maintainer markup in the file itself.
+	2. Then look for a NAINTAINERS file in the current directory.
+	3. Then look upwards for MAINTAINERS files in enclosing directories.
+
+> My one gripe about the MAINTAINERS file is that it still lists Remy
+> Card as EXT2 maintainer, so we would probably need to do a find on
+> the whole kernel tree, email each address a list of files that they
+> "maintain" and wait until they complain, agree, or time out.  Once
+> the database is up-to-date, it simplifies the job of keeping maintainers
+> (and other interested parties) in the loop.
+
+I have until 6 May at least to work on this, if there is consensus that it's
+a good idea.
 -- 
 		<a href="http://www.tuxedo.org/~esr/">Eric S. Raymond</a>
 
-This would be the best of all possible worlds, if there were
-no religion in it.
-	-- John Adams, in a letter to Thomas Jefferson.
+Where rights secured by the Constitution are involved, there can be no
+rule making or legislation which would abrogate them.
+        -- Miranda vs. Arizona, 384 US 436 p. 491
