@@ -1,22 +1,17 @@
-Return-Path: <ja2morri@csclub.uwaterloo.ca>
-Received: from perpugilliam.csclub.uwaterloo.ca
-	(perpugilliam.csclub.uwaterloo.ca [129.97.134.31])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BC31C48F1
+Return-Path: <soete.joel@tiscali.be>
+Received: from cpout1.tiscali.be (cpout1.tiscali.be [62.235.13.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E040F4879
 	for <parisc-linux@lists.parisc-linux.org>;
-	Tue, 16 Mar 2004 07:57:58 -0700 (MST)
-Sender: ja2morri@perpugilliam.csclub.uwaterloo.ca
-To: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 	RE: New glibc patches 2004-03-08,
-	fixes GLRO changes.
-References: <404EC2E70000349C@ocpmta2.freegates.net>
-From: James Morrison <ja2morri@csclub.uwaterloo.ca>
-Date: 16 Mar 2004 09:57:56 -0500
-In-Reply-To: <404EC2E70000349C@ocpmta2.freegates.net>
-Message-ID: <kfhsmg8et57.fsf@perpugilliam.csclub.uwaterloo.ca>
+	Tue, 16 Mar 2004 09:38:15 -0700 (MST)
+Date: Tue, 16 Mar 2004 17:17:01 +0100
+Message-ID: <40561E7100000AF2@ocpmta2.freegates.net>
+In-Reply-To: <Pine.LNX.4.58.0403150256180.17258@sal.ucc.ie>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: RE: [parisc-linux] SCSI broken in latest CVS changes
+To: "M. Grabert" <xam@cs.ucc.ie>, parisc-linux@lists.parisc-linux.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Carlos O'Donell <carlos@baldric.uwo.ca>,
-	parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain; charset="ISO-8859-1"
+Cc: 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,20 +21,27 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-
-"Joel Soete" <soete.joel@tiscali.be> writes:
-
-> > Are you running make check after make install?
-> >
-> Yes, but as mentioned in the original build env and not in the chrooted env
-> as it seems I would had to do.
+Hello Max,
 > 
-> hth,
->     Joel
+> Hi,
+>
+>I was using a linux-2.6.4-pa2 (CVS, up to and including the following patch:
+>http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2004-March/033902.html)
+>which was working fine.
+>
+>However the later/latest CVS changes obviously broke sym2 SCSI:
+>It doesn't detect any of the two internal 9 GB LVD-SCSI of my C3k.
+>
 
- Humm, this seems backwards to me.  I wonder if make install mangles some
-variables to look at the newly installed versions of ld.so, etc.  Anyway,
-I'll be quiet for a while since I don't have a build on hand to check stuff
-out.
+The same for me on b180 OTC 2.6.4-pa1 runing fine...
 
-Jim
+Do you got some news?
+
+Thanks,
+    Joel
+
+
+
+----------------------------------------------------------------------------------------
+Tiscali ADSL: 35 €/mois, la meilleure offre du marché!
+http://reg.tiscali.be/default.asp?lg=fr
