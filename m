@@ -1,14 +1,14 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] Call for Testing
-Date: Tue, 29 Mar 2005 21:47:29 -0600
-Message-ID: <1112154449.5784.9.camel@mulgrave>
+Date: Wed, 30 Mar 2005 00:13:19 -0500
+Message-ID: <20050330051319.GF24913@roadwarrior.mcmartin.ca>
 References: <20050327204550.GC7728@roadwarrior.mcmartin.ca>
 	<200503272308.32745.dmp@davidmpye.dyndns.org>
 	<20050330030126.GN2485@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Randolph Chung <randolph@tausq.org>
+Content-Type: text/plain;
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20050330030126.GN2485@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -21,18 +21,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 2005-03-29 at 19:01 -0800, Randolph Chung wrote:
+On Tue, Mar 29, 2005 at 07:01:26PM -0800, Randolph Chung wrote:
 > Fixing this requires some work in binutils that nobody has been
 > motivated enough to pursue yet.
+> 
+> Kyle, if there is enough interest in ipv6, is making it builtin an
+> option?
+> 
 
-Well ... not necessarily binutils.  The module is compiled with -
-ffunction-sections, so it could be fixed in the in-kernel loader as
-well ...  Still have to find someone motivated enough to do the work,
-though.
+I don't think so... It only effects -32-smp, as far as I can tell
+(by testing), which is very few machines that can't run -64-smp
+instead.
 
-James
+At this late stage of the game, it would likely cause much more harm
+than good to build it in.
 
-
+Cheers,
+-- 
+Kyle McMartin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
