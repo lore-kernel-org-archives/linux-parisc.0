@@ -1,37 +1,40 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hotmail.com (f214.law12.hotmail.com [64.4.19.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 36635482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  7 Jun 2001 10:15:30 -0600 (MDT)
-From: "Mike Werneke" <mikewerneke@hotmail.com>
-To: parisc-linux@lists.parisc-linux.org
-Date: Thu, 07 Jun 2001 03:51:22 -0000
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F214YiMCIqtQvAauNjV0001bb18@hotmail.com>
-Subject: [parisc-linux] Apollo 735/99 hangs after booting from CDROM
+Received: from mail.kdt.de (mail.kdt.de [195.8.224.4])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1DD02482A
+	for <parisc-linux@parisc-linux.org>; Thu,  7 Jun 2001 10:48:55 -0600 (MDT)
+Sender: aj@suse.de
+To: Matthew Wilcox <willy@ldl.fc.hp.com>
+Cc: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] [aj@suse.de: Re: Remove multiline asm statements]
+References: <20010606102430.V25417@zumpano.fc.hp.com>
+	<20010607092322.E12263@bubble.local>
+From: Andreas Jaeger <aj@suse.de>
+Date: 07 Jun 2001 08:30:45 +0200
+In-Reply-To: <20010607092322.E12263@bubble.local> (Alan Modra's message of "Thu, 7 Jun 2001 09:23:22 +0930")
+Message-ID: <u8ae3kkdii.fsf@gromit.moeb>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Hello.
+Alan Modra <amodra@bigpond.net.au> writes:
 
-I have an HP Apollo 735/99 workstation with 112MB RAM and a 2GB HD.  The 
-external SCSI CDROM is a bit old, but it's Sony from Sun.  I burned the 
-32-bit graphical iso this afternoon and it booted into the 2.4.0-pa10 
-kernel.   After it's done searching for devices (it finds 13 of them), it 
-prints out:
+>> > diff -urNx CVS glibc-223/sysdeps/hppa/dl-machine.h glibc-merge/sysdeps/hppa/dl-machine.h
+>> > --- glibc-223/sysdeps/hppa/dl-machine.h	Fri Apr 27 14:31:02 2001
+>> >+++ glibc-merge/sysdeps/hppa/dl-machine.h	Mon May  7 15:25:44 2001
+>> > @@ -75,11 +82,11 @@
+>> >  
+>> >  #if 0
+>> >    /* Use this method if GOT address not yet set up.  */
+>> 
+>> Can we remove the #if 0 code?
+> 
+> Yes.
 
---snip
-CPU(s): 1 x PA7100 (PCX-T) at 99.000000 MHz
-Kernel command line: HOME=/ TERM=linux root=/dev/ram console=tty0 sti=0 
-sti_font=VGA8x16
-Console: colour dummy device 80x25
-snip--
+Shall I just commit the obvious patch?
 
-and then hangs.  Could this be a bad iso image? Or is this a known issue? 
-Any help would be greatly appreciated (as is all the effort already done by 
-the developers of the parisc port).
-
-Thanks-
-
-Mike Werneke
-_________________________________________________________________
-Get your FREE download of MSN Explorer at http://explorer.msn.com
+Andreas
+-- 
+ Andreas Jaeger
+  SuSE Labs aj@suse.de
+   private aj@arthur.inka.de
+    http://www.suse.de/~aj
