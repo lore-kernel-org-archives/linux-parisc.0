@@ -1,37 +1,45 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from puffin.external.hp.com (puffin.external.hp.com [192.25.206.4])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C6F87482A
-	for <parisc-linux@parisc-linux.org>; Sat, 14 Apr 2001 22:30:36 -0600 (MDT)
-Message-Id: <200104150423.WAA30889@puffin.external.hp.com>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: parisc-linux@parisc-linux.org
-Subject: Re: [parisc-linux] xfree86 build problem 
-In-Reply-To: Your message of "Sun, 15 Apr 2001 00:41:00 BST."
-             <E14oZf5-0005mU-00@the-village.bc.nu>
-Date: Sat, 14 Apr 2001 22:23:24 -0600
-From: Grant Grundler <grundler@puffin.external.hp.com>
+Received: from mail-ob03.one.net.au (mail-ob03.one.net.au [61.12.0.163])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0D083482A
+	for <parisc-linux@lists.parisc-linux.org>; Sat, 14 Apr 2001 23:16:31 -0600 (MDT)
+Received: Received: [from squeak.local (async134-ade-isp-4.nas.one.net.au [203.101.93.135])
+	by mail-ob03.one.net.au  with SMTP id f3F5GM313473
+	for <parisc-linux@lists.parisc-linux.org>; Sun, 15 Apr 2001 15:16:22 +1000 (EST)]
+From: amodra@one.net.au
+Date: Sun, 15 Apr 2001 15:47:43 +0930
+To: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] xfree86 build problem
+Message-ID: <20010415154649.F25145@squeak.one.net.au>
+Reply-To: 200104150436.WAA30928@puffin.external.hp.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-ID: <linux-parisc.vger.kernel.org>
 
-Alan Cox wrote:
-> Did the patches I built to get XFree86 libs building not get as far as you.
-> I sent them to Paul (I believe)
+On Sat, Apr 14, 2001 at 10:36:25PM -0600, Grant Grundler wrote:
+> amodra@one.net.au wrote:
+> > True, but it's not recommended.  The reason being that non-PIC code in
+> > a shared lib will mean lib pages with relocations can't be shared between
+> > processes should the library be loaded at a different virtual addresses.
+> 
+> Well, I guess either x86 doesn't have that problem,
 
-nope. On Thursday, paul (Lahaie) forwarded an email from you (Feb 12th)
-stating you would dig up the patches for him but no patches.I pointed
-this out to paul but he didn't reply yet. Can you fwd me the patches?
+It does.
 
-Besides, alot has changed since you built xfree86.
-But I could use it as guidance.
+> no one has noticed it, or no one cares (OpenGL fans?).
 
-BTW, I did get the libs to build.  I've hacked the Imakefile for libGLU
-so only the .a gets built.  Battling my way through programs directories
-now. A good test to see if the libs are useful or not (already found
-the libfreetype.a was missing/stale).
-Short notes and diff are on pehc:~grundler/*.xfree86
+Possibly :-(  As Ulrich mentioned, it's fairly easy to see if a shared lib
+can't actually be shared.  "readelf -d libwhatever.so | grep DT_TEXTREL"
 
-ta,
-grant
+> Under build-env/xc/lib/GL/glu Imakefiles
+> all have the following construct: (eg libtess/Imakefile)
+> 
+> 	NormalLibraryTarget(tess, $(OBJS))
+> 		rm -f unshared; ln -sf . ./unshared
+> 
+> The result is only .a's get built and the libGLU.so is globbed together
+> from those. The last step fails for __hppa__ since the .o's are non-PIC.
 
-Grant Grundler
-parisc-linux {PCI|IOMMU|SMP} hacker
-+1.408.447.7253
+I suppose you could build the .a lib with -fPIC as a workaround.
+
+-- 
+Alan Modra
