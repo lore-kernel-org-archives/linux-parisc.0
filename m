@@ -1,29 +1,33 @@
 Received: from mailserv2.iuinc.com (qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id QAA24563
-	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Jul 1999 16:56:00 -0600
-Date: Fri, 2 Jul 1999 00:56:13 +0200
-From: Matthew Wilcox <Matthew.Wilcox@genedata.com>
-To: Davin Petersen <davinp@celltech.com>
+	by puffin.external.hp.com (8.8.7/8.8.7) with SMTP id RAA24793
+	for <parisc-linux@puffin.external.hp.com>; Thu, 1 Jul 1999 17:19:42 -0600
+Received: from hub-fue by rachael.franken.de
+	via rmail with uucp
+	id <m10zq7K-0027VQC@rachael.franken.de>
+	for thepuffingroup.com!parisc-linux; Fri, 2 Jul 1999 01:19:42 +0200 (MET DST)
+	(Smail-3.2 1996-Jul-4 #4 built DST-Sep-8)
+Message-ID: <19990702011517.A3692@alpha.franken.de>
+Date: Fri, 2 Jul 1999 01:15:17 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Matthew Wilcox <Matthew.Wilcox@genedata.com>,
+        Davin Petersen <davinp@celltech.com>
 Cc: parisc-linux@thepuffingroup.com
 Subject: Re: [parisc-linux] Booting the kernel
-Message-ID: <19990702005613.B30362@mencheca.ch.genedata.com>
-References: <BF0601275C6FD211B04900A0C9E9205241D111@mailsrvr.hq.celltech.com>
+References: <BF0601275C6FD211B04900A0C9E9205241D111@mailsrvr.hq.celltech.com> <19990702005613.B30362@mencheca.ch.genedata.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <BF0601275C6FD211B04900A0C9E9205241D111@mailsrvr.hq.celltech.com>; from Davin Petersen on Thu, Jul 01, 1999 at 03:41:40PM -0700
+In-Reply-To: <19990702005613.B30362@mencheca.ch.genedata.com>; from Matthew Wilcox on Fri, Jul 02, 1999 at 12:56:13AM +0200
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Thu, Jul 01, 1999 at 03:41:40PM -0700, Davin Petersen wrote:
-> After downloading the goodies available from the FTP site I gather that
-> rbootd is the way to spit the linux kernel to a HP box.  Am I wrong?  Is
-> there no way of using the ISL?  I tried using the ISL (on my H60), got
-> an error message and was dumped back to the ISL prompt.
+On Fri, Jul 02, 1999 at 12:56:13AM +0200, Matthew Wilcox wrote:
+> rbootd is the way for older machines like my 715.  Later models like
+> the A180 tftp their kernel, I think you need bootparamd set up as well.
 
-rbootd is the way for older machines like my 715.  Later models like
-the A180 tftp their kernel, I think you need bootparamd set up as well.
+for the A180 you need a proper setup bootpd/tftpd combo.
+
+Thomas.
 
 -- 
-Matthew Wilcox <willy@bofh.ai>
-"Windows and MacOS are products, contrived by engineers in the service of
-specific companies. Unix, by contrast, is not so much a product as it is a
-painstakingly compiled oral history of the hacker subculture." - N Stephenson
+   This device has completely bogus header. Compaq scores again :-|
+It's a host bridge, but it should be called ghost bridge instead ;^)
+                                        [Martin `MJ' Mares on linux-kernel]
