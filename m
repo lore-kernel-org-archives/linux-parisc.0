@@ -1,15 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mothra.mx.pitdc1.stargate.net (mothra.mx.pitdc1.stargate.net [206.210.69.149])
-	by dsl2.external.hp.com (Postfix) with SMTP id 697004884
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 15 Jul 2002 17:31:06 -0600 (MDT)
-Message-ID: <3D335B27.3060808@neuronet.pitt.edu>
-Date: Mon, 15 Jul 2002 19:30:47 -0400
-From: "Rafael E. Herrera" <raffo@neuronet.pitt.edu>
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] 2.4.19 merge
-References: <20020714091619.B1E35483A@dsl2.external.hp.com>	<20020715142028.J27706@parcelfarce.linux.theplanet.co.uk> 	<1026743879.30202.5.camel@irongate.swansea.linux.org.uk>  	<20020715230306.93501485E@dsl2.external.hp.com> <1026779010.31925.44.camel@irongate.swansea.linux.org.uk>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from mail.speakeasy.net (mail16.speakeasy.net [216.254.0.216])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C51E4862
+	for <parisc-linux@parisc-linux.org>; Mon, 15 Jul 2002 22:56:55 -0600 (MDT)
+Date: Mon, 15 Jul 2002 22:00:31 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: parisc-linux@parisc-linux.org
+Cc: gcc@gcc.gnu.org
+Message-ID: <20020716050031.GA641@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] gcc-3.[02] alignment problem
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,9 +22,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Seems like the merge already begun:
+Compiling the linux kernel (2.4.19-rc1-ac5) with hppa64-linux-gcc 
+(3.0.4 or 3.2) gives:
 
-http://linuxtoday.com/news_story.php3?ltsn=2002-07-15-015-26-NW-KN-DV
+tausq@a500:~/src/linux-2.4.19-rc1/net/ipv4$ hppa64-linux-gcc -D__KERNEL__ -I/home/tausq/src/linux-2.4.19-rc1/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -fomit-frame-pointer -D__linux__ -pipe -fno-strength-reduce -mno-space-regs -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=2.0 -mschedule=8000   -nostdinc -I /usr/lib/gcc-lib/hppa64-linux/3.0/include -DKBUILD_BASENAME=tcp_diag  -c -o tcp_diag.o tcp_diag.c
+{standard input}: Assembler messages:
+{standard input}:138: Error: Field not properly aligned [8] (44).
+{standard input}:138: Error: Invalid operands
+{standard input}:609: Error: Field not properly aligned [8] (44).
+{standard input}:609: Error: Invalid operands
+{standard input}:707: Error: Field not properly aligned [8] (44).
+{standard input}:707: Error: Invalid operands
 
--- 
-      Rafael
+preprocessed source attached.
+
+(incidentally, we also see this while building glibc...)
+
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
