@@ -1,11 +1,16 @@
-From: kyle@mcmartin.ca (Kyle McMartin)
-Subject: [parisc-linux] memory barriers, spinlocks, debuglocks, oh my
-Date: Fri, 27 Aug 2004 12:37:02 -0400
-Message-ID: <20040827163701.GA2414@mcmartin.ca>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: [parisc-linux] linux signal race fixes, patches against hppa tree,
+	please test.
+Date: Fri, 27 Aug 2004 14:26:26 -0400
+Message-ID: <20040827182626.GH25975@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
+ James Bottomley <James.Bottomley@steeleye.com>,
+ Matthew Wilcox <willy@debian.org>,
+ Randolph Chung <tausq@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,138 +22,177 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Not knowing anything about how 2.4 works, I hope this is enough,
-ping me if it isn't, and I'll take another look.
 
-	Regards,
-		Kyle
+jda,
 
-arch/parisc/lib/locks.c         |    6 ++++++
-include/asm-parisc/atomic.h     |   10 ++++++++--
-include/asm-parisc/spinlock_t.h |   19 +++++++++++--------
-3 files changed, 25 insertions(+), 10 deletions(-)
+This is more important for you, approximately 48 hours ago, Linus
+commited a fix for a signal handling race.
 
+http://linux.bkbits.net:8080/linux-2.6/cset@1.1846.1.48?nav=index.html|ChangeSet@-2d
 
-Index: arch/parisc/lib/locks.c
+That is the changeset, and included is a patch against our CVS head 
+that fixes the race condition.
+
+It could force a thread not to restart or crash, or do all sorts of
+things. It may be the bug you are seeing.
+
+Please test it out and see if it makes the builds more stable. It could
+be the reason for random sigsegvs with expect/tcl.
+
+The patch fixes our arch code so we *never* have a k_sigaction that
+wasn't copied without a lock held.
+
+The new code passes around a pointer to an arch allocated k_sigaction
+and copies it with the lock held so it can't be changed between 'check'
+and 'delivery.'
+
+c.
+
+Index: arch/parisc/kernel/signal.c
 ===================================================================
-RCS file: /var/cvs/linux-2.4/arch/parisc/lib/locks.c,v
-retrieving revision 1.1
-diff -u -r1.1 locks.c
---- arch/parisc/lib/locks.c	16 Nov 2002 07:28:08 -0000	1.1
-+++ arch/parisc/lib/locks.c	27 Aug 2004 16:12:50 -0000
-@@ -22,6 +22,7 @@
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/signal.c,v
+retrieving revision 1.17
+diff -u -p -r1.17 signal.c
+--- arch/parisc/kernel/signal.c	31 Mar 2004 07:03:13 -0000	1.17
++++ arch/parisc/kernel/signal.c	27 Aug 2004 18:17:53 -0000
+@@ -494,11 +494,9 @@ give_sigsegv:
+  */	
  
- void spin_lock(spinlock_t *lock)
+ static long
+-handle_signal(unsigned long sig, siginfo_t *info, sigset_t *oldset,
+-	      struct pt_regs *regs, int in_syscall)
++handle_signal(unsigned long sig, siginfo_t *info, struct k_sigaction *ka,
++		sigset_t *oldset, struct pt_regs *regs, int in_syscall)
  {
-+	mb();
- 	int cpu = smp_processor_id();
- 	unsigned int stuck = INIT_STUCK;
- 	while (!__spin_trylock(lock)) {
-@@ -39,19 +40,23 @@
- 	}
- 	lock->owner_pc = (unsigned long)__builtin_return_address(0);
- 	lock->owner_cpu = cpu;
-+	mb();
- }
- 
- int spin_trylock(spinlock_t *lock)
- {
-+	mb();
- 	if (!__spin_trylock(lock))
+-	struct k_sigaction *ka = &current->sighand->action[sig-1];
+-
+ 	DBG(1,"handle_signal: sig=%ld, ka=%p, info=%p, oldset=%p, regs=%p\n",
+ 	       sig, ka, info, oldset, regs);
+ 	
+@@ -506,9 +504,6 @@ handle_signal(unsigned long sig, siginfo
+ 	if (!setup_rt_frame(sig, ka, info, oldset, regs, in_syscall))
  		return 0;
- 	lock->owner_cpu = smp_processor_id(); 
- 	lock->owner_pc = (unsigned long)__builtin_return_address(0);
-+	mb();
+ 
+-	if (ka->sa.sa_flags & SA_ONESHOT)
+-		ka->sa.sa_handler = SIG_DFL;
+-
+ 	if (!(ka->sa.sa_flags & SA_NODEFER)) {
+ 		spin_lock_irq(&current->sighand->siglock);
+ 		sigorsets(&current->blocked,&current->blocked,&ka->sa.sa_mask);
+@@ -535,7 +530,7 @@ asmlinkage int
+ do_signal(sigset_t *oldset, struct pt_regs *regs, int in_syscall)
+ {
+ 	siginfo_t info;
+-	struct k_sigaction *ka;
++	struct k_sigaction ka;
+ 	int signr;
+ 
+ 	DBG(1,"\ndo_signal: oldset=0x%p, regs=0x%p, sr7 %#lx, in_syscall=%d\n",
+@@ -553,10 +548,15 @@ do_signal(sigset_t *oldset, struct pt_re
+ 		oldset->sig[0], oldset->sig[1]);
+ 
+ 
+-	signr = get_signal_to_deliver(&info, regs, NULL);
+-	DBG(3,"do_signal: signr = %d, regs->gr[28] = %ld\n", signr, regs->gr[28]); 
++	/* May need to force signal if handle_signal failed to deliver */
++	while (1) {
++	  
++		signr = get_signal_to_deliver(&info, &ka, regs, NULL);
++		DBG(3,"do_signal: signr = %d, regs->gr[28] = %ld\n", signr, regs->gr[28]); 
+ 	
+-	if (signr > 0) {
++		if (signr <= 0)
++		  break;
++		
+ 		/* Restart a system call if necessary. */
+ 		if (in_syscall) {
+ 			/* Check the return code */
+@@ -569,8 +569,7 @@ do_signal(sigset_t *oldset, struct pt_re
+ 				break;
+ 
+ 			case -ERESTARTSYS:
+-				ka = &current->sighand->action[signr-1];
+-				if (!(ka->sa.sa_flags & SA_RESTART)) {
++				if (!(ka.sa.sa_flags & SA_RESTART)) {
+ 					DBG(1,"ERESTARTSYS: putting -EINTR\n");
+ 					regs->gr[28] = -EINTR;
+ 					break;
+@@ -578,8 +577,7 @@ do_signal(sigset_t *oldset, struct pt_re
+ 			/* fallthrough */
+ 			case -ERESTARTNOINTR:
+ 				/* A syscall is just a branch, so all
+-                                   we have to do is fiddle the return
+-                                   pointer. */
++				   we have to do is fiddle the return pointer. */
+ 				regs->gr[31] -= 8; /* delayed branching */
+ 				/* Preserve original r28. */
+ 				regs->gr[28] = regs->orig_r28;
+@@ -589,12 +587,13 @@ do_signal(sigset_t *oldset, struct pt_re
+ 		/* Whee!  Actually deliver the signal.  If the
+ 		   delivery failed, we need to continue to iterate in
+ 		   this loop so we can deliver the SIGSEGV... */
+-		if (handle_signal(signr, &info, oldset, regs, in_syscall)) {
++		if (handle_signal(signr, &info, &ka, oldset, regs, in_syscall)) {
+ 			DBG(1,KERN_DEBUG "do_signal: Exit (success), regs->gr[28] = %ld\n",
+ 				regs->gr[28]);
+ 			return 1;
+ 		}
+ 	}
++	/* end of while(1) looping forever if we can't force a signal */
+ 
+ 	/* Did we come from a system call? */
+ 	if (in_syscall) {
+Index: kernel/signal.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/kernel/signal.c,v
+retrieving revision 1.22
+diff -u -p -r1.22 signal.c
+--- kernel/signal.c	20 Jul 2004 22:07:41 -0000	1.22
++++ kernel/signal.c	27 Aug 2004 18:17:53 -0000
+@@ -1725,7 +1725,8 @@ static inline int handle_group_stop(void
  	return 1;
  }
  
- void spin_unlock(spinlock_t *lp)
+-int get_signal_to_deliver(siginfo_t *info, struct pt_regs *regs, void *cookie)
++int get_signal_to_deliver(siginfo_t *info, struct k_sigaction *return_ka, 
++		struct pt_regs *regs, void *cookie)
  {
-+	mb();
-   	if ( lp->lock )
- 		printk("spin_unlock(%p): no lock cpu %d curr PC %p %s/%d\n",
- 		       lp, smp_processor_id(), __builtin_return_address(0),
-@@ -63,6 +68,7 @@
- 	lp->owner_pc = lp->owner_cpu = 0;
- 	wmb();
- 	lp->lock = 1;
-+	mb();
- }
+ 	sigset_t *mask = &current->blocked;
+ 	int signr = 0;
+@@ -1794,8 +1795,15 @@ relock:
+ 		ka = &current->sighand->action[signr-1];
+ 		if (ka->sa.sa_handler == SIG_IGN) /* Do nothing.  */
+ 			continue;
+-		if (ka->sa.sa_handler != SIG_DFL) /* Run the handler.  */
++		if (ka->sa.sa_handler != SIG_DFL) {
++			/* Run the handler.  */
++			*return_ka = *ka;
++		  
++			if (ka->sa.sa_flags & SA_ONESHOT)
++			  ka->sa.sa_handler = SIG_DFL;
++			
+ 			break; /* will return non-zero "signr" value */
++		}
  
- #endif
-Index: include/asm-parisc/atomic.h
+ 		/*
+ 		 * Now we are doing the default action for this signal.
+Index: include/linux/signal.h
 ===================================================================
-RCS file: /var/cvs/linux-2.4/include/asm-parisc/atomic.h,v
-retrieving revision 1.10
-diff -u -r1.10 atomic.h
---- include/asm-parisc/atomic.h	13 Sep 2002 21:43:37 -0000	1.10
-+++ include/asm-parisc/atomic.h	27 Aug 2004 16:13:00 -0000
-@@ -30,8 +30,14 @@
-  *
-  * XXX REVISIT these could be renamed and moved to spinlock_t.h as well
-  */
--#define SPIN_LOCK(x)	do { while(__ldcw(&(x)->lock) == 0); } while(0)
--#define SPIN_UNLOCK(x)  do { (x)->lock = 1; } while(0)
-+#define SPIN_LOCK(x)    mb();     \
-+                        do { while(__ldcw(&(x)->lock) == 0); } \
-+                        while(0); \
-+                        mb()
-+#define SPIN_UNLOCK(x)  mb();     \
-+                        do { (x)->lock = 1; } \
-+                        while(0); \
-+                        mb()
- 
- #else	/* CONFIG_SMP */
- 
-Index: include/asm-parisc/spinlock_t.h
-===================================================================
-RCS file: /var/cvs/linux-2.4/include/asm-parisc/spinlock_t.h,v
+RCS file: /var/cvs/linux-2.6/include/linux/signal.h,v
 retrieving revision 1.5
-diff -u -r1.5 spinlock_t.h
---- include/asm-parisc/spinlock_t.h	7 May 2003 17:20:29 -0000	1.5
-+++ include/asm-parisc/spinlock_t.h	27 Aug 2004 16:13:00 -0000
-@@ -68,15 +68,18 @@
-  * Writing this with asm also ensures that the unlock doesn't
-  * get reordered
-  */
--#define spin_unlock(x) \
--	__asm__ __volatile__ ("stw,ma  %%sp,0(%0)" : : "r" (&(x)->lock) : "memory" )
-+#define spin_unlock(x) do { mb(); \
-+ 	__asm__ __volatile__ ("stw,ma  %%sp,0(%0)" : : "r" (&(x)->lock) : "memory" ); \
-+        mb(); } while(0)
-+
-+#define spin_unlock_wait(x) mb(); \
-+ do { barrier(); } while(((volatile spinlock_t *)(x))->lock == 0); \
-+ mb()
+diff -u -p -r1.5 signal.h
+--- include/linux/signal.h	20 Jul 2004 22:07:35 -0000	1.5
++++ include/linux/signal.h	27 Aug 2004 18:17:53 -0000
+@@ -217,7 +217,8 @@ extern int sigprocmask(int, sigset_t *, 
  
--#define spin_unlock_wait(x)     do { barrier(); } while(((volatile spinlock_t *)(x))->lock == 0)
--
--#define spin_lock(x) do { \
-+#define spin_lock(x) do { mb(); \
- 	while (__ldcw (&(x)->lock) == 0) \
- 		while ((x)->lock == 0) ; \
--} while (0)
-+        mb(); } while (0)
- 
- #else
- 
-@@ -85,12 +88,12 @@
- 
- /* Define 6 spinlock primitives that don't depend on anything else. */
- 
--#define spin_lock_init(x)       do { (x)->lock = 1; (x)->owner_cpu = 0; (x)->owner_pc = 0; } while(0)
-+#define spin_lock_init(x)       mb(); do { (x)->lock = 1; (x)->owner_cpu = 0; (x)->owner_pc = 0; } while(0); mb()
- #define spin_is_locked(x)       ((x)->lock == 0)
- void spin_lock(spinlock_t *lock);
- int spin_trylock(spinlock_t *lock);
- void spin_unlock(spinlock_t *lock);
--#define spin_unlock_wait(x)     do { barrier(); } while(((volatile spinlock_t *)(x))->lock == 0)
-+#define spin_unlock_wait(x)     mb(); do { barrier(); } while(((volatile spinlock_t *)(x))->lock == 0); mb()
- 
+ #ifndef HAVE_ARCH_GET_SIGNAL_TO_DELIVER
+ struct pt_regs;
+-extern int get_signal_to_deliver(siginfo_t *info, struct pt_regs *regs, void *cookie);
++extern int get_signal_to_deliver(siginfo_t *info, struct k_sigaction *return_ka, 
++		struct pt_regs *regs, void *cookie);
  #endif
  
--- 
-Kyle McMartin
+ int copy_siginfo_from_user(siginfo_t *to, siginfo_t __user *from);
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
