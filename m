@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mel-rto6.wanadoo.fr (smtp-out-6.wanadoo.fr [193.252.19.25])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 08D21482D
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 08:48:20 -0600 (MDT)
-Received: from mel-rta8.wanadoo.fr (193.252.19.79) by mel-rto6.wanadoo.fr (6.5.007)
-        id 3D18683700016726 for parisc-linux@lists.parisc-linux.org; Tue, 25 Jun 2002 16:48:17 +0200
-Received: from wanadoo.fr (217.128.251.25) by mel-rta8.wanadoo.fr (6.5.007)
-        id 3D11E54E0026F273 for parisc-linux@lists.parisc-linux.org; Tue, 25 Jun 2002 16:48:17 +0200
-Message-ID: <3D188431.1060804@wanadoo.fr>
-Date: Tue, 25 Jun 2002 16:54:41 +0200
-From: eddantes@wanadoo.fr
-MIME-Version: 1.0
-To: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Subject: [parisc-linux] [OT] PCI hardware question
+Received: from dvmwest.gt.owl.de (dvmwest.gt.owl.de [62.52.24.140])
+	by dsl2.external.hp.com (Postfix) with ESMTP id DC9B2483D
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 25 Jun 2002 08:50:53 -0600 (MDT)
+Date: Tue, 25 Jun 2002 16:50:51 +0200
+From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+To: on on <665544@wp.pl>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] (no subject)
+Message-ID: <20020625145051.GW24903@lug-owl.de>
+References: <3d185b06d7cf2@wp.pl>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="S+p9DbwVuimCDe+R"
+In-Reply-To: <3d185b06d7cf2@wp.pl>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,28 +24,38 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello list
+--S+p9DbwVuimCDe+R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I guess this is not the best place to ask, but I don't really know any 
-other, so here is my question.
+On Tue, 2002-06-25 13:59:02 +0200, on on <665544@wp.pl>
+wrote in message <3d185b06d7cf2@wp.pl>:
 
-I'm planning to buy a second hand station at some point and have fun 
-with Linux, but in the documentation process, I discovered some stations 
-have problemw with PCI hardware.
+Hi "on on" (your parents seem ru be quite rude, aren't they?)
 
-The question is: which kind of PCI stuff is this? Regular, PC compatible 
-cards, or HP specific?
+> The other question is for keyboard - what about using PS/2=20
+> keyboard?=20
 
-If I remember correctly, various cards (PCI, ISA, AGP and so on) come 
-with a firmware, that has to "match" the host computer. I know some OSes 
-bypass this firmware and re-discover everything, others don't.
+That should be fine.
 
-So the logical other way to ask the question is: is it possible to stick 
-(fairly standard) ISA or PCI PC cards into an HP station and get them to 
-work?
+MfG, JBG
 
-Relly sorry if this is a brain-dead question... :)
+--=20
+Jan-Benedict Glaw   .   jbglaw@lug-owl.de   .   +49-172-7608481
+	 -- New APT-Proxy written in shell script --
+	   http://lug-owl.de/~jbglaw/software/ap2/
 
+--S+p9DbwVuimCDe+R
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Thanks a lot
-/Dantes
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
+
+iD8DBQE9GINKHb1edYOZ4bsRApduAKCCuS73Drqy4f/07nd6reSuwP5figCeLCBQ
+IHx748gFoBWzt2+0X43k5cw=
+=Ot7t
+-----END PGP SIGNATURE-----
+
+--S+p9DbwVuimCDe+R--
