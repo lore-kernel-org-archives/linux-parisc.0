@@ -1,7 +1,7 @@
 From: jason@gcc.gnu.org
 Subject: [parisc-linux] Re: c++/10091: [3.3 regression] [parisc] ICE in cp_expr_size, at cp/cp-lang.c:307
-Date: 17 Mar 2003 23:33:58 -0000
-Message-ID: <20030317233358.13120.qmail__44463.4358319037$1416622296$gmane$org@sources.redhat.com>
+Date: 18 Mar 2003 04:37:24 -0000
+Message-ID: <20030318043724.6836.qmail__2718.7371779748$1416622296$gmane$org@sources.redhat.com>
 Reply-To: jason@gcc.gnu.org, debian-gcc@lists.debian.org,
 	gcc-bugs@gcc.gnu.org, gcc-prs@gcc.gnu.org, jason@gcc.gnu.org,
 	parisc-linux@lists.parisc-linux.org, tausq@debian.org,
@@ -22,29 +22,12 @@ List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
 Synopsis: [3.3 regression] [parisc] ICE in cp_expr_size, at cp/cp-lang.c:307
 
-State-Changed-From-To: open->analyzed
+State-Changed-From-To: analyzed->closed
 State-Changed-By: jason
-State-Changed-When: Mon Mar 17 23:33:58 2003
+State-Changed-When: Tue Mar 18 04:37:24 2003
 State-Changed-Why:
-    The problem is that the #pragma pack means that _GEIdx::addr
-    might not have the usual alignment of an ftn_addr, so we
-    can't just take the address of current.addr in order to bind
-    it to a reference.  expand_expr knows this, and tries to
-    make a bitwise copy and take the address of that.  But since
-    ftn_addr has a copy constructor, we can't make bitwise
-    copies, so we abort.
-    
-    Now, in your particular testcase ftn_golded_nodelist_index::current
-    does in fact have enough alignment for a ftn_addr, so we'd
-    be OK just using the address of current.addr (it would be
-    different if either of the latter two classes began with,
-    say, a char field).  But the backend doesn't currently track
-    alignment info from enclosing classes, so we are conservative
-    and fail.
-    
-    We used to err in the other direction: taking the address of
-    a packed field would lose any information about it possibly
-    having less alignment, and things trying to use the resulting
-    pointer could get a bus error.  See g++.dg/other/packed1.C.
+    OK, I was wrong; the backend does track alignment info, the
+    problem was the frontend tacking on a INDIRECT_REF/NOP_EXPR/ADDR_EXPR
+    sequence between the COMPONENT_REFs.  Fixed.
 
 http://gcc.gnu.org/cgi-bin/gnatsweb.pl?cmd=view%20audit-trail&database=gcc&pr=10091
