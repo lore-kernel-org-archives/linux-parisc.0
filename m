@@ -1,26 +1,25 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA22497
-	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 12:55:04 -0700
-Date: Wed, 15 Mar 2000 19:55:20 +0100
-From: Philipp Rumpf <prumpf@inwestnet.de>
-To: Hugo.van.der.Kooij@caiw.nl
-Cc: "Brian S. Julin" <bri@mojo.calyx.net>, parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] Cross compiler -- on Alpha?
-Message-ID: <20000315195520.E673@abacus.local>
-References: <20000315182657.D673@abacus.local> <Pine.LNX.4.10.10003151927530.21833-100000@bastion.hugo.vanderkooij.org>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id NAA22708
+	for <parisc-linux@puffin.external.hp.com>; Wed, 15 Mar 2000 13:01:48 -0700
+From: willy@thepuffingroup.com
+Received: (from willy@localhost)
+	by gin.ext.thepuffingroup.com (8.9.3/8.9.3) id OAA20880
+	for parisc-linux@thepuffingroup.com; Wed, 15 Mar 2000 14:03:09 -0500
+Date: Wed, 15 Mar 2000 14:03:09 -0500
+To: parisc-linux@thepuffingroup.com
+Message-ID: <20000315140309.U27942@thepuffingroup.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.LNX.4.10.10003151927530.21833-100000@bastion.hugo.vanderkooij.org>; from Hugo.van.der.Kooij@caiw.nl on Wed, Mar 15, 2000 at 07:30:40PM +0100
+Subject: [parisc-linux] Merge with Linus 2.3.99pre1
 List-ID: <linux-parisc.vger.kernel.org>
 
-> > It might.  The only real difference between alpha and i386 to run a
-> > cross-compiler on is sizeof(long), and I don't think we rely on that
-> > too heavily in gcc.
-> 
-> Wouldn't big endian vs little endian be an issue?
 
-PA-RISC is (usually) big-endian;  Alpha and i386 are little-endian.  Cross-
-compiling from i386 works, so this shouldn't be an issue for cross-compiling
-from Alpha.
+Linus released 2.3.99pre1 today which marks the start of the 2.4
+release effort.  We'd like to merge Linus' changes into our tree on
+Friday, starting around 11am EST (8am PST, 4pm UTC, 5pm CET).  If you
+have any local changes which can go back into our tree, now would be a
+good time to commit them.  If you're in the middle of something which
+will be disrupted by this, now would also be a good time to shout `STOP'.
 
-	Philipp Rumpf
+People who wish to help are welcome.  Please contact me if you feel you
+can help.
