@@ -1,17 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.scram.de (mail.scram.de [195.226.127.117])
-	by dsl2.external.hp.com (Postfix) with ESMTP id EA4E34829
-	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Nov 2002 16:03:09 -0700 (MST)
-Date: Sun, 3 Nov 2002 23:56:47 +0100 (CET)
-From: Jochen Friedrich <jochen@scram.de>
-To: Grant Grundler <grundler@dsl2.external.hp.com>
-Cc: "BUCH-PEDERSEN,LEIF (HP-France,ex1)" <leif_buch-pedersen@hp.com>,
-	"'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
-Subject: Re: [parisc-linux] ip6tables problem 
-In-Reply-To: <20021031193623.6B06E4829@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0211032348580.24848-100000@gfrw1044.bocc.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id D20714829
+	for <parisc-linux@lists.parisc-linux.org>; Sun,  3 Nov 2002 16:18:53 -0700 (MST)
+Received: from willy by www.linux.org.uk with local (Exim 3.33 #5)
+	id 188U13-0001yy-00; Sun, 03 Nov 2002 23:18:49 +0000
+Date: Sun, 3 Nov 2002 23:18:49 +0000
+From: Matthew Wilcox <willy@debian.org>
+To: Thibaut VARENE <varenet@esiee.fr>
+Cc: parisc-linux@lists.parisc-linux.org, willy@debian.org
+Subject: Re: [parisc-linux] Placement of hil drivers
+Message-ID: <20021103231849.D20749@parcelfarce.linux.theplanet.co.uk>
+References: <20021102155723.I20749@parcelfarce.linux.theplanet.co.uk> <20021103223132.7d57ffff.varenet@esiee.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20021103223132.7d57ffff.varenet@esiee.fr>; from varenet@esiee.fr on Sun, Nov 03, 2002 at 10:31:32PM +0100
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,19 +25,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Grant,
+On Sun, Nov 03, 2002 at 10:31:32PM +0100, Thibaut VARENE wrote:
+> That's not true, I've worked hard enough on 2.5 config system, and
+> especially on HIL, to deny such statement ;^)
 
-> Not many people use IPV6 (ie run it on their machines).
-> I'm not aware of anyone trying it for parisc-linux.
+OK, it's nowhere to be found in 2.5.45 ;-)  I guess this change got lost
+during the Kconfig transition.
 
-I'm running an IPv6 cluster on two 715 HPPA machines in production use
-(using heartbeat and an IPv6 IP address takeover script). Yet another 720
-HPPA machine is running for development and testing and partly builds the
-stuff for the Debian IPv6 project (http://debian.fabbione.net).
+> AFAICR, I already have said when we merged 2.4 config files into 2.5 that
+> HIL driver files and config may need review.
+> 
+> It looks like time has come for such review.
 
-However, i'm not using the ip6tables on that boxes as all three of them
-are behind dedicated packet filters...
+Certainly, that was what i was starting to do when i noticed nothing was
+including the Kconfig stuff in drivers/hil ... and that no Makefile was
+linking drivers/hil.  So it's not _just_ the Kconfig changes that broke
+this.
 
-At least i can confirm the original problem (just tried it on the 720).
+> I would like to hear from Helge Deller too.
 
---jochen
+Yep, and Brian Julin... at least to hear that they don't care where
+these drivers are put.
+
+-- 
+Revolutions do not require corporate support.
