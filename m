@@ -1,31 +1,29 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Sun, 7 Feb 1999 22:43:51 -0500 (EST)
-From: Alex deVries <adevries@redhat.com>
-To: "hppa-linux@puffingroup.com" <hppa-linux@puffingroup.com>
-Subject: Re: [hppa-linux] egcs-1.1.1 xcompile
-In-Reply-To: <36BE31DE.FEA80D5C@ottawa.com>
-Message-ID: <Pine.LNX.3.96.990207224313.907g-100000@devserv.devel.redhat.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Resent-Message-ID: <"eK_Bt.0.fO.PVdls"@burrow.puffingroup.com>
+Date: Mon, 8 Feb 1999 02:13:50 -0500
+From: "Steven A. DuChene" <sad@ale.org>
+To: hppa-linux@puffingroup.com
+Message-ID: <19990208021350.A548@sduchene.users.mindspring.com>
+References: <199902070232.SAA16244@gatekeeper.equator.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <199902070232.SAA16244@gatekeeper.equator.com>; from Jason Eckhardt on Sat, Feb 06, 1999 at 06:32:09PM -0800
+Subject: [hppa-linux] Various docs available at HP pubkic doc site
+Resent-Message-ID: <"2G5hU1.0.XS.hXfls"@burrow.puffingroup.com>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, 7 Feb 1999, Paul J.Y. Lahaie wrote:
+OK, In case others on this list don't know about it, there is a publically
+accessable HP doc site at http://www.docs.hp.com
 
->   At this point, there is some code (I assume from libgcc2.c) which
-> puts "opcode arg,arg,arg    ; comment" style comments which confuses
-> as (it thinks "; comment" is an opcode).  I'm gonna go look to see
-> if I can do a quick patch to fix this.  Other than that, the
-> compiler seems to work fine with little or no patchings (beyond
-> support for hppa1.1-hp-linux)
-> 
+Amoung other things is a white paper on booting at:
 
-Yeah, I had to fix this elsewhere.  The solution was to use a "#"
-character instead of ";" to mark the start of a comment.
+http://www.docs.hp.com/hpux/content/boot.html
 
-- Alex
 
+Looked through the above and while it may not answer all questions there
+might be a gem of information or two in there.
+
+Steve DuChene
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
