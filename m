@@ -1,30 +1,49 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id MAA31347
-	for <parisc-linux@puffin.external.hp.com>; Wed, 14 Jun 2000 12:47:52 -0600
-Message-Id: <200006141848.OAA26497@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] oops, egcs didn't build all the way...
-To: catfish@alltel.net (T. Martin)
-Date: Wed, 14 Jun 2000 14:48:38 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@thepuffingroup.com
-In-Reply-To: <Pine.LNX.4.10.10006141344360.727-100000@jesse.crash.lan> from "T. Martin" at Jun 14, 2000 01:45:58 pm
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id PAA32373
+	for <parisc-linux@puffin.external.hp.com>; Wed, 14 Jun 2000 15:09:16 -0600
+Received: from boca210a.boca.ssc.siemens.com (boca210a.boca.ssc.siemens.com [135.1.69.210])
+	by lmmx1.fl.icn.siemens.com (8.9.3/8.9.3) with ESMTP id RAA12204
+	for <parisc-linux@thepuffingroup.com>; Wed, 14 Jun 2000 17:09:58 -0400 (EDT)
+Message-ID: <2FF13E24F61AD41193130008C791A76031F0FA@boca215a.boca.ssc.siemens.com>
+From: "D'Angelo, James" <James.D'Angelo@icn.siemens.com>
+To: parisc-linux@thepuffingroup.com
+Date: Wed, 14 Jun 2000 17:07:58 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: [parisc-linux] Linux make dep scsi error
 List-ID: <linux-parisc.vger.kernel.org>
 
-> On Wed, 14 Jun 2000 willy@thepuffingroup.com wrote:
-> 
-> > On Wed, Jun 14, 2000 at 12:05:06AM -0500, T. Martin wrote:
-> > > egcs failed to build, 
-> > > RH 6.1
-> > > ar: libE77/Labort.o: No such file or directory
-> > > make[2]: *** [libg2c.a] Error 1
-> > > make[2]: Leaving directory `/opt/puffin/egcs/i586-pc-linux-gnu/libf2c'
-> > 
-> > um, this is fortran stuff.  why on earth is it trying to build fortran?!
+I've been fairly successful with building the compile environment, except
+for this error message I seem not to be able to get past.  Any ideas?
 
-Do "make LANGUAGES=c" to only build C.
+gmake[1]: Leaving directory `/disk2/puffin/linux-2.3/arch/parisc/hpux'
+hppa1.1-linux-ld  -T /disk2/puffin/linux-2.3/arch/parisc/vmlinux.lds
+arch/parisc/real/head.o  init/main.o init/version.o \
+--start-group \
+		arch/parisc/kernel/pdc_cons.o arch/parisc/kernel/process.o
+arch/parisc/real/real.o /disk2/puffin/linux-2.3/arch/parisc/lib/lib.a
+arch/parisc/mm/mm.o arch/parisc/kernel/kernel.o arch/parisc/hpux/hpux.o
+kernel/kernel.o mm/mm.o fs/fs.o ipc/ipc.o arch/parisc/kernel/init_task.o \
+		drivers/block/block.a drivers/char/char.o drivers/net/net.o
+drivers/scsi/scsi.a drivers/cdrom/cdrom.a drivers/video/video.o
+drivers/gsc/gsc.a drivers/parport/parport.a \
+	net/network.a \
+	/disk2/puffin/linux-2.3/arch/parisc/lib/lib.a
+/disk2/puffin/linux-2.3/lib/lib.a  \
+	--end-group \
+	-o vmlinux
+	drivers/scsi/scsi.a: could not read symbols: Malformed archive
+	gmake: *** [vmlinux] Error 1
+jdangelo@spider> 
 
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+I am building with the gcc from puffin on a 712/80 (same as my target
+platform).
+
+Jay D'Angelo
+jdangelo@techie.com <mailto:jdangelo@techie.com> 
+
+
+
+
+
