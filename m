@@ -1,17 +1,9 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from sh.od.inet (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.140.233])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 6A4D24830
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  5 Mar 2002 23:05:07 -0700 (MST)
-Date: Wed, 6 Mar 2002 00:58:18 -0500
-From: "Carlos O'Donell Jr." <carlos@baldric.uwo.ca>
-To: Matthew Wilcox <willy@debian.org>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Printer Port & kernel stuff
-Message-ID: <20020306005818.D23625@systemhalted>
-References: <005101c1c480$ae437900$02c1a8c0@james.co.uk> <20020305200711.E30960@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20020305200711.E30960@parcelfarce.linux.theplanet.co.uk>; from willy@debian.org on Tue, Mar 05, 2002 at 08:07:11PM +0000
+To: parisc-linux@lists.parisc-linux.org
+Message-Id: <20020306080101.B6A874859@dsl2.external.hp.com>
+Date: Wed,  6 Mar 2002 01:01:01 -0700 (MST)
+From: grundler@dsl2.external.hp.com (Grant Grundler)
+Subject: [parisc-linux] FB on c3k
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,30 +15,51 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> On Tue, Mar 05, 2002 at 03:02:29PM -0500, James S wrote:
-> > Has nobody else had the same problem as me with the printer port ?
-> > 
-> > My 712/60 locks every time i send anything to the local printer.
-> 
-> Isn't this cured with Thomas Bogendoerfer's recent changes to make
-> parport_gsc & parport_pc work when compiled into the same kernel?
-> 
-> > while i'm at it - does anybody have a list of the options i should choose
-> > when i'm doing a make config for the kernel so i can get the right network
-> > stuff installed etc.
-> 
-> defconfig is pretty all-encompassing.  there's also the debian-configs
-> in the CVS tree.
-> 
-> > i need to recompile to include smbfs (which i think would be very handy if
-> > compiled into the kernel as standard)
-> 
-> last i heard it still wouldn't compile.  but maybe it got fixed and i
-> don't remember.
->
+Getting closer.
 
-I compiled it into the kernel, and as a module. No compilation issues.
+I'm comfortable that FB ioctl wrappers are ok with an updated
+version of the ioctl32.c patch (ftp.p-l.o:patches/fb_ioctl.diff).
+"fbset -v -i" on c3k (64-bit kernel, PDC 4.6, Vis-EG/PCI) reports:
 
-Haven't tested it :)
+Linux Frame Buffer Device Configuration Version 2.1 (23/06/1999)
+(C) Copyright 1995-1999 by Geert Uytterhoeven
 
-c. 
+Opening frame buffer device `/dev/fb0'
+Using current video mode from `/dev/fb0'
+
+mode "1280x1024"
+    geometry 1280 1024 1280 1024 8
+    timings 0 0 0 0 0 0 0
+    rgba 8/0,8/0,8/0,0/0
+endmode
+
+Getting further frame buffer information
+Frame buffer device information:
+    Name        : 
+    Address     : 0xfb000000
+    Size        : 33554432
+    Type        : PACKED PIXELS
+    Visual      : PSEUDOCOLOR
+    XPanStep    : 0
+    YPanStep    : 0
+    YWrapStep   : 0
+    LineLength  : 2048
+    MMIO Address: 0xfa100000
+    MMIO Size   : 4194304
+    Accelerator : No
+
+
+But when I try to "fbi foo.jpg", I get diagonal black "lines" from
+top left to bottom right striped about 3-4 pixels wide and spaced about
+12-16 pixels apart (all just guesses). Tux does show up in the top
+left corner at boot and stays there. System seems to lock up.
+TOC doesn't work. Power off occurs 20-30 seconds after hitting power
+button.
+
+I suspect some parameter isn't right for FB device definition
+but don't know what. Hoping the diagonal lines are the clue
+that someone could tell me about - some sort of "off-by-one"
+type of error.
+
+thanks,
+grant
