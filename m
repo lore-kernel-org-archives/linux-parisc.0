@@ -1,30 +1,74 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BDAF64834
-	for <parisc-linux@lists.parisc-linux.org>; Wed,  4 Jul 2001 16:51:51 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 6.03.0009/NU8172.00.4d3e3a24) with ESMTP id qxdngaaa for parisc-linux@lists.parisc-linux.org; Wed, 4 Jul 2001 15:48:07 -0700
-Date: Wed, 4 Jul 2001 15:51:08 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: Torsten Neumann <torsten@imke.infodrom.ffis.de>,
-	Peter Weilbacher <weilbach@uni-sw.gwdg.de>,
-	parisc-linux@lists.parisc-linux.org
-Message-ID: <20010704155108.H31475@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] unaligned memory accesses
+Received: from epirel991.europay.com (mail.europay.com [193.75.200.45])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 70C1E482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  5 Jul 2001 00:13:12 -0600 (MDT)
+Received: from mcnbru01 (unverified) by epirel991.europay.com
+ (Content Technologies SMTPRS 4.1.5) with ESMTP id <Tac10592d548e8baaec@epirel991.europay.com> for <parisc-linux@lists.parisc-linux.org>;
+ Thu, 5 Jul 2001 08:12:50 +0200
+Subject: Re: [parisc-linux] Re: How to access the second serial port on a B180 with
+ PALINUX
+To: "Thomas Bogendoerfer <tsbogend" <tsbogend%alpha.franken.de%SMTP%EUROPAY@mastercard.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Message-ID: <OF8324628D.0EB37C45-ONC1256A80.00210FD4@LocalDomain>
+From: "=?iso-8859-1?Q?Jo=EBl_Soete?=" <jso@europay.com>
+Date: Thu, 5 Jul 2001 08:02:50 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=iso-8859-1
 List-ID: <linux-parisc.vger.kernel.org>
 
-Torsten and Peter,
+Thomas,
 
-I've checked in some changes to parisc kernel cvs that should address 
-the crashes you've seen. Please try picking up latest kernel files from 
-cvs and let us know if they fix the errors you've seen.
+Sorry I have not enough knowledge to help you.
 
-thanks,
-randolph
--- 
-   @..@                                         http://www.TauSq.org/
-  (----)
- ( >__< )
- ^^ ~~ ^^
+I will awating your result.
+
+Thanks a lot,
+     Joel
+
+
+
+                                                                           =
+                                      =20
+                    Thomas                                                 =
+                                      =20
+                    Bogendoerfer             To:     Jo=EBl Soete/BRU/MASTE=
+RCARD@MASTERCARD                        =20
+                    <tsbogend@alpha.f        cc:     parisc-linux@lists.par=
+isc-linux.org@SMTP@EUROPAY            =20
+                    ranken.de>               Subject:     Re: [parisc-linux=
+] Re: How to access the second serial =20
+                                             port on a B180 with PALINUX   =
+                                      =20
+                    04-07-01 07:43 PM                                      =
+                                      =20
+                                                                           =
+                                      =20
+                                                                           =
+                                      =20
+
+
+
+On Wed, Jul 04, 2001 at 06:57:41PM +0200, Jo=EBl Soete wrote:
+> Any idea about this keyboard problem?
+
+I'm working on that problem, which I've noticed during the last weekend.
+PS2 keyboard and mouse are working on my 712 but not on the B180.
+
+Thomas.
+
+--
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                 [ Alexander Viro on linux-kernel
+]
+
+
+
+
+
+**********************************************************************
+This e-mail and any attachments to it may contain confidential information =
+which is strictly intended for the use of the authorised recipient.  If you=
+ have received this e-mail in error, please delete it and notify the sender=
+ by replying to this e-mail.
+Thank you for your co-operation.
+**********************************************************************
