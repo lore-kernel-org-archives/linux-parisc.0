@@ -1,29 +1,31 @@
-Received: from bentley.socsci.auc.dk (bentley.socsci.auc.dk [130.225.60.48])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id EAA21390
-	for <parisc-linux@puffin.external.hp.com>; Thu, 24 Feb 2000 04:15:52 -0700
-Sender: mkp@socsci.auc.dk
-To: "Thierry SIMONNET" <t.simonnet@esiee.fr>
-Cc: <parisc-linux@puffin.external.hp.com>
-Subject: Re: [parisc-linux] nfsroot howto
-References: <yq1itzr9zwt.fsf@leyland.socsci.auc.dk> <00c401bf7ea9$a7216660$0a14d793@esiee.fr>
-From: "Martin K. Petersen" <mkp@mkp.net>
-Date: 24 Feb 2000 11:16:25 +0100
-In-Reply-To: "Thierry SIMONNET"'s message of "Thu, 24 Feb 2000 10:29:30 +0100"
-Message-ID: <yq14sayewhy.fsf@leyland.socsci.auc.dk>
-MIME-Version: 1.0
+Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA24298
+	for <parisc-linux@puffin.external.hp.com>; Thu, 24 Feb 2000 09:35:14 -0700
+Received: from udlkern.fc.hp.com (jsm@udlkern.fc.hp.com [15.1.52.48])
+	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id IAA07863
+	for <parisc-linux@thepuffingroup.com>; Thu, 24 Feb 2000 08:36:00 -0700 (MST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.1) id IAA28435 for parisc-linux@thepuffingroup.com; Thu, 24 Feb 2000 08:36:00 -0700 (MST)
+Date: Thu, 24 Feb 2000 08:36:00 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200002241536.IAA28435@udlkern.fc.hp.com>
+To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] Kernel Stack size increase
 List-ID: <linux-parisc.vger.kernel.org>
 
->>>>> "Thierry" == Thierry SIMONNET <t.simonnet@esiee.fr> writes:
 
-Thierry> I have a 712/60 Workstation as NFS server and a 712/80 as
-Thierry> parisc-linux box.  I have some trouble with nfsroot :bootp
-Thierry> and tftp process works but IP-Config says : IP-Config : No
-Thierry> Network device available.
+I just committed code to change the task structure/kernel stack size from
+8K to 16K. Willy asked me to do this after I had mentioned to him that
+I had observed that we had already crossed the 6K boundary. 
 
-You have to enable Lasi ethernet (CONFIG_APRICOT) on machines with 10
-Mbps ethernet onboard (7xx, old B- and C-class).
+We may never actually cross the 8K boundary, but I (and willy agrees)
+believe that it is not worth risking at this point (a kernel stack overflow
+will cause a variety of hard to track problems, since Linux currently does
+not have a redzone for kernel stacks).  Later on in the port we can make
+more precise measurements to determine what a safe value for the kernel 
+stack size should be. There are also other possible designs that could be 
+considered.
 
--- 
-Martin Kasper Petersen			BOFH, IC1&2, Aalborg University, DK
-mailto:mkp@SunSITE.auc.dk		http://SunSITE.auc.dk/~mkp/
+John Marvin
+jsm@fc.hp.com
