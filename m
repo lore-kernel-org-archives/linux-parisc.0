@@ -1,17 +1,14 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
-	by dsl2.external.hp.com (Postfix) with ESMTP id BD3EF482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 14 May 2002 16:11:24 -0600 (MDT)
-Message-ID: <3CE18B91.8B0E15B@gmx.at>
-Date: Wed, 15 May 2002 00:11:29 +0200
-From: Christoph Plattner <christoph.plattner@gmx.at>
-MIME-Version: 1.0
-To: Thibaut VARENE <varenet@esiee.fr>
-Cc: PA/Linux <parisc-linux@lists.parisc-linux.org>,
-	Grant Grundler <grundler@dsl2.external.hp.com>
-Subject: Re: [parisc-linux] New HWDB design online
-References: <62DAF8F4-6769-11D6-9BB9-0030656F07A2@esiee.fr>
-Content-Type: text/plain; charset=us-ascii
+To: Christoph Plattner <christoph.plattner@gmx.at>
+Cc: Thibaut VARENE <varenet@esiee.fr>,
+	PA/Linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] New HWDB design online 
+In-Reply-To: Message from Christoph Plattner <christoph.plattner@gmx.at>
+   of "Wed, 15 May 2002 00:11:29 +0200." <3CE18B91.8B0E15B@gmx.at>
+References: <62DAF8F4-6769-11D6-9BB9-0030656F07A2@esiee.fr>  <3CE18B91.8B0E15B@gmx.at> 
+Date: Tue, 14 May 2002 17:51:20 -0600
+From: Grant Grundler <grundler@dsl2.external.hp.com>
+Message-Id: <20020514235120.BA086482A@dsl2.external.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -23,47 +20,26 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hello !
-
-Are you now responsible for the HWDB ?
-
-I wrote moths ago some times to the "webmaster" to delete my
-registratioon with the old email address !
-
-Please delete for 
-	720
-	E55
-the entry "christoph.plattner@dot.at". It is already duplicated with
-my "gmx.at" mail account ! "dot.at" is not valid now !
-
-With friendly regards
-Christoph P.
-
-
-
-Thibaut VARENE wrote:
+Christoph Plattner wrote:
+> Hello !
 > 
-> Bonjour !  ;o)
-> 
-> I'm glad to announce that the new hwdb is online at
-> http://hwdb.parisc-linux.org/
-> 
-> I hope you'll like it, and I pray it will work fine.
-> 
-> Please mail for any comment/problem to report.
-> 
-> Enjoy ;o)
-> 
-> Thibaut VARENE
-> PA/Linux ESIEE Team
-> http://pateam.esiee.fr/
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> Are you now responsible for the HWDB ?
 
--- 
--------------------------------------------------------
-private:	christoph.plattner@gmx.at
-company:	christoph.plattner@alcatel.at
+Christoph,
+No. Mostly, thibaut just updated the header/footer/navigation bar
+so it matches the rest of the site. Of course, if someone
+*wants* to maintain hwdb, they should let me know...
+
+> I wrote moths ago some times to the "webmaster" to delete my
+> registratioon with the old email address !
+> 
+> Please delete for 
+> 	720
+> 	E55
+> the entry "christoph.plattner@dot.at". It is already duplicated with
+> my "gmx.at" mail account ! "dot.at" is not valid now !
+
+If that doesn't get updated by this weekend, send me a friendly reminder
+and I'll see if I can figure out how to do that on the weekend.
+
+grant
