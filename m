@@ -1,20 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel9.hp.com (atlrel9.hp.com [156.153.255.214])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 217EE4829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Oct 2002 08:27:09 -0600 (MDT)
-Received: from udlkern.fc.hp.com (udlkern.fc.hp.com [15.1.52.48])
-	by atlrel9.hp.com (Postfix) with ESMTP id E3305E0119B
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Oct 2002 10:27:02 -0400 (EDT)
-Received: (from jsm@localhost)
-	by udlkern.fc.hp.com (8.9.3 (PHNE_18979)/8.9.3 SMKit7.01) id IAA27522
-	for parisc-linux@lists.parisc-linux.org; Tue, 8 Oct 2002 08:27:02 -0600 (MDT)
-Date: Tue, 8 Oct 2002 08:27:02 -0600 (MDT)
-From: John Marvin <jsm@udlkern.fc.hp.com>
-Message-Id: <200210081427.IAA27522@udlkern.fc.hp.com>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] ksoftirqd eats 100% cpu :-(
+Received: from pippin.tausq.org (gandalf.tausq.org [64.81.244.94])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1C8254829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Oct 2002 08:58:04 -0600 (MDT)
+Date: Tue, 8 Oct 2002 08:00:53 -0700
+From: Randolph Chung <randolph@tausq.org>
+To: phi <phi@hpfrcu81.france.hp.com>
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] boot (micro) hang
+Message-ID: <20021008150053.GC24881@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
+References: <3DA2945D.7010301@visoel.de> <3DA2E27B.5708975E@hpfrcu81.france.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <3DA2E27B.5708975E@hpfrcu81.france.hp.com>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -26,13 +24,24 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-> It's a bug/feature related to the HIL drivers.
-> Since we have to poll the HIL ports the whole time
-> the bunch of running timers increase the ksoftirqd load a lot.
+> I have made no progress today.
+> Thomas helped to turn on verbosity during boot and remove LED display code,
+> but yet it fail to boot 'normally' and I still get the micro hang (15 minute).
+> 
+> Here is the boot display.
 
-I understand that polling is necessary while sending commands out
-to hil devices, but input should be interrupt driven. What is the
-reason for all of the polling?
+Make sure you have the System.map that goes along with the kernel you
+are booting, then when you observe the hang on bootup, press the TOC
+button (usually a recessed button on the back of the box). The machine
+should automatically reboot. At the next reboot at the PDC prompt, do
+"ser pim" and capture the output. Put that output and your System.map
+someplace others can access (or you can try to match it up yourself, 
+the interesting bits are where the IAOQ and GR02 values lay in 
+System.map)
 
-John Marvin
-jsm@fc.hp.com
+good luck :)
+randolph
+--  
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
