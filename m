@@ -1,18 +1,15 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by dsl2.external.hp.com (Postfix) with SMTP id 105A64829
-	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Sep 2002 00:30:16 -0600 (MDT)
-From: Helge Deller <deller@gmx.de>
-To: "Tobias Giesen" <tobias_subscriber@tgtools.com>
-Subject: Re: [parisc-linux] Re: [PATCH] Voodoo framebuffer on PARISC
-Date: Mon, 16 Sep 2002 08:29:35 +0200
-Cc: <parisc-linux@lists.parisc-linux.org>
-References: <000001c25d16$80be8b30$0100a8c0@PLUTO>
-In-Reply-To: <000001c25d16$80be8b30$0100a8c0@PLUTO>
+Received: from viefep16-int.chello.at (viefep16-int.chello.at [213.46.255.17])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 2EE234829
+	for <parisc-linux@lists.parisc-linux.org>; Mon, 16 Sep 2002 15:37:23 -0600 (MDT)
+Message-ID: <3D864F0D.32223AC9@gmx.at>
+Date: Mon, 16 Sep 2002 23:37:17 +0200
+From: Christoph Plattner <christoph.plattner@gmx.at>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Message-Id: <200209160829.35216.deller@gmx.de>
+To: Ryan Bradetich <rbradetich@uswest.net>
+Cc: "parisc-linux@lists.parisc-linux.org" <parisc-linux@lists.parisc-linux.org>
+Content-Type: text/plain; charset=us-ascii
+Subject: [parisc-linux] SPIFI hardware access
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,43 +21,27 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Tobias,
+Hello Ryan
+,
 
-you should use a standard PC mulitfrequency monitor, as most
-HP monitors are fixed frequency and won't work.
+I think we have a much more basic problem, I thought
+up to now. I think all bus accesses to the device 
+are unsuccessfull.
 
-Furthermore you might search in sstfb.c for:
-/*
-  Default video mode .
-  0 800x600@60  took from glide
-  1 640x480@75  took from glide
-  2 1024x768@76 std fb.mode
-  3 640x480@60  glide default */
-#define DEFAULT_MODE 1
+Independent of the word position, I read back a 
+0x0000ff00. You see this as a counter value, and
+even the regs->spstat deliveres 0x0000ff00 and via
+the bit operations the ID=7 results, and I thought
+at the beginning, this wa correctly read out .... !
 
-and try to change the DEFAULT_MODE to 2 or 0.
+What are doing we wrong in the bus access or device
+access. The MUX port can be accessed, what's the
+difference here ?
 
-Greetings,
-Helge
+Christoph
 
-On Monday 16 September 2002 02:17, Tobias Giesen wrote:
-> Hello,
->
-> I think I need some more help with this. Here's what I did:
->
-> - grabbed fresh 2.4.19-pa17 sources
-> - applied sstfb.c and .h patch
-> - set kernel options to include sst1
-> - compiled & installed new kernel
->
-> The new kernel seems to try to activate a Voodoo console shortly after
-> the "If this is the last message you see ..." warning. However, my
-> monitor says the frequencies are out of range and switches itself off.
-> The main sti console is then dead also.
->
-> Any ideas? Maybe could I try a precompiled kernel with Voodoo support?
->
-> Thanks.
->
-> Best wishes,
-> Tobias Giesen
+
+-- 
+-------------------------------------------------------
+private:	christoph.plattner@gmx.at
+company:	christoph.plattner@alcatel.at
