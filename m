@@ -1,24 +1,25 @@
 Return-Path: <hppa-linux@puffingroup.com>
-Date: Tue, 23 Feb 1999 23:58:46 -0500 (EST)
-From: Christopher Beard <cjbeard@istar.ca>
+Message-ID: <19990223232949.N18952@cmu.edu>
+Date: Tue, 23 Feb 1999 23:29:49 -0500
+From: Phil Schwan <pschwan@cmu.edu>
 To: hppa-linux@thepuffingroup.com
-Message-ID: <Pine.LNX.4.10.9902232356060.1324-100000@centauri.osfi-bsif.gc.ca>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [hppa-linux] New Servers
-Resent-Message-ID: <"T7c7u1.0.a42.KSuqs"@sod.res.cmu.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: [hppa-linux] Testing mailing list changes
+Resent-Message-ID: <"Q8wGQ.0.jx1.01uqs"@sod.res.cmu.edu>
 Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
- 
-Please note that as of today the WWW pages and mailing lists for this
-project will be hosts on 'thepuffingroup.com' while the CVS repository and
-FTP server have been moved to 'sod.res.cmu.edu'. These changes are
-reflected on the project web pages. We have tried to make these changes as
-transparent as possible.
+Hallo all.  Just testing to make sure that the mailing lists still
+work on their new home :)
 
-                --- Christopher Beard & Alex deVries
+-Phil
 
--------------------------------------------------------------------------
-To unsubscribe: send e-mail to hppa-linux-request@thepuffingroup.com with
+------------------------------------------------------------------
+"In film you will find four basic story lines. Man versus man, man
+versus nature, nature versus nature, and dog versus vampire."
+        - Steven Spielberg
+
+----------------------------------------------------------------------
+To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
 `unsubscribe' as the subject.
