@@ -1,7 +1,7 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] cacheflush: reforamted suggestion
-Date: Mon, 29 Nov 2004 09:51:14 +0100
-Message-ID: <418A800300008FDB@mail-1-bnl.tiscali.it>
+Subject: [parisc-linux] cacheflush.h: a smp simplification
+Date: Mon, 29 Nov 2004 10:48:31 +0100
+Message-ID: <418A80030000906C@mail-1-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
@@ -19,140 +19,89 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 Hello all,
 
-May I suggest this small patch (just a reformat trying to stay into 80 co=
-lumns):
---- cacheflush.h.Orig	2004-11-22 18:00:28.449820293 +0100
-+++ cacheflush.h	2004-11-22 18:49:06.925429961 +0100
-@@ -10,9 +10,9 @@
+I would also suggested this code simplification:
+--- linux-2.6.10-rc2-bk12-pa18M/include/asm-parisc/cacheflush.h.orig1	200=
+4-11-29
+09:44:46.940675194 +0100
++++ linux-2.6.10-rc2-bk12-pa18M/include/asm-parisc/cacheflush.h	2004-11-2=
+9
+09:44:05.702579346 +0100
+@@ -9,12 +9,6 @@
+
  /* Cache flush operations */
- 
- #ifdef CONFIG_SMP
--#define flush_cache_mm(mm) flush_cache_all()
-+#define flush_cache_mm(mm)		flush_cache_all()
- #else
--#define flush_cache_mm(mm) flush_cache_all_local()
-+#define flush_cache_mm(mm)		flush_cache_all_local()
- #endif
- 
+
+-#ifdef CONFIG_SMP
+-#define flush_cache_mm(mm)		flush_cache_all()
+-#else
+-#define flush_cache_mm(mm)		flush_cache_all_local()
+-#endif
+-
  #define flush_kernel_dcache_range(start,size) \
-@@ -20,18 +20,20 @@
- 
- extern void flush_cache_all_local(void);
- 
--static inline void cacheflush_h_tmp_function(void *dummy)
-+static inline void
-+cacheflush_h_tmp_function(void *dummy)
- {
- 	flush_cache_all_local();
- }
- 
--static inline void flush_cache_all(void)
-+static inline void
-+flush_cache_all(void)
- {
+ 	flush_kernel_dcache_range_asm((start), (start)+(size));
+
+@@ -32,6 +26,8 @@
  	on_each_cpu(cacheflush_h_tmp_function, NULL, 1, 1);
  }
- 
--#define flush_cache_vmap(start, end)		flush_cache_all()
--#define flush_cache_vunmap(start, end)		flush_cache_all()
-+#define flush_cache_vmap(start, end)	flush_cache_all()
-+#define flush_cache_vunmap(start, end)	flush_cache_all()
- 
- extern int parisc_cache_flush_threshold;
- void parisc_setup_cache_timing(void);
-@@ -56,30 +58,40 @@
- 
- extern void flush_dcache_page(struct page *page);
- 
--#define flush_dcache_mmap_lock(mapping) \
-+#define flush_dcache_mmap_lock(mapping)			\
- 	spin_lock_irq(&(mapping)->tree_lock)
--#define flush_dcache_mmap_unlock(mapping) \
-+#define flush_dcache_mmap_unlock(mapping)		\
- 	spin_unlock_irq(&(mapping)->tree_lock)
- 
--#define flush_icache_page(vma,page)	do { flush_kernel_dcache_page(page_a=
-ddress(page));
-flush_kernel_icache_page(page_address(page)); } while (0)
-+#define flush_icache_page(vma,page)				\
-+do {								\
-+	flush_kernel_dcache_page(page_address(page));		\
-+	flush_kernel_icache_page(page_address(page));		\
-+} while (0)
- 
--#define flush_icache_range(s,e)		do { flush_kernel_dcache_range_asm(s,e)=
-;
-flush_kernel_icache_range_asm(s,e); } while (0)
-+#define flush_icache_range(s,e)					\
-+do {								\
-+	flush_kernel_dcache_range_asm(s,e);			\
-+	flush_kernel_icache_range_asm(s,e);			\
-+} while (0)
- 
--#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
--do { \
--	flush_cache_page(vma, vaddr); \
--	memcpy(dst, src, len); \
--	flush_kernel_dcache_range_asm((unsigned long)dst, (unsigned long)dst +
-len); \
-+#define copy_to_user_page(vma, page, vaddr, dst, src, len)	\
-+do {								\
-+	flush_cache_page(vma, vaddr);				\
-+	memcpy(dst, src, len);					\
-+	flush_kernel_dcache_range_asm((unsigned long)dst,	\
-+				 (unsigned long)dst + len); 	\
- } while (0)
- 
--#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
--do { \
--	flush_cache_page(vma, vaddr); \
--	memcpy(dst, src, len); \
-+#define copy_from_user_page(vma, page, vaddr, dst, src, len)	\
-+do {								\
-+	flush_cache_page(vma, vaddr);				\
-+	memcpy(dst, src, len);					\
- } while (0)
- 
--static inline void flush_cache_range(struct vm_area_struct *vma,
--		unsigned long start, unsigned long end)
-+static inline void
-+flush_cache_range(struct vm_area_struct *vma, unsigned long start,
-+		unsigned long end)
- {
- 	int sr3;
- 
-@@ -99,8 +111,8 @@
- 
- /* Simple function to work out if we have an existing address translatio=
-n
-  * for a user space vma. */
--static inline pte_t *__translation_exists(struct mm_struct *mm,
--					  unsigned long addr)
-+static inline pte_t *
-+__translation_exists(struct mm_struct *mm, unsigned long addr)
- {
- 	pgd_t *pgd =3D pgd_offset(mm, addr);
- 	pmd_t *pmd;
-@@ -136,7 +148,8 @@
- 				  unsigned long vmaddr)
- {
- 	/* save the current process space and pgd */
--	unsigned long space =3D mfsp(3), pgd =3D mfctl(25);
-+	unsigned long space =3D mfsp(3);
-+	unsigned long pgd =3D mfctl(25);
- 
- 	/* we don't mind taking interrups since they may not
- 	 * do anything with user space, but we can't
-@@ -178,5 +191,5 @@
- 		__flush_cache_page(vma, vmaddr);
- 
- }
--#endif
-+#endif	/* _PARISC_CACHEFLUSH_H */
-=3D=3D=3D=3D=3D=3D=3D=3D=3D><=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Cheers,
-    Joel
++#define flush_cache_mm(mm)		flush_cache_all()
++
+ #define flush_cache_vmap(start, end)	flush_cache_all()
+ #define flush_cache_vunmap(start, end)	flush_cache_all()
+=3D=3D=3D=3D=3D=3D=3D=3D><=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+acoording to on_each_cpu() def of linux/smp.h it seems to me ok (but I co=
+uld
+always missed something?)
+
+Joel
+
+PS: another question realted to cacheflush:
+in our cache.c we have:
+[...]
+#ifdef CONFIG_SMP
+void
+flush_data_cache(void)
+{
+	on_each_cpu((void (*)(void *))flush_data_cache_local, NULL, 1, 1);
+}
+void
+flush_instruction_cache(void)
+{
+	on_each_cpu((void (*)(void *))flush_instruction_cache_local, NULL, 1, 1)=
+;
+}
+#endif
+
+void
+flush_cache_all_local(void)
+{
+	flush_instruction_cache_local();
+	flush_data_cache_local();
+}
+EXPORT_SYMBOL(flush_cache_all_local);
+
+[...]
+In the same maner as above suggested couldn't we get rid of #ifdef CONFIG=
+_SMP
+and #endif
+and btw define here
+void
+flush_cache_all(void)
+{
+	flush_instruction_cache();
+	flush_data_cache();
+}
+EXPORT_SYMBOL(flush_cache_all);
+
+Or why didn't we define 
+flush_cache_all(void)
+{
+        on_each_cpu((void (*)(void *))flush_cache_all_local, NULL, 1, 1);=
+
+}
+as the other functions?
+
+Thanks for additional info ;-)
 
 
 -------------------------------------------------------------------------=
