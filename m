@@ -1,18 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtpde02.sap-ag.de (smtpde02.sap-ag.de [194.39.131.53])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0905F483A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Apr 2002 03:10:39 -0600 (MDT)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Helge Deller <helge.deller@sap.com>
-To: Paul Seelig <pseelig@uni-mainz.de>,
-	parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Successful installation and keyboard problems
-Date: Wed, 10 Apr 2002 11:10:32 +0200
-References: <871ydo6a5a.fsf@p50811B33.dip.t-dialin.net>
-In-Reply-To: <871ydo6a5a.fsf@p50811B33.dip.t-dialin.net>
-MIME-Version: 1.0
-Message-Id: <200204101110.32294.helge.deller@sap.com>
+Received: from volta.midco.net (volta.midco.net [24.220.1.10])
+	by dsl2.external.hp.com (Postfix) with SMTP id 23B7C483D
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 10 Apr 2002 07:24:58 -0600 (MDT)
+Date: Wed, 10 Apr 2002 08:24:56 -0500
+From: Jonathan Crockett <jcrockett@midco.net>
+To: Matt McKenzie <linuxknight@attbi.com>
+Cc: PARISC-Linux <parisc-linux@lists.parisc-linux.org>
+Subject: Re: [parisc-linux] 715/75
+Message-ID: <20020410082456.A20344@volta.midco.net>
+References: <1018419728.2603.13.camel@mustang>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1018419728.2603.13.camel@mustang>; from linuxknight@attbi.com on Tue, Apr 09, 2002 at 11:22:07PM -0700
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,32 +23,68 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Hi Paul,
+Hello,
+  I have a 715/100 that had very similiar symptoms.  I have HP-UX on it
+then installed debian.  After I had the base installed I moved the machine
+and in a not so brilliant move added an external cdrom and changed keyboards
+and mouse.  The system sat there and acted like it was having a very difficult
+time coming to terms with the changes.  To fix it, swapped out the HIL mouse
+that I had switch to with a ps2 three button mouse and took the external
+cdrom off the scsi chain.  I let it sit for about 20 minute to a half hour
+then it decided to boot.  I also found that I could not use the on board
+video after I had used the addon card.  I even disconnect the addon card,
+but it made no difference.
 
-Please retry with a recent kernel.
+HTH
+jc
 
-Greetings,
-Helge
+On Tue, Apr 09, 2002 at 11:22:07PM -0700, Matt McKenzie wrote:
+> I posted a while earlier, but no response has been forthcoming.
+> 
+> Does anyone have any idea what I can do so solve my problem with an HP
+> 715/75, that displays the LEDs 1,2,6 on the front panel at power-up? 
+> I have an HP monitor with it, and it stays blank.
+> 
+> The manual, if I'm reading it correctly, says the LEDs mean:
+> 
+> Internal inconsistency: IODC Entry_Init
+> 
+> But there is no mention of what this means exactly, or what to do about
+> it.  
+> 
+> What can I do to resolve this, if possible?
+> 
+> I would very much like to put Linux on this machine.
+> 
+> It seems to me hardware questions aren't off-topic... does this just
+> mean no one knows how to fix this?  Or is it because I have no
+> transcript or logs to post (because the monitor is blank I can't see
+> anything)?
+> 
+> Would it be possible to get a serial console working to see anything?
+> I am guessing a standard RS232 Null-modem cable would work?
+> 
+> Also, I have the AUI-10bT ethernet transceiver, but I don't know if it
+> has a valid static IP, or if it is trying DHCP lookup.
+> 
+> Any help would be appreciated.
+> 
+> Thanks.
+> 
+> 
+> -- 
+> 73 de K6LNX
+> 
+> Matt M.
+> LinuxKnight
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
-On Tuesday 09 April 2002 19:42, Paul Seelig wrote:
-> Hi all,
->
-> i finally downloaded the palinux-0.9.4 ISO and successfully installed
-> Debian on my 715/64.  Installation was surprisingly smooth -- albeit
-> without X so far -- and the system seems to run just fine dualbooting
-> with the NeXTSTEP-3.3 i installed last sunday. :-)
->
-> Because of NeXTSTEP i've once gotten rid of my HIL keyboard and mouse,
-> replacing both with standard PS/2 variants.  Unfortunately, at the
-> console the PS/2 keyboard (with German layout) chokes on pressing the
-> key containing the characters '>', '<' and '|' (on a german keyboard
-> the key between Shift and Y), only telling me:
->
->      keyboard: unrecognized scancode (7f) ignored
->
-> I have to admit that i didn't check any FAQ.  So please simply ignore
-> my question if it can be solved with some scrutinizing RTFM. ;-)
->
-> Anyway, Debian runs and i'm really happy about it! :-)
->
->                                     Thanks, P. *8^
+-- 
+Jonathan Crockett
+Network Engineer
+Midcontinent Communications
