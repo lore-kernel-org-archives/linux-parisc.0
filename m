@@ -1,20 +1,26 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id JAA26430
-	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Mar 2000 09:29:56 -0700
-From: willy@thepuffingroup.com
-Date: Mon, 13 Mar 2000 10:30:24 -0500
-To: "FINK,MARTIN \(HP-FtCollins,ex1\)" <martin_fink@hp.com>
-Cc: parisc-linux@thepuffingroup.com
-Subject: Re: [parisc-linux] USB
-Message-ID: <20000313103024.X27942@thepuffingroup.com>
-References: <56D553C0B61BD311AD2300A0C9F485C202E9DAE5@xfc02.fc.hp.com>
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id KAA26836
+	for <parisc-linux@puffin.external.hp.com>; Mon, 13 Mar 2000 10:05:29 -0700
+Date: Mon, 13 Mar 2000 17:05:31 +0100
+From: Philipp Rumpf <prumpf@inwestnet.de>
+To: Ulrich Strelow <ulrich_strelow@yahoo.com>
+Cc: "Brian S. Julin" <bri@mojo.calyx.net>, g@abacus.local,
+        parisc-linux <parisc-linux@thepuffingroup.com>
+Subject: Re: [parisc-linux] HIL_BASE ("finding" devices)
+Message-ID: <20000313170530.I5281@abacus.local>
+References: <20000313151007.24401.qmail@web507.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <56D553C0B61BD311AD2300A0C9F485C202E9DAE5@xfc02.fc.hp.com>; from FINK,MARTIN (HP-FtCollins,ex1) on Mon, Mar 13, 2000 at 08:23:38AM -0700
+In-Reply-To: <20000313151007.24401.qmail@web507.mail.yahoo.com>; from ulrich_strelow@yahoo.com on Mon, Mar 13, 2000 at 07:10:07AM -0800
 List-ID: <linux-parisc.vger.kernel.org>
 
-On Mon, Mar 13, 2000 at 08:23:38AM -0700, FINK,MARTIN (HP-FtCollins,ex1) wrote:
-> The USB on HP workstations is OHCI, not UHCI.  Don't know if it makes
-> a difference from the driver perspective.
+> If you need a tester for a new HIL-driver on a 715/33
+> (like Matthew was using), please let me know. I have
+> been using Matthew's hack on my workstation until it
+> ceased to work, and it allowed me to see the first
+> responses at the sash prompt.
 
-oops, my mistake.  Linux already has an OHCI driver too..
+okay, I wasn't aware the HIL driver stopped working at all.  I'm just
+setting up the 715 to see whether it can be convinced to go again.
+
+	Philipp Rumpf
