@@ -1,117 +1,84 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from kuolema.infodrom.north.de (kuolema.infodrom.north.de [217.89.86.35])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 27A114831
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 12 Sep 2001 09:49:50 -0600 (MDT)
-Date: Wed, 12 Sep 2001 17:49:19 +0200
-From: Martin Schulze <joey@finlandia.infodrom.north.de>
-To: parisc-linux@lists.parisc-linux.org, linux-mips@oss.sgi.com,
-	linux-mips@fnet.fr, linux-mips@vger.kernel.org,
-	linux-m68k@phil.uni-sb.de, linux-alpha@vger.kernel.org,
-	sparclinux@vger.kernel.org, ultralinux@vger.kernel.org,
-	linux-mca@vger.kernel.org
-Message-ID: <20010912174919.Q5720@finlandia.infodrom.north.de>
-Reply-To: Martin Schulze <joey@infodrom.north.de>
+Received: from www.linux.org.uk (parcelfarce.linux.theplanet.co.uk [195.92.249.252])
+	by dsl2.external.hp.com (Postfix) with ESMTP id A6A17483E
+	for <parisc-linux@parisc-linux.org>; Wed, 12 Sep 2001 12:10:51 -0600 (MDT)
+Received: from willy by www.linux.org.uk with local (Exim 3.13 #1)
+	id 15hETK-0000Z5-00; Wed, 12 Sep 2001 19:10:50 +0100
+Date: Wed, 12 Sep 2001 19:10:50 +0100
+From: Matthew Wilcox <willy@debian.org>
+To: "BLESSING,MICHAEL (HP-FtCollins,ex1)" <mblessing@hp.com>
+Cc: "'parisc-linux@parisc-linux.org'" <parisc-linux@parisc-linux.org>
+Subject: Re: [parisc-linux] Getting a CD?
+Message-ID: <20010912191050.F2618@parcelfarce.linux.theplanet.co.uk>
+References: <E97137CF9A25D311902E00A0C9F484E004BA01ED@xfc03.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="dgjlcl3Tl+kb3YDk"
-Subject: [parisc-linux] Invitation to the 6th Linux Developers Meeting in Oldenburg
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <E97137CF9A25D311902E00A0C9F484E004BA01ED@xfc03.fc.hp.com>; from mblessing@hp.com on Tue, Sep 11, 2001 at 11:25:17AM -0700
+Sender: <willy@www.linux.org.uk>
 List-ID: <linux-parisc.vger.kernel.org>
 
---dgjlcl3Tl+kb3YDk
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+We haven't attempted to make a full CD available.  Partly this is because
+it'd be a lot of effort to add all the packages that people might want,
+and the result would be huge (an estimated 4-5 CDs currently).  Another
+reason is that the packages are constantly being updated right now, and
+any CD we produced would be out of date the following day.  We decided
+to only produce an install CD and let people upgrade that themselves.
 
+hppa will be one of the architectures released with Woody, so Debian
+will produce CD images then.  Woody is scheduled to release in December.
 
-              -----------------------------------------
-	      6th Linux Developers Meeting in Oldenburg
+On Tue, Sep 11, 2001 at 11:25:17AM -0700, BLESSING,MICHAEL (HP-FtCollins,ex1) wrote:
+> Hi,
+> 
+> The following e-mail was sent into the HP Developer's Resource web site (
+> http://devresource.hp.com ).  They are having an installation problem and
+> have a question about getting a CD.  Can you help them out?
+> 
+> Thanks,
+> Mike Blessing
+> HP Developer's Resource
+> 
+> 
+> 
+> -----Original Message-----
+> From: stefan.bieri@garaventa.com [mailto:stefan.bieri@garaventa.com]
+> Sent: Tuesday, September 11, 2001 5:15 AM
+> To: webmasterdevrsrc@shelty.fc.hp.com
+> Subject: DevResource Feedback: Tuesday, 11-Sep-2001 05:14:22 MDT
+> 
+> 
+> Below is the result of your feedback form.  It was submitted by:
+>      (stefan.bieri@garaventa.com)
+>     on Tuesday, September 11, 2001 at 05:15:22
+> ---------------------------------------------------------------------------
+> 
+> Referring_Page:
+> http://www.devresource.hp.com/devresource/Topics/Linux/PALinuxRelease.html
+> 
+> topic: Other
+> 
+> YourName: Bieri Stefan
+> 
+> Comments: Hi
+> 
+> We tried to install PARISC-Linux on a HP Workstation 715/100 with XFree86,
+> X-Server-System etc. The problems we have, is, that we download the packages
+> on a Win2k pc and everytime we try to install the X-Window-System, we have
+> some problems with the dependency and we have to download also this packages
+> (those who are needed, because of the dependency), and then when we try to
+> install again, we have another dependency problems, etc. and that
+> continues...
+> 
+> The question we have, is it possible to download (other cd-images than the
+> installation cd) or buy a full distribution of the PARISC-Linux?
+> 
+> ---------------------------------------------------------------------------
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/cgi-bin/mailman/listinfo/parisc-linux
 
-
-	       Thursday, September 27th to Sunday, 30th
-
-
-		   University of Oldenburg, Wechloy
-              -----------------------------------------
-
-
-This is the public invitation for Linux developers to attend this
-years' Linux Developers Meeting in Oldenburg.  The scope of this
-meeting is to port Linux to non-intel architectures. It is derived
-from the linux/m68k meeting 1995 in Solingen , though, recently there
-were a lot of other architectures as well.
-
-Just like the last years, the purpose of this meeting is to get as
-much of the Linux/m68k core developers and active users together to
-discuss current problems, show off projects, exchange news, and
-generally to have fun.
-
-Like last year, the meeting will take place from thursday afternoon
-(September 27th) to sunday evening (September 30th).  You don't have
-to attend from thursday, it's an offer for those of you who would like
-to and who can afford coming early.  If you can't make it that early,
-just join when you can afford it.  The meeting will take place at the
-same place like last year (that is University of Oldenburg, Wechloy).
-
-For those of you, who don't know Oldenburg yet, it's in the northern
-part of Germany.  That means, you'll find lots of green areas (trees,
-meadows etc.), good air and less industries.  The meeting will be held
-at the science building of the University of Oldenburg, in Oldenburg
-Wechloy.
-
-If you would like to attend the meeting, please send back this form,
-so I can calculate space, power, food and stuff.  Space, power and
-connectivity will thankfully be sponsored by the University, food and
-stuff will be sponsored by ffis e.V., except dinner in restaurants.
-We will be able to use showers inside of the sport building.
-
-You'll need to take with you these things: machines, monitors,
-technical documentation (very important), enough triple plugs for your
-machines, some network cabling, some hubs/switches, sleeping bag, air
-mattress, towel, shower stuff, plate, cutlery, coffee mug.
-
-Comprehensive Information are on the web:
-http://oldenburger.linuxtage.de/Oldenburg2001/
-
-
-Regards,
-
-        Joey
-
----------- 8< ---------- 8< ---------- 8< ---------- 8< ----------
-
-Linux Developer's Meeting in Oldenburg 2001 - Sept 27th - 30th
-
-Name  :
-E-Mail:
-
-I'd like to attend on these days:
-
-    [ ] Thursday, September 27th
-    [ ] Friday, September 28th
-    [ ] Saturday, September 29th
-    [ ] Sunday, September 30th
-
-    Dinner will be from 7pm - 9pm or something.  If you plan to arrive
-    within this period, make sure you know how to reach me mobile.
-
-Number of machines ...........:
-Number of monitors ...........:
-
-Name may be placed on web page: ( ) yes
-                                ( ) no
-
----------- 8< ---------- 8< ---------- 8< ---------- 8< ----------
-
---dgjlcl3Tl+kb3YDk
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE7n4P/W5ql+IAeqTIRAv7+AJ9SHUH5c8PqV9YIE8beUzlUStZj/gCcCRpK
-EjM0a/Wm5UnnwhVNlq6PWdo=
-=Oqd1
------END PGP SIGNATURE-----
-
---dgjlcl3Tl+kb3YDk--
+-- 
+Revolutions do not require corporate support.
