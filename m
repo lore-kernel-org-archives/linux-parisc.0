@@ -1,15 +1,15 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] [Status] hppa's userspace in 2004 (looking back)
-Date: Tue, 6 Jan 2004 10:48:59 -0500
-Message-ID: <20040106154859.GA18590__33132.1675949313$1416623109$gmane$org@systemhalted>
-References: <20040106053924.GC14464@systemhalted>
-	<200401060616.i066GiBR007413@hiauly1.hia.nrc.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Date: Wed, 7 Jan 2004 16:04:25 -0500 (EST)
+Message-ID: <200401072104.i07L4Pr1014569__31746.9345442534$1416623111$gmane$org@hiauly1.hia.nrc.ca>
+References: <20040105194809.GA9269@systemhalted>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org, debian-hppa@lists.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-Path: <carlos@baldric.uwo.ca>
-In-Reply-To: <200401060616.i066GiBR007413@hiauly1.hia.nrc.ca>
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <20040105194809.GA9269@systemhalted> from "Carlos O'Donell" at
+	Jan 5, 2004 02:48:09 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,30 +19,14 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 
-On Tue, Jan 06, 2004 at 01:16:44AM -0500, John David Anglin wrote:
-> > Does this seem like a reasonable triage list?
-> > 
-> > a. gdb.
-> > b. atomic kernel ops.
-> > c. libstdc++ failures.
+> glibc 2.3.2.ds1-10
 > 
-> I expect GCC 3.4 is coming in 2-3 months, although there isn't a definite
-> timeline yet.  Would you like to try to get atomic kernel ops in 2.6.x?
-> How important is the kernel timeline for this work?  We missed gdb 6.0.
-> A couple of quick hacks allow 6.0 to build for hppa-linux.  Bug fixes are
-> another matter.
+> - Added profiling patches (Thanks Randolph!)
 
-No timeline, just icing.
- 
-> Probably, the v3 issues involve doing enough research to file a PR if
-> the problem is generic, fix the problem if it is GCC hppa specific.
-> If a problem turns out to be glibc/kernel related, we can wait for
-> a fix ;)
+The GCC profiling tests still segfault.  It looks like crtn.o
+hasn't been updated.  Did I miss something?
 
-I can interleave b,c in order to help you out? :)
-
-80% gdb.
-10% atomic ops.
-10% libstc++ failures.
-
-c.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
