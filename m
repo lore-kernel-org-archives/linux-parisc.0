@@ -1,15 +1,12 @@
 From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] [PATCH] New help text for HIL options
-Date: Fri, 27 Aug 2004 09:20:23 +0100
-Message-ID: <20040827082023.GA5270@ntlworld.com>
-References: <20040827012141.GA4746@ntlworld.com>
-	<20040827060219.GD6949@colo.lackof.org>
+Subject: [parisc-linux] [PATCH] ALSA Harmony bugfixes
+Date: Fri, 27 Aug 2004 13:54:14 +0100
+Message-ID: <20040827125414.GA5515@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20040827060219.GD6949@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,27 +17,56 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Aug 27, 2004 at 12:02:19AM -0600, Grant Grundler wrote:
-> On Fri, Aug 27, 2004 at 02:21:41AM +0100, Stuart Brady wrote:
-> > I hope it's an improvement.
-> 
-> In general yes.
-> Normally, Helge Deller deals with the HIL and related patches.
-> I just had one question.
-> 
-> > -	  The "Human Interface Loop" is a older, 8-channel USB-like
-> > +	  Say Y here (or to "HP HIL keyboard support") if you have a
-> > +	  PA-RISC machine with a HIL keyboard connected. This driver does
-> 
-> Is HIL also used on HP m68k workstations as well?
-> The ones that predate "snakes" workstations. eg HP 425.
+Two patches for the ALSA Harmony driver:
 
-The INPUT_HIL_OLD driver seems to support HP300s, so I think it should
-depend on ( PARISC || HP300 ).  None of the other drivers do AFAICS, so
-I'll just state this in the text.
+   One fixes a crash when reloading the ALSA Harmony driver.
+   The other is a minor cleanup for formats/rates.
 
-Maybe the new HIL drivers could be ported to the HP300, but I don't have
-one to test.
+--- linux-2.6/sound/parisc/harmony.c	2004-08-26 07:36:02.066664310 +0100
++++ linux-2.6/sound/parisc/harmony.c	2004-08-26 07:46:34.221250320 +0100
+@@ -1111,11 +1111,13 @@
+ 		{	
+ 			DPRINTK(KERN_INFO PFX "Freeing card %d\n", idx);
+ 			harmony = snd_harmony_cards[idx]->private_data;
+-			free_irq(harmony->irq, snd_card_harmony_interrupt);
++			free_irq(harmony->irq, harmony);
+ 			printk(KERN_INFO PFX "Card unloaded %d, irq=%d\n", idx, harmony->irq);
+ 			snd_card_free(snd_harmony_cards[idx]);
+ 		}
+ 	}	
++	if (unregister_parisc_driver(&snd_card_harmony_driver) < 0)
++		printk(KERN_ERR "Failed to unregister Harmony driver\n");
+ }
+ 
+ module_init(alsa_card_harmony_init)
+
+
+--- linux-2.6/sound/parisc/harmony.c	2004-08-26 07:36:02.066664310 +0100
++++ linux-2.6/sound/parisc/harmony.c	2004-08-26 07:41:26.158761888 +0100
+@@ -283,7 +283,7 @@
+ {
+ 	unsigned int idx;
+ 	
+-	for (idx = 0; idx <= RATES; idx++)
++	for (idx = 0; idx < RATES; idx++)
+ 		if (snd_card_harmony_rates[idx] == rate)
+ 			return rate_bits[idx];
+ 	return HARMONY_SR_44KHZ; /* fallback */
+@@ -648,10 +648,10 @@
+ 					SNDRV_PCM_INFO_JOINT_DUPLEX | 
+ 					SNDRV_PCM_INFO_MMAP_VALID |
+ 					SNDRV_PCM_INFO_BLOCK_TRANSFER),
+-	.formats =		(SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_BE | 
+-					SNDRV_PCM_FMTBIT_A_LAW | SNDRV_PCM_FMTBIT_MU_LAW),
++	.formats =		(SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW |
++					SNDRV_PCM_FMTBIT_S16_BE),
+ 	.rates =		SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_8000_48000,
+-	.rate_min =		5500,
++	.rate_min =		5125,
+ 	.rate_max =		48000,
+ 	.channels_min =		1,
+ 	.channels_max =		2,
+
 -- 
 Stuart Brady
 _______________________________________________
