@@ -1,16 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
 Received: from mail.planb.de (aldebaran.planb.de [212.227.14.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 26259482A
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 07:33:38 -0700 (MST)
-Date: Tue, 8 Jan 2002 15:33:35 +0100
-To: John Marvin <jsm@udlkern.fc.hp.com>
+	by dsl2.external.hp.com (Postfix) with ESMTP id E9B184831
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  8 Jan 2002 07:35:11 -0700 (MST)
+Date: Tue, 8 Jan 2002 15:35:11 +0100
+To: tsbogend@alpha.franken.de
 Cc: parisc-linux@lists.parisc-linux.org
 Subject: Re: [parisc-linux] any info on 710/Bushmaster Audio available?
-Message-ID: <20020108153335.B28664@electra.intern.planb.de>
-References: <200201081230.FAA22547@udlkern.fc.hp.com>
+Message-ID: <20020108153510.C28664@electra.intern.planb.de>
+References: <200201081230.FAA22547@udlkern.fc.hp.com> <20020108134436.GA24909@elvis.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-In-Reply-To: <200201081230.FAA22547@udlkern.fc.hp.com>
+In-Reply-To: <20020108134436.GA24909@elvis.franken.de>
 From: Enrik Berkhan <Enrik.Berkhan@planb.de>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
@@ -23,17 +23,13 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-John,
+On Tue, Jan 08, 2002 at 02:44:36PM +0100, Thomas Bogendoerfer wrote:
+> [PSB216 audio]
+> yes, looks doable. I'm not sure, whether I have the time to it myself,
+> but I could help people with questions about the PSB2160 config registers
+> (I'll write the register bits down and put it online during the next days).
 
-On Tue, Jan 08, 2002 at 05:30:04AM -0700, John Marvin wrote:
-> The audio codec on the 705/710 is a Siemens PSB 2160. I tried looking
-> on their website for information, and the only info I found was that
-> it was replaced by the PSB 2161. I don't know if you can still find
-> documentation on that old chip, or if the PSB 2161 is programmatically
-> similar. I cannot currently locate my printed documentation on the
-> chip.
-
-Tanks for the information, anyway. Helps a lot.
+Thanks in advance.
 
 Enrik
 -- 
