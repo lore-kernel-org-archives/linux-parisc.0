@@ -1,128 +1,56 @@
-Received: from palrel1.hp.com (palrel1.hp.com [156.153.255.242])
-	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id XAA04922
-	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Nov 2000 23:46:31 -0700
-Received: from milano.cup.hp.com (milano.cup.hp.com [15.8.80.76])
-	by palrel1.hp.com (Postfix) with ESMTP id 9374F3CE
-	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Nov 2000 22:48:41 -0800 (PST)
-Message-Id: <200011200647.WAA18137@milano.cup.hp.com>
-To: Ingo Matthaes <imatthae@grc.hp.com>
-Cc: Parisc-Linux <parisc-linux@puffin.external.hp.com>
-Subject: Re: [parisc-linux] A500 and glibc woes 
-In-reply-to: Your message of "Sun, 19 Nov 2000 19:35:57 PST."
-             <20001119193557.A8796@grccd310.grc.hp.com>
-Date: Sun, 19 Nov 2000 22:47:27 -0800
-From: Grant Grundler <grundler@cup.hp.com>
+Received: from front.linuxcare.com.au (linuxcare.com.au [203.29.91.49])
+	by puffin.external.hp.com (8.9.3/8.9.3) with ESMTP id XAA05386
+	for <parisc-linux@puffin.external.hp.com>; Sun, 19 Nov 2000 23:54:06 -0700
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id RAA27096;
+	Mon, 20 Nov 2000 17:53:18 +1100
+Date: Mon, 20 Nov 2000 17:53:18 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: John Marvin <jsm@udlkern.fc.hp.com>
+cc: parisc-linux@puffin.external.hp.com, parisc-linux@thepuffingroup.com
+Subject: Re: Single-stepping
+In-Reply-To: <200011200543.WAA23694@udlkern.fc.hp.com>
+Message-ID: <Pine.LNX.4.21.0011201703290.15391-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-Ingo Matthaes wrote:
-> finally we've got a A500 for palinux testing. Unfortunately
-> we have some problems with it.
+On Sun, 19 Nov 2000, John Marvin wrote:
 
-Ingo,
-uhmm...I'm not surprised. Let me help you understand the A500
-and the direction we are going with support on the A500.
-I'm one of several people working on A500 support.
-
-A500 Features (marketing crud - you probably know this):
-o 16GB of RAM
-o 2-way 550 MHz PA8600
-o 4 PCI-4X slots (3 of which are 1 slot per PCI bus)
-o all in 2U rack mountable box.
-
-Inside is (technical crud):
-o PCX-W+
-o Astro IOMMU (aka SBA. Provides cache-coherent DMA and virtual I/O DMA)
-o Elroy PCI Host Bus Adapter (aka LBA)
-o IOSAPIC interrupt controller (integrated in Elroy)
-o PAT PDC (not legacy)
-o ^B for service processor access (ie I can reset the machine remotely)
- 
-> A 32 bit kernel complains about a very old firmware and claims
-> "that machine will probably never run linux"  But in fact, it 
-> will :-)
-
-That's right! :^)
-
-> First question: Did anyone ever succeeded with a 32bit kernel
-> on that hardware ?
-
-No. Only on *64-bit* kernels. The reason is some of the PAT PDC
-calls we need are *only* available in wide mode. We could have written
-narrow<->wide mode translation routines but a 32-bit kernel ignores
-the A500's best feature - 16GB of RAM. The issue is HP needs good
-specweb99 numbers to sell these boxes and that requires GB of RAM.
-
-The 512MB of RAM that 32-bit kernel currently supports (jsm tells me
-3GB or so can be done) won't approach the perf levels which can be
-acheived with 8 or 16GB. The HPUX specweb team (who just *beat* single
-CPU TUX specweb99 numbers with HPUX on A500) told me. They have a clue.
-
-You are welcome to write those translation routines and then
-*remove* many the "#ifdef __LP64__" preprocessor directives in
-arch/parisc/kernel/inventory.c and lba_pci.c. Send me the
-patch and I'll test/review/commit the changes.
-
-> A 64 bit Kernel boots fine and recognizes all available hardware 
-> including the additional 100BT card. But it traps with the init
-> which comes with the latest nfsroot tarball.
-
-There are issues/problems with PCI resource management and I have
-some code waiting to be tested when I get in tomorrow.
-
-But you can be very helpful with user space! Perhaps Paul Bame
-can be more specific.  But basically we don't have all the translation
-routines in place for 32-bit applications invoking 64-bit kernel syscalls.
-
-> I built a new one
-> from the sourcesw of debians sysvlinux-2.78 and it does not trap
-> anymore, but the kernel told me about unimplemented 32 syscalls.
-
-Right.
-
-> At this point I tried to build a 64 bit glibc in order to get
-> a crt1.o , which is needed to builf for a 64bit init.
+> > I'm a little intrigued about these "complications".  How can the link
+> > register or space _not_ be updated properly?  As far as I can see, the
+> > only really tricky instruction to single-step is RFI - which shouldn't
+> > ever occur in userspace, and which we'd just emulate if it was important.
 > 
-> Did anyone ever build a 64bit glibc out of the current cvs tree ?
+> The problem is that the link register is set to IAOQ_Back + 4. and in
+> the case of ble, sr0 is set to IASQ_Back. Since we've played games with
+> the queues, IAOQ_Back and IASQ_Back are pointing at the break page, not
+> at the instruction following the branch.
 
-I don't think so. Eventually we wanted to but haven't been able yet.
-So this great that you are trying!
+Ah.  That is a little nasty, especially given the effect on signal
+handlers you mention below.  Maybe using the recovery counter isn't such a
+bad idea after all, especially since the added syscall and task switch
+overhead can be quite small if the kernel only supports single-step by
+one instruction.
 
-> Today I've got 
-...
+> The additional complication is that the taken branch trap traps at the
+> branch destination, not at the branch, so at the point of the trap you
+> don't know where you came from in order to fix the problem easily.  So,
+> what HP-UX does is check each instruction before it executes it to see if
+> it is a branch, and if so, what the link register is (and that is all that
+> needs to be parsed, since we are not emulating the instruction).  It then
+> stores the branch location, and also sets some branch state flags (e.g.
+> UBE for a branch external, and UBL for a branch with a link, both flags
+> being set for a ble instruction).  Then in the taken branch handler you
+> have all the information you need to fix the queue.  You also need
+> to check this saved state if a signal handler is invoked while single
+> stepping, so that the proper pc queue values can be saved in the signal
+> context.
 
-Can someone one with a clue about toolchain look at that?
+Another question for you and/or the list in general:
+Why does struct pt_regs have an ipsw field?  Seems like it currently is
+unused.
 
-I'd be really impressed if someone got a 64-bit userspace built!
-I can help get kernel working right but don't have a clue about the tools.
-
-The 64-bit kernel can be booted on the following class of boxes
-to about the same point as the A500:
-o C160/180/200/240/360
-o B2000/C3000/J5000/C3600/J5600/J6000
-o some D/K/R-class machines
-
-The key is the box must have PCX-U (PA8000), PCX-U+ (PA8200), 
-PCX-W (PA8500) or PCX-W+ (PA8600) processor.
-
-Look in the HWDB (http://www.parisc-linux.org/hw.html) or
-in /usr/sam/lib/mo/sched.models (HPUX 11.x) to determine which
-processor you have.
-
-
-> Thats the point I'm currently stucking.
-> 
-> BTW If someone involved into the port with access to the internal HP 
->     Network needs access to that machine, please contact me.
-
-Ditto. I can arrange access to my A500 as well. External access
-to some limited number of people could be arranged if demand
-is justifiable.  But given the number of other boxes which can
-run 64-bit kernel, I hope that's not necessary.
-
-Thanks Ingo!
-
-grant
-
-Grant Grundler
-Unix Systems Enablement Lab
-+1.408.447.7253
+Regards, Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
