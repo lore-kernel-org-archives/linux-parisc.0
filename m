@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from smtp-1.nordnet.fr (unknown [194.206.126.239])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 3CDAD485C
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:40:28 -0700 (MST)
-Received: from pop-1.nordnet.fr (pop-1.nordnet.fr [192.168.164.129])
-	by smtp-1.nordnet.fr (8.9.0/8.9.0) with ESMTP id CAA23719
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 02:40:26 +0100
-From: root@pop-1.nordnet.fr
-Date: Wed, 30 Jan 2002 02:40:16 +0100
-Message-Id: <200201300140.CAA14158@pop-1.nordnet.fr>
-To: parisc-linux@lists.parisc-linux.org
-Subject: [parisc-linux] ALERTE: VIRUS DETECTE DANS UN MESSAGE ENVOYE PAR parisc-linux-admin@lists.parisc-linux.org
+Received: from orbix.orange.dk (orbix.orange.dk [212.97.216.244])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 8B078485B
+	for <parisc-linux@lists.parisc-linux.org>; Tue, 29 Jan 2002 18:40:35 -0700 (MST)
+Received: from msgate-b.intra.mobilix.dk (msgate-b.intra.mobilix.dk [172.16.3.107])
+	by orbix.orange.dk (8.10.2+Sun/8.10.2) with ESMTP id g0U1eXw01244
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 30 Jan 2002 02:40:33 +0100 (CET)
+Message-ID: <76F2DFF76DE8414D95AF660570B0A40B01AA62@exch01.intra.orange.dk>
+From: ANTIGEN_EXCH01 <ANTIGEN_EXCH01@orange.dk>
+To: "'parisc-linux@lists.parisc-linux.org'" <parisc-linux@lists.parisc-linux.org>
+Date: Wed, 30 Jan 2002 02:39:43 +0100
+MIME-Version: 1.0
+Content-Type: text/plain
+Subject: [parisc-linux] Antigen found W32/MyParty-A (Sophos) virus
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,39 +23,10 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-             A L E R T E   V I R U S
-
-
-  Notre système de détection automatique anti-virus 
-  a détecté un virus dans un message qui vous a été
-  envoyé par  paolobentenuto@vidoetron.ca.
-
-    La distribution de ce message a été stoppée.
-
-  Veuillez vous rapprocher de l'émetteur  paolobentenuto@vidoetron.ca pour
-  régler avec lui le problème.
-
-                  ************
-
-Votre PC est-il bien protégé ? Pour une protection 
-performante et autonome, www.securitoo.com/indexml.php 
-est la solution contre tous les virus connus et à venir.
-
-		  ************
-
-Is your PC really protected ? For the best protection, 
-www.securitoo.com/indexml.php is the solution that will 
-protect your PC from all known viruses and viruses to be.
-
-		  ************
-
-	     V I R U S   A L E R T
-
-
-  Our anti-virus system has detected a virus in an 
-  email sent by  paolobentenuto@vidoetron.ca.
-
-    We have stopped the delivery of this email.
-
-  We invite you to contact  paolobentenuto@vidoetron.ca
-  to solve the problem.
+Antigen for Exchange found www.myparty.yahoo.com infected with W32/MyParty-A
+(Sophos) virus.
+The file is currently Removed.  The message, "[parisc-linux] new photos from
+my party!", was
+sent from paolobentenuto@vidoetron.ca and was discovered in Servio E.
+Cabrera\Inbox\PA-RISC/LINUX
+located at Mobilix AS/Denmark/EXCH01.
