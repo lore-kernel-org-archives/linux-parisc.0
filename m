@@ -1,12 +1,17 @@
-From: "Adam J. Richter" <adam@yggdrasil.com>
+From: Greg KH <greg@kroah.com>
 Subject: Re: [parisc-linux] Untested port of parisc_device to generic device interface
-Date: Sat, 9 Nov 2002 21:20:46 -0800
-Message-ID: <200211100520.VAA27408__32227.2083176815$1416621897$gmane$org@baldur.yggdrasil.com>
-Cc: andmike@us.ibm.com, hch@lst.de, James.Bottomley@steeleye.com,
-	linux-kernel@vger.kernel.org, mochel@osdl.org,
+Date: Tue, 12 Nov 2002 22:13:10 -0800
+Message-ID: <20021113061310.GD2106__4523.261197801$1416621914$gmane$org@kroah.com>
+References: <20021109060342.GA7798@kroah.com> <200211091533.gA9FXuW02017@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Matthew Wilcox <willy@debian.org>,
+	"Adam J. Richter" <adam@yggdrasil.com>, andmike@us.ibm.com,
+	hch@lst.de, linux-kernel@vger.kernel.org, mochel@osdl.org,
 	parisc-linux@lists.parisc-linux.org
-To: willy@debian.org
+To: "J.E.J. Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <200211091533.gA9FXuW02017@localhost.localdomain>
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -17,57 +22,64 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-On Sat, Nov 09, 2002 at 05:21:50AM +0000, Matthew Wilcox wrote about
-generic device models:
-> And, for gods sake, don't fuck it up by integrating it with USB too early
-> in the game.
+On Sat, Nov 09, 2002 at 10:33:56AM -0500, J.E.J. Bottomley wrote:
+> 
+> > The SCSI people are being drug kicking and screaming into it,
+> > _finally_ now (hell, SCSI is still not using the updated PCI
+> > interface, those people _never_ update their drivers if they can avoid
+> > it.)
+> 
+> That't not entirely fair.  Most of the unbroken drivers in the tree (those 
+> with active 2.5 maintainers) are using the up to date pci/dma interface.  The 
+> mid layer is `sort of' using the device api.
 
-	Without rewriting everything, I could see creating a common
-device container for devices connected directly to the CPU's memory,
-IO or interrupt busses (PCI, ISA, sbus, etc.) so as not to increase
-the memory size of device and device_driver for non-mapped device
-types (USB, firewire, SCSI, etc.).  More importantly, this change
-would provide some type checking for operations that are really only
-meaningful on CPU mapped devices, such as the "generic"
-dma_{alloc,free}_consistent() and related functions.  I imagine
-something like this:
+I was referring to the pci_module_init() model of PCI drivers, which, as
+of 2.5.47, is only implemented in the ips, nsp32 and aic7xxx drivers.
+Every other PCI SCSI controller driver will crash and burn a nasty death
+if placed in a machine with a PCI hotplug controller, and someone tries
+to remove it.  Hopefully someday this will be fixed... :)
 
+> Where I'd like to see the device model go for SCSI is:
+> 
+> - we have a device node for every struct scsi_device (even unattached ones)
+> 
+> - unattached devices are really minimal entities with as few resources 
+> allocated as we can get away with, so we can have lazy attachment more easily.
+> 
+> - on attachment, the device node gets customised by the attachment type (and 
+> remember, we can have more than one attachment).
+> 
+> - whatever the permanent `name' field for the device is going to be needs to 
+> be writeable from user level, that way it can eventually be determined by the 
+> user level and simply written there as a string (rather than having all the 
+> wwn fallback cruft in the mid-layer).
+> 
+> - Ultimately, I'd like us to dump the host/channel/target numbering scheme in 
+> favour of the unique device node name (we may still number them in the 
+> mid-layer for convenience) so that we finesse the FC mapping problems---FC 
+> devices can embed the necessary identification in the target strings.
+> 
+> - Oh, and of course, we move to a hotplug/coldplug model where the root device 
+> is attached in initramfs and everything else is discovered in user space from 
+> the boot process.
 
-struct cpu_mapped_device {
-	dma_addr_t		dma_mask;
-	/* Initialized from parent->dma_mask and driver->dma_restrictions. */
-	void			*prealloc_vaddr;
-	void 			*prealloc_busaddr;
-	struct device		device;
-};
+All of that sounds very reasonable, and would be nice to see
+implemented.
 
-struct cpu_mapped_driver {
-	struct io_restrictions	*dma_restrictions;
-	int			prealloc_consistent;
-	int			fake_consistent_ok : 1;
-	struct device_driver	driver;
-};
+> > Patches for this stuff are going to be happening for quite some time
+> > now, don't despair.
+> 
+> > And they are greatly appreciated, and welcomed from everyone :) 
+> 
+> As far as extending the generic device model goes, I'll do it for the MCA bus. 
+>  I have looked at doing it previously, but giving the MCA bus a struct pci_dev 
+> is a real pain because of the underlying assumptions when one of these exists 
+> in an x86 machine.
 
-struct device {
-	...
-	struct resource_list		*resources;
-	/* For automatic release of memory ranges, IO ports, DMA channels,
-	   IRQ's, SCSI ID's, SCSI LUN's within an ID, USB device ID's,
-	   etc.  (but not USB hub ports, and PCMCIA slots, which we can
-	   released before ->remove() is called). */
+What is the real reason for needing this, pci_alloc_consistent()?  We
+have talked about renaming that to dev_alloc_consistent() in the past,
+which I think will work for you, right?
 
-	dma_pool_t			dma_stub_pool[2];
-	struct cpu_mapped_device	*dma_dev;
-	/* Points to the cpu_mapped_device that we are embedded in for PCI,
-	   ISA, and other cpu mapped devices.  Points to the parent
-	   cpu mapped device for others, such as the USB controller for a
-	   USB network interface.   Will be used for allocating DMA gather
-	   scatter stubs when allocating skbuff's, bio's, scsi_request's,
-	   USB request blocks, etc., eliminating another set of error
-	   branches. */
-};
+thanks,
 
-Adam J. Richter     __     ______________   575 Oroville Road
-adam@yggdrasil.com     \ /                  Miplitas, California 95035
-+1 408 309-6081         | g g d r a s i l   United States of America
-                         "Free Software For The Rest Of Us."
+greg k-h
