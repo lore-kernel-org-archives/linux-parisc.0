@@ -1,18 +1,18 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from bob.ncssm.edu (bob.ncssm.edu [152.34.37.42])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 67C8E482A
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 May 2002 14:22:37 -0600 (MDT)
-Received: from localhost (andersop@localhost)
-	by bob.ncssm.edu (8.11.6/8.11.6) with ESMTP id g4MKRDp15397
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 22 May 2002 16:27:13 -0400
-Date: Wed, 22 May 2002 16:27:13 -0400 (EDT)
-From: Phil Anderson <andersop@bob.ncssm.edu>
-To: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] PS/2 Keyboard & Mouse on 715 
-In-Reply-To: <20020522185132.7DB0F482D@dsl2.external.hp.com>
-Message-ID: <Pine.LNX.4.44.0205221625560.15389-100000@bob.ncssm.edu>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from thinkpad.home (pc4-hems4-0-cust39.bre.cable.ntl.com [213.105.90.39])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 4C9FB482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 23 May 2002 00:57:45 -0600 (MDT)
+Date: Thu, 23 May 2002 07:35:31 +0100
+From: Richard Hirst <rhirst@linuxcare.com>
+To: Armijn Hemel <armijn@nl.linux.org>
+Cc: Grant Grundler <grundler@dsl2.external.hp.com>,
+	parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] installing on b2600 fails
+Message-ID: <20020523063531.GH3471@sleepie.demon.co.uk>
+References: <20020517130527.J32014@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020517152054.4F2CE482A@dsl2.external.hp.com> <20020517172600.I29738@humbolt.geo.uu.nl> <armijn@nl.linux.org> <20020517154923.47C7E4838@dsl2.external.hp.com> <20020521155220.A28518@humbolt.geo.uu.nl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20020521155220.A28518@humbolt.geo.uu.nl>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -24,40 +24,16 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-I think I have one of these sitting around here, sans 715 to use it with. 
-If you can't find it anywhere else, talk to me and I could send it or 
-something.
+On Tue, May 21, 2002 at 03:52:21PM +0200, Armijn Hemel wrote:
+> On Fri, May 17, 2002 at 09:49:23AM -0600, Grant Grundler wrote:
+> > Can you be more specific (and cc the mailing list) where
+> > you got the ISO from (ie file name)?
 
--phil
+Since boot-floppies 3.0.22 (released 3rd April), at least, hppa has used
+a 2.4.17-pa32 kernel.  Final woody b-f will use that same kernel, so
+unless you have a very old ISO, I wouldn't expect a newer one to help.
 
+If it turns out a more recent kernel is needed for some machines, I
+could do a special b-f build and ISO.
 
-On Wed, 22 May 2002, Grant Grundler wrote:
-
-> s-clarob@st-aidans.cumbria.sch.uk wrote:
-> > Just bought a 715 to upgrade my 712 without realising they needed a
-> > special KB.
-> 
-> 715's need an adapter/dongle that should have come with the system.
-> The dongle exports one HIL and 2 PS/2 ports.
-> 
-> grant
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-
--- 
-===============================================================================
-
-Phil Anderson
-UNIX Systems Administrator
-andersop@neverland.ncssm.edu
-The_13th_Ewok@hotmail.com
-
-the me that you know he used to have feelings
-but the blood has stopped pumping and he is left to decay
-the me that you know is now made up of wires
-and even when i'm right with you i'm so far away
-					-nine inch nails, the becoming
+Richard
