@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] kernel module relocation bug
-Date: Mon, 29 Nov 2004 18:53:09 -0500 (EST)
-Message-ID: <200411292353.iATNrAc4005771@hiauly1.hia.nrc.ca>
-References: <20041127064710.GL9148@tausq.org>
+From: rray@tcmail.mstc.state.ms.us
+Subject: [parisc-linux] Console problem
+Date: Tue, 30 Nov 2004 15:51:49 -0600 (CST)
+Message-ID: <Pine.LNX.4.58.0411301543230.17128@rray.drdc.mstc.ms.gov>
 Mime-Version: 1.0
-Content-Type: text/plain;
+Content-Type: TEXT/PLAIN;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: randolph@tausq.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20041127064710.GL9148@tausq.org> from "Randolph Chung" at Nov 27,
-	2004 01:47:10 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,20 +17,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> to fix this we will probably need to introduce long branch stubs into 
-> into the kernel module loader. anybody want to give this a shot?
+Hey all,
 
-Another option which is probably less work is to build your kernel
-and modules with -mpa-risc-2-0.  This should give you 22-bit branches.
+I've just installed Debian on a 9000/819 K200.
+The base install went fine after I changed the console to ttyB0.
+After the reboot I get the dredded "If this is the last
+message you see, you may need to switch your console.  This is
+a common symptom -- search the FAQ and mailing list at parisc-linux.org".
+And this is the last thing I see.
+I've seen references in the mailing list about switching consoles but not
+what this really means.
+I only have one console connected with a serial cable to the console port
+of the server.
+Could someone give me a little more info.
 
-There is also -mlong-calls.  Not too well tested but in theory it
-should always avoid the above problem.  It's much more expensive
-than -mpa-risc-2-0.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thanks
+Richard Ray
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
