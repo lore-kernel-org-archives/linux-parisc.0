@@ -1,60 +1,51 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from atlrel1.hp.com (atlrel1.hp.com [156.153.255.210])
-	by dsl2.external.hp.com (Postfix) with ESMTP id A03D2482A
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Jul 2001 10:44:43 -0600 (MDT)
-To: "M. Grabert" <xam@grabert.net>
-Cc: parisc-linux@lists.parisc-linux.org, taggart@carmen.fc.hp.com
-Subject: Re: [parisc-linux] Proposal for Errata DB 
-In-Reply-To: Your message of "Thu, 26 Jul 2001 11:20:40 +0200."
-             <Pine.LNX.4.21.0107261046410.10907-100000@sgate.charlysworld.de>
-References: <Pine.LNX.4.21.0107261046410.10907-100000@sgate.charlysworld.de> 
-Date: Thu, 26 Jul 2001 10:44:41 -0600
-From: Matt Taggart <taggart@carmen.fc.hp.com>
-Message-Id: <20010726164441.5B2D737CD9@carmen.fc.hp.com>
+Received: from mout0.freenet.de (mout0.freenet.de [194.97.50.131])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 75E2D482A
+	for <parisc-linux@lists.parisc-linux.org>; Thu, 26 Jul 2001 10:55:15 -0600 (MDT)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Reinhard Gimbel <Reinhard.Gimbel@freenet.de>
+Reply-To: Reinhard.Gimbel@freenet.de
+To: parisc-linux@lists.parisc-linux.org
+Date: Thu, 26 Jul 2001 18:48:42 +0200
+References: <20010726124024.1EB23482B@dsl2.external.hp.com>
+In-Reply-To: <20010726124024.1EB23482B@dsl2.external.hp.com>
+Cc: sanaya@gr.hp.com
+MIME-Version: 1.0
+Message-Id: <01072618484200.01103@octopus>
+Subject: [parisc-linux] Re: Help on install
 List-ID: <linux-parisc.vger.kernel.org>
 
-"M. Grabert" writes...
+> I'm attempting to to install HP Linux on a C180XP
+> Has anyone had success install V0.9 on this type
+> of machine?
 
-> Hello,
-> 
-> I just wanted to know whether there is something
-> like a database where I can look up all the
-> unfinished tasks/unsupported hardware ?
+I'm still trying to install 0.9.2 on a C180, too.
+ 
+> The problem I'm having is that when booting from
+> a CD, created with the current CD image on the
+> web site, the system just hangs in the boot
+> process after Serial driver has been enabled.
 
-On the main http://parisc-linux.org page there is a link under the "PA-RISC
-FAQ" section called "Where do I find the project todo list?". If you click
-on that link it takes you to a page that explains that the todo list is
-tracked by the Bug Tracking System at,
+My expirence is that the DINO I/O chip seems to be the key 
+element for that problem. Version 1.x of this chip crashes the 
+system like you describe it (crash during boot ... :-( ) My 
+DINO version (2.1) allows at least boot the system but the 
+system crashes when I try to do the next steps within the 
+installation procedure.
 
-http://bugs.parisc-linux.org
+One tip i got in this mailing list was to try to install over 
+network / NFS.
 
-It is open to all to use. If you find bugs or know about unfinished tasks
-please file them.
+My problem at present is that the TP port of my C180 box seems 
+to be broken, because i can't get a connection to my Intel 
+Linux box. I tried to use either 100 Mbps as well as 10 Mbps on 
+my Intel Linux box. The AUI-Ethernet port I can't test because 
+I've not glue box from my Intel Linux TP ethernet adaptor to 
+the AUI ethernet port of my C180 ...
 
-> I'm writing this, because all the information
-> on the website (e.g. ToDo-list, or the 'supported
-> hardware' web page) are quite outdated or not
-> very accurate/detailed. So potential Linux/HPPA
-> users have to read the mailing lists carefully
-> and/or ask (maybe annoying) questions.
+Anybody outthere with an idea in this area ?
 
-You're right the website is out of date. If you have additions for the FAQ
-or website please post them to the list, we'd love to have them.
+Thanks a lot !
 
-> Since I'm not a (PA)linux kernel and HP expert
-> (and many people out there aren't either), I
-> just want to know what machine is supported
-> (and how good).
-
-On the 0.9 release page,
-
-http://parisc-linux.org/release-0.9/index.html
-
-there are links for systems supported and errata. Again if you have additions
-please send them.
-
-Thanks,
-
--- 
-Matt Taggart        Linux Development Lab
-taggart@fc.hp.com   HP Linux Systems Operation
+Reinhard.
