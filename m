@@ -1,15 +1,19 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hawk.mail.pas.earthlink.net (hawk.mail.pas.earthlink.net [207.217.120.22])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 0B0F74829
-	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 14:42:29 -0600 (MDT)
-Message-ID: <3D92203F.3020801@earthlink.net>
-Date: Wed, 25 Sep 2002 15:44:47 -0500
-From: "Bryan W. Headley" <bwheadley@earthlink.net>
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id E181C4829
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 18:23:33 -0600 (MDT)
+Received: from hiauly1.hia.nrc.ca (localhost [127.0.0.1])
+	by hiauly1.hia.nrc.ca (8.12.0.Beta16/8.12.0.Beta16) with ESMTP id g8PKDg00000910
+	for <parisc-linux@lists.parisc-linux.org>; Wed, 25 Sep 2002 16:13:43 -0400 (EDT)
+Message-Id: <200209252013.g8PKDfD4000908@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] netacct-mysql compilation problem
+To: stephan@itp.bg
+Date: Wed, 25 Sep 2002 16:13:41 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020925195914.081FA4829@dsl2.external.hp.com> from "Stephan" at Sep 25, 2002 11:00:40 pm
 MIME-Version: 1.0
-To: jsoe0708@tiscali.be, parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] Mouse stops working when exiting KDE
-References: <3D8F01140000099E@ocpmta2.be.tiscali.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,23 +25,19 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-jsoe0708@tiscali.be wrote:
-> Hi Brian,
-> 
-> Sorry, the last test I do on my b180 and gpmdata as mouse driver does not
-> work :)
-> (xfree86-4.1)
-> 
-Forgot what mouse type you're supposed to tell X you have. Just tried it 
-on my i386, and had a hung mouse real fast! I thought it was Imps/2, but 
-obviously not...
+> <P>Sep 25 22:54:02 obzor kernel: do_page_fault() pid=25917 command='nacctd'
+> type=15 address=0x00000000<BR>Sep 25 22:54:02 obzor kernel: <BR>Sep 25
 
-You are right -- if you return to the console with control-alt-F[1-6], 
-and then back again, the issue clears up. It's a well-known but 
-irritating "solution"
+Looks like a NULL pointer.
 
+> IASQ: 000024e0 000024e0 IAOQ: 00017c83 00017c87<BR>Sep 25 22:54:02 obzor
 
+The instruction causing the fault is at 0x00017c80.  This is probably
+a coding problem in the source.  Some systems are more tolerant of
+NULL pointers than others.  You would need to use a debugger to
+investigate further.
 
+Dave
 -- 
-____               .:.                 ____
-Bryan W. Headley - bwheadley@earthlink.net
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
