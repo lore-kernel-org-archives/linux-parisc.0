@@ -1,58 +1,57 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id TAA02866
-	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 19:28:08 -0600
-Message-Id: <5.0.0.25.0.20001027180812.00a505d0@mail.webcash.com>
-Date: Fri, 27 Oct 2000 18:22:26 -0700
-To: Matt Taggart <taggart@carmen.fc.hp.com>
-From: Kailashnath V Rampure <kailasr@webcash.com>
-Subject: Re: [parisc-linux] glibc problem 
-Cc: Grant Grundler <grundler@cup.hp.com>, deller@gmx.de,
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id UAA03906
+	for <parisc-linux@puffin.external.hp.com>; Fri, 27 Oct 2000 20:57:32 -0600
+Received: from linuxcare.com.au (HELO front.linuxcare.com.au) (203.29.91.49)
+  by mailserv2.iuinc.com with SMTP; 28 Oct 2000 02:59:06 -0000
+Received: from localhost (alan@localhost)
+	by front.linuxcare.com.au (8.9.3/8.9.3/Debian 8.9.3-21) with ESMTP id NAA06746;
+	Sat, 28 Oct 2000 13:55:13 +1100
+Date: Sat, 28 Oct 2000 13:55:13 +1100 (EST)
+From: Alan Modra <alan@linuxcare.com.au>
+To: Mark Mitchell <mark@codesourcery.com>
+cc: Grant Grundler <grundler@cup.hp.com>, gcc-patches@gcc.gnu.org,
         parisc-linux@thepuffingroup.com
-In-Reply-To: <20001027215137.00F1138137@carmen.fc.hp.com>
-References: <Message from Kailashnath V Rampure <kailasr@webcash.com>
- <5.0.0.25.0.20001027142719.03822920@mail.webcash.com>
- <Your message of "Fri, 27 Oct 2000 13:37:49 PDT."  <5.0.0.25.0.20001027131913.00a57090@mail.webcash.com>
- <5.0.0.25.0.20001027142719.03822920@mail.webcash.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Message-ID: <Pine.LNX.4.21.0010281302510.2559-100000@front.linuxcare.com.au>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [parisc-linux] __FUNCTION__ broken
 List-ID: <linux-parisc.vger.kernel.org>
 
-Thanks !!!!! a lot specially to MATT and Helge Deller
-I was able to Bring up the linux on A class server.
+Hi Mark,
+  Your 2000-09-16 change doesn't clear c_function_name_declared_p
+anywhere, resulting in empty strings for __FUNCTION__ and the like.
 
-Now I have formatted the hdd and mounted disk to /mnt and then transfered 
-the root to /dev/hda2.
-I want to know how  do I transfer palo to this new hdd.
+eg. testcase
+cat > funcname.c <<EOF
+extern int printf (__const char *__restrict __format, ...);
 
-Regards
-Kailas
+int foo (int x)
+{
+  return x+1;
+}
 
-At 03:51 PM 10/27/00 -0600, Matt Taggart wrote:
+int main (void)
+{
+  printf ("%s\n", __FUNCTION__);
+  return 0;
+}
+EOF
 
->Kailashnath V Rampure writes...
->
-> > I also see on the Linux server that bootpd is being invoked for some time
-> > only.
->
->bootpd runs from inetd and only stays up if it's receiving requests. After a
->specified amount of time of no requests it will exit. This isn't a problem as
->inetd will fire up a new one if needed.
->
->I would make sure that tftpd is doing the right thing. You can test your 
->tftpd
->setup by trying to download the lifimage yourself using the tftp client
->program.
->
->bootpd and tftpd are pretty good about writing to syslog too, so check there
->for errors.
->
->HTH,
->
->--
->Matt Taggart
->taggart@fc.hp.com
->
->
->---------------------------------------------------------------------------
->To unsubscribe: send e-mail to parisc-linux-request@thepuffingroup.com with
->`unsubscribe' as the subject.
+
+The following little patch seems to fix the problem, but please check
+whether other cleaning up is required.
+
+--- gcc/c-decl.c~	Thu Oct 26 16:20:36 2000
++++ gcc/c-decl.c	Sat Oct 28 12:10:56 2000
+@@ -6733,6 +6733,7 @@ finish_function (nested)
+ 	 function.  For a nested function, this value is used in
+ 	 pop_c_function_context and then reset via pop_function_context.  */
+       current_function_decl = NULL;
++      c_function_name_declared_p = 0;
+     }
+ }
+ 
+
+Regards, Alan Modra
+-- 
+Linuxcare.  Support for the Revolution.
