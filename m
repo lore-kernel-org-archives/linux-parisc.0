@@ -1,30 +1,39 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 2229C482A
-	for <parisc-linux@parisc-linux.org>; Mon, 23 Apr 2001 13:04:19 -0600 (MDT)
-Message-Id: <200104231904.PAA20313@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc -print-file-name=cpp
-To: matthew@wil.cx (Matthew Wilcox)
-Date: Mon, 23 Apr 2001 15:04:10 -0400 (EDT)
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Cc: parisc-linux@parisc-linux.org
-In-Reply-To: <20010423195239.D18464@parcelfarce.linux.theplanet.co.uk> from "Matthew Wilcox" at Apr 23, 2001 07:52:39 pm
+Received: from bender.bawue.de (bender.bawue.de [193.197.13.1])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 0E26D482A
+	for <parisc-linux@parisc-linux.org>; Mon, 23 Apr 2001 13:34:22 -0600 (MDT)
+Received: from gate.ixs.com (pC19F803F.dip.t-dialin.net [193.159.128.63])
+	by bender.bawue.de (Postfix) with ESMTP id 3FFA448640
+	for <parisc-linux@parisc-linux.org>; Mon, 23 Apr 2001 21:33:54 +0200 (CEST)
+Received: from localhost (andreas@localhost)
+	by gate.ixs.com (8.9.3/8.9.3) with ESMTP id VAA29790
+	for <parisc-linux@parisc-linux.org>; Mon, 23 Apr 2001 21:33:39 +0200
+Date: Mon, 23 Apr 2001 21:33:39 +0200 (CEST)
+From: Andreas Thienemann <andreas@thienemann.net>
+To: parisc-linux@parisc-linux.org
+Subject: Re: [parisc-linux] Problems with glibc
+In-Reply-To: <20010422202057.Y18464@parcelfarce.linux.theplanet.co.uk>
+Message-ID: <Pine.LNX.4.10.10104232132120.18481-100000@gate.ixs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-ID: <linux-parisc.vger.kernel.org>
 
-> Our gcc prints `cpp' when invoked as gcc -print-file-name=cpp.  Every
-> other gcc in the world seems to output something along the lines of
-> /usr/lib/gcc-lib/i386-linux/2.95.2/cpp.  This includes other gcc 3.0
-> and 3.1 versions.  Would someone care to track this down?  This bug
-> currently requires a patch to glibc in order to get glibc to build,
-> and Ulrich rightly refuses to apply this patch to glibc CVS.
+Hi Matthew,
 
-Is there a library file with the name `cpp' on your system?  In gcc 3.0,
-the preprocessor is builtin, although there is a standalone processor
-cpp0.
+On Sun, 22 Apr 2001, Matthew Wilcox wrote:
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
+> Yes, I was getting it too.  After my recent kernel checkin to fix the
+> stat64 struct, I was able to build glibc successfully.  My theory is that
+> glibc was trying to call the *stat64 syscalls and the kernel was happily
+> writing all over user memory.
+
+> I would be grateful if you updated your (running) kernel to head of
+> CVS and tried building glibc again.
+Jepp. That did it. glibc was just build successful.
+But you wouldn't believe how long it took on that system. Just 101MHz..
+
+But thanks for the advice.
+Now back to my quest on installing linux from  scratch. ;)
+
+bye,
+ andreas
