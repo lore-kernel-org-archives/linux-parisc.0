@@ -1,21 +1,16 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from crisis.wild-wind.fr.eu.org (lopsy-lu.misterjones.org [62.4.18.26])
-	by dsl2.external.hp.com (Postfix) with ESMTP id C6727482B
-	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 May 2002 09:01:28 -0600 (MDT)
-Received: from hina.wild-wind.fr.eu.org ([192.168.70.139])
-	by crisis.wild-wind.fr.eu.org with esmtp (Exim 3.35 #1 (Debian))
-	id 173I38-0004Ow-00
-	for <parisc-linux@lists.parisc-linux.org>; Thu, 02 May 2002 16:59:14 +0200
-To: parisc-linux@lists.parisc-linux.org
+Received: from hiauly1.hia.nrc.ca (hiauly1.hia.nrc.ca [132.246.100.193])
+	by dsl2.external.hp.com (Postfix) with ESMTP id 1B9DD482B
+	for <parisc-linux@lists.parisc-linux.org>; Thu,  2 May 2002 09:16:11 -0600 (MDT)
+Message-Id: <200205021454.g42EsWra009574@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] 700x?
-References: <20020502144934.GI5641@charite.de>
-Reply-To: maz@wild-wind.fr.eu.org
-From: Marc Zyngier <maz@wild-wind.fr.eu.org>
-Date: 02 May 2002 17:00:45 +0200
-Message-ID: <wrpd6we61cy.fsf@hina.wild-wind.fr.eu.org>
-In-Reply-To: <20020502144934.GI5641@charite.de>
+To: Ralf.Hildebrandt@charite.de (Ralf Hildebrandt)
+Date: Thu, 2 May 2002 10:54:32 -0400 (EDT)
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+In-Reply-To: <20020502144934.GI5641@charite.de> from "Ralf Hildebrandt" at May 2, 2002 04:49:34 pm
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -27,12 +22,12 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
->>>>> "Ralf" == Ralf Hildebrandt <Ralf.Hildebrandt@charite.de> writes:
+> What is a HP 700x (or x700) machine? An X Terminal?
 
-Ralf> What is a HP 700x (or x700) machine? An X Terminal?
+Yes (700/RX).  In theory, it should be possible to install the software
+to run it under parisc-linux.
 
-This is a (very old) X terminal...
-
-        M.
+Dave
 -- 
-Places change, faces change. Life is so very strange.
+J. David Anglin                                  dave.anglin@nrc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6605)
