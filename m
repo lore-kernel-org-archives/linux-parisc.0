@@ -1,15 +1,17 @@
 Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from beavis.ybsoft.com (bradetich.net [209.161.7.161])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 768544829
-	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 20:40:17 -0600 (MDT)
-From: Ryan Bradetich <rbradetich@uswest.net>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Received: from systemhalted (CPE0080c82c70ca.cpe.net.cable.rogers.com [24.112.224.149])
+	by dsl2.external.hp.com (Postfix) with ESMTP id BEE4D4829
+	for <parisc-linux@lists.parisc-linux.org>; Tue,  1 Oct 2002 21:14:07 -0600 (MDT)
+Date: Tue, 1 Oct 2002 23:14:06 -0400
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Cc: parisc-linux@lists.parisc-linux.org
-Content-Type: text/plain
-Date: 01 Oct 2002 20:40:14 -0600
-Message-Id: <1033526414.31126.1871.camel@beavis>
+Subject: Re: [parisc-linux] [roland@redhat.com: Re: [PATCH] glibc 2.2.94 - hppa - min kernel and unwind-find-fde]
+Message-ID: <20021002031406.GA32230@systemhalted>
+References: <20021001200329.GG25959@systemhalted> <200210012018.g91KIrCv028501@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Subject: [parisc-linux] Request for preliminary approval for a lanana device number.
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <200210012018.g91KIrCv028501@hiauly1.hia.nrc.ca>
 Sender: parisc-linux-admin@lists.parisc-linux.org
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
@@ -21,33 +23,36 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-Alan,
+> > Please figure it out and be sure.  You need it only if there are existing
+> > old C++ binaries that have references to _Unwind_Find_FDE.  If there are no
+> > C++ binaries you want to be compatible with that predate a certain GCC
+> > version (not sure which off hand), then you don't need it.  But I don't
+> > think it hurts to have it.
+> 
+> I believe that this is needed for dw2 exception support.  This doesn't
+> work with gcc 3.0.4, so I don't think you need to worry much about old
+> binaries.
 
-I have written a driver to handle the non-16550-compatible serial ports
-used on the parisc machines.  This includes support for the E, F-I,
-K and optional console card for the D & R class systems.  The console
-for these systems is on port 0 of the MUX.  
+So the rationale is:
+It never worked, so removing it still leaves non-working old C++ binaries.
 
-I would like to request prelimiary approval from you that you intend to
-merge this driver into your tree, so I can request a valid device
-number from lanana.
+I assume I would be able to test this by looking at all the C++ binaries 
+in the hppa archive and looking for ref's to _Unwind_Find_FDE.
+ 
+> > > 2002-10-01  Matthew Wilcox  <willy@debian.org>
+> > > 
+> > > 	* sysdeps/unix/sysv/linux/configure: 
+> > > 	Make 2.4.18 minimum linux kernel for hppa, and add 
+> > > 	libc_cv_gcc_unwind_find_fde=yes.
+> > 
+> > This log entry is for a generated file, and there is no log entry for the
+> > actual source file.
+> 
+> I noticed this when I was fixing the gcc dw2 exception support.  Changing
+> it didn't seem to have any affect on the v3 or g++ testsuite results, but
+> it seems the correct thing to do.
+> 
 
-Here is a link to the code in CVS:
-http://cvs.parisc-linux.org/linux/drivers/char/mux.c?rev=1.3&content-type=text/vnd.viewcvs-markup
-
-
-Obviously this driver is not finished yet, as others are working on
-getting the full MUX support from these devices, but this driver does
-handle the console nicely.
-
-I am not asking for you to pick this driver up immediately, as I assume
-you will pick it up during your next merging excercise of the
-parisc-linux tree.
-
-
-Thanks much for your time, and hopefully we can get approval for the
-device number to get these systems supported by the Debian installer.
-
-Thanks,
-
-- Ryan
+Setting "libc_cv_gcc_unwind_find_fde=no" seems the correct thing to do?
+                                    ^^^^
+c.
