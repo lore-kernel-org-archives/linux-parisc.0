@@ -1,35 +1,41 @@
 Received: from mailserv2.iuinc.com (IDENT:qmailr@mailserv2.iuinc.com [206.245.164.55])
-	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id LAA06940
-	for <parisc-linux@puffin.external.hp.com>; Mon, 31 Jan 2000 11:23:56 -0700
-Received: from vis.ethz.ch (endor.ethz.ch [129.132.71.60])
-	by naboo.ethz.ch (Postfix) with ESMTP id 63998275B6
-	for <parisc-linux@thepuffingroup.com>; Mon, 31 Jan 2000 18:24:53 +0100 (CET)
-Sender: pedro@vis.ethz.ch
-Message-ID: <3895C5E7.D1E5000B@vis.ethz.ch>
-Date: Mon, 31 Jan 2000 18:27:03 +0100
-From: "Pedro G. Gonnet" <pedro@vis.ethz.ch>
-Reply-To: pgonnet@student.ethz.ch
-MIME-Version: 1.0
+	by puffin.external.hp.com (8.9.3/8.9.3) with SMTP id CAA12608
+	for <parisc-linux@puffin.external.hp.com>; Tue, 1 Feb 2000 02:02:45 -0700
+Received: from udlkern.fc.hp.com (jsm@udlkern.fc.hp.com [15.1.52.48])
+	by hpfcla.fc.hp.com (8.9.1/8.9.1) with ESMTP id BAA05465
+	for <parisc-linux@thepuffingroup.com>; Tue, 1 Feb 2000 01:03:46 -0700 (MST)
+Received: (from jsm@localhost) by udlkern.fc.hp.com (8.8.6 (PHNE_14041)/8.7.1) id BAA10229 for parisc-linux@thepuffingroup.com; Tue, 1 Feb 2000 01:03:45 -0700 (MST)
+Date: Tue, 1 Feb 2000 01:03:45 -0700 (MST)
+From: John Marvin <jsm@udlkern.fc.hp.com>
+Message-Id: <200002010803.BAA10229@udlkern.fc.hp.com>
 To: parisc-linux@thepuffingroup.com
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: [parisc-linux] serail console on 735/99
+Subject: [parisc-linux] Lan configuration failures
 List-ID: <linux-parisc.vger.kernel.org>
 
+Today some people have seen a couple of failures using the new ram disk
+that willy generated. This new ram disk contains a program that tries
+to configure a network card.  I have tracked down the problems, and
+found them to both be configuration related:
 
-hello!
+    1) First, you must have CONFIG_INET set. If you don't, the socket
+    call will fail, and you will get a "Bad file number" failure,
+    due to the code trying to do an ioctl call on the -1 returned
+    from the socket call failure.
 
-i just got a hp9000/735/99 without a graphics adaptor and a
-fddi-interface. i tried to boot it over a vt100 (yup, not a typo), but
-all i get is a blank screen and about 5 min of disk activity.
+    2) You must have the tulip driver configured in (CONFIG_DEC_ELCP)
+    which also requires things like CONFIG_PCI, etc. If you have
+    an older box that does not contain a tulip based network interface,
+    or if you have a newer non Lasi box, you will not be able to
+    get this to work. You must see "eth0:" debug output.
 
-the terminal is set to 9600 baud and connected to the serial port labled
-"a" like the howto says, but i don't get anything on the screen and
-hitting keys doesn't help.
+    If the hardware is not configured properly, the socket call will
+    succeed, however the following ioctl will fail and you will get
+    a "No such device" error.
 
-in an older posting i saw something about the "TOC"-button, but that
-doesn't seem to work either.
+Both of the failures will lead to the program exiting, which finally
+will result in a "Kernel panic: Attempted to kill init!" failure.
 
-help.
-
-pedro gonnet
-pgonnet@student.ethz.ch
+John
+jsm@fc.hp.com
