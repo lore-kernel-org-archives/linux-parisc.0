@@ -1,20 +1,43 @@
 Return-Path: <hppa-linux@puffingroup.com>
-From: Barrie Spence <barrie@calvin.demon.co.uk>
-Message-Id: <199902032318.AAA01511@calvin.demon.co.uk>
-Date: Wed, 3 Feb 1999 23:18:52 +0000 (   )
+Date: Thu, 4 Feb 1999 00:32:44 -0500 (EST)
+From: Alex deVries <adevries@redhat.com>
 To: hppa-linux@puffingroup.com
-Reply-to: barrie@calvin.demon.co.uk
+Message-ID: <Pine.LNX.3.96.990204002746.907E-100000@devserv.devel.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: [hppa-linux] background information - HP Journal
-Resent-Message-ID: <"vHLyC1.0.ZF6.cCFks"@burrow.puffingroup.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [hppa-linux] egcs in cvs.
+Resent-Message-ID: <"Hqd_p.0.Hn6.BhKks"@burrow.puffingroup.com>
+Reply-To: hppa-linux@puffingroup.com
 List-Id: linux-parisc.vger.kernel.org
 
-Lots of useful info on the hardware...
 
-   http://www.hp.com/hpj/journal.html
+I uploaded egcs 1.1b into the HPPA Linux CVS so that we can work on this
+together.  I know that Paul Lahaie was interested in working on it.
 
-Barrie
+I've gotten partway; it's all under the assumption that you're using my
+binutils rpm.
+
+I've fixed a few things, like detection of hppa1.1-hp-linux, merging some
+stuff from the mklinux gcc 2.6.3.  
+
+The intention is to get a cross compiler at first, so, build it with:
+
+./configure --prefix=/usr/hppa-linux --target=hppa1.1-hp-linux
+
+Also, because we don't have glibc include files yet, you'll have to
+manually add -Dinhibit_libc in gcc/Makefile.  Bleah.
+
+I'm not *quite* sure about cvs instructions.  I'm sure someone can post
+them tomorrow.
+
+At some point we're going to have to look into HPPA 2.0 instructions.
+
+- Alex
+
+-- 
+Alex deVries <puffin@redhat.com>
+Red Hat Contrib Net maintainer
+Ottawa, Canada
 
 ----------------------------------------------------------------------
 To unsubscribe: send e-mail to hppa-linux-request@puffingroup.com with
