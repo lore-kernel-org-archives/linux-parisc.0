@@ -1,20 +1,16 @@
-Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
-Received: from mail.pangeatech.com (pxofc151-phx1.pangeatech.com [63.110.32.151])
-	by dsl2.external.hp.com (Postfix) with ESMTP id 7A6F5482B
-	for <parisc-linux@lists.parisc-linux.org>; Tue, 30 Apr 2002 23:06:21 -0600 (MDT)
-Received: from [65.192.22.133] by mail.pangeatech.com (NTMail 7.00.0018/NU8172.00.e2123c13) with ESMTP id pgbanaaa for parisc-linux@lists.parisc-linux.org; Tue, 30 Apr 2002 22:05:06 -0700
-Date: Tue, 30 Apr 2002 22:10:16 -0700
-From: Randolph Chung <randolph@tausq.org>
-To: James Braid <james.braid@peace.com>
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] mkraid doesnt work on L2000 with 64-bit kernel
-Message-ID: <20020501051016.GH30370@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
-References: <003801c1f0c7$e6687c90$5e01000a@bongo> <005701c1f0c9$0c4fe5a0$5e01000a@bongo>
+From: Matthew Wilcox <willy@debian.org>
+Subject: [parisc-linux] Re: SMP instability?
+Date: Thu, 11 Apr 2002 21:40:12 +0100
+Message-ID: <20020411214012.A2264__2187.4979291626$1416621232$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <59FFD7B1E114D111B4000060082F1C53024B2637@edge1.edge-technologies.com>
+Reply-To: parisc-linux@parisc-linux.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <005701c1f0c9$0c4fe5a0$5e01000a@bongo>
-Sender: parisc-linux-admin@lists.parisc-linux.org
+Cc: "'debian-hppa@lists.debian.org'" <debian-hppa@lists.debian.org>,
+	parisc-linux@parisc-linux.org
+To: "D'Ausilio, John" <John.Dausilio@edge-technologies.com>
+Return-Path: <owner-parisc-linux@dsl2.external.hp.com>
+In-Reply-To: <59FFD7B1E114D111B4000060082F1C53024B2637@edge1.edge-technologies.com>; from John.Dausilio@edge-technologies.com on Thu, Apr 11, 2002 at 03:16:25PM -0400
 Errors-To: parisc-linux-admin@lists.parisc-linux.org
 List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
@@ -25,13 +21,15 @@ List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
 List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux/>
 
-In reference to a message from James Braid, dated May 01:
-> Arrrgh, sorry for this. Take 3:
+On Thu, Apr 11, 2002 at 03:16:25PM -0400, D'Ausilio, John wrote:
+> Is the 2.4.18 which comes down from the archive as recent as the ones in the
+> FTP server? I'm going to boot back into the original kernel and try getting
+> the latest from the FTP server .. if that dosn't work I guess I'll get the
+> sources and build from CVS. Any other hints/clues/suggestions? Should I just
+> run single proc for now?
 
-commited to cvs:
-* -pa23
-* RAID ioctl fixes for 64-bit kernels; contributed by "James Braid" 
-  <james.braid@peace.com>
+Yes, we've also found 2.4.18 to be unstable SMP.  I believe Grant has a
+handle on this problem now, so expect it to be fixed quite soon.
 
-thanks
-randolph
+-- 
+Revolutions do not require corporate support.
