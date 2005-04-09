@@ -1,16 +1,18 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] pthread problems - test program
-Date: Sat, 9 Apr 2005 02:38:47 -0400
-Message-ID: <20050409063847.GR1833@baldric.uwo.ca>
-References: <20050408212918.GK1833@baldric.uwo.ca>
-	<200504090013.j390DLSC019178@hiauly1.hia.nrc.ca>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] SLAB bug SMP 64bit / XFS mess
+Date: Sat, 09 Apr 2005 13:25:40 +0000
+Message-ID: <4257D7D4.80401@tiscali.be>
+References: <200504090100.j3910CW0019308@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+Cc: James.Bottomley@SteelEye.com,
+ parisc-linux@lists.parisc-linux.org,
+ Thibaut VARENE <T-Bone@parisc-linux.org>
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200504090013.j390DLSC019178@hiauly1.hia.nrc.ca>
+In-Reply-To: <200504090100.j3910CW0019308@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,17 +23,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Apr 08, 2005 at 08:13:21PM -0400, John David Anglin wrote:
-> > Since technically this is not possible, the mutex .lock in __fork_block
-> > makes sure that such a thing can't occur.
+
+
+John David Anglin wrote:
+>>It's also quite surprising the 32bit kernel is unaffected.
 > 
-> Just wondering if this has to do with rt signals versus old style linux
-> signals (ia64 seems to define some wrappers).
+well nothing new since: <http://lists.parisc-linux.org/pipermail/parisc-linux/2005-March/026055.html>
 
-libc or kernel?
+> 
+> As a plug for my put_user patch, I recall that there is at least one
+> xfs ioctl that involves putting a long int to userspace.
+> 
+Yes iirc that was (in 2.4) one of the reason I asked help to Randolph to introduce put_user_asm64() for 32bit kernel.
 
-c.
-
+Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
