@@ -1,16 +1,18 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
 Subject: Re: [parisc-linux] pthread problems - test program
-Date: Fri, 8 Apr 2005 17:29:18 -0400
-Message-ID: <20050408212918.GK1833@baldric.uwo.ca>
-References: <200504070245.j372j6YF008446@hiauly1.hia.nrc.ca>
-	<200504080256.j382u0x0013973@hiauly1.hia.nrc.ca>
+Date: Sat, 9 Apr 2005 02:37:50 -0400
+Message-ID: <20050409063750.GQ1833@baldric.uwo.ca>
+References: <20050408212918.GK1833@baldric.uwo.ca>
+	<200504082254.j38MsKfA018596@hiauly1.hia.nrc.ca>
+	<20050409055852.GM1833@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ Randolph Chung <tausq@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200504080256.j382u0x0013973@hiauly1.hia.nrc.ca>
+In-Reply-To: <20050409055852.GM1833@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,58 +23,51 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Apr 07, 2005 at 10:56:00PM -0400, John David Anglin wrote:
-> After thinking a bit more about this, I'm convinced that the problem
-> is a race between the registration of fork handlers and the delivery of
-> the signal.  If the signal handler is called before the registration
-> is complete, the code suspends when the signal handler exits and
-> tries to unregister the fork handlers.  The test works if the signal
-> is delayed.
+On Sat, Apr 09, 2005 at 01:58:52AM -0400, Carlos O'Donell wrote:
+> On Fri, Apr 08, 2005 at 06:54:20PM -0400, John David Anglin wrote:
+> > > Since technically this is not possible, the mutex .lock in __fork_block
+> > > makes sure that such a thing can't occur.
+> > 
+> > The program hangs doesn't it?
+> 
+> I just realized the program doesn't call pthread_atfork and it still
+> hangs. Though it doesn't hang on i386. Is there a relied upon semantic
+> we are missing here?
 
-If you can prove that those mutex's aren't working properly then we have
-a case :)
+The following hangs and I don't really know why... maybe I'm just
+sleepy :)
 
-Since technically this is not possible, the mutex .lock in __fork_block
-makes sure that such a thing can't occur.
+--- 
+#include <stdio.h>
+#include <signal.h>
+#include <sys/types.h>
 
+void exit_on_signal(int signr)
+{
+  fprintf(stderr, "Thread %d, exiting on signal %d.\n", getpid(), signr); 
+  exit(0);
+}
+
+int main(void)
+{
+  pid_t parent = getpid();
+  printf("Parent thread is %d\n",parent);
+  signal(SIGUSR2,exit_on_signal);
+  if (fork() == 0) 
+    {
+      /* child kills parent */
+      printf("Child thread is %d\n",getpid());
+      kill(parent, SIGUSR2);
+    } 
+  else 
+    {
+      printf("Parent done.\n");
+    }
+  exit(0);
+}
 ---
 
-During the handler registration the mutex is taken, and only when
-complete released. The __pthread_fork code must take that mutex before
-calling the prepared handlers.
-
-Look at:
-linuxthreads/ptfork.c 
-	(__pthread_fork)
-linuxthreads/sysdeps/unix/sysv/linux/register-atfork.c
-	(__register_atfork)
-
-
-The lock is via __libc_lock_lock, which is:
-	(__libc_maybe_call2 (pthread_mutex_lock, (&(NAME)), 0));
-
-Which is pthread_mutex_lock, which could call:
-	__pthread_lock(&mutex->__m_lock, NULL);
-	__pthread_alt_lock(&mutex->__m_lock, NULL);
-	__pthread_lock(&mutex->__m_lock, self);
-	__pthread_alt_lock(&mutex->__m_lock, self);
-
-The __pthread_lock is rather complex.
-
-Seems to rely upon:
-	__pthread_acquire(&lock->__spinlock);
-
-Which relies upon:
-	testandset(spinlock);
-
-Which relies upon all the ldcw code we worked out.
-
-*** WARNING ***
-
-What am I missing?
-
 c.
-
 
 _______________________________________________
 parisc-linux mailing list
