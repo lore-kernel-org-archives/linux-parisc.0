@@ -1,7 +1,7 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] pthread problems - test program
-Date: Fri, 8 Apr 2005 18:54:20 -0400 (EDT)
-Message-ID: <200504082254.j38MsKfA018596@hiauly1.hia.nrc.ca>
+Date: Fri, 8 Apr 2005 20:13:21 -0400 (EDT)
+Message-ID: <200504090013.j390DLSC019178@hiauly1.hia.nrc.ca>
 References: <20050408212918.GK1833@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -24,27 +24,8 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 > Since technically this is not possible, the mutex .lock in __fork_block
 > makes sure that such a thing can't occur.
 
-The program hangs doesn't it?
-
-If the handler registration is done before the fork, I'll believe you.
-However, if they are done after the fork, the lock isn't going to help.
-The same problem could occur if a signal is taken during deregistration
-when exiting from main.
-
-A signal can be taken while the mutex is locked, or as it appears when
-__status is 1.  Since the signal handler does an exit, the main code
-never runs again and there is no way it can change the lock or __status.
-So, we end up suspending the task while its trying to exit (i.e.,
-deadlock).
-
-If the signal handler returns instead of exits, there isn't a problem.
-If the child delays sending the signal a bit, there isn't a problem.
-
-In the presence of signals, I believe that adding and removing
-handlers run at exit needs to be atomic.  A simple mutex isn't
-sufficient as a thread or task may die in the critical region.
-Even if there is a mutex recovery mechanism, a handler might get
-run twice, etc.
+Just wondering if this has to do with rt signals versus old style linux
+signals (ia64 seems to define some wrappers).
 
 Dave
 -- 
