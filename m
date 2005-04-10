@@ -1,16 +1,19 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] More from the TLS glibc front.
-Date: Sat, 09 Apr 2005 16:57:18 +0000
-Message-ID: <4258096E.1050205@tiscali.be>
-References: <200504091515.j39FFtij022153@hiauly1.hia.nrc.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] TLS added relocations.
+Date: Sun, 10 Apr 2005 03:48:04 -0700
+Message-ID: <20050410104804.GL6987@tausq.org>
+References: <20050405161549.GM1833@baldric.uwo.ca>
+	<20050405162643.GB6987@tausq.org>
+	<20050405163400.GN1833@baldric.uwo.ca>
+	<20050405191612.GQ1833@baldric.uwo.ca>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: Carlos O'Donell <carlos@baldric.uwo.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200504091515.j39FFtij022153@hiauly1.hia.nrc.ca>
+In-Reply-To: <20050405191612.GQ1833@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,27 +24,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-
-John David Anglin wrote:
->>what's up with gcc-3.3.x?
->>I never reach to complet the glibc build with gcc-3.4 (see detailed investigation in 
->><http://gcc.gnu.org/bugzilla/show_bug.cgi?id=17471>), gcc-3.5 at this time (now gcc-4) seems to solve this pb even thought there was 
->>some other pb to fix with this new compiler ;-S (but not enough time to investigate, sorry)
+> If it can compile this then it's cool. Normal gcc/binutils chokes but
+> the tls-toolchain works just fine :)
 > 
-> 
-> I'm not aware of any GCC PRs related to this.
-Sorry iirc those new pb wouldn't have to be the object of gcc pr but would more need some small changes in the glibc code to take 
-into account the new gcc-4.x (may be some more always_use arrtibute?)
+> Please update your documentation, the symbols used for relocation don't
+> match (e.g. $tls_dtlndx$ is really $tls_gdix$)?
 
-> A few PA specific bug fixes
-> have been back ported to 3.3 and 3.4.
->
-well mentioned pr #17471 was 2.3.3 glibc and 3.4 gcc related; today 2.3.5 is out, if I find some more free time I will try this new 
-2.3.5 glibc with new 4.? gcc
+Which documentation are you using? Please work off of
+http://wiki.parisc-linux.org/ThreadLocalStorage
+I've been keeping that up to date as I find bugs in the original design.
 
-Thanks for feedback,
-     Joel
+Once we get it sorted out we can go back to fix the PDF.
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
