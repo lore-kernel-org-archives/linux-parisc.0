@@ -1,16 +1,17 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] More from the TLS glibc front.
-Date: Sun, 10 Apr 2005 03:44:03 -0700
-Message-ID: <20050410104403.GK6987@tausq.org>
-References: <20050409050558.GL1833@baldric.uwo.ca>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: "Bryan W. Headley" <bwheadley@earthlink.net>
+Subject: Re: [parisc-linux] Booting Sarge (24-Mar) on c110
+Date: Sun, 10 Apr 2005 12:40:59 -0500
+Message-ID: <4259652B.4090007@earthlink.net>
+References: <42594374.2040803@earthlink.net>
+	<20050410165816.GF8669@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@baldric.uwo.ca>
+  charset=ISO-8859-1;
+  format=flowed
+To: Matthew Wilcox <matthew@wil.cx>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050409050558.GL1833@baldric.uwo.ca>
+In-Reply-To: <20050410165816.GF8669@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,55 +22,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Still tacking:
+Matthew Wilcox wrote:
 
-Hmm.... I guess I must be using slightly different sources, and I see
-different problems....
+>On Sun, Apr 10, 2005 at 10:17:08AM -0500, Bryan W. Headley wrote:
+>  
+>
+>>Everything works fine, up til the dreaded STI -switchover. So, it boots, 
+>>but video isn't initialized right. Let's see: I'm using tty0, with 
+>>monitor type 3 (1280x1024 Vesa), using graphics3.
+>>
+>>Of course, it worked fine with kernel 2.4.x.
+>>    
+>>
+>
+>What graphics card are you using?
+>
+>  
+>
+Watching 2.4.20 boot, it says,
 
-I'm using:
-binutils CVS HEAD (20050409)
-gcc-4.0-20050402 (ftp'ed)
-glibc CVS HEAD (20050409)
+16. U2-IOA BC GSC+ Port (7) at 0xf3fbf000 [8/63], versions 0x501, 0x1, 
+0xc,  add
+itional addresses: 0xf3f80000
+17. U2-IOA BC Runway Port (12) at 0xfff8a000 [10], versions 0x580, 0x7, 0xb
+18. Coral SGC Graphics (10) at 0xf4000000 [10/16], versions 0x4, 0x0, 0x77
+19. U2-IOA BC GSC+ Port (7) at 0xf3fff000 [10/63], versions 0x501, 0x1, 0xc
 
-First of all, the patches seem to be out of date. I've updated the
-binutils and gcc ones.
+And later says, STI device: HPA4071B_LZ
 
-http://www.parisc-linux.org/~tausq/hppa-tls-gcc.diff
-http://www.parisc-linux.org/~tausq/hppa-tls-binutils.diff
+I don't know if this is useful, but the fact that there is nothing in 
+graphics0 .. graphics2 an issue?
 
-I find some other issues with the glibc build. Carlos, a few of your
-patches are malformed. They have CVS conflict markers in them.. :)
 
-Right now my build fails when building tst-tlsmod14a.c with a gcc ICE. I
-think my gcc patches are broken (no surprise there...)
-
-I'll try to take a closer look at the gcc failure. The failure looks
-like this (simplified to a small test program):
-
-$ /home/tausq/tls/bin/gcc -O2 -fPIC -c tlstst.c
-tlstst.c: In function 'in_dso1':
-tlstst.c:21: error: unable to find a register to spill in class 'R1_REGS'
-tlstst.c:21: error: this is the insn:
-(insn 26 20 23 0 (set (reg:SI 28 %r28 [106])
-        (plus:SI (reg:SI 19 %r19)
-            (high:SI (symbol_ref/v/f:SI ("*.LC0") [flags 0x2] <string_cst 0x400b8780>)))) 46 {*pa.md:2717} (nil)
-    (nil))
-tlstst.c:21: confused by earlier errors, bailing out
-
-Only happens with -fPIC. Likely I'm doing the rtl wrong in
-legitimize_tls_address ()
-
-tlstst.c is at http://www.parisc-linux.org/~tausq/tlstst.c
-
-btw, Carlos, are you building glibc with linuxthreads or nptl when you
-enable TLS? If I use nptl I get a lot of build errors very early in the
-build process.
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
