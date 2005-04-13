@@ -1,19 +1,16 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] SLAB bug SMP 64bit / XFS mess
-Date: Sun, 10 Apr 2005 23:49:56 -0600
-Message-ID: <20050411054956.GC30629@colo.lackof.org>
-References: <20050404110025.GA6987@tausq.org>
-	<4208AA1B000184AE@mail-3-bnl.tiscali.it>
-	<20050408205428.GJ1833@baldric.uwo.ca>
-	<20050409021049.0d0a851d@Tatooine.r3z0>
-	<20050411045747.GA30629@colo.lackof.org>
-	<20050411051517.GB30629@colo.lackof.org>
+Subject: Re: [parisc-linux] some other small bitops.h suggestion?
+Date: Wed, 13 Apr 2005 00:14:30 -0600
+Message-ID: <20050413061430.GB9519@colo.lackof.org>
+References: <20050403143246.GE8921@tausq.org>
+	<42134E6200012F70@mail-2-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: PARISC list <parisc-linux@lists.parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050411051517.GB30629@colo.lackof.org>
+In-Reply-To: <42134E6200012F70@mail-2-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,35 +21,86 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Apr 10, 2005 at 11:15:17PM -0600, Grant Grundler wrote:
-> Just for comparison, I ran the same workload on ext3 and it worked fine.
+On Tue, Apr 05, 2005 at 11:28:26AM +0200, Joel Soete wrote:
+...
+> -#define hweight32(x) generic_hweight32(x)
+> -#define hweight16(x) generic_hweight16(x)
+> -#define hweight8(x) generic_hweight8(x)
+> +#define hweight64(x)   generic_hweight64(x)
+> +#define hweight32(x)   generic_hweight32(x)
+> +#define hweight16(x)   generic_hweight16(x)
+> +#define hweight8(x)    generic_hweight8(x)
 
-Sorry, I meant ext2.
+This bit is fine.
+
+>   * Every architecture must define this function. It's the fastest
+> @@ -337,10 +330,8 @@
+>  #else
+>         if (unlikely(b[0]))
+>                 return __ffs(b[0]);
+> -       if (unlikely(((unsigned int)b[1])))
+> +       if (unlikely(b[1]))
+>                 return __ffs(b[1]) + 64;
+> -       if (b[1] >> 32)
+> -               return __ffs(b[1] >> 32) + 96;
+>         return __ffs(b[2]) + 128;
+>  #endif
+...
+> The second hunk just because I didn't understand why this form (looks like
+> sparc64) and not another (e.g. ppc64).
+
+I think it's just for performance.
+Sparc implementation of __ffs isn't very fast and it's quicker
+to test the high/low parts of the word seperately because of which
+bits are most likely to be set.
+
+I'm pretty sure on parisc it will only cost two more cycles to check
+the extra 32-bits. The test for top/bottom seperately would likely
+cost us more if we don't predict the branches correctly.
+
+But becuase of how sparc64 does it, I'm wondering if we should
+use "likely(b[1])". Any comments?
 
 
-Here is the correct rsync output for ext3 on /dev/sdb3:
+sched_find_first_bit(), __clear_bit() and find_next_bit() just
+all need to agree how bits are numbered in am in-memory bitmap.
 
-root@gggj6k:~# time rsync -aWx --stats / /mnt
+Code like this in kernel/sched.c:
 
-Number of files: 394228
-Number of files transferred: 349626
-Total file size: 12845701275 bytes
-Total transferred file size: 12845565669 bytes
-Literal data: 12845570528 bytes
-Matched data: 0 bytes
-File list size: 7360229
-Total bytes sent: 12869632989
-Total bytes received: 6992540
+skip_bitmap:
+        if (!idx)
+                idx = sched_find_first_bit(array->bitmap);
+        else
+                idx = find_next_bit(array->bitmap, MAX_PRIO, idx);
 
-sent 12869632989 bytes  received 6992540 bytes  8178231.52 bytes/sec
-total size is 12845701275  speedup is 1.00
+requires we number the bits the same way in both.
+And __clear_bit() has to agree as well:
 
-real    26m14.078s
-user    5m47.767s
-sys     7m11.995s
-root@gggj6k:~# 
+static void dequeue_task(struct task_struct *p, prio_array_t *array)
+{
+        array->nr_active--;
+        list_del(&p->run_list);
+        if (list_empty(array->queue + p->prio))
+                __clear_bit(p->prio, array->bitmap);
+}
 
 
+parisc __clear_bit also uses unsigned long to access the array:
+
+static __inline__ void __clear_bit(unsigned long nr, volatile unsigned long * address)
+{
+        unsigned long mask;
+        unsigned long *addr = (unsigned long *) address;
+
+        addr += (nr >> SHIFT_PER_LONG);
+        mask = 1UL << CHOP_SHIFTCOUNT(nr);
+        *addr &= ~mask;
+}
+
+ugh...I think I'm just going to use the sparc64 version here.
+I'm not comfortable with the "volatile" attribute getting dropped.
+
+thanks,
 grant
 _______________________________________________
 parisc-linux mailing list
