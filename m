@@ -1,16 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] some other small bitops.h suggestion?
-Date: Wed, 13 Apr 2005 11:47:56 -0600
-Message-ID: <20050413174756.GA21641@colo.lackof.org>
-References: <20050403143246.GE8921@tausq.org>
-	<42134E6200012F70@mail-2-bnl.tiscali.it>
+Date: Thu, 14 Apr 2005 10:39:08 -0400 (EDT)
+Message-ID: <200504141439.j3EEd9oX018785@hiauly1.hia.nrc.ca>
+References: <20050414050727.GA30838@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=US-ASCII
+Cc: tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42134E6200012F70@mail-2-bnl.tiscali.it>
+In-Reply-To: <20050414050727.GA30838@colo.lackof.org> from "Grant Grundler" at
+	Apr 13, 2005 11:07:27 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,173 +22,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Apr 05, 2005 at 11:28:26AM +0200, Joel Soete wrote:
-> Here is some other change to suggest (even thought it doesn't fix anything
-> :-( ):
-...
+> > In this case, we are doing a single operation to *addr, and this
+> > function is explicitly not atomic, so I am not quite sure why we need
+> > volatile at all.
+> 
+> James Bottomley dug up the original thread:
+> 	http://marc.theaimsgroup.com/?t=108826637900003
+> 
+> If __set_bit() doesn't need volatile, then is the same true
+> for __clear_bit and __change_bit?
 
-Here is what I'd like to commit for include/parisc/bitops.h.
+The above discussion bothers me a lot:
 
-Summary of changes:
-o uses generic_hweight64
-o uses CONFIG_64BIT where neccessary
-o make our __clear_bit and __set_bit look like ppc64 instead of sparc.
-o simplify sched_find_first_bit()
+  So the rule has always been (and this has nothing to do with parisc, and 
+  parisc DOES NOT GET TO SET THE RULES!) that "test_bit()" acts in a 
+  volatile manner, and that you traditionally could write
 
-Any comments before I commit this?
+     while (test_and_set_bit(xxx, field))
+       while (test_bit(xx, field)) /* Nothing */;
 
-(Joel, additional changes can go in another commit please :^)
+  to do a lock.
 
-Beware, touching bitops.h will cause a full recompile.
+  NOTE! There are no volatile data structures _anywhere_, because as
+  mentioned, I think that whole notion is a total piece of crap, and is not
+  even a well-defined part of the C language. But the test_bit() function
+  has to act as if the data it is passed down can change. To repeat:  
+  _codepaths_ may have volatility attributes depending on usage of the data.
 
-thanks,
-grant
+I don't believe that a lock can be implemented as shown above on
+PA-RISC as we don't have an atomic test_and_set_bit.  The only atomic
+ops are ldcw and ldcd (load and clear word/double).  So, if test_and_set_bit
+needs locking semantics, it will have to be implemented with spinlocks.
 
+Secondly, I'm not convinced of the concept of volatile code paths
+and using the volatile keyword to keep loops from being optimized
+away.  I think this approach results in bad code.
 
-Index: include/asm-parisc/bitops.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/bitops.h,v
-retrieving revision 1.18
-diff -u -p -r1.18 bitops.h
---- include/asm-parisc/bitops.h	4 Apr 2005 17:54:41 -0000	1.18
-+++ include/asm-parisc/bitops.h	13 Apr 2005 17:44:13 -0000
-@@ -12,7 +12,7 @@
-  * to include/asm-i386/bitops.h or kerneldoc
-  */
- 
--#ifdef __LP64__
-+#ifdef CONFIG_64BIT
- #   define SHIFT_PER_LONG 6
- #ifndef BITS_PER_LONG
- #   define BITS_PER_LONG 64
-@@ -43,37 +43,29 @@ static __inline__ void set_bit(int nr, v
- 	_atomic_spin_unlock_irqrestore(addr, flags);
- }
- 
--static __inline__ void __set_bit(int nr, volatile unsigned long * address)
-+static __inline__ void __set_bit(unsigned long nr, volatile unsigned long * addr)
- {
--	unsigned long mask;
--	unsigned long *addr = (unsigned long *) address;
-+	volatile unsigned long *m = addr + (((unsigned) nr) >> SHIFT_PER_LONG);
- 
--	addr += (nr >> SHIFT_PER_LONG);
--	mask = 1UL << CHOP_SHIFTCOUNT(nr);
--	*addr |= mask;
-+	*m |= 1UL << CHOP_SHIFTCOUNT(nr);
- }
- 
- static __inline__ void clear_bit(int nr, volatile unsigned long * address)
- {
--	unsigned long mask;
--	unsigned long *addr = (unsigned long *) address;
-+	unsigned long mask = 1UL << CHOP_SHIFTCOUNT((unsigned int) nr);
-+	volatile unsigned long *addr = address + (((unsigned int) nr) >> SHIFT_PER_LONG);
- 	unsigned long flags;
- 
--	addr += (nr >> SHIFT_PER_LONG);
--	mask = 1UL << CHOP_SHIFTCOUNT(nr);
- 	_atomic_spin_lock_irqsave(addr, flags);
- 	*addr &= ~mask;
- 	_atomic_spin_unlock_irqrestore(addr, flags);
- }
- 
--static __inline__ void __clear_bit(unsigned long nr, volatile unsigned long * address)
-+static __inline__ void __clear_bit(unsigned long nr, volatile unsigned long * addr)
- {
--	unsigned long mask;
--	unsigned long *addr = (unsigned long *) address;
-+	volatile unsigned long *m = addr + (nr >> SHIFT_PER_LONG);
- 
--	addr += (nr >> SHIFT_PER_LONG);
--	mask = 1UL << CHOP_SHIFTCOUNT(nr);
--	*addr &= ~mask;
-+	*m &= ~(1UL << CHOP_SHIFTCOUNT(nr));
- }
- 
- static __inline__ void change_bit(int nr, volatile unsigned long * address)
-@@ -89,14 +81,11 @@ static __inline__ void change_bit(int nr
- 	_atomic_spin_unlock_irqrestore(addr, flags);
- }
- 
--static __inline__ void __change_bit(int nr, volatile unsigned long * address)
-+static __inline__ void __change_bit(unsigned long nr, volatile unsigned long * addr)
- {
--	unsigned long mask;
--	unsigned long *addr = (unsigned long *) address;
-+	volatile unsigned long *m = addr + (nr >> SHIFT_PER_LONG);
- 
--	addr += (nr >> SHIFT_PER_LONG);
--	mask = 1UL << CHOP_SHIFTCOUNT(nr);
--	*addr ^= mask;
-+	*m ^= 1UL << CHOP_SHIFTCOUNT(nr);
- }
- 
- static __inline__ int test_and_set_bit(int nr, volatile unsigned long * address)
-@@ -229,7 +218,7 @@ static __inline__ unsigned long __ffs(un
- 	unsigned long ret;
- 
- 	__asm__(
--#if BITS_PER_LONG > 32
-+#ifdef CONFIG_64BIT
- 		" ldi       63,%1\n"
- 		" extrd,u,*<>  %0,63,32,%%r0\n"
- 		" extrd,u,*TR  %0,31,32,%0\n"	/* move top 32-bits down */
-@@ -304,14 +293,7 @@ static __inline__ int fls(int x)
-  * hweightN: returns the hamming weight (i.e. the number
-  * of bits set) of a N-bit word
-  */
--#define hweight64(x)						\
--({								\
--	unsigned long __x = (x);				\
--	unsigned int __w;					\
--	__w = generic_hweight32((unsigned int) __x);		\
--	__w += generic_hweight32((unsigned int) (__x>>32));	\
--	__w;							\
--})
-+#define hweight64(x) generic_hweight64(x)
- #define hweight32(x) generic_hweight32(x)
- #define hweight16(x) generic_hweight16(x)
- #define hweight8(x) generic_hweight8(x)
-@@ -324,7 +306,13 @@ static __inline__ int fls(int x)
-  */
- static inline int sched_find_first_bit(const unsigned long *b)
- {
--#ifndef __LP64__
-+#ifdef CONFIG_64BIT
-+	if (unlikely(b[0]))
-+		return __ffs(b[0]);
-+	if (unlikely(b[1]))
-+		return __ffs(b[1]) + 64;
-+	return __ffs(b[2]) + 128;
-+#else
- 	if (unlikely(b[0]))
- 		return __ffs(b[0]);
- 	if (unlikely(b[1]))
-@@ -334,14 +322,6 @@ static inline int sched_find_first_bit(c
- 	if (b[3])
- 		return __ffs(b[3]) + 96;
- 	return __ffs(b[4]) + 128;
--#else
--	if (unlikely(b[0]))
--		return __ffs(b[0]);
--	if (unlikely(((unsigned int)b[1])))
--		return __ffs(b[1]) + 64;
--	if (b[1] >> 32)
--		return __ffs(b[1] >> 32) + 96;
--	return __ffs(b[2]) + 128;
- #endif
- }
- 
-@@ -445,7 +425,7 @@ found_middle:
-  * test_and_{set,clear}_bit guarantee atomicity without
-  * disabling interrupts.
-  */
--#ifdef __LP64__
-+#ifdef CONFIG_64BIT
- #define ext2_set_bit(nr, addr)		__test_and_set_bit((nr) ^ 0x38, (unsigned long *)addr)
- #define ext2_set_bit_atomic(l,nr,addr)  test_and_set_bit((nr) ^ 0x38, (unsigned long *)addr)
- #define ext2_clear_bit(nr, addr)	__test_and_clear_bit((nr) ^ 0x38, (unsigned long *)addr)
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
