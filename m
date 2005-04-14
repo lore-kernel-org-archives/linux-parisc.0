@@ -1,16 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] More from the TLS glibc front.
-Date: Fri, 15 Apr 2005 12:05:42 -0400 (EDT)
-Message-ID: <200504151605.j3FG5gM8024602@hiauly1.hia.nrc.ca>
-References: <20050415143044.GM26980@baldric.uwo.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] some other small bitops.h suggestion?
+Date: Wed, 13 Apr 2005 23:07:27 -0600
+Message-ID: <20050414050727.GA30838@colo.lackof.org>
+References: <20050403143246.GE8921@tausq.org>
+	<42134E6200012F70@mail-2-bnl.tiscali.it>
+	<20050413174756.GA21641@colo.lackof.org>
+	<20050414013105.GB17749@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+To: Randolph Chung <tausq@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050415143044.GM26980@baldric.uwo.ca> from "Carlos O'Donell" at
-	Apr 15, 2005 10:30:45 am
+In-Reply-To: <20050414013105.GB17749@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,15 +23,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Note: gcc 3.5 or higher is now required to build glibc.
+On Wed, Apr 13, 2005 at 06:31:05PM -0700, Randolph Chung wrote:
+> One might argue that the contents pointed to by addr can be volatile,
+> but in that case shouldn't it be "unsigned long * volatile addr"?
 
-3.5 doesn't exist.  This should be 4.0.0.  However, I'm surprised
-that 3.3.5 or 3.4.3 don't work.  They both have more test history.
+Originally it's to make sure gcc doesn't optimize the read/modify/write
+completely away if it thinks no one is using the result.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> In this case, we are doing a single operation to *addr, and this
+> function is explicitly not atomic, so I am not quite sure why we need
+> volatile at all.
+
+James Bottomley dug up the original thread:
+	http://marc.theaimsgroup.com/?t=108826637900003
+
+If __set_bit() doesn't need volatile, then is the same true
+for __clear_bit and __change_bit?
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
