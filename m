@@ -1,16 +1,17 @@
-From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] More from the TLS glibc front.
-Date: Fri, 15 Apr 2005 12:30:06 -0400
-Message-ID: <20050415163006.GA26980@baldric.uwo.ca>
-References: <20050409050558.GL1833@baldric.uwo.ca>
-	<20050410104403.GK6987@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] pthread problems - test program
+Date: Fri, 15 Apr 2005 11:48:15 -0400 (EDT)
+Message-ID: <200504151548.j3FFmFuB024460@hiauly1.hia.nrc.ca>
+References: <20050415141611.GI26980@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+  charset=US-ASCII
+Cc: tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@baldric.uwo.ca (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050410104403.GK6987@tausq.org>
+In-Reply-To: <20050415141611.GI26980@baldric.uwo.ca> from "Carlos O'Donell" at
+	Apr 15, 2005 10:16:12 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,38 +22,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Apr 10, 2005 at 03:44:03AM -0700, Randolph Chung wrote:
-> I'm using:
-> binutils CVS HEAD (20050409)
-> gcc-4.0-20050402 (ftp'ed)
-> glibc CVS HEAD (20050409)
-> 
-> First of all, the patches seem to be out of date. I've updated the
-> binutils and gcc ones.
-> 
-> http://www.parisc-linux.org/~tausq/hppa-tls-gcc.diff
-> http://www.parisc-linux.org/~tausq/hppa-tls-binutils.diff
-> 
-> I find some other issues with the glibc build. Carlos, a few of your
-> patches are malformed. They have CVS conflict markers in them.. :)
-> 
-> Right now my build fails when building tst-tlsmod14a.c with a gcc ICE. I
-> think my gcc patches are broken (no surprise there...)
+> Bugger. Then our testcase is undefined. Removing exit() fixes the
+> problem.
 
-Woah, wait a second. You have a working build? You got to atleast the
-check phase if you are building the tests. Are you sure your build made
-it all the way through?
+There might still be a bug.  I have the sense that doing a fork()
+in the signal handler might cause a problem similar to that with
+exit().  I say might because I'm not sure that sigsuspend will
+cause a problem in this case.  The procss may get restarted by
+a SIGCHLD signal.
 
-How did you fix this:
-/mnt/flaire/src/tls-toolchain/install/bin/../lib/gcc/hppa-linux/3.4.3/../../../../hppa-linux/bin/ld:
-__libc_errno: TLS definition in
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-08-hppa/libc_pic.a(errno.os)
-section .tbss mismatches non-TLS reference in
-/home/carlos/fsrc/tls-toolchain/build/libc/2005-04-08-hppa/libc_pic.a(getcwd.os)
-
-
-c.
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
