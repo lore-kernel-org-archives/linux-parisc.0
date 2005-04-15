@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] some other small bitops.h suggestion?
-Date: Fri, 15 Apr 2005 17:41:22 -0400 (EDT)
-Message-ID: <200504152141.j3FLfMXi025954@hiauly1.hia.nrc.ca>
-References: <20050415192713.GA26321@colo.lackof.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] More from the TLS glibc front.
+Date: Fri, 15 Apr 2005 10:33:11 -0400
+Message-ID: <20050415143311.GN26980@baldric.uwo.ca>
+References: <20050409050558.GL1833@baldric.uwo.ca>
+	<20050410104403.GK6987@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050415192713.GA26321@colo.lackof.org> from "Grant Grundler" at
-	Apr 15, 2005 01:27:13 pm
+In-Reply-To: <20050410104403.GK6987@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,22 +21,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> My take is "volatile" is just a way to tell gcc something about the
-> code/data that it can't see. I'm not going to quibble with linus
-> about whether data is volatile or code is volatile. I think in some
-> cases it's one (e.g accessing memory mapped HW) or the other
-> (accessing shared data). Key thing is gcc be able to optimize code
-> but not remove it (especially in the latter case).
+On Sun, Apr 10, 2005 at 03:44:03AM -0700, Randolph Chung wrote:
+> btw, Carlos, are you building glibc with linuxthreads or nptl when you
+> enable TLS? If I use nptl I get a lot of build errors very early in the
+> build process.
 
-The problem here is that there are some conventions regarding the use
-of "volatile" in GCC C that are rather poorly documented.  You might
-look at this discussion regarding volatile and C++ to get a flavor
-for what I mean <http://gcc.gnu.org/ml/gcc/2005-04/msg00724.html>.
+Disable nptl, we don't have the patches for that to work yet, since we
+don't have a working futex prototype.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I am building with:
+
+$SRC/$LIBC/configure --host=$ARCH-linux --build=$ARCH-linux
+--target=$ARCH-linux --prefix=$GINSTALL --enable-add-ons=linuxthreads
+--enable-tls --enable-__thread  --enable-all-warnings >&
+../configure-$BUILDNAME-$ARCH.log
+
+c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
