@@ -1,16 +1,16 @@
 From: Carlos O'Donell <carlos@baldric.uwo.ca>
-Subject: Re: [parisc-linux] More from the TLS glibc front.
-Date: Fri, 15 Apr 2005 10:34:38 -0400
-Message-ID: <20050415143437.GO26980@baldric.uwo.ca>
-References: <20050409050558.GL1833@baldric.uwo.ca>
-	<20050410104403.GK6987@tausq.org>
+Subject: Re: [parisc-linux] pthread problems - test program
+Date: Fri, 15 Apr 2005 10:16:59 -0400
+Message-ID: <20050415141659.GJ26980@baldric.uwo.ca>
+References: <20050409063847.GR1833@baldric.uwo.ca>
+	<200504091501.j39F112M022031@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050410104403.GK6987@tausq.org>
+In-Reply-To: <200504091501.j39F112M022031@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,16 +21,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Apr 10, 2005 at 03:44:03AM -0700, Randolph Chung wrote:
-> I find some other issues with the glibc build. Carlos, a few of your
-> patches are malformed. They have CVS conflict markers in them.. :)
+On Sat, Apr 09, 2005 at 11:01:00AM -0400, John David Anglin wrote:
+> > > Just wondering if this has to do with rt signals versus old style linux
+> > > signals (ia64 seems to define some wrappers).
+> > 
+> > libc or kernel?
+> 
+> libc.
 
-Oh, yes. I'm not always as careful as I want to be with that patch
-generation. I fix the upstream glibc problems too fast, and the update
-script does a 'cvs up' and then generates patches. Not always optimal.
+Where are you looking to see these wrappers?
 
 c.
-
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
