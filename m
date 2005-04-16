@@ -1,17 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] some other small bitops.h suggestion?
-Date: Thu, 14 Apr 2005 10:39:08 -0400 (EDT)
-Message-ID: <200504141439.j3EEd9oX018785@hiauly1.hia.nrc.ca>
-References: <20050414050727.GA30838@colo.lackof.org>
+Date: Sat, 16 Apr 2005 11:27:21 -0600
+Message-ID: <20050416172721.GA11765@colo.lackof.org>
+References: <20050415192713.GA26321@colo.lackof.org>
+	<200504152141.j3FLfMXi025954@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: tausq@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050414050727.GA30838@colo.lackof.org> from "Grant Grundler" at
-	Apr 13, 2005 11:07:27 pm
+In-Reply-To: <200504152141.j3FLfMXi025954@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,46 +21,68 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > In this case, we are doing a single operation to *addr, and this
-> > function is explicitly not atomic, so I am not quite sure why we need
-> > volatile at all.
+On Fri, Apr 15, 2005 at 05:41:22PM -0400, John David Anglin wrote:
+> > My take is "volatile" is just a way to tell gcc something about the
+> > code/data that it can't see. I'm not going to quibble with linus
+> > about whether data is volatile or code is volatile. I think in some
+> > cases it's one (e.g accessing memory mapped HW) or the other
+> > (accessing shared data). Key thing is gcc be able to optimize code
+> > but not remove it (especially in the latter case).
 > 
-> James Bottomley dug up the original thread:
-> 	http://marc.theaimsgroup.com/?t=108826637900003
-> 
-> If __set_bit() doesn't need volatile, then is the same true
-> for __clear_bit and __change_bit?
+> The problem here is that there are some conventions regarding the use
+> of "volatile" in GCC C that are rather poorly documented.  You might
+> look at this discussion regarding volatile and C++ to get a flavor
+> for what I mean <http://gcc.gnu.org/ml/gcc/2005-04/msg00724.html>.
 
-The above discussion bothers me a lot:
+In this followup, I think Nathan Sidwell got at least one bit:
+| It seems to me that threads require barriers _within_ the abstract machine,
+| and currently there is no mechanism to specify just that.  Volatile is all
+| we have, and AFAICT those are only ordered WRT other volatile accesses
+| separated by a sequence point.
 
-  So the rule has always been (and this has nothing to do with parisc, and 
-  parisc DOES NOT GET TO SET THE RULES!) that "test_bit()" acts in a 
-  volatile manner, and that you traditionally could write
+(See http://gcc.gnu.org/ml/gcc/2005-04/msg00748.html)
 
-     while (test_and_set_bit(xxx, field))
-       while (test_bit(xx, field)) /* Nothing */;
+And that's a difference: the kernel has defined a set of barriers.
+Linux kernel generally doesn't depend on current semantics of volatile
+for accessing memory mapped IO.
+At least I don't think it does since ia64-linux is using ld.acq
+and st.rel instructions today.  While the compiler is observing
+the ordering, the CPU may not.  e.g. The CPU doesn't wait for a
+regular store to complete before starting sucessive ld.acq.
 
-  to do a lock.
+This is a rare for IO drivers to do this. More discussion about
+volatile and acq/rel semantics in "IA-64 Linux Kernel" by
+David Mosberger and Stephane Eranian.
 
-  NOTE! There are no volatile data structures _anywhere_, because as
-  mentioned, I think that whole notion is a total piece of crap, and is not
-  even a well-defined part of the C language. But the test_bit() function
-  has to act as if the data it is passed down can change. To repeat:  
-  _codepaths_ may have volatility attributes depending on usage of the data.
+I learned one more thing about ia64 not in the book when trying
+to understand how ld.rel works WRT to fixing posted write problems
+(st.rel).  I summarize it in my OLS2004 paper:
+	http://iou.parisc-linux.org/ols2004/www/
 
-I don't believe that a lock can be implemented as shown above on
-PA-RISC as we don't have an atomic test_and_set_bit.  The only atomic
-ops are ldcw and ldcd (load and clear word/double).  So, if test_and_set_bit
-needs locking semantics, it will have to be implemented with spinlocks.
+See http://iou.parisc-linux.org/ols2004/www/2_2_Eh_Memory_Reads.html
 
-Secondly, I'm not convinced of the concept of volatile code paths
-and using the volatile keyword to keep loops from being optimized
-away.  I think this approach results in bad code.
+  "Memory ordering imposes no constraint on non-load/store instructions."
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+This is critical for changing CPU state (enable/disable I-bit) or
+reading CPU state (e.g. ITC).
+
+ia64 has a weakly ordered memory subsystem but executes instructions
+in order. parisc is strongly ordered for both and is less complicated
+in this regard. I think because of this parisc could use volatile
+keyword for telling the compiler certain instructions *must* be kept
+in the stream, and then use memory barriers to constrain how the
+optimizer can reorder the instruction stream.
+
+But changing the semantics of volatile will break some code
+in both the kernel and in multithreaded applications.
+I strongly suspect this is going to need to fall into
+the "use with caution" compiler flags (like -O4).
+
+I'm glad they are having this discussion now *before*
+widespread adoption of RDMA technologies.
+
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
