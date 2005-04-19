@@ -1,16 +1,15 @@
-From: Randolph Chung <randolph@tausq.org>
+From: Thibaut VARENE <varenet@esiee.fr>
 Subject: Re: [parisc-linux] A500: 2.4.18 64bit SMP Kernel Crash
-Date: Mon, 18 Apr 2005 21:06:31 -0700
-Message-ID: <20050419040631.GD19715@tausq.org>
-References: <19310.64.142.78.25.1113877145.squirrel@webmail.sonic.net>
-Reply-To: Randolph Chung <randolph@tausq.org>
+Date: Tue, 19 Apr 2005 09:23:21 +0300
+Message-ID: <20050419072321.7088C3658F2@mail.esiee.fr>
+References: <20050419040631.GD19715@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kai Holthaus <kmh@sonic.net>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <19310.64.142.78.25.1113877145.squirrel@webmail.sonic.net>
+In-Reply-To: <20050419040631.GD19715@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,34 +20,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> So, I installed the 2.4.18-hppa kernel sources, and built my own kernel.
-> However, the box wouldn't boot that kernel; instead it'd crash right after
-> the IPL part of PALO would try to load the kernel image.
-> 
-> - I used the gcc-hppa64-3.0.4ds9-3-hppa.deb gcc compiler, along with the
-> binutils-2.11.90.0.18-o.deb package off
-> ftp.parisc-linux.org/unofficial-debs to compile
+-------------------
+> > So, I installed the 2.4.18-hppa kernel sources, and built my own
+kernel.
+> > However, the box wouldn't boot that kernel; instead it'd crash
+right after
+> > the IPL part of PALO would try to load the kernel image.
+> >=20
+> > - I used the gcc-hppa64-3.0.4ds9-3-hppa.deb gcc compiler, along
+with the
+> > binutils-2.11.90.0.18-o.deb package off
+> > ftp.parisc-linux.org/unofficial-debs to compile
+>=20
+> Can you try a prebuilt a500 kernel? Something from
+> http://cvs.parisc-linux.org/download/linux-2.6/
+>=20
+> Perhaps:
+>
+http://cvs.parisc-linux.org/download/linux-2.6/autobuild/a500_defconfi
+g/palinux-a500-defconfig-2.6.12-rc2-pa3_0-2_all.deb
+>=20
+> If you want to build it from source, I would suggest that you:
+> - upgrade to "testing" from woody
+> - install gcc-3.3-hppa64 and binutils-hppa64 (from Debian, not
+>   from unofficial-debs)
+> - Get the sources from
+> =20
+http://cvs.parisc-linux.org/download/linux-2.6/linux-2.6.12-rc2-pa3.ta
+r.bz2
+>=20
+>   Or directly from cvs: http://www.parisc-linux.org/faq/cvs.html
 
-Can you try a prebuilt a500 kernel? Something from
-http://cvs.parisc-linux.org/download/linux-2.6/
+Beware that it is likely that your SCSI devices will be renamed (eg
+sda -> sdb)
 
-Perhaps:
-http://cvs.parisc-linux.org/download/linux-2.6/autobuild/a500_defconfig/palinux-a500-defconfig-2.6.12-rc2-pa3_0-2_all.deb
-
-If you want to build it from source, I would suggest that you:
-- upgrade to "testing" from woody
-- install gcc-3.3-hppa64 and binutils-hppa64 (from Debian, not
-  from unofficial-debs)
-- Get the sources from
-  http://cvs.parisc-linux.org/download/linux-2.6/linux-2.6.12-rc2-pa3.tar.bz2
-
-  Or directly from cvs: http://www.parisc-linux.org/faq/cvs.html
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+--=20
+Thibaut VARENE
+Debian, Ubuntu and Kernel hacker
+http://www.pateam.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
