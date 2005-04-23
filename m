@@ -1,16 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] head.S: a small typo
-Date: Sat, 23 Apr 2005 00:31:39 -0600
-Message-ID: <20050423063139.GB857@colo.lackof.org>
-References: <20050422063649.GB13389@colo.lackof.org>
-	<420889870001E83F@mail-4-bnl.tiscali.it>
+Date: Sat, 23 Apr 2005 15:35:16 -0400 (EDT)
+Message-ID: <200504231935.j3NJZG1n007660@hiauly1.hia.nrc.ca>
+References: <426A8857.5090702@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <420889870001E83F@mail-4-bnl.tiscali.it>
+In-Reply-To: <426A8857.5090702@tiscali.be> from "Joel Soete" at Apr 23,
+	2005 05:39:35 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,40 +21,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Apr 22, 2005 at 06:04:03PM +0200, Joel Soete wrote:
-> > grundler <509>pwd
-> > /usr/src/linux-2.6/arch/parisc/kernel
-> > grundler <510>fgrep ssm *.S | fgrep 0,0 | wc -l
-> > 337
->
-> Do you want I prepare other patches too ?
+> It was why ifdef __LP64__ of align_rfi
 
-No, but thanks anyway.
+This is point 2 on page F-4 and F-5 of the arch.
 
-> > My priorities are:
-> > o getting pa8800 stable (latest kernels still occasionally segfaults.)
->
-> Isn't it related to the generic pb encounter elsewhere?
-> (all my system 32bit mainly make from time to time panic: that was in fact
-> what I was trying to study, when interruptions are enabled and disabled (PSW
-> I bit if I well understand?)...)
+#ifdef __LP64__ /* move to psw.h? */
+#define         PSW_BITS        PSW_Q+PSW_I+PSW_D+PSW_P+PSW_R
+#else
+#define         PSW_BITS        PSW_SM_Q
+#endif
 
-I don't know but I'm skeptical it's generic core issue.
-If it were generic, I would expect to see similar symptoms on ia64
-and x86 and I don't.
+$rfi:
+        /* turn off troublesome PSW bits */
+	rsm             PSW_BITS,%r0
 
-> > o get MPT/Fusion driver working on parisc (HPMCs on IOC reset)
-> > o MSI support on parisc.
-> > o stable ad1889 (workstation audio)
-> > o FX-E support (ok, that's wishful thinking now...)
->
-> Ah you finaly found some doc ?
+	/* kernel PSW:
+	 *  - no interruptions except HPMC and TOC (which are handled by PDC)
+	 *  - Q bit set (IODC / PDC interruptions)
+	 *  - big-endian
+	 *  - virtually mapped
+	 */
 
-No...just the GPL'd FX/5 and FX/10 drivers that have been available
-for a long time but don't seem to be sufficient to write a new driver
-for parisc.
+The above code turns off the Q bit in both 32 and 64 bit kernels.  Thus,
+it's not clear why this is only needed in a 64-bit kernel.  Indeed pacache.S
+uses this sequence.  The comment seems to imply that at one time the Q
+bit was set in this code.
 
-grant
+The clearing rsm can't be within 8 instructions of a page boundary.  Thus,
+it seems the alignment of 256 can be reduced to 128 in head.S.  We also
+seem to have one more nop than needed.
+
+The alignment of 128 used for flush_tlb_all_local and disable_sr_hashing_asm
+might be too small.  For example, the second rsm in disable_sr_hashing_asm
+is 31 instructions after the first.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
