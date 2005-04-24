@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] head.S: a small typo
-Date: Sat, 23 Apr 2005 15:35:16 -0400 (EDT)
-Message-ID: <200504231935.j3NJZG1n007660@hiauly1.hia.nrc.ca>
-References: <426A8857.5090702@tiscali.be>
+From: Andrew Gaffney <agaffney@gentoo.org>
+Subject: [parisc-linux] issues with a C3600
+Date: Sun, 24 Apr 2005 11:51:30 -0500
+Message-ID: <426BCE92.3040006@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (Joel Soete)
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <426A8857.5090702@tiscali.be> from "Joel Soete" at Apr 23,
-	2005 05:39:35 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,44 +17,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> It was why ifdef __LP64__ of align_rfi
+I know this question isn't exactly related to linux, but I figured this would be
+a good place to ask and the box *is* running Linux :P
 
-This is point 2 on page F-4 and F-5 of the arch.
+I recently managed to get a HP C3600 workstation. It had been working fine for
+the last week or so on serial console. I decided to try to get keyboard/video
+working. I picked up one of those PS/2->USB adapters that handles the USB stuff
+for the keyboard. I plugged in the keyboard and stuck in an ATI Rage II Mach64
+GT card that I had laying around.
 
-#ifdef __LP64__ /* move to psw.h? */
-#define         PSW_BITS        PSW_Q+PSW_I+PSW_D+PSW_P+PSW_R
-#else
-#define         PSW_BITS        PSW_SM_Q
-#endif
+The machine came up just fine but it kept going to serial console. The video
+card was detected:
 
-$rfi:
-        /* turn off troublesome PSW bits */
-	rsm             PSW_BITS,%r0
+Information Menu: Enter command > io
 
-	/* kernel PSW:
-	 *  - no interruptions except HPMC and TOC (which are handled by PDC)
-	 *  - Q bit set (IODC / PDC interruptions)
-	 *  - big-endian
-	 *  - virtually mapped
-	 */
+I/O MODULE INFORMATION
+                                                                     IODC IODC
+Path         Decimal     Type                  Location   HVER SVER  Vers Dep
+------------ ----------- --------------------- ---------- ---- ----  ---- ----
+<snip>
+PCI6         10/1/6/0    VGA                   slot 6     0070 8500  0x01 0x00
 
-The above code turns off the Q bit in both 32 and 64 bit kernels.  Thus,
-it's not clear why this is only needed in a 64-bit kernel.  Indeed pacache.S
-uses this sequence.  The comment seems to imply that at one time the Q
-bit was set in this code.
+I ran a few more information commands and walked away leaving the machine
+running. When I came back ~15 minutes later, I saw the following on the serial
+console:
 
-The clearing rsm can't be within 8 instructions of a page boundary.  Thus,
-it seems the alignment of 256 can be reduced to 128 in head.S.  We also
-seem to have one more nop than needed.
+Main Menu: Enter command > pcoq000000f0 f000b748
+    000000f0 f000b74c
+ior 00001f38
+iir 53c63e73
+pcoq000000f0 f000b748
+    000000f0 f000b74c
+ior 00001f38
+iir 53c63e73
+(same 4 lines repeating 6 more times)
+pcoq000000f0 f000b748
+    000
 
-The alignment of 128 used for flush_tlb_all_local and disable_sr_hashing_asm
-might be too small.  For example, the second rsm in disable_sr_hashing_asm
-is 31 instructions after the first.
+At this point, the box was locked up (not responding to any input over serial).
+I shut it off and turned it back on. I hear the fans and HD spinning up, but all
+I get on the LCD is blocks across the top row, and nothing comes over the
+serial. I've unplugged the keyboard and removed the video card, but that hasn't
+helped. Does anyone have any idea what happened or how to fix it?
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Andrew Gaffney                            http://dev.gentoo.org/~agaffney/
+Gentoo Linux Developer                                   Installer Project
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
