@@ -1,10 +1,11 @@
-From: Andrew Gaffney <agaffney@gentoo.org>
-Subject: [parisc-linux] issues with a C3600
-Date: Sun, 24 Apr 2005 11:51:30 -0500
-Message-ID: <426BCE92.3040006@gentoo.org>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: [parisc-linux] Ubuntu hppa status
+Date: Mon, 25 Apr 2005 00:35:35 +0200
+Message-ID: <20050425003535.7d4496a6@Tatooine.r3z0>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
+  charset=US-ASCII
+Cc: LaMont Jones <lamont.jones@ubuntu.com>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -17,52 +18,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I know this question isn't exactly related to linux, but I figured this would be
-a good place to ask and the box *is* running Linux :P
+Hi pa-ckers
 
-I recently managed to get a HP C3600 workstation. It had been working fine for
-the last week or so on serial console. I decided to try to get keyboard/video
-working. I picked up one of those PS/2->USB adapters that handles the USB stuff
-for the keyboard. I plugged in the keyboard and stuck in an ATI Rage II Mach64
-GT card that I had laying around.
+A quick "sounder" notice to let those of you who don't already know, that
+LaMont Jones and myself are working in our spare time on porting Ubuntu
+Linux (www.ubuntulinux.org) to hppa.
 
-The machine came up just fine but it kept going to serial console. The video
-card was detected:
+There's an unofficial website at http://ubuntu-hppa.pateam.org/ with some
+data on the progress of that port.
 
-Information Menu: Enter command > io
+Currently we have finished to (partially) build Hoary (almost all of
+main, and most of universe, all in all we're approx 95% up-to-date), and
+it's available for download. There are some installation instructions as
+well since we don't have yet an installer, of course, these instructions
+are reserved to "developers", knowledgeable people willing to
+test/help/debug;)
 
-I/O MODULE INFORMATION
-                                                                     IODC IODC
-Path         Decimal     Type                  Location   HVER SVER  Vers Dep
------------- ----------- --------------------- ---------- ---- ----  ---- ----
-<snip>
-PCI6         10/1/6/0    VGA                   slot 6     0070 8500  0x01 0x00
+We are now moving forward to get Breezy in shape, that implies in
+particular fixing the installer, as well as a few other things (such as
+bootstraping gcc-4.0, since Breezy will be built against gcc-4.0), and
+fixing firefox (dies during post-install).
 
-I ran a few more information commands and walked away leaving the machine
-running. When I came back ~15 minutes later, I saw the following on the serial
-console:
+We should sort out an updated TODO list pretty soon (the one on the
+website needs some refreshing :), so stay tuned.
 
-Main Menu: Enter command > pcoq000000f0 f000b748
-    000000f0 f000b74c
-ior 00001f38
-iir 53c63e73
-pcoq000000f0 f000b748
-    000000f0 f000b74c
-ior 00001f38
-iir 53c63e73
-(same 4 lines repeating 6 more times)
-pcoq000000f0 f000b748
-    000
+Anyway, I just wanted to let you know that something was underway, and
+that we might need some help in the near future ;)
 
-At this point, the box was locked up (not responding to any input over serial).
-I shut it off and turned it back on. I hear the fans and HD spinning up, but all
-I get on the LCD is blocks across the top row, and nothing comes over the
-serial. I've unplugged the keyboard and removed the video card, but that hasn't
-helped. Does anyone have any idea what happened or how to fix it?
+Greetings
 
--- 
-Andrew Gaffney                            http://dev.gentoo.org/~agaffney/
-Gentoo Linux Developer                                   Installer Project
+T-Bone
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
