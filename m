@@ -1,16 +1,17 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] head.S: a small typo
-Date: Tue, 26 Apr 2005 15:43:29 -0400
-Message-ID: <20050426194329.GA19796@roadwarrior.mcmartin.ca>
-References: <200504251623.j3PGNq6m011656@hiauly1.hia.nrc.ca>
-	<4252B02B000092E3@mail-1-bnl.tiscali.it>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] ssm/rsm sequences
+Date: Tue, 26 Apr 2005 23:20:55 -0600
+Message-ID: <20050427052055.GJ2612@colo.lackof.org>
+References: <20050425165540.GD12325@colo.lackof.org>
+	<200504251744.j3PHixu9015886@hiauly1.hia.nrc.ca>
+	<20050427022925.GH2612@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: rhirst@levanta.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4252B02B000092E3@mail-1-bnl.tiscali.it>
+In-Reply-To: <20050427022925.GH2612@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,16 +22,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Apr 26, 2005 at 07:36:43PM +0200, Joel Soete wrote:
-> (btw I disasemble the resulting kernel text and this code seems to be only
-> called once and very early)
+On Tue, Apr 26, 2005 at 08:29:25PM -0600, Grant Grundler wrote:
+> The example code is just that, an example:
+> 	SSM	0,gr0	; initial RSM, SSM, or MTSM
+> ...
 > 
+> AFAICT, that sequence does nothing but burn some cycles.
 
-This is the kernel entry point from the bootloader. It sets things up then 
-jumps to init/main.c:start_kernel().
+*sigh*. The ssm 0,0/nop * 8/rsm sequence isn't so obvious.
+Richard Hirst added this comment to entry.S in 2001:
+        * The ssm is necessary due to a PCXT bug
 
--- 
-Kyle McMartin
+http://lists.parisc-linux.org/hypermail/parisc-linux-cvs/3628.html
+
+Richard, any clue what the bug is?
+I don't have a PCX-T ERS or errata sheet to look this up.
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
