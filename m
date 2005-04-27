@@ -1,16 +1,20 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gcc-3.3 vs. 3.4
-Date: Wed, 27 Apr 2005 14:23:58 -0400 (EDT)
-Message-ID: <200504271823.j3RINwTK000206@hiauly1.hia.nrc.ca>
-References: <20050427171532.GC496@baldric.uwo.ca>
+From: Andy Walker <andy@puszczka.com>
+Subject: Re: [parisc-linux] ssm/rsm sequences
+Date: Wed, 27 Apr 2005 09:18:31 +0200 (CEST)
+Message-ID: <16467.193.160.141.5.1114586311.squirrel@www.puszczka.com>
+References: <20050425165540.GD12325@colo.lackof.org>
+	<200504251744.j3PHixu9015886@hiauly1.hia.nrc.ca>
+	<20050427022925.GH2612@colo.lackof.org>
+	<20050427052055.GJ2612@colo.lackof.org>
+	<20050427065822.GK2612@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+  charset=iso-8859-1
+Cc: rhirst@levanta.com,
+ parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050427171532.GC496@baldric.uwo.ca> from "Carlos O'Donell" at
-	Apr 27, 2005 01:15:32 pm
+In-reply-to: <20050427065822.GK2612@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,28 +25,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Wed, Apr 27, 2005 at 01:00:20PM -0400, Carlos O'Donell wrote:
-> > NOTE: dl_make_ftpr is actually compiled *into* the executable at this
-> > point, since it's static and all the loader code is included.
-> 
-> On second thought, I'm sure _dl_make_fptr from the dynamically loaded
-> ld.so.1 is being used. So I'm not quite sure what distinguishes this
-> case from any other, except that it crashes on the first call to
-> _dl_make_fptr.
+Grant,
 
-Do you have the macro fix installed?  There is a definition that's
-only used in an asm that 3.4 deletes because it thinks it's not used.
-I believe there is a warning.
+> +++ include/asm-parisc/assembly.h	27 Apr 2005 06:27:59 -0000
+> @@ -450,5 +450,23 @@
+>  	REST_CR	(%cr22, PT_PSW	(\regs))
+>  	.endm
+>
+> +#if defined(CONFIG_PA7000)
+> +	.macro	pcxt_ssm_bug
+> +	/* Create a "relied upon translation" PA 2.0 Arch. page F-4 and F-5
+> +	* The ssm is necessary due to a PCXT bug. Ie not needed for 64-bit.
+> +	*/
+> +	ssm	0,%r0
+> +	nop	/* 1 */
+> +	nop	/* 2 */
+> +	nop	/* 3 */
+> +	nop	/* 4 */
+> +	nop	/* 5 */
+> +	nop	/* 6 */
+> +	nop	/* 7 */
+> +	.endm
+> +#else
+> +#define pcxt_ssm_bug	/* Thank $DIETY. You don't have brain damaged HW. */
+> +#endif
+> +
+>  #endif /* __ASSEMBLY__ */
+>  #endif
 
-If that's not the problem, can you send the precompiled source,
-the compile command, and a note as to which code is miscompiled.
 
-I probably won't be able to look at it until next week.
+Make that $DEITY - or is this the weight-watchers version ;-)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+-Andy
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
