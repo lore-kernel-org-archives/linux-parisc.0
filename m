@@ -1,16 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] ssm/rsm sequences
-Date: Thu, 28 Apr 2005 14:20:58 -0600
-Message-ID: <20050428202058.GG10171@colo.lackof.org>
-References: <20050428190659.GD10171@colo.lackof.org>
-	<200504281942.j3SJgQvL005780@hiauly1.hia.nrc.ca>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [parisc-linux] gcc-3.3 vs. 3.4
+Date: Wed, 27 Apr 2005 19:35:53 -0400
+Message-ID: <200504271935.53614.vapier@gentoo.org>
+References: <20050427170020.GA496@baldric.uwo.ca>
+	<20050427171532.GC496@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200504281942.j3SJgQvL005780@hiauly1.hia.nrc.ca>
+In-Reply-To: <20050427171532.GC496@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,57 +20,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Apr 28, 2005 at 03:42:26PM -0400, John David Anglin wrote:
-> > Besides the basic issue, this also implies flush_tlb_all() is
-> > called twice in the same code path. That might be ok if 
-> > flush_tlb_all() took parameters, but it does not.
-> 
-> Twice?
+On Wednesday 27 April 2005 01:15 pm, Carlos O'Donell wrote:
+> On Wed, Apr 27, 2005 at 01:00:20PM -0400, Carlos O'Donell wrote:
+> > NOTE: dl_make_ftpr is actually compiled *into* the executable at this
+> > point, since it's static and all the loader code is included.
+>
+> On second thought, I'm sure _dl_make_fptr from the dynamically loaded
+> ld.so.1 is being used. So I'm not quite sure what distinguishes this
+> case from any other, except that it crashes on the first call to
+> _dl_make_fptr.
 
-Yes. Once from
-	exit_mmap() -> flush_tlb_mm() -> flush_tlb_all()
-and again
-	unmap_vmas() -> unmap_page_range() -> tlb_end_vma() ->
-		 flush_tlb_range() -> flush_tlb_all()
-
-But flush_tlb_range() only calls flush_tlb_all() IFF:
-...
-	if (npages >= 512)  /* XXX arbitrary, should be tuned */
-		flush_tlb_all();
-	else {
-...
-
-That may be why I'm not seeing it more often.
-
-jejb, any insight here?
-
-> > Any clue what the basic issue is here?
-> 
-> flush_tlb_all doesn't call anything.
-
-Eh?! I'm looking at arch/parisc/mm/init.c and it is:
-...
-        }
-        spin_unlock(&sid_lock);
-        on_each_cpu((void (*)(void *))flush_tlb_all_local, NULL, 1, 1);
-        if (do_recycle) {
-...
-
->   I'm guessing but I think this
-> implies that smp_call_function is getting called because a TLB miss
-> fault has occured.  It appears from the backtrace that the fault
-> has occurred in the part of flush_tlb_all with the REAL_MODE_PSW
-> flags set (W and Q).  Interrupts are off, so this causes the warning.
-
-Wouldn't we see more gunk on the stack trace?
-
-If I'm reading the PA 2.0 Arch correctly, PDTLB/PDTLBE insn can NOT cause
-a TLB Miss. But I don't really know.
-
-It also doesn't make sense for a TLB miss if we are in REAL_MODE.
-
-thanks,
-grant
+which basically looks like when you try to run the new ld.so it segfaults ?  
+we've been testing just about every version of gcc-3.4 thus far on parisc and 
+it has yet to build us a glibc w/out segfaults ;)
+-mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
