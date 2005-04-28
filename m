@@ -1,17 +1,17 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] ssm/rsm sequences
-Date: Thu, 28 Apr 2005 13:54:35 -0700
-Message-ID: <1114721675.5022.22.camel@mulgrave>
-References: <20050428190659.GD10171@colo.lackof.org>
-	<200504281942.j3SJgQvL005780@hiauly1.hia.nrc.ca>
-	<20050428202058.GG10171@colo.lackof.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] gcc-3.3 vs. 3.4
+Date: Wed, 27 Apr 2005 22:23:15 -0400
+Message-ID: <20050428022313.GD496@baldric.uwo.ca>
+References: <20050427170020.GA496@baldric.uwo.ca>
+	<20050427171532.GC496@baldric.uwo.ca>
+	<200504271935.53614.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050428202058.GG10171@colo.lackof.org>
+In-Reply-To: <200504271935.53614.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,32 +22,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, 2005-04-28 at 14:20 -0600, Grant Grundler wrote:
-> That may be why I'm not seeing it more often.
+On Wed, Apr 27, 2005 at 07:35:53PM -0400, Mike Frysinger wrote:
+> On Wednesday 27 April 2005 01:15 pm, Carlos O'Donell wrote:
+> > On Wed, Apr 27, 2005 at 01:00:20PM -0400, Carlos O'Donell wrote:
+> > > NOTE: dl_make_ftpr is actually compiled *into* the executable at this
+> > > point, since it's static and all the loader code is included.
+> >
+> > On second thought, I'm sure _dl_make_fptr from the dynamically loaded
+> > ld.so.1 is being used. So I'm not quite sure what distinguishes this
+> > case from any other, except that it crashes on the first call to
+> > _dl_make_fptr.
 > 
-> jejb, any insight here?
+> which basically looks like when you try to run the new ld.so it segfaults ?  
+> we've been testing just about every version of gcc-3.4 thus far on parisc and 
+> it has yet to build us a glibc w/out segfaults ;)
 
-Yes, but you're not going to like it.  For this to show up twice for the
-same process, we must have done a full tlb flush so often that we've
-completely cycled around the spaces.
+It builds, and runs all the testsuite, except for these two tests.
+Perhaps debian has gcc-3.4 patches that gentoo is missing?
 
-This, in turn, looks to be because we have a total screw up in our tlb
-flushing implementation.  What's supposed to happen is that the 
-
-tlb_gather_mmu()
-...
-tlb_finish_mmu()
-
-is supposed simply to say "I promise to flush the tlb when I'm done, so
-don't actually flush anywhere within, just add the dirty tlbs to the
-list".
-
-Unfortunately, our implementation of tlb_end_vma() meaning either flush
-this vma or add it to the tlb list seems to flush every time, which is
-why we do this so often.
-
-James
-
+c.
 
 _______________________________________________
 parisc-linux mailing list
