@@ -1,17 +1,17 @@
 From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] ssm/rsm sequences
-Date: Thu, 28 Apr 2005 15:30:08 +0000
-Message-ID: <42710180.2030004@tiscali.be>
-References: <20050425165540.GD12325@colo.lackof.org>	<200504251744.j3PHixu9015886@hiauly1.hia.nrc.ca>	<20050427022925.GH2612@colo.lackof.org>	<20050427052055.GJ2612@colo.lackof.org>	<20050427150050.GB21784@colo.lackof.org>
-	<20050428145834.GA10171@colo.lackof.org>
+Subject: Re: [parisc-linux] head.S: a small typo
+Date: Thu, 28 Apr 2005 17:04:09 +0000
+Message-ID: <42711789.8040408@tiscali.be>
+References: <200504261908.j3QJ8gA5027898@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii;
   format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050428145834.GA10171@colo.lackof.org>
+In-Reply-To: <200504261908.j3QJ8gA5027898@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,86 +22,156 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Grant,
+Hello Dave, Grant,
 
-Grant Grundler wrote:
-> Grant Grundler wrote:
-> 
->>Here's a new patch WITHOUT the s/__lp64__/CONFIG_64BIT/ changes.
-> 
-> 
-> I tested this patch on a500 and the kernel blew up when
-> /etc/init.d/firewall script was started.
-> Something in iptables triggered a WARN_ON in our smp_call_function.
-> Thinking this might be related to the missing "ssm/nop*8" sequence,
-> I removed the ifdef around the pcxt_ssm_bug so it's always used.
-> Still panics in basically the same way:
-> 
-> ....
-> Setting up IP spoofing protection: rp_filter.
-> Configuring network interfaces...done.
-> Starting portmap daemon: portmap.
-> 
-> Setting the System Clock using the Hardware Clock as reference...
-> System Clock set. Local time: Thu Apr 28 07:29:51 PDT 2005
-> 
-> eth10: Setting full-duplex based on MII#1 link partner capability of 41e1.
-> Initializing random number generator...done.
-> Recovering nvi editor sessions... done.
-> Setting up X server socket directory /tmp/.X11-unix...tg3: eth11: Link is up at 1000 Mbps, full duplex.
-> tg3: eth11: Flow control is off for TX and off for RX.
-> done.
-> Setting up ICE socket directory /tmp/.ICE-unix...done.
-> INIT: Entering runlevel: 2
-> Starting system log daemon: syslogd.
-> Starting kernel log daemon: klogd.
-> Starting firewall (iptables):Badness in smp_call_function at arch/parisc/kernel/smp.c:340
-> Backtrace:
->  [<0000000010114d70>] dump_stack+0x18/0x28
->  [<000000001011f74c>] smp_call_function+0x474/0x480
->  [<00000000101ab470>] unmap_vm_area+0xa0/0x328
->  [<00000000101abe4c>] remove_vm_area+0x94/0xd8
->  [<00000000101abf3c>] __vunmap+0xac/0x1e0
->  [<00000000101ac098>] vfree+0x28/0x80
->  [<0000000000398bb0>] do_ipt_set_ctl+0x1040/0x1268 [ip_tables]
->  [<00000000103c8598>] nf_sockopt+0x200/0x3c0
->  [<00000000103c8774>] nf_setsockopt+0x1c/0x28
->  [<00000000103e4b98>] ip_setsockopt+0x288/0xdc0
->  [<0000000010408324>] raw_setsockopt+0x3c/0x90
->  [<00000000103aad70>] sock_common_setsockopt+0x28/0x38
->  [<00000000103a6f68>] sys_setsockopt+0x90/0xf8
->  [<00000000103cb2a0>] compat_sys_setsockopt+0x538/0x548
->  [<0000000010107fb4>] syscall_exit+0x0/0x14
-> 
-> SMP CALL FUNCTION TIMED OUT! (cpu=0), try 1
-> SMP CALL FUNCTION TIMED OUT! (cpu=0), try 2
-> SMP CALL FUNCTION TIMED OUT! (cpu=0), try 3
-> SMP CALL FUNCTION TIMED OUT! (cpu=0), try 4
-> SMP CALL FUNCTION TIMED OUT! (cpu=0), try 5
-> SMP CALL FUNCTION TIMED OUT! (cpu=0), try 6
-> ...
+John David Anglin wrote:
+>>btw I don't more understand why the following ifdef (in the same head.S):
+>>#ifdef __LP64__ /* move to psw.h? */   
+>>#define         PSW_BITS        PSW_Q+PSW_I+PSW_D+PSW_P+PSW_R
+>>#else
+>>#define         PSW_BITS        PSW_SM_Q
+>>#endif
 > 
 > 
-> Looks like unmap_vm_area() has changed for every 2.6.12-rc release.
-> I expect the WARN_ON is invoked via flush_tlb_kernel_range().
-> Anyone have a clue what's up here?
+> I also don't understand the difference between the 32 and 64 bit cases.
+> There's probably a reason to turn off I, D, P and R in these sequences.
+> For example, a flush instruction cache instruction with the D bit set
+> affects the relied upon translation.  So, the question would be why the
+> bits are not turned off in the 32-bit case.  It may be because the PDCs
+> differ in their handling of these bits.  I'm pretty sure that the 64-bit
+> define would work in the 32-bit case.  The bits are only off through to
+> the rfi which then sets new bits.
 > 
-no sorry but I tested pa8000 64bit up on b2k (but no fw iptable :-( ) and I didn't encounter any pb:
-	o my stress test during about 20h: no panic, no error, ... :-)
+> The bits for the 64-bit case probably should be written using the "PSW_SM"
+> defines.  There's no difference for the Q, I, D, P and R bits but the SM
+> defines are for the "sm" instructions.
+> 
+Yes, as mentioned elsewhere (ssm/rsm ggg's patch) it works on all of my config (b180, d380 32bit smp)
 
-btw I found another way to make panicing 32bit:
-	o vi a big file (e.g. a kernel objdump) and launch a dG cmd
-	  (it takes obviously some minutes to copy the recovery file)
-	  then try to save: no pb with 64bit on b2k but panicing quickly with 32bit on b180
+> 
+>>        b,n             srdis_done
+>>[snip]
+> 
+> 
+> I believe that you should align srdis_done as follows:
+> 
+> 	.align 128
+> 
+mmm is there importance in the order of:
+	.align 128
+	.text
+rfi_virt2real:
 
-I also tested on pa8000 32bit smp on the d380:
-	o boot fine;
-	o but hanging on the smp_call_function() WARN_ON() when simply vi my big file (need to check without patch?)
+later this is the contrary:
+	.text
+	.align 128
+rfi_real2virt:
 
-that said, iirc jda already mentioned such fw iptable pb (but not yet find the time to track down in more, sorry :-( )
+(from real2.S :-) )
 
-hth,
-	Joel
+> You would then need to add a branch and nop to get there.
+> 
+But I mainly come back here with the fact that 64bit kernel works fine while
+its 32 bit twin panicing on same hw (b2k e.g.):
+(to test ggg patch I run again my stress loop during about 20h on b2k with
+the 64bit kernel without any pb ;-)
+
+as far as I remember cffc() is only 32bit stuff so this patch would make
+sense imho:
+--- arch/parisc/kernel/parisc_ksyms.c.Orig      2005-04-28 14:39:07.000000000 +0200
++++ arch/parisc/kernel/parisc_ksyms.c   2005-04-28 14:18:23.000000000 +0200
+@@ -160,8 +160,10 @@
+  EXPORT_SYMBOL(__lshrdi3);
+  EXPORT_SYMBOL(__muldi3);
+
++#ifndef CONFIG_64BIT
+  asmlinkage void * __canonicalize_funcptr_for_compare(void *);
+  EXPORT_SYMBOL(__canonicalize_funcptr_for_compare);
++#endif /* CONFIG_64BIT */
+
+  #ifdef __LP64__
+  extern void __divdi3(void);
+--- arch/parisc/kernel/real2.S.Orig     2005-04-28 14:39:29.000000000 +0200
++++ arch/parisc/kernel/real2.S  2005-04-28 14:20:31.000000000 +0200
+@@ -288,7 +272,7 @@
+         bv,n    0(%rp)
+         nop
+
+-
++#ifndef CONFIG_64BIT
+         .export __canonicalize_funcptr_for_compare
+         .text
+         /* http://lists.parisc-linux.org/hypermail/parisc-linux/10916.html
+@@ -296,9 +280,6 @@
+         **      comparing function pointers.
+         */
+  __canonicalize_funcptr_for_compare:
+-#ifdef __LP64__
+-       bve (%r2)
+-#else
+         bv %r0(%r2)
+-#endif
+         copy %r26,%r28
++#endif /* CONFIG_64BIT */
+====<>====
+(compile fine)
+
+mmm, could it be the diff I was looking for between 32 and 64bit ?
+
+For the moment, it is the most important diff that could explain me those
+so different behaviour?
+
+well iirc this last hunk is not more than:
+
+typedef int (*fptr_t) (void);
+unsigned int
+__canonicalize_funcptr_for_compare (fptr)
+      fptr_t fptr;
+{
+     return (unsigned int) fptr;
+}
+
+this form could help me to add some printk() to check the fptr containt?
+(or may be a WARN_ON() to collect stack tree?)
+
+But that would just give me addresses; how would I be able to check if a fcnt_ptr comparison is erronious?
+
+Another thought: could it be some kind of border effect due to an additonal branch in 32bit (not present in 64bit)?
+
+# grep canoni vmlinux-2.6.12-rc3-pa1-050425.dmp
+10111b8c <__canonicalize_funcptr_for_compare>:
+101265e8: e8 55 0b 3d  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+101265f8: e8 55 0b 1d  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+101327f8: e8 4f 07 1d  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10132804: e8 4f 07 05  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10132e80: e8 4f 1a 09  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10132e8c: e8 4f 19 f1  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10133308: e8 4f 10 f9  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10133314: e8 4f 10 e1  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013335c: e8 4f 10 51  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10133368: e8 4f 10 39  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+101340d4: e8 4e 15 65  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+101340e0: e8 4e 15 4d  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10134100: e8 4e 15 0d  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013410c: e8 4e 14 f5  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10134268: e8 4e 12 3d  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10134274: e8 4e 12 25  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013487c: e8 4e 06 15  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10134888: e8 4e 05 fd  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013583c: e8 4e 06 91  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+10135848: e8 4e 06 79  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013d7f8: e8 4a 07 19  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013d804: e8 4a 07 01  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013dab4: e8 4a 01 a1  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+1013dac0: e8 4a 01 89  b,l 10111b8c <__canonicalize_funcptr_for_compare>,rp
+103bd7b0 <__ksymtab___canonicalize_funcptr_for_compare>:
+103c1f24 <__kstrtab___canonicalize_funcptr_for_compare>:
+
+yet another thought: is there any mean to inline this, to check this other hypothesis?
+
+Thanks again,
+     Joel
+
 
 _______________________________________________
 parisc-linux mailing list
