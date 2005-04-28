@@ -1,19 +1,18 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] ssm/rsm sequences
-Date: Wed, 27 Apr 2005 14:17:44 -0600
-Message-ID: <20050427201744.GE21784@colo.lackof.org>
-References: <20050425165540.GD12325@colo.lackof.org>
-	<200504251744.j3PHixu9015886@hiauly1.hia.nrc.ca>
-	<20050427022925.GH2612@colo.lackof.org>
-	<20050427052055.GJ2612@colo.lackof.org>
+From: Carlos O'Donell <carlos@baldric.uwo.ca>
+Subject: Re: [parisc-linux] gcc-3.3 vs. 3.4
+Date: Thu, 28 Apr 2005 08:22:08 -0400
+Message-ID: <20050428122206.GE496@baldric.uwo.ca>
+References: <20050427170020.GA496@baldric.uwo.ca>
+	<200504271935.53614.vapier@gentoo.org>
+	<20050428022313.GD496@baldric.uwo.ca>
+	<200504272326.10869.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: rhirst@levanta.com,
- parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050427052055.GJ2612@colo.lackof.org>
+In-Reply-To: <200504272326.10869.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,39 +23,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Apr 26, 2005 at 11:20:55PM -0600, Grant Grundler wrote:
-> On Tue, Apr 26, 2005 at 08:29:25PM -0600, Grant Grundler wrote:
-> > The example code is just that, an example:
-> > 	SSM	0,gr0	; initial RSM, SSM, or MTSM
-> > ...
-> > 
-> > AFAICT, that sequence does nothing but burn some cycles.
+On Wed, Apr 27, 2005 at 11:26:10PM -0400, Mike Frysinger wrote:
+> > It builds, and runs all the testsuite, except for these two tests.
+> > Perhaps debian has gcc-3.4 patches that gentoo is missing?
 > 
-> *sigh*. The ssm 0,0/nop * 8/rsm sequence isn't so obvious.
-> Richard Hirst added this comment to entry.S in 2001:
->         * The ssm is necessary due to a PCXT bug
+> perhaps ... which version of gcc/glibc are you playing with in debian ?
+> -mike
 
-Dave Anglin (offlist) pointed out it's part of the PA 2.0 Architecture:
-| The first bullet in point 2., page F-4:
-| 
-|   The RSM or MTSM instruction which sets the PSW Q-bit (the clearing
-|   RSM or MTSM) is preceded by another RSM, SSM, or MTSM instruction
-|   which does not affect the Q-bit and which appears at least 8
-|   instructions prior.
+Debian binutils and gcc 3.4, with glibc head + patches.
 
-Kudos to Dave for being persistent. I had read this before but didn't
-really understand what it said.
-
-My copy of "PA-RISC 1.1 Architecture and Instruction Set" (3rd Edition,
-Feb 1994) has change bars in front of the first two bullets on page 3-20.
-This suggests it was added later - maybe after finding the "feature"
-in PCX-T.
-
-I've got research to do before moving forward with the
-pcxt_ssm_bug patch.
-
-thanks,
-grant
+c.
 
 _______________________________________________
 parisc-linux mailing list
