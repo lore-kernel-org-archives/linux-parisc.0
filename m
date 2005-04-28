@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] ssm/rsm sequences
-Date: Thu, 28 Apr 2005 15:42:26 -0400 (EDT)
-Message-ID: <200504281942.j3SJgQvL005780@hiauly1.hia.nrc.ca>
+Date: Thu, 28 Apr 2005 14:20:58 -0600
+Message-ID: <20050428202058.GG10171@colo.lackof.org>
 References: <20050428190659.GD10171@colo.lackof.org>
+	<200504281942.j3SJgQvL005780@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050428190659.GD10171@colo.lackof.org> from "Grant Grundler" at
-	Apr 28, 2005 01:06:59 pm
+In-Reply-To: <200504281942.j3SJgQvL005780@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,48 +21,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Thu, Apr 28, 2005 at 08:58:34AM -0600, Grant Grundler wrote:
-> > Grant Grundler wrote:
-> > > Here's a new patch WITHOUT the s/__lp64__/CONFIG_64BIT/ changes.
-> > 
-> > I tested this patch on a500 and the kernel blew up when
-> > /etc/init.d/firewall script was started.
-> > Something in iptables triggered a WARN_ON in our smp_call_function.
-> > Thinking this might be related to the missing "ssm/nop*8" sequence,
-> > I removed the ifdef around the pcxt_ssm_bug so it's always used.
-> > Still panics in basically the same way:
+On Thu, Apr 28, 2005 at 03:42:26PM -0400, John David Anglin wrote:
+> > Besides the basic issue, this also implies flush_tlb_all() is
+> > called twice in the same code path. That might be ok if 
+> > flush_tlb_all() took parameters, but it does not.
 > 
-> I've restored the #ifdef CONFIG_64BIT around pcxt_ssm_bug
-> so my 64-bit kernels don't use it *and* disabled
-> /etc/init.d/firewall so iptables doesn't get invoked.
-> The system boots to a login prompt but when I ssh
-> to the box, I get the following WARNON with several
-> different stack traces:
+> Twice?
+
+Yes. Once from
+	exit_mmap() -> flush_tlb_mm() -> flush_tlb_all()
+and again
+	unmap_vmas() -> unmap_page_range() -> tlb_end_vma() ->
+		 flush_tlb_range() -> flush_tlb_all()
+
+But flush_tlb_range() only calls flush_tlb_all() IFF:
+...
+	if (npages >= 512)  /* XXX arbitrary, should be tuned */
+		flush_tlb_all();
+	else {
+...
+
+That may be why I'm not seeing it more often.
+
+jejb, any insight here?
+
+> > Any clue what the basic issue is here?
 > 
-> Badness in smp_call_function at arch/parisc/kernel/smp.c:340
-> Backtrace:
->  [<0000000010114cf0>] dump_stack+0x18/0x28
->  [<000000001011f6cc>] smp_call_function+0x474/0x480
->  [<00000000101130f8>] flush_tlb_all+0x108/0x238
+> flush_tlb_all doesn't call anything.
 
-> Besides the basic issue, this also implies flush_tlb_all() is
-> called twice in the same code path. That might be ok if 
-> flush_tlb_all() took parameters, but it does not.
+Eh?! I'm looking at arch/parisc/mm/init.c and it is:
+...
+        }
+        spin_unlock(&sid_lock);
+        on_each_cpu((void (*)(void *))flush_tlb_all_local, NULL, 1, 1);
+        if (do_recycle) {
+...
 
-Twice?
+>   I'm guessing but I think this
+> implies that smp_call_function is getting called because a TLB miss
+> fault has occured.  It appears from the backtrace that the fault
+> has occurred in the part of flush_tlb_all with the REAL_MODE_PSW
+> flags set (W and Q).  Interrupts are off, so this causes the warning.
 
-> Any clue what the basic issue is here?
+Wouldn't we see more gunk on the stack trace?
 
-flush_tlb_all doesn't call anything.  I'm guessing but I think this
-implies that smp_call_function is getting called because a TLB miss
-fault has occured.  It appears from the backtrace that the fault
-has occurred in the part of flush_tlb_all with the REAL_MODE_PSW
-flags set (W and Q).  Interrupts are off, so this causes the warning.
+If I'm reading the PA 2.0 Arch correctly, PDTLB/PDTLBE insn can NOT cause
+a TLB Miss. But I don't really know.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+It also doesn't make sense for a TLB miss if we are in REAL_MODE.
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
