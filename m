@@ -1,19 +1,12 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: Re: [parisc-linux] gcc-3.3 vs. 3.4
-Date: Fri, 29 Apr 2005 09:01:47 +0200
-Message-ID: <17009.56283.420099.510745@gargle.gargle.HOWL>
-References: <20050427170020.GA496@baldric.uwo.ca>
-	<200504271935.53614.vapier@gentoo.org>
-	<20050428022313.GD496@baldric.uwo.ca>
-	<200504272326.10869.vapier@gentoo.org>
-	<20050428122206.GE496@baldric.uwo.ca>
+From: Guy Martin <gmsoft@gentoo.org>
+Subject: [parisc-linux] IDE cdrom crash when trying to mount it on C3600/B2K
+Date: Fri, 29 Apr 2005 20:15:03 +0200
+Message-ID: <20050429201503.35d767d3.gmsoft@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Carlos O'Donell" <carlos@baldric.uwo.ca>
+Content-Type: multipart/mixed;
+  boundary="===============1461017967=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050428122206.GE496@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,19 +17,72 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Carlos O'Donell writes:
-> On Wed, Apr 27, 2005 at 11:26:10PM -0400, Mike Frysinger wrote:
-> > > It builds, and runs all the testsuite, except for these two tests.
-> > > Perhaps debian has gcc-3.4 patches that gentoo is missing?
-> > 
-> > perhaps ... which version of gcc/glibc are you playing with in debian ?
-> > -mike
-> 
-> Debian binutils and gcc 3.4, with glibc head + patches.
+--===============1461017967==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="pgp-sha1";
+	boundary="Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_"
 
-$ gcc-3.4 --version
-gcc-3.4 (GCC) 3.4.4 20050314 (prerelease) (Debian 3.4.3-12)
+--Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+
+Hello guys,
+
+
+I have experienced a really bad bug when trying to create a installation
+cd for gentoo. When I try to mount a ide cd I only have this :
+
+
+hope root # mount /dev/hda /mnt/cdrom/
+Kernel panic - not syncing: Kernel Fault
+
+
+There is no stack trace or anything else.
+
+It only happends when trying to read on the cd. Reading the cdrom
+parameters works fine. This is of course with DMA disabled.
+Trying to read a single block with dd also crash the box.
+
+I'm not the only one who experienced this. I have reports from several
+people with several kernels from 2.6.10-pa11 to the latest one. I don't
+know about the older kernels.
+
+I don't have the skills to fix this. I would be really happy if someone
+could have a look at this since ide cdrom support is kinda required for
+install cdrom :)
+
+If you need more info, I'd be glad to provide it.
+
+
+TIA
+
+-- 
+Guy Martin
+Gentoo Linux - HPPA port Lead / IPv6 team
+
+
+--Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFCcnmqrpShrnoH4YYRAiMcAJ9LnIEsWHfCioZ95VnedE5EuCM2AgCfaBXb
+5XcIY9pZ4RbZqe9ngf62n/I=
+=67Fl
+-----END PGP SIGNATURE-----
+
+--Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_--
+
+--===============1461017967==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1461017967==--
