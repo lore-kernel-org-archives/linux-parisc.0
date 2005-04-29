@@ -1,12 +1,17 @@
-From: Guy Martin <gmsoft@gentoo.org>
-Subject: [parisc-linux] IDE cdrom crash when trying to mount it on C3600/B2K
-Date: Fri, 29 Apr 2005 20:15:03 +0200
-Message-ID: <20050429201503.35d767d3.gmsoft@gentoo.org>
+From: Max Grabert <parisc@gmail.com>
+Subject: Re: [parisc-linux] IDE cdrom crash when trying to mount it on
+	C3600/B2K
+Date: Fri, 29 Apr 2005 19:48:35 +0100
+Message-ID: <e6eae02905042911485333ddb0@mail.gmail.com>
+References: <20050429201503.35d767d3.gmsoft@gentoo.org>
+Reply-To: Max Grabert <parisc@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1461017967=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=ISO-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Guy Martin <gmsoft@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050429201503.35d767d3.gmsoft@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,72 +22,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1461017967==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="pgp-sha1";
-	boundary="Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_"
+On 4/29/05, Guy Martin <gmsoft@gentoo.org> wrote:
+> Hello guys,
+>=20
+> I have experienced a really bad bug when trying to create a installation
+> cd for gentoo. When I try to mount a ide cd I only have this :
+>=20
+> hope root # mount /dev/hda /mnt/cdrom/
+> Kernel panic - not syncing: Kernel Fault
 
---Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+This is a known problem, search the p-l m-l.
+It only happens with the ide-cd driver, so try to use
+ide-scsi instead ... "works for me" (tm).
 
-Hello guys,
-
-
-I have experienced a really bad bug when trying to create a installation
-cd for gentoo. When I try to mount a ide cd I only have this :
-
-
-hope root # mount /dev/hda /mnt/cdrom/
-Kernel panic - not syncing: Kernel Fault
-
-
-There is no stack trace or anything else.
-
-It only happends when trying to read on the cd. Reading the cdrom
-parameters works fine. This is of course with DMA disabled.
-Trying to read a single block with dd also crash the box.
-
-I'm not the only one who experienced this. I have reports from several
-people with several kernels from 2.6.10-pa11 to the latest one. I don't
-know about the older kernels.
-
-I don't have the skills to fix this. I would be really happy if someone
-could have a look at this since ide cdrom support is kinda required for
-install cdrom :)
-
-If you need more info, I'd be glad to provide it.
-
-
-TIA
-
--- 
-Guy Martin
-Gentoo Linux - HPPA port Lead / IPv6 team
-
-
---Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCcnmqrpShrnoH4YYRAiMcAJ9LnIEsWHfCioZ95VnedE5EuCM2AgCfaBXb
-5XcIY9pZ4RbZqe9ngf62n/I=
-=67Fl
------END PGP SIGNATURE-----
-
---Signature=_Fri__29_Apr_2005_20_15_03_+0200_acdA=M1vQRUJtqo_--
-
---===============1461017967==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Greetings, Max
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1461017967==--
