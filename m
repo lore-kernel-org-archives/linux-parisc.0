@@ -1,17 +1,15 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] IDE cdrom crash when trying to mount it on
-	C3600/B2K
-Date: Fri, 29 Apr 2005 19:48:35 +0100
-Message-ID: <e6eae02905042911485333ddb0@mail.gmail.com>
-References: <20050429201503.35d767d3.gmsoft@gentoo.org>
-Reply-To: Max Grabert <parisc@gmail.com>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] head.S: a small typo
+Date: Fri, 29 Apr 2005 07:25:55 +0200
+Message-ID: <426F252F00001172@mail-4-bnl.tiscali.it>
+References: <200504281752.j3SHqBeE005408@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
+  charset="ISO-8859-15"
 Cc: parisc-linux@lists.parisc-linux.org
-To: Guy Martin <gmsoft@gentoo.org>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050429201503.35d767d3.gmsoft@gentoo.org>
+In-Reply-To: <200504281752.j3SHqBeE005408@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,20 +20,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 4/29/05, Guy Martin <gmsoft@gentoo.org> wrote:
-> Hello guys,
->=20
-> I have experienced a really bad bug when trying to create a installation
-> cd for gentoo. When I try to mount a ide cd I only have this :
->=20
-> hope root # mount /dev/hda /mnt/cdrom/
-> Kernel panic - not syncing: Kernel Fault
 
-This is a known problem, search the p-l m-l.
-It only happens with the ide-cd driver, so try to use
-ide-scsi instead ... "works for me" (tm).
+> -- Original Message --
+> To: soete.joel@tiscali.be (Joel Soete)
+> Date: Thu, 28 Apr 2005 13:52:11 -0400 (EDT)
+> From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+> Cc: grundler@parisc-linux.org, parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] head.S: a small typo
+> 
+> 
+> > mmm is there importance in the order of:
+> > 	.align 128
+> > 	.text
+> > rfi_virt2real:
+> 
+> Yes, put the .align after the .text.  You want to align the following
+> text.
+> 
+ah my memory is not so bad ;-) (thanks)
 
-Greetings, Max
+> > But I mainly come back here with the fact that 64bit kernel works fin=
+e
+> while
+> > its 32 bit twin panicing on same hw (b2k e.g.):
+> > (to test ggg patch I run again my stress loop during about 20h on b2k=
+
+with
+> > the 64bit kernel without any pb ;-)
+> > 
+> > as far as I remember cffc() is only 32bit stuff so this patch would m=
+ake
+> 
+> Yes.  You don't need it in 64-bit code.  Regarding cffc, GCC 4.0
+> has a fix as to when canonicalization is done.  In 4.0 and later,
+> canonicalization is only done when both sides of are function
+> pointers.
+> 
+Cool, I will so either try to learn more on the status of deb pkg (gcc_sn=
+apshot)
+or use lfs procedure (just need more patience) ;-)
+
+I will advise obviously :)
+
+Thanks for all,
+    Joel
+ 
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
