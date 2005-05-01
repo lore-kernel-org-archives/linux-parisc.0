@@ -1,14 +1,16 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] BUG 2.6.12-rc3-pa1 PCI mmap panic
-Date: Sun, 01 May 2005 14:24:20 -0500
-Message-ID: <1114975460.4788.27.camel@mulgrave>
-References: <20050501074901.GA13801@colo.lackof.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] head.S: a small typo
+Date: Sun, 01 May 2005 14:26:57 +0000
+Message-ID: <4274E731.6080207@tiscali.be>
+References: <200504281752.j3SHqBeE005408@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+Content-Type: text/plain;
+  charset=us-ascii;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050501074901.GA13801@colo.lackof.org>
+In-Reply-To: <200504281752.j3SHqBeE005408@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,37 +21,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2005-05-01 at 01:49 -0600, Grant Grundler wrote:
-> Trying to get "tvflash" running on pa8800. tvflash is a userspace
-> firmware flash tool for mellanox infiniband boards.
-> Works fine on x86, x86-64, ia64, ppc, and sparc64.
-> "tvflash -i" is supposed to go off and identify all
-> installed mellanox boards and which firmware rev they
-> currently have.
+Hi Dave, Grant,
+
+John David Anglin wrote:
+>>mmm is there importance in the order of:
+>>	.align 128
+>>	.text
+>>rfi_virt2real:
 > 
-> The panic is in pfn_to_nid():
->         r = pfnnid_map[i];
->         BUG_ON(r == 0xff);	<---- panic
 > 
-> Any clue what's broken?
+> Yes, put the .align after the .text.  You want to align the following
+> text.
+> 
+Here is the patch so:
+--- arch/parisc/kernel/real2.S.Orig     2005-01-08 16:58:49.000000000 +0100
++++ arch/parisc/kernel/real2.S  2005-05-01 15:45:32.000000000 +0200
+@@ -143,8 +143,8 @@
+  /* rfi_virt2real() and rfi_real2virt() could perhaps be adapted for
+   * more general-purpose use by the several places which need RFIs
+   */
+-       .align 128
+         .text
++       .align 128
+  rfi_virt2real:
+         /* switch to real mode... */
+         ssm             0,0             /* See "relied upon translation" */
+====<>====
 
-pfnnid_map is a map per 1gb (currently what PFNNID_SHIFT defines) of our
-memory range showing which discontig chunk this maps to.  0xff means the
-range maps nowhere.
-
-Without better debugging, it's hard to say, but I guess that this flash
-tool is actually trying to mmap a region of memory on the PCI card and
-it's tripping over this section of code.  My second order guess would be
-that we don't update the pfnnid_map when we actually declare a card I/O
-range, so the kernel thinks it can map the region OK but we erroneously
-trip this bug.
-
-I'm with Joel on this one: Can you reproduce the problem without
-CONFIG_DISCONTIGMEM?
-
-James
-
-
+Thanks to ci for me,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
