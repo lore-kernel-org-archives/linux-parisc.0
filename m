@@ -1,14 +1,18 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: [parisc-linux] traps, unwind new patch proposal.
-Date: Sun, 01 May 2005 14:25:12 +0000
-Message-ID: <4274E6C8.9020704@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] BUG 2.6.12-rc3-pa1 PCI mmap panic
+Date: Sun, 1 May 2005 22:12:44 -0600
+Message-ID: <20050502041244.GA1601@colo.lackof.org>
+References: <20050501074901.GA13801@colo.lackof.org>
+	<1114975460.4788.27.camel@mulgrave>
+	<20050502000833.GE17998@colo.lackof.org>
+	<1114993898.4788.47.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: Randolph Chung <tausq@debian.org>
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <1114993898.4788.47.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,162 +23,71 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Randolph and *,
+On Sun, May 01, 2005 at 07:31:37PM -0500, James Bottomley wrote:
+> > *nod*. Where should we be telling the VM about MMIO ranges?
+> > We clearly need to be advertising them.
+> 
+> Is this a 64 bit mmio region?  Our pfn_is_io heuristics are a bit simple
+> (i.e. top F only set).
 
-Here is my new proposal to attempt to fix the show_stack() bug in the early boot stage:
---- include/asm-parisc/unwind.h.Orig    2005-05-01 15:55:25.000000000 +0200
-+++ include/asm-parisc/unwind.h 2005-05-01 15:23:56.000000000 +0200
-@@ -61,6 +61,14 @@
-         unsigned long prev_sp, prev_ip;
-  };
+It's a 64-bit BAR but not an address > 32-bits.
+ion:~# lspci -vs 81:
+0000:81:00.0 InfiniBand: Mellanox Technology MT23108 InfiniHost (rev a1)
+        Subsystem: Hewlett-Packard Company: Unknown device 12ce
+        Flags: bus master, 66MHz, medium devsel, latency 64, IRQ 24
+        Memory at c0800000 (64-bit, non-prefetchable) [size=1M]
+        Memory at c0000000 (64-bit, prefetchable) [size=8M]
+        Capabilities: [40] #11 [001f]
+        Capabilities: [50] Vital Product Data
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/5 Enable-
+        Capabilities: [70] PCI-X non-bridge device.
 
-+struct unwind_frame_regs {
-+       unsigned long sp, ip, rp, r31;
-+};
-+
-+#define UFI_REGS_BUF_MAX       128     /* about 4k for LP64 */
-+extern struct unwind_frame_regs ufi_regs_buf[UFI_REGS_BUF_MAX];
-+extern unsigned int ufi_regs_buf_i;
-+
-  struct unwind_table *
-  unwind_table_add(const char *name, unsigned long base_addr,
-                  unsigned long gp, void *start, void *end);
-@@ -68,9 +76,11 @@
-  unwind_table_remove(struct unwind_table *table);
+The 3rd BAR isn't exposed by the current version of firmware.
+If it were exposed, then we would see a 128MB or 256MB MMIO space.
 
-  void unwind_frame_init(struct unwind_frame_info *info, struct task_struct *t,
--                      struct pt_regs *regs);
-+                       struct unwind_frame_regs *regs);
-  void unwind_frame_init_from_blocked_task(struct unwind_frame_info *info, struct task_struct *t);
-+#if 0   /* FIXME: not used */
-  void unwind_frame_init_running(struct unwind_frame_info *info, struct pt_regs *regs);
-+#endif
-  int unwind_once(struct unwind_frame_info *info);
-  int unwind_to_user(struct unwind_frame_info *info);
 
---- arch/parisc/kernel/unwind.c.Orig    2005-05-01 15:50:50.000000000 +0200
-+++ arch/parisc/kernel/unwind.c 2005-05-01 15:40:39.000000000 +0200
-@@ -326,14 +326,18 @@
-  }
+> Yes, wrong kernel.  That bug physically cannot occur with
+> CONFIG_DISCONTIGMEM=n.  What I'm interested in there is if the tool
+> actually works.
 
-  void unwind_frame_init(struct unwind_frame_info *info, struct task_struct *t,
--                      struct pt_regs *regs)
-+                       struct unwind_frame_regs *regs)
-  {
--       memset(info, 0, sizeof(struct unwind_frame_info));
-+       if (unlikely(!info)) {
-+               printk(KERN_ERR "%s: info == NULL\n", __FUNCTION__);
-+               return;
-+       }
-+       memset(info, 0, sizeof(*info));
-         info->t = t;
--       info->sp = regs->gr[30];
--       info->ip = regs->iaoq[0];
--       info->rp = regs->gr[2];
--       info->r31 = regs->gr[31];
-+       info->sp = regs->sp;
-+       info->ip = regs->ip;
-+       info->rp = regs->rp;
-+       info->r31 = regs->r31;
+Sorry, it was the old kernel. I expect make -j2 failure scrolled
+off the screen after one of the threads segfaults.
+ie no new kernel got built.
 
-         dbg("(%d) Start unwind from sp=%08lx ip=%08lx\n",
-             t ? (int)t->pid : -1, info->sp, info->ip);
-@@ -342,22 +346,21 @@
-  void unwind_frame_init_from_blocked_task(struct unwind_frame_info *info, struct task_struct *t)
-  {
-         struct pt_regs *r = &t->thread.regs;
--       struct pt_regs *r2;
-+       struct unwind_frame_regs r2;
+Now the system just resets. No tombstone of any kind. :^(
 
--       r2 = (struct pt_regs *)kmalloc(sizeof(struct pt_regs), GFP_KERNEL);
--       if (!r2)
--               return;
--       *r2 = *r;
--       r2->gr[30] = r->ksp;
--       r2->iaoq[0] = r->kpc;
--       unwind_frame_init(info, t, r2);
--       kfree(r2);
-+       r2.sp  = r->ksp;
-+       r2.ip  = r->kpc;
-+       r2.rp  = r->gr[2];
-+       r2.r31 = r->gr[31];
-+       unwind_frame_init(info, t, &r2);
-  }
+ion:/usr/src/openib_gen2/src/userspace/tvflash# cat /proc/meminfo 
+MemTotal:      1024548 kB
+MemFree:        988272 kB
+Buffers:          2016 kB
+Cached:          15172 kB
+...
+ion:/usr/src/openib_gen2/src/userspace/tvflash# src/tvflash -i
+open_hca(0)
 
-+#if 0  /* FIXME: not used */
-  void unwind_frame_init_running(struct unwind_frame_info *info, struct pt_regs *regs)
-  {
-         unwind_frame_init(info, current, regs);
-  }
-+#endif
 
-  int unwind_once(struct unwind_frame_info *next_frame)
-  {
---- arch/parisc/kernel/traps.c.Orig     2005-05-01 15:50:32.000000000 +0200
-+++ arch/parisc/kernel/traps.c  2005-05-01 15:38:08.000000000 +0200
-@@ -158,25 +158,35 @@
-         printk("\n");
-  }
 
-+struct unwind_frame_regs ufi_regs_buf[UFI_REGS_BUF_MAX];
-+unsigned int ufi_regs_buf_i = 0;
-+
-  void show_stack(struct task_struct *task, unsigned long *s)
-  {
-         struct unwind_frame_info info;
-+       struct unwind_frame_regs *r;
+Firmware Version  44.24
 
-         if (!task) {
-+               if (ufi_regs_buf_i >= UFI_REGS_BUF_MAX) {
-+                       printk(KERN_ERR "Can't %s().\n", __FUNCTION__);
-+                       return;
-+               }
-+
-                 unsigned long sp;
--               struct pt_regs *r;
+Duplex Console IO Dependent Code (IODC) revision 1
 
-  HERE:
-                 asm volatile ("copy %%r30, %0" : "=r"(sp));
--               r = (struct pt_regs *)kmalloc(sizeof(struct pt_regs), GFP_KERNEL);
--               if (!r)
--                       return;
--               memset(r, 0, sizeof(struct pt_regs));
--               r->iaoq[0] = (unsigned long)&&HERE;
--               r->gr[2] = (unsigned long)__builtin_return_address(0);
--               r->gr[30] = sp;
-+               r = &ufi_regs_buf[ufi_regs_buf_i++];
-+               memset(r, 0, sizeof(*r));
-+               r->ip = (unsigned long)&&HERE;
-+               r->rp = (unsigned long)__builtin_return_address(0);
-+               r->sp = sp;
-                 unwind_frame_init(&info, current, r);
--               kfree(r);
-+               ufi_regs_buf_i--;
-+               if (ufi_regs_buf_i < 0) {
-+                       printk(KERN_ERR "Wouldn't have reach here???\n");
-+                       return;
-+               }
-         } else {
-                 unwind_frame_init_from_blocked_task(&info, task);
-         }
-@@ -423,7 +433,10 @@
-         {
-                 /* show_stack(NULL, (unsigned long *)regs->gr[30]); */
-                 struct unwind_frame_info info;
--               unwind_frame_init(&info, current, regs);
-+               struct unwind_frame_regs r2;
-+               r2.sp = regs->gr[30]; r2.ip = regs->iaoq[0];
-+               r2.rp = regs->gr[2]; r2.r31 = regs->gr[31];
-+               unwind_frame_init(&info, current, &r2);
-                 do_show_stack(&info);
-         }
 
-====<>====
+PC and RP from PIM dump + System.map:
 
-compile and boot fine on c110.
+CPU0 IOAQ 0x1010aadc $$remoI+350
+CPU0 GR02 0x1010d110 __udivdi3+198
 
-Thanks for additional advise,
-	Joel
+CPU1 IOAQ 0x101011b0 flush_data_cache_local+8
+CPU1 GR02 0x10113b04 update_mmu_cache+94
+
+
+Looks like CPU1 died right away trying to flush an uncacheable region.
+No surprise that didn't work too well.
+
+And no clue what's up with CPU0.
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
