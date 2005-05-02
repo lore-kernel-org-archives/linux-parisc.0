@@ -1,20 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] BUG 2.6.12-rc3-pa1 PCI mmap panic
-Date: Mon, 2 May 2005 10:00:47 -0600
-Message-ID: <20050502160047.GA20612@colo.lackof.org>
-References: <20050501074901.GA13801@colo.lackof.org>
-	<1114975460.4788.27.camel@mulgrave>
-	<20050502000833.GE17998@colo.lackof.org>
-	<1114993898.4788.47.camel@mulgrave>
-	<20050502041244.GA1601@colo.lackof.org>
-	<1115045510.5006.7.camel@mulgrave>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Mon, 2 May 2005 15:01:55 -0400 (EDT)
+Message-ID: <200505021901.j42J1twk000106@hiauly1.hia.nrc.ca>
+References: <42767353.4040100@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+  charset=US-ASCII
+Cc: lamont@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1115045510.5006.7.camel@mulgrave>
+In-Reply-To: <42767353.4040100@tiscali.be> from "Joel Soete" at May 2,
+	2005 06:37:07 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,53 +22,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, May 02, 2005 at 09:51:50AM -0500, James Bottomley wrote:
-> On Sun, 2005-05-01 at 22:12 -0600, Grant Grundler wrote:
-> >         Memory at c0800000 (64-bit, non-prefetchable) [size=1M]
-> >         Memory at c0000000 (64-bit, prefetchable) [size=8M]
+> and the console showing me:
+>        -------------------------------
+>               \   ^__^
+>                \  (xx)\_______
+>                   (__)\       )\/\
+>                    U  ||----w |
+>                       ||     ||
+> expect (pid 11251): Protection id trap (code 27)
 > 
-> Exactly ... that's the 3rd gigabyte; I assume there's no physical memory
-> there, so the pfnnid_map is 0xff (except the bit where the io region
-> check works).
-
-ok
-
-> However, there's a total screw up here: 0xc0000000 is outside of our
-> premapped I/O region (0xf0000000-0xffffffff) so one of our assumptions
-> about pa is broken; either the mercury doesn't obey the I/O window rules
-> and we need to update the OS,
-
-We need to update the OS.
-
-> or the card has the wrong address.
-
-The card has the right address for the Rope it's under.
-THis is a ZX1 chipset. Similar to N-class, MMIO space is 2-4GB address.
-
-> > CPU1 IOAQ 0x101011b0 flush_data_cache_local+8
-> > CPU1 GR02 0x10113b04 update_mmu_cache+94
-> > 
-> > 
-> > Looks like CPU1 died right away trying to flush an uncacheable region.
-> > No surprise that didn't work too well.
-> > 
-> > And no clue what's up with CPU0.
+>       YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00001000000001101111111100001111 Not tainted
+> r00-03  0000000000000000 000000001046a030 00000000101b21ec 000000001fdafb00
+> r04-07  00000000105c4ce0 0000000000000000 000000000002e4f8 0000000000000001
+> r08-11  0000000000000000 000000000002e500 00000000000001fe 000000001fdafb00
+> r12-15  fffffffffffffff2 0000000000000000 00000000000aa000 00000000000f2f08
+> r16-19  0000000000000000 00000000000f2a88 0000000000000001 000000001f3ec000
+> r20-23  0000000000000001 0000000000000000 000000000002e4fe 000000001fdafb1a
+> r24-27  0000000000000000 0000000000000001 000000001b3dac80 00000000105c4ce0
+> r28-31  0000000000000000 000000001f3ec3c0 000000001f3ec270 0000000000000000
+> sr0-3   0000000000bc8800 0000000000000000 0000000000000000 0000000000bc8800
+> sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
 > 
-> CPU0 was probably executing a different thread when it was halted by the
-> HPMC.
+> IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000101b22e4 00000000101b22e8
+>   IIR: 0ed5d240    ISR: 0000000000bc8800  IOR: 000000000002e4fe
+>   CPU:        0   CR30: 000000001f3ec000 CR31: 0000000010584000
+>   ORIG_R28: 000000001010e400
+>   IAOQ[0]: sys_poll+0x274/0x298
+>   IAOQ[1]: sys_poll+0x278/0x298
+>   RP(r2): sys_poll+0x17c/0x298
+> 
+>   # disasm 0ed5d240
+>     0:   0e d5 d2 40     sth r21,0(sr3,r22)
 
-Maybe. The fact that it died early in the routine suggests otherwise.
+Where did this address come from?  IAOQ[0] = 0x101b22e4.
 
-> flushing an uncacheable area doesn't cause a HPMC,
-
-This is the part I'm not sure about. John Marvin?
-
-> but flushing a non-existent (and non-responding) area would ...
-
-Yes, probably.
-
-thanks,
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
