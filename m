@@ -1,17 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: yet another ssm/rsm/rfi question [Was: [parisc-linux] head.S: a
-	small typo]
-Date: Tue, 3 May 2005 11:23:53 -0600
-Message-ID: <20050503172353.GA23515@colo.lackof.org>
-References: <20050501152849.GA17998@colo.lackof.org>
-	<426F252F00002DD9@mail-1-bnl.tiscali.it>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] Re: traps, unwind new patch proposal.
+Date: Tue, 3 May 2005 02:30:52 -0700
+Message-ID: <20050503093052.GF21760@tausq.org>
+References: <4274E6C8.9020704@tiscali.be>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <426F252F00002DD9@mail-1-bnl.tiscali.it>
+In-Reply-To: <4274E6C8.9020704@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,39 +21,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, May 03, 2005 at 04:56:10PM +0000, Joel Soete wrote:
-...
->         pcxt_ssm_bug
-...
-> (well we could easly re-label 1 by e.g. flush_tlb_all_local_1 and use "load32
-> PA(flush_tlb_all_local_1), %r1")
+Joel,
 
-Sure. We could. Why?
+> Here is my new proposal to attempt to fix the show_stack() bug in the early 
+> boot stage:
 
-> but I am surprised to not find the 8 nops between rfi and label.
+Can you explain again what is the problem you are seeing? Is it because
+of stack overflow? calls to kmalloc()?
 
-AFAICT, the NOPs are pointless. The RFI better not return or we
-have more serious problems (e.g. HW failure).
+> +struct unwind_frame_regs {
+> +       unsigned long sp, ip, rp, r31;
+> +};
 
-I will unify (i.e. define macros) uses of ssm/rsm/rfi once this current
-patch is in CVS and people are happy with it.
+this is better, although i am still not very clear why we can't just use
+pt_regs.
 
-There are currently 8 uses of RFI:
+> +#define UFI_REGS_BUF_MAX       128     /* about 4k for LP64 */
+> +extern struct unwind_frame_regs ufi_regs_buf[UFI_REGS_BUF_MAX];
+> +extern unsigned int ufi_regs_buf_i;
 
-grundler <501>fgrep pcxt_ssm_bug *S
-entry.S:        pcxt_ssm_bug
-head.S: pcxt_ssm_bug
-pacache.S:      pcxt_ssm_bug
-pacache.S:      pcxt_ssm_bug
-pacache.S:      pcxt_ssm_bug
-pacache.S:      pcxt_ssm_bug
-real2.S:        pcxt_ssm_bug
-real2.S:        pcxt_ssm_bug
+this seems to be used to handle recursive calls to show_stack(), is that
+right? why do we want to call show_stack() recursively?
 
-All but one are easily replaced with a macro that takes 2 parameters.
-But one step at a time...
+i'm not sure why you want to put this array as a global variable. what's
+wrong with putting it on the stack of show_stack()?
 
-grant
+> +#if 0   /* FIXME: not used */
+>  void unwind_frame_init_running(struct unwind_frame_info *info, struct 
+>  pt_regs *regs);
+> +#endif
+
+please fix this. this function is useful e.g. for kdb.
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
