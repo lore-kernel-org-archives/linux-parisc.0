@@ -1,17 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 05 May 2005 16:20:22 +0000
-Message-ID: <427A47C6.7060400@tiscali.be>
-References: <200505022046.j42KkQnh000694@hiauly1.hia.nrc.ca>
+Date: Thu, 5 May 2005 13:07:54 -0400 (EDT)
+Message-ID: <200505051707.j45H7sH3016561@hiauly1.hia.nrc.ca>
+References: <427A47C6.7060400@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=US-ASCII
 Cc: lamont@debian.org,
  parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200505022046.j42KkQnh000694@hiauly1.hia.nrc.ca>
+In-Reply-To: <427A47C6.7060400@tiscali.be> from "Joel Soete" at May 5,
+	2005 04:20:22 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,50 +22,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Dave,
+> Come back to expect pb:
+> 	o I just grab dpkg src and while I rebuild it localy I noticed that:
+> ./configure [snip] --enable-threads
+> [snip]
+> checking for building with threads... configure: WARNING: Expect is not fully thread-enabled.  Although significant work has been 
+> done towards that goal, it is not complete.  Continue compiling at your own risk.
 
-Come back to expect pb:
-	o I just grab dpkg src and while I rebuild it localy I noticed that:
-./configure [snip] --enable-threads
-[snip]
-checking for building with threads... configure: WARNING: Expect is not fully thread-enabled.  Although significant work has been 
-done towards that goal, it is not complete.  Continue compiling at your own risk.
-no (default)
-[snip]
-	? do you also used this '--enable-threads' options
+I don't configure it using --enable-threads.  I've been using something
+like this:
 
-	o I also grab the latest 5.43.0 release and btw lfs recommended the patch: expect-5.43.0-spawn-1.patch
-	  <http://lfs-matrix.net/lfs/view/development/chapter05/expect.html>
-	? do you already test it?
+# ../configure  --prefix=/home/dave/opt/gnu --host=hppa-linux --build=hppa-linux --with-tcl=/usr/lib/tcl8.3 --with-tk=/usr/lib/tk8.3 --with-tk=/usr/lib/tk8.3 --with-tclinclude=/usr/include/tcl8.3/tcl-private --with-tkinclude=/usr/include/tcl8.3/tk-private
 
-Thanks,
-	Joel
+I used the following CFLAGS:
 
-John David Anglin wrote:
->>>>  IAOQ[0]: sys_poll+0x274/0x298
->>>>  IAOQ[1]: sys_poll+0x278/0x298
->>>>  RP(r2): sys_poll+0x17c/0x298
->>>>
->>>>  # disasm 0ed5d240
->>>>    0:   0e d5 d2 40     sth r21,0(sr3,r22)
->>>
->>>Where did this address come from?  IAOQ[0] = 0x101b22e4.
->>
->>Sorry, this is the faulting instruction.  However, this isn't much help.
->>This isn't GCC code (GCC doesn't generate code using sr3).  It's part of
->>a syscall asm.  The value in sr3 seems wierd.
-> 
-> 
-> The problem code is in fs/select.c:
-> 
->                 for (j=0; j < walk->len; j++, ufds++) {
-> 			if(__put_user(fds[j].revents, &ufds->revents))
-> 				goto out_fds;
-> 		}
-> 
-> The sth is in the __put_user code.
-> 
-> Dave
+CFLAGS = -O1 -g -ansi -D_SVID_SOURCE -D_POSIX_SOURCE
+
+-ansi and the defines are because of the wait flag issue.
+
+> 	o I also grab the latest 5.43.0 release and btw lfs recommended the patch: expect-5.43.0-spawn-1.patch
+> 	  <http://lfs-matrix.net/lfs/view/development/chapter05/expect.html>
+> 	? do you already test it?
+
+I'm running 5.43.0 on one system.  I haven't tried the patch.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
