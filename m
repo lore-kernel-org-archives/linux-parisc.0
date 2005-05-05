@@ -1,17 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Tue, 3 May 2005 15:00:33 -0400 (EDT)
-Message-ID: <200505031900.j43J0XXG005722@hiauly1.hia.nrc.ca>
-References: <426F252F00002E4D@mail-1-bnl.tiscali.it>
+Date: Thu, 05 May 2005 16:20:22 +0000
+Message-ID: <427A47C6.7060400@tiscali.be>
+References: <200505022046.j42KkQnh000694@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii;
+  format=flowed
 Cc: lamont@debian.org,
  parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (Joel Soete)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <426F252F00002E4D@mail-1-bnl.tiscali.it> from "Joel Soete" at May
-	3, 2005 05:58:03 pm
+In-Reply-To: <200505022046.j42KkQnh000694@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +22,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> 102f3ac8:       eb 0e bf 35     b,l 10111a68 <__canonicalize_funcptr_for_compare>,%r2
-> 10380978 <__ksymtab___canonicalize_funcptr_for_compare>:
-> 1038542c <__kstrtab___canonicalize_funcptr_for_compare>:
+Hello Dave,
+
+Come back to expect pb:
+	o I just grab dpkg src and while I rebuild it localy I noticed that:
+./configure [snip] --enable-threads
+[snip]
+checking for building with threads... configure: WARNING: Expect is not fully thread-enabled.  Although significant work has been 
+done towards that goal, it is not complete.  Continue compiling at your own risk.
+no (default)
+[snip]
+	? do you also used this '--enable-threads' options
+
+	o I also grab the latest 5.43.0 release and btw lfs recommended the patch: expect-5.43.0-spawn-1.patch
+	  <http://lfs-matrix.net/lfs/view/development/chapter05/expect.html>
+	? do you already test it?
+
+Thanks,
+	Joel
+
+John David Anglin wrote:
+>>>>  IAOQ[0]: sys_poll+0x274/0x298
+>>>>  IAOQ[1]: sys_poll+0x278/0x298
+>>>>  RP(r2): sys_poll+0x17c/0x298
+>>>>
+>>>>  # disasm 0ed5d240
+>>>>    0:   0e d5 d2 40     sth r21,0(sr3,r22)
+>>>
+>>>Where did this address come from?  IAOQ[0] = 0x101b22e4.
+>>
+>>Sorry, this is the faulting instruction.  However, this isn't much help.
+>>This isn't GCC code (GCC doesn't generate code using sr3).  It's part of
+>>a syscall asm.  The value in sr3 seems wierd.
 > 
-> this one doesn't seems to help me to get rid of those call __canonicalize_funcptr_for_compare().
-
-The only way to get rid of the calls is to not compare function pointers ;)
-
-> Do you think that gcc-4.0 final release will help more?
-
-No.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> 
+> The problem code is in fs/select.c:
+> 
+>                 for (j=0; j < walk->len; j++, ufds++) {
+> 			if(__put_user(fds[j].revents, &ufds->revents))
+> 				goto out_fds;
+> 		}
+> 
+> The sth is in the __put_user code.
+> 
+> Dave
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
