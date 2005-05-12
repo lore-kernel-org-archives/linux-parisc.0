@@ -1,15 +1,12 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] 2.6.12-rc3-pa3 usb keyboard and mouse don't respond
-Date: Mon, 9 May 2005 10:18:58 +0000
-Message-ID: <426F252F00004256@mail-3-bnl.tiscali.it>
-References: <200505081623.j48GNoF4003723@hiauly1.hia.nrc.ca>
+From: Guy Martin <gmsoft@gentoo.org>
+Subject: [parisc-linux] NFS problems : kernel panic
+Date: Thu, 12 May 2005 14:46:17 +0200
+Message-ID: <20050512144617.5b3569d9.gmsoft@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="ISO-8859-15"
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
- parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+  boundary="===============0838917233=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200505081623.j48GNoF4003723@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,28 +17,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+--===============0838917233==
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="PGP-SHA1";
+	boundary="Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j"
 
-> 
-> I tried 2.6.12-rc3-pa3 yesterday but the console keyboard and mouse
-> (usb) didn't respond after X came up.  I couldn't see any difference
-> in the log files between this version and 2.6.11-pa4.  2.6.11-pa4
-> boots ok.  Is this a known problem?
-> 
-Could it be linked to this related pb:
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2005-March/026155.h=
-tml>
+--Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I had to remove usb support to boot my b2k with 2.6.12-rc1 because of the=
 
-re-work of usb api 
-(looks like pci api change) but sorry I didn't find more time to track it=
+Hello guys,
 
-down :-(
+Many users are reporting me problems with kernel after 2.6.10-pa11. I've
+had the problem myself on both my C3600 and my B180L.
+When you upload or download big files via NFS, the kernel crash with no
+more message than :
+Kernel panic - not syncing
 
-Joel
+The nfs share can be either udp or tcp. That doesn't matter.
 
+Is this a know problem ? Is there a workaround (don't tell me samba :) ?
+
+Feel free to ask if you want more info or if you want me to do some
+tests.
+
+
+Cheers
+
+--=20
+Guy Martin
+Gentoo Linux - HPPA port Lead / IPv6 team
+
+
+--Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFCg1AbrpShrnoH4YYRAsbWAKCHR1BDSlv+k0FgUAYoGqeACCXOZgCggd5s
+Qf8s/A4SZxF2cbzXV8lNilA=
+=ygt8
+-----END PGP SIGNATURE-----
+
+--Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j--
+
+--===============0838917233==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============0838917233==--
