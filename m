@@ -1,12 +1,15 @@
-From: Guy Martin <gmsoft@gentoo.org>
-Subject: [parisc-linux] NFS problems : kernel panic
-Date: Thu, 12 May 2005 14:46:17 +0200
-Message-ID: <20050512144617.5b3569d9.gmsoft@gentoo.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] NFS problems : kernel panic
+Date: Thu, 12 May 2005 09:05:35 -0600
+Message-ID: <20050512150535.GB15173@colo.lackof.org>
+References: <20050512144617.5b3569d9.gmsoft@gentoo.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============0838917233=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Guy Martin <gmsoft@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050512144617.5b3569d9.gmsoft@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,61 +20,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============0838917233==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j"
+On Thu, May 12, 2005 at 02:46:17PM +0200, Guy Martin wrote:
+> 
+> Hello guys,
+> 
+> Many users are reporting me problems with kernel after 2.6.10-pa11.
 
---Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just to make sure I understand: 2.6.10-pa11 works fine?
+And this NFS problem is with any 2.6.11 kernels?
 
+I ask because 2.6.10-pa11 was the last parisc specific version
+and was committed to CVS exactly 4 monthes ago: 2005/01/12
 
-Hello guys,
+> I've had the problem myself on both my C3600 and my B180L.
+> When you upload or download big files via NFS, the kernel crash with no
+> more message than :
+> Kernel panic - not syncing
+> 
+> The nfs share can be either udp or tcp. That doesn't matter.
+> 
+> Is this a know problem ? Is there a workaround (don't tell me samba :) ?
 
-Many users are reporting me problems with kernel after 2.6.10-pa11. I've
-had the problem myself on both my C3600 and my B180L.
-When you upload or download big files via NFS, the kernel crash with no
-more message than :
-Kernel panic - not syncing
+Sorry, I don't.
+My advice is to troll for 2.6.11 bug reports on netdev or linux-kernel
+mailing lists. Ie. abuse google for "linux 2.6.11 NFS bug" searches
+and variants of those (or additional) keywords.
 
-The nfs share can be either udp or tcp. That doesn't matter.
+> Feel free to ask if you want more info or if you want me to do some
+> tests.
 
-Is this a know problem ? Is there a workaround (don't tell me samba :) ?
+Has anyone tried to reproduce this with 2.6.12-rc3 or -rc4 kernels?
 
-Feel free to ask if you want more info or if you want me to do some
-tests.
-
-
-Cheers
-
---=20
-Guy Martin
-Gentoo Linux - HPPA port Lead / IPv6 team
-
-
---Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFCg1AbrpShrnoH4YYRAsbWAKCHR1BDSlv+k0FgUAYoGqeACCXOZgCggd5s
-Qf8s/A4SZxF2cbzXV8lNilA=
-=ygt8
------END PGP SIGNATURE-----
-
---Signature=_Thu__12_May_2005_14_46_17_+0200_nTBTqXZEi+STk/_j--
-
---===============0838917233==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============0838917233==--
