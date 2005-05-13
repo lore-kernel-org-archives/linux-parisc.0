@@ -1,47 +1,56 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] 2.6.12-rc3-pa3 usb keyboard and mouse don't respond
-Date: Mon, 9 May 2005 16:18:35 +0100
-Message-ID: <e6eae0290505090818fe14a54@mail.gmail.com>
-References: <200505081623.j48GNoF4003723@hiauly1.hia.nrc.ca>
-Reply-To: Max Grabert <parisc@gmail.com>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: glibc hppa build failure - ulimit
+Date: Fri, 13 May 2005 18:45:35 +0100
+Message-ID: <20050513174535.GH10567__49741.1771597855$1416624538$gmane$org@parcelfarce.linux.theplanet.co.uk>
+References: <20050513161718.GA9620@nevyn.them.org> <20050513163833.GG10567@parcelfarce.linux.theplanet.co.uk> <20050513172148.GA12680@nevyn.them.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- Linux/PA <parisc-linux@parisc-linux.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200505081623.j48GNoF4003723@hiauly1.hia.nrc.ca>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: debian-admin@lists.debian.org,
+ debian-glibc@lists.debian.org,
+ debian-hppa@lists.debian.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <20050513172148.GA12680@nevyn.them.org>
+Resent-Message-ID: <8KgGoC.A.swE.jyOhCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On 5/8/05, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> I tried 2.6.12-rc3-pa3 yesterday but the console keyboard and mouse
-> (usb) didn't respond after X came up.  I couldn't see any difference
-> in the log files between this version and 2.6.11-pa4.  2.6.11-pa4
-> boots ok.  Is this a known problem?
+On Fri, May 13, 2005 at 01:21:48PM -0400, Daniel Jacobowitz wrote:
+> On Fri, May 13, 2005 at 05:38:33PM +0100, Matthew Wilcox wrote:
+> > On Fri, May 13, 2005 at 12:17:18PM -0400, Daniel Jacobowitz wrote:
+> > > 27319 mmap(NULL, 1073741824, PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0 <unfinished ...>
+> > > 27319 <... mmap resumed> )              = -1 ENOMEM (Cannot allocate memory)
+> > > 
+> > > Right now I don't think we could even rebuild glibc -21.  The hppa
+> > > machines are configured with ulimit -s set to 1GB.  This makes
+> > > LinuxThreads use 1GB thread stacks.  Which is, um, pretty bad.
+> > 
+> > PA machines grow the stack upwards, starting at 0xffffffff - hard
+> > stack limit.  glibc never used to pay attention to the stack limit,
+> > choosing always to use 4MB stacks (iirc).  When did glibc change that?
+> 
+> Probably when Carlos added a patch to glibc which defined
+> FLOATING_STACKS.  Glibc throttles the size to 8MB if the rlimit is
+> infinity, but trusts the rlimit if it is explicitly larger than 8MB.
 
-I also discovered that about a week ago, but failed to post a report on=20
-the m-l (just mentioned it on IRC). On my c3700 the USB keyboard=20
-actually seems to work somewhat (using 2.6.12-rc3-rc2), eg. if I switch=20
-to the fbcon; however I can't enter anything in X/xdm, because the text
-field is not selected and the USB mouse is not working.
+Ugh.  Can we change the logic there to throttle to 8MB if the rlimit is
+larger than 1GB and we're building a 32-bit libc?
 
-I haven't tried any 64bit kernels lately, so I can't tell whether there
-is an issue aswell ...
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 
-BTW, 2.6.11-pa4 is also working fine here.
 
-
-Greetings,
-   Max
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
