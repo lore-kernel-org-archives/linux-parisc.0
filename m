@@ -1,13 +1,18 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: RE: [parisc-linux] NFS problems : kernel panic
-Date: Fri, 13 May 2005 11:32:30 +0200
-Message-ID: <4282FEEC000008EE@mail-4-bnl.tiscali.it>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Linux-VServer syscall number for parisc
+	(hppa/64) ...
+Date: Sat, 14 May 2005 17:04:52 -0600
+Message-ID: <20050514230452.GB23641@colo.lackof.org>
+References: <20050506002253.GA27506@MAIL.13thfloor.at>
+	<20050506053757.GC25195@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-To: "Guy Martin" <gmsoft@gentoo.org>,
- parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ Matthew Wilcox <matthew@wil.cx>
+To: Herbert Poetzl <herbert@13thfloor.at>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050506053757.GC25195@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,67 +23,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello GMsoft,
+On Thu, May 05, 2005 at 11:37:57PM -0600, Grant Grundler wrote:
+> We are also missing a few other syscalls:
+> 	__NR_sys_kexec_load
+> 	__NR_add_key
+> 	__NR_request_key
+> 	__NR_keyctl
 
-:-)
+Herbert,
+I've got a patch ready that adds vserver (263) and the three
+key syscalls. I'm not touching sys_kexec_load since it's arch
+specific and no one has asked for it.
 
->
-> Many users are reporting me problems with kernel after 2.6.10-pa11. I'v=
-e
-> had the problem myself on both my C3600 and my B180L.
-> When you upload or download big files via NFS, the kernel crash with no=
+I checked sparc64 syscall_table.S and it looks like the key syscalls
+do NOT need 32-bit compat wrappers.
+I did NOT audit the key handling code.
 
-> more message than :
-> Kernel panic - not syncing
->
-> The nfs share can be either udp or tcp. That doesn't matter.
->
-> Is this a know problem ? Is there a workaround (don't tell me samba :)
-?
->
-mmm upload/download BIG files that sounds like file transfer?
-Isn't it more secure to use scp or sftp for such case?
+Patch is on
+	ftp://ftp.parisc-linux.org/patches/diff-2.6.12-rc4-pa4-vserver
 
-btw I use regulary such kind of ft:
-cd /CVS/hppa; tar -cslp linux-2.6 | tar -C /usr/src -xslpf;
-(/CVS being a nfs mp)
-So that looks like a file of 200Mb (at about 350k/s on a 10M-half dusplex=
+I'll commit this in a bit unless willy or someone else yells.
 
-;-)
-without pb?
-
-Any way, that remember me vaguely that at a moment I also encountered nfs=
-
-pb during such operation.
-It seems that I find a work-around by removing nfs-v4 support from my ker=
-nel?
-(but I am very not sure: very very vague souvenir)
-Just in case, here is my nfs config:
-#
-# Network File Systems
-#
-CONFIG_NFS_FS=3Dy
-CONFIG_NFS_V3=3Dy
-# CONFIG_NFS_V4 is not set
-# CONFIG_NFS_DIRECTIO is not set
-CONFIG_NFSD=3Dy
-CONFIG_NFSD_V3=3Dy
-# CONFIG_NFSD_V4 is not set
-CONFIG_NFSD_TCP=3Dy
-CONFIG_ROOT_NFS=3Dy
-CONFIG_LOCKD=3Dy
-CONFIG_LOCKD_V4=3Dy
-CONFIG_EXPORTFS=3Dy
-CONFIG_SUNRPC=3Dy
-
-> Feel free to ask if you want more info or if you want me to do some
-> tests.
->
-Sorry not enough clue to track this.
-
-Joel
-
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
