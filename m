@@ -1,19 +1,14 @@
-From: Herbert Poetzl <herbert@13thfloor.at>
-Subject: Re: [parisc-linux] Re: Linux-VServer syscall number for parisc
-	(hppa/64) ...
-Date: Sun, 15 May 2005 01:27:26 +0200
-Message-ID: <20050514232726.GB4507@MAIL.13thfloor.at>
-References: <20050506002253.GA27506@MAIL.13thfloor.at>
-	<20050506053757.GC25195@colo.lackof.org>
-	<20050514230452.GB23641@colo.lackof.org>
+From: Thibaut VARENE <varenet@esiee.fr>
+Subject: Re: [parisc-linux] information about a J5600
+Date: Mon, 16 May 2005 13:57:37 +0300
+Message-ID: <20050516115737.1BF75365901@mail.esiee.fr>
+References: <20050515165519.GA3223@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050514230452.GB23641@colo.lackof.org>
+In-Reply-To: <20050515165519.GA3223@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,34 +19,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, May 14, 2005 at 05:04:52PM -0600, Grant Grundler wrote:
-> On Thu, May 05, 2005 at 11:37:57PM -0600, Grant Grundler wrote:
-> > We are also missing a few other syscalls:
-> > 	__NR_sys_kexec_load
-> > 	__NR_add_key
-> > 	__NR_request_key
-> > 	__NR_keyctl
-> 
-> Herbert,
-> I've got a patch ready that adds vserver (263) and the three
-> key syscalls. I'm not touching sys_kexec_load since it's arch
-> specific and no one has asked for it.
-> 
-> I checked sparc64 syscall_table.S and it looks like the key syscalls
-> do NOT need 32-bit compat wrappers.
-> I did NOT audit the key handling code.
-> 
-> Patch is on
-> 	ftp://ftp.parisc-linux.org/patches/diff-2.6.12-rc4-pa4-vserver
-> 
-> I'll commit this in a bit unless willy or someone else yells.
+-------------------
+> On Sun, May 15, 2005 at 05:53:13PM +0200, startus wrote:
+> > I bought a J5600 HP in the US. It works with an
+> > input voltage of 110 Volt. Before starting it and
+> > installing a HPPA DEBIAN, I would like to known if=20
+> > it will work directly with an input voltage of 220 or,
+> > if I should use electric transformer.
+>=20
+> AFAIK, all recent HP PA-RISC and IA64 workstations and servers
+> are autosensing.
 
-excellent, thanks a lot!
+"recent" for the ages: we've got US B180s, 712 and 725 that work just
+fine feeded with 220V ;)
 
-best,
-Herbert
+> But it's wise to follow Dave's advice and read the label on the back
+> of the machine that describes the input voltage/current.
 
-> grant
+yeah. It has to be written somewhere anyway.
+
+T-Bone
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
