@@ -1,14 +1,15 @@
-From: Kyle McMartin <kyle@there.is.no.cabal.ca>
-Subject: [parisc-linux] [RFC] Make unaligned handling optional on a
-	pre-process basis
-Date: Wed, 18 May 2005 18:53:40 -0400
-Message-ID: <20050518225340.GA8057@roadwarrior.mcmartin.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] ccio-dma 64bit debug_init info
+Date: Wed, 18 May 2005 23:55:09 -0600
+Message-ID: <20050519055509.GB29802@colo.lackof.org>
+References: <4282FEEE00001BF0@mail-5-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: lamont@debian.org
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <4282FEEE00001BF0@mail-5-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,114 +20,114 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
+On Tue, May 17, 2005 at 06:29:18PM +0200, Joel Soete wrote:
+> > > ccio-dma.c: failed to claim CCIO bus address space (ffffffff00000000,ffffffffffffffff)
+...
+> > It would be interesting to know why it's asking for that range.
+> > Where are the values of that range coming from?
 
-LaMont wanted this for a Debian machine, so I bashed this out,
-any objections?
+> 32bit kernel:
+...
+> ccio_init_resource(res=10712c68, name=GSC Bus [8/], ioaddr=fff88078)
+> ccio_init_resource() res->start f1000000
+> ccio_init_resource() res->end f17fffff
+> ccio_init_resource() res->end + 1  f1800000
+> ccio_init_resource() claimed CCIO bus address space (f1000000, f17fffff)
+> ccio_init_resource(res=10712c84, name=GSC Bus [8/], ioaddr=fff88060)
+> ccio_init_resource() res->start fc000000
+> ccio_init_resource() res->end fff7ffff
+> ccio_init_resource() res->end + 1  fff80000
+> ccio_init_resource() claimed CCIO bus address space (fc000000, fff7ffff)
+...
 
- arch/parisc/kernel/unaligned.c |   16 ++++++++++------
- include/asm-parisc/processor.h |   19 +++++++++++++++++++
- kernel/sys.c                   |    1 +
- 3 files changed, 30 insertions(+), 6 deletions(-)
+Ah...I forgot that U2/Uturn have two sets of range registers.
+One per GSC bus....
 
-kernel/sys.c :
-	Add explicit include of processor.h since we're using macros that
-	both hppa and ia64 use there.
+BTW, PDC sets all of this address stuff up AFAIK.
 
-arch/parisc/kernel/unaligned.c :
-	Force a SIGBUS if desired on a per thread basis.
+...
+> ccio_init_resource(res=1071245c, name=GSC Bus [10/], ioaddr=fff8a078)
+> ccio_init_resource() res->start f1800000
+> ccio_init_resource() res->end f1ffffff
+> ccio_init_resource() res->end + 1  f2000000
+> ccio_init_resource() claimed CCIO bus address space (f1800000, f1ffffff)
+> ccio_init_resource(res=10712478, name=GSC Bus [10/], ioaddr=fff8a060)
+> ccio_init_resource() res->start 00000000
+> ccio_init_resource() res->end ffffffff
+> ccio_init_resource() res->end + 1  00000000
+> Lasi version 0 at 0xffd00000 found.
+> ...
 
-Index: arch/parisc/kernel/unaligned.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/unaligned.c,v
-retrieving revision 1.14
-diff -u -d -p -r1.14 unaligned.c
---- arch/parisc/kernel/unaligned.c	4 Oct 2004 19:12:49 -0000	1.14
-+++ arch/parisc/kernel/unaligned.c	18 May 2005 22:50:12 -0000
-@@ -513,15 +513,18 @@ void handle_unaligned(struct pt_regs *re
- 	register int flop=0;	/* true if this is a flop */
+This last one seems to be disabled.
+That's what this code in ccio_init_resource() is testing for:
+	if (res->end + 1 == res->start)
+                return;
  
- 	/* log a message with pacing */
--	if (user_mode(regs))
--	{
--		if (unaligned_count > 5 && jiffies - last_time > 5*HZ)
--		{
-+	if (user_mode(regs)) {
-+                if (current->thread.flags & PARISC_UAC_SIGBUS) {
-+                        goto force_sigbus;
-+                }
-+
-+		if (unaligned_count > 5 && jiffies - last_time > 5*HZ) {
- 			unaligned_count = 0;
- 			last_time = jiffies;
- 		}
--		if (++unaligned_count < 5)
--		{
-+
-+		if (!(current->thread.flags & PARISC_UAC_NOPRINT) 
-+                    && ++unaligned_count < 5) {
- 			char buf[256];
- 			sprintf(buf, "%s(%d): unaligned access to 0x" RFMT " at ip=0x" RFMT "\n",
- 				current->comm, current->pid, regs->ior, regs->iaoq[0]);
-@@ -530,6 +533,7 @@ void handle_unaligned(struct pt_regs *re
- 			show_regs(regs);
- #endif		
- 		}
-+
- 		if (!unaligned_enabled)
- 			goto force_sigbus;
- 	}
-Index: include/asm-parisc/processor.h
-===================================================================
-RCS file: /var/cvs/linux-2.6/include/asm-parisc/processor.h,v
-retrieving revision 1.11
-diff -u -d -p -r1.11 processor.h
---- include/asm-parisc/processor.h	12 Jan 2005 20:17:51 -0000	1.11
-+++ include/asm-parisc/processor.h	18 May 2005 22:50:15 -0000
-@@ -121,7 +121,26 @@ struct thread_struct {
- }; 
- 
- /* Thread struct flags. */
-+#define PARISC_UAC_NOPRINT	(1UL << 0)	/* see prctl and unaligned.c */
-+#define PARISC_UAC_SIGBUS	(1UL << 1)
- #define PARISC_KERNEL_DEATH	(1UL << 31)	/* see die_if_kernel()... */
-+
-+#define PARISC_UAC_SHIFT	0
-+#define PARISC_UAC_MASK		(PARISC_UAC_NOPRINT|PARISC_UAC_SIGBUS)
-+
-+#define SET_UNALIGN_CTL(task,value)                                       \
-+        ({                                                                \
-+        (task)->thread.flags = (((task)->thread.flags & ~PARISC_UAC_MASK) \
-+                                | (((value) << PARISC_UAC_SHIFT) &        \
-+                                   PARISC_UAC_MASK));                     \
-+        0;                                                                \
-+        })
-+
-+#define GET_UNALIGN_CTL(task,addr)                                        \
-+        ({                                                                \
-+        put_user(((task)->thread.flags & PARISC_UAC_MASK)                 \
-+                 >> PARISC_UAC_SHIFT, (int __user *) (addr));             \
-+        })
- 
- #define INIT_THREAD { \
- 	regs:	{	gr: { 0, }, \
-Index: kernel/sys.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/kernel/sys.c,v
-retrieving revision 1.25
-diff -u -d -p -r1.25 sys.c
---- kernel/sys.c	9 May 2005 02:01:00 -0000	1.25
-+++ kernel/sys.c	18 May 2005 22:50:15 -0000
-@@ -30,6 +30,7 @@
- #include <linux/compat.h>
- #include <linux/syscalls.h>
- 
-+#include <asm/processor.h>
- #include <asm/uaccess.h>
- #include <asm/io.h>
- #include <asm/unistd.h>
--- 
-Kyle McMartin
+/me puts on his fortune teller hat and looks in his crystal ball:
+	"Joel will be submitting a patch shortly...You must add a comment
+	explaining WTF this test is doing..."
+
+
+> 64bit kernel:
+...
+> ccio_init_resource(res=00000000109e3858, name=GSC Bus [8/], ioaddr=fffffffffff88078)
+> ccio_init_resource() res->start fffffffff1000000
+> ccio_init_resource() res->end fffffffff17fffff
+> ccio_init_resource() res->end + 1  fffffffff1800000
+> ccio_init_resource() claimed CCIO bus address space (fffffffff1000000, fffffffff17fffff)
+> ccio_init_resource(res=00000000109e3890, name=GSC Bus [8/], ioaddr=fffffffffff88060)
+> ccio_init_resource() res->start fffffffffc000000
+> ccio_init_resource() res->end fffffffffff7ffff
+> ccio_init_resource() res->end + 1  fffffffffff80000
+> ccio_init_resource() claimed CCIO bus address space (fffffffffc000000, fffffffffff7ffff)
+
+No problem with the first one.
+
+...
+> ccio_init_resource(res=00000000109e5858, name=GSC Bus [10/], ioaddr=fffffffffff8a078)
+> ccio_init_resource() res->start fffffffff1800000
+> ccio_init_resource() res->end fffffffff1ffffff
+> ccio_init_resource() res->end + 1  fffffffff2000000
+> ccio_init_resource() claimed CCIO bus address space (fffffffff1800000, fffffffff1ffffff)
+> ccio_init_resource(res=00000000109e5890, name=GSC Bus [10/], ioaddr=fffffffffff8a060)
+> ccio_init_resource() res->start ffffffff00000000
+> ccio_init_resource() res->end ffffffffffffffff
+> ccio_init_resource() res->end + 1  0000000000000000
+
+This fails because io_io_low/high registers in reality are only 16 bits.
+The upper 16 bits are hardcoded to 1's.
+The conversion of res->start to 64-bit is wrong for this one case:
+	res->start = (unsigned long)(signed) __raw_readl(ioaddr) << 16;
+
+__raw_readl(ioaddr) returns 0xffff0000.
+0xffff0000 << 16 should be 0 but it's not since this is 64-bit.
+That line should read something like:
+	res->start = (unsigned long) ((signed) __raw_readl(ioaddr) << 16);
+
+And please add a comment here too that parenthesis *do* matter.
+Then it should fail the same test that I point out above....
+
+> ccio_init_resource() failed to claim CCIO bus address space (ffffffff00000000,
+> ffffffffffffffff)
+
+...and we wouldn't even try to acquire this range.
+
+> ccio_init_resource() claimed CCIO bus address space (ffffffff00000000, ffffffffffffffff)
+> Lasi version 0 at 0xffffffffffd00000 found.
+> 
+> even thought I have no doc to now what would means:
+>         res->start = (unsigned long)(signed) READ_U32(ioaddr) << 16; (==
+> 0x0 in 32bits)
+>         res->end = (unsigned long)(signed) (READ_U32(ioaddr + 4) << 16) -
+> 1; (== 0xffffffff in 32bits too)
+> 
+> but seems that test:
+>         if (res->end + 1 == res->start)
+> is a stuff which not love 64bit :-(
+
+You almost got it right.
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
