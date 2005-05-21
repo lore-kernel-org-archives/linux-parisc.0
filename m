@@ -1,15 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] ccio-dma 64bit debug_init info
-Date: Fri, 20 May 2005 09:15:42 -0600
-Message-ID: <20050520151542.GA22835@colo.lackof.org>
-References: <4282FEEE00003164@mail-6-bnl.tiscali.it>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: [parisc-linux] ncr53c8xx 64bit verbose boot info
+Date: Sat, 21 May 2005 14:46:56 +0000
+Message-ID: <428F49E0.6070004@tiscali.be>
+References: <4282FEEC00003588@mail-2-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=us-ascii;
+  format=flowed
+Cc: James Bottomley <James.Bottomley@SteelEye.com>
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4282FEEE00003164@mail-6-bnl.tiscali.it>
+In-Reply-To: <4282FEEC00003588@mail-2-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,86 +21,82 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, May 20, 2005 at 12:42:05PM +0200, Joel Soete wrote:
-> > BTW, PDC sets all of this address stuff up AFAIK.
->
-> Any idea where is the doc about this feature?
-
-Sorry, I only know this from experience, not a document.
-
-> > This last one seems to be disabled.
-> Ah ok (any idea why? hw failure?)
-
-Because it's not needed?
-i.e. no devices downstream
-
-> so here is a first patch:
-
-Does this patch work for you?
-Which machine(s) did you test it on?
-
-> --- drivers/parisc/ccio-dma.c.orig      2005-05-20 08:47:17.000000000 +0200
-> +++ drivers/parisc/ccio-dma.c.orig1     2005-05-20 12:15:35.000000000 +0200
-...
-> -       res->start = (unsigned long)(signed) __raw_readl(ioaddr) << 16;
-> -       res->end = (unsigned long)(signed) (__raw_readl(ioaddr + 4) << 16)
-> - 1;
-> +       /*
-> +        * bracing ((signed) ...) are required for 64bit kernel
-
-	* bracing ((signed) ...) are required for 64bit kernel because
-	* we only want to sign extend the lower 16 bits. The upper 16-bits
-	* of range registers are hardcoded to 0xffff.
-
-...
-> +       /*
-> +        * Check if the set of range registers is disable
-
-	* Check if this MMIO range is disable
-
-...
-> Some additional stuff:
-> --- drivers/parisc/ccio-dma.c.orig      2005-05-20 08:47:17.000000000 +0200
-> +++ drivers/parisc/ccio-dma.c.orig1     2005-05-20 12:15:35.000000000 +0200
-> @@ -1328,13 +1328,12 @@
-
-I'm ignoring this chunk because it looks identical to the
-previous patch. Please re-submit additional changes seperately.
-I'm ok with dropping __FILE__ usage.
-
-> -#ifdef __LP64__
-> +#ifdef CONFIG_64BIT
-
-I'll replace __LP64__ with CONFIG_64BIT - don't need a patch for that.
-
-> -               __raw_writel(((parent->end)>>16) | 0xffff0000,
-> +               WRITE_U32(((parent->end)>>16) | 0xffff0000,
->                              &ioc->ioc_regs->io_io_high);
-
-Please submit a seperate patch for these.
-
-And if everything is working for you,
-can you try with this change:
-- #define CCIO_INLINE     /* inline */
-+ #define CCIO_INLINE inline
-
-I would expect some minor, measurable improvements in performance.
 
 
-> and btw some stuff which could interesting sba:
-> --- drivers/parisc/sba_iommu.c.orig     2005-05-20 09:07:26.000000000 +0200
-> +++ drivers/parisc/sba_iommu.c  2005-05-20 09:33:23.000000000 +0200
-> @@ -91,7 +91,7 @@
->  #define DBG_RES(x...)
->  #endif
+Joel Soete wrote:
+> Hello James,
 > 
-> -#if defined(__LP64__) && !defined(CONFIG_PDC_NARROW)
-> +#if defined(CONFIG_64BIT) && !defined(CONFIG_PDC_NARROW)
+> 
+>>On Fri, 2005-05-20 at 19:16 +0200, Joel Soete wrote:
+>>
+>>>Btw I also have an external bootable disk narrow SE connected to the
+> 
+> s710
+> 
+>>>driver. Do you know if this one is 64bit capable?
+>>
+>>The lasi700 driver works fine in a 64 bit kernel, yes.
+>>
+> 
+> Cool, I will so be able to test more (sorry not next week (i will be on training)
+> but next one) ;-)
+> 
+> btw any idea as starting point of investigation to make ncr53c8xx driver
+> 64bit capable?
+> (a mail ref, ...)
+> 
 
-Yeah, I can apply those as well.
+Ah I remember that ncr verbose (iirc 3) boot info collected:
+32bit kernel:
+[...]
+zalon_probe: Zalon version 1, IRQ 67
+ncr53c720-0: rev 0xf irq 67
+ncr53c720-0: using memory mapped IO at virtual address 0xf1004800
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+ncr53c720-0: initial SCNTL3/DMODE/DCNTL/CTEST3/4/5 = (hex) 00/00/20/00/80/00
+ncr53c720-0: final   SCNTL3/DMODE/DCNTL/CTEST3/4/5 = (hex) 03/80/20/00/88/00
+ncr53c720-0: resetting, command processing suspended for 2 seconds
+ncr53c720-0: restart (scsi reset).
 
-thanks,
-grant
+scsi0 : ncr53c8xx-3.4.3g
+ncr53c720-0: command processing resumed
+   Vendor: SEAGATE   Model: ST39173WC         Rev: HP11
+   Type:   Direct-Access                      ANSI SCSI revision: 02
+  0:0:5:0: tagged command queue depth set to 8
+  target0:0:5: Beginning Domain Validation
+[...]
+
+64bit:
+[...]
+zalon_probe: Zalon version 1, IRQ 66
+ncr53c720-0: rev 0xf irq 66
+ncr53c720-0: using memory mapped IO at virtual address 0xfffffffff1004800
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+ncr53c720-0: initial SCNTL3/DMODE/DCNTL/CTEST3/4/5 = (hex) 00/00/20/00/80/00
+ncr53c720-0: final   SCNTL3/DMODE/DCNTL/CTEST3/4/5 = (hex) 03/80/20/00/88/00
+ncr53c720-0: resetting, command processing suspended for 2 seconds
+ncr53c720-0: restart (scsi reset).
+
+scsi0 : ncr53c8xx-3.4.3g
+ncr53c720-0: command processing resumed
+    # till there all seems ok but after?
+ncr53c720-0: resetting, command processing suspended for 2 seconds
+ncr53c720-0: restart (scsi reset).
+ncr53c720-0: command processing resumed
+scsi: Device offlined - not ready after error recovery: host 0 channel 0 id 0 lu
+n 0
+ncr53c720-0: resetting, command processing suspended for 2 seconds
+ncr53c720-0: restart (scsi reset).
+ncr53c720-0: command processing resumed
+scsi: Device offlined - not ready after error recovery: host 0 channel 0 id 5 lu
+n 0
+ncr53c720-0: resetting, command processing suspended for 2 seconds
+...hung here
+
+mmm strange in 32bit zalon_probe() used IRQ 67 while the 64bit used IRQ 66, is that important?
+
+Thanks,
+     Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
