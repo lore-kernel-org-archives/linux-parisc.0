@@ -1,16 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] need help to fix outdated comment in ccio-dma
-Date: Sun, 22 May 2005 19:44:29 -0600
-Message-ID: <20050523014429.GC8960@colo.lackof.org>
-References: <20050522022224.60F7A494058@palinux.hppa>
-	<42905AA1.4010605@tiscali.be>
+From: Stuart Brady <sdbrady@ntlworld.com>
+Subject: [parisc-linux] ALSA Harmony driver
+Date: Mon, 23 May 2005 15:34:51 +0100
+Message-ID: <20050523143451.GA2485@ntlworld.com>
+References: <20050523105248.4F858494058@palinux.hppa>
+	<20050523111554.GA2301@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42905AA1.4010605@tiscali.be>
+In-Reply-To: <20050523111554.GA2301@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,24 +20,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, May 22, 2005 at 10:10:41AM +0000, Joel Soete wrote:
-> I would still like to update this comment in the head this file:
-> [snip]
-> **  Philipp Rumpf has a "Real Mode" driver for PCX-W machines at:
-> **      CVSROOT=:pserver:anonymous@198.186.203.37:/cvsroot/linux-parisc
-> **      cvs -z3 co linux/arch/parisc/kernel/dma-rm.c
-> [snip]
+On Mon, May 23, 2005 at 12:15:55PM +0100, Stuart Brady wrote:
+> I've not had panics from ALSA Harmony in quite a while.
 
-Actually, I'm very tempted to just delete this comment.
+Oops -- it appears removing the module isn't very reliable, yet.
 
-> '198.186.203.37' doesn't seems to be a relevant address, so shouldn't we 
-> better refer to cvs ccio-rm-dma.c?
+> The only things missing are simultaneous playback/capture,
 
-If someone maintained it, Yes. But prumpf doesn't maintain it and
-I'm not aware of anyone that actually uses ccio-rm-dma since it
-*only* works on C360.  I'm completely un-interested in trying to support it.
+I've no idea if this is even possible with ALSA.  (The problem is that
+playback and capture must use the same sample rate and format.)
 
-grant
+> some mixer settings
+
+I.e. switches for headphones, line-out and internal speaker output,
+which I've just committed.   OSS mixer apps (like aumix) won't see
+these, but alsamixer works fine.  (Use "m" to toggle.)
+
+ALSA drivers usually mute everything during initialisation.  Unless
+anyone has a reason not to, I'm going to make Harmony mute the
+headphones, line-out and internal speaker outputs, too.
+
+> and some cleanups for the monitor channel (which most people
+> won't care about).  I think it's preferable to the OSS driver, anyway.
+
+OTOH, maybe not if it's built as a module...
+-- 
+Stuart Brady
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
