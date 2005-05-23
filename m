@@ -1,17 +1,19 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] ncr53c8xx 64bit verbose boot info
-Date: Sat, 21 May 2005 15:59:26 +0100
-Message-ID: <20050521145926.GH6857@parcelfarce.linux.theplanet.co.uk>
-References: <4282FEEC00003588@mail-2-bnl.tiscali.it>
-	<428F49E0.6070004@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] ccio-dma 64bit debug_init info
+Date: Sun, 22 May 2005 19:40:53 -0600
+Message-ID: <20050523014053.GB8960@colo.lackof.org>
+References: <4282FEEE00003164@mail-6-bnl.tiscali.it>
+	<20050520151542.GA22835@colo.lackof.org>
+	<428F3D4A.6000200@tiscali.be>
+	<20050522015619.GB2733@colo.lackof.org>
+	<429083BB.6010506@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
- PARISC list <parisc-linux@lists.parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org
 To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <428F49E0.6070004@tiscali.be>
+In-Reply-To: <429083BB.6010506@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,21 +24,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, May 21, 2005 at 02:46:56PM +0000, Joel Soete wrote:
-> mmm strange in 32bit zalon_probe() used IRQ 67 while the 64bit used IRQ 66, 
-> is that important?
+On Sun, May 22, 2005 at 01:06:03PM +0000, Joel Soete wrote:
+> linux-2.6.12-rc4-pa5-050522.tar               100%  207MB 881.1KB/s   04:00
+...
+> mmm the builtin nic of the c110 is only 10M/half duplex, I presume that's 
+> why there was no improvement or may be another more relevant test?
 
-No.  Interrupt numbers are now virtual and have no connection to how
-interrupts are routed.  I'd expect them to be different between 32 and
-64 bit kernels.
+Both actually.
 
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+If possible, connect the C110 with 100BT NIC to *any* other 100BT with
+a cross-over cable or to switch. I think you need a card-mode DINO card
+(EISA form factor) for C110 since it doesn't have PCI.
+Then run pktgen (kernel psuedo-driver). This script needs some adjusting
+but should get you started:
+	http://iou.parisc-linux.org/ols2004/documents/pktgen-testing/pktgen-single
+
+If you can plug in multiple 100BT (or gige NICs),
+look at some of the other scripts in the same directory.
+
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
