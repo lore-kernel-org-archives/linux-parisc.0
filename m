@@ -1,12 +1,11 @@
-From: Jeremy Drake <blackdown@jdrake.com>
-Subject: [parisc-linux] blackdown support on linux on parisc arch
-Date: Fri, 27 May 2005 09:53:38 -0700 (PDT)
-Message-ID: <Pine.LNX.4.50.0505270943540.17931-100000__36600.1557595611$1416623791$gmane$org@garibaldi.apptechsys.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] c3k panics
+Date: Sat, 28 May 2005 21:41:40 -0400 (EDT)
+Message-ID: <200505290141.j4T1ffhI006449@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
+Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: java-linux@java.blackdown.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,25 +17,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Is there a Java 1.4 sdk/jre available for linux on the parisc arch?  I'm 
-guessing no, but it doesn't hurt to ask...
+I can panic my c3750 very consistently running the binutils testsuite
+(cvs source as of 20050526).  I've tried many of the default kernels
+to see if I could isolate when the problem was introduced.  The last
+kernel that seems unaffected is 2.6.8.1-pa11.  The problem is present
+in 2.6.12-rc5-pa0 and 2.6.11-pa4.
 
-If not, is there any porting effort underway?  If not, would it be 
-possible for someone (possibly myself) to undertake such a task?  What is 
-involved in getting a port started?
+The sad part is that panic is also broken and no error messages are
+produced when the fault occurs.  Before adding panic=180 to the command
+line, pressing TOC just yielded a register dump for panic itself.  That's
+not too useful.  In my testing, the last working panic dump was with
+2.6.9-pa1 which faulted with a HPMC during boot.
 
-I apologize for cross-posting to the parisc-linux list also, but perhaps 
-someone there may have some additional insight.  It is not really a 
-debian issue, so I did not post to debian-hppa like it says for user space 
-issues.  I was a member of the parisc-linux list, but unsubscribed some 
-time ago (my box has been so stable I haven't needed it!)
-
-
-Thanks
-
+Dave
 -- 
-Too much is just enough.
-		-- Mark Twain, on whiskey
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
