@@ -1,16 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] c3k panics
-Date: Sun, 29 May 2005 19:39:54 -0400 (EDT)
-Message-ID: <200505292339.j4TNdtYu026757@hiauly1.hia.nrc.ca>
-References: <20050529220827.GF749@baldric.uwo.ca>
+Date: Sun, 29 May 2005 18:13:18 -0700
+Message-ID: <20050530011318.GE3050@tausq.org>
+References: <200505290141.j4T1ffhI006449@hiauly1.hia.nrc.ca>
+	<42999A30.6070602@tiscali.be> <4299F8C2.2060400@tiscali.be>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: carlos@baldric.uwo.ca (Carlos O'Donell)
+  charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050529220827.GF749@baldric.uwo.ca> from "Carlos O'Donell" at
-	May 29, 2005 06:08:28 pm
+In-Reply-To: <4299F8C2.2060400@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,34 +23,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Sat, May 28, 2005 at 09:50:38PM -0400, John David Anglin wrote:
-> > > I can panic my c3750 very consistently running the binutils testsuite
-> > > (cvs source as of 20050526).  I've tried many of the default kernels
-> > > to see if I could isolate when the problem was introduced.  The last
-> > > kernel that seems unaffected is 2.6.8.1-pa11.  The problem is present
-> > > in 2.6.12-rc5-pa0 and 2.6.11-pa4.
-> > 
-> > Hmmm, just noticed that as-new may be using all of the machines memory
-> > and swap space.
-> 
-> Neither of these situations should kill the kernel.
-> Why doesn't OOM kill the process?
+> #ifndef CONFIG_64BIT
+>         .macro fixup_branch,lbl
+>         b           \lbl
+>         .endm
+> #else
+>         .macro fixup_branch,lbl
+>         ldil        L%\lbl, %r1
+>         ldo         R%\lbl(%r1), %r1
+>         bv,n        %r0(%r1)
+>         .endm
+> #endif
 
-I agree but we don't get any error messages, so it's hard to tell.
+These two do the same thing. The 32-bit version is simpler because we
+can rely on the linker to do fixups for us if the branch is too far
+away. The 64-bit version always uses a long branch sequence to avoid
+stub issues with the 64-bit toolchain. In the C code I have simply not
+done this (micro-)optimization.
 
-I can avoid the problem with ulimit -v.  However, this doesn't fix
-all the stability problems.  I've had two kernel hangs since.  r2
-is pointing to the return of the call to getname near the beginning
-of sys_rmdir.  The IIA Offset addresses in the TOC dump point into
-the fault_vector_20 jump table.  One was here:
-
-	b,l <intr_save>,r0
-==>	ldi 9, r8
-
-Dave
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
