@@ -1,17 +1,18 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] c3k panics
-Date: Mon, 30 May 2005 23:26:19 -0700
-Message-ID: <20050531062619.GI3050@tausq.org>
-References: <4282FEEE0000724C@mail-5-bnl.tiscali.it>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: Matrox Mystique video card caused Kernel Panic
+	on HP Visualize 785/B2000 with rebuilt 2.6.8 kernel
+Date: Tue, 31 May 2005 15:10:14 -0600
+Message-ID: <20050531211014.GB2674@colo.lackof.org>
+References: <5.1.1.6.1.20050530221651.0238dca8@pop.singnet.com.sg>
+	<5.1.1.6.1.20050530221651.0238dca8@pop.singnet.com.sg>
+	<5.1.1.6.1.20050531110035.02358110@pop.singnet.com.sg>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+To: "J. L. Lee" <jllee@singnet.com.sg>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4282FEEE0000724C@mail-5-bnl.tiscali.it>
+In-Reply-To: <5.1.1.6.1.20050531110035.02358110@pop.singnet.com.sg>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,31 +23,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Ok clear but still confused why 32bit branch doesn't nullify the insn
-> in delay slot like did 64bit?
+On Tue, May 31, 2005 at 11:09:05AM +0800, J. L. Lee wrote:
+> I am a novice to Linux, especially the Debian variant and the HP 
+> workstations. I am also not a programmer so afraid you have to be patient 
+> with me.
 
-it's a bug, but fortunately that copy of the fixup_branch macro (in
-syscall.S) isn't actually used ;-) I'll remove it.
+no problem.
+Please keep the parisc-linux list cc'd so the mail gets archived.
 
-> btw one more thing confusing me: the third fixup_branch macro definition
-> in lusercopy.S:
-> [snip]
->          .macro fixup_branch,lbl
->          ldil        L%\lbl, %r1
->          ldo         R%\lbl(%r1), %r1
->          bv          %r0(%r1)
->          .endm
+> You mentioned "The symptom is consistent with derefencing an address that's 
+> not ioremapped. But it looks like ioremapped is being called in 
+> initMatrox2(). You want to add printk's to make sure that's happening like 
+> we expect."
 > 
-> This time just bv not bv,n ?
+> I don't understand what you mean but if you can direct me to where I could 
+> change the coding in the source code I will give it a try and let you know 
+> the result.
 
-Yes, if you look at where the macro is used you will see that there is
-an instruction in the delay slot for the branch that should be executed.
+What I meant was, in drivers/video/matrox/matroxfb_base.h
+add a printk to mga_ioremap() and to mga_iounmap() so we know
+what the virtual and physical addresses are and when to expect
+the mappings to be valid.
+Sorry, I don't have time to cook up a proper patch.
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+Please also build with CONFIG_FB_MATROX=m (as a module) so you can first:
+	lspci -v
+	cat /proc/iomem
+
+then "modprobe maxtroxfb" once you are ready to crash the machine.
+
+
+> ps. Yes, I have referred to the Graphics How-To. That is why I chose the 
+> Matrox video card. I have S3 Virge too but there is no configurable S3 
+> driver in the kernel configuration file.
+
+Ok. If someone can tell me S3 Virge is compatible with another matrox
+cards, I'd be happy to add it to the How-To.
+
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
