@@ -1,16 +1,15 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] c3k panics
-Date: Wed, 1 Jun 2005 16:04:08 +0200
-Message-ID: <4282FEEC00007D5D@mail-2-bnl.tiscali.it>
-References: <4299F8C2.2060400@tiscali.be>
+Subject: RE: [parisc-linux] S3 ViRGE
+Date: Wed, 1 Jun 2005 15:42:14 +0200
+Message-ID: <4282FEEC00007D33@mail-2-bnl.tiscali.it>
+References: <20050601010422.GA17369@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
-Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
- "Randolph Chung" <randolph@tausq.org>
+To: "Stuart Brady" <sdbrady@ntlworld.com>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4299F8C2.2060400@tiscali.be>
+In-Reply-To: <20050601010422.GA17369@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,44 +20,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+
+> 
+> On Tue, May 31, 2005 at 11:09:05AM +0800, J. L. Lee wrote:
+> > I have S3 Virge too but there is no configurable S3 driver in the
+> > kernel configuration file.
+> 
+> virgefb seems to be for for Amigas only.  It might be worth trying the
+X
+> driver (which works for me on x86).
+> -- 
+
+Just for the record, I noticed that 2.6.11.11 patch contained:
 [snip]
-> > 
-> > The same for me, it seems that the pb appears during 2.6.9 developeme=
-nt;
-> > as far as I can test, it seems that the pb appears between 2.6.9-rc2-=
-pa2
-> > and pa5;
-> > For my part I already tried to revert only this pa5 (just to be sure)=
+    [PATCH] Fix matroxfb on big-endian hardware
+[snip]
 
+Is it already part of 2.6.12-rc5?
 
-> > <http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2004-Septem=
-ber/034576.html>
-...
-> > 
-> > So still have to revert few thing (but it would be hard like fixup 
-> > stuff) to try to isolate the pb?
-> > 
-Well again for the record, I also reverted this (always to be shure that
-this is not becuase this new fixup_branch).
-but the kernel alway failed the same way i.e.:
->>IASQ: 00000000 00000000 IAOQ: 1014c10c 1014c110
->> IIR: 6b800020    ISR: 00000000  IOR: 84de0906
->> CPU:        0   CR30: 15d98000 CR31: 10450000
->> ORIG_R28: 1039a000
->> IAOQ[0]: alloc_slabmgmt+0x30/0x6c
->> IAOQ[1]: alloc_slabmgmt+0x34/0x6c
->> RP(r2): cache_grow+0xd4/0x1a8
->>Kernel panic - not syncing: Kernel Fault
-
-I also try to re-use compile option: "cflags-y        +=3D -mdisable-fpre=
-gs"
-but this time the system hang without any panic (nothing in pimfo after t=
-he
-forced reboot) nor backtrace?
-so helpless :-(
-
-Thanks,
-    Joel
+Joel
 
 
 _______________________________________________
