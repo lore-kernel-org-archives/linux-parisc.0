@@ -1,13 +1,16 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] c3k panics
-Date: Wed, 1 Jun 2005 17:05:32 +0200
-Message-ID: <4282FEEC00007DED@mail-2-bnl.tiscali.it>
+Date: Wed, 1 Jun 2005 16:04:08 +0200
+Message-ID: <4282FEEC00007D5D@mail-2-bnl.tiscali.it>
+References: <4299F8C2.2060400@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
 Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+ "Randolph Chung" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <4299F8C2.2060400@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,44 +21,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->
-> I believe that there's likely more than one bug.  After working around
-> the memory management bug, I tried a number of gcc builds.  Two crashes=
+[snip]
+> > 
+> > The same for me, it seems that the pb appears during 2.6.9 developeme=
+nt;
+> > as far as I can test, it seems that the pb appears between 2.6.9-rc2-=
+pa2
+> > and pa5;
+> > For my part I already tried to revert only this pa5 (just to be sure)=
 
-> occurred as previously reported.  I also had a third crash.  In this
-> one, the TOC IIA Offset value pointed into "userspace".  These all
-> occurred with only a few hours of running time.
->
-Sorry but I don't remember if I already mentioned some more results about=
 
-test getting rid of cffc():
-I reach to boot successfully this kernel which didn't panicing any more;
-anyway after enough untar, rm the corresponding ext3 fs was switched to r=
-ead-only
-mode (corruption)?
+> > <http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2004-Septem=
+ber/034576.html>
+...
+> > 
+> > So still have to revert few thing (but it would be hard like fixup 
+> > stuff) to try to isolate the pb?
+> > 
+Well again for the record, I also reverted this (always to be shure that
+this is not becuase this new fixup_branch).
+but the kernel alway failed the same way i.e.:
+>>IASQ: 00000000 00000000 IAOQ: 1014c10c 1014c110
+>> IIR: 6b800020    ISR: 00000000  IOR: 84de0906
+>> CPU:        0   CR30: 15d98000 CR31: 10450000
+>> ORIG_R28: 1039a000
+>> IAOQ[0]: alloc_slabmgmt+0x30/0x6c
+>> IAOQ[1]: alloc_slabmgmt+0x34/0x6c
+>> RP(r2): cache_grow+0xd4/0x1a8
+>>Kernel panic - not syncing: Kernel Fault
 
-> I then switched from vmlinux-2.6.11-pa4-c3000_defconfig to
-> vmlinux-2.6.8.1-pa11-c3000_defconfig.  This kernel seems ok.  It's
-> survived one binutils and three full gcc builds.  However, there are
-> seven fails in the libstdc++ testsuite that don't occur with 2.6.11.
-> On the otherhand, I'm seeing a few Java processes not terminate with
-> 2.6.11-pa4.  This problem doesn't seem to be present in 2.6.8.1-pa11
-> and Grant's 64-bit version of 2.6.11-pa4 on gsyprf11.
->
-imho and according to my numerous test (that took me more time on b180) 2=
-.6.8.1-pa11
-(+some Kyle backport) seems to be rock solid, and iirc early 2.6.10 alrea=
-dy
-presented the pb (2.6.9 seems also?)
+I also try to re-use compile option: "cflags-y        +=3D -mdisable-fpre=
+gs"
+but this time the system hang without any panic (nothing in pimfo after t=
+he
+forced reboot) nor backtrace?
+so helpless :-(
 
-> I'm going to try a few more kernels to see if it's possible to isolate
-> the change that introduced the problem.
->
-Thanks (that's too much time I am working in blind on this pb, I very nee=
-d
-a breack)
-
-Joel
+Thanks,
+    Joel
 
 
 _______________________________________________
