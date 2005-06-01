@@ -1,17 +1,16 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: [parisc-linux] S3 ViRGE
-Date: Wed, 1 Jun 2005 02:04:22 +0100
-Message-ID: <20050601010422.GA17369@ntlworld.com>
-References: <5.1.1.6.1.20050530221651.0238dca8@pop.singnet.com.sg>
-	<5.1.1.6.1.20050530221651.0238dca8@pop.singnet.com.sg>
-	<5.1.1.6.1.20050531110035.02358110@pop.singnet.com.sg>
-	<20050531211014.GB2674@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] c3k panics
+Date: Wed, 1 Jun 2005 15:11:55 +0200
+Message-ID: <4282FEEC00007CF4@mail-2-bnl.tiscali.it>
+References: <20050531062619.GI3050@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset="ISO-8859-15"
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: "Randolph Chung" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050531211014.GB2674@colo.lackof.org>
+In-Reply-To: <20050531062619.GI3050@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,14 +21,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, May 31, 2005 at 11:09:05AM +0800, J. L. Lee wrote:
-> I have S3 Virge too but there is no configurable S3 driver in the
-> kernel configuration file.
 
-virgefb seems to be for for Amigas only.  It might be worth trying the X
-driver (which works for me on x86).
--- 
-Stuart Brady
+> 
+> 
+> > Ok clear but still confused why 32bit branch doesn't nullify the insn=
+
+> > in delay slot like did 64bit?
+> 
+> it's a bug, but fortunately that copy of the fixup_branch macro (in
+> syscall.S) isn't actually used ;-) I'll remove it.
+> 
+mmm, it seems that I am ongoing to become blind (to miss that ?)
+ah no this the night (no idea where stand this dmaned bug) but I was just=
+
+blind by a pocket torch thinking it would be a star :_(
+ 
+> > btw one more thing confusing me: the third fixup_branch macro definit=
+ion
+> > in lusercopy.S:
+> > [snip]
+> >          .macro fixup_branch,lbl
+> >          ldil        L%\lbl, %r1
+> >          ldo         R%\lbl(%r1), %r1
+> >          bv          %r0(%r1)
+> >          .endm
+> > 
+> > This time just bv not bv,n ?
+> 
+> Yes, if you look at where the macro is used you will see that there is
+> an instruction in the delay slot for the branch that should be executed=
+.
+> 
+Cool :-)
+
+Thanks,
+    Joel
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
