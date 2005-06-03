@@ -1,13 +1,11 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] [PATCH] usb/input/hid-core.c extract() brain damage
-Date: Thu, 2 Jun 2005 15:35:19 -0600
-Message-ID: <20050602213519.GA18164__7667.71121784604$1416624539$gmane$org@colo.lackof.org>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] [mingo@elte.hu: [patch] spinlock consolidation, v2]
+Date: Fri, 3 Jun 2005 18:31:32 +0100
+Message-ID: <20050603173132.GX14929@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Kyle McMartin <kyle@there.is.no.cabal.ca>,
- parisc-linux@parisc-linux.org
-To: linux-usb-devel@lists.sourceforge.net
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,121 +17,100 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi folks,,
-extract() and implement() are bit field manipulation routines.
-They mangle "n" bits starting at "offset" index into the bit field.
-Since this is USB, the byte array is little endian.
-Big endian machines (e.g. parisc, mips) should only need to
-byte swap the value.
 
-extract() and implement() have brain damaged attempts to handle
-32-bit wide "fields".
-The problem is the index math in the original code didn't clear all
-the relevant bits.  (offset >> 5) only compensated for 32-bit index.
-We need (offset >> 6) if we want to use 64-bit loads.
+Anyone have time to test this out?
 
-But it was also wrong in that it tried to use quasi-aligned loads.
-Ie "report" was only incremented in multiples of 4 bytes and then
-the offset was masked off for values greater than 4 bytes.
-The right way is to pretend "report" points at a byte array.
-And offset is then only minor adjustment for < 8 bits of offset.
-"n" (field width) can then be as big as 24 (assuming 32-bit loads)
-since "offset" will never be bigger than 7.
+----- Forwarded message from Ingo Molnar <mingo@elte.hu> -----
 
-If someone needs either function to handle more than 24-bits,
-please document why - point at a specification or specific USB
-hid device - in comments in the code.
+Date:	Fri, 3 Jun 2005 17:40:29 +0200
+From:	Ingo Molnar <mingo@elte.hu>
+Subject: [patch] spinlock consolidation, v2
 
-extract/implement() are also an eyesore to read.
-Please banish whoever wrote it to read CodingStyle 3 times in a row
-to a classroom full of 1st graders armed with rubberbands.
-Or just flame them. Whatever. Globbing all the code together
-on two lines does NOT make it faster and is Just Wrong.
+the latest version of the spinlock consolidation patch can be found at:
 
-Patch below fixes the above issues. Please apply.
+  http://redhat.com/~mingo/spinlock-patches/consolidate-spinlocks.patch
 
-I've tested this patch on j6000 (dual 750Mhz PA-RISC, 32-bit 2.6.12-rc5).
-Kyle McMartin tested on c3000 (up 400Mhz PA-RISC, same kernel).
-"p2-mate" (Peter De Schrijver?) tested on sb1250 (dual core Mips,
-   broadcom "swarm" eval board).
+the patch is now complete in the sense that it does everything i wanted 
+it to do. If you have any other suggestions (or i have missed to 
+incorporate an earlier suggestion of yours), please yell.
 
-c3000 and j6000 have (lspci output):
-0000:00:0e.0 IDE interface: National Semiconductor Corporation 87415/87560 IDE (rev 03)
-0000:00:0e.1 Bridge: National Semiconductor Corporation 87560 Legacy I/O (rev 01)
-0000:00:0e.2 USB Controller: National Semiconductor Corporation USB Controller (rev 02)
+Changes:
 
-(87560 is also known as "SuckyIO" chip in parisc community)
+ - all architectures have been converted to the new spinlock code.
+   arm, i386, ia64, ppc, ppc64, s390/s390x, x64 was build-tested via
+   crosscompilers. Alpha, m32r, mips, parisc, sh, sparc, sparc64 has
+   not been tested yet, but should be mostly fine. x86 and x64 was
+   boot-tested in all relevant .config variations. It all brought a nice 
+   reduction in source code size:
 
+     62 files changed, 1455 insertions(+), 3025 deletions(-)
 
+   Al, would you be interested in checking this patch on your build 
+   farm? It should build on all architectures, UP and SMP alike.
 
-Couple more general comments that belong in seperate patches:
-o get_unaligned() and put_unaligned() are more or less obsolete.
-  The kernel misaligned trap handler is expected to handle this
-  for every arch that uses "asm-generic/unaligned.h".
-  See "fgrep generic include/asm*/unaligned.h" output.
+   (NOTE: i've switched sparc32, sparc64, alpha, ppc, parisc to use the 
+    generic spinlock debugging code. I believe the generic debugging 
+    code is now capable enough to be a replacement - but especially the 
+    Sparc ones are pretty advanced; so if i've missed some important
+    feature please let me know and i'll implement it in the generic 
+    code.)
 
-  Don't misunderstand, I prefer to see get_unaligned() but just
-  want to point out it's not doing what people might assume it does.
+ - linux/spinlock_types.h: new, pure header file that can be used
+   by other headers to define spinlock fields - without having to
+   pull in all the other include files that are needed on the
+   implementational side. (Roman Zippel)
 
-  The networking stack has misaligned accesses that davem/jgarzik
-  have refused to fixup with get_aligned() despite well documented
-  performance reasons for doing so. So USB is not some odd exception. 
+ - lib/spinlock_debug.c: got rid of the __FILE__/__LINE__ debug output 
+   (suggested by Ingo Oeser), and streamlined the debug output. 
+   Implemented 'lockup detection' which is a must for architectures that 
+   dont have the equivalent of an NMI watchdog. (but is useful on other 
+   architectures as well.) Both spinlocks and rwlocks are now fully 
+   debugged.
 
-o "static inline" is preferred as per Documentation/SubmittingPatches.
-  I'd be happy to submit a patch if someone isn't able
-  to run "sed -e 's/__inline__/inline/'" over the code.
+ - linux/spinlock.h: got rid of the ATOMIC_DEC_AND_LOCK cruft. This is 
+   achieved by not doing the UP-nonpreempt-nondebug specific 
+   optimization but letting it pick the generic _atomic_dec_and_lock 
+   function. The assembly looks sane on x86 (no locked ops, etc.) so 
+   there's no performance problem. Other architectures should work fine 
+   too, those which implement _atomic_dec_and_lock unconditionally might 
+   want to review whether they want to use the CONFIG_HAVE_DEC_LOCK 
+   mechanism to get the optimized (generic) version of the function on 
+   UP.
 
-thanks,
-grant
+ - asm-generic/spinlock_types_up.h: further simplifications (suggested
+   by Arjan van de Ven), typo fixed
 
-Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
+ - linux/spinlock_up.h: since this an UP-nondebug branch now, the macros 
+   were simplified and streamlined significantly.
 
-Index: drivers/usb/input/hid-core.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/drivers/usb/input/hid-core.c,v
-retrieving revision 1.21
-diff -u -p -r1.21 hid-core.c
---- drivers/usb/input/hid-core.c	22 Apr 2005 00:25:56 -0000	1.21
-+++ drivers/usb/input/hid-core.c	2 Jun 2005 06:10:13 -0000
-@@ -759,21 +759,31 @@ static __inline__ __u32 s32ton(__s32 val
- }
- 
- /*
-- * Extract/implement a data field from/to a report.
-+ * Extract/implement a data field from/to a little endian report (bit array).
-  */
- 
- static __inline__ __u32 extract(__u8 *report, unsigned offset, unsigned n)
- {
--	report += (offset >> 5) << 2; offset &= 31;
--	return (le64_to_cpu(get_unaligned((__le64*)report)) >> offset) & ((1 << n) - 1);
-+	u32 x;
-+
-+	report += offset >> 3;  /* adjust byte index */
-+	offset &= 8 - 1;
-+	x = get_unaligned((u32 *) report);
-+	x = le32_to_cpu(x);
-+	x = (x >> offset) & ((1 << n) - 1);
-+	return x;
- }
- 
- static __inline__ void implement(__u8 *report, unsigned offset, unsigned n, __u32 value)
- {
--	report += (offset >> 5) << 2; offset &= 31;
--	put_unaligned((get_unaligned((__le64*)report)
--		& cpu_to_le64(~((((__u64) 1 << n) - 1) << offset)))
--		| cpu_to_le64((__u64)value << offset), (__le64*)report);
-+	u32 x;
-+
-+	report += offset >> 3;
-+	offset &= 8 - 1;
-+	x = get_unaligned((u32 *)report);
-+	x &= cpu_to_le32(~((((__u32) 1 << n) - 1) << offset));
-+	x |= cpu_to_le32(value << offset);
-+	put_unaligned(x,(u32 *)report);
- }
- 
- /*
+ - asm-generic/spinlock_up.h: further cleanups, reordering of op
+   definitions into 'natural' op order.
+
+ - asm-i386/spinlock.h and asm-x86_64/spinlock.h: reordering of ops, 
+   cleanups
+
+ - include/linux/spinlock.h: more cleanups, reordering
+
+ - linux/spinlock_smp.h: cleanups, reordering of prototypes
+
+ - kernel/spinlock.c: fixed bug in generic_raw_read_trylock and renamed 
+   it to generic__raw_read_trylock to ease conversion.
+
+ - lib/kernel_lock.c: simplification
+
+ - (lots of small details i forgot)
+
+	Ingo
+
+----- End forwarded message -----
+
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
