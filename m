@@ -1,16 +1,20 @@
 From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [mingo@elte.hu: [patch] spinlock consolidation, v2]
-Date: Sat, 04 Jun 2005 11:55:03 +0000
-Message-ID: <42A19697.8010501@tiscali.be>
-References: <20050603173132.GX14929@parcelfarce.linux.theplanet.co.uk>
+Subject: Re: [parisc-linux] [PATCH] usb/input/hid-core.c extract() brain damage
+Date: Sat, 04 Jun 2005 13:59:15 +0000
+Message-ID: <42A1B3B3.7030003__35224.5811991908$1416624542$gmane$org@tiscali.be>
+References: <20050604011655.GA16999@colo.lackof.org>	<200506040125.j541PI7g009179@hiauly1.hia.nrc.ca>	<20050604072510.GD8230@colo.lackof.org>
+	<42A182E9.7020609@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii;
   format=flowed
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@parisc-linux.org,
+ linux-usb-devel@lists.sourceforge.net,
+ kyle@cabal.ca
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050603173132.GX14929@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <42A182E9.7020609@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,176 +25,60 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Matthew, Mingo,
+[...]
+>>
+>> Ok. Can you want to try the older version of 
+>> include/asm-parisc/unaligned.h?
+>>
+> Interesting, I will too
+> 
+Sorry it didn't help for me (on a b180 with kernel 2.6.12-rc5-pa2 and 2.6.8/include/asm-parisc/unaligned.h)
+still panicing as usual:
+  [<101511b0>] cache_grow+0xd8/0x1a8
+  [<10151428>] cache_alloc_refill+0x1a8/0x264
+  [<10151744>] kmem_cache_alloc+0x48/0x4c
+  [<101b590c>] ext3_alloc_inode+0x18/0x40
+  [<10186ae8>] alloc_inode+0x28/0x1a0
+  [<1018772c>] new_inode+0x10/0x8c
+  [<101aa718>] ext3_new_inode+0xc4/0x73c
+  [<101b36b8>] ext3_create+0x8c/0x12c
+  [<1017b484>] vfs_create+0xe0/0x140
+  [<1017bd54>] open_namei+0x680/0x734
+  [<101694bc>] filp_open+0x3c/0x70
+  [<101699ac>] sys_open+0x70/0xb8
+  [<1010d12c>] syscall_exit+0x0/0x14
 
-Matthew Wilcox wrote:
-> Anyone have time to test this out?
-> 
-> ----- Forwarded message from Ingo Molnar <mingo@elte.hu> -----
-> 
-> Date:	Fri, 3 Jun 2005 17:40:29 +0200
-> From:	Ingo Molnar <mingo@elte.hu>
-> Subject: [patch] spinlock consolidation, v2
-> 
-> the latest version of the spinlock consolidation patch can be found at:
-> 
->   http://redhat.com/~mingo/spinlock-patches/consolidate-spinlocks.patch
-> 
-> the patch is now complete in the sense that it does everything i wanted 
-> it to do. If you have any other suggestions (or i have missed to 
-> incorporate an earlier suggestion of yours), please yell.
-> 
-I applied against one of our latest 2.6.12-rc5-pa1 without pb :-)
 
-Any way it failled to compile very early with following messages:
-   gcc -Wp,-MD,arch/parisc/kernel/.asm-offsets.s.d  -nostdinc -isystem /usr/lib/gcc-lib/hppa-linux/3.3.5/include -D__KERNEL__ 
--Iinclude -Iinclude2 -I/usr/src/linux-2.6.12-rc5-pa1-050601/include -I/usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel 
--Iarch/parisc/kernel -Wall -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -ffreestanding -O2 
--fomit-frame-pointer -pipe -mno-space-regs -mfast-indirect-calls -ffunction-sections -march=1.1 -mschedule=7200 
--DKBUILD_BASENAME=asm_offsets -DKBUILD_MODNAME=asm_offsets -S -o arch/parisc/kernel/asm-offsets.s 
-/usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel/asm-offsets.c
-In file included from include2/asm/bitops.h:5,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/spinlock.h:51,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/system.h:174: error: syntax error before "pa_tlb_lock"
-include2/asm/system.h:174: warning: type defaults to `int' in declaration of `pa_tlb_lock'
-include2/asm/system.h:174: warning: data definition has no type or storage class
-In file included from include2/asm/atomic.h:17,
-                  from include2/asm/bitops.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/spinlock.h:51,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/spinlock.h:11: error: syntax error before '*' token
-include2/asm/spinlock.h:12: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_spin_is_locked':
-include2/asm/spinlock.h:13: error: `x' undeclared (first use in this function)
-include2/asm/spinlock.h:13: error: (Each undeclared identifier is reported only once
-include2/asm/spinlock.h:13: error: for each function it appears in.)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:21: error: syntax error before '*' token
-include2/asm/spinlock.h:22: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_spin_lock':
-include2/asm/spinlock.h:26: error: `x' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:32: error: syntax error before '*' token
-include2/asm/spinlock.h:33: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_spin_unlock':
-include2/asm/spinlock.h:36: error: `x' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:41: error: syntax error before '*' token
-include2/asm/spinlock.h:42: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_spin_trylock':
-include2/asm/spinlock.h:47: error: `x' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:64: error: syntax error before '*' token
-include2/asm/spinlock.h:65: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_read_lock':
-include2/asm/spinlock.h:68: error: `rw' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:76: error: syntax error before '*' token
-include2/asm/spinlock.h:77: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_read_unlock':
-include2/asm/spinlock.h:80: error: `rw' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:97: error: syntax error before '*' token
-include2/asm/spinlock.h:98: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_write_lock':
-include2/asm/spinlock.h:100: error: `rw' undeclared (first use in this function)
-include2/asm/spinlock.h:107: warning: implicit declaration of function `cpu_relax'
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:118: error: syntax error before '*' token
-include2/asm/spinlock.h:119: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_write_unlock':
-include2/asm/spinlock.h:120: error: `rw' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:124: error: syntax error before '*' token
-include2/asm/spinlock.h:125: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_write_trylock':
-include2/asm/spinlock.h:126: error: `rw' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:139: error: syntax error before '*' token
-include2/asm/spinlock.h:140: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_is_read_locked':
-include2/asm/spinlock.h:141: error: `rw' undeclared (first use in this function)
-include2/asm/spinlock.h: At top level:
-include2/asm/spinlock.h:144: error: syntax error before '*' token
-include2/asm/spinlock.h:145: warning: function declaration isn't a prototype
-include2/asm/spinlock.h: In function `__raw_is_write_locked':
-include2/asm/spinlock.h:146: error: `rw' undeclared (first use in this function)
-In file included from include2/asm/bitops.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/spinlock.h:51,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/atomic.h: At top level:
-include2/asm/atomic.h:27: error: syntax error before "__atomic_hash"
-include2/asm/atomic.h:27: warning: type defaults to `int' in declaration of `__atomic_hash'
-include2/asm/atomic.h:27: warning: data definition has no type or storage class
-include2/asm/atomic.h: In function `__atomic_add_return':
-include2/asm/atomic.h:143: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/atomic.h:143: error: `s' undeclared (first use in this function)
-include2/asm/atomic.h:143: warning: implicit declaration of function `_raw_spin_lock'
-include2/asm/atomic.h:147: warning: implicit declaration of function `_raw_spin_unlock'
-include2/asm/atomic.h: In function `atomic_set':
-include2/asm/atomic.h:154: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/atomic.h:154: error: `s' undeclared (first use in this function)
-In file included from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/spinlock.h:51,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/bitops.h: In function `set_bit':
-include2/asm/bitops.h:45: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/bitops.h:45: error: `s' undeclared (first use in this function)
-include2/asm/bitops.h: In function `clear_bit':
-include2/asm/bitops.h:63: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/bitops.h:63: error: `s' undeclared (first use in this function)
-include2/asm/bitops.h: In function `change_bit':
-include2/asm/bitops.h:81: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/bitops.h:81: error: `s' undeclared (first use in this function)
-include2/asm/bitops.h: In function `test_and_set_bit':
-include2/asm/bitops.h:100: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/bitops.h:100: error: `s' undeclared (first use in this function)
-include2/asm/bitops.h: In function `test_and_clear_bit':
-include2/asm/bitops.h:127: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/bitops.h:127: error: `s' undeclared (first use in this function)
-include2/asm/bitops.h: In function `test_and_change_bit':
-include2/asm/bitops.h:154: error: `spinlock_t' undeclared (first use in this function)
-include2/asm/bitops.h:154: error: `s' undeclared (first use in this function)
-In file included from include2/asm/thread_info.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/thread_info.h:21,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/spinlock.h:51,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/processor.h: At top level:
-include2/asm/processor.h:90: error: syntax error before "spinlock_t"
-include2/asm/processor.h:90: warning: no semicolon at end of struct or union
-include2/asm/processor.h:102: error: syntax error before '}' token
-In file included from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/spinlock.h:79,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.12-rc5-pa1-050601/arch/parisc/kernel/asm-offsets.c:31:
-/usr/src/linux-2.6.12-rc5-pa1-050601/include/linux/spinlock_types.h:26: error: `spinlock_t' used prior to declaration
-make[2]: *** [arch/parisc/kernel/asm-offsets.s] Error 1
-make[1]: *** [arch/parisc/kernel/asm-offsets.s] Error 2
-make: *** [vmlinux] Error 2
-====<>====
+Kernel Fault: Code=15 regs=15154600 (Addr=27c944cc)
 
-What did I missed?
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001110011100001111 Not tainted
+r00-03  00000000 10513e58 101511b0 105004f8
+r04-07  17794000 100df6e0 00000010 00000050
+r08-11  00000001 15f172bc 17b050dc 00000000
+r12-15  15154110 000081a4 0004db4e 000e1bc8
+r16-19  000e1c68 00000000 00000000 27c944f8
+r20-23  27c944bc 000003dc 000001a5 00000050
+r24-27  105004bc 17794000 100df6e0 10400010
+r28-31  27c944bc 00000000 15154600 10153a94
+sr0-3   00000000 000028a9 00000000 00002635
+sr4-7   00000000 00000000 00000000 00000000
+
+IASQ: 00000000 00000000 IAOQ: 10150f30 10150f34
+  IIR: 6b800020    ISR: 00000000  IOR: 27c944cc
+  CPU:        0   CR30: 15154000 CR31: 10460000
+  ORIG_R28: 00000000
+  IAOQ[0]: alloc_slabmgmt+0x30/0x6c
+  IAOQ[1]: alloc_slabmgmt+0x34/0x6c
+  RP(r2): cache_grow+0xd8/0x1a8
+Kernel panic - not syncing: Kernel Fault
+  <0>Rebooting in 120 seconds..
+
+:_(
 
 Thanks,
-     Joel
+	Joel
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
