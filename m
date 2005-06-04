@@ -1,12 +1,11 @@
-From: Joel Soete <soete.joel@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Linux on a HP 9000/800/N4000-36
-Date: Sat, 04 Jun 2005 09:11:23 +0000
-Message-ID: <42A1703B.3090206@tiscali.be>
+Date: Sat, 4 Jun 2005 12:40:54 -0600
+Message-ID: <20050604184054.GF19823@colo.lackof.org>
 References: <42A0B12D.8070602@xtech.com.ar>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=us-ascii
 Cc: Roel <Rule@freegates.be>,
  Peter Van Loock <pvl@maxon.be>,
  parisc-linux@lists.parisc-linux.org
@@ -23,45 +22,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Fri, Jun 03, 2005 at 04:36:13PM -0300, Daniel Coletti wrote:
+> Since I used the HP console I don't have the full output,
+
+Daniel,
+can you try to capture the full output?
+And then post it to parisc-linux@lists.parisc-linux.org?
+
+I need to know which kernel you are running.
+
+Here are more tips on how to report kernel bugs:
+	http://www.parisc-linux.org/faq/kernelbug-howto.html
 
 
-Daniel Coletti wrote:
-> Hi,
->     I tried to install Debian on a HP9000/800/N4000-36 and the kernel 
-> doesn't work. As I can read in this[0] page, somebody did make it work 
-> but on a -55 model (not -36 like the one I tried with).
-> http://hwdb.parisc-linux.org/view.php?type=machine&name=N4000-55
-> 
-Afaik, the only diff is the cpu clock?
-
-> Since I used the HP console I don't have the full output, but the 
-> startup seams to work fine (with the default kernel params) until it 
-> starts writing:
 > Kernel bug at lba_pci.c:1285!
 > Kernel bug at lba_pci.c:1250!
 > lba range[2]: ignoring GMMIO (0x-a-lot-of-hexa-numbers)
-> [....]
-> WARNING! Stack pointer and cr30 do not correspond
-> Dumping virtual address stack instead
-> Dumping from 0x000000005fd40000 to 0x000000005fa44b00
-> 
-> and it prints lots and lots of hexa numbers and sais things like "PSW: 
-> NNNNN Not tainted nnnnNNNnnNN"
-> 
+
+This won't prevent the box from booting.
+
 > I tried with debian-woody official ISO (downloaded from debian), is 
 > there something special that I have to do with the HP N-class?
-As far as remember, woody comes with kernel 2.4?
-Unfortunately, iirc the pb you encountered is a well known _smp_ kernel bug never fixed in 2.4 but well it 2.6 :-)
+> Is there another kernel I should try out?
 
-> Is there another kernel I should try out?> 
-First try to install a up kernel (for the A, L and N Class is must be a 64bit).
-Then you would be able to upgrade to sarge and install a 2.6 kernel (may be try first a up kernel then try the smp one)
+Yes, probably. Joel should be able to point at one on
+http://cvs.parisc-linux.org/download/linux-2.6 that
+will work for you.
 
-Or you could reinstall your system with a recent netinstall iso cd:
-<http://cdimage.debian.org/pub/cdimage-testing/sarge_d-i/hppa/>
+Getting it on the machine is another issue.
+See the other thread on debian-hppa mailing list for ideas
+on how to replace a kernel on a non-booting machine.
 
-Hth,
-	Joel
+grant
+
+> 
+> thanks a lot.
+> 
+> daniel///
+> -- 
+> Daniel Coletti
+> XTech (Soluciones Linux para Empresas) - http://www.xtech.com.ar
+> 25 de Mayo 293 - 5to. 'B'
+> Buenos Aires, Argentina
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
