@@ -1,20 +1,18 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [PATCH] usb/input/hid-core.c extract() brain damage
-Date: Sat, 04 Jun 2005 10:31:05 +0000
-Message-ID: <42A182E9.7020609__45124.7611469173$1416624541$gmane$org@tiscali.be>
-References: <20050604011655.GA16999@colo.lackof.org>	<200506040125.j541PI7g009179@hiauly1.hia.nrc.ca>
-	<20050604072510.GD8230@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [linux-usb-devel] Re: [parisc-linux] [PATCH] usb/input/hid-core.c
+	extract() brain damage
+Date: Sat, 4 Jun 2005 11:43:08 -0600
+Message-ID: <20050604174308.GA19823__45977.6966752999$1416624541$gmane$org@colo.lackof.org>
+References: <20050604072510.GD8230@colo.lackof.org>
+	<Pine.LNX.4.44L0.0506041057560.5133-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- kyle@cabal.ca,
- linux-usb-devel@lists.sourceforge.net,
+  charset=us-ascii
+Cc: linux-usb-devel@lists.sourceforge.net,
  parisc-linux@parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Alan Stern <stern@rowland.harvard.edu>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050604072510.GD8230@colo.lackof.org>
+In-Reply-To: <Pine.LNX.4.44L0.0506041057560.5133-100000@iolanthe.rowland.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,60 +23,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Sat, Jun 04, 2005 at 11:06:52AM -0400, Alan Stern wrote:
+> In spite of the total overall number of changes required, wouldn't it be 
+> much simpler to have a suite of routines (inlines or macros) like:
+> 
+> 	get_16, put_16, get_le16, put_le16, get_be16, put_be16
+> 	get_32, put_32, get_le32, put_le32, get_be32, put_be32
+> 	get_64, put_64, get_le64, put_le64, get_be64, put_be64
+> 
+> 	in short, {get|put}_{|le|be}{16|32|64}
 
+Sorry, no. The architectures that trap on misaligned accesses have to
+handle that in the kernel. And even though the implementations
+get simpler, a plethoria of interfaces just clutters up the general
+device driver API. For that reason alone I wouldn't want it.
 
-Grant Grundler wrote:
-> On Fri, Jun 03, 2005 at 09:25:18PM -0400, John David Anglin wrote:
-> 
->>>>It seems that this problem has been around for some time.
->>>
->>>I didn't check to see how long this code has been around.
->>
->>It's in 2.6.10-pa3.  Since the USB mouse and keyboard work in it,
->>some other change must have been involved in the 2.6.12 breakage.
-> 
-> 
-> Yes, Kyle tracked it down to parisc switching from a parisc asm
-> definition of get_unaligned() to using the generic ones.
-> Ie we moved from avoiding kernel traps to exercising them.
-> But 64-bit kernel worked fine with USB.
-> And on 32-bit kernels le64() loads degenerate into two 32-bit
-> loads. Ie the trap handler is still only dealing with 32-bit
-> misaligned accesses like it would with this patch. So I don't
-> think the kernel trap support is the problem.
-> 
-> Regardless, the two functions are badly written and could
-> be alot clearer.
-> 
-Thanks for feedback ;-)
+The endian conversion (swap) macros are PITA already.
+I'll argue the swap API should be simplified to four macros:
+	cpu_to_le(x), cpu_to_be(x), le_to_cpu(x), be_to_cpu(x)
 
-That said, I also noticed a big difference of behaviour when I select or not the CONFIG_PDC_STABLE option or not:
-	o when selected my stress test make panicing my b2k in 5 min showing a cash_grow() pb (as reported before)
-	o when not selected the system hang as decribe by jda.
+and force the caller to cast to the right size. switch(sizeof(x)) would
+then select the right arch specific variant. I'll figure out how to
+pitch this to linux-arch...and then see how far it gets batted back. :^)
 
+> for native, little-endian, and big-endian unaligned accesses?  The generic 
+> definitions are extremely simple and architecture-specific headers could 
+> easily provide optimized versions.
 > 
->>As an aside, 2.6.10-pa3 doesn't seem to have the stability problems
-Interesting, I will check. Thanks
+> I realize this doesn't fit in very well with the current state of the API, 
+> but IMHO it would be a big improvement.
 
->>that I saw 2.6.11-pa4.  It pretty much seems as stable as 2.6.8.1-pa11
->>on my c3750.  There was hang in the java testsuite (PR218) in one of
->>two gcc builds and check.  Otherwise, the test results were identical.
-> 
-> 
-> Ok. Can you want to try the older version of include/asm-parisc/unaligned.h?
-> 
-Interesting, I will too
-> 
->>>USB keyboard and mouse work with 2.6.12-rc5 on parisc.
->>
->>Great!
-> 
-> 
-> Well, I haven't committed it to cvs.parisc-linux.org.
-> I'm waiting for the USB guru's to comment.
-> 
-Many thanks,
-	Joel
+Not really. davem is right that it would clutter up certain parts
+of the code (e.g. networking stack).
+Don't forget all the above is a NOP on 90% (x86) of the computers.
+
+I'm annoyed that certain performance sensitive paths (e.g. TCP/IP) don't
+use macros to access unaligned data. It affects my work (ia64)
+and pet (parisc) architectures. But that's how it is and I don't
+see it changing anytime in the near future.
+
+thanks for thinking about it,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
