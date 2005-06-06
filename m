@@ -1,18 +1,19 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Ingo Molnar <mingo@elte.hu>
 Subject: [parisc-linux] Re: [patch] spinlock consolidation, v2
-Date: Mon, 6 Jun 2005 09:12:32 -0600
-Message-ID: <20050606151232.GA24437@colo.lackof.org>
+Date: Mon, 6 Jun 2005 18:31:41 +0200
+Message-ID: <20050606163141.GA15703@elte.hu>
 References: <20050603173132.GX14929@parcelfarce.linux.theplanet.co.uk>
 	<20050606060512.GB30857@colo.lackof.org>
 	<20050606073627.GA10387@elte.hu>
+	<20050606151232.GA24437@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@parisc-linux.org,
  Matthew Wilcox <matthew@wil.cx>
-To: Ingo Molnar <mingo@elte.hu>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050606073627.GA10387@elte.hu>
+In-Reply-To: <20050606151232.GA24437@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,36 +24,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 06, 2005 at 09:36:27AM +0200, Ingo Molnar wrote:
-> > I've adapted parisc-linux to this patch and put my changes into
-> > a patch that goes on top of Ingo's.
+
+* Grant Grundler <grundler@parisc-linux.org> wrote:
+
+> >  I feel a bit uneasy about using the raw 
+> > spinlocks directly - they were not intended to be used like that, for 
+> > the time being. Right now they are internal types.
 > 
-> i'm wondering, is the conversion to raw_spinlock_t absolutely necessary 
-> to get a working PARISC kernel?
+> They are arch specific types (asm/spinlock_types.h) and I'm only using 
+> raw_spinlock_t in arch specific code.
 
-No. They were regular spinlocks before too. But there was a pretty
-ugly set of interdependencies between asm/system.h, spinlock.h,
-atomic.h, and bitops.h.
+please dont use the raw spinlocks. They dont carry some features such as 
+debugging. (or any other future feature of the generic spinlock_t type)
 
-The cleanup necessary might be alot more baggage than you want
-to carry around for this patch.
-
->  I feel a bit uneasy about using the raw 
-> spinlocks directly - they were not intended to be used like that, for 
-> the time being. Right now they are internal types.
-
-They are arch specific types (asm/spinlock_types.h) and
-I'm only using raw_spinlock_t in arch specific code.
-
->  You should be able to 
-> use spinlock_types.h just as much to simplify your include file 
-> dependencies. (as long as you use the spinlock APIs only in .c files)
-
-I'll take another quick look
-and see where the circular dependencies are now.
-
-thanks,
-grant
+	Ingo
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
