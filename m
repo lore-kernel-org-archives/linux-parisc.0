@@ -1,17 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Remove __ldcw_align for PA-RISC 2.0 processors
-Date: Thu, 9 Jun 2005 09:05:26 -0600
-Message-ID: <20050609150526.GA9291@colo.lackof.org>
+From: "Jim Hull" <jim.hull@hp.com>
+Subject: RE: [parisc-linux] Remove __ldcw_align for PA-RISC 2.0 processors
+Date: Thu, 9 Jun 2005 10:32:34 -0700
+Message-ID: <200506091732.KAA07794@lucy.cup.hp.com>
 References: <20050609054700.GA9450@colo.lackof.org>
-	<200506091429.j59ETPwv008987@hiauly1.hia.nrc.ca>
-	<20050609144615.GA24611@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="US-ASCII"
 Cc: parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: "'Grant Grundler'" <grundler@parisc-linux.org>,
+ "'Kyle McMartin'" <kyle@fattire.cabal.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050609144615.GA24611@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20050609054700.GA9450@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,16 +21,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jun 09, 2005 at 03:46:15PM +0100, Matthew Wilcox wrote:
-...
-> For userspace, it's obviously different.  There, we have to cope with
-> any PA processor, and thus have to use a "self aligning" lock, but the
-> kernel can be fine tuned.
+Grant wrote: 
 
-For *32-bit* userspace, I agree. Someday someone will be motivated
-to get a 64-bit userspace together.
+> Jim Hull (HP PARISC/IPF Architect) published an errata later
+> indicating that the alignment could be relaxed to "native access"
+> (ie 4 byte for ldcw) if ",co" (Coherent Operation) completer 
+> was specified.
+> The email was dated Jan 29th, 2003.
+> But I can't a direct public reference of it. :^(
 
-grant
+The public errata are here:
+
+ 
+http://h21007.www2.hp.com/dspp/tech/tech_TechDocumentDetailPage_IDX/1,1701,592,0
+0.html
+
+and the semaphore alignment change is here:
+
+ 
+http://h21007.www2.hp.com/dspp/tech/tech_TechDocumentDetailPage_IDX/1,1701,5310,
+00.html
+
+ -- Jim
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
