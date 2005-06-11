@@ -1,17 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: [patch] spinlock consolidation, v2
-Date: Wed, 8 Jun 2005 10:05:25 -0600
-Message-ID: <20050608160525.GA5908@colo.lackof.org>
-References: <20050607180315.GH29220@colo.lackof.org>
-	<4282FEEC0000AB95@mail-3-bnl.tiscali.it>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [PATCH] usb/input/hid-core.c extract() brain damage
+Date: Sat, 11 Jun 2005 21:06:54 +0000
+Message-ID: <42AB526E.3020508@tiscali.be>
+References: <200506072020.j57KKJgU028014@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Ingo Molnar <mingo@elte.hu>,
+  charset=us-ascii;
+  format=flowed
+Cc: kyle@cabal.ca,
  parisc-linux@parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4282FEEC0000AB95@mail-3-bnl.tiscali.it>
+In-Reply-To: <200506072020.j57KKJgU028014@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,62 +22,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Jun 08, 2005 at 03:31:14PM +0200, Joel Soete wrote:
-> error: structure has no member named `lock'
-...
-> the pb is this hunk:
-> --- linux/include/asm-parisc/processor.h-orig   20 May 2005 00:05:13 -0000
-> +++ linux/include/asm-parisc/processor.h        6 Jun 2005 04:32:36 -0000
-> @@ -87,7 +88,7 @@ struct cpuinfo_parisc {
->         unsigned long hpa;          /* Host Physical address */
->         unsigned long txn_addr;     /* MMIO addr of EIR or id_eid */
->  #ifdef CONFIG_SMP
-> -       spinlock_t lock;            /* synchronization for ipi's */
-> +       raw_spinlock_t pending_lock;  /* protect sender/receiver races */
->         unsigned long pending_ipi;  /* bitmap of type ipi_message_type */
->         unsigned long ipi_count;    /* number ipi Interrupts */
->  #endif
-> ====<>====
+Hi all,
 
-Sorry - my bad. That chunk is not in my source tree.
-I've respun the patch without that bit.
-See -03 in the same location.
+A small update:
 
-> Freeing unused kernel memory: Badness in smp_call_function at /Develop/linux-2.6.12-rc5-pa3-050606_4Consolidate/arch/parisc/kernel/0
-> Backtrace:
->  [<1011604c>] smp_call_function+0x6c/0x384
->  [<10106024>] flush_data_cache+0x24/0x40
-...
-
-This is not a real problem. We have a paranoid WARN_ON in the code
-and it's been warning us about this one case for a long time now.
-
-> 364k freed
-> [...]
+John David Anglin wrote:
+>>>Sorry it didn't help for me (on a b180 with kernel 2.6.12-rc5-pa2 and 2.6.8/include/asm-parisc/unaligned.h)
+>>>still panicing as usual:
 > 
-> hanging?
+> 
+> It also didn't help the stability issues that I previously reported
+> for my c3750 although the mouse and keyboard now work with 2.6.12.
+> 
+> 
+>>Definitely, the system already hang with 2.6.9-rc2-pa13.
+>>As it's a b180, I observe leds on front panel:
+>>    o heart bit always flicking, 
+>>    o from time to time lan in/out leds flick also,
+>>    o power on/off button didn't reach to stop the system
+>>    o after that only toc buttom reach to restart the server (fwiw nothing
+>>in piminfo?)
+OTC 2.6.9-rc2-pa1 works fine (stress test during a full day wihout pb)
 
-What was the last output?
+:-) : pb didn't come from upstream merge (that reduce also analysis to only some 150k :-) )
 
-> The analayse of a TOC giving me following info:
-> -----------------  Processor 0 TOC Information -------------------
-> GR[02] == rp = 0000000010276d7c
-> Func: uart_shutdown, Off: 0xbc, Addr: 0x10276d7c
-...
-> Parse IAOQ = 0x0000000010158b80 for CPU[0]
-> Func: synchronize_irq, Off: 0x18, Addr: 0x10158b80
+[...]
 
+> 
+> The system was still pingable, but ssh and the console didn't work.
+mmm typical when a system crash: as far as I can observe the nic is only reset when the system reset itself.
+So when a system crash, the nic is still configured and icmp trafic (afaik hw level) still respond.
 
-> GR[02] == rp = 0000000010195000
-> Func: chrdev_open, Off: 0xe0, Addr: 0x10195000
-...
-> Parse IAOQ = 0x0000000010104404 for CPU[1]
-> Func: lock_kernel, Off: 0x34, Addr: 0x10104404
+> No heartbeat was observed.
+>
+That would mean that there is not anymore activity on the system.
+Otc of my system where at least some routine (e.g. heartbit) was still running.
 
-I'm not sure what the issue is here.
-Let me respin the patch so that I know the lock is correctly declared.
+Most probably we are facing to different pb.
 
-grant
+Thanks,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
