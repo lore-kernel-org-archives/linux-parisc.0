@@ -1,17 +1,19 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [PATCH] usb/input/hid-core.c extract() brain damage
-Date: Sat, 11 Jun 2005 21:06:54 +0000
-Message-ID: <42AB526E.3020508@tiscali.be>
-References: <200506072020.j57KKJgU028014@hiauly1.hia.nrc.ca>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: [parisc-linux] Re: [patch] spinlock consolidation, v2
+Date: Sun, 12 Jun 2005 08:49:22 +0200
+Message-ID: <20050612064922.GA5257@elte.hu>
+References: <20050603173132.GX14929@parcelfarce.linux.theplanet.co.uk>
+	<20050606060512.GB30857@colo.lackof.org>
+	<20050606073627.GA10387@elte.hu>
+	<20050606175029.GC24437@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: kyle@cabal.ca,
- parisc-linux@parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org,
+ Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200506072020.j57KKJgU028014@hiauly1.hia.nrc.ca>
+In-Reply-To: <20050606175029.GC24437@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,46 +24,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
 
-A small update:
+* Grant Grundler <grundler@parisc-linux.org> wrote:
 
-John David Anglin wrote:
->>>Sorry it didn't help for me (on a b180 with kernel 2.6.12-rc5-pa2 and 2.6.8/include/asm-parisc/unaligned.h)
->>>still panicing as usual:
+> IPI and TLB locks can be normal locks.
+> I've dropped the parts that changed those.
 > 
-> 
-> It also didn't help the stability issues that I previously reported
-> for my c3750 although the mouse and keyboard now work with 2.6.12.
-> 
-> 
->>Definitely, the system already hang with 2.6.9-rc2-pa13.
->>As it's a b180, I observe leds on front panel:
->>    o heart bit always flicking, 
->>    o from time to time lan in/out leds flick also,
->>    o power on/off button didn't reach to stop the system
->>    o after that only toc buttom reach to restart the server (fwiw nothing
->>in piminfo?)
-OTC 2.6.9-rc2-pa1 works fine (stress test during a full day wihout pb)
+> New (smaller) patch parked at:
+>     ftp://ftp.parisc-linux.org/patches/consolidate-spinlocks-parisc.patch-02
 
-:-) : pb didn't come from upstream merge (that reduce also analysis to only some 150k :-) )
+thanks. I'm still wondering about the fundamental question though: why 
+doesnt the box boot without your patch? Why does the __atomic_hash and 
+the pending_lock have to be converted to a raw_spinlock? This patch does 
+not change anything fundamental - you are still getting the same 
+spinlock primitives from spinlock_t. The only thing that changes is with 
+spinlock debugging: there another (generic) piece of code kicks in. The 
+only problem could be with assembly code that 'knows' the layout of the 
+spinlocks but doesnt take debugging into account - but is this possible 
+in the PARISC case? (Yet another possibility would be if i messed up the 
+raw type completely, but then your box wouldnt boot at all.)
 
-[...]
+so this is still quite much of a mystery to me!
 
-> 
-> The system was still pingable, but ssh and the console didn't work.
-mmm typical when a system crash: as far as I can observe the nic is only reset when the system reset itself.
-So when a system crash, the nic is still configured and icmp trafic (afaik hw level) still respond.
-
-> No heartbeat was observed.
->
-That would mean that there is not anymore activity on the system.
-Otc of my system where at least some routine (e.g. heartbit) was still running.
-
-Most probably we are facing to different pb.
-
-Thanks,
-	Joel
+	Ingo
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
