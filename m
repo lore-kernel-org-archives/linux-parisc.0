@@ -1,13 +1,11 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: [parisc-linux] List of things that are known no to work on Linux/PA
-Date: Fri, 17 Jun 2005 17:18:49 +0100
-Message-ID: <e6eae02905061709187feef001__38820.4669151039$1416624548$gmane$org@mail.gmail.com>
-Reply-To: Max Grabert <parisc@gmail.com>
+From: Sven Schnelle <sschnelle@astaro.com>
+Subject: [parisc-linux] [OT] USB Keyboard on C3600?
+Date: Fri, 17 Jun 2005 18:50:59 +0200
+Message-ID: <87slzhudu4.fsf@deprecated.intranet.astaro.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: debian-hppa@lists.debian.org
-To: Linux/PA <parisc-linux@parisc-linux.org>
+Content-Type: multipart/mixed;
+  boundary="===============1768217663=="
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,37 +17,59 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Perhaps this should be put into a Wiki or a FAQ:
-(however it could be a pain to maintain it I guess).
+--===============1768217663==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
 
-Anyway, for whom it might be of interest here it is:
+--=-=-=
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-Things that are known to be broken or not yet supported
-in the latest (2.6.12-rc6-pa1) linux/PA kernel:
+i've got a "new" HP9000-C3600, and now i'm wondering if a standard
+PC-USB Keyboard should work on this machine. I've got a blank screen,
+and the HP is switching to serial console. i think there's a message
+like "failed to initialize PCI 2" or something like this appearing in the
+Display, but the PDC doesn't display me any errors.
 
-- NTPL is not yet supported (being worked on)
-- kernel low-latency/preempt is not yet supported
-- 64bit userland is not yet supported
-- SMP, expecially on 64bit kernels seems to be rather unstable
-- on some machines heavy I/O can cause problems
-- XFS used to/is still broken
-- ide-cd causes HPMC on cd-rom access; use ide-scsi instead
-- Using native XFree86 drivers may cause HPMC, try to use fbdev instead
-- Using fbdev with XFree86 causes HPMC on 64bit kernels
-- To use onboard sound on B/C/Jxxxx use the snd_ad1889 ALSA driver,
-   with OSS Emulation (native ALSA interface seems to have problems)
+The Primary Console is switched to GRAPHICS(2)/USB, so the serial
+Console is probably only a fallback. Should this HP display something on
+the screen, even without keyboard?
 
+TIA,
 
-Please correct me if something has changed recently; I guess some of the PA
-kernel hackers (and also users) might want to add a few things to this list=
- ;)
+Sven.
 
-   Max
+PS: Many thanks to you guys for porting linux to HPPA. I'm running
+PA/Linux since 2001 on an old 712/60... :)
 
+=2D-=20
+Sven Schnelle <sschnelle@astaro.com> | Escalation Engineer
+Astaro AG | http://www.astaro.com | Phone +49-721-25516-262 | Fax -200
 
-PS: sorry for cross-posting
+Documentation: http://docs.astaro.org | Bulletin Board: http://www.astaro.o=
+rg
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBCsv9186MdxiXaIbERAoSHAJ0cT4IR5udxDpY+TzrasigUQUBZuACgwmkY
+iPWszcc9pMR+iFCzFrwkocI=
+=oqkl
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+--===============1768217663==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1768217663==--
