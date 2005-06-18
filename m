@@ -1,21 +1,13 @@
 From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] List of things that are known no to work
-	on	Linux/PA
-Date: Sat, 18 Jun 2005 13:32:37 +0000
-Message-ID: <42B42275.1090405__29396.5442608625$1416624550$gmane$org@tiscali.be>
-References: <e6eae02905061709187feef001@mail.gmail.com>	<1119030367.5049.45.camel@mulgrave>	<20050617174915.GM4229@systemhalted.org>
-	<e6eae02905061711053b72fb5@mail.gmail.com>
+Subject: [parisc-linux] 2.6.12-pa0 boot fine on my c110 :-)
+Date: Sat, 18 Jun 2005 13:42:12 +0000
+Message-ID: <42B424B4.6010201@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii;
   format=flowed
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
- Carlos O'Donell <carlos@systemhalted.org>,
- debian-hppa@lists.debian.org,
- Linux/PA <parisc-linux@parisc-linux.org>
-To: Max Grabert <parisc@gmail.com>
+To: Linux/PA <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <e6eae02905061711053b72fb5@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,54 +18,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Max,
+Hello *,
 
-Btw, may be am i wrong, but afaik for 64bit HUGETLB_PAGE could also be a wished support?
+As mentioned in title it build and boot fine on my c110 ;-)
 
-Also ccio and ncr53c8xx (for ncr53c720) are not yet 64bit complient (well not not my d380)
+No time to test more :-(
+
+But I made a mistake (certainly not 2.6.12 related):
+# more /proc/bus/runway/ccio-bitmap
+
+proc_file_read: Apparent buffer overflow!
+/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30303020.
+/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30303030.
+/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30303030.
+/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30203030.
+/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30302030.
+kernel BUG at /Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/mmap.c:1937!
+Backtrace:
+  [<1015be50>] exit_mmap+0x190/0x1cc
+  [<101249c4>] mmput+0x44/0xbc
+  [<10129280>] do_exit+0xc0/0x304
+  [<10129534>] do_group_exit+0x40/0xcc
+  [<10134134>] get_signal_to_deliver+0x4c/0x37c
+  [<101113d0>] do_signal+0x5c/0x24c
+  [<1010c2b4>] intr_do_signal+0x28/0x30
+Kernel panic - not syncing: Kernel Fault
+
+What did I wrong?
 
 Thanks,
 	Joel
-
-Max Grabert wrote:
-> On 6/17/05, Carlos O'Donell <carlos@systemhalted.org> wrote:
-> 
->>On Fri, Jun 17, 2005 at 12:46:07PM -0500, James Bottomley wrote:
->>
->>>On Fri, 2005-06-17 at 17:18 +0100, Max Grabert wrote:
->>>
->>>>- 64bit userland is not yet supported
->>>
->>>Actually, the kernel supports it quite happily.  There's a 64 bit mini
->>>library that will build static ELF64 user binaries that I used to debug
->>>support when I added it.
->>>
->>>What's missing is:
->>>
->>>- 64 bit gcc that will build DSO's
->>>- 64 bit glibc
->>
->>I forgot perhaps we should add:
->>
->>  - Multiple stub sections for the 64-bit linker.
->>
->>Which will probably be the next project after TLS/NPTL/FUTEX.
->>Binutils elf64-hppa needs a good cleanup.
-> 
-> 
-> Thank you all (Carlos, James, Kyle etc.) for your input!
-> 
-> I'll add a wiki page in the next couple of days that will
-> contain a (hopefully regulary updated) list of things that
-> are "known broken", "being worked on" and
-> "probably never supported" in the p-l kernel.
-> 
->    Max
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
