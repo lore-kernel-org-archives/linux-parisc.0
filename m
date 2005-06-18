@@ -1,13 +1,15 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: [parisc-linux] 2.6.12-pa0 boot fine on my c110 :-)
-Date: Sat, 18 Jun 2005 13:42:12 +0000
-Message-ID: <42B424B4.6010201@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [OT] USB Keyboard on C3600?
+Date: Sat, 18 Jun 2005 15:50:07 -0600
+Message-ID: <20050618215007.GA24175@colo.lackof.org>
+References: <87slzhudu4.fsf@deprecated.intranet.astaro.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-To: Linux/PA <parisc-linux@parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: Sven Schnelle <sschnelle@astaro.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <87slzhudu4.fsf@deprecated.intranet.astaro.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,36 +20,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello *,
+On Fri, Jun 17, 2005 at 06:50:59PM +0200, Sven Schnelle wrote:
+> i've got a "new" HP9000-C3600, and now i'm wondering if a standard
+> PC-USB Keyboard should work on this machine.
 
-As mentioned in title it build and boot fine on my c110 ;-)
+Most likely.
 
-No time to test more :-(
+>  I've got a blank screen,
+> and the HP is switching to serial console. i think there's a message
+> like "failed to initialize PCI 2" or something like this appearing in the
+> Display, but the PDC doesn't display me any errors.
 
-But I made a mistake (certainly not 2.6.12 related):
-# more /proc/bus/runway/ccio-bitmap
+"PCI 2" is slot 2 where the graphics card is expected to be installed.
 
-proc_file_read: Apparent buffer overflow!
-/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30303020.
-/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30303030.
-/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30303030.
-/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30203030.
-/Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/memory.c:105: bad pmd 30302030.
-kernel BUG at /Debian-apt/SRC/linux-2.6.12-pa0-050618/mm/mmap.c:1937!
-Backtrace:
-  [<1015be50>] exit_mmap+0x190/0x1cc
-  [<101249c4>] mmput+0x44/0xbc
-  [<10129280>] do_exit+0xc0/0x304
-  [<10129534>] do_group_exit+0x40/0xcc
-  [<10134134>] get_signal_to_deliver+0x4c/0x37c
-  [<101113d0>] do_signal+0x5c/0x24c
-  [<1010c2b4>] intr_do_signal+0x28/0x30
-Kernel panic - not syncing: Kernel Fault
+> The Primary Console is switched to GRAPHICS(2)/USB, so the serial
+> Console is probably only a fallback.
 
-What did I wrong?
+Correct
 
-Thanks,
-	Joel
+> Should this HP display something on the screen, even without keyboard?
+
+Probably Yes though I haven't tried this in a while.
+It suggested the video doesn't match the monitor.
+Plug in the USB keyboard and hit <TAB> key until
+something shows up on the monitor.
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
