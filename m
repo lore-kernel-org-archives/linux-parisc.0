@@ -1,16 +1,21 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: Re: [parisc-linux] Re: Trident video card caused Kernel Panic on HP
-	Visualize 785/B2000 with rebuilt 2.6.11-rc6-pa1 kernel
-Date: Mon, 20 Jun 2005 14:45:19 -0600
-Message-ID: <200506201445.19818.bjorn.helgaas@hp.com>
-References: <5.1.1.6.1.20050615221250.02a429c0@pop.singnet.com.sg>
-	<20050615190616.GA29652@colo.lackof.org>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] Re: [RFC] Emit OPD reloc for all global symbols
+	and then some.
+Date: Mon, 20 Jun 2005 17:29:13 -0400
+Message-ID: <20050620212913.GL5269__9439.86458373747$1416623807$gmane$org@systemhalted.org>
+References: <20050620191501.GA31614@lucon.org>
+	<200506202026.j5KKQPb7007471@hiauly1.hia.nrc.ca>
+	<20050620204056.GA351@lucon.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ binutils@sources.redhat.com,
+ tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: "H. J. Lu" <hjl@lucon.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050615190616.GA29652@colo.lackof.org>
+In-Reply-To: <20050620204056.GA351@lucon.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,21 +26,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wednesday 15 June 2005 1:06 pm, Grant Grundler wrote:
-> The HPMC occurs when tridentfb.c tries to poke at:
->         if (chip_id == TGUI9660) {
->                 outb(RevisionID,0x3C4);
->                 revision = inb(0x3C5);
-> ...	
+On Mon, Jun 20, 2005 at 01:40:56PM -0700, H. J. Lu wrote:
+> On Mon, Jun 20, 2005 at 04:26:25PM -0400, John David Anglin wrote:
+> > > > Under hppa-linux:
+> > > > ------------------
+> > > > We want to generate a PLABEL32 (OPD reloc) against all global symbols,
+> > > > and then some. For example it should be possible for an application to
+> > > > call dlsym asking for the address of main, and when compared to main it
+> > > > should match.
+> > > > 
+> > > 
+> > > Does it work on Linux/ia32? If not, why should it work on Linux/hppa?
+> > 
+> > The linux manpage for dlsym indicates that symbols in the main
+> > program can be looked up with dlsym:
+> > 
+> >      If filename is a NULL pointer, then the returned handle is
+> >      for the main program.  When given to dlsym(), this  handle
+> >      causes a search for a symbol in the main program, followed
+> >      by all shared libraries loaded  at  program  startup,  and
+> >      then all shared libraries loaded by dlopen() with the flag
+> >      RTLD_GLOBAL.
+> > 
+> > So, if it doesn't work, that would seem to be a bug in Linux/ia32.
 > 
-> This generally can't work on parisc.
-> Only if the trident card is plugged in under PCI bus 0.
-> The driver needs to map the hard coded address to some PCI resource.
+> It works if the global symbol is exported. But not all global symbols
+> in main are exported by default. You can use --export-dynamic to export
+> all global symbols.
 
-0x3C4 and 0x3C5 are in the legacy VGA port range.  Does Astro have
-programmable routing for that range?  If so, this could probably
-be made to work with enough kernel support.  I'm working on some
-similar stuff for ia64.
+Regardless of wether or not I export all global symbols in main, I must
+still emit OPD relocs in the executable for all dynamic symbols. In the
+past the OPD reloc was "fudged" and pointed at the PLT, and this is not
+a satisfactory situation. I want ld.so.1 to generate the OPD so we no
+longer need gcc to emit the __cffc helper function for comparisons.
+
+I owe you a big thank you for writing the generic function
+descriptor code in glibc, since hppa is also using that code :)
+
+c.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
