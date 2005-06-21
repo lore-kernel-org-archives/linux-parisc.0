@@ -1,18 +1,23 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: Trident video card caused Kernel Panic on HP
-	Visualize 785/B2000 with rebuilt 2.6.11-rc6-pa1 kernel
-Date: Mon, 20 Jun 2005 20:06:05 -0600
-Message-ID: <20050621020605.GB12189@colo.lackof.org>
-References: <5.1.1.6.1.20050615221250.02a429c0@pop.singnet.com.sg>
-	<20050615190616.GA29652@colo.lackof.org>
-	<200506201445.19818.bjorn.helgaas@hp.com>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] Re: [RFC] Emit OPD reloc for all global symbols
+	and then some.
+Date: Mon, 20 Jun 2005 22:44:40 -0400
+Message-ID: <20050621024438.GP5269__4058.88158497891$1416623808$gmane$org@systemhalted.org>
+References: <20050620191501.GA31614@lucon.org>
+	<200506202026.j5KKQPb7007471@hiauly1.hia.nrc.ca>
+	<20050620204056.GA351@lucon.org>
+	<20050620212913.GL5269@systemhalted.org>
+	<20050620224610.GA2198@lucon.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ binutils@sources.redhat.com,
+ tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: "H. J. Lu" <hjl@lucon.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200506201445.19818.bjorn.helgaas@hp.com>
+In-Reply-To: <20050620224610.GA2198@lucon.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,75 +28,55 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 20, 2005 at 02:45:19PM -0600, Bjorn Helgaas wrote:
-> On Wednesday 15 June 2005 1:06 pm, Grant Grundler wrote:
-> > The HPMC occurs when tridentfb.c tries to poke at:
-> >         if (chip_id == TGUI9660) {
-> >                 outb(RevisionID,0x3C4);
-> >                 revision = inb(0x3C5);
-> > ...	
-> > 
-> > This generally can't work on parisc.
-> > Only if the trident card is plugged in under PCI bus 0.
-> > The driver needs to map the hard coded address to some PCI resource.
+On Mon, Jun 20, 2005 at 03:46:10PM -0700, H. J. Lu wrote:
+> > Regardless of wether or not I export all global symbols in main, I must
+> > still emit OPD relocs in the executable for all dynamic symbols. In the
+> 						^^^^^^^^^^
 > 
-> 0x3C4 and 0x3C5 are in the legacy VGA port range.
+> Did you mean dynamic or global? There is a big difference. In your
+> proposal, you said "We want to generate a PLABEL32 (OPD reloc) against
+> all global symbols,". I am not familiar with HPPA. I just want to know
+> what you have in mind.
 
-Bjorn,
-ok - thanks for the follow up.
+Sorry for being sloppy, there is a qualifier in my mind that I keep
+forgetting to write, read the following:
 
-> Does Astro have programmable routing for that range?
+ld must emit an OPD reloc in the executable for each global symbol that
+had an OPD reloc to begin with. This way the dynamic loader can assign
+an OPD at runtime for use in a comparison. Dynamic symbols that had an
+OPD reloc should also emit the reloc in the executable.
 
-Supposedly yes. But it was never verified by the HW teams and
-I've been told that it is in fact broken.
+Previously an executable just pointed the OPD data word for global and 
+dynamic symbols at their associated .plt entries (since .plt entries
+like on ia64 are function descriptors). No OPD reloc emitted. Thus the
+address of the OPD was really the address of the .plt entry.
 
-If someone wants to poke at this anyway, the "STATUS_CONTROL"
-register documented in:
-	http://ftp.parisc-linux.org/docs/chips/elroy_ers.ps
+This meant that if you passed the address of a dynamic symbol to a shared
+library function, from which the symbol came from, the two addresses
+would be different. One would point to the executables .plt entry for
+that dynamic symbol, while the shared library would have an OPD for that
+symbol. The ip/gp of both would be the same though (after resolution of
+the .plt that is).
 
-describes the "VGA Enable bit":
-| VGA Enable (bit 3, 0x8)
-|    If ve = 1, VGA frame buffer and IOP space accesses will never be
-|    claimed by ELROY, regardless of range register programming. This bit
-|    must be set if a VGA device is located on this PCI bus. Only one
-|    ELROY in the system should have its ve bit set.
-|    If ve = 0, ELROY may claim VGA space, depending on range register
-|    programming.
+The shared case in hppa was always different, and a DSO has always
+created OPD relocs against symbols that started with OPD relocs.
+ 
+> > past the OPD reloc was "fudged" and pointed at the PLT, and this is not
+> > a satisfactory situation. I want ld.so.1 to generate the OPD so we no
+> > longer need gcc to emit the __cffc helper function for comparisons.
 
-ie a "directed range" could be programmed to redirect accesses from
-MMIO space to a particular Elroy. Requires programming a directed
-range in Astro and a matched "Extra LMMIO" range in Elroy.
-I've never messed with this and always depended on firmware
-to deal with range registers.
+Calling through the .plt is still faster than calling through an OPD.
+You can still call through an OPD using $dyncall in hppa.
+Thus we probably want to keep the .plt entry even though we are creating
+an OPD that could be used to call through.
 
-| VGA Frame Buffer Space
-| The VGA frame buffer space is a fixed 128 k region from 640 k to (768 k - 1).
-| The only PCI bus in the system that will claim this space is the one
-| with the VGA Enable bit set. This PCI bus will also claim accesses to
-| VGA I/O Space.
+---
 
+I'm still a bit wet behind the ears, and I fumble the terminology, so
+please accept my apologies.
 
-| VGA I/O Port Space
-| The VGA I/O space is the fixed I/O space region from 0x03B0 through
-| 0x03DF and the 10 bit aliases.
-...
-| Also, even if the VGA I/O Space overlaps the I/O space of another
-| PCI bus, only the PCI bus with its VGA Enable bit set will respond
-| to these ranges.
+c.
 
-Just remember it may not work at all or fail in some wierd way.
-If if doesn't work, don't ask me since I won't know either.
-
-
-> If so, this could probably
-> be made to work with enough kernel support.  I'm working on some
-> similar stuff for ia64.
-
-Note that pa8800 boxes also use ZX1 chipset. Please keep
-parisc-linux cc'd on any patches you cook up for this.
-
-thanks again ,
-grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
