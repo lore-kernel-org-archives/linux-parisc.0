@@ -1,15 +1,25 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [OT] USB Keyboard on C3600?
-Date: Sat, 18 Jun 2005 15:50:07 -0600
-Message-ID: <20050618215007.GA24175@colo.lackof.org>
-References: <87slzhudu4.fsf@deprecated.intranet.astaro.de>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: [parisc-linux] Re: [patch] spinlock consolidation, v2
+Date: Tue, 21 Jun 2005 13:22:35 +0200
+Message-ID: <20050621112235.GA19113@elte.hu>
+References: <20050603173132.GX14929@parcelfarce.linux.theplanet.co.uk>
+	<20050606060512.GB30857@colo.lackof.org>
+	<20050606073627.GA10387@elte.hu>
+	<20050606175029.GC24437@colo.lackof.org>
+	<20050612064922.GA5257@elte.hu>
+	<20050612072507.GB25059@colo.lackof.org>
+	<20050612073453.GA7718@elte.hu>
+	<20050613062938.GD21766@colo.lackof.org>
+	<20050613074407.GA13878@elte.hu>
+	<20050613183932.GA9457@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Sven Schnelle <sschnelle@astaro.com>
+Cc: parisc-linux@parisc-linux.org,
+ Matthew Wilcox <matthew@wil.cx>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <87slzhudu4.fsf@deprecated.intranet.astaro.de>
+In-Reply-To: <20050613183932.GA9457@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,32 +30,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jun 17, 2005 at 06:50:59PM +0200, Sven Schnelle wrote:
-> i've got a "new" HP9000-C3600, and now i'm wondering if a standard
-> PC-USB Keyboard should work on this machine.
 
-Most likely.
+* Grant Grundler <grundler@parisc-linux.org> wrote:
 
->  I've got a blank screen,
-> and the HP is switching to serial console. i think there's a message
-> like "failed to initialize PCI 2" or something like this appearing in the
-> Display, but the PDC doesn't display me any errors.
+> The next step may to seperate the definition of atomic_t (e.g moving
+> that to asm/types.h) from the inline code (usage) and function prototypes.
+> ie have 4 header files:
+> 	spinlock_types.h	/* spinlock_t, SPIN_UNLOCKED, et al */
+> 	spinlocks		/* spin_lock_*() */
+> 	atomic_types.h		/* atomic_t */
+> 	atomic.h		/* _atomic_spin_lock_*(), __xchg(), et al  */
+> 
+> Then linux/spinlock.h can include asm/atomic_types.h to get just the 
+> subset it needs. asm/atomic.h will have to include linux/spinlock.h 
+> then to use regular spinlocks then.  TBH, I don't like the general 
+> idea of an asm/*.h depending on a linux/*.h (atomic.h including 
+> spinlock.h respectively in this case).  But could live with it if you 
+> feel strongly about no one using _raw_spinlocks directly.
 
-"PCI 2" is slot 2 where the graphics card is expected to be installed.
+perhaps we could further simplify things by requiring arch 
+spinlock_types.h to include any other types the main spinlock.h needs.  
+For most arches that would be a simple #include <asm/atomic.h>, for 
+PARISC it would be #include <asm/atomic_types.h>. But i also like the 
+idea of splitting up atomic.h into atomic.h and atomic_types.h.
 
-> The Primary Console is switched to GRAPHICS(2)/USB, so the serial
-> Console is probably only a fallback.
+on PARISC, asm/atomic.h would have to include linux/spinlock.h, and i 
+dont see that as an ugly thing: your atomic type implementation does 
+depend on spinlocks, and spinlocks are defined by the linux/spinlock*.h 
+files.
 
-Correct
-
-> Should this HP display something on the screen, even without keyboard?
-
-Probably Yes though I haven't tried this in a while.
-It suggested the video doesn't match the monitor.
-Plug in the USB keyboard and hit <TAB> key until
-something shows up on the monitor.
-
-grant
+	Ingo
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
