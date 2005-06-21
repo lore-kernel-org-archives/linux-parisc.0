@@ -1,20 +1,13 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [RFC] Emit OPD reloc for all global symbols
-	and then some.
-Date: Tue, 21 Jun 2005 11:21:58 -0400 (EDT)
-Message-ID: <200506211521.j5LFLwgJ011696__38288.3194754415$1416623808$gmane$org@hiauly1.hia.nrc.ca>
-References: <20050621024438.GP5269@systemhalted.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] ccio-dma more debuging
+Date: Tue, 21 Jun 2005 18:01:21 +0200
+Message-ID: <42933E2F0000A9DC@mail-1-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: binutils@sources.redhat.com,
- hjl@lucon.org,
- tausq@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+  charset="ISO-8859-15"
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: "Grundler Grant" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050621024438.GP5269@systemhalted.org> from "Carlos O'Donell"
-	at Jun 20, 2005 10:44:40 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,59 +18,130 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Mon, Jun 20, 2005 at 03:46:10PM -0700, H. J. Lu wrote:
-> > > Regardless of wether or not I export all global symbols in main, I must
-> > > still emit OPD relocs in the executable for all dynamic symbols. In the
-> > 						^^^^^^^^^^
-> > 
-> > Did you mean dynamic or global? There is a big difference. In your
-> > proposal, you said "We want to generate a PLABEL32 (OPD reloc) against
-> > all global symbols,". I am not familiar with HPPA. I just want to know
-> > what you have in mind.
-> 
-> Sorry for being sloppy, there is a qualifier in my mind that I keep
-> forgetting to write, read the following:
-> 
-> ld must emit an OPD reloc in the executable for each global symbol that
-> had an OPD reloc to begin with. This way the dynamic loader can assign
-> an OPD at runtime for use in a comparison. Dynamic symbols that had an
-> OPD reloc should also emit the reloc in the executable.
+Hello Grant,
 
-There is a difference between ia32 and hppa.  As you note, global
-symbols are not automatically exported on ia32, even when the symbol
-is used in a function-pointer comparison.  This is possible because
-ia32 doesn't use function descriptors.
+2 small stuff:
+    o testing the following patch on my d380, I just figure out that (by
+accident ;-) ) 2.6.12-pa1 was working in _smp_  ;-)
+      (it compiled 2 kernels (a 32 and a 64bit) in the same time in two d=
+ifferent
+fs during more then 2h 
+       without neither smp error messages nor hanging ;-)
+      may be a better basis to test Ingo stuff (if you have new patches t=
+o
+make me test)?
 
-However, on hppa, GCC generates a PLABEL32 relocation when a function
-symbol is used in a comparison.  If this relocation resolves to a
-non-unique function descriptor in the PLT, then we get comparison
-errors when symbols get passed between shared and main for comparison.
-As a result, hpux and linux currently have magic functions to
-canonicalize function pointers.  Aside from this being inefficient,
-it also causes issues for building kernel software (i.e., canonicalization
-is only applicable to user space).
+    o some additional ccio-dma stuff I would like to submit you (if you s=
+till
+have some time):
+ --- drivers/parisc/ccio-dma.c.Orig      2005-06-21 17:15:16.000000000 +0=
+200
++++ drivers/parisc/ccio-dma.c   2005-06-21 17:19:46.000000000 +0200
+@@ -226,14 +226,16 @@
+ */
+ 
+ struct ioc {
+-       struct ioa_registers __iomem *ioc_regs;  /* I/O MMU base address
+*/
+-       u8  *res_map;                   /* resource map, bit =3D=3D pdir =
+entry
+*/
+-       u64 *pdir_base;                 /* physical base address */
+-       u32 pdir_size;                  /* bytes, function of IOV Space s=
+ize
+*/
+-       u32 res_hint;                   /* next available IOVP - 
++       struct ioa_registers
++               __iomem *ioc_regs;      /* I/O MMU base address */
++       unsigned char   *res_map;       /* resource map, bit =3D=3D pdir =
+entry
+*/
++       u64             *pdir_base;     /* physical base address */
++       unsigned int     pdir_size;     /* bytes, function of IOV Space s=
+ize
+*/
++       unsigned long    res_hint;      /* next available IOVP - 
+                                           circular search */
+-       u32 res_size;                   /* size of resource map in bytes
+*/
+-       spinlock_t res_lock;
++       spinlock_t       res_lock;
++       unsigned int     res_size;      /* size of resource map in bytes
+*/
++       unsigned int     res_bitshift;  /* from the LEFT! */
+ 
+ #ifdef CCIO_SEARCH_TIME
+ #define CCIO_SEARCH_SAMPLE 0x100
+@@ -302,7 +304,7 @@
+        for(; res_ptr < res_end; ++res_ptr) { \
+                if(0 =3D=3D (*res_ptr & mask)) { \
+                        *res_ptr |=3D mask; \
+-                       res_idx =3D (unsigned int)((unsigned long)res_ptr=
+ -
+(unsigned long)ioc->res_map); \
++                       res_idx =3D ((unsigned long)res_ptr - (unsigned l=
+ong)ioc->res_map);
+\
+                        ioc->res_hint =3D res_idx + (size >> 3); \
+                        goto resource_found; \
+                } \
+@@ -341,14 +343,16 @@
+ static int
+ ccio_alloc_range(struct ioc *ioc, size_t size)
+ {
+-       unsigned int pages_needed =3D size >> IOVP_SHIFT;
+-       unsigned int res_idx;
++       unsigned int    pages_needed;
++       unsigned long   res_idx;
+ #ifdef CCIO_SEARCH_TIME
+        unsigned long cr_start =3D mfctl(16);
+ #endif
+ 
++       pages_needed =3D size >> IOVP_SHIFT;
++
+        BUG_ON(pages_needed =3D=3D 0);
+-       BUG_ON((pages_needed * IOVP_SIZE) > DMA_CHUNK_SIZE);
++       BUG_ON(pages_needed > BITS_PER_LONG);
+      
+        DBG_RES("%s() size: %d pages_needed %d\n", 
+                __FUNCTION__, size, pages_needed);
+@@ -383,12 +387,11 @@
+                CCIO_FIND_FREE_MAPPING(ioc, res_idx, ~0UL, 64);
+ #endif
+        } else {
+-               panic("%s: %s() Too many pages to map. pages_needed: %u\n=
+",
+-                      __FILE__,  __FUNCTION__, pages_needed);
++               panic("%s() Too many pages to map. pages_needed: %u\n",
++                      __FUNCTION__, pages_needed);
+        }
+ 
+-       panic("%s: %s() I/O MMU is out of mapping resources.\n", __FILE__=
+,
+-             __FUNCTION__);
++       panic("%s() I/O MMU is out of mapping resources.\n", __FUNCTION__=
+);
+ 
+ resource_found:
+ 
+@@ -435,7 +438,6 @@
+        unsigned int res_idx =3D PDIR_INDEX(iovp) >> 3;
+ 
+        BUG_ON(pages_mapped =3D=3D 0);
+-       BUG_ON((pages_mapped * IOVP_SIZE) > DMA_CHUNK_SIZE);
+        BUG_ON(pages_mapped > BITS_PER_LONG);
+ 
+        DBG_RES("%s():  res_idx: %d pages_mapped %d\n", 
+=3D=3D=3D=3D<>=3D=3D=3D=3D
 
-Having the PLABEL32 relocation resolve to an OPD appears to require
-that the symbol be exported.  As a result, we have a different behaviors
-for dlsym on hppa and ia32.  What's ia64 do?
+As previoulsy said, tested with success on d380 smp 32bit kernel (the 64b=
+it
+twin is ongoing to be compiled...)
 
-Under hpux, in a 32-bit link or a +compat mode 64-bit link, ld marks
-only those symbols symbols that are actually referenced by a shared
-library seen at link time for export.  In a 64-bit +std link, all symbols
-are exported by default.  However, explicitly exporting symbols has
-the side effect that the symbols will not be removed when using dead
-code elimination.
+Thanks in advance,
+    Joel
 
->>From my standpoint, I would like to see the same behavior for both
-32 and 64-bit links when hppa linux supports both 32 and 64-bit 
-user spaces.  The original linux implementation was modelled on hpux
-but over the years we have found that hpux compatibility isn't
-important.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
