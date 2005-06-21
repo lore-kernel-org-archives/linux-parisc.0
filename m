@@ -1,21 +1,20 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: [RFC] Emit OPD reloc for all global symbols
-	and then some.
-Date: Tue, 21 Jun 2005 10:14:31 -0600
-Message-ID: <20050621161431.GA16368__5991.81873626566$1416623809$gmane$org@colo.lackof.org>
-References: <20050621024438.GP5269@systemhalted.org>
-	<200506211521.j5LFLwgJ011696@hiauly1.hia.nrc.ca>
+Date: Tue, 21 Jun 2005 16:26:46 -0400 (EDT)
+Message-ID: <200506212026.j5LKQk6m013156__25255.5892606781$1416623809$gmane$org@hiauly1.hia.nrc.ca>
+References: <jeekavhet4.fsf@sykes.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: hjl@lucon.org,
- Carlos O'Donell <carlos@systemhalted.org>,
+ carlos@systemhalted.org,
  binutils@sources.redhat.com,
  tausq@debian.org,
  parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: schwab@suse.de (Andreas Schwab)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200506211521.j5LFLwgJ011696@hiauly1.hia.nrc.ca>
+In-Reply-To: <jeekavhet4.fsf@sykes.suse.de> from "Andreas Schwab" at Jun 21,
+	2005 06:09:43 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,37 +25,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jun 21, 2005 at 11:21:58AM -0400, John David Anglin wrote:
-> >From my standpoint, I would like to see the same behavior for both
-> 32 and 64-bit links when hppa linux supports both 32 and 64-bit 
-> user spaces.
+> "John David Anglin" <dave@hiauly1.hia.nrc.ca> writes:
+> 
+> > Having the PLABEL32 relocation resolve to an OPD appears to require
+> > that the symbol be exported.  As a result, we have a different behaviors
+> > for dlsym on hppa and ia32.  What's ia64 do?
+> 
+> hppa needs to be fixed to implement correct variants of the macros in
+> dl-lookupcfg.h.  It probably just has to copy the definitions of
+> DL_FIXUP_* from sysdeps/ia64/dl-lookupcfg.h, and
+> _dl_runtime_{resolve,profile} has to be adapted accordingly.
 
-Yeah, that would make sense.
+There could be problems here but it seems that hppa is exporting
+all global symbols in .dynsym.
 
->   The original linux implementation was modelled on hpux
-> but over the years we have found that hpux compatibility isn't
-> important.
+Regarding the patch, I'm not sure why but it seems to result in
+more R_PARISC_NONE dynamic relocation records (one for each real
+dynamic relocation?).
 
-When I first got involved in parisc-linux in 1999, there was
-an interest in commercializing parisc-linux. That would
-mean investing several million dollars per year on a team
-to support/test parisc-linux *and* compatibility (where possible)
-with hpux so customers could run smaller apps on both.
-HP chose not to do that (it was a very rational decision
-though personally disappointing).  parisc-linux did not get
-commercialized and the developer community around parisc-linux
-is not interested in HPUX compatibility.
-
-If someone is interested in HPUX application compatibility,
-they better start providing parisc-linux kernel patches this year.
-An ABI compatibility event in the tool chain would be sufficient
-reason for me to rip out the broken HPUX compatibility
-support currently in the parisc-linux source tree.
-So far, I've lobbied to keep HPUX app support in the tree with
-the hope we could someday run the HPUX X11 server (3D HW Accel!).
-But the right people haven't volunteered to make that work.
-
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
