@@ -1,23 +1,20 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: [RFC] Emit OPD reloc for all global symbols
 	and then some.
-Date: Mon, 20 Jun 2005 22:44:40 -0400
-Message-ID: <20050621024438.GP5269__4058.88158497891$1416623808$gmane$org@systemhalted.org>
-References: <20050620191501.GA31614@lucon.org>
-	<200506202026.j5KKQPb7007471@hiauly1.hia.nrc.ca>
-	<20050620204056.GA351@lucon.org>
-	<20050620212913.GL5269@systemhalted.org>
-	<20050620224610.GA2198@lucon.org>
+Date: Tue, 21 Jun 2005 11:21:58 -0400 (EDT)
+Message-ID: <200506211521.j5LFLwgJ011696__38288.3194754415$1416623808$gmane$org@hiauly1.hia.nrc.ca>
+References: <20050621024438.GP5269@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- binutils@sources.redhat.com,
+  charset=US-ASCII
+Cc: binutils@sources.redhat.com,
+ hjl@lucon.org,
  tausq@debian.org,
  parisc-linux@lists.parisc-linux.org
-To: "H. J. Lu" <hjl@lucon.org>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050620224610.GA2198@lucon.org>
+In-Reply-To: <20050621024438.GP5269@systemhalted.org> from "Carlos O'Donell"
+	at Jun 20, 2005 10:44:40 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,55 +25,59 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 20, 2005 at 03:46:10PM -0700, H. J. Lu wrote:
-> > Regardless of wether or not I export all global symbols in main, I must
-> > still emit OPD relocs in the executable for all dynamic symbols. In the
-> 						^^^^^^^^^^
+> On Mon, Jun 20, 2005 at 03:46:10PM -0700, H. J. Lu wrote:
+> > > Regardless of wether or not I export all global symbols in main, I must
+> > > still emit OPD relocs in the executable for all dynamic symbols. In the
+> > 						^^^^^^^^^^
+> > 
+> > Did you mean dynamic or global? There is a big difference. In your
+> > proposal, you said "We want to generate a PLABEL32 (OPD reloc) against
+> > all global symbols,". I am not familiar with HPPA. I just want to know
+> > what you have in mind.
 > 
-> Did you mean dynamic or global? There is a big difference. In your
-> proposal, you said "We want to generate a PLABEL32 (OPD reloc) against
-> all global symbols,". I am not familiar with HPPA. I just want to know
-> what you have in mind.
+> Sorry for being sloppy, there is a qualifier in my mind that I keep
+> forgetting to write, read the following:
+> 
+> ld must emit an OPD reloc in the executable for each global symbol that
+> had an OPD reloc to begin with. This way the dynamic loader can assign
+> an OPD at runtime for use in a comparison. Dynamic symbols that had an
+> OPD reloc should also emit the reloc in the executable.
 
-Sorry for being sloppy, there is a qualifier in my mind that I keep
-forgetting to write, read the following:
+There is a difference between ia32 and hppa.  As you note, global
+symbols are not automatically exported on ia32, even when the symbol
+is used in a function-pointer comparison.  This is possible because
+ia32 doesn't use function descriptors.
 
-ld must emit an OPD reloc in the executable for each global symbol that
-had an OPD reloc to begin with. This way the dynamic loader can assign
-an OPD at runtime for use in a comparison. Dynamic symbols that had an
-OPD reloc should also emit the reloc in the executable.
+However, on hppa, GCC generates a PLABEL32 relocation when a function
+symbol is used in a comparison.  If this relocation resolves to a
+non-unique function descriptor in the PLT, then we get comparison
+errors when symbols get passed between shared and main for comparison.
+As a result, hpux and linux currently have magic functions to
+canonicalize function pointers.  Aside from this being inefficient,
+it also causes issues for building kernel software (i.e., canonicalization
+is only applicable to user space).
 
-Previously an executable just pointed the OPD data word for global and 
-dynamic symbols at their associated .plt entries (since .plt entries
-like on ia64 are function descriptors). No OPD reloc emitted. Thus the
-address of the OPD was really the address of the .plt entry.
+Having the PLABEL32 relocation resolve to an OPD appears to require
+that the symbol be exported.  As a result, we have a different behaviors
+for dlsym on hppa and ia32.  What's ia64 do?
 
-This meant that if you passed the address of a dynamic symbol to a shared
-library function, from which the symbol came from, the two addresses
-would be different. One would point to the executables .plt entry for
-that dynamic symbol, while the shared library would have an OPD for that
-symbol. The ip/gp of both would be the same though (after resolution of
-the .plt that is).
+Under hpux, in a 32-bit link or a +compat mode 64-bit link, ld marks
+only those symbols symbols that are actually referenced by a shared
+library seen at link time for export.  In a 64-bit +std link, all symbols
+are exported by default.  However, explicitly exporting symbols has
+the side effect that the symbols will not be removed when using dead
+code elimination.
 
-The shared case in hppa was always different, and a DSO has always
-created OPD relocs against symbols that started with OPD relocs.
- 
-> > past the OPD reloc was "fudged" and pointed at the PLT, and this is not
-> > a satisfactory situation. I want ld.so.1 to generate the OPD so we no
-> > longer need gcc to emit the __cffc helper function for comparisons.
+>>From my standpoint, I would like to see the same behavior for both
+32 and 64-bit links when hppa linux supports both 32 and 64-bit 
+user spaces.  The original linux implementation was modelled on hpux
+but over the years we have found that hpux compatibility isn't
+important.
 
-Calling through the .plt is still faster than calling through an OPD.
-You can still call through an OPD using $dyncall in hppa.
-Thus we probably want to keep the .plt entry even though we are creating
-an OPD that could be used to call through.
-
----
-
-I'm still a bit wet behind the ears, and I fumble the terminology, so
-please accept my apologies.
-
-c.
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
