@@ -1,21 +1,21 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] Re: [RFC] Emit OPD reloc for all global symbols
-Date: Wed, 22 Jun 2005 18:07:48 -0400
-Message-ID: <20050622220748.GX5269__31815.5580819168$1416623812$gmane$org@systemhalted.org>
-References: <jeekavhet4.fsf@sykes.suse.de>
-	<200506212026.j5LKQk6m013156@hiauly1.hia.nrc.ca>
-	<20050622133828.GA2180@lucon.org>
+Subject: [parisc-linux] [OT] Emit OPD reloc (HPUX compatibility)
+Date: Wed, 22 Jun 2005 18:15:13 -0400
+Message-ID: <20050622221513.GY5269__25309.4016960405$1416623812$gmane$org@systemhalted.org>
+References: <20050621024438.GP5269@systemhalted.org>
+	<200506211521.j5LFLwgJ011696@hiauly1.hia.nrc.ca>
+	<20050621161431.GA16368@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ hjl@lucon.org,
  binutils@sources.redhat.com,
  tausq@debian.org,
- parisc-linux@lists.parisc-linux.org,
- Andreas Schwab <schwab@suse.de>
-To: "H. J. Lu" <hjl@lucon.org>
+ parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050622133828.GA2180@lucon.org>
+In-Reply-To: <20050621161431.GA16368@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,37 +26,48 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Jun 22, 2005 at 06:38:28AM -0700, H. J. Lu wrote:
-> On Tue, Jun 21, 2005 at 04:26:46PM -0400, John David Anglin wrote:
-> > > "John David Anglin" <dave@hiauly1.hia.nrc.ca> writes:
-> > > 
-> > > > Having the PLABEL32 relocation resolve to an OPD appears to require
-> > > > that the symbol be exported.  As a result, we have a different behaviors
-> > > > for dlsym on hppa and ia32.  What's ia64 do?
-> > > 
-> > > hppa needs to be fixed to implement correct variants of the macros in
-> > > dl-lookupcfg.h.  It probably just has to copy the definitions of
-> > > DL_FIXUP_* from sysdeps/ia64/dl-lookupcfg.h, and
-> > > _dl_runtime_{resolve,profile} has to be adapted accordingly.
-> > 
-> > There could be problems here but it seems that hppa is exporting
-> > all global symbols in .dynsym.
+On Tue, Jun 21, 2005 at 10:14:31AM -0600, Grant Grundler wrote:
+> On Tue, Jun 21, 2005 at 11:21:58AM -0400, John David Anglin wrote:
+> > >From my standpoint, I would like to see the same behavior for both
+> > 32 and 64-bit links when hppa linux supports both 32 and 64-bit 
+> > user spaces.
 > 
-> Why does hppa do that? A global symbol in executable should be exported
-> only if it is referenced by a DSO or --export-dynamic is used.
-
-Legacy behaviour. Does an ia64 hpux system also export main in .dynsms?
- 
-> > 
-> > Regarding the patch, I'm not sure why but it seems to result in
-> > more R_PARISC_NONE dynamic relocation records (one for each real
-> > dynamic relocation?).
-> > 
+> Yeah, that would make sense.
 > 
-> IA64 also uses function descriptors. Everything works fine.
+> >   The original linux implementation was modelled on hpux
+> > but over the years we have found that hpux compatibility isn't
+> > important.
+> 
+> When I first got involved in parisc-linux in 1999, there was
+> an interest in commercializing parisc-linux. That would
+> mean investing several million dollars per year on a team
+> to support/test parisc-linux *and* compatibility (where possible)
+> with hpux so customers could run smaller apps on both.
+> HP chose not to do that (it was a very rational decision
+> though personally disappointing).  parisc-linux did not get
+> commercialized and the developer community around parisc-linux
+> is not interested in HPUX compatibility.
+> 
+> If someone is interested in HPUX application compatibility,
+> they better start providing parisc-linux kernel patches this year.
+> An ABI compatibility event in the tool chain would be sufficient
+> reason for me to rip out the broken HPUX compatibility
+> support currently in the parisc-linux source tree.
+> So far, I've lobbied to keep HPUX app support in the tree with
+> the hope we could someday run the HPUX X11 server (3D HW Accel!).
+> But the right people haven't volunteered to make that work.
 
-This sort of behaviour is architecture dependant. We have problems in
-our implementation, and we are trying to fix them :)
+This is completely orthogonal, but I think that supporting the HPUX X11
+server is a pipe dream.
+
+Simple HPUX applications will run. Anything more than that is going to
+require a *lot* of work. And a lot of documentation that will never be
+made available.
+
+My personal goal is to be as compatible with other linux ports as
+possible, offering everything that they also offer.
+
+e.g. TLS, NPTL ... and more.
 
 c.
 
