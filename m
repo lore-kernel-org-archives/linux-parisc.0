@@ -1,16 +1,21 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Wed, 22 Jun 2005 23:27:53 -0600
-Message-ID: <20050623052753.GA20584@colo.lackof.org>
-References: <200503242133.j2OLXl4R020985@hiauly1.hia.nrc.ca>
-	<42B9C20E.3090409@tiscali.be>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] Re: [RFC] Emit OPD reloc for all global symbols
+	and then some.
+Date: Wed, 22 Jun 2005 17:59:02 -0400
+Message-ID: <20050622215901.GV5269__13914.56339411$1416623811$gmane$org@systemhalted.org>
+References: <200506211521.j5LFLwgJ011696@hiauly1.hia.nrc.ca>
+	<jeekavhet4.fsf@sykes.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ hjl@lucon.org,
+ tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org,
+ binutils@sources.redhat.com
+To: Andreas Schwab <schwab@suse.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42B9C20E.3090409@tiscali.be>
+In-Reply-To: <jeekavhet4.fsf@sykes.suse.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,29 +26,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Jun 22, 2005 at 07:54:54PM +0000, Joel Soete wrote:
-> of fp registers?
-> or how may I try to define it as accurately as possible?
-> (I objdump a operating 2.6.12-rc.-pa. 64bit to grep some 'fr[12][0..9]' and 
-> all of them seems to be used?
+On Tue, Jun 21, 2005 at 06:09:43PM +0200, Andreas Schwab wrote:
+> "John David Anglin" <dave@hiauly1.hia.nrc.ca> writes:
+> 
+> > Having the PLABEL32 relocation resolve to an OPD appears to require
+> > that the symbol be exported.  As a result, we have a different behaviors
+> > for dlsym on hppa and ia32.  What's ia64 do?
+> 
+> hppa needs to be fixed to implement correct variants of the macros in
+> dl-lookupcfg.h.  It probably just has to copy the definitions of
+> DL_FIXUP_* from sysdeps/ia64/dl-lookupcfg.h, and
+> _dl_runtime_{resolve,profile} has to be adapted accordingly.
 
-Of course they will all be used - kernel has to save and restore
-process state when switching context. You have to look at each
-use and determine why FP is being used. There shouldn't
-be that many different uses.
+We have the correct variants implemented.
 
-> Do I have to look elsewhere; tausq also spoke about: sic
-> [...]One proposal that has been talked about before is if we can
-> compile a version of the millicode lib that uses limited fpregs range
-> and compile the kernel using this new option that Dave is talking about,
-> then we will be able to get by using a (much) smaller subset of fp regs
-> and we won't have to save/restore them in the kernel. )
+http://cvs.parisc-linux.org/glibc/sysdeps/hppa/dl-lookupcfg.h?rev=1.3&view=markup
 
-That's correct - but we will still have to save/restore all FP regs
-on a general context switch - just a subset of those when
-entering/leaving the kernel (e.g. handling an external interrupt).
+Upstream glibc is not a good indicator of the status of our port.
+I am trying to merge as much as I can upstream.
 
-grant
+c.
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
