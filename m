@@ -1,73 +1,44 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Thu, 23 Jun 2005 08:10:19 +0200
-Message-ID: <4282FEEE0000FA5F@mail-6-bnl.tiscali.it>
-References: <20050623052753.GA20584@colo.lackof.org>
+From: Kyle McMartin <kyle@there.is.no.cabal.ca>
+Subject: Re: [parisc-linux] new debian binutils-hppa64, r=2.15-7 pb?
+Date: Thu, 23 Jun 2005 08:10:19 -0400
+Message-ID: <20050623121019.GM14502__45519.0920773477$1416623813$gmane$org@roadwarrior.mcmartin.ca>
+References: <17081.52770.365946.52496@gargle.gargle.HOWL> <200506230342.j5N3gOte019236@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Grant Grundler" <grundler@parisc-linux.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050623052753.GA20584@colo.lackof.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: Matthias Klose <doko@cs.tu-berlin.de>,
+ soete.joel@tiscali.be,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200506230342.j5N3gOte019236@hiauly1.hia.nrc.ca>
+Resent-Message-ID: <NNOmWD.A.4SH.jsquCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-
-> -- Original Message --
-> Date: Wed, 22 Jun 2005 23:27:53 -0600
-> From: Grant Grundler <grundler@parisc-linux.org>
-> To: Joel Soete <soete.joel@tiscali.be>
-> Cc: parisc-linux@lists.parisc-linux.org
-> Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+On Wed, Jun 22, 2005 at 11:42:23PM -0400, John David Anglin wrote:
+> gcc-3.4.  It only seems to install the 64-bit compiler driver:
 > 
+> /usr/bin/hppa64-linux-gcc-3.4
 > 
-> On Wed, Jun 22, 2005 at 07:54:54PM +0000, Joel Soete wrote:
-> > of fp registers?
-> > or how may I try to define it as accurately as possible?
-> > (I objdump a operating 2.6.12-rc.-pa. 64bit to grep some 'fr[12][0..9=
-]'
-> and 
-> > all of them seems to be used?
-> 
-> Of course they will all be used - kernel has to save and restore
-> process state when switching context.
-Oops I missed it (my bad)
+> I also haven't seen 4.0.0 yet.
 
-> You have to look at each
-> use and determine why FP is being used. There shouldn't
-> be that many different uses.
-> 
-Thanks for enlightenment,
+I believe this is because the gcc-defaults package is currently 
+set for the sarge default, which means gcc 3.3. I imagine a new
+upload is coming soon that will change the default compiler
+to 3.4 or 4.0 soon.
 
-I still have to make a lot of progress ;-)
-
-> > Do I have to look elsewhere; tausq also spoke about: sic
-> > [...]One proposal that has been talked about before is if we can
-> > compile a version of the millicode lib that uses limited fpregs range=
-
-> > and compile the kernel using this new option that Dave is talking abo=
-ut,
-> > then we will be able to get by using a (much) smaller subset of fp re=
-gs
-> > and we won't have to save/restore them in the kernel. )
-> 
-> That's correct - but we will still have to save/restore all FP regs
-> on a general context switch - just a subset of those when
-> entering/leaving the kernel (e.g. handling an external interrupt).
-> 
-Thanks,
-    Joel
+Cheers,
+-- 
+Kyle McMartin
 
 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
