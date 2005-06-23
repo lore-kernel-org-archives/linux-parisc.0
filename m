@@ -1,15 +1,20 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] new debian binutils-hppa64, r=2.15-7 pb?
-Date: Thu, 23 Jun 2005 11:18:26 +0200
-Message-ID: <4282FEEC00010445__3718.20649966157$1416623814$gmane$org@mail-3-bnl.tiscali.it>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Re: Trident video card caused Kernel Panic on HP
+	Visualize 785/B2000 with rebuilt 2.6.11-rc6-pa1 kernel
+Date: Thu, 23 Jun 2005 14:59:25 -0400
+Message-ID: <20050623185925.GB28881@roadwarrior.mcmartin.ca>
+References: <5.1.1.6.1.20050615221250.02a429c0@pop.singnet.com.sg>
+	<20050615190616.GA29652@colo.lackof.org>
+	<200506201445.19818.bjorn.helgaas@hp.com>
+	<20050621020605.GB12189@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: Kyle McMartin <kyle@there.is.no.cabal.ca>,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: "Matthias Klose" <doko@cs.tu-berlin.de>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050621020605.GB12189@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,52 +25,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Matthias,
-
-[...]
+On Mon, Jun 20, 2005 at 08:06:05PM -0600, Grant Grundler wrote:
+> ie a "directed range" could be programmed to redirect accesses from
+> MMIO space to a particular Elroy. Requires programming a directed
+> range in Astro and a matched "Extra LMMIO" range in Elroy.
+> I've never messed with this and always depended on firmware
+> to deal with range registers.
 >
-> that should be fixed after the next gcc-defaults upload.
->
-just update:
-[...]
-Setting up gcc-3.3-hppa64 (3.3.6-7) ...
-[...]
 
-and just noticed a small pb while re-compiling the kernel:
-make is still looking for hppa64-linux-gcc
+I've been looking at the Astro and Elroy ERS trying to understand
+this. Does this mean that even if the "VGA Enable" logic is broken,
+we could still force VGA accesses to be routed to a specific PCI 
+device, or are we out of luck?
 
-/usr/src/linux-2.6.12-pa1-050620/scripts/gcc-version.sh: line 11: hppa64-=
-linux-gcc:
-command not found
+If it's feasible, I'm willing to take some time to look into this.
 
-this coming from:
-# cd /usr/bin; ls -l hppa64*
-lrwxr-xr-x  1 root root     34 Dec 22  2004 hppa64-linux-gcc -> /etc/alte=
-rnatives/hppa64-linux-gcc
-[...]
-
-unfortunately this alternative is not updated and still point to:
-/etc/alternatives/hppa64-linux-gcc -> /usr/bin/hppa64-linux-gcc-3.3
-
-in place of the new hppa64-linux-gnu-gcc-3.3.
-
-Oops: still a small pb:
-[...]
-make -f /usr/src/linux-2.6.12-pa1-050620/scripts/Makefile.build obj=3Dfs/=
-autofs4
-   rm -f fs/autofs4/built-in.o; hppa64-linux-ar rcs fs/autofs4/built-in.o=
-
-/bin/sh: hppa64-linux-ar: command not found
-make[3]: *** [fs/autofs4/built-in.o] Error 127
-
-Thanks for your attention,
-    Joel
-
-
-
-
-
-
+Cheers,
+-- 
+Kyle McMartin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
