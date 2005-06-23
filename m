@@ -1,44 +1,60 @@
-From: Kyle McMartin <kyle@there.is.no.cabal.ca>
-Subject: Re: [parisc-linux] new debian binutils-hppa64, r=2.15-7 pb?
-Date: Thu, 23 Jun 2005 08:10:19 -0400
-Message-ID: <20050623121019.GM14502__45519.0920773477$1416623813$gmane$org@roadwarrior.mcmartin.ca>
-References: <17081.52770.365946.52496@gargle.gargle.HOWL> <200506230342.j5N3gOte019236@hiauly1.hia.nrc.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Thu, 23 Jun 2005 09:09:52 -0400 (EDT)
+Message-ID: <200506231309.j5ND9qHA021191@hiauly1.hia.nrc.ca>
+References: <4282FEEC00010335@mail-3-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Matthias Klose <doko@cs.tu-berlin.de>,
- soete.joel@tiscali.be,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200506230342.j5N3gOte019236@hiauly1.hia.nrc.ca>
-Resent-Message-ID: <NNOmWD.A.4SH.jsquCB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-hppa/>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <4282FEEC00010335@mail-3-bnl.tiscali.it> from "Joel Soete" at Jun
+	23, 2005 09:19:51 am
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Jun 22, 2005 at 11:42:23PM -0400, John David Anglin wrote:
-> gcc-3.4.  It only seems to install the 64-bit compiler driver:
-> 
-> /usr/bin/hppa64-linux-gcc-3.4
-> 
-> I also haven't seen 4.0.0 yet.
+> And effectively with -mdisable-fpregs option a function like <do_setitimer>
+> (amoung others) used __muldi3 as in:
+> [...]
+> 1012b630:       e8 4b 01 61     b,l 101016e8 <__muldi3>,rp
+> [...]
+> 1012b650:       e8 4b 01 21     b,l 101016e8 <__muldi3>,rp
+> 1012b654:       08 03 02 5a     copy r3,r26
+> [...]
 
-I believe this is because the gcc-defaults package is currently 
-set for the sarge default, which means gcc 3.3. I imagine a new
-upload is coming soon that will change the default compiler
-to 3.4 or 4.0 soon.
+The same issue that I mentioned previously applies to -mdisable-fpregs.
+__muldi3 and similar routines in libgcc use fp regs and the xmpyu for
+64-bit multiplation.  It takes two 32-bit values and produces a 64-bit
+result.  In millicode, we can multiple to 32 bit values and produce a
+32-bit result.  This isn't sufficient to implement __muldi3.  GCC needs
+a pattern to duplicate xmpyu using millicode.  This could be done by
+"long" multiplication.  Break the 32-bit values into two 16-bit chunks
+and use the millicode multiply.
 
-Cheers,
+HPUX has millicode routines to do larger multiplication but these
+routines weren't released.
+
+I'm a bit surprised that 32-bit kernels needs 64-bit multiplication.
+Anyway, xmpyu is much more efficient for multiplication than software.
+Possibly, I should look at using the -mfixed-range option when building
+libgcc as a first step.  Looking at libgcc, I think it needs fr4, fr5
+and fr22-fr26.  __mulvdi3 needs the most registers.  The argument
+registers are needed for some floating point conversion routines.
+I doubt the kernel uses these.
+
+Dave
 -- 
-Kyle McMartin
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
