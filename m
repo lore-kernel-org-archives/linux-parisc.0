@@ -1,21 +1,15 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] [OT] Emit OPD reloc (HPUX compatibility)
-Date: Wed, 22 Jun 2005 18:15:13 -0400
-Message-ID: <20050622221513.GY5269__25309.4016960405$1416623812$gmane$org@systemhalted.org>
-References: <20050621024438.GP5269@systemhalted.org>
-	<200506211521.j5LFLwgJ011696@hiauly1.hia.nrc.ca>
-	<20050621161431.GA16368@colo.lackof.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Thu, 23 Jun 2005 08:10:19 +0200
+Message-ID: <4282FEEE0000FA5F@mail-6-bnl.tiscali.it>
+References: <20050623052753.GA20584@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- hjl@lucon.org,
- binutils@sources.redhat.com,
- tausq@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset="ISO-8859-15"
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050621161431.GA16368@colo.lackof.org>
+In-Reply-To: <20050623052753.GA20584@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,50 +20,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jun 21, 2005 at 10:14:31AM -0600, Grant Grundler wrote:
-> On Tue, Jun 21, 2005 at 11:21:58AM -0400, John David Anglin wrote:
-> > >From my standpoint, I would like to see the same behavior for both
-> > 32 and 64-bit links when hppa linux supports both 32 and 64-bit 
-> > user spaces.
+
+> -- Original Message --
+> Date: Wed, 22 Jun 2005 23:27:53 -0600
+> From: Grant Grundler <grundler@parisc-linux.org>
+> To: Joel Soete <soete.joel@tiscali.be>
+> Cc: parisc-linux@lists.parisc-linux.org
+> Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
 > 
-> Yeah, that would make sense.
 > 
-> >   The original linux implementation was modelled on hpux
-> > but over the years we have found that hpux compatibility isn't
-> > important.
+> On Wed, Jun 22, 2005 at 07:54:54PM +0000, Joel Soete wrote:
+> > of fp registers?
+> > or how may I try to define it as accurately as possible?
+> > (I objdump a operating 2.6.12-rc.-pa. 64bit to grep some 'fr[12][0..9=
+]'
+> and 
+> > all of them seems to be used?
 > 
-> When I first got involved in parisc-linux in 1999, there was
-> an interest in commercializing parisc-linux. That would
-> mean investing several million dollars per year on a team
-> to support/test parisc-linux *and* compatibility (where possible)
-> with hpux so customers could run smaller apps on both.
-> HP chose not to do that (it was a very rational decision
-> though personally disappointing).  parisc-linux did not get
-> commercialized and the developer community around parisc-linux
-> is not interested in HPUX compatibility.
+> Of course they will all be used - kernel has to save and restore
+> process state when switching context.
+Oops I missed it (my bad)
+
+> You have to look at each
+> use and determine why FP is being used. There shouldn't
+> be that many different uses.
 > 
-> If someone is interested in HPUX application compatibility,
-> they better start providing parisc-linux kernel patches this year.
-> An ABI compatibility event in the tool chain would be sufficient
-> reason for me to rip out the broken HPUX compatibility
-> support currently in the parisc-linux source tree.
-> So far, I've lobbied to keep HPUX app support in the tree with
-> the hope we could someday run the HPUX X11 server (3D HW Accel!).
-> But the right people haven't volunteered to make that work.
+Thanks for enlightenment,
 
-This is completely orthogonal, but I think that supporting the HPUX X11
-server is a pipe dream.
+I still have to make a lot of progress ;-)
 
-Simple HPUX applications will run. Anything more than that is going to
-require a *lot* of work. And a lot of documentation that will never be
-made available.
+> > Do I have to look elsewhere; tausq also spoke about: sic
+> > [...]One proposal that has been talked about before is if we can
+> > compile a version of the millicode lib that uses limited fpregs range=
 
-My personal goal is to be as compatible with other linux ports as
-possible, offering everything that they also offer.
+> > and compile the kernel using this new option that Dave is talking abo=
+ut,
+> > then we will be able to get by using a (much) smaller subset of fp re=
+gs
+> > and we won't have to save/restore them in the kernel. )
+> 
+> That's correct - but we will still have to save/restore all FP regs
+> on a general context switch - just a subset of those when
+> entering/leaving the kernel (e.g. handling an external interrupt).
+> 
+Thanks,
+    Joel
 
-e.g. TLS, NPTL ... and more.
-
-c.
 
 _______________________________________________
 parisc-linux mailing list
