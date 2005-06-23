@@ -1,18 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] new debian binutils-hppa64, r=2.15-7 pb?
-Date: Wed, 22 Jun 2005 23:42:23 -0400 (EDT)
-Message-ID: <200506230342.j5N3gOte019236__18094.8848058053$1416623811$gmane$org@hiauly1.hia.nrc.ca>
-References: <17081.52770.365946.52496@gargle.gargle.HOWL>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Wed, 22 Jun 2005 23:27:53 -0600
+Message-ID: <20050623052753.GA20584@colo.lackof.org>
+References: <200503242133.j2OLXl4R020985@hiauly1.hia.nrc.ca>
+	<42B9C20E.3090409@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org,
- kyle@cabal.ca
-To: doko@cs.tu-berlin.de (Matthias Klose)
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <17081.52770.365946.52496@gargle.gargle.HOWL> from "Matthias
-	Klose" at Jun 22, 2005 10:46:26 pm
+In-Reply-To: <42B9C20E.3090409@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,19 +21,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> that should be fixed after the next gcc-defaults upload.
+On Wed, Jun 22, 2005 at 07:54:54PM +0000, Joel Soete wrote:
+> of fp registers?
+> or how may I try to define it as accurately as possible?
+> (I objdump a operating 2.6.12-rc.-pa. 64bit to grep some 'fr[12][0..9]' and 
+> all of them seems to be used?
 
-As I noted previously, there seems to be a packaging issue with
-gcc-3.4.  It only seems to install the 64-bit compiler driver:
+Of course they will all be used - kernel has to save and restore
+process state when switching context. You have to look at each
+use and determine why FP is being used. There shouldn't
+be that many different uses.
 
-/usr/bin/hppa64-linux-gcc-3.4
+> Do I have to look elsewhere; tausq also spoke about: sic
+> [...]One proposal that has been talked about before is if we can
+> compile a version of the millicode lib that uses limited fpregs range
+> and compile the kernel using this new option that Dave is talking about,
+> then we will be able to get by using a (much) smaller subset of fp regs
+> and we won't have to save/restore them in the kernel. )
 
-I also haven't seen 4.0.0 yet.
+That's correct - but we will still have to save/restore all FP regs
+on a general context switch - just a subset of those when
+entering/leaving the kernel (e.g. handling an external interrupt).
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
