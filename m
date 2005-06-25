@@ -1,25 +1,12 @@
-From: Ingo Molnar <mingo@elte.hu>
-Subject: [parisc-linux] Re: [patch] spinlock consolidation, v2
-Date: Tue, 21 Jun 2005 13:22:35 +0200
-Message-ID: <20050621112235.GA19113@elte.hu>
-References: <20050603173132.GX14929@parcelfarce.linux.theplanet.co.uk>
-	<20050606060512.GB30857@colo.lackof.org>
-	<20050606073627.GA10387@elte.hu>
-	<20050606175029.GC24437@colo.lackof.org>
-	<20050612064922.GA5257@elte.hu>
-	<20050612072507.GB25059@colo.lackof.org>
-	<20050612073453.GA7718@elte.hu>
-	<20050613062938.GD21766@colo.lackof.org>
-	<20050613074407.GA13878@elte.hu>
-	<20050613183932.GA9457@colo.lackof.org>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] latest palinux crash
+Date: Sat, 25 Jun 2005 16:09:05 +0100
+Message-ID: <20050625150905.GC5200@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@parisc-linux.org>
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050613183932.GA9457@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,35 +18,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-* Grant Grundler <grundler@parisc-linux.org> wrote:
+Kernel Fault: Code=26 regs=0000000047c34720 (Addr=0000000000000001)
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000011001111111000001111 Not tainted
+r00-03  0000000000000000 00000000105456f0 00000000101a3494 0000000000000001
+r04-07  00000000104b9200 00000000c55ec518 000000006eb29a2d 00000000bd27d428
+r08-11  0000000047c344d0 00000000141cc568 000000000000000a 0000000000000000
+r12-15  00000000204f0018 000000000000004e 0000000000000001 0000000000000000
+r16-19  0000000000000801 000000000004dee8 000000000004dee8 0000000000000000
+r20-23  000000000007ffff 00001389e3fff288 00000000140ce5c0 000020dd6eb29a2d
+r24-27  0000000047c344c0 0000000047c344d0 00000000bd27d428 00000000104b9200
+r28-31  0000000000000000 0000000047c34630 0000000047c34720 00000000405d58c3
+sr0-3   0000000000090800 0000000000090800 0000000000000000 0000000000090800
+sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
 
-> The next step may to seperate the definition of atomic_t (e.g moving
-> that to asm/types.h) from the inline code (usage) and function prototypes.
-> ie have 4 header files:
-> 	spinlock_types.h	/* spinlock_t, SPIN_UNLOCKED, et al */
-> 	spinlocks		/* spin_lock_*() */
-> 	atomic_types.h		/* atomic_t */
-> 	atomic.h		/* _atomic_spin_lock_*(), __xchg(), et al  */
-> 
-> Then linux/spinlock.h can include asm/atomic_types.h to get just the 
-> subset it needs. asm/atomic.h will have to include linux/spinlock.h 
-> then to use regular spinlocks then.  TBH, I don't like the general 
-> idea of an asm/*.h depending on a linux/*.h (atomic.h including 
-> spinlock.h respectively in this case).  But could live with it if you 
-> feel strongly about no one using _raw_spinlocks directly.
+IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000101b0b70 00000000101b0b58
+ IIR: 0c6010d3    ISR: 0000000000000000  IOR: 0000000000000001
+ CPU:        0   CR30: 0000000047c34000 CR31: 0000000010480000
+ ORIG_R28: 0000000000000001
+ IAOQ[0]: __d_lookup+0xc8/0x1a8
+ IAOQ[1]: __d_lookup+0xb0/0x1a8
+ RP(r2): do_lookup+0x3c/0xf0
+Kernel panic: Kernel Fault
 
-perhaps we could further simplify things by requiring arch 
-spinlock_types.h to include any other types the main spinlock.h needs.  
-For most arches that would be a simple #include <asm/atomic.h>, for 
-PARISC it would be #include <asm/atomic_types.h>. But i also like the 
-idea of splitting up atomic.h into atomic.h and atomic_types.h.
 
-on PARISC, asm/atomic.h would have to include linux/spinlock.h, and i 
-dont see that as an ugly thing: your atomic type implementation does 
-depend on spinlocks, and spinlocks are defined by the linux/spinlock*.h 
-files.
-
-	Ingo
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
