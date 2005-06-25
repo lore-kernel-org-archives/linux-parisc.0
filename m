@@ -1,18 +1,16 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: Re: [parisc-linux] Re: Trident video card caused Kernel Panic on HP
-	Visualize 785/B2000 with rebuilt 2.6.11-rc6-pa1 kernel
-Date: Thu, 23 Jun 2005 14:46:08 -0600
-Message-ID: <200506231446.08345.bjorn.helgaas@hp.com>
-References: <5.1.1.6.1.20050615221250.02a429c0@pop.singnet.com.sg>
-	<20050623201807.GB28240@colo.lackof.org>
-	<20050623203038.GD28881@roadwarrior.mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Sat, 25 Jun 2005 02:46:23 -0400 (EDT)
+Message-ID: <200506250646.j5P6kN2H029175@hiauly1.hia.nrc.ca>
+References: <42B91C1400000F85@mail-1-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050623203038.GD28881@roadwarrior.mcmartin.ca>
+In-Reply-To: <42B91C1400000F85@mail-1-bnl.tiscali.it> from "Joel Soete" at Jun
+	24, 2005 07:05:14 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,36 +21,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thursday 23 June 2005 2:30 pm, Kyle McMartin wrote:
-> On Thu, Jun 23, 2005 at 02:18:07PM -0600, Grant Grundler wrote:
-> > > Even without Astro VGA routing, the emulator or kernel could remap
-> > > those accesses so they get routed to the correct bus.  But that's
-> > > not enough, because then they won't appear on the bus in the
-> > > 0x3b0-0x3df range that the card is expecting.
-> > 
-> > Given the above, we can poke any value we want in to the Elroy registers
-> > in order to generate the right IO port space addresses.
-> 
-> Given this, it's probably feasible then to wrap (out|in)X with a
-> vga_(out|in)X define in each of the drivers and emulate it as best we 
-> can with Elroy?
+> mmm do I well understand that to force gcc to on;y use fr4-f5 and fr22-fr26
+> (as do __muldi3), I had to use option:
+> cflags-y        += -mfixed-range=fr6-fr21,fr27-fr28
 
-The part I was talking about is for user-land.  Late last year,
-Jesse Barnes added some new files in sysfs (see the bottom of
-Documentation/filesystems/sysfs-pci.txt).
+Close, I used the change below.  This seems to build and check ok.
+I don't know if it would be possible to cut back another register or not.
+If I was going to try, I would add fr26 to the fixed list.
 
-At the same time, they added some stuff to X to use these new
-sysfs files for access to the legacy MMIO and I/O port ranges.
-I don't think this has made it into a released X yet, but it's
-in Xorg CVS.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
-I haven't really looked into the in-kernel accessors.  They'd
-probably need work like you mention.  Ben H. proposed a VGA
-arbiter that I think would be involved.  But my guess is that
-you'd only need something like that if you want the in-kernel
-framebuffer driver or something.  With the stuff Jesse added,
-X can run the option ROM to initialize any card, so you may
-not need the framebuffer drivers.
+Index: config/pa/pa.c
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/config/pa/pa.c,v
+retrieving revision 1.294
+diff -u -3 -p -r1.294 pa.c
+--- config/pa/pa.c	23 Apr 2005 21:28:33 -0000	1.294
++++ config/pa/pa.c	24 Jun 2005 02:37:47 -0000
+@@ -306,7 +306,7 @@ fix_range (const char *const_str)
+      REG2 are either register names or register numbers.  The effect
+      of this option is to mark the registers in the range from REG1 to
+      REG2 as ``fixed'' so they won't be used by the compiler.  This is
+-     used, e.g., to ensure that kernel mode code doesn't use f32-f127.  */
++     used, e.g., to ensure that kernel mode code doesn't use fr4-fr31.  */
+ 
+   i = strlen (const_str);
+   str = (char *) alloca (i + 1);
+Index: config/pa/t-linux
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/config/pa/t-linux,v
+retrieving revision 1.8
+diff -u -3 -p -r1.8 t-linux
+--- config/pa/t-linux	5 Dec 2002 01:57:27 -0000	1.8
++++ config/pa/t-linux	24 Jun 2005 02:37:47 -0000
+@@ -6,7 +6,8 @@ LIB1ASMFUNCS = _divI _divU _remI _remU _
+ LIB1ASMSRC = pa/milli64.S
+ 
+ # Compile libgcc2.a as PIC.
+-TARGET_LIBGCC2_CFLAGS = -fPIC -DELF=1 -DLINUX=1
++TARGET_LIBGCC2_CFLAGS = -fPIC -DELF=1 -DLINUX=1 \
++  -mfixed-range="fr6-fr21,fr27-fr31"
+ 
+ LIB2FUNCS_EXTRA=fptr.c
+ 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
