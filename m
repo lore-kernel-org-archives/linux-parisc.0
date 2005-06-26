@@ -1,14 +1,17 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] AD1889 OPL3 Synthesis
-Date: Sun, 26 Jun 2005 16:45:01 +0100
-Message-ID: <20050626154500.GA2704@ntlworld.com>
-References: <20050626145353.GA2566@ntlworld.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: ccio-dma more debuging
+Date: Sun, 26 Jun 2005 14:27:34 -0600
+Message-ID: <20050626202734.GA3338@colo.lackof.org>
+References: <42933E2F0000A9DC@mail-1-bnl.tiscali.it>
+	<20050621171823.GB16368@colo.lackof.org>
+	<42BD9D2D.4030605@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050626145353.GA2566@ntlworld.com>
+In-Reply-To: <42BD9D2D.4030605@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,41 +22,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jun 26, 2005 at 03:53:54PM +0100, Stuart Brady wrote:
-> I used playmidi for testing.  There are some example MIDI files:
-> /usr/share/doc/playmidi/examples/*.mid.gz.  Unfortunately, ALSA's OPL3
-> code has some bugs which affect the quality of the music produced.
-> Also, playmidi's instruments need some work.
-> 
-> I was getting silence when testing before, but it otherwise appeared to
-> be working.  There's probably a mixer channel associated with the OPL3
-> (or SYN, see below) which must be used.  I have no idea which this is.
+On Sat, Jun 25, 2005 at 06:06:37PM +0000, Joel Soete wrote:
+> >It's easier to review if you submit those seperately.
+> >Also because I probably wouldn't apply the white space changes. :^)
+> >
+> >
+> >>-       BUG_ON((pages_needed * IOVP_SIZE) > DMA_CHUNK_SIZE);
+> >>+       BUG_ON(pages_needed > BITS_PER_LONG);
+> >
+> >
+> >This BUG_ON exists because I was lazy. Alex Williamson added support
+> >for "unlimited" sized requests to arch/ia64/hp/common/sba_iommu.c.
+> >We might be able to add that to our iommu-helpers.h file.
+> >
+> mmm is there a viewcvs for ia64 at some url?
 
-I forgot to mention -- there seems to be another bug in ALSA: before you
-can play anything, you'll have to run:
+Yes, but I expect it in our CVS 2.6.12 source tree.
 
-    cat /proc/asound/seq/clients
+> (I tried a diff between parisc and ia64 but to big to let me understand 
+> what patch was?)
 
-I've no idea why, and I haven't got around to reporting it to the ALSA
-developers yet.  If you don't do this, you'll see:
+Right - that won't work. You'll have to dredge up the oldmail
+were Alex proposes the patch. That should be part of the
+ia64-linux mail in ia64-linux mail archives
 
-    playmidi: No playback device found.
+> >Just ditch __FUNCTION__ and hard code the string in the panic message.
+>
+> Is there some pb I missed with __FUNCTION__?
 
-Also, if you try to play the example MIDI files using playmidi, without
-gunzipping them first, playmidi will just segfault.
+Not really - but embedding it directly in the string just makes
+less work for gcc.
 
-BTW, playmidi produces better sound if it is passed the "-4" option, but
-this reduces the number of notes that can be played simultaneously.
-
-You could also try using pmidi, which doesn't rely on OSS emulation,
-although this didn't work for me.
-
-If anyone's looking for a more sensible way to play MIDI files, I would
-suggest using TiMidity++, which doesn't use OPL3.
-
-Cheers,
--- 
-Stuart Brady
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
