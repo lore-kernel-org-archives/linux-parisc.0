@@ -1,60 +1,71 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: ccio-dma more debuging
-Date: Sun, 26 Jun 2005 14:27:34 -0600
-Message-ID: <20050626202734.GA3338@colo.lackof.org>
-References: <42933E2F0000A9DC@mail-1-bnl.tiscali.it>
-	<20050621171823.GB16368@colo.lackof.org>
-	<42BD9D2D.4030605@tiscali.be>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] AD1889 Support (yes it's there!)
+Date: Sun, 26 Jun 2005 14:46:33 +0200
+Message-ID: <20050626144633.56c99909@Tatooine.r3z0>
+References: <20050626022615.15d0ccbb@Tatooine.r3z0>
+	<200506261029.07942.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42BD9D2D.4030605@tiscali.be>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <T-Bone@parisc-linux.org>
+In-Reply-To: <200506261029.07942.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, Jun 25, 2005 at 06:06:37PM +0000, Joel Soete wrote:
-> >It's easier to review if you submit those seperately.
-> >Also because I probably wouldn't apply the white space changes. :^)
-> >
-> >
-> >>-       BUG_ON((pages_needed * IOVP_SIZE) > DMA_CHUNK_SIZE);
-> >>+       BUG_ON(pages_needed > BITS_PER_LONG);
-> >
-> >
-> >This BUG_ON exists because I was lazy. Alex Williamson added support
-> >for "unlimited" sized requests to arch/ia64/hp/common/sba_iommu.c.
-> >We might be able to add that to our iommu-helpers.h file.
-> >
-> mmm is there a viewcvs for ia64 at some url?
+On Sun, 26 Jun 2005 10:29:07 +0200
+Helge Deller <deller@gmx.de> wrote:
 
-Yes, but I expect it in our CVS 2.6.12 source tree.
+> Hello Thibaut.
+> 
+> Congratulations for this big sucess !
+> 
+> I just tried the driver and I think I found a small bug:
+> - Using xmms (with OSS output driver)
+> - Headphones connected to the Headphone connector (PhoneOut)
+> - start playing -> sound starts
+> 
+> Now:
+> - start on a console "aumix"
+> - play around with the "Pcm" slider
+> - when moving this slider from 0-100% it seems to be doubled. 
+>   You will get the same loadness in the 0-50% range as in the 51-100%
+>   range, which means maximum loadness is at 49% and 99%.
 
-> (I tried a diff between parisc and ia64 but to big to let me understand 
-> what patch was?)
+Good catch, that's indeed another known "feature", all sliders (aside the
+Master ones) wrap around at 50%. It's actually quite strange because these
+sliders control the AC97 codec which is well documented (it's an AD1819),
+and which is out of the scope of this driver (we don't implement our own
+mixer). Actually, this is handled directly by the ALSA layer. So maybe the
+hardware is not compliant with the specs, or maybe there's some knob
+missing, yet, it didn't seem to me like a big deal :)
 
-Right - that won't work. You'll have to dredge up the oldmail
-were Alex proposes the patch. That should be part of the
-ia64-linux mail in ia64-linux mail archives
+For the curious people, the difference between the "Master" knobs and the
+others, according the the AD1819 codec doc, is that Masters range from 0
+to -46.5dB as the value written to register goes from 0x0000h to 0x1F1F
+(left is bits 13-8, right is 5-0), and any bigger value doesn't change the
+attenuation.
 
-> >Just ditch __FUNCTION__ and hard code the string in the panic message.
->
-> Is there some pb I missed with __FUNCTION__?
+For the other knobs, otoh, the range is +12dB to -34.5dB for left/right,
+with the following scheme: 0x0000 is +12dB, 0x0808 is 0dB and 0x1F1F is
+-34.5dB. What seems to happen in our case, is that the hardware doesn't
+implement the "gain" range, contrary to what the doc says.
 
-Not really - but embedding it directly in the string just makes
-less work for gcc.
+Again, this is a well known AC97 codec (AD1819), well documented,
+and supported by the ALSA layer, so if you can make sense of what happens,
+maybe we could see what's wrong. :)
 
-grant
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+I'll add that to the wiki.
+
+One last hint (which is on the wiki):
+
+There's no such thing as separate volume control for Phones and Line Out.
+Phones is just an amplified wiring of Line Out, and both are
+simultaneously controlled by "Master". The internal speaker volume is
+controlled by Master Mono.
+
+HTH
+
+Thibaut VARENE
+The PA/Linux Team
+http://www.pateam.org/
