@@ -1,15 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Problem with two NICs on B132L+
-Date: Sun, 26 Jun 2005 14:42:02 -0600
-Message-ID: <20050626204202.GB3338@colo.lackof.org>
-References: <42BEB9B5.4090108@bigfoot.de>
+From: Ryan Bradetich <rbradetich@uswest.net>
+Subject: Re: [parisc-linux] Re: ccio-dma more debuging
+Date: Sun, 26 Jun 2005 15:00:26 -0600
+Message-ID: <1119819626.21317.13.camel@localhost.localdomain>
+References: <42933E2F0000A9DC@mail-1-bnl.tiscali.it>
+	<20050621171823.GB16368@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Ullrich Seibel <useibel@bigfoot.de>
+Content-Type: text/plain
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>,
+ Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42BEB9B5.4090108@bigfoot.de>
+In-Reply-To: <20050621171823.GB16368@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,20 +21,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jun 26, 2005 at 04:20:37PM +0200, Ullrich Seibel wrote:
-> tulip0:  Index #0 - Media MII (#11) described by a 21142 MII PHY (3) block.
-> tulip0: ***WARNING***: No MII transceiver found!
+Hello Joel and Grant,
 
-Kyle McMartin needs to backport the patch Thibaut Varenet cooked up
-with my help that fixes 21142 support. Ie Debian 2.6.8.x kernel
-needs to roll if it wants to fix this problem.
+On Tue, 2005-06-21 at 11:18 -0600, Grant Grundler wrote:
 
-This patch was recently accepted into -mm (Andrew Morton's source tree).
+> Sorry - very short on time right now. Ryan Bradetich is still the official
+> maintainer. If he doesn't have time to deal with it, lobby him to
+> officially hand off to someone else. My impression was he was just
+> very busy at work and wanted to get involved....this patch sounds like
+> a nice easy thing to start with.
 
-thanks for posting the entire console output.
+As work mentioned, several changes in work has kept me very busy and I
+have not been able to spend  much time on non-work related projects like
+the parisc-linux port.  I am working on getting this situation changed
+so I can spend more time on project like this :)
 
-hth,
-grant
+I am still interested in maintaining the ccio driver (since almost all
+my system have this driver) .. but I am also willing to hand over
+maintenance to someone that has the interest and more time than I have
+been able to commit to it.  Hopefully my time on this project will be
+increasing in the future, but if someone is willing to step up to the
+plate now and give ccio the attention it deserves, then I will not stand
+in the way :)
+
+I also want to thank willy, ggg, jejb and all who have supported this
+driver while I have been busy with work.
+
+Thanks,
+
+- Ryan
 
 _______________________________________________
 parisc-linux mailing list
