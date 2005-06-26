@@ -1,16 +1,12 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Sat, 25 Jun 2005 08:29:56 +0000
-Message-ID: <42BD1604.4050403@tiscali.be>
-References: <200506250646.j5P6kN2H029175@hiauly1.hia.nrc.ca>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: [parisc-linux] AD1889 Support (yes it's there!)
+Date: Sun, 26 Jun 2005 02:26:15 +0200
+Message-ID: <20050626022615.15d0ccbb@Tatooine.r3z0>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200506250646.j5P6kN2H029175@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +17,48 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Fellow pa-ckers,
 
+Some of you have been wondering whether they'll be able to enjoy quality
+music playback on their AD1889-enabled PA-RISC machines one of these days
+(BCJ-X000 class machines, basically).
 
-John David Anglin wrote:
->>mmm do I well understand that to force gcc to on;y use fr4-f5 and fr22-fr26
->>(as do __muldi3), I had to use option:
->>cflags-y        += -mfixed-range=fr6-fr21,fr27-fr28
-> 
-> 
-> Close, I used the change below.
-mmm I definetely have to go back to elementary school (4 + 28 -1 = 31 and not 28, my bad !!!)
+Well, be happy, dance around, that day has come! ;)
 
->  This seems to build and check ok.
-Ok I will try to rebuild libgcc2 and kernel with same options.
+The recent commits to the CVS have brought in a now really decent AD1889
+driver, supporting full duplex playback and capture.
 
-Btw 2.6.12-pa1 already build and boot fine with above mentioned options.
-Anyway still hanging after 44 min of stress test.
+It works absolutely fine in OSS emulation mode. So far we have a bug with
+the ALSA native mode, which produces unintelligible sound.[1]
 
-So imho 2 first thinks to do:
-	o apply the right 'fixed-range' option
-	o apply 2.6.12.1 patch
+Oh, don't use mpg123, madplay, ogg123 (and probably anything not properly
+catching ctrl-C), because if you interrupt the playback before the end of
+the file with Ctrl-C, you'll be playing russian roulette, with
+statistically good chances of not surviving it. :)
 
-> I don't know if it would be possible to cut back another register or not.
-> If I was going to try, I would add fr26 to the fixed list.
-> 
-If still not work, the 3rd test I will do ;-)
+This could be a bug in our signal handling code, because XMMS works just
+fine for instance. sox works fine as well.
 
-I will advise.
+So my 2c is "use XMMS" or wait for the EOF in playback, with OSS
+emulation, and use sox to record :)
 
-Thanks again,
-     Joel
+More info at http://wiki.parisc-linux.org/AD1889
+
+[1] For those interested, it appears that if you run something like:
+
+while :; do cat /proc/asound/AD1889/AD1889; done
+
+while playing something in native ALSA mode, it would somehow work. The
+above reads registers on the card, but I don't know if that a PCI posting
+issue, a timing issue, or something else. It's pretty strange since we
+fully comply to the ALSA API (to the best of our knowledge, at least).
+
+HTH
+
+-- 
+Thibaut VARENE
+The PA/Linux Team
+http://wiki.parisc-linux.org/ThibautVarene
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
