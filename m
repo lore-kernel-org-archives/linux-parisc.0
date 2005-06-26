@@ -1,15 +1,14 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] AD1889 Support (yes it's there!)
-Date: Sun, 26 Jun 2005 10:29:07 +0200
-Message-ID: <200506261029.07942.deller@gmx.de>
-References: <20050626022615.15d0ccbb@Tatooine.r3z0>
+From: Stuart Brady <sdbrady@ntlworld.com>
+Subject: Re: [parisc-linux] AD1889 OPL3 Synthesis
+Date: Sun, 26 Jun 2005 16:45:01 +0100
+Message-ID: <20050626154500.GA2704@ntlworld.com>
+References: <20050626145353.GA2566@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: Thibaut VARENE <T-Bone@parisc-linux.org>
+  charset=us-ascii
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050626022615.15d0ccbb@Tatooine.r3z0>
+In-Reply-To: <20050626145353.GA2566@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,36 +19,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Thibaut.
-
-Congratulations for this big sucess !
-
-I just tried the driver and I think I found a small bug:
-- Using xmms (with OSS output driver)
-- Headphones connected to the Headphone connector (PhoneOut)
-- start playing -> sound starts
-
-Now:
-- start on a console "aumix"
-- play around with the "Pcm" slider
-- when moving this slider from 0-100% it seems to be doubled. 
-  You will get the same loadness in the 0-50% range as in the 51-100% range, which means maximum loadness is at 49% and 99%.
-
-Best regards,
-Helge
-
-On Sunday 26 June 2005 02:26, Thibaut VARENE wrote:
-> Some of you have been wondering whether they'll be able to enjoy quality
-> music playback on their AD1889-enabled PA-RISC machines one of these days
-> (BCJ-X000 class machines, basically).
+On Sun, Jun 26, 2005 at 03:53:54PM +0100, Stuart Brady wrote:
+> I used playmidi for testing.  There are some example MIDI files:
+> /usr/share/doc/playmidi/examples/*.mid.gz.  Unfortunately, ALSA's OPL3
+> code has some bugs which affect the quality of the music produced.
+> Also, playmidi's instruments need some work.
 > 
-> Well, be happy, dance around, that day has come! ;)
-> 
-> The recent commits to the CVS have brought in a now really decent AD1889
-> driver, supporting full duplex playback and capture.
-> 
-> It works absolutely fine in OSS emulation mode. So far we have a bug with
-> the ALSA native mode, which produces unintelligible sound.[1]
+> I was getting silence when testing before, but it otherwise appeared to
+> be working.  There's probably a mixer channel associated with the OPL3
+> (or SYN, see below) which must be used.  I have no idea which this is.
+
+I forgot to mention -- there seems to be another bug in ALSA: before you
+can play anything, you'll have to run:
+
+    cat /proc/asound/seq/clients
+
+I've no idea why, and I haven't got around to reporting it to the ALSA
+developers yet.  If you don't do this, you'll see:
+
+    playmidi: No playback device found.
+
+Also, if you try to play the example MIDI files using playmidi, without
+gunzipping them first, playmidi will just segfault.
+
+BTW, playmidi produces better sound if it is passed the "-4" option, but
+this reduces the number of notes that can be played simultaneously.
+
+You could also try using pmidi, which doesn't rely on OSS emulation,
+although this didn't work for me.
+
+If anyone's looking for a more sensible way to play MIDI files, I would
+suggest using TiMidity++, which doesn't use OPL3.
+
+Cheers,
+-- 
+Stuart Brady
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
