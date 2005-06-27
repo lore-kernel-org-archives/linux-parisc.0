@@ -1,15 +1,16 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] PRINTK_TIME make panicing very early b2k?
-Date: Mon, 27 Jun 2005 16:01:07 +0100
-Message-ID: <20050627150107.GG5200@parcelfarce.linux.theplanet.co.uk>
-References: <42BAE7C300000EB4@mail-5-bnl.tiscali.it>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: ccio-dma more debuging
+Date: Mon, 27 Jun 2005 09:08:17 -0600
+Message-ID: <20050627150817.GA17711@colo.lackof.org>
+References: <20050626202734.GA3338@colo.lackof.org>
+	<42BAE7C300000ABE@mail-5-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
 To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42BAE7C300000EB4@mail-5-bnl.tiscali.it>
+In-Reply-To: <42BAE7C300000ABE@mail-5-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,32 +21,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 27, 2005 at 04:30:21PM +0200, Joel Soete wrote:
-> Hello all,
-> 
-> I hope to get help from CONFIG_PRINTK_TIME to debug my d380 64bit slowness
-> pb but tested first on a b2k it panics (waht siad lcd display at leat) very
-> early in the boot and unfortunately pim lakes of relievant info:
+On Mon, Jun 27, 2005 at 08:23:38AM +0200, Joel Soete wrote:
+> Cool I found what I think being the trick:
+> <http://marc.theaimsgroup.com/?l=bk-commits-head&m=107647970230357&w=2>
 
-I'm not sure why you say it lacks relevant info.  Seems pretty clear to me:
+Yeah, that looks like the right one.
 
-> IIA Space                    = 0x0000000000000000
-> IIA Offset                   = 0x0000000000000000
+Keep in mind that parisc sba_iommu.c shares some of the code
+touched by the above patch with ccio driver. See iommu-helpers.h.
 
-... a null pointer dereference, in kernel space.
+> But that inforce you to take care of each name change in every palces when
+> gcc could do for you ;-)
 
-> General Registers 0 - 31
-> 00-03   0000000000000000  0000000000000000  000000001012799c  0000000000800327
+We aren't cutting/pasting from the code anymore.
+I don't need that at this point.
 
-called from 1012799c.  Where's that in your System.map?
-
--- 
-"Next the statesmen will invent cheap lies, putting the blame upon 
-the nation that is attacked, and every man will be glad of those
-conscience-soothing falsities, and will diligently study them, and refuse
-to examine any refutations of them; and thus he will by and by convince 
-himself that the war is just, and will thank God for the better sleep 
-he enjoys after this process of grotesque self-deception." -- Mark Twain
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
