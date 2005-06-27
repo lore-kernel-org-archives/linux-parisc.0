@@ -1,15 +1,16 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] Re: ccio-dma more debuging
-Date: Mon, 27 Jun 2005 08:23:38 +0200
-Message-ID: <42BAE7C300000ABE@mail-5-bnl.tiscali.it>
-References: <20050626202734.GA3338@colo.lackof.org>
+Subject: Re: [parisc-linux] Re: ccio-dma more debuging
+Date: Mon, 27 Jun 2005 08:31:51 +0200
+Message-ID: <42BAE7C300000AC9@mail-5-bnl.tiscali.it>
+References: <1119819626.21317.13.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
 Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+To: "Ryan Bradetich" <rbradetich@uswest.net>,
+ "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050626202734.GA3338@colo.lackof.org>
+In-Reply-To: <1119819626.21317.13.camel@localhost.localdomain>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,34 +21,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-[...]
-> 
-> > (I tried a diff between parisc and ia64 but to big to let me understa=
-nd
-> 
-> > what patch was?)
-> 
-> Right - that won't work. You'll have to dredge up the oldmail
-> were Alex proposes the patch. That should be part of the
-> ia64-linux mail in ia64-linux mail archives
 
-Cool I found what I think being the trick:
-<http://marc.theaimsgroup.com/?l=3Dbk-commits-head&m=3D107647970230357&w=3D=
-2>
+> -- Original Message --
+> From: Ryan Bradetich <rbradetich@uswest.net>
+> To: Joel Soete <soete.joel@tiscali.be>,
+> 	Grant Grundler <grundler@parisc-linux.org>
+> Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+> Date: Sun, 26 Jun 2005 15:00:26 -0600
+> Subject: Re: [parisc-linux] Re: ccio-dma more debuging
+> 
+> 
+> Hello Joel and Grant,
+> 
+> On Tue, 2005-06-21 at 11:18 -0600, Grant Grundler wrote:
+> 
+> > Sorry - very short on time right now. Ryan Bradetich is still the off=
+icial
+> > maintainer. If he doesn't have time to deal with it, lobby him to
+> > officially hand off to someone else. My impression was he was just
+> > very busy at work and wanted to get involved....this patch sounds lik=
+e
+> > a nice easy thing to start with.
+> 
+> As work mentioned, several changes in work has kept me very busy and I
+> have not been able to spend  much time on non-work related projects lik=
+e
+> the parisc-linux port.  I am working on getting this situation changed
+> so I can spend more time on project like this :)
+> 
+> I am still interested in maintaining the ccio driver
+Nice 
 
-> 
-> > >Just ditch __FUNCTION__ and hard code the string in the panic messag=
-e.
-> >
-> > Is there some pb I missed with __FUNCTION__?
-> 
-> Not really - but embedding it directly in the string just makes
-> less work for gcc.
-> 
-But that inforce you to take care of each name change in every palces whe=
-n
-gcc could do for you ;-)
+> (since almost all my system have this driver)
+Great two of mine too: a c110 and a d380 (still have important slowness p=
+b
+in 64bit as well as afaik some K models)
 
+> .. but I am also willing to hand over
+> maintenance to someone that has the interest and more time than I have
+> been able to commit to it.  Hopefully my time on this project will be
+> increasing in the future, but if someone is willing to step up to the
+> plate now and give ccio the attention it deserves, then I will not stan=
+d
+> in the way :)
+> 
 Thanks,
     Joel
 
