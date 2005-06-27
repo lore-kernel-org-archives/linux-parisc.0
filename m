@@ -1,15 +1,15 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] PRINTK_TIME make panicing very early b2k?
-Date: Mon, 27 Jun 2005 18:07:22 +0200
-Message-ID: <42BAE856000010F9@mail-6-bnl.tiscali.it>
-References: <20050627150107.GG5200@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] Re: ccio-dma more debuging
+Date: Mon, 27 Jun 2005 08:23:38 +0200
+Message-ID: <42BAE7C300000ABE@mail-5-bnl.tiscali.it>
+References: <20050626202734.GA3338@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="ISO-8859-15"
 Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: "Matthew Wilcox" <matthew@wil.cx>
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050627150107.GG5200@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20050626202734.GA3338@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,61 +20,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+[...]
+> 
+> > (I tried a diff between parisc and ia64 but to big to let me understa=
+nd
+> 
+> > what patch was?)
+> 
+> Right - that won't work. You'll have to dredge up the oldmail
+> were Alex proposes the patch. That should be part of the
+> ia64-linux mail in ia64-linux mail archives
+
+Cool I found what I think being the trick:
+<http://marc.theaimsgroup.com/?l=3Dbk-commits-head&m=3D107647970230357&w=3D=
+2>
 
 > 
-> On Mon, Jun 27, 2005 at 04:30:21PM +0200, Joel Soete wrote:
-> > Hello all,
-> > 
-> > I hope to get help from CONFIG_PRINTK_TIME to debug my d380 64bit slo=
-wness
-> > pb but tested first on a b2k it panics (waht siad lcd display at leat=
-)
-> very
-> > early in the boot and unfortunately pim lakes of relievant info:
+> > >Just ditch __FUNCTION__ and hard code the string in the panic messag=
+e.
+> >
+> > Is there some pb I missed with __FUNCTION__?
 > 
-> I'm not sure why you say it lacks relevant info.
-Just because I again missed gr2 info (my bad) sorry
-
->  Seems pretty clear to me:
+> Not really - but embedding it directly in the string just makes
+> less work for gcc.
 > 
-> > IIA Space                    =3D 0x0000000000000000
-> > IIA Offset                   =3D 0x0000000000000000
-> 
-> ... a null pointer dereference, in kernel space.
-> 
-> > General Registers 0 - 31
-> > 00-03   0000000000000000  0000000000000000  000000001012799c  0000000=
-000800327
-> 
-> called from 1012799c.  Where's that in your System.map?
->
-mmm
- GR[02] =3D=3D rp =3D 000000001012799c
+But that inforce you to take care of each name change in every palces whe=
+n
+gcc could do for you ;-)
 
-Func: vprintk, Off: 0xcc, Addr: 0x1012799c
-
-10127990 <vprintk+0xc0>:
-10127990:       37 84 00 60     ldo 30(ret0),r4
-10127994:       eb ef a1 c5     b,l 10106a7c <sched_clock>,%r2
-10127998:       08 00 02 40     nop
-1012799c:       6b dc 3e 91     stw ret0,-b8(,sp)
-101279a0:       6b dd 3e 99     stw ret1,-b4(,sp)
-101279a4:       08 1c 02 55     copy ret0,r21
-101279a8:       08 1d 02 56     copy ret1,r22
-101279ac:       08 1c 02 5d     copy ret0,ret1
-101279b0:       34 1c 00 00     ldi 0,ret0
-101279b4:       0b bc 02 7c     or ret0,ret1,ret0
-101279b8:       8f 80 25 48     cmpib,<> 0,ret0,10127c64 <vprintk+0x394>
-
-and afaik:
-
-GR[28] =3D=3D ret0 =3D 00000000fffb6c20
-
-GR[30] =3D=3D sp =3D 0000000020000080
-
-A bit (no largely) out of my understanding.
-
-Joel
+Thanks,
+    Joel
 
 
 _______________________________________________
