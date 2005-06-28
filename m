@@ -1,16 +1,19 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] Re: ccio-dma more debuging
-Date: Mon, 27 Jun 2005 08:31:51 +0200
-Message-ID: <42BAE7C300000AC9@mail-5-bnl.tiscali.it>
-References: <1119819626.21317.13.camel@localhost.localdomain>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: install failure model 9000/879/K260
+Date: Tue, 28 Jun 2005 12:19:26 -0600
+Message-ID: <20050628181926.GA2543__37493.4571017095$1416623823$gmane$org@colo.lackof.org>
+References: <20050628093912.GA20475@paradigm.rfc822.org>
+	<200506281208.j5SC8uru014096@arbas.nms.ulrich-teichert.org>
+	<20050628123308.GA22276@paradigm.rfc822.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: "Ryan Bradetich" <rbradetich@uswest.net>,
- "Grant Grundler" <grundler@parisc-linux.org>
+  charset=us-ascii
+Cc: Ulrich Teichert <krypton@ulrich-teichert.org>,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: Florian Lohoff <flo@rfc822.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1119819626.21317.13.camel@localhost.localdomain>
+In-Reply-To: <20050628123308.GA22276@paradigm.rfc822.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,53 +24,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Tue, Jun 28, 2005 at 02:33:08PM +0200, Florian Lohoff wrote:
+> > Sounds like a known bug - try to set the kernel option ramdisk_size=32768.
+> > You seem to have enough RAM on your box for a bigger ramdisk as well.....
+> 
+> Yep - fixes this problem - Later on it dies again with a Kernel fault
+> and without stack trace :(
 
-> -- Original Message --
-> From: Ryan Bradetich <rbradetich@uswest.net>
-> To: Joel Soete <soete.joel@tiscali.be>,
-> 	Grant Grundler <grundler@parisc-linux.org>
-> Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-> Date: Sun, 26 Jun 2005 15:00:26 -0600
-> Subject: Re: [parisc-linux] Re: ccio-dma more debuging
-> 
-> 
-> Hello Joel and Grant,
-> 
-> On Tue, 2005-06-21 at 11:18 -0600, Grant Grundler wrote:
-> 
-> > Sorry - very short on time right now. Ryan Bradetich is still the off=
-icial
-> > maintainer. If he doesn't have time to deal with it, lobby him to
-> > officially hand off to someone else. My impression was he was just
-> > very busy at work and wanted to get involved....this patch sounds lik=
-e
-> > a nice easy thing to start with.
-> 
-> As work mentioned, several changes in work has kept me very busy and I
-> have not been able to spend  much time on non-work related projects lik=
-e
-> the parisc-linux port.  I am working on getting this situation changed
-> so I can spend more time on project like this :)
-> 
-> I am still interested in maintaining the ccio driver
-Nice 
+Florian,
+Can you capture and post the complete console output from power on
+until crash?
 
-> (since almost all my system have this driver)
-Great two of mine too: a c110 and a d380 (still have important slowness p=
-b
-in 64bit as well as afaik some K models)
+Our "how to report kernel bugs" FAQ is here:
+   http://www.parisc-linux.org/faq/kernelbug-howto.html
 
-> .. but I am also willing to hand over
-> maintenance to someone that has the interest and more time than I have
-> been able to commit to it.  Hopefully my time on this project will be
-> increasing in the future, but if someone is willing to step up to the
-> plate now and give ccio the attention it deserves, then I will not stan=
-d
-> in the way :)
-> 
-Thanks,
-    Joel
+In general, the parisc-linux kernels have been known to boot
+on K-class machines. I think Franke Benke might be able to help
+you out...ISTR he has a K-class to play with as well.
 
+grant
 
 _______________________________________________
 parisc-linux mailing list
