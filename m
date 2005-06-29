@@ -1,17 +1,12 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] Why gas kills the hppa-linux kernel and what you
-	can
-Date: Thu, 30 Jun 2005 15:17:43 -0400
-Message-ID: <20050630191743.GN5269@systemhalted.org>
-References: <20050630183559.GK5269@systemhalted.org>
-	<200506301907.j5UJ7UAx029747@hiauly1.hia.nrc.ca>
+From: Sven Schnelle <svens@gmx.de>
+Subject: [parisc-linux] netpoll support for lasi_82596
+Date: Wed, 29 Jun 2005 07:59:26 +0200
+Message-ID: <878y0t66v5.fsf@deprecated.intranet.astaro.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: multipart/mixed;
+  boundary="===============1153608949=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200506301907.j5UJ7UAx029747@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,41 +17,95 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jun 30, 2005 at 03:07:30PM -0400, John David Anglin wrote:
-> >  IAOQ[0]: memset+0x24/0xac
-> >  IAOQ[1]: memset+0x28/0xac
-> 
-> It looks like memset has been passed a bad address.
-> 
+--===============1153608949==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
 
-Who passed the bad page?
+--=-=-=
+Content-Transfer-Encoding: quoted-printable
 
-I see this from the userspace/kernel side:
+Hi,
 
-as-new        D 10109D08     0  1065    748                     (NOTLB)
-Backtrace:
- [<10100eac>] schedule+0x4a0/0x6f8
- [<10101b10>] io_schedule+0x3c/0x68
- [<101404d8>] sync_page+0x40/0x68
- [<10102078>] __wait_on_bit_lock+0xdc/0xf0
- [<101410a4>] __lock_page+0x98/0xa4
- [<101532fc>] do_swap_page+0x36c/0x400
- [<10153c94>] handle_mm_fault+0x120/0x204
- [<10103558>] do_page_fault+0x214/0x2a4
- [<10104fd4>] handle_interruption+0x2bc/0x5e8
- [<1010a088>] intr_check_sig+0x0/0xc
- [<1014c388>] __pagevec_lru_add_active+0xfc/0x144
- [<10129e98>] tasklet_action+0x70/0xe0
- [<10162fd4>] dentry_open+0x120/0x1c0
- [<10162fd4>] dentry_open+0x120/0x1c0
- [<10162fd4>] dentry_open+0x120/0x1c0
- [<10162fd4>] dentry_open+0x120/0x1c0
+i'm working on kgdb for linux-2.6, and added netpoll support to the
+lasi_82596 driver. Maybe we can add this patch?
 
-Clearly as-new is toast and swapping the system like made.
+=2D--------------------------------------------------------------
+Index: lasi_82596.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /var/cvs/linux-2.6/drivers/net/lasi_82596.c,v
+retrieving revision 1.15
+diff -u -r1.15 lasi_82596.c
+=2D-- lasi_82596.c	29 Nov 2004 19:56:12 -0000	1.15
++++ lasi_82596.c	29 Jun 2005 05:25:40 -0000
+@@ -415,6 +415,9 @@
+ static int ticks_limit =3D 100;
+ static int max_cmd_backlog =3D TX_RING_SIZE-1;
+=20
++#if CONFIG_NET_POLL_CONTROLLER
++static void i596_poll_controller(struct net_device *dev);
++#endif
+=20
+ static inline void CA(struct net_device *dev)
+ {
+@@ -1209,7 +1212,9 @@
+ 	dev->set_multicast_list =3D set_multicast_list;
+ 	dev->tx_timeout =3D i596_tx_timeout;
+ 	dev->watchdog_timeo =3D TX_TIMEOUT;
+=2D
++#ifdef CONFIG_NET_POLL_CONTROLLER
++	dev->poll_controller =3D i596_poll_controller;
++#endif
+ 	dev->priv =3D (void *)(dev->mem_start);
+=20
+ 	lp =3D dev->priv;
+@@ -1242,6 +1247,14 @@
+ 	return 0;
+ }
+=20
++#ifdef CONFIG_NET_POLL_CONTROLLER
++static void i596_poll_controller(struct net_device *dev)
++{
++    disable_irq(dev->irq);
++    i596_interrupt(dev->irq, dev, NULL);
++    enable_irq(dev->irq);
++}
++#endif
+=20
+ static irqreturn_t i596_interrupt(int irq, void *dev_id, struct pt_regs *r=
+egs)
+ {
+=2D------------------------------------------------------------------------=
+-------
 
-c.
+Thanks,
+
+Sven.
+=2D-=20
+We've seen the restless children at the head of the columns
+Come to purify the future with the arrogance of youth
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBCwji/86MdxiXaIbERAtk9AKCAjvaThLR6id5Tjrbjgl8UBaXr3gCghG91
+eYMWxvLgx9OlYcH9rzqyktY=
+=hKRA
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+--===============1153608949==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1153608949==--
