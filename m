@@ -1,19 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: install failure model 9000/879/K260
-Date: Tue, 28 Jun 2005 12:19:26 -0600
-Message-ID: <20050628181926.GA2543__37493.4571017095$1416623823$gmane$org@colo.lackof.org>
-References: <20050628093912.GA20475@paradigm.rfc822.org>
-	<200506281208.j5SC8uru014096@arbas.nms.ulrich-teichert.org>
-	<20050628123308.GA22276@paradigm.rfc822.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] PRINTK_TIME make panicing very early b2k?
+Date: Tue, 28 Jun 2005 22:41:05 -0400 (EDT)
+Message-ID: <200506290241.j5T2f6xi019650@hiauly1.hia.nrc.ca>
+References: <20050627150107.GG5200@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Ulrich Teichert <krypton@ulrich-teichert.org>,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Florian Lohoff <flo@rfc822.org>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: matthew@wil.cx (Matthew Wilcox)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050628123308.GA22276@paradigm.rfc822.org>
+In-Reply-To: <20050627150107.GG5200@parcelfarce.linux.theplanet.co.uk> from
+	"Matthew Wilcox" at Jun 27, 2005 04:01:07 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,26 +21,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jun 28, 2005 at 02:33:08PM +0200, Florian Lohoff wrote:
-> > Sounds like a known bug - try to set the kernel option ramdisk_size=32768.
-> > You seem to have enough RAM on your box for a bigger ramdisk as well.....
+> I'm not sure why you say it lacks relevant info.  Seems pretty clear to me:
 > 
-> Yep - fixes this problem - Later on it dies again with a Kernel fault
-> and without stack trace :(
+> > IIA Space                    = 0x0000000000000000
+> > IIA Offset                   = 0x0000000000000000
+> 
+> ... a null pointer dereference, in kernel space.
+> 
+> > General Registers 0 - 31
+> > 00-03   0000000000000000  0000000000000000  000000001012799c  0000000000800327
+> 
+> called from 1012799c.  Where's that in your System.map?
 
-Florian,
-Can you capture and post the complete console output from power on
-until crash?
+I had a similar toc dump today with 2.6.10-pa11.  The rp value pointed
+to the return from the call to do_poll in sys_poll.  I've seen other
+hangs in sys_poll.  The code could be in do_poll or sys_poll.  Does a
+null pointer dereference in kernel space cause this?  Off hand, I would
+have suspected a stack problem in an ISR.
 
-Our "how to report kernel bugs" FAQ is here:
-   http://www.parisc-linux.org/faq/kernelbug-howto.html
-
-In general, the parisc-linux kernels have been known to boot
-on K-class machines. I think Franke Benke might be able to help
-you out...ISTR he has a K-class to play with as well.
-
-grant
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
