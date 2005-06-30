@@ -1,15 +1,17 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Why gas kills the hppa-linux kernel and what you
-	can do about it.
-Date: Thu, 30 Jun 2005 14:41:33 -0400
-Message-ID: <20050630184132.GL5269@systemhalted.org>
+	can
+Date: Thu, 30 Jun 2005 15:07:30 -0400 (EDT)
+Message-ID: <200506301907.j5UJ7UAx029747@hiauly1.hia.nrc.ca>
 References: <20050630183559.GK5269@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050630183559.GK5269@systemhalted.org>
+In-Reply-To: <20050630183559.GK5269@systemhalted.org> from "Carlos O'Donell"
+	at Jun 30, 2005 02:36:03 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,30 +22,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jun 30, 2005 at 02:36:03PM -0400, Carlos O'Donell wrote:
-> 
-> pa,
-> 
-> Assemble this using a binutils without Alan Modra's pa_block patch:
-> ---        
-> 	.data
-> foo:
->         .block
-> bar:
->         .block 0x3fffffff
-> com:
-> ---
+>  IAOQ[0]: memset+0x24/0xac
+>  IAOQ[1]: memset+0x28/0xac
 
-The last thing I see is this:
-mmap(NULL, 1073811456, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x408fc000
+It looks like memset has been passed a bad address.
 
-And I believe that the process proceeds to memset everything to zero.
-I've done similar tests before and not had any problems. I guess I
-should probably turn OOM off.
-
-c.
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
