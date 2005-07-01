@@ -1,15 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] latest palinux crash
-Date: Mon, 27 Jun 2005 11:29:22 -0600
-Message-ID: <20050627172922.GB17711@colo.lackof.org>
-References: <20050625150905.GC5200@parcelfarce.linux.theplanet.co.uk>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Fri, 1 Jul 2005 15:43:17 +0200
+Message-ID: <42BAE7C3000026F9@mail-5-bnl.tiscali.it>
+References: <42BD1604.4050403@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+  charset="ISO-8859-15"
+Cc: parisc-linux@lists.parisc-linux.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050625150905.GC5200@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <42BD1604.4050403@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,57 +20,80 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jun 25, 2005 at 04:09:05PM +0100, Matthew Wilcox wrote:
-> 
-> Kernel Fault: Code=26 regs=0000000047c34720 (Addr=0000000000000001)
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00001000000011001111111000001111 Not tainted
-> r00-03  0000000000000000 00000000105456f0 00000000101a3494 0000000000000001
+Helo Dave and all,
 
+Just a small update with some success ;-)
 
-> r04-07  00000000104b9200 00000000c55ec518 000000006eb29a2d 00000000bd27d428
-> r08-11  0000000047c344d0 00000000141cc568 000000000000000a 0000000000000000
-> r12-15  00000000204f0018 000000000000004e 0000000000000001 0000000000000000
-> r16-19  0000000000000801 000000000004dee8 000000000004dee8 0000000000000000
-> r20-23  000000000007ffff 00001389e3fff288 00000000140ce5c0 000020dd6eb29a2d
-> r24-27  0000000047c344c0 0000000047c344d0 00000000bd27d428 00000000104b9200
-> r28-31  0000000000000000 0000000047c34630 0000000047c34720 00000000405d58c3
-> sr0-3   0000000000090800 0000000000090800 0000000000000000 0000000000090800
-> sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> 
-> IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000101b0b70 00000000101b0b58
->  IIR: 0c6010d3    ISR: 0000000000000000  IOR: 0000000000000001
->  CPU:        0   CR30: 0000000047c34000 CR31: 0000000010480000
->  ORIG_R28: 0000000000000001
->  IAOQ[0]: __d_lookup+0xc8/0x1a8
->  IAOQ[1]: __d_lookup+0xb0/0x1a8
->  RP(r2): do_lookup+0x3c/0xf0
-> Kernel panic: Kernel Fault
+for remind:
+(with gcc-3.3)
+    o 2.6.9-rc2-pa1 with default compile option '-mdisable-fpregs' works
+fine on my b180 (stress test ok)
 
-I'm not sure what to make of the kernel lookups.
-Using build-tools/a.c and the matching System.map-2.6.11-pa4, I get:
+    o the same 2.6.9-rc2-pa1 without this option (i.e. new default) crash=
+ed
+on stress test (about 2h test)
+    o the later 2.6.9-rc2-pa13 (without '-mdisable-fpregs' by default) cr=
+ashed
+also.
 
-GR02 0x101a3494 sys_mprotect+504
-IOAQ[0] 0x101b0b70 shmem_getpage+ab0
-IOAQ[1] 0x101b0b58 shmem_getpage+a98
+good news with gcc-4.0 (debian pakage) and '-mfixed-range=3Dfr6-fr21,fr27=
+-fr31'
 
-Any clue what the "do_lookup" is getting?
-Sounds like a bug.
+    o 2.6.9-rc2-pa1 seems to works as fine as with original option
+    o 2.6.9-rc2-pa13 the same 
 
-grant
+(just have to backport some small stuff to  reach to compile kernels)
+
+I apply my stress test (tar loops + kernel build loops) during a full day=
+
+for each one without any pb ;-)
+
+I can now try a step forward: 2.6.10-pa + gcc-4.0, ...
+
+Thanks,
+    Joel
+
 > 
 > 
-> -- 
-> "Next the statesmen will invent cheap lies, putting the blame upon 
-> the nation that is attacked, and every man will be glad of those
-> conscience-soothing falsities, and will diligently study them, and refuse
-> to examine any refutations of them; and thus he will by and by convince 
-> himself that the war is just, and will thank God for the better sleep 
-> he enjoys after this process of grotesque self-deception." -- Mark Twain
+> John David Anglin wrote:
+> >>mmm do I well understand that to force gcc to on;y use fr4-f5 and fr2=
+2-fr26
+> >>(as do __muldi3), I had to use option:
+> >>cflags-y        +=3D -mfixed-range=3Dfr6-fr21,fr27-fr28
+> > 
+> > 
+> > Close, I used the change below.
+> mmm I definetely have to go back to elementary school (4 + 28 -1 =3D 31=
+ and
+> not 28, my bad !!!)
+> 
+> >  This seems to build and check ok.
+> Ok I will try to rebuild libgcc2 and kernel with same options.
+> 
+> Btw 2.6.12-pa1 already build and boot fine with above mentioned options=
+.
+> Anyway still hanging after 44 min of stress test.
+> 
+> So imho 2 first thinks to do:
+> 	o apply the right 'fixed-range' option
+> 	o apply 2.6.12.1 patch
+> 
+> > I don't know if it would be possible to cut back another register or
+not.
+> > If I was going to try, I would add fr26 to the fixed list.
+> > 
+> If still not work, the 3rd test I will do ;-)
+> 
+> I will advise.
+> 
+> Thanks again,
+>      Joel
 > _______________________________________________
 > parisc-linux mailing list
 > parisc-linux@lists.parisc-linux.org
 > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
