@@ -1,15 +1,16 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [dave@hiauly1.hia.nrc.ca: Re: [parisc-linux] Why gas kills the
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [dave@hiauly1.hia.nrc.ca: Re: [parisc-linux] Why gas kills the
 	hppa-linux kernel and what you can]
-Date: Fri, 1 Jul 2005 13:53:20 -0400
-Message-ID: <20050701175316.GS5269@systemhalted.org>
+Date: Fri, 01 Jul 2005 14:07:24 -0400
+Message-ID: <1120241244.5046.16.camel@mulgrave>
+References: <20050701175316.GS5269@systemhalted.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
- Randolph Chung <tausq@debian.org>
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Cc: Randolph Chung <tausq@debian.org>,
+ PARISC list <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050701175316.GS5269@systemhalted.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,46 +21,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Fri, 2005-07-01 at 13:53 -0400, Carlos O'Donell wrote:
+> journal_alloc_journal_head() can return a null pointer causing
+> the kernel to die in memset.  I think the fix is to skip calling
+> memset when new_jh is null.  The rest of the code looks ok except
+> for possibly
 
-Dave,
+That's true (and needs fixing), but isn't what happened in this case.
+Look at the traceback:
 
-Forwarding your valuable comments to the list for analysis :)
+> Kernel Fault: Code=15 regs=3249c840 (Addr=73c9d7ba)
 
-c.
+The address wasn't NULL, it was something really strange above the
+addressable virtual memory in the system.
+
+This fault is consistent with a class of faults we've been seeing since
+2.6.11-rc1-pa0 where kmem_cache_alloc() is returning memory that can't
+be written to (usually just slightly above the end of virtual memory).
+
+James
 
 
------ Forwarded message from John David Anglin <dave@hiauly1.hia.nrc.ca> -----
-
-> > Backtrace:   
-> >  [<101c10a4>] journal_add_journal_head+0xdc/0x13c
-
-I think this is a bug in journal_add_journal_head:
-
-repeat:
-        if (!buffer_jbd(bh)) {
-		new_jh = journal_alloc_journal_head();
-		memset(new_jh, 0, sizeof(*new_jh));
-	}
-
-journal_alloc_journal_head() can return a null pointer causing
-the kernel to die in memset.  I think the fix is to skip calling
-memset when new_jh is null.  The rest of the code looks ok except
-for possibly
-
-                if (!new_jh) {
-			jbd_unlock_bh_journal_head(bh);
-			goto repeat;
-		}
-
-This might loop forever.  So, somebody who knows how this is
-supposed to work should look at it.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-
------ End forwarded message -----
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
