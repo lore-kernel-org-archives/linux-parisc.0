@@ -1,7 +1,7 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
 Subject: Re: [dave@hiauly1.hia.nrc.ca: Re: [parisc-linux] Why gas kills the
-Date: Fri, 1 Jul 2005 15:08:54 -0400
-Message-ID: <20050701190854.GW5269@systemhalted.org>
+Date: Fri, 1 Jul 2005 15:12:55 -0400
+Message-ID: <20050701191254.GX5269@systemhalted.org>
 References: <1120241244.5046.16.camel@mulgrave>
 	<200507011838.j61Ic37N006115@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
@@ -41,11 +41,9 @@ On Fri, Jul 01, 2005 at 02:38:03PM -0400, John David Anglin wrote:
 > and possibly CONFIG_DEBUG_PAGEALLOC to find how the pointer is
 > getting allocated.
 
-CONFIG_DEBUG_SLAB
-CONFIG_DEBUG_KOBJECT
-CONFIG_DEBUG_FS
-
-I'll try these and then crash the machine again :)
+I don't know how to turn that on, I can see the define in a couple of
+places, but it's not really connected to any configuration option.
+It looks bitrotten.
 
 c.
 
