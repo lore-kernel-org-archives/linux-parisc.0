@@ -1,18 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: Trident video card caused Kernel Panic on HP
-	Visualize 785/B2000 with rebuilt 2.6.11-rc6-pa1 kernel
-Date: Sat, 2 Jul 2005 01:44:42 -0600
-Message-ID: <20050702074442.GB14091@colo.lackof.org>
-References: <5.1.1.6.1.20050615221250.02a429c0@pop.singnet.com.sg>
-	<5.1.1.6.1.20050615221250.02a429c0@pop.singnet.com.sg>
-	<5.1.1.6.1.20050701204720.02abaec0@pop.singnet.com.sg>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] [RFC] Alternative implementation of glibc spinlocks
+Date: Sat, 02 Jul 2005 23:23:57 +0800
+Message-ID: <42C6B18D.7090909@tausq.org>
+References: <20050702135938.GV19114@tausq.org>
+	<200507020935.42389.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "J. L. Lee" <jllee@singnet.com.sg>
+  charset=ISO-2022-JP
+To: "Michael S. Zick" <mszick@morethan.org>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <5.1.1.6.1.20050701204720.02abaec0@pop.singnet.com.sg>
+In-Reply-To: <200507020935.42389.mszick@morethan.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,32 +21,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jul 01, 2005 at 08:55:21PM +0800, J. L. Lee wrote:
-> >Only if the trident card is plugged in under PCI bus 0.
-> >The driver needs to map the hard coded address to some PCI resource.
-> >What does your "lspci -v" output say?
+Please reply on list.
 
-Lee,
-Can you please post the "lspci -v" output?
-
-> Pls adv if by 'PCI bus 0' you mean the first (counting from the top of the 
-> box) available PCI slot (4 slots in mine) in my B2000?
-
-No. PCI Bus != slot. Normally parisc machines don't have
-slots on PCI bus 0 - that's usually reserved for "built-in" devices.
-
-> >You could hack around this with "#ifndef CONFIG_PARISC"
-> >and hardcode the "chip_id" to the model you have.
-> >You could then find out if the rest of the code has a chance of working.
+> 1) Your free-listing of locks does not appear to be thread safe;
+>     I.E: Protected from concurrent changes.
 > 
-> Where can I find the line "#ifndef CONFIG_PARISC" and how to hardcode the 
-> "chip_id" to the model I have? Where can I get the "chip_id" info? by 
-> 'lspci -v' & 'cat /proc/iomem'?
+> But then, perhaps my mind is going and I just did not
+> read the code closely enough.
 
-Sorry, sounds like my advice is a bit beyond your current skill level.
-Can someone cook up a patch for him to try?
+They are protected by a spinlock.
 
-grant
+> 2) How about an alternative implementation?
+> Based on 4,096 byte pages;
+> 
+> Using the find_[first|last]_[zero|one] asm routines;
+> 
+> As I recall, they only go to 64 bits currently but only
+> require 3 instructions per binary radix (add 6 instructions
+> for 256 bits);
+> 
+> First 16 bytes of the page - your current header;
+> Second 16 bytes of the page - bitmap of available locks;
+
+Why do you need a bitmap?
+
+> First bit of the bitmap represents the current header -
+> use this to lock the page list (currently called free-list);
+> 
+> Second bit of the bitmap represents the bitmap -
+> use this to lock the bitmap;
+
+how do you use a bit to do locking?
+
+> The remaining 254 bits/lock structures per page are usable.
+
+randolph
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
