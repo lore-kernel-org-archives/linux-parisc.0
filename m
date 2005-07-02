@@ -1,17 +1,15 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] ATI 3D Rage II+ Video Card
-Date: Sun, 03 Jul 2005 09:56:22 +0000
-Message-ID: <42C7B646.1000602__15257.5323627845$1416623830$gmane$org@tiscali.be>
-References: <5.1.1.6.1.20050703114537.02a58010@pop.singnet.com.sg>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] PCI SCSI Card in slot 1 disabled :(
+Date: Sat, 2 Jul 2005 02:44:30 -0600
+Message-ID: <20050702084430.GF14091@colo.lackof.org>
+References: <E1DnwdK-0006cH-7z@argon.connect.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: "J. L. Lee" <jllee@singnet.com.sg>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Christopher James Weatherby <chrisw@merseymail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <5.1.1.6.1.20050703114537.02a58010@pop.singnet.com.sg>
+In-Reply-To: <E1DnwdK-0006cH-7z@argon.connect.org.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,39 +20,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Lee,
+On Thu, Jun 30, 2005 at 11:51:02AM +0100, Christopher James Weatherby wrote:
+> Hi Scott,
+>          I've had the same problem with my B132L, and pci cards.
+>  Its all to do with the Firmware version your machine is running.
+>  In the later versions of the Firmware , HP, in its wisdom decided to
+> prevent any non-supported cards (from the cards id, rather than the
+> chipsets), from running on their workstations, and
+> prevent the machine from booting, if one was inserted.
+
+No. HP is not just being obnoxious here.
+This was implemented to prevent silent data corruption. 
+In certain configurations (e.g B132L and a few other workstations),
+Dino version 3.0 and older would silently corrupt data if the address
+of the dino register passed over the bus as data.
+
+A service note was published in ~1998-1999 time frame covering this.
+Searching parisc-linux mailing list for "dino corruption" I didn't
+find any direct references. I advise searching the HP website
+directly. Or does some other HP person have a direct reference?
 
 
-J. L. Lee wrote:
-> Hi,
-> 
-> If you are interested, followiong are some test results I carried out 
-> while trying to bring up an ATI 3D Rage II+ video card on my B2000 which 
-> runs on Linux kernel 2.6.12-rc6-pa1.
-> 
-> The video card outputs from 'lspci -v' are:
-> 
-> 0000:01:01.0 VGA compatible controller: ATI Technologies Inc 3D Rage II+ 
-> 215GTB [Mach64 GTB] (rev 9a) (prog-if 00 [VGA])
->     Flags: bus master, stepping, medium devsel, latency 255
->     Memory at fa000000 (32-bit, non-prefetchable) [size=16M]
->     I/O ports at 12000 [size=256]
->     Memory at f4800000 (32-bit, non-prefetchable) [size=4K]
->     Expansion ROM at f4820000 [disabled] [size=128K]
-> 
-Iirc for such ATI 3D Rage on a non-i386 platform you would have to select:
+> My machine used to
+> happily boot with a wide range of PCI cards, but stopped when I upgraded to
+> the last Firmware version (6.1, I think).
+>  I think the only solution is to find an older version of the firmware, and
+> downgrade the machine. 
 
-  CONFIG_FB_ATY_XL_INIT: (sic "to support booting a Rage XL without BIOS support.")
+No. The only solution is to replace the machine with one
+that is repaired. Sorry. :^(
 
-i.e. something like in your make menuconfig:
+> However I've never been able to find older versions of the firmware for a
+> B132L on HP's patch/firmware site (http://itrc.hp.com/ /
+> ftp://ftp.itrc.hp.com/ )
 
-<M>   ATI Mach64 display support
-[*]     Mach64 CT/VT/GT/LT (incl. 3D RAGE) support
-[ ]       Mach64 generic LCD support (EXPERIMENTAL) (NEW)
-[*]       Rage XL No-BIOS Init support
+That's becuase it's a Bad Idea (tm). That's not by accident.
 
-Hth,
-	Joel
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
