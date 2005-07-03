@@ -1,18 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Is the message from 'make modules_install'
-	important?
-Date: Sun, 3 Jul 2005 09:07:52 -0400 (EDT)
-Message-ID: <200507031307.j63D7qPf015325__23406.3551681631$1416623831$gmane$org@hiauly1.hia.nrc.ca>
-References: <5.1.1.6.1.20050703124208.02a57290@pop.singnet.com.sg>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Sun, 3 Jul 2005 14:47:15 -0400 (EDT)
+Message-ID: <200507031847.j63IlFQZ016629@hiauly1.hia.nrc.ca>
+References: <42C81991.6030502@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: jllee@singnet.com.sg (J. L. Lee)
+Cc: parisc-linux@lists.parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <5.1.1.6.1.20050703124208.02a57290@pop.singnet.com.sg> from "J.
-	L. Lee" at Jul 3, 2005 12:45:29 pm
+In-Reply-To: <42C81991.6030502@tiscali.be> from "Joel Soete" at Jul 3,
+	2005 05:00:01 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,12 +21,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Did the 'make modules_install' complete its task or it stopped prematurely? 
-> Pls adv.
+> > good news with gcc-4.0 (debian pakage) and '-mfixed-range=fr6-fr21,fr27-fr31'
+> > 
+> >     o 2.6.9-rc2-pa1 seems to works as fine as with original option
+> >     o 2.6.9-rc2-pa13 the same 
+> > 
+> > (just have to backport some small stuff to  reach to compile kernels)
+> > 
+> > I apply my stress test (tar loops + kernel build loops) during a full day
+> > for each one without any pb ;-)
+> > 
+> > I can now try a step forward: 2.6.10-pa + gcc-4.0, ...
 
-Another related item is 'make install'.  In 2.6.10, it did a nicer job
-of installing the kernel, and the vmlinux, config and System.map links.
-It also searched for palo.
+I'll have to try a gcc-4.0 built kernel to see if it improves things
+on the c3k.
+
+Just a note, a patch to fix the function pointer canonicalization
+issue that you and others noticed was installed Friday to the 4.0 branch,
+and Saturday to the GCC head.
 
 Dave
 -- 
