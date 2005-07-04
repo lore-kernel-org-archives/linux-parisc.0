@@ -1,13 +1,15 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: [parisc-linux] [RFC] Alternative implementation of glibc spinlocks
-Date: Sat, 2 Jul 2005 06:59:39 -0700
-Message-ID: <20050702135938.GV19114@tausq.org>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Mon, 4 Jul 2005 16:51:31 +0200
+Message-ID: <42BAE7C300003107@mail-5-bnl.tiscali.it>
+References: <200507031847.j63IlFQZ016629@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset="ISO-8859-15"
+Cc: parisc-linux@lists.parisc-linux.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200507031847.j63IlFQZ016629@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,288 +20,133 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-In order to satisfy the ldcw address alignment requirements of the
-PA architecture, currently in glibc we implement locks in an
-ingenious but rather difficult to manage way. We define a spinlock as
-an array of 4 ints (16-bytes) at during lock time we select the
-individual word that has correct alignment, and use that to do locking. 
+Hello Dave,
 
-This works, but experience has shown that it makes glibc implementation
-and merging to upstream rather difficult. glibc is full of assumptions
-that a spinlock is an "int", and, while it is getting better, there is
-still a lot of code that assumes an uninitialized lock has the value "0"
+> 
+> > > good news with gcc-4.0 (debian pakage) and '-mfixed-range=3Dfr6-fr2=
+1,fr27-fr31'
+> > > 
+> > >     o 2.6.9-rc2-pa1 seems to works as fine as with original option
+> > >     o 2.6.9-rc2-pa13 the same 
+> > > 
+> > > (just have to backport some small stuff to  reach to compile kernel=
+s)
+> > > 
+> > > I apply my stress test (tar loops + kernel build loops) during a fu=
+ll
+> day
+> > > for each one without any pb ;-)
+> > > 
+> > > I can now try a step forward: 2.6.10-pa + gcc-4.0, ...
+> 
+> I'll have to try a gcc-4.0 built kernel to see if it improves things
+> on the c3k.
+> 
+cool ;-)
 
-There has been some proposals to redo our locking infrastructure. For
-example, see willy's proposal at http://wiki.parisc-linux.org/Locks
-This solves the "initialize to 0" problem, but it still makes glibc
-implementation difficult because of the scalar lock assumption.
+btw for the 2.6.10-pa11 I had to apply those small backports:
+diff -NaurX dontdiff linux-2.6.10-pa10-20050112/arch/parisc/Makefile linu=
+x-2.6.10-pa10-20050112-gcc40/arch/parisc/Makefile
+--- linux-2.6.10-pa10-20050112/arch/parisc/Makefile     2005-01-04 07:37:=
+20.000000000
++0100
++++ linux-2.6.10-pa10-20050112-gcc40/arch/parisc/Makefile       2005-07-0=
+1
+17:30:00.000000000 +0200
+@@ -44,6 +44,7 @@
+ # If that gets optimized, we might need to disable the use of fpregs in
+the
+ # kernel.
+ #cflags-y      +=3D -mdisable-fpregs
++cflags-y       +=3D -mfixed-range=3Dfr6-fr21,fr27-fr31
+ 
+ # Without this, "ld -r" results in .text sections that are too big
+ # (> 0x40000) for branches to reach stubs.
+diff -NaurX dontdiff linux-2.6.10-pa10-20050112/drivers/eisa/Makefile lin=
+ux-2.6.10-pa10-20050112-gcc40/drivers/eisa/Makefile
+--- linux-2.6.10-pa10-20050112/drivers/eisa/Makefile    2003-09-08 23:42:=
+02.000000000
++0200
++++ linux-2.6.10-pa10-20050112-gcc40/drivers/eisa/Makefile      2005-07-0=
+1
+18:12:25.000000000 +0200
+@@ -1,8 +1,5 @@
+ # Makefile for the Linux device tree
+ 
+-# Being anal sometimes saves a crash/reboot cycle... ;-)
+-EXTRA_CFLAGS    :=3D -Werror
+-
+ obj-$(CONFIG_EISA)             +=3D eisa-bus.o
+ obj-${CONFIG_EISA_PCI_EISA}     +=3D pci_eisa.o
+ 
+diff -NaurX dontdiff linux-2.6.10-pa10-20050112/include/linux/fb.h linux-=
+2.6.10-pa10-20050112-gcc40/include/linux/fb.h
+--- linux-2.6.10-pa10-20050112/include/linux/fb.h       2004-11-30 07:45:=
+36.000000000
++0100
++++ linux-2.6.10-pa10-20050112-gcc40/include/linux/fb.h 2005-07-01 18:38:=
+07.000000000
++0200
+@@ -857,7 +857,6 @@
+ 
+ /* drivers/video/modedb.c */
+ #define VESA_MODEDB_SIZE 34
+-extern const struct fb_videomode vesa_modes[];
+ extern void fb_var_to_videomode(struct fb_videomode *mode,
+                                struct fb_var_screeninfo *var);
+ extern void fb_videomode_to_var(struct fb_var_screeninfo *var,
+@@ -902,6 +901,8 @@
+        u32 flag;
+ };
+ 
++extern const struct fb_videomode vesa_modes[];
++
+ struct fb_modelist {
+        struct list_head list;
+        struct fb_videomode mode;
+=3D=3D=3D=3D<>=3D=3D=3D=3D
 
-Attached is a compiled but untested code snippet that contains an
-alternative proposal for how to handle spinlocks in glibc. Actual locks
-are allocated dynamically and lazily. The exposed glibc lock type is
-simply a "cookie" to the actual lock. This allows glibc to still
-think of a lock as a scalar. Some obvious downsides are:
+And eventualy:
+diff -NaurX dontdiff linux-2.6.10-pa10-20050112/Makefile linux-2.6.10-pa1=
+0-20050112-gcc40/Makefile
+--- linux-2.6.10-pa10-20050112/Makefile 2005-01-10 12:00:43.000000000 +01=
+00
++++ linux-2.6.10-pa10-20050112-gcc40/Makefile   2005-07-01 17:29:16.00000=
+0000
++0200
+@@ -201,7 +201,7 @@
+          else if [ -x /bin/bash ]; then echo /bin/bash; \
+          else echo sh; fi ; fi)
+ 
+-HOSTCC         =3D gcc
++HOSTCC         =3D gcc-4.0
+ HOSTCXX        =3D g++
+ HOSTCFLAGS     =3D -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer
+ HOSTCXXFLAGS   =3D -O2
+@@ -318,7 +318,7 @@
+ 
+ AS             =3D $(CROSS_COMPILE)as
+ LD             =3D $(CROSS_COMPILE)ld
+-CC             =3D $(CROSS_COMPILE)gcc
++CC             =3D $(CROSS_COMPILE)gcc-4.0
+ CPP            =3D $(CC) -E
+ AR             =3D $(CROSS_COMPILE)ar
+ NM             =3D $(CROSS_COMPILE)nm
+=3D=3D=3D=3D<>=3D=3D=3D=3D
 
-1) We are moving more compile-time work to run-time; requires memory
-   allocation at run-time, potentially slow.
-2) The pthread interface allows spinlock locking to fail, and this
-   code may fail a locking operation if memory cannot be allocated,
-   but most code probably don't handle this case and may deadlock
-   or function incorrectly.
-3) The code is not 64-bit clean, although that can be fixed if needed
-   by making the lock cookie an index.
+Still have to find back what should still have to be backported (as kyle
+did for 2.6.8) for b2k ;-)
 
-There are probably other problems. I *think* this code still works with
-locks in shared memory, but I may be missing some cases.
+> Just a note, a patch to fix the function pointer canonicalization
+> issue that you and others noticed was installed Friday to the 4.0 branc=
+h,
+> and Saturday to the GCC head.
+> 
+Thanks for feedback (I will try it asap),
 
-Comments?
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+    Joel
 
 
-#include <stdio.h>
-#include <string.h>
-#include <sys/mman.h>
-#include <assert.h>
-#include <errno.h>
-
-typedef int lock_t;
-
-/* Exported interface */
-int spin_init(lock_t *lock);
-int spin_destroy(lock_t *lock);
-int spin_lock(lock_t *lock);
-int spin_unlock(lock_t *lock);
-int spin_trylock(lock_t *lock);
-int spin_is_locked(lock_t *lock);
-
-/* Implementation */
-
-/* The idea of this implementation is that each lock_t points to
- * a dynamically allocated, properly aligned lock.
- *
- * We manage these dynamically aligned locks as pages of locks. Each
- * lock page contains a header that contains a simple freelist of
- * lock objects.
- */
-
-#define PAGESIZE 4096
-
-struct lock_page;
-
-/* An internal lock is a 16-byte structure that is allocated aligned
- * to a 16-byte boundary. The first word of the lock structure is
- * actually used to do ldcw. The other fields can be used for other
- * accounting purposes.
- */
-struct internal_lock {
-	int lockword;
-	struct lock_page *page;
-	short next;
-	short pad1;
-	int pad2;
-};
-
-/* Locks are allocated in pages; each page contains this header. */
-struct lock_page_hdr {
-	struct lock_page *next; /* Chain together allocated pages */
-	short freelist; /* First available lock index in this page */
-	/* Pad to 16-bytes, not really needed, but just to make
-	 * it explicit.
-	 */
-	unsigned short pad1[3];
-	int pad2;
-};
-
-#define LOCKS_PER_PAGE ((PAGESIZE - sizeof(struct lock_page_hdr))/sizeof(struct internal_lock))
-
-struct lock_page {
-	struct lock_page_hdr hdr;
-	struct internal_lock locks[LOCKS_PER_PAGE];
-};
-
-/* Internal data */
-static struct internal_lock __lock __attribute__((aligned(16))) = { 1, 0, 0, 0, 0 };
-static struct lock_page *__lock_pages;
-
-static int
-__ldcw(void *a)
-{
-	int ret;
-	__asm__ __volatile__("ldcw 0(%1),%0" : "=r" (ret) : "r" (a));
-	return ret;
-}
-
-static void
-__raw_spin_lock(struct internal_lock *l)
-{
-	while (__ldcw(&l->lockword))
-		while (l->lockword == 0)
-			/* spin */ ;
-}
-
-static void
-__raw_spin_unlock(struct internal_lock *l)
-{
-	l->lockword = 0;
-}
-
-static lock_t
-__allocate_lock(void)
-{
-	struct lock_page *p;
-	short target;
-
-	__raw_spin_lock(&__lock);
-	for (p = __lock_pages; p != NULL; p = p->hdr.next)
-		if (p->hdr.freelist >= 0)
-			break;
-
-	if (p == NULL) {
-		void *m;
-		int i;
-		struct internal_lock *l;
-
-		m = mmap(0, PAGESIZE, PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_SHARED, -1, 0);
-		if (m == MAP_FAILED) {
-			__raw_spin_unlock(&__lock);
-			return ENOMEM;
-		}
-		p = (struct lock_page *)m;
-		p->hdr.freelist = 0;
-
-		/* Initialize lock linked list */
-		for (i = 0; i < LOCKS_PER_PAGE; i++) {
-			l = &p->locks[i];
-			l->lockword = 1;
-			l->page = p;
-			l->next = i + 1;
-		}
-		l->next = -1;
-
-		p->hdr.next = __lock_pages;
-		__lock_pages = p;
-	}
-
-	assert(p && p->hdr.freelist >= 0);
-
-	target = p->hdr.freelist;
-	p->hdr.freelist = p->locks[target].next;
-	p->locks[target].next = -1;
-	
-	__raw_spin_unlock(&__lock);
-
-	return (int)&p->locks[target];
-}
-
-static int
-__free_lock(lock_t lock)
-{
-	struct lock_page *p;
-	struct internal_lock *l;
-
-	__raw_spin_lock(&__lock);
-	l = (struct internal_lock *)lock;
-	p = l->page;
-
-	l->next = p->hdr.freelist;
-	p->hdr.freelist = l - &p->locks[0];
-	__raw_spin_unlock(&__lock);
-
-	return 0;
-}
-
-static struct internal_lock *
-__find_lock(lock_t lock)
-{
-	return (struct internal_lock *)lock;
-}
-
-int spin_init(lock_t *lock)
-{
-	*lock = __allocate_lock();
-	if (*lock == 0)
-		return ENOMEM;
-	return 0;
-}
-
-int spin_destroy(lock_t *lock)
-{
-	if (*lock)
-		return __free_lock(*lock);
-	return 0;
-}
-
-int spin_lock(lock_t *lock)
-{
-	struct internal_lock *l;
-
-	/* lazy lock init */
-	if (*lock == 0) {
-		if (spin_init(lock) != 0)
-			return EINVAL;
-	}
-
-	l = __find_lock(*lock);
-	if (!l)
-		return EINVAL;
-
-	__raw_spin_lock(l);
-	return 0;
-}
-
-int spin_unlock(lock_t *lock)
-{
-	struct internal_lock *l;
-
-	/* Assume unallocated locks are unlocked */
-	if (*lock == 0)
-		return 0;
-
-	l = __find_lock(*lock);
-	if (!l) 
-		return EINVAL;
-
-	__raw_spin_unlock(l);
-	return 0;
-}
-
-int spin_trylock(lock_t *lock)
-{
-	struct internal_lock *l;
-
-	/* lazy lock init */
-	if (*lock == 0) {
-		if (spin_init(lock) != 0)
-			return EINVAL;
-	}
-
-	l = __find_lock(*lock);
-	if (!l)
-		return EINVAL;
-
-	return __ldcw(&l->lockword) != 0 ? 0 : EBUSY;
-}
-
-int spin_is_locked(lock_t *lock)
-{
-	struct internal_lock *l;
-
-	/* Assume unallocated locks are unlocked */
-	if (*lock == 0)
-		return 0;
-
-	l = __find_lock(*lock);
-	if (l)
-		return l->lockword == 0;
-
-	/* Assume invalid locks are unlocked */
-	return 0;
-}
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
