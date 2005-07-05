@@ -1,182 +1,96 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] [RFC] Alternative implementation of glibc spinlocks
-Date: Tue, 5 Jul 2005 01:14:00 -0400
-Message-ID: <20050705051359.GA5906@systemhalted.org>
-References: <20050702135938.GV19114@tausq.org>
-	<20050704010044.GA5269@systemhalted.org> <42C897F2.80307@tausq.org>
-	<20050704041453.GC5269@systemhalted.org>
-	<42C8CDCC.7060308@tausq.org>
-	<20050704145417.GE5269@systemhalted.org>
-	<42C9E4B4.2060303@tausq.org>
+From: "J. L. Lee" <jllee@singnet.com.sg>
+Subject: Setting up IDE CD-ROM on HPPA B2000
+Date: Tue, 05 Jul 2005 15:15:20 +0800
+Message-ID: <5.1.1.6.1.20050705144330.02b5c6f0__19492.7591168836$1416623834$gmane$org@pop.singnet.com.sg>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42C9E4B4.2060303@tausq.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset="us-ascii";
+  format=flowed
+To: <debian-hppa@lists.debian.org>,
+ <parisc-linux@lists.parisc-linux.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <t-ElP.A.ZZC.mOjyCB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-hppa/>
 
-On Tue, Jul 05, 2005 at 09:39:00AM +0800, Randolph Chung wrote:
-> > If the lock is locked when copied, the copy is locked.
-> > 
-> > Wether or not the thread can enter the critical section is dependant
-> > upon the programmer. The programmer would have to ensure the lock copy
-> > was atomic by protecting the structure. Then it could point the two
-> > threads at the new copy, and delete the old copy.
-> 
-> I have to agree with Dave - this seems like a recipe for disaster.
+Hi,
 
-Users do weird things, it's not that hard to send a SIGSTOP to a pair of
-threads and do this work.
- 
-> > If we add a level of indirection we insert a lookup requirement. The
-> > lookup needs to determine if it has to materialize a lock, index load
-> > the lock from the table, which might be on a faraway page (requiring
-> > more searching), and our performance is shot.
-> 
-> sounds like we are implementing a VM with page tables. We need a TLB! :-)
+I have seen several postings mentioning about IDE CD-ROM drives crash the 
+HPPA boxes while running Linux. I myself also encoutered it repeatedly of 
+late after succesfully trying various ways to go round it. Thanks to Max 
+Grabert's help, I have now set it up as IDE-SCSI CD-ROM drive and it seems 
+to be holding steady so far without me having to try some tricks as before.
 
-Yes we do, but in that case we have control over serialization to swap
-:)
+If you are interested, followings are what I have done to set up the IDE 
+CD-ROM as IDE-SCSI CD-ROM under the patient guidance of Max Grabert:
 
-> > It still doesn't solve our lock rematerializing issue. I think the issue
-> > will never go away if we have to provide our own lock cookie namespace 
-> > management.
-> 
-> In any case rematerializing a lock seems iffy.....
+1) Run 'make menuconfig' (or equivalent), select 'Device drivers -> 
+ATA/ATAPI/MFM/RLL support -> SCSI emulation support' to compile as module 
+(or into kernel if you prefer);
 
-Agreed.
- 
-> > A threaded lisp interpreter writes a running image to disk, only a
-> > partial write and not the entire address space. It expects to reload
-> > this from disk and start a thread up at the same place. If it has lock
-> > aliasing other threads might collide with the loaded lock cookie.
-> 
-> I'm not sure it can do this without doing fixups after reading from a
-> disk image. For example, in many object systems pointers are written to
-> disks as UUIDs and when the object is read back from disk the UUID needs
-> to be reconverted to a real pointer. I would think the situation is the
-> same with locks; to have predictable behavior you have to write
-> information about the state of the lock and manage it yourself, instead
-> of relying on the underlying representation of the lock.
+2) In the same 'make menuconfig' (or equivalent), deselect 'Device drivers 
+-> ATA/ATAPI/MFM/RLL support -> Include IDE/ATAPI CDROM support' if it is 
+selected;
 
-The situation is not the same with locks, the system pointers could get
-serialized as UUID's but then we'd have to go in and write hppa specific
-code to also serialize the lock to a special UUID?!
+3) In the same 'make menuconfig' (or equivalent), make sure that required 
+CD-ROM file systems are selected under the 'File Systems',
 
-> > I think having the lock data with the lock is the only reasonable
-> > solution.
-> 
-> Perhaps, but "lock data" should not be the internal representation of
-> the lock. My reading of the POSIX/SuSv3 pthread spec suggests that the
-> interface is designed explicitly to allow locks to be allocated dynamically.
+4) Edit palo config file '/etc/palo.conf' to add 'hda=ide-scsi'  at the end 
+of the command line entry (the 1st entry);
 
-I agree with you :)
- 
-> > Politics is a part of life, and removing it from the equation means you
-> > are missing important information when making a decision.
-> 
-> Yes, but I don't think we should settle on an implementation that is
-> otherwise inferior only to get around the politics of an open source
-> project.
+5) Recompiled the kernel;
 
-What if it means the different between forking and maintaining your own
-repository? :)
+6) Run /sbin/palo;
 
-> > I don't know what "more natural" means in this case. It's not a
-> > measurable quantity. A the POSIX pthread interface it's already a
-> > structure, so what difference does it make, the internals are opaque.
-> 
-> s/more natural/easier to implement/ then.
+7) If you compile any of the the above drivers as modules, please make sure 
+they are also loaded on boot by adding the following lines into /etc/modules:
 
-Ok.
+iso9660
+udf
+ns87415
+ide-scsi
+sg
+sr_mod
 
-> > A deferred dynamically allocated lock system faces cookie namespace
-> > problems.
-> 
-> I think there are two separate "namespace" problems:
-> 1) Shared memory locks - this is relatively easy to solve
-> 2) Serializable locks - this is difficult
+8) Reboot.
 
-I had pondered using a space register to access locks, and create a
-4GB space just for locks :)
+Remember from now on your IDE CD-ROM drive will be known as /dev/scdX. 
+/dev/scd0 in my case.
 
-> > Compliance with the standards is important, but second to a robust and
-> > working implementation under minimum defined criteria.
-> 
-> I dunno about "second to"....
+Rgds,
+Lee
 
-How about "close second to" ? :)
+ps. Any downside in setting up IDE CD-ROM as IDE-SCSI CD-ROM?
 
-> > Let me run a thought an experiment, let me construct the most idiotic
-> > implementation of "scalar lock" that comes to mind...
-> > 
-> > Implementation of Scalar Locks (Take 1)
-> > =======================================
-> > 
-> > a. glibc has a single aligned master lock.
-> > b. Every thread uses a scalar for a lock.
-> > c. The pthread functions do the following:
-> > 	- If the sig_atomic_t lock != 0
-> >           Use LWS CAS to take the lock [1]
-> >           = Done.
-> > 	- Block signals.
-> > 	- Increment the sig_atomic_t lock.
-> > 	- Acquire a master lock.
-> > 	- Twiddle a bit in the scalar lock.
-> > 	- Unlock a master lock.
-> > 	- Decrement the sig_atomic_t lock.
-> > 	- Unblock signals.
-> 
-> Your increment/decrement operations will also need to be done with a LWS.
+pps. You might see the following msg but I believe it is harmless:
 
-I think I see what you mean. One thread executing LWS CAS on
-scalar_lock, and the other twiddling the sclar_lock bit could happen in
-the above algorithm. If I'm going to use LWS CAS it might as well be to
-handle the lock itself.
- 
-I'm *trying* to execute the sequence of insns required to twiddle the
-scalar_lock atomically using a mutex provided by ldcw on a masterlock[n],
-"n" being selected from a hash of the scalar_lock address.
+modprobe -k ide-mod options="hda=ide-scsi"
+FATAL: Module ide_mod not found.
 
-The problem is that if any thread took a signal, it could face deadlock
-if it tries to do any other similar pthread locking function. I thought
-myself clever and setup a fallback to LWS CAS.
 
-Though it won't work since LWS CAS uses a set of kernel locks. And two
-threads might try to twiddle the lock independantly of eachother in this
-case (e.g. kernel lock vs. master lock protecting one scalar lock).
+pps. You might also see the following msg: (Does 'deprecated for cd 
+burning' msg mean that we can burn CDs if we have a CD/RW drive?)
 
-Do we think that LWS CAS could be used effectively to implement locks?
+ide-scsi is deprecated for cd burning! Use ide-cd and give dev=/dev/hdX as 
+devicescsi1 : SCSI \ host adapter emulation for IDE ATAPI devices Vendor: 
+MITSUMI   Model: CD-ROM FX4820T!B  \ Rev: F01M Type: CD-ROM ANSI SCSI 
+revision: 02 sg
 
-All the test code is in the "userspace" repository under test-lws. I
-wrote a small set of routines for it aswell. Perhaps you want to review
-that for me to make sure I didn't get anything wrong?
+Attached scsi generic sg0 at scsi0, channel 0, id 6, lun 0,  type 0Attached 
+scsi generic sg1 at \ scsi1, channel 0, id 0, lun 0,  type 5sr0: scsi3-mmc 
+drive: 48x/48x cd/rw xa/form2 cdda \ trayUniform CD-ROM driver Revision: 
+3.20    sr_mod
 
-> One undesirable property of this approach seems to be that as the lock
-> becomes more contended, you spend an increasing amount of time spinning
-> in the kernel (doing your LWS CAS). As you told me last night, this
-> means the kernel has interrupts off, so processes are not getting
-> scheduled, and your lock contention becomes worse.
+All modules loaded.
 
-Almost right, interrupts are still on, we just don't schedule. The tail
-call of schedule is in assembly and it checks to see if you came from
-the gateway, if you did then it doesn't schedule (or deliver your
-signals). Interrupts have to be left on so I can fault the page back in
-from disk if it happens to be swapped out.
 
-c.
 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
