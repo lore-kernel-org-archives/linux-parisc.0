@@ -1,47 +1,127 @@
-From: Sven Schnelle <svens@gmx.de>
-Subject: kgdb (was: Re: [parisc-linux] netpoll support for lasi_82596)
-Date: Wed, 06 Jul 2005 08:22:02 +0200
-Message-ID: <87zmt0bgj9.fsf_-_@deprecated.intranet.astaro.de>
-References: <878y0t66v5.fsf@deprecated.intranet.astaro.de>
-	<200507052243.32912.deller@gmx.de>
+From: "Vikrant_Basotra" <Vikrant_Basotra@Satyam.com>
+Subject: [parisc-linux] Porting Linux On PMC8266 based custom board
+Date: Wed, 6 Jul 2005 12:01:51 +0530
+Message-ID: <D8595042F3765A4285B848A78A2C2ED10162C3@bsdmsg002.corp.satyam.ad>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="=-=-=";
-  micalg=pgp-sha1;
-  protocol="application/pgp-signature"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <svens@gmx.de>
-In-Reply-To: <200507052243.32912.deller@gmx.de> (Helge Deller's message of "Tue, 5 Jul 2005 22:43:32 +0200")
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+To: <parisc-linux@lists.parisc-linux.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---=-=-=
-Content-Transfer-Encoding: quoted-printable
 
-Hi Helge,
+Hi All,
+		I am porting Linux on MPC8266 custom board, after
+getting in to Linux the system seems to be struck at a point.
+Saved Environment variable:-
+      bootargs console=3DttyS0,11520 root=3D1f00 and downloaded the =
+Kernel
+image at address 0x02000000 in the RAM.
+>>From the u-boot prompt the bootm command is invoked as:-=20
+	bootm 0x02000000
 
-Helge Deller <deller@gmx.de> writes:
+After that what I get on the terminal is pasted below for your
+reference.
+I couldn't make out any thing from the output, can any body tell me
+where I am doing wrong, and also I don't have any idea about the
+bootargs argument "root". Can any body give the precise description of
+this argument?
 
-> I've applied your patch (with small modifications).
 
-Thanks, maybe one day this will be useful for kgdb debugging over
-ethernet - but this needs some work, at the Moment there are no
-breakpoints and no singlestepping in my kgdb port for linux-2.6.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++
+=3D> bootm 02000000 ## Booting image at 02000000...
+   Image Name:   2.4.24 MPC8260ADS
+   Image Type:   PowerPC Linux Kernel Image (gzip compressed)
+   Data Size:    725838 Bytes =3D 708.8 kB
+   Load Address: 00000000
+   Entry Point:  00000000
+   Verifying Checksum ... OK
+   Uncompressing Kernel Image ... OK
+Memory BAT mapping: BAT2=3D128Mb, BAT3=3D0Mb, residual: 0Mb
 
-Bye,
+Linux version 2.4.24-pre2 (root@pmcserver) (gcc version 3.3.4) #2 Tue
+Jul 5 15:05:10 IST 2005
 
-Sven
-=2D-=20
-Disc space - the final frontier...
+On node 0 totalpages: 32768
 
---=-=-=
-Content-Type: application/pgp-signature
+zone(0): 32768 pages.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
+zone(1): 0 pages.
 
-iD8DBQBCy3iM86MdxiXaIbERAgMqAKC3l4PIwgZkvC2WMQzTKG2SGGKffwCeOLHT
-JJigW5kCqL8XvTB2FMpdLQM=
-=2PGw
------END PGP SIGNATURE-----
---=-=-=--
+zone(2): 0 pages.
+
+Kernel command line: console=3DttyS0,115200 root=3D1f00
+
+Warning: real time clock seems stuck!
+
+Calibrating delay loop... 131.89 BogoMIPS
+
+Memory: 127812k available (1232k kernel code, 412k data, 64k init, 0k
+highmem)
+
+Dentry cache hash table entries: 16384 (order: 5, 131072 bytes)
+
+Inode cache hash table entries: 8192 (order: 4, 65536 bytes)
+
+Mount cache hash table entries: 512 (order: 0, 4096 bytes)
+
+Buffer cache hash table entries: 8192 (order: 3, 32768 bytes)
+
+Page-cache hash table entries: 32768 (order: 5, 131072 bytes)
+
+POSIX conformance testing by UNIFIX
+
+Linux NET4.0 for Linux 2.4
+
+Based upon Swansea University Computer Society NET3.039
+
+Initializing RT netlink socket
+
+Starting kswapd
+
+JFFS2 version 2.1. (C) 2001 Red Hat, Inc., designed by Axis
+Communications AB.
+
+i2c-core.o: i2c core module version 2.6.1 (20010830)
+
+i2c-dev.o: i2c /dev entries driver module version 2.6.1 (20010830)
+
+CPM UART driver version 0.01
+
+ttyS0 on SMC1 at 0x0000, BRG7
+
+ttyS1 on SMC2 at 0x0040, BRG8
+
+ttyS2 on SCC1 at 0x8000, BRG1
+
+ttyS3 on SCC2 at 0x8100, BRG2
+
+pty: 256 Unix98 ptys configured
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+=09
+Waiting eagerly,
+Regards,
+VB
+
+
+DISCLAIMER:
+This email (including any attachments) is intended for the sole use of =
+the intended recipient/s and may contain material that is CONFIDENTIAL =
+AND PRIVATE COMPANY INFORMATION. Any review or reliance by others or =
+copying or distribution or forwarding of any or all of the contents in =
+this message is STRICTLY PROHIBITED. If you are not the intended =
+recipient, please contact the sender by email and delete all copies; =
+your cooperation in this regard is appreciated.
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
