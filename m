@@ -1,52 +1,47 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Wed, 6 Jul 2005 13:00:00 -0400 (EDT)
-Message-ID: <200507061700.j66H01NH006241@hiauly1.hia.nrc.ca>
-References: <42BAB5E10000403E@mail-2-bnl.tiscali.it>
+From: Sven Schnelle <svens@gmx.de>
+Subject: kgdb (was: Re: [parisc-linux] netpoll support for lasi_82596)
+Date: Wed, 06 Jul 2005 08:22:02 +0200
+Message-ID: <87zmt0bgj9.fsf_-_@deprecated.intranet.astaro.de>
+References: <878y0t66v5.fsf@deprecated.intranet.astaro.de>
+	<200507052243.32912.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
+Content-Type: multipart/signed;
+  boundary="=-=-=";
+  micalg=pgp-sha1;
+  protocol="application/pgp-signature"
 Cc: parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (Joel Soete)
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42BAB5E10000403E@mail-2-bnl.tiscali.it> from "Joel Soete" at Jul
-	6, 2005 06:40:32 pm
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <svens@gmx.de>
+In-Reply-To: <200507052243.32912.deller@gmx.de> (Helge Deller's message of "Tue, 5 Jul 2005 22:43:32 +0200")
+List-ID: <linux-parisc.vger.kernel.org>
 
-> Ok I boot the same and grab recent gcc-4.1 src (about 6h gmt) and build it
-> with build-tls-tools with following options:
-> --enable-shared --with-system-zlib --disable-nls --enable-debug --host=hppa-linux
-> --tar
-> get=hppa-linux --disable-libmudflap --enable-languages=c,c++
+--=-=-=
+Content-Transfer-Encoding: quoted-printable
 
-Don't use 4.1 unless you want to help with fixing GCC bugs!
+Hi Helge,
 
-> My very bad error was to forget to save the System.map, so it's hard to say
-> if the pim analyse is relevant:
+Helge Deller <deller@gmx.de> writes:
 
-objdump -d will tell you everything you need to know.
+> I've applied your patch (with small modifications).
 
-According to the grapevine, most of the current stability problems
-are probably caused by not properly saving fpregs in all context switches.
-The 32-bit port used to be built with -mdisable-fpregs but this was removed
-when memcpy was made more efficient.  Note that disabling fpregs when
-building the kernel isn't a complete solution as libgcc uses various
-floating-point instructions which may or may not get linked into the
-kernel (e.g., for integer multiplication).
+Thanks, maybe one day this will be useful for kgdb debugging over
+ethernet - but this needs some work, at the Moment there are no
+breakpoints and no singlestepping in my kgdb port for linux-2.6.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Bye,
+
+Sven
+=2D-=20
+Disc space - the final frontier...
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQBCy3iM86MdxiXaIbERAgMqAKC3l4PIwgZkvC2WMQzTKG2SGGKffwCeOLHT
+JJigW5kCqL8XvTB2FMpdLQM=
+=2PGw
+-----END PGP SIGNATURE-----
+--=-=-=--
