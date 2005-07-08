@@ -1,16 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Wed, 6 Jul 2005 21:27:36 -0400 (EDT)
-Message-ID: <200507070127.j671Ra0q008822@hiauly1.hia.nrc.ca>
-References: <42BAE7C300003107@mail-5-bnl.tiscali.it>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] Getting PIE to work (was How to reclaim .rela.dyn
+	entries for symbols that become hidden?)
+Date: Fri, 08 Jul 2005 10:06:05 +0800
+Message-ID: <42CDDF8D.4000305@tausq.org>
+References: <20050630165918.GG5269@systemhalted.org>	<200507071759.12521.vapier@gentoo.org>
+	<42CDDD31.4030403@tausq.org> <200507072200.10597.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=ISO-8859-1
 Cc: parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (Joel Soete)
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42BAE7C300003107@mail-5-bnl.tiscali.it> from "Joel Soete" at Jul
-	4, 2005 04:51:31 pm
+In-Reply-To: <200507072200.10597.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,20 +22,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Joel,
+> ah, was not aware parisc kept a glibc cvs tree
 
->  #cflags-y      += -mdisable-fpregs
-> +cflags-y       += -mfixed-range=fr6-fr21,fr27-fr31
+we just added this recently to work on TLS.
 
-See <http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2005-July/035965.html>.
-It's now clear why you had success with the -mfixed-range in gcc 4.0.
-The range above disables gcc's use of the floating-point no clobber
-registers.
+I realized after I sent that last email that the pie patch probably has
+some other dependencies so it may take some time to get it upstream. If
+you want to look the changes are all in dl-machine.h
 
-Dave
+randolph
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
