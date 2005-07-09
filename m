@@ -1,14 +1,17 @@
-From: Kurt Fitzner <kfitzner@excelcia.org>
-Subject: Re: [parisc-linux] Infinite error message from SDC driver on install
-Date: Sat, 09 Jul 2005 15:50:04 -0600
-Message-ID: <42D0468C.5010005@excelcia.org>
-References: <42CF1766.8030608@excelcia.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
+Date: Sat, 09 Jul 2005 15:42:51 +0000
+Message-ID: <42CFF07B.4000402@tiscali.be>
+References: <42B91C1400005075@mail-1-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <42CF1766.8030608@excelcia.org>
+In-Reply-To: <42B91C1400005075@mail-1-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,59 +22,81 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I have found that if I switch to a serial console that after a variable
-(from 1 to 50) number of "Transaction add failed" error messages that a
-timeout error would occur and no further transaction errors will occur.
-This allows me to install Debian.
+I know it's just a w-a but I also test 2.6.12.2-pa2 on the b180 and it also survive to my stress test for more then a day:
+# cat /proc/cpuinfo ; uname -a ; echo " "; uptime
+processor       : 0
+cpu family      : PA-RISC 1.1e
+cpu             : PA7300LC (PCX-L2)
+cpu MHz         : 180.000000
+model           : 9000/778/B180L
+model name      : Merlin L2+ 180 (9000/778/B180L)
+hversion        : 0x00005040
+sversion        : 0x00000481
+I-cache         : 64 KB
+D-cache         : 64 KB (WB, 0-way associative)
+ITLB entries    : 96
+DTLB entries    : 96 - shared with ITLB
+BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
+BTLB fix-entr.  : 0 instruction, 0 data (8 combined)
+BTLB var-entr.  : 0 instruction, 0 data (0 combined)
+bogomips        : 119.60
+software id     : 2010134099
 
-After installation if I continue to boot with a serial console then I
-can boot the Debian installation.  If I try to boot with the standard
-graphics console, however, I have a new problem with the SDC driver.
-During boot when the SDC driver initializes, it issues the following
-message:
+Linux patst004 2.6.12.2-pa2-b180 #2 Fri Jul 8 12:15:14 CEST 2005 parisc GNU/Linux
 
-"HP SDC MLC: Registering the System Domain Controller's HIL MLC."
+  17:00:15 up 1 day,  4:31,  4 users,  load average: 8.86, 8.69, 8.88
 
-After the above message, the kernel hangs and booting is not possible.
+Still have to find why it help a bit (for relatively high I/O)?
 
-I am at my wit's end with this one.  I would really appreciate any
-insight that could be offered.
+Why this g++ test (4.1 and not debian 4.0) make hanging the kernel?
 
-Regards,
+Joel
 
-    Kurt Fitzner
-
-p.s. In case it is relevant, machine specs are as follows:
-HP 9000 B132L workstation
-128 MB RAM
-Seagate 4.3GB drive on fwscsi.6.0
-Panasonic cdrom on sescsi.3.0
-No EISA or PCI cards installed.
-
-Kurt Fitzner wrote:
-> I have just recently attempted to install Debian 3.1 on an old B132L.  I
-> have managed to get the install CD to boot, but the kernel is issuing an
-> infinite stream of error messages from the SDC driver:
+Joel Soete wrote:
+>>>Ok I boot the same and grab recent gcc-4.1 src (about 6h gmt) and build
+>>
+>>it
+>>
+>>>with build-tls-tools with following options:
+>>>--enable-shared --with-system-zlib --disable-nls --enable-debug --host=hppa-linux
+>>>--tar
+>>>get=hppa-linux --disable-libmudflap --enable-languages=c,c++
+>>
+>>Don't use 4.1 
 > 
-> "HP SDC: Transaction add failed: transaction already queued?"
 > 
-> At first this was preventing the install CD from booting.  I determined
-> this was due to syslogd filling the ramdisk by logging the above
-> message.  I was able to get the install CD to boot into the installation
-> by making the initial ramdisk size very large (64 meg).  However, even
-> this fills up withing a few minutes.
+> Ok but that was just  to reproduce the pb you encountered :-)
 > 
-> I'm not very familliar with the SDC - is there a way to prevent the
-> above from occuring?
 > 
-> Thanks in advance,
+>>unless you want to help with fixing GCC bugs!
+>>
 > 
-> 	Kurt Fitzner
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> I would so like but I am just able to drive some test as accurately as possible.
 > 
+> 
+[...]
+>>The range above disables gcc's use of the floating-point no clobber
+>>registers.
+> 
+btw which fpr do you called 'no clobber'?
+
+I am a bit confused by those other comment in our entry.S:
+...
+          /* Floating point registers (FIXME: what do we do with these?)
+
+             %fr0  - %fr3    status/exception, not preserved
+             %fr4  - %fr7    arguments
+             %fr8  - %fr11   not preserved by C code
+             %fr12 - %fr21   preserved by C code
+             %fr22 - %fr31   not preserved by C code
+           */
+...
+
+and according to your answer <http://lists.parisc-linux.org/pipermail/parisc-linux/2005-April/026256.html>
+fr12 - fr21 (the preserved by C code) would remain unchanged across a call?
+
+Thanks again,
+	Joel
 
 _______________________________________________
 parisc-linux mailing list
