@@ -1,15 +1,17 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] cvs head arch/parisc/kernel/drivers.c issues
-Date: Sun, 31 Jul 2005 02:12:54 -0400
-Message-ID: <20050731061254.GG21753@roadwarrior.mcmartin.ca>
-References: <20050730231056.GC5500@levanta.com>
+From: Olaf Hering <olh@suse.de>
+Subject: [parisc-linux] [PATCH 5/82] remove linux/version.h include from
+	arch/parisc
+Date: Sun, 10 Jul 2005 19:35:13 +0000
+Message-ID: <39063.433421734$1416624552@news.gmane.org>
+References: <20050710193508.0.PmFpst2252.2247.olh@nectarine.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Richard Hirst <rhirst@levanta.com>
+  charset=utf-8
+Cc: parisc-linux@parisc-linux.org
+To: Andrew Morton <akpm@osdl.org>,
+ linux-kernel@vger.kernel.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050730231056.GC5500@levanta.com>
+In-Reply-To: <20050710193508.0.PmFpst2252.2247.olh@nectarine.suse.de>  
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,15 +22,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jul 31, 2005 at 12:10:56AM +0100, Richard Hirst wrote:
-> PDC Stable Storage facility v0.09
-> Backtrace:
->  [<10128170>] __wake_up+0x54/0x84
 
-Try disabling CONFIG_PDC_STABLE_STORAGE until this gets worked out.
+changing CONFIG_LOCALVERSION rebuilds too much, for no appearent reason.
 
--- 
-Kyle McMartin
+Signed-off-by: Olaf Hering <olh@suse.de>
+
+arch/parisc/kernel/asm-offsets.c |    1 -
+1 files changed, 1 deletion(-)
+
+Index: linux-2.6.13-rc2-mm1/arch/parisc/kernel/asm-offsets.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/arch/parisc/kernel/asm-offsets.c
++++ linux-2.6.13-rc2-mm1/arch/parisc/kernel/asm-offsets.c
+@@ -30,7 +30,6 @@
+#include <linux/types.h>
+#include <linux/sched.h>
+#include <linux/thread_info.h>
+-#include <linux/version.h>
+#include <linux/ptrace.h>
+#include <linux/hardirq.h>
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
