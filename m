@@ -1,17 +1,18 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] [gcc] should we teach gcc some new tricks?
-Date: Sat, 09 Jul 2005 15:42:51 +0000
-Message-ID: <42CFF07B.4000402@tiscali.be>
-References: <42B91C1400005075@mail-1-bnl.tiscali.it>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: [parisc-linux] [RFC] Deferred lock init or lock cookies (hppa
+	spinlock requirements)
+Date: Mon, 11 Jul 2005 09:54:49 -0400
+Message-ID: <20050711135449.GH5314__1025.46321363679$1416623841$gmane$org@systemhalted.org>
+References: <20050628031928.GP5269@systemhalted.org>
+	<42D19A1B.2060409@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+  charset=us-ascii
+Cc: libc-alpha <libc-alpha@sources.redhat.com>,
  parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: Ulrich Drepper <drepper@redhat.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42B91C1400005075@mail-1-bnl.tiscali.it>
+In-Reply-To: <42D19A1B.2060409@redhat.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,81 +23,51 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I know it's just a w-a but I also test 2.6.12.2-pa2 on the b180 and it also survive to my stress test for more then a day:
-# cat /proc/cpuinfo ; uname -a ; echo " "; uptime
-processor       : 0
-cpu family      : PA-RISC 1.1e
-cpu             : PA7300LC (PCX-L2)
-cpu MHz         : 180.000000
-model           : 9000/778/B180L
-model name      : Merlin L2+ 180 (9000/778/B180L)
-hversion        : 0x00005040
-sversion        : 0x00000481
-I-cache         : 64 KB
-D-cache         : 64 KB (WB, 0-way associative)
-ITLB entries    : 96
-DTLB entries    : 96 - shared with ITLB
-BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
-BTLB fix-entr.  : 0 instruction, 0 data (8 combined)
-BTLB var-entr.  : 0 instruction, 0 data (0 combined)
-bogomips        : 119.60
-software id     : 2010134099
+On Sun, Jul 10, 2005 at 02:58:51PM -0700, Ulrich Drepper wrote:
+> I checked in a little bit cleaned up version.
 
-Linux patst004 2.6.12.2-pa2-b180 #2 Fri Jul 8 12:15:14 CEST 2005 parisc GNU/Linux
+Thanks.
 
-  17:00:15 up 1 day,  4:31,  4 users,  load average: 8.86, 8.69, 8.88
+Perhaps I can get your academic opinion on the following?
 
-Still have to find why it help a bit (for relatively high I/O)?
+We are prototyping an NPTL port for hppa. We want to touch as little
+core code as possible, and we are thinking of deferred lock
+initialization, or scalar cookies.
 
-Why this g++ test (4.1 and not debian 4.0) make hanging the kernel?
+Deferred Locks:
+The core idea is to let the lock acquire fail. On the spin we check to
+see if the lock was initialized. Having four lock words means that an
+"all zero" lock had been memset to zero, in this case we use a
+light-weight-syscall to initialize the lock. The lock held case is
+similar.
 
-Joel
+This saves us from making core code changes that setup the lock to a
+different value. It still doesn't save us from using a structure for a
+lock word.
 
-Joel Soete wrote:
->>>Ok I boot the same and grab recent gcc-4.1 src (about 6h gmt) and build
->>
->>it
->>
->>>with build-tls-tools with following options:
->>>--enable-shared --with-system-zlib --disable-nls --enable-debug --host=hppa-linux
->>>--tar
->>>get=hppa-linux --disable-libmudflap --enable-languages=c,c++
->>
->>Don't use 4.1 
-> 
-> 
-> Ok but that was just  to reproduce the pb you encountered :-)
-> 
-> 
->>unless you want to help with fixing GCC bugs!
->>
-> 
-> I would so like but I am just able to drive some test as accurately as possible.
-> 
-> 
-[...]
->>The range above disables gcc's use of the floating-point no clobber
->>registers.
-> 
-btw which fpr do you called 'no clobber'?
+Scalar Cookies:
+A completely alternative implementation involves using an int lock as a
+cookie. The cookies are created dynamically and a lock is materialized
+for the cookie.
 
-I am a bit confused by those other comment in our entry.S:
-...
-          /* Floating point registers (FIXME: what do we do with these?)
+We have a prototype design using cookies, but we have a couple of issues:
 
-             %fr0  - %fr3    status/exception, not preserved
-             %fr4  - %fr7    arguments
-             %fr8  - %fr11   not preserved by C code
-             %fr12 - %fr21   preserved by C code
-             %fr22 - %fr31   not preserved by C code
-           */
-...
+Cookies that are serialized and later reloaded.
+	= Requires lock rematerialization.
+	= Non-trivial.
 
-and according to your answer <http://lists.parisc-linux.org/pipermail/parisc-linux/2005-April/026256.html>
-fr12 - fr21 (the preserved by C code) would remain unchanged across a call?
+Cookies placed in shared memory would need to look at the pshared == 1
+case, and place locks into a known named posix shared memory segment.
 
-Thanks again,
-	Joel
+I know you've had experience with these issue, and I was curious about
+your opinion.
+
+c.
+
+NOTE: There is a third alternative, and that is to use the
+light-weight-syscall "compare and swap" to do the entire lock
+implementation. Performance has not been measured for this case. AFAIK
+this is the route HPUX took.
 
 _______________________________________________
 parisc-linux mailing list
