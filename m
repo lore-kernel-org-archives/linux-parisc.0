@@ -1,16 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] PA 2.0 float conversion to unsigned long long
-Date: Thu, 14 Jul 2005 08:29:15 +0200
-Message-ID: <42BAE7C300005798@mail-5-bnl.tiscali.it>
-References: <200507140356.j6E3uShf022345@hiauly1.hia.nrc.ca>
+From: Kurt Fitzner <kfitzner@excelcia.org>
+Subject: Re: [parisc-linux] Debian sarge netinstall hangs after first boot on
+	b132l
+Date: Thu, 14 Jul 2005 17:56:35 -0600
+Message-ID: <42D6FBB3.1030003@excelcia.org>
+References: <42BAE85600005DFE@mail-6-bnl.tiscali.it>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="ISO-8859-15"
-Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
- kyle@mcmartin.ca
+  charset=ISO-8859-15
+To: Joel Soete <soete.joel@tiscali.be>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200507140356.j6E3uShf022345@hiauly1.hia.nrc.ca>
+In-reply-to: <42BAE85600005DFE@mail-6-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,105 +21,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Joel Soete wrote:
 
-> -- Original Message --
-> To: kyle@mcmartin.ca (Kyle McMartin)
-> Date: Wed, 13 Jul 2005 23:56:28 -0400 (EDT)
-> From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-> Cc: parisc-linux@lists.parisc-linux.org
-> Subject: Re: [parisc-linux] PA 2.0 float conversion to unsigned long lo=
-ng
+>>I got an hp b132l to play with :) and decided to put debian sarge on it,
+>>downloaded the latest netinstall cd from the web (debian site) and 
+>>installed using serial console.
 > 
-> 
-> > On Wed, Jul 13, 2005 at 10:53:50PM -0400, John David Anglin wrote:
-> > > The enclosed testcase derived from GCC PR 22474 aborts under linux
-but
-> > > not under hpux.  The problem is the following insn:
-> > >=3D20
-> > > 0x00002930 <f2ull+24>:  fcnv,t,sgl,udw fr22,fr22
-> > >=3D20
-> > 
-> > Might this be an insn that is not implemented in hardware, and
-> > correctly being trapped on hpux, but not on Linux? I took a look
-> > in arch/parisc/math-emu, but it's quite a bit more than I can handle.=
+> Just being curious: didn't you try from sti (i.e. builtin graphical interface)?
 
-:)
-> 
-> That's what I was thinking when I wrote the message.  Under linux,
-> both the left and right halves of fr22 end up with 0x80000000.  Under
-> hpux, the left result is 0x80000000 and the right 0.  The only other
-> explanation is that the c3k fpu has a bug that's not present in an A500=
+Booting with the graphic console on a B132L is difficult.  I just wrote
+about this in my post to the mailing list titled "Infinite error message
+ from SDC driver on install".
 
-> (doubtful).
-> 
-No: here same 
- # ./pr22474 
-Aborted
+If you want to use the graphic console on a B132L, I found that if you
+manipulate the mouse continually (a nice even circular motion), that you
+are far less likely to get that infinite loop of SDC error messages.  I
+believe that this is dur to the same reason why installing with a serial
+console works (extra overhead of the mouse/serial interrupts allows the
+SDC driver a chance to time out).  Once you get the error message:
+  "HP SDC: read timeout (999999ms)"
+you are safe to stop moving the mouse.
 
-on n4k, b2k and d380 runing respectively: 2.6.12-pa2-n4ksmp, 2.6.11.12-pa=
-4-b2k32,
-2.6.12-pa1-d32up.
+>>The install went ok, after making the initial ramdisk larger (64k 
+>>instead of 16), and gave no errors, but after the copying of the files
+>>and doing the first reboot. My system hung. I wasn't able to do anything
 
-with cpu:
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8600 (PCX-W+)
-cpu MHz         : 550.000000
-model           : 9000/800/N4000-55
-model name      : Unknown machine
-hversion        : 0x00005d30
-sversion        : 0x00000491
-I-cache         : 512 KB
-D-cache         : 1024 KB (WB, 0-way associative)
-ITLB entries    : 160
-DTLB entries    : 160 - shared with ITLB
-bogomips        : 1093.63
-software id     : 664309341
-[x2]
+The SMP kernels hang on a B132L.  You need to install a non-smp one.  In
+order to do this, you have to tell the installer not to make so many
+default decisions on its own.
 
-# cat /proc/cpuinfo 
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8600 (PCX-W+)
-cpu MHz         : 400.000000
-model           : 9000/785/B2000
-model name      : Kazoo W+
-hversion        : 0x00005d00
-sversion        : 0x00000481
-I-cache         : 512 KB
-D-cache         : 1024 KB (WB, 0-way associative)
-ITLB entries    : 160
-DTLB entries    : 160 - shared with ITLB
-bogomips        : 796.67
-software id     : 2011773200
+To do this, hit ESC when you are first asked about what language you
+want.  You'll then be in the main installer menu.  Cursor down to the
+entry "Change debconf priority".  Set it to "low".  After that, you will
+have to select each stage in the installation process manually, and you
+will be asked more questions at each stage, but you should be able to
+install a non-smp kernel now (it will ask you which kernel to install).
 
-# cat /proc/cpuinfo 
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8000 (PCX-U)
-cpu MHz         : 180.000000
-model           : 9000/820/D380
-model name      : UL proc 2-way U180 1M/1M
-hversion        : 0x00005aa0
-sversion        : 0x00000491
-I-cache         : 1024 KB
-D-cache         : 1024 KB (WB, 0-way associative)
-ITLB entries    : 96
-DTLB entries    : 96 - shared with ITLB
-BTLB            : not supported
-bogomips        : 359.62
-software id     : 2005347373
+However, after the install, you still aren't out of the water yet.  The
+problem is the infinite SDC error will still be a problem because all
+the 32 bit kernels have the SDC and HIL drivers built in.  When you
+reboot your machine, you will need to do the mouse trick to get past the
+SDC errors.  Once your machine is booted up and you go through the
+secondary debian install process, you will need to download and compile
+your own kernel.  There is a good tutorial on this online for newbies
+(like I was) to Debian at:
+http://newbiedoc.sourceforge.net/system/kernel-pkg.html
 
-either compiled with (debian testing) gcc-3.3.5 or new (debian unstable d=
-efault)
-gcc-4.0.1
+Debian has some silliness with using an initrd ramdisk at boot time and
+making EVERYTHING into a module.  I didn't do this with my kernel.  I
+put the scsi drivers right into the kernel.  You end up getting some
+error messages at boot time from discover and hotplug (why Debian
+installs and uses BOTH, I have no idea) because they both try and load
+the scsi modules and there aren't any.  I ended up removing discover and
+configuring hotplug to ignore the SCSI subsystem (let me know if you
+want more info on that).
 
-(unfortunately I don't have any place where I could install gcc on pa-2.0=
+I'd be very happy to offer you the debian package I compiled for my
+B132L.  It's made of the most recent 2.6.12-pa2 kernel source.
 
-arch :-( )
+Hope this helps,
 
-Hth,
-    Joel
+	Kurt (another B132L owner)
 
 
 _______________________________________________
