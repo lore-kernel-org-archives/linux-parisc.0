@@ -1,17 +1,12 @@
-From: Olaf Hering <olh@suse.de>
-Subject: [parisc-linux] [PATCH 5/82] remove linux/version.h include from
-	arch/parisc
-Date: Sun, 10 Jul 2005 19:35:13 +0000
-Message-ID: <39063.433421734$1416624552@news.gmane.org>
-References: <20050710193508.0.PmFpst2252.2247.olh@nectarine.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=utf-8
-Cc: parisc-linux@parisc-linux.org
-To: Andrew Morton <akpm@osdl.org>,
- linux-kernel@vger.kernel.org
+From: domen@coderock.org
+Subject: [parisc-linux] [patch 1/1] parisc/kernel/pci-dma: Audit return code
+	of create_proc_*
+Date: Fri, 15 Jul 2005 00:19:38 +0200
+Message-ID: <20050714221937.998948000@homer>
+Cc: domen@coderock.org,
+ parisc-linux@parisc-linux.org
+To: matthew@wil.cx
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050710193508.0.PmFpst2252.2247.olh@nectarine.suse.de>  
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,26 +17,58 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+From: Christophe Lucas <clucas@rotomalug.org>
 
-changing CONFIG_LOCALVERSION rebuilds too much, for no appearent reason.
 
-Signed-off-by: Olaf Hering <olh@suse.de>
+---
+ pci-dma.c |   30 ++++++++++++++++++++----------
+ 1 files changed, 20 insertions(+), 10 deletions(-)
 
-arch/parisc/kernel/asm-offsets.c |    1 -
-1 files changed, 1 deletion(-)
-
-Index: linux-2.6.13-rc2-mm1/arch/parisc/kernel/asm-offsets.c
+Index: quilt/arch/parisc/kernel/pci-dma.c
 ===================================================================
---- linux-2.6.13-rc2-mm1.orig/arch/parisc/kernel/asm-offsets.c
-+++ linux-2.6.13-rc2-mm1/arch/parisc/kernel/asm-offsets.c
-@@ -30,7 +30,6 @@
-#include <linux/types.h>
-#include <linux/sched.h>
-#include <linux/thread_info.h>
--#include <linux/version.h>
-#include <linux/ptrace.h>
-#include <linux/hardirq.h>
+--- quilt.orig/arch/parisc/kernel/pci-dma.c
++++ quilt/arch/parisc/kernel/pci-dma.c
+@@ -333,18 +333,28 @@ pcxl_free_range(unsigned long vaddr, siz
+ static int __init
+ pcxl_dma_init(void)
+ {
+-    if (pcxl_dma_start == 0)
+-	return 0;
++	if (pcxl_dma_start == 0)
++		return 0;
+ 
+-    spin_lock_init(&pcxl_res_lock);
+-    pcxl_res_size = PCXL_DMA_MAP_SIZE >> (PAGE_SHIFT + 3);
+-    pcxl_res_hint = 0;
+-    pcxl_res_map = (char *)__get_free_pages(GFP_KERNEL,
++	spin_lock_init(&pcxl_res_lock);
++	pcxl_res_size = PCXL_DMA_MAP_SIZE >> (PAGE_SHIFT + 3);
++	pcxl_res_hint = 0;
++	pcxl_res_map = (char *)__get_free_pages(GFP_KERNEL,
+ 					    get_order(pcxl_res_size));
+-    memset(pcxl_res_map, 0, pcxl_res_size);
+-    proc_gsc_root = proc_mkdir("gsc", 0);
+-    create_proc_info_entry("dino", 0, proc_gsc_root, pcxl_proc_info);
+-    return 0;
++	memset(pcxl_res_map, 0, pcxl_res_size);
++	proc_gsc_root = proc_mkdir("gsc", 0);
++	if (!proc_gsc_root)
++    		printk(KERN_WARNING
++			"pcxl_dma_init: Unable to create gsc /proc dir entry\n");
++	else {
++		struct proc_dir_entry* ent;
++		ent = create_proc_info_entry("dino", 0,
++				proc_gsc_root, pcxl_proc_info);
++		if (!ent)
++			printk(KERN_WARNING
++				"pci-dma.c: Unable to create dino /proc entry.\n");
++	}
++	return 0;
+ }
+ 
+ __initcall(pcxl_dma_init);
 
+--
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
