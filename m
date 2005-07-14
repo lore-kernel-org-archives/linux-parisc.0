@@ -1,16 +1,12 @@
-From: =?ISO-8859-15?Q?=22Jos=E9_Miguel_Morales_F=2E=22?= <jmmf@mat.puc.cl>
-Subject: [parisc-linux] A bit curious about...
-Date: Thu, 14 Jul 2005 13:31:25 -0400
-Message-ID: <42D6A16D.3040309@mat.puc.cl>
-References: <42BAE85600005DFE@mail-6-bnl.tiscali.it>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] PA 2.0 float conversion to unsigned long long
+Date: Wed, 13 Jul 2005 22:53:50 -0400 (EDT)
+Message-ID: <200507140253.j6E2ro4A022061@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-To: parisc-linux@lists.parisc-linux.org,
- Joel Soete <soete.joel@tiscali.be>
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42BAE85600005DFE@mail-6-bnl.tiscali.it>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,17 +17,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello...	Yes, I'm a bit curious about the link:
+The enclosed testcase derived from GCC PR 22474 aborts under linux but
+not under hpux.  The problem is the following insn:
 
-	http://cvs.parisc-linux.org/download/linux-2.6
+0x00002930 <f2ull+24>:  fcnv,t,sgl,udw fr22,fr22
 
--) The "32" column kernels... Have *FULL* HIL support built?
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
--) For an HP 9000 series 735... Can I gain something adicional (H/W support, 
-performance, etc.) using a 2.6 kernel instead of good'ol 2.4?
+/* gcc -w -o pr22474 -O0 -march=2.0 -fno-show-column pr22474.c */
+unsigned long long
+f2ull(float f)
+{
+  return (unsigned long long int) f;
+}
 
-					T.I.A...		JMMF.
-
+int
+main ()
+{
+  if (f2ull((float) ((~0ULL) >> 1)) != (~0ULL) >> 1 &&  /* 0x7fffffff */
+      f2ull((float) ((~0ULL) >> 1)) != ((~0ULL) >> 1) + 1)
+    abort();
+  return 0;
+}
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
