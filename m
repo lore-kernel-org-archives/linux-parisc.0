@@ -1,17 +1,18 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] Non-inline math, and inline math broken,
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: Non-inline math, and inline math broken,
 	GCC to blame? (1 hppa tls toolchain regression).
-Date: Fri, 15 Jul 2005 19:44:48 -0400
-Message-ID: <20050715234448.GA5314@systemhalted.org>
-References: <20050715142609.GR5314@systemhalted.org>
+Date: Fri, 15 Jul 2005 20:08:43 -0400 (EDT)
+Message-ID: <200507160008.j6G08hdg005634@hiauly1.hia.nrc.ca>
+References: <20050715234448.GA5314@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: John David Anglin <dave.anglin@nrc-cnrc.gc.ca>,
- Randolph Chung <tausq@debian.org>,
- parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050715142609.GR5314@systemhalted.org>
+In-Reply-To: <20050715234448.GA5314@systemhalted.org> from "Carlos O'Donell"
+	at Jul 15, 2005 07:44:48 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,80 +23,42 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jul 15, 2005 at 10:26:10AM -0400, Carlos O'Donell wrote:
-> make[2]: *** [/glibc/math/test-fenv.out] Error 1
-> 	= Regression (1)
-> make[2]: *** [/glibc/math/test-float.out] Error 1
-> make[2]: *** [/glibc/math/test-double.out] Error 1
-> make[2]: *** [/glibc/math/test-ifloat.out] Error 1
-> make[2]: *** [/glibc/math/test-idouble.out] Error 1
-> make[1]: *** [math/tests] Error 2
-> make[2]: *** [/glibc/stdlib/tst-strtod.out] Error 1
-> make[2]: *** [/glibc/stdlib/bug-strtod.out] Error 1
-> make[1]: *** [stdlib/tests] Error 2
-> make[2]: [/glibc/posix/annexc.out] Error 1 (ignored)
-> make[2]: *** [/glibc/elf/tst-array1.out] Error 1
-> make[2]: *** [/glibc/elf/tst-array2.out] Error 1
-> make[2]: *** [/glibc/elf/tst-array3.out] Error 1
-> make[2]: *** [/glibc/elf/tst-array4.out] Error 1
-> make[2]: *** [/glibc/elf/tst-array1-static.out] Error 1
-> 	= Regressions (5)
-> make[2]: *** [/glibc/elf/tst-tls13.out] Error 1
-> 	= TIMEOUTFACTOR=10 required.
-> make[1]: *** [elf/tests] Error 2
-> make: *** [check] Error 2
+> However, the following is troubling and where trouble goes, so does the
+> blame on the compiler.
+> 
+> test-float.out (Non-inline float):
+>  Test suite completed:
+>    2599 test cases plus 2384 tests for exception flags executed.
+> -  39 errors occurred.
+> +  4363 errors occurred.
+> 
+> test-double.out (Non-inline double):
+>  Test suite completed:
+>    2624 test cases plus 2399 tests for exception flags executed.
+> -  38 errors occurred.
+> +  4388 errors occurred.
+> 
+> Although the numbers don't add up with the errors a cursory check shows
+> *none* of the non-inline math tests passed.
 
-Fixed binutils...
+I don't want to throw stones but I posted a message to parisc two
+days ago indicating that we have at least one kernel bug in its math
+emulation ;)
 
-Make that 1 regression:
+Ok, PA 2.0 support could be suspect.  I doubt very much there are
+major FP issues with PA 1.1.  In PA 1.1, essentially all the operations
+are supported in hardware (I hate assist).  There's an issue with
+complex support using PA 1.0 but if the compiler didn't die that's
+not likely the problem.  That's fixed in main.  Finally, you've got
+the glibc issue in handling 64-bit long doubles.  I would suspect a
+glibc issue first.  GCC doesn't have much to do with exception support
+or control of rounding modes, although you would think the compiler
+would need to know about rounding mode.
 
-make[2]: *** [/glibc/math/test-fenv.out] Error 1
-make[2]: *** [/glibc/math/test-float.out] Error 1
-make[2]: *** [/glibc/math/test-double.out] Error 1
-make[2]: *** [/glibc/math/test-ifloat.out] Error 1
-make[2]: *** [/glibc/math/test-idouble.out] Error 1
-make[1]: *** [math/tests] Error 2
-make[2]: *** [/glibc/stdlib/tst-strtod.out] Error 1
-make[2]: *** [/glibc/stdlib/bug-strtod.out] Error 1
-make[1]: *** [stdlib/tests] Error 2
-make[2]: [/glibc/posix/annexc.out] Error 1 (ignored)
-make: *** [check] Error 2
-
-However, the following is troubling and where trouble goes, so does the
-blame on the compiler.
-
-test-float.out (Non-inline float):
- Test suite completed:
-   2599 test cases plus 2384 tests for exception flags executed.
--  39 errors occurred.
-+  4363 errors occurred.
-
-test-double.out (Non-inline double):
- Test suite completed:
-   2624 test cases plus 2399 tests for exception flags executed.
--  38 errors occurred.
-+  4388 errors occurred.
-
-Although the numbers don't add up with the errors a cursory check shows
-*none* of the non-inline math tests passed.
-
-The inline math does *much* better, observe:
-
-test-ifloat.out (Inline float):
- Test suite completed:
-   2537 test cases plus 2322 tests for exception flags executed.
--  1 errors occurred.
-+  11 errors occurred.
-
-test-idbouble.out (Inline double):
- Test suite completed:
-   2562 test cases plus 2337 tests for exception flags executed.
--  1 errors occurred.
-+  10 errors occurred.
-
-
-c.
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
