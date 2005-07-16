@@ -1,18 +1,19 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: Non-inline math, and inline math broken,
 	GCC to blame? (1 hppa tls toolchain regression).
-Date: Sat, 16 Jul 2005 13:37:50 -0400 (EDT)
-Message-ID: <200507161737.j6GHboDo009866@hiauly1.hia.nrc.ca>
-References: <20050716161603.GE5314@systemhalted.org>
+Date: Sat, 16 Jul 2005 13:54:48 -0400 (EDT)
+Message-ID: <200507161754.j6GHsmB3010087@hiauly1.hia.nrc.ca>
+References: <200507161737.j6GHboDo009866@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: tausq@debian.org,
+Cc: carlos@systemhalted.org,
+ tausq@debian.org,
  parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050716161603.GE5314@systemhalted.org> from "Carlos O'Donell"
-	at Jul 16, 2005 12:16:04 pm
+In-Reply-To: <200507161737.j6GHboDo009866@hiauly1.hia.nrc.ca> from "John David
+	Anglin" at Jul 16, 2005 01:37:50 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,19 +24,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Who previously executed the COPR,0,0?
+> However, you have to be careful in using fstd to get the fp status
+> register as it clears T after the insn.
 
-I dunno, incorrect identify sequence?  I agree the 1.1 arch is specific
-about how to do an identify sequence.
+And, indeed the following is wrong for the above reason:
 
-> I use the fldd to set the new cleared state of the status register.
+#include <fenv.h>
 
-I had been wondering if fstw and fldw could be used, but it's an
-undefined operation to set T with fldw and fstd clears T, so I believe
-your use of fstd and fldd is correct in this sequence.
+int
+fetestexcept (int excepts)
+{
+  unsigned int sw[2];
 
-However, you have to be careful in using fstd to get the fp status
-register as it clears T after the insn.
+  /* Get the current status word. */
+  __asm__ ("fstd %%fr0,0(%1)" : "=m" (*sw) : "r" (sw));
+
+  return (sw[0] >> 27) & excepts & FE_ALL_EXCEPT;
+}
+
+You need to add a 'fldd' to the asm to restore the T bit.  Another
+option might be to use fstw to access the status register in this
+situation.
 
 Dave
 -- 
