@@ -1,15 +1,17 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] Next steps? hppa tls toolchain and packaging in
-	debian.
-Date: Sun, 17 Jul 2005 12:31:40 -0400
-Message-ID: <20050717163140.GM5314@systemhalted.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] PA 2.0 float conversion to unsigned long long
+Date: Mon, 18 Jul 2005 13:45:28 -0600
+Message-ID: <20050718194528.GD11016@colo.lackof.org>
+References: <20050714033206.GD4949@roadwarrior.mcmartin.ca>
+	<200507140356.j6E3uShf022345@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <tausq@debian.org>,
- John David Anglin <dave.anglin@nrc-cnrc.gc.ca>
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200507140356.j6E3uShf022345@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,46 +22,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Wed, Jul 13, 2005 at 11:56:28PM -0400, John David Anglin wrote:
+...
+> That's what I was thinking when I wrote the message.  Under linux,
+> both the left and right halves of fr22 end up with 0x80000000.  Under
+> hpux, the left result is 0x80000000 and the right 0.  The only other
+> explanation is that the c3k fpu has a bug that's not present in an A500
+> (doubtful).
 
-Gentlemen,
+If they are running at the same clock speed, they are likely to have
+identical CPUs. Some of the 440Mhz boxes did roll CPU HW version
+after initial release - including some SMP bugs that C3K wouldn't
+be exposed to. I'm skeptical it's a bug in the FPU unless you
+can demonstrate the same code works on another (newer) CPU model.
 
-We seem to have a working TLS implementation for hppa. What are some of
-the next steps we want to take?
-
-a. Submit a plabel 21/14, dir 21/14 patch to debian glibc.
-   Submit the same patch to Ubuntu.
-
-b. Submit TLS patch to binutils.
-
-c. Submit OPD patch to binutils.
-   - There may still be some issues about this patch with regards
-     to the behvious of --export-dynamic.
-
-d. Submit patches to upstream glibc for TLS
-   - Linuxthread patches are being handled by drow.
-   - Sysdep patches are handled by Roland/Ulrich.
-   - Luckily no core changes required.
-
-e. Work at futex implementation.
-   - Mockup and test.
-
-f. Work at NPTL implementation
-   - Already started thanks to Randolph.
-
-Any extra entries to add to the list?
-
-How do we handle this:
-
-1. Packages built with a newer toolchain can emit OPD's
-2. These packages should require a newer glibc.
-
-Can we make debian-binutils depend on a newer libc?
-I still don't see how we can stop someone from isntalling a package that
-has these relocs but not a new libc?
-
-Cheers,
-Carlos.
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
