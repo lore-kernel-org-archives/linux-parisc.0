@@ -1,17 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] PA 2.0 float conversion to unsigned long long
-Date: Tue, 19 Jul 2005 14:29:19 -0400 (EDT)
-Message-ID: <200507191829.j6JITJl1028390@hiauly1.hia.nrc.ca>
-References: <IJVYHN$354379AA3907AD5E5A7B8AAF60BAA597@scarlet.be>
+From: Kurt Fitzner <kfitzner@excelcia.org>
+Subject: [parisc-linux] Machine hanging during high-traffic NFS
+Date: Tue, 19 Jul 2005 15:02:55 -0600
+Message-ID: <42DD6A7F.8090706@excelcia.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: kyle@mcmartin.ca,
- parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (soete.joel)
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IJVYHN$354379AA3907AD5E5A7B8AAF60BAA597@scarlet.be> from
-	"soete.joel" at Jul 19, 2005 01:41:47 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,18 +17,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Dave would you mean that c3k was runing parisc-linux and a500 hpux?
+I've been using nfs to try and save backup images from my B132L
+(2.6.12-pa2) with a simple:
+  dd if=/dev/sda of=/mnt/bulk/sda-image bs=512
 
-Correct.
+Every time the machine hangs solid - the heartbeat LED even stops.
+Usually it hangs after around 1 to 2 gigs have been transferred.  There
+are no log entries at the time of the hang.  IT just... stops.
 
-> Is there some pb in sgl -> udw convertion?
+I'm using a 3c905 PCI ethernet card rather than the stock 10 megabit
+LASI on board.
 
-Could be.  There is a significant different between PA 1.x and 2.0
-in this respect.  PA 2.0 has "hardware" instructions to do these
-conversions.  GCC currently uses these instructions when generating
-PA 2.0 code.
+I'm wondering if this might be an issue with the ethernet driver when
+compiled for PARISC.  I've tried very large ftp transfers and can't
+reproduce the problem that way.
 
-Dave
+I've also tried NFS over TCP and  tried reducing the rsize/wsize below
+1500 bytes to prevent IP fragmentation.  Neither of which seem to help.
+
+Are there any known NFS issues right now?  Any ideas?  Suggestions?
+
+	Kurt.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
