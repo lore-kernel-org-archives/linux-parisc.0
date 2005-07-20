@@ -1,11 +1,11 @@
-From: domen@coderock.org
-Subject: [parisc-linux] [patch 1/1] parisc/kernel/pci-dma: Audit return code
-	of create_proc_*
-Date: Fri, 15 Jul 2005 00:19:38 +0200
-Message-ID: <20050714221937.998948000@homer>
-Cc: domen@coderock.org,
- parisc-linux@parisc-linux.org
-To: matthew@wil.cx
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] Latest palinux crash
+Date: Wed, 20 Jul 2005 13:22:27 +0100
+Message-ID: <20050720122227.GK10156@parcelfarce.linux.theplanet.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset=us-ascii
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,58 +17,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-From: Christophe Lucas <clucas@rotomalug.org>
+
+This seems to be a bit different from most:
+
+Bad Address (null pointer deref?): Code=15 regs=00000000ff8b88f0 (Addr=c000007f80000000)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000001001110001000001110 Not tainted
+r00-03  0000000000000000 ffffffffffff5000 00000000101728f4 0000000098c54000
+r04-07  00000000104b9200 00000000ff956900 00000000fff700e8 00000000ff956910
+r08-11  000000000000001a 00000000105435e8 000000000000001b 0000000000200200
+r12-15  0000000000100100 00000000ff956930 00000000000000f0 00000000000000ff
+r16-19  00000000f00003dc 00000000f000028c 00000000f0002aec 00000000003bd64c
+r20-23  ffffffff80000000 00000000eb78ed40 0000000012a06260 0000000000000000
+r24-27  000000000000b000 0000000000000002 0000000098c545c0 00000000104b9200
+r28-31  0000000000000002 00000000ff8b88c0 00000000ff8b88f0 0000000000000001
+sr0-3   0000000000046800 0000000000046800 0000000000000000 0000000000046800
+sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
+
+IASQ: 0000000000000000 0000000000000000 IAOQ: 00000000101728d4 00000000101728d8
+ IIR: 0e9512c0    ISR: 000000003fffff80  IOR: c000007f80000000
+ CPU:        0   CR30: 00000000ff8b8000 CR31: 0000000010480000
+ ORIG_R28: 00000000104b9200
+ IAOQ[0]: free_block+0xac/0x1a0
+ IAOQ[1]: free_block+0xb0/0x1a0
+ RP(r2): free_block+0xcc/0x1a0
+Kernel panic: Bad Address (null pointer deref?)
 
 
----
- pci-dma.c |   30 ++++++++++++++++++++----------
- 1 files changed, 20 insertions(+), 10 deletions(-)
-
-Index: quilt/arch/parisc/kernel/pci-dma.c
-===================================================================
---- quilt.orig/arch/parisc/kernel/pci-dma.c
-+++ quilt/arch/parisc/kernel/pci-dma.c
-@@ -333,18 +333,28 @@ pcxl_free_range(unsigned long vaddr, siz
- static int __init
- pcxl_dma_init(void)
- {
--    if (pcxl_dma_start == 0)
--	return 0;
-+	if (pcxl_dma_start == 0)
-+		return 0;
- 
--    spin_lock_init(&pcxl_res_lock);
--    pcxl_res_size = PCXL_DMA_MAP_SIZE >> (PAGE_SHIFT + 3);
--    pcxl_res_hint = 0;
--    pcxl_res_map = (char *)__get_free_pages(GFP_KERNEL,
-+	spin_lock_init(&pcxl_res_lock);
-+	pcxl_res_size = PCXL_DMA_MAP_SIZE >> (PAGE_SHIFT + 3);
-+	pcxl_res_hint = 0;
-+	pcxl_res_map = (char *)__get_free_pages(GFP_KERNEL,
- 					    get_order(pcxl_res_size));
--    memset(pcxl_res_map, 0, pcxl_res_size);
--    proc_gsc_root = proc_mkdir("gsc", 0);
--    create_proc_info_entry("dino", 0, proc_gsc_root, pcxl_proc_info);
--    return 0;
-+	memset(pcxl_res_map, 0, pcxl_res_size);
-+	proc_gsc_root = proc_mkdir("gsc", 0);
-+	if (!proc_gsc_root)
-+    		printk(KERN_WARNING
-+			"pcxl_dma_init: Unable to create gsc /proc dir entry\n");
-+	else {
-+		struct proc_dir_entry* ent;
-+		ent = create_proc_info_entry("dino", 0,
-+				proc_gsc_root, pcxl_proc_info);
-+		if (!ent)
-+			printk(KERN_WARNING
-+				"pci-dma.c: Unable to create dino /proc entry.\n");
-+	}
-+	return 0;
- }
- 
- __initcall(pcxl_dma_init);
-
---
+-- 
+"Next the statesmen will invent cheap lies, putting the blame upon 
+the nation that is attacked, and every man will be glad of those
+conscience-soothing falsities, and will diligently study them, and refuse
+to examine any refutations of them; and thus he will by and by convince 
+himself that the war is just, and will thank God for the better sleep 
+he enjoys after this process of grotesque self-deception." -- Mark Twain
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
