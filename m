@@ -1,19 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Machine hanging during high-traffic NFS
-Date: Thu, 21 Jul 2005 12:04:13 -0400
-Message-ID: <20050721160413.GA1482@roadwarrior.mcmartin.ca>
-References: <42DD6A7F.8090706@excelcia.org>
-	<20050720010425.GC24060@roadwarrior.mcmartin.ca>
-	<42DDF65E.7010605@excelcia.org>
-	<20050720164058.GA3681@colo.lackof.org>
-	<42DF51D4.3010106@excelcia.org>
+Date: Thu, 21 Jul 2005 19:28:41 -0400 (EDT)
+Message-ID: <200507212328.j6LNSfto010960@hiauly1.hia.nrc.ca>
+References: <20050721123607.GA27978@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kurt Fitzner <kfitzner@excelcia.org>
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42DF51D4.3010106@excelcia.org>
+In-Reply-To: <20050721123607.GA27978@colo.lackof.org> from "Grant Grundler" at
+	Jul 21, 2005 06:36:07 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,21 +21,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jul 21, 2005 at 01:42:12AM -0600, Kurt Fitzner wrote:
-> I 'downgraded' to 2.6.8.1-pa11 as Mr. Anglin suggested and I am not able
-> to reproduce the hang.  Would it be helpful if I were to identify the
-> exact kernel version where the hang first begins to occur?
+> On Thu, Jul 21, 2005 at 01:42:12AM -0600, Kurt Fitzner wrote:
+> > I 'downgraded' to 2.6.8.1-pa11 as Mr. Anglin suggested and I am not able
+> > to reproduce the hang.  Would it be helpful if I were to identify the
+> > exact kernel version where the hang first begins to occur?
 > 
+> Definitely. Be warned that this can be very time consuming.
+> If you can narrow the window to a major kernel release,
+> that would already be very helpful. The exact -paX version
+> would of course be perfect.
 
-Binary searching from 2.6.8.1-pa11 onwards would be helpful.
+I know that 32-bit 2.6.10 isn't stable on my c3k.  There is a known
+bug with kernel memcpy and fpregs.  Either James' fix needs to be
+backported, or builds need to be done with gcc-4.0.0 (or 4.0.1) using
+the -mfixed-range as discussed previously on the list.  I haven't
+had time to try this.
 
-[Pick the middle version between 2.6.8.1 and current, if it's broken, at
- the middle of 2.6.8.1-pa11 to middle, otherwise middle to current, and
- continue until you can narrow the timeframe.]
-
-Cheers,
+Dave
 -- 
-Kyle McMartin
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
