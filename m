@@ -1,16 +1,14 @@
-From: Joel Soete <soete.joel@tiscali.be>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Latest palinux crash
-Date: Thu, 21 Jul 2005 11:34:22 +0000
-Message-ID: <42DF883E.1020607@tiscali.be>
+Date: Thu, 21 Jul 2005 06:30:45 -0600
+Message-ID: <20050721123045.GA27330@colo.lackof.org>
 References: <20050720122227.GK10156@parcelfarce.linux.theplanet.co.uk>
 	<20050721043626.GY30182@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: parisc-linux@parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20050721043626.GY30182@systemhalted.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -23,37 +21,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-
-Carlos O'Donell wrote:
-> On Wed, Jul 20, 2005 at 01:22:27PM +0100, Matthew Wilcox wrote:
-> 
-[...]
-> 
+On Thu, Jul 21, 2005 at 12:36:27AM -0400, Carlos O'Donell wrote:
 > We need better tools for this... I wonder if we still have lkcd support
 > for hppa.
-> 
+
+I have the "most recent" (2.4.20) patch from Bruno Vidal 
+and he had it working on most of the platforms (32 and 64-bit).
+It didn't get included becuase of (my) lack of time to integrate
+and the fact that it wasn't popular at the time. I'm really
+happy to see that's changed.
+
+Bruno, is that posted someplace publicly or can I post it?
+(I'm hoping Bruno is still subscribed to p-l)
+
 > If we had lkcd support would you be willing to run a modified kernel on
 > parisc-linux?
-> 
-Afaik unfortunately there wasn't any more support of lkcd on hppa since 2 or 3 years :-(
-(iirc Bruno Vidal made this effort in 2.4 but never ported in 2.6 :_( ?
 
-But I totaly agree with you, we would need better tool, specialy when the situation is not clear:
-some weeks ago, with jda's help I manage to compile p-l kernel with gcc-4.0 and some fpr constraint.
-This kernel seems to be very more stable (passed with success some stress test of mine during severall days when it would crash in 
-few ours or less when compile with gcc-3.3).
-But I also tried to rebuild gcc-4.1 to just reproduce the pb encountered by jda in a c++ test:
-efectively, the kernel 'hang' or 'freeze' during this test and it's hard to guess what's hapening;
-no more network responds (no ping, no ssh, ...), no more console responds, ...
-but pressing TOC button launched well a panic, and unfortunately pim analisys didn't help at all :-?
-(fyi: <http://lists.parisc-linux.org/pipermail/parisc-linux/2005-July/026855.html>)
+I would.
+In fact, I'd change all the default config files to include it.
 
-So am I also looking for way to help: lkcd? instrumenting the kernel like kprobes/dprobes? (but not yet hppa support)
-Unfortunately, I definetily don't have deep enough knowledge of linux kernel to help more, sorry.
-
-Thanks,
-	Joel
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
