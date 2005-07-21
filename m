@@ -1,7 +1,8 @@
-From: Kurt Fitzner <kfitzner@excelcia.org>
-Subject: [parisc-linux] Bug report data collection tool
-Date: Thu, 21 Jul 2005 01:51:04 -0600
-Message-ID: <42DF53E8.5010904@excelcia.org>
+From: Karthik <molecularbiophysics@gmail.com>
+Subject: [parisc-linux] Debian hppa request install
+Date: Thu, 21 Jul 2005 10:35:50 +0200
+Message-ID: <a015f9a00507210135b8b9071@mail.gmail.com>
+Reply-To: Karthik <molecularbiophysics@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=ISO-8859-1
@@ -17,21 +18,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I was thinking that perhaps it would be useful to have a tool to help
-collate information after a hang/crash.  Something you would run on the
-next boot.
+Hi Gurus,
 
-I wasn't able to tell from a cursory glance at pdc_stable.c, but if the
-driver supports it then perhaps the tool could read HPMC/TOC data post
-crash from nvram (rather than having to write out or use a serial
-console to capture 'ser pim' data).  It could then cross reference the
-crash address with the System.map, gather pre-crash data from the logs
-and a machine profile from /proc.
+I plan to install Debian hppa in 712/60. I hope to install the basic
+packages with CD1 and later install other packages with "apt-get". Can
+anyone confirm me if the following image is the correct one to start
+with?
 
-If something like this would be useful, I could do with having a project
-to help me learn the ropes.
+http://cdimage.debian.org/debian-cd/3.1_r0a/hppa/iso-cd/debian-31r0a-hppa-b=
+inary-1.iso
 
-	Kurt.
+1. Will it result in a minimum install system (with network)?
+2. Is 96MB memory OK for debian installer to work?
+
+Apologies if this question is too un-nerdish....
+
+Many thanks...
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
