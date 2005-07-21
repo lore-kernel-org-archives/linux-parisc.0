@@ -1,16 +1,19 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Latest palinux crash
-Date: Thu, 21 Jul 2005 07:48:01 -0500
-Message-ID: <200507210748.01467.mszick@morethan.org>
-References: <20050720122227.GK10156@parcelfarce.linux.theplanet.co.uk>
-	<20050721043626.GY30182@systemhalted.org>
-	<20050721123045.GA27330@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Machine hanging during high-traffic NFS
+Date: Thu, 21 Jul 2005 06:36:07 -0600
+Message-ID: <20050721123607.GA27978@colo.lackof.org>
+References: <42DD6A7F.8090706@excelcia.org>
+	<20050720010425.GC24060@roadwarrior.mcmartin.ca>
+	<42DDF65E.7010605@excelcia.org>
+	<20050720164058.GA3681@colo.lackof.org>
+	<42DF51D4.3010106@excelcia.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-2022-jp"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Kurt Fitzner <kfitzner@excelcia.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050721123045.GA27330@colo.lackof.org>
+In-Reply-To: <42DF51D4.3010106@excelcia.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,41 +24,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu July 21 2005 07:30, Grant Grundler wrote:
-> On Thu, Jul 21, 2005 at 12:36:27AM -0400, Carlos O'Donell wrote:
-> > We need better tools for this... I wonder if we still have lkcd support
-> > for hppa.
-> 
-> I have the "most recent" (2.4.20) patch from Bruno Vidal 
-> and he had it working on most of the platforms (32 and 64-bit).
-> It didn't get included becuase of (my) lack of time to integrate
-> and the fact that it wasn't popular at the time. I'm really
-> happy to see that's changed.
-> 
-Grant,
-It is on sourceforge.net
-http://sourceforge.net/project/showfiles.php?group_id=2726&package_id=108740
+On Thu, Jul 21, 2005 at 01:42:12AM -0600, Kurt Fitzner wrote:
+> I 'downgraded' to 2.6.8.1-pa11 as Mr. Anglin suggested and I am not able
+> to reproduce the hang.  Would it be helpful if I were to identify the
+> exact kernel version where the hang first begins to occur?
 
-See: lkcd.sourceforge.net
+Definitely. Be warned that this can be very time consuming.
+If you can narrow the window to a major kernel release,
+that would already be very helpful. The exact -paX version
+would of course be perfect.
 
-Mike
-> Bruno, is that posted someplace publicly or can I post it?
-> (I'm hoping Bruno is still subscribed to p-l)
-> 
-> > If we had lkcd support would you be willing to run a modified kernel on
-> > parisc-linux?
-> 
-> I would.
-> In fact, I'd change all the default config files to include it.
-> 
-> thanks,
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
