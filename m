@@ -1,16 +1,11 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Machine hanging during high-traffic NFS
-Date: Thu, 21 Jul 2005 21:55:18 -0600
-Message-ID: <20050722035518.GC29339@colo.lackof.org>
-References: <200507212328.j6LNSfto010960@hiauly1.hia.nrc.ca>
-	<42E03DFA.6040808@excelcia.org>
+From: Tres Melton <tres@mindspring.com>
+Subject: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Date: Fri, 22 Jul 2005 06:56:34 -0600
+Message-ID: <1122036994.10454.131.camel@thor.tres.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kurt Fitzner <kfitzner@excelcia.org>
+Content-Type: text/plain
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <42E03DFA.6040808@excelcia.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,44 +16,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jul 21, 2005 at 06:29:46PM -0600, Kurt Fitzner wrote:
-> John David Anglin wrote:
-> 
-> > I know that 32-bit 2.6.10 isn't stable on my c3k.  There is a known
-> > bug with kernel memcpy and fpregs.
-> 
-> Well, as far as the bug I am reporting goes, so far I have narrowed it
-> down to a kernel later than 2.6.10-pa11 and before 2.6.11-pa4.  It
-> appears that whatever went into 2.6.10 isn't to blame.
+Grant,
 
-Ok...If you were to try one more kernel, could it be 2.6.11-pa1?
+	While searching the web I came across your email:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2004-January/022125.html
 
-> It looks like the interrupt storm theory is best.  The functions I get
-> from the TOC data this time are:
-> 
-> GRO2 0x101060e0 handle_interruption+6c
-> IOAQ 0x101120dc handle_unaligned+2c0
+where you said:
 
-yes, seems like it's likely too.
+Here's "apps/openssl speed rsa" gprof output from my c3000.
+(2.6.0-pa7, Debian testing)
 
-> I am curious, though.  This time when it hung the hearbeat didn't stop.
->  Does this mean that it didn't hang as solid as the other times?
+TBH, it looks wrong.
 
-that would be my guess too.
 
-> Are
-> interrupts still being handled at some kernel level if the heartbeat LED
-> is flashing normally?
 
-yes
+It is wrong.  For details please see:
 
-> If this is the case, then this means the TOC data
-> may be useless this time around, right?
+http://bugs.gentoo.org/show_bug.cgi?id=90090
 
-Not necessarily. The TOC data may still be useful
-for register state.
+	If you have any more information on the subject I would appreciate it
+as a number of us are preparing to take this issue to the LKML.  I'm
+specifically looking at a convincing reason to put forth to Linus to
+export the correct clock-ticks/second.  Linus has stated in the past
+that user space has no need for the information.  A couple of other
+kernel devs are going to back me up here but we need a good argument to
+get Linus to change his mind.
 
-grant
+Thanks,
+-- 
+Tres
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
