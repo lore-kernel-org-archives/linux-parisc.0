@@ -1,16 +1,15 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] PA 2.0 float conversion to unsigned long long
-Date: Mon, 25 Jul 2005 11:57:36 +0200
-Message-ID: <IK6H00$910131208EE75A1A8B3FE51EFCB8D16A@scarlet.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Date: Sun, 24 Jul 2005 18:09:19 -0600
+Message-ID: <20050725000919.GA18659@colo.lackof.org>
+References: <1122036994.10454.131.camel@thor.tres.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: kyle <kyle@mcmartin.ca>,
- dave <dave@hiauly1.hia.nrc.ca>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>,
- tsg45800 <tsg45800@scarlet.be>
-To: "grundler" <grundler@parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Tres Melton <tres@mindspring.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <1122036994.10454.131.camel@thor.tres.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,72 +20,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Sat, Jul 23, 2005 at 09:39:34AM +0000, Joel Soete wrote:
-> > >I'm not sure it's a very good idea posting bits of the HP-UX
-> > >kernel on a publicly archived mailing list. I imagine the disassembl=
-y's
-> > >legal status is questionable... 
-> >
-> > Yes I hesitate but finaly though that reverse engineering is legal (s=
-ee the 
-> > famous samba project ;-) )?
+On Fri, Jul 22, 2005 at 06:56:34AM -0600, Tres Melton wrote:
+> | Here's "apps/openssl speed rsa" gprof output from my c3000.
+> | (2.6.0-pa7, Debian testing)
+> |  
+> | TBH, it looks wrong.
 > 
-> samba didn't disassemble a copy of the binary.
-> They reverse engineered the "on wire" protocol as captured by tcpdump.
+> It is wrong.  For details please see:
 > 
-(mmm is boomerang <http://boomerang.sourceforge.net/> a more relevant exa=
-mple
-:-? )
-That said, my worry was not much the way reverse engineering was realised=
- then
-reverse-engineering by itself: is it or not legal?
- 
-> Dumping raw dissassembly isn't interesting.
-More over ;-)(absolutely agree with you)
+> http://bugs.gentoo.org/show_bug.cgi?id=90090
 
-Anyway may I come back shortly to the original object of this thread:
-"PA 2.0 float conversion to unsigned long long"
+Ugh. user space vs kernel space HZ battles.
 
-I reach to reproduce the pb clearly decribe by jda and with the help of g=
-db I
-observed not only a difference of results between p-l and hpux-11.00 but =
-also
-a noticable difference of behaviour in fpsr.
+> 	If you have any more information on the subject
 
-The differences make me ask if "fpu is configurable?"
+Sorry - I really don't.
+I'm happy to run more tests on kernel patches if that would help.
 
-On irc Carlos put me another question on the fpu mode which make me disco=
-ver
-in parisc2.0.pdf ("PA-RISC 2.0 Architecture Floating-Point Instruction Se=
-t
-9-9") a documented way to (at least) indentify pfu.
+>  I would appreciate it
+> as a number of us are preparing to take this issue to the LKML.  I'm
+> specifically looking at a convincing reason to put forth to Linus to
+> export the correct clock-ticks/second.  Linus has stated in the past
+> that user space has no need for the information.  A couple of other
+> kernel devs are going to back me up here but we need a good argument to
+> get Linus to change his mind.
 
-Btw I discover:
-    o this chunk wasn't implemented in p-l but well hpux-11.00 (32 and 64=
-bit).
+I'm certainly not the one who has a solid grasp of the problem.
+I just recognized the output looked wrong.
 
-    o hpux (11-.00) has also a label which make thought
-      that fpu have actualy to be initialized
+Another kernel developer has suggested this is a gprof bug.
+I was told the kernel has two types of ticks: one for kernel and another
+for users space - some conversation needs to take place by gprof
+that I know nothing about.
 
-    o this thread
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2003-January/018852=
-.html>
-      (my grasp of this code is not yet complete sorry: 
-            when/where fpregs[] was setup? ...)
-
-Are we missing something?
-
-> If it is legal in your country to analyze the behaviors, I'm
-> really only interested in the analysis.
-> 
-(In a help desk, I read this joke: ... for miracle we ask you a delay of =
-24h :-)
-
-Thanks again,
-    Joel=0A=0A-------------------------------------------------------=0AN=
-OTE! My email address is changing to ... @scarlet.be=0APlease make the ne=
-cessary changes in your address book. =0A=0A
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
