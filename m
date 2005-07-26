@@ -1,13 +1,16 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
 Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-Date: Tue, 26 Jul 2005 13:16:27 -0400
-Message-ID: <20050726171625.GA9703@systemhalted.org>
+Date: Tue, 26 Jul 2005 14:08:53 -0400
+Message-ID: <20050726180851.GB9703@systemhalted.org>
 References: <1122036994.10454.131.camel@thor.tres.org>
 	<20050725000919.GA18659@colo.lackof.org>
 	<1122272788.10644.71.camel@thor.tres.org>
 	<20050726132402.GA32722@colo.lackof.org>
 	<1122385036.10644.146.camel@thor.tres.org>
 	<20050726141837.GB6663@parcelfarce.linux.theplanet.co.uk>
+	<42E647E8.3000505@tausq.org>
+	<20050726170109.GQ30182@systemhalted.org>
+	<20050726170949.GB2221@parcelfarce.linux.theplanet.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -15,7 +18,7 @@ Cc: Tres Melton <tres@mindspring.com>,
  parisc-linux@lists.parisc-linux.org
 To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050726141837.GB6663@parcelfarce.linux.theplanet.co.uk>
+In-Reply-To: <20050726170949.GB2221@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,24 +29,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jul 26, 2005 at 03:18:37PM +0100, Matthew Wilcox wrote:
-> On Tue, Jul 26, 2005 at 07:37:16AM -0600, Tres Melton wrote:
-> > I'm advocating a way for user space to *know* what the kernel is
-> > running.  It is this thinking crap that is messing things up.
+On Tue, Jul 26, 2005 at 06:09:49PM +0100, Matthew Wilcox wrote:
+> > IMO any interface exporting/using ticks is broken. Accurate time can 
+> > be provided through other interfaces. Userspace should never see ticks,
+> > only converted time.
 > 
-> User space should not "know" what HZ the kernel is using.  Instead, all
-> interfaces should be properly reported in terms of whatever HZ userspace
-> used to assume (100 on i386, other values on other platforms).  I don't
-> know what interface gprof is using, but it needs to be fixed.
-> 
-> Otherwise we stand no chance of going to a dynamic HZ in the future.
+> userspace should see converted ticks.  ie divide by 10 if CONFIG_HZ is 1000
+> since PA userspace expects to see 100Hz.
 
-Or better yet a precise time interface with feedback about the accuracy
-of the returned time.
+I meant "ideologicall" broken. Yes, converting ticks to an expected
+value preserves userspace compatibility.
 
-For example, while cr16 on parisc is a very precise measurement of insn
-execution speed, it varies too much to be used for a stable and accurate
-global clock.
+gprof may want to stop using times() when a more suitable interface
+becomes available.
 
 c.
 
