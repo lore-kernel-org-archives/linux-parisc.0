@@ -1,10 +1,11 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] [wiki] high-precision timers for parisc using cr16
-Date: Tue, 26 Jul 2005 15:16:32 -0400
-Message-ID: <20050726191630.GD9703@systemhalted.org>
+Subject: [parisc-linux] nptl build failures (so close!)
+Date: Tue, 26 Jul 2005 15:45:40 -0400
+Message-ID: <20050726194540.GG9703@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
+Cc: Randolph Chung <tausq@debian.org>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -18,22 +19,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-parisc,
+Randolph, Dave,
 
-After another dicsussion about high-precision timers on parisc
-and the possible uses of cr16, I decided to write down our ideas
-so that they are not lost and rehashed.
+Any thoughts?
 
-http://wiki.parisc-linux.org/Time?action=show
+../sysdeps/generic/strtol_l.c: In function '____strtol_l_internal':
+../sysdeps/generic/strtol_l.c:483: warning: cast discards qualifiers from pointer target type
+../sysdeps/generic/strtol_l.c:497: error: 'ERANGE' undeclared (first use in this function)
+../sysdeps/generic/strtol_l.c:497: error: (Each undeclared identifier is reported only once
+../sysdeps/generic/strtol_l.c:497: error: for each function it appears in.)
+../sysdeps/generic/strtol_l.c:517: warning: cast discards qualifiers from pointer target type
+../sysdeps/generic/strtol_l.c:520: warning: cast discards qualifiers from pointer target type
+make[2]: *** [/mnt/flaire/src/tls-toolchain-hppa/build/glibc-nptl/stdlib/strtol_l.o] Error 1
+make[2]: Leaving directory `/mnt/flaire/src/tls-toolchain-hppa/src/glibc/stdlib'
+make[1]: *** [stdlib/subdir_lib] Error 2
+make[1]: Leaving directory `/mnt/flaire/src/tls-toolchain-hppa/src/glibc'
+make: *** [all] Error 2
 
-I'm looking for comments. In particular from kernel hackers about
-implementing the cr16 offset table. If someone wants a small project
-that would be cool to work on. I would make myself responsible to finish
-the userspace pieces and then we would have nanosecond timing using
-get_cycles (independant library) or clock_gettime (nsec field filled
-from cr16).
+I tried to debug a weird header file include problem in the nptl headers
+last night, but to no avail. It looks like gcc was reordering the includes
+and "lll_lock_t" wasn't included. This time around "ERANGE" is missing, but 
+if I trace the headers by hand it should have been included.
+
+This looks like an einvironment problem. No other arches seem to define anything
+magical to make this work.
+
+I had a similar problem in nptl/descr.h where lowlevellock.h wasn't being
+included until after descr.h was entirely processed. Which made no sense
+at all.
 
 c.
+
 
 _______________________________________________
 parisc-linux mailing list
