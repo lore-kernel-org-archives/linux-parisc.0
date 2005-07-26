@@ -1,22 +1,23 @@
-From: Karthik <molecularbiophysics@gmail.com>
-Subject: Re: [parisc-linux] Debian hppa kernel panic - solved -
-Date: Sun, 24 Jul 2005 10:21:56 +0200
-Message-ID: <a015f9a00507240121418be05b@mail.gmail.com>
-References: <a015f9a00507210135b8b9071@mail.gmail.com>
-	<20050721130031.GD27330@colo.lackof.org>
-	<a015f9a005072211286e926d2d@mail.gmail.com>
-	<a015f9a005072211305665198b@mail.gmail.com>
-	<20050722184332.GA11034@roadwarrior.mcmartin.ca>
-	<a015f9a005072212031e9cb7df@mail.gmail.com>
-	<20050722190917.GB11034@roadwarrior.mcmartin.ca>
-	<a015f9a005072401206190bc37@mail.gmail.com>
-Reply-To: Karthik <molecularbiophysics@gmail.com>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
+Date: Tue, 26 Jul 2005 13:01:35 -0400
+Message-ID: <20050726170109.GQ30182@systemhalted.org>
+References: <1122036994.10454.131.camel@thor.tres.org>
+	<20050725000919.GA18659@colo.lackof.org>
+	<1122272788.10644.71.camel@thor.tres.org>
+	<20050726132402.GA32722@colo.lackof.org>
+	<1122385036.10644.146.camel@thor.tres.org>
+	<20050726141837.GB6663@parcelfarce.linux.theplanet.co.uk>
+	<42E647E8.3000505@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: Tres Melton <tres@mindspring.com>,
+ parisc-linux@lists.parisc-linux.org,
+ Matthew Wilcox <matthew@wil.cx>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <a015f9a005072401206190bc37@mail.gmail.com>
+In-Reply-To: <42E647E8.3000505@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,31 +28,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-So many thanks... Every thing up and running except my PS2 mouse
+On Tue, Jul 26, 2005 at 10:25:44PM +0800, Randolph Chung wrote:
+> >User space should not "know" what HZ the kernel is using.  Instead, all
+> >interfaces should be properly reported in terms of whatever HZ userspace
+> >used to assume (100 on i386, other values on other platforms).  I don't
+> >know what interface gprof is using, but it needs to be fixed.
+> 
+> I thought gprof uses a SIGPROF timer using the setitimer interface. Why 
+> is it HZ dependent?
 
-The soln:
-http://www.debian.org/releases/stable/debian-installer/index#errata
+Even though you get a signal you have to calculate the elapsed time.
+The profiling codes prefers "times" to "getrusage" to "clock."
 
-K
+Unfortunately to interpret "times" information you need to multiply by
+ticks_to_msec.
 
+IMO any interface exporting/using ticks is broken. Accurate time can 
+be provided through other interfaces. Userspace should never see ticks,
+only converted time.
 
+c.
 
-> On 7/22/05, Kyle McMartin <kyle@mcmartin.ca> wrote:
-> > On Fri, Jul 22, 2005 at 09:03:40PM +0200, Karthik wrote:
-> > > > You need to bump initrd_size.
-> >
-> > For one, you're asking on the wrong list. Since this is a Debian
-> > problem.
-> >
-> > Second, get to the PALO prompt (answering yes to interact with the IPL,
-> > or boot pri ipl) and add initrd_size=3D32768 to the path by choosing a
-> > number available and adding that to the line which will create
-> > a new entry.
-> >
-> > --
-> > Kyle McMartin
-> >
->
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
