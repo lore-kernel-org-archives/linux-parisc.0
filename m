@@ -1,24 +1,12 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] [Testers wanted] New glibc with profiling fixed.
-Date: Tue, 26 Jul 2005 14:08:53 -0400
-Message-ID: <20050726180851.GB9703@systemhalted.org>
-References: <1122036994.10454.131.camel@thor.tres.org>
-	<20050725000919.GA18659@colo.lackof.org>
-	<1122272788.10644.71.camel@thor.tres.org>
-	<20050726132402.GA32722@colo.lackof.org>
-	<1122385036.10644.146.camel@thor.tres.org>
-	<20050726141837.GB6663@parcelfarce.linux.theplanet.co.uk>
-	<42E647E8.3000505@tausq.org>
-	<20050726170109.GQ30182@systemhalted.org>
-	<20050726170949.GB2221@parcelfarce.linux.theplanet.co.uk>
+Subject: [parisc-linux] [wiki] high-precision timers for parisc using cr16
+Date: Tue, 26 Jul 2005 15:16:32 -0400
+Message-ID: <20050726191630.GD9703@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Tres Melton <tres@mindspring.com>,
- parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050726170949.GB2221@parcelfarce.linux.theplanet.co.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,19 +17,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jul 26, 2005 at 06:09:49PM +0100, Matthew Wilcox wrote:
-> > IMO any interface exporting/using ticks is broken. Accurate time can 
-> > be provided through other interfaces. Userspace should never see ticks,
-> > only converted time.
-> 
-> userspace should see converted ticks.  ie divide by 10 if CONFIG_HZ is 1000
-> since PA userspace expects to see 100Hz.
 
-I meant "ideologicall" broken. Yes, converting ticks to an expected
-value preserves userspace compatibility.
+parisc,
 
-gprof may want to stop using times() when a more suitable interface
-becomes available.
+After another dicsussion about high-precision timers on parisc
+and the possible uses of cr16, I decided to write down our ideas
+so that they are not lost and rehashed.
+
+http://wiki.parisc-linux.org/Time?action=show
+
+I'm looking for comments. In particular from kernel hackers about
+implementing the cr16 offset table. If someone wants a small project
+that would be cool to work on. I would make myself responsible to finish
+the userspace pieces and then we would have nanosecond timing using
+get_cycles (independant library) or clock_gettime (nsec field filled
+from cr16).
 
 c.
 
