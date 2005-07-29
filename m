@@ -1,15 +1,15 @@
-From: Richard Hirst <rhirst@levanta.com>
-Subject: Re: [parisc-linux] 2.6.13-rc3-pa0 booted to login prompt on B180
-Date: Wed, 27 Jul 2005 22:25:06 +0100
-Message-ID: <20050727212506.GJ5500@levanta.com>
-References: <20050726225246.GE5500@levanta.com>
-	<20050727203951.GI5500@levanta.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Debian install
+Date: Fri, 29 Jul 2005 06:39:56 -0600
+Message-ID: <20050729123956.GA11883@colo.lackof.org>
+References: <42EA19FC.2030500@evonux.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="4SFOXa2GPu3tIq4H"
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Maxime Woznicki <maxime.woznicki@evonux.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050727203951.GI5500@levanta.com>
+In-Reply-To: <42EA19FC.2030500@evonux.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,67 +20,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
---4SFOXa2GPu3tIq4H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 27, 2005 at 09:39:51PM +0100, Richard Hirst wrote:
-> On Tue, Jul 26, 2005 at 11:52:46PM +0100, Richard Hirst wrote:
-> > Patch attached; it boots to a login prompt but
-> > 
-> > a) keyboard is dead
-> > b) serial port is dead
+On Fri, Jul 29, 2005 at 01:58:52PM +0200, Maxime Woznicki wrote:
+> Hello,
 > 
-> Those problems are caused by the gsc.c part of the patch, which is
+> I would like to know if debian hppa port supports these differents 
+> servers (I've searched in the supported hardware page but it isn't 
+> really clear for me) :
+> * HP9000  L2000
 
-Patch attached, which I think is the correct fix.  There are many
-next_device() functions in the tree; we needed one that used
-knode_parent, not knode_driver.
+yes
 
-Still looks to me like drivers/parisc/sba_iommu.c needs this fix
-too, but I've not actually tried it.
+> * RP-4440
 
-Richard
+pa8800 support isn't stable yet.
+I have several rp3440-4 boxes setup for developement but we haven't
+gotten to the bottom of the sshd segfault (can't ssh into the box).
+I believe it's an I-cache flushing issue but haven't had time
+to track it further down. Thanks to Randolph/Carlos for getting it that far.
+We have determined it's not an I/O coherency issue.
 
+> * RP5430
+> * RP5470
 
---4SFOXa2GPu3tIq4H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="gsc.patch"
+Offhand, I'm not sure what these are.
+I expect they are later versions of L-class but aren't sure.
 
-Index: drivers/parisc/gsc.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/drivers/parisc/gsc.c,v
-retrieving revision 1.22
-diff -d -u -r1.22 gsc.c
---- drivers/parisc/gsc.c	27 Jul 2005 00:31:04 -0000	1.22
-+++ drivers/parisc/gsc.c	27 Jul 2005 21:18:04 -0000
-@@ -183,10 +183,15 @@
- 	*irqp = irq;
- }
- 
-+static struct device* next_device(struct klist_iter *i)
-+{
-+	struct klist_node * n = klist_next(i);
-+	return n ? container_of(n, struct device, knode_parent) : NULL;
-+}
-+
- void gsc_fixup_irqs(struct parisc_device *parent, void *ctrl,
- 			void (*choose_irq)(struct parisc_device *, void *))
- {
--	extern struct device *next_device(struct klist_iter *i);
- 	struct device *dev;
- 	struct klist_iter i;
- 
+> If these servers are supported , can they be used as production servers ?
 
---4SFOXa2GPu3tIq4H
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+What does "supported" mean to you?
+You have to do your own testing/support on these boxes unless you
+want to fund one of the independent developers to do that for you.
 
+FWIW, The most stable recent kernels seem to be 2.6.8.1 (Debian) or
+self-built 2.6.10-pa11 (IIRC).
+
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---4SFOXa2GPu3tIq4H--
