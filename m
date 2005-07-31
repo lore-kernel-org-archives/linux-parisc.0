@@ -1,19 +1,20 @@
-From: Richard Hirst <rhirst@levanta.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] cvs head arch/parisc/kernel/drivers.c issues
-Date: Sun, 31 Jul 2005 21:01:44 +0100
-Message-ID: <20050731200144.GF5500@levanta.com>
+Date: Sun, 31 Jul 2005 16:13:35 -0400
+Message-ID: <20050731201335.GJ21753@roadwarrior.mcmartin.ca>
 References: <20050730231056.GC5500@levanta.com>
 	<20050731061254.GG21753@roadwarrior.mcmartin.ca>
 	<20050731090005.GD5500@levanta.com>
 	<20050731193229.GE5500@levanta.com>
 	<20050731193821.GI21753@roadwarrior.mcmartin.ca>
+	<20050731200144.GF5500@levanta.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+To: Richard Hirst <rhirst@levanta.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050731193821.GI21753@roadwarrior.mcmartin.ca>
+In-Reply-To: <20050731200144.GF5500@levanta.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,19 +25,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jul 31, 2005 at 03:38:21PM -0400, Kyle McMartin wrote:
-> On Sun, Jul 31, 2005 at 08:32:29PM +0100, Richard Hirst wrote:
-> > I noticed the 2.6.13 kernel is using completely different IRQ allocations
-> > from 2.6.8 (cat /proc/interrupts); is this expected?
-> > 
+On Sun, Jul 31, 2005 at 09:01:44PM +0100, Richard Hirst wrote:
+> OK; booted 2.6.12-pa2 and and got the same allocations, with ps/2
+> on irq 20.
 > 
-> Yeah, willy rewrote our interrupt support sometime around 2.6.10.
 
-OK; booted 2.6.12-pa2 and and got the same allocations, with ps/2
-on irq 20.
+I think the problem is that check_dev isn't properly passing the "next"
+device if it's faulty.
 
-Richard
+http://cvs.parisc-linux.org/linux-2.6/arch/parisc/kernel/drivers.c?rev=1.9&view=markup
 
+For how it used to look.
+
+Cheers,
+-- 
+Kyle McMartin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
