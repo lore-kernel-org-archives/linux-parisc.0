@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] cvs head arch/parisc/kernel/drivers.c issues
-Date: Sun, 31 Jul 2005 16:13:35 -0400
-Message-ID: <20050731201335.GJ21753@roadwarrior.mcmartin.ca>
+Date: Sun, 31 Jul 2005 16:23:38 -0400
+Message-ID: <20050731202338.GK21753@roadwarrior.mcmartin.ca>
 References: <20050730231056.GC5500@levanta.com>
 	<20050731061254.GG21753@roadwarrior.mcmartin.ca>
 	<20050731090005.GD5500@levanta.com>
@@ -30,14 +30,31 @@ On Sun, Jul 31, 2005 at 09:01:44PM +0100, Richard Hirst wrote:
 > on irq 20.
 > 
 
-I think the problem is that check_dev isn't properly passing the "next"
-device if it's faulty.
+Can you try something like this?
 
-http://cvs.parisc-linux.org/linux-2.6/arch/parisc/kernel/drivers.c?rev=1.9&view=markup
+#define check_dev(padev) (padev->id.hw_type != HPHW_FAULTY) \
+				? padev : next_device(padev)
 
-For how it used to look.
 
-Cheers,
+static struct parisc_device *
+next_device(struct parisc_device *padev) {
+	struct device *dev;
+	struct klist_iter i;
+	struct parisc_device *next = NULL;
+
+	if (!padev)
+		return NULL;
+
+	klist_iter_init(&padev->dev.klist_children, &i);
+	
+	dev = next_device(&i);
+	if (dev)
+		next = to_parisc_device(dev);
+	klist_iter_exit(&i);
+
+	return next;
+}
+
 -- 
 Kyle McMartin
 _______________________________________________
