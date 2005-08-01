@@ -1,13 +1,16 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] Feature request for parsic kernel hackers (2
-	mini-projects)
-Date: Mon, 1 Aug 2005 00:57:38 -0400
-Message-ID: <20050801045734.GU9703@systemhalted.org>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] Feature request for parsic kernel hackers
+	(2	mini-projects)
+Date: Mon, 01 Aug 2005 17:59:20 +0800
+Message-ID: <42EDF278.5080403@tausq.org>
+References: <20050801045734.GU9703@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050801045734.GU9703@systemhalted.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,25 +21,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+> 2. Add some option that enables the user to print something
+>    like /proc/self/maps when a user process dies. This is 
+>    very usefull for translating a fault address into a quick
+>    estimate of which library function crashed.
 
-parisc,
+gdb?
 
-I have two small kernel hacker projects.
+randolph
 
-1. Add cr27 printing to HPMC, this would let someone debug
-   multi-threaded problems by examining the thread register.
-   It would be even cooler to make this NPTL aware and dump
-   the TCB and DTV.
-
-2. Add some option that enables the user to print something
-   like /proc/self/maps when a user process dies. This is 
-   very usefull for translating a fault address into a quick
-   estimate of which library function crashed.
-
-Fame and glory? My gratitude? :)
-
-Cheers,
-Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
