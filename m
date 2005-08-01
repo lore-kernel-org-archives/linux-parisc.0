@@ -1,23 +1,13 @@
-From: Richard Hirst <rhirst@levanta.com>
-Subject: Re: [parisc-linux] cvs head arch/parisc/kernel/drivers.c issues
-Date: Mon, 1 Aug 2005 15:53:10 +0100
-Message-ID: <20050801145310.GJ5500@levanta.com>
-References: <20050730231056.GC5500@levanta.com>
-	<20050731061254.GG21753@roadwarrior.mcmartin.ca>
-	<20050731090005.GD5500@levanta.com>
-	<20050731193229.GE5500@levanta.com>
-	<20050731193821.GI21753@roadwarrior.mcmartin.ca>
-	<20050731200144.GF5500@levanta.com>
-	<20050731202338.GK21753@roadwarrior.mcmartin.ca>
-	<20050731202709.GL21753@roadwarrior.mcmartin.ca>
-	<20050801134844.GI5500@levanta.com>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: [parisc-linux] pa_memcpy kernel crashing testcase == "glibc +nptl
+	+testsuite", and some tests.
+Date: Mon, 1 Aug 2005 11:15:12 -0400
+Message-ID: <20050801151506.GW9703@systemhalted.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="wxDdMuZNg1r63Hyj"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain;
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050801134844.GI5500@levanta.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,121 +19,127 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
---wxDdMuZNg1r63Hyj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+parisc,
 
-The attached patch fixes 'Found devices' order to display parents before
-children.  It's still not ideal, as the children are not reported in
-numerical order but I don't see a clean way to fix that.
+Luckily I found an excellent testcase that crashes the kernel *every*
+time, thus enabling me to test a patch from Randolph to see if the
+recent stability issues could be fixed.
 
-I included the patch to remove the check_dev() call from match_by_id()
-too; that still seems like the right thing to do to me.
+Kernel 2.6.13-rc3-pa0
+gcc version 3.3.6 (Debian 1:3.3.6-7)
 
-My C360 now reports:
-
-Found devices:
-1. U2-IOA BC Runway Port at 0xfff88000 [8] { 12, 0xf, 0x580, 0x0000b }
-2. Dino PCI Bridge at 0xf2000000 [8/0] { 13, 0x3, 0x680, 0x0000a },  additional 
-3. Raven U/L2 Dino RS-232 at 0xf2003000 [8/0/63] { 10, 0x0, 0x006, 0x0008c }
-4. Raven+ w SE FWSCSI Core BA at 0xffd00000 [8/16] { 11, 0x0, 0x056, 0x00081 }, 
-5. Raven+ w SE FWSCSI Core RS-232 at 0xffd05000 [8/16/4] { 10, 0x0, 0x056, 0x00}
-6. Raven+ w SE FWSCSI Core SCSI at 0xffd06000 [8/16/5] { 10, 0x0, 0x056, 0x0008}
-7. Raven+ w SE FWSCSI Core Centronics at 0xffd02000 [8/16/0] { 10, 0x0, 0x056,  
-8. Raven+ w SE FWSCSI Core Audio at 0xffd04000 [8/16/1] { 10, 0x4, 0x056, 0x000}
-9. Raven+ w SE FWSCSI Core PS/2 Port at 0xffd08000 [8/16/7] { 10, 0x0, 0x056, 0}
-10. Raven+ w SE FWSCSI Core PS/2 Port at 0xffd08100 [8/16/8] { 10, 0x0, 0x056, }
-11. U2-IOA BC GSC+ Port at 0xf203f000 [8/63] { 7, 0x1, 0x501, 0x0000c }
-12. Raven U/L2 Dino PS/2 Port at 0xf2001000 [8/1] { 10, 0x0, 0x006, 0x00096 }
-13. U2-IOA BC Runway Port at 0xfff8a000 [10] { 12, 0xf, 0x580, 0x0000b }
-14. U2-IOA BC GSC+ Port at 0xf103f000 [10/63] { 7, 0x1, 0x501, 0x0000c }
-15. Cujo PCI Bridge at 0xf1000000 [10/0] { 13, 0x1, 0x682, 0x0000a },  addition 
-16. Dino RS-232 at 0xf1003000 [10/3] { 10, 0x0, 0x007, 0x0008c }
-17. Raven W 360 (9000/780) at 0xfffa0000 [32] { 0, 0x0, 0x5c6, 0x00004 }
-18. Memory at 0xfffb1000 [49] { 1, 0x0, 0x097, 0x00009 }
+64-bit kernel, UP, on an a500 (PA8700) with 1.5GB of RAM.
+Running the glibc testsuite with NPTL enabled causes the machine
+to consistently HPMC.
+---------------------------------------------------------------------
+Backtrace:
+ [<000000001032d994>] copy_to_user+0x34/0x40
+ [<0000000010172284>] sys_timer_create+0x294/0x8c8
+ [<0000000010184d04>] compat_sys_timer_create+0x74/0xa8
+ [<0000000010107f8c>] syscall_exit+0x0/0x14
 
 
-Richard
+Kernel Fault: Code=15 regs=00000000484cc480 (Addr=00000000c064cb48)
 
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000001001111111100001111 Not tainted
+r00-03  0000000000000000 0000000010677e28 000000001032d994 0000000000000000
+r04-07  00000000106dfc00 0000000060e59e80 0000000000000000 00000000c064cb48
+r08-11  00000000484cc190 0000000000000001 00000000000e8608 0000000000000000
+r12-15  00000000000e8648 00000000000e88e8 00000000000aa000 00000000000eac08
+r16-19  00000000000ecc08 00000000000e8648 0000000000000000 0000000000000000
+r20-23  00000000484cc000 00000000484cc280 00000000484cc281 00000000c064cb48
+r24-27  0000000000000004 00000000484cc280 00000000c064cb48 00000000106dfc00
+r28-31  0000000000000000 00000000c064cb48 00000000484cc480 0000000000000004
+sr0-3   0000000002014000 0000000000000000 0000000000000000 0000000002014000
+sr4-7   0000000000000000 0000000000000000 0000000000000000 0000000000000000
 
---wxDdMuZNg1r63Hyj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=ddd
+      VZOUICununcqcqcqcqcqcrmunTDVZOUI
+FPSR: 00000000000000000000000000000000
+FPER1: 00000000
+fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+fr04-07  00000000101f7be4 00000000000000fa 0000000012623c18 0000000000000000
+fr08-11  00000000106dfc00 0000000000000002 00000000106dfc00 0000000000000802
+fr12-15  000f41fa2f2149c0 0000000000000020 fffffffffffffc18 0000000000000000
+fr16-19  000000001019baa0 00000000125c7000 00000000101cb07c 00000000125c7000
+fr20-23  00000000125c7000 0000000000000000 0000000000000043 0000000000000228
+fr24-27  000fb909ffe5cb9a 3fe0000000000000 412e848000000000 00000000125c7000
+fr28-31  0000000000001000 00000000106dfc00 000000001077f240 0000000000000000
 
-Index: arch/parisc/kernel/drivers.c
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/drivers.c,v
-retrieving revision 1.25
-diff -u -r1.25 drivers.c
---- arch/parisc/kernel/drivers.c	26 Jul 2005 23:55:47 -0000	1.25
-+++ arch/parisc/kernel/drivers.c	1 Aug 2005 14:45:26 -0000
-@@ -59,19 +59,11 @@
- static int descend_children(struct device * dev, void * data)
- {
- 	struct recurse_struct * recurse_data = (struct recurse_struct *)data;
--	int ret;
- 
--	/*
--	 * First, descend down the tree.
--	 */
--	ret = device_for_each_child(dev, recurse_data, descend_children);
--	if (ret)
--		return ret;
--
--	/*
--	 * Now, iterate over the children and call the function.
--	 */
--	return device_for_each_child(dev, recurse_data->obj, recurse_data->fn);
-+	if (recurse_data->fn(dev, recurse_data->obj))
-+		return 1;
-+	else
-+		return device_for_each_child(dev, recurse_data, descend_children);
- }
- 
- /**
-@@ -80,7 +72,8 @@
-  *	@data:	Data to pass to the called function.
-  *
-  *	This performs a depth-first traversal of the tree, calling the
-- *	function passed for each node.
-+ *	function passed for each node.  It calls the function for parents
-+ *	before children.
-  */
- 
- static int for_each_padev(int (*fn)(struct device *, void *), void * data)
-@@ -89,7 +82,7 @@
- 		.obj	= data,
- 		.fn	= fn,
- 	};
--	return descend_children(&root, &recurse_data);
-+	return device_for_each_child(&root, &recurse_data, descend_children);
- }
- 
- /**
-@@ -448,11 +441,9 @@
- 	struct parisc_device * pdev = to_parisc_device(dev);
- 	struct match_id_data * d = data;
- 
--	if (check_dev(pdev)) {
--		if (pdev->hw_path == d->id) {
--			d->dev = pdev;
--			return 1;
--		}
-+	if (pdev->hw_path == d->id) {
-+		d->dev = pdev;
-+		return 1;
- 	}
- 	return 0;
- }
+IASQ: 0000000000000000 0000000000000000 IAOQ: 000000001032d678 000000001032d67c
+ IIR: 0fb39222    ISR: 0000000000000000  IOR: 00000000c064cb48
+ CPU:        0   CR30: 00000000484cc000 CR31: 00000000106a0000
+ ORIG_R28: 00000000106dfc00
+ IAOQ[0]: pa_memcpy+0x178/0x32c
+ IAOQ[1]: pa_memcpy+0x17c/0x32c
+ RP(r2): copy_to_user+0x34/0x40
+Kernel panic - not syncing: Kernel Fault
+---------------------------------------------------------------------
 
---wxDdMuZNg1r63Hyj
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Applying Randolph's patch to remove fpregs and the double word copies
+using thos registers can be found at:
+http://www.parisc-linux.org/~tausq/fpreg.diff
+
+Same kernel with that patch applied still crash.
+
+This can mean any number of things, but it could mean:
+
+a. There is another path in the kernel code corrupting fp registers.
+b. The optimal pa_memcpy is too optimal and exposes other bugs?
+
+I think that 'a.' is the most plausible.
+Any thoughts about catching the culprit?
+
+Cheers,
+Carlos.
+
+NOTE:
+Even with Randolph's patch the following functions use fpregs heavily:
+__muldi3 : Heavy fpregs usage
+__divdi3 : "
+__moddi3 : "
+__udivdi3 : "
+__umoddi3 : "
+
+The following functions save/restore fpregs:
+linux_gateway_entry - Save fpregs
+_switch_to - Save fpregs
+_switch_to_ret - Restore fpregs
+intr_restore - Restore fpregs
+L4^B1 - Save fpregs?
+L4^B2 - Save fpregs?
+syscall_restore - Load fpregs
+
+The following functions have a weird sequence involving fr31R?
+schedule
+    1010e8c4:   68 d4 00 98     stw r20,4c(r6)
+    1010e8c8:   5c df 00 9a     fldw 4c(r6),fr31R
+    1010e8cc:   00 13 18 60     mtsm r19
+io_schedule
+    10110d14:   68 d3 24 88     stw r19,1244(r6)
+    10110d18:   5c df 24 8a     fldw 1244(r6),fr31R
+    10110d1c:   00 14 18 60     mtsm r20
+__down_read
+__down_write
+sys_ptrace
+load_elf_binary
+dev_ifname32
+sched_setaffinity
+get_task_mm
+copy_mm
+copy_fs_struct
+copy_files
+unshare_files
+copy_process
+profile_hit
+release_task
+daemonize
+get_file_struct
+...
+And many more. This load to fr31R is discarded and never used.
+
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---wxDdMuZNg1r63Hyj--
