@@ -1,17 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: NPTL pthread_cancel and libgcc_s.so.2 vs.
-	libgcc_s.so.1 (Why the DSO version bump?)
-Date: Tue, 2 Aug 2005 10:13:42 -0400 (EDT)
-Message-ID: <200508021413.j72EDgM3013869@hiauly1.hia.nrc.ca>
-References: <20050802135905.GD9703@systemhalted.org>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] Re: gdb debugging SIGEV_THREAD threads?
+Date: Tue, 02 Aug 2005 22:44:55 +0800
+Message-ID: <42EF86E7.40506@tausq.org>
+References: <20050802134128.GC9703@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=ISO-8859-1;
+  format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050802135905.GD9703@systemhalted.org> from "Carlos O'Donell"
-	at Aug 2, 2005 09:59:10 am
+In-Reply-To: <20050802134128.GC9703@systemhalted.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,16 +21,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> What was the reason for DSO version bump in libgcc_s.so.1?
+> Might you have a clue as to why gdb can't debug a SIGEV_THREAD?
+> This test fails with a SIGSEGV in NPTL. The thread is in
+> __deallocate_stack (DSO address check from fault) 
 
-It was done to distinguish between libgcc_s's built with sjlj and dwarf2
-eh support, respectively.  They use incompatible unwind routines and it's
-not possible to support both exception handling techniques with one library.
+Not a clue, but I can look into it.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+randolph
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
