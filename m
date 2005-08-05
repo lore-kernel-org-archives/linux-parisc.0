@@ -1,15 +1,15 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] [BUG] PDC stable storage broken on 2.6.13-rc3-pa1
-Date: Fri, 05 Aug 2005 18:25:58 +0800
-Message-ID: <42F33EB6.5060006@tausq.org>
-References: <20050803183614.GB16029@colo.lackof.org>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] paer.debian.org crash in ext3_write_inode()
+Date: Fri, 5 Aug 2005 15:53:11 -0400
+Message-ID: <20050805195306.GS9703@systemhalted.org>
+References: <1123204638.3628.132.camel@krebs.dannf>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: dann frazier <dannf@hp.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050803183614.GB16029@colo.lackof.org>
+In-Reply-To: <1123204638.3628.132.camel@krebs.dannf>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,26 +20,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> PDC stable storage driver panics/hpmc's most/all parisc boxen
-> with the current 2.6.13-rc3-pa1 kernels.
+On Thu, Aug 04, 2005 at 07:17:18PM -0600, dann frazier wrote:
+> fyi, paer.debian.org was reported down.  The GSP's console log
+> follows.  
 > 
-> Here is the backtrace and console output for c3000.
-> I won't be able to chase this today.
-> Maybe this weekend if no one else gets to it first.
+> dannf@paer:~$ uname -a
+> Linux paer 2.6.8-2-64 #1 Tue Feb 8 05:54:00 EST 2005 parisc64 GNU/Linux
 
-I think that the problem is that we have an infinite recursion that is
-trashing the stack.
+No register dump? That is the most interesting and usefull piece of
+information :(
 
-This is happening in hwpath_to_device() which is called by
-pdcspath_fetch(). hwpath_to_device tranverses the device tree. It looks
-like it recurses forever, eventually filling up the stack and trashing
-stuff.
-
-Not yet sure why, nor do I really understand how the device tree
-iterators work. Perhaps somebody else who understands this better will
-be able to fix it quickly ;-)
-
-randolph
+c.
 
 _______________________________________________
 parisc-linux mailing list
