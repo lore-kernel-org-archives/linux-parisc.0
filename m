@@ -1,19 +1,11 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] paer.debian.org crash in ext3_write_inode()
-Date: Sat, 6 Aug 2005 11:56:01 -0600
-Message-ID: <20050806175601.GA12272@colo.lackof.org>
-References: <1123204638.3628.132.camel@krebs.dannf>
-	<20050805195306.GS9703@systemhalted.org>
-	<1123274838.9036.57.camel@krebs.dannf>
-	<20050806051432.GA21031@colo.lackof.org>
-	<1123341709.10768.1.camel@localhost>
+From: dann frazier <dannf@hp.com>
+Subject: [parisc-linux] paer.debian.org crash in ext3_write_inode()
+Date: Thu, 04 Aug 2005 19:17:18 -0600
+Message-ID: <1123204638.3628.132.camel@krebs.dannf>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: dann frazier <dannf@hp.com>
+Content-Type: text/plain
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1123341709.10768.1.camel@localhost>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,24 +16,240 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Aug 06, 2005 at 09:21:49AM -0600, dann frazier wrote:
-> > > Yeah; we really should be logging the console while its acting up...
-> > > I'll try to set that up.
-> > 
-> > pear is an a500?
-> > 
-> > If so, "cl" from the GSP will dump the last couple hundred lines
-> > of console output.
-> 
-> right, that output is in my first message.
+fyi, paer.debian.org was reported down.  The GSP's console log
+follows.  
 
-Ok..then the missing register dump isn't something logging
-the console will fix. Not unless you want to make the
-console log available from the internet...not something I'd
-be real comfortable with.
+dannf@paer:~$ uname -a
+Linux paer 2.6.8-2-64 #1 Tue Feb 8 05:54:00 EST 2005 parisc64 GNU/Linux
 
-thanks,
-grant
+
+GSP> cl
+
+
+CL
+
+<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+
+
+Press Q/q to quit, Enter to continue:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+Backtrace:
+ [<00000000101164d8>] dump_stack+0x18/0x28
+ [<000000000012b024>] ext3_write_inode+0x3c/0x68 [ext3]
+
+
+
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
