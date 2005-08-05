@@ -1,18 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [parisc-linux] [Alsa-devel] [PATCH] Support for AD1889 PCI
-	Soundchip
-Date: Thu, 4 Aug 2005 15:30:45 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0508041503020.11474-100000__8051.72438635982$1416623881$gmane$org@studcom.urz.uni-halle.de>
-References: <20050729211634.566f5343@Tatooine.r3z0>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] [BUG] PDC stable storage broken on 2.6.13-rc3-pa1
+Date: Fri, 05 Aug 2005 18:25:58 +0800
+Message-ID: <42F33EB6.5060006@tausq.org>
+References: <20050803183614.GB16029@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII
-Cc: alsa-devel@lists.sourceforge.net,
- parisc-linux@lists.parisc-linux.org,
- kyle@parisc-linux.org
-To: Thibaut VARENE <T-Bone@parisc-linux.org>
+Content-Type: text/plain;
+  charset=ISO-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050729211634.566f5343@Tatooine.r3z0>
+In-Reply-To: <20050803183614.GB16029@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,26 +20,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Thibaut VARENE wrote:
-> Attached is a patch against 2.6.13-rc4 providing support for Analog
-> Devices AD1889 PCI Sound chip, which is especially found on some HP
-> PA-RISC machines.
+> PDC stable storage driver panics/hpmc's most/all parisc boxen
+> with the current 2.6.13-rc3-pa1 kernels.
+> 
+> Here is the backtrace and console output for c3000.
+> I won't be able to chase this today.
+> Maybe this weekend if no one else gets to it first.
 
-I don't actually have this hardware :-), but the docs don't mention
-any dependency between the count registers (BC, CC) and the interrupt
-count registers (IC, IB).
+I think that the problem is that we have an infinite recursion that is
+trashing the stack.
 
-So wouldn't it be possible to put the ALSA buffer size into the count
-registers and the ALSA period size into the interrupt count registers?
+This is happening in hwpath_to_device() which is called by
+pdcspath_fetch(). hwpath_to_device tranverses the device tree. It looks
+like it recurses forever, eventually filling up the stack and trashing
+stuff.
 
-This would make the interrupt handler much simpler, as it wouldn't
-have to reprogram any registers.  And it would solve the problem that
-the DMA accesses for one period go beyond the buffer when the number
-of periods per buffer is not an integer.
+Not yet sure why, nor do I really understand how the device tree
+iterators work. Perhaps somebody else who understands this better will
+be able to fix it quickly ;-)
 
-
-Regards,
-Clemens
+randolph
 
 _______________________________________________
 parisc-linux mailing list
