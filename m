@@ -1,17 +1,13 @@
-From: Matt Taggart <taggart@debian.org>
-Subject: Re: [parisc-linux] paer.debian.org crash in ext3_write_inode()
-Date: Sat, 06 Aug 2005 13:43:52 -0700
-Message-ID: <20050806204352.F1B4A1AA7B5@cyrix.home.bogus>
-References: <1123204638.3628.132.camel@krebs.dannf>
-	<20050805195306.GS9703@systemhalted.org>
-	<1123274838.9036.57.camel@krebs.dannf>
-	<20050806183834.0C7681AA7DF@cyrix.home.bogus>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] Why toggle_bounce only for disks?
+Date: Sat, 6 Aug 2005 19:56:15 -0400
+Message-ID: <20050806235615.GK3505__6988.44505609504$1416623885$gmane$org@roadwarrior.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: linux-ide@vger.kernel.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <20050806183834.0C7681AA7DF@cyrix.home.bogus> 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,36 +18,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Ahoi,
 
-Matt Taggart writes...
+The following patch fixes a crash caused by attempting to bounce buffer
+when an IDE CD-ROM is used on a machine with an IO-MMU. [At least, this
+patch fixes things so I can use my IDE CD-ROM behind an ns87415 on a 
+HP PA-RISC workstation.]
 
-> I can repeatably cause a kernel panic on paer now. The machine is running the
->  
-> Debian kernel-image-2.6.8-2-64 version 2.6.8-6 package. When I tried to run 
-> apt-get upgrade in an unstable chroot I got the following on the console,
+Why was this only allowed for disks?
 
-I had a hunch that this problem was something to do with the apt in the 
-unstable chroot so I tried some things to fix it.
+--- a/drivers/ide/ide-lib.c   18 Jul 2005 18:46:30 -0000
++++ b/drivers/ide/ide-lib.c   6 Aug 2005 20:28:04 -0000
+@@ -410,7 +410,7 @@ void ide_toggle_bounce(ide_drive_t *driv
+ {
+        u64 addr = BLK_BOUNCE_HIGH;     /* dma64_addr_t */
+ 
+-       if (on && drive->media == ide_disk) {
++       if (on) {
+                if (!PCI_DMA_BUS_IS_PHYS)
+                        addr = BLK_BOUNCE_ANY;
+                else if (HWIF(drive)->pci_dev)
 
-First, using aptitude upgrade instead caused a crash as well, no surprise.
-
-Second, I suspected that the problem might be a c++ issue, so I used dpkg to 
-upgrade a few things by hand. After just upgrading libstdc++6 from 4.0.1-2 to 
-4.0.1-3 the apt-get upgrade to no longer crashed the machine, but it still 
-segfaulted. I then upgraded apt/apt-utils to 0.6.39 and now apt-get upgrade 
-seems to work fine.
-
-So paer is fixed, but apt shouldn't have been able to crash the kernel so it 
-still might be nice to figure out why. I think the test case should be easy to 
-replicate for someone who wanted to try and figure out why.
-
-Thanks,
-
+Cheers,
 -- 
-Matt Taggart
-taggart@debian.org
-
-
+Kyle McMartin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
