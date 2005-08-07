@@ -1,12 +1,11 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] Why toggle_bounce only for disks?
-Date: Sat, 6 Aug 2005 19:56:15 -0400
-Message-ID: <20050806235615.GK3505__6988.44505609504$1416623885$gmane$org@roadwarrior.mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Processor-Specific ELF Supplement for PA-RISC
+Date: Sun, 7 Aug 2005 14:33:04 -0400 (EDT)
+Message-ID: <200508071833.j77IX5ZO028505@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: linux-ide@vger.kernel.org
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,30 +17,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Ahoi,
+I noticed recently that HP has updated various defines for ELF under
+HP-UX which are not documented in the ELF supplement.  I was wondering
+if the supplement has been updated.  The last version that I can find
+is version 1.5, August 20, 1998.  Some of these updates might also be
+applicable to ia64.
 
-The following patch fixes a crash caused by attempting to bounce buffer
-when an IDE CD-ROM is used on a machine with an IO-MMU. [At least, this
-patch fixes things so I can use my IDE CD-ROM behind an ns87415 on a 
-HP PA-RISC workstation.]
-
-Why was this only allowed for disks?
-
---- a/drivers/ide/ide-lib.c   18 Jul 2005 18:46:30 -0000
-+++ b/drivers/ide/ide-lib.c   6 Aug 2005 20:28:04 -0000
-@@ -410,7 +410,7 @@ void ide_toggle_bounce(ide_drive_t *driv
- {
-        u64 addr = BLK_BOUNCE_HIGH;     /* dma64_addr_t */
- 
--       if (on && drive->media == ide_disk) {
-+       if (on) {
-                if (!PCI_DMA_BUS_IS_PHYS)
-                        addr = BLK_BOUNCE_ANY;
-                else if (HWIF(drive)->pci_dev)
-
-Cheers,
+Dave
 -- 
-Kyle McMartin
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
