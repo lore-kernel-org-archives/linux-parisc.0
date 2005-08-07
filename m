@@ -1,15 +1,16 @@
-From: Mike Frysinger <vapier@gentoo.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Processor-Specific ELF Supplement for PA-RISC
-Date: Sun, 7 Aug 2005 18:12:05 -0400
-Message-ID: <200508071812.05787.vapier@gentoo.org>
-References: <200508071833.j77IX5ZO028505@hiauly1.hia.nrc.ca>
+Date: Sun, 7 Aug 2005 18:31:37 -0400 (EDT)
+Message-ID: <200508072231.j77MVbrW029457@hiauly1.hia.nrc.ca>
+References: <200508071812.05787.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: vapier@gentoo.org (Mike Frysinger)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200508071833.j77IX5ZO028505@hiauly1.hia.nrc.ca>
+In-Reply-To: <200508071812.05787.vapier@gentoo.org> from "Mike Frysinger" at
+	Aug 7, 2005 06:12:05 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,16 +21,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sunday 07 August 2005 02:33 pm, John David Anglin wrote:
-> I noticed recently that HP has updated various defines for ELF under
-> HP-UX which are not documented in the ELF supplement.  I was wondering
-> if the supplement has been updated.  The last version that I can find
-> is version 1.5, August 20, 1998.  Some of these updates might also be
-> applicable to ia64.
+> hrm, i only have version 1.43 from October 6, 1997 ... can i get a copy of 
+> your updated version and/or a URL for it ? :)
 
-hrm, i only have version 1.43 from October 6, 1997 ... can i get a copy of 
-your updated version and/or a URL for it ? :)
--mike
+There doesn't seem to be a link to it on the www.parisc-linux.org
+site but it's here <http://ftp.parisc-linux.org/docs/arch/elf-pa-hp.pdf>.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
