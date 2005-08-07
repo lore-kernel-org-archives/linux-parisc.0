@@ -1,12 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Processor-Specific ELF Supplement for PA-RISC
-Date: Sun, 7 Aug 2005 14:33:04 -0400 (EDT)
-Message-ID: <200508071833.j77IX5ZO028505@hiauly1.hia.nrc.ca>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [parisc-linux] Processor-Specific ELF Supplement for PA-RISC
+Date: Sun, 7 Aug 2005 19:25:43 -0400
+Message-ID: <200508071925.44003.vapier@gentoo.org>
+References: <200508072231.j77MVbrW029457@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset="iso-8859-1"
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200508072231.j77MVbrW029457@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,16 +19,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I noticed recently that HP has updated various defines for ELF under
-HP-UX which are not documented in the ELF supplement.  I was wondering
-if the supplement has been updated.  The last version that I can find
-is version 1.5, August 20, 1998.  Some of these updates might also be
-applicable to ia64.
+On Sunday 07 August 2005 06:31 pm, John David Anglin wrote:
+> > hrm, i only have version 1.43 from October 6, 1997 ... can i get a copy
+> > of your updated version and/or a URL for it ? :)
+>
+> There doesn't seem to be a link to it on the www.parisc-linux.org
+> site but it's here <http://ftp.parisc-linux.org/docs/arch/elf-pa-hp.pdf>.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+great, thanks
+
+while we're on the subject of Processor-Specific ELF Supplements, anyone know 
+where i can find the one for Alpha ? :)
+-mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
