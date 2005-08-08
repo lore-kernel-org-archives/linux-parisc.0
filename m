@@ -1,17 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: gsyprf11 and 2.6.13-rc3-pa1
-Date: Sat, 13 Aug 2005 15:30:45 -0400 (EDT)
-Message-ID: <200508131930.j7DJUjiT009503@hiauly1.hia.nrc.ca>
-References: <200508131746.j7DHkqNo009063@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: GCC not disabling the use fr31 even with
+	-mdisable-fpregs.
+Date: Sun, 7 Aug 2005 23:53:56 -0400 (EDT)
+Message-ID: <200508080353.j783ruNq009002@hiauly1.hia.nrc.ca>
+References: <20050807233503.GE9703@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: James.Bottomley@SteelEye.com,
- parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Cc: parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200508131746.j7DHkqNo009063@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Aug 13, 2005 01:46:52 pm
+In-Reply-To: <20050807233503.GE9703@systemhalted.org> from "Carlos O'Donell"
+	at Aug 7, 2005 07:35:08 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,17 +22,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> However,
+> > > What is of real concern is the save/restore of fr31, when the compiler
+> > > has been told to disable floating point registers.
+> > 
+> > There's a bug there:
+> > 
+> > #define CONDITIONAL_REGISTER_USAGE \
+> > {                                               \
+> >   int i;                                        \
+> >   if (TARGET_DISABLE_FPREGS || TARGET_SOFT_FLOAT)\
+> >     {                                           \
+> >       for (i = FP_REG_FIRST; i < FP_REG_LAST; i++)\
+> > 	fixed_regs[i] = call_used_regs[i] = 1;  \
+> >     }                                           \
+> > 
+> > It looks like the '<' should be '<=".  It's not disabling the last
+> > fpreg.
 > 
-> cc1plus -O2 -ftemplate-depth-20000 inline4.C
-> 
-> consistently crashes my c3k.
+> Aha! Zat is ze bug! :)
 
-I tried this with builds of 2.6.13-rc6-pa1 with debian gcc-3.3, gcc-3.4
-and gcc-4.0.  They all crash in the same manner.
-
-I will send cc1plus by separate mail to anyone interested in trying to
-duplicate this.
+This is now fixed in all active gcc branches (3.4, 4.0 and head).  The
+problem has been present since the hppa64 port was introduced (3.0).
 
 Dave
 -- 
