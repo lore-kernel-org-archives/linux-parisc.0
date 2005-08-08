@@ -1,13 +1,11 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] Latest palinux crash
-Date: Tue, 16 Aug 2005 11:30:40 +0200
-Message-ID: <ILB6F4$E18FB548873F17079F03F09636E06452@scarlet.be>
+From: Isolde <lasts@furlong.net>
+Subject: [parisc-linux] New SmallCap Growth stock
+Date: Mon, 8 Aug 2005 14:15:12 -0400
+Message-ID: <93476103823.888481121@pool-71-247-198-63.nycmny.east.verizon.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: tsg45800 <tsg45800@scarlet.be>,
- parisc-linux <parisc-linux@parisc-linux.org>
-To: "grundler" <grundler@parisc-linux.org>
+  charset=US-ASCII
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,39 +17,99 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Mon, Aug 15, 2005 at 02:40:45PM +0000, Joel Soete wrote:
-> > >I have the "most recent" (2.4.20) patch from Bruno Vidal 
-     ^^^ just make me thought you have something newest ;-)
+CGKY--CGKY--CGKY--CGKY--CGKY--CGKY--CGKY--CGKY--CGKY--CGKY--CGKY
 
-> > >and he had it working on most of the platforms (32 and 64-bit).
-> > >It didn't get included becuase of (my) lack of time to integrate
-> > >and the fact that it wasn't popular at the time. I'm really
-> > >happy to see that's changed.
-> > >
-> > >Bruno, is that posted someplace publicly or can I post it?
-> > >(I'm hoping Bruno is still subscribed to p-l)
-> >
-> > No news?
-> 
-> Is this the right patch?
-> 	ftp.parisc-linux.org:patches/dump_modules-2.4.20-pa32.patch.gz
-> 
-> -rw-r--r--  1 tausq cvsusers 42166 Apr  8  2003 dump_modules-2.4.20-pa3=
-2.patch.z
+$ GET IN NOW!!! You know the old saying, buy the
+rumor and sell on the news. Once the news is out it is time to get
+ready for next rally...$
 
-Yes and the associated crashtools.tar.gz  :-)
 
-> 
-> > Do you have more recent stuff then what is available in ftp.p-l.org?
-> 
-> sorry - If I do, I'm not sure where.
-> 
-No pb just want to be sure to start work on good basis :-)
+Hot Stocks-Investor ALERT!!!
+SYMBOL: CGKY
+Timing is everything!
+Profits of 300-400 % EXPECTED
+TRADING SYMBOL: CGKY
+Opening Price:  $.16
+10 Day Target: $.60
 
-Thanks,
-    Joel=0A=0A-----------------------------------------------------------=
-----=0AA free anti-spam and anti-virus filter on all Scarlet mailboxes=0A=
-More info on http://www.scarlet.be/
+
+LAS VEGAS--(BUSINESS WIRE)--Aug. 3, 2005--Carnegie Cooke & Company, Inc. (CGKY.PK)
+is in the process of acquiring two new locations in Niteroi, the island city adjoining Rio de Janeiro.
+Niteroi is one of the most affluent suburbs in Brazil. Its population is greater than 500,000
+with a daily average of 300,000 commuters. These potential new locations are in addition
+to the existing domestic revenue generating OTB's currently being expanded in Campos and Macae.
+Carnegie Cooke recently signed a three year contract, with an option for three additional years,
+for exclusivity with the Jockey Club de Campus to operate both domestic and international simulcast signals
+related to the turf industry throughout the state of Rio de Janeiro.
+
+With ownership of the Campus facility, the domestic betting signal allows access
+to forty existing accredited domestic simulcast signal OTB's within the state of Rio de Janeiro.
+Management is in the process of analyzing these sites for the inclusion into its expanding OTB network.
+
+A $1,000 dollar investment could yield a $5,000 dollar profit in
+just one trade if you trade out at the top. CGKY should be one of the most
+profitable stocks to trade this year. In this range the stock has
+potential to move in either direction in big wings. This means you should be able to buy at the
+lows and sell at the highs for months to come.
+
+***Make no mistake: Our mission at Hot-Stocks-Investors is to claw our way through
+the thousands of underperforming companies out there to find the golden needle in the haystack
+the micro-cap DIAMOND that can make you rich. More often than not, the stocks we profile show
+a significant increase in stock price and sometimes in days, not months or years.
+
+IF YOU ARE RECEIVING THIS EMAIL, YOU ARE AMONG THE FIRST PUBLIC INVESTORS TO KNOW ABOUT
+CGKY !!! WE WISH YOU LUCK AND REMEMBER THE SAYING, TRADE AT THE TOP!!!
+
+
+
+
+
+Disclaimer:
+Information within this email contains "forwardlooking statements" within
+the meaning of Section 27Aof the Securities Act of 1933 and Section 21B of
+the Securities Exchange Act of 1934. Any statements that express or involve
+discussions with respect to predictions, expectations, beliefs,
+plans, projections, objectives, goals, assumptions or future events or
+performance are not statements of historical fact and may be "forward
+looking statements". "Forward looking statements" are based on
+expectations, estimates and projections at the time the statements are made
+that involve a number of risks and uncertainties which could cause actual
+results or events to differ materially from those presently anticipated.
+Forward looking statements in this action may be identified through the use
+of words such as "projects", "foresee", "expects", "will", "anticipates",
+"estimates", "believes", "understands" or that by statements indicating
+certain actions "may", "could", or "might" occur. Risk factors include
+general economic and business conditions, the ability to acquire and develop
+specific projects, the ability to fund operations and changes in consumer
+and business consumption habits and other factors overwhich the company has
+little or no control. The publisher of this newsletter does not represent
+that the information contained in this message states all material facts or
+does not omit a material fact necessary to make the statements therein not
+misleading. All information provided within this email pertaining to
+investing, ST0CKs, securities must be understood as information provided and
+not investment advice. The publisher of this newsletter advises all readers
+and subscribers to seek advice from a registered professional securities
+representative before deciding to trade in ST0CKs featured within this
+email. None of the material within this report shall be construed as any
+kind of investment advice or solicitation. Many of these companies are on
+the verge of bankruptcy. You can lose all your money by investing in this
+ST0CK. We urge you to read the company's SEC filings now, before you invest.
+The publisher of this newsletter is not a registered invstment advisor.
+Subscribers should not view information herein as legal, tax, accounting or
+investment advice. In compliance with the SecuritiesAct of 1933, Section
+17(b), The publisher of this newsletter is contracted to receive six hundred
+thousand free trading shares from a third party, not an officer, director or
+affiliate shareholder for the circulation of this report. Be aware of an
+inherent conflict of interest resulting from such compensation due to the
+fact that this is a paid advertisement and is not without bias. The party
+that paid us has a position in the ST0CK they will sell at anytime without
+notice. This could have a negative impact on the price of the ST0CK, causing
+you to lose money. All factual information in this report was gathered from
+public sources, including but not limited to SEC filings, Company Websites
+and Company Press Releases. The publisher of this newsletter believes this
+information to be reliable but can make no guarantee as to its accuracy or
+completeness. Use of the material within this email constitutes your
+
 
 _______________________________________________
 parisc-linux mailing list
