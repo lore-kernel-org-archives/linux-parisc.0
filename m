@@ -1,13 +1,17 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re:[parisc-linux] crash without pim info
-Date: Fri, 12 Aug 2005 17:56:19 +0200
-Message-ID: <IL49LV$B7B9D6A0708F34916FC37BB7E17057B0@scarlet.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: GCC not disabling the use fr31 even with
+	-mdisable-fpregs.
+Date: Sun, 7 Aug 2005 20:52:22 -0400 (EDT)
+Message-ID: <200508080052.j780qMuI006934@hiauly1.hia.nrc.ca>
+References: <20050807233503.GE9703@systemhalted.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "b.gunreben" <b.gunreben@web.de>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050807233503.GE9703@systemhalted.org> from "Carlos O'Donell"
+	at Aug 7, 2005 07:35:08 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,56 +22,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+> .o file can be found at:
+> www.baldric.uwo.ca/~carlos/sched.o
 > 
-> Hi,
-> 
-> when trying to setup a chroot system for compiling packages, my C3600 j=
-ust
-crashes with 
-> 
-> Kernel panic - not syncing: BUG!
-> 
-> when I try to use the SysRq, I just do not get any output:
-> 
-> SysRq : HELP : loglevel0-8 reBoot tErm Full kIll saK showMem Nice showP=
-c unRa
-> w Sync showTasks Unmount 
-> SysRq : Show State
-> SysRq : Show Memory
-> SysRq : Show Regs
-> SysRq : Resetting
-> 
-Sorry no clue about SysRq...
+> carlos@firin:~/fsrc/linux-2.6-exp/linux-2.6$ hppa64-linux-gnu-objdump -d
+> kernel/sched.o | grep fr31R
+>      600:       5c df 00 9a     fldw 4c(r6),fr31R
+>     29d8:       5c df 24 8a     fldw 1244(r6),fr31R
+>     29fc:       5c df 24 8a     fldw 1244(r6),fr31R
+>     2a50:       5c df 24 8a     fldw 1244(r6),fr31R
+>     2a74:       5c df 24 8a     fldw 1244(r6),fr31R
+>   4c:   5f 5f 00 22     fldw 10(r26),fr31R
+>  130:   5c 3f 00 9a     fldw 4c(r1),fr31R
+> carlos@firin:~/fsrc/linux-2.6-exp/linux-2.6$ 
 
-> What i do then, is reboot and check the pim info: All fields are just 0=
-.
-Afaik piminfo fields are only fill in when a hpmc (High Priority Machine
-Check) occures (on hpux generaly when an unexpected hw failure occures) o=
-r you
- trigger a TOC (Transfer Of Control). So all zero would just mean that no=
- hpmc
-occures.
+Need preproccessed source and .s output.
 
-> The problem seems to be related to a newly compiled glibc (glibc from C=
-VS,
-built with gcc4 (gcc version 4.0.2 20050720))
-Yes it seems to be confirmed (eventhought with a kernel 2.6.11 it works
-without pb???)
+> I think that objdump should not produce fr31R if it's dumping 2.0w code.
 
-> that I want to use in the chroot system. I already upgraded the kernel =
-to
-kernel 2.6.13-rc6-pa1 (compiled with gcc version 3.3.5).
-> 
-> Does anyone have a hint, how I possibly could get some more information=
+To my eye, objdump is doing the right thing.  The difference between
+narrow and wide only comes in the interpretation of the space register
+bits.  They are zero in the above instructions.
 
-about this problem? 
-> 
-No idea, sorry?
+There must be another bug that's setting the R bit.
 
-Joel=0A=0A---------------------------------------------------------------=
-=0AA free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore=
- info on http://www.scarlet.be/
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
