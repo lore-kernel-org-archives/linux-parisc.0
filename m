@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Latest 2.6.13-rc6-pa2 test pr :_(
-Date: Fri, 19 Aug 2005 14:41:41 -0400 (EDT)
-Message-ID: <200508191841.j7JIffAq013241@hiauly1.hia.nrc.ca>
-References: <4305FA88.9040404@tausq.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Results from NFS hang tests
+Date: Mon, 08 Aug 2005 19:27:34 +0000
+Message-ID: <42F7B226.5040501@tiscali.be>
+References: <42E27D23.4050601@excelcia.org> <20050729081920.GU5500@levanta.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii;
+  format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
-To: randolph@tausq.org (Randolph Chung)
+To: Richard Hirst <rhirst@levanta.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4305FA88.9040404@tausq.org> from "Randolph Chung" at Aug 19,
-	2005 11:28:08 pm
+In-Reply-To: <20050729081920.GU5500@levanta.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,40 +21,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > TOC:
-> > 
-> > r2	__handle_mm_fault+0x68  (return from call to pte_alloc_map)
-> > IIA	__handle_mm_fault+0x190
-> > 
-> > It looks as if this might have been caused by Process_3.exe in the
-> > libjava GCC testsuite.
+
+
+Richard Hirst wrote:
+> Just for the record, I'm running  2.6.13-rc3-pa0 built locally
+> with gcc 4.0.1 on a B180 with a 4G disk, and have run your 'dd'
+> test for 88 cycles so far without any problems.  The nfs mount
+> is from a linux box running Fedora Core 3.
 > 
-> Does it always hang in the same place? How much RAM/swap do you have in 
-> your system? Does it hang more/less if you disable swap?
+> Richard
+> 
+Hello Richard,
 
-I've seen this fault before.  I don't have enough data at this point
-with 2.6.13 to say it always hangs in the same place.
+May I ask your NFS kernel config?
 
-RAM: 1GB
+(it seems to work fine for me too but without nfs v4;
+btw I now manage my ft with ssh (may be stunnel and rsync would be a better sol?) so I spend less time for more test?)
 
-SWAP:
-root@hiauly6:/home/dave# cat /proc/swaps
-Filename                                Type            Size    Used    Priority
-/dev/sdb1                               partition       265032  0       -1
-/dev/sda1                               partition       263144  0       -2
-
-dave@hiauly6:~$ ulimit -v
-524288
-
-The above limit was sufficient to prevent the as crash associated with
-the 1GB .block directive.
-
-I don't know the answer to the last question at this time.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thank in advance,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
