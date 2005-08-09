@@ -1,15 +1,28 @@
-From: Sven Schnelle <svens@gmx.de>
-Subject: Re: [parisc-linux] USB Keyboard problems on C3600
-Date: Mon, 08 Aug 2005 21:46:20 +0200
-Message-ID: <87oe882ovn.fsf@deprecated.intranet.astaro.de>
-References: <874qa39yqm.fsf@deprecated.intranet.astaro.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [parisc-linux] Re: [2.6 patch] schedule obsolete OSS drivers for
+	removal (version 2)
+Date: Tue, 09 Aug 2005 13:13:51 -0400
+Message-ID: <1123607633.5601.7.camel__44384.1938431889$1416623910$gmane$org@mindpipe>
+References: <20050729153226.GE3563@stusta.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1283354566=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain
+Cc: Andrew Morton <akpm@osdl.org>,
+ alsa-devel@alsa-project.org,
+ Christoph Eckert <ce@christeck.de>,
+ zaitcev@yahoo.com,
+ kyle@parisc-linux.org,
+ James@superbug.demon.co.uk,
+ Thorsten Knabe <linux@thorsten-knabe.de>,
+ linux-kernel@vger.kernel.org,
+ linux-sound@vger.kernel.org,
+ sailer@ife.ee.ethz.ch,
+ parisc-linux@lists.parisc-linux.org,
+ zab@zabbo.net,
+ jgarzik@pobox.com,
+ perex@suse.cz
+To: Adrian Bunk <bunk@stusta.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <874qa39yqm.fsf@deprecated.intranet.astaro.de> (Sven Schnelle's
-	message of "Sat, 06 Aug 2005 11:54:41 +0200")
+In-Reply-To: <20050729153226.GE3563@stusta.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,57 +33,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1283354566==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha1; protocol="application/pgp-signature"
+On Fri, 2005-07-29 at 17:32 +0200, Adrian Bunk wrote:
+> This patch schedules obsolete OSS drivers (with ALSA drivers that 
+> support the same hardware) for removal.
+> 
+> Scheduling the via82cxxx driver for removal was ACK'ed by Jeff Garzik.
+> 
 
---=-=-=
-Content-Transfer-Encoding: quoted-printable
+Someone on linux-audio-user just pointed out that the OSS USB audio and
+midi modules were never deprecated, much less scheduled to be removed.
 
-Hi,
+Maybe the best way to deprecate them is to move them to Sound -> OSS,
+that's where they belong anyway.
 
-Sven Schnelle <svens@gmx.de> writes:
+Lee
 
-Just speaking to me, myself and i:
+On Tue, 2005-08-09 at 18:42 +0200, Christoph Eckert wrote: 
+> > Recompile the kernel with USB audio support.
+> 
+> Please ensure that you *disable* => Devioce drivers => USB => 
+> USB audio and USB Midi.
+> 
+> Both are OSS modules and caused a lot of trouble here when 
+> used in conjunction with the ALSA module
+> 
+> => Sound => ALSA => USB devices => USB Audio/MIDI driver
+> 
+> 
+> BTW: OSS is marked as deprecated, but not the two OSS modules 
+> mentioned above. Couldn't this get set or at least some info 
+> that these modules belong to OSS?
 
-> i have a MAC USB Keyboard, which won't work with the builtin USB
-> Controller of the C3600. If i connect it, i get this error messages:
-> [..]
-> Now i use a PCI USB Controller, and with this the keyboard is working
-> fine, the only bad thing is that the Kernel crashes after 1-2h:
-> [Kernel-oops-Backtrace]
-
-Ok, this oops happens only if i have a Tekram DC-390U2W (SYM53C895
-Chipset) SCSI Controller running in this system. After i removed it, the
-kernel never crashed again. Unfortunately, this doen't mean that the
-Keyboard is working the Onboard USB Controller. But at least its now
-running fine with an PCI USB Controller.
-
-Sven.
-=2D-=20
-"The number of Unix installations has grown to ten,  with more
- expected." (Unix Programmer's Manual, 2nd ed.; june 1972)
-
---=-=-=
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQBC97aM86MdxiXaIbERAgf5AKDORN7zWhHyriI4ulMwsoq/zqGHqgCfXblD
-rKzedOwI6H3V3QDVva6J0oI=
-=v3E/
------END PGP SIGNATURE-----
---=-=-=--
-
---===============1283354566==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1283354566==--
