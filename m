@@ -1,11 +1,11 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] New debian libc6 2.3.5: glibc bug or kernel bug???
-Date: Thu, 11 Aug 2005 11:25:53 +0200
-Message-ID: <IL1WV5$C263D00B95D5C9242114A7D700723650@scarlet.be>
+From: Elisabeth <Aeneas@fricke.com>
+Subject: [parisc-linux] SmallCap For You to Watch
+Date: Thu, 11 Aug 2005 08:18:30 -0400
+Message-ID: <38061119326.320569030@cpe-72-224-217-193.maine.res.rr.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "parisc-linux" <parisc-linux@parisc-linux.org>
+  charset=US-ASCII
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,67 +17,109 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
+Looking for a company with some good news?  Here's one!
 
-As many other reported, I encountered some pb with the recent upgrade of
-debian unstable glibc.
+**MWIS****MWIS****MWIS****MWIS****MWIS****MWIS****MWIS**
 
-Back from some kind holidays, I first tried to rebuild the recent cvs ker=
-nel
-2.6.13.
++++++++++++++++++++++++++++++++++++++++++++++++
+Investor Alert - WE HAVE A RUNNER
++++++++++++++++++++++++++++++++++++++++++++++++
 
-On my own c110, while I launched the 'make oldconfig', I noticed this abn=
-ormal
-(afaik user space wouldn't cause) panic with my custom kernel:
- kernel BUG at mm/mmap.c:????
-Backtrace:
-[<1015c5e8>] exit_mmap+0x1b8/0x1d8
-[<10126614>] mmput+0x44/0xbc
-[<1012a928>] do_exit+0xd4/0xa04
-[<1012b2bc>] do_group_exit+0x64/0xcc
-[<1010d12c>] syscall_exit+0x0/0x14
 
-Kernel panic - not syncing: BUG!
+WE ARE LOOKING FOR A HUGH THURSDAY $$$$$
 
-Back to the office, on a d380 running a 2.6.12-pa1 (32bit up), I encounte=
-red
-the same kind of panic:
+SYMBOL: MWIS.OB
+CURRENT PRICE: .15
+1 WEEK PROJECTION .75
 
-kernel BUG at /usr/src/linux-2.6.12-pa1-050620/mm/mmap.c:1937!
-Backtrace:
- [<1015d510>] exit_mmap+0x190/0x1cc
- [<101249c4>] mmput+0x44/0xbc
- [<101292ec>] do_exit+0xc0/0x304
- [<101295a0>] do_group_exit+0x40/0xcc
- [<1010d12c>] syscall_exit+0x0/0x14
+THIS IS THE ONE THAT COULD MAKE YOU 500-700% PROFIT (see news release)
 
-(fwiw no cpu status dump :-(  in the 2 case)
+M-Wise Announces New European License of Content Management and Delivery Platform
+Thursday August 4, 8:49 am ET
+MobilityZone Will Use Platform to Provide Java Games to Customers of a Leading European Operator
 
-But I got very different results with other kernels:
-    o on c110 with 2.6.8.1-pa7 the same 'make' did a 'Segmentation fault'=
+WILMINGTON, Del., Aug, 2005 (PRIMEZONE) -- M-Wise, Inc. (OTC BB:MWIS.OB - News),
+a leading technology provider of mobile content solutions for operators, ASPs
+and content providers, today announced that its MOMA platform has been selected
+by MobilityZone for content management and delivery. MobilityZone, based in Israel,
+develops, produces and maintains one of the largest, up-to-date catalogs of licensed
+content from all of the major publishing companies and other top producers.
+Recently, MobilityZone secured a deal with a leading European mobile operator
+to provide its customers with Java Games and will use m-Wise's MOMA content management
+and delivery platform to host, manage and deliver games for its clients.
 
-    o on d380 with 2.6.10-pa11 (32bit up) the same 'Segmentation fault'
-any way what is very weird:
-    o on b2k with 2.6.11.12-pa4 (32bit gcc-4.0) no pb??? (I can update my=
+MobilityZone serves wireless operators and other clients by supplying them with services
+that are optimally designed to significantly increase operator revenues, attract new
+and existing customers and enhance the network's image and positioning. Its services are
+uniquely designed to be modular and can support and operate opposite any existing
+platform or infrastructure.
 
-system smoothly and rebuild the 2.6.13-rc6-pa1 without any pb with libc6
-2.3.5-3). (btw boot fine on this system but panicing when 'make menuconfi=
-g' too)
+"We are delighted to work with m-Wise to enhance our content delivery offering.
+We selected the MOMA content delivery platform because of its ability to effectively handle
+the needs and demands of our clients," said Eran Aviv, joint managing director of MobilityZone.
+A study from The ARC Group, specializing in providing worldwide technology
+and market analysis, research on the communications industry, estimates that ring tones
+now account for more than 10 percent of the $32.3 billion in sales from music market worldwide.
+The firm also forecasted that the global market for ring tones will grow to $5.2 billion
+in 2006 and gaming will reach $8.3 billion in 2008, an increase from $2.4 billion in 2004.
 
-Any idea?
-
-Thanks,
-    Joel
-
-ps: all system above mentioned are all unstable debian install today
-dist-upgraded.
+Last time we issued a Investor Alert and watched it climb from $2.00 to
+$8.00 faster than you can count the ways to spend your money.
+Now MWIS is on the on the move.
+We urge you to keep a WATCH on (MWIS) on Thursday.
 
 
 
 
-=0A=0A-------------------------------------------------------=0ANOTE! My =
-email address is changing to ... @scarlet.be=0APlease make the necessary =
-changes in your address book. =0A=0A
+
+
+
+Disclaimer:
+Information within this email contains "forwardlooking statements" within
+the meaning of Section 27Aof the Securities Act of 1933 and Section 21B of
+the Securities Exchange Act of 1934. Any statements that express or involve
+discussions with respect to predictions, expectations, beliefs,
+plans, projections, objectives, goals, assumptions or future events or
+performance are not statements of historical fact and may be "forward
+looking statements". "Forward looking statements" are based on
+expectations, estimates and projections at the time the statements are made
+that involve a number of risks and uncertainties which could cause actual
+results or events to differ materially from those presently anticipated.
+Forward looking statements in this action may be identified through the use
+of words such as "projects", "foresee", "expects", "will", "anticipates",
+"estimates", "believes", "understands" or that by statements indicating
+certain actions "may", "could", or "might" occur. Risk factors include
+general economic and business conditions, the ability to acquire and develop
+specific projects, the ability to fund operations and changes in consumer
+and business consumption habits and other factors overwhich the company has
+little or no control. The publisher of this newsletter does not represent
+that the information contained in this message states all material facts or
+does not omit a material fact necessary to make the statements therein not
+misleading. All information provided within this email pertaining to
+investing, ST0CKs, securities must be understood as information provided and
+not investment advice. The publisher of this newsletter advises all readers
+and subscribers to seek advice from a registered professional securities
+representative before deciding to trade in ST0CKs featured within this
+email. None of the material within this report shall be construed as any
+kind of investment advice or solicitation. Many of these companies are on
+the verge of bankruptcy. You can lose all your money by investing in this
+ST0CK. We urge you to read the company's SEC filings now, before you invest.
+The publisher of this newsletter is not a registered invstment advisor.
+Subscribers should not view information herein as legal, tax, accounting or
+investment advice. In compliance with the SecuritiesAct of 1933, Section
+17(b), The publisher of this newsletter is contracted to receive six hundred
+thousand free trading shares from a third party, not an officer, director or
+affiliate shareholder for the circulation of this report. Be aware of an
+inherent conflict of interest resulting from such compensation due to the
+fact that this is a paid advertisement and is not without bias. The party
+that paid us has a position in the ST0CK they will sell at anytime without
+notice. This could have a negative impact on the price of the ST0CK, causing
+you to lose money. All factual information in this report was gathered from
+public sources, including but not limited to SEC filings, Company Websites
+and Company Press Releases. The publisher of this newsletter believes this
+information to be reliable but can make no guarantee as to its accuracy or
+completeness. Use of the material within this email constitutes your
+
 
 _______________________________________________
 parisc-linux mailing list
