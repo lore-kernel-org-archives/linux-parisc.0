@@ -1,15 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] 712/60 LAN not working after kernel update to 2.6
-Date: Sat, 13 Aug 2005 12:21:43 -0600
-Message-ID: <20050813182143.GB21280@colo.lackof.org>
-References: <1123945739.42fe0d0bae677@cyrus.bru-hub.dhl.com>
+From: "Jools Smyth" <jools@oxfordinspire.co.uk>
+Subject: [parisc-linux] HP 9000 a180c fan problem
+Date: Sat, 13 Aug 2005 21:20:32 +0100 (BST)
+Message-ID: <10236.82.70.241.8.1123964432.squirrel@webmail.oxfordinspire.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@parisc-linux.org>
-To: Schelstraete Bart <Bart.SCHELSTRAETE@dhl.com>
+  charset=iso-8859-1
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1123945739.42fe0d0bae677@cyrus.bru-hub.dhl.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,22 +17,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Aug 13, 2005 at 04:08:59PM +0100, Schelstraete Bart wrote:
-> Hello ,
-> 
-> As a lot of hppa users - I guess- I'm using an older 712/60 workstation.
-> In the past I installed Debian hppa on it , and it worked fine with the
-> 2.4 kernel series.
-> Now, a few days ago  I finally upgraded the box to kernel 2.6, and the
-> machine boots. Which is already a start :)
+Hi,
 
-Bart,
-If you have to post the same thing to both debian-hppa and parisc-linux,
-do it using "cc" so folks know it's on both lists.
+This is a bit offtopic sorry. I have a problem with my a180c which someone
+might be able to help with. I was fiddling with it and powered it on with
+1 less fan running. I didn't know it had detection code, and it threw up
+an error, and then powered off. I plugged the fan back in, but it's still
+throwing up the fan error. It must have set some flag somewhere in flash
+?!? I removed the battery, but it still is reporting the error.
 
-I've replied to your debian-hppa posting.
+The error is "Warning! Fan failure has been detected, the system will be
+powering down. please call a service respresentative)
 
-grant
+Any secret key to press on the remote console to reset the thing ? or some
+jumper ?
+
+My worry is it's written something to flash memory, which has made the
+machine permanently useless... :(
+
+Best Regards
+
+Jools
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
