@@ -1,12 +1,10 @@
 From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: [parisc-linux] [PATCH] fix git-checkout-cache segfault on parisc
-Date: Sat, 13 Aug 2005 10:29:32 -0500
-Message-ID: <1123946972.5115.4.camel__19182.0079730407$1416623892$gmane$org@mulgrave>
+Subject: [parisc-linux] parisc git tree up and running
+Date: Sat, 13 Aug 2005 10:42:27 -0500
+Message-ID: <1123947747.5115.10.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: text/plain
-Cc: PARISC list <parisc-linux@lists.parisc-linux.org>,
- git@vger.kernel.org
-To: junkio@cox.net
+To: PARISC list <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,38 +16,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This one I think is Linus' fault, so send him a brown paper bag with my
-complements ...
+I used to run bitkeeper trees for the convenience of those who needed to
+check bitkeeper on current parisc.  I've been a bit remiss since
+bitkeeper went away, but I've finally got the parisc trees into git.
+Like their prior bitkeeper counterparts, they're simply shadow copies of
+the imported parisc patch sets, not full copies of our cvs tree
+(primarily because keeping a full copy would be too much work and I
+can't be bothered). Also, I only merge up to Linus' head when I feel
+like it rather than every time he pushes something.
 
-The index cleanup code is executed via atexit() which is *after* main
-has completed, so the stack allocated cache_file has gone out of scope.
-Parisc seems to use stack in the destructor functions, so cache_file
-gets partially overwritten leading to the predictable disastrous
-consequences.
+They're browseable here:
 
-Signed-off-by: James Bottomley <James.Bottomley@SteelEye.com>
+http://www.parisc-linux.org/cgi-bin/gitweb.pl
 
----
+and available for download here:
+
+rsync://www.parisc-linux.org/~jejb/git/parisc-2.6.git
 
 James
-
-diff --git a/checkout-cache.c b/checkout-cache.c
---- a/checkout-cache.c
-+++ b/checkout-cache.c
-@@ -80,10 +80,11 @@ static int checkout_all(void)
- static const char checkout_cache_usage[] =
- "git-checkout-cache [-u] [-q] [-a] [-f] [-n] [--prefix=<string>] [--] <file>...";
- 
-+static struct cache_file cache_file;
-+
- int main(int argc, char **argv)
- {
- 	int i, force_filename = 0;
--	struct cache_file cache_file;
- 	int newfd = -1;
- 
- 	if (read_cache() < 0) {
-diff --git a/index.c b/index.c
 
 
 _______________________________________________
