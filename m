@@ -1,16 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: gsyprf11 and 2.6.13-rc3-pa1
-Date: Sat, 13 Aug 2005 13:46:52 -0400 (EDT)
-Message-ID: <200508131746.j7DHkqNo009063@hiauly1.hia.nrc.ca>
-References: <1123940428.5037.2.camel@mulgrave>
+Date: Sat, 13 Aug 2005 15:30:45 -0400 (EDT)
+Message-ID: <200508131930.j7DJUjiT009503@hiauly1.hia.nrc.ca>
+References: <200508131746.j7DHkqNo009063@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: James.Bottomley@SteelEye.com (James Bottomley)
+Cc: James.Bottomley@SteelEye.com,
+ parisc-linux@lists.parisc-linux.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1123940428.5037.2.camel@mulgrave> from "James Bottomley" at Aug
-	13, 2005 08:40:28 am
+In-Reply-To: <200508131746.j7DHkqNo009063@hiauly1.hia.nrc.ca> from "John David
+	Anglin" at Aug 13, 2005 01:46:52 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,35 +22,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Fri, 2005-08-12 at 23:02 -0600, Grant Grundler wrote:
-> > I expect this is the difference...I need to use the same g++ version.
-> > Does someone want to hack a small test program that consumes
-> > stack space until it bombs out becuase of the ulimit?
+> However,
 > 
-> Here's a test program that does this:
-> But the results are as expected (on 2.6.13-rc6-pa1):
+> cc1plus -O2 -ftemplate-depth-20000 inline4.C
+> 
+> consistently crashes my c3k.
 
-It doesn't trigger the fault on my c3k with 2.6.13-rc3-pa1 either.
+I tried this with builds of 2.6.13-rc6-pa1 with debian gcc-3.3, gcc-3.4
+and gcc-4.0.  They all crash in the same manner.
 
-However,
-
-cc1plus -O2 -ftemplate-depth-20000 inline4.C
-
-consistently crashes my c3k.  There must be something more than
-just running out of stack space.  Strangely, the system doesn't
-crash when cc1plus is run under gdb.
-
-dave@hiauly6:~/gnu/gcc-4.0/objdir/gcc$ ./cc1plus --version
-GNU C++ version 4.1.0 20050813 (experimental) (hppa-linux)
-        compiled by GNU C version 4.1.0 20050813 (experimental).
-GGC heuristics: --param ggc-min-expand=30 --param ggc-min-heapsize=4096
-
-Another TOC gave the following:
-
-r2	0x1010c260	search_exception_tables+0x34
-IIA	0x1020c76c	search_extable+0x10
-
-I've seen this once before.
+I will send cc1plus by separate mail to anyone interested in trying to
+duplicate this.
 
 Dave
 -- 
