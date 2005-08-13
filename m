@@ -1,15 +1,12 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] New debian libc6 2.3.5: glibc bug or kernel bug???
-Date: Thu, 11 Aug 2005 08:09:00 -0400
-Message-ID: <20050811120900.GH18837@roadwarrior.mcmartin.ca>
-References: <IL1WV5$C263D00B95D5C9242114A7D700723650@scarlet.be>
+From: Schelstraete Bart <Bart.SCHELSTRAETE@dhl.com>
+Subject: [parisc-linux] 712/60 LAN not working after kernel update to 2.6
+Date: Sat, 13 Aug 2005 16:08:59 +0100
+Message-ID: <1123945739.42fe0d0bae677@cyrus.bru-hub.dhl.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=ISO-8859-1
+To: parisc-linux <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IL1WV5$C263D00B95D5C9242114A7D700723650@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,25 +17,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Aug 11, 2005 at 11:25:53AM +0200, Joel Soete wrote:
->  kernel BUG at mm/mmap.c:????
-> Backtrace:
-> [<1015c5e8>] exit_mmap+0x1b8/0x1d8
-> [<10126614>] mmput+0x44/0xbc
-> [<1012a928>] do_exit+0xd4/0xa04
-> [<1012b2bc>] do_group_exit+0x64/0xcc
-> [<1010d12c>] syscall_exit+0x0/0x14
-> 
-> Kernel panic - not syncing: BUG!
-> 
+Hello ,
 
-I can confirm this, my C3000 panicked during `make oldconfig' though
-I didn't think it was running unstable, nor did I get a backtrace, though
-it seems syslogd may have gotten it.
+As a lot of hppa users - I guess- I'm using an older 712/60 workstation.
+In the past I installed Debian hppa on it , and it worked fine with the
+2.4 kernel series.
+Now, a few days ago  I finally upgraded the box to kernel 2.6, and the
+machine boots. Which is already a start :)
 
-Cheers,
--- 
-Kyle McMartin
+But, after the kernel upgrade, the builtin network card doesn't work
+anymore.
+
+After doing an ifup it's complaining that he couldn't find the device:
+'eth0: ERROR while getting interface flangs: No such device'
+
+
+When I check the devices in the box , I can see that the kernel found
+the network card:
+
+--
+Found devices:
+..
+4.  Gecko Core LAN (802.3) at 0xf0107000
+--
+
+Can somebody help me with this issue?
+
+
+Bart
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+DHL Aviation Webmail 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
