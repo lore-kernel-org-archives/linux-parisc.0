@@ -1,16 +1,34 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: gsyprf11 and 2.6.13-rc3-pa1
-Date: Sat, 13 Aug 2005 21:32:00 -0400 (EDT)
-Message-ID: <200508140132.j7E1W0KF011257@hiauly1.hia.nrc.ca>
-References: <20050812180551.GA32609@colo.lackof.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [parisc-linux] [2.6 patch] schedule OSS USB drivers for removal
+Date: Sun, 14 Aug 2005 13:00:58 +0200
+Message-ID: <20050814110058.GD8393__31380.6494152688$1416623894$gmane$org@stusta.de>
+References: <20050729153226.GE3563@stusta.de>
+	<1123607633.5601.7.camel@mindpipe>
+	<20050809174906.GA4006@stusta.de>
+	<1123876729.12680.45.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ alsa-devel@alsa-project.org,
+ zab@zabbo.net,
+ Christoph Eckert <ce@christeck.de>,
+ zaitcev@yahoo.com,
+ kyle@parisc-linux.org,
+ James@superbug.demon.co.uk,
+ gregkh@suse.de,
+ linux-kernel@vger.kernel.org,
+ linux-sound@vger.kernel.org,
+ sailer@ife.ee.ethz.ch,
+ Thorsten Knabe <linux@thorsten-knabe.de>,
+ NAGANO Daisuke <breeze.nagano@nifty.ne.jp>,
+ jgarzik@pobox.com,
+ perex@suse.cz,
+ linux-usb-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>,
+ Andrew Morton <akpm@osdl.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050812180551.GA32609@colo.lackof.org> from "Grant Grundler" at
-	Aug 12, 2005 12:05:51 pm
+In-Reply-To: <1123876729.12680.45.camel@mindpipe>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,21 +39,110 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > > Odd that it uses "rp" for the insn at 101068ac and "%r2"
-> > > for the b,l insn at 101068a4.
+On Fri, Aug 12, 2005 at 03:58:48PM -0400, Lee Revell wrote:
+> On Tue, 2005-08-09 at 19:49 +0200, Adrian Bunk wrote:
+> > On Tue, Aug 09, 2005 at 01:13:51PM -0400, Lee Revell wrote:
+> > > On Fri, 2005-07-29 at 17:32 +0200, Adrian Bunk wrote:
+> > > > This patch schedules obsolete OSS drivers (with ALSA drivers that 
+> > > > support the same hardware) for removal.
+> > > > 
+> > > > Scheduling the via82cxxx driver for removal was ACK'ed by Jeff Garzik.
+> > > > 
+> > > 
+> > > Someone on linux-audio-user just pointed out that the OSS USB audio and
+> > > midi modules were never deprecated, much less scheduled to be removed.
+> > > 
+> > > Maybe the best way to deprecate them is to move them to Sound -> OSS,
+> > > that's where they belong anyway.
 > > 
-> > I'll look at it.  It's a small inconsistency in hppa-dis.c,
-> > affecting objdump, etc.
+> > I'd deprecate them without moving them.
+> > 
 > 
-> ok. minor problem though.
+> Here's the patch.  The bug was that CONFIG_USB_AUDIO and CONFIG_USB_MIDI
+> need to depend on CONFIG_SOUND_PRIME.
+>...
 
-This is now fixed in binutils head along with a couple of other
-special cases where we printed '%' before register names.
+This doesn't deprecate them (I've deprecated only some of the options 
+below CONFIG_SOUND_PRIME).
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+What about the patch below?
+
+A second "deprecated OSS" option doesn't do much harm and seems to be 
+the easiest solution.
+
+cu
+Adrian
+
+
+<--  snip  -->
+
+
+Deprecate the OSS USB drivers.
+
+This patch includes spelling fixes by Lee Revell.
+
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+---
+
+ Documentation/feature-removal-schedule.txt |    2 +-
+ drivers/usb/class/Kconfig                  |   21 ++++++++++++++++++---
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+--- linux-2.6.13-rc5-mm1-full/Documentation/feature-removal-schedule.txt.old	2005-08-14 12:53:46.000000000 +0200
++++ linux-2.6.13-rc5-mm1-full/Documentation/feature-removal-schedule.txt	2005-08-14 12:54:01.000000000 +0200
+@@ -42,7 +42,7 @@
+ 
+ ---------------------------
+ 
+-What:	drivers depending on OBSOLETE_OSS_DRIVER
++What:	drivers depending on OBSOLETE_OSS_DRIVER or OBSOLETE_OSS_USB_DRIVER
+ When:	October 2005
+ Why:	OSS drivers with ALSA replacements
+ Who:	Adrian Bunk <bunk@stusta.de>
+--- linux-2.6.13-rc5-mm1-full/drivers/usb/class/Kconfig.old	2005-08-14 12:47:29.000000000 +0200
++++ linux-2.6.13-rc5-mm1-full/drivers/usb/class/Kconfig	2005-08-14 12:54:52.000000000 +0200
+@@ -4,9 +4,22 @@
+ comment "USB Device Class drivers"
+ 	depends on USB
+ 
++config OBSOLETE_OSS_USB_DRIVER
++	bool "Obsolete OSS USB drivers"
++	depends on USB && SOUND
++	help
++	  This option enables support for the obsolete USB Audio and Midi
++	  drivers that are scheduled for removal in the near future since
++	  there are ALSA drivers for the same hardware.
++
++	  Please contact Adrian Bunk <bunk@stusta.de> if you had to
++	  say Y here because of missing support in the ALSA drivers.
++
++	  If unsure, say N.
++
+ config USB_AUDIO
+ 	tristate "USB Audio support"
+-	depends on USB && SOUND
++	depends on USB && SOUND && OBSOLETE_OSS_USB_DRIVER
+ 	help
+ 	  Say Y here if you want to connect USB audio equipment such as
+ 	  speakers to your computer's USB port. You only need this if you use
+@@ -40,10 +53,12 @@
+ 
+ config USB_MIDI
+ 	tristate "USB MIDI support"
+-	depends on USB && SOUND
++	depends on USB && SOUND && OBSOLETE_OSS_USB_DRIVER
+ 	---help---
+ 	  Say Y here if you want to connect a USB MIDI device to your
+-	  computer's USB port. This driver is for devices that comply with
++	  computer's USB port.  You only need this if you use the OSS
++	  sound system; USB MIDI devices are supported by ALSA's USB
++	  audio driver. This driver is for devices that comply with
+ 	  'Universal Serial Bus Device Class Definition for MIDI Device'.
+ 
+ 	  The following devices are known to work:
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
