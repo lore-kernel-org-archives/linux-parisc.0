@@ -1,17 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: GCC not disabling the use fr31 even with
-	-mdisable-fpregs.
-Date: Sun, 7 Aug 2005 23:53:56 -0400 (EDT)
-Message-ID: <200508080353.j783ruNq009002@hiauly1.hia.nrc.ca>
-References: <20050807233503.GE9703@systemhalted.org>
+Subject: [parisc-linux] Re: gsyprf11 and 2.6.13-rc3-pa1
+Date: Sat, 13 Aug 2005 21:32:00 -0400 (EDT)
+Message-ID: <200508140132.j7E1W0KF011257@hiauly1.hia.nrc.ca>
+References: <20050812180551.GA32609@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050807233503.GE9703@systemhalted.org> from "Carlos O'Donell"
-	at Aug 7, 2005 07:35:08 pm
+In-Reply-To: <20050812180551.GA32609@colo.lackof.org> from "Grant Grundler" at
+	Aug 12, 2005 12:05:51 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,27 +21,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > > What is of real concern is the save/restore of fr31, when the compiler
-> > > has been told to disable floating point registers.
+> > > Odd that it uses "rp" for the insn at 101068ac and "%r2"
+> > > for the b,l insn at 101068a4.
 > > 
-> > There's a bug there:
-> > 
-> > #define CONDITIONAL_REGISTER_USAGE \
-> > {                                               \
-> >   int i;                                        \
-> >   if (TARGET_DISABLE_FPREGS || TARGET_SOFT_FLOAT)\
-> >     {                                           \
-> >       for (i = FP_REG_FIRST; i < FP_REG_LAST; i++)\
-> > 	fixed_regs[i] = call_used_regs[i] = 1;  \
-> >     }                                           \
-> > 
-> > It looks like the '<' should be '<=".  It's not disabling the last
-> > fpreg.
+> > I'll look at it.  It's a small inconsistency in hppa-dis.c,
+> > affecting objdump, etc.
 > 
-> Aha! Zat is ze bug! :)
+> ok. minor problem though.
 
-This is now fixed in all active gcc branches (3.4, 4.0 and head).  The
-problem has been present since the hppa64 port was introduced (3.0).
+This is now fixed in binutils head along with a couple of other
+special cases where we printed '%' before register names.
 
 Dave
 -- 
