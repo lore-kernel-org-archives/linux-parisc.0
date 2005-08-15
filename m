@@ -1,12 +1,18 @@
-From: "Jools Smyth" <jools@oxfordinspire.co.uk>
-Subject: [parisc-linux] HP 9000 a180c fan problem
-Date: Sat, 13 Aug 2005 21:20:32 +0100 (BST)
-Message-ID: <10236.82.70.241.8.1123964432.squirrel@webmail.oxfordinspire.co.uk>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Latest palinux crash
+Date: Mon, 15 Aug 2005 14:40:45 +0000
+Message-ID: <4300A96D.5090806@tiscali.be>
+References: <20050720122227.GK10156@parcelfarce.linux.theplanet.co.uk>	<20050721043626.GY30182@systemhalted.org>
+	<20050721123045.GA27330@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: parisc-linux@parisc-linux.org
+  charset=us-ascii;
+  format=flowed
+Cc: Carlos O'Donell <carlos@systemhalted.org>,
+ parisc-linux@parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20050721123045.GA27330@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,27 +23,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
+Hello Grant,
 
-This is a bit offtopic sorry. I have a problem with my a180c which someone
-might be able to help with. I was fiddling with it and powered it on with
-1 less fan running. I didn't know it had detection code, and it threw up
-an error, and then powered off. I plugged the fan back in, but it's still
-throwing up the fan error. It must have set some flag somewhere in flash
-?!? I removed the battery, but it still is reporting the error.
 
-The error is "Warning! Fan failure has been detected, the system will be
-powering down. please call a service respresentative)
+Grant Grundler wrote:
+> On Thu, Jul 21, 2005 at 12:36:27AM -0400, Carlos O'Donell wrote:
+> 
+>>We need better tools for this... I wonder if we still have lkcd support
+>>for hppa.
+> 
+> 
+> I have the "most recent" (2.4.20) patch from Bruno Vidal 
+> and he had it working on most of the platforms (32 and 64-bit).
+> It didn't get included becuase of (my) lack of time to integrate
+> and the fact that it wasn't popular at the time. I'm really
+> happy to see that's changed.
+> 
+> Bruno, is that posted someplace publicly or can I post it?
+> (I'm hoping Bruno is still subscribed to p-l)
+> 
+No news?
 
-Any secret key to press on the remote console to reset the thing ? or some
-jumper ?
+> 
+>>If we had lkcd support would you be willing to run a modified kernel on
+>>parisc-linux?
+> 
+> 
+> I would.
+> In fact, I'd change all the default config files to include it.
+> 
+Do you have more recent stuff then what is available in ftp.p-l.org?
 
-My worry is it's written something to flash memory, which has made the
-machine permanently useless... :(
-
-Best Regards
-
-Jools
+Thanks,
+     Joel
 
 _______________________________________________
 parisc-linux mailing list
