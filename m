@@ -1,18 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] Re: gsyprf11 and 2.6.13-rc3-pa1
-Date: Tue, 16 Aug 2005 09:39:51 -0400 (EDT)
-Message-ID: <200508161339.j7GDdqw9024211@hiauly1.hia.nrc.ca>
-References: <4301BB90.5060907@tausq.org>
+Date: Tue, 16 Aug 2005 22:34:33 +0800
+Message-ID: <4301F979.2050709@tausq.org>
+References: <200508161339.j7GDdqw9024211@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=ISO-8859-1;
+  format=flowed
 Cc: James.Bottomley@SteelEye.com,
  parisc-linux@lists.parisc-linux.org,
  tsg45800@scarlet.be
-To: randolph@tausq.org (Randolph Chung)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4301BB90.5060907@tausq.org> from "Randolph Chung" at Aug 16,
-	2005 06:10:24 pm
+In-Reply-To: <200508161339.j7GDdqw9024211@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,21 +23,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I'm not sure what's the "correct" behavior in this case. I recall now
-> that we saw a similar problem with expect where the signal handler was
-> recursing.
+> See http://www.opengroup.org/onlinepubs/009695399/functions/signal.html.
 > 
-> Is the kernel responsible for blocking SIGSEGV handlers that generate
-> SIGSEGV?
+> This is implementation defined.
 
-See http://www.opengroup.org/onlinepubs/009695399/functions/signal.html.
+I remember reading that, but does that mean hanging the system is ok? :-)
 
-This is implementation defined.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+randolph
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
