@@ -1,18 +1,18 @@
-From: Randolph Chung <randolph@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: gsyprf11 and 2.6.13-rc3-pa1
-Date: Wed, 17 Aug 2005 07:57:39 +0800
-Message-ID: <43027D73.80906@tausq.org>
-References: <200508161339.j7GDdqw9024211@hiauly1.hia.nrc.ca>
+Date: Tue, 16 Aug 2005 20:08:37 -0400 (EDT)
+Message-ID: <200508170008.j7H08bKU026983@hiauly1.hia.nrc.ca>
+References: <43027D73.80906@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset=US-ASCII
 Cc: James.Bottomley@SteelEye.com,
  parisc-linux@lists.parisc-linux.org,
  tsg45800@scarlet.be
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: randolph@tausq.org (Randolph Chung)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200508161339.j7GDdqw9024211@hiauly1.hia.nrc.ca>
+In-Reply-To: <43027D73.80906@tausq.org> from "Randolph Chung" at Aug 17,
+	2005 07:57:39 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,18 +23,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->>Is the kernel responsible for blocking SIGSEGV handlers that generate
->>SIGSEGV?
+> >>Is the kernel responsible for blocking SIGSEGV handlers that generate
+> >>SIGSEGV?
+> > 
+> > See http://www.opengroup.org/onlinepubs/009695399/functions/signal.html.
+> > 
+> > This is implementation defined.
 > 
-> See http://www.opengroup.org/onlinepubs/009695399/functions/signal.html.
-> 
-> This is implementation defined.
+> James spotted where we were not doing the right thing when setting up a 
+> signal handler frame. I've checked in his suggested fix to 
+> 2.6.13-rc6-pa2. I think it should solve the problem.
 
-James spotted where we were not doing the right thing when setting up a 
-signal handler frame. I've checked in his suggested fix to 
-2.6.13-rc6-pa2. I think it should solve the problem.
+We also don't seem to be using force_sigsegv.
 
-randolph
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
