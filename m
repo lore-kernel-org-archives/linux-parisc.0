@@ -1,18 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [parisc-linux] [Alsa-devel] [PATCH] Support for AD1889 PCI
-	Soundchip
-Date: Thu, 18 Aug 2005 13:12:34 -0400
-Message-ID: <1124385155.5973.20.camel__10715.4370438822$1416623907$gmane$org@mindpipe>
-References: <Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Latest 2.6.13-rc6-pa2 test pr :_(
+Date: Thu, 18 Aug 2005 13:24:48 -0400 (EDT)
+Message-ID: <200508181724.j7IHOnLq006926@hiauly1.hia.nrc.ca>
+References: <ILFDUV$F78A20A99DD29674BBE529F42F203D92@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: kyle@parisc-linux.org,
- alsa-devel@lists.sourceforge.net,
- parisc-linux@lists.parisc-linux.org,
- Thibaut VARENE <T-Bone@parisc-linux.org>
-To: Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de>
+In-Reply-To: <ILFDUV$F78A20A99DD29674BBE529F42F203D92@scarlet.be> from "Joel
+	Soete" at Aug 18, 2005 06:01:43 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,32 +21,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, 2005-08-18 at 17:35 +0200, Clemens Ladisch wrote:
-> > > +/* keep track of some hw registers */
-> > >  struct ad1889_register_state {
-> > >     u16 reg;        /* reg setup */
-> > >     u32 addr;       /* dma base address */
-> > > -   u16 rate;       /* sample rate */
-> > > -   unsigned long pos;      /* last recorded DMA buffer position
-> */
-> > > -   unsigned long buf;      /* period # */
-> > >     unsigned long size;     /* DMA buffer size */
-> > > -   unsigned long count;    /* period size, aka nb bytes sent in
-> the current DMA transfer */
-> >
-> > reading the patch through webmail doesn't help a lot getting a grasp
-> > of its whole but i wonder if we could still find some debugging
-> > purposes for these values. Remember this driver is work in
-> progress ;)
-> 
-> Those fields just aren't used anymore; anything interesting is in the
-> chip's registers. 
+> Well the system reboot fine but the same test as describe above make again the
+> system hang after only 45min of test ;_(
 
-Isn't it still useful to maintain a cached copy of the register state
-for suspend/resume purposes?
+Yah, my c3k is also hung.  It got through one GCC full build and check,
+but hung last night in the second.
 
-Lee
+Randolph's patch only fixed a hang causes by a stack overflow when
+catching SIGSEGV.  It's not going to fix anything that doesn't SEGV.
 
+Note that my patch was to fix a glibc issue affecting signal handling.
+It's doubtful that it would fix the hangs that you have been experiencing
+with your stress test.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
