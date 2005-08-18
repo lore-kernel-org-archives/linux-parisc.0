@@ -1,13 +1,11 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] B132L outperforms C160 - 64-bit userland needed?
-Date: Thu, 18 Aug 2005 10:27:37 +0200
-Message-ID: <ILESU1$F6D40EC654A84E56AFFAC27CDCE1FD84@scarlet.be>
+From: "Jan Prunk" <janprunk@hotmail.com>
+Subject: [parisc-linux] New version of lifimage
+Date: Thu, 18 Aug 2005 11:06:08 +0000
+Message-ID: <BAY24-F14ECDF1AD2DA941C29A4B7D8B20@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- tsg45800 <tsg45800@scarlet.be>
-To: "grundler" <grundler@parisc-linux.org>
+  format=flowed
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,37 +17,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Wed, Aug 17, 2005 at 11:27:24PM -0600, Kurt Fitzner wrote:
-> > p.s.  I installed HPUX in 64-bit mode.  Which, so I'm told, should ha=
-ve
-> > decreased my performance.  I'd like to get my C160 running Linux in
-> > 64-bit mode, but I can't. :(
-> 
-> Sure you can. recent 64-bit kernels will boot on C160.
-> It's just not an obvious win in most cases.
-> 
-mmm, is this system need ccio-dma and zalon:ncr53c720 drivers as does my =
-d380?
+Hello !
 
-[...]
-> 
-> But if it's an OS problem (it could be), running lmbench
-> on both HPUX and parisc-linux might shed light on where
-> the issue is.
-> 
-On my d380 those two drivers doesn't seems to be 64bit ready :_( (2.6.12-=
-pa2)
-(I expect to find simple instrumentation tools like IKD (but not maintain=
- for
-2.6) or LTT to help me to figure out if some race condition (as I suspect=
-)
-occures or not)
+At this point I am using 2.4.22-pa17 lifimage from 2003 to boot my pa-risc 
+over network.
+I am wondering if there is a newer version of this , which includes sarge 
+and maybe the 2.6 kernel tree ?
 
-Thanks,
-    Joel
-=0A=0A---------------------------------------------------------------=0AA=
- free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore inf=
-o on http://www.scarlet.be/
+Regards, Jan
+
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
 _______________________________________________
 parisc-linux mailing list
