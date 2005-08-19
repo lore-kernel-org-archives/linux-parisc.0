@@ -1,17 +1,18 @@
-From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+From: Jens Axboe <axboe@suse.de>
 Subject: [parisc-linux] Re: Why toggle_bounce only for disks?
-Date: Fri, 19 Aug 2005 12:07:44 +0200
-Message-ID: <58cb370e05081903073d9a2b73__42746.015583589$1416623908$gmane$org@mail.gmail.com>
+Date: Fri, 19 Aug 2005 12:21:33 +0200
+Message-ID: <20050819102132.GM6273__19605.2533145577$1416623908$gmane$org@suse.de>
 References: <20050806235615.GK3505@roadwarrior.mcmartin.ca>
+	<58cb370e05081903073d9a2b73@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
+  charset=us-ascii
 Cc: linux-ide@vger.kernel.org,
- Jens Axboe <axboe@suse.de>,
- parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@parisc-linux.org>
+ parisc-linux@lists.parisc-linux.org,
+ Kyle McMartin <kyle@parisc-linux.org>
+To: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050806235615.GK3505@roadwarrior.mcmartin.ca>
+In-Reply-To: <58cb370e05081903073d9a2b73@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,39 +23,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
+On Fri, Aug 19 2005, Bartlomiej Zolnierkiewicz wrote:
+> Hi,
+> 
+> http://www.ussg.iu.edu/hypermail/linux/kernel/0209.1/1074.html
+> 
+> Jens, is this still true??
 
-http://www.ussg.iu.edu/hypermail/linux/kernel/0209.1/1074.html
+It is, ide-cd would require changes to accept highmem pages.
 
-Jens, is this still true??
+> > Ahoi,
+> > 
+> > The following patch fixes a crash caused by attempting to bounce buffer
+> > when an IDE CD-ROM is used on a machine with an IO-MMU. [At least, this
+> > patch fixes things so I can use my IDE CD-ROM behind an ns87415 on a
+> > HP PA-RISC workstation.]
+> > 
+> > Why was this only allowed for disks?
 
-Bartlomiej
+Because not bouncing is a performance optimization and I only did the
+work on ide-cd to allow it. Your patch breaks ide-cd on highmem i386
+machines, so it's not acceptable.
 
-On 8/7/05, Kyle McMartin <kyle@parisc-linux.org> wrote:
-> Ahoi,
->=20
-> The following patch fixes a crash caused by attempting to bounce buffer
-> when an IDE CD-ROM is used on a machine with an IO-MMU. [At least, this
-> patch fixes things so I can use my IDE CD-ROM behind an ns87415 on a
-> HP PA-RISC workstation.]
->=20
-> Why was this only allowed for disks?
->=20
-> --- a/drivers/ide/ide-lib.c   18 Jul 2005 18:46:30 -0000
-> +++ b/drivers/ide/ide-lib.c   6 Aug 2005 20:28:04 -0000
-> @@ -410,7 +410,7 @@ void ide_toggle_bounce(ide_drive_t *driv
->  {
->         u64 addr =3D BLK_BOUNCE_HIGH;     /* dma64_addr_t */
->=20
-> -       if (on && drive->media =3D=3D ide_disk) {
-> +       if (on) {
->                 if (!PCI_DMA_BUS_IS_PHYS)
->                         addr =3D BLK_BOUNCE_ANY;
->                 else if (HWIF(drive)->pci_dev)
->=20
-> Cheers,
-> --
-> Kyle McMartin
+Tells us more about this crash instead, I'm pretty sure you are working
+around another issue (your io-mmu code, is it hardware or software?)
+somehwere with this patch.
+
+
+> > --- a/drivers/ide/ide-lib.c   18 Jul 2005 18:46:30 -0000
+> > +++ b/drivers/ide/ide-lib.c   6 Aug 2005 20:28:04 -0000
+> > @@ -410,7 +410,7 @@ void ide_toggle_bounce(ide_drive_t *driv
+> >  {
+> >         u64 addr = BLK_BOUNCE_HIGH;     /* dma64_addr_t */
+> > 
+> > -       if (on && drive->media == ide_disk) {
+> > +       if (on) {
+> >                 if (!PCI_DMA_BUS_IS_PHYS)
+> >                         addr = BLK_BOUNCE_ANY;
+> >                 else if (HWIF(drive)->pci_dev)
+> > 
+> > Cheers,
+> > --
+> > Kyle McMartin
+> 
+
+-- 
+Jens Axboe
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
