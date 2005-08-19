@@ -1,16 +1,17 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] Latest 2.6.13-rc6-pa2 test pr :_(
-Date: Fri, 19 Aug 2005 07:49:44 +0800
-Message-ID: <43051E98.7080306@tausq.org>
-References: <ILFDUV$F78A20A99DD29674BBE529F42F203D92@scarlet.be>
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: [parisc-linux] Re: Why toggle_bounce only for disks?
+Date: Fri, 19 Aug 2005 12:07:44 +0200
+Message-ID: <58cb370e05081903073d9a2b73__42746.015583589$1416623908$gmane$org@mail.gmail.com>
+References: <20050806235615.GK3505@roadwarrior.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=ISO-8859-1
+Cc: linux-ide@vger.kernel.org,
+ Jens Axboe <axboe@suse.de>,
+ parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <ILFDUV$F78A20A99DD29674BBE529F42F203D92@scarlet.be>
+In-Reply-To: <20050806235615.GK3505@roadwarrior.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,19 +22,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I also install the latest gcc-4.0-4.0.1-5 on my unstable b2k install to
-> rebuild the same 32bit kernel (2.6.13-rc6-pa2 cvs 20050817) but saving libc6
-> 2.3.2.ds1-22 (excepted this the 2 systems are debian unstable update at the
-> same level this morning).
-> Well the system reboot fine but the same test as describe above make again the
-> system hang after only 45min of test ;_(
+Hi,
 
-does the system respond to sysrq when it hangs? if so it may be useful 
-to look at it with kdb.
+http://www.ussg.iu.edu/hypermail/linux/kernel/0209.1/1074.html
 
-does it always hang in internal_add_timer?
+Jens, is this still true??
 
-randolph
+Bartlomiej
+
+On 8/7/05, Kyle McMartin <kyle@parisc-linux.org> wrote:
+> Ahoi,
+>=20
+> The following patch fixes a crash caused by attempting to bounce buffer
+> when an IDE CD-ROM is used on a machine with an IO-MMU. [At least, this
+> patch fixes things so I can use my IDE CD-ROM behind an ns87415 on a
+> HP PA-RISC workstation.]
+>=20
+> Why was this only allowed for disks?
+>=20
+> --- a/drivers/ide/ide-lib.c   18 Jul 2005 18:46:30 -0000
+> +++ b/drivers/ide/ide-lib.c   6 Aug 2005 20:28:04 -0000
+> @@ -410,7 +410,7 @@ void ide_toggle_bounce(ide_drive_t *driv
+>  {
+>         u64 addr =3D BLK_BOUNCE_HIGH;     /* dma64_addr_t */
+>=20
+> -       if (on && drive->media =3D=3D ide_disk) {
+> +       if (on) {
+>                 if (!PCI_DMA_BUS_IS_PHYS)
+>                         addr =3D BLK_BOUNCE_ANY;
+>                 else if (HWIF(drive)->pci_dev)
+>=20
+> Cheers,
+> --
+> Kyle McMartin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
