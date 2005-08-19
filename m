@@ -1,20 +1,20 @@
-From: Jens Axboe <axboe@suse.de>
-Subject: Re: [parisc-linux] Re: Why toggle_bounce only for disks?
-Date: Fri, 19 Aug 2005 16:03:08 +0200
-Message-ID: <20050819140307.GY6273__9450.99309687993$1416623909$gmane$org@suse.de>
-References: <20050806235615.GK3505@roadwarrior.mcmartin.ca>
-	<58cb370e05081903073d9a2b73@mail.gmail.com>
-	<20050819102132.GM6273@suse.de> <1124458322.5130.18.camel@mulgrave>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [Alsa-devel] [PATCH] Support for AD1889 PCI
+	Soundchip
+Date: Fri, 19 Aug 2005 11:46:55 -0600
+Message-ID: <20050819174655.GA6376__41568.3607374833$1416623909$gmane$org@colo.lackof.org>
+References: <20050817101017.008D03658E8@mail.esiee.fr>
+	<Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: linux-ide@vger.kernel.org,
- PARISC list <parisc-linux@lists.parisc-linux.org>,
- Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
- Kyle McMartin <kyle@parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Cc: kyle@parisc-linux.org,
+ alsa-devel@lists.sourceforge.net,
+ parisc-linux@lists.parisc-linux.org,
+ Thibaut VARENE <T-Bone@parisc-linux.org>
+To: Clemens Ladisch <clemens@ladisch.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1124458322.5130.18.camel@mulgrave>
+In-Reply-To: <Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,50 +25,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Aug 19 2005, James Bottomley wrote:
-> On Fri, 2005-08-19 at 12:21 +0200, Jens Axboe wrote:
-> > Because not bouncing is a performance optimization and I only did the
-> > work on ide-cd to allow it. Your patch breaks ide-cd on highmem i386
-> > machines, so it's not acceptable.
-> > 
-> > Tells us more about this crash instead, I'm pretty sure you are working
-> > around another issue (your io-mmu code, is it hardware or software?)
-> > somehwere with this patch.
+On Thu, Aug 18, 2005 at 05:35:20PM +0200, Clemens Ladisch wrote:
+...
+> > reading the patch through webmail doesn't help a lot getting a grasp
+> > of its whole but i wonder if we could still find some debugging
+> > purposes for these values. Remember this driver is work in progress ;)
 > 
-> OK, so the particular fix is wrong; but the logic in ide_toggle_bounce()
-> is also incorrec.  Our problem is not that we don't want to bounce
-> highmem in ide-cd, it's that this is a parisc system with an IOMMU and
-> doesn't have any highmem to begin with.
-> 
-> we need ide_toggle_bounce to return BLK_BOUNCE_ANY always if
-> PCI_DMA_BUS_IS_PHYS is not set.
-> 
-> James
-> 
-> diff --git a/drivers/ide/ide-lib.c b/drivers/ide/ide-lib.c
-> --- a/drivers/ide/ide-lib.c
-> +++ b/drivers/ide/ide-lib.c
-> @@ -410,10 +410,10 @@ void ide_toggle_bounce(ide_drive_t *driv
->  {
->  	u64 addr = BLK_BOUNCE_HIGH;	/* dma64_addr_t */
->  
-> -	if (on && drive->media == ide_disk) {
-> -		if (!PCI_DMA_BUS_IS_PHYS)
-> -			addr = BLK_BOUNCE_ANY;
-> -		else if (HWIF(drive)->pci_dev)
-> +	if (!PCI_DMA_BUS_IS_PHYS)
-> +		addr = BLK_BOUNCE_ANY;
-> +	else if (on && drive->media == ide_disk) {
-> +		if (HWIF(drive)->pci_dev)
->  			addr = HWIF(drive)->pci_dev->dma_mask;
->  	}
+> Those fields just aren't used anymore; anything interesting is in the
+> chip's registers.
 
-That looks more correct, indeed. It's really too convoluted for drivers,
-the defines/setup could do with a little work-over.
+Clemens,
+You don't want to be reading chip registers all the time.
+It's *very* expensive. Cache any values that don't change
+in a local struct if they get referenced regularly.
 
--- 
-Jens Axboe
+You might find the mmio_test results interesting.
+It would be great if you could add one or two audio devices
+to mmio_test program here:
+	svn co http://svn.gnumonks.org/trunk/mmio_test/
 
+Please send a patch to Harald Welte <laforge@gnumonks.org>.
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
