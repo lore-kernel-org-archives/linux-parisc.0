@@ -1,18 +1,13 @@
-From: Jens Axboe <axboe@suse.de>
-Subject: [parisc-linux] Re: Why toggle_bounce only for disks?
-Date: Fri, 19 Aug 2005 12:21:33 +0200
-Message-ID: <20050819102132.GM6273__19605.2533145577$1416623908$gmane$org@suse.de>
-References: <20050806235615.GK3505@roadwarrior.mcmartin.ca>
-	<58cb370e05081903073d9a2b73@mail.gmail.com>
+From: Kurt Fitzner <kfitzner@excelcia.org>
+Subject: [parisc-linux] 64-bit kernel booting problem (was: B132L
+	outperforms...)
+Date: Fri, 19 Aug 2005 04:47:01 -0600
+Message-ID: <4305B8A5.9070102@excelcia.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: linux-ide@vger.kernel.org,
- parisc-linux@lists.parisc-linux.org,
- Kyle McMartin <kyle@parisc-linux.org>
-To: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <58cb370e05081903073d9a2b73@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,53 +18,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Aug 19 2005, Bartlomiej Zolnierkiewicz wrote:
-> Hi,
-> 
-> http://www.ussg.iu.edu/hypermail/linux/kernel/0209.1/1074.html
-> 
-> Jens, is this still true??
+Grant Grundler wrote:
+>>p.s.  I installed HPUX in 64-bit mode.  Which, so I'm told, should
+>>have decreased my performance.  I'd like to get my C160 running Linux
+>>in 64-bit mode, but I can't. :(
+>
+> Sure you can. recent 64-bit kernels will boot on C160.
+> It's just not an obvious win in most cases.
 
-It is, ide-cd would require changes to accept highmem pages.
+No, I mean I'm running into problems trying to get a 64-bit kernel to
+work.  Two problems - one I could work around, one I can't.
 
-> > Ahoi,
-> > 
-> > The following patch fixes a crash caused by attempting to bounce buffer
-> > when an IDE CD-ROM is used on a machine with an IO-MMU. [At least, this
-> > patch fixes things so I can use my IDE CD-ROM behind an ns87415 on a
-> > HP PA-RISC workstation.]
-> > 
-> > Why was this only allowed for disks?
+First is as soon as any kernel I've tried gets to enumerating EISA
+devices it hangs.  The panel LEDs flash in a specific pattern.  I think
+I remember reading about how each pattern is one nybble of an error code
+(wow - I don't remember the last time I got to use the word 'nybble').
+I should prolly do a ToC and grab the data for reporting, just haven't
+got around to it yet.  Now, I know for a sure it's at the EISA point in
+a 2.6.13 kernel as I can tell from the messages.  I think something
+changed in recent kernels so that kernel messages are shown sooner in
+the boot process.  Earlier kernels would just hang after about the same
+amount of time, but I wouldn't see the message.  The LED pattern is the
+same in all cases, regardless of kernel version.  BTW - can someone
+confirm my kernel message theory?  Whoever made that change, thanks. :)
 
-Because not bouncing is a performance optimization and I only did the
-work on ide-cd to allow it. Your patch breaks ide-cd on highmem i386
-machines, so it's not acceptable.
+Anyways, if I disable EISA in the kernel, I get up to the SCSI driver it
+hangs for about a minute then spits out a message about offlining the
+drive:
 
-Tells us more about this crash instead, I'm pretty sure you are working
-around another issue (your io-mmu code, is it hardware or software?)
-somehwere with this patch.
+ncr53c720-0: rev 0xf irq 67
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+scsi0 : ncr53c8xx-3.4.3g
+scsi: Device offlined - not ready after error recovery: host 0 channel 0
+ id 0 lun 0
 
-
-> > --- a/drivers/ide/ide-lib.c   18 Jul 2005 18:46:30 -0000
-> > +++ b/drivers/ide/ide-lib.c   6 Aug 2005 20:28:04 -0000
-> > @@ -410,7 +410,7 @@ void ide_toggle_bounce(ide_drive_t *driv
-> >  {
-> >         u64 addr = BLK_BOUNCE_HIGH;     /* dma64_addr_t */
-> > 
-> > -       if (on && drive->media == ide_disk) {
-> > +       if (on) {
-> >                 if (!PCI_DMA_BUS_IS_PHYS)
-> >                         addr = BLK_BOUNCE_ANY;
-> >                 else if (HWIF(drive)->pci_dev)
-> > 
-> > Cheers,
-> > --
-> > Kyle McMartin
-> 
-
--- 
-Jens Axboe
-
+	Kurt.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
