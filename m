@@ -1,16 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Processor-Specific ELF Supplement for PA-RISC
-Date: Sun, 7 Aug 2005 18:31:37 -0400 (EDT)
-Message-ID: <200508072231.j77MVbrW029457@hiauly1.hia.nrc.ca>
-References: <200508071812.05787.vapier@gentoo.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] B132L outperforms C160 - 64-bit userland needed?
+Date: Sat, 20 Aug 2005 00:21:35 -0600
+Message-ID: <20050820062135.GA28839@colo.lackof.org>
+References: <4301B090.9040405@excelcia.org>
+	<20050817061913.GA8761@colo.lackof.org>
+	<430384FE.6080105@excelcia.org> <20050817194058.GA3378@netfall.com>
+	<43041C3C.2080704@excelcia.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: vapier@gentoo.org (Mike Frysinger)
+To: Kurt Fitzner <kfitzner@excelcia.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200508071812.05787.vapier@gentoo.org> from "Mike Frysinger" at
-	Aug 7, 2005 06:12:05 pm
+In-Reply-To: <43041C3C.2080704@excelcia.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,16 +23,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> hrm, i only have version 1.43 from October 6, 1997 ... can i get a copy of 
-> your updated version and/or a URL for it ? :)
+On Wed, Aug 17, 2005 at 11:27:24PM -0600, Kurt Fitzner wrote:
+...
+> Next off, for nbench running on a C160/HPUX I see a memory throughput
+> increase of 2.67X, integer calc increase of 1.4X, and floating point
+> increase of 2.24X when compared to the C160/Linux.
+...
+> The performance issue on my C160/Linux was not due cache line
+> loading/thrashing.
+...
+> What really locked it in for me that it's an OS issue,
+...
 
-There doesn't seem to be a link to it on the www.parisc-linux.org
-site but it's here <http://ftp.parisc-linux.org/docs/arch/elf-pa-hp.pdf>.
+It clearly is an OS issue. And thinking about it more,
+I'm convinced this benchmark is exposing a cache utilization
+(or lack thereof) issue. HPUX is very efficient at
+NOT flushing the cache. Linux flushes alot more.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
