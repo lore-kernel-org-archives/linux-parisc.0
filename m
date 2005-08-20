@@ -1,16 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] 64-bit kernel booting problem (was: B132L
-	outperforms...)
-Date: Sat, 20 Aug 2005 00:36:43 -0600
-Message-ID: <20050820063643.GC28839@colo.lackof.org>
-References: <4305B8A5.9070102@excelcia.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Latest 2.6.13-rc6-pa2 test pr :_(
+Date: Sat, 20 Aug 2005 13:51:51 -0400 (EDT)
+Message-ID: <200508201751.j7KHpqIH017505@hiauly1.hia.nrc.ca>
+References: <4305FA88.9040404@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kurt Fitzner <kfitzner@excelcia.org>
+To: randolph@tausq.org (Randolph Chung)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4305B8A5.9070102@excelcia.org>
+In-Reply-To: <4305FA88.9040404@tausq.org> from "Randolph Chung" at Aug 19,
+	2005 11:28:08 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,51 +21,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Aug 19, 2005 at 04:47:01AM -0600, Kurt Fitzner wrote:
-> First is as soon as any kernel I've tried gets to enumerating EISA
-> devices it hangs.
-
-Yes - EISA is known to be broken....certain people should have
-enough information at this point to write the code but
-it's not trivial to get working. EISA just isn't that exciting
-these days.
-
-> The panel LEDs flash in a specific pattern.  I think
-> I remember reading about how each pattern is one nybble
-> of an error code
-
-If so, that's probably documented in one of the user guides.
-See "Tech Documentation" on www.parisc-linux.org.
-Possibly this one:
-	http://ftp.parisc-linux.org/docs/platforms/cxxx-service.pdf
-
-
-> I should prolly do a ToC and grab the data for reporting,
-> just haven't got around to it yet.
-
-See the FAQ for how to report kernel bugs - some good
-tips there on what's needed.
-
-
-> Anyways, if I disable EISA in the kernel, I get up to
-> the SCSI driver it hangs for about a minute then spits
-> out a message about offlining the drive:
+> > TOC:
+> > 
+> > r2	__handle_mm_fault+0x68  (return from call to pte_alloc_map)
+> > IIA	__handle_mm_fault+0x190
+> > 
+> > It looks as if this might have been caused by Process_3.exe in the
+> > libjava GCC testsuite.
 > 
-> ncr53c720-0: rev 0xf irq 67
-> ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
-> scsi0 : ncr53c8xx-3.4.3g
-> scsi: Device offlined - not ready after error recovery: host 0 channel 0
->  id 0 lun 0
+> Does it always hang in the same place? How much RAM/swap do you have in 
+> your system? Does it hang more/less if you disable swap?
 
-Can you connect a serial console and capture the entire output?
-Normally, one just needs to disconnect the keyboard and
-talk to serial port 1 with minicom from another box.
+Had another hang last night.  Here is the TOC for it:
 
-I'm pretty sure this worked before on C200/C240/C360
-machines before.
+r2	intr_check_sig+0
+IIA	handle_interruption+0x30
+r26,r5	code = 0x1a = 26 => Data Memory Access Rights Trap
 
-thanks,
-grant
+This again occurred in the libjava testsuite:
+
+byte compile: /home/dave/gnu/gcc-4.0/objdir/gcc/gcj -B/home/dave/gnu/gcc-4.0/objdir/hppa-linux/libjava/ -B/home/dave/gnu/gcc-4.0/objdir/gcc/ --encoding=UTF-8 -C -I/home/dave/gnu/gcc-4.0/objdir/hppa-linux/libjava/testsuite/../libgcj-4.1.0.jar -g /home/dave/gnu/gcc-4.0/gcc/libjava/testsuite/libjava.lang/SyncTest.java -d
+/home/dave/gnu/gcc-4.0/objdir/hppa-linux/libjava/testsuite 2>@ stdout
+PASS: SyncTest byte compilation
+SyncTestSyncTest set_ld_library_path_env_vars: ld_library_path=.:/home/dave/gnu/gcc-4.0/objdir/hppa-linux/./libjava/.libs:/home/dave/gnu/gcc-4.0/objdir/gcc
+Setting LD_LIBRARY_PATH to .:/home/dave/gnu/gcc-4.0/objdir/hppa-linux/./libjava/.libs:/home/dave/gnu/gcc-4.0/objdir/gcc:.:/home/dave/gnu/gcc-4.0/objdir/hppa-linux/./libjava/.libs:/home/dave/gnu/gcc-4.0/objdir/gcc:.:/home/dave/gnu/gcc-4.0/objdir/hppa-linux/./libjava/.libs:/home/dave/gnu/gcc-4.0/objdir/gcc:/home/dave/gnu/gcc-4.0/objdir/hppa-linux/libstdc++-v3/.libs:/home/dave/gnu/gcc-4.0/objdir/hppa-linux/libmudflap/.libs:/home/dave/gnu/gcc-4.0/objdir/hppa-linux/libssp/.libs:/home/dave/gnu/gcc-4.0/objdir/./gcc:/home/dave/gnu/gcc-4.0/objdir/./prev-gcc:/usr/lib/debug
+Exception in thread "Thread-1" Exception in thread "Thread-2" Exception in thread "Thread-3" Exception in thread "Thread-4"
+
+I found that Process_3.exe was generating unaligned exceptions.  This
+was a result of a new macro define being added to libjava
+(UNWRAP_FUNCTION_DESCRIPTOR).  This macro was incorrectly doing function
+pointer canonicalization resulting in the unaligned exceptions.  I was
+testing a fix for this when I got the above hang.
+
+I have the feeling that there is at least one more circumstance where
+handle_exceptions can loop.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
