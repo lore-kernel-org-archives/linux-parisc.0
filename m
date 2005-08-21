@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] Latest 2.6.13-rc6-pa2 test pr :_(
-Date: Sun, 21 Aug 2005 11:47:48 -0400 (EDT)
-Message-ID: <200508211547.j7LFlmLQ022122@hiauly1.hia.nrc.ca>
-References: <430891B2.1010507@tiscali.be>
+Date: Sun, 21 Aug 2005 23:53:39 +0800
+Message-ID: <4308A383.8090704@tausq.org>
+References: <200508201751.j7KHpqIH017505@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=ISO-8859-1;
+  format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
-To: soete.joel@tiscali.be (Joel Soete)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <430891B2.1010507@tiscali.be> from "Joel Soete" at Aug 21,
-	2005 02:37:38 pm
+In-Reply-To: <200508201751.j7KHpqIH017505@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,46 +21,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->      737                 force_sig_info(SIGSEGV, &si, current);
-> [...]
->      781                 force_sig_info(SIGSEGV, &si, current);
-> [...]
-> 
-> This last one is specialy interesting as (if I well understand) ending handle_interruption() for case 26.
-> 
-> Unfortunately, not yet find how to fix it:
-> 	o as tausq did for signal.c
-> 	o s/force_sig_info(SIGSEGV, &si, current)/force_sig(SIGSEGV, current)/
+> I found that Process_3.exe was generating unaligned exceptions.  This
+> was a result of a new macro define being added to libjava
+> (UNWRAP_FUNCTION_DESCRIPTOR).  This macro was incorrectly doing function
+> pointer canonicalization resulting in the unaligned exceptions.  I was
+> testing a fix for this when I got the above hang.
 
-Hmmm, possibly all SIGSEGV calls to force_sig_info are potentially
-subject to looping.  I see ia64 defines a function force_sigsegv_info.
-The important difference being the following bit of code:
+Process_3.exe was causing unaligned traps, but it was not the process 
+running when the system hung, right?
 
-        if (sig == SIGSEGV) {
-		/*
-		 * Acquiring siglock around the sa_handler-update is almost
-		 * certainly overkill, but this isn't a
-		 * performance-critical path and I'd rather play it safe
-		 * here than having to debug a nasty race if and when
-		 * something changes in kernel/signal.c that would make it
-		 * no longer safe to modify sa_handler without holding the
-		 * lock.
-		*/
-		spin_lock_irqsave(&current->sighand->siglock, flags);
-		current->sighand->action[sig - 1].sa.sa_handler = SIG_DFL;
-		spin_unlock_irqrestore(&current->sighand->siglock, flags);
-	}
+> I have the feeling that there is at least one more circumstance where
+> handle_exceptions can loop.
 
-where it looks as if it resets the handler for the signal to SIG_DFL.
-This same bit of code is in force_sigsegv.  If we were to do this, I
-see that we need to handle SEGV_MAPERR and SI_KERNEL.
+In this case, when the machine hung, was it the same as before, where it 
+will still respond to sysrq and pings?
 
-I think we may also want to reset the handler for SIGBUS.
+In the previous case (stack overflow), I was able to debug this further 
+by running the hanging process in the background (i.e. ./cc1plus ... &). 
+Now when it hangs, I was still able to use the console and run strace on 
+it. I wonder if you ran the gcc testsuite in the background, will the 
+machine still respond sufficiently when it is "hung" that you can do 
+some more debugging? strace should tell you if you are having another 
+signal loop.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+randolph
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
