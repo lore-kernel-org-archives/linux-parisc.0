@@ -1,16 +1,16 @@
-From: Joel Soete <soete.joel@tiscali.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Latest 2.6.13-rc6-pa2 test pr :_(
-Date: Sun, 21 Aug 2005 14:37:38 +0000
-Message-ID: <430891B2.1010507@tiscali.be>
-References: <200508201751.j7KHpqIH017505@hiauly1.hia.nrc.ca>
+Date: Sun, 21 Aug 2005 11:47:48 -0400 (EDT)
+Message-ID: <200508211547.j7LFlmLQ022122@hiauly1.hia.nrc.ca>
+References: <430891B2.1010507@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200508201751.j7KHpqIH017505@hiauly1.hia.nrc.ca>
+In-Reply-To: <430891B2.1010507@tiscali.be> from "Joel Soete" at Aug 21,
+	2005 02:37:38 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,47 +21,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-
-John David Anglin wrote:
->>>TOC:
->>>
->>>r2	__handle_mm_fault+0x68  (return from call to pte_alloc_map)
->>>IIA	__handle_mm_fault+0x190
->>>
->>>It looks as if this might have been caused by Process_3.exe in the
->>>libjava GCC testsuite.
->>
->>Does it always hang in the same place? How much RAM/swap do you have in 
->>your system? Does it hang more/less if you disable swap?
+>      737                 force_sig_info(SIGSEGV, &si, current);
+> [...]
+>      781                 force_sig_info(SIGSEGV, &si, current);
+> [...]
 > 
+> This last one is specialy interesting as (if I well understand) ending handle_interruption() for case 26.
 > 
-> Had another hang last night.  Here is the TOC for it:
-> 
-> r2	intr_check_sig+0
-> IIA	handle_interruption+0x30
-> r26,r5	code = 0x1a = 26 => Data Memory Access Rights Trap
-> 
-mmm, from pure user point of view that sounds a bit like a segv?
+> Unfortunately, not yet find how to fix it:
+> 	o as tausq did for signal.c
+> 	o s/force_sig_info(SIGSEGV, &si, current)/force_sig(SIGSEGV, current)/
 
-and btw in traps.c still stand some other
-[...]
-     479 void handle_interruption(int code, struct pt_regs *regs)
-     480 {
-[...]
-     737                 force_sig_info(SIGSEGV, &si, current);
-[...]
-     781                 force_sig_info(SIGSEGV, &si, current);
-[...]
+Hmmm, possibly all SIGSEGV calls to force_sig_info are potentially
+subject to looping.  I see ia64 defines a function force_sigsegv_info.
+The important difference being the following bit of code:
 
-This last one is specialy interesting as (if I well understand) ending handle_interruption() for case 26.
+        if (sig == SIGSEGV) {
+		/*
+		 * Acquiring siglock around the sa_handler-update is almost
+		 * certainly overkill, but this isn't a
+		 * performance-critical path and I'd rather play it safe
+		 * here than having to debug a nasty race if and when
+		 * something changes in kernel/signal.c that would make it
+		 * no longer safe to modify sa_handler without holding the
+		 * lock.
+		*/
+		spin_lock_irqsave(&current->sighand->siglock, flags);
+		current->sighand->action[sig - 1].sa.sa_handler = SIG_DFL;
+		spin_unlock_irqrestore(&current->sighand->siglock, flags);
+	}
 
-Unfortunately, not yet find how to fix it:
-	o as tausq did for signal.c
-	o s/force_sig_info(SIGSEGV, &si, current)/force_sig(SIGSEGV, current)/
+where it looks as if it resets the handler for the signal to SIG_DFL.
+This same bit of code is in force_sigsegv.  If we were to do this, I
+see that we need to handle SEGV_MAPERR and SI_KERNEL.
 
-Joel
+I think we may also want to reset the handler for SIGBUS.
 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
