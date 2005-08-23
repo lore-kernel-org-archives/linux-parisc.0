@@ -1,16 +1,25 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Latest 2.6.13-rc6-pa2 test pr :_(
-Date: Sun, 21 Aug 2005 12:46:38 -0400 (EDT)
-Message-ID: <200508211646.j7LGkcJa022512@hiauly1.hia.nrc.ca>
-References: <4308A383.8090704@tausq.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [Alsa-devel] [PATCH] Support for AD1889 PCI
+	Soundchip
+Date: Mon, 22 Aug 2005 18:13:25 -0600
+Message-ID: <20050823001325.GA19568__37955.4454972551$1416623915$gmane$org@colo.lackof.org>
+References: <20050817101017.008D03658E8@mail.esiee.fr>
+	<Pine.HPX.4.33n.0508171249360.19860-200000@studcom.urz.uni-halle.de>
+	<20050819174655.GA6376@colo.lackof.org>
+	<s5hr7cpdd9p.wl%tiwai@suse.de>
+	<20050820013655.GC6376@colo.lackof.org>
+	<s5hpss6p721.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: randolph@tausq.org (Randolph Chung)
+  charset=us-ascii
+Cc: Clemens Ladisch <clemens@ladisch.de>,
+ kyle@parisc-linux.org,
+ Thibaut VARENE <T-Bone@parisc-linux.org>,
+ alsa-devel@lists.sourceforge.net,
+ parisc-linux@lists.parisc-linux.org
+To: Takashi Iwai <tiwai@suse.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4308A383.8090704@tausq.org> from "Randolph Chung" at Aug 21,
-	2005 11:53:39 pm
+In-Reply-To: <s5hpss6p721.wl%tiwai@suse.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,39 +30,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Process_3.exe was causing unaligned traps, but it was not the process 
-> running when the system hung, right?
+On Mon, Aug 22, 2005 at 01:03:34PM +0200, Takashi Iwai wrote:
+> At Fri, 19 Aug 2005 19:36:55 -0600,
+> Grant Grundler wrote:
+> > 
+> > On Fri, Aug 19, 2005 at 07:53:22PM +0200, Takashi Iwai wrote:
+> > > Check his patch carefully.  It doesn't add any extra accesses (except
+> > > for one readl to flush in irq handler - I guess it was added to be
+> > > sure?).  The original driver didn't use these fields effectively at
+> > > all, too.
+> > 
+> > Sorry - I didn't look at patch at all.
+> > If the fields were never used, removing them is fine.
+> > If they *could* have been used, then removing them is a bad idea.
+> 
+> They won't be used/referred any more at all, so why do you need still
+> to keep them?
 
-I'm not sure.  It was the last test run in the log but this isn't a
-reliable indication.
+I don't - removing them is fine.
 
-I installed a GCC fix last night which fixes Process_3.exe, so it doesn't
-generate the unaligned faults anymore.  The fixes stack traces under
-java.  However, there's still a problem when gij is used (PR libgcj/21692).
-I haven't figured out how to debug this.
+> > In general, referencing parameters in IO device registers is NOT
+> > a good substitute for caching the values "locally" in host mem.
+> 
+> A cached value is not accurate, especially if you want to get a
+> precise position.
 
-> In this case, when the machine hung, was it the same as before, where it 
-> will still respond to sysrq and pings?
+Caching is only possible if the register is "constant" for
+the duration of it's use. e.g. offset or "count down" registers
+can't be cached.
 
-I'm not sure about sysrq but the machine was still responding to pings.
 
-> In the previous case (stack overflow), I was able to debug this further 
-> by running the hanging process in the background (i.e. ./cc1plus ... &). 
-> Now when it hangs, I was still able to use the console and run strace on 
-> it. I wonder if you ran the gcc testsuite in the background, will the 
-> machine still respond sufficiently when it is "hung" that you can do 
-> some more debugging? strace should tell you if you are having another 
-> signal loop.
+>   The position callback should return the accurate
+> position as much as possible since this can be used from the low
+> latency calculation like dmix.
 
-I actually run GCC builds and the testsuite in the background all
-the time.  So, it's definitely possible to do this from the console.
-Problem is the machine is downtown at NRC and it's not setup with a
-serial console.  I know from past experience that ssh connections die.
+ok - no problem. That's reasonable.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
