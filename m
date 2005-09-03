@@ -1,39 +1,40 @@
-From: Kumar Gala <kumar.gala@freescale.com>
-Subject: Re: [parisc-linux] [PATCH 07/15] parisc: remove use of asm/segment.h
-Date: Wed, 24 Aug 2005 12:31:11 -0500
-Message-ID: <C8230D03-D0D9-4096-A995-0C1E124F665D__6592.80028562552$1416624560$gmane$org@freescale.com>
-References: <20050824171433.GD4645@parcelfarce.linux.theplanet.co.uk>
-Mime-Version: 1.0 (Apple Message framework v734)
+From: Kurt Fitzner <kfitzner@excelcia.org>
+Subject: [parisc-linux] C160 lmbench results comparing HPUX & Linux
+Date: Sat, 03 Sep 2005 15:20:13 -0600
+Message-ID: <431A138D.5010105@excelcia.org>
+Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII;
-  delsp=yes;
-  format=flowed
-Cc: "Gala Kumar K.-galak" <galak@freescale.com>,
- <linux-kernel@vger.kernel.org>,
- "Andrew Morton" <akpm@osdl.org>,
- <parisc-linux@parisc-linux.org>
-To: "Matthew Wilcox" <matthew@wil.cx>
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20050824171433.GD4645@parcelfarce.linux.theplanet.co.uk>
-List-Id: linux-parisc.vger.kernel.org
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+In the thread where I first posted about my C160 scoring much lower in
+HPUX, someone mentioned that it might be better to offer lmbench
+results.  Didn't have time before our summer-end camping trip, but I've
+now finished this.
 
-On Aug 24, 2005, at 12:14 PM, Matthew Wilcox wrote:
+Raw results: http://www.excelcia.org/~kfitzner/misc/lmbench_c160_raw.tar.gz
 
-> On Wed, Aug 24, 2005 at 11:55:30AM -0500, Kumar Gala wrote:
->
->> Removed asm-parisc/segment.h as its not used by anything.
->>
->
-> Did you already remove all the uses outside the parisc-specific  
-> bits of
-> the tree, eg ISDN, media/video/, sound/oss/, etc?
->
-> If so, ACK, otherwise, NAK.
+PDF with graphs:
+http://www.excelcia.org/~kfitzner/misc/lmbench_c160.pdf
 
-I did remove them.  I should have included a reference to the patch  
-that did this:
+The raw data has all three runs I performed on each OS.  The pdf graphs
+have the first run for each OS since there is little variation in each run.
 
-http://www.ussg.iu.edu/hypermail/linux/kernel/0508.3/0099.html
+Anyone see anything significant here?  I don't really.
 
-- kumar
+	Kurt.
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
