@@ -1,17 +1,12 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] 2.6.13-pa1 + mm1 relayfs + relay-apps-0.8 works
-	for	the most
-Date: Fri, 09 Sep 2005 19:54:14 +0000
-Message-ID: <4321E866.7050106@tiscali.be>
-References: <IMI60O$028EFC99FEAF5A22C521A5C6437C7977@scarlet.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] New libc6 2.3.5-6: poll timeouts
+Date: Sun, 11 Sep 2005 12:06:33 -0400 (EDT)
+Message-ID: <200509111606.j8BG6X7U025669@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IMI60O$028EFC99FEAF5A22C521A5C6437C7977@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,149 +17,82 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+I updated my c3k yesterday afternoon.  This upgrade included libc6
+version 2.3.5-6.  I now find that many commands run as slow as molasses.
+For example,
 
+dave@hiauly6:~$ time ls -ltr
+total 3300
+...
+real    0m20.024s
+user    0m0.006s
+sys     0m0.015s
 
-Joel Soete wrote:
-> Hello all,
-> 
-> Just for info:
-> I just finishe to play to grab relayfs from 2.6.13-mm1 (I didn't apply all
-> because spinlock-consolidation affraid me a bit)
+There aren't that many files in this directory!
 
-Much more fore reminder: today it was mm2 and hack it just a few but :_(
-   gcc -Wp,-MD,arch/parisc/kernel/.asm-offsets.s.d  -nostdinc -isystem /usr/lib/gcc/hppa-linux-gnu/4.0.2/include -D__KERNEL__ -Iinclu
-de -Iinclude2 -I/usr/src/linux-2.6.13-pa1-mm2-20050908/include -I/usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel -Iarch/pa
-risc/kernel -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -ffreestanding -O2 -fomit-frame-pointe
-r -pipe -mno-space-regs -mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=1.1 -mschedule=7200 -Wdeclaration-after-st
-atement -Wno-pointer-sign  -DKBUILD_BASENAME=asm_offsets -DKBUILD_MODNAME=asm_offsets -S -o arch/parisc/kernel/asm-offsets.s /usr/sr
-c/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c
-In file included from include2/asm/spinlock.h:6,
-                  from include2/asm/bitops.h:6,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/preempt.h:10,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock.h:50,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/spinlock_types.h:14: error: conflicting types for 'raw_spinlock_t'
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock_types_up.h:30: error: previous declaration of 'raw_spinlock_t' was her
-e
-In file included from include2/asm/spinlock.h:6,
-                  from include2/asm/bitops.h:6,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/preempt.h:10,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock.h:50,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/spinlock_types.h:22:1: warning: "__RAW_SPIN_LOCK_UNLOCKED" redefined
-In file included from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock_types.h:15,
-                  from include2/asm/processor.h:14,
-                  from include2/asm/spinlock.h:5,
-                  from include2/asm/bitops.h:6,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/preempt.h:10,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock.h:50,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock_types_up.h:32:1: warning: this is the location of the previous definit
-ion
-include2/asm/spinlock_types.h:27: error: conflicting types for 'raw_rwlock_t'
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock_types_up.h:43: error: previous declaration of 'raw_rwlock_t' was here
-In file included from include2/asm/spinlock.h:6,
-                  from include2/asm/bitops.h:6,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/preempt.h:10,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock.h:50,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/spinlock_types.h:29:1: warning: "__RAW_RW_LOCK_UNLOCKED" redefined
-In file included from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock_types.h:15,
-                  from include2/asm/processor.h:14,
-                  from include2/asm/spinlock.h:5,
-                  from include2/asm/bitops.h:6,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/preempt.h:10,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock.h:50,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock_types_up.h:45:1: warning: this is the location of the previous definit
-ion
-In file included from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock.h:90,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock_up.h:71:1: warning: "__raw_spin_unlock_wait" redefined
-In file included from include2/asm/bitops.h:6,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/bitops.h:77,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/thread_info.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/preempt.h:10,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/spinlock.h:50,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/capability.h:45,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:7,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/spinlock.h:20:1: warning: this is the location of the previous definition
-In file included from include2/asm/semaphore.h:28,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/wait.h: In function 'init_waitqueue_head':
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/wait.h:82: error: unknown field 'lock' specified in initializer
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/wait.h:82: error: extra brace group at end of initializer
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/wait.h:82: error: (near initialization for '(anonymous).raw_lock')
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/wait.h:82: warning: excess elements in struct initializer
-/usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/wait.h:82: warning: (near initialization for '(anonymous).raw_lock')
-In file included from /usr/src/linux-2.6.13-pa1-mm2-20050908/include/linux/sched.h:20,
-                  from /usr/src/linux-2.6.13-pa1-mm2-20050908/arch/parisc/kernel/asm-offsets.c:31:
-include2/asm/semaphore.h: In function 'sema_init':
-include2/asm/semaphore.h:63: error: unknown field 'lock' specified in initializer
-include2/asm/semaphore.h:63: error: extra brace group at end of initializer
-include2/asm/semaphore.h:63: error: (near initialization for '(anonymous).raw_lock')
-include2/asm/semaphore.h:63: warning: excess elements in struct initializer
-include2/asm/semaphore.h:63: warning: (near initialization for '(anonymous).raw_lock')
-include2/asm/semaphore.h:63: error: unknown field 'lock' specified in initializer
-include2/asm/semaphore.h:63: error: extra brace group at end of initializer
-include2/asm/semaphore.h:63: error: (near initialization for '(anonymous).raw_lock')
-include2/asm/semaphore.h:63: warning: excess elements in struct initializer
-include2/asm/semaphore.h:63: warning: (near initialization for '(anonymous).raw_lock')
-make[2]: *** [arch/parisc/kernel/asm-offsets.s] Error 1
-make[1]: *** [arch/parisc/kernel/asm-offsets.s] Error 2
-make: *** [vmlinux] Error 2
+Looking at the command under gdb, I find that poll seems to be
+timing out:
 
-I need a more detail attention and time to try to fix that stuff ...
+Dump of assembler code for function poll:
+0x408543d4 <*__GI___poll+0>:    stw rp,-14(,sp)
+0x408543d8 <*__GI___poll+4>:    addil 1000,r19,%r1
+0x408543dc <*__GI___poll+8>:    ldw 484(,r1),ret0
+0x408543e0 <*__GI___poll+12>:   stw,ma r7,80(,sp)
+0x408543e4 <*__GI___poll+16>:   stw r6,-7c(,sp)
+0x408543e8 <*__GI___poll+20>:   copy r26,r6
+0x408543ec <*__GI___poll+24>:   stw r5,-78(,sp)
+0x408543f0 <*__GI___poll+28>:   copy r25,r5
+0x408543f4 <*__GI___poll+32>:   stw r3,-70(,sp)
+0x408543f8 <*__GI___poll+36>:   stw r4,-74(,sp)
+0x408543fc <*__GI___poll+40>:   stw r19,-20(,sp)
+0x40854400 <*__GI___poll+44>:   ldw 0(,ret0),r20
+0x40854404 <*__GI___poll+48>:   cmpib,<> 0,r20,0x40854464 <*__GI___poll+144>
+0x40854408 <*__GI___poll+52>:   copy r24,r3
+0x4085440c <*__GI___poll+56>:   copy r19,r4
+0x40854410 <*__GI___poll+60>:   be,l 100(sr2,r0),%sr0,%r31
+0x40854414 <*__GI___poll+64>:   ldi a8,r20
+0x40854418 <*__GI___poll+68>:   copy r4,r19
 
-but where I couldn't help it's in sched-add-cacheflush-asm.patch:
-diff -puN include/asm-parisc/system.h~sched-add-cacheflush-asm include/asm-parisc/system.h
---- devel/include/asm-parisc/system.h~sched-add-cacheflush-asm	2005-09-07 20:11:01.000000000 -0700
-+++ devel-akpm/include/asm-parisc/system.h	2005-09-07 20:11:02.000000000 -0700
-@@ -49,6 +49,15 @@ extern struct task_struct *_switch_to(st
-  	(last) = _switch_to(prev, next);			\
-  } while(0)
+Starting program: /bin/ls -ltr
+Breakpoint 1 at 0x40854418
+Breakpoint 1 at 0x40854418: file ../sysdeps/unix/sysv/linux/poll.c, line 82.
+[Thread debugging using libthread_db enabled]
+[New Thread 16384 (LWP 3198)]
+total 3300
+[Switching to Thread 16384 (LWP 3198)]
 
-+/*
-+ * On SMP systems, when the scheduler does migration-cost autodetection,
-+ * it needs a way to flush as much of the CPU's caches as possible.
-+ *
-+ * TODO: fill this in!
-+ */
-+static inline void sched_cacheflush(void)
-+{
-+}
+Breakpoint 1, 0x40854418 in *__GI___poll (fds=0xc03feec8, nfds=1, timeout=5000)     at ../sysdeps/unix/sysv/linux/poll.c:82
+82      ../sysdeps/unix/sysv/linux/poll.c: No such file or directory.
+    in ../sysdeps/unix/sysv/linux/poll.c
+(gdb) p $ret0
+$6 = 1
+(gdb) c
+Continuing.
 
+Breakpoint 1, 0x40854418 in *__GI___poll (fds=0xc03fecc8, nfds=1, timeout=5000)
+    at ../sysdeps/unix/sysv/linux/poll.c:82
+82      in ../sysdeps/unix/sysv/linux/poll.c
+(gdb) p $ret0
+$7 = 0
+(gdb) bt
+#0  0x40854418 in *__GI___poll (fds=0xc03fecc8, nfds=1, timeout=5000)
+    at ../sysdeps/unix/sysv/linux/poll.c:82
+#1  0x407ecb08 in _IO_new_fclose (fp=0x1388) at iofclose.c:88
+#2  0x40896708 in get_mapping (type=Variable "type" is not available.
+) at nscd_helper.c:195
+#3  0x407f96a4 in _IO_new_file_write (f=0x7363642f, data=0x736f636b,
+    n=1970155374) at fileops.c:1260
+#4  0x00008800 in ?? ()
+Cannot find bounds of current function (@0x0), unwinding will fail.
 
-  /* interrupt control */
+Any thoughts on what's wrong?  The gdb backtrace is messed up because
+the callinfo data isn't right for the syscall.  The call to __GI___poll
+is actually from get_mapping at nscd_helper.c:195.
 
-Any idea?
-
-Thanks,
-	Joel
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
