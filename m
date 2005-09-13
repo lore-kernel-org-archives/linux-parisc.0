@@ -1,7 +1,7 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] K-class support improved
-Date: Sat, 10 Sep 2005 12:46:03 -0600
-Message-ID: <20050910184603.GE4770@parisc-linux.org>
+Subject: [parisc-linux] Please fix the OPL mess
+Date: Tue, 13 Sep 2005 11:34:22 -0600
+Message-ID: <20050913173422.GF32395@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -18,19 +18,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-Those watching the CVS list will see that I've renovated some code to
-improve K-class support.  On Thursday, I tracked down the SMP hang when
-initialising the Mux serial driver (it was a missing spin_lock_init()).
-Today, I rewrote some of the driver probing so we allocate iomem resources
-sufficiently early that the fancy code I wrote to avoid allocating PCI
-iomem resources over the top of other devices actually works ;-)
+I'm not entirely sure which of our intrepid sound hackers introduced
+this problem, but it's a PITA when trying to build a suitable kernel for
+ia64 boxes out of the parisc tree, and I suspect for C8000 too.  Could
+somebody fix it?
 
-I also updated the defconfig to include support for the Mux console so
-when 2.6.13-pa2 appears on http://cvs.parisc-linux.org/download/linux-2.6/
-it should work.  I'd appreciate it if people with a K-class could test
-this assumption ;-)  The E-class should also work (as well as it ever
-has ... still no Wizard SCSI support).
+  CC      sound/drivers/opl3/opl3_lib.o
+sound/drivers/opl3/opl3_lib.c: In function `snd_opl3_free':
+sound/drivers/opl3/opl3_lib.c:336: error: structure has no member named `unmap_on_free'
+sound/drivers/opl3/opl3_lib.c: In function `snd_opl3_create_main':
+sound/drivers/opl3/opl3_lib.c:421: error: structure has no member named `unmap_on_free'
 
+Easiest way to reproduce the error is probably to enable the FM801
+driver, but obviously this library is used by a lot of drivers.
+
+Thanks
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
