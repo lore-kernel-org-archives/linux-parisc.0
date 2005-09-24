@@ -1,16 +1,17 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] binutils breaks hppa kernel build,
-	bad operands of fic, m
-Date: Sat, 24 Sep 2005 12:54:39 -0600
-Message-ID: <20050924185439.GC7824__47063.9892424971$1416623923$gmane$org@colo.lackof.org>
+Date: Sat, 24 Sep 2005 13:06:48 -0600
+Message-ID: <20050924190648.GD7824__14908.2773401917$1416623924$gmane$org@colo.lackof.org>
 References: <1127580340.10496.7.camel@localhost>
+	<200509241733.j8OHXHRM001100@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: 329888@bugs.debian.org
+Cc: 329888@bugs.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1127580340.10496.7.camel@localhost>
+In-Reply-To: <200509241733.j8OHXHRM001100@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,31 +22,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Sep 24, 2005 at 10:45:40AM -0600, dann frazier wrote:
-> As discussed on irc:
-> http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=329888
+On Sat, Sep 24, 2005 at 01:33:15PM -0400, John David Anglin wrote:
+> > As discussed on irc:
+> > http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=329888
+> 
+> This is a debian issue as far a I can tell.  I tried
+> 
+>       fic,m           %r23(%sr3,%r26)
+> 
+> with GNU assembler 2.16.91 20050814 and I don't see a problem.
 
-binutils-2.15 has this in include/opcodes/hppa.h:
-{ "fdc",        0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
-{ "fdc",        0x04001280, 0xfc003fdf, "cZx(b)", pa10, 0},
-{ "fic",        0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
-{ "fic",        0x04000280, 0xfc001fdf, "cZx(b)", pa10, 0},
+You are right - debian has a stale include file.
+The picked up this version of the opcode/hppa.h file:
+http://sourceware.org/cgi-bin/cvsweb.cgi/src/include/opcode/hppa.h.diff?r1=1.55&r2=1.56&cvsroot=src&f=h
 
-And the binutils_2.16.1cvs20050902 version has only:
-{ "fdc",        0x04001280, 0xfc00ffdf, "cZx(b)", pa10, 0},
-{ "fdc",        0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
-{ "fic",        0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
-
-The order of the with 's' vs without 's' was switched and
-in the process dropped one "fic" line.
-
-Can binutils maintainer/folks please just add it back
-in the new location?
-
-Is the fix obvious enough or is a patch necessary?
+Debian needs to pick up the TOB opcode/hppa.h and life will be good again.
 
 thanks,
 grant
+
+> However, I do see that we don't support the 2-bit space register
+> form (PA 2.0).
+> 
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
