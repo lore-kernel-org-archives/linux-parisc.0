@@ -1,37 +1,28 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] glibc binary NMU for hppa, built with gcc-3.4
-Date: Sun, 18 Sep 2005 13:22:44 -0400 (EDT)
-Message-ID: <200509181722.j8IHMj1j027274__13822.6003073671$1416623922$gmane$org@hiauly1.hia.nrc.ca>
-References: <17196.20757.267124.105624@gargle.gargle.HOWL>
+From: dann frazier <dannf@hp.com>
+Subject: [parisc-linux] binutils breaks hppa kernel build,
+	bad operands of fic, m
+Date: Sat, 24 Sep 2005 10:45:40 -0600
+Message-ID: <1127580340.10496.7.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
-Cc: debian-glibc@lists.debian.org,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <17196.20757.267124.105624@gargle.gargle.HOWL> from "Matthias Klose" at Sep 17, 2005 07:23:33 pm
-Resent-Message-ID: <W__jxB.A.kkF.-YaLDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+Content-Type: text/plain
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Following the discussion on parisc, I uploaded glibc built with
-> gcc-3.4. Validated, that gcc-4.0 bootstraps again and the python build
-> errors are gone.
-
-Does this fix GCC PR 23731?
-
-Dave
+As discussed on irc:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=329888
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+dann frazier <dannf@hp.com>
 
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
