@@ -1,16 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Space registers and how to use them
-Date: Sun, 25 Sep 2005 11:35:13 -0600
-Message-ID: <20050925173513.GA22786@colo.lackof.org>
+Date: Sun, 25 Sep 2005 13:43:58 -0400 (EDT)
+Message-ID: <200509251743.j8PHhw4w013823@hiauly1.hia.nrc.ca>
 References: <20050925034342.GA1459@parisc-linux.org>
-	<43367383.6030307@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@parisc-linux.org
-To: Joel Soete <soete.joel@tiscali.be>
+To: matthew@wil.cx (Matthew Wilcox)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <43367383.6030307@tiscali.be>
+In-Reply-To: <20050925034342.GA1459@parisc-linux.org> from "Matthew Wilcox" at
+	Sep 24, 2005 09:43:42 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,27 +21,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Sep 25, 2005 at 09:53:07AM +0000, Joel Soete wrote:
-> Btw can you help me to undurstand the concept of the 4 quadrants as it was 
-> spoken in:
-> <http://lists.parisc-linux.org/pipermail/parisc-linux/2002-December/018602.html>
+> Instructions with a 2-bit s field have two cases.  If s is 1-3, we use
+> the corresponding space register (sr1-sr3).  If the value in the s field
+> is 0, we do not use space register 0.  Instead, we use one of sr4-7 as
+> determined by the top two bits of the *base register*.
 
-A "quadrant" is 1GB of address space. Think of each 1GB of address space
-in 4GB as a "quadrant".
+Actually, there is another twist to the above in wide mode (PSW[W]==1).
+Instructions with long displacements always use the implicit addressing
+scheme.  The space register bits are used instead to provide a 16-bit
+displacement.  At the moment, we need support for some additional
+relocations to handle long displacements for all instruction formats
+(e.g., we lack support for long displacements in floating point loads
+and stores).
 
-> Used in hpux? (documented somewhere?)
+Short and indexed instructions behave the same as in 32-bit mode for
+s_field==0 (i.e., space register is determined by the top two bits
+of the base register).  However, it's an undefined operation to have
+a nonzero s_field in unprivileged code.
 
-Probably.
+Regarding GAS, I changed the rules regarding the specification of
+space registers in instructions to avoid confusion.  In instructions
+that have a 3-bit space register field, it is now a requirement to
+explicitly specify the space register field.  The treatment of sr0 in
+these instructions is completely different from the treatment in
+instructions with 2-bit space register fields (i.e., the base register
+selection process isn't used).  There were a couple of entries in
+the opcode table that allowed omitting the space register field in
+instructions with 3-bit space register fields.  These have been
+removed.  Indeed, without doing this, it wouldn't have been possible
+to support both the 2 and 3-bit formats for "fic".
 
-> Is it related to the usage of sr4-7 as 4 different kernel spaces?
+As a coding note, it's best not to specify sr0 in instructions which
+use the base register selection mechanism.
 
-Yes. "2 bit s" field in fdc/fic map each "quadrant" to sr4-7.
-ie 0-1GB uses sr4, 1-2GB uses sr5, etc.
-
-John was just saying it doesn't matter since parisc-linux uses
-the same value in all four (sr4-7) space registers.
-
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
