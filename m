@@ -1,12 +1,11 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: [parisc-linux] [PATCH] move PA perf driver over to ->compat_iocll
-Date: Mon, 19 Sep 2005 22:43:09 +0200
-Message-ID: <20050919204309.GA19633@lst.de>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] Space registers and how to use them
+Date: Sat, 24 Sep 2005 21:43:42 -0600
+Message-ID: <20050925034342.GA1459@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: matthew@wil.cx
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,92 +17,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-the lock_kernel could probably go away aswell, but I'll rather leave
-that to the parisc experts..
 
+There's a certain amount of confusion about how space registers are
+specified, so I'm going to explain it for posterity.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+There are two types of instruction which reference memory; those with
+2-bit 's' fields and those with 3-bit 's' fields.
 
-Index: linux-2.6/arch/parisc/kernel/perf.c
-===================================================================
---- linux-2.6.orig/arch/parisc/kernel/perf.c	2005-09-19 17:41:31.000000000 +0200
-+++ linux-2.6/arch/parisc/kernel/perf.c	2005-09-19 17:41:42.000000000 +0200
-@@ -438,48 +438,56 @@
-  * must be running on the processor that you wish to change.
-  */
- 
--static int perf_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
-+static long perf_ioctl(struct file *file, unsigned int cmd,
- 	unsigned long arg)
- {
- 	long error_start;
--	uint32_t raddr[4];	
-+	uint32_t raddr[4];
-+	int error = 0;
- 
-+	lock_kernel();
- 	switch (cmd) {
- 
- 	    case PA_PERF_ON:
- 			/* Start the counters */
- 			perf_start_counters();
--			return 0;
-+			break;
- 
- 	    case PA_PERF_OFF:
- 			error_start = perf_stop_counters(raddr);
- 			if (error_start != 0) {
- 				printk(KERN_ERR "perf_off: perf_stop_counters = %ld\n", error_start);
--				return -EFAULT;	
-+				error = -EFAULT;
-+				break;
- 			}
- 
- 			/* copy out the Counters */
- 			if (copy_to_user((void __user *)arg, raddr, 
- 					sizeof (raddr)) != 0) {
--				return -EFAULT;
-+				error =  -EFAULT;
-+				break;
- 			}
--			return 0;
-+			break;
- 
- 	    case PA_PERF_VERSION:
-   	  		/* Return the version # */
--			return put_user(PERF_VERSION, (int *)arg);
-+			error = put_user(PERF_VERSION, (int *)arg);
-+			break;
- 
- 	    default:
--  	 		break;
-+  	 		error = -ENOTTY;
- 	}
--	return -ENOTTY;
-+
-+	unlock_kernel()
-+	return error;
- }
- 
- static struct file_operations perf_fops = {
- 	.llseek = no_llseek,
- 	.read = perf_read,
- 	.write = perf_write,
--	.ioctl = perf_ioctl,
-+	.unlocked_ioctl = perf_ioctl,
-+	.compat_ioctl = perf_ioctl,
- 	.open = perf_open,
- 	.release = perf_release
- };
-Index: linux-2.6/arch/parisc/kernel/ioctl32.c
-===================================================================
---- linux-2.6.orig/arch/parisc/kernel/ioctl32.c	2005-09-19 17:41:31.000000000 +0200
-+++ linux-2.6/arch/parisc/kernel/ioctl32.c	2005-09-19 17:41:49.000000000 +0200
-@@ -37,11 +37,6 @@
- #define DECLARES
- #include "compat_ioctl.c"
- 
--/* PA-specific ioctls */
--COMPATIBLE_IOCTL(PA_PERF_ON)
--COMPATIBLE_IOCTL(PA_PERF_OFF)
--COMPATIBLE_IOCTL(PA_PERF_VERSION)
+Instructions with a 3-bit s field are straightforward.  The value of
+the s field directly specifies which of the 8 space registers to use.
+
+Instructions with a 2-bit s field have two cases.  If s is 1-3, we use
+the corresponding space register (sr1-sr3).  If the value in the s field
+is 0, we do not use space register 0.  Instead, we use one of sr4-7 as
+determined by the top two bits of the *base register*.
+
+In Linux, sr4-7 are always set to the same value.  When in kernel space,
+they are 0.  In user space, they have the value for the task we're
+currently executing.
+
+What we were trying to do in pacache.S was use an instruction (flush
+instruction cache) as if it were a 2-bit-s instruction when it's actually
+a 3-bit-s instruction.  This led to the processor using sr0 instead of
+one of sr4-7.  The assembler now errors on this case, causing us to find
+a bug.
+
+Just to make things harder, there is a 2-bit-s version of flush
+instruction cache, but it's only available on pa2.0 processors, so we
+don't want to use it.  Instead we use sr4 (since sr4-7 all have the same
+value in Linux).
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
