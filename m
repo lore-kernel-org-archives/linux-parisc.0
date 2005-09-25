@@ -1,17 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] binutils breaks hppa kernel build,
-Date: Sat, 24 Sep 2005 22:06:12 -0400 (EDT)
-Message-ID: <200509250206.j8P26CdT003066__12633.8807669983$1416623925$gmane$org@hiauly1.hia.nrc.ca>
-References: <200509250127.j8P1RMGg002900@hiauly1.hia.nrc.ca>
+Date: Sat, 24 Sep 2005 23:24:31 -0400 (EDT)
+Message-ID: <200509250324.j8P3OVYQ003335__13234.2372010045$1416623925$gmane$org@hiauly1.hia.nrc.ca>
+References: <20050925014906.GC29038@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: 329888@bugs.debian.org,
  parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+To: matthew@wil.cx (Matthew Wilcox)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200509250127.j8P1RMGg002900@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Sep 24, 2005 09:27:22 pm
+In-Reply-To: <20050925014906.GC29038@parisc-linux.org> from "Matthew Wilcox"
+	at Sep 24, 2005 07:49:06 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,42 +22,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > binutils-2.15 has this in include/opcodes/hppa.h:
-> > { "fdc",        0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
-> > { "fdc",        0x04001280, 0xfc003fdf, "cZx(b)", pa10, 0},
-> > { "fic",        0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
-> > { "fic",        0x04000280, 0xfc001fdf, "cZx(b)", pa10, 0},
+> On Sat, Sep 24, 2005 at 09:27:22PM -0400, John David Anglin wrote:
+> > The last "fic" opcode entry is wrong.  It's using the wrong
+> > instruction format, the mask is wrong, pa10 is wrong, etc.
 > 
-> The last "fic" opcode entry is wrong.  It's using the wrong
-> instruction format, the mask is wrong, pa10 is wrong, etc.
+> I don't think we realised this until now.  I suspect we've been
+> silently emitting bad code up until this point, and given that it's
+> in flush_kernel_icache_page, maybe it explains some of our occasional
+> crashes.
+> 
+> The code was previously:
+> 
+>         fic,m           %r23(%r26)
 
-The enclosed patch against binutils head adds the missing "fic"
-entry.  I also noticed that we were missing a pa20 im5 variant for
-"fdc".  This builds and checks with no regressions.  However,
-the new entries aren't really tested.
+I've committed a fix to binutils head.  The above should now be
+accepted when generating PA 2.0 code.  However, I'd probably
+avoid using this feature for awhile.  It looks like the bug has
+been present since ~ 1996.
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-
-Index: hppa.h
-===================================================================
-RCS file: /cvs/src/src/include/opcode/hppa.h,v
-retrieving revision 1.59
-diff -u -3 -p -r1.59 hppa.h
---- hppa.h	3 Aug 2005 15:08:52 -0000	1.59
-+++ hppa.h	25 Sep 2005 01:58:35 -0000
-@@ -755,6 +755,9 @@ static const struct pa_opcode pa_opcodes
- { "pdc",	0x04001380, 0xfc003fdf, "cZx(s,b)", pa10, 0},
- { "fdc",	0x04001280, 0xfc00ffdf, "cZx(b)", pa10, 0},
- { "fdc",	0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
-+{ "fdc",	0x04003280, 0xfc00ffff, "5(b)", pa20, FLAG_STRICT},
-+{ "fdc",	0x04003280, 0xfc003fff, "5(s,b)", pa20, FLAG_STRICT},
-+{ "fic",	0x040013c0, 0xfc00dfdf, "cZx(b)", pa20, FLAG_STRICT},
- { "fic",	0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
- { "fdce",	0x040012c0, 0xfc00ffdf, "cZx(b)", pa10, 0},
- { "fdce",	0x040012c0, 0xfc003fdf, "cZx(s,b)", pa10, 0},
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
