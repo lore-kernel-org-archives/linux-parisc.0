@@ -1,12 +1,16 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Space registers and how to use them
-Date: Sat, 24 Sep 2005 21:43:42 -0600
-Message-ID: <20050925034342.GA1459@parisc-linux.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Space registers and how to use them
+Date: Sun, 25 Sep 2005 11:35:13 -0600
+Message-ID: <20050925173513.GA22786@colo.lackof.org>
+References: <20050925034342.GA1459@parisc-linux.org>
+	<43367383.6030307@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@parisc-linux.org
+Cc: parisc-linux@parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <43367383.6030307@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,35 +21,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Sun, Sep 25, 2005 at 09:53:07AM +0000, Joel Soete wrote:
+> Btw can you help me to undurstand the concept of the 4 quadrants as it was 
+> spoken in:
+> <http://lists.parisc-linux.org/pipermail/parisc-linux/2002-December/018602.html>
 
-There's a certain amount of confusion about how space registers are
-specified, so I'm going to explain it for posterity.
+A "quadrant" is 1GB of address space. Think of each 1GB of address space
+in 4GB as a "quadrant".
 
-There are two types of instruction which reference memory; those with
-2-bit 's' fields and those with 3-bit 's' fields.
+> Used in hpux? (documented somewhere?)
 
-Instructions with a 3-bit s field are straightforward.  The value of
-the s field directly specifies which of the 8 space registers to use.
+Probably.
 
-Instructions with a 2-bit s field have two cases.  If s is 1-3, we use
-the corresponding space register (sr1-sr3).  If the value in the s field
-is 0, we do not use space register 0.  Instead, we use one of sr4-7 as
-determined by the top two bits of the *base register*.
+> Is it related to the usage of sr4-7 as 4 different kernel spaces?
 
-In Linux, sr4-7 are always set to the same value.  When in kernel space,
-they are 0.  In user space, they have the value for the task we're
-currently executing.
+Yes. "2 bit s" field in fdc/fic map each "quadrant" to sr4-7.
+ie 0-1GB uses sr4, 1-2GB uses sr5, etc.
 
-What we were trying to do in pacache.S was use an instruction (flush
-instruction cache) as if it were a 2-bit-s instruction when it's actually
-a 3-bit-s instruction.  This led to the processor using sr0 instead of
-one of sr4-7.  The assembler now errors on this case, causing us to find
-a bug.
+John was just saying it doesn't matter since parisc-linux uses
+the same value in all four (sr4-7) space registers.
 
-Just to make things harder, there is a 2-bit-s version of flush
-instruction cache, but it's only available on pa2.0 processors, so we
-don't want to use it.  Instead we use sr4 (since sr4-7 all have the same
-value in Linux).
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
