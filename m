@@ -1,17 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] binutils breaks hppa kernel build,
-Date: Sat, 24 Sep 2005 21:27:22 -0400 (EDT)
-Message-ID: <200509250127.j8P1RMGg002900__23306.6597291783$1416623924$gmane$org@hiauly1.hia.nrc.ca>
+Date: Sat, 24 Sep 2005 19:49:06 -0600
+Message-ID: <20050925014906.GC29038__20560.6145239019$1416623925$gmane$org@parisc-linux.org>
 References: <20050924185439.GC7824@colo.lackof.org>
+	<200509250127.j8P1RMGg002900@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: 329888@bugs.debian.org,
  parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050924185439.GC7824@colo.lackof.org> from "Grant Grundler" at
-	Sep 24, 2005 12:54:39 pm
+In-Reply-To: <200509250127.j8P1RMGg002900@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,43 +22,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> binutils-2.15 has this in include/opcodes/hppa.h:
-> { "fdc",        0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
-> { "fdc",        0x04001280, 0xfc003fdf, "cZx(b)", pa10, 0},
-> { "fic",        0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
-> { "fic",        0x04000280, 0xfc001fdf, "cZx(b)", pa10, 0},
+On Sat, Sep 24, 2005 at 09:27:22PM -0400, John David Anglin wrote:
+> The last "fic" opcode entry is wrong.  It's using the wrong
+> instruction format, the mask is wrong, pa10 is wrong, etc.
 
-The last "fic" opcode entry is wrong.  It's using the wrong
-instruction format, the mask is wrong, pa10 is wrong, etc.
+I don't think we realised this until now.  I suspect we've been
+silently emitting bad code up until this point, and given that it's
+in flush_kernel_icache_page, maybe it explains some of our occasional
+crashes.
 
-> And the binutils_2.16.1cvs20050902 version has only:
-> { "fdc",        0x04001280, 0xfc00ffdf, "cZx(b)", pa10, 0},
-> { "fdc",        0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
-> { "fic",        0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
+The code was previously:
 
-Yes, I deleted the entry because there isn't implicit space
-register selection for 'S' instructions.
+        fic,m           %r23(%r26)
 
-> The order of the with 's' vs without 's' was switched and
-> in the process dropped one "fic" line.
-
-Changing the order of with 's' vs without 's' was intentional.
-It generates better disassembly.  Give the new objdump a try
-and you will see the difference.
-
-> Can binutils maintainer/folks please just add it back
-> in the new location?
-
-We need a new pa20 format 24 entry.
-
-> Is the fix obvious enough or is a patch necessary?
-
-A patch is needed.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+We're trying to flush kernel space at this point, so we can use any of
+sr4-sr7.   I suspect before we were putting sr0 in, which could have
+been flushing any random space instead of the one we wanted.  I'll
+commit this change to the kernel source now.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
