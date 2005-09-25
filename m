@@ -1,18 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] binutils breaks hppa kernel build,
-Date: Sat, 24 Sep 2005 13:22:02 -0600
-Message-ID: <20050924192202.GE7824__27249.5157355026$1416623924$gmane$org@colo.lackof.org>
-References: <1127580340.10496.7.camel@localhost>
-	<200509241733.j8OHXHRM001100@hiauly1.hia.nrc.ca>
-	<20050924190648.GD7824@colo.lackof.org>
+Date: Sat, 24 Sep 2005 21:27:22 -0400 (EDT)
+Message-ID: <200509250127.j8P1RMGg002900__23306.6597291783$1416623924$gmane$org@hiauly1.hia.nrc.ca>
+References: <20050924185439.GC7824@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: 329888@bugs.debian.org,
  parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050924190648.GD7824@colo.lackof.org>
+In-Reply-To: <20050924185439.GC7824@colo.lackof.org> from "Grant Grundler" at
+	Sep 24, 2005 12:54:39 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,49 +22,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Sep 24, 2005 at 01:06:48PM -0600, Grant Grundler wrote:
-> On Sat, Sep 24, 2005 at 01:33:15PM -0400, John David Anglin wrote:
-> > > As discussed on irc:
-> > > http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=329888
-> > 
-> > This is a debian issue as far a I can tell.  I tried
-> > 
-> >       fic,m           %r23(%sr3,%r26)
-> > 
-> > with GNU assembler 2.16.91 20050814 and I don't see a problem.
-> 
-> You are right - debian has a stale include file.
+> binutils-2.15 has this in include/opcodes/hppa.h:
+> { "fdc",        0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
+> { "fdc",        0x04001280, 0xfc003fdf, "cZx(b)", pa10, 0},
+> { "fic",        0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
+> { "fic",        0x04000280, 0xfc001fdf, "cZx(b)", pa10, 0},
 
-Sorry - I was wrong too.
+The last "fic" opcode entry is wrong.  It's using the wrong
+instruction format, the mask is wrong, pa10 is wrong, etc.
 
-I confused the bug report with a related problem on unstable
-kernel builds:
-...
-  AS      arch/parisc/kernel/pacache.o
-arch/parisc/kernel/pacache.S: Assembler messages:
-arch/parisc/kernel/pacache.S:952: Error: Invalid operands 
-arch/parisc/kernel/pacache.S:953: Error: Invalid operands 
-arch/parisc/kernel/pacache.S:954: Error: Invalid operands 
-...
+> And the binutils_2.16.1cvs20050902 version has only:
+> { "fdc",        0x04001280, 0xfc00ffdf, "cZx(b)", pa10, 0},
+> { "fdc",        0x04001280, 0xfc003fdf, "cZx(s,b)", pa10, 0},
+> { "fic",        0x04000280, 0xfc001fdf, "cZx(S,b)", pa10, 0},
 
-Where line 952/953/etc are this format:
-1:      fic,m           %r23(%r26)
-        fic,m           %r23(%r26)
-        fic,m           %r23(%r26)
+Yes, I deleted the entry because there isn't implicit space
+register selection for 'S' instructions.
 
+> The order of the with 's' vs without 's' was switched and
+> in the process dropped one "fic" line.
 
-> The picked up this version of the opcode/hppa.h file:
-> http://sourceware.org/cgi-bin/cvsweb.cgi/src/include/opcode/hppa.h.diff?r1=1.55&r2=1.56&cvsroot=src&f=h
+Changing the order of with 's' vs without 's' was intentional.
+It generates better disassembly.  Give the new objdump a try
+and you will see the difference.
 
-I'm pretty sure this diff introduces the error I saw.
+> Can binutils maintainer/folks please just add it back
+> in the new location?
 
-> Debian needs to pick up the TOB opcode/hppa.h and life will be good again.
+We need a new pa20 format 24 entry.
 
-Sorry - my bad again.  TOB opcode/hppa.h is missing one variant of "fic"
-as I mentioned in previous email. I had it right the first time around.
+> Is the fix obvious enough or is a patch necessary?
 
-apologies for the confusion and hope this clarifies,
-grant
+A patch is needed.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
