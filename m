@@ -1,19 +1,16 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] make[2]: *** [arch/parisc/lib/fixup.o] Error 1
-Date: Tue, 04 Oct 2005 20:16:14 +0000
-Message-ID: <4342E30E.7010406@tiscali.be>
-References: <200509251914.j8PJEMDq015612@hiauly1.hia.nrc.ca>	<200509251950.j8PJoJh2016027@hiauly1.hia.nrc.ca>	<20050926001932.GB3725@colo.lackof.org>
-	<20050926004810.GC3725@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Space registers and how to use them
+Date: Wed, 5 Oct 2005 22:59:36 -0600
+Message-ID: <20051006045936.GA27034@colo.lackof.org>
+References: <20050925173513.GA22786@colo.lackof.org>
+	<200509251803.j8PI3tLI014517@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- matthew@wil.cx,
- parisc-linux@parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20050926004810.GC3725@colo.lackof.org>
+In-Reply-To: <200509251803.j8PI3tLI014517@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,51 +21,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Just to mentioned that my stress test (a loop compiling the kernel + a loop deflating a kernel src tar file) run on my b2k for more 
-then a full day without any pb :^): I wasn't any more able to do it for a long time.
+On Sun, Sep 25, 2005 at 02:03:55PM -0400, John David Anglin wrote:
+> > John was just saying it doesn't matter since parisc-linux uses
+> > the same value in all four (sr4-7) space registers.
+> 
+> It's possible for user code to mess with sr4.  It's not a
+> privileged register.
 
-Thanks for all,
-	Joel
+Certainly. But in the kernel those are KERNEL_SPACE (zero).
+We save/restore the user space values for sr4-7.
+We clear sr4-sr7 in linux_gateway_entry (arch/parisc/kernel/syscall.S)
+for syscalls.  We do the same for interrupts in virt_map macro in entry.S.
 
-PS: Just noticed something weird:
-when I objdump the ccio-dma.o (for the d380), it seems that insn lci is desasembled as the famous undocumented lha?
-
-
-Grant Grundler wrote:
-> On Sun, Sep 25, 2005 at 06:19:32PM -0600, Grant Grundler wrote:
-> 
->>On Sun, Sep 25, 2005 at 03:50:18PM -0400, John David Anglin wrote:
->>
->>>>fixup.S needs a ".level 1.1" directive.  "ldw,s" is a PA 1.1 feature.
->>>
->>>Actually, it looks like there is a binutils bug here.  However, the
->>>".level" directive still should be added to PA 1.1 files.
->>
->>Unfortunately, use of LDREG precludes specifying .level directly.
->>LDREG becomes "ldd" for 64-bit builds and requires pa20 level.
->>Maybe add a "LDREGS_LEVEL" or somesuch.
-> 
-> 
-> I obviously hadn't looked in asm-parisc/assembly.h.
-> "#define LEVEL" is already present.
-> 
-> 
->>We could make the "LDREG,s" a new macro. But I'm not keen on using
->>the PA1.1 syntax (LDWX). If no one else has a better idea,
->> I'll make this change.
-> 
-> 
-> Also already present (LDREGX).
-> The 32-bit-SMP build completes with both in fixup.S.
-> 
-> thanks,
-> grant "needs a cup of tea" grundler
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
