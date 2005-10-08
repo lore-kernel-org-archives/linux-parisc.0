@@ -1,7 +1,7 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: 2.6.14-rc2-pa2 ccio patch
-Date: Sat, 8 Oct 2005 15:30:47 -0400 (EDT)
-Message-ID: <200510081930.j98JUm9U007695@hiauly1.hia.nrc.ca>
+Date: Sat, 8 Oct 2005 15:50:35 -0400 (EDT)
+Message-ID: <200510081950.j98JoZ9k015452@hiauly1.hia.nrc.ca>
 References: <200509292321.j8TNLc60012238@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -21,15 +21,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I'm going to take a crack at trying to fix PA 1.0 to 1.1 promotion
-> this weekend.  This is currently tied to the the lax matching used
-> with PA 1.0 instructions.
+> > Yes and Yes. But my reading of the PA1.1 arch says it *only* has a 2-bit
+> > s field.
+> 
+> Oops, my mix up (fic/fdc confusion).  However, don't add sr0 to the
+> instruction.
 
-I believe that binutils (cvs head) should now correctly handle promotion.
-See http://sources.redhat.com/ml/binutils/2005-10/msg00085.html.  The
-change also fixes a problem with "fdc" that was introduced when I added
-the PA 2.0 immediate form.  It turns out that I broke the PA 1.0 register
-immediate form.
+I see that the change was committed with the addition of "%sr0" in the
+fdc instructions.  Explicitly mentioning %sr0 in instructions with 2-bit
+s-fields is discouraged.  It's unnecessary and there could be confusion
+regarding its effect.  In instructions with 3-bit s-fields, %sr0 is
+treated in the same manner as the other space registers.  I may add
+a warning about using %sr0 in instructions with 2-bit s-fields.
 
 Dave
 -- 
