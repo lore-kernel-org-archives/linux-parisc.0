@@ -1,16 +1,19 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: 2.6.14-rc2-pa2 ccio patch
-Date: Sat, 8 Oct 2005 15:50:35 -0400 (EDT)
-Message-ID: <200510081950.j98JoZ9k015452@hiauly1.hia.nrc.ca>
-References: <200509292321.j8TNLc60012238@hiauly1.hia.nrc.ca>
+Date: Tue, 11 Oct 2005 12:04:01 -0400 (EDT)
+Message-ID: <200510111604.j9BG41Q7021242@hiauly1.hia.nrc.ca>
+References: <IO7AYH$A873EF9A4A4D74961990E3C295F405D8@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Cc: doko@debian.org,
+ parisc-linux@lists.parisc-linux.org,
+ james@nocrew.org,
+ tsg45800@scarlet.be
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200509292321.j8TNLc60012238@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Sep 29, 2005 07:21:38 pm
+In-Reply-To: <IO7AYH$A873EF9A4A4D74961990E3C295F405D8@scarlet.be> from "Joel
+	Soete" at Oct 11, 2005 04:59:05 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,18 +24,12 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > Yes and Yes. But my reading of the PA1.1 arch says it *only* has a 2-bit
-> > s field.
+> May I abuse of your presious time: I also recompile the kernel for a d380=
 > 
-> Oops, my mix up (fic/fdc confusion).  However, don't add sr0 to the
-> instruction.
+> which uses ccio-dma in its term uses insn lci (see attached precompile .s=
 
-I see that the change was committed with the addition of "%sr0" in the
-fdc instructions.  Explicitly mentioning %sr0 in instructions with 2-bit
-s-fields is discouraged.  It's unnecessary and there could be confusion
-regarding its effect.  In instructions with 3-bit s-fields, %sr0 is
-treated in the same manner as the other space registers.  I may add
-a warning about using %sr0 in instructions with 2-bit s-fields.
+I'll look at it.  As I recall, there wasn't much information about lha.
+If lha and lci are the same, we should be using lci in the disassebly.
 
 Dave
 -- 
