@@ -1,24 +1,27 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: Trying to install sarge on a C200
+Subject: [parisc-linux] Re: Trying to install sarge on a C200
 Date: Tue, 11 Oct 2005 15:54:53 -0600
-Message-ID: <20051011215453.GA13161__39465.227435767$1416623928$gmane$org@colo.lackof.org>
-References: <434A195B.5010201@albacom.net> <20051010161557.GA15072@colo.lackof.org> <434BDE68.1070605@albacom.net>
+Message-ID: <20051011215453.GA13161__5996.4231717915$1416623928$gmane$org@colo.lackof.org>
+References: <434A195B.5010201@albacom.net>
+	<20051010161557.GA15072@colo.lackof.org>
+	<434BDE68.1070605@albacom.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
- debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
 To: Fabio Bizzi <bizzi@albacom.net>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <434BDE68.1070605@albacom.net>
-Resent-Message-ID: <2LCYRC.A.h5F.WMDTDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 On Tue, Oct 11, 2005 at 05:46:48PM +0200, Fabio Bizzi wrote:
 > Yesterday night I've tried the following:
@@ -70,8 +73,7 @@ welcome - and thanks for your patience and tenacity.
 
 ciao!
 grant
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
