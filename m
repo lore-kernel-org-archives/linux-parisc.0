@@ -1,65 +1,43 @@
-From: Fabio Bizzi <bizzi@albacom.net>
-Subject: [parisc-linux] Re: Trying to install sarge on a C200
-Date: Wed, 12 Oct 2005 12:44:51 +0200
-Message-ID: <434CE923.8030607__44204.9639802009$1416623929$gmane$org@albacom.net>
+From: Max Grabert <parisc@gmail.com>
+Subject: Re: [parisc-linux] Re: Trying to install sarge on a C200
+Date: Wed, 12 Oct 2005 10:35:06 +0100
+Message-ID: <e6eae0290510120235g766a5b3k__31290.1720674292$1416623929$gmane$org@mail.gmail.com>
 References: <434A195B.5010201@albacom.net>
-	<20051010161557.GA15072@colo.lackof.org>
-	<434BDE68.1070605@albacom.net>
-	<20051011215453.GA13161@colo.lackof.org>
+	 <20051010165308.GA15762@quicksilver.road.mcmartin.ca>
+	 <7d01f9f00510110147u170a7be7nce566efbf1443765@mail.gmail.com>
+	 <20051011143151.GA11440@lst.de>
+	 <7d01f9f00510110840q254927c5q7e215de45344cb0c@mail.gmail.com>
+	 <20051012065639.GE9412@colo.lackof.org>
+	 <7d01f9f00510120212g5470a397q436d7d41eef706b6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: Grant Grundler <grundler@parisc-linux.org>,
+  charset=ISO-8859-1
+Cc: Grant Grundler <grundler@parisc-linux.org>,
  parisc-linux@lists.parisc-linux.org,
  debian-hppa@lists.debian.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051011215453.GA13161@colo.lackof.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: Thibaut VARENE <varenet@gmail.com>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <7d01f9f00510120212g5470a397q436d7d41eef706b6@mail.gmail.com>
+Resent-Message-ID: <GzjZgB.A.Y4E.AQYTDB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-Hi Grant,
+On 12/10/05, Thibaut VARENE <varenet@gmail.com> wrote:
+> Awesome. If that's a 64bit kernel, then the problem is most likely
+> gone (and we should remove it from the wiki KnownIssues list ;)
 
-Grant Grundler wrote:
-[...]
-> Your choice. two 18GB partions should work fine too.
-> My preference would be to try the "etch" netinst CD but I don't
-> have a clue if that works better or not for C200.
+Heh, seems I was 5 minutes faster than you:
 
-Ok, let's try etch... ;)
+ Info for "KnownIssues":
+   2005-10-12 08:48:01 =093375 =09=09MaxGrabert =09XFS seems to work, some
+sound issues seem to be fixed as well
 
->>Please let me know because at home I have no fast internet connection 
->>and if I'd try the sarge option I'll download at office the installation 
->>CD and the packages DVD.
 
-Ok, my c200 has a cdrom but no dvd-rom and no internet broadband 
-connection, so for sarge I've copied the two DVD-ROM to my laptop and 
-published by http, and apt works.
-For etch I've seen that cdrom images are aivailable but noy dvd-rom 
-images, I don't want burn 14 cdrom ;) so how can I download the 
-installation archives to my laptop?
+BTW, looking at the ad1889 wiki page it still says that ALSA is broken ...
 
-Thank You! :)
-
-> welcome - and thanks for your patience and tenacity.
-
-Where there is the will there is the way! ;)
-I want to install debian to my C200 and I want to start using it!!! :)
-If I can help you with debugs or compilation or else let me know.
-
-Thanks again! :)
-
-Ciao.
-
-	Fabio.
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Greetings,
+   Max
