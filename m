@@ -1,43 +1,82 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] Re: Trying to install sarge on a C200
-Date: Wed, 12 Oct 2005 10:35:06 +0100
-Message-ID: <e6eae0290510120235g766a5b3k__31290.1720674292$1416623929$gmane$org@mail.gmail.com>
-References: <434A195B.5010201@albacom.net>
-	 <20051010165308.GA15762@quicksilver.road.mcmartin.ca>
-	 <7d01f9f00510110147u170a7be7nce566efbf1443765@mail.gmail.com>
-	 <20051011143151.GA11440@lst.de>
-	 <7d01f9f00510110840q254927c5q7e215de45344cb0c@mail.gmail.com>
-	 <20051012065639.GE9412@colo.lackof.org>
-	 <7d01f9f00510120212g5470a397q436d7d41eef706b6@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: PA7200 smp pb on d380 [Continue: May be ccio-dma
+	also?]
+Date: Fri, 14 Oct 2005 00:04:17 -0600
+Message-ID: <20051014060417.GD3348@colo.lackof.org>
+References: <IOC4Y4$47D21CD65D90BE54F77B218C41CF7D41@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: Grant Grundler <grundler@parisc-linux.org>,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Thibaut VARENE <varenet@gmail.com>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <7d01f9f00510120212g5470a397q436d7d41eef706b6@mail.gmail.com>
-Resent-Message-ID: <GzjZgB.A.Y4E.AQYTDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=us-ascii
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ tsg45800 <tsg45800@scarlet.be>
+To: Joel Soete <soete.joel@tiscali.be>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <IOC4Y4$47D21CD65D90BE54F77B218C41CF7D41@scarlet.be>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 12/10/05, Thibaut VARENE <varenet@gmail.com> wrote:
-> Awesome. If that's a 64bit kernel, then the problem is most likely
-> gone (and we should remove it from the wiki KnownIssues list ;)
+On Fri, Oct 14, 2005 at 07:37:16AM +0200, Joel Soete wrote:
+> > sr0?
+> > The above change was for %r0, not %sr0.
+> > Or can you point out exactly what you are referring to?
+>
+> Ah it was so a good question :=)
+> let see so the first:
+> RCS file: /var/lib/cvs/linux-2.6/drivers/parisc/ccio-dma.c,v
+> retrieving revision 1.24
+> retrieving revision 1.25
+> diff -u -r1.24 -r1.25
+> --- linux-2.6/drivers/parisc/ccio-dma.c	2005/09/11 19:47:11	1.24
+> +++ linux-2.6/drivers/parisc/ccio-dma.c	2005/10/12 15:25:21	1.25
+> @@ -613,7 +613,7 @@
+>  	** the real mode coherence index generation of U2, the PDIR entry
+>  	** must be flushed to memory to retain coherence."
+>  	*/
+> -	asm volatile("fdc 0(%0)" : : "r" (pdir_ptr));
+> +	asm volatile("fdc %%r0(%%sr0,%0)" : : "r" (pdir_ptr));
 
-Heh, seems I was 5 minutes faster than you:
+Ah ok!
 
- Info for "KnownIssues":
-   2005-10-12 08:48:01 =093375 =09=09MaxGrabert =09XFS seems to work, some
-sound issues seem to be fixed as well
+> (I agree that it was in my original proposal, you can blame me ...)
+
+No. My bad. I should have known better.
 
 
-BTW, looking at the ad1889 wiki page it still says that ALSA is broken ...
+> finaly (what confusing my tiny mind: your previous related patch just removed it):
+> RCS file: /var/lib/cvs/linux-2.6/drivers/parisc/sba_iommu.c,v
+> retrieving revision 1.39
+> retrieving revision 1.40
+> diff -u -r1.39 -r1.40
+> --- linux-2.6/drivers/parisc/sba_iommu.c	2005/10/09 21:08:38	1.39
+> +++ linux-2.6/drivers/parisc/sba_iommu.c	2005/10/12 15:30:28	1.40
+> @@ -743,9 +743,8 @@
+>  	 * (bit #61, big endian), we have to flush and sync every time
+>  	 * IO-PDIR is changed in Ike/Astro.
+>  	 */
+> -	if (ioc_needs_fdc) {
+> -		asm volatile("fdc %%r0(%0)\n\tsync" : : "r" (pdir_ptr));
+> -	}
+> +	if (ioc_needs_fdc)
+> +		asm volatile("fdc %%r0(%%sr0,%0)" : : "r" (pdir_ptr));
+>  }
+> 
+> 
+> ====<>====
+> (why I said 'resurected')
 
-Greetings,
-   Max
+ok - I'll remove that as well. I suspect that crept in when
+I switch machines and didn't properly sync the source trees.
+
+thanks,
+grant
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
