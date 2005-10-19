@@ -1,15 +1,16 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: Re: [parisc-linux] GCC regressions with libc6/2.3.5-6.0.1
-Date: Tue, 18 Oct 2005 02:16:24 +0200
-Message-ID: <17236.16088.230585.214895@gargle.gargle.HOWL>
-References: <200510161938.j9GJcjW0002899@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: 2.6.14-rc2-pa6 issues on C3000
+Date: Wed, 19 Oct 2005 14:11:38 -0600
+Message-ID: <20051019201138.GA29348@colo.lackof.org>
+References: <IOLN1Y$2D02E9DC48FF1382783F4DBD297A44A4@scarlet.be>
+	<200510191854.j9JIsgEf018826@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200510161938.j9GJcjW0002899@hiauly1.hia.nrc.ca>
+In-Reply-To: <200510191854.j9JIsgEf018826@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,17 +21,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-John David Anglin writes:
-> I just wanted to note that installing libc6/2.3.5-6.0.1 causes a variety
-> of regressions in the GCC testsuite relative to 2.3.2.  See for example
-> http://gcc.gnu.org/ml/gcc-testresults/2005-10/msg00576.html versus
-> http://gcc.gnu.org/ml/gcc-testresults/2005-09/msg00946.html.  These
-> are in addition to the issues caused by building libc with GCC 4.x
-> (e.g., http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=327351).
+On Wed, Oct 19, 2005 at 02:54:42PM -0400, John David Anglin wrote:
+> > Nice that works a lot better (you get rid of may Warning) eventhought didn't
+> > boot yet (again synchronize_irq()) :_(
+> 
+> rc2-pa5 doesn't boot on c3k with default config.  I built it with
+> gcc-4.0 (debian).  It dies with a data alignment exception (code=26)
+> in kref_get (if I remember correctly).
 
-just as a notice, that libc6/2.3.5-7 is built with 4.0 again.
+I'm not seeing that with my j6k.
+But I'm building using "stable" gcc (gcc version 3.3.5 (Debian 1:3.3.5-13)).
+I also have enabled SMP and DEBUG_SLAB in my kernel builds.
+Diff between c3000_config and my mine is appended (It's short).
 
-  Matthias
+Kernel should warn about, but handle data alignment exceptions.
+So this sounds like two bugs: one for the misaligned data and
+another that the kernel isn't handling it properly.
+I expect this is another exposure that gcc 3.x was hiding by
+automatically aligning some data types.
+
+> There's also some undefined symbols in a module.
+
+Ok - those should be easy to sort out. I'll look at that tonight.
+I haven't noticed it on my builds.
+
+thanks,
+grant
+
+
+grundler <505>diff /boot/config-2.6.14-rc2-pa6 arch/parisc/configs/c3000_defconfig 
+3,4c3,4
+< # Linux kernel version: 2.6.14-rc2-pa5
+< # Mon Oct 17 19:39:53 2005
+---
+> # Linux kernel version: 2.6.14-rc2-pa1
+> # Sat Sep 24 18:33:00 2005
+22d21
+< CONFIG_LOCK_KERNEL=y
+40d38
+< # CONFIG_CPUSETS is not set
+70d67
+< CONFIG_STOP_MACHINE=y
+83,84c80
+< CONFIG_SMP=y
+< CONFIG_HOTPLUG_CPU=y
+---
+> # CONFIG_SMP is not set
+98d93
+< CONFIG_NR_CPUS=4
+916a912,913
+> CONFIG_SND_AD1889=y
+> # CONFIG_SND_AD1889_OPL3 is not set
+939,940d935
+< CONFIG_SND_AD1889=y
+< # CONFIG_SND_AD1889_OPL3 is not set
+1280c1275
+< CONFIG_DEBUG_SLAB=y
+---
+> # CONFIG_DEBUG_SLAB is not set
+1287d1281
+< # CONFIG_DEBUG_RWLOCK is not set
+grundler <506>
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
