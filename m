@@ -1,21 +1,23 @@
 From: Hugh Dickins <hugh@veritas.com>
 Subject: Re: [parisc-linux] Re: [PATCH 3/9] mm: parisc pte atomicity
-Date: Sun, 23 Oct 2005 10:02:46 +0100 (BST)
-Message-ID: <Pine.LNX.4.61.0510230930470.19527__2847.41203436187$1416624565$gmane$org@goblin.wat.veritas.com>
+Date: Mon, 24 Oct 2005 05:36:35 +0100 (BST)
+Message-ID: <Pine.LNX.4.61.0510240441570.22402__18510.3494827219$1416624565$gmane$org@goblin.wat.veritas.com>
 References: <Pine.LNX.4.61.0510221716380.18047@goblin.wat.veritas.com>
 	<Pine.LNX.4.61.0510221722260.18047@goblin.wat.veritas.com>
 	<20051022163330.GD3364@parisc-linux.org>
 	<1130000925.6461.15.camel@mulgrave>
+	<Pine.LNX.4.61.0510230930470.19527@goblin.wat.veritas.com>
+	<1130079931.3437.21.camel@mulgrave>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN;
   charset=US-ASCII
 Cc: Andrew Morton <akpm@osdl.org>,
- parisc-linux@parisc-linux.org,
+ Matthew Wilcox <matthew@wil.cx>,
  linux-kernel@vger.kernel.org,
- Matthew Wilcox <matthew@wil.cx>
+ parisc-linux@parisc-linux.org
 To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1130000925.6461.15.camel@mulgrave>
+In-Reply-To: <1130079931.3437.21.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,108 +28,113 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 22 Oct 2005, James Bottomley wrote:
-> On Sat, 2005-10-22 at 10:33 -0600, Matthew Wilcox wrote:
-> > On Sat, Oct 22, 2005 at 05:23:27PM +0100, Hugh Dickins wrote:
-> > > There's a worrying function translation_exists in parisc cacheflush.h,
-> > > unaffected by split ptlock since flush_dcache_page is using it on some
-> > > other mm, without any relevant lock.  Oh well, make it a slightly more
-> > > robust by factoring the pfn check within it.  And it looked liable to
-> > > confuse a camouflaged swap or file entry with a good pte: fix that too.
+On Sun, 23 Oct 2005, James Bottomley wrote:
+> On Sun, 2005-10-23 at 10:02 +0100, Hugh Dickins wrote:
+> 
+> The change does slightly worry me in that it alters the behaviour of
+> flush_cache_page() because now it checks the pfn whereas previously it
+> didn't.  This means that previously we would flush the COW'd page of a
+> shared mapping, now we won't.
+
+Perhaps you're thinking of some use of flush_cache_page that no longer
+exists in the tree?  All the uses I see are passing in the right pfn,
+and the question is why translation_exists even gets called by it.
+
+Even those uses of flush_cache_page in asm-parisc/cacheflush.h itself
+(which I'd missed before): copy_to_user_page and copy_from_user_page
+are only used by nothing but access_process_vm, after get_user_pages:
+so any COW has already been done, and the right pfn is passed in.
+
+> > I'm right, aren't I? that the previous pte_none test was actually letting
+> > through swap entries and pte_file entries which might look as if they had
+> > the right pfn, just by coincidence of their offsets?  So flush_dcache_page
+> > would stop, thinking it had done a good flush, when actually it hadn't.
+> 
+> Actually, no, pte_none() on parisc is either pte is zero or _PAGE_FLUSH
+> (which is our private flag saying we're preserving the pte entry for the
+> purposes of flushing even though it's gone) is set.
+
+Sorry, "pte_none test" was my lazy shorthand for the actual test:
+	if(pte_none(*pte) && ((pte_val(*pte) & _PAGE_FLUSH) == 0))
+		return NULL;
+from which point on it assumes the pte is valid.  I'm contending that
+a swap entry or pte_file entry does not return NULL there, so is then
+treated as a valid pte: and pte_pfn on it might match the target pfn.
+
+I believe my
+	/* Filter out coincidental file entries and swap entries */
+	if (!(pte_val(pte) & (_PAGE_FLUSH|_PAGE_PRESENT)))
+		return 0;
+is correct, and avoids that problem (plus avoiding the complication
+of parisc's unintuitive pte_none).
+
+> However, now that I
+> look at it, are you thinking our ptep_get_and_clear() should be doing a
+> check for _PAGE_PRESENT before it sets _PAGE_FLUSH?
+
+That's certainly not what I was thinking.  No, I'm pretty sure that
+ptep_get_and_clear only gets called when we've got the right lock and
+know the pte is present: I don't think you need to make any change there.
+(The "pretty sure" reflecting that there's a bit of a macro maze here now,
+so actually following up each reference would take a bit longer.)
+
+But you may be seeing something I don't see: I've only just met your
+_PAGE_FLUSH, and that unusual pte_none might be letting something
+through that I'm overlooking, that you're aware of.
+
+> > But races remain: the pte good at the moment translation_exists checks it,
+> > may have been taken out by kswapd a moment later (flush_dcache_mmap_lock
+> > only secures the vma_prio_tree structure, not ptes within the vmas);
+> > or it may have been COWed in the interval; or zapped from the mm.
 > > 
-> > I have to say I really don't understand VM at all.  cc'ing the
-> > parisc-linux list in case anyone there has a better understanding than I
-> > do.
+> > Can you get a success code out of __flush_cache_page?  Or perhaps you
+> > should run translation_exists a second time after the  __flush_cache_page,
+> > to check nothing changed (the pte pointer would then be helpful, to save
+> > descending a second time)?  Or perhaps it all works out, that any such
+> > change which might occur, itself does the __flush_cache_page you need?
 > 
-> Well, I wrote the code for translation_exists() so I suppose that's
-> me...
-> 
-> Do you have a reference to the thread that triggered this?  I need more
-> context to decide what the actual problem is.
+> Yes, I know ... I never liked the volatility of this, but it's better
+> than what was there before, believe me (previously we just flushed the
+> first entry we found regardless).
 
-No thread, and I don't know of any problem reported.  It's just that
-in connection with my page fault scalability patches, splitting up the
-page_table_lock, I've had to search through architectures for pte code
-which may need changing.
+I do believe you!
 
-Since translation_exists is doing no locking at present, it doesn't need
-any change to match my ptlock changes.  But it's a little worrying that
-it has no locking.  When called from flush_cache_page that's almost
-always right, and locking would just deadlock on locks already taken
-(I think core dumping uses flush_cache_page outside of locks, not a big
-deal).  But when called from flush_dcache_page, it's dealing with some
-other mm entirely: anything could happen at any moment.
+> Getting a return code out of __flush_dcache_page() is hard because it
+> doesn't know if the tlb miss handler nullified the instructions it's
+> trying to execute; and they're interruption handlers (meaning we don't
+> push anything on the stack for them, they run in shadow registers), so
+> getting a return code out of them is next to impossible.
 
-We're actually better off with my changes here than before.  Since you're
-coming from the vma_prio_tree, with the necessary locking on that, you
-can now be sure that the page tables won't get pulled out from under you
-(whereas before there was an unlikely window in which they might be).
+Right, it was just a thought.
 
-> Let me explain what translation_exists() is though for the benefit of
-> the mm people.
+> For the flush to be effective in the VIPT cache, we have to have a
+> virtual address with a valid translation that points to the correct
+> physical address.  I suppose we could flush through the tmpalias space
+> instead.  That's where we set up an artifical translation that's not the
+> actual vaddr but instead is congruent to the vaddr so the mapping is
+> effective in cache aliasing terms.  Our congruence boundary is 4MB, so
+> we set up a private (per cpu) 4MB space (tmpalias) where we can set up
+> our pte's (or actually manufacture them in the tlb miss handler)
+> securely.
 
-Thanks for taking the trouble, James (more than I needed to know!
-but I'm reassured by what you say of the TLB miss handlers, I was
-worried about how serious the consequence of doing it on an invalid
-entry, feared kernel panic or something).
- 
-> Parisc is a VIPT architecture, so that would ordinarily entail a lot of
-> cache flushing through process spaces for shared pages.  However, we use
-> an optimisation of making all user space shared pages congruent, so
-> flushing a single one makes the cache coherent for all the others (this
-> is also a cache usage optimisation).
-> 
-> So, what our flush_dcache_page() does is it selects the first user page
-> it comes across to flush knowing that flushing this is sufficient to
-> flush all the others.
-> 
-> Unfortunately, there's a catch: the page we're flushing must have been
-> mapped into the user process (not guaranteed even if the area is in the
-> vma list) otherwise the flush has no effect (a VIPT cache flush must
-> know the translation of the page it's flushing), so we have to check the
-> validity of the translation before doing the flush.
-> 
-> On parisc, if we try to flush a page without a translation, it's picked
-> up by our software tlb miss handlers, which actually nullify the
-> instruction (but since we have to flush a page as a set of non
-> interlocking cache line flushes [about 128 of them per page with a cache
-> width of 32]) and the tlb handler is invoked for every flush instruction
-> (because the translation continues not to exist) it makes that flush
-> operation extremely slow. (128 interruptions of the execution stream per
-> flush)
-> 
-> So, the uses of translation_exists() are threefold
-> 
-> 1) Make sure we execute flush_dcache_page() correctly (rather than
-> executing a flush that has no effect)
-> 2) optimise single page flushing: don't excite the tlb miss handlers if
-> there's no translation
-> 3) optimise pte lookup (that's why translation_exists returns the pte
-> pointer); since we already have to walk the page tables to answer the
-> question, the return value may as well be the pte entry or NULL rather
-> than true or false.
+I have no appreciation at all how that would compare.  On the one hand
+it sounds like a lot of overhead you'd understandably prefer to avoid;
+on the other hand, this hit-and-miss search of the vma_prio_tree might
+be a worse overhead better avoided.   I've no appreciation at all.
 
-Regarding 3, I changed it to boolean because the only use made of the pte
-pointer was to check pfn: which check I folded inside translation_exists,
-so the pte it's checking for pfn cannot have changed since it was checked
-for being present (repeated dereferences of pte pointer without locking
-make me nervous, and I changed some code in other architectures for that).
+But I made two suggestions above that might be less work.  One,
+requiring no work but research, that _perhaps_ in all the racy cases
+you can rely on the __flush_cache_page having been done by the racer?
+I can't tell, and it may be obvious to you that that's a non-starter.
 
-I'm right, aren't I? that the previous pte_none test was actually letting
-through swap entries and pte_file entries which might look as if they had
-the right pfn, just by coincidence of their offsets?  So flush_dcache_page
-would stop, thinking it had done a good flush, when actually it hadn't.
-
-But races remain: the pte good at the moment translation_exists checks it,
-may have been taken out by kswapd a moment later (flush_dcache_mmap_lock
-only secures the vma_prio_tree structure, not ptes within the vmas);
-or it may have been COWed in the interval; or zapped from the mm.
-
-Can you get a success code out of __flush_cache_page?  Or perhaps you
-should run translation_exists a second time after the  __flush_cache_page,
-to check nothing changed (the pte pointer would then be helpful, to save
-descending a second time)?  Or perhaps it all works out, that any such
-change which might occur, itself does the __flush_cache_page you need?
+Other, that you just check the pte again after the __flush_cache_page,
+if it's no longer right then assume the flush didn't work and continue.
+There is a small chance that the pte was right before, wrong during the
+flush, then right after (something else faulted it back in, while we
+were away... I was about to say handling an interrupt, but actually
+even interrupts are disabled here by flush_dcache_mmap_lock, since
+that's a reuse of mapping->tree_lock).  But it would improve the
+safety by several orders of magnitude.
 
 Hugh
 _______________________________________________
