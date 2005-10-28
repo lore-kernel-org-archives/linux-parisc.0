@@ -1,19 +1,16 @@
-From: Horms <horms@debian.org>
-Subject: [parisc-linux] Re: 2.6.14 has been released,
-	please all checks build and configs, we upload today :)
-Date: Fri, 28 Oct 2005 17:34:06 +0900
-Message-ID: <20051028083312.GD11045__39367.2219165184$1416623933$gmane$org@debian.org>
-References: <20051028052909.GA24788@localhost.localdomain>
-	<20051028053740.GB24788@localhost.localdomain>
-	<20051028080239.GE24155@mail.lowpingbastards.de>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Re: 2.6.14 has been released,
+Date: Fri, 28 Oct 2005 16:22:21 +0200
+Message-ID: <IP2QL9$80D9D12BAAD377014AEB6EE5322A5F7D__7550.54031401432$1416623933$gmane$org@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Sven Luther <sven.luther@wanadoo.fr>,
- debian-kernel@lists.debian.org
+  charset=iso-8859-1
+Cc: debian-kernel <debian-kernel@lists.debian.org>,
+ "sven.luther" <sven.luther@wanadoo.fr>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ matthew <matthew@wil.cx>
+To: "dave" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051028080239.GE24155@mail.lowpingbastards.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,39 +21,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Oct 28, 2005 at 10:02:39AM +0200, Frederik Schueler wrote:
-> Hello,
+> > On Fri, Oct 28, 2005 at 05:34:06PM +0900, Horms wrote:
+> > > Also, can someone look into HPPA, or point me at which patch to use=
+?
+> > >
+http://packages.vergenet.net/testing/linux-2.6-2.6.14/linux-2.6_2.6.14-1-=
+hppa.log.gz
+> > 
+> > I know I *said* not to use the -pa0 kernel, but it's booted fine for =
+me
+> > on a K460 and an N4000.   Any other reports?
 > 
-> On Fri, Oct 28, 2005 at 07:37:40AM +0200, Sven Luther wrote:
-> >  CONFIG_SCSI_SATA_INTEL_COMBINED=y has been added.
-> >  Do you want to make this change [G]lobal, per-[A]rch, or per-[F]lavour? [GAF]
+> Not -pa0 but 2.6.14-rc5-pa1 has been up for more than 7 days now on
+> my c3k.  Nothing since 2.6.8.1-pa11 has been this stable.  However,
+> gsyprf11 with 64-bit SMP hasn't been as stable (two crashes doing
+> GCC builds and checks in roughly the same period).
 > 
-> we could make this global, as other sata stuff is global too.
-> 
-> >  CONFIG_SCSI_QLA2XXX has been changed from 'n' to 'm'.
-> >  Do you want to make this change [G]lobal, per-[A]rch, or per-[F]lavour? [GAF]
-> 
-> this should be made global, or the
-> remove-references-to-removed-drivers.patch should be fixed to remove
-> this (in the debian kernel useless) Kconfig option.
+Dave I fully agree with you: I even report numerous succesfull stress tes=
+t
+(only up system) on some b180 and b2k 32bit and the same success with
+reverting latest frp tausq patch (i.e. re-enabling fpr) ;-)
 
-I think Svenl was playing with an unpatched tree, and these problems
-went away. Well I'm certain that the second one did.
+Still have to do:
+    o have to stress more d380 (32bit smp system)
+    o test gcc-4.1 build (on various system's 32/64 bit smp/up)
 
-He and I tagged 2.6.14-1 and are planning to upload to unstable
-powerpc and i386 rsn. I guess there will be a second upload
-in the not to distant future, as some FTBFS bugs are solved.
+Joel=0A=0A---------------------------------------------------------------=
+=0AA free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore=
+ info on http://www.scarlet.be/
 
-For now souces are in
-http://packages.vergenet.net/testing/linux-2.6-2.6.14/
-These may change if the i386 build fails, though that
-seems unlikely at this point.
-
-Also, can someone look into HPPA, or point me at which patch to use?
-http://packages.vergenet.net/testing/linux-2.6-2.6.14/linux-2.6_2.6.14-1-hppa.log.gz
-
--- 
-Horms
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
