@@ -1,14 +1,16 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] Measuring kernel compile times on smp system.
-Date: Thu, 27 Oct 2005 21:55:23 -0500
-Message-ID: <1130468124.9453.17.camel@mulgrave>
+Date: Thu, 27 Oct 2005 21:19:10 -0600
+Message-ID: <20051028031910.GB1612@parisc-linux.org>
 References: <1130389617.31977.16.camel@localhost.localdomain>
+	<20051027201333.GA3107@netfall.com> <43618813.9060804@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Ryan Bradetich <rbradetich@uswest.net>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1130389617.31977.16.camel@localhost.localdomain>
+In-Reply-To: <43618813.9060804@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,25 +21,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, 2005-10-26 at 23:06 -0600, Ryan Bradetich wrote:
-> K460-smp(3):
-> 	cold		44m36.961s	93m25.844s	35m37.427s
-> 	warm		44m19.736s	93m9.127s	35m49.683s
+On Fri, Oct 28, 2005 at 10:08:19AM +0800, Randolph Chung wrote:
+> > To really understand these numbers, you need three things: the amount
+> > of memory on the system, the L2 (and L3?) cache sizes,
 > 
-> K460-smp(4):
-> 	cold		41m59.795s	114m6.654s	46m20.045s
-> 	warm		41m39.792s	114m29.156s	46m6.385s
+> http://en.wikipedia.org/wiki/PA-RISC
+> 
+> "An interesting aspect of the PA-RISC line is that most of its
+> generations have no Level 2 cache. Instead large Level 1 caches are
+> used, formerly as separate chips connected by a bus, now integrated
+> on-chip. Only the PA-7100LC and PA-7300LC had L2 caches."
 
-that's pretty bad 3->4 scaling.
-
-Could you just check that you don't have irqbalanced running.  On a K or
-D system, it would cause great inefficiencies in interrupt rethrowing.
-
-Thanks,
-
-James
-
-
+Technically, PA-8800 and 8900 have an L2 cache.  However, it's completely
+transparent to software.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
