@@ -1,16 +1,19 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] Measuring kernel compile times on smp system.
-Date: Thu, 27 Oct 2005 21:19:10 -0600
-Message-ID: <20051028031910.GB1612@parisc-linux.org>
-References: <1130389617.31977.16.camel@localhost.localdomain>
-	<20051027201333.GA3107@netfall.com> <43618813.9060804@tausq.org>
+From: Horms <horms@debian.org>
+Subject: [parisc-linux] Re: 2.6.14 has been released,
+	please all checks build and configs, we upload today :)
+Date: Fri, 28 Oct 2005 17:34:06 +0900
+Message-ID: <20051028083312.GD11045__39367.2219165184$1416623933$gmane$org@debian.org>
+References: <20051028052909.GA24788@localhost.localdomain>
+	<20051028053740.GB24788@localhost.localdomain>
+	<20051028080239.GE24155@mail.lowpingbastards.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+To: Sven Luther <sven.luther@wanadoo.fr>,
+ debian-kernel@lists.debian.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <43618813.9060804@tausq.org>
+In-Reply-To: <20051028080239.GE24155@mail.lowpingbastards.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,19 +24,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Oct 28, 2005 at 10:08:19AM +0800, Randolph Chung wrote:
-> > To really understand these numbers, you need three things: the amount
-> > of memory on the system, the L2 (and L3?) cache sizes,
+On Fri, Oct 28, 2005 at 10:02:39AM +0200, Frederik Schueler wrote:
+> Hello,
 > 
-> http://en.wikipedia.org/wiki/PA-RISC
+> On Fri, Oct 28, 2005 at 07:37:40AM +0200, Sven Luther wrote:
+> >  CONFIG_SCSI_SATA_INTEL_COMBINED=y has been added.
+> >  Do you want to make this change [G]lobal, per-[A]rch, or per-[F]lavour? [GAF]
 > 
-> "An interesting aspect of the PA-RISC line is that most of its
-> generations have no Level 2 cache. Instead large Level 1 caches are
-> used, formerly as separate chips connected by a bus, now integrated
-> on-chip. Only the PA-7100LC and PA-7300LC had L2 caches."
+> we could make this global, as other sata stuff is global too.
+> 
+> >  CONFIG_SCSI_QLA2XXX has been changed from 'n' to 'm'.
+> >  Do you want to make this change [G]lobal, per-[A]rch, or per-[F]lavour? [GAF]
+> 
+> this should be made global, or the
+> remove-references-to-removed-drivers.patch should be fixed to remove
+> this (in the debian kernel useless) Kconfig option.
 
-Technically, PA-8800 and 8900 have an L2 cache.  However, it's completely
-transparent to software.
+I think Svenl was playing with an unpatched tree, and these problems
+went away. Well I'm certain that the second one did.
+
+He and I tagged 2.6.14-1 and are planning to upload to unstable
+powerpc and i386 rsn. I guess there will be a second upload
+in the not to distant future, as some FTBFS bugs are solved.
+
+For now souces are in
+http://packages.vergenet.net/testing/linux-2.6-2.6.14/
+These may change if the i386 build fails, though that
+seems unlikely at this point.
+
+Also, can someone look into HPPA, or point me at which patch to use?
+http://packages.vergenet.net/testing/linux-2.6-2.6.14/linux-2.6_2.6.14-1-hppa.log.gz
+
+-- 
+Horms
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
