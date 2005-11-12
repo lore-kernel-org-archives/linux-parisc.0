@@ -1,14 +1,17 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] 2.6.15-rc1 freeing a reserved page from uart_shutdown
-Date: Fri, 11 Nov 2005 23:39:14 -0700
-Message-ID: <20051112063914.GH1658__9232.93254240907$1416624566$gmane$org@parisc-linux.org>
+Subject: [parisc-linux] Re: [PATCH] parisc: remove copat_ioctl entires for pp
+Date: Sat, 12 Nov 2005 06:33:08 -0700
+Message-ID: <20051112133308.GI1658@parisc-linux.org>
+References: <20051112095213.GA15918@lst.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org,
+Cc: akpm@osdl.org,
+ netdev@vger.kernel.org,
  parisc-linux@parisc-linux.org
+To: Christoph Hellwig <hch@lst.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20051112095213.GA15918@lst.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,34 +22,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Sat, Nov 12, 2005 at 10:52:13AM +0100, Christoph Hellwig wrote:
+> ppp ioctls handlers in parisc are wrong:
+> 
+>  - they would need to do a copat_ptr on  ifr->ifr_ifru.ifru_data
+>  - SIOCGPPP* ioctls are defines as SIOCDEVPRIVATE + n, so they'd
+>    kick in for all private ioctls which is defintely wrong.
+> 
+> to implement proper ppp compat_ioctl handlig we'd need a compat_ioctl
+> method in struct net_device, which we don't have yet.
 
-I'm having some trouble with 2.6.15-rc1:
+While I agree that this is theoretically wrong, the problem is that if
+we remove them, people using ppp on 64-bit PA machines will no longer be
+able to do so.  And yes, there are some, that's why these got added in
+the first place.
 
-VFS: Mounted root (ext2 filesystem) readonly.
-Freeing unused kernel memory: 640k freed
-Bad page state at free_hot_cold_page (in process 'init', page 108a24a0)
-flags:0x00000400 mapping:00000000 mapcount:0 count:0
-Backtrace:
-Backtrace:
- [<101481cc>] bad_page+0x70/0xc4
- [<10148920>] free_hot_cold_page+0x74/0x124
- [<10275e68>] uart_shutdown+0xf0/0xf8
- [<102775f8>] uart_close+0xc8/0x214
- [<1025c710>] release_dev+0x72c/0x734
- [<1025cddc>] tty_release+0x10/0x20
- [<101680f0>] __fput+0x15c/0x170
- [<10166520>] filp_close+0x58/0x94
- [<1010d114>] syscall_exit+0x0/0x14
-
-This is on a parisc system, though a very similar tree boots fine on a
-different machine.  The machine which produces this message is a K460
-which uses the Mux serial driver.  As far as I can tell, the only call
-to free_hot_cold_page() in uart_shutdown() is to free info->xmit.buf
-which seems to be always filled by a call to get_zeroed_page().
-
-This problem doesn't show with 2.6.14.  I can give access to this
-machine to anyone who wants to do some debugging.  It has remote power
-capabilities ;-)
+Perhaps I'll look into the compat_ioctl route later.  In any case, I
+would prefer this patch not be added for the moment.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
