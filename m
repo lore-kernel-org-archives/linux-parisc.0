@@ -1,14 +1,16 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: [parisc-linux] Console/X problems on HCRX-24
-Date: Tue, 15 Nov 2005 19:59:18 +0000
-Message-ID: <20051115195918.GA5640@ntlworld.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] experimental gcc-4.1 packages
+Date: Wed, 16 Nov 2005 09:31:40 -0500 (EST)
+Message-ID: <200511161431.jAGEVfxF010874@hiauly1.hia.nrc.ca>
+References: <IQ1IVB$BE453CA6C7839293715E8E1912237425@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org,
- Johannes Raspe <j.raspe@t-online.de>,
- Andy Walker <ajwalker@broadpark.no>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <IQ1IVB$BE453CA6C7839293715E8E1912237425@scarlet.be> from "Joel
+	Soete" at Nov 16, 2005 10:11:35 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,36 +21,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
+> Iirc jda is already aware of some dwarf pb (is it amoung?)
 
-Firstly, I've just found that my HCRX-24 works with an LCD monitor.
-This was news to me, as IIRC it had even failed to work with monitors
-that claimed to support sync-on-green.  I hope that might help someone.
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=24348.
 
-Secondly, I can confirm several problems reported by Johannes Raspe and
-Andy Walker late last year:
+I had asked Richard to install the generic part of the patch
+referred to in the PR.  However, this hasn't happened yet.  I've
+completed a patch to add dwarf2 exception support to the hpux
+port.  I plan to submit it this evening.  Hopefully, this will
+get things moving.
 
-1) The Tux colours are wrong.  I'll try to expand on that later.
+The patch includes a small change to the linux EH support.
+Dynamic relocations are eliminated from the .eh_frame data.
 
-2) The console colours aren't right... actually, the 'normal' colours
-   work correctly, but the 'bright' colours are all white.  (Even bright
-   black).  Switching to/from X seems to fix this.
-
-3) X doesn't work properly in 32-bit mode.  It appears as though the X
-   server is using 24-bit pixels, but the HCRX-24 card is expecting
-   8-bits of padding per pixel...  So something like this:
-
-   HCRX-24: R G B U|R G B U|R G B U|...
-   X:       R G B|R G B|R G B|R G B|...
-
-   That's consistent with the colour 'artefacts' that I'm seeing.  BTW,
-   the right 1/4 of the screen is just whatever was left in the console
-   before switching to X.  I'll have a look at this one, but I expect
-   it's a bug in our STI code. :-(
-
-Cheers,
+Dave
 -- 
-Stuart Brady
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
