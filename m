@@ -1,16 +1,14 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: [parisc-linux] Console/X problems on HCRX-24
-Date: Tue, 15 Nov 2005 23:00:46 +0000
-Message-ID: <20051115230046.GA5731@ntlworld.com>
-References: <20051115195918.GA5640@ntlworld.com>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [git pull] parisc-linux for 2.6.15
+Date: Fri, 18 Nov 2005 17:16:01 -0500
+Message-ID: <20051118221601.GD28276@tachyon.int.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org,
- Johannes Raspe <j.raspe@t-online.de>,
- Andy Walker <ajwalker@broadpark.no>
+Cc: akpm@osdl.org,
+ parisc-linux@lists.parisc-linux.org
+To: torvalds@osdl.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051115195918.GA5640@ntlworld.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,31 +19,115 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Nov 15, 2005 at 07:59:18PM +0000, Stuart Brady wrote:
-> 3) X doesn't work properly in 32-bit mode.  It appears as though the X
->    server is using 24-bit pixels, but the HCRX-24 card is expecting
->    8-bits of padding per pixel...  So something like this:
-> 
->    HCRX-24: R G B U|R G B U|R G B U|...
->    X:       R G B|R G B|R G B|R G B|...
-> 
->    That's consistent with the colour 'artefacts' that I'm seeing.  BTW,
->    the right 1/4 of the screen is just whatever was left in the console
->    before switching to X.  I'll have a look at this one, but I expect
->    it's a bug in our STI code. :-(
+Hi Linus,
 
-Thanks to Max Grabert for the suggestion: adding the following line to
-the "Screen" section in xorg.conf works for me:
+This pull contains the last remnants of parisc divergence in parisc
+specific files up to this point. At least, until someone commits to cvs.
+Remaining changes in CVS are compat_signal and some ALSA stuff that will
+be forwarded along to Jaroslav.
 
-	DefaultFbBpp	32
+Before you consider whether to pull, I'd just like to double check
+whether I made any mistakes in the process:
 
-I would have expected the X server to be able to find this out for
-itself, so I'm not sure if there's still a bug here.  I can't see
-anything obviously wrong with stifb, fwiw.
+	! merged a bunch of patches
+
+	$ git-send-pack $remote parisc	to master.kernel.org
+
+	! merged some more, made a mistake, nuked tree
+
+	$ git pull my tree from master.kernel.org and fixed up remotes to
+	  point master:origin to your tree, and parisc:parisc to mine
+
+	! merged some more patches, noticed I had accumulated a patch in the
+	  branch from "origin" somehow since I branched
+
+	$ git checkout -f master
+	$ git pull origin
+	$ git checkout -f parisc
+	$ git pull . master		to merge up to your tree
+	$ git-send-pack $remote --all	to master.kernel.org to update all
+					branches(?)
+
+However, in doing this, I accumulated one of those annoying
+"Merge branch 'master'" messages. I looked at Jeff's pull requests, and
+he didn't seem to have any in there. Is this process kosher? Should I do
+more or less the same thing next time?
+
+--
+
+Please pull the `parisc' branch from,
+
+master.kernel.org:/pub/scm/linux/kernel/git/kyle/parisc-2.6.git parisc
+
+Which contains the following changesets,
+
+ CREDITS                        |   12 
+ arch/parisc/kernel/drivers.c   |    8 
+ arch/parisc/kernel/entry.S     |    1 
+ arch/parisc/kernel/inventory.c |    2 
+ arch/parisc/kernel/ioctl32.c   |  546 -----------------------------------------
+ arch/parisc/kernel/irq.c       |  110 ++++++--
+ arch/parisc/kernel/perf.c      |   33 +-
+ arch/parisc/kernel/ptrace.c    |    5 
+ arch/parisc/kernel/signal.c    |    1 
+ arch/parisc/kernel/smp.c       |   24 +
+ arch/parisc/kernel/syscall.S   |    3 
+ drivers/ide/Kconfig            |    2 
+ drivers/isdn/hisax/Kconfig     |   12 
+ drivers/isdn/pcbit/Kconfig     |    2 
+ drivers/parisc/iosapic.c       |   26 +
+ drivers/parisc/superio.c       |   35 +-
+ drivers/serial/Kconfig         |    2 
+ drivers/serial/mux.c           |   19 -
+ include/asm-parisc/irq.h       |    5 
+ include/asm-parisc/smp.h       |    7 
+ include/asm-parisc/spinlock.h  |   19 -
+ include/asm-parisc/tlbflush.h  |   16 -
+ include/linux/mm.h             |    2 
+ mm/mmap.c                      |    2 
+ 24 files changed, 245 insertions(+), 649 deletions(-)
+
+Carlos O'Donell:
+      [PARISC] Document some register usages in assembly files
+
+Christoph Hellwig:
+      [PARISC] move PA perf driver over to ->compat_ioctl
+      [PARISC] remove drm compat ioctls handlers
+
+Grant Grundler:
+      [PARISC] Disable nesting of interrupts
+      [PARISC] irq_affinityp[] only available for SMP builds
+      [PARISC] Remove unused variable in signal.c
+
+James Bottomley:
+      [PARISC] Make sure timer and IPI execute with interrupts disabled
+      [PARISC] Fix our interrupts not to use smp_call_function
+      [PARISC] Add IRQ affinities
+      [PARISC] Fix our spinlock implementation
+
+Kyle McMartin:
+      [PARISC] Fix uniprocessor build by dummying smp_send_all_nop()
+      [PARISC] Make superio.c initialize before any driver needs it
+      [PARISC] Update CREDITS entries
+      Merge branch 'master'
+
+Matthew Wilcox:
+      [PARISC] Return PDC_OK when alloc_pa_dev fails to enumerate all devices
+      [PARISC] Improve the error message when we get a clashing mod path
+      [PARISC] Fix some compile problems in ptrace.c
+      [PARISC] Always spinlock tlb flush operations to ensure preempt safety
+      [PARISC] Fix compile warning caused by conflicting types of expand_upwards()
+      [PARISC] Make Serial MUX depend on a specific bus type.
+      [PARISC] Mention PA-RISC in NS87415 help
+      [PARISC] Mark hisax and pcbit ISDN drivers as not for parisc
+
+Ryan Bradetich:
+      [PARISC] Make redirecting irq messages less noisy
+      [PARISC] Compile fixups for serial/mux.c
+      [PARISC] Define port->timeout to fix a long msleep in mux.c
 
 Cheers,
--- 
-Stuart Brady
+	Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
