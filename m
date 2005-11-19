@@ -1,18 +1,12 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] Re: [git pull] parisc-linux for 2.6.15
-Date: Sat, 19 Nov 2005 05:16:06 +0000
-Message-ID: <e6eae0290511182116i43490909o@mail.gmail.com>
-References: <20051118221601.GD28276@tachyon.int.mcmartin.ca>
-	<Pine.LNX.4.64.0511181426270.13959@g5.osdl.org>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] Merge progress update
+Date: Sat, 19 Nov 2005 11:42:59 -0500
+Message-ID: <20051119164259.GO28276@tachyon.int.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: akpm@osdl.org,
- parisc-linux@lists.parisc-linux.org,
- Kyle McMartin <kyle@parisc-linux.org>
-To: Linus Torvalds <torvalds@osdl.org>
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.64.0511181426270.13959@g5.osdl.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,47 +17,108 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 18/11/05, Linus Torvalds <torvalds@osdl.org> wrote:
->
-> On Fri, 18 Nov 2005, Kyle McMartin wrote:
-> >
-> > This pull contains the last remnants of parisc divergence in parisc
-> > specific files up to this point. At least, until someone commits to cvs=
-.
-> > Remaining changes in CVS are compat_signal and some ALSA stuff that wil=
-l
-> > be forwarded along to Jaroslav.
->
-> Argh. I was tempted to not merge at this point, but since most of it is i=
-n
-> the parisc subdirectories, I let it slide.
+So, the following went upstream to Linus yesterday:
 
-I guess the less diff between the parisc tree and mainline, the more
-happy we  (users & developers) are ;)
+	68K     linus_to_parisc_2.diff
 
-> > Before you consider whether to pull, I'd just like to double check
-> > whether I made any mistakes in the process:
->
-> Ok, it has that unnecessary extra merge, but apart from that there doesn'=
-t
-> seem to be anything actually _wrong_ with it.
->
-> I don't mind some criss-cross merges, as long as they aren't common enoug=
-h
-> to make the history completely unreadable, and that was certainly not the
-> case here.
->
-> I just ask for cleanliness - not totally sterile trees ;)
+Shortlog and diffstat are contained below.
 
-I'm personally more the kinda guy who'll ask for a black&decker and some
-WD40 and if something doesn't fit in properly.
-I guess not everything IRL applies to CS ;)
+The ide_toggle_bounce fix went upstream with Bartlomiej yesterday,
+so that's another chunk out of our diff. I'll be maintaining a 
+ad1889 git tree to upstream via the ALSA folks some of our other
+changes.
 
-Does this mean Linux/PA development is moving towards git in the near futur=
-e?
+Approximate remaining bits,
 
-Slan,
-   Max
+	100K    parisc_remainingish.diff
+
+Which consists primarily of:
+
+	-rw-r--r--  1 kyle kyle 22881 Nov 19 11:37 scsi
+		(sym2 + 53c700 changes) [willy for sym2]
+	
+	-rw-r--r--  1 kyle kyle 29568 Nov 19 11:38 sound
+		(oss harmony & ad1889 and alsa ad1889 changes)
+
+	-rw-r--r--  1 kyle kyle 33188 Nov 19 11:40 compat
+		(compat_signal)
+
+	-rw-r--r--  1 kyle kyle 3676 Nov 19 11:41 tulip
+		(tulip modifications)
+
+The rest of the diff is primarily small little hacks and a few things
+that need to be resolved with subsystem maintainers. For example,
+James' fixes for pcmcia, and Grant's fixes for usb hid.
+
+Cheers,
+	Kyle
+
+--
+
+Carlos O'Donell:
+      [PARISC] Document some register usages in assembly files
+
+Christoph Hellwig:
+      [PARISC] move PA perf driver over to ->compat_ioctl
+      [PARISC] remove drm compat ioctls handlers
+
+Grant Grundler:
+      [PARISC] Disable nesting of interrupts
+      [PARISC] irq_affinityp[] only available for SMP builds
+      [PARISC] Remove unused variable in signal.c
+
+James Bottomley:
+      [PARISC] Make sure timer and IPI execute with interrupts disabled
+      [PARISC] Fix our interrupts not to use smp_call_function
+      [PARISC] Add IRQ affinities
+      [PARISC] Fix our spinlock implementation
+
+Kyle McMartin:
+      [PARISC] Fix uniprocessor build by dummying smp_send_all_nop()
+      [PARISC] Make superio.c initialize before any driver needs it
+      [PARISC] Update CREDITS entries
+      Merge branch 'master'
+
+Matthew Wilcox:
+      [PARISC] Return PDC_OK when alloc_pa_dev fails to enumerate all devices
+      [PARISC] Improve the error message when we get a clashing mod path
+      [PARISC] Fix some compile problems in ptrace.c
+      [PARISC] Always spinlock tlb flush operations to ensure preempt safety
+      [PARISC] Fix compile warning caused by conflicting types of expand_upwards()
+      [PARISC] Make Serial MUX depend on a specific bus type.
+      [PARISC] Mention PA-RISC in NS87415 help
+      [PARISC] Mark hisax and pcbit ISDN drivers as not for parisc
+
+Ryan Bradetich:
+      [PARISC] Make redirecting irq messages less noisy
+      [PARISC] Compile fixups for serial/mux.c
+      [PARISC] Define port->timeout to fix a long msleep in mux.c
+
+ CREDITS                        |   12 
+ arch/parisc/kernel/drivers.c   |    8 
+ arch/parisc/kernel/entry.S     |    1 
+ arch/parisc/kernel/inventory.c |    2 
+ arch/parisc/kernel/ioctl32.c   |  546 -----------------------------------------
+ arch/parisc/kernel/irq.c       |  110 ++++++--
+ arch/parisc/kernel/perf.c      |   33 +-
+ arch/parisc/kernel/ptrace.c    |    5 
+ arch/parisc/kernel/signal.c    |    1 
+ arch/parisc/kernel/smp.c       |   24 +
+ arch/parisc/kernel/syscall.S   |    3 
+ drivers/ide/Kconfig            |    2 
+ drivers/isdn/hisax/Kconfig     |   12 
+ drivers/isdn/pcbit/Kconfig     |    2 
+ drivers/parisc/iosapic.c       |   26 +
+ drivers/parisc/superio.c       |   35 +-
+ drivers/serial/Kconfig         |    2 
+ drivers/serial/mux.c           |   19 -
+ include/asm-parisc/irq.h       |    5 
+ include/asm-parisc/smp.h       |    7 
+ include/asm-parisc/spinlock.h  |   19 -
+ include/asm-parisc/tlbflush.h  |   16 -
+ include/linux/mm.h             |    2 
+ mm/mmap.c                      |    2 
+ 24 files changed, 245 insertions(+), 649 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
