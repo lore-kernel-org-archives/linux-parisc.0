@@ -1,17 +1,12 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Re: [PATCH] parisc: remove copat_ioctl entires for pp
-Date: Sat, 12 Nov 2005 06:33:08 -0700
-Message-ID: <20051112133308.GI1658@parisc-linux.org>
-References: <20051112095213.GA15918@lst.de>
+Subject: [parisc-linux] Migrating from CVS to Git
+Date: Mon, 21 Nov 2005 09:54:11 -0700
+Message-ID: <20051121165411.GF1598@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: akpm@osdl.org,
- netdev@vger.kernel.org,
- parisc-linux@parisc-linux.org
-To: Christoph Hellwig <hch@lst.de>
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051112095213.GA15918@lst.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,23 +17,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Nov 12, 2005 at 10:52:13AM +0100, Christoph Hellwig wrote:
-> ppp ioctls handlers in parisc are wrong:
-> 
->  - they would need to do a copat_ptr on  ifr->ifr_ifru.ifru_data
->  - SIOCGPPP* ioctls are defines as SIOCDEVPRIVATE + n, so they'd
->    kick in for all private ioctls which is defintely wrong.
-> 
-> to implement proper ppp compat_ioctl handlig we'd need a compat_ioctl
-> method in struct net_device, which we don't have yet.
+I'm investigating what needs to be done to switch us from CVS to Git.
+So far I've done:
 
-While I agree that this is theoretically wrong, the problem is that if
-we remove them, people using ppp on 64-bit PA machines will no longer be
-able to do so.  And yes, there are some, that's why these got added in
-the first place.
+ - Set up a shared repository (current people with commit access:
+   bame,carlos,deller,grundler,jejb,kyle,rbrad,tausq,varenet,willy
+   others will be added on an ad-hoc basis)
+ - Changes made to that repository get sent to the p-l-cvs mailing list
+ - The repo is visible via gitweb: http://git.parisc-linux.org/
+ - Changes are linked from the mailing list
 
-Perhaps I'll look into the compat_ioctl route later.  In any case, I
-would prefer this patch not be added for the moment.
+What needs to be converted?
+
+ - Tagging.  It's now essentially free.  A tag in git terms is just a
+   ref.  You can add them at any point.  So we need to figure out what
+   we want to bless as good.
+ - Autobuilding.  This can change slightly as a result of how different
+   tagging is.  Do we want to just build every time there's a commit?
+   It'd be a bit wasteful, but CPU and disk is cheap.
+ - Documentation.  There's the git tutorials to link to, but something
+   specific to "Here's how you work on the p-l tree" would make the
+   learning curve less steep.
+ - Merging to Linus.  This should hopefully be an easier process,
+   being easier to cherry-pick changesets out of our shared repo.
+ - Merging from Linus.  We can now pull whenever we like, but how often
+   should we pull, and what bits of Linus' dev tree do we want to
+   inflict on our users?  ;-)
+
+I'm sure there are other things that need to be converted and discussed.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
