@@ -1,16 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Migrating from CVS to Git
-Date: Mon, 21 Nov 2005 22:27:26 -0500
-Message-ID: <20051122032726.GA9450@tachyon.int.mcmartin.ca>
-References: <20051121165411.GF1598@parisc-linux.org>
-	<20051121222522.GB25773@colo.lackof.org>
-	<20051122031619.GJ1598@parisc-linux.org>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] d380: latest eth0: command unit timed out, status
+	resetting (seems to made panicing)
+Date: Thu, 24 Nov 2005 07:51:59 +0100
+Message-ID: <IQG5QN$2C2E1AB431EA3CD2CAD4F66075F38C18@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=iso-8859-1
+Cc: tsg45800 <tsg45800@scarlet.be>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ matthew <matthew@wil.cx>
+To: "soete.joel" <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051122031619.GJ1598@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,27 +21,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Nov 21, 2005 at 08:16:19PM -0700, Matthew Wilcox wrote:
-> > >  - Autobuilding.  This can change slightly as a result of how different
-> > >    tagging is.  Do we want to just build every time there's a commit?
+> [...]
+> > > 
+> > > Difficult to analyse as it seems erratic.
+> > Not any more true ;<(
 > > 
-> > Something that anyone who has write access can trigger.
-> > Just need to make sure we "commit" sets properly.
-> > Will the Makefile commit will no longer trigger the auto-builder?
+> > Because of change of fw rules, I don't have any more cvs access ;<(, =
+also I
+> > grab the tarball on p-l.org. When I 'scp linux-xxx D380NAME', after s=
+ome 4Mb
+> > the same behaviour: 
+> >     1/ "eth0: command unit timed out, status resetting." appears at c=
+ons
+> >     2/ a short time after the system panics.
+> > 
+> weird, this 'scp linux-xxx D380NAME' pb doesn't _seem_ to re-occure wit=
+h same
+> system runing this time 2.6.15-rc2-pa1 (always 32bit up)??
 > 
-> I was hoping we'd no longer have to do Makefile commits.  Maybe we still
-> want to, though?
->
+Pb not solved: occures today again :<( (couldn't just reproduced with sim=
+ple test)
 
-I dunno, maybe it would be easier to just manually thunk the autobuilder
-with a commit id whenever we feel it's justified, and let the autobuilder
-worry about the incrementing -pa numbers? There's an embedded CONFIG 
-option that will embed the commit sha1sum in the kernel version, turning
-this on in defconfigs would be good for everyone who pulls our tree
-from git. 
+Joel=0A=0A-------------------------------------------------------=0ANOTE!=
+ My email address is changing to ... @scarlet.be=0APlease make the necess=
+ary changes in your address book. =0A=0A
 
-Btw, if no one has used it yet, the git bisect stuff is pretty darn
-cool.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
