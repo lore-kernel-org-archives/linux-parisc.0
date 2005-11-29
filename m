@@ -1,11 +1,12 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: [parisc-linux] Palo patch : remove useless TERM and HOME variables
-Date: Sat, 26 Nov 2005 16:37:48 +0100
-Message-ID: <20051126163748.3c0fcb37.gmsoft@tuxicoman.be>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] 2.6.15-rc3 merged successfully with rc2-pa2 but
+	failed to build :<(
+Date: Tue, 29 Nov 2005 16:21:46 +0100
+Message-ID: <IQQ2OA$24369881EF560DF3182403C54DA7DA20@scarlet.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="Multipart=_Sat__26_Nov_2005_16_37_48_+0100_90d=VQ9K9fNwb6aQ"
-To: parisc-linux@parisc-linux.org
+Content-Type: text/plain;
+  charset=iso-8859-1
+To: "parisc-linux" <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,137 +18,110 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This is a multi-part message in MIME format.
+Hi *,
 
---Multipart=_Sat__26_Nov_2005_16_37_48_+0100_90d=VQ9K9fNwb6aQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+I just get a try to this merge (near straightforward :<)) but failled to =
+build
+in 2 places with the same error:
+  gcc -Wp,-MD,mm/.memory.o.d  -nostdinc -isystem
+/usr/lib/gcc/hppa-linux-gnu/4.0.3/include -D__KERNEL__ -Iinclude -Iinclud=
+e2
+-I/CAD/
+linux-2.6.15-rc2-pa2-20051127/include -include include/linux/autoconf.h
+-I/CAD/linux-2.6.15-rc2-pa2-20051127/mm -Imm -Wall -Wundef -
+Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
+-ffreestanding -O2 -fomit-frame-pointer -pipe -mno-space-regs -mf
+ast-indirect-calls -mdisable-fpregs -ffunction-sections -march=3D2.0
+-mschedule=3D8000 -Wdeclaration-after-statement -Wno-pointer-sign
+-DKBUILD_BASENAME=3Dmemory -DKBUILD_MODNAME=3Dmemory -c -o mm/memory.o
+/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c
+/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c: In function do_wp_page:
+/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c:1349: error: pfn undeclare=
+d
+(first use in this function)
+/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c:1349: error: (Each undecla=
+red
+identifier is reported only once
+/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c:1349: error: for each func=
+tion
+it appears in.)
+make[2]: *** [mm/memory.o] Error 1
 
+and:
+  gcc -Wp,-MD,mm/.rmap.o.d  -nostdinc -isystem
+/usr/lib/gcc/hppa-linux-gnu/4.0.3/include -D__KERNEL__ -Iinclude -Iinclud=
+e2
+-I/CAD/li
+nux-2.6.15-rc3-pa2mm-20051127/include -include include/linux/autoconf.h
+-I/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm -Imm -Wall -Wundef
+ -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
+-ffreestanding -O2 -fomit-frame-pointer -pipe -mno-space-regs -
+mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=3D2.0
+-mschedule=3D8000 -Wdeclaration-after-statement -Wno-pointer-sign
+  -DKBUILD_BASENAME=3Drmap -DKBUILD_MODNAME=3Drmap -c -o mm/rmap.o
+/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c
+/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c: In function try_to_unmap_=
+cluster:
+/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c:644: error: pfn undeclared=
 
-Hi all,
+(first use in this function)
+/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c:644: error: (Each undeclar=
+ed
+identifier is reported only once
+/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c:644: error: for each funct=
+ion
+it appears in.)
+make[2]: *** [mm/rmap.o] Error 1
 
-The trivial attached patch remove the need of HOME and TERM into the boot command line.
-This is usfull for gentoo livecd to which we sometimes have to pass long boot command lines.
+This ack seems to make the drill:
+--- mm/memory.c.Orig    2005-11-29 14:20:21.000000000 +0100
++++ mm/memory.c 2005-11-29 14:27:49.000000000 +0100
+@@ -1346,7 +1346,7 @@
+                int reuse =3D can_share_swap_page(old_page);
+                unlock_page(old_page);
+                if (reuse) {
+-                       flush_cache_page(vma, address, pfn);
++                       flush_cache_page(vma, address, pte_pfn(orig_pte))=
+;
+                        entry =3D pte_mkyoung(orig_pte);
+                        entry =3D maybe_mkwrite(pte_mkdirty(entry), vma);=
 
-Cheers
-
-
-
--- 
-Guy Martin
-Gentoo Linux - HPPA port Lead / IPv6 team
-
---Multipart=_Sat__26_Nov_2005_16_37_48_+0100_90d=VQ9K9fNwb6aQ
-Content-Type: text/x-patch;
- name="palo-remove-HOME-TERM.patch"
-Content-Disposition: attachment;
- filename="palo-remove-HOME-TERM.patch"
-Content-Transfer-Encoding: 7bit
-
-diff -uNr palo.orig/Makefile palo/Makefile
---- palo.orig/Makefile	2004-05-17 13:39:00.431714000 +0200
-+++ palo/Makefile	2004-05-17 13:39:45.221714000 +0200
-@@ -56,7 +56,7 @@
-     ROOT=root=/dev/nfs nfsroot=${NFSROOT} ip=bootp
- endif
+                        ptep_set_access_flags(vma, address, page_table, e=
+ntry, 1);
+@@ -1390,7 +1390,7 @@
+                        }
+                } else
+                        inc_mm_counter(mm, anon_rss);
+-               flush_cache_page(vma, address, pfn);
++               flush_cache_page(vma, address, pte_pfn(orig_pte));
+                entry =3D mk_pte(new_page, vma->vm_page_prot);
+                entry =3D maybe_mkwrite(pte_mkdirty(entry), vma);
+                ptep_establish(vma, address, page_table, entry);
+=3D=3D=3D=3D<>=3D=3D=3D=3D
+--- mm/rmap.c.Orig      2005-11-29 14:32:43.000000000 +0100
++++ mm/rmap.c   2005-11-29 14:36:21.000000000 +0100
+@@ -641,7 +641,7 @@
+                        continue;
  
--CMDLINE = 0/vmlinux HOME=/ TERM=linux $(ROOT) $(EISAIRQ) $(CONSOLE)
-+CMDLINE = 0/vmlinux $(ROOT) $(EISAIRQ) $(CONSOLE)
+                /* Nuke the page table entry. */
+-               flush_cache_page(vma, address, pfn);
++               flush_cache_page(vma, address, pte_pfn(*pte));
+                pteval =3D ptep_clear_flush(vma, address, pte);
  
- all: makepalo README palo.conf
- 	
-diff -uNr palo.orig/README palo/README
---- palo.orig/README	2004-05-17 13:39:00.431714000 +0200
-+++ palo/README	2004-05-17 13:40:09.341714000 +0200
-@@ -42,13 +42,13 @@
-        files to it, unmount.
-      * Use palo to make the disk bootable:
-         $ palo \
--             -c "5/vmlinux HOME=/ TERM=linux console=tty" \
-+             -c "5/vmlinux console=tty" \
-              -k path/to/vmlinux \
-              -I /dev/your-disk
- 
-       On a self-hosted system, you can accomplish the same thing by placing
-       the following into /etc/palo.conf:
--   --commandline=5/vmlinux HOME=/ TERM=linux console=tty
-+   --commandline=5/vmlinux console=tty
-    --recoverykernel=/boot/vmlinux
-    --init-partitioned=/dev/your-disk
- 
-diff -uNr palo.orig/README.html palo/README.html
---- palo.orig/README.html	2004-05-17 13:39:00.431714000 +0200
-+++ palo/README.html	2004-05-17 13:40:27.801714000 +0200
-@@ -52,13 +52,13 @@
-     <p><li>Use <i>palo</i> to make the disk bootable:
-     <pre>
- 	$ palo \
--	     -c "5/vmlinux HOME=/ TERM=linux console=tty" \
-+	     -c "5/vmlinux console=tty" \
- 	     -k path/to/vmlinux \
- 	     -I /dev/your-disk</pre>
- <center><table border=1 bgcolor=yellow width=80%><tr><td>
- On a self-hosted system, you can accomplish the same thing by placing
- the following into <tt>/etc/palo.conf</tt>:
--<pre>--commandline=5/vmlinux HOME=/ TERM=linux console=tty
-+<pre>--commandline=5/vmlinux console=tty
- --recoverykernel=/boot/vmlinux
- --init-partitioned=/dev/your-disk</pre>
- and running <i>palo</i>.
-diff -uNr palo.orig/ipl/ipl.c palo/ipl/ipl.c
---- palo.orig/ipl/ipl.c	2004-05-17 13:39:00.491714000 +0200
-+++ palo/ipl/ipl.c	2004-05-17 13:39:19.681714000 +0200
-@@ -481,9 +481,6 @@
- 	        chk_strcat(commandline, "ttyB0", CMDLINELEN, &ok);
-             else
- 	        chk_strcat(commandline, "ttyS0", CMDLINELEN, &ok);
--
--	    if (strstr(commandline, " TERM=") == 0)
--	        chk_strcat(commandline, " TERM=vt102", CMDLINELEN, &ok);
- 	}
- 	else
- 	{
-@@ -519,8 +516,6 @@
- 	    }
- 	    if (strstr(commandline, " sti_font=") == 0)
- 	        chk_strcat(commandline, " sti_font=VGA8x16", CMDLINELEN, &ok);
--	    if (strstr(commandline, " TERM=") == 0)
--	        chk_strcat(commandline, " TERM=linux", CMDLINELEN, &ok);
- 	}
-     }
- 
-diff -uNr palo.orig/palo.conf palo/palo.conf
---- palo.orig/palo.conf	2004-05-17 13:39:00.431714000 +0200
-+++ palo/palo.conf	2004-05-17 13:41:01.541714000 +0200
-@@ -8,7 +8,7 @@
- # recovery kernel, and the default dynamically-booted kernel.
- # --recoverykernel=/boot/vmlinux
- # --init-partitioned=/dev/sda
--# --commandline=3/boot/vmlinux HOME=/ TERM=linux root=/dev/sda3
-+# --commandline=3/boot/vmlinux root=/dev/sda3
- 
- #
- #Usage: palo [options]
-@@ -18,8 +18,8 @@
- #		Maximum 127 characters.
- #    -k, --recoverykernel=path to recovery kernel (perhaps /boot/vmlinux)
- #    -b, --bootloader=path to boot loader
--		Defaults to /usr/share/palo/iplboot -- you usually don't
--		need to use -b or --bootloader
-+#		Defaults to /usr/share/palo/iplboot -- you usually don't
-+#		need to use -b or --bootloader
- #    -r, --ramdisk=path to initial ramdisk image
- #    -I, --init-partitioned=partitioned device or file
- #    		Initialize a pre-partitioned device, usually a hard disk.
+                /* If nonlinear, store the file page offset in the pte. *=
+/
+=3D=3D=3D=3D<>=3D=3D=3D=3D
 
---Multipart=_Sat__26_Nov_2005_16_37_48_+0100_90d=VQ9K9fNwb6aQ
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I doubt it could be the fix as it seems that it was already build without=
+ that
+stuff (<http://lkml.org/lkml/2005/11/29/27>)?
+
+Thanks for your attention,
+    Joel=0A=0A-------------------------------------------------------=0AN=
+OTE! My email address is changing to ... @scarlet.be=0APlease make the ne=
+cessary changes in your address book. =0A=0A
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---Multipart=_Sat__26_Nov_2005_16_37_48_+0100_90d=VQ9K9fNwb6aQ--
