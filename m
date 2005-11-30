@@ -1,127 +1,83 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] 2.6.15-rc3 merged successfully with rc2-pa2 but
-	failed to build :<(
-Date: Tue, 29 Nov 2005 16:21:46 +0100
-Message-ID: <IQQ2OA$24369881EF560DF3182403C54DA7DA20@scarlet.be>
+From: Fabio Bizzi <bizzi@albacom.net>
+Subject: Strange compiler behavior
+Date: Wed, 30 Nov 2005 09:38:08 +0100
+Message-ID: <438D64F0.7080307__31841.736395336$1416624568$gmane$org@albacom.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "parisc-linux" <parisc-linux@parisc-linux.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: debian-hppa@lists.debian.org
+To: parisc-linux <parisc-linux@parisc-linux.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <iC-ii.A.MdE.QUWjDB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-Hi *,
+Hi PA-Gurus! :)
 
-I just get a try to this merge (near straightforward :<)) but failled to =
-build
-in 2 places with the same error:
-  gcc -Wp,-MD,mm/.memory.o.d  -nostdinc -isystem
-/usr/lib/gcc/hppa-linux-gnu/4.0.3/include -D__KERNEL__ -Iinclude -Iinclud=
-e2
--I/CAD/
-linux-2.6.15-rc2-pa2-20051127/include -include include/linux/autoconf.h
--I/CAD/linux-2.6.15-rc2-pa2-20051127/mm -Imm -Wall -Wundef -
-Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
--ffreestanding -O2 -fomit-frame-pointer -pipe -mno-space-regs -mf
-ast-indirect-calls -mdisable-fpregs -ffunction-sections -march=3D2.0
--mschedule=3D8000 -Wdeclaration-after-statement -Wno-pointer-sign
--DKBUILD_BASENAME=3Dmemory -DKBUILD_MODNAME=3Dmemory -c -o mm/memory.o
-/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c
-/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c: In function do_wp_page:
-/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c:1349: error: pfn undeclare=
-d
-(first use in this function)
-/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c:1349: error: (Each undecla=
-red
-identifier is reported only once
-/CAD/linux-2.6.15-rc2-pa2-20051127/mm/memory.c:1349: error: for each func=
-tion
-it appears in.)
-make[2]: *** [mm/memory.o] Error 1
+I've tried to compile a LiveMedia test program on my B180L with sarge 
+and etch 2.6.12-1-parisc kernel installed.
 
-and:
-  gcc -Wp,-MD,mm/.rmap.o.d  -nostdinc -isystem
-/usr/lib/gcc/hppa-linux-gnu/4.0.3/include -D__KERNEL__ -Iinclude -Iinclud=
-e2
--I/CAD/li
-nux-2.6.15-rc3-pa2mm-20051127/include -include include/linux/autoconf.h
--I/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm -Imm -Wall -Wundef
- -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common
--ffreestanding -O2 -fomit-frame-pointer -pipe -mno-space-regs -
-mfast-indirect-calls -mdisable-fpregs -ffunction-sections -march=3D2.0
--mschedule=3D8000 -Wdeclaration-after-statement -Wno-pointer-sign
-  -DKBUILD_BASENAME=3Drmap -DKBUILD_MODNAME=3Drmap -c -o mm/rmap.o
-/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c
-/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c: In function try_to_unmap_=
-cluster:
-/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c:644: error: pfn undeclared=
+If I give all the correct include all goes well and a correct executable 
+is produced, the following is the working compile string:
 
-(first use in this function)
-/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c:644: error: (Each undeclar=
-ed
-identifier is reported only once
-/CAD/linux-2.6.15-rc3-pa2mm-20051127/mm/rmap.c:644: error: for each funct=
-ion
-it appears in.)
-make[2]: *** [mm/rmap.o] Error 1
+bizzi@b180l:~/examples$ g++ testMP3Streamer.cpp -o testMP3Streamer 
+-I/usr/include/liveMedia/ -I/usr/include/groupsock/ 
+-I/usr/include/BasicUsageEnvironment -I/usr/include/UsageEnvironment 
+-lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment
 
-This ack seems to make the drill:
---- mm/memory.c.Orig    2005-11-29 14:20:21.000000000 +0100
-+++ mm/memory.c 2005-11-29 14:27:49.000000000 +0100
-@@ -1346,7 +1346,7 @@
-                int reuse =3D can_share_swap_page(old_page);
-                unlock_page(old_page);
-                if (reuse) {
--                       flush_cache_page(vma, address, pfn);
-+                       flush_cache_page(vma, address, pte_pfn(orig_pte))=
-;
-                        entry =3D pte_mkyoung(orig_pte);
-                        entry =3D maybe_mkwrite(pte_mkdirty(entry), vma);=
+But if I miss a couple of include dir I have a correct error generation 
+and a strange message in /var/log/debug , the uncorrect compile string is:
 
-                        ptep_set_access_flags(vma, address, page_table, e=
-ntry, 1);
-@@ -1390,7 +1390,7 @@
-                        }
-                } else
-                        inc_mm_counter(mm, anon_rss);
--               flush_cache_page(vma, address, pfn);
-+               flush_cache_page(vma, address, pte_pfn(orig_pte));
-                entry =3D mk_pte(new_page, vma->vm_page_prot);
-                entry =3D maybe_mkwrite(pte_mkdirty(entry), vma);
-                ptep_establish(vma, address, page_table, entry);
-=3D=3D=3D=3D<>=3D=3D=3D=3D
---- mm/rmap.c.Orig      2005-11-29 14:32:43.000000000 +0100
-+++ mm/rmap.c   2005-11-29 14:36:21.000000000 +0100
-@@ -641,7 +641,7 @@
-                        continue;
- 
-                /* Nuke the page table entry. */
--               flush_cache_page(vma, address, pfn);
-+               flush_cache_page(vma, address, pte_pfn(*pte));
-                pteval =3D ptep_clear_flush(vma, address, pte);
- 
-                /* If nonlinear, store the file page offset in the pte. *=
-/
-=3D=3D=3D=3D<>=3D=3D=3D=3D
+g++ testMP3Streamer.cpp -o testMP3Streamer -I/usr/include/liveMedia/ 
+-I/usr/include/groupsock/ -lliveMedia -lgroupsock 
+-lBasicUsageEnvironment -lUsageEnvironment
 
-I doubt it could be the fix as it seems that it was already build without=
- that
-stuff (<http://lkml.org/lkml/2005/11/29/27>)?
+and the /var/log/debug message is:
 
-Thanks for your attention,
-    Joel=0A=0A-------------------------------------------------------=0AN=
-OTE! My email address is changing to ... @scarlet.be=0APlease make the ne=
-cessary changes in your address book. =0A=0A
+8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-
 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+do_page_fault() pid=19583 command='cc1plus' type=15 address=0x000000ec
+
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111100100001111 Not tainted
+r00-03  00000000 0036c198 0002570f 4062eaf0
+r04-07  40014cb0 4062eaf0 0036c198 00000000
+r08-11  003c1998 0039c198 0039c198 0036c198
+r12-15  00000000 002ef000 0039e198 00036f4c
+r16-19  bff8f908 0039e198 00000000 00000000
+r20-23  00000000 00000022 00000001 00000000
+r24-27  00000001 4062eaf0 00000160 0036c198
+r28-31  40014cb0 00000000 bff90580 00162f37
+sr0-3   00000000 00000006 00000000 0000012b
+sr4-7   0000012b 0000012b 0000012b 0000012b
+
+IASQ: 0000012b 0000012b IAOQ: 00025713 00025717
+  IIR: 4a8301d8    ISR: 0000012b  IOR: 000000ec
+  CPU:        0   CR30: 17f5c000 CR31: 103e4000
+  ORIG_R28: 00000000
+  IAOQ[0]: 0x25713
+  IAOQ[1]: 0x25717
+  RP(r2): 0x2570f
+
+8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-8<-
+
+I've installed via apt-get the liblivemedia-dev paackage version 
+2005.04.01-1
+
+Is this a normal behavior or I've found something strange? ;)
+
+Thanks a lot to evrybody!!! :)
+
+Ciao.
+
+	Fabio.
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
