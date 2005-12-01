@@ -1,56 +1,61 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Strange compiler behavior
-Date: Wed, 30 Nov 2005 21:42:42 -2900 (EST)
-Message-ID: <200512010242.jB12ghR9006672__38322.6219950759$1416624569$gmane$org@hiauly1.hia.nrc.ca>
-References: <438E52C9.2030007@tausq.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] FLT CBFB on B1000 when accessing second graphics
+	card
+Date: Thu, 1 Dec 2005 00:25:07 -0500
+Message-ID: <20051201052507.GB30663@tachyon.int.mcmartin.ca>
+References: <a4743ac50511300621i1f7ed34eq@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@parisc-linux.org,
- debian-hppa@lists.debian.org
-To: randolph@tausq.org (Randolph Chung)
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <438E52C9.2030007@tausq.org> from "Randolph Chung" at Dec 1, 2005 09:32:57 am
-Resent-Message-ID: <xsHKOC.A.vQF.DomjDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Thomas Klinger <th.klinger@gmail.com>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <a4743ac50511300621i1f7ed34eq@mail.gmail.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> John David Anglin wrote:
-> >> The limited stack trace is:
-> >>
-> >> Program received signal SIGSEGV, Segmentation fault.
-> >> 0x000255fc in pop_everything ()
-> >> (gdb) bt
-> >> #0  0x000255fc in pop_everything ()
-> >> #1  0x0002f834 in cxx_insert_default_attributes ()
-> >> #2  0x00072688 in cxx_make_type ()
-> >> #3  0x000b7870 in c_common_parse_file ()
-> >> #4  0x0022bb8c in rtx_addr_varies_p ()
-> >> #5  0x00231224 in rtx_addr_varies_p ()
-> >> #6  0x002312e8 in rtx_addr_varies_p ()
-> >> #7  0x401ee6e4 in __libc_start_main () from /lib/libc.so.6
-> >> #8  0x00016a58 in ?? ()
-> > 
-> > This stack trace looks wierd at the higher numbers.
+On Wed, Nov 30, 2005 at 03:21:17PM +0100, Thomas Klinger wrote:
+> Now, the setup and everything else went through smoothly, even the
+> first setup of the X server using the original display card went
+> pretty fine, but only with 8-bit colors. That's why we built in the
+> Matrox card. It is recognized by the system and displayed using lspci.
+>
+
+> What comes now is that if we try to start the X server using the
+> second card the system switches the card and immediatly fails with the
+> error code FLT CBFB (shown in the front LCD display).
+>
+
+You need to post your Xorg.conf or whatever it's called nowadays.
+ 
+> I posted the symptom to debian-hppa and was then forwared by Grant
+> Grundler to this mailing list to post my concern.
 > 
-> This is because the binary is stripped so the symbol info for static
-> functions are lost. All those rtx_address_varies_p() references are
-> probably pointing to static functions.
+> The goal of the system is to boot the system with the original card
+> (as is does already), but use the secondary card (Matrox in that case)
+> as display for the desktop environment in 16-bit colors, at least.
+>
 
-Still seems strange to me.  Are you sure that the start of the unwind
-region for each frame matches the symbol printed?  I guess the symbols
-are from .dynsym.  Isn't main in .dynsym?
+This will probably work provided you use the matroxfb framebuffer, with
+the "fbdev" driver of X. Anything else is almost guaranteed to fail with
+an HPMC. Specifics are explained in the graphics FAQ.
+ 
+> A Data I/O Fetch Timeout occured while CPU 0 was
+> requesting information from a device with the address 0xfff9017ff1.
+>
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Somebody did something it shouldn't've.
 
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+Cheers,
+	Kyle 
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
