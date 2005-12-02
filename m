@@ -1,17 +1,17 @@
-From: Fabio Bizzi <bizzi@albacom.net>
-Subject: Re: Strange compiler behavior
-Date: Wed, 30 Nov 2005 11:08:20 +0100
-Message-ID: <438D7A14.3000708__41598.7141350799$1416624569$gmane$org@albacom.net>
-References: <438D64F0.7080307@albacom.net> <438D70C4.4080003@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: Strange compiler behavior
+Date: Wed, 30 Nov 2005 21:42:42 -2900 (EST)
+Message-ID: <200512010242.jB12ghR9006672__38322.6219950759$1416624569$gmane$org@hiauly1.hia.nrc.ca>
+References: <438E52C9.2030007@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux <parisc-linux@parisc-linux.org>,
+  charset=US-ASCII
+Cc: parisc-linux@parisc-linux.org,
  debian-hppa@lists.debian.org
+To: randolph@tausq.org (Randolph Chung)
 Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <438D70C4.4080003@tausq.org>
-Resent-Message-ID: <7lsHKB.A.MGB.zoXjDB@murphy>
+In-Reply-To: <438E52C9.2030007@tausq.org> from "Randolph Chung" at Dec 1, 2005 09:32:57 am
+Resent-Message-ID: <xsHKOC.A.vQF.DomjDB@murphy>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-Post: <mailto:debian-hppa@lists.debian.org>
@@ -19,36 +19,36 @@ List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
 List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-Hi Randolph
-
-Randolph Chung wrote:
-> Looks like you found a gcc bug. What happened is that g++ crashed
-> (SIGSEGV) while processing your file.
+> John David Anglin wrote:
+> >> The limited stack trace is:
+> >>
+> >> Program received signal SIGSEGV, Segmentation fault.
+> >> 0x000255fc in pop_everything ()
+> >> (gdb) bt
+> >> #0  0x000255fc in pop_everything ()
+> >> #1  0x0002f834 in cxx_insert_default_attributes ()
+> >> #2  0x00072688 in cxx_make_type ()
+> >> #3  0x000b7870 in c_common_parse_file ()
+> >> #4  0x0022bb8c in rtx_addr_varies_p ()
+> >> #5  0x00231224 in rtx_addr_varies_p ()
+> >> #6  0x002312e8 in rtx_addr_varies_p ()
+> >> #7  0x401ee6e4 in __libc_start_main () from /lib/libc.so.6
+> >> #8  0x00016a58 in ?? ()
+> > 
+> > This stack trace looks wierd at the higher numbers.
 > 
-> It seems to be only in g++-3.3. I tried with g++-3.3 and g++-4.0.2 and
-> can not reproduce the problem.
-[...]
-> Perhaps you can try a newer gcc, or file a bug upstream with the gcc
-> developers. See http://gcc.gnu.org/bugs.html
+> This is because the binary is stripped so the symbol info for static
+> functions are lost. All those rtx_address_varies_p() references are
+> probably pointing to static functions.
 
-Thank you for the help Randolph!!! :)
+Still seems strange to me.  Are you sure that the start of the unwind
+region for each frame matches the symbol printed?  I guess the symbols
+are from .dynsym.  Isn't main in .dynsym?
 
-I've installed g++-3.4 from sarge archives, now I have another problem.
-When I try to compile the same source with the correct string and 
-includes I get a lot of undefined references, I suppose that it is due 
-because LiveMedia libraries was compiled with g++3.3.5 (The default 
-sarge compiler).
-
-How can I test it?
-
-Can I download the source code of LiveMedia and compile it from scratch 
-with 3.4 g++ and do again the test with new liblivemdia.a library?
-
-Thank You again!
-
-Ciao.
-
-	Fabio.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
 
 -- 
