@@ -1,18 +1,13 @@
-From: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Subject: Re: [parisc-linux] FLT CBFB on B1000 when accessing second graphics
-	card
-Date: Thu, 1 Dec 2005 10:29:31 -0700
-Message-ID: <200512011029.31134.bjorn.helgaas@hp.com>
-References: <a4743ac50511300621i1f7ed34eq@mail.gmail.com>
-	<200511301224.39435.bjorn.helgaas@hp.com>
-	<20051201050612.GA30663@tachyon.int.mcmartin.ca>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH] PCMCIA: Disable probing on parisc
+Date: Sun, 4 Dec 2005 01:04:23 -0500
+Message-ID: <20051204060423.GA12355@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: Kyle McMartin <kyle@mcmartin.ca>
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: linux-pcmcia@lists.infradead.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051201050612.GA30663@tachyon.int.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,22 +18,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wednesday 30 November 2005 10:06 pm, Kyle McMartin wrote:
-> At the moment, there's absolutely no support for legacy VGA
-> registers. Legacy IO port accesses will likely timeout doing an access
-> to the PCI bus behind rope0. Legacy VGA mmio will, uh, do something
-> funny.
+PCMCIA port and memory probing is broken on parisc, disabling both
+allows the PCMCIA subsystem to work on parisc systems.
 
-Oh, yes, I vaguely remember that :-)
+Signed-off-by: James Bottomley <jejb@parisc-linux.org>
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 
-IIRC, there was a back-door approach that Grant thought might work.
-My patch provides the hooks you'd need for that.  Instead of
-reprogramming the chipset VGA routing and doing inb/outb, you'd
-just do the LBA magic for I/O port accesses.
-
-I don't know how MMIO would be handled (or even what chipset is
-in the box in question).  But my guess is that it's similar to
-how the current chipsets work.
+--- a/drivers/pcmcia/Kconfig	2005-11-29 10:53:24.000000000 -0700
++++ b/drivers/pcmcia/Kconfig	2005-11-11 21:08:04.000000000 -0700
+@@ -200,7 +200,11 @@
+ 
+ config PCMCIA_PROBE
+ 	bool
+-	default y if ISA && !ARCH_SA1100 && !ARCH_CLPS711X
++	default y if ISA && !ARCH_SA1100 && !ARCH_CLPS711X && !PARISC
++
++config PCMCIA_PROBE_MEM
++	bool
++	default y if !PARISC
+ 
+ config M32R_PCC
+ 	bool "M32R PCMCIA I/F"
+--- a/drivers/pcmcia/rsrc_nonstatic.c	2005-11-29 10:53:24.000000000 -0700
++++ b/drivers/pcmcia/rsrc_nonstatic.c	2005-11-11 21:08:04.000000000 -0700
+@@ -43,7 +43,11 @@
+ 
+ #define INT_MODULE_PARM(n, v) static int n = v; module_param(n, int, 0444)
+ 
++#ifdef CONFIG_PCMCIA_PROBE_MEM
+ INT_MODULE_PARM(probe_mem,	1);		/* memory probe? */
++#else
++INT_MODULE_PARM(probe_mem,	0);		/* memory probe? */
++#endif
+ #ifdef CONFIG_PCMCIA_PROBE
+ INT_MODULE_PARM(probe_io,	1);		/* IO port probe? */
+ INT_MODULE_PARM(mem_limit,	0x10000);
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
