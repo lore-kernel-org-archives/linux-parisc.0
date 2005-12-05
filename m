@@ -1,7 +1,7 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] kernel panic when reading from a NBD device
-Date: Sun, 4 Dec 2005 20:39:21 -0500
-Message-ID: <20051205013921.GA26910@quicksilver.road.mcmartin.ca>
+Date: Sun, 4 Dec 2005 22:25:15 -0700
+Message-ID: <20051205052515.GA25789@colo.lackof.org>
 References: <20051204202710.6615ca1e.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -21,35 +21,55 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 On Sun, Dec 04, 2005 at 08:27:10PM +0100, Guy Martin wrote:
->  IAOQ[0]: mempool_alloc+0x38/0x100
->  IAOQ[1]: mempool_alloc+0x3c/0x100
->  RP(r2): blk_queue_bounce+0xf0/0x320
+> If you read from a nbd device (b 43 0) you got a kernel panic (attached).
+...
+> Please have a look at the attached diff which is certainly not perfect
+> but which is a good start :)
 
-If I had to guess, this is because the pool argument of
-mempool_alloc is NULL. As it is directly dereferenced
-in mm/mempool.c:mempool_alloc() line 220.
+Yeah, seems like each "block driver" needs to call blk_queue_bounce_limit().
+IDE and SCSI lib support do it on behalf of their subsystems.
 
-	element = pool->alloc(gfp_temp, pool->pool_data);
+> --- ../linux.orig/drivers/block/nbd.c	2005-09-05 20:05:01.000000000 +0200
+> +++ drivers/block/nbd.c	2005-12-04 18:56:51.000000000 +0100
+> @@ -665,6 +665,7 @@
+>  		 * These structs are big so we dynamically allocate them.
+>  		 */
+>  		disk->queue = blk_init_queue(do_nbd_request, &nbd_lock);
+> +		blk_queue_bounce_limit(disk->queue, BLK_BOUNCE_ANY);
+>  		if (!disk->queue) {
 
-Called from mm/highmem.c:blk_queue_bounce() which must be
-setting pool to page_pool, which would be uninitialized because
-CONFIG_HIGHMEM is not set. I would guess that blk_queue_bounce
-is missing this 
+blk_queue_bounce_limit() wants to be called *after* checking
+the disk->queue ptr is valid. :)
 
-		if (q->bounce_pfn >= blk_max_pfn)
-			return;
+Calling blk_queue_bounce_limit() sugests max_low_pn needs to be set.
+Would the following patch properly set max_low_pfn?
+I've stared at various bits of code for the past hour or two and
+still aren't sure how this is really supposed to be used.
 
-if-clause... blk_max_pfn is set from max_pfn in 
-arch/parisc/mm/init.c:setup_bootmem(). q->bounce_pfn is unset because
-blk_bounce_queue_limit() hasn't been called.
+grant
 
-I'm unsure of the best way to proceed from here, it seems clear
-we have a bug of some sort. I'm not sure that your patch is 
-generically correct... might want to bring this up with the nbd
-folks until we figure out what our bug is here.
 
-Cheers,
-	Kyle
+Index: arch/parisc/mm/init.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/mm/init.c,v
+retrieving revision 1.22
+diff -u -p -r1.22 init.c
+--- arch/parisc/mm/init.c	12 Nov 2005 04:06:42 -0000	1.22
++++ arch/parisc/mm/init.c	5 Dec 2005 05:12:57 -0000
+@@ -300,6 +300,13 @@ static void __init setup_bootmem(void)
+ 			max_pfn = start_pfn + npages;
+ 	}
+ 
++	/* IOMMU is always used to access "high mem" on those boxes
++	 * that can support enough mem that a PCI device couldn't
++	 * directly DMA to any physical addresses.
++	 * ISA DMA support will need to revisit this.
++	 */
++	max_low_pfn = max_pfn;
++
+ 	if ((bootmap_pfn - bootmap_start_pfn) != bootmap_pages) {
+ 		printk(KERN_WARNING "WARNING! bootmap sizing is messed up!\n");
+ 		BUG();
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
