@@ -1,18 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] HCRX-24 and missing consoles on my C200
-Date: Wed, 7 Dec 2005 11:35:30 -0700
-Message-ID: <20051207183530.GC11417__44073.8291982145$1416624571$gmane$org@colo.lackof.org>
+Date: Wed, 7 Dec 2005 13:29:13 -0500
+Message-ID: <20051207182913.GB32168__10719.6857141846$1416624571$gmane$org@quicksilver.road.mcmartin.ca>
 References: <43971676.1010009@gmail.com>
 	<20051207180130.GB11417@colo.lackof.org>
-	<43972408.1020708@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: debian-hppa@lists.debian.org,
  parisc-linux@parisc-linux.org
-To: Fabio Bizzi <fbizzi@gmail.com>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <43972408.1020708@gmail.com>
+In-Reply-To: <20051207180130.GB11417@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,34 +22,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Dec 07, 2005 at 07:03:52PM +0100, Fabio Bizzi wrote:
-> >STI firmware is failing to initialize itself, not the kernel
-> >initializing the card.
-> 
-> I'm bit confused about it, what do you mean with "the firmware is 
-> failing to initialize itself"?
+On Wed, Dec 07, 2005 at 11:01:30AM -0700, Grant Grundler wrote:
+> > STI GSC/PCI core graphics driver Version 0.9a
+> >     id 2bcb015a-9a02587, conforms to spec rev. 8.04
+> > STI init_graph failed (ret -1, errno 258)
+> > sti: probe of 10:8 failed with error 1
+>
 
-STI is a seperate firmware from PDC and IODC. We have to invoke
-the initializaton functions from the OS to get it started.
-I'm not STI expert though. And we do have public documentation
-for STI that you are "encouraged" to read :^)
+Someone should probably turn on debugging. Edit
+drivers/video/sticore.h and change the initial #if 0 to #if 1 and
+rebuild and boot.
 
-	http://ftp.parisc-linux.org/docs/arch/sti.pdf
+As far as I know, this is failing the initial call to STI init_graph,
+I suspect either it doesn't like the default init values, or something
+is not quite right when setting up the glob_cfg. As I understand it,
+we set up the glob_cfg structures with nothing but the region pointers,
+and then call init_graph to set up the rest of the context which is passed
+between every further called STI function.
 
-And sorry, I don't know offhand if any 24bpp graphics cards will work.
-Perhaps some are listed in the parisc graphics FAQ or
-http://wiki.parisc-linux.org/.
+Or the STI rom is completely broken on this card and HP-UX uses software
+instead of the firmware routines.
 
-> I'm really sorry for this annoyng issue, next time I'll do as you suggested.
+I think I have a HCRX here (A4070 with A4072), I can try and fix this
+but not until at least January.
 
-It's not that bad...don't lose any sleep over it.
-
-> Thank you again!
-
-welcome.
-
-ciao!
-grant
+Cheers,
+	Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
