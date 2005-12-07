@@ -1,61 +1,57 @@
-From: Fabio Bizzi <fbizzi@gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] HCRX-24 and missing consoles on my C200
-Date: Wed, 07 Dec 2005 19:03:52 +0100
-Message-ID: <43972408.1020708__36936.7797779434$1416624571$gmane$org@gmail.com>
-References: <43971676.1010009@gmail.com> <20051207180130.GB11417@colo.lackof.org>
+Date: Wed, 7 Dec 2005 11:35:30 -0700
+Message-ID: <20051207183530.GC11417__44073.8291982145$1416624571$gmane$org@colo.lackof.org>
+References: <43971676.1010009@gmail.com>
+	<20051207180130.GB11417@colo.lackof.org>
+	<43972408.1020708@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux@parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Grant Grundler <grundler@parisc-linux.org>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <20051207180130.GB11417@colo.lackof.org>
-Resent-Message-ID: <uBK90D.A.S3C.YQylDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=us-ascii
+Cc: debian-hppa@lists.debian.org,
+ parisc-linux@parisc-linux.org
+To: Fabio Bizzi <fbizzi@gmail.com>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <43972408.1020708@gmail.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Grant Grundler wrote:
-> This has never worked and I don't know why.
-> See:
-> 	http://lists.debian.org/debian-hppa/2003/10/msg00073.html
-> 	http://lists.debian.org/debian-hppa/2005/02/msg00120.html
-
-Thank You Grant, helpfully as usual. :)
-Please, can you suggest to me any video card that is working on a C200 
-with linux (24 bpp)?
-
-> STI firmware is failing to initialize itself, not the kernel
-> initializing the card.
-
-I'm bit confused about it, what do you mean with "the firmware is 
-failing to initialize itself"?
-
->>P.S. I've experienced some mail server problems, i'm sorry for eventual 
->>duouble posts!
+On Wed, Dec 07, 2005 at 07:03:52PM +0100, Fabio Bizzi wrote:
+> >STI firmware is failing to initialize itself, not the kernel
+> >initializing the card.
 > 
-> 
-> Double would have been nice. ;)
-> Next time, check the mailing list archives to determine if a particular
-> email reached the list(s).
-> 
+> I'm bit confused about it, what do you mean with "the firmware is 
+> failing to initialize itself"?
 
-I'm really sorry for this annoyng issue, next time I'll do as you suggested.
+STI is a seperate firmware from PDC and IODC. We have to invoke
+the initializaton functions from the OS to get it started.
+I'm not STI expert though. And we do have public documentation
+for STI that you are "encouraged" to read :^)
 
-I've asked some help to the list owner.
+	http://ftp.parisc-linux.org/docs/arch/sti.pdf
 
-Thank you again!
+And sorry, I don't know offhand if any 24bpp graphics cards will work.
+Perhaps some are listed in the parisc graphics FAQ or
+http://wiki.parisc-linux.org/.
 
-Ciao.
+> I'm really sorry for this annoyng issue, next time I'll do as you suggested.
 
-	Fabio.
+It's not that bad...don't lose any sleep over it.
 
+> Thank you again!
 
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+welcome.
+
+ciao!
+grant
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
