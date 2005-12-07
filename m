@@ -1,54 +1,41 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] HCRX-24 and missing consoles on my C200
-Date: Wed, 7 Dec 2005 13:29:13 -0500
-Message-ID: <20051207182913.GB32168__10719.6857141846$1416624571$gmane$org@quicksilver.road.mcmartin.ca>
-References: <43971676.1010009@gmail.com>
-	<20051207180130.GB11417@colo.lackof.org>
+Date: Wed, 7 Dec 2005 11:54:38 -0700
+Message-ID: <20051207185438.GD11417__2191.74407325244$1416624572$gmane$org@colo.lackof.org>
+References: <43971676.1010009@gmail.com> <20051207180130.GB11417@colo.lackof.org> <20051207182913.GB32168@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: debian-hppa@lists.debian.org,
- parisc-linux@parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051207180130.GB11417@colo.lackof.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Cc: Fabio Bizzi <fbizzi@gmail.com>,
+ parisc-linux@parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <20051207182913.GB32168@quicksilver.road.mcmartin.ca>
+Resent-Message-ID: <CWfHbC.A.DzF._3ylDB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Wed, Dec 07, 2005 at 11:01:30AM -0700, Grant Grundler wrote:
-> > STI GSC/PCI core graphics driver Version 0.9a
-> >     id 2bcb015a-9a02587, conforms to spec rev. 8.04
-> > STI init_graph failed (ret -1, errno 258)
-> > sti: probe of 10:8 failed with error 1
->
+On Wed, Dec 07, 2005 at 01:29:13PM -0500, Kyle McMartin wrote:
+> Or the STI rom is completely broken on this card and HP-UX uses software
+> instead of the firmware routines.
 
-Someone should probably turn on debugging. Edit
-drivers/video/sticore.h and change the initial #if 0 to #if 1 and
-rebuild and boot.
+HPUX *never* supported this card on C-class boxes.
+See page 157 (pdf page #) of C200 owners manual:
+NOTICE: The A4077A Color Graphics Card, A4078A Dual Color Graphics Card,
+        A4079B HCRX-8Z graphics adapter, and the A4071B HCRX-24 graphics
+        adapter with the A4072A Z Accelerator attached are not supported
+        in the Model C160/C180.
 
-As far as I know, this is failing the initial call to STI init_graph,
-I suspect either it doesn't like the default init values, or something
-is not quite right when setting up the glob_cfg. As I understand it,
-we set up the glob_cfg structures with nothing but the region pointers,
-and then call init_graph to set up the rest of the context which is passed
-between every further called STI function.
+getting it working might be quite "challenging". :)
 
-Or the STI rom is completely broken on this card and HP-UX uses software
-instead of the firmware routines.
+grant
 
-I think I have a HCRX here (A4070 with A4072), I can try and fix this
-but not until at least January.
 
-Cheers,
-	Kyle
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
