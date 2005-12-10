@@ -1,16 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] kernel panic when reading from a NBD device
-Date: Sat, 10 Dec 2005 16:44:23 -0500
-Message-ID: <20051210214423.GB6247@tachyon.int.mcmartin.ca>
-References: <20051204202710.6615ca1e.gmsoft@tuxicoman.be>
-	<20051205013921.GA26910@quicksilver.road.mcmartin.ca>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Linux-Vserver?
+Date: Sat, 10 Dec 2005 22:06:58 +0000
+Message-ID: <439B5182.2010306@tiscali.be>
+References: <IQVT5V$E9AC9B07E4AC628ABC4B6531981DFB7F@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+  charset=us-ascii;
+  format=flowed
+Cc: parisc-linux <parisc-linux@parisc-linux.org>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051205013921.GA26910@quicksilver.road.mcmartin.ca>
+In-Reply-To: <IQVT5V$E9AC9B07E4AC628ABC4B6531981DFB7F@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,96 +21,78 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Dec 04, 2005 at 08:39:21PM -0500, Kyle McMartin wrote:
-> 		if (q->bounce_pfn >= blk_max_pfn)
-> 			return;
->
+Hello all,
 
-My mistake, blk_queue_bounce_limit(q, BLK_BOUNCE_HIGH) is called during
-during queue init:
+Just a small update, till now:
 
-nbd.c:667
-		disk->queue = blk_init_queue(do_nbd_request, &nbd_lock);
+	o latest patch-2.6.14.3-vs2.1.0-rc10.diff against our latest 2.6.14
+	  (cvs dated 20051111) merged with upstream patch-2.6.14.3.bz2 boot
+	  fine on c110, d380 (32bit up).
+	o and preliminary testme.sh-0.14 finaly passed with success on the c110
+	  (just need a small patch of util-vserver_0.30.209)
+# ./testme.sh-0.14
+Linux-VServer Test [V0.14] Copyright (C) 2003-2005 H.Poetzl
+chcontext is working.
+chbind is working.
+Linux 2.6.14.3-vs2.1.0-rc10-pa0-c110 parisc/0.30.209/0.30.209 [Ea] (0)
+VCI:  0002:0001 263 03000116
+---
+[000]# succeeded.
+[001]# succeeded.
+[011]# succeeded.
+[031]# succeeded.
+[101]# succeeded.
+[102]# succeeded.
+[201]# succeeded.
+[202]# succeeded.
 
-blk_init_queue() calls blk_init_queue_node() which calls
+;-)
 
-ll_rw_blk.c:1749
-	blk_queue_make_request(q, __make_request);
+Hope now to be able to go further next week.
 
-ll_rw_blk.c:261
-	/*
-	 * by default assume old behaviour and bounce for any highmem page
-	 */
-	blk_queue_bounce_limit(q, BLK_BOUNCE_HIGH);
+Joel Soete wrote:
+[...]
 
-This meant that q->bounce_pfn was 0, since:
+Matthew,
 
-#define BLK_BOUNCE_HIGH		((u64)blk_max_low_pfn << PAGE_SHIFT)
+(don't know if you're still the maintainer of this stuff)
+but any way have you some good advise about following:
+> 
+> PS: btw I just read:
+> --- linux-2.6.14.2/arch/parisc/kernel/sys_parisc32.c    2005-06-22 02:37:56 +0200
+> +++ linux-2.6.14.2-vs2.1.0-rc8/arch/parisc/kernel/sys_parisc32.c       
+> 2005-10-29 04:06:52 +0200
+> @@ -657,6 +657,7 @@ asmlinkage int sys32_sysinfo(struct sysi
+> 
+>         do {
+>                 seq = read_seqbegin(&xtime_lock);
+> +               /* FIXME requires vx virtualization */
+>                 val.uptime = jiffies / HZ;
+> 
+>                 val.loads[0] = avenrun[0] << (SI_LOAD_SHIFT - FSHIFT);
+> ====<>====
+> 
+> according to the comment:
+> /* We used to call sys_sysinfo and translate the result.  But sys_sysinfo
+>  * undoes the good work done elsewhere, and rather than undoing the
+>  * damage, I decided to just duplicate the code from sys_sysinfo here.
+>  */
+> 
+> could it be look like as in kernel/timer.c:
+> @@ -1263,6 +1273,8 @@ asmlinkage long sys_sysinfo(struct sysin
+>                         tp.tv_nsec = tp.tv_nsec - NSEC_PER_SEC;
+>                         tp.tv_sec++;
+>                 }
+> +               if (vx_flags(VXF_VIRT_UPTIME, 0))
+> +                       vx_vsi_uptime(&tp, NULL);
+>                 val.uptime = tp.tv_sec + (tp.tv_nsec ? 1 : 0);
+> 
+>                 val.loads[0] = avenrun[0] << (SI_LOAD_SHIFT - FSHIFT);
+> ====<>====
+> 
 
-blk_max_low_pfn was 0, so BLK_BOUNCE_HIGH was 0. 
-
-This sets bounce_pfn in blk_queue_bounce_limit:523 to 0, which means
-
-blk_queue_bounce_limit():
-
-	if (bounce_pfn < blk_max_low_pfn) {
-		BUG_ON(dma_addr < BLK_BOUNCE_ISA);
-		init_emergency_isa_pool();
-		q->bounce_gfp = GFP_NOIO | GFP_DMA;
-	} else
-		q->bounce_gfp = GFP_NOIO;
-
-	q->bounce_pfn = bounce_pfn;
-
-Sets bounce_gfp to GFP_NOIO, and q->bounce_pfn = 0;
-
-Much later when blk_queue_bounce is called,
-
-highmem.c:477
-	if (!(q->bounce_gfp & GFP_DMA)) {
-		if (q->bounce_pfn >= blk_max_pfn)
-			return;
-		pool = page_pool;
-	} else {
-		BUG_ON(!isa_page_pool);
-		pool = isa_page_pool;
-	}
-
-	/*
-	 * slow path
-	 */
-	__blk_queue_bounce(q, bio_orig, pool);
-
-Fails the q->bounce_pfn (0) >= blk_max_pfn (0xbig), so pool is set
-to page_pool, and we try to bounce. Inside __blk_queue_bounce we
-call mempool_alloc(pool, ..);
-
-mempool.c:220
-	element = pool->alloc(gfp_temp, pool->pool_data);
-
-Which dereferences pool, which is NULL, because we don't have
-CONFIG_HIGHMEM set, so it wasn't initialized,
-
-highmem.c:51
-#ifdef CONFIG_HIGHMEM
-
-static void *page_pool_alloc(gfp_t gfp_mask, void *data)
-{
-	return alloc_page(gfp_mask);
-}
-
-And kaboom, we die in an unfortunate way.
-
-With max_low_pfn set, the 
-                if (q->bounce_pfn >= blk_max_pfn)
-gets hit, and we simply return instead of attempting to bounce
-something.
-
-I'm willing to bet this also fixes our ide-lib.c bug we hit earlier in
-a cleaner way than changing the structure of that code.
-
-Cheers,
-	Kyle
+Tia,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
