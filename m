@@ -1,13 +1,11 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] Is this patch enough to fix: tk8.4 +glibc 2.3.5 buid
-	with gcc-4.0 SEGV?
-Date: Fri,  9 Dec 2005 14:29:29 +0100
-Message-ID: <IR8G55$53231A76143F09DD87282E8FDC5BAEE8@scarlet.be>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "carlos" <carlos@systemhalted.org>
+From: Keven Tipping <bytelogix@shaw.ca>
+Subject: [parisc-linux] Stable Storage woes
+Date: Sat, 10 Dec 2005 01:33:19 -0700
+Message-ID: <C66D65CA-8B9E-4653-82F9-84820ED23925@shaw.ca>
+Mime-Version: 1.0 (Apple Message framework v746.2)
+Content-Type: multipart/mixed;
+  boundary="===============0013831168=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,156 +17,122 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Carlos,
 
-> with my atempt to merge glibc-2.3.6 with debian stuff I reach to get ri=
-d of
-> those "warning: inlining failed" thanks to compile option "-fno-unit-at=
--a-time
-> " (as discused a year ago) and the following patch:
-> --- sysdeps/hppa/Makefile.Orig  2005-12-06 19:01:00.000000000 +0100
-> +++ sysdeps/hppa/Makefile       2005-12-06 19:01:57.000000000 +0100
-> @@ -24,6 +24,7 @@
-> 
->  ifeq ($(subdir),elf)
->  CFLAGS-rtld.c +=3D -mdisable-fpregs
-> +CFLAGS-dl-reloc.c +=3D -fno-unit-at-a-time
->  sysdep-dl-routines +=3D dl-symaddr dl-fptr
->  sysdep_routines +=3D $(sysdep-dl-routines)
->  sysdep-rtld-routines +=3D $(sysdep-dl-routines)
-> 
-> (unfortunately it seems to fail with 2.3.5 (debian dpkg src, when rebui=
-ld with
-> gcc-4.0, i.e the same compiler as for 2.3.6), need to check more ...)
-> 
-> And fwiw it didn't help (wish8.4 still segv ;-( )
-> 
-> Now compare glibc 2.3.5 + gcc-3.3 with glibc 2.3.6 + gcc-4.0 here are t=
-he
-> regression test:
->  2.3.6 + gcc-4.0
-> make[2]: ***
->
-[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/posix/=
-tst-regex.out]
-> Error 143
-> make[2]: ***
->
-[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/posix/=
-tst-regex2.out]
-> Error 1
-> 
-> make[2]: ***
->
-[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/linuxt=
-hreads/tst-cancel4.out]
-> Error 1
-> make[2]: ***
->
-[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/linuxt=
-hreads/tst-cancel5.out]
-> Error 1
-> make[2]: ***
->
-[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/linuxt=
-hreads/tst-cancel-static.out]
-> Error 1
-> make[1]: *** [linuxthreads/tests] Error 2
-> make[2]: ***
->
-[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/elf/ts=
-t-pie1.out]
-> Error 127
-> 
-> (I was oblige to kill tst-regex because of an endless nanosleep loop ;-=
-( ).
-> 
-> But I had to get rid of some following debian patch because failing to =
-apply:
-> #cvs-localedata                # j: upstream now
-> #glibc235-gcc4-cvs             # j: in upstream now
-> #glibc235-gcc4-elf             # j: ?
-> #glibc235-gcc4-jis0208         # j: ?
-> #glibc235-binutils216-ia64
-> #glibc235-gcc4-ia64-profile
-> #glibc235-gcc4-ppc-procfs
-> #glibc235-gcc4-arm-inline
-> #glibc235-gcc4-sparc-inline
-> #hurd-libpthread-indirect-loading
-> #glibc235-gcc4-s390-inline
-> #glibc235-execvp-fix
-> #glibc235-dl-execstack
-> #glibc235-localedata-sr_CS
-> #glibc235-gcc4-hurd
-> #glibc235-alpha-divqu
-> #mips-bits-syscall
-> 
+--===============0013831168==
+Content-type: multipart/alternative; boundary=Apple-Mail-1--869907180
 
-mmm, I apply this patch (from cvs.p-l.org glibc) against my own acking
-glibc-2.3.6 as well as dpkg libc6 2.3.5-8.1:
---- linuxthreads/sysdeps/unix/sysv/linux/hppa/sysdep-cancel.h   2005-11-1=
-5
-11:02:31.000000000 +0100
-+++ linuxthreads.new/sysdeps/unix/sysv/linux/hppa/sysdep-cancel.h      
-2005-06-26 15:48:38.000000000 +0200
-@@ -110,14 +111,14 @@
-        ldw -24(%sp), %r26                              ASM_LINE_SEP    \=
 
-        CDISABLE                                        ASM_LINE_SEP    \=
+--Apple-Mail-1--869907180
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=US-ASCII;
+	delsp=yes;
+	format=flowed
 
-        stw %ret0, -24(%sp) /* delay */                 ASM_LINE_SEP    \=
+Greetings to all!
 
--       /* Restore syscall return (use arg regs) */     ASM_LINE_SEP    \=
+This may be a awkward question to be asking over here, but this is  
+really the only community of HPPA users that I've seen on the net so  
+far.
 
--       ldw -24(%sp), %r26                              ASM_LINE_SEP    \=
+I've got a K570 in my basement here that I need to change the Model  
+String stuck up in Stable Storage (presumably on some magical NVRam  
+or EEPROM chipset) somehow. The machine right now has been retarded  
+by HP and thinks it is a "K370", despite having the Mainboard and all  
+the hardware parts of a K570.
 
-+       /* Restore syscall return */                    ASM_LINE_SEP    \=
+Therefore, PDC ever-so-helpfully warns me that my second Memory  
+Carrier (which it finds, tests, and reports all RAM correctly on) is  
+exceeding a K370's hardware specification, and that I have to remove  
+it. It refuses to boot with the second card, despite the second card  
+and all associated RAM working perfectly (Guess this is the "HP Way"  
+of crippling your hardware marketing).
 
-+       ldw -24(%sp), %ret0                             ASM_LINE_SEP    \=
+I'd like to know- how can I update the Model String? I know its  
+possible via way of SS_Config, but thats another magical HP utility  
+that only CE's apparently have, and HP told me they won't give it to  
+a hobbyist with a K570 living in his basement :(. Can Linux do this,  
+and if so, how would I go about updating the Model String?
 
-        /* compare error */                             ASM_LINE_SEP    \=
+I don't need to change anything else. I'd just like to be able to use  
+the hardware that the machine physically supports, without PDC  
+getting all freaked out about hardware specs and such.
 
-        ldi NO_ERROR,%r1                                ASM_LINE_SEP    \=
+Cheers!
 
-        /* branch if no error */                        ASM_LINE_SEP    \=
+Keven Tipping
 
--       cmpb,>>=3D,n %r1,%r26,L(pre_end)                  ASM_LINE_SEP   =
- \
-+       cmpb,>>=3D,n %r1,%ret0,L(pre_end)                 ASM_LINE_SEP   =
- \
-        LOAD_PIC(TREG)  /* cond. nullify */             ASM_LINE_SEP    \=
 
--       copy %r26, TREG /* save syscall return */       ASM_LINE_SEP    \=
 
-+       copy %ret0, TREG /* save syscall return */      ASM_LINE_SEP    \=
+--Apple-Mail-1--869907180
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=US-ASCII
 
-        SYSCALL_ERROR_HANDLER                           ASM_LINE_SEP    \=
+<HTML><BODY style=3D"word-wrap: break-word; -khtml-nbsp-mode: space; =
+-khtml-line-break: after-white-space; ">Greetings to all!<DIV><BR =
+class=3D"khtml-block-placeholder"></DIV><DIV>This may be a awkward =
+question to be asking over here, but this is really the only community =
+of HPPA users that I've seen on the net so far.</DIV><DIV><BR =
+class=3D"khtml-block-placeholder"></DIV><DIV>I've got a K570 in my =
+basement here that I need to change the Model String stuck up in Stable =
+Storage (presumably on some magical NVRam or EEPROM chipset) somehow. =
+The machine right now has been retarded by HP and thinks it is a "K370", =
+despite having the Mainboard and all the hardware parts of a =
+K570.</DIV><DIV><BR =
+class=3D"khtml-block-placeholder"></DIV><DIV>Therefore, PDC =
+ever-so-helpfully warns me that my second Memory Carrier (which it =
+finds, tests, and reports all RAM correctly on) is exceeding a K370's =
+hardware specification, and that I have to remove it. It refuses to boot =
+with the second card, despite the second card and all associated RAM =
+working perfectly (Guess this is the "HP Way" of crippling your hardware =
+marketing).</DIV><DIV><BR class=3D"khtml-block-placeholder"></DIV><DIV>I'd=
+ like to know- how can I update the Model String? I know its possible =
+via way of SS_Config, but thats another magical HP utility that only =
+CE's apparently have, and HP told me they won't give it to a hobbyist =
+with a K570 living in his basement :(. Can Linux do this, and if so, how =
+would I go about updating the Model String?</DIV><DIV><BR =
+class=3D"khtml-block-placeholder"></DIV><DIV>I don't need to change =
+anything else. I'd just like to be able to use the hardware that the =
+machine physically supports, without PDC getting all freaked out about =
+hardware specs and such.</DIV><DIV><BR =
+class=3D"khtml-block-placeholder"></DIV><DIV>Cheers!</DIV><DIV><BR><DIV> =
+<SPAN class=3D"Apple-style-span" style=3D"border-collapse: separate; =
+border-spacing: 0px 0px; color: rgb(0, 0, 0); font-family: Helvetica; =
+font-size: 12px; font-style: normal; font-variant: normal; font-weight: =
+normal; letter-spacing: normal; line-height: normal; text-align: auto; =
+-khtml-text-decorations-in-effect: none; text-indent: 0px; =
+-apple-text-size-adjust: auto; text-transform: none; orphans: 2; =
+white-space: normal; widows: 2; word-spacing: 0px; "><SPAN =
+class=3D"Apple-style-span" style=3D"border-collapse: separate; =
+border-spacing: 0px 0px; color: rgb(0, 0, 0); font-family: Helvetica; =
+font-size: 12px; font-style: normal; font-variant: normal; font-weight: =
+normal; letter-spacing: normal; line-height: normal; text-align: auto; =
+-khtml-text-decorations-in-effect: none; text-indent: 0px; =
+-apple-text-size-adjust: auto; text-transform: none; orphans: 2; =
+white-space: normal; widows: 2; word-spacing: 0px; "><SPAN =
+class=3D"Apple-style-span" style=3D"border-collapse: separate; =
+border-spacing: 0px 0px; color: rgb(0, 0, 0); font-family: Helvetica; =
+font-size: 12px; font-style: normal; font-variant: normal; font-weight: =
+normal; letter-spacing: normal; line-height: normal; text-align: auto; =
+-khtml-text-decorations-in-effect: none; text-indent: 0px; =
+-apple-text-size-adjust: auto; text-transform: none; orphans: 2; =
+white-space: normal; widows: 2; word-spacing: 0px; "><P style=3D"margin: =
+0.0px 0.0px 0.0px 0.0px"><FONT face=3D"Helvetica" size=3D"3" =
+style=3D"font: 12.0px Helvetica">Keven Tipping</FONT></P><BR =
+class=3D"Apple-interchange-newline"></SPAN></SPAN></SPAN> =
+</DIV><BR></DIV></BODY></HTML>=
 
-        /* make syscall res value positive */           ASM_LINE_SEP    \=
+--Apple-Mail-1--869907180--
 
-        sub %r0, TREG, TREG     /* delay */             ASM_LINE_SEP    \=
-
-=3D=3D=3D=3D<>=3D=3D=3D=3D
-
-and all recompile with debian stock gcc-4.0 and it seems to fix this pb o=
-f
-tkinfo ;-)
-
-Is it enough?
-
-Thanks,
-    Joel
-
-PS: with 2.3.6 I didn't reach to get read of sched_yield() pb with tst-re=
-gex
-but for sure not with your cvs src. I compare the dump of the 2 libpthrea=
-d and
-are nearly the same now. Any other idea? (librt?)=0A=0A------------------=
----------------------------------------------=0AA free anti-spam and anti=
--virus filter on all Scarlet mailboxes=0AMore info on http://www.scarlet.=
-be/
+--===============0013831168==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============0013831168==--
