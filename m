@@ -1,79 +1,79 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] Re: [PATCH] PCMCIA: Disable probing on parisc
-Date: Sun, 11 Dec 2005 10:50:04 -0700
-Message-ID: <20051211175004.GA22449@colo.lackof.org>
+Date: Sun, 11 Dec 2005 12:01:02 -0600
+Message-ID: <1134324062.3367.9.camel@mulgrave>
 References: <20051204060423.GA12355@quicksilver.road.mcmartin.ca>
-	<20051204103338.GA16791@flint.arm.linux.org.uk>
-	<1133818340.3395.11.camel@mulgrave>
-	<20051205220344.GJ15201@flint.arm.linux.org.uk>
-	<1133829923.3262.1.camel@mulgrave>
-	<20051206093643.GA1706@flint.arm.linux.org.uk>
-	<1133876209.3267.2.camel@mulgrave>
-	<20051207122129.GA31601@isilmar.linta.de>
-	<20051211065023.GA7987@colo.lackof.org>
-	<1134314073.3367.5.camel@mulgrave>
+	 <20051204103338.GA16791@flint.arm.linux.org.uk>
+	 <1133818340.3395.11.camel@mulgrave>
+	 <20051205220344.GJ15201@flint.arm.linux.org.uk>
+	 <1133829923.3262.1.camel@mulgrave>
+	 <20051206093643.GA1706@flint.arm.linux.org.uk>
+	 <1133876209.3267.2.camel@mulgrave>
+	 <20051207122129.GA31601@isilmar.linta.de>
+	 <20051211065023.GA7987@colo.lackof.org> <1134314073.3367.5.camel@mulgrave>
+	 <20051211175004.GA22449@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
+Content-Type: text/plain
+Cc: Helge Deller <deller@gmx.de>,
  Russell King <rmk+pcmcia@arm.linux.org.uk>,
  linux-pcmcia@lists.infradead.org,
+ parisc-linux@lists.parisc-linux.org,
  Kyle McMartin <kyle@parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1134314073.3367.5.camel@mulgrave>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
+Return-Path: <James.Bottomley@SteelEye.com>
+In-Reply-To: <20051211175004.GA22449@colo.lackof.org>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Sun, Dec 11, 2005 at 09:14:33AM -0600, James Bottomley wrote:
-> On Sat, 2005-12-10 at 23:50 -0700, Grant Grundler wrote:
-> > Could post the /proc/iomem output?
+On Sun, 2005-12-11 at 10:50 -0700, Grant Grundler wrote:
+> On Sun, Dec 11, 2005 at 09:14:33AM -0600, James Bottomley wrote:
+> >  The question is would it without the pcmcia hack?
 > 
-> Sure, it's below
+> *nod*.  If PCMCIA code is accessing IO Port space looking for legacy
+> ISA devices, then a parisc box will definitely HPMC.
 
-thanks
+Well, I pulled out the mem probe and left in the PCMCIA_PROBE config
+setting based on !PARISC.
 
-> > It just occurred to me that you shouldn't need to bring down the network.
-> > We can verify if an IO range resource didn't get parented correctly or
-> > otherwise failed to get registered.
-> 
-> Well, yes I do.  I still need to verify that the kernel works without
-> the probe prevention hack.
+Everything seems to work.  Here's the relevant dmesg output 
 
-Sorry, I wasn't clear - just referring to grabbing the /proc/iomem output.
+Yenta: CardBus bridge found at 0000:00:02.0 [0000:0000]
+PCI: Bus 1, cardbus bridge: 0000:00:02.0
+  IO window: 00000400-000005ff
+  IO window: 00000800-000009ff
+  PREFETCH window: f0c00000-f0ffffff
+  MEM window: f0900000-f09fffff
+Yenta: Enabling burst memory read transactions
+Yenta: Using CSCINT to route CSC interrupts to PCI
+Yenta: Routing CardBus interrupts to PCI
+Yenta TI: socket 0000:00:02.0, mfunc 0x00000000, devctl 0x66
+Yenta TI: socket 0000:00:02.0 probing PCI interrupt failed, trying to
+fix
+Yenta TI: socket 0000:00:02.0 falling back to parallel PCI interrupts
+Yenta TI: socket 0000:00:02.0 parallel PCI interrupts ok
+Yenta: ISA IRQ mask 0x0000, PCI irq 23
+Socket status: 30000010
+pcmcia: parent PCI bridge I/O window: 0x0 - 0xffff
+pcmcia: parent PCI bridge Memory window: 0xf0800000 - 0xf0ffffff
+pccard: PCMCIA card inserted into slot 0
+[...]
+cs: memory probe 0xf0800000-0xf0ffffff: excluding 0xf0800000-0xf087ffff
+0xf0900000-0xf09fffff 0xf0c00000-0xf0ffffff
+pcmcia: registering new device pcmcia0.0
+pcmcia: Detected deprecated PCMCIA ioctl usage.
+pcmcia: This interface will soon be removed from the kernel; please
+expect breakage unless you upgrade to new tools.
+pcmcia: see
+http://www.kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html for
+details.
+orinoco 0.15rc3 (David Gibson <hermes@gibson.dropbear.id.au>, Pavel
+Roskin <proski@gnu.org>, et al)
 
->   The problem years ago wasn't the parenting,
-> it was PCMCIA looking for things like ISA memory regions.  I know the
-> card currently gets the correct parenting and regions (because it
-> works).
+As you can see, we do get the cis memory probe occuring within the
+correct boundaries now.
 
-I agree - the output for "Dino LMMIO 0" is correct.
+Helge, I think the next test is over to you, could you see how CVS tree
+head fares on your tadpole?
 
->  The question is would it without the pcmcia hack?
+Thanks,
 
-*nod*.  If PCMCIA code is accessing IO Port space looking for legacy
-ISA devices, then a parisc box will definitely HPMC.
-
-Most of the parisc PCI bus controllers can only "hard fail" on a
-PCI Master Abort for both IO Port and MMIO space accesses. I know
-this isn't expected behavior for IO port space but HPUX didn't need
-to handle this more gracefully.
-
-I've learned that "ISA Memory regions" are 20 bits for 8-bit ISA or
-24-bits for 16-bit ISA. In both cases, I would expect Host RAM to
-respond instead of any IO device.  E.g. VGA memory at 0xa0000-0xb0000
-would get garbage instead of an HPMC.
-
-thanks,
-grant
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+James
