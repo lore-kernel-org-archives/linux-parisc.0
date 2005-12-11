@@ -1,20 +1,25 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] Re: [PATCH] PCMCIA: Disable probing on parisc
-Date: Sun, 11 Dec 2005 00:41:38 -0700
-Message-ID: <20051211074138.GB7987@colo.lackof.org>
+Date: Sun, 11 Dec 2005 09:14:33 -0600
+Message-ID: <1134314073.3367.5.camel@mulgrave>
 References: <20051204060423.GA12355@quicksilver.road.mcmartin.ca>
 	<20051204103338.GA16791@flint.arm.linux.org.uk>
 	<1133818340.3395.11.camel@mulgrave>
 	<20051205220344.GJ15201@flint.arm.linux.org.uk>
-	<20051206081458.GA16793@colo.lackof.org>
-	<20051206094908.GB1706@flint.arm.linux.org.uk>
+	<1133829923.3262.1.camel@mulgrave>
+	<20051206093643.GA1706@flint.arm.linux.org.uk>
+	<1133876209.3267.2.camel@mulgrave>
+	<20051207122129.GA31601@isilmar.linta.de>
+	<20051211065023.GA7987@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Russell King <rmk+pcmcia@arm.linux.org.uk>
+Content-Type: text/plain
+Cc: Russell King <rmk+pcmcia@arm.linux.org.uk>,
+ parisc-linux@lists.parisc-linux.org,
+ linux-pcmcia@lists.infradead.org,
+ Kyle McMartin <kyle@parisc-linux.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051206094908.GB1706@flint.arm.linux.org.uk>
+In-Reply-To: <20051211065023.GA7987@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,113 +30,56 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Dec 06, 2005 at 09:49:08AM +0000, Russell King wrote:
-> > Is there some obvious document that explains my basic questions?
-> 
-> Unfortunately the only thing which exists is the code, sorry.
+On Sat, 2005-12-10 at 23:50 -0700, Grant Grundler wrote:
+> Could post the /proc/iomem output?
 
-Russell,
-As promised, here's a first cut on something to add to
-Documentation/pcmcia/memory_probe. This is in the hope of
-being helpful to others porting PCMCIA to their platform.
+Sure, it's below
 
-There is a "FIXME" bit that you'll need to rephrase or perhaps delete.
-I'm not clear if you generalized when mentioning P2P bridges as
-the parent of the resources.
+> It just occurred to me that you shouldn't need to bring down the network.
+> We can verify if an IO range resource didn't get parented correctly or
+> otherwise failed to get registered.
 
-I also think the distinction between, CIS memory and PCMCIA
-card MMIO ranges isn't as sharp as it could be. The last bit
-at the bottom hints at it but doesn't say anything about
-why the additional MMIO address space is needed.
+Well, yes I do.  I still need to verify that the kernel works without
+the probe prevention hack.  The problem years ago wasn't the parenting,
+it was PCMCIA looking for things like ISA memory regions.  I know the
+card currently gets the correct parenting and regions (because it
+works).  The question is would it without the pcmcia hack?
 
-I also assumed "CIS data" is the content in "CIS memmory".
+James
 
-
-/dream on
-And someday it might be interesting to use the PCI error recovery
-code in PCMCIA memory probing to recovery from failures on PPC and
-ia64 platforms. It might be possible on some PARISC chipsets as well
-but no one is working on PCI error recovery for any PARISC chipset AFAIK.
-/dream off
-
-thanks,
-grant
-
-
-
-PCMCIA Memory Probing
----------------------
-
-Summarized from parisc-linux mailing thread by Grant Grundler:
-http://lists.parisc-linux.org/pipermail/parisc-linux/2005-December/027743.html
-
-
-Abstract
---------
-The memory probing code sets up a mapping to place the CIS in one of
-the available regions, and then tries to validate/read the CIS.
-The probe code then unmaps the CIS data, maps it into the next place,
-and repeats.  We're reading data from the PCMCIA card after setting
-up various valid mappings.
-
-
-
-> Why are we doing this? Is this a form of bus walk?
-
-We are ensuring the MMIO resource really is available. On PCs this
-resource may clash with weirdo ACPI/SMM/BIOS crap which we don't know
-about.  On non-PCs probing should be completely harmless.  If it isn't,
-we found another hardware problem which precludes use of the offending
-address range. So the memory probe itself is not the problem, but it may
-find something we weren't expecting which will cause a problem later.
+00000000-1fffffff : System RAM
+  00000000-000009ff : PDC data (Page Zero)
+  00100000-002b8fff : Kernel code
+  002b9000-003efe0b : Kernel data
+f0190001-f0190001 : led_data
+f0800000-f0ffffff : Dino LMMIO 0
+  f0800000-f0800fff : 0000:00:02.0
+    f0800000-f0800fff : yenta_socket
+  f0801000-f0801fff : 0000:00:13.0
+    f0801000-f0801fff : sym53c8xx
+  f0802000-f08020ff : 0000:00:13.0
+    f0802000-f08020ff : sym53c8xx
+  f0803000-f080307f : 0000:00:01.0
+  f0804000-f080407f : 0000:00:14.0
+    f0804000-f080407f : tulip
+  f0805000-f0805fff : pcmcia_socket0
+  f0900000-f09fffff : PCI CardBus #01
+  f0a00000-f0afffff : PCI CardBus #01
+f8000000-f8000fff : sti
+f8100000-f84fffff : stifb mmio
+f9000000-f917ffff : stifb fb
+ffd00000-ffdfffff : Lasi
+  ffd00000-ffd00fff : Lasi
+  ffd05800-ffd05807 : serial
+  ffd08000-ffd08fff : GSC PS2
+fff80000-fffaffff : Central Bus
+  fff80000-fff80fff : Dino
+  fff83800-fff83807 : serial
+fffb0000-fffdffff : Local Broadcast
+  fffbe000-fffbefff : CPU
+fffe0000-ffffffff : Global Broadcast
 
 
-[ unfortunately, it's not always harmless on PA-RISC and some
-IA64 platforms. These platforms will HPMC (or MCA respectively) if a
-CPU times out on an MMIO read. Error recovery on ia64 could eventually
-deal sanely with this. -ggg ]
-
-
-CIS data describes how much IO and memory space PCMCIA card needs,
-the supply voltages, access timings, device IDs and so forth.
-It is only accessed once a card has been inserted, and we have asked
-the PCMCIA controller to map the CIS memory from the card into the
-hosts memory space - which must be available.
-
-CIS data is memory mapped the same way the memory probing is done.
-Hence, if the memory probing causes issues, reading CIS data from the
-card under the non-probing scenarios is not realiable either.
-
-
-
-> How is the region selected? (ie please point me at the right code)
-
-By the addresses passed in as available resources, or the parent bridge
-resources if the cardbus bridge is attached to a P2P bridge.
-
-# FIXME - what if the PCMCIA controller is connected to a Host PCI
-# Bus controller?
-# Maybe I'm being a bit anal in the intrepretation here because
-# Host PCI bus controllers *act* like PCI-PCI Bridges from
-# a PCI Point of view. But the number and type of resources
-# available from a Host PCI bus controller is NOT architected
-# as is the case for a PCI-PCI Bridge. 
-
-PCMCIA Probe interates over the entire MMIO resource with a step size
-of 16k to 8MB depending on the size of the resource.  We ioremap
-the physical address, and then ask the PCMCIA controller to forward
-accesses targetted at the physical address to the PCMCIA card.
-We then access the physical address, verify the card's CIS data matches
-previously read data, and then we destroy the mapping and iounmap.
-Repeat for each step until we reach the end of the MMIO resource.
-
-If that fails, we perform the same thing (mapping the CIS data) but
-we use a checksum method on the mapped card data instead.
-
-
-PCMCIA bridges use memory and IO outside their own BARs when setting
-up mappings for legacy PCMCIA cards.  Hence, the parent bridge needs
-to forward _more_ IO and memory than the bus would appear to require.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
