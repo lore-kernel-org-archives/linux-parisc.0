@@ -1,7 +1,7 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Re: [PATCH] PCMCIA: Disable probing on parisc
-Date: Sun, 11 Dec 2005 09:14:33 -0600
-Message-ID: <1134314073.3367.5.camel@mulgrave>
+Date: Sun, 11 Dec 2005 10:50:04 -0700
+Message-ID: <20051211175004.GA22449@colo.lackof.org>
 References: <20051204060423.GA12355@quicksilver.road.mcmartin.ca>
 	<20051204103338.GA16791@flint.arm.linux.org.uk>
 	<1133818340.3395.11.camel@mulgrave>
@@ -11,15 +11,17 @@ References: <20051204060423.GA12355@quicksilver.road.mcmartin.ca>
 	<1133876209.3267.2.camel@mulgrave>
 	<20051207122129.GA31601@isilmar.linta.de>
 	<20051211065023.GA7987@colo.lackof.org>
+	<1134314073.3367.5.camel@mulgrave>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Russell King <rmk+pcmcia@arm.linux.org.uk>,
- parisc-linux@lists.parisc-linux.org,
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ Russell King <rmk+pcmcia@arm.linux.org.uk>,
  linux-pcmcia@lists.infradead.org,
  Kyle McMartin <kyle@parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051211065023.GA7987@colo.lackof.org>
+In-Reply-To: <1134314073.3367.5.camel@mulgrave>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,56 +32,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 2005-12-10 at 23:50 -0700, Grant Grundler wrote:
-> Could post the /proc/iomem output?
+On Sun, Dec 11, 2005 at 09:14:33AM -0600, James Bottomley wrote:
+> On Sat, 2005-12-10 at 23:50 -0700, Grant Grundler wrote:
+> > Could post the /proc/iomem output?
+> 
+> Sure, it's below
 
-Sure, it's below
+thanks
 
-> It just occurred to me that you shouldn't need to bring down the network.
-> We can verify if an IO range resource didn't get parented correctly or
-> otherwise failed to get registered.
+> > It just occurred to me that you shouldn't need to bring down the network.
+> > We can verify if an IO range resource didn't get parented correctly or
+> > otherwise failed to get registered.
+> 
+> Well, yes I do.  I still need to verify that the kernel works without
+> the probe prevention hack.
 
-Well, yes I do.  I still need to verify that the kernel works without
-the probe prevention hack.  The problem years ago wasn't the parenting,
-it was PCMCIA looking for things like ISA memory regions.  I know the
-card currently gets the correct parenting and regions (because it
-works).  The question is would it without the pcmcia hack?
+Sorry, I wasn't clear - just referring to grabbing the /proc/iomem output.
 
-James
+>   The problem years ago wasn't the parenting,
+> it was PCMCIA looking for things like ISA memory regions.  I know the
+> card currently gets the correct parenting and regions (because it
+> works).
 
-00000000-1fffffff : System RAM
-  00000000-000009ff : PDC data (Page Zero)
-  00100000-002b8fff : Kernel code
-  002b9000-003efe0b : Kernel data
-f0190001-f0190001 : led_data
-f0800000-f0ffffff : Dino LMMIO 0
-  f0800000-f0800fff : 0000:00:02.0
-    f0800000-f0800fff : yenta_socket
-  f0801000-f0801fff : 0000:00:13.0
-    f0801000-f0801fff : sym53c8xx
-  f0802000-f08020ff : 0000:00:13.0
-    f0802000-f08020ff : sym53c8xx
-  f0803000-f080307f : 0000:00:01.0
-  f0804000-f080407f : 0000:00:14.0
-    f0804000-f080407f : tulip
-  f0805000-f0805fff : pcmcia_socket0
-  f0900000-f09fffff : PCI CardBus #01
-  f0a00000-f0afffff : PCI CardBus #01
-f8000000-f8000fff : sti
-f8100000-f84fffff : stifb mmio
-f9000000-f917ffff : stifb fb
-ffd00000-ffdfffff : Lasi
-  ffd00000-ffd00fff : Lasi
-  ffd05800-ffd05807 : serial
-  ffd08000-ffd08fff : GSC PS2
-fff80000-fffaffff : Central Bus
-  fff80000-fff80fff : Dino
-  fff83800-fff83807 : serial
-fffb0000-fffdffff : Local Broadcast
-  fffbe000-fffbefff : CPU
-fffe0000-ffffffff : Global Broadcast
+I agree - the output for "Dino LMMIO 0" is correct.
 
+>  The question is would it without the pcmcia hack?
 
+*nod*.  If PCMCIA code is accessing IO Port space looking for legacy
+ISA devices, then a parisc box will definitely HPMC.
+
+Most of the parisc PCI bus controllers can only "hard fail" on a
+PCI Master Abort for both IO Port and MMIO space accesses. I know
+this isn't expected behavior for IO port space but HPUX didn't need
+to handle this more gracefully.
+
+I've learned that "ISA Memory regions" are 20 bits for 8-bit ISA or
+24-bits for 16-bit ISA. In both cases, I would expect Host RAM to
+respond instead of any IO device.  E.g. VGA memory at 0xa0000-0xb0000
+would get garbage instead of an HPMC.
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
