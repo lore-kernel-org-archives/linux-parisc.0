@@ -1,35 +1,49 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: [PATCH] PCMCIA: Disable probing on parisc
-Date: Tue, 13 Dec 2005 15:28:15 -0700
-Message-ID: <20051213222815.GA22809@colo.lackof.org>
-References: <20051204060423.GA12355@quicksilver.road.mcmartin.ca> <20051212073003.GA15901@colo.lackof.org> <1134398708.9994.3.camel@mulgrave> <200512122217.16864.deller@gmx.de>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] Re: Merged new binutils.
+Date: Tue, 13 Dec 2005 19:46:44 -0500
+Message-ID: <20051214004643.GZ1298@baldric.uwo.ca>
+References: <20051213213825.GY1298@baldric.uwo.ca>
+	<200512132208.jBDM8mNG013383@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- James Bottomley <James.Bottomley@steeleye.com>,
- Grant Grundler <grundler@parisc-linux.org>,
- Russell King <rmk+pcmcia@arm.linux.org.uk>,
- linux-pcmcia@lists.infradead.org,
- Kyle McMartin <kyle@parisc-linux.org>
-To: Helge Deller <deller@gmx.de>
-Return-Path: <grundler@lackof.org>
-In-Reply-To: <200512122217.16864.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200512132208.jBDM8mNG013383@hiauly1.hia.nrc.ca>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Dec 12, 2005 at 10:17:16PM +0100, Helge Deller wrote:
-> I agree. As long as we don't know if this is a generic cirrus/parisc/dino problem I think it's not good to add code to the generic drivers/pci.c driver.
-> Furthermore, since I don't think there are many people out there who have the possibility to test cirrus pcmcia hw on parisc I would propose to put the (temporary) quirk in drivers/parisc/dino.c instead.
-> Attached is a patch for this parisc-specific quirk which works for me. 
-> Ok to commit to the local parisc CVS tree ?
-
-yes - please do.
-
-> Helge
+On Tue, Dec 13, 2005 at 05:08:48PM -0500, John David Anglin wrote:
+> > I merged a new binutils into cvs.parisc-linux.org. Anyone want to take a
+> > look at why we have 38 regressions in ld?
+> > 
+> > This is probably my fault :)
 > 
-> BTW, I tested the orinoco_cs and ide_cs drivers. Both worked like a charm out of the box on my tadpole laptop (B160L) :-)
+> cvs:
+> 
+>                 === ld Summary ===
+> 
+> # of expected passes            215
+> # of expected failures          41
+> /home/dave/binutils-2.16.91/objdir/ld/ld-new 20051213
 
-Very cool :)
+Oh wow... that's CVS?
 
-thanks,
-grant
+I guess we have something we need to fix. ld doesn't bootstrap properly
+so it's a pretty serious buglet somewhere.
+
+c.
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
