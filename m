@@ -1,19 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Merged new binutils.
-Date: Wed, 14 Dec 2005 09:23:21 -0500 (EST)
-Message-ID: <200512141423.jBEENLhP028272@hiauly1.hia.nrc.ca>
-References: <IRHPEQ$F2D0F9EAA5D374E7768DFCBED2602C1F@scarlet.be>
+From: Oliver Grafe <heiner991@gmx.de>
+Subject: Re: [parisc-linux] B1000 freeze after sym0:
+Date: Wed, 14 Dec 2005 18:30:36 +0100
+Message-ID: <20051214183036.5960e851.heiner991@gmx.de>
+References: <17461.1134562581@www66.gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: carlos@systemhalted.org,
- tausq@debian.org,
- parisc-linux@lists.parisc-linux.org,
- tsg45800@scarlet.be
-To: soete.joel@tiscali.be (Joel Soete)
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IRHPEQ$F2D0F9EAA5D374E7768DFCBED2602C1F@scarlet.be> from "Joel
-	Soete" at Dec 14, 2005 02:28:02 pm
+In-Reply-To: <17461.1134562581@www66.gmx.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,31 +19,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > I merged a new binutils into cvs.parisc-linux.org. Anyone want to take a
-> > look at why we have 38 regressions in ld?
-> > 
-> Sorry, I don't have any more access to cvs :-(
-> mmm (should be most egoistic) couldn't it be placed a compressed co on
-> cvs.p-l.org/download as build-tools-latest.tar.gz?
-> (just forget if it's too much work ;-)
+Hi!
 
-There are some snapshots here:
-ftp://sourceware.org/pub/binutils/snapshots/.
+Heiner991@gmx.de wrote:
+> I installed Debian 3.1_r0 on my B1000, but now i got problems at boot.
+> The machine hangs after the following message:
+> 
+> [...]
+> NET: Registered protocol family 1
+> sym0: <896> rev 0x4 at pci 0000:00:0f.0 irq 65
+> sym0: No NVRAM, ID 7, Fast-40, SE, parity checking
+> [...]
 
-The version kept at cvs.parisc-linux.org is mainly for TLS development.
-It's not generally kept up to date.  Other than for TLS, the work of
-maintaining parisc binutils is being done directly in the binutils cvs.
-In the early days of parisc-linux, there were a variety of parisc bug
-fixes in the parisc tree.  However, these were all merged several years
-ago.
+I "solved" it: I disconnected keyboard, mice and monitor, now the
+machine boots nicely and i get access via ssh. It's the first time i see
+a connected/disconnected USB-Keyboard got something to do with a
+SCSI driver, but it "works for me" now.
 
-H.J.L supports a "linux" version of binutils, but it's not regularly
-tested on parisc as far as I know.
+If someone is still interested in really solving this problem i'm glad
+to give further informations or compiling kernels etc...
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+Greetings,
+Oliver
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
