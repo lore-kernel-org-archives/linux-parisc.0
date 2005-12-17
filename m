@@ -1,7 +1,7 @@
 From: Keven Tipping <bytelogix@shaw.ca>
-Subject: Re: [parisc-linux] Gentoo & PARisc Kernel broken?
-Date: Fri, 16 Dec 2005 13:34:14 -0700
-Message-ID: <9cd1679d03d0.9d03d09cd167@shaw.ca>
+Subject: [parisc-linux] Bizzare Bash behavior (Bug? 2.6.14.3-pa0 SMP)
+Date: Sat, 17 Dec 2005 02:16:28 -0700
+Message-ID: <a6b35aa6481f.a6481fa6b35a@shaw.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -19,109 +19,28 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 Greetings to all!
 
-Thanks for your help.
+I've now got the following quirk on my HPPA box.
 
-Managed to fix the problem, turns out that /etc/inittab wasn't point to ttyB0. It was pointing to ttyS0 instead.
+This problem is only evident when running SMP, as it appears. The problem doesn't happen under a Uniprocessor kernel.
 
-I'm not sure why that caused the kernel to panic on the first sign of input from the serial console when it hanged (in reality Agetty just hadn't been spawned on the ttyB0 interface), but anyways, the machine seems to be operating properly now as the login pops up right after the last bootup line ("Mounting network filesystems... [OK]").
+SMP, works great otherwise. No segfaults or panics related to SMP sofar.
+
+What happens here is that Bash doesn't "return" after a command, ie, my prompt dissapears and never comes back. Doing something as trivial as uname or ls, my computer# Bash prompt never re-appears after the program has finished sending its output (ie, after the directory listing of ls or the output to terminal from uname).
+
+This is using /dev/ttyB0 as the terminal, as specified under /etc/inittab. Agetty spawns and works as expected.
+
+Now, I can SSH into the box just fine after the Bash prompt has dissapeared under the serial console. I can kill Bash from this SSH terminal and Agetty respawns on ttyB0, and I can repeat this process indefinately. SSH works absolutely great, no problems with a SSH connection at all.
+
+This only happens after running "some" command. If I let Bash idle, and come back, it still accepts input as normal, so its not hanging after a given amount of time. Its just after executing programs.
+
+Bash works under SSH, so I can't see what the problem is here or why SMP seems to cause it. Dmesg shows no errors. No kernel panics or anything else. This only occurs on ttyB0.
+
+I've turned off all color for the Bash & LS Commands on by default under Gentoo, same results, so the colored console/serial terminal has nothing to do with it (and besides, it makes no difference as it works with color regardless under a Uniproc kernel).
+
+Any ideas?
 
 Thanks!
 Keven Tipping
-
------ Original Message -----
-From: Grant Grundler <grundler@parisc-linux.org>
-Date: Friday, December 16, 2005 0:51 am
-Subject: Re: [parisc-linux] Gentoo & PARisc Kernel broken?
-
-> On Thu, Dec 15, 2005 at 10:58:42PM -0700, Keven Tipping wrote:
-> > Greetings to all!
-> > 
-> > I have a K370 here, all reasonable attempts to boot it have 
-> failed miserably.
-> > The only thing that boots is the Gentoo 2005 Live CD and I have 
-> no clue why :(.
-> > 
-> > Here is the bootup log.
-> ...
-> > 12. HP HSC-PCI Cards at 0xf1808000 [10/8] { 4, 0x0, 0x004, 
-> 0x0009d }
-> > 13. Gecko BOA BC GSC+ Port at 0xf1810000 [10/16] { 7, 0x0, 
-> 0x500, 0x0000c }
-> > 14. Gecko BOA BC HP-PB Port at 0xf1a3c000 [10/16/60] { 7, 0x0, 
-> 0x103, 0x0000c }
-> > 15. U2-IOA BC GSC+ Port at 0xf183f000 [10/63] { 7, 0x1, 0x501, 
-> 0x0000c }
-> > 16. U2-IOA BC Runway Port at 0xfff88000 [8] { 12, 0xf, 0x580, 
-> 0x0000b }
-> > 17. Shrike Add-on FW-SCSI at 0xf1008000 [8/8] { 4, 0x1, 0x014, 
-> 0x00089 }
-> > 18. HP HSC-PCI Cards at 0xf100c000 [8/12] { 4, 0x0, 0x004, 
-> 0x0009d }
-> 
-> My first guess was the "HSC-PCI" cards are the root of some new 
-> problem...
-> ...
-> > Found GeckoBoa at 0xf1804000
-> > Found GeckoBoa at 0xf1810000
-> > Dino version 3.x (card mode) found at 0xf100c000
-> > Dino version 3.x (card mode) found at 0xf1808000
-> 
-> which are better known as "Card Mode Dino". But I don't think
-> that's the case since I never saw evidence of tulip getting loaded
-> nor any problem with configuring LAN.
-> 
-> 
-> >  * Calculating module dependencies ...                           
->         [ ok ]
-> >  * Using /etc/modules.autoload.d/kernel-2.6 as config:
-> >  *   Loading module lasi_82596 ...                               
->         [ ok ]
-> 
-> Note that this LAN driver worked fine. Firmware programs
-> the MMIO address range for this card.
-> Any reason why tulip driver didn't get auto-loaded here?
-> 
-> ...
-> >  *   Bringing up eth0
-> >  *     10.0.1.202
-> 
-> Which I expect to be the LASI NIC.
-> 
-> ...
-> >  * Mounting network filesystems ...                              
->         [ ok ]
-> > Kernel panic - not syncing: Kernel Fault
-> > 
-> > What happens here is that it sticks at "Mounting Network 
-> Filesystems".> If I press any key on my Serial console here, then 
-> it goes off and panics.
-> 
-> Which suggests it's a problem with the Mux Driver somehow.
-> I expect a "login:" prompt to be the next output.
-> 
-> At one point there were issues with MUX driver keyboard input.
-> Maybe those issues have resurfaced in a new way now.
-> 
-> ...
-> > I'm not sure whats wrong here, and rebooting this beast is a 
-> very long
-> > process (20 minutes each time).
-> > 
-> > Does anyone have any ideas?
-> ...
-> > I'd really like to run Linux on this mammoth somehow, but I've tried
-> > everything I can think of with no sucssess (except the Gentoo 
-> Live CD,
-> > but that doesn't really do anything other then let me setup the 
-> system> and compile a kernel).
-> 
-> Start comparing the Gentoo Live CD kernel with the nearest revision
-> from debian or otherwise that fails.  MUX driver and serial support
-> in particular.
-> 
-> hth,
-> grant
-> 
 
 _______________________________________________
 parisc-linux mailing list
