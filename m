@@ -1,32 +1,36 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Bizzare Bash behavior (Bug? 2.6.14.3-pa0 SMP)
-Date: Sat, 17 Dec 2005 15:08:43 -0500
-Message-ID: <20051217200843.GA25923@quicksilver.road.mcmartin.ca>
-References: <a6b35aa6481f.a6481fa6b35a@shaw.ca>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] HCRX-24 and missing consoles on my C200
+Date: Mon, 19 Dec 2005 21:57:59 +0100
+Message-ID: <200512192157.59926.deller__27142.5084364184$1416623959$gmane$org@gmx.de>
+References: <43971676.1010009@gmail.com> <20051219170717.GA1464@ntlworld.com> <20051219203048.GA2197@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Keven Tipping <bytelogix@shaw.ca>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <a6b35aa6481f.a6481fa6b35a@shaw.ca>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset="iso-8859-1"
+Cc: Stuart Brady <sdbrady@ntlworld.com>,
+ debian-hppa@lists.debian.org,
+ parisc-linux@parisc-linux.org
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <20051219203048.GA2197@ntlworld.com>
+Resent-Message-ID: <7E3LWB.A.5Y.j7xpDB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Sat, Dec 17, 2005 at 02:16:28AM -0700, Keven Tipping wrote:
->
+On Monday 19 December 2005 21:30, Stuart Brady wrote:
+> > Ooh!  I'll test this...  Unfortunately, I'm compiling on a 715/100 so
+> > bear with me for a moment. :)
 
-Fixed already. Upgrade your kernel.
+BTW, I'm doing all PA-Linux development on my Athlon desktop and cross-compile the parisc-linux kernel (e.g. with ftp://ftp.parisc-linux.org/x86-xcompilers/xc-20040917-hppa32.tgz).
+Then the Athlon PC runs a tftp-server and services the built kernel to the parisc servers. The kernel boots, but then has it's root directory on the local hard disk.
+It's way faster than native compilation, and as benefit I can boot all my parisc machines with this one single kernel (build once, boot everywhere ;-)).
 
-http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2005-November/036299.html
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Helge
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
