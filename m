@@ -1,49 +1,54 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Re: 2.6.15-rc5-mm2 can't boot on ia64 due to
-	changing on_each_cpu().
-Date: Thu, 15 Dec 2005 08:41:00 -0700
-Message-ID: <20051215154100.GB9286__16688.7075444267$1416624576$gmane$org@parisc-linux.org>
-References: <20051215030040.GA28660@kvack.org>
-	<43A0FE0D.6030100@jp.fujitsu.com>
-	<20051215152450.2445.Y-GOTO@jp.fujitsu.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] HCRX-24 and missing consoles on my C200
+Date: Mon, 19 Dec 2005 16:39:43 +0100
+Message-ID: <200512191639.44027.deller__44830.519174184$1416624576$gmane$org@gmx.de>
+References: <43971676.1010009@gmail.com> <1354.193.160.141.5.1134039392.squirrel@www.puszczka.com> <20051208173922.GA2515@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Andrew Morton <akpm@osdl.org>,
- tony.luck@intel.com,
- linux-ia64@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-mm@kvack.org,
- Benjamin LaHaise <bcrl@kvack.org>,
- Kenji Kaneshige <kaneshige.kenji@jp.fujitsu.com>,
+  charset="iso-8859-1"
+Cc: Stuart Brady <sdbrady@ntlworld.com>,
+ Andy Walker <andy@puszczka.com>,
  parisc-linux@parisc-linux.org
-To: Yasunori Goto <y-goto@jp.fujitsu.com>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051215152450.2445.Y-GOTO@jp.fujitsu.com>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: debian-hppa@lists.debian.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <20051208173922.GA2515@ntlworld.com>
+Resent-Message-ID: <Kc7ORD.A.pvE._QtpDB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Thu, Dec 15, 2005 at 03:34:27PM +0900, Yasunori Goto wrote:
-> Thanks! It works!
-> 
-> BTW, I found same casted function at on_each_cpu() in parisc code.
->  (arch/parisc/kernel/cache.c
->   arch/parisc/kernel/smp.c
->   arch/parisc/mm/init.c)
-> 
-> Are they also should fixed? 
-> I don't have parisc box. So, I don't know there is same trouble on
-> parisc box or not, and I can't test it.
+Hi all,
 
-Yes, these  will also need to be changed.  Thanks.
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+On Thursday 08 December 2005 18:39, Stuart Brady wrote:
+> On Thu, Dec 08, 2005 at 11:56:32AM +0100, Andy Walker wrote:
+> > Note that the A4071B/HCRX24 gets detected just fine. Its set in PDC as
+> > the console path, and also via the sti=8/8 parameter.
+> > 
+> > Nothing crashes, but the console is unusable. Most of the output is
+> > black on black, though I get bits of text in magenta, yellow and green
+> > depending on the intended colour. Tux has a bright green background and
+> > is otherwise pretty psychedelic. Back to Vis-EG for the time being.
+> 
+> Have you tried running X, and then switching back to the console?  That
+> at least gets it working for me...  I wonder which devices are affected
+> by this?  What about the A4071A?
+
+Hi all,
+
+I just committed a patch to stifb in kernel 2.6.15-rc6-pa1.
+Could you please try this one? It works for me... :-)
+
+Stuart's hint with starting X and then switching back again pointed to a bug in the palette handling of stifb, which I hopefully fixed now.
+
+X11 still only shows me 3/4 of the screen, but this seems to be another problem....
+
+Regards,
+Helge
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
