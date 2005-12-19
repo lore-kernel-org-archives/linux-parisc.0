@@ -1,60 +1,58 @@
-From: Andy Walker <ajwalker@broadpark.no>
+From: Stuart Brady <sdbrady@ntlworld.com>
 Subject: Re: [parisc-linux] HCRX-24 and missing consoles on my C200
-Date: Mon, 19 Dec 2005 21:21:49 +0100
-Message-ID: <43A7165D.4040606__7991.37764047391$1416624578$gmane$org@broadpark.no>
-References: <43971676.1010009@gmail.com> <200512191639.44027.deller@gmx.de>
- <43A6F709.3080008@bizzi.org> <200512192104.48593.deller@gmx.de>
+Date: Mon, 19 Dec 2005 20:30:48 +0000
+Message-ID: <20051219203048.GA2197__8502.06701220504$1416624578$gmane$org@ntlworld.com>
+References: <43971676.1010009@gmail.com>
+	<1354.193.160.141.5.1134039392.squirrel@www.puszczka.com>
+	<20051208173922.GA2515@ntlworld.com>
+	<200512191639.44027.deller@gmx.de>
+	<20051219170717.GA1464@ntlworld.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: Fabio Bizzi <fbizzi@bizzi.org>,
+  charset=us-ascii
+To: debian-hppa@lists.debian.org,
  parisc-linux@parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <ajwalker@broadpark.no>
-In-reply-to: <200512192104.48593.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+ Helge Deller <deller@dmx.de>,
+ Andy Walker <andy@puszczka.com>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20051219170717.GA1464@ntlworld.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Helge Deller wrote:
-> Hello Fabio,
+On Mon, Dec 19, 2005 at 05:07:17PM +0000, Stuart Brady wrote:
+> On Mon, Dec 19, 2005 at 04:39:43PM +0100, Helge Deller wrote:
+> > Hi all,
+> > 
+> > I just committed a patch to stifb in kernel 2.6.15-rc6-pa1.
+> > Could you please try this one? It works for me... :-)
+> > 
+> > Stuart's hint with starting X and then switching back again pointed to
+> > a bug in the palette handling of stifb, which I hopefully fixed now.
 > 
-> On Monday 19 December 2005 19:08, Fabio Bizzi wrote:
->> Helge Deller wrote:
->>> I just committed a patch to stifb in kernel 2.6.15-rc6-pa1.
->>> Could you please try this one? It works for me... :-)
->> I'm sorry, but I didn't undestrand if you have fixed my problem with 
->> HCRX-24? :)
-> 
-> Probably not.
-> Your main problem is that you see this message:
-> 
-> STI GSC/PCI core graphics driver Version 0.9a
->      id 2bcb015a-9a02587, conforms to spec rev. 8.04
-> STI init_graph failed (ret -1, errno 258)
-> sti: probe of 10:8 failed with error 1
-> 
-> "init_graph" is a graphic card firmware function, which seems to not work on your system.
-> Some HP firmwares have support to "patch" the graphic card firmware before executing "init_graph".
-> This is probably not the case for your c200.
-> 
-> So, please check if your machine runs the latest HP-C200 firmware.
-> For this please read the PARISC-Linux FAQ at http://www.parisc-linux.org/faq/index.html#PDCupdate ("How can I check if the PDC (firmware) revision is the latest?").
-> 
-> Additionally I will try write some patch-code during the next weeks, which might get your card working even on the C200 and other machines. Stay tuned.
->  
->> If yes the kernel with your patch is aivailable on cvs.parisc-linux.org 
->> or I've to patch the source and compile it?
-> 
-> 2.6.15-rc6-pa1 is currently beeing built.
-> During the next hour I assume it should be finished and you may download it from here: http://cvs.parisc-linux.org/download/linux-2.6/
-> (I assume a B180 might be close to your c200 ?).
-> 
-> Helge
+> Ooh!  I'll test this...  Unfortunately, I'm compiling on a 715/100 so
+> bear with me for a moment. :)
 
-I'll give it a spin on the B132. The C180 is in storage right now,
-though with the cold weather we're having I could justify running
-it purely as a heater ;-) That thing really generates some heat
-when its chock of 64MB SIMMs.
+Seems to work fine... except for a few black patches on Tux's feet.
 
--Andy
+I've tested using:
+
+for n in 0 1; do
+	for m in 0 4 1 5 2 6 3 7; do
+		echo -e "\033[${n};3${m}mTesting\033[m"
+	done
+done
+
+Works as expected.
+-- 
+Stuart Brady
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
