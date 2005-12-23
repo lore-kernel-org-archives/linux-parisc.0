@@ -1,7 +1,8 @@
 From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [parisc-linux] [PATCH] parisc: add __iomem to __raw_check_addr()
-Date: Sat, 24 Dec 2005 02:36:20 +0300
-Message-ID: <20051223233620.GA23618@mipter.zuzino.mipt.ru>
+Subject: [parisc-linux] [PATCH] include/asm-parisc/processor.h: C99
+	initializers
+Date: Sat, 24 Dec 2005 02:39:01 +0300
+Message-ID: <20051223233901.GB23618@mipter.zuzino.mipt.ru>
 References: <20051222101523.GP27946@ftp.linux.org.uk>
 	<20051223093146.GT27946@ftp.linux.org.uk>
 Mime-Version: 1.0
@@ -21,25 +22,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Nukes ~13809 sparse warnings on allmodconfig.
-
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
 
- include/asm-parisc/io.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/asm-parisc/processor.h |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/include/asm-parisc/io.h
-+++ b/include/asm-parisc/io.h
-@@ -41,7 +41,7 @@ extern void __raw_bad_addr(const volatil
- #define __raw_check_addr(addr)					\
- 	if (((unsigned long)addr >> NYBBLE_SHIFT) != 0xe)	\
- 		__raw_bad_addr(addr);			\
--	addr = (void *)((unsigned long)addr | (0xfUL << NYBBLE_SHIFT));
-+	addr = (void __iomem *)((unsigned long)addr | (0xfUL << NYBBLE_SHIFT));
- #else
- #define gsc_check_addr(addr)
- #define __raw_check_addr(addr)
+--- a/include/asm-parisc/processor.h
++++ b/include/asm-parisc/processor.h
+@@ -144,16 +144,16 @@ struct thread_struct {
+         })
+ 
+ #define INIT_THREAD { \
+-	regs:	{	gr: { 0, }, \
+-			fr: { 0, }, \
+-			sr: { 0, }, \
+-			iasq: { 0, }, \
+-			iaoq: { 0, }, \
+-			cr27: 0, \
++	.regs = {	.gr	= { 0, }, \
++			.fr	= { 0, }, \
++			.sr	= { 0, }, \
++			.iasq	= { 0, }, \
++			.iaoq	= { 0, }, \
++			.cr27	= 0, \
+ 		}, \
+-	task_size:      DEFAULT_TASK_SIZE, \
+-	map_base:       DEFAULT_MAP_BASE, \
+-	flags:          0 \
++	.task_size	= DEFAULT_TASK_SIZE, \
++	.map_base	= DEFAULT_MAP_BASE, \
++	.flags		= 0 \
+ 	}
+ 
+ /*
 
 _______________________________________________
 parisc-linux mailing list
