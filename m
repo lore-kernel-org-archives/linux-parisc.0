@@ -1,8 +1,7 @@
 From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [parisc-linux] [PATCH] include/asm-parisc/processor.h: C99
-	initializers
-Date: Sat, 24 Dec 2005 02:39:01 +0300
-Message-ID: <20051223233901.GB23618@mipter.zuzino.mipt.ru>
+Subject: [parisc-linux] [PATCH] eisa_eeprom.c: __user annotations
+Date: Sat, 24 Dec 2005 02:41:30 +0300
+Message-ID: <20051223234130.GC23618@mipter.zuzino.mipt.ru>
 References: <20051222101523.GP27946@ftp.linux.org.uk>
 	<20051223093146.GT27946@ftp.linux.org.uk>
 Mime-Version: 1.0
@@ -25,37 +24,20 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
 
- include/asm-parisc/processor.h |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/parisc/eisa_eeprom.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/asm-parisc/processor.h
-+++ b/include/asm-parisc/processor.h
-@@ -144,16 +144,16 @@ struct thread_struct {
-         })
+--- a/drivers/parisc/eisa_eeprom.c
++++ b/drivers/parisc/eisa_eeprom.c
+@@ -48,7 +48,7 @@ static loff_t eisa_eeprom_llseek(struct 
+ }
  
- #define INIT_THREAD { \
--	regs:	{	gr: { 0, }, \
--			fr: { 0, }, \
--			sr: { 0, }, \
--			iasq: { 0, }, \
--			iaoq: { 0, }, \
--			cr27: 0, \
-+	.regs = {	.gr	= { 0, }, \
-+			.fr	= { 0, }, \
-+			.sr	= { 0, }, \
-+			.iasq	= { 0, }, \
-+			.iaoq	= { 0, }, \
-+			.cr27	= 0, \
- 		}, \
--	task_size:      DEFAULT_TASK_SIZE, \
--	map_base:       DEFAULT_MAP_BASE, \
--	flags:          0 \
-+	.task_size	= DEFAULT_TASK_SIZE, \
-+	.map_base	= DEFAULT_MAP_BASE, \
-+	.flags		= 0 \
- 	}
- 
- /*
+ static ssize_t eisa_eeprom_read(struct file * file,
+-			      char *buf, size_t count, loff_t *ppos )
++			      char __user *buf, size_t count, loff_t *ppos )
+ {
+ 	unsigned char *tmp;
+ 	ssize_t ret;
 
 _______________________________________________
 parisc-linux mailing list
