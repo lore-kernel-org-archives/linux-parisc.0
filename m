@@ -1,17 +1,12 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] strtold
-Date: Mon, 26 Dec 2005 14:58:40 -0500 (EST)
-Message-ID: <200512261958.jBQJwex0017907@hiauly1.hia.nrc.ca>
-References: <no.id>
+Subject: [parisc-linux] X startup failure
+Date: Mon, 26 Dec 2005 16:34:49 -0500 (EST)
+Message-ID: <200512262134.jBQLYo4v018267@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: carlos@systemhalted.org,
- tausq@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <no.id> from "John David Anglin" at Dec 13, 2005 05:08:48 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,19 +17,12 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-With libc6 2.3.5-8:
+X no longer starts on my c3k using unstable.  The problem seems
+to be:
 
-#include <stdlib.h>
-int
-main ()
-{
-  printf ("%Lf\n", strtold ("1", NULL));
-    return 0;
-}
+(EE) FBDEV(0): FBIOPAN_DISPLAY: Invalid argument
 
-dave@gsyprf11:~/gcc_test$ gcc -o ld1 ld1.c
-dave@gsyprf11:~/gcc_test$ ./ld1
-0.000000
+XF86Config-4 hasn't changed for at least a year.  Any ideas?
 
 Dave
 -- 
