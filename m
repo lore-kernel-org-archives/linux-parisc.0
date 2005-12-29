@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] X startup failure
-Date: Thu, 29 Dec 2005 12:59:05 -0500 (EST)
-Message-ID: <200512291759.jBTHx5Qe003164@hiauly1.hia.nrc.ca>
-References: <200512291541.jBTFfNbf002585@hiauly1.hia.nrc.ca>
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Subject: [parisc-linux] sym2 changes between 2.6.12 and 2.6.15
+Date: Thu, 29 Dec 2005 19:16:19 +0100
+Message-ID: <7d01f9f00512291016k67676c59i759121abdfa0cf24@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200512291541.jBTFfNbf002585@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Dec 29, 2005 10:41:23 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +17,79 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > >>On Monday 26 December 2005 22:34, John David Anglin wrote:
-> > >>
-> > >>>X no longer starts on my c3k using unstable.  The problem seems
-> > >>>to be:
+Hi all
 
-Problem solved.  Somehow kde (kdm) had been purged and there was no
-longer a window manger installed.  I'm sure I didn't manually delete
-it.
+I recently got 2.6.15-rc7-pa0 booting up on my rp3440 and noticed sym
+wasn't initializing HDs as it previously was, in fact it was
+initializing in Narrow mode instead of wide:
 
-I tried to reinstall kde but it currently can't be installed using
-apt-get due to unmet dependencies.  Possibly, this has something to do
-with how it got purged.
+with 2.6.12-rc6-pa1:
+ target0:0:0: tagged command queuing enabled, command queue depth 16.
+ target0:0:0: Beginning Domain Validation
+ target0:0:0: asynchronous.
+WIDTH IS 1
+ target0:0:0: wide asynchronous.
+ target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 62)
+ target0:0:0: Ending Domain Validation
 
-I installed gnome and X now starts.
+with 2.6.15-rc7-pa0:
+ target0:0:0: tagged command queuing enabled, command queue depth 16.
+ target0:0:0: Beginning Domain Validation
+ target0:0:0: asynchronous.
+ target0:0:0: FAST-40 SCSI 40.0 MB/s ST (25 ns, offset 31)
+ target0:0:0: Domain Validation skipping write tests
+ target0:0:0: Ending Domain Validation
 
-Thanks for all the help,
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+in both cases, though, cat /sys/class/spi_host/host0/signalling says "LVD"
+
+jejb suggested the following: in 2.6.15-rc7-pa0:
+magnum:~# cat /sys/class/spi_transport/target0\:0\:0/dt
+0
+magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/dt
+  target0:0:0: FAST-40 WIDE SCSI 80.0 MB/s DT (25 ns, offset 31)
+cat /sys/class/spi_transport/target0\:0\:0/dt
+1
+magnum:~# cat /sys/class/spi_transport/target0\:0\:0/period
+25
+echo "12.5" >  /sys/class/spi_transport/target0\:0\:0/period
+  target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 31)
+
+but then, alas:
+magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/revalidate
+ target0:0:0: Beginning Domain Validation
+ target0:0:0: asynchronous.
+ target0:0:0: FAST-40 SCSI 40.0 MB/s ST (25 ns, offset 31)
+ target0:0:0: Domain Validation skipping write tests
+ target0:0:0: Ending Domain Validation
+
+magnum:~# cat /sys/class/spi_transport/target0\:0\:0/min_period
+reserved
+magnum:~# cat /sys/class/spi_transport/target0\:0\:0/max_width
+0
+magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/max_width
+magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/revalidate
+ target0:0:0: Beginning Domain Validation
+ target0:0:0: asynchronous.
+ target0:0:0: wide asynchronous.
+ target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 62)
+ target0:0:0: Ending Domain Validation
+
+at which point jejb said:
+<jejb> OK, it's picking up narrow as an nvram setting
+<jejb> that's a new feature of the driver (believing the nvram)
+<jejb> there's probably some secret PDC call we should be doing instead
+
+complete boot logs:
+http://www.pateam.org/archive/logs/dmesg_rp3440-2.6.12-rc6-pa1.txt
+http://www.pateam.org/archive/logs/dmesg_rp3440.txt
+
+HTH
+
+T-Bone
+
+--
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
