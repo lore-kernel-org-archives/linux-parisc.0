@@ -1,11 +1,11 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: [parisc-linux] sym2 changes between 2.6.12 and 2.6.15
-Date: Thu, 29 Dec 2005 19:16:19 +0100
-Message-ID: <7d01f9f00512291016k67676c59i759121abdfa0cf24@mail.gmail.com>
+From: "Craig D. Lansing" <clansing@charter.net>
+Subject: [parisc-linux] J2240 - Almost there....
+Date: Fri, 30 Dec 2005 10:51:22 -0500
+Message-ID: <000101c60d58$e249ac40$3401a8c0@POGO>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+  boundary="===============1665340200=="
+To: <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,80 +17,249 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all
+This is a multi-part message in MIME format.
 
-I recently got 2.6.15-rc7-pa0 booting up on my rp3440 and noticed sym
-wasn't initializing HDs as it previously was, in fact it was
-initializing in Narrow mode instead of wide:
+--===============1665340200==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0002_01C60D2E.F973A440"
 
-with 2.6.12-rc6-pa1:
- target0:0:0: tagged command queuing enabled, command queue depth 16.
- target0:0:0: Beginning Domain Validation
- target0:0:0: asynchronous.
-WIDTH IS 1
- target0:0:0: wide asynchronous.
- target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 62)
- target0:0:0: Ending Domain Validation
+This is a multi-part message in MIME format.
 
-with 2.6.15-rc7-pa0:
- target0:0:0: tagged command queuing enabled, command queue depth 16.
- target0:0:0: Beginning Domain Validation
- target0:0:0: asynchronous.
- target0:0:0: FAST-40 SCSI 40.0 MB/s ST (25 ns, offset 31)
- target0:0:0: Domain Validation skipping write tests
- target0:0:0: Ending Domain Validation
+------=_NextPart_000_0002_01C60D2E.F973A440
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-in both cases, though, cat /sys/class/spi_host/host0/signalling says "LVD"
+I have an old J2240 w/ p1120 console that I was going to throw away, but
+decided to load the most recent PA-RISC Linux instead.  I had loaded and
+gotten it running from the PA-RISC project several years ago.  Using the
+ISO's from 12/19/05 I was able to successfully install on one of the hdd's
+(FWSCSI.5.0), but cannot boot to a prompt. When booting from path FWSCSI.5.0
+I get the 2 Tux images, a long list of console output, and get the point
+below and it freezes.  I have tried booting using a serial console, but
+cannot get connected to the serial port.  Any ideas on how to proceed from
+here?
 
-jejb suggested the following: in 2.6.15-rc7-pa0:
-magnum:~# cat /sys/class/spi_transport/target0\:0\:0/dt
-0
-magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/dt
-  target0:0:0: FAST-40 WIDE SCSI 80.0 MB/s DT (25 ns, offset 31)
-cat /sys/class/spi_transport/target0\:0\:0/dt
-1
-magnum:~# cat /sys/class/spi_transport/target0\:0\:0/period
-25
-echo "12.5" >  /sys/class/spi_transport/target0\:0\:0/period
-  target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 31)
+ 
 
-but then, alas:
-magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/revalidate
- target0:0:0: Beginning Domain Validation
- target0:0:0: asynchronous.
- target0:0:0: FAST-40 SCSI 40.0 MB/s ST (25 ns, offset 31)
- target0:0:0: Domain Validation skipping write tests
- target0:0:0: Ending Domain Validation
+End of console output:
 
-magnum:~# cat /sys/class/spi_transport/target0\:0\:0/min_period
-reserved
-magnum:~# cat /sys/class/spi_transport/target0\:0\:0/max_width
-0
-magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/max_width
-magnum:~# echo 1 > /sys/class/spi_transport/target0\:0\:0/revalidate
- target0:0:0: Beginning Domain Validation
- target0:0:0: asynchronous.
- target0:0:0: wide asynchronous.
- target0:0:0: FAST-80 WIDE SCSI 160.0 MB/s DT (12.5 ns, offset 62)
- target0:0:0: Ending Domain Validation
+----------------------------------------------------------------------------
+--------------------------------------------------------
 
-at which point jejb said:
-<jejb> OK, it's picking up narrow as an nvram setting
-<jejb> that's a new feature of the driver (believing the nvram)
-<jejb> there's probably some secret PDC call we should be doing instead
+Starting hotplug subsystem:
 
-complete boot logs:
-http://www.pateam.org/archive/logs/dmesg_rp3440-2.6.12-rc6-pa1.txt
-http://www.pateam.org/archive/logs/dmesg_rp3440.txt
+            pci
 
-HTH
+                        tulip: already loaded
 
-T-Bone
+defxx.c:v1.06 2003/08/04 Lawrence V. Stephani and others
 
---
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+fddi%d: DEFPA at I/O addr = 0x100, IRQ = 96, Hardware addr =
+58-B0-60-00-00-00
+
+----------------------------------------------------------------------------
+---------------------------------------------------------
+
+ 
+
+Other info.:
+
+SESCSI.3.0 = HP C1537A Tape
+
+SESCSI.2.0 = Toshiba CD-ROM (used for install)
+
+FWSCSI.6.0 = IBM HDD (HP-UX 10.0)
+
+FWSCSI.5.0 = IBM HDD (Linux)
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+------=_NextPart_000_0002_01C60D2E.F973A440
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I have an old J2240 w/ p1120 console that I was going =
+to
+throw away, but decided to load the most recent PA-RISC Linux =
+instead.&nbsp; I
+had loaded and gotten it running from the PA-RISC project several years
+ago.&nbsp; Using the ISO&#8217;s from 12/19/05 I was able to =
+successfully
+install on one of the hdd&#8217;s (FWSCSI.5.0), but cannot boot to a =
+prompt.
+When booting from path FWSCSI.5.0 I get the 2 Tux images, a long list of
+console output, and get the point below and it freezes.&nbsp; I have =
+tried
+booting using a serial console, but cannot get connected to the serial
+port.&nbsp; Any ideas on how to proceed from =
+here?<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>End of console output:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>------------------------------------------------------=
+-------------------------------------------------------------------------=
+-----<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Starting hotplug =
+subsystem:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp; pci<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp; tulip:
+already loaded<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>defxx.c:v1.06 2003/08/04 Lawrence V. Stephani and =
+others<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>fddi%d: DEFPA at I/O addr =3D 0x100, IRQ =3D 96, =
+Hardware addr =3D
+58-B0-60-00-00-00<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>------------------------------------------------------=
+-------------------------------------------------------------------------=
+------<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Other info.:<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>SESCSI.3.0 =3D HP C1537A =
+Tape<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>SESCSI.2.0 =3D Toshiba CD-ROM (used for =
+install)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>FWSCSI.6.0 =3D IBM HDD (HP-UX =
+10.0)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>FWSCSI.5.0 =3D IBM HDD =
+(Linux)<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0002_01C60D2E.F973A440--
+
+
+--===============1665340200==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1665340200==--
