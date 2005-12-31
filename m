@@ -1,16 +1,15 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: [parisc-linux] Re: J2240 - Almost there....
-Date: Sat, 31 Dec 2005 15:43:22 +0100
-Message-ID: <e6eae0290512310643q523877d9x@mail.gmail.com>
-References: <000101c60d58$e249ac40$3401a8c0@POGO>
-	<20051230200924.GA3556@tachyon.int.mcmartin.ca>
+From: "Craig D. Lansing" <clansing@charter.net>
+Subject: RE: [parisc-linux] J2240 - Almost there....
+Date: Sat, 31 Dec 2005 11:21:48 -0500
+Message-ID: <000f01c60e26$4ccb0f00$3401a8c0@POGO>
+References: <20051231033058.GA1497@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1083759609=="
+Content-Type: text/plain;
+  charset="us-ascii"
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+To: "'Kyle McMartin'" <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051230200924.GA3556@tachyon.int.mcmartin.ca>
+In-Reply-To: <20051231033058.GA1497@quicksilver.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,54 +20,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1083759609==
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+That worked, Thanx!!!!  I added both defxx and DEFPA to
+/etc/hotplug/blacklist.d/parisc to be safe.
 
-T24gMzAvMTIvMDUsIEt5bGUgTWNNYXJ0aW4gPGt5bGVAbWNtYXJ0aW4uY2E+IHdyb3RlOgo+IE9u
-IEZyaSwgRGVjIDMwLCAyMDA1IGF0IDEwOjUxOjIyQU0gLTA1MDAsIENyYWlnIEQuIExhbnNpbmcg
-d3JvdGU6Cj4gPiBkZWZ4eC5jOnYxLjA2IDIwMDMvMDgvMDQgTGF3cmVuY2UgVi4gU3RlcGhhbmkg
-YW5kIG90aGVycwo+ID4gZmRkaSVkOiBERUZQQSBhdCBJL08gYWRkciA9IDB4MTAwLCBJUlEgPSA5
-NiwgSGFyZHdhcmUgYWRkciA9Cj4gNTgtQjAtNjAtMDAtMDAtMDAKPgo+IEknbSBnb2luZyB0byB0
-YWtlIGEgc3RhYiBhbmQgc2F5IHRoaXMgaXMgeW91ciBwcm9ibGVtLiBZb3UncmUgbGlrZWx5IGdv
-aW5nCj4gdG8gc2VlIGEgSFBNQyBjaGFzc2lzIGNvZGUgaG93ZXZlciB0aGlzIG1hY2hpbmUgZGlz
-cGxheXMgc3VjaCBhIHRoaW5nIChsb29rCj4gdXAgdGhlIExFRCBjb2RlLCBvciBpdCBzaG91bGQg
-ZGlzcGxheSBpdCByaWdodCBvbiBhbiBMQ0QgaWYgaXQgd2FzIG9uZS4pCj4KPiBbVGhhbmtzIGZv
-ciBpZGVudGlmeWluZyBhIHBpZWNlIG9mIG5vbi13b3JraW5nIGhhcmR3YXJlLl0KCkJUVywgdGhp
-cyBpcyBhIERFQyBGRERJIGNhcmQsIHRob3NlIHdlcmUgdXN1YWxseSB0aGUgb25lcyBzb2xkIGJ5
-IEhQL0NvbXBhcS4KCkRFRlBBIGlzIGtub3duIG5vdCB0byB3b3JrIG9uIDIuNiAuLi4gb24gYW55
-IHBsYXRmb3JtLiBXaGljaCBpcyBraW5kCm9mIHNhZCBzaW5jZQphbGwgdGhlIEJTRHMgaGF2ZSBh
-IHdvcmtpbmcgZHJpdmVyIGFuZCBpdCBpcyBhIG5pY2UgcGllY2Ugb2YgaGFyZHdhcmUuCgpJIGNv
-bnRhY3RlZCB0aGUgbWFpbnRhaW5lciBhIGNvdXBsZSBvZiBtb250aHMgYWdvLCBidXQgaGUgd2Fz
-IGJ1c3kKd2l0aCBvdGhlciBwcm9qZWN0cywKYW5kIGhlIHNhaWQgaGUgd2FudGVkIHRvIGNvbXBs
-ZXRlbHkgcmV3cml0ZSB0aGUgZHJpdmVyLCBidXQgaXQgaXMKcmF0aGVyIGxvdyBwcmlvcml0eSBm
-b3IgaGltCnJpZ2h0IG5vdy4gSSBhbHNvIGdhdmUgaXQgYSB0cnkgdG8gZml4IHRoZSBkcml2ZXIs
-IGJ1dCBJIHNvb24gZm91bmQKb3V0IHRoYXQgaXQgaXMgbW9yZSBlZmZvcnQKdG8gZml4IHRoZSBk
-cml2ZXIgdGhhbiB0byByZXdyaXRlIGl0IGZyb20gc2NyYXRjaC4KClRoZSBvbmx5IHN1cHBvcnRl
-ZCBhbmQgd29ya2luZyBGRERJIGNhcmRzIHVuZGVyIGxpbnV4IGFyZSB0aGUgb25lcwpmcm9tIFN5
-c2Nvbm5lY3QsCmhvd2V2ZXIgdGhvc2UgY2FyZHMgaGF2ZSBhIEdQTC1vbmx5IGRyaXZlciBhbmQg
-dGhlcmUgZXhpc3RzIG5vIGRyaXZlcgpmb3IgdGhlIEJTRHMuCgo+IFRvIHdvcmsgYXJvdW5kIHRo
-aXMsIHlvdSBoYXZlIHR3byBvcHRpb25zOgo+Cj4gCTEgLSBSZW1vdmUgdGhlIGV4cGFuc2lvbiBj
-YXJkLCBpZiBwb3NzaWJsZS4KPgo+IAkyIC0gQm9vdCBzaW5nbGUgdXNlciwgKGFwcGVuZCBzaW5n
-bGUgdG8gdGhlIFBBTE8vSVBMIGNvbW1hbmQgbGluZSkKPiAJCTIuMSAtIEVkaXQvY3JlYXRlIC9l
-dGMvaG90cGx1Zy9ibGFja2xpc3QuZC9wYXJpc2MgYW5kCj4gCQkJYWRkIHRoZSBtb2R1bGUgbmFt
-ZSAocHJvYmFibHkgZGVmeHgpIHRvIHRoZSBmaWxlLgo+Cj4gSWYgb3RoZXIgbW9kdWxlcyBnaXZl
-IHlvdSBncmllZiwgcmVwZWF0IHRoZSBzdGVwIHRvIGJsYWNrbGlzdCB0aGVtLgo+Cj4gSSdsbCBt
-YWtlIHN1cmUgdGhpcyBtb2R1bGUgZG9lc24ndCBnZXQgYnVpbHQgaW50byB0aGUga2VybmVsLCB0
-aGUgZHJpdmVyCj4gaXMgcHJvYmFibHkgd3JpdHRlbiBub24tcG9ydGFibHksIGFuZCB0aHVzIGZh
-aWxzIG1pc2VyYWJseSBvbiAnb2RkJwo+IGhhcmR3YXJlIGxpa2UgcGFyaXNjLgoKTm8sIGl0J3Mg
-bXVjaCB3b3JzZSB0aGFuIHRoYXQgOi1QCjUgeWVhcnMgb2YgYml0LXJvdCBsZWF2ZXMgaXRzIG1h
-cmtzLgoKR3JlZXRpbmdzLAogICBNYXgK
+I am now able to boot and have completed the install.
 
---===============1083759609==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+$uname -a
+Linux howlin 2.6.8-2-32-smp #1 SMP Wed Aug 24 17:55:41 UTC 2005 parisc
+GNU/Linux
+
+OK, I have a little work to do with the h/w clock, but it's a start.
+
+As far as what cards (or anything else) are in there I don't really remember
+and it is not in a really good place to access the rear panel at all :-(
+I'm sure of 2x CPUs, 2 FWSCSI 9GB HDD, DDS 3 Tape, Toshiba CD-ROM, and
+probably redundant Ethernet/FDDI cards.  Unfortunately, the system + console
+on top of it weight in at what feels like a ton :-)  If I could remember the
+root password (ergh!), I could poke around in SAM on the HP-UX partition.
+It boots to CDE, but I can't remember a single login.  The J2240 was a gift
+from a client who was an HP shop and was bought by a BigBlue company.  They
+gradually had to get rid of their HP equipment.  They called me one day
+several years ago and said they were going to throw away this J2240 and the
+HP p1120 console (brand new... 1 day old) and I could have it... so I took
+it.  Be careful what you ask for.........
+
+
+-----Original Message-----
+From: Kyle McMartin [mailto:kyle@mcmartin.ca] 
+Sent: Friday, December 30, 2005 10:31 PM
+To: Craig D. Lansing
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] J2240 - Almost there....
+
+On Fri, Dec 30, 2005 at 10:16:59PM -0500, Craig D. Lansing wrote:
+> I tried adding "single" to various parts of the PALO command line.  No
+luck.
+> Since the error at least looks like it is related to the FDDI card, I
+> re-installed using the other NIC as my primary (eth1).  No difference.
+>
+
+Bah. Instead of single use "init=/bin/sh" and run mount -o remount,rw /
+to remount your root fs read-write, then follow the same step.
+
+Definitely sounds like an HPMC because of a bad driver. What types
+of expansion card do you have in that thing?
+
+[You really shouldn't just throw it out, it's quite a nice box...]
+
+Cheers,
+	Kyle 
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1083759609==--
