@@ -1,15 +1,15 @@
-From: "Craig D. Lansing" <clansing@charter.net>
-Subject: RE: [parisc-linux] J2240 - Almost there....
-Date: Fri, 30 Dec 2005 22:16:59 -0500
-Message-ID: <000301c60db8$ab35c850$3401a8c0@POGO>
-References: <20051230200924.GA3556@tachyon.int.mcmartin.ca>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] sym2 changes between 2.6.12 and 2.6.15
+Date: Fri, 30 Dec 2005 20:18:35 -0700
+Message-ID: <20051231031835.GB19769@parisc-linux.org>
+References: <7d01f9f00512291016k67676c59i759121abdfa0cf24@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: "'Kyle McMartin'" <kyle@mcmartin.ca>
+To: Thibaut VARENE <T-Bone@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20051230200924.GA3556@tachyon.int.mcmartin.ca>
+In-Reply-To: <7d01f9f00512291016k67676c59i759121abdfa0cf24@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,64 +20,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I tried adding "single" to various parts of the PALO command line.  No luck.
-Since the error at least looks like it is related to the FDDI card, I
-re-installed using the other NIC as my primary (eth1).  No difference.
+On Thu, Dec 29, 2005 at 07:16:19PM +0100, Thibaut VARENE wrote:
+> I recently got 2.6.15-rc7-pa0 booting up on my rp3440 and noticed sym
+> wasn't initializing HDs as it previously was, in fact it was
+> initializing in Narrow mode instead of wide:
 
-The LCD just keeps cycling through...
+You should probably try kernels either side of:
 
-FLT 5108.8-2-32
-FLT 5408.8-2-32
-FLT 5505.8-2-32
-FLT CBF4.8-2-32
-FLT CBFC.8-2-32
-FLT CBF0.8-2-32
+http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2005-December/036342.html
 
+to be sure we're debugging the right problem.  Or take out the
+"         spi_max_width(tp->starget) = tp->usr_width;" line from sym_glue.c
 
-The system is in my den and not very accessible to take apart and start
-pulling cards.
+> at which point jejb said:
+> <jejb> OK, it's picking up narrow as an nvram setting
+> <jejb> that's a new feature of the driver (believing the nvram)
+> <jejb> there's probably some secret PDC call we should be doing instead
 
-I guess I should have gone with my original plan to load this thing in my
-truck and haul it to the dump, but now I'm determined to make it work.  Any
-other ideas?
+But we already are -- see sym_read_parisc_pdc() and sym_nvram_setup_host().
 
+Could you dump the contents of nvram->data.parisc ?
 
+I have a feeling we're not doing something right though, because we
+should only be setting width on a 9000/785 (ie C3000-family).
 
------Original Message-----
-From: Kyle McMartin [mailto:kyle@mcmartin.ca] 
-Sent: Friday, December 30, 2005 3:09 PM
-To: Craig D. Lansing
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] J2240 - Almost there....
-
-On Fri, Dec 30, 2005 at 10:51:22AM -0500, Craig D. Lansing wrote:
-> defxx.c:v1.06 2003/08/04 Lawrence V. Stephani and others
-> fddi%d: DEFPA at I/O addr = 0x100, IRQ = 96, Hardware addr =
-58-B0-60-00-00-00
-
-I'm going to take a stab and say this is your problem. You're likely going
-to see a HPMC chassis code however this machine displays such a thing (look
-up the LED code, or it should display it right on an LCD if it was one.)
-
-[Thanks for identifying a piece of non-working hardware.]
-
-To work around this, you have two options:
-
-	1 - Remove the expansion card, if possible.
-
-	2 - Boot single user, (append single to the PALO/IPL command line)
-		2.1 - Edit/create /etc/hotplug/blacklist.d/parisc and
-			add the module name (probably defxx) to the file.
-
-If other modules give you grief, repeat the step to blacklist them.
-
-I'll make sure this module doesn't get built into the kernel, the driver
-is probably written non-portably, and thus fails miserably on 'odd'
-hardware like parisc.
-
-Cheers,
-	Kyle
-
+Debugging needed, please!
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
