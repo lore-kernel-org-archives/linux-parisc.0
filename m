@@ -1,15 +1,13 @@
-From: "Craig D. Lansing" <clansing@charter.net>
-Subject: RE: [parisc-linux] J2240 - Almost there....
-Date: Mon, 2 Jan 2006 21:01:05 -0500
-Message-ID: <000501c61009$8ef37db0$3401a8c0@POGO>
-References: <20060101063243.GA16296@colo.lackof.org>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH] libaio parisc partial support
+Date: Mon, 2 Jan 2006 22:56:36 -0500
+Message-ID: <20060103035636.GB8130@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: "'Grant Grundler'" <grundler@parisc-linux.org>
+To: lamont@debian.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060101063243.GA16296@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,108 +18,149 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I finally got the getty to work on HP-UX.  Here's the ioscan -fk output:
+Got this mostly together, but I'm too lazy/etc to test...
 
-Class       I  H/W Path      Driver      S/W State   H/W Type
-Description
-============================================================================
-==
-bc          0                root        CLAIMED     BUS_NEXUS    
-bc          1  8             ccio        CLAIMED     BUS_NEXUS    I/O
-Adapter
-ba          0  8/0           GSCtoPCI    CLAIMED     BUS_NEXUS    PCI Bus
-Bridge
- - GSCtoPCI
-unknown    -1  8/0/3/0                   UNCLAIMED   UNKNOWN
-PCI(10110019) 
--- 3
-lan         1  8/0/4/0       fddi4       CLAIMED     INTERFACE    PCI FDDI
-Adapt
-er
-tty         0  8/0/63        asio0       CLAIMED     INTERFACE    Built-in
-RS-23
-2C
-ba          1  8/4           GSCtoPCI    CLAIMED     BUS_NEXUS    PCI Bus
-Bridge
- - GSCtoPCI
-ext_bus     0  8/4/19/0      c720        CLAIMED     INTERFACE    Ultra2
-Wide SC
-SI
-target      0  8/4/19/0.5    tgt         CLAIMED     DEVICE       
-disk        0  8/4/19/0.5.0  sdisk       CLAIMED     DEVICE       IBM
-DDRS-3
-9130WS
-target      1  8/4/19/0.6    tgt         CLAIMED     DEVICE       
-disk        1  8/4/19/0.6.0  sdisk       CLAIMED     DEVICE       IBM
-DDRS-3
-9130WS
-target      2  8/4/19/0.7    tgt         CLAIMED     DEVICE       
-ctl         0  8/4/19/0.7.0  sctl        CLAIMED     DEVICE       Initiator
-lan         0  8/4/20/0      btlan3      CLAIMED     INTERFACE
-PCI(10110019) 
--- Built-in #2
-ba          2  8/12          bus_adapter CLAIMED     BUS_NEXUS    Core I/O
-Adapt
-er
-ext_bus     2  8/12/0        CentIf      CLAIMED     INTERFACE    Built-in
-Paral
-lel Interface
-audio       0  8/12/1        audio       CLAIMED     INTERFACE    Built-in
-Audio
+Anyone want to check that,
+	1 - I'm correctly doing the ldi with the right arg #. I suppose
+	    this would be easier if I just used a named input.
+	2 - What to do about errno setting in the syscall return.
 
-ext_bus     1  8/12/5        c720        CLAIMED     INTERFACE    Built-in
-SCSI
-target      3  8/12/5.2      tgt         CLAIMED     DEVICE       
-disk        2  8/12/5.2.0    sdisk       CLAIMED     DEVICE       TOSHIBA
-CD-ROM
- XM-5701TA
-target      4  8/12/5.3      tgt         CLAIMED     DEVICE       
-tape        0  8/12/5.3.0    stape       CLAIMED     DEVICE       HP
-C1537A
+syscall-arch.h on most other ports includes the syscall numbers, but
+it seems ours already includes them, so I haven't. For reference they're
+215->219 iirc.
 
-target      5  8/12/5.7      tgt         CLAIMED     DEVICE       
-ctl         1  8/12/5.7.0    sctl        CLAIMED     DEVICE       Initiator
-ps2         0  8/12/7        ps2         CLAIMED     INTERFACE    Built-in
-Keybo
-ard/Mouse
-bc          2  10            ccio        CLAIMED     BUS_NEXUS    I/O
-Adapter
-ba          3  10/4          GSCtoPCI    CLAIMED     BUS_NEXUS    PCI Bus
-Bridge
- - GSCtoPCI
-graphics    0  10/4/0/0      graph3      CLAIMED     INTERFACE
-PCI(103c1005) 
--- 0
-tty         1  10/4/63       asio0       CLAIMED     INTERFACE    Built-in
-RS-23
-2C
-processor   0  32            processor   CLAIMED     PROCESSOR    Processor
-processor   1  34            processor   CLAIMED     PROCESSOR    Processor
-memory      0  49            memory      CLAIMED     MEMORY       Memory
+I glanced at the glibc src to derive the needed macros, but it wasn't
+cribbed from there, so I don't think there's any licensing issues.
 
------Original Message-----
-From: Grant Grundler [mailto:grundler@parisc-linux.org] 
-Sent: Sunday, January 01, 2006 1:33 AM
-To: Craig D. Lansing
-Cc: parisc-linux@lists.parisc-linux.org
-Subject: Re: [parisc-linux] J2240 - Almost there....
+Oh, I just objdump'd it, and the delay slot of __io_get_events has
+ldi d9, %r20 in it, which looks to be the right syscall nr. So the
+resulting lib probably works, but the harness doesn't compile and I'm
+too lazy to look into it.
 
-On Sat, Dec 31, 2005 at 11:21:06PM -0500, Craig D. Lansing wrote:
-> Duh!!!  Can you tell that it has been a long time since I've had a "real"
-> computer to play with?
-> 
-> Anyway, I now have a dual-boot (HP-UX 10 / Debian Linux) J2240.
-> 
-> Here's what SAM thinks is in the system:
+Anyways, enjoy.
 
-"ioscan -fk" is the preferred output and I can
-better understand what is in the box.
-I don't understand what's really built-in or add-on
-with the SAM output.
+	Kyle
 
-thanks,
-grant
-
+--- a/debian/control	2006-01-02 22:33:58.000000000 -0500
++++ b/debian/control	2006-01-02 22:26:57.000000000 -0500
+@@ -7,7 +7,7 @@
+ 
+ Package: libaio
+ Section: libs
+-Architecture: i386 ia64 s390 alpha powerpc
++Architecture: i386 ia64 s390 alpha powerpc hppa
+ Depends:
+ Description: kernel aio access library
+  This library enables userspace to use kernel asynchronous I/O system
+diff -Nur a/src/libaio.h b/src/libaio.h
+--- a/src/libaio.h	2005-04-01 15:31:32.000000000 -0500
++++ b/src/libaio.h	2006-01-02 22:01:10.000000000 -0500
+@@ -60,7 +60,7 @@
+ #define PADDED(x, y)	unsigned y; x
+ #define PADDEDptr(x,y)	x
+ #define PADDEDul(x, y)	unsigned long x
+-#elif defined(__PPC__)  /* big endian, 32 bits */
++#elif defined(__PPC__) || defined(__hppa__)  /* big endian, 32 bits */
+ #define PADDED(x, y)	unsigned y; x
+ #define PADDEDptr(x, y)	unsigned y; x
+ #define PADDEDul(x, y)	unsigned y; unsigned long x
+diff -Nur a/src/syscall-parisc.h b/src/syscall-parisc.h
+--- a/src/syscall-parisc.h	1969-12-31 19:00:00.000000000 -0500
++++ b/src/syscall-parisc.h	2006-01-02 22:26:17.000000000 -0500
+@@ -0,0 +1,81 @@
++#define __syscall_nr(nr, type, name, args...)				\
++	unsigned long __sc_ret;						\
++	{								\
++		__sc_loadargs_##nr(name, args);				\
++		__asm__ __volatile__					\
++			("	ble  0x100(%%sr2, %%r0)\n"		\
++			 "	ldi  %1, %%r20\n"			\
++			: "=r" (__sc_res)				\
++			: "i" (__NR_##name), __sc_asm_input_##nr	\
++			: "memory", "%r1", "%r2", "%r20", "%r29",	\
++			  "%r31" __sc_clob_args_##nr			\
++		);							\
++		__sc_ret = (long)__sc_res;				\
++	}								\
++	if ((unsigned long)__sc_ret >= (unsigned long)-4095) {		\
++		__sc_ret = -1;						\
++	}								\
++	return __sc_ret
++
++#define __sc_loadargs_0(name, dummy...)					\
++	register unsigned long __sc_res __asm__("r28") = __NR_##name
++#define __sc_loadargs_1(name, arg1)					\
++	__sc_loadargs_0(name);						\
++	register unsigned long __sc_r26 __asm__("r26") = (unsigned long) (arg1)
++#define __sc_loadargs_2(name, arg1, arg2)				\
++	__sc_loadargs_1(name, arg1);					\
++	register unsigned long __sc_r25 __asm__("r25") = (unsigned long) (arg2)
++#define __sc_loadargs_3(name, arg1, arg2, arg3)				\
++	__sc_loadargs_2(name, arg1, arg2);				\
++	register unsigned long __sc_r24 __asm__("r24") = (unsigned long) (arg3)
++#define __sc_loadargs_4(name, arg1, arg2, arg3, arg4)			\
++	__sc_loadargs_3(name, arg1, arg2, arg3);			\
++	register unsigned long __sc_r23 __asm__("r23") = (unsigned long) (arg4)
++#define __sc_loadargs_5(name, arg1, arg2, arg3, arg4, arg5)		\
++	__sc_loadargs_4(name, arg1, arg2, arg3, arg4);			\
++	register unsigned long __sc_r22 __asm__("r22") = (unsigned long) (arg5)
++
++#define __sc_asm_input_0
++#define __sc_asm_input_1 "r" (__sc_r26)
++#define __sc_asm_input_2 __sc_asm_input_1, "r" (__sc_r25)
++#define __sc_asm_input_3 __sc_asm_input_2, "r" (__sc_r24)
++#define __sc_asm_input_4 __sc_asm_input_3, "r" (__sc_r23)
++#define __sc_asm_input_5 __sc_asm_input_4, "r" (__sc_r22)
++
++#define __sc_clob_args_5
++#define __sc_clob_args_4 __sc_clob_args_5, "%r22"
++#define __sc_clob_args_3 __sc_clob_args_4, "%r23"
++#define __sc_clob_args_2 __sc_clob_args_3, "%r24"
++#define __sc_clob_args_1 __sc_clob_args_2, "%r25"
++#define __sc_clob_args_0 __sc_clob_args_1, "%r26"
++
++
++#define io_syscall1(type,fname,sname,type1,arg1)				\
++type fname(type1 arg1)							\
++{									\
++	__syscall_nr(1, type, sname, arg1);				\
++}
++
++#define io_syscall2(type,fname,sname,type1,arg1,type2,arg2)		\
++type fname(type1 arg1, type2 arg2)					\
++{									\
++	__syscall_nr(2, type, sname, arg1, arg2);			\
++}
++
++#define io_syscall3(type,fname,sname,type1,arg1,type2,arg2,type3,arg3)	\
++type fname(type1 arg1, type2 arg2, type3 arg3)				\
++{									\
++	__syscall_nr(3, type, sname, arg1, arg2, arg3);			\
++}
++
++#define io_syscall4(type,fname,sname,type1,arg1,type2,arg2,type3,arg3,type4,arg4) \
++type fname(type1 arg1, type2 arg2, type3 arg3, type4 arg4)		\
++{									\
++	__syscall_nr(4, type, sname, arg1, arg2, arg3, arg4);		\
++}
++
++#define io_syscall5(type,fname,sname,type1,arg1,type2,arg2,type3,arg3,type4,arg4,type5,arg5) \
++type fname(type1 arg1, type2 arg2, type3 arg3, type4 arg4, type5 arg5)	\
++{									\
++	__syscall_nr(5, type, sname, arg1, arg2, arg3, arg4, arg5);	\
++}
+diff -Nur a/src/syscall.h b/src/syscall.h
+--- a/src/syscall.h	2005-04-01 15:31:32.000000000 -0500
++++ b/src/syscall.h	2006-01-02 21:58:28.000000000 -0500
+@@ -22,6 +22,8 @@
+ #include "syscall-s390.h"
+ #elif defined(__alpha__)
+ #include "syscall-alpha.h"
++#elif defined(__hppa__)
++#include "syscall-parisc.h"
+ #else
+ #error "add syscall-arch.h"
+ #endif
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
