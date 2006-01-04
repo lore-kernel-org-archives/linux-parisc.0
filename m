@@ -1,17 +1,13 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] J2240 - Almost there....
-Date: Mon, 2 Jan 2006 19:01:16 -0700
-Message-ID: <20060103020116.GI19769@parisc-linux.org>
-References: <7d01f9f00601010615v54117490o9a575fd279244524@mail.gmail.com>
-	<000401c61003$cea58c60$3401a8c0@POGO>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] Re: init pause() on some systems but not all?
+Date: Wed,  4 Jan 2006 15:41:33 +0100
+Message-ID: <ISKOT9$01479B19DBBD4E611FFAC1EF3F14FD12@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- 'Thibaut VARENE' <T-Bone@parisc-linux.org>
-To: "Craig D. Lansing" <clansing@charter.net>
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "parisc" <parisc@gmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <000401c61003$cea58c60$3401a8c0@POGO>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,32 +18,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jan 02, 2006 at 08:19:55PM -0500, Craig D. Lansing wrote:
-> f1600000-f3ffffff : GSC Bus [10/]
->   f1604000-f1604fff : Cujo
->   f1607800-f1607807 : serial
->   f1800000-f1ffffff : Cujo LMMIO 0
-> f4000000-f5ffffff : GSC Bus [8/]
-> f6000000-f7ffffff : GSC Bus [10/]
->   f6000000-f7ffffff : Cujo LMMIO 1
-> f8000000-fff7ffff : GSC Bus [8/]
->   fc000000-fc000fff : Cujo
->   fc004000-fc004fff : Dino [8/4]
->   fc800000-fcffffff : Dino [8/4] LMMIO 0
->   fd800000-fdffffff : Cujo LMMIO 0
-[...]
-> Found devices:
-> 1. U2-IOA BC Runway Port at 0xfff88000 [8] { 12, 0xf, 0x580, 0x0000b } 2.
-> unknown device at 0xfc000000 [8/0] { 13, 0x3, 0x05d, 0x0000a },  additional
-> a
-> ddresses: 0xfd800000
-[...]
-> Cujo version unknown found at 0xfc000000 Dino [8/4] version 3.1 found at
-> 0xfc004000 Cujo version 2.0 found at 0xf1604000 Enabling Cujo 2.0 bug
-> workaround SCSI subsystem initialized TC classifier action (bugs to
+Hello Max,
 
-Fixed both of these problems (Dino reported as Cujo and first Cujo
-reported as unknown)
+> Hi Joel & PA,
+> 
+> I also have the same, or at least similar problem on my c3700
+> (2.6.15-rc1-pa1, 2.6.15-rc5-pa3, debian/testing):
+
+Thanks for feedback ;-)
+
+Just a small uptade about 2.5.15-pa1 kernel: the pb is still there ;-/
+
+For what is the very frustating situation, I just view alive the pb occur=
+ing
+on all my testing systems (b2k, d380, b180, n4k): all were clean, early t=
+his
+morning when daily cron job started, then after a few moment init() fall =
+in
+pause() but very hard to tack some picture of process runing on all those=
+
+sytem at this very moment :<(
+
+Any idea?
+
+Thanks,
+    Joel
+
+ =0A=0A-------------------------------------------------------=0ANOTE! My=
+ email address is changing to ... @scarlet.be=0APlease make the necessary=
+ changes in your address book. =0A=0A
 
 _______________________________________________
 parisc-linux mailing list
