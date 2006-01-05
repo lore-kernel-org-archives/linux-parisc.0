@@ -1,15 +1,14 @@
-From: Max Grabert <parisc@gmail.com>
-Subject: Re: [parisc-linux] Re: init pause() on some systems but not all?
-Date: Thu, 5 Jan 2006 16:32:17 +0100
-Message-ID: <e6eae0290601050732mfb82edbw@mail.gmail.com>
-References: <ISM4PO$E2049D32F139939E93037B953A98A7B7@scarlet.be>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] finaly kill(1, 25) was the init pause() pb on some
+	systems but not all.
+Date: Thu,  5 Jan 2006 17:21:43 +0100
+Message-ID: <ISMO47$84F6A96E04ED5DC958A06D88419F6D3C@scarlet.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1865024531=="
+Content-Type: text/plain;
+  charset=iso-8859-1
 Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+To: "matthew" <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <ISM4PO$E2049D32F139939E93037B953A98A7B7@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,69 +19,104 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1865024531==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_52282_11737976.1136475137452"
+> On Thu, Jan 05, 2006 at 03:18:35PM +0100, Joel Soete wrote:
+> > This very small test case reproduce it:
+> > #include <stdio.h>
+> > #include <errno.h>
+> > #include <sys/types.h>
+> > #include <dirent.h>
+> > #include <ctype.h>
+> > #include <stdlib.h>
+> > #include <unistd.h>
+> > #include <signal.h>
+> > 
+> > int main(int argc, char **argv)
+> > {
+> >     int retdir=3D0;
+> >     retdir =3D kill (1, 25);
+> >     printf("Kill (1, 25) : %d\n", retdir);
+> >     printf("errno : %d\n", errno);
+> > }
+> 
+> Run as root?
+> 
+Yes ;-)
 
-------=_Part_52282_11737976.1136475137452
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+(as common user:
+$ ./TstK
+Kill (1, 25) : -1
+errno : 1
 
-T24gMDUvMDEvMDYsIEpvZWwgU29ldGUgPHNvZXRlLmpvZWxAdGlzY2FsaS5iZT4gd3JvdGU6Cj4K
-PiBIZWxsbyBNYXgsCj4gPgo+ID4gPiBIaSBKb2VsICYgUEEsCj4gPiA+Cj4gPiA+IEkgYWxzbyBo
-YXZlIHRoZSBzYW1lLCBvciBhdCBsZWFzdCBzaW1pbGFyIHByb2JsZW0gb24gbXkgYzM3MDAKPiA+
-ID4gKDIuNi4xNS1yYzEtcGExLCAyLjYuMTUtcmM1LXBhMywgZGViaWFuL3Rlc3RpbmcpOgo+ID4K
-PiA+IFRoYW5rcyBmb3IgZmVlZGJhY2sgOy0pCj4gPgo+ID4gSnVzdCBhIHNtYWxsIHVwdGFkZSBh
-Ym91dCAyLjUuMTUtcGExIGtlcm5lbDogdGhlIHBiIGlzIHN0aWxsIHRoZXJlIDstLwo+ID4KPiA+
-IEZvciB3aGF0IGlzIHRoZSB2ZXJ5IGZydXN0YXRpbmcgc2l0dWF0aW9uLCBJIGp1c3QgdmlldyBh
-bGl2ZSB0aGUgcGIKPiBvY2N1cmluZwo+ID4gb24gYWxsIG15IHRlc3Rpbmcgc3lzdGVtcyAoYjJr
-LCBkMzgwLCBiMTgwLCBuNGspOiBhbGwgd2VyZSBjbGVhbiwgZWFybHkKPiB0aGlzCj4gPiBtb3Ju
-aW5nIHdoZW4gZGFpbHkgY3JvbiBqb2Igc3RhcnRlZCwgdGhlbiBhZnRlciBhIGZldyBtb21lbnQg
-aW5pdCgpIGZhbGwKPiBpbgo+ID4gcGF1c2UoKSBidXQgdmVyeSBoYXJkIHRvIHRhY2sgc29tZSBw
-aWN0dXJlIG9mIHByb2Nlc3MgcnVuaW5nIG9uIGFsbAo+IHRob3NlCj4gPiBzeXRlbSBhdCB0aGlz
-IHZlcnkgbW9tZW50IDo8KAo+ID4KPgo+IENvdWxkIGl0IGJlIHRoYXQgeW91IGluc3RhbGxlZCBj
-a3Jvb3RraXQgZHBrZyBvbiB5b3VyIHN5c3RlbT8KCgpFcm1tLCB5ZXMuCk5vdyBJIGFsc28gbm90
-aWNlIHRoYXQgdGhlIHByb2JsZW1zIG9jY3VycmVkIGFyb3VuZCB0aGUgdGltZSBJIGluc3RhbGxl
-ZApjaGtyb290a2l0IC4uLgoKICBNYXgK
-------=_Part_52282_11737976.1136475137452
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+> > =3D=3D=3D=3D<>=3D=3D=3D=3D
+> > 
+> > mmm that said, I am curious to know why '25' is coded like this (and =
+not e.g.
+> > symbolic name)?
+> 
+> Probably because 25 is XFSZ on everything except MIPS and PA.
+> 
+> > Finaly: a kernel pb, a libc pb or chkrootkit bug?
+> 
+> Definitely the latter.  Whether it's a former, I don't know.  Can you
+> do it on x86 by sending init a TSTP?
+> 
+> 
+Well, writen the foo.c like:
+int main(int argc, char **argv)
+{
+    int retdir=3D0;
+    retdir =3D kill (1, SIGTSTP);
+    printf("Kill (1, SIGTSTP) : %d\n", retdir);
+    printf("errno : %d\n", errno);
+}
 
-PGRpdj48c3BhbiBjbGFzcz0iZ21haWxfcXVvdGUiPk9uIDA1LzAxLzA2LCA8YiBjbGFzcz0iZ21h
-aWxfc2VuZGVybmFtZSI+Sm9lbCBTb2V0ZTwvYj4gJmx0OzxhIGhyZWY9Im1haWx0bzpzb2V0ZS5q
-b2VsQHRpc2NhbGkuYmUiPnNvZXRlLmpvZWxAdGlzY2FsaS5iZTwvYT4mZ3Q7IHdyb3RlOjwvc3Bh
-bj4KPGJsb2NrcXVvdGUgY2xhc3M9ImdtYWlsX3F1b3RlIiBzdHlsZT0iUEFERElORy1MRUZUOiAx
-ZXg7IE1BUkdJTjogMHB4IDBweCAwcHggMC44ZXg7IEJPUkRFUi1MRUZUOiAjY2NjIDFweCBzb2xp
-ZCI+SGVsbG8gTWF4LDxicj4mZ3Q7PGJyPiZndDsgJmd0OyBIaSBKb2VsICZhbXA7IFBBLDxicj4m
-Z3Q7ICZndDs8YnI+Jmd0OyAmZ3Q7IEkgYWxzbyBoYXZlIHRoZSBzYW1lLCBvciBhdCBsZWFzdCBz
-aW1pbGFyIHByb2JsZW0gb24gbXkgYzM3MDAKPGJyPiZndDsgJmd0OyAoMi42LjE1LXJjMS1wYTEs
-IDIuNi4xNS1yYzUtcGEzLCBkZWJpYW4vdGVzdGluZyk6PGJyPiZndDs8YnI+Jmd0OyBUaGFua3Mg
-Zm9yIGZlZWRiYWNrIDstKTxicj4mZ3Q7PGJyPiZndDsgSnVzdCBhIHNtYWxsIHVwdGFkZSBhYm91
-dCAyLjUuMTUtcGExIGtlcm5lbDogdGhlIHBiIGlzIHN0aWxsIHRoZXJlIDstLzxicj4mZ3Q7PGJy
-PiZndDsgRm9yIHdoYXQgaXMgdGhlIHZlcnkgZnJ1c3RhdGluZyBzaXR1YXRpb24sIEkganVzdCB2
-aWV3IGFsaXZlIHRoZSBwYiBvY2N1cmluZwo8YnI+Jmd0OyBvbiBhbGwgbXkgdGVzdGluZyBzeXN0
-ZW1zIChiMmssIGQzODAsIGIxODAsIG40ayk6IGFsbCB3ZXJlIGNsZWFuLCBlYXJseSB0aGlzPGJy
-PiZndDsgbW9ybmluZyB3aGVuIGRhaWx5IGNyb24gam9iIHN0YXJ0ZWQsIHRoZW4gYWZ0ZXIgYSBm
-ZXcgbW9tZW50IGluaXQoKSBmYWxsIGluPGJyPiZndDsgcGF1c2UoKSBidXQgdmVyeSBoYXJkIHRv
-IHRhY2sgc29tZSBwaWN0dXJlIG9mIHByb2Nlc3MgcnVuaW5nIG9uIGFsbCB0aG9zZQo8YnI+Jmd0
-OyBzeXRlbSBhdCB0aGlzIHZlcnkgbW9tZW50IDombHQ7KDxicj4mZ3Q7PGJyPjxicj5Db3VsZCBp
-dCBiZSB0aGF0IHlvdSBpbnN0YWxsZWQgY2tyb290a2l0IGRwa2cgb24geW91ciBzeXN0ZW0/PC9i
-bG9ja3F1b3RlPgo8ZGl2PiZuYnNwOzwvZGl2Pgo8ZGl2PkVybW0sIHllcy48L2Rpdj4KPGRpdj5O
-b3cgSSBhbHNvIG5vdGljZSB0aGF0IHRoZSBwcm9ibGVtcyBvY2N1cnJlZCBhcm91bmQgdGhlIHRp
-bWUgSSBpbnN0YWxsZWQgY2hrcm9vdGtpdCAuLi48L2Rpdj4KPGRpdj4mbmJzcDs8L2Rpdj4KPGRp
-dj4mbmJzcDsgTWF4PC9kaXY+PGJyPiZuYnNwOzwvZGl2Pjxicj4K
-------=_Part_52282_11737976.1136475137452--
+(i.e. on i386: #define SIGTSTP         20      /* Keyboard stop (POSIX). =
+ */)
 
---===============1865024531==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+has the same effect on a i386, though:
+top - 17:03:15 up 2 days,  1:34,  7 users,  load average: 0.02, 0.05, 0.0=
+1
+Tasks:  72 total,   1 running,  71 sleeping,   0 stopped,   0 zombie
+Cpu(s):  3.0% us,  0.3% sy,  0.0% ni, 95.4% id,  0.0% wa,  0.3% hi,  1.0%=
+ si
+Mem:    125892k total,   121868k used,     4024k free,    11520k buffers
+Swap:   257032k total,    38368k used,   218664k free,    52244k cached
+Change delay from 3.0 to: 
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  WCHAN     CO=
+MMAND
+                                                    
+ 3058 jso       15   0  118m  42m  12m S  3.3 34.7  26:29.05 stext    
+mozilla-bin                                                  
+ 8883 root      16   0  2248 1088  840 R  0.7  0.9   0:03.68 stext     to=
+p   
+                                                      
+    1 root      16   0  1924  604  552 S  0.0  0.5   0:00.42 pause     in=
+it  
+                                                      
+
+That said, I also thought that could be an init pb:
+i read in ./parisc/kernel/signal.c:
+/* 
+ * Note that 'init' is a special process: it doesn't get signals it doesn=
+'t
+ * want to handle.
+[...]
+
+but what are the signal that init want to handle?
+
+Btw: could you explain me why is it foreseen that it want to handle SIGTS=
+TP
+(what ever is real value is) and not ignore it as I basicaly thought?
+
+Thanks,
+    Joel
+
+PS: I will report pb asap to chkrootkit.
+=0A=0A-------------------------------------------------------=0ANOTE! My =
+email address is changing to ... @scarlet.be=0APlease make the necessary =
+changes in your address book. =0A=0A
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1865024531==--
