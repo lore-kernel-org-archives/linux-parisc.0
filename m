@@ -1,18 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] J2240 - Almost there....
-Date: Wed, 4 Jan 2006 11:18:54 -0700
-Message-ID: <20060104181854.GE20079@colo.lackof.org>
-References: <7d01f9f00601010615v54117490o9a575fd279244524@mail.gmail.com>
-	<000401c61003$cea58c60$3401a8c0@POGO>
-	<20060104174332.GB20079@colo.lackof.org>
-	<20060104174943.GP19769@parisc-linux.org>
+From: "Craig D. Lansing" <clansing@charter.net>
+Subject: RE: [parisc-linux] J2240 - Almost there....
+Date: Wed, 4 Jan 2006 23:08:03 -0500
+Message-ID: <000601c611ad$a02a50e0$3401a8c0@POGO>
+References: <20060104181854.GE20079@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="us-ascii"
 Cc: parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: "'Grant Grundler'" <grundler@parisc-linux.org>,
+ "'Matthew Wilcox'" <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060104174943.GP19769@parisc-linux.org>
+In-Reply-To: <20060104181854.GE20079@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,6 +20,43 @@ List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
 List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+
+I forgot about the built-in LAN port.  I moved the cable to that one and all
+was working from HP-UX, so I restarted the Debian install from CD... it sure
+works much better now!!!! The installer doesn't ask for the network info
+anymore (i.e. got an IP address from DHCP and did not ask for DNS info,
+gateway, etc.), automagically selected eth1 (I guess that implies that eth1
+is the built-in and eth0 is the card), and no longer whines about not being
+able to reach security.debian.org.
+
+The installer has been busily installing packages for at least 3 hours.  
+
+1. Blew up / hung once on:
+Setting up libatk1.0-0 (1.8.0-4) ...
+module ipv6 relocation of symbol ipv6_chk_addr is out of range (0x3ff3fffd
+in 17 bits).
+
+2. Power cycled, booted
+I get the "module ipv6..." errors when portmap, PostgreSQL, and Apache2
+daemons start.
+
+3. Restarted install via "apt-get -f install".  This is my first attempt at
+Debian, so I am not APT literate.  This is just what I was prompted to do
+when I tried to install one package.
+
+Installer is still chugging.
+
+This appears to be a good sign.
+
+
+-----Original Message-----
+From: parisc-linux-bounces@lists.parisc-linux.org
+[mailto:parisc-linux-bounces@lists.parisc-linux.org] On Behalf Of Grant
+Grundler
+Sent: Wednesday, January 04, 2006 1:19 PM
+To: Matthew Wilcox
+Cc: parisc-linux@lists.parisc-linux.org
+Subject: Re: [parisc-linux] J2240 - Almost there....
 
 On Wed, Jan 04, 2006 at 10:49:43AM -0700, Matthew Wilcox wrote:
 ...
@@ -48,6 +83,11 @@ identical silk screened slot numbers.
 
 thanks,
 grant
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 _______________________________________________
 parisc-linux mailing list
