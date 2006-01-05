@@ -1,14 +1,19 @@
-From: Russell King <rmk@arm.linux.org.uk>
-Subject: [parisc-linux] [CFT 10/29] Add parisc_bus_type probe and remove
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] [CFT 10/29] Add parisc_bus_type probe and remove
 	methods
-Date: Thu, 05 Jan 2006 14:34:38 +0000
-Message-ID: <20060105142951.13.10__8313.83396075598$1416624581$gmane$org@flint.arm.linux.org.uk>
+Date: Thu, 5 Jan 2006 11:46:45 -0700
+Message-ID: <20060105184645.GX19769__18131.2187029564$1416624581$gmane$org@parisc-linux.org>
 References: <20060105142951.13.01@flint.arm.linux.org.uk>
+	<20060105142951.13.10@flint.arm.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: Greg K-H <greg@kroah.com>,
+ LKML <linux-kernel@vger.kernel.org>,
  parisc <parisc-linux@parisc-linux.org>
-To: LKML <linux-kernel@vger.kernel.org>
+To: Russell King <rmk@arm.linux.org.uk>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <20060105142951.13.01@flint.arm.linux.org.uk>
+In-Reply-To: <20060105142951.13.10@flint.arm.linux.org.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,33 +24,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+On Thu, Jan 05, 2006 at 02:34:38PM +0000, Russell King wrote:
+> Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
----
- arch/parisc/kernel/drivers.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Works fine, Acked-by: Matthew Wilcox <matthew@wil.cx>
 
-diff -up -x BitKeeper -x ChangeSet -x SCCS -x _xlk -x *.orig -x *.rej -x .git linus/arch/parisc/kernel/drivers.c linux/arch/parisc/kernel/drivers.c
---- linus/arch/parisc/kernel/drivers.c	Sun Nov  6 22:14:46 2005
-+++ linux/arch/parisc/kernel/drivers.c	Sun Nov 13 16:08:49 2005
-@@ -173,8 +173,6 @@ int register_parisc_driver(struct parisc
- 	WARN_ON(driver->drv.probe != NULL);
- 	WARN_ON(driver->drv.remove != NULL);
- 
--	driver->drv.probe = parisc_driver_probe;
--	driver->drv.remove = parisc_driver_remove;
- 	driver->drv.name = driver->name;
- 
- 	return driver_register(&driver->drv);
-@@ -570,6 +568,8 @@ struct bus_type parisc_bus_type = {
- 	.name = "parisc",
- 	.match = parisc_generic_match,
- 	.dev_attrs = parisc_device_attrs,
-+	.probe = parisc_driver_probe,
-+	.remove = parisc_driver_remove,
- };
- 
- /**
+> diff -up -x BitKeeper -x ChangeSet -x SCCS -x _xlk -x *.orig -x *.rej -x .git linus/arch/parisc/kernel/drivers.c linux/arch/parisc/kernel/drivers.c
+> --- linus/arch/parisc/kernel/drivers.c	Sun Nov  6 22:14:46 2005
+> +++ linux/arch/parisc/kernel/drivers.c	Sun Nov 13 16:08:49 2005
+> @@ -173,8 +173,6 @@ int register_parisc_driver(struct parisc
+>  	WARN_ON(driver->drv.probe != NULL);
+>  	WARN_ON(driver->drv.remove != NULL);
+
+I wonder if you want to delete the two WARN_ONs here too.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
