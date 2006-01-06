@@ -1,41 +1,35 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] gcc-hppa64 compilers
-Date: Fri, 06 Jan 2006 09:10:08 -0600
-Message-ID: <1136560208.3528.4.camel__22297.5227669396$1416623977$gmane$org@mulgrave>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: gcc-hppa64 compilers
+Date: Fri, 6 Jan 2006 14:27:46 -0500
+Message-ID: <20060106192746.GA3782__47560.2202037864$1416623977$gmane$org@tachyon.int.mcmartin.ca>
 References: <17341.56304.198509.175260@gargle.gargle.HOWL>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org,
  debian-hppa@lists.debian.org
 To: Matthias Klose <doko@cs.tu-berlin.de>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
 In-Reply-To: <17341.56304.198509.175260@gargle.gargle.HOWL>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Resent-Message-ID: <hpqxOC.A.WuD.yisvDB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Fri, 2006-01-06 at 03:54 +0100, Matthias Klose wrote:
+On Fri, Jan 06, 2006 at 03:54:40AM +0100, Matthias Klose wrote:
 > Which gcc-X.Y-hppa64 variants are still needed for Debian sid/etch?
 > Currently compilers are built for 3.3, 3.4, 4.0 and 4.1, the latter
 > one for experimental. Is it time to drop some of these?
+>
 
-We use the hppa64 compilers only for generating our kernels.  Most of my
-64 bit kernels are currently built with 3.4.5-1 so I wouldn't have
-strenuous objections to removing 3.3;  For 4.0 and 4.1, you need to ask
-John David Anglin <dave@hiauly1.hia.nrc.ca> because I think these
-compilers are still under suspicion of not generating correct code for
-parisc64.
-
-James
+Please don't remove gcc-3.4-hppa64. I use it on many machines
+for kernel builds. 3.3 and 4.0 can go, imnsho, but I'll defer to the
+experts. 
 
 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
