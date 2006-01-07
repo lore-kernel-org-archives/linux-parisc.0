@@ -1,59 +1,54 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: gcc-hppa64 compilers
-Date: Sat, 7 Jan 2006 12:25:41 -0500 (EST)
-Message-ID: <200601071725.k07HPfmg019562__48123.446168802$1416623978$gmane$org@hiauly1.hia.nrc.ca>
-References: <7d01f9f00601070727l24ae2c79h75c8a4a4d38b4e89@mail.gmail.com>
+Subject: Re: [parisc-linux] Re: qt-x11-free build fails
+Date: Sat, 7 Jan 2006 13:49:15 -0500 (EST)
+Message-ID: <200601071849.k07InFlv019952__35913.8606385843$1416623978$gmane$org@hiauly1.hia.nrc.ca>
+References: <20060107174000.GA11145@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: deller@gmx.de,
+Cc: 342545@bugs.debian.org,
+ jbailey@debian.org,
+ lamont@debian.org,
  parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: T-Bone@parisc-linux.org (Thibaut VARENE)
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <7d01f9f00601070727l24ae2c79h75c8a4a4d38b4e89@mail.gmail.com> from "Thibaut VARENE" at Jan 7, 2006 04:27:24 pm
-Resent-Message-ID: <RIjbEB.A.IIF.21_vDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+ debian-hppa@lists.debian.org,
+ 341675@bugs.debian.org,
+ tausq@debian.org,
+ debian-release@lists.debian.org
+To: grundler@parisc-linux.org (Grant Grundler)
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060107174000.GA11145@colo.lackof.org> from "Grant Grundler" at
+	Jan 7, 2006 10:40:00 am
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On 1/7/06, Helge Deller <deller@gmx.de> wrote:
-> >
-> > BTW, what does it take to drop hppa64-compiler in favour of a "-m64" compiler flag (as on x86_64) to hppa-gcc as well ?
-> 
-> This is probably impossible for the simple reason that the 64bit
-> flavour of hppa gcc can only build kernels: we don't have a 64bit
-> userland and thus the 64bit gcc is very limited in its features...
-> This is not a full-featured compiler:
+> On Sat, Jan 07, 2006 at 01:05:11AM -0800, Steve Langasek wrote:
+> > Grant, thank you for your work to date on this bug.  (BTW, it would be
+> > helpful if you would follow up to bug #342545 on libgcc2, instead of bug
+> > #341675 which is filed against just one of the many packages affected by
+> > it).
 
-That's not true.  Under hpux, it's features are essentially equivalent
-to the 32-bit compiler except for the lack of an ada port.  A -m64
-option would be immediately useful under hpux.
+There isn't a lot of info in #342545.  However, I suspect from the
+following comment
 
-There's not a lot that needs to be added to GCC for a 64-bit linux runtime.
-The problems in creating a 64-bit userland are elsewhere.  Carlos has
-made a start.  Maybe this should be in the wiki.
+> It would be nice if somebody fluent with hppa assembly can tell us if 
 
-As usual, the main issue is the number of contributors.  Randolph and
-Carlos have just about finished TLS support.  Randolph and others in
-the gdb project have made numerous fixes to gdb that makes life so much
-easier...  When TLS is finished, possibly the next step is to move back
-to the 64-bit runtime.
+>       fldw -10(,sp),fr23
 
-As well as GCC, work needs to be done on binutils for merged 32/64 bit
-support.  For example, it would be nice if elf32-hppa.c and elf64-hppa.c 
-could be merged to elfxx-hppa.c.  We really need to merge the binutils
-tools before doing GCC.
+that this is the same bug as reported here:
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=20754.
 
 Dave
 -- 
 J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
 National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
