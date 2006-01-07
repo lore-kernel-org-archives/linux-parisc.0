@@ -1,12 +1,17 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [parisc-linux] bug in arg checking in clone.S ?
-Date: Sun, 8 Jan 2006 02:41:07 -0500
-Message-ID: <200601080241.07960.vapier@gentoo.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: strtold
+Date: Sat, 7 Jan 2006 18:49:10 -0500 (EST)
+Message-ID: <200601072349.k07NnBqA021120@hiauly1.hia.nrc.ca>
+References: <20060107234230.GQ17559@baldric.uwo.ca>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_TIMwDehoF7TKqnn"
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060107234230.GQ17559@baldric.uwo.ca> from "Carlos O'Donell" at
+	Jan 7, 2006 06:42:30 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,77 +22,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---Boundary-00=_TIMwDehoF7TKqnn
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> I believe it will only require removing the implies line for ldbl-128
+> from glibc.
 
-for some reason the attached test case (originally from LTP) segfaults on 
-glibc/hppa systems ... every other arch ive tested on works fine ...
+Excellent.
 
-for example, a good run would be:
-$ gcc errno.c -o errno ; ./errno ; echo $?
-0
+> I am building you a new debian glibc based on 2.3.5-8 for you to test,
+> would this be good?
 
-on hppa, i get:
-$ gcc errno.c -o errno ; ./errno ; echo $?
-Segmentation fault
+Yes.
 
-tested on Debian (glibc 2.3.5-11) and Gentoo (glibc 2.3.4.20040808-r1), both 
-fail in the same way:
-Program received signal SIGSEGV, Segmentation fault.
-0x40538990 in __errno_location () from /lib/libc.so.6
-(gdb) bt
-#0  0x40538990 in __errno_location () from /lib/libc.so.6
-#1  0x40538748 in __libc_start_main () from /lib/libc.so.6
-#2  0x00010644 in main ()
--mike
+Do you also have a fix for FP exception support?
 
---Boundary-00=_TIMwDehoF7TKqnn
-Content-Type: text/x-csrc;
-  charset="us-ascii";
-  name="errno.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="errno.c"
-
-/* based originally on one the clone tests in the LTP */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <sched.h>
-
-int child_fn(void *arg)
-{
-	fprintf(stderr, "in child_fn\n");
-	exit(1);
-}
-
-int main(void)
-{
-	int r_clone, ret_errno;
-
-	r_clone = clone(child_fn, NULL, (int) NULL, NULL);
-	ret_errno = errno;
-	if (ret_errno != EINVAL || r_clone != -1) {
-		fprintf(stderr, "clone: res=%d (wanted -1) errno=%d (wanted %d)\n",
-			r_clone, errno, EINVAL);
-		return 1;
-	}
-
-	return 0;
-}
-
---Boundary-00=_TIMwDehoF7TKqnn
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---Boundary-00=_TIMwDehoF7TKqnn--
