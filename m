@@ -1,57 +1,84 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: gcc-hppa64 compilers
-Date: Sat, 7 Jan 2006 11:55:20 -0500 (EST)
-Message-ID: <200601071655.k07GtKmF019459__38105.8220672005$1416623980$gmane$org@hiauly1.hia.nrc.ca>
-References: <200601071606.24320.deller@gmx.de>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: qt-x11-free build fails
+Date: Sat, 7 Jan 2006 10:40:00 -0700
+Message-ID: <20060107174000.GA11145__23294.5378440947$1416623980$gmane$org@colo.lackof.org>
+References: <20060107090511.GI29300@tennyson.dodds.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: deller@gmx.de (Helge Deller)
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <200601071606.24320.deller@gmx.de> from "Helge Deller" at Jan 7, 2006 04:06:22 pm
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=us-ascii
+To: 342545@bugs.debian.org,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org,
+ debian-release@lists.debian.org,
+ lamont@debian.org,
+ willy@debian.org,
+ tausq@debian.org,
+ kyle@debian.org,
+ jbailey@debian.org,
+ 341675@bugs.debian.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <20060107090511.GI29300@tennyson.dodds.net>
+Resent-Message-ID: <Dqj6rB.A.GyE.Pr_vDB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-> On Friday 06 January 2006 20:27, Kyle McMartin wrote:
-> > On Fri, Jan 06, 2006 at 03:54:40AM +0100, Matthias Klose wrote:
-> > > Which gcc-X.Y-hppa64 variants are still needed for Debian sid/etch?
-> > > Currently compilers are built for 3.3, 3.4, 4.0 and 4.1, the latter
-> > > one for experimental. Is it time to drop some of these?
-> > >
-> > 
-> > Please don't remove gcc-3.4-hppa64. I use it on many machines
-> > for kernel builds. 3.3 and 4.0 can go, imnsho, but I'll defer to the
-> > experts. 
-> 
-> I'm for removing 3.3 and 4.0 as well.
+On Sat, Jan 07, 2006 at 01:05:11AM -0800, Steve Langasek wrote:
+> Grant, thank you for your work to date on this bug.  (BTW, it would be
+> helpful if you would follow up to bug #342545 on libgcc2, instead of bug
+> #341675 which is filed against just one of the many packages affected by
+> it).
 
-Personally, I would take 4.0 over 4.1 at the moment.  Although 4.1
-is getting there, it's taking more time than expected to eliminate
-most of the regressions.  For example, the ada testsuite is pretty
-clean in 4.0, but there are a lot of problems in 4.1.  I'm aware of
-one optimization issue affecting floating point code.  This problem
-is present in all versions, but exposed by the "improvements" in 4.x.
+Steve,
+welcome!
+I'm just replying to what was already on the CC list.
+I've also added parisc-linux mailing list since this may involve
+kernel and/or need FP unit expertise that I don't have.
 
-The newer GCC versions require more memory and are slower.  You might
-find that 4.x is too slow on PA 1.1 machines.  The GCC build and check
-time on a 735 is up to about five days.
+> Unfortunately, it doesn't seem from the bug log as though much progress is
+> being made towards a resolution.
 
-It takes quite a bit of time to find and fix bugs.  For example, there
-are still a number of libc problems caused by the move to 4.0.  So, I
-wouldn't rush to use the newer versions unless they fix a crucial bug.
+We (several hppa developers) are working on it.
+But keep in mind this is a hobby for all of us.
 
-> BTW, what does it take to drop hppa64-compiler in favour of a "-m64" compiler flag (as on x86_64) to hppa-gcc as well ?
+> At this point, the KDE transition has
+> been completed in testing for all architectures, with the exception of hppa
+> as a result of this bug.  The release team is already moving on to other
+> transitions that need to happen for etch, including another round of
+> dbus-related KDE changes.
 
-Quite a bit of work is involved.  Some of the work involves adding new
-target hooks to the core code.  The problem is that there are different
-sets of macro defines for 32 bit/64 bit/gas/HP as/GNU ld/HP ld/etc and these
-conditionally change the behavior of other macros defined in the core code.
-In the past, Jeff Law stated that this wasn't worth doing.  At the moment,
-my primary focus is on fixing bugs and regressions, and getting libjava
-working under hpux.
+My opinion: release team should move on and ignore hppa until this is
+resolved. If it doesn't get resolved in the next couple of weeks
+(say by Feb or mid-Feb), then drop hppa from etch. But I'm not
+a DD and don't want to know the politics involved. Just my $0.02.
 
-Dave
+> This is a release-critical bug, and it is impacting hppa's ability to keep
+> up with etch at large, extending even to such core packages as aptitude
+> (build-depends on cppunit; now uninstallable in testing on hppa).
+
+*nod* - I saw the KDE dependency already.
+
+>  Is there
+> progress being made on this bug that's not shown in the bug log, or do we
+> need to consider dropping hppa from the list of etch release archs at this
+> point?
+
+Yes, we are making progress - nothing new to report since last week.
+I'm looking at it today and will consult with other hppa developers
+once I have more data later today.
+
+And as noted above, I think release team should informally ignore
+hppa until this is resolved and we catch up again. But I don't know
+what the politics or policys in Debian allow for. I'm just a (mostly)
+happy debian user and upstream (hppa) maintainer.
+
+thanks,
+grant
+
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
