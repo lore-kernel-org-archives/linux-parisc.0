@@ -1,51 +1,57 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: Re: gcc-hppa64 compilers
-Date: Sat, 7 Jan 2006 16:27:24 +0100
-Message-ID: <7d01f9f00601070727l24ae2c79h75c8a4a4d38b4e89__26853.7990552888$1416623980$gmane$org@mail.gmail.com>
-References: <17341.56304.198509.175260@gargle.gargle.HOWL>
-	 <20060106192746.GA3782@tachyon.int.mcmartin.ca>
-	 <200601071606.24320.deller@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: gcc-hppa64 compilers
+Date: Sat, 7 Jan 2006 11:55:20 -0500 (EST)
+Message-ID: <200601071655.k07GtKmF019459__38105.8220672005$1416623980$gmane$org@hiauly1.hia.nrc.ca>
+References: <200601071606.24320.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
+  charset=US-ASCII
 Cc: debian-hppa@lists.debian.org,
- Matthias Klose <doko@cs.tu-berlin.de>,
  parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200601071606.24320.deller@gmx.de>
-Resent-Message-ID: <QUQrY.A.D7E.u6-vDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+To: deller@gmx.de (Helge Deller)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <200601071606.24320.deller@gmx.de> from "Helge Deller" at Jan 7, 2006 04:06:22 pm
+List-ID: <linux-parisc.vger.kernel.org>
 
-On 1/7/06, Helge Deller <deller@gmx.de> wrote:
->
-> BTW, what does it take to drop hppa64-compiler in favour of a "-m64" comp=
-iler flag (as on x86_64) to hppa-gcc as well ?
+> On Friday 06 January 2006 20:27, Kyle McMartin wrote:
+> > On Fri, Jan 06, 2006 at 03:54:40AM +0100, Matthias Klose wrote:
+> > > Which gcc-X.Y-hppa64 variants are still needed for Debian sid/etch?
+> > > Currently compilers are built for 3.3, 3.4, 4.0 and 4.1, the latter
+> > > one for experimental. Is it time to drop some of these?
+> > >
+> > 
+> > Please don't remove gcc-3.4-hppa64. I use it on many machines
+> > for kernel builds. 3.3 and 4.0 can go, imnsho, but I'll defer to the
+> > experts. 
+> 
+> I'm for removing 3.3 and 4.0 as well.
 
-This is probably impossible for the simple reason that the 64bit
-flavour of hppa gcc can only build kernels: we don't have a 64bit
-userland and thus the 64bit gcc is very limited in its features...
-This is not a full-featured compiler:
+Personally, I would take 4.0 over 4.1 at the moment.  Although 4.1
+is getting there, it's taking more time than expected to eliminate
+most of the regressions.  For example, the ada testsuite is pretty
+clean in 4.0, but there are a lot of problems in 4.1.  I'm aware of
+one optimization issue affecting floating point code.  This problem
+is present in all versions, but exposed by the "improvements" in 4.x.
 
-Reading specs from /usr/lib/gcc/hppa64-linux-gnu/3.4.5/specs
-Configured with: ../src/configure --enable-languages=3Dc --prefix=3D/usr
---libexecdir=3D/usr/lib --disable-shared --disable-nls --disable-threads
---with-as=3D/usr/bin/hppa64-linux-gnu-as
---with-ld=3D/usr/bin/hppa64-linux-gnu-ld
---includedir=3D/usr/hppa64-linux/include --host=3Dhppa-linux-gnu
---build=3Dhppa-linux-gnu --target=3Dhppa64-linux-gnu
-Thread model: single
-gcc version 3.4.5 (Debian 3.4.5-1)
+The newer GCC versions require more memory and are slower.  You might
+find that 4.x is too slow on PA 1.1 machines.  The GCC build and check
+time on a 735 is up to about five days.
 
-HTH
+It takes quite a bit of time to find and fix bugs.  For example, there
+are still a number of libc problems caused by the move to 4.0.  So, I
+wouldn't rush to use the newer versions unless they fix a crucial bug.
 
-T-Bone
+> BTW, what does it take to drop hppa64-compiler in favour of a "-m64" compiler flag (as on x86_64) to hppa-gcc as well ?
 
---
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+Quite a bit of work is involved.  Some of the work involves adding new
+target hooks to the core code.  The problem is that there are different
+sets of macro defines for 32 bit/64 bit/gas/HP as/GNU ld/HP ld/etc and these
+conditionally change the behavior of other macros defined in the core code.
+In the past, Jeff Law stated that this wasn't worth doing.  At the moment,
+my primary focus is on fixing bugs and regressions, and getting libjava
+working under hpux.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
