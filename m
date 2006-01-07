@@ -1,84 +1,97 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: qt-x11-free build fails
-Date: Sat, 7 Jan 2006 10:40:00 -0700
-Message-ID: <20060107174000.GA11145__23294.5378440947$1416623980$gmane$org@colo.lackof.org>
-References: <20060107090511.GI29300@tennyson.dodds.net>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: [parisc-linux] Re: strtold
+Date: Sat, 7 Jan 2006 18:42:30 -0500
+Message-ID: <20060107234230.GQ17559@baldric.uwo.ca>
+References: <20060107210757.GM17559@baldric.uwo.ca>
+	<200601072241.k07MfqiW020827@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: 342545@bugs.debian.org,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org,
- debian-release@lists.debian.org,
- lamont@debian.org,
- willy@debian.org,
- tausq@debian.org,
- kyle@debian.org,
- jbailey@debian.org,
- 341675@bugs.debian.org
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <20060107090511.GI29300@tennyson.dodds.net>
-Resent-Message-ID: <Dqj6rB.A.GyE.Pr_vDB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+Cc: tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200601072241.k07MfqiW020827@hiauly1.hia.nrc.ca>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jan 07, 2006 at 01:05:11AM -0800, Steve Langasek wrote:
-> Grant, thank you for your work to date on this bug.  (BTW, it would be
-> helpful if you would follow up to bug #342545 on libgcc2, instead of bug
-> #341675 which is filed against just one of the many packages affected by
-> it).
+On Sat, Jan 07, 2006 at 05:41:52PM -0500, John David Anglin wrote:
+> > strtold will never work, gcc and libc have different sizes for long
+> > double. This is probably a side-effect of this.
+> 
+> I'm not sure what has changed but this is the source of a number
+> of gfortran and libstdc++ regressions when using the current version
+> of libc in unstable.
 
-Steve,
-welcome!
-I'm just replying to what was already on the CC list.
-I've also added parisc-linux mailing list since this may involve
-kernel and/or need FP unit expertise that I don't have.
+strold has always done funny things in the glibc testsuite, consider
+yourself lucky.
+ 
+> > If we really want long double to work we need to do something like set
+> > it to be the same as double.
+> 
+> Long double has always been the same as double in GCC.  It allowed
+> by the C and C++ standards.  It fast and the hardware and corner
+> cases are well understood.
 
-> Unfortunately, it doesn't seem from the bug log as though much progress is
-> being made towards a resolution.
+So long doubles have always been DFmode in GCC, okay, I thought it was
+something else.
 
-We (several hppa developers) are working on it.
-But keep in mind this is a hobby for all of us.
+glibc thinks long double is 128-bit. If you want strtold to work then I
+need to make the changes in glibc.
 
-> At this point, the KDE transition has
-> been completed in testing for all architectures, with the exception of hppa
-> as a result of this bug.  The release team is already moving on to other
-> transitions that need to happen for etch, including another round of
-> dbus-related KDE changes.
+> I've given up hope that HP will release their IEEE long double emulation
+> code for PA-RISC.  Although I don't have any hard evidence of bugs in it,
+> there is the suggestion from the ada testsuite run under hpux that there
+> may be bugs in the rounding and exception support.
 
-My opinion: release team should move on and ignore hppa until this is
-resolved. If it doesn't get resolved in the next couple of weeks
-(say by Feb or mid-Feb), then drop hppa from etch. But I'm not
-a DD and don't want to know the politics involved. Just my $0.02.
+I agree, I don't think it will ever be released. If it is released then
+we'll jigger it out some other way :)
 
-> This is a release-critical bug, and it is impacting hppa's ability to keep
-> up with etch at large, extending even to such core packages as aptitude
-> (build-depends on cppunit; now uninstallable in testing on hppa).
+> > 128-bit long double is just going to be a pain, and I don't know how
+> > well the 80-bit long double from IBM supports IEEE modes.
+> 
+> The only viable alternatives at this point are:
+> 
+>   1) long double == double (64 bit long double), or
+>   2) IBM 128-bit double double implementation used by powerpc.
 
-*nod* - I saw the KDE dependency already.
+Or write our own library! ;-)
 
->  Is there
-> progress being made on this bug that's not shown in the bug log, or do we
-> need to consider dropping hppa from the list of etch release archs at this
-> point?
+> After more than a year of using the double-double format, the powerpc
+> folks are still working the bugs out from the corner cases.  While I
+> guess it more or less works, I wouldn't want to rely on it for
+> critical calculations.  RTH recented indicated that this would be a
+> poor choice for another port in the same situation.  The same viewpoint
+> was expressed to me by an Ada maintainer at the last GCC summit.  Ada
+> probably has the best numerics support in GCC.
 
-Yes, we are making progress - nothing new to report since last week.
-I'm looking at it today and will consult with other hppa developers
-once I have more data later today.
+I say we go for (1).
 
-And as noted above, I think release team should informally ignore
-hppa until this is resolved and we catch up again. But I don't know
-what the politics or policys in Debian allow for. I'm just a (mostly)
-happy debian user and upstream (hppa) maintainer.
+> There is no support for the 80-bit format (either in hardware or
+> software) on PA-RISC as far as I know.  So, this alternative isn't viable.
 
-thanks,
-grant
+Okay.
 
+> C99 requires long double support.  Thus, I believe we should go with
+> option 1 and libc should be changed.  We aren't the only target with
+> this problem, so there must be some libc support for 64-bit long double.
 
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+I believe it will only require removing the implies line for ldbl-128
+from glibc.
+
+I am building you a new debian glibc based on 2.3.5-8 for you to test,
+would this be good?
+
+c.
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
