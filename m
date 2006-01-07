@@ -1,17 +1,18 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: gcc-hppa64 compilers
-Date: Sat, 7 Jan 2006 16:06:22 +0100
-Message-ID: <200601071606.24320.deller__40016.3476042964$1416623977$gmane$org@gmx.de>
-References: <17341.56304.198509.175260@gargle.gargle.HOWL> <20060106192746.GA3782@tachyon.int.mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: gcc-hppa64 compilers
+Date: Sat, 7 Jan 2006 12:25:41 -0500 (EST)
+Message-ID: <200601071725.k07HPfmg019562__48123.446168802$1416623978$gmane$org@hiauly1.hia.nrc.ca>
+References: <7d01f9f00601070727l24ae2c79h75c8a4a4d38b4e89@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: Matthias Klose <doko@cs.tu-berlin.de>,
- parisc-linux@lists.parisc-linux.org
-To: debian-hppa@lists.debian.org
+  charset=US-ASCII
+Cc: deller@gmx.de,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: T-Bone@parisc-linux.org (Thibaut VARENE)
 Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <20060106192746.GA3782@tachyon.int.mcmartin.ca>
-Resent-Message-ID: <_c8guD.A.Yb.1j9vDB@murphy>
+In-Reply-To: <7d01f9f00601070727l24ae2c79h75c8a4a4d38b4e89@mail.gmail.com> from "Thibaut VARENE" at Jan 7, 2006 04:27:24 pm
+Resent-Message-ID: <RIjbEB.A.IIF.21_vDB@murphy>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-Post: <mailto:debian-hppa@lists.debian.org>
@@ -19,22 +20,38 @@ List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
 List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Friday 06 January 2006 20:27, Kyle McMartin wrote:
-> On Fri, Jan 06, 2006 at 03:54:40AM +0100, Matthias Klose wrote:
-> > Which gcc-X.Y-hppa64 variants are still needed for Debian sid/etch?
-> > Currently compilers are built for 3.3, 3.4, 4.0 and 4.1, the latter
-> > one for experimental. Is it time to drop some of these?
+> On 1/7/06, Helge Deller <deller@gmx.de> wrote:
 > >
+> > BTW, what does it take to drop hppa64-compiler in favour of a "-m64" compiler flag (as on x86_64) to hppa-gcc as well ?
 > 
-> Please don't remove gcc-3.4-hppa64. I use it on many machines
-> for kernel builds. 3.3 and 4.0 can go, imnsho, but I'll defer to the
-> experts. 
+> This is probably impossible for the simple reason that the 64bit
+> flavour of hppa gcc can only build kernels: we don't have a 64bit
+> userland and thus the 64bit gcc is very limited in its features...
+> This is not a full-featured compiler:
 
-I'm for removing 3.3 and 4.0 as well.
+That's not true.  Under hpux, it's features are essentially equivalent
+to the 32-bit compiler except for the lack of an ada port.  A -m64
+option would be immediately useful under hpux.
 
-BTW, what does it take to drop hppa64-compiler in favour of a "-m64" compiler flag (as on x86_64) to hppa-gcc as well ?
+There's not a lot that needs to be added to GCC for a 64-bit linux runtime.
+The problems in creating a 64-bit userland are elsewhere.  Carlos has
+made a start.  Maybe this should be in the wiki.
 
-Helge
+As usual, the main issue is the number of contributors.  Randolph and
+Carlos have just about finished TLS support.  Randolph and others in
+the gdb project have made numerous fixes to gdb that makes life so much
+easier...  When TLS is finished, possibly the next step is to move back
+to the 64-bit runtime.
+
+As well as GCC, work needs to be done on binutils for merged 32/64 bit
+support.  For example, it would be nice if elf32-hppa.c and elf64-hppa.c 
+could be merged to elfxx-hppa.c.  We really need to merge the binutils
+tools before doing GCC.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
 
 -- 
