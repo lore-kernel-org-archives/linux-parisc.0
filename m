@@ -1,16 +1,16 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] nscd: error while loading shared libraries:
-Date: Sat, 7 Jan 2006 18:51:37 -0500
-Message-ID: <20060107235137.GS17559@baldric.uwo.ca>
-References: <200512270014.45080.vapier@gentoo.org>
-	<200512271815.jBRIF1rH022390@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: nscd: error while loading shared libraries:
+	unexpected reloc type 0x42
+Date: Sat, 7 Jan 2006 18:53:24 -0500
+Message-ID: <20060107235323.GT17559@baldric.uwo.ca>
+References: <200512262154.jBQLshmK018411@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200512271815.jBRIF1rH022390@hiauly1.hia.nrc.ca>
+In-Reply-To: <200512262154.jBQLshmK018411@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,16 +21,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Dec 27, 2005 at 01:15:01PM -0500, John David Anglin wrote:
-> > good news though, when i mentioned this before:
-> > http://lists.parisc-linux.org/pipermail/parisc-linux/2005-July/026865.html
-> > people said it's in the works to be fixed :)
+On Mon, Dec 26, 2005 at 04:54:42PM -0500, John David Anglin wrote:
+> > So they must come from an asm or assembly code.  I think libc used this
+> > reloc for loading the address of the function descriptor of main.
 > 
-> It seems this issue has fallen through the cracks.  I know Carlos has
-> been busy finishing up his thesis.  The relocation problem is a separate
-> issue from PIE support as it could arise independently.
+> objdump -R nscd
+> ...
+> 00005970 R_PARISC_PLABEL21L  main
+> 00005974 R_PARISC_PLABEL14R  main
+> 00005980 R_PARISC_PLABEL21L  __libc_csu_init
+> 00005984 R_PARISC_PLABEL14R  __libc_csu_init
+> 00005988 R_PARISC_PLABEL21L  __libc_csu_fini
+> 0000598c R_PARISC_PLABEL14R  __libc_csu_fini
+> 
+> If I recall correctly, there was a dynamic loader fix to handle these
+> relocations.  However, it doesn't seem to be in libc6 2.3.5-8.
 
-But AFAIR with the relocation support in place PIE just works (tm).
+It is in the one I have installed on my system :)
+
+The proper fix was this:
+http://cvs.parisc-linux.org/glibc/sysdeps/hppa/elf/start.S?r1=1.2&r2=1.3
+
+Please verify.
 
 c.
 
