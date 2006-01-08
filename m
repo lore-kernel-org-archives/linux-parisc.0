@@ -1,16 +1,17 @@
 From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [PATCH 4/5] Convert x86_64 to use generic
-	compat_siginfo_t
-Date: Sun, 8 Jan 2006 14:38:07 -0500
-Message-ID: <20060108193807.GK3782__40233.9064902209$1416623986$gmane$org@tachyon.int.mcmartin.ca>
+Subject: [parisc-linux] [PATCH 3/5] Fix generic compat_siginfo_t on s390 and
+	sparc64
+Date: Sun, 8 Jan 2006 14:38:03 -0500
+Message-ID: <20060108193803.GJ3782__25337.0000901215$1416623986$gmane$org@tachyon.int.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: carlos@parisc-linux.org,
+Cc: linux-kernel@vger.kernel.org,
  willy@parisc-linux.org,
- ak@suse.de,
- parisc-linux@lists.parisc-linux.org,
- linux-kernel@vger.kernel.org
+ carlos@parisc-linux.org,
+ schwidefsky@de.ibm.com,
+ davem@davemloft.net,
+ parisc-linux@lists.parisc-linux.org
 To: akpm@osdl.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -23,44 +24,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-From: Kyle McMartin <kyle@parisc-linux.org>
+From: Carlos O'Donell <carlos@parisc-linux.org>
 
-Convert arch/x86_64 to use generic compat_siginfo_t.
+Define types needed for generic compat_siginfo_t on s390 and sparc64.
 
+Signed-off-by: Carlos O'Donell <carlos@parisc-linux.org>
 Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 
 ---
 
-Andi,
+ include/asm-s390/compat.h    |    3 +++
+ include/asm-sparc64/compat.h |    3 +++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
 
-I've done testing of this using my x86-64 machine, and it seems to survive
-the GCC testsuite, which seemed to be a rather signal heavy workload. If you
-would prefer me to run something else to test, let me know, I'd be more
-than happy to.
-
- arch/x86_64/ia32/ia32_signal.c |    1 +
- include/asm-x86_64/compat.h    |    3 ++
- include/asm-x86_64/ia32.h      |   53 +---------------------------------------
- 3 files changed, 5 insertions(+), 52 deletions(-)
-
-82a78ba45a265996a8a8d5ffdcea568f3fe07c1f
-diff --git a/arch/x86_64/ia32/ia32_signal.c b/arch/x86_64/ia32/ia32_signal.c
-index 0903cc1..b02cfe4 100644
---- a/arch/x86_64/ia32/ia32_signal.c
-+++ b/arch/x86_64/ia32/ia32_signal.c
-@@ -23,6 +23,7 @@
- #include <linux/stddef.h>
- #include <linux/personality.h>
- #include <linux/compat.h>
-+#include <linux/compat_siginfo.h>
- #include <asm/ucontext.h>
- #include <asm/uaccess.h>
- #include <asm/i387.h>
-diff --git a/include/asm-x86_64/compat.h b/include/asm-x86_64/compat.h
-index f0155c3..7e0a7fb 100644
---- a/include/asm-x86_64/compat.h
-+++ b/include/asm-x86_64/compat.h
-@@ -16,6 +16,9 @@ typedef s32		compat_clock_t;
+c5833cf4215cfbab87f83d32520251da5631355f
+diff --git a/include/asm-s390/compat.h b/include/asm-s390/compat.h
+index a007715..38b1165 100644
+--- a/include/asm-s390/compat.h
++++ b/include/asm-s390/compat.h
+@@ -15,6 +15,9 @@ typedef s32		compat_clock_t;
  typedef s32		compat_pid_t;
  typedef u16		__compat_uid_t;
  typedef u16		__compat_gid_t;
@@ -70,70 +52,24 @@ index f0155c3..7e0a7fb 100644
  typedef u32		__compat_uid32_t;
  typedef u32		__compat_gid32_t;
  typedef u16		compat_mode_t;
-diff --git a/include/asm-x86_64/ia32.h b/include/asm-x86_64/ia32.h
-index c7bc9c0..d9a32d5 100644
---- a/include/asm-x86_64/ia32.h
-+++ b/include/asm-x86_64/ia32.h
-@@ -6,6 +6,7 @@
- #ifdef CONFIG_IA32_EMULATION
- 
- #include <linux/compat.h>
-+#include <linux/compat_siginfo.h>
- 
- /*
-  * 32 bit structures for IA32 support.
-@@ -78,58 +79,6 @@ struct stat64 {
- 	unsigned long long	st_ino;
- } __attribute__((packed));
- 
--typedef struct compat_siginfo{
--	int si_signo;
--	int si_errno;
--	int si_code;
--
--	union {
--		int _pad[((128/sizeof(int)) - 3)];
--
--		/* kill() */
--		struct {
--			unsigned int _pid;	/* sender's pid */
--			unsigned int _uid;	/* sender's uid */
--		} _kill;
--
--		/* POSIX.1b timers */
--		struct {
--			compat_timer_t _tid;	/* timer id */
--			int _overrun;		/* overrun count */
--			compat_sigval_t _sigval;	/* same as below */
--			int _sys_private;	/* not to be passed to user */
--			int _overrun_incr;	/* amount to add to overrun */
--		} _timer;
--
--		/* POSIX.1b signals */
--		struct {
--			unsigned int _pid;	/* sender's pid */
--			unsigned int _uid;	/* sender's uid */
--			compat_sigval_t _sigval;
--		} _rt;
--
--		/* SIGCHLD */
--		struct {
--			unsigned int _pid;	/* which child */
--			unsigned int _uid;	/* sender's uid */
--			int _status;		/* exit code */
--			compat_clock_t _utime;
--			compat_clock_t _stime;
--		} _sigchld;
--
--		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
--		struct {
--			unsigned int _addr;	/* faulting insn/memory ref. */
--		} _sigfault;
--
--		/* SIGPOLL */
--		struct {
--			int _band;	/* POLL_IN, POLL_OUT, POLL_MSG */
--			int _fd;
--		} _sigpoll;
--	} _sifields;
--} compat_siginfo_t;
+diff --git a/include/asm-sparc64/compat.h b/include/asm-sparc64/compat.h
+index c73935d..06fbfb8 100644
+--- a/include/asm-sparc64/compat.h
++++ b/include/asm-sparc64/compat.h
+@@ -14,6 +14,9 @@ typedef s32		compat_clock_t;
+ typedef s32		compat_pid_t;
+ typedef u16		__compat_uid_t;
+ typedef u16		__compat_gid_t;
++/* Define for use in the compat_siginfo_t */
++#undef __ARCH_SI_COMPAT_UID_T
++#define __ARCH_SI_COMPAT_UID_T compat_uint_t
+ typedef u32		__compat_uid32_t;
+ typedef u32		__compat_gid32_t;
+ typedef u16		compat_mode_t;
+-- 
+1.0.7
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
