@@ -1,16 +1,19 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] nscd: error while loading shared libraries:
-	unexpected reloc type 0x42
-Date: Sat, 7 Jan 2006 18:48:38 -0500
-Message-ID: <20060107234838.GR17559@baldric.uwo.ca>
-References: <200512262147.jBQLlKKP018323@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: strtold
+Date: Sat, 7 Jan 2006 21:28:26 -0700
+Message-ID: <20060108042826.GA3567@colo.lackof.org>
+References: <20060107210757.GM17559@baldric.uwo.ca>
+	<200601072241.k07MfqiW020827@hiauly1.hia.nrc.ca>
+	<20060107234230.GQ17559@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ tausq@debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200512262147.jBQLlKKP018323@hiauly1.hia.nrc.ca>
+In-Reply-To: <20060107234230.GQ17559@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,24 +24,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Dec 26, 2005 at 04:47:20PM -0500, John David Anglin wrote:
-> I'm seeing the following error in the boot log:
+On Sat, Jan 07, 2006 at 06:42:30PM -0500, Carlos O'Donell wrote:
+...
+> > I've given up hope that HP will release their IEEE long double emulation
+> > code for PA-RISC.  Although I don't have any hard evidence of bugs in it,
+> > there is the suggestion from the ada testsuite run under hpux that there
+> > may be bugs in the rounding and exception support.
 > 
-> Fri Nov 25 04:59:01 2005: Starting Name Service Cache Daemon: nscd/usr/sbin/nscd
-> : error while loading shared libraries: unexpected reloc type 0x42
-> Fri Nov 25 04:59:02 2005: .
-> 
-> I think this is a R_PARISC_PLABEL21L reloc.  GCC doesn't generate these.
-> So they must come from an asm or assembly code.  I think libc used this
-> reloc for loading the address of the function descriptor of main.
+> I agree, I don't think it will ever be released. If it is released then
+> we'll jigger it out some other way :)
 
-This is what happens when GCC starts compiling things with -fpie I
-believe. I saw this problem with the -fpie tests.
+Me too. But I wouldn't worry about an ABI event too much.
+As long as the only dependency is debian/gentoo packages,
+then I think we can tolerate an ABI event like this on the
+next OS release if necessary.
 
-I have patches for libc to fix this in debian. I'll post these after I
-get you to test them ... mmm kay? :)
-
-c.
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
