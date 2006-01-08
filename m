@@ -1,11 +1,10 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] [Update] TLS toolchain.
-Date: Sun, 8 Jan 2006 00:51:10 -0500
-Message-ID: <20060108055109.GE17559@baldric.uwo.ca>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [parisc-linux] bug in arg checking in clone.S ?
+Date: Sun, 8 Jan 2006 02:41:07 -0500
+Message-ID: <200601080241.07960.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: Randolph Chung <tausq@debian.org>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_TIMwDehoF7TKqnn"
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -18,50 +17,77 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+--Boundary-00=_TIMwDehoF7TKqnn
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Binutils is good to go with a recent merge at 2005-12-10.
-GCC is working from our CVS, but the merge is 7 months old and based on
-the 4.0.0 release.
+for some reason the attached test case (originally from LTP) segfaults on 
+glibc/hppa systems ... every other arch ive tested on works fine ...
 
-GLIBC is merge from 2005-06-08 and I have tls+linuxthreads working
-without many failures:
----
-make[2]: *** [/glibc/math/atest-exp2.out] Error 136
-make[2]: *** [/glibc/math/test-float.out] Error 136
-make[2]: *** [/glibc/math/test-double.out] Error 1
-make[2]: *** [/glibc/math/test-ifloat.out] Error 136
-make[2]: *** [/glibc/math/test-idouble.out] Error 1
-make[1]: *** [math/tests] Error 2
-make[2]: *** [/glibc/linuxthreads/tst-attr1.out] Error 1
-make[1]: *** [linuxthreads/tests] Error 2
-make[2]: *** [/glibc/elf/tst-array1.out] Error 1
-make[2]: *** [/glibc/elf/tst-array2.out] Error 1
-make[2]: *** [/glibc/elf/tst-array3.out] Error 1
-make[2]: *** [/glibc/elf/tst-array4.out] Error 1
-make[2]: *** [/glibc/elf/tst-array1-static.out] Error 1
-make[2]: *** [/glibc/elf/order.out] Error 1
-make[2]: *** [/glibc/elf/nodelete2.out] Error 1
-make[2]: *** [/glibc/elf/tst-align2.out] Error 1
-make[2]: *** [/glibc/elf/order2.out] Error 1
-make[1]: *** [elf/tests] Error 2
-make: *** [check] Error 2
----
-The FPU code is a bit borked right now and needs review, I tried
-incorporating my changes and Daniel's alignment patch but it didn't work
-out very well.
+for example, a good run would be:
+$ gcc errno.c -o errno ; ./errno ; echo $?
+0
 
-The linuxthreads tst-attr1 test is unclassified.
+on hppa, i get:
+$ gcc errno.c -o errno ; ./errno ; echo $?
+Segmentation fault
 
-The elf related failures are relatively new and related to binutils.
----
+tested on Debian (glibc 2.3.5-11) and Gentoo (glibc 2.3.4.20040808-r1), both 
+fail in the same way:
+Program received signal SIGSEGV, Segmentation fault.
+0x40538990 in __errno_location () from /lib/libc.so.6
+(gdb) bt
+#0  0x40538990 in __errno_location () from /lib/libc.so.6
+#1  0x40538748 in __libc_start_main () from /lib/libc.so.6
+#2  0x00010644 in main ()
+-mike
 
-I'm going to run the NPTL build and see how the tests turn out.
+--Boundary-00=_TIMwDehoF7TKqnn
+Content-Type: text/x-csrc;
+  charset="us-ascii";
+  name="errno.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="errno.c"
 
-Anyone remember what the next step was?
+/* based originally on one the clone tests in the LTP */
 
-Cheers,
-Carlos.
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sched.h>
+
+int child_fn(void *arg)
+{
+	fprintf(stderr, "in child_fn\n");
+	exit(1);
+}
+
+int main(void)
+{
+	int r_clone, ret_errno;
+
+	r_clone = clone(child_fn, NULL, (int) NULL, NULL);
+	ret_errno = errno;
+	if (ret_errno != EINVAL || r_clone != -1) {
+		fprintf(stderr, "clone: res=%d (wanted -1) errno=%d (wanted %d)\n",
+			r_clone, errno, EINVAL);
+		return 1;
+	}
+
+	return 0;
+}
+
+--Boundary-00=_TIMwDehoF7TKqnn
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--Boundary-00=_TIMwDehoF7TKqnn--
