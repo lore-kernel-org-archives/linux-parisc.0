@@ -1,17 +1,13 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] Re: strtold
-Date: Sat, 7 Jan 2006 19:18:36 -0500
-Message-ID: <20060108001836.GV17559@baldric.uwo.ca>
-References: <20060107235546.GU17559@baldric.uwo.ca>
-	<200601080008.k0808n4E021273@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] [RFC] Updated glibc 2.3.5-8.1
+Date: Sat, 7 Jan 2006 22:03:43 -0500
+Message-ID: <20060108030342.GA17559@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: tausq@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: Randolph Chung <tausq@debian.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200601080008.k0808n4E021273@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,28 +18,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jan 07, 2006 at 07:08:49PM -0500, John David Anglin wrote:
-> > > Do you also have a fix for FP exception support?
-> > 
-> > Do you refer to the fenv_t align problems?
-> 
-> http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=327351.  Vaguely
-> I thought that there might have been a similar issue in fesetexceptflag
-> or feraiseexcept.
 
-Two problems:
+Updated glibc 2.3.5-8.1
 
-a) GCC optimizing away code.
-	- Fixed by using struct and memory clobber.
-b) Unaligned fenv_t
-	- Fixed by copying to temporarily aligned structure.
+Contains the following extra fixes:
 
-Both patches are included in my new debian glibc package.
-That is not to say that fpu/* code is correct, there were always
-failures in the testsuite that come and go changing with time.
+- Added relocation support for:
+	= DIR21L, DIR14R, PLABEL21L, PLABEL21R.
 
-c.
+- Fixed return value restore in syscall cancellation
 
+- Probably messed up fpu code but made it more compliant
+  with the fr0 save/restore of T-bit.
+
+- Removed implied routines for 128-bit long double, default
+  should be whatever gcc uses for long double (DFmode).
+
+Update located:
+http://www.parisc-linux.org/~carlos/glibc-work/glibc-2.3.5-debs-2006-01-07/
+
+I have this running on my local system without problems.
+I'm testing the NPTL/TLS toolchain using this as my system libc.
+
+Dave could you please test if this fixes the strtold failures?
+
+This is probably the patch set I will send upstream.
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
