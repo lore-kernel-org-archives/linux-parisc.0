@@ -1,19 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: strtold
-Date: Sat, 7 Jan 2006 21:28:26 -0700
-Message-ID: <20060108042826.GA3567@colo.lackof.org>
-References: <20060107210757.GM17559@baldric.uwo.ca>
-	<200601072241.k07MfqiW020827@hiauly1.hia.nrc.ca>
-	<20060107234230.GQ17559@baldric.uwo.ca>
+From: Carlos O'Donell <carlos@systemhalted.org>
+Subject: [parisc-linux] [Update] TLS toolchain.
+Date: Sun, 8 Jan 2006 00:51:10 -0500
+Message-ID: <20060108055109.GE17559@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- tausq@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Cc: Randolph Chung <tausq@debian.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060107234230.GQ17559@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,22 +18,49 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jan 07, 2006 at 06:42:30PM -0500, Carlos O'Donell wrote:
-...
-> > I've given up hope that HP will release their IEEE long double emulation
-> > code for PA-RISC.  Although I don't have any hard evidence of bugs in it,
-> > there is the suggestion from the ada testsuite run under hpux that there
-> > may be bugs in the rounding and exception support.
-> 
-> I agree, I don't think it will ever be released. If it is released then
-> we'll jigger it out some other way :)
 
-Me too. But I wouldn't worry about an ABI event too much.
-As long as the only dependency is debian/gentoo packages,
-then I think we can tolerate an ABI event like this on the
-next OS release if necessary.
+Binutils is good to go with a recent merge at 2005-12-10.
+GCC is working from our CVS, but the merge is 7 months old and based on
+the 4.0.0 release.
 
-grant
+GLIBC is merge from 2005-06-08 and I have tls+linuxthreads working
+without many failures:
+---
+make[2]: *** [/glibc/math/atest-exp2.out] Error 136
+make[2]: *** [/glibc/math/test-float.out] Error 136
+make[2]: *** [/glibc/math/test-double.out] Error 1
+make[2]: *** [/glibc/math/test-ifloat.out] Error 136
+make[2]: *** [/glibc/math/test-idouble.out] Error 1
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/glibc/linuxthreads/tst-attr1.out] Error 1
+make[1]: *** [linuxthreads/tests] Error 2
+make[2]: *** [/glibc/elf/tst-array1.out] Error 1
+make[2]: *** [/glibc/elf/tst-array2.out] Error 1
+make[2]: *** [/glibc/elf/tst-array3.out] Error 1
+make[2]: *** [/glibc/elf/tst-array4.out] Error 1
+make[2]: *** [/glibc/elf/tst-array1-static.out] Error 1
+make[2]: *** [/glibc/elf/order.out] Error 1
+make[2]: *** [/glibc/elf/nodelete2.out] Error 1
+make[2]: *** [/glibc/elf/tst-align2.out] Error 1
+make[2]: *** [/glibc/elf/order2.out] Error 1
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
+---
+The FPU code is a bit borked right now and needs review, I tried
+incorporating my changes and Daniel's alignment patch but it didn't work
+out very well.
+
+The linuxthreads tst-attr1 test is unclassified.
+
+The elf related failures are relatively new and related to binutils.
+---
+
+I'm going to run the NPTL build and see how the tests turn out.
+
+Anyone remember what the next step was?
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
