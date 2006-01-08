@@ -1,11 +1,10 @@
 From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: [parisc-linux] [RFC] Updated glibc 2.3.5-8.1
-Date: Sat, 7 Jan 2006 22:03:43 -0500
-Message-ID: <20060108030342.GA17559@baldric.uwo.ca>
+Subject: [parisc-linux] mozilla vs. firefox.
+Date: Sat, 7 Jan 2006 22:28:45 -0500
+Message-ID: <20060108032845.GC17559@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Randolph Chung <tausq@debian.org>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -19,33 +18,12 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-Updated glibc 2.3.5-8.1
+Anybody know why mozilla doesn't work on parisc but firefox does?
 
-Contains the following extra fixes:
+I did my standard Xnest test to make sure my environment could run all
+the standard tools and network applications.
 
-- Added relocation support for:
-	= DIR21L, DIR14R, PLABEL21L, PLABEL21R.
-
-- Fixed return value restore in syscall cancellation
-
-- Probably messed up fpu code but made it more compliant
-  with the fr0 save/restore of T-bit.
-
-- Removed implied routines for 128-bit long double, default
-  should be whatever gcc uses for long double (DFmode).
-
-Update located:
-http://www.parisc-linux.org/~carlos/glibc-work/glibc-2.3.5-debs-2006-01-07/
-
-I have this running on my local system without problems.
-I'm testing the NPTL/TLS toolchain using this as my system libc.
-
-Dave could you please test if this fixes the strtold failures?
-
-This is probably the patch set I will send upstream.
-
-Cheers,
-Carlos.
+c.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
