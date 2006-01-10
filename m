@@ -1,15 +1,17 @@
-From: Randolph Chung <randolph@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: [parisc-linux] Re: [Update] TLS toolchain.
-Date: Tue, 10 Jan 2006 15:33:11 +0800
-Message-ID: <43C36337.9040202@tausq.org>
-References: <20060108055109.GE17559@baldric.uwo.ca>
+Date: Tue, 10 Jan 2006 09:47:06 -0500 (EST)
+Message-ID: <200601101447.k0AEl7fP003814@hiauly1.hia.nrc.ca>
+References: <43C36337.9040202@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+  charset=US-ASCII
+Cc: carlos@systemhalted.org,
+ parisc-linux@lists.parisc-linux.org
+To: randolph@tausq.org (Randolph Chung)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060108055109.GE17559@baldric.uwo.ca>
+In-Reply-To: <43C36337.9040202@tausq.org> from "Randolph Chung" at Jan 10,
+	2006 03:33:11 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,27 +22,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> The elf related failures are relatively new and related to binutils.
-> ---
-> 
-> I'm going to run the NPTL build and see how the tests turn out.
-> 
-> Anyone remember what the next step was?
+> I don't think we are ready for NPTL yet. Did we settle on how we are
+> implementing futexes? Are we going to implement a new kernel fsyscall
+> for the compare-and-exchange primitive that NPTL seems to depend on?
 
-I think the gcc stuff is all merged upstream already.
+Regarding atomic, I suggest looking at
+http://www.hpl.hp.com/research/linux/atomic_ops and
+http://www.hpl.hp.com/techreports/2005/HPL-2005-217.html.
 
-binutils stuff needs to be merged upstream. Perhaps we should look at
-those elf related failures first.
+I haven't had a chance to look at it but this work is part of a study
+being done to add thread support to C++.  This came up when I added a
+userspace implementation of CAS to java.  Apparently, gc7alpha versions
+are using this code.
 
-I don't think we are ready for NPTL yet. Did we settle on how we are
-implementing futexes? Are we going to implement a new kernel fsyscall
-for the compare-and-exchange primitive that NPTL seems to depend on?
-
-randolph
+Dave
 -- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
