@@ -1,17 +1,12 @@
-From: Carlos O'Donell <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] Re: [RFC] Updated glibc 2.3.5-8.1
-Date: Tue, 17 Jan 2006 16:21:18 -0500
-Message-ID: <20060117212118.GS17559@baldric.uwo.ca>
-References: <20060117202325.GP17559@baldric.uwo.ca>
-	<200601172048.k0HKmpLC012311@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [RF{C,T} PATCH] chassis_power_off
+Date: Wed, 18 Jan 2006 00:24:56 -0500
+Message-ID: <20060118052456.GJ4049@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: tausq@debian.org,
- parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200601172048.k0HKmpLC012311@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,44 +17,88 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jan 17, 2006 at 03:48:51PM -0500, John David Anglin wrote:
-> > On Sun, Jan 08, 2006 at 02:13:03PM -0500, John David Anglin wrote:
-> > > > in fr22 until after the SIGFPE.  It sort of looks like the exception
-> > > > must be in __ieee754_acos.
-> > > 
-> > > Take that back.  The function calls feholdexcept (envp=0xc04fba68)
-> > > and then fesetround (round=0) before the arithmetic exception.
-> > > 
-> > > (gdb) p/x *envp
-> > > $2 = {__status_word = 0x1, __exception = {0x40000360, 0x1, 0x40000360,
-> > >     0x4033af90, 0x4084c6b8, 0x4084c6b8, 0x0}}
-> > 
-> > There could be problems here. I noted in the release email that the FPU
-> > stuff is not working well with the new compiler. I need to debug this.
-> > If you can find a testcase then it would rock e.g. feholdexcept
-> > and fesetround that doesn't set the right bits.
-> 
-> Randolph has a patch which he sent around a few days ago.  The
-> problem appears to be a sequencing issue with respect to fr0.
-> He dropped saving and restoring fr1, fr2 and fr3.  Debian may be
-> going to roll an hppa libc update in the near future.  It would
-> be nice to also get your other fixes into this update as well.
+I *think* this should fix halt -p with 2.6.16-rc1. Comments please...
+The motivation for this is a recent change to sys_reboot(),
 
-Yes, I saw that patch, but Randolph didn't say why it fixes
-the issue. There *was* a sequencing issue wrt to fr1,2,3 but we fixed
-that in CVS. You have to restore fr0 last, and save it first, it's
-not an impossible task :)
+http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=blobdiff;h=d8e49e659027f70de633b69d2efd13132a428bb5;hp=eecf84526afeca15c7e82894c5c3e898239fa062;hb=5e38291d80086f6972f471c7caffa03184de0bf0;f=kernel/sys.c
+
+If nobody raises an objection to this, I'll commit it.
+
+Cheers,
+	Kyle
+
+Index: arch/parisc/kernel/process.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/process.c,v
+retrieving revision 1.26
+diff -u -d -p -r1.26 process.c
+--- arch/parisc/kernel/process.c	17 Jan 2006 14:50:31 -0000	1.26
++++ arch/parisc/kernel/process.c	18 Jan 2006 05:13:34 -0000
+@@ -54,12 +54,6 @@
+ #include <asm/uaccess.h>
+ #include <asm/unwind.h>
  
-> As I understand it, the exception bug causes a segmentation fault
-> in uic.  This blocks building qt-xfree86-free which blocks kde.
-> Thus, the issue is quite urgent.
-
-That is a bummer.
-
-I'll post my debian patches soon then.
-
-c.
-
+-/*
+- * Power off function, if any
+- */ 
+-void (*pm_power_off)(void);
+-EXPORT_SYMBOL(pm_power_off);
+-
+ void default_idle(void)
+ {
+ 	barrier();
+@@ -142,6 +136,7 @@ void machine_halt(void)
+ 	*/
+ }
+ 
++void (*chassis_power_off)(void);
+ 
+ /*
+  * This routine is called from sys_reboot to actually turn off the
+@@ -150,8 +145,8 @@ void machine_halt(void)
+ void machine_power_off(void)
+ {
+ 	/* If there is a registered power off handler, call it. */
+-	if(pm_power_off)
+-		pm_power_off();
++	if (chassis_power_off)
++		chassis_power_off();
+ 
+ 	/* Put the soft power button back under hardware control.
+ 	 * If the user had already pressed the power button, the
+@@ -167,6 +162,8 @@ void machine_power_off(void)
+ 	       KERN_EMERG "Please power this system off now.");
+ }
+ 
++void (*pm_power_off)(void) = machine_power_off;
++EXPORT_SYMBOL(pm_power_off);
+ 
+ /*
+  * Create a kernel thread
+Index: drivers/parisc/lasi.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/drivers/parisc/lasi.c,v
+retrieving revision 1.21
+diff -u -d -p -r1.21 lasi.c
+--- drivers/parisc/lasi.c	17 Jan 2006 19:40:39 -0000	1.21
++++ drivers/parisc/lasi.c	18 Jan 2006 05:13:36 -0000
+@@ -166,6 +166,7 @@ static void lasi_power_off(void)
+ int __init
+ lasi_init_chip(struct parisc_device *dev)
+ {
++	extern void (*chassis_power_off)(void);
+ 	struct gsc_asic *lasi;
+ 	struct gsc_irq gsc_irq;
+ 	int ret;
+@@ -222,7 +223,7 @@ lasi_init_chip(struct parisc_device *dev
+ 	 * ensure that only the first LASI (the one controlling the power off)
+ 	 * should set the HPA here */
+ 	lasi_power_off_hpa = lasi->hpa;
+-	pm_power_off = lasi_power_off;
++	chassis_power_off = lasi_power_off;
+ 	
+ 	return ret;
+ }
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
