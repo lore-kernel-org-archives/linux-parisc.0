@@ -1,15 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] pci.h pb with gcc-4.0
-Date: Thu, 19 Jan 2006 11:28:21 -0700
-Message-ID: <20060119182821.GC2628@colo.lackof.org>
-References: <ITCBDZ$237BDD3D61015C37DE6E824ACAF3708B@scarlet.be>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] a small compile warning cleanup?
+Date: Fri, 20 Jan 2006 15:55:28 +0100
+Message-ID: <ITEC4G$9C17DD6AE38ACE7E042A68D230E01BEF@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=iso-8859-1
+To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <ITCBDZ$237BDD3D61015C37DE6E824ACAF3708B@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,23 +17,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jan 19, 2006 at 01:44:23PM +0100, Joel Soete wrote:
-> hello *,
-> 
-> mmm don't know if because I use gcc 4.0 but here is a pb I encounter to build
-> 2.6.16-rc1-pa1 (+patch):
-...
-> /CAD/linux-2.6.16-rc1-pa1/arch/parisc/kernel/pci.c:56: error: static
-> declaration of \xe2\x80\x98pci_hba_count\xe2\x80\x99 follows no
-> n-static declaration
-> include2/asm/pci.h:206: error: previous declaration of
-> \xe2\x80\x98pci_hba_count\xe2\x80\x99 was here
+Hello pa,
 
-We can also remove the extern declaration of parisc_pci_hbap[].
-I'll fix this by this weekend.
+Attempting to get rid of this warning (gcc-4.0):
+/CAD/linux-2.6.16-rc1-pa1-20060119/kernel/compat.c: In function
+'compat_sys_timer_create':
+/CAD/linux-2.6.16-rc1-pa1-20060119/kernel/compat.c:532: warning: implicit=
 
-thanks,
-grant
+declaration of function 'get_compat_sigevent'
+
+As used in severall places (2 at least), I thing this could help:
+--- include/linux/compat_siginfo.h.Orig 2006-01-20 13:39:16.000000000 +01=
+00
++++ include/linux/compat_siginfo.h      2006-01-20 13:40:40.000000000 +01=
+00
+@@ -177,6 +177,9 @@
+ extern int compat_copy_sigevent_from_user(struct sigevent *to,
+compat_sigevent_t __user *from);
+ extern int compat_copy_sigevent_to_user(compat_sigevent_t __user *to, st=
+ruct
+sigevent *from);
+ 
++extern int get_compat_sigevent(struct sigevent *event,
++               const struct compat_sigevent __user *u_event);
++
+ #endif /* CONFIG_COMPAT */
+ #endif /* _ASM_GENERIC_COMPAT_SIGINFO_H */
+ 
+=3D=3D=3D=3D<>=3D=3D=3D=3D
+
+If agreed feel free to ci (no cvs access).
+
+TIA,
+    Joel
+=0A=0A---------------------------------------------------------------=0AA=
+ free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore inf=
+o on http://www.scarlet.be/
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
