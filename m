@@ -1,13 +1,17 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] very weird pb with libgtk2.0-0 since upgrade: many
-	gui segv ; -(
-Date: Sat, 21 Jan 2006 18:59:17 +0100
-Message-ID: <ITGFAT$E5239B6758E21ED15FCC0DD1DA012A9F@scarlet.be>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [RFC] Updated glibc 2.3.5-8.1
+Date: Sun, 22 Jan 2006 16:12:45 +0000
+Message-ID: <43D3AEFD.6070406@tiscali.be>
+References: <20060108030342.GA17559@baldric.uwo.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii;
+  format=flowed
+Cc: Randolph Chung <tausq@debian.org>,
+ parisc-linux@lists.parisc-linux.org
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060108030342.GA17559@baldric.uwo.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,113 +22,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
 
-I put additional question about
-<http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D348109>
 
-here because I presume there would be few who facing this pb ;_(
+Carlos O'Donell wrote:
+> Updated glibc 2.3.5-8.1
+> 
+> Contains the following extra fixes:
+> 
+> - Added relocation support for:
+> 	= DIR21L, DIR14R, PLABEL21L, PLABEL21R.
+> 
+> - Fixed return value restore in syscall cancellation
+> 
+> - Probably messed up fpu code but made it more compliant
+>   with the fr0 save/restore of T-bit.
+> 
+> - Removed implied routines for 128-bit long double, default
+>   should be whatever gcc uses for long double (DFmode).
+> 
+> Update located:
+> http://www.parisc-linux.org/~carlos/glibc-work/glibc-2.3.5-debs-2006-01-07/
+> 
+mmm, isn't it possible to add your .diff.gz (may be also .dsc),
+that would help me a lot to countinue my test with gcc-4.0 ;-)
 
-In short:
-
-since this apt-get dist-upgrade:
-### Mon Dec 19 09:38:46 2005 ###
-
-Reading package lists...
-Building dependency tree...
-Starting
-Starting 2
-Investigating libsnmpkit2c2a
-Package libsnmpkit2c2a has broken dep on libsnmpkit2c2
-  Considering libsnmpkit2c2 1 as a solution to libsnmpkit2c2a 2
-  Added libsnmpkit2c2 to the remove list
-  Fixing libsnmpkit2c2a via remove of libsnmpkit2c2
-Investigating libprinterconf0c2a
-Package libprinterconf0c2a has broken dep on libprinterconf0c2
-  Considering libprinterconf0c2 0 as a solution to libprinterconf0c2a 1
-  Added libprinterconf0c2 to the remove list
-  Fixing libprinterconf0c2a via remove of libprinterconf0c2
-Investigating libsvncpp0c2a
-Package libsvncpp0c2a has broken dep on libsvncpp0c2
-  Considering libsvncpp0c2 0 as a solution to libsvncpp0c2a 0
-  Holding Back libsvncpp0c2a rather than change libsvncpp0c2
-Investigating rapidsvn
-Package rapidsvn has broken dep on libsvncpp0c2a
-  Considering libsvncpp0c2a 0 as a solution to rapidsvn 0
-  Holding Back rapidsvn rather than change libsvncpp0c2a
- Try to Re-Instate rapidsvn
-Done
-The following packages will be REMOVED:
-  libprinterconf0c2 libsnmpkit2c2
-The following NEW packages will be installed:
-  firefox irssi libcairo2 libpoppler0c2 libprinterconf0c2a libsnmpkit2c2a=
-
-  vim-runtime
-The following packages have been kept back:
-  rapidsvn
-The following packages will be upgraded:
-  base-passwd binutils binutils-dev binutils-doc cogito db4.2-util db4.3-=
-util
-  debianutils debsums dialog dpatch fakeroot git-core glibc-doc groff
-  groff-base irb1.8 irssi-text kernel-package libasound2 libc6 libc6-dev
-  libc6-pic libcupsys2 libdb4.2 libdb4.3 libdbm-ruby1.8 libgtk2.0-0
-  libgtk2.0-bin libgtk2.0-common libgtk2.0-doc libkpathsea4 libkrb53
-  libpango1.0-0 libpango1.0-common libperl5.8 libreadline-ruby1.8 libruby=
-1.8
-  libssl-dev libssl0.9.8 libtcltk-ruby1.8 lintian locales make manpages
-  manpages-dev menu mozilla-firefox netcat openssl pciutils pconf-detect =
-perl
-  perl-base perl-doc perl-modules rdoc1.8 ri1.8 ruby1.8 ruby1.8-examples =
-scite
-  stunnel syslinux tetex-bin transfig vim vim-common xprint xprint-common=
-
-69 upgraded, 7 newly installed, 2 to remove and 1 not upgraded.
-Need to get 0B/86.8MB of archives.
-After unpacking 9374kB of additional disk space will be used.
-Do you want to continue [Y/n]? Reading changelogs...
-
-many gui like gftp-gtk, firefox, d4x, gdmsetup,... segv.
-(as well as runing on p-l as i386 boxes :_( )
-
-Fwiw, this only occures with my operational hpux 11.00 CDE graphical env =
-and
-not with some other sun cde (sparc solaris 9) or xfce debian unstable (i3=
-86).
-
-the only w-a I found is to downgrade libgtk2.0 by using previous:
-libgtk2.0-common_2.6.10-1_all.deb libgtk2.0-bin_2.6.10-1_i386.deb \
-libgtk2.0-0_2.6.10-1_i386.deb libgtk2.0-doc_2.6.10-1_all.deb
-
-That why I select this specific pkg as br target, though.
-
-gdb (for i386 and p-l) seems useless:
-# gdb
-GNU gdb 6.4-debian
-Copyright 2005 Free Software Foundation, Inc.
-GDB is free software, covered by the GNU General Public License, and you
-are
-welcome to change it and/or distribute copies of it under certain
-conditions.
-Type "show copying" to see the conditions.
-There is absolutely no warranty for GDB.  Type "show warranty" for
-details.
-This GDB was configured as "i486-linux-gnu".
-(gdb) target core ./core
-Using host libthread_db library "/lib/tls/libthread_db.so.1".
-(no debugging symbols found)
-Core was generated by `/usr/bin/gftp-gtk'.
-Program terminated with signal 11, Segmentation fault.
-#0  0x00000000 in ?? ()
-
-Any idea how should I investigate in more detail?
-
+[...]
+> 
+> This is probably the patch set I will send upstream.
+> 
 TIA,
-    Joel
-
-=0A=0A---------------------------------------------------------------=0AA=
- free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore inf=
-o on http://www.scarlet.be/
-
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
