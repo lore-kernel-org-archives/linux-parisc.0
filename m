@@ -1,66 +1,75 @@
-From: Richard Walter <richard@richardwalter.de>
-Subject: [parisc-linux] kernel 2.6.15-pa1 and 2.6.15.1-pa4 fault on HIL
-	keyboard event
-Date: Thu, 26 Jan 2006 21:22:47 +0100
-Message-ID: <200601262122.47507.richard@richardwalter.de>
+From: Fabio Bizzi <fbizzi@bizzi.org>
+Subject: Re: [parisc-linux] Trying to install ...bian-31r1a-hppa on a C200
+Date: Mon, 30 Jan 2006 09:24:09 +0100
+Message-ID: <43DDCD29.8080800__7099.90802356533$1416624001$gmane$org@bizzi.org>
+References: <004b01c62550$59414920$040aa8c0@local>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=UTF-8;
+  format=flowed
+Cc: debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: =?UTF-8?B?642w7J207YSw7YWN?= <support@datatek.co.kr>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <004b01c62550$59414920$040aa8c0@local>
+Resent-Message-ID: <oe8bV.A.auE.x0c3DB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-Hello,
+데이터텍 wrote:
+> I would like to install a debian-31r1a-hppa-netinst.iso, but there's an 
+> error while base installation.
+> My machine is HP C200 having 256MB with SCSI CD, SCSI HDD(18GB).
 
-when I touch any key of my HIL keyboard, the kernels mentioned above fail 
-immediately.
+Ok, we have worked it out some times ago'! :)
 
-The machine in question is a HP9000 735/125 running Gentoo Linux, using 
-gcc-3.3.6, binutils-2.16.1 and glibc-2.3.4.20040808-r1.
+The problem is that the stock sarge kernel is buggy on big disks.
+So you have to do a clean installation from 3.1r1a disks, and when the
+installer asks to you to reboot, you have to "go back" until the main
+menu of the installer will shown.
+At this point you have to open a shell, verify that all the partitions
+of the target file system are mounted eg:
 
-If dmesg -n 7 was issued (obviously by an ssh session) or I press a key before 
-the rc scripts run, then I get an output like
-http://www.richardwalter.de/Backtrace%202.6.15_p1%20on%20keyboard%20event%20second%20try
-and the machine does not move any further.
+/dev/sda1 on /target/boot ext2
+/dev/sda5 on /target ext3
+/none on /target/proc procfs
 
-The kernel sources are hppa-sources-2.6.15_p1 from portage, the .config file 
-is
-http://www.richardwalter.de/.config
-the System.map is
-http://www.richardwalter.de/System.map.bz2
-and the resulting vmlinux looks like this one
-http://www.richardwalter.de/vmlinux.bz2
-(I compressed the latter two for bandwith-limited people)
+It's important that proc file system is mounted on the target file
+system or the installation of the new kernel will fail.
 
-I have been able to locate the crash to the file
-sftp://root@10.0.0.254/usr/src/linux/drivers/input/input.c
-in the function
-void input_event(struct input_dev *dev, unsigned int type, unsigned int code, 
-int value)
-to the line 182 which says
-			if (handle->open)
+Now do a chroot to the new system "# chroot /target /bin/bash"
+wget to the nwe filesystem the testing kernel images:
 
-Unfortunately I have not been able to locate the source of this error.
 
-If it is of help, I also inspected the CPU instruction on adress 0c681093, 
-according to gdb it says 
-ldw -c(r3),r19
+# wget
+http://ftp.ie.debian.org/debian/pool/main/l/linux-2.6/linux-image-parisc_2.6.12-10_hppa.deb
+# wget
+http://ftp.ie.debian.org/debian/pool/main/l/linux-2.6/linux-image-2.6-parisc_2.6.12-10_hppa.deb
+# wget
+http://ftp.ie.debian.org/debian/pool/main/l/linux-2.6/linux-image-2.6.12-1-parisc_2.6.12-10_hppa.deb
 
-I have experienced the similar problem on 2.6.15.1-pa4, but did not intercept 
-it to the same depth. Up to now, I could not test any post-2.6.15.x-kernels, 
-and the pre-2.6.15-kernels in portage did not have that problem.
+And now install them with “#dpkg -i linux-*”, after the installation do
+a "# palo" and exit from the shell.
 
-Thanks for help
-	HPRichard
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Unmount the proc filesystem from the target filesystem “# unmount
+/target/proc” and exit from the shell.
+
+Select the “finish installation” of the installation program’s menù and
+reboot the C200, after the reboot continue with base-config and so on.... ;)
+
+
+If you experience troubles before the "reboot" prompt, power off and try
+again... sometime it happens! ;)
+
+Ciao.
+
+	Fabio.
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
