@@ -1,45 +1,74 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: =?UTF-8?B?642w7J207YSw7YWN?= <support@datatek.co.kr>
 Subject: Re: [parisc-linux] Trying to install ...bian-31r1a-hppa on a C200
-Date: Tue, 31 Jan 2006 09:02:30 -0700
-Message-ID: <20060131160230.GA17042__36739.800804253$1416624002$gmane$org@colo.lackof.org>
+Date: Tue, 31 Jan 2006 17:04:57 +0900
+Message-ID: <001101c6263d$06e3f0e0$040aa8c0__24363.6956591674$1416624002$gmane$org@local>
 References: <004b01c62550$59414920$040aa8c0@local> <43DDCD29.8080800@bizzi.org>
-	<001101c6263d$06e3f0e0$040aa8c0@local>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: ???????????? <support@datatek.co.kr>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <001101c6263d$06e3f0e0$040aa8c0@local>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset="UTF-8"
+Cc: <debian-hppa@lists.debian.org>,
+ <parisc-linux@lists.parisc-linux.org>
+To: "Fabio Bizzi" <fbizzi@bizzi.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <bAt54.A.wfD.y0x3DB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Tue, Jan 31, 2006 at 05:04:57PM +0900, ???????????? wrote:
-> Creating ext3 file system for / in partition #1 of SCSI1 (0,5,0)
-> (sda)...Kernel panic: drivers/parisc/ccio-dma.c: ccio_alloc_range() I/O MMU
-> is out of mapping resources.
-
-sorry - this is a well known problem.
-Here are two previous emails on the topic:
-	http://lists.parisc-linux.org/pipermail/parisc-linux/2003-October/021244.html
-	http://lists.parisc-linux.org/hypermail/parisc-linux/1686.html
-
-If you want more info, Start here:
-	http://www.parisc-linux.org/mailing-lists/index.html
-
-and search for "ccio_alloc_range ccio_mem_ratio out of mapping"
-
-hth,
-grant
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+SGksDQouDQpJIGZvbGxvd2VkIGFzIHlvdXIgcmVjb21tZW5kYXRpb24gLCBidXQgZmFpbGVkIGFz
+IHRoZSBiZWxvdy4NCkkgdHJpZWQgd2l0aCBkZWJpYW4tMzFyMWEtaHBwYSBvbiBhIEMyMDAgb3Zl
+ciAxMCB0aW1lcywgYnV0IG5vIG1lc3NhZ2Ugb2YgcmVib290Lg0KSSBqdXN0IG1ldCB0aGUgZm9s
+bG93aW5nIG1lc3NhZ2UuDQpJcyB0aGlzIG1lc3NhZ2UgdGhlIHNhbWUgd2l0aCB5b3VyIGV4cGVy
+aWVuY2UgPw0KLi4uLi4NCi4uLg0KQ3JlYXRpbmcgZXh0MyBmaWxlIHN5c3RlbSBmb3IgLyBpbiBw
+YXJ0aXRpb24gIzEgb2YgU0NTSTEgKDAsNSwwKQ0KKHNkYSkuLi5LZXJuZWwgcGFuaWM6IGRyaXZl
+cnMvcGFyaXNjL2NjaW8tZG1hLmM6IGNjaW9fYWxsb2NfcmFuZ2UoKSBJL08gTU1VDQppcyBvdXQg
+b2YgbWFwcGluZyByZXNvdXJjZXMuDQpJbiBpbnRlcnJ1cHQgaGFuZGxlciAtIG5vdCBzeW5jaW5n
+DQouLi4NCg0KPiBTbyB5b3UgaGF2ZSB0byBkbyBhIGNsZWFuIGluc3RhbGxhdGlvbiBmcm9tIDMu
+MXIxYSBkaXNrcywgYW5kIHdoZW4gdGhlDQoNCldoYXQgZG8geW91IG1lYW4gJ2EgY2xlYW4gaW5z
+dGFsbGF0aW9uJyA/DQoNCj4gaW5zdGFsbGVyIGFza3MgdG8geW91IHRvIHJlYm9vdCwgeW91IGhh
+dmUgdG8gImdvIGJhY2siIHVudGlsIHRoZSBtYWluLi4NCg0KSW4gbXkgY2FzZSB0aGVyZSBpcyBu
+byBhc2tpbmcgdG8gcmVib290Lg0KDQpDb3VsZCB5b3UgcGxlYXNlIGdpdmUgbWUgc29tZSB0aXBz
+IGZvciBib290aW5nIG9uIEhQIEMyMDAgPw0KSSBkbyBhcHByZWNpYXRlIHlvdXIgY29uc2lkZXJh
+dGlvbi4NCi4NCkZyaWVuZGx5LA0KTm9iZWwNCg0KDQoNCg0KLS0tLS0gT3JpZ2luYWwgTWVzc2Fn
+ZSAtLS0tLSANCkZyb206ICJGYWJpbyBCaXp6aSIgPGZiaXp6aUBiaXp6aS5vcmc+DQpUbzogIuuN
+sOydtO2EsO2FjSIgPHN1cHBvcnRAZGF0YXRlay5jby5rcj4NCkNjOiA8ZGViaWFuLWhwcGFAbGlz
+dHMuZGViaWFuLm9yZz47IDxwYXJpc2MtbGludXhAbGlzdHMucGFyaXNjLWxpbnV4Lm9yZz4NClNl
+bnQ6IE1vbmRheSwgSmFudWFyeSAzMCwgMjAwNiA1OjI0IFBNDQpTdWJqZWN0OiBSZTogW3Bhcmlz
+Yy1saW51eF0gVHJ5aW5nIHRvIGluc3RhbGwgLi4uYmlhbi0zMXIxYS1ocHBhIG9uIGEgQzIwMA0K
+DQoNCj4g642w7J207YSw7YWNIHdyb3RlOg0KPiA+IEkgd291bGQgbGlrZSB0byBpbnN0YWxsIGEg
+ZGViaWFuLTMxcjFhLWhwcGEtbmV0aW5zdC5pc28sIGJ1dCB0aGVyZSdzIGFuIA0KPiA+IGVycm9y
+IHdoaWxlIGJhc2UgaW5zdGFsbGF0aW9uLg0KPiA+IE15IG1hY2hpbmUgaXMgSFAgQzIwMCBoYXZp
+bmcgMjU2TUIgd2l0aCBTQ1NJIENELCBTQ1NJIEhERCgxOEdCKS4NCj4gDQo+IE9rLCB3ZSBoYXZl
+IHdvcmtlZCBpdCBvdXQgc29tZSB0aW1lcyBhZ28nISA6KQ0KPiANCj4gVGhlIHByb2JsZW0gaXMg
+dGhhdCB0aGUgc3RvY2sgc2FyZ2Uga2VybmVsIGlzIGJ1Z2d5IG9uIGJpZyBkaXNrcy4NCj4gU28g
+eW91IGhhdmUgdG8gZG8gYSBjbGVhbiBpbnN0YWxsYXRpb24gZnJvbSAzLjFyMWEgZGlza3MsIGFu
+ZCB3aGVuIHRoZQ0KPiBpbnN0YWxsZXIgYXNrcyB0byB5b3UgdG8gcmVib290LCB5b3UgaGF2ZSB0
+byAiZ28gYmFjayIgdW50aWwgdGhlIG1haW4NCj4gbWVudSBvZiB0aGUgaW5zdGFsbGVyIHdpbGwg
+c2hvd24uDQo+IEF0IHRoaXMgcG9pbnQgeW91IGhhdmUgdG8gb3BlbiBhIHNoZWxsLCB2ZXJpZnkg
+dGhhdCBhbGwgdGhlIHBhcnRpdGlvbnMNCj4gb2YgdGhlIHRhcmdldCBmaWxlIHN5c3RlbSBhcmUg
+bW91bnRlZCBlZzoNCj4gDQo+IC9kZXYvc2RhMSBvbiAvdGFyZ2V0L2Jvb3QgZXh0Mg0KPiAvZGV2
+L3NkYTUgb24gL3RhcmdldCBleHQzDQo+IC9ub25lIG9uIC90YXJnZXQvcHJvYyBwcm9jZnMNCj4g
+DQo+IEl0J3MgaW1wb3J0YW50IHRoYXQgcHJvYyBmaWxlIHN5c3RlbSBpcyBtb3VudGVkIG9uIHRo
+ZSB0YXJnZXQgZmlsZQ0KPiBzeXN0ZW0gb3IgdGhlIGluc3RhbGxhdGlvbiBvZiB0aGUgbmV3IGtl
+cm5lbCB3aWxsIGZhaWwuDQo+IA0KPiBOb3cgZG8gYSBjaHJvb3QgdG8gdGhlIG5ldyBzeXN0ZW0g
+IiMgY2hyb290IC90YXJnZXQgL2Jpbi9iYXNoIg0KPiB3Z2V0IHRvIHRoZSBud2UgZmlsZXN5c3Rl
+bSB0aGUgdGVzdGluZyBrZXJuZWwgaW1hZ2VzOg0KPiANCj4gDQo+ICMgd2dldA0KPiBodHRwOi8v
+ZnRwLmllLmRlYmlhbi5vcmcvZGViaWFuL3Bvb2wvbWFpbi9sL2xpbnV4LTIuNi9saW51eC1pbWFn
+ZS1wYXJpc2NfMi42LjEyLTEwX2hwcGEuZGViDQo+ICMgd2dldA0KPiBodHRwOi8vZnRwLmllLmRl
+Ymlhbi5vcmcvZGViaWFuL3Bvb2wvbWFpbi9sL2xpbnV4LTIuNi9saW51eC1pbWFnZS0yLjYtcGFy
+aXNjXzIuNi4xMi0xMF9ocHBhLmRlYg0KPiAjIHdnZXQNCj4gaHR0cDovL2Z0cC5pZS5kZWJpYW4u
+b3JnL2RlYmlhbi9wb29sL21haW4vbC9saW51eC0yLjYvbGludXgtaW1hZ2UtMi42LjEyLTEtcGFy
+aXNjXzIuNi4xMi0xMF9ocHBhLmRlYg0KPiANCj4gQW5kIG5vdyBpbnN0YWxsIHRoZW0gd2l0aCDi
+gJwjZHBrZyAtaSBsaW51eC0q4oCdLCBhZnRlciB0aGUgaW5zdGFsbGF0aW9uIGRvDQo+IGEgIiMg
+cGFsbyIgYW5kIGV4aXQgZnJvbSB0aGUgc2hlbGwuDQo+IA0KPiBVbm1vdW50IHRoZSBwcm9jIGZp
+bGVzeXN0ZW0gZnJvbSB0aGUgdGFyZ2V0IGZpbGVzeXN0ZW0g4oCcIyB1bm1vdW50DQo+IC90YXJn
+ZXQvcHJvY+KAnSBhbmQgZXhpdCBmcm9tIHRoZSBzaGVsbC4NCj4gDQo+IFNlbGVjdCB0aGUg4oCc
+ZmluaXNoIGluc3RhbGxhdGlvbuKAnSBvZiB0aGUgaW5zdGFsbGF0aW9uIHByb2dyYW3igJlzIG1l
+bsO5IGFuZA0KPiByZWJvb3QgdGhlIEMyMDAsIGFmdGVyIHRoZSByZWJvb3QgY29udGludWUgd2l0
+aCBiYXNlLWNvbmZpZyBhbmQgc28gb24uLi4uIDspDQo+IA0KPiANCj4gSWYgeW91IGV4cGVyaWVu
+Y2UgdHJvdWJsZXMgYmVmb3JlIHRoZSAicmVib290IiBwcm9tcHQsIHBvd2VyIG9mZiBhbmQgdHJ5
+DQo+IGFnYWluLi4uIHNvbWV0aW1lIGl0IGhhcHBlbnMhIDspDQo+IA0KPiBDaWFvLg0KPiANCj4g
+RmFiaW8u
