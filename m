@@ -1,75 +1,45 @@
-From: Fabio Bizzi <fbizzi@bizzi.org>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Trying to install ...bian-31r1a-hppa on a C200
-Date: Mon, 30 Jan 2006 09:24:09 +0100
-Message-ID: <43DDCD29.8080800__7099.90802356533$1416624001$gmane$org@bizzi.org>
-References: <004b01c62550$59414920$040aa8c0@local>
+Date: Tue, 31 Jan 2006 09:02:30 -0700
+Message-ID: <20060131160230.GA17042__36739.800804253$1416624002$gmane$org@colo.lackof.org>
+References: <004b01c62550$59414920$040aa8c0@local> <43DDCD29.8080800@bizzi.org>
+	<001101c6263d$06e3f0e0$040aa8c0@local>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: =?UTF-8?B?642w7J207YSw7YWN?= <support@datatek.co.kr>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <004b01c62550$59414920$040aa8c0@local>
-Resent-Message-ID: <oe8bV.A.auE.x0c3DB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: ???????????? <support@datatek.co.kr>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <001101c6263d$06e3f0e0$040aa8c0@local>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-데이터텍 wrote:
-> I would like to install a debian-31r1a-hppa-netinst.iso, but there's an 
-> error while base installation.
-> My machine is HP C200 having 256MB with SCSI CD, SCSI HDD(18GB).
+On Tue, Jan 31, 2006 at 05:04:57PM +0900, ???????????? wrote:
+> Creating ext3 file system for / in partition #1 of SCSI1 (0,5,0)
+> (sda)...Kernel panic: drivers/parisc/ccio-dma.c: ccio_alloc_range() I/O MMU
+> is out of mapping resources.
 
-Ok, we have worked it out some times ago'! :)
+sorry - this is a well known problem.
+Here are two previous emails on the topic:
+	http://lists.parisc-linux.org/pipermail/parisc-linux/2003-October/021244.html
+	http://lists.parisc-linux.org/hypermail/parisc-linux/1686.html
 
-The problem is that the stock sarge kernel is buggy on big disks.
-So you have to do a clean installation from 3.1r1a disks, and when the
-installer asks to you to reboot, you have to "go back" until the main
-menu of the installer will shown.
-At this point you have to open a shell, verify that all the partitions
-of the target file system are mounted eg:
+If you want more info, Start here:
+	http://www.parisc-linux.org/mailing-lists/index.html
 
-/dev/sda1 on /target/boot ext2
-/dev/sda5 on /target ext3
-/none on /target/proc procfs
+and search for "ccio_alloc_range ccio_mem_ratio out of mapping"
 
-It's important that proc file system is mounted on the target file
-system or the installation of the new kernel will fail.
-
-Now do a chroot to the new system "# chroot /target /bin/bash"
-wget to the nwe filesystem the testing kernel images:
-
-
-# wget
-http://ftp.ie.debian.org/debian/pool/main/l/linux-2.6/linux-image-parisc_2.6.12-10_hppa.deb
-# wget
-http://ftp.ie.debian.org/debian/pool/main/l/linux-2.6/linux-image-2.6-parisc_2.6.12-10_hppa.deb
-# wget
-http://ftp.ie.debian.org/debian/pool/main/l/linux-2.6/linux-image-2.6.12-1-parisc_2.6.12-10_hppa.deb
-
-And now install them with “#dpkg -i linux-*”, after the installation do
-a "# palo" and exit from the shell.
-
-Unmount the proc filesystem from the target filesystem “# unmount
-/target/proc” and exit from the shell.
-
-Select the “finish installation” of the installation program’s menù and
-reboot the C200, after the reboot continue with base-config and so on.... ;)
-
-
-If you experience troubles before the "reboot" prompt, power off and try
-again... sometime it happens! ;)
-
-Ciao.
-
-	Fabio.
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+hth,
+grant
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
