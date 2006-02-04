@@ -1,16 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] kernel install.sh patch/enhancement?
-Date: Sat, 04 Feb 2006 18:15:13 +0000
-Message-ID: <43E4EF31.3080300@tiscali.be>
-References: <ITJYTG$104D92B447D6B504FB5F1167C1BF3EF1@scarlet.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] long double on hppa64-*-linux*
+Date: Sat, 4 Feb 2006 18:41:00 -0500 (EST)
+Message-ID: <200602042341.k14Nf0P9005946@hiauly1.hia.nrc.ca>
+References: <no.id>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-Cc: Joel Soete <jsoete@morethan.org>
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+  charset=US-ASCII
+Cc: carlos@systemhalted.org,
+ parisc-linux@lists.parisc-linux.org,
+ tausq@debian.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <ITJYTG$104D92B447D6B504FB5F1167C1BF3EF1@scarlet.be>
+In-Reply-To: <no.id> from "John David Anglin" at Feb 3, 2006 07:11:26 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,112 +22,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello pa*,
+I noticed another long double issue.  Long double is defined to be 128
+bits on all 64-bit targets on the PA.  I believe that it should be 128 bits
+only on hpux.
 
+I would like to change the long double default on PA64t o 64 bits as there
+isn't any hardware support for the 128-bit type, and we currently don't
+have software support for 128-bit long doubles implemented.  I can't see
+this affecting anything, but it's another ABI change and I thought I should
+ask.
 
-Joel Soete wrote:
-> Hello pa*,
-> 
-> Just some small hunck to (I hope) improve our kernel install.sh.
-> 
-snip
-> 2/ append kernel version to filename (as many other arch too):
-> --- arch/parisc/install.sh.Orig 2006-01-23 14:30:17.000000000 +0100
-> +++ arch/parisc/install.sh      2006-01-23 15:30:30.000000000 +0100
-snip
-> @@ -44,13 +47,18 @@
->  
->  # Default install
->  
-> -if [ -f $4/vmlinux ]; then
-> -       mv $4/vmlinux $4/vmlinux.old
-> +if [ -f $4/vmlinux-$1 ]; then
-> +       mv $4/vmlinux-$1 $4/vmlinux.old
-> +fi
-> +
-> +if [ -f $4/System.map-$1 ]; then
-> +       mv $4/System.map-$1 $4/System.old
->  fi
->  
-> -if [ -f $4/System.map ]; then
-> -       mv $4/System.map $4/System.old
-> +if [ -f $4/config-$1 ]; then
-> +       mv $4/config-$1 $4/config.old
->  fi
->  
-> -cat $2 > $4/vmlinux
-> -cp $3 $4/System.map
-> +cat $2 > $4/vmlinux-$1
-> +cp $3 $4/System.map-$1
-> +cp .config $4/config-$1
-> 
-> 3/ my paranoid check (because by /boot is a fs usualy mounted in ro, as I
-> presume most of sysadm ;-?) 
-> --- arch/parisc/install.sh.Orig 2006-01-23 15:32:42.000000000 +0100
-> +++ arch/parisc/install.sh      2006-01-23 15:57:24.000000000 +0100
-snip
-> @@ -62,3 +82,13 @@
->  cat $2 > $4/vmlinux-$1
->  cp $3 $4/System.map-$1
->  cp .config $4/config-$1
-> +
-> +if [ -h $4/vmlinux ]; then
-> +       mv $4/vmlinux $4/vmlinux.prev
-> +       ln -sf $4/vmlinux-$1 $4/vmlinux
-> +fi
-> +
-> +if [ -h $4/System.map ]; then
-> +       mv $4/System.map $4/System.prev
-> +       ln -sf $4/System.map-$1 $4/System.map
-> +fi
-> ====<>====
-> 
-There was obviously some small bugs in those to hunk which I change like:
---- arch/parisc/install.sh.Orig 2006-02-03 14:34:17.000000000 +0100
-+++ arch/parisc/install.sh      2006-02-03 14:17:12.000000000 +0100
-@@ -68,27 +68,29 @@
-  # Default install
-
-  if [ -f $4/vmlinux-$1 ]; then
--       mv $4/vmlinux-$1 $4/vmlinux.old
-+       mv $4/vmlinux-$1 $4/vmlinux-$1.old
-  fi
-
-  if [ -f $4/System.map-$1 ]; then
--       mv $4/System.map-$1 $4/System.old
-+       mv $4/System.map-$1 $4/System.map-$1.old
-  fi
-
-  if [ -f $4/config-$1 ]; then
--       mv $4/config-$1 $4/config.old
-+       mv $4/config-$1 $4/config-1$.old
-  fi
-
-  cat $2 > $4/vmlinux-$1
-  cp $3 $4/System.map-$1
-  cp .config $4/config-$1
-
--if [ -h $4/vmlinux ]; then
--       mv $4/vmlinux $4/vmlinux.prev
--       ln -sf $4/vmlinux-$1 $4/vmlinux
-+cd $4
-+if [ -h vmlinux ]; then
-+       mv vmlinux vmlinux.prev
-+       ln -sf vmlinux-$1 vmlinux
-  fi
-
--if [ -h $4/System.map ]; then
--       mv $4/System.map $4/System.prev
--       ln -sf $4/System.map-$1 $4/System.map
-+if [ -h System.map ]; then
-+       mv System.map System.map.prev
-+       ln -sf System.map-$1 System.map
-  fi
-+cd -
-====<>====
-
-Tx,
-     Joel
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
