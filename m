@@ -1,17 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] long double on hppa64-*-linux*
-Date: Sat, 4 Feb 2006 18:41:00 -0500 (EST)
-Message-ID: <200602042341.k14Nf0P9005946@hiauly1.hia.nrc.ca>
-References: <no.id>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] "I/O MMU is out of mapping resources" while a base
+	install into HP C200
+Date: Sat, 4 Feb 2006 17:39:24 -0700
+Message-ID: <20060205003924.GA2225@colo.lackof.org>
+References: <20060204095247.1896.qmail@web54511.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: carlos@systemhalted.org,
- parisc-linux@lists.parisc-linux.org,
- tausq@debian.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+  charset=us-ascii
+Cc: debian-hppa-request@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: yong Jung <yong_jk@yahoo.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <no.id> from "John David Anglin" at Feb 3, 2006 07:11:26 pm
+In-Reply-To: <20060204095247.1896.qmail@web54511.mail.yahoo.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,20 +22,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I noticed another long double issue.  Long double is defined to be 128
-bits on all 64-bit targets on the PA.  I believe that it should be 128 bits
-only on hpux.
+On Sat, Feb 04, 2006 at 06:52:47PM +0900, yong Jung wrote:
+> Hellow debian lovers,
+> .
+> Could you give me a favor to check my install problem
+> on C200 machine ?
 
-I would like to change the long double default on PA64t o 64 bits as there
-isn't any hardware support for the 128-bit type, and we currently don't
-have software support for 128-bit long doubles implemented.  I can't see
-this affecting anything, but it's another ABI change and I thought I should
-ask.
+Hi Yong.
+You are the 3rd person in the past week or so to report this problem. :)
+It was fixed here:
+| revision 1.18
+| date: 2005/03/06 23:48:39;  author: grundler;  state: Exp;  lines: +34 -32
+| branches:  1.18.2;  1.18.4;
+| 
+| 2.6.11-pa2 - ditch ccio_mem_ratio. "Ported" from similar change to sba driver.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I'm told debian-31r1a-hppa-netinst.iso uses 2.6.8.1.
+
+Workaround is to reduce the number of outstanding scsi commands
+and thus reduce the amount of total I/O "in flight".
+
+You can do this by setting "queue_depth" to 1.
+Offhand I only know about /sys entries:
+	find /sys -name queue_depth 
+
+and then "echo 1 > /sys/devices/...../queue_depth"
+
+Or can someone remind me how to globally do that from the command line?
+google isn't finding it for me today.
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
