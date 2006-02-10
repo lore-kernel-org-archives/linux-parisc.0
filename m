@@ -1,15 +1,17 @@
-From: Andy Walker <ajwalker@broadpark.no>
-Subject: Re: [parisc-linux] RAM for C200 and J5600
-Date: Wed, 08 Feb 2006 10:49:07 +0100
-Message-ID: <2780df10f34a59915f7718b92f24ee10@localhost>
-References: <20060208063323.GT19232@lug-owl.de>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: [Fwd: Parisc - Linux on a HP-UX C8000 machine]
+Date: Fri, 10 Feb 2006 00:05:03 -0700
+Message-ID: <20060210070503.GA28772@colo.lackof.org>
+References: <1139531824.5272.1.camel@debian>
+	<1b137cb70602091651s6e51cb7fq48568fc9afbff654@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: parisc-linux@lists.parisc-linux.org
-To: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+  charset=us-ascii
+Cc: Weicht@mpimp-golm.mpg.de,
+ parisc-linux@lists.parisc-linux.org
+To: Roel Teuwen <roel.teuwen@gmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <20060208063323.GT19232@lug-owl.de>
+In-Reply-To: <1b137cb70602091651s6e51cb7fq48568fc9afbff654@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,39 +22,54 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Roel,
+thanks for forwarding.
+
+On Fri, Feb 10, 2006 at 01:51:16AM +0100, Roel Teuwen wrote:
+...
+> I see at least a few problems with my C8000 running linux. First of
+> all, I did not yet have any time to test it. Secondly, my C8000
+> contains PA8900 processors which I don't think anyone has tried yet.
+
+I've been trying some rp3440's with pa8800 processors over
+the past 18 monthes and we still have problems with the L2
+cache. I'm very slowly making some forward progress on it
+but it's nowhere near debugged.
+
+We do think it's related to the use of non-equivalent aliasing
+by the parisc-linux kernel. HPUX doesn't do that.
+
+So right now don't expect more than a single socket to work
+and still see occasion segfaults.
+If more than one CPU socket is enabled, the box will HPMC
+with any substatial load that inolves lots of context switching.
 
 
+> I've added the machine to the hardware database with the plan of
+> sending a success/error report to the pateam site and parisc-linux
+> maillist later.
 
-On Wed, 08 Feb 2006 07:33:24 +0100, Jan-Benedict Glaw <jbglaw@lug-owl.de> wrote:
-> Hi!
-> 
-> I recently got two C200 (thanks Frank!) and I'll probably soon get a
-> J5600. Unfortunately all machines are without any RAM. What kind of
-> RAM do I need for these machines? Can I transplant RAM from a 712/50,
-> a B132L, 735 or 715? Though that's probably not a nice solution, I do
-> have these machines used for Linux hacking, but that's probably better
-> than no RAM at all :->
-> 
-> Thanks, JBG
+thanks!
 
-B132L RAM should be fine in the C200s. These are the "new" 72pin ECC SIMMs.
+> By the way, apparently the HWDB doesn't recognize most of the hardware
+> in this machine to map it to useful entries. (PA8800 and PA8900 are
+> missing for example). I have CC'd the parisc-linux mailing list in the
+> hope that someone might know why.
 
-712 and 715 have "old" 72pin SIMMS. The 735 has some weird and ancient
-modules used only in 720/730/735/750/755.
+We probably need to clone the new entries from arch/parisc/kernel/hardware.c
+to the php/mysql code that drives the HWDB.
+Any volunteers?
 
-I've got a pile of 16MB modules for B/C/D class at home. I could probably
-send some to Germany (from Norway) if you're interested. Mail me off-list.
+> I was planning on using Debian but I don't expect the graphical
+> interface (I suppose you mean X) to work at all. (even the console
+> might not, no tests yet :-) )
 
->>From the J5600 info:
+I have a C8000 here as well and was told we could probably get
+X.org working on it with 2D accelleration. We could get 3D HW accel
+if we could get bugs in the x.org/xfree86 BIOS emulation fixed.
 
-Memory
-    * 278-pin 120MHz ECC SDRAM DIMMs
-    * Takes 256/512/1024MB modules
-    * J5000: 8 slots
-    * 256MB (1*256) minimum, J5000: 8GB (8*1024) maximum
-
--Andy
-
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
