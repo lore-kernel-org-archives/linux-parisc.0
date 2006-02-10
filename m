@@ -1,17 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Re: [Fwd: Parisc - Linux on a HP-UX C8000 machine]
-Date: Fri, 10 Feb 2006 00:05:03 -0700
-Message-ID: <20060210070503.GA28772@colo.lackof.org>
+From: Roel Teuwen <roel.teuwen@gmail.com>
+Subject: [parisc-linux] Re: [Fwd: Parisc - Linux on a HP-UX C8000 machine]
+Date: Fri, 10 Feb 2006 01:51:16 +0100
+Message-ID: <1b137cb70602091651s6e51cb7fq48568fc9afbff654@mail.gmail.com>
 References: <1139531824.5272.1.camel@debian>
-	<1b137cb70602091651s6e51cb7fq48568fc9afbff654@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Weicht@mpimp-golm.mpg.de,
- parisc-linux@lists.parisc-linux.org
-To: Roel Teuwen <roel.teuwen@gmail.com>
+  charset=ISO-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Weicht@mpimp-golm.mpg.de
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1b137cb70602091651s6e51cb7fq48568fc9afbff654@mail.gmail.com>
+In-Reply-To: <1139531824.5272.1.camel@debian>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,54 +20,98 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Roel,
-thanks for forwarding.
+Hello Daniel,
 
-On Fri, Feb 10, 2006 at 01:51:16AM +0100, Roel Teuwen wrote:
-...
-> I see at least a few problems with my C8000 running linux. First of
-> all, I did not yet have any time to test it. Secondly, my C8000
-> contains PA8900 processors which I don't think anyone has tried yet.
+> > I read that you are the owner of the HP-UX C8000 machine in the
+> > machine list of the PA_RISC Linux website. In our institute we have
+> > the same machine and would like to install a Linux on this machine. We
+> > tried the Debian 3.1, the gentoo and the Ubuntu HPPA version but
+> > without any success.
 
-I've been trying some rp3440's with pa8800 processors over
-the past 18 monthes and we still have problems with the L2
-cache. I'm very slowly making some forward progress on it
-but it's nowhere near debugged.
+As you can read on the hardware database website
+(http://www.parisc-linux.org/hardware/index.html), the hardware
+database just contains links from certain hardware models to specific
+devices to help the developers.
 
-We do think it's related to the use of non-equivalent aliasing
-by the parisc-linux kernel. HPUX doesn't do that.
+It is not a list of supported hardware. For that you will be better
+off following the link on the same page :
+http://www.parisc-linux.org/hardware/supported.html and
+http://www.pateam.org/list.html
 
-So right now don't expect more than a single socket to work
-and still see occasion segfaults.
-If more than one CPU socket is enabled, the box will HPMC
-with any substatial load that inolves lots of context switching.
+> > Is it possible to get some help of you?
 
+I see at least a few problems with my C8000 running linux. First of
+all, I did not yet have any time to test it. Secondly, my C8000
+contains PA8900 processors which I don't think anyone has tried yet.
+I've added the machine to the hardware database with the plan of
+sending a success/error report to the pateam site and parisc-linux
+maillist later.
 
-> I've added the machine to the hardware database with the plan of
-> sending a success/error report to the pateam site and parisc-linux
-> maillist later.
+By the way, apparently the HWDB doesn't recognize most of the hardware
+in this machine to map it to useful entries. (PA8800 and PA8900 are
+missing for example). I have CC'd the parisc-linux mailing list in the
+hope that someone might know why.
 
-thanks!
+> > Which distribution did you use and which parameters did you set while
+> > booting? Does the graphical user interface works in your installation?
 
-> By the way, apparently the HWDB doesn't recognize most of the hardware
-> in this machine to map it to useful entries. (PA8800 and PA8900 are
-> missing for example). I have CC'd the parisc-linux mailing list in the
-> hope that someone might know why.
+I was planning on using Debian but I don't expect the graphical
+interface (I suppose you mean X) to work at all. (even the console
+might not, no tests yet :-) )
 
-We probably need to clone the new entries from arch/parisc/kernel/hardware.c
-to the php/mysql code that drives the HWDB.
-Any volunteers?
+> > I hope you can help us.
 
-> I was planning on using Debian but I don't expect the graphical
-> interface (I suppose you mean X) to work at all. (even the console
-> might not, no tests yet :-) )
+Not really, sorry. Someone on the mailinglist might know more or be
+interested in hearing about any specific problems you have
+encountered.
 
-I have a C8000 here as well and was told we could probably get
-X.org working on it with 2D accelleration. We could get 3D HW accel
-if we could get bugs in the x.org/xfree86 BIOS emulation fixed.
+Best regards,
 
-thanks,
-grant
+Roel
+
+> > Thanks, Daniel
+> >
+> >
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > MPI of Molecular Plant Physiology
+> >
+> >
+> >
+> > Dipl. Inf. (FH)
+> >
+> > Daniel Weicht
+> >
+> > Bioinformatics Group
+> >
+> >
+> >
+> > Max-Planck-Institut f=FCr Molekulare Pflanzenphysiologie
+> >
+> > Wissenschaftspark Golm
+> >
+> > Am M=FChlenberg 1
+> >
+> > 14476 Potsdam-Golm
+> >
+> > Germany
+> >
+> >
+> >
+> > e-mail:  weicht@mpimp-golm.mpg.de
+> >
+> > web:  http://www.mpimp-golm.mpg.de
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> >
+> >
+> >
+>
+>
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
