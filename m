@@ -1,13 +1,15 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: [parisc-linux] a stupid question about pdc_console?
-Date: Sun, 12 Feb 2006 13:40:40 +0000
-Message-ID: <43EF3AD8.7050803@tiscali.be>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] a stupid question about pdc_console?
+Date: Tue, 14 Feb 2006 02:17:21 -0500
+Message-ID: <20060214071721.GD13492@quicksilver.road.mcmartin.ca>
+References: <43EF3AD8.7050803@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <43EF3AD8.7050803@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,39 +20,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello pa*,
+On Sun, Feb 12, 2006 at 01:40:40PM +0000, Joel Soete wrote:
+> how printk() works before setup_arch() initialized his early console?
+> (that works but how?)
 
-afaik our pdc_console is the very early console that kernel has to printout early msg?
+it queues it until a console registers, and then it gets dumped.
 
-if yes could we anyway printk before this console is initialized?
-
-(see arch/parisc/kernel/setup.c
-in setup_arch()
-we printk the kernel bit width (32/64 bits) just before pdc_console_init(), though?)
-
-TIA,
-	Joel
-
-PS: don't much understand how in init/main.c
-[...]
-     441 asmlinkage void __init start_kernel(void)
-     442 {
-     443         char * command_line;
-     444         extern struct kernel_param __start___param[], __stop___param[];
-     445 /*
-     446  * Interrupts are still disabled. Do necessary setups, then
-     447  * enable them
-     448  */
-     449         lock_kernel();
-     450         page_address_init();
-     451         printk(KERN_NOTICE);
-     452         printk(linux_banner);
-     453         setup_arch(&command_line);
-     454         setup_per_cpu_areas();
-[...]
-
-how printk() works before setup_arch() initialized his early console?
-(that works but how?)
+(see register_console in kernel/printk.c)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
