@@ -1,34 +1,44 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: Bug#353480: yaird: [hppa] /dev/sd* device nodes not created and eth0 not enabled
-Date: Sat, 18 Feb 2006 17:49:16 -0500
-Message-ID: <20060218224916.GT13492__30721.5146408$1416624009$gmane$org@quicksilver.road.mcmartin.ca>
-References: <20060218210228.2433.50230.reportbug@treebeard.fjphome.nl>
+Subject: [parisc-linux] SMP_CALL_FUNCTION timeouts
+Date: Mon, 20 Feb 2006 14:07:43 -0500
+Message-ID: <20060220190743.GC15519@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Frans Pop <aragorn@tiscali.nl>,
- 353480@bugs.debian.org
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <20060218210228.2433.50230.reportbug@treebeard.fjphome.nl>
-Resent-Message-ID: <BVHAw.A.D5.im69DB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Feb 18, 2006 at 10:02:28PM +0100, Frans Pop wrote:
-> udevd[862]: get_netlink_msg: unable to receive kernel netlink message: No buffer space available
-> <!-- not sure about this message, but the same is shown for initramfs-tools --
+Hmm, I just saw this booting a dual 552MHz J6000:
 
-This is the reason you aren't getting /dev/sd* nodes. I debugged
-this yesterday, needs new udev upload, more details here:
-http://marc.theaimsgroup.com/?l=linux-hotplug-devel&m=114019842906313&w=2
+FP[1] enabled: Rev 1 Model 16
+migration_cost=2000
+CPU(s): 2 x PA8600 (PCX-W+) at 552.000000 MHz
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 1
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 2
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 3
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 4
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 5
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 6
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 7
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 8
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 9
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 10
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 11
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 12
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 13
+SMP CALL FUNCTION TIMED OUT! (cpu=0), try 14
+Setting cache flush threshold to 63134a00 (2 CPUs online)
 
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
