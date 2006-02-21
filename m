@@ -1,11 +1,12 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] patch-2.6.16-rc1-rc2 seems to works fine
-Date: Fri,  3 Feb 2006 19:25:52 +0100
-Message-ID: <IU4J74$1D5A440EC1E444AE6F491282E2515E25@scarlet.be>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: [parisc-linux] Re: gcj can't make shared libs on hppa
+Date: Tue, 21 Feb 2006 03:25:58 +0100
+Message-ID: <17402.31286.940841.655257__46649.2008338266$1416624583$gmane$org@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "parisc-linux" <parisc-linux@parisc-linux.org>
+  charset=us-ascii
+To: parisc-linux@parisc-linux.org,
+ debian-hppa@lists.debian.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,18 +18,11 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello pa*,
+please see http://bugs.debian.org/353346
 
-Short words to mention that I tested patch-2.6.16-rc1-rc2 with success
-(apparently straightforward: any failure excepted Makefile obviously) and=
+same thing with the 4.1 rc1 build.
 
-tested up kernels 32bit and 64 bit on my b2k.
-
-Hth,
-    Joel=0A=0A-----------------------------------------------------------=
-----=0AA free anti-spam and anti-virus filter on all Scarlet mailboxes=0A=
-More info on http://www.scarlet.be/
-
+thanks, Matthias
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
