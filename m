@@ -1,11 +1,13 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] bits of PREEMPT support
-Date: Sun, 26 Feb 2006 02:31:18 -0500
-Message-ID: <20060226073118.GA12426@quicksilver.road.mcmartin.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re:[parisc-linux] debian glibc 2.3.6-2.0 test
+Date: Tue, 28 Feb 2006 18:39:44 +0100
+Message-ID: <IVERQ8$55135086D27FA4C64BE96516AA1C04AF@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ tsg45800 <tsg45800@scarlet.be>
+To: "soete.joel" <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,148 +19,164 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Linux duet 2.6.16-rc4-ga0124d78-dirty #32 SMP PREEMPT Sun Feb 26 01:42:36 EST 2006 parisc64 GNU/Linux
+> Hello pa*,
+> 
+> With those debian src + Carlos's patch:
+<http://cvs.parisc-linux.org/glibc/posix/regcomp.c?rev=3D1.3&view=3Dlog>,=
+ here are
+the latest 
+> Error of make -k check:
+> # grep Err ../../../../Logs/glibc-2.3.6-2.0.Check make[2]: *** 
+>
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/locale=
+data/sort-test.out]
+Error 1
+> make[1]: *** [localedata/tests] Error 2
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/math/t=
+est-float.out]
+Error 1
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/math/t=
+est-double.out]
+Error 1
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/math/t=
+est-idouble.out]
+Error 1
+> make[1]: *** [math/tests] Error 2
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/posix/=
+tst-rxspencer.out]
+Error 139
+> make[2]:
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/posix/=
+annexc.out]
+Error 1 (ignored)
+> make[1]: *** [posix/tests] Error 2
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/linuxt=
+hreads/tst-attr1.out]
+Error 1
+> make[1]: *** [linuxthreads/tests] Error 2
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/rt/tst=
+-timer.out]
+Error 137
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/rt/tst=
+-aio4.out]
+Error 1
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/rt/tst=
+-timer4.out]
+Error 1
+> make[1]: *** [rt/tests] Error 2
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/elf/ts=
+t-tls13.out]
+Error 1
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/elf/ts=
+t-execstack.out]
+Error 1
+> make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/elf/ts=
+t-execstack-prog.out]
+Error 1
+> make[1]: *** [elf/tests] Error 2
+> make: *** [check] Error 2
+> 
+> Sorry I didn't fond back the list of known Errors, could you point me o=
+ut
+regressions?
+> 
 
-My hope is that PREEMPT will expose some bugs for us...
-Seems to be self-hosting, at least, a make -j8 on the kernel succeeded.
+For remind:
+Rebuilding libc6 2.3.5-13 dpkg with gcc-3.3, I got following Error check:=
 
-For this to be unbuggy, someone probably needs to do the legwork to
-forward port the previous work in ftp.p-l.org/patches.
+grep Err ../../../../Logs/glibc-2.3.5-13.Checkmake[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/locale=
+data/sort-test.out]
+Error 1
+make[1]: *** [localedata/tests] Error 2
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/math/t=
+est-float.out]
+Error 1
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/math/t=
+est-double.out]
+Error 1
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/math/t=
+est-ifloat.out]
+Error 1
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/math/t=
+est-idouble.out]
+Error 1
+make[1]: *** [math/tests] Error 2
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/stdlib=
+/tst-strtod.out]
+Error 1
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/stdlib=
+/bug-strtod.out]
+Error 1
+make[1]: *** [stdlib/tests] Error 2
+make[2]:
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/posix/=
+annexc.out]
+Error 1 (ignored)
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/linuxt=
+hreads/tst-attr1.out]
+Error 1
+make[1]: *** [linuxthreads/tests] Error 2
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/rt/tst=
+-timer.out]
+Error 137
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/rt/tst=
+-aio4.out]
+Error 1
+make[2]: ***
+[/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.5/build-tree/hppa-libc/rt/tst=
+-timer4.out]
+Error 1
+make[1]: *** [rt/tests] Error 2
+make: *** [check] Error 2
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index eca33cf..cf79639 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -169,14 +169,10 @@ config ARCH_DISCONTIGMEM_DEFAULT
- 	def_bool y
- 	depends on ARCH_DISCONTIGMEM_ENABLE
- 
-+source "kernel/Kconfig.preempt"
- source "kernel/Kconfig.hz"
- source "mm/Kconfig"
- 
--config PREEMPT
--	bool
--#	bool "Preemptible Kernel"
--	default n
--
- config COMPAT
- 	def_bool y
- 	depends on 64BIT
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index 9af4b22..920fb9c 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1014,14 +1014,23 @@ intr_restore:
- 	nop
- 	nop
- 
-+#ifndef CONFIG_PREEMPT
-+# define intr_do_preempt	intr_restore
-+#endif /* !CONFIG_PREEMPT */
-+
- 	.import schedule,code
- intr_do_resched:
--	/* Only do reschedule if we are returning to user space */
-+	/* Only call schedule on return to userspace, if we're returning
-+	 * to kernel space, we may schedule if CONFIG_PREEMPT...
-+	 *
-+	 * NOTE: Conditional nullification because of branch direction
-+	 * doesn't matter, since both are NULL.
-+	 */
- 	LDREG	PT_IASQ0(%r16), %r20
--	CMPIB= 0,%r20,intr_restore /* backward */
-+	CMPIB= 0,%r20,intr_do_preempt
- 	nop
- 	LDREG	PT_IASQ1(%r16), %r20
--	CMPIB= 0,%r20,intr_restore /* backward */
-+	CMPIB= 0,%r20,intr_do_preempt
- 	nop
- 
- #ifdef CONFIG_64BIT
-@@ -1037,7 +1046,37 @@ intr_do_resched:
- #endif
- 	ldo	R%intr_check_sig(%r2), %r2
- 
-+	/* preempt the current task on returning to kernel
-+	 * mode from an interrupt, iff need_resched is set,
-+	 * and preempt_count is 0. otherwise, we continue on
-+	 * our merry way back to the current running task.
-+	 */
-+#ifdef CONFIG_PREEMPT
-+	.import preempt_schedule_irq,code
-+intr_do_preempt:
-+	/* current_thread_info()->preempt_count */
-+	mfctl	%cr30, %r1
-+	LDREG	TI_PRE_COUNT(%r1), %r19
-+	CMPIB<>	0, %r19, intr_check_sig	/* if preempt_count > 0 */
-+	nop				/* prev insn branched backwards */
-+
-+	/* this block looks redundant... we wouldn't be here if
-+	 * TIF_NEED_RESCHED wasn't set */
-+	LDREG	TI_FLAGS(%r1), %r20
-+	bb,>=,n	%r20, 31 - TIF_NEED_RESCHED, intr_check_sig
-+	nop				/* backward */
-+	
-+	ssm	0, %r20			/* are interrupts disabled? */
-+	bb,<,n	%r20, 31 - PSW_I, intr_check_sig
-+	nop				/* backward */
-+
-+1:	BL	preempt_schedule_irq, %r2
-+	nop
- 
-+	mfctl	%cr30, %r1
-+	LDREG	TI_FLAGS(%r1), %r20
-+	bb,<,n	%r20, 31 - TIF_NEED_RESCHED, 1b
-+#endif /* CONFIG_PREEMPT */
- 	.import do_signal,code
- intr_do_signal:
- 	/* 
-diff --git a/include/asm-parisc/spinlock.h b/include/asm-parisc/spinlock.h
-index 16c2ac0..bfa8125 100644
---- a/include/asm-parisc/spinlock.h
-+++ b/include/asm-parisc/spinlock.h
-@@ -134,14 +134,22 @@ static  __inline__ int __raw_write_trylo
- 	return 1;
- }
- 
--static __inline__ int __raw_is_read_locked(raw_rwlock_t *rw)
-+/*
-+ * read_can_lock - would read_trylock() succeed?
-+ * @lock: the rwlock in question.
-+ */
-+static __inline__ int __raw_read_can_lock(raw_rwlock_t *rw)
- {
--	return rw->counter > 0;
-+	return rw->counter >= 0;
- }
- 
--static __inline__ int __raw_is_write_locked(raw_rwlock_t *rw)
-+/*
-+ * write_can_lock - would write_trylock() succeed?
-+ * @lock: the rwlock in question.
-+ */
-+static __inline int __raw_write_can_lock(raw_rwlock_t *rw)
- {
--	return rw->counter < 0;
-+	return !rw->counter;
- }
- 
- #endif /* __ASM_SPINLOCK_H */
-diff --git a/include/asm-parisc/thread_info.h b/include/asm-parisc/thread_info.h
-index ac32f14..f2f83b0 100644
---- a/include/asm-parisc/thread_info.h
-+++ b/include/asm-parisc/thread_info.h
-@@ -49,7 +49,8 @@ struct thread_info {
- 
- #endif /* !__ASSEMBLY */
- 
--#define PREEMPT_ACTIVE          0x10000000
-+#define PREEMPT_ACTIVE_BIT	28
-+#define PREEMPT_ACTIVE		(1 << PREEMPT_ACTIVE_BIT)
- 
- /*
-  * thread information flags
+
+Well, the first regression is in tst-rxspencer which only failled on 2 te=
+st:
+[...]
+a[[=3Db=3D]]c      &       abc     abc
+[...]
+a[[=3Db=3D]        &C      EBRACK
+[...]
+
+Program received signal SIGSEGV, Segmentation fault.
+0x400b7010 in build_equiv_class (sbcset=3D0x23268, mbcset=3D0x45600,
+equiv_class_alloc=3D0xc0020e48, name=3D0xc0020e78 "b")
+    at regcomp.c:3495
+warning: Source file is more recent than executable.
+
+3495          len =3D weights[idx1];
+(gdb) p idx1
+$1 =3D 16777820
+
+...
+
+Hth,
+    Joel
+=0A=0A-------------------------------------------------------=0ANOTE! My =
+email address is changing to ... @scarlet.be=0APlease make the necessary =
+changes in your address book. =0A=0A
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
