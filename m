@@ -1,17 +1,16 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] alternate insn for parisc (ccio/sba)
-Date: Sat, 04 Mar 2006 11:21:41 +0800
-Message-ID: <440907C5.7050503@tausq.org>
-References: <20060303201428.GA25283@quicksilver.road.mcmartin.ca>
-	<20060304003802.GB18473@colo.lackof.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] confirme: bug in arg checking in clone.S
+Date: Sat, 04 Mar 2006 20:00:17 +0000
+Message-ID: <4409F1D1.70605@tiscali.be>
+References: <200601080241.07960.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: parisc-linux@lists.parisc-linux.org,
- Kyle McMartin <kyle@parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset=us-ascii;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060304003802.GB18473@colo.lackof.org>
+In-Reply-To: <200601080241.07960.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,33 +21,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Anyplace we use asm that could be different for PA20 vs PA11.
-> __ffs() in include/asm/bitops.h probaby isn't the best example
-> but it might be good enough to give an idea.
-> Ie kernel built for PA11 could be optimized for PA20-32bit.
+Hello Mike and list,
 
-Just my 2 cents, but unless it is code that is performance critical and
-we can demonstrate a significant difference on a particular measurement,
-and it is not something that can be determined at compile time, I think
-we should do runtime code patching sparingly. If nothing else, it makes
-the code harder to read and perhaps to debug.
+Mike Frysinger wrote:
+> for some reason the attached test case (originally from LTP) segfaults on 
+> glibc/hppa systems ... every other arch ive tested on works fine ...
+> 
+Ok I find this LTP Stuff.
+# ./clone04
+clone04     1  BROK  :  Unexpected signal 11 received.
 
->> Also, if you want to test it, you'll need to remove the & ~_PAGE_WRITE from
->> PAGE_KERNEL_RO in asm/pgtable.h until we write protect the kernel at a
->> later stage.
 
-Right - it seems we should re-map the kernel read-only after you patch
-the insns.
+Effectively, as the comment said:
+  * DESCRIPTION
+  *      Verify that,
+  *      clone(2) returns -1 and sets errno to EINVAL if
+  *      child stack is set to a zero value(NULL)
 
-> very cool! ++kyle. :)
+Also as your subject better explain, the hppa implementation didn't do a "Sanity check arguments" (as other arch does).
 
-it is cool, thanks for working on this, Kyle.
+Can somebody could check this patch proposal:
+--- ./sysdeps/unix/sysv/linux/hppa/clone.S.Orig 2006-01-14 17:48:33.000000000 +0000
++++ ./sysdeps/unix/sysv/linux/hppa/clone.S      2006-03-04 19:46:03.000000000 +0000
+@@ -46,6 +46,11 @@
+          .text
+  ENTRY(__clone)
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
++       /* Sanity check arguments.  */
++       ldi     -EINVAL, %ret0
++       comib,=,n       0,%r26,.Lerror  /* no NULL function pointers */
++       comib,=,n       0,%r25,.Lerror  /* no NULL stack pointers */
++
+         /* Save the fn ptr and arg on the new stack.  */
+         stwm    %r26,64(%r25)
+         stw     %r23,-60(%r25)
+====<>====
+
+(Not sure I didn't miss some nop in delay slot on comib?)
+
+Thanks in advance,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
