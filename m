@@ -1,13 +1,14 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] alternate insn for parisc (ccio/sba)
-Date: Fri, 3 Mar 2006 19:35:31 -0500
-Message-ID: <20060304003531.GA30283@quicksilver.road.mcmartin.ca>
+Date: Sat, 04 Mar 2006 11:21:41 +0800
+Message-ID: <440907C5.7050503@tausq.org>
 References: <20060303201428.GA25283@quicksilver.road.mcmartin.ca>
 	<20060304003802.GB18473@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1
+Cc: parisc-linux@lists.parisc-linux.org,
+ Kyle McMartin <kyle@parisc-linux.org>
 To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20060304003802.GB18473@colo.lackof.org>
@@ -21,51 +22,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Mar 03, 2006 at 05:38:02PM -0700, Grant Grundler wrote:
 > Anyplace we use asm that could be different for PA20 vs PA11.
 > __ffs() in include/asm/bitops.h probaby isn't the best example
 > but it might be good enough to give an idea.
 > Ie kernel built for PA11 could be optimized for PA20-32bit.
->
 
-*nod* 
+Just my 2 cents, but unless it is code that is performance critical and
+we can demonstrate a significant difference on a particular measurement,
+and it is not something that can be determined at compile time, I think
+we should do runtime code patching sparingly. If nothing else, it makes
+the code harder to read and perhaps to debug.
 
-> hrm...are kernel modules loaded into write protected space as well?
-> If so, then we can't apply this to kernel modules...would kinda limit
-> how it could be used. E.g. we couldn't get rid of dma_ops indirect
-> calls.
->
+>> Also, if you want to test it, you'll need to remove the & ~_PAGE_WRITE from
+>> PAGE_KERNEL_RO in asm/pgtable.h until we write protect the kernel at a
+>> later stage.
 
-Unfortunately, this can't directly be applied to modules. It could
-though, be extended by exporting the code, and hacking it into the module
-loader, I imagine.
- 
-> > -	/* FIXME: PCX_W platforms don't need FDC/SYNC. (eg C360)
-> > -	**        PCX-U/U+ do. (eg C200/C240)
-> > -	**        PCX-T'? Don't know. (eg C110 or similar K-class)
-> > -	**
-> > -	** See PDC_MODEL/option 0/SW_CAP word for "Non-coherent IO-PDIR bit".
-> 
-> I'd like to save the comments that specify which CPU/platforms need
-> certain ops. We need these comments to document which platforms/CPUs
-> needs to be tested if something related changes.
-> Can you add leave them someplace in ccio/sba code?
-> 
-
-Will do.
-
-> Can we put instruction patching declarations in a new header file?
-> system.h is way overloaded already.
-> 
-
-Yeah, touching system.h sucks too, as it causes basically everything
-to be rebuilt.
+Right - it seems we should re-map the kernel read-only after you patch
+the insns.
 
 > very cool! ++kyle. :)
->
 
-Thanks,
-	Kyle 
+it is cool, thanks for working on this, Kyle.
+
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
