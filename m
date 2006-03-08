@@ -1,16 +1,16 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [Fwd: Re: [parisc-linux] Re: gcj can't make shared libs on hppa]
-Date: Mon, 6 Mar 2006 11:47:47 -0500
-Message-ID: <119aab440603060847i5cd87f25tc50fb5699429d5ab@mail.gmail.com>
-References: <440BC3CB.8020801@tausq.org>
+Date: Tue, 7 Mar 2006 19:36:13 -0500 (EST)
+Message-ID: <200603080036.k280aD1s015303@hiauly1.hia.nrc.ca>
+References: <119aab440603060847i5cd87f25tc50fb5699429d5ab@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-To: "Randolph Chung" <randolph@tausq.org>,
- dave@hiauly1.hia.nrc.ca,
- parisc-linux@parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <440BC3CB.8020801@tausq.org>
+In-Reply-To: <119aab440603060847i5cd87f25tc50fb5699429d5ab@mail.gmail.com>
+	from "Carlos O'Donell" at Mar 6, 2006 11:47:47 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,50 +21,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Dave,
-
-Sorry, it appears I've been dropped from various lists when my
-mail servers went down due to university problems.
-
-> > Right, it's a linker bug.  The following plabel is dropped from the
-> > shared library.
+> > I was too hasty in calling this a linker bug.  We end up with the
+> > following relocations in the shared library as a result of the above
+> > relocation in the object file:
 > >
-> > 0000000c R_PARISC_PLABEL32  .L_ZN2A1C1Ev0
->
-> I was too hasty in calling this a linker bug.  We end up with the
-> following relocations in the shared library as a result of the above
-> relocation in the object file:
->
-> 00010f34 R_PARISC_PLABEL32  *ABS*+0x00010f46
-> 00010f44 R_PARISC_IPLT     *ABS*+0x000009a8
->
-> The reason for the segmentation fault is the R_PARISC_IPLT isn't
-> being handled correctly and the indirect call to the constructor
-> for the library branches to the wrong location.
+> > 00010f34 R_PARISC_PLABEL32  *ABS*+0x00010f46
+> > 00010f44 R_PARISC_IPLT     *ABS*+0x000009a8
+> >
+> > The reason for the segmentation fault is the R_PARISC_IPLT isn't
+> > being handled correctly and the indirect call to the constructor
+> > for the library branches to the wrong location.
+> 
+> Can you explain what is broken?
 
-Can you explain what is broken?
-Where does it branch to?
+If I knew that, I probably would have fixed the problem ;(
 
-> Carlos, do you have an opinion on how plabels that reference local
-> symbols in shared libraries should be handled?  This is what we have
-> in the A1.s file for .L_ZN2A1C1Ev0:
->
->         .word   P%.L_ZN2A1C1Ev0
->         .set    .L_ZN2A1C1Ev0,_ZN2A1C1Ev
+> Where does it branch to?
 
-*ABS* IPLT relocations might be mildly broken in hppa actually.
+(gdb) stepi
+0x400abb94 in __do_global_ctors_aux () from ./liba1.so.0
+(gdb)
+0x400ab9c4 in $$dyncall () from ./liba1.so.0
+(gdb)
+0x400ab9c4 in $$dyncall () from ./liba1.so.0
+(gdb)
+0x400ab9d4 in $$dyncall () from ./liba1.so.0
+(gdb)
+0x400ab9d8 in $$dyncall () from ./liba1.so.0
+(gdb)
+0x08000240 in ?? ()
+(gdb) stepi
 
-*ABS* PLABEL's point to the PLT at runtime, this might be a
-reason for the breakage. We point them at the PLT because they
-are local and thus the PLT is a unique OPD.
+Program received signal SIGSEGV, Segmentation fault.
+0x08000240 in ?? ()
 
-It might be possible the IP is correctly set, but the GP is incorrect.
-If you could verify this it would be great?
+Starting program: /home/dave/gcc_test/main
+[Thread debugging using libthread_db enabled]
+[New Thread 16384 (LWP 29346)]
+[Switching to Thread 16384 (LWP 29346)]
 
-This breakage would have occured around the time that fixup was
-changed to incorporate ia64 changes.
+Breakpoint 3, 0x400abb90 in __do_global_ctors_aux () from ./liba1.so.0
+(gdb) p/x $r22
+$3 = 0x8000240
 
-c.
+This is just before the call to $$dyncall.  As can be seen, $r22
+doesn't point to a function descriptor.  There doesn't seem to be
+a function at 0x8000240.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
