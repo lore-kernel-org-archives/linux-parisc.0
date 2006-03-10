@@ -1,20 +1,19 @@
-From: =?ISO-8859-1?Q?Vincent_Stehl=E9?= <vincent.stehle@free.fr>
-Subject: Re: [parisc-linux] Bug report: 2.6.15 crash when accessing nbd on
-	a 712.
-Date: Thu, 09 Mar 2006 22:58:10 +0100
-Message-ID: <4410A4F2.2050100@free.fr>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Bug report: 2.6.15 crash when accessing nbd on a
+	712.
+Date: Thu, 9 Mar 2006 21:56:24 -0700
+Message-ID: <20060310045624.GB15359@colo.lackof.org>
 References: <440CB949.7040706@free.fr>
 	<20060309154750.GA11249@quicksilver.road.mcmartin.ca>
-	<20060309174841.GA26062@colo.lackof.org>
+	<20060309174841.GA26062@colo.lackof.org> <4410A4F2.2050100@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset=us-ascii
 Cc: Kyle McMartin <kyle@mcmartin.ca>,
  parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: Vincent Stehl? <vincent.stehle@free.fr>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060309174841.GA26062@colo.lackof.org>
+In-Reply-To: <4410A4F2.2050100@free.fr>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,26 +24,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Thu, Mar 09, 2006 at 10:58:10PM +0100, Vincent Stehl? wrote:
+> But don't you prefer the full log, like I attached to my first post? 
+> Just wondering...
 
-Kyle, Grant,
+Yes, please. I didn't realize you had attachments. Looking at them now.
+And it's better to NOT compress them since they aren't that big and
+can't be searched later.
 
-Thank you for your concern. I'll (hopefully) try the kernel you suggest 
-next week-end.
-
-Grant Grundler wrote:
-> In case the newer kernel doesn't take care of it, can you manually copy
-> down a few key lines of the panic: panic reason, IOAQ, top three lines
-> of stack backtrace, gr24, gr25, gr26.
-
-Certainly,
-
-But don't you prefer the full log, like I attached to my first post? 
-Just wondering...
-
-Best regards,
-
--- 
-Vincent Stehlé
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
