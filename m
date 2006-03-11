@@ -1,19 +1,20 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Bug report: 2.6.15 crash when accessing nbd on a
-	712.
-Date: Thu, 9 Mar 2006 21:56:24 -0700
-Message-ID: <20060310045624.GB15359@colo.lackof.org>
+From: =?ISO-8859-1?Q?Vincent_Stehl=E9?= <vincent.stehle@free.fr>
+Subject: Re: [parisc-linux] Bug report: 2.6.15 crash when accessing nbd on
+	a 712.
+Date: Sat, 11 Mar 2006 21:30:15 +0100
+Message-ID: <44133357.3070104@free.fr>
 References: <440CB949.7040706@free.fr>
 	<20060309154750.GA11249@quicksilver.road.mcmartin.ca>
-	<20060309174841.GA26062@colo.lackof.org> <4410A4F2.2050100@free.fr>
+	<20060309174841.GA26062@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=ISO-8859-1;
+  format=flowed
 Cc: Kyle McMartin <kyle@mcmartin.ca>,
  parisc-linux@lists.parisc-linux.org
-To: Vincent Stehl? <vincent.stehle@free.fr>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4410A4F2.2050100@free.fr>
+In-Reply-To: <20060309174841.GA26062@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,16 +25,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Mar 09, 2006 at 10:58:10PM +0100, Vincent Stehl? wrote:
-> But don't you prefer the full log, like I attached to my first post? 
-> Just wondering...
+Kyle, Grant,
 
-Yes, please. I didn't realize you had attachments. Looking at them now.
-And it's better to NOT compress them since they aren't that big and
-can't be searched later.
+I took your -pa4 patch, applied it over the debian 2.6.15 sources, 
+recompiled with nbd and it works fine. I can now swap over nbd.
 
-thanks,
-grant
+Thank you very much for your help!
+
+-- 
+Vincent Stehlé
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
