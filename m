@@ -1,17 +1,17 @@
-From: Randolph Chung <randolph@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: gcj can't make shared libs on hppa
-Date: Sun, 12 Mar 2006 00:28:58 +0800
-Message-ID: <4412FACA.2010102__3856.6583571539$1416624585$gmane$org@tausq.org>
-References: <200602220005.k1M05o1D006305@hiauly1.hia.nrc.ca>
+Date: Sat, 11 Mar 2006 21:10:56 -0500 (EST)
+Message-ID: <200603120210.k2C2AvIw012101__37342.6364422359$1416624585$gmane$org@hiauly1.hia.nrc.ca>
+References: <4412FACA.2010102@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset=US-ASCII
 Cc: parisc-linux@parisc-linux.org,
  debian-hppa@lists.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: randolph@tausq.org (Randolph Chung)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200602220005.k1M05o1D006305@hiauly1.hia.nrc.ca>
+In-Reply-To: <4412FACA.2010102@tausq.org> from "Randolph Chung" at Mar 12,
+	2006 00:28:58 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,36 +22,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> The reason for the segmentation fault is the R_PARISC_IPLT isn't
-> being handled correctly and the indirect call to the constructor
-> for the library branches to the wrong location.
+> but *(%ret0-4) points inside the text section, so r22 eventually gets 
+> loaded with an instruction value (0x4fd23f01 == ldw,mb -80(sp),r18)
 
-here's what i see....
+r22 should be pointing to a function descriptor and have the plabel
+bit set.  It's a relative rare situation when an indirect call can
+be made directly (no shared libraries).
 
-__do_global_ctors_aux is trying to load a value from the GOT
-(__CTORS_LIST i think). I'm seeing that it loads some garbage value
-(0x4fd23f01 in my case), and then it tries to do a $dyncall on that.
-
-__do_global_ctors_aux does something like:
-
-addil 0(%r19),%r1
-ldw 28(%r1),%ret0
-ldw -4(%ret0),%r3
-...
-copy %r3,%r22
-b,l $$dyncall, %r31
-
-$r19+0x28 is 0x41896830; points inside the .plt. seems reasonable
-
-but *(%ret0-4) points inside the text section, so r22 eventually gets 
-loaded with an instruction value (0x4fd23f01 == ldw,mb -80(sp),r18)
-
-dunno if this helps with anything... have to think about it somemore to 
-see what's happening...
-
-randolph
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
