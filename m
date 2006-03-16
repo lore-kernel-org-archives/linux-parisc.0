@@ -1,8 +1,8 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
 Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to
 	init on parisc
-Date: Thu, 16 Mar 2006 10:58:06 -0600
-Message-ID: <1142528286.3244.19.camel__788.053617771034$1416624587$gmane$org@mulgrave.il.steeleye.com>
+Date: Thu, 16 Mar 2006 18:31:17 +0100
+Message-ID: <E1FJwJh-00084l-00__11342.7144977779$1416624587$gmane$org@dorka.pomaz.szeredi.hu>
 References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<E1FGwXn-0005Dh-00@dorka.pomaz.szeredi.hu>
 	<20060309055002.GJ26474@pooh.bubble.frostnet.net>
@@ -12,15 +12,14 @@ References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<20060310230000.GX26474@pooh.bubble.frostnet.net>
 	<E1FIlC6-0005ts-00@dorka.pomaz.szeredi.hu>
 	<20060316161336.GA16771@colo.lackof.org>
-Mime-Version: 1.0
-Content-Type: text/plain
+	<1142528286.3244.19.camel@mulgrave.il.steeleye.com>
 Cc: fuse-devel@lists.sourceforge.net,
  parisc-linux@parisc-linux.org,
- chris@frostnet.net,
- Miklos Szeredi <miklos@szeredi.hu>
-To: Grant Grundler <grundler@parisc-linux.org>
+ chris@frostnet.net
+To: James.Bottomley@SteelEye.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060316161336.GA16771@colo.lackof.org>
+In-reply-to: <1142528286.3244.19.camel@mulgrave.il.steeleye.com> (message from
+	James Bottomley on Thu, 16 Mar 2006 10:58:06 -0600)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,39 +30,66 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, 2006-03-16 at 09:13 -0700, Grant Grundler wrote:
-> On Mon, Mar 13, 2006 at 12:26:34PM +0100, Miklos Szeredi wrote:
-> > OK.  I'm out of ideas, CC-ing parisc-linux, maybe they can help shed
-> > some light on this.
+> This is wrong.  A VIPT cache requires a mapping to flush on.  If you
+> kunmap, you've lost the mapping.
+
+Ahh, I knew I was missing something fundamental.
+
+> What you should do is
 > 
-> Miklos,
-> I took a quick look last week but didn't see anything obvious.
-> I was suspicious of the memcopy() calls to copy stuff to
-> user space. But willy me told those are fine if using the
-> result of kmap() (and then kunmap'ing when done).
+> kmap()
+> operate on data
+> flush_kernel_dcache_page()
+> kunmap()
 
-Sorry, meant to reply earlier.
+Chris, can you try the below patch?
 
-> > The reason appears to be that when the userspace filesystem reads from
-> > the FUSE device, the kernel doesn't copy any data to the userspace
-> > read buffer, though the correct size is returned by read().
-> > 
-> > FUSE uses a combination of get_user_pages(), kmap_atomic() and
-> > memcpy().  After kunmap_atomic(), flush_dcache_page() is called to
-> > avoid virtual aliasing.  The data in the read buffer is totally
-> > untouched.
+Thanks,
+Miklos
 
-This is wrong.  A VIPT cache requires a mapping to flush on.  If you
-kunmap, you've lost the mapping.  What you should do is
-
-kmap()
-operate on data
-flush_kernel_dcache_page()
-kunmap()
-
-James
-
-
+Index: linux/fs/fuse/dev.c
+===================================================================
+--- linux.orig/fs/fuse/dev.c	2006-03-13 18:26:00.000000000 +0100
++++ linux/fs/fuse/dev.c	2006-03-16 18:28:54.000000000 +0100
+@@ -432,11 +432,11 @@ static void fuse_copy_init(struct fuse_c
+ static void fuse_copy_finish(struct fuse_copy_state *cs)
+ {
+ 	if (cs->mapaddr) {
+-		kunmap_atomic(cs->mapaddr, KM_USER0);
+-		if (cs->write) {
++		if (cs->write)
+ 			flush_dcache_page(cs->pg);
++		kunmap_atomic(cs->mapaddr, KM_USER0);
++		if (cs->write)
+ 			set_page_dirty_lock(cs->pg);
+-		}
+ 		put_page(cs->pg);
+ 		cs->mapaddr = NULL;
+ 	}
+@@ -504,6 +504,8 @@ static int fuse_copy_page(struct fuse_co
+ 	if (page && zeroing && count < PAGE_SIZE) {
+ 		void *mapaddr = kmap_atomic(page, KM_USER1);
+ 		memset(mapaddr, 0, PAGE_SIZE);
++		if (!cs->write)
++			flush_dcache_page(page);
+ 		kunmap_atomic(mapaddr, KM_USER1);
+ 	}
+ 	while (count) {
+@@ -514,12 +516,12 @@ static int fuse_copy_page(struct fuse_co
+ 			void *mapaddr = kmap_atomic(page, KM_USER1);
+ 			void *buf = mapaddr + offset;
+ 			offset += fuse_copy_do(cs, &buf, &count);
++			if (!cs->write)
++				flush_dcache_page(page);
+ 			kunmap_atomic(mapaddr, KM_USER1);
+ 		} else
+ 			offset += fuse_copy_do(cs, NULL, &count);
+ 	}
+-	if (page && !cs->write)
+-		flush_dcache_page(page);
+ 	return 0;
+ }
+ 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
