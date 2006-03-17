@@ -1,25 +1,17 @@
-From: Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to
-	init on parisc
-Date: Fri, 17 Mar 2006 10:13:19 +0100
-Message-ID: <E1FKB1L-0002jY-00__15264.4970025451$1416624587$gmane$org@dorka.pomaz.szeredi.hu>
-References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
-	<E1FGwXn-0005Dh-00@dorka.pomaz.szeredi.hu>
-	<20060309055002.GJ26474@pooh.bubble.frostnet.net>
-	<E1FHKQR-0007JU-00@dorka.pomaz.szeredi.hu>
-	<20060309223622.GP26474@pooh.bubble.frostnet.net>
-	<E1FHfby-00052b-00@dorka.pomaz.szeredi.hu>
-	<20060310230000.GX26474@pooh.bubble.frostnet.net>
-	<E1FIlC6-0005ts-00@dorka.pomaz.szeredi.hu>
-	<20060316161336.GA16771@colo.lackof.org>
-	<1142528286.3244.19.camel@mulgrave.il.steeleye.com>
-Cc: fuse-devel@lists.sourceforge.net,
- parisc-linux@parisc-linux.org,
- chris@frostnet.net
-To: James.Bottomley@SteelEye.com
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: gcj can't make shared libs on hppa
+Date: Fri, 17 Mar 2006 13:00:01 -0500 (EST)
+Message-ID: <200603171800.k2HI01Tj008945__9270.14033445648$1416624588$gmane$org@hiauly1.hia.nrc.ca>
+References: <17433.20663.776171.375034@gargle.gargle.HOWL>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: parisc-linux@parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: doko@cs.tu-berlin.de (Matthias Klose)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <1142528286.3244.19.camel@mulgrave.il.steeleye.com> (message from
-	James Bottomley on Thu, 16 Mar 2006 10:58:06 -0600)
+In-Reply-To: <17433.20663.776171.375034@gargle.gargle.HOWL> from "Matthias
+	Klose" at Mar 16, 2006 12:49:11 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -30,28 +22,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > > FUSE uses a combination of get_user_pages(), kmap_atomic() and
-> > > memcpy().  After kunmap_atomic(), flush_dcache_page() is called to
-> > > avoid virtual aliasing.  The data in the read buffer is totally
-> > > untouched.
+> John David Anglin writes:
+> > > please see http://bugs.debian.org/353346
+> > 
+> > Should be fixed.  See http://gcc.gnu.org/ml/gcc-patches/2006-03/msg00815.html
 > 
-> This is wrong.  A VIPT cache requires a mapping to flush on.  If you
-> kunmap, you've lost the mapping.  What you should do is
+> with this change (and the typo fix), gcj-dbtool segfaults:
 > 
-> kmap()
-> operate on data
-> flush_kernel_dcache_page()
-> kunmap()
+> (gdb) run -n classmap.db
+> Starting program: /usr/bin/gcj-dbtool-4.1 -n classmap.db
+> [Thread debugging using libthread_db enabled]
+> [New Thread 16384 (LWP 6962)]
+> [New Thread 32769 (LWP 6965)]
+> [New Thread 16386 (LWP 6966)]
+> 
+> Program received signal SIGSEGV, Segmentation fault.
+> [Switching to Thread 16384 (LWP 6962)]
+> linear_search_fdes (ob=0xbff02054, this_fde=0x4291a780, pc=0x427ed7f3)
+>     at unwind-dw2-fde.c:776
+> 776     unwind-dw2-fde.c: No such file or directory.
+>         in unwind-dw2-fde.c
 
-OK, this didn't help.  Looking closer it didn't have a chance of
-helping, since kunmap()/kunmap_atomic() are no-ops unless
-CONFIG_HIGHMEM is set, but on parisc there's no highmem support.
+I just remembered, see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=334112
 
-Any other ideas?
-
-Thanks,
-Miklos
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
