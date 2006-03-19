@@ -1,17 +1,26 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: gcj can't make shared libs on hppa
-Date: Fri, 17 Mar 2006 13:00:01 -0500 (EST)
-Message-ID: <200603171800.k2HI01Tj008945__9270.14033445648$1416624588$gmane$org@hiauly1.hia.nrc.ca>
-References: <17433.20663.776171.375034@gargle.gargle.HOWL>
+From: Chris Frost <chris@frostnet.net>
+Subject: [parisc-linux] Re: [fuse-devel] Example filesystem fail to init on
+	parisc
+Date: Sat, 18 Mar 2006 20:39:39 -0800
+Message-ID: <20060319043939.GP26474__44157.688241876$1416624588$gmane$org@pooh.bubble.frostnet.net>
+References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
+	<E1FGwXn-0005Dh-00@dorka.pomaz.szeredi.hu>
+	<20060309055002.GJ26474@pooh.bubble.frostnet.net>
+	<E1FHKQR-0007JU-00@dorka.pomaz.szeredi.hu>
+	<20060309223622.GP26474@pooh.bubble.frostnet.net>
+	<E1FHfby-00052b-00@dorka.pomaz.szeredi.hu>
+	<20060310230000.GX26474@pooh.bubble.frostnet.net>
+	<E1FIlC6-0005ts-00@dorka.pomaz.szeredi.hu>
+	<E1FJsHo-0006Yf-00@dorka.pomaz.szeredi.hu>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@parisc-linux.org,
- debian-hppa@lists.debian.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
+  charset=unknown-8bit
+Cc: fuse-devel@lists.sourceforge.net,
+ jick.nan@gmail.com,
+ parisc-linux@parisc-linux.org
+To: Miklos Szeredi <miklos@szeredi.hu>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <17433.20663.776171.375034@gargle.gargle.HOWL> from "Matthias
-	Klose" at Mar 16, 2006 12:49:11 pm
+In-Reply-To: <E1FJsHo-0006Yf-00@dorka.pomaz.szeredi.hu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,33 +31,55 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> John David Anglin writes:
-> > > please see http://bugs.debian.org/353346
-> > 
-> > Should be fixed.  See http://gcc.gnu.org/ml/gcc-patches/2006-03/msg00815.html
-> 
-> with this change (and the typo fix), gcj-dbtool segfaults:
-> 
-> (gdb) run -n classmap.db
-> Starting program: /usr/bin/gcj-dbtool-4.1 -n classmap.db
-> [Thread debugging using libthread_db enabled]
-> [New Thread 16384 (LWP 6962)]
-> [New Thread 32769 (LWP 6965)]
-> [New Thread 16386 (LWP 6966)]
-> 
-> Program received signal SIGSEGV, Segmentation fault.
-> [Switching to Thread 16384 (LWP 6962)]
-> linear_search_fdes (ob=0xbff02054, this_fde=0x4291a780, pc=0x427ed7f3)
->     at unwind-dw2-fde.c:776
-> 776     unwind-dw2-fde.c: No such file or directory.
->         in unwind-dw2-fde.c
+The kernel output on my parisc machine using copy_to/from_user2() is a bit
+different:
 
-I just remembered, see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=334112
 
-Dave
+woozle:/home/frost/fuse_test# insmod copytest.ko
+woozle:/home/frost/fuse_test# cat /proc/fs/test
+woozle:/home/frost/fuse_test# echo hello > /proc/fs/test
+woozle:/home/frost/fuse_test# dmesg | tail
+program smartd is using a deprecated SCSI ioctl, please convert it to SG_IO
+test_read 000258a0 1024 0
+dst: 000258a0 page: 10acb460 offset: 2208 mapaddr: 3b523000 ptr: 3b5238a0
+  test_read: 7
+test_read 000258a0 1024 7
+  test_read: 0
+test_write 000d6c08 6 0
+src: 000d6c08 page: 108e9060 offset: 3080 mapaddr: 2c403000 ptr: 2c403c08
+<ßßßßßß>
+  test_write: 6
+woozle:/home/frost/fuse_test#
+
+
+Changing the copy_to/from_user2() calls to copy_to/from_user1() changes
+the output to include the "Hello!" and "<hello\n>" you see on an x86
+(x86, I presume);
+
+
+woozle:/home/frost/fuse_test# insmod copytest.ko
+woozle:/home/frost/fuse_test# cat /proc/fs/test
+Hello!
+woozle:/home/frost/fuse_test# echo hello > /proc/fs/test
+woozle:/home/frost/fuse_test# dmesg | tail -9
+program smartd is using a deprecated SCSI ioctl, please convert it to SG_IO
+test_read 000258a0 1024 0
+  test_read: 7
+test_read 000258a0 1024 7
+  test_read: 0
+test_write 000d6c08 6 0
+<hello
+>
+  test_write: 6
+woozle:/home/frost/fuse_test# 
+
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Chris Frost  |  <http://www.frostnet.net/chris/>
+-------------+----------------------------------
+Public PGP Key:
+   Email chris@frostnet.net with the subject "retrieve pgp key"
+   or visit <http://www.frostnet.net/chris/about/pgp_key.phtml>
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
