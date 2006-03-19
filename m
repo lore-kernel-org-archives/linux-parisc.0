@@ -1,8 +1,8 @@
-From: Hugh Dickins <hugh@veritas.com>
-Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to init
-	on parisc
-Date: Sun, 19 Mar 2006 15:38:04 +0000 (GMT)
-Message-ID: <Pine.LNX.4.61.0603191526250.4440__44236.7171323442$1416624589$gmane$org@goblin.wat.veritas.com>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to
+	init on parisc
+Date: Sun, 19 Mar 2006 09:46:31 -0600
+Message-ID: <1142783191.3240.14.camel__30923.6501031139$1416624589$gmane$org@mulgrave.il.steeleye.com>
 References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<E1FGwXn-0005Dh-00@dorka.pomaz.szeredi.hu>
 	<20060309055002.GJ26474@pooh.bubble.frostnet.net>
@@ -16,17 +16,17 @@ References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<1142750588.3773.26.camel@mulgrave.il.steeleye.com>
 	<Pine.LNX.4.61.0603191033480.9273@goblin.wat.veritas.com>
 	<1142777049.3240.6.camel@mulgrave.il.steeleye.com>
+	<Pine.LNX.4.61.0603191526250.4440@goblin.wat.veritas.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN;
-  charset=US-ASCII
+Content-Type: text/plain
 Cc: fuse-devel@lists.sourceforge.net,
  jick.nan@gmail.com,
  parisc-linux@parisc-linux.org,
  Chris Frost <chris@frostnet.net>,
  Miklos Szeredi <miklos@szeredi.hu>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+To: Hugh Dickins <hugh@veritas.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1142777049.3240.6.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <Pine.LNX.4.61.0603191526250.4440@goblin.wat.veritas.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -37,24 +37,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 19 Mar 2006, James Bottomley wrote:
-> 
-> Well, yes, I think fuse is guilty to some degree.  However, the same
-> situation would prevail if anonymous memory were sent down to our other
-> kernel<->user mapping routines, like SG_IO for instance.  Perhaps we
-> should be doing early cow breaking for anonymous pages we know we're
-> going to write to?
+On Sun, 2006-03-19 at 15:38 +0000, Hugh Dickins wrote:
+> Certainly, that is part of what copy_to_user and get_user_pages(,,,,1,,,)
+> (and ordinary userspace writing) guarantee.  So if there's some new route
+> by which userspace pages may be modified on behalf of the user, never mind
+> the architecture-specific cache coherency issues, COWs must be broken to
+> preserve the semantics of fork.
 
-Certainly, that is part of what copy_to_user and get_user_pages(,,,,1,,,)
-(and ordinary userspace writing) guarantee.  So if there's some new route
-by which userspace pages may be modified on behalf of the user, never mind
-the architecture-specific cache coherency issues, COWs must be broken to
-preserve the semantics of fork.
+Yes, that's where I think the problem lies.  For an anonymous unshared
+page, the user view of the cache may still be dirty.  get_user_pages()
+only seems to use flush_dcache_page() to restore coherency, which won't
+work on anon pages.  Thus, get_user_pages() for an anon page is
+returning a page to the kernel that still has an incoherent user cache,
+which is what causes the issues in the copytest module.
 
-drivers/scsi/sg.c looks like it makes all the necessary calls to
-__copy_to_user or get_user_pages... but it's not hard to fool me.
+> drivers/scsi/sg.c looks like it makes all the necessary calls to
+> __copy_to_user or get_user_pages... but it's not hard to fool me.
 
-Hugh
+Yes ... and the copytest module has an almost exact duplicate of that
+code ... it's the actual get_user_pages() where I think we have
+coherency issues ... I've verified that it is returning an incoherent
+page if the underlying user page is PAGE_MAPPING_ANON.
+
+James
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
