@@ -1,8 +1,8 @@
 From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to
 	init on parisc
-Date: Sun, 19 Mar 2006 10:50:48 -0600
-Message-ID: <1142787049.3240.20.camel__14311.6683852442$1416624590$gmane$org@mulgrave.il.steeleye.com>
+Date: Sun, 19 Mar 2006 08:04:09 -0600
+Message-ID: <1142777049.3240.6.camel__43182.8889683404$1416624590$gmane$org@mulgrave.il.steeleye.com>
 References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<E1FGwXn-0005Dh-00@dorka.pomaz.szeredi.hu>
 	<20060309055002.GJ26474@pooh.bubble.frostnet.net>
@@ -15,22 +15,16 @@ References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<20060319043939.GP26474@pooh.bubble.frostnet.net>
 	<1142750588.3773.26.camel@mulgrave.il.steeleye.com>
 	<Pine.LNX.4.61.0603191033480.9273@goblin.wat.veritas.com>
-	<1142777049.3240.6.camel@mulgrave.il.steeleye.com>
-	<Pine.LNX.4.61.0603191526250.4440@goblin.wat.veritas.com>
-	<1142783191.3240.14.camel@mulgrave.il.steeleye.com>
-	<Pine.LNX.4.61.0603191614210.4908@goblin.wat.veritas.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Cc: Andrew Morton <akpm@osdl.org>,
- Miklos Szeredi <miklos@szeredi.hu>,
- fuse-devel@lists.sourceforge.net,
- Chris Frost <chris@frostnet.net>,
+Cc: fuse-devel@lists.sourceforge.net,
  jick.nan@gmail.com,
- "David S. Miller" <davem@davemloft.net>,
- parisc-linux@parisc-linux.org
+ parisc-linux@parisc-linux.org,
+ Chris Frost <chris@frostnet.net>,
+ Miklos Szeredi <miklos@szeredi.hu>
 To: Hugh Dickins <hugh@veritas.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.61.0603191614210.4908@goblin.wat.veritas.com>
+In-Reply-To: <Pine.LNX.4.61.0603191033480.9273@goblin.wat.veritas.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -41,32 +35,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2006-03-19 at 16:37 +0000, Hugh Dickins wrote:
-> It sounds like an issue you need to raise on linux-arch?  I've no idea
+On Sun, 2006-03-19 at 10:52 +0000, Hugh Dickins wrote:
+> > So, Hugh, you were the one who introduced this anonymous page behaviour;
+> > how are we supposed to obtain coherency for these pages?
+> 
+> I don't think I changed any behaviour here, just implemention details
+> (what you might expect to find stored in "page->mapping" in different
+> circumstances).  Comparing current parisc source against 2.6.5 source
+> (several releases before PAGE_MAPPING_ANON) bears that out, doesn't it?
+> page->mapping on anonymous pages at that time would have been NULL (or
+> &swapper_space if the page happened to have some swap assigned to it).
 
-Yes ... I think so.  I think the issue is that get_user_pages() has to
-guarantee that every page it gets has no dirty user cache above it.
+OK ... I just remember you introducing the page_mapping() macro ...
 
-> whether it's the parisc implementation of flush_dcache_page which is
-> at fault (skipping anonymous pages), or that get_user_pages ought to
-> be calling something stronger (something new?).  Remember, I'm one of
-> those x86 people with only a nursery-school grasp of coherency issues.
+> Isn't the point simply that anonymous pages are never writably shared,
+> and so don't require the coherency measures that shared writable pages
+> do?  Anonymous pages may be shared readonly between children and parent
+> of fork (and any modification requires Copy-On-Write at either end).
+> There are MAP_SHARED|MAP_ANONYMOUS pages, but those are implemented
+> like shared memory, as pages of an underlying tmpfs object (to which
+> page->mapping will point as for a normal file).
 
-It seems to me that flush_dcache_page() should sweep up anonymous pages
-as well ... as long as we have this pre-emptive coherency model where we
-only call flush_dcache_page() once on entry so that as long as we exit
-to user level having modified the underlying page memory (and the user
-hasn't done anything to bring the page into their cache) then everything
-works.
+Yes, this is precisely the point.  While it is true that anonymous pages
+shouldn't be writeably shared and therefore no coherence measures should
+be necessary between user space processes, anonymous pages are still not
+congruently mapped in our kernel, so we have to take coherency measures
+when trying to view them from the kernel.
 
-> I do see that when flush_dcache_page was added into get_user_pages in
-> 2.5.46, the parisc flush_dcache_page looked to be doing something else,
-> something which would have caught the anonymous pages.  And I just
-> looked up the ChangeLog-2.5.46 entry, below: akpm and davem CC'ed.
+> Whereas now Chris is working on a /proc file which gives access to
+> anonymous pages by a backdoor?  That's new territory, and may indeed
+> need something special such as you appended.  It might be something
+> very useful for local use, but I doubt it would be accepted into a
+> mainline kernel.
 
-Yes, I suspect our implementation should just sweep up anon pages
-again ... However, I'll also compose a mailing for linux-arch just to be
-sure we're all on the same page (no pun intended).
+Well, yes, I think fuse is guilty to some degree.  However, the same
+situation would prevail if anonymous memory were sent down to our other
+kernel<->user mapping routines, like SG_IO for instance.  Perhaps we
+should be doing early cow breaking for anonymous pages we know we're
+going to write to?
 
 James
 
