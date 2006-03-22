@@ -1,48 +1,29 @@
-From: Helge Deller <deller@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: linux-2.6 deller (ioremap-changes)
-Date: Wed, 22 Mar 2006 23:30:19 +0100
-Message-ID: <200603222330.19695.deller@gmx.de>
-References: <IWJHEG$84A0993CB79425B02A52A47173C782A6@scarlet.be>
-	<200603221916.19396.deller@gmx.de>
+Date: Wed, 22 Mar 2006 18:49:49 -0500 (EST)
+Message-ID: <200603222349.k2MNnoxd028375@hiauly1.hia.nrc.ca>
+References: <200603222330.19695.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: tsg45800 <tsg45800@scarlet.be>
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200603221916.19396.deller@gmx.de>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org,
+ tsg45800@scarlet.be
+To: deller@gmx.de (Helge Deller)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <200603222330.19695.deller@gmx.de> from "Helge Deller" at Mar 22, 2006 11:30:19 pm
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Wednesday 22 March 2006 19:16, Helge Deller wrote:
-> On Wednesday 22 March 2006 18:18, Joel Soete wrote:
-> > > The 64bit Kernel boots now, but I still have to clean up STIfb driver to 
-> > > do the right thing.
-> > > Anyway, nice to have this fixed.
-> > > If STIfb is done, it's time to remove the CONFIG_HPPA_IOREMAP option.
-> > 
-> > But unfortuantely failed to boot on b2k (64bit up kernel):
-> > STI GSC/PCI core graphics driver Version 0.9a                                
-> > STI PCI graphic ROM found at fffffffff4940000 (128 kB), fb at fffffffffb000000
-> > (16 MB)                                              
-> >     id 35acda16-9a02587, conforms to spec rev. 8.0c                          
-> > BUG: soft lockup detected on CPU#0!                                          
-> > <crash>
+> > That's why I said I need to fix STIfb.... :-)
 > 
-> That's why I said I need to fix STIfb.... :-)
+> It's fixed now in CVS (2.6.16-pa2).
+> Even X11 on stifb with 64bit kernel works...
 
-It's fixed now in CVS (2.6.16-pa2).
-Even X11 on stifb with 64bit kernel works...
+Did this bug also affect 32bit kernels?  The reason I ask is I
+had to back out using 2.6.16-pa0 on my c3k.  The most obvious
+symptoms were fsck failures on reboot, iptables error messages
+and unreliable behavior of gnome teminal.
 
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
