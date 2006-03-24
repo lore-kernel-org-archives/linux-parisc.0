@@ -1,15 +1,13 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] Re: linux-2.6 deller (ioremap-changes)
-Date: Thu, 23 Mar 2006 19:07:10 +0100
-Message-ID: <200603231907.10486.deller@gmx.de>
-References: <200603231354.k2NDs6gk001693@hiauly1.hia.nrc.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] "BUG: soft lockup detected on CPU#0" on recent 64bit
+	k-2.6.16 (up or smp)
+Date: Fri, 24 Mar 2006 12:30:12 +0100
+Message-ID: <IWMQMC$BFEEA083EC68F0E28220AFDDAC649D49@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+  charset=iso-8859-1
+To: "Parisc List" <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200603231354.k2NDs6gk001693@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,20 +18,129 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thursday 23 March 2006 14:54, John David Anglin wrote:
-> Generally, I prefer kde but it hasn't been installable on unstable for
-> several months:
-> 
-> The following packages have unmet dependencies:
->   kde: Depends: kdeaddons but it is not going to be installed
->        Depends: kdewebdev but it is not going to be installed
+Hello pa*,
 
-Hi Dave,
+Just to report some "BUG: soft lockup detected on CPU#0":
+on b2k testing k-2.6.16-pa4 64bit up:
+BUG: soft lockup detected on CPU#0!
 
-both packages (kdeaddons and kdewebdev) are not required packages....
-If the others work it should be equally fine (specially kdelibs, kdebase, kdepim).
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000001000000000000001111 Not tainted
+r00-03  0000000000000000 0079dd400000003e 0000000010111bdc 0000000010648c=
+e0
+r04-07  00000000105cbc20 fffc1302123ce2c3 0000000009a447a4 000000008600c0=
+62
+r08-11  000000000800000f 0000000010648c70 0000000010574bd0 00000000104cb7=
+d8
+r12-15  0000000010574d28 00000000104cb820 0000000016568ca8 00000000000000=
+00
+r16-19  00000000165684f0 00000000144006c8 00000000000477a8 00000000c54000=
+00
+r20-23  0000000000000000 0000000000000000 000000000000007c 00000000000000=
+00
+r24-27  0000000000000000 000000000000fa00 000000000079dd40 00000000105cbc=
+20
+r28-31  fffffffffff0bdc0 0000000000000000 0000000016568e10 00000000000f40=
+00
+sr0-3   0000000000ab3000 0000000000000000 0000000000000000 0000000000ab30=
+00
+sr4-7   0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00
 
-Helge
+      VZOUICununcqcqcqcqcqcrmunTDVZOUI
+FPSR: 00000000000000000000000000000000
+FPER1: 00000000
+fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000=
+000
+fr04-07  0000000010defb80 00000000105cbc20 ffffffffffffff9c 0000000000000=
+000
+fr08-11  fffffffffffffc18 0000000000000000 0000000000000802 0000000010da2=
+ac0
+fr12-15  0000000410da2ad0 0004739e105cbc20 0000000000000000 5555555555555=
+555
+fr16-19  5555555555555555 5555555555555555 5555555555555555 5555555555555=
+555
+fr20-23  000000001018a420 5555555555555555 000000000000007c 0000000000000=
+000
+fr24-27  0000000000000000 3fe0000000000000 412e848000000000 bec7de009e9e8=
+cec
+fr28-31  036583df286abc0a 2fe9bb4be37ae44c 036583df00000000 cb458fb500000=
+802
+
+IASQ: 0000000000000000 0000000000000000 IAOQ: 0000000010111c18 0000000010=
+111c1c
+ IIR: 0b850a25    ISR: 0000000000000000  IOR: 0000000010648868
+ CPU:        0   CR30: 0000000016568000 CR31: 0000000010584000
+ ORIG_R28: 00000000104cb7d8
+ IAOQ[0]: do_gettimeofday+0x150/0x1a0
+ IAOQ[1]: do_gettimeofday+0x154/0x1a0
+ RP(r2): do_gettimeofday+0x114/0x1a0
+
+also noticed on n4k runing k-2.6.16-pa0 64bit smp kernel:
+BUG: soft lockup detected on CPU#0!
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000001011101111110000001111 Not tainted
+r00-03  0000000000000000 0000000010584f20 000000001015aebc 000000008db449=
+f0
+r04-07  000000001057af20 000000001051d040 000000000000000e 00000000000000=
+01
+r08-11  000000008f2cb738 00002d1426893f20 0000000000000001 00000000000000=
+01
+r12-15  000000001052b5d8 000000001048d728 000000008b1bc3b0 000000008b1bc6=
+f8
+r16-19  000000008b1bc3b0 000000001051d040 0000000000000000 00000000000000=
+00
+r20-23  0000000000372b98 0000000000000000 0000000000000001 00000000000000=
+00
+r24-27  000000008f2cb738 0000000000000001 000000001051d040 000000001057af=
+20
+r28-31  0000000000000000 000000008b1bcc20 000000008b1bcc50 00000000000000=
+00
+sr0-3   00000000006e4800 00000000006e4800 0000000000000000 00000000006e48=
+00
+sr4-7   0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00
+
+      VZOUICununcqcqcqcqcqcrmunTDVZOUI
+FPSR: 00000000000000000000000000000000
+FPER1: 00000000
+fr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000=
+000
+fr04-07  000000008f0276c0 000000001057af20 ffffffffffffff9c 00000000105db=
+000
+fr08-11  00000000101ac718 00000000105db000 fffffffffffffc18 0000000000000=
+000
+fr12-15  c002c4c800000802 ffffffff1299aac0 000000001299aad0 000000001057a=
+f20
+fr16-19  0000000000000000 00000000105d62a8 00000000105d62a8 00000000ff800=
+730
+fr20-23  00000000101ad170 0000000000000000 000000000000a105 0000000000000=
+008
+fr24-27  0000000000000000 000000001be51d00 00000000105d62a8 00000000104f1=
+3e8
+fr28-31  000f41fa42806500 fffffffffffffc18 0000000000000000 0000000000000=
+802
+
+IASQ: 0000000000000000 0000000000000000 IAOQ: 000000001010e728 0000000010=
+10e718
+ IIR: 0f48109c    ISR: 0000000000000080  IOR: 0000000000000002
+ CPU:        0   CR30: 000000008b1bc000 CR31: 000000001053c000
+ ORIG_R28: 000000001013f77c
+ IAOQ[0]: _read_lock+0x18/0x30
+ IAOQ[1]: _read_lock+0x8/0x30
+ RP(r2): send_group_sig_info+0x3c/0xb0
+
+(on this system also with a previous k-2.6.16-rc4-pa1-n4kmp without activ=
+ity
+then waiting my request ;-) )
+
+Hth,
+    Joel
+=0A=0A---------------------------------------------------------------=0AA=
+ free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore inf=
+o on http://www.scarlet.be/
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
