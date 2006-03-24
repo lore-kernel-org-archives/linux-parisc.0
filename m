@@ -1,16 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] hppa glibc clone() patch proposal (3/3)
-Date: Fri, 24 Mar 2006 09:51:20 -0700
-Message-ID: <20060324165120.GC4206@colo.lackof.org>
-References: <IWMNAP$23D07646E4F7FC13AA5E343EDFB71AEA@scarlet.be>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] a small hunk to cleanup 2 build warning?
+Date: Fri, 24 Mar 2006 17:58:27 +0100
+Message-ID: <200603241758.28042.deller@gmx.de>
+References: <IWMZGK$A7E56C1F2E8CACD0CB61C6EEBA1DB197@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Parisc List <parisc-linux@lists.parisc-linux.org>,
- Kyle McMartin <kyle@parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IWMNAP$23D07646E4F7FC13AA5E343EDFB71AEA@scarlet.be>
+In-Reply-To: <IWMZGK$A7E56C1F2E8CACD0CB61C6EEBA1DB197@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,45 +19,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Mar 24, 2006 at 11:18:25AM +0100, Joel Soete wrote:
-> Hello Mike, pa*,
+Hello Joel,
+
+thank you for the patch.
+I just looked how it is fixed currently in Linus' (>2.6.16) tree, and there this was added to include/linux/compat.h.
+Since I don't think we will push the changes you propose to 2.6.16 in the file compat_siginfo.h upstream (since it has been fixed differently), I think it's easier to just stick with this small warning at the moment.
+If others here think differently just go ahead...
+
+Regards,
+Helge
+
+On Friday 24 March 2006 15:41, Joel Soete wrote:
+> Hi pa*,
 > 
-> And this last step is my actual fix proposal:
-...
->  ENTRY(__clone)
-> +       /* Sanity check arguments.  */
-> +       comib,=         0, %arg0, .Larg_error   /* no NULL function pointers */
-> +       ldi             -EINVAL, %ret0
-> +       comib,=         0, %arg1, .Larg_error   /* no NULL stack pointers */
-> +       nop
-
-If this is correct, then I would prefer:
-
-	/* catch NULL stack or function ptrs */
-	xor		%arg1, %arg0, %ret0
-	comib,=,n	0, %ret0, .Larg_error
-	ldi             -EINVAL, %ret0
-
-
+> those 2 warning crossed my look during the build of n4k (64bit) smp kernel (in
+> a loop to stress it a bit):
+>   CC      kernel/compat.o
+> /usr/src/linux-2.6.16-pa4/kernel/compat.c: In function 'compat_sys_timer_create':
+> /usr/src/linux-2.6.16-pa4/kernel/compat.c:531: warning: implicit declaration
+> of function 'get_compat_sigevent'
+> [...]
+>   CC      ipc/compat_mq.o
+> /usr/src/linux-2.6.16-pa4/ipc/compat_mq.c: In function 'compat_sys_mq_notify':
+> /usr/src/linux-2.6.16-pa4/ipc/compat_mq.c:113: warning: implicit declaration
+> of function 'get_compat_sigevent'
+> [...]
 > 
->         /* Save the fn ptr and arg on the new stack.  */
->         stwm            %arg0, 64(%arg1)
-> @@ -60,8 +67,8 @@
+> imho this simple hunk could be helpfull:
+> --- ./include/linux/compat_siginfo.h.Orig       2006-03-24 14:04:10.000000000
+> +0100
+> +++ ./include/linux/compat_siginfo.h    2006-03-24 14:24:49.000000000 +0100
+> @@ -171,6 +171,9 @@
+>  
+>  #endif /* !HAVE_ARCH_COMPAT_COPY_SIGINFO */
+>  
+> +extern int get_compat_sigevent(struct sigevent *event,
+> +                       const struct compat_sigevent __user *u_event);
+> +
+>  extern int compat_copy_siginfo_to_user(compat_siginfo_t __user *to, struct
+> siginfo *from);
+>  extern int compat_copy_siginfo_from_user(struct siginfo *to, compat_siginfo_t
+> __user *from);
+>  
+> ====<>====
 > 
->         /* Create frame for function */
->         copy            %sp, %r21
-> +       stw             %r21, 60(%sp)
-
-Is %r21 used later again?
-If not, then these two ops can become:
-	stw            %sp, 60(%sp)
-
-If yes, then add the copy() *after* the stw.
-PA-RISC can only do one store at a time.
-PA20 can do the copy in parallel with the store.
-
-hth,
-grant
+> If Ok can you ci?
+> 
+> TIA,
+>     Joel
+> 
+> -------------------------------------------------------
+> NOTE! My email address is changing to ... @scarlet.be
+> Please make the necessary changes in your address book. 
+> 
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
