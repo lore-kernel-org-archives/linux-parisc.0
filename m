@@ -1,94 +1,39 @@
-From: "Max Grabert" <parisc@gmail.com>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: linux-2.6 deller (ioremap-changes) and more
-Date: Sun, 26 Mar 2006 04:32:17 +0100
-Message-ID: <e6eae0290603251932l142222f2n@mail.gmail.com>
+Date: Sat, 25 Mar 2006 23:05:16 -0500
+Message-ID: <20060326040516.GA27713@hiauly1.hia.nrc.ca>
+References: <e6eae0290603251932l142222f2n@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-  boundary="----=_Part_173_27613596.1143343937713"
-Cc: "Helge Deller" <deller@gmx.de>,
- parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Return-Path: <parisc@gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Max Grabert <parisc@gmail.com>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <e6eae0290603251932l142222f2n@mail.gmail.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-------=_Part_173_27613596.1143343937713
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+> Regarding the segfault, I can't help you there ... although I have seen many
+> applications not longer working on my Debian/testing system lately
+> (segfault, 'unresolvable relocation error 0x42' most of the time).
 
-T24gMjYvMDMvMDYsIEpvaG4gRGF2aWQgQW5nbGluIDxkYXZlQGhpYXVseTEuaGlhLm5yYy5jYT4g
-d3JvdGU6Cj4KPiA+IEJ1dCBJIGRpZCBib290ZWQgeWVzdGVyZGF5IHRoZSBsYXRlc3QgQ1ZTIDMy
-Yml0IEtlcm5lbCBvbiBteSBjM2sgYW5kIGl0Cj4gd29ya2VkIGZpbmUsIHNvIEkgYXNzdW1lIHlv
-dSBzaG91bGRuJ3Qgc2VlIGFueSBwcm9ibGVtcyBlaXRoZXIuLi4KPgo+IEkgdHJpZWQgdGhlIGRl
-ZmF1bHQgMi42LjE2LXBhNSBmcm9tIHd3dy5wYXJpc2MtbGludXgub3JnIHRoaXMgYWZ0ZXJub29u
-Lgo+IEkgc3RpbGwgZ2V0IGEgbG90IG9mIGlwX3RhYmxlcyBtZXNzYWdlcyBvbiB0aGUgY29uc29s
-ZSB3aGljaCB1bmZvcnR1bmF0ZWx5Cj4gYXJlbid0IGNhcHR1cmVkIGluIGFueSBsb2cgZmlsZS4g
-IEkndmUgYXR0YWNoZWQgdGhlIGRpZmYgYmV0d2Vlbgo+IDIuNi4xNS1yYzctcGEKPiBhbmQgMi42
-LjE2LXBhNSBkbWVzZyBmaWxlcy4gIElzIHRoZSBldGgwIGRpZmZlcmVuY2Ugc2lnbmlmaWNhbnQ/
-ICBUaGVyZSdzCj4gYWxzbyBhIHNlZ3YgaW4gZGlybW5nciB0aGF0IG9jY3VycyBsYXRlIGluIGJv
-dGggYm9vdHMuCgoKSSBoYWQgYSBzaW1pbGFyIHByb2JsZW0gKHJlZ2FyZGluZyBpcHRhYmxlcyku
-IEl0IHNlZW1zIHRoZXkgYXJlIGltcGxlbWVudGluZwphIG5ldyB1bmlmaWVkIGludGVyZmFjZSAo
-TkZORVRMSU5LKSB3aGljaCBtaWdodCBicmVhayB0aGUgdXNlcnNwYWNlCm5ldGZpbHRlciB0b29s
-cyAoYWthLiBpcHRhYmxlcy9pcDZ0YWJsZXMpLCB1bmxlc3MgeW91IHVzZSB0aGUgQ1ZTIHZlcnNp
-b24gb2YKdGhlbS4gVGhpcyBpcyB3YXMgaW50cm9kdWNlZCBzb21ld2hlcmUgYmV0d2VlbiAyLjYu
-MTUgYW5kIDIuNi4xNi4KSUlSQyBhZnRlciBkaXNhYmxpbmcgQ09ORklHX05FVEZJTFRFUl9ORVRM
-SU5LIChvciBhdCBsZWFzdCBzZXQgaXQgdG8gY29tcGlsZQppdCBhcyBhIG1vZHVsZSkgYW5kIGVu
-YWJsaW5nIENPTkZJR19ORVRGSUxURVJfWFRBQkxFUyBJIGRpZG4ndCBoYXZlIGFueQpwcm9ibGVt
-cyBhbnltb3JlLgoKClJlZ2FyZGluZyB0aGUgc2VnZmF1bHQsIEkgY2FuJ3QgaGVscCB5b3UgdGhl
-cmUgLi4uIGFsdGhvdWdoIEkgaGF2ZSBzZWVuIG1hbnkKYXBwbGljYXRpb25zIG5vdCBsb25nZXIg
-d29ya2luZyBvbiBteSBEZWJpYW4vdGVzdGluZyBzeXN0ZW0gbGF0ZWx5CihzZWdmYXVsdCwgJ3Vu
-cmVzb2x2YWJsZSByZWxvY2F0aW9uIGVycm9yIDB4NDInIG1vc3Qgb2YgdGhlIHRpbWUpLgpUaGUg
-YWZmZWN0ZWQgYXBwbGljYXRpb25zL2RlYmlhbiBwYWNrYWdlcyBhcmU6Ci0gYWlkZQotIHNhbWJh
-IChsaWJzbWJjbGllbnQsIHNhbWJhLCBzYW1iYS1jb21tb24sIHNtYmNsaWVudCwgc21iZnMgZXRj
-LikKLSBhdXRvZnMKClJlY29tcGlsaW5nIHRob3NlIGFwcGxpY2F0aW9ucyB2aWEgJ2FwdC1nZXQg
-YnVpbGQtZGVwIDxwYWNrYWdlPicgYW5kCidhcHQtZ2V0IC1iIHNvdXJjZSA8cGFja2FnZT4nIHdp
-dGggZ2NjLTMuNCBwcm9kdWNlcyB3b3JraW5nIGV4ZWN1dGFibGVzLiBBdApsZWFzdCBmb3Igc2Ft
-YmEgSSBhbHNvIHRyaWVkIHJlY29tcGlsaW5nIHdpdGggZ2NjLTQuMCwgd2l0aCBhbHNvIHdvcmtl
-ZC4gSXQKc2VlbXMgdGhhdCB0aGVyZSBpcyBzb21ldGhpbmcgd3Jvbmcgd2l0aCB0aGUgc2V0dXAg
-RGViaWFuJ3MgYnVpbGRkIHVzZXMgLi4uCi4uLiBJIHRoaW5rIEkgc2hvdWxkIHJhdGhlciByZXBv
-cnQgdGhpcyBidWcgdG8gdGhlIGRlYmlhbi1ocHBhIG0tbCAuLi4KCiAgIE1heAo=
-------=_Part_173_27613596.1143343937713
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+This should be fixed in libc6 2.3.6-3 which has support for the above
+relocation.  If it's still occurring, there needs to be a new bug report.
+In the situations that I've seen the relocations are coming from
+/usr/lib/Scrt1.o when pie code is being used.
 
-T24gMjYvMDMvMDYsIDxiIGNsYXNzPSJnbWFpbF9zZW5kZXJuYW1lIj5Kb2huIERhdmlkIEFuZ2xp
-bjwvYj4gJmx0OzxhIGhyZWY9Im1haWx0bzpkYXZlQGhpYXVseTEuaGlhLm5yYy5jYSI+ZGF2ZUBo
-aWF1bHkxLmhpYS5ucmMuY2E8L2E+Jmd0OyB3cm90ZTo8ZGl2PjxzcGFuIGNsYXNzPSJnbWFpbF9x
-dW90ZSI+PC9zcGFuPjxibG9ja3F1b3RlIGNsYXNzPSJnbWFpbF9xdW90ZSIgc3R5bGU9ImJvcmRl
-ci1sZWZ0OiAxcHggc29saWQgcmdiKDIwNCwgMjA0LCAyMDQpOyBtYXJnaW46IDBwdCAwcHQgMHB0
-IDAuOGV4OyBwYWRkaW5nLWxlZnQ6IDFleDsiPgomZ3Q7IEJ1dCBJIGRpZCBib290ZWQgeWVzdGVy
-ZGF5IHRoZSBsYXRlc3QgQ1ZTIDMyYml0IEtlcm5lbCBvbiBteSBjM2sgYW5kIGl0IHdvcmtlZCBm
-aW5lLCBzbyBJIGFzc3VtZSB5b3Ugc2hvdWxkbid0IHNlZSBhbnkgcHJvYmxlbXMgZWl0aGVyLi4u
-PGJyPjxicj5JIHRyaWVkIHRoZSBkZWZhdWx0IDIuNi4xNi1wYTUgZnJvbSA8YSBocmVmPSJodHRw
-Oi8vd3d3LnBhcmlzYy1saW51eC5vcmciPgp3d3cucGFyaXNjLWxpbnV4Lm9yZzwvYT4gdGhpcyBh
-ZnRlcm5vb24uPGJyPkkgc3RpbGwgZ2V0IGEgbG90IG9mIGlwX3RhYmxlcyBtZXNzYWdlcyBvbiB0
-aGUgY29uc29sZSB3aGljaCB1bmZvcnR1bmF0ZWx5PGJyPmFyZW4ndCBjYXB0dXJlZCBpbiBhbnkg
-bG9nIGZpbGUuJm5ic3A7Jm5ic3A7SSd2ZSBhdHRhY2hlZCB0aGUgZGlmZiBiZXR3ZWVuIDIuNi4x
-NS1yYzctcGE8YnI+YW5kIDIuNi4xNi1wYTUgZG1lc2cgZmlsZXMuJm5ic3A7Jm5ic3A7SXMgdGhl
-IGV0aDAgZGlmZmVyZW5jZSBzaWduaWZpY2FudD8mbmJzcDsmbmJzcDtUaGVyZSdzCjxicj5hbHNv
-IGEgc2VndiBpbiBkaXJtbmdyIHRoYXQgb2NjdXJzIGxhdGUgaW4gYm90aCBib290cy48L2Jsb2Nr
-cXVvdGU+PGRpdj48YnI+SSBoYWQgYSBzaW1pbGFyIHByb2JsZW0gKHJlZ2FyZGluZyBpcHRhYmxl
-cykuIEl0IHNlZW1zIHRoZXkgYXJlIGltcGxlbWVudGluZyBhIG5ldyB1bmlmaWVkIGludGVyZmFj
-ZSAoTkZORVRMSU5LKSB3aGljaCBtaWdodCBicmVhayB0aGUgdXNlcnNwYWNlIG5ldGZpbHRlciB0
-b29scyAoYWthLiBpcHRhYmxlcy9pcDZ0YWJsZXMpLCB1bmxlc3MgeW91IHVzZSB0aGUgQ1ZTIHZl
-cnNpb24gb2YgdGhlbS4gVGhpcyBpcyB3YXMgaW50cm9kdWNlZCBzb21ld2hlcmUgYmV0d2VlbiAK
-Mi42LjE1IGFuZCAyLjYuMTYuPGJyPklJUkMgYWZ0ZXIgZGlzYWJsaW5nIENPTkZJR19ORVRGSUxU
-RVJfTkVUTElOSyAob3IgYXQgbGVhc3Qgc2V0IGl0IHRvIGNvbXBpbGUgaXQgYXMgYSBtb2R1bGUp
-IGFuZCBlbmFibGluZyBDT05GSUdfTkVURklMVEVSX1hUQUJMRVMgSSBkaWRuJ3QgaGF2ZSBhbnkg
-cHJvYmxlbXMgYW55bW9yZS48YnI+PGJyPjxicj5SZWdhcmRpbmcgdGhlIHNlZ2ZhdWx0LCBJIGNh
-bid0IGhlbHAgeW91IHRoZXJlIC4uLiBhbHRob3VnaCBJIGhhdmUgc2VlbiBtYW55IGFwcGxpY2F0
-aW9ucyBub3QgbG9uZ2VyIHdvcmtpbmcgb24gbXkgRGViaWFuL3Rlc3Rpbmcgc3lzdGVtIGxhdGVs
-eSAoc2VnZmF1bHQsICd1bnJlc29sdmFibGUgcmVsb2NhdGlvbiBlcnJvciAweDQyJyBtb3N0IG9m
-IHRoZSB0aW1lKS4KPGJyPlRoZSBhZmZlY3RlZCBhcHBsaWNhdGlvbnMvZGViaWFuIHBhY2thZ2Vz
-IGFyZTo8YnI+LSBhaWRlPGJyPi0gc2FtYmEgKGxpYnNtYmNsaWVudCwgc2FtYmEsIHNhbWJhLWNv
-bW1vbiwgc21iY2xpZW50LCBzbWJmcyBldGMuKTxicj4tIGF1dG9mczxicj48YnI+UmVjb21waWxp
-bmcgdGhvc2UgYXBwbGljYXRpb25zIHZpYSAnYXB0LWdldCBidWlsZC1kZXAgJmx0O3BhY2thZ2Um
-Z3Q7JyBhbmQgJ2FwdC1nZXQgLWIgc291cmNlICZsdDtwYWNrYWdlJmd0Oycgd2l0aCAKZ2NjLTMu
-NCBwcm9kdWNlcyB3b3JraW5nIGV4ZWN1dGFibGVzLiBBdCBsZWFzdCBmb3Igc2FtYmEgSSBhbHNv
-IHRyaWVkIHJlY29tcGlsaW5nIHdpdGggZ2NjLTQuMCwgd2l0aCBhbHNvIHdvcmtlZC4gSXQgc2Vl
-bXMgdGhhdCB0aGVyZSBpcyBzb21ldGhpbmcgd3Jvbmcgd2l0aCB0aGUgc2V0dXAgRGViaWFuJ3Mg
-YnVpbGRkIHVzZXMgLi4uPGJyPi4uLiBJIHRoaW5rIEkgc2hvdWxkIHJhdGhlciByZXBvcnQgdGhp
-cyBidWcgdG8gdGhlIGRlYmlhbi1ocHBhIG0tbCAuLi4KPGJyPjxicj4mbmJzcDsmbmJzcDsgTWF4
-PGJyPjwvZGl2PjwvZGl2Pgo=
-------=_Part_173_27613596.1143343937713--
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
