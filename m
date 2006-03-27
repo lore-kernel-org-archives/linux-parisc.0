@@ -1,14 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] Re: linux-2.6 deller (ioremap-changes) and more
-Date: Mon, 27 Mar 2006 06:46:00 +0100
-Message-ID: <IWRUOO$5330BBF8C58E5D93EB8E702EE1864A91@scarlet.be>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] Fwd: hppa glibc clone() patch proposal (3/3)
+Date: Mon, 27 Mar 2006 09:33:44 +0800
+Message-ID: <442740F8.6070408@tausq.org>
+References: <IWMNAP$23D07646E4F7FC13AA5E343EDFB71AEA@scarlet.be>		<119aab440603241148k755eb8a1m10982b0538fc2cf3@mail.gmail.com>		<119aab440603241150p3e15057gc23e355732c1dea@mail.gmail.com>		<442467DF.8060309@tiscali.be>		<119aab440603241504m5f1f8a97tebe4110185d5ac4c@mail.gmail.com>		<4424F7EE.7020002@tiscali.be>	<119aab440603251126s3a599718n32759d5ed0dcd8c0@mail.gmail.com>
+	<4426D6A6.5050503@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: dave <dave@hiauly1.hia.nrc.ca>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "dave" <dave@hiauly1.hia.nrc.ca>
+  charset=ISO-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <4426D6A6.5050503@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,94 +21,96 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > I'm not sure about the debian status.  I believe that Matthias integr=
-ated
-> > the change but there was a regression due to a missing glibc patch
-> > needed to prevent a SIGSEGV in the unwind code.  Matthias said this
-> > problem was fixed on March 20.
-> 
-> 2.3.6-3 does't have the fix:
-> 
-> dave@hiauly6:~$ objdump -d /lib/libpthread.so.0
-> /lib/libpthread.so.0:     file format elf32-hppa-linux
-> 
-> Disassembly of section .init:
-> 
-> 000041ac <_init>:
->     41ac:       6b c2 3f d9     stw rp,-14(sp)
->     41b0:       6f c4 00 80     stw,ma r4,40(sp)
->     41b4:       6b d3 3f c1     stw r19,-20(sp)
->     41b8:       e8 42 02 a0     b,l 8310 <__pthread_initialize_minimal>=
-,rp
->     41bc:       08 13 02 44     copy r19,r4
->     41c0:       08 04 02 53     copy r4,r19
->     41c4:       e8 40 0c 70     b,l 4804 <frame_dummy>,rp
->     41c8:       08 00 02 40     nop
->     41cc:       e8 44 1d 2c     b,l e068 <__do_global_ctors_aux>,rp
->     41d0:       08 00 02 40     nop
->     41d4:       4b c2 3f 59     ldw -54(sp),rp
->     41d8:       08 04 02 53     copy r4,r19
->     41dc:       e8 40 c0 00     bv r0(rp)
-> 
-> 000041e0 <_end_init>:
->     41e0:       4f c4 3f 81     ldw,mb -40(sp),r4
-> 
-> This .init section isn't built correctly in shared libraries.  The
-> PIC register r19 needs to be retored after every call if it is
-> subsequently used.  As can be seen above, there is no restore after
-> the call to frame_dummy and r19 is needed for the call to
-> __do_global_ctors_aux.
-> 
-mmm not yet in 2.3.6-4:
-# objdump -d /lib/libpthread.so.0 | more
+Joel,
 
-/lib/libpthread.so.0:     file format elf32-hppa-linux
+Some comments:
 
-Disassembly of section .init:
+1) I think you are right in fixing the first __syscall_error call. I
+don't know why we are doing a b instead of bl now. It seems to be that
+the current code will result in an orphaned stack frame if we ever
+errored out. However, I see that in the other syscalls, the call to
+__syscall_error is inlined. Maybe that would be better.....
 
-000041ac <_init>:
-    41ac:       6b c2 3f d9     stw rp,-14(sp)
-    41b0:       6f c4 00 80     stw,ma r4,40(sp)
-    41b4:       6b d3 3f c1     stw r19,-20(sp)
-    41b8:       e8 42 02 a0     b,l 8310 <__pthread_initialize_minimal>,r=
-p
-    41bc:       08 13 02 44     copy r19,r4
-    41c0:       08 04 02 53     copy r4,r19
-    41c4:       e8 40 0c 70     b,l 4804 <frame_dummy>,rp
-    41c8:       08 00 02 40     nop
-    41cc:       e8 44 1d 2c     b,l e068 <__do_global_ctors_aux>,rp
-    41d0:       08 00 02 40     nop
-    41d4:       4b c2 3f 59     ldw -54(sp),rp
-    41d8:       08 04 02 53     copy r4,r19
-    41dc:       e8 40 c0 00     bv r0(rp)
+2)
+>          .text
+>  ENTRY(__clone)
+> +    /* this proto do: stw rp, -20(sp) */
 
-000041e0 <_end_init>:
-    41e0:       4f c4 3f 81     ldw,mb -40(sp),r4
-Disassembly of section .text:
-=3D=3D=3D=3D<>=3D=3D=3D=3D
+Yes, you should put "stw %rp, -20(%sp)" here.
 
-and the same with my testing 2.3.6-4.1 build with gcc dpkg:
-dpkg -l gcc-4.0
-Desired=3DUnknown/Install/Remove/Purge/Hold
-| Status=3DNot/Installed/Config-files/Unpacked/Failed-config/Half-install=
-ed
-|/ Err?=3D(none)/Hold/Reinst-required/X=3Dboth-problems (Status,Err: uppe=
-rcase=3Dbad)
-||/ Name                        Version                     Description
-+++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-ii  gcc-4.0                     4.0.3-1                     The GNU C com=
-piler
+> +       /* FIXME: I have no idea how profiling works on hppa. */
 
-Thanks,
-    Joel
-=0A=0A---------------------------------------------------------------=0AA=
- free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore inf=
-o on http://www.scarlet.be/
+Let's leave profiling out of this for now....
+
+> +       /* Sanity check arguments.  */
+> +       comib,=         0, %arg0, .Larg_error   /* no NULL function
+> pointers */
+> +       ldi             -EINVAL, %ret0
+> +       comib,=         0, %arg1, .Larg_error   /* no NULL stack
+> pointers */
+> +       nop
+
+There seems to be some confusion here....
+
+You want clone() to return -1, and set errno = -EINVAL. The logic to do
+this is in .Larg_error. Probably better here to just detect the two
+error conditions and branch to .Larg_error and handle all the logic there.
+
+>         /* Save the fn ptr and arg on the new stack.  */
+>         stwm            %arg0, 64(%arg1)
+> @@ -94,13 +102,35 @@
+>  #endif
+>         /* Set errno */
+>         copy            %ret0, %r3
+> -       b               __syscall_error
+> +       bl              __syscall_error, %rp
+>         sub             %r0, %ret0, %arg0
+>         copy            %r3, %ret0
+>         /* Return after setting errno */
+> +       /* Restore rp from ENTRY() */
+> +       ldw             -84(%sp), %rp
+
+Right now since you don't store rp, this will give you junk.
+
+> +.Larg_error:
+> +
+> +       /* Save arg0: the fn ptr.  */
+> +       stw             %arg0, -36(%sp)
+
+In the error case, you don't invoke the function, so no need to save and
+restore arg0.
+
+> +       /* Save the PIC register? */
+> +       stwm            %r3, 64(%sp)
+
+r3 is just a caller-save register; it has nothing to do with PIC. You
+don't need to use r3 in this path; just create a stack frame with:
+	ldo 64(%sp), %sp
+
+> +       /* Set errno */
+> +       copy            %ret0, %r3
+> +       bl              __syscall_error, %rp
+> +       sub             %r0, %ret0, %arg0
+
+Here, I think you want to do (or inline the __syscall_error logic):
+	bl __syscall_error, %rp
+	ldi EINVAL, %arg0
+	ldi -1, %ret0
+
+> +       /* Restore arg0: the fn ptr.  */
+> +       ldw             -100(%sp), %arg0
+> +       /* Return after setting errno */
+> +       /* Restore rp from ENTRY() */
+> +       ldw             -84(%sp), %rp
+> +       bv              %r0(%rp)
+> +       ldwm            -64(%sp), %r3
+
+and here you can just do:
+	ldw -84(%sp), %rp
+	bv %r0(%rp)
+	ldo -64(%sp), %sp
+
+randolph
 
 _______________________________________________
 parisc-linux mailing list
