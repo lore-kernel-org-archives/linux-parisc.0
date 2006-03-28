@@ -1,17 +1,9 @@
-From: Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to
-	init on parisc
-Date: Tue, 28 Mar 2006 13:00:42 +0200
-Message-ID: <E1FOBwI-0001TR-00__4339.19738648019$1416624591$gmane$org@dorka.pomaz.szeredi.hu>
-References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
-	<E1FGwXn-0005Dh-00@dorka.pomaz.szeredi.hu>
-	<20060309055002.GJ26474@pooh.bubble.frostnet.net>
-	<E1FHKQR-0007JU-00@dorka.pomaz.szeredi.hu>
-	<20060309223622.GP26474@pooh.bubble.frostnet.net>
-	<E1FHfby-00052b-00@dorka.pomaz.szeredi.hu>
-	<20060310230000.GX26474@pooh.bubble.frostnet.net>
-	<E1FIlC6-0005ts-00@dorka.pomaz.szeredi.hu>
-	<E1FJsHo-0006Yf-00@dorka.pomaz.szeredi.hu>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to init
+	on parisc
+Date: Tue, 28 Mar 2006 09:03:55 -0500
+Message-ID: <20060328140355.GE9011__42438.6077830151$1416624591$gmane$org@quicksilver.road.mcmartin.ca>
+References: <E1FJsHo-0006Yf-00@dorka.pomaz.szeredi.hu>
 	<20060319043939.GP26474@pooh.bubble.frostnet.net>
 	<1142750588.3773.26.camel@mulgrave.il.steeleye.com>
 	<Pine.LNX.4.61.0603191033480.9273@goblin.wat.veritas.com>
@@ -20,18 +12,21 @@ References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<1142783191.3240.14.camel@mulgrave.il.steeleye.com>
 	<Pine.LNX.4.61.0603191614210.4908@goblin.wat.veritas.com>
 	<1142787049.3240.20.camel@mulgrave.il.steeleye.com>
-Cc: akpm@osdl.org,
- miklos@szeredi.hu,
+	<E1FOBwI-0001TR-00@dorka.pomaz.szeredi.hu>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: James.Bottomley@SteelEye.com,
+ akpm@osdl.org,
  fuse-devel@lists.sourceforge.net,
  chris@frostnet.net,
  jick.nan@gmail.com,
  hugh@veritas.com,
  davem@davemloft.net,
  parisc-linux@parisc-linux.org
-To: James.Bottomley@SteelEye.com
+To: Miklos Szeredi <miklos@szeredi.hu>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <1142787049.3240.20.camel@mulgrave.il.steeleye.com> (message from
-	James Bottomley on Sun, 19 Mar 2006 10:50:48 -0600)
+In-Reply-To: <E1FOBwI-0001TR-00@dorka.pomaz.szeredi.hu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -42,17 +37,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Yes, I suspect our implementation should just sweep up anon pages
-> again ... However, I'll also compose a mailing for linux-arch just to be
-> sure we're all on the same page (no pun intended).
+On Tue, Mar 28, 2006 at 01:00:42PM +0200, Miklos Szeredi wrote:
+> Hi James,
+> 
+> I've seen you submitted the needed API changes on lkml.  Do you also
+> have the parisc implementation for Chris to try out?
+>
 
-Hi James,
+He committed it to cvs... I should have it divvied up and sent
+to Linus by the weekend. In the meantime, try this patch against
+2.6.16 (which is the parisc patchset) 
+http://cvs.parisc-linux.org/download/linux-2.6/patch-2.6.16-pa8.gz 
 
-I've seen you submitted the needed API changes on lkml.  Do you also
-have the parisc implementation for Chris to try out?
-
-Thanks,
-Miklos
+Cheers,
+	Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
