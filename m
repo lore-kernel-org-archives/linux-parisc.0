@@ -1,8 +1,8 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
 Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to
 	init on parisc
-Date: Sun, 19 Mar 2006 08:04:09 -0600
-Message-ID: <1142777049.3240.6.camel__43182.8889683404$1416624590$gmane$org@mulgrave.il.steeleye.com>
+Date: Tue, 28 Mar 2006 13:00:42 +0200
+Message-ID: <E1FOBwI-0001TR-00__4339.19738648019$1416624591$gmane$org@dorka.pomaz.szeredi.hu>
 References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<E1FGwXn-0005Dh-00@dorka.pomaz.szeredi.hu>
 	<20060309055002.GJ26474@pooh.bubble.frostnet.net>
@@ -15,16 +15,23 @@ References: <20060308071445.GA28275@pooh.bubble.frostnet.net>
 	<20060319043939.GP26474@pooh.bubble.frostnet.net>
 	<1142750588.3773.26.camel@mulgrave.il.steeleye.com>
 	<Pine.LNX.4.61.0603191033480.9273@goblin.wat.veritas.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Cc: fuse-devel@lists.sourceforge.net,
+	<1142777049.3240.6.camel@mulgrave.il.steeleye.com>
+	<Pine.LNX.4.61.0603191526250.4440@goblin.wat.veritas.com>
+	<1142783191.3240.14.camel@mulgrave.il.steeleye.com>
+	<Pine.LNX.4.61.0603191614210.4908@goblin.wat.veritas.com>
+	<1142787049.3240.20.camel@mulgrave.il.steeleye.com>
+Cc: akpm@osdl.org,
+ miklos@szeredi.hu,
+ fuse-devel@lists.sourceforge.net,
+ chris@frostnet.net,
  jick.nan@gmail.com,
- parisc-linux@parisc-linux.org,
- Chris Frost <chris@frostnet.net>,
- Miklos Szeredi <miklos@szeredi.hu>
-To: Hugh Dickins <hugh@veritas.com>
+ hugh@veritas.com,
+ davem@davemloft.net,
+ parisc-linux@parisc-linux.org
+To: James.Bottomley@SteelEye.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <Pine.LNX.4.61.0603191033480.9273@goblin.wat.veritas.com>
+In-reply-to: <1142787049.3240.20.camel@mulgrave.il.steeleye.com> (message from
+	James Bottomley on Sun, 19 Mar 2006 10:50:48 -0600)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -35,48 +42,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2006-03-19 at 10:52 +0000, Hugh Dickins wrote:
-> > So, Hugh, you were the one who introduced this anonymous page behaviour;
-> > how are we supposed to obtain coherency for these pages?
-> 
-> I don't think I changed any behaviour here, just implemention details
-> (what you might expect to find stored in "page->mapping" in different
-> circumstances).  Comparing current parisc source against 2.6.5 source
-> (several releases before PAGE_MAPPING_ANON) bears that out, doesn't it?
-> page->mapping on anonymous pages at that time would have been NULL (or
-> &swapper_space if the page happened to have some swap assigned to it).
+> Yes, I suspect our implementation should just sweep up anon pages
+> again ... However, I'll also compose a mailing for linux-arch just to be
+> sure we're all on the same page (no pun intended).
 
-OK ... I just remember you introducing the page_mapping() macro ...
+Hi James,
 
-> Isn't the point simply that anonymous pages are never writably shared,
-> and so don't require the coherency measures that shared writable pages
-> do?  Anonymous pages may be shared readonly between children and parent
-> of fork (and any modification requires Copy-On-Write at either end).
-> There are MAP_SHARED|MAP_ANONYMOUS pages, but those are implemented
-> like shared memory, as pages of an underlying tmpfs object (to which
-> page->mapping will point as for a normal file).
+I've seen you submitted the needed API changes on lkml.  Do you also
+have the parisc implementation for Chris to try out?
 
-Yes, this is precisely the point.  While it is true that anonymous pages
-shouldn't be writeably shared and therefore no coherence measures should
-be necessary between user space processes, anonymous pages are still not
-congruently mapped in our kernel, so we have to take coherency measures
-when trying to view them from the kernel.
-
-> Whereas now Chris is working on a /proc file which gives access to
-> anonymous pages by a backdoor?  That's new territory, and may indeed
-> need something special such as you appended.  It might be something
-> very useful for local use, but I doubt it would be accepted into a
-> mainline kernel.
-
-Well, yes, I think fuse is guilty to some degree.  However, the same
-situation would prevail if anonymous memory were sent down to our other
-kernel<->user mapping routines, like SG_IO for instance.  Perhaps we
-should be doing early cow breaking for anonymous pages we know we're
-going to write to?
-
-James
-
-
+Thanks,
+Miklos
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
