@@ -1,13 +1,13 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: "Max Grabert" <parisc@gmail.com>
 Subject: Re: [parisc-linux] IOGear Firewire+USB card causes unexpected irq 2
-Date: Wed, 29 Mar 2006 08:58:38 -0500
-Message-ID: <20060329135838.GL9011@quicksilver.road.mcmartin.ca>
+Date: Wed, 29 Mar 2006 18:42:49 +0100
+Message-ID: <e6eae0290603290942o79a2990bma9faa8ef527c1243@mail.gmail.com>
 References: <20060329093444.GA5593@pooh.bubble.frostnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
+Content-Type: multipart/mixed;
+  boundary="===============1507795203=="
 Cc: parisc-linux@lists.parisc-linux.org
-To: Chris Frost <chris@frostnet.net>
+To: "Chris Frost" <chris@frostnet.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20060329093444.GA5593@pooh.bubble.frostnet.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -20,26 +20,72 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Mar 29, 2006 at 01:34:44AM -0800, Chris Frost wrote:
-> If I change the if condition in superio.c to not error when irq == 2
-> the machine gets further but produces several warnings, errors, stack
-> traces, and an oops or two. It does recognize the firewire controller
-> and sees a firewire disk I attach. I am even able to mount the file system
-> on the disk and list its contents. However, the results of a find on the
-> drive appear to only come in small chunks when I type on the keyboard.
-> It would seem superio and the card are linked.
->
+--===============1507795203==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_1253_849327.1143654169728"
 
-lspci -vn for the card, please...
+------=_Part_1253_849327.1143654169728
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-Try commenting out 
-	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87560_USB) },
-	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87415) },
-in superio.c and seeing if that helps at all.
+T24gMjkvMDMvMDYsIENocmlzIEZyb3N0IDxjaHJpc0Bmcm9zdG5ldC5uZXQ+IHdyb3RlOgo+Cj4g
+V2hlbiBJIGJvb3QgYSBCMTAwMCB1c2luZyAyLjYuMTYtcGE4IHdpdGggYW4gSU9HZWFyIEZpcmV3
+aXJlK1VTQiBjYXJkCj4gKEdVRjMxMjEpIHRoZSBtYWNoaW5lIHNob3dzIHRoZSBlcnJvciBkcml2
+ZXJzL3BhcmlzYy9zdXBlcmlvLmM6MzA4LAo+ICJJbGxlZ2FsIGlycSBudW1iZXIoMikiLCBhZnRl
+ciBpdCBicmluZ3MgdXAgVVNCLiBUaGlzIGhhcHBlbnMgd2hlbiB0aGUKPiBjYXJkIGlzIGluIHRo
+ZSA2Nk1IeiA2NGJpdCBzbG90IGFuZCB3aGVuIGl0IGlzIGluIG9uZSBvZiB0aGUgMzNNSHoKPiAz
+MmJpdCBzbG90cy4gKFRoZSBjYXJkIGlzIDMzTUh6IDMyYml0OyBJIHRyaWVkIHRvIHNlZSBpZiBk
+aWZmZXJlbnQKPiBzbG90cy9idXNlcyBtaWdodCBjaGFuZ2UgdGhlIGlycS4pCgoKRllJIEknbSB1
+c2luZyBhIHNpbWlsYXIgVVNCL0ZpcmV3aXJlIGNvbWJvIGNhcmQgaW4gbXkgQzMwMDAgYW5kIGEK
+VVNCMi4wNXBvcnQgUENJIGNhcmQgaW4gbXkgQzM3MDAgYW5kIHRoZXkgd29yayBmaW5lIChib3Ro
+IGNhcmRzIHVzaW5nCkVIQ0kgLyBPSENJLAp3b3JrIHNpbmNlIHRoZSBlYXJseSAyLjYgZGF5cyB1
+cCB0byB0aGUgbGFzdGVzdCBDVlMga2VybmVsKS4KClNvIGl0IHNlZW1zIHRvIGJlIGEgcHJvYmxl
+bSB3aXRoIHlvdXIgc3BlY2lmaWMgdHlwZSBvZiBVU0IgY29udHJvbGxlcjsgaXMgaXQKYnkgYW55
+IGNoYW5jZSBhIFVIQ0kgY29tcGF0aWJsZSBjb250cm9sbGVyPyBBRkFJSyB0aGV5IHNob3VsZCB3
+b3JrIGZpbmUsIGJ1dAp3aG8ga25vd3M/IEEgJ2xzcGNpIC12JyBvdXRwdXQgd291bGQgYmUgbmlj
+ZSwgYWxzbyBtYWtlIHN1cmUgdGhhdCB5b3VyIEIxMDAwCmlzIHVzaW5nIHRoZSBsYXRlc3QgUERD
+IGZpcm13YXJlOyBJSVJDIHRoZXJlIHdlcmUgYSBjb3VwbGUgb2YgUENJIHJlbGF0ZWQKYnVncyBp
+biBvbGRlciB2ZXJzaW9ucyAuLi4KCkdyZWV0aW5ncywKICBNYXgK
+------=_Part_1253_849327.1143654169728
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-Cheers,
-	Kyle 
+T24gMjkvMDMvMDYsIDxiIGNsYXNzPSJnbWFpbF9zZW5kZXJuYW1lIj5DaHJpcyBGcm9zdDwvYj4g
+Jmx0OzxhIGhyZWY9Im1haWx0bzpjaHJpc0Bmcm9zdG5ldC5uZXQiPmNocmlzQGZyb3N0bmV0Lm5l
+dDwvYT4mZ3Q7IHdyb3RlOjxkaXY+PHNwYW4gY2xhc3M9ImdtYWlsX3F1b3RlIj48L3NwYW4+PGJs
+b2NrcXVvdGUgY2xhc3M9ImdtYWlsX3F1b3RlIiBzdHlsZT0iYm9yZGVyLWxlZnQ6IDFweCBzb2xp
+ZCByZ2IoMjA0LCAyMDQsIDIwNCk7IG1hcmdpbjogMHB0IDBwdCAwcHQgMC44ZXg7IHBhZGRpbmct
+bGVmdDogMWV4OyI+CldoZW4gSSBib290IGEgQjEwMDAgdXNpbmcgMi42LjE2LXBhOCB3aXRoIGFu
+IElPR2VhciBGaXJld2lyZStVU0IgY2FyZDxicj4oR1VGMzEyMSkgdGhlIG1hY2hpbmUgc2hvd3Mg
+dGhlIGVycm9yIGRyaXZlcnMvcGFyaXNjL3N1cGVyaW8uYzozMDgsPGJyPiZxdW90O0lsbGVnYWwg
+aXJxIG51bWJlcigyKSZxdW90OywgYWZ0ZXIgaXQgYnJpbmdzIHVwIFVTQi4gVGhpcyBoYXBwZW5z
+IHdoZW4gdGhlCjxicj5jYXJkIGlzIGluIHRoZSA2Nk1IeiA2NGJpdCBzbG90IGFuZCB3aGVuIGl0
+IGlzIGluIG9uZSBvZiB0aGUgMzNNSHo8YnI+MzJiaXQgc2xvdHMuIChUaGUgY2FyZCBpcyAzM01I
+eiAzMmJpdDsgSSB0cmllZCB0byBzZWUgaWYgZGlmZmVyZW50PGJyPnNsb3RzL2J1c2VzIG1pZ2h0
+IGNoYW5nZSB0aGUgaXJxLik8L2Jsb2NrcXVvdGU+PGJyPgpGWUkgSSdtIHVzaW5nIGEgc2ltaWxh
+ciBVU0IvRmlyZXdpcmUgY29tYm8gY2FyZCBpbiBteSBDMzAwMCBhbmQgYQpVU0IyLjAgNXBvcnQg
+UENJIGNhcmQgaW4gbXkgQzM3MDAgYW5kIHRoZXkgd29yayBmaW5lIChib3RoIGNhcmRzIHVzaW5n
+CkVIQ0kgLyBPSENJLCB3b3JrIHNpbmNlIHRoZSBlYXJseSAyLjYgZGF5cyB1cCB0byB0aGUgbGFz
+dGVzdCBDVlMKa2VybmVsKS48YnI+Cjxicj4KU28gaXQgc2VlbXMgdG8gYmUgYSBwcm9ibGVtIHdp
+dGggeW91ciBzcGVjaWZpYyB0eXBlIG9mIFVTQiBjb250cm9sbGVyOwppcyBpdCBieSBhbnkgY2hh
+bmNlIGEgVUhDSSBjb21wYXRpYmxlIGNvbnRyb2xsZXI/IEFGQUlLIHRoZXkgc2hvdWxkCndvcmsg
+ZmluZSwgYnV0IHdobyBrbm93cz8gQSAnbHNwY2kgLXYnIG91dHB1dCB3b3VsZCBiZSBuaWNlLCBh
+bHNvIG1ha2UKc3VyZSB0aGF0IHlvdXIgQjEwMDAgaXMgdXNpbmcgdGhlIGxhdGVzdCBQREMgZmly
+bXdhcmU7IElJUkMgdGhlcmUgd2VyZQphIGNvdXBsZSBvZiBQQ0kgcmVsYXRlZCBidWdzIGluIG9s
+ZGVyIHZlcnNpb25zIC4uLjxicj4KPGJyPgpHcmVldGluZ3MsPGJyPgombmJzcDsgTWF4PGJyPgo8
+L2Rpdj4K
+------=_Part_1253_849327.1143654169728--
+
+--===============1507795203==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1507795203==--
