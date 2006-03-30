@@ -1,16 +1,14 @@
-From: Chris Frost <chris@frostnet.net>
-Subject: Re: [parisc-linux] IOGear Firewire+USB card causes unexpected irq 2
-Date: Thu, 30 Mar 2006 00:02:02 -0800
-Message-ID: <20060330080202.GE5336@pooh.bubble.frostnet.net>
-References: <20060329093444.GA5593@pooh.bubble.frostnet.net>
-	<20060329135838.GL9011@quicksilver.road.mcmartin.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Fwd: hppa glibc clone() patch proposal (3/3)
+Date: Thu, 30 Mar 2006 16:08:05 +0100
+Message-ID: <IWY4PH$66A7B7349BAF4B2D0043D5D9DC7413F8@scarlet.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="TB36FDmn/VVEgNH/"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain;
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ tsg45800 <tsg45800@scarlet.be>
+To: "randolph" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <e6eae0290603290942o79a2990bma9faa8ef527c1243@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,119 +19,173 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello Randolph, Carlos,
 
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Joel,
+> 
+> Some comments:
+> 
+> 1) I think you are right in fixing the first __syscall_error call. I
+> don't know why we are doing a b instead of bl now. It seems to be that
+> the current code will result in an orphaned stack frame if we ever
+> errored out. However, I see that in the other syscalls, the call to
+> __syscall_error is inlined. Maybe that would be better.....
+> 
+> 2)
+> >          .text
+> >  ENTRY(__clone)
+> > +    /* this proto do: stw rp, -20(sp) */
+> 
+> Yes, you should put "stw %rp, -20(%sp)" here.
+> 
+> > +       /* FIXME: I have no idea how profiling works on hppa. */
+> 
+> Let's leave profiling out of this for now....
+> 
+> > +       /* Sanity check arguments.  */
+> > +       comib,=3D         0, %arg0, .Larg_error   /* no NULL function=
 
-On Wed, Mar 29, 2006 at 08:58:38AM -0500, Kyle McMartin wrote:
-> lspci -vn for the card, please...
+> > pointers */
+> > +       ldi             -EINVAL, %ret0
+> > +       comib,=3D         0, %arg1, .Larg_error   /* no NULL stack
+> > pointers */
+> > +       nop
+> 
+> There seems to be some confusion here....
+> 
+> You want clone() to return -1, and set errno =3D -EINVAL. The logic to =
+do
+> this is in .Larg_error. Probably better here to just detect the two
+> error conditions and branch to .Larg_error and handle all the logic the=
+re.
+> 
+> >         /* Save the fn ptr and arg on the new stack.  */
+> >         stwm            %arg0, 64(%arg1)
+> > @@ -94,13 +102,35 @@
+> >  #endif
+> >         /* Set errno */
+> >         copy            %ret0, %r3
+> > -       b               __syscall_error
+> > +       bl              __syscall_error, %rp
+> >         sub             %r0, %ret0, %arg0
+> >         copy            %r3, %ret0
+> >         /* Return after setting errno */
+> > +       /* Restore rp from ENTRY() */
+> > +       ldw             -84(%sp), %rp
+> 
+> Right now since you don't store rp, this will give you junk.
+> 
+> > +.Larg_error:
+> > +
+> > +       /* Save arg0: the fn ptr.  */
+> > +       stw             %arg0, -36(%sp)
+> 
+> In the error case, you don't invoke the function, so no need to save an=
+d
+> restore arg0.
+> 
+> > +       /* Save the PIC register? */
+> > +       stwm            %r3, 64(%sp)
+> 
+> r3 is just a caller-save register; it has nothing to do with PIC. You
+> don't need to use r3 in this path; just create a stack frame with:
+> 	ldo 64(%sp), %sp
+> 
+So excepted this above stuff (for which I didn't yet understand the pb) a=
+nd
+inlining __syscall_error() (not yet enough knowledge to do), ...
 
-Attached (pci) is the output of lspci -vvv. The vendor and device codes
-are immediately below. As the machine does not boot with the card in the
-lspci output is from a pc.
+> > +       /* Set errno */
+> > +       copy            %ret0, %r3
+> > +       bl              __syscall_error, %rp
+> > +       sub             %r0, %ret0, %arg0
+> 
+> Here, I think you want to do (or inline the __syscall_error logic):
+> 	bl __syscall_error, %rp
+> 	ldi EINVAL, %arg0
+> 	ldi -1, %ret0
+> 
+> > +       /* Restore arg0: the fn ptr.  */
+> > +       ldw             -100(%sp), %arg0
+> > +       /* Return after setting errno */
+> > +       /* Restore rp from ENTRY() */
+> > +       ldw             -84(%sp), %rp
+> > +       bv              %r0(%rp)
+> > +       ldwm            -64(%sp), %r3
+> 
+> and here you can just do:
+> 	ldw -84(%sp), %rp
+> 	bv %r0(%rp)
+> 	ldo -64(%sp), %sp
+> 
+here is the last proposal:
+--- glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/clone.S.orig2      2006-03-2=
+4
+10:11:27.000000000 +0100
++++ glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/clone.S    2006-03-30
+13:56:56.000000000 +0200
+@@ -45,7 +45,30 @@
+ 
+         .text
+ ENTRY(__clone)
++    /* this ENTRY() macro do: stw rp, -20(sp)
++       and "FIXME: I have no idea how profiling works on hppa." */
+ 
++       /* Sanity check arguments.  */
++       comib,=3D         0, %arg0, .Larg_error           /* no NULL func=
+tion
+pointers */
++       nop
++       comib,<>,n      0, %arg1, .Lno_arg_error        /* no NULL stack
+pointers */
++       nop
++
++.Larg_error:
++       /* Create a stack frame */
++       stwm            %r3, 64(%sp)
++       /* Set errno */
++       bl              __syscall_error, %rp
++       ldi             EINVAL, %arg0
++/*     ldi             -1, %ret0 */
++
++       /* Return after setting errno */
++       /* Restore rp from ENTRY() */
++       ldw             -84(%sp), %rp
++       bv              %r0(%rp)
++       ldwm            -64(%sp), %r3
++
++.Lno_arg_error:
+        /* Save the fn ptr and arg on the new stack.  */
+        stwm            %arg0, 64(%arg1)
+        stw             %arg3, -60(%arg1)
+@@ -94,10 +117,12 @@
+ #endif
+        /* Set errno */
+        copy            %ret0, %r3
+-       b               __syscall_error
++       bl              __syscall_error, %rp
+        sub             %r0, %ret0, %arg0
+        copy            %r3, %ret0
+        /* Return after setting errno */
++       /* Restore rp from ENTRY() */
++       ldw             -84(%sp), %rp
+        bv              %r0(%rp)
+        ldwm            -64(%sp), %r3
+ 
+=3D=3D=3D=3D<>=3D=3D=3D=3D
 
-0:d.0: class 604, vendor id 3388, pci id 0021, rev 13
-1:c.0: class 0c03, vendor id 1033, pci id 0035, rev 41
-1:c.1: class 0c03, vendor id 1033, pci id 0035, rev 41
-1:c.2: class 0c03, vendor id 1033, pci id 00e0, rev 2
-1:f.0: class 0c00, vendor id 1003, pci id 00f2, rev 1
+May be should I still put the:
++       /* Create a stack frame */
++       stwm            %r3, 64(%sp)
 
+in the delay slot of the first cmpib,=3D (on going to test ...)
 
-> Try commenting out 
-> 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87560_USB) },
-> 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87415) },
-> in superio.c and seeing if that helps at all.
-
-This change appears to have no effect.
-
-
-Max suggested checking the machine's firmware version. It was running 3.4.
-I upgraded the machine to the latest, 5.0, but this has no visible effect.
-
-
-Since 2.6.16-pa9 was released today I also upgraded to it, but with no
-visible change.
-
-thanks again,
--- 
-Chris Frost  |  <http://www.frostnet.net/chris/>
--------------+----------------------------------
-Public PGP Key:
-   Email chris@frostnet.net with the subject "retrieve pgp key"
-   or visit <http://www.frostnet.net/chris/about/pgp_key.phtml>
-
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=pci
-
-00:0d.0 PCI bridge: Hint Corp: Unknown device 0021 (rev 13) (prog-if 00 [Normal decode])
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Latency: 66, cache line size 08
-	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-	I/O behind bridge: 0000f000-00000fff
-	Memory behind bridge: ff900000-ff9fffff
-	Prefetchable memory behind bridge: 00000000ff800000-00000000ff800000
-	BridgeCtl: Parity+ SERR+ NoISA- VGA- MAbort- >Reset- FastB2B-
-	Capabilities: [80] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-		Bridge: PM- B3+
-	Capabilities: [90] #06 [0000]
-	Capabilities: [a0] Vital Product Data
-
-01:0c.0 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
-	Subsystem: Unknown device 1735:0035
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Latency: 64 (250ns min, 10500ns max), cache line size 08
-	Interrupt: pin A routed to IRQ 7
-	Region 0: Memory at ff9fc000 (32-bit, non-prefetchable) [size=4K]
-	Capabilities: [40] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-01:0c.1 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
-	Subsystem: Unknown device 1735:0035
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Latency: 64 (250ns min, 10500ns max), cache line size 08
-	Interrupt: pin B routed to IRQ 5
-	Region 0: Memory at ff9fd000 (32-bit, non-prefetchable) [size=4K]
-	Capabilities: [40] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-01:0c.2 USB Controller: NEC Corporation: Unknown device 00e0 (rev 02) (prog-if 20)
-	Subsystem: Unknown device 1735:00e1
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Latency: 64 (4000ns min, 8500ns max), cache line size 08
-	Interrupt: pin C routed to IRQ 11
-	Region 0: Memory at ff9fec00 (32-bit, non-prefetchable) [size=256]
-	Capabilities: [40] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-01:0f.0 FireWire (IEEE 1394): NEC Corporation: Unknown device 00f2 (rev 01) (prog-if 10 [OHCI])
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Latency: 64 (63750ns min, 63750ns max), cache line size 08
-	Interrupt: pin A routed to IRQ 9
-	Region 0: Memory at ff9ff000 (32-bit, non-prefetchable) [size=4K]
-	Capabilities: [60] Power Management version 2
-		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
---TB36FDmn/VVEgNH/
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks,
+    Joel=0A=0A-------------------------------------------------------=0AN=
+OTE! My email address is changing to ... @scarlet.be=0APlease make the ne=
+cessary changes in your address book. =0A=0A
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---TB36FDmn/VVEgNH/--
