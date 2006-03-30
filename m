@@ -1,13 +1,13 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re:[parisc-linux] What's the right way to create a new stack in glibc?
-Date: Thu, 30 Mar 2006 16:53:13 +0100
-Message-ID: <IWY6SP$0D4147158F89214AB5A7DCA3E9285CC1@scarlet.be>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [git patches] Please pull on parisc tree
+Date: Thu, 30 Mar 2006 17:38:21 -0500
+Message-ID: <20060330223819.GB31321@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- tsg45800 <tsg45800@scarlet.be>
-To: "soete.joel" <soete.joel@tiscali.be>
+  charset=us-ascii
+Cc: akpm@osdl.org,
+ parisc-linux@lists.parisc-linux.org
+To: torvalds@osdl.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,133 +19,95 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Hello Randoplh, Carlos,
-> 
-> May be can you give me some more light.
-> 
-> I was testing all rational changes suggested by tausq in last mail abou=
-t
-> clone() patch but it was broken. A first one was of mine I sadly confus=
-e
-> boolean and bit  insn, after a fix it was still broken ;<(. I so come b=
-ack
-> step by step to a working situation and noticed that:
-> this hunk made panicing kernel:
-> [snip]    
-> .Larg_error:
-> 
->        /* Create a stack frame */
->        ldo             64(%sp), %sp
-> 
->        /* Set errno */
->        bl              __syscall_error, %rp
->        sub             %r0, %ret0, %arg0
-> 
->        /* Return after setting errno */
->        /* Restore rp from ENTRY() */
->        ldw             -84(%sp), %rp
->        bv              %r0(%rp)
->        ldo             -64(%sp), %sp
-> [snip]
-> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011027
-> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001105f
-> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011177
-> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001117f
-> Unaligned handler failed, ret =3D -2
-> clone04 (pid 2665): Unaligned data reference (code 28) at 0001119b
-> kernel BUG at /CAD/linux-2.6.16-pa8/mm/mmap.c:1957!
-> Backtrace:
->  [<10158848>] exit_mmap+0x178/0x330
->  [<101235a4>] mmput+0x44/0xb8
->  [<101281e0>] do_exit+0x12c/0x8a0
->  [<101289b8>] do_group_exit+0x64/0xc4
->  [<1010b114>] syscall_exit+0x0/0x14
-> 
-> Kernel panic - not syncing: BUG!
-> 
-mmm, having a look at the clone04.s, I can read:
-[...]
-main:
-        .PROC
-        .CALLINFO FRAME=3D128,CALLS,SAVE_RP,SAVE_SP,ENTRY_GR=3D5
-        .ENTRY
-        stw %r2,-20(%r30)
-.LCFI0:
-        copy %r3,%r1
-.LCFI1:
-        copy %r30,%r3
-.LCFI2:
-        stwm %r1,128(%r30)
-.LCFI3:
-        stw %r5,24(%r3)
-.LCFI4:
-        stw %r4,28(%r3)
-.LCFI5:
-[snip]
+The following changes since commit 5d4fe2c1ce83c3e967ccc1ba3d580c1a5603a866:
+  Lennert Buytenhek:
+        ixp2000: fix gcc4 breakage
 
-That doesn't explain why the system panic but may be why save/restore r3 =
-help?
+are found in the git repository at:
 
-> OTH, this hunk was working:
-> [snip]
-> .Larg_error:
-> 
->         /* Create a stack frame */
->         stwm            %r3, 64(%sp)
-> 
->         /* Set errno */
->         bl              __syscall_error, %rp
->         sub             %r0, %ret0, %arg0
-> 
->         /* Return after setting errno */
->         /* Restore rp from ENTRY() */
->         ldw             -84(%sp), %rp
->         bv              %r0(%rp)
->         ldwm            -64(%sp), %r3
-> [snip]
-> 
-> Even though that's well what does gcc when I compile this sample:
-> [snip]
-> int sclone(unsigned long Val1, unsigned long Val2)
-> {
->   if ((( Val1) && (Val2))) {
->     printf ("Ok ;-)\n");
->     return 0;
->   } else { 
->     printf ("Ko ;-(\n");
->     return -1;
->   } 
-> };
-> [snip]
-> 
-> # gcc --save-temps -O2 foo.c
-> more foo.s
-> [snip]
-> sclone:
->         .PROC
->         .CALLINFO FRAME=3D64,CALLS,SAVE_RP
->         .ENTRY
->         stw %r2,-20(%r30)
->         comib,=3D 0,%r26,.L2
->         ldo 64(%r30),%r30
->         comib,<>,n 0,%r25,.L7
-> .L2:
->         ldil LR'.LC1,%r26
->         bl puts,%r2
->         ldo RR'.LC1(%r26),%r26
->         ldw -84(%r30),%r2
->         ldi -1,%r28
->         bv %r0(%r2)
->         ldo -64(%r30),%r30
-> .L7:
-> [snip]
-> 
-Thank again,
-    Joel
-=0A=0A-------------------------------------------------------=0ANOTE! My =
-email address is changing to ... @scarlet.be=0APlease make the necessary =
-changes in your address book. =0A=0A
+  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
 
+Helge Deller:
+      [PARISC] Enable free_initrd_mem()
+      [PARISC] I/O-Space must be ioremap_nocache()'d
+      [PARISC] Fix IOREMAP with a 64-bit kernel
+      [PARISC] Add STRICT_MM_TYPECHECKS
+      [PARISC] Add CONFIG_HPPA_IOREMAP to conditionally enable ioremap
+      [PARISC] Fix stifb with IOREMAP and a 64-bit kernel
+      [PARISC] Enable ioremap functionality unconditionally
+      [PARISC] Temporary FIXME for ioremapping EISA regions
+      [PARISC] Remove obsolete CONFIG_DEBUG_IOREMAP
+      [PARISC] Fixup CONFIG_EISA a bit
+      [PARISC] Convert HIL drivers to use input_allocate_device
+      [PARISC] Update defconfigs
+
+James Bottomley:
+      [PARISC] Add parisc implementation of flush_anon_page()
+      [PARISC] Add parisc implementation of flush_kernel_dcache_page()
+
+Kyle McMartin:
+      [PARISC] getsockopt should be ENTRY_COMP
+      [PARISC] More useful readwrite lock helpers
+      [PARISC] Add PREEMPT support
+      [PARISC] Make local_t use atomic_long_t
+      [PARISC] Move ioremap EXPORT_SYMBOL from parisc_ksyms.c
+      [PARISC] Kill duplicated EXPORT_SYMBOL warnings
+      [PARISC] Add atomic_sub_and_test
+      [PARISC] Fix double free when removing HIL drivers
+
+Stuart Brady:
+      [PARISC] Enabled some NLS modules in a500, b180 and c3000 defconfigs
+
+Thibaut VARENE:
+      [PARISC] Clarify pdc_stable license terms
+
+ arch/parisc/Kconfig                 |    6 -
+ arch/parisc/configs/712_defconfig   |  160 ++++++++++------------
+ arch/parisc/configs/a500_defconfig  |    4 -
+ arch/parisc/configs/b180_defconfig  |   12 +-
+ arch/parisc/configs/c3000_defconfig |  252 +++++++++++++++--------------------
+ arch/parisc/defconfig               |  165 +++++++++++++++--------
+ arch/parisc/kernel/cache.c          |    6 -
+ arch/parisc/kernel/entry.S          |   45 +++++-
+ arch/parisc/kernel/pacache.S        |    4 -
+ arch/parisc/kernel/parisc_ksyms.c   |   19 ---
+ arch/parisc/kernel/pdc_chassis.c    |    5 -
+ arch/parisc/kernel/perf.c           |    2 
+ arch/parisc/kernel/syscall_table.S  |    2 
+ arch/parisc/lib/iomap.c             |    4 -
+ arch/parisc/mm/init.c               |    7 -
+ arch/parisc/mm/ioremap.c            |   54 +-------
+ drivers/input/keyboard/hil_kbd.c    |   58 ++++----
+ drivers/input/keyboard/hilkbd.c     |   49 ++++---
+ drivers/input/mouse/hil_ptr.c       |   92 +++++++------
+ drivers/input/serio/gscps2.c        |    4 -
+ drivers/parisc/ccio-dma.c           |    2 
+ drivers/parisc/dino.c               |    5 -
+ drivers/parisc/eisa.c               |    2 
+ drivers/parisc/iosapic.c            |    2 
+ drivers/parisc/lba_pci.c            |    8 +
+ drivers/parisc/pdc_stable.c         |    5 -
+ drivers/parisc/sba_iommu.c          |    6 -
+ drivers/parisc/superio.c            |   46 +++---
+ drivers/scsi/lasi700.c              |    2 
+ drivers/scsi/zalon.c                |    2 
+ drivers/serial/8250_gsc.c           |   15 +-
+ drivers/serial/mux.c                |    4 -
+ drivers/video/console/sticore.c     |   18 ---
+ drivers/video/sticore.h             |   37 ++---
+ drivers/video/stifb.c               |   91 +------------
+ include/asm-parisc/atomic.h         |    3 
+ include/asm-parisc/cache.h          |    2 
+ include/asm-parisc/cacheflush.h     |   17 ++
+ include/asm-parisc/io.h             |   95 -------------
+ include/asm-parisc/local.h          |   18 +--
+ include/asm-parisc/page.h           |   58 ++++++--
+ include/asm-parisc/pci.h            |    5 +
+ include/asm-parisc/pdc_chassis.h    |    5 -
+ include/asm-parisc/spinlock.h       |   16 ++
+ include/asm-parisc/thread_info.h    |    3 
+ lib/Kconfig.debug                   |   13 --
+ 46 files changed, 625 insertions(+), 805 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
