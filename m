@@ -1,11 +1,11 @@
-From: Chris Frost <chris@frostnet.net>
-Subject: [parisc-linux] IOGear Firewire+USB card causes unexpected irq 2
-Date: Wed, 29 Mar 2006 01:34:44 -0800
-Message-ID: <20060329093444.GA5593@pooh.bubble.frostnet.net>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] What's the right way to create a new stack in glibc?
+Date: Thu, 30 Mar 2006 07:35:27 +0100
+Message-ID: <IWXGZ3$DD5205B10AADF945ECDD523A4C5A1C7B@scarlet.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="82I3+IH0IqGh5yIs"
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=iso-8859-1
+To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,201 +17,113 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello Randoplh, Carlos,
 
---82I3+IH0IqGh5yIs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+May be can you give me some more light.
 
-When I boot a B1000 using 2.6.16-pa8 with an IOGear Firewire+USB card
-(GUF3121) the machine shows the error drivers/parisc/superio.c:308,
-"Illegal irq number(2)", after it brings up USB. This happens when the
-card is in the 66MHz 64bit slot and when it is in one of the 33MHz
-32bit slots. (The card is 33MHz 32bit; I tried to see if different
-slots/buses might change the irq.)
+I was testing all rational changes suggested by tausq in last mail about
+clone() patch but it was broken. A first one was of mine I sadly confuse
+boolean and bit  insn, after a fix it was still broken ;<(. I so come bac=
+k
+step by step to a working situation and noticed that:
+this hunk made panicing kernel:
+[snip]    
+.Larg_error:
 
-If I change the if condition in superio.c to not error when irq == 2
-the machine gets further but produces several warnings, errors, stack
-traces, and an oops or two. It does recognize the firewire controller
-and sees a firewire disk I attach. I am even able to mount the file system
-on the disk and list its contents. However, the results of a find on the
-drive appear to only come in small chunks when I type on the keyboard.
-It would seem superio and the card are linked.
+       /* Create a stack frame */
+       ldo             64(%sp), %sp
 
-I'd be most interested in any thoughts or suggestions; thank you!
+       /* Set errno */
+       bl              __syscall_error, %rp
+       sub             %r0, %ret0, %arg0
+
+       /* Return after setting errno */
+       /* Restore rp from ENTRY() */
+       ldw             -84(%sp), %rp
+       bv              %r0(%rp)
+       ldo             -64(%sp), %sp
+[snip]
+clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011027
+clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001105f
+clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011177
+clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001117f
+Unaligned handler failed, ret =3D -2
+clone04 (pid 2665): Unaligned data reference (code 28) at 0001119b
+kernel BUG at /CAD/linux-2.6.16-pa8/mm/mmap.c:1957!
+Backtrace:
+ [<10158848>] exit_mmap+0x178/0x330
+ [<101235a4>] mmput+0x44/0xb8
+ [<101281e0>] do_exit+0x12c/0x8a0
+ [<101289b8>] do_group_exit+0x64/0xc4
+ [<1010b114>] syscall_exit+0x0/0x14
+
+Kernel panic - not syncing: BUG!
+
+OTH, this hunk was working:
+[snip]
+.Larg_error:
+
+        /* Create a stack frame */
+        stwm            %r3, 64(%sp)
+
+        /* Set errno */
+        bl              __syscall_error, %rp
+        sub             %r0, %ret0, %arg0
+
+        /* Return after setting errno */
+        /* Restore rp from ENTRY() */
+        ldw             -84(%sp), %rp
+        bv              %r0(%rp)
+        ldwm            -64(%sp), %r3
+[snip]
+
+Even though that's well what does gcc when I compile this sample:
+[snip]
+int sclone(unsigned long Val1, unsigned long Val2)
+{
+  if ((( Val1) && (Val2))) {
+    printf ("Ok ;-)\n");
+    return 0;
+  } else { 
+    printf ("Ko ;-(\n");
+    return -1;
+  } 
+};
+[snip]
+
+# gcc --save-temps -O2 foo.c
+more foo.s
+[snip]
+sclone:
+        .PROC
+        .CALLINFO FRAME=3D64,CALLS,SAVE_RP
+        .ENTRY
+        stw %r2,-20(%r30)
+        comib,=3D 0,%r26,.L2
+        ldo 64(%r30),%r30
+        comib,<>,n 0,%r25,.L7
+.L2:
+        ldil LR'.LC1,%r26
+        bl puts,%r2
+        ldo RR'.LC1(%r26),%r26
+        ldw -84(%r30),%r2
+        ldi -1,%r28
+        bv %r0(%r2)
+        ldo -64(%r30),%r30
+.L7:
+[snip]
+
+TIA for addtional attention,
+    Joel
 
 
-kernel: 2.6.16-pa8
-gcc: debian 1:3.3.5-13
-binutils: debian 2.15-6
-machine: 9000/785/B1000
-32bit kernel
-palo kernel command line: root=/dev/sda5 HOME=/ console=ttyS0 TERM=vt102 palo_kernel=2/vmlinux
-System.map: http://woozle.cs.ucla.edu/~frost/stuff/System.map-2.6.16-pa8.gz
-.config: attached (as config.gz)
-no remote management card
-using graphics console (above command line from a terminal boot of the machine)
-compiled the kernel on the same machine
 
--- 
-Chris Frost  |  <http://www.frostnet.net/chris/>
--------------+----------------------------------
-Public PGP Key:
-   Email chris@frostnet.net with the subject "retrieve pgp key"
-   or visit <http://www.frostnet.net/chris/about/pgp_key.phtml>
 
---82I3+IH0IqGh5yIs
-Content-Type: application/x-gunzip
-Content-Disposition: attachment; filename="config.gz"
-Content-Transfer-Encoding: base64
-
-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
-3PN/AXiaLNiecAAA
-
---82I3+IH0IqGh5yIs
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+=0A=0A-------------------------------------------------------=0ANOTE! My =
+email address is changing to ... @scarlet.be=0APlease make the necessary =
+changes in your address book. =0A=0A
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---82I3+IH0IqGh5yIs--
