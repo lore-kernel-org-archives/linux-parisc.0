@@ -1,13 +1,13 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] Fwd: hppa glibc clone() patch proposal (3/3)
-Date: Thu, 30 Mar 2006 16:08:05 +0100
-Message-ID: <IWY4PH$66A7B7349BAF4B2D0043D5D9DC7413F8@scarlet.be>
+Subject: Re:[parisc-linux] What's the right way to create a new stack in glibc?
+Date: Thu, 30 Mar 2006 16:53:13 +0100
+Message-ID: <IWY6SP$0D4147158F89214AB5A7DCA3E9285CC1@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=iso-8859-1
 Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
  tsg45800 <tsg45800@scarlet.be>
-To: "randolph" <randolph@tausq.org>
+To: "soete.joel" <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,171 +19,132 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Randolph, Carlos,
+> Hello Randoplh, Carlos,
+> 
+> May be can you give me some more light.
+> 
+> I was testing all rational changes suggested by tausq in last mail abou=
+t
+> clone() patch but it was broken. A first one was of mine I sadly confus=
+e
+> boolean and bit  insn, after a fix it was still broken ;<(. I so come b=
+ack
+> step by step to a working situation and noticed that:
+> this hunk made panicing kernel:
+> [snip]    
+> .Larg_error:
+> 
+>        /* Create a stack frame */
+>        ldo             64(%sp), %sp
+> 
+>        /* Set errno */
+>        bl              __syscall_error, %rp
+>        sub             %r0, %ret0, %arg0
+> 
+>        /* Return after setting errno */
+>        /* Restore rp from ENTRY() */
+>        ldw             -84(%sp), %rp
+>        bv              %r0(%rp)
+>        ldo             -64(%sp), %sp
+> [snip]
+> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011027
+> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001105f
+> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011177
+> clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001117f
+> Unaligned handler failed, ret =3D -2
+> clone04 (pid 2665): Unaligned data reference (code 28) at 0001119b
+> kernel BUG at /CAD/linux-2.6.16-pa8/mm/mmap.c:1957!
+> Backtrace:
+>  [<10158848>] exit_mmap+0x178/0x330
+>  [<101235a4>] mmput+0x44/0xb8
+>  [<101281e0>] do_exit+0x12c/0x8a0
+>  [<101289b8>] do_group_exit+0x64/0xc4
+>  [<1010b114>] syscall_exit+0x0/0x14
+> 
+> Kernel panic - not syncing: BUG!
+> 
+mmm, having a look at the clone04.s, I can read:
+[...]
+main:
+        .PROC
+        .CALLINFO FRAME=3D128,CALLS,SAVE_RP,SAVE_SP,ENTRY_GR=3D5
+        .ENTRY
+        stw %r2,-20(%r30)
+.LCFI0:
+        copy %r3,%r1
+.LCFI1:
+        copy %r30,%r3
+.LCFI2:
+        stwm %r1,128(%r30)
+.LCFI3:
+        stw %r5,24(%r3)
+.LCFI4:
+        stw %r4,28(%r3)
+.LCFI5:
+[snip]
 
-> Joel,
-> 
-> Some comments:
-> 
-> 1) I think you are right in fixing the first __syscall_error call. I
-> don't know why we are doing a b instead of bl now. It seems to be that
-> the current code will result in an orphaned stack frame if we ever
-> errored out. However, I see that in the other syscalls, the call to
-> __syscall_error is inlined. Maybe that would be better.....
-> 
-> 2)
-> >          .text
-> >  ENTRY(__clone)
-> > +    /* this proto do: stw rp, -20(sp) */
-> 
-> Yes, you should put "stw %rp, -20(%sp)" here.
-> 
-> > +       /* FIXME: I have no idea how profiling works on hppa. */
-> 
-> Let's leave profiling out of this for now....
-> 
-> > +       /* Sanity check arguments.  */
-> > +       comib,=3D         0, %arg0, .Larg_error   /* no NULL function=
+That doesn't explain why the system panic but may be why save/restore r3 =
+help?
 
-> > pointers */
-> > +       ldi             -EINVAL, %ret0
-> > +       comib,=3D         0, %arg1, .Larg_error   /* no NULL stack
-> > pointers */
-> > +       nop
+> OTH, this hunk was working:
+> [snip]
+> .Larg_error:
 > 
-> There seems to be some confusion here....
+>         /* Create a stack frame */
+>         stwm            %r3, 64(%sp)
 > 
-> You want clone() to return -1, and set errno =3D -EINVAL. The logic to =
-do
-> this is in .Larg_error. Probably better here to just detect the two
-> error conditions and branch to .Larg_error and handle all the logic the=
-re.
+>         /* Set errno */
+>         bl              __syscall_error, %rp
+>         sub             %r0, %ret0, %arg0
 > 
-> >         /* Save the fn ptr and arg on the new stack.  */
-> >         stwm            %arg0, 64(%arg1)
-> > @@ -94,13 +102,35 @@
-> >  #endif
-> >         /* Set errno */
-> >         copy            %ret0, %r3
-> > -       b               __syscall_error
-> > +       bl              __syscall_error, %rp
-> >         sub             %r0, %ret0, %arg0
-> >         copy            %r3, %ret0
-> >         /* Return after setting errno */
-> > +       /* Restore rp from ENTRY() */
-> > +       ldw             -84(%sp), %rp
+>         /* Return after setting errno */
+>         /* Restore rp from ENTRY() */
+>         ldw             -84(%sp), %rp
+>         bv              %r0(%rp)
+>         ldwm            -64(%sp), %r3
+> [snip]
 > 
-> Right now since you don't store rp, this will give you junk.
+> Even though that's well what does gcc when I compile this sample:
+> [snip]
+> int sclone(unsigned long Val1, unsigned long Val2)
+> {
+>   if ((( Val1) && (Val2))) {
+>     printf ("Ok ;-)\n");
+>     return 0;
+>   } else { 
+>     printf ("Ko ;-(\n");
+>     return -1;
+>   } 
+> };
+> [snip]
 > 
-> > +.Larg_error:
-> > +
-> > +       /* Save arg0: the fn ptr.  */
-> > +       stw             %arg0, -36(%sp)
+> # gcc --save-temps -O2 foo.c
+> more foo.s
+> [snip]
+> sclone:
+>         .PROC
+>         .CALLINFO FRAME=3D64,CALLS,SAVE_RP
+>         .ENTRY
+>         stw %r2,-20(%r30)
+>         comib,=3D 0,%r26,.L2
+>         ldo 64(%r30),%r30
+>         comib,<>,n 0,%r25,.L7
+> .L2:
+>         ldil LR'.LC1,%r26
+>         bl puts,%r2
+>         ldo RR'.LC1(%r26),%r26
+>         ldw -84(%r30),%r2
+>         ldi -1,%r28
+>         bv %r0(%r2)
+>         ldo -64(%r30),%r30
+> .L7:
+> [snip]
 > 
-> In the error case, you don't invoke the function, so no need to save an=
-d
-> restore arg0.
-> 
-> > +       /* Save the PIC register? */
-> > +       stwm            %r3, 64(%sp)
-> 
-> r3 is just a caller-save register; it has nothing to do with PIC. You
-> don't need to use r3 in this path; just create a stack frame with:
-> 	ldo 64(%sp), %sp
-> 
-So excepted this above stuff (for which I didn't yet understand the pb) a=
-nd
-inlining __syscall_error() (not yet enough knowledge to do), ...
-
-> > +       /* Set errno */
-> > +       copy            %ret0, %r3
-> > +       bl              __syscall_error, %rp
-> > +       sub             %r0, %ret0, %arg0
-> 
-> Here, I think you want to do (or inline the __syscall_error logic):
-> 	bl __syscall_error, %rp
-> 	ldi EINVAL, %arg0
-> 	ldi -1, %ret0
-> 
-> > +       /* Restore arg0: the fn ptr.  */
-> > +       ldw             -100(%sp), %arg0
-> > +       /* Return after setting errno */
-> > +       /* Restore rp from ENTRY() */
-> > +       ldw             -84(%sp), %rp
-> > +       bv              %r0(%rp)
-> > +       ldwm            -64(%sp), %r3
-> 
-> and here you can just do:
-> 	ldw -84(%sp), %rp
-> 	bv %r0(%rp)
-> 	ldo -64(%sp), %sp
-> 
-here is the last proposal:
---- glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/clone.S.orig2      2006-03-2=
-4
-10:11:27.000000000 +0100
-+++ glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/clone.S    2006-03-30
-13:56:56.000000000 +0200
-@@ -45,7 +45,30 @@
- 
-         .text
- ENTRY(__clone)
-+    /* this ENTRY() macro do: stw rp, -20(sp)
-+       and "FIXME: I have no idea how profiling works on hppa." */
- 
-+       /* Sanity check arguments.  */
-+       comib,=3D         0, %arg0, .Larg_error           /* no NULL func=
-tion
-pointers */
-+       nop
-+       comib,<>,n      0, %arg1, .Lno_arg_error        /* no NULL stack
-pointers */
-+       nop
-+
-+.Larg_error:
-+       /* Create a stack frame */
-+       stwm            %r3, 64(%sp)
-+       /* Set errno */
-+       bl              __syscall_error, %rp
-+       ldi             EINVAL, %arg0
-+/*     ldi             -1, %ret0 */
-+
-+       /* Return after setting errno */
-+       /* Restore rp from ENTRY() */
-+       ldw             -84(%sp), %rp
-+       bv              %r0(%rp)
-+       ldwm            -64(%sp), %r3
-+
-+.Lno_arg_error:
-        /* Save the fn ptr and arg on the new stack.  */
-        stwm            %arg0, 64(%arg1)
-        stw             %arg3, -60(%arg1)
-@@ -94,10 +117,12 @@
- #endif
-        /* Set errno */
-        copy            %ret0, %r3
--       b               __syscall_error
-+       bl              __syscall_error, %rp
-        sub             %r0, %ret0, %arg0
-        copy            %r3, %ret0
-        /* Return after setting errno */
-+       /* Restore rp from ENTRY() */
-+       ldw             -84(%sp), %rp
-        bv              %r0(%rp)
-        ldwm            -64(%sp), %r3
- 
-=3D=3D=3D=3D<>=3D=3D=3D=3D
-
-May be should I still put the:
-+       /* Create a stack frame */
-+       stwm            %r3, 64(%sp)
-
-in the delay slot of the first cmpib,=3D (on going to test ...)
-
-Thanks,
-    Joel=0A=0A-------------------------------------------------------=0AN=
-OTE! My email address is changing to ... @scarlet.be=0APlease make the ne=
-cessary changes in your address book. =0A=0A
+Thank again,
+    Joel
+=0A=0A-------------------------------------------------------=0ANOTE! My =
+email address is changing to ... @scarlet.be=0APlease make the necessary =
+changes in your address book. =0A=0A
 
 _______________________________________________
 parisc-linux mailing list
