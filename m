@@ -1,12 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] What's the right way to create a new stack in glibc?
-Date: Thu, 30 Mar 2006 07:35:27 +0100
-Message-ID: <IWXGZ3$DD5205B10AADF945ECDD523A4C5A1C7B@scarlet.be>
+From: Chris Frost <chris@frostnet.net>
+Subject: Re: [parisc-linux] IOGear Firewire+USB card causes unexpected irq 2
+Date: Thu, 30 Mar 2006 00:02:02 -0800
+Message-ID: <20060330080202.GE5336@pooh.bubble.frostnet.net>
+References: <20060329093444.GA5593@pooh.bubble.frostnet.net>
+	<20060329135838.GL9011@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=iso-8859-1
-To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+  boundary="TB36FDmn/VVEgNH/"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <e6eae0290603290942o79a2990bma9faa8ef527c1243@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,113 +21,119 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Randoplh, Carlos,
 
-May be can you give me some more light.
+--TB36FDmn/VVEgNH/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I was testing all rational changes suggested by tausq in last mail about
-clone() patch but it was broken. A first one was of mine I sadly confuse
-boolean and bit  insn, after a fix it was still broken ;<(. I so come bac=
-k
-step by step to a working situation and noticed that:
-this hunk made panicing kernel:
-[snip]    
-.Larg_error:
+On Wed, Mar 29, 2006 at 08:58:38AM -0500, Kyle McMartin wrote:
+> lspci -vn for the card, please...
 
-       /* Create a stack frame */
-       ldo             64(%sp), %sp
+Attached (pci) is the output of lspci -vvv. The vendor and device codes
+are immediately below. As the machine does not boot with the card in the
+lspci output is from a pc.
 
-       /* Set errno */
-       bl              __syscall_error, %rp
-       sub             %r0, %ret0, %arg0
-
-       /* Return after setting errno */
-       /* Restore rp from ENTRY() */
-       ldw             -84(%sp), %rp
-       bv              %r0(%rp)
-       ldo             -64(%sp), %sp
-[snip]
-clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011027
-clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001105f
-clone04(2665): unaligned access to 0xfffffffa at ip=3D0x00011177
-clone04(2665): unaligned access to 0xfffffffa at ip=3D0x0001117f
-Unaligned handler failed, ret =3D -2
-clone04 (pid 2665): Unaligned data reference (code 28) at 0001119b
-kernel BUG at /CAD/linux-2.6.16-pa8/mm/mmap.c:1957!
-Backtrace:
- [<10158848>] exit_mmap+0x178/0x330
- [<101235a4>] mmput+0x44/0xb8
- [<101281e0>] do_exit+0x12c/0x8a0
- [<101289b8>] do_group_exit+0x64/0xc4
- [<1010b114>] syscall_exit+0x0/0x14
-
-Kernel panic - not syncing: BUG!
-
-OTH, this hunk was working:
-[snip]
-.Larg_error:
-
-        /* Create a stack frame */
-        stwm            %r3, 64(%sp)
-
-        /* Set errno */
-        bl              __syscall_error, %rp
-        sub             %r0, %ret0, %arg0
-
-        /* Return after setting errno */
-        /* Restore rp from ENTRY() */
-        ldw             -84(%sp), %rp
-        bv              %r0(%rp)
-        ldwm            -64(%sp), %r3
-[snip]
-
-Even though that's well what does gcc when I compile this sample:
-[snip]
-int sclone(unsigned long Val1, unsigned long Val2)
-{
-  if ((( Val1) && (Val2))) {
-    printf ("Ok ;-)\n");
-    return 0;
-  } else { 
-    printf ("Ko ;-(\n");
-    return -1;
-  } 
-};
-[snip]
-
-# gcc --save-temps -O2 foo.c
-more foo.s
-[snip]
-sclone:
-        .PROC
-        .CALLINFO FRAME=3D64,CALLS,SAVE_RP
-        .ENTRY
-        stw %r2,-20(%r30)
-        comib,=3D 0,%r26,.L2
-        ldo 64(%r30),%r30
-        comib,<>,n 0,%r25,.L7
-.L2:
-        ldil LR'.LC1,%r26
-        bl puts,%r2
-        ldo RR'.LC1(%r26),%r26
-        ldw -84(%r30),%r2
-        ldi -1,%r28
-        bv %r0(%r2)
-        ldo -64(%r30),%r30
-.L7:
-[snip]
-
-TIA for addtional attention,
-    Joel
+0:d.0: class 604, vendor id 3388, pci id 0021, rev 13
+1:c.0: class 0c03, vendor id 1033, pci id 0035, rev 41
+1:c.1: class 0c03, vendor id 1033, pci id 0035, rev 41
+1:c.2: class 0c03, vendor id 1033, pci id 00e0, rev 2
+1:f.0: class 0c00, vendor id 1003, pci id 00f2, rev 1
 
 
+> Try commenting out 
+> 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87560_USB) },
+> 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87415) },
+> in superio.c and seeing if that helps at all.
+
+This change appears to have no effect.
 
 
-=0A=0A-------------------------------------------------------=0ANOTE! My =
-email address is changing to ... @scarlet.be=0APlease make the necessary =
-changes in your address book. =0A=0A
+Max suggested checking the machine's firmware version. It was running 3.4.
+I upgraded the machine to the latest, 5.0, but this has no visible effect.
+
+
+Since 2.6.16-pa9 was released today I also upgraded to it, but with no
+visible change.
+
+thanks again,
+-- 
+Chris Frost  |  <http://www.frostnet.net/chris/>
+-------------+----------------------------------
+Public PGP Key:
+   Email chris@frostnet.net with the subject "retrieve pgp key"
+   or visit <http://www.frostnet.net/chris/about/pgp_key.phtml>
+
+--TB36FDmn/VVEgNH/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=pci
+
+00:0d.0 PCI bridge: Hint Corp: Unknown device 0021 (rev 13) (prog-if 00 [Normal decode])
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 66, cache line size 08
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+	I/O behind bridge: 0000f000-00000fff
+	Memory behind bridge: ff900000-ff9fffff
+	Prefetchable memory behind bridge: 00000000ff800000-00000000ff800000
+	BridgeCtl: Parity+ SERR+ NoISA- VGA- MAbort- >Reset- FastB2B-
+	Capabilities: [80] Power Management version 2
+		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+		Bridge: PM- B3+
+	Capabilities: [90] #06 [0000]
+	Capabilities: [a0] Vital Product Data
+
+01:0c.0 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
+	Subsystem: Unknown device 1735:0035
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 64 (250ns min, 10500ns max), cache line size 08
+	Interrupt: pin A routed to IRQ 7
+	Region 0: Memory at ff9fc000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [40] Power Management version 2
+		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+01:0c.1 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
+	Subsystem: Unknown device 1735:0035
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 64 (250ns min, 10500ns max), cache line size 08
+	Interrupt: pin B routed to IRQ 5
+	Region 0: Memory at ff9fd000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [40] Power Management version 2
+		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+01:0c.2 USB Controller: NEC Corporation: Unknown device 00e0 (rev 02) (prog-if 20)
+	Subsystem: Unknown device 1735:00e1
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 64 (4000ns min, 8500ns max), cache line size 08
+	Interrupt: pin C routed to IRQ 11
+	Region 0: Memory at ff9fec00 (32-bit, non-prefetchable) [size=256]
+	Capabilities: [40] Power Management version 2
+		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+01:0f.0 FireWire (IEEE 1394): NEC Corporation: Unknown device 00f2 (rev 01) (prog-if 10 [OHCI])
+	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
+	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+	Latency: 64 (63750ns min, 63750ns max), cache line size 08
+	Interrupt: pin A routed to IRQ 9
+	Region 0: Memory at ff9ff000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [60] Power Management version 2
+		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
+		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+--TB36FDmn/VVEgNH/
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--TB36FDmn/VVEgNH/--
