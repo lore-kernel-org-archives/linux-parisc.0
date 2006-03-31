@@ -1,13 +1,11 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [git patches] Please pull on parisc tree
-Date: Thu, 30 Mar 2006 17:38:21 -0500
-Message-ID: <20060330223819.GB31321@quicksilver.road.mcmartin.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: [parisc-linux] Strange newest LAB msg?
+Date: Fri, 31 Mar 2006 16:26:38 +0100
+Message-ID: <IX008E$FF5F5C221189CADA64719030F0E34D37@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: akpm@osdl.org,
- parisc-linux@lists.parisc-linux.org
-To: torvalds@osdl.org
+  charset=iso-8859-1
+To: "Parisc List" <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,95 +17,210 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-The following changes since commit 5d4fe2c1ce83c3e967ccc1ba3d580c1a5603a866:
-  Lennert Buytenhek:
-        ixp2000: fix gcc4 breakage
+Hello all,
 
-are found in the git repository at:
+Just noticed on n4k with recent kernel:
+[snip]
+Mar 31 11:45:39 patst006 kernel: Linux version 2.6.16-pa8-n4kmp
+(root@patst006) (gcc version 4.0.3 (Debian 4.0.3-1)) #212 SMP Tue Ma
+r 28 12:30:16 CEST 2006
+[snip]
+Mar 31 11:45:39 patst006 kernel: CPU(s): 2 x PA8600 (PCX-W+) at 550.00000=
+0 MHz
+Mar 31 11:45:39 patst006 kernel: Whole cache flush 199180 cycles, flushin=
+g
+5369080 bytes 1536791 cycles
+Mar 31 11:45:39 patst006 kernel: Setting cache flush threshold to a9e80 (=
+2
+CPUs online)
+Mar 31 11:45:39 patst006 kernel: SBA found Ike rev 2 at 0xfffffffffed0000=
+0
+Mar 31 11:45:39 patst006 kernel: SBA found Ike rev 2 at 0xfffffffffed4000=
+0
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe0000
+Mar 31 11:45:39 patst006 kernel: iosapic: no IRTE for 0000:00:04.0 (IRQ n=
+ot
+connected?)
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe2000
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe4000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe8000
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffea000
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbfff0000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbfff4000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbfff8000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffece0000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffece4000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffece8000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffecf0000
+Mar 31 11:45:39 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Mar 31 11:45:39 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffecf4000
+Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space =
+- use
+vmalloc=3D<size> to increase size.
+Mar 31 11:45:39 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffecf8000
+Mar 31 11:45:39 patst006 kernel: SCSI subsystem initialized
+Mar 31 11:45:39 patst006 kernel: unwind_init: start =3D 0x10451cc0, end =3D=
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
+0x10472e10, entries =3D 8469
+Mar 31 11:45:39 patst006 kernel: Performance monitoring counters enabled =
+for
+Unknown machine
+Mar 31 11:45:39 patst006 kernel: Initializing Cryptographic API
+Mar 31 11:45:39 patst006 kernel: io scheduler noop registered
+Mar 31 11:45:39 patst006 kernel: io scheduler anticipatory registered (de=
+fault)
+[...]
 
-Helge Deller:
-      [PARISC] Enable free_initrd_mem()
-      [PARISC] I/O-Space must be ioremap_nocache()'d
-      [PARISC] Fix IOREMAP with a 64-bit kernel
-      [PARISC] Add STRICT_MM_TYPECHECKS
-      [PARISC] Add CONFIG_HPPA_IOREMAP to conditionally enable ioremap
-      [PARISC] Fix stifb with IOREMAP and a 64-bit kernel
-      [PARISC] Enable ioremap functionality unconditionally
-      [PARISC] Temporary FIXME for ioremapping EISA regions
-      [PARISC] Remove obsolete CONFIG_DEBUG_IOREMAP
-      [PARISC] Fixup CONFIG_EISA a bit
-      [PARISC] Convert HIL drivers to use input_allocate_device
-      [PARISC] Update defconfigs
+(with a previous kernel
+Feb 13 13:47:20 patst006 kernel: Linux version 2.6.16-rc3-pa0-n4kmp
+(root@patst006) (gcc version 4.0.3 20060128 (prerelease) (Debian
+ 4.0.2-8)) #14 SMP Mon Feb 13 13:05:14 CET 2006
+Feb 13 13:47:20 patst006 kernel: CPU(s): 2 x PA8600 (PCX-W+) at 550.00000=
+0 MHz
+Feb 13 13:47:20 patst006 kernel: Whole cache flush 217577 cycles, flushin=
+g
+5352456 bytes 1498027 cycles
+Feb 13 13:47:20 patst006 kernel: Setting cache flush threshold to bdcc0 (=
+2
+CPUs online)
+Feb 13 13:47:20 patst006 kernel: SBA found Ike rev 2 at 0xfffffffffed0000=
+0
+Feb 13 13:47:20 patst006 kernel: SBA found Ike rev 2 at 0xfffffffffed4000=
+0
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe0000
+Feb 13 13:47:20 patst006 kernel: iosapic: no IRTE for 0000:00:04.0 (IRQ n=
+ot
+connected?)
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe2000
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe4000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffe8000
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbffea000
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbfff0000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbfff4000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xffffffffbfff8000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffece0000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffece4000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffece8000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffecf0000
+Feb 13 13:47:20 patst006 kernel: NOTICE: PCI bus reset still asserted! (c=
+learing)
+Feb 13 13:47:20 patst006 kernel: NOTICE: Enabling PCI Arbitration
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffecf4000
+Feb 13 13:47:20 patst006 kernel: LBA version TR4.0 (0x5) found at
+0xfffffffffecf8000
+Feb 13 13:47:20 patst006 kernel: SCSI subsystem initialized
+Feb 13 13:47:20 patst006 kernel: unwind_init: start =3D 0x10452ce0, end =3D=
 
-James Bottomley:
-      [PARISC] Add parisc implementation of flush_anon_page()
-      [PARISC] Add parisc implementation of flush_kernel_dcache_page()
+0x10473d50, entries =3D 8455
+Feb 13 13:47:20 patst006 kernel: Performance monitoring counters enabled =
+for
+Unknown machine
+Feb 13 13:47:20 patst006 kernel: Initializing Cryptographic API
+[snip]
+)
 
-Kyle McMartin:
-      [PARISC] getsockopt should be ENTRY_COMP
-      [PARISC] More useful readwrite lock helpers
-      [PARISC] Add PREEMPT support
-      [PARISC] Make local_t use atomic_long_t
-      [PARISC] Move ioremap EXPORT_SYMBOL from parisc_ksyms.c
-      [PARISC] Kill duplicated EXPORT_SYMBOL warnings
-      [PARISC] Add atomic_sub_and_test
-      [PARISC] Fix double free when removing HIL drivers
+Joel=0A=0A---------------------------------------------------------------=
+=0AA free anti-spam and anti-virus filter on all Scarlet mailboxes=0AMore=
+ info on http://www.scarlet.be/
 
-Stuart Brady:
-      [PARISC] Enabled some NLS modules in a500, b180 and c3000 defconfigs
-
-Thibaut VARENE:
-      [PARISC] Clarify pdc_stable license terms
-
- arch/parisc/Kconfig                 |    6 -
- arch/parisc/configs/712_defconfig   |  160 ++++++++++------------
- arch/parisc/configs/a500_defconfig  |    4 -
- arch/parisc/configs/b180_defconfig  |   12 +-
- arch/parisc/configs/c3000_defconfig |  252 +++++++++++++++--------------------
- arch/parisc/defconfig               |  165 +++++++++++++++--------
- arch/parisc/kernel/cache.c          |    6 -
- arch/parisc/kernel/entry.S          |   45 +++++-
- arch/parisc/kernel/pacache.S        |    4 -
- arch/parisc/kernel/parisc_ksyms.c   |   19 ---
- arch/parisc/kernel/pdc_chassis.c    |    5 -
- arch/parisc/kernel/perf.c           |    2 
- arch/parisc/kernel/syscall_table.S  |    2 
- arch/parisc/lib/iomap.c             |    4 -
- arch/parisc/mm/init.c               |    7 -
- arch/parisc/mm/ioremap.c            |   54 +-------
- drivers/input/keyboard/hil_kbd.c    |   58 ++++----
- drivers/input/keyboard/hilkbd.c     |   49 ++++---
- drivers/input/mouse/hil_ptr.c       |   92 +++++++------
- drivers/input/serio/gscps2.c        |    4 -
- drivers/parisc/ccio-dma.c           |    2 
- drivers/parisc/dino.c               |    5 -
- drivers/parisc/eisa.c               |    2 
- drivers/parisc/iosapic.c            |    2 
- drivers/parisc/lba_pci.c            |    8 +
- drivers/parisc/pdc_stable.c         |    5 -
- drivers/parisc/sba_iommu.c          |    6 -
- drivers/parisc/superio.c            |   46 +++---
- drivers/scsi/lasi700.c              |    2 
- drivers/scsi/zalon.c                |    2 
- drivers/serial/8250_gsc.c           |   15 +-
- drivers/serial/mux.c                |    4 -
- drivers/video/console/sticore.c     |   18 ---
- drivers/video/sticore.h             |   37 ++---
- drivers/video/stifb.c               |   91 +------------
- include/asm-parisc/atomic.h         |    3 
- include/asm-parisc/cache.h          |    2 
- include/asm-parisc/cacheflush.h     |   17 ++
- include/asm-parisc/io.h             |   95 -------------
- include/asm-parisc/local.h          |   18 +--
- include/asm-parisc/page.h           |   58 ++++++--
- include/asm-parisc/pci.h            |    5 +
- include/asm-parisc/pdc_chassis.h    |    5 -
- include/asm-parisc/spinlock.h       |   16 ++
- include/asm-parisc/thread_info.h    |    3 
- lib/Kconfig.debug                   |   13 --
- 46 files changed, 625 insertions(+), 805 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
