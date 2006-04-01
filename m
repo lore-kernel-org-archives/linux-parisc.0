@@ -1,15 +1,15 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] [PATCH] Fixs to work on ARM and PARIC platforms.
-Date: Sat, 01 Apr 2006 09:46:35 -0600
-Message-ID: <1143906395.3368.10.camel__21941.4684958339$1416624038$gmane$org@mulgrave.il.steeleye.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Subject: [parisc-linux] Re: [fuse-devel] [PATCH] Fixs to work on ARM and
+	PARIC platforms.
+Date: Sat, 01 Apr 2006 18:35:38 +0200
+Message-ID: <E1FPj4c-0001ay-00__35941.4216284224$1416624038$gmane$org@dorka.pomaz.szeredi.hu>
 References: <e739902b0604010122tefc6ab5radf8121eea8a3015@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain
 Cc: fuse-devel@lists.sourceforge.net,
  parisc-linux@lists.parisc-linux.org
-To: Ryan Bradetich <rbradetich@gmail.com>
+To: rbradetich@gmail.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <e739902b0604010122tefc6ab5radf8121eea8a3015@mail.gmail.com>
+In-reply-to: <e739902b0604010122tefc6ab5radf8121eea8a3015@mail.gmail.com>
+	(rbradetich@gmail.com)
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,25 +20,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 2006-04-01 at 01:22 -0800, Ryan Bradetich wrote:
-> --- fuse-2.6.0-pre2/kernel/dev.c.orig   2006-04-01 00:40:28.000000000
-> -0800
-> +++ fuse-2.6.0-pre2/kernel/dev.c        2006-04-01 00:40:43.000000000
-> -0800
+> 1.  The rwlock tree_lock  in struct fuse was not properly initialized using
+> pthread_rwlock_init().    This normally works on other archs (besides
+> PARISC) since the lock can be initialized to 0 values, this is not true on
+> the PARISC platform ... these locks must be initialized properly to work on
+> PARISC.
 
-Is this path just wrong and you meant fs/fuse/dev.c?
+Good find, thanks.
 
-In which case, the placement of the flush and the fact that
-flush_dcache_page() doesn't bring coherency indicates one of the input
-pages is incoherent at the user level.  So it looks like you have an
-anonymous page you haven't called get_user_pages() on .... and by the
-way, you have checked that you're actually using the kernel with the
-parisc implementations of flush_kernel_dcache_page() and
-flush_anon_page()?
+The initialization should actually look like this:
 
-James
+  pthread_rwlock_init(&f->tree_lock, NULL);
 
+I can't imagine how your version managed to work...
 
+> 2. I had to add an additional cache flush in the fuse_copy_do function.  On
+> both ARM and PARISC, the data was corrupted unless cache is flushed first.
+> Unfortunately I hit it with a very big hammer (flush_cache_all) ... I am
+> hoping someone more familiar with the caches will suggest a better flush
+> function to use.  I tried to use the flush_kernel_dcache_page and
+> flush_dcache_page functions without any luck :(
+
+You should try using the parisc patchset from:
+
+   http://cvs.parisc-linux.org/download/linux-2.6/
+
+and replace flush_dcache_page() with flush_kernel_dcache_page() in
+FUSE source.
+
+Thanks,
+Miklos
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
