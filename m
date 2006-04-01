@@ -1,16 +1,18 @@
-From: Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [fuse-devel] Re: [parisc-linux] [PATCH] Fixs to work on ARM and
-	PARIC platforms.
-Date: Sat, 01 Apr 2006 18:51:10 +0200
-Message-ID: <E1FPjJe-0001cw-00__25118.7718626626$1416624038$gmane$org@dorka.pomaz.szeredi.hu>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [fuse-devel] Re: [parisc-linux] [PATCH] Fixs to work on ARM
+	and PARIC platforms.
+Date: Sat, 01 Apr 2006 16:38:04 -0600
+Message-ID: <1143931084.3368.18.camel__22459.7846194685$1416624039$gmane$org@mulgrave.il.steeleye.com>
 References: <e739902b0604010122tefc6ab5radf8121eea8a3015@mail.gmail.com>
 	<1143906395.3368.10.camel@mulgrave.il.steeleye.com>
+	<E1FPjJe-0001cw-00@dorka.pomaz.szeredi.hu>
+Mime-Version: 1.0
+Content-Type: text/plain
 Cc: fuse-devel@lists.sourceforge.net,
  parisc-linux@lists.parisc-linux.org
-To: James.Bottomley@SteelEye.com
+To: Miklos Szeredi <miklos@szeredi.hu>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <1143906395.3368.10.camel@mulgrave.il.steeleye.com> (message from
-	James Bottomley on Sat, 01 Apr 2006 09:46:35 -0600)
+In-Reply-To: <E1FPjJe-0001cw-00@dorka.pomaz.szeredi.hu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,31 +23,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Sat, 2006-04-01 at 01:22 -0800, Ryan Bradetich wrote:
-> > --- fuse-2.6.0-pre2/kernel/dev.c.orig   2006-04-01 00:40:28.000000000
-> > -0800
-> > +++ fuse-2.6.0-pre2/kernel/dev.c        2006-04-01 00:40:43.000000000
-> > -0800
-> 
-> Is this path just wrong and you meant fs/fuse/dev.c?
+On Sat, 2006-04-01 at 18:51 +0200, Miklos Szeredi wrote:
+> BTW, these seem to be needed for ARM too.  Do you have any idea who I
+> should bug about this?  The MAINTAINERS file is far from clear on this
+> point.
 
-Yeah.  It's the out-of-tree version, which closely resembles the
-in-tree one.
+Erm, not just arm.  The anon page problem looks like it might afflict
+other incoherent architectures (like sparc and ppc); it just depends
+whether their flush_dcache_page() accidentally flushes anonymous pages
+or not.
 
-> In which case, the placement of the flush and the fact that
-> flush_dcache_page() doesn't bring coherency indicates one of the input
-> pages is incoherent at the user level.  So it looks like you have an
-> anonymous page you haven't called get_user_pages() on .... and by the
-> way, you have checked that you're actually using the kernel with the
-> parisc implementations of flush_kernel_dcache_page() and
-> flush_anon_page()?
+For arm, it does look like the arm list won't accept postings, so I'd
+send patches to Russell King <rmk@arm.linux.org.uk>
 
-BTW, these seem to be needed for ARM too.  Do you have any idea who I
-should bug about this?  The MAINTAINERS file is far from clear on this
-point.
+James
 
-Thanks,
-Miklos
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
