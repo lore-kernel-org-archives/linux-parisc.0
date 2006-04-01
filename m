@@ -1,32 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Re: [fuse-devel] Example filesystem fail to init
-	on parisc
-Date: Tue, 28 Mar 2006 09:03:55 -0500
-Message-ID: <20060328140355.GE9011__42438.6077830151$1416624591$gmane$org@quicksilver.road.mcmartin.ca>
-References: <E1FJsHo-0006Yf-00@dorka.pomaz.szeredi.hu>
-	<20060319043939.GP26474@pooh.bubble.frostnet.net>
-	<1142750588.3773.26.camel@mulgrave.il.steeleye.com>
-	<Pine.LNX.4.61.0603191033480.9273@goblin.wat.veritas.com>
-	<1142777049.3240.6.camel@mulgrave.il.steeleye.com>
-	<Pine.LNX.4.61.0603191526250.4440@goblin.wat.veritas.com>
-	<1142783191.3240.14.camel@mulgrave.il.steeleye.com>
-	<Pine.LNX.4.61.0603191614210.4908@goblin.wat.veritas.com>
-	<1142787049.3240.20.camel@mulgrave.il.steeleye.com>
-	<E1FOBwI-0001TR-00@dorka.pomaz.szeredi.hu>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Strange newest LAB msg?
+Date: Sat, 1 Apr 2006 00:02:36 -0700
+Message-ID: <20060401070236.GC23508@colo.lackof.org>
+References: <IX008E$FF5F5C221189CADA64719030F0E34D37@scarlet.be>
+	<20060331155448.GP13590@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: James.Bottomley@SteelEye.com,
- akpm@osdl.org,
- fuse-devel@lists.sourceforge.net,
- chris@frostnet.net,
- jick.nan@gmail.com,
- hugh@veritas.com,
- davem@davemloft.net,
- parisc-linux@parisc-linux.org
-To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <E1FOBwI-0001TR-00@dorka.pomaz.szeredi.hu>
+In-Reply-To: <20060331155448.GP13590@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -37,20 +21,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Mar 28, 2006 at 01:00:42PM +0200, Miklos Szeredi wrote:
-> Hi James,
+On Fri, Mar 31, 2006 at 08:54:48AM -0700, Matthew Wilcox wrote:
 > 
-> I've seen you submitted the needed API changes on lkml.  Do you also
-> have the parisc implementation for Chris to try out?
->
+> Just so nobody else has to scratch their head looking at two
+> almost-identical dumps, the message Joel means is 
+> 
+> > Mar 31 11:45:39 patst006 kernel: allocation failed: out of vmalloc space - use
+> > vmalloc=<size> to increase size.
 
-He committed it to cvs... I should have it divvied up and sent
-to Linus by the weekend. In the meantime, try this patch against
-2.6.16 (which is the parisc patchset) 
-http://cvs.parisc-linux.org/download/linux-2.6/patch-2.6.16-pa8.gz 
+Ah - thanks. I saw that but wasn't sure it was the cause of discussion.
 
-Cheers,
-	Kyle
+> Either we're leaking vmalloc space, we allocate too much of it, or we
+> need to drastically increase it the amount of it we have available.
+
+It's odd that vmalloc fails so early in the boot sequence.
+At least the last 10 (of 14) PCI busses fail with the
+"allocation failed" message.
+Could this somehow be related to the IOREMAP changes?
+
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
