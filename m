@@ -1,154 +1,57 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] IOGear Firewire+USB card causes unexpected irq 2
-Date: Tue, 4 Apr 2006 08:05:33 +0200
-Message-ID: <200604040805.33828.deller@gmx.de>
-References: <20060329093444.GA5593@pooh.bubble.frostnet.net>
-	<20060330080202.GE5336@pooh.bubble.frostnet.net>
-	<20060404033400.GQ25493@pooh.bubble.frostnet.net>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] Strange newest LAB msg?
+Date: Tue, 04 Apr 2006 14:05:53 +0200
+Message-ID: <1144152354.3425.21.camel@mulgrave.il.steeleye.com>
+References: <IX008E$FF5F5C221189CADA64719030F0E34D37@scarlet.be>
+	 <200604021129.31095.deller@gmx.de> <442FB31A.5040308@tiscali.be>
+	 <200604021515.04424.deller@gmx.de> <20060403012831.GB12037@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060404033400.GQ25493@pooh.bubble.frostnet.net>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Content-Type: text/plain
+Cc: parisc-linux@lists.parisc-linux.org,
+ Helge Deller <deller@gmx.de>
+To: Grant Grundler <grundler@parisc-linux.org>
+Return-Path: <James.Bottomley@SteelEye.com>
+In-Reply-To: <20060403012831.GB12037@colo.lackof.org>
+List-ID: <linux-parisc.vger.kernel.org>
 
-01:0f.0 FireWire (IEEE 1394): NEC Corporation: Unknown device 00f2 (rev 01) (prog-if 10 [OHCI])
-says:	Interrupt: pin A routed to IRQ 9
+On Sun, 2006-04-02 at 19:28 -0600, Grant Grundler wrote:
+> Unfortunately not. Not unless you want to disable IO Port space access.
+> Each PCI bus controller routes 64MB of GMMIO space to 64KB of IO port space.
+> The first 4 bytes of each page maps to a unique 4 byte in IO Port space.
+> 
+> On Astro platforms, we can use 64KB in LMMIO space to access
+> IO Port space for all busses. The difference is Astro only
+> has one SBA and IOC. N-class has two. There's more to this
+> and I'm not sure of all the details at the moment.
+> 
+> 240MB is clearly not going to be enough on that machine.
+> Even on a "normal" machine, a couple of graphics cards
+> would exhaust the 240MB.  A single infiniband card could
+> exhaust the 240MB space we have now.
 
-Do you have CONFIG_EISA and/or CONFIG_ISA enabled ?
-If yes, try without...
+OK, could someone explain what we're trying to do and why?
 
-Helge
+The original PA implementation of ioremap actually had I/O space and
+memory space separated (this is almost essential on 32 bit machines with
+lots of memory).
 
-On Tuesday 04 April 2006 05:34, Chris Frost wrote:
-> Just curious if anyone might have any thoughts or suggestions? I'd be
-> quite interested; thanks!
-> 
-> 
-> On Thu, Mar 30, 2006 at 12:02:02AM -0800, Chris Frost wrote:
-> > On Wed, Mar 29, 2006 at 08:58:38AM -0500, Kyle McMartin wrote:
-> > > lspci -vn for the card, please...
-> > 
-> > Attached (pci) is the output of lspci -vvv. The vendor and device codes
-> > are immediately below. As the machine does not boot with the card in the
-> > lspci output is from a pc.
-> > 
-> > 0:d.0: class 604, vendor id 3388, pci id 0021, rev 13
-> > 1:c.0: class 0c03, vendor id 1033, pci id 0035, rev 41
-> > 1:c.1: class 0c03, vendor id 1033, pci id 0035, rev 41
-> > 1:c.2: class 0c03, vendor id 1033, pci id 00e0, rev 2
-> > 1:f.0: class 0c00, vendor id 1003, pci id 00f2, rev 1
-> > 
-> > 
-> > > Try commenting out 
-> > > 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87560_USB) },
-> > > 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87415) },
-> > > in superio.c and seeing if that helps at all.
-> > 
-> > This change appears to have no effect.
-> > 
-> > 
-> > Max suggested checking the machine's firmware version. It was running 3.4.
-> > I upgraded the machine to the latest, 5.0, but this has no visible effect.
-> > 
-> > 
-> > Since 2.6.16-pa9 was released today I also upgraded to it, but with no
-> > visible change.
-> > 
-> > thanks again,
-> > -- 
-> > Chris Frost  |  <http://www.frostnet.net/chris/>
-> > -------------+----------------------------------
-> > Public PGP Key:
-> >    Email chris@frostnet.net with the subject "retrieve pgp key"
-> >    or visit <http://www.frostnet.net/chris/about/pgp_key.phtml>
-> 
-> > 00:0d.0 PCI bridge: Hint Corp: Unknown device 0021 (rev 13) (prog-if 00 [Normal decode])
-> > 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-> > 	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-> > 	Latency: 66, cache line size 08
-> > 	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-> > 	I/O behind bridge: 0000f000-00000fff
-> > 	Memory behind bridge: ff900000-ff9fffff
-> > 	Prefetchable memory behind bridge: 00000000ff800000-00000000ff800000
-> > 	BridgeCtl: Parity+ SERR+ NoISA- VGA- MAbort- >Reset- FastB2B-
-> > 	Capabilities: [80] Power Management version 2
-> > 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-> > 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> > 		Bridge: PM- B3+
-> > 	Capabilities: [90] #06 [0000]
-> > 	Capabilities: [a0] Vital Product Data
-> > 
-> > 01:0c.0 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
-> > 	Subsystem: Unknown device 1735:0035
-> > 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-> > 	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-> > 	Latency: 64 (250ns min, 10500ns max), cache line size 08
-> > 	Interrupt: pin A routed to IRQ 7
-> > 	Region 0: Memory at ff9fc000 (32-bit, non-prefetchable) [size=4K]
-> > 	Capabilities: [40] Power Management version 2
-> > 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-> > 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> > 
-> > 01:0c.1 USB Controller: NEC Corporation USB (rev 41) (prog-if 10 [OHCI])
-> > 	Subsystem: Unknown device 1735:0035
-> > 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-> > 	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-> > 	Latency: 64 (250ns min, 10500ns max), cache line size 08
-> > 	Interrupt: pin B routed to IRQ 5
-> > 	Region 0: Memory at ff9fd000 (32-bit, non-prefetchable) [size=4K]
-> > 	Capabilities: [40] Power Management version 2
-> > 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-> > 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> > 
-> > 01:0c.2 USB Controller: NEC Corporation: Unknown device 00e0 (rev 02) (prog-if 20)
-> > 	Subsystem: Unknown device 1735:00e1
-> > 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-> > 	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-> > 	Latency: 64 (4000ns min, 8500ns max), cache line size 08
-> > 	Interrupt: pin C routed to IRQ 11
-> > 	Region 0: Memory at ff9fec00 (32-bit, non-prefetchable) [size=256]
-> > 	Capabilities: [40] Power Management version 2
-> > 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-> > 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> > 
-> > 01:0f.0 FireWire (IEEE 1394): NEC Corporation: Unknown device 00f2 (rev 01) (prog-if 10 [OHCI])
-> > 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- SERR+ FastB2B-
-> > 	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-> > 	Latency: 64 (63750ns min, 63750ns max), cache line size 08
-> > 	Interrupt: pin A routed to IRQ 9
-> > 	Region 0: Memory at ff9ff000 (32-bit, non-prefetchable) [size=4K]
-> > 	Capabilities: [60] Power Management version 2
-> > 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
-> > 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 
-> > _______________________________________________
-> > parisc-linux mailing list
-> > parisc-linux@lists.parisc-linux.org
-> > http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> -- 
-> Chris Frost  |  <http://www.frostnet.net/chris/>
-> -------------+----------------------------------
-> Public PGP Key:
->    Email chris@frostnet.net with the subject "retrieve pgp key"
->    or visit <http://www.frostnet.net/chris/about/pgp_key.phtml>
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+The new implementation is trying to map our I/O space directly into
+memory.  Because of the way PA is implemented: no highmem, entire memory
+offset mapped at 0x1000000; that means the only space we have for kernel
+VM is 0-0x10000000 (On 32 bits, this offset mapping loses us the top
+256k on 4GB machines, but that's f space anyway).  However, our vmalloc
+space is very squeezed at 240k (remember, all modules have to be in
+vmalloc space), so trying to share it with I/O mappings looks to be a
+bit of a non-starter.
+
+I suggest that on 32 bits, we really shouldn't alter the current scheme
+(i.e. keep the separated I/O and  memory mappings).  On 64 bits, we
+could allocate a far different VM range to vmalloc (somewhere up beyond
+the maximum possible physical memory) and thus make it far bigger, which
+would allow us to keep a mapped ioremap implementation.
+
+Oh, and just before anyone suggests it, we'd have incredible difficulty
+moving __PAGE_OFFSET because of the absolute<->virtual equivalence
+requirements.
+
+James
