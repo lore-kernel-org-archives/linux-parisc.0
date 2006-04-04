@@ -1,57 +1,38 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] Strange newest LAB msg?
-Date: Tue, 04 Apr 2006 14:05:53 +0200
-Message-ID: <1144152354.3425.21.camel@mulgrave.il.steeleye.com>
-References: <IX008E$FF5F5C221189CADA64719030F0E34D37@scarlet.be>
-	 <200604021129.31095.deller@gmx.de> <442FB31A.5040308@tiscali.be>
-	 <200604021515.04424.deller@gmx.de> <20060403012831.GB12037@colo.lackof.org>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] 2.6.17-rc1-pa0 attempt to build for 64bit ;-)
+Date: Tue, 4 Apr 2006 06:44:21 -0600
+Message-ID: <20060404124421.GH8315@parisc-linux.org>
+References: <IX76T0$9C06EC779069A908914854C520DF80D1@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux@lists.parisc-linux.org,
- Helge Deller <deller@gmx.de>
-To: Grant Grundler <grundler@parisc-linux.org>
-Return-Path: <James.Bottomley@SteelEye.com>
-In-Reply-To: <20060403012831.GB12037@colo.lackof.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <IX76T0$9C06EC779069A908914854C520DF80D1@scarlet.be>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2006-04-02 at 19:28 -0600, Grant Grundler wrote:
-> Unfortunately not. Not unless you want to disable IO Port space access.
-> Each PCI bus controller routes 64MB of GMMIO space to 64KB of IO port space.
-> The first 4 bytes of each page maps to a unique 4 byte in IO Port space.
+On Tue, Apr 04, 2006 at 01:31:48PM +0100, Joel Soete wrote:
+> Matthew,
 > 
-> On Astro platforms, we can use 64KB in LMMIO space to access
-> IO Port space for all busses. The difference is Astro only
-> has one SBA and IOC. N-class has two. There's more to this
-> and I'm not sure of all the details at the moment.
-> 
-> 240MB is clearly not going to be enough on that machine.
-> Even on a "normal" machine, a couple of graphics cards
-> would exhaust the 240MB.  A single infiniband card could
-> exhaust the 240MB space we have now.
+> Very sorry but as I haven't any more access to cvs (i can just grab snapshot
+> ;-( ), so I missed your patch.
 
-OK, could someone explain what we're trying to do and why?
+But you asked about it yesterday, and I told you the patch was already
+committed.  Helge comimtted a -pa1 bump, so the -pa1 snapshot won't have
+this problem.
 
-The original PA implementation of ioremap actually had I/O space and
-memory space separated (this is almost essential on 32 bit machines with
-lots of memory).
-
-The new implementation is trying to map our I/O space directly into
-memory.  Because of the way PA is implemented: no highmem, entire memory
-offset mapped at 0x1000000; that means the only space we have for kernel
-VM is 0-0x10000000 (On 32 bits, this offset mapping loses us the top
-256k on 4GB machines, but that's f space anyway).  However, our vmalloc
-space is very squeezed at 240k (remember, all modules have to be in
-vmalloc space), so trying to share it with I/O mappings looks to be a
-bit of a non-starter.
-
-I suggest that on 32 bits, we really shouldn't alter the current scheme
-(i.e. keep the separated I/O and  memory mappings).  On 64 bits, we
-could allocate a far different VM range to vmalloc (somewhere up beyond
-the maximum possible physical memory) and thus make it far bigger, which
-would allow us to keep a mapped ioremap implementation.
-
-Oh, and just before anyone suggests it, we'd have incredible difficulty
-moving __PAGE_OFFSET because of the absolute<->virtual equivalence
-requirements.
-
-James
+In general, the -pa0 snapshot has *not* been built for any config, is
+generally untested, and isn't worth wasting any time on.
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
