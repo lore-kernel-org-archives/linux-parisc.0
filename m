@@ -1,15 +1,17 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] 2.6.17-rc1-pa0 attempt to build for 64bit ;-)
-Date: Tue, 4 Apr 2006 06:44:21 -0600
-Message-ID: <20060404124421.GH8315@parisc-linux.org>
-References: <IX76T0$9C06EC779069A908914854C520DF80D1@scarlet.be>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] Strange newest LAB msg?
+Date: Wed, 5 Apr 2006 08:50:05 +0200
+Message-ID: <200604050850.06058.deller@gmx.de>
+References: <IX008E$FF5F5C221189CADA64719030F0E34D37@scarlet.be>
+	<20060403012831.GB12037@colo.lackof.org>
+	<1144152354.3425.21.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset="utf-8"
+Cc: parisc-linux@lists.parisc-linux.org
+To: James Bottomley <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IX76T0$9C06EC779069A908914854C520DF80D1@scarlet.be>
+In-Reply-To: <1144152354.3425.21.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,18 +22,62 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Apr 04, 2006 at 01:31:48PM +0100, Joel Soete wrote:
-> Matthew,
+On Tuesday 04 April 2006 14:05, James Bottomley wrote:
+> On Sun, 2006-04-02 at 19:28 -0600, Grant Grundler wrote:
+> > Unfortunately not. Not unless you want to disable IO Port space access.
+> > Each PCI bus controller routes 64MB of GMMIO space to 64KB of IO port space.
+> > The first 4 bytes of each page maps to a unique 4 byte in IO Port space.
+> > 
+> > On Astro platforms, we can use 64KB in LMMIO space to access
+> > IO Port space for all busses. The difference is Astro only
+> > has one SBA and IOC. N-class has two. There's more to this
+> > and I'm not sure of all the details at the moment.
+> > 
+> > 240MB is clearly not going to be enough on that machine.
+> > Even on a "normal" machine, a couple of graphics cards
+> > would exhaust the 240MB.  A single infiniband card could
+> > exhaust the 240MB space we have now.
 > 
-> Very sorry but as I haven't any more access to cvs (i can just grab snapshot
-> ;-( ), so I missed your patch.
+> OK, could someone explain what we're trying to do and why?
+> 
+> The original PA implementation of ioremap actually had I/O space and
+> memory space separated (this is almost essential on 32 bit machines with
+> lots of memory).
 
-But you asked about it yesterday, and I told you the patch was already
-committed.  Helge comimtted a -pa1 bump, so the -pa1 snapshot won't have
-this problem.
+Yes.
+ 
+> The new implementation is trying to map our I/O space directly into
+> memory.  Because of the way PA is implemented: no highmem, entire memory
+> offset mapped at 0x1000000; that means the only space we have for kernel
+> VM is 0-0x10000000 (On 32 bits, this offset mapping loses us the top
+> 256k on 4GB machines, but that's f space anyway).  However, our vmalloc
+> space is very squeezed at 240k (remember, all modules have to be in
+> vmalloc space), so trying to share it with I/O mappings looks to be a
+> bit of a non-starter.
 
-In general, the -pa0 snapshot has *not* been built for any config, is
-generally untested, and isn't worth wasting any time on.
+Yes (240MB). 
+ 
+> I suggest that on 32 bits, we really shouldn't alter the current scheme
+> (i.e. keep the separated I/O and  memory mappings).  On 64 bits, we
+> could allocate a far different VM range to vmalloc (somewhere up beyond
+> the maximum possible physical memory) and thus make it far bigger, which
+> would allow us to keep a mapped ioremap implementation.
+
+Might work, although it makes the sources pretty ugly again.
+The biggest problem with 64bit kernel and seperated I/O and memory mappings was, that you wasn't able to export I/O-memory via mmap() to 32bit userspace applications.
+Biggest affected application was X11, who tried to mmap() the 64bit f-space region of the graphics RAM into 32bit-userspace.
+This might maybe be maybe solveable with your proposal, since e.g. X11 on 32bit Kernel worked already somehow and 64bit could be solved with the mapping.
+
+Another proposal could be to keep the current implementation on 32bit and as such not make the sources ugly again.
+If a user then runs on a big iron like N4k he should use a 64bit kernel instead, which then would implement your 64bit-changes proposal.
+ 
+> Oh, and just before anyone suggests it, we'd have incredible difficulty
+> moving __PAGE_OFFSET because of the absolute<->virtual equivalence
+> requirements.
+
+Yes, that's the reason I never proposed that :-)
+
+Helge
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
