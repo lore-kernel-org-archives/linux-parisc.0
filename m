@@ -1,39 +1,68 @@
 From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] Strange newest LAB msg?
-Date: Wed, 05 Apr 2006 20:02:53 -0400
-Message-ID: <1144281773.3214.2.camel@mulgrave.il.steeleye.com>
-References: <IX008E$FF5F5C221189CADA64719030F0E34D37@scarlet.be>
-	 <20060403012831.GB12037@colo.lackof.org>
-	 <1144152354.3425.21.camel@mulgrave.il.steeleye.com>
-	 <200604050850.06058.deller@gmx.de>
+Subject: Re: [fuse-devel] Re: [parisc-linux] [PATCH] Fixs to work on ARM
+	and PARIC platforms.
+Date: Wed, 05 Apr 2006 20:07:26 -0400
+Message-ID: <1144282046.3214.7.camel__40984.6630217091$1416624047$gmane$org@mulgrave.il.steeleye.com>
+References: <e739902b0604010122tefc6ab5radf8121eea8a3015@mail.gmail.com>
+	<1143906395.3368.10.camel@mulgrave.il.steeleye.com>
+	<E1FPjJe-0001cw-00@dorka.pomaz.szeredi.hu>
+	<1143931084.3368.18.camel@mulgrave.il.steeleye.com>
+	<E1FPyD6-0002ag-00@dorka.pomaz.szeredi.hu>
+	<1143986960.3865.5.camel@mulgrave.il.steeleye.com>
+	<E1FQOzi-0007VZ-00@dorka.pomaz.szeredi.hu>
+	<1144135400.3552.11.camel@mulgrave.il.steeleye.com>
+	<E1FQhEh-0000Vz-00@dorka.pomaz.szeredi.hu>
+	<1144165204.3597.13.camel@mulgrave.il.steeleye.com>
+	<E1FQo4N-000159-00@dorka.pomaz.szeredi.hu>
 Mime-Version: 1.0
 Content-Type: text/plain
-Cc: parisc-linux@lists.parisc-linux.org,
- Grant Grundler <grundler@parisc-linux.org>
-To: Helge Deller <deller@gmx.de>
-Return-Path: <James.Bottomley@SteelEye.com>
-In-Reply-To: <200604050850.06058.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+Cc: fuse-devel@lists.sourceforge.net,
+ parisc-linux@lists.parisc-linux.org
+To: Miklos Szeredi <miklos@szeredi.hu>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <E1FQo4N-000159-00@dorka.pomaz.szeredi.hu>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, 2006-04-05 at 08:50 +0200, Helge Deller wrote: 
-> > I suggest that on 32 bits, we really shouldn't alter the current scheme
-> > (i.e. keep the separated I/O and  memory mappings).  On 64 bits, we
-> > could allocate a far different VM range to vmalloc (somewhere up beyond
-> > the maximum possible physical memory) and thus make it far bigger, which
-> > would allow us to keep a mapped ioremap implementation.
+On Tue, 2006-04-04 at 18:07 +0200, Miklos Szeredi wrote:
+> > No, because if you look at the implementation, you'll see that
+> > copy_to/from_user() copy straight into the user view (i.e. via the user
+> > cache lines).
 > 
-> Might work, although it makes the sources pretty ugly again.
-> The biggest problem with 64bit kernel and seperated I/O and memory mappings was, that you wasn't able to export I/O-memory via mmap() to 32bit userspace applications.
-> Biggest affected application was X11, who tried to mmap() the 64bit f-space region of the graphics RAM into 32bit-userspace.
-> This might maybe be maybe solveable with your proposal, since e.g. X11 on 32bit Kernel worked already somehow and 64bit could be solved with the mapping.
+> Yes.  But how will this ensure that the above problems (dirty/clean
+> cache lines in aliases) won't cause any problems?
 
-I suspected it might be something like this.  Actually, ioremap looks to
-be the wrong interface to fix this.  The problem seems to be that
-fb_mmap() in drivers/video/fb.c has a special fall through case if the
-driver doesn't implement fb_mmap() which tries to insert page mappings
-for the I/O memory region into the users space, this fall through
-doesn't seem to be correct for 64 bits (or at least for 32 bit processes
-running on a 64 bit kernel) ... I think if we fix this, we'll get
-graphics on 64 bit without the need to remap I/O memory.
+It doesn't.  The object is to write into the user cache as though the
+actual user process had done it (i.e. disregarding all aliasing).
+
+> What is the difference between
+> 
+>  - updating cached data through the user view
+> 
+>  - flushing the cache lines for the user view, then updating data
+>    through the kernel view and finally flushing the cache lines for
+>    the kernel view
+
+In the former, the data usually ends up in dirty user cache lines.  In
+the latter the cache lines are entirely clean after the procedure.
+
+> I don't see in either case that the cache lines for any other aliases
+> are touched.  Is there still some difference in behavior?
+
+Yes, in the former, only a single alias (the user view) is affected.  In
+the latter, all views are accounted for.
 
 James
+
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
