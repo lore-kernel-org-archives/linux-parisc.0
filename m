@@ -1,13 +1,20 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] bfd tls bug?
-Date: Sat, 8 Apr 2006 12:14:13 -0400
-Message-ID: <119aab440604080914h3ad85b9fsa54876804279ed0b@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Re: + parisc-add-ptr-compatpatch.patch added to
+	-mm tree
+Date: Sat, 8 Apr 2006 20:11:00 -0400
+Message-ID: <20060409001100.GD30539@quicksilver.road.mcmartin.ca>
+References: <200602220102.k1M12Jje015527@shell0.pdx.osdl.net>
+	<20060222010459.GE26809@quicksilver.road.mcmartin.ca>
+	<20060221172126.2db4adef.akpm@osdl.org>
+	<20060222091356.GA27449@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-To: "Randolph Chung" <randolph@tausq.org>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii
+Cc: Andrew Morton <akpm@osdl.org>,
+ parisc-linux@lists.parisc-linux.org
+To: Ingo Molnar <mingo@elte.hu>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060222091356.GA27449@elte.hu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,21 +25,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Randolph,
+[Sorry about how long it has taken to get to this... I bounced it to
+ parisc-linux too, so hopefully someone else can comment as well.]
 
-bfd/elf32-hppa.c
-   4168                     need_relocs =3D TRUE;
-   4169                     loc =3D htab->srelgot->contents;
-   4170                     /* FIXME (CAO): Should this be reloc_count++ ? =
-*/
-   4171                     loc +=3D htab->srelgot->reloc_count * sizeof
-(Elf32_External_Rela);
+On Wed, Feb 22, 2006 at 10:13:56AM +0100, Ingo Molnar wrote:
+> There's only one complication i can imagine on PARISC: truly atomic 
+> futex_atomic_cmpxchg_inuser() is not possible in any sane way because 
+> any spinlock based cmpxchg exposes itself to userspace locking up the 
+> kernel - no good. [We could in theory do something about it by imposing 
+> some sort of deadline on the maximum time the spinning-on-userspace-lock 
+> can take - but i dont think it's worth the trouble.]
+>
 
-Should there be a reloc_count++ there?
-Or is this taken into account earlier?
+Due to a complete lack of useful atomic operations on parisc, the
+way I envisioned implementing the routines was serializing all futex
+ops on a kernel spinlock. Since it's a userspace address, we couldn't
+use an atomic hash unless we found the physical address behind it, so 
+just one spinlock would do... Of course, I'm probably missing something 
+critical here, though.
 
 Cheers,
-Carlos.
+	Kyle M.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
