@@ -1,16 +1,15 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] [RFC] pselect/ppoll support
-Date: Sun, 9 Apr 2006 22:16:15 -0400
-Message-ID: <20060410021615.GC27661@quicksilver.road.mcmartin.ca>
-References: <20060409182521.GA27661@quicksilver.road.mcmartin.ca>
-	<119aab440604091906m19b9bf33yfd9e8b1cbff22844@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] B2000 PCI resource problem
+Date: Sun, 9 Apr 2006 20:34:56 -0600
+Message-ID: <20060410023456.GA25141@colo.lackof.org>
+References: <wrp7j62jz7e.fsf@wild-wind.fr.eu.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: Marc Zyngier <maz@misterjones.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440604091906m19b9bf33yfd9e8b1cbff22844@mail.gmail.com>
+In-Reply-To: <wrp7j62jz7e.fsf@wild-wind.fr.eu.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,68 +20,55 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Apr 09, 2006 at 10:06:03PM -0400, Carlos O'Donell wrote:
-> > -       .export sys_rt_sigsuspend_wrapper
-> > -sys_rt_sigsuspend_wrapper:
-<snip>
-> > -
-> > -       bv      %r0(%r2)
-> > -       nop
-> > -
+On Thu, Apr 06, 2006 at 09:12:05PM +0200, Marc Zyngier wrote:
+> People,
 > 
-> This needs more review.
->
-
-As far as I could tell, this was just massaging to get the pt_regs
-for sys_rt_sigsuspend, so if we use the generic one, it could go too.
- 
-> > -asmlinkage int
-> > -sys_rt_sigsuspend(sigset_t __user *unewset, size_t sigsetsize, struct pt_regs *regs)
+> I recently added a Sun dual gigabit, dual scsi PCI card to one of my
+> B2000s. This board contains 2 cassini chips, and a 53c896, all sitting
+> behind an Intel (well, Digital) 21154 PCI bridge.
 > 
-> You've switched over to the kernel generic version of
-> sys_rt_sigsuspend, and you will have to review if it does exactly what
-> our version was doing. I suspect it's slightly different, and you
-> problems start here.
+> The system works fine, but I'm seeing the following problems:
 > 
-
-I did a quick comparison of the two, and it seemed to be mostly the
-same. Someone who is more clued in should make sure I'm not on drugs
-though.
-
-<snip>
-> I believe we've always had a race condition in this trampoline.
-> I'm raising this issue so we can remember that it's there or
-> completely squash the issue. While returning to userspace
-> you *cannot* take another restart since the restarts are not
-> nestable. You must disable restarts and then reenable them
-> when you return from the trampoline. Linus wrote an email about
-> this issue. Has this been fixed for us?
->
-
-NFC.
- 
-> > +       if (!user_mode(regs))
-> > +               return;
+> Whel probing the SCSI part of the board, the kernel spits the
+> following:
 > 
-> Don't delete the comment unless you are willing to replace it with
-> one that explains why this might be the case. Please think about
-> kernel mode threads and why we don't do this for them.
->
+> PCI: resource not parented! [2000-2fff]
+> PCI: resource not parented! [fb000000-fb5fffff]
 
-I'm just playing follow the leader through most of this routine.
- 
-> > -       while (1) {
-> > -
-> Have other arches changed their handlers?
-> Are we no longer required to loop in an attempt to deliver the signal?
->
+Which kernel version?
 
-We loop in entry.S if we still have SIGPENDING set. AFAICT, this 
-looping was redundant. Unless we can jump out of do_signal without
-hitting intr_check_sig && syscall_check_sig, I'm not sure...
+>   00002000-00002fff : PCI Bus #02
+> [... ad nauseam].
 
-Cheers!
-	Kyle 
+This is definitely a bug.
+
+> 0000:01:02.0 PCI bridge: Intel Corporation 21154 PCI-to-PCI Bridge (prog-if 00 [Normal decode])
+...
+>         I/O behind bridge: 00002000-00002fff
+>         Memory behind bridge: fb000000-fb5fffff
+
+Looks like PCI bridge support isn't parenting the allocation
+of these resources correctly.
+
+> 0000:02:00.0 Ethernet controller: National Semiconductor Corporation DP83065 [Saturn] 10/100/1000 Ethernet Controller (rev 30)
+...
+>         Region 0: Memory at fb200000 (32-bit, non-prefetchable) [size=2M]
+
+Wow! 2M? That's a fair chunk of space for a NIC.
+Any special about that RAM or what it's used for?
+(Just curious)
+
+> 0000:02:02.0 SCSI storage controller: LSI Logic / Symbios Logic 53C896/897 (rev 07)
+...
+>         Region 0: I/O ports at 12100 [size=256]
+>         Region 1: Memory at fb405000 (64-bit, non-prefetchable) [size=1K]
+>         Region 3: Memory at fb402000 (64-bit, non-prefetchable) [size=8K]
+
+Is CONFIG_SCSI_SYM53C8XX_MMIO enabled in your kernel?
+(again just curious)
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
