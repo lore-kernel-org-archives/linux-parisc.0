@@ -1,8 +1,8 @@
 From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re:[parisc-linux] "BUG: soft lockup detected on CPU#0" on recent
-	64bit k-2.6.16 (up or smp)
-Date: Thu, 13 Apr 2006 07:45:45 +0100
-Message-ID: <IXNES9$1FC408083B06CF3616F90EC3F405A12F@scarlet.be>
+Subject: [parisc-linux] linux-2.6 deller (2.6.17-rc1-pa2) breack 'DISCONTIG'
+	mem ; -(
+Date: Thu, 13 Apr 2006 13:28:07 +0100
+Message-ID: <IXNUMV$DD7102BFD962611738B0B72A6FC9A3DB@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=iso-8859-1
@@ -18,32 +18,63 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Hello pa*,
+> CVSROOT:	/var/cvs
+> Module name:	linux-2.6
+> Changes by:	deller@cvs.parisc-linux.org	2006-04-12 12:50:38
 > 
-> Just to report some "BUG: soft lockup detected on CPU#0":
-> on b2k testing k-2.6.16-pa4 64bit up:
-> BUG: soft lockup detected on CPU#0!
+> Modified files:
+> 	.              : Makefile 
 > 
+> Log message:
+> 	2.6.17-rc1-pa2: some 16k page size work (still not functional)
+> 
+Hello Helge,
+
+Just applying this patch (I mean pa1-pa2):
+    * build fine on d380 (32bit smp kernel), b2k (64bit up) and n4k (64bi=
+t smp)
+
+    * boot fine on d380 and b2k
+
+    * boot hang very early on n4k (sorry just have, even not full, msg):
 [snip]
+ model 9000/800/N4000-55
+Memory Ranges:
+ 0) Start 0x0000000000000000 End 0x000000007fffffff Size   2048 MB
+ 1) Start 0x0000000180000000 End 0x00000001ffffffff Size   2048 MB
+Total Memory: 4096 MB
+Backtrace:
+ [<000000001014356c>] release_console_sem+0x34c/0x3b0
+ [<0000000010272620>] memset+0x40/0x8e0
+ [<00000000103f3900>] csum_partial_copy_from_user+0x0/0xa0
+ [<00000000103f31a8>] klist_remove+0x0/0x68
+ [<00000000103f2f38>] klist_release+0x0/0x98
+ [<00000000103f1978>] packet_release+0x0/0x380
+ [<00000000103f0610>] packet_get
 
->  IAOQ[0]: _read_lock+0x18/0x30
->  IAOQ[1]: _read_lock+0x8/0x30
->  RP(r2): send_group_sig_info+0x3c/0xb0
-> 
-> (on this system also with a previous k-2.6.16-rc4-pa1-n4kmp without act=
-ivity
-> then waiting my request ;-) )
-> 
-Hi all,
+hang here while the boot of previous pa1 said:
+model 9000/800/N4000-55
+Memory Ranges:
+ 0) Start 0x0000000000000000 End 0x000000007fffffff Size   2048 MB
+ 1) Start 0x0000000180000000 End 0x00000001ffffffff Size   2048 MB
+Total Memory: 4096 MB
+SMP: bootstrap CPU ID is 0
+Built 2 zonelists
+[...]
 
-Could that be the result of the upstream bug:
-<http://www.kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.16.4>
+I just rebuild the exactely same src but using flate mem in palce of disc=
+ontig
+mem and the kernel boot fine (obviously could just access 2 of the 4 Gb o=
+f ram)
 
-At least in the way; I will test it ...
-
-Thanks,
+Hth,
     Joel
 
+=0A=0A----------=0AWordt ook lid van de Scarlet Club via een bestaande Sc=
+arlet klant en ontvang cadeaucheques twv EUR 50! Bezoek snel http://www.s=
+carletclub.be=0ADevenez aussi membre du Club Scarlet via un client Scarle=
+t existant et recevez des cheques cadeaux jusqu'a EUR 50! Surfez vite sur=
+ http://www.clubscarlet.be
 
 _______________________________________________
 parisc-linux mailing list
