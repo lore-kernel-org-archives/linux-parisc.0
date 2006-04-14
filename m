@@ -1,10 +1,10 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] [PATCH] kernel-features.h for hppa
-Date: Fri, 14 Apr 2006 18:29:51 -0400
-Message-ID: <119aab440604141529p4a9bf2a9r33e6ebbb1138acc9@mail.gmail.com>
+Subject: [parisc-linux] [PATCH] Update linux bits/* for hppa.
+Date: Fri, 14 Apr 2006 18:40:15 -0400
+Message-ID: <119aab440604141540s103cc86aof9cdb4a2047f4665@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-  boundary="----=_Part_1572_1900494.1145053791226"
+  boundary="----=_Part_1644_8100867.1145054415037"
 To: libc-ports@sources.redhat.com,
  parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
@@ -18,30 +18,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-------=_Part_1572_1900494.1145053791226
+------=_Part_1644_8100867.1145054415037
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-This keeps hppa up to date on the recent kernel-features.h removal of
-all ports arches.
+Update mman.h and fcntl.h for hppa.
 
-Ok to commit?
+This is a new mail setup for me, so please feel free to use a
+cluebat if something is malformed.
+
+Ok to checkin?
 
 Cheers,
 Carlos.
 
 2006-04-14  Carlos O'Donell  <carlos@systemhalted.org>
 
-=09* sysdeps/unix/sysv/linux/hppa/kernel-features.h: New file.
+=09* sysdeps/unix/sysv/linux/hppa/bits/mman.h [__USE_GNU]:
+=09Define MMAP_FIXED.
+=09* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h [__USE_GNU]:
+=09Define SYNC_FILE_RANGE_WAIT_BEFORE, SYNC_FILE_RANGE_WRITE,
+=09SYNC_FILE_RANGE_WAIT_AFTER, sync_file_range, splice, tee.
 
-------=_Part_1572_1900494.1145053791226
-Content-Type: text/x-patch;
-	name=patch-import-kernel-features-2006-04-14.diff; charset=us-ascii
+------=_Part_1644_8100867.1145054415037
+Content-Type: text/x-patch; name=patch-fix-linux-bits-2006-04-14.diff;
+	charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Attachment-Id: f_em13cj7s
+X-Attachment-Id: f_em13or4a
 Content-Disposition: attachment;
-	filename="patch-import-kernel-features-2006-04-14.diff"
+	filename="patch-fix-linux-bits-2006-04-14.diff"
 
 Index: ChangeLog.hppa
 ===================================================================
@@ -49,59 +55,83 @@ RCS file: /cvs/glibc/ports/ChangeLog.hppa,v
 retrieving revision 1.2
 diff -u -p -r1.2 ChangeLog.hppa
 --- ChangeLog.hppa	28 Feb 2006 22:20:13 -0000	1.2
-+++ ChangeLog.hppa	14 Apr 2006 22:26:30 -0000
-@@ -1,3 +1,8 @@
++++ ChangeLog.hppa	14 Apr 2006 22:36:37 -0000
+@@ -1,3 +1,11 @@
 +2006-04-14  Carlos O'Donell  <carlos@systemhalted.org>
 +
-+	* sysdeps/unix/sysv/linux/hppa/kernel-features.h: New file.
-+
++	* sysdeps/unix/sysv/linux/hppa/bits/mman.h [__USE_GNU]: 
++	Define MMAP_FIXED.
++	* sysdeps/unix/sysv/linux/hppa/bits/fcntl.h [__USE_GNU]: 
++	Define SYNC_FILE_RANGE_WAIT_BEFORE, SYNC_FILE_RANGE_WRITE,
++	SYNC_FILE_RANGE_WAIT_AFTER, sync_file_range, splice, tee.
 +
  2006-02-28  Roland McGrath  <roland@redhat.com>
  
  	* sysdeps/hppa/shlib-versions: New file.
-Index: sysdeps/unix/sysv/linux/hppa/kernel-features.h
+Index: sysdeps/unix/sysv/linux/hppa/bits/fcntl.h
 ===================================================================
-RCS file: sysdeps/unix/sysv/linux/hppa/kernel-features.h
-diff -N sysdeps/unix/sysv/linux/hppa/kernel-features.h
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ sysdeps/unix/sysv/linux/hppa/kernel-features.h	14 Apr 2006 22:26:30 -0000
-@@ -0,0 +1,34 @@
-+/* Set flags signalling availability of kernel features based on given
-+   kernel version number.
-+   Copyright (C) 2006 Free Software Foundation, Inc.
-+   This file is part of the GNU C Library.
+RCS file: /cvs/glibc/ports/sysdeps/unix/sysv/linux/hppa/bits/fcntl.h,v
+retrieving revision 1.7
+diff -u -p -r1.7 fcntl.h
+--- sysdeps/unix/sysv/linux/hppa/bits/fcntl.h	23 Aug 2004 07:28:44 -0000	1.7
++++ sysdeps/unix/sysv/linux/hppa/bits/fcntl.h	14 Apr 2006 22:36:37 -0000
+@@ -172,10 +172,38 @@ struct flock64
+ # define POSIX_FADV_NOREUSE	5 /* Data will be accessed once.  */
+ #endif
+ 
++#ifdef __USE_GNU
++# define SYNC_FILE_RANGE_WAIT_BEFORE	1 /* Wait upon writeout of all pages
++					     in the range before performing the
++					     write.  */
++# define SYNC_FILE_RANGE_WRITE		2 /* Initiate writeout of all those
++					     dirty pages in the range which are
++					     not presently under writeback.  */
++# define SYNC_FILE_RANGE_WAIT_AFTER	4 /* Wait upon writeout of all pages in
++					     the range after performing the
++					     write.  */
++#endif
 +
-+   The GNU C Library is free software; you can redistribute it and/or
-+   modify it under the terms of the GNU Lesser General Public
-+   License as published by the Free Software Foundation; either
-+   version 2.1 of the License, or (at your option) any later version.
+ __BEGIN_DECLS
+ 
++#ifdef __USE_GNU
 +
-+   The GNU C Library is distributed in the hope that it will be useful,
-+   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+   Lesser General Public License for more details.
+ /* Provide kernel hint to read ahead.  */
+ extern ssize_t readahead (int __fd, __off64_t __offset, size_t __count)
+     __THROW;
+ 
++/* Selective file content synch'ing.  */
++extern int sync_file_range (int __fd, __off64_t __from, __off64_t __to,
++			    unsigned int __flags);
 +
-+   You should have received a copy of the GNU Lesser General Public
-+   License along with the GNU C Library; if not, write to the Free
-+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-+   02111-1307 USA.  */
++/* Splice two files together.  */
++extern int splice (int __fdin, int __fdout, size_t __len, unsigned int __flags)
++    __THROW;
++
++/* In-kernel implementation of tee for pipe buffers.  */
++extern int tee (int __fdin, int __fdout, size_t __len, unsigned int __flags)
++    __THROW;
++    
++#endif
++    
+ __END_DECLS
+Index: sysdeps/unix/sysv/linux/hppa/bits/mman.h
+===================================================================
+RCS file: /cvs/glibc/ports/sysdeps/unix/sysv/linux/hppa/bits/mman.h,v
+retrieving revision 1.3
+diff -u -p -r1.3 mman.h
+--- sysdeps/unix/sysv/linux/hppa/bits/mman.h	25 Sep 2003 16:39:38 -0000	1.3
++++ sysdeps/unix/sysv/linux/hppa/bits/mman.h	14 Apr 2006 22:36:37 -0000
+@@ -80,4 +80,7 @@
+ /* Flags for `mremap'.  */
+ #ifdef __USE_GNU
+ # define MREMAP_MAYMOVE 1
++# define MREMAP_FIXED	2
+ #endif
 +
 +
-+/* There are an infinite number of PA-RISC kernel versions numbered
-+   2.4.0.  But they've not really been released as such.  We require
-+   and expect the final version here.  */
-+# define __ASSUME_32BITUIDS		1
-+# define __ASSUME_TRUNCATE64_SYSCALL	1
-+# define __ASSUME_MMAP2_SYSCALL		1
-+# define __ASSUME_STAT64_SYSCALL	1
-+# define __ASSUME_IPC64			1
-+# define __ASSUME_ST_INO_64_BIT		1
-+# define __ASSUME_FCNTL64		1
-+# define __ASSUME_GETDENTS64_SYSCALL	1
-+
-+#include_next <kernel-features.h>
 
-------=_Part_1572_1900494.1145053791226
+
+------=_Part_1644_8100867.1145054415037
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -111,4 +141,4 @@ _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-------=_Part_1572_1900494.1145053791226--
+------=_Part_1644_8100867.1145054415037--
