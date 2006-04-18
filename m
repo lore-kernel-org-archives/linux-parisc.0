@@ -1,15 +1,16 @@
-From: Randolph Chung <randolph@tausq.org>
+From: Jeff Bailey <jbailey@raspberryginger.com>
 Subject: Re: [parisc-linux] ELF ABI Documents
-Date: Tue, 18 Apr 2006 11:00:24 +0800
-Message-ID: <44445648.5050004@tausq.org>
+Date: Mon, 17 Apr 2006 23:11:23 -0400
+Message-ID: <1145329883.24150.17.camel@localhost.localdomain>
 References: <1145324814.24150.12.camel@localhost.localdomain>
+	<44445648.5050004@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1
+Content-Type: multipart/mixed;
+  boundary="===============0705205181=="
 Cc: parisc-linux@lists.parisc-linux.org
-To: Jeff Bailey <jbailey@raspberryginger.com>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1145324814.24150.12.camel@localhost.localdomain>
+In-reply-to: <44445648.5050004@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,40 +21,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> It's most common in the LSB specs to refer to the ELF psabi document
-> where possible.  http://refspecs.freestandards.org/elf/elf-pa.pdf seems
-> to be a copy of the psabi document, but when checking with some folks,
-> it looks like the document isn't a reflection on reality for
-> parisc-linux.  The question is, should the document be updated to
-> reflect reality, should we slowly change to match the document, or
-> should I just not refer to the psabi document much when writing the LSB
-> document?
 
-First of all, I want to say that such a document would be wonderful to have!
+--===============0705205181==
+Content-type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-tTY/wEoPmEJ2QLKCwLOy"
 
-I think the ELF-PA document corresponds mostly with what we do on
-parisc-linux. There are some things we don't implement (e.g. I don't
-think we have PCREL14WR/PCREL14DR), and we have made some enhancements
-in other areas (e.g. TLS relocations). The only thing that I know of
-where we don't follow the spec is how we handle SEGREL32 - we don't use
-a SEGBASE relocation to set the segment base, but rely on other
-information from the ELF headers.
 
-I don't think the ELF spec talks about calling conventions and syscall
-conventions though. For that, parisc-linux mostly follows the SOM spec
-for calling conventions
-(http://ftp.parisc-linux.org/docs/arch/pa-runtime-32-SOM.pdf)
+--=-tTY/wEoPmEJ2QLKCwLOy
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-A document about hppa ABI will not be complete without some discussion
-about the hppa unwinding mechanism too.
+Le mardi 18 avril 2006 =C3=A0 11:00 +0800, Randolph Chung a =C3=A9crit :
 
-my 2 cents :)
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+> I don't think the ELF spec talks about calling conventions and syscall
+> conventions though. For that, parisc-linux mostly follows the SOM spec
+> for calling conventions
+> (http://ftp.parisc-linux.org/docs/arch/pa-runtime-32-SOM.pdf)
+
+Right.  This is where the LSB document comes it.  It does wind up
+defining those for Linux at least.  The "Mostly follows SOM" is largely
+what's inspired me on this quest.  I'd love to see a definitive document
+that defines this and am willing to go through the effort to do it.
+
+Tks,
+Jeff Bailey
+
+--=20
+Although when you're in the situation that RMS is telling you that
+you're being too ideological about freedom, maybe, just maybe, it's
+true.
+- Matthew Wilcox
+
+--=-tTY/wEoPmEJ2QLKCwLOy
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQBERFjb5M5hmdCYCpkRApVNAKDLvnNpbqYLSpEYlcHZO+71cufOTQCePklm
+LKp8DyUTN5fSR6pQOMss2R0=
+=tY0n
+-----END PGP SIGNATURE-----
+
+--=-tTY/wEoPmEJ2QLKCwLOy--
+
+
+--===============0705205181==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============0705205181==--
