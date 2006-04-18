@@ -1,13 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] gcc instrument-function on parisc?
-Date: Tue, 18 Apr 2006 16:28:13 +0100
-Message-ID: <IXXCB1$DA3AB156FC2925CAA26A8737245EC4CD@scarlet.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] gcc instrument-function on parisc?
+Date: Tue, 18 Apr 2006 12:20:21 -0400 (EDT)
+Message-ID: <200604181620.k3IGKLls005439@hiauly1.hia.nrc.ca>
+References: <IXXCB1$DA3AB156FC2925CAA26A8737245EC4CD@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
- "Parisc List" <parisc-linux@lists.parisc-linux.org>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <IXXCB1$DA3AB156FC2925CAA26A8737245EC4CD@scarlet.be> from "Joel
+	Soete" at Apr 18, 2006 04:28:13 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,48 +21,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Dave,
+> OTOH I find this comment in gcc-4.0 info:
+> `-finstrument-functions'
+>      Generate instrumentation calls for entry and exit to functions.
+>      Just after function entry and just before function exit, the
+>      following profiling functions will be called with the address of
+>      the current function and its call site.  (On some platforms,
+>      `__builtin_return_address' does not work beyond the current
+>      function, so the call site information may not be available to the
+>      profiling functions otherwise.)
+> 
+> Is 'some platform' include parisc?
 
-I tried to use this example of gcc instrumentation:
-<http://www-128.ibm.com/developerworks/linux/library/l-graphvis/?ca=3Ddgr=
--lnxw18Graphviz>
+Yes, `__builtin_return_address' only provides the return address
+for the current function on PA-RISC (on some targets, it can unwind
+multiple levels).  There's some question in my mind as to whether it
+handles all stubs correctly.  If it detects a stub, it tries to
+provide the return address for the stub.  It's guaranteed not to
+work in a signal handler.
 
-I try to rebuild its trivial test.c as mentioned:
-test.c
-::::::::::::::
-#include <stdio.h>
+The above hasn't really been tested as far as I know on parisc.
 
-int main()
-{
-        printf("Hello World\n");
-        return 0;
-}
-
-# gcc -g -finstrument-functions test.c instrument.c -o test
-
-# more trace.txt
-E0x20e3e
-X0x20e3e
-
-but this is not the main() address (gdb shows 0x1067c).
-
-OTOH I find this comment in gcc-4.0 info:
-`-finstrument-functions'
-     Generate instrumentation calls for entry and exit to functions.
-     Just after function entry and just before function exit, the
-     following profiling functions will be called with the address of
-     the current function and its call site.  (On some platforms,
-     `__builtin_return_address' does not work beyond the current
-     function, so the call site information may not be available to the
-     profiling functions otherwise.)
-
-Is 'some platform' include parisc?
-
-TIA for advise,
-    Joel
-
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
