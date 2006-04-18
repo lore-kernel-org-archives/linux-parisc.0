@@ -1,14 +1,17 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: Re: [parisc-linux] gcc instrument-function on parisc?
-Date: Wed, 19 Apr 2006 06:46:41 +0100
-Message-ID: <IXYG1T$27580A183174C43B0B2B6E3056980F4B@scarlet.be>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
+	__put_kernel_asm() 64bit?
+Date: Tue, 18 Apr 2006 17:35:02 -0500
+Message-ID: <200604181735.02973.mszick@morethan.org>
+References: <IXJXEQ$C47DD9AC94AAFC817D7A8379F72B1E8E@scarlet.be>
+	<4442A5AB.5080604@tiscali.be>
+	<119aab440604181335r585ab489je1bef3c952a5a79b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- tsg45800 <tsg45800@scarlet.be>
-To: "dave" <dave@hiauly1.hia.nrc.ca>
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440604181335r585ab489je1bef3c952a5a79b@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,53 +22,80 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > OTOH I find this comment in gcc-4.0 info:
-> > `-finstrument-functions'
-> >      Generate instrumentation calls for entry and exit to functions.
-> >      Just after function entry and just before function exit, the
-> >      following profiling functions will be called with the address of=
-
-> >      the current function and its call site.  (On some platforms,
-> >      `__builtin_return_address' does not work beyond the current
-> >      function, so the call site information may not be available to t=
-he
-> >      profiling functions otherwise.)
-> > 
-> > Is 'some platform' include parisc?
+On Tue April 18 2006 15:35, Carlos O'Donell wrote:
+> On 4/16/06, Joel Soete <soete.joel@tiscali.be> wrote:
+> > Hello all,
+> >
+> > I tried to apply my 'beautify' asm template to some uaccess.h and figure out that
+> > this hunk din't mentioned that "r1" was cloberred (iirc in fixup text) while
+> > the 32bit one did:
+> >
+> > mmm, doesn't seems to change anything (I just check sys_parisc32.s) but may be elsewhere?
 > 
-> Yes, `__builtin_return_address' only provides the return address
-> for the current function on PA-RISC (on some targets, it can unwind
-> multiple levels).  There's some question in my mind as to whether it
-> handles all stubs correctly.  If it detects a stub, it tries to
-> provide the return address for the stub.  It's guaranteed not to
-> work in a signal handler.
+> Please put on your thinking cap.
+>
+Please do not assume that was not step 1.
+
 > 
-Too bad ;-(
+> a) What does a clobber mean from the viewpoint of an __asm?
+>
+Why not from the syntax used?
 
-(is jbailey defintely right:
-<http://cvs.parisc-linux.org/web/src/puffinfest/pariscfortunes.diff?cvsro=
-ot=3D&r1=3D1.13&r2=3D1.14>
-;-? )
+Two possibilities:
+1) Compiler can not distinguish the effects of assemble statements
+on register usage.  It has to be told, as a general rule.
 
-> The above hasn't really been tested as far as I know on parisc.
+2) Compiler can distinguish the effects of assemble statements.
+In this case, there is no reason for the clobber field.
+
+Since there IS a clobber field in the syntax, then (2) must be
+the intended assumption.
+
+> b) Which insn clobber r1?
+>
+If (1) holds, it does not matter, the compiler already knows
+when r1 will be trashed.
+
+If (2) holds, the code author should know.
+ 
+> Research both and return with the answer.
+> Double marks if you solve...
 > 
-Well, that was just a test.
-The idea was using relayfs builtin to create a space at early boot to wri=
-te
-some data from a code chunk (e.g. ccio-dma) instumented by gcc better the=
-n do
-it manually.
+> c) Should any of the __put_kernel_asm's have r1 listed as a clobber?
+> 
+if (1) holds, it does not matter.
 
-Any work-around idea?
+if (2) holds, then at least two more possibilities:
 
-Thanks again,
-    Joel
-=0A=0A----------=0AWordt ook lid van de Scarlet Club via een bestaande Sc=
-arlet klant en ontvang cadeaucheques twv EUR 50! Bezoek snel http://www.s=
-carletclub.be=0ADevenez aussi membre du Club Scarlet via un client Scarle=
-t existant et recevez des cheques cadeaux jusqu'a EUR 50! Surfez vite sur=
- http://www.clubscarlet.be
+3) The compiler never carries a live value in r1 across an __asm block.
+This is the same result as if r1 was listed as a clobber from the viewpoint
+of preserving a value in r1 - there isn't one to preserve.
 
+4) The compiler considers r1 a general purpose register.
+In this case, the code author should not make an exception from the 
+general rule implied by the supplied syntax of __asm blocks.
+
+Q.E.D:
+Safe coding practice over the lifetime of changing compiler versions
+answers the question - r1 should appear in the clobber list of any
+block that changes its value.
+
+Either:
+a) It makes no difference for some combinations of the above;
+Or:
+b) It is required.
+
+> Cheers,
+Your welcome,
+Mike
+
+> Carlos.
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
