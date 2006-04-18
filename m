@@ -1,16 +1,17 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] ELF ABI Documents
-Date: Tue, 18 Apr 2006 14:46:52 -0400
-Message-ID: <119aab440604181146s19bf0013t985abf0853601aa2@mail.gmail.com>
-References: <1145329883.24150.17.camel@localhost.localdomain>
-	<200604181436.k3IEaG06004632@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
+	__put_kernel_asm() 64bit?
+Date: Tue, 18 Apr 2006 16:35:01 -0400
+Message-ID: <119aab440604181335r585ab489je1bef3c952a5a79b@mail.gmail.com>
+References: <IXJXEQ$C47DD9AC94AAFC817D7A8379F72B1E8E@scarlet.be>
+	<4442A5AB.5080604@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=ISO-8859-1
-Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: "Joel Soete" <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604181436.k3IEaG06004632@hiauly1.hia.nrc.ca>
+In-Reply-To: <4442A5AB.5080604@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +22,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 4/18/06, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> I think what is needed is a SYSV PS ABI for PA-RISC.  It probably shouldn=
-'t
-> be an LSB document.  Typically, the LSB only adopts a subset of any
-> particular specification, and in the case of the PS ABIs, references
-> the documents for the various processors currently specified by the
-> LSB.  The IA64 document is probably the closest to what's needed for
-> PA-RISC although it can be simplified.  It was written jointly by HP
-> and Intel.
+On 4/16/06, Joel Soete <soete.joel@tiscali.be> wrote:
+> Hello all,
+>
+> I tried to apply my 'beautify' asm template to some uaccess.h and figure =
+out that
+> this hunk din't mentioned that "r1" was cloberred (iirc in fixup text) wh=
+ile
+> the 32bit one did:
+>
+> mmm, doesn't seems to change anything (I just check sys_parisc32.s) but m=
+ay be elsewhere?
 
-The SYSV psABI for HP PA-RISC is going to be a very messy thing to start wi=
-th.
-I whole heartedly recommend that Jeff begin work by writing the ELF
-psABI for hppa and perhaps after that moving towards the SYSV psABI.
-The LSB documentation will then be a reference to the SYSV psABI and
-the ELF psABI documents.
+Please put on your thinking cap.
 
-So Jeff, care to whip up a document that is a copy of the elf-pa.pdf and
-we can start commenting on what's wrong with the document?
+a) What does a clobber mean from the viewpoint of an __asm?
+b) Which insn clobber r1?
 
-What document format are you going to use? I recommend openoffice or tex.
+Research both and return with the answer.
+Double marks if you solve...
 
-List of the relocs we handle:
-binutils/include/elf/hppa.h
-  This file lists our relocs and their values. With comments about
-their processing.
-binutils/bfd/elf-hppa.h
-  This file contains the relocs howto showing if some are unimplemented.
-  (elf_hppa_final_write_processing): Contains flag settings for the elf hea=
-der.
+c) Should any of the __put_kernel_asm's have r1 listed as a clobber?
 
 Cheers,
 Carlos.
