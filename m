@@ -1,17 +1,14 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-	__put_kernel_asm() 64bit?
-Date: Tue, 18 Apr 2006 16:35:01 -0400
-Message-ID: <119aab440604181335r585ab489je1bef3c952a5a79b@mail.gmail.com>
-References: <IXJXEQ$C47DD9AC94AAFC817D7A8379F72B1E8E@scarlet.be>
-	<4442A5AB.5080604@tiscali.be>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] gcc instrument-function on parisc?
+Date: Wed, 19 Apr 2006 06:46:41 +0100
+Message-ID: <IXYG1T$27580A183174C43B0B2B6E3056980F4B@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: "Joel Soete" <soete.joel@tiscali.be>
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ tsg45800 <tsg45800@scarlet.be>
+To: "dave" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4442A5AB.5080604@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,30 +19,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 4/16/06, Joel Soete <soete.joel@tiscali.be> wrote:
-> Hello all,
->
-> I tried to apply my 'beautify' asm template to some uaccess.h and figure =
-out that
-> this hunk din't mentioned that "r1" was cloberred (iirc in fixup text) wh=
-ile
-> the 32bit one did:
->
-> mmm, doesn't seems to change anything (I just check sys_parisc32.s) but m=
-ay be elsewhere?
+> > OTOH I find this comment in gcc-4.0 info:
+> > `-finstrument-functions'
+> >      Generate instrumentation calls for entry and exit to functions.
+> >      Just after function entry and just before function exit, the
+> >      following profiling functions will be called with the address of=
 
-Please put on your thinking cap.
+> >      the current function and its call site.  (On some platforms,
+> >      `__builtin_return_address' does not work beyond the current
+> >      function, so the call site information may not be available to t=
+he
+> >      profiling functions otherwise.)
+> > 
+> > Is 'some platform' include parisc?
+> 
+> Yes, `__builtin_return_address' only provides the return address
+> for the current function on PA-RISC (on some targets, it can unwind
+> multiple levels).  There's some question in my mind as to whether it
+> handles all stubs correctly.  If it detects a stub, it tries to
+> provide the return address for the stub.  It's guaranteed not to
+> work in a signal handler.
+> 
+Too bad ;-(
 
-a) What does a clobber mean from the viewpoint of an __asm?
-b) Which insn clobber r1?
+(is jbailey defintely right:
+<http://cvs.parisc-linux.org/web/src/puffinfest/pariscfortunes.diff?cvsro=
+ot=3D&r1=3D1.13&r2=3D1.14>
+;-? )
 
-Research both and return with the answer.
-Double marks if you solve...
+> The above hasn't really been tested as far as I know on parisc.
+> 
+Well, that was just a test.
+The idea was using relayfs builtin to create a space at early boot to wri=
+te
+some data from a code chunk (e.g. ccio-dma) instumented by gcc better the=
+n do
+it manually.
 
-c) Should any of the __put_kernel_asm's have r1 listed as a clobber?
+Any work-around idea?
 
-Cheers,
-Carlos.
+Thanks again,
+    Joel
+=0A=0A----------=0AWordt ook lid van de Scarlet Club via een bestaande Sc=
+arlet klant en ontvang cadeaucheques twv EUR 50! Bezoek snel http://www.s=
+carletclub.be=0ADevenez aussi membre du Club Scarlet via un client Scarle=
+t existant et recevez des cheques cadeaux jusqu'a EUR 50! Surfez vite sur=
+ http://www.clubscarlet.be
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
