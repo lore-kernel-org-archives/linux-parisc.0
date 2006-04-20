@@ -1,14 +1,16 @@
-From: "Michael S. Zick" <mszick@morethan.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-Date: Thu, 20 Apr 2006 15:21:55 -0500
-Message-ID: <200604201521.55966.mszick@morethan.org>
-References: <200604201932.k3KJWgKJ023738@hiauly1.hia.nrc.ca>
+Date: Thu, 20 Apr 2006 17:29:31 -0400 (EDT)
+Message-ID: <200604202129.k3KLTVrE024472@hiauly1.hia.nrc.ca>
+References: <119aab440604201304g165a9218n885ef29fbfb7983b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604201932.k3KJWgKJ023738@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440604201304g165a9218n885ef29fbfb7983b@mail.gmail.com>
+	from "Carlos O'Donell" at Apr 20, 2006 04:04:20 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,61 +21,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu April 20 2006 14:32, John David Anglin wrote:
-> > > > > (here) insn, an interruption occures which in turn launch the
-> > > > > fixup_put_user_skip_1()
-> > > > 
-> > > > A couple more questions for research :)
-> > > > 
-> > > > Q: Does the process of interruption clobber registers?
-> > > 
-> > Joel,
-> > 
-> > The machine should switch a small sub-set of the general
-> > registers to an alternate set, called the 'shadow registers'
-> > for the interruption routine to use.
-> 
-> fixup_put_user_skip_1() runs after the interruption, so the
-> shadow registers don't matter. 
->
-I was unclear, I was answering the second question, my bad.
+> - Add the missing "r1" clobbers to any asm using FIXUP_BRANCH.
+>   Run a boot test. Post a pach including the result of the boot test.
 
-> Look at the registers used 
-> by fixup_put_user_skip_1() and where it returns.  
->
-Ah, the first question...
+With luck, this will fix the handling of unaligned fldd instructions
+(failure of libjava negzero).
 
-> Note that 
-> GCC is only concerned about registers used in the current
-> function (i.e., if an asm changes sections and generates code
-> using registers in that section, this is all black magic to
-> GCC and it doesn't need to know about it).
-> 
-Giving that a little though, and it should be obvious...
-
-GCC only compiles a single flow of execution at a time,
-the ::: information fields only apply to what the compiler
-is doing at the moment.
-
-If the author of the code writes instructions inside of the
-current black box (__asm block) that are on a different path
-of execution, then it is up to the author to ensure that 
-the _other_ path (section in this case) observes proper
-register usage.
-
-It is the _other_ path of execution that needs its register
-usage audited.
-
-Mike
-> It's clear that the __get* and __put* macros need brief comments
-> about the register use of the fixup routines.  Also, the fixup
-> routines need corresponding comments.
-> 
-> > I do not know if r1 is shadowed or not.
-> 
-> Yes.
-> 
-> Dave
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
