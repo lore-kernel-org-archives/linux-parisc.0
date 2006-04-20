@@ -1,16 +1,17 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-	__put_kernel_asm() 64bit?
-Date: Thu, 20 Apr 2006 13:09:20 -0400
-Message-ID: <119aab440604201009t2e5513c4n69b4a68477998768@mail.gmail.com>
-References: <IY13E1$80C55BA8C044E2D421CA2D8B24C31D6A@scarlet.be>
+Date: Thu, 20 Apr 2006 13:28:16 -0400 (EDT)
+Message-ID: <200604201728.k3KHSH7W022804@hiauly1.hia.nrc.ca>
+References: <119aab440604201009t2e5513c4n69b4a68477998768@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-To: "Joel Soete" <soete.joel@tiscali.be>,
- "Parisc List" <parisc-linux@lists.parisc-linux.org>
+  charset=US-ASCII
+Cc: soete.joel@tiscali.be,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IY13E1$80C55BA8C044E2D421CA2D8B24C31D6A@scarlet.be>
+In-Reply-To: <119aab440604201009t2e5513c4n69b4a68477998768@mail.gmail.com>
+	from "Carlos O'Donell" at Apr 20, 2006 01:09:20 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,88 +22,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 4/20/06, Joel Soete <soete.joel@tiscali.be> wrote:
-> Please help me I hate this game:
->   - tel me why?
->   - no tel me why not?
->   - ...
+> > (here) insn, an interruption occures which in turn launch the
+> > fixup_put_user_skip_1()
+> 
+> A couple more questions for research :)
+> 
+> Q: Does the process of interruption clobber registers?
 
-This is all part of learning. We want to teach you to do some of the
-research yourself before emailing to the list. When you send email you
-should have some research done which contributes to the solution of
-the problem. For example the research you have done below is exactly
-what I would have expected from a serious hacker. This is an excellent
-amount of research! Good work Joel.
+r8 and r9?
 
-> > a) What does a clobber mean from the viewpoint of an __asm?
->
-> Sorry, I was the first to put this question:
-> "btw I had another question: what's the meaning of 'clobber' in the sens =
-of
-> asm extension of gcc?
-
-*I* know the answer. The question is intended for you to learn how to resea=
-rch.
-Google is a horrible research tool. I recommend going to the source. GCC ha=
-s
-great manuals.
-
-a) Go to "http://gcc.gnu.org/"
-b) Click on "Manual"
-c) Click on "GCC 4.1.0 Manual"
-d) Read sections 5.34 and 5.35 describing the behaviour of asm's.
-
-Please read the manuals if you don't know the answer. It keeps others from
-being frustrated. The manuals were written for a reason.
-
-> > b) Which insn clobber r1?
-> >
-> Hey, may be am I be confused by the complexity if this stuff: fixup().
-
-The following is not an answer to the question. Though it is a good
-analysis of the problem.
-
-[snip]
-
-> My understanding of all those matter is: when an error occures while the =
-store
-> (here) insn, an interruption occures which in turn launch the
-> fixup_put_user_skip_1()
-
-A couple more questions for research :)
-
-Q: Does the process of interruption clobber registers?
-Q: Does fixup_put_user_skip_1() execute in the interruption, or after when
-     returning the interrupted user process?
-
-> imho, it would make sense that the fixup_*()'s author
-> <http://cvs.parisc-linux.org/linux-2.6/include/asm-parisc/uaccess.h?r1=3D=
-1.15&r2=3D1.16>
-> put r1 in clobbered list "to tell the compiler the" gr1's value is modifi=
-ed.
-
-Don't trust other authors, Randolph might have made a mistake!
-
-> > c) Should any of the __put_kernel_asm's have r1 listed as a clobber?
-> imho, Yes (if there wasn't anoying fusy _probably_).
-
-Haha! :)
-
-> That said, according to the same logic, Mike make me also noticed that in=
- our
-> unaligned.c we have e.g.:
-> static int emulate_ldh(struct pt_regs *regs, int toreg)
-> also shouldn't we also 'probably' put r1 in the clobbered register list.
-
-Yes, if you can answer the questions above then you have a valid basis
-for adding "r1" to the clober list.
-
-Joel, I'm only trying to help, so stick with it, we're almost done the
-problem analysis. After which there will be some *real* work to do to
-fix our kernel :)
-
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
