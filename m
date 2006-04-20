@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] ELF ABI Documents
-Date: Wed, 19 Apr 2006 20:45:25 -0400 (EDT)
-Message-ID: <200604200045.k3K0jPYV016350@hiauly1.hia.nrc.ca>
-References: <1145324814.24150.12.camel@localhost.localdomain>
+Date: Thu, 20 Apr 2006 10:23:20 -0400 (EDT)
+Message-ID: <200604201423.k3KENKQn021466@hiauly1.hia.nrc.ca>
+References: <20060420085621.A64FC1AACC6@cyrix.home.bogus>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: jbailey@raspberryginger.com (Jeff Bailey)
+To: matt@lackof.org (Matt Taggart)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1145324814.24150.12.camel@localhost.localdomain> from "Jeff
-	Bailey" at Apr 17, 2006 09:46:54 pm
+In-Reply-To: <20060420085621.A64FC1AACC6@cyrix.home.bogus> from "Matt Taggart"
+	at Apr 20, 2006 01:56:21 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,30 +21,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> It's most common in the LSB specs to refer to the ELF psabi document
-> where possible.  http://refspecs.freestandards.org/elf/elf-pa.pdf seems
+> There is also some communication between the LSB workgroup and the Austin 
+> Group and they are both benefitting from the other's work.
 
-The latest version is here:
-http://ftp.parisc-linux.org/docs/arch/elf-pa-hp.pdf
+I'm aware of this and the efforts to align POSIX and the LSB where
+differences exist.  The majority of areas where differences exist
+between POSIX and linux are resolved in current implementations.
+Thus, it appears that the standards can be aligned in future updates
+without too much difficulty.
 
-HP and Intel also developed a generic specification for the ELF-64 object
-file format, and a version containing HP and HP-UX extensions.
+FWIW, I personally believe that the development of the LSB was a
+useful effort.  However, as you know, one of Austin Group participants
+believes the LSB to be useless...   Time will tell.
 
-> to be a copy of the psabi document, but when checking with some folks,
-> it looks like the document isn't a reflection on reality for
-> parisc-linux.  The question is, should the document be updated to
-> reflect reality, should we slowly change to match the document, or
-> should I just not refer to the psabi document much when writing the LSB
-> document?
+> > If it's
+> > possible to obtain full community support, it's more likely that the
+> > document would be useful and a guide to implementors.  However,
+> > just documenting what is would be useful.
+> 
+> Here, here! And don't worry about doing the work via the LSB, just produce the 
+> standard and the LSB will adopt it when it makes sense.
 
-None of the above mentioned documents appear to contain a copyright
-notice.  However, this may no longer be an absolute requirement under
-US copyright law.  In as much as a linux document is likely going to
-have to utilize material from the above, it probably would be wise to
-get the written approval from HP before proceeding.  It might also be
-necessary to get Intel's approval if the document also attempts to
-specify ELF for 64-bit linux.  Of course if you just reference these
-specifications and point out differences, this problem can be avoided.
+It would be a significant achievement if production of these documents
+allowed PA-RISC to become part of the LSB standard!  I think it fair to
+say that almost all (all?) of the processor specific documents referenced
+by the LSB were developed by commercial entities rather than the open source
+community at large.
 
 Dave
 -- 
