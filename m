@@ -1,14 +1,15 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-Date: Thu, 20 Apr 2006 12:36:37 -0500
-Message-ID: <200604201236.37925.mszick@morethan.org>
-References: <200604201728.k3KHSH7W022804@hiauly1.hia.nrc.ca>
+From: Matt Taggart <matt@lackof.org>
+Subject: Re: [parisc-linux] ELF ABI Documents
+Date: Thu, 20 Apr 2006 01:56:21 -0700
+Message-ID: <20060420085621.A64FC1AACC6@cyrix.home.bogus>
+References: <200604181436.k3IEaG06004632@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604201728.k3KHSH7W022804@hiauly1.hia.nrc.ca>
+In-reply-to: <200604181436.k3IEaG06004632@hiauly1.hia.nrc.ca> 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,32 +20,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu April 20 2006 12:28, John David Anglin wrote:
-> > > (here) insn, an interruption occures which in turn launch the
-> > > fixup_put_user_skip_1()
-> > 
-> > A couple more questions for research :)
-> > 
-> > Q: Does the process of interruption clobber registers?
-> 
-Joel,
 
-The machine should switch a small sub-set of the general
-registers to an alternate set, called the 'shadow registers'
-for the interruption routine to use.
+"John David Anglin" writes...
 
-I do not recall the exact list of which register numbers
-those are.  Search for 'shadow registers' in the acd.pdf
+> One of the criticisms of the LSB is that it simply documents what is
+> and in large measure it just refers to other specifications.
 
-I do not know if r1 is shadowed or not.
+1) The LSB is a trailing-edge standard, they don't "invent" standards, they 
+just document the standards that are accepted and in use. The work coming up 
+with new standards is being done elsewhere. (X.org and freedesktop.org for 
+example)
+2) Referring to other specs is a good thing, why reinvent the wheel?
 
-If the interrupt routine needs to use other registers,
-then it must save/restore them in that routine.
+> Whereas, specifications such as POSIX have been written by people
+> aware of the subtle tradeoffs between different implementations
+> and they try to actually specify an implementation.
 
-Mike
-> r8 and r9?
-> 
-> Dave
+To be fair, the LSB is in a hard position. On one hand you have application 
+developers demanding an implementation "We want a solid predictable 
+implementation that we can test on" and on the other you have the Linux 
+distros screaming "Don't take away our right to innovate! Just stick to 
+documenting interfaces and we'll make sure our implementations are compliant 
+with them". What the LSB has done to try and balance in the middle is define a 
+"sample implementation" rather than a "reference implementation". The LSB gets 
+asked once a month "can't you just get all the Linux distros to agree on an 
+implementation, or declare one of them the winner that everyone should use?" 
+IMO the UnitedLinux, DCC, and UserLinux consortiums were all created with that 
+as a goal.
+
+There is also some communication between the LSB workgroup and the Austin 
+Group and they are both benefitting from the other's work.
+
+> If it's
+> possible to obtain full community support, it's more likely that the
+> document would be useful and a guide to implementors.  However,
+> just documenting what is would be useful.
+
+Here, here! And don't worry about doing the work via the LSB, just produce the 
+standard and the LSB will adopt it when it makes sense.
+
+-- 
+Matt Taggart
+matt@lackof.org
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
