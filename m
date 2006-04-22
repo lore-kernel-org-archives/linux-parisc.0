@@ -1,14 +1,20 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [git patches] please pull on parisc tree
-Date: Fri, 21 Apr 2006 20:01:09 -0400
-Message-ID: <20060422000109.GA10514@quicksilver.road.mcmartin.ca>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: Re: Bug#364231: [parisc-linux] Re: Bug#364231: exception catching
+	broken on HPPA
+Date: Sat, 22 Apr 2006 19:00:57 +0200
+Message-ID: <17482.24905.713197.434153__37152.3373447873$1416624064$gmane$org@gargle.gargle.HOWL>
+References: <17481.57988.932528.963398@gargle.gargle.HOWL>
+	<200604221558.k3MFwOIs010589@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: akpm@osdl.org,
- parisc-linux@lists.parisc-linux.org
-To: torvalds@osdl.org
+Cc: steven.robbins@videotron.ca,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+ 364231@bugs.debian.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200604221558.k3MFwOIs010589@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,69 +25,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Linus,
+John David Anglin writes:
+> > > smr@paer:~/gmp-4.2.dfsg/tests/cxx$ g++ -Wall test-throw.cc && ./a.out
+> > > /usr/bin/ld: warning: libgcc_s.so.4, needed by /usr/lib/gcc/hppa-linux-gnu/4.0.3/libstdc++.so, may conflict with libgcc_s.so.2
+> 
+> I'm puzzled about this.  It seems like libstdc++ for GCC 4.0.3 was
+> built using GCC 4.1 or latter.  In my 4.0.3 build, I see:
+> 
+> dave@gsyprf11:~/gcc-4.0/objdir/hppa-linux/libstdc++-v3/src/.libs$ ldd libstdc++.so
+>         libm.so.6 => /lib/libm.so.6 (0x40643000)
+> 	libgcc_s.so.2 => /lib/libgcc_s.so.2 (0x4034a000)
+> 	libc.so.6 => /lib/libc.so.6 (0x40a57000)
+> 	/lib/ld.so.1 (0x41252000)
+> 
+> But:
+> 
+> dave@gsyprf11:~/gcc-4.0/objdir/hppa-linux/libstdc++-v3/src/.libs$ ldd /usr/lib/gcc/hppa-linux-gnu/4.0.3/libstdc++.so
+>         libm.so.6 => /lib/libm.so.6 (0x40243000)
+> 	libgcc_s.so.4 => /lib/libgcc_s.so.4 (0x40746000)
+> 	libc.so.6 => /lib/libc.so.6 (0x40a57000)
+> 	/lib/ld.so.1 (0x41252000)
+> 
+> You need to build 4.0.3 and associated libraries with 4.0.3.
 
-Not a whole lot of change here so I think it is appropriate for 2.6.17-rc3.
-The biggest diff here is catching up with the syscall additions, and making
-ioremap default to _nocache behaviour so more drivers work. The multiple
-page size code is mostly replacing hardcoded values with #defines where
-appropriate, and is well tested by Helge.
+Yes, we do, but
 
-Cheers,
-	Kyle
+$ ls -l /usr/lib/gcc/hppa-linux-gnu/4.0.3/libstdc++.so
+lrwxr-xr-x 1 root root 23 Apr  6 02:08 /usr/lib/gcc/hppa-linux-gnu/4.0.3/libstdc++.so -> ../../../libstdc++.so.6
 
-The following changes since commit f4ffaa452e71495a06376f12f772342bc57051fc:
-are found in the git repository at:
+we can only have one libstdc++.so.6 installed. that's currently the
+library from 4.1. So maybe we need to bump the soversion of libstdc++
+on hppa?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
-
-Grant Grundler:
-      [PARISC] Document that we tolerate "Relaxed Ordering"
-
-Helge Deller:
-      [PARISC] EISA regions must be mapped NO_CACHE
-      [PARISC] Misc. janitorial work
-      [PARISC] defconfig updates
-      [PARISC] Further work for multiple page sizes
-
-Kyle McMartin:
-      [PARISC] Add new entries to the syscall table
-      [PARISC] Make ioremap default to _nocache
-      [PARISC] MAINTAINERS
-
-Matthew Wilcox:
-      [PARISC] Fix up hil_kbd.c mismerge
-
-Stuart Brady:
-      [PARISC] OSS ad1889: Match register names with ALSA driver
-
- MAINTAINERS                        |    4 
- arch/parisc/Kconfig                |   31 ++
- arch/parisc/defconfig              |  494 +++++++++++++++++++++++-------------
- arch/parisc/kernel/asm-offsets.c   |    3 
- arch/parisc/kernel/cache.c         |    4 
- arch/parisc/kernel/entry.S         |   36 ++-
- arch/parisc/kernel/head.S          |   15 +
- arch/parisc/kernel/init_task.c     |   10 -
- arch/parisc/kernel/pacache.S       |   25 +-
- arch/parisc/kernel/sys_parisc.c    |    8 +
- arch/parisc/kernel/syscall.S       |   10 -
- arch/parisc/kernel/syscall_table.S |    8 +
- arch/parisc/kernel/vmlinux.lds.S   |   54 ++--
- arch/parisc/mm/fault.c             |    2 
- arch/parisc/mm/init.c              |   28 +-
- arch/parisc/mm/ioremap.c           |    3 
- drivers/input/keyboard/hil_kbd.c   |    2 
- drivers/parisc/pdc_stable.c        |    2 
- drivers/parisc/sba_iommu.c         |   43 ++-
- drivers/parisc/superio.c           |    4 
- include/asm-parisc/io.h            |   17 -
- include/asm-parisc/page.h          |   25 ++
- include/asm-parisc/pgtable.h       |   63 +++--
- include/asm-parisc/unistd.h        |    8 +
- sound/oss/ad1889.c                 |  198 +++++++-------
- sound/oss/ad1889.h                 |  101 ++++---
- 26 files changed, 734 insertions(+), 464 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
