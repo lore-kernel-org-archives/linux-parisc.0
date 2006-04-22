@@ -1,19 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Bug#364231: exception catching broken on HPPA
-Date: Sat, 22 Apr 2006 11:22:20 -0400 (EDT)
-Message-ID: <200604221522.k3MFMKpi010218__3809.54022189162$1416624065$gmane$org@hiauly1.hia.nrc.ca>
-References: <20060422084136.GC22720@mauritius.dodds.net>
+Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
+Date: Sat, 22 Apr 2006 12:48:02 -0400 (EDT)
+Message-ID: <200604221648.k3MGm2MW010955@hiauly1.hia.nrc.ca>
+References: <20060422154641.GC10514@quicksilver.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: steven.robbins@videotron.ca,
- 364231@bugs.debian.org,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: vorlon@debian.org (Steve Langasek)
+Cc: parisc-linux@lists.parisc-linux.org
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060422084136.GC22720@mauritius.dodds.net> from "Steve
-	Langasek" at Apr 22, 2006 01:41:36 am
+In-Reply-To: <20060422154641.GC10514@quicksilver.road.mcmartin.ca> from "Kyle
+	McMartin" at Apr 22, 2006 11:46:41 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,53 +21,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Sat, Apr 22, 2006 at 10:00:04AM +0200, Matthias Klose wrote:
-> > $ ldd a.out
-> >         libstdc++.so.6 =3D> /usr/lib/libstdc++.so.6 (0x40575000)
-> >         libm.so.6 =3D> /lib/libm.so.6 (0x4046e000)
-> >         libgcc_s.so.2 =3D> /lib/libgcc_s.so.2 (0x40068000)
-> >         libc.so.6 =3D> /lib/libc.so.6 (0x4074b000)
-> >         libgcc_s.so.4 =3D> /lib/libgcc_s.so.4 (0x40015000)
-> >         /lib/ld.so.1 (0x400e1000)
+> On Fri, Apr 21, 2006 at 04:30:08PM -0400, John David Anglin wrote:
+> > >     101112c4:   e8 1f 1f df     b,l,n 101112b8 <_read_lock+0x8>,r0
+> > >     101112c8:   0f 48 10 9c     ldw 4(r26),ret0  <== exception here
+> > > 
+> > > r26 contains 0x105d62a8 according to Joel's message.  There isn't
+> > > a branch in the delay slot.  The exception just occurs in the delay
+> > > slot of a branch.  It's not obvious to me what caused the exception.
+> > 
+> > Correction, r26 contained 0x000000001051d040.  I also just noticed
+> > that the branch is nullified (N=1 in PSW).  Just guessing, but I think
+> > this is a timer interruption (soft lockup).
+> >
 > 
-> > We end up with both libgcc_s.so.2 and libgcc_s.so.4 linked.  Is there
-> > a solution other than making gcc-4.1/g++-4.1 the default and
-> > rebuilding the libstdc++6 dependent packages with binary NMU's?
-> 
-> I guess having gcc-4.0 link against libgcc4 is out of the question?
+> This crashed palinux last night... Same IIR/IASQIAOQ... 
 
-Doing so is not a good idea, but it's only going to break numeric
-applications using complex numbers and possibly vectors.
+Actually, it's probably just a nice place to crash for the night ;)
 
-The calling conventions for passing complex values was changed between
-4.0 and 4.1 when it was discovered that it didn't conform to the runtime
-documentation.  Support for complex and vector objects was added to GCC
-some time ago.  However noone noticed that these values weren't being
-passed correctly...
+Any info on the interruption and what was going on? In Joel's case,
+the call was from here:
 
-The change affects the routines __muldc3, __mulsc3, __divdc3 and __divsc3
-in libgcc_s.  It also affects any package/library using complex numbers,
-including glibc since the registers used for passing the first few
-arguments and the return value have changed.  Particularly, complex
-floats are no longer passed in the floating registers.
+int
+send_group_sig_info(int sig, struct siginfo *info, struct task_struct *p)
+{
+        int ret;
+	read_lock(&tasklist_lock);
+	ret = group_send_sig_info(sig, info, p);
+	read_unlock(&tasklist_lock);
+	return ret;
+}
 
-I think the approach suggested by Matthias is ultimately the only
-viable solution but the impact is broader than the libstdc++6 dependent
-packages.  The situation is similar to that when DWARF EH support was
-introduced.  The only other option that I can see is to delay 4.1.
-However, I would like 4.1 to become the default.
-
-For the most part, the passing of complex values in 4.0 and earlier
-is internally self-consistent (there's a minor incompatibility between
-PA 1.0 code and PA 1.1 code due to the fact that the left and right
-halves of floating-point registers are not independently accessible
-when generating PA 1.0 code).
-
-I recognized that this was going to cause pain, and brought the matter
-up for discussion on the parisc-linux list a few months ago.  There
-wasn't much in the way of comments for or against.  In the end, I
-decided it was probably better to make the change in 4.1 and let time
-smooth over the difficulties.
+tasklist_lock is used in a lot of places.  send_group_sig_info only
+seems to be called in one place from kernel/itimer.c.  It would seem
+like there's some situation where the lock isn't getting unlocked,
+or it's very highly contended.
 
 Dave
 -- 
