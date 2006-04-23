@@ -1,53 +1,41 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-Date: Sun, 23 Apr 2006 12:06:53 -0500
-Message-ID: <200604231206.53217.mszick@morethan.org>
-References: <200604221648.k3MGm2MW010955@hiauly1.hia.nrc.ca>
-	<200604231118.51833.mszick@morethan.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Bug#364231: exception catching broken on HPPA
+Date: Sun, 23 Apr 2006 15:58:09 -0600
+Message-ID: <20060423215809.GA31392__5615.20958222008$1416624066$gmane$org@colo.lackof.org>
+References: <20060422084136.GC22720@mauritius.dodds.net> <200604221522.k3MFMKpi010218@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604231118.51833.mszick@morethan.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: Steve Langasek <vorlon@debian.org>,
+ steven.robbins@videotron.ca,
+ 364231@bugs.debian.org,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200604221522.k3MFMKpi010218@hiauly1.hia.nrc.ca>
+Resent-Message-ID: <1eogdB.A.IhF.xW_SEB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Sun April 23 2006 11:18, Michael S. Zick wrote:
-> 
-> Next question.
-> 
-My bad, that was just plain rude.
+On Sat, Apr 22, 2006 at 11:22:20AM -0400, John David Anglin wrote:
+...
+> I recognized that this was going to cause pain, and brought the matter
+> up for discussion on the parisc-linux list a few months ago.  There
+> wasn't much in the way of comments for or against.  In the end, I
+> decided it was probably better to make the change in 4.1 and let time
+> smooth over the difficulties.
 
-The question and the answer:
+You did and I still think it was the right choice. 
 
-Multiple processor pa-risc systems with per-processor
-caches use a 'cache coherency' trigger.
+thanks,
+grant
 
-To trip the trigger (I.E: make the changes observable)
 
-ldcw,co target_address
-
-Where target_address includes the magic byte[0] of 
-the cache line.
-
-Translation:
-
-Spin on the ldcw,co not the ldw here.
-
-On the systems with 128 byte long cache lines,
-ensure these spinlocks are 128 byte aligned not
-64 byte aligned as in this dump.
-
-Mike
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
