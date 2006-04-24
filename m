@@ -1,14 +1,16 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] Re:Added clobbers to unaligned.c and uaccess.h
-Date: Mon, 24 Apr 2006 18:49:06 +0200
-Message-ID: <IY8K1U$8FE099F66A8462E832C7AFDC38E1A3E1@scarlet.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
+Date: Mon, 24 Apr 2006 12:50:48 -0400 (EDT)
+Message-ID: <200604241650.k3OGon5N027856@hiauly1.hia.nrc.ca>
+References: <20060424162545.GA25893@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "carlos" <carlos@systemhalted.org>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060424162545.GA25893@colo.lackof.org> from "Grant Grundler" at
+	Apr 24, 2006 10:25:45 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,41 +21,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Joel,
+> On Mon, Apr 24, 2006 at 11:35:48AM -0400, John David Anglin wrote:
+> > The intent of the errata seems to be to relax the alignment requirement
+> > for ldc[dw],co in cases where the spinlock is not being shared with a
+> > non-coherent I/O device.
 > 
-> Patch to add the extra clobbers checked into CVS.
-> Thanks for all the work!
-> 
-No, sincerely thanks for your help.
+> AFAIK, only one non-coherent PA-RISC box has PA2.0 and parisc-linux
+> doesn't support it: T600.
 
-> What's your next project? ;-)
-> 
-No clue for the moment: I very need some break but a lot of idea:
-    * glibc float nan values pb?
-    * find an easy way to instrument of chunk of kernel code with e.g. re=
-layfs
-      (that was working) but builtin gcc stuff doesn't seems to be tested=
- a
-       lot)?
-    * ccio-dma imho need more for 64bit?
-    * palo -> grub (seems to be friend but not easy to merge)?
-    * finishing a ruby script to build tool chain (something is already
-      working but need some cleanup and strengthening)?
-    * ...
+It probably has coherent I & D caches as well as this seems to be a
+requirement for both 1.1 and 2.0.
 
-btw: just as game, I rebuild glibc-2.3.6 + my clone patch with gcc-4.1 an=
-d
-with same src and same kernel (results vary a very few with kernel releas=
-e?),
-I didn't noticed any regression versus the build with gcc-4.0 ;-)
+> (I'm assuming ",co" completer is PA2.0 only - please correct me if
+> that's wrong.)
 
-Thanks,
-    Joel=0A=0A----------=0AWordt ook lid van de Scarlet Club via een best=
-aande Scarlet klant en ontvang cadeaucheques twv EUR 50! Bezoek snel http=
-://www.scarletclub.be=0ADevenez aussi membre du Club Scarlet via un clien=
-t Scarlet existant et recevez des cheques cadeaux jusqu'a EUR 50! Surfez =
-vite sur http://www.clubscarlet.be
+It's not in the PA 1.1 arch...
 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
