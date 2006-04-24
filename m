@@ -1,45 +1,58 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: Bug#364562: linux32 "doesn't work" on hppa64 kernels
-Date: Mon, 24 Apr 2006 08:19:13 -0400
-Message-ID: <20060424121913.GG19550__7975.64960453219$1416624067$gmane$org@quicksilver.road.mcmartin.ca>
-References: <17484.38215.530303.856546@gargle.gargle.HOWL>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
+Date: Mon, 24 Apr 2006 11:35:48 -0400 (EDT)
+Message-ID: <200604241535.k3OFZmPJ027261@hiauly1.hia.nrc.ca>
+References: <200604231206.53217.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: Matthias Klose <doko@cs.tu-berlin.de>,
- 364562@bugs.debian.org
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <17484.38215.530303.856546@gargle.gargle.HOWL>
-Resent-Message-ID: <E3hxUD.A.nFG.0aMTEB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: mszick@morethan.org (Michael S. Zick)
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200604231206.53217.mszick@morethan.org> from "Michael S. Zick"
+	at Apr 23, 2006 12:06:53 pm
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Apr 24, 2006 at 11:07:19AM +0200, Matthias Klose wrote:
-> Package: linux32
-> Version: 1-3
+> ldcw,co target_address
 > 
-> $ uname -m
-> parisc64
+> Where target_address includes the magic byte[0] of 
+> the cache line.
+
+Where is this documented?
+
+> Translation:
 > 
-> $ linux32 uname -m
-> parisc64
->
+> Spin on the ldcw,co not the ldw here.
 
-I spent some time trying to fix this a while ago at Jeff Bailey's
-request, but it required nasty invasive changes that I didn't have
-time to debug. (It's not really an improvement when /sbin/init fails
-to exec...)
+I believe this makes sense as the errata specifies that the ldcw,co
+operation has to be performed in cache on PA 2.0 machines:
+http://h21007.www2.hp.com/dspp/tech/tech_TechDocumentDetailPage_IDX/1,1701,5310,00.html
 
-If I have some time this week, I'll dust off the diff and see if I can
-finagle it to work.
+> On the systems with 128 byte long cache lines,
+> ensure these spinlocks are 128 byte aligned not
+> 64 byte aligned as in this dump.
 
+As a practical note, this is very difficult to achieve for dynamically
+allocated spinlocks.
 
+The intent of the errata seems to be to relax the alignment requirement
+for ldc[dw],co in cases where the spinlock is not being shared with a
+non-coherent I/O device.  If spinlocks have to be aligned to the start
+of a cacheline, there doesn't seem to be any point to the errata.
+
+Dave
 -- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
