@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-Date: Mon, 24 Apr 2006 12:50:48 -0400 (EDT)
-Message-ID: <200604241650.k3OGon5N027856@hiauly1.hia.nrc.ca>
-References: <20060424162545.GA25893@colo.lackof.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [parisc-linux] Re: Added clobbers to unaligned.c and uaccess.h
+Date: Mon, 24 Apr 2006 12:54:41 -0400
+Message-ID: <119aab440604240954y58dde658g4c84ca153cacb265@mail.gmail.com>
+References: <IY8K1U$8FE099F66A8462E832C7AFDC38E1A3E1@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+  charset=ISO-8859-1
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Joel Soete" <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060424162545.GA25893@colo.lackof.org> from "Grant Grundler" at
-	Apr 24, 2006 10:25:45 am
+In-Reply-To: <IY8K1U$8FE099F66A8462E832C7AFDC38E1A3E1@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +21,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Mon, Apr 24, 2006 at 11:35:48AM -0400, John David Anglin wrote:
-> > The intent of the errata seems to be to relax the alignment requirement
-> > for ldc[dw],co in cases where the spinlock is not being shared with a
-> > non-coherent I/O device.
-> 
-> AFAIK, only one non-coherent PA-RISC box has PA2.0 and parisc-linux
-> doesn't support it: T600.
+On 4/24/06, Joel Soete <soete.joel@tiscali.be> wrote:
+> > Joel,
+> >
+> > Patch to add the extra clobbers checked into CVS.
+> > Thanks for all the work!
+> >
+> No, sincerely thanks for your help.
+>
+> > What's your next project? ;-)
+> >
+> No clue for the moment: I very need some break but a lot of idea:
+>     * glibc float nan values pb?
 
-It probably has coherent I & D caches as well as this seems to be a
-requirement for both 1.1 and 2.0.
+This would be an excellent project. We have various floating point
+problems that I haven't invetigated. The math tests in glibc are the
+first place to start work.
 
-> (I'm assuming ",co" completer is PA2.0 only - please correct me if
-> that's wrong.)
+Dave might have other project recommendations.
 
-It's not in the PA 1.1 arch...
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
