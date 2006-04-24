@@ -1,15 +1,17 @@
 From: "Michael S. Zick" <mszick@morethan.org>
 Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-Date: Mon, 24 Apr 2006 14:12:02 -0500
-Message-ID: <200604241412.02200.mszick@morethan.org>
-References: <200604241846.k3OIknKK028491@hiauly1.hia.nrc.ca>
+Date: Mon, 24 Apr 2006 16:57:19 -0500
+Message-ID: <200604241657.19464.mszick@morethan.org>
+References: <200604241535.k3OFZmPJ027261@hiauly1.hia.nrc.ca>
+	<200604241135.58306.mszick@morethan.org>
+	<200604241300.13265.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604241846.k3OIknKK028491@hiauly1.hia.nrc.ca>
+In-Reply-To: <200604241300.13265.mszick@morethan.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,74 +22,62 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon April 24 2006 13:46, John David Anglin wrote:
-> > Those instruction descriptions do not always mention side-effects,
-> > even less often do they mention the exceptions to the side-effects.
+On Mon April 24 2006 13:00, Michael S. Zick wrote:
+> On Mon April 24 2006 11:35, you wrote:
+> > On Mon April 24 2006 10:35, you wrote:
+> > > > ldcw,co target_address
+> > > > 
+> > > > Where target_address includes the magic byte[0] of 
+> > > > the cache line.
+> > > 
+> > > Where is this documented?
+> > > 
+> > Well, they didn't put it in the instruction RTL where
+> > someone could find it.  It is a footnote or mentioned
+> > in passing somewhere.
 > > 
-> > An exception (footnoted somewhere):
-> > ldcw,co does not set the dirty bit on the dcache line.
+> > I will look for it, I found it about 5 years ago when
+> > Matt and I discussed this on the list, I can find it again.
+> > 
 > 
-> Don't see this. 
->
-I agree, it is not clear
+I give up - I can not find it now.
+Which does not mean it is not there, somewhere.
 
-Start with:
-http://h21007.www2.hp.com/dspp/files/unprotected/parisc20/PA_7_inst_descriptions.pdf
+Ever need to be put to sleep?
+Read this:
+http://h21007.www2.hp.com/dspp/files/unprotected/parisc20/PA_G_memory_ordering.pdf
 
-Find section 7-74, physical page 76 of the above.
+In particular, that the semaphore instructions are described as
+a load followed (sic: indivisibly) by a store.
 
-Sub-section: "If the cache control hint is not specified ..."
+Now branch thee here:
+http://h21007.www2.hp.com/dspp/files/unprotected/parisc20/PA_6_inst_overview.pdf
 
-First bullet, last sentence:
-"If the line is retained in cache, it must not be marked dirty."
+Pick section 6-10, physically pages 11 and 12.
 
-PA2.0 only does this on lines in cache with the co completer;
-therefore, it must be 'retained in cache'.
+Now overlay tables 6-7, 6-8, and 6-9 and note the relationship of cc=01 in all
+three tables.
 
-Now:
-Sub-section: "If the cache control hint is specified ..."
+ldw cc=01 <reserved>
+stw cc=01 <stw,bc >
+ldcw cc=01 <ldcw,co >
 
-"... the semaphore operation _may_ be handled as if the cache control
-hint had not been specified ..."
+This is not an accident, in the days this cpu was designed, silicon did not
+grow on trees.
 
-Now add in the errata to this flow ...
+Read thee the paragraphs between table 6-8, and 6-9 - note the special
+significance of cache line byte[0] for stw,bc.
 
-Then jump forward a page to the first clause of the indivisible RTL
-statement:
+But finding that specificly for ldcw,co - even in en_HP - is beyond my
+abilities.
 
-Note that all the operations are qualified by "NO_HINT"
+Nor do I have a machine where I could simply change the *&^*& spinlock
+macro to see if it makes a difference.
 
-Duh...
-And this is the easy one to find, still searching for the magic byte[0]
-reference.
+I think I will go fishing with Joel,
+I am too old to stand for my orals now.
 
 Mike
-> It uses mem_store just like stw.  The only exception 
-> is when gr0 is the target and it behaves like a prefetch.  See also
-> discussion of D bit trap.  If the machine has multiple D-caches, I
-> don't see how the overhead present in the coherency communication
-> can be avoided.
-> 
-> In the case where store_in_memory is used, the line is first flushed
-> and then the data is written to memory.  It doesn't make sense to set
-> the dirty bit in this case.  So, if you do a tight ldcw loop without
-> the co completer on a CPU that is not fully coherent, you will always
-> be in the slow store_in_memory case.
-> 
-> > Since there is no way to clear the lock with ldcw,co then when the
-> > lock is cleared, then there must be another magic completer that needs
-> > to be used on the instruction that resets the condition to '1' (unlocked).
-> > 
-> > Something that triggers the cache coherency system so the change is
-> > immediately observable by all cpus.
-> 
-> The lock can be reset with a store.  You are probably thinking of
-> the 'O' completer.  However, I think that all PA-RISC CPUs have strongly
-> ordered loads and stores.  However, I think the discussion on pages
-> 435-438 in http://ftp.parisc-linux.org/docs/arch/parisc2.0.pdf is
-> relevant to the SMP case.
-> 
-> Dave
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
