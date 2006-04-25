@@ -1,16 +1,17 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: [parisc-linux] Re: Added clobbers to unaligned.c and uaccess.h
-Date: Tue, 25 Apr 2006 16:09:34 -0400
-Message-ID: <119aab440604251309i4186ac6cp25b40f7b2c9f7549@mail.gmail.com>
-References: <IY9MLX$78E3F79033FFF0B479BDF074F042B181@scarlet.be>
+Date: Tue, 25 Apr 2006 16:20:19 -0400 (EDT)
+Message-ID: <200604252020.k3PKKJe8008879@hiauly1.hia.nrc.ca>
+References: <119aab440604251309i4186ac6cp25b40f7b2c9f7549@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: dave <dave@hiauly1.hia.nrc.ca>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Joel Soete" <soete.joel@tiscali.be>
+  charset=US-ASCII
+Cc: soete.joel@tiscali.be,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IY9MLX$78E3F79033FFF0B479BDF074F042B181@scarlet.be>
+In-Reply-To: <119aab440604251309i4186ac6cp25b40f7b2c9f7549@mail.gmail.com>
+	from "Carlos O'Donell" at Apr 25, 2006 04:09:34 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,22 +22,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Carlos,
->
-> Ok for me to focus on float pb: I just started some month ago and iirc
-> numerous pb are around nan (Not-a-Number) values. TBH, before reading tha=
-t I
-> was ignoring all about this (eventhought I was good in numerical computin=
-g at
-> school, well 20 years ago, but not yet enough ;-) ). So I need first to
-> isolate faulty stuff then attempt to analyse the pb...
+> > Ok for me to focus on float pb: I just started some month ago and iirc
+> > numerous pb are around nan (Not-a-Number) values. TBH, before reading that I
+> > was ignoring all about this (eventhought I was good in numerical computing at
+> > school, well 20 years ago, but not yet enough ;-) ). So I need first to
+> > isolate faulty stuff then attempt to analyse the pb...
+> 
+> Perhaps ask Dave if he has some libstdc++ failures for you to look into?
+> There are all sorts of interesting areas you can learn if you are interested.
 
-Perhaps ask Dave if he has some libstdc++ failures for you to look into?
-There are all sorts of interesting areas you can learn if you are intereste=
-d.
+libstdc++ is pretty much ok (1 FAIL on head at the moment).  The easiest
+way to find problems that need work is to go to the bugzilla search page:
+http://gcc.gnu.org/bugzilla/query.cgi
 
-Cheers,
-Carlos.
+Do a search with "hppa" in the target box.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
