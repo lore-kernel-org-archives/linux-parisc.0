@@ -1,17 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: Added clobbers to unaligned.c and uaccess.h
-Date: Tue, 25 Apr 2006 16:20:19 -0400 (EDT)
-Message-ID: <200604252020.k3PKKJe8008879@hiauly1.hia.nrc.ca>
-References: <119aab440604251309i4186ac6cp25b40f7b2c9f7549@mail.gmail.com>
+Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
+Date: Tue, 25 Apr 2006 17:42:52 -0400 (EDT)
+Message-ID: <200604252142.k3PLgrxB009232@hiauly1.hia.nrc.ca>
+References: <200604251352.28932.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: soete.joel@tiscali.be,
- parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+Cc: parisc-linux@lists.parisc-linux.org
+To: mszick@morethan.org (Michael S. Zick)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440604251309i4186ac6cp25b40f7b2c9f7549@mail.gmail.com>
-	from "Carlos O'Donell" at Apr 25, 2006 04:09:34 pm
+In-Reply-To: <200604251352.28932.mszick@morethan.org> from "Michael S. Zick"
+	at Apr 25, 2006 01:52:28 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,20 +21,60 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > Ok for me to focus on float pb: I just started some month ago and iirc
-> > numerous pb are around nan (Not-a-Number) values. TBH, before reading that I
-> > was ignoring all about this (eventhought I was good in numerical computing at
-> > school, well 20 years ago, but not yet enough ;-) ). So I need first to
-> > isolate faulty stuff then attempt to analyse the pb...
+> On Tue April 25 2006 10:17, Michael S. Zick wrote:
+> > On Mon April 24 2006 10:35, John David Anglin wrote:
+> > > > ldcw,co target_address
+> > > > 
+> > > > Where target_address includes the magic byte[0] of 
+> > > > the cache line.
+> > > 
+> > > Where is this documented?
+> > > 
+> > Close, not quite there yet:
+> > 
+> > HP patent number: 4,713,755
+> > 
+> > The page to retrieve this by number:
+> > http://patft1.uspto.gov/netahtml/PTO/srchnum.htm
+> > 
+> > Now it should be a 'simple' matter to just read
+> > every patent that references this one.
+> > 
 > 
-> Perhaps ask Dave if he has some libstdc++ failures for you to look into?
-> There are all sorts of interesting areas you can learn if you are interested.
+> One more conjecture confirmed,
+> 
+> The cache lines are a master/slave arrangement,
+> only one processor (or device) can be the master
+> (owner) of the cache line.
+> 
+> This is accomplished by keeping the cpu id (address)
+> of the master in the virtual tag.
+> 
+> Ref: HP patent number: 5,197,146
+> 
+> That is how the logical 'makePrivate' of the formal
+> memory model happens.
 
-libstdc++ is pretty much ok (1 FAIL on head at the moment).  The easiest
-way to find problems that need work is to go to the bugzilla search page:
-http://gcc.gnu.org/bugzilla/query.cgi
+That's pretty much what I said this morning.
 
-Do a search with "hppa" in the target box.
+Correct me if I'm wrong but wouldn't an ldcw,co on a different
+cpu cause a transfer of ownership?  However, it's not clear to
+me that a cpu that doesn't own the line can unlock the semaphore
+owned by a different cpu.  As far as I can tell, the only
+instructions that appear to perform a coherent store are ldcw,co
+and ldcd,co, and these can't do an unlock.  Hmmm, maybe doing a
+flush and sync (see G-3 and G-4) before the store would do the trick.
+
+> Translation:
+> 
+> Thou shall not allow load balancing to migrate a
+> task that holds a spinlock - you leave the master
+> of that cache line on the prior processor.
+
+Page G-3 says that a SYNC is necessary when switching tasks.  Possibly,
+this together with the flush allows spinlocks in user code.
+
+I see the PA-8200 has a CINCD instruction (coherent 64-bit increment).
 
 Dave
 -- 
