@@ -1,16 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: "Michael S. Zick" <mszick@morethan.org>
 Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-Date: Mon, 24 Apr 2006 17:07:35 -0400 (EDT)
-Message-ID: <200604242107.k3OL7Zc7029333@hiauly1.hia.nrc.ca>
-References: <200604241412.02200.mszick@morethan.org>
+Date: Tue, 25 Apr 2006 13:52:28 -0500
+Message-ID: <200604251352.28932.mszick@morethan.org>
+References: <200604241535.k3OFZmPJ027261@hiauly1.hia.nrc.ca>
+	<200604251017.14866.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: mszick@morethan.org (Michael S. Zick)
+  charset="us-ascii"
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604241412.02200.mszick@morethan.org> from "Michael S. Zick"
-	at Apr 24, 2006 02:12:02 pm
+In-Reply-To: <200604251017.14866.mszick@morethan.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,67 +21,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > > An exception (footnoted somewhere):
-> > > ldcw,co does not set the dirty bit on the dcache line.
+On Tue April 25 2006 10:17, Michael S. Zick wrote:
+> On Mon April 24 2006 10:35, John David Anglin wrote:
+> > > ldcw,co target_address
+> > > 
+> > > Where target_address includes the magic byte[0] of 
+> > > the cache line.
 > > 
-> > Don't see this. 
-> >
-> I agree, it is not clear
+> > Where is this documented?
+> > 
+> Close, not quite there yet:
 > 
-> Start with:
-> http://h21007.www2.hp.com/dspp/files/unprotected/parisc20/PA_7_inst_descriptions.pdf
+> HP patent number: 4,713,755
 > 
-> Find section 7-74, physical page 76 of the above.
+> The page to retrieve this by number:
+> http://patft1.uspto.gov/netahtml/PTO/srchnum.htm
 > 
-> Sub-section: "If the cache control hint is not specified ..."
+> Now it should be a 'simple' matter to just read
+> every patent that references this one.
 > 
-> First bullet, last sentence:
-> "If the line is retained in cache, it must not be marked dirty."
-> 
-> PA2.0 only does this on lines in cache with the co completer;
-> therefore, it must be 'retained in cache'.
-> 
-> Now:
-> Sub-section: "If the cache control hint is specified ..."
-> 
-> "... the semaphore operation _may_ be handled as if the cache control
-> hint had not been specified ..."
-> 
-> Now add in the errata to this flow ...
 
-I believe that the PA 2.0 errata requires support for the cache control
-hint and that the operation must be performed in cache when it is specified.
-The first bullet and second bullets only apply when the hint isn't specified.
-I would argue that the errata requires PA 2.0 machines to effectively
-use bullet 2 (see indivisible on page 7-75).  In this case, I believe
-that the line has to marked dirty.  The difference being that the line
-hasn't been flushed and zero written to memory.
+One more conjecture confirmed,
 
-The PA 1.1 situation is messy in that the arch gave the hardware designers
-an out since the hint can be ignored.  So, on a mchine that's not coherent,
-it seems like an efficient implementation would try load the line and
-make it dirty before doing the ldcw.  However, this is only going to work
-if the machine does the operation in cache.  It's allowed to use the
-technique in bullet 1.  Thus, probably trying ldcw once and then sampling
-with ldw is as optimal has it gets without checking the capabilities
-of each CPU.  PA7100LC ERS says the cache control hint is supported and
-will operate in cache if the line is present the cache.  PA7300LC ERS
-states that ldcw hints are supported at all privilege levels.  So,
-I would say add the hint but be aware that it might be ignored on some
-cpus.
+The cache lines are a master/slave arrangement,
+only one processor (or device) can be the master
+(owner) of the cache line.
 
-> Then jump forward a page to the first clause of the indivisible RTL
-> statement:
-> 
-> Note that all the operations are qualified by "NO_HINT"
+This is accomplished by keeping the cpu id (address)
+of the master in the virtual tag.
 
-I think the hints used in mem_store are those in table 6-8 which is
-why ldcw uses "NO_HINT".
+Ref: HP patent number: 5,197,146
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+That is how the logical 'makePrivate' of the formal
+memory model happens.
+
+Translation:
+
+Thou shall not allow load balancing to migrate a
+task that holds a spinlock - you leave the master
+of that cache line on the prior processor.
+
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
