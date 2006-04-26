@@ -1,15 +1,13 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Does it lakes some cloberred r1 in
-Date: Wed, 26 Apr 2006 11:42:22 -0500
-Message-ID: <200604261142.22548.mszick@morethan.org>
-References: <200604241650.k3OGon5N027856@hiauly1.hia.nrc.ca>
+From: "Joel Soete" <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] Re: Added clobbers to unaligned.c and uaccess.h
+Date: Wed, 26 Apr 2006 19:38:57 +0200
+Message-ID: <IYCBOX$3B000069249C22339E9F9F5DC8AB8238@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: parisc-linux@lists.parisc-linux.org
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "dave" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604241650.k3OGon5N027856@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,152 +18,325 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon April 24 2006 11:50, John David Anglin wrote:
-> > On Mon, Apr 24, 2006 at 11:35:48AM -0400, John David Anglin wrote:
-> > > The intent of the errata seems to be to relax the alignment requirement
-> > > for ldc[dw],co in cases where the spinlock is not being shared with a
-> > > non-coherent I/O device.
+> >                 =3D=3D=3D gfortran Summary =3D=3D=3D
 > > 
-> > AFAIK, only one non-coherent PA-RISC box has PA2.0 and parisc-linux
-> > doesn't support it: T600.
+> > # of expected passes            12718
+> > # of unexpected failures        2
+> > # of expected failures          14
+> > # of unsupported tests          96
+> > # of expected failures          12
+> > # of unsupported tests          315
 > 
-> It probably has coherent I & D caches as well as this seems to be a
-> requirement for both 1.1 and 2.0.
+> Excellent.  All the complex fails are fixed.  I'll do a PR on the
+> two enum fails.
 > 
-> > (I'm assuming ",co" completer is PA2.0 only - please correct me if
-> > that's wrong.)
+> It would be great if you could generate a test summary with
+> contrib/test_summary 
+
+mmm, the build of the gcc-snapshot dpkg already prepare its 'test-summary=
+' file:
+Results for 4.2.0 20060425 (experimental) testsuite on hppa-unknown-linux=
+-gnu
+LAST_UPDATED: 
+Native configuration is hppa-unknown-linux-gnu
+
+		=3D=3D=3D g++ tests =3D=3D=3D
+
+
+Running target unix
+
+		=3D=3D=3D g++ Summary =3D=3D=3D
+
+# of expected passes		12322
+# of expected failures		67
+# of unsupported tests		124
+/CAD/parisc-linux/Dpkg/dpkg-work/gcc-snapshot-20060425/build/gcc/testsuit=
+e/g++/../../g++
+ version 4.2.0 20060425 (experimental)
+
+		=3D=3D=3D gcc tests =3D=3D=3D
+
+
+Running target unix
+WARNING: program timed out.
+FAIL: gcc.c-torture/compile/20001226-1.c  -O3 -g  (test for excess errors=
+)
+FAIL: gcc.c-torture/execute/builtin-bitops-1.c execution,  -O3
+-fomit-frame-pointer -funroll-loops 
+FAIL: gcc.c-torture/execute/builtin-bitops-1.c execution,  -O3
+-fomit-frame-pointer -funroll-all-loops -finline-functions 
+FAIL: gcc.dg/gomp/pr25989.c (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-1.c  -O2  (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-1.c  -O3 -fomit-frame-pointer  (test for exc=
+ess
+errors)
+FAIL: gcc.dg/torture/pr24626-1.c  -O3 -g  (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-1.c  -Os  (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-2.c  -O2  (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-2.c  -O3 -fomit-frame-pointer  (test for exc=
+ess
+errors)
+FAIL: gcc.dg/torture/pr24626-2.c  -O3 -g  (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-3.c  -O2  (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-3.c  -O3 -fomit-frame-pointer  (test for exc=
+ess
+errors)
+FAIL: gcc.dg/torture/pr24626-3.c  -O3 -g  (test for excess errors)
+FAIL: gcc.dg/torture/pr24626-3.c  -Os  (test for excess errors)
+FAIL: gcc.dg/tree-prof/val-prof-2.c scan-tree-dump n \\+ \\-1
+XPASS: gcc.dg/tree-ssa/loop-1.c scan-assembler-times foo 5
+
+		=3D=3D=3D gcc Summary =3D=3D=3D
+
+# of expected passes		37948
+# of unexpected failures	16
+# of unexpected successes	1
+# of expected failures		79
+# of untested testcases		28
+# of unsupported tests		382
+/CAD/parisc-linux/Dpkg/dpkg-work/gcc-snapshot-20060425/build/gcc/xgcc  ve=
+rsion
+4.2.0 20060425 (experimental)
+
+		=3D=3D=3D gfortran tests =3D=3D=3D
+
+
+Running target unix
+FAIL: gfortran.dg/enum_2.f90  -O   (test for errors, line 9)
+FAIL: gfortran.dg/enum_2.f90  -O  (test for excess errors)
+
+		=3D=3D=3D gfortran Summary =3D=3D=3D
+
+# of expected passes		12718
+# of unexpected failures	2
+# of expected failures		14
+# of unsupported tests		96
+/CAD/parisc-linux/Dpkg/dpkg-work/gcc-snapshot-20060425/build/gcc/testsuit=
+e/gfortran/../../gfortran
+ version 4.2.0 20060425 (experimental)
+
+		=3D=3D=3D obj-c++ tests =3D=3D=3D
+
+
+Running target unix
+FAIL: obj-c++.dg/comp-types-10.mm (test for excess errors)
+FAIL: obj-c++.dg/cxx-ivars-2.mm execution test
+FAIL: obj-c++.dg/encode-3.mm (test for excess errors)
+FAIL: obj-c++.dg/encode-8.mm execution test
+FAIL: obj-c++.dg/isa-field-1.mm (test for excess errors)
+FAIL: obj-c++.dg/lookup-2.mm (test for excess errors)
+WARNING: obj-c++.dg/lookup-2.mm compilation failed to produce executable
+FAIL: obj-c++.dg/try-catch-2.mm (test for excess errors)
+WARNING: obj-c++.dg/try-catch-2.mm compilation failed to produce executab=
+le
+FAIL: obj-c++.dg/try-catch-9.mm (test for excess errors)
+WARNING: obj-c++.dg/try-catch-9.mm compilation failed to produce executab=
+le
+
+		=3D=3D=3D obj-c++ Summary =3D=3D=3D
+
+# of expected passes		425
+# of unexpected failures	8
+# of unsupported tests		13
+/CAD/parisc-linux/Dpkg/dpkg-work/gcc-snapshot-20060425/build/gcc/testsuit=
+e/obj-c++/../../g++
+ version 4.2.0 20060425 (experimental)
+
+		=3D=3D=3D objc tests =3D=3D=3D
+
+
+Running target unix
+
+		=3D=3D=3D objc Summary =3D=3D=3D
+
+# of expected passes		1752
+# of expected failures		7
+# of unsupported tests		24
+/CAD/parisc-linux/Dpkg/dpkg-work/gcc-snapshot-20060425/build/gcc/xgcc  ve=
+rsion
+4.2.0 20060425 (experimental)
+
+		=3D=3D=3D treelang tests =3D=3D=3D
+
+
+Running target unix
+
+		=3D=3D=3D treelang Summary =3D=3D=3D
+
+# of expected passes		50
+		=3D=3D=3D libffi tests =3D=3D=3D
+
+
+Running target unix
+
+		=3D=3D=3D libffi Summary =3D=3D=3D
+
+# of expected passes		1072
+# of unsupported tests		8
+		=3D=3D=3D libgomp tests =3D=3D=3D
+
+
+Running target unix
+FAIL: libgomp.c/critical-1.c (test for excess errors)
+WARNING: libgomp.c/critical-1.c compilation failed to produce executable
+FAIL: libgomp.c/loop-1.c (test for excess errors)
+WARNING: libgomp.c/loop-1.c compilation failed to produce executable
+FAIL: libgomp.c/loop-2.c (test for excess errors)
+WARNING: libgomp.c/loop-2.c compilation failed to produce executable
+FAIL: libgomp.c/ordered-1.c (test for excess errors)
+WARNING: libgomp.c/ordered-1.c compilation failed to produce executable
+FAIL: libgomp.c/ordered-2.c (test for excess errors)
+WARNING: libgomp.c/ordered-2.c compilation failed to produce executable
+FAIL: libgomp.c/sections-1.c (test for excess errors)
+WARNING: libgomp.c/sections-1.c compilation failed to produce executable
+FAIL: libgomp.c/single-1.c (test for excess errors)
+WARNING: libgomp.c/single-1.c compilation failed to produce executable
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -O0  execution test
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -O1  execution test
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -O2  execution test
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -O3 -fomit-frame-pointer  execution=
+ test
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -O3 -fomit-frame-pointer -funroll-l=
+oops
+ execution test
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -O3 -fomit-frame-pointer
+-funroll-all-loops -finline-functions  execution test
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -O3 -g  execution test
+WARNING: program timed out.
+FAIL: libgomp.fortran/reduction6.f90  -Os  execution test
+
+		=3D=3D=3D libgomp Summary =3D=3D=3D
+
+# of expected passes		1136
+# of unexpected failures	15
+# of unsupported tests		110
+		=3D=3D=3D libjava tests =3D=3D=3D
+
+
+Running target unix
+XPASS: PR26858 execution - source compiled test
+XPASS: PR26858 output - source compiled test
+XPASS: PR26858 execution - bytecode->native test
+XPASS: PR26858 output - bytecode->native test
+XPASS: PR26858 -O3 execution - source compiled test
+XPASS: PR26858 -O3 output - source compiled test
+XPASS: PR26858 -O3 execution - bytecode->native test
+XPASS: PR26858 -O3 output - bytecode->native test
+FAIL: Serialization output - gij test
+FAIL: Serialization output - gij test
+FAIL: negzero output - gij test
+FAIL: negzero output - gij test
+FAIL: pr25676 output - gij test
+FAIL: pr25676 output - gij test
+
+		=3D=3D=3D libjava Summary =3D=3D=3D
+
+# of expected passes		4143
+# of unexpected failures	6
+# of unexpected successes	8
+# of expected failures		12
+# of untested testcases		10
+		=3D=3D=3D libmudflap tests =3D=3D=3D
+
+
+Running target unix
+
+		=3D=3D=3D libmudflap Summary =3D=3D=3D
+
+# of expected passes		1814
+		=3D=3D=3D libstdc++ tests =3D=3D=3D
+
+
+Running target unix
+FAIL: 25_algorithms/prev_permutation/1.cc execution test
+XPASS: 26_numerics/cmath/c99_classification_macros_c.cc (test for excess =
+errors)
+
+		=3D=3D=3D libstdc++ Summary =3D=3D=3D
+
+# of expected passes		3540
+# of unexpected failures	1
+# of unexpected successes	1
+# of expected failures		12
+# of unsupported tests		315
+
+Compiler version: 4.2.0 20060425 (experimental) 
+Platform: hppa-unknown-linux-gnu
+configure flags: -v --prefix=3D/usr/lib/gcc-snapshot --enable-shared
+--with-system-zlib --disable-nls --enable-__cxa_atexit --enable-clocale=3D=
+gnu
+--enable-libstdcxx-debug --enable-java-awt=3Dgtk --enable-gtk-cairo
+--with-java-home=3D/usr/lib/gcc-snapshot/jre --enable-mpfr --disable-werr=
+or
+hppa-linux-gnu --enable-languages=3Dc,c++,fortran,java,objc,obj-c++,treel=
+ang
+BOOT_CFLAGS=3D-O2
+
+
+Build Dependencies:
+Desired=3DUnknown/Install/Remove/Purge/Hold
+| Status=3DNot/Installed/Config-files/Unpacked/Failed-config/Half-install=
+ed
+|/ Err?=3D(none)/Hold/Reinst-required/X=3Dboth-problems (Status,Err: uppe=
+rcase=3Dbad)
+||/ Name           Version             Description
++++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+ii  binutils       2.16.1cvs20060413-1 The GNU assembler, linker and bina=
+ry
+utilities
+
+
+Patches that Debian applied in this version:
+
+cpu-default-i486:
+  set default 32bit ix86 architecture to i486
+
+gcc-ice-hack:
+  2004-01-23  Jakub Jelinek  <jakub@redhat.com>
+  
+  	* system.h (ICE_EXIT_CODE): Define.
+  	* gcc.c (execute): Don't free first string early, but at the end
+  	of the function.  Call retry_ice if compiler exited with
+  	ICE_EXIT_CODE.
+  	(retry_ice): New function.
+  	* diagnostic.c (diagnostic_count_diagnostic,
+  	diagnostic_action_after_output, error_recursion): Exit with
+  	ICE_EXIT_CODE instead of FATAL_EXIT_CODE.
+
+Counting all warnings,
+there are 0 warnings in stage3 of this bootstrap.
+
+Number of warnings per file:
+
+Number of warning types:
+=3D=3D=3D=3D<>=3D=3D=3D=3D
+
+Or would it be better to run the purely gcc script?
+
+
+>and use the generated script to mail the
+> results to gcc-testresults@gcc.gnu.org.
 > 
-> It's not in the PA 1.1 arch...
-> 
-Dave, Grant, Group;
+> Thanks,
 
-We are faced with 10 year old documentation on a 20 year old design
-and a question on a 21st century kernel.
+Welcome,
+    Joel
+=0A=0A----------=0AWordt ook lid van de Scarlet Club via een bestaande Sc=
+arlet klant en ontvang cadeaucheques twv EUR 50! Bezoek snel http://www.s=
+carletclub.be=0ADevenez aussi membre du Club Scarlet via un client Scarle=
+t existant et recevez des cheques cadeaux jusqu'a EUR 50! Surfez vite sur=
+ http://www.clubscarlet.be
 
-To find a direct quote in answer to a bullet proof spinlock in this
-context has eluded me.
-But, I think I can explain the requirements.
-
-To keep this mail from becoming pathologically long, I will paraphrase
-a lot.
-
-You want on hand the:
-
-PA7200_design.pdf (HP website);
-
-Ms. Ruby B. Lee's article "Precision Architecture" from IEEE Computer,
-Volume 22, No. 1, January 1989, pp 79-91 (IEEE Society will sell you 
-a reprint);
-
-The tables and descriptions of load/store completer codes from the
-PA Instruction Overview (website);
-
-The instruction descriptions for ldw/stw/ldcw from the PA Instruction
-descriptions (website);
-
-Optionally, HP Patent No. 6,079,012 - get the 'image' version with
-the nice flow charts. (ignore the issue date)
-
-- - - -
-
-Background:
-
-Ms. Lee redesigned the data cache system for the PA7200; she also
-gave us the instructions that we need to deal with our problem.
-
-Ms. Lee describes this as a Level 1 cache without a Level 2 cache.
-Without quibbling over terminology, consider it a split, single
-level, cache system.  That makes its layout clearer.
-
-Physically, it is split into two parts.  A small cache, on-chip,
-which she terms an 'assist cache' and the larger capacity, off-chip
-cache.  Both run at cpu clock speed.
-
-The cpu operates only on/to/from the data in the assist cache.
-A not present address is fetched directly to the assist cache, if
-it is not present in the off-chip cache.
-
-What happens when the little cache runs out of room?
-
-Without programmer intervention, it is written to the off-chip cache,
-and it is the off-chip cache that deals with memory when required.
-
-How to make changes (such as lock release) immediately observable?
-
-Ms. Lee gave us a couple new instructions.  The tech writer who wrote
-the instruction descriptions call these 'Hints'. 
-Ms. Lee describes them as cache control commands.
-
-Enter the 'sl' completer for ldw/stw.
-
-Specifying the 'sl' disables the write-back to the off-chip cache
-and causes the assist cache to write to main memory.  In effect, a
-strongly ordered store of a Dcache line flush.
-
-This design also employs 'cache snooping' and allows approximately
-ten snoops to be outstanding at the same time.  
-
-The snoops have a higher priority than the data/instruction transactions.
-They _should not_ (but might) require a 'sync' to give us the 
-immediately observable lock release that we require.
-
-It is unclear to me if the ownership (master/slave) relationship
-of the cache lines still holds in this new design.  Both the on-chip
-and off-chip caches are under the control of the same on-chip CAM.
-(Which probably why she calls this a single level cache system.)
-
-- - - -
-
-Entering the 21st century, Linux world...
-
-Consider:
-Load balancing can 'pull' a task off of a cpu and migrate it
-to another cpu...
-Kernel code is executed in the kernel context of the user task...
-Tasks can be preempted...
-
-It seems (without a code path audit) that a task could be migrated
-to another cpu while holding an 'in system' spinlock.
-
-Now that would be a rare occurrence, but the current spinlocks only
-fail once every two or three days under heavy load.
-
-- - - -
-
-The bullet proof spinlock...
-
-The elegant solution lies somewhere between this and what is
-currently implemented.
-
-/* Optional, only if available and proven needed */
-- - Save current flag and set tcb 'do not migrate'
-- - Save current flag and set tcb 'do not preempt'
-
-/* If another processor already holds the lock, the cache
-   line has been replicated in our cache. Pretend we are
-   first to use the lock. */
-
-	ldw,sl the_lock, a_register  /* This will be assist cache only */
-    ldcw,co the_lock, a_register /* Try to grab lock */
-
-- - If successful, continue
-- - If fail, spin on either ldcw,co or a ldw,sl - not clear which
-
-/* Now release the lock with the implied assist cache line flush
-   to memory. */
-
-   stw,sl UNLOCKED, the_lock
-
-/* If we diddled the scheduler tcb flags, restore them here
-- - Restore the tcb 'do not preempt'
-- - Restore the tcb 'do not migrate'
-
-- - - -
-
-At which point, I must defer to the software engineering department.
-
-Mike
-> Dave
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
