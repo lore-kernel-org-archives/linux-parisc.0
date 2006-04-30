@@ -1,15 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "Michael S. Zick" <mszick@morethan.org>
 Subject: Re: [parisc-linux] Heavy Iron Reference Docs
-Date: Sun, 30 Apr 2006 01:03:02 -0600
-Message-ID: <20060430070302.GA32765@colo.lackof.org>
+Date: Sun, 30 Apr 2006 08:12:24 -0500
+Message-ID: <200604300812.24276.mszick@morethan.org>
 References: <200604292250.49455.mszick@morethan.org>
+	<20060430070302.GA32765@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Michael S. Zick" <mszick@morethan.org>
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604292250.49455.mszick@morethan.org>
+In-Reply-To: <20060430070302.GA32765@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,60 +20,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Apr 29, 2006 at 10:50:49PM -0500, Michael S. Zick wrote:
-...
-> Although these are titled V-Class servers they seem to
-> be the only documentation on the PA8x00 coherent memory
-> system outside of the HP vaults.
+On Sun April 30 2006 02:03, you wrote:
+> 
+> Seems to state V2500 NUMA implementation is NOT supported by the general
+> PA 2.0 architecture. Be very careful to not generalize statements made in
+> the V-class specific documents.
+> 
 
-On page "20 of 248" for V2500 doc:
-    "This document does not attempt to duplicate information in that
-     manual. Instead, it presents only V2500 server-specific information."
+Grant, I wish it was that simple.
 
-And ISTR V-class has "unique" constraints on coherency.
-Sorry - I've forgotten details. But you might start on
-page "71" (aka page 89 using xpdf numbering):
-|  The instructions which flush based on a memory line address are PDC,
-|  FDC and FIC. These instructions are broadcast to other processors
-|  within a node that may be sharing the same cache lines. These
-|  instructions, therefore, have global effects within a node.
-...
-|  Cache flush instructions must be followed by a sync instruction to ensure
-|  that all flushes have made it to memory.
+What you point out of about the V2500 seems
+to be exact.
 
-and Page "75" (aka page 93 of pdf):
-|  CTI cache interfaces
-|  The PA-RISC architecture (1.0 and 2.0) does not support the concept of a
-|  CTI Cache. Thus, there are no PA-RISC architected instructions for
-|  issuing the CTI cache operations.
+The V2200 has different memory hardware and
+a different means for coherent semaphores.
 
-Seems to state V2500 NUMA implementation is NOT supported by the general
-PA 2.0 architecture. Be very careful to not generalize statements made in
-the V-class specific documents.
+My biggest mistake was to think that we can
+go by the cpu version. There will have to be 
+another way found.
 
-I'm currently only certain cc-NUMA V-2500 has cache coherency issues
-with DMA.  A seperate exciting topic for discussion once I've retired.
-(at least another 20 years or so)  :)
+HP-UX uses an external library for semaphores
+to get it correct, at least sometimes.
+The S... is getting deep.
 
+What can be demonstrated at this moment is:
 
-> Contain a lot of useful information, like how to make
-> coherent semaphores (spinlocks) work on the PA8x00
-> server classes.
+PA8500 - works (?)
+PA8600 - broke
+PA8700 - works
+PA8800 - ???
+PA8900 - broke (?)
 
-How to implement spinlocks on V2500 is not necessarily the
-same set of requirements for all other classes of PA20 machines.
-Keep in mind parisc-linux currently does NOT support any V-class
-machines - ie we have no ability to test theories about locking
-other than with HP-UX.
+The lack of documentation that would tell us
+why does not mean we have given up though.
 
-
-Lastly, if other HP employees get permission to redistribute
-the V-class PDF files, I'd be happy to put them on ftp.parisc-linux.org.
-Until parisc-linux kernel supports V-class, I have no interest in
-pursuing permission to do redistribute those documents.
-
-thanks,
-grant
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
