@@ -1,12 +1,16 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: [parisc-linux] Heavy Iron Reference Docs
-Date: Sat, 29 Apr 2006 22:50:49 -0500
-Message-ID: <200604292250.49455.mszick@morethan.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Heavy Iron Reference Docs
+Date: Sun, 30 Apr 2006 00:36:50 -0400 (EDT)
+Message-ID: <200604300436.k3U4ao30012106@hiauly1.hia.nrc.ca>
+References: <200604292250.49455.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: mszick@morethan.org (Michael S. Zick)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200604292250.49455.mszick@morethan.org> from "Michael S. Zick"
+	at Apr 29, 2006 10:50:49 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,29 +21,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Group,
+> On the this page, in the PA 2.0 reference section:
+> http://parisc-linux.org/documentation/index.html
 
-On the this page, in the PA 2.0 reference section:
-http://parisc-linux.org/documentation/index.html
+I also found the following:
+http://h21007.www2.hp.com/dspp/files/unprotected/itanium/spinlocks.pdf
 
-Could someone post copies of these two docs?
-
-The PA8200 heavy iron supplement to the architecture ref:
-http://docs.hp.com/en/A3725-90004/A3725-90004.pdf
-
-The PA8500 heavy iron supplement to the architecture ref:
-http://docs.hp.com/en/A5074-90004/A5074-90004.pdf
-
-Although these are titled V-Class servers they seem to
-be the only documentation on the PA8x00 coherent memory
-system outside of the HP vaults.
-
-Contain a lot of useful information, like how to make
-coherent semaphores (spinlocks) work on the PA8x00
-server classes.
-
-(Dave found them)
-Mike
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
