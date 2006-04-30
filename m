@@ -1,16 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Heavy Iron Reference Docs
-Date: Sun, 30 Apr 2006 17:25:13 -0400 (EDT)
-Message-ID: <200604302125.k3ULPDl5016370@hiauly1.hia.nrc.ca>
-References: <20060430171331.GB1358@skunkworks.cabal.ca>
+Date: Sun, 30 Apr 2006 19:30:03 -0400 (EDT)
+Message-ID: <200604302330.k3UNU3C5017984@hiauly1.hia.nrc.ca>
+References: <200604301801.23210.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+Cc: kyle@mcmartin.ca,
+ parisc-linux@lists.parisc-linux.org
+To: mszick@morethan.org (Michael S. Zick)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060430171331.GB1358@skunkworks.cabal.ca> from "Kyle McMartin"
-	at Apr 30, 2006 01:13:31 pm
+In-Reply-To: <200604301801.23210.mszick@morethan.org> from "Michael S. Zick"
+	at Apr 30, 2006 06:01:23 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,63 +22,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Our in-kernel spinlocks respect this, minus the pretest which probably
-> isn't necessary for anything but performance. See include/asm-parisc/spinlock.h
-> __raw_ macros for more details. I suspect mb() is probably a good equivalent
-> for the notation used as a compiler barrier in that document.
+> Somewhere it is written: "No data should be stored on the same cache
+> line as the lock unless all access is protected by that lock."
 
-They also lack the optimization discussed in section 4.1 paragraph 4
-(write zero byte to high order byte of lock word to try to make the
-cacheline dirty for the executing cpu).  The mb() should work as a
-compiler barrier.
+It's in the arch:
 
-I also suggest using an ordered store for the unlock operation.  This
-doesn't cost anything and may help to ensure that the order of memory
-accesses as seen by another processor occur in the expected sequence.
+  When using semaphores to synchronize with I/O, care must be taken
+  in placing other information in the same cache line as the semaphore.
+  Data which is writable, can only be placed in the same cache line as
+  a semaphore if access to write the data is controlled by the semaphore.
 
-> Note, the document also uses LDCW,CO so I suspect this is correct
-> in our implementation as well.
+I think it's easy to misread these two sentences (i.e., to assume
+that writeable data can occur on the same line as the semaphore
+if the semaphore isn't being used to synchonize with I/O).
 
-I've come to believe that using the ",CO' completer may be a bug.
-I think it would be better to drop using the ",CO' completer and use
-the trick of storing a zero byte to high-byte of the lock word to
-make the cacheline dirty.
+I'm almost certain we have more than one semaphore per line in current
+kernels and I think that using ldcw,co is dangerous when that's done.
+ldcw appears safer because it does a flush if needed.  Still, I worry
+that this may not be sufficient because a sync is usually also necessary.
+Flushes are weakly ordered.
 
-It all comes down to this crucial bit of code in the ldcw description:
-
-  (indivisible)
-  if (cache line is present and dirty || coherent_system || cc != 0) {
-    GR[t] <-- zero_ext(mem_load(space,offset,0,31,NO_HINT),32);
-    mem_store(space,offset,0,31,NO_HINT,0);
-  } else {
-    Dcache_flush(space, offset);
-    GR[t] <-- zero_ext(mem_load(space,offset,0,31,NO_HINT),32);
-    store_in_memory(space,offset,0,31,NO_HINT,0);
-  }
-
-and what happens when we have a MP system that supports cc and
-coherent_system == 0.  Obviously, specifying ",CO" on a system
-that's fully coherent doesn't make a difference.
-
-This is what the ",CO" completer is supposed to do:
-
-  "The Coherent Operation cache control hint is a recommendation
-   to the processor that, if the addressed data is already in the
-   cache, it can operate on the addressed data in the cache rather
-   than having to update memory."
-
-Note the line doesn't have to be dirty.  Unless extreme care is
-used, the line could have been be brought into cache by a load for
-data elsewhere on the line.  So for correct operation of 'ldcw,co',
-there really must be no inter-processor timing problems in kicking
-out cachelines.  Otherwise, we could end up with two dirty cachelines
-and a broken spinlock.
-
-It may be this is only reliable on fully coherent systems.  While
-the N-class is classified as a UMA machine, it has two system buses
-separated by a memory controller.  Each system bus can handle four
-processors with L1 and L2 cache.  Thus, it would seem safer to adopt
-the prewrite and use ldcw without the cache control completer.
+If we dedicate 128 bytes per semaphore, then possibly ldcw,co will work.
+It's also optimal from the contention standpoint.  This is pointed out
+in the paper on semaphores.
 
 Dave
 -- 
