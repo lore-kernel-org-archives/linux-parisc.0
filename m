@@ -1,17 +1,19 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] Heavy Iron Reference Docs
-Date: Tue, 2 May 2006 00:00:28 -0600
-Message-ID: <20060502060028.GA14414@colo.lackof.org>
-References: <20060430171331.GB1358@skunkworks.cabal.ca>
-	<200604302125.k3ULPDl5016370@hiauly1.hia.nrc.ca>
+Date: Tue, 2 May 2006 00:24:42 -0600
+Message-ID: <20060502062442.GC14414@colo.lackof.org>
+References: <200604302125.k3ULPDl5016370@hiauly1.hia.nrc.ca>
+	<200604301801.23210.mszick@morethan.org>
+	<200604301828.26318.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ John David Anglin <dave@hiauly1.hia.nrc.ca>,
  parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: "Michael S. Zick" <mszick@morethan.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200604302125.k3ULPDl5016370@hiauly1.hia.nrc.ca>
+In-Reply-To: <200604301828.26318.mszick@morethan.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,50 +24,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Apr 30, 2006 at 05:25:13PM -0400, John David Anglin wrote:
-...
-> I also suggest using an ordered store for the unlock operation.  This
-> doesn't cost anything and may help to ensure that the order of memory
-> accesses as seen by another processor occur in the expected sequence.
+On Sun, Apr 30, 2006 at 06:28:26PM -0500, Michael S. Zick wrote:
+> On Sun April 30 2006 18:01, Michael S. Zick wrote:
+> > 
+> > Scratches head...
+> > 
+> > I wonder where Joel has his processors installed in relation to the
+> > two busses?  Both on same buss or one per buss?  Would his lockups
+> > go away if he picked the other relationship?
+> > 
+> > I will ask him.  (or perhaps I just did)
+> >
+> 
+> Browsing old parisc spinlock code, I find a comment that the N4K
+> can only have one outstanding PxTLB transaction at a time.
 
-I've had it drilled into my head that all parisc implmentations
-have strongly ordered memory subsystems. John Marvin (jsm) has
-stated that more than a few times on this list. So "ordered store"
-is the same as a regular store.
+The original document says:
+	The Merced bus is designed to only support a single broadcast
+	PxTLB transaction in progress at a time, and this must be guaranteed
+	by software. Software must semaphore to guarantee that only one
+	processor is trying to issue a broadcast PxTLB at a time.
 
-> It all comes down to this crucial bit of code in the ldcw description:
+	Local PxTLBs, however, have no restrictions, since they are executed
+	entirely on the issuing processor.
 
-I'd rather have someone like Jerry Huck or someone in his experience
-comment on this before we go down this path.  I'll try to find
-someone to consult with this week.
+> Is it not the PxTLB transactions that implement the inter-processor
+> coherency?
 
-...
-> It may be this is only reliable on fully coherent systems.  While
-> the N-class is classified as a UMA machine, it has two system buses
-> separated by a memory controller.  Each system bus can handle four
-> processors with L1 and L2 cache.
+I don't think so.
 
-AFAIK, N-class has no L2 cache.
+> 
+> Which is of course required for inter-processor spinlocks to work.
+> 
+> And, of course, this being Linux, the queue is protected by a spinlock!
 
-But it's worse than you think.
-N-class has two _Merced_ busses connected to the memory controller. 
-Each Processor is connected via a double pumped Runway Bus to "Dew"
-which acts as a "bridge" to one of the Merced Busses.
+PA-RISC _only_ has a spinlock.
 
-[ Digression - certain document says:
-	In PA-RISC, code fetches are non-coherent, such that PCX-W doesn't
-	even supply Vindex bits that would allow the code fetches to be
-	coherent.
-]
+> Did someone just shoot themselves in the foot?
 
-> Thus, it would seem safer to adopt
-> the prewrite and use ldcw without the cache control completer.
+Do you honestly think the HP HW engineers were _that_ stupid?
 
-I'm skeptical but will ask about this.
-Maybe I'm thinking kernel space only...is this intended only for
-user space or for kernel also?
+They occasionally make mistakes....but designing an SMP machine
+that doesn't have at least one working atomic op would be a bit
+over the top. ;)
 
-thanks,
 grant
 _______________________________________________
 parisc-linux mailing list
