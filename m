@@ -1,17 +1,21 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Heavy Iron Reference Docs
-Date: Tue, 2 May 2006 06:27:21 -0500
-Message-ID: <200605020627.21319.mszick@morethan.org>
-References: <200604302125.k3ULPDl5016370@hiauly1.hia.nrc.ca>
-	<200604301828.26318.mszick@morethan.org>
-	<20060502062442.GC14414@colo.lackof.org>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: Re: Bug#364231: [parisc-linux] Re: Bug#364231: exception catching
+Date: Tue, 2 May 2006 14:27:49 +0200
+Message-ID: <17495.20549.807070.229385__8419.171794276$1416624080$gmane$org@gargle.gargle.HOWL>
+References: <20060501025703.GL18891@mauritius.dodds.net>
+	<200605011356.k41DugMD023580@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset=us-ascii
+Cc: steven.robbins@videotron.ca,
+ debian-glibc@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org,
+ Steve Langasek <vorlon@debian.org>,
+ debian-hppa@lists.debian.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+ 364231@bugs.debian.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060502062442.GC14414@colo.lackof.org>
+In-Reply-To: <200605011356.k41DugMD023580@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,31 +26,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue May 2 2006 01:24, Grant Grundler wrote:
-> On Sun, Apr 30, 2006 at 06:28:26PM -0500, Michael S. Zick wrote:
->
-- - - -
-> > Is it not the PxTLB transactions that implement the inter-processor
-> > coherency?
-> 
-> I don't think so.
->
+[should we drop parisc-linux?]
 
-Makes sense, the hardware function transactions, such as coherency
-transactions are usually not accessable by even kernel code.
-
-Ignoring diagnostic features of course.
- 
+John David Anglin writes:
+> > Er, no; we're talking about official Debian packages here, and the
+> > libstdc++.so.6 in Debian is now from gcc-4.1.  The problem is precisely that
+> > GMP *is* being built using gcc-4.0, but libstdc++ is from gcc-4.1, resulting
+> > in the double libgcc_s problem.
 > 
+> Then, you must build *eveything* for hppa with gcc-4.1 or later.
 > 
-> Do you honestly think the HP HW engineers were _that_ stupid?
+> Unfortunately, there's an ABI break.  Mixing libraries compiled with
+> 4.0 or earlier with libraries compiled with 4.1 or later is just going
+> to cause unnecessary problems.   3.3 uses libstdc++.so.5, so you
+> avoid the double libgcc_s problem building GMP.  However, you still
+> have the ABI change affecting the passing and return of complex types.
 > 
+> At a fundamental level, libstdc++.so.6, libgfortran.so.1.0.0 and any
+> other gcc libraries built with 4.1 or later need glibc built with 4.1
+> to function correctly because of the various complex functions in
+> the math library.
+> 
+> I think there's a dynamic loader bug here as well.  I'm just
+> guessing but I think the double libgcc_s problem causes a problem
+> with the handling of .eh_frame data.
 
-No.
-But programmers of old hardware are not always up to the same
-standard.  Typo's, Think-o's, and Brain Farts happen.
 
-Mike
+Ok, coming back to the question of the system compiler on hppa for
+etch. Assuming that hppa does want to do that:
+
+- is glibc buildable with gcc-4.1 on hppa?
+- libstdc++6 would need to conflict with libgcc2, which seems to be
+  doable, but then rules out g++-3.4 and g++-4.0 as a fallback
+  solution, where g++-4.1 fails.
+- libgfortran did have a soname change, so nothing needs to be done.
+- is libffi hit by the ABI change as well?
+
+	Matthias
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
