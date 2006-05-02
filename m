@@ -1,19 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Bug#364231: [parisc-linux] Re: Bug#364231: exception catching
-Date: Mon, 1 May 2006 09:56:41 -0400 (EDT)
-Message-ID: <200605011356.k41DugMD023580__17646.4157797911$1416624078$gmane$org@hiauly1.hia.nrc.ca>
-References: <20060501025703.GL18891@mauritius.dodds.net>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Heavy Iron Reference Docs
+Date: Tue, 2 May 2006 00:00:28 -0600
+Message-ID: <20060502060028.GA14414@colo.lackof.org>
+References: <20060430171331.GB1358@skunkworks.cabal.ca>
+	<200604302125.k3ULPDl5016370@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: steven.robbins@videotron.ca,
- 364231@bugs.debian.org,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: vorlon@debian.org (Steve Langasek)
+  charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060501025703.GL18891@mauritius.dodds.net> from "Steve
-	Langasek" at Apr 30, 2006 07:57:03 pm
+In-Reply-To: <200604302125.k3ULPDl5016370@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,32 +22,51 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Er, no; we're talking about official Debian packages here, and the
-> libstdc++.so.6 in Debian is now from gcc-4.1.  The problem is precisely that
-> GMP *is* being built using gcc-4.0, but libstdc++ is from gcc-4.1, resulting
-> in the double libgcc_s problem.
+On Sun, Apr 30, 2006 at 05:25:13PM -0400, John David Anglin wrote:
+...
+> I also suggest using an ordered store for the unlock operation.  This
+> doesn't cost anything and may help to ensure that the order of memory
+> accesses as seen by another processor occur in the expected sequence.
 
-Then, you must build *eveything* for hppa with gcc-4.1 or later.
+I've had it drilled into my head that all parisc implmentations
+have strongly ordered memory subsystems. John Marvin (jsm) has
+stated that more than a few times on this list. So "ordered store"
+is the same as a regular store.
 
-Unfortunately, there's an ABI break.  Mixing libraries compiled with
-4.0 or earlier with libraries compiled with 4.1 or later is just going
-to cause unnecessary problems.   3.3 uses libstdc++.so.5, so you
-avoid the double libgcc_s problem building GMP.  However, you still
-have the ABI change affecting the passing and return of complex types.
+> It all comes down to this crucial bit of code in the ldcw description:
 
-At a fundamental level, libstdc++.so.6, libgfortran.so.1.0.0 and any
-other gcc libraries built with 4.1 or later need glibc built with 4.1
-to function correctly because of the various complex functions in
-the math library.
+I'd rather have someone like Jerry Huck or someone in his experience
+comment on this before we go down this path.  I'll try to find
+someone to consult with this week.
 
-I think there's a dynamic loader bug here as well.  I'm just
-guessing but I think the double libgcc_s problem causes a problem
-with the handling of .eh_frame data.
+...
+> It may be this is only reliable on fully coherent systems.  While
+> the N-class is classified as a UMA machine, it has two system buses
+> separated by a memory controller.  Each system bus can handle four
+> processors with L1 and L2 cache.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+AFAIK, N-class has no L2 cache.
+
+But it's worse than you think.
+N-class has two _Merced_ busses connected to the memory controller. 
+Each Processor is connected via a double pumped Runway Bus to "Dew"
+which acts as a "bridge" to one of the Merced Busses.
+
+[ Digression - certain document says:
+	In PA-RISC, code fetches are non-coherent, such that PCX-W doesn't
+	even supply Vindex bits that would allow the code fetches to be
+	coherent.
+]
+
+> Thus, it would seem safer to adopt
+> the prewrite and use ldcw without the cache control completer.
+
+I'm skeptical but will ask about this.
+Maybe I'm thinking kernel space only...is this intended only for
+user space or for kernel also?
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
