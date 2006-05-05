@@ -1,23 +1,16 @@
-From: Aurelien Jarno <aurel32@debian.org>
-Subject: Re: Bug#364231: [parisc-linux] Re: Bug#364231: exception catching
-Date: Fri, 05 May 2006 05:48:12 +0200
-Message-ID: <445ACAFC.2060307__4599.89350424639$1416624081$gmane$org@debian.org>
-References: <20060501025703.GL18891@mauritius.dodds.net>	<200605011356.k41DugMD023580@hiauly1.hia.nrc.ca>
-	<17495.20549.807070.229385@gargle.gargle.HOWL>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: hppa64-...-gcc-4.1 annoying pb?
+Date: Fri, 5 May 2006 09:46:34 -0400 (EDT)
+Message-ID: <200605051346.k45DkZ9R019019@hiauly1.hia.nrc.ca>
+References: <IYS8WE$1149DA86EF81D47F85EBAF2CD08B40A2@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- 364231@bugs.debian.org,
- Steve Langasek <vorlon@debian.org>,
- steven.robbins@videotron.ca,
- debian-hppa@lists.debian.org,
- debian-glibc@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: Matthias Klose <doko@cs.tu-berlin.de>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <17495.20549.807070.229385@gargle.gargle.HOWL>
+In-Reply-To: <IYS8WE$1149DA86EF81D47F85EBAF2CD08B40A2@scarlet.be> from "Joel
+	Soete" at May 5, 2006 10:00:14 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,45 +21,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Matthias Klose wrote:
-> [should we drop parisc-linux?]
+> mmm, this seems to be a key;
+> this morming (to me), I rebuild 2.6.17-rc3-pa3 + your patch the 64bit kernel on:
+>     1/ the n4k + ulimit -v 524288 -> compile time nornal 
 > 
-> John David Anglin writes:
->>> Er, no; we're talking about official Debian packages here, and the
->>> libstdc++.so.6 in Debian is now from gcc-4.1.  The problem is precisely that
->>> GMP *is* being built using gcc-4.0, but libstdc++ is from gcc-4.1, resulting
->>> in the double libgcc_s problem.
->> Then, you must build *eveything* for hppa with gcc-4.1 or later.
->>
->> Unfortunately, there's an ABI break.  Mixing libraries compiled with
->> 4.0 or earlier with libraries compiled with 4.1 or later is just going
->> to cause unnecessary problems.   3.3 uses libstdc++.so.5, so you
->> avoid the double libgcc_s problem building GMP.  However, you still
->> have the ABI change affecting the passing and return of complex types.
->>
->> At a fundamental level, libstdc++.so.6, libgfortran.so.1.0.0 and any
->> other gcc libraries built with 4.1 or later need glibc built with 4.1
->> to function correctly because of the various complex functions in
->> the math library.
->>
->> I think there's a dynamic loader bug here as well.  I'm just
->> guessing but I think the double libgcc_s problem causes a problem
->> with the handling of .eh_frame data.
+>     2/ the b2k (default ulimit -v being ulimited) ->  page_alloc.c compilation 
+>        very long (even thought this only have 256Mb?)
 > 
-> 
-> Ok, coming back to the question of the system compiler on hppa for
-> etch. Assuming that hppa does want to do that:
-> 
-> - is glibc buildable with gcc-4.1 on hppa?
+> > This is on a machine with 1 GB.  I had found that the VM system
+> > could thrash and the system crash when it tried to allocate about
+> > 1 GB.
 
-Yes, and it seems to works nicely. People who want to try can fetch .deb 
-from http://people.debian.org/~aurel32/hppa/
+I think this is a UP problem.  When too much VM gets allocated
+to one process, it blocks some userspace kernel support.  The
+following assembler file was where I first noticed the problem:
 
+	.data
+foo:
+	.block -1
+
+Dave
 -- 
-   .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
-  : :' :  Debian developer           | Electrical Engineer
-  `. `'   aurel32@debian.org         | aurelien@aurel32.net
-    `-    people.debian.org/~aurel32 | www.aurel32.net
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
