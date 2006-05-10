@@ -1,14 +1,17 @@
-From: "Joel Soete" <soete.joel@tiscali.be>
-Subject: [parisc-linux] Re: some starting . of glibc test math filaures ;-)
-Date: Wed, 10 May 2006 09:44:59 +0200
-Message-ID: <IZ1HIZ$4144AA8344DB0FD4D72CB04BB67F306E@scarlet.be>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Just a question about a sba_iommu.c warning with
+	gcc 64bit (but not 32bit)?
+Date: Wed, 10 May 2006 16:13:14 -0400
+Message-ID: <20060510201314.GL32414@skunkworks.cabal.ca>
+References: <IZ1TQF$AB963885A7ABF163B254A190F47F10B6@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: dave <dave@hiauly1.hia.nrc.ca>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "carlos" <carlos@systemhalted.org>
+  charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ Parisc List <parisc-linux@lists.parisc-linux.org>
+To: Joel Soete <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <IZ1TQF$AB963885A7ABF163B254A190F47F10B6@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,50 +22,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On 5/9/06, Joel Soete <soete.joel@tiscali.be> wrote:
-> > > > If somebody still remember why, that could help me a bit.
-> > >
-> > > Probably the maxulps data on hppa is out of date. We've fixed one o=
-r two
-> > > cases from time to time, but there are probably other problems.
-> > >
-> > > Pls send a patch to fix this case.
-> > >
-> > Obvioulsy ;-)
-> >
-> 
-> Where is your ChangeLog?!  ;-)
-> 
-> I'm the hppa libc-ports maintainer. If you send me a well formed
-> ChangeLog and patch I can do the checkin.
-> 
-Appologies, I am not in use to manage project ;</ but I fully agree that
-changelogs and comments are even (if not more) important then code.
+On Wed, May 10, 2006 at 02:08:39PM +0200, Joel Soete wrote:
+> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1000: warning: value
+> computed is not used
 
-I just hope that the following will be convinen to you (I let you as
-maintainer ;-)):
---- glibc-ports/ChangeLog.hppa.Orig     2006-05-10 09:25:43.000000000 +02=
-00
-+++ glibc-ports/ChangeLog.hppa  2006-05-10 09:32:14.000000000 +0200
-@@ -1,3 +1,7 @@
-+2006-05-10  Carlos O'Donell  <carlos@systemhalted.org>
-+
-+       * sysdeps/hppa/fpu/libm-test-ulps: remove outdated lround maxulps=
-.
-+
- 2006-04-27  Carlos O'Donell  <carlos@systemhalted.org>
- 
-        * sysdeps/unix/sysv/linux/hppa/bits/fcntl.h: Include uio.h, and
---- glibc-ports/sysdeps/hppa/fpu/libm-test-ulps.Orig    2006-05-10 
-9:25:15.000000000 +0200
-+++ glibc-ports/sysdeps/hppa/fpu/libm-test-ulps 2006-05-10 09:26:56.00000=
-0000
-+0200
-@@ -479,11 +479,6 @@
- float: 1
- ifloat: 1
- 
--# lround
--Test "lround (1071930.0008) =3D=3D 1071930":
--double: -214511494
--idouble: -214511494
+lack of cast to (void)
+
+> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1767: warning:
+> initialization makes integer from pointer without a cast
+
+ioc_hpa should be void __iomem *
+
+> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1782: warning:
+> passing argument 1 of '__raw_readq' makes pointer from integ
+> er without a cast
+> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1784: warning:
+> passing argument 2 of '__raw_writeq' makes pointer from inte
+> ger without a cast
+
+rope_cfg and cfg_val should be void __iomem *
+
+> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1790: warning:
+> passing argument 2 of '__raw_writeq' makes pointer from inte
+> ger without a cast
+
+ioc_hpa should be void __iomem *
+
+> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1794: warning: value
+> computed is not used
+>
+
+lack of cast to (void) 
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
