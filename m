@@ -1,17 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Just a question about a sba_iommu.c warning with
-	gcc 64bit (but not 32bit)?
-Date: Wed, 10 May 2006 16:13:14 -0400
-Message-ID: <20060510201314.GL32414@skunkworks.cabal.ca>
-References: <IZ1TQF$AB963885A7ABF163B254A190F47F10B6@scarlet.be>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: (void) cast for READ_REG
+Date: Thu, 11 May 2006 11:25:17 -0600
+Message-ID: <20060511172517.GA22074@colo.lackof.org>
+References: <20060511063131.2B581494041@palinux.external.hp.com>
+	<20060511081639.GH12272@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- Parisc List <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IZ1TQF$AB963885A7ABF163B254A190F47F10B6@scarlet.be>
+In-Reply-To: <20060511081639.GH12272@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,37 +21,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, May 10, 2006 at 02:08:39PM +0200, Joel Soete wrote:
-> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1000: warning: value
-> computed is not used
+On Thu, May 11, 2006 at 02:16:39AM -0600, Matthew Wilcox wrote:
+> The void casts are just bogus.  Please take them out.
 
-lack of cast to (void)
+"bogus" isn't the word I would use.
+I agree with Kyle that we don't want that behavior for every function.
+But I want the compiler to tell me when we throw away return values
+we normally use.
 
-> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1767: warning:
-> initialization makes integer from pointer without a cast
+I'll remove them since your last commit makes the casts superfluous.
+And I don't recall why I opencoded READ_REG in the first place. :(
 
-ioc_hpa should be void __iomem *
-
-> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1782: warning:
-> passing argument 1 of '__raw_readq' makes pointer from integ
-> er without a cast
-> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1784: warning:
-> passing argument 2 of '__raw_writeq' makes pointer from inte
-> ger without a cast
-
-rope_cfg and cfg_val should be void __iomem *
-
-> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1790: warning:
-> passing argument 2 of '__raw_writeq' makes pointer from inte
-> ger without a cast
-
-ioc_hpa should be void __iomem *
-
-> /usr/src/linux-2.6.17-rc3-pa3/drivers/parisc/sba_iommu.c:1794: warning: value
-> computed is not used
->
-
-lack of cast to (void) 
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
