@@ -1,16 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [RFC] using 64bit wide registers with 32bit kernel
-Date: Sat, 13 May 2006 13:07:06 -0400 (EDT)
-Message-ID: <200605131707.k4DH765S029172@hiauly1.hia.nrc.ca>
-References: <7d01f9f00605130841v6185b06dybae82c9f9c77e2b4@mail.gmail.com>
+From: Herb Radford <herbr@magma.ca>
+Subject: [parisc-linux] B180 boot problem
+Date: Sat, 13 May 2006 15:21:17 -0400
+Message-ID: <7.0.1.0.1.20060513143945.01f61810@magma.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: T-Bone@parisc-linux.org (Thibaut VARENE)
+  charset=us-ascii;
+  format=flowed;
+  x-avg-checked=avg-ok-4F3E348F
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <7d01f9f00605130841v6185b06dybae82c9f9c77e2b4@mail.gmail.com>
-	from "Thibaut VARENE" at May 13, 2006 05:41:53 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,41 +19,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Two options from there:
-> 1) we claim what I'm trying to do should not be done on parisc-linux
-> => using ldd/std, MAX2 and other insns that rely on 64bit regs should
-> be prohibited by binutils for non-wide code (currently gcc/binutils
-> happily build my code with -mpa-risc-2-0, which generates level 2.0
-> non wide code)
+I have a B180 machine which was loaded with a version of linux back in 1993.
+I'm trying to start fresh and tried to boot the 3.1r2 cd 
+"debian-hppa-binary-1.iso" to install.
+I consistently get a mangled message just above the tux on the boot 
+screen which says something to the effect:
 
-Well, hpux supports using 64-bit registers in non-wide code, so
-I don't particularly like the idea that code generation changes
-between linux and hpux.  64-bit registers are a PA 2.0 feature
-and their use is independent of whether or not the processor is
-in wide mode.
+Kernel panic: Kernel Fault4/0xb0cr31:10....., IRQ sharing enabled
 
-> 2) we claim what I'm trying to do should be possible on parisc-linux
-> => we need to fix context switching in 32bit kernels.
+I have tried various burns at various speed of the same cd with the 
+same results.
+I have interacted with the IPL and tried setting some variations on a 
+"sensible" set of parameters to pass to the kernel.
+When I clear ALL the entries to be passed to the kernel, I get an 
+unable to mount root message so I started adding some root and initrd 
+items to the parameters.
+I just can't find the correct parameters to allow the box to boot!
 
-I believe that's the correct approach.  The context state needs to
-be updated for 64-bit userspace anyway.  HP-UX has some horrible
-macros like GetSSReg for accessing register values in context data
-(see pa/save_state.h).
+What is/are the correct set of parameters to be passed to the kernel?
 
-config.guess for the distinguishes narrow and wide hpux kernels
-(hppa2.0, hppa2.0n and hppa2.0w).  The hppa2.0 and hppa2.0n kernels
-are narrow and don't support 64-bit context information.  As far
-as I know, wide kernels support 64-bit context information for
-the 32-bit runtime.
+Regards, Herb
 
-The GMP library is one bit of code that attempts to make use of this
-capability.  It's a problem for GCC as there's no way to describe that
-a register is partially call clobbered.
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.1.392 / Virus Database: 268.5.6/338 - Release Date: 12/05/2006
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
