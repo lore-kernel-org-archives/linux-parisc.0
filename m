@@ -1,18 +1,17 @@
-From: Joel Soete <soete.joel@tiscali.be>
-Subject: [parisc-linux] Next step in glibc test math failures analysis ;-)
-Date: Sun, 14 May 2006 12:06:25 +0000
-Message-ID: <44671D41.6010401@tiscali.be>
-References: <IZ03Y4$9E8A6266AB8A578EB25FE5A0BE2593A0@scarlet.be>
-	<119aab440605091805q741bba07i3d50aee4299e6d82@mail.gmail.com>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] [RFC] using 64bit wide registers with 32bit kernel
+Date: Sun, 14 May 2006 00:32:33 +0200
+Message-ID: <7d01f9f00605131532n39626580j370336a67c98e0af@mail.gmail.com>
+References: <7d01f9f00605130841v6185b06dybae82c9f9c77e2b4@mail.gmail.com>
+	<1147539787.6632.7.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
+  charset=ISO-8859-1;
   format=flowed
-Cc: dave <dave@hiauly1.hia.nrc.ca>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: "James Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440605091805q741bba07i3d50aee4299e6d82@mail.gmail.com>
+In-Reply-To: <1147539787.6632.7.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,137 +22,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On 5/13/06, James Bottomley <James.Bottomley@steeleye.com> wrote:
+> On Sat, 2006-05-13 at 17:41 +0200, Thibaut VARENE wrote:
+> > 1) we claim what I'm trying to do should not be done on parisc-linux
+> > =3D> using ldd/std, MAX2 and other insns that rely on 64bit regs should
+> > be prohibited by binutils for non-wide code (currently gcc/binutils
+> > happily build my code with -mpa-risc-2-0, which generates level 2.0
+> > non wide code)
+>
+> I really don't think doubling the size of our register file on all tasks
+> and doubling the size of the saved registers on stack for interruptions
+> is really a sensible thing to do just so some multi-media extension can
+> be made to work.
 
+that's not my point. It's not only about "some multimedia extension".
+It's about being able to do 64bit logic on 64bit-wide registers with
+32bit kernels...
 
-Hello all,
+> > 2) we claim what I'm trying to do should be possible on parisc-linux
+> > =3D> we need to fix context switching in 32bit kernels.
+> >
+> > Comments?
+>
+> There is a third possibility, and that's to execute the instruction in
+> the kernel where there wouldn't be a danger of context switches, where
+> the return values could be packaged properly and where it could be
+> emulated if necessary.  It would be nice to use a vDSO for this, but I
+> suspect Carlos' lightweight semaphore infrastructure can be pressed into
+> service for this.
 
-Next investigation are obviously:
-/CAD/parisc-linux/Dpkg/dpkg-work/glibc-2.3.6/build-tree/hppa-libc/math/test-float.out
-::::::::::::::
-testing float (without inline functions)
-Failure: Real part of: cacos (inf + NaN i) == NaN + inf i plus sign of zero/inf not specified: Exception "Invalid operation" set
-Failure: Real part of: cacos (-inf + NaN i) == NaN + inf i plus sign of zero/inf not specified: Exception "Invalid operation" set
-Failure: Real part of: cacos (NaN + inf i) == NaN - inf i: Exception "Invalid operation" set
-Failure: Real part of: cacos (NaN - inf i) == NaN + inf i: Exception "Invalid operation" set
-Failure: Real part of: cacos (NaN + NaN i) == NaN + NaN i: Exception "Invalid operation" set
-Failure: Real part of: ccosh (inf + NaN i) == inf + NaN i: Exception "Invalid operation" set
-Failure: Real part of: ccosh (-inf + NaN i) == inf + NaN i: Exception "Invalid operation" set
-Failure: Real part of: cpow (NaN + NaN i, NaN + NaN i) == NaN + NaN i: Exception "Invalid operation" set
-Failure: Real part of: csinh (0.0 + NaN i) == 0.0 + NaN i plus sign of zero/inf not specified: Exception "Invalid operation" set
-Failure: Real part of: csinh (-0 + NaN i) == 0.0 + NaN i plus sign of zero/inf not specified: Exception "Invalid operation" set
-Failure: Real part of: csinh (inf + NaN i) == inf + NaN i plus sign of zero/inf not specified: Exception "Invalid operation" set
-Failure: Real part of: csinh (-inf + NaN i) == inf + NaN i plus sign of zero/inf not specified: Exception "Invalid operation" set
+If by "executing the instruction" you mean one specific insn, that
+sounds like a nightmare to me. I've got some routines asm-optimized
+that are about 15 lines of asm. Each of these routines handle packs of
+16 pixels. On a 640x480@25fps movie for instance, these routines would
+typically be called at least 480000 times per second, and they're
+expected to be executed as fast as possible (which is the whole point
+of doing them in hand crafted asm)...
 
-First thought, the reported failure is very unrelevent: the actual pb is not related to computed value but well because cacos() let 
-fpu flag with "Invalid operation" set. So imho this 1st patch:
---- libm-test.inc.Orig 2006-05-12 12:02:10.000000000 +0000
-+++ libm-test.inc 2006-05-12 15:39:31.000000000 +0000
-@@ -549,14 +549,19 @@
-    int part_xfail;
-    char str[200];
+I don't know about vDSO, but the thought of having to call something
+in the kernel in that perspective doesn't feel about right to me. I've
+been reading other archs optimizations, and all do straight forward
+asm computation.
 
-+  /* report first what computation did */
-+  test_exceptions (test_name, exception);
-+
-    sprintf (str, "Real part of: %s", test_name);
-    part_comp = __real__ computed;
-    part_exp = __real__ expected;
-    part_max_ulp = __real__ max_ulp;
-    part_xfail = __real__ xfail;
+What I'm looking for is a way to use the architecture to the best of
+its design, and said design comprises 64bit wide GPRs...
 
-+  /* Don't check again for exceptions, just pass through the
-+     zero/inf sign test.  */
-    check_float_internal (str, part_comp, part_exp, part_max_ulp, part_xfail,
--   exception, &real_max_error);
-+   exception & IGNORE_ZERO_INF_SIGN, &real_max_error);
+If that's not possible in parisc-linux, fine, I'd just like to have
+this clarified so I don't waste my time on pointless code :-)
 
-    sprintf (str, "Imaginary part of: %s", test_name);
-    part_comp = __imag__ computed;
-@@ -564,11 +569,8 @@
-    part_max_ulp = __imag__ max_ulp;
-    part_xfail = __imag__ xfail;
+HTH
 
--  /* Don't check again for exceptions, just pass through the
--     zero/inf sign test.  */
-    check_float_internal (str, part_comp, part_exp, part_max_ulp, part_xfail,
--   exception & IGNORE_ZERO_INF_SIGN,
--   &imag_max_error);
-+   exception & IGNORE_ZERO_INF_SIGN, &imag_max_error);
-  }
+T-Bone
 
-
-====<>====
-
-would better report the actual pb like this test:
-Failure: cacos (inf + NaN i) == NaN + inf i plus sign of zero/inf not specified: Exception "Invalid operation" set
-
-Would it have a chance to be accepted?
-
-That said, for now I just know that for the first failure only, the pb occure in:
-__complex__ float
-__cacosf (__complex__ float x)
-{
-   __complex__ float y;
-   __complex__ float res;
-
-   y = __casinf (x);
-
-   __real__ res = (float) M_PI_2 - __real__ y;
-   __imag__ res = -__imag__ y;
-
-   return res;
-}
-
-when the "_real_ res" is computed.
-
-The test "check_complex ("casin (inf + NaN i) == NaN + inf i plus sign of zero/inf not specified" pass well so the the computation 
-would be __real__ res = (double) M_PI_2 - NaN.
-
-And also seems to confirm my very first feeling: this formula is mathematicaly right but may be presents some lakes of numerical 
-implementation like is the brotherhood funct:
-__complex__ float
-__casinf (__complex__ float x)
-{
-   __complex__ float res;
-
-   if (isnan (__real__ x) || isnan (__imag__ x))
-     {
-       if (__real__ x == 0.0)
-         {
-           res = x;
-         }
-       else if (__isinff (__real__ x) || __isinff (__imag__ x))
-         {
-           __real__ res = __nanf ("");
-           __imag__ res = __copysignf (HUGE_VALF, __imag__ x);
-         }
-       else
-         {
-           __real__ res = __nanf ("");
-           __imag__ res = __nanf ("");
-         }
-     }
-   else
-     {
-       __complex__ float y;
-
-       __real__ y = -__imag__ x;
-       __imag__ y = __real__ x;
-
-       y = __casinhf (y);
-
-       __real__ res = __imag__ y;
-       __imag__ res = -__real__ y;
-     }
-
-   return res;
-}
-
-So my next question is: is some of you know a similar implementation of cacosf()? or what would be the results of cacosf() for 
-various limit figure with nan, 0.0 and infinity?
-
-Thanks in advance,
-	Joel
+--=20
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
