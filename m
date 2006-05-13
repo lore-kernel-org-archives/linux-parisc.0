@@ -1,18 +1,13 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Re: (void) cast for READ_REG
-Date: Thu, 11 May 2006 13:26:53 -0400
-Message-ID: <20060511172653.GA26547@skunkworks.cabal.ca>
-References: <20060511063131.2B581494041@palinux.external.hp.com>
-	<20060511081639.GH12272@parisc-linux.org>
-	<20060511172517.GA22074@colo.lackof.org>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: [parisc-linux] [RFC] using 64bit wide registers with 32bit kernel
+Date: Sat, 13 May 2006 17:41:53 +0200
+Message-ID: <7d01f9f00605130841v6185b06dybae82c9f9c77e2b4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060511172517.GA22074@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,23 +18,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, May 11, 2006 at 11:25:17AM -0600, Grant Grundler wrote:
-> "bogus" isn't the word I would use.
-> I agree with Kyle that we don't want that behavior for every function.
-> But I want the compiler to tell me when we throw away return values
-> we normally use.
-> 
-> I'll remove them since your last commit makes the casts superfluous.
-> And I don't recall why I opencoded READ_REG in the first place. :(
->
+Hi pa,
 
-I think the reason we were seeing the warnings, and weren't with, for
-example, printk(), is that le{32,64}_to_cpu is a macro and not a function.
+I've been writing a few optimized asm bits for ffmpeg, using MAX2
+insns and taking advantage of the fact that pa2.0 implements 64bit
+wide registers.
 
-And so we were actually discarding an assignment (statement with no
-effect in general...) rather than just discarding a return value.
+NOTE: i'm not using a 64bit address space at all. I'm just taking
+advantage of the fact that GRs can hold 64bit, as per architecture
+design. MAX2 insns need the full 64bit width, for instance.
 
+Yet, Randolph pointed out that it's likely that upon context switch,
+the upper 32bit of the registers i'm using would be thrown away.
 
+Two options from there:
+1) we claim what I'm trying to do should not be done on parisc-linux
+=3D> using ldd/std, MAX2 and other insns that rely on 64bit regs should
+be prohibited by binutils for non-wide code (currently gcc/binutils
+happily build my code with -mpa-risc-2-0, which generates level 2.0
+non wide code)
+
+2) we claim what I'm trying to do should be possible on parisc-linux
+=3D> we need to fix context switching in 32bit kernels.
+
+Comments?
+
+T-Bone
+
+--=20
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
