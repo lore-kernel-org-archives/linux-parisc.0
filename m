@@ -1,17 +1,16 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [RFC] using 64bit wide registers with 32bit kernel
-Date: Sun, 14 May 2006 00:43:36 +0200
-Message-ID: <7d01f9f00605131543p1458c0c9l55863d71f1a039d8@mail.gmail.com>
-References: <7d01f9f00605130841v6185b06dybae82c9f9c77e2b4@mail.gmail.com>
-	<200605131707.k4DH765S029172@hiauly1.hia.nrc.ca>
+Date: Sat, 13 May 2006 19:35:48 -0400 (EDT)
+Message-ID: <200605132335.k4DNZmAY002050@hiauly1.hia.nrc.ca>
+References: <7d01f9f00605131543p1458c0c9l55863d71f1a039d8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: T-Bone@parisc-linux.org (Thibaut VARENE)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200605131707.k4DH765S029172@hiauly1.hia.nrc.ca>
+In-Reply-To: <7d01f9f00605131543p1458c0c9l55863d71f1a039d8@mail.gmail.com>
+	from "Thibaut VARENE" at May 14, 2006 00:43:36 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,62 +21,58 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 5/13/06, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> > Two options from there:
-> > 1) we claim what I'm trying to do should not be done on parisc-linux
-> > =3D> using ldd/std, MAX2 and other insns that rely on 64bit regs should
-> > be prohibited by binutils for non-wide code (currently gcc/binutils
-> > happily build my code with -mpa-risc-2-0, which generates level 2.0
-> > non wide code)
->
-> Well, hpux supports using 64-bit registers in non-wide code, so
-> I don't particularly like the idea that code generation changes
-> between linux and hpux.  64-bit registers are a PA 2.0 feature
-> and their use is independent of whether or not the processor is
-> in wide mode.
+> > I believe that's the correct approach.  The context state needs to
+> > be updated for 64-bit userspace anyway.  HP-UX has some horrible
+> > macros like GetSSReg for accessing register values in context data
+> > (see pa/save_state.h).
+> 
+> As James pointed out, fixing this means doubling the size of saved
+> registers on stack...
 
-Yes I took back the wrong implication in a subsequent post.
-I'm glad to hear that, that sounds sensible to me.
+I believe that we already save 64 bits when CONFIG_64BIT is true.  See
+assembly.h.
 
-> > 2) we claim what I'm trying to do should be possible on parisc-linux
-> > =3D> we need to fix context switching in 32bit kernels.
->
-> I believe that's the correct approach.  The context state needs to
-> be updated for 64-bit userspace anyway.  HP-UX has some horrible
-> macros like GetSSReg for accessing register values in context data
-> (see pa/save_state.h).
+> There I'm a bit confused. Correct me if I'm wrong, but to be able to
+> effectively use 64bit registers you need the kernel to save 64bit
+> registers on context switch? So if the narrow kernel doesn't support
+> 64bit context information (as it's currently the case with
+> parisc-linux), you can't use them?
 
-As James pointed out, fixing this means doubling the size of saved
-registers on stack...
+64-bit kernels run in wide mode, so they have to save/restore 64bit
+registers.  It's certainly not much of an extension to save 64 bits
+on user context changes.
 
-> config.guess for the distinguishes narrow and wide hpux kernels
-> (hppa2.0, hppa2.0n and hppa2.0w).  The hppa2.0 and hppa2.0n kernels
-> are narrow and don't support 64-bit context information.  As far
-> as I know, wide kernels support 64-bit context information for
-> the 32-bit runtime.
->
-> The GMP library is one bit of code that attempts to make use of this
-> capability.  It's a problem for GCC as there's no way to describe that
-> a register is partially call clobbered.
+> Are you trying to say that userspace code shouldn't be using the full
+> registers width when running a 32bit (narrow) kernel?
 
-There I'm a bit confused. Correct me if I'm wrong, but to be able to
-effectively use 64bit registers you need the kernel to save 64bit
-registers on context switch? So if the narrow kernel doesn't support
-64bit context information (as it's currently the case with
-parisc-linux), you can't use them?
+I don't believe that it's impossible to support the full register width
+with a 32bit (narrow) kernel.  However, hpux to my knowledge doesn't
+support 64-bit registers when using a narrow kernel.  I think this
+reflects the historical development of hpux.  The first PA 2.0 kernels
+were narrow and based on the 32-bit PA 1.1 implementation.  Wide kernels
+were introduced with HP-UX 11.
 
-Are you trying to say that userspace code shouldn't be using the full
-registers width when running a 32bit (narrow) kernel?
+> If so, how can hpux support using 64bit registers in non wide mode?
+> Upon any context switch, their content would be messed up if only half
+> of it is saved...
 
-If so, how can hpux support using 64bit registers in non wide mode?
-Upon any context switch, their content would be messed up if only half
-of it is saved...
+Sure.  The hpux context has various flag bits (e.g. SS_WIDEREGS
+and SS_NARROWISINVALID) to handle the various differences between
+the PA 1.0, 1.1 and 2.0 architectures.  There was a change in
+the number of floating point registers between 1.0 and 1.1, and
+in the accessibility of the left and right halves.
 
-T-Bone
+Personally, I think the wide register support is most important
+when running a 64-bit kernel and that's the place it would be
+easiest to implement.  I can see that there are situations where
+it would be nice to use 64-bit registers on a narrow kernel but
+this would change the size of register files, the context passed
+to signal handlers, etc.
 
---=20
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
