@@ -1,16 +1,20 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [RFC] using 64bit wide registers with 32bit kernel
-Date: Sat, 13 May 2006 19:35:48 -0400 (EDT)
-Message-ID: <200605132335.k4DNZmAY002050@hiauly1.hia.nrc.ca>
-References: <7d01f9f00605131543p1458c0c9l55863d71f1a039d8@mail.gmail.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [parisc-linux] Re: Next step in glibc test math failures analysis ;
+	-)
+Date: Sun, 14 May 2006 17:34:01 -0400
+Message-ID: <119aab440605141434s1090ffb5k5322d14d3d959da8@mail.gmail.com>
+References: <IZ03Y4$9E8A6266AB8A578EB25FE5A0BE2593A0@scarlet.be>
+	<119aab440605091805q741bba07i3d50aee4299e6d82@mail.gmail.com>
+	<44671D41.6010401@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: T-Bone@parisc-linux.org (Thibaut VARENE)
+  charset=ISO-8859-1;
+  format=flowed
+Cc: dave <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Joel Soete" <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <7d01f9f00605131543p1458c0c9l55863d71f1a039d8@mail.gmail.com>
-	from "Thibaut VARENE" at May 14, 2006 00:43:36 am
+In-Reply-To: <44671D41.6010401@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,58 +25,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > I believe that's the correct approach.  The context state needs to
-> > be updated for 64-bit userspace anyway.  HP-UX has some horrible
-> > macros like GetSSReg for accessing register values in context data
-> > (see pa/save_state.h).
-> 
-> As James pointed out, fixing this means doubling the size of saved
-> registers on stack...
+> So my next question is: is some of you know a similar implementation of c=
+acosf()?
+> or what would be the results of cacosf() for various limit figure with na=
+n, 0.0 and infinity?
 
-I believe that we already save 64 bits when CONFIG_64BIT is true.  See
-assembly.h.
+Is the problem the setting of the V-bit by the operation?
 
-> There I'm a bit confused. Correct me if I'm wrong, but to be able to
-> effectively use 64bit registers you need the kernel to save 64bit
-> registers on context switch? So if the narrow kernel doesn't support
-> 64bit context information (as it's currently the case with
-> parisc-linux), you can't use them?
+The value of  "cacos (inf + NaN i)" is  "NaN + inf i", the problem is
+that after the test the processor has turned on the V bit to indicate
+that the operation is invalid.
 
-64-bit kernels run in wide mode, so they have to save/restore 64bit
-registers.  It's certainly not much of an extension to save 64 bits
-on user context changes.
+In 10-9 of the PA 2.0 book there is a complete description of what
+should and should
+not trigger an "invalid" exception.
 
-> Are you trying to say that userspace code shouldn't be using the full
-> registers width when running a 32bit (narrow) kernel?
+Do we have a case of:
+1. Any arithmetic operation on a signaling NaN except for conversion
+to integer formats.
+2. Magnitude subtraction of intinities like (+inf + -inf)
+3. Multiplication of 0 and inf
+4. The division operations 0/0 and inf/inf
+5. Square root if the operand is less than zero
+6. Inproper comparison operations
+7. Conversion to integer format as in table 10-6.
 
-I don't believe that it's impossible to support the full register width
-with a 32bit (narrow) kernel.  However, hpux to my knowledge doesn't
-support 64-bit registers when using a narrow kernel.  I think this
-reflects the historical development of hpux.  The first PA 2.0 kernels
-were narrow and based on the 32-bit PA 1.1 implementation.  Wide kernels
-were introduced with HP-UX 11.
-
-> If so, how can hpux support using 64bit registers in non wide mode?
-> Upon any context switch, their content would be messed up if only half
-> of it is saved...
-
-Sure.  The hpux context has various flag bits (e.g. SS_WIDEREGS
-and SS_NARROWISINVALID) to handle the various differences between
-the PA 1.0, 1.1 and 2.0 architectures.  There was a change in
-the number of floating point registers between 1.0 and 1.1, and
-in the accessibility of the left and right halves.
-
-Personally, I think the wide register support is most important
-when running a 64-bit kernel and that's the place it would be
-easiest to implement.  I can see that there are situations where
-it would be nice to use 64-bit registers on a narrow kernel but
-this would change the size of register files, the context passed
-to signal handlers, etc.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
