@@ -1,14 +1,17 @@
-From: Herb Radford <herbr@magma.ca>
-Subject: [parisc-linux] B180 boot problem
-Date: Sat, 13 May 2006 15:21:17 -0400
-Message-ID: <7.0.1.0.1.20060513143945.01f61810@magma.ca>
+From: John Marvin <jsm@fc.hp.com>
+Subject: Re: [parisc-linux] [RFC] using 64bit wide registers with 32bit kernel
+Date: Sat, 13 May 2006 23:06:59 -0600
+Message-ID: <4466BAF3.8060608@fc.hp.com>
+References: <200605132335.k4DNZmAY002050@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed;
-  x-avg-checked=avg-ok-4F3E348F
-To: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org,
+ Thibaut VARENE <T-Bone@parisc-linux.org>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200605132335.k4DNZmAY002050@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,34 +22,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I have a B180 machine which was loaded with a version of linux back in 1993.
-I'm trying to start fresh and tried to boot the 3.1r2 cd 
-"debian-hppa-binary-1.iso" to install.
-I consistently get a mangled message just above the tux on the boot 
-screen which says something to the effect:
+John David Anglin wrote:
 
-Kernel panic: Kernel Fault4/0xb0cr31:10....., IRQ sharing enabled
+> 
+> I don't believe that it's impossible to support the full register width
+> with a 32bit (narrow) kernel.  However, hpux to my knowledge doesn't
+> support 64-bit registers when using a narrow kernel.  I think this
+> reflects the historical development of hpux.  The first PA 2.0 kernels
+> were narrow and based on the 32-bit PA 1.1 implementation.  Wide kernels
+> were introduced with HP-UX 11.
+> 
 
-I have tried various burns at various speed of the same cd with the 
-same results.
-I have interacted with the IPL and tried setting some variations on a 
-"sensible" set of parameters to pass to the kernel.
-When I clear ALL the entries to be passed to the kernel, I get an 
-unable to mount root message so I started adding some root and initrd 
-items to the parameters.
-I just can't find the correct parameters to allow the box to boot!
+You are correct.
 
-What is/are the correct set of parameters to be passed to the kernel?
+If you are running a 32 bit version of hpux on a 64 bit machine then the 
+upper halfs of registers are not saved. I will note that there are not 
+many (and may no longer be any) 64 bit machines that HP supports running 
+a 32 bit kernel on.
 
-Regards, Herb
+If you are running a 64 bit version of hpux then the upper halfs of 
+registers are saved during context switches, even if you are running a 
+32 bit app. It gets interesting in a signal handler, since the registers 
+are saved in the signal context twice, i.e. the 32 bit lower halfs are 
+saved in one place (for backwards object compatibility), and then the 64 
+bit versions are saved in another. I forget all the details about what 
+happens if you want to change the saved value in the signal context.
 
-
--- 
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.1.392 / Virus Database: 268.5.6/338 - Release Date: 12/05/2006
-
-
+John
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
