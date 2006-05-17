@@ -1,12 +1,44 @@
-From: "pyrotek" <pyrotek@internode.on.net>
-Subject: [parisc-linux] Question on video cards.
-Date: Wed, 31 May 2006 14:03:03 +1000
-Message-ID: <1149048178_22889@mail.internode.on.net>
-Reply-To: pyrotek@internode.on.net
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: [parisc-linux] [RFC PATCH 00/09] robust VM per_cpu variables
+Date: Wed, 17 May 2006 05:54:39 -0400 (EDT)
+Message-ID: <Pine.LNX.4.58.0605170547490.8408__13175.347451079$1416624592$gmane$org@gandalf.stny.rr.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="US-ASCII"
-To: <parisc-linux@lists.parisc-linux.org>
+Content-Type: MULTIPART/MIXED;
+  BOUNDARY="8323328-688922444-1147859679=:8408"
+Cc: Andrew Morton <akpm@osdl.org>,
+ linux-mips@linux-mips.org,
+ David Mosberger-Tang <davidm@hpl.hp.com>,
+ linux-ia64@vger.kernel.org,
+ Martin Mares <mj@atrey.karlin.mff.cuni.cz>,
+ spyro@f2s.com,
+ Joe Taylor <joe@tensilica.com>,
+ linuxppc-dev@ozlabs.org,
+ Paul Mackerras <paulus@samba.org>,
+ benedict.gaster@superh.com,
+ sam@ravnborg.org,
+ bjornw@axis.com,
+ kenneth.w.chen@intel.com,
+ Ingo Molnar <mingo@elte.hu>,
+ kiran@scalex86.org,
+ clameter@sgi.com,
+ Nick Piggin <nickpiggin@yahoo.com.au>,
+ arnd@arndb.de,
+ Rusty Russell <rusty@rustcorp.com.au>,
+ starvik@axis.com,
+ Linus Torvalds <torvalds@osdl.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ rth@twiddle.net,
+ Chris Zankel <chris@zankel.net>,
+ tony.luck@intel.com,
+ Andi Kleen <ak@suse.de>,
+ ralf@linux-mips.org,
+ Marc Gauthier <marc@tensilica.com>,
+ lethal@linux-sh.org,
+ schwidefsky@de.ibm.com,
+ linux390@de.ibm.com,
+ davem@davemloft.net,
+ pari
+To: LKML <linux-kernel@vger.kernel.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,33 +50,131 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-Hello all,
+--8323328-688922444-1147859679=:8408
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-I know this topic has been done to death. And I have read quite a lot in the
-mailing list archives.
-If I've missed something please feal free to point me in the right
-direction.
+(I tried to include all arch maintianers and memory maintainers, if I
+missed someone, please let me know).
 
-I've got a Fx10 (grumbles)
-I don't want to go back to a Vis-EG 8bit colour no thanks I use the Fx10 in
-Hp-UX
 
->>From my limited understanding "some" PCI video cards "may" work.
+OK, as promised, I've got a working VM percpu solution.
 
-I have read that the voodoo 2 card "should" work?
->>From my memory this was a PCI card that connected to your main video card
-via a small vga cable. is this the card everyone is talking about?
-If so can I piggy back it off my FX10? Or do I need to use it by it self?
+A little history: please read the thread http://lkml.org/lkml/2006/4/14/137
 
-Can anyone confirm that this works?
+Preivously I noticed that the per_cpu variables were implemented with
+a little hack that Rusty Russell wrote up.  I call it a hack because,
+for modules an arbitrary number was used to hold all per_cpu variables
+that would be used in the kernel or in modules.  If this number was too
+big, you waste the memory that is allocated for it, and if it were
+too small, you wont be able to load all the modules that are required.
 
-Also has any one tested this? 8MB 3dfx Voodoo Banshee PCI?
+My first attempt to fix this introduced another dereference, to allow
+for modules to allocate their own memory.  This was quickly shot down,
+and for good reason, because dereferences kill performance, and don't
+play nice with large SMP systems that depend on per_cpu being fast.
 
-Thanks
-Brendan
+But that first attempt had one benefit.  It had good responses on how
+to actually fix the problem.  Without the first try, I would not have
+tried this approach.
+
+So what is this solution?
+
+I now place the per_cpu variables into VM, such that the pages are
+only allocated when needed. All the architecture needs to do is
+supply a VM address range, size for each CPU to use (note this
+implementation expects all the VM CPU areas to be together), and
+three functions to allow for allocating page tables at bootup.
+
+The bootup page table allocations are needed because the percpu
+variables are used before the system initializes the memory. So
+bootmem is needed to load the page tables.
+
+But that's it!  No more hacks for architectures with lots of CPUS and
+NUMA to implement their own percpu algorithms.  They just supply the
+functions to allocate the variables, and the memory will be loaded
+appropriately.  So all architectures with VM can use the generic
+solution.  Does the main-line kernel support any architectures that
+doesn't have a VM?
+
+Another benefit is that this approach removes the one redirection that
+was already used in the generic solution.  Since the virtual memory
+of the architecture for the per_cpu is static, the calculation to
+find the variable is done with constants.  So this is another win
+for this solution.
+
+So the three things that this patch gives us are:
+
+1) Robust per_cpu.  No more guessing the size of the per_cpu variable
+   sections.  Default VM is 1 Meg per cpu.  If you use more than that
+   I guess you're SOL.
+
+2) Generic solution for all architectures.  No more fancy hacks to
+   get the per cpu offest.
+
+3) Removes the inderection of the current per_cpu generic solution.
+
+The set of patches that I have implement this for the i386 architecture
+and lays out the ground work for others.  The i386 implementation I did
+was mainly a hack.  Nick Piggin suggested that before I do too much
+work, I should post my stuff and ask for comments.  That's what I'm doing
+now.
+
+This patch set works for my laptop (P4 HT) and I haven't tested
+it with any other configuration.  The implementation that I did for
+i386 was only to get it to work and is not flexible.  It needs much
+better implementation, and I ask for help with that.
+
+I basically concentrated to the core stuff.  Another nice thing about
+this patch set is that it needs both CONFIG_HAS_VM_PERCPU and
+__ARCH_HAS_VM_PERCPU to take advantage of the VM percpu implementation.
+Without these set, it defaults to the old usage.  This way we
+can slowly implement each architecture, in an incremental fashion.
+
+OK, let'er rip. Flame me, yell at me, curse me, but please give me
+feedback.
+
+Thanks for your time.
+
+-- Steve
+
+PS. The attached module was used to test this patch on my laptop.
+
+
+--8323328-688922444-1147859679=:8408
+Content-Type: TEXT/x-csrc; charset=US-ASCII; name="per_cpu.c"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.58.0605170554390.8408@gandalf.stny.rr.com>
+Content-Description: 
+Content-Disposition: attachment; filename="per_cpu.c"
+
+I2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KI2luY2x1ZGUgPGxpbnV4L3Bl
+cmNwdS5oPg0KDQojZGVmaW5lIEJJR19TSVpFIDQyMDANCkRFRklORV9QRVJf
+Q1BVKGludCAsIGJpZ2FycmF5W0JJR19TSVpFXSk7DQoNCnN0YXRpYyBpbnQg
+X19pbml0IHBlcmNwdV9pbml0KHZvaWQpDQp7DQoJaW50IGksIHg7DQoJZm9y
+IChpPTA7IGNwdV9wb3NzaWJsZShpKSA7IGkrKykNCgkJZm9yICh4PTA7IHgg
+PCBCSUdfU0laRTsgeCsrKSB7DQoJCQlpZiAoISh4JTEwMCkpDQoJCQkJcHJp
+bnRrKCJwcm9jZXNzaW5nICVkOiVkXG4iLCBpLCB4KTsNCgkJCXBlcl9jcHUo
+YmlnYXJyYXlbeF0sIGkpID0gMTAwMDAgKyB4Ow0KCQl9DQoJcmV0dXJuIDA7
+DQp9DQoNCnN0YXRpYyB2b2lkIF9fZXhpdCBwZXJjcHVfZXhpdCh2b2lkKQ0K
+ew0KCWludCBpOw0KDQoJZm9yIChpPTE7IGkgPCBCSUdfU0laRTsgaSA8PD0g
+MSkNCgkJcHJpbnRrKCJiaWdhcnJheVslZF0gPSAlZFxuIiwgaSwgcGVyX2Nw
+dShiaWdhcnJheVtpXSwwKSk7DQp9DQoNCm1vZHVsZV9pbml0KHBlcmNwdV9p
+bml0KTsNCm1vZHVsZV9leGl0KHBlcmNwdV9leGl0KTsNCg0KTU9EVUxFX0FV
+VEhPUigiTXkgbmFtZSBoZXJlIik7DQpNT0RVTEVfREVTQ1JJUFRJT04oInBl
+cmNwdSEiKTsNCk1PRFVMRV9MSUNFTlNFKCJHUEwiKTsNCg0K
+
+--8323328-688922444-1147859679=:8408
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--8323328-688922444-1147859679=:8408--
