@@ -1,17 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Next step in glibc test math failures analysis
-	;
-Date: Tue, 16 May 2006 10:28:45 -0400 (EDT)
-Message-ID: <200605161428.k4GESjPE025534@hiauly1.hia.nrc.ca>
-References: <IZD40G$E184A44107684D193BCA87FBC6894626@scarlet.be>
+Subject: Re: [parisc-linux] Re: hppa64-...-gcc-4.1 annoying pb?
+Date: Fri, 19 May 2006 09:28:25 -0400 (EDT)
+Message-ID: <200605191328.k4JDSPrm019529@hiauly1.hia.nrc.ca>
+References: <IZI5N7$BB103ABBA779B9B522CAFD57168EE63C@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
+Cc: kyle@mcmartin.ca,
+ parisc-linux@lists.parisc-linux.org
 To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <IZD40G$E184A44107684D193BCA87FBC6894626@scarlet.be> from "Joel
-	Soete" at May 16, 2006 04:24:16 pm
+In-Reply-To: <IZI5N7$BB103ABBA779B9B522CAFD57168EE63C@scarlet.be> from "Joel
+	Soete" at May 19, 2006 09:47:31 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,11 +22,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> pr #27627
-> include the test case and the precompile stuff.
+> Just a follow up; if I well uderstand, the compilation cmdl with -v option
+> return me:
+> [snip]
+> Thread model: single
+> gcc version 4.1.1 20060511 (prerelease) (Debian 4.1.0-4)
+>  /usr/lib/gcc/hppa64-linux-gnu/4.1.1/cc1 -quiet -nostdinc -v -Iinclude
+> -Iinclude2 -I/CAD/linux-2.6.17-rc4-pa1/include -I/CAD/linux-2.6.17-rc4-pa1/mm
+> -Imm -D__KERNEL__ -DKBUILD_STR(s)=#s -DKBUILD_BASENAME=KBUILD_STR(page_alloc)
+> -DKBUILD_MODNAME=KBUILD_STR(page_alloc) -isystem
+> /usr/lib/gcc/hppa64-linux-gnu/4.1.1/include -include include/linux/autoconf.h
+> -MD mm/.page_alloc.o.d /CAD/linux-2.6.17-rc4-pa1/mm/page_alloc.c -quiet
+> -dumpbase page_alloc.c -mno-space-regs -mfast-indirect-calls -mdisable-fpregs
+> -march=2.0 -mschedule=8000 -auxbase-strip mm/.tmp_page_alloc.o -O2 -Wall
+> -Wundef -Wstrict-prototypes -Wno-trigraphs -Wdeclaration-after-statement
+> -Wno-pointer-sign -version -fno-strict-aliasing -fno-common
+> -fomit-frame-pointer -ffunction-sections -o - |
+>  /usr/bin/hppa64-linux-gnu-as --traditional-format -V -o mm/.tmp_page_alloc.o -
 
-A simpler testcase is to simply print '__builtin_nanf("")' in hex.
-This is totally independent of the parisc-linux implementation.
+Joel, would you send me offline the preprocessed .i file for the above.
+I would like to try the compilation on a machine with more memory.  It's
+a bit surprising that most of the time is spent in the expand pass.
 
 Dave
 -- 
