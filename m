@@ -1,12 +1,15 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: [parisc-linux] Missing POSIX_MADV_* defines in bits/mman.h
-Date: Wed, 24 May 2006 01:39:30 +0200
-Message-ID: <20060524013930.c0b80171.gmsoft@tuxicoman.be>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] Missing POSIX_MADV_* defines in bits/mman.h
+Date: Wed, 24 May 2006 08:24:20 +0200
+Message-ID: <200605240824.20762.deller@gmx.de>
+References: <20060524013930.c0b80171.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="Multipart=_Wed__24_May_2006_01_39_30_+0200_s/yvmlKUVFcPV_Sj"
+Content-Type: text/plain;
+  charset="utf-8"
+Cc: Guy Martin <gmsoft@tuxicoman.be>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060524013930.c0b80171.gmsoft@tuxicoman.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,57 +20,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This is a multi-part message in MIME format.
+Hi Guy,
 
---Multipart=_Wed__24_May_2006_01_39_30_+0200_s/yvmlKUVFcPV_Sj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+On Wednesday 24 May 2006 01:39, Guy Martin wrote:
+> I was wondering why does the hppa glibc misses all the POSIX_MADV_* defines from bits/mman.h and jbailey confirmed that it's a bug and shouldn't be missing.
+> 
+> This trivial copy/paste patch attached fix this lack.
 
-Hi all,
+Thanks for noticing!
 
-I was wondering why does the hppa glibc misses all the POSIX_MADV_* defines from bits/mman.h and jbailey confirmed that it's a bug and shouldn't be missing.
+But your patch misses at least the "new" madvise() parameters as well:
+/* common/generic parameters */
+#define MADV_REMOVE     9               /* remove these pages & resources */
+#define MADV_DONTFORK   10              /* don't inherit across fork */
+#define MADV_DOFORK     11              /* do inherit across fork */
 
-This trivial copy/paste patch attached fix this lack.
+See: http://cvs.parisc-linux.org/linux-2.6/include/asm-parisc/mman.h?view=markup
 
-
-Cheers,
-  Guy
-
---Multipart=_Wed__24_May_2006_01_39_30_+0200_s/yvmlKUVFcPV_Sj
-Content-Type: text/x-patch;
- name="glibc-hppa-missing-POSIX_MADV.diff"
-Content-Disposition: attachment; filename="glibc-hppa-missing-POSIX_MADV.diff"
-Content-Transfer-Encoding: 7bit
-
-Add the missing POSIX bits for memory advisory information and alignment control on hppa.
-
-Signed-off-by: Guy Martin <gmsoft@tuxicoman.be>
-
-diff -uNr glibc-2.3.6.orig/sysdeps/unix/sysv/linux/hppa/bits/mman.h glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/bits/mman.h
---- glibc-2.3.6.orig/sysdeps/unix/sysv/linux/hppa/bits/mman.h	2006-05-23 23:58:44.000000000 +0200
-+++ glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/bits/mman.h	2006-05-23 23:59:18.000000000 +0200
-@@ -81,3 +81,12 @@
- #ifdef __USE_GNU
- # define MREMAP_MAYMOVE 1
- #endif
-+
-+/* The POSIX people had to invent similar names for the same things.  */
-+#ifdef __USE_XOPEN2K
-+# define POSIX_MADV_NORMAL	0 /* No further special treatment.  */
-+# define POSIX_MADV_RANDOM	1 /* Expect random page references.  */
-+# define POSIX_MADV_SEQUENTIAL	2 /* Expect sequential page references.  */
-+# define POSIX_MADV_WILLNEED	3 /* Will need these pages.  */
-+# define POSIX_MADV_DONTNEED	4 /* Don't need these pages.  */
-+#endif
-
---Multipart=_Wed__24_May_2006_01_39_30_+0200_s/yvmlKUVFcPV_Sj
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Helge
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---Multipart=_Wed__24_May_2006_01_39_30_+0200_s/yvmlKUVFcPV_Sj--
