@@ -1,44 +1,37 @@
-From: Helge Deller <deller@gmx.de>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [parisc-linux] Missing POSIX_MADV_* defines in bits/mman.h
-Date: Wed, 24 May 2006 08:24:20 +0200
-Message-ID: <200605240824.20762.deller@gmx.de>
+Date: Wed, 24 May 2006 11:24:49 -0400
+Message-ID: <119aab440605240824i84b0866x471036953efc8a01@mail.gmail.com>
 References: <20060524013930.c0b80171.gmsoft@tuxicoman.be>
+	 <200605240824.20762.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
-Cc: Guy Martin <gmsoft@tuxicoman.be>
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060524013930.c0b80171.gmsoft@tuxicoman.be>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org,
+ "Guy Martin" <gmsoft@tuxicoman.be>
+To: "Helge Deller" <deller@gmx.de>
+Return-Path: <patofiero@gmail.com>
+In-Reply-To: <200605240824.20762.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Guy,
+On 5/24/06, Helge Deller <deller@gmx.de> wrote:
+> Thanks for noticing!
+>
+> But your patch misses at least the "new" madvise() parameters as well:
+> /* common/generic parameters */
+> #define MADV_REMOVE     9               /* remove these pages & resources=
+ */
+> #define MADV_DONTFORK   10              /* don't inherit across fork */
+> #define MADV_DOFORK     11              /* do inherit across fork */
+>
+> See: http://cvs.parisc-linux.org/linux-2.6/include/asm-parisc/mman.h?view=
+=3Dmarkup
 
-On Wednesday 24 May 2006 01:39, Guy Martin wrote:
-> I was wondering why does the hppa glibc misses all the POSIX_MADV_* defines from bits/mman.h and jbailey confirmed that it's a bug and shouldn't be missing.
-> 
-> This trivial copy/paste patch attached fix this lack.
+Helge,
 
-Thanks for noticing!
+Be careful that these are the non-POSIX definitions. They also need to
+be added to glibc. I'll do that right now.
 
-But your patch misses at least the "new" madvise() parameters as well:
-/* common/generic parameters */
-#define MADV_REMOVE     9               /* remove these pages & resources */
-#define MADV_DONTFORK   10              /* don't inherit across fork */
-#define MADV_DOFORK     11              /* do inherit across fork */
-
-See: http://cvs.parisc-linux.org/linux-2.6/include/asm-parisc/mman.h?view=markup
-
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Cheersr,
+Carlos.
