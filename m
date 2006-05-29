@@ -1,12 +1,19 @@
-From: Chris Frost <chris@frostnet.net>
-Subject: [parisc-linux] ohci1394 and ioremap()
-Date: Sat, 27 May 2006 23:14:43 -0700
-Message-ID: <20060528061443.GA20234@pooh.cs.ucla.edu>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] Close to mainline for hppa-linux TLS.
+Date: Mon, 29 May 2006 11:41:48 -0400
+Message-ID: <119aab440605290841p284b297eo85f7031afbca421d@mail.gmail.com>
+References: <119aab440605260729m1fad24ccta84a2ada06c82c7a@mail.gmail.com>
+	<1148677068.21405.5.camel@localhost.localdomain>
+	<119aab440605261416q7997e5d5x3e4bd642cb662ccd@mail.gmail.com>
+	<1148784620.5626.0.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Jeff Bailey" <jbailey@raspberryginger.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <1148784620.5626.0.camel@localhost.localdomain>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,25 +24,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-In case this issue is unknown, when ohci1394_pci_probe() calls
-ioremap() a notice is printed that ioremap should not be used for
-non-cacheable memory regions. Changing ioremap() to ioremap_nocache()
-removes the message; both versions appear to be functional. This is
-with kernel 2.6.16-pa11 on a B1000/785.
+> > It's unverified, and should not be changed blindly because it's an ABI =
+change.
+>
+> Right.  I'm trolling for patches for Ubuntu. =3D)  The ABI change is what
+> caught my eye.
+>
+> Any sorts of testing reports that you're looking for?
 
-According to previous threads, it sounds like a more correct solution
-abstracts the ioremap call using the pci_iomap API:
-	http://www.mail-archive.com/netdev@vger.kernel.org/msg10410.html
+Nothing yet. Thanks to Randolph we caught a bug in asm/unistd.h that I
+introduce 2 years ago, and the include chain changes revealed the bug
+during the build.
 
-I no longer have the firewire card, and so can't comment much further, but
-wanted to mention the above just in case!
+TLS + Linuxthreads is our first target.
+NPTL is the next target.
 
--- 
-Chris Frost  |  <http://www.frostnet.net/chris/>
--------------+----------------------------------
-Public PGP Key:
-   Email chris@frostnet.net with the subject "retrieve pgp key"
-   or visit <http://www.frostnet.net/chris/about/pgp_key.phtml>
+All patches upstream is the goal.
+This will never happen for linuxthreads.
+This will happen for NPTL.
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
