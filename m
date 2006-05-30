@@ -1,19 +1,16 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] Close to mainline for hppa-linux TLS.
-Date: Mon, 29 May 2006 11:41:48 -0400
-Message-ID: <119aab440605290841p284b297eo85f7031afbca421d@mail.gmail.com>
-References: <119aab440605260729m1fad24ccta84a2ada06c82c7a@mail.gmail.com>
-	<1148677068.21405.5.camel@localhost.localdomain>
-	<119aab440605261416q7997e5d5x3e4bd642cb662ccd@mail.gmail.com>
-	<1148784620.5626.0.camel@localhost.localdomain>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: glibc tls linuxthreads failure baseline.
+Date: Tue, 30 May 2006 09:34:03 -0400 (EDT)
+Message-ID: <200605301334.k4UDY33E014007@hiauly1.hia.nrc.ca>
+References: <447BB7D0.7080603@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Jeff Bailey" <jbailey@raspberryginger.com>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: randolph@tausq.org (Randolph Chung)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1148784620.5626.0.camel@localhost.localdomain>
+In-Reply-To: <447BB7D0.7080603@tausq.org> from "Randolph Chung" at May 30,
+	2006 11:11:12 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,27 +21,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > It's unverified, and should not be changed blindly because it's an ABI =
-change.
->
-> Right.  I'm trolling for patches for Ubuntu. =3D)  The ABI change is what
-> caught my eye.
->
-> Any sorts of testing reports that you're looking for?
+> > make[2]: *** [/libc/math/test-float.out] Error 1
+> > make[2]: *** [/libc/math/test-double.out] Error 1
+> > make[2]: *** [/libc/math/test-ifloat.out] Error 1
+> > make[2]: *** [/libc/math/test-idouble.out] Error 1
+> > 
+> > Much of this is fixed by Joel's great work. New compiler building.
+> 
+> I see some weird failures in test-double.out ....
 
-Nothing yet. Thanks to Randolph we caught a bug in asm/unistd.h that I
-introduce 2 years ago, and the include chain changes revealed the bug
-during the build.
+Just a reminder, there is a difference in the handling of unaligned
+fixups for doubles on 32 and 64 bit kernels.  I installed a work
+around to libffi to avoid this failure as it's necessary on hpux.
 
-TLS + Linuxthreads is our first target.
-NPTL is the next target.
-
-All patches upstream is the goal.
-This will never happen for linuxthreads.
-This will happen for NPTL.
-
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
