@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: glibc tls linuxthreads failure baseline.
-Date: Tue, 30 May 2006 09:34:03 -0400 (EDT)
-Message-ID: <200605301334.k4UDY33E014007@hiauly1.hia.nrc.ca>
-References: <447BB7D0.7080603@tausq.org>
+Subject: Re: [parisc-linux] glibc tls linuxthreads failure baseline.
+Date: Tue, 30 May 2006 10:07:00 -0400 (EDT)
+Message-ID: <200605301407.k4UE71cL014247@hiauly1.hia.nrc.ca>
+References: <119aab440605291950w7f1f0022nd96fcdce3082bb44@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: randolph@tausq.org (Randolph Chung)
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <447BB7D0.7080603@tausq.org> from "Randolph Chung" at May 30,
-	2006 11:11:12 am
+In-Reply-To: <119aab440605291950w7f1f0022nd96fcdce3082bb44@mail.gmail.com>
+	from "Carlos O'Donell" at May 29, 2006 10:50:10 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,18 +21,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > make[2]: *** [/libc/math/test-float.out] Error 1
-> > make[2]: *** [/libc/math/test-double.out] Error 1
-> > make[2]: *** [/libc/math/test-ifloat.out] Error 1
-> > make[2]: *** [/libc/math/test-idouble.out] Error 1
-> > 
-> > Much of this is fixed by Joel's great work. New compiler building.
+> make[1]: *** [math/tests] Error 2
+> make[2]: *** [/libc/stdlib/tst-strtod.out] Error 1
+> make[2]: *** [/libc/stdlib/bug-strtod.out] Error 1
 > 
-> I see some weird failures in test-double.out ....
+> Usual long-double problem.
 
-Just a reminder, there is a difference in the handling of unaligned
-fixups for doubles on 32 and 64 bit kernels.  I installed a work
-around to libffi to avoid this failure as it's necessary on hpux.
+I thought we had agreed to treat long doubles as doubles...
+
+Debian has had a one-line glibc patch installed for some time to
+fix this and GCC has always treated long doubles as doubles on linux.
+I don't understand why you persist in leaving this bug in the upstream
+source.
+
+HP isn't going to release their ieee library and I had to disable using
+it with Ada on hpux because of bugs.  That only leaves the double-double
+extended format used by powerpc and mips.  Even if we decide to change
+the ABI again and add this support, this is a separate issue as far as
+I can tell.
+
+> make[1]: *** [stdlib/tests] Error 2
+> make[2]: [/libc/posix/annexc.out] Error 1 (ignored)
+> make[2]: *** [/libc/crypt/cert.out] Error 139
+> 
+> GCC optimizer bug.
+
+Is there a PR?
 
 Dave
 -- 
