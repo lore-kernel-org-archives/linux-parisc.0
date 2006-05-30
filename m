@@ -1,16 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] glibc tls linuxthreads failure baseline.
-Date: Tue, 30 May 2006 11:00:42 -0400 (EDT)
-Message-ID: <200605301500.k4UF0gk0014775@hiauly1.hia.nrc.ca>
-References: <200605301407.k4UE71cL014247@hiauly1.hia.nrc.ca>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [parisc-linux] glibc tls linuxthreads failure baseline.
+Date: Mon, 29 May 2006 22:50:10 -0400
+Message-ID: <119aab440605291950w7f1f0022nd96fcdce3082bb44@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ "Randolph Chung" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200605301407.k4UE71cL014247@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at May 30, 2006 10:07:00 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,33 +19,84 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > Usual long-double problem.
+Randolph,
 
-> Debian has had a one-line glibc patch installed for some time to
+This is the baseline failures I have for glibc tls linuxthreads:
 
-Patch is shown below.
+make[2]: *** [/libc/math/test-float.out] Error 1
+make[2]: *** [/libc/math/test-double.out] Error 1
+make[2]: *** [/libc/math/test-ifloat.out] Error 1
+make[2]: *** [/libc/math/test-idouble.out] Error 1
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Much of this is fixed by Joel's great work. New compiler building.
 
-2005-06-18  Carlos O'Donell <carlos@systemhalted.org>
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/libc/stdlib/tst-strtod.out] Error 1
+make[2]: *** [/libc/stdlib/bug-strtod.out] Error 1
 
-	* sysdeps/hppa/hppa1.1/Implies: Remove ldbl-128.
+Usual long-double problem.
 
-===================================================================
-RCS file: /var/lib/cvs/glibc/sysdeps/hppa/hppa1.1/Implies,v
-retrieving revision 1.2
-retrieving revision 1.3
-diff -u -r1.2 -r1.3
---- glibc/sysdeps/hppa/hppa1.1/Implies	2005/06/08 20:32:10	1.2
-+++ glibc/sysdeps/hppa/hppa1.1/Implies	2005/07/18 04:32:31	1.3
-@@ -1,4 +1,3 @@
- wordsize-32
- ieee754/flt-32
- ieee754/dbl-64
--ieee754/ldbl-128
+make[1]: *** [stdlib/tests] Error 2
+make[2]: [/libc/posix/annexc.out] Error 1 (ignored)
+make[2]: *** [/libc/crypt/cert.out] Error 139
+
+GCC optimizer bug.
+
+make[1]: *** [crypt/tests] Error 2
+make[2]: *** [/libc/linuxthreads/tst-clock1.out] Error 1
+
+This looks like a wrapper problem.
+
+make[2]: *** [/libc/linuxthreads/tst-attr1.out] Error 1
+
+Guard address problem.
+
+make[1]: *** [linuxthreads/tests] Error 2
+make[2]: *** [/libc/rt/tst-aio9.out] Error 1
+make[2]: *** [/libc/rt/tst-aio10.out] Error 1
+
+Unknown. New regressions.
+
+make[1]: *** [rt/tests] Error 2
+make[2]: *** [/libc/elf/tst-pie1.out] Error 139
+
+Unknown.
+
+make[2]: *** [/libc/elf/tst-leaks1-mem] Error 1
+
+Bad mojo.
+
+make[2]: *** [/libc/elf/order.out] Error 1
+
+Bad mojo, library constructor/destructors are processed out of order.
+
+make[2]: *** [/libc/elf/nodelete2.out] Error 1
+
+Bad mojo.
+
+make[2]: *** [/libc/elf/tst-align2.out] Error 1
+
+Bad mojo.
+
+make[2]: *** [/libc/elf/order2.out] Error 1
+
+Bad mojo.
+
+make[2]: *** [/libc/elf/tst-audit2.out] Error 139
+
+This is because our LA code is a bogus stub.
+
+make[2]: *** [/libc/elf/check-textrel.out] Error 1
+
+Huh... ?
+
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
+
+I'm not seeing tst-printf failures.
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
