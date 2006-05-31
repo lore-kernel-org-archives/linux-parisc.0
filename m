@@ -1,17 +1,16 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: Re: [parisc-linux] Question on video cards.
-Date: Wed, 31 May 2006 13:06:15 +0200
-Message-ID: <7d01f9f00605310406v2df7f5e3qd87e79ec108c5779@mail.gmail.com>
-References: <1149048178_22889@mail.internode.on.net>
-	<e6eae0290605310116m3fe25a88o675e7e95cd1a8e70@mail.gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: Encounter ICE while: Re: [parisc-linux] Close to mainline for
+Date: Wed, 31 May 2006 09:58:38 -0400 (EDT)
+Message-ID: <200605311358.k4VDwcHh023487@hiauly1.hia.nrc.ca>
+References: <J04K6A$FA60C75853CD63495B4707B49127E6A4@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: "Max Grabert" <parisc@gmail.com>
+To: soete.joel@tiscali.be (Joel Soete)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <e6eae0290605310116m3fe25a88o675e7e95cd1a8e70@mail.gmail.com>
+In-Reply-To: <J04K6A$FA60C75853CD63495B4707B49127E6A4@scarlet.be> from "Joel
+	Soete" at May 31, 2006 12:08:34 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,24 +21,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 5/31/06, Max Grabert <parisc@gmail.com> wrote:
-> On 31/05/06, pyrotek <pyrotek@internode.on.net> wrote:
+> regcomp.c:408: internal compiler error: in gen_reg_rtx, at emit-rtl.c:807
+> Please submit a full bug report,
+> with preprocessed source if appropriate.
+> See <URL:http://gcc.gnu.org/bugs.html> for instructions.
+> For Debian GNU/Linux specific bug reporting instructions,
+> see <URL:file:///usr/share/doc/gcc-4.1/README.Bugs>.
+> Preprocessed source stored into /tmp/ccOU1j8a.out file, please attach this to
+> your bugreport.
+> make[2]: *** [/CAD/parisc-linux/CVS-20060529/build/posix/regex.o] Error 1
+> 
+> Dave can you confirm me that I would actualy fill in a pr?
 
-> > If so can I piggy back it off my FX10? Or do I need to use it by it self?
->
->
-> You should be able to do both. Use sticon/stifb/X11 (fbdev) with the FX10
+My impression is that this wouldn't be useful without a lot more
+investigation.  It's highly likely that the compiler used for this
+compilation was itself miscompiled.  On the otherhand, if you are
+using the stock debian build of 4.1 for this compilation, then
+definitely a bug report should be submitted.
 
-Err... No.
+A version of regex is part of GCC in libiberty.  It builds in every
+stage.  So, normally a problem compiling regex would be noticed
+immediately.  That's what makes me think the problem is somehow
+specific to the compiler that you are using.
 
-Only sticon works on FX cards. That's the whole point, you cannot do
-graphics *at all* with them. Only text.
+There error would appear to be at this point:
 
-HTH
+  /* Don't let anything called after initial flow analysis create new
+     registers.  */
+  gcc_assert (!no_new_pseudos);
 
+It would be useful to have a stack backtrace at the point of the error.
+
+You can do this by running gcc with -v to determine the cc1 command
+for the compilation.  Run cc1 under gdb.  Put a break on the gcc_assert.
+Use the 'ignore' command to tell gdb to ignore the break some large
+number of times.  Run the program from the start.  Info break will
+tell you how many times the break has been hit.  Use ignore again to
+set the number of breaks to ignore to the number of hits less one.
+Rerun and a break should occur on the assert which calls abort.  You
+could also put a break on abort.
+
+Dave
 -- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
