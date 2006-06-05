@@ -1,15 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] User space locks -- what's wrong
-Date: Mon, 5 Jun 2006 10:40:33 -0400
-Message-ID: <20060605144033.GD1335@skunkworks.cabal.ca>
-References: <200606042355.k54Ntw0R026812@hiauly1.hia.nrc.ca>
+Date: Mon, 5 Jun 2006 12:49:52 -0400 (EDT)
+Message-ID: <200606051649.k55Gnqtf004110@hiauly1.hia.nrc.ca>
+References: <20060605144033.GD1335@skunkworks.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200606042355.k54Ntw0R026812@hiauly1.hia.nrc.ca>
+In-Reply-To: <20060605144033.GD1335@skunkworks.cabal.ca> from "Kyle McMartin"
+	at Jun 5, 2006 10:40:33 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,52 +21,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jun 04, 2006 at 07:55:58PM -0400, John David Anglin wrote:
-> I'm about to throw the following change to the garbage heap since it
-> doesn't work as expected, particularly with SMP kernels.
-> 
-> The problem is I still see occasional libstdc++ and libjava testsuite
-> failures in pthread process intensive tests.  In particular, I'm getting
-> timeouts on tests that didn't timeout before.
->
+> That's absolutely bizarre. Can you include steps for us toolchain
+> newbies to reproduce this? I'd love to try and trace down why this is
+> occuring. It could be a problem indicative of something very funky
+> occuring in our kernel.
 
-I don't suppose we could test this using locks based on Carlos'
-light-weight-syscalls? This would have the added 
- 
-> The enclosed change is based on ideas presented in the paper,
-> "Implementing Spinlocks on the Intel Itanium Architecture and PA-RISC".
->
+There definitely are some funky things going on in the kernel.
+For example, if I try to build GCC with 'make -j 4 bootstrap' on
+gsyprf11, about 50% of the time make dies because of a malloc data
+corruption or a shell problem.  However, I never see this with
+just 'make bootstrap'.
 
-The changes look fine to me.
- 
-> The main issue that the change tries to address is that spinning
-> indefinitely in user space on a UP kernel just burns cycles.  So, the
-> change is to spin awhile and then sleep.  This seemed to work with
-> the test application in the paper, but in practice it seems to cause
-> more test failures that just spinning, particularly on SMP kernels.
-> I suspect that on SMP kernels we sometimes end up with all threads
-> sleeping.
-> 
+It's crossed my mind that locking could break if there is a memory
+aliasing issue,
 
-That's absolutely bizarre. Can you include steps for us toolchain
-newbies to reproduce this? I'd love to try and trace down why this is
-occuring. It could be a problem indicative of something very funky
-occuring in our kernel.
-
-> I've tried various sleep routines including sched_yield, and other
-> optimizations, but they don't seem to make a difference.  The trick
-> to dirty the cacheline presented in the paper didn't help performance
-> as measured by the Appendix F program.  I also didn't see
-> and difference in performance using the ",co" completer.  Possibly,
-> this is because I only tested on coherent PA 2.0 machines.
-> 
-
-I suspect a majority of this is because we aren't running
-optimally as it is. I suspect if we were performing as well as HPUX
-the minor details would make more of a difference.
-
-Cheers,
-	Kyle
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
