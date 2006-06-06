@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] User space locks -- what's wrong
-Date: Mon, 5 Jun 2006 12:49:52 -0400 (EDT)
-Message-ID: <200606051649.k55Gnqtf004110@hiauly1.hia.nrc.ca>
-References: <20060605144033.GD1335@skunkworks.cabal.ca>
+From: Kai Holthaus <kmh@sonic.net>
+Subject: [parisc-linux] Module Relocation Problem
+Date: Mon, 5 Jun 2006 18:45:54 -0700
+Message-ID: <200606051845.54924.kmh@sonic.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+Content-Type: multipart/mixed;
+  boundary="===============1471761893=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060605144033.GD1335@skunkworks.cabal.ca> from "Kyle McMartin"
-	at Jun 5, 2006 10:40:33 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,25 +17,74 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> That's absolutely bizarre. Can you include steps for us toolchain
-> newbies to reproduce this? I'd love to try and trace down why this is
-> occuring. It could be a problem indicative of something very funky
-> occuring in our kernel.
+--===============1471761893==
+Content-Type: multipart/signed; boundary="nextPart14744473.VKIUT7n3Rt";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-There definitely are some funky things going on in the kernel.
-For example, if I try to build GCC with 'make -j 4 bootstrap' on
-gsyprf11, about 50% of the time make dies because of a malloc data
-corruption or a shell problem.  However, I never see this with
-just 'make bootstrap'.
+--nextPart14744473.VKIUT7n3Rt
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-It's crossed my mind that locking could break if there is a memory
-aliasing issue,
+Hi,
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I'm trying to compile and install the qc-usb (http://qce-ga.sourceforge.net=
+/)=20
+kernel module on my A5005X server. Compilation works just fine (make all &&=
+=20
+make install), but upon insmodding I get the following error:
+
+Module quickcam, symbol qc_proc_init is out of range for PCREL22F relocation
+=46ATAL: Error inserting quickcam (/lib/modules/2.6.16-pa11/misc/quickcam.k=
+o):=20
+Invalid module format
+
+I've searched on google (in general) and on this mailing list for help on t=
+his=20
+topic, but couldn't find anything that would help me out, since I'm not=20
+really a kernel and/or gcc wiz.=20
+
+What am I doing wrong? Or is there something in the module code that's not=
+=20
+compatible with a 64bit hppa kernel?
+
+Thanks so much,
+
+	Kai
+=2D-=20
+Hofstadter's Law:
+  "It always takes longer than you expect,
+   even when you take into account Hofstadter's Law."
+                             -- Douglas R. Hofstadter
+
+kmh.AT.sonic.net
+
+Check out Mission Octagon - a new, exciting novel!
+http://www.missionoctagon.com
+
+--nextPart14744473.VKIUT7n3Rt
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+
+iD8DBQBEhN5Swl7N6T1/FugRAgqPAJ0XZQ/5LhS3xMg8CEq0cA3Fl0DbIACfbhGN
+whOJO/HULd6bYMiJTEI6Q3k=
+=6k4f
+-----END PGP SIGNATURE-----
+
+--nextPart14744473.VKIUT7n3Rt--
+
+--===============1471761893==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1471761893==--
