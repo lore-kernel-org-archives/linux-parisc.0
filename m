@@ -1,16 +1,14 @@
-From: Corne Beerse <cbeerse@gmail.com>
-Subject: Re: [parisc-linux] [RFC] PA-RISC/Linux Boot HOWTO update
-Date: Fri, 09 Jun 2006 10:43:47 +0200
-Message-ID: <448934C3.9080900@gmail.com>
-References: <7d01f9f00606081618q15b2df7fyb00f2925ed0fa2c0@mail.gmail.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [parisc-linux] Latest glibc failures.
+Date: Fri, 9 Jun 2006 10:57:05 -0400
+Message-ID: <119aab440606090757vc2966ear8a4d30c04af17ae2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
+  charset=ISO-8859-1;
   format=flowed
-To: Thibaut VARENE <T-Bone@parisc-linux.org>,
- parisc-linux@lists.parisc-linux.org
+To: "Randolph Chung" <randolph@tausq.org>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <7d01f9f00606081618q15b2df7fyb00f2925ed0fa2c0@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,53 +19,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Thibaut VARENE wrote:
+Randolph,
 
-> Hi pa-ckers,
->
-> I'm about to release an update to our Boot Howto, but before doing so
-> I'd like to get some review from the community, in order to make sure
-> I haven't missed the obvious or forgot about something important.
->
-> The current howto can be fetched here:
-> http://www.pateam.org/archive/tmp/
->
-> There's both the PDF (for viewing, though the style will differ a bit
-> from other TLDP howtos as I didn't use exactly TLP's DTD) and XML for
-> people willing to send patches ;)
->
-> I expect to release this sometime next week, so
-> feedback/comments/patches welcome!
->
+Everything for libc-ports is upstream, even fixes for errlist-compat
+(new errnos added to the kernel mandated a new symbol).
 
-That's a verry nice compilation. I'd like to add some pointers:
+I'm seeing the funny tst-printfsz failures. Not sure what to make of these.
 
-The OpenPA Project, that has a very nice overview of old and not so old 
-HP hardware: http://www.openpa.net/. I see it as suplemental to your 
-chapter 1 on supported hardware: it just contains far more information.
+Cheers,
+Carlos.
 
-About serial cosoles (your chapter 2.2.2): Add a pointer to make the HP 
-9000/712 work on serial console: 
-http://www.netbsd.org/Ports/hp700/serialconsole-712.html. Some additions 
-to this document: it also includes a way to update the firmware over the 
-network, without HP-UX and without a tape-device.
-
-Then there is 
-http://www.netbsd.org/Documentation/network/netboot/intro.hp700.html, 
-the net-bsd document on network booting and diskless operating. I found 
-valuable information there, however I see you have covered most (all) of 
-it in your document.
-
-Once your document is finished, it would be nice if you inform 
-http://www.openpa.net/ about it so they can set a pointer to your document.
-
-
-Regards
-
-CBee
-
-
-
+make[2]: *** [/libc/math/test-float.out] Error 1
+make[2]: *** [/libc/math/test-double.out] Error 1
+make[2]: *** [/libc/math/test-ifloat.out] Error 1
+make[2]: *** [/libc/math/test-idouble.out] Error 1
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/libc/stdio-common/tst-printfsz.out] Error 139
+make[2]: *** [/libc/stdio-common/tst-printf.out] Error 1
+make[1]: *** [stdio-common/tests] Error 2
+make[2]: [/libc/posix/annexc.out] Error 1 (ignored)
+make[2]: *** [/libc/linuxthreads/tst-clock1.out] Error 1
+make[2]: *** [/libc/linuxthreads/tst-attr1.out] Error 1
+make[1]: *** [linuxthreads/tests] Error 2
+make[2]: *** [/libc/rt/tst-aio9.out] Error 1
+make[2]: *** [/libc/rt/tst-aio10.out] Error 1
+make[1]: *** [rt/tests] Error 2
+make[2]: *** [/libc/elf/tst-pie1.out] Error 139
+make[2]: *** [/libc/elf/tst-leaks1-mem] Error 1
+make[2]: *** [/libc/elf/order.out] Error 1
+make[2]: *** [/libc/elf/nodelete2.out] Error 1
+make[2]: *** [/libc/elf/tst-align2.out] Error 1
+make[2]: *** [/libc/elf/order2.out] Error 1
+make[2]: *** [/libc/elf/tst-audit2.out] Error 139
+make[2]: *** [/libc/elf/check-textrel.out] Error 1
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
