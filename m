@@ -1,14 +1,15 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] Latest glibc failures.
-Date: Fri, 9 Jun 2006 10:57:05 -0400
-Message-ID: <119aab440606090757vc2966ear8a4d30c04af17ae2@mail.gmail.com>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] User space locks -- what's wrong
+Date: Sat, 10 Jun 2006 12:41:13 -0500
+Message-ID: <200606101241.13801.mszick@morethan.org>
+References: <200606070409.k5749BK4009914@hiauly1.hia.nrc.ca>
+	<200606070725.43473.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: "Randolph Chung" <randolph@tausq.org>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200606070725.43473.mszick@morethan.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,41 +20,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Randolph,
+On Wed June 7 2006 07:25, Michael S. Zick wrote:
+> On Tue June 6 2006 23:09, John David Anglin wrote:
+> > 
+> > 
+> > I've looked at the locking in hpux a bit.  As far as I can tell,
+> > the kernel never really spins.  It has code to do pre-arbitration
+> > and keeps track of tasks and priorities.  When a lock is released,
+> > the code calls into suwaiters to see if the lock should be handed
+> > over to another task or released.  When we just spin, we are relying
+> > on the bus arbitration to select a winner.  So, when we have a
+> > highly contended lock, it might be  possible for a cpu to get locked
+> > out for sufficient time to cause a softlockup.
+> > 
+> 
+> I never went back to correct the state tables in the document I worked
+> up to match the most recent code snippets...
+> 
+> I will fix that and then post a link on this list.
+> 
 
-Everything for libc-ports is upstream, even fixes for errlist-compat
-(new errnos added to the kernel mandated a new symbol).
+Document is now updated.  Intended to be a continuation of Dave's one
+spinlock per cache-line experimental patch.
 
-I'm seeing the funny tst-printfsz failures. Not sure what to make of these.
+See:
+http://www.morethan.org/parisc/pa-spinlocks.html
+http://www.morethan.org/parisc/pa-spinlocks.pdf
 
-Cheers,
-Carlos.
+>
+> Right or wrong - that document gives us the ground work for lock passing
+> and lock failure recovery without ever having seen HPUX.
+>
 
-make[2]: *** [/libc/math/test-float.out] Error 1
-make[2]: *** [/libc/math/test-double.out] Error 1
-make[2]: *** [/libc/math/test-ifloat.out] Error 1
-make[2]: *** [/libc/math/test-idouble.out] Error 1
-make[1]: *** [math/tests] Error 2
-make[2]: *** [/libc/stdio-common/tst-printfsz.out] Error 139
-make[2]: *** [/libc/stdio-common/tst-printf.out] Error 1
-make[1]: *** [stdio-common/tests] Error 2
-make[2]: [/libc/posix/annexc.out] Error 1 (ignored)
-make[2]: *** [/libc/linuxthreads/tst-clock1.out] Error 1
-make[2]: *** [/libc/linuxthreads/tst-attr1.out] Error 1
-make[1]: *** [linuxthreads/tests] Error 2
-make[2]: *** [/libc/rt/tst-aio9.out] Error 1
-make[2]: *** [/libc/rt/tst-aio10.out] Error 1
-make[1]: *** [rt/tests] Error 2
-make[2]: *** [/libc/elf/tst-pie1.out] Error 139
-make[2]: *** [/libc/elf/tst-leaks1-mem] Error 1
-make[2]: *** [/libc/elf/order.out] Error 1
-make[2]: *** [/libc/elf/nodelete2.out] Error 1
-make[2]: *** [/libc/elf/tst-align2.out] Error 1
-make[2]: *** [/libc/elf/order2.out] Error 1
-make[2]: *** [/libc/elf/tst-audit2.out] Error 139
-make[2]: *** [/libc/elf/check-textrel.out] Error 1
-make[1]: *** [elf/tests] Error 2
-make: *** [check] Error 2
+Document does not yet have pa-risc examples of lock passing and lock failure
+recovery - you need to consult the references made for those at this point.
+ 
+> 
+> > Dave
+> 
+> Mike
+
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
