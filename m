@@ -1,17 +1,16 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] User space locks -- what's wrong
-Date: Sun, 11 Jun 2006 22:27:40 -0400
-Message-ID: <119aab440606111927j740b57efgebcb6a33705c639d@mail.gmail.com>
-References: <119aab440606111734j3226f013l78e4c2fa22c08709@mail.gmail.com>
-	<200606120054.k5C0sF1m025654@hiauly1.hia.nrc.ca>
+Date: Sun, 11 Jun 2006 17:56:56 -0400 (EDT)
+Message-ID: <200606112156.k5BLuvQe011929@hiauly1.hia.nrc.ca>
+References: <119aab440606061830peac8e3ah7030b831881e6f76@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200606120054.k5C0sF1m025654@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440606061830peac8e3ah7030b831881e6f76@mail.gmail.com> from
+	"Carlos O'Donell" at Jun 6, 2006 09:30:05 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,62 +21,66 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 6/11/06, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> (gdb) p *((st_parameter_dt *)$r26)->u.p.current_unit
-> $38 = {unit_number = -1, s = 0x193248, left = 0x0, right = 0x0, priority = 0,
->   read_bad = 1, current_record = 1, endfile = NO_ENDFILE, mode = WRITING,
->   flags = {access = ACCESS_SEQUENTIAL, action = ACTION_READWRITE,
->   blank = BLANK_NULL, delim = DELIM_NONE, form = FORM_FORMATTED,
->   is_notpadded = 0, position = POSITION_ASIS, status = STATUS_UNSPECIFIED,
->   pad = PAD_YES, convert = CONVERT_NATIVE}, recl = 36, last_record = 0,
->   maxrec = 0, bytes_left = 0, lock = {__m_reserved = 0, __m_count = 0,
->   __m_owner = 0x0, __m_kind = 0, __m_lock = {__spinlock = {lock = {0, 0, 0,
->   0}}, __status = 0}}, waiting = 0, closed = 0, ls = 0x0, rank = 0,
->   file_len = 0, file = 0x0}
->
-> The only unit numbers that I see being initialized are 5, 6 and 0.
+> You've implemented almost exactly what glibc does for pthreads.
+> However, glibc uses nanosleep without any adverse effects.
 
-The "lock" variable must always be initialized.
-The value of __GTHREAD_MUTEX_INIT should be set to PTHREAD_MUTEX_INITIALIZER.
+Are you sure?  The libgomp test libgomp.fortran/reduction6.f90
+times out.  It's using pthread_mutex_lock and pthread_mutex_unlock
+for locking (there's no futex implementation for parisc-linux).
 
-There might be some missing initializers, or memsets, which don't show
-problems on i686-pc-linux-gnu, but are invalid things to do on hppa :)
+I see with top:
 
-I see that "unit_lock" is initialized properly, without this nothing would work.
+top - 13:30:57 up 7 days, 22:52,  3 users,  load average: 0.00, 0.00, 0.00
+Tasks:  73 total,   1 running,  72 sleeping,   0 stopped,   0 zombie
+Cpu(s):  0.2% us,  0.3% sy,  0.0% ni, 99.3% id,  0.2% wa,  0.0% hi,  0.0% si
+Mem:   8227376k total,  8025664k used,   201712k free,   489404k buffers
+Swap:  1367032k total,        0k used,  1367032k free,  3775216k cached
 
-There is a bug in "get_internal_unit" where there is a memset of a
-"gfc_unit" without a mutex initializer.
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
 
-Index: libgfortran/io/unit.c
-===================================================================
---- libgfortran/io/unit.c       (revision 114219)
-+++ libgfortran/io/unit.c       (working copy)
-@@ -376,7 +376,16 @@
-     }
+ ...
+ 7430 dave      15   0  8076  988  768 S    0  0.0   0:00.05 reduction6.xg
+ 7431 dave      16   0  8076  988  768 S    0  0.0   0:00.00 reduction6.xg
+ 7432 dave      19   0  8076  988  768 S    0  0.0   0:00.00 reduction6.xg
+ 7433 dave      20   0  8076  988  768 S    0  0.0   0:00.00 reduction6.xg
+ ...
 
-   memset (iunit, '\0', sizeof (gfc_unit));
-+#ifdef __GTHREAD_MUTEX_INIT
-+  {
-+    __gthread_mutex_t tmp = __GTHREAD_MUTEX_INIT;
-+    iunit->lock = tmp;
-+  }
-+#else
-+  __GTHREAD_MUTEX_INIT_FUNCTION (&iunit->lock);
-+#endif
+strace indicates that the reduction6.xg processes are mainly calling
+sched_yield(), and occassionally nanosleep().
 
-+
-   iunit->recl = dtp->internal_unit_len;
+The program doesn't timeout under hpux.  I killed the program after 50m
+on linux.  It appears that we are deadlocking on linux.  The time on
+a relatively slow hpux system is:
 
-   /* For internal units we set the unit number to -1.
+# time ./reduction6.xg
 
-Please verify.
+real    0m0.047s
+user    0m0.030s
+sys     0m0.010s
 
-Cheers,
-Carlos.
+It appears that the hpux built application never sleeps or calls
+sched_yield.  Under linux, I see after running a bit the following
+backtrace in nanosleep:
 
+Program received signal SIGINT, Interrupt.
+0x00032310 in nanosleep ()
+(gdb) bt
+#0  0x00032310 in nanosleep ()
+#1  0x0003189c in __pthread_acquire (spinlock=0x191030) at spinlock.c:716
+#2  0x000319d4 in __pthread_alt_unlock (lock=0xbff00d4c) at spinlock.c:527
+#3  0x0002ef18 in __pthread_mutex_unlock (mutex=<value optimized out>)
+    at mutex.c:199
+#4  0x00015388 in *_gfortran_st_write_done (dtp=0xbff00aa8)
+    at ../../../gcc/libgfortran/io/transfer.c:2424
+#5  0x000105ac in MAIN__ ()
+    at /home/dave/gcc-4.2/gcc/libgomp/testsuite/libgomp.fortran/reduction6.f90:10
+#6  0x00011e58 in main (argc=<value optimized out>, argv=<value optimized out>)
+    at ../../../gcc/libgfortran/fmain.c:18
 
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
