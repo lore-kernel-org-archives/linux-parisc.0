@@ -1,17 +1,16 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] User space locks -- what's wrong
-Date: Sun, 11 Jun 2006 19:20:47 -0400
-Message-ID: <119aab440606111620w40d1808en7adec56144d4b1aa@mail.gmail.com>
-References: <119aab440606061830peac8e3ah7030b831881e6f76@mail.gmail.com>
-	<200606112156.k5BLuvQe011929@hiauly1.hia.nrc.ca>
+Date: Sun, 11 Jun 2006 19:57:40 -0400 (EDT)
+Message-ID: <200606112357.k5BNvgoL020309@hiauly1.hia.nrc.ca>
+References: <119aab440606111620w40d1808en7adec56144d4b1aa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200606112156.k5BLuvQe011929@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440606111620w40d1808en7adec56144d4b1aa@mail.gmail.com>
+	from "Carlos O'Donell" at Jun 11, 2006 07:20:47 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,63 +21,83 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 6/11/06, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> > You've implemented almost exactly what glibc does for pthreads.
-> > However, glibc uses nanosleep without any adverse effects.
->
-> Are you sure?  The libgomp test libgomp.fortran/reduction6.f90
-> times out.  It's using pthread_mutex_lock and pthread_mutex_unlock
-> for locking (there's no futex implementation for parisc-linux).
+> On 6/11/06, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
+> > > You've implemented almost exactly what glibc does for pthreads.
+> > > However, glibc uses nanosleep without any adverse effects.
+> >
+> > Are you sure?  The libgomp test libgomp.fortran/reduction6.f90
+> > times out.  It's using pthread_mutex_lock and pthread_mutex_unlock
+> > for locking (there's no futex implementation for parisc-linux).
+> 
+> Can we get a reduced testcase from this?
 
-Can we get a reduced testcase from this?
+> We *could* experiment with turning on HAS_COMPARE_AND_SWAP in
+> linuxthreads, and using the LWS CAS to implement this.
+> 
+> I'm dying for a testcase...
 
-> strace indicates that the reduction6.xg processes are mainly calling
-> sched_yield(), and occassionally nanosleep().
+The testcase is already quite reduced:
 
-Yes, the core in glibc reads like this:
+! { dg-do run }
 
-linuxthreads/spinlock.c (__pthread_acquire):
+  integer, dimension (6, 6) :: a
+  character (36) :: c
+  integer nthreads
+  a = 9
+  nthreads = -1
+  call foo (a (2:4, 3:5), nthreads)
+  if (nthreads .eq. 3) then
+    write (c, '(36i1)') a
+    if (c .ne. '999999999999966699966699966699999999') call abort
+  end if
+contains
+  subroutine foo (b, nthreads)
+    use omp_lib
+    integer, dimension (3:, 5:) :: b
+    integer :: err, nthreads
+    b = 0
+    err = 0
+!$omp parallel num_threads (3) reduction (+:b)
+    if (any (b .ne. 0)) then
+!$omp atomic
+      err = err + 1
+    end if
+!$omp master
+    nthreads = omp_get_num_threads ()
+!$omp end master
+    b = 2
+!$omp end parallel
+    if (err .gt. 0) call abort
+  end subroutine foo
+end
 
-    722   READ_MEMORY_BARRIER();
-    723
-    724   while (testandset(spinlock)) {
-    725     if (cnt < MAX_SPIN_COUNT) {
-    726       sched_yield();
-    727       cnt++;
-    728     } else {
-    729       tm.tv_sec = 0;
-    730       tm.tv_nsec = SPIN_SLEEP_DURATION;
-    731       nanosleep(&tm, NULL);
-    732       cnt = 0;
-    733     }
-    734   }
+I've forgotten all the fortran I ever knew.  In any case, I suspect
+a lock initialization problem.  In the first call into __pthread_acquire
+with this particular lock, it's not initialized:
 
-So you will see "sched_yield" and "nanosleep".
+(gdb) p *spinlock
+$10 = {lock = {0, 0, 0, 0}} <== we would see some ones if initialized
+(gdb) bt
+#0  __pthread_acquire (spinlock=0x191030) at spinlock.c:710
+#1  0x000319d4 in __pthread_alt_unlock (lock=0x191030) at spinlock.c:527
+#2  0x0002ef18 in __pthread_mutex_unlock (mutex=<value optimized out>)
+    at mutex.c:199
+#3  0x00015388 in *_gfortran_st_write_done (dtp=0xbff00aa8)
+    at ../../../gcc/libgfortran/io/transfer.c:2424
+#4  0x000105ac in MAIN__ ()
+    at /home/dave/gcc-4.2/gcc/libgomp/testsuite/libgomp.fortran/reduction6.f90:10
+#5  0x00011e58 in main (argc=<value optimized out>, argv=<value optimized out>)
+    at ../../../gcc/libgfortran/fmain.c:18
+(gdb) p/x *($sp - 0x78)
+$11 = 0x191030
 
-> The program doesn't timeout under hpux.  I killed the program after 50m
-> on linux.  It appears that we are deadlocking on linux.  The time on
-> a relatively slow hpux system is:
+So, I believe the value for spinlock in the backtrace.  Thus, this is
+probably a libgfortran issue.  
 
-If a child misses a signal and doesn't call __pthread_release, then
-the lock is held forever.
-In which case switching over to futex's, or even LWS CAS is not going to help.
-
-Truth be told, many applications don't call "__pthread_acquire" like
-we do, they use a CAS insn to acquire the lock.
-
-We *could* experiment with turning on HAS_COMPARE_AND_SWAP in
-linuxthreads, and using the LWS CAS to implement this.
-
-I'm dying for a testcase...
-
-> It appears that the hpux built application never sleeps or calls
-> sched_yield.  Under linux, I see after running a bit the following
-> backtrace in nanosleep:
-
-Yes, that's an attempt to acquire the lock.
-
-Cheers,
-Carlos.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
