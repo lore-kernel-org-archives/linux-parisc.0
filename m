@@ -1,16 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] User space locks -- what's wrong
-Date: Sun, 11 Jun 2006 23:19:34 -0400 (EDT)
-Message-ID: <200606120319.k5C3JZXj004098@hiauly1.hia.nrc.ca>
-References: <119aab440606112013s71bc1daen46041756ce843d14@mail.gmail.com>
+Date: Mon, 12 Jun 2006 00:01:23 -0600
+Message-ID: <20060612060123.GB24813@colo.lackof.org>
+References: <119aab440606111942o1be5e11bw6ede4fa941f01778@mail.gmail.com>
+	<200606120303.k5C33wIi002802@hiauly1.hia.nrc.ca>
+	<119aab440606112013s71bc1daen46041756ce843d14@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+  charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <119aab440606112013s71bc1daen46041756ce843d14@mail.gmail.com>
-	from "Carlos O'Donell" at Jun 11, 2006 11:13:33 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,29 +23,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > #   slow_pthread_self   The synchronization code should try to avoid
-> > #                       pthread_self calls by caching thread IDs in a hashtable
-> >
-> > There's also 'enable_hash_synchronization_default'.
-> 
+On Sun, Jun 11, 2006 at 11:13:33PM -0400, Carlos O'Donell wrote:
 > Reading the thread register is a single mfctl, I don't know if that is
 > considered slow?
 
-Looks like it's the later parameter that affects lock caching:
+I believe it depends on the source of the "Move From".
+But I can't find a table with timing info. (e.g. mfctl CR16).
 
-# Should we use hashtable-based synchronization?
-# Currently works only for Linux X86/ia64
-# Typically faster and more space-efficient
-AC_ARG_ENABLE(hash-synchronization,
-  AS_HELP_STRING([--enable-hash-synchronization],
-		   [use global hash table for monitor locks]))
+I did find this bit though:
 
-I'll try turning this off.
+| 	Most control operations (the "light weight" control ops) are
+| handled by a mechanism that is very similar to the way that C/B
+| dependencies are handled. The major differences are that there
+| are no control rename registers, and there is no bypassing.
+| Thus, an instruction that is dependent on a control op will not
+| be able to execute until the control op retires. 
+...
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+"Heavy Weight" control ops are the ones where the instruction execution
+is serialized completely.
+
+hth,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
