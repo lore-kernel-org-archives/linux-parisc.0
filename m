@@ -1,15 +1,19 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: Re:[parisc-linux] new debian libgmp (4.2-dfsg-1) break the gcc(-4.1)
-	build
-Date: Wed, 14 Jun 2006 17:44:59 +0200
-Message-ID: <J0UX2Z$08DAE5F983CF44ED0585264F7784FC15@scarlet.be>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] Module Relocation Problem
+Date: Wed, 14 Jun 2006 12:47:57 -0400
+Message-ID: <1150303677.3143.3.camel@mulgrave.il.steeleye.com>
+References: <200606052020.52908.kmh@sonic.net>
+	<200606060349.k563n4ST023145@hiauly1.hia.nrc.ca>
+	<7d01f9f00606060551n2aabd3e9p908745991df33a2f@mail.gmail.com>
+	<448FC282.80402@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: dave <dave@hiauly1.hia.nrc.ca>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "soete.joel" <soete.joel@scarlet.be>
+Content-Type: text/plain
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org,
+ Thibaut VARENE <varenet@gmail.com>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <448FC282.80402@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,65 +24,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Hello Dave,
-> 
-> I am not any more on debian hppa list for the moment ;-( , so I put inf=
-o here
-> temporarely.
-> 
-> This morning I tried to rebuild my local gcc-4.1 but it failled with th=
-is
-> failure noticed in config.log:
-> [snip]
-> configure:2316: gnatgcc -o conftest -g -O2    conftest.c  -lmpfr -lgmp =
-1>&5
-> /usr/lib/gcc/hppa-linux-gnu/4.0.4/../../../libmpfr.so: undefined refere=
-nce to
-> `__gmp_rand'
-> collect2: ld returned 1 exit status
-> configure: failed program was:
-> #line 2308 "configure"
-> #include "confdefs.h"
-> #include <gmp.h>
-> #include <mpfr.h>
-> int main() {
-> mpfr_t n; mpfr_init(n);
-> ; return 0; }
-> 
-> and also noticed that libgmp??? dpkg was upgraded since previous build.=
+On Wed, 2006-06-14 at 16:02 +0800, Randolph Chung wrote:
+> - As an aside, while looking at the module loading problem, I've
+> convinced myself that the 64-bit module loader is wrong. OTOH, it
+> seems
+> to work in most cases, so there's clearly something that I don't yet
+> understand.....
 
-> 
-> Fortunately, I can still grab all src files from previous libgmp releas=
-e
-> (4.1.4-11) and reinstall a rebuild. Now the gcc-4.1 build continue ;-)
-> 
-> Any known issue with this new libgmp?
-> 
-mmm, seems to be well known mpfr pr #362837.
+Well ... OK ... since I made that work I can try to remember how I did
+it ... what seems to be the problem?
 
-> Thanks,
+James
 
-Now the problem is that mpfr ftbs for hppa as read in
-<http://buildd.debian.org/fetch.php?&pkg=3Dmpfr&ver=3D2.2.0.dfsg.1-6&arch=
-=3Dhppa&stamp=3D1149775099&file=3Dlog&as=3Draw>
-because of many test failures ;-(
-
-I tried '-k' make's option but doesn't help to complete the build?
-
-Also tried to rebuild libs with -O0 (as for m68k), no help.
-
-And finaly older gcc-4.0 as compiler didn't help more.
-
-(btw I didn't yet understand why this lib is neceesary to build gcc: i ju=
-st
-want to test it (as well as the 64bit x compiler) against kernel, and gli=
-bc
-for regression testing ;-?
-
-Joel=0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous devene=
-z aujourd'hui Scarlet One grace a un client existant de Scarlet, vous rec=
-evez tous les deux un cadeau d'une valeur de 50 euros! Surfez vite sur ht=
-tp://www.clubscarlet.be
 
 _______________________________________________
 parisc-linux mailing list
