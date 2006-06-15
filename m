@@ -1,17 +1,17 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] Module Relocation Problem
-Date: Wed, 14 Jun 2006 16:02:10 +0800
-Message-ID: <448FC282.80402@tausq.org>
-References: <200606052020.52908.kmh@sonic.net>	<200606060349.k563n4ST023145@hiauly1.hia.nrc.ca>
-	<7d01f9f00606060551n2aabd3e9p908745991df33a2f@mail.gmail.com>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] [RFC] PA-RISC/Linux Boot HOWTO update
+Date: Thu, 15 Jun 2006 12:49:52 +0200
+Message-ID: <7d01f9f00606150349x63e0cb64o27e903b1ebe64c5@mail.gmail.com>
+References: <J0L2GT$E2B08705CCE59F3B534C4AC3D3637C58@scarlet.be>
+	<7d01f9f00606090902j260fa33by2fd0cec437a89cfc@mail.gmail.com>
+	<448B1FEC.9040909@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- parisc-linux@lists.parisc-linux.org
-To: Thibaut VARENE <varenet@gmail.com>
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <7d01f9f00606060551n2aabd3e9p908745991df33a2f@mail.gmail.com>
+In-Reply-To: <448B1FEC.9040909@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,46 +22,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> A number of kernel modules fail to load nowadays on parisc. That
-> includes xfs, netfilter, ipv6... Some are known bloated big ones, but
-> others are quite surprising. In any case that's clearly a problem we
-> want to fix at some point.
-> 
-> I remember Randolph saying that might indeed be a kernel loader
-> issue... Randolph, any thought?
+Hi pa-ckers
 
-ok, several things:
+I've updated the howto based on various feedback I got, if someone
+wants to give it a final look before I submit it to TLDP, it's here:
 
-- I looked at fixing this in binutils, which is really the "right" place
-to fix this; unfortunately the changes required are very extensive, so I
-gave up
+http://www.pateam.org/archive/tmp/
 
-- I looked at using -mlong-calls to address this issue. I've added the
-missing relocation that was reported in a previous message on this
-thread, but there are other problems - with modules compiled with
--mlong-call I am seeing rather bizarre crashes that I have not had time
-to debug further. I do not yet know why they are happening, although I
-suspect it has to do with bve clobbering r31. I'm not yet sure if this
-is a kernel problem or a gcc problem.
+HTH
 
-- As to "small" modules causing the out of bounds problem - I haven't
-really looked at any modules other than ipv6. If there's a particular
-one that is "surprising", I can take a look. Usually it's quite obvious
-where the out of bounds problem is.
-
-- As an aside, while looking at the module loading problem, I've
-convinced myself that the 64-bit module loader is wrong. OTOH, it seems
-to work in most cases, so there's clearly something that I don't yet
-understand.....
-
-The module loader has a hard coded limit for the number of GOT entries.
-We can exceed this rather easily in some cases when we are using long calls.
-
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+T-Bone
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
