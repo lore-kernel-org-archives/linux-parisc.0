@@ -1,12 +1,17 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: [parisc-linux] D380 and ext[23] fs grave pb
-Date: Tue, 20 Jun 2006 11:00:49 +0200
-Message-ID: <J15IDD$792EA7C022C55786772856E81DA0720F@scarlet.be>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] [PATCH] flush our cache through tmpalias space
+Date: Sat, 24 Jun 2006 20:36:21 +0000
+Message-ID: <449DA245.2020705@tiscali.be>
+References: <1150925123.8456.56.camel@mulgrave.il.steeleye.com>
+	<1151117721.3450.24.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "Parisc List" <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii;
+  format=flowed
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <1151117721.3450.24.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,135 +22,95 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello *pa,
-
-Making some stress test to atempt to identify some smp pb on my d380, I f=
-igure
-out this ext[23] relatively grave pb. Effectively during this test loop:
-# while true ; do nice -n -3 tar -xspf linux-2.6.11-rc3-pa3.tar ; nice -n=
- -3 rm
--rf linux-2.6.11-rc3-pa3 ; date ; done
-
-after about 30 iteration, I got a fs' corruption:
-EXT3-fs error (device sda10): ext3_readdir: bad entry in directory #84801=
-:
-rec_len % 4 !=3D 0 - offset=3D0, inode=3D175234
-Aborting journal on device sda10.
-
-ext3_abort called.
-
-EXT3-fs error (device sda10): ext3_journal_start_sb: Detected aborted jou=
-rnal
-
-Remounting filesystem read-only
-
-EXT3-fs error (device sda10): ext3_readdir: bad entry in directory #84801=
-:
-rec_len % 4 !=3D 0 - offset=3D0, inode=3D1752397164, rec_len=3D24
-EXT3-fs error (device sda10): ext3_readdir: bad entry in directory #84801=
-:
-rec_len % 4 !=3D 0 - offset=3D0, inode=3D1752397164, rec_len=3D24
-[snip]
-
-and during fsck I noticed:
-__journal_remove_journal_head: freeing b_committed_data
-
-Pass 2: Checking directory structure
-Directory inode 84801, block 0, offset 0: directory corrupted
-Salvage? yes
-
-Missing '.' in directory inode 84801.
-Fix? yes
-
-Setting filetype for entry '.' in ??? (84801) to 2.
-Missing '..' in directory inode 84801.
-Fix? yes
-
-[snip]
-
-As the first time it was with a smp kernel, I re-test with up kernels onl=
-y.
-
-This pb occured with different (up) kernels (2.6.17-rc6, 2.6.14, 2.6.17 a=
-nd
-even with 2.6.8.1) on different fs located on different disk and differen=
-t
-hba, and finaly on the 2 different cpu?
-
-That said I also get a fs corruption during a simple apt-get dist-upgrade=
-:
-(sdb6 being /var)
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 745764206, count =3D 1
-Aborting journal on device sdb6.
-ext3_abort called.
-EXT3-fs error (device sdb6): ext3_journal_start_sb: Detected aborted jour=
-nal
-Remounting filesystem read-only
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 1869488138, count =3D 1
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 1953459744, count =3D 1
-[snip]
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 2003788910, count =3D 1
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 1851878701, count =3D 1
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 1919248225, count =3D 1<3>BUG: soft lockup det
-ected on CPU#0!
-Backtrace:
- [<1013222c>] update_process_times+0x34/0x80
- [<1010748c>] timer_interrupt+0x9c/0x134
- [<10145f44>] handle_IRQ_event+0x5c/0xa4
- [<10146004>] __do_IRQ+0x78/0x18c
- [<10107bc4>] do_cpu_irq_mask+0x6c/0xc8
- [<1010a068>] intr_return+0x0/0xc
 
 
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 1632635402, count =3D 1
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 1734437731, count =3D 1
-[snip]
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 1313423904, count =3D 1
-EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in data=
-zone -
-block =3D 171515972, count =3D 1
-EXT3-fs error (device sdb6) in ext3_reserve_inode_write: Journal has abor=
-ted
-EXT3-fs error (device sdb6) in ext3_truncate: Journal has aborted
-EXT3-fs error (device sdb6) in ext3_reserve_inode_write: Journal has abor=
-ted
-EXT3-fs error (device sdb6) in ext3_orphan_del: Journal has aborted
-EXT3-fs error (device sdb6) in ext3_reserve_inode_write: Journal has abor=
-ted
-__journal_remove_journal_head: freeing b_committed_data
+James Bottomley wrote:
+> On Wed, 2006-06-21 at 16:25 -0500, James Bottomley wrote:
+> 
+>>One of the current disadvantages parisc has is that we have to walk the
+>>inode mapping list to do a flush_dcache_page(), which means we get
+>>entangled in locking.  The reason we do this is because a VIPT cache
+>>can't be flushed without a mapping, so we have to find one to use
+>>
+>>The intent of this patch is to instead flush through the tmpalias space
+>>on the correct congruence boundary which would dispense with the need
+>>for finding a mapping at all.  However, in the current incarnation we
+>>still walk the mappings to check that all the usermappings are, indeed,
+>>on the correct congruence boundary.  Unfortunately, as you'll see if you
+>>try it out, not all are ... which is a bit of a problem.
+> 
+> 
+> This patch is current and tested against 2.6.17-pa4.  It might eat your
+> data but I'm reasonably assured it won't kill kittens.
+> 
+> James
+> 
+Thanks a lot.
 
-It's the only system of this model on which I can reproduce but also I ca=
-n
-test (and as I am not hp, I don't have passwd diagnostic cd to test hw ;-=
-( ),
-so it's very hard to me if it's a driver pb (e.g. ncr hba) or a hw pb?
+Just met a small compile pb:
 
-Any idea, advises are welcome.
+gcc -Wp,-MD,arch/parisc/kernel/.entry.o.d  -nostdinc -isystem /usr/lib/gcc/hppa-linux-gnu/4.0.4/include -D__KERNEL__ -Iinclude 
+-Iinclude2 -I/usr/src/linux-2.6.17-pa4/include -include include/linux/autoconf.h -D__ASSEMBLY__ -traditional  -c -o 
+arch/parisc/kernel/entry.o /usr/src/linux-2.6.17-pa4/arch/parisc/kernel/entry.S
+/usr/src/linux-2.6.17-pa4/arch/parisc/kernel/entry.S: Assembler messages:
+/usr/src/linux-2.6.17-pa4/arch/parisc/kernel/entry.S:1369: Error: Unknown opcode: `mstp'
+/usr/src/linux-2.6.17-pa4/arch/parisc/kernel/entry.S:1630: Error: Unknown opcode: `mstp'
+/usr/src/linux-2.6.17-pa4/arch/parisc/kernel/entry.S:1653: Error: symbol `dtlb_check_alias_20' is already defined
+make[2]: *** [arch/parisc/kernel/entry.o] Error 1
 
-Thanks in advance,
-    Joel=0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous de=
-venez aujourd'hui Scarlet One grace a un client existant de Scarlet, vous=
- recevez tous les deux un cadeau d'une valeur de 50 euros! Surfez vite su=
-r http://www.clubscarlet.be
+effectively mstp doesn't exist but well mtsp?
 
+For the second error it cames from this hunck:
+@@ -1617,6 +1645,14 @@
+
+  	f_extend	pte,t0	
+
++	iitlbt          pte,prot
++
++	rfir
++	nop
++	
++dtlb_check_alias_20:
++	do_alias	spc,t0,t1,va,pte,prot,itlb_fault
++	
+  	iitlbt          pte,prot
+
+  	rfir
+
+Shouldn't it be here 'itlb_check_alias_20:'?
+
+My 2pence diff looks like:
+--- arch/parisc/kernel/entry.S.Orig     2006-06-24 22:35:19.000000000 +0200
++++ arch/parisc/kernel/entry.S  2006-06-24 22:55:49.000000000 +0200
+@@ -1366,7 +1366,7 @@
+         idtlba          pte,(%sr1,va)
+         idtlbp          prot,(%sr1,va)
+
+-       mstp            t0,%sr1         /* Restore sr1 */
++       mtsp            t0,%sr1         /* Restore sr1 */
+
+         rfir
+         nop
+@@ -1627,7 +1627,7 @@
+         iitlba          pte,(%sr1,va)
+         iitlbp          prot,(%sr1,va)
+
+-       mstp            t0,%sr1         /* Restore sr1 */
++       mtsp            t0,%sr1         /* Restore sr1 */
+
+         rfir
+         nop
+@@ -1650,7 +1650,7 @@
+         rfir
+         nop
+
+-dtlb_check_alias_20:
++itlb_check_alias_20:
+         do_alias        spc,t0,t1,va,pte,prot,itlb_fault
+
+         iitlbt          pte,prot
+
+Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
