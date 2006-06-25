@@ -1,10 +1,11 @@
 From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [PATCH 16/23] [PARISC] Remove unused macro
-	fixup_branch in syscall.S
-Date: Sun, 25 Jun 2006 19:34:44 -0400
-Message-ID: <11512784931712-git-send-email-kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH 13/23] [PARISC] Reduce data footprint in
+	pdc_stable.c
+Date: Sun, 25 Jun 2006 19:34:41 -0400
+Message-ID: <11512784933098-git-send-email-kyle@parisc-linux.org>
 References: <20060625233123.GC2837@athena.road.mcmartin.ca>
 Reply-To: Kyle McMartin <kyle@parisc-linux.org>
+Cc: Thibaut Varene <varenet@parisc-linux.org>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <20060625233123.GC2837@athena.road.mcmartin.ca>
@@ -18,30 +19,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+From: Thibaut Varene <varenet@parisc-linux.org>
+
+No code change - reduce data footprint.
+
+Signed-off-by: Thibaut VARENE <varenet@parisc-linux.org>
 Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 
 ---
 
- arch/parisc/kernel/syscall.S |   12 ------------
- 1 files changed, 0 insertions(+), 12 deletions(-)
+ drivers/parisc/pdc_stable.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
 
-9f6d09dc715952f5d953645d050a400ffa881af5
-diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
-index a028c99..9670a89 100644
---- a/arch/parisc/kernel/syscall.S
-+++ b/arch/parisc/kernel/syscall.S
-@@ -29,18 +29,6 @@ #else
- 	.level		1.1
- #endif
+e2a55d47bfe9d186d8060194028a5f63114108a9
+diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+index 4b991d5..a109421 100644
+--- a/drivers/parisc/pdc_stable.c
++++ b/drivers/parisc/pdc_stable.c
+@@ -628,16 +628,16 @@ pdcs_osid_read(struct subsystem *entry, 
+ 		return -EINVAL;
  
--#ifndef CONFIG_64BIT
--	.macro fixup_branch,lbl
--	b	    \lbl
--	.endm
--#else
--	.macro fixup_branch,lbl
--	ldil	    L%\lbl, %r1
--	ldo	    R%\lbl(%r1), %r1
--	bv,n        %r0(%r1)
--	.endm
--#endif
+ 	switch (pdcs_osid) {
+-		case 0x0000:	tmpstr = "No OS-dependent data"; break;
+-		case 0x0001:	tmpstr = "HP-UX dependent data"; break;
+-		case 0x0002:	tmpstr = "MPE-iX dependent data"; break;
+-		case 0x0003:	tmpstr = "OSF dependent data"; break;
+-		case 0x0004:	tmpstr = "HP-RT dependent data"; break;
+-		case 0x0005:	tmpstr = "Novell Netware dependent data"; break;
+-		case 0x0006:	tmpstr = "Linux dependent data"; break;
++		case 0x0000:	tmpstr = "No OS"; break;
++		case 0x0001:	tmpstr = "HP-UX"; break;
++		case 0x0002:	tmpstr = "MPE-iX"; break;
++		case 0x0003:	tmpstr = "OSF"; break;
++		case 0x0004:	tmpstr = "HP-RT"; break;
++		case 0x0005:	tmpstr = "Novell Netware"; break;
++		case 0x0006:	tmpstr = "Linux"; break;
+ 		default:	tmpstr = "Unknown"; break;
+ 	}
+-	out += sprintf(out, "%s (0x%.4x)\n", tmpstr, pdcs_osid);
++	out += sprintf(out, "%s dependent data (0x%.4x)\n", tmpstr, pdcs_osid);
+ 
+ 	return out - buf;
+ }
+-- 
+1.3.3
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
