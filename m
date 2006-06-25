@@ -1,7 +1,8 @@
 From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [PATCH 19/23] [PARISC] OS_ID_LINUX == 0x0006
-Date: Sun, 25 Jun 2006 19:34:47 -0400
-Message-ID: <11512784934070-git-send-email-kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH 17/23] [PARISC] Match show_cache_info with
+	reality
+Date: Sun, 25 Jun 2006 19:34:45 -0400
+Message-ID: <11512784931379-git-send-email-kyle@parisc-linux.org>
 References: <20060625233123.GC2837@athena.road.mcmartin.ca>
 Reply-To: Kyle McMartin <kyle@parisc-linux.org>
 To: parisc-linux@lists.parisc-linux.org
@@ -17,89 +18,88 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-We were assigned an OS_ID of 0x0006. Consistently use OS_ID_LINUX
-instead of using the magic number. Also update the OS_ID_ defines in
-asm/pdc.h to reflect this.
+show_cache_info and struct pdc_cache_cf were out of sync with
+published documentation. Fix the reporting of cache associativity
+and update the pdc_cache_cf bitfields to match documentation.
 
 Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 
 ---
 
- arch/parisc/kernel/firmware.c |    4 +++-
- arch/parisc/kernel/setup.c    |    2 +-
- drivers/parisc/pdc_stable.c   |    4 ++--
- include/asm-parisc/pdc.h      |    3 +--
- 4 files changed, 7 insertions(+), 6 deletions(-)
+ arch/parisc/kernel/cache.c |   18 ++++++++++--------
+ include/asm-parisc/pdc.h   |    4 ++--
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-889a598b271a7ef14c2c7c83b26a82ccf57d9ab9
-diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-index c80c277..4398d2a 100644
---- a/arch/parisc/kernel/firmware.c
-+++ b/arch/parisc/kernel/firmware.c
-@@ -407,7 +407,9 @@ int pdc_model_info(struct pdc_model *mod
-  * pdc_model_sysmodel - Get the system model name.
-  * @name: A char array of at least 81 characters.
-  *
-- * Get system model name from PDC ROM (e.g. 9000/715 or 9000/778/B160L)
-+ * Get system model name from PDC ROM (e.g. 9000/715 or 9000/778/B160L).
-+ * Using OS_ID_HPUX will return the equivalent of the 'modelname' command
-+ * on HP/UX.
-  */
- int pdc_model_sysmodel(char *name)
+9e474ed388eb542bf0948aced376f787fb2e26b9
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index c057ad7..851519c 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -97,15 +97,17 @@ update_mmu_cache(struct vm_area_struct *
+ void
+ show_cache_info(struct seq_file *m)
  {
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 8471486..278f4b9 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -303,7 +303,7 @@ extern void eisa_init(void);
++	char buf[32];
++
+ 	seq_printf(m, "I-cache\t\t: %ld KB\n", 
+ 		cache_info.ic_size/1024 );
+-	seq_printf(m, "D-cache\t\t: %ld KB (%s%s, %d-way associative)\n", 
++	if (cache_info.dc_loop == 1)
++		snprintf(buf, 32, "%lu-way associative", cache_info.dc_loop);
++	seq_printf(m, "D-cache\t\t: %ld KB (%s%s, %s)\n",
+ 		cache_info.dc_size/1024,
+ 		(cache_info.dc_conf.cc_wt ? "WT":"WB"),
+ 		(cache_info.dc_conf.cc_sh ? ", shared I/D":""),
+-		(cache_info.dc_conf.cc_assoc)
+-	);
+-
++		((cache_info.dc_loop == 1) ? "direct mapped" : buf));
+ 	seq_printf(m, "ITLB entries\t: %ld\n" "DTLB entries\t: %ld%s\n",
+ 		cache_info.it_size,
+ 		cache_info.dt_size,
+@@ -158,11 +160,11 @@ #if 0
+ 		cache_info.dc_conf.cc_block,
+ 		cache_info.dc_conf.cc_line,
+ 		cache_info.dc_conf.cc_shift);
+-	printk("	wt %d sh %d cst %d assoc %d\n",
++	printk("	wt %d sh %d cst %d hv %d\n",
+ 		cache_info.dc_conf.cc_wt,
+ 		cache_info.dc_conf.cc_sh,
+ 		cache_info.dc_conf.cc_cst,
+-		cache_info.dc_conf.cc_assoc);
++		cache_info.dc_conf.cc_hv);
  
- static int __init parisc_init(void)
- {
--	u32 osid = (0x0006 << 16);
-+	u32 osid = (OS_ID_LINUX << 16);
+ 	printk("IC  base 0x%lx stride 0x%lx count 0x%lx loop 0x%lx\n",
+ 		cache_info.ic_base,
+@@ -176,11 +178,11 @@ #if 0
+ 		cache_info.ic_conf.cc_block,
+ 		cache_info.ic_conf.cc_line,
+ 		cache_info.ic_conf.cc_shift);
+-	printk("	wt %d sh %d cst %d assoc %d\n",
++	printk("	wt %d sh %d cst %d hv %d\n",
+ 		cache_info.ic_conf.cc_wt,
+ 		cache_info.ic_conf.cc_sh,
+ 		cache_info.ic_conf.cc_cst,
+-		cache_info.ic_conf.cc_assoc);
++		cache_info.ic_conf.cc_hv);
  
- 	parisc_proc_mkdir();
- 	parisc_init_resources();
-diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
-index a109421..97b3458 100644
---- a/drivers/parisc/pdc_stable.c
-+++ b/drivers/parisc/pdc_stable.c
-@@ -884,7 +884,7 @@ pdcs_osdep1_write(struct subsystem *entr
- 	if (!entry || !buf || !count)
- 		return -EINVAL;
- 
--	if (unlikely(pdcs_osid != 0x0006))
-+	if (unlikely(pdcs_osid != OS_ID_LINUX))
- 		return -EPERM;
- 
- 	if (count > 16)
-@@ -926,7 +926,7 @@ pdcs_osdep2_write(struct subsystem *entr
- 	if (unlikely(pdcs_size <= 224))
- 		return -ENOSYS;
- 
--	if (unlikely(pdcs_osid != 0x0006))
-+	if (unlikely(pdcs_osid != OS_ID_LINUX))
- 		return -EPERM;
- 
- 	size = pdcs_size - 224;
+ 	printk("D-TLB conf: sh %d page %d cst %d aid %d pad1 %d \n",
+ 		cache_info.dt_conf.tc_sh,
 diff --git a/include/asm-parisc/pdc.h b/include/asm-parisc/pdc.h
-index 3d3446e..33bff61 100644
+index 7d8a71a..592f13b 100644
 --- a/include/asm-parisc/pdc.h
 +++ b/include/asm-parisc/pdc.h
-@@ -278,12 +278,11 @@ #define PDC_LINK_USB_ENTRY_POINTS	1  /* 
- /* constants for OS (NVM...) */
- #define OS_ID_NONE		0	/* Undefined OS ID	*/
- #define OS_ID_HPUX		1	/* HP-UX OS		*/
--#define OS_ID_LINUX		OS_ID_HPUX /* just use the same value as hpux */
- #define OS_ID_MPEXL		2	/* MPE XL OS		*/
- #define OS_ID_OSF		3	/* OSF OS		*/
- #define OS_ID_HPRT		4	/* HP-RT OS		*/
- #define OS_ID_NOVEL		5	/* NOVELL OS		*/
--#define OS_ID_NT		6	/* NT OS		*/
-+#define OS_ID_LINUX		6	/* Linux		*/
+@@ -352,8 +352,8 @@ #endif
+ 		cc_wt	: 1,	/* 0 = WT-Dcache, 1 = WB-Dcache */
+ 		cc_sh	: 2,	/* 0 = separate I/D-cache, else shared I/D-cache */
+ 		cc_cst  : 3,	/* 0 = incoherent D-cache, 1=coherent D-cache */
+-		cc_pad1 : 5,	/* reserved */
+-		cc_assoc: 8;	/* associativity of I/D-cache */
++		cc_pad1 : 10,	/* reserved */
++		cc_hv   : 3;	/* hversion dependent */
+ };
  
- 
- /* constants for PDC_CHASSIS */
+ struct pdc_tlb_cf {		/* for PDC_CACHE (I/D-TLB's) */
 -- 
 1.3.3
 
