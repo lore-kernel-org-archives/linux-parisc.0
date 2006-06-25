@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [PATCH 15/23] [PARISC] Add is_compat_task() helper
-Date: Sun, 25 Jun 2006 19:34:43 -0400
-Message-ID: <11512784931469-git-send-email-kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH 19/23] [PARISC] OS_ID_LINUX == 0x0006
+Date: Sun, 25 Jun 2006 19:34:47 -0400
+Message-ID: <11512784934070-git-send-email-kyle@parisc-linux.org>
 References: <20060625233123.GC2837@athena.road.mcmartin.ca>
 Reply-To: Kyle McMartin <kyle@parisc-linux.org>
 To: parisc-linux@lists.parisc-linux.org
@@ -17,176 +17,89 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-... And convert signal.c and ptrace.c to use it instead of open
-coded equivalents.
+We were assigned an OS_ID of 0x0006. Consistently use OS_ID_LINUX
+instead of using the magic number. Also update the OS_ID_ defines in
+asm/pdc.h to reflect this.
 
 Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 
 ---
 
- arch/parisc/kernel/ptrace.c |    8 ++++----
- arch/parisc/kernel/signal.c |   20 ++++++++++----------
- include/asm-parisc/compat.h |   11 +++++++++++
- 3 files changed, 25 insertions(+), 14 deletions(-)
+ arch/parisc/kernel/firmware.c |    4 +++-
+ arch/parisc/kernel/setup.c    |    2 +-
+ drivers/parisc/pdc_stable.c   |    4 ++--
+ include/asm-parisc/pdc.h      |    3 +--
+ 4 files changed, 7 insertions(+), 6 deletions(-)
 
-d504011f391cc883c080decc1ba70d70b8a4a6ba
-diff --git a/arch/parisc/kernel/ptrace.c b/arch/parisc/kernel/ptrace.c
-index 413292f..3f28de9 100644
---- a/arch/parisc/kernel/ptrace.c
-+++ b/arch/parisc/kernel/ptrace.c
-@@ -91,7 +91,7 @@ #endif
- 		int copied;
- 
- #ifdef __LP64__
--		if (personality(child->personality) == PER_LINUX32) {
-+		if (__is_compat_task(child)) {
- 			unsigned int tmp;
- 
- 			addr &= 0xffffffffL;
-@@ -123,7 +123,7 @@ #endif
- 	case PTRACE_POKEDATA:
- 		ret = 0;
- #ifdef __LP64__
--		if (personality(child->personality) == PER_LINUX32) {
-+		if (__is_compat_task(child)) {
- 			unsigned int tmp = (unsigned int)data;
- 			DBG("sys_ptrace(POKE%s, %d, %lx, %lx)\n",
- 				request == PTRACE_POKETEXT ? "TEXT" : "DATA",
-@@ -146,7 +146,7 @@ #endif
- 	case PTRACE_PEEKUSR: {
- 		ret = -EIO;
- #ifdef __LP64__
--		if (personality(child->personality) == PER_LINUX32) {
-+		if (__is_compat_task(child)) {
- 			unsigned int tmp;
- 
- 			if (addr & (sizeof(int)-1))
-@@ -205,7 +205,7 @@ #endif
- 			goto out_tsk;
- 		}
- #ifdef __LP64__
--		if (personality(child->personality) == PER_LINUX32) {
-+		if (__is_compat_task(child)) {
- 			if (addr & (sizeof(int)-1))
- 				goto out_tsk;
- 			if ((addr = translate_usr_offset(addr)) < 0)
-diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
-index cc38edf..bb83880 100644
---- a/arch/parisc/kernel/signal.c
-+++ b/arch/parisc/kernel/signal.c
-@@ -76,7 +76,7 @@ sys_rt_sigsuspend(sigset_t __user *unews
- #ifdef __LP64__
- 	compat_sigset_t newset32;
- 
--	if(personality(current->personality) == PER_LINUX32){
-+	if (is_compat_task()) {
- 		/* XXX: Don't preclude handling different sized sigset_t's.  */
- 		if (sigsetsize != sizeof(compat_sigset_t))
- 			return -EINVAL;
-@@ -153,7 +153,7 @@ #ifdef __LP64__
- 	compat_sigset_t compat_set;
- 	struct compat_rt_sigframe __user * compat_frame;
- 	
--	if(personality(current->personality) == PER_LINUX32)
-+	if (is_compat_task())
- 		sigframe_size = PARISC_RT_SIGFRAME_SIZE32;
- #endif
- 
-@@ -166,7 +166,7 @@ #endif
- #ifdef __LP64__
- 	compat_frame = (struct compat_rt_sigframe __user *)frame;
- 	
--	if(personality(current->personality) == PER_LINUX32){
-+	if (is_compat_task()) {
- 		DBG(2,"sys_rt_sigreturn: ELF32 process.\n");
- 		if (__copy_from_user(&compat_set, &compat_frame->uc.uc_sigmask, sizeof(compat_set)))
- 			goto give_sigsegv;
-@@ -186,7 +186,7 @@ #endif
- 
- 	/* Good thing we saved the old gr[30], eh? */
- #ifdef __LP64__
--	if(personality(current->personality) == PER_LINUX32){
-+	if (is_compat_task()) {
- 		DBG(1,"sys_rt_sigreturn: compat_frame->uc.uc_mcontext 0x%p\n",
- 				&compat_frame->uc.uc_mcontext);
- // FIXME: Load upper half from register file
-@@ -315,7 +315,7 @@ #ifdef __LP64__
- 
- 	compat_frame = (struct compat_rt_sigframe __user *)frame;
- 	
--	if(personality(current->personality) == PER_LINUX32) {
-+	if (is_compat_task()) {
- 		DBG(1,"setup_rt_frame: frame->info = 0x%p\n", &compat_frame->info);
- 		err |= copy_siginfo_to_user32(&compat_frame->info, info);
- 		DBG(1,"SETUP_RT_FRAME: 1\n");
-@@ -392,7 +392,7 @@ #endif
- 	haddr = A(ka->sa.sa_handler);
- 	/* The sa_handler may be a pointer to a function descriptor */
- #ifdef __LP64__
--	if(personality(current->personality) == PER_LINUX32) {
-+	if (is_compat_task()) {
- #endif
- 		if (haddr & PA_PLABEL_FDESC) {
- 			Elf32_Fdesc fdesc;
-@@ -427,19 +427,19 @@ #endif
- 	 */
- 	sigframe_size = PARISC_RT_SIGFRAME_SIZE;
- #ifdef __LP64__
--	if(personality(current->personality) == PER_LINUX32)
-+	if (is_compat_task())
- 		sigframe_size = PARISC_RT_SIGFRAME_SIZE32;
- #endif
- 	if (in_syscall) {
- 		regs->gr[31] = haddr;
- #ifdef __LP64__
--		if(personality(current->personality) == PER_LINUX)
-+		if (personality(current->personality) == PER_LINUX)
- 			sigframe_size |= 1;
- #endif
- 	} else {
- 		unsigned long psw = USER_PSW;
- #ifdef __LP64__
--		if(personality(current->personality) == PER_LINUX)
-+		if (personality(current->personality) == PER_LINUX)
- 			psw |= PSW_W;
- #endif
- 
-@@ -464,7 +464,7 @@ #endif
- 	regs->gr[26] = sig;               /* signal number */
- 	
- #ifdef __LP64__
--	if(personality(current->personality) == PER_LINUX32){
-+	if (is_compat_task()) {
- 		regs->gr[25] = A(&compat_frame->info); /* siginfo pointer */
- 		regs->gr[24] = A(&compat_frame->uc);   /* ucontext pointer */
- 	} else
-diff --git a/include/asm-parisc/compat.h b/include/asm-parisc/compat.h
-index 289624d..71b4eee 100644
---- a/include/asm-parisc/compat.h
-+++ b/include/asm-parisc/compat.h
-@@ -5,6 +5,7 @@ #define _ASM_PARISC_COMPAT_H
+889a598b271a7ef14c2c7c83b26a82ccf57d9ab9
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index c80c277..4398d2a 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -407,7 +407,9 @@ int pdc_model_info(struct pdc_model *mod
+  * pdc_model_sysmodel - Get the system model name.
+  * @name: A char array of at least 81 characters.
+  *
+- * Get system model name from PDC ROM (e.g. 9000/715 or 9000/778/B160L)
++ * Get system model name from PDC ROM (e.g. 9000/715 or 9000/778/B160L).
++ * Using OS_ID_HPUX will return the equivalent of the 'modelname' command
++ * on HP/UX.
   */
- #include <linux/types.h>
- #include <linux/sched.h>
-+#include <linux/personality.h>
+ int pdc_model_sysmodel(char *name)
+ {
+diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
+index 8471486..278f4b9 100644
+--- a/arch/parisc/kernel/setup.c
++++ b/arch/parisc/kernel/setup.c
+@@ -303,7 +303,7 @@ extern void eisa_init(void);
  
- #define COMPAT_USER_HZ 100
+ static int __init parisc_init(void)
+ {
+-	u32 osid = (0x0006 << 16);
++	u32 osid = (OS_ID_LINUX << 16);
  
-@@ -149,4 +150,14 @@ static __inline__ void __user *compat_al
- 	return (void __user *)regs->gr[30];
- }
+ 	parisc_proc_mkdir();
+ 	parisc_init_resources();
+diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+index a109421..97b3458 100644
+--- a/drivers/parisc/pdc_stable.c
++++ b/drivers/parisc/pdc_stable.c
+@@ -884,7 +884,7 @@ pdcs_osdep1_write(struct subsystem *entr
+ 	if (!entry || !buf || !count)
+ 		return -EINVAL;
  
-+static inline int __is_compat_task(struct task_struct *t)
-+{
-+	return personality(t->personality) == PER_LINUX32;
-+}
-+
-+static inline int is_compat_task(void)
-+{
-+	return __is_compat_task(current);
-+}
-+
- #endif /* _ASM_PARISC_COMPAT_H */
+-	if (unlikely(pdcs_osid != 0x0006))
++	if (unlikely(pdcs_osid != OS_ID_LINUX))
+ 		return -EPERM;
+ 
+ 	if (count > 16)
+@@ -926,7 +926,7 @@ pdcs_osdep2_write(struct subsystem *entr
+ 	if (unlikely(pdcs_size <= 224))
+ 		return -ENOSYS;
+ 
+-	if (unlikely(pdcs_osid != 0x0006))
++	if (unlikely(pdcs_osid != OS_ID_LINUX))
+ 		return -EPERM;
+ 
+ 	size = pdcs_size - 224;
+diff --git a/include/asm-parisc/pdc.h b/include/asm-parisc/pdc.h
+index 3d3446e..33bff61 100644
+--- a/include/asm-parisc/pdc.h
++++ b/include/asm-parisc/pdc.h
+@@ -278,12 +278,11 @@ #define PDC_LINK_USB_ENTRY_POINTS	1  /* 
+ /* constants for OS (NVM...) */
+ #define OS_ID_NONE		0	/* Undefined OS ID	*/
+ #define OS_ID_HPUX		1	/* HP-UX OS		*/
+-#define OS_ID_LINUX		OS_ID_HPUX /* just use the same value as hpux */
+ #define OS_ID_MPEXL		2	/* MPE XL OS		*/
+ #define OS_ID_OSF		3	/* OSF OS		*/
+ #define OS_ID_HPRT		4	/* HP-RT OS		*/
+ #define OS_ID_NOVEL		5	/* NOVELL OS		*/
+-#define OS_ID_NT		6	/* NT OS		*/
++#define OS_ID_LINUX		6	/* Linux		*/
+ 
+ 
+ /* constants for PDC_CHASSIS */
 -- 
 1.3.3
 
