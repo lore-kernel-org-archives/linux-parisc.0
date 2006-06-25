@@ -1,8 +1,7 @@
 From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [PATCH 17/23] [PARISC] Match show_cache_info with
-	reality
-Date: Sun, 25 Jun 2006 19:34:45 -0400
-Message-ID: <11512784931379-git-send-email-kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH 20/23] [PARISC] Add os_id_to_string helper
+Date: Sun, 25 Jun 2006 19:34:48 -0400
+Message-ID: <11512784934079-git-send-email-kyle@parisc-linux.org>
 References: <20060625233123.GC2837@athena.road.mcmartin.ca>
 Reply-To: Kyle McMartin <kyle@parisc-linux.org>
 To: parisc-linux@lists.parisc-linux.org
@@ -18,88 +17,71 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-show_cache_info and struct pdc_cache_cf were out of sync with
-published documentation. Fix the reporting of cache associativity
-and update the pdc_cache_cf bitfields to match documentation.
+Add a helper to asm/pdc.h to translate OS_ID values to strings
+and use it in the pdc_stable driver.
 
 Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 
 ---
 
- arch/parisc/kernel/cache.c |   18 ++++++++++--------
- include/asm-parisc/pdc.h   |    4 ++--
- 2 files changed, 12 insertions(+), 10 deletions(-)
+ drivers/parisc/pdc_stable.c |   14 ++------------
+ include/asm-parisc/pdc.h    |   13 +++++++++++++
+ 2 files changed, 15 insertions(+), 12 deletions(-)
 
-9e474ed388eb542bf0948aced376f787fb2e26b9
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index c057ad7..851519c 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -97,15 +97,17 @@ update_mmu_cache(struct vm_area_struct *
- void
- show_cache_info(struct seq_file *m)
+484e05640cb33480c6cbd8c9f8e519a635424d1a
+diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
+index 97b3458..ea1b7a6 100644
+--- a/drivers/parisc/pdc_stable.c
++++ b/drivers/parisc/pdc_stable.c
+@@ -622,22 +622,12 @@ static ssize_t
+ pdcs_osid_read(struct subsystem *entry, char *buf)
  {
-+	char buf[32];
-+
- 	seq_printf(m, "I-cache\t\t: %ld KB\n", 
- 		cache_info.ic_size/1024 );
--	seq_printf(m, "D-cache\t\t: %ld KB (%s%s, %d-way associative)\n", 
-+	if (cache_info.dc_loop == 1)
-+		snprintf(buf, 32, "%lu-way associative", cache_info.dc_loop);
-+	seq_printf(m, "D-cache\t\t: %ld KB (%s%s, %s)\n",
- 		cache_info.dc_size/1024,
- 		(cache_info.dc_conf.cc_wt ? "WT":"WB"),
- 		(cache_info.dc_conf.cc_sh ? ", shared I/D":""),
--		(cache_info.dc_conf.cc_assoc)
--	);
--
-+		((cache_info.dc_loop == 1) ? "direct mapped" : buf));
- 	seq_printf(m, "ITLB entries\t: %ld\n" "DTLB entries\t: %ld%s\n",
- 		cache_info.it_size,
- 		cache_info.dt_size,
-@@ -158,11 +160,11 @@ #if 0
- 		cache_info.dc_conf.cc_block,
- 		cache_info.dc_conf.cc_line,
- 		cache_info.dc_conf.cc_shift);
--	printk("	wt %d sh %d cst %d assoc %d\n",
-+	printk("	wt %d sh %d cst %d hv %d\n",
- 		cache_info.dc_conf.cc_wt,
- 		cache_info.dc_conf.cc_sh,
- 		cache_info.dc_conf.cc_cst,
--		cache_info.dc_conf.cc_assoc);
-+		cache_info.dc_conf.cc_hv);
+ 	char *out = buf;
+-	char *tmpstr = NULL;
  
- 	printk("IC  base 0x%lx stride 0x%lx count 0x%lx loop 0x%lx\n",
- 		cache_info.ic_base,
-@@ -176,11 +178,11 @@ #if 0
- 		cache_info.ic_conf.cc_block,
- 		cache_info.ic_conf.cc_line,
- 		cache_info.ic_conf.cc_shift);
--	printk("	wt %d sh %d cst %d assoc %d\n",
-+	printk("	wt %d sh %d cst %d hv %d\n",
- 		cache_info.ic_conf.cc_wt,
- 		cache_info.ic_conf.cc_sh,
- 		cache_info.ic_conf.cc_cst,
--		cache_info.ic_conf.cc_assoc);
-+		cache_info.ic_conf.cc_hv);
+ 	if (!entry || !buf)
+ 		return -EINVAL;
  
- 	printk("D-TLB conf: sh %d page %d cst %d aid %d pad1 %d \n",
- 		cache_info.dt_conf.tc_sh,
+-	switch (pdcs_osid) {
+-		case 0x0000:	tmpstr = "No OS"; break;
+-		case 0x0001:	tmpstr = "HP-UX"; break;
+-		case 0x0002:	tmpstr = "MPE-iX"; break;
+-		case 0x0003:	tmpstr = "OSF"; break;
+-		case 0x0004:	tmpstr = "HP-RT"; break;
+-		case 0x0005:	tmpstr = "Novell Netware"; break;
+-		case 0x0006:	tmpstr = "Linux"; break;
+-		default:	tmpstr = "Unknown"; break;
+-	}
+-	out += sprintf(out, "%s dependent data (0x%.4x)\n", tmpstr, pdcs_osid);
++	out += sprintf(out, "%s dependent data (0x%.4x)\n",
++		os_id_to_string(pdcs_osid), pdcs_osid);
+ 
+ 	return out - buf;
+ }
 diff --git a/include/asm-parisc/pdc.h b/include/asm-parisc/pdc.h
-index 7d8a71a..592f13b 100644
+index 33bff61..7a21f10 100644
 --- a/include/asm-parisc/pdc.h
 +++ b/include/asm-parisc/pdc.h
-@@ -352,8 +352,8 @@ #endif
- 		cc_wt	: 1,	/* 0 = WT-Dcache, 1 = WB-Dcache */
- 		cc_sh	: 2,	/* 0 = separate I/D-cache, else shared I/D-cache */
- 		cc_cst  : 3,	/* 0 = incoherent D-cache, 1=coherent D-cache */
--		cc_pad1 : 5,	/* reserved */
--		cc_assoc: 8;	/* associativity of I/D-cache */
-+		cc_pad1 : 10,	/* reserved */
-+		cc_hv   : 3;	/* hversion dependent */
- };
+@@ -284,6 +284,19 @@ #define OS_ID_HPRT		4	/* HP-RT OS		*/
+ #define OS_ID_NOVEL		5	/* NOVELL OS		*/
+ #define OS_ID_LINUX		6	/* Linux		*/
  
- struct pdc_tlb_cf {		/* for PDC_CACHE (I/D-TLB's) */
++static inline char * os_id_to_string(u16 os_id) {
++	switch(os_id) {
++	case OS_ID_NONE:	return "No OS";
++	case OS_ID_HPUX:	return "HP-UX";
++	case OS_ID_MPEXL:	return "MPE-iX";
++	case OS_ID_OSF:		return "OSF";
++	case OS_ID_HPRT:	return "HP-RT";
++	case OS_ID_NOVEL:	return "Novell Netware";
++	case OS_ID_LINUX:	return "Linux";
++	default:	return "Unknown";
++	}
++}
++
+ 
+ /* constants for PDC_CHASSIS */
+ #define OSTAT_OFF		0
 -- 
 1.3.3
 
