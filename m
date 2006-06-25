@@ -1,7 +1,8 @@
 From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [PATCH 12/23] [PARISC] pdc_stable version 0.30
-Date: Sun, 25 Jun 2006 19:34:40 -0400
-Message-ID: <1151278492719-git-send-email-kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH 10/23] [PARISC] PDC_CHASSIS is implemented on
+	all machines
+Date: Sun, 25 Jun 2006 19:34:38 -0400
+Message-ID: <11512784921346-git-send-email-kyle@parisc-linux.org>
 References: <20060625233123.GC2837@athena.road.mcmartin.ca>
 Reply-To: Kyle McMartin <kyle@parisc-linux.org>
 Cc: Thibaut Varene <varenet@parisc-linux.org>
@@ -20,380 +21,291 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 From: Thibaut Varene <varenet@parisc-linux.org>
 
-pdc_stable v0.30:
+This patch removes a limitation of the original code, so that CHASSIS
+codes can be sent to all machines. On machines with a LCD panel, this
+code displays "INI" during bootup, "RUN" when the system is booted and
+running, "FLT" when a panic occurs, etc.
 
-This patch introduces 3 more files to the /sys/firmware/stable tree:
-- diagnostic, which contains a cryptic hex string
-- osdep1, a 16 bytes os-dependent storage area always available
-- osdep2, another os-dependent storage area which existence/size depends
-on hversion.
+This part of the code can be enabled/disabled through CONFIG_PDC_CHASSIS
 
-This patch also adds code to setup the "Linux" signature in stable
-storage. That is to say that starting with this patch, the kernel will
-now sign its OSID (0x0006, thx LaMont) in Stable Storage upon boot,
-whether pdc_stable is enabled or not.
+This patch also adds minimalistic support for Chassis warnings, through
+a proc entry '/proc/chassis', which will reflect the warnings status (PSU
+or fans failure when they happen, NVRAM battery level and temperature
+thresholds overflows).
+
+This part of the code can be enabled/disabled through CONFIG_PDC_CHASSIS_WARN
 
 Signed-off-by: Thibaut VARENE <varenet@parisc-linux.org>
 Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
 
 ---
 
- arch/parisc/kernel/setup.c  |    5 +
- drivers/parisc/pdc_stable.c |  219 ++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 210 insertions(+), 14 deletions(-)
+ arch/parisc/kernel/firmware.c    |   22 +++++++++--
+ arch/parisc/kernel/pdc_chassis.c |   73 ++++++++++++++++++++++++++++++++------
+ drivers/parisc/Kconfig           |   33 ++++++++++++++---
+ include/asm-parisc/pdc.h         |    1 +
+ 4 files changed, 107 insertions(+), 22 deletions(-)
 
-a77039bc889939409af9726760e9b1b3fe77f6fb
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index 4a36ec3..8471486 100644
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -303,6 +303,8 @@ extern void eisa_init(void);
- 
- static int __init parisc_init(void)
- {
-+	u32 osid = (0x0006 << 16);
-+
- 	parisc_proc_mkdir();
- 	parisc_init_resources();
- 	do_device_inventory();                  /* probe for hardware */
-@@ -311,6 +313,9 @@ static int __init parisc_init(void)
- 	
- 	/* set up a new led state on systems shipped LED State panel */
- 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_BSTART);
-+
-+	/* tell PDC we're Linux. Nevermind failure. */
-+	pdc_stable_write(0x40, &osid, sizeof(osid));
- 	
- 	processor_init();
- 	printk(KERN_INFO "CPU(s): %d x %s at %d.%06d MHz\n",
-diff --git a/drivers/parisc/pdc_stable.c b/drivers/parisc/pdc_stable.c
-index bbeabe3..4b991d5 100644
---- a/drivers/parisc/pdc_stable.c
-+++ b/drivers/parisc/pdc_stable.c
-@@ -28,8 +28,15 @@
-  *    following code can deal with just 96 bytes of Stable Storage, and all
-  *    sizes between 96 and 192 bytes (provided they are multiple of struct
-  *    device_path size, eg: 128, 160 and 192) to provide full information.
-- *    The code makes no use of data above 192 bytes. One last word: there's one
-- *    path we can always count on: the primary path.
-+ *    One last word: there's one path we can always count on: the primary path.
-+ *    Anything above 224 bytes is used for 'osdep2' OS-dependent storage area.
-+ *
-+ *    The first OS-dependent area should always be available. Obviously, this is
-+ *    not true for the other one. Also bear in mind that reading/writing from/to
-+ *    osdep2 is much more expensive than from/to osdep1.
-+ *    NOTE: We do not handle the 2 bytes OS-dep area at 0x5D, nor the first
-+ *    2 bytes of storage available right after OSID. That's a total of 4 bytes
-+ *    sacrificed: -ETOOLAZY :P
+10308768c98d32cf8606224ee01c92dc9ff57126
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index 2dc06b8..0596f27 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -11,7 +11,7 @@
+  * Copyright 1999 The Puffin Group, (Alex deVries, David Kennedy)
+  * Copyright 2003 Grant Grundler <grundler parisc-linux org>
+  * Copyright 2003,2004 Ryan Bradetich <rbrad@parisc-linux.org>
+- * Copyright 2004 Thibaut VARENE <varenet@parisc-linux.org>
++ * Copyright 2004,2006 Thibaut VARENE <varenet@parisc-linux.org>
   *
-  *    The current policy wrt file permissions is:
-  *	- write: root only
-@@ -64,15 +71,18 @@ #include <asm/page.h>
- #include <asm/uaccess.h>
- #include <asm/hardware.h>
+  *    This program is free software; you can redistribute it and/or modify
+  *    it under the terms of the GNU General Public License as published by
+@@ -252,10 +252,8 @@ int pdc_pat_chassis_send_log(unsigned lo
+ #endif
  
--#define PDCS_VERSION	"0.22"
-+#define PDCS_VERSION	"0.30"
- #define PDCS_PREFIX	"PDC Stable Storage"
- 
- #define PDCS_ADDR_PPRI	0x00
- #define PDCS_ADDR_OSID	0x40
-+#define PDCS_ADDR_OSD1	0x48
-+#define PDCS_ADDR_DIAG	0x58
- #define PDCS_ADDR_FSIZ	0x5C
- #define PDCS_ADDR_PCON	0x60
- #define PDCS_ADDR_PALT	0x80
- #define PDCS_ADDR_PKBD	0xA0
-+#define PDCS_ADDR_OSD2	0xE0
- 
- MODULE_AUTHOR("Thibaut VARENE <varenet@parisc-linux.org>");
- MODULE_DESCRIPTION("sysfs interface to HP PDC Stable Storage data");
-@@ -82,6 +92,9 @@ MODULE_VERSION(PDCS_VERSION);
- /* holds Stable Storage size. Initialized once and for all, no lock needed */
- static unsigned long pdcs_size __read_mostly;
- 
-+/* holds OS ID. Initialized once and for all, hopefully to 0x0006 */
-+static u16 pdcs_osid __read_mostly;
-+
- /* This struct defines what we need to deal with a parisc pdc path entry */
- struct pdcspath_entry {
- 	rwlock_t rw_lock;		/* to protect path entry access */
-@@ -609,27 +622,74 @@ static ssize_t
- pdcs_osid_read(struct subsystem *entry, char *buf)
+ /**
+- * pdc_chassis_disp - Updates display
++ * pdc_chassis_disp - Updates chassis code
+  * @retval: -1 on error, 0 on success
+- *
+- * Works on old PDC only (E class, others?)
+  */
+ int pdc_chassis_disp(unsigned long disp)
  {
- 	char *out = buf;
--	__u32 result;
- 	char *tmpstr = NULL;
- 
- 	if (!entry || !buf)
- 		return -EINVAL;
- 
--	/* get OSID */
--	if (pdc_stable_read(PDCS_ADDR_OSID, &result, sizeof(result)) != PDC_OK)
--		return -EIO;
--
--	/* the actual result is 16 bits away */
--	switch (result >> 16) {
-+	switch (pdcs_osid) {
- 		case 0x0000:	tmpstr = "No OS-dependent data"; break;
- 		case 0x0001:	tmpstr = "HP-UX dependent data"; break;
- 		case 0x0002:	tmpstr = "MPE-iX dependent data"; break;
- 		case 0x0003:	tmpstr = "OSF dependent data"; break;
- 		case 0x0004:	tmpstr = "HP-RT dependent data"; break;
- 		case 0x0005:	tmpstr = "Novell Netware dependent data"; break;
-+		case 0x0006:	tmpstr = "Linux dependent data"; break;
- 		default:	tmpstr = "Unknown"; break;
- 	}
--	out += sprintf(out, "%s (0x%.4x)\n", tmpstr, (result >> 16));
-+	out += sprintf(out, "%s (0x%.4x)\n", tmpstr, pdcs_osid);
-+
-+	return out - buf;
-+}
-+
-+/**
-+ * pdcs_osdep1_read - Stable Storage OS-Dependent data area 1 output.
-+ * @entry: An allocated and populated subsytem struct. We don't use it tho.
-+ * @buf: The output buffer to write to.
-+ *
-+ * This can hold 16 bytes of OS-Dependent data.
-+ */
-+static ssize_t
-+pdcs_osdep1_read(struct subsystem *entry, char *buf)
-+{
-+	char *out = buf;
-+	u32 result[4];
-+
-+	if (!entry || !buf)
-+		return -EINVAL;
-+
-+	if (pdc_stable_read(PDCS_ADDR_OSD1, &result, sizeof(result)) != PDC_OK)
-+		return -EIO;
-+
-+	out += sprintf(out, "0x%.8x\n", result[0]);
-+	out += sprintf(out, "0x%.8x\n", result[1]);
-+	out += sprintf(out, "0x%.8x\n", result[2]);
-+	out += sprintf(out, "0x%.8x\n", result[3]);
-+
-+	return out - buf;
-+}
-+
-+/**
-+ * pdcs_diagnostic_read - Stable Storage Diagnostic register output.
-+ * @entry: An allocated and populated subsytem struct. We don't use it tho.
-+ * @buf: The output buffer to write to.
-+ *
-+ * I have NFC how to interpret the content of that register ;-).
-+ */
-+static ssize_t
-+pdcs_diagnostic_read(struct subsystem *entry, char *buf)
-+{
-+	char *out = buf;
-+	u32 result;
-+
-+	if (!entry || !buf)
-+		return -EINVAL;
-+
-+	/* get diagnostic */
-+	if (pdc_stable_read(PDCS_ADDR_DIAG, &result, sizeof(result)) != PDC_OK)
-+		return -EIO;
-+
-+	out += sprintf(out, "0x%.4x\n", (result >> 16));
- 
- 	return out - buf;
- }
-@@ -645,7 +705,7 @@ static ssize_t
- pdcs_fastsize_read(struct subsystem *entry, char *buf)
- {
- 	char *out = buf;
--	__u32 result;
-+	u32 result;
- 
- 	if (!entry || !buf)
- 		return -EINVAL;
-@@ -664,6 +724,39 @@ pdcs_fastsize_read(struct subsystem *ent
+@@ -269,6 +267,22 @@ int pdc_chassis_disp(unsigned long disp)
  }
  
  /**
-+ * pdcs_osdep2_read - Stable Storage OS-Dependent data area 2 output.
-+ * @entry: An allocated and populated subsytem struct. We don't use it tho.
-+ * @buf: The output buffer to write to.
-+ *
-+ * This can hold pdcs_size - 224 bytes of OS-Dependent data, when available.
++ * pdc_chassis_warn - Fetches chassis warnings
++ * @retval: -1 on error, 0 on success
 + */
-+static ssize_t
-+pdcs_osdep2_read(struct subsystem *entry, char *buf)
++int pdc_chassis_warn(unsigned long *warn)
 +{
-+	char *out = buf;
-+	unsigned long size;
-+	unsigned short i;
-+	u32 result;
++	int retval = 0;
 +
-+	if (unlikely(pdcs_size <= 224))
-+		return -ENODATA;
++	spin_lock_irq(&pdc_lock);
++	retval = mem_pdc_call(PDC_CHASSIS, PDC_CHASSIS_WARN, __pa(pdc_result));
++	*warn = pdc_result[0];
++	spin_unlock_irq(&pdc_lock);
 +
-+	size = pdcs_size - 224;
-+
-+	if (!entry || !buf)
-+		return -EINVAL;
-+
-+	for (i=0; i<size; i+=4) {
-+		if (unlikely(pdc_stable_read(PDCS_ADDR_OSD2 + i, &result,
-+					sizeof(result)) != PDC_OK))
-+			return -EIO;
-+		out += sprintf(out, "0x%.8x\n", result);
-+	}
-+
-+	return out - buf;
++	return retval;
 +}
 +
 +/**
-  * pdcs_auto_write - This function handles autoboot/search flag modifying.
-  * @entry: An allocated and populated subsytem struct. We don't use it tho.
-  * @buf: The input buffer to read from.
-@@ -770,13 +863,100 @@ pdcs_autosearch_write(struct subsystem *
- 	return pdcs_auto_write(entry, buf, count, PF_AUTOSEARCH);
- }
- 
-+/**
-+ * pdcs_osdep1_write - Stable Storage OS-Dependent data area 1 input.
-+ * @entry: An allocated and populated subsytem struct. We don't use it tho.
-+ * @buf: The input buffer to read from.
-+ * @count: The number of bytes to be read.
+  * pdc_coproc_cfg - To identify coprocessors attached to the processor.
+  * @pdc_coproc_info: Return buffer address.
+  *
+diff --git a/arch/parisc/kernel/pdc_chassis.c b/arch/parisc/kernel/pdc_chassis.c
+index a45e2e2..51e86c0 100644
+--- a/arch/parisc/kernel/pdc_chassis.c
++++ b/arch/parisc/kernel/pdc_chassis.c
+@@ -1,8 +1,8 @@
+ /* 
+- *    interfaces to log Chassis Codes via PDC (firmware)
++ *    interfaces to Chassis Codes via PDC (firmware)
+  *
+  *    Copyright (C) 2002 Laurent Canet <canetl@esiee.fr>
+- *    Copyright (C) 2002-2004 Thibaut VARENE <varenet@parisc-linux.org>
++ *    Copyright (C) 2002-2006 Thibaut VARENE <varenet@parisc-linux.org>
+  *
+  *    This program is free software; you can redistribute it and/or modify
+  *    it under the terms of the GNU General Public License, version 2, as
+@@ -16,6 +16,9 @@
+  *    You should have received a copy of the GNU General Public License
+  *    along with this program; if not, write to the Free Software
+  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 + *
-+ * This can store 16 bytes of OS-Dependent data. We use a byte-by-byte
-+ * write approach. It's up to userspace to deal with it when constructing
-+ * its input buffer.
-+ */
-+static ssize_t
-+pdcs_osdep1_write(struct subsystem *entry, const char *buf, size_t count)
-+{
-+	u8 in[16];
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EACCES;
-+
-+	if (!entry || !buf || !count)
-+		return -EINVAL;
-+
-+	if (unlikely(pdcs_osid != 0x0006))
-+		return -EPERM;
-+
-+	if (count > 16)
-+		return -EMSGSIZE;
-+
-+	/* We'll use a local copy of buf */
-+	memset(in, 0, 16);
-+	memcpy(in, buf, count);
-+
-+	if (pdc_stable_write(PDCS_ADDR_OSD1, &in, sizeof(in)) != PDC_OK)
-+		return -EIO;
-+
-+	return count;
-+}
-+
-+/**
-+ * pdcs_osdep2_write - Stable Storage OS-Dependent data area 2 input.
-+ * @entry: An allocated and populated subsytem struct. We don't use it tho.
-+ * @buf: The input buffer to read from.
-+ * @count: The number of bytes to be read.
-+ *
-+ * This can store pdcs_size - 224 bytes of OS-Dependent data. We use a
-+ * byte-by-byte write approach. It's up to userspace to deal with it when
-+ * constructing its input buffer.
-+ */
-+static ssize_t
-+pdcs_osdep2_write(struct subsystem *entry, const char *buf, size_t count)
-+{
-+	unsigned long size;
-+	unsigned short i;
-+	u8 in[4];
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EACCES;
-+
-+	if (!entry || !buf || !count)
-+		return -EINVAL;
-+
-+	if (unlikely(pdcs_size <= 224))
-+		return -ENOSYS;
-+
-+	if (unlikely(pdcs_osid != 0x0006))
-+		return -EPERM;
-+
-+	size = pdcs_size - 224;
-+
-+	if (count > size)
-+		return -EMSGSIZE;
-+
-+	/* We'll use a local copy of buf */
-+
-+	for (i=0; i<count; i+=4) {
-+		memset(in, 0, 4);
-+		memcpy(in, buf+i, (count-i < 4) ? count-i : 4);
-+		if (unlikely(pdc_stable_write(PDCS_ADDR_OSD2 + i, &in,
-+					sizeof(in)) != PDC_OK))
-+			return -EIO;
-+	}
-+
-+	return count;
-+}
-+
- /* The remaining attributes. */
- static PDCS_ATTR(size, 0444, pdcs_size_read, NULL);
- static PDCS_ATTR(autoboot, 0644, pdcs_autoboot_read, pdcs_autoboot_write);
- static PDCS_ATTR(autosearch, 0644, pdcs_autosearch_read, pdcs_autosearch_write);
- static PDCS_ATTR(timer, 0444, pdcs_timer_read, NULL);
--static PDCS_ATTR(osid, 0400, pdcs_osid_read, NULL);
-+static PDCS_ATTR(osid, 0444, pdcs_osid_read, NULL);
-+static PDCS_ATTR(osdep1, 0600, pdcs_osdep1_read, pdcs_osdep1_write);
-+static PDCS_ATTR(diagnostic, 0400, pdcs_diagnostic_read, NULL);
- static PDCS_ATTR(fastsize, 0400, pdcs_fastsize_read, NULL);
-+static PDCS_ATTR(osdep2, 0600, pdcs_osdep2_read, pdcs_osdep2_write);
++ *    TODO: poll chassis warns, trigger (configurable) machine shutdown when
++ *    		needed.
+  */
  
- static struct subsys_attribute *pdcs_subsys_attrs[] = {
- 	&pdcs_attr_size,
-@@ -784,7 +964,10 @@ static struct subsys_attribute *pdcs_sub
- 	&pdcs_attr_autosearch,
- 	&pdcs_attr_timer,
- 	&pdcs_attr_osid,
-+	&pdcs_attr_osdep1,
-+	&pdcs_attr_diagnostic,
- 	&pdcs_attr_fastsize,
-+	&pdcs_attr_osdep2,
- 	NULL,
- };
+ #undef PDC_CHASSIS_DEBUG
+@@ -30,6 +33,7 @@ #include <linux/kernel.h>
+ #include <linux/reboot.h>
+ #include <linux/notifier.h>
+ #include <linux/cache.h>
++#include <linux/proc_fs.h>
  
-@@ -865,6 +1048,7 @@ pdc_stable_init(void)
+ #include <asm/pdc_chassis.h>
+ #include <asm/processor.h>
+@@ -38,7 +42,6 @@ #include <asm/pdcpat.h>
+ 
+ 
+ #ifdef CONFIG_PDC_CHASSIS
+-static int pdc_chassis_old __read_mostly = 0;	
+ static unsigned int pdc_chassis_enabled __read_mostly = 1;
+ 
+ 
+@@ -64,7 +67,7 @@ __setup("pdcchassis=", pdc_chassis_setup
+  * Currently, only E class and A180 are known to work with this.
+  * Inspired by Christoph Plattner
+  */
+-
++#if 0
+ static void __init pdc_chassis_checkold(void)
  {
- 	struct subsys_attribute *attr;
- 	int i, rc = 0, error = 0;
-+	u32 result;
+ 	switch(CPU_HVERSION) {
+@@ -73,7 +76,6 @@ static void __init pdc_chassis_checkold(
+ 		case 0x482:		/* E45 */
+ 		case 0x483:		/* E55 */
+ 		case 0x516:		/* A180 */
+-			pdc_chassis_old = 1;
+ 			break;
  
- 	/* find the size of the stable storage */
- 	if (pdc_stable_get_size(&pdcs_size) != PDC_OK) 
-@@ -876,6 +1060,13 @@ pdc_stable_init(void)
+ 		default:
+@@ -81,7 +83,7 @@ static void __init pdc_chassis_checkold(
+ 	}
+ 	DPRINTK(KERN_DEBUG "%s: pdc_chassis_checkold(); pdc_chassis_old = %d\n", __FILE__, pdc_chassis_old);
+ }
+-
++#endif
  
- 	printk(KERN_INFO PDCS_PREFIX " facility v%s\n", PDCS_VERSION);
+ /**
+  * pdc_chassis_panic_event() - Called by the panic handler.
+@@ -136,14 +138,13 @@ #ifdef CONFIG_PDC_CHASSIS
+ 		DPRINTK(KERN_DEBUG "%s: parisc_pdc_chassis_init()\n", __FILE__);
  
-+	/* get OSID */
-+	if (pdc_stable_read(PDCS_ADDR_OSID, &result, sizeof(result)) != PDC_OK)
+ 		/* Let see if we have something to handle... */
+-		/* Check for PDC_PAT or old LED Panel */
+-		pdc_chassis_checkold();
++		/* Check for PDC_PAT */
+ 		if (is_pdc_pat()) {
+ 			printk(KERN_INFO "Enabling PDC_PAT chassis codes support.\n");
+ 			handle = 1;
+ 		}
+-		else if (unlikely(pdc_chassis_old)) {
+-			printk(KERN_INFO "Enabling old style chassis LED panel support.\n");
++		else {
++			printk(KERN_INFO "Enabling regular chassis codes support.\n");
+ 			handle = 1;
+ 		}
+ 
+@@ -215,9 +216,12 @@ #ifdef CONFIG_64BIT
+ 			}
+ 		} else retval = -1;
+ #else
+-		if (unlikely(pdc_chassis_old)) {
++		if (1) {
+ 			switch (message) {
+ 				case PDC_CHASSIS_DIRECT_BSTART:
++					retval = pdc_chassis_disp(PDC_CHASSIS_DISP_DATA(OSTAT_INIT));
++					break;
++
+ 				case PDC_CHASSIS_DIRECT_BCOMPLETE:
+ 					retval = pdc_chassis_disp(PDC_CHASSIS_DISP_DATA(OSTAT_RUN));
+ 					break;
+@@ -244,3 +248,50 @@ #endif /* CONFIG_64BIT */
+ #endif /* CONFIG_PDC_CHASSIS */
+ 	return retval;
+ }
++
++#ifdef CONFIG_PDC_CHASSIS_WARN
++#ifdef CONFIG_PROC_FS
++static int pdc_chassis_warn_pread(char *page, char **start, off_t off,
++		int count, int *eof, void *data)
++{
++	char *out = page;
++	int len, ret;
++	unsigned long warn;
++	u32 warnreg;
++
++	ret = pdc_chassis_warn(&warn);
++	if (ret != PDC_OK)
 +		return -EIO;
 +
-+	/* the actual result is 16 bits away */
-+	pdcs_osid = (u16)(result >> 16);
++	warnreg = (warn & 0xFFFFFFFF);
 +
- 	/* For now we'll register the stable subsys within this driver */
- 	if ((rc = firmware_register(&stable_subsys)))
- 		goto fail_firmreg;
-@@ -887,7 +1078,7 @@ pdc_stable_init(void)
- 	
- 	/* register the paths subsys as a subsystem of stable subsys */
- 	kset_set_kset_s(&paths_subsys, stable_subsys);
--	if ((rc= subsystem_register(&paths_subsys)))
-+	if ((rc = subsystem_register(&paths_subsys)))
- 		goto fail_subsysreg;
++	if ((warnreg >> 24) & 0xFF)
++		out += sprintf(out, "Chassis component failure! (eg fan or PSU): 0x%.2x\n", ((warnreg >> 24) & 0xFF));
++
++	out += sprintf(out, "Battery: %s\n", (warnreg & 0x04) ? "Low!" : "OK");
++	out += sprintf(out, "Temp low: %s\n", (warnreg & 0x02) ? "Exceeded!" : "OK");
++	out += sprintf(out, "Temp mid: %s\n", (warnreg & 0x01) ? "Exceeded!" : "OK");
++
++	len = out - page - off;
++	if (len < count) {
++		*eof = 1;
++		if (len <= 0) return 0;
++	} else {
++		len = count;
++	}
++	*start = page + off;
++	return len;
++}
++
++static int __init pdc_chassis_create_procfs(void)
++{
++	printk(KERN_INFO "Enabling PDC chassis warnings support.\n");
++	create_proc_read_entry("chassis", 0400, NULL, pdc_chassis_warn_pread,
++				NULL);
++	return 0;
++}
++
++__initcall(pdc_chassis_create_procfs);
++
++#endif /* CONFIG_PROC_FS */
++#endif /* CONFIG_PDC_CHASSIS_WARN */
+diff --git a/drivers/parisc/Kconfig b/drivers/parisc/Kconfig
+index 3f5de86..1d3b84b 100644
+--- a/drivers/parisc/Kconfig
++++ b/drivers/parisc/Kconfig
+@@ -140,18 +140,37 @@ config CHASSIS_LCD_LED
+ 	  If unsure, say Y.
  
- 	/* now we create all "files" for the paths subsys */
+ config PDC_CHASSIS
+-	bool "PDC chassis State Panel support"
++	bool "PDC chassis state codes support"
+ 	default y
+ 	help
+-	  Say Y here if you want to enable support for the LED State front
+-	  panel as found on E class, and support for the GSP Virtual Front
+-	  Panel (LED State and message logging)  as found on high end
+-	  servers such as A, L and N-class.
+-	  
+-	  This has nothing to do with Chassis LCD and LED support.
++	  Say Y here if you want to enable support for Chassis codes.
++	  That includes support for LED State front panel as found on E
++	  class, and support for the GSP Virtual Front Panel (LED State and
++	  message logging)  as found on high end servers such as A, L and
++	  N-class.
++	  This driver will also display progress messages on LCD display,
++	  such as "INI", "RUN" and "FLT", and might thus clobber messages
++	  shown by the LED/LCD driver.
++	  This driver updates the state panel (LED and/or LCD) upon system
++	  state change (eg: boot, shutdown or panic).
+ 	  
+ 	  If unsure, say Y.
+ 
++
++config PDC_CHASSIS_WARN
++	bool "PDC chassis warnings support"
++	depends on PROC_FS
++	default y
++	help
++	  Say Y here if you want to enable support for Chassis warnings.
++	  This will add a proc entry '/proc/chassis' giving some information
++	  about the overall health state of the system.
++	  This includes NVRAM battery level, overtemp or failures such as
++	  fans or power units.
++
++	  If unsure, say Y.
++
++
+ config PDC_STABLE
+ 	tristate "PDC Stable Storage support"
+ 	depends on SYSFS
+diff --git a/include/asm-parisc/pdc.h b/include/asm-parisc/pdc.h
+index 08364f9..7d8a71a 100644
+--- a/include/asm-parisc/pdc.h
++++ b/include/asm-parisc/pdc.h
+@@ -719,6 +719,7 @@ void setup_pdc(void);		/* in inventory.c
+ int pdc_add_valid(unsigned long address);
+ int pdc_chassis_info(struct pdc_chassis_info *chassis_info, void *led_info, unsigned long len);
+ int pdc_chassis_disp(unsigned long disp);
++int pdc_chassis_warn(unsigned long *warn);
+ int pdc_coproc_cfg(struct pdc_coproc_cfg *pdc_coproc_info);
+ int pdc_iodc_read(unsigned long *actcnt, unsigned long hpa, unsigned int index,
+ 		  void *iodc_data, unsigned int iodc_data_size);
 -- 
 1.3.3
 
