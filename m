@@ -1,18 +1,12 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Module Relocation Problem
-Date: Mon, 26 Jun 2006 08:10:56 -0400
-Message-ID: <20060626121056.GA16242@athena.road.mcmartin.ca>
-References: <J0FGHF$3C34E7AFFFACE857F314B50EFB7BB29D@scarlet.be>
-	<200606251902.11694.kmh@sonic.net>
-	<20060626021022.GA19541@tachyon.int.mcmartin.ca>
-	<200606252124.58264.kmh@sonic.net>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] What happen to the Penguin
+Date: Mon, 26 Jun 2006 19:59:31 -0400 (EDT)
+Message-ID: <200606262359.k5QNxVrN007724@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Kai Holthaus <kmh@sonic.net>
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200606252124.58264.kmh@sonic.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,19 +17,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jun 25, 2006 at 09:24:57PM -0700, Kai Holthaus wrote:
-> Jun 25 21:20:02 obelix kernel: ioctl32(qcset:2965): Unknown cmd fd(3) 
-> cmd(403c7601){00} arg(c05cd808) on /dev/video0
-> 
+I haven't been able to boot recent consoles of my c3k (oh, I did
+accidently boot a 64-bit kernel built for an A500 without frame
+buffer support).  The last build that successfully boots is
+2.6.17-rc3-pa3.  The last messages that is see are:
 
-On a first look, it sounds like the driver is not properly handling
-compat_ioctl (32bit ioctls on a 64bit kernel).
+...
+STI PCI graphic ROM found at f6000000 (64 kB), fb at f8000000 (32 MB)
+    id 2d08c0a7-9a02587, conforms to spec rev. 8.0a
+    graphics card name: PCI_GRAFFITIX1280
+STI PCI graphic ROM found at f7000000 (2048 kB), fb at fa000000 (32 MB)
+    id 35acda30-9a02587, conforms to spec rev. 8.0d
+    graphics card name: A1262A
+sticon: Initializing STI text console.
 
-I can try to take a look sometime this week, unless someone else
-beats me to it.
+Possibly, the problem is the unsupported A1262A.  This is what
+follows with 2.6.17-rc3-pa3:
 
-Cheers,
-	Kyle
+Console: switching to colour STI console 160x64
+Console: switching to colour frame buffer device 160x64
+fb0: stifb 1280x1024-8 frame buffer device, PCI_GRAFFITIX1280, id: 2d08c0a7, mm
+io: 0xf8100000
+stifb: 'A1262A' (id: 0x35acda30) not supported.
+...
+
+Any ideas as to what's broken in later kernels?
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
