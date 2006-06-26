@@ -1,16 +1,17 @@
-From: Kai Holthaus <kmh@sonic.net>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] Module Relocation Problem
-Date: Sun, 25 Jun 2006 19:02:04 -0700
-Message-ID: <200606251902.11694.kmh@sonic.net>
+Date: Sun, 25 Jun 2006 22:10:22 -0400
+Message-ID: <20060626021022.GA19541@tachyon.int.mcmartin.ca>
 References: <J0FGHF$3C34E7AFFFACE857F314B50EFB7BB29D@scarlet.be>
 	<200606101105.38472.kmh@sonic.net> <448B184F.7020309@tiscali.be>
+	<200606251902.11694.kmh@sonic.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============0903894000=="
+Content-Type: text/plain;
+  charset=us-ascii
 Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@tiscali.be>
+To: Kai Holthaus <kmh@sonic.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <448B184F.7020309@tiscali.be>
+In-Reply-To: <200606251902.11694.kmh@sonic.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,71 +22,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============0903894000==
-Content-Type: multipart/signed; boundary="nextPart2750942.2loOpEWIHo";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Sun, Jun 25, 2006 at 07:02:04PM -0700, Kai Holthaus wrote:
+> This has all been very helpful. If it is indeed a problem in the hppa-linux 
+> kernel, I'll keep a watchful eye out for fixes. If there's anything a kernel 
+> layman like me can do, please let me know.
+> 
 
---nextPart2750942.2loOpEWIHo
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Ironic that you mentioned this today. The fix to module.c James
+committed yesterday should fix this for you. Please try 2.6.17-pa6 and
+see if that helps.
 
->     1. How do I compile the qc-usb driver directly into the kernel rather
-> than as a standalone module?
->
->        At the moment, it is not possible without a lot of work to build t=
-he
-> qc-usb driver into the kernel. We recommend building qc-usb driver as a
-> separate module rather than directly into the kernel. [snip]
->
-> So apparently there is a few chance but regarding the generic advise it
-> could be out dated, the best is certainly to contact developers to get an
-> actual status ;-)
-
-Thanks for the help and advice - here's the answer from the developer:
-
-"I haven't tried doing this recently. I made a couple of attempts to
-shoehorn the driver into the kernel build system, but it ended up being
-a rathole I didn't want to go down until I've cleaned up the driver
-itself. Integrating the qc-usb driver into the kernel is definitely on
-the TODO list, just not right now. Sorry."
-
-> Appology if I don't have much more help to offer (no hardware and mainly
-> dramaticaly lakes of time, specialy for the moment).
-
-This has all been very helpful. If it is indeed a problem in the hppa-linux=
-=20
-kernel, I'll keep a watchful eye out for fixes. If there's anything a kerne=
-l=20
-layman like me can do, please let me know.
-
-Thanks,
-
-	Kai
-
---nextPart2750942.2loOpEWIHo
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQBEn0Ajwl7N6T1/FugRAqAiAJ9m/RqYaPxMT2jcQGVkl+0mi9uDjQCdGfdW
-hpnBzGVhpHJp8JFoLxvxMvY=
-=M6yM
------END PGP SIGNATURE-----
-
---nextPart2750942.2loOpEWIHo--
-
---===============0903894000==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Cheers,
+	Kyle M.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============0903894000==--
