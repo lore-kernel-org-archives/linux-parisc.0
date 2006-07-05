@@ -1,13 +1,17 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: [parisc-linux] PA-RISC/Linux Boot HOWTO updated
-Date: Wed, 5 Jul 2006 00:58:01 +0200
-Message-ID: <7d01f9f00607041558q6e00150di1373214bbb745331@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Mysterious hangs with parisc
+Date: Wed, 5 Jul 2006 12:47:34 -0400
+Message-ID: <20060705164734.GB30640@athena.road.mcmartin.ca>
+References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
+	<200606240241.k5O2fALQ001885@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii
+Cc: James.Bottomley@SteelEye.com,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200606240241.k5O2fALQ001885@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,17 +22,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi pa-ckers!
+On Fri, Jun 23, 2006 at 10:41:09PM -0400, John David Anglin wrote:
+> This is not to say that the locking code can't be improved.  As far
+> as I can tell, hpux doesn't spin.  It has pre-abitration, priorities
+> for waiters, etc.  When a lock is released, suwaiters is called to
+> pass the lock in a fair way to another waiter if there is one.
+> 
 
-This mail to let you know that the updated PA-RISC/Linux Boot HOWTO
-has finally been published on TLDP:
-http://tldp.org/HOWTO/PA-RISC-Linux-Boot-HOWTO/
+HPUX spinlocks /do/ spin, afaict. They just keep track of how long
+they've been spinning for (and panic after 60 seconds.) On release of
+a spinlock, they also donate it to another cpu, which is, I guess, the
+arbitration thing. I can back this up with disassembly, but I wouldn't
+be comfortable doing it over mail, due to copyright infringement and
+blah blah.
 
-Many thanks to those who helped me going through this!
-
-HTH
-
-T-Bone
+Cheers,
+	 Kyle M.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
