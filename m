@@ -1,21 +1,14 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Mysterious hangs with parisc
-Date: Thu, 6 Jul 2006 14:34:09 -0400
-Message-ID: <20060706183409.GB5692@athena.road.mcmartin.ca>
-References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
-	<200606240241.k5O2fALQ001885@hiauly1.hia.nrc.ca>
-	<20060705164734.GB30640@athena.road.mcmartin.ca>
-	<44AD54F0.90508@tiscali.be>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: [parisc-linux] 2.6.18-rc1-pa1: new 53c710 driver's errors?
+Date: Fri, 07 Jul 2006 16:46:19 +0000
+Message-ID: <44AE8FDB.7010304@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
- James.Bottomley@SteelEye.com,
- parisc-linux@lists.parisc-linux.org,
- John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: Joel Soete <soete.joel@tiscali.be>
+  charset=us-ascii;
+  format=flowed
+To: James Bottomley <James.Bottomley@SteelEye.com>,
+ Parisc List <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <44AD54F0.90508@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,61 +19,88 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jul 06, 2006 at 06:22:40PM +0000, Joel Soete wrote:
->  [<000000001011cc08>] smp_do_timer+0x70/0x80
+Hello James,
 
-You're running an SMP kernel.
+I was testing newest 2.6.18-rc1-pa1 on my c110; on this model an narrow single ended scsi disk is pluged in the external connection 
+  drived by your driver 53c710:
+[snip]
+53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
+scsi1: 53c710 rev 2
+scsi1 : LASI SCSI 53c700
+[snip]
 
-time.c:
+Unfortunaltely at the middle of the sw upgrade (apt-get dist-upgrade) some failures occured:
+[snip]
+Jul  7 17:24:08 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO CD MSG BSY REQ MSG IN
+Jul  7 17:24:08 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe93ce0, slot 2fd6864c, dsp 000a01e8[01e8]
+Jul  7 17:24:08 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93ce0
+Jul  7 17:24:09 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:24:09 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe93ce0, slot 2fd6864c, dsp 000a01e8[01e8]
+Jul  7 17:24:09 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93ce0
+Jul  7 17:24:10 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:24:10 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe93ce0, slot 2fd6864c, dsp 000a01e8[01e8]
+Jul  7 17:24:10 hpalin kernel:  failing command because of reset, slot 2fd68520, cmnd 2fe93920
+Jul  7 17:24:10 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93ce0
+Jul  7 17:24:10 hpalin kernel:  failing command because of reset, slot 2fd68778, cmnd 2fe93420
+Jul  7 17:24:10 hpalin kernel:  failing command because of reset, slot 2fd688a4, cmnd 2fe936a0
+Jul  7 17:24:47 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:24:47 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe93920, slot 2fd688a4, dsp 000a01e8[01e8]
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd68520, cmnd 2fe936a0
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93420
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd68778, cmnd 2fe93ce0
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd688a4, cmnd 2fe93920
+Jul  7 17:24:12 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:24:47 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe93920, slot 2fd688a4, dsp 000a01e8[01e8]
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd68520, cmnd 2fe936a0
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93420
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd68778, cmnd 2fe93ce0
+Jul  7 17:24:11 hpalin kernel:  failing command because of reset, slot 2fd688a4, cmnd 2fe93920
+Jul  7 17:24:12 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:24:12 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe936a0, slot 2fd688a4, dsp 000a01e8[01e8]
+Jul  7 17:24:12 hpalin kernel:  failing command because of reset, slot 2fd68520, cmnd 2fe93920
+Jul  7 17:24:12 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93ce0
+Jul  7 17:24:12 hpalin kernel:  failing command because of reset, slot 2fd68778, cmnd 2fe93420
+Jul  7 17:24:12 hpalin kernel:  failing command because of reset, slot 2fd688a4, cmnd 2fe936a0
+Jul  7 17:24:13 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:24:13 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe93920, slot 2fd688a4, dsp 000a01e8[01e8]
+Jul  7 17:24:13 hpalin kernel:  failing command because of reset, slot 2fd68520, cmnd 2fe936a0
+Jul  7 17:24:13 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93420
+Jul  7 17:24:13 hpalin kernel:  failing command because of reset, slot 2fd68778, cmnd 2fe93ce0
+Jul  7 17:24:13 hpalin kernel:  failing command because of reset, slot 2fd688a4, cmnd 2fe93920
+Jul  7 17:24:14 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+[snip]
+Jul  7 17:30:13 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:30:13 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe93920, slot 2fd688a4, dsp 000a01e8[01e8]
+Jul  7 17:30:13 hpalin kernel:  failing command because of reset, slot 2fd68520, cmnd 2fe936a0
+Jul  7 17:30:13 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93420
+Jul  7 17:30:13 hpalin kernel:  failing command because of reset, slot 2fd68778, cmnd 2fe93ce0
+Jul  7 17:30:13 hpalin kernel:  failing command because of reset, slot 2fd688a4, cmnd 2fe93920
+Jul  7 17:30:14 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+Jul  7 17:30:14 hpalin kernel: scsi1: Bus Reset detected, executing command 2fe936a0, slot 2fd688a4, dsp 000a01e8[01e8]
+Jul  7 17:30:14 hpalin kernel:  failing command because of reset, slot 2fd68520, cmnd 2fe93920
+Jul  7 17:30:14 hpalin kernel:  failing command because of reset, slot 2fd6864c, cmnd 2fe93ce0
+Jul  7 17:30:14 hpalin kernel:  failing command because of reset, slot 2fd68778, cmnd 2fe93420
+Jul  7 17:30:14 hpalin kernel:  failing command because of reset, slot 2fd688a4, cmnd 2fe936a0
+<end>
 
-static inline unsigned long
-gettimeoffset (void)
-{
-#ifndef CONFIG_SMP
-	/*
-	 * FIXME: This won't work on smp because jiffies are updated by cpu 0.
-	 *    Once parisc-linux learns the cr16 difference between processors,
-	 *    this could be made to work.
-	 */
+and seems to finaly panic (but I tried first to reboot?)
 
-	long last_tick;
-	long elapsed_cycles;
+Any idea?
 
-	/* it_value is the intended time of the next tick */
-	last_tick = cpu_data[smp_processor_id()].it_value;
+TIA,
+	Joel
 
-	/* Subtract one tick and account for possible difference between
-	 * when we expected the tick and when it actually arrived.
-	 * (aka wall vs real)
-	 */
-	last_tick -= clocktick * (jiffies - wall_jiffies + 1);
-	elapsed_cycles = mfctl(16) - last_tick;
+PS: with previous kernel I read just:
+[snip]
+May 28 00:26:07 hpalin kernel: scsi1: (3:0) phase mismatch at 01e8, phase IO CD MSG BSY REQ MSG IN
+May 28 00:26:07 hpalin kernel: scsi1: Bus Reset detected, executing command 226c8320, slot 2fe988a4, dsp 000a01e8[01e8]
+May 28 00:26:07 hpalin kernel:  failing command because of reset, slot 2fe98520, cmnd 2fe2b060
+May 28 00:26:07 hpalin kernel:  failing command because of reset, slot 2fe9864c, cmnd 2fe2b8a0
+May 28 00:26:07 hpalin kernel:  failing command because of reset, slot 2fe98778, cmnd 2fe2ba00
+May 28 00:26:07 hpalin kernel:  failing command because of reset, slot 2fe988a4, cmnd 226c8320
+[snip]
 
-	/* the precision of this math could be improved */
-	return elapsed_cycles / (PAGE0->mem_10msec / 10000);
-#else
-	return 0;
-#endif
-}
-
-Now let's look at the comment for James' change:
-
-<quote>
-Apparently gettimeoffset can return small negative values (usually in
-the 100us range).  If xtime.tv_nsec is accidentally less than this,
-though (a fortunately unlikely event) it triggers the loop forever.
-
-I've added a test and correct adjustment for this case.  It has a
-warning printk in there which I'd like to leave for the time being
-just in case this problem implicates some other part of the kernel.
-</quote>
-
-I don't see 0 being a small negative value. ;-)
-
-James' fix only applied to UP builds. :)
-
-Cheers,
-	Kyle M.
+from time to time but wasn't looping; and this also on a brotherhood arch: d380.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
