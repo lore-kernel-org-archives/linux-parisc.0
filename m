@@ -1,11 +1,11 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: [parisc-linux] [RFT] PA7200 users?
-Date: Fri, 7 Jul 2006 13:11:28 -0400
-Message-ID: <20060707171128.GA8689@athena.road.mcmartin.ca>
+From: "Joel Soete" <soete.joel@scarlet.be>
+Subject: [parisc-linux] 2.6.18-rc1-pa1: new printk's warning?
+Date: Tue, 11 Jul 2006 15:27:59 +0200
+Message-ID: <J28QQN$2C78E6C4D1CF6CFF36C63BCCB1DABEF4@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=iso-8859-1
+To: "Parisc List" <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,31 +17,101 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Can someone with a PA7200 please boot test this patch? I was reading
-some docs which lead me to believe that PA7200 will suppress traps on
-loads to gr0 too.
+Hello,
 
-If not, you'll find out pretty quick when you're boot craps out. :)
+Because of this resource_size_t change in this new 2.6.18-rc1:
+include/linux/types.h
+#ifdef CONFIG_RESOURCES_64BIT
+typedef u64 resource_size_t;
+#else
+typedef u32 resource_size_t;
+#endif
 
-Cheers,
-	Kyle M.
+and related resource structure:
+include/linux/ioport.h
+struct resource {
+        resource_size_t start;
+        resource_size_t end;
+        const char *name;
+        unsigned long flags;
+        struct resource *parent, *sibling, *child;
+};
 
-Index: arch/parisc/Kconfig
-===================================================================
-RCS file: /var/cvs/linux-2.6/arch/parisc/Kconfig,v
-retrieving revision 1.48
-diff -u -d -p -r1.48 Kconfig
---- arch/parisc/Kconfig	6 Jul 2006 12:21:25 -0000	1.48
-+++ arch/parisc/Kconfig	7 Jul 2006 17:09:40 -0000
-@@ -127,7 +127,7 @@ config PA11
- 
- config PREFETCH
- 	def_bool y
--	depends on PA8X00
-+	depends on PA8X00 || PA7200
- 
- config 64BIT
- 	bool "64-bit kernel"
+(btw, as start and end are actualy addresses, I would find more relevant =
+to
+use resource_addr_t as new typedef ;-?)
+
+some printk() warning appears:
+# grep resource_size_t  /var/logs/k-2.6.18-rc1-pa1-c110-t
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/arch/parisc/kernel/drivers.c:837: wa=
+rning:
+format '%lx' expects type 'long unsigned int', but argument 4 has type
+'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/net/lasi_82596.c:1545: warni=
+ng:
+format '%lx' expects type 'long unsigned int', but argument 3 has type
+'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/net/lasi_82596.c:1550: warni=
+ng:
+format '%lx' expects type 'long unsigned int', but argument 2 has type
+'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/ccio-dma.c:1402: warn=
+ing:
+format '%08lx' expects type 'long unsigned int', but argument 3 has type
+'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/ccio-dma.c:1402: warn=
+ing:
+format '%08lx' expects type 'long unsigned int', but argument 4 has type
+'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/ccio-dma.c:1554: warn=
+ing:
+format '%lx' expects type 'long unsigned int', but argument 3 has type
+'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/asp.c:85: warning: fo=
+rmat
+'%lx' expects type 'long unsigned int', but argument 4 has type 'resource=
+_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/eisa.c:318: warning: =
+format
+'%08lx' expects type 'long unsigned int', but argument 3 has type
+'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/eisa_enumerator.c:101=
+:
+warning: format '%lx' expects type 'long unsigned int', but argument 2 ha=
+s
+type 'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/eisa_enumerator.c:101=
+:
+warning: format '%lx' expects type 'long unsigned int', but argument 3 ha=
+s
+type 'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/eisa_enumerator.c:191=
+:
+warning: format '%lx' expects type 'long unsigned int', but argument 2 ha=
+s
+type 'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parisc/eisa_enumerator.c:191=
+:
+warning: format '%lx' expects type 'long unsigned int', but argument 3 ha=
+s
+type 'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/parport/parport_gsc.c:363:
+warning: format '%lx' expects type 'long unsigned int', but argument 2 ha=
+s
+type 'resource_size_t'
+/Debian-apt/SRC/linux-2.6.18-rc1-pa1/drivers/serial/8250_gsc.c:45: warnin=
+g:
+format '%lx' expects type 'long unsigned int', but argument 2 has type
+'resource_size_t'
+
+Any idea?
+
+Thanks,
+    Joel=0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous de=
+venez aujourd'hui Scarlet One grace a un client existant de Scarlet, vous=
+ recevez tous les deux un cadeau d'une valeur de 50 euros! Surfez vite su=
+r http://www.clubscarlet.be
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
