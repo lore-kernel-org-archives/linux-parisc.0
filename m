@@ -1,16 +1,19 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Uninterruptible sleep
-Date: Wed, 12 Jul 2006 13:29:56 -0400 (EDT)
-Message-ID: <200607121729.k6CHTvgp029697@hiauly1.hia.nrc.ca>
-References: <44B48645.1010203@tausq.org>
+From: Joel Soete <soete.joel@tiscali.be>
+Subject: Re: [parisc-linux] HPPA NPTL Support committed to libc-ports,help
+	needed!
+Date: Sat, 15 Jul 2006 13:32:32 +0000
+Message-ID: <44B8EE70.8080602@tiscali.be>
+References: <J2EH4I$3077C4C25049A3D92E390FB82AA610CA@scarlet.be>
+	<44B8441A.4030200@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: randolph@tausq.org (Randolph Chung)
+  charset=us-ascii;
+  format=flowed
+Cc: Joel Soete <soete.joel@scarlet.be>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <44B48645.1010203@tausq.org> from "Randolph Chung" at Jul 12,
-	2006 01:19:01 pm
+In-Reply-To: <44B8441A.4030200@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,33 +24,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> John David Anglin wrote:
-> >   PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
-> > 
-> >   17958 dave      16   0     0    0    0 D  0.0  0.0   0:00.00 Process_5.exe
-> >   18055 dave      15   0     0    0    0 D  0.0  0.0   0:00.02 Process_6.exe
-> > 
-> > Anybody got any ideas how processes can end up sleeping forever?  The
-> > above two processes have been sleeping for more than a day.  This is
-> > a 32-bit kernel 2.6.17-rc3-pa3.
+Hello parisc-linux,
+
+Randolph Chung wrote:
+>>>gcc cvs head newer than 2005-07-05 with TLS turned on.
+>>
+>>Just to be sure: is it well 2005?
+>>if yes latest gcc-4.1 would be good enough (if rebuild with previous binutils)?
 > 
-> can you try doing a sysrq-t and see where they are stuck? This is most
-> easily done on a serial console by sending a break, and then 't'. If you
-> are telneting to a GSP console you can escape out to the telnet prompt
-> and type "send break".
+> 
+> July 2005 sounds correct. Yes, it has been merged for some time. Make
+> sure you build gcc with the correct binutils, and that gcc is configured
+> to enable TLS.
 
-These were left over from the libjava testsuite and I subsequently tried
-to kill them.  I don't have a terminal connection to these processes.
-So, all I could do is attach to the process with gdb or strace.
+I have check to <http://buildd.debian.org/build.php?arch=hppa&pkg=gcc-4.1>
 
-I've rebooted the system so these two are lost but it probably will happen
-again.  Something changed in the libjava process support and we are getting
-testsuite errors again.
+and afaik debian gcc-4.1 release >= 4.1.1-6 should be ok
+(iirc no gcc configure option to build it with tls support but a check if used binutils supports it)
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+[snip]
+bzip2: missing
+binutils: already installed (2.17-1 >= 2.16.1cvs20051214 is satisfied)
+binutils-hppa64: missing
+[snip]
+
+(still need to check if this pb:
+<http://lists.parisc-linux.org/pipermail/parisc-linux/2006-May/029185.html>
+is not any more in 4.1.1, i will advise?)
+
+> See the build script Carlos referenced for appropriate
+> configure parameters.
+> 
+> randolph
+Many thanks,
+	Joel
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
