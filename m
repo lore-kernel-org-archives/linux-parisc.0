@@ -1,17 +1,14 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] Re: A warning about NPTL pthreaddefs.h
-Date: Tue, 18 Jul 2006 10:01:35 -0400
-Message-ID: <119aab440607180701t27a3443bv8628574815636085@mail.gmail.com>
-References: <119aab440607171537p25d0350he9aa937c439c428a@mail.gmail.com>
-	<44BC2900.4030303@tausq.org> <20060718101242.GA12796@titanium.v3.ca>
+From: Jeff Bailey <jbailey@raspberryginger.com>
+Subject: [parisc-linux] tst-audit.h missing?
+Date: Sun, 16 Jul 2006 11:08:11 -0700
+Message-ID: <20060716180811.GB29459@titanium.v3.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Jeff Bailey" <jbailey@raspberryginger.com>
+  charset=us-ascii
+Cc: libc-ports@sources.redhat.com,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060718101242.GA12796@titanium.v3.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +19,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 7/18/06, Jeff Bailey <jbailey@raspberryginger.com> wrote:
-> On other platforms, LT binaries generally run on the NPTL libs.  If we
-> break this, then there'll be an interesting upgrade problem for the
-> distros tosolve that they haven't needed to do on other archs.
+Carlos,
 
-It's technically possible... maybe...
+I don't see sysdeps/hppa/tst-audit.h in my checkout and a grep doesn't
+show me anything that might define pltenter, pltexit & friends.  Without
+this, elf/tst-auditmod1.c won't compile.
 
-1. Use 1 for locked, and 0 for unlocked in our integer sized locks (to match LT)
-2. Add padding in the form of a union, aligned to 16.
-3. Select the aligned lock word, but use CAS instead of LDCW.
+This seems to do the trick:
 
-This would give the same semantics as LT, and probably preserve binary
-compatiblity. The only performance loss is calculated the aligned
-word.
+2006-07-16  Jeff Bailey  <jbailey@ubuntu.com>
 
-c.
+	* sysdeps/hppa/tst-audit.h: New file.
+
+--- /dev/null	2006-05-22 07:45:19.000000000 -0400
++++ sysdeps/hppa/tst-audit.h	2006-07-16 13:40:30.000000000 -0400
+@@ -0,0 +1,26 @@
++/* Definitions for testing PLT entry/exit auditing.  HPPA version.
++
++   Copyright (C) 2005, 2006 Free Software Foundation, Inc.
++
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#define pltenter la_hppa_gnu_pltenter
++#define pltexit la_hppa_gnu_pltexit
++#define La_regs La_hppa_regs
++#define La_retval La_hppa_retval
++#define int_retval lrv_r28
+
+
+-- 
+I do not agree with a word you say, but I will defend to the death your
+right to say it. 
+ - Voltaire
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
