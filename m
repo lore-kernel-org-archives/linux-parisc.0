@@ -1,15 +1,17 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] Looking at vfprintf.c and alloca.
-Date: Mon, 17 Jul 2006 23:40:22 -0400
-Message-ID: <119aab440607172040gf1209cp52131893cea42460@mail.gmail.com>
+From: Jeff Bailey <jbailey@raspberryginger.com>
+Subject: [parisc-linux] Re: Duplicate ustat structure
+Date: Sun, 16 Jul 2006 10:07:25 -0700
+Message-ID: <20060716170725.GA29459@titanium.v3.ca>
+References: <20060716160300.GA27091@titanium.v3.ca>
+	<jeodvpbj2k.fsf@sykes.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
- "Randolph Chung" <randolph@tausq.org>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii
+Cc: libc-ports@sources.redhat.com,
+ parisc-linux@lists.parisc-linux.org
+To: Andreas Schwab <schwab@suse.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <jeodvpbj2k.fsf@sykes.suse.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,52 +22,77 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I was looking at our tst-printfsz failures in glibc, and I noticed
-some very cute code in vfprintf.c. The code uses alloca to create a
-specs structure, and then using certain know addresses decides if the
-stack grows down or up.
+On Sun, Jul 16, 2006 at 06:39:15PM +0200, Andreas Schwab wrote:
 
-Does this look right? Anyone care to review if this actually works
-with a newer GCC on hppa?
+> > The problem is that bits/ustat.h includes the definition of struct
+> > ustat.  However, sys/types.h eventually winds up pulling in
+> > linux/types.h which also defines struct ustat.
+> 
+> <sys/types.h> should not include <linux/types.h> in the first place.
 
-   1601     size_t nspecs = 0;
-   1602     size_t nspecs_max = 32;     /* A more or less arbitrary
-start value.  */
-   1603     struct printf_spec *specs
-   1604       = alloca (nspecs_max * sizeof (struct printf_spec));
+It seems like it ought to now that the kernel is exporting a set of
+headers that are intended to be used by userspace.  struct ustat is
+defined in linux/types.h.
 
-...
-   1636     for (f = lead_str_end; *f != L_('\0'); f = specs[nspecs++].next_fmt)
-   1637       {
-   1638         if (nspecs >= nspecs_max)
-   1639           {
-   1640             /* Extend the array of format specifiers.  */
-   1641             struct printf_spec *old = specs;
-   1642
-   1643             nspecs_max *= 2;
-   1644             specs = alloca (nspecs_max * sizeof (struct printf_spec));
-   1645
-   1646             if (specs == &old[nspecs])
-   1647               /* Stack grows up, OLD was the last thing allocated;
-   1648                  extend it.  */
-   1649               nspecs_max += nspecs_max / 2;
-   1650             else
-   1651               {
-   1652                 /* Copy the old array's elements to the new space.  */
-   1653                 memcpy (specs, old, nspecs * sizeof (struct
-printf_spec));
-   1654                 if (old == &specs[nspecs])
-   1655                   /* Stack grows down, OLD was just below the new
-   1656                      SPECS.  We can use that space when the new space
-   1657                      runs out.  */
-   1658                   nspecs_max += nspecs_max / 2;
-   1659               }
-   1660           }
+But in general, this is the path by which it gets included:
 
-I didn't expect alloca's behaviour to be so explicitly defined.
+include/sys/types.h includes thread_db.h
 
-Cheers,
-Carlos.
+nptl_db/thread_db.h includes procfs.h
+
+ports/sysdeps/unix/sysv/linux/hppa/sys/procfs.h includes asm/elf.h for
+elf_gregset_t and elf_fpregset_t
+
+asm-parisc/elf.h includes asm/ptrace.h unnecessarily, but relies on it
+to pull in linux/types for __u32
+
+asm-parisc/ptrace.h includes linux/types.h for __u64
+
+So the following patch would work instead, but I think this type of fix
+used to be right when the kernel folks didn't want to provide userspace
+headers.  Now that they are doing so, I think it's more correct for us
+to use them.
+
+2006-07-16  Jeff Bailey  <jbailey@ubuntu.com>
+
+	* sysdeps/unix/sysv/linux/hppa/sys/procfs.h: Don't include
+	elf.h.
+	Declare elf_greg_t, elf_gregset_t, elf_fpreg_t,
+	and elf_fpregset_t.
+
+Index: sysdeps/unix/sysv/linux/hppa/sys/procfs.h
+===================================================================
+RCS file: /cvs/glibc/ports/sysdeps/unix/sysv/linux/hppa/sys/procfs.h,v
+retrieving revision 1.2
+diff -u -p -r1.2 procfs.h
+--- sysdeps/unix/sysv/linux/hppa/sys/procfs.h	6 Jul 2001 04:56:16 -0000	1.2
++++ sysdeps/unix/sysv/linux/hppa/sys/procfs.h	16 Jul 2006 16:57:39 -0000
+@@ -34,10 +34,18 @@
+ #include <sys/types.h>
+ #include <sys/ucontext.h>
+ #include <sys/user.h>
+-#include <asm/elf.h>
+ 
+ __BEGIN_DECLS
+ 
++typedef unsigned long elf_greg_t;
++#define ELF_NGREG 80    /* We only need 64 at present, but leave space
++			                              for expansion. */
++typedef elf_greg_t elf_gregset_t[ELF_NGREG];
++
++#define ELF_NFPREG 32
++typedef double elf_fpreg_t;
++typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
++
+ struct elf_siginfo
+   {
+     int si_signo;			/* Signal number.  */
+
+
+-- 
+I do not agree with a word you say, but I will defend to the death your
+right to say it. 
+ - Voltaire
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
