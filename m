@@ -1,17 +1,19 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] Re: tst-audit.h missing?
-Date: Sun, 16 Jul 2006 14:13:48 -0400
-Message-ID: <119aab440607161113r2216a066v708af4d9c238849c@mail.gmail.com>
-References: <20060716180811.GB29459@titanium.v3.ca>
+Subject: [parisc-linux] Re: Duplicate ustat structure
+Date: Sun, 16 Jul 2006 16:13:55 -0400
+Message-ID: <119aab440607161313h4c196882gab171b4614957b7c@mail.gmail.com>
+References: <20060716160300.GA27091@titanium.v3.ca>
+	<jeodvpbj2k.fsf@sykes.suse.de> <20060716170725.GA29459@titanium.v3.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=ISO-8859-1;
   format=flowed
-Cc: libc-ports@sources.redhat.com,
+Cc: Andreas Schwab <schwab@suse.de>,
+ libc-ports@sources.redhat.com,
  parisc-linux@lists.parisc-linux.org
 To: "Jeff Bailey" <jbailey@raspberryginger.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060716180811.GB29459@titanium.v3.ca>
+In-Reply-To: <20060716170725.GA29459@titanium.v3.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,26 +25,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 On 7/16/06, Jeff Bailey <jbailey@raspberryginger.com> wrote:
-> Carlos,
+> On Sun, Jul 16, 2006 at 06:39:15PM +0200, Andreas Schwab wrote:
 >
-> I don't see sysdeps/hppa/tst-audit.h in my checkout and a grep doesn't
-> show me anything that might define pltenter, pltexit & friends.  Without
-> this, elf/tst-auditmod1.c won't compile.
+> > > The problem is that bits/ustat.h includes the definition of struct
+> > > ustat.  However, sys/types.h eventually winds up pulling in
+> > > linux/types.h which also defines struct ustat.
+> >
+> > <sys/types.h> should not include <linux/types.h> in the first place.
 >
-> This seems to do the trick:
->
-> 2006-07-16  Jeff Bailey  <jbailey@ubuntu.com>
->
->         * sysdeps/hppa/tst-audit.h: New file.
+> It seems like it ought to now that the kernel is exporting a set of
+> headers that are intended to be used by userspace.  struct ustat is
+> defined in linux/types.h.
 
-Thanks! I'll check this into CVS.
+In which case this patch should go upstream to libc-alpha, where the
+generic version of ustat.h should be changed.
 
-I have tst-audit.h in my development tree, along with a first cut
-implementation for dl-trampoline.S (dl_profile).
-
-Expect the auditing tests to fail until I check this into CVS.
-
-Cheersr,
+Cheers,
 Carlos.
 _______________________________________________
 parisc-linux mailing list
