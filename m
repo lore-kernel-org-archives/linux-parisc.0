@@ -1,17 +1,14 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] My a500 reported a bug during gsp reset (Good dump)
-Date: Mon, 17 Jul 2006 18:35:32 -0400
-Message-ID: <119aab440607171535m76f159fej192f55bad4ab843@mail.gmail.com>
-References: <119aab440607171419h26cb2aa5ide166b94dbf94796@mail.gmail.com>
-	<1153171572.3704.8.camel@mulgrave.il.steeleye.com>
+Subject: [parisc-linux] A warning about NPTL pthreaddefs.h
+Date: Mon, 17 Jul 2006 18:37:58 -0400
+Message-ID: <119aab440607171537p25d0350he9aa937c439c428a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=ISO-8859-1;
   format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "James Bottomley" <James.Bottomley@steeleye.com>
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ "Randolph Chung" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1153171572.3704.8.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,20 +19,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 7/17/06, James Bottomley <James.Bottomley@steeleye.com> wrote:
->
-> What's on IRQ69?
->
+Randolph,
 
-           CPU0
- 64:   10891024             CPU  timer
- 65:      78367  IO-SAPIC-level  eth0
- 66:         33  IO-SAPIC-level  sym53c8xx
- 67:      94746  IO-SAPIC-level  sym53c8xx, sym53c8xx
- 68:      14573  IO-SAPIC-level  sym53c8xx
- 69:     200051  IO-SAPIC-level  serial
+A warning that the pthreaddefs.h might be horribly wrong. I remember a
+long while ago adding padding the structures so they matched the size
+of the linuxthread types (atleast the lock position).
 
-c.
+This padding is not correct, we would need to pull into our tree the
+static mutex initializers so they are correctly sized aswell.
+
+If you look at the build logs there are warnings about this.
+
+I'm trying a build with the lock padding removed, but it still fails
+all over the place, but atleast this time there are no apparent
+deadlocks!!! Yay!
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
