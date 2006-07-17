@@ -1,14 +1,17 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [parisc-linux] My a500 reported a bug during gsp reset (Good dump)
-Date: Mon, 17 Jul 2006 17:26:12 -0400
-Message-ID: <1153171572.3704.8.camel@mulgrave.il.steeleye.com>
+Date: Mon, 17 Jul 2006 18:35:32 -0400
+Message-ID: <119aab440607171535m76f159fej192f55bad4ab843@mail.gmail.com>
 References: <119aab440607171419h26cb2aa5ide166b94dbf94796@mail.gmail.com>
+	<1153171572.3704.8.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset=ISO-8859-1;
+  format=flowed
 Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+To: "James Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440607171419h26cb2aa5ide166b94dbf94796@mail.gmail.com>
+In-Reply-To: <1153171572.3704.8.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,48 +22,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, 2006-07-17 at 17:19 -0400, Carlos O'Donell wrote:
-> Here is the clean dump from logs:
-> ---
-> irq 69: nobody cared (try booting with the "irqpoll" option)
-> Debug: sleeping function called from invalid context at mm/slab.c:2096
-> in_atomic():1, irqs_disabled():1
-> Backtrace:
->  [<0000000010114af0>] dump_stack+0x18/0x28
->  [<0000000010146950>] __might_sleep+0x110/0x128
->  [<000000001019ae70>] kmem_cache_alloc+0x110/0x118
->  [<0000000010114c88>] show_stack+0x80/0xf0
->  [<0000000010114af0>] dump_stack+0x18/0x28
->  [<0000000010186750>] __report_bad_irq+0x50/0x118
->  [<0000000010186904>] note_interrupt+0xac/0x160
->  [<0000000010185398>] __do_IRQ+0x368/0x498
->  [<0000000010116c7c>] do_cpu_irq_mask+0xc4/0x118
->  [<0000000010107074>] intr_return+0x0/0x14
+On 7/17/06, James Bottomley <James.Bottomley@steeleye.com> wrote:
+>
+> What's on IRQ69?
+>
 
-That's a bug in parisc show_stack ... it has a kmalloc GFP_KERNEL in it.
+           CPU0
+ 64:   10891024             CPU  timer
+ 65:      78367  IO-SAPIC-level  eth0
+ 66:         33  IO-SAPIC-level  sym53c8xx
+ 67:      94746  IO-SAPIC-level  sym53c8xx, sym53c8xx
+ 68:      14573  IO-SAPIC-level  sym53c8xx
+ 69:     200051  IO-SAPIC-level  serial
 
-> Backtrace:
->  [<0000000010114af0>] dump_stack+0x18/0x28
->  [<0000000010186750>] __report_bad_irq+0x50/0x118
->  [<0000000010186904>] note_interrupt+0xac/0x160
->  [<0000000010185398>] __do_IRQ+0x368/0x498
->  [<0000000010116c7c>] do_cpu_irq_mask+0xc4/0x118
->  [<0000000010107074>] intr_return+0x0/0x14
-> kernel/irq/handle.c:126:
-> spin_lock(kernel/irq/handle.c:000000001068a2a8) already locked by
-> kernel/irq/handle.c/173
-> 
-> handlers:
-> [<00000000106bd8e0>] (interrupt_stack+0x298e0/0x3fae0)
-> Disabling IRQ #69
-> kernel/irq/handle.c:169:
-> spin_unlock(kernel/irq/handle.c:000000001068a2a8) not locked
-
-What's on IRQ69?
-
-James
-
-
+c.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
