@@ -1,18 +1,20 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [parisc-linux] Re: Looking at vfprintf.c and alloca.
-Date: Tue, 18 Jul 2006 14:22:30 -0600
-Message-ID: <20060718202230.GA23947@parisc-linux.org>
+Date: Tue, 18 Jul 2006 16:49:15 -0400
+Message-ID: <119aab440607181349g7eb17c25m5b5aa96a7482d7ba@mail.gmail.com>
 References: <119aab440607172040gf1209cp52131893cea42460@mail.gmail.com>
 	<44BD0369.3090905@tausq.org>
 	<119aab440607181230l3abcf965y5afe9fe6901e36d7@mail.gmail.com>
+	<20060718202230.GA23947@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=ISO-8859-1;
+  format=flowed
 Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
  parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: "Matthew Wilcox" <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440607181230l3abcf965y5afe9fe6901e36d7@mail.gmail.com>
+In-Reply-To: <20060718202230.GA23947@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,25 +25,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jul 18, 2006 at 03:30:40PM -0400, Carlos O'Donell wrote:
-> On 7/18/06, Randolph Chung <randolph@tausq.org> wrote:
-> >tausq@riot:~$ gcc-4.1 -Wall -o alloca alloca.c; ./alloca
-> >ptr = 0xc04ca590
-> >old = 0xc04ca3d0
-> >&old[100] = 0xc04ca560
-> 
-> I thought so, if this code is ever execute it will be wrong.
-> 
-> I think our tst-printfsz failure is related to this code trying to
-> expand the specs and getting the wrong answer.
-> 
-> Michael, want to write a patch to fix this for glibc? :)
-> I'll support you on libc-alpha!
-> 
-> In glibc I don't think the code should be a runtime check at all,
-> there are STACK_GROWS_UP macros that should be used.
+On 7/18/06, Matthew Wilcox <matthew@wil.cx> wrote:
+> > In glibc I don't think the code should be a runtime check at all,
+> > there are STACK_GROWS_UP macros that should be used.
+>
+> How about just using min(ptr, old)?  ;-)
 
-How about just using min(ptr, old)?  ;-)
+You're almost there Matthew, just a little more, and I'll be able to
+list your name in the libc-ports ChangeLogs :-)
+
+c.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
