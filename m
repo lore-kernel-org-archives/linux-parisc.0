@@ -1,7 +1,7 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: [parisc-linux] Re: A warning about NPTL pthreaddefs.h
-Date: Mon, 17 Jul 2006 22:24:28 -0400
-Message-ID: <119aab440607171924l1d07d066ged80705ae14ea196@mail.gmail.com>
+Date: Mon, 17 Jul 2006 23:01:48 -0400
+Message-ID: <119aab440607172001k492bb76die4a6302b1e442b7b@mail.gmail.com>
 References: <119aab440607171537p25d0350he9aa937c439c428a@mail.gmail.com>
 	<44BC2900.4030303@tausq.org>
 Mime-Version: 1.0
@@ -34,22 +34,7 @@ On 7/17/06, Randolph Chung <randolph@tausq.org> wrote:
 > linuxthreads (if that is even possible...), after all you cannot run a
 > linuxthreads binary against nptl libs or vice versa...
 
-Yes, yes you are. Ulrich's first post of NPTL 1.0 says:
----
-The thread library is designed to be binary compatible with the old
-LinuxThreads implementation.  This compatibility obviously has some
-limitations.  In places where the LinuxThreads implementation diverged
-from the POSIX standard incompatibilities exist.  Users of the old
-library have been warned from day one that this day will come and code
-which added work-arounds for the POSIX non-compliance better be
-prepared to remove that code.  The visible changes of the library
-include:
----
-
-And he goes on to list things which are not compatible.
-
-Wether or not PARISC can do this is another question. It might not be
-possible due to our lock[4] and LDCW linuxthreads implementation.
+Regardless we still bomb out on a lot of the tests :)
 
 c.
 _______________________________________________
