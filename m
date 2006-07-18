@@ -1,14 +1,18 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [parisc-linux] Warning about bad kernel headers.
-Date: Sun, 16 Jul 2006 17:39:49 -0400
-Message-ID: <200607161739.50494.vapier@gentoo.org>
-References: <119aab440607151526n1318ba80l2523528ac607eaae@mail.gmail.com>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: [parisc-linux] Re: Looking at vfprintf.c and alloca.
+Date: Tue, 18 Jul 2006 15:11:42 -0500
+Message-ID: <200607181511.42481.mszick@morethan.org>
+References: <119aab440607172040gf1209cp52131893cea42460@mail.gmail.com>
+	<44BD0369.3090905@tausq.org>
+	<119aab440607181230l3abcf965y5afe9fe6901e36d7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1014574969=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset="us-ascii"
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440607151526n1318ba80l2523528ac607eaae@mail.gmail.com>
+In-Reply-To: <119aab440607181230l3abcf965y5afe9fe6901e36d7@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,66 +23,51 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1014574969==
-Content-Type: multipart/signed; boundary="nextPart8813805.KYJ1GKlpJI";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Tue July 18 2006 14:30, Carlos O'Donell wrote:
+> On 7/18/06, Randolph Chung <randolph@tausq.org> wrote:
+> > I tried this with both old (gcc-3.[34]) and new gcc (gcc-4.[01]) and i
+> > don't think this works....
+> >
+> > tausq@riot:~$ gcc-4.1 -Wall -o alloca alloca.c; ./alloca
+> > ptr = 0xc04ca590
+> > old = 0xc04ca3d0
+> > &old[100] = 0xc04ca560
+> 
+> I thought so, if this code is ever execute it will be wrong.
+>
 
---nextPart8813805.KYJ1GKlpJI
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+I did not look at the original code - just the posted example.
 
-On Saturday 15 July 2006 18:26, Carlos O'Donell wrote:
-> A quick warning, if your kernel headers file unistd.h contain "#define
-> PIC" then remove this line. It will cause all sorts of havoc when
-> building glibc. It won't be immediately visible when building, and
-> infact ld.so can compile quite happily and run with mixed pic non-pic
-> code.
+If the library code is depending on an expected difference between
+the old and new stack position (other than direction) 
+- it will be in trouble.
 
-i dont use debian, but i assume your headers were trying to work with the f=
-act=20
-that it does 'extern int errno' which can break in nasty ways when errno.h=
-=20
-hasnt also been included ?
+> 
+> I think our tst-printfsz failure is related to this code trying to
+> expand the specs and getting the wrong answer.
+> 
+> Michael, want to write a patch to fix this for glibc? :)
+> I'll support you on libc-alpha!
+> 
 
-in Gentoo, we patch our kernel headers like so:
-=2Dextern int errno;
-+#include <errno.h>
-=2Dmike
+It just so happened that I was compiling glibc and during this exchange
+vfprintf.c scrolled by...
+I think it set some sort of record for "number of warning messages"
 
---nextPart8813805.KYJ1GKlpJI
-Content-Type: application/pgp-signature
+So it needs work.  Probably would be better to give someone else a chance.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.4 (GNU/Linux)
+Getting -finstrument-functions and the related __builtin_{frame,return}_address()
+to work is taking all of my time right now.
 
-iQIVAwUARLqyJkFjO5/oN/WBAQKrWxAAhfVhCwPTlWZDpNHibkclVaiAGZ+JsMhk
-FcUCJMO2T0P/IgddeJzDKHcsrN8ycXdIp1fZfJ6EDS8dC7N1D/emjqfFbxUpXXg2
-PHoQ+YIGt8Tv9LY6BfPBcfDEjI15tVumfWCTWnD0fkQQCHtrVeV88sUlppHtkhah
-WNovs5S/lKxTIqDTz3KvvpsNuFddCikQm1R5gWp7hzDoNaKATTAPrfwJC+WMl8l6
-uTRz1VfgLNNtPFEQpcHjSegsyK8WOoKTv8+WlZv/xOOuO0o7rfqeL+8dgFoLr+hg
-mtFuTAcDxhIglsmXVnSA6CqYPr1HniW91+kVcOGdoD5p7XBGd03rRFsFNlzi4j9u
-fsHmzdDCpwhZh/GdMjyxp4UVjhNz3eEz2tr6xyb5oK3Twwg9zRmj4WHWMCcNXmvC
-3XRKJKdoZ5TLdUqM0gqo9InheXfK+LOC6flKs/h00A7u1TdCAgk0xAEvyVed7xSB
-VvfovYZn1ZMAzZijh/t5xiwqvFPUEIT/BoOTYN0befSzzuzJEVSBW8dRJ5uS0Ul8
-2BwoLV44IwTPpua6bfBpQaEcWngetR2SSY99pu7AghytD6IDJ76tWmP0OujfHHbU
-ivRpMW75Q2FNbMh0U4hmgU/OdZmUkjfXhgUPlJrhKAcdpeegzphDiXzIRYfswwxm
-O1tAeDY2lqQ=
-=SKo0
------END PGP SIGNATURE-----
+> In glibc I don't think the code should be a runtime check at all,
+> there are STACK_GROWS_UP macros that should be used.
+> 
 
---nextPart8813805.KYJ1GKlpJI--
+Sounds reasonable to me.
 
---===============1014574969==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+> c.
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1014574969==--
