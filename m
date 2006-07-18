@@ -1,13 +1,16 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Re: Looking at vfprintf.c and alloca.
-Date: Tue, 18 Jul 2006 11:51:52 -0500
-Message-ID: <200607181151.53069.mszick@morethan.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [parisc-linux] Re: Looking at vfprintf.c and alloca.
+Date: Tue, 18 Jul 2006 15:30:40 -0400
+Message-ID: <119aab440607181230l3abcf965y5afe9fe6901e36d7@mail.gmail.com>
 References: <119aab440607172040gf1209cp52131893cea42460@mail.gmail.com>
 	<44BD0369.3090905@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Randolph Chung" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 In-Reply-To: <44BD0369.3090905@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -20,63 +23,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue July 18 2006 10:51, Randolph Chung wrote:
-> Carlos O'Donell wrote:
-> > I was looking at our tst-printfsz failures in glibc, and I noticed
-> > some very cute code in vfprintf.c. The code uses alloca to create a
-> > specs structure, and then using certain know addresses decides if the
-> > stack grows down or up.
-> > 
-> > Does this look right? Anyone care to review if this actually works
-> > with a newer GCC on hppa?
-> 
-> I tried this with both old (gcc-3.[34]) and new gcc (gcc-4.[01]) and i 
+On 7/18/06, Randolph Chung <randolph@tausq.org> wrote:
+> I tried this with both old (gcc-3.[34]) and new gcc (gcc-4.[01]) and i
 > don't think this works....
-> 
-> tausq@riot:~$ cat alloca.c
-> #include <alloca.h>
-> #include <stdio.h>
-> 
-> int main(int argc, char **argv)
-> {
->          int *old;
->          int *ptr = alloca(100 * sizeof(int));
-> 
->          old = ptr;
-> 
->          ptr = alloca(100 * sizeof(int));
-> 
->          printf("ptr = %p\nold = %p\n&old[100] = %p\n", ptr, old, 
-> &old[100]);
->          return 0;
-> }
+>
 > tausq@riot:~$ gcc-4.1 -Wall -o alloca alloca.c; ./alloca
 > ptr = 0xc04ca590
 > old = 0xc04ca3d0
 > &old[100] = 0xc04ca560
-> 
 
-For the case of gcc-4.2, stack-grows down...
+I thought so, if this code is ever execute it will be wrong.
 
-ptr = 0xbfea1fc0
-old = 0xbfea2160
-&old[100] = 0xbfea22f0
+I think our tst-printfsz failure is related to this code trying to
+expand the specs and getting the wrong answer.
 
-In both the cases (up/down) &old[100] has an offset of
-400 bytes (correct).
+Michael, want to write a patch to fix this for glibc? :)
+I'll support you on libc-alpha!
 
-There is some compiler generated, machine dependent,
-optimization dependent, space between "ptr" and "old[100]"
-Most likely the "guaranteed stack alignment" thingy.
+In glibc I don't think the code should be a runtime check at all,
+there are STACK_GROWS_UP macros that should be used.
 
-Mike
-> randolph
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+c.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
