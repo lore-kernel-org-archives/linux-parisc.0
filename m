@@ -1,17 +1,16 @@
 From: Jeff Bailey <jbailey@raspberryginger.com>
-Subject: [parisc-linux] Re: Duplicate ustat structure
-Date: Sun, 16 Jul 2006 10:07:25 -0700
-Message-ID: <20060716170725.GA29459@titanium.v3.ca>
-References: <20060716160300.GA27091@titanium.v3.ca>
-	<jeodvpbj2k.fsf@sykes.suse.de>
+Subject: Re: [parisc-linux] Re: A warning about NPTL pthreaddefs.h
+Date: Tue, 18 Jul 2006 03:12:42 -0700
+Message-ID: <20060718101242.GA12796@titanium.v3.ca>
+References: <119aab440607171537p25d0350he9aa937c439c428a@mail.gmail.com>
+	<44BC2900.4030303@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: libc-ports@sources.redhat.com,
- parisc-linux@lists.parisc-linux.org
-To: Andreas Schwab <schwab@suse.de>
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <jeodvpbj2k.fsf@sykes.suse.de>
+In-Reply-To: <44BC2900.4030303@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,72 +21,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jul 16, 2006 at 06:39:15PM +0200, Andreas Schwab wrote:
-
-> > The problem is that bits/ustat.h includes the definition of struct
-> > ustat.  However, sys/types.h eventually winds up pulling in
-> > linux/types.h which also defines struct ustat.
+On Tue, Jul 18, 2006 at 08:19:12AM +0800, Randolph Chung wrote:
+> >A warning that the pthreaddefs.h might be horribly wrong. I remember a
+> >long while ago adding padding the structures so they matched the size
+> >of the linuxthread types (atleast the lock position).
+> >
+> >This padding is not correct, we would need to pull into our tree the
+> >static mutex initializers so they are correctly sized aswell.
 > 
-> <sys/types.h> should not include <linux/types.h> in the first place.
+> fwiw,i don't think we need to worry about making the structs the same as 
+> linuxthreads (if that is even possible...), after all you cannot run a 
+> linuxthreads binary against nptl libs or vice versa...
 
-It seems like it ought to now that the kernel is exporting a set of
-headers that are intended to be used by userspace.  struct ustat is
-defined in linux/types.h.
+On other platforms, LT binaries generally run on the NPTL libs.  If we
+break this, then there'll be an interesting upgrade problem for the
+distros tosolve that they haven't needed to do on other archs.
 
-But in general, this is the path by which it gets included:
-
-include/sys/types.h includes thread_db.h
-
-nptl_db/thread_db.h includes procfs.h
-
-ports/sysdeps/unix/sysv/linux/hppa/sys/procfs.h includes asm/elf.h for
-elf_gregset_t and elf_fpregset_t
-
-asm-parisc/elf.h includes asm/ptrace.h unnecessarily, but relies on it
-to pull in linux/types for __u32
-
-asm-parisc/ptrace.h includes linux/types.h for __u64
-
-So the following patch would work instead, but I think this type of fix
-used to be right when the kernel folks didn't want to provide userspace
-headers.  Now that they are doing so, I think it's more correct for us
-to use them.
-
-2006-07-16  Jeff Bailey  <jbailey@ubuntu.com>
-
-	* sysdeps/unix/sysv/linux/hppa/sys/procfs.h: Don't include
-	elf.h.
-	Declare elf_greg_t, elf_gregset_t, elf_fpreg_t,
-	and elf_fpregset_t.
-
-Index: sysdeps/unix/sysv/linux/hppa/sys/procfs.h
-===================================================================
-RCS file: /cvs/glibc/ports/sysdeps/unix/sysv/linux/hppa/sys/procfs.h,v
-retrieving revision 1.2
-diff -u -p -r1.2 procfs.h
---- sysdeps/unix/sysv/linux/hppa/sys/procfs.h	6 Jul 2001 04:56:16 -0000	1.2
-+++ sysdeps/unix/sysv/linux/hppa/sys/procfs.h	16 Jul 2006 16:57:39 -0000
-@@ -34,10 +34,18 @@
- #include <sys/types.h>
- #include <sys/ucontext.h>
- #include <sys/user.h>
--#include <asm/elf.h>
- 
- __BEGIN_DECLS
- 
-+typedef unsigned long elf_greg_t;
-+#define ELF_NGREG 80    /* We only need 64 at present, but leave space
-+			                              for expansion. */
-+typedef elf_greg_t elf_gregset_t[ELF_NGREG];
-+
-+#define ELF_NFPREG 32
-+typedef double elf_fpreg_t;
-+typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
-+
- struct elf_siginfo
-   {
-     int si_signo;			/* Signal number.  */
-
+Tks,
+Jeff Bailey
 
 -- 
 I do not agree with a word you say, but I will defend to the death your
