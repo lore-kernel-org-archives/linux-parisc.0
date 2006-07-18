@@ -1,14 +1,17 @@
-From: Jeff Bailey <jbailey@raspberryginger.com>
-Subject: [parisc-linux] tst-audit.h missing?
-Date: Sun, 16 Jul 2006 11:08:11 -0700
-Message-ID: <20060716180811.GB29459@titanium.v3.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] Re: Looking at vfprintf.c and alloca.
+Date: Tue, 18 Jul 2006 23:51:05 +0800
+Message-ID: <44BD0369.3090905@tausq.org>
+References: <119aab440607172040gf1209cp52131893cea42460@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: libc-ports@sources.redhat.com,
- parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440607172040gf1209cp52131893cea42460@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,53 +22,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Carlos,
+Carlos O'Donell wrote:
+> I was looking at our tst-printfsz failures in glibc, and I noticed
+> some very cute code in vfprintf.c. The code uses alloca to create a
+> specs structure, and then using certain know addresses decides if the
+> stack grows down or up.
+> 
+> Does this look right? Anyone care to review if this actually works
+> with a newer GCC on hppa?
 
-I don't see sysdeps/hppa/tst-audit.h in my checkout and a grep doesn't
-show me anything that might define pltenter, pltexit & friends.  Without
-this, elf/tst-auditmod1.c won't compile.
+I tried this with both old (gcc-3.[34]) and new gcc (gcc-4.[01]) and i 
+don't think this works....
 
-This seems to do the trick:
+tausq@riot:~$ cat alloca.c
+#include <alloca.h>
+#include <stdio.h>
 
-2006-07-16  Jeff Bailey  <jbailey@ubuntu.com>
+int main(int argc, char **argv)
+{
+         int *old;
+         int *ptr = alloca(100 * sizeof(int));
 
-	* sysdeps/hppa/tst-audit.h: New file.
+         old = ptr;
 
---- /dev/null	2006-05-22 07:45:19.000000000 -0400
-+++ sysdeps/hppa/tst-audit.h	2006-07-16 13:40:30.000000000 -0400
-@@ -0,0 +1,26 @@
-+/* Definitions for testing PLT entry/exit auditing.  HPPA version.
-+
-+   Copyright (C) 2005, 2006 Free Software Foundation, Inc.
-+
-+   This file is part of the GNU C Library.
-+
-+   The GNU C Library is free software; you can redistribute it and/or
-+   modify it under the terms of the GNU Lesser General Public
-+   License as published by the Free Software Foundation; either
-+   version 2.1 of the License, or (at your option) any later version.
-+
-+   The GNU C Library is distributed in the hope that it will be useful,
-+   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+   Lesser General Public License for more details.
-+
-+   You should have received a copy of the GNU Lesser General Public
-+   License along with the GNU C Library; if not, write to the Free
-+   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-+   02111-1307 USA.  */
-+
-+#define pltenter la_hppa_gnu_pltenter
-+#define pltexit la_hppa_gnu_pltexit
-+#define La_regs La_hppa_regs
-+#define La_retval La_hppa_retval
-+#define int_retval lrv_r28
+         ptr = alloca(100 * sizeof(int));
 
+         printf("ptr = %p\nold = %p\n&old[100] = %p\n", ptr, old, 
+&old[100]);
+         return 0;
+}
+tausq@riot:~$ gcc-4.1 -Wall -o alloca alloca.c; ./alloca
+ptr = 0xc04ca590
+old = 0xc04ca3d0
+&old[100] = 0xc04ca560
 
--- 
-I do not agree with a word you say, but I will defend to the death your
-right to say it. 
- - Voltaire
+randolph
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
