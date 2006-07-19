@@ -1,17 +1,15 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Mysterious hangs with parisc (a
-	send_group_sig_info() analysis)
-Date: Fri, 21 Jul 2006 15:21:54 -0500
-Message-ID: <200607211521.54713.mszick@morethan.org>
-References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
-	<20060706183409.GB5692@athena.road.mcmartin.ca>
-	<44C1338C.7010607@tiscali.be>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] Re: Looking at vfprintf.c and alloca.
+Date: Wed, 19 Jul 2006 11:04:31 +0800
+Message-ID: <44BDA13F.6040706@tausq.org>
+References: <200607190248.k6J2mlLd015855@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <44C1338C.7010607@tiscali.be>
+In-Reply-To: <200607190248.k6J2mlLd015855@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,24 +20,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri July 21 2006 15:05, Joel Soete wrote:
-> Hello all,
-> 
-- - - snip
-> 
-> Mike, feel free to complete this summary if something 
-> looks like bad, not complete or not clear ;-) 
-> 
+> What doesn't work?  ptr - old = 0x1c0 = 7 * 64.  The preferred
+> stack boundary is 64 bytes.  6 * 64 = 384 bytes.  That's too
+> small for the requested allocation.  &old[100] - old = 0x190 = 400.
+> So, the results printed appear correct.
 
-Nothing to add.  That is a good summary Joel.
+gcc is completely correct, I meant to agree with your other email, that
+is glibc is totally bogus ;P
 
-We know that routine fails, 
-we know its different, 
-we can't find the problem.
-
-> Thanks for help,
-> 	Joel
-Mike
+randolph
+-- 
+Randolph Chung
+Debian GNU/Linux Developer, hppa/ia64 ports
+http://www.tausq.org/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
