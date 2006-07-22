@@ -1,15 +1,20 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Sat, 22 Jul 2006 13:50:40 -0400
-Message-ID: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
+From: Jeff Bailey <jbailey@raspberryginger.com>
+Subject: [parisc-linux] Re: NPTL fixes.
+Date: Sat, 22 Jul 2006 11:54:23 -0700
+Message-ID: <20060722185423.GA30156@titanium.v3.ca>
+References: <119aab440607181547v383ed926ic3420c7865846361@mail.gmail.com>
+	<20060720221634.GA25514@titanium.v3.ca>
+	<119aab440607210834u7761a7e2w54e3990fedaa995c@mail.gmail.com>
+	<20060721155009.GA18291@titanium.v3.ca>
+	<119aab440607221000w6cf467c2k8d16edf20e7791c4@mail.gmail.com>
+	<119aab440607221000w687c2d8v9afa5fb7d7bdd12b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- "James Bottomley" <James.Bottomley@steeleye.com>,
- "Grant Grundler" <grundler@parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440607221000w687c2d8v9afa5fb7d7bdd12b@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,81 +25,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-James,
+(restoring cc:'s dropped by accident)
 
-After spending ~4 hours of debugging yesterday evening, between
-Thibaut, Dave, and myself, we firmly believe the PA8800 problems are
-data cache issues.
+On Sat, Jul 22, 2006 at 01:00:58PM -0400, Carlos O'Donell wrote:
+> On 7/22/06, Carlos O'Donell <carlos@systemhalted.org> wrote:
+> >> If yes, I'll make it a priority next week so that I can get some initial
+> >> bootstrapping stuff done.
+> >
+> >It's not high-prio, I don't care about the ABI break, I care primarily
+> >about reducing the number of failures. After the failures are reduced
+> >we *might* be able to tackle ABI compatibility... but again I doubt
+> >this, since it would require similar patches to Linuxthreads which
+> >were rejected before and will be rejected again. Not to mention it
+> >causes weird headaches with all the other arches that put
+> >uninitialized locks in .bss.
+> 
+> Is an alternative that we bump the .so number in the thread library?
 
-Let me describe the test environment, the test, and the results/conclusions:
+Yes an no.  That solves the problem from an upstream perspective, but it
+will make upgrading to NPTL for current parisc users hard.  The problem
+is that we don't version libpthreads itself, we only version libc6.  The
+packaging system doesn't then provide any hints that the version of
+libpthreads that the packages are looking for doesn't exist anymore.
 
-1. Thibaut's magnum, PA8800. 1 cpu enabled, 2 cores, L1/L2 enabled. etc.
-2. Kernel was 2.6.17, with a revision identifier that is not in my notes.
-3. A statically compiled sshd, with *everything* disabled.
-    This required LIBS="-ldl" and LD_FLAGS="-static" to achieve.
+If you're going to bump the version number of pthreads, I'd recommend
+taking this time to do a break on glibc as well and get any changes done
+that you might need to.
 
-We copied the statically compiled sshd to the PA8800, loaded sshd via
-gdb. Passed the following parameters "-D -p 2222", in gdb we used "set
-follow-fork-mode child", and started the process.
+Tks,
+Jeff Bailey
 
->>From an external box we initiate an ssh connection to the remote
-PA8800 and waite for gdb to catch the SIGSEGV in the sshd child. We
-did this over, and over, and over to look for patterns.
-
-Pattern 1:
-
-Using strace, we looked at the syscalls, and determined that the child
-sshd process *always* dies after an fd socket read.
-
-Pattern 2:
-
-The set of registers involved is small, roughly r4, r19, r3, r21, r28.
-These registers are primarily used by GCC to reference local data on
-the stack. r3 is the frame marker and was frequently involved in the
-faults.
-
-Pattern 3:
-
-Called functions that fail deal with allocating and touching new
-memory. Deaths are primarily in malloc, xmalloc, memset,
-packet_read_seqnr, buffer_put_bignum2_ret. Infact we died more often
-than not in malloc.
-
-Results:
-
-Initially we thought it was an icache issue, then we realized that
-PLABEL's are just data, and when we removed the PLABEL's from the
-equation (complete static compile) we stopped seeing invalid insns. We
-believe the truth here is that the PLABEL data is corrupted, and thus
-r19 and the ip are bogus, so the failure appears to be icache related.
-In thruth it was only corrupted PLABELs.
-
-With a fully static sshd, the PLABEL's are not present, and the faults
-are *all* memory loads and stores to the stack.
-
-Conclusions:
-
-a) We think it is not an icache issue, but infact a dcache issue.
-
-Often it appears as if a register was corrupted, but the truth is that
-the ldw loaded bogus data into a register.
-
-b) One time, on a later comparison in gdb, the register and data in
-memory did not equal. I stress that we only saw this situation once.
-
-c) We have often seen the failure with the frame marker on a cacheline
-boundary, for example 0xc0278100 (e.g. 256 bytes).
-
-It is my hope that these patterns will trigger someone to devise a
-plan for fixing this. If you have any questions about our methods, or
-reproducing this, you can easily talk to Thibaut and we can probably
-setup access to the test sshd binary.
-
-Grant expressed worry that "Pattern 1" was indicative of a dma sync
-problem with the network socket read.
-
-Cheers,
-Carlos.
+-- 
+I do not agree with a word you say, but I will defend to the death your
+right to say it. 
+ - Voltaire
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
