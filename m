@@ -1,20 +1,26 @@
-From: "Michael S. Zick" <mszick@morethan.org>
+From: Joel Soete <soete.joel@tiscali.be>
 Subject: Re: [parisc-linux] Mysterious hangs with parisc (a
 	send_group_sig_info() analysis)
-Date: Sat, 22 Jul 2006 14:11:18 -0500
-Message-ID: <200607221411.18605.mszick@morethan.org>
-References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
+Date: Sat, 22 Jul 2006 22:10:04 +0000
+Message-ID: <44C2A23C.8000509@tiscali.be>
+References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>	
+	<200606240241.k5O2fALQ001885@hiauly1.hia.nrc.ca>	
+	<20060705164734.GB30640@athena.road.mcmartin.ca>	
+	<44AD54F0.90508@tiscali.be>	
+	<20060706183409.GB5692@athena.road.mcmartin.ca>	
 	<44C1338C.7010607@tiscali.be>
-	<119aab440607221023s30f966c0pbee4aa9357d9b7b5@mail.gmail.com>
+	<119aab440607221029h1acda159mf4c4e5baca2f0c1e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset=us-ascii;
+  format=flowed
 Cc: Kyle McMartin <kyle@mcmartin.ca>,
  James.Bottomley@steeleye.com,
+ parisc-linux@lists.parisc-linux.org,
  John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: parisc-linux@lists.parisc-linux.org
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440607221023s30f966c0pbee4aa9357d9b7b5@mail.gmail.com>
+In-Reply-To: <119aab440607221029h1acda159mf4c4e5baca2f0c1e@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,50 +31,71 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat July 22 2006 12:23, Carlos O'Donell wrote:
-> > And here are a lot of questions:
-> >         Q2: some diff in routine like 2 times ldcw with gcc-3 and only one with gcc-4 (may be ok?)
-> >
+
+
+Carlos O'Donell wrote:
+>>         Q4: imho the most important: with 2 gcc where is the couple of 
+>> ssm/rsm that jejb introduced in his patch:
 > 
-> Analyze the code. Is it doing functionally the same thing?
 > 
-> I assert that yes, it's doing exactly the same thing. The older gcc
-> has unwrapped one of the ldcw's, and thus has two copies of the inner
-> loop in the assembly. The code on the right does exactly the same
-> thing, but in less instructions. GCC has gotten better.
+> The *most* important piece of imformation is the pre-compiled source.
+    if (flags & 0x00000001) {
+     __asm__ __volatile__("ssm %0,%%r0\n" : : "i" (0x00000001) : "memory" );
+     __asm__ __volatile__("":::"memory");
+     __asm__ __volatile__("rsm %0,%%r0\n" : : "i" (0x00000001) : "memory" );
+    } else
+     __asm__ __volatile__("":::"memory");
+
+> You *must* determine that both paths of the if/else are different,
+> because if they are the same, then GCC is right to remove one of the
+> paths, and unconditionally call cpu_relax.
 > 
-> There isn't a missing lock, we only needed one lock, the older gcc was
-> doing a poorer job of code generation.
+and flags is a parameter of __raw_spin_lock_flags():
+static inline __attribute__((always_inline)) void __raw_spin_lock_flags(raw_spinlock_t *x,
+       unsigned long flags)
+
+So i didn't see how gcc could know at compile time that (flags & 0x00000001) was always false?
+
+> Where is the pre-compiled source to prove that the paths aren't identical?
 > 
+Well I don't think that pre-compile stuff would help more because doesn't inlining stuff like as #define would?
 
-OK - will go with that theory.
+That said I think to have found what you want to learn me: isn't it exactely this inlining into:
+static __inline__ __attribute__((always_inline)) void __raw_read_unlock(raw_rwlock_t *rw)
+{
+  __raw_spin_lock_flags(&rw->lock, 0);
 
-> There may be other parts of the kernel that have problems, so keep looking!
+--- snip ---
+
+where obvioulsy (0 & whatelse) == 0 (i.e. false)
+
+Is it well what you expected we found?
+
+> Remember to work towards a solution!
 > 
+So this:
+  IAOQ[0]: _read_lock+0x18/0x30
+  IAOQ[1]: _read_lock+0x8/0x30
+  RP(r2): send_group_sig_info+0x3c/0x88
 
-Now that portion of the work is easy (not quick, easy) to reproduce.
+was 2.6.14-rc related and not anymore to 2.6.17 and greater?
 
-Pick a fairly recent kernel (I think Joel has used both 2.6.16 & 2.6.17);
-Use gcc-3.3 to build 64-bit-smp;
-Use gcc-4.1 to build 64-bit-smp;
+But I haven't anymore IAOQ report when this system hang now (even TOC doesn't report any usefull info).
+So where to start other investigattion?
 
-Pick a machine with two or more processors (Joel has PA8000 & PA8700);
-Pick yourself a never-ending script that keeps all processors busy;
+Thanks,
+	Joel
 
-Run the gcc-4.1 built kernel; observe that machine locks up after some
-time period ranging from hours to a few days;
+PS: would it make sence to test this nucked hunk
+I mean afaik this "__raw_spin_lock_flags(&rw->lock, 0);" comes from this definition:
+#define __raw_spin_lock(lock) __raw_spin_lock_flags(lock, 0)
 
-Boot the gcc-3.3 built kernel; observe that machine runs for weeks.
+Tbh I am a bit confused by this patch: write some stuff and say don't use it?
 
-Yes, there is something getting compiled differently than intended.
-
-Q) Is the following an expected difference?
-
-send_group_sig_info:                              send_group_sig_info:
-    .PROC                                             .PROC
-    .CALLINFO FRAME=144,CALLS,SAVE_RP,ENTRY_GR=6 |    .CALLINFO FRAME=160,CALLS,SAVE_RP,ENTRY_GR=7
-
-Mike
+> Cheers,
+> Carlos.
+> 
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
