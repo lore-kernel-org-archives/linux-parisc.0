@@ -1,8 +1,8 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [parisc-linux] Mysterious hangs with parisc (a
 	send_group_sig_info() analysis)
-Date: Sat, 22 Jul 2006 13:23:57 -0400
-Message-ID: <119aab440607221023s30f966c0pbee4aa9357d9b7b5@mail.gmail.com>
+Date: Sat, 22 Jul 2006 13:29:13 -0400
+Message-ID: <119aab440607221029h1acda159mf4c4e5baca2f0c1e@mail.gmail.com>
 References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
 	<200606240241.k5O2fALQ001885@hiauly1.hia.nrc.ca>
 	<20060705164734.GB30640@athena.road.mcmartin.ca>
@@ -30,21 +30,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> And here are a lot of questions:
->         Q2: some diff in routine like 2 times ldcw with gcc-3 and only one with gcc-4 (may be ok?)
->
+>         Q4: imho the most important: with 2 gcc where is the couple of ssm/rsm that jejb introduced in his patch:
 
-Analyze the code. Is it doing functionally the same thing?
+The *most* important piece of imformation is the pre-compiled source.
+You *must* determine that both paths of the if/else are different,
+because if they are the same, then GCC is right to remove one of the
+paths, and unconditionally call cpu_relax.
 
-I assert that yes, it's doing exactly the same thing. The older gcc
-has unwrapped one of the ldcw's, and thus has two copies of the inner
-loop in the assembly. The code on the right does exactly the same
-thing, but in less instructions. GCC has gotten better.
+Where is the pre-compiled source to prove that the paths aren't identical?
 
-There isn't a missing lock, we only needed one lock, the older gcc was
-doing a poorer job of code generation.
-
-There may be other parts of the kernel that have problems, so keep looking!
+Remember to work towards a solution!
 
 Cheers,
 Carlos.
