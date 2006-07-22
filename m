@@ -1,20 +1,20 @@
-From: Jeff Bailey <jbailey@raspberryginger.com>
-Subject: [parisc-linux] Re: NPTL fixes.
-Date: Sat, 22 Jul 2006 11:54:23 -0700
-Message-ID: <20060722185423.GA30156@titanium.v3.ca>
-References: <119aab440607181547v383ed926ic3420c7865846361@mail.gmail.com>
-	<20060720221634.GA25514@titanium.v3.ca>
-	<119aab440607210834u7761a7e2w54e3990fedaa995c@mail.gmail.com>
-	<20060721155009.GA18291@titanium.v3.ca>
-	<119aab440607221000w6cf467c2k8d16edf20e7791c4@mail.gmail.com>
-	<119aab440607221000w687c2d8v9afa5fb7d7bdd12b@mail.gmail.com>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] Mysterious hangs with parisc (a
+	send_group_sig_info() analysis)
+Date: Sat, 22 Jul 2006 14:11:18 -0500
+Message-ID: <200607221411.18605.mszick@morethan.org>
+References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
+	<44C1338C.7010607@tiscali.be>
+	<119aab440607221023s30f966c0pbee4aa9357d9b7b5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+  charset="us-ascii"
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ James.Bottomley@steeleye.com,
+ John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440607221000w687c2d8v9afa5fb7d7bdd12b@mail.gmail.com>
+In-Reply-To: <119aab440607221023s30f966c0pbee4aa9357d9b7b5@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,40 +25,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-(restoring cc:'s dropped by accident)
-
-On Sat, Jul 22, 2006 at 01:00:58PM -0400, Carlos O'Donell wrote:
-> On 7/22/06, Carlos O'Donell <carlos@systemhalted.org> wrote:
-> >> If yes, I'll make it a priority next week so that I can get some initial
-> >> bootstrapping stuff done.
+On Sat July 22 2006 12:23, Carlos O'Donell wrote:
+> > And here are a lot of questions:
+> >         Q2: some diff in routine like 2 times ldcw with gcc-3 and only one with gcc-4 (may be ok?)
 > >
-> >It's not high-prio, I don't care about the ABI break, I care primarily
-> >about reducing the number of failures. After the failures are reduced
-> >we *might* be able to tackle ABI compatibility... but again I doubt
-> >this, since it would require similar patches to Linuxthreads which
-> >were rejected before and will be rejected again. Not to mention it
-> >causes weird headaches with all the other arches that put
-> >uninitialized locks in .bss.
 > 
-> Is an alternative that we bump the .so number in the thread library?
+> Analyze the code. Is it doing functionally the same thing?
+> 
+> I assert that yes, it's doing exactly the same thing. The older gcc
+> has unwrapped one of the ldcw's, and thus has two copies of the inner
+> loop in the assembly. The code on the right does exactly the same
+> thing, but in less instructions. GCC has gotten better.
+> 
+> There isn't a missing lock, we only needed one lock, the older gcc was
+> doing a poorer job of code generation.
+> 
 
-Yes an no.  That solves the problem from an upstream perspective, but it
-will make upgrading to NPTL for current parisc users hard.  The problem
-is that we don't version libpthreads itself, we only version libc6.  The
-packaging system doesn't then provide any hints that the version of
-libpthreads that the packages are looking for doesn't exist anymore.
+OK - will go with that theory.
 
-If you're going to bump the version number of pthreads, I'd recommend
-taking this time to do a break on glibc as well and get any changes done
-that you might need to.
+> There may be other parts of the kernel that have problems, so keep looking!
+> 
 
-Tks,
-Jeff Bailey
+Now that portion of the work is easy (not quick, easy) to reproduce.
 
--- 
-I do not agree with a word you say, but I will defend to the death your
-right to say it. 
- - Voltaire
+Pick a fairly recent kernel (I think Joel has used both 2.6.16 & 2.6.17);
+Use gcc-3.3 to build 64-bit-smp;
+Use gcc-4.1 to build 64-bit-smp;
+
+Pick a machine with two or more processors (Joel has PA8000 & PA8700);
+Pick yourself a never-ending script that keeps all processors busy;
+
+Run the gcc-4.1 built kernel; observe that machine locks up after some
+time period ranging from hours to a few days;
+
+Boot the gcc-3.3 built kernel; observe that machine runs for weeks.
+
+Yes, there is something getting compiled differently than intended.
+
+Q) Is the following an expected difference?
+
+send_group_sig_info:                              send_group_sig_info:
+    .PROC                                             .PROC
+    .CALLINFO FRAME=144,CALLS,SAVE_RP,ENTRY_GR=6 |    .CALLINFO FRAME=160,CALLS,SAVE_RP,ENTRY_GR=7
+
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
