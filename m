@@ -1,16 +1,25 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Looking at vfprintf.c and alloca.
-Date: Tue, 18 Jul 2006 23:22:30 -0400 (EDT)
-Message-ID: <200607190322.k6J3MU58016184@hiauly1.hia.nrc.ca>
-References: <200607181151.53069.mszick@morethan.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] Mysterious hangs with parisc (a
+	send_group_sig_info() analysis)
+Date: Sat, 22 Jul 2006 13:23:57 -0400
+Message-ID: <119aab440607221023s30f966c0pbee4aa9357d9b7b5@mail.gmail.com>
+References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
+	<200606240241.k5O2fALQ001885@hiauly1.hia.nrc.ca>
+	<20060705164734.GB30640@athena.road.mcmartin.ca>
+	<44AD54F0.90508@tiscali.be>
+	<20060706183409.GB5692@athena.road.mcmartin.ca>
+	<44C1338C.7010607@tiscali.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: mszick@morethan.org (Michael S. Zick)
+  charset=ISO-8859-1;
+  format=flowed
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ James.Bottomley@steeleye.com,
+ parisc-linux@lists.parisc-linux.org,
+ John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: "Joel Soete" <soete.joel@tiscali.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200607181151.53069.mszick@morethan.org> from "Michael S. Zick"
-	at Jul 18, 2006 11:51:52 am
+In-Reply-To: <44C1338C.7010607@tiscali.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,35 +30,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> For the case of gcc-4.2, stack-grows down...
+> And here are a lot of questions:
+>         Q2: some diff in routine like 2 times ldcw with gcc-3 and only one with gcc-4 (may be ok?)
+>
 
-Is this for hppa?  The stack should never grow downward.
+Analyze the code. Is it doing functionally the same thing?
 
-> ptr = 0xbfea1fc0
-> old = 0xbfea2160
-> &old[100] = 0xbfea22f0
-> 
-> In both the cases (up/down) &old[100] has an offset of
-> 400 bytes (correct).
+I assert that yes, it's doing exactly the same thing. The older gcc
+has unwrapped one of the ldcw's, and thus has two copies of the inner
+loop in the assembly. The code on the right does exactly the same
+thing, but in less instructions. GCC has gotten better.
 
-You have to take into account the preferred stack boundary
-into account when determining the delta between alloca allocations.
+There isn't a missing lock, we only needed one lock, the older gcc was
+doing a poorer job of code generation.
 
-The HP runtime specifies 64 bytes (i.e., cache aligned) for
-the preferred stack boundary in the 32-bit runtime.  The stack
-boundary is 8 bytes.  This is the minimum alignment that the
-hardware needs except for the infamous ldcw instruction.  The
-preferred stack boundary could have been 8 bytes.  However,
-changing it now would be an ABI change...
+There may be other parts of the kernel that have problems, so keep looking!
 
-HP probably recognized that 64-byte alignment didn't help performance
-much, so they relaxed the 64-bit alignment to 16 bytes.  In the 64-bit
-runtime, some types are 16-byte aligned.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
