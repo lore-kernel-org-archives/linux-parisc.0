@@ -1,17 +1,17 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] Mysterious hangs with parisc (a
-	send_group_sig_info() analysis)
-Date: Sat, 22 Jul 2006 18:49:18 -0500
-Message-ID: <200607221849.18925.mszick@morethan.org>
-References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
-	<119aab440607221029h1acda159mf4c4e5baca2f0c1e@mail.gmail.com>
-	<44C2A23C.8000509@tiscali.be>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
+Date: Sat, 22 Jul 2006 21:01:03 -0400
+Message-ID: <7d01f9f00607221801v256dd541l152a85d7624a8d5b@mail.gmail.com>
+References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: James Bottomley <James.Bottomley@steeleye.com>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <44C2A23C.8000509@tiscali.be>
+In-Reply-To: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,70 +22,88 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat July 22 2006 17:10, Joel Soete wrote:
-> 
-> Carlos O'Donell wrote:
-> >>         Q4: imho the most important: with 2 gcc where is the couple of 
-> >> ssm/rsm that jejb introduced in his patch:
-> > 
-> > 
-> > The *most* important piece of imformation is the pre-compiled source.
->     if (flags & 0x00000001) {
->      __asm__ __volatile__("ssm %0,%%r0\n" : : "i" (0x00000001) : "memory" );
->      __asm__ __volatile__("":::"memory");
->      __asm__ __volatile__("rsm %0,%%r0\n" : : "i" (0x00000001) : "memory" );
->     } else
->      __asm__ __volatile__("":::"memory");
-> 
-> > You *must* determine that both paths of the if/else are different,
-> > because if they are the same, then GCC is right to remove one of the
-> > paths, and unconditionally call cpu_relax.
-> > 
+Carlos,
 
-Note: That code is the same when either compiler is used;
-_But_ as a separate problem...
+I'm observing something totally crazy right now. On the very same
+machine we hacked yesterday, exact same setup (same kernel, same
+binary, same everything):
 
-My reading of the intent of that added code was:
+i /can't/ start our static sshd anymore. It dies right after a sysctl (!):
 
-Busy_Loop:
-   If (Interrupts are disabled) {
-      Enable interrupts;
-      Cpu_relax; /* Long enough to recognize pending interrupts */
-      Disable interrupts;
-   } else {
-      Cpu_relax;
-   }
+898   mmap(NULL, 4096, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x4000b000
+898   getpid()                          = 898
+898   rt_sigaction(SIGRTMIN, {0x40c51eba, [], 0}, NULL, 8) = 0
+898   rt_sigaction(SIGRT_1, {0x40c51ec2, [TRAP], 0}, NULL, 8) = 0
+898   rt_sigaction(SIGRT_2, {0x40c51ea2, [], 0}, NULL, 8) = 0
+898   rt_sigprocmask(SIG_BLOCK, [RTMIN], NULL, 8) = 0
+898   rt_sigprocmask(SIG_UNBLOCK, [RT_1], NULL, 8) = 0
+898   _sysctl({{CTL_KERN, KERN_VERSION}, 2, 0xc00e67d4, 36, (nil), 0}) = 0
+898   --- SIGSEGV (Segmentation fault) @ 0 (0) ---
+898   +++ killed by SIGSEGV +++
 
-And my complaint was a matter of structure...
+as you can see at that point it hasn't even yet spawned any child. gdb
+isn't of much help, as the backtrace is pretty clueless:
 
-The assumption here is that the flag bit in an external variable
-is always in-sync with the interrupt status bit in the register.
+(gdb) symbol-file /home/varenet/openssh-4.3p2/sshd
+Reading symbols from /home/varenet/openssh-4.3p2/sshd...done.
+(gdb) set follow-fork-mode child
+(gdb) set args -D -p 2222
+(gdb) run
+Starting program: /usr/local/test/sbin/sshd -D -p 2222
 
-Obviously a false assumption, this routine is an example...
+Program received signal SIGSEGV, Segmentation fault.
+0x00000000 in ?? ()
+(gdb) bt
+#0  0x00000000 in ?? ()
+#1  0x40c3a9a0 in ?? ()
+Previous frame identical to this frame (corrupt stack?)
 
-Inside the first if block, the status bit is changed but the external
-variable bit is not.
+finally dmesg shows:
 
-A general purpose, like we don't know what state the interrupts
-are in, and we don't want to trust an external flag bit;
+do_page_fault() pid=898 command='sshd' type=6 address=0x00000003
 
-Looks like:
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001101111111100001011 Not tainted
+r00-03  0000000000000000 0000000040c5233c 0000000040c3a9a3 00000000c00e67d4
+r04-07  0000000040c5233c 0000000040c51a80 000000004069e830 0000000000000200
+r08-11  0000000040c513d4 00000000000000e1 0000000080000001 0000000090000000
+r12-15  00000000d0000000 000000000021fd70 00000000001a5800 00000000001a5800
+r16-19  000000000004c8c0 00000000c00de698 000000000004c8c0 0000000040c5233c
+r20-23  0000000000000000 0000000000000053 0000000000000000 00000000c00e66c8
+r24-27  00000000c00e67d4 0000000040c401b2 00000000c00e67d7 00000000001db060
+r28-31  0000000040c51a80 0000000000000213 00000000c00e6a40 0000000040c3a9a3
+sr0-3   00000000001fa800 0000000000000000 0000000000000000 00000000001fa800
+sr4-7   00000000001fa800 00000000001fa800 00000000001fa800 00000000001fa800
 
-Busy_Loop:
-   Save current interrupt status to the external variable;
-   Enable interrupts; /* a nop if already enabled */
-   Cpu_relax; /* Long enough to recognize pending interrupts */
-   Restore interrupt status from external variable;
+The cool thing is that i can /consistently/ reproduce this.
 
-Our redefining Cpu_relax to a pair of nops was for machines that
-delay recognizing interrupts for an instruction after changing
-the status bit.  We also included an asm comment in Cpu_relax
-just in case we wanted to see that it had not gotten optimized away.
+I'm leaving the box powered up, not touching anything until we get a
+chance to investigate this a bit more.
 
-Same reason the mb() was redefined as an asm comment that could
-be identified by inspection.
+Aside that, I /really/ believe that the fact that we can trigger the
+bug that easily with some network applications isn't a coincidence.
+Grant's hint of a dma think problem shouldn't be overlooked. The
+"make" failures could also be I/O related...
 
-Mike
+HTH
+
+T-Bone
+
+PS: i tried "ssh localhost" with the 'normal' sshd (/usr/sbin/sshd) as
+I told you earlier today, it dies as expected with pretty much the
+same tombstones that those we've seen yesterday.
+
+Haven't investigated that much more at that point.
+
+Note: you and James can access that machine (provided you remember
+your password) and that your ssh key on mkhppa02.esiee.fr is valid. If
+there's a problem with any of these, it's easy to fix. If jda wants an
+account, it's also easy
+
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
