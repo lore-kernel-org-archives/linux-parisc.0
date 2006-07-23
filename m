@@ -1,12 +1,18 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: [parisc-linux] parisc trap.c unwind.c small question?
-Date: Mon, 24 Jul 2006 16:18:15 +0200
-Message-ID: <J2WVQF$103CC701D3667777526743F0D77A2136@scarlet.be>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
+Date: Sun, 23 Jul 2006 18:03:47 -0400
+Message-ID: <7d01f9f00607231503j7943b075ub6d98f0d5f9c3162@mail.gmail.com>
+References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
+	<7d01f9f00607221801v256dd541l152a85d7624a8d5b@mail.gmail.com>
+	<200607231128.45454.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "Parisc List" <parisc-linux@lists.parisc-linux.org>
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Michael S. Zick" <mszick@morethan.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200607231128.45454.mszick@morethan.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,72 +23,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi *,
+On 7/23/06, Michael S. Zick <mszick@morethan.org> wrote:
+> On Sat July 22 2006 20:01, Thibaut VARENE wrote:
+> > Carlos,
+> >
+> > I'm observing something totally crazy right now. On the very same
+> > machine we hacked yesterday, exact same setup (same kernel, same
+> > binary, same everything):
+> >
+> > i /can't/ start our static sshd anymore. It dies right after a sysctl (!):
+> >
+> > I'm leaving the box powered up, not touching anything until we get a
+> > chance to investigate this a bit more.
+> >
+>
+> Is it still possible to capture the kernel's internal state by
+> copying /proc/kcore to a file somewhere?
 
-While taking a break, istr it was better to write (ptr =3D=3D NULL) is pl=
-ace
-(!ptr)?--- arch/parisc/kernel/traps.c.Orig     2006-07-24 15:21:46.000000=
-000 +0200
-+++ arch/parisc/kernel/traps.c  2006-07-24 16:01:13.000000000 +0200
-@@ -182,14 +182,14 @@
- {
-        struct unwind_frame_info info;
+That box hit the "kill your fs" bug I've seen on ppc and ia64
+(upcoming report mail to be posted soon) so it's basically dead at
+that point and I'm having hard time reinstalling it (thanks to pa8800
+being /such/ a hassle to install remotely).
 
--       if (!task) {
-+       if (task =3D=3D NULL) {
-                unsigned long sp;
-                struct pt_regs *r;
+T-Bone
 
- HERE:
-                asm volatile ("copy %%r30, %0" : "=3Dr"(sp));
-                r =3D kzalloc(sizeof(struct pt_regs), GFP_KERNEL);
--               if (!r)
-+               if (r =3D=3D NULL)
-                        return;
-                r->iaoq[0] =3D (unsigned long)&&HERE;
-                r->gr[2] =3D (unsigned long)__builtin_return_address(0);
-@@ -238,7 +238,7 @@
-         * to initialize the serial or STI console. In that case we shoul=
-d
-         * re-enable the pdc console, so that the user will be able to
-         * identify the problem. */
--       if (!console_drivers)
-+       if (console_drivers =3D=3D NULL)
-                pdc_console_restart();
-
-        printk(KERN_CRIT "%s (pid %d): %s (code %ld)\n",
-@@ -423,7 +423,7 @@
-        pdc_emergency_unlock();
-
-        /* restart pdc console if necessary */
--       if (!console_drivers)
-+       if (console_drivers =3D=3D NULL)
-                pdc_console_restart();
-
-        /* Not all paths will gutter the processor... */
---- arch/parisc/kernel/unwind.c.Orig    2006-07-24 15:49:07.000000000 +02=
-00
-+++ arch/parisc/kernel/unwind.c 2006-07-24 15:49:51.000000000 +0200
-@@ -345,7 +345,7 @@
-        struct pt_regs *r2;
-
-        r2 =3D (struct pt_regs *)kmalloc(sizeof(struct pt_regs), GFP_KERN=
-EL);
--       if (!r2)
-+       if (r2 =3D=3D NULL)
-                return;
-        *r2 =3D *r;
-        r2->gr[30] =3D r->ksp;
-=3D=3D=3D=3D<>=3D=3D=3D=3D
-
-Thanks,
-    Joel
-
-=0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous devenez au=
-jourd'hui Scarlet One grace a un client existant de Scarlet, vous recevez=
- tous les deux un cadeau d'une valeur de 50 euros! Surfez vite sur http:/=
-/www.clubscarlet.be
-
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
