@@ -1,16 +1,17 @@
-From: "Michael S. Zick" <mszick@morethan.org>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
 Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Sun, 23 Jul 2006 11:28:45 -0500
-Message-ID: <200607231128.45454.mszick@morethan.org>
+Date: Sun, 23 Jul 2006 22:54:38 -0400
+Message-ID: <7d01f9f00607231954m7b9992e8r6148bb26b7b461da@mail.gmail.com>
 References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
-	<7d01f9f00607221801v256dd541l152a85d7624a8d5b@mail.gmail.com>
+	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Cc: Thibaut VARENE <T-Bone@parisc-linux.org>
-To: parisc-linux@lists.parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "James Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <7d01f9f00607221801v256dd541l152a85d7624a8d5b@mail.gmail.com>
+In-Reply-To: <1153708426.1235.11.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,23 +22,39 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat July 22 2006 20:01, Thibaut VARENE wrote:
-> Carlos,
-> 
-> I'm observing something totally crazy right now. On the very same
-> machine we hacked yesterday, exact same setup (same kernel, same
-> binary, same everything):
-> 
-> i /can't/ start our static sshd anymore. It dies right after a sysctl (!):
-> 
-> I'm leaving the box powered up, not touching anything until we get a
-> chance to investigate this a bit more.
-> 
+On 7/23/06, James Bottomley <James.Bottomley@steeleye.com> wrote:
+> Carlos wrote:
+> > Grant expressed worry that "Pattern 1" was indicative of a dma sync
+> > problem with the network socket read.
+>
+> I'm still dubious about this one ... even if we agree it's a D cache
+> issue, it's definitely a D cache issue affecting program execution (i.e.
+> function pointers or call indirection).  The data coming out of the
+> network pipe for ssh never finds its way into the execution stream,
+> which means it's unlikely to affect these areas.  Additionally, ssh has
+> message integrity checks which fail noisily (i.e. the network data is
+> verified against a secure hash before it's used).  So, if we had
+> incoherent data from the pipe, I would exect to see periodic MIC
+> failures, which we don't see.
 
-Is it still possible to capture the kernel's internal state by
-copying /proc/kcore to a file somewhere?
+Actually on some occasion, the sshd would kill the incoming connection
+with "bad packet length" and "invalid hash packet" and all sorts of
+various nasty error messages. And we made sure that these messages
+were sent by the _server_, not the _client_...
 
-Mike
+My take is that we see that bug so much more on pa8800 because of its
+huge cache and thus because we hit cache much more often than on all
+other machines...
+
+Still investigating this, i'm about to bring back online my rp3440 ;)
+
+HTH
+
+T-Bone
+
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
