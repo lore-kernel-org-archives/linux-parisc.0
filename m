@@ -1,19 +1,20 @@
-From: Jeff Bailey <jbailey@raspberryginger.com>
-Subject: [parisc-linux] Re: Duplicate ustat structure
-Date: Mon, 24 Jul 2006 20:47:52 -0400
-Message-ID: <1153788472.7679.2.camel@localhost.localdomain>
-References: <20060716160300.GA27091@titanium.v3.ca>
-	<jeodvpbj2k.fsf@sykes.suse.de> <20060716170725.GA29459@titanium.v3.ca>
-	<119aab440607161313h4c196882gab171b4614957b7c@mail.gmail.com>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
+Date: Sun, 23 Jul 2006 22:39:22 -0400
+Message-ID: <7d01f9f00607231939x50741ff4le79858bad05b5cd8@mail.gmail.com>
+References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
+	<7d01f9f00607221801v256dd541l152a85d7624a8d5b@mail.gmail.com>
+	<200607231128.45454.mszick@morethan.org>
+	<7d01f9f00607231503j7943b075ub6d98f0d5f9c3162@mail.gmail.com>
+	<20060724014058.GA5542@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  CHARSET=US-ASCII
-Cc: Andreas Schwab <schwab@suse.de>,
- libc-ports@sources.redhat.com,
- parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Kyle McMartin" <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-reply-to: <119aab440607161313h4c196882gab171b4614957b7c@mail.gmail.com>
+In-Reply-To: <20060724014058.GA5542@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,38 +25,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On dim, 2006-07-16 at 16:13 -0400, Carlos O'Donell wrote:
-> On 7/16/06, Jeff Bailey <jbailey@raspberryginger.com> wrote:
-> > On Sun, Jul 16, 2006 at 06:39:15PM +0200, Andreas Schwab wrote:
+On 7/23/06, Kyle McMartin <kyle@mcmartin.ca> wrote:
+> On Sun, Jul 23, 2006 at 06:03:47PM -0400, Thibaut VARENE wrote:
+> > That box hit the "kill your fs" bug I've seen on ppc and ia64
+> > (upcoming report mail to be posted soon) so it's basically dead at
+> > that point and I'm having hard time reinstalling it (thanks to pa8800
+> > being /such/ a hassle to install remotely).
 > >
-> > > > The problem is that bits/ustat.h includes the definition of struct
-> > > > ustat.  However, sys/types.h eventually winds up pulling in
-> > > > linux/types.h which also defines struct ustat.
-> > >
-> > > <sys/types.h> should not include <linux/types.h> in the first place.
-> >
-> > It seems like it ought to now that the kernel is exporting a set of
-> > headers that are intended to be used by userspace.  struct ustat is
-> > defined in linux/types.h.
-> 
-> In which case this patch should go upstream to libc-alpha, where the
-> generic version of ustat.h should be changed.
+>
+> Does it have two disks? Maybe we should keep one disk as 'known good'
+> backup on ioz and magnum, and if they crap out, BO ALT and dd it over
+> the scrogged disk? Just a thought which might save some pain in the
+> future considering they are crash n' bash machines.
 
-Certainly, but could you apply the second patch in the meantime?  That's
-what all the other arch's do right now, and it will at least make
-current glibc buildable with current kernel headers.  I'll try and pitch
-the concept of using kernel headers instead of copying values into glibc
-when I have enough time and energy to fight that battle.
+It /had/ two disks and one good backup. Until I ran (for my own shame
+and that of my offsprings) '# rm -rf /mnt *' on the backup one...
 
-Tks,
-Jeff Bailey
+T-Bone
 
 -- 
-Although when you're in the situation that RMS is telling you that
-you're being too ideological about freedom, maybe, just maybe, it's
-true.
-- Matthew Wilcox
-
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
