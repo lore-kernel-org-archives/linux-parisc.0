@@ -1,27 +1,13 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Tue, 25 Jul 2006 12:46:15 -0400
-Message-ID: <20060725164615.GD4311@athena.road.mcmartin.ca>
-References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
-	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
-	<7d01f9f00607231954m7b9992e8r6148bb26b7b461da@mail.gmail.com>
-	<20060724033223.GE29603@parisc-linux.org>
-	<7d01f9f00607232115n18865924s4f07f64d84e45dce@mail.gmail.com>
-	<1153750204.1235.18.camel@mulgrave.il.steeleye.com>
-	<20060724163228.GA22560@colo.lackof.org>
-	<1153839113.3452.28.camel@mulgrave.il.steeleye.com>
-	<20060725161345.GA13707@hiauly1.hia.nrc.ca>
-	<1153844239.3452.29.camel@mulgrave.il.steeleye.com>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [PATCH] vfork() for parisc
+Date: Sun, 23 Jul 2006 23:14:38 -0400
+Message-ID: <20060724031438.GB5542@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- Thibaut VARENE <T-Bone@parisc-linux.org>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>,
- Matthew Wilcox <matthew@wil.cx>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Cc: parisc-linux@lists.parisc-linux.org
+To: klibc@zytor.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1153844239.3452.29.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -32,12 +18,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jul 25, 2006 at 11:17:19AM -0500, James Bottomley wrote:
-> Kyle's working on it based on Grant's original work ... you need access
-> to a lot of secret diag registers to do this, though, so it's not easy.
-> 
+Implement "pid_t vfork(void)" for parisc.
 
-WTF? Am not.
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+---
+
+Ugh. vfork() me harder.
+
+ Kbuild  |    2 +-
+ vfork.S |   31 +++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 1 deletion(-)
+
+diff --git a/usr/klibc/arch/parisc/Kbuild b/usr/klibc/arch/parisc/Kbuild
+index d57a873..57ca5c2 100644
+--- a/usr/klibc/arch/parisc/Kbuild
++++ b/usr/klibc/arch/parisc/Kbuild
+@@ -2,7 +2,7 @@ #
+ # klibc files for parisc
+ #
+ 
+-klib-y := setjmp.o syscall.o
++klib-y := setjmp.o syscall.o vfork.o
+ 
+ always  := crt0.o
+ targets := crt0.o
+diff --git a/usr/klibc/arch/parisc/vfork.S b/usr/klibc/arch/parisc/vfork.S
+new file mode 100644
+index 0000000..97ebc8f
+--- /dev/null
++++ b/usr/klibc/arch/parisc/vfork.S
+@@ -0,0 +1,31 @@
++/*
++ * arch/parisc/vfork.S, "vfork() me harder. ugh." -- kyle
++ *
++ * %r20 contains the system call number, %rp contains whence we came,
++ * %rp is saved and restored across the syscall, thankfully.
++ *
++ */
++
++	.text
++	.align 64				; cache-width aligned
++	.globl	vfork
++	.type	vfork,@function
++vfork:
++	/* pid_t vfork(void) */
++	ble		0x100(%sr2, %r0)	; jump to gateway page
++	nop
++
++	ldi		-0x1000,%r19		; %r19 = -4096
++	sub		%r0,%ret0,%r22		; %r22 = -%ret0
++	cmpb,>>=,n	%r19,%ret0,1f		; if %ret0 >= -4096UL
++	ldi		-1,%ret0		; nullified on taken forward
++
++	/* store %r22 to errno... */
++	ldil		L%errno,%r1
++	ldo		R%errno(%r1),%r1
++	stw		%r22,0(%r1)
++1:
++	bv		%r0(%rp)		; jump back
++	nop
++
++	.size vfork,.-vfork
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
