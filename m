@@ -1,18 +1,22 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Mon, 24 Jul 2006 10:58:24 -0400 (EDT)
-Message-ID: <200607241458.k6OEwOif027105@hiauly1.hia.nrc.ca>
-References: <20060724033223.GE29603@parisc-linux.org>
+Date: Mon, 24 Jul 2006 10:32:28 -0600
+Message-ID: <20060724163228.GA22560@colo.lackof.org>
+References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
+	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
+	<7d01f9f00607231954m7b9992e8r6148bb26b7b461da@mail.gmail.com>
+	<20060724033223.GE29603@parisc-linux.org>
+	<7d01f9f00607232115n18865924s4f07f64d84e45dce@mail.gmail.com>
+	<1153750204.1235.18.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: James.Bottomley@steeleye.com,
- parisc-linux@lists.parisc-linux.org,
- T-Bone@parisc-linux.org
-To: matthew@wil.cx (Matthew Wilcox)
+  charset=us-ascii
+Cc: Matthew Wilcox <matthew@wil.cx>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ Thibaut VARENE <T-Bone@parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060724033223.GE29603@parisc-linux.org> from "Matthew Wilcox"
-	at Jul 23, 2006 09:32:23 pm
+In-Reply-To: <1153750204.1235.18.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,22 +27,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Sun, Jul 23, 2006 at 10:54:38PM -0400, Thibaut VARENE wrote:
-> > My take is that we see that bug so much more on pa8800 because of its
-> > huge cache and thus because we hit cache much more often than on all
-> > other machines...
-> 
-> I don't think so.  pa8800 has less cache per core than pa8700.  The L2
-> cache is ignorable for the purposes of this scenario, since it's
-> transparent to software.
+On Mon, Jul 24, 2006 at 09:10:04AM -0500, James Bottomley wrote:
+> What Matthew means is that the L2 cache is PIPT ... you can't get
+> aliasing effects in a PIPT cache, so for the purposes of the problem it
+> must be ignorable, since we can only get aliasing effects in the L1
+> cache which is VIPT.
 
-It is visible.  You see it in the size returned for the D cache by
-PDC_CACHE.
+While I agree in general that a PIPT cache won't have aliasing effects.
+ISTR the virtual coherence index (VCI) is part of the "physical address".
+If it's not, I'm confused how CPUs on different sockets remain coherent.
+I expect the VCI is visible across the Mckinley Bus and thus is part
+of the physical address. IOMMU is also pushing out an address that
+has VCI bits in it - so DMA remains coherent with CPU virtual addresses.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+If I've got this right, then we can have aliasing in PIPT cache.
+Willy, can you check the pa8800 ERS and look for "coherence index"
+or similar, related words?
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
