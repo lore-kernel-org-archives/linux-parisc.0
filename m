@@ -1,19 +1,19 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Mysterious hangs with parisc (a
-	send_group_sig_info() analysis)
-Date: Sun, 23 Jul 2006 22:16:31 -0600
-Message-ID: <20060724041631.GB24411@colo.lackof.org>
-References: <20060624015935.GJ12481@quicksilver.road.mcmartin.ca>
-	<119aab440607221029h1acda159mf4c4e5baca2f0c1e@mail.gmail.com>
-	<44C2A23C.8000509@tiscali.be>
-	<200607221849.18925.mszick@morethan.org>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
+Date: Mon, 24 Jul 2006 00:26:21 -0400
+Message-ID: <7d01f9f00607232126o68124272he34464cf9abeab4e@mail.gmail.com>
+References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
+	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
+	<7d01f9f00607231954m7b9992e8r6148bb26b7b461da@mail.gmail.com>
+	<1153711459.1235.13.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Michael S. Zick" <mszick@morethan.org>
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "James Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200607221849.18925.mszick@morethan.org>
+In-Reply-To: <1153711459.1235.13.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,48 +24,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Jul 22, 2006 at 06:49:18PM -0500, Michael S. Zick wrote:
-> The assumption here is that the flag bit in an external variable
-> is always in-sync with the interrupt status bit in the register.
+On 7/23/06, James Bottomley <James.Bottomley@steeleye.com> wrote:
+> On Sun, 2006-07-23 at 22:54 -0400, Thibaut VARENE wrote:
+> > Actually on some occasion, the sshd would kill the incoming connection
+> > with "bad packet length" and "invalid hash packet" and all sorts of
+> > various nasty error messages. And we made sure that these messages
+> > were sent by the _server_, not the _client_...
+> >
+> > My take is that we see that bug so much more on pa8800 because of its
+> > huge cache and thus because we hit cache much more often than on all
+> > other machines...
+> >
+> > Still investigating this, i'm about to bring back online my rp3440 ;)
+>
+> I can get a stable ssh connection to a pa8800 ... once established, I
+> don't ever see them close for MIC problems.
 
-The flag bit is generally the value _before_ we attempted to acquire a lock.
-I'm really not comfortable with passing in a zero flags value.
-I'd need to review alot more code to be happy we aren't breaking
-something else that uses __raw_spin_lock.
+I'm totally amazed. Carlos and I could never get a single established
+connection...
 
-...
-> A general purpose, like we don't know what state the interrupts
-> are in, and we don't want to trust an external flag bit;
-> 
-> Looks like:
-> 
-> Busy_Loop:
->    Save current interrupt status to the external variable;
->    Enable interrupts; /* a nop if already enabled */
->    Cpu_relax; /* Long enough to recognize pending interrupts */
->    Restore interrupt status from external variable;
+> To get one going, you just start several remote ssh's at once, so this
+> would tend to indicate that it's some type of timing issue connected to
+> the fork.
 
-I'm ok with this for two reasons:
-1) I'm not sure looking at the _previous_ state is the intent
-2) branch in perf path is always a bad thing (after cacheline misses).
+Well, I can consistently crash a remote telnet session if i output too
+much data in the terminal (eg running dmesg or ls -lR). I doubt this
+is fork related...
 
-However, I don't know if there is a reason to instead look at
-the previous state.
+Another point worth mentioning, is that sshd is very likely mlocking
+stuff so that it doesn't get swapped. Actually, it's been a while
+since i last gave a look at sshd source, but I'd bet it keeps mostly
+everything in RAM, and given the size of the cache on pa8800, blah
+blah see my other mail i'm exhausted ;)
 
-> Our redefining Cpu_relax to a pair of nops was for machines that
-> delay recognizing interrupts for an instruction after changing
-> the status bit.  We also included an asm comment in Cpu_relax
-> just in case we wanted to see that it had not gotten optimized away.
+HTH
 
-the asm comment is a good idea.
+T-Bone
 
-> Same reason the mb() was redefined as an asm comment that could
-> be identified by inspection.
-
-*nod*.
-
-thanks,
-grant
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
