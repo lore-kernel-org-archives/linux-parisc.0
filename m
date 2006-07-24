@@ -1,15 +1,18 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Mon, 24 Jul 2006 09:51:37 -0500
-Message-ID: <1153752697.1235.32.camel@mulgrave.il.steeleye.com>
-References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
-	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
+Date: Mon, 24 Jul 2006 10:58:24 -0400 (EDT)
+Message-ID: <200607241458.k6OEwOif027105@hiauly1.hia.nrc.ca>
+References: <20060724033223.GE29603@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: James.Bottomley@steeleye.com,
+ parisc-linux@lists.parisc-linux.org,
+ T-Bone@parisc-linux.org
+To: matthew@wil.cx (Matthew Wilcox)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1153708426.1235.11.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <20060724033223.GE29603@parisc-linux.org> from "Matthew Wilcox"
+	at Jul 23, 2006 09:32:23 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,40 +23,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2006-07-23 at 22:33 -0400, James Bottomley wrote:
-> > Grant expressed worry that "Pattern 1" was indicative of a dma sync
-> > problem with the network socket read.
+> On Sun, Jul 23, 2006 at 10:54:38PM -0400, Thibaut VARENE wrote:
+> > My take is that we see that bug so much more on pa8800 because of its
+> > huge cache and thus because we hit cache much more often than on all
+> > other machines...
 > 
-> I'm still dubious about this one ... even if we agree it's a D cache
-> issue, it's definitely a D cache issue affecting program execution (i.e.
-> function pointers or call indirection).  The data coming out of the
-> network pipe for ssh never finds its way into the execution stream,
-> which means it's unlikely to affect these areas.  Additionally, ssh has
-> message integrity checks which fail noisily (i.e. the network data is
-> verified against a secure hash before it's used).  So, if we had
-> incoherent data from the pipe, I would exect to see periodic MIC
-> failures, which we don't see.
+> I don't think so.  pa8800 has less cache per core than pa8700.  The L2
+> cache is ignorable for the purposes of this scenario, since it's
+> transparent to software.
 
-Let me back up on this one.  I still don't think it's a DMA sync issue.
-However, it could be a different D incoherency issue.  Because the linux
-kernel operates with kernel to user aliases (i.e. the user address of a
-page is rarely congruent to the kernel address of a page) it is possible
-to generate D incoherency by missing a flush when a kernel page is
-reclaimed (i.e. freed).
+It is visible.  You see it in the size returned for the D cache by
+PDC_CACHE.
 
-The scenario that resonates nicely with all this has to do with the
-skbuff allocation and copying.  Because the network read path isn't zero
-copy, we do intermediate copies into skbuff areas before eventually
-sending the data to the user socket.  the idea is that the skbuff is
-freed and then reallocated to the user process in the fault (this gives
-us the necessary same physical index).  If the kernel address of the
-skbuff were accidentally congruent to the fault address, we'd actually
-see the skbuff data instead of the underlying page data if it weren't
-flushed.  The problem, as usual, is that this isn't pa8800 specific ...
-
-James
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
