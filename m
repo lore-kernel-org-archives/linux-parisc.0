@@ -1,27 +1,19 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Tue, 25 Jul 2006 16:02:35 -0600
-Message-ID: <20060725220235.GB28294@colo.lackof.org>
-References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
-	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
-	<7d01f9f00607231954m7b9992e8r6148bb26b7b461da@mail.gmail.com>
-	<20060724033223.GE29603@parisc-linux.org>
-	<7d01f9f00607232115n18865924s4f07f64d84e45dce@mail.gmail.com>
-	<1153750204.1235.18.camel@mulgrave.il.steeleye.com>
-	<20060724163228.GA22560@colo.lackof.org>
-	<1153839113.3452.28.camel@mulgrave.il.steeleye.com>
-	<20060725161345.GA13707@hiauly1.hia.nrc.ca>
-	<1153844239.3452.29.camel@mulgrave.il.steeleye.com>
+From: "H. Peter Anvin" <hpa@zytor.com>
+Subject: [parisc-linux] Re: [klibc] [PATCH] vfork() for parisc
+Date: Tue, 25 Jul 2006 15:28:32 -0700
+Message-ID: <44C69B10.7050203@zytor.com>
+References: <20060724031438.GB5542@athena.road.mcmartin.ca>
+	<44C693EA.5080704@zytor.com>
+	<20060725221524.GA5625@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- Matthew Wilcox <matthew@wil.cx>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>,
- Thibaut VARENE <T-Bone@parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+  charset=ISO-8859-1;
+  format=flowed
+Cc: klibc@zytor.com,
+ parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1153844239.3452.29.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <20060725221524.GA5625@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -32,19 +24,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jul 25, 2006 at 11:17:19AM -0500, James Bottomley wrote:
-> On Tue, 2006-07-25 at 12:13 -0400, John David Anglin wrote:
-> > How about disabling L2?  This should test your theory.
+Kyle McMartin wrote:
+> On Tue, Jul 25, 2006 at 02:58:02PM -0700, H. Peter Anvin wrote:
+>> Kyle McMartin wrote:
+>>> Implement "pid_t vfork(void)" for parisc.
+>>>
+>> Dumb question... where does %r20 get set?  This isn't invoked by a 
+>> system call stub; it's the entire function.
+>>
 > 
-> Kyle's working on it based on Grant's original work ... you need access
-> to a lot of secret diag registers to do this, though, so it's not easy.
+> Oh. Nowhere then. We can set it in the branch delay slot.
+> 
 
-You misheard. I'll be poking at this again in the near future.
-I've gotten the code to modify diag registers done.
-I just need to test the L2 disable and write a wrapper that
-does the necessary I/D cache flushing.
+Cool.  Could you do a "make test" and run usr/klibc/tests/vfork to verify?
 
-grant
+(For completeness sake: klibc supports generating stubs for alternate 
+system call conventions by using the following syntax in SYSCALLS.def:
+
+returntype syscall@convention(args...);
+
+The string "convention" gets passed to sysstub.ph; on most architectures 
+it simply replaces the string "common" in "__syscall_common".
+
+However, there isn't exactly any point to do that for single-shot system 
+  call conventions, like vfork() and pipe() on many platforms.
+
+	-hpa
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
