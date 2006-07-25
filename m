@@ -1,7 +1,7 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
 Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Tue, 25 Jul 2006 11:17:19 -0500
-Message-ID: <1153844239.3452.29.camel@mulgrave.il.steeleye.com>
+Date: Tue, 25 Jul 2006 12:34:05 -0400
+Message-ID: <7d01f9f00607250934o111be951sc4ba0b765ed986ba@mail.gmail.com>
 References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
 	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
 	<7d01f9f00607231954m7b9992e8r6148bb26b7b461da@mail.gmail.com>
@@ -10,15 +10,14 @@ References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
 	<1153750204.1235.18.camel@mulgrave.il.steeleye.com>
 	<20060724163228.GA22560@colo.lackof.org>
 	<1153839113.3452.28.camel@mulgrave.il.steeleye.com>
-	<20060725161345.GA13707@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Matthew Wilcox <matthew@wil.cx>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>,
- Thibaut VARENE <T-Bone@parisc-linux.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain;
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "James Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060725161345.GA13707@hiauly1.hia.nrc.ca>
+In-Reply-To: <1153839113.3452.28.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,15 +28,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 2006-07-25 at 12:13 -0400, John David Anglin wrote:
-> How about disabling L2?  This should test your theory.
+On 7/25/06, James Bottomley <James.Bottomley@steeleye.com> wrote:
 
-Kyle's working on it based on Grant's original work ... you need access
-to a lot of secret diag registers to do this, though, so it's not easy.
+> This theory seems to explain all of the behaviour, why we see it so
+> rarely, and why it seems to happen around forks when I/O is going on in
+> the system.  Unfortunately it also seems to indicate that the only way
+> of fixing it would be to have full equivalence.
 
-James
- 
+So basically what you explain here should only affect pa8800, and what
+we see on other machines is something else, correct?
 
+T-Bone
+
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
