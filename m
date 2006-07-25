@@ -1,14 +1,27 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] The problem on the PA8800 is all in the data-cache.
-Date: Sun, 23 Jul 2006 22:33:45 -0400
-Message-ID: <1153708426.1235.11.camel@mulgrave.il.steeleye.com>
+Date: Tue, 25 Jul 2006 16:02:35 -0600
+Message-ID: <20060725220235.GB28294@colo.lackof.org>
 References: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
+	<1153708426.1235.11.camel@mulgrave.il.steeleye.com>
+	<7d01f9f00607231954m7b9992e8r6148bb26b7b461da@mail.gmail.com>
+	<20060724033223.GE29603@parisc-linux.org>
+	<7d01f9f00607232115n18865924s4f07f64d84e45dce@mail.gmail.com>
+	<1153750204.1235.18.camel@mulgrave.il.steeleye.com>
+	<20060724163228.GA22560@colo.lackof.org>
+	<1153839113.3452.28.camel@mulgrave.il.steeleye.com>
+	<20060725161345.GA13707@hiauly1.hia.nrc.ca>
+	<1153844239.3452.29.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ Matthew Wilcox <matthew@wil.cx>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ Thibaut VARENE <T-Bone@parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440607221050w3b6a949j49862c2766d5c7ef@mail.gmail.com>
+In-Reply-To: <1153844239.3452.29.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,85 +32,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 2006-07-22 at 13:50 -0400, Carlos O'Donell wrote: 
-> After spending ~4 hours of debugging yesterday evening, between
-> Thibaut, Dave, and myself, we firmly believe the PA8800 problems are
-> data cache issues.
-
-Thanks very much for spending the time to do this!
-
-> a) We think it is not an icache issue, but infact a dcache issue.
+On Tue, Jul 25, 2006 at 11:17:19AM -0500, James Bottomley wrote:
+> On Tue, 2006-07-25 at 12:13 -0400, John David Anglin wrote:
+> > How about disabling L2?  This should test your theory.
 > 
-> Often it appears as if a register was corrupted, but the truth is that
-> the ldw loaded bogus data into a register.
+> Kyle's working on it based on Grant's original work ... you need access
+> to a lot of secret diag registers to do this, though, so it's not easy.
 
-OK, I'll buy this provisionally ... D cache incoherence is far more
-difficult to explain than D/I incoherence, but I'll try.
+You misheard. I'll be poking at this again in the near future.
+I've gotten the code to modify diag registers done.
+I just need to test the L2 disable and write a wrapper that
+does the necessary I/D cache flushing.
 
-> b) One time, on a later comparison in gdb, the register and data in
-> memory did not equal. I stress that we only saw this situation once.
-
-OK, as long as it was a register read, this must have been D
-incoherence.
-
-> c) We have often seen the failure with the frame marker on a cacheline
-> boundary, for example 0xc0278100 (e.g. 256 bytes).
-> 
-> It is my hope that these patterns will trigger someone to devise a
-> plan for fixing this. If you have any questions about our methods, or
-> reproducing this, you can easily talk to Thibaut and we can probably
-> setup access to the test sshd binary.
-
-OK .. let me try to think of this one.  To me, the pattern indicates
-errors in newly faulted memory (either from stack growth or touching
-malloced areas which are mmapped in glibc).  So, here's the only current
-theory I can come up with:  Aggressive prefetching is causing us
-problems in faulting.  Theoretically, it looks like the culprit should
-be anonymous pages (because that's what stack and malloc areas
-are---they're not file backed).  However, I tend to discount this
-because the only way data gets into anonymous memory is when the user
-(or the linker running on behalf of the user) puts it there.  Thus,
-there should be no user coherence issues with data in anonymous memory.
-
-> Grant expressed worry that "Pattern 1" was indicative of a dma sync
-> problem with the network socket read.
-
-I'm still dubious about this one ... even if we agree it's a D cache
-issue, it's definitely a D cache issue affecting program execution (i.e.
-function pointers or call indirection).  The data coming out of the
-network pipe for ssh never finds its way into the execution stream,
-which means it's unlikely to affect these areas.  Additionally, ssh has
-message integrity checks which fail noisily (i.e. the network data is
-verified against a secure hash before it's used).  So, if we had
-incoherent data from the pipe, I would exect to see periodic MIC
-failures, which we don't see.
-
-I'm also coming to the conclusion that the aggressive prefetch theory
-isn't entirely accurate.  It fits the I/D incoherency theory because we
-get I cache prefetches on D cache TLB entries (because of the combined
-I/D tlb) then we only flush the D cache because we don't expect I data
-there (all our data regions currently seem to be executable as well).
-However, for D cache incoherence alone, it seems implausible because we
-have to have a tlb entry to move in across a page boundary, and every
-tlb entry can only be inserted from a pte (and for every pte we will
-flush the cache on object destruction).
-
-One of the suspicious monsters in our code is the PAGE_FLUSH setting,
-which allows tlb re-insertion after linux thinks it has been cleared in
-violation of the linux tlb philosophy.  However, those mappings are
-supposed to be "flush only" and, since the algorithm had a hole in it, I
-thought I fixed it not to need PAGE_FLUSH entries (even though we keep
-them around).  Regardless, tmpalias flushing completely eliminates any
-window we have in this regard, and, as pa8800 still doesn't work, I
-think I have to conclude it's not even this.
-
-So, the final thing we're left with is a missed or elided flush
-somewhere in the linux code, which is going to be extremely hard to
-find.
-
-James
-
-
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
