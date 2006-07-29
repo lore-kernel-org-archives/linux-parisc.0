@@ -1,15 +1,14 @@
-From: Ulrich Teichert <krypton@ulrich-teichert.org>
-Subject: Re: [parisc-linux] 712 and booting.
-Date: Fri, 28 Jul 2006 20:21:52 +0200 (MEST)
-Message-ID: <200607281821.k6SILrwm014061@arbas.nms.ulrich-teichert.org>
-References: <1429.10.80.1.1.1154072576.squirrel@turbine.brezh.nyet>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [git patches] tulip fixes from parisc-linux
+Date: Sat, 29 Jul 2006 18:54:59 -0400
+Message-ID: <20060729225459.GA4835__4115.12003415755$1416624151$gmane$org@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-Cc: parisc-linux@lists.parisc-linux.org
-To: leandro@con.ca
+  charset=us-ascii
+Cc: netdev@vger.kernel.org,
+ parisc-linux@lists.parisc-linux.org
+To: Valerie Henson <val_henson@linux.intel.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1429.10.80.1.1.1154072576.squirrel@turbine.brezh.nyet>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,36 +19,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
+Hi Val,
 
->I have an HP 712 and decided to install Debian on it.  Followed the
->instructions, got the SCSI CD-ROM to work, booted, installed it and then
->it said that it had made the system bootable.  This, oddly enough, sent it
->back to asking me for language.
+Sorry it took so long for me to get around to splitting
+up the changes from the parisc-linux tree. But here
+they finally are. This patchset has been running on a
+variety of parisc and ia64 machines for quite some
+time (several years...) without issue. Some of these
+are more cosmetic changes than anything else.
 
-Which version of debian (sarge?), which kind of install (mini-iso & net,
-full CD-install?). How much RAM?
+Cheers,
+	Kyle M.
 
->I rebooted and the system still ended up looking for HPUX and then dumped
->me into an ISL menu (if memory serves me correctly).  Read the entirety of
->the FAQ but I can't seem to find a part explaining how to get the 712 to
->use Debian and boot from it at start-up--unless of course I was looking
->for something and it was right in front of my face with a different name.
->
->Suggestions?  Do I need to reinstall it all over again?
+The following changes since commit dc710afe95ee9b263ab593c11d86a684f1606872:
+  Linus Torvalds:
+        Merge branch 'upstream-linus' of master.kernel.org:/.../jgarzik/libata-dev
 
-Do you have more than one disk? Perhaps you're trying to boot from the
-wrong one? Interrupt the boot process and type "search" on the prompt
-to get all choices.
+are found in the git repository at:
 
-How does your partition layout looks like?
+  git://git.kernel.org/pub/scm/linux/kernel/git/kyle/tulip-2.6.git
 
-HTH,
-Uli
--- 
-Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de
-Stormweg 24               |listening to: Cauchemar (Opération S)
-24539 Neumuenster, Germany|Good Looks, Big Deal (Sweatmaster)
+Francois Romieu:
+      [TULIP] Defer tulip_select_media() to process context
+
+Grant Grundler:
+      [TULIP] Fix PHY init and reset
+      [TULIP] Print physical address in tulip_init_one
+      [TULIP] Make tulip_stop_rxtx() failure case slightly more informative
+      [TULIP] Clean tulip.h so it can be used by winbond-840.c
+      [TULIP] Flush MMIO writes in reset sequence
+      [TULIP] Fix IRQ/DMA race
+
+Helge Deller:
+      [TULIP] Fix section mismatch in de2104x.c
+
+Thibaut Varene:
+      [TULIP] Make DS21143 printout match lspci output
+
+ drivers/net/tulip/21142.c       |    4 +-
+ drivers/net/tulip/de2104x.c     |    6 +-
+ drivers/net/tulip/interrupt.c   |    4 ++
+ drivers/net/tulip/media.c       |   40 ++++++++++++++-
+ drivers/net/tulip/timer.c       |   14 +++++
+ drivers/net/tulip/tulip.h       |   43 ++++++++++++----
+ drivers/net/tulip/tulip_core.c  |  102 +++++++++++++++++++--------------------
+ drivers/net/tulip/winbond-840.c |   68 +++++++++-----------------
+ 8 files changed, 164 insertions(+), 117 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
