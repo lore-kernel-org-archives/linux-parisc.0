@@ -1,12 +1,17 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [parisc-linux] Fwd: [patch] enable pie scripts for hppa64
-Date: Wed, 9 Aug 2006 00:13:09 -0400
-Message-ID: <200608090013.09789.vapier@gentoo.org>
+Subject: Re: [parisc-linux] Fwd: [patch] enable pie scripts for hppa64
+Date: Wed, 9 Aug 2006 11:54:34 -0400
+Message-ID: <200608091154.35852.vapier@gentoo.org>
+References: <200608090013.09789.vapier@gentoo.org>
+	<119aab440608090746o2341650ar6bfb0167057ffa16@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-  boundary="===============0033293297=="
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+  boundary="===============1741181574=="
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440608090746o2341650ar6bfb0167057ffa16@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,87 +22,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============0033293297==
-Content-Type: multipart/signed; boundary="nextPart39863287.3X00dBzZSq";
+--===============1741181574==
+Content-Type: multipart/signed; boundary="nextPart17803731.9HtcG1PI9g";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart39863287.3X00dBzZSq
-Content-Type: multipart/mixed;
-  boundary="Boundary-01=_VDW2Eb0Wd+te0zQ"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
---Boundary-01=_VDW2Eb0Wd+te0zQ
+--nextPart17803731.9HtcG1PI9g
 Content-Type: text/plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-ok to apply ?  i dont want to step on anyone's toes ...
--mike
+On Wednesday 09 August 2006 10:46, Carlos O'Donell wrote:
+> On 8/9/06, Mike Frysinger <vapier@gentoo.org> wrote:
+> > ok to apply ?  i dont want to step on anyone's toes ...
+>
+> Don't worry about stepping on toes! You are doing good work looking
+> for missing hppa features. Your patch looks good. Unfortunately we
+> don't have an hppa64-linux userspace to take advantage of this, and I
+> don't know if HPUX supports -fPIE and -pie.
 
-----------  Forwarded Message  ----------
+right, i wasnt expecting a pie script to suddenly make everything work, but=
+ i=20
+know of no disadvantages and it would make [future] development easier
 
-Subject: [patch] enable pie scripts for hppa64
-Date: Thursday 20 July 2006 01:18
-From: Mike Frysinger <vapier@gentoo.org>
-To: binutils@sourceware.org
+> Have you posted this on binutils for Dave to approve?
 
-ld/emulparams/hppalinux.sh was updated not too long ago to enable pie
- scripts, but hppa64linux.sh was skipped ... any reason to not do this ?
--mike
-
--------------------------------------------------------
-
---Boundary-01=_VDW2Eb0Wd+te0zQ
-Content-Type: text/x-diff; charset="us-ascii";
-	name="10_all_generate-pie-scripts.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline;
-	filename="10_all_generate-pie-scripts.patch"
-
-2006-07-19  Mike Frysinger  <vapier@gentoo.org>
-
-	* emulparams/hppa64linux.sh (GENERATE_PIE_SCRIPT): Set to yes.
-
-=2D-- ld/emulparams/hppa64linux.sh
-+++ ld/emulparams/hppa64linux.sh
-@@ -13,6 +13,7 @@
- ENTRY=3D"main"
- TEMPLATE_NAME=3Delf32
- GENERATE_SHLIB_SCRIPT=3Dyes
-+GENERATE_PIE_SCRIPT=3Dyes
+i posted it twice so far and havent heard back which is why i forwarded my=
 =20
- # We really want multiple .stub sections, one for each input .text section,
- # but for now this is good enough.
+last one from July to the parisc list
+=2Dmike
 
---Boundary-01=_VDW2Eb0Wd+te0zQ--
-
---nextPart39863287.3X00dBzZSq
+--nextPart17803731.9HtcG1PI9g
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.4 (GNU/Linux)
 
-iQIVAwUARNlg1UFjO5/oN/WBAQKmZA//e9HhoWrm28GNsuLHq1Sr89xqJDmkK+dL
-OdizL9UnbBu6NdW7E58OX4s+/eK9ppJjH5Mwto2Xe8B/IATy3bwQhjRsSlLsWnCe
-bKD42p7xufBff3lq1Jau2fD2gpvZI62qa4+t/34mVD/NJKxIyFZvJONI3PimCFt8
-j7LZQte1uHlgTWf1GJj+5rmhhsCxx7y2nvXb8F94eHEGK2zOEoaqm5y0UQI6buPi
-INg6bseFgqchdjncpmeKlgEzEUfjdrccSkWKxQgyrMAhlBRiGmgloeMZMiRHkvPe
-lVTLS1FURUThEOBTgbF2xkWRfAFbkouew36YMCneSLWsHv+2I4k6AaPNRnmX5YfD
-2kVu/tM5KmJkmKf2LYDIpYfJq2/hC6qFGvJf7W7CX2mYo71hrOZb3+Ri1VrvNLzU
-BC9CMn+JFatz9JYyMPnT9/oGONLSdb3Nyv6c2E3hJ56UZUCz2d0OCQ9SFPbb7CAf
-uVclsEFeSCFfrDbLPVq+HnskVioqvA8lB3QNYMFUnCsGU+NCySpJzliuCN45HM3p
-lfxYy+zfgP2Cm8O6sr5RgMFe5dJOgJc3dd6P5t1b5p0wFRILSR8IG8Wg18PAqk7h
-53l0+zti1W03YrEOHtnIiVIWFChgHYXD6jjX45n8z42WTlKMaPjRWzw2+S01NXYk
-lO5POlxG05w=
-=blu5
+iQIVAwUARNoFO0FjO5/oN/WBAQJQxhAAyZ2mkM47Fh8/S1kf69Wamd0EMW5y+daW
+0FIqSqHWgBO+lzN/C5FbSlqL7y9yy9uDA2Lo5DJSKCf8CjP4XJtLcYouVqv8AxDY
+ir3S18p+d2O49jUTi4+ddS6TKrpQCBkptvU80QjWTEUQov600bufZfO3iteDnikS
+KXO0mBip36hi6rA2Mphbi8qc03+t1UcuDa97DHIv1HJbdDhqhBDeyytpJnk56C9Q
+aGt+bFTewdXlwXA9Cb1BiXsHPfMtYDzMXyUF7/7lPRq0ZP0WBumkZYgjwH2DBOjP
+UvZza2ELUrK0km/uCEjmsIStoTVfmkzBdEuG5UgPyt1b9iAEkmzMNn4bQo9sgLUe
++ime0qQdAjQ1+ZuBG8flOgnES/8kFqAu7vaukqoYJakG+fs5SBP1ya2TTNdfhLIf
+nTonO7hNUpR39wplRmQjO0IXakws9gEmjufJ6Ha/Uow14N34oBl4PFy5qYhdxziq
+5ab+Pxb22DLbF38bpx8DkGQMTWPczXwgdTW4nH6dIVJT6nhUpW/+P1aIuP5rM+td
+WsiRY9VbGqtqmQRfkIQTixvS9dzB3UMrpXFJL5Chr8M20iIcIIHIWx5AtRYjfgj2
+nvRAazkmwswqmECsD67XahKlXfc11LYoUxxMH/p180aA6TtxOmfbSYTFRICYaIRl
+rX4Ys2KK6c8=
+=nk0z
 -----END PGP SIGNATURE-----
 
---nextPart39863287.3X00dBzZSq--
+--nextPart17803731.9HtcG1PI9g--
 
---===============0033293297==
+--===============1741181574==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -107,4 +86,4 @@ _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============0033293297==--
+--===============1741181574==--
