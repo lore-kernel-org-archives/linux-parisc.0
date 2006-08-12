@@ -1,13 +1,15 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] OLS PARISC BOF 2006 Notes.
-Date: Sat, 12 Aug 2006 15:17:37 -0400
-Message-ID: <119aab440608121217s1e99c93ei4ec6c264267e30d3@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] OLS PARISC BOF 2006 Notes.
+Date: Sat, 12 Aug 2006 15:57:54 -0400
+Message-ID: <20060812195754.GA4800@tachyon.int.mcmartin.ca>
+References: <119aab440608121217s1e99c93ei4ec6c264267e30d3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440608121217s1e99c93ei4ec6c264267e30d3@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,19 +20,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-parisc-linux,
+On Sat, Aug 12, 2006 at 03:17:37PM -0400, Carlos O'Donell wrote:
+> Please read them, and if you feel daring try to work
+> on some of those important issues :)
+>
 
-Every year we hold a parisc-linux BOF at
-OLS (http://www.linuxsymposium.org)
-I recently transcribed the notes from OLS 2006.
-
-http://wiki.parisc-linux.org/OLS_20PARISC_20BOF_202006
-
-Please read them, and if you feel daring try to work
-on some of those important issues :)
+Thanks for taking the time to transcribe this!
 
 Cheers,
-Carlos.
+	Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
