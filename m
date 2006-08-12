@@ -1,16 +1,13 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Fwd: [patch] enable pie scripts for hppa64
-Date: Wed, 9 Aug 2006 14:49:43 -0400 (EDT)
-Message-ID: <200608091849.k79InheU010485@hiauly1.hia.nrc.ca>
-References: <200608090013.09789.vapier@gentoo.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [parisc-linux] OLS PARISC BOF 2006 Notes.
+Date: Sat, 12 Aug 2006 15:17:37 -0400
+Message-ID: <119aab440608121217s1e99c93ei4ec6c264267e30d3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: vapier@gentoo.org (Mike Frysinger)
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200608090013.09789.vapier@gentoo.org> from "Mike Frysinger" at
-	Aug 9, 2006 00:13:09 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,17 +18,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> ld/emulparams/hppalinux.sh was updated not too long ago to enable pie
->  scripts, but hppa64linux.sh was skipped ... any reason to not do this ?
+parisc-linux,
 
-Have you tested this on hpux?  Inspite of the script's name, its
-main use is on hpux.  There's no 64-bit runtime yet and as far as
-I know PIE isn't used for kernel builds..
+Every year we hold a parisc-linux BOF at
+OLS (http://www.linuxsymposium.org)
+I recently transcribed the notes from OLS 2006.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+http://wiki.parisc-linux.org/OLS_20PARISC_20BOF_202006
+
+Please read them, and if you feel daring try to work
+on some of those important issues :)
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
