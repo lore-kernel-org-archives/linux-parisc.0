@@ -1,11 +1,13 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Shared git tree
-Date: Sun, 13 Aug 2006 20:46:22 -0600
-Message-ID: <20060814024622.GA4340@parisc-linux.org>
+Subject: [parisc-linux] stack-protect in conflict with CROSS_COMPILE
+Date: Mon, 14 Aug 2006 06:07:29 -0600
+Message-ID: <20060814120729.GB4340__30859.7600590021$1416624596$gmane$org@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@parisc-linux.org
+Cc: linux-kernel@vger.kernel.org,
+ parisc-linux@parisc-linux.org
+To: Sam Ravnborg <sam@ravnborg.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,19 +20,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-OK, I think we're all set with git.
+Hi Sam,
 
-http://git.parisc-linux.org/?p=linux-2.6.git;a=summary shows what's in
-our tree.
+We've stumbled on a problem with -fno-stack-protector and CROSS_COMPILE:
 
-See (and send patches for improving ;-)
-http://www.parisc-linux.org/faq/git.html
+CFLAGS          := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+                   -fno-strict-aliasing -fno-common
+# Force gcc to behave correct even for buggy distributions
+CFLAGS          += $(call cc-option, -fno-stack-protector)
 
-I'll probably pull the other three repositories out of the way soon.
+round about line 310 of Makefile will cause CC to be called before we
+get a chance to set CROSS_COMPILE in arch/parisc/Makefile.  For people
+who are compiling 64-bit parisc kernels, this means the wrong gcc gets
+called, and sometimes the compiler versions are out of sync.
 
-It'd be nice if someone could convert the autobuilder to work on this
-instead of CVS.
+We will have similar problems with:
 
+CFLAGS          += -fno-omit-frame-pointer $(call cc-option,-fno-optimize-sibling-calls,)
+
+Should we include the arch Makefile earlier in the proceedings?
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
