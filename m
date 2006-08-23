@@ -1,15 +1,21 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] cacheline size and IPI
-Date: Tue, 22 Aug 2006 14:58:29 -0500
-Message-ID: <200608221458.29491.mszick@morethan.org>
-References: <J4EPT2$29A32450E1241FA2763D117BC258E270@scarlet.be>
-	<20060822161200.GC20945@colo.lackof.org>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: [parisc-linux] Re: Bug#342545: qt-x11-free FTBFS
+Date: Wed, 23 Aug 2006 10:39:04 +0200
+Message-ID: <17644.5160.464612.203605__12545.6380461857$1416624155$gmane$org@gargle.gargle.HOWL>
+References: <877j1ug3tu.fsf@nahar.marcbrockschmidt.de>
+	<200608061403.30923.chrsmrtn@debian.org>
+	<20060810042506.GP6949@mauritius.dodds.net>
+	<200608101952.41156.chrsmrtn@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: 342545@bugs.debian.org,
+ debian-release@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: Christopher Martin <chrsmrtn@debian.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060822161200.GC20945@colo.lackof.org>
+In-Reply-To: <200608101952.41156.chrsmrtn@debian.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,41 +26,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue August 22 2006 11:12, Grant Grundler wrote:
-> On Tue, Aug 22, 2006 at 06:00:38PM +0200, Joel Soete wrote:
-> > > No it can't. The CPU and memory controller have to agree on one size
-> > > for any given implementation. The IOMMU has to use this cacheline size
-> > > as well.
-> > >
-> > I doubt it could be important but is there a way to know the size of the
-> > cacheline 'negociated' between cpu and mc?
+The qt-x11-free package builds fine with a standard Debian setup.
+Building with prctl --unaligned=signal makes the "bug" reproducible.
+
+Christopher Martin writes:
+> reassign 342545 libgcc2
+> stop
 > 
-> The cacheline size is decided by the HW designers.
-> Not negotiated at run time.
+> On Thursday 10 August 2006 00:25, Steve Langasek wrote:
+> > It hasn't been, because I can't see any way that libglu1-mesa could
+> > have anything to do with the failure in question.  libglu1-mesa
+> > should not be a dependency of the tool that's failing with SIGBUS in
+> > the build log.
+> >
+> > I would suggest that someone should investigate this further and get
+> > a clear answer on the nature of the bug, because I really don't buy
+> > that libgcc skew is to blame.
 > 
-
-Joel,
-
-If you look at the information available with the pdc_cache calls, it
-should contain the cache line size.
-
-The people in the hardware design department might not actually have
-built it that way on a particular machine, but it _will_ work the 
-same as what is reported.
-
-> > PS: I forgot to ask: can you tell me in very short what IPI means in the linux
-> > kernel (iirc also related to spinlock management)?
+> Fair enough, but before I take off for the weekend, I'm sending this 
+> report back to libgcc2, since it seems to have been established long 
+> ago that this isn't a Qt bug, and it really should be assigned to 
+> something in the toolchain. I note that, for a time, the problem was 
+> thought to be in glibc, so perhaps the glibc team would again be worth 
+> consulting.
 > 
-> Inter Processor Interrupt.
-> When one CPU wants to get the attention of another CPU and ask it
-> to do some house keeping work.
-> 
-
-Which is why a processor busy waiting for a lock must run with the
-interrupts enabled on pa-risc.
-
-Mike
-> grant
+> Cheers,
+> Christopher Martin
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
