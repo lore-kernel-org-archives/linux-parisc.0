@@ -1,21 +1,19 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: [parisc-linux] Re: Bug#342545: qt-x11-free FTBFS
-Date: Wed, 23 Aug 2006 10:39:04 +0200
-Message-ID: <17644.5160.464612.203605__12545.6380461857$1416624155$gmane$org@gargle.gargle.HOWL>
-References: <877j1ug3tu.fsf@nahar.marcbrockschmidt.de>
-	<200608061403.30923.chrsmrtn@debian.org>
-	<20060810042506.GP6949@mauritius.dodds.net>
-	<200608101952.41156.chrsmrtn@debian.org>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] Just A suggestion to highlight mb() and	cpu_relax()
+	in s files?
+Date: Thu, 24 Aug 2006 18:39:23 +0000
+Message-ID: <44EDF25B.6070309@scarlet.be>
+References: <J4IE0Y$F96BD8695898C37EEF35C0BA6880F173@scarlet.be>	<20060824154721.GL24068@parisc-linux.org>
+	<20060824161532.GA1455@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: 342545@bugs.debian.org,
- debian-release@lists.debian.org,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: Christopher Martin <chrsmrtn@debian.org>
+  charset=us-ascii;
+  format=flowed
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ Matthew Wilcox <matthew@wil.cx>
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200608101952.41156.chrsmrtn@debian.org>
+In-Reply-To: <20060824161532.GA1455@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,32 +24,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-The qt-x11-free package builds fine with a standard Debian setup.
-Building with prctl --unaligned=signal makes the "bug" reproducible.
 
-Christopher Martin writes:
-> reassign 342545 libgcc2
-> stop
+
+Kyle McMartin wrote:
+> On Thu, Aug 24, 2006 at 09:47:21AM -0600, Matthew Wilcox wrote:
 > 
-> On Thursday 10 August 2006 00:25, Steve Langasek wrote:
-> > It hasn't been, because I can't see any way that libglu1-mesa could
-> > have anything to do with the failure in question.  libglu1-mesa
-> > should not be a dependency of the tool that's failing with SIGBUS in
-> > the build log.
-> >
-> > I would suggest that someone should investigate this further and get
-> > a clear answer on the nature of the bug, because I really don't buy
-> > that libgcc skew is to blame.
+>>I like the idea.  How about using the function name instead, though?
+>>
+>>+#define __mb(s)           __asm__ __volatile__(s "()":::"memory") /* barrier() */
+>>+#define mb()	__mb("mb")
+>>+#define rmb()          __mb("rmb")
+>>+#define wmb()          __mb("wmb")
+>>+#define smp_mb()       __mb("smp_mb")
 > 
-> Fair enough, but before I take off for the weekend, I'm sending this 
-> report back to libgcc2, since it seems to have been established long 
-> ago that this isn't a Qt bug, and it really should be assigned to 
-> something in the toolchain. I note that, for a time, the problem was 
-> thought to be in glibc, so perhaps the glibc team would again be worth 
-> consulting.
 > 
-> Cheers,
-> Christopher Martin
+Love it too (would be my next q)
+anyway won't we need some comment charater: I prefer ';' (my oldfashion) but may be better '#'
++#define __mb(s)           __asm__ __volatile__("# " s "()":::"memory")	/* barrier() */
+
+> I liek it.
+
+Will you do it or do you prefer I send you (tomorrow) a patch?
+
+TIA,
+	Joel
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
