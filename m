@@ -1,68 +1,62 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Bug#342545: qt-x11-free FTBFS
-Date: Thu, 24 Aug 2006 20:56:40 -0400 (EDT)
-Message-ID: <200608250056.k7P0ueLs024447__17693.4578609236$1416624156$gmane$org@hiauly1.hia.nrc.ca>
-References: <20060824002245.GL7375@mauritius.dodds.net>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: [parisc-linux] Re: update mman.h in latest glibc cvs
+Date: Fri, 25 Aug 2006 16:01:36 -0400
+Message-ID: <119aab440608251301i8096348u60a567f795dc2ded@mail.gmail.com>
+References: <200608250050.34940.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: kyle@debian.org,
- 342545@bugs.debian.org,
- chrsmrtn@debian.org,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: vorlon@debian.org (Steve Langasek)
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <20060824002245.GL7375@mauritius.dodds.net> from "Steve Langasek" at Aug 23, 2006 05:22:45 pm
-Resent-Message-ID: <ou6Pk.A.W3G.7Fl7EB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Mike Frysinger" <vapier@gentoo.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200608250050.34940.vapier@gentoo.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> That would be wonderful if you, or another hppa porter, could track down
-> where the bug lies.  libgcc2 is almost certainly the wrong package, since
-> nothing should be *using* libgcc2 in a fresh build of qt-x11-free; it may be
-> a bug in libgcc4 instead, but I think that's yet to be determined.  In the
-> meantime, I think it's best to reassign this back to qt-x11-free.
+On 8/25/06, Mike Frysinger <vapier@gentoo.org> wrote:
+> Carlos: for future hppa patches, would you prefer i send to libc-ports or to
+> the parisc list ?
+>
+> this patch is against latest mman.h in the ports cvs ... the one in the parisc
+> cvs is a little bit more outdated
 
-This might be a nan bug.  There is one GCC nan fix that's only
-installed on the trunk:
+I'm the libc-ports hppa maintainer, and posting to libc-ports is the
+correct procedure. If you would like you can also CC parisc-linux to
+keep people up to date on changes.
 
-2006-05-24  John David Anglin  <dave.anglin@nrc-cnrc.gc.ca>
+There are a couple of problems with your patch:
+1. You need a ChangeLog.
+2. You will need FSF assignments if you don't already have them for GLIBC.
+3. Feel free to respond to the following..
 
-	PR target/27627
-	* pa/pa-modes.def: Use mips_single_format, mips_double_format and
-	mips_quad_format formats instead of ieee_single_format,
-	ieee_double_format and ieee_quad_format formats, respectively.
+The following is a bug.
++# define MAP_ANON	MAP_ANONYMOUS
++# define MAP_ANONYMOUS	0x10		/* don't use a file */
 
-However, I think the real bug is here:
+Please avoid superflous style changes.
+-/* Advice to "madvise" */
++/* Advice to `madvise'.  */
 
-> > 0x40cb2150 in negNan () at tools/qlocale.cpp:131
-> > 131                 *((const double *) le_neg_nan_bytes));
+Are you sure nothing uses these?
+-#define MAP_VARIABLE	0
+-# define MADV_VPS_PURGE	  6	/* Purge pages from VM page cache */
+-# define MADV_VPS_INHERIT 7	/* Inherit parents page size */
 
-PA-RISC requires strict alignment and it's highly likely that
-the pointer le_neg_nan_bytes isn't aligned to an eight byte
-boundary.  You could see the faulting insn by disassembling
-around 0x40cb2150 to be sure.  The nan problem fixed by the
-above change would cause a SIGFPE instead of a SIGBUS.
+Thanks for working on updating mman.h!
+What we really need is people building glibc and debugging 'make -k
+check' failures! :)
 
-I'm fairly certain we have a bug in handling unaligned fixups
-for doubles in the kernel.  This caused a problem for libffi.
-This depends on whether the kernel is 32/64 bits.
-
-As Kyle pointed out, unaligned fixups by the kernel are expensive
-and they should be avoided.  tools/qlocale.cpp appears to be a
-qt-x11-free routine, so I agree that the reassignment was correct.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+Cheers,
+Carlos.
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
