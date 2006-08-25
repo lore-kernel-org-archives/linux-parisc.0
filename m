@@ -1,16 +1,15 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [parisc-linux] Re: update mman.h in latest glibc cvs
-Date: Sat, 26 Aug 2006 00:59:00 -0400
-Message-ID: <200608260059.00980.vapier@gentoo.org>
-References: <200608250050.34940.vapier@gentoo.org>
-	<119aab440608251301i8096348u60a567f795dc2ded@mail.gmail.com>
+From: "Joel Soete" <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] Just A suggestion to highlight mb() and
+	cpu_relax() in s files?
+Date: Fri, 25 Aug 2006 14:39:08 +0200
+Message-ID: <J4K0H8$704B2688EDEDE27EBD0E625D0652B863@scarlet.be>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-  boundary="===============1181580365=="
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+  boundary="_=__=_XaM3_.1156509548.2A.707118.42.27770.52.42.007.1964481327"
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ matthew <matthew@wil.cx>
+To: "kyle" <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440608251301i8096348u60a567f795dc2ded@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,81 +20,97 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1181580365==
-Content-Type: multipart/signed; boundary="nextPart1993912.nTLlEV5XPA";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1993912.nTLlEV5XPA
-Content-Type: text/plain;
-  charset="iso-8859-1"
+--_=__=_XaM3_.1156509548.2A.707118.42.27770.52.42.007.1964481327
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-On Friday 25 August 2006 16:01, Carlos O'Donell wrote:
-> 1. You need a ChangeLog.
+> On Thu, Aug 24, 2006 at 09:47:21AM -0600, Matthew Wilcox wrote:
+> > I like the idea.  How about using the function name instead, though?
+> > 
+> > +#define __mb(s)           __asm__ __volatile__(s "()":::"memory") /*=
 
-indeed ... i wanted to see if the patch was correct first as writing Change=
-Log=20
-entries is boring ;)
+barrier() */
+> > +#define mb()	__mb("mb")
+> > +#define rmb()          __mb("rmb")
+> > +#define wmb()          __mb("wmb")
+> > +#define smp_mb()       __mb("smp_mb")
+> 
+> I liek it.
+> 
+--- include/asm-parisc/system.h.Orig    2006-08-24 08:43:12.000000000 +02=
+00
++++ include/asm-parisc/system.h 2006-08-25 12:05:51.000000000 +0200
+@@ -141,12 +141,13 @@
+ ** The __asm__ op below simple prevents gcc/ld from reordering
+ ** instructions across the mb() "call".
+ */
+-#define mb()           __asm__ __volatile__("":::"memory")     /* barrie=
+r() */
+-#define rmb()          mb()
+-#define wmb()          mb()
+-#define smp_mb()       mb()
+-#define smp_rmb()      mb()
+-#define smp_wmb()      mb()
++#define __mb(s)                __asm__ __volatile__("# " s "()":::"memor=
+y") 
+  /* barrier() */
++#define mb()           __mb("mb")
++#define rmb()          __mb("rmb")
++#define wmb()          __mb("wmb")
++#define smp_mb()       __mb("smp_mb")
++#define smp_rmb()      __mb("smp_rmb")
++#define smp_wmb()      __mb("smp_wmb")
+ #define smp_read_barrier_depends()     do { } while(0)
+ #define read_barrier_depends()         do { } while(0)
 
-> 2. You will need FSF assignments if you don't already have them for GLIBC.
+--- include/asm-parisc/processor.h.Orig 2006-08-24 08:47:36.000000000 +02=
+00
++++ include/asm-parisc/processor.h      2006-08-25 11:07:28.000000000 +02=
+00
+@@ -330,7 +330,7 @@
+ #define KSTK_EIP(tsk)  ((tsk)->thread.regs.iaoq[0])
+ #define KSTK_ESP(tsk)  ((tsk)->thread.regs.gr[30])
 
-i dont have in place specifically for glibc, ive just contributed my previo=
-us=20
-things as "small" and/or "obvious" ... i can simply release into the public=
-=20
-domain; all that matters to me is that things get fixed
+-#define cpu_relax()    barrier()
++#define cpu_relax()    __mb("cpu_relax")
 
-> The following is a bug.
-> +# define MAP_ANON	MAP_ANONYMOUS
-> +# define MAP_ANONYMOUS	0x10		/* don't use a file */
+ #endif /* __ASSEMBLY__ */
 
-yes, that should be reversed
+=3D=3D=3D=3D <> =3D=3D=3D=3D
 
-> Please avoid superflous style changes.
+(also attached in case of bad wraping ;-)
 
-it isnt superfluous, it is the "GNU standard" and the way all other arch=20
-mman.h headers are done ... so while i personally consider the GNU coding=20
-standard complete garbage, glibc is a GNU project and adheres pretty rigidl=
-y=20
-to the GNU coding standard
+Cheers,
+    Joel=0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous de=
+venez aujourd'hui Scarlet One grace a un client existant de Scarlet, vous=
+ recevez tous les deux un cadeau d'une valeur de 50 euros! Surfez vite su=
+r http://www.clubscarlet.be
+--_=__=_XaM3_.1156509548.2A.707118.42.27770.52.42.007.1964481327
+Content-Type: text/plain;
+	name="=?iso-8859-1?Q?MbComment.txt?="
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="=?iso-8859-1?Q?MbComment.txt?="
 
-> Are you sure nothing uses these?
-> -#define MAP_VARIABLE	0
-> -# define MADV_VPS_PURGE	  6	/* Purge pages from VM page cache */
-> -# define MADV_VPS_INHERIT 7	/* Inherit parents page size */
-
-i was syncing to other architectures ... but since parisc is the only one (=
-in=20
-the kernel headers) that defines these three, i guess it's appropriate to=20
-keep them for parisc
-=2Dmike
-
---nextPart1993912.nTLlEV5XPA
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iQIVAwUARO/VFEFjO5/oN/WBAQJtpxAAzH2pPz8DLS61WA1JxutCB5m0FeER6F2s
-fRE3bgiETFFsAQlBg++xg4+3pQgphgsBD8XLO83AMJmMLZIDXAb6amzUuFFRk1U3
-3daGTMGzdB9ob1chDCVhao3rHyckH8WY7+LweqsBToLH/gY/n2p+chlbDwV5ZYnJ
-AKuHPd/PUKGXNcNp9yiAdClM/UvvkuvgyjL5JNhk/OUdM/6rI8/fVT3gnpZ+DSEc
-3oSvP7en8QOXBO0fbmtLqwQnusLLiWjCcuOb9BssH9OvEuDvQY5cmV+jUIGkefyy
-oEVgr3Qpv40XAlcyqXu7oYZiuzYDkADeB8h4P/u3Fuhb3ePOJpel/9E+z1/lPKPj
-GR2V13CHQXQOJZHLK2S45PeLYMZDN3Yxh+ahIGIdT6wy4vfErRbxp6G7Tmo53+oX
-thJ0L6lmZMXfOFTX5HNOISvJnX39wIKNMBK3mc09qEskcSRopFEx82I6UbGZXzCi
-T+IyKwRBaYL52/muj/AVnN0hLD37f97QS4fxvZgrLYkC5NDXlKqNkPQzlI2fn8Bc
-boRQ7x8J5sn9hhBoB27J8GDZXaUZE5lR+mXIUQAWALlWMtHD+XYXVhjmnzY3WkjV
-Je4kqd46DyGt/uVjqvEBCFZOjPMxr8601L2IQVWxNilxpW7FFnpSVqmI8CuepUSb
-xP2Ly8fww3c=
-=j2q/
------END PGP SIGNATURE-----
-
---nextPart1993912.nTLlEV5XPA--
-
---===============1181580365==
+--- include/asm-parisc/system.h.Orig	2006-08-24 08:43:12.000000000 +0200=0A=
++++ include/asm-parisc/system.h	2006-08-25 12:05:51.000000000 +0200=0A@@ =
+-141,12 +141,13 @@=0A ** The __asm__ op below simple prevents gcc/ld from=
+ reordering=0A ** instructions across the mb() "call".=0A */=0A-#define m=
+b()		__asm__ __volatile__("":::"memory")	/* barrier() */=0A-#define rmb()=
+		mb()=0A-#define wmb()		mb()=0A-#define smp_mb()	mb()=0A-#define smp_rmb=
+()	mb()=0A-#define smp_wmb()	mb()=0A+#define __mb(s)		__asm__ __volatile_=
+_("# " s "()":::"memory")	/* barrier() */=0A+#define mb()		__mb("mb")=0A+=
+#define rmb()		__mb("rmb")=0A+#define wmb()		__mb("wmb")=0A+#define smp_m=
+b()	__mb("smp_mb")=0A+#define smp_rmb()	__mb("smp_rmb")=0A+#define smp_wm=
+b()	__mb("smp_wmb")=0A #define smp_read_barrier_depends()	do { } while(0)=
+=0A #define read_barrier_depends()		do { } while(0)=0A =0A--- include/asm=
+-parisc/processor.h.Orig	2006-08-24 08:47:36.000000000 +0200=0A+++ includ=
+e/asm-parisc/processor.h	2006-08-25 11:07:28.000000000 +0200=0A@@ -330,7 =
++330,7 @@=0A #define KSTK_EIP(tsk)	((tsk)->thread.regs.iaoq[0])=0A #defin=
+e KSTK_ESP(tsk)	((tsk)->thread.regs.gr[30])=0A =0A-#define cpu_relax()	ba=
+rrier()=0A+#define cpu_relax()	__mb("cpu_relax")=0A =0A #endif /* __ASSEM=
+BLY__ */=0A =0A
+--_=__=_XaM3_.1156509548.2A.707118.42.27770.52.42.007.1964481327
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -105,4 +120,4 @@ _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1181580365==--
+--_=__=_XaM3_.1156509548.2A.707118.42.27770.52.42.007.1964481327--
