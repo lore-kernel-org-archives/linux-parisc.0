@@ -1,17 +1,16 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [parisc-linux] Re: update mman.h in latest glibc cvs
-Date: Sat, 26 Aug 2006 17:44:06 -0400
-Message-ID: <200608261744.07651.vapier@gentoo.org>
-References: <200608250050.34940.vapier@gentoo.org>
-	<200608260059.00980.vapier@gentoo.org>
-	<119aab440608260809v26134ee2w46e5166168607a5f@mail.gmail.com>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] How hp implemented 'undefined instruction'?
+Date: Sat, 26 Aug 2006 17:11:47 -0500
+Message-ID: <200608261711.47468.mszick@morethan.org>
+References: <44F04733.1050305@scarlet.be>
+	<20060826152143.GM1455@athena.road.mcmartin.ca>
+	<44F0A3B5.605@scarlet.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1945002868=="
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440608260809v26134ee2w46e5166168607a5f@mail.gmail.com>
+In-Reply-To: <44F0A3B5.605@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,77 +21,60 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1945002868==
-Content-Type: multipart/signed; boundary="nextPart3146273.IVREhkUUZ3";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3146273.IVREhkUUZ3
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Saturday 26 August 2006 11:09, Carlos O'Donell wrote:
-> I appreciate it if you say "Is this patch correct?" or some indication
-> that it is not final. I spend a different amount of time reviewing
-> final patches than just initial hacks.
-
-sorry, my mistake ... i'll keep that in mind in the future
-
-> > > Please avoid superflous style changes.
-> >
-> > it isnt superfluous, it is the "GNU standard" and the way all other arch
-> > mman.h headers are done ... so while i personally consider the GNU codi=
-ng
-> > standard complete garbage, glibc is a GNU project and adheres pretty
-> > rigidly to the GNU coding standard
+On Sat August 26 2006 14:40, Joel Soete wrote:
 >
-> I don't see a requirement for left single quote and right single quote
-> in comments?
 
-as i said i was simply doing exactly what every other arch port in glibc is=
-=20
-doing ... if you want to keep hppa different, well you're the maintainer ;)
+That seems to be two different situations.
+Can be hard to understand even for native English readers.
+ 
+> 
+> Ok I understand what you mean but I thought to such e.g. ldcw:
+> "The address must be 16-byte aligned. If the address is unaligned, the operation of the instruction is undefined."
+> (just for example)
+> 
 
-> Thank you. Could you put together another patch please? If you haven't
-> done a build test please tell me.
+Here, it is "the operation" (how it accomplishes its task) that is undefined.
+The instruction definition lists the logical steps the instruction follows when
+the operation is aligned.  
+There is no list of logical steps for when it is not aligned.
 
-i just do cross-compile builds as my hppa's are too painfully slow to do=20
-development natively :)
-=2Dmike
+> or may be a better example ssm/mtsm:
+> "Setting the PSW Q-bit, PSW{60}, to 1 with this instruction, if it was not already 1, is an undefined operation."
+> 
 
---nextPart3146273.IVREhkUUZ3
-Content-Type: application/pgp-signature
+Here, it is what the "result of the operation" is that is undefined.
+A software attempt to make a change 0 to 1 and how the hardware follows
+that change attempt is not defined.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
+> I am still trying to understand this soft lockup bug and why this lock is not unlocked? 
+>
 
-iQIVAwUARPDAp0FjO5/oN/WBAQJ6mxAAimmeResj9aVp7vqO4hYPoPuUyLi1SJCR
-sW5UTBr2oNL+1nNIrO457jIyPTVGgrTKQJ0ew3DVyG3r00gwORPsMw9L8mOdejVb
-Ogw71hBpg97JG8E9HlELi2VygksDZ/dUnTW/PmkZAyOMp994efZYeJ2jcRG9kaM1
-z0xq4IQfVutj5RF4q9w2THOfCe1JsurLxNXvazwZFbNg6PYLTMDtT51mArspVtS6
-4ZYhghelHrNWiR2Vl7Xnw//NybP2SgEM9GTKuAkPZ3bNzm0uiE9KGcsSngdkhnDj
-OrcX6EPAgE/oC+7cu6UkeF9RgAFB0l4r/mMzAgO23hGGW3gitDlkTuP8w/bF7SFM
-rg3agQkeRqokMeYJOvNTaWPcjJLcofLksxOBPn/kLgMMymSyan/2wIO7JB8mpe7K
-+FvSHlLLwPwl6Myo4nZpDmTjyRpynwdrJOn5NBtP8InxwxYHlZFzuPu6PIE1zb5M
-4018zgkFN0lbgHc8XLvcesd3EMQb79QwWk2fPa6p34NySAEo6zA6bAxzixrQMoGP
-xvEi1jo1Qm+njQHyWXcrkWFJZ4ixZgr+nooI8IpaPRoTYMg7wByZPTducZ4A/RcQ
-F/d6PkBvGGIjQXvF/+GXiVZcGSsiESbwVs62ZTmjiQ18ans+ALrxnl+YJz3/YEjo
-jnqZJn/nvO4=
-=iqjn
------END PGP SIGNATURE-----
+Ah, yes, the key question.
+The results of the tests that you are running now should help us understand the answer.
 
---nextPart3146273.IVREhkUUZ3--
+> (could it be because PSW_I bit is not enabled when we exepted? 
+>
 
---===============1945002868==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+No.
+But if it is not enabled during the "busy wait" the waiting cpu
+will not "see" IPI messages while waiting for the lock.
 
+The "busy wait" time should not be long enough to matter if the
+lock is not broken.
+If the "busy wait" time happens to be too long with the IPI
+messages disabled, then things begin to break.
+
+> The 'atomic' ldcw(,co) doesn't operate as we expect?) 
+> 
+
+My favorite theory is that the lock release does not operate
+as we expect, but that is only a theory.
+
+> Thanks,
+> 	Joel
+> 
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1945002868==--
