@@ -1,17 +1,17 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [parisc-linux] [2.6 patch] arch/parisc/Makefile: remove GCC_VERSION
-Date: Sat, 19 Aug 2006 19:19:38 +0200
-Message-ID: <20060819171938.GK7813__34672.941247891$1416624596$gmane$org@stusta.de>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [BUG] 2.6.17.11 kernel build failed on 715/64
+Date: Sat, 26 Aug 2006 12:04:10 -0600
+Message-ID: <20060826180410.GA8437@colo.lackof.org>
+References: <20060825152450.GA3541@hrz.tu-chemnitz.de>
+	<44F01C50.1040106@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: Sam Ravnborg <sam@ravnborg.org>,
- Matthew Wilcox <willy@parisc-linux.org>,
- grundler@parisc-linux.org,
- parisc-linux@parisc-linux.org,
- linux-kernel@vger.kernel.org,
- Kyle McMartin <kyle@mcmartin.ca>
+Cc: Joerg Roedel <joerg@zlug.org>,
+ parisc-linux@parisc-linux.org
+To: Joel Soete <soete.joel@scarlet.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <44F01C50.1040106@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,37 +22,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This patch removes the usage of GCC_VERSION from arch/parisc/Makefile.
+On Sat, Aug 26, 2006 at 10:02:56AM +0000, Joel Soete wrote:
+> Joerg Roedel wrote:
+> >Hello,
+> >
+> >I just tried to build the 2.6.17.11 Linux kernel on my 715/64 HPPA
+> >workstation.
+> just to be sure, I would better advise you grab parisc-linux cvs 
+> (<http://cvs.parisc-linux.org/download/linux-2.6/linux-2.6.17-pa6.tar.bz2>)
 
-There are no functional changes, it simply makes it a bit shorter (and 
-removes the last instance of GCC_VERSION in the kernel).
+Joerg,
+Joel is correct that one cannot quite yet build a parisc-linux
+tree from kernel.org sources.
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-Acked-by: Kyle McMartin <kyle@mcmartin.ca>
+While the CVS tree is not stale, it's also no longer used for developement.
+Developement has moved to git.parisc-linux.org.
+See www.parisc-linux.org/faq/git.html for access.
 
----
-
-This patch was already sent on:
-- 12 Jan 2006
-
---- linux-2.6.15-mm3-hppa/arch/parisc/Makefile.old	2006-01-12 03:11:45.000000000 +0100
-+++ linux-2.6.15-mm3-hppa/arch/parisc/Makefile	2006-01-12 03:12:35.000000000 +0100
-@@ -35,12 +35,8 @@
- 
- OBJCOPY_FLAGS =-O binary -R .note -R .comment -S
- 
--GCC_VERSION     := $(call cc-version)
--ifneq ($(shell if [ -z $(GCC_VERSION) ] ; then echo "bad"; fi ;),)
--$(error Sorry, couldn't find ($(cc-version)).)
--endif
--ifneq ($(shell if [ $(GCC_VERSION) -lt 0303 ] ; then echo "bad"; fi ;),)
--$(error Sorry, your compiler is too old ($(GCC_VERSION)).  GCC v3.3 or above is required.)
-+ifneq ($(shell if [ $(call cc-version) -lt 0303 ] ; then echo "bad"; fi ;),)
-+$(error Sorry, your compiler is too old.  GCC v3.3 or above is required.)
- endif
- 
- cflags-y	:= -pipe
-
+cheers,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
