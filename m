@@ -1,16 +1,16 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [parisc-linux] gettimeofday() issue on D270
-Date: Sun, 27 Aug 2006 23:12:05 +0200
-Message-ID: <20060827231205.487025b1.gmsoft@tuxicoman.be>
-References: <20060827222653.3f3ef48d.gmsoft@tuxicoman.be>
-	<200608272107.k7RL7frm018389@hiauly1.hia.nrc.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] What happen to the Penguin
+Date: Sun, 27 Aug 2006 17:21:43 -0400 (EDT)
+Message-ID: <200608272121.k7RLLh0F018554@hiauly1.hia.nrc.ca>
+References: <20060630184210.GE27102@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200608272107.k7RL7frm018389@hiauly1.hia.nrc.ca>
+In-Reply-To: <20060630184210.GE27102@athena.road.mcmartin.ca> from "Kyle
+	McMartin" at Jun 30, 2006 02:42:10 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,27 +21,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-
-This is a 32 bit kernel.
-
-On Sun, 27 Aug 2006 17:07:41 -0400 (EDT)
-"John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
-
-> > So far I was able to workaround the problem by making gettimeoffset() return 0 instead of the actual result. This is in arch/parisc/kernel/time.c.
-> > It looks like gettimeoffset() returns a very large value when there is load on the system.
-> > This value seems to be adding 27 secs to the actual time one every 5 to 10 seconds. I poll every second.
+> On Mon, Jun 26, 2006 at 07:59:31PM -0400, John David Anglin wrote:
+> > I haven't been able to boot recent consoles of my c3k (oh, I did
+> > accidently boot a 64-bit kernel built for an A500 without frame
+> > buffer support).  The last build that successfully boots is
+> > 2.6.17-rc3-pa3.  The last messages that is see are:
+> > 
+> <snip...>
+> > Any ideas as to what's broken in later kernels?
+> > 
 > 
-> Is this a 64 or 32 bit kernel?  The size of long changes.  There may
-> be a subtle issue with cr16.  It's reads as a 64 bit register.  However,
-> on writes, only the least significant matter.  I could see missing
-> a timer interrupt if we get close too close to the compare value.
-> The 27 seconds might be the time for the counter to wrap.
-> 
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> Apparently there has been some changes to the way VTs are handled,
+> as I saw someone else complaining about this in a completely
+> unrelated place. I'll take a look into it at some point this weekend.
+
+This happened between 2.6.17-rc3-pa3 and 2.6.17-rc4-pa0.  Removing
+the unsupported A1262A allowed 2.6.17-pa6 to boot.  It doesn't boot
+with the card installed.  This is using the c3000_defconfig kernels.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
