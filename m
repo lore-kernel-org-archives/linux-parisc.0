@@ -1,17 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gettimeofday() issue on D270
-Date: Sun, 27 Aug 2006 17:32:09 -0400 (EDT)
-Message-ID: <200608272132.k7RLW9hl018646@hiauly1.hia.nrc.ca>
-References: <200608272107.k7RL7frm018389@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] What happen to the Penguin
+Date: Sun, 27 Aug 2006 19:30:45 -0400
+Message-ID: <20060827233044.GA6394@athena.road.mcmartin.ca>
+References: <20060630184210.GE27102@athena.road.mcmartin.ca>
+	<200608272121.k7RLLh0F018554@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: gmsoft@tuxicoman.be,
+  charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
  parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200608272107.k7RL7frm018389@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Aug 27, 2006 05:07:41 pm
+In-Reply-To: <200608272121.k7RLLh0F018554@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +22,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > So far I was able to workaround the problem by making gettimeoffset() return 0 instead of the actual result. This is in arch/parisc/kernel/time.c.
-> > It looks like gettimeoffset() returns a very large value when there is load on the system.
-> > This value seems to be adding 27 secs to the actual time one every 5 to 10 seconds. I poll every second.
+On Sun, Aug 27, 2006 at 05:21:43PM -0400, John David Anglin wrote:
+> This happened between 2.6.17-rc3-pa3 and 2.6.17-rc4-pa0.  Removing
+> the unsupported A1262A allowed 2.6.17-pa6 to boot.  It doesn't boot
+> with the card installed.  This is using the c3000_defconfig kernels.
 > 
-> Is this a 64 or 32 bit kernel?  The size of long changes.  There may
-> be a subtle issue with cr16.  It's reads as a 64 bit register.  However,
-> on writes, only the least significant matter.  I could see missing
-> a timer interrupt if we get close too close to the compare value.
-> The 27 seconds might be the time for the counter to wrap.
 
-0x100000000 / 27 = 159072862.  The D270 is a 160 MHz machine isn't it?
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Can you remove the PCI_DEVICE(...) lines with PCI_DEVICE_HP_VISUALIZEFX*
+in drivers/video/console/sticore.c and see what happens? That should
+at least allow them to boot.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
