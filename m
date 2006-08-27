@@ -1,16 +1,12 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] How hp implemented 'undefined instruction'?
-Date: Sat, 26 Aug 2006 17:11:47 -0500
-Message-ID: <200608261711.47468.mszick@morethan.org>
-References: <44F04733.1050305@scarlet.be>
-	<20060826152143.GM1455@athena.road.mcmartin.ca>
-	<44F0A3B5.605@scarlet.be>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: [parisc-linux] gettimeofday() issue on D270
+Date: Sun, 27 Aug 2006 15:17:41 +0200
+Message-ID: <20060827151741.fe94122d.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset=US-ASCII
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <44F0A3B5.605@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,59 +17,65 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat August 26 2006 14:40, Joel Soete wrote:
->
+Hi all,
 
-That seems to be two different situations.
-Can be hard to understand even for native English readers.
- 
-> 
-> Ok I understand what you mean but I thought to such e.g. ldcw:
-> "The address must be 16-byte aligned. If the address is unaligned, the operation of the instruction is undefined."
-> (just for example)
-> 
+I have an issue on my D270 with gettimeofday(). It looks like it's returning the time added with a few amount of seconds (usually 27) each now and then when there is some load on the system.
 
-Here, it is "the operation" (how it accomplishes its task) that is undefined.
-The instruction definition lists the logical steps the instruction follows when
-the operation is aligned.  
-There is no list of logical steps for when it is not aligned.
+I've made a simple test program :
+        while(gettimeofday(&tv, NULL) == 0) {
+                printf("Time : %d sec, %d usec\n", tv.tv_sec, tv.tv_usec);
+                sleep(1);
+        }
 
-> or may be a better example ssm/mtsm:
-> "Setting the PSW Q-bit, PSW{60}, to 1 with this instruction, if it was not already 1, is an undefined operation."
-> 
+This is the output I get when running it :
 
-Here, it is what the "result of the operation" is that is undefined.
-A software attempt to make a change 0 to 1 and how the hardware follows
-that change attempt is not defined.
+Time : 1156682268 sec, 88967 usec
+Time : 1156682269 sec, 92621 usec
+Time : 1156682270 sec, 95641 usec
+Time : 1156682271 sec, 97411 usec
+Time : 1156682272 sec, 101165 usec
+Time : 1156682273 sec, 103535 usec
+Time : 1156682274 sec, 107368 usec
+Time : 1156682275 sec, 109810 usec
+Time : 1156682276 sec, 112610 usec
+Time : 1156682277 sec, 113504 usec
+Time : 1156682278 sec, 115311 usec
+Time : 1156682279 sec, 117252 usec
+Time : 1156682280 sec, 120393 usec
+Time : 1156682307 sec, 965178 usec       <-- there is an issue
+Time : 1156682282 sec, 123684 usec
+Time : 1156682283 sec, 126481 usec
+Time : 1156682284 sec, 128473 usec
+Time : 1156682285 sec, 130257 usec
+Time : 1156682286 sec, 133017 usec
+Time : 1156682287 sec, 135863 usec
 
-> I am still trying to understand this soft lockup bug and why this lock is not unlocked? 
->
 
-Ah, yes, the key question.
-The results of the tests that you are running now should help us understand the answer.
 
-> (could it be because PSW_I bit is not enabled when we exepted? 
->
+Depending on the load, this occures more or less often.
+This is the kernel I used :
+Linux hulk 2.6.17.11-pa6 #4 Sun Aug 27 12:19:25 CEST 2006 parisc PA8000 (PCX-U) GNU/Linux
+However, I've seen this issue since quite some time.
 
-No.
-But if it is not enabled during the "busy wait" the waiting cpu
-will not "see" IPI messages while waiting for the lock.
 
-The "busy wait" time should not be long enough to matter if the
-lock is not broken.
-If the "busy wait" time happens to be too long with the IPI
-messages disabled, then things begin to break.
+I tried to reproduce the same issue on my C3600 with a similar kernel config and I wasn't able to do so even with very high load.
 
-> The 'atomic' ldcw(,co) doesn't operate as we expect?) 
-> 
+Also, I've changed gettimeoffset() in arch/parisc/kernel/time.c to return only 0 and that avoids the problem.
 
-My favorite theory is that the lock release does not operate
-as we expect, but that is only a theory.
+Could someone please look into this ?
 
-> Thanks,
-> 	Joel
-> 
-Mike
+
+Thanks,
+  Guy
+
+
+
+
+
+
+
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
