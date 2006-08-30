@@ -1,18 +1,14 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Wed, 30 Aug 2006 16:23:38 -0400
-Message-ID: <119aab440608301323w309debf2g6635ce4757ac024b@mail.gmail.com>
-References: <J4TKVV$8AA4E9E98C79A1A2778C0CBF8A96F048@scarlet.be>
-	<20060830165211.GA3999@colo.lackof.org>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: [parisc-linux] some more questions about __raw_write_trylock() hppa
+	implementation
+Date: Wed, 30 Aug 2006 20:23:39 +0000
+Message-ID: <44F5F3CB.30806@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
+  charset=us-ascii;
   format=flowed
-Cc: Joel Soete <soete.joel@scarlet.be>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060830165211.GA3999@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,35 +19,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 8/30/06, Grant Grundler <grundler@parisc-linux.org> wrote:
-> On Wed, Aug 30, 2006 at 06:38:19PM +0200, Joel Soete wrote:
-> > > 1. The timer interrupt fires, and 'now' comes after 'next_tick'
-> > mmm (just a thought) what's up if now comes after next_tick but cr16 has
-> > already wrap 1, 2, ... times?
->
-> Every ~4 seconds a 32-bit cycle counter running 1Ghz will wrap.
-> If it wraps twice between any two interrupts, I think we are already screwed.
-> There is no way to detect that with a 32-bit kernel.  My hope is the same
-> bug is visible on 64-bit kernel where we have 30 billion or so seconds
-> before the counter will wrap.
->
-> > > reported problems. Guy, would you mind patching your kernel with this
-> > > patch and testing again?
-> >
-> > Make sense to me but patch doesn't works for me on b2k 32bit kernel ;-(
-> > it was hanging (no error msg on lcd display) just after "Memory: 262144k
-> > available" then I have to force reboot power off/on cycle.
->
-> I'll give it a go as well.
+Hello all,
 
-It actaully turns out I don't think I ever booted this patch, my
-palo.conf was hosed and I was writing the wrong kernel. It was too
-good to be true :)
+I noticed that:
+static  __inline__ int __raw_write_trylock(raw_rwlock_t *rw)
+{
+         __raw_spin_lock(&rw->lock);
+         if (rw->counter != 0) {
+                 /* this basically never happens */
+                 __raw_spin_unlock(&rw->lock);
 
-I'll have a go at testing this again tonight.
+                 return 0;
+         }
 
-Cheers,
-Carlos.
+         /* got it.  now leave without unlocking */
+         rw->counter = -1; /* remember we are locked */
+         return 1;
+}
+
+
+so depending the counter is null or not the lock is kept or relaxed?
+
+following my smp pb invextigation the pb I encounter seems to occure rarely and so according to above comment "/* this basically 
+never happens */" I place here a panic() in the hope to get a better trace if it start to hang by this place. Unfortunately the 
+comment is wrong and system panicing at boot time ;-(
+
+Looking to some other implementation (powerpc and sh in particular), I don't have the feeling that this fnct should have to keep the 
+lock in any case. Any idea?
+
+Thanks,
+	Joel
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
