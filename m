@@ -1,14 +1,17 @@
-From: Joel Soete <soete.joel@scarlet.be>
-Subject: [parisc-linux] some more questions about __raw_write_trylock() hppa
-	implementation
-Date: Wed, 30 Aug 2006 20:23:39 +0000
-Message-ID: <44F5F3CB.30806@scarlet.be>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] gettimeofday() issue on D270
+Date: Wed, 30 Aug 2006 19:58:05 -0400
+Message-ID: <20060830235805.GJ3926@athena.road.mcmartin.ca>
+References: <20060827151741.fe94122d.gmsoft@tuxicoman.be>
+	<119aab440608271231j3856ea27h7c03e1c9722ae7e1@mail.gmail.com>
+	<20060827222653.3f3ef48d.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii;
-  format=flowed
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060827222653.3f3ef48d.gmsoft@tuxicoman.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,37 +22,14 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello all,
+On Sun, Aug 27, 2006 at 10:26:53PM +0200, Guy Martin wrote:
+> I wasn't able to reproduce at all on my C3600.
+> 
 
-I noticed that:
-static  __inline__ int __raw_write_trylock(raw_rwlock_t *rw)
-{
-         __raw_spin_lock(&rw->lock);
-         if (rw->counter != 0) {
-                 /* this basically never happens */
-                 __raw_spin_unlock(&rw->lock);
+Is your C3600 running a 64bit kernel?
 
-                 return 0;
-         }
-
-         /* got it.  now leave without unlocking */
-         rw->counter = -1; /* remember we are locked */
-         return 1;
-}
-
-
-so depending the counter is null or not the lock is kept or relaxed?
-
-following my smp pb invextigation the pb I encounter seems to occure rarely and so according to above comment "/* this basically 
-never happens */" I place here a panic() in the hope to get a better trace if it start to hang by this place. Unfortunately the 
-comment is wrong and system panicing at boot time ;-(
-
-Looking to some other implementation (powerpc and sh in particular), I don't have the feeling that this fnct should have to keep the 
-lock in any case. Any idea?
-
-Thanks,
-	Joel
-
+CR16 is 4294967296 times bigger on a 64bit kernel, whereas
+the clockspeed of your C3600 is only about 4x faster...
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
