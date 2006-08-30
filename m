@@ -1,17 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [BUG] 2.6.17.11 kernel build failed on 715/64
-Date: Sat, 26 Aug 2006 12:04:10 -0600
-Message-ID: <20060826180410.GA8437@colo.lackof.org>
-References: <20060825152450.GA3541@hrz.tu-chemnitz.de>
-	<44F01C50.1040106@scarlet.be>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: [parisc-linux] Re: build failure of stlport 5.0.2 on hppa
+Date: Wed, 30 Aug 2006 09:27:38 +0200
+Message-ID: <17653.15850.943986.966989@gargle.gargle.HOWL>
+References: <a90bfcf0608291318y2d2c3072j3a7463ce3fcc730b@mail.gmail.com>
+	<200608301028.01941.ptr@island.corbina.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Joerg Roedel <joerg@zlug.org>,
+Cc: Petr Ovtchenkov <ptr@island.corbina.net>,
  parisc-linux@parisc-linux.org
-To: Joel Soete <soete.joel@scarlet.be>
+To: "Torsten Werner" <mail.twerner@googlemail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <44F01C50.1040106@scarlet.be>
+In-Reply-To: <200608301028.01941.ptr@island.corbina.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,25 +22,62 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Aug 26, 2006 at 10:02:56AM +0000, Joel Soete wrote:
-> Joerg Roedel wrote:
-> >Hello,
-> >
-> >I just tried to build the 2.6.17.11 Linux kernel on my 715/64 HPPA
-> >workstation.
-> just to be sure, I would better advise you grab parisc-linux cvs 
-> (<http://cvs.parisc-linux.org/download/linux-2.6/linux-2.6.17-pa6.tar.bz2>)
+[ CCing parisc-linux ]
 
-Joerg,
-Joel is correct that one cannot quite yet build a parisc-linux
-tree from kernel.org sources.
+  Matthias
 
-While the CVS tree is not stale, it's also no longer used for developement.
-Developement has moved to git.parisc-linux.org.
-See www.parisc-linux.org/faq/git.html for access.
-
-cheers,
-grant
+Petr Ovtchenkov writes:
+> On Wednesday 30 August 2006 00:18, you wrote:
+> > Hi Petr,
+> > 
+> > 
+> > compiling the library with USE_STATIC_LIBGCC=1 leads to other error messages:
+> > 
+> > obj/gcc/shared/test_main.o: In function `main':
+> > ../../../test/unit/cppunit/test_main.cpp:138: undefined reference to
+> > `_Unwind_Resume'
+> > obj/gcc/shared/test_main.o: In function `~Reporter':
+> > ../../../test/unit/cppunit/cppunit_mini.h:31: undefined reference to
+> > `_Unwind_Resume'
+> > ../../../test/unit/cppunit/cppunit_mini.h:31: undefined reference to
+> > `_Unwind_Resume'
+> > obj/gcc/shared/accum_test.o: In function `~TestFixture':
+> > ../../../test/unit/cppunit/cppunit_mini.h:41: undefined reference to
+> > `_Unwind_Resume'
+> > obj/gcc/shared/accum_test.o: In function
+> > `stlpmtx_std::__node_alloc<false, 0>::deallocate(void*, unsigned
+> > int)':
+> > ../../../stlport/stl/_alloc.h:311: undefined reference to `_Unwind_Resume'
+> > obj/gcc/shared/accum_test.o:../../../test/unit/accum_test.cpp:42: more
+> > undefined references to `_Unwind_Resume' follow
+> > 
+> > Do you have an idea, what is wrong?
+> 
+> During modern gcc build process, depends on --enable-shared/--disable-shared options
+> it produces following libs:
+> 
+> 1. --enable-shared: 
+>    a) link with shared
+>       libgcc_s.so --- runtime gcc support
+>       libsupc++.a --- C++ language support
+>    b) link with static
+>       libgcc.a    --- runtime gcc support
+>       libgcc_eh.a --- C++ exceptions support, if you use static libgcc
+>       libsupc++.a --- C++ language support
+> 
+> 2. --disable-shared:
+>       libgcc.a    --- runtime gcc support, C++ exceptions support
+>       libsupc++.a --- C++ language support
+> 
+> But on some platform (I treat it as bug in gcc build) not all support
+> functions present in correct place. Looks like this is you case.
+> 
+> See gmake/lib/gcc.mak and gmake/app/gcc.mak for link sequence and my
+> comments. Note, that when we build libstlport*, we import whole
+> libsupc++.a, so no needs to mention libsupc++.a when link application
+> with libstlport*.
+> 
+>   - ptr
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
