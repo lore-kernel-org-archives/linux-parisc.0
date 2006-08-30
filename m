@@ -1,14 +1,19 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Wed, 30 Aug 2006 00:48:43 -0400
-Message-ID: <119aab440608292148s4ee3ffb0xaac62a74c0f1403b@mail.gmail.com>
+Subject: Re: [parisc-linux] gettimeofday() issue on D270
+Date: Wed, 30 Aug 2006 10:19:43 -0400
+Message-ID: <119aab440608300719l74c4be28m642253dd7d470ab8@mail.gmail.com>
+References: <200608272107.k7RL7frm018389@hiauly1.hia.nrc.ca>
+	<200608272132.k7RLW9hl018646@hiauly1.hia.nrc.ca>
+	<20060830101016.0ea9fe4d.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="----=_Part_17714_1511142.1156913323921"
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- willy@debian.org,
- "James Bottomley" <James.Bottomley@steeleye.com>
+Content-Type: text/plain;
+  charset=ISO-8859-1;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org
+To: "Guy Martin" <gmsoft@tuxicoman.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060830101016.0ea9fe4d.gmsoft@tuxicoman.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,166 +24,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-------=_Part_17714_1511142.1156913323921
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On 8/30/06, Guy Martin <gmsoft@tuxicoman.be> wrote:
+> Thanks for identifying the possible issue. However I'm not sure how that could be fixed.
+> What happend when we read from cr16 and then write in a long does 0xffffffff get stored because it overflow ?
 
-A review of 'arch/parisc/kernel/time.c' and in particular
-'timer_interrupt' and 'gettimeoffset'  show that this code has a
-couple of design flaws.
+In practice we need only guarantee that gettimeoffset() return
+positive values to ensure the forward progression of time.
 
-1. cr16 is treated as signed.
-2. No attempt is made to handle cr16 wrapping.
-3. jiffies vs. wall_jiffies adjustment is incorrect.
+> What would be the best fix for this then ? Process the value returned by cr16 and add one sec for the higher 4bytes and the proceed as usual with the lower bytes ?
 
-I have rewritten 'timer_interrupt'.
+The best fix is to identify the wrapping situation. There are 2 or 3
+robust ways to do this.
 
-A. cr16 is treated as an unsigned long.
-B. The following 3 scenarios exist.
+> How does this counter works ? Does it increase or decrease ? How fast is it doing so ?
 
-1. The timer interrupt fires, and 'now' comes after 'next_tick'
-2. The timer interrupt fires, and 'now' has wrapped and is before 'next_tick'
-3. The timer interrupt fires, and 'now' is *just* before 'next_tick'
-
-In theory 99% of the time we should be in scenario 1. On occasion we
-may miss a timer interrupt, end up close to wrapping, and we get
-scenario 2. Scenario 3 is just plain wrong and for now I will BUG() if
-the timer fires before we intended.
-
-I have adjusted 'gettimeoffset' in the following fashion:
-
-A. cr16 is treated as an unsigned long.
-B. Never ever ever return a negative adjustment.
-C. (jiffies - wall_jiffies) adjustment is always positive and added to usec.
-D. The 3 timer scenarios (same as above), exist.
-
-I assert that 'gettimeoffset' should never return a negative value. It
-represents the postive adjustment accounting for the fact that we are
-*part* of the way through a tick.
-
-The patch is attached. Please review. I booted this on my a500 without
-any problems. I don't really know how to look for problems so I ran
-the glibc testsuite and didn't get any extra regressions.
-
-The real test will be to run this on a 715/50 and look for Guy's
-reported problems. Guy, would you mind patching your kernel with this
-patch and testing again?
+You need to read the PA 1.1 or PA 2.0 architecture documens which
+describe the behaviour of the interval timer and the interrupt
+generation. The counter is actually 2 registers, a free-running
+counter usually counting at the same speed as the CPU clock, and the
+"trigger time" which is always a 32-bit trigger value. When the lower
+32-bits of the free-running counter equals the 32-bit trigger, then a
+timer interrupt is generated.
 
 Cheers,
-Carlos.
-
-------=_Part_17714_1511142.1156913323921
-Content-Type: text/x-patch; name=patch-2006-08-29-time.diff;
-	charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_erh86tf1
-Content-Disposition: attachment; filename="patch-2006-08-29-time.diff"
-
-ZGlmZiAtLWdpdCBhL2FyY2gvcGFyaXNjL2tlcm5lbC90aW1lLmMgYi9hcmNoL3BhcmlzYy9rZXJu
-ZWwvdGltZS5jCmluZGV4IDVmYWNjOWIuLmNlN2RjNWUgMTAwNjQ0Ci0tLSBhL2FyY2gvcGFyaXNj
-L2tlcm5lbC90aW1lLmMKKysrIGIvYXJjaC9wYXJpc2Mva2VybmVsL3RpbWUuYwpAQCAtNDQsMzIg
-KzQ0LDU3IEBAICNlbmRpZgogCiBpcnFyZXR1cm5fdCB0aW1lcl9pbnRlcnJ1cHQoaW50IGlycSwg
-dm9pZCAqZGV2X2lkLCBzdHJ1Y3QgcHRfcmVncyAqcmVncykKIHsKLQlsb25nIG5vdzsKLQlsb25n
-IG5leHRfdGljazsKLQlpbnQgbnRpY2tzOworCXVuc2lnbmVkIGxvbmcgbm93OworCXVuc2lnbmVk
-IGxvbmcgbmV4dF90aWNrOworCXVuc2lnbmVkIGxvbmcgbmV4dF9uZXh0X3RpY2s7CisJdW5zaWdu
-ZWQgbG9uZyBkaWZmZXJlbmNlOworICAgICAgICB1bnNpZ25lZCBsb25nIHJlbWFpbmRlcjsKKwlp
-bnQgbnRpY2tzID0gMDsKIAlpbnQgY3B1ID0gc21wX3Byb2Nlc3Nvcl9pZCgpOwogCiAJcHJvZmls
-ZV90aWNrKENQVV9QUk9GSUxJTkcsIHJlZ3MpOwogCi0Jbm93ID0gbWZjdGwoMTYpOwotCS8qIGlu
-aXRpYWxpemUgbmV4dF90aWNrIHRvIHRpbWUgYXQgbGFzdCBjbG9ja3RpY2sgKi8KKwkvKiBJbml0
-aWFsaXplIG5leHRfdGljayB0byB0aGUgZXhwZWN0ZWQgdGljayB0aW1lLiAqLwogCW5leHRfdGlj
-ayA9IGNwdV9kYXRhW2NwdV0uaXRfdmFsdWU7CisJbmV4dF9uZXh0X3RpY2sgPSBuZXh0X3RpY2sg
-KyBjbG9ja3RpY2s7CiAKLQkvKiBzaW5jZSB0aW1lIHBhc3NlcyBiZXR3ZWVuIHRoZSBpbnRlcnJ1
-cHQgYW5kIHRoZSBtZmN0bCgpCi0JICogYWJvdmUsIGl0IGlzIG5ldmVyIHRydWUgdGhhdCBsYXN0
-X3RpY2sgKyBjbG9ja3RpY2sgPT0gbm93LiAgSWYgd2UKLQkgKiBuZXZlciBtaXNzIGEgY2xvY2t0
-aWNrLCB3ZSBjb3VsZCBzZXQgbmV4dF90aWNrID0gbGFzdF90aWNrICsgY2xvY2t0aWNrCi0JICog
-YnV0IG1heWJlIHdlJ2xsIG1pc3MgdGlja3MsIGhlbmNlIHRoZSBsb29wLgotCSAqCi0JICogVmFy
-aWFibGVzIGFyZSAqc2lnbmVkKi4KLQkgKi8KKwkvKiBHZXQgY3VycmVudCBpbnRlcnZhbCB0aW1l
-ciByZWFkaW5nLCByZWFkcyBhcyA2NC8zMiBiaXQKKyAgICAgICAgICAgdmFsdWUgZGVwZW5kaW5n
-IGlmIHlvdSBoYXZlIGEgNjQvMzIgYml0IG1hY2hpbmUuICAqLworCW5vdyA9IG1mY3RsKDE2KTsK
-IAotCW50aWNrcyA9IDA7Ci0Jd2hpbGUoKG5leHRfdGljayAtIG5vdykgPCBoYWxmdGljaykgewot
-CQluZXh0X3RpY2sgKz0gY2xvY2t0aWNrOworCS8qIERldGVybWluZSBob3cgbXVjaCB0aW1lIGVs
-YXBzZWQuICAqLworCWlmIChub3cgPiBuZXh0X3RpY2spIHsKKwkJLyogU2NlbmFyaW8gMTogIm5v
-dyIgaXMgbGF0ZS4gICovCisJCW50aWNrcyA9IChub3cgLSBuZXh0X3RpY2spIC8gY2xvY2t0aWNr
-OworCQlyZW1haW5kZXIgPSAobm93IC0gbmV4dF90aWNrKSAlIGNsb2NrdGljazsKKwl9CisgICAg
-ICAgIGVsc2UgeworCQkvKiAibm93IiBpcyBlaXRoZXIgZWFybHkgb3IgY3IxNiB3cmFwcGVkLiAg
-Ki8KKwkJaWYgKG5leHRfbmV4dF90aWNrIDwgbmV4dF90aWNrKSB7CisJCQkvKiBTY2VuYXJpbyAy
-OiBBIG1pc3NlZCBjbG9jayB0aWNrIHdvdWxkIHdyYXAuICovCisJCQlkaWZmZXJlbmNlID0gfjBV
-TCAtIChuZXh0X3RpY2sgLSBub3cpOworCQkJbnRpY2tzID0gZGlmZmVyZW5jZSAvIGNsb2NrdGlj
-azsKKwkJCXJlbWFpbmRlciA9IGRpZmZlcmVuY2UgJSBjbG9ja3RpY2s7CisJCX0gZWxzZSB7CisJ
-CQkvKiBTY2VuYXJpbyAzOiBXZSBkaWRuJ3QgbWlzcyBhIGNsb2NrIHRpY2suIAorCQkJICAgIm5v
-dyIgaXMgZWFybHk/ICAqLworCQkJcHJpbnRrICgidGltZXJfaW50ZXJydXB0OiBOb3cgaXMgZWFy
-bHksIG5vdyA9ICVseCwgbmV4dF90aWNrID0gJWx4LCBjbG9ja3RpY2sgPSAlbHhcbiIsIG5vdywg
-bmV4dF90aWNrLCBjbG9ja3RpY2spOworCQkJQlVHICgpOworCQl9CisJfQorCisJLyogQ2hlY2sg
-dGhlIHJlbWFpbmRlciB0byBzZWUgaG93IGZhciB3ZSBhcmUgaW50byB0aGUgbmV4dCB0aWNrPyAg
-Ki8KKwlpZiAocmVtYWluZGVyID4gaGFsZnRpY2spIHsKKwkJLyogTW9yZSB0aGFuIDEvMiB3YXkg
-aW4/IENvdW50IGEgdGljay4gICovCiAJCW50aWNrcysrOwogCX0KLQltdGN0bChuZXh0X3RpY2ss
-IDE2KTsKLQljcHVfZGF0YVtjcHVdLml0X3ZhbHVlID0gbmV4dF90aWNrOworCisJLyogQWRkIGFu
-eSBmdWxsIHRpY2tzIHRoYXQgaGF2ZSBlbGFwc2VkLiAgKi8KKwluZXh0X25leHRfdGljayArPSBu
-dGlja3MgKiBjbG9ja3RpY2s7CisKKyAgICAgICAgLyogT25seSBib3R0b20gMzItYml0cyBvZiBu
-ZXh0X3RpY2sgYXJlIHdyaXR0ZW4gdG8gY3IxNi4gICovCisJbXRjdGwobmV4dF9uZXh0X3RpY2ss
-IDE2KTsKKwljcHVfZGF0YVtjcHVdLml0X3ZhbHVlID0gbmV4dF9uZXh0X3RpY2s7CiAKIAl3aGls
-ZSAobnRpY2tzLS0pIHsKICNpZmRlZiBDT05GSUdfU01QCkBAIC0xMjQsMjEgKzE0OSw0NyBAQCAj
-aWZuZGVmIENPTkZJR19TTVAKIAkgKiAgICBPbmNlIHBhcmlzYy1saW51eCBsZWFybnMgdGhlIGNy
-MTYgZGlmZmVyZW5jZSBiZXR3ZWVuIHByb2Nlc3NvcnMsCiAJICogICAgdGhpcyBjb3VsZCBiZSBt
-YWRlIHRvIHdvcmsuCiAJICovCi0JbG9uZyBsYXN0X3RpY2s7Ci0JbG9uZyBlbGFwc2VkX2N5Y2xl
-czsKKwl1bnNpZ25lZCBsb25nIG5vdzsKKwl1bnNpZ25lZCBsb25nIGxhc3RfdGljazsKKwl1bnNp
-Z25lZCBsb25nIG5leHRfdGljazsKKwl1bnNpZ25lZCBsb25nIG5leHRfbmV4dF90aWNrOworCXVu
-c2lnbmVkIGxvbmcgZWxhcHNlZF9jeWNsZXM7CisJdW5zaWduZWQgbG9uZyB1c2VjOworCXVuc2ln
-bmVkIGxvbmcgbG9zdDsKIAogCS8qIGl0X3ZhbHVlIGlzIHRoZSBpbnRlbmRlZCB0aW1lIG9mIHRo
-ZSBuZXh0IHRpY2sgKi8KLQlsYXN0X3RpY2sgPSBjcHVfZGF0YVtzbXBfcHJvY2Vzc29yX2lkKCld
-Lml0X3ZhbHVlOworCW5leHRfdGljayA9IGNwdV9kYXRhW3NtcF9wcm9jZXNzb3JfaWQoKV0uaXRf
-dmFsdWU7CisJbmV4dF9uZXh0X3RpY2sgPSBuZXh0X3RpY2sgKyBjbG9ja3RpY2s7CiAKLQkvKiBT
-dWJ0cmFjdCBvbmUgdGljayBhbmQgYWNjb3VudCBmb3IgcG9zc2libGUgZGlmZmVyZW5jZSBiZXR3
-ZWVuCi0JICogd2hlbiB3ZSBleHBlY3RlZCB0aGUgdGljayBhbmQgd2hlbiBpdCBhY3R1YWxseSBh
-cnJpdmVkLgotCSAqIChha2Egd2FsbCB2cyByZWFsKQotCSAqLwotCWxhc3RfdGljayAtPSBjbG9j
-a3RpY2sgKiAoamlmZmllcyAtIHdhbGxfamlmZmllcyArIDEpOwotCWVsYXBzZWRfY3ljbGVzID0g
-bWZjdGwoMTYpIC0gbGFzdF90aWNrOworCS8qIFRoaXMgcmVwcmVzZW50cyBsb3N0IGppZmZpZXMu
-ICAqLworCWxvc3QgPSBjbG9ja3RpY2sgKiAoamlmZmllcyAtIHdhbGxfamlmZmllcyk7IAorCQor
-CS8qIFdlIHJvbGwgYmFjayAxIHRpY2suICAqLworCWxhc3RfdGljayA9IG5leHRfdGljayAtIGNs
-b2NrdGljazsKKworCS8qIFJlYWQgdGhlIGhhcmR3YXJlIGludGVydmFsIHRpbWVyLiAgKi8KKwlu
-b3cgPSBtZmN0bCgxNik7CiAKLQkvKiB0aGUgcHJlY2lzaW9uIG9mIHRoaXMgbWF0aCBjb3VsZCBi
-ZSBpbXByb3ZlZCAqLwotCXJldHVybiBlbGFwc2VkX2N5Y2xlcyAvIChQQUdFMC0+bWVtXzEwbXNl
-YyAvIDEwMDAwKTsKKwlpZiAobm93ID4gbGFzdF90aWNrKSB7CisJCS8qIFNjZW5hcmlvIDE6ICJu
-b3ciIGlzIGxhdGVyIHRoYW4gbGFzdF90aWNrLiAgKi8KKwkJZWxhcHNlZF9jeWNsZXMgPSBub3cg
-LSBsYXN0X3RpY2s7CisJfSBlbHNlIHsKKwkJLyogIm5vdyIgaXMgZWl0aGVyIGVhcmx5IG9yIGNy
-MTYgd3JhcHBlZC4gICovCisJCWlmIChuZXh0X25leHRfdGljayA8IGxhc3RfdGljaykgeworCQkJ
-LyogU2NlbmFyaW8gMjogQSBtaXNzZWQgY2xvY2sgdGljayB3b3VsZCB3cmFwLiAqLworCQkJZWxh
-cHNlZF9jeWNsZXMgPSB+MFVMIC0gKGxhc3RfdGljayAtIG5vdyk7CisJCX0gZWxzZSB7CisJCQkv
-KiBTY2VuYXJpbyAzOiBXZSBkaWRuJ3QgbWlzcyBhIGNsb2NrIHRpY2suIAorCQkJICAgIm5vdyIg
-aXMgZWFybHk/ICAqLworCQkJcHJpbnRrICgiZ2V0dGltZW9mZnNldDogTm93IGlzIGVhcmx5LCBu
-b3cgPSAlbHgsIGxhc3RfdGljayA9ICVseCwgbmV4dF90aWNrID0gJWx4LCBjbG9ja3RpY2sgPSAl
-bHhcbiIsIG5vdywgbGFzdF90aWNrLCBuZXh0X3RpY2ssIGNsb2NrdGljayk7CisJCQlCVUcgKCk7
-CisJCX0KKwl9CisKKwkvKiBGSVhNRTogSW1wcm92ZSBwcmVjaXNpb24uICovCisJdXNlYyA9IGVs
-YXBzZWRfY3ljbGVzICogMTAwMDAgLyBQQUdFMC0+bWVtXzEwbXNlYzsKKwl1c2VjICs9IGxvc3Q7
-CisJcmV0dXJuIHVzZWM7CiAjZWxzZQogCXJldHVybiAwOwogI2VuZGlmCkBAIC0xNDksNiArMjAw
-LDcgQEAgZG9fZ2V0dGltZW9mZGF5IChzdHJ1Y3QgdGltZXZhbCAqdHYpCiB7CiAJdW5zaWduZWQg
-bG9uZyBmbGFncywgc2VxLCB1c2VjLCBzZWM7CiAKKwkvKiBIb2xkIHh0aW1lX2xvY2sgYW5kIGFk
-anVzdCB0aW1ldmFsLiAgKi8KIAlkbyB7CiAJCXNlcSA9IHJlYWRfc2VxYmVnaW5faXJxc2F2ZSgm
-eHRpbWVfbG9jaywgZmxhZ3MpOwogCQl1c2VjID0gZ2V0dGltZW9mZnNldCgpOwpAQCAtMTU2LDI1
-ICsyMDgsMTMgQEAgZG9fZ2V0dGltZW9mZGF5IChzdHJ1Y3QgdGltZXZhbCAqdHYpCiAJCXVzZWMg
-Kz0gKHh0aW1lLnR2X25zZWMgLyAxMDAwKTsKIAl9IHdoaWxlIChyZWFkX3NlcXJldHJ5X2lycXJl
-c3RvcmUoJnh0aW1lX2xvY2ssIHNlcSwgZmxhZ3MpKTsKIAotCWlmICh1bmxpa2VseSh1c2VjID4g
-TE9OR19NQVgpKSB7Ci0JCS8qIFRoaXMgY2FuIGhhcHBlbiBpZiB0aGUgZ2V0dGltZW9mZnNldCBh
-ZGp1c3RtZW50IGlzCi0JCSAqIG5lZ2F0aXZlIGFuZCB4dGltZS50dl9uc2VjIGlzIHNtYWxsZXIg
-dGhhbiB0aGUKLQkJICogYWRqdXN0bWVudCAqLwotCQlwcmludGsoS0VSTl9FUlIgImRvX2dldHRp
-bWVvZmRheSgpIHNwdXJpb3VzIHh0aW1lLnR2X25zZWMgb2YgJWxkXG4iLCB1c2VjKTsKLQkJdXNl
-YyArPSBVU0VDX1BFUl9TRUM7Ci0JCS0tc2VjOwotCQkvKiBUaGlzIHNob3VsZCBuZXZlciBoYXBw
-ZW4sIGl0IG1lYW5zIHRoZSBuZWdhdGl2ZQotCQkgKiB0aW1lIGFkanVzdG1lbnQgd2FzIG1vcmUg
-dGhhbiBhIHNlY29uZCwgc28gdGhlcmUncwotCQkgKiBzb21ldGhpbmcgc2VyaW91c2x5IHdyb25n
-ICovCi0JCUJVR19PTih1c2VjID4gTE9OR19NQVgpOwotCX0KLQotCisJLyogTW92ZSBhZGp1c3Rl
-ZCB1c2VjJ3MgaW50byBzZWMncy4gICovCiAJd2hpbGUgKHVzZWMgPj0gVVNFQ19QRVJfU0VDKSB7
-CiAJCXVzZWMgLT0gVVNFQ19QRVJfU0VDOwogCQkrK3NlYzsKIAl9CiAKKwkvKiBSZXR1cm4gYWRq
-dXN0ZWQgcmVzdWx0LiAgKi8KIAl0di0+dHZfc2VjID0gc2VjOwogCXR2LT50dl91c2VjID0gdXNl
-YzsKIH0K
-------=_Part_17714_1511142.1156913323921
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Calros.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-------=_Part_17714_1511142.1156913323921--
