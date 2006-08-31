@@ -1,17 +1,17 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] gettimeofday() issue on D270
-Date: Wed, 30 Aug 2006 19:58:05 -0400
-Message-ID: <20060830235805.GJ3926@athena.road.mcmartin.ca>
-References: <20060827151741.fe94122d.gmsoft@tuxicoman.be>
-	<119aab440608271231j3856ea27h7c03e1c9722ae7e1@mail.gmail.com>
-	<20060827222653.3f3ef48d.gmsoft@tuxicoman.be>
+Subject: Re: [parisc-linux] What happen to the Penguin
+Date: Wed, 30 Aug 2006 20:06:35 -0400
+Message-ID: <20060831000635.GK3926@athena.road.mcmartin.ca>
+References: <20060630184210.GE27102@athena.road.mcmartin.ca>
+	<200608272121.k7RLLh0F018554@hiauly1.hia.nrc.ca>
+	<20060827233044.GA6394@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060827222653.3f3ef48d.gmsoft@tuxicoman.be>
+In-Reply-To: <20060827233044.GA6394@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,14 +22,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Aug 27, 2006 at 10:26:53PM +0200, Guy Martin wrote:
-> I wasn't able to reproduce at all on my C3600.
+On Sun, Aug 27, 2006 at 07:30:45PM -0400, Kyle McMartin wrote:
+> On Sun, Aug 27, 2006 at 05:21:43PM -0400, John David Anglin wrote:
+> > This happened between 2.6.17-rc3-pa3 and 2.6.17-rc4-pa0.  Removing
+> > the unsupported A1262A allowed 2.6.17-pa6 to boot.  It doesn't boot
+> > with the card installed.  This is using the c3000_defconfig kernels.
+> > 
+> 
+> Can you remove the PCI_DEVICE(...) lines with PCI_DEVICE_HP_VISUALIZEFX*
+> in drivers/video/console/sticore.c and see what happens? That should
+> at least allow them to boot.
 > 
 
-Is your C3600 running a 64bit kernel?
+I've finally got a chance to install my A1262A and VisEG PCI in my J6700,
+I'll try to spend some time debugging this as soon as possible (though,
+it might not been until mid-next week).
 
-CR16 is 4294967296 times bigger on a 64bit kernel, whereas
-the clockspeed of your C3600 is only about 4x faster...
+Cheers,
+	Kyle M.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
