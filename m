@@ -1,17 +1,18 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: [parisc-linux] Re: build failure of stlport 5.0.2 on hppa
-Date: Wed, 30 Aug 2006 09:27:38 +0200
-Message-ID: <17653.15850.943986.966989@gargle.gargle.HOWL>
-References: <a90bfcf0608291318y2d2c3072j3a7463ce3fcc730b@mail.gmail.com>
-	<200608301028.01941.ptr@island.corbina.net>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: build failure of stlport 5.0.2 on hppa
+Date: Wed, 30 Aug 2006 20:10:01 -0400 (EDT)
+Message-ID: <200608310010.k7V0A2MW016233@hiauly1.hia.nrc.ca>
+References: <17653.15850.943986.966989@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Petr Ovtchenkov <ptr@island.corbina.net>,
+  charset=US-ASCII
+Cc: mail.twerner@googlemail.com,
+ ptr@island.corbina.net,
  parisc-linux@parisc-linux.org
-To: "Torsten Werner" <mail.twerner@googlemail.com>
+To: doko@cs.tu-berlin.de (Matthias Klose)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200608301028.01941.ptr@island.corbina.net>
+In-Reply-To: <17653.15850.943986.966989@gargle.gargle.HOWL> from "Matthias
+	Klose" at Aug 30, 2006 09:27:38 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,62 +23,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-[ CCing parisc-linux ]
+> > > compiling the library with USE_STATIC_LIBGCC=1 leads to other error messages:
+> > > 
+> > > obj/gcc/shared/test_main.o: In function `main':
+> > > ../../../test/unit/cppunit/test_main.cpp:138: undefined reference to
+> > > `_Unwind_Resume'
 
-  Matthias
+You need to look at how test_main.o is being linked (e.g., add -v, -Wl,-v,
+or -Wl,-debug to the compilation/link command.  There's not enough info
+to determine whether this is a GCC or package bug. 
 
-Petr Ovtchenkov writes:
-> On Wednesday 30 August 2006 00:18, you wrote:
-> > Hi Petr,
+> > 2. --disable-shared:
+> >       libgcc.a    --- runtime gcc support, C++ exceptions support
+> >       libsupc++.a --- C++ language support
 > > 
-> > 
-> > compiling the library with USE_STATIC_LIBGCC=1 leads to other error messages:
-> > 
-> > obj/gcc/shared/test_main.o: In function `main':
-> > ../../../test/unit/cppunit/test_main.cpp:138: undefined reference to
-> > `_Unwind_Resume'
-> > obj/gcc/shared/test_main.o: In function `~Reporter':
-> > ../../../test/unit/cppunit/cppunit_mini.h:31: undefined reference to
-> > `_Unwind_Resume'
-> > ../../../test/unit/cppunit/cppunit_mini.h:31: undefined reference to
-> > `_Unwind_Resume'
-> > obj/gcc/shared/accum_test.o: In function `~TestFixture':
-> > ../../../test/unit/cppunit/cppunit_mini.h:41: undefined reference to
-> > `_Unwind_Resume'
-> > obj/gcc/shared/accum_test.o: In function
-> > `stlpmtx_std::__node_alloc<false, 0>::deallocate(void*, unsigned
-> > int)':
-> > ../../../stlport/stl/_alloc.h:311: undefined reference to `_Unwind_Resume'
-> > obj/gcc/shared/accum_test.o:../../../test/unit/accum_test.cpp:42: more
-> > undefined references to `_Unwind_Resume' follow
-> > 
-> > Do you have an idea, what is wrong?
-> 
-> During modern gcc build process, depends on --enable-shared/--disable-shared options
-> it produces following libs:
-> 
-> 1. --enable-shared: 
->    a) link with shared
->       libgcc_s.so --- runtime gcc support
->       libsupc++.a --- C++ language support
->    b) link with static
->       libgcc.a    --- runtime gcc support
->       libgcc_eh.a --- C++ exceptions support, if you use static libgcc
->       libsupc++.a --- C++ language support
-> 
-> 2. --disable-shared:
->       libgcc.a    --- runtime gcc support, C++ exceptions support
->       libsupc++.a --- C++ language support
-> 
-> But on some platform (I treat it as bug in gcc build) not all support
-> functions present in correct place. Looks like this is you case.
-> 
-> See gmake/lib/gcc.mak and gmake/app/gcc.mak for link sequence and my
-> comments. Note, that when we build libstlport*, we import whole
-> libsupc++.a, so no needs to mention libsupc++.a when link application
-> with libstlport*.
-> 
->   - ptr
+> > But on some platform (I treat it as bug in gcc build) not all support
+> > functions present in correct place. Looks like this is you case.
+
+If not all support functions are present in this case, please file a
+GCC PR.  It's highly unlikely this is PA specific.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
