@@ -1,17 +1,18 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Thu, 31 Aug 2006 00:53:27 -0600
-Message-ID: <20060831065327.GG3999@colo.lackof.org>
-References: <119aab440608292148s4ee3ffb0xaac62a74c0f1403b@mail.gmail.com>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] some more questions about __raw_write_trylock()
+	hppa implementation
+Date: Thu, 31 Aug 2006 06:31:35 -0600
+Message-ID: <20060831123135.GC4919@parisc-linux.org>
+References: <44F5F3CB.30806@scarlet.be>
+	<20060831035932.GB4919@parisc-linux.org>
+	<20060831060637.GF3999@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: willy@debian.org,
- James Bottomley <James.Bottomley@steeleye.com>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440608292148s4ee3ffb0xaac62a74c0f1403b@mail.gmail.com>
+In-Reply-To: <20060831060637.GF3999@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,260 +23,100 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Aug 30, 2006 at 12:48:43AM -0400, Carlos O'Donell wrote:
-> A review of 'arch/parisc/kernel/time.c' and in particular
-> 'timer_interrupt' and 'gettimeoffset'  show that this code has a
-> couple of design flaws.
+On Thu, Aug 31, 2006 at 12:06:37AM -0600, Grant Grundler wrote:
+> Here's the patch I ended up with.
+> Diff is also parked on gsyprf11:~grundler/diff-2.6.18-rc4-pa4-rwlocks-01
 > 
-> 1. cr16 is treated as signed.
+> +static  __inline__ int __raw_read_trylock(raw_rwlock_t *rw)
+> +{
+> +	if (!__raw_spin_trylock(&rw->lock))
+> +		return 0;
+>  
+> +	rw->counter++;
+>  	__raw_spin_unlock(&rw->lock);
+> +	return 1;
+>  }
 
-This was by design. Paul Bame (IIRC) wrote this code and
-while I was never that comfortable with it, I could never 
-find anything wrong with it either. Randolph Chung and I
-stared at timer_interrupt() _alot_.
+This has the false failure problem.  ie if another CPU is doing a
+read_lock() at the same time, it will fail to acquire the lock, even
+though it would succeed if it tried again.  I don't know if we have any
+code which depends upon that not failing, but it does seem a bit
+suboptimal.
 
-> 2. No attempt is made to handle cr16 wrapping.
+Fixing this is somewhat Hard.  My original suggestion was this:
 
-The signed math was supposed to handle it.
-I believe it did but forgot details since looking at
-it a few years ago.
+retry:
+	if (__raw_spin_trylock(&rw->lock)) {
+		rw->counter++;
+		__raw_spin_unlock(&rw->lock);
+		return 1;
+	} else if (rw->counter < 0) {
+		return 0;
+	} else {
+		goto retry;
+	}
 
-I personally prefer to NOT use signed math in this case.
-But that's honestly not a great reason to change this code.
-I'd really prefer some evidence the kernel code is wrong.
+But this leads to deadlock if called from interrupt context and the CPU
+had got to:
 
-> 3. jiffies vs. wall_jiffies adjustment is incorrect.
-> 
-> I have rewritten 'timer_interrupt'.
+static  __inline__ void __raw_write_lock(raw_rwlock_t *rw)
+{
+retry:
+        __raw_spin_lock(&rw->lock);
 
-And I've hacked your version some more.
-diff is below.
+<<<- here
 
-I've included your changes to gettimeoffset() in my patch below
-and will review those next.
+and hadn't set counter to -1.  Now, we can fix that:
 
-And something is certainly wrong with my version of the code.
-It seems to be running the system clock at ~ 1/2 speed now. :)
+static  __inline__ void __raw_write_lock(raw_rwlock_t *rw)
+{
+	unsigned long flags;
+retry:
+	local_irq_save(flags);
+        __raw_spin_lock(&rw->lock);
 
-odine:~# while : ; do sleep 10 ; ntpdate pool.ntp.org ; done
-30 Aug 23:51:13 ntpdate[14051]: step time server 203.217.30.156 offset 60.165510 sec
-30 Aug 23:51:39 ntpdate[14053]: step time server 203.217.30.156 offset 13.065388 sec
-30 Aug 23:52:04 ntpdate[14055]: step time server 195.234.188.26 offset 11.578574 sec
-30 Aug 23:52:31 ntpdate[14058]: step time server 203.217.30.156 offset 13.954358 sec
-...
+        if (rw->counter != 0) {
+                /* this basically never happens */
+                __raw_spin_unlock(&rw->lock);
+		local_irq_restore(flags);
 
-> A. cr16 is treated as an unsigned long.
-> B. The following 3 scenarios exist.
-> 
-> 1. The timer interrupt fires, and 'now' comes after 'next_tick'
+                while (rw->counter != 0)
+                        cpu_relax();
 
-This is the "normal" case I think. 'now' should always lag behind
-'next_tick' and how much depends on how long interrupts are blocked
-on that CPU.
+                goto retry;
+        }
 
-> 2. The timer interrupt fires, and 'now' has wrapped and is before 
-> 'next_tick'
-> 3. The timer interrupt fires, and 'now' is *just* before 'next_tick'
-> 
-> In theory 99% of the time we should be in scenario 1. On occasion we
-> may miss a timer interrupt, end up close to wrapping, and we get
-> scenario 2.
+        /* got it.  now leave without unlocking */
+        rw->counter = -1; /* remember we are locked */
+	local_irq_restore(flags);
+}
 
-I'll assert we don't need to miss a timer interrupt to hit Scenario 2.
-All we need is a timer interrupt that scheduled near 4GB (but below)
-and 'normal' lag in interrupt delivery/handling will allow the
-CR16 to wrap.
+A similar change has to be made to __raw_write_trylock too:
 
-> Scenario 3 is just plain wrong and for now I will BUG() if
-> the timer fires before we intended.
+static  __inline__ int __raw_write_trylock(raw_rwlock_t *rw)
+{
+	unsigned long flags;
+	int result = 0;
+	local_irq_save(flags);
+	if (__raw_spin_trylock(&rw->lock)) {
+		if (rw->counter == 0) {
+			rw->counter = -1;
+			result = 1;
+		} else {
+			__raw_spin_unlock(&rw->lock);
+		}
+	}
+	local_irq_restore(flags);
+	return result;
+}
 
-I agree.
+Better ideas, anyone?
 
-...
-> I assert that 'gettimeoffset' should never return a negative value. It
-> represents the postive adjustment accounting for the fact that we are
-> *part* of the way through a tick.
-
-I have to think about this more. But I wonder if how "halftick" is
-handled in timer_interrupt does not play well with this concept.
-
-> The patch is attached. Please review. I booted this on my a500 without
-> any problems. I don't really know how to look for problems so I ran
-> the glibc testsuite and didn't get any extra regressions.
-
-I've only booted on a500 (64-bit kernel) and will try on b2600
-(32-bit kernel) next.
-
-
-Please review and see if I added any new bugs.
-
-Note that I replaced the "~0UL - XXX" with "~ XXX".
-I'll be off by one cycle. I don't care.
-
-thanks,
-grant
-
-
-diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-index 5facc9b..9f6cf58 100644
---- a/arch/parisc/kernel/time.c
-+++ b/arch/parisc/kernel/time.c
-@@ -44,34 +44,58 @@ #endif
- 
- irqreturn_t timer_interrupt(int irq, void *dev_id, struct pt_regs *regs)
- {
--	long now;
--	long next_tick;
--	int nticks;
-+	unsigned long now;
-+	unsigned long next_tick;
-+        unsigned long remainder;
-+	unsigned long ticks_elapsed = 0;
- 	int cpu = smp_processor_id();
- 
- 	profile_tick(CPU_PROFILING, regs);
- 
--	now = mfctl(16);
--	/* initialize next_tick to time at last clocktick */
-+	/* Initialize next_tick to the expected tick time. */
- 	next_tick = cpu_data[cpu].it_value;
- 
--	/* since time passes between the interrupt and the mfctl()
--	 * above, it is never true that last_tick + clocktick == now.  If we
--	 * never miss a clocktick, we could set next_tick = last_tick + clocktick
--	 * but maybe we'll miss ticks, hence the loop.
--	 *
--	 * Variables are *signed*.
-+	/* Get current interval timer.
-+	 * CR16 reads as 64 or 32 bit value depending CPU wide/narrow mode.
- 	 */
-+	now = mfctl(16);
-+
-+	/* Determine how much time elapsed.  */
-+	if (now > next_tick) {
-+		/* Scenario 1: "now" is late. A bit late is normal. */
-+		ticks_elapsed = (now - next_tick) / clocktick;
-+		remainder = now - (ticks_elapsed * clocktick);
-+	}
-+        else {
-+		/* "now" is either early or cr16 wrapped.  */
-+		if (~next_tick < clocktick) {
-+			unsigned long difference;
-+
-+			/* Scenario 2: A missed clock tick would wrap. */
-+			difference = ~0UL - (next_tick - now);
-+			ticks_elapsed = difference / clocktick;
-+			remainder = difference % clocktick;
-+		} else {
-+			/* Scenario 3: We didn't miss a clock tick. 
-+			   "now" is early?  */
-+			printk ("timer_interrupt: Now is early, now = %lx, next_tick = %lx, clocktick = %lx\n", now, next_tick, clocktick);
-+			BUG ();
-+		}
-+	}
- 
--	nticks = 0;
--	while((next_tick - now) < halftick) {
--		next_tick += clocktick;
--		nticks++;
-+	if (remainder > halftick) {
-+		/* More than 1/2 way into the next tick. It counts.  */
-+		ticks_elapsed++;
- 	}
-+
-+	/* Add any full ticks that have elapsed plus the one we want next. */
-+	next_tick += (ticks_elapsed + 1) * clocktick;
-+
-+        /* Only bottom 32-bits of next_tick are written to cr16.  */
- 	mtctl(next_tick, 16);
- 	cpu_data[cpu].it_value = next_tick;
- 
--	while (nticks--) {
-+	while (ticks_elapsed--) {
- #ifdef CONFIG_SMP
- 		smp_do_timer(regs);
- #else
-@@ -124,21 +148,47 @@ #ifndef CONFIG_SMP
- 	 *    Once parisc-linux learns the cr16 difference between processors,
- 	 *    this could be made to work.
- 	 */
--	long last_tick;
--	long elapsed_cycles;
-+	unsigned long now;
-+	unsigned long last_tick;
-+	unsigned long next_tick;
-+	unsigned long next_next_tick;
-+	unsigned long elapsed_cycles;
-+	unsigned long usec;
-+	unsigned long lost;
- 
- 	/* it_value is the intended time of the next tick */
--	last_tick = cpu_data[smp_processor_id()].it_value;
-+	next_tick = cpu_data[smp_processor_id()].it_value;
-+	next_next_tick = next_tick + clocktick;
- 
--	/* Subtract one tick and account for possible difference between
--	 * when we expected the tick and when it actually arrived.
--	 * (aka wall vs real)
--	 */
--	last_tick -= clocktick * (jiffies - wall_jiffies + 1);
--	elapsed_cycles = mfctl(16) - last_tick;
-+	/* This represents lost jiffies.  */
-+	lost = clocktick * (jiffies - wall_jiffies); 
-+	
-+	/* We roll back 1 tick.  */
-+	last_tick = next_tick - clocktick;
-+
-+	/* Read the hardware interval timer.  */
-+	now = mfctl(16);
-+
-+	if (now > last_tick) {
-+		/* Scenario 1: "now" is later than last_tick.  */
-+		elapsed_cycles = now - last_tick;
-+	} else {
-+		/* "now" is either early or cr16 wrapped.  */
-+		if (next_next_tick < last_tick) {
-+			/* Scenario 2: A missed clock tick would wrap. */
-+			elapsed_cycles = ~0UL - (last_tick - now);
-+		} else {
-+			/* Scenario 3: We didn't miss a clock tick. 
-+			   "now" is early?  */
-+			printk ("gettimeoffset: Now is early, now = %lx, last_tick = %lx, next_tick = %lx, clocktick = %lx\n", now, last_tick, next_tick, clocktick);
-+			BUG ();
-+		}
-+	}
- 
--	/* the precision of this math could be improved */
--	return elapsed_cycles / (PAGE0->mem_10msec / 10000);
-+	/* FIXME: Improve precision. */
-+	usec = elapsed_cycles * 10000 / PAGE0->mem_10msec;
-+	usec += lost;
-+	return usec;
- #else
- 	return 0;
- #endif
-@@ -149,6 +199,7 @@ do_gettimeofday (struct timeval *tv)
- {
- 	unsigned long flags, seq, usec, sec;
- 
-+	/* Hold xtime_lock and adjust timeval.  */
- 	do {
- 		seq = read_seqbegin_irqsave(&xtime_lock, flags);
- 		usec = gettimeoffset();
-@@ -156,25 +207,13 @@ do_gettimeofday (struct timeval *tv)
- 		usec += (xtime.tv_nsec / 1000);
- 	} while (read_seqretry_irqrestore(&xtime_lock, seq, flags));
- 
--	if (unlikely(usec > LONG_MAX)) {
--		/* This can happen if the gettimeoffset adjustment is
--		 * negative and xtime.tv_nsec is smaller than the
--		 * adjustment */
--		printk(KERN_ERR "do_gettimeofday() spurious xtime.tv_nsec of %ld\n", usec);
--		usec += USEC_PER_SEC;
--		--sec;
--		/* This should never happen, it means the negative
--		 * time adjustment was more than a second, so there's
--		 * something seriously wrong */
--		BUG_ON(usec > LONG_MAX);
--	}
--
+(And perhaps more importantly, anyone spot any holes in my reasoning?
+I'm not too happy disabling interrupts *after* disabling preemption.
+And of course, we disable interrupts twice when called with
+write_lock_irq.)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
