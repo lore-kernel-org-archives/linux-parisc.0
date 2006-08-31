@@ -1,18 +1,16 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: "Michael S. Zick" <mszick@morethan.org>
 Subject: Re: [parisc-linux] some more questions about __raw_write_trylock()
 	hppa implementation
-Date: Thu, 31 Aug 2006 06:31:35 -0600
-Message-ID: <20060831123135.GC4919@parisc-linux.org>
-References: <44F5F3CB.30806@scarlet.be>
-	<20060831035932.GB4919@parisc-linux.org>
-	<20060831060637.GF3999@colo.lackof.org>
+Date: Thu, 31 Aug 2006 08:01:30 -0500
+Message-ID: <200608310801.30580.mszick@morethan.org>
+References: <44F5F3CB.30806@scarlet.be> <20060831060637.GF3999@colo.lackof.org>
+	<20060831123135.GC4919@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Grant Grundler <grundler@parisc-linux.org>
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060831060637.GF3999@colo.lackof.org>
+In-Reply-To: <20060831123135.GC4919@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,99 +21,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Aug 31, 2006 at 12:06:37AM -0600, Grant Grundler wrote:
-> Here's the patch I ended up with.
-> Diff is also parked on gsyprf11:~grundler/diff-2.6.18-rc4-pa4-rwlocks-01
+On Thu August 31 2006 07:31, Matthew Wilcox wrote:
 > 
-> +static  __inline__ int __raw_read_trylock(raw_rwlock_t *rw)
-> +{
-> +	if (!__raw_spin_trylock(&rw->lock))
-> +		return 0;
->  
-> +	rw->counter++;
->  	__raw_spin_unlock(&rw->lock);
-> +	return 1;
->  }
+> Better ideas, anyone?
+> 
 
-This has the false failure problem.  ie if another CPU is doing a
-read_lock() at the same time, it will fail to acquire the lock, even
-though it would succeed if it tried again.  I don't know if we have any
-code which depends upon that not failing, but it does seem a bit
-suboptimal.
+better? not sure, but one thing I am looking at using is
+tri-state locks, defined as:
 
-Fixing this is somewhat Hard.  My original suggestion was this:
+0 == Busy, change in process
+&lock == Locked
+other == Unlocked
 
-retry:
-	if (__raw_spin_trylock(&rw->lock)) {
-		rw->counter++;
-		__raw_spin_unlock(&rw->lock);
-		return 1;
-	} else if (rw->counter < 0) {
-		return 0;
-	} else {
-		goto retry;
-	}
+Since that can be done with load&clear and the information
+already on hand in the registers.
 
-But this leads to deadlock if called from interrupt context and the CPU
-had got to:
+That is also compatible with the single-linked, bi-directional
+lists of requesters - I.E: the values and the lock are also
+the head (or tail) of the list. (race free)
 
-static  __inline__ void __raw_write_lock(raw_rwlock_t *rw)
-{
-retry:
-        __raw_spin_lock(&rw->lock);
+No actual code to offer at this time.
 
-<<<- here
+Not my idea, took it from one of the references mentioned
+in my pa-risc synchronization constructs write-up.
 
-and hadn't set counter to -1.  Now, we can fix that:
+Hmmm...
+That might be usable (the tri-state logic) in dealing with
+a wrapping timer cr16 also.
 
-static  __inline__ void __raw_write_lock(raw_rwlock_t *rw)
-{
-	unsigned long flags;
-retry:
-	local_irq_save(flags);
-        __raw_spin_lock(&rw->lock);
-
-        if (rw->counter != 0) {
-                /* this basically never happens */
-                __raw_spin_unlock(&rw->lock);
-		local_irq_restore(flags);
-
-                while (rw->counter != 0)
-                        cpu_relax();
-
-                goto retry;
-        }
-
-        /* got it.  now leave without unlocking */
-        rw->counter = -1; /* remember we are locked */
-	local_irq_restore(flags);
-}
-
-A similar change has to be made to __raw_write_trylock too:
-
-static  __inline__ int __raw_write_trylock(raw_rwlock_t *rw)
-{
-	unsigned long flags;
-	int result = 0;
-	local_irq_save(flags);
-	if (__raw_spin_trylock(&rw->lock)) {
-		if (rw->counter == 0) {
-			rw->counter = -1;
-			result = 1;
-		} else {
-			__raw_spin_unlock(&rw->lock);
-		}
-	}
-	local_irq_restore(flags);
-	return result;
-}
-
-Better ideas, anyone?
-
-(And perhaps more importantly, anyone spot any holes in my reasoning?
-I'm not too happy disabling interrupts *after* disabling preemption.
-And of course, we disable interrupts twice when called with
-write_lock_irq.)
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
