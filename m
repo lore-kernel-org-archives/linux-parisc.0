@@ -1,17 +1,21 @@
 From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Fri, 1 Sep 2006 16:59:04 -0600
-Message-ID: <20060901225904.GE4041@colo.lackof.org>
-References: <119aab440608292148s4ee3ffb0xaac62a74c0f1403b@mail.gmail.com>
-	<20060831065327.GG3999@colo.lackof.org>
-	<20060901224825.GD4041@colo.lackof.org>
+Date: Sun, 3 Sep 2006 13:31:22 -0600
+Message-ID: <20060903193122.GA20217@colo.lackof.org>
+References: <J4TKVV$8AA4E9E98C79A1A2778C0CBF8A96F048@scarlet.be>
+	<20060830165211.GA3999@colo.lackof.org>
+	<119aab440608301323w309debf2g6635ce4757ac024b@mail.gmail.com>
+	<1157212326.4041.26.camel@mulgrave.il.steeleye.com>
+	<119aab440609030800h264c16bcn2958a78558a2ef48@mail.gmail.com>
+	<1157300093.3486.15.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Grant Grundler <grundler@parisc-linux.org>
+Cc: Joel Soete <soete.joel@scarlet.be>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060901224825.GD4041@colo.lackof.org>
+In-Reply-To: <1157300093.3486.15.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,48 +26,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Sep 01, 2006 at 04:48:25PM -0600, Grant Grundler wrote:
-> On Thu, Aug 31, 2006 at 12:53:27AM -0600, Grant Grundler wrote:
-> > And I've hacked your version some more.
-> > diff is below.
-> 
-> version #3: seems to be working fine on 64-bit SMP.
-> 32-bit UP kernel is still under construction.
-...
-> gettimeoffset printk is busticated. I'll fix that in the next version.
-> But it looks like wrapped values are causing problems.
+On Sun, Sep 03, 2006 at 11:14:53AM -0500, James Bottomley wrote:
+> Since the timer interrupts miss so many ticks, halftick processing looks
+> like a good idea to me.
 
-Looks like only the printk is broken.
+I was going to argue halfticks are a bad idea.
+They just make it all more complicated.
+My last version of the rewrite patch does away with them complete.
 
-The attached test program (based on Guy's description) seems
-to be working fine on 32-bit UP/b2600:
-...
-Time : 1157151360 sec, 106770 usec
-Time : 1157151361 sec, 116765 usec
-Time : 1157151362 sec, 126770 usec
-Time : 1157151363 sec, 136764 usec
-...
+>   Thus, we have to assume gettimeoffset() can be
+> negative by up to half a tick.  The current processing in
+> do_gettimeofday() already copes nicely with this.
 
-Note there is ~10ms shift on each "Time" output.
-I believe this is because the task will run on the next
-tick _after_ the 1 second time has expired.
+It deals nicely _without_ halfticks too.
 
-hth,
 grant
-
-
-#include <stdio.h>
-#include <sys/time.h>
-#include <time.h>
-main()
-{
-	struct timeval tv;
-
-	while(gettimeofday(&tv, NULL) == 0) {
-		printf("Time : %d sec, %d usec\n", tv.tv_sec, tv.tv_usec);
-		sleep(1);
-	}
-}
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
