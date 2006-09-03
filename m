@@ -1,21 +1,16 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Sun, 3 Sep 2006 16:30:22 -0400
-Message-ID: <119aab440609031330i70b208cat9f347fe2ed6e8b52@mail.gmail.com>
-References: <119aab440608292148s4ee3ffb0xaac62a74c0f1403b@mail.gmail.com>
-	<20060831065327.GG3999@colo.lackof.org>
-	<119aab440608311152m28ef65f6ud3db46b12c59d3@mail.gmail.com>
-	<20060831214650.GC16032@colo.lackof.org>
-	<119aab440609030754t5e0f869bq10b5c10770f14105@mail.gmail.com>
-	<20060903195553.GC20217@colo.lackof.org>
+Date: Sun, 3 Sep 2006 17:22:14 -0400 (EDT)
+Message-ID: <200609032122.k83LMEpr020136@hiauly1.hia.nrc.ca>
+References: <119aab440609031330i70b208cat9f347fe2ed6e8b52@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060903195553.GC20217@colo.lackof.org>
+In-Reply-To: <119aab440609031330i70b208cat9f347fe2ed6e8b52@mail.gmail.com>
+	from "Carlos O'Donell" at Sep 3, 2006 04:30:22 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,46 +21,83 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 9/3/06, Grant Grundler <grundler@parisc-linux.org> wrote:
-> I'll rework my code later today to try to match the discussion so far.
+> The signed math works correctly as an approximation (off by 2) and I
+> do admit I find no fault in the math, but it is still confusing.
 
-Original code:
+The signed math works as long as the latency in delivering the
+interruption is not larger than about half a cycle.  Once
+next_tick - now >= halftick, then we stop updating next_tick
+until the counter wraps.  Probably, this could be extended
+using unsigned math but you still have to handle the wrap.
 
- 58         now = mfctl(16);
- 60         next_tick = cpu_data[cpu].it_value;
- 70         nticks = 0;
- 71         while((next_tick - now) < halftick) {
- 72                 next_tick += clocktick;
- 73                 nticks++;
- 74         }
- 75         mtctl(next_tick, 16);
- 76         cpu_data[cpu].it_value = next_tick;
+The other issue is to ensure that the compare value for the
+next interrupt is set before the counter passes this count.
+We could have an interruption between the read and write
+of cr16 even with interrupts disabled.  So, I think we should
+minimize memory accesses.  The enclosed change eliminates
+the memory accesses.
 
-1. Let us assume a 32-bit CPU with a 32-bit counter and a 32-bit
-trigger register.
-2. Assume that it_value is *near* the signed long boundary (0x7fffff)
-3. The counter and trigger match, raising an interrupt.
-4. During the interrupt delivery cr16 wraps into negative signed long,
-but only a little bit.
-    Let us say cr16 is ~(0x7fffffff + 50)
-5. The value "next_tick - now" is equivalent to:
-    "next_tick - (-now)" since now is negative.
-    "next_tick + now"
-6. The signed long math wraps, and the solution is a small negative
-number, or small positive number, in this case it is +48.
-7. The while loop adds clockticks until we are positive and bigger
-than halftick. Adding 1 clocktick.
+It may be we don't need the save/restore if interrupts are disabled.
 
-The signed math works correctly as an approximation (off by 2) and I
-do admit I find no fault in the math, but it is still confusing.
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
-However, as James points out, if the *real* cr16 gets ahead of the
-newly set it_value, by delaying this function due to other interrupts,
-then we will have to wait for a full wrap to have it trigger another
-timer interrupt.
-
-Cheers,
-Carlos.
+Index: time.c
+===================================================================
+RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/time.c,v
+retrieving revision 1.16
+diff -u -p -u -r1.16 time.c
+--- time.c	24 Jun 2006 16:05:18 -0000	1.16
++++ time.c	3 Sep 2006 21:17:25 -0000
+@@ -47,29 +47,36 @@ irqreturn_t timer_interrupt(int irq, voi
+ {
+ 	long now;
+ 	long next_tick;
+-	int nticks;
++	unsigned long nticks = 0;
++	long ct = clocktick;
++	long ht = halftick;
+ 	int cpu = smp_processor_id();
++	long flags;
+ 
+ 	profile_tick(CPU_PROFILING, regs);
+ 
+-	now = mfctl(16);
+-	/* initialize next_tick to time at last clocktick */
++	/* Initialize next_tick to time at last clocktick */
+ 	next_tick = cpu_data[cpu].it_value;
+ 
+-	/* since time passes between the interrupt and the mfctl()
+-	 * above, it is never true that last_tick + clocktick == now.  If we
+-	 * never miss a clocktick, we could set next_tick = last_tick + clocktick
+-	 * but maybe we'll miss ticks, hence the loop.
++	/* Since time passes between the interrupt and the mfctl(),
++	 * it is never true that last_tick + clocktick == now.
++	 * If we never miss a clocktick, we could set
++	 * next_tick = last_tick + clocktick, * but maybe we'll miss
++	 * ticks, hence the loop.
+ 	 *
+ 	 * Variables are *signed*.
+ 	 */
+ 
+-	nticks = 0;
+-	while((next_tick - now) < halftick) {
+-		next_tick += clocktick;
++	/* Don't want to be interrupted while calculating
++	 * the time for the next tick.  */
++	local_irq_save(flags);
++	now = mfctl(16);
++	while((next_tick - now) < ht) {
++		next_tick += ct;
+ 		nticks++;
+ 	}
+ 	mtctl(next_tick, 16);
++	local_irq_restore(flags);
+ 	cpu_data[cpu].it_value = next_tick;
+ 
+ 	while (nticks--) {
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
