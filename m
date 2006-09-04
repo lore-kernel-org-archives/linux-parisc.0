@@ -1,19 +1,18 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Sun, 3 Sep 2006 10:54:18 -0400
-Message-ID: <119aab440609030754t5e0f869bq10b5c10770f14105@mail.gmail.com>
-References: <119aab440608292148s4ee3ffb0xaac62a74c0f1403b@mail.gmail.com>
-	<20060831065327.GG3999@colo.lackof.org>
-	<119aab440608311152m28ef65f6ud3db46b12c59d3@mail.gmail.com>
-	<20060831214650.GC16032@colo.lackof.org>
+Date: Sun, 3 Sep 2006 18:09:37 -0600
+Message-ID: <20060904000937.GA6963@colo.lackof.org>
+References: <20060903193806.GB20217@colo.lackof.org>
+	<200609031959.k83JxYon019649@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Grant Grundler" <grundler@parisc-linux.org>
+  charset=us-ascii
+Cc: James.Bottomley@SteelEye.com,
+ soete.joel@scarlet.be,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060831214650.GC16032@colo.lackof.org>
+In-Reply-To: <200609031959.k83JxYon019649@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,149 +23,97 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 8/31/06, Grant Grundler <grundler@parisc-linux.org> wrote:
-> I think it's arbitrary where the overflow occurs.
-> Maybe unsigned math overflow is easier to visualize/understand.
-> At least it is for me.
+On Sun, Sep 03, 2006 at 03:59:34PM -0400, John David Anglin wrote:
+> > Is it ok if I only add the irqsave/restore to my current patch?
+> > I also like the "avoid div/mul ops" test too.
+> 
+> I agree on that.  They are very expensive, especially in 64-bit code.
+> 
+> I'm playing with the patch below.  The main thing I tried to do is
+> reduce the amount of code in the irqsave/restore.
 
-I agree with you, unsigned long code is easier to maintain.
-Signed math overflow is implementation defined behaviour, it should
-not be relied upon.
+I've not applied the irqsave/restore since I don't think it does anything.
+do_cpu_irq_mask() doesn't allow nested external interrupts.
 
-> Yes. I'm now pretty sure the fix for that will be in gettimeoffset()
-> and not in timer_interrupt(). But I agree the two functions are very
-> similar but have to handle slightly different corner cases.
+> GCC didn't do a great job of optimizing the code.  I think we would
+> get better code if clocktick and halftick were copied to temps before
+> the irqsave.
 
-I still disagree, if you see James most recent patch which disabled
-IRQ's while we handle the timer interrupt, you will see that both
-functions are closer to being similar :)
+hrm...I would expect the same result from __read_mostly but can understand
+why that's not as useful as I hoped.
 
-I will assert that at the end of the day we will be writing
-"cr16_offset" which is a generic function that can be called with
-interrupts disabled and *that* will handle all the corner cases and be
-called by "timer_interrupt" and "gettimeoffset".
+Can we tell GCC that clocktick doesn't change during execution of this code?
+ie despite being a global, it's a "constant" and doesn't need to be
+reloaded on each loop iteration?
 
-> I was thinking the opposite: I'm missing a "tick_elapsed" count
-> on each timer interrupt.
 
-That might also be the case.
+> I was also concerned about nticks not being unsigned long.
 
-> >  Does cr16 *actuall* count at the instruction rate, or
-> > does it count at 1/2 rate?
->
-> I _believe_ all implementations count at the actual rate.
-> At least I'm not aware of any implementations that don't
-> count at the advertized clock speed.
+I agree. I'm leaning very strongly in favor of the unsigned version
+of the code. Even though I think Carlos demonstrated the signed
+math is correct. So unless someone objects to the unsigned version
+I posted earlier soon (assuming I address all bug fixes), I'd like
+to commit that in the next couple of days.
 
-OK.
+thanks,
+grant
 
-> > There is a bug here because of this, you are right to be warry of the
-> > halftick adjustment. It is also needed in gettimeoffset, or "now" will
-> > appear before "next_tick" without wrapping.
->
-> Sorry - this didn't make sense. Can you provide an example?
-> For simplicity assume a 5 bit counter and pick the values
-> that illustrate your case.
-
-5 bit counter.
-it_value = 5
-cr16 = ... free running.
-clocktick = 5
-halftick = 2
-
-a. Counter goes off at 8. Expected to go off at 5.
-b. Since (8 - 5) == 3 > 2 or a halftick, we push forward 2 ticks
-c. Set it_value to 15.
-
-1. User calls gettimeofday.
-2. cr16 says time is 9
-3. The it_value is 15, subtract a clocktick and you get 10.
-
-*boom*
-
-The value of cr16 is < the value of a rolled back clocktick.
-In counting the halftick, we need to rollback the halftick in gettimeoffset.
-
-> > What have you got against modulo?
->
-> Modulo is a division.
-> Division is much more expensive than integer multiplication.
-> Is there a way to do the division once _and_ get the remainder?
->
-> My assumption that integer multiplication is "cheaper"
-> could be wrong.
-
-I timed this for some reasonable values of dividend and divisor.
-The division and modulo operation is ~156 cycles.
-The integer multiplication is ~73 cycles.
-This is the average cr16 tick over 1000 runs.
-The integer multiplication is "cheaper"
-
-> >  The correct math is as follows.
-> >
-> > remainder = now - next_tick - ticks_elapsed * clocktick;
->
-> Erm, no.  ticks_elapsed was calculated here:
->         ticks_elapsed = (now - next_tick) / clocktick;
->
-> (the line above.)
-> I'm taking advantage of truncation since this is integer division.
-> That make more sense?
-
-Let us do some math.
-
-You say the following equations are correct:
-
-ticks_elapsed = (now - next_tick) / clocktick;
-remainder = now - (ticks_elapsed * clocktick);
-
-The ticks_elapsed equation *is* correct.
-
-The remainder equation is wrong. The value of "now" could be 4GB, the
-value of "next_tick" could be "4GB - clocktick", the ticks_elapsed
-value is 1. This is correct. However, the remainder is going to be
-"4GB - 1 * clocktick" which is incorrect. The remainder in this case
-is zero.
-
-To get the remainder you *must* do:
-
-remainder = (now - next_tick) - (ticks_elapsed * clocktick)
-
-This gives you the left over ticks you didn't count. I have added
-brackets here to clarify the math.
-
-> > >+               /* "now" is either early or cr16 wrapped.  */
-> > >+               if (~next_tick < clocktick) {
-> >
-> > Too clever for me :)
->
-> Now I'm worried. :)
-> I've already removed this code in the version I'm working on now.
-
-I was only joking here, but a comment is absolutely required when you
-use clever 1's compliment tricks to approximate more compilcated
-mathematics. Including a comment saying that it's 1 off.
-
-> > Somwhere in thie function we need to makeup for the halftick...
->
-> Hrm. I need to think more about that. You might be right.
-
-I have come to the conclusion that adding the halftick is conceptually wrong.
-
-Follow me on this.
-
-1. By adding the halftick, as a real tick, the system time moves into
-the future.
-2. A system with future time means we need negative gettimeoffset adjustments.
-3. Negative gettimeoffset adjustment complicate things needlessly.
-4. Halfticks should not be counted, and should be ignored.
-5. Ignoring halfticks is not a problem, when the late timer interrupt
-arrives we will accrue all full ticks anyway.
-
-What do you think?
-
-Cheers,
-Carlos.
+> 
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> 
+> Index: time.c
+> ===================================================================
+> RCS file: /var/cvs/linux-2.6/arch/parisc/kernel/time.c,v
+> retrieving revision 1.16
+> diff -u -p -u -r1.16 time.c
+> --- time.c	24 Jun 2006 16:05:18 -0000	1.16
+> +++ time.c	3 Sep 2006 19:42:24 -0000
+> @@ -47,29 +47,34 @@ irqreturn_t timer_interrupt(int irq, voi
+>  {
+>  	long now;
+>  	long next_tick;
+> -	int nticks;
+> +	unsigned long nticks = 0;
+>  	int cpu = smp_processor_id();
+> +	long flags;
+>  
+>  	profile_tick(CPU_PROFILING, regs);
+>  
+> -	now = mfctl(16);
+> -	/* initialize next_tick to time at last clocktick */
+> +	/* Initialize next_tick to time at last clocktick */
+>  	next_tick = cpu_data[cpu].it_value;
+>  
+> -	/* since time passes between the interrupt and the mfctl()
+> -	 * above, it is never true that last_tick + clocktick == now.  If we
+> -	 * never miss a clocktick, we could set next_tick = last_tick + clocktick
+> -	 * but maybe we'll miss ticks, hence the loop.
+> +	/* Since time passes between the interrupt and the mfctl(),
+> +	 * it is never true that last_tick + clocktick == now.
+> +	 * If we never miss a clocktick, we could set
+> +	 * next_tick = last_tick + clocktick, * but maybe we'll miss
+> +	 * ticks, hence the loop.
+>  	 *
+>  	 * Variables are *signed*.
+>  	 */
+>  
+> -	nticks = 0;
+> +	/* Don't want to be interrupted while calculating
+> +	 * the time for the next tick.  */
+> +	local_irq_save(flags);
+> +	now = mfctl(16);
+>  	while((next_tick - now) < halftick) {
+>  		next_tick += clocktick;
+>  		nticks++;
+>  	}
+>  	mtctl(next_tick, 16);
+> +	local_irq_restore(flags);
+>  	cpu_data[cpu].it_value = next_tick;
+>  
+>  	while (nticks--) {
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
