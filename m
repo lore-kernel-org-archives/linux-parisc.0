@@ -1,19 +1,16 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Sun, 03 Sep 2006 11:14:53 -0500
-Message-ID: <1157300093.3486.15.camel@mulgrave.il.steeleye.com>
-References: <J4TKVV$8AA4E9E98C79A1A2778C0CBF8A96F048@scarlet.be>
-	<20060830165211.GA3999@colo.lackof.org>
-	<119aab440608301323w309debf2g6635ce4757ac024b@mail.gmail.com>
-	<1157212326.4041.26.camel@mulgrave.il.steeleye.com>
-	<119aab440609030800h264c16bcn2958a78558a2ef48@mail.gmail.com>
+Date: Mon, 4 Sep 2006 15:12:31 -0400 (EDT)
+Message-ID: <200609041912.k84JCVWn027155@hiauly1.hia.nrc.ca>
+References: <1157390636.3513.21.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Joel Soete <soete.joel@scarlet.be>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: James.Bottomley@SteelEye.com (James Bottomley)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440609030800h264c16bcn2958a78558a2ef48@mail.gmail.com>
+In-Reply-To: <1157390636.3513.21.camel@mulgrave.il.steeleye.com> from "James
+	Bottomley" at Sep 4, 2006 12:23:56 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,24 +21,35 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2006-09-03 at 11:00 -0400, Carlos O'Donell wrote:
-> Your guess that this is the solution to problem 2) is not quite right.
-> I will argue that the "halftick" counting is at fault here. When a
-> "halftick" is counted as a full tick the system time moves into the
-> future. All calls to gettimeoffset must therefore return negative
-> adjustments. I think removing the erroneous halftick counting is the
-> solution to issue 2.
+> On Mon, 2006-09-04 at 12:57 -0400, John David Anglin wrote:
+> > There needs to be a check to ensure that the code has enough time
+> > to set cr16 with the new compare time before the counter passes this
+> > value.  If it misses, the counter will wrap.  This probably doesn't
+> > need to be a full half tick if it's desireable to avoid negative
+> > offsets.
+> 
+> Exactly!
 
+The loop in the last timer patch that I sent, as compiled for a 32-bit 
+c3k kernel, is four instructions.  Using a 500 us half tick time and
+assuming a slow 50 MHz cpu, I estimate we should be able to handle
+latencies up to about 6 seconds.  The maximum latency time for faster
+cpus are proportionately longer.  That should be enough to handle most
+circumstances except for an uninitialized tick value.  Another loop
+could be added with a larger decrement if we need to handle larger
+latencies.
 
-Actually, I think we just accept it as a feature rather than a bug.
-Since the timer interrupts miss so many ticks, halftick processing looks
-like a good idea to me.  Thus, we have to assume gettimeoffset() can be
-negative by up to half a tick.  The current processing in
-do_gettimeofday() already copes nicely with this.
+I'd hoped that improving the handling of timer interrupts might
+fix the behavior of expect, but it doesn't.  If I run the binutils
+ld testsuite under load, it usually hangs at the end of the test:
 
-James
+dave     28731 28706  4 14:56 pts/1    00:00:25 expect -- /usr/share/dejagnu/runtest.exp --tool ld --srcdir /home/dave/gnu/binutils-2.16.91/src/ld/testsuite CC=gcc -L/home/dave/gnu/binutils-2.16.91/objdir/./ld CFLAGS=-g -O2 CXX=c++ -L/home/dave/gnu/binutils-2.16.91/objdir/./ld CXXFLAGS=-g -O2 CC_FOR_HOST=gcc CFLAGS_FOR_HOST=-g -O2 OFILES=ldgram.o ldlex.o lexsup.o ldlang.o mri.o ldctor.o ldmain.o ldwrite.o ldexp.o  ldemul.o ldver.o ldmisc.o ldfile.o ldcref.o ehppalinux.o  BFDLIB=../bfd/.libs/libbfd.a LIBIBERTY=../libiberty/libiberty.a  LIBS=
+dave     28751 28731  0 14:56 pts/1    00:00:00 [expect] <defunct>
 
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
