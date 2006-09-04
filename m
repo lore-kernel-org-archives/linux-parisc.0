@@ -1,16 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Mon, 4 Sep 2006 15:12:31 -0400 (EDT)
-Message-ID: <200609041912.k84JCVWn027155@hiauly1.hia.nrc.ca>
-References: <1157390636.3513.21.camel@mulgrave.il.steeleye.com>
+Date: Mon, 4 Sep 2006 15:21:39 -0600
+Message-ID: <20060904212139.GA12278@colo.lackof.org>
+References: <1157385104.3513.11.camel@mulgrave.il.steeleye.com>
+	<200609041657.k84GvPht025978@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: James.Bottomley@SteelEye.com (James Bottomley)
+  charset=us-ascii
+Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1157390636.3513.21.camel@mulgrave.il.steeleye.com> from "James
-	Bottomley" at Sep 4, 2006 12:23:56 pm
+In-Reply-To: <200609041657.k84GvPht025978@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,35 +22,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Mon, 2006-09-04 at 12:57 -0400, John David Anglin wrote:
-> > There needs to be a check to ensure that the code has enough time
-> > to set cr16 with the new compare time before the counter passes this
-> > value.  If it misses, the counter will wrap.  This probably doesn't
-> > need to be a full half tick if it's desireable to avoid negative
-> > offsets.
-> 
-> Exactly!
+On Mon, Sep 04, 2006 at 12:57:25PM -0400, John David Anglin wrote:
+> There needs to be a check to ensure that the code has enough time
+> to set cr16 with the new compare time before the counter passes this
+> value.  If it misses, the counter will wrap.  This probably doesn't
+> need to be a full half tick if it's desireable to avoid negative
+> offsets.
 
-The loop in the last timer patch that I sent, as compiled for a 32-bit 
-c3k kernel, is four instructions.  Using a 500 us half tick time and
-assuming a slow 50 MHz cpu, I estimate we should be able to handle
-latencies up to about 6 seconds.  The maximum latency time for faster
-cpus are proportionately longer.  That should be enough to handle most
-circumstances except for an uninitialized tick value.  Another loop
-could be added with a larger decrement if we need to handle larger
-latencies.
+Yes - I agree. I think this is the last bug in my code.
+I'll just "skip" one tick in that case.
+My guess is we'll never need more than a 0x1000 cycles
+to read CR16, calculate the new "next_tick" and write CR16.
 
-I'd hoped that improving the handling of timer interrupts might
-fix the behavior of expect, but it doesn't.  If I run the binutils
-ld testsuite under load, it usually hangs at the end of the test:
+I picked 0x1000 because it very easy to test for: "if (x >> 12)...".
 
-dave     28731 28706  4 14:56 pts/1    00:00:25 expect -- /usr/share/dejagnu/runtest.exp --tool ld --srcdir /home/dave/gnu/binutils-2.16.91/src/ld/testsuite CC=gcc -L/home/dave/gnu/binutils-2.16.91/objdir/./ld CFLAGS=-g -O2 CXX=c++ -L/home/dave/gnu/binutils-2.16.91/objdir/./ld CXXFLAGS=-g -O2 CC_FOR_HOST=gcc CFLAGS_FOR_HOST=-g -O2 OFILES=ldgram.o ldlex.o lexsup.o ldlang.o mri.o ldctor.o ldmain.o ldwrite.o ldexp.o  ldemul.o ldver.o ldmisc.o ldfile.o ldcref.o ehppalinux.o  BFDLIB=../bfd/.libs/libbfd.a LIBIBERTY=../libiberty/libiberty.a  LIBS=
-dave     28751 28731  0 14:56 pts/1    00:00:00 [expect] <defunct>
+I'll review the your patch and see if I missed anything else
+and then post version #4 (or #5?). Lost count.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+grant
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
