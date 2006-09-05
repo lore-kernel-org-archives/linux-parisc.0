@@ -1,16 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [PATCH] timer_interrupt and gettimeoffset.
-Date: Mon, 4 Sep 2006 19:52:51 -0400 (EDT)
-Message-ID: <200609042352.k84NqpuE028835@hiauly1.hia.nrc.ca>
-References: <1157410039.3513.26.camel@mulgrave.il.steeleye.com>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] [PATCH] make parisc interrupts nest properly
+Date: Tue, 05 Sep 2006 19:14:33 +0000
+Message-ID: <44FDCC99.2040805@scarlet.be>
+References: <1157391143.3513.23.camel@mulgrave.il.steeleye.com>	<119aab440609041955k6a6b9466h91726bd1a9e2d621@mail.gmail.com>
+	<1157425332.3513.35.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: James.Bottomley@SteelEye.com (James Bottomley)
+  charset=us-ascii;
+  format=flowed
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1157410039.3513.26.camel@mulgrave.il.steeleye.com> from "James
-	Bottomley" at Sep 4, 2006 05:47:19 pm
+In-Reply-To: <1157425332.3513.35.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,33 +22,51 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> +	if (likely(now - next_tick < clocktick)) {
-> +		nticks = 1;
->  		next_tick += clocktick;
-> -		nticks++;
-> +	} else {
-> +		nticks = ((now - next_tick)/clocktick) + 1;
-> +		next_tick += clocktick*nticks;
-> +	}
 
-I'd rather loop if now - next_tick isn't too many ticks.  Integer
-division and multiplation are very expensive, particularly when
-running in 64-bit mode.  We don't have optimized millicode to do it.
-So, I don't much like falling into the unlikely case if we are just
-delayed one tick.
 
-I'm still concerned that we may take a TLB exception in this code
-and substantially increase the calculation time.
+James Bottomley wrote:
+> On Mon, 2006-09-04 at 22:55 -0400, Carlos O'Donell wrote:
+> 
+>>This patch looks great. What boxes have you tested this with? 32-bit?
+>>64-bit?
+> 
+> 
+> The only one I currently have access to: a pa8800 (i.e. 64 bit).
+> 
+duno if that could help: I tested it on b2k 32bit kernel and c110.
+I did noticed build pb nor boot ;-)
 
-It's somewhat unclear whether any of these tweaks will solve the
-B160 issue.  The halftick margin may not be enough in the slow
-path at 1000 Hz and decreasing the tick rate may be the only fix
-on slow machines.
+Just compare on b2k the time to build the same kernel tree (same config):
+without patch:
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+real    30m43.031s
+user    26m17.318s
+sys     3m58.584s
+
+with patch:
+
+real    31m14.598s
+user    26m9.790s
+sys     4m40.426s
+
+imho no significant differences.
+
+Joel
+
+> There's some testing to do to make sure I haven't disturbed any of the
+> other bus types, so I'll try it out on my raven when I get that up, but,
+> unfortunately, the dino block of interrupts, because of the way they're
+> wired, won't be able to interrupt each other.
+> 
+> James
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+> 
+> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
