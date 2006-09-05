@@ -1,16 +1,15 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] [PATCH] make parisc interrupts nest properly
-Date: Mon, 4 Sep 2006 22:55:27 -0400
-Message-ID: <119aab440609041955k6a6b9466h91726bd1a9e2d621@mail.gmail.com>
+Date: Mon, 04 Sep 2006 22:02:12 -0500
+Message-ID: <1157425332.3513.35.camel@mulgrave.il.steeleye.com>
 References: <1157391143.3513.23.camel@mulgrave.il.steeleye.com>
+	<119aab440609041955k6a6b9466h91726bd1a9e2d621@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+Content-Type: text/plain
 Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: "James Bottomley" <James.Bottomley@steeleye.com>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1157391143.3513.23.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <119aab440609041955k6a6b9466h91726bd1a9e2d621@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,22 +20,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 9/4/06, James Bottomley <James.Bottomley@steeleye.com> wrote:
-> Linux is designed so that one interrupt can be interrupted by another
-> (but not by itself).  The idea behind this is to help reduce latency.
-> Parisc interrupts have never allowed nesting.  We physically disable all
-> interrupts in the eiem register before entering interrupt handlers, so
-> even if the handler enables interrupts, nothing ever fires.
->
-> I won't apply this until we've got the timers sorted out, because it
-> will only complicate things (also note that the timer interrupts are
-> IRQF_DISABLED, so we're guaranteed not to take any interrupts in them
-> until local_irq_enable() is called).
+On Mon, 2006-09-04 at 22:55 -0400, Carlos O'Donell wrote:
+> This patch looks great. What boxes have you tested this with? 32-bit?
+> 64-bit?
 
-This patch looks great. What boxes have you tested this with? 32-bit? 64-bit?
+The only one I currently have access to: a pa8800 (i.e. 64 bit).
 
-Cheers,
-Carlos.
+There's some testing to do to make sure I haven't disturbed any of the
+other bus types, so I'll try it out on my raven when I get that up, but,
+unfortunately, the dino block of interrupts, because of the way they're
+wired, won't be able to interrupt each other.
+
+James
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
