@@ -1,16 +1,17 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] gij/gcj-dbtool segfaults
-Date: Thu, 7 Sep 2006 18:51:20 -0400 (EDT)
-Message-ID: <200609072251.k87MpKtq025883@hiauly1.hia.nrc.ca>
-References: <17664.34373.179880.934087@gargle.gargle.HOWL>
+From: Jeff Bailey <jbailey@raspberryginger.com>
+Subject: Re: [parisc-linux] NPTL: The Bad News.
+Date: Thu, 7 Sep 2006 16:13:49 -0700
+Message-ID: <20060907231349.GA11955@titanium.v3.ca>
+References: <119aab440609061723r168cc628x3bf2dfb18bac1641@mail.gmail.com>
+	<20060907155428.GA5447@titanium.v3.ca>
+	<119aab440609071009j12dc7daew199692707f1885d2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <17664.34373.179880.934087@gargle.gargle.HOWL> from "Matthias
-	Klose" at Sep 7, 2006 10:51:17 pm
+In-Reply-To: <119aab440609071009j12dc7daew199692707f1885d2@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,20 +22,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> at least no more bus errors; that started after the backport of
-> classpath-0.92 and gcj-4.2 to the 4.1 branch; I built a current 4.2
-> compiler yesterday, but found the same behaviour on the trunk.  It's
-> reproducible by installing gij-4.2 (or by running gcj-dbtool-4.2).
+On Thu, Sep 07, 2006 at 01:09:34PM -0400, Carlos O'Donell wrote:
 
-FWIW, this isn't happening in my builds on either linux or hpux.  I
-did have this problem a couple of months ago in porting to hpux but
-the problem went away after HP fixed a linker bug.  Make sure the
-shared libraries being used by gcj-dbtool are exactly as expected.
+> I didn't check it into CVS last night, but it is all there now.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+When updating my tree, I noticed that this is still outstanding:
+http://sourceware.org/ml/libc-ports/2006-07/msg00009.html
+
+Without this one, glibc doesn't build with recent kernel headers.
+
+Tks,
+Jeff Bailey
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
