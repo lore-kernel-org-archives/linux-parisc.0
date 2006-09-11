@@ -1,21 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] timer_interrupt #5
-Date: Fri, 8 Sep 2006 12:49:33 -0600
-Message-ID: <20060908184933.GA24597@colo.lackof.org>
-References: <119aab440608292148s4ee3ffb0xaac62a74c0f1403b@mail.gmail.com>
-	<20060831065327.GG3999@colo.lackof.org>
-	<20060901224825.GD4041@colo.lackof.org>
-	<20060906062900.GC3448@colo.lackof.org>
-	<44FF2A69.5040102@scarlet.be>
-	<20060907001944.GA4407@colo.lackof.org>
-	<450188D8.5000501@scarlet.be>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] w-a to what [Was: D380 and ext[23] fs grave pb]
+Date: Mon, 11 Sep 2006 08:29:22 -0500
+Message-ID: <200609110829.23168.mszick@morethan.org>
+References: <45018CEC.4040104@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@scarlet.be>
+  charset="iso-8859-1"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <450188D8.5000501@scarlet.be>
+In-Reply-To: <45018CEC.4040104@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,29 +19,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Sep 08, 2006 at 03:14:32PM +0000, Joel Soete wrote:
-> Cool
-> (I tested with success the GM loop on my c110 (kernel up 32bit) and it 
-> seems to works fine)
+On Fri September 8 2006 10:31, Joel Soete wrote:
+> Hello James, Matthrew,
+>=20
+> I come back to you with this pb because as explained in a previous mail:=
+=20
+> <http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/0301=
+52.html>
+>=20
+> , it seems to be related to ncr53c720 driver.
+>=20
 
-Excellent - thanks.
+That's the second hit on that driver this week:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-August/030054.html
 
-For the record, I 've been testing those patches on C3000 (no problems)
-B2600 (HPMC in tulip_get_stats() from LED/LCD task), and A500 (no problems).
-The C3000 (32-bit UP) and A500 (64-bit SMP) ran "make -j4" several days
-in a loop with no problems or console output.
+In the above mail, the driver was reporting:
 
-> right nothing related:
-> I just did a tar/untar and already get:
-> EXT3-fs error (device md2): ext3_readdir: bad entry in directory4Remounting 
-> filesystem read-only
+ncr53c720-0: rev 0xf irq 66
+ncr53c720-0: ID 7, Fast-10, Parity Checking, Differential
+scsi0 : ncr53c8xx-3.4.3g
 
-It would be best if you (re)started a new thread about this problem.
-When I hit "^D" in the near future to clean up my inbox, this thread
-will only exist (from my point of view) in the archives.
+=A0 =A0Vendor: SEAGATE =A0 Model: ST15150W =A0 =A0 =A0 =A0 =A0Rev: HP07
+=A0 =A0Type: =A0 Direct-Access =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0A=
+NSI SCSI revision: 02
 
-hth,
-grant
+Where the model number was single-ended, not: ST15150WD (Differential)
+and the problem was that the drive could not be written.
+
+Joel, what does that part of your dmesg have to say?
+Do the messages match what you have installed?
+
+Dave pointed out that some drives firmware does not report
+the correct model number - making this a non-problem.
+
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
