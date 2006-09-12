@@ -1,17 +1,14 @@
 From: Joel Soete <soete.joel@scarlet.be>
-Subject: [parisc-linux] [RFC]: rename ncr53c8xx to 53c720? [Was: D380 and
- ext[23] fs grave pb]
-Date: Tue, 12 Sep 2006 11:09:09 +0000
-Message-ID: <45069555.60807@scarlet.be>
-References: <45018CEC.4040104@scarlet.be>
+Subject: [parisc-linux] some more cpu info?
+Date: Tue, 12 Sep 2006 11:21:13 +0000
+Message-ID: <45069829.5060804@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=ISO-8859-1;
   format=flowed
-Cc: Matthew Wilcox <matthew@wil.cx>
-To: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <45018CEC.4040104@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,216 +19,256 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Matthew,
+Hello Kyle,
 
-May be now that parisc-linux tree is managed with git and that driver is 
-in fact only for ncr 53c720 hba, isn't it time to rename those stuff 
-like ncr53c8xx to 53c720?
+ITSR that JDA sent me some interesting material about cpuinfog which 
+would look like:
+--- include/asm-parisc/pdc.h.Orig       2006-09-10 21:22:11.000000000 +0200
++++ include/asm-parisc/pdc.h    2006-09-11 12:32:59.000000000 +0200
+@@ -346,26 +346,57 @@
+  #endif
+                 cc_alias: 4,    /* alias boundaries for virtual 
+addresses   */
+                 cc_block: 4,    /* to determine most efficient stride */
+-               cc_line : 3,    /* maximum amount written back as a 
+result of store (multiple of 16 bytes) */
++               cc_line : 3,    /* maximum amount written back as a result
++                                  of store (multiple of 16 bytes) */
+                 cc_shift: 2,    /* how much to shift cc_block left */
+                 cc_wt   : 1,    /* 0 = WT-Dcache, 1 = WB-Dcache */
+-               cc_sh   : 2,    /* 0 = separate I/D-cache, else shared 
+I/D-cache */
+-               cc_cst  : 3,    /* 0 = incoherent D-cache, 1=coherent 
+D-cache */
++               cc_sh   : 2,    /* 0 = separate I/D-cache (both FIC and 
+FDC),
++                                  1 = shared I/D-cache (only FDC),
++                                  2 = shared I/D-cache (only FIC),
++                                  3 = shared I/D-cache (either FIC or 
+FDC) */
++               cc_cst  : 3,    /* 0 = incoherent D-cache,
++                                  1 = coherent D-cache,
++                                  2 - 7 reserved */
+                 cc_pad1 : 10,   /* reserved */
+                 cc_hv   : 3;    /* hversion dependent */
+  };
 
-Awaitng a better fix, may I also suggest this small change:
---- drivers/scsi/ncr53c8xx.c.Orig       2006-09-11 11:26:36.000000000 +0200
-+++ drivers/scsi/ncr53c8xx.c    2006-09-12 12:40:01.000000000 +0200
-@@ -8362,7 +8362,12 @@
-         tpnt->this_id           = 7;
-         tpnt->sg_tablesize      = SCSI_NCR_SG_TABLESIZE;
-         tpnt->cmd_per_lun       = SCSI_NCR_CMD_PER_LUN;
-+#if defined(__hppa__)
-+       /* FIXME: ENABLE_CLUSTERING cause ext fs corruptions */
-+       tpnt->use_clustering    = DISABLE_CLUSTERING;
-+#else
-         tpnt->use_clustering    = ENABLE_CLUSTERING;
+-struct pdc_tlb_cf {            /* for PDC_CACHE (I/D-TLB's) */
+-    unsigned long tc_pad0:12,  /* reserved */
++struct pdc_dtlb_cf {           /* for PDC_CACHE (D-TLB's) */
++    unsigned long
+  #ifdef __LP64__
+                 tc_padW:32,
+  #endif
++               tc_pad0 :12,    /* reserved */
++               tc_sh   : 2,    /* 0 = separate I/D-TLB (both PITLB and 
+PDTLB),
++                                  1 = shared I/D-TLB (only PDTLB),
++                                  2 = shared I/D-TLB (only PITLB),
++                                  3 = shared I/D-TLB (either PITLB or 
+PDTLB) */
++               tc_hv   : 1,    /* HV */
++               tc_u    : 1,    /* 0 = TLB U-bit not implemented,
++                                  1 = TLB U-bit implemented */
++               tc_cst  : 3,    /* 0 = incoherent D-cache,
++                                  1 = coherent D-cache,
++                                  2 -7 reserved */
++               tc_pad1 :11,    /* reserved */
++               tc_hv1  : 2;    /* HV1 */
++};
++
++struct pdc_itlb_cf {           /* for PDC_CACHE (I-TLB's) */
++    unsigned long
++#ifdef __LP64__
++               tc_padW:32,
 +#endif
++               tc_pad0 :12,    /* reserved */
+                 tc_sh   : 2,    /* 0 = separate I/D-TLB, else shared 
+I/D-TLB */
+                 tc_hv   : 1,    /* HV */
+-               tc_page : 1,    /* 0 = 2K page-size-machine, 1 = 4k page 
+size */
+-               tc_cst  : 3,    /* 0 = incoherent operations, else 
+coherent operations */
+-               tc_aid  : 5,    /* ITLB: width of access ids of 
+processor (encoded!) */
+-               tc_pad1 : 8;    /* ITLB: width of space-registers 
+(encoded) */
++               tc_page : 1,    /* 0 = 2K page-size-machine,
++                                  1 = 4k page size */
++               tc_cst  : 3,    /* 0 = incoherent D-cache,
++                                  1 = coherent D-cache,
++                                  2 -7 reserved */
++               tc_aid  : 5,    /* encoded width of access ids of 
+processor */
++               tc_sr   : 6,    /* encoded width of space-registers */
++               tc_hv1  : 2;    /* HV1 */
+  };
 
-         if (device->differential)
-                 driver_setup.diff_support = device->differential;
+  struct pdc_cache_info {                /* main-PDC_CACHE-structure 
+(caches & TLB's) */
+@@ -385,7 +416,7 @@
+         unsigned long   dc_loop;
+         /* Instruction-TLB */
+         unsigned long   it_size;        /* number of entries in I-TLB */
+-       struct pdc_tlb_cf it_conf;      /* I-TLB-configuration */
++       struct pdc_itlb_cf it_conf;     /* I-TLB-configuration */
+         unsigned long   it_sp_base;
+         unsigned long   it_sp_stride;
+         unsigned long   it_sp_count;
+@@ -395,7 +426,7 @@
+         unsigned long   it_loop;
+         /* data-TLB */
+         unsigned long   dt_size;        /* number of entries in D-TLB */
+-       struct pdc_tlb_cf dt_conf;      /* D-TLB-configuration */
++       struct pdc_dtlb_cf dt_conf;     /* D-TLB-configuration */
+         unsigned long   dt_sp_base;
+         unsigned long   dt_sp_stride;
+         unsigned long   dt_sp_count;
+--- arch/parisc/kernel/cache.c.Orig     2006-09-11 11:35:10.000000000 +0200
++++ arch/parisc/kernel/cache.c  2006-09-12 12:44:21.000000000 +0200
+@@ -104,11 +104,14 @@
+                 cache_info.ic_size/1024 );
+         if (cache_info.dc_loop == 1)
+                 snprintf(buf, 32, "%lu-way associative", 
+cache_info.dc_loop);
+-       seq_printf(m, "D-cache\t\t: %ld KB (%s%s, %s)\n",
++       seq_printf(m, "D-cache\t\t: %ld KB (stride = %lu, %s/%s%s, %s)\n",
+                 cache_info.dc_size/1024,
++               cache_info.dc_stride,
++               (cache_info.dc_conf.cc_cst ? "CO":"NC"),
+                 (cache_info.dc_conf.cc_wt ? "WT":"WB"),
+                 (cache_info.dc_conf.cc_sh ? ", shared I/D":""),
+-               ((cache_info.dc_loop == 1) ? "direct mapped" : buf));
++               ((cache_info.dc_loop == 1) ? "direct mapped" : buf)
++       );
+         seq_printf(m, "ITLB entries\t: %ld\n" "DTLB entries\t: %ld%s\n",
+                 cache_info.it_size,
+                 cache_info.dt_size,
+@@ -143,7 +146,7 @@
+         if (pdc_cache_info(&cache_info) < 0)
+                 panic("parisc_cache_init: pdc_cache_info failed");
+
+-#if 0
++#if 1
+         printk("ic_size %lx dc_size %lx it_size %lx\n",
+                 cache_info.ic_size,
+                 cache_info.dc_size,
+@@ -155,13 +158,13 @@
+                 cache_info.dc_count,
+                 cache_info.dc_loop);
+
+-       printk("dc_conf = 0x%lx  alias %d blk %d line %d shift %d\n",
++       printk("dc_conf = 0x%lx  alias %d blk %d line %d shift %d "
++               "wt %d sh %d cst %d assoc %d\n",
+                 *(unsigned long *) (&cache_info.dc_conf),
+                 cache_info.dc_conf.cc_alias,
+                 cache_info.dc_conf.cc_block,
+                 cache_info.dc_conf.cc_line,
+-               cache_info.dc_conf.cc_shift);
+-       printk("        wt %d sh %d cst %d hv %d\n",
++               cache_info.dc_conf.cc_shift,
+                 cache_info.dc_conf.cc_wt,
+                 cache_info.dc_conf.cc_sh,
+                 cache_info.dc_conf.cc_cst,
+@@ -173,31 +176,34 @@
+                 cache_info.ic_count,
+                 cache_info.ic_loop);
+
+-       printk("ic_conf = 0x%lx  alias %d blk %d line %d shift %d\n",
++       printk("ic_conf = 0x%lx  alias %d blk %d line %d shift %d "
++               "wt %d sh %d cst %d assoc %d\n",
+                 *(unsigned long *) (&cache_info.ic_conf),
+                 cache_info.ic_conf.cc_alias,
+                 cache_info.ic_conf.cc_block,
+                 cache_info.ic_conf.cc_line,
+-               cache_info.ic_conf.cc_shift);
+-       printk("        wt %d sh %d cst %d hv %d\n",
++               cache_info.ic_conf.cc_shift,
+                 cache_info.ic_conf.cc_wt,
+                 cache_info.ic_conf.cc_sh,
+                 cache_info.ic_conf.cc_cst,
+                 cache_info.ic_conf.cc_hv);
+
+-       printk("D-TLB conf: sh %d page %d cst %d aid %d pad1 %d \n",
++       printk("D-TLB conf: sh %d hv %d u %d cst %d pad1 %d hv1 %d\n",
+                 cache_info.dt_conf.tc_sh,
+-               cache_info.dt_conf.tc_page,
++               cache_info.dt_conf.tc_hv,
++               cache_info.dt_conf.tc_u,
+                 cache_info.dt_conf.tc_cst,
+-               cache_info.dt_conf.tc_aid,
+-               cache_info.dt_conf.tc_pad1);
++               cache_info.dt_conf.tc_pad1,
++               cache_info.dt_conf.tc_hv1);
+
+-       printk("I-TLB conf: sh %d page %d cst %d aid %d pad1 %d \n",
++       printk("I-TLB conf: sh %d hv %d page %d cst %d aid %d sr %d hv1 
+%d\n",
+                 cache_info.it_conf.tc_sh,
++               cache_info.dt_conf.tc_hv,
+                 cache_info.it_conf.tc_page,
+                 cache_info.it_conf.tc_cst,
+                 cache_info.it_conf.tc_aid,
+-               cache_info.it_conf.tc_pad1);
++               cache_info.it_conf.tc_sr,
++               cache_info.it_conf.tc_hv1);
+  #endif
+
+         split_tlb = 0;
+=== <> ===
+(but may be have got something more recent?)
+
+I would just like to add those cache line size info:
+--- arch/parisc/kernel/cache.c  2006-09-12 12:44:21.000000000 +0200
++++ arch/parisc/kernel/cache.c.New      2006-09-12 12:43:00.000000000 +0200
+@@ -102,6 +102,8 @@
+
+         seq_printf(m, "I-cache\t\t: %ld KB\n",
+                 cache_info.ic_size/1024 );
++       seq_printf(m, "I-cache line\t: %d Byte\n",
++               cache_info.ic_conf.cc_line << 4 );
+         if (cache_info.dc_loop == 1)
+                 snprintf(buf, 32, "%lu-way associative", 
+cache_info.dc_loop);
+         seq_printf(m, "D-cache\t\t: %ld KB (stride = %lu, %s/%s%s, %s)\n",
+@@ -112,6 +114,8 @@
+                 (cache_info.dc_conf.cc_sh ? ", shared I/D":""),
+                 ((cache_info.dc_loop == 1) ? "direct mapped" : buf)
+         );
++       seq_printf(m, "D-cache line\t: %d Byte\n",
++               cache_info.dc_conf.cc_line << 4 );
+         seq_printf(m, "ITLB entries\t: %ld\n" "DTLB entries\t: %ld%s\n",
+                 cache_info.it_size,
+                 cache_info.dt_size,
 === <> ===
 
-TIA for help,
+Tested on my c110, it reports:
+#  cat /proc/cpuinfo
+processor       : 0
+cpu family      : PA-RISC 1.1c
+cpu             : PA7200 (PCX-T')
+cpu MHz         : 120.000000
+model           : 9000/777/C110
+model name      : Raven 120 T'
+hversion        : 0x000058e0
+sversion        : 0x00000481
+I-cache         : 256 KB
+I-cache line    : 32 Byte
+D-cache         : 258 KB (stride = 32, WBCO, direct mapped)
+D-cache line    : 32 Byte
+ITLB entries    : 120
+DTLB entries    : 120 - shared with ITLB
+BTLB fixed      : max. 16384 pages, pagesize=4096 (64MB)
+BTLB fix-entr.  : 0 instruction, 0 data (16 combined)
+BTLB var-entr.  : 0 instruction, 0 data (0 combined)
+bogomips        : 119.29
+software id     : 2011460976
+
+Please fill free to commit if there are some interest ;-)
+
+Tia,
 	Joel
-
-
-Joel Soete wrote:
-> Hello James, Matthrew,
-> 
-> I come back to you with this pb because as explained in a previous mail: 
-> <http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030152.html> 
-> 
-> 
-> , it seems to be related to ncr53c720 driver.
-> 
-> As I encountered same kind of pb on my c110:
-> a few time after the reboot, I just did a tar/untar and already get:
-> EXT3-fs error (device md2): ext3_readdir: bad entry in 
-> directory4Remounting filesystem read-only
-> 
-> That said, it seems that I find a work around: I just reverted this
-> <http://cvs.parisc-linux.org/linux-2.6/drivers/scsi/ncr53c8xx.c?r1=1.18&r2=1.19&makepatch=1&diff_format=h> 
-> 
-> ===================================================================
-> RCS file: /var/lib/cvs/linux-2.6/drivers/scsi/ncr53c8xx.c,v
-> retrieving revision 1.18
-> retrieving revision 1.19
-> diff -u -r1.18 -r1.19
-> --- linux-2.6/drivers/scsi/ncr53c8xx.c    2004/07/20 22:06:43    1.18
-> +++ linux-2.6/drivers/scsi/ncr53c8xx.c    2004/07/27 21:19:51    1.19
-> @@ -8633,7 +8633,7 @@
->       tpnt->this_id        = 7;
->       tpnt->sg_tablesize    = SCSI_NCR_SG_TABLESIZE;
->       tpnt->cmd_per_lun    = SCSI_NCR_CMD_PER_LUN;
-> -    tpnt->use_clustering    = DISABLE_CLUSTERING;
-> +    tpnt->use_clustering    = ENABLE_CLUSTERING;
-> 
->       if (device->differential)
->           driver_setup.diff_support = device->differential;
-> === <> ===
-> 
-> And a loop like:
-> # while true; do nice -n -5 tar -xslpf linux-2.6.12-rc1-pa1.tar ; nice 
-> -n -5 rm -rf linux-2.6.12-rc1-pa 1-050319; date; done
-> 
-> was already running at least 85 time without any pb on this same c110 
-> (same kernel 2.6.18-rc6-pa1 + jejb's patch + your
-> timer_interrupt patch).
-> 
-> As you're scsi driver expert and also symbios/ncr one, may be have you 
-> an idea where ncr stuff could be broken by enabling 'clustering'?
-> 
-> TIA,
->     Joel
-> 
-> Joel Soete wrote:
->  > Hello *pa,
->  >
->  > Making some stress test to atempt to identify some smp pb on my d380, 
-> I figure
->  > out this ext[23] relatively grave pb. Effectively during this test loop:
->  > # while true ; do nice -n -3 tar -xspf linux-2.6.11-rc3-pa3.tar ; 
-> nice -n -3 rm
->  > -rf linux-2.6.11-rc3-pa3 ; date ; done
->  >
->  > after about 30 iteration, I got a fs' corruption:
->  > EXT3-fs error (device sda10): ext3_readdir: bad entry in directory 
-> #84801:
->  > rec_len % 4 != 0 - offset=0, inode=175234
->  > Aborting journal on device sda10.
->  >
->  > ext3_abort called.
->  >
->  > EXT3-fs error (device sda10): ext3_journal_start_sb: Detected aborted 
-> journal
->  >
->  > Remounting filesystem read-only
->  >
->  > EXT3-fs error (device sda10): ext3_readdir: bad entry in directory 
-> #84801:
->  > rec_len % 4 != 0 - offset=0, inode=1752397164, rec_len=24
->  > EXT3-fs error (device sda10): ext3_readdir: bad entry in directory 
-> #84801:
->  > rec_len % 4 != 0 - offset=0, inode=1752397164, rec_len=24
->  > [snip]
->  >
->  > and during fsck I noticed:
->  > __journal_remove_journal_head: freeing b_committed_data
->  >
->  > Pass 2: Checking directory structure
->  > Directory inode 84801, block 0, offset 0: directory corrupted
->  > Salvage? yes
->  >
->  > Missing '.' in directory inode 84801.
->  > Fix? yes
->  >
->  > Setting filetype for entry '.' in ??? (84801) to 2.
->  > Missing '..' in directory inode 84801.
->  > Fix? yes
->  >
->  > [snip]
->  >
->  > As the first time it was with a smp kernel, I re-test with up kernels 
-> only.
->  >
->  > This pb occured with different (up) kernels (2.6.17-rc6, 2.6.14, 
-> 2.6.17 and
->  > even with 2.6.8.1) on different fs located on different disk and 
-> different
->  > hba, and finaly on the 2 different cpu?
->  >
->  > That said I also get a fs corruption during a simple apt-get 
-> dist-upgrade:
->  > (sdb6 being /var)
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 745764206, count = 1
->  > Aborting journal on device sdb6.
->  > ext3_abort called.
->  > EXT3-fs error (device sdb6): ext3_journal_start_sb: Detected aborted 
-> journal
->  > Remounting filesystem read-only
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 1869488138, count = 1
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 1953459744, count = 1
->  > [snip]
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 2003788910, count = 1
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 1851878701, count = 1
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 1919248225, count = 1<3>BUG: soft lockup det
->  > ected on CPU#0!
->  > Backtrace:
->  >  [<1013222c>] update_process_times+0x34/0x80
->  >  [<1010748c>] timer_interrupt+0x9c/0x134
->  >  [<10145f44>] handle_IRQ_event+0x5c/0xa4
->  >  [<10146004>] __do_IRQ+0x78/0x18c
->  >  [<10107bc4>] do_cpu_irq_mask+0x6c/0xc8
->  >  [<1010a068>] intr_return+0x0/0xc
->  >
->  >
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 1632635402, count = 1
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 1734437731, count = 1
->  > [snip]
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 1313423904, count = 1
->  > EXT3-fs error (device sdb6): ext3_free_blocks: Freeing blocks not in 
-> datazone -
->  > block = 171515972, count = 1
->  > EXT3-fs error (device sdb6) in ext3_reserve_inode_write: Journal has 
-> aborted
->  > EXT3-fs error (device sdb6) in ext3_truncate: Journal has aborted
->  > EXT3-fs error (device sdb6) in ext3_reserve_inode_write: Journal has 
-> aborted
->  > EXT3-fs error (device sdb6) in ext3_orphan_del: Journal has aborted
->  > EXT3-fs error (device sdb6) in ext3_reserve_inode_write: Journal has 
-> aborted
->  > __journal_remove_journal_head: freeing b_committed_data
->  >
->  > It's the only system of this model on which I can reproduce but also 
-> I can
->  > test (and as I am not hp, I don't have passwd diagnostic cd to test 
-> hw ;-( ),
->  > so it's very hard to me if it's a driver pb (e.g. ncr hba) or a hw pb?
->  >
->  > Any idea, advises are welcome.
->  >
->  > Thanks in advance,
->  >     Joel
->  >
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
