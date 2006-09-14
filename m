@@ -1,16 +1,18 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] NPTL for hppa-linux approaching production ready!
-Date: Wed, 13 Sep 2006 18:31:46 -0400
-Message-ID: <119aab440609131531p23470b7dkdf8419838d884ec8@mail.gmail.com>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] Good news for d380 but sad news for n4k
+	with	newest rwlock implementation ; -)
+Date: Wed, 13 Sep 2006 23:16:00 -0500
+Message-ID: <200609132316.00952.mszick@morethan.org>
+References: <4508505F.8030407@scarlet.be>
+	<200609131410.51839.mszick@morethan.org>
+	<45086ED6.2070109@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- "Jeff Bailey" <jbailey@raspberryginger.com>,
- "Randolph Chung" <randolph@tausq.org>,
- "John David Anglin" <dave.anglin@nrc.ca>
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@scarlet.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <45086ED6.2070109@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,117 +23,72 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Application destructor running problems fixed, and checked into libc-ports!
+On Wed September 13 2006 15:49, Joel Soete wrote:
+> 
+> Michael S. Zick wrote:
+> > On Wed September 13 2006 13:39, Joel Soete wrote:
+> >> Hello all,
+> >>
+> >> The good point is that k 2.6.18-rc5-pa1 (32bit smp) already run my kernel build loop for 10 days of test without any pb ;-)
+> >>
 
-My latest testsuite run shows:
+That is progress - the D380 used to be the one that failed first - now
+that is around 5 times longer than ever before.
 
-make[2]: *** [/libc-tls-nptl/math/test-float.o] Error 1
-make[2]: *** [/libc-tls-nptl/math/test-double.out] Error 1
-make[2]: *** [/libc-tls-nptl/math/test-ifloat.out] Error 1
-make[2]: *** [/libc-tls-nptl/math/test-idouble.o] Error 1
-make[1]: *** [math/tests] Error 2
+> >> Otoh, the 2.6.18-rc7-pa0 (64bit smp) boot well on n4k but didn't survive 10 minutes (here there are an additional tar/untar 
+> >> loop) to stress test.
+> >>
 
-	- Normal math problems. No worries here.
-	- Ignore.
+This may also be good news - with the general problems taken care of, now
+we have something specific to the N4K to locate.
 
-make[2]: [/libc-tls-nptl/posix/annexc.out] Error 1 (ignored)
+And having it fail in 10 minutes is a lot nicer than failing in 10 days.
 
-make[2]: *** [/libc-tls-nptl/nptl/tst-align2.out] Error 1
+> > 
+> > Finally, I think we forced the kernel to give us some usable information!
+> > 
+> > Besides the kernel version and kernel width (32-bit & 64-bit) your earlier
+> > posting of the /proc/cpuinfo messages shows the d380 is a 32-byte cache-line
+> for c110 yes but for d380 I would like to check (this a p8000 but runing 32bit kernel so?)
+>
 
-	- Reason unkonwn. SIGSEGV in child.
-	- Bad.
+My bad, it was the c110 with the 32-byte cache-line, I lost track of what was what.
 
-make[2]: *** [/libc-tls-nptl/nptl/tst-cancel24] Error 1
+> (specialy usefull to me to learn how to finish the jda stuff)
+>
 
-	- libstdc++.so problem with my environment?
-	- Ignore.
+IIRC, Since spinlock_t is a compile-time size, Dave thought that all we could do
+was print a warning if the kernel was booted on a machine with a cache-line size
+different than what it was compiled for.
 
-	/usr/local/tools/bin/../lib/gcc/hppa-linux/4.2.0/../../../libstdc++.so:
-undefined reference to `int std::__convert_from_v<long double>(char*,
-int, char const*, long double, int* const&, int)'
-	/usr/local/tools/bin/../lib/gcc/hppa-linux/4.2.0/../../../libstdc++.so:
-undefined reference to `int std::__convert_from_v<double>(char*, int,
-char const*, double, int* const&, int)'
-	collect2: ld returned 1 exit status
+To do that requires the cache-line size be put into that pdc data structure;
+which is part of the /proc/cpuinfo and dmesg changes.
 
-/libc-tls-nptl/nptl/tst-oddstacklimit: error while loading shared
-libraries: libpthread.so.0: cannot open shared object file: Error 14
-make[2]: *** [/libc-tls-nptl/nptl/tst-oddstacklimit.out] Error 127
+Since application programs may not have to be compile-time sized, having the
+cache-line size in /proc/cpuinfo could be useful for other purposes also.
 
-	- This test is baloney, setting 'ulimit -s 1023' is not a good test.
-	- Standard stack is '8192', or an 8MB stack, not a 1MB stack.
-	- The error you see is libpthread.so.0 failing to load because the stack
-	  is probably too small, and libc makes alloca calls aswell.
-	- Ignore.
+I seem to recall that Dave passed on those changes to Kyle, but I may be
+wrong in my recollection.
+ 
+> > and the n4k is a 64-byte cache-line machine.
+> > 
+> Curious to read results on pa8800 system (if somebody could take try on such system?)
+> 
+> > What patches where applied to this kernel?
+> > Willy's spinlock changes?
+> > The timer changes?
+> > The interrupt nesting changes?
+> > The /proc/cpuinfo changes?
+> > 
+> on d180 only "Willy's spinlock changes" (as per pa1)
+> on n4k all.
+>
 
-make[2]: *** [/libc-tls-nptl/nptl/tst-getpid1.out] Error 1
-make[2]: *** [/libc-tls-nptl/nptl/tst-getpid2.out] Error 1
-
-	- Possible breakage in clone. New called function via clone returns
-parents PID from
-	  call to getpid(). This means clone failed?
-	- Bad.
-
-make[2]: *** [/libc-tls-nptl/nptl/tst-cancelx4.out] Error 1
-make[2]: *** [/libc-tls-nptl/nptl/tst-cancelx5.out] Error 1
-make[2]: *** [/libc-tls-nptl/nptl/tst-cancelx20.out] Error 1
-make[2]: *** [/libc-tls-nptl/nptl/tst-cancelx21.out] Error 1
-make[2]: *** [/libc-tls-nptl/nptl/tst-cleanupx4.out] Error 1
-make[1]: *** [nptl/tests] Error 2
-
-	- All 5 tests are cleanup handler failures.
-	- Bad.
-
-make[2]: *** [/libc-tls-nptl/rt/tst-timer.out] Error 139
-
-	- nptl/sysdeps/pthread/tst-timer.c crash in signal handler.
-	- Bad.
-
-make[2]: *** [/libc-tls-nptl/rt/tst-mqueue3.out] Error 1
-
-	- mq_open fails?
-	- Ignore.
-
-make[2]: *** [/libc-tls-nptl/rt/tst-timer4.out] Error 1
-make[2]: *** [/libc-tls-nptl/rt/tst-timer5.out] Error 1
-make[2]: *** [/libc-tls-nptl/rt/tst-cputimer1.out] Error 1
-make[2]: *** [/libc-tls-nptl/rt/tst-cputimer2.out] Error 1
-make[2]: *** [/libc-tls-nptl/rt/tst-cputimer3.out] Error 1
-
-	- Crash when timer fires. Related to tst-timer?
-	- Bad.
-
-make[1]: *** [rt/tests] Error 2
-make[2]: *** [/libc-tls-nptl/elf/tst-pie1.out] Error 139
-
-	- Probably a toolchain problem with -fPIE.
-	- Ignore.
-
-make[2]: *** [/libc-tls-nptl/elf/tst-audit2.out] Error 139
-
-	- dl-trampoline.S enter_plt path done, but exit_plt path has bugs.
-	- Ignore until I finish the code.
-
-make[2]: *** [/libc-tls-nptl/elf/tst-addr1.out] Error 1
-
-	- This test doesn't work well with architectures that use OPD's.
-	- Without first resolving printf we can't get its address.
-	- This test is bogus.
-	- Ignore.
-
-make[2]: *** [/libc-tls-nptl/elf/check-textrel.out] Error 1
-make[1]: *** [elf/tests] Error 2
-make: *** [check] Error 2
-
-	- We have various security considerations to take into account.
-	- For right now we don't care that text relocations are writable.
-	- Ignore.
-
-Summary:
-	14 - Bad failures.
-	11 - Ignored failures.
-
-We are looking production ready ;)
+Perhaps those changes should get another look for 64-bit problems before
+pulling them to locate the one that took the machine down so fast.
+ 
+> Joel
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
