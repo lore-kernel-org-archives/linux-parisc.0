@@ -1,15 +1,12 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] Zen and the Art of Merge Maintenance
-Date: Tue, 12 Sep 2006 11:19:29 -0400
-Message-ID: <20060912151929.GB15336@athena.road.mcmartin.ca>
-References: <20060912124622.GM29775@parisc-linux.org>
+From: David Woodhouse <dwmw2@infradead.org>
+Subject: [parisc-linux] [PATCH] Fix 'make headers_check' for PARISC in 2.6.18
+Date: Thu, 14 Sep 2006 11:47:54 +0100
+Message-ID: <1158230874.4312.51.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
+Content-Type: text/plain
 Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: matthew@wil.cx
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060912124622.GM29775@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,49 +17,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Ok, this is how I've been doing merges on palinux.
+Running 'make headers_check' with the 2.6.18-rc7 kernel gives this error
+on parisc:
 
-(Using palinux only to minimize the amount of uploading I have to do
- when I push the tree)
+  CHECK   include/asm/page.h
+/tmp/khdr-parisc/include/asm/page.h requires asm-generic/memory_model.h,
+which does not exist in exported headers
 
-## first, update the `linus' branch on palinux
+Fix attached. Please apply and forward to Linus before 2.6.18, if you
+want parisc to be working in the linux-libc-headers which get released
+based on the 2.6.18 exported headers. Having an empty asm/page.h is fine
+-- it's one of the headers which is probably going to disappear entirely
+in future. But for now, having it break the compile if it does happen to
+be included is a bad thing.
 
-$ git fetch \
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
- master:linus
+The patch also removes some gratuitous and probably incorrect noise
+within #ifndef __KERNEL__, and corrects a some comments. 
 
-## then push the branch back, and any new tags
+Signed-off-by: David Woodhouse <dwmw2@infradead.org>
 
-$ git push origin linus:linus
-$ git push --tags origin
-
-## make sure the tree is clean
-
-$ git checkout -f
-
-## then do the merge from a tag
-
-$ git pull origin refs/tags/v2.6.18-rc6:master
-
-## look at, and fix up conflicts
-
-$ vi Makefile
-
-## edit the merge message to remove the conflicts section
-
-$ git commit -a
-
-## tag the merge
-
-$ git tag -a v2.6.18-rc6-pa0
-
-## push
-
-$ git push origin
-$ git push --tags origin
-
-## and we're done
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+diff --git a/include/asm-parisc/page.h b/include/asm-parisc/page.h
+index 0695bc9..cb90065 100644
+--- a/include/asm-parisc/page.h
++++ b/include/asm-parisc/page.h
+@@ -1,22 +1,14 @@
+ #ifndef _PARISC_PAGE_H
+ #define _PARISC_PAGE_H
+ 
+-#if !defined(__KERNEL__)
+-/* this is for userspace applications (4k page size) */
+-# define PAGE_SHIFT	12	/* 4k */
+-# define PAGE_SIZE	(1UL << PAGE_SHIFT)
+-# define PAGE_MASK	(~(PAGE_SIZE-1))
+-#endif
+-
+-
+ #ifdef __KERNEL__
+ 
+ #if defined(CONFIG_PARISC_PAGE_SIZE_4KB)
+-# define PAGE_SHIFT	12	/* 4k */
++# define PAGE_SHIFT	12	/* 4KiB */
+ #elif defined(CONFIG_PARISC_PAGE_SIZE_16KB)
+-# define PAGE_SHIFT	14	/* 16k */
++# define PAGE_SHIFT	14	/* 16KiB */
+ #elif defined(CONFIG_PARISC_PAGE_SIZE_64KB)
+-# define PAGE_SHIFT	16	/* 64k */
++# define PAGE_SHIFT	16	/* 64KiB */
+ #else
+ # error "unknown default kernel page size"
+ #endif
+@@ -188,9 +180,8 @@ #define virt_to_page(kaddr)     pfn_to_p
+ #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
+ 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+ 
+-#endif /* __KERNEL__ */
