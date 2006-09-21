@@ -1,11 +1,11 @@
-From: David Woodhouse <dwmw2@infradead.org>
-Subject: [parisc-linux] [PATCH] Fix 'make headers_check' for PARISC in 2.6.18
-Date: Thu, 14 Sep 2006 11:47:54 +0100
-Message-ID: <1158230874.4312.51.camel@pmac.infradead.org>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] Anyone maintaining Mux?
+Date: Wed, 20 Sep 2006 20:51:29 -0600
+Message-ID: <20060921025129.GK2585@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux@parisc-linux.org
-To: matthew@wil.cx
+Content-Type: text/plain;
+  charset=us-ascii
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -17,57 +17,42 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Running 'make headers_check' with the 2.6.18-rc7 kernel gives this error
-on parisc:
 
-  CHECK   include/asm/page.h
-/tmp/khdr-parisc/include/asm/page.h requires asm-generic/memory_model.h,
-which does not exist in exported headers
+Ryan's listed as the MODULE_AUTHOR for Mux, but I haven't seen anything
+from him since he changed jobs.
 
-Fix attached. Please apply and forward to Linus before 2.6.18, if you
-want parisc to be working in the linux-libc-headers which get released
-based on the 2.6.18 exported headers. Having an empty asm/page.h is fine
--- it's one of the headers which is probably going to disappear entirely
-in future. But for now, having it break the compile if it does happen to
-be included is a bad thing.
+I recently did an allmodconfig build and I'm looking at the missing
+symbols.  A modular Mux looks for:
 
-The patch also removes some gratuitous and probably incorrect noise
-within #ifndef __KERNEL__, and corrects a some comments. 
+WARNING: "pdc_iodc_putc" [drivers/serial/mux.ko] undefined!
 
-Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+That's funny (mostly in the sense of odd, with a tinge of amusing)
+because mux is supposed to be an output driver ... why's it calling pdc
+to write bytes for it?
 
-diff --git a/include/asm-parisc/page.h b/include/asm-parisc/page.h
-index 0695bc9..cb90065 100644
---- a/include/asm-parisc/page.h
-+++ b/include/asm-parisc/page.h
-@@ -1,22 +1,14 @@
- #ifndef _PARISC_PAGE_H
- #define _PARISC_PAGE_H
- 
--#if !defined(__KERNEL__)
--/* this is for userspace applications (4k page size) */
--# define PAGE_SHIFT	12	/* 4k */
--# define PAGE_SIZE	(1UL << PAGE_SHIFT)
--# define PAGE_MASK	(~(PAGE_SIZE-1))
--#endif
--
--
- #ifdef __KERNEL__
- 
- #if defined(CONFIG_PARISC_PAGE_SIZE_4KB)
--# define PAGE_SHIFT	12	/* 4k */
-+# define PAGE_SHIFT	12	/* 4KiB */
- #elif defined(CONFIG_PARISC_PAGE_SIZE_16KB)
--# define PAGE_SHIFT	14	/* 16k */
-+# define PAGE_SHIFT	14	/* 16KiB */
- #elif defined(CONFIG_PARISC_PAGE_SIZE_64KB)
--# define PAGE_SHIFT	16	/* 64k */
-+# define PAGE_SHIFT	16	/* 64KiB */
- #else
- # error "unknown default kernel page size"
- #endif
-@@ -188,9 +180,8 @@ #define virt_to_page(kaddr)     pfn_to_p
- #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
- 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
- 
--#endif /* __KERNEL__ */
+Turns out, that's in mux_console_write() -- ie only used if
+CONFIG_SERIAL_MUX_CONSOLE is set.  It's an exact duplicate of the code
+in pdc_cons.c.
+
+We have five options that I see for solving this:
+
+1. Make CONFIG_SERIAL_MUX a bool.  No more mux-as-module.
+
+2. Make CONFIG_SERIAL_MUX_CONSOLE only available if CONFIG_SERIAL_MUX is y.
+
+3. Export pdc_iodc_putc.  What's one more symbol between friends?
+
+4. Delete CONFIG_SERIAL_MUX_CONSOLE and make pdc console work right.
+
+5. Rewrite the Mux console to actually use the mux rather than PDC.
+
+I'd like somebody else to be enthusiastic enough to do #5, but I'm
+concerned that we don't really have a maintainer for this code right
+now, and nobody's going to have time/inclination to do it.
+
+BTW, owning this hardware is not required to work on this driver -- we
+have a K-class with remote power in the Fort Collins test-ring.
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
