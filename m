@@ -1,14 +1,12 @@
 From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: [parisc-linux] Re:w-a to what [Was: D380 and ext[23] fs grave pb]
-Date: Thu, 21 Sep 2006 09:44:18 +0200
-Message-ID: <J5XMTU$E343E6866EECDA1EF5A8398F48EC38DA@scarlet.be>
+Subject: Re: [parisc-linux] the 53c700 driver pb on c110/d380
+Date: Thu, 21 Sep 2006 09:58:13 +0200
+Message-ID: <J5XNH1$569ECF73DD1D392C7A9410B9077DDA0C@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=iso-8859-1
-Cc: "James.Bottomley" <James.Bottomley@SteelEye.com>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>,
- matthew <matthew@wil.cx>
-To: "soete.joel" <soete.joel@scarlet.be>
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "James.Bottomley" <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -20,84 +18,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Hello James, Matthrew,
-> 
-Just small update ;-)
+> On Fri, 2006-09-15 at 11:10 +0000, Joel Soete wrote:
+> > Aug 26 07:37:48 patst007 kernel: scsi3: (3:0) phase mismatch at 01e8,=
 
-> I come back to you with this pb because as explained in a previous mail=
-: 
->
-<http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/0301=
-52.html>
+> > phase IO CD MSG BSY REQ MSG IN
 > 
-> , it seems to be related to ncr53c720 driver.
+> 1e8 is 	at
 > 
-> As I encountered same kind of pb on my c110:
-> a few time after the reboot, I just did a tar/untar and already get:
-> EXT3-fs error (device md2): ext3_readdir: bad entry in directory4Remoun=
-ting
-filesystem read-only
+> MOVE	CommandCount, CommandAddress, WHEN CMD
 > 
-> That said, it seems that I find a work around: I just reverted this
->
-<http://cvs.parisc-linux.org/linux-2.6/drivers/scsi/ncr53c8xx.c?r1=3D1.18=
-&r2=3D1.19&makepatch=3D1&diff_format=3Dh>
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /var/lib/cvs/linux-2.6/drivers/scsi/ncr53c8xx.c,v
-> retrieving revision 1.18
-> retrieving revision 1.19
-> diff -u -r1.18 -r1.19
-> --- linux-2.6/drivers/scsi/ncr53c8xx.c	2004/07/20 22:06:43	1.18
-> +++ linux-2.6/drivers/scsi/ncr53c8xx.c	2004/07/27 21:19:51	1.19
-> @@ -8633,7 +8633,7 @@
->    	tpnt->this_id		=3D 7;
->    	tpnt->sg_tablesize	=3D SCSI_NCR_SG_TABLESIZE;
->    	tpnt->cmd_per_lun	=3D SCSI_NCR_CMD_PER_LUN;
-> -	tpnt->use_clustering	=3D DISABLE_CLUSTERING;
-> +	tpnt->use_clustering	=3D ENABLE_CLUSTERING;
-> 
->    	if (device->differential)
->    		driver_setup.diff_support =3D device->differential;
-> =3D=3D=3D <> =3D=3D=3D
-> 
-> And a loop like:
-> # while true; do nice -n -5 tar -xslpf linux-2.6.12-rc1-pa1.tar ; nice =
--n -5
-rm -rf linux-2.6.12-rc1-pa 1-050319; date; done
-> 
-> was already running at least 85 time without any pb on this same c110 (=
-same
-kernel 2.6.18-rc6-pa1 + jejb's patch + your
-> timer_interrupt patch).
-> 
-A longuer test on d380 (2.6.18-rc7-pa1 32bit up kernel) failed after only=
- some
-loop with message:
-EXT3-fs error (device sda10): ext3_readdir: bad entry in directory #14607=
-0:
-rec_len % 4 !=3D 0 - offset=3D0, inode=3D17645
-Aborting journal on device sda10.                                        =
-    
-                                                      
-ext3_abort called.                                                       =
-    
-                                                      
-EXT3-fs error (device sda10): ext3_journal_start_sb: Detected aborted jou=
-rnal
-                                                      
-Remounting filesystem read-only
+> What this means is that the device transitioned away from the command
+> phase while the host still had bytes to send.  i.e. the host and device=
 
-Too bad ;-(
+> disagree on how long some command should be.  Thus, either the device i=
+s
+> buggy, or someone sent a command via sg with an incorrect length.
+> 
+Thanks.
 
-Thanks,
+Btw I grab the disk with its scsi terminator and scsi cable to connect it=
+ on a
+b180 (using also scsi1: 53c710 rev 2) and ran the test loop for now more =
+then
+17h without any kind of pb ;-)
+
+May I supposed that there is no hw with scsi disk.
+
+That said the kernel used the same drivers for the same kind of hba, and =
+afaik
+the big diff between this b180 and other c110/d380 is the ccio runaway bu=
+s
+ctrlr. May I so reasonably thougt that the pb came from the ccio-dma driv=
+er?
+But where should it be located?
+
+Thanks again,
     Joel
 
-=0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous devenez au=
-jourd'hui Scarlet One grace a un client existant de Scarlet, vous recevez=
- tous les deux un cadeau d'une valeur de 50 euros! Surfez vite sur http:/=
-/www.clubscarlet.be
+> James
+> 
+> 
+> =0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous devenez =
+aujourd'hui Scarlet One grace a un client existant de Scarlet, vous recev=
+ez tous les deux un cadeau d'une valeur de 50 euros! Surfez vite sur http=
+://www.clubscarlet.be
 
 _______________________________________________
 parisc-linux mailing list
