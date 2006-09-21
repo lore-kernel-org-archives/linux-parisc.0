@@ -1,7 +1,7 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Anyone maintaining Mux?
-Date: Wed, 20 Sep 2006 20:51:29 -0600
-Message-ID: <20060921025129.GK2585@parisc-linux.org>
+Subject: [parisc-linux] Current allmodconfig failures
+Date: Thu, 21 Sep 2006 05:42:40 -0600
+Message-ID: <20060921114240.GL2585@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
@@ -17,41 +17,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-Ryan's listed as the MODULE_AUTHOR for Mux, but I haven't seen anything
-from him since he changed jobs.
-
-I recently did an allmodconfig build and I'm looking at the missing
-symbols.  A modular Mux looks for:
-
+$ grep undefined make.err 
+WARNING: "flush_data_cache" [drivers/video/console/sticore.ko] undefined!
+WARNING: "sti_set" [drivers/video/console/sticon.ko] undefined!
+WARNING: "sti_putc" [drivers/video/console/sticon.ko] undefined!
+WARNING: "sti_bmove" [drivers/video/console/sticon.ko] undefined!
+WARNING: "sti_clear" [drivers/video/console/sticon.ko] undefined!
+WARNING: "dummy_con" [drivers/video/console/sticon.ko] undefined!
+WARNING: "conswitchp" [drivers/video/console/sticon.ko] undefined!
 WARNING: "pdc_iodc_putc" [drivers/serial/mux.ko] undefined!
+WARNING: "isa_bus_to_virt" [drivers/net/ni52.ko] undefined!
 
-That's funny (mostly in the sense of odd, with a tinge of amusing)
-because mux is supposed to be an output driver ... why's it calling pdc
-to write bytes for it?
+I suspect the flush_data_cache() is a relic from the olden days -- I
+think the flush_icache_range() call should be sufficient.
 
-Turns out, that's in mux_console_write() -- ie only used if
-CONFIG_SERIAL_MUX_CONSOLE is set.  It's an exact duplicate of the code
-in pdc_cons.c.
+The pdc_iodc_putc() call I mentioned in a missive yesterday.
 
-We have five options that I see for solving this:
+isa_bus_to_virt() is an interesting one.  We don't currently have
+virtual mappings for the ISA bus.  This driver needs to be converted to
+use ioremap().  I'm tempted to mark it !PARISC in Kconfig.  Or rather,
+mark it ARM || MIPS || X86 since those are the only architectures which
+implement isa_bus_to_virt.
 
-1. Make CONFIG_SERIAL_MUX a bool.  No more mux-as-module.
+STI scares me.  I don't understand why we need the dummy console.  I
+don't know if it makes any sense to build your console as a module.  I
+don't know why sticore is in the console directory.
 
-2. Make CONFIG_SERIAL_MUX_CONSOLE only available if CONFIG_SERIAL_MUX is y.
-
-3. Export pdc_iodc_putc.  What's one more symbol between friends?
-
-4. Delete CONFIG_SERIAL_MUX_CONSOLE and make pdc console work right.
-
-5. Rewrite the Mux console to actually use the mux rather than PDC.
-
-I'd like somebody else to be enthusiastic enough to do #5, but I'm
-concerned that we don't really have a maintainer for this code right
-now, and nobody's going to have time/inclination to do it.
-
-BTW, owning this hardware is not required to work on this driver -- we
-have a K-class with remote power in the Fort Collins test-ring.
+I fixed all the other allmodconfig problems I found ;-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
