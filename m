@@ -1,15 +1,16 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] Current allmodconfig failures
-Date: Fri, 22 Sep 2006 20:44:03 +0200
-Message-ID: <200609222044.03317.deller@gmx.de>
-References: <20060921114240.GL2585@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [PATCH] timer_interrupt #5
+Date: Fri, 22 Sep 2006 20:41:41 -0400 (EDT)
+Message-ID: <200609230041.k8N0fgHk014938@hiauly1.hia.nrc.ca>
+References: <20060908184933.GA24597@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: Matthew Wilcox <matthew@wil.cx>
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20060921114240.GL2585@parisc-linux.org>
+In-Reply-To: <20060908184933.GA24597@colo.lackof.org> from "Grant Grundler" at
+	Sep 8, 2006 12:49:33 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,42 +21,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thursday 21 September 2006 13:42, Matthew Wilcox wrote:
-> $ grep undefined make.err 
-> WARNING: "flush_data_cache" [drivers/video/console/sticore.ko] undefined!
-> WARNING: "sti_set" [drivers/video/console/sticon.ko] undefined!
-> WARNING: "sti_putc" [drivers/video/console/sticon.ko] undefined!
-> WARNING: "sti_bmove" [drivers/video/console/sticon.ko] undefined!
-> WARNING: "sti_clear" [drivers/video/console/sticon.ko] undefined!
-> WARNING: "dummy_con" [drivers/video/console/sticon.ko] undefined!
-> WARNING: "conswitchp" [drivers/video/console/sticon.ko] undefined!
-> 
-> I suspect the flush_data_cache() is a relic from the olden days -- I
-> think the flush_icache_range() call should be sufficient.
+> For the record, I 've been testing those patches on C3000 (no problems)
+> B2600 (HPMC in tulip_get_stats() from LED/LCD task), and A500 (no problems).
+> The C3000 (32-bit UP) and A500 (64-bit SMP) ran "make -j4" several days
+> in a loop with no problems or console output.
 
-Yes. flush_kernel_dcache_range() may need to stay as well.
+I just saw the following message doing an "apt-get upgrade" on c2k:
 
-> STI scares me.  
+tar: ./usr/share/sysvinit/inittab: time stamp 2006-09-22 20:32:05.780266 is 0.000141 s in the future
 
-Why ?
+System is 2.6.18-rc7-pa1.
 
-> I don't understand why we need the dummy console.  
-
-AFAIK, we need the dummy console, because at the point where other arches initialize their graphics subsystem, we can't do it.
-We do it later when all infrastructure is available and then take_over_console().
-
-> I don't know if it makes any sense to build your console as a module. 
-
-Why not ?
-Switching from sti console to another one should be possible IMHO.
-It's even good when debugging the STI functions.
-
-> I don't know why sticore is in the console directory.
-
-sticore is used by stifb and sticon.
-It has more console functions, so IMHO it's OK.
-
-Helge
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
