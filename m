@@ -1,12 +1,19 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Current allmodconfig failures
-Date: Thu, 21 Sep 2006 05:42:40 -0600
-Message-ID: <20060921114240.GL2585@parisc-linux.org>
+Subject: Re: [parisc-linux] [PATCH] ioremap balanced with iounmap for
+	drivers/parisc
+Date: Thu, 28 Sep 2006 07:14:52 -0600
+Message-ID: <20060928131452.GA5017__43845.4632102095$1416624601$gmane$org@parisc-linux.org>
+References: <1159422814.9310.17.camel@amol.verismonetworks.com>
+	<20060928125815.GA3507@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-To: parisc-linux@parisc-linux.org
+Cc: kernel Janitors <kernel-janitors@lists.osdl.org>,
+ Amol Lad <amol@verismonetworks.com>,
+ parisc-linux@parisc-linux.org
+To: Kyle McMartin <kyle@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20060928125815.GA3507@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,33 +24,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-$ grep undefined make.err 
-WARNING: "flush_data_cache" [drivers/video/console/sticore.ko] undefined!
-WARNING: "sti_set" [drivers/video/console/sticon.ko] undefined!
-WARNING: "sti_putc" [drivers/video/console/sticon.ko] undefined!
-WARNING: "sti_bmove" [drivers/video/console/sticon.ko] undefined!
-WARNING: "sti_clear" [drivers/video/console/sticon.ko] undefined!
-WARNING: "dummy_con" [drivers/video/console/sticon.ko] undefined!
-WARNING: "conswitchp" [drivers/video/console/sticon.ko] undefined!
-WARNING: "pdc_iodc_putc" [drivers/serial/mux.ko] undefined!
-WARNING: "isa_bus_to_virt" [drivers/net/ni52.ko] undefined!
+On Thu, Sep 28, 2006 at 08:58:15AM -0400, Kyle McMartin wrote:
+> On Thu, Sep 28, 2006 at 11:23:34AM +0530, Amol Lad wrote:
+> > ioremap must be balanced by an iounmap and failing to do so can result
+> > in a memory leak.
+> > 
+> 
+> Looks ok. Will merge.
 
-I suspect the flush_data_cache() is a relic from the olden days -- I
-think the flush_icache_range() call should be sufficient.
-
-The pdc_iodc_putc() call I mentioned in a missive yesterday.
-
-isa_bus_to_virt() is an interesting one.  We don't currently have
-virtual mappings for the ISA bus.  This driver needs to be converted to
-use ioremap().  I'm tempted to mark it !PARISC in Kconfig.  Or rather,
-mark it ARM || MIPS || X86 since those are the only architectures which
-implement isa_bus_to_virt.
-
-STI scares me.  I don't understand why we need the dummy console.  I
-don't know if it makes any sense to build your console as a module.  I
-don't know why sticore is in the console directory.
-
-I fixed all the other allmodconfig problems I found ;-)
+Actually, it shows some areas we need to do better.  It's an
+improvement, but look at, eg, the error returns from elroy.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
