@@ -1,12 +1,13 @@
-From: Jeff Bailey <jbailey@raspberryginger.com>
-Subject: [parisc-linux] NPTL Glibc on Ubuntu this week
-Date: Tue, 31 Oct 2006 09:49:35 -0500
-Message-ID: <1162306175.5738.6.camel@localhost.localdomain>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] Why wasn't rbrad cc'd on mux patch?
+Date: Mon, 2 Oct 2006 05:26:11 -0600
+Message-ID: <20061002112611.GJ16272@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============2099052943=="
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@parisc-linux.org
+To: Amol Lad <amol@verismonetworks.com>,
+ Andrew Morton <akpm@osdl.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,56 +20,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
---===============2099052943==
-Content-type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-DRvxaa7kPsukXGW21HEO"
+I don't see anyone who knows anything about this driver on the CC list
+for this patch which is already in Linus' tree.  That's poor form.
+You need to check MODULE_AUTHOR next time.
 
+commit af907dc8cd4157d629e48533b3400786467340d5
+Author: Amol Lad <amol@verismonetworks.com>
+Date:   Sat Sep 30 23:29:25 2006 -0700
 
---=-DRvxaa7kPsukXGW21HEO
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+    [PATCH] ioremap balanced with iounmap for drivers/serial/mux.c
+    
+    ioremap must be balanced by an iounmap and failing to do so can result
+    in a memory leak.
+    
+    Signed-off-by: Amol Lad <amol@verismonetworks.com>
+    Cc: Alan Cox <alan@lxorguk.ukuu.org.uk>
+    Signed-off-by: Andrew Morton <akpm@osdl.org>
+    Signed-off-by: Linus Torvalds <torvalds@osdl.org>
 
-Hey'all!
-
-We're just getting ready to roll out the new glibc on Ubuntu.  Last I
-checked, Carlos said that there was libthread ABI breakage.  We didn't
-bump the SOVERSION, though.  Even if we did bump it, Debian/Ubuntu don't
-track the thread package version separately right now, so we'd never see
-it in package upgrades - things will just silently break.  So far the
-plan is to ignore it, since updating from dapper to feisty is a by-hand
-operation and the basic tools aren't threaded.  So upgrades will work,
-they'll just suck.
-
-So this is a final check before we roll - any other dragons hiding in
-the waters that we might worry about?
-
---
-Jeff Bailey - http://www.raspberryginger.com/jbailey/
-
---=-DRvxaa7kPsukXGW21HEO
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQBFR2J/5M5hmdCYCpkRAp6LAKCkngcVfCGy1escsYVb/Dg9jWJTUgCg6XKa
-S4DVwd4pEUJbbxXA7GkeKWM=
-=Nns9
------END PGP SIGNATURE-----
-
---=-DRvxaa7kPsukXGW21HEO--
-
-
---===============2099052943==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============2099052943==--
