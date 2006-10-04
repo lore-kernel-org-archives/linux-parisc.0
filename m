@@ -1,16 +1,17 @@
-From: Amol Lad <amol@verismonetworks.com>
-Subject: [parisc-linux] [PATCH] ioremap balanced with iounmap for
-	drivers/parisc
-Date: Thu, 28 Sep 2006 11:23:34 +0530
-Message-ID: <1159422814.9310.17.camel__13978.3726343468$1416624601$gmane$org@amol.verismonetworks.com>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] NCR SCSI hardware documentation
+Date: Wed, 4 Oct 2006 08:05:13 -0500
+Message-ID: <200610040805.14001.mszick@morethan.org>
+References: <200609250926.40678.mszick@morethan.org>
+	<1159462892.3392.2.camel@mulgrave.il.steeleye.com>
+	<200609281347.34279.mszick@morethan.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: kernel Janitors <kernel-janitors@lists.osdl.org>,
- parisc-linux@parisc-linux.org
-To: kyle@parisc-linux.org,
- grundler@parisc-linux.org,
- matthew@wil.cx
+Content-Type: text/plain;
+  charset="us-ascii"
+Cc: James Bottomley <James.Bottomley@steeleye.com>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200609281347.34279.mszick@morethan.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,91 +22,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-ioremap must be balanced by an iounmap and failing to do so can result
-in a memory leak.
+On Thu September 28 2006 13:47, Michael S. Zick wrote:
+>
+> The SCSI SCRIPTS Processors Programming Guide:
+> http://www.lsilogic.com/files/docs/techdocs/storage_stand_prod/PCISCSICont/Software/8XX_21.pdf
+> 
+> This document also covers 7xx SCRIPTS processors - the comment about 770+ comes about because
+> this is an LSI document and controllers prior to the 770 acquired from Symbolics where not
+> continued. [confirmed]
+> This _is_ the programming manual for the 720 when limited to the 720 instruction set ...
+> 
 
-Tested (compilation only) to make sure the files are compiling without
-any warning/error due to new changes
+The following two items are posted for the use of the parisc-Linux
+driver development community by permission of LSI-Logic.  
+No NDA required for either item, additional
+re-distribution requires permission from LSI-Logic.
 
-Signed-off-by: Amol Lad <amol@verismonetworks.com>
----
- dino.c    |    4 +++-
- eisa.c    |    1 +
- iosapic.c |    1 +
- lba_pci.c |    7 ++++++-
- 4 files changed, 11 insertions(+), 2 deletions(-)
----
-diff -uprN -X linux-2.6.18-orig/Documentation/dontdiff linux-2.6.18-orig/drivers/parisc/dino.c linux-2.6.18/drivers/parisc/dino.c
---- linux-2.6.18-orig/drivers/parisc/dino.c	2006-09-21 10:15:38.000000000 +0530
-+++ linux-2.6.18/drivers/parisc/dino.c	2006-09-28 10:14:07.000000000 +0530
-@@ -1007,8 +1007,10 @@ static int __init dino_probe(struct pari
- 		dino_bridge_init(dino_dev, name);
- 	}
- 
--	if (dino_common_init(dev, dino_dev, name))
-+	if (dino_common_init(dev, dino_dev, name)) {
-+		iounmap(dino_dev->hba.base_addr);
- 		return 1;
-+	}
- 
- 	dev->dev.platform_data = dino_dev;
- 
-diff -uprN -X linux-2.6.18-orig/Documentation/dontdiff linux-2.6.18-orig/drivers/parisc/eisa.c linux-2.6.18/drivers/parisc/eisa.c
---- linux-2.6.18-orig/drivers/parisc/eisa.c	2006-09-21 10:15:38.000000000 +0530
-+++ linux-2.6.18/drivers/parisc/eisa.c	2006-09-28 10:14:49.000000000 +0530
-@@ -381,6 +381,7 @@ static int __devinit eisa_probe(struct p
- 		eisa_dev.root.dma_mask = 0xffffffff; /* wild guess */
- 		if (eisa_root_register (&eisa_dev.root)) {
- 			printk(KERN_ERR "EISA: Failed to register EISA root\n");
-+			iounmap(eisa_eeprom_addr);
- 			return -1;
- 		}
- 	}
-diff -uprN -X linux-2.6.18-orig/Documentation/dontdiff linux-2.6.18-orig/drivers/parisc/iosapic.c linux-2.6.18/drivers/parisc/iosapic.c
---- linux-2.6.18-orig/drivers/parisc/iosapic.c	2006-09-21 10:15:38.000000000 +0530
-+++ linux-2.6.18/drivers/parisc/iosapic.c	2006-09-28 10:15:30.000000000 +0530
-@@ -887,6 +887,7 @@ void *iosapic_register(unsigned long hpa
- 	vip = isi->isi_vector = (struct vector_info *)
- 		kzalloc(sizeof(struct vector_info) * isi->isi_num_vectors, GFP_KERNEL);
- 	if (vip == NULL) {
-+		iounmap(isi->addr);
- 		kfree(isi);
- 		return NULL;
- 	}
-diff -uprN -X linux-2.6.18-orig/Documentation/dontdiff linux-2.6.18-orig/drivers/parisc/lba_pci.c linux-2.6.18/drivers/parisc/lba_pci.c
---- linux-2.6.18-orig/drivers/parisc/lba_pci.c	2006-08-24 02:46:33.000000000 +0530
-+++ linux-2.6.18/drivers/parisc/lba_pci.c	2006-09-28 10:17:56.000000000 +0530
-@@ -1574,6 +1574,7 @@ lba_driver_probe(struct parisc_device *d
- 		cfg_ops = &mercury_cfg_ops;
- 	} else {
- 		printk(KERN_ERR "Unknown LBA found at 0x%lx\n", dev->hpa.start);
-+		iounmap(addr);
- 		return -ENODEV;
- 	}
- 
-@@ -1589,6 +1590,7 @@ lba_driver_probe(struct parisc_device *d
- 	lba_dev = kzalloc(sizeof(struct lba_device), GFP_KERNEL);
- 	if (!lba_dev) {
- 		printk(KERN_ERR "lba_init_chip - couldn't alloc lba_device\n");
-+		iounmap(addr);
- 		return(1);
- 	}
- 
-@@ -1606,8 +1608,11 @@ lba_driver_probe(struct parisc_device *d
- 	pcibios_register_hba(HBA_DATA(lba_dev));
- 	spin_lock_init(&lba_dev->lba_lock);
- 
--	if (lba_hw_init(lba_dev))
-+	if (lba_hw_init(lba_dev)) {
-+		iounmap(lba_dev->hba.base_addr);
-+		lba_dev->hba.base_addr = NULL;
- 		return(1);
-+	}
- 
- 	/* ---------- Third : setup I/O Port and MMIO resources  --------- */
- 
+The 53C720/53C720SE data manual:
+http://www.morethan.org/parisc/53C720_Data_Manual_Rev_3_1.PDF
 
+The SCSI SCRIPTS assembler:
+http://www.morethan.org/parisc/nasm302.zip
+(includes 700, 710, 720 instruction sets)
 
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
