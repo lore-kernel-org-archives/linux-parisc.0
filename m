@@ -1,16 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] C3600 crash with PCMCIA bridge
-Date: Sat, 7 Oct 2006 11:27:52 -0400 (EDT)
-Message-ID: <200610071527.k97FRruf011292@hiauly1.hia.nrc.ca>
+Date: Sat, 07 Oct 2006 10:27:41 -0500
+Message-ID: <1160234861.3459.27.camel@mulgrave.il.steeleye.com>
 References: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
+Content-Type: text/plain
 Cc: parisc-linux@parisc-linux.org
-To: gmsoft@tuxicoman.be (Guy Martin)
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061007165519.d85d8839.gmsoft@tuxicoman.be> from "Guy Martin"
-	at Oct 7, 2006 04:55:19 pm
+In-Reply-To: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,21 +19,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-The crash occurs because the first argument in the call to
-pci_enable_bridges is a null pointer.  It's here:
+On Sat, 2006-10-07 at 16:55 +0200, Guy Martin wrote:
+> I've been experiencing kernel crashes when I plug a RICOH RL5c475 cardbus bridge.
+> 
+> I've attached the crash info.
+> 
+> Linux hope 2.6.17.4-pa6 #1 Thu Jul 13 09:06:34 CEST 2006 parisc PA8600 (PCX-W+) GNU/Linux
 
-102253dc <pci_enable_bridges>:
-102253dc:       6b c2 3f d9     stw rp,-14(sp)
-102253e0:       6f c4 00 80     stw,ma r4,40(sp)
-102253e4:       6b c3 3f 89     stw r3,-3c(sp)
-102253e8:       4b 5c 00 28     ldw 14(r26),ret0
+The only parisc chip known to work with cardbus is dino ... there are a
+few strage tweaks you have to do to get it all running (and even dino
+only seems to work with my single socket yenta bridge; it doesn't work
+for helge with his dual yenta tadpole).
 
-r26 is zero.
+No-one's ever looked at putting the necessary code into astro ...
+although it shouldn't be that hard.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+James
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
