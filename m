@@ -1,14 +1,27 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] C3600 crash with PCMCIA bridge
-Date: Sat, 07 Oct 2006 10:27:41 -0500
-Message-ID: <1160234861.3459.27.camel@mulgrave.il.steeleye.com>
-References: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] Re: [PATCH 3/3] IRQ: Maintain regs pointer globally
+	rather than passing to IRQ handlers
+Date: Sat, 7 Oct 2006 08:44:53 -0600
+Message-ID: <20061007144453.GY2563__20810.6914688416$1416624605$gmane$org@parisc-linux.org>
+References: <20061002132116.2663d7a3.akpm@osdl.org>
+	<20061002162049.17763.39576.stgit@warthog.cambridge.redhat.com>
+	<20061002162053.17763.26032.stgit@warthog.cambridge.redhat.com>
+	<18975.1160058127@warthog.cambridge.redhat.com>
+	<Pine.LNX.4.64.0610051632250.3952@g5.osdl.org>
+	<20061006164211.GA15321@flint.arm.linux.org.uk>
+	<Pine.LNX.4.64.0610061055490.3952@g5.osdl.org>
+	<20061007025444.GV2563@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux@parisc-linux.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: David Howells <dhowells@redhat.com>,
+ Andrew Morton <akpm@osdl.org>,
+ parisc-linux@parisc-linux.org,
+ linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org
+To: Linus Torvalds <torvalds@osdl.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
+In-Reply-To: <20061007025444.GV2563@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,23 +32,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 2006-10-07 at 16:55 +0200, Guy Martin wrote:
-> I've been experiencing kernel crashes when I plug a RICOH RL5c475 cardbus bridge.
+On Fri, Oct 06, 2006 at 08:54:44PM -0600, Matthew Wilcox wrote:
+> git-pull git://git.parisc-linux.org/git/linux-2.6.git irq-fixes
 > 
-> I've attached the crash info.
-> 
-> Linux hope 2.6.17.4-pa6 #1 Thu Jul 13 09:06:34 CEST 2006 parisc PA8600 (PCX-W+) GNU/Linux
+> Or apply the patch below, if that's easier
 
-The only parisc chip known to work with cardbus is dino ... there are a
-few strage tweaks you have to do to get it all running (and even dino
-only seems to work with my single socket yenta bridge; it doesn't work
-for helge with his dual yenta tadpole).
+And the next series of patches actually make it boot.
 
-No-one's ever looked at putting the necessary code into astro ...
-although it shouldn't be that hard.
+git-pull git://git.parisc-linux.org/git/linux-2.6.git irq-fixes
 
-James
+Kyle McMartin:
+      [PARISC] Make firmware calls irqsafe-ish...
 
+Matthew Wilcox:
+      [PARISC] Use set_irq_regs
+      [PA-RISC] Fix boot breakage
+      [PARISC] pdc_init no longer exists
+      [PARISC] More pt_regs removal
+
+ arch/parisc/kernel/drivers.c  |    6 -
+ arch/parisc/kernel/firmware.c |  250 +++++++++++++++++++++++++-----------------
+ arch/parisc/kernel/irq.c      |    3 
+ arch/parisc/kernel/smp.c      |   15 --
+ arch/parisc/kernel/time.c     |   32 ++---
+ include/asm-parisc/pdc.h      |    2 
+ 6 files changed, 177 insertions(+), 131 deletions(-)
 
 _______________________________________________
 parisc-linux mailing list
