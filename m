@@ -1,12 +1,16 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Proposal for git tree management
-Date: Sat, 7 Oct 2006 18:41:52 -0600
-Message-ID: <20061008004151.GZ2563@parisc-linux.org>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: Re: [parisc-linux] C3600 crash with PCMCIA bridge
+Date: Sun, 8 Oct 2006 09:18:18 +0200
+Message-ID: <20061008091818.93138d32.gmsoft@tuxicoman.be>
+References: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
+	<200610071527.k97FRruf011292@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@parisc-linux.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200610071527.k97FRruf011292@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,41 +22,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-I think the git development model is working out pretty well.  We've
-committed around 100 patches to our tree since we switched to using git.
-Most of those have gone upstream, mostly through Kyle's hard work.
 
-However, figuring out what is left to merge is getting harder.  Due to
-trying to keep Linus' tree clean, the commit that goes into our
-development tree isn't the same one that ends up in his tree.  So it's
-hard to tell what's been committed and what hasn't.  Don't get me wrong,
-it's still an improvement over using CVS, but I think we could use Git
-more effectively.
+Dave,
 
-Right now, git-log linus..origin shows all the patches we've ever
-committed, regardless of whether they've been merged.  A graphic would
-make this easier:
+Thanks, by checking if lba_bus is != NULL before calling pci_enable_bridges() in lba_pci.c, my C3600 does boot.
+However the bridge isn't working but that was expected :)
 
-A -> B -> C -> D' -> E
- \-> D -------/-> F --\->G
+  Guy
 
-This illustrates Linus' tree at time A.  We clone his tree and make
-change D, and eventually it ends up in Linus' tree as D' (after changes
-B and C have happened in his tree).  At point G, git-log linus..master
-shows change D, even though it was already merged to the linus tree.
+On Sat, 7 Oct 2006 11:27:52 -0400 (EDT)
+"John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
 
-The obvious solution is to rebase the tree.  We start a new origin
-branch from point E and pull commit F onto it as commit F'.  But if we
-delete the former origin branch we lose our history.  So I'd like to
-rename it (probably to something like devel-2006-10-07), and create a
-new origin.  That way we can still go back and find our history, and
-still keep git-log useful.
+> The crash occurs because the first argument in the call to
+> pci_enable_bridges is a null pointer.  It's here:
+> 
+> 102253dc <pci_enable_bridges>:
+> 102253dc:       6b c2 3f d9     stw rp,-14(sp)
+> 102253e0:       6f c4 00 80     stw,ma r4,40(sp)
+> 102253e4:       6b c3 3f 89     stw r3,-3c(sp)
+> 102253e8:       4b 5c 00 28     ldw 14(r26),ret0
+> 
+> r26 is zero.
+> 
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
-I'm concerned we may get an unreasonable number of branches using this
-scheme.  Using a date (rather than a cardinal) helps understand how
-relevant a branch may be.
-
-Anyway, comments, suggestions, alternatives, abuse?
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
