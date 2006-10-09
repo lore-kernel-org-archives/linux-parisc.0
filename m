@@ -1,13 +1,18 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: [parisc-linux] CCIO dma io_command and related io_tlb format
-	questions.
-Date: Mon,  9 Oct 2006 11:41:11 +0200
-Message-ID: <J6V48N$07BEC56C541729714304848986C290A3@scarlet.be>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] Proposal for git tree management
+Date: Mon, 9 Oct 2006 13:39:58 +0200
+Message-ID: <7d01f9f00610090439g763c9260q257fad185bbdf326@mail.gmail.com>
+References: <20061008004151.GZ2563@parisc-linux.org>
+	<20061009032945.GB30517@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "parisc-linux" <parisc-linux@parisc-linux.org>
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux@parisc-linux.org,
+ Matthew Wilcox <matthew@wil.cx>
+To: "Grant Grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20061009032945.GB30517@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,85 +23,71 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Grant,
+On 10/9/06, Grant Grundler <grundler@parisc-linux.org> wrote:
+> On Sat, Oct 07, 2006 at 06:41:52PM -0600, Matthew Wilcox wrote:
+> >
+> > I think the git development model is working out pretty well.  We've
+> > committed around 100 patches to our tree since we switched to using git.
+> > Most of those have gone upstream, mostly through Kyle's hard work.
+>
+> Agreed - many kudos/thanks to kyle!
 
-I back port the sba sg list manager in ccio-dma on my d380 (not enough ti=
-me to
-test c110).
+All hail Kyle indeed :)
 
-On one hand, it seems to improve a bit ncr53c720 behaviour: tar/rm loop t=
-est
-run longer (at least 2h in place of 5/10 min)
+> > The obvious solution is to rebase the tree.  We start a new origin
+> > branch from point E and pull commit F onto it as commit F'.  But if we
+> > delete the former origin branch we lose our history.
+>
+> I don't care so much about "our" history. I mostly care
+> about the commit message(s) that end up in linus' tree.
 
-Otoh no change (may be even worse) for ncr53c710 and break secondary nic =
-(the
-setup of this card make panicing the system?)
+Despite not being terribly active nowadays, I'd like to contrast this
+view a little bit. "Our" history has proven very useful (at least to
+me) in a number of cases (comes to mind the development of gscps2
+input driver based on evolutions of hp_kbd.c and friends) and I
+remember quite a few occasion where it was actually interesting to be
+able to track down who committed any given bit of code (for some
+reason I remember tracking down prumpf's commits in some well known
+locking routine, among other things).
 
-That said, there are no public doc of this IO stuff and so I didn't chang=
-e
-those 2 hunks:
-[snip]
-static CCIO_INLINE void
-ccio_clear_io_tlb(struct ioc *ioc, dma_addr_t iovp, size_t byte_cnt)
-{
-        u32 chain_size =3D 1 << ioc->chainid_shift;
+On a more "play the devil's advocate" side of things, i believe it's
+of great importance to be able to track down when any given code was
+first introduced and who committed it. Copyright issues such as the
+SCO-induced shite are a good demonstration that being able to quickly
+assert copyright/genealogy on any given bit is a good thing...
 
-        iovp &=3D IOVP_MASK;      /* clear offset bits, just want pagenum=
- */
-        byte_cnt +=3D chain_size;
+> > I'm concerned we may get an unreasonable number of branches using this
+> > scheme.  Using a date (rather than a cardinal) helps understand how
+> > relevant a branch may be.
+>
+> I think anything is ok if it helps us determine what's missing
+> from linus' tree and ship those patches (when ready) to him.
+> I'll probably end up ignoring the branches anyway.
+>
+> Please just make it "KISS". I'm only using git a few times per month
+> and it's just not enough to do anything complicated right now.
+> My goal is any git commits I make can (indirectly via kyle) go
+> to linus without the confusion you described.
 
-        while(byte_cnt > chain_size) {
-                WRITE_U32(CMD_TLB_PURGE | iovp, &ioc->ioc_regs->io_comman=
-d);   
-                iovp +=3D chain_size;
-                byte_cnt -=3D chain_size;
-        }
-}
+I'd also strongly support a KISS approach. Yet I was under the
+impression that rebasing the tree would break any subsequent 'git
+pull' on older trees, is that right?
 
-[snip]
+Along those lines I'm also thinking that assuming we want to revive
+our kernel autobuilder, we probably want to think of a git tree
+architecture that will induce minimal man handling of the autobuilder
+once started...
 
-static void
-ccio_ioc_init(struct ioc *ioc)
-{
-[snip]
+Just my 2c, well aware that I'm not paying enough attention to our
+development process lately, and thus I may be full of sh*t  ;^)
 
-        /*
-        ** Initialize all I/O TLB entries to 0 (Valid bit off).
-        */
-        WRITE_U32(0, &ioc->ioc_regs->io_tlb_entry_m);
-        WRITE_U32(0, &ioc->ioc_regs->io_tlb_entry_l);
+HTH
 
-        for(i =3D 1 << CCIO_CHAINID_SHIFT; i ; i--) {
-                WRITE_U32((CMD_TLB_DIRECT_WRITE | (i << ioc->chainid_shif=
-t)),
-                          &ioc->ioc_regs->io_command);
-        } 
-}
-...
+T-Bone
 
-About which cames to me 2 questions:
-   1/ what is supposed to contain an io_tlb entry: a io (page size) addre=
-ss
-      as seems to say the value ("CMD_TLB_PURGE | iovp")
-      in ccio_clear_io_tlb() or a memory page size should be splited in
-      severall tlb entries per ioc->chainid_shift?
-
-   2/ what is supposed to contain the ccio io_command register, I mean th=
-at 
-      I don't understand what seems to me to be different io_command
-      contents for CMD_TLB_DIRECT_WRITE or CMD_TLB_PURGE?
-
-If you still have (or access to) this internal doc, it would be great if =
-you
-could find some time to explain me those stuff.
-
-TIA,
-    Joel
-=0A=0A----------=0AClub Scarlet : Tout le monde gagne! Si vous devenez au=
-jourd'hui Scarlet One grace a un client existant de Scarlet, vous recevez=
- tous les deux un cadeau d'une valeur de 50 euros! Surfez vite sur http:/=
-/www.clubscarlet.be
-
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
