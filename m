@@ -1,19 +1,14 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Proposal for git tree management
-Date: Mon, 9 Oct 2006 14:15:52 -0400
-Message-ID: <20061009181551.GA3354@athena.road.mcmartin.ca>
-References: <20061008004151.GZ2563@parisc-linux.org>
-	<20061009032945.GB30517@colo.lackof.org>
-	<7d01f9f00610090439g763c9260q257fad185bbdf326@mail.gmail.com>
-	<20061009180652.GB28254@parisc-linux.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org,
- Thibaut VARENE <T-Bone@parisc-linux.org>
-To: Matthew Wilcox <matthew@wil.cx>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [parisc-linux] [PATCH 562] m68k/HP300: Enable HIL configuration
+	options
+Date: Mon, 9 Oct 2006 22:22:37 +0200
+Message-ID: <200610092022.k99KMbtC031450__39588.7131257497$1416624608$gmane$org@anakin.of.borg>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linux Kernel Development <linux-kernel@vger.kernel.org>,
+ Linux/PA-RISC <parisc-linux@parisc-linux.org>
+To: Linus Torvalds <torvalds@osdl.org>,
+ Andrew Morton <akpm@osdl.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061009180652.GB28254@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,19 +19,82 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Oct 09, 2006 at 12:06:52PM -0600, Matthew Wilcox wrote:
-> I agree, though I wouldn't expect rebasing to be a common operation
-> (every 2-3 months), it would suck to inadvertently break the autobuilder.
->
+Enable HIL configuration options on HP300
 
-if we queue the autobuilder based on tags, even if we rebase, we will never
-have an issue, since git-prune will only remove unreachable commits. as long
-as we have a tag for the pre-rebased commits, they'll never be removed, which
-is the desired behaviour (since the autobuilder will always be able to check
-them out.)
+Signed-Off-By: Kars de Jong <jongk@linux-m68k.org>
+Signed-Off-By: Geert Uytterhoeven <geert@linux-m68k.org>
 
-cheers,
-	kyle
+---
+ keyboard/Kconfig |    4 ++--
+ misc/Kconfig     |    2 +-
+ mouse/Kconfig    |    2 +-
+ serio/Kconfig    |    2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+--- linux/drivers/input/keyboard/Kconfig	2005/06/18 16:15:57	1.1.1.12
++++ linux/drivers/input/keyboard/Kconfig	2005/08/29 19:17:44	1.2
+@@ -154,7 +154,7 @@ config KEYBOARD_AMIGA
+ 
+ config KEYBOARD_HIL_OLD
+ 	tristate "HP HIL keyboard support (simple driver)"
+-	depends on GSC
++	depends on GSC || HP300
+ 	default y
+ 	help
+ 	  The "Human Interface Loop" is a older, 8-channel USB-like
+@@ -171,7 +171,7 @@ config KEYBOARD_HIL_OLD
+ 
+ config KEYBOARD_HIL
+ 	tristate "HP HIL keyboard support"
+-	depends on GSC
++	depends on GSC || HP300
+ 	default y
+ 	select HP_SDC
+ 	select HIL_MLC
+--- linux/drivers/input/misc/Kconfig	2005/06/18 16:15:58	1.1.1.12
++++ linux/drivers/input/misc/Kconfig	2005/08/29 19:17:44	1.2
+@@ -51,7 +51,7 @@ config INPUT_UINPUT
+ 
+ config HP_SDC_RTC
+ 	tristate "HP SDC Real Time Clock"       
+-	depends on GSC
++	depends on GSC || HP300
+ 	select HP_SDC
+ 	help
+ 	  Say Y here if you want to support the built-in real time clock
+--- linux/drivers/input/mouse/Kconfig	2005/06/18 16:15:58	1.1.1.18
++++ linux/drivers/input/mouse/Kconfig	2005/08/29 19:17:44	1.2
+@@ -129,7 +129,7 @@ config MOUSE_VSXXXAA
+ 
+ config MOUSE_HIL
+ 	tristate "HIL pointers (mice etc)."     
+-	depends on GSC
++	depends on GSC || HP300
+ 	select HP_SDC
+ 	select HIL_MLC
+ 	help
+--- linux/drivers/input/serio/Kconfig	2005/08/29 14:19:56	1.1.1.17
++++ linux/drivers/input/serio/Kconfig	2005/08/29 19:17:45	1.5
+@@ -112,7 +112,7 @@ config SERIO_GSCPS2
+ 
+ config HP_SDC
+ 	tristate "HP System Device Controller i8042 Support"
+-	depends on GSC && SERIO
++	depends on (GSC || HP300) && SERIO
+ 	default y
+ 	---help---
+ 	  This option enables supports for the the "System Device
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
