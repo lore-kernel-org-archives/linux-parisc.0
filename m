@@ -1,16 +1,15 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [parisc-linux] C3600 crash with PCMCIA bridge
-Date: Sun, 8 Oct 2006 09:18:18 +0200
-Message-ID: <20061008091818.93138d32.gmsoft@tuxicoman.be>
-References: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
-	<200610071527.k97FRruf011292@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Proposal for git tree management
+Date: Sun, 8 Oct 2006 21:29:45 -0600
+Message-ID: <20061009032945.GB30517@colo.lackof.org>
+References: <20061008004151.GZ2563@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200610071527.k97FRruf011292@hiauly1.hia.nrc.ca>
+In-Reply-To: <20061008004151.GZ2563@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,34 +20,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-
-
-Dave,
-
-Thanks, by checking if lba_bus is != NULL before calling pci_enable_bridges() in lba_pci.c, my C3600 does boot.
-However the bridge isn't working but that was expected :)
-
-  Guy
-
-On Sat, 7 Oct 2006 11:27:52 -0400 (EDT)
-"John David Anglin" <dave@hiauly1.hia.nrc.ca> wrote:
-
-> The crash occurs because the first argument in the call to
-> pci_enable_bridges is a null pointer.  It's here:
+On Sat, Oct 07, 2006 at 06:41:52PM -0600, Matthew Wilcox wrote:
 > 
-> 102253dc <pci_enable_bridges>:
-> 102253dc:       6b c2 3f d9     stw rp,-14(sp)
-> 102253e0:       6f c4 00 80     stw,ma r4,40(sp)
-> 102253e4:       6b c3 3f 89     stw r3,-3c(sp)
-> 102253e8:       4b 5c 00 28     ldw 14(r26),ret0
-> 
-> r26 is zero.
-> 
-> Dave
-> -- 
-> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> I think the git development model is working out pretty well.  We've
+> committed around 100 patches to our tree since we switched to using git.
+> Most of those have gone upstream, mostly through Kyle's hard work.
 
+Agreed - many kudos/thanks to kyle!
+
+...
+> The obvious solution is to rebase the tree.  We start a new origin
+> branch from point E and pull commit F onto it as commit F'.  But if we
+> delete the former origin branch we lose our history.
+
+I don't care so much about "our" history. I mostly care
+about the commit message(s) that end up in linus' tree.
+
+> I'm concerned we may get an unreasonable number of branches using this
+> scheme.  Using a date (rather than a cardinal) helps understand how
+> relevant a branch may be.
+
+I think anything is ok if it helps us determine what's missing
+from linus' tree and ship those patches (when ready) to him.
+I'll probably end up ignoring the branches anyway.
+
+Please just make it "KISS". I'm only using git a few times per month
+and it's just not enough to do anything complicated right now.
+My goal is any git commits I make can (indirectly via kyle) go
+to linus without the confusion you described.
+
+thanks!
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
