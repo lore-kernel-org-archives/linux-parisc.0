@@ -1,15 +1,15 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Proposal for git tree management
-Date: Sun, 8 Oct 2006 21:29:45 -0600
-Message-ID: <20061009032945.GB30517@colo.lackof.org>
-References: <20061008004151.GZ2563@parisc-linux.org>
+Subject: Re: [parisc-linux] C3600 crash with PCMCIA bridge
+Date: Sun, 8 Oct 2006 22:54:32 -0600
+Message-ID: <20061009045432.GC30517@colo.lackof.org>
+References: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: Guy Martin <gmsoft@tuxicoman.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061008004151.GZ2563@parisc-linux.org>
+In-Reply-To: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,36 +20,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Oct 07, 2006 at 06:41:52PM -0600, Matthew Wilcox wrote:
+On Sat, Oct 07, 2006 at 04:55:19PM +0200, Guy Martin wrote:
+> I've been experiencing kernel crashes when I plug a RICOH RL5c475
+> cardbus bridge.
 > 
-> I think the git development model is working out pretty well.  We've
-> committed around 100 patches to our tree since we switched to using git.
-> Most of those have gone upstream, mostly through Kyle's hard work.
+> I've attached the crash info.
 
-Agreed - many kudos/thanks to kyle!
+Thanks - I've looked over lba_driver_probe() and I'm wondering why
+we are getting a NULL pointer back from pci_scan_bus_parented().
 
-...
-> The obvious solution is to rebase the tree.  We start a new origin
-> branch from point E and pull commit F onto it as commit F'.  But if we
-> delete the former origin branch we lose our history.
+If you could determine why pci_create_bus() is returning a NULL
+pointer to pci_scan_bus_parented(), that would probably provide
+clues to the real problem.
 
-I don't care so much about "our" history. I mostly care
-about the commit message(s) that end up in linus' tree.
+And the first "if (lba_bus)" right after that bus scan seems
+wrong to me too since the code below it will crash anyway.
+Seems a NULL lba_bus should cleanup and exit with an error.
 
-> I'm concerned we may get an unreasonable number of branches using this
-> scheme.  Using a date (rather than a cardinal) helps understand how
-> relevant a branch may be.
-
-I think anything is ok if it helps us determine what's missing
-from linus' tree and ship those patches (when ready) to him.
-I'll probably end up ignoring the branches anyway.
-
-Please just make it "KISS". I'm only using git a few times per month
-and it's just not enough to do anything complicated right now.
-My goal is any git commits I make can (indirectly via kyle) go
-to linus without the confusion you described.
-
-thanks!
+thanks,
 grant
 _______________________________________________
 parisc-linux mailing list
