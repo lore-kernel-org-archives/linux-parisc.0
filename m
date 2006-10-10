@@ -1,18 +1,17 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] C3600 crash with PCMCIA bridge
-Date: Sat, 7 Oct 2006 18:15:30 +0200
-Message-ID: <200610071815.31131.deller@gmx.de>
-References: <20061007165519.d85d8839.gmsoft@tuxicoman.be>
-	<1160234861.3459.27.camel@mulgrave.il.steeleye.com>
+Subject: Re: [parisc-linux] [PATCH 562] m68k/HP300: Enable HIL configuration
+	options
+Date: Tue, 10 Oct 2006 21:25:01 +0200
+Message-ID: <200610102125.01767.deller@gmx.de>
+References: <200610092022.k99KMbtC031450@anakin.of.borg>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="utf-8"
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
- Guy Martin <gmsoft@tuxicoman.be>,
- parisc-linux@parisc-linux.org
-To: parisc-linux@lists.parisc-linux.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Kars de Jong <jongk@linux-m68k.org>,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1160234861.3459.27.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <200610092022.k99KMbtC031450@anakin.of.borg>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,25 +22,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Saturday 07 October 2006 17:27, James Bottomley wrote:
-> On Sat, 2006-10-07 at 16:55 +0200, Guy Martin wrote:
-> > I've been experiencing kernel crashes when I plug a RICOH RL5c475 cardbus bridge.
-> > 
-> > I've attached the crash info.
-> > 
-> > Linux hope 2.6.17.4-pa6 #1 Thu Jul 13 09:06:34 CEST 2006 parisc PA8600 (PCX-W+) GNU/Linux
-> 
-> The only parisc chip known to work with cardbus is dino ... there are a
-> few strage tweaks you have to do to get it all running (and even dino
-> only seems to work with my single socket yenta bridge; it doesn't work
-> for helge with his dual yenta tadpole).
+Hi Geert,
+Hi Kars,
 
-Hi James,
+thanks for the patch.
 
-One correction:
-Last time I tried (and after a few people here on the list helped) it did worked with both slots in my tadpole.
+Just out of couriosity:
+Does anyone of you still have a HP300 to test ?
 
 Helge
+
+On Monday 09 October 2006 22:22, Geert Uytterhoeven wrote:
+> Enable HIL configuration options on HP300
+> 
+> Signed-Off-By: Kars de Jong <jongk@linux-m68k.org>
+> Signed-Off-By: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> ---
+>  keyboard/Kconfig |    4 ++--
+>  misc/Kconfig     |    2 +-
+>  mouse/Kconfig    |    2 +-
+>  serio/Kconfig    |    2 +-
+>  4 files changed, 5 insertions(+), 5 deletions(-)
+....
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
