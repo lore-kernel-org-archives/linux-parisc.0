@@ -1,14 +1,16 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [parisc-linux] [PATCH 562] m68k/HP300: Enable HIL configuration
-	options
-Date: Mon, 9 Oct 2006 22:22:37 +0200
-Message-ID: <200610092022.k99KMbtC031450__39588.7131257497$1416624608$gmane$org@anakin.of.borg>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Linux Kernel Development <linux-kernel@vger.kernel.org>,
- Linux/PA-RISC <parisc-linux@parisc-linux.org>
-To: Linus Torvalds <torvalds@osdl.org>,
- Andrew Morton <akpm@osdl.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: CCIO dma io_command and related io_tlb format
+	questions.
+Date: Tue, 10 Oct 2006 16:08:41 -0600
+Message-ID: <20061010220841.GG12490@colo.lackof.org>
+References: <J6V48N$07BEC56C541729714304848986C290A3@scarlet.be>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux <parisc-linux@parisc-linux.org>
+To: Joel Soete <soete.joel@scarlet.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <J6V48N$07BEC56C541729714304848986C290A3@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,82 +21,66 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Enable HIL configuration options on HP300
+On Mon, Oct 09, 2006 at 11:41:11AM +0200, Joel Soete wrote:
+> Hello Grant,
+> 
+> I back port the sba sg list manager in ccio-dma on my d380 (not enough time to
+> test c110).
+...
 
-Signed-Off-By: Kars de Jong <jongk@linux-m68k.org>
-Signed-Off-By: Geert Uytterhoeven <geert@linux-m68k.org>
+Sounds like you have some debugging to do still...I'll try to
+answer the questions below.
 
----
- keyboard/Kconfig |    4 ++--
- misc/Kconfig     |    2 +-
- mouse/Kconfig    |    2 +-
- serio/Kconfig    |    2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+> That said, there are no public doc of this IO stuff
 
---- linux/drivers/input/keyboard/Kconfig	2005/06/18 16:15:57	1.1.1.12
-+++ linux/drivers/input/keyboard/Kconfig	2005/08/29 19:17:44	1.2
-@@ -154,7 +154,7 @@ config KEYBOARD_AMIGA
- 
- config KEYBOARD_HIL_OLD
- 	tristate "HP HIL keyboard support (simple driver)"
--	depends on GSC
-+	depends on GSC || HP300
- 	default y
- 	help
- 	  The "Human Interface Loop" is a older, 8-channel USB-like
-@@ -171,7 +171,7 @@ config KEYBOARD_HIL_OLD
- 
- config KEYBOARD_HIL
- 	tristate "HP HIL keyboard support"
--	depends on GSC
-+	depends on GSC || HP300
- 	default y
- 	select HP_SDC
- 	select HIL_MLC
---- linux/drivers/input/misc/Kconfig	2005/06/18 16:15:58	1.1.1.12
-+++ linux/drivers/input/misc/Kconfig	2005/08/29 19:17:44	1.2
-@@ -51,7 +51,7 @@ config INPUT_UINPUT
- 
- config HP_SDC_RTC
- 	tristate "HP SDC Real Time Clock"       
--	depends on GSC
-+	depends on GSC || HP300
- 	select HP_SDC
- 	help
- 	  Say Y here if you want to support the built-in real time clock
---- linux/drivers/input/mouse/Kconfig	2005/06/18 16:15:58	1.1.1.18
-+++ linux/drivers/input/mouse/Kconfig	2005/08/29 19:17:44	1.2
-@@ -129,7 +129,7 @@ config MOUSE_VSXXXAA
- 
- config MOUSE_HIL
- 	tristate "HIL pointers (mice etc)."     
--	depends on GSC
-+	depends on GSC || HP300
- 	select HP_SDC
- 	select HIL_MLC
- 	help
---- linux/drivers/input/serio/Kconfig	2005/08/29 14:19:56	1.1.1.17
-+++ linux/drivers/input/serio/Kconfig	2005/08/29 19:17:45	1.5
-@@ -112,7 +112,7 @@ config SERIO_GSCPS2
- 
- config HP_SDC
- 	tristate "HP System Device Controller i8042 Support"
--	depends on GSC && SERIO
-+	depends on (GSC || HP300) && SERIO
- 	default y
- 	---help---
- 	  This option enables supports for the the "System Device
+There is none for CCIO. And I no longer have access to those
+documents (deleted them from my laptop/workstations).
+You'd need access to U2/Uturn ERS via OSDL.
 
-Gr{oetje,eeting}s,
 
-						Geert
+> and so I didn't change those 2 hunks:
+> [snip]
+> static CCIO_INLINE void
+> ccio_clear_io_tlb(struct ioc *ioc, dma_addr_t iovp, size_t byte_cnt)
+...
+> ccio_ioc_init(struct ioc *ioc)
+...
+> About which cames to me 2 questions:
+>    1/ what is supposed to contain an io_tlb entry:
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+You want to know the layout of the "ioc_command" register.
+It is a combination of iovp and command.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+
+>       a io (page size) address as seems to say the value
+>      ("CMD_TLB_PURGE | iovp") in ccio_clear_io_tlb()
+
+Offhand I'm not sure of the exact split but guess it's
+lower 12 bits for command and upper 20 bits for IO Virtual Page
+as used in ccio_clear_io_tlb().
+
+>       or a memory page size should be splited in
+>       severall tlb entries per ioc->chainid_shift?
+
+ccio_ioc_init is just clearing the entire IO TLB.
+We know there are only "1<<CCIO_CHAINID_SHIFT" IO TLB entries.
+See comments above where CCIO_CHAINID_SHIFT is defined.
+ccio_clear_io_tlb() is just purging all of them.
+
+>    2/ what is supposed to contain the ccio io_command register, I mean that
+>       I don't understand what seems to me to be different io_command
+>       contents for CMD_TLB_DIRECT_WRITE or CMD_TLB_PURGE?
+
+Generally we only need to use CMD_TLB_PURGE to avoid use of stale entries.
+You shouldn't need to change the uses of CMD_TLB_DIRECT_WRITE.
+
+> If you still have (or access to) this internal doc, it would be great if you
+> could find some time to explain me those stuff.
+
+Sorry - I don't.
+
+Hope that helps,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
