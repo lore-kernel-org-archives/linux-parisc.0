@@ -1,14 +1,26 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] NICs on EISA bus...
-Date: Wed, 11 Oct 2006 12:04:35 -0500
-Message-ID: <1160586275.3447.38.camel@mulgrave.il.steeleye.com>
-References: <452CE20A020000C500004F88@mail.scires.com>
+From: "Ollie Wild" <aaw@google.com>
+Subject: [parisc-linux] Re: Removing MAX_ARG_PAGES (request for
+	comments/assistance)
+Date: Wed, 11 Oct 2006 10:13:26 -0700
+Message-ID: <65dd6fd50610111013t6c783f3esc038c64abbcddeb0__33696.4876078584$1416624194$gmane$org@mail.gmail.com>
+References: <65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com>
+	<1160553621.3000.355.camel@laptopd505.fenrus.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: parisc-linux@lists.parisc-linux.org
-To: James Love <jlove@scires.com>
+Content-Type: text/plain;
+  charset=ISO-8859-1;
+  format=flowed
+Cc: Andrew Morton <akpm@osdl.org>,
+ linux-arch@vger.kernel.org,
+ Andi Kleen <ak@muc.de>,
+ linux-kernel@vger.kernel.org,
+ David Howells <dhowells@redhat.com>,
+ linux-mm@kvack.org,
+ Linus Torvalds <torvalds@osdl.org>,
+ Ingo Molnar <mingo@elte.hu>,
+ parisc-linux@lists.parisc-linux.org
+To: "Arjan van de Ven" <arjan@infradead.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <452CE20A020000C500004F88@mail.scires.com>
+In-Reply-To: <1160553621.3000.355.camel@laptopd505.fenrus.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,22 +31,14 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, 2006-10-11 at 12:22 -0400, James Love wrote:
-> Writing a simple EISA driver allows me to read the board id and MAC off
-> the card, but I'm not sure if the IO or interrupts are working
-> correctly.  Is there some reason (eg kernel/eisa bus issues) that I
-> shouldn't expect to get this to work?  I spend all my time in userspace,
-> so I may very well have driver issues, but I'd like to know whether this
-> is even possible.
+> on first sight it looks like you pin the entire userspace buffer at the
+> same time (but I can misread the code; this stuff is a bit of a
+> spaghetti by nature); that would be a DoS scenario if true...
 
-It's possible, but I'm not sure it can be done without programming the
-WAX interface (that's a thing the person who last read the WAX documents
-can tell us ... unfortunately we no longer seem to have a copy of the
-docs).
+I'm not sure I understand.  Could you please elaborate?
 
-James
-
-
+Thanks,
+Ollie
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
