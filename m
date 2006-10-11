@@ -1,24 +1,17 @@
-From: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: [parisc-linux] Re: Removing MAX_ARG_PAGES (request for
-	comments/assistance)
-Date: Wed, 11 Oct 2006 15:14:20 +0200
-Message-ID: <1160572460.2006.79.camel__28379.2507056662$1416624192$gmane$org@taijtu>
-References: <65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] Can't write to hard drives on a K200
+Date: Wed, 11 Oct 2006 11:14:13 -0500
+Message-ID: <200610111114.14135.mszick@morethan.org>
+References: <J6B9MR$91CD8B56571F1770C341CEA677BE5E0B@scarlet.be>
+	<200609290939.19381.mszick@morethan.org>
+	<20060929145622.GM5017@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Andrew Morton <akpm@osdl.org>,
- linux-arch@vger.kernel.org,
- Andi Kleen <ak@muc.de>,
- linux-kernel@vger.kernel.org,
- David Howells <dhowells@redhat.com>,
- linux-mm@kvack.org,
- Linus Torvalds <torvalds@osdl.org>,
- Ingo Molnar <mingo@elte.hu>,
- parisc-linux@lists.parisc-linux.org,
- Arjan van de Ven <arjan@infradead.org>
-To: Ollie Wild <aaw@google.com>
+Content-Type: text/plain;
+  charset="us-ascii"
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com>
+In-Reply-To: <20060929145622.GM5017@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -29,50 +22,48 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, 2006-10-10 at 17:05 -0700, Ollie Wild wrote:
+On Fri September 29 2006 09:56, Matthew Wilcox wrote:
+> On Fri, Sep 29, 2006 at 09:39:19AM -0500, Michael S. Zick wrote:
+> > I can confirm that - having never worked for HP, all I can do is guess,
+> > and I often guess wrong.
+> 
 
-> +                       vma->vm_flags &= ~VM_EXEC;
-> +               // FIXME: Are the next two lines sufficient, or do I need to
-> +               // do some additional magic?
-> +               vma->vm_flags |= mm->def_flags;
-> +               vma->vm_page_prot = protection_map[vma->vm_flags & 0x7];
+Still reading, perhaps learning.  Now have a HP specific question...
 
-Yeah, you'll need to change the PTEs for those pages you created by
-calling get_user_page() by calling an mprotect like function; perhaps
-something like:
+> 
+> We can call you unable to read.  Looking at
+> http://hwdb.parisc-linux.org/view.php?type=machine&name=K200
+> there is indeed
+> KittyHawk GSY Core SCSI (Foreign I/O Module)  (NCR53c710 driver)
+> but there is also
+> KittyHawk GSY Core FW-SCSI (A DMA)  (Zalon driver)
+> 
+> The hard drives are HVD SCSI and are connected to the Core FW-SCSI
+> (ncr720 chip).  The tape drive and CD-ROM drive are SE SCSI and are
+> connected to the Core SCSI (ncr710 chip).
+> 
+> This is not an uncommon arrangement; it is also found in the
+> B160L, C100, C110, C160, C160L, C180, C180XP, J200, J210, J210XC, J282,
+> as well as all the other K-class machines.
+> 
+> Several B, C and J class machines use a PCI NCR 875 chip to provide HVD
+> SCSI.  They also still use the 710 provided in Lasi for SE SCSI.
+> 
 
- struct vm_area_struct *prev;
- unsigned long vm_flags = vma->vm_flags;
+I am still studying the documentation with an eye towards re-writing
+the ncr-risc code as hp-specific...
 
- s/vma->vm_flags/vm_flags/g
+I see from a note on the wiki that some machines with more than one
+GSC (GSY?) bus run the buses at different speeds (32 Mhz and 40 Mhz).
 
- err = mprotect_fixup(vma, &prev, vma->vm_start, vma->vm_end, vm_flags);
- BUG_ON(prev != vma);
+Could you (or anyone on the list) eyeball the GSC scsi card(s) and
+see if they have their own crystal(s)? 
+Or are these controllers clocked by the GSC bus clock?
 
-mprotect_fixup will then set the new protection on all PTEs and update
-vma->vm_flags and vma->vm_page_prot.
+Expected would be a 40 or 80 Mhz crystal depending on the controller
+if not clocked by the card's bus.
 
-> +               /* Move stack pages down in memory. */
-> +               if (stack_shift) {
-> +                       // FIXME: Verify the shift is OK.
-> +
-
-What exactly are you wondering about? the call to move_vma looks sane to
-me
-
-> +                       /* This should be safe even with overlap because we
-> +                        * are shifting down. */
-> +                       ret = move_vma(vma, vma->vm_start,
-> +                                       vma->vm_end - vma->vm_start,
-> +                                       vma->vm_end - vma->vm_start,
-> +                                       vma->vm_start - stack_shift);
-> +                       if (ret & ~PAGE_MASK) {
-> +                               up_write(&mm->mmap_sem);
-> +                               return ret;
-> +                       }
->                 }
-
-
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
