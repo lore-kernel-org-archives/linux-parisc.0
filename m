@@ -1,19 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Can't write to hard drives on a K200
-Date: Wed, 11 Oct 2006 19:19:28 -0600
-Message-ID: <20061012011928.GB18624@colo.lackof.org>
-References: <J6B9MR$91CD8B56571F1770C341CEA677BE5E0B@scarlet.be>
-	<200609290939.19381.mszick@morethan.org>
-	<20060929145622.GM5017@parisc-linux.org>
-	<200610111114.14135.mszick@morethan.org>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] NICs on EISA bus...
+Date: Fri, 13 Oct 2006 11:08:25 -0600
+Message-ID: <20061013170825.GE11633@parisc-linux.org>
+References: <452CFD68020000C500004FA3@mail.scires.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- Matthew Wilcox <matthew@wil.cx>
-To: "Michael S. Zick" <mszick@morethan.org>
+Cc: James.Bottomley@SteelEye.com,
+ parisc-linux@lists.parisc-linux.org
+To: James Love <jlove@scires.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200610111114.14135.mszick@morethan.org>
+In-Reply-To: <452CFD68020000C500004FA3@mail.scires.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,25 +21,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Oct 11, 2006 at 11:14:13AM -0500, Michael S. Zick wrote:
-> Could you (or anyone on the list) eyeball the GSC scsi card(s) and
-> see if they have their own crystal(s)? 
-> Or are these controllers clocked by the GSC bus clock?
-> 
-> Expected would be a 40 or 80 Mhz crystal depending on the controller
-> if not clocked by the card's bus.
+On Wed, Oct 11, 2006 at 02:19:20PM -0400, James Love wrote:
+> This particular 715 appears to have a Scorpio EISA bus adapter.  I see
+> no mention of WAX as a device in the boot logs (excerpt appended below).
 
-The GSC bus and the SCSI bus are in independent frequency domains.
-All logic on the board will be divided between those two zones.
-My guess is the SCSI chip is bridging the two but I don't know that
-for sure.
+The EISA bit of Wax and Mongoose are essentially the same.
 
-My point is the presence of the crystal is just to drive the clocking
-on the SCSI Bus and probably doesn't tell us much about
-which frequency domain any particular part is unless you
-put an oscilloscope on the board
+>  Is the Scorpio a good or a bad thing in regards to getting this bus
+> working?  I also have a 755 with a Cobra EISA BA, any idea whether that
+> will work either?
 
-grant
+That's also a Mongoose.
+
+Interrupts probably work; I haven't tried them recently, but they should.
+Port IO and Memory IO accesses to the chip from the CPU should work.
+DMA from the chip to host RAM will not work.  I've read the chapter in
+the ERS which describes how to make it work; unfortunately, I don't
+remember it in enough detail, and don't have that document any more.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
