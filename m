@@ -1,15 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Any chance of an HP AutoRAID array working?
-Date: Thu, 12 Oct 2006 14:12:42 -0600
-Message-ID: <20061012201242.GC15124@colo.lackof.org>
-References: <452E95C0.3050307@computer.org>
+From: "Michael S. Zick" <mszick@morethan.org>
+Subject: Re: [parisc-linux] Re: CCIO dma io_command and related io_tlb format
+	questions.
+Date: Sat, 14 Oct 2006 11:40:40 -0500
+Message-ID: <200610141140.40487.mszick@morethan.org>
+References: <J70JNP$255156D3B4F90827118C5EFE40FD3ABF@scarlet.be>
+	<4530DF1F.5060601@scarlet.be>
+	<20061014141147.GM11633@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Andrew Gaylard <ag@computer.org>
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <452E95C0.3050307@computer.org>
+In-Reply-To: <20061014141147.GM11633@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,31 +22,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Oct 12, 2006 at 09:21:36PM +0200, Andrew Gaylard wrote:
-...
-> I'm keen to use Linux (probably Gentoo but Debian's also fine) on
-> these boxes, but I'm wondering if that'll mean I'll have to forfeit
-> the 8 x 18G disks in each array, which would be a pity...
+On Sat October 14 2006 09:11, Matthew Wilcox wrote:
+> On Sat, Oct 14, 2006 at 12:59:11PM +0000, Joel Soete wrote:
+> > but yes that's the primary question and:
+> > 	* I encountered pbs with ncr53c720 and core io ncr53c710
+> > 	 (different pb with each hba but same one-to-one on d380 and c110),
+> > 	* but no pb with same disk (and its scsi chain: cable + terminator) 
+> > 	with ncr53c710 (behind dino) on a b180,
+> > so
+> > 	* no hw pb with disk,
+> > 	* no sw pb with nc53c710 Jame's driver,
+> > 	 (even thought less sure, as make me noticed Mike:
+> > 		on b180, 53c710 is behind dino i.e. gsc pci bus bridge, 
+> > 		right?
+> > 		on c110 and d380, this 53c710 is behind LASI (afaik just a 
+> > 		vlsi assembly and no bus bridge)
+> > 		so could be also a pb with 53c710 when married with gsc?)
+> 
+> You should never listen to Zick.  
 
-No. Those are standard SCSI LUNs. use the LCD panel to config
-the LUNs and the AutoRAID will arrange for shifting data from
-RAID 1 to RAID 5 as it sees fit.
+More from the least trusted source of information:
 
-> Has anyone tried Linux on one of these AutoRAID systems?
+The C710 designed into the LASI chip operates from a fixed frequency
+clock of 40Mhz.
 
-At one point i did. I haven't in a long time though.
+Ref:
+http://www.hpl.hp.com/hpjournal/95apr/apr95a4.pdf
+Page: 3, Section: Phase-Locked Loop Clock Generators, Paragraph: 1
 
-> Also, I presume that I can strip two of the machines to fill up
-> the remaining machine with RAM and CPUs;  the HWDB seems to suggest
-> that multiple processors will work OK under recent kernels.  Right?
+All K-class systems have at least 1 HP-HSC bus, it runs at 32Mhz.
+In addition the K-400 and K-410 may have an additional HP-HSC bus
+which runs at 40Mhz.
 
-In general, SMP is working.
+Ref:
+http://www.hpl.hp.com/hpjournal/96feb/feb96a1.pdf
+Page: 6, Section: I/O Expansion, Paragraph: 1
 
-AFAIK, K-class only had issues with console support
-and some recent issues with GSC 53c720 support.
-I've forgotten details. :(
-
-grant
+Mike
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
