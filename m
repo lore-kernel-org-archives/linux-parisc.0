@@ -1,16 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: CCIO dma io_command and related io_tlb format
-	questions.
-Date: Mon, 16 Oct 2006 23:59:23 -0600
-Message-ID: <20061017055923.GA6055@colo.lackof.org>
-References: <J788XR$E1A2FE043CF88207AEC13412E82258F2@scarlet.be>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] 64bit kernel & nfs module: Global Offset Table
+	overflow (used 1068, allowed 1023)
+Date: Wed, 18 Oct 2006 22:03:11 +0200
+Message-ID: <200610182203.11413.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@parisc-linux.org>
-To: Joel Soete <soete.joel@scarlet.be>
+  charset="us-ascii"
+To: parisc-linux <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <J788XR$E1A2FE043CF88207AEC13412E82258F2@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,34 +18,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Oct 16, 2006 at 01:51:27PM +0200, Joel Soete wrote:
-...
->     but it seems that at in the history num_physpages (now ram size in bytes)
->     was well the physical number of page:
-...
->     nowaday num_physpages is bytes so the comparision is eronous?
->     (compare bytes against page number)
+With a 64bit Kernel (git head):
 
-Where did you get the idea num_physpages is in bytes?
+c3000:/home/cvs# modprobe nfs
+FATAL: Error inserting nfs (/lib/modules/2.6.19-rc2-pa0/kernel/fs/nfs/nfs.ko): Invalid argument
 
-These two examples suggest it's counting PAGE_SIZE pages :
-
-mm/slab.c:      if (num_physpages > (32 << 20) >> PAGE_SHIFT)
-mm/swap.c:      unsigned long megs = num_physpages >> (20 - PAGE_SHIFT);
+dmesg says:
+nfs: Global Offset Table overflow (used 1068, allowed 1023)
 
 
->     the same way in:
->     iov_order = get_order(iova_space_size << PAGE_SHIFT);
-> 
->     iova_space_size << PAGE_SHIFT == iova_space_size * 2^PAGE_SHIFT
->                                   == iova_space_size * PAGE_SIZE
-> 
->     made sense when iova_space_size was a number of pages,
+In the source code arch/parisc/kernel/module.c I found:
 
-Look at get_order() then you'll understand why the "<< PAGE_SHIFT".
-iov_order is being set to log2(iova_space_size)+1.
+/* Maximum number of GOT entries. We use a long displacement ldd from
+ * the bottom of the table, which has a maximum signed displacement of
+ * 0x3fff; however, since we're only going forward, this becomes
+ * 0x1fff, and thus, since each GOT entry is 8 bytes long we can have
+ * at most 1023 entries */
+#define MAX_GOTS        1023
 
-grant
+Since I don't have any real idea about GOT and modules in general:
+Isn't it possible to increase this number for 64bit kernels ?
+
+Helge
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
