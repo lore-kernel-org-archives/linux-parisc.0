@@ -1,16 +1,12 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] [patch] Remove magic constant from gas/tc-hppa.c
-Date: Sat, 21 Oct 2006 12:46:54 -0600
-Message-ID: <20061021184654.GC2602__36733.2913367592$1416624198$gmane$org@parisc-linux.org>
-References: <1161454639.7854.57.camel@localhost.localdomain>
+From: "Ryan Bradetich" <rbradetich@gmail.com>
+Subject: [parisc-linux] Mux Updates.
+Date: Thu, 19 Oct 2006 22:36:58 -0700
+Message-ID: <e739902b0610192236u61d76952l942d4f9caac066c6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: binutils <binutils@sources.redhat.com>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Jeff Bailey <jbailey@raspberryginger.com>
+Content-Type: multipart/mixed;
+  boundary="----=_Part_81929_21838151.1161322618585"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1161454639.7854.57.camel@localhost.localdomain>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,51 +17,167 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Oct 21, 2006 at 02:17:19PM -0400, Jeff Bailey wrote:
-> @@ -105,12 +105,6 @@ typedef som_symbol_type obj_symbol_type;
->  #endif
->  #endif /* OBJ_SOM */
->  
-> -#if TARGET_ARCH_SIZE == 64
-> -#define DEFAULT_LEVEL 25
-> -#else
-> -#define DEFAULT_LEVEL 10
-> -#endif
-> -
->  /* Various structures and types used internally in tc-hppa.c.  */
->  
->  /* Unwind table and descriptor.  FIXME: Sync this with GDB version.  */
-> @@ -8259,7 +8253,11 @@ md_begin (void)
->    call_info_root = NULL;
->  
->    /* Set the default machine type.  */
-> -  if (!bfd_set_arch_mach (stdoutput, bfd_arch_hppa, DEFAULT_LEVEL))
-> +#if TARGET_ARCH_SIZE == 64
-> +  if (!bfd_set_arch_mach (stdoutput, bfd_arch_hppa, bfd_mach_hppa10))
-> +#else
-> +  if (!bfd_set_arch_mach (stdoutput, bfd_arch_hppa, bfd_mach_hppa20w))
-> +#endif
->      as_warn (_("could not set architecture and machine"));
->  
->    /* Folding of text and data segments fails miserably on the PA.
+------=_Part_81929_21838151.1161322618585
+Content-Type: multipart/alternative;
+	boundary="----=_Part_81930_15441518.1161322618585"
 
-My personal preference would be to see this patch as:
+------=_Part_81930_15441518.1161322618585
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
- #if TARGET_ARCH_SIZE == 64
--#define DEFAULT_LEVEL 25
-+#define DEFAULT_LEVEL bfd_mach_hppa20w
- #else
--#define DEFAULT_LEVEL 10
-+#define DEFAULT_LEVEL bfd_mach_hppa10
- #endif
+Hello all,
 
-... particularly since you seem to have got them the wrong way round in
-this patch.
+The following patch provides the following updates to the Mux driver:
 
-I'd also dearly love it if someone could unify the hppa and hppa64 ports
-so we don't have to build two toolchains for one port.  Just like sparc,
-mips, s390 and i386.
+  * Addresses the concerns Willy raised in this email:
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030220.html
+
+    I fixed the Mux to use not use the PDC Software console and actually use
+    the Mux hardware.
+
+
+  * Addresses the concerns Willy and Russell King raised in this email:
+
+http://lists.parisc-linux.org/pipermail/parisc-linux/2005-December/027912.html
+
+    I have not tested this fix yet, hopefully I will have a chance to verify
+this fix
+    on knapps.
+
+
+  * Fixed some compiler warnings.
+
+
+  * Updated the HP-PB driver to recognize the Gecko Boa device on the E-35.
+
+
+  * Updated the Mux to claim the resources used for the serial ports.
+
+
+Sorry this is one big patch, but my git-foo is very weak :(  I can work on
+breaking this
+patch into smaller chucks if it will make it easer for review.
+
+Thanks!
+
+- Ryan
+
+------=_Part_81930_15441518.1161322618585
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Hello all,<br><br>The following patch provides the following updates to the Mux driver:<br><br>&nbsp; * Addresses the concerns Willy raised in this email:<br>&nbsp;&nbsp;&nbsp; <a href="http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030220.html">
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030220.html</a><br><br>&nbsp;&nbsp;&nbsp; I fixed the Mux to use not use the PDC Software console and actually use<br>&nbsp;&nbsp;&nbsp; the Mux hardware.<br><br><br>&nbsp; * Addresses the concerns Willy and Russell King raised in this email:
+<br>&nbsp;&nbsp;&nbsp; <a href="http://lists.parisc-linux.org/pipermail/parisc-linux/2005-December/027912.html">http://lists.parisc-linux.org/pipermail/parisc-linux/2005-December/027912.html</a><br><br>&nbsp;&nbsp;&nbsp; I have not tested this fix yet, hopefully I will have a chance to verify this fix
+<br>&nbsp;&nbsp;&nbsp; on knapps.<br><br><br>&nbsp; * Fixed some compiler warnings.<br><br><br>&nbsp; * Updated the HP-PB driver to recognize the Gecko Boa device on the E-35.<br><br><br>&nbsp; * Updated the Mux to claim the resources used for the serial ports.
+<br><br><br>Sorry this is one big patch, but my git-foo is very weak :(&nbsp; I can work on breaking this<br>patch into smaller chucks if it will make it easer for review.<br><br>Thanks!<br><br>- Ryan<br><br>
+
+------=_Part_81930_15441518.1161322618585--
+
+------=_Part_81929_21838151.1161322618585
+Content-Type: text/x-patch; name=mux.diff; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_eti4s1ss
+Content-Disposition: attachment; filename="mux.diff"
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGFyaXNjL2hwcGIuYyBiL2RyaXZlcnMvcGFyaXNjL2hwcGIu
+YwppbmRleCAwN2RjMmI2Li43NTNhYzkyIDEwMDY0NAotLS0gYS9kcml2ZXJzL3BhcmlzYy9ocHBi
+LmMKKysrIGIvZHJpdmVycy9wYXJpc2MvaHBwYi5jCkBAIC02Nyw3ICs2Nyw3IEBAIHN0YXRpYyBp
+bnQgaHBwYl9wcm9iZShzdHJ1Y3QgcGFyaXNjX2RldmkKIAkJfQogCQljYXJkID0gY2FyZC0+bmV4
+dDsKIAl9Ci0gICAgICAgIHByaW50ayhLRVJOX0lORk8gIkZvdW5kIEdlY2tvQm9hIGF0IDB4JWx4
+XG4iLCBkZXYtPmhwYS5zdGFydCk7CisgICAgICAgIHByaW50ayhLRVJOX0lORk8gIkZvdW5kIEdl
+Y2tvQm9hIGF0IDB4JXhcbiIsIGRldi0+aHBhLnN0YXJ0KTsKIAogCWNhcmQtPmhwYSA9IGRldi0+
+aHBhLnN0YXJ0OwogCWNhcmQtPm1taW9fcmVnaW9uLm5hbWUgPSAiSFAtUEIgQnVzIjsKQEAgLTc4
+LDcgKzc4LDcgQEAgc3RhdGljIGludCBocHBiX3Byb2JlKHN0cnVjdCBwYXJpc2NfZGV2aQogCiAJ
+c3RhdHVzID0gY2Npb19yZXF1ZXN0X3Jlc291cmNlKGRldiwgJmNhcmQtPm1taW9fcmVnaW9uKTsK
+IAlpZihzdGF0dXMgPCAwKSB7Ci0JCXByaW50ayhLRVJOX0VSUiAiJXM6IGZhaWxlZCB0byBjbGFp
+bSBIUC1QQiBidXMgc3BhY2UgKCUwOGx4LCAlMDhseClcbiIsCisJCXByaW50ayhLRVJOX0VSUiAi
+JXM6IGZhaWxlZCB0byBjbGFpbSBIUC1QQiBidXMgc3BhY2UgKCUwOHgsICUwOHgpXG4iLAogCQkJ
+X19GSUxFX18sIGNhcmQtPm1taW9fcmVnaW9uLnN0YXJ0LCBjYXJkLT5tbWlvX3JlZ2lvbi5lbmQp
+OwogCX0KIApAQCAtODgsNiArODgsNyBAQCBzdGF0aWMgaW50IGhwcGJfcHJvYmUoc3RydWN0IHBh
+cmlzY19kZXZpCiAKIHN0YXRpYyBzdHJ1Y3QgcGFyaXNjX2RldmljZV9pZCBocHBiX3RibFtdID0g
+ewogICAgICAgICB7IEhQSFdfQkNQT1JULCBIVkVSU0lPTl9SRVZfQU5ZX0lELCAweDUwMCwgMHhj
+IH0sIAorICAgICAgICB7IEhQSFdfQkNQT1JULCBIVkVSU0lPTl9SRVZfQU5ZX0lELCAweDUwMSwg
+MHhjIH0sIAogICAgICAgICB7IDAsIH0KIH07CiAKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2VyaWFs
+L211eC5jIGIvZHJpdmVycy9zZXJpYWwvbXV4LmMKaW5kZXggOGFkMWI4Yy4uZWM5ZjU4ZSAxMDA2
+NDQKLS0tIGEvZHJpdmVycy9zZXJpYWwvbXV4LmMKKysrIGIvZHJpdmVycy9zZXJpYWwvbXV4LmMK
+QEAgLTQ5LDkgKzQ5LDEzIEBACiAjZGVmaW5lIE1VWF9TVEFUVVMoc3RhdHVzKSAoKHN0YXR1cyAm
+IDB4RjAwMCkgPT0gMHg4MDAwKQogI2RlZmluZSBNVVhfQlJFQUsoc3RhdHVzKSAoKHN0YXR1cyAm
+IDB4RjAwMCkgPT0gMHgyMDAwKQogCi0jZGVmaW5lIE1VWF9OUiAyNTYKKyNkZWZpbmUgTVVYX05S
+IDE2IAogc3RhdGljIHVuc2lnbmVkIGludCBwb3J0X2NudCBfX3JlYWRfbW9zdGx5Owotc3RhdGlj
+IHN0cnVjdCB1YXJ0X3BvcnQgbXV4X3BvcnRzW01VWF9OUl07CitzdHJ1Y3QgbXV4X3BvcnQgewor
+ICAgICAgICAgaW50IGVuYWJsZWQ7CisgICAgICAgICBzdHJ1Y3QgdWFydF9wb3J0IHVhcnRfcG9y
+dDsKK307CitzdGF0aWMgc3RydWN0IG11eF9wb3J0IG11eF9wb3J0c1tNVVhfTlJdOwogCiBzdGF0
+aWMgc3RydWN0IHVhcnRfZHJpdmVyIG11eF9kcml2ZXIgPSB7CiAJLm93bmVyID0gVEhJU19NT0RV
+TEUsCkBAIC02Miw2ICs2Niw4IEBAIHN0YXRpYyBzdHJ1Y3QgdWFydF9kcml2ZXIgbXV4X2RyaXZl
+ciA9IHsKIAkubnIgPSBNVVhfTlIsCiB9OwogCisvKiBGSVhNRTogT25seSBzdXBwb3J0cyBvbmUg
+Y2FyZCAqLworc3RhdGljIHN0cnVjdCByZXNvdXJjZSBtbWlvX3JlZ2lvbjsKIHN0YXRpYyBzdHJ1
+Y3QgdGltZXJfbGlzdCBtdXhfdGltZXI7CiAKICNkZWZpbmUgVUFSVF9QVVRfQ0hBUihwLCBjKSBf
+X3Jhd193cml0ZWwoKGMpLCAocCktPm1lbWJhc2UgKyBJT19EQVRBX1JFR19PRkZTRVQpCkBAIC0y
+NTAsNyArMjU2LDcgQEAgc3RhdGljIHZvaWQgbXV4X3JlYWQoc3RydWN0IHVhcnRfcG9ydCAqcAog
+ICovCiBzdGF0aWMgaW50IG11eF9zdGFydHVwKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQpCiB7Ci0J
+bW9kX3RpbWVyKCZtdXhfdGltZXIsIGppZmZpZXMgKyBNVVhfUE9MTF9ERUxBWSk7CisgICAgICAg
+IG11eF9wb3J0c1twb3J0LT5saW5lXS5lbmFibGVkID0gMTsKIAlyZXR1cm4gMDsKIH0KIApAQCAt
+MjYyLDYgKzI2OCw3IEBAIHN0YXRpYyBpbnQgbXV4X3N0YXJ0dXAoc3RydWN0IHVhcnRfcG9ydCAK
+ICAqLwogc3RhdGljIHZvaWQgbXV4X3NodXRkb3duKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQpCiB7
+CisgICAgICAgIG11eF9wb3J0c1twb3J0LT5saW5lXS5lbmFibGVkID0gMDsKIH0KIAogLyoqCkBA
+IC0zNTcsMTEgKzM2NCwxMSBAQCBzdGF0aWMgdm9pZCBtdXhfcG9sbCh1bnNpZ25lZCBsb25nIHVu
+dXNlCiAJaW50IGk7CiAKIAlmb3IoaSA9IDA7IGkgPCBwb3J0X2NudDsgKytpKSB7Ci0JCWlmKCFt
+dXhfcG9ydHNbaV0uaW5mbykKKwkJaWYoIW11eF9wb3J0c1tpXS5lbmFibGVkKQogCQkJY29udGlu
+dWU7CiAKLQkJbXV4X3JlYWQoJm11eF9wb3J0c1tpXSk7Ci0JCW11eF93cml0ZSgmbXV4X3BvcnRz
+W2ldKTsKKwkJbXV4X3JlYWQoJm11eF9wb3J0c1tpXS51YXJ0X3BvcnQpOworCQltdXhfd3JpdGUo
+Jm11eF9wb3J0c1tpXS51YXJ0X3BvcnQpOwogCX0KIAogCW1vZF90aW1lcigmbXV4X3RpbWVyLCBq
+aWZmaWVzICsgTVVYX1BPTExfREVMQVkpOwpAQCAtMzcxLDggKzM3OCwxNiBAQCBzdGF0aWMgdm9p
+ZCBtdXhfcG9sbCh1bnNpZ25lZCBsb25nIHVudXNlCiAjaWZkZWYgQ09ORklHX1NFUklBTF9NVVhf
+Q09OU09MRQogc3RhdGljIHZvaWQgbXV4X2NvbnNvbGVfd3JpdGUoc3RydWN0IGNvbnNvbGUgKmNv
+LCBjb25zdCBjaGFyICpzLCB1bnNpZ25lZCBjb3VudCkKIHsKLSAgICAgICAgd2hpbGUoY291bnQt
+LSkKLSAgICAgICAgICAgICAgICBwZGNfaW9kY19wdXRjKCpzKyspOworICAgICAgICAvKiBXYWl0
+IHVudGlsIHRoZSBGSUZPIGRyYWlucy4gKi8KKyAgICAgICAgd2hpbGUoVUFSVF9HRVRfRklGT19D
+TlQoJm11eF9wb3J0c1swXS51YXJ0X3BvcnQpKQorICAgICAgICAgICAgICAgIHVkZWxheSgxKTsK
+KworICAgICAgICB3aGlsZShjb3VudC0tKSB7CisgICAgICAgICAgICAgICAgaWYoKnMgPT0gJ1xu
+JykgeworICAgICAgICAgICAgICAgICAgICAgICAgVUFSVF9QVVRfQ0hBUigmbXV4X3BvcnRzWzBd
+LnVhcnRfcG9ydCwgJ1xyJyk7ICAgICAgICAgICAgICAgIAorICAgICAgICAgICAgICAgIH0KKyAg
+ICAgICAgICAgICAgICBVQVJUX1BVVF9DSEFSKCZtdXhfcG9ydHNbMF0udWFydF9wb3J0LCAqcysr
+KTsKKyAgICAgICAgfQogfQogCiBzdGF0aWMgaW50IG11eF9jb25zb2xlX3NldHVwKHN0cnVjdCBj
+b25zb2xlICpjbywgY2hhciAqb3B0aW9ucykKQEAgLTQ0MCw3ICs0NTUsNyBAQCBzdGF0aWMgaW50
+IF9faW5pdCBtdXhfcHJvYmUoc3RydWN0IHBhcmlzCiAJfQogCiAJcG9ydHMgPSBHRVRfTVVYX1BP
+UlRTKGlvZGNfZGF0YSk7Ci0gCXByaW50ayhLRVJOX0lORk8gIlNlcmlhbCBtdXggZHJpdmVyICgl
+ZCBwb3J0cykgUmV2aXNpb246IDAuM1xuIiwgcG9ydHMpOworIAlwcmludGsoS0VSTl9JTkZPICJT
+ZXJpYWwgbXV4IGRyaXZlciAoJWQgcG9ydHMpIFJldmlzaW9uOiAwLjRcbiIsIHBvcnRzKTsKIAog
+CWlmKCFwb3J0X2NudCkgewogCQltdXhfZHJpdmVyLmNvbnMgPSBNVVhfQ09OU09MRTsKQEAgLTQ1
+NSw4ICs0NzAsMTQgQEAgc3RhdGljIGludCBfX2luaXQgbXV4X3Byb2JlKHN0cnVjdCBwYXJpcwog
+CQltdXhfdGltZXIuZnVuY3Rpb24gPSBtdXhfcG9sbDsKIAl9CiAKKyAgICAgICAgbW1pb19yZWdp
+b24ubmFtZSA9ICJNdXgiOworICAgICAgICBtbWlvX3JlZ2lvbi5mbGFncyA9IElPUkVTT1VSQ0Vf
+TUVNOworICAgICAgICBtbWlvX3JlZ2lvbi5zdGFydCA9IGRldi0+aHBhLnN0YXJ0ICsgTVVYX09G
+RlNFVDsKKyAgICAgICAgbW1pb19yZWdpb24uZW5kID0gZGV2LT5ocGEuc3RhcnQgKyBNVVhfT0ZG
+U0VUICsgKHBvcnRzICogTVVYX0xJTkVfT0ZGU0VUKSAtIDE7CisgICAgICAgIGluc2VydF9yZXNv
+dXJjZSgmaW9tZW1fcmVzb3VyY2UsICZtbWlvX3JlZ2lvbik7CisKIAlmb3IoaSA9IDA7IGkgPCBw
+b3J0czsgKytpLCArK3BvcnRfY250KSB7Ci0JCXBvcnQgPSAmbXV4X3BvcnRzW3BvcnRfY250XTsK
+KwkJcG9ydCA9ICZtdXhfcG9ydHNbcG9ydF9jbnRdLnVhcnRfcG9ydDsKIAkJcG9ydC0+aW9iYXNl
+CT0gMDsKIAkJcG9ydC0+bWFwYmFzZQk9IGRldi0+aHBhLnN0YXJ0ICsgTVVYX09GRlNFVCArCiAJ
+CQkJCQkoaSAqIE1VWF9MSU5FX09GRlNFVCk7CkBAIC00ODQsNiArNTA1LDggQEAgc3RhdGljIGlu
+dCBfX2luaXQgbXV4X3Byb2JlKHN0cnVjdCBwYXJpcwogI2lmZGVmIENPTkZJR19TRVJJQUxfTVVY
+X0NPTlNPTEUKICAgICAgICAgcmVnaXN0ZXJfY29uc29sZSgmbXV4X2NvbnNvbGUpOwogI2VuZGlm
+CisJbW9kX3RpbWVyKCZtdXhfdGltZXIsIGppZmZpZXMgKyBNVVhfUE9MTF9ERUxBWSk7CisKIAly
+ZXR1cm4gMDsKIH0KIApAQCAtNTIwLDkgKzU0Myw5IEBAIHN0YXRpYyB2b2lkIF9fZXhpdCBtdXhf
+ZXhpdCh2b2lkKQogCWludCBpOwogCiAJZm9yIChpID0gMDsgaSA8IHBvcnRfY250OyBpKyspIHsK
+LQkJdWFydF9yZW1vdmVfb25lX3BvcnQoJm11eF9kcml2ZXIsICZtdXhfcG9ydHNbaV0pOwotCQlp
+ZiAobXV4X3BvcnRzW2ldLm1lbWJhc2UpCi0JCQlpb3VubWFwKG11eF9wb3J0c1tpXS5tZW1iYXNl
+KTsKKwkJdWFydF9yZW1vdmVfb25lX3BvcnQoJm11eF9kcml2ZXIsICZtdXhfcG9ydHNbaV0udWFy
+dF9wb3J0KTsKKwkJaWYgKG11eF9wb3J0c1tpXS51YXJ0X3BvcnQubWVtYmFzZSkKKwkJCWlvdW5t
+YXAobXV4X3BvcnRzW2ldLnVhcnRfcG9ydC5tZW1iYXNlKTsKIAl9CiAKIAl1YXJ0X3VucmVnaXN0
+ZXJfZHJpdmVyKCZtdXhfZHJpdmVyKTsK
+------=_Part_81929_21838151.1161322618585
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+------=_Part_81929_21838151.1161322618585--
