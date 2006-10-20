@@ -1,40 +1,98 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] 64bit kernel & nfs module: Global Offset Table overflow (used 1068, allowed 1023)
-Date: Wed, 18 Oct 2006 17:23:46 -0600
-Message-ID: <20061018232346.GW22289@parisc-linux.org>
-References: <200610182203.11413.deller@gmx.de>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: [parisc-linux] Re: CCIO dma io_command and related io_tlb format
+	questions.
+Date: Fri, 20 Oct 2006 17:18:28 +0000
+Message-ID: <453904E4.60608@scarlet.be>
+References: <J6YR5K$1938FDCB7E5B1C4FE794753632F5E240@scarlet.be>
+	<20061012010426.GA18624@colo.lackof.org>
+	<4538BB5F.5040703@scarlet.be>
+	<20061020155059.GB23094@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=ISO-8859-1;
+  format=flowed
 Cc: parisc-linux <parisc-linux@parisc-linux.org>
-To: Helge Deller <deller@gmx.de>
-Return-Path: <willy@parisc-linux.org>
-In-Reply-To: <200610182203.11413.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+To: Grant Grundler <grundler@parisc-linux.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20061020155059.GB23094@colo.lackof.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Oct 18, 2006 at 10:03:11PM +0200, Helge Deller wrote:
-> With a 64bit Kernel (git head):
-> 
-> c3000:/home/cvs# modprobe nfs
-> FATAL: Error inserting nfs (/lib/modules/2.6.19-rc2-pa0/kernel/fs/nfs/nfs.ko): Invalid argument
-> 
-> dmesg says:
-> nfs: Global Offset Table overflow (used 1068, allowed 1023)
-> 
-> 
-> In the source code arch/parisc/kernel/module.c I found:
-> 
-> /* Maximum number of GOT entries. We use a long displacement ldd from
->  * the bottom of the table, which has a maximum signed displacement of
->  * 0x3fff; however, since we're only going forward, this becomes
->  * 0x1fff, and thus, since each GOT entry is 8 bytes long we can have
->  * at most 1023 entries */
-> #define MAX_GOTS        1023
-> 
-> Since I don't have any real idea about GOT and modules in general:
-> Isn't it possible to increase this number for 64bit kernels ?
 
-We'd need to make the GOT register point 0x2000 above where it currently
-does.  Then we could use a signed +0x1fff / -0x2000 offset.
 
-I have no idea how to make this happen.
+Grant Grundler wrote:
+> On Fri, Oct 20, 2006 at 12:04:47PM +0000, Joel Soete wrote:
+>> mmm offhand wasn't there limits in ccio page size like in ia64 sba comments:
+>>> /*
+>>> ** The zx1 IOC supports 4/8/16/64KB page sizes (see TCNFG register)
+> 
+> I don't remember.
+> ia64 sba is the 3rd generation IO controller.
+> U2 (ccio) is the first generation.
+> Sorry, I'm not interested in comparing them.
+> 
+no pb,
+
+>>> Uhm....sounds reasonable to me. All I know is I believe the existing
+>>> code use of chain_id is correct.
+>>>
+>> Just come back here shortly: the computed values with my hw config (256Mb 
+>> and 2 ccio) are
+>>> Found U2 at 0xfff88000
+>>> ccio_ioc_init() hpa 0x00008000 mem 256Mb IOV 128Mb (27 bits)
+>>>  base 10740000
+>>> ccio_ioc_init() res_size 0x1000
+>>>  chainid_shift 0x13
+>>>  chainid_mask 0x7f80000
+> 
+> This looks correct.
+> 
+>>> Found U2 at 0xfff8a000
+>>> ccio_ioc_init() hpa 0x0000a000 mem 256Mb IOV 128Mb (27 bits)
+>>>  base 10780000
+>>> ccio_ioc_init() res_size 0x1000
+>>>  chainid_shift 0x13
+>>>  chainid_mask 0x7f80000
+>> otoh, applying this other formula [io_chain_id_mask = (~(CHAINID_SIZE -1)); 
+>> with CHAINID_SIZE = (1UL << ioc->chainid_shift)], I got:
+>>>  chainid_mask 0xfff80000
+> 
+> This second chainid_mask is 13 bits wide.
+mmm sorry how do you compute this wide value?
+
+> Remember that the mask can only be 8 bits wide for ccio.
+> 
+
+Btw I just discover an interesting comment in rope.h
+> /*
+> ** IOC supports 4/8/16/64KB page sizes (see TCNFG register)
+> ** It's safer (avoid memory corruption) to keep DMA page mappings
+> ** equivalently sized to VM PAGE_SIZE.
+> **
+[snip]
+> **
+> ** PAGE_SIZE could be greater than IOVP_SIZE. But not the inverse.
+> */
+
+and specialy:
+ > ** It's safer (avoid memory corruption) to keep DMA page mappings
+ > ** equivalently sized to VM PAGE_SIZE.
+
+which was related to the original question I didn't reach to explain better.
+
+So even if I don't understand why, we have to limits the number of iotlb entries to 256 (without doc I just accept it).
+but in term to 'avoid memory corruption' why don't we limit the iova_space_size to 256 * IOVP_SIZE?
+
+Many thanks,
+	Joel
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
