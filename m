@@ -1,22 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: CCIO dma io_command and related io_tlb format
-	questions.
-Date: Sun, 22 Oct 2006 22:34:42 -0600
-Message-ID: <20061023043442.GB15915@colo.lackof.org>
-References: <J6YR5K$1938FDCB7E5B1C4FE794753632F5E240@scarlet.be>
-	<20061012010426.GA18624@colo.lackof.org>
-	<4538BB5F.5040703@scarlet.be>
-	<20061020155059.GB23094@colo.lackof.org>
-	<453904E4.60608@scarlet.be>
-	<20061021061944.GA24732@colo.lackof.org>
-	<453A563A.9050704@scarlet.be>
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: [parisc-linux] [PATCH] parisc: fix module_param iommu permission
+Date: Mon, 23 Oct 2006 20:01:25 -0700
+Message-ID: <20061023200125.6f05e0f3.randy.dunlap@oracle.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@parisc-linux.org>
-To: Joel Soete <soete.joel@scarlet.be>
+  charset=US-ASCII
+Cc: akpm <akpm@osdl.org>,
+ kyle@parisc-linux.org,
+ matthew@wil.cx
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <453A563A.9050704@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,18 +20,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Oct 21, 2006 at 05:17:46PM +0000, Joel Soete wrote:
-...
-> Or I just have to wait public ccio doc to better understand how this hw 
-> works ;-)
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-Sorry, I guess so. :(
+Fix/change module_param permissions parameter from an init value
+to a permission value.
 
-Not unless someone at HP can look up a description of "Chain ID" and
-related registers in the CCIO documentation and share a summarized
-version of those.
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+---
+ drivers/parisc/sba_iommu.c |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
 
-grant
+--- linux-2.6.19-rc2-git8.orig/drivers/parisc/sba_iommu.c
++++ linux-2.6.19-rc2-git8/drivers/parisc/sba_iommu.c
+@@ -109,7 +109,7 @@ static unsigned long piranha_bad_128k = 
+ 
+ #ifdef SBA_AGP_SUPPORT
+ static int sba_reserve_agpgart = 1;
+-module_param(sba_reserve_agpgart, int, 1);
++module_param(sba_reserve_agpgart, int, 0444);
+ MODULE_PARM_DESC(sba_reserve_agpgart, "Reserve half of IO pdir as AGPGART");
+ #endif
+ 
+
+
+---
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
