@@ -1,18 +1,18 @@
-From: Alan Mock <alan.mock@gmail.com>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [parisc-linux] 64-bit Userland
-Date: Sun, 29 Oct 2006 21:44:23 -0600
-Message-ID: <62A625B5-C6B7-4266-ABA5-9F178D00EAEB@gmail.com>
+Date: Mon, 30 Oct 2006 10:43:25 -0500
+Message-ID: <119aab440610300743y2eae2a5fje17535527eb17860@mail.gmail.com>
 References: <A95DDDB4-BE43-42F9-BC91-4D0438118952@gmail.com>
 	<119aab440610291758pcc33aaelb679d1c42bed62ef@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v752.2)
+	<62A625B5-C6B7-4266-ABA5-9F178D00EAEB@gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII;
-  delsp=yes;
+  charset=ISO-8859-1;
   format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: "Alan Mock" <alan.mock@gmail.com>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440610291758pcc33aaelb679d1c42bed62ef@mail.gmail.com>
+In-Reply-To: <62A625B5-C6B7-4266-ABA5-9F178D00EAEB@gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,29 +23,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I would like to work on it, but I don't think I know enough to get  
-started on my own.  I wouldn't mind working on the 32-bit port,  
-either.  Is there a list somewhere of things that need work?
-Thanks,
-Alan
-On Oct 29, 2006, at 7:58 PM, Carlos O'Donell wrote:
+On 10/29/06, Alan Mock <alan.mock@gmail.com> wrote:
+> I would like to work on it, but I don't think I know enough to get
+> started on my own.  I wouldn't mind working on the 32-bit port,
+> either.  Is there a list somewhere of things that need work?
 
-> On 10/23/06, Alan Mock <alan.mock@gmail.com> wrote:
->> Hello,
->>
->> Is there currently any work being done on a 64-bit userland for
->> Linux?  I can't find any recent references to it.
->> Thanks,
->
-> Would you like to work on it?
->
-> There is quite a bit of work to do in our 32-bit port aswell if you
-> are interested in toolchain hacking.
->
-> Cheers,
-> Carlos
-> (Back from the land of "moving to a new condo")
+A great place to start is with our compiler. I would start by learning
+to build and test GCC on your parisc-linux system.
 
+http://gcc.gnu.org
+
+You can use SVN to checkout the latest "trunk" of GCC, then run
+
+configure --enable-languages=c,c++
+make bootstrap
+make -k check
+
+Post the results of the testsuite to the list.
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
