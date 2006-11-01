@@ -1,7 +1,7 @@
 From: "Carlos O'Donell" <carlos@systemhalted.org>
 Subject: Re: [parisc-linux] [RFC] vdso for parisc-linux
-Date: Wed, 1 Nov 2006 10:04:39 -0500
-Message-ID: <119aab440611010704h2746644bu64d742424a89e030@mail.gmail.com>
+Date: Wed, 1 Nov 2006 10:19:42 -0500
+Message-ID: <119aab440611010719v3a7d0358jcd7be64afb769b8a@mail.gmail.com>
 References: <4544A34A.6080700@tausq.org>
 	<119aab440610300825l4cfd056fi21738f63f3d99d72@mail.gmail.com>
 	<4546E861.9050909@tausq.org>
@@ -34,32 +34,35 @@ On 10/31/06, Randolph Chung <randolph@tausq.org> wrote:
 > i can't quite see how lws disables scheduling... maybe you can enlighten
 > me :)
 
+LWS doesn't disable scheduling. See arch/parisc/kernel/syscall.S
 
-> Well, there are two parts:
-> 1) Finding "sigreturn"
-> 2) Finding the system state on the stack
->
-> Right now this is all done on parisc-linux by poking in memory using
-> magic constants.
->
-> On HPUX, #1 is available symbolically, but #2 still requires poking in
-> memory using magic constants. It is particularly nasty on HPUX because
-> the kernel can store state in either narrow or wide mode and the offsets
-> are not fixed.
+arch/parisc/kernel/syscall.S
+547 /* NOTES:
+548 This all works becuse intr_do_signal
+549 and schedule both check the return iasq
+550 and see that we are on the kernel page
+551 so this process is never scheduled off
+552 or is ever sent any signal of any sort,
+553 thus it is wholly atomic from usrspaces
+554 perspective
+555 */
 
-On parisc-linux there is *always* a 32-bit system state on the stack.
-If you have a 64-bit kernel there is an auxiliary section which
-contains the register top-halves. I think we can conjure up some magic
-to determine which structure is on the stack.
+Checks like this:
+arch/parisc/kernel/entry.S
+1023 intr_do_resched:
+1024 /* Only call schedule on return to userspace. If we're returning
+1025 * to kernel space, we may schedule if CONFIG_PREEMPT, otherwise
+1026 * we jump back to intr_restore.
+1027 */
+1028 LDREG PT_IASQ0(%r16), %r20
+1029 CMPIB= 0, %r20, intr_do_preempt
+1030 nop
 
-> > What testing do we need to do before you check this into git?
->
-> What I have is just infrastructure, we need to add some functionality
-> into it :)
+Mean that if we take an interrupt while on the gateway page, the
+PT_IASQ0 should be zero and prevent intr_do_preempt, or
+intr_do_signal, or any other protected intr_* action.
 
-Yes, but if it gets checked into git it makes it easier to keep it
-from bitrotting.
-With your HK timezone it makes coordinating more difficult.
+Scheduling isn't a bit problem, but signals cause deadlocks.
 
 Cheers,
 Carlos.
