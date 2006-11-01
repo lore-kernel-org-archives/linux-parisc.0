@@ -1,14 +1,18 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] Git tree rebased
-Date: Tue, 31 Oct 2006 09:05:16 -0700
-Message-ID: <20061031160516.GC26964@parisc-linux.org>
-References: <20061031150001.GB26964@parisc-linux.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] [RFC] vdso for parisc-linux
+Date: Wed, 1 Nov 2006 10:04:39 -0500
+Message-ID: <119aab440611010704h2746644bu64d742424a89e030@mail.gmail.com>
+References: <4544A34A.6080700@tausq.org>
+	<119aab440610300825l4cfd056fi21738f63f3d99d72@mail.gmail.com>
+	<4546E861.9050909@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@parisc-linux.org
+  charset=ISO-8859-1;
+  format=flowed
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Randolph Chung" <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061031150001.GB26964@parisc-linux.org>
+In-Reply-To: <4546E861.9050909@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,52 +23,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Oct 31, 2006 at 08:00:01AM -0700, Matthew Wilcox wrote:
-> If your remotes file currently has a line in it like:
-> 
-> 	Pull: refs/heads/master:refs/heads/origin
-> 
-> then you'll want to add the '+' at the beginning:
-> 
-> 	Pull: +refs/heads/master:refs/heads/origin
-> 
-> otherwise git will refuse to update.  With the +, it will complain, but
-> do it anyway.
-
-As we've now learned, it's not that easy.  The problem is that all your
-local repositories have a divergent branch of history from the one now
-in the shared repo's master branch.  Here's a recovery guide.  Sorry for
-all the inconvenience.
-
-First, be sure your tree is clean before you pull.  ie git-diff returns
-nothing.  Otherwise you'll be in even more pain than the rest of this.
-
-Now, if you have no commits outstanding vs upstream
-(git-log origin..master returns nothing), life is fairly easy.
-After you put in the + above, you need to git-pull, then
-
-git-checkout origin
-git-branch -D master
-git-checkout -b master
-
-Now you can work as before.
+On 10/31/06, Randolph Chung <randolph@tausq.org> wrote:
+> > atomic ops are *not* prime candidates for vDSO's, I was wrong about
+> > this. There are special requirements for the atomic operations which
+> > require access to kernel locks, no scheduling, and no signals.  All of
+> > these are impossible to do if gdb can write to code, thus we put the
+> > atomic ops on the gateway page (which has the aforementioned special
+> > properties).
+>
+> i can't quite see how lws disables scheduling... maybe you can enlighten
+> me :)
 
 
-If you have commits in your master branch, then we need to move them
-over to the new origin branch.
+> Well, there are two parts:
+> 1) Finding "sigreturn"
+> 2) Finding the system state on the stack
+>
+> Right now this is all done on parisc-linux by poking in memory using
+> magic constants.
+>
+> On HPUX, #1 is available symbolically, but #2 still requires poking in
+> memory using magic constants. It is particularly nasty on HPUX because
+> the kernel can store state in either narrow or wide mode and the offsets
+> are not fixed.
 
-git-fetch origin devel-2006-10-31:devel-2006-10-31
-git-fetch origin
-git-checkout -b new-master origin
-for i in `git-rev-list devel-2006-10-31..master |tac`; do if ! git-cherry-pick -r $i; then sh; fi; done
-# assuming the above goes OK
-git-branch -D master
-git-checkout -b master
-git-branch -d new-master
+On parisc-linux there is *always* a 32-bit system state on the stack.
+If you have a 64-bit kernel there is an auxiliary section which
+contains the register top-halves. I think we can conjure up some magic
+to determine which structure is on the stack.
 
+> > What testing do we need to do before you check this into git?
+>
+> What I have is just infrastructure, we need to add some functionality
+> into it :)
 
-Any more problems, please let me know.  I hadn't thought through all the
-consequences of rebasing the current master branch.
+Yes, but if it gets checked into git it makes it easier to keep it
+from bitrotting.
+With your HK timezone it makes coordinating more difficult.
+
+Cheers,
+Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
