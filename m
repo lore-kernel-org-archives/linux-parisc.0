@@ -1,18 +1,16 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] [RFC] vdso for parisc-linux
-Date: Wed, 1 Nov 2006 10:19:42 -0500
-Message-ID: <119aab440611010719v3a7d0358jcd7be64afb769b8a@mail.gmail.com>
-References: <4544A34A.6080700@tausq.org>
-	<119aab440610300825l4cfd056fi21738f63f3d99d72@mail.gmail.com>
-	<4546E861.9050909@tausq.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Trouble Building GCC
+Date: Wed, 1 Nov 2006 20:17:25 -0500 (EST)
+Message-ID: <200611020117.kA21HQCp029595@hiauly1.hia.nrc.ca>
+References: <47F7F502-FBD7-4E25-8701-A04DBC278804@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Randolph Chung" <randolph@tausq.org>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: alan.mock@gmail.com (Alan Mock)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4546E861.9050909@tausq.org>
+In-Reply-To: <47F7F502-FBD7-4E25-8701-A04DBC278804@gmail.com> from "Alan Mock"
+	at Nov 1, 2006 06:38:25 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,49 +21,53 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 10/31/06, Randolph Chung <randolph@tausq.org> wrote:
-> > atomic ops are *not* prime candidates for vDSO's, I was wrong about
-> > this. There are special requirements for the atomic operations which
-> > require access to kernel locks, no scheduling, and no signals.  All of
-> > these are impossible to do if gdb can write to code, thus we put the
-> > atomic ops on the gateway page (which has the aforementioned special
-> > properties).
->
-> i can't quite see how lws disables scheduling... maybe you can enlighten
-> me :)
+> I am having trouble bootstrapping gcc.  My questions are how do I get  
+> gcc to bootstrap using hppa1.1 and how do I disable building ada?  I  
+> configured using --enable-languages=c,c++ as the only flag and  
+> encountered the following error.
+> 
+> /usr/bin/ld: warning: hppa2.0w architecture of input file `libgcc/./ 
+> gthr-gnat_s.o' is incompatible with hppa1.1 output
+> /usr/bin/ld: warning: hppa2.0w architecture of input file `libgcc/./ 
+> unwind-c_s.o' is incompatible with hppa1.1 output
+> /usr/bin/ld: warning: hppa2.0w architecture of input file `./ 
+> crtendS.o' is incompatible with hppa1.1 output
+> /usr/bin/ld: ./crtbeginS.o(.data.rel+0x0): cannot handle  
+> R_PARISC_DIR64 for __dso_handle
 
-LWS doesn't disable scheduling. See arch/parisc/kernel/syscall.S
+You have to force the target to 32 bits when using a 64-bit kernel.
+Otherwise, the build machinary will try to build a 64-bit version
+of GCC.  However, parisc-linux only supports a 32-bit userspace
+at the moment ;(
 
-arch/parisc/kernel/syscall.S
-547 /* NOTES:
-548 This all works becuse intr_do_signal
-549 and schedule both check the return iasq
-550 and see that we are on the kernel page
-551 so this process is never scheduled off
-552 or is ever sent any signal of any sort,
-553 thus it is wholly atomic from usrspaces
-554 perspective
-555 */
+There's probably a bug in config.guess.  Under hpux, it selects
+between 32 and 64 bits based on the bootstrap compiler.  However,
+this is a bit of a hack and there's some work going on to try to
+integrate the 32 and 63-bit tool chains.
 
-Checks like this:
-arch/parisc/kernel/entry.S
-1023 intr_do_resched:
-1024 /* Only call schedule on return to userspace. If we're returning
-1025 * to kernel space, we may schedule if CONFIG_PREEMPT, otherwise
-1026 * we jump back to intr_restore.
-1027 */
-1028 LDREG PT_IASQ0(%r16), %r20
-1029 CMPIB= 0, %r20, intr_do_preempt
-1030 nop
+> With many more warning: lines above what is shown.  To fix this I  
+> tried passing --target=hppa-unknown-linux-gnu --enable-languages=c,c+ 
+> + to configure so that it will not try to build an hppa2.0 compiler,  
+> however that produces an error message saying that gnat can't be  
+> found, so I guess it is trying to build the ada frontend.
 
-Mean that if we take an interrupt while on the gateway page, the
-PT_IASQ0 should be zero and prevent intr_do_preempt, or
-intr_do_signal, or any other protected intr_* action.
+c,c++ should be "c,c++".  This should fix the gnat error.  I typically
+something like the following to configure GCC:
 
-Scheduling isn't a bit problem, but signals cause deadlocks.
+../gcc/configure --with-gnu-as --with-gnu-ld --enable-shared --prefix=/home/dave/opt/gnu/gcc/gcc-4.2.0 --with-local-prefix=/home/dave/opt/gnu --enable-threads=posix --enable-__cxa_atexit --host=hppa-linux --enable-clocale=gnu --enable-java-gc=boehm --enable-java-awt="xlib" --enable-languages="c,c++,objc,fortran,java,ada,obj-c++"
 
-Cheers,
-Carlos.
+The --host option also sets --target.  Here my build directory is adjacent
+to my GCC tree.
+
+Using debian and I believe gentoo, GCC 4.1 packages are available.
+So, you really shouldn't have to build GCC unless you are interested
+in working on or learning about GCC.  4.2 and 4.3 aren't ready for
+prime time.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
