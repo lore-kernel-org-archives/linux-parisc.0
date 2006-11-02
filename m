@@ -1,18 +1,14 @@
 From: Joel Soete <soete.joel@scarlet.be>
-Subject: Re: [parisc-linux] Git tree rebased
-Date: Wed, 01 Nov 2006 14:42:18 +0000
-Message-ID: <4548B24A.1010902@scarlet.be>
-References: <20061031150001.GB26964@parisc-linux.org>
-	<45487F41.4020509@scarlet.be>
-	<20061101124125.GB11399@parisc-linux.org>
+Subject: [parisc-linux] syncdma question (back to ccio drivers)
+Date: Thu, 02 Nov 2006 22:11:02 +0000
+Message-ID: <454A6CF6.3040309@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
+  charset=UTF-8;
   format=flowed
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux <parisc-linux@parisc-linux.org>,
+ grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061101124125.GB11399@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,107 +19,66 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello Grant,
 
+In one of my test, I also activated CCIO_MAP_STATS and noticed that before 53c700 pb occured the ccio driver used a very few 
+number of entries: may max 30 of severall 100 available?
 
-Matthew Wilcox wrote:
-> On Wed, Nov 01, 2006 at 11:04:33AM +0000, Joel Soete wrote:
->> * refs/heads/origin: does not fast forward to branch 'master' of 
->> git://git.parisc-linux.org/git/linux-2.6;
->>   not updating.
->>
->> Any idea of what I missed?
-> 
-> It's THE BIT YOU JUST QUOTED!
-> 
-well ...
->>> If your remotes file currently has a line in it like:
->>>
-trying so to translate your idea in non git expert you mean that file:
-# find . -type f | xargs grep "refs/heads/master"
-./.git/remotes/origin:Pull: refs/heads/master:refs/heads/origin
-./.git/HEAD:ref: refs/heads/master
+This make me so suspected a pb of coherency and remember me another of your comment in sba:
+         /* XXX REVISIT for 2.5 Linux - need syncdma for zero-copy support.
+         ** For Astro based systems this isn't a big deal WRT performance.
+         ** As long as 2.4 kernels copyin/copyout data from/to userspace,
+         ** we don't need the syncdma. The issue here is I/O MMU cachelines
+         ** are *not* coherent in all cases.  May be hwrev dependent.
+         ** Need to investigate more.
+         asm volatile("syncdma");
+         */
 
->>> 	Pull: refs/heads/master:refs/heads/origin
->>>
->>> then you'll want to add the '+' at the beginning:
->>>
->>> 	Pull: +refs/heads/master:refs/heads/origin
->>>
-so my .git/remotes/origin looks like now:
-URL: git://git.parisc-linux.org/git/linux-2.6.git
-Pull: +refs/heads/master:refs/heads/origin
-Pull: refs/heads/linus:refs/heads/linus
-Pull: refs/heads/scsi:refs/heads/scsi
+Reading back pa11_acd text:
+� Cache Coherent I/O
+Two instructions (LOAD COHERENCE INDEX and SYNCHRONIZE DMA) have been added to enable cache coherent memory references by 
+I/O modules. Previously, responsibility for cache coherence between the processor and I/O modules lay with software, which 
+had to use a sequence of flush and purge operations to ensure coherence. While software cache coherence for I/O is still 
+attractive in uniprocessor systems because of the lower hardware cost, hardware cache coherence for I/O has a relatively low 
+incremental cost in multiprocessor systems.
 
->>> otherwise git will refuse to update.  With the +, it will complain,
-Ok it do something:
-# git-pull 2>&1 | tee -a /var/logs/GitParisc26.log
-remote: Generating pack...
-remote: Done counting 1545 objects.
-remote: Result has 1156 objects.
-remote: Deltifying 1156 objects.
-remote:  100% (1156/1156) done
-Unpacking 1156 objects
-remote: Total 1156, written 1156 (delta 947), reused 15 (delta 11)
-* refs/heads/origin: does not fast forward to branch 'master' of git://git.parisc-linux.org/git/linux-2.6;
-   forcing update.
-* refs/heads/linus: fast forward to branch 'linus' of git://git.parisc-linux.org/git/linux-2.6
-   from e80391500078b524083ba51c3df01bbaaecc94bb to ae99a78af33f00565a05dbbc6ca9b247fed002c5
-Auto-following refs/tags/v2.6.19-rc4-pa0
-Auto-following refs/tags/v2.6.19-rc4
-remote: Generating pack...
-remote: Done counting 2 objects.
-remote: Deltifying 2 objects.
-remote:  100% (2/2) done
-remote: Total 2, written 2 (delta 0), reused 0 (delta 0)
-Unpacking 2 objects
-* refs/tags/v2.6.19-rc4-pa0: storing tag 'v2.6.19-rc4-pa0' of git://git.parisc-linux.org/git/linux-2.6
-* refs/tags/v2.6.19-rc4: storing tag 'v2.6.19-rc4' of git://git.parisc-linux.org/git/linux-2.6
-Trying really trivial in-index merge...
-fatal: Merge requires file-level merging
-Nope.
-merge: warning: conflicts during merge
-Merging HEAD with 1c5484420c0a451eafd30121fd1fcc62bd234f1e
-Merging:
-823bbec4f4c48113da0083fc8220d60748daf8ed PA-RISC: sparse fixes
-1c5484420c0a451eafd30121fd1fcc62bd234f1e Enable CONFIG_LOCALVERSION_AUTO in defconfigs
-found 1 common ancestor(s):
-7059abedd2f04b68bd7e1a79c9c72f7aeee134c0 Linux 2.6.19-rc3
-Auto-merging Makefile
-CONFLICT (content): Merge conflict in Makefile
-Auto-merging arch/ia64/ia32/ia32_signal.c
-Auto-merging arch/parisc/configs/712_defconfig
-Auto-merging arch/parisc/configs/a500_defconfig
-Auto-merging arch/parisc/configs/b180_defconfig
-Auto-merging arch/parisc/configs/c3000_defconfig
-Auto-merging arch/parisc/defconfig
-Auto-merging arch/x86_64/ia32/ia32_signal.c
-Removing include/asm-i386/mach-visws/do_timer.h
-Auto-merging include/linux/compat.h
-Auto-merging kernel/compat.c
-Automatic merge failed; fix conflicts and then commit the result.
+� Uncacheable Memory
+An optional U (Uncacheable) bit has been added to each data TLB entry which controls cache move-in for the corresponding 
+page. When the U-bit is set, new lines must not be moved in to the data cache, although existing lines may remain resident 
+in the cache. This forces all references to non-resident lines to cause transactions to memory and enables better support of 
+industry standard I/O busses where byte and word transactions to memory are sometimes required to communicate with I/O devices.
 
- >>> but do it anyway.
+Unfortunately later:
 
-root@sidh:/Develop/parisc-linux/parisc-2.6 # head Makefile
-VERSION = 2
-PATCHLEVEL = 6
-SUBLEVEL = 19
-<<<<<<< HEAD/Makefile
-EXTRAVERSION =-rc3-pa0
-=======
-EXTRAVERSION =-rc4
- >>>>>>> 1c5484420c0a451eafd30121fd1fcc62bd234f1e/Makefile
-NAME=Avast! A bilge rat!
+If implemented, the U (Uncacheable) bit is found in the data TLB entry associated with a page. Whether or not the U-bit is 
+implemented, the state of this bit if implemented, whether the memory reference is virtual or absolute, and whether the 
+reference is made from a page in the memory or I/O address spaces determine if the reference may be moved into the data 
+cache. The detailed rules for moving references into the data cache are specified in "Data Cache Move-In" on page 3-21.
 
+Software must set the U-bit associated with all pages in the I/O address space to 1. Referencing a page in the I/O address 
+space for which the U-bit is 0 is an undefined operation.
 
-And now what am I supposed to do with this 'conflictual' file in my local git tree?
+Changing the state of the U-bit for a page has no effect on the data cache lines from that page which already exist in the 
+cache. A page from the memory address space which has its U-bit set to 0 is called a cacheable page. Pages from the I/O 
+address space and pages which have their U-bit set to 1 are called uncacheable pages. It is possible for data cache lines 
+from an uncacheable page to exist in a data cache. This case may be caused by changing a cacheable page to uncacheable after 
+references to this page were moved into the data cache.
 
-(I know what I have to do if I want to use this file to build the kernel but what's up for the next git-pull?)
+So my first question is:
+How/where could I find if U-bit is implemented on my systems?
 
-Joel
-> 
-> 
+p-l pacache.S rely on its implementation (while hpux does syncdma conditional to a global var: duno what? )
+
+TIA,
+	Joel
+
+PS: by reference to this James'paper <http://www.linuxjournal.com/article/7104>, mmu virtualize physical memory addresses 
+for the cpu and otoh iommu virtualize this same physical memory addresses for the io bus; so given a virtual page address 
+for the cpu, it's impossible for lpa to help me to know if this page is a physical address of a page in IO address space (I 
+mean above 0xF0000000 for 32 bit kernels and above 0xF1000000 00000000 for 64bit kernel)?
+
+PS2: is there any way to grab a [id]tlb entry for a given virtual address (may be undocumented feature like the "bit graber" 
+;-) ?)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
