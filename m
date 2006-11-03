@@ -1,19 +1,12 @@
-From: Joel Soete <soete.joel@scarlet.be>
-Subject: Re: [parisc-linux] Trouble Building GCC
-Date: Thu, 02 Nov 2006 20:17:45 +0000
-Message-ID: <454A5269.8020800@scarlet.be>
-References: <47F7F502-FBD7-4E25-8701-A04DBC278804@gmail.com>	<200611020117.kA21HQCp029595@hiauly1.hia.nrc.ca>
-	<119aab440611021000i5c283d29mdda5682afdf2b2c8@mail.gmail.com>
+From: "Ryan Bradetich" <rbradetich@gmail.com>
+Subject: [parisc-linux] [PATCH] Multiple Mux Cards.
+Date: Thu, 2 Nov 2006 23:51:37 -0800
+Message-ID: <e739902b0611022351l3a4e53deld3cacd29e4b721a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- Alan Mock <alan.mock@gmail.com>,
- parisc-linux@lists.parisc-linux.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: multipart/mixed;
+  boundary="----=_Part_7886_21731243.1162540297083"
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440611021000i5c283d29mdda5682afdf2b2c8@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,32 +17,161 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+------=_Part_7886_21731243.1162540297083
+Content-Type: multipart/alternative;
+	boundary="----=_Part_7887_30573624.1162540297083"
 
+------=_Part_7887_30573624.1162540297083
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Carlos O'Donell wrote:
-> On 11/1/06, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
->> Using debian and I believe gentoo, GCC 4.1 packages are available.
->> So, you really shouldn't have to build GCC unless you are interested
->> in working on or learning about GCC.  4.2 and 4.3 aren't ready for
->> prime time.
-> 
-> I recommended he start by learning to build the compiler.
-> 
-imho, a good source of information for that was for me the learning the way the debian packages (gcc-4.1 and gcc-4.2 aka 
-gcc-snapshot) are build (verbose build and log the stuff was helpfull). More over, for me, those pakages are particulary 
-well design: uptream sources, debian patches, ... and consequently easy to understand ;-)
+Hello All,
 
-Ciao,
-	Joel
-> Cheers,
-> Carlos.
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+The Mux driver did not properly handle multiple Mux cards in the system.
+One of the biggest problems I ran into on the E-35 is the detection of other
+Mux cards happens before the detection of the built-in Mux card.   This
+caused problems because the console would be be ttyB0 without the additional
+Mux card, and ttyB16 with the additional Mux card.
+
+The patch is still rough, but I wanted to present the proof-of-concept patch
+I came up with to solve the problem to this list for review.
+
+Basically the patch checks to see if the console on the PAGE0 address is a
+Mux.  If it is, it calculates the number of ports that are available on the
+Mux and reserves these ports before registering the driver.   The other
+information (iomem resources, etc) are still done when the devices is
+actually probed.
+
+Let me know what you think :)
+
+Thanks!
+
+- Ryan
+
+------=_Part_7887_30573624.1162540297083
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+Hello All,<br><br>The Mux driver did not properly handle multiple Mux cards in the system.&nbsp;&nbsp; One of the biggest problems I ran into on the E-35 is the detection of other Mux cards happens before the detection of the built-in Mux card.&nbsp;&nbsp; This caused problems because the console would be be ttyB0 without the additional Mux card, and ttyB16 with the additional Mux card.
+<br><br>The patch is still rough, but I wanted to present the proof-of-concept patch I came up with to solve the problem to this list for review.<br><br>Basically the patch checks to see if the console on the PAGE0 address is a Mux.&nbsp; If it is, it calculates the number of ports that are available on the Mux and reserves these ports before registering the driver.&nbsp;&nbsp; The other information (iomem resources, etc) are still done when the devices is actually probed.
+<br><br>Let me know what you think :)<br><br>Thanks!<br><br>- Ryan<br><br>
+
+------=_Part_7887_30573624.1162540297083--
+
+------=_Part_7886_21731243.1162540297083
+Content-Type: text/x-patch; name=mux-multicard.diff; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_eu2a43by
+Content-Disposition: attachment; filename="mux-multicard.diff"
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2VyaWFsL211eC5jIGIvZHJpdmVycy9zZXJpYWwvbXV4LmMK
+aW5kZXggNDhhOWQyMi4uYzVkN2RjYyAxMDA2NDQKLS0tIGEvZHJpdmVycy9zZXJpYWwvbXV4LmMK
+KysrIGIvZHJpdmVycy9zZXJpYWwvbXV4LmMKQEAgLTI3LDYgKzI3LDcgQEAKICNpbmNsdWRlIDxs
+aW51eC9kZXZpY2UuaD4KICNpbmNsdWRlIDxhc20vaW8uaD4KICNpbmNsdWRlIDxhc20vaXJxLmg+
+CisjaW5jbHVkZSA8YXNtL3BkYy5oPgogI2luY2x1ZGUgPGFzbS9wYXJpc2MtZGV2aWNlLmg+CiAK
+ICNpZmRlZiBDT05GSUdfTUFHSUNfU1lTUlEKQEAgLTQ3Miw1OSArNDczLDQ3IEBAIHN0YXRpYyBz
+dHJ1Y3QgbXV4X2NhcmQgKiBfX2luaXQgZ2V0X25ld18KIH0KIAogLyoqCi0gKiBtdXhfcHJvYmUg
+LSBEZXRlcm1pbmUgaWYgdGhlIFNlcmlhbCBNdXggc2hvdWxkIGNsYWltIHRoaXMgZGV2aWNlLgot
+ICogQGRldjogVGhlIHBhcmlzYyBkZXZpY2UuCisgKiBnZXRfbXV4X3BvcnRfY291bnQgLSBHZXQg
+dGhlIG51bWJlciBvZiBwb3J0cyB0aGUgTVVYIHN1cHBvcnRzLgorICogQGhwYTogVGhlIEhQQSBv
+ZiB0aGUgTVVYIGRldmljZS4KICAqCi0gKiBEZXRlcmltaW5lIGlmIHRoZSBTZXJpYWwgTXV4IHNo
+b3VsZCBjbGFpbSB0aGlzIGNoaXAgKHJldHVybiAwKQotICogb3Igbm90IChyZXR1cm4gMSkuCisg
+KiBUaGlzIGZ1bmN0aW9uIHJlYWRzIHRoZSBJT0RDIHRvIGRldGVybWluZSB0aGUgbnVtYmVyIG9m
+IHBvcnRzCisgKiB0aGUgTVVYIHN1cHBvcnRzLgogICovCi1zdGF0aWMgaW50IF9faW5pdCBtdXhf
+cHJvYmUoc3RydWN0IHBhcmlzY19kZXZpY2UgKmRldikKK3N0YXRpYyBpbnQgX19pbml0IGdldF9t
+dXhfcG9ydF9jb3VudCh1bnNpZ25lZCBpbnQgaHBhKQogewotCWludCBpLCBzdGF0dXMsIHBvcnRz
+OworCWludCBzdGF0dXM7CiAJdTggaW9kY19kYXRhWzMyXTsKIAl1bnNpZ25lZCBsb25nIGJ5dGVj
+bnQ7Ci0Jc3RydWN0IHVhcnRfcG9ydCAqcG9ydDsKLQlzdHJ1Y3QgbXV4X2NhcmQgKmNhcmQ7CiAK
+LQlzdGF0dXMgPSBwZGNfaW9kY19yZWFkKCZieXRlY250LCBkZXYtPmhwYS5zdGFydCwgMCwgaW9k
+Y19kYXRhLCAzMik7Ci0JaWYoc3RhdHVzICE9IFBEQ19PSykgewotCQlwcmludGsoS0VSTl9FUlIg
+IlNlcmlhbCBtdXg6IFVuYWJsZSB0byByZWFkIElPREMuXG4iKTsKLQkJcmV0dXJuIDE7Ci0JfQor
+CXN0YXR1cyA9IHBkY19pb2RjX3JlYWQoJmJ5dGVjbnQsIGhwYSwgMCwgaW9kY19kYXRhLCAzMik7
+CisJQlVHX09OKHN0YXR1cyAhPSBQRENfT0spOwogCi0JcG9ydHMgPSBHRVRfTVVYX1BPUlRTKGlv
+ZGNfZGF0YSk7Ci0gCXByaW50ayhLRVJOX0lORk8gIlNlcmlhbCBtdXggZHJpdmVyICglZCBwb3J0
+cykgUmV2aXNpb246IDAuNFxuIiwgcG9ydHMpOwotCi0JY2FyZCA9IGdldF9uZXdfbXV4X2NhcmQo
+KTsKLQlpZihjYXJkID09IE5VTEwpCi0JCXJldHVybiAxOwotCi0JY2FyZC0+ZGV2ID0gZGV2Owot
+CWNhcmQtPnBvcnRfY291bnQgPSBwb3J0czsKLQlyZXF1ZXN0X21lbV9yZWdpb24oY2FyZC0+ZGV2
+LT5ocGEuc3RhcnQgKyBNVVhfT0ZGU0VULAotCQljYXJkLT5wb3J0X2NvdW50ICogTVVYX0xJTkVf
+T0ZGU0VULCAiTXV4Iik7Ci0KLQlpZighcG9ydF9jbnQpIHsKLQkJbXV4X2RyaXZlci5jb25zID0g
+TVVYX0NPTlNPTEU7CisJcmV0dXJuIEdFVF9NVVhfUE9SVFMoaW9kY19kYXRhKTsKK30KIAotCQlz
+dGF0dXMgPSB1YXJ0X3JlZ2lzdGVyX2RyaXZlcigmbXV4X2RyaXZlcik7Ci0JCWlmKHN0YXR1cykg
+ewotCQkJcHJpbnRrKEtFUk5fRVJSICJTZXJpYWwgbXV4OiBVbmFibGUgdG8gcmVnaXN0ZXIgZHJp
+dmVyLlxuIik7Ci0JCQlyZXR1cm4gMTsKLQkJfQorLyoqCisgKiBzZXR1cF9tdXhfcG9ydHMgLSBT
+ZXR1cCBhbGwgdGhlIG11eCBwb3J0c2UuCisgKiBAaHBhOiBUaGUgSFBBIG9mIHRoZSBNVVggZGV2
+aWNlLgorICoKKyAqIFRoaXMgZnVuY3Rpb24gaXMgdXNlZCB0byBpbml0aWFsaXplIGFsbCB0aGUg
+cG9ydHMgZm9yIHRoZSBnaXZlbiBtdXgKKyAqIGFuZCByZWdpc3RlciB0aGUgcG9ydHMgd2l0aCB0
+aGUgc2VyaWFsIGNvcmUgZHJpdmVyLgorICovCitzdGF0aWMgaW50IF9faW5pdCBzZXR1cF9tdXhf
+cG9ydHModW5zaWduZWQgaW50IGhwYSwgdW5zaWduZWQgaW50IG51bV9wb3J0cykKK3sKKwlpbnQg
+aSwgc3RhdHVzOworCXN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQ7CiAKLQkJaW5pdF90aW1lcigmbXV4
+X3RpbWVyKTsKLQkJbXV4X3RpbWVyLmZ1bmN0aW9uID0gbXV4X3BvbGw7CisJaWYocG9ydF9jbnQg
+PT0gMCkgeworCQlwcmludGsoS0VSTl9JTkZPICJTZXJpYWwgbXV4IGRyaXZlci4gIFJldmlzaW9u
+OiAwLjVcbiIpOwogCX0KIAotCWZvcihpID0gMDsgaSA8IHBvcnRzOyArK2ksICsrcG9ydF9jbnQp
+IHsKKwlmb3IoaSA9IDA7IGkgPCBudW1fcG9ydHM7ICsraSwgKytwb3J0X2NudCkgewogCQlwb3J0
+ID0gJm11eF9wb3J0c1twb3J0X2NudF0ucG9ydDsKLQkJcG9ydC0+aW9iYXNlCT0gMDsKLQkJcG9y
+dC0+bWFwYmFzZQk9IGRldi0+aHBhLnN0YXJ0ICsgTVVYX09GRlNFVCArCi0JCQkJCQkoaSAqIE1V
+WF9MSU5FX09GRlNFVCk7Ci0JCXBvcnQtPm1lbWJhc2UJPSBpb3JlbWFwX25vY2FjaGUocG9ydC0+
+bWFwYmFzZSwgTVVYX0xJTkVfT0ZGU0VUKTsKLQkJcG9ydC0+aW90eXBlCT0gVVBJT19NRU07Ci0J
+CXBvcnQtPnR5cGUJPSBQT1JUX01VWDsKKwkJcG9ydC0+aW9iYXNlICAgID0gMDsKKwkJcG9ydC0+
+bWFwYmFzZSAgID0gaHBhICsgTVVYX09GRlNFVCArIChpICogTVVYX0xJTkVfT0ZGU0VUKTsKKwkJ
+cG9ydC0+bWVtYmFzZSAgID0gaW9yZW1hcF9ub2NhY2hlKHBvcnQtPm1hcGJhc2UsIE1VWF9MSU5F
+X09GRlNFVCk7CisJCXBvcnQtPmlvdHlwZSAgICA9IFVQSU9fTUVNOworCQlwb3J0LT50eXBlICAg
+ICAgPSBQT1JUX01VWDsKIAkJcG9ydC0+aXJxCT0gTk9fSVJROwogCQlwb3J0LT51YXJ0Y2xrCT0g
+MDsKIAkJcG9ydC0+Zmlmb3NpemUJPSBNVVhfRklGT19TSVpFOwpAQCAtNTQzLDEwICs1MzIsMzAg
+QEAgc3RhdGljIGludCBfX2luaXQgbXV4X3Byb2JlKHN0cnVjdCBwYXJpcwogCQlCVUdfT04oc3Rh
+dHVzKTsKIAl9CiAKLSNpZmRlZiBDT05GSUdfU0VSSUFMX01VWF9DT05TT0xFCi0gICAgICAgIHJl
+Z2lzdGVyX2NvbnNvbGUoJm11eF9jb25zb2xlKTsKLSNlbmRpZgotCW1vZF90aW1lcigmbXV4X3Rp
+bWVyLCBqaWZmaWVzICsgTVVYX1BPTExfREVMQVkpOworCXJldHVybiAwOworfQorCisvKioKKyAq
+IG11eF9wcm9iZSAtIERldGVybWluZSBpZiB0aGUgU2VyaWFsIE11eCBzaG91bGQgY2xhaW0gdGhp
+cyBkZXZpY2UuCisgKiBAZGV2OiBUaGUgcGFyaXNjIGRldmljZS4KKyAqCisgKiBEZXRlcmltaW5l
+IGlmIHRoZSBTZXJpYWwgTXV4IHNob3VsZCBjbGFpbSB0aGlzIGNoaXAgKHJldHVybiAwKQorICog
+b3Igbm90IChyZXR1cm4gMSkuCisgKi8KK3N0YXRpYyBpbnQgX19pbml0IG11eF9wcm9iZShzdHJ1
+Y3QgcGFyaXNjX2RldmljZSAqZGV2KQoreworCWludCBwb3J0X2NvdW50ID0gZ2V0X211eF9wb3J0
+X2NvdW50KGRldi0+aHBhLnN0YXJ0KTsKKwlzdHJ1Y3QgbXV4X2NhcmQgKmNhcmQgPSBnZXRfbmV3
+X211eF9jYXJkKCk7CisJaWYoY2FyZCA9PSBOVUxMKQorCQlyZXR1cm4gMTsKKworCWNhcmQtPmRl
+diA9IGRldjsKKwljYXJkLT5wb3J0X2NvdW50ID0gcG9ydF9jb3VudDsKKwlyZXF1ZXN0X21lbV9y
+ZWdpb24oY2FyZC0+ZGV2LT5ocGEuc3RhcnQgKyBNVVhfT0ZGU0VULAorCQljYXJkLT5wb3J0X2Nv
+dW50ICogTVVYX0xJTkVfT0ZGU0VULCAiTXV4Iik7CisKKwlpZihkZXYtPmhwYS5zdGFydCAhPSBQ
+QUdFMC0+bWVtX2NvbnMuaHBhKQorCQlzZXR1cF9tdXhfcG9ydHMoZGV2LT5ocGEuc3RhcnQsIHBv
+cnRfY291bnQpOwogCiAJcmV0dXJuIDA7CiB9CkBAIC01NjUsMTMgKzU3NCw2NCBAQCBzdGF0aWMg
+c3RydWN0IHBhcmlzY19kcml2ZXIgc2VyaWFsX211eF9kCiB9OwogCiAvKioKKyAqIGNvbnNvbGVf
+aXNfbXV4IC0gRGV0ZXJtaW5lcyBpZiB0aGUgY29uc29sZSBpcyBhIE1VWCBkZXZpY2UuCisgKgor
+ICogVGhpcyBmdW5jdGlvbiBjaGVja3MgdGhlIFBBR0UwIGNvbnNvbGUgZGV2aWNlIHRvIGRldGVy
+bWluZQorICogaWYgdGhlIGRldmljZSBpcyBhIE1VWC4KKyAqLworc3RhdGljIGludCBfX2luaXQg
+Y29uc29sZV9pc19tdXgodm9pZCkKK3sKKwlpbnQgc3RhdHVzOworCXU4IGlvZGNfZGF0YVszMl07
+CisJdW5zaWduZWQgbG9uZyBieXRlY250OworCisJc3RhdHVzID0gcGRjX2lvZGNfcmVhZCgmYnl0
+ZWNudCwgUEFHRTAtPm1lbV9jb25zLmhwYSwgMCwgaW9kY19kYXRhLCAzMik7CisJQlVHX09OKHN0
+YXR1cyAhPSBQRENfT0spOworCisJaWYoKGlvZGNfZGF0YVszXSAmIDB4MWYpICE9IEhQSFdfQV9E
+SVJFQ1QpCisJCXJldHVybiAwOworCisJaWYoKChpb2RjX2RhdGFbNF0gJiAweGYpIDw8IDE2IHwg
+KGlvZGNfZGF0YVs1XSA8PCA4KSB8IGlvZGNfZGF0YVs2XSkgIT0gMHgwMDBEKQorCQlyZXR1cm4g
+MDsKKworCXJldHVybiAxOworfQorCisKKy8qKgogICogbXV4X2luaXQgLSBTZXJpYWwgTVVYIGlu
+aXRhbGl6YXRpb24gcHJvY2VkdXJlLgogICoKICAqIFJlZ2lzdGVyIHRoZSBTZXJpYWwgTVVYIGRy
+aXZlci4KICAqLwogc3RhdGljIGludCBfX2luaXQgbXV4X2luaXQodm9pZCkKIHsKLQlyZXR1cm4g
+cmVnaXN0ZXJfcGFyaXNjX2RyaXZlcigmc2VyaWFsX211eF9kcml2ZXIpOworCWludCBzdGF0dXM7
+CisKKyNpZmRlZiBDT05GSUdfU0VSSUFMX01VWF9DT05TT0xFCisJbXV4X2RyaXZlci5jb25zID0g
+TVVYX0NPTlNPTEU7CisjZW5kaWYKKworICAgICAgIC8qIElmIHRoZSBjb25zb2xlIGlzIGEgTVVY
+LCBzZXR1cCB0aGUgbXV4IHBvcnRzIHRoYXQgYmVsb25nIHRvIHRoZQorICAgICAgICAqIGNvbnNv
+bGUgYmVmb3JlIHJlZ2lzdGVyaW5nIHRoZSBzZXJpYWxfbXV4X2RyaXZlci4gIFRoaXMgcHJldmVu
+dHMKKyAgICAgICAgKiB0aGUgcG9ydHMgZnJvbSBiZWluZyBhc3NpZ25lZCBpbiB0aGUgd3Jvbmcg
+b3JkZXIgaWYgdGhlIHN5c3RlbQorICAgICAgICAqIGhhcyBtdWx0aXBsZSBNVVggY2FyZHMgaW5z
+dGFsbGVkLgorICAgICAgICAqLworICAgICAgIGlmKGNvbnNvbGVfaXNfbXV4KCkpIHsKKwkJc3Rh
+dHVzID0gdWFydF9yZWdpc3Rlcl9kcml2ZXIoJm11eF9kcml2ZXIpOworCQlCVUdfT04oc3RhdHVz
+KTsKKworCQlzZXR1cF9tdXhfcG9ydHMoUEFHRTAtPm1lbV9jb25zLmhwYSwgZ2V0X211eF9wb3J0
+X2NvdW50KFBBR0UwLT5tZW1fY29ucy5ocGEpKTsKKwkJcmVnaXN0ZXJfY29uc29sZSgmbXV4X2Nv
+bnNvbGUpOworCX0KKworCXN0YXR1cyA9IHJlZ2lzdGVyX3BhcmlzY19kcml2ZXIoJnNlcmlhbF9t
+dXhfZHJpdmVyKTsKKwlpZihzdGF0dXMgPT0gMCAmJiBwb3J0X2NudCA+IDApIHsKKwkJaW5pdF90
+aW1lcigmbXV4X3RpbWVyKTsKKwkJbXV4X3RpbWVyLmZ1bmN0aW9uID0gbXV4X3BvbGw7CisJCW1v
+ZF90aW1lcigmbXV4X3RpbWVyLCBqaWZmaWVzICsgTVVYX1BPTExfREVMQVkpOworCX0KKworCXJl
+dHVybiBzdGF0dXM7CiB9CiAKIC8qKgo=
+------=_Part_7886_21731243.1162540297083
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+------=_Part_7886_21731243.1162540297083--
