@@ -1,16 +1,12 @@
 From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [parisc-linux] suppress led task for KittyHawk's LCD
-Date: Sun, 12 Nov 2006 15:44:51 +0100
-Message-ID: <20061112154451.6f9c7448.gmsoft@tuxicoman.be>
-References: <20061112014535.f583cc92.gmsoft@tuxicoman.be>
-	<20061112020737.GX16952@parisc-linux.org>
+Subject: [parisc-linux] K410 SCSI 53c700 issue with PLEXTOR PX-R820T
+Date: Sun, 12 Nov 2006 16:03:50 +0100
+Message-ID: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061112020737.GX16952@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,51 +18,60 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-Hi Matthew,
-
-As far as I understand the code, led_LCD_driver() is only in charge of updating the led status. The led being a true led or a char on the LCD.
-I can't find any documentation stating that the LCD on the K410 supports those chars. It only displays CPU01234 depending on the number of CPU you have at boot time.
-The update of the LCD text is done via lcd_print() which doesn't use led_LCD_driver(). It only uses a reference to it to check if the device is correctly initialized.
-
-If you tell me that led_LCD_driver() is supposed to work and it should display the right leds character, then led_LCD_driver() is buggy and needs to be fixed. Currently each time it's called, a char of the LCD become black for each leds that need updating. It goes from left to right and starts from the bottom row and then occure at the top row a bit later. If you echo something to /proc/pdc/lcd, you'll see the text for a few and then being overwritten.
+Hi all,
 
 
-Also, I actually sent the wrong patch. With the current version of the driver, only the odd chars from the string you pass is written on the lcd.
-You need to set the min_cmd_delay to 80t of fix this.
+I'm experiencing an issue with the LASI 53c700 SCSI driver. It looks similar to the problem found by Joel earlier :
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-July/029506.html
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030202.html
 
-@@ -695,6 +699,8 @@ int __init led_init(void)
-        case 0x58B:             /* KittyHawk DC2 100 (K200) */
-                printk(KERN_INFO "%s: KittyHawk-Machine (hversion 0x%x) found, "
-                                "LED detection skipped.\n", __FILE__, CPU_HVERSION);
-+               lcd_info.min_cmd_delay = 80;
-+               no_led = 1;     /* no led support on KittyHawk */
-                goto found;     /* use the preinitialized values of lcd_info */
-        }
- 
+My plextor cd burner works fine on an x86 and on that K410 with HP-UX or linux 2.4.
 
-Regards,
+This is how 2.4 detects it :
+scsi3: (4:0) Synchronous at offset 8, period 100ns
+  Vendor: PLEXTOR   Model: CD-R   PX-R820T   Rev: 1.08
+  Type:   CD-ROM                             ANSI SCSI revision: 02
+
+And this is how 2.6 detects it :
+[42949430.090000]   Vendor: PLEXTOR   Model: CD-R   PX-R820T   Rev: 1.08
+[42949430.150000]   Type:   CD-ROM                             ANSI SCSI revision: 02
+[42949430.170000]  target2:0:4: Beginning Domain Validation
+[42949430.180000]  target2:0:4: asynchronous
+[42949430.190000]  target2:0:4: FAST-10 SCSI 10.0 MB/s ST (100 ns, offset 8)
+[42949430.200000]  target2:0:4: Domain Validation skipping write tests
+[42949430.210000]  target2:0:4: Ending Domain Validation
+
+
+The main difference seems that 2.4 detects and syncronous drive while 2.6 detects an async one.
+
+Full 2.4 dmesg : https://www.tuxicoman.be/temp/dmesg-2.4-53c700
+Full 2.6 dmesg : https://www.tuxicoman.be/temp/dmesg-2.6-53c700
+2.6 kernel config : https://www.tuxicoman.be/temp/k410-2.6.18.2-pa0.config
+
+On my 2.6 kernel, when you try to mount it, you get the those error messages in loop.
+
+[  297.870000] scsi2: (4:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+[  297.870000] scsi2: Bus Reset detected, executing command 4f7bb840, slot 4ff50520, dsp 001c01e8[01e8]
+[  297.870000]  failing command because of reset, slot 4ff50520, cmnd 4f7bb840
+[  327.880000] sr 2:0:4:0: New error handler wants to abort command
+[  327.880000] 	sr 2:0:4:0: 
+[  327.880000]         command: cdb[0]=0x0: 00 00 00 00 00 00
+[  327.880000] scsi2: Bus Reset detected, executing command 4f7bb840, slot 4ff50520, dsp 001c0010[0010]
+[  327.880000]  failing command because of reset, slot 4ff50520, cmnd 4f7bb840
+[  327.890000] sr 2:0:4:0: New error handler wants BUS reset, cmd 4f7bb840
+[  327.890000] 	sr 2:0:4:0: 
+[  327.890000]         command: cdb[0]=0x0: 00 00 00 00 00 00
+[  327.890000] scsi2: Bus Reset detected, executing command 00000000, slot 00000000, dsp 001c0010[0010]
+
+
+As you can see in the dmesg, I have another CDROM drive on the same SCSI bus and this one works like a charm.
+
+
+
+Please have a look at it and let me know if you need any other info.
+
+Thanks,
   Guy
-
-
-
-On Sat, 11 Nov 2006 19:07:38 -0700
-Matthew Wilcox <matthew@wil.cx> wrote:
-
-> On Sun, Nov 12, 2006 at 01:45:35AM +0100, Guy Martin wrote:
-> > I've noticed that the LCD on my K410 is filled at a constant rate with black characters.
-> > After some investigation, it looked like the code updating the led status was filling the LCD.
-> > 
-> > I believe there is not led support on K class but I didn't checked.
-> > 
-> > The attached patch disable the led_task, which is updating the led status, for KittyHawk hardware.
-> 
-> That's clearly the wrong solution.  The led_task is responsible for
-> updating both LEDs and LCDs.  It should be calling led_LCD_driver()
-> which should be putting the image of a beating heart on the LCD panel.
-> 
-> It would be great if you could do some more debugging and figure out
-> what's going on here.
-
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
