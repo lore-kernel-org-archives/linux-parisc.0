@@ -1,17 +1,18 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] LBA PCI : avoid crash when pluging a pcmcia bridge
-Date: Wed, 15 Nov 2006 05:23:52 -0700
-Message-ID: <20061115122352.GH19143@parisc-linux.org>
+Date: Wed, 15 Nov 2006 08:54:15 -0600
+Message-ID: <1163602455.3524.8.camel@mulgrave.il.steeleye.com>
 References: <20061108150706.bb658b27.gmsoft@tuxicoman.be>
 	<20061115080022.GB30664@colo.lackof.org>
 	<20061115122506.523bdd01.gmsoft@tuxicoman.be>
+	<20061115122352.GH19143@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+Content-Type: text/plain
+Cc: Guy Martin <gmsoft@tuxicoman.be>,
+ parisc-linux@lists.parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061115122506.523bdd01.gmsoft@tuxicoman.be>
+In-Reply-To: <20061115122352.GH19143@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,35 +23,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Nov 15, 2006 at 12:25:06PM +0100, Guy Martin wrote:
-> It looks like pci_find_bus() return non null for the pcmcia bridge.
-> 
->         if (pci_find_bus(pci_domain_nr(b), bus)) {
->                 /* If we already got to this bus through a different bridge, ignore it */
->                 pr_debug("PCI: Bus %04x:%02x already known\n", pci_domain_nr(b), bus);
->                 goto err_out;
->         }
+On Wed, 2006-11-15 at 05:23 -0700, Matthew Wilcox wrote:
+> I bet a plain lspci will show a bus 2 elsewhere (probably one of the
+> root busses).  ie: we need to renumber all our busses, just like we do
+> for Dino.  Either that, or start using PCI domains, but I'd rather not
+> go there just yet.
 
-Oh.  So we got a bus numbering conflict.  Yay.
+The dino code will probably be pretty much transportable over to LBA.
+Dino was redone like this specifically to get PCMCIA bridges working,
+and for the same reason (Firmware doesn't scan them, so they ended up
+with conflicting or unassigned bus numbers).
 
-> With PCI_DEBUG and some more printk() I can see this in my dmesg :
-> 
-> PCI: Found 0000:01:06.0 [1180/0475] 000607 02
-> PCI: Calling quirk 102564c8 for 0000:01:06.0
-> PCI: Fixups for bus 0000:01
-> PCI: Scanning behind PCI bridge 0000:01:06.0, config 000000, pass 0
-> PCI: Scanning behind PCI bridge 0000:01:06.0, config 000000, pass 1
-> PCI: Bus scan for 0000:01 returning with max=05
-> PCI: Enabling bus mastering for device 0000:01:06.0
-> PCI: Bus 0000:02 already known
-> PCI: Reached err_out:
-> 
-> Let me know if you need anything else.
+James
 
-I bet a plain lspci will show a bus 2 elsewhere (probably one of the
-root busses).  ie: we need to renumber all our busses, just like we do
-for Dino.  Either that, or start using PCI domains, but I'd rather not
-go there just yet.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
