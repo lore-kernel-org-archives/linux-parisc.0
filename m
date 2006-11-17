@@ -1,20 +1,17 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: Re: [parisc-linux] suppress led task for KittyHawk's LCD
-Date: Fri, 17 Nov 2006 14:02:46 +0100
-Message-ID: <7d01f9f00611170502r7c8e95c3nfef955365987e313@mail.gmail.com>
-References: <20061112014535.f583cc92.gmsoft@tuxicoman.be>
-	<200611121605.07365.deller@gmx.de>
-	<20061113225421.e00e5c4b.gmsoft@tuxicoman.be>
-	<200611162155.49380.deller@gmx.de>
-	<20061116220426.5941dd16.gmsoft@tuxicoman.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: 64-bit long double support.
+Date: Fri, 17 Nov 2006 11:48:50 -0500 (EST)
+Message-ID: <200611171648.kAHGmorq011765@hiauly1.hia.nrc.ca>
+References: <200611170129.45825.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Guy Martin" <gmsoft@tuxicoman.be>
+  charset=US-ASCII
+Cc: dave.anglin@nrc.ca,
+ parisc-linux@lists.parisc-linux.org
+To: vapier@gentoo.org (Mike Frysinger)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061116220426.5941dd16.gmsoft@tuxicoman.be>
+In-Reply-To: <200611170129.45825.vapier@gentoo.org> from "Mike Frysinger" at
+	Nov 17, 2006 01:29:44 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,33 +22,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 11/16/06, Guy Martin <gmsoft@tuxicoman.be> wrote:
->
-> Helge,
->
-> I installed HP-UX on that box and it only displayed PCD state codes as linux does when you select only CONFIG_PDC_CHASSIS.
-> On that point, I think that CONFIG_PDC_CHASSIS and CONFIG_CHASSIS_LCD_LED should be mutually exclusive.
+> > It would appear that the adddi3 expander in pa.md isn't used for some
+> > reason in the initial code expansion as it would reject the insn.  You
+> > are in the best position to determine where the insn is being emitted fro=
+> m.
+> > It could be being emitted from the generic code or the PA backend.  Try
+> > breaks on emit_move_sequence, emit_insn, emit_insn_after or
+> > emit_insn_before and see if you can find where the insn is being emitted.
+> 
+> erm, i've never debugged gcc before ... my experience involves producing=20
+> reduced test cases and getting others to verify/fix gcc :)
 
-Certainly not.
+If you add -v to the gcc command line, the driver will output the
+command it uses to run cc1.  This is needed to debug cc1.
 
-> When you select CONFIG_CHASSIS_LCD_LED, you don't see the chassis state anymore but only the text from /proc/pdc/lcd.
+GCC is a volunteer based project, so help is always welcome.  I got
+involved when similar issues affected the projects that I was working
+on.
 
-Wrong. You see whichever sent the last event. If the system is working
-normaly you see the proc text, if it panic'd, you'll see a FLT
-message. Besides, CONFIG_CHASSIS_LCD_LED drives the heartbeat, network
-and disk symbols on the lcd as you know, so because there's a
-"conflict" on the upper part of the lcd doesn't mean that you want to
-make those mutually exclusive anyway.
+There's always bugs (e.g., mainline is currently broken for both 32
+and 64 bits on hpux).  There are over 50 open PRs for hppa.  There
+are more critical issues that need to be resolved for the upcoming
+4.2.0 release.  Most people do native builds and the problem doesn't
+appear there.  Fixing this requires finding a suitable 64-bit host to
+debug it on.
 
-I've coded this that way on purpose, and the wiki and config help are
-(imho) explicit enough as to what will happen when you select both.
-Selecting both does have a purpose.
+This problem should be relatively easy to fix if we know where and
+why the insn is being emitted.
 
-T-Bone
-
+Dave
 -- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
