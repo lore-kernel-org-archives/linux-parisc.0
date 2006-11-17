@@ -1,19 +1,19 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] LBA PCI : avoid crash when pluging a pcmcia bridge
-Date: Fri, 17 Nov 2006 13:30:42 -0700
-Message-ID: <20061117203041.GD18567@parisc-linux.org>
-References: <20061108150706.bb658b27.gmsoft@tuxicoman.be>
-	<20061115080022.GB30664@colo.lackof.org>
-	<20061115122506.523bdd01.gmsoft@tuxicoman.be>
-	<20061115122352.GH19143@parisc-linux.org>
-	<20061115190830.f8e99725.gmsoft@tuxicoman.be>
+From: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] gcc ICE PR29114 (was: 64-bit long double support.)
+Date: Fri, 17 Nov 2006 15:51:27 -0500
+Message-ID: <20061117205126.GA15716@hiauly1.hia.nrc.ca>
+References: <119aab440611161731p47779d1hdc7e7dbd336eb23c@mail.gmail.com>
+	<200611162310.03845.vapier@gentoo.org>
+	<20061117053556.GA694@hiauly1.hia.nrc.ca>
+	<200611171502.49875.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Guy Martin <gmsoft@tuxicoman.be>
+Cc: dave.anglin@nrc.ca,
+ parisc-linux@lists.parisc-linux.org
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061115190830.f8e99725.gmsoft@tuxicoman.be>
+In-Reply-To: <200611171502.49875.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,58 +24,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Nov 15, 2006 at 07:08:30PM +0100, Guy Martin wrote:
-> I've put the complete dmesg and lspci output (both numerical and not) here :
-> https://www.tuxicoman.be/temp/c3600-pci-debug.logs
+> i've attached my gdb run ... i'm not familiar with gcc so i dont know what 
+> more information you need to see to debug
 
-Thanks.  Please try this patch (cribbed somewhat from jejb's patch for
-Dino back in December 2003 ;-)
+Excellent progress.
 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index ad4a1a1..963f35c 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1406,6 +1406,14 @@ lba_hw_init(struct lba_device *d)
- 	return 0;
- }
- 
-+/*
-+ * Unfortunately, when firmware numbers busses, it doesn't take into account
-+ * Cardbus bridges.  So we have to renumber the busses to suit ourselves.
-+ * Elroy/Mercury don't actually know what bus number they're attached to;
-+ * we use bus 0 to indicate the directly attached bus and any other bus
-+ * number will be taken care of by the PCI-PCI bridge.
-+ */
-+static unsigned int lba_next_bus = 0;
- 
- 
- /*
-@@ -1529,16 +1537,20 @@ lba_driver_probe(struct parisc_device *d
- 		lba_legacy_resources(dev, lba_dev);
- 	}
- 
--	/* 
--	** Tell PCI support another PCI bus was found.
--	** Walks PCI bus for us too.
--	*/
-+	if (lba_dev->hba.bus_num.start < lba_next_bus) {
-+		DBG(KERN_DEBUG "Reassigning firmware bus %d as Linux bus %d\n",
-+			lba_dev->hba.bus_num.start, lba_next_bus);
-+		lba_dev->hba.bus_num.start = lba_next_bus;
-+	}
-+
- 	dev->dev.platform_data = lba_dev;
- 	lba_bus = lba_dev->hba.hba_bus =
- 		pci_scan_bus_parented(&dev->dev, lba_dev->hba.bus_num.start,
- 				cfg_ops, NULL);
--	if (lba_bus)
-+	if (lba_bus) {
-+		lba_next_bus = lba_bus->subordinate + 1;
- 		pci_bus_add_devices(lba_bus);
-+	}
- 
- 	/* This is in lieu of calling pci_assign_unassigned_resources() */
- 	if (is_pdc_pat()) {
+> Breakpoint 1, emit_move_sequence (operands=0x7c3908288900, mode=DImode, scratch_reg=0x0)
+>     at /usr/local/src/gnu/gcc/branches/gcc-4_1-branch/gcc/config/pa/pa.c:1309
+> 1309	{
+
+What we need to see is the backtrace when emit_move_sequence (or emit_insn)
+is called with operands that match those in the insn that causes the ICE below.
+This will localize the area of the problem.
+
+In the call to emit_move_sequence, operands is an array.  operands[0] is
+the DEST for the move operation.  operands[1] is the SRC.
+
+You can see the RTL for the first two operands with the commands:
+
+p debug_rtl (operands[0])
+p debug_rtl (operands[1])
+
+In the break at emit_insn,
+
+p debug_rtl (x)
+
+will print "x" in formated form.
+
+Other useful GCC debug commands:
+
+p debug_rtl_list (INSN, N)
+where INSN is an instruction RTX.  This will print N insns.
+
+p debug_tree (TREE)
+where TREE is a tree variable will print out the tree struct.
+
+p operands[0]
+will print operands[0] as a C struct.
+
+ptype operands[0]
+will show the RTX type details.  This is useful for figuring
+out how to set a conditional break that will check for "reg:DI 95".
+
+> ../seed48_r.i: In function 'main':
+> ../seed48_r.i:1: error: unrecognizable insn:
+> (insn 9 8 10 1 (set (reg:DI 95)
+>         (plus:DI (reg:DI 96)
+>             (const_int -6547 [0xffffffffffffe66d]))) -1 (nil)
+>     (expr_list:REG_EQUAL (const_int 25214903917 [0x5deece66d])
+>         (nil)))
+> ../seed48_r.i:1: internal compiler error: in extract_insn, at recog.c:2084
+> Please submit a full bug report,
+> with preprocessed source if appropriate.
+> See <URL:http://gcc.gnu.org/bugs.html> for instructions.
+> 
+> Program exited with code 01.
+> (gdb) 
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
