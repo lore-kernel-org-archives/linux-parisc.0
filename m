@@ -1,22 +1,18 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] LBA PCI : avoid crash when pluging a pcmcia bridge
-Date: Sat, 18 Nov 2006 08:22:24 -0600
-Message-ID: <1163859744.2806.1.camel@mulgrave.il.steeleye.com>
-References: <20061108150706.bb658b27.gmsoft@tuxicoman.be>
-	<20061115080022.GB30664@colo.lackof.org>
-	<20061115122506.523bdd01.gmsoft@tuxicoman.be>
-	<20061115122352.GH19143@parisc-linux.org>
-	<20061115190830.f8e99725.gmsoft@tuxicoman.be>
-	<20061117203041.GD18567@parisc-linux.org>
-	<20061118122103.0771c93e.gmsoft@tuxicoman.be>
-	<20061118135610.GE18567@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: 64-bit long double support.
+Date: Thu, 16 Nov 2006 20:48:50 -0500 (EST)
+Message-ID: <200611170148.kAH1moG4028180__7427.71063601157$1416624216$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440611161731p47779d1hdc7e7dbd336eb23c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Guy Martin <gmsoft@tuxicoman.be>,
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: dave.anglin@nrc.ca,
+ libc-alpha@sources.redhat.com,
  parisc-linux@lists.parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061118135610.GE18567@parisc-linux.org>
+In-Reply-To: <119aab440611161731p47779d1hdc7e7dbd336eb23c@mail.gmail.com> from
+	"Carlos O'Donell" at Nov 16, 2006 08:31:58 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,21 +23,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, 2006-11-18 at 06:56 -0700, Matthew Wilcox wrote:
-> I suspect the next problem is getting IRQs working:
-> 
-> iosapic: 0xfed32800 : no IRT entry for slot 6, pin 1
-> iosapic: no IRTE for 0000:01:06.0 (IRQ not connected?)
+> Is there any opposition to checking in the fix for 3?
+> Speak now or forever hold your peace.
 
-Yes ... that was exactly the same as for dino.  There's a piece of
-fiddle code in the dino to guess where the interrupt actually is and
-wire it up ...
+Do it before I change my mind...
 
-In this case, it just looks like you need to fill in the IRT entry.
-
-James
-
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
