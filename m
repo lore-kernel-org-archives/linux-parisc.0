@@ -1,115 +1,97 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [parisc-linux] suppress led task for KittyHawk's LCD
-Date: Thu, 16 Nov 2006 22:04:26 +0100
-Message-ID: <20061116220426.5941dd16.gmsoft@tuxicoman.be>
-References: <20061112014535.f583cc92.gmsoft@tuxicoman.be>
-	<200611121605.07365.deller@gmx.de>
-	<20061113225421.e00e5c4b.gmsoft@tuxicoman.be>
-	<200611162155.49380.deller@gmx.de>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [parisc-linux] Re: 64-bit long double support.
+Date: Thu, 16 Nov 2006 23:59:03 -0500
+Message-ID: <200611162359.05014.vapier@gentoo.org>
+References: <119aab440611161731p47779d1hdc7e7dbd336eb23c@mail.gmail.com>
+	<200611162310.03845.vapier@gentoo.org>
+	<200611162316.26872.vapier@gentoo.org>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+  boundary="===============1243345199=="
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ dave.anglin@nrc.ca
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200611162316.26872.vapier@gentoo.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+
+--===============1243345199==
+Content-Type: multipart/signed; boundary="nextPart4086046.Q1Vv3LMnWu";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart4086046.Q1Vv3LMnWu
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <gmsoft@tuxicoman.be>
-In-Reply-To: <200611162155.49380.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset="iso-8859-6"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
+On Thursday 16 November 2006 23:16, Mike Frysinger wrote:
+> ok, just tried glibc-2.5 + hppa + linuxthreads and that is for sure broken
+> (the defines for handling locking is all broken in the release)
 
-Helge,
+yeah glibc-2.5 fails as well:
+=2E.. -o /var/tmp/portage/cross-hppa2.0-unknown-linux-gnu/glibc-2.5
+/work/build-default-hppa2.0-unknown-linux-gnu-nptl/csu/crtn.o
+In file included from ../nptl/descr.h:30,
+                 from ../ports/sysdeps/hppa/nptl/tls.h:63,
+                 from ../include/tls.h:6,
+                 from <stdin>:2:
+=2E./ports/sysdeps/unix/sysv/linux/hppa/nptl/lowlevellock.h: In=20
+function '__lll_mutex_trylock':
+=2E./ports/sysdeps/unix/sysv/linux/hppa/nptl/lowlevellock.h:113: error:=20
+expected ':' or ')' before '-' token
+=2E..
 
-I installed HP-UX on that box and it only displayed PCD state codes as linux does when you select only CONFIG_PDC_CHASSIS.
-On that point, I think that CONFIG_PDC_CHASSIS and CONFIG_CHASSIS_LCD_LED should be mutually exclusive.
-When you select CONFIG_CHASSIS_LCD_LED, you don't see the chassis state anymore but only the text from /proc/pdc/lcd.
+i leave adding snap updates to GMsoft ... i try to stick with releases sinc=
+e i=20
+have to help so many arches :/
 
-How am I supposed to enable something like CONFIG_CHASSIS_LCD_LED in HP-UX and display random text ?
+> what is the minimal binutils/gcc versions for TLS support ?  binutils-2.17
+> + gcc-4.1.1 =3D=3D no hppa TLS
 
+upgraded to binutils-2.17.50.0.6 and i got TLS with gcc-4.1.1
+=2Dmike
 
-  Guy
+--nextPart4086046.Q1Vv3LMnWu
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-On Thu, 16 Nov 2006 21:55:49 +0100
-Helge Deller <deller@gmx.de> wrote:
+iQIVAwUARV1BmEFjO5/oN/WBAQLtIQ//abuyo8k1LUYkoOL7ujtg1nmdwx1yGynM
+EXk5CqaPlmggilBggt6D19a3/PbhSKX7K3wZ+yx/OWpUzTFk9z5+RiQ+yjEGE6dz
+wEHxJM042Ww0vmn9lOwlMuJVYYB03K1mID1q75709SgrorMHK+sy1htki00VSTaq
+08/7f4kkoVbROyVCEfemVIOs+N07unHWruWAQQo+sb6SxB8eBumGwFEHHkXOZ/Us
+QkvPi8NYqEyYFg5tbaBXHW/68dOS4EY+W2bc1ZC176oFpD157GjJEzfWh2RDCifZ
+C3XIBEI0KIvlxVO7fnnBlA8D+GQUqdicdBeiv0P35lzplWfRuR1QcMDx4qRM4UhR
+w12xuBHU8S4oPbHv8XXcCECQ61SjJsqeLzrCHWaNH1vwujiTHMPBWs6wQFn7Lgj3
+BEx0EOo4WBVn8S+Wru/7Ydj5VE+Cmnj79cjv3VYqa5QX37UKvfhxUYSztsTL3WAw
+WdNFS1eyaMn8LdEOJ6c66lL3RVMYbnBqMxFO0uLwiavltRb6GvJ5FKUTNLFJT59F
+GjA2nCuyNU4ACq+ABbLMnptJ/4A5vhpR5JryCWjNUrIRkRZfb8CGRdMf6BNA6r2b
+tWvigtL+c/dgtqlXPljhdeeviIzSzkhAh+LzRgFQsji01hntHP1btAR9mR8athLj
+MEudzwn8jmM=
+=WB6r
+-----END PGP SIGNATURE-----
 
-> Hi Guy,
-> 
-> I'm not sure if the LCD display on KittyHawks is supposed to print the activity symbols.
-> I think the best thing is to try it with HPUX. If HP-UX works, then something needs to be fixed.
-> 
-> Maybe HP-UX only uses the LCD display to print the LCD text (/proc/pdc/lcd) as well ?
-> In this case you should try again to disable the led status symbols for KittyHawk machines only.
-> 
-> Helge
-> 
-> On Monday 13 November 2006 22:54, Guy Martin wrote:
-> > Sorry for the missunderstanding.
-> > 
-> > It says this :
-> > [42949382.500000] LED display at ffd0c000 registered
-> > 
-> > And nothing can be seen on the lcd since it's not detected and disabled.
-> > /proc/pdc/lcd doesn't exists.
-> > 
-> > Do you know if this lcd is supposed to display the leds character ?
-> > 
-> > 
-> >   Guy
-> > 
-> > 
-> > On Sun, 12 Nov 2006 16:05:07 +0100
-> > Helge Deller <deller@gmx.de> wrote:
-> > 
-> > > Hi Guy,
-> > > 
-> > > I think you misunderstood me.
-> > > My idea was that you check what your machine's BIOS (PDC) returns for pdc_chassis_info().
-> > > 
-> > > So, if you would remove this code from led_init() you may test the results without this "workaround for KittyHawk":
-> > >         /* Work around the buggy PDC of KittyHawk-machines */
-> > >         switch (CPU_HVERSION) {
-> > >         case 0x580:             /* KittyHawk DC2-100 (K100) */
-> > >         case 0x581:             /* KittyHawk DC3-120 (K210) */
-> > >         case 0x582:             /* KittyHawk DC3 100 (K400) */
-> > >         case 0x583:             /* KittyHawk DC3 120 (K410) */
-> > >         case 0x58B:             /* KittyHawk DC2 100 (K200) */
-> > >                 printk(KERN_INFO "%s: KittyHawk-Machine (hversion 0x%x) found, "
-> > >                                 "LED detection skipped.\n", __FILE__, CPU_HVERSION);
-> > >                 goto found;     /* use the preinitialized values of lcd_info */
-> > >         }
-> > > 
-> > > Helge
-> > > 
-> > > 
-> > > On Sunday 12 November 2006 15:50, Guy Martin wrote:
-> > > > 
-> > > > Hi Helge,
-> > > > 
-> > > > This can't work. If you don't call register_led_driver(), led_func_ptr and led_type stay NULL and lcd_print() never prints anything.
-> > > > You can change lcd_print() not to check led_func_ptr but I fear something may break if the device is not initialized :)
-> > > > 
-> > > > Maybe we could use static int initialized defined in register_led_driver and make it global to check if the device is ready or not.
-> > > > 
-> > > >   Guy
-> > > > 
-> > > > 
-> > > > On Sun, 12 Nov 2006 15:04:38 +0100
-> > > > Helge Deller <deller@gmx.de> wrote:
-> > > > 
-> > > > > Hi Guy,
-> > > > > 
-> > > > > On Sunday 12 November 2006 01:45, Guy Martin wrote:
-> > > > > > I've noticed that the LCD on my K410 is filled at a constant rate with black characters.
-> > > > > > After some investigation, it looked like the code updating the led status was filling the LCD.
-> > > > > ....
-> > > > > 
-> > > > > instead of adding:
-> > > > > +               no_led = 1;     /* no led support on KittyHawk */
-> > > > >                 goto found;     /* use the preinitialized values of lcd_info */
-> > > > > 
-> > > > > did you tried to comment out the "goto found" ?
-> > > > > 
-> > > > > Helge
-> > > > 
-> > > > 
-> > 
-> > 
+--nextPart4086046.Q1Vv3LMnWu--
+
+--===============1243345199==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1243345199==--
