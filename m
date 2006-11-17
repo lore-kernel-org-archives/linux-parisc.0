@@ -1,16 +1,16 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [parisc-linux] K410 SCSI 53c700 issue with PLEXTOR PX-R820T
-Date: Thu, 16 Nov 2006 00:49:36 +0100
-Message-ID: <20061116004936.cd0b52ff.gmsoft@tuxicoman.be>
-References: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>
-	<20061112191436.GY16952@parisc-linux.org>
+From: "Carlos O'Donell" <carlos@systemhalted.org>
+Subject: Re: [parisc-linux] Problem with a J6700.
+Date: Thu, 16 Nov 2006 20:33:30 -0500
+Message-ID: <119aab440611161733p5f4d168et4a3ba8bb98d11a68@mail.gmail.com>
+References: <455CAA61.10809@home.se>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=ISO-8859-1;
+  format=flowed
 Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+To: "Anders Hanson" <anders.hanson@home.se>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061112191436.GY16952@parisc-linux.org>
+In-Reply-To: <455CAA61.10809@home.se>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,31 +21,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 12 Nov 2006 12:14:37 -0700
-Matthew Wilcox <matthew@wil.cx> wrote:
+On 11/16/06, Anders Hanson <anders.hanson@home.se> wrote:
+> I've recently got myself a HP J6700 and installed Debian testing with on
+> it but have a small problem.
+>
+> After it had been running for couple of weeks it started do strange
+> things and complained about scsi disks being offline and problem with
+> irq handling.
+> Now I can't even get it to boot up fully before it starts complaining.
+>
+> Anyone got any idea? I know it's not much to go on but I will try to
+> gather more info when I manage to boot it and recover some logs :)
 
-> > Please have a look at it and let me know if you need any other info.
-> 
-> Presumably at some point in 2.6, this device worked fine.  Any chance
-> you could bisect and figure out when it started failing?  I'd start with
-> looking at something in the 2.6.8 sort of timeframe.
+Bad hardware? Get a new disk and try again?
 
-
-I've tried from kernels since 2.6.8 and it looks like it breaks since 2.6.18.
-
-The dmesg of the last working kernel is here :
-https://www.tuxicoman.be/temp/dmesg-2.6.17-53c700
-
-The dmesg of the non working one is here :
-https://www.tuxicoman.be/temp/dmesg-2.6-53c700
-
-
-According 2.6.18's changelog, it looks like a few fixes were merged in this release.
-
-As usual, if you need any other info or even access to this box, let me know.
-
-Cheers,
-  Guy
+c.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
