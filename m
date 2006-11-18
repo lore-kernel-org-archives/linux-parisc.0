@@ -1,15 +1,22 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: [parisc-linux] 64-bit long double support.
-Date: Thu, 16 Nov 2006 20:31:58 -0500
-Message-ID: <119aab440611161731p47779d1hdc7e7dbd336eb23c__13115.5189279982$1416624215$gmane$org@mail.gmail.com>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] LBA PCI : avoid crash when pluging a pcmcia bridge
+Date: Sat, 18 Nov 2006 08:22:24 -0600
+Message-ID: <1163859744.2806.1.camel@mulgrave.il.steeleye.com>
+References: <20061108150706.bb658b27.gmsoft@tuxicoman.be>
+	<20061115080022.GB30664@colo.lackof.org>
+	<20061115122506.523bdd01.gmsoft@tuxicoman.be>
+	<20061115122352.GH19143@parisc-linux.org>
+	<20061115190830.f8e99725.gmsoft@tuxicoman.be>
+	<20061117203041.GD18567@parisc-linux.org>
+	<20061118122103.0771c93e.gmsoft@tuxicoman.be>
+	<20061118135610.GE18567@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux <parisc-linux@lists.parisc-linux.org>,
- "John David Anglin" <dave.anglin@nrc.ca>,
- libc-alpha@sources.redhat.com
+Content-Type: text/plain
+Cc: Guy Martin <gmsoft@tuxicoman.be>,
+ parisc-linux@lists.parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20061118135610.GE18567@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,46 +27,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-The HP-PARISC processor has no 128-bit hardware floating point
-support. In HPUX the 128-bit long double support is all in software.
-After years of trying we have come to the conclusion that the HPUX
-128-bit long double support will never be released into the public.
+On Sat, 2006-11-18 at 06:56 -0700, Matthew Wilcox wrote:
+> I suspect the next problem is getting IRQs working:
+> 
+> iosapic: 0xfed32800 : no IRT entry for slot 6, pin 1
+> iosapic: no IRTE for 0000:01:06.0 (IRQ not connected?)
 
-It was the conclusion of the community that we would use 64-bit long
-double, a type which would be identical to double.
+Yes ... that was exactly the same as for dino.  There's a piece of
+fiddle code in the dino to guess where the interrupt actually is and
+wire it up ...
 
-The goal is to get `long double' fixed for hppa-linux. You might ask
-what is broken?
+In this case, it just looks like you need to fill in the IRT entry.
 
-1. GCC at one point assumed `long double' was 96-bits (fixed, 64-bits)
-2. GLIBC at one point asumed `long double' was 128-bits (fixed, 64-bits)
-3. GLIBC headers do not export `xxxxl' (long double) variants of the
-math functions.
-     = The fix is to undef __NO_LONG_DOUBLE_MATH in your own version
-of mathdefs.h
-4. GLIBC doesn't test `long double' support.
-     = Hack up math/Makefile to have a finer control over building and
-testing long doubles.
+James
 
-I have patches for 3, and 4. The patch for 3 will "turn on" 64-bit
-`long double' math functions in our headers. The patch for 4 will
-reveal that "lrintl" and "lroundl" are probably broken in some
-rounding cases.
 
-There was mention of using gcc to support "double double" and use 2x
-64-bit doubles. Unfortunately I think this road would be paved with
-lots of debugging, a new ABI, and more headaches for little reward.
-Remember our goal "fix long double support."
-
-Is there any opposition to checking in the fix for 3?
-Speak now or forever hold your peace.
-
-... or until Kyle writes the 128-bit long double support library,
-makes it fast, and we transition our ABI (there are provisions for
-this already).
-
-Cheers,
-Carlos.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
