@@ -1,10 +1,10 @@
-From: Kurt Fitzner <kfitzner@excelcia.org>
-Subject: [parisc-linux] Debian etch rc1 & daily build install fail on C160
-Date: Tue, 21 Nov 2006 02:36:24 -0700
-Message-ID: <4562C898.2090605@excelcia.org>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: [parisc-linux] lockdep branch created
+Date: Mon, 20 Nov 2006 14:39:24 -0700
+Message-ID: <20061120213924.GP18567@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
+  charset=us-ascii
 To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -17,26 +17,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I've tried installing Debian Etch rc1 and yesterday's daily build on my
-C160, and both fail.  The installation itself seems to work fine, but
-when it boots after, it can't find the root partition.
 
-I don't know if it's because the kernel doesn't have the SCSI driver I
-need, or if I'm running into the issue listed on the errata:
+In keeping with the new usage policy, I've created a lockdep branch in the
+parisc git repo for people to hack on until we can get CONFIG_LOCKDEP
+working.  We need some code written to handle STACKTRACE_SUPPORT.
+It shouldn't be too hard a project, but I've run out of time to look
+at it.
 
-Disk devices may change on reboot
-  On systems with multiple diskcontrollers, the kernel/udev may assign
-  a different device node on reboot of the system than was used during
-  installation due to difference in load order of drivers.
-  This can lead to failure to boot the system. In most cases this can be
-  rectified changing the bootloader configuration and /etc/fstab,
-  possibly using the rescue mode of the installer.
-
-  Note however that this problem may occur again on subsequent boots.
-  Fixing this issue has priority for the next release of Debian
-  installer.
-
-Is this something I should be reporting here, or to Debian?
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
