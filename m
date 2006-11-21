@@ -1,16 +1,12 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] Problem with a J6700.
-Date: Thu, 16 Nov 2006 20:33:30 -0500
-Message-ID: <119aab440611161733p5f4d168et4a3ba8bb98d11a68@mail.gmail.com>
-References: <455CAA61.10809@home.se>
+From: Kurt Fitzner <kfitzner@excelcia.org>
+Subject: [parisc-linux] Debian etch rc1 & daily build install fail on C160
+Date: Tue, 21 Nov 2006 02:36:24 -0700
+Message-ID: <4562C898.2090605@excelcia.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: parisc-linux@parisc-linux.org
-To: "Anders Hanson" <anders.hanson@home.se>
+  charset=ISO-8859-1
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <455CAA61.10809@home.se>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,21 +17,26 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 11/16/06, Anders Hanson <anders.hanson@home.se> wrote:
-> I've recently got myself a HP J6700 and installed Debian testing with on
-> it but have a small problem.
->
-> After it had been running for couple of weeks it started do strange
-> things and complained about scsi disks being offline and problem with
-> irq handling.
-> Now I can't even get it to boot up fully before it starts complaining.
->
-> Anyone got any idea? I know it's not much to go on but I will try to
-> gather more info when I manage to boot it and recover some logs :)
+I've tried installing Debian Etch rc1 and yesterday's daily build on my
+C160, and both fail.  The installation itself seems to work fine, but
+when it boots after, it can't find the root partition.
 
-Bad hardware? Get a new disk and try again?
+I don't know if it's because the kernel doesn't have the SCSI driver I
+need, or if I'm running into the issue listed on the errata:
 
-c.
+Disk devices may change on reboot
+  On systems with multiple diskcontrollers, the kernel/udev may assign
+  a different device node on reboot of the system than was used during
+  installation due to difference in load order of drivers.
+  This can lead to failure to boot the system. In most cases this can be
+  rectified changing the bootloader configuration and /etc/fstab,
+  possibly using the rescue mode of the installer.
+
+  Note however that this problem may occur again on subsequent boots.
+  Fixing this issue has priority for the next release of Debian
+  installer.
+
+Is this something I should be reporting here, or to Debian?
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
