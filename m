@@ -1,17 +1,12 @@
-From: "Max Grabert" <parisc@gmail.com>
-Subject: Re: [parisc-linux] Debian Etch RC1 on B180L / X display problem
-Date: Thu, 23 Nov 2006 14:22:58 +0000
-Message-ID: <e6eae0290611230622s265d1eb4heae4d760f0b1e3e9@mail.gmail.com>
-References: <200611222359.kAMNxbBp022646@stephenson.dhis.org>
-	<20061123133925.GA12617@athena.road.mcmartin.ca>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] [PATCH] hppa-linux-gas binutils patch
+Date: Thu, 23 Nov 2006 22:41:56 +0100
+Message-ID: <200611232241.56731.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Kyle McMartin" <kyle@mcmartin.ca>
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061123133925.GA12617@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,26 +17,54 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 23/11/06, Kyle McMartin <kyle@mcmartin.ca> wrote:
-> On Thu, Nov 23, 2006 at 12:59:35AM +0100, Jean-Pierre HOFER wrote:
-> > The X display shows only a grey surface with some horizontal white dotted
-> > lines. The mouse pointer is a series of horizontal white lines. There is
-> > no colour at all.
->
-> X (and Linux fbdev in general) is incapable of configuring HP graphics cards,
-> only driving them through the documented STI commands.
->
-> You likely want to change the Monitor type to something else in "CO MO" at
-> the PDC prompt.
+hppa-linux-gnu-gas only allows one type of ".equ" pseudo-op syntax:
+symbol:		.equ value
 
-I changed my screen resolution//refresh rate in X by using fbset
-(before you start X), and having a matching modeline entry in
-XF86Config/xorg.conf (see fbset -x).
-Works for me, but for some strange reason not for every case (ie. not
-all resolutions/refresh rates supported by fbset)
+The following patch allows hppa-gas to understand
+			.equ symbol,value
+as well, which seems to be pretty standard for other gas-targets as well.
 
-Slan,
-   Max
+I didn't found any problems yet with this patch, and it allows even the 
+src/binutils/testsuite/binutils-all/localize-hidden-1.s
+gas test  to compile.
+
+Comments ?
+If OK, would somebody with write-access to binutils submit it upstream ?
+
+Helge
+
+Index: gas/config/tc-hppa.c
+===================================================================
+RCS file: /cvs/src/src/gas/config/tc-hppa.c,v
+retrieving revision 1.133
+diff -u -r1.133 tc-hppa.c
+--- gas/config/tc-hppa.c	30 Oct 2006 01:09:18 -0000	1.133
++++ gas/config/tc-hppa.c	23 Nov 2006 21:32:49 -0000
+@@ -3262,7 +3262,7 @@
+       return;
+     }
+ 
+-  /* Look up the opcode in the has table.  */
++  /* Look up the opcode in the hash table.  */
+   if ((insn = (struct pa_opcode *) hash_find (op_hash, str)) == NULL)
+     {
+       as_bad ("Unknown opcode: `%s'", str);
+@@ -6397,8 +6397,11 @@
+     {
+       if (reg)
+ 	as_bad (_(".REG must use a label"));
+-      else
+-	as_bad (_(".EQU must use a label"));
++      else {
++	/* Try gas' standard ".equ X,Y" pseudo opcode.  */
++      	s_set(0);
++	return;
++      }
+     }
+ 
+   pa_undefine_label ();
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
