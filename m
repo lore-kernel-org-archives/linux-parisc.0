@@ -1,14 +1,15 @@
-From: Jean-Pierre HOFER <jph@stephenson.dhis.org>
+From: Stuart Brady <sdbrady@ntlworld.com>
 Subject: Re: [parisc-linux] Debian Etch RC1 on B180L / X display problem
-Date: Fri, 24 Nov 2006 13:19:11 +0100 (CET)
-Message-ID: <200611241219.kAOCJD3V002537@stephenson.dhis.org>
+Date: Fri, 24 Nov 2006 12:51:21 +0000
+Message-ID: <20061124125120.GA27596@miranda.arrow>
 References: <200611240137.kAO1bAdB000831@stephenson.dhis.org>
+	<200611241219.kAOCJD3V002537@stephenson.dhis.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200611240137.kAO1bAdB000831@stephenson.dhis.org>
+In-Reply-To: <200611241219.kAOCJD3V002537@stephenson.dhis.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,20 +20,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > [...]
-> > You can then experiment on the /etc/X11/xorg.conf.
-> > Use "xstart" or "xinit" commands to start X11 manually.
+On Fri, Nov 24, 2006 at 01:19:11PM +0100, Jean-Pierre HOFER wrote:
+
+> Sorry, there are not 5 ROWs, but 5 identical COLUMNs.
 > 
-> I have tried many different configurations with 'dpkg-reconfigure
-> xserver-xorg' without success : after 'xinit', the display shows still a
-> grey surface that is subdivided in 5 identical rows. In each row, there
-> is a dash that should be the mouse pointer (at least, the mouse is alive).
+> Thanks in advance for all hints.
 
-Sorry, there are not 5 ROWs, but 5 identical COLUMNs.
+What happens if you put:
 
-Thanks in advance for all hints.
+    Option "ShadowFB" "false"
 
-Jean-Pierre
+in the Device section of xorg.conf?
+-- 
+Stuart Brady
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
