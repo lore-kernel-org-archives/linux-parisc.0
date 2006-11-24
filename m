@@ -1,16 +1,15 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] Remove spinlock_t from cpu_data (and thus
-	from processor.h)
-Date: Sun, 26 Nov 2006 00:33:06 -0700
-Message-ID: <20061126073306.GB29213@colo.lackof.org>
-References: <20061125165344.GA29949@athena.road.mcmartin.ca>
+From: Jean-Pierre HOFER <jph@stephenson.dhis.org>
+Subject: Re: [parisc-linux] Debian Etch RC1 on B180L / X display problem
+Date: Sat, 25 Nov 2006 00:00:55 +0100 (CET)
+Message-ID: <200611242300.kAON0vgf003083@stephenson.dhis.org>
+References: <20061124125120.GA27596@miranda.arrow>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@parisc-linux.org>
+To: Stuart Brady <sdbrady@ntlworld.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061125165344.GA29949@athena.road.mcmartin.ca>
+In-Reply-To: <20061124125120.GA27596@miranda.arrow>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,27 +20,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Nov 25, 2006 at 11:53:44AM -0500, Kyle McMartin wrote:
-> This should enable us to clean up our header files nicely.
-...
+> > Sorry, there are not 5 ROWs, but 5 identical COLUMNs.
+> > 
+> > Thanks in advance for all hints.
+> 
+> What happens if you put:
+> 
+>     Option "ShadowFB" "false"
+> 
+> in the Device section of xorg.conf?
+> -- 
+> Stuart Brady
 
-Yes, but...
+Yes, it did the trick !  Many thanks for your hint.
 
-> +spinlock_t fencepost[NR_CPUS] = {
-> +	[0 ... NR_CPUS-1] = SPIN_LOCK_UNLOCKED
-> +};
+This is a trap. It would be very useful to have a possibility to set/unset
+this option in 'dpkg-reconfigure xserver-xorg'. For instance include this
+choice in a menu after the mask about "Desired default color depth in bits",
+together with some comments about needed setings for the supported HP graphic
+cards.
 
-Unless each CPU gets it's own cacheline, I believe this is
-going to ping-pong across CPU caches like hell. Thus
-the "per-CPU" initialization. If the fencepost[] locks
-are seldom used, then it doesn't matter and we could just use
-one cacheline.
-
-but I think you are on the right track to unraveling our
-header dependencies a bit more...
-
-thanks,
-grant
+Jean-Pierre
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
