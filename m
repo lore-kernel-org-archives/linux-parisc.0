@@ -1,16 +1,18 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: Grant Grundler <grundler@parisc-linux.org>
 Subject: Re: [parisc-linux] [PATCH] Remove spinlock_t from cpu_data (and thus
 	from processor.h)
-Date: Sun, 26 Nov 2006 11:38:32 -0700
-Message-ID: <20061126183832.GK14076@parisc-linux.org>
+Date: Sun, 26 Nov 2006 11:56:34 -0700
+Message-ID: <20061126185634.GE17707@colo.lackof.org>
 References: <20061125165344.GA29949@athena.road.mcmartin.ca>
+	<20061126073306.GB29213@colo.lackof.org>
+	<20061126183742.GB14193@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
 Cc: parisc-linux@lists.parisc-linux.org
 To: Kyle McMartin <kyle@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061125165344.GA29949@athena.road.mcmartin.ca>
+In-Reply-To: <20061126183742.GB14193@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +23,72 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Nov 25, 2006 at 11:53:44AM -0500, Kyle McMartin wrote:
-> This should enable us to clean up our header files nicely.
+On Sun, Nov 26, 2006 at 01:37:42PM -0500, Kyle McMartin wrote:
+> diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+> index 4a23a97..5b6bc6e 100644
+> --- a/arch/parisc/kernel/smp.c
+> +++ b/arch/parisc/kernel/smp.c
+> @@ -76,6 +76,7 @@ cpumask_t cpu_possible_map __read_mostly
+>  EXPORT_SYMBOL(cpu_online_map);
+>  EXPORT_SYMBOL(cpu_possible_map);
+>  
+> +DEFINE_PER_CPU(spinlock_t, ipi_lock) = SPIN_LOCK_UNLOCKED;
 
-Thanks for looking at this.
+If this works - this is the right way to do it.
+You rock!
 
-My first thought was "Surely there's a better way to do this, maybe
-DEFINE_PER_CPU".
+thanks!
+grant
 
-Then I looked at what you'd had to touch.  Essentially, we're
-multiplexing 6 different ops onto one interrupt.  This would make sense
-if we were short of interrupts, but on the vast majority of systems, we
-aren't.
-
-We define NOP, RESCHEDULE, CALL_FUNC, CPU_START, CPU_STOP and CPU_TEST.
-CPU_TEST is never sent, down to 5.  CPU_NOP and CPU_RESCHEDULE are the
-same other than debug statements, down to 4.  So by taking 3 additional
-CPU interrupts, we can eliminate the spinlock entirely.
-
-We could do away with RESCHEDULE if we pass a nop function to CALL_FUNC.
-I don't know if we would suffer a performance hit from doing that
-though.
-
-We could also only enable CPU_STOP if CPU_HOTPLUG was set.  And
-fold CPU_START/CPU_STOP into the CALL_FUNC bucket.  Or deregister
-CPU_START after the CPU's come up.
-
-In any case, I think this is a whole lot preferable to the spinlock that
-we're currently using.  I have some other ideas (like using set_bit()
-and xchg() which would take the atomic_hash_spinlock), but I think
-redoing our IPI support in the way I've outlined above is cleaner.
+>  
+>  struct smp_call_struct {
+>  	void (*func) (void *info);
+> @@ -167,10 +168,11 @@ ipi_interrupt(int irq, void *dev_id) 
+>  	mb();	/* Order interrupt and bit testing. */
+>  
+>  	for (;;) {
+> -		spin_lock_irqsave(&(p->lock),flags);
+> +		spinlock_t *lock = &per_cpu(ipi_lock, this_cpu);
+> +		spin_lock_irqsave(lock, flags);
+>  		ops = p->pending_ipi;
+>  		p->pending_ipi = 0;
+> -		spin_unlock_irqrestore(&(p->lock),flags);
+> +		spin_unlock_irqrestore(lock, flags);
+>  
+>  		mb(); /* Order bit clearing and data access. */
+>  
+> @@ -275,12 +277,13 @@ static inline void
+>  ipi_send(int cpu, enum ipi_message_type op)
+>  {
+>  	struct cpuinfo_parisc *p = &cpu_data[cpu];
+> +	spinlock_t *lock = &per_cpu(ipi_lock, cpu);
+>  	unsigned long flags;
+>  
+> -	spin_lock_irqsave(&(p->lock),flags);
+> +	spin_lock_irqsave(lock, flags);
+>  	p->pending_ipi |= 1 << op;
+>  	gsc_writel(IPI_IRQ - CPU_IRQ_BASE, cpu_data[cpu].hpa);
+> -	spin_unlock_irqrestore(&(p->lock),flags);
+> +	spin_unlock_irqrestore(lock, flags);
+>  }
+>  
+>  
+> diff --git a/include/asm-parisc/processor.h b/include/asm-parisc/processor.h
+> index fd7866d..435afe5 100644
+> --- a/include/asm-parisc/processor.h
+> +++ b/include/asm-parisc/processor.h
+> @@ -87,7 +87,6 @@ struct cpuinfo_parisc {
+>  	unsigned long hpa;          /* Host Physical address */
+>  	unsigned long txn_addr;     /* MMIO addr of EIR or id_eid */
+>  #ifdef CONFIG_SMP
+> -	spinlock_t lock;            /* synchronization for ipi's */
+>  	unsigned long pending_ipi;  /* bitmap of type ipi_message_type */
+>  	unsigned long ipi_count;    /* number ipi Interrupts */
+>  #endif
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
