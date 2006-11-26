@@ -1,72 +1,84 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [PATCH] hppa-linux-gas binutils patch
-Date: Sun, 26 Nov 2006 20:34:02 -0500 (EST)
-Message-ID: <200611270134.kAR1Y2k0025862@hiauly1.hia.nrc.ca>
-References: <119aab440611261406t3b221212seec90894cd57c63d@mail.gmail.com>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: Re: [parisc-linux] [PATCH] Remove spinlock_t from cpu_data (and thus
+	from processor.h)
+Date: Sun, 26 Nov 2006 13:37:42 -0500
+Message-ID: <20061126183742.GB14193@athena.road.mcmartin.ca>
+References: <20061125165344.GA29949@athena.road.mcmartin.ca>
+	<20061126073306.GB29213@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: deller@gmx.de,
- dave.anglin@nrc.ca,
- parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <119aab440611261406t3b221212seec90894cd57c63d@mail.gmail.com> from "Carlos O'Donell" at Nov 26, 2006 05:06:04 pm
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20061126073306.GB29213@colo.lackof.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> The GAS manual says:
-> ---
-> .equ symbol, expression
-> This directive sets the value of symbol to expression. It is
-> synonymous with `.set'; see section .set symbol, expression.
-> The syntax for equ on the HPPA is `symbol .equ expression'.
-> ---
+On Sun, Nov 26, 2006 at 12:33:06AM -0700, Grant Grundler wrote:
 > 
-> This should be updated.
-> 
-> Have you considered the implications of your patch to porting HPUX assembly?
-> Does the HPUX assembler have an .equ directive? Dave can probably
-> answer that so I'll CC him.
-> 
-> ---
-> label .reg expr
->     Synonym for .equ; define label with the absolute expression expr
-> as its value.
-> ---
-> 
-> In summary... if you provide a documentation patch I'll test this and
-> submit upstream. When upstreams gives the green flag I'll check this
-> into binutils head.
 
-This needs testing on hpux.  I believe there may be problems.
-The current implementation reflects the syntax for .equ using HP as.
-
-The HP assembler only allows an integer expression which evalutes
-to an absolute value.  The HP assembler prohibits the use of
-relocatable labels and imported symbols as a component of a
-.equ expression.  This reflected the capabilites of HP ld at
-one time.  This may not reflect current capabilites.  There may
-be differences between the 32 and 64-bit linkers.  I'm cautious
-here as I know .set which has no HP assembler equivalent works
-most of the time, but the capabilities of HP ld aren't well
-documented and there are subtle issues in assigning aliases.
-There are some uses of .set in the gas testsuite which run under
-hpux and they seem to work at basic level.  However, the weak
-alias stuff isn't useful under hpux because of the way HP ld
-handles "weak" symbols.
-
-On the otherhand, more latitude on the expression is allowed when
-GNU ld is being used.  .equ is effectively a synonym for .set.  
-Because of this, I haven't been too concerned about the syntax
-for .equ.  There are various other directives that also follow the
-HP syntax.  In summary, these probably should be changed to follow
-the standard behavior under linux, etc; but I think the current
-behavior should be retained under hpux.
-
-Sorry, I haven't had a chance to look at the details of your change.
-I've been busy and a few GCC targets are broken...
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index 4a23a97..5b6bc6e 100644
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -76,6 +76,7 @@ cpumask_t cpu_possible_map __read_mostly
+ EXPORT_SYMBOL(cpu_online_map);
+ EXPORT_SYMBOL(cpu_possible_map);
+ 
++DEFINE_PER_CPU(spinlock_t, ipi_lock) = SPIN_LOCK_UNLOCKED;
+ 
+ struct smp_call_struct {
+ 	void (*func) (void *info);
+@@ -167,10 +168,11 @@ ipi_interrupt(int irq, void *dev_id) 
+ 	mb();	/* Order interrupt and bit testing. */
+ 
+ 	for (;;) {
+-		spin_lock_irqsave(&(p->lock),flags);
++		spinlock_t *lock = &per_cpu(ipi_lock, this_cpu);
++		spin_lock_irqsave(lock, flags);
+ 		ops = p->pending_ipi;
+ 		p->pending_ipi = 0;
+-		spin_unlock_irqrestore(&(p->lock),flags);
++		spin_unlock_irqrestore(lock, flags);
+ 
+ 		mb(); /* Order bit clearing and data access. */
+ 
+@@ -275,12 +277,13 @@ static inline void
+ ipi_send(int cpu, enum ipi_message_type op)
+ {
+ 	struct cpuinfo_parisc *p = &cpu_data[cpu];
++	spinlock_t *lock = &per_cpu(ipi_lock, cpu);
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&(p->lock),flags);
++	spin_lock_irqsave(lock, flags);
+ 	p->pending_ipi |= 1 << op;
+ 	gsc_writel(IPI_IRQ - CPU_IRQ_BASE, cpu_data[cpu].hpa);
+-	spin_unlock_irqrestore(&(p->lock),flags);
++	spin_unlock_irqrestore(lock, flags);
+ }
+ 
+ 
+diff --git a/include/asm-parisc/processor.h b/include/asm-parisc/processor.h
+index fd7866d..435afe5 100644
+--- a/include/asm-parisc/processor.h
++++ b/include/asm-parisc/processor.h
+@@ -87,7 +87,6 @@ struct cpuinfo_parisc {
+ 	unsigned long hpa;          /* Host Physical address */
+ 	unsigned long txn_addr;     /* MMIO addr of EIR or id_eid */
+ #ifdef CONFIG_SMP
+-	spinlock_t lock;            /* synchronization for ipi's */
+ 	unsigned long pending_ipi;  /* bitmap of type ipi_message_type */
+ 	unsigned long ipi_count;    /* number ipi Interrupts */
+ #endif
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
