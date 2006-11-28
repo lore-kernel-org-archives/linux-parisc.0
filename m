@@ -1,18 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] Remove spinlock_t from cpu_data (and thus
-	from processor.h)
-Date: Sun, 26 Nov 2006 11:56:34 -0700
-Message-ID: <20061126185634.GE17707@colo.lackof.org>
-References: <20061125165344.GA29949@athena.road.mcmartin.ca>
-	<20061126073306.GB29213@colo.lackof.org>
-	<20061126183742.GB14193@athena.road.mcmartin.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Prebuilt kernels not available
+Date: Mon, 27 Nov 2006 19:41:55 -0500
+Message-ID: <20061128004155.GB18370@tachyon.int.mcmartin.ca>
+References: <200611261138.51972.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@parisc-linux.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061126183742.GB14193@athena.road.mcmartin.ca>
+In-Reply-To: <200611261138.51972.deller@gmx.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,72 +19,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Nov 26, 2006 at 01:37:42PM -0500, Kyle McMartin wrote:
-> diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-> index 4a23a97..5b6bc6e 100644
-> --- a/arch/parisc/kernel/smp.c
-> +++ b/arch/parisc/kernel/smp.c
-> @@ -76,6 +76,7 @@ cpumask_t cpu_possible_map __read_mostly
->  EXPORT_SYMBOL(cpu_online_map);
->  EXPORT_SYMBOL(cpu_possible_map);
->  
-> +DEFINE_PER_CPU(spinlock_t, ipi_lock) = SPIN_LOCK_UNLOCKED;
+On Sun, Nov 26, 2006 at 11:38:51AM +0100, Helge Deller wrote:
+> I just noticed, that we don't have any recent prebuilt kernels at the kernel download page any longer:
+> http://cvs.parisc-linux.org/download/linux-2.6/
+> 
+> It's still at 2.6.18-rc1-pa5 from July.
+> 
 
-If this works - this is the right way to do it.
-You rock!
+It hasn't been updated for Git. Now that we pretty much build
+straight out of Linus' tree barring some recent devel work, I don't
+see too much value providing autobuilt images.
 
-thanks!
-grant
+I spent a bit of time playing with the idea of a tinderbox to build
+-git snapshots daily, but never bothered to see it through to completion.
 
->  
->  struct smp_call_struct {
->  	void (*func) (void *info);
-> @@ -167,10 +168,11 @@ ipi_interrupt(int irq, void *dev_id) 
->  	mb();	/* Order interrupt and bit testing. */
->  
->  	for (;;) {
-> -		spin_lock_irqsave(&(p->lock),flags);
-> +		spinlock_t *lock = &per_cpu(ipi_lock, this_cpu);
-> +		spin_lock_irqsave(lock, flags);
->  		ops = p->pending_ipi;
->  		p->pending_ipi = 0;
-> -		spin_unlock_irqrestore(&(p->lock),flags);
-> +		spin_unlock_irqrestore(lock, flags);
->  
->  		mb(); /* Order bit clearing and data access. */
->  
-> @@ -275,12 +277,13 @@ static inline void
->  ipi_send(int cpu, enum ipi_message_type op)
->  {
->  	struct cpuinfo_parisc *p = &cpu_data[cpu];
-> +	spinlock_t *lock = &per_cpu(ipi_lock, cpu);
->  	unsigned long flags;
->  
-> -	spin_lock_irqsave(&(p->lock),flags);
-> +	spin_lock_irqsave(lock, flags);
->  	p->pending_ipi |= 1 << op;
->  	gsc_writel(IPI_IRQ - CPU_IRQ_BASE, cpu_data[cpu].hpa);
-> -	spin_unlock_irqrestore(&(p->lock),flags);
-> +	spin_unlock_irqrestore(lock, flags);
->  }
->  
->  
-> diff --git a/include/asm-parisc/processor.h b/include/asm-parisc/processor.h
-> index fd7866d..435afe5 100644
-> --- a/include/asm-parisc/processor.h
-> +++ b/include/asm-parisc/processor.h
-> @@ -87,7 +87,6 @@ struct cpuinfo_parisc {
->  	unsigned long hpa;          /* Host Physical address */
->  	unsigned long txn_addr;     /* MMIO addr of EIR or id_eid */
->  #ifdef CONFIG_SMP
-> -	spinlock_t lock;            /* synchronization for ipi's */
->  	unsigned long pending_ipi;  /* bitmap of type ipi_message_type */
->  	unsigned long ipi_count;    /* number ipi Interrupts */
->  #endif
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Cheers,
+	Kyle M.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
