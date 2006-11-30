@@ -1,50 +1,35 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] [PATCH] hppa-linux-gas binutils patch
-Date: Thu, 30 Nov 2006 11:13:31 -0500 (EST)
-Message-ID: <200611301613.kAUGDV3J004744__41816.1709014841$1416624224$gmane$org@hiauly1.hia.nrc.ca>
-References: <200611282034.01241.deller@gmx.de>
+From: Kurt Fitzner <kfitzner@excelcia.org>
+Subject: Re: [parisc-linux] Debian etch rc1 & daily build install fail on C160
+Date: Thu, 30 Nov 2006 10:38:29 -0700
+Message-ID: <456F1715.5080305__4004.01247102327$1416624225$gmane$org@excelcia.org>
+References: <4562C898.2090605@excelcia.org>
+	<200611211348.20682.mszick@morethan.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- dave.anglin@nrc.ca
-To: deller@gmx.de (Helge Deller)
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <200611282034.01241.deller@gmx.de> from "Helge Deller" at Nov 28, 2006 08:34:01 pm
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-reply-to: <200611211348.20682.mszick@morethan.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> deller@c3000:~/binutils/run/bin$ cat test.s
-> AA       .equ  4
-> BB      .equ  6
-> deller@c3000:~/binutils/run/bin$ as test.s
-> test.s: Assembler messages:
-> test.s:1: Error: Unknown opcode: `aa'
-> test.s:2: Error: Invalid operands
+I've tried everything I can think of, but can't get the system to boot.
+ I finally got smart and checked /proc/modules after a failed boot (at
+the initramfs prompt) and found that only an ide driver was loaded.  Not
+exactly what a C160 needs.
 
-This is because the linux target was changed to require colons after
-labels.  As a result, operands can start in the first column of a line.
-Under hpux, there needs to be at least one white space character before
-an operand and labels have to start in the first column.
-
-> although as.info states:
-> 
-> 7.37 `.equ SYMBOL, EXPRESSION'
-> ==============================
-> 
-> This directive sets the value of SYMBOL to EXPRESSION.  It is
-> synonymous with `.set'; see *Note `.set': Set.
-> 
->    The syntax for `equ' on the HPPA is `SYMBOL .equ EXPRESSION'.
-
-This doesn't reflect that SYMBOL needs to be followed by a colon
-on HPPA linux.  So, the documentation needs updating.
-
-Probably, the linux should have been updated to use the normal GNU
-syntax when it was introduced.  Now, updating the syntax involves a
-potential compatibility break with GCC and existing assembler code.
-At the moment, I don't see a strong need to do the update.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+So, it doesn't look like a device ordering problem - it's a lack of
+device problem.  Other than compiling a kernel to hard-code the correct
+devices in, does anyone have suggestions as to how to get the right
+drivers to auto-load?
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
