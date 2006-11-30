@@ -1,18 +1,16 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [parisc-linux] K410 SCSI 53c700 issue with PLEXTOR PX-R820T
-Date: Mon, 27 Nov 2006 18:10:40 +0100
-Message-ID: <20061127181040.94d1e30f.gmsoft@tuxicoman.be>
-References: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>
-	<20061112191436.GY16952@parisc-linux.org>
-	<20061127115832.b413fd7b.gmsoft@tuxicoman.be>
-	<20061127153713.GQ14076@parisc-linux.org>
+From: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
+Subject: [parisc-linux] [PATCH] parisc: pdcpat remove extra brackets
+Date: Thu, 30 Nov 2006 10:20:50 +0100
+Message-ID: <200611301020.51261.m.kozlowski__39162.9402911805$1416624624$gmane$org@tuxland.pl>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+  charset="iso-8859-2"
+Cc: linux-kernel@vger.kernel.org,
+ parisc-linux@parisc-linux.org
+To: matthew@wil.cx,
+ grundler@parisc-linux.org,
+ kyle@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061127153713.GQ14076@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,45 +21,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Hello,
 
-Matthew,
+	This patch removes extra brackets.
 
-In only tested on my K410. I'm clueless about IOMMU besides what I can read about it on wikipedia :)
+Signed-off-by: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
 
-I can give it a try on my b180l but I don't know if there is a point and if it has the right connector.
+ include/asm-parisc/pdcpat.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-As James said, it looks like the size of some commands is not negociated properly or so.
-http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030204.html
+--- linux-2.6.19-rc6-mm2-a/include/asm-parisc/pdcpat.h	2006-11-16 05:03:40.000000000 +0100
++++ linux-2.6.19-rc6-mm2-b/include/asm-parisc/pdcpat.h	2006-11-30 01:09:47.000000000 +0100
+@@ -250,7 +250,7 @@ struct pdc_pat_pd_addr_map_entry {
+ #define PAT_GET_ENTITY(value)	(((value) >> 56) & 0xffUL)
+ #define PAT_GET_DVI(value)	(((value) >> 48) & 0xffUL)
+ #define PAT_GET_IOC(value)	(((value) >> 40) & 0xffUL)
+-#define PAT_GET_MOD_PAGES(value)(((value) & 0xffffffUL)
++#define PAT_GET_MOD_PAGES(value) ((value) & 0xffffffUL)
+ 
+ 
+ /*
+@@ -330,7 +330,7 @@ extern int pdc_pat;     /* arch/parisc/k
+ #define PAT_GET_ENTITY(value)	(((value) >> 56) & 0xffUL)
+ #define PAT_GET_DVI(value)	(((value) >> 48) & 0xffUL)
+ #define PAT_GET_IOC(value)	(((value) >> 40) & 0xffUL)
+-#define PAT_GET_MOD_PAGES(value)(((value) & 0xffffffUL)
++#define PAT_GET_MOD_PAGES(value) ((value) & 0xffffffUL)
+ 
+ #endif /* __ASSEMBLY__ */
+ 
 
-Is there a way I make this negociation more verbose ?
 
-However, unlike Joel's problem, those errors start to appear when I try to mount a cd or even before that when udevd starts and not after some untar/rm iterations. I sould mention that if I eject the media while mount is stuck, it aborts.
+-- 
+Regards,
 
-  Guy
-
-
-On Mon, 27 Nov 2006 08:37:14 -0700
-Matthew Wilcox <matthew@wil.cx> wrote:
-
-> On Mon, Nov 27, 2006 at 11:58:32AM +0100, Guy Martin wrote:
-> > Some more detail on this issue.
-> > This burner still works at commit 6391a11375de5e2bb1eb8481e54619761dc65d9f but breaks at commit 0f13fc09db68de92585558984bff1c51b87db72f.
-> 
-> Thanks for narrowing it down so much!
-> 
-> > commit 0f13fc09db68de92585558984bff1c51b87db72f
-> > Author: James Bottomley <James.Bottomley@steeleye.com>
-> > Date:   Thu Jun 29 13:02:11 2006 -0400
-> > 
-> >     [SCSI] 53c700: fix breakage caused by the autosense update
-> >     
-> >     A bit of a brown paper bag issue.  The previous patch to remove the soon
-> >     to be ripped out fields that were used in autosense actually broke the
-> >     driver.  This patch fixes it and has been tested (honestly).
-> 
-> If James says he tested it, I believe him.  I *think* we're in the
-> situation where it works on machines without an IOMMU and breaks on
-> machines with an IOMMU.  Joel, Guy, do I have that right?
+	Mariusz Kozlowski
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
