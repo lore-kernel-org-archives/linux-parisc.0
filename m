@@ -1,55 +1,60 @@
-From: Helge Deller <deller@gmx.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [PATCH] hppa-linux-gas binutils patch
-Date: Tue, 28 Nov 2006 20:34:01 +0100
-Message-ID: <200611282034.01241.deller@gmx.de>
-References: <200611270134.kAR1Y2k0025862@hiauly1.hia.nrc.ca>
-	<200611282020.26412.deller@gmx.de>
+Date: Thu, 30 Nov 2006 10:46:33 -0500 (EST)
+Message-ID: <200611301546.kAUFkXkZ003953__45492.6423299641$1416624224$gmane$org@hiauly1.hia.nrc.ca>
+References: <200611282020.26412.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- dave.anglin@nrc.ca
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200611282020.26412.deller@gmx.de>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: dave.anglin@nrc.ca,
+ parisc-linux@lists.parisc-linux.org
+To: deller@gmx.de (Helge Deller)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <200611282020.26412.deller@gmx.de> from "Helge Deller" at Nov 28, 2006 08:20:26 pm
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Tuesday 28 November 2006 20:20, Helge Deller wrote:
+> It will only allow the case of:
+> 		.equ VAR,VALUE
+> which was printing an error message before.
+> So, it doesn't change any currently existing behavior. 
+
+It adds new behavior which was previously invalid.  The above syntax
+isn't valid using HP as and previously gas syntax mirrored the HP
+syntax.  So, you have to convince the binutils maintainers that the
+above extension is compatible with what exists now.  For example,
+
+LABEL:	.equ VALUE
+	.equ VAR,VALUE
+LABEL1: .equ VAR,VALUE	; ???
+
+Do these all work correctly?
+
 > As a background story:
 > Originally I wanted to add support for
 > VAR		.equ  VALUE
 > as it's e.g. documented here: http://docs.hp.com/en/92432-90012/ch02.html
 > (JAN   .equ  1).
+> But this is in contrast to what gas (in as.info) states, since it does not end with a colon:
+> "  For HPPA targets, labels need not be immediately followed by a
+> "colon, but the definition of a label must begin in column zero.  This
+> "also implies that only one label may be defined on each line.
+> "    label:     .directive    followed by something
+> ...
+> Sadly I until now failed to get  this working as well :-(
 
-There is more broken:
+I believe the labels must be followed by followed by a colon on linux.
+On hpux, the colon is optional.  HP as wants no colon.  Note that labels
+don't have to be on the same line as the directive.  Thus, I believe that
 
-deller@c3000:~/binutils/run/bin$ cat test.s
-AA       .equ  4
-BB      .equ  6
-deller@c3000:~/binutils/run/bin$ as test.s
-test.s: Assembler messages:
-test.s:1: Error: Unknown opcode: `aa'
-test.s:2: Error: Invalid operands
+label:	.equ	VALUE
 
-although as.info states:
+should work on linux.
 
-7.37 `.equ SYMBOL, EXPRESSION'
-==============================
+I'm not sure the in comment in as.info about only one label per line
+is correct.  There's a line termination character that allows multiple
+directives per line.  It's useful in macros.
 
-This directive sets the value of SYMBOL to EXPRESSION.  It is
-synonymous with `.set'; see *Note `.set': Set.
-
-   The syntax for `equ' on the HPPA is `SYMBOL .equ EXPRESSION'.
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
