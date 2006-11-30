@@ -1,18 +1,19 @@
-From: Joel Soete <soete.joel@scarlet.be>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] K410 SCSI 53c700 issue with PLEXTOR PX-R820T
-Date: Thu, 30 Nov 2006 16:50:40 +0000
-Message-ID: <456F0BE0.1060707__2022.85980708456$1416624625$gmane$org@scarlet.be>
-References: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>	<20061112191436.GY16952@parisc-linux.org>	<20061127115832.b413fd7b.gmsoft@tuxicoman.be>	<20061127153713.GQ14076@parisc-linux.org>
-	<20061127181040.94d1e30f.gmsoft@tuxicoman.be>
+Date: Thu, 30 Nov 2006 12:17:43 -0500
+Message-ID: <1164907064.22826.23.camel__41974.9905042865$1416624625$gmane$org@mulgrave.il.steeleye.com>
+References: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>
+	<20061112191436.GY16952@parisc-linux.org>
+	<20061127115832.b413fd7b.gmsoft@tuxicoman.be>
+	<20061127153713.GQ14076@parisc-linux.org>
+	<20061130101805.2a82273b.gmsoft@tuxicoman.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+Content-Type: text/plain
 Cc: parisc-linux@parisc-linux.org,
  Matthew Wilcox <matthew@wil.cx>
 To: Guy Martin <gmsoft@tuxicoman.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061127181040.94d1e30f.gmsoft@tuxicoman.be>
+In-Reply-To: <20061130101805.2a82273b.gmsoft@tuxicoman.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,57 +24,58 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Actually, your analysis isn't quite correct.  This is the real problem
+
+On Thu, 2006-11-30 at 10:18 +0100, Guy Martin wrote:
+> [42949427.280000] 53c700: scsi2, command sr 2:0:2:0: 
+> [42949427.280000]         command: cdb[0]=0x43: 43 00 00 00 00 00 00 00 0c 40
+
+READ_TOC(10) command (i.e. 10 byte command)
+
+> [42949427.280000]  scatter block 0: move 12[0900000c] from 0x1d48e00
+> [42949427.280000]  SETTING 001c0528 to 90080000
+> [42949427.280000]  script, patching short field MessageCount at 30 to 0xe000001
+> [42949427.280000]  script, patching ID field Device_ID at 0 to 0x41040000
+> [42949427.280000]  script, patching CommandAddress at 121 to 0x1d508f8
+> [42949427.280000]  script, patching short field CommandCount at 120 to 0xa00000a
+> [42949427.280000]  script, patching SGScriptStartAddress at 191 to 0x1c0520
+> [42949427.280000]  script, patching SGScriptStartAddress at 207 to 0x1c0520
+> [42949427.290000] scsi2: istat 01 sstat0 00 dstat 84 dsp 012a[001c04a8] dsps 0x401
+> [42949427.290000] scsi2: (2:0) ====>SCRIPT INTERRUPT<====
+> [42949427.290000]   COMMAND COMPLETE, status=02
+
+Returns Check Condition, causing the driver to send out a REQUEST_SENSE
+command, which it begins here using the same slot:
+
+> [42949427.290000]  script, patching short field MessageCount at 30 to 0xe000006
+> [42949427.290000]  script, patching ID field Device_ID at 0 to 0x41040000
+> [42949427.290000]  script, patching CommandAddress at 121 to 0x1d58c20
+> [42949427.290000]  script, patching short field CommandCount at 120 to 0xa00000a
+
+This patches the command length to ten bytes, but REQUEST_SENSE is only
+a 6 byte command ... it's clearly inherited the length parameter from
+the previous command.
+
+> [42949427.290000]  script, patching SGScriptStartAddress at 191 to 0x1c0520
+> [42949427.290000]  script, patching SGScriptStartAddress at 207 to 0x1c0520
+> [42949427.290000] scsi2: Issuing saved command slot 4f6b8520, cmd 4f23b8c0      
+> [42949427.300000] scsi2: istat 09 sstat0 00 dstat 84 dsp 00ba[001c02e8] dsps 0x250
+> [42949427.300000] scsi2: (2:0) ====>SCRIPT INTERRUPT<====
+> [42949427.300000] scsi2 (2:0): message before command phase: 01 03 01 3b 08 
+> [42949427.300000] Attempting to resume at 1c02e8
+> [42949427.320000] scsi2: istat 0a sstat0 c0 dstat 00 dsp 007a[001c01e8] dsps 0x1d58c20
+> [42949427.320000] scsi2: (2:0) phase mismatch at 01e8, phase IO BSY DATA_IN
+
+And here we get a phase mismatch in the command phase because the drive
+transitions to data phase after six bytes and the driver still thinks it
+has another four to send.
+
+I'd have the maintainer shot ... he clearly forgot to set up the command
+length for auto request sense.
+
+James
 
 
-Guy Martin wrote:
-> Matthew,
-> 
-> In only tested on my K410. I'm clueless about IOMMU besides what I can read about it on wikipedia :)
-> 
-> I can give it a try on my b180l but I don't know if there is a point and if it has the right connector.
-> 
-Yes connectors and even hba are afaik the same (into LASI), the diff stand in this Uturn/U2 bus converter/adapter (ioscan 
-name it bc, mstm ba?) on your K model (as on my D) and not on B180L+.
-
-> As James said, it looks like the size of some commands is not negociated properly or so.
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030204.html
-> 
-> Is there a way I make this negociation more verbose ?
-> 
-> However, unlike Joel's problem, those errors start to appear when I try to mount a cd or even before that when udevd starts and not after some untar/rm iterations. I sould mention that if I eject the media while mount is stuck, it aborts.
-> 
->   Guy
-> 
-> 
-> On Mon, 27 Nov 2006 08:37:14 -0700
-> Matthew Wilcox <matthew@wil.cx> wrote:
-> 
->> On Mon, Nov 27, 2006 at 11:58:32AM +0100, Guy Martin wrote:
->>> Some more detail on this issue.
->>> This burner still works at commit 6391a11375de5e2bb1eb8481e54619761dc65d9f but breaks at commit 0f13fc09db68de92585558984bff1c51b87db72f.
->> Thanks for narrowing it down so much!
->>
->>> commit 0f13fc09db68de92585558984bff1c51b87db72f
->>> Author: James Bottomley <James.Bottomley@steeleye.com>
->>> Date:   Thu Jun 29 13:02:11 2006 -0400
->>>
->>>     [SCSI] 53c700: fix breakage caused by the autosense update
->>>     
->>>     A bit of a brown paper bag issue.  The previous patch to remove the soon
->>>     to be ripped out fields that were used in autosense actually broke the
->>>     driver.  This patch fixes it and has been tested (honestly).
->> If James says he tested it, I believe him.  I *think* we're in the
->> situation where it works on machines without an IOMMU and breaks on
->> machines with an IOMMU.  Joel, Guy, do I have that right?
-> 
-Well my test case is totaly different as far as I just tested se-scsi disk.
-And I don't own any PLEXTOR, so only GMSoft test on its b180 could confirm us if it's same kind of pb.
-
-The only thing of what I still sure is that the pb occure to me when I tried to stress (high io rate) this driver.
-
-Joel
-
-> 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
