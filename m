@@ -1,19 +1,20 @@
 From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] K410 SCSI 53c700 issue with PLEXTOR PX-R820T
-Date: Thu, 30 Nov 2006 12:17:43 -0500
-Message-ID: <1164907064.22826.23.camel__41974.9905042865$1416624625$gmane$org@mulgrave.il.steeleye.com>
+Date: Thu, 30 Nov 2006 13:13:46 -0500
+Message-ID: <1164910427.22826.37.camel__5772.7744141177$1416624625$gmane$org@mulgrave.il.steeleye.com>
 References: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>
 	<20061112191436.GY16952@parisc-linux.org>
 	<20061127115832.b413fd7b.gmsoft@tuxicoman.be>
 	<20061127153713.GQ14076@parisc-linux.org>
 	<20061130101805.2a82273b.gmsoft@tuxicoman.be>
+	<1164907064.22826.23.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Cc: parisc-linux@parisc-linux.org,
- Matthew Wilcox <matthew@wil.cx>
+Cc: Matthew Wilcox <matthew@wil.cx>,
+ parisc-linux@parisc-linux.org
 To: Guy Martin <gmsoft@tuxicoman.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061130101805.2a82273b.gmsoft@tuxicoman.be>
+In-Reply-To: <1164907064.22826.23.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,56 +25,44 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Actually, your analysis isn't quite correct.  This is the real problem
+On Thu, 2006-11-30 at 12:17 -0500, James Bottomley wrote:
+> And here we get a phase mismatch in the command phase because the drive
+> transitions to data phase after six bytes and the driver still thinks it
+> has another four to send.
+> 
+> I'd have the maintainer shot ... he clearly forgot to set up the command
+> length for auto request sense.
 
-On Thu, 2006-11-30 at 10:18 +0100, Guy Martin wrote:
-> [42949427.280000] 53c700: scsi2, command sr 2:0:2:0: 
-> [42949427.280000]         command: cdb[0]=0x43: 43 00 00 00 00 00 00 00 0c 40
-
-READ_TOC(10) command (i.e. 10 byte command)
-
-> [42949427.280000]  scatter block 0: move 12[0900000c] from 0x1d48e00
-> [42949427.280000]  SETTING 001c0528 to 90080000
-> [42949427.280000]  script, patching short field MessageCount at 30 to 0xe000001
-> [42949427.280000]  script, patching ID field Device_ID at 0 to 0x41040000
-> [42949427.280000]  script, patching CommandAddress at 121 to 0x1d508f8
-> [42949427.280000]  script, patching short field CommandCount at 120 to 0xa00000a
-> [42949427.280000]  script, patching SGScriptStartAddress at 191 to 0x1c0520
-> [42949427.280000]  script, patching SGScriptStartAddress at 207 to 0x1c0520
-> [42949427.290000] scsi2: istat 01 sstat0 00 dstat 84 dsp 012a[001c04a8] dsps 0x401
-> [42949427.290000] scsi2: (2:0) ====>SCRIPT INTERRUPT<====
-> [42949427.290000]   COMMAND COMPLETE, status=02
-
-Returns Check Condition, causing the driver to send out a REQUEST_SENSE
-command, which it begins here using the same slot:
-
-> [42949427.290000]  script, patching short field MessageCount at 30 to 0xe000006
-> [42949427.290000]  script, patching ID field Device_ID at 0 to 0x41040000
-> [42949427.290000]  script, patching CommandAddress at 121 to 0x1d58c20
-> [42949427.290000]  script, patching short field CommandCount at 120 to 0xa00000a
-
-This patches the command length to ten bytes, but REQUEST_SENSE is only
-a 6 byte command ... it's clearly inherited the length parameter from
-the previous command.
-
-> [42949427.290000]  script, patching SGScriptStartAddress at 191 to 0x1c0520
-> [42949427.290000]  script, patching SGScriptStartAddress at 207 to 0x1c0520
-> [42949427.290000] scsi2: Issuing saved command slot 4f6b8520, cmd 4f23b8c0      
-> [42949427.300000] scsi2: istat 09 sstat0 00 dstat 84 dsp 00ba[001c02e8] dsps 0x250
-> [42949427.300000] scsi2: (2:0) ====>SCRIPT INTERRUPT<====
-> [42949427.300000] scsi2 (2:0): message before command phase: 01 03 01 3b 08 
-> [42949427.300000] Attempting to resume at 1c02e8
-> [42949427.320000] scsi2: istat 0a sstat0 c0 dstat 00 dsp 007a[001c01e8] dsps 0x1d58c20
-> [42949427.320000] scsi2: (2:0) phase mismatch at 01e8, phase IO BSY DATA_IN
-
-And here we get a phase mismatch in the command phase because the drive
-transitions to data phase after six bytes and the driver still thinks it
-has another four to send.
-
-I'd have the maintainer shot ... he clearly forgot to set up the command
-length for auto request sense.
+Try this and see if it fixes the problem
 
 James
+
+diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+index 562432d..9aabb64 100644
+--- a/drivers/scsi/53c700.c
++++ b/drivers/scsi/53c700.c
+@@ -622,8 +622,10 @@ #endif
+ 			dma_unmap_single(hostdata->dev, slot->dma_handle, sizeof(SCp->sense_buffer), DMA_FROM_DEVICE);
+ 			/* restore the old result if the request sense was
+ 			 * successful */
+-			if(result == 0)
++			if (result == 0)
+ 				result = cmnd[7];
++			/* restore the original length */
++			SCp->cmd_len = cmnd[8];
+ 		} else
+ 			NCR_700_unmap(hostdata, SCp, slot);
+ 
+@@ -1007,6 +1009,9 @@ #endif
+ 				 * of the command */
+ 				cmnd[6] = NCR_700_INTERNAL_SENSE_MAGIC;
+ 				cmnd[7] = hostdata->status[0];
++				cmnd[8] = SCp->cmd_len;
++				SCp->cmd_len = 6; /* command length for 
++						   * REQUEST_SENSE */
+ 				slot->pCmd = dma_map_single(hostdata->dev, cmnd, MAX_COMMAND_SIZE, DMA_TO_DEVICE);
+ 				slot->dma_handle = dma_map_single(hostdata->dev, SCp->sense_buffer, sizeof(SCp->sense_buffer), DMA_FROM_DEVICE);
+ 				slot->SG[0].ins = bS_to_host(SCRIPT_MOVE_DATA_IN | sizeof(SCp->sense_buffer));
 
 
 _______________________________________________
