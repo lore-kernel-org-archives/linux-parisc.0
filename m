@@ -1,58 +1,48 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] [PATCH] hppa-linux-gas binutils patch
-Date: Thu, 30 Nov 2006 10:46:33 -0500 (EST)
-Message-ID: <200611301546.kAUFkXkZ003953__45492.6423299641$1416624224$gmane$org@hiauly1.hia.nrc.ca>
-References: <200611282020.26412.deller@gmx.de>
+Date: Thu, 30 Nov 2006 11:13:31 -0500 (EST)
+Message-ID: <200611301613.kAUGDV3J004744__41816.1709014841$1416624224$gmane$org@hiauly1.hia.nrc.ca>
+References: <200611282034.01241.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: dave.anglin@nrc.ca,
- parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org,
+ dave.anglin@nrc.ca
 To: deller@gmx.de (Helge Deller)
 Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <200611282020.26412.deller@gmx.de> from "Helge Deller" at Nov 28, 2006 08:20:26 pm
+In-Reply-To: <200611282034.01241.deller@gmx.de> from "Helge Deller" at Nov 28, 2006 08:34:01 pm
 List-ID: <linux-parisc.vger.kernel.org>
 
-> It will only allow the case of:
-> 		.equ VAR,VALUE
-> which was printing an error message before.
-> So, it doesn't change any currently existing behavior. 
+> deller@c3000:~/binutils/run/bin$ cat test.s
+> AA       .equ  4
+> BB      .equ  6
+> deller@c3000:~/binutils/run/bin$ as test.s
+> test.s: Assembler messages:
+> test.s:1: Error: Unknown opcode: `aa'
+> test.s:2: Error: Invalid operands
 
-It adds new behavior which was previously invalid.  The above syntax
-isn't valid using HP as and previously gas syntax mirrored the HP
-syntax.  So, you have to convince the binutils maintainers that the
-above extension is compatible with what exists now.  For example,
+This is because the linux target was changed to require colons after
+labels.  As a result, operands can start in the first column of a line.
+Under hpux, there needs to be at least one white space character before
+an operand and labels have to start in the first column.
 
-LABEL:	.equ VALUE
-	.equ VAR,VALUE
-LABEL1: .equ VAR,VALUE	; ???
+> although as.info states:
+> 
+> 7.37 `.equ SYMBOL, EXPRESSION'
+> ==============================
+> 
+> This directive sets the value of SYMBOL to EXPRESSION.  It is
+> synonymous with `.set'; see *Note `.set': Set.
+> 
+>    The syntax for `equ' on the HPPA is `SYMBOL .equ EXPRESSION'.
 
-Do these all work correctly?
+This doesn't reflect that SYMBOL needs to be followed by a colon
+on HPPA linux.  So, the documentation needs updating.
 
-> As a background story:
-> Originally I wanted to add support for
-> VAR		.equ  VALUE
-> as it's e.g. documented here: http://docs.hp.com/en/92432-90012/ch02.html
-> (JAN   .equ  1).
-> But this is in contrast to what gas (in as.info) states, since it does not end with a colon:
-> "  For HPPA targets, labels need not be immediately followed by a
-> "colon, but the definition of a label must begin in column zero.  This
-> "also implies that only one label may be defined on each line.
-> "    label:     .directive    followed by something
-> ...
-> Sadly I until now failed to get  this working as well :-(
-
-I believe the labels must be followed by followed by a colon on linux.
-On hpux, the colon is optional.  HP as wants no colon.  Note that labels
-don't have to be on the same line as the directive.  Thus, I believe that
-
-label:	.equ	VALUE
-
-should work on linux.
-
-I'm not sure the in comment in as.info about only one label per line
-is correct.  There's a line termination character that allows multiple
-directives per line.  It's useful in macros.
+Probably, the linux should have been updated to use the normal GNU
+syntax when it was introduced.  Now, updating the syntax involves a
+potential compatibility break with GCC and existing assembler code.
+At the moment, I don't see a strong need to do the update.
 
 Dave
 -- 
