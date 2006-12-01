@@ -1,27 +1,17 @@
-From: Guy Martin <gmsoft@tuxicoman.be>
-Subject: Re: [parisc-linux] K410 SCSI 53c700 issue with PLEXTOR PX-R820T
-Date: Sat, 2 Dec 2006 08:19:34 +0100
-Message-ID: <20061202081934.8763795d.gmsoft__43211.5923999392$1416624624$gmane$org@tuxicoman.be>
-References: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>
-	<20061112191436.GY16952@parisc-linux.org>
-	<20061127115832.b413fd7b.gmsoft@tuxicoman.be>
-	<20061127153713.GQ14076@parisc-linux.org>
-	<20061130101805.2a82273b.gmsoft@tuxicoman.be>
-	<1164907064.22826.23.camel@mulgrave.il.steeleye.com>
-	<1164910427.22826.37.camel@mulgrave.il.steeleye.com>
-	<20061130194830.90043d05.gmsoft@tuxicoman.be>
-	<45705108.3080500@scarlet.be>
-	<20061201161033.GO14076@parisc-linux.org>
-	<4570AFC3.1050304@scarlet.be>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [parisc-linux] [2.6 patch] parisc: "extern inline" -> "static
+	inline" (fwd)
+Date: Fri, 1 Dec 2006 12:48:11 +0100
+Message-ID: <20061201114811.GQ11084__39443.4123569683$1416624626$gmane$org@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: James.Bottomley@SteelEye.com,
+  charset=us-ascii
+Cc: linux-kernel@vger.kernel.org,
+ kyle@parisc-linux.org,
  parisc-linux@parisc-linux.org,
  matthew@wil.cx
-To: Joel Soete <soete.joel@scarlet.be>
+To: Andrew Morton <akpm@osdl.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4570AFC3.1050304@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -32,47 +22,217 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+"extern inline" generates a warning with -Wmissing-prototypes and I'm 
+currently working on getting the kernel cleaned up for adding this to 
+the CFLAGS since it will help us to avoid a nasty class of runtime 
+errors.
 
+If there are places that really need a forced inline, __always_inline 
+would be the correct solution.
 
-Joel,
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+Acked-by: Kyle McMartin <kyle@parisc-linux.org>
 
-The git commands I used may not be the best but it works :)
+---
 
-You have to find out the commit you want with git log or anything else.
-Then do "git branch <branchname> <commit#>" to create a new branch at that commit. Then you can "git checkout <branchname>" to have your workdir reflect that branch.
-Maybe it's more appropriate to do this with tags but I don't think it's possible to checkout on tags.
+This patch was already sent on:
+- 21 Nov 2006
+- 19 Aug 2006
 
+ arch/parisc/lib/memcpy.c       |    4 +--
+ include/asm-parisc/io.h        |    2 -
+ include/asm-parisc/pci.h       |    2 -
+ include/asm-parisc/pgtable.h   |   40 ++++++++++++++++-----------------
+ include/asm-parisc/prefetch.h  |    4 +--
+ include/asm-parisc/semaphore.h |   10 ++++----
+ include/asm-parisc/tlbflush.h  |    3 --
+ 7 files changed, 32 insertions(+), 33 deletions(-)
 
-  Guy
+--- linux-2.6.14-rc5-mm1-full/arch/parisc/lib/memcpy.c.old	2005-10-30 01:58:43.000000000 +0200
++++ linux-2.6.14-rc5-mm1-full/arch/parisc/lib/memcpy.c	2005-10-30 01:59:11.000000000 +0200
+@@ -158,12 +158,12 @@
+ #define stw(_s,_t,_o,_a,_e) 	def_store_insn(stw,"r",_s,_t,_o,_a,_e)
+ 
+ #ifdef  CONFIG_PREFETCH
+-extern inline void prefetch_src(const void *addr)
++static inline void prefetch_src(const void *addr)
+ {
+ 	__asm__("ldw 0(" s_space ",%0), %%r0" : : "r" (addr));
+ }
+ 
+-extern inline void prefetch_dst(const void *addr)
++static inline void prefetch_dst(const void *addr)
+ {
+ 	__asm__("ldd 0(" d_space ",%0), %%r0" : : "r" (addr));
+ }
+--- linux-2.6.14-rc5-mm1-full/include/asm-parisc/pci.h.old	2005-10-30 01:59:57.000000000 +0200
++++ linux-2.6.14-rc5-mm1-full/include/asm-parisc/pci.h	2005-10-30 02:00:01.000000000 +0200
+@@ -193,7 +193,7 @@
+ extern void pcibios_register_hba(struct pci_hba_data *);
+ extern void pcibios_set_master(struct pci_dev *);
+ #else
+-extern inline void pcibios_register_hba(struct pci_hba_data *x)
++static inline void pcibios_register_hba(struct pci_hba_data *x)
+ {
+ }
+ #endif
+--- linux-2.6.14-rc5-mm1-full/include/asm-parisc/pgtable.h.old	2005-10-30 02:00:14.000000000 +0200
++++ linux-2.6.14-rc5-mm1-full/include/asm-parisc/pgtable.h	2005-10-30 02:00:18.000000000 +0200
+@@ -316,31 +316,31 @@
+  * setup: the pgd is never bad, and a pmd always exists (as it's folded
+  * into the pgd entry)
+  */
+-extern inline int pgd_none(pgd_t pgd)		{ return 0; }
+-extern inline int pgd_bad(pgd_t pgd)		{ return 0; }
+-extern inline int pgd_present(pgd_t pgd)	{ return 1; }
+-extern inline void pgd_clear(pgd_t * pgdp)	{ }
++static inline int pgd_none(pgd_t pgd)		{ return 0; }
++static inline int pgd_bad(pgd_t pgd)		{ return 0; }
++static inline int pgd_present(pgd_t pgd)	{ return 1; }
++static inline void pgd_clear(pgd_t * pgdp)	{ }
+ #endif
+ 
+ /*
+  * The following only work if pte_present() is true.
+  * Undefined behaviour if not..
+  */
+-extern inline int pte_read(pte_t pte)		{ return pte_val(pte) & _PAGE_READ; }
+-extern inline int pte_dirty(pte_t pte)		{ return pte_val(pte) & _PAGE_DIRTY; }
+-extern inline int pte_young(pte_t pte)		{ return pte_val(pte) & _PAGE_ACCESSED; }
+-extern inline int pte_write(pte_t pte)		{ return pte_val(pte) & _PAGE_WRITE; }
+-extern inline int pte_file(pte_t pte)		{ return pte_val(pte) & _PAGE_FILE; }
+-extern inline int pte_user(pte_t pte) 		{ return pte_val(pte) & _PAGE_USER; }
+-
+-extern inline pte_t pte_rdprotect(pte_t pte)	{ pte_val(pte) &= ~_PAGE_READ; return pte; }
+-extern inline pte_t pte_mkclean(pte_t pte)	{ pte_val(pte) &= ~_PAGE_DIRTY; return pte; }
+-extern inline pte_t pte_mkold(pte_t pte)	{ pte_val(pte) &= ~_PAGE_ACCESSED; return pte; }
+-extern inline pte_t pte_wrprotect(pte_t pte)	{ pte_val(pte) &= ~_PAGE_WRITE; return pte; }
+-extern inline pte_t pte_mkread(pte_t pte)	{ pte_val(pte) |= _PAGE_READ; return pte; }
+-extern inline pte_t pte_mkdirty(pte_t pte)	{ pte_val(pte) |= _PAGE_DIRTY; return pte; }
+-extern inline pte_t pte_mkyoung(pte_t pte)	{ pte_val(pte) |= _PAGE_ACCESSED; return pte; }
+-extern inline pte_t pte_mkwrite(pte_t pte)	{ pte_val(pte) |= _PAGE_WRITE; return pte; }
++static inline int pte_read(pte_t pte)		{ return pte_val(pte) & _PAGE_READ; }
++static inline int pte_dirty(pte_t pte)		{ return pte_val(pte) & _PAGE_DIRTY; }
++static inline int pte_young(pte_t pte)		{ return pte_val(pte) & _PAGE_ACCESSED; }
++static inline int pte_write(pte_t pte)		{ return pte_val(pte) & _PAGE_WRITE; }
++static inline int pte_file(pte_t pte)		{ return pte_val(pte) & _PAGE_FILE; }
++static inline int pte_user(pte_t pte) 		{ return pte_val(pte) & _PAGE_USER; }
++
++static inline pte_t pte_rdprotect(pte_t pte)	{ pte_val(pte) &= ~_PAGE_READ; return pte; }
++static inline pte_t pte_mkclean(pte_t pte)	{ pte_val(pte) &= ~_PAGE_DIRTY; return pte; }
++static inline pte_t pte_mkold(pte_t pte)	{ pte_val(pte) &= ~_PAGE_ACCESSED; return pte; }
++static inline pte_t pte_wrprotect(pte_t pte)	{ pte_val(pte) &= ~_PAGE_WRITE; return pte; }
++static inline pte_t pte_mkread(pte_t pte)	{ pte_val(pte) |= _PAGE_READ; return pte; }
++static inline pte_t pte_mkdirty(pte_t pte)	{ pte_val(pte) |= _PAGE_DIRTY; return pte; }
++static inline pte_t pte_mkyoung(pte_t pte)	{ pte_val(pte) |= _PAGE_ACCESSED; return pte; }
++static inline pte_t pte_mkwrite(pte_t pte)	{ pte_val(pte) |= _PAGE_WRITE; return pte; }
+ 
+ /*
+  * Conversion functions: convert a page and protection to a page entry,
+@@ -368,7 +368,7 @@
+ #define mk_pte_phys(physpage, pgprot) \
+ ({ pte_t __pte; pte_val(__pte) = physpage + pgprot_val(pgprot); __pte; })
+ 
+-extern inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
++static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+ { pte_val(pte) = (pte_val(pte) & _PAGE_CHG_MASK) | pgprot_val(newprot); return pte; }
+ 
+ /* Permanent address of a page.  On parisc we don't have highmem. */
+--- linux-2.6.14-rc5-mm1-full/include/asm-parisc/semaphore.h.old	2005-10-30 02:00:45.000000000 +0200
++++ linux-2.6.14-rc5-mm1-full/include/asm-parisc/semaphore.h	2005-10-30 02:00:51.000000000 +0200
+@@ -58,7 +58,7 @@
+ #define DECLARE_MUTEX(name) __DECLARE_SEMAPHORE_GENERIC(name,1)
+ #define DECLARE_MUTEX_LOCKED(name) __DECLARE_SEMAPHORE_GENERIC(name,0)
+ 
+-extern inline void sema_init (struct semaphore *sem, int val)
++static inline void sema_init (struct semaphore *sem, int val)
+ {
+ 	*sem = (struct semaphore)__SEMAPHORE_INITIALIZER((*sem),val);
+ }
+@@ -86,7 +86,7 @@
+  * interrupts while we're messing with the semaphore.  Sorry.
+  */
+ 
+-extern __inline__ void down(struct semaphore * sem)
++static inline void down(struct semaphore * sem)
+ {
+ 	might_sleep();
+ 	spin_lock_irq(&sem->sentry);
+@@ -98,7 +98,7 @@
+ 	spin_unlock_irq(&sem->sentry);
+ }
+ 
+-extern __inline__ int down_interruptible(struct semaphore * sem)
++static inline int down_interruptible(struct semaphore * sem)
+ {
+ 	int ret = 0;
+ 	might_sleep();
+@@ -116,7 +116,7 @@
+  * down_trylock returns 0 on success, 1 if we failed to get the lock.
+  * May not sleep, but must preserve irq state
+  */
+-extern __inline__ int down_trylock(struct semaphore * sem)
++static inline int down_trylock(struct semaphore * sem)
+ {
+ 	int flags, count;
+ 
+@@ -132,7 +132,7 @@
+  * Note! This is subtle. We jump to wake people up only if
+  * the semaphore was negative (== somebody was waiting on it).
+  */
+-extern __inline__ void up(struct semaphore * sem)
++static inline void up(struct semaphore * sem)
+ {
+ 	int flags;
+ 	spin_lock_irqsave(&sem->sentry, flags);
+--- linux-2.6.14-rc5-mm1-full/include/asm-parisc/tlbflush.h.old	2005-10-30 02:01:00.000000000 +0200
++++ linux-2.6.14-rc5-mm1-full/include/asm-parisc/tlbflush.h	2005-10-30 02:01:06.000000000 +0200
+@@ -42,7 +42,7 @@
+ #endif
+ }
+ 
+-extern __inline__ void flush_tlb_pgtables(struct mm_struct *mm, unsigned long start, unsigned long end)
++static inline void flush_tlb_pgtables(struct mm_struct *mm, unsigned long start, unsigned long end)
+ {
+ }
+  
 
-
-On Fri, 01 Dec 2006 22:42:11 +0000
-Joel Soete <soete.joel@scarlet.be> wrote:
-
-> 
-> 
-> Matthew Wilcox wrote:
-> > On Fri, Dec 01, 2006 at 03:58:00PM +0000, Joel Soete wrote:
-> >> Sorry no yet a fix for my pb :_(
-> > 
-> > It'd be useful to know if your problem was introduced at the same time.
-> > Can you try the same git revisions that Guy tried and let us know if
-> > that's the same commit that broke your machine?
-> > 
-> mmm reading back this pr <http://lists.parisc-linux.org/pipermail/parisc-linux/2006-July/029506.html>
-> my pb seems to be already in early 2.6.18-rc1-pa1 and most probably in 2.6.17 (according to my ps at this time).
-> 
-> Eventhought I have the filling that there was always pbs with this driver on my c110 
-> (<http://lists.parisc-linux.org/pipermail/parisc-linux/2004-September/024736.html>),
-> I am ready to grab what Guy tried;
-> may be can you send me the git cmdl parameters to grab exactely the same stuff.
-> 
-> Joel
-> 
-> PS: the d380 I have for testing have to go back to production, sorry it couldn't help us for a while :_(
-> 
-
-
+-
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
+--- linux-2.6.18-rc4-mm1/include/asm-parisc/io.h.old	2006-08-13 23:08:01.000000000 +0200
++++ linux-2.6.18-rc4-mm1/include/asm-parisc/io.h	2006-08-13 23:08:15.000000000 +0200
+@@ -128,7 +128,7 @@
+ /* Most machines react poorly to I/O-space being cacheable... Instead let's
+  * define ioremap() in terms of ioremap_nocache().
+  */
+-extern inline void __iomem * ioremap(unsigned long offset, unsigned long size)
++static inline void __iomem * ioremap(unsigned long offset, unsigned long size)
+ {
+ 	return __ioremap(offset, size, _PAGE_NO_CACHE);
+ }
+--- linux-2.6.18-rc4-mm1/include/asm-parisc/prefetch.h.old	2006-08-13 23:08:25.000000000 +0200
++++ linux-2.6.18-rc4-mm1/include/asm-parisc/prefetch.h	2006-08-13 23:08:34.000000000 +0200
+@@ -19,7 +19,7 @@
+ #ifdef CONFIG_PREFETCH
+ 
+ #define ARCH_HAS_PREFETCH
+-extern inline void prefetch(const void *addr)
++static inline void prefetch(const void *addr)
+ {
+ 	__asm__("ldw 0(%0), %%r0" : : "r" (addr));
+ }
+@@ -27,7 +27,7 @@
+ /* LDD is a PA2.0 addition. */
+ #ifdef CONFIG_PA20
+ #define ARCH_HAS_PREFETCHW
+-extern inline void prefetchw(const void *addr)
++static inline void prefetchw(const void *addr)
+ {
+ 	__asm__("ldd 0(%0), %%r0" : : "r" (addr));
+ }
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
