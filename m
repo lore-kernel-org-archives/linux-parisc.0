@@ -1,21 +1,20 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [2.6 patch] parisc: "extern inline" -> "static
-Date: Fri, 1 Dec 2006 12:38:16 -0500 (EST)
-Message-ID: <200612011738.kB1HcGwo006938__25185.3341040716$1416624623$gmane$org@hiauly1.hia.nrc.ca>
-References: <20061201164354.GA10549@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] Re: [2.6 patch] arch/parisc/Makefile: remove
+	GCC_VERSION
+Date: Fri, 1 Dec 2006 11:23:55 -0700
+Message-ID: <20061201182355.GC10549__12204.3425021277$1416624623$gmane$org@colo.lackof.org>
+References: <20061201114908.GR11084@stusta.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: akpm@osdl.org,
- matthew@wil.cx,
+  charset=us-ascii
+Cc: Andrew Morton <akpm@osdl.org>,
+ Kyle McMartin <kyle@mcmartin.ca>,
  linux-kernel@vger.kernel.org,
- kyle@parisc-linux.org,
- bunk@stusta.de,
+ Sam Ravnborg <sam@ravnborg.org>,
  parisc-linux@parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+To: Adrian Bunk <bunk@stusta.de>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061201164354.GA10549@colo.lackof.org> from "Grant Grundler" at
-	Dec 1, 2006 09:43:54 am
+In-Reply-To: <20061201114908.GR11084@stusta.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,32 +25,41 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> The parisc point intentionally switched to "extern inline" at one
-> point and unless what jda wrote is now incorrect, I'm not inclined
-> to change it.
+On Fri, Dec 01, 2006 at 12:49:08PM +0100, Adrian Bunk wrote:
+> This patch removes the usage of GCC_VERSION from arch/parisc/Makefile.
+> 
+> There are no functional changes, it simply makes it a bit shorter (and 
+> removes the last instance of GCC_VERSION in the kernel).
 
-The handling of "extern inline" is changing in GCC 4.3 to the C99 specified
-behavior.  The attribute gnu_inline on an inline declaration results in the
-old GNU C89 inline behavior even in the ISO C99 mode.
+Thanks!
+I've committed a variant of this to git://git.parisc-linux.org/git/linux-2.6.git
+I didn't test the failure case - only that it doesn't trigger with
+my current gcc 4.x compilers.
 
-The C99 behavior allows the function being inlined to be externally
-called.  As a result, conflicts will occur if the function is defined in
-a header included by multiple objects.  So, code that assumed the previous
-GNU treatment unfortunately needs to change.
+I expect Kyle will push parisc tree to linus in the near future.
 
-The main difference between "static inline" and "extern inline" in the
-old GNU treatment was that with "extern inline" the function was never
-compiled on its own, even if its address was explicitly referenced.
-With "static inline", the function would be compiled on its own in some
-circumstances.  So, this is mostly a code size issue.
+Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
 
-More details are present in extend.texi in the GCC head.  This has also
-been discussed on the gcc list a few times.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 9b7e424..760567a 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -35,12 +35,8 @@ FINAL_LD=$(CROSS_COMPILE)ld --warn-commo
+ 
+ OBJCOPY_FLAGS =-O binary -R .note -R .comment -S
+ 
+-GCC_VERSION     := $(call cc-version)
+-ifneq ($(shell if [ -z $(GCC_VERSION) ] ; then echo "bad"; fi ;),)
+-$(error Sorry, couldn't find ($(cc-version)).)
+-endif
+-ifneq ($(shell if [ $(GCC_VERSION) -lt 0303 ] ; then echo "bad"; fi ;),)
+-$(error Sorry, your compiler is too old ($(GCC_VERSION)).  GCC v3.3 or above is required.)
++ifneq ($(call cc-ifversion, -lt, 0303, "bad"),)
++$(error Sorry, GCC v3.3 or above is required.)
+ endif
+ 
+ cflags-y	:= -pipe
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
