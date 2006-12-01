@@ -1,29 +1,21 @@
-From: "Ollie Wild" <aaw@google.com>
-Subject: [parisc-linux] Re: [patch] remove MAX_ARG_PAGES
-Date: Sun, 31 Dec 2006 22:58:59 -0800
-Message-ID: <65dd6fd50612312258i3bea1928m3d06c04fdbb5a7c__29239.240443758$1416624245$gmane$org@mail.gmail.com>
-References: <65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com>
-	<1160572460.2006.79.camel@taijtu>
-	<65dd6fd50610111448q7ff210e1nb5f14917c311c8d4@mail.gmail.com>
-	<65dd6fd50610241048h24af39d9ob49c3816dfe1ca64@mail.gmail.com>
-	<20061229200357.GA5940@elte.hu>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: [2.6 patch] parisc: "extern inline" -> "static
+Date: Fri, 1 Dec 2006 12:38:16 -0500 (EST)
+Message-ID: <200612011738.kB1HcGwo006938__25185.3341040716$1416624623$gmane$org@hiauly1.hia.nrc.ca>
+References: <20061201164354.GA10549@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: Andrew Morton <akpm@osdl.org>,
- linux-arch@vger.kernel.org,
- Peter Zijlstra <a.p.zijlstra@chello.nl>,
- Andi Kleen <ak@muc.de>,
+  charset=US-ASCII
+Cc: akpm@osdl.org,
+ matthew@wil.cx,
  linux-kernel@vger.kernel.org,
- David Howells <dhowells@redhat.com>,
- linux-mm@kvack.org,
- Linus Torvalds <torvalds@osdl.org>,
- parisc-linux@lists.parisc-linux.org,
- Arjan van de Ven <arjan@infradead.org>
-To: "Ingo Molnar" <mingo@elte.hu>
+ kyle@parisc-linux.org,
+ bunk@stusta.de,
+ parisc-linux@parisc-linux.org
+To: grundler@parisc-linux.org (Grant Grundler)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061229200357.GA5940@elte.hu>
+In-Reply-To: <20061201164354.GA10549@colo.lackof.org> from "Grant Grundler" at
+	Dec 1, 2006 09:43:54 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -34,26 +26,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 12/29/06, Ingo Molnar <mingo@elte.hu> wrote:
->
-> what is keeping this fix from going upstream?
->
+> The parisc point intentionally switched to "extern inline" at one
+> point and unless what jda wrote is now incorrect, I'm not inclined
+> to change it.
 
-There are still a couple outstanding issues which need to be resolved
-before this is ready for inclusion in the mainline kernel.
+The handling of "extern inline" is changing in GCC 4.3 to the C99 specified
+behavior.  The attribute gnu_inline on an inline declaration results in the
+old GNU C89 inline behavior even in the ISO C99 mode.
 
-The main one is support for CONFIG_STACK_GROWSUP, which I think is
-just parisc.  I've been meaning to look into this for a while, but I
-was out of commision for most of November so it got punted to the back
-burner.  I'll try to revisit it soonish.  If someone from the
-parisc-linux list wants to take a look, though, that's fine by me.
+The C99 behavior allows the function being inlined to be externally
+called.  As a result, conflicts will occur if the function is defined in
+a header included by multiple objects.  So, code that assumed the previous
+GNU treatment unfortunately needs to change.
 
-The other is support for the various executable formats.  I've tested
-elf and script pretty thoroughly, but I'm not sure how to go about
-testing most of the others -- does anyone use aout anymore?  Maybe the
-solution is just to check it in and wait to see if someone complains.
+The main difference between "static inline" and "extern inline" in the
+old GNU treatment was that with "extern inline" the function was never
+compiled on its own, even if its address was explicitly referenced.
+With "static inline", the function would be compiled on its own in some
+circumstances.  So, this is mostly a code size issue.
 
-Ollie
+More details are present in extend.texi in the GCC head.  This has also
+been discussed on the gcc list a few times.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
