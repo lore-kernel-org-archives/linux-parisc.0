@@ -1,20 +1,27 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: [2.6 patch] arch/parisc/Makefile: remove
-	GCC_VERSION
-Date: Fri, 1 Dec 2006 11:23:55 -0700
-Message-ID: <20061201182355.GC10549__12204.3425021277$1416624623$gmane$org@colo.lackof.org>
-References: <20061201114908.GR11084@stusta.de>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] K410 SCSI 53c700 issue with PLEXTOR PX-R820T
+Date: Fri, 01 Dec 2006 22:42:11 +0000
+Message-ID: <4570AFC3.1050304__41444.3496767946$1416624623$gmane$org@scarlet.be>
+References: <20061112160350.8b7d4afd.gmsoft@tuxicoman.be>
+	<20061112191436.GY16952@parisc-linux.org>
+	<20061127115832.b413fd7b.gmsoft@tuxicoman.be>
+	<20061127153713.GQ14076@parisc-linux.org>
+	<20061130101805.2a82273b.gmsoft@tuxicoman.be>
+	<1164907064.22826.23.camel@mulgrave.il.steeleye.com>
+	<1164910427.22826.37.camel@mulgrave.il.steeleye.com>
+	<20061130194830.90043d05.gmsoft@tuxicoman.be>
+	<45705108.3080500@scarlet.be>
+	<20061201161033.GO14076@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Andrew Morton <akpm@osdl.org>,
- Kyle McMartin <kyle@mcmartin.ca>,
- linux-kernel@vger.kernel.org,
- Sam Ravnborg <sam@ravnborg.org>,
+  charset=ISO-8859-1;
+  format=flowed
+Cc: Guy Martin <gmsoft@tuxicoman.be>,
+ James Bottomley <James.Bottomley@SteelEye.com>,
  parisc-linux@parisc-linux.org
-To: Adrian Bunk <bunk@stusta.de>
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061201114908.GR11084@stusta.de>
+In-Reply-To: <20061201161033.GO14076@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,41 +32,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Dec 01, 2006 at 12:49:08PM +0100, Adrian Bunk wrote:
-> This patch removes the usage of GCC_VERSION from arch/parisc/Makefile.
+
+
+Matthew Wilcox wrote:
+> On Fri, Dec 01, 2006 at 03:58:00PM +0000, Joel Soete wrote:
+>> Sorry no yet a fix for my pb :_(
 > 
-> There are no functional changes, it simply makes it a bit shorter (and 
-> removes the last instance of GCC_VERSION in the kernel).
+> It'd be useful to know if your problem was introduced at the same time.
+> Can you try the same git revisions that Guy tried and let us know if
+> that's the same commit that broke your machine?
+> 
+mmm reading back this pr <http://lists.parisc-linux.org/pipermail/parisc-linux/2006-July/029506.html>
+my pb seems to be already in early 2.6.18-rc1-pa1 and most probably in 2.6.17 (according to my ps at this time).
 
-Thanks!
-I've committed a variant of this to git://git.parisc-linux.org/git/linux-2.6.git
-I didn't test the failure case - only that it doesn't trigger with
-my current gcc 4.x compilers.
+Eventhought I have the filling that there was always pbs with this driver on my c110 
+(<http://lists.parisc-linux.org/pipermail/parisc-linux/2004-September/024736.html>),
+I am ready to grab what Guy tried;
+may be can you send me the git cmdl parameters to grab exactely the same stuff.
 
-I expect Kyle will push parisc tree to linus in the near future.
+Joel
 
-Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
+PS: the d380 I have for testing have to go back to production, sorry it couldn't help us for a while :_(
 
-
-diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
-index 9b7e424..760567a 100644
---- a/arch/parisc/Makefile
-+++ b/arch/parisc/Makefile
-@@ -35,12 +35,8 @@ FINAL_LD=$(CROSS_COMPILE)ld --warn-commo
- 
- OBJCOPY_FLAGS =-O binary -R .note -R .comment -S
- 
--GCC_VERSION     := $(call cc-version)
--ifneq ($(shell if [ -z $(GCC_VERSION) ] ; then echo "bad"; fi ;),)
--$(error Sorry, couldn't find ($(cc-version)).)
--endif
--ifneq ($(shell if [ $(GCC_VERSION) -lt 0303 ] ; then echo "bad"; fi ;),)
--$(error Sorry, your compiler is too old ($(GCC_VERSION)).  GCC v3.3 or above is required.)
-+ifneq ($(call cc-ifversion, -lt, 0303, "bad"),)
-+$(error Sorry, GCC v3.3 or above is required.)
- endif
- 
- cflags-y	:= -pipe
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
