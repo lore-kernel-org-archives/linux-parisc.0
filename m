@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Java 5
-Date: Mon, 4 Dec 2006 12:30:48 -0500 (EST)
-Message-ID: <200612041730.kB4HUmJw006841__35514.9263902151$1416624629$gmane$org@hiauly1.hia.nrc.ca>
-References: <4574524A.5060608@venture.com.sg>
+From: Kurt Fitzner <kfitzner@excelcia.org>
+Subject: [parisc-linux] Couple kernel problems
+Date: Mon, 04 Dec 2006 15:37:42 -0700
+Message-ID: <4574A336.3000007__20765.5687620447$1416624629$gmane$org@excelcia.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@parisc-linux.org
-To: curtis.cooley@venture.com.sg (Curtis Cooley)
+  charset=windows-1252
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4574524A.5060608@venture.com.sg> from "Curtis Cooley" at Dec 4,
-	2006 08:52:26 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,27 +17,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I poked around quite a bit looking for a Java5 JRE that runs on PA-RISC 
-> Linux, but I have not found one. Has anybody had luck with this. We 
-> inherited 5 HP B2000s and we are a Java shop, so running Java is a key 
-> to them being useful.
+I've been having a few problems with kernels, and am wondering if these
+are known issues.
 
-Hmmm, you want Sun's Java5 for HP!  Not too likely.  See
-<http://java.sun.com/j2se/1.5.0/system-configurations.html>.
-As far I can tell, only Sparc, x86 and Itanium processors
-are supported and even for these the matrix is incomplete.
+1) XFS will not load as a module.  When I try I get:
+ FATAL: Error inserting xfs
+ (/lib/modules/2.6.18-3-parisc/kernel/fs/xfs/xfs.ko):
+ Invalid module format
 
-There might be hope in the future given Sun's decision to
-open source Java.
+dmesg reveals:
+ module xfs relocation of symbol $$divU is out of range (0x3ffefffd in
+ 17 bits)
 
-For PA-RISC linux, there's the support within GCC.  There may
-be one or two other implementations but I don't know any details
-about these.
+This occurs with any kernel I can get from Debian testing and above, so
+2.6.17 and 2.6.18.  I tried their images and compiled a 2.6.17 kernel of
+my own from their source.  Could this be related to Debian patches?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+2) I'm having problems compiling a 2.6.18 kernel (debian source again).
+ Perhaps this issue is out-of-scope for this list, but it confuses me
+and I wondered if anyone else here has run into it:
+ CC      arch/parisc/kernel/asm-offsets.s
+   In file included from include/asm/thread_info.h:7,
+                    from include/linux/thread_info.h:21,
+                    from include/linux/preempt.h:9,
+                    from include/linux/spinlock.h:49,
+                    from include/linux/capability.h:45,
+                    from include/linux/sched.h:44,
+                    from arch/parisc/kernel/asm-offsets.c:31:
+   include/asm/processor.h:347: error: redefinition of ‘prefetch’
+   include/linux/prefetch.h:43: error: previous definition of ‘prefetch’
+    was here
+   include/asm/processor.h:352: error: redefinition of ‘prefetchw’
+   include/linux/prefetch.h:47: error: previous definition of
+    ‘prefetchw’ was here
+
+As you can see, it's a simple issue, but what confuses me is that
+someone must be compiling this source, since Debian supplies a binary
+package in unstable of this kernel.  Could this somehow be related to my
+installed tool tree?
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
