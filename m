@@ -1,17 +1,13 @@
-From: Marc Zyngier <maz@misterjones.org>
-Subject: Re: [parisc-linux] Anyone use a 3c597?
-Date: Sat, 02 Dec 2006 16:16:47 +0100
-Message-ID: <wrp3b7y2uqo.fsf__24063.28141592$1416624628$gmane$org@wild-wind.fr.eu.org>
-References: <45718DBE.30509@excelcia.org>
-Reply-To: maz@misterjones.org
+From: Curtis Cooley <curtis.cooley@venture.com.sg>
+Subject: [parisc-linux] Java 5
+Date: Mon, 04 Dec 2006 08:52:26 -0800
+Message-ID: <4574524A.5060608__13308.1778105863$1416624628$gmane$org@venture.com.sg>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Kurt Fitzner <kfitzner@excelcia.org>
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc <parisc-linux@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <45718DBE.30509@excelcia.org> (Kurt Fitzner's message of "Sat, 02
-	Dec 2006 07:29:18 -0700")
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,28 +18,10 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
->>>>> "Kurt" == Kurt Fitzner <kfitzner@excelcia.org> writes:
-
-Kurt,
-
-Kurt> I am looking to pick up an EISA ethernet card.  I've found a
-Kurt> 3c597 for fairly cheap, but upon searching I noticed a couple of
-Kurt> notes on the mailing list back in 2002/2003 that mentioned
-Kurt> issues with this driver.  Does anyone right now have this card
-Kurt> working, and if not, does anyone have any suggestions for
-Kurt> something EISA?
-
-3c592/3c597 won't work on HPPA because we lack DMA support on the EISA
-bus (no documentation). Your best bet is with a pure PIO card. I had
-great success with a 3c579 (EISA version of the 3c509) on a C100.
-
-It's only a 10Mbit/s, though.
-
-Regards,
-
-	M.
--- 
-And if you don't know where you're going, any road will take you there...
+I poked around quite a bit looking for a Java5 JRE that runs on PA-RISC 
+Linux, but I have not found one. Has anybody had luck with this. We 
+inherited 5 HP B2000s and we are a Java shop, so running Java is a key 
+to them being useful.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
