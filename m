@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Couple kernel problems
-Date: Mon, 4 Dec 2006 18:25:03 -0500 (EST)
-Message-ID: <200612042325.kB4NP4M0029780__15263.3616155528$1416624630$gmane$org@hiauly1.hia.nrc.ca>
-References: <4574A336.3000007@excelcia.org>
+Subject: Re: [parisc-linux] Java 5
+Date: Mon, 4 Dec 2006 18:58:00 -0500 (EST)
+Message-ID: <200612042358.kB4Nw1Wv000505__15618.9225418077$1416624630$gmane$org@hiauly1.hia.nrc.ca>
+References: <4574ABBE.2060206@venture.com.sg>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@parisc-linux.org
-To: kfitzner@excelcia.org (Kurt Fitzner)
+To: curtis.cooley@venture.com.sg (Curtis Cooley)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4574A336.3000007@excelcia.org> from "Kurt Fitzner" at Dec 4,
-	2006 03:37:42 pm
+In-Reply-To: <4574ABBE.2060206@venture.com.sg> from "Curtis Cooley" at Dec 4,
+	2006 03:14:06 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,21 +21,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> dmesg reveals:
->  module xfs relocation of symbol $$divU is out of range (0x3ffefffd in
->  17 bits)
+> I don't really care that it's necessarily from Sun, but that it supports 
+> Java5.
 
-$$divU is a millicode routine.  There are special limitations on
-branch distances for millicode.  If this was userspace, $$divU would
-be linked into the module and stubs would handle out of range branches.
-Millicode symbols are forced local so they can appear in more than
-one module.
+There is an HP-UX version available from HP for 11iv1 and later.
 
-The above message suggests that the millicode library isn't being
-linked with kernel modules and that the symbol is being resolved
-by the kernel itself.  I could be all wet about this though...
-
-The fix in this case is probably to build the module into the kernel.
+The PA-RISC Linux project is volunteer based, so it doesn't have
+the resources for a port without help from the Java community.
 
 Dave
 -- 
