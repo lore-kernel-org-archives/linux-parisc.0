@@ -1,18 +1,19 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] Anonymous posting?
-Date: Wed, 13 Dec 2006 23:52:13 -0700
-Message-ID: <20061214065213.GB8325__2935.21285425431$1416624632$gmane$org@colo.lackof.org>
-References: <45805DC3.9040309@excelcia.org>
-	<200612132048.kBDKmxgL021779@hiauly1.hia.nrc.ca>
+Date: Thu, 14 Dec 2006 18:44:24 +0800
+Message-ID: <45812B08.5030409__49561.9320929565$1416624633$gmane$org@tausq.org>
+References: <45805DC3.9040309@excelcia.org>	<200612132048.kBDKmxgL021779@hiauly1.hia.nrc.ca>	<20061214065213.GB8325@colo.lackof.org>
+	<20061214091436.GV14042@lug-owl.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org,
+  charset=ISO-8859-1
+To: Grant Grundler <grundler@parisc-linux.org>,
+ John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@parisc-linux.org,
  Kurt Fitzner <kfitzner@excelcia.org>,
  T-Bone@parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200612132048.kBDKmxgL021779@hiauly1.hia.nrc.ca>
+In-Reply-To: <20061214091436.GV14042@lug-owl.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,28 +24,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, Dec 13, 2006 at 03:48:58PM -0500, John David Anglin wrote:
-> I agree.  As one who receives a lot of spam, I know the amount
-> of spam will grow and overwhelm the content if the list is left
-> open without antivirus and spam protection.  This may cause
-> spam filters to reject all messages from the list.
+> I don't think it's *that* much work to implement some basic spam
+> filtering. Just pipe it through spamc and drop everything above a
+> certain spam level for the first step.
+> 
+> Feeding back unrecognized spam would help to make it better, though.
+> 
+> As far as other services would be used, why not just move to
+> vger.kernel.org?
 
-Any objection to moving the list to a different service
-that can provide spam protection and host the list?
+We can, the only concern is that moving to a new service means we may
+lose some subscribers....
 
-I've created parisc-linux on google (just to reserve the name)
-but want some more comments on the basic premise that we should
-migrate the service first.
+In any case, Kyle has implemented some steps to mitigate the issue with
+spam on the list. I expect we will see significant improvement from now
+on. Thanks Kyle!! :-)
 
-> The GCC project uses proofpoint virus and spam protection, and the
-> lists have very little spam on them.  This may not be feasible for
-> the parisc-linux list without hosting support but something is needed.
+randolph
 
-I guess so - I see it in the archives even if I don't see it
-after my spamassassin setup filters it out.
-
-thanks,
-grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
