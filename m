@@ -1,46 +1,27 @@
-From: Helge Deller <deller@gmx.de>
+From: Kyle McMartin <kyle@parisc-linux.org>
 Subject: Re: [parisc-linux] Anonymous posting?
-Date: Thu, 14 Dec 2006 09:22:36 +0100
-Message-ID: <200612140922.36185.deller__10289.933140348$1416624231$gmane$org@gmx.de>
-References: <45805DC3.9040309@excelcia.org>
-	<200612132048.kBDKmxgL021779@hiauly1.hia.nrc.ca>
-	<20061214065213.GB8325@colo.lackof.org>
+Date: Thu, 14 Dec 2006 07:30:24 -0500
+Message-ID: <20061214123024.GB5657__3940.33077541298$1416624232$gmane$org@athena.road.mcmartin.ca>
+References: <45805DC3.9040309@excelcia.org> <200612132048.kBDKmxgL021779@hiauly1.hia.nrc.ca> <20061214065213.GB8325@colo.lackof.org> <200612140922.36185.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org,
- parisc-linux@parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061214065213.GB8325@colo.lackof.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <kyle@athena.road.mcmartin.ca>
+In-Reply-To: <200612140922.36185.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Thursday 14 December 2006 07:52, Grant Grundler wrote:
-> On Wed, Dec 13, 2006 at 03:48:58PM -0500, John David Anglin wrote:
-> > I agree.  As one who receives a lot of spam, I know the amount
-> > of spam will grow and overwhelm the content if the list is left
-> > open without antivirus and spam protection.  This may cause
-> > spam filters to reject all messages from the list.
+On Thu, Dec 14, 2006 at 09:22:36AM +0100, Helge Deller wrote:
 > 
-> Any objection to moving the list to a different service
-> that can provide spam protection and host the list?
+> I second any step which reduces the spam.
+> Of course I would prefer keeping our own list server (with spam filtering) on parisc-linux.org, but if you think it's less work to host it on some other service I'll fine with that as well.
 > 
-> I've created parisc-linux on google (just to reserve the name)
-> but want some more comments on the basic premise that we should
-> migrate the service first.
 
-I second any step which reduces the spam.
-Of course I would prefer keeping our own list server (with spam filtering) on parisc-linux.org, but if you think it's less work to host it on some other service I'll fine with that as well.
+The problem is, it's *not* hosted on parisc-linux.org (aka palinux.)
+lists.parisc-linux.org is hosted on free.linux.hp.com which is a hp only
+machine... So me (the list admin) can do practically nothing to fix the spam
+problem.
 
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Cheers,
+	Kyle
