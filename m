@@ -1,16 +1,17 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] killing a set of user processes causes system
-Date: Thu, 14 Dec 2006 12:22:53 -0700
-Message-ID: <20061214192253.GR21070__11581.2355805703$1416624232$gmane$org@parisc-linux.org>
+	reboot
+Date: Sat, 16 Dec 2006 12:36:04 -0500 (EST)
+Message-ID: <200612161736.kBGHa4sZ021645__11576.3675109067$1416624233$gmane$org@hiauly1.hia.nrc.ca>
 References: <119aab440612140929i3f5ea59dvb002b6fa525978ff@mail.gmail.com>
-	<200612141914.kBEJETU6021023@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200612141914.kBEJETU6021023@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440612140929i3f5ea59dvb002b6fa525978ff@mail.gmail.com>
+	from "Carlos O'Donell" at Dec 14, 2006 12:29:26 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,29 +22,103 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Dec 14, 2006 at 02:14:28PM -0500, John David Anglin wrote:
-> > Yes. We talked about this before. You have to set up a serial console
-> > to your C3K, and issue a SYSRQ-T to show where the process is stuck in
-> > the kernel.
-> 
-> I know but that's a problem.  Can't capture enough info to graphics
-> console.  Don't have the right cable for a serial console, so I would
-> probably have to build it.  The machine's downtown and I haven't been
-> driving for the last two weeks.  Before that, Luxcom was sucking up
-> most of my time.
+> FYI I've been running gcc builds on my c3k to reproduce this, but I
+> haven't seen anything like this.
 
-I have a bunch of null-modem cables; you can borrow one if you like.
-Heck, if you give me directions (and sort out access permissions),
-I can go and install it for you.
+A little more info.
 
-> I've now using ethernet consoles for the servers but that's not an
-> option for the c3k.  Really, it would be great if it were possible
-> to do a SYSRQ-T over a standard ssh link.
+I'm seeing this almost every time with GCC 4.2.0 branch using
+vmlinux-2.6.18-rc7-pa1 or vmlinux-2.6.19-g211c7899-dirty.  The
+kernels are 32-bit with the default c3000 config.  It's happened
+in the last two builds and checks running the libjava testsuite.
+The tests timeout, so I would think the dejagnu/tcl framework
+would have tried to kill them when the timeout occured.
 
-Ah, /proc/sysrq-trigger is your friend here.
+Within a group of processes that are stuck, I can kill all but one
+without causing a system reboot.  The processes appear stuck in the
+kernel.  I don't see any activity with strace.
 
-Best of luck with your eye problems!
+I often see this with the Process_3.java test.  For example,
+http://gcc.gnu.org/ml/gcc-testresults/2006-12/msg00637.html
 
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+// Create a process and pipe data through it.  waitFor() the process
+// in a different thread than the one that created it.
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
+
+public class Process_3 implements Runnable
+{
+  Process p;
+
+  public void run()
+  {
+    try
+      {
+	Runtime r = Runtime.getRuntime();
+	String[] a = { "sed", "-e", "s/Hello/Goodbye/" };
+	synchronized (this)
+	  {
+	    p = r.exec(a);
+	    this.notifyAll();
+	  }
+	OutputStream os = p.getOutputStream();
+	PrintStream ps = new PrintStream(os);
+	ps.println("Hello World");
+	ps.close();
+      }
+    catch (Exception ex)
+      {
+	System.out.println(ex.toString());
+        System.exit(1);
+      }
+  }
+
+  public static void main(String[] args)
+  {
+    try
+      {
+	Process_3 p3 = new Process_3();
+	Thread t = new Thread(p3);
+	t.start();
+	synchronized (p3)
+	  {
+	    while (p3.p == null)
+	      p3.wait();
+	  }
+
+	InputStream is = p3.p.getInputStream();
+	InputStreamReader isr = new InputStreamReader(is);
+	BufferedReader br = new BufferedReader(isr);
+	String result = br.readLine();
+	if (! "Goodbye World".equals(result))
+	  {
+	    System.out.println("bad 1");
+	    return;
+	  }
+	result = br.readLine();
+	if (result != null)
+	  {
+	    System.out.println("bad 2");
+	    return;
+	  }
+	int c = p3.p.waitFor();
+	System.out.println(c == 0 ? "ok" : "bad 3");
+      }
+    catch (Exception ex)
+      {
+	System.out.println(ex.toString());
+      }
+  }
+}
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
