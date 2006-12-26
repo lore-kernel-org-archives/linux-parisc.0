@@ -1,63 +1,45 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [RFC] [PATCH] fix gettimeofday() on parisc to be monotonic
-Date: Mon, 25 Dec 2006 15:40:05 -0700
-Message-ID: <20061225224005.GA14136__14450.8289093666$1416624240$gmane$org@colo.lackof.org>
-References: <200612210450.55640.deller@gmx.de> <200612210509.09787.deller@gmx.de> <200612211005.04078.deller@gmx.de>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: [parisc-linux] Feisty and HPPA
+Date: Tue, 26 Dec 2006 10:50:02 -0500
+Message-ID: <5b2e36650612260750s68a4a19vd83090f5dbe7cff8__2827.5373661474$1416624240$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <grundler@lackof.org>
-In-Reply-To: <200612211005.04078.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=UTF-8;
+  format=flowed
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ adam.conrad@ubuntu.com,
+ "Carlos O'Donell" <carlos@systemhalted.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Dec 21, 2006 at 10:05:03AM +0100, Helge Deller wrote:
-...
-> diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-> index bad7d1e..896057f 100644
-> --- a/arch/parisc/kernel/time.c
-> +++ b/arch/parisc/kernel/time.c
-> @@ -34,6 +34,27 @@
->  
->  static unsigned long clocktick __read_mostly;	/* timer cycles per tick */
->  
-> +static struct time_interpolator mfctl16_interpolator = {
-> +	.shift = 16,
-> +	.mask = 0UL-1,
+For those interested in playing along, I'm putting the .deb's that I'm
+building up at:
 
-My preference is to use "~OUL" since it's unsigned.
-The "0-1" doesn't make sense for unsigned even though most people
-will know what it does.
+http://people.ubuntu.com/~jbailey/snapshot/hppa-feisty/
 
-> +	.source = TIME_SOURCE_CPU
-> +};
-...
+It's apt'able.  You probably also want to have the usual Dapper and
+Feisty repos in your sources.list, since older binaries and arch-all
+packages can come from there.  Sources are all the pristine source
+>from Feisty.
 
-> --- a/kernel/timer.c
-> +++ b/kernel/timer.c
-> @@ -1625,7 +1625,7 @@ struct time_interpolator *time_interpola
->  static struct time_interpolator *time_interpolator_list __read_mostly;
->  static DEFINE_SPINLOCK(time_interpolator_lock);
->  
-> -static inline u64 time_interpolator_get_cycles(unsigned int src)
-> +static inline cycles_t time_interpolator_get_cycles(unsigned int src)
->  {
->  	unsigned long (*x)(void);
->  
-> @@ -1652,7 +1652,7 @@ static inline u64 time_interpolator_get_
->  	if (time_interpolator->jitter)
->  	{
->  		u64 lcycle;
-> -		u64 now;
-> +		cycles_t now;
->  
->  		do {
->  			lcycle = time_interpolator->last_cycle;
+In particular, this features NPTL and TLS, although with 2.6.20-rc2
+I'm still seeing the glibc failures that Carlos reported on September
+6th[0], not the much-reduced set he reported on September 13th[1].
 
-Too bad lcycle and time_interpolator_get_count also don't use cycles_t.
+[0] http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030146.html
+[1] http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030197.html
 
-Still looking at the code though.
-
-thanks,
-grant
+-- 
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
