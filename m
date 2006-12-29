@@ -1,15 +1,16 @@
-From: Russell King <rmk+lkml@arm.linux.org.uk>
+From: Linus Torvalds <torvalds@osdl.org>
 Subject: [parisc-linux] Re: [patch] remove MAX_ARG_PAGES
-Date: Fri, 29 Dec 2006 20:49:04 +0000
-Message-ID: <20061229204904.GI20596__20817.2061051757$1416624243$gmane$org@flint.arm.linux.org.uk>
+Date: Fri, 29 Dec 2006 13:23:35 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.0612291322150.4473__8052.46854802153$1416624243$gmane$org@woody.osdl.org>
 References: <65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com>
 	<1160572460.2006.79.camel@taijtu>
 	<65dd6fd50610111448q7ff210e1nb5f14917c311c8d4@mail.gmail.com>
 	<65dd6fd50610241048h24af39d9ob49c3816dfe1ca64@mail.gmail.com>
 	<20061229200357.GA5940@elte.hu>
+	<20061229204904.GI20596@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII
 Cc: Andrew Morton <akpm@osdl.org>,
  linux-arch@vger.kernel.org,
  Peter Zijlstra <a.p.zijlstra@chello.nl>,
@@ -17,13 +18,13 @@ Cc: Andrew Morton <akpm@osdl.org>,
  linux-kernel@vger.kernel.org,
  David Howells <dhowells@redhat.com>,
  linux-mm@kvack.org,
- Linus Torvalds <torvalds@osdl.org>,
  Ollie Wild <aaw@google.com>,
+ Ingo Molnar <mingo@elte.hu>,
  parisc-linux@lists.parisc-linux.org,
  Arjan van de Ven <arjan@infradead.org>
-To: Ingo Molnar <mingo@elte.hu>
+To: Russell King <rmk+lkml@arm.linux.org.uk>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061229200357.GA5940@elte.hu>
+In-Reply-To: <20061229204904.GI20596@flint.arm.linux.org.uk>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -34,24 +35,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Dec 29, 2006 at 09:03:57PM +0100, Ingo Molnar wrote:
-> FYI, i have forward ported your MAX_ARG_PAGES limit removal patch to 
-> 2.6.20-rc2 and have included it in the -rt kernel. It's working great - 
-> i can now finally do a "ls -t patches/*.patch" in my patch repository - 
-> something i havent been able to do for years ;-)
 
-How do the various autoconf stuff react to this?  Eg, I notice the
-following in various configure scripts:
 
-checking the maximum length of command line arguments... 32768
+On Fri, 29 Dec 2006, Russell King wrote:
+> 
+> Suggest you test (eg) a rebuild of libX11 to see how it reacts to
+> this patch.
 
-Suggest you test (eg) a rebuild of libX11 to see how it reacts to
-this patch.
+Also: please rebuild "xargs" and install first. Otherwise, a lot of 
+build script etc that use "xargs" won't ever trigger the new limits (or 
+lack thereof), because xargs will have been installed with some old 
+limits.
 
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:
+Perhaps more worrying is if compiling xargs under a new kernel then means 
+that it won't work correctly under an old one.
+
+		Linus
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
