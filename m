@@ -1,16 +1,13 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] fstatat64 and newfstatat syscalls
-Date: Wed, 27 Dec 2006 23:28:18 +0100
-Message-ID: <200612272328.18484.deller__8825.29209270633$1416624241$gmane$org@gmx.de>
-References: <200612230049.41484.deller@gmx.de>
-	<200612230054.34497.deller@gmx.de>
-	<20061224034018.GB24131@colo.lackof.org>
+Subject: [parisc-linux] [PATCH] fix error condition in glibc's clone() call
+Date: Fri, 29 Dec 2006 17:09:34 +0100
+Message-ID: <200612291709.34592.deller__22584.7319853075$1416624242$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
+Cc: Joel Soete <soete.joel@tiscali.be>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061224034018.GB24131@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,40 +18,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun Dec 24 2006, Grant Grundler wrote:
-> On Sat, Dec 23, 2006 at 12:54:34AM +0100, Helge Deller wrote:
-> > On Sat Dec 23 2006, Helge Deller wrote:
-> > > Hi Grant,
-> > > 
-> > > I think we have some wrong assignments with above $TOPIC syscalls.
-> > > 
-> > > I found this mail and CVS patch from you:
-> > > http://lists.parisc-linux.org/pipermail/parisc-linux-cvs/2006-February/036543.html
-> 
-> Yeah - I wasn't that confident in that change.  My main goal was to get the build
-> working again. I didn't have any way to prove it was correct.
-> 
-> > > http://cvs.parisc-linux.org/linux-2.6/arch/parisc/kernel/syscall_table.S.diff?cvsroot=&r1=1.22&r2=1.23
-> > > 
-> > > but currently we have:
-> > > arch/parisc/kernel/syscall_table.S:		ENTRY_SAME(fstatat64)           /* 280 */
-> > > while in:
-> > > include/asm-parisc/unistd.h:			#define __NR_newfstatat         (__NR_Linux + 280)
-> > 
-> > I think the right solution is to change current line in unistd.h to this:
-> > include/asm-parisc/unistd.h:			#define __NR_fstatat64         (__NR_Linux + 280)
-> 
-> Yeah. That looks better to me too.
-> I suspect I assumed fstatat64 and newfsatat would be equivalent in all contexts.
-> 
-> > The fstatat testcase from LTP passes with then this change as well...
-> 
-> Excellent - thanks for fixing!
+Hello,
 
-I just committed this change...
+The following patch to glibc fixes an error which is triggered by the Linux Test Projects clone04 test, and was already mentioned and analyzed by Mike and Joel (see links to mail threads below).
+The problem is, that if clone(<function>, <stack>, ...) is called and <function> or <stack> is NULL, then %r19 is restored from a location which wasn't initialized.
+Something like this...
+clone:
+		if <function> == NULL goto .Lerror
+		if <stack>== NULL goto .Lerror
+		save_%r19_on_stack
+		.....
+.Lerror:	restore_%r19_from_stack  ##### <- may read from stack without %r19 having been saved here !
+		goto __syscall_error
+
+The patch below moves the "save_%r19_on_stack" part above the checks, so that "restore_%r19_from_stack" always reads the correct value.
+
+Any takers to bring this patch into glibc ?
 
 Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+Original threads:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-January/028088.html
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-March/028552.html
+http://sourceware.org/ml/libc-alpha/2003-12/msg00120.html
+
+PATCH:
+--- ../glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/clone.S.org	2006-12-29 08:49:25.000000000 +0100
++++ ../glibc-2.3.6/sysdeps/unix/sysv/linux/hppa/clone.S	2006-12-29 16:58:30.000000000 +0100
+@@ -32,6 +32,11 @@
+ ENTRY(__clone)
+ 	/* FIXME: I have no idea how profiling works on hppa. */
+ 
++	/* Save the PIC register. */
++#ifdef PIC
++	stw	%r19,-32(%sr0, %sp)	/* parent */
++#endif
++
+ 	/* Sanity check arguments.  */
+ 	comib,=  0,%arg0,.Lerror        /* no NULL function pointers */
+ 	ldi     -EINVAL,%ret0
+@@ -42,11 +47,6 @@
+ 	stwm    %arg0,64(%arg1)
+ 	stw	%arg3,-60(%arg1)
+ 
+-	/* Save the PIC register. */
+-#ifdef PIC
+-	stw	%r19,-32(%sr0, %sp)	/* parent */
+-#endif
