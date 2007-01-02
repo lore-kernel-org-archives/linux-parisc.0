@@ -1,29 +1,22 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: [parisc-linux] Re: [patch] remove MAX_ARG_PAGES
-Date: Mon, 1 Jan 2007 17:28:03 +0000
-Message-ID: <20070101172803.GC4214__38363.4056583562$1416624245$gmane$org@ucw.cz>
+From: David Howells <dhowells@redhat.com>
+Subject: [parisc-linux] Re: Removing MAX_ARG_PAGES (request for
+	comments/assistance)
+Date: Tue, 02 Jan 2007 17:52:14 +0000
+Message-ID: <22336.1167760334__19922.9401107461$1416624245$gmane$org@redhat.com>
 References: <65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com>
-	<1160572460.2006.79.camel@taijtu>
-	<65dd6fd50610111448q7ff210e1nb5f14917c311c8d4@mail.gmail.com>
-	<65dd6fd50610241048h24af39d9ob49c3816dfe1ca64@mail.gmail.com>
-	<20061229200357.GA5940@elte.hu>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
 Cc: Andrew Morton <akpm@osdl.org>,
  linux-arch@vger.kernel.org,
- Peter Zijlstra <a.p.zijlstra@chello.nl>,
  Andi Kleen <ak@muc.de>,
  linux-kernel@vger.kernel.org,
  David Howells <dhowells@redhat.com>,
  linux-mm@kvack.org,
  Linus Torvalds <torvalds@osdl.org>,
- Ollie Wild <aaw@google.com>,
+ Ingo Molnar <mingo@elte.hu>,
  parisc-linux@lists.parisc-linux.org,
  Arjan van de Ven <arjan@infradead.org>
-To: Ingo Molnar <mingo@elte.hu>
+To: "Ollie Wild" <aaw@google.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061229200357.GA5940@elte.hu>
+In-Reply-To: <65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com> 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -34,23 +27,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi!
+Ollie Wild <aaw@google.com> wrote:
 
-> FYI, i have forward ported your MAX_ARG_PAGES limit removal patch to 
-> 2.6.20-rc2 and have included it in the -rt kernel. It's working great - 
-> i can now finally do a "ls -t patches/*.patch" in my patch repository - 
-> something i havent been able to do for years ;-)
-> 
-> what is keeping this fix from going upstream?
+> - I haven't tested this on a NOMMU architecture.  Could someone please
+> validate this?
 
-+1
+There are a number of potential problems with NOMMU:
 
-I like this. I've been running with MAX_ARG_PAGES raised to insane
-value, and I'd love to get rid of that hack.
+ (1) The argument data is copied twice (once into kernel memory and once out
+     of kernel memory).
 
-							Pavel
--- 
-Thanks for all the (sleeping) penguins.
+ (2) The permitted amount of argument data is governed by the stack size of
+     the program to be exec'd.  You should assume that NOMMU stacks cannot
+     grow.
+
+ (3) VMAs on NOMMU are a shared resource.
+
+However, we might be able to extend your idea to improve things.  If we work
+out the stack size required earlier, we can allocate the VMA and the memory
+for the stack *before* we reach the point of no return.  We can then fill in
+the stack and load up all the parameters *before* releasing the original
+executable.  That would eliminate one of the copied mentioned in (1).  Working
+out the stack size earlier may be difficult though, as we may need to load the
+interpreter header before we can do so.
+
+Overall, I don't think there should be too many problems with this for NOMMU.
+
+David
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
