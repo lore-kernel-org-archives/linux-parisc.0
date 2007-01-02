@@ -1,26 +1,14 @@
-From: David Howells <dhowells@redhat.com>
-Subject: [parisc-linux] Re: [patch] remove MAX_ARG_PAGES
-Date: Tue, 02 Jan 2007 18:18:48 +0000
-Message-ID: <23996.1167761928__15132.5606079356$1416624246$gmane$org@redhat.com>
-References: <20061229200357.GA5940@elte.hu>
-	<65dd6fd50610101705t3db93a72sc0847cd120aa05d3@mail.gmail.com>
-	<1160572460.2006.79.camel@taijtu>
-	<65dd6fd50610111448q7ff210e1nb5f14917c311c8d4@mail.gmail.com>
-	<65dd6fd50610241048h24af39d9ob49c3816dfe1ca64@mail.gmail.com>
-Cc: Andrew Morton <akpm@osdl.org>,
- linux-arch@vger.kernel.org,
- Peter Zijlstra <a.p.zijlstra@chello.nl>,
- Andi Kleen <ak@muc.de>,
- linux-kernel@vger.kernel.org,
- David Howells <dhowells@redhat.com>,
- linux-mm@kvack.org,
- Linus Torvalds <torvalds@osdl.org>,
- Ollie Wild <aaw@google.com>,
- parisc-linux@lists.parisc-linux.org,
- Arjan van de Ven <arjan@infradead.org>
-To: Ingo Molnar <mingo@elte.hu>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] [RFC][PATCH] use cycle_t instead of u64 in struct
+	time_interpolator
+Date: Tue, 2 Jan 2007 22:33:25 +0100
+Message-ID: <200701022233.25697.deller__37301.6776670285$1416624246$gmane$org@gmx.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org
+To: linux-kernel@vger.kernel.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20061229200357.GA5940@elte.hu> 
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,74 +19,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Ingo Molnar <mingo@elte.hu> wrote:
+The 32bit and 64bit PARISC Linux kernels suffers from the problem, that the gettimeofday() call sometimes returns non-monotonic times.
+The easiest way to fix this, is to drop the PARISC-specific implementation and switch over to the generic TIME_INTERPOLATION framework.
+But in order to make it even compile on 32bit PARISC, the patch below which touches the generic Linux code, is mandatory. 
+More information and the full patch with the parisc-specific changes is included in this thread: http://lists.parisc-linux.org/pipermail/parisc-linux/2006-December/031003.html
 
-> FYI, i have forward ported your MAX_ARG_PAGES limit removal patch to 
-> 2.6.20-rc2 and have included it in the -rt kernel. It's working great - 
-> i can now finally do a "ls -t patches/*.patch" in my patch repository - 
-> something i havent been able to do for years ;-)
+As far as I could see, this patch does not change anything for the existing architectures which use this framework (IA64 and SPARC64), since "cycles_t" is defined there as unsigned 64bit-integer anyway (which then makes this patch a no-change for them).
 
-I get a NULL kernel pointer reference with this patch with FRV in MMU mode.
-It's whilst the kernel is attempting to execute init:
+Ok, not Ok ?
 
-(gdb) bt
-#0  0xc0063d54 in do_anonymous_page (mm=0xc05c1a04, vma=0xc05c884c, address=3221225457, page_table=0xdc00bffc, pmd=0xc05c6f00, write_access=0) at pgtable.h:525
-#1  0xc006468c in __handle_mm_fault (mm=0xbffffff1, vma=0xc05c884c, address=3691036668, write_access=1) at memory.c:2404
-#2  0xc0061c18 in get_user_pages (tsk=0xc034eba0, mm=0xc05c1a04, start=3221225457, len=1, write=1, force=0, pages=0xc0353b80, vmas=0x0) at memory.c:1064
-#3  0xc0084c7c in copy_strings (argc=0, argv=0xc0388c3c, bprm=0xc0388b88) at exec.c:326
-#4  0xc0084dac in copy_strings_kernel (argc=1, argv=0xc05c884c, bprm=0xbffffff1) at exec.c:365
-#5  0xc0085f5c in do_execve (filename=0xc0387000 "/sbin/init", argv=0xc026e8c8, envp=0xc026e950, regs=0xc0353bf8) at exec.c:1158
-#6  0xc000f55c in sys_execve (name=0x1 <Address 0x1 out of bounds>, argv=0xc026e8c8, envp=0xc026e950) at process.c:263
-#7  0xc000e1e0 in __syscall_call () at arch/frv/kernel/entry.S:878
-#8  0xc000e1e0 in __syscall_call () at arch/frv/kernel/entry.S:878
+Regards, Helge
 
-The problem appears to be that current->mm is NULL.  It's a bit difficult to
-say for sure because gdb or gcc determined that the error is in pgtable.h, but
-doesn't seem to have determined which one.
 
-However, looking at the code, I think it must be this:
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-	static int do_anonymous_page(struct mm_struct *mm, ...)
-	{
-		...
-		update_mmu_cache(vma, address, entry);
-		...
-	}
-
-But that uses current->mm, which is NULL, via this function:
-
-	[include/asm-frv/pgtable.h]
-
-	/* * preload information about a newly instantiated PTE into the SCR0/SCR1 PGE
-	cache */
-
-	static inline void update_mmu_cache(struct vm_area_struct *vma,
-					unsigned long address, pte_t pte)
-	{
-		unsigned long ampr;
-		pgd_t *pge = pgd_offset(current->mm, address);
-		pud_t *pue = pud_offset(pge, address);
-		pmd_t *pme = pmd_offset(pue, address);
-
-		ampr = pme->ste[0] & 0xffffff00;
-		ampr |= xAMPRx_L | xAMPRx_SS_16Kb | xAMPRx_S | xAMPRx_C | xAMPRx_V;
-
-		asm volatile("movgs %0,scr0\n"
-			     "movgs %0,scr1\n"
-			     "movgs %1,dampr4\n"
-			     "movgs %1,dampr5\n"
-			     :
-			     : "r"(address), "r"(ampr)
-			     );
-	}
-
-This really oughtn't to be called in this situation, I suspect.  I could just
-skip the operation if current->mm is NULL, but I'm not sure that that's the
-right thing to do.  Maybe I should be using current->active_mm instead.
-
-Everything works fine without the patch.
-
-David
+diff --git a/include/linux/timex.h b/include/linux/timex.h
+index db501dc..9a24e50 100644
+--- a/include/linux/timex.h
++++ b/include/linux/timex.h
+@@ -255,10 +255,10 @@ struct time_interpolator {
+ 	u8 jitter;			/* if set compensate for fluctuations */
+ 	u32 nsec_per_cyc;		/* set by register_time_interpolator() */
+ 	void *addr;			/* address of counter or function */
+-	u64 mask;			/* mask the valid bits of the counter */
++	cycles_t mask;			/* mask the valid bits of the counter */
+ 	unsigned long offset;		/* nsec offset at last update of interpolator */
+ 	u64 last_counter;		/* counter value in units of the counter at last update */
+-	u64 last_cycle;			/* Last timer value if TIME_SOURCE_JITTER is set */
++	cycles_t last_cycle;		/* Last timer value if TIME_SOURCE_JITTER is set */
+ 	u64 frequency;			/* frequency in counts/second */
+ 	long drift;			/* drift in parts-per-million (or -1) */
+ 	unsigned long skips;		/* skips forward */
+diff --git a/kernel/timer.c b/kernel/timer.c
+index c2a8ccf..d38801a 100644
+--- a/kernel/timer.c
++++ b/kernel/timer.c
+@@ -1624,7 +1624,7 @@ struct time_interpolator *time_interpola
+ static struct time_interpolator *time_interpolator_list __read_mostly;
+ static DEFINE_SPINLOCK(time_interpolator_lock);
+ 
+-static inline u64 time_interpolator_get_cycles(unsigned int src)
++static inline cycles_t time_interpolator_get_cycles(unsigned int src)
+ {
+ 	unsigned long (*x)(void);
+ 
+@@ -1650,8 +1650,8 @@ static inline u64 time_interpolator_get_
+ 
+ 	if (time_interpolator->jitter)
+ 	{
+-		u64 lcycle;
+-		u64 now;
++		cycles_t lcycle;
++		cycles_t now;
+ 
+ 		do {
+ 			lcycle = time_interpolator->last_cycle;
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
