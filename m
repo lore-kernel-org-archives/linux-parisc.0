@@ -1,67 +1,111 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH] fix error condition in glibc's clone() call
-Date: Wed, 3 Jan 2007 00:37:11 -0500
-Message-ID: <200701030037.12854.vapier__13487.2693139643$1416624248$gmane$org@gentoo.org>
-References: <200612291709.34592.deller@gmx.de> <119aab440701022107u1e5cbbb5qeaf6537b95f362aa@mail.gmail.com> <119aab440701022108t12bfe6cbv592f62d3d0605a85@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] PA8800 Status (Happy New Year)
+Date: Wed, 3 Jan 2007 00:24:18 -0700
+Message-ID: <20070103072418.GE702__45206.3177749098$1416624248$gmane$org@colo.lackof.org>
+References: <200701030058.l030wur7018506@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1433152.tq59yWizOM";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Cc: "Helge Deller" <deller@gmx.de>,
- parisc-linux@lists.parisc-linux.org,
- "Joel Soete" <soete.joel@tiscali.be>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
-Return-Path: <vapier@gentoo.org>
-In-Reply-To: <119aab440701022108t12bfe6cbv592f62d3d0605a85@mail.gmail.com>
-List-ID: <linux-parisc.vger.kernel.org>
-
---nextPart1433152.tq59yWizOM
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200701030058.l030wur7018506@hiauly1.hia.nrc.ca>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wednesday 03 January 2007 00:08, Carlos O'Donell wrote:
-> On 1/3/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
-> > On 1/2/07, Mike Frysinger <vapier@gentoo.org> wrote:
-> > > when it comes to parisc sources, are we supposed to be looking at the
-> > > FSF glibc cvs or the parisc glibc cvs ?  they often seem way out of
-> > > sync ...
-> >
-> > glibc cvs.
->
-> Though... your distro may not be completely up to date.
-> We are in the middle of brining NPTL + TLS out ot "alpha" status for hppa.
+On Tue, Jan 02, 2007 at 07:58:56PM -0500, John David Anglin wrote:
+> I spent the last couple of days updating the kernel and userspace
+> software on the pa8800 that I have (ior).  The good news is that
+> the machine is now much more stable than it was.  ssh seems to
+> work.  I've even been able to do a full GCC build on it.  Thanks
+> to all for the fixes!
 
-i've been following the nptl stuff and yes Gentoo is out of date ... we're =
-on=20
-glibc-2.3.6 + linuxthreads
+Happy New Year!
+Wow! That is good!
 
-i was asking for personal preference when investigating things ... want to=
-=20
-make sure i'm looking at the latest code when i send fixes ;)
-=2Dmike
+> The bad news.  The system died almost immediately starting the
+> gcc testsuite:
+> 
+> >From the console log:
+> 
+> expect (pid 20348): Protection id trap (code 27)
+> Backtrace:
+>       _______________________________
+>      < Your System ate a SPARC! Gah! >
+>       -------------------------------
+>              \   ^__^
+>               \  (xx)\_______
+>                  (__)\       )\/\
+>                   U  ||----w |
+>                      ||     ||
+> expect (pid 20348): Protection id trap (code 27)
+> Backtrace:
+>       _______________________________
+>      < Your System ate a SPARC! Gah! >
+> 
+> [repeats a number of times]
+> 
+> Backtrace:
+> 
+> 
+> Bad Address (null pointer deref?): Code=15 regs=0000000245b4f590 (Addr=00000625733a213a)
+> 
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00001000000001001011110100001111 Not tainted
+> r00-03  000000ff0804bd0f 000000004050f8c0 0000000040311010 0000000084f664ff
+> r04-07  00000000405038c0 0000000000000002 0000000084f664c1 000000007fe0a000
+> r08-11  0000000000000000 000000007fe0a000 00000000000002b1 000000007ea85600
+> r12-15  000000004f2241c0 000000007e96c000 000000007fe0a000 0000000000000040
+> r16-19  0000000000000000 000000007fe0a494 000000007ad0b012 00000000404ba2d4
+> r20-23  3c353e25733a2046 000000004050f8c0 000000007fe0a000 0000000000000000
+> r24-27  0000000084f664c1 0000000000013c43 0000000078340400 00000000405038c0
+> r28-31  0000000000000003 0000000245b4f560 0000000245b4f590 00000000404ba2c0
+> sr00-03  0000000001436800 0000000000000000 0000000000000000 0000000001436800
+> sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> 
+> IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004031104c 0000000040311050
 
---nextPart1433152.tq59yWizOM
-Content-Type: application/pgp-signature
+This looks like userspace. Odd.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.1 (GNU/Linux)
+>  IIR: 4a9c01e8    ISR: 000000003c353800  IOR: 00000625733a213a
 
-iQIVAwUARZtBCEFjO5/oN/WBAQImOxAAtIeHUQwWXQkj2SH0GMZGrqiXfVPPtc/P
-K4jZqRxOl0BGizczVDC1BmL6dI79RWCFsPekLIMZUobyuSAt/gYbDCrlhQTPkgya
-dCHWTqYXk9lbfh9KRNrIf2O9Y0Hsv0sOSfFWR6XO2OMbqwyZu+O0Yrn7w1ABER0T
-vBCqylhyNynqirdcYRkZ0NFscw6cF8jOFG594ZR6+ttt2zlkubtgNOHMI8eMZLmy
-M2v1q408FqYboOrD3IAEkca3NVu01CYZrpRnAkuShBKVkC5dNm6WIPEIfV4uOGlI
-eqUKOtiHJhgT70dMcwg59/77JLObZ2NhPFgAgYzxyWVE2TL2TDsIJ5d9hdVhn1Pn
-MQOnXVOIF6INuqKNB3lQQZqnFPf7wJAqSo+0d6VBxXshRHaxSgpeFP/rwnVa8W0R
-pwJ0eePnfK3nndEsN3WvjfWg9hdYJsRkBZICXlFpf9BMw9fqX/ZsnbJZndU8DC+G
-qBMRQ8ZlW3DD8UiuC3+lEHfs6ysAeleFAjciZknuz4uwVklguFOF4Tyc3fkIjfsi
-kjbW/RgUtbZtwnLbymzx1kquhK4AaRM48NmU8tpHVETzPNqQar/QxGJfIlVRFtOK
-uCaG7qBATr14lEomkVl2rAGK34HgOntgBzNhIdcHmXOUkfWGSK+RpacU2Mnv6xNl
-Uq5kkB16wiI=
-=xi7b
------END PGP SIGNATURE-----
+And the IOR looks like garbage. :(
 
---nextPart1433152.tq59yWizOM--
+>  CPU:        0   CR30: 0000000241ee0000 CR31: 00000000404c4000
+>  ORIG_R28: 00000054000000c8
+>  IAOQ[0]: ip_route_input+0xb4/0xca8
+>  IAOQ[1]: ip_route_input+0xb8/0xca8
+>  RP(r2): ip_route_input+0x78/0xca8
+> Kernel panic - not syncing: Bad Address (null pointer deref?)
+>  <0>Rebooting in 5 seconds..
+
+Right now, I don't trust the backtrace. *sigh*
+
+FYI, ioz (800Mhz pa8800) crashed when booting 2.6.20-rc2.
+I'm still looking at the PIM dump.
+Last output was from ide driver. I'll try to disable DMA
+and see if that works better.
+
+cheers,
+grant
+
+> 
+> Dave
+> -- 
+> J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+> National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
