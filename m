@@ -1,18 +1,12 @@
-From: "Jeff Bailey" <jbailey@raspberryginger.com>
-Subject: [parisc-linux] Re: Feisty and HPPA
-Date: Tue, 2 Jan 2007 19:43:45 -0500
-Message-ID: <5b2e36650701021643x4e1d721sf558b010d36ed7b6__45069.0643200234$1416624249$gmane$org@mail.gmail.com>
-References: <5b2e36650612260750s68a4a19vd83090f5dbe7cff8@mail.gmail.com>
-	<119aab440701021637l1c544acfn35a4f3ac93a82a4f@mail.gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] PA8800 Status (Happy New Year)
+Date: Tue, 2 Jan 2007 19:58:56 -0500 (EST)
+Message-ID: <200701030058.l030wur7018506__6655.66025204516$1416624249$gmane$org@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: adam.conrad@ubuntu.com,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440701021637l1c544acfn35a4f3ac93a82a4f@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,27 +17,66 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 02/01/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
-> > For those interested in playing along, I'm putting the .deb's that I'm
-> > In particular, this features NPTL and TLS, although with 2.6.20-rc2
-> > I'm still seeing the glibc failures that Carlos reported on September
-> > 6th[0], not the much-reduced set he reported on September 13th[1].
-> >
-> > [0] http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030146.html
-> > [1] http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030197.html
->
-> This is because [1] is a mistake. In [1] the LWS CAS was disabled and
-> I accidentally ran the tests with the non-atomic versions.
+I spent the last couple of days updating the kernel and userspace
+software on the pa8800 that I have (ior).  The good news is that
+the machine is now much more stable than it was.  ssh seems to
+work.  I've even been able to do a full GCC build on it.  Thanks
+to all for the fixes!
 
-Ah, okay.  I'd been hacking assuming that I should be able to
-reproduce those results.  At least my setup isn't broken.
+The bad news.  The system died almost immediately starting the
+gcc testsuite:
 
-BTW, I have a patch for upstream to use the right define for LWS CAS
-if you don't have it.  Current libc head doesn't build without it
-anymore.
+>>>From the console log:
 
+expect (pid 20348): Protection id trap (code 27)
+Backtrace:
+      _______________________________
+     < Your System ate a SPARC! Gah! >
+      -------------------------------
+             \   ^__^
+              \  (xx)\_______
+                 (__)\       )\/\
+                  U  ||----w |
+                     ||     ||
+expect (pid 20348): Protection id trap (code 27)
+Backtrace:
+      _______________________________
+     < Your System ate a SPARC! Gah! >
+
+[repeats a number of times]
+
+Backtrace:
+
+
+Bad Address (null pointer deref?): Code=15 regs=0000000245b4f590 (Addr=00000625733a213a)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000001001011110100001111 Not tainted
+r00-03  000000ff0804bd0f 000000004050f8c0 0000000040311010 0000000084f664ff
+r04-07  00000000405038c0 0000000000000002 0000000084f664c1 000000007fe0a000
+r08-11  0000000000000000 000000007fe0a000 00000000000002b1 000000007ea85600
+r12-15  000000004f2241c0 000000007e96c000 000000007fe0a000 0000000000000040
+r16-19  0000000000000000 000000007fe0a494 000000007ad0b012 00000000404ba2d4
+r20-23  3c353e25733a2046 000000004050f8c0 000000007fe0a000 0000000000000000
+r24-27  0000000084f664c1 0000000000013c43 0000000078340400 00000000405038c0
+r28-31  0000000000000003 0000000245b4f560 0000000245b4f590 00000000404ba2c0
+sr00-03  0000000001436800 0000000000000000 0000000000000000 0000000001436800
+sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+
+IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004031104c 0000000040311050
+ IIR: 4a9c01e8    ISR: 000000003c353800  IOR: 00000625733a213a
+ CPU:        0   CR30: 0000000241ee0000 CR31: 00000000404c4000
+ ORIG_R28: 00000054000000c8
+ IAOQ[0]: ip_route_input+0xb4/0xca8
+ IAOQ[1]: ip_route_input+0xb8/0xca8
+ RP(r2): ip_route_input+0x78/0xca8
+Kernel panic - not syncing: Bad Address (null pointer deref?)
+ <0>Rebooting in 5 seconds..
+
+Dave
 -- 
-Jeff Bailey - http://www.raspberryginger.com/jbailey/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
