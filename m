@@ -1,80 +1,47 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: PA8800 Status (Happy New Year)
-Date: Tue, 2 Jan 2007 20:41:42 -0500 (EST)
-Message-ID: <200701030141.l031fgxn019232__28578.9060676054$1416624250$gmane$org@hiauly1.hia.nrc.ca>
-References: <no.id>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: Re: [parisc-linux] Re: Who is actively porting the Debian architectures?
+Date: Tue, 2 Jan 2007 19:45:31 -0500
+Message-ID: <20070103004531.GA26830__38007.087869528$1416624250$gmane$org@athena.road.mcmartin.ca>
+References: <200612252340.14760.elendil@planet.nl> <119aab440701021635w5e9fc799j6e048d124c94c13@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <no.id> from "John David Anglin" at Jan 2, 2007 07:58:56 pm
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: debian-hppa@lists.debian.org,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <119aab440701021635w5e9fc799j6e048d124c94c13@mail.gmail.com>
+Resent-Message-ID: <qV374.A.g3B.-lwmFB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-> Bad Address (null pointer deref?): Code=15 regs=0000000245b4f590 (Addr=00000625733a213a)
+On Tue, Jan 02, 2007 at 07:35:33PM -0500, Carlos O'Donell wrote:
+> On 12/25/06, Frans Pop <elendil@planet.nl> wrote:
+> >I would suggest at least the following changes:
+> >HPPA: add Kyle McMartin
+> >Note: you may also wish to review and update the port pages under [2].
+> >
+
+I'm not sure where this email came from, as I don't see it in my 
+debian-hppa folder.
+
+> Kyle,
 > 
->      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-> PSW: 00001000000001001011110100001111 Not tainted
-> r00-03  000000ff0804bd0f 000000004050f8c0 0000000040311010 0000000084f664ff
-> r04-07  00000000405038c0 0000000000000002 0000000084f664c1 000000007fe0a000
-> r08-11  0000000000000000 000000007fe0a000 00000000000002b1 000000007ea85600
-> r12-15  000000004f2241c0 000000007e96c000 000000007fe0a000 0000000000000040
-> r16-19  0000000000000000 000000007fe0a494 000000007ad0b012 00000000404ba2d4
-> r20-23  3c353e25733a2046 000000004050f8c0 000000007fe0a000 0000000000000000
-> r24-27  0000000084f664c1 0000000000013c43 0000000078340400 00000000405038c0
-> r28-31  0000000000000003 0000000245b4f560 0000000245b4f590 00000000404ba2c0
-> sr00-03  0000000001436800 0000000000000000 0000000000000000 0000000001436800
-> sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> Would you like my help? I wouldn't mind being added to the hppa list
+> aswell. I can always answer hppa-linux related questions and help port
+> this and that.
 > 
-> IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004031104c 0000000040311050
->  IIR: 4a9c01e8    ISR: 000000003c353800  IOR: 00000625733a213a
->  CPU:        0   CR30: 0000000241ee0000 CR31: 00000000404c4000
->  ORIG_R28: 00000054000000c8
->  IAOQ[0]: ip_route_input+0xb4/0xca8
->  IAOQ[1]: ip_route_input+0xb8/0xca8
->  RP(r2): ip_route_input+0x78/0xca8
-> Kernel panic - not syncing: Bad Address (null pointer deref?)
->  <0>Rebooting in 5 seconds..
 
-The code seems to be:
+Please, be my guest, I think you are our de facto toolchain ring leader. :)
 
-    40311008:   eb fe ac 25     b,l 4030e620 <rt_hash_code>,rp
-    4031100c:   0b 97 02 28     and r23,ret0,r8
-    40311010:   08 04 02 5b     copy r4,dp
-    40311014:   2b 63 20 00     addil L%7000,dp,r1
-    40311018:   50 3f 04 f0     ldd 278(r1),r31
-    4031101c:   0f e0 10 d3     ldd 0(r31),r19
-    40311020:   0e 7c 20 dc     ldd,s ret0(r19),ret0
-    40311024:   9f 80 22 00     cmpb,*= r0,ret0,4031112c <ip_route_input+0x194>
-    40311028:   2b 66 00 00     addil L%c000,dp,r1
-    4031102c:   08 1c 02 54     copy ret0,r20
-    40311030:   50 33 0e a0     ldd 750(r1),r19
-    40311034:   e8 00 00 20     b,l 4031104c <ip_route_input+0xb4>,r0
-    40311038:   08 01 02 55     copy r1,r21
-    4031103c:   37 9c 00 02     ldo 1(ret0),ret0
-    40311040:   6a 7c 00 70     stw ret0,38(r19)
-    40311044:   0e 80 10 d4     ldd 0(r20),r20
-    40311048:   9e 80 21 ba     cmpb,*=,n r0,r20,4031112c <ip_route_input+0x194>
-    4031104c:   4a 9c 01 e8     ldw f4(r20),ret0
+Cheers,
+	Kyle M.
 
-It seems like there must be some way to get to 4031104c avoiding the
-on r20/ret0.  Don't see any branches to the region between 40311024
-and 40311044 in the function, or any other direct branches to 4031104c.
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
