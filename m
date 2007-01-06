@@ -1,13 +1,11 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] Re: timing bug in clone() ? [BUGFIX-PATCH attached]
-Date: Wed, 03 Jan 2007 18:12:47 +0100
-Message-ID: <engo6f$jur$1__35288.2619751201$1416624634$gmane$org@sea.gmane.org>
-References: <200612291721.53961.deller@gmx.de> <4595BBC0.2020602@tausq.org>
-	<200701012047.10616.deller@gmx.de>
-	<119aab440701021616q48f35673o76373519b7a23198@mail.gmail.com>
+Subject: [parisc-linux] [PARISC] parisc-patch for Linux Test Project
+Date: Sat, 06 Jan 2007 21:31:18 +0100
+Message-ID: <enp0um$dek$1__40125.1241834418$1416624634$gmane$org@sea.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
+Cc: ltp-list@lists.sourceforge.net
 To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -20,90 +18,246 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Carlos O'Donell wrote:
+Hello * at The Linux Test Project !
+CC: PARISC-Linux development mailing list
 
-> On 1/1/07, Helge Deller <deller@gmx.de> wrote:
->> I've found the bug now... :-)
->> Patch is attached below, and the problem was not in the kernel, but in
->> glibc.
->>
->> The first hunk in the patch below ("Save the PIC register.") is the fix
->> for the arguments check which I posted before
->>
-(http://lists.parisc-linux.org/pipermail/parisc-linux/2006-December/031029.html).
->> This hunk fixes LTP's clone04 test.
->>
->> The second and third hunk fixes the "return 0" bug as reported by LTP's
->> clone06 test. It first saves the current FPIC register on the child's
->> stack (to %arg0 instead of %sr0,%sp) and later reads it back from there
->> in the third hunk just before calling _exit(). That way the PIC register
->> has the correct value and exit() doesn't crashes any more.
->>
->> Now all clone()-tests from LTP succeeds :-)
->>
->> Helge
->>
->>
->> ---
->>
-glibc-2.3.6.ds1/build-tree/glibc-2.3.6/debian/sysdeps/unix/sysv/linux/hppa/clone.S.org
->>      2006-12-29 08:49:25.000000000 +0100
->> +++
->>
-glibc-2.3.6.ds1/build-tree/glibc-2.3.6/debian/sysdeps/unix/sysv/linux/hppa/clone.S
->>  2007-01-01 19:53:00.000000000 +0100 @@ -32,6 +32,11 @@
->>  ENTRY(__clone)
->>         /* FIXME: I have no idea how profiling works on hppa. */
->>
->> +       /* Save the PIC register. */
->> +#ifdef PIC
->> +       stw     %r19,-32(%sr0, %sp)     /* parent */
->> +#endif
->> +
->>         /* Sanity check arguments.  */
->>         comib,=  0,%arg0,.Lerror        /* no NULL function pointers */
->>         ldi     -EINVAL,%ret0
->> @@ -41,10 +46,8 @@
->>         /* Save the fn ptr and arg on the new stack.  */
->>         stwm    %arg0,64(%arg1)
->>         stw     %arg3,-60(%arg1)
->> -
->> -       /* Save the PIC register. */
->>  #ifdef PIC
->> -       stw     %r19,-32(%sr0, %sp)     /* parent */
->> +       stw     %r19,-32(%arg1)         /* save PIC on child's stack */
->>  #endif
->>
->>         /* Do the system call */
->> @@ -88,6 +91,11 @@
->>         bl      $$dyncall,%r31
->>         copy    %r31,%rp
->>
->> +       /* Restore PIC register for exit() */
->> +#ifdef PIC
->> +       ldw     -32(%sr0, %sp), %r19    /* parent */
->> +#endif
->> +
->>         bl      _exit,%rp
->>         copy    %ret0,%arg0
-> 
-> Ah, I found this already and fixed it in upstream. You need to submit
-> this patch to debian's bts and get it applied to their fixed glibc
-> version.
-> 
-> In the upstream versrion I allocated r4 as a temporary register
-> instead of spilling to the stack and back.
+the trivial patch below is against the current CVS version of LTP and adds
+missing pieces and changes which are necessary for LTP on the PARISC/HPPA
+architecture.
 
-yes, and I realized that you fixed it after I was finished with my patch :-(
-Anyway, I filed a bugreport today at debian bts:
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=405411
+The read04.c patch part is a real architecture-independend bugfix. The
+read04 tests writes TST_SIZE bytes to a file, reads the same amount of
+bytes back again and compares the contents. Naturally, it only should
+verify if TST_SIZE bytes (the amount of bytes which where written!)
+matches. sizeof() returns the number of bytes including the leading
+zero-byte which hasn't been read back.
 
-Of course I prefer if we can switch to your NPTL-enabled glibc as soon as
-possible. But in the meantime it's maybe good to have this patch in in the
-old glibc...
+It would be really nice, if someone could apply this patch to the LTP CVS
+sources.
 
+Thanks,
 Helge
 
+
+Index: testcases/kernel/syscalls/read/read04.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/read/read04.c,v
+retrieving revision 1.5
+diff -u -p -r1.5 read04.c
+--- testcases/kernel/syscalls/read/read04.c     25 Dec 2006 00:32:54 -0000      1.5
++++ testcases/kernel/syscalls/read/read04.c     6 Jan 2007 20:19:12 -0000
+@@ -105,7 +105,7 @@ int main(int ac, char **av)
+                                         "expected %d", TEST_RETURN, TST_SIZE);
+                                continue;
+                        }
+-                       if (memcmp(palfa, prbuf, sizeof(palfa)) != 0) {
++                       if (memcmp(palfa, prbuf, TST_SIZE) != 0) {
+                                tst_resm(TFAIL, "read buffer not equal "
+                                         "to write buffer");
+                                continue;
+Index: testcases/kernel/mem/shmt/shmt02.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/mem/shmt/shmt02.c,v
+retrieving revision 1.4
+diff -u -p -r1.4 shmt02.c
+--- testcases/kernel/mem/shmt/shmt02.c  29 Jul 2003 19:46:14 -0000      1.4
++++ testcases/kernel/mem/shmt/shmt02.c  6 Jan 2007 20:19:12 -0000
+@@ -81,7 +81,7 @@ int main()
+ 
+ 
+                 /* are we doing with ia64 or arm_arch_4t arch */
+-#if defined (__ia64__) || defined (__ARM_ARCH_4T__)
++#if defined (__ia64__) || defined (__ARM_ARCH_4T__) || defined(__hppa__)
+                 cp = (char *) shmat(shmid, (void *)NULL, 0);
+ #else          
+                 cp = (char *) shmat(shmid, (void *)0x80000, 0);
+Index: testcases/kernel/mem/shmt/shmt04.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/mem/shmt/shmt04.c,v
+retrieving revision 1.5
+diff -u -p -r1.5 shmt04.c
+--- testcases/kernel/mem/shmt/shmt04.c  29 Jul 2003 19:46:14 -0000      1.5
++++ testcases/kernel/mem/shmt/shmt04.c  6 Jan 2007 20:19:12 -0000
+@@ -107,7 +107,7 @@ if ((shmid = shmget(key, SIZE, IPC_CREAT
+ else {
+ #ifdef __ia64__
+   cp = (char *) shmat(shmid, ADDR1, 0);
+-#elif defined(__ARM_ARCH_4T__)
++#elif defined(__ARM_ARCH_4T__) || defined(__hppa__)
+   cp = (char *) shmat(shmid, NULL, 0);
+ #else
+   cp = (char *) shmat(shmid, ADDR, 0);
+@@ -185,7 +185,7 @@ else 
+ {
+ #ifdef __ia64__
+   cp = (char *) shmat(shmid, ADDR1, 0);
+-#elif defined(__ARM_ARCH_4T__)
++#elif defined(__ARM_ARCH_4T__) || defined(__hppa__)
+   cp = (char *) shmat(shmid, NULL, 0);
+ #else
+   cp = (char *) shmat(shmid, ADDR, 0);
+Index: testcases/kernel/mem/shmt/shmt05.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/mem/shmt/shmt05.c,v
+retrieving revision 1.4
+diff -u -p -r1.4 shmt05.c
+--- testcases/kernel/mem/shmt/shmt05.c  29 Jul 2003 19:46:14 -0000      1.4
++++ testcases/kernel/mem/shmt/shmt05.c  6 Jan 2007 20:19:12 -0000
+@@ -85,7 +85,7 @@ int main()
+  } else {
+ #ifdef __ia64__ 
+   cp = (char *) shmat(shmid, ADDR_IA, 0);
+-#elif defined(__ARM_ARCH_4T__)
++#elif defined(__ARM_ARCH_4T__) || defined(__hppa__)
+   cp = (char *) shmat(shmid, (void *)NULL, 0);
+ #else
+   cp = (char *) shmat(shmid, ADDR, 0);
+@@ -111,6 +111,8 @@ int main()
+    cp1 = (char *) shmat(shmid1, ADDR1_IA, 0);
+ #elif defined(__ARM_ARCH_4T__)
+    cp1 = (char *) shmat(shmid1, (void *)NULL, 0);
++#elif defined(__hppa__)
++   cp1 = (char *) shmat(shmid1, cp+4096, 0);
+ #else
+    cp1 = (char *) shmat(shmid1, ADDR1, 0);
+ #endif
+Index: testcases/kernel/mem/shmt/shmt06.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/mem/shmt/shmt06.c,v
+retrieving revision 1.6
+diff -u -p -r1.6 shmt06.c
+--- testcases/kernel/mem/shmt/shmt06.c  14 Jun 2004 19:14:09 -0000      1.6
++++ testcases/kernel/mem/shmt/shmt06.c  6 Jan 2007 20:19:12 -0000
+@@ -51,6 +51,8 @@
+ #define                ADDR1           (void *)0xA0000
+ #define         ADDR_MIPS       (void *)0x80000
+ #define         ADDR1_MIPS      (void *)0xC0000
++#define                ADDR_HPPA       (void *)0x10000000
++#define                ADDR1_HPPA      (void *)0x20000000
+ #define        ADDR_IA         (void *)0x40000000
+ #define        ADDR1_IA        (void *)0x50000000
+ #define                SIZE            16*1024
+@@ -111,6 +113,8 @@ int main()
+                  cp = (char *) shmat(shmid, (void*) NULL, 0);
+ #elif defined(__mips__)
+                  cp = (char *) shmat(shmid, ADDR_MIPS, 0);
++#elif defined(__hppa__)
++                 cp = (char *) shmat(shmid, ADDR_HPPA, 0);
+ #else
+                  cp = (char *) shmat(shmid, ADDR, 0);
+ #endif 
+@@ -187,6 +191,8 @@ int child()
+                  cp = (char *) shmat(shmid, (void *) NULL, 0);
+ #elif defined(__mips__)        
+                  cp = (char *) shmat(shmid, ADDR1_MIPS, 0);
++#elif defined(__hppa__)        
++                 cp = (char *) shmat(shmid, ADDR1_HPPA, 0);
+ #else
+                  cp = (char *) shmat(shmid, ADDR1, 0);
+ #endif
+Index: testcases/kernel/mem/shmt/shmt07.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/mem/shmt/shmt07.c,v
+retrieving revision 1.4
+diff -u -p -r1.4 shmt07.c
+--- testcases/kernel/mem/shmt/shmt07.c  29 Jul 2003 19:46:14 -0000      1.4
++++ testcases/kernel/mem/shmt/shmt07.c  6 Jan 2007 20:19:12 -0000
+@@ -84,7 +84,7 @@ int main()
+ 
+ #ifdef __ia64__        
+          cp = (char *) shmat(shmid, ADDR_IA, 0);
+-#elif defined(__ARM_ARCH_4T__)
++#elif defined(__ARM_ARCH_4T__) || defined(__hppa__)
+          cp = (char *) shmat(shmid, (void *) NULL, 0);
+ #else
+          cp = (char *) shmat(shmid, ADDR, 0);
+Index: testcases/kernel/mem/shmt/shmt09.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/mem/shmt/shmt09.c,v
+retrieving revision 1.11
+diff -u -p -r1.11 shmt09.c
+--- testcases/kernel/mem/shmt/shmt09.c  15 Nov 2006 21:11:43 -0000      1.11
++++ testcases/kernel/mem/shmt/shmt09.c  6 Jan 2007 20:19:12 -0000
+@@ -68,7 +68,7 @@ int main()
+        char    *c1=NULL, *c2=NULL, *c3=NULL;
+        void    *vp;
+        int     shmid;
+-#if defined(__ia64__) || defined(__mips__)
++#if defined(__ia64__) || defined(__mips__) || defined(__hppa__)
+        int     increment;
+ #endif
+        key_t   key;
+@@ -179,7 +179,7 @@ int main()
+                        rm_shm(shmid);
+                        tst_exit();
+        }
+-#elif __mips__
++#elif defined(__mips__) || defined(__hppa__)
+                increment=262144;        /* 256Kb */
+                while ((vp = sbrk(increment)) != (void *)-1);
+                if (errno != ENOMEM) {
+Index: testcases/kernel/io/direct_io/diotest4.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/io/direct_io/diotest4.c,v
+retrieving revision 1.18
+diff -u -p -r1.18 diotest4.c
+--- testcases/kernel/io/direct_io/diotest4.c    9 Nov 2006 16:34:11 -0000       1.18
++++ testcases/kernel/io/direct_io/diotest4.c    6 Jan 2007 20:19:12 -0000
+@@ -546,6 +546,8 @@ main(int argc, char *argv[])
+        else {
+ #if defined(__powerpc64__)
+                ret = read(fd, (char*)(((ulong *)main)[0] & pagemask), count);
++#elif defined(__hppa__)
++               ret = read(fd, (char*)((ulong)__builtin_return_address(0) & pagemask),
+count);
+ #else
+                ret = read(fd, (char*)((ulong)main & pagemask), count);
+ #endif
+@@ -563,6 +565,8 @@ main(int argc, char *argv[])
+        else {
+ #if defined(__powerpc64__)
+                ret = write(fd, (char *)(((ulong *)main)[0] & pagemask), count);
++#elif defined(__hppa__)
++               ret = write(fd, (char *)((ulong)__builtin_return_address(0) & pagemask),
+count);
+ #else
+                ret = write(fd, (char *)((ulong)main & pagemask), count);
+ #endif
+Index: testcases/kernel/include/linux_syscall_numbers.h
+===================================================================
+RCS
+file: /cvsroot/ltp/ltp/testcases/kernel/include/linux_syscall_numbers.h,v
+retrieving revision 1.2
+diff -u -p -r1.2 linux_syscall_numbers.h
+--- testcases/kernel/include/linux_syscall_numbers.h    10 Sep 2006 10:12:01
+-0000   1.2
++++ testcases/kernel/include/linux_syscall_numbers.h    6 Jan 2007 20:19:12
+-0000
+@@ -136,7 +136,7 @@
+ #endif
+ 
+ 
+-#ifdef __parisc__
++#if defined(__hppa__)
+ # ifndef __NR_openat
+ #  define __NR_openat 275
+ # endif
+@@ -179,6 +179,15 @@
+ # ifndef __NR_faccessat
+ #  define __NR_faccessat (__NR_openat + 12)
+ # endif
++# ifndef __NR_splice
++#  define __NR_splice 291
++# endif
++# ifndef __NR_tee
++#  define __NR_tee 293
++# endif
++# ifndef __NR_vmsplice
++#  define __NR_vmsplice 294
++# endif
+ #endif
+ 
+ 
 
 _______________________________________________
 parisc-linux mailing list
