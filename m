@@ -1,17 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] sshd triggers Protection id trap
-Date: Wed, 10 Jan 2007 15:21:46 -0700
-Message-ID: <20070110222146.GD29244__32761.0712535263$1416624261$gmane$org@colo.lackof.org>
-References: <20070109034731.GD1065@athena.road.mcmartin.ca>
-	<200701100205.l0A25XjX006906@hiauly1.hia.nrc.ca>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] [PATCH] shmat() and CONFIG_STACK_GROWSUP
+Date: Thu, 11 Jan 2007 20:15:58 +0100
+Message-ID: <200701112015.58821.deller__16019.4718781442$1416624261$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: T-Bone@parisc-linux.org,
- parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset="us-ascii"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200701100205.l0A25XjX006906@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,24 +17,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jan 09, 2007 at 09:05:33PM -0500, John David Anglin wrote:
-> I think all the hung processes aren't being scheduled.  strace shows
-> nothing and evertime I attach with gdb the processes are always at
-> exactly the same place.  It's killing the thread manager process that
-> crashes the system.  The others can be killed.
+I think this patch for the shmat() is obviously correct for our stack (which grows up).
+Basically we gain a small region of 4 Pages in which shmat() may map memory.
 
-Running "make -j4" on a 2-way machine with 2.6.20-rc3, top shows
-processes being scheduled only on CPU 0. CPU 1 is always idle.
-This was reproducible with 2.6.20-rc[23] on a500 and rp3440.
-I've verified this bug doesn't exist on 2.6.17-pa6.
-I need to retest with something more recent (ie 2.6.19).
+Ok ?
+If yes, should I commit or send to linux-kernel mailing list ?
 
-So I'm pretty sure we have a general scheduling bug and the above comments
-suggest these might be related problem...no evidence of course.
-Ideas on where I might start looking for the general bug?
+Helge
 
-thanks,
-grant
+diff --git a/ipc/shm.c b/ipc/shm.c
+index 6d16bb6..f5cc635 100644
+--- a/ipc/shm.c
++++ b/ipc/shm.c
+@@ -852,6 +852,7 @@ long do_shmat(int shmid, char __user *sh
+ 		user_addr = ERR_PTR(-EINVAL);
+ 		if (find_vma_intersection(current->mm, addr, addr + size))
+ 			goto invalid;
++#ifndef CONFIG_STACK_GROWSUP
+ 		/*
+ 		 * If shm segment goes below stack, make sure there is some
+ 		 * space left for the stack to grow (at least 4 pages).
+@@ -859,6 +860,7 @@ long do_shmat(int shmid, char __user *sh
+ 		if (addr < current->mm->start_stack &&
+ 		    addr > current->mm->start_stack - size - PAGE_SIZE * 5)
+ 			goto invalid;
++#endif
+ 	}
+ 		
+ 	user_addr = (void*) do_mmap (file, addr, size, prot, flags, 0);
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
