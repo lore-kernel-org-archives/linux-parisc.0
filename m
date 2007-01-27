@@ -1,12 +1,16 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [parisc-linux] binutils-2.17.50.0.10+ hates hppa ?
-Date: Sat, 27 Jan 2007 05:09:49 -0500
-Message-ID: <200701270509.50109.vapier__42379.2979251177$1416624268$gmane$org@gentoo.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] binutils-2.17.50.0.10+ hates hppa ?
+Date: Sat, 27 Jan 2007 11:13:48 -0500 (EST)
+Message-ID: <200701271613.l0RGDmXX008512__25184.3144222677$1416624268$gmane$org@hiauly1.hia.nrc.ca>
+References: <200701270509.50109.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1831314481=="
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: vapier@gentoo.org (Mike Frysinger)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200701270509.50109.vapier@gentoo.org> from "Mike Frysinger" at
+	Jan 27, 2007 05:09:49 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,68 +21,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1831314481==
-Content-Type: multipart/signed; boundary="nextPart4153313.UVMlQnOUaV";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+> after upgrading from 2.17.50.0.9 to 2.17.50.0.10 (.11 too), ld seems unable=
+>  to=20
+> do anything remotely basic ... is there something basic i'm missing here ? =
+>  i=20
+> verified that it isnt caused by the Gentoo patchsets as a vanilla build=20
+> exhibits the issue as well
 
---nextPart4153313.UVMlQnOUaV
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+There's been very few hppa changes to binutils in the past several
+months.  I can't duplicate the problem, so maybe there's something
+wrong with your libc setup.
 
-after upgrading from 2.17.50.0.9 to 2.17.50.0.10 (.11 too), ld seems unable=
- to=20
-do anything remotely basic ... is there something basic i'm missing here ? =
- i=20
-verified that it isnt caused by the Gentoo patchsets as a vanilla build=20
-exhibits the issue as well
+> $ cat test.c
+> int main() { fopen(); }
+> $ gcc test.c
+> /usr/hppa2.0-unknown-linux-gnu/binutils-bin/2.17.50.0.10/ld: /tmp/ccpL4Tbn.=
+> o(.text+0x10):=20
+> cannot handle R_PARISC_PCREL17F for fopen@@GLIBC_2.2
+> /usr/hppa2.0-unknown-linux-gnu/binutils-bin/2.17.50.0.10/ld: final link=20
+> failed: Bad value
+> collect2: ld returned 1 exit status
 
-$ cat test.c
-int main() { fopen(); }
-$ gcc test.c
-/usr/hppa2.0-unknown-linux-gnu/binutils-bin/2.17.50.0.10/ld: /tmp/ccpL4Tbn.=
-o(.text+0x10):=20
-cannot handle R_PARISC_PCREL17F for fopen@@GLIBC_2.2
-/usr/hppa2.0-unknown-linux-gnu/binutils-bin/2.17.50.0.10/ld: final link=20
-failed: Bad value
-collect2: ld returned 1 exit status
-$ gcc --version
-gcc (GCC) 4.1.1 (Gentoo 4.1.1-r3)
-=2Dmike
+You might try adding "-Wl,-v -Wl,--trace -Wl,--trace-symbol=fopen" to the
+above gcc command and see what it shows.  This should show the command
+used to link test and details of the lookup for the the symbol fopen.
 
---nextPart4153313.UVMlQnOUaV
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.1 (GNU/Linux)
-
-iQIVAwUARbsk7UFjO5/oN/WBAQIktA//YACyJkFnYlt0teuujM58D7rcYrr2yh82
-fM1l44NCdgwzGea/gn8K79/FaYfZqBHq1+kNTbRgbEzs/v9kWACBet6PApa7KooB
-7crzZNMS2vp/hPoigmktFj5x1CVzfYN1PbRcarnAH+I9kzoPpmj/H8+NQXIIevou
-qaBOpSZhQRtUlxdRtIXKsP28HAkneuoghhZztyhdxRXsamsWjPpyocfwGmCrFx9G
-VZqdh688bE+B2Bz/9zVWH/MNU/IPWMnKZAp+oZdztcCzFFO49QK5BWdRfOjqnOB5
-HZp1Ki5j42noSHnq+mwekEWj5VI3ssPwWsAtW0XFaKl9VkFSi6Ixoy7nlvEsp4JX
-NLcxq/TDkyYoqlCbjlTXkwHoR/lWwR9OHhMLPeg+Bb7q+fX1rsXRUc+HzaLgsW9o
-u+SiZBFj9kYwH2JO8KUSuBD2TydQcuhVKpYzKAVYCxP1WaujWbjyHACAgalEvGAp
-e4OL2VybPQA3uU2Un2N9LOsk9+8dIjut55WOfTAn9t71X1U/D1QYZeRh6iWEWOJX
-ap9AhDOshrQ9SINACSq80WfRgavD3gf+auSNn8w2XJhddjBzpQ/0gCWQmtcnGvWK
-0Bw7OGA/AJ8OiIBL6KxeaXrSrMywA+6VjD4Bya15ShBbEIPsWlQmQmx1cNjSgQ+U
-3HtYqMFJ8SI=
-=cOgw
------END PGP SIGNATURE-----
-
---nextPart4153313.UVMlQnOUaV--
-
---===============1831314481==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1831314481==--
