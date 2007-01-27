@@ -1,16 +1,15 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Mike Frysinger <vapier@gentoo.org>
 Subject: Re: [parisc-linux] binutils-2.17.50.0.10+ hates hppa ?
-Date: Sat, 27 Jan 2007 14:19:13 -0500 (EST)
-Message-ID: <200701271919.l0RJJDeq011264__45218.0795291953$1416624269$gmane$org@hiauly1.hia.nrc.ca>
-References: <200701271256.06424.vapier@gentoo.org>
+Date: Sat, 27 Jan 2007 14:38:51 -0500
+Message-ID: <200701271438.52157.vapier__15319.9034547017$1416624270$gmane$org@gentoo.org>
+References: <200701271919.l0RJJDeq011264@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
+Content-Type: multipart/mixed;
+  boundary="===============1167316613=="
 Cc: parisc-linux@lists.parisc-linux.org
-To: vapier@gentoo.org (Mike Frysinger)
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200701271256.06424.vapier@gentoo.org> from "Mike Frysinger" at
-	Jan 27, 2007 12:56:05 pm
+In-Reply-To: <200701271919.l0RJJDeq011264@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,34 +20,60 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > There's been very few hppa changes to binutils in the past several
-> > months.  I can't duplicate the problem, so maybe there's something
-> > wrong with your libc setup.
-> 
-> no, one of the very few changes to the hppa bfd broke things ... it's writi=
-> ng=20
-> the ELF OS ABI field as HPUX instead of Linux and well, that doesnt go over=
-> =20
-> very well :)
-> 
-> here's the weird thing ... looking at bfd/elf32-hppa.c in binutils 2.17.50.=
-> 0.
-> {10,11} doesnt seem to match the version actually in cvs ??
-> 
-> at any rate, attached patch applies against 2.17.50.0.10 and 2.17.50.0.11 a=
-> nd=20
+--===============1167316613==
+Content-Type: multipart/signed; boundary="nextPart1695403.t7L4tOXuut";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-The problem appears to have been introduced by gentoo by the addition
-of several ELF_OSABI defines to the file ;)  I don't think they should
-be there.
+--nextPart1695403.t7L4tOXuut
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-The new elf_bed defines look ok.
+On Saturday 27 January 2007 14:19, John David Anglin wrote:
+> The problem appears to have been introduced by gentoo by the addition
+> of several ELF_OSABI defines to the file ;)  I don't think they should
+> be there.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+huh ?  that patch was against vanilla binutils release ... in other words, =
+i=20
+did `tar jxf binutils-2.17.50.0.11.tar.bz2` ... so unless Gentoo has patche=
+d=20
+tar to screw up elf32-hppa.c, i dont think it's a Gentoo issue
+=2Dmike
+
+--nextPart1695403.t7L4tOXuut
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.1 (GNU/Linux)
+
+iQIVAwUARbuqS0FjO5/oN/WBAQI9hw//c6emD5wwVKWP2l2PhH3rcgNVaJ/rmDV6
+MnuyhnvJNRUxS2OJ2ENBnvTlHWD9458Yh37NTy6QdBAzzjMgbiyda3WLJ1kujOST
+UnyhuV/F48zjTVfFrNP+vh69ekEJNf39zuonDmkHQ9aRXiPj+C4fkopY+P8Lvcrc
+AieZirlJSDSpLPyWx1ZEcgxc1wdrAgL2w/pVQgMyyTZL5JsBd00Z2Z0BVSBXcR7B
+YzbLjPQ+e9smq4d5/AGSj5NJmCw/MrEysXAGCQag0BTpwv5vWF6g0oDnLN0jFjvm
+nxpcTqb1OPIBrA65x/j7J+pqgKYjbodpSuzknvamjZephNp8KWAKpei1NMYsi85X
+7bdTQSsPeHYPWI1U3iJRAAohHsVxcexhN7b+RPeD/C+7U8Ps96UhZWkNvJZ95/eB
+hBM6q14i2W1ehBetqMtZWNDIJT2nV+fVvzQXGClTzMJ2xdScSu8l9ld1cyQvOIpZ
+Tobt9IqOOHApFgxqCnpv/nCiJ8JEh+UhIO9w4RDlODjqZA71uk9AF3IsCCjoS0FI
+ID5qOm3OM3VabIS5q4hnd1VqvNnRSQXnekKHT1PPnp9vKzOBsmZmNOSodcpfQIsF
+tu0D1E4MebMgDq3GnNAowhZLV4Om86w8wrvwokFxl/da0yTWTLXGsm4Jabva2wB9
+arXkkWF+vBs=
+=iUvL
+-----END PGP SIGNATURE-----
+
+--nextPart1695403.t7L4tOXuut--
+
+--===============1167316613==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1167316613==--
