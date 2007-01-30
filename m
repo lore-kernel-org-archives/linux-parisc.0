@@ -1,17 +1,12 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] Re: [patch] use __u64 rather than u64 in parisc
-	statfs structs
-Date: Tue, 30 Jan 2007 21:14:05 -0500
-Message-ID: <20070131021404.GA7088__32568.790499545$1416624272$gmane$org@athena.road.mcmartin.ca>
-References: <200701281848.26804.vapier@gentoo.org>
+From: Guy Martin <gmsoft@tuxicoman.be>
+Subject: [parisc-linux] GCC 4.1.1 generates invalid mfctl,w asm instruction
+Date: Tue, 30 Jan 2007 15:19:34 +0100
+Message-ID: <20070130151934.cf3622e4.gmsoft__31801.6100013212$1416624273$gmane$org@tuxicoman.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: linux-kernel@vger.kernel.org,
- parisc-linux@lists.parisc-linux.org
-To: Mike Frysinger <vapier@gentoo.org>
+  charset=US-ASCII
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200701281848.26804.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,13 +17,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jan 28, 2007 at 06:48:26PM -0500, Mike Frysinger wrote:
-> the statfs header exports some structs to userspace ... the parisc statfs64 
-> struct currently uses u64 so the trivial attached patch fixes it to use __u64
-> -mike
 
-ack'd and merged. can you please not attach patches but properly send them
-inline so i don't have to edit them before applying them to my tree?
+Hi all,
+
+Reference : http://h21007.www2.hp.com/dspp/tech/tech_TechDocumentDetailPage_IDX/1,1701,959!114!244,00.html
+
+According this doc, the ,w completer of the mfctl instruction is only used for the cr11 register. This is the way binutils handle it.
+However, gcc will generate the following instruction "mfctl,w %%cr27,%0" while compiling glibc-2.5 on pa2.0.
+
+This little patch fix this :
+
+diff -uNr gcc-4.1.1.orig/gcc/config/pa/pa.md gcc-4.1.1/gcc/config/pa/pa.md
+--- gcc-4.1.1.orig/gcc/config/pa/pa.md  2007-01-30 06:59:07.579391048 +0000
++++ gcc-4.1.1/gcc/config/pa/pa.md       2007-01-30 07:23:29.213188936 +0000
+@@ -9854,7 +9854,7 @@
+   [(set (match_operand:SI 0 "register_operand" "=r")
+        (unspec:SI [(const_int 0)] UNSPEC_TP))]
+   ""
+-  "{mfctl|mfctl,w} %%cr27,%0"
++  "mfctl %%cr27,%0"
+   [(set_attr "type" "multi")
+    (set_attr "length" "4")])
+
+
+Please review.
+
+
+Regards,
+  Guy
+
+
+-- 
+Guy Martin
+Gentoo Linux - HPPA port Lead
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
