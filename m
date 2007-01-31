@@ -1,15 +1,13 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: Re: [parisc-linux] Help with J5600 (Model: 9000/785/J5600)
-Date: Thu, 25 Jan 2007 19:05:39 -0500
-Message-ID: <20070126000539.GB13938__45686.3864594654$1416624635$gmane$org@athena.road.mcmartin.ca>
-References: <epbfs6$62t$1@sea.gmane.org>
+From: "Joel Soete" <soete.joel@scarlet.be>
+Subject: [parisc-linux] an ultimate question about "at least 7 insn"
+Date: Wed, 31 Jan 2007 11:00:38 +0100
+Message-ID: <JCQ952$77E869952C796B32BB4B0FAD30F577E3__47705.8802884587$1416624635$gmane$org@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org
-To: Michael Greene <listsnews@cox.net>
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@parisc-linux.org>
+To: "grundler" <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <epbfs6$62t$1@sea.gmane.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,26 +18,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jan 25, 2007 at 06:52:39PM -0500, Michael Greene wrote:
-> I am trying to get any version of hppa linux running on an old J5600, 
-> <snip>
-> SBA found Astro 2.1 at 0xfed00000
-> Elroy version TR4.0 (0x5) found at 0xfed30000
-> PCI: Enabled native mode for NS87415 (pif=0x8f)
-> iosapic: 0xfed30800 : no IRT entry for slot 12, pin 1
-> iosapic: no IRTE for 0000:00:0c.0 (IRQ not connected?)
-> iosapic: 0xfed30800 : no IRT entry for slot 13, pin 1
-> iosapic: no IRTE for 0000:00:0d.0 (IRQ not connected?)
-> iosapic: 0xfed30800 : no IRT entry for slot 14, pin 4
-> iosapic: no IRTE for 0000:00:0e.2 (IRQ not connected?)
-> iosapic: 0xfed30800 : no IRT entry for slot 15, pin 1
-> iosapic: no IRTE for 0000:00:0f.0 (IRQ not connected?)
-> iosapic: 0xfed30800 : no IRT entry for slot 15, pin 1
-> iosapic: no IRTE for 0000:00:0f.1 (IRQ not connected?)
-> Elroy version TR4.0 (0x5) found at 0xfed32000
+Hello Grant,
 
-Do you have any PCI cards in this machine? Something is badly
-broken in the firmware.
+Some time ago we spoke about some programming note like in pa11_acd.pdf:
+[snip]
+Software may rely upon this instruction translation in order to improve
+performance in process dispatch. For example, in this code sequence:
+    SSM 0,gr0       ; initial RSM, SSM or MTSM
+    LDW             ; set up process state
+    .               ; must be at least 7 instructions
+    .               ; between the system mask instrs
+    .
+    LDW
+    RSM 8,gr0       ; set PSW Q-bit to 0
+    MTCTL reg1,cr20 ; set up IIASQ
+[snip]
+
+My question: is that request of 7 insn is hard-coded somewhere in silicon=
+ or
+much more a logical value because of cache line size (e.g. 32 byte on a d=
+380
+and as an insn is 32 bit wide =3D=3D 4 byte)? 
+
+Why? because I noticed that recent system like n4k seems to have a bigger=
+
+cacheline (according jda patch 64 byte), though.
+
+Tia,
+    Joel---=0AScarlet One - Combinez l'ADSL avec la telephonie fixe illim=
+itee et epargnez 400 euros=0Ahttp://www.scarlet.be =0A
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
