@@ -1,12 +1,15 @@
-From: Aurelien Jarno <aurelien@aurel32.net>
-Subject: [parisc-linux] glibc 2.5 and binutils CVS
-Date: Fri, 02 Feb 2007 19:05:21 +0100
-Message-ID: <45C37D61.4040507__11698.0355502621$1416624273$gmane$org@aurel32.net>
+From: Guy Martin <gmsoft@gentoo.org>
+Subject: Re: [parisc-linux] glibc 2.5 and binutils CVS
+Date: Fri, 2 Feb 2007 19:28:09 +0100
+Message-ID: <20070202192809.865707d4.gmsoft__26122.7298331962$1416624273$gmane$org@gentoo.org>
+References: <45C37D61.4040507@aurel32.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+  boundary="Multipart=_Fri__2_Feb_2007_19_28_09_+0100_oiBz8E8FrpMnsfYL"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Aurelien Jarno <aurelien@aurel32.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <45C37D61.4040507@aurel32.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,27 +20,74 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi all,
+This is a multi-part message in MIME format.
 
-I am trying to build glibc 2.5 with a CVS version of binutils
-(2.17.20070103) in order to enable thread local storage support.
+--Multipart=_Fri__2_Feb_2007_19_28_09_+0100_oiBz8E8FrpMnsfYL
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I get an error on an assembly file:
-../ports/sysdeps/hppa/dl-trampoline.S: Assembler messages:
-../ports/sysdeps/hppa/dl-trampoline.S:287: Error: open CFI at the end of
-file; missing .cfi_endproc directive
 
-Does anybody know how to fix that?
+Aurelien,
 
-Thanks,
-Aurélien
+The trivial attached patch fix this issue.
 
--- 
-  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
- : :' :  Debian developer           | Electrical Engineer
- `. `'   aurel32@debian.org         | aurelien@aurel32.net
-   `-    people.debian.org/~aurel32 | www.aurel32.net
+Glibc hackers, please commit.
+
+  Guy
+
+On Fri, 02 Feb 2007 19:05:21 +0100
+Aurelien Jarno <aurelien@aurel32.net> wrote:
+
+> Hi all,
+>=20
+> I am trying to build glibc 2.5 with a CVS version of binutils
+> (2.17.20070103) in order to enable thread local storage support.
+>=20
+> I get an error on an assembly file:
+> ../ports/sysdeps/hppa/dl-trampoline.S: Assembler messages:
+> ../ports/sysdeps/hppa/dl-trampoline.S:287: Error: open CFI at the end of
+> file; missing .cfi_endproc directive
+>=20
+> Does anybody know how to fix that?
+>=20
+> Thanks,
+> Aur=E9lien
+
+--=20
+Guy Martin
+Gentoo Linux - HPPA port Lead
+
+--Multipart=_Fri__2_Feb_2007_19_28_09_+0100_oiBz8E8FrpMnsfYL
+Content-Type: text/x-patch;
+ name="glibc-missing-cfi_procend.diff"
+Content-Disposition: attachment;
+ filename="glibc-missing-cfi_procend.diff"
+Content-Transfer-Encoding: 7bit
+
+
+Add missing cfi_procend.
+
+Signed-off-by: Guy Martin <gmsoft@tuxicoman.be>
+
+diff -uNr glibc-2.5.orig/ports/sysdeps/hppa/dl-trampoline.S glibc-2.5/ports/sysdeps/hppa/dl-trampoline.S
+--- glibc-2.5.orig/ports/sysdeps/hppa/dl-trampoline.S	2006-09-07 16:34:43.000000000 +0000
++++ glibc-2.5/ports/sysdeps/hppa/dl-trampoline.S	2007-01-30 15:15:58.000000000 +0000
+@@ -284,5 +284,6 @@
+ 	bv,n	0(%r2)
+         .EXIT
+         .PROCEND
++	cfi_endproc
+ 	.size   _dl_runtime_profile, . - _dl_runtime_profile
+ 
+
+--Multipart=_Fri__2_Feb_2007_19_28_09_+0100_oiBz8E8FrpMnsfYL
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--Multipart=_Fri__2_Feb_2007_19_28_09_+0100_oiBz8E8FrpMnsfYL--
