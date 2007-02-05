@@ -1,16 +1,13 @@
-From: "Max Grabert" <parisc@gmail.com>
-Subject: Re: [parisc-linux] J5600 Video
-Date: Thu, 8 Feb 2007 01:05:16 +0100
-Message-ID: <e6eae0290702071605x213ec1cdq81dc168a390fb84b__17701.3308777989$1416624277$gmane$org@mail.gmail.com>
-References: <45CA42F4.2070207@cox.net>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: [parisc-linux] glibc 2.5 & TLS linuxthreads (+ NPTL status)
+Date: Mon, 05 Feb 2007 22:25:35 +0100
+Message-ID: <45C7A0CF.4020404__39680.7162710049$1416624277$gmane$org@aurel32.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1841894822=="
-Cc: debian-glibc@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: "Michael Greene" <listsnews@cox.net>
+Content-Type: text/plain;
+  charset=ISO-8859-1
+Cc: GNU Libc Maintainers <debian-glibc@lists.debian.org>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <45CA42F4.2070207@cox.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,53 +18,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1841894822==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_17375_6750289.1170893116664"
+Hi all,
 
-------=_Part_17375_6750289.1170893116664
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I spent the last week-end trying to get the Debian glibc 2.5 package
+built with linuxthreads and TLS support on HPPA. And it was successfull!
+The packages should be available in the experimental repository when the
+HPPA autobuilder have built it (my build was a bit hackish).
 
-On 07/02/07, Michael Greene <listsnews@cox.net> wrote:
->
-> I have my old J5600 recompiled and running with 2.6.19.1 kernel. I put
-> an old Voodoo3 2000 rev 1 in the secondary pci slot and it is recognized
-> by the system (not compiled in the kernel just lspci).  Is there any
-> trick to getting it to work with linux in the J5600 before I waste time
-> trying?
+FYI, I used binutils 2.17 CVS 20070103 and 4.2.0 CVS 20070105.
 
+To make the glibc buildable I had to use the following patch from Carlos
+O'Donell:
+http://svn.debian.org/wsvn/pkg-glibc/glibc-package/branches/glibc-2.5/debian/patches/hppa/submitted-lt.diff?op=file&rev=0&sc=0
 
-At one time I was trying to use a Voodoo3 3000 in a C3000, but I was
-unsuccessful (linux fb wouldn't initialise/turn on the display, and
-the native XFree86 driver would crash the machine).
-That was about 2 years ago I think, and some things have changed since
-then ... you might even be successful today. Just try and find out :-)
+This patch is already very old, but has still not be committed to the
+CVS. Is it something wanted, or has it only been forgotten?
 
-   Max
+Also what is the current status of NPTL on HPPA. Last time I tried it
+was building but they were some failures in the testsuite. I am
+currently building a test version here. Is it something stable enough
+that it can be used "in production"? I have seen Gentoo has made the
+switch...
 
-------=_Part_17375_6750289.1170893116664
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Bye,
+Aurelien
 
-On 07/02/07, <b class="gmail_sendername">Michael Greene</b> &lt;<a href="mailto:listsnews@cox.net">listsnews@cox.net</a>&gt; wrote:<div><span class="gmail_quote"></span><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-I have my old J5600 recompiled and running with <a href="http://2.6.19.1">2.6.19.1</a> kernel. I put<br>an old Voodoo3 2000 rev 1 in the secondary pci slot and it is recognized<br>by the system (not compiled in the kernel just lspci).&nbsp;&nbsp;Is there any
-<br>trick to getting it to work with linux in the J5600 before I waste time<br>trying?</blockquote><div><br>At one time I was trying to use a Voodoo3 3000 in a C3000, but I was<br>unsuccessful (linux fb wouldn&#39;t initialise/turn on the display, and
-<br>the native XFree86 driver would crash the machine).<br>That was about 2 years ago I think, and some things have changed since<br>then ... you might even be successful today. Just try and find out :-)<br><br>&nbsp;&nbsp; Max<br>
-</div></div>
-
-------=_Part_17375_6750289.1170893116664--
-
---===============1841894822==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+-- 
+  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
+ : :' :  Debian developer           | Electrical Engineer
+ `. `'   aurel32@debian.org         | aurelien@aurel32.net
+   `-    people.debian.org/~aurel32 | www.aurel32.net
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1841894822==--
