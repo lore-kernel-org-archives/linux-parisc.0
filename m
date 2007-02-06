@@ -1,20 +1,16 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] Floppy disk support for 9000 series (715, 755,
-	etc.) workstations.
-Date: Thu, 8 Feb 2007 13:11:48 -0700
-Message-ID: <20070208201148.GP13101__32070.1528959491$1416624274$gmane$org@parisc-linux.org>
-References: <45B67554.6010208@scires.com>
-	<20070124162810.GA31075@colo.lackof.org>
-	<45CB5C9D.1070601@scires.com>
-	<20070208173808.GL13101@parisc-linux.org>
-	<45CB8357.2050703@scires.com>
+Subject: Re: [parisc-linux] glibc nptl failure baseline update.
+Date: Tue, 6 Feb 2007 05:23:29 -0700
+Message-ID: <20070206122329.GA13101__6144.23097945309$1416624275$gmane$org@parisc-linux.org>
+References: <119aab440702051913m1edfb6ecg535c80d2301c9c11@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "James K. Love" <jlove@scires.com>
+Cc: debian-glibc@lists.debian.org,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <45CB8357.2050703@scires.com>
+In-Reply-To: <119aab440702051913m1edfb6ecg535c80d2301c9c11@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,13 +21,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Feb 08, 2007 at 03:08:55PM -0500, James K. Love wrote:
-> I haven't looked at the fdformat code either, but it aborts early due to the
-> scsi floppy device having the wrong major number.  I don't think it even 
-> gets to
-> any ioctls.  BTW, the mtools functions all appear to work.
+On Mon, Feb 05, 2007 at 10:13:01PM -0500, Carlos O'Donell wrote:
+> make[2]: *** [/libc-tls-nptl/io/tst-fstatat.out] Error 1
+> make[2]: *** [/libc-tls-nptl/io/tst-futimesat.out] Error 1
+> make[2]: *** [/libc-tls-nptl/io/tst-renameat.out] Error 1
+> make[2]: *** [/libc-tls-nptl/io/tst-fchmodat.out] Error 1
+> make[2]: *** [/libc-tls-nptl/io/tst-symlinkat.out] Error 1
+> make[2]: *** [/libc-tls-nptl/io/tst-linkat.out] Error 1
+> make[2]: *** [/libc-tls-nptl/io/tst-mkdirat.out] Error 1
+> make[2]: *** [/libc-tls-nptl/io/tst-mkfifoat.out] Error 1
 
-Oh ... I guess we just need to fix fdformat then.  Thanks.
+I guess we need to hook up the *at syscalls.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
