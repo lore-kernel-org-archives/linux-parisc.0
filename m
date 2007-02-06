@@ -1,16 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] 64-bit kernel broken.
-Date: Thu, 8 Feb 2007 19:43:14 -0500
-Message-ID: <20070209004314.GE18899__30614.8784970448$1416624275$gmane$org@athena.road.mcmartin.ca>
-References: <119aab440702061420w2b5ab788g815313761f440bc9@mail.gmail.com>
-	<20070209003302.GD18899@athena.road.mcmartin.ca>
+From: Guy Martin <gmsoft@gentoo.org>
+Subject: Re: [parisc-linux] glibc nptl failure baseline update.
+Date: Tue, 6 Feb 2007 22:42:46 +0100
+Message-ID: <20070206224246.3000a76c.gmsoft__30966.1500774839$1416624275$gmane$org@gentoo.org>
+References: <119aab440702051913m1edfb6ecg535c80d2301c9c11@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Kyle McMartin <kyle@mcmartin.ca>
+  charset=US-ASCII
+Cc: debian-glibc@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070209003302.GD18899@athena.road.mcmartin.ca>
+In-Reply-To: <119aab440702051913m1edfb6ecg535c80d2301c9c11@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +21,95 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Feb 08, 2007 at 07:33:02PM -0500, Kyle McMartin wrote:
-> On Tue, Feb 06, 2007 at 05:20:18PM -0500, Carlos O'Donell wrote:
-> > Run this test:
-> > http://www.parisc-linux.org/~carlos/tst-sigqueue.c
-> > 
-> > On a 32-bit userspace, with a 64-bit 2.6.18 kernel and the test exits with 
-> > 0.
-> > 
-> > carlos@firin:~$ ./tst-sigqueue
-> > in f
-> > pid = 1429
-> > new thread: 1429
-> > carlos@firin:~$ echo $?
-> > 0
-> > 
-> > Run it with a 64-bit 2.6.20 kernel and you get an error.
-> > 
-> > carlos@firin:~$ ./tst-sigqueue
-> > in f
-> > pid = 31148
-> > new thread: 31148
-> > expected PID 31148, got si_pid 1000
-> > carlos@firin:~$ echo $?
-> > 1
-> > 
-> 
-> Right. This got inadvertantly reverted with some other stuff. Fixed in a
-> second.
+On Mon, 5 Feb 2007 22:13:01 -0500
+"Carlos O'Donell" <carlos@systemhalted.org> wrote:
 
-Fixed in 1736b4bbf2bbfebaad06114d569f3617517524d1.
+> This is my official baseline as of 2007-02-05.
+> 
+> To get the baseline you need to apply something like this patch:
+> http://www.parisc-linux.org/~carlos/libc-head-2007-02-05.diff
+> 
+> Anything non-generic is already in libc ports for hppa.
+> 
+> I'm interested in hearing if the gentoo or ubuntu people can reproduce
+> this baseline.
+> In theory this baseline is good enough for a "beta" quality userspace.
+> I think we are out of "alpha" quality.
+> 
+> Cheers,
+> Carlos.
+
+
+Carlos,
+
+This is the result of the patchset I've created :
+
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/math/test-float.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/math/test-double.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/math/test-ifloat.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/math/test-idouble.out] Error 1
+make[1]: *** [math/tests] Error 2
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/libio/tst-memstream2.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/libio/tst-wmemstream2.out] Error 1
+make[1]: *** [libio/tests] Error 2
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/string/tst-strxfrm2.out] Error 1
+make[1]: *** [string/tests] Error 2
+make[2]: [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/posix/annexc.out] Error 1 (ignored)
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/nptl/tst-cancelx4.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/nptl/tst-cancelx5.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/nptl/tst-cancelx20.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/nptl/tst-cancelx21.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/nptl/tst-cleanupx4.out] Error 1
+make[1]: *** [nptl/tests] Error 2
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/rt/tst-timer4.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/rt/tst-timer5.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/rt/tst-cputimer1.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/rt/tst-cputimer2.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/rt/tst-cputimer3.out] Error 1
+make[1]: *** [rt/tests] Error 2
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/elf/tst-pie1.out] Error 139
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/elf/tst-audit2.out] Error 139
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/elf/tst-addr1.out] Error 1
+make[2]: *** [/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/elf/check-textrel.out] Error 1
+make[1]: *** [elf/tests] Error 2
+make: *** [check] Error 2
+
+I used those patches :
+
+7001_hppa_local-inlining.patch : from debian's deb
+7002_hppa_submitted-lt.patch : idem
+7003_hppa_ports-cvs-head-20070129.patch : cvs head of the ports repo on the 20070129
+7005_hppa_cvs-head-20061203.patch : cvs head as of 20061203 of the libcd repo. This is the time of the last hppa commit to ports
+7006_hppa_ports-cvs-head-20070205.patch : your patch mentionned in your previous email
+7007_hppa_various-fixes.patch : cfi_endproc fix + 2 small include fix
+
+
+We have always had the floating point errors even on previous glibc.
+
+The memstream tests fail with this error "Timed out: killed the child process"
+
+The cancel tests fail with message similar to this :
+cleanup handler not called for 'pause'
+
+tst-timer4.out :
+clock_gettime returned timespec = { 1170787417, 996313000 }
+clock_getres returned timespec = { 0, 4000250 }
+
+tst-addr1.out :
+found symbol (null) in /var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/elf/tst-addr1
+
+check-textrel.out :
+/var/tmp/portage/glibc-2.5/work/build-default-hppa2.0-unknown-linux-gnu-nptl/libc.so: segment 3 is executable and writable
+
+
+Cheers,
+  Guy
+
+
+-- 
+Guy Martin
+Gentoo Linux - HPPA port lead
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
