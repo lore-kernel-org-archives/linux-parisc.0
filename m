@@ -1,17 +1,18 @@
-From: "James K. Love" <jlove@scires.com>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] Floppy disk support for 9000 series (715, 755,
 	etc.) workstations.
-Date: Thu, 08 Feb 2007 12:23:41 -0500
-Message-ID: <45CB5C9D.1070601__2433.89864122054$1416624278$gmane$org@scires.com>
+Date: Thu, 8 Feb 2007 10:38:08 -0700
+Message-ID: <20070208173808.GL13101__35519.0112641596$1416624278$gmane$org@parisc-linux.org>
 References: <45B67554.6010208@scires.com>
 	<20070124162810.GA31075@colo.lackof.org>
-Reply-To: jlove@scires.com
+	<45CB5C9D.1070601@scires.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="------------030801000502080206080706"
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: "James K. Love" <jlove@scires.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070124162810.GA31075@colo.lackof.org>
+In-Reply-To: <45CB5C9D.1070601@scires.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,111 +23,57 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This is a multi-part message in MIME format.
---------------030801000502080206080706
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 1/17/2007 2:16 PM, Matt Taggart wrote:
-> "James Love" writes...
->> They use a HP-proprietary TEAC SCSI floppy disk, which appears to be an
->> IDE drive with a SCSI-IO/FDC board piggy-backed on it. Any idea whether
->> the TEAC drive is the one that HP won't provide the documents for?
->
-> I hope you are able to make progress on a driver, that would be cool. But I
-> don't think anyone from HP is going to be able to help. :(
->
->> Regardless, the drive works in MKLinux, so hopefully someone knows
->> something about how it works...
->
-> Yeah it sounds like there is hope of getting it working then.
->
-
-On 1/24/2007 11:28 AM, Grant Grundler wrote:
-> On Tue, Jan 23, 2007 at 03:51:32PM -0500, James K. Love wrote:
->> In an attempt investigate further, I installed MKLinux on a 715, and the
->> scsi floppy drive was supported through some combination of the MACH
->> kernel and it's hosted Linux kernel.  I've looked through the MKLinux
->> source code, and it appears that the MACH scsi driver had some support
->> for flexible disk drives (which I assume is the floppy drive), but I'm
->> uncertain if this is the only missing piece to the puzzle.  If anyone
->> has any additional info/insight, I'd really appreciated it.
+On Thu, Feb 08, 2007 at 12:23:41PM -0500, James K. Love wrote:
+> I finally figured some of this out.  I ported the MACH flexible scsi disk
+> code over to the 2.6 kernel, and I can now mount/read/write with my HP TEAC 
+> FC-1
+> drive.  The modifications I made were inside the scsi device (sd) driver, 
+> which
+> is similar to where they were inside the MACH kernel.  This is obviously not
+> ideal, since the device major is for a scsi disk, but the drive is really a
+> floppy.  This breaks some user-space floppy apps like fdformat.  There 
+> really
+> should be a new floppy driver similar to the cdrom driver, but these 
+> changes may
+> not work with any other scsi floppy drive (are there any others?).  I only 
+> have
+> a few HP OEM TEAC revs to test with here.
 > 
-> If you can figure out what's missing between linux and MKlinux there
-> is a good change it could get added. The closer you get to providing
-> a patch, the more likely it will get included.
-> 
+> Bottom line... The scsi disk driver could be patched, but it may only 
+> provide
+> partial/experimental support for this drive without extensive changes.  I'm
+> traditionally a user-space developer, so I'd appreciate any advice/thoughts
+> before I get knee deep.  Also, if someone could pass along a few links to 
+> some
+> procedural docs about properly submitting kernel code/patches, I'd really
+> appreciate it.
 
-I finally figured some of this out.  I ported the MACH flexible scsi disk
-code over to the 2.6 kernel, and I can now mount/read/write with my HP TEAC FC-1
-drive.  The modifications I made were inside the scsi device (sd) driver, which
-is similar to where they were inside the MACH kernel.  This is obviously not
-ideal, since the device major is for a scsi disk, but the drive is really a
-floppy.  This breaks some user-space floppy apps like fdformat.  There really
-should be a new floppy driver similar to the cdrom driver, but these changes may
-not work with any other scsi floppy drive (are there any others?).  I only have
-a few HP OEM TEAC revs to test with here.
+That's good work!
 
-Bottom line... The scsi disk driver could be patched, but it may only provide
-partial/experimental support for this drive without extensive changes.  I'm
-traditionally a user-space developer, so I'd appreciate any advice/thoughts
-before I get knee deep.  Also, if someone could pass along a few links to some
-procedural docs about properly submitting kernel code/patches, I'd really
-appreciate it.
+Could you post the patch to sd.c here?  I, and others, can look it over,
+critique it, and help polish it before you submit it to the linux-scsi
+list.  Or if you're brave, you could send it straight to linux-scsi
+(there's about 3 of us who're on both lists, so you may well see feedback
+>from a familiar name anyway).
 
-Thanks,
-James L.
+Without looking at the source code to check, I suspect the fdformat code
+is trying ioctls that are implemented in floppy.c and we might want to
+emulate them in sd.c if the device is a floppy.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---------------030801000502080206080706
-Content-Type: text/x-vcard; charset=utf-8;
- name="jlove.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="jlove.vcf"
-
-begin:vcard
-fn:James K. Love
-n:Love;James K.
-org:SPAWAR Systems Center Charleston, Code 523;Scientific Research Corporation, ISS Division
-adr:Building 3452, WS-20;;One Innovation Drive;Hanahan;SC;29406;USA
-email;internet:jlove@scires.com
-title:Software Engineer
-tel;work:843.218.6532
-x-mozilla-html:FALSE
-url:http://www.scires.com
-version:2.1
-end:vcard
-
-
---------------030801000502080206080706
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+We certainly could do a sf.c that's similar in spirit to sr, sd, st, etc.
+That might be the right approach, or it might be best to extend sd.
+The SCSI-2 spec says that floppy drives are Direct Access Devices (which
+sd normally drives).  But then, if we want to make it appear to Linux as
+if it's a floppy drive, sf.c would be the right way to go.  If we want
+to support machines with both a scsi floppy and a regular floppy at the
+same time (and such machines can certainly be constructed; eg a C3000
+with a SuperIO floppy and a scsi floppy, or a 725 with a Lasi floppy and
+a scsi floppy), then I think we have to use the 'sd' approach to avoid
+the drivers fighting over the major number.  A disadvantage to that is
+the lack of different device nodes for different sector sizes ... otoh,
+some may see that as an advantage ;-)
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---------------030801000502080206080706--
