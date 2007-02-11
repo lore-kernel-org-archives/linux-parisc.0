@@ -1,19 +1,18 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: [parisc-linux] Re: Fw: Another problem with making things static
-Date: Sun, 11 Feb 2007 09:56:53 -0600
-Message-ID: <1171209413.3406.30.camel__42827.8610147119$1416624284$gmane$org@mulgrave.il.steeleye.com>
-References: <20070210130136.9538498b.akpm@linux-foundation.org>
-	<20070210214309.GP12958@stusta.de>
-	<1171158436.3373.51.camel@mulgrave.il.steeleye.com>
-	<20070211073520.GR12958@stusta.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Expect defunct, kill -9 panics kernel?
+Date: Sun, 11 Feb 2007 12:17:08 -0500 (EST)
+Message-ID: <200702111717.l1BHH8dB023568__34888.6876753115$1416624284$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440702110909r2018a297k98b4f1baed54821a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Parisc List <parisc-linux@lists.parisc-linux.org>
-To: Adrian Bunk <bunk@stusta.de>
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: James.Bottomley@steeleye.com,
+ dave.anglin@nrc.ca,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070211073520.GR12958@stusta.de>
+In-Reply-To: <119aab440702110909r2018a297k98b4f1baed54821a@mail.gmail.com>
+	from "Carlos O'Donell" at Feb 11, 2007 12:09:24 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,32 +23,38 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2007-02-11 at 08:35 +0100, Adrian Bunk wrote:
-> On Sat, Feb 10, 2007 at 07:47:16PM -0600, James Bottomley wrote:
-> > On Sat, 2007-02-10 at 22:43 +0100, Adrian Bunk wrote:
-> > > First of all thanks to Andrew for forwarding this email to me - it's 
-> > > otherwise a bit hard to defend against an email that doesn't reach me.
-> > 
-> > I think if you read the email you'll find it didn't actually attack you
-> > at all ... I was careful only to ask for a change of policy before
-> > accepting a patch that does nothing but make a function static.
+> On 2/10/07, James Bottomley <James.Bottomley@steeleye.com> wrote:
+> > On Sat, 2007-02-10 at 14:37 -0500, John David Anglin wrote:
+> > > > 0x10 looks to be curr->func implying curr is NULL and thus the queue
+> > > > task_list is corrupt.
+> > >
+> > > Do you think it help to add a check in __wake_up for a NULL pointer?
+> >
+> > I suppose so ... I'd really like someone to validate my guess though,
+> > although an additional BUG_ON() can't hurt.
 > 
-> Then let's call it "trying to establish rule forbidding something 
-> established without even informing the people whose actions you want to 
-> become forbidden".
+> How do I validate your guess? Look for a null or bogus curr->func when
+> scheduling?
 
-I'm sorry, but I didn't realise you would be unable to come up with
-justifications for API removal, and thus this would become an
-insuperable bar to you.  The justification criterion was meant to be a
-more objective way of judging whether some API should be revoked and it
-seems to me, as a developer, to be a reasonable and not too onerous one.
-As Andrew pointed out, for most of the driver and FS symbols the
-justification is simply that this module isn't supposed to be exporting
-an API at all.
+I'm trying the change below.  Hasn't triggered yet.
 
-James
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 
-
+diff --git a/kernel/sched.c b/kernel/sched.c
+index cca93cc..277e426 100644
+--- a/kernel/sched.c
++++ b/kernel/sched.c
+@@ -3703,6 +3703,7 @@ void fastcall __wake_up(wait_queue_head_t *q, unsigned int mode,
+ {
+ 	unsigned long flags;
+ 
++	BUG_ON(!q);
+ 	spin_lock_irqsave(&q->lock, flags);
+ 	__wake_up_common(q, mode, nr_exclusive, 0, key);
+ 	spin_unlock_irqrestore(&q->lock, flags);
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
