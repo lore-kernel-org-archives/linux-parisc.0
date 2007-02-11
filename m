@@ -1,16 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] input constraints in atomic.h too loose ?
-Date: Sun, 11 Feb 2007 12:36:56 -0500 (EST)
-Message-ID: <200702111736.l1BHav1a028394__24370.5841283829$1416624284$gmane$org@hiauly1.hia.nrc.ca>
-References: <119aab440702110918k1aca7744rc8abb50949a22069@mail.gmail.com>
+Date: Sun, 11 Feb 2007 12:59:19 -0500 (EST)
+Message-ID: <200702111759.l1BHxJBD003332__41339.2244525768$1416624285$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440702110947u418c907eu19c3044230874df4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
 To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440702110918k1aca7744rc8abb50949a22069@mail.gmail.com>
-	from "Carlos O'Donell" at Feb 11, 2007 12:18:54 pm
+In-Reply-To: <119aab440702110947u418c907eu19c3044230874df4@mail.gmail.com>
+	from "Carlos O'Donell" at Feb 11, 2007 12:47:32 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,15 +21,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > /tmp/ccvCRbqg.s:43: Error: bad expression
+> There was a reason I didn't force them to a register, but I can't
+> remember. At this very moment I don't see why they couldn't have been
+> "=r".
 
-> What *is* the bad assembly here. Please don't make me count assembly
-> line numbers, just point me at the bad asm.
+> Did you want to test "=r" and change the two stw's to copy's?
 
-The problem is the "m" constraint is too broad for ldw and stw insns.
-These instructions don't accept any memory address.  As suggested,
-the "o" constraint should work.  Alternatively, the address of the
-variables could be forced to a register.
+That won't work.  If these are global variables, you need the
+*address* of the variables in registers and to use stw %rX,0(%Y)
+instead of stw %rX,%Y.
 
 Dave
 -- 
