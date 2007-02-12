@@ -1,22 +1,15 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Re: Fw: Another problem with making things static
-Date: Sun, 11 Feb 2007 11:54:05 -0500
-Message-ID: <20070211165405.GA4050__17506.8640303381$1416624286$gmane$org@athena.road.mcmartin.ca>
-References: <20070210130136.9538498b.akpm@linux-foundation.org>
-	<20070210214309.GP12958@stusta.de>
-	<1171158436.3373.51.camel@mulgrave.il.steeleye.com>
-	<20070210201911.7a16b5f3.akpm@linux-foundation.org>
-	<20070211072552.GC22248@colo.lackof.org>
-	<20070210234424.500ed1c9.akpm@linux-foundation.org>
+Subject: Re: [parisc-linux] statfs() problem with glibc-2.5
+Date: Mon, 12 Feb 2007 09:13:25 -0500
+Message-ID: <20070212141325.GC14731__11140.4532370672$1416624287$gmane$org@athena.road.mcmartin.ca>
+References: <20070212102844.f045d760.gmsoft@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Parisc List <parisc-linux@lists.parisc-linux.org>
-To: Andrew Morton <akpm@linux-foundation.org>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Guy Martin <gmsoft@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070210234424.500ed1c9.akpm@linux-foundation.org>
+In-Reply-To: <20070212102844.f045d760.gmsoft@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,21 +20,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Feb 10, 2007 at 11:44:24PM -0800, Andrew Morton wrote:
-> I say this a lot, but...  It is in the interests of arch maintainers to
-> help others to build cross-compilers.  If someone were to prepare a web
-> page (or even a script) which could be used to generate a kernel
-> cross-compilation environment for parisc then the parisc maintainers would
-> see a lot less breakage.
+On Mon, Feb 12, 2007 at 10:28:44AM +0100, Guy Martin wrote:
+> 
+> Hi all,
+> 
+> 
+> While running and testing glibc-2.5, I've encountered the following problem :
 > 
 
-Heh, I put this up last time you asked. :)
+Wow. Let me get my divining rod, crystal ball, and other tools to help
+out my clairvoyance...
 
-http://kyle.mcmartin.ca/hppa64-hp-linux-gcc-3.4.tar
-
-Cheers,
-	Kyle
-
+How about you strace it and tell us what bloody syscalls it used...
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
