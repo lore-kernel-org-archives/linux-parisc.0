@@ -1,16 +1,23 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] statfs() problem with glibc-2.5
-Date: Mon, 12 Feb 2007 09:48:06 -0700
-Message-ID: <20070212164806.GT13101__30408.7384058677$1416624288$gmane$org@parisc-linux.org>
-References: <20070212102844.f045d760.gmsoft@gentoo.org>
-	<20070212153731.846e2ad3.gmsoft@gentoo.org>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [parisc-linux] Re: Fw: Another problem with making things static
+Date: Mon, 12 Feb 2007 09:15:42 -0800
+Message-ID: <20070212091542.70951e2f.akpm__25110.3843715557$1416624288$gmane$org@linux-foundation.org>
+References: <20070210130136.9538498b.akpm@linux-foundation.org>
+	<20070210214309.GP12958@stusta.de>
+	<1171158436.3373.51.camel@mulgrave.il.steeleye.com>
+	<20070210201911.7a16b5f3.akpm@linux-foundation.org>
+	<20070211072552.GC22248@colo.lackof.org>
+	<20070210234424.500ed1c9.akpm@linux-foundation.org>
+	<20070211165405.GA4050@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Guy Martin <gmsoft@gentoo.org>
+  charset=US-ASCII
+Cc: James.Bottomley@SteelEye.com,
+ torvalds@linux-foundation.org,
+ parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070212153731.846e2ad3.gmsoft@gentoo.org>
+In-Reply-To: <20070211165405.GA4050@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,14 +28,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Feb 12, 2007 at 03:37:31PM +0100, Guy Martin wrote:
-> After some more troubleshooting, I've found out that parisc doesn't hook up the statfs64 syscall.
+> On Sun, 11 Feb 2007 11:54:05 -0500 Kyle McMartin <kyle@mcmartin.ca> wrote:
+> On Sat, Feb 10, 2007 at 11:44:24PM -0800, Andrew Morton wrote:
+> > I say this a lot, but...  It is in the interests of arch maintainers to
+> > help others to build cross-compilers.  If someone were to prepare a web
+> > page (or even a script) which could be used to generate a kernel
+> > cross-compilation environment for parisc then the parisc maintainers would
+> > see a lot less breakage.
+> > 
+> 
+> Heh, I put this up last time you asked. :)
+> 
+> http://kyle.mcmartin.ca/hppa64-hp-linux-gcc-3.4.tar
+> 
 
-I thought we didn't need a statfs64 syscall since it returns the same
-struct as statfs on parisc (due to the struct definitions already being
-big enough).  However, now that I review the definitions, I think you're
-right and we should hook it up.
-
+Drat, I have no memory of that.   Thanks..
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
