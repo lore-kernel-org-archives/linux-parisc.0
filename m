@@ -1,17 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Expect defunct, kill -9 panics kernel?
-Date: Sun, 11 Feb 2007 15:59:37 -0500 (EST)
-Message-ID: <200702112059.l1BKxboZ010491__35286.3322398209$1416624285$gmane$org@hiauly1.hia.nrc.ca>
-References: <1171226106.3406.47.camel@mulgrave.il.steeleye.com>
+From: Guy Martin <gmsoft@gentoo.org>
+Subject: [parisc-linux] statfs() problem with glibc-2.5
+Date: Mon, 12 Feb 2007 10:28:44 +0100
+Message-ID: <20070212102844.f045d760.gmsoft__33436.6176663481$1416624286$gmane$org@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: dave.anglin@nrc.ca,
- parisc-linux@lists.parisc-linux.org
-To: James.Bottomley@SteelEye.com (James Bottomley)
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1171226106.3406.47.camel@mulgrave.il.steeleye.com> from "James
-	Bottomley" at Feb 11, 2007 02:35:06 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,22 +17,42 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Right, now here's a bit of really useful detective work:
-> 
-> In the same piece of disassembly can you see what happens to %r26 ...
-> the first argument to __wake_up_common() which is the wait queue?  It
-> may be clobbered, but if it isn't by the time we fault we know that
-> 0x45f10250 is the address of the wait queue.  If we're incredibly lucky,
-> it's a symbol in the vmlinux, can you see if it is (and if it's valid)?
 
-In the code I'm looking at, r26 is copied to r7 near the beginning of
-__wake_up_common().  r7 is 0 in the register dump.  Of course, Carlos'
-kernel may differ.
+Hi all,
 
-Dave
+
+While running and testing glibc-2.5, I've encountered the following problem :
+
+hope bin # ./df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/sda3             276Y  276Y  539Z 100% /
+sysfs                18641256972210Y 18634655137640Y 70815813734120Y  21% /sys
+udev                 18641256972210Y 18634655137640Y 70815813734120Y  21% /dev
+devpts               18641256972210Y 18634655137640Y 70815813734120Y  21% /dev/pts
+shm                  18641256972210Y 18634655137640Y 70815813734120Y  21% /dev/shm
+usbfs                18641256972210Y 18634655137640Y 70815813734120Y  21% /proc/bus/usb
+playa:/usr/portage/distfiles
+                     18641256972210Y 18634655137640Y 70815813734120Y  21% /usr/portage/distfiles
+/dev/sdb4            18641256972210Y 18634655137640Y 70815813734120Y  21% /mnt/gentoo
+/dev/sdb2            18641256972210Y 18634655137640Y 70815813734120Y  21% /mnt/gentoo/boot
+
+
+Despite the fact that I whish I had that capacity, there is definately an issue.
+
+This is using glibc-2.5, 2.6.20-pa0 and corresponding headers.
+
+
+Let me know if you need more info.
+
+Cheers,
+  Guy
+
+
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Guy Martin
+Gentoo Linux - HPPA port lead
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
