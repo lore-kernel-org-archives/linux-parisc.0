@@ -1,23 +1,17 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [parisc-linux] Re: Fw: Another problem with making things static
-Date: Mon, 12 Feb 2007 09:15:42 -0800
-Message-ID: <20070212091542.70951e2f.akpm__25110.3843715557$1416624288$gmane$org@linux-foundation.org>
-References: <20070210130136.9538498b.akpm@linux-foundation.org>
-	<20070210214309.GP12958@stusta.de>
-	<1171158436.3373.51.camel@mulgrave.il.steeleye.com>
-	<20070210201911.7a16b5f3.akpm@linux-foundation.org>
-	<20070211072552.GC22248@colo.lackof.org>
-	<20070210234424.500ed1c9.akpm@linux-foundation.org>
-	<20070211165405.GA4050@athena.road.mcmartin.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: [parisc-linux] Re: [PATCH] Compat signal fixes for 64-bit parisc.
+Date: Mon, 12 Feb 2007 21:18:40 -0500
+Message-ID: <20070213021840.GC20686__15703.5382152118$1416624288$gmane$org@athena.road.mcmartin.ca>
+References: <119aab440702121814g7fbe0e90tf026c8f75ddd56d3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: James.Bottomley@SteelEye.com,
- torvalds@linux-foundation.org,
- parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+  charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>,
+ Matthew Wilcox <matthew@wil.cx>
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070211165405.GA4050@athena.road.mcmartin.ca>
+In-Reply-To: <119aab440702121814g7fbe0e90tf026c8f75ddd56d3@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,21 +22,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Sun, 11 Feb 2007 11:54:05 -0500 Kyle McMartin <kyle@mcmartin.ca> wrote:
-> On Sat, Feb 10, 2007 at 11:44:24PM -0800, Andrew Morton wrote:
-> > I say this a lot, but...  It is in the interests of arch maintainers to
-> > help others to build cross-compilers.  If someone were to prepare a web
-> > page (or even a script) which could be used to generate a kernel
-> > cross-compilation environment for parisc then the parisc maintainers would
-> > see a lot less breakage.
-> > 
+On Mon, Feb 12, 2007 at 09:14:28PM -0500, Carlos O'Donell wrote:
+> @@ -505,17 +505,15 @@ asmlinkage long compat_sys_rt_sigqueuein
+> 	struct compat_siginfo __user *uinfo)
+> {
+> 	siginfo_t info;
+> +	int ret;
+> +	mm_segment_t old_fs = get_fs();
 > 
-> Heh, I put this up last time you asked. :)
+> 	if (copy_siginfo_from_user32(&info, uinfo))
+> 		return -EFAULT;
 > 
-> http://kyle.mcmartin.ca/hppa64-hp-linux-gcc-3.4.tar
+> -	/* Not even root can pretend to send signals from the kernel.
+> -	   Nor can they impersonate a kill(), which adds source info.  */
+> -	if (info.si_code >= 0)
+> -		return -EPERM;
+> -	info.si_signo = sig;
+> -
+> -	/* POSIX.1b doesn't mention process groups.  */
+> -	return kill_proc_info(sig, &info, pid);
+> +	set_fs (KERNEL_DS);
+> +	ret = sys_rt_sigqueueinfo(pid, sig, &info);
+> +	set_fs (old_fs);
+> +	return ret;
+> }
 > 
 
-Drat, I have no memory of that.   Thanks..
+Why? We replicate the code in sys_rt_sigqueueinfo here to avoid the nasty
+set_fs/get_fs hacks. See my compat_sys_sysinfo changes for reference.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
