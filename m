@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: [parisc-linux] Re: [PATCH] Compat signal fixes for 64-bit parisc.
-Date: Mon, 12 Feb 2007 21:18:40 -0500
-Message-ID: <20070213021840.GC20686__15703.5382152118$1416624288$gmane$org@athena.road.mcmartin.ca>
+Date: Mon, 12 Feb 2007 21:23:48 -0500
+Message-ID: <20070213022348.GD20686__2147.41068562052$1416624289$gmane$org@athena.road.mcmartin.ca>
 References: <119aab440702121814g7fbe0e90tf026c8f75ddd56d3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -23,33 +23,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 On Mon, Feb 12, 2007 at 09:14:28PM -0500, Carlos O'Donell wrote:
-> @@ -505,17 +505,15 @@ asmlinkage long compat_sys_rt_sigqueuein
-> 	struct compat_siginfo __user *uinfo)
-> {
-> 	siginfo_t info;
-> +	int ret;
-> +	mm_segment_t old_fs = get_fs();
-> 
-> 	if (copy_siginfo_from_user32(&info, uinfo))
-> 		return -EFAULT;
-> 
-> -	/* Not even root can pretend to send signals from the kernel.
-> -	   Nor can they impersonate a kill(), which adds source info.  */
-> -	if (info.si_code >= 0)
-> -		return -EPERM;
-> -	info.si_signo = sig;
-> -
-> -	/* POSIX.1b doesn't mention process groups.  */
-> -	return kill_proc_info(sig, &info, pid);
-> +	set_fs (KERNEL_DS);
-> +	ret = sys_rt_sigqueueinfo(pid, sig, &info);
-> +	set_fs (old_fs);
-> +	return ret;
-> }
+> I see we are back to using our antiquated version of
+> copy_siginfo_to_user32. Let's stomp some bugs shall we? Please review.
 > 
 
-Why? We replicate the code in sys_rt_sigqueueinfo here to avoid the nasty
-set_fs/get_fs hacks. See my compat_sys_sysinfo changes for reference.
+Well, you never pushed any of it upstream. I don't know what
+you're complaining about.
+
+> This fixes the tst-timer segfault with glibc head, and does a little
+> cleanup. I have an acute feeling of deja-vu. Thankfully I feel taller
+> than ever, and the whole fix only took a little sleuthing.
+> 
+> For nostalgia read..
+> 
+> Date	Wed, 10 Dec 2003 19:17:56 -0500
+> From	Carlos O'Donell <>
+> Subject	[RFC] Compat siginfo_t for 64-bit kernels running 32-bit 
+> userspace.
+> http://lkml.org/lkml/2003/12/10/225
+> 
+> ...and note the date.
+> 
+
+I'm well aware. You can't make such changes to the core kernel and then just
+leave it for 3 years. We had to carry tens of KB of diff to the core kernel.
+
+Whatever, I've hit a wall with parisc, anything I want to do is blocked on an
+utter lack of documentation, so I pretty much have gone into maintenance mode
+hibernation. I have cooler toys these days anyway.
+
+-- Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
