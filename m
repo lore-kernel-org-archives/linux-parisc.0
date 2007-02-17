@@ -1,52 +1,76 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: call_init in libc6 2.3.6.ds1-11
-Date: Sat, 17 Feb 2007 15:43:07 -0500 (EST)
-Message-ID: <200702172043.l1HKh71P024335__35471.6398324401$1416624293$gmane$org@hiauly1.hia.nrc.ca>
-References: <119aab440702171237p32753949i7ade700ee405cead@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440702171237p32753949i7ade700ee405cead@mail.gmail.com>
-	from "Carlos O'Donell" at Feb 17, 2007 03:37:36 pm
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [PARISC] fix uninitialized spinlock in HIL keyboard driver
+Date: Sat, 17 Feb 2007 15:55:23 -0500
+Message-ID: <11717457253477-git-send-email-kyle__3678.15955910391$1416624293$gmane$org@parisc-linux.org>
+References: <11717457251848-git-send-email-kyle@parisc-linux.org> <11717457251606-git-send-email-kyle@parisc-linux.org>
+Cc: parisc-linux@lists.parisc-linux.org,
+ akpm@osdl.org,
+ Helge Deller <deller@gmx.de>,
+ Kyle McMartin <kyle@parisc-linux.org>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Return-Path: <kyle@athena.road.mcmartin.ca>
+In-Reply-To: <11717457251606-git-send-email-kyle@parisc-linux.org>
+List-ID: <linux-parisc.vger.kernel.org>
 
-> > While it's possible that DT_INIT and DT_FINI shouldn't point at function
-> > descriptors, the above hack can't be right since DL_DT_INIT_ADDRESS is used
-> > for calling init() from dl-init.c:
-> >
-> >       init_t init = (init_t) DL_DT_INIT_ADDRESS
-> >         (l, l->l_addr + l->l_info[DT_INIT]->d_un.d_ptr);
-> >
-> >       /* Call the function.  */
-> >       init (argc, argv, env);
-> 
-> We might have been lucky in that init () called another function which
-> setup r19 for us before we accessed data. I agree completely that r19
-> should be set to the r19 of the module before calling init(), even if
-> it *is* or *isn't* a function descriptor.
-> 
-> I wrote dl-lookupcfg.h, and the code you see there is legacy. I
-> carried it forward without understanding what it meant.
+From: Helge Deller <deller@gmx.de>
 
-It may be that special care is needed for applications that are
-statically linked.
+- remove some warnings for PARISC part of the driver
+- annotate hphilkeyb_keycode[] array as __read_mostly
 
-Dave
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+---
+ drivers/input/keyboard/hilkbd.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/input/keyboard/hilkbd.c b/drivers/input/keyboard/hilkbd.c
+index c2264a6..585f0a7 100644
+--- a/drivers/input/keyboard/hilkbd.c
++++ b/drivers/input/keyboard/hilkbd.c
+@@ -3,7 +3,7 @@
+  *
+  *  Copyright (C) 1998 Philip Blundell <philb@gnu.org>
+  *  Copyright (C) 1999 Matthew Wilcox <willy@bofh.ai>
+- *  Copyright (C) 1999-2006 Helge Deller <deller@gmx.de>
++ *  Copyright (C) 1999-2007 Helge Deller <deller@gmx.de>
+  *
+  *  Very basic HP Human Interface Loop (HIL) driver.
+  *  This driver handles the keyboard on HP300 (m68k) and on some
+@@ -89,7 +89,7 @@ MODULE_LICENSE("GPL v2");
+ #define	HIL_READKBDSADR	 	0xF9
+ #define	HIL_WRITEKBDSADR 	0xE9
+ 
+-static unsigned int hphilkeyb_keycode[HIL_KEYCODES_SET1_TBLSIZE] =
++static unsigned int hphilkeyb_keycode[HIL_KEYCODES_SET1_TBLSIZE] __read_mostly =
+ 	{ HIL_KEYCODES_SET1 };
+ 
+ /* HIL structure */
+@@ -211,6 +211,7 @@ hil_keyb_init(void)
+ 		return -ENODEV; /* already initialized */
+ 	}
+ 
++	spin_lock_init(&hil_dev.lock);
+ 	hil_dev.dev = input_allocate_device();
+ 	if (!hil_dev.dev)
+ 		return -ENOMEM;
+@@ -295,7 +296,9 @@ err3:
+ 	free_irq(HIL_IRQ, hil_dev.dev_id);
+ err2:
+ 	release_region(HILBASE + HIL_DATA, 2);
++#if defined(CONFIG_HP300)
+ err1:
++#endif
+ 	input_free_device(hil_dev.dev);
+ 	hil_dev.dev = NULL;
+ 	return err;
+@@ -307,7 +310,7 @@ static int __init
+ hil_init_chip(struct parisc_device *dev)
+ {
+ 	if (!dev->irq) {
+-		printk(KERN_WARNING "HIL: IRQ not found for HIL bus at 0x%08lx\n", dev->hpa.start);
++		printk(KERN_WARNING "HIL: IRQ not found for HIL bus at 0x%08lux\n", (unsigned long)dev->hpa.start);
+ 		return -ENODEV;
+ 	}
+ 
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+1.4.4.4
