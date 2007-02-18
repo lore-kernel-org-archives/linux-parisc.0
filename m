@@ -1,15 +1,16 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] gsyprf11 has a failing root disk
-Date: Sat, 17 Feb 2007 18:56:31 -0700
-Message-ID: <20070218015631.GA6107__8633.59826985306$1416624296$gmane$org@colo.lackof.org>
-References: <1171751021.3379.27.camel@mulgrave.il.steeleye.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: call_init in libc6 2.3.6.ds1-11
+Date: Sat, 17 Feb 2007 23:23:12 -0500 (EST)
+Message-ID: <200702180423.l1I4NCa8000957__10746.2734602906$1416624296$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440702171419v57a40e89i4f5baeb9702a15a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1171751021.3379.27.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <119aab440702171419v57a40e89i4f5baeb9702a15a@mail.gmail.com> from
+	"Carlos O'Donell" at Feb 17, 2007 05:19:53 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,32 +21,31 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Feb 17, 2007 at 04:23:40PM -0600, James Bottomley wrote:
-> The log is full of these:
+> So what is the verdict? I think the code looks right.
 > 
-> sd 1:0:15:0: SCSI error: return code = 0x8000002
-> sda: Current: sense key=0x4
->     ASC=0x3 <<vendor>> ASCQ=0x80
+> readelf -a /bin/bash shows:
+>  0x0000000c (INIT)                       0x24198
 > 
-> The ASCQ is vendor specific, but the key means "hardware error" and ASC
-> 0x03 is usually associated with some type of internal write error, so I
-> think it's safe to say the root disc is dying.  Can we get it replaced?
+> This is a not an OPD, and therefore will have a local non-unique OPD
+> constructed for the call.
 
-Yes...jda and I already had this conversation.
+See the same for INIT in /bin/sh.  However, the INIT value of interest
+here is that for /lib/libc.so.6:
 
-I'm off to Lake Tahoe for the rest of the week.
-But I'll ask Rick Jones if he can replace it with the "second"
-disk from another system. Then from the console someone will
-just need to fixup the network, add /etc/init.d/firewall, and 
-mount /home. If that's all a bit much for someone, it will have
-to wait until I'm back in 10 days and can head down to cupertino.
+dave@mx3210:~/gnu/gcc-4.3/objdir/hppa-linux/libjava$ readelf -a /lib/libc.so.6|grep INIT
+ 0x0000000c (INIT)                       0x1f164
 
-Note that /home on gsyprf11 wasn't doing too well either.
+This was the value at r21 + 4.  This value also isn't an OPD.  However,
+I showed before that init() didn't get called using an OPD.  As a result,
+r19 was likely incorrect for the call.  See the code snippet in the
+original report.
 
-"We apologize for the inconvience."
+Possibly, there's a GCC optimization bug but I'm not sure.
 
-*sigh*,
-grant
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
