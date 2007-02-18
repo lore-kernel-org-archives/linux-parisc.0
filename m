@@ -1,15 +1,15 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] Let's Try Something New(tm)
-Date: Sat, 17 Feb 2007 23:24:56 +0100
-Message-ID: <200702172324.57167.deller__12373.1494335972$1416624296$gmane$org@gmx.de>
-References: <20070217064648.GA2880@athena.road.mcmartin.ca>
-	<20070217103018.GD26273@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] gsyprf11 has a failing root disk
+Date: Sat, 17 Feb 2007 18:56:31 -0700
+Message-ID: <20070218015631.GA6107__8633.59826985306$1416624296$gmane$org@colo.lackof.org>
+References: <1171751021.3379.27.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-To: parisc-linux@lists.parisc-linux.org
+  charset=us-ascii
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070217103018.GD26273@colo.lackof.org>
+In-Reply-To: <1171751021.3379.27.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,47 +20,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Kyle,
-
-On Saturday 17 February 2007, Grant Grundler wrote:
-> On Sat, Feb 17, 2007 at 01:46:48AM -0500, kyle mcmartin wrote:
-> > And, well, I'm kind of getting sick of it. I propose for at least the next
-> > few months, instead of everyone being able to pollute the shared tree, they
-> > keep all their work in branches. Instead of merging or pushing, or whatever,
-> > you can send the patches to the list for review. This will work more or less
-> > like linux-kernel does, hopefully. 
+On Sat, Feb 17, 2007 at 04:23:40PM -0600, James Bottomley wrote:
+> The log is full of these:
 > 
-> Ok. Fair enough. Well said. 
-
-Fine with me as well.
-
-Thanks for the merging Kyle !
-
-Helge
-
-
-> Can someone with more git experience than I 
-> have share a recipe for creating and committing to a git branch?
-> Maybe post that on one of the existing HOW-TO web pages or a new wiki page?
+> sd 1:0:15:0: SCSI error: return code = 0x8000002
+> sda: Current: sense key=0x4
+>     ASC=0x3 <<vendor>> ASCQ=0x80
 > 
-> And yes, the fact that SMP is broken bothers me too.
-> I've spent some time looking at the cpu_possible_map patch pointed
-> out by james bottomly (IIRC) and I haven't figure out why that
-> has the impact that it does.
-> 
-> I also haven't had time to dig more into why the schedule is
-> only running things on CPU 0.
-> 
-> thanks,
-> grant
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+> The ASCQ is vendor specific, but the key means "hardware error" and ASC
+> 0x03 is usually associated with some type of internal write error, so I
+> think it's safe to say the root disc is dying.  Can we get it replaced?
 
+Yes...jda and I already had this conversation.
 
+I'm off to Lake Tahoe for the rest of the week.
+But I'll ask Rick Jones if he can replace it with the "second"
+disk from another system. Then from the console someone will
+just need to fixup the network, add /etc/init.d/firewall, and 
+mount /home. If that's all a bit much for someone, it will have
+to wait until I'm back in 10 days and can head down to cupertino.
+
+Note that /home on gsyprf11 wasn't doing too well either.
+
+"We apologize for the inconvience."
+
+*sigh*,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
