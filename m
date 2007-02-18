@@ -1,15 +1,15 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] The parisc SMP boot problem
-Date: Sun, 18 Feb 2007 14:32:37 -0500
-Message-ID: <20070218193237.GB22043__2797.28349200941$1416624300$gmane$org@athena.road.mcmartin.ca>
+Date: Sun, 18 Feb 2007 14:27:18 -0600
+Message-ID: <1171830438.3423.26.camel__167.795716743235$1416624300$gmane$org@mulgrave.il.steeleye.com>
 References: <1171820653.3423.22.camel@mulgrave.il.steeleye.com>
+	<20070218193237.GB22043@athena.road.mcmartin.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
+Content-Type: text/plain
 Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1171820653.3423.22.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <20070218193237.GB22043@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,32 +20,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Feb 18, 2007 at 11:44:13AM -0600, James Bottomley wrote:
-> After a bit more of an analysis of our changesets (I concluded it must
-> have been something we introduced).  This is the source of the SMP boot
-> hang on 2.6.20-rcX:
-> 
-> commit 01a9fa750904beed08814364fcbd7039eca8ec71
-> Author: Randolph <tausq@debian.org>
-> Date:   Mon Dec 11 16:07:51 2006 -0800
-> 
->     Optimize TLB flush on SMP systems
->     
->     Signed-off-by: Randolph Chung <tausq@debian.org>
-> 
-> As predicted, the reason it passed all the tests at the time it was
-> introduced is that because of the piggin bug, we were only scheduling on
-> a single CPU, and so the SMP piece of this wasn't truly tested.
-> 
-> Reverting this patch allows ioz to boot correctly.
-> 
+On Sun, 2007-02-18 at 14:32 -0500, Kyle McMartin wrote:
+> Any idea what was wrong with it?
 
-Ok. I'll revert it in the for-linus tree as well.
+Not yet ... the fact that everything goes OK for a while then hangs
+implies there's some issue with handling the SID wrap around, but I
+can't pinpoint it yet.
 
-Any idea what was wrong with it?
+James
 
-Cheers,
-	Kyle
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
