@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: call_init in libc6 2.3.6.ds1-11
-Date: Sun, 18 Feb 2007 11:44:24 -0500 (EST)
-Message-ID: <200702181644.l1IGiOir014616__6121.93587371639$1416624298$gmane$org@hiauly1.hia.nrc.ca>
-References: <200702181445.l1IEjV7B012366@hiauly1.hia.nrc.ca>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: [parisc-linux] The parisc SMP boot problem
+Date: Sun, 18 Feb 2007 11:44:13 -0600
+Message-ID: <1171820653.3423.22.camel__39132.812122307$1416624298$gmane$org@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
+Content-Type: text/plain
+To: Parisc List <parisc-linux@lists.parisc-linux.org>,
+ Randolph Chung <randolph@tausq.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200702181445.l1IEjV7B012366@hiauly1.hia.nrc.ca> from "John David
-	Anglin" at Feb 18, 2007 09:45:31 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,45 +17,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> (gdb) p/x $r20
-> $2 = 0x4086221c
-> (gdb) x/2x $r20
-> 0x4086221c <.LC2+84>:   0x00000003      0x40df252f
+After a bit more of an analysis of our changesets (I concluded it must
+have been something we introduced).  This is the source of the SMP boot
+hang on 2.6.20-rcX:
 
-Comparing the setup of this region of memory in /lib/libc.so.6
-to that in a simple testcase, it seems that the value setup for
-r19 is somehow wrong.  Surrounding values are similar to what
-I see in the simple testcase:
+commit 01a9fa750904beed08814364fcbd7039eca8ec71
+Author: Randolph <tausq@debian.org>
+Date:   Mon Dec 11 16:07:51 2006 -0800
 
-#include <stdlib.h>
-int
-main ()
-{
-  exit (0);
-}
+    Optimize TLB flush on SMP systems
+    
+    Signed-off-by: Randolph Chung <tausq@debian.org>
 
-Testcase:
-(gdb) x/16x 0x4046221c
-0x4046221c:     0x00000003      0x40465c6c      0x00000002      0x0000147c
-0x4046222c:     0x00000014      0x00000007      0x00000017      0x403397cc
-0x4046223c:     0x00000007      0x4032d0ac      0x00000008      0x0000c720
-0x4046224c:     0x00000009      0x0000000c      0x6ffffffc      0x00010ec0
+As predicted, the reason it passed all the tests at the time it was
+introduced is that because of the piggin bug, we were only scheduling on
+a single CPU, and so the SMP piece of this wasn't truly tested.
 
-Segv case:
-(gdb) x/16x $r20
-0x4086221c <.LC2+84>:   0x00000003      0x40df252f      0x00000002      0x0000147c
-0x4086222c <.LC2+100>:  0x00000014      0x00000007      0x00000017      0x407397cc
-0x4086223c <.LC2+116>:  0x00000007      0x4072d0ac      0x00000008      0x0000c720
-0x4086224c <.LC2+132>:  0x00000009      0x0000000c      0x6ffffffc      0x00010ec0
+Reverting this patch allows ioz to boot correctly.
 
-I think '3' in the preceeding location indicates the erronious value
-is a PLTGOT value (i.e., we're looking at part of the relocated dynamic
-section in /lib/libc.so.6).
+James
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
