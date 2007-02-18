@@ -1,12 +1,17 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: [parisc-linux] The parisc SMP boot problem
-Date: Sun, 18 Feb 2007 11:44:13 -0600
-Message-ID: <1171820653.3423.22.camel__39132.812122307$1416624298$gmane$org@mulgrave.il.steeleye.com>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: Re: [parisc-linux] One of these things is not like the other!
+Date: Sun, 18 Feb 2007 13:25:26 -0500
+Message-ID: <5b2e36650702181025t595bfdbam3d11b455be1cc657__33451.932288199$1416624299$gmane$org@mail.gmail.com>
+References: <119aab440702181014p1b99a00dj191bab9884d42a8d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-To: Parisc List <parisc-linux@lists.parisc-linux.org>,
- Randolph Chung <randolph@tausq.org>
+Content-Type: text/plain;
+  charset=UTF-8;
+  format=flowed
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440702181014p1b99a00dj191bab9884d42a8d@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,27 +22,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-After a bit more of an analysis of our changesets (I concluded it must
-have been something we introduced).  This is the source of the SMP boot
-hang on 2.6.20-rcX:
+On 18/02/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
+> apt works fine from the chroot, but packages that rely on threads are broken.
+> Packages relying on pthread_push_cleanup, and pthread_pop_cleanup are
+> also broken since we have bugs in those functions according to the
+> testsuite.
 
-commit 01a9fa750904beed08814364fcbd7039eca8ec71
-Author: Randolph <tausq@debian.org>
-Date:   Mon Dec 11 16:07:51 2006 -0800
+apt only stopped working for me after I recompiled libstdc++6, but
+before I recompiled apt.
 
-    Optimize TLB flush on SMP systems
-    
-    Signed-off-by: Randolph Chung <tausq@debian.org>
-
-As predicted, the reason it passed all the tests at the time it was
-introduced is that because of the piggin bug, we were only scheduling on
-a single CPU, and so the SMP piece of this wasn't truly tested.
-
-Reverting this patch allows ioz to boot correctly.
-
-James
-
-
+-- 
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
