@@ -1,18 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] statfs() problem with glibc-2.5
-Date: Sun, 18 Feb 2007 22:16:27 -0500
-Message-ID: <20070219031627.GA28109__6300.25852374292$1416624301$gmane$org@athena.road.mcmartin.ca>
-References: <20070212102844.f045d760.gmsoft@gentoo.org>
-	<20070212153731.846e2ad3.gmsoft@gentoo.org>
-	<20070217160642.GC2880@athena.road.mcmartin.ca>
-	<119aab440702181911t32a25761t8bf1f2306376595d@mail.gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] The parisc SMP boot problem
+Date: Sun, 18 Feb 2007 22:25:46 -0500 (EST)
+Message-ID: <200702190325.l1J3Plun027178__42238.8121871792$1416624301$gmane$org@hiauly1.hia.nrc.ca>
+References: <1171820653.3423.22.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+To: James.Bottomley@SteelEye.com (James Bottomley)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440702181911t32a25761t8bf1f2306376595d@mail.gmail.com>
+In-Reply-To: <1171820653.3423.22.camel@mulgrave.il.steeleye.com> from "James
+	Bottomley" at Feb 18, 2007 11:44:13 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,13 +21,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Feb 18, 2007 at 10:11:13PM -0500, Carlos O'Donell wrote:
-> >>  #define __NR_Linux_syscalls     298
-> 
-> You also forgot to update the total syscall count.
-> 
+> Reverting this patch allows ioz to boot correctly.
 
-I fixed that one for him. ;-)
+With the patch reverted, I was also able to boot successfully
+an SMP kernel on what was ior for the first time ;)
+
+Thanks,
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
