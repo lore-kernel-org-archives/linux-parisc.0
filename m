@@ -1,23 +1,16 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] Re: NPTL for hppa-linux is not backwards compatible
-	with Linuxthreads.
-Date: Mon, 19 Feb 2007 13:20:40 -0500 (EST)
-Message-ID: <200702191820.l1JIKelf003875__6059.79243196106$1416624305$gmane$org@hiauly1.hia.nrc.ca>
-References: <119aab440702190825y26ea8d5eib876818d9cb89c5d@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Re: call_init in libc6 2.3.6.ds1-11
+Date: Mon, 19 Feb 2007 13:21:12 -0500
+Message-ID: <20070219182112.GA32148__9642.85473241962$1416624306$gmane$org@athena.road.mcmartin.ca>
+References: <119aab440702190834p36f92f95ue4ded14fa5a25a5@mail.gmail.com>
+	<200702191656.l1JGuVkq018705@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: matthias.klose@ubuntu.com,
- roland@redhat.com,
- libc-ports@sourceware.org,
- dave.anglin@nrc.ca,
- willy@debian.org,
- debian-glibc@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440702190825y26ea8d5eib876818d9cb89c5d@mail.gmail.com>
-	from "Carlos O'Donell" at Feb 19, 2007 11:25:11 am
+In-Reply-To: <200702191656.l1JGuVkq018705@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,16 +21,20 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Do you know of any other ABI breaks that could be coordinated with
-> this transition?
+On Mon, Feb 19, 2007 at 11:56:30AM -0500, John David Anglin wrote:
+> > What hardware are you using?
+> 
+> This is pa8800 (Mako) at 800 MHz.
+> 
 
-No.  The last break was GCC 4.1.0 where the calling convention
-for passing complex values was corrected.
+Keep in mind James pointed out that while he fixed the primary source of
+corruption, there still might be second-order problems...
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+John, what's the fastest non-PA8800 machine you have right now? Would a dual
+750MHz j6700 help you?
+
+Cheers,
+	Kyle M.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
