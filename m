@@ -1,15 +1,16 @@
-From: Guy Martin <gmsoft@gentoo.org>
-Subject: [parisc-linux] Re: Glib testsuite under NPTL.
-Date: Mon, 19 Feb 2007 20:15:29 +0100
-Message-ID: <20070219201529.4862ab70.gmsoft__34546.6173057959$1416624306$gmane$org@gentoo.org>
-References: <119aab440702181557v18e47baya3e582298f7282ae@mail.gmail.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: call_init in libc6 2.3.6.ds1-11
+Date: Mon, 19 Feb 2007 14:22:16 -0500 (EST)
+Message-ID: <200702191922.l1JJMGhm014372__36583.6083343767$1416624306$gmane$org@hiauly1.hia.nrc.ca>
+References: <20070219182112.GA32148@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440702181557v18e47baya3e582298f7282ae@mail.gmail.com>
+In-Reply-To: <20070219182112.GA32148@athena.road.mcmartin.ca> from "Kyle
+	McMartin" at Feb 19, 2007 01:21:12 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,68 +21,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+> John, what's the fastest non-PA8800 machine you have right now? Would a dual
+> 750MHz j6700 help you?
 
+c3750 (875 MHz).  This one is is subject to the thread timing bug.
 
-Hi Carlos,
+I'm out of ethernet connections and NRC doesn't like switches, so
+I can't easily add new machines.  I could swap out the c3750 for
+the j6700.  It would probably would build gcc faster.
 
-For the NPTL thing, I only built glibc after upgrading glibc so there is no chance I tested the wrong one.
-
-I tested with glib-2.12.7 with the same setup as usual.
-
-The tests that fail here are the following :
-
-PASS: queue-test
-GThread-ERROR **: file gthread-posix.c: line 356 (): error 'Cannot allocate memory' during 'pthread_create'
-aborting...
-/bin/sh: line 4:  5771 Aborted                 srcdir=. LIBCHARSET_ALIAS_DIR=../glib/libcharset MALLOC_CHECK_=2 MALLOC_PERTURB_=$((${RANDOM:-256} % 256)) ${dir}$tst
-
-
-PASS: thread-test
-GThread-ERROR **: file gthread-posix.c: line 356 (): error 'Cannot allocate memory' during 'pthread_create'
-aborting...
-/bin/sh: line 4:  6173 Aborted                 srcdir=. LIBCHARSET_ALIAS_DIR=../glib/libcharset MALLOC_CHECK_=2 MALLOC_PERTURB_=$((${RANDOM:-256} % 256)) ${dir}$tst
-
-
-
-Let me know if you need more info.
-
-  Guy
-
-
-
-
-On Sun, 18 Feb 2007 18:57:15 -0500
-"Carlos O'Donell" <carlos@systemhalted.org> wrote:
-
-> Guy,
-> 
-> I think you may have mentioned that Glib under NPTL was showing more
-> failures than with Linuxthreads. I ran the tests myself with the
-> following results.
-> 
-> Linuxthreads:
-> check-lt.log:FAIL: closures
-> check-lt.log:FAIL: keyfile-test
-> check-lt.log:FAIL: run-collate-tests.sh
-> 
-> NPTL:
-> check-nptl.log:FAIL: keyfile-test
-> check-nptl.log:FAIL: run-collate-tests.sh
-> 
-> NPTL fixes the closures failure.
-> 
-> The Glib testsuite tests the installed libglib, so beware that you
-> have rebuild the library, install the library, and *then* run the
-> tests.
-> 
-> Cheers,
-> Carlos.
-
-
+Dave
 -- 
-Guy Martin
-Gentoo Linux - HPPA port lead
-
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
