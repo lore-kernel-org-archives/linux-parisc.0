@@ -1,16 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: call_init in libc6 2.3.6.ds1-11
-Date: Mon, 19 Feb 2007 23:49:49 -0500 (EST)
-Message-ID: <200702200449.l1K4nn04019104__27377.883034251$1416624307$gmane$org@hiauly1.hia.nrc.ca>
-References: <20070219182112.GA32148@athena.road.mcmartin.ca>
+Date: Mon, 19 Feb 2007 23:56:41 -0500 (EST)
+Message-ID: <200702200456.l1K4ufdN020072__43859.0582497001$1416624307$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440702192022pd57d4deibd2c919cd86e1177@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+Cc: kyle@mcmartin.ca,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070219182112.GA32148@athena.road.mcmartin.ca> from "Kyle
-	McMartin" at Feb 19, 2007 01:21:12 pm
+In-Reply-To: <119aab440702192022pd57d4deibd2c919cd86e1177@mail.gmail.com> from
+	"Carlos O'Donell" at Feb 19, 2007 11:22:51 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,23 +22,14 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Keep in mind James pointed out that while he fixed the primary source of
-> corruption, there still might be second-order problems...
+> I posted a testcase here that always crashes the kernel:
+> http://lists.parisc-linux.org/pipermail/parisc-linux/2007-February/031250.html
+> 
+> I'm trying to build my kernel with debugging but my current
+> configuration doesn't boot.
 
-There's always bugs...
-
-While this might be a kernel TLB management problem, there's no strong
-evidence of that and I wouldn't automatically assign the problem to the
-pa8800 bug black hole.  This could just as easily be a bug in the dynamic
-loader.  The system now runs for weeks with only occasional problems in
-UP mode.  Will see about SMP mode.
-
-The memory corruption is very limited and appears to occur in the
-initial phase of loading libc.  It's happened twice while the echo
-command tried to generate a file list building libjava.  Tens of
-thousands of other applications have been launched successfully.
-Probably, a lot more applications would die if memory corruption
-was rampant.
+Yes, this testcase is obviously excellent progress toward understanding
+this bug.
 
 Dave
 -- 
