@@ -1,19 +1,17 @@
-From: Guy Martin <gmsoft@gentoo.org>
-Subject: Re: [parisc-linux] statfs() problem with glibc-2.5
-Date: Tue, 20 Feb 2007 18:06:58 +0100
-Message-ID: <20070220180658.ce5ce5ba.gmsoft__32032.9042188407$1416624308$gmane$org@gentoo.org>
-References: <20070212102844.f045d760.gmsoft@gentoo.org>
-	<20070212153731.846e2ad3.gmsoft@gentoo.org>
-	<20070217160642.GC2880@athena.road.mcmartin.ca>
-	<119aab440702181911t32a25761t8bf1f2306376595d@mail.gmail.com>
-	<20070219031627.GA28109@athena.road.mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: call_init in libc6 2.3.6.ds1-11
+Date: Mon, 19 Feb 2007 23:08:14 -0500 (EST)
+Message-ID: <200702200408.l1K48FOe013501__46973.9035972909$1416624308$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440702191908r773a00capade2bc7ec19c4160@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="Multipart=_Tue__20_Feb_2007_18_06_58_+0100_BK3LTC=uCclzkv7T"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: kyle@mcmartin.ca,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070219031627.GA28109@athena.road.mcmartin.ca>
+In-Reply-To: <119aab440702191908r773a00capade2bc7ec19c4160@mail.gmail.com>
+	from "Carlos O'Donell" at Feb 19, 2007 10:08:10 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,85 +22,34 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This is a multi-part message in MIME format.
-
---Multipart=_Tue__20_Feb_2007_18_06_58_+0100_BK3LTC=uCclzkv7T
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-
-
-Kyle,
-
-Here is the proper patch with Signed-off-by.
-
-Cheers,
-  Guy
-
-
-On Sun, 18 Feb 2007 22:16:27 -0500
-Kyle McMartin <kyle@mcmartin.ca> wrote:
-
-> On Sun, Feb 18, 2007 at 10:11:13PM -0500, Carlos O'Donell wrote:
-> > >>  #define __NR_Linux_syscalls     298
-> > 
-> > You also forgot to update the total syscall count.
-> > 
+> On 2/19/07, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
+> > > John, what's the fastest non-PA8800 machine you have right now? Would a dual
+> > > 750MHz j6700 help you?
+> >
+> > c3750 (875 MHz).  This one is is subject to the thread timing bug.
 > 
-> I fixed that one for him. ;-)
+> What is the "thread timing bug"?
 
+http://lists.parisc-linux.org/pipermail/parisc-linux/2006-December/030969.html
 
+I presume this is the same bug as you reported here:
+http://lists.parisc-linux.org/pipermail/parisc-linux/2007-February/031200.html
+
+In the java case, the tests that fail are always thread intensive.
+I should note that when a test times out in the gcc testsuite (other
+than in the acats suite), expect tries to kill off the processes
+that have timed out.  Yet, sometimes the processes survive and killing
+the initial process causes a system crash.  Also, the system often
+fails to reboot when it panics.
+
+There's some timing aspect to this bug.  I have the strong impression
+that it occurs mainly on fast processors.
+
+Dave
 -- 
-Guy Martin
-Gentoo Linux - HPPA port lead
-
---Multipart=_Tue__20_Feb_2007_18_06_58_+0100_BK3LTC=uCclzkv7T
-Content-Type: text/x-patch;
- name="statfs-syscalls.diff"
-Content-Disposition: attachment;
- filename="statfs-syscalls.diff"
-Content-Transfer-Encoding: 7bit
-
-Add missing statfs64 and fstatfs64 to parisc.
-
-Signed-off-by: Guy Martion <gmsoft@tuxicoman.be>
-
-diff --git a/arch/parisc/kernel/syscall_table.S b/arch/parisc/kernel/syscall_table.S
-index 5114666..7d665de 100644
---- a/arch/parisc/kernel/syscall_table.S
-+++ b/arch/parisc/kernel/syscall_table.S
-@@ -403,5 +403,7 @@
- 	ENTRY_COMP(move_pages)		/* 295 */
- 	ENTRY_SAME(getcpu)
- 	ENTRY_SAME(epoll_pwait)
-+	ENTRY_COMP(statfs64)
-+	ENTRY_COMP(fstatfs64)
- 	/* Nothing yet */
- 
-diff --git a/include/asm-parisc/unistd.h b/include/asm-parisc/unistd.h
-index 7c1bb8b..5513bdf 100644
---- a/include/asm-parisc/unistd.h
-+++ b/include/asm-parisc/unistd.h
-@@ -790,8 +790,10 @@
- #define __NR_move_pages		(__NR_Linux + 295)
- #define __NR_getcpu		(__NR_Linux + 296)
- #define __NR_epoll_pwait	(__NR_Linux + 297)
-+#define __NR_statfs64		(__NR_Linux + 298)
-+#define __NR_fstatfs64		(__NR_Linux + 299)
- 
--#define __NR_Linux_syscalls     298
-+#define __NR_Linux_syscalls     300
- 
- #define HPUX_GATEWAY_ADDR       0xC0000004
- #define LINUX_GATEWAY_ADDR      0x100
-
---Multipart=_Tue__20_Feb_2007_18_06_58_+0100_BK3LTC=uCclzkv7T
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---Multipart=_Tue__20_Feb_2007_18_06_58_+0100_BK3LTC=uCclzkv7T--
