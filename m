@@ -1,11 +1,19 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: [parisc-linux] [PATCH] fix SMP TLB optimisations
-Date: Sat, 24 Feb 2007 08:51:29 -0600
-Message-ID: <1172328689.3401.3.camel__16349.359896458$1416624312$gmane$org@mulgrave.il.steeleye.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [parisc-linux] Re: NPTL for hppa-linux is not backwards compatible
+	with Linuxthreads.
+Date: Fri, 23 Feb 2007 06:46:22 -0500
+Message-ID: <200702230646.23698.vapier__33154.5230038047$1416624312$gmane$org@gentoo.org>
+References: <20070223024202.1175E1800E4@magilla.sf.frob.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-To: Parisc List <parisc-linux@lists.parisc-linux.org>
+Content-Type: multipart/mixed;
+  boundary="===============0065797075=="
+Cc: libc-ports@sourceware.org,
+ Aurelien Jarno <aurel32@debian.org>,
+ debian-glibc@lists.debian.org,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: Roland McGrath <roland@redhat.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20070223024202.1175E1800E4@magilla.sf.frob.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -16,85 +24,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Since we're now changing the %sr3 from an IPI, we have to be careful
-about other places in the kernel where we're using temporary values in %
-sr3.  As far as I can tell, this is pretty much only non local cache
-flushing.  The following patch fixes the IPI to work (by not saving %sr3
-across an interruption) and patches up temporary %sr3 usage.
+--===============0065797075==
+Content-Type: multipart/signed; boundary="nextPart26664061.BdoMTrDk5b";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-The sharp eyed will also notice I've corrected a Protection ID bug with
-the non current flushes.
+--nextPart26664061.BdoMTrDk5b
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Signed-off-by: James Bottomley <James.Bottomley@SteelEye.com>
+On Thursday 22 February 2007, Roland McGrath wrote:
+> > All statically initialized locks are broken. We made locks smaller,
+> > and changed the value of the static initialization.
+>
+> Smaller?  Smaller is easy.  And you didn't actually reduce
+> __SIZEOF_PTHREAD_MUTEX_T, did you?  This seems like it would not be at all
+> hard to accommodate just with symbol versioning and not break any
+> compatibility.  Off hand, it seems like it would be some simple code in o=
+ne
+> new file in your sysdeps/ tree and a smattering of sysdeps Versions files.
 
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index 00b1641..cb1dd17 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -303,25 +303,28 @@ flush_user_cache_page_non_current(struct vm_area_struct *vma,
- 				  unsigned long vmaddr)
- {
- 	/* save the current process space and pgd */
--	unsigned long space = mfsp(3), pgd = mfctl(25);
-+	unsigned long space, pgd;
- 
--	/* we don't mind taking interrups since they may not
--	 * do anything with user space, but we can't
--	 * be preempted here */
--	preempt_disable();
-+	/* Have to disable interrupts here, since now %sr3 changes
-+	 * are carried by IPI and we can't have that happen while
-+	 * we're using a temporary %sr3 */
-+	local_irq_disable();
-+
-+	space = mfsp(3);
-+	pgd = mfctl(25);
- 
- 	/* make us current */
- 	mtctl(__pa(vma->vm_mm->pgd), 25);
--	mtsp(vma->vm_mm->context, 3);
-+	load_context(vma->vm_mm->context);
- 
- 	flush_user_dcache_page(vmaddr);
- 	if(vma->vm_flags & VM_EXEC)
- 		flush_user_icache_page(vmaddr);
- 
- 	/* put the old current process back */
--	mtsp(space, 3);
-+	load_context(space);
- 	mtctl(pgd, 25);
--	preempt_enable();
-+	local_irq_enable();
- }
- 
- 
-diff --git a/include/asm-parisc/assembly.h b/include/asm-parisc/assembly.h
-index 5587f00..efe9ebc 100644
---- a/include/asm-parisc/assembly.h
-+++ b/include/asm-parisc/assembly.h
-@@ -435,7 +435,8 @@
- 	SAVE_SP  (%sr0, PT_SR0 (\regs))
- 	SAVE_SP  (%sr1, PT_SR1 (\regs))
- 	SAVE_SP  (%sr2, PT_SR2 (\regs))
--	SAVE_SP  (%sr3, PT_SR3 (\regs))
-+; Can't save and restore %sr3, it may be update from IPI
-+;	SAVE_SP  (%sr3, PT_SR3 (\regs))
- 	SAVE_SP  (%sr4, PT_SR4 (\regs))
- 	SAVE_SP  (%sr5, PT_SR5 (\regs))
- 	SAVE_SP  (%sr6, PT_SR6 (\regs))
-@@ -475,7 +476,8 @@
- 	REST_SP  (%sr0, PT_SR0 (\regs))
- 	REST_SP  (%sr1, PT_SR1 (\regs))
- 	REST_SP  (%sr2, PT_SR2 (\regs))
--	REST_SP  (%sr3, PT_SR3 (\regs))
-+; Can't save and restore %sr3, it may be updated from IPI
-+;	REST_SP  (%sr3, PT_SR3 (\regs))
- 	REST_SP  (%sr4, PT_SR4 (\regs))
- 	REST_SP  (%sr5, PT_SR5 (\regs))
- 	REST_SP  (%sr6, PT_SR6 (\regs))
+how can you do symbol versioning on static initializers ?  the initialized=
+=20
+value is compiled into the .data sections of the actual binary ...
 
+hmm ... do you mean we retain the pthread code that uses the old locking=20
+methods and create all the new code with glibc-2.6 symbol versions ?
+=2Dmike
+
+--nextPart26664061.BdoMTrDk5b
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.2 (GNU/Linux)
+
+iQIVAwUARd7UD0FjO5/oN/WBAQLpFRAAl50AUlZe+u71ZQJ37JhAHxFsNbBJ2nD0
+/1Bwfe94oAhAS1ML/h/ORv0JqmqhEHIC55+JMyrydqQxI+CUcCfQhQOPDmhfCfGx
+COlQy36JvfotFDUoVLkQtqrj69XaM2omcn1gEwL4v/2uitPqz99KORq16d78o9tE
+MLNhXUFxK0CLnCCq5nRyeFT3ydeFpFxrpKatpBssg7ZflkTMMIv797hZhRGoDCLm
+xdvKYvjxaEGHKr5i3E+jxjk9p83arwZaQ+wsA/QZrNUGvnAT4bTQRHw6rKlFdniy
+LXPt60xnidht+4Y7BKv04+D6iJbGJL1vfP5f7xN8XuxeRHtNn5MVhcy//Bx+kej9
+iYUMPu4rTd+WgYuteV8m+yZ04PFM7xHuoozQVEEl3MdrRqf8vOw+JzEXRm/Qpr+q
+5OL46cafUIFKip6xRregKun/I4VWOx+pwFmSJbZjS6YvgYqLMw9IDB1d0Dz4hX5E
+JdZ4c5DAzcQNA7dph21770RaGBpB9GoTUpIUYkPIdQ/rZzp3D3X/bUjfAVFEXS2H
+leLY6tEdbQH3plEspYtMkou6KAdk/ieZQL1qfJ7R+flAHjACZzzy8FmXR+SSUWsp
+jCEZ/u63RtyYe1VXlWfETItmvCUPPuSck8ugz17GMiYC+F6FFswb6w+uKasVkdqI
+VWixJCmg0fA=
+=lQS1
+-----END PGP SIGNATURE-----
+
+--nextPart26664061.BdoMTrDk5b--
+
+--===============0065797075==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============0065797075==--
