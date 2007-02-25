@@ -1,17 +1,15 @@
-From: ram <talk2ram@gmail.com>
-Subject: Re: [parisc-linux] [git patches] parisc build fixes for 2.6.21
-Date: Tue, 27 Feb 2007 18:59:02 +0530
-Message-ID: <b74751490702270529r17e9ef27j4b3717cea351c39c__47916.3183285438$1416624313$gmane$org@mail.gmail.com>
-References: <20070227033201.GA13669@athena.road.mcmartin.ca>
-	<b74751490702270222l194eba13sd797c2b5e208829@mail.gmail.com>
-	<20070227131625.GB3545@athena.road.mcmartin.ca>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] [PATCH] fix SMP TLB optimisations
+Date: Sat, 24 Feb 2007 19:27:19 -0600
+Message-ID: <1172366840.3401.31.camel__30062.8440025777$1416624314$gmane$org@mulgrave.il.steeleye.com>
+References: <1172328689.3401.3.camel@mulgrave.il.steeleye.com>
+	<20070225004603.GB18944@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============0047801297=="
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Kyle McMartin" <kyle@parisc-linux.org>
+Content-Type: text/plain
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070227131625.GB3545@athena.road.mcmartin.ca>
+In-Reply-To: <20070225004603.GB18944@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,77 +20,81 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============0047801297==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_9538_6307435.1172582942197"
+On Sat, 2007-02-24 at 17:46 -0700, Grant Grundler wrote:
+> Isn't sr3 part of the context?
 
-------=_Part_9538_6307435.1172582942197
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+It is the user context above the kernel, yes.
 
-On 2/27/07, Kyle McMartin <kyle@parisc-linux.org> wrote:
->
-> On Tue, Feb 27, 2007 at 03:52:27PM +0530, ram wrote:
-> >
->
-> No. I will tell you when they are fixed. Please realize this is a
-> volunteer
-> effort, and your problem is extremely low priority.
->
+> ie if we need to change the sr3 for a given context shouldn't
+> the code be modifying the value in the struct context instead
 
+That's what tausq's change does.  It updates active_mm->context but then
+it has to propagate the change on an SMP system, which is what the IPI
+is supposed to do.
 
-Hi
+> the actual register unless we know we are in that context?
 
+That's why the IPI checks current->active_mm against the mm being
+changed.  If the CPU isn't executing in that context, nothing happens.
+If it has, since we just changed mm->context, the new context gets
+loaded into sr3, as it should be.
 
-yes i understand,
+> The IPI code should know the sr3 was saved and where.
 
-iam just trying to understand , is this possible to help people to
-test and give input if i can, dont think that iam asking anything extra
+It does: in mm->context.
 
-since iam curious to install debian on HP Server and use this box for other
-services.
+> The change to assembly.h has me very nervous since I don't understand it.
+> You probably have it right and I'm being a bit dense.
 
-thanks,  i will await for your responce
-mean time let me know if iam usefull help anything for testing
+Actually, I think it's pointless saving any space register for an
+interrupt ... no interrupt should muck with the space registers since no
+interrupt should ever be mucking with anything in user context ...
+However, sr3 is special ... even if we get interrupts mucking with space
+registers, they'll never touch sr3.
 
-ram
+> I was trying to track down other uses of "mtsp sr3" and schedule()
+> seems to be one:
+> 	schedule() -> context_switch() -> switch_mm() -> load_context()
+> 
+> I'm not seeing where this path disables local interrupts.
 
-------=_Part_9538_6307435.1172582942197
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+It doesn't need to.  The IPI either updates sr3 or it doesn't.  The
+load_context() will actually update it anyway, and sr3 isn't used until
+the kernel accesses userspace, which is nowhere in that sequence, so
+it's all quite safe.
 
-<br><br>
-<div><span class="gmail_quote">On 2/27/07, <b class="gmail_sendername">Kyle McMartin</b> &lt;<a href="mailto:kyle@parisc-linux.org">kyle@parisc-linux.org</a>&gt; wrote:</span>
-<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">On Tue, Feb 27, 2007 at 03:52:27PM +0530, ram wrote:<br>&gt;<br><br>No. I will tell you when they are fixed. Please realize this is a volunteer
-<br>effort, and your problem is extremely low priority.<br></blockquote></div>
-<div><br>&nbsp;</div>
-<div>Hi</div>
-<div>&nbsp;</div>
-<div>&nbsp;</div>
-<div>yes i understand, </div>
-<div>&nbsp;</div>
-<div>iam just trying to understand , is this possible to help people to</div>
-<div>test and give input if i can, dont think that iam asking anything extra</div>
-<div>&nbsp;</div>
-<div>since iam curious to install debian on HP Server and use this box for other services.</div>
-<div>&nbsp;</div>
-<div>thanks,&nbsp; i will await for your responce</div>
-<div>mean time let me know if iam usefull help anything for testing</div>
-<div>&nbsp;</div>
-<div>ram</div>
+> Sounds like it should before calling load_context() or we should
+> in our switch_mm() or add a prepare_arch_switch() to asm-parisc/system.h.
 
-------=_Part_9538_6307435.1172582942197--
+Not really ... like I said, the IPI's effect will be known even if we're
+beginning a context switch.
 
---===============0047801297==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> >   As far as I can tell, this is pretty much only non local cache
+> > flushing.
+> 
+> ISTR copy and one or two other places use sr3 as well.
+
+No, pa_memcpy uses sr1 and sr2 ... it's only the non-local flushing that
+uses sr3.
+
+> > The following patch fixes the IPI to work (by not saving %sr3
+> > across an interruption) and patches up temporary %sr3 usage.
+> > 
+> > The sharp eyed will also notice I've corrected a Protection ID bug with
+> > the non current flushes.
+> 
+> That's not me :)
+> Was the fix to place "pgd = mfctl(25)" after the local_irq_disable()?
+
+No, it was changing the mtsp(xx, 3) to load_context(xx).  The problem is
+that if we don't update %cr8 then the new context in sr3 is completely
+ineffective since the protection IDs will mismatch in the TLBs, so, as
+far as I can tell, the non local flush was never effective.
+
+James
+
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============0047801297==--
