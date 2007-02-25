@@ -1,14 +1,15 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [git patches] parisc build fixes for 2.6.21
-Date: Mon, 26 Feb 2007 22:32:01 -0500
-Message-ID: <20070227033201.GA13669__43007.6698809446$1416624313$gmane$org@athena.road.mcmartin.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [PATCH] fix SMP TLB optimisations
+Date: Sat, 24 Feb 2007 17:46:03 -0700
+Message-ID: <20070225004603.GB18944__32250.8928984918$1416624313$gmane$org@colo.lackof.org>
+References: <1172328689.3401.3.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: akpm@osdl.org,
- parisc-linux@lists.parisc-linux.org
-To: torvalds@osdl.org
+Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
+To: James Bottomley <James.Bottomley@SteelEye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <1172328689.3401.3.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,29 +20,119 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Build fixes for 2.6.21, should be nothing objectionable here.
+On Sat, Feb 24, 2007 at 08:51:29AM -0600, James Bottomley wrote:
+> Since we're now changing the %sr3 from an IPI, we have to be careful
+> about other places in the kernel where we're using temporary values in %
+> sr3.
 
-The following changes since commit c68644d3304d217d50b8f0a179d4aa7e5a85a5bc:
-  Ralf Baechle (1):
-        [MIPS] Make SMTC_IDLE_HOOK_DEBUG a proper option in Kconfig.debug.
+Isn't sr3 part of the context?
+ie if we need to change the sr3 for a given context shouldn't
+the code be modifying the value in the struct context instead
+the actual register unless we know we are in that context?
+The IPI code should know the sr3 was saved and where.
 
-are found in the git repository at:
+The change to assembly.h has me very nervous since I don't understand it.
+You probably have it right and I'm being a bit dense.
 
-  /pub/scm/linux/kernel/git/kyle/parisc-2.6.git
+I was trying to track down other uses of "mtsp sr3" and schedule()
+seems to be one:
+	schedule() -> context_switch() -> switch_mm() -> load_context()
 
-Kyle McMartin (6):
-      [PARISC] Remove __read_mostly annotation from command_line
-      [PARISC] clocksource_cr16: Use clocksource_change_rating()
-      [PARISC] time: Convert clocksource is_continuous to flag
-      [PARISC] time: clocksource lost update_callback
-      [PARISC] parisc-agp: Fix thinko const-ifying
-      [PARISC] clocksource: Move update_cr16_clocksource later in boot
+I'm not seeing where this path disables local interrupts.
+Sounds like it should before calling load_context() or we should
+in our switch_mm() or add a prepare_arch_switch() to asm-parisc/system.h.
 
- arch/parisc/kernel/processor.c |    8 ++++++++
- arch/parisc/kernel/setup.c     |    2 +-
- arch/parisc/kernel/time.c      |   18 ++++++++++--------
- drivers/char/agp/parisc-agp.c  |    2 +-
- 4 files changed, 20 insertions(+), 10 deletions(-)
+>   As far as I can tell, this is pretty much only non local cache
+> flushing.
+
+ISTR copy and one or two other places use sr3 as well.
+
+> The following patch fixes the IPI to work (by not saving %sr3
+> across an interruption) and patches up temporary %sr3 usage.
+> 
+> The sharp eyed will also notice I've corrected a Protection ID bug with
+> the non current flushes.
+
+That's not me :)
+Was the fix to place "pgd = mfctl(25)" after the local_irq_disable()?
+
+thanks,
+grant
+
+> 
+> Signed-off-by: James Bottomley <James.Bottomley@SteelEye.com>
+> 
+> diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+> index 00b1641..cb1dd17 100644
+> --- a/arch/parisc/kernel/cache.c
+> +++ b/arch/parisc/kernel/cache.c
+> @@ -303,25 +303,28 @@ flush_user_cache_page_non_current(struct vm_area_struct *vma,
+>  				  unsigned long vmaddr)
+>  {
+>  	/* save the current process space and pgd */
+> -	unsigned long space = mfsp(3), pgd = mfctl(25);
+> +	unsigned long space, pgd;
+>  
+> -	/* we don't mind taking interrups since they may not
+> -	 * do anything with user space, but we can't
+> -	 * be preempted here */
+> -	preempt_disable();
+> +	/* Have to disable interrupts here, since now %sr3 changes
+> +	 * are carried by IPI and we can't have that happen while
+> +	 * we're using a temporary %sr3 */
+> +	local_irq_disable();
+> +
+> +	space = mfsp(3);
+> +	pgd = mfctl(25);
+>  
+>  	/* make us current */
+>  	mtctl(__pa(vma->vm_mm->pgd), 25);
+> -	mtsp(vma->vm_mm->context, 3);
+> +	load_context(vma->vm_mm->context);
+>  
+>  	flush_user_dcache_page(vmaddr);
+>  	if(vma->vm_flags & VM_EXEC)
+>  		flush_user_icache_page(vmaddr);
+>  
+>  	/* put the old current process back */
+> -	mtsp(space, 3);
+> +	load_context(space);
+>  	mtctl(pgd, 25);
+> -	preempt_enable();
+> +	local_irq_enable();
+>  }
+>  
+>  
+> diff --git a/include/asm-parisc/assembly.h b/include/asm-parisc/assembly.h
+> index 5587f00..efe9ebc 100644
+> --- a/include/asm-parisc/assembly.h
+> +++ b/include/asm-parisc/assembly.h
+> @@ -435,7 +435,8 @@
+>  	SAVE_SP  (%sr0, PT_SR0 (\regs))
+>  	SAVE_SP  (%sr1, PT_SR1 (\regs))
+>  	SAVE_SP  (%sr2, PT_SR2 (\regs))
+> -	SAVE_SP  (%sr3, PT_SR3 (\regs))
+> +; Can't save and restore %sr3, it may be update from IPI
+> +;	SAVE_SP  (%sr3, PT_SR3 (\regs))
+>  	SAVE_SP  (%sr4, PT_SR4 (\regs))
+>  	SAVE_SP  (%sr5, PT_SR5 (\regs))
+>  	SAVE_SP  (%sr6, PT_SR6 (\regs))
+> @@ -475,7 +476,8 @@
+>  	REST_SP  (%sr0, PT_SR0 (\regs))
+>  	REST_SP  (%sr1, PT_SR1 (\regs))
+>  	REST_SP  (%sr2, PT_SR2 (\regs))
+> -	REST_SP  (%sr3, PT_SR3 (\regs))
+> +; Can't save and restore %sr3, it may be updated from IPI
+> +;	REST_SP  (%sr3, PT_SR3 (\regs))
+>  	REST_SP  (%sr4, PT_SR4 (\regs))
+>  	REST_SP  (%sr5, PT_SR5 (\regs))
+>  	REST_SP  (%sr6, PT_SR6 (\regs))
+> 
+> 
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
