@@ -1,14 +1,14 @@
 From: ram <talk2ram@gmail.com>
-Subject: [parisc-linux] Fwd: http://picasaweb.google.com/talk2ram/HpProblems
-Date: Mon, 26 Feb 2007 20:12:25 +0530
-Message-ID: <b74751490702260642g746ae640g8789f2ca08d4a611__46990.2962017388$1416624318$gmane$org@mail.gmail.com>
-References: <b74751490702260500o7451d131l6af36a0b49f08eb3@mail.gmail.com>
+Subject: [parisc-linux] Fwd: problem installing Debian on HP R class 9000
+Date: Mon, 26 Feb 2007 20:12:55 +0530
+Message-ID: <b74751490702260642i4b1a2538rd384e280e0a24622__39964.7482358434$1416624318$gmane$org@mail.gmail.com>
+References: <b74751490702220323o3b3d78a9u14b024a75341c986@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-  boundary="===============1377385617=="
+  boundary="===============0409264017=="
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <b74751490702260500o7451d131l6af36a0b49f08eb3@mail.gmail.com>
+In-Reply-To: <b74751490702220323o3b3d78a9u14b024a75341c986@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,53 +19,69 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1377385617==
+--===============0409264017==
 Content-Type: multipart/alternative;
-	boundary="----=_Part_96828_24963476.1172500945661"
+	boundary="----=_Part_96848_26797382.1172500975429"
 
-------=_Part_96828_24963476.1172500945661
+------=_Part_96848_26797382.1172500975429
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-hi
+Hi all
 
-iam trying to install Debian on HP R class 9000
-but i dont see iam able to make success
-can some one help me ot resolve this problem
+I have HP R Class 900 Server
 
+I have downloaded  debian hppa
 
-http://picasaweb.google.com/talk2ram/HpProblems
+and reading the document of PA-RISK How to boot
 
-any solution for this problem
-any help will be great
+and when boot started i select boot from
 
-ram
+boot p1( is the CDROM connected)
 
-------=_Part_96828_24963476.1172500945661
+I got the menu, and select English, and Country, after that, its reading CD
+
+after a 15min i get a error on console
+
+Kernel Panic- not syncing:drivers/parisc/ccio-dma.c: ccio_alloc_range() I/O
+MMU is out of mapping resources
+
+any help and suggestions
+
+Ram
+
+------=_Part_96848_26797382.1172500975429
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-<br><br>
+<br><br><span class="gmail_quote"><br></span>
+<div>Hi all</div>
 <div>&nbsp;</div>
-<div>hi</div>
+<div>I have HP R Class 900 Server</div>
 <div>&nbsp;</div>
-<div>iam trying to install Debian on HP R class 9000</div>
-<div>but i dont see iam able to make success</div>
-<div>can some one help me ot resolve this problem</div>
+<div>I have downloaded&nbsp; debian hppa</div>
 <div>&nbsp;</div>
+<div>and reading the document of PA-RISK How to boot</div>
 <div>&nbsp;</div>
-<div><a onclick="return top.js.OpenExtLink(window,event,this)" href="http://picasaweb.google.com/talk2ram/HpProblems" target="_blank">http://picasaweb.google.com/talk2ram/HpProblems</a></div>
+<div>and when boot started i select boot from </div>
 <div>&nbsp;</div>
-<div>any solution for this problem</div>
-<div>any help will be great</div><span class="sg">
+<div>boot p1( is the CDROM connected)</div>
 <div>&nbsp;</div>
-<div>ram<br>&nbsp;</div></span>
+<div>I got the menu, and select English, and Country, after that, its reading CD</div>
+<div>&nbsp;</div>
+<div>after a 15min i get a error on console</div>
+<div>&nbsp;</div>
+<div>Kernel Panic- not syncing:drivers/parisc/ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping resources</div>
+<div>&nbsp;</div>
+<div>any help and suggestions</div><span class="sg">
+<div>&nbsp;</div>
+<div>Ram</div></span>
 
-------=_Part_96828_24963476.1172500945661--
+------=_Part_96848_26797382.1172500975429--
 
---===============1377385617==
+--===============0409264017==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -75,4 +91,4 @@ _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1377385617==--
+--===============0409264017==--
