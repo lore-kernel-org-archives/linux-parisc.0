@@ -1,20 +1,14 @@
-From: Roland McGrath <roland@redhat.com>
-Subject: Re: [parisc-linux] Re: NPTL for hppa-linux is not backwards
-	compatible with Linuxthreads.
-Date: Sun, 25 Feb 2007 22:45:58 -0800 (PST)
-Message-ID: <20070226064558.714C0180067__3021.80991643599$1416624317$gmane$org@magilla.sf.frob.com>
-References: <119aab440702251847u29687878mff8770653cccbb35@mail.gmail.com>
+From: ram <talk2ram@gmail.com>
+Subject: [parisc-linux] Fwd: http://picasaweb.google.com/talk2ram/HpProblems
+Date: Mon, 26 Feb 2007 20:12:25 +0530
+Message-ID: <b74751490702260642g746ae640g8789f2ca08d4a611__46990.2962017388$1416624318$gmane$org@mail.gmail.com>
+References: <b74751490702260500o7451d131l6af36a0b49f08eb3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: debian-glibc@lists.debian.org,
- libc-ports@sourceware.org,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: multipart/mixed;
+  boundary="===============1377385617=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: Carlos O'Donell's message of  Sunday,
-	25 February 2007 21:47:38 -0500
-	<119aab440702251847u29687878mff8770653cccbb35@mail.gmail.com>
+In-Reply-To: <b74751490702260500o7451d131l6af36a0b49f08eb3@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,19 +19,60 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I did a couple of tests and I verified that I have no words to spare.
-> Adding an extra "int __pad" forces the structure to grow by 8 bytes
-> due to the "long long" alignment requirements.
+--===============1377385617==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_96828_24963476.1172500945661"
 
-Just reorder the fields so that the 32-bit fields are all in groups of 2 or 4.
-All that should matter is that the padding word is one of the first four so
-you can detect the old initializer data, and that __mutex is the 6th
-member so the PTHREAD_COND_INITIALIZER text works out to be warning-free.
-In fact, that doesn't really matter since the initializer contents are all
-zero regardless of spelling.  If need be, you can add a new first union
-member not called __data, with a layout that makes PTHREAD_COND_INITIALIZER
-happy. 
+------=_Part_96828_24963476.1172500945661
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+hi
+
+iam trying to install Debian on HP R class 9000
+but i dont see iam able to make success
+can some one help me ot resolve this problem
+
+
+http://picasaweb.google.com/talk2ram/HpProblems
+
+any solution for this problem
+any help will be great
+
+ram
+
+------=_Part_96828_24963476.1172500945661
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<br><br>
+<div>&nbsp;</div>
+<div>hi</div>
+<div>&nbsp;</div>
+<div>iam trying to install Debian on HP R class 9000</div>
+<div>but i dont see iam able to make success</div>
+<div>can some one help me ot resolve this problem</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div><a onclick="return top.js.OpenExtLink(window,event,this)" href="http://picasaweb.google.com/talk2ram/HpProblems" target="_blank">http://picasaweb.google.com/talk2ram/HpProblems</a></div>
+<div>&nbsp;</div>
+<div>any solution for this problem</div>
+<div>any help will be great</div><span class="sg">
+<div>&nbsp;</div>
+<div>ram<br>&nbsp;</div></span>
+
+------=_Part_96828_24963476.1172500945661--
+
+--===============1377385617==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============1377385617==--
