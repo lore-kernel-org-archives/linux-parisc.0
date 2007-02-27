@@ -1,15 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [PATCH] fix SMP TLB optimisations
-Date: Sat, 24 Feb 2007 17:46:03 -0700
-Message-ID: <20070225004603.GB18944__32250.8928984918$1416624313$gmane$org@colo.lackof.org>
-References: <1172328689.3401.3.camel@mulgrave.il.steeleye.com>
+From: ram <talk2ram@gmail.com>
+Subject: Re: [parisc-linux] [git patches] parisc build fixes for 2.6.21
+Date: Tue, 27 Feb 2007 18:59:02 +0530
+Message-ID: <b74751490702270529r17e9ef27j4b3717cea351c39c__47916.3183285438$1416624313$gmane$org@mail.gmail.com>
+References: <20070227033201.GA13669@athena.road.mcmartin.ca>
+	<b74751490702270222l194eba13sd797c2b5e208829@mail.gmail.com>
+	<20070227131625.GB3545@athena.road.mcmartin.ca>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: Parisc List <parisc-linux@lists.parisc-linux.org>
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Content-Type: multipart/mixed;
+  boundary="===============0047801297=="
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Kyle McMartin" <kyle@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1172328689.3401.3.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <20070227131625.GB3545@athena.road.mcmartin.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,120 +22,77 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Feb 24, 2007 at 08:51:29AM -0600, James Bottomley wrote:
-> Since we're now changing the %sr3 from an IPI, we have to be careful
-> about other places in the kernel where we're using temporary values in %
-> sr3.
+--===============0047801297==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_9538_6307435.1172582942197"
 
-Isn't sr3 part of the context?
-ie if we need to change the sr3 for a given context shouldn't
-the code be modifying the value in the struct context instead
-the actual register unless we know we are in that context?
-The IPI code should know the sr3 was saved and where.
+------=_Part_9538_6307435.1172582942197
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-The change to assembly.h has me very nervous since I don't understand it.
-You probably have it right and I'm being a bit dense.
+On 2/27/07, Kyle McMartin <kyle@parisc-linux.org> wrote:
+>
+> On Tue, Feb 27, 2007 at 03:52:27PM +0530, ram wrote:
+> >
+>
+> No. I will tell you when they are fixed. Please realize this is a
+> volunteer
+> effort, and your problem is extremely low priority.
+>
 
-I was trying to track down other uses of "mtsp sr3" and schedule()
-seems to be one:
-	schedule() -> context_switch() -> switch_mm() -> load_context()
 
-I'm not seeing where this path disables local interrupts.
-Sounds like it should before calling load_context() or we should
-in our switch_mm() or add a prepare_arch_switch() to asm-parisc/system.h.
+Hi
 
->   As far as I can tell, this is pretty much only non local cache
-> flushing.
 
-ISTR copy and one or two other places use sr3 as well.
+yes i understand,
 
-> The following patch fixes the IPI to work (by not saving %sr3
-> across an interruption) and patches up temporary %sr3 usage.
-> 
-> The sharp eyed will also notice I've corrected a Protection ID bug with
-> the non current flushes.
+iam just trying to understand , is this possible to help people to
+test and give input if i can, dont think that iam asking anything extra
 
-That's not me :)
-Was the fix to place "pgd = mfctl(25)" after the local_irq_disable()?
+since iam curious to install debian on HP Server and use this box for other
+services.
 
-thanks,
-grant
+thanks,  i will await for your responce
+mean time let me know if iam usefull help anything for testing
 
-> 
-> Signed-off-by: James Bottomley <James.Bottomley@SteelEye.com>
-> 
-> diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-> index 00b1641..cb1dd17 100644
-> --- a/arch/parisc/kernel/cache.c
-> +++ b/arch/parisc/kernel/cache.c
-> @@ -303,25 +303,28 @@ flush_user_cache_page_non_current(struct vm_area_struct *vma,
->  				  unsigned long vmaddr)
->  {
->  	/* save the current process space and pgd */
-> -	unsigned long space = mfsp(3), pgd = mfctl(25);
-> +	unsigned long space, pgd;
->  
-> -	/* we don't mind taking interrups since they may not
-> -	 * do anything with user space, but we can't
-> -	 * be preempted here */
-> -	preempt_disable();
-> +	/* Have to disable interrupts here, since now %sr3 changes
-> +	 * are carried by IPI and we can't have that happen while
-> +	 * we're using a temporary %sr3 */
-> +	local_irq_disable();
-> +
-> +	space = mfsp(3);
-> +	pgd = mfctl(25);
->  
->  	/* make us current */
->  	mtctl(__pa(vma->vm_mm->pgd), 25);
-> -	mtsp(vma->vm_mm->context, 3);
-> +	load_context(vma->vm_mm->context);
->  
->  	flush_user_dcache_page(vmaddr);
->  	if(vma->vm_flags & VM_EXEC)
->  		flush_user_icache_page(vmaddr);
->  
->  	/* put the old current process back */
-> -	mtsp(space, 3);
-> +	load_context(space);
->  	mtctl(pgd, 25);
-> -	preempt_enable();
-> +	local_irq_enable();
->  }
->  
->  
-> diff --git a/include/asm-parisc/assembly.h b/include/asm-parisc/assembly.h
-> index 5587f00..efe9ebc 100644
-> --- a/include/asm-parisc/assembly.h
-> +++ b/include/asm-parisc/assembly.h
-> @@ -435,7 +435,8 @@
->  	SAVE_SP  (%sr0, PT_SR0 (\regs))
->  	SAVE_SP  (%sr1, PT_SR1 (\regs))
->  	SAVE_SP  (%sr2, PT_SR2 (\regs))
-> -	SAVE_SP  (%sr3, PT_SR3 (\regs))
-> +; Can't save and restore %sr3, it may be update from IPI
-> +;	SAVE_SP  (%sr3, PT_SR3 (\regs))
->  	SAVE_SP  (%sr4, PT_SR4 (\regs))
->  	SAVE_SP  (%sr5, PT_SR5 (\regs))
->  	SAVE_SP  (%sr6, PT_SR6 (\regs))
-> @@ -475,7 +476,8 @@
->  	REST_SP  (%sr0, PT_SR0 (\regs))
->  	REST_SP  (%sr1, PT_SR1 (\regs))
->  	REST_SP  (%sr2, PT_SR2 (\regs))
-> -	REST_SP  (%sr3, PT_SR3 (\regs))
-> +; Can't save and restore %sr3, it may be updated from IPI
-> +;	REST_SP  (%sr3, PT_SR3 (\regs))
->  	REST_SP  (%sr4, PT_SR4 (\regs))
->  	REST_SP  (%sr5, PT_SR5 (\regs))
->  	REST_SP  (%sr6, PT_SR6 (\regs))
-> 
-> 
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+ram
+
+------=_Part_9538_6307435.1172582942197
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<br><br>
+<div><span class="gmail_quote">On 2/27/07, <b class="gmail_sendername">Kyle McMartin</b> &lt;<a href="mailto:kyle@parisc-linux.org">kyle@parisc-linux.org</a>&gt; wrote:</span>
+<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">On Tue, Feb 27, 2007 at 03:52:27PM +0530, ram wrote:<br>&gt;<br><br>No. I will tell you when they are fixed. Please realize this is a volunteer
+<br>effort, and your problem is extremely low priority.<br></blockquote></div>
+<div><br>&nbsp;</div>
+<div>Hi</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>yes i understand, </div>
+<div>&nbsp;</div>
+<div>iam just trying to understand , is this possible to help people to</div>
+<div>test and give input if i can, dont think that iam asking anything extra</div>
+<div>&nbsp;</div>
+<div>since iam curious to install debian on HP Server and use this box for other services.</div>
+<div>&nbsp;</div>
+<div>thanks,&nbsp; i will await for your responce</div>
+<div>mean time let me know if iam usefull help anything for testing</div>
+<div>&nbsp;</div>
+<div>ram</div>
+
+------=_Part_9538_6307435.1172582942197--
+
+--===============0047801297==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============0047801297==--
