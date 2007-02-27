@@ -1,18 +1,14 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Fwd: problem installing Debian on HP R class 9000
-Date: Mon, 26 Feb 2007 18:36:03 -0700
-Message-ID: <20070227013603.GA7420__21538.8568271466$1416624313$gmane$org@colo.lackof.org>
-References: <b74751490702220323o3b3d78a9u14b024a75341c986@mail.gmail.com>
-	<b74751490702260642i4b1a2538rd384e280e0a24622@mail.gmail.com>
-	<20070226165018.GB30763@colo.lackof.org>
-	<b74751490702260950i6ed5ef98g219297ad504672fb@mail.gmail.com>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [git patches] parisc build fixes for 2.6.21
+Date: Mon, 26 Feb 2007 22:32:01 -0500
+Message-ID: <20070227033201.GA13669__43007.6698809446$1416624313$gmane$org@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: ram <talk2ram@gmail.com>
+Cc: akpm@osdl.org,
+ parisc-linux@lists.parisc-linux.org
+To: torvalds@osdl.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <b74751490702260950i6ed5ef98g219297ad504672fb@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,41 +19,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Feb 26, 2007 at 11:20:50PM +0530, ram wrote:
-> >Yeah, this is a known problem. Current workaround is to hack the
-> >ccio driver to increase the minimum amount of IOVA space allocated.
-> >
-> >We need to make this a kernel parameter.
-> 
-> 
-> 
-> Hi
-> 
-> thanks for the quick reply
-> can you suggest me some document
-> how can i hack the code make my HP R class work with debian
+Build fixes for 2.6.21, should be nothing objectionable here.
 
-This would require you build your own kernel and integrate it
-into the installer. My understanding was Kyle McMartin was
-going to do that. Please wait until he can provide an installer
-image for you to test.
+The following changes since commit c68644d3304d217d50b8f0a179d4aa7e5a85a5bc:
+  Ralf Baechle (1):
+        [MIPS] Make SMTC_IDLE_HOOK_DEBUG a proper option in Kconfig.debug.
 
-In general, I haven't looked at our build process in a while.
-You can take a look at the "Developer Resources" links at the bottom
-of the www.parisc-linux.org navigation bar. The "Build Kernel"
-is the most recent one....and it looks stale since it refers
-to CVS (which we stopped using about 8 monthes ago).
-Use "git" instructions to get kernel source and then follow
-the rest of the instructions if you still wish to build
-your own kernel.
+are found in the git repository at:
 
-hth,
-grant
+  /pub/scm/linux/kernel/git/kyle/parisc-2.6.git
 
-> 
-> any suggestions or readings
-> 
-> ram
+Kyle McMartin (6):
+      [PARISC] Remove __read_mostly annotation from command_line
+      [PARISC] clocksource_cr16: Use clocksource_change_rating()
+      [PARISC] time: Convert clocksource is_continuous to flag
+      [PARISC] time: clocksource lost update_callback
+      [PARISC] parisc-agp: Fix thinko const-ifying
+      [PARISC] clocksource: Move update_cr16_clocksource later in boot
+
+ arch/parisc/kernel/processor.c |    8 ++++++++
+ arch/parisc/kernel/setup.c     |    2 +-
+ arch/parisc/kernel/time.c      |   18 ++++++++++--------
+ drivers/char/agp/parisc-agp.c  |    2 +-
+ 4 files changed, 20 insertions(+), 10 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
