@@ -1,14 +1,15 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: [parisc-linux] [PATCH] parisc: unbreak setup.c re command_line
-Date: Sat, 24 Feb 2007 02:32:26 +0300
-Message-ID: <20070223233226.GC5599__37026.9650164575$1416624637$gmane$org@martell.zuzino.mipt.ru>
+From: ram <talk2ram@gmail.com>
+Subject: [parisc-linux] Re: http://picasaweb.google.com/talk2ram/HpProblems
+Date: Thu, 1 Mar 2007 10:55:30 +0530
+Message-ID: <b74751490702282125u5afff38dp180281aaf8ab72f9__40728.5695350312$1416624319$gmane$org@mail.gmail.com>
+References: <b74751490702260500o7451d131l6af36a0b49f08eb3@mail.gmail.com>
+	<b74751490702260642g746ae640g8789f2ca08d4a611@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: linux-kernel@vger.kernel.org,
- parisc-linux@parisc-linux.org
-To: akpm@osdl.org
+Content-Type: multipart/mixed;
+  boundary="===============0557766909=="
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <b74751490702260642g746ae640g8789f2ca08d4a611@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,32 +20,80 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-What compiler is supposed to do upon seeing
+--===============0557766909==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_59743_7099635.1172726730614"
 
-	char __attribute__((__section__ (".init.data")))	command_line[1024]
-	     __attribute__((__section__(".data.read_mostly")));
+------=_Part_59743_7099635.1172726730614
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-?
+On 2/26/07, ram <talk2ram@gmail.com> wrote:
+>
+>
+>
+>
+> hi
+>
+> iam trying to install Debian on HP R class 9000
+> but i dont see iam able to make success
+> can some one help me ot resolve this problem
+>
+>
+> http://picasaweb.google.com/talk2ram/HpProblems
+>
+> any solution for this problem
+> any help will be great
+>
+> ram
+>
+>
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
 
- arch/parisc/kernel/setup.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+any update on this issue
 
---- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -45,7 +45,7 @@ #include <asm/pdc_chassis.h>
- #include <asm/io.h>
- #include <asm/setup.h>
- 
--char	__initdata command_line[COMMAND_LINE_SIZE] __read_mostly;
-+static char __initdata command_line[COMMAND_LINE_SIZE];
- 
- /* Intended for ccio/sba/cpu statistics under /proc/bus/{runway|gsc} */
- struct proc_dir_entry * proc_runway_root __read_mostly = NULL;
+ram
+
+------=_Part_59743_7099635.1172726730614
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<br><br>
+<div><span class="gmail_quote">On 2/26/07, <b class="gmail_sendername">ram</b> &lt;<a href="mailto:talk2ram@gmail.com">talk2ram@gmail.com</a>&gt; wrote:</span>
+<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
+<div><span class="e" id="q_110fe809b0fa9461_0"><br><br>
+<div>&nbsp;</div>
+<div>hi</div>
+<div>&nbsp;</div>
+<div>iam trying to install Debian on HP R class 9000</div>
+<div>but i dont see iam able to make success</div>
+<div>can some one help me ot resolve this problem</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div><a onclick="return top.js.OpenExtLink(window,event,this)" href="http://picasaweb.google.com/talk2ram/HpProblems" target="_blank">http://picasaweb.google.com/talk2ram/HpProblems</a></div>
+<div>&nbsp;</div>
+<div>any solution for this problem</div>
+<div>any help will be great</div><span>
+<div>&nbsp;</div>
+<div>ram<br>&nbsp;</div></span></span></div></blockquote>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>any update on this issue</div>
+<div>&nbsp;</div>
+<div>ram</div><br>&nbsp;</div><br>
+
+------=_Part_59743_7099635.1172726730614--
+
+--===============0557766909==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============0557766909==--
