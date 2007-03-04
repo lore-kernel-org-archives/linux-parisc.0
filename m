@@ -1,14 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] greylisting test
-Date: Thu, 1 Mar 2007 11:13:21 -0500
-Message-ID: <20070301161321.GA4489__44205.4851715968$1416624320$gmane$org@athena.road.mcmartin.ca>
-References: <20070301153813.GA3964@athena.road.mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Debugging 64-bit kernel crashes involving
+Date: Sat, 3 Mar 2007 20:05:21 -0500 (EST)
+Message-ID: <200703040105.l2415MEE004514__39267.0391047888$1416624320$gmane$org@hiauly1.hia.nrc.ca>
+References: <1172620930.3408.46.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org
+To: James.Bottomley@SteelEye.com (James Bottomley)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070301153813.GA3964@athena.road.mcmartin.ca>
+In-Reply-To: <1172620930.3408.46.camel@mulgrave.il.steeleye.com> from "James
+	Bottomley" at Feb 27, 2007 06:02:10 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -19,14 +21,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Mar 01, 2007 at 10:38:13AM -0500, Kyle McMartin wrote:
-> let's see if this works...
->
-X-Greylist: delayed 514 seconds by postgrey-1.27 at palinux; Thu, 01 Mar 2007
-08:49:49 MST
+James,
 
-Ok. Let's hope this cuts down some of the spam to @parisc-linux.org
-even more...
+> Based on the theory, I managed to reproduce the problem on ioz (you just
+> have to increase N to be much greater than the number of CPUs you have)
+> and tried a little fix, which seems to work for ioz.  Could you try this
+> out on your a500?
+
+I tried the change on my c3750.  It's survived four full GCC builds
+and checks with no hung process in the libjava testsuite.  While this
+might have happened before, the probability of this happening was low.
+So, I think this change is a good one ;)
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
