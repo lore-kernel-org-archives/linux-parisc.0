@@ -1,19 +1,17 @@
-From: ram <talk2ram@gmail.com>
-Subject: Re: [parisc-linux] Fwd: problem installing Debian on HP R class 9000
-Date: Wed, 7 Mar 2007 18:08:58 +0530
-Message-ID: <b74751490703070438n719df933pa5b88d64b0b0fa71__33101.3749041178$1416624321$gmane$org@mail.gmail.com>
-References: <b74751490702220323o3b3d78a9u14b024a75341c986@mail.gmail.com>
-	<b74751490702260642i4b1a2538rd384e280e0a24622@mail.gmail.com>
-	<20070226165018.GB30763@colo.lackof.org>
-	<b74751490702260950i6ed5ef98g219297ad504672fb@mail.gmail.com>
-	<20070227013603.GA7420@colo.lackof.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [PATCH] fix SMP TLB optimisations
+Date: Tue, 6 Mar 2007 19:43:40 -0500 (EST)
+Message-ID: <200703070043.l270hfAt001079__2470.15706631846$1416624322$gmane$org@hiauly1.hia.nrc.ca>
+References: <200702252119.l1PLJTk7014385@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1092467308=="
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Grant Grundler" <grundler@parisc-linux.org>
+Content-Type: text/plain;
+  charset=US-ASCII
+Cc: James.Bottomley@steeleye.com,
+ parisc-linux@lists.parisc-linux.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070227013603.GA7420@colo.lackof.org>
+In-Reply-To: <200702252119.l1PLJTk7014385@hiauly1.hia.nrc.ca> from "John David
+	Anglin" at Feb 25, 2007 04:19:29 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,49 +22,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1092467308==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_200725_29341445.1173271138106"
+> > > Don't like what's going on with fr22 in the above code.  Seems like a
+> > > GCC optimization bug since it looks like there are a few general registers
+> > > that could be used.
+> > 
+> > Why a bug? It's a register just like any other.
+> 
+> It's an optimization bug because copying from a general to a floating
+> register has to be done through memory.  A stack local would save
+> a read and write.  In this case, all the manipulation is done before
+> the syscall and there would appear to be sufficient general registers
+> available to do the job.  GCC's register allocator should be smart
+> enough to figure this out...
 
-------=_Part_200725_29341445.1173271138106
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+With luck, his problem should be fixed:
+http://gcc.gnu.org/ml/gcc-patches/2007-03/msg00335.html
 
-Hi
+Also, the 64-bit kernel should use fp regs only for xmpyu.
 
-
-all any update on this issue
-
-just check if any test i can do help to sort of the problem
-
-ram
-
-------=_Part_200725_29341445.1173271138106
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-<br><br>
-<div><span class="gmail_quote">Hi </span></div>
-<div><span class="gmail_quote"></span>&nbsp;</div>
-<div><span class="gmail_quote"></span>&nbsp;</div>
-<div><span class="gmail_quote">all any update on this issue</span></div>
-<div><span class="gmail_quote"></span>&nbsp;</div>
-<div><span class="gmail_quote">just check if any test i can do help to sort of the problem</span></div>
-<div><span class="gmail_quote"></span>&nbsp;</div>
-<div><span class="gmail_quote">ram</span></div>
-
-------=_Part_200725_29341445.1173271138106--
-
---===============1092467308==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1092467308==--
