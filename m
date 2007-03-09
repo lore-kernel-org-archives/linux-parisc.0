@@ -1,20 +1,23 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: "James K. Love" <jlove@scires.com>
 Subject: Re: [parisc-linux] [PATCH] sd: Adds flexible disk (TEAC FC-1,
 	scsi-floppy) support to scsi disk driver
-Date: Wed, 7 Mar 2007 23:53:23 -0700
-Message-ID: <20070308065323.GB26641__27247.4781064831$1416624323$gmane$org@colo.lackof.org>
+Date: Fri, 09 Mar 2007 10:51:01 -0500
+Message-ID: <45F18265.3040809__9719.07934076644$1416624323$gmane$org@scires.com>
 References: <45B67554.6010208@scires.com>
 	<20070124162810.GA31075@colo.lackof.org>
 	<45CB5C9D.1070601@scires.com>
 	<20070208173808.GL13101@parisc-linux.org>
 	<45EC9702.9080107@scires.com>
+	<20070308065323.GB26641@colo.lackof.org>
+	<45F0260A.7080306@scires.com>
+	<20070308182601.GA18689@colo.lackof.org>
+Reply-To: jlove@scires.com
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: "James K. Love" <jlove@scires.com>
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <45EC9702.9080107@scires.com>
+In-Reply-To: <20070308182601.GA18689@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,94 +28,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Mar 05, 2007 at 05:17:38PM -0500, James K. Love wrote:
-> All:
-> 
-> I've just merged my flexible disk changes (see thread link below) into the
-> latest scsi disk driver source.  These changes add scsi-floppy disk support
-> (particularly HP's revs of the TEAC FC-1 drive) to the scsi disk driver.  Per
-> Matthew's suggestion, I'm cowardly posting here first to get some feedback,
-> rather than posting straight to linux-scsi.
+On 3/8/2007 1:26 PM, Grant Grundler wrote:
+> welcome :)
+> kudos for chasing this.
 
-That's fine. In general, very nice work!
-I only have some some coding style issues and one question.
+No Problem.  I can't think of anything more exciting than finally getting an
+obscure, antiquated, low-capacity, franken-drive like the TEAC FC-1 working.
+But seriously, I hope someone else finds this patch useful.
 
-> --- ./drivers/scsi/sd.orig	2007-02-25 22:46:56.000000000 -0500
-> +++ ./drivers/scsi/sd.c	2007-03-04 21:26:00.000000000 -0500
-...
-> +#ifdef __BIG_ENDIAN_BITFIELD
-> +	unsigned char   true_rdy            : 1;
-> +	unsigned char   start_sector_number : 1;
-> +	unsigned char   motor_on            : 1;
-> +	unsigned char   reserved2           : 5;
-> +	unsigned char   reserved3           : 4;
-> +	unsigned char   step_pulse_per_cyl  : 4;
-> +#else
-> +	unsigned char   reserved2           : 5;
-> +	unsigned char   motor_on            : 1;
-> +	unsigned char   start_sector_number : 1;
-> +	unsigned char   true_rdy            : 1;
-> +	unsigned char   step_pulse_per_cyl  : 4;
-> +	unsigned char   reserved3           : 4;
-> +#endif
+> It sounds good but it's totally not obvious this was the intent.
+> If you are "hard coding" the geometry, then can't you just use #define?
 
-I prefer bit masks over bit fields for two reasons:
-1) don't have the endian mess
-2) assignment to bit fields are NOT atomic - they are read/modify/write ops.
-   Use of bit fields hides this behavior.
+Yes or consts, whichever is preferable.  The drive geometry is always initially
+incorrect, so I must set it to the correct values.  These values should always
+be the same for THIS drive... which leads me to...
 
-But if you prefer them, I don't think their use is prohibited in general.
+> I expect there are other "device->removable && !TYPE_MOD" devices.
 
-...
-> @@ -1535,6 +1626,11 @@ static int sd_revalidate_disk(struct gen
->  	struct scsi_device *sdp = sdkp->device;
->  	unsigned char *buffer;
->  	unsigned ordered;
-> +	char mode_buf[0xFF];
-> +	scsi_mode_sense_page5_t* page5 = NULL;
-> +	struct scsi_mode_data data;
-> +	int length = 0;
-> +	int res = 0;
+You would know this better than I, so I'll defer to you.  I was always a bit
+uncomfortable making this assumption, which I documented in a comment in the
+code.  When the scsi driver attaches to my devices, they are all of TYPE_DISK
+and removable.  I was hoping someone else could test this out with a different
+scsi-floppy drive, but there may not be any others.  Would it be a better idea
+to use model and vendor information to exactly identify the drive as a TEAC FC-1?
 
-Could these new local vars be moved into the code block inside
-the "if ()" statement where they are used?
+Regards,
+James Love
 
-Just makes it easier to understand variable usage when reviewing
-the code in the future.
-
->  	SCSI_LOG_HLQUEUE(3, printk("sd_revalidate_disk: disk=%s\n", disk->disk_name));
-> 
-> @@ -1563,6 +1659,66 @@ static int sd_revalidate_disk(struct gen
->  	sd_spinup_disk(sdkp, disk->disk_name);
-> 
->  	/*
-> +	 * Assuming here that this check will suffice for ID'ing a scsi floppy.
-> +	 * Note that sd_spinup_disk sets media_present above.
-> +	 */
-> +	if (sdp->removable && (sdp->type != TYPE_MOD)
-> +	                   && sdkp->media_present) {
-> +		memset(&data, 0, sizeof(data));
-> +		memset(&mode_buf, 0, sizeof(mode_buf));
-...
-
-This code chunk is long enough that it should be it's own subroutine.
-Would that be difficult?
-
-...
-> +		/* store the drive's geometry info we just read */
-> +		sf_heads = page5->number_of_heads;
-> +		sf_sectors = page5->sectors_per_track;
-> +		sf_cylinders = page5->number_of_cylinders_msb << 8
-> +		               | page5->number_of_cylinders_lsb;
-
-I'm kinda nervous about the use of static globals to "return" the
-result of the previous code. In case some whacko decided to
-have two scsi floppies with different media types, would this break?
-
-Can't we directly park this info into the per disk data struct?
-
-thanks,
-grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
