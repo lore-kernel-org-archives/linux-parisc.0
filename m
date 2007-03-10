@@ -1,43 +1,21 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] Problem with atomicity of TIF for parisc ?
-Date: Fri, 9 Mar 2007 20:07:32 +0100
-Message-ID: <200703092007.32746.deller__32317.9801962853$1416624324$gmane$org@gmx.de>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Problem with atomicity of TIF for parisc ?
+Date: Sat, 10 Mar 2007 09:03:24 -0500
+Message-ID: <20070310140324.GA31586__23298.082574229$1416624324$gmane$org@athena.road.mcmartin.ca>
+References: <200703092007.32746.deller@gmx.de> <200703100006.l2A06o7Y012173@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: Helge Deller <deller@gmx.de>,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <kyle@athena.road.mcmartin.ca>
+In-Reply-To: <200703100006.l2A06o7Y012173@hiauly1.hia.nrc.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 
-While reading LKML I saw the patches by Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca> titled
-"Fix atomicity of TIF update in flush_thread() for XXX"
-e.g. http://permalink.gmane.org/gmane.linux.kernel/502597
+On Fri, Mar 09, 2007 at 07:06:50PM -0500, John David Anglin wrote:
+> 
+> Is disabling interrupts sufficient on a SMP system?
+> 
 
-Now I'm wondering if our thread-problems may be due the fact that we do not disable interrupts while testing the TIF_XX values in arch/parisc/kernel/entry.S, e.g.:
-
-intr_return:
-        /* NOTE: Need to enable interrupts incase we schedule. */
-        ssm     PSW_SM_I, %r0
-<....>
-intr_check_resched:
-        /* check for reschedule */
-        mfctl   %cr30,%r1
-        LDREG   TI_FLAGS(%r1),%r19      /* sched.h: TIF_NEED_RESCHED */
-        bb,<,n  %r19,31-TIF_NEED_RESCHED,intr_do_resched /* forward */
-
-Is the coding correct, or do we need to disable interrupts when checking TIF_NEED_RESCHED ?
-(There are more TIF_XXX places in entry.S as well which might need checking then...)
-
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+No. :/
