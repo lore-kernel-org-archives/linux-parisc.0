@@ -1,43 +1,54 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Problem with atomicity of TIF for parisc ?
-Date: Fri, 9 Mar 2007 19:06:50 -0500 (EST)
-Message-ID: <200703100006.l2A06o7Y012173__41336.9075315588$1416624324$gmane$org@hiauly1.hia.nrc.ca>
-References: <200703092007.32746.deller@gmx.de>
+From: Guy Martin <gmsoft@gentoo.org>
+Subject: [parisc-linux] glibc dladdr test failure
+Date: Sun, 11 Mar 2007 20:17:50 +0100
+Message-ID: <20070311201750.0f280e87__27286.3079830588$1416624324$gmane$org@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: deller@gmx.de (Helge Deller)
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <200703092007.32746.deller@gmx.de> from "Helge Deller" at Mar 9, 2007 08:07:32 pm
-List-ID: <linux-parisc.vger.kernel.org>
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Now I'm wondering if our thread-problems may be due the fact that we do not disable interrupts while testing the TIF_XX values in arch/parisc/kernel/entry.S, e.g.:
 
-Do you have a testcase?  I'm still seeing the occasional thread test
-fail in the GCC testsuite fail.  These are usually timeouts.  I'm not
-seeing hung processes leading to a kernel crash anymore ;)
 
-I also see output from a test truncated occasionally when a test generates
-a lot of output.
+Hi all,
 
-> intr_return:
->         /* NOTE: Need to enable interrupts incase we schedule. */
->         ssm     PSW_SM_I, %r0
-> <....>
-> intr_check_resched:
->         /* check for reschedule */
->         mfctl   %cr30,%r1
->         LDREG   TI_FLAGS(%r1),%r19      /* sched.h: TIF_NEED_RESCHED */
->         bb,<,n  %r19,31-TIF_NEED_RESCHED,intr_do_resched /* forward */
-> 
-> Is the coding correct, or do we need to disable interrupts when checking TIF_NEED_RESCHED ?
 
-The bb test clearly isn't atomic...
+The dladdr test of the glibc testsuite fail for the following reason :
 
-Is disabling interrupts sufficient on a SMP system?
+in elf/dl-addr.c:30, the address passed is transformed this way :
+  const ElfW(Addr) addr = DL_LOOKUP_ADDRESS (address);
 
-Dave
+
+While in ports/sysdeps/hppa/dl-lookupcfg.h:35, you have this :
+
+/* Clear the bottom two bits so generic code can find the fdesc entry */
+#define DL_LOOKUP_ADDRESS(addr) \
+  (_dl_lookup_address ((void *)((unsigned long)addr & ~3)))
+
+
+If you don't apply this bitmask, addr is set to the original value of
+the passed address and it is resolved correctly.
+
+What should be the correct fix ?
+
+
+  Guy
+
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Guy Martin
+Gentoo Linux - HPPA port lead
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
