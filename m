@@ -1,18 +1,22 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] Problem with atomicity of TIF for parisc ?
-Date: Sun, 11 Mar 2007 21:25:53 +0100
-Message-ID: <200703112125.53971.deller__17606.0614445761$1416624325$gmane$org@gmx.de>
-References: <200703092007.32746.deller@gmx.de>
-	<200703100006.l2A06o7Y012173@hiauly1.hia.nrc.ca>
-	<20070310140324.GA31586@athena.road.mcmartin.ca>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] Debugging 64-bit kernel crashes involving
+Date: Sun, 11 Mar 2007 15:39:25 -0500
+Message-ID: <1173645565.3420.22.camel__32981.641466222$1416624326$gmane$org@mulgrave.il.steeleye.com>
+References: <200702240039.l1O0dCxG017471@hiauly1.hia.nrc.ca>
+	<1172277920.3424.83.camel@mulgrave.il.steeleye.com>
+	<119aab440702251819u1a070512j2cb8ca2eeadf0962@mail.gmail.com>
+	<1172461983.3423.34.camel@mulgrave.il.steeleye.com>
+	<1172467172.3423.39.camel@mulgrave.il.steeleye.com>
+	<1172620930.3408.46.camel@mulgrave.il.steeleye.com>
+	<20070308193119.GA3553@athena.road.mcmartin.ca>
+	<119aab440703111328x5738d60es118519743e6000a3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
  parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070310140324.GA31586@athena.road.mcmartin.ca>
+In-Reply-To: <119aab440703111328x5738d60es118519743e6000a3@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,20 +27,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Saturday 10 March 2007, Kyle McMartin wrote:
-> On Fri, Mar 09, 2007 at 07:06:50PM -0500, John David Anglin wrote:
-> > 
-> > Is disabling interrupts sufficient on a SMP system?
-> > 
-> 
-> No. :/
+On Sun, 2007-03-11 at 16:28 -0400, Carlos O'Donell wrote:
+> Are we considering James' patch for inclusion into
+> git.parisc-linux.org?
 
-Hi Kyle,
+No ... it's failing on more complex tests.  The theory is sound ... we
+have a huge cockup in our shared space handling code (which is why
+threads don't work very well).  The problem is I'm not entirely sure how
+to fix it.
 
-Independend of the fact if irq-disabling is enough on SMP or not.
-The question still remains: May this be one of the reasons we see the hangs ?
+James
 
-Helge
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
