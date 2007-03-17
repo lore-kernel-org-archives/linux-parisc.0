@@ -1,11 +1,10 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] [PATCH] limit thread stack size with >4K pages
-Date: Sat, 17 Mar 2007 13:23:05 +0100
-Message-ID: <200703171323.06002.deller__27255.2623333924$1416624327$gmane$org@gmx.de>
+Subject: [parisc-linux] missing system calls ?
+Date: Sat, 17 Mar 2007 13:48:56 +0100
+Message-ID: <200703171348.56311.deller__34071.5101840489$1416624328$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: Kyle McMartin <kyle@mcmartin.ca>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
@@ -18,40 +17,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This patch limits the thread stack size when pages >4 K were selected.
-i.e. THREAD_SIZE is calculated to "MAX(16K, PAGE_SIZE)"
+I just tested the patch "missing system calls" patch by David Woodhouse (http://thread.gmane.org/gmane.linux.ports.ppc64.devel/16991) 
+and the additional patch by David Miller (http://thread.gmane.org/gmane.linux.ports.ppc64.devel/16991/focus=502554) on top of it.
+I really liked the patches.
 
-diff-tree 6033080df2431638223580559ebea54efb22bc42 (from cd54f53359c3e0deb898a5dbb199b70c5cb6ef0f)
-Author: Helge Deller <deller@gmx.de>
-Date:   Sat Mar 17 13:19:01 2007 +0100
+Here is the result for my parisc-linux tree:
+init/missing_syscalls.h:68:3: warning: #warning syscall umount not implemented
+init/missing_syscalls.h:203:3: warning: #warning syscall sigaction not implemented
+init/missing_syscalls.h:218:3: warning: #warning syscall sigsuspend not implemented
+init/missing_syscalls.h:248:3: warning: #warning syscall select not implemented
+init/missing_syscalls.h:269:3: warning: #warning syscall readdir not implemented
+init/missing_syscalls.h:308:3: warning: #warning syscall socketcall not implemented
+init/missing_syscalls.h:353:3: warning: #warning syscall ipc not implemented
+init/missing_syscalls.h:359:3: warning: #warning syscall sigreturn not implemented
+init/missing_syscalls.h:749:3: warning: #warning syscall fadvise64 not implemented
+init/missing_syscalls.h:800:3: warning: #warning syscall statfs64 not implemented
+init/missing_syscalls.h:803:3: warning: #warning syscall fstatfs64 not implemented
+init/missing_syscalls.h:809:3: warning: #warning syscall utimes not implemented
+init/missing_syscalls.h:845:3: warning: #warning syscall kexec_load not implemented
 
-    [PARISC] limit thread stack size with >4K pages
-    
-    Signed-off-by: Helge Deller <deller@gmx.de>
+Comments ?
 
-diff --git a/include/asm-parisc/thread_info.h b/include/asm-parisc/thread_info.h
-index 949314c..ec92d66 100644
---- a/include/asm-parisc/thread_info.h
-+++ b/include/asm-parisc/thread_info.h
-@@ -34,11 +34,16 @@ struct thread_info {
- 
- /* thread information allocation */
- 
--#define THREAD_ORDER            2
-+#if defined(CONFIG_PARISC_PAGE_SIZE_4KB)
-+# define THREAD_ORDER	2
-+#elif defined(CONFIG_PARISC_PAGE_SIZE_16KB)
-+# define THREAD_ORDER	0
-+#elif defined(CONFIG_PARISC_PAGE_SIZE_64KB)
-+# define THREAD_ORDER	0
-+#endif
- /* Be sure to hunt all references to this down when you change the size of
-  * the kernel stack */
- #define THREAD_SIZE             (PAGE_SIZE << THREAD_ORDER)
--#define THREAD_SHIFT            (PAGE_SHIFT + THREAD_ORDER)
- 
- #define alloc_thread_info(tsk) ((struct thread_info *) \
- 			__get_free_pages(GFP_KERNEL, THREAD_ORDER))
+Helge
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
