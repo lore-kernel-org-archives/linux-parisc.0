@@ -1,17 +1,13 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] Re: [LTP] [PATCH] shmt02-shmt10 tests on PARISC/hppa
-Date: Thu, 15 Mar 2007 21:47:07 +0100
-Message-ID: <200703152147.08100.deller__32206.9413531155$1416624327$gmane$org@gmx.de>
-References: <200612202344.08356.deller@gmx.de>
-	<200703131628.04648.vapier@gentoo.org>
+Subject: [parisc-linux] [PATCH] limit thread stack size with >4K pages
+Date: Sat, 17 Mar 2007 13:23:05 +0100
+Message-ID: <200703171323.06002.deller__27255.2623333924$1416624327$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
-Cc: ltp-list@lists.sourceforge.net,
- parisc-linux@lists.parisc-linux.org
-To: Mike Frysinger <vapier@gentoo.org>
+  charset="us-ascii"
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200703131628.04648.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,66 +18,40 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Mike,
+This patch limits the thread stack size when pages >4 K were selected.
+i.e. THREAD_SIZE is calculated to "MAX(16K, PAGE_SIZE)"
 
-On Tuesday 13 March 2007, Mike Frysinger wrote:
-> can i assume your other e-mail included everything needed to resolve this ?
+diff-tree 6033080df2431638223580559ebea54efb22bc42 (from cd54f53359c3e0deb898a5dbb199b70c5cb6ef0f)
+Author: Helge Deller <deller@gmx.de>
+Date:   Sat Mar 17 13:19:01 2007 +0100
 
-yes, and thanks a lot for applying them !
+    [PARISC] limit thread stack size with >4K pages
+    
+    Signed-off-by: Helge Deller <deller@gmx.de>
 
-I've updated to latest CVS version of LTP, and now the PARISC Linux port finally survives all tests beside one:
-  getcontext01    1  FAIL  :  getcontext - Sanity test :  Fail errno=251 : Function not implemented
-That's correct, since we don't have the getcontext() call in glibc yet....
-
-Thanks again,
-Helge
-
--------------------
-Summary:
-
-/etc/issue:
-Debian GNU/Linux 4.0 \n \l
-
-Linux c3000 2.6.20 #341 Wed Mar 7 22:23:17 CET 2007 parisc GNU/Linux
-
-Gnu C                  gcc (GCC) 4.1.2 20061115 (prerelease) (Debian 4.1.1-21)
-Gnu make               3.81
-util-linux             2.12r
-mount                  2.12r
-modutils               3.3-pre2
-e2fsprogs              1.40-WIP
-Linux C Library        2.3.6
-Dynamic linker (ldd)   2.3.6
-Linux C++ Library      5..
-Procps                 3.2.7
-Net-tools              1.60
-Console-tools          0.2.3
-Sh-utils               5.97
-Modules Loaded
-
-free reports:
-             total       used       free     shared    buffers     cached
-Mem:       2069792     108588    1961204          0      20292      46744
--/+ buffers/cache:      41552    2028240
-Swap:      2216928          0    2216928
-
-/proc/cpuinfo
-processor       : 0
-cpu family      : PA-RISC 2.0
-cpu             : PA8700 (PCX-W2)
-cpu MHz         : 750.000000
-model           : 9000/785/C3700
-model name      : Allegro W2
-hversion        : 0x00005dc0
-sversion        : 0x00000481
-I-cache         : 768 KB
-D-cache         : 1536 KB (WB, direct mapped)
-ITLB entries    : 240
-DTLB entries    : 240 - shared with ITLB
-BTLB            : not supported
-bogomips        : 1495.04
-software id     : 2004631172
-
+diff --git a/include/asm-parisc/thread_info.h b/include/asm-parisc/thread_info.h
+index 949314c..ec92d66 100644
+--- a/include/asm-parisc/thread_info.h
++++ b/include/asm-parisc/thread_info.h
+@@ -34,11 +34,16 @@ struct thread_info {
+ 
+ /* thread information allocation */
+ 
+-#define THREAD_ORDER            2
++#if defined(CONFIG_PARISC_PAGE_SIZE_4KB)
++# define THREAD_ORDER	2
++#elif defined(CONFIG_PARISC_PAGE_SIZE_16KB)
++# define THREAD_ORDER	0
++#elif defined(CONFIG_PARISC_PAGE_SIZE_64KB)
++# define THREAD_ORDER	0
++#endif
+ /* Be sure to hunt all references to this down when you change the size of
+  * the kernel stack */
+ #define THREAD_SIZE             (PAGE_SIZE << THREAD_ORDER)
+-#define THREAD_SHIFT            (PAGE_SHIFT + THREAD_ORDER)
+ 
+ #define alloc_thread_info(tsk) ((struct thread_info *) \
+ 			__get_free_pages(GFP_KERNEL, THREAD_ORDER))
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
