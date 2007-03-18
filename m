@@ -1,28 +1,81 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] [PATCH] limit thread stack size with >4K pages
-Date: Sat, 17 Mar 2007 12:23:32 -0400
-Message-ID: <20070317162332.GB10950__24221.719420939$1416624329$gmane$org@athena.road.mcmartin.ca>
-References: <200703171323.06002.deller@gmx.de> <1174139264.3476.1.camel@mulgrave.il.steeleye.com>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] missing system calls ?
+Date: Sun, 18 Mar 2007 12:51:10 +0100
+Message-ID: <200703181251.10536.deller__27953.2912456945$1416624329$gmane$org@gmx.de>
+References: <200703171348.56311.deller@gmx.de>
+	<20070317150117.GA10950@athena.road.mcmartin.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
- parisc-linux@lists.parisc-linux.org,
- Kyle McMartin <kyle@mcmartin.ca>
-To: James Bottomley <James.Bottomley@SteelEye.com>
-Return-Path: <kyle@athena.road.mcmartin.ca>
-In-Reply-To: <1174139264.3476.1.camel@mulgrave.il.steeleye.com>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset="iso-8859-1"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20070317150117.GA10950@athena.road.mcmartin.ca>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Mar 17, 2007 at 08:47:44AM -0500, James Bottomley wrote:
-> That's a bit ugly ... and would break if someone added new page sizes.
-> Can't we do something like
+On Saturday 17 March 2007, Kyle McMartin wrote:
+> On Sat, Mar 17, 2007 at 01:48:56PM +0100, Helge Deller wrote:
 > 
-> #if PAGE_BITS > 16
-> #define THREAD_ORDER 0
-> #else
-> #define THREAD_ORDER (16 - PAGE_BITS)
-> #endif
+> > init/missing_syscalls.h:203:3: warning: #warning syscall sigaction not implemented
+> > init/missing_syscalls.h:218:3: warning: #warning syscall sigsuspend not implemented
+> > init/missing_syscalls.h:359:3: warning: #warning syscall sigreturn not implemented
 > 
+> We don't support non-realtime signals (the syscalls are rt_*)
+> 
+> > init/missing_syscalls.h:68:3: warning: #warning syscall umount not implemented
+> 
+> umount2
+> 
+> > init/missing_syscalls.h:248:3: warning: #warning syscall select not implemented
+> 
+> newselect
+> 
+> > init/missing_syscalls.h:269:3: warning: #warning syscall readdir not implemented
+> 
+> obsolete
+> 
+> > init/missing_syscalls.h:308:3: warning: #warning syscall socketcall not implemented
+> 
+> we don't use the socketcall multiplexer (presumably because we don't need
+> to put the args on the stack) for socket/bind/connect/ etc...
+> 
+> > init/missing_syscalls.h:353:3: warning: #warning syscall ipc not implemented
+> 
+> same story as socketcall, obsolete multiplexed syscall
+> 
+> > init/missing_syscalls.h:749:3: warning: #warning syscall fadvise64 not implemented
+> 
+> sys_fadvise64_64 versus fadvise64 is a reordering of syscall args, presumably
+> because loff_t is 64bit and needs to be passed in pairs.
+> 
+> > init/missing_syscalls.h:800:3: warning: #warning syscall statfs64 not implemented
+> > init/missing_syscalls.h:803:3: warning: #warning syscall fstatfs64 not implemented
+> 
+> Your kernel is too old. 2.6.21-rc3 has this.
+> 
+> > init/missing_syscalls.h:809:3: warning: #warning syscall utimes not implemented
+> 
+> Dunno about this one. sys_utimes seems to just call futimesat anyways.
+> 
+> > init/missing_syscalls.h:845:3: warning: #warning syscall kexec_load not implemented
+> 
+> nobody's implemented kexec yet. :)
 
-Nice.
+Thanks Kyle !
+
+So parisc-linux has all important (and currently on PA possible) syscalls wired up.
+Nice to know.
+
+Helge
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
