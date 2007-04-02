@@ -1,16 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] parisc tree?
-Date: Sat, 7 Apr 2007 16:42:35 -0400 (EDT)
-Message-ID: <200704072042.l37KgaeC000456__5198.2810524807$1416624331$gmane$org@hiauly1.hia.nrc.ca>
-References: <20070404050204.GC9446@colo.lackof.org>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] FW diag is broken?
+Date: Sun, 1 Apr 2007 23:37:59 -0600
+Message-ID: <20070402053759.GC20818__30307.5881828137$1416624332$gmane$org@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: grundler@parisc-linux.org (Grant Grundler)
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070404050204.GC9446@colo.lackof.org> from "Grant Grundler" at
-	Apr 3, 2007 11:02:04 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,27 +17,90 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-) can you remind me how these patches should be pushed into your tree?
-> Or do you want to directly apply them yourself?
-> 
-> I have the impression git.parisc-linux.org tree is stale and I should
-> be using something different. I just don't know what.
+Hi,
+gsyprf11.external.hp.com is having problems and the latest manifestation
+is this very odd output from the console when trying to netboot the
+PF_CHAW4350.frm in order to update firmware:
 
-I'd thought that patches once approved would somehow get pushed upstream.
+Main Menu: Enter command or menu > bo lan
+Interact with IPL (Y, N, or Cancel)?> n
 
-Where parisc needs to maintain its own changes, I would be happy
-to just be able to download a diff against the upstream tree.  I believe
-that Kyle posted a patch set sometime back.  Ideally the upstream tree
-would be usable without patches.
+Booting... 
+Network Station Address 00306e-2661a3
+System IP Address 192.6.38.61
+Server IP Address 192.6.38.60
 
-It would be nice if the process could be documented on the web site.
+Boot IO Dependent Code (IODC) revision 2
 
-PS: There is a problem with web access to the parisc-linux archive.
+IPL error: bad LIF magic.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+************* SYSTEM ALERT **************
+SYSTEM NAME: rp2470c
+DATE: 04/02/2007 TIME: 04:21:21
+ALERT LEVEL: 6 = Boot possible, pending failure - action required
+
+REASON FOR ALERT
+SOURCE: 8 = I/O 
+SOURCE DETAIL: 6 = disk   SOURCE ID: 0
+PROBLEM DETAIL: 0 = no problem detail
+
+LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
+       FLASH    FLASH         ON        ON         ON
+LED State: Boot Failed.  Running non-OS code.  Non-critical error detected.
+Check Chassis and Console Logs for error messages.
+
+0x00000060860010B0 00000000 00000000 - type  0 = Data Field Unused
+0x58000860860010B0 00006B03 02041515 - type 11 = Timestamp 04/02/2007 04:21:21
+A: ack read of this entry - X: Disable all future alert messages
+Anything else skip redisplay the log entry
+->Choice:Timeout!
+*****************************************
+
+************* SYSTEM ALERT **************
+SYSTEM NAME: rp2470c
+DATE: 04/02/2007 TIME: 04:21:22
+ALERT LEVEL: 6 = Boot possible, pending failure - action required
+
+REASON FOR ALERT
+SOURCE: 8 = I/O 
+SOURCE DETAIL: 6 = disk   SOURCE ID: 0
+PROBLEM DETAIL: 0 = no problem detail
+
+LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
+       FLASH    FLASH         ON        ON         ON
+LED State: Boot Failed.  Running non-OS code.  Non-critical error detected.
+Check Chassis and Console Logs for error messages.
+
+0x00000060860014F0 00000000 00000000 - type  0 = Data Field Unused
+0x58000860860014F0 00006B03 02041516 - type 11 = Timestamp 04/02/2007 04:21:22
+A: ack read of this entry - X: Disable all future alert messages
+Anything else skip redisplay the log entry
+->Choice:X
+*****************************************
+
+CAUTION: System Alerts have been disabled. This will re-enable with 
+a re-boot or power-on of the system. To re-enable system alerts now, you
+may use the AC (Alert Display Configuration) command.
+
+************* SYSTEM ALERT **************
+Alert messages are now disabled. Enter Commands Interface AC command 
+to enable them again
+*****************************************
+
+
+------------------------------- cut here --------------------------
+
+The firmware update image should be fine...both copies I have are the same.
+I get the same error when trying to boot from disk - and I'm obviously
+trying to boot from LAN above, not disk.
+
+So I have to wonder if this is really a RAM HW failure that the powerup
+selftests are not catching. Or maybe some other HW failure? Can anyone
+make sense of the "SOURCE DETAIL: 6 = disk" when booting from network?
+
+
+thanks,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
