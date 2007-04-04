@@ -1,16 +1,19 @@
-From: ram <talk2ram@gmail.com>
-Subject: Re: [parisc-linux] almost booted a K420...
-Date: Thu, 12 Apr 2007 16:20:40 +0530
-Message-ID: <b74751490704120350s162d6140g95622904d2142bca__34650.792546063$1416624330$gmane$org@mail.gmail.com>
-References: <461DA527.8FF91FC1@bom.gov.au>
-	<9df6f3ea0704112341y55866aebk73373b75e90686d1@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [KJ][PATCH] ROUND_?UP macro cleanup in
+	drivers/parisc
+Date: Tue, 3 Apr 2007 23:02:04 -0600
+Message-ID: <20070404050204.GC9446__14647.1456428573$1416624330$gmane$org@colo.lackof.org>
+References: <20070331105746.GA14572@arun.site>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1016092917=="
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Andrew Gaylard" <ag@computer.org>
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: kernel-janitors@lists.osdl.org,
+ akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org,
+ parisc-linux@lists.parisc-linux.org
+To: Milind Arun Choudhary <milindchoudhary@gmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <9df6f3ea0704112341y55866aebk73373b75e90686d1@mail.gmail.com>
+In-Reply-To: <20070331105746.GA14572@arun.site>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,88 +24,143 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1016092917==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_30510_10967414.1176375040964"
+On Sat, Mar 31, 2007 at 04:27:46PM +0530, Milind Arun Choudhary wrote:
+> Clean up ROUND_?UP, Use ALIGN where ever appropriate.
+> 
+> Signed-off-by: Milind Arun Choudhary <milindchoudhary@gmail.com>
 
-------=_Part_30510_10967414.1176375040964
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Milind,
+Looks good to me.
 
-> Hi Paul,
->
-> I'm using a K370 with great success. I'm not sure whether
-> the Debian install CD will work on a multi-CPU box.  You can
-> try unplugging all but the first CPU and see if that makes a
-> difference.  Also, you may have to add "console=ttyB0" or
-> somesuch to PALO's boot line -- the K classes (and perhaps
-> a few other boxes) have very different serial hardware.  Oh
-> wait, I see you have it already.
->
-> Sorry this  is a bit vague; I run Gentoo and it was very simple
-> to boot the install CD.  So if you hit a dead-end, you might
-> give it a try.
+Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
 
+Kyle,
+can you remind me how these patches should be pushed into your tree?
+Or do you want to directly apply them yourself?
 
-Hi
+I have the impression git.parisc-linux.org tree is stale and I should
+be using something different. I just don't know what.
 
-some time back i posted the problem, but  some one responded, but i did not
-solve the problem
+thanks,
+grant
 
-after i saw the new version released, i want to try, but i see the same
-problem
-
- Kernel Panic- not syncing:drivers/parisc/ccio-dma.c: ccio_alloc_range() I/O
-MMU is out of mapping resources
-
-iam using  webconsole and installing
-
-any suggestion make my system working with Debian 4.X
-
-HP R Class 9000, 1GB RAM, Built in CD ROM
-
-thanks
-ram
-
-------=_Part_30510_10967414.1176375040964
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-<br>
-<div>
-<blockquote class="gmail_quote" style="PADDING-LEFT: 1ex; MARGIN: 0px 0px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">Hi Paul,<br><br>I&#39;m using a K370 with great success. I&#39;m not sure whether<br>the Debian install CD will work on a multi-CPU box.&nbsp; You can 
-<br>try unplugging all but the first CPU and see if that makes a<br>difference.&nbsp; Also, you may have to add &quot;console=ttyB0&quot; or<br>somesuch to PALO&#39;s boot line -- the K classes (and perhaps<br>a few other boxes) have very different serial hardware.&nbsp; Oh 
-<br>wait, I see you have it already.<br><br>Sorry this&nbsp; is a bit vague; I run Gentoo and it was very simple<br>to boot the install CD.&nbsp; So if you hit a dead-end, you might<br>give it a try.</blockquote>
-<div>&nbsp;</div>
-<div>Hi</div>
-<div>&nbsp;</div>
-<div>some time back i posted the problem, but&nbsp; some one responded, but i did not solve the problem</div>
-<div>&nbsp;</div>
-<div>after i saw the new version released, i want to try, but i see the same problem</div>
-<div>&nbsp;</div>
-<div>
-<div>Kernel Panic- not syncing:drivers/parisc/ccio-dma.c: ccio_alloc_range() I/O MMU is out of mapping resources</div>&nbsp;</div>
-<div>iam using&nbsp; webconsole and installing</div>
-<div>&nbsp;</div>
-<div>any suggestion make my system working with Debian 4.X</div>
-<div>&nbsp;</div>
-<div>HP R Class 9000, 1GB RAM, Built in CD ROM</div>
-<div>&nbsp;</div>
-<div>thanks</div>
-<div>ram&nbsp;</div></div>
-
-------=_Part_30510_10967414.1176375040964--
-
---===============1016092917==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+> 
+> ---
+>  ccio-dma.c      |    8 ++++----
+>  iommu-helpers.h |    4 ++--
+>  sba_iommu.c     |    6 ++----
+>  3 files changed, 8 insertions(+), 10 deletions(-)
+> 
+> 
+> 
+> diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+> index 894fdb9..1459ca8 100644
+> --- a/drivers/parisc/ccio-dma.c
+> +++ b/drivers/parisc/ccio-dma.c
+> @@ -32,6 +32,7 @@
+>  */
+>  
+>  #include <linux/types.h>
+> +#include <linux/kernel.h>
+>  #include <linux/init.h>
+>  #include <linux/mm.h>
+>  #include <linux/spinlock.h>
+> @@ -292,7 +293,6 @@ static int ioc_count;
+>  #define PDIR_INDEX(iovp)    ((iovp)>>IOVP_SHIFT)
+>  #define MKIOVP(pdir_idx)    ((long)(pdir_idx) << IOVP_SHIFT)
+>  #define MKIOVA(iovp,offset) (dma_addr_t)((long)iovp | (long)offset)
+> -#define ROUNDUP(x,y) ((x + ((y)-1)) & ~((y)-1))
+>  
+>  /*
+>  ** Don't worry about the 150% average search length on a miss.
+> @@ -668,7 +668,7 @@ ccio_mark_invalid(struct ioc *ioc, dma_addr_t iova, size_t byte_cnt)
+>  	size_t saved_byte_cnt;
+>  
+>  	/* round up to nearest page size */
+> -	saved_byte_cnt = byte_cnt = ROUNDUP(byte_cnt, IOVP_SIZE);
+> +	saved_byte_cnt = byte_cnt = ALIGN(byte_cnt, IOVP_SIZE);
+>  
+>  	while(byte_cnt > 0) {
+>  		/* invalidate one page at a time */
+> @@ -751,7 +751,7 @@ ccio_map_single(struct device *dev, void *addr, size_t size,
+>  	offset = ((unsigned long) addr) & ~IOVP_MASK;
+>  
+>  	/* round up to nearest IOVP_SIZE */
+> -	size = ROUNDUP(size + offset, IOVP_SIZE);
+> +	size = ALIGN(size + offset, IOVP_SIZE);
+>  	spin_lock_irqsave(&ioc->res_lock, flags);
+>  
+>  #ifdef CCIO_MAP_STATS
+> @@ -814,7 +814,7 @@ ccio_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
+>  
+>  	iova ^= offset;        /* clear offset bits */
+>  	size += offset;
+> -	size = ROUNDUP(size, IOVP_SIZE);
+> +	size = ALIGN(size, IOVP_SIZE);
+>  
+>  	spin_lock_irqsave(&ioc->res_lock, flags);
+>  
+> diff --git a/drivers/parisc/iommu-helpers.h b/drivers/parisc/iommu-helpers.h
+> index 38d9e1a..0a1f99a 100644
+> --- a/drivers/parisc/iommu-helpers.h
+> +++ b/drivers/parisc/iommu-helpers.h
+> @@ -138,7 +138,7 @@ iommu_coalesce_chunks(struct ioc *ioc, struct scatterlist *startsg, int nents,
+>  			** exceed DMA_CHUNK_SIZE if we coalesce the
+>  			** next entry.
+>  			*/   
+> -			if(unlikely(ROUNDUP(dma_len + dma_offset + startsg->length,
+> +			if(unlikely(ALIGN(dma_len + dma_offset + startsg->length,
+>  					    IOVP_SIZE) > DMA_CHUNK_SIZE))
+>  				break;
+>  
+> @@ -158,7 +158,7 @@ iommu_coalesce_chunks(struct ioc *ioc, struct scatterlist *startsg, int nents,
+>  		** Allocate space for DMA stream.
+>  		*/
+>  		sg_dma_len(contig_sg) = dma_len;
+> -		dma_len = ROUNDUP(dma_len + dma_offset, IOVP_SIZE);
+> +		dma_len = ALIGN(dma_len + dma_offset, IOVP_SIZE);
+>  		sg_dma_address(contig_sg) =
+>  			PIDE_FLAG 
+>  			| (iommu_alloc_range(ioc, dma_len) << IOVP_SHIFT)
+> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+> index 76a29da..7d83d9f 100644
+> --- a/drivers/parisc/sba_iommu.c
+> +++ b/drivers/parisc/sba_iommu.c
+> @@ -113,8 +113,6 @@ module_param(sba_reserve_agpgart, int, 1);
+>  MODULE_PARM_DESC(sba_reserve_agpgart, "Reserve half of IO pdir as AGPGART");
+>  #endif
+>  
+> -#define ROUNDUP(x,y) ((x + ((y)-1)) & ~((y)-1))
+> -
+>  
+>  /************************************
+>  ** SBA register read and write support
+> @@ -352,7 +350,7 @@ sba_search_bitmap(struct ioc *ioc, unsigned long bits_wanted)
+>  		** SBA HW features in the unmap path.
+>  		*/
+>  		unsigned long o = 1 << get_order(bits_wanted << PAGE_SHIFT);
+> -		uint bitshiftcnt = ROUNDUP(ioc->res_bitshift, o);
+> +		uint bitshiftcnt = ALIGN(ioc->res_bitshift, o);
+>  		unsigned long mask;
+>  
+>  		if (bitshiftcnt >= BITS_PER_LONG) {
+> @@ -779,7 +777,7 @@ sba_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
+>  	offset = iova & ~IOVP_MASK;
+>  	iova ^= offset;        /* clear offset bits */
+>  	size += offset;
+> -	size = ROUNDUP(size, IOVP_SIZE);
+> +	size = ALIGN(size, IOVP_SIZE);
+>  
+>  	spin_lock_irqsave(&ioc->res_lock, flags);
+>  
+> 
+> -- 
+> Milind Arun Choudhary
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1016092917==--
