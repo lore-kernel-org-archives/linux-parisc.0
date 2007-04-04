@@ -1,19 +1,20 @@
 From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [KJ][PATCH] ROUND_?UP macro cleanup in
-	drivers/parisc
-Date: Tue, 3 Apr 2007 23:02:04 -0600
-Message-ID: <20070404050204.GC9446__14647.1456428573$1416624330$gmane$org@colo.lackof.org>
-References: <20070331105746.GA14572@arun.site>
+Subject: [parisc-linux] Re: [KJ][PATCH] ROUND_UP macro cleanup in arch/parisc
+Date: Tue, 3 Apr 2007 23:05:09 -0600
+Message-ID: <20070404050509.GD9446__16744.3198305138$1416624331$gmane$org@colo.lackof.org>
+References: <20070401073646.GA11444@arun.site>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: kernel-janitors@lists.osdl.org,
- akpm@linux-foundation.org,
+Cc: willy@debian.org,
  linux-kernel@vger.kernel.org,
+ kyle@mcmartin.ca,
+ kernel-janitors@lists.osdl.org,
+ akpm@linux-foundation.org,
  parisc-linux@lists.parisc-linux.org
 To: Milind Arun Choudhary <milindchoudhary@gmail.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070331105746.GA14572@arun.site>
+In-Reply-To: <20070401073646.GA11444@arun.site>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,142 +25,90 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Mar 31, 2007 at 04:27:46PM +0530, Milind Arun Choudhary wrote:
-> Clean up ROUND_?UP, Use ALIGN where ever appropriate.
+On Sun, Apr 01, 2007 at 01:06:46PM +0530, Milind Arun Choudhary wrote:
+> ROUND_UP macro cleanup, use ALIGN where ever appropriate
 > 
 > Signed-off-by: Milind Arun Choudhary <milindchoudhary@gmail.com>
 
-Milind,
-Looks good to me.
+Also looks good to me. Just one white space nit we can fixup by hand.
 
 Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
 
-Kyle,
-can you remind me how these patches should be pushed into your tree?
-Or do you want to directly apply them yourself?
 
-I have the impression git.parisc-linux.org tree is stale and I should
-be using something different. I just don't know what.
+> 
+> ---
+>  hpux/fs.c             |    5 ++---
+>  kernel/sys_parisc32.c |    3 +--
+>  2 files changed, 3 insertions(+), 5 deletions(-)
+> 
+> 
+> 
+> diff --git a/arch/parisc/hpux/fs.c b/arch/parisc/hpux/fs.c
+> index 4204cd1..7ff5546 100644
+> --- a/arch/parisc/hpux/fs.c
+> +++ b/arch/parisc/hpux/fs.c
+> @@ -21,6 +21,7 @@
+>   *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+>   */
+>  
+> +#include <linux/kernel.h>
+>  #include <linux/mm.h>
+>  #include <linux/sched.h>
+>  #include <linux/file.h>
+> @@ -70,7 +71,6 @@ struct getdents_callback {
+>  };
+>  
+>  #define NAME_OFFSET(de) ((int) ((de)->d_name - (char *) (de)))
+> -#define ROUND_UP(x) (((x)+sizeof(long)-1) & ~(sizeof(long)-1))
+>  
+>  static int filldir(void * __buf, const char * name, int namlen, loff_t offset,
+>  		u64 ino, unsigned d_type)
+> @@ -78,7 +78,7 @@ static int filldir(void * __buf, const char * name, int namlen, loff_t offset,
+>  	struct hpux_dirent * dirent;
+>  	struct getdents_callback * buf = (struct getdents_callback *) __buf;
+>  	ino_t d_ino;
+> -	int reclen = ROUND_UP(NAME_OFFSET(dirent) + namlen + 1);
+> +	int reclen = ALIGN(NAME_OFFSET(dirent) + namlen + 1,sizeof(long));
+
+Nit: I'd want a blank space after the comma.
 
 thanks,
 grant
 
-> 
-> ---
->  ccio-dma.c      |    8 ++++----
->  iommu-helpers.h |    4 ++--
->  sba_iommu.c     |    6 ++----
->  3 files changed, 8 insertions(+), 10 deletions(-)
-> 
-> 
-> 
-> diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-> index 894fdb9..1459ca8 100644
-> --- a/drivers/parisc/ccio-dma.c
-> +++ b/drivers/parisc/ccio-dma.c
-> @@ -32,6 +32,7 @@
->  */
 >  
->  #include <linux/types.h>
-> +#include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/mm.h>
->  #include <linux/spinlock.h>
-> @@ -292,7 +293,6 @@ static int ioc_count;
->  #define PDIR_INDEX(iovp)    ((iovp)>>IOVP_SHIFT)
->  #define MKIOVP(pdir_idx)    ((long)(pdir_idx) << IOVP_SHIFT)
->  #define MKIOVA(iovp,offset) (dma_addr_t)((long)iovp | (long)offset)
-> -#define ROUNDUP(x,y) ((x + ((y)-1)) & ~((y)-1))
+>  	buf->error = -EINVAL;	/* only used if we fail.. */
+>  	if (reclen > buf->count)
+> @@ -103,7 +103,6 @@ static int filldir(void * __buf, const char * name, int namlen, loff_t offset,
+>  }
 >  
->  /*
->  ** Don't worry about the 150% average search length on a miss.
-> @@ -668,7 +668,7 @@ ccio_mark_invalid(struct ioc *ioc, dma_addr_t iova, size_t byte_cnt)
->  	size_t saved_byte_cnt;
+>  #undef NAME_OFFSET
+> -#undef ROUND_UP
 >  
->  	/* round up to nearest page size */
-> -	saved_byte_cnt = byte_cnt = ROUNDUP(byte_cnt, IOVP_SIZE);
-> +	saved_byte_cnt = byte_cnt = ALIGN(byte_cnt, IOVP_SIZE);
+>  int hpux_getdents(unsigned int fd, struct hpux_dirent *dirent, unsigned int count)
+>  {
+> diff --git a/arch/parisc/kernel/sys_parisc32.c b/arch/parisc/kernel/sys_parisc32.c
+> index ce3245f..e590880 100644
+> --- a/arch/parisc/kernel/sys_parisc32.c
+> +++ b/arch/parisc/kernel/sys_parisc32.c
+> @@ -311,14 +311,13 @@ struct readdir32_callback {
+>  	int count;
+>  };
 >  
->  	while(byte_cnt > 0) {
->  		/* invalidate one page at a time */
-> @@ -751,7 +751,7 @@ ccio_map_single(struct device *dev, void *addr, size_t size,
->  	offset = ((unsigned long) addr) & ~IOVP_MASK;
+> -#define ROUND_UP(x,a)	((__typeof__(x))(((unsigned long)(x) + ((a) - 1)) & ~((a) - 1)))
+>  #define NAME_OFFSET(de) ((int) ((de)->d_name - (char __user *) (de)))
+>  static int filldir32 (void *__buf, const char *name, int namlen,
+>  			loff_t offset, u64 ino, unsigned int d_type)
+>  {
+>  	struct linux32_dirent __user * dirent;
+>  	struct getdents32_callback * buf = (struct getdents32_callback *) __buf;
+> -	int reclen = ROUND_UP(NAME_OFFSET(dirent) + namlen + 1, 4);
+> +	int reclen = ALIGN(NAME_OFFSET(dirent) + namlen + 1, 4);
+>  	u32 d_ino;
 >  
->  	/* round up to nearest IOVP_SIZE */
-> -	size = ROUNDUP(size + offset, IOVP_SIZE);
-> +	size = ALIGN(size + offset, IOVP_SIZE);
->  	spin_lock_irqsave(&ioc->res_lock, flags);
->  
->  #ifdef CCIO_MAP_STATS
-> @@ -814,7 +814,7 @@ ccio_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
->  
->  	iova ^= offset;        /* clear offset bits */
->  	size += offset;
-> -	size = ROUNDUP(size, IOVP_SIZE);
-> +	size = ALIGN(size, IOVP_SIZE);
->  
->  	spin_lock_irqsave(&ioc->res_lock, flags);
->  
-> diff --git a/drivers/parisc/iommu-helpers.h b/drivers/parisc/iommu-helpers.h
-> index 38d9e1a..0a1f99a 100644
-> --- a/drivers/parisc/iommu-helpers.h
-> +++ b/drivers/parisc/iommu-helpers.h
-> @@ -138,7 +138,7 @@ iommu_coalesce_chunks(struct ioc *ioc, struct scatterlist *startsg, int nents,
->  			** exceed DMA_CHUNK_SIZE if we coalesce the
->  			** next entry.
->  			*/   
-> -			if(unlikely(ROUNDUP(dma_len + dma_offset + startsg->length,
-> +			if(unlikely(ALIGN(dma_len + dma_offset + startsg->length,
->  					    IOVP_SIZE) > DMA_CHUNK_SIZE))
->  				break;
->  
-> @@ -158,7 +158,7 @@ iommu_coalesce_chunks(struct ioc *ioc, struct scatterlist *startsg, int nents,
->  		** Allocate space for DMA stream.
->  		*/
->  		sg_dma_len(contig_sg) = dma_len;
-> -		dma_len = ROUNDUP(dma_len + dma_offset, IOVP_SIZE);
-> +		dma_len = ALIGN(dma_len + dma_offset, IOVP_SIZE);
->  		sg_dma_address(contig_sg) =
->  			PIDE_FLAG 
->  			| (iommu_alloc_range(ioc, dma_len) << IOVP_SHIFT)
-> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-> index 76a29da..7d83d9f 100644
-> --- a/drivers/parisc/sba_iommu.c
-> +++ b/drivers/parisc/sba_iommu.c
-> @@ -113,8 +113,6 @@ module_param(sba_reserve_agpgart, int, 1);
->  MODULE_PARM_DESC(sba_reserve_agpgart, "Reserve half of IO pdir as AGPGART");
->  #endif
->  
-> -#define ROUNDUP(x,y) ((x + ((y)-1)) & ~((y)-1))
-> -
->  
->  /************************************
->  ** SBA register read and write support
-> @@ -352,7 +350,7 @@ sba_search_bitmap(struct ioc *ioc, unsigned long bits_wanted)
->  		** SBA HW features in the unmap path.
->  		*/
->  		unsigned long o = 1 << get_order(bits_wanted << PAGE_SHIFT);
-> -		uint bitshiftcnt = ROUNDUP(ioc->res_bitshift, o);
-> +		uint bitshiftcnt = ALIGN(ioc->res_bitshift, o);
->  		unsigned long mask;
->  
->  		if (bitshiftcnt >= BITS_PER_LONG) {
-> @@ -779,7 +777,7 @@ sba_unmap_single(struct device *dev, dma_addr_t iova, size_t size,
->  	offset = iova & ~IOVP_MASK;
->  	iova ^= offset;        /* clear offset bits */
->  	size += offset;
-> -	size = ROUNDUP(size, IOVP_SIZE);
-> +	size = ALIGN(size, IOVP_SIZE);
->  
->  	spin_lock_irqsave(&ioc->res_lock, flags);
->  
+>  	buf->error = -EINVAL;	/* only used if we fail.. */
 > 
 > -- 
 > Milind Arun Choudhary
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
