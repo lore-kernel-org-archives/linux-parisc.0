@@ -1,20 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] Re: [KJ][PATCH] ROUND_UP macro cleanup in arch/parisc
-Date: Tue, 3 Apr 2007 23:05:09 -0600
-Message-ID: <20070404050509.GD9446__16744.3198305138$1416624331$gmane$org@colo.lackof.org>
-References: <20070401073646.GA11444@arun.site>
+From: Alan Johnson <alan.johnson@charter.net>
+Subject: [parisc-linux] j3516a nic issue
+Date: Thu, 12 Apr 2007 16:53:11 -0500
+Message-ID: <461EAA47.6030205__38239.8871858188$1416624331$gmane$org@charter.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: willy@debian.org,
- linux-kernel@vger.kernel.org,
- kyle@mcmartin.ca,
- kernel-janitors@lists.osdl.org,
- akpm@linux-foundation.org,
- parisc-linux@lists.parisc-linux.org
-To: Milind Arun Choudhary <milindchoudhary@gmail.com>
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070401073646.GA11444@arun.site>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,90 +18,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Apr 01, 2007 at 01:06:46PM +0530, Milind Arun Choudhary wrote:
-> ROUND_UP macro cleanup, use ALIGN where ever appropriate
-> 
-> Signed-off-by: Milind Arun Choudhary <milindchoudhary@gmail.com>
+I have a D250/350 with a j3516a with the DEC 21140 chipset.  When I try 
+to install Debian 3.1 it freezes with a trap error on the display.  It 
+boots fine but when it tries to load the tulip driver it freezes and the 
+display on the front shows FLT CBC0 TRAPS CPU01.  I have 3 of these 
+boards and they all do the same thing.  Is there some trick to getting 
+this board to work?  Has any one else had this issue?  Thanks for any 
+assistance you might be able to provide.
 
-Also looks good to me. Just one white space nit we can fixup by hand.
 
-Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
-
-
-> 
-> ---
->  hpux/fs.c             |    5 ++---
->  kernel/sys_parisc32.c |    3 +--
->  2 files changed, 3 insertions(+), 5 deletions(-)
-> 
-> 
-> 
-> diff --git a/arch/parisc/hpux/fs.c b/arch/parisc/hpux/fs.c
-> index 4204cd1..7ff5546 100644
-> --- a/arch/parisc/hpux/fs.c
-> +++ b/arch/parisc/hpux/fs.c
-> @@ -21,6 +21,7 @@
->   *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
->   */
->  
-> +#include <linux/kernel.h>
->  #include <linux/mm.h>
->  #include <linux/sched.h>
->  #include <linux/file.h>
-> @@ -70,7 +71,6 @@ struct getdents_callback {
->  };
->  
->  #define NAME_OFFSET(de) ((int) ((de)->d_name - (char *) (de)))
-> -#define ROUND_UP(x) (((x)+sizeof(long)-1) & ~(sizeof(long)-1))
->  
->  static int filldir(void * __buf, const char * name, int namlen, loff_t offset,
->  		u64 ino, unsigned d_type)
-> @@ -78,7 +78,7 @@ static int filldir(void * __buf, const char * name, int namlen, loff_t offset,
->  	struct hpux_dirent * dirent;
->  	struct getdents_callback * buf = (struct getdents_callback *) __buf;
->  	ino_t d_ino;
-> -	int reclen = ROUND_UP(NAME_OFFSET(dirent) + namlen + 1);
-> +	int reclen = ALIGN(NAME_OFFSET(dirent) + namlen + 1,sizeof(long));
-
-Nit: I'd want a blank space after the comma.
-
-thanks,
-grant
-
->  
->  	buf->error = -EINVAL;	/* only used if we fail.. */
->  	if (reclen > buf->count)
-> @@ -103,7 +103,6 @@ static int filldir(void * __buf, const char * name, int namlen, loff_t offset,
->  }
->  
->  #undef NAME_OFFSET
-> -#undef ROUND_UP
->  
->  int hpux_getdents(unsigned int fd, struct hpux_dirent *dirent, unsigned int count)
->  {
-> diff --git a/arch/parisc/kernel/sys_parisc32.c b/arch/parisc/kernel/sys_parisc32.c
-> index ce3245f..e590880 100644
-> --- a/arch/parisc/kernel/sys_parisc32.c
-> +++ b/arch/parisc/kernel/sys_parisc32.c
-> @@ -311,14 +311,13 @@ struct readdir32_callback {
->  	int count;
->  };
->  
-> -#define ROUND_UP(x,a)	((__typeof__(x))(((unsigned long)(x) + ((a) - 1)) & ~((a) - 1)))
->  #define NAME_OFFSET(de) ((int) ((de)->d_name - (char __user *) (de)))
->  static int filldir32 (void *__buf, const char *name, int namlen,
->  			loff_t offset, u64 ino, unsigned int d_type)
->  {
->  	struct linux32_dirent __user * dirent;
->  	struct getdents32_callback * buf = (struct getdents32_callback *) __buf;
-> -	int reclen = ROUND_UP(NAME_OFFSET(dirent) + namlen + 1, 4);
-> +	int reclen = ALIGN(NAME_OFFSET(dirent) + namlen + 1, 4);
->  	u32 d_ino;
->  
->  	buf->error = -EINVAL;	/* only used if we fail.. */
-> 
-> -- 
-> Milind Arun Choudhary
+Alan
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
