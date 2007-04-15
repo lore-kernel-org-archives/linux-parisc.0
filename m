@@ -1,15 +1,12 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] j3516a nic issue
-Date: Sat, 14 Apr 2007 17:08:57 -0600
-Message-ID: <20070414230857.GB15862__42482.3170797483$1416624333$gmane$org@colo.lackof.org>
-References: <461EAA47.6030205@charter.net>
+From: Matthew Evanson <debianuser@twosillies.com>
+Subject: [parisc-linux] Debian 4.0 and PCI issues?
+Date: Sat, 14 Apr 2007 22:04:49 -0400
+Message-ID: <1176602689.4621884127120__48805.1357250244$1416624333$gmane$org@www.twosillies.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Alan Johnson <alan.johnson@charter.net>
+  charset=ISO-8859-1
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <461EAA47.6030205@charter.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,37 +17,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Apr 12, 2007 at 04:53:11PM -0500, Alan Johnson wrote:
-> I have a D250/350 with a j3516a with the DEC 21140 chipset.  When I try 
-> to install Debian 3.1 it freezes with a trap error on the display.  It 
-> boots fine but when it tries to load the tulip driver it freezes and the 
-> display on the front shows FLT CBC0 TRAPS CPU01.
 
-I need a bit more info. Can you look at the kernel bug HOW-TO FAQ?
+First, hats off to those that have made Linux usable on PA-RISC.  
 
-	http://www.parisc-linux.org/faq/kernelbug-howto.html
+I was wondering if others have had success running Debian 4.0 (or 3.1 testing)
+on a C class workstation (specifically C180) with PCI hardware.
 
->  I have 3 of these boards and they all do the same thing.  Is there
-> some trick to getting this board to work?
+Background:
+* Own a C180 with the buggy GSCtoPCI hardware (per note A4190A-01)
+* Installed a Compaq quad port PCI ethernet card in the box
+* System failed to boot due to firmware lockout
+* Modified firmware to bypass error and allow booting
+* When Linux probes the PCI bus, errors are reported and device is unusable.
 
-Not aware any trick was needed. I'm pretty sure they worked at one point.
+Errors thrown are:
+    PCI: Unable to handle 64-bit address space for bridge 0000:00:03.0
+    PCI: Failed to allocate mem resource #0:1000@f2c00000 for 0000:01:04.0
+    PCI: Failed to allocate mem resource #0:1000@f2c00000 for 0000:01:05.0
+    PCI: Failed to allocate mem resource #0:1000@f2c00000 for 0000:01:06.0
+    PCI: Failed to allocate mem resource #0:1000@f2c00000 for 0000:01:07.0
 
-> Has any one else had this issue?
+The e100 module fails to load with the message:
+    Cannot find proper PCI device base address, aborting.
 
-Have you searched the parisc-linux mail archive?
-Just look for the j3516a part number.
+I've traced this to the function pci_read_brige_bases in drives/pci/probe.c.  I
+built a new kernel that instead of erroring out, reports and ignores
+mem_base_hi and mem_limit_hi.  With this new kernel, I am successfully able to
+use my PCI hardware.
 
-hth,
-grant
+mem_base_hi and mem_limit_hi both report as 0xffffffff.  This seems to be
+incorrect behaviour per the comments in the code.
 
-> Thanks for any assistance you might be able to provide.
-> 
-> 
-> Alan
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Ultimately, my question is whether or not those values are expected or if this
+is the result of change in behaviour due to my firmware modification?
+
+FYI, I do understand the potential for corruption of data running in this
+configuration but the way in which this machine will be utilized is low risk.
+
+Thanks,
+--matt
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
