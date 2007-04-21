@@ -1,18 +1,18 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] Re: hanging linuxthread processes
-Date: Sun, 22 Apr 2007 00:55:18 -0400
-Message-ID: <20070422045518.GA22100__11476.1432320394$1416624338$gmane$org@athena.road.mcmartin.ca>
-References: <1177177757.3718.79.camel@mulgrave.il.steeleye.com>
-	<200704211911.l3LJBBgh028700@hiauly1.hia.nrc.ca>
+Date: Sat, 21 Apr 2007 12:00:52 -0500
+Message-ID: <1177174852.3718.73.camel__31814.5627309152$1416624339$gmane$org@mulgrave.il.steeleye.com>
+References: <119aab440704210751o66fae91mc10f30f429c71143@mail.gmail.com>
+	<200704211600.l3LG0pp1025406@hiauly1.hia.nrc.ca>
+	<119aab440704210916p65be074fg4b6503bedad88c54@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: James Bottomley <James.Bottomley@SteelEye.com>,
- kyle@mcmartin.ca,
+Content-Type: text/plain
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ John David Anglin <dave@hiauly1.hia.nrc.ca>,
  parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200704211911.l3LJBBgh028700@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440704210916p65be074fg4b6503bedad88c54@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,18 +23,14 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Apr 21, 2007 at 03:11:11PM -0400, John David Anglin wrote:
-> I definitely miss being able to download parisc patched kernels
-> and source for testing.  However, I recognize that maintaining
-> this tree is a lot of work.
-> 
+On Sat, 2007-04-21 at 12:16 -0400, Carlos O'Donell wrote:
+> Are you considering your patch for Kyle's CFP?
 
-I'm on a lot of planes over the next few weeks for work, I'll see if I can
-finish off the tinderbox to provide prebuilt binaries and patches if I
-get some peace and quiet.
+Er, what patch?
 
-Cheers,
-	Kyle
+James
+
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
