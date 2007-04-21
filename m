@@ -1,15 +1,13 @@
 From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] LCD driver trims whitespace
-Date: Sat, 21 Apr 2007 11:41:25 +0200
-Message-ID: <200704211141.26069.deller__14174.7144553394$1416624336$gmane$org@gmx.de>
-References: <46279704.1080001@web.de>
+Subject: [parisc-linux] hanging linuxthread processes
+Date: Sat, 21 Apr 2007 15:12:32 +0200
+Message-ID: <200704211512.32234.deller__41280.2416984507$1416624336$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
-To: parisc-linux@lists.parisc-linux.org,
- Kyle McMartin <kyle@parisc-linux.org>
+  charset="us-ascii"
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <46279704.1080001@web.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,20 +18,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thursday 19 April 2007, Julian Stecklina wrote:
-> I have a HP Visualize workstation with this fancy little LCD at the 
-> front controllable via /proc/pdc/lcd. The problem is that the 
-> responsible driver trims all trailing whitespace, which is quite 
-> annoying if you want to scroll some text. The attached trivial patch 
-> (against 2.6.20.1) removes this behaviour.
+Do we still see pthread/linuxthread-"hangs" on HPPA ?
 
-I'm sure, there was a reason to strip the whitespaces. 
-But I forgot it by now and it was probably a not very good reason :-)
+On Alpha they had similiar problems with "hanging" threads:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=325600
 
-Nevertheless, the patch looks good.
+Their trivial solution seems to be:
+http://permalink.gmane.org/gmane.linux.debian.ports.alpha/7114
 
-Kyle, could you add the patch to your git tree ?
--> http://lists.parisc-linux.org/pipermail/parisc-linux/attachments/20070419/d58ce234/no-space-removal.bin
+Could this be a solution on HPPA (with #ifdef __hppa__ added) as well ?
+Mabye someone who compiles glibc on regular basis want to try ?
 
 Helge
 _______________________________________________
