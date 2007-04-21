@@ -1,13 +1,14 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] hanging linuxthread processes
-Date: Sat, 21 Apr 2007 15:12:32 +0200
-Message-ID: <200704211512.32234.deller__41280.2416984507$1416624336$gmane$org@gmx.de>
+Subject: Re: [parisc-linux] Splitted lasi_82596 driver
+Date: Sat, 21 Apr 2007 16:14:19 +0200
+Message-ID: <200704211614.19496.deller__23513.8997821652$1416624336$gmane$org@gmx.de>
+References: <20070415144209.GA11196@alpha.franken.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>
+  charset="iso-8859-1"
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20070415144209.GA11196@alpha.franken.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,17 +19,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Do we still see pthread/linuxthread-"hangs" on HPPA ?
+Hi Thomas,
 
-On Alpha they had similiar problems with "hanging" threads:
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=325600
+On Sunday 15 April 2007, Thomas Bogendoerfer wrote:
+> as I needed a 82596 driver for a machine (SNI RM400), I took
+> lasi_82596.c, cloned it and made it working on that machine. But
+> I don't think it's a good idea to have another clone of 82596.c in
+> linux, therefore I splitted my cloned driver and took the lasi parts
+> to get one major file (lib82596.c) and two hardware specific parts
+> (lasi_82596.c and sni_82596.c), which just holds the hardware things
+> of the driver. This "new" driver works now on the RM400, so it's
+> time to test it on parisc hardware. Unfortunatly my machines with
+> lasi82596 are stored away, so I'm looking for someone, who is
+> willing to try the patch below and give me feedback.
 
-Their trivial solution seems to be:
-http://permalink.gmane.org/gmane.linux.debian.ports.alpha/7114
+Tests sucessfully passed on my B160L :-)
+ 
+> Are there any other things, which should be improved in the driver,
+> before I'm going to submit this driver ?
 
-Could this be a solution on HPPA (with #ifdef __hppa__ added) as well ?
-Mabye someone who compiles glibc on regular basis want to try ?
+Some basic ethtool support would be a nice-to-have.
+E.g. name/driver name/Available speeds/link up&down/...
 
+Greetings,
 Helge
 _______________________________________________
 parisc-linux mailing list
