@@ -1,60 +1,39 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] [PATCH] limit thread stack size with >4K pages
-Date: Sat, 21 Apr 2007 16:35:16 +0200
-Message-ID: <200704211635.16322.deller__39395.5571730205$1416624337$gmane$org@gmx.de>
-References: <200703171323.06002.deller@gmx.de>
-	<1174139264.3476.1.camel@mulgrave.il.steeleye.com>
-	<20070317162332.GB10950@athena.road.mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: hanging linuxthread processes
+Date: Sat, 21 Apr 2007 12:00:51 -0400 (EDT)
+Message-ID: <200704211600.l3LG0pp1025406__7577.06367080591$1416624337$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440704210751o66fae91mc10f30f429c71143@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
+  charset=US-ASCII
+Cc: deller@gmx.de,
  parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070317162332.GB10950@athena.road.mcmartin.ca>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440704210751o66fae91mc10f30f429c71143@mail.gmail.com> from "Carlos O'Donell" at Apr 21, 2007 10:51:06 am
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Saturday 17 March 2007, Kyle McMartin wrote:
-> On Sat, Mar 17, 2007 at 08:47:44AM -0500, James Bottomley wrote:
-> > That's a bit ugly ... and would break if someone added new page sizes.
-> > Can't we do something like
-> > 
-> > #if PAGE_BITS > 16
-> > #define THREAD_ORDER 0
-> > #else
-> > #define THREAD_ORDER (16 - PAGE_BITS)
-> > #endif
-> > 
+> On 4/21/07, Helge Deller <deller@gmx.de> wrote:
+> > Do we still see pthread/linuxthread-"hangs" on HPPA ?
 > 
-> Nice.
+> The HPPA hangs are attributed to a race condition in our space id
+> setting code. We can reproduce this at will, but we don't yet have a
+> good solution. See the older thread about this.
 
-Nice yes, but doesn't work.
-Basically I think it would need to be PAGE_SHIFT  (instead of PAGE_BITS is part of include/linux/raid/bitmap.h).
+With James' last patch for this problem, I haven't had any zombies
+in the GCC testsuite for a couple of months.  My c3k running 2.6.20
+hasn't crashed in the same period.  Before, it was crashing every
+couple of days.  I'd encourage James to queue this patch for the
+next merge even if it isn't perfect.
 
-But with PAGE_SHIFT you get due to missing #includes lots of:
-In file included from include/linux/thread_info.h:21,
-                 from include/linux/preempt.h:9,
-                 from include/linux/spinlock.h:49,
-                 from include/linux/module.h:9,
-                 from init/main.c:13:
-include/asm/thread_info.h:37:5: warning: "PAGE_SHIFT" is not defined
+I tried the testcase from the alpha PR and it didn't cause a problem.
 
-Adding more #includes isn't a good idea either.
+I am seeing timeouts in some thread intensive tests.  For some reason,
+these are significantly more frequent on pa8800 with a 64-bit kernel.
+I haven't had a chance to investigate but we may have a deadlock somewhere.
+I did have a software lockup using a UP kernel a couple of weeks ago.
 
-I still propose my initial patch: http://lists.parisc-linux.org/pipermail/parisc-linux/2007-March/031423.html
-If someone adds new page sizes (is this likely?), he will stumble over the not-defined THREAD_ORDER anyway and will have to fix it acordingly.
-
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
