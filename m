@@ -1,59 +1,43 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] Re: hanging linuxthread processes
-Date: Sat, 21 Apr 2007 12:49:17 -0500
-Message-ID: <1177177757.3718.79.camel__32178.1555343934$1416624340$gmane$org@mulgrave.il.steeleye.com>
-References: <200704211726.l3LHQxEg027021@hiauly1.hia.nrc.ca>
+From: tsbogend@alpha.franken.de (Thomas Bogendoerfer)
+Subject: Re: [parisc-linux] Splitted lasi_82596 driver
+Date: Sun, 22 Apr 2007 15:06:26 +0200
+Message-ID: <20070422130626.GA6828__48593.6211691753$1416624340$gmane$org@alpha.franken.de>
+References: <20070415144209.GA11196@alpha.franken.de> <200704211614.19496.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: kyle@mcmartin.ca,
- parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200704211726.l3LHQxEg027021@hiauly1.hia.nrc.ca>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <tsbogend@alpha.franken.de>
+In-Reply-To: <200704211614.19496.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-On Sat, 2007-04-21 at 13:26 -0400, John David Anglin wrote:
-> > On Sat, 2007-04-21 at 12:16 -0400, Carlos O'Donell wrote:
-> > > Are you considering your patch for Kyle's CFP?
-> > 
-> > Er, what patch?
+On Sat, Apr 21, 2007 at 04:14:19PM +0200, Helge Deller wrote:
+> Tests sucessfully passed on my B160L :-)
+
+thanks for testing.
+
+I did some more changes, so I could use it wie coherent dma memory on
+the SNI machines (otherwise I would have to pad all descriptors to
+64bytes, because of the 64 byte L2 cacheline size on the R4400 bases
+machines). I've testet this version on my B132L and it's working like
+the unmodified driver.
+
+> > Are there any other things, which should be improved in the driver,
+> > before I'm going to submit this driver ?
 > 
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2007-February/031385.html
+> Some basic ethtool support would be a nice-to-have.
+> E.g. name/driver name/Available speeds/link up&down/...
 
-This one, definitely not ... it doesn't work ... I need to get acess to
-a machine again where I can play around with it.
+no problem, as there are basically static values. Even link detection
+would be more or less a "return some_old_state", because the hardware
+does only link monitoring during transmits.
 
-> There's also the somewhat related space register issue associated with
-> TLB flushing:
-> 
-> http://lists.parisc-linux.org/pipermail/parisc-linux/2007-February/031365.html
+My current plan is to submit the changes for inclusion into 2.6.22 and
+do enhancments after that.
 
-I think this one works OK ... but we could do with checking it
+Thomas.
 
-> Randolph's change to tlbflush.h is broken and needs to be reverted
-> if we don't have a better fix yet.
-
-I really think these problems demonstrate this new approach to patch
-management is non functional.  I bet even the good patch has had no
-testing at all for the last two months.  I'm afraid that unless I care
-about a patch (i.e. I need it for something I'm doing), I shoot it
-across the list and forget about it.  Previously, when I checked it into
-the repository and forgot about it, at least it was being built and
-tested ... and someone would eventually notice if it needed to go
-upstream.
-
-James
-
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                                [ RFC1925, 2.3 ]
