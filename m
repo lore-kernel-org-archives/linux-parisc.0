@@ -1,16 +1,18 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: Re: [parisc-linux] Sound problems on a C3600
-Date: Sun, 22 Apr 2007 06:03:21 +0200
-Message-ID: <7d01f9f00704212103q1c6f8d42lc275946dceb8a893__27530.3748589524$1416624338$gmane$org@mail.gmail.com>
-References: <462A3C0D.8090004@web.de>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Re: hanging linuxthread processes
+Date: Sun, 22 Apr 2007 00:55:18 -0400
+Message-ID: <20070422045518.GA22100__11476.1432320394$1416624338$gmane$org@athena.road.mcmartin.ca>
+References: <1177177757.3718.79.camel@mulgrave.il.steeleye.com>
+	<200704211911.l3LJBBgh028700@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Julian Stecklina" <der_julian@web.de>
+  charset=us-ascii
+Cc: James Bottomley <James.Bottomley@SteelEye.com>,
+ kyle@mcmartin.ca,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <462A3C0D.8090004@web.de>
+In-Reply-To: <200704211911.l3LJBBgh028700@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,23 +23,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 4/21/07, Julian Stecklina <der_julian@web.de> wrote:
-> Hello,
->
-> I am trying to get my HP Visualize C3600 to output some sound, but
-> without luck so far. Both the onboard AD1889 sound chip and a
-> Soundblaster Live! PCI only produce highly distorted noises with the
-> 2.6.20.1 kernel.
+On Sat, Apr 21, 2007 at 03:11:11PM -0400, John David Anglin wrote:
+> I definitely miss being able to download parisc patched kernels
+> and source for testing.  However, I recognize that maintaining
+> this tree is a lot of work.
+> 
 
-That "sounds" like an old alsa-on-parisc bug that I thought was fixed,
-but could you try using the OSS emulation instead of native ALSA, see
-if it does any better?
+I'm on a lot of planes over the next few weeks for work, I'll see if I can
+finish off the tinderbox to provide prebuilt binaries and patches if I
+get some peace and quiet.
 
-Thanks
-
--- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+Cheers,
+	Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
