@@ -1,9 +1,9 @@
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: [parisc-linux] [patch 10/33] hilkbd: Kill compiler warning and fix
 	comment dyslexia
-Date: Tue, 01 May 2007 21:51:02 +0200
-Message-ID: <20070501195132.228808086__14686.6252799102$1416624637$gmane$org@mail.of.borg>
-References: <20070501195052.390551603@mail.of.borg>
+Date: Tue, 01 May 2007 22:32:44 +0200
+Message-ID: <20070501203332.229877177__27497.2504274503$1416624638$gmane$org@mail.of.borg>
+References: <20070501203234.252205858@mail.of.borg>
 Cc: linux-m68k@vger.kernel.org,
  linux-kernel@vger.kernel.org,
  parisc-linux@parisc-linux.org
