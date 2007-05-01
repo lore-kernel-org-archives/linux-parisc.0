@@ -1,16 +1,13 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
-Date: Wed, 2 May 2007 13:17:01 -0400 (EDT)
-Message-ID: <200705021717.l42HH2Mk017727__39060.3173910224$1416624344$gmane$org@hiauly1.hia.nrc.ca>
-References: <4638B005.60902@aurel32.net>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: [parisc-linux] [PATCH] [HPPA] fix bits/pthreadtypes.h
+Date: Tue, 1 May 2007 21:28:27 +0200
+Message-ID: <20070501192826.GA4309__36538.2532276728$1416624345$gmane$org@amd64.aurel32.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: aurelien@aurel32.net (Aurelien Jarno)
+  charset=iso-8859-15
+To: parisc-linux@lists.parisc-linux.org,
+ libc-ports@sourceware.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4638B005.60902@aurel32.net> from "Aurelien Jarno" at May 2,
-	2007 05:36:37 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,26 +18,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > This is a bug in __attribute__ ((tls_model ("initial-exec"))).  It
-> > doesn't express that it uses r19.  As a result, GCC is free to optimize
-> > the save and restore of r19 across the call to free away.
-> > 
-> > The same is true of the asm.
-> 
-> What would be the correct way to express that?
+Hi all,
 
-As far as the tls_model attribute goes, I can see that the TLS patterns
-in pa.md (e.g., tgd_load) don't express their dependence on r19 and r27.
-I think the simplest fix is to use expanders and separate patterns for
-pic and non-pic.  This will allow different rtl for the two cases.
+On hppa using linuxthreads + TLS, bits/pthreadtypes.h is out of date 
+compare to the generic linuxthreads file. This makes pthread.h unusable.
 
-Asms that use the pic register need to express that dependence in their
-list of input operands.
+Please find below a patch to fix that.
 
-Dave
+Bye,
+Aurelien
+
+--- libc/ports/sysdeps/unix/sysv/linux/hppa/linuxthreads/bits/pthreadtypes.h	2007-05-01 21:15:38.000000000 +020
++++ libc/ports/sysdeps/unix/sysv/linux/hppa/linuxthreads/bits/pthreadtypes.h	2007-05-01 21:16:03.000000000 +0200
+@@ -134,7 +134,7 @@
+ } pthread_rwlockattr_t;
+ #endif
+ 
+-#ifdef __USE_XOPEN2K
++#if defined __USE_UNIX98 || defined __USE_XOPEN2K
+ /* POSIX spinlock data type.  */
+ typedef __atomic_lock_t pthread_spinlock_t;
+ 
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
+ : :' :  Debian developer           | Electrical Engineer
+ `. `'   aurel32@debian.org         | aurelien@aurel32.net
+   `-    people.debian.org/~aurel32 | www.aurel32.net
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
