@@ -1,23 +1,15 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] Re: [PATCH] Introduce O_CLOEXEC (take >2)
-Date: Thu, 31 May 2007 23:07:54 -0400
-Message-ID: <20070601030754.GB14217__21032.8297260732$1416624381$gmane$org@fattire.cabal.ca>
-References: <200705311809.l4VI9F9X009556@devserv.devel.redhat.com>
-	<20070531162021.4cd4e91a.akpm@linux-foundation.org>
-	<20070601113840.813463db.sfr@canb.auug.org.au>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: Chris Zankel <chris@zankel.net>,
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [parisc-linux] [patch 10/33] hilkbd: Kill compiler warning and fix
+	comment dyslexia
+Date: Tue, 01 May 2007 21:51:02 +0200
+Message-ID: <20070501195132.228808086__14686.6252799102$1416624637$gmane$org@mail.of.borg>
+References: <20070501195052.390551603@mail.of.borg>
+Cc: linux-m68k@vger.kernel.org,
  linux-kernel@vger.kernel.org,
- Ulrich Drepper <drepper@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- torvalds@linux-foundation.org,
- mingo@elte.hu,
- parisc-linux@lists.parisc-linux.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>
+ parisc-linux@parisc-linux.org
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070601113840.813463db.sfr@canb.auug.org.au>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,28 +20,37 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jun 01, 2007 at 11:38:40AM +1000, Stephen Rothwell wrote:
-> This also breaks Alpha (which uses 02000000 for O_DIRECT) and parisc
-> (which uses 02000000 for O_RSYNC).  So you ether need to choose a
-> different value or define O_CLOEXEC for those two architectures.
-> 
+hilkbd: Kill compiler warning and fix comment dyslexia
 
-That's easy enough to fix...
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/input/keyboard/hilkbd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
-
-diff --git a/include/asm-parisc/fcntl.h b/include/asm-parisc/fcntl.h
-index 317851f..4ca0fb0 100644
---- a/include/asm-parisc/fcntl.h
-+++ b/include/asm-parisc/fcntl.h
-@@ -14,6 +14,7 @@
- #define O_DSYNC		01000000 /* HPUX only */
- #define O_RSYNC		02000000 /* HPUX only */
- #define O_NOATIME	04000000
-+#define O_CLOEXEC	08000000 /* set close_on_exec */
+--- linux-m68k-2.6.21.orig/drivers/input/keyboard/hilkbd.c
++++ linux-m68k-2.6.21/drivers/input/keyboard/hilkbd.c
+@@ -52,7 +52,7 @@ MODULE_LICENSE("GPL v2");
  
- #define O_DIRECTORY	00010000 /* must be a directory */
- #define O_NOFOLLOW	00000200 /* don't follow links */
+ #elif defined(CONFIG_HP300)
+ 
+- #define HILBASE		0xf0428000 /* HP300 (m86k) port address */
++ #define HILBASE		0xf0428000UL /* HP300 (m68k) port address */
+  #define HIL_DATA		0x1
+  #define HIL_CMD		0x3
+  #define HIL_IRQ		2
+
+--
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
