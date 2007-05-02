@@ -1,21 +1,18 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
-Date: Fri, 4 May 2007 03:39:12 +0200
-Message-ID: <7d01f9f00705031839l7ef0131se561bb410e1bff2f__22341.6616594934$1416624351$gmane$org@mail.gmail.com>
-References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
-	<200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>
-	<5b2e36650705030552l100c7ecayfc848248aac679c9@mail.gmail.com>
-	<4639DE38.3000108@aurel32.net>
-	<7d01f9f00705031039v20fafffcyf701f8a50cede9e0@mail.gmail.com>
-	<463A764E.4030606@aurel32.net>
+From: "Ollie Wild" <aaw@google.com>
+Subject: Re: [parisc-linux] memory management issues
+Date: Wed, 2 May 2007 16:52:18 -0700
+Message-ID: <65dd6fd50705021652s3b3b721dl6a8323259cd4efa9__15999.6690032587$1416624351$gmane$org@mail.gmail.com>
+References: <65dd6fd50704301144k77003d1he9f85f4bb6cf2ace@mail.gmail.com>
+	<1178149192.3712.28.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8;
+  charset=ISO-8859-1;
   format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Aurelien Jarno" <aurelien@aurel32.net>
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
+ parisc-linux@lists.parisc-linux.org
+To: "James Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <463A764E.4030606@aurel32.net>
+In-Reply-To: <1178149192.3712.28.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,22 +23,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 5/4/07, Aurelien Jarno <aurelien@aurel32.net> wrote:
->
-> Actually I need a fast hppa machine where I can install packages that I
-> have just built (like a new gcc).
+> Give me more of a clue on this one ... afterwards *who* sees the pages
+> as zero'd?  The user or the kernel ... if the user, I think it's a
+> simple coherency problem.
 
-That's absolutely not a problem (especially if you can cope with a
-chroot environment). I have systems ready for that purpose.
+Ah, I should have been more clear.  I scattered a bunch of code
+similar to this throughout the kernel:
 
-> But that case is very rare, and
-> paer.d.o is enough in most cases. Thanks anyway.
+  {
+    struct page *page;
+    char * addr;
 
-You're welcome, feel free to poke again if you change your mind ;)
+    get_user_pages(current, bprm->mm, bprm->p, 1, 0, 1, &page, NULL);
+    addr = kmap(page);
+    printk("page = %p, bprm->p = %016lx\n", page, bprm->p);
+    printk("%s: %d: \"%s\"\n", __FUNCTION__, __LINE__, addr);
+    kunmap(page);
+    put_page(page);
+  }
 
--- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+I observed that after the activate_mm() call, page and bprm->p were
+unchanged, but the string at addr switched from the executable name to
+the null string.
+
+I thought that caching might play a role, so I added
+flush_dcache_page() calls after the kunmap's, but that didn't help.
+
+Ollie
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
