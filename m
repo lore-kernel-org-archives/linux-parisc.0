@@ -1,7 +1,7 @@
 From: Aurelien Jarno <aurelien@aurel32.net>
 Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
-Date: Wed, 2 May 2007 11:14:52 +0200
-Message-ID: <20070502091452.GA26226__6328.7932229743$1416624346$gmane$org@farad.aurel32.net>
+Date: Wed, 2 May 2007 11:38:51 +0200
+Message-ID: <20070502093851.GA26242__30692.2623575248$1416624347$gmane$org@farad.aurel32.net>
 References: <46379E8A.8080705@aurel32.net>
 	<200705012059.l41Kxj21011265@hiauly1.hia.nrc.ca>
 	<119aab440705011847o29e04a2eted8aea1e7c0bb041@mail.gmail.com>
@@ -61,13 +61,30 @@ On Wed, May 02, 2007 at 08:38:02AM +0200, Aurelien Jarno wrote:
 > In case you want to have a closer look, please find attached the
 > preprocessed file. I will try to reduce the testcase later today.
 > 
-> The problem does not appear at -O0, and start to appears with -O1.
 
-Some more progress. The following change in the preprocessed source code
-"fixes" the problem:
+Please find the reduced testcase below. When the value is assigned to
+__libc_errno, the value of r19 has been overrided by the call to free().
 
-- extern __thread int __libc_errno __attribute__ ((tls_model ("initial-exec")));
-+ extern __thread int __libc_errno;
+
+extern __thread int __libc_errno __attribute__ ((tls_model ("initial-exec")));
+extern void free (void *__ptr) __attribute__ ((__nothrow__));
+
+int
+__closedir (int *p)
+{
+  int i;
+
+  i = *p;
+  free (p);
+
+  register unsigned long __res asm("r28");                                                                            register unsigned long __r26 __asm__("r26") = (unsigned long)(p);                                                   asm volatile("copy %%r19, %%r4\n"                                                                                                "ble  0x100(%%sr2, %%r0)\n"                                                                                         "ldi %1, %%r20\n"                                                                                                   "copy %%r4, %%r19\n"                                                                                                : "=r" (__res) : "i" (0 + 6) , "r" (__r26)                                               
+                            : "memory", "%r1", "%r2", "%r4", "%r20", "%r29", "%r31" , "%r21", "%r22", "%r23", "%r24", "%r25" );
+
+  __libc_errno = 25;
+
+  return __res;
+}
+
 
 -- 
   .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
