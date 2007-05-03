@@ -1,17 +1,20 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
-Date: Wed, 2 May 2007 14:15:51 -0400 (EDT)
-Message-ID: <200705021815.l42IFqYS018776__3060.60149237073$1416624347$gmane$org@hiauly1.hia.nrc.ca>
-References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
+From: "Ollie Wild" <aaw@google.com>
+Subject: Re: [parisc-linux] memory management issues
+Date: Thu, 3 May 2007 01:11:04 -0700
+Message-ID: <65dd6fd50705030111i993390bx829ee5eb8a188462__728.330881293182$1416624347$gmane$org@mail.gmail.com>
+References: <65dd6fd50704301144k77003d1he9f85f4bb6cf2ace@mail.gmail.com>
+	<1178149192.3712.28.camel@mulgrave.il.steeleye.com>
+	<65dd6fd50705021652s3b3b721dl6a8323259cd4efa9@mail.gmail.com>
+	<1178153532.3712.39.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: aurelien@aurel32.net,
+  charset=ISO-8859-1;
+  format=flowed
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
  parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+To: "James Bottomley" <James.Bottomley@steeleye.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
-	from "Carlos O'Donell" at May 2, 2007 01:21:28 pm
+In-Reply-To: <1178153532.3712.39.camel@mulgrave.il.steeleye.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,25 +25,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > The same is true of the asm.
-> 
-> You told me that listing r19 as input was problematic. Is this no longer true?
+Thanks, James.
 
-If I said that, it was wrong.  It's never wrong to correctly specify
-asm and rtl dependencies.  I think the issue is pic versus non-pic.
+> The first thing this does is
+> immediately decohere the page because we zero it through the user
+> mapping before adding it to the vma.  Fortunately get_user_pages()
+> should make it coherent again.
 
-> I noticed that the tie_load tgd_load and tld _load patterns in pa.md
-> are broken and don't specify a dependency on r19 or r27.
-> 
-> Would you be able to cook up a possible fix? :-)
+This is the critical insight I was missing.  I was assuming the page
+was unaccessed prior to mapping it into the kernel.  The zeroing
+hadn't occurred to me.  Unfortunately, it looks like get_user_pages()
+doesn't make it coherent again.  Calling flush_kernel_dcache_page()
+alone fails to resolve the problem.  Calling flush_cache_page() after
+kmap() and flush_kernel_dcache_page() before kunmap() does.
 
-They are definitely broken.  I've been very busy lately, and
-have a couple of things I should do first.  I'll get to it sometime.
+Is this a bug in get_user_pages()?  Should it be calling
+flush_cache_page() directly?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+By the way, I've left my kernel running on iodine.  Try running:
+
+    ulimit -s unlimited
+    ls -l `find /usr -type f`
+
+Ollie
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
