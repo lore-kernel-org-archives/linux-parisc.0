@@ -1,20 +1,18 @@
-From: "Ollie Wild" <aaw@google.com>
-Subject: Re: [parisc-linux] memory management issues
-Date: Thu, 3 May 2007 01:11:04 -0700
-Message-ID: <65dd6fd50705030111i993390bx829ee5eb8a188462__728.330881293182$1416624347$gmane$org@mail.gmail.com>
-References: <65dd6fd50704301144k77003d1he9f85f4bb6cf2ace@mail.gmail.com>
-	<1178149192.3712.28.camel@mulgrave.il.steeleye.com>
-	<65dd6fd50705021652s3b3b721dl6a8323259cd4efa9@mail.gmail.com>
-	<1178153532.3712.39.camel@mulgrave.il.steeleye.com>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
+Date: Thu, 3 May 2007 08:52:59 -0400
+Message-ID: <5b2e36650705030552l100c7ecayfc848248aac679c9__943.750449414615$1416624348$gmane$org@mail.gmail.com>
+References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
+	<200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
+  charset=UTF-8;
   format=flowed
-Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
- parisc-linux@lists.parisc-linux.org
-To: "James Bottomley" <James.Bottomley@steeleye.com>
+Cc: parisc-linux@lists.parisc-linux.org,
+ aurelien@aurel32.net
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1178153532.3712.39.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -25,29 +23,115 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Thanks, James.
+To work around the gcc pic/tls bug, I'm using this patch:
+http://people.ubuntu.com/~jbailey/hppa-caller-save-pic-tls.dpatch
 
-> The first thing this does is
-> immediately decohere the page because we zero it through the user
-> mapping before adding it to the vma.  Fortunately get_user_pages()
-> should make it coherent again.
+I thought it would be interesting to compare glibc testsuite failures:
+No longer fails:
+tst-memstream2
+tst-wmemstream2
+bug-atexit3-lib
+tst-timer5
+tst-cpuclock2
 
-This is the critical insight I was missing.  I was assuming the page
-was unaccessed prior to mapping it into the kernel.  The zeroing
-hadn't occurred to me.  Unfortunately, it looks like get_user_pages()
-doesn't make it coherent again.  Calling flush_kernel_dcache_page()
-alone fails to resolve the problem.  Calling flush_cache_page() after
-kmap() and flush_kernel_dcache_page() before kunmap() does.
+New failures:
+tststatic
+tststatic2
+tst-conf18
+tst-oddstacklimit (segfaults)
+tst-mqueue3
+tst-time5
+tst-tls9-static
 
-Is this a bug in get_user_pages()?  Should it be calling
-flush_cache_page() directly?
+Full lists below:
 
-By the way, I've left my kernel running on iodine.  Try running:
+Build with gcc without the patch.
+test-float
+test-double
+test-idouble
+tst-memstream2
+tst-wmemstream2
+bug-atexit3-lib
+tst-cond16
+tst-cond17
+tst-cancel24
+tst-cancelx4
+tst-cancelx5
+tst-cancelx8
+tst-cancelx9
+tst-cancelx10
+tst-cancelx11
+tst-cancelx12
+tst-cancelx13
+tst-cancelx14
+tst-cancelx15
+tst-cancelx16
+tst-cancelx17
+tst-cancelx18
+tst-cancelx20
+tst-cancelx21
+tst-cleanupx0
+tst-cleanupx1
+tst-cleanupx3
+tst-cleanupx4
+tst-oncex3
+tst-oncex4
+tst-timer4
+tst-timer5
+tst-cpuclock2
+tst-cputimer1
+tst-cputimer2
+tst-cputimer3
+tst-pie1 (139)
+tst-audit2
+tst-addr1
+check-textrel
 
-    ulimit -s unlimited
-    ls -l `find /usr -type f`
+Build with the gcc with the patch:
+test-float
+test-double
+test-idouble
+tststatic
+tststatic2
+tst-cond16
+tst-cond17
+tst-conf18
+tst-oddstacklimit (139)
+tst-cancelx4
+tst-cancelx5
+tst-cancelx8
+tst-cancelx9
+tst-cancelx10
+tst-cancelx11
+tst-cancelx12
+tst-cancelx13
+tst-cancelx14
+tst-cancelx15
+tst-cancelx16
+tst-cancelx17
+tst-cancelx18
+tst-cancelx20
+tst-cancelx21
+tst-cleanupx0
+tst-cleanupx1
+tst-cleanupx3
+tst-cleanupx4
+tst-oncex3
+tst-oncex4
+tst-mqueue3
+tst-timer4
+tst-time5
+tst-cputimer1
+tst-cputimer2
+tst-cputimer3
+tst-pie1 (139)
+tst-tls9-static
+tst-audit2
+tst-addr1
+check-textrel
 
-Ollie
+-- 
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
