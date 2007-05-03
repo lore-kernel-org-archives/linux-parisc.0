@@ -1,22 +1,17 @@
-From: Peter Zijlstra <a.p.zijlstra@chello.nl>
+From: James Bottomley <James.Bottomley@SteelEye.com>
 Subject: Re: [parisc-linux] memory management issues
-Date: Thu, 03 May 2007 23:03:36 +0200
-Message-ID: <1178226216.2767.1.camel__36969.5595735267$1416624352$gmane$org@lappy>
+Date: Wed, 02 May 2007 19:52:12 -0500
+Message-ID: <1178153532.3712.39.camel__1164.15727320618$1416624352$gmane$org@mulgrave.il.steeleye.com>
 References: <65dd6fd50704301144k77003d1he9f85f4bb6cf2ace@mail.gmail.com>
 	<1178149192.3712.28.camel@mulgrave.il.steeleye.com>
 	<65dd6fd50705021652s3b3b721dl6a8323259cd4efa9@mail.gmail.com>
-	<1178153532.3712.39.camel@mulgrave.il.steeleye.com>
-	<65dd6fd50705030111i993390bx829ee5eb8a188462@mail.gmail.com>
-	<1178203985.3714.11.camel@mulgrave.il.steeleye.com>
-	<65dd6fd50705031055p1fa02d55j6fd729239ea35d38@mail.gmail.com>
-	<1178221672.3714.55.camel@mulgrave.il.steeleye.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Cc: Ollie Wild <aaw@google.com>,
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
  parisc-linux@lists.parisc-linux.org
-To: James Bottomley <James.Bottomley@SteelEye.com>
+To: Ollie Wild <aaw@google.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1178221672.3714.55.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <65dd6fd50705021652s3b3b721dl6a8323259cd4efa9@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,33 +22,49 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, 2007-05-03 at 14:47 -0500, James Bottomley wrote:
-> On Thu, 2007-05-03 at 10:55 -0700, Ollie Wild wrote:
-> > This doesn't work because we're copying between two different
-> > mm_struct's.  Since we can't have both active at the same time, we
-> > need to setup some sort of temporary mapping.
-> > 
-> > I could maybe check the vma boundaries and create new pages in the
-> > kernel, but I still need to assign them to the process space to make
-> > them swappable.  Since some binfmt's remove args, I'll also
-> > potentially need to reload old pages, which means copy_strings() will
-> > still need to call get_user_pages() to retrieve potentially swapped
-> > out pages.
+On Wed, 2007-05-02 at 16:52 -0700, Ollie Wild wrote:
+> > Give me more of a clue on this one ... afterwards *who* sees the pages
+> > as zero'd?  The user or the kernel ... if the user, I think it's a
+> > simple coherency problem.
 > 
-> OK, then you'll just have to go with flush_cache_page() ... it should be
-> reasonably efficient on parisc since I modified it to do non-current
-> flushing (which is really what you're doing).  However, you should be
-> aware that the original parisc implementation threw up its hands and
-> flushed the entire cache if it found a non-current page ... so if any
-> other architecture still does that, it will be remarkably inefficient
-> for you ...
+> Ah, I should have been more clear.  I scattered a bunch of code
+> similar to this throughout the kernel:
+> 
+>   {
+>     struct page *page;
+>     char * addr;
+> 
+>     get_user_pages(current, bprm->mm, bprm->p, 1, 0, 1, &page, NULL);
+>     addr = kmap(page);
+>     printk("page = %p, bprm->p = %016lx\n", page, bprm->p);
+>     printk("%s: %d: \"%s\"\n", __FUNCTION__, __LINE__, addr);
+>     kunmap(page);
+>     put_page(page);
+>   }
+> 
+> I observed that after the activate_mm() call, page and bprm->p were
+> unchanged, but the string at addr switched from the executable name to
+> the null string.
 
-I think this is best; if we were to go with a parisc specific API here,
-all other arches that hit this will be in pain. Better fix their
-flush_cache_page() if and when it really is a problem.
+Well, it seems to be a classic case of missing flushing ... however,
+because of the way you've altered the page allocation, it's incredibly
+subtle.  You no longer use alloc_page() to get the page, you use
+expand_stack on an anonymous vma.  The first thing this does is
+immediately decohere the page because we zero it through the user
+mapping before adding it to the vma.  Fortunately get_user_pages()
+should make it coherent again.  however, you need to
+flush_kernel_dcache_page() before kunmap() I think
 
-Ollie, how about posting this to lkml, and get some feedback, now that
-its mostly complete.
+> I thought that caching might play a role, so I added
+> flush_dcache_page() calls after the kunmap's, but that didn't help.
+
+It likely wouldn't ... on most architectures, flush_dcache_page() can do
+strange things on non file backed areas ... although most of the time it
+should call flush_kernel_dcache_page() anyway.  Try
+flush_kernel_dcache_page() first and I can think further if that fails.
+
+James
+
 
 _______________________________________________
 parisc-linux mailing list
