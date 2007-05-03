@@ -1,19 +1,19 @@
-From: James Bottomley <James.Bottomley@SteelEye.com>
-Subject: Re: [parisc-linux] memory management issues
-Date: Thu, 03 May 2007 09:53:05 -0500
-Message-ID: <1178203985.3714.11.camel__948.65729702196$1416624349$gmane$org@mulgrave.il.steeleye.com>
-References: <65dd6fd50704301144k77003d1he9f85f4bb6cf2ace@mail.gmail.com>
-	<1178149192.3712.28.camel@mulgrave.il.steeleye.com>
-	<65dd6fd50705021652s3b3b721dl6a8323259cd4efa9@mail.gmail.com>
-	<1178153532.3712.39.camel@mulgrave.il.steeleye.com>
-	<65dd6fd50705030111i993390bx829ee5eb8a188462@mail.gmail.com>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
+Date: Thu, 3 May 2007 19:39:36 +0200
+Message-ID: <7d01f9f00705031039v20fafffcyf701f8a50cede9e0__19013.9082762927$1416624349$gmane$org@mail.gmail.com>
+References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
+	<200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>
+	<5b2e36650705030552l100c7ecayfc848248aac679c9@mail.gmail.com>
+	<4639DE38.3000108@aurel32.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
- parisc-linux@lists.parisc-linux.org
-To: Ollie Wild <aaw@google.com>
+Content-Type: text/plain;
+  charset=UTF-8;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Aurelien Jarno" <aurelien@aurel32.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <65dd6fd50705030111i993390bx829ee5eb8a188462@mail.gmail.com>
+In-Reply-To: <4639DE38.3000108@aurel32.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,44 +24,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, 2007-05-03 at 01:11 -0700, Ollie Wild wrote:
-> Thanks, James.
-> 
-> > The first thing this does is
-> > immediately decohere the page because we zero it through the user
-> > mapping before adding it to the vma.  Fortunately get_user_pages()
-> > should make it coherent again.
-> 
-> This is the critical insight I was missing.  I was assuming the page
-> was unaccessed prior to mapping it into the kernel.  The zeroing
-> hadn't occurred to me.  Unfortunately, it looks like get_user_pages()
-> doesn't make it coherent again.  Calling flush_kernel_dcache_page()
-> alone fails to resolve the problem.  Calling flush_cache_page() after
-> kmap() and flush_kernel_dcache_page() before kunmap() does.
+On 5/3/07, Aurelien Jarno <aurelien@aurel32.net> wrote:
 
-No, you're perverting the use of get_user_pages() ... it's designed to
-get mapping backed pages.  I already did one fix for it so the fuse
-people could use it to get anonymous pages ... I have a nasty feeling
-stack pages are neither file backed nor anonymous.
+> My machine is too slow to build a glibc (I am doing my gcc tests on
+> paer.d.o). Would it be possible to do the same tests with my patch?
 
-Really, given the page is already present and cached in user space, why
-not just copy through the user mappings instead of trying to map the
-pages into the kernel an then fix up coherence issues, copy then push
-the coherency back to the user ... the API you want is copy_in_user().
+Hi Aurelien
 
-James
+If you need access to fast hppa machines, I can fix that ;)
 
+HTH
 
-> Is this a bug in get_user_pages()?  Should it be calling
-> flush_cache_page() directly?
-> 
-> By the way, I've left my kernel running on iodine.  Try running:
-> 
->     ulimit -s unlimited
->     ls -l `find /usr -type f`
-> 
-> Ollie
+T-Bone
 
+-- 
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
