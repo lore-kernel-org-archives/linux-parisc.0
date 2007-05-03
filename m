@@ -1,19 +1,19 @@
-From: "Jeff Bailey" <jbailey@raspberryginger.com>
-Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
-Date: Thu, 3 May 2007 10:23:48 -0400
-Message-ID: <5b2e36650705030723v4a9b14c6v2bfa9251335524db__925.593594047491$1416624348$gmane$org@mail.gmail.com>
-References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
-	<200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>
-	<5b2e36650705030552l100c7ecayfc848248aac679c9@mail.gmail.com>
-	<4639DE38.3000108@aurel32.net>
+From: James Bottomley <James.Bottomley@SteelEye.com>
+Subject: Re: [parisc-linux] memory management issues
+Date: Thu, 03 May 2007 09:53:05 -0500
+Message-ID: <1178203985.3714.11.camel__948.65729702196$1416624349$gmane$org@mulgrave.il.steeleye.com>
+References: <65dd6fd50704301144k77003d1he9f85f4bb6cf2ace@mail.gmail.com>
+	<1178149192.3712.28.camel@mulgrave.il.steeleye.com>
+	<65dd6fd50705021652s3b3b721dl6a8323259cd4efa9@mail.gmail.com>
+	<1178153532.3712.39.camel@mulgrave.il.steeleye.com>
+	<65dd6fd50705030111i993390bx829ee5eb8a188462@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="===============1593861432=="
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+Content-Type: text/plain
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
  parisc-linux@lists.parisc-linux.org
-To: "Aurelien Jarno" <aurelien@aurel32.net>
+To: Ollie Wild <aaw@google.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4639DE38.3000108@aurel32.net>
+In-Reply-To: <65dd6fd50705030111i993390bx829ee5eb8a188462@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,35 +24,45 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
---===============1593861432==
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+On Thu, 2007-05-03 at 01:11 -0700, Ollie Wild wrote:
+> Thanks, James.
+> 
+> > The first thing this does is
+> > immediately decohere the page because we zero it through the user
+> > mapping before adding it to the vma.  Fortunately get_user_pages()
+> > should make it coherent again.
+> 
+> This is the critical insight I was missing.  I was assuming the page
+> was unaccessed prior to mapping it into the kernel.  The zeroing
+> hadn't occurred to me.  Unfortunately, it looks like get_user_pages()
+> doesn't make it coherent again.  Calling flush_kernel_dcache_page()
+> alone fails to resolve the problem.  Calling flush_cache_page() after
+> kmap() and flush_kernel_dcache_page() before kunmap() does.
 
-T24gMDMvMDUvMDcsIEF1cmVsaWVuIEphcm5vIDxhdXJlbGllbkBhdXJlbDMyLm5ldD4gd3JvdGU6
-Cj4gSmVmZiBCYWlsZXkgYSDDqWNyaXQgOgo+ID4gVG8gd29yayBhcm91bmQgdGhlIGdjYyBwaWMv
-dGxzIGJ1ZywgSSdtIHVzaW5nIHRoaXMgcGF0Y2g6Cj4gPiBodHRwOi8vcGVvcGxlLnVidW50dS5j
-b20vfmpiYWlsZXkvaHBwYS1jYWxsZXItc2F2ZS1waWMtdGxzLmRwYXRjaAo+ID4KPgo+IEkgaGF2
-ZSBhbHNvIG1hZGUgYSBwYXRjaCB0byBmaXggdGhlIHByb2JsZW0gdGhhdCBzZWVtcyB0byB3b3Jr
-Cj4gY29ycmVjdGx5LiBJIGhhdmUgcG9zdGVkIGl0IHRvIGdjYy1wYXRjaGVzLCB5b3UgY2FuIGFs
-c28gZmluZCBpdCBhcyBhCj4gZHBhdGNoIG9uIGh0dHA6Ly90ZW1wLmF1cmVsMzIubmV0L2hwcGEt
-Y2FsbGVyLXNhdmUtcGljLXRscy5kcGF0Y2gKPgo+IE15IG1hY2hpbmUgaXMgdG9vIHNsb3cgdG8g
-YnVpbGQgYSBnbGliYyAoSSBhbSBkb2luZyBteSBnY2MgdGVzdHMgb24KPiBwYWVyLmQubykuIFdv
-dWxkIGl0IGJlIHBvc3NpYmxlIHRvIGRvIHRoZSBzYW1lIHRlc3RzIHdpdGggbXkgcGF0Y2g/CgpO
-aWNlLCB3aWxsIGRvLiAgSSdtIGp1c3QgYnVpbGRpbmcgZ2NqLTQuMSB0byBzZWUgaWYgdGhpcyBm
-aXhlcyB0aGUKTnVsbFBvaW50ZXJFeGNlcHRpb25zIHRoYXQgSSdtIGdldHRpbmcuICBTbyBmYXIg
-aXQgbG9va3MgbGlrZSBpdApkb2Vzbid0LiA9KCAgQXQgbHVuY2gsIEknbGwgc3RhcnQgdGhlIGdj
-YyByZWJ1aWxkIHdpdGggeW91ciBwYXRjaC4KClRrcywKSmVmZiBCYWlsZXkKCi0tIApKZWZmIEJh
-aWxleSAtIGh0dHA6Ly93d3cucmFzcGJlcnJ5Z2luZ2VyLmNvbS9qYmFpbGV5Lwo=
+No, you're perverting the use of get_user_pages() ... it's designed to
+get mapping backed pages.  I already did one fix for it so the fuse
+people could use it to get anonymous pages ... I have a nasty feeling
+stack pages are neither file backed nor anonymous.
 
---===============1593861432==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Really, given the page is already present and cached in user space, why
+not just copy through the user mappings instead of trying to map the
+pages into the kernel an then fix up coherence issues, copy then push
+the coherency back to the user ... the API you want is copy_in_user().
+
+James
+
+
+> Is this a bug in get_user_pages()?  Should it be calling
+> flush_cache_page() directly?
+> 
+> By the way, I've left my kernel running on iodine.  Try running:
+> 
+>     ulimit -s unlimited
+>     ls -l `find /usr -type f`
+> 
+> Ollie
 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---===============1593861432==--
