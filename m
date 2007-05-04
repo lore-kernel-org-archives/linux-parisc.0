@@ -1,19 +1,17 @@
-From: Aurelien Jarno <aurelien@aurel32.net>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
-Date: Fri, 04 May 2007 01:54:54 +0200
-Message-ID: <463A764E.4030606__20518.3060760193$1416624350$gmane$org@aurel32.net>
-References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>	
-	<200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>	
-	<5b2e36650705030552l100c7ecayfc848248aac679c9@mail.gmail.com>	
-	<4639DE38.3000108@aurel32.net>
-	<7d01f9f00705031039v20fafffcyf701f8a50cede9e0@mail.gmail.com>
+Date: Thu, 3 May 2007 20:12:20 -0400 (EDT)
+Message-ID: <200705040012.l440CLiL002581__40289.5210813314$1416624351$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440705031658g22e8be87p6b4c477a18501f5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8
-Cc: parisc-linux@lists.parisc-linux.org
-To: Thibaut VARENE <T-Bone@parisc-linux.org>
+  charset=US-ASCII
+Cc: aurelien@aurel32.net,
+ parisc-linux@lists.parisc-linux.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <7d01f9f00705031039v20fafffcyf701f8a50cede9e0@mail.gmail.com>
+In-Reply-To: <119aab440705031658g22e8be87p6b4c477a18501f5@mail.gmail.com> from
+	"Carlos O'Donell" at May 3, 2007 07:58:35 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,29 +22,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Thibaut VARENE a écrit :
-> On 5/3/07, Aurelien Jarno <aurelien@aurel32.net> wrote:
-> 
->> My machine is too slow to build a glibc (I am doing my gcc tests on
->> paer.d.o). Would it be possible to do the same tests with my patch?
-> 
-> Hi Aurelien
-> 
-> If you need access to fast hppa machines, I can fix that ;)
-> 
+> My full list follows, which is smaller than your full list. I am using
+> gcc head, and a very recent binutils.
 
-Actually I need a fast hppa machine where I can install packages that I
-have just built (like a new gcc). But that case is very rare, and
-paer.d.o is enough in most cases. Thanks anyway.
+Somewhat surprising since head has significantly more problems than 4.2.0
+and binutils has the new eh_frame_hdr warning.
 
-Bye,
-Aurelien
-
+Dave
 -- 
-  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
- : :' :  Debian developer           | Electrical Engineer
- `. `'   aurel32@debian.org         | aurelien@aurel32.net
-   `-    people.debian.org/~aurel32 | www.aurel32.net
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
