@@ -1,17 +1,21 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
 Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
-Date: Thu, 3 May 2007 20:12:20 -0400 (EDT)
-Message-ID: <200705040012.l440CLiL002581__40289.5210813314$1416624351$gmane$org@hiauly1.hia.nrc.ca>
-References: <119aab440705031658g22e8be87p6b4c477a18501f5@mail.gmail.com>
+Date: Fri, 4 May 2007 03:39:12 +0200
+Message-ID: <7d01f9f00705031839l7ef0131se561bb410e1bff2f__22341.6616594934$1416624351$gmane$org@mail.gmail.com>
+References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
+	<200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>
+	<5b2e36650705030552l100c7ecayfc848248aac679c9@mail.gmail.com>
+	<4639DE38.3000108@aurel32.net>
+	<7d01f9f00705031039v20fafffcyf701f8a50cede9e0@mail.gmail.com>
+	<463A764E.4030606@aurel32.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: aurelien@aurel32.net,
- parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+  charset=UTF-8;
+  format=flowed
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Aurelien Jarno" <aurelien@aurel32.net>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440705031658g22e8be87p6b4c477a18501f5@mail.gmail.com> from
-	"Carlos O'Donell" at May 3, 2007 07:58:35 pm
+In-Reply-To: <463A764E.4030606@aurel32.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,16 +26,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> My full list follows, which is smaller than your full list. I am using
-> gcc head, and a very recent binutils.
+On 5/4/07, Aurelien Jarno <aurelien@aurel32.net> wrote:
+>
+> Actually I need a fast hppa machine where I can install packages that I
+> have just built (like a new gcc).
 
-Somewhat surprising since head has significantly more problems than 4.2.0
-and binutils has the new eh_frame_hdr warning.
+That's absolutely not a problem (especially if you can cope with a
+chroot environment). I have systems ready for that purpose.
 
-Dave
+> But that case is very rare, and
+> paer.d.o is enough in most cases. Thanks anyway.
+
+You're welcome, feel free to poke again if you change your mind ;)
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Thibaut VARENE
+http://www.parisc-linux.org/~varenet/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
