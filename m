@@ -1,22 +1,21 @@
-From: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: Re: [parisc-linux] memory management issues
-Date: Sun, 06 May 2007 18:01:48 +0200
-Message-ID: <1178467308.2810.4.camel__47494.6779701442$1416624354$gmane$org@lappy>
-References: <65dd6fd50704301144k77003d1he9f85f4bb6cf2ace@mail.gmail.com>
-	<1178149192.3712.28.camel@mulgrave.il.steeleye.com>
-	<65dd6fd50705021652s3b3b721dl6a8323259cd4efa9@mail.gmail.com>
-	<1178153532.3712.39.camel@mulgrave.il.steeleye.com>
-	<65dd6fd50705030111i993390bx829ee5eb8a188462@mail.gmail.com>
-	<1178461403.3760.10.camel@mulgrave.il.steeleye.com>
-	<1178462545.2789.1.camel@lappy>
-	<1178465951.3760.23.camel@mulgrave.il.steeleye.com>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: Re: [parisc-linux] unaligned access using bash on glibc 2.5
+Date: Sun, 6 May 2007 09:11:42 -0700
+Message-ID: <5b2e36650705060911l27d0ac7co957cefcf40e03ad2__39458.6002840244$1416624355$gmane$org@mail.gmail.com>
+References: <119aab440705021021i35132820we4338ae3ca1862cd@mail.gmail.com>
+	<200705021815.l42IFqYS018776@hiauly1.hia.nrc.ca>
+	<5b2e36650705030552l100c7ecayfc848248aac679c9@mail.gmail.com>
+	<119aab440705031658g22e8be87p6b4c477a18501f5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Cc: Ollie Wild <aaw@google.com>,
- parisc-linux@lists.parisc-linux.org
-To: James Bottomley <James.Bottomley@SteelEye.com>
+Content-Type: text/plain;
+  charset=UTF-8;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org,
+ aurelien@aurel32.net
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1178465951.3760.23.camel@mulgrave.il.steeleye.com>
+In-Reply-To: <119aab440705031658g22e8be87p6b4c477a18501f5@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,55 +26,82 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, 2007-05-06 at 10:39 -0500, James Bottomley wrote:
-> On Sun, 2007-05-06 at 16:42 +0200, Peter Zijlstra wrote:
-> > > It took me a while to discover this, largely because you do this:
-> > > 
-> > > +                               ret = get_user_pages(current, bprm->mm, pos,
-> > > +                                                    1, 1, 1, &page, NULL);
-> > > 
-> > > That's horribly wrong ... you can't use the current process context to
-> > > gather non-current pages ... if anything goes wrong and the page needs
-> > > faulting (unusual for a nascent process, but not impossible) you'll get
-> > > into terrible trouble because the mapping for the page isn't in current.
-> > 
-> > Right, what would be the proper way to go about this, a NULL tsk?
-> > Because the bprm->mm is un-owned at this point in time. That is, there
-> > is no process context associated with it at all.
-> 
-> Heh, no good way I can think of ... you certainly can't use NULL.
+On 03/05/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
+> On 5/3/07, Jeff Bailey <jbailey@raspberryginger.com> wrote:
+> > To work around the gcc pic/tls bug, I'm using this patch:
+> > http://people.ubuntu.com/~jbailey/hppa-caller-save-pic-tls.dpatch
+> >
+> > I thought it would be interesting to compare glibc testsuite failures:
+>
+> My full list follows, which is smaller than your full list. I am using
+> gcc head, and a very recent binutils.
+>
+> libc/dlfcn/tststatic.out
+> libc/dlfcn/tststatic2.out
+> libc/nptl/tst-cancel24.o
+> libc/nptl/tst-cancelx4.out
 
-heh, I suspected that might not work out :-)
+> Catch me if you can! :-)
 
->   But
-> look at what you're doing.  You're using the stack expansion functions
-> to populate the mm's vma ... then you use get_user_pages() to place the
-> pages into the vma.  I suspect it only works because you're in the
-> middle of a fork
+I'm travelling at the moment, so basic troubleshooting is going to be
+a bit delayed, just as a quick status report, I'm getting linker
+failures in some of the tests.  I've checked that nptl/libpthread.so
+has _Unwind_Resume in it, so I'll need to do more hunting this week.
 
-execve, actually. there is only one task_struct, but two mm_structs.
+Error message follows in case someone has an obvious "aha":
 
->  and the new process is structurally almost identical to
-> the old one, so get_user_pages() is using pieces of current (mainly the
-> task gate) and accounting all the page faults the new process is taking
-> to current.
-> 
-> The thing which worries me is that this user of get_user_pages() is very
-> fragile.  Fortunately, you have the mm ... certainly on parisc, that's
-> the primary coherence entity for memory management (we don't really care
-> what the task is).
-> 
-> However, the fragility could be greatly reduced if you could do this
-> later when you do have a task structure ... then you could even use the
-> appropriate APIs, like access_proces_vm() or copy_to_user_page() which
-> will take care of the architecturally necessary flushing for you.
+gcc-4.1 -fno-stack-protector -nostdlib -nostartfiles -o /home/jbailey/Programmin
+g/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst-cancelx4  -Wl,-dynamic-
+linker=/lib/ld.so.1   -Wl,-z,combreloc  -Wl,--hash-style=both /home/jbailey/Prog
+ramming/packages/glibc/glibc-2.5/build-tree/hppa-libc/csu/crt1.o /home/jbailey/P
+rogramming/packages/glibc/glibc-2.5/build-tree/hppa-libc/csu/crti.o `gcc-4.1 -fn
+o-stack-protector --print-file-name=crtbegin.o` /home/jbailey/Programming/packag
+es/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst-cancelx4.o /home/jbailey/Progra
+mming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/libpthread.so /home/jba
+iley/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/libpthread_n
+onshared.a  -Wl,-rpath-link=/home/jbailey/Programming/packages/glibc/glibc-2.5/b
+uild-tree/hppa-libc:/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tre
+e/hppa-libc/math:/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/h
+ppa-libc/elf:/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-
+libc/dlfcn:/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-li
+bc/nss:/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/n
+is:/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/rt:/h
+ome/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/resolv:/ho
+me/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/crypt:/home
+/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl /home/jb
+ailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/libc.so.6 /home/
+jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/libc_nonshared
+.a -lgcc `gcc-4.1 -fno-stack-protector --print-file-name=crtend.o` /home/jbailey
+/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/csu/crtn.o
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o: In function `tf_accept':
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/glibc-2.5/nptl/tst
+-cancel4.c:1000: warning: the use of `mktemp' is dangerous, better use `mkstemp'
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o: In function `tf_read':
+(.text+0xc30): undefined reference to `_Unwind_Resume'
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o: In function `tf_readv':
+(.text+0xd7c): undefined reference to `_Unwind_Resume'
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o: In function `tf_write':
+(.text+0xecc): undefined reference to `_Unwind_Resume'
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o: In function `tf_writev':
+(.text+0x102c): undefined reference to `_Unwind_Resume'
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o: In function `tf_sleep':
+(.text+0x10dc): undefined reference to `_Unwind_Resume'
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o:(.text+0x118c): more undefined references to `_Unwind_Resume' follow
+/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa-libc/nptl/tst
+-cancelx4.o:(.data+0x3c): undefined reference to `__gcc_personality_v0'
+collect2: ld returned 1 exit status
+make[3]: *** [/home/jbailey/Programming/packages/glibc/glibc-2.5/build-tree/hppa
+-libc/nptl/tst-cancelx4] Error 1
 
-Well, it would be the same task_struct that we currently have, its just
-that we need to copy stuff from the old mm to the new mm, there is no
-point in time where both have an associated task_struct.
-
-
-
+-- 
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
