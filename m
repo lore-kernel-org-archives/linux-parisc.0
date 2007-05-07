@@ -1,18 +1,24 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: Re: [parisc-linux] Sound problems on a C3600
-Date: Tue, 8 May 2007 00:31:52 +0200
-Message-ID: <7d01f9f00705071531n6d5d045i365ddeb2074c6e5f__31132.929135538$1416624356$gmane$org@mail.gmail.com>
-References: <462A3C0D.8090004@web.de>
-	<7d01f9f00704212103q1c6f8d42lc275946dceb8a893@mail.gmail.com>
-	<463F732D.6050904@web.de>
+From: William Lee Irwin III <wli@holomorphy.com>
+Subject: [parisc-linux] Re: [patch] removes MAX_ARG_PAGES
+Date: Mon, 7 May 2007 12:01:07 -0700
+Message-ID: <20070507190107.GF19966__40275.5080293447$1416624356$gmane$org@holomorphy.com>
+References: <65dd6fd50705060151m78bb9b4fpcb941b16a8c4709e@mail.gmail.com>
+	<617E1C2C70743745A92448908E030B2A01719390@scsmsx411.amr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Julian Stecklina" <der_julian@web.de>
+  charset=us-ascii
+Cc: linux-arch@vger.kernel.org,
+ Andrew Morton <akpm@osdl.org>,
+ Peter Zijlstra <a.p.zijlstra@chello.nl>,
+ linux-kernel@vger.kernel.org,
+ Andi Kleen <ak@suse.de>,
+ linux-mm@kvack.org,
+ Ollie Wild <aaw@google.com>,
+ Ingo Molnar <mingo@elte.hu>,
+ parisc-linux@lists.parisc-linux.org
+To: "Luck, Tony" <tony.luck@intel.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <463F732D.6050904@web.de>
+In-Reply-To: <617E1C2C70743745A92448908E030B2A01719390@scsmsx411.amr.corp.intel.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,53 +29,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 5/7/07, Julian Stecklina <der_julian@web.de> wrote:
-> Tests done using the onboard AD1889 without any .asoundrc:
->
->  > mplayer -ao oss ...
-> ...
-> AO: [oss] 44100Hz 2ch s16be (2 bytes per sample)
-> ...
-> Works!
+At some point in the past, Ollie Wild wrote:
+>> We've tested the following architectures: i386, x86_64, um/i386,
+>> parisc, and frv.  These are representative of the various scenarios
+>> which this patch addresses, but other architecture teams should try it
+>> out to make sure there aren't any unexpected gotchas.
 
-Expected
+On Mon, May 07, 2007 at 10:46:49AM -0700, Luck, Tony wrote:
+> Doesn't build on ia64: complaints from arch/ia64/ia32/binfmt_elf.c
+> (which #includes ../../../fs/binfmt_elf.c) ...
+[...]
+> Turning off CONFIG_IA32-SUPPORT, the kernel built, but oops'd during boot.
+> My serial connection to my test machine is currently broken, so I didn't
+> get a capture of the stack trace, sorry.
 
->  > mplayer -ao alsa ...
->
-> Doesn't work, noise. (Endian problem? Mplayer's fault?)
+It needs to sweep 32-bit emulation code more generally.
 
-Expected
 
->  > mplayer -ao alsa:device=hw=0,0 ...
-
-> Works?!
-
-Unexpected ;)
-
-> I then did some tests using mpg123:
-> An mpg123 using OSS produces only noise as well (seems to be the endian
-> issue again). An ALSA mpg123 produces some "cracks" and "scritches" (my
-> English is probably not good enough to properly describe this), unless I
->    cause some disk access, then it produces distorted (but sometimes
-> recognizable) sound...
-
-Last time I tried, mpg123 was working for me. The noise issue is
-unfortunately a known one without a clear explanation yet, making hard
-(if not impossible) to fix...
-
-> uname -a:
-> Linux efficio 2.6.20.1-hppa #12 Mon May 7 17:40:45 CEST 2007 parisc
-> PA8600 (PCX-W+) 9000/785/C3600 GNU/Linux
->
-> I am happy to supply any needed debugging information. And btw, is the
-> signaling issue mentioned in http://wiki.parisc-linux.org/AD1889 fixed, yet?
-
-If by 'signaling issue' you mean the random crash when doing ctrl-C, I
-don't know if it's fixed. The best way to check is to try ;)
-
--- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+-- wli
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
