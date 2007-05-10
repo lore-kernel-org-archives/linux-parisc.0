@@ -1,9 +1,10 @@
 From: Rob Landley <rob@landley.net>
 Subject: [parisc-linux] Re: [patch] removes MAX_ARG_PAGES
-Date: Wed, 9 May 2007 21:04:42 -0400
-Message-ID: <200705092104.43353.rob__4916.77312315932$1416624356$gmane$org@landley.net>
+Date: Thu, 10 May 2007 05:19:37 -0400
+Message-ID: <200705100519.38073.rob__4611.68904225833$1416624357$gmane$org@landley.net>
 References: <65dd6fd50705060151m78bb9b4fpcb941b16a8c4709e@mail.gmail.com>
-	<20070509134815.81cb9aa9.akpm@linux-foundation.org>
+	<200705092104.43353.rob@landley.net>
+	<65dd6fd50705092106i15722e97g85f43191ceb5a3d7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
@@ -12,12 +13,12 @@ Cc: linux-arch@vger.kernel.org,
  linux-kernel@vger.kernel.org,
  Andi Kleen <ak@suse.de>,
  linux-mm@kvack.org,
- Ollie Wild <aaw@google.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
  Ingo Molnar <mingo@elte.hu>,
  parisc-linux@lists.parisc-linux.org
-To: Andrew Morton <akpm@linux-foundation.org>
+To: "Ollie Wild" <aaw@google.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070509134815.81cb9aa9.akpm@linux-foundation.org>
+In-Reply-To: <65dd6fd50705092106i15722e97g85f43191ceb5a3d7@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -28,65 +29,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wednesday 09 May 2007 4:48 pm, Andrew Morton wrote:
-> On Sun, 6 May 2007 01:51:34 -0700
-> "Ollie Wild" <aaw@google.com> wrote:
+On Thursday 10 May 2007 12:06 am, Ollie Wild wrote:
+> On 5/9/07, Rob Landley <rob@landley.net> wrote:
+> > Just FYI, a really really quick and dirty way of testing this sort of 
+thing on
+> > more architectures and you're likely to physically have?
 > 
-> > A while back, I sent out a preliminary patch
-> > (http://thread.gmane.org/gmane.linux.ports.hppa/752) to remove the
-> > MAX_ARG_PAGES limit on command line sizes.  Since then, Peter Zijlstra
-> > and I have fixed a number of bugs and addressed the various
-> > outstanding issues.
-> > 
-> > The attached patch incorporates the following changes:
-> > 
-> > - Fixes a BUG_ON() assertion failure discovered by Ingo Molnar.
-> > - Adds CONFIG_STACK_GROWSUP (parisc) support.
-> > - Adds auditing support.
-> > - Reverts to the old behavior on architectures with no MMU.
-> > - Fixes broken execution of 64-bit binaries from 32-bit binaries.
-> > - Adds elf_fdpic support.
-> > - Fixes cache coherency bugs.
-> > 
-> > We've tested the following architectures: i386, x86_64, um/i386,
-> > parisc, and frv.  These are representative of the various scenarios
-> > which this patch addresses, but other architecture teams should try it
-> > out to make sure there aren't any unexpected gotchas.
->
-> I'll duck this for now, given the couple of problems which people have
-> reported. 
+> Does this properly emulate caching?  On parisc, cache coherency was
+> the main issue we ran into.  I suspect this might be the case with
+> other architectures as well.
 
-Just FYI, a really really quick and dirty way of testing this sort of thing on 
-more architectures and you're likely to physically have?
+This is really a QEMU question.  I've been focused on making cross-compilers 
+and using those to create kernels and a minimal native build environment I 
+could use to natively compile packages with.  (The way I designed the thing 
+you could substitute real hardware for the qemu step, assuming you had it.  
+Or another emulator like armulator for a specific platform.)
 
-1) Install QEMU.
-
-2) Grab http://landley.net/code/firmware (releases in the downloads directory, 
-or tarball of most recent repository snapshot is 
-wget "http://landley.net/hg/firmware?ca=tip;type=gz").
-
-3) Edit "download.sh" to point at the URL of your tarball instead of whatever 
-kernel.org version it's using.  (Or add your patch to sources/patches if it 
-applies to the version it's already using.  Note that if you set SHA1= blank 
-in download.sh it'll skip the checksum test, so you don't have to recalculate 
-the sha1sum if you don't want to.)
-
-4) Run ./build.sh for the architecture you're interested in.  (I suggest 
-armv4l, i686, mipsel, and x86_64.  Both sparc and ppc are currently broken 
-for different reasons; I'm working on it.)  Wait a longish time for it to 
-finish compiling. :)
-
-5) "cd build; ./run-armv4l.sh" and your shell prompt should now be in qemu 
-running a kernel for the appropriate architecture.  (You even have a native 
-version of gcc you can build stuff with, although you may have 
-to "ln -s /tools/lib /lib" to run the results, for reasons Linux From Scratch 
-developers will recognize. :)
-
-This won't help you test real hardware (at least hardware qemu doesn't 
-emulate), but for stuff like filesystems or executable file formats, it's 
-handy. :)
-
-Email me if something doesn't work...
+I don't believe QEMU emulates parisc yet, although it adds new platforms all 
+the time.  (It just grew an alpha emulation last month.)  It's under very 
+active development.
 
 Rob
 _______________________________________________
