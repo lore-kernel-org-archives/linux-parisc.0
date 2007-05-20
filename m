@@ -1,26 +1,16 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap
-	function on hppa
-Date: Tue, 22 May 2007 21:37:09 -0600
-Message-ID: <20070523033709.GO18519__14984.3961619355$1416624362$gmane$org@parisc-linux.org>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap function
+	on hppa
+Date: Sun, 20 May 2007 03:56:53 +0200
+Message-ID: <20070520015653.GA22224__24390.3088187382$1416624362$gmane$org@amd64.aurel32.net>
 References: <20070520015215.GA26949@amd64.aurel32.net>
-	<20070520015653.GA22224@amd64.aurel32.net>
-	<119aab440705200822vcfe3dd2ud542783a4ac2c3c8@mail.gmail.com>
-	<4652C3EF.3020905@aurel32.net>
-	<119aab440705220705s13c5fa96yd27857e22afbd2bd@mail.gmail.com>
-	<20070522151930.GA16377@farad.aurel32.net>
-	<20070522153723.GC16717@fattire.cabal.ca>
-	<119aab440705221919pa9f14a7kc8330b6c7ad9ffec@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Kyle McMartin <kyle@mcmartin.ca>,
- libc-ports@sourceware.org,
- Aurelien Jarno <aurelien@aurel32.net>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Carlos O'Donell <carlos@systemhalted.org>
+  charset=iso-8859-15
+Cc: parisc-linux@lists.parisc-linux.org
+To: libc-ports@sourceware.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440705221919pa9f14a7kc8330b6c7ad9ffec@mail.gmail.com>
+In-Reply-To: <20070520015215.GA26949@amd64.aurel32.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -31,12 +21,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, May 22, 2007 at 10:19:32PM -0400, Carlos O'Donell wrote:
-> The code shouldn't undefine or define anything a user might define.
-> All the constants have to go away. This header needs a rewrite.
+On Sun, May 20, 2007 at 03:52:15AM +0200, Aurelien Jarno wrote:
+> Hi,
+> 
+> I have finally tracked down the "error while loading shared libraries: 
+> internal error: symidx out of range of fptr table" problem. 
+> 
+> It comes from a bug in atomic.h, the errno number is compared with the
+> wrong value. The kernel returns -EAGAIN (ie -11), but the value in the
+> cmpib instruction is EAGAIN (11).
+> 
+> The patch below fixes the problem.
+> 
 
-However, the _ namespace is reserved to the library.  So _LWS_EGAIN is
-permissible.
+Oops this patch is reversed.
+
+Please find a new version below.
+
+
+2007-05-20  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/atomic.h: check for
+	-EAGAIN instead of EAGAIN.
+
+--- ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h.orig	2007-05-20 03:28:39.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h	2007-05-20 03:24:41.000000000 +0200
+@@ -56,7 +56,7 @@
+ #define LWS_CAS "0"
+ /* Note r31 is the link register */
+ #define LWS_CLOBBER "r1", "r26", "r25", "r24", "r23", "r22", "r21", "r20", "r28", "r31", "memory"
+-#define ASM_EAGAIN "11" 
++#define ASM_EAGAIN "-11" 
+ 
+ #if __ASSUME_LWS_CAS
+ /* The only basic operation needed is compare and exchange.  */
+
+-- 
+  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
+ : :' :  Debian developer           | Electrical Engineer
+ `. `'   aurel32@debian.org         | aurelien@aurel32.net
+   `-    people.debian.org/~aurel32 | www.aurel32.net
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
