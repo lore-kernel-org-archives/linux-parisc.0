@@ -1,12 +1,18 @@
-From: "Joel Soete" <soete.joel@scarlet.be>
-Subject: [parisc-linux] merge 2.6.22-rc2 ftbfs
-Date: Fri, 25 May 2007 11:54:53 +0200
-Message-ID: <JILCVH$61D15139B4C794DE6FE7310CA621D93B__8723.69042267582$1416624365$gmane$org@scarlet.be>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: Re: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap
+	function
+Date: Sun, 20 May 2007 23:19:01 +0200
+Message-ID: <20070520211900.GA22493__2028.50371501899$1416624365$gmane$org@i386.aurel32.net>
+References: <119aab440705200822vcfe3dd2ud542783a4ac2c3c8@mail.gmail.com>
+	<200705201534.l4KFYknM023731@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-1
-To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+  charset=iso-8859-15
+Cc: libc-ports@sourceware.org,
+ parisc-linux@lists.parisc-linux.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200705201534.l4KFYknM023731@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,128 +23,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Kyle,
+On Sun, May 20, 2007 at 11:34:46AM -0400, John David Anglin wrote:
+> > > -#define ASM_EAGAIN "11"
+> > > +#define ASM_EAGAIN "-11"
+> 
+> If the check is wrong, I would change the compare instead of the
+> define.  Error numbers are normally defined as positive values.
+> 
 
-Just a short playtime (just need to have some fun from time to time) and =
-here
-are two small patch which help me build your merge of 2.6.22-rc2:
---- ./drivers/parisc/pdc_stable.c.Orig  2007-05-24 13:19:16.000000000 +00=
-00
-+++ ./drivers/parisc/pdc_stable.c       2007-05-25 07:03:29.000000000 +00=
-00
-@@ -1067,7 +1067,7 @@
-                        error =3D subsys_create_file(&stable_subsys, attr=
-);
+Then, what about this patch?
 
-        /* register the paths subsys as a subsystem of stable subsys */
--       kset_set_kset_s(&paths_subsys, stable_subsys);
-+       kobj_set_kset_s(&paths_subsys, stable_subsys);
-        if ((rc =3D subsystem_register(&paths_subsys)))
-                goto fail_subsysreg;
+--- ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h.orig	2007-05-20 23:15:37.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h	2007-05-20 23:15:59.000000000 +0200
+@@ -71,10 +71,10 @@
+ 	"copy	%5, %%r24			\n\t"			\
+ 	"ble	" LWS "(%%sr2, %%r0)		\n\t"			\
+ 	"ldi	" LWS_CAS ", %%r20		\n\t"			\
++        "sub	%%r0, %%r21, %%r21		\n\t"			\
+ 	"cmpib,=,n " ASM_EAGAIN ",%%r21,0b	\n\t"			\
+ 	"nop					\n\t"			\
+ 	"stw	%%r28, %0			\n\t"			\
+-        "sub	%%r0, %%r21, %%r21		\n\t"			\
+ 	"stw	%%r21, %1			\n\t"			\
+ 	: "=m" (lws_ret), "=m" (lws_errno), "=m" (*mem)			\
+         : "r" (mem), "r" (oldval), "r" (newval)				\
 
---- ./drivers/parisc/power.c.Orig       2007-05-25 07:04:03.000000000 +00=
-00
-+++ ./drivers/parisc/power.c    2007-05-25 07:04:13.000000000 +0000
-@@ -35,6 +35,7 @@
-  */
-
- #include <linux/module.h>
-+#include <linux/pm.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/notifier.h>
-
-That even boot on a b180 and a b2k (32bit) compiled with:
-# gcc -v
-Using built-in specs.
-Target: hppa-linux-gnu
-Configured with: ../src/configure -v
---enable-languages=3Dc,c++,fortran,objc,obj-c++,treelang --prefix=3D/usr
---enable-shared --with-system-zlib --libexecdir=3D/usr/lib
---without-included-gettext --enable-threads=3Dposix --enable-nls
---with-gxx-include-dir=3D/usr/include/c++/4.1.3 --program-suffix=3D-4.1
---enable-__cxa_atexit --enable-clocale=3Dgnu --enable-libstdcxx-debug
---enable-mpfr --disable-libssp --enable-checking=3Drelease hppa-linux-gnu=
-
-Thread model: posix
-gcc version 4.1.3 20070518 (prerelease) (Debian 4.1.2-8)
-
-but I am worry of some WARNING:
-## B180
-make -f /CAD/linux-2.6.22-rc2-20070524/scripts/Makefile.modpost vmlinux
-  scripts/mod/modpost   -o /CAD/linux-2.6-pa-b180/Module.symvers   
-arch/parisc/kernel/head.o   init/built-in.o  usr/built-in.o  arc
-h/parisc/mm/built-in.o  arch/parisc/kernel/built-in.o 
-arch/parisc/math-emu/built-in.o arch/parisc/kernel/init_task.o  kernel/bu=
-ilt-
-in.o  mm/built-in.o  fs/built-in.o  ipc/built-in.o  security/built-in.o 
-crypto/built-in.o  block/built-in.o  lib/lib.a  arch/parisc
-/lib/lib.a `gcc -print-libgcc-file-name`  lib/built-in.o 
-arch/parisc/lib/built-in.o `gcc -print-libgcc-file-name`  drivers/built-i=
-n
-.o  sound/built-in.o  net/built-in.o
-WARNING: arch/parisc/kernel/built-in.o(.text.alloc_pa_dev+0x150): Section=
-
-mismatch: reference to .init.text:parisc_hardware_descript
-ion (after 'alloc_pa_dev')
-WARNING: arch/parisc/kernel/built-in.o(.data.read_mostly+0xc4): Section
-mismatch: reference to .init.text:processor_probe (between '
-cpu_driver' and 'boot_cpu_data')
-WARNING: drivers/built-in.o(.text.eisa_probe+0x2c8): Section mismatch:
-reference to .init.text:eisa_root_register (after 'eisa_probe
-')
-WARNING: drivers/built-in.o(.text.sticore_pci_init+0xac): Section mismatc=
-h:
-reference to .init.text:sti_try_rom_generic (after 'stic
-ore_pci_init')
-WARNING: drivers/built-in.o(.text.sticore_pci_init+0xcc): Section mismatc=
-h:
-reference to .init.text:sticore_check_for_default_sti (a
-fter 'sticore_pci_init')
-WARNING: drivers/built-in.o(.text.parport_init_chip+0x70): Section mismat=
-ch:
-reference to .init.data:parport_count (after 'parport_i
-nit_chip')
-WARNING: drivers/built-in.o(.text.parport_init_chip+0x74): Section mismat=
-ch:
-reference to .init.data:parport_count (after 'parport_i
-nit_chip')
-WARNING: drivers/built-in.o(.text.parport_init_chip+0x7c): Section mismat=
-ch:
-reference to .init.data:parport_count (after 'parport_i
-nit_chip')
-rm -f .old_version
-
-## B2k
-make -f /CAD/linux-2.6.22-rc2-20070524/scripts/Makefile.modpost vmlinux
-  scripts/mod/modpost -m  -o /CAD/linux-2.6-pa-b2k32/Module.symvers   
-arch/parisc/kernel/head.o   init/built-in.o  usr/built-in.o
-arch/parisc/mm/built-in.o  arch/parisc/kernel/built-in.o 
-arch/parisc/math-emu/built-in.o arch/parisc/kernel/init_task.o  kernel/bu=
-i
-lt-in.o  mm/built-in.o  fs/built-in.o  ipc/built-in.o  security/built-in.=
-o 
-crypto/built-in.o  block/built-in.o  lib/lib.a  arch/par
-isc/lib/lib.a `gcc -print-libgcc-file-name`  lib/built-in.o 
-arch/parisc/lib/built-in.o `gcc -print-libgcc-file-name`  drivers/built
--in.o  sound/built-in.o  arch/parisc/oprofile/built-in.o  net/built-in.o
-WARNING: arch/parisc/kernel/built-in.o(.text.alloc_pa_dev+0x150): Section=
-
-mismatch: reference to .init.text:parisc_hardware_descript
-ion (after 'alloc_pa_dev')
-WARNING: arch/parisc/kernel/built-in.o(.data.read_mostly+0xc8): Section
-mismatch: reference to .init.text:processor_probe (between '
-cpu_driver' and 'boot_cpu_data')
-WARNING: drivers/built-in.o(.text.lba_fixup_bus+0x3c): Section mismatch:
-reference to .init.text:pci_read_bridge_bases (after 'lba_f
-ixup_bus')
-rm -f .old_version
-
-Sorry to haven't any more much time to do more.
-
-J.=0A---=0AFree iPod Nano 2GB with every Scarlet One Unlimited, 50GB, 6 M=
-bps, from EUR 39,95
-
+-- 
+  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
+ : :' :  Debian developer           | Electrical Engineer
+ `. `'   aurel32@debian.org         | aurelien@aurel32.net
+   `-    people.debian.org/~aurel32 | www.aurel32.net
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
