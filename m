@@ -1,12 +1,19 @@
-From: Thibaut VARENE <T-Bone@parisc-linux.org>
-Subject: [parisc-linux] Fw: Hardware-List
-Date: Thu, 24 May 2007 23:40:51 +0200
-Message-ID: <20070524234051.3b9bcbfd__46693.6209974394$1416624364$gmane$org@Alucard.r3z0>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap
+	function
+Date: Sun, 20 May 2007 11:34:46 -0400 (EDT)
+Message-ID: <200705201534.l4KFYknM023731__5265.95525811917$1416624364$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440705200822vcfe3dd2ud542783a4ac2c3c8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-To: parisc-linux@lists.parisc-linux.org
+Cc: libc-ports@sourceware.org,
+ parisc-linux@lists.parisc-linux.org,
+ aurelien@aurel32.net
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440705200822vcfe3dd2ud542783a4ac2c3c8@mail.gmail.com> from
+	"Carlos O'Donell" at May 20, 2007 11:22:18 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,31 +24,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-I thought this should be read by everyone ;)
+> > -#define ASM_EAGAIN "11"
+> > +#define ASM_EAGAIN "-11"
 
-Begin forwarded message:
+If the check is wrong, I would change the compare instead of the
+define.  Error numbers are normally defined as positive values.
 
-Date: Tue, 22 May 2007 01:10:35 -0500
-From: Matthew Simpson <ms@tx.rr.com>
-To: puffin@pateam.org
-Subject: Hardware-List
-
-
-I have successfully installed hppa etch on an HP c3750, in text mode 
-only on the graphics console (i.e. not the serial console). The HP 
-graphics card is not supported but I don't need graphics on this
-system. PA-RISC 875 mhz processor, 4G RAM.
-
-Installation went very well without any problem, in some cases easier 
-than on an Intel system. I was very impressed, good job! I am using
-ext3 and reiserfs file systems.
-
-Matt Simpson
-
-
+Dave
 -- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
