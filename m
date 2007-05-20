@@ -1,18 +1,14 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap
-Date: Mon, 21 May 2007 15:04:38 -0400 (EDT)
-Message-ID: <200705211904.l4LJ4dh5027982__44099.9417951845$1416624359$gmane$org@hiauly1.hia.nrc.ca>
-References: <119aab440705211130w461d0f4fn3bf2833f40f58e60@mail.gmail.com>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: [parisc-linux] [PATCH] Fix the atomic compare and swap function on
+	hppa
+Date: Sun, 20 May 2007 03:52:15 +0200
+Message-ID: <20070520015215.GA26949__14474.4328725666$1416624359$gmane$org@amd64.aurel32.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: libc-ports@sourceware.org,
- aurelien@aurel32.net,
- parisc-linux@lists.parisc-linux.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+  charset=iso-8859-15
+Cc: parisc-linux@lists.parisc-linux.org
+To: libc-ports@sourceware.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440705211130w461d0f4fn3bf2833f40f58e60@mail.gmail.com>
-	from "Carlos O'Donell" at May 21, 2007 02:30:34 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,22 +19,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > Yah, this just occurred to me.  It would be nice if the code could
-> > use EAGAIN from errno.h but I can see that that's a bit tricky.
-> > Possibly, a macro argument would work.
-> 
-> I don't want to be at the *whim* of users who might redefine EAGAIN. I
-> think the value should be fixed and immutable.
+Hi,
 
-Users who redefine names reserved by POSIX should be lined up and ...
+I have finally tracked down the "error while loading shared libraries: 
+internal error: symidx out of range of fptr table" problem. 
 
-You are quite safe in fixing the value as any change in the error
-number for EAGAIN would break binaries that check for this code.
+It comes from a bug in atomic.h, the errno number is compared with the
+wrong value. The kernel returns -EAGAIN (ie -11), but the value in the
+cmpib instruction is EAGAIN (11).
 
-Dave
+The patch below fixes the problem.
+
+Bye,
+Aurelien
+
+
+2007-05-20  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/unix/sysv/linux/hppa/bits/atomic.h: check for
+	-EAGAIN instead of EAGAIN.
+
+--- ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h.orig	2007-05-20 03:28:39.000000000 +0200
++++ ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h	2007-05-20 03:24:41.000000000 +0200
+@@ -56,7 +56,7 @@
+ #define LWS_CAS "0"
+ /* Note r31 is the link register */
+ #define LWS_CLOBBER "r1", "r26", "r25", "r24", "r23", "r22", "r21", "r20", "r28", "r31", "memory"
+-#define ASM_EAGAIN "-11" 
++#define ASM_EAGAIN "11" 
+ 
+ #if __ASSUME_LWS_CAS
+ /* The only basic operation needed is compare and exchange.  */
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
+ : :' :  Debian developer           | Electrical Engineer
+ `. `'   aurel32@debian.org         | aurelien@aurel32.net
+   `-    people.debian.org/~aurel32 | www.aurel32.net
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
