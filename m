@@ -1,16 +1,18 @@
-From: Aurelien Jarno <aurelien@aurel32.net>
-Subject: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap function
-	on hppa
-Date: Sun, 20 May 2007 03:56:53 +0200
-Message-ID: <20070520015653.GA22224__24390.3088187382$1416624362$gmane$org@amd64.aurel32.net>
-References: <20070520015215.GA26949@amd64.aurel32.net>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: [parisc-linux] Re: Reproducing glibc testsuite failures on
+	hppa-linux.
+Date: Sat, 19 May 2007 23:36:37 -0400
+Message-ID: <5b2e36650705192036o45d1a939u7e49bc56d8d25ddf__43350.9351140403$1416624363$gmane$org@mail.gmail.com>
+References: <119aab440705171918n15051b70y2eef1a59229510b8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-15
-Cc: parisc-linux@lists.parisc-linux.org
-To: libc-ports@sourceware.org
+  charset=UTF-8;
+  format=flowed
+Cc: libc-ports@sourceware.org,
+ parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "Carlos O'Donell" <carlos@systemhalted.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070520015215.GA26949@amd64.aurel32.net>
+In-Reply-To: <119aab440705171918n15051b70y2eef1a59229510b8@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,46 +23,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, May 20, 2007 at 03:52:15AM +0200, Aurelien Jarno wrote:
-> Hi,
-> 
-> I have finally tracked down the "error while loading shared libraries: 
-> internal error: symidx out of range of fptr table" problem. 
-> 
-> It comes from a bug in atomic.h, the errno number is compared with the
-> wrong value. The kernel returns -EAGAIN (ie -11), but the value in the
-> cmpib instruction is EAGAIN (11).
-> 
-> The patch below fixes the problem.
-> 
+On 17/05/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
+> Thanks for trying to reproduce the set of glibc failures I am seeing
+> on hppa-linux. Attached are two patches which represent the entire set
+> of local hacks I have applied to glibc and ports.
+>
+> I've CC'd libc-ports for posterity. Perhaps someone will have pity and
+> tell me why I need the as-needed changes in the nptl makefiles (I have
+> yet to deduce if this is gcc or glibc's fault).
 
-Oops this patch is reversed.
+Heya Carlos!  Thanks for this.  This is a quick heads up for the
+experiment.  Using the Ubuntu glibc package, compiling with gcc-4.2
+instead of gcc-4.1 removes the following failures:
 
-Please find a new version below.
+test-float
+tst-cond17
+tst-cond18
+tst-robustpi8
+tst-fork1
 
+Some tests that use C99 initialisers no longer compiler, but that's
+expected with glibc-2.5
 
-2007-05-20  Aurelien Jarno  <aurelien@aurel32.net>
-
-	* sysdeps/unix/sysv/linux/hppa/bits/atomic.h: check for
-	-EAGAIN instead of EAGAIN.
-
---- ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h.orig	2007-05-20 03:28:39.000000000 +0200
-+++ ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h	2007-05-20 03:24:41.000000000 +0200
-@@ -56,7 +56,7 @@
- #define LWS_CAS "0"
- /* Note r31 is the link register */
- #define LWS_CLOBBER "r1", "r26", "r25", "r24", "r23", "r22", "r21", "r20", "r28", "r31", "memory"
--#define ASM_EAGAIN "11" 
-+#define ASM_EAGAIN "-11" 
- 
- #if __ASSUME_LWS_CAS
- /* The only basic operation needed is compare and exchange.  */
+I'll keep you posted as I converge. =)
 
 -- 
-  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
- : :' :  Debian developer           | Electrical Engineer
- `. `'   aurel32@debian.org         | aurelien@aurel32.net
-   `-    people.debian.org/~aurel32 | www.aurel32.net
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
