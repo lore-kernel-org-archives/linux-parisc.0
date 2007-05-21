@@ -1,17 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap
-Date: Mon, 21 May 2007 12:19:19 -0400 (EDT)
-Message-ID: <200705211619.l4LGJKaT004977__34055.7099007585$1416624358$gmane$org@hiauly1.hia.nrc.ca>
-References: <20070520211900.GA22493@i386.aurel32.net>
+Subject: Re: [parisc-linux] More testsuite info
+Date: Mon, 21 May 2007 12:43:55 -0400 (EDT)
+Message-ID: <200705211643.l4LGhtvv008432__2380.68155381388$1416624358$gmane$org@hiauly1.hia.nrc.ca>
+References: <5b2e36650705202338wa690426i956e716cebbd593d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: libc-ports@sourceware.org,
+Cc: lamont@mmjgroup.com,
  parisc-linux@lists.parisc-linux.org
-To: aurelien@aurel32.net (Aurelien Jarno)
+To: jbailey@raspberryginger.com (Jeff Bailey)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070520211900.GA22493@i386.aurel32.net> from "Aurelien Jarno"
-	at May 20, 2007 11:19:01 pm
+In-Reply-To: <5b2e36650705202338wa690426i956e716cebbd593d@mail.gmail.com> from
+	"Jeff Bailey" at May 21, 2007 02:38:32 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,24 +22,46 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Then, what about this patch?
+> Rebuilding ubuntu gcc-4.2 with the ubuntu glibc-2.5 that was build
+> with ubuntu gcc-4.2, I have three fewer failures in the gcc testsuite:
 > 
-> --- ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h.orig	2007-05-20 23:15:37.000000000 +0200
-> +++ ports/sysdeps/unix/sysv/linux/hppa/bits/atomic.h	2007-05-20 23:15:59.000000000 +0200
-> @@ -71,10 +71,10 @@
->  	"copy	%5, %%r24			\n\t"			\
->  	"ble	" LWS "(%%sr2, %%r0)		\n\t"			\
->  	"ldi	" LWS_CAS ", %%r20		\n\t"			\
-> +        "sub	%%r0, %%r21, %%r21		\n\t"			\
->  	"cmpib,=,n " ASM_EAGAIN ",%%r21,0b	\n\t"			\
+> FAIL: gcc.c-torture/compile/20001226-1.c  -O3 -fomit-frame-pointer  (test for ex
+> cess errors)
+> WARNING: program timed out.
+> FAIL: gcc.c-torture/compile/20001226-1.c  -O3 -g  (test for excess errors)
+> WARNING: program timed out.
+> FAIL: gcc.c-torture/compile/20001226-1.c  -Os  (test for excess errors)
 
-Hmmm, I think the original code was better since it keeps the sub
-instruction outside the loop.  The cmpib instruction could be modified
-to negate the ASM_EAGAIN.
+This is a known issue and a GCC PR.  Essentially, GCC has gotten
+slower over the years and this test fails on slow machines.  One
+factor is the checking that's done prior to release.  You can disable
+this with the configure option "--disable-checking".
 
-On the otherhand, I'm now thinking that macros like LWS, LWS_CAS and
-ASM_EAGAIN shouldn't be used as they are names that could be used in
-user code.
+> two fewer failures in libmudflap:
+> FAIL: libmudflap.cth/pass39-frag.c (-O2) (rerun 16) execution test
+> FAIL: libmudflap.cth/pass39-frag.c (-O2) (rerun 16) output pattern test
+
+These were probably timeouts.  I don't see any libmudflap fails with
+gcc-4.2 and linuxthreads.  If you have failures that aren't timeouts,
+they need investigation.
+
+> one fewer failure in libstdc++:
+> FAIL: thread/pthread5.cc execution test
+> 
+> but four additional ones:
+> WARNING: program timed out.
+> FAIL: thread/pthread1.cc execution test
+> WARNING: program timed out.
+> FAIL: thread/pthread3.cc execution test
+> WARNING: program timed out.
+> FAIL: tr1/2_general_utilities/memory/shared_ptr/thread/default_weaktoshared.cc e
+> xecution test
+> FAIL: tr1/2_general_utilities/memory/shared_ptr/thread/mutex_weaktoshared.cc exe
+> cution test
+
+These don't fail with linuxthreads.  If mutex_weaktoshared didn't timeout,
+then there's an implementation problem with threads (e.g., bug reported
+by Aurelien).
 
 Dave
 -- 
