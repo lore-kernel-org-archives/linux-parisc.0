@@ -1,22 +1,13 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap
-	function on hppa
-Date: Tue, 22 May 2007 11:37:23 -0400
-Message-ID: <20070522153723.GC16717__1622.58685236356$1416624361$gmane$org@fattire.cabal.ca>
-References: <20070520015215.GA26949@amd64.aurel32.net>
-	<20070520015653.GA22224@amd64.aurel32.net>
-	<119aab440705200822vcfe3dd2ud542783a4ac2c3c8@mail.gmail.com>
-	<4652C3EF.3020905@aurel32.net>
-	<119aab440705220705s13c5fa96yd27857e22afbd2bd@mail.gmail.com>
-	<20070522151930.GA16377@farad.aurel32.net>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: [parisc-linux] [PATCH] parisc: Disable LWS debugging
+Date: Tue, 22 May 2007 17:38:26 +0200
+Message-ID: <20070522153825.GA16404__31260.7159991332$1416624361$gmane$org@farad.aurel32.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: libc-ports@sourceware.org,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Aurelien Jarno <aurelien@aurel32.net>
+  charset=iso-8859-15
+Cc: parisc-linux@lists.parisc-linux.org
+To: linux-kernel@vger.kernel.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070522151930.GA16377@farad.aurel32.net>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,38 +18,62 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, May 22, 2007 at 05:19:30PM +0200, Aurelien Jarno wrote:
-> As discussed on IRC, there is actually a bug in the kernel:
-> 
->   #define ENABLE_LWS_DEBUG 0
->   ...
->   # ifdef ENABLE_LWS_DEBUG
-> 
+The LWS debugging code on parisc is wrongly enabled due to a bug in the
+use of the preprocessor directives. This debugging code is not thread 
+safe and causes problems with a recent glibc on SMP kernels.
 
-Patch to switch #ifdef to #if $x == 1 or the #define to #undef welcome.
+Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+Cc: parisc-linux@lists.parisc-linux.org
+---
+ syscall.S |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> ENABLE_LWS_DEBUG is defined as 0, so the debug code is enabled.
-> 
-> Please find below a patch which fixes the -EAGAIN problem by harcoding
-> the value directly into the code. It also adds a workaround for unfixed
-> kernels which return -EDEADLOCK.
-> 
-> +/* The only basic operation needed is compare and exchange.
-> +   -11 corresponds to -EAGAIN, and -45 to -EDEADLOCK. The constants
-> +   must stay the same to avoid breaking backwards compatibility.
-> +
-> +   The check for -EDEADLOCK workarounds a kernel bug (debugging code
-> +   enabled by default). */
+-- 
+  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
+ : :' :  Debian developer           | Electrical Engineer
+ `. `'   aurel32@debian.org         | aurelien@aurel32.net
+   `-    people.debian.org/~aurel32 | www.aurel32.net
 
-This is stupid. Why not just use the symbol and then #undef it
-immediately afterwards? For extra paranoia name it LWS_RET_EAGAIN or
-something.
 
-Putting magic numbers in the code is irritating and makes it more
-difficult to read it on a glance.
-
-Regards,
-	Kyle
+diff -u a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -501,7 +501,7 @@
+ 	shlw	%r20, 4, %r20
+ 	add	%r20, %r28, %r20
+ 
+-# ifdef ENABLE_LWS_DEBUG
++# if ENABLE_LWS_DEBUG
+ 	/*	
+ 		DEBUG, check for deadlock! 
+ 		If the thread register values are the same
+@@ -550,7 +550,7 @@
+ 		perspective
+ 	*/
+ cas_action:
+-#if defined CONFIG_SMP && defined ENABLE_LWS_DEBUG
++#if defined CONFIG_SMP && ENABLE_LWS_DEBUG
+ 	/* DEBUG */
+ 	mfctl	%cr27, %r1
+ 	stw	%r1, 4(%sr2,%r20)
+@@ -562,7 +562,7 @@
+ #ifdef CONFIG_SMP
+ 	/* Free lock */
+ 	stw	%r20, 0(%sr2,%r20)
+-# ifdef ENABLE_LWS_DEBUG
++# if ENABLE_LWS_DEBUG
+ 	/* Clear thread register indicator */
+ 	stw	%r0, 4(%sr2,%r20)
+ # endif
+@@ -576,7 +576,7 @@
+ #ifdef CONFIG_SMP
+ 	/* Free lock */
+ 	stw	%r20, 0(%sr2,%r20)
+-# ifdef ENABLE_LWS_DEBUG
++# if ENABLE_LWS_DEBUG
+ 	stw	%r0, 4(%sr2,%r20)
+ # endif
+ #endif
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
