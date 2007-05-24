@@ -1,19 +1,16 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: [PATCH] Fix the atomic compare and swap
-	function
-Date: Sun, 20 May 2007 11:34:46 -0400 (EDT)
-Message-ID: <200705201534.l4KFYknM023731__5265.95525811917$1416624364$gmane$org@hiauly1.hia.nrc.ca>
-References: <119aab440705200822vcfe3dd2ud542783a4ac2c3c8@mail.gmail.com>
+Subject: Re: [parisc-linux] Fw: Hardware-List
+Date: Thu, 24 May 2007 19:06:32 -0400 (EDT)
+Message-ID: <200705242306.l4ON6Xas019531__39609.9949408837$1416624364$gmane$org@hiauly1.hia.nrc.ca>
+References: <20070524234051.3b9bcbfd@Alucard.r3z0>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: libc-ports@sourceware.org,
- parisc-linux@lists.parisc-linux.org,
- aurelien@aurel32.net
-To: carlos@systemhalted.org (Carlos O'Donell)
+Cc: parisc-linux@lists.parisc-linux.org
+To: T-Bone@parisc-linux.org (Thibaut VARENE)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440705200822vcfe3dd2ud542783a4ac2c3c8@mail.gmail.com> from
-	"Carlos O'Donell" at May 20, 2007 11:22:18 am
+In-Reply-To: <20070524234051.3b9bcbfd@Alucard.r3z0> from "Thibaut VARENE" at
+	May 24, 2007 11:40:51 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,11 +21,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > -#define ASM_EAGAIN "11"
-> > +#define ASM_EAGAIN "-11"
+> I have successfully installed hppa etch on an HP c3750, in text mode 
+> only on the graphics console (i.e. not the serial console). The HP 
+> graphics card is not supported but I don't need graphics on this
+> system. PA-RISC 875 mhz processor, 4G RAM.
 
-If the check is wrong, I would change the compare instead of the
-define.  Error numbers are normally defined as positive values.
+For those that do want graphics, I had a problem migrating to
+the xorg server.  Keyboard input didn't work because the server
+was looking in the wrong place for XKeysymDB.
+
+A fix is here:
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=422430
 
 Dave
 -- 
