@@ -1,18 +1,21 @@
-From: "Jeff Bailey" <jbailey@raspberryginger.com>
-Subject: [parisc-linux] Re: Reproducing glibc testsuite failures on
-	hppa-linux.
-Date: Sat, 19 May 2007 23:36:37 -0400
-Message-ID: <5b2e36650705192036o45d1a939u7e49bc56d8d25ddf__43350.9351140403$1416624363$gmane$org@mail.gmail.com>
-References: <119aab440705171918n15051b70y2eef1a59229510b8@mail.gmail.com>
+From: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Subject: [parisc-linux] RE: [patch] removes MAX_ARG_PAGES
+Date: Thu, 24 May 2007 17:20:19 +0200
+Message-ID: <1180020019.7019.133.camel__138.56637892804$1416624363$gmane$org@twins>
+References: <617E1C2C70743745A92448908E030B2A0184DF88@scsmsx411.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: libc-ports@sourceware.org,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: text/plain
+Cc: linux-arch@vger.kernel.org,
+ Andrew Morton <akpm@osdl.org>,
+ linux-kernel@vger.kernel.org,
+ Andi Kleen <ak@suse.de>,
+ linux-mm@kvack.org,
+ Ollie Wild <aaw@google.com>,
+ Ingo Molnar <mingo@elte.hu>,
+ parisc-linux@lists.parisc-linux.org
+To: "Luck, Tony" <tony.luck@intel.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440705171918n15051b70y2eef1a59229510b8@mail.gmail.com>
+In-Reply-To: <617E1C2C70743745A92448908E030B2A0184DF88@scsmsx411.amr.corp.intel.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,33 +26,67 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 17/05/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
-> Thanks for trying to reproduce the set of glibc failures I am seeing
-> on hppa-linux. Attached are two patches which represent the entire set
-> of local hacks I have applied to glibc and ports.
->
-> I've CC'd libc-ports for posterity. Perhaps someone will have pity and
-> tell me why I need the as-needed changes in the nptl makefiles (I have
-> yet to deduce if this is gcc or glibc's fault).
+On Tue, 2007-05-22 at 16:49 -0700, Luck, Tony wrote:
+> > In order to solve this, I added a STACK_TOP_MAX macro for each arch and
+> > use that. This made IA64 boot properly.
+> 
+> Yes.  Patches apply to 2.6.21 cleanly, build cleanly and boot for me too.
+> I can even run:
+> 
+> 	$ ls -lrt `find /usr/share -type f -print`
+> 
+> on the new kernel (thats 48020 files for a total of 2.3MB of args).
+> 
+> > The second patch makes the compat stuff compile, untested though, as I
+> > have no idea how that works on ia64.
+> 
+> Not so good on this part.  Running an ia32 binary on this patched kernel
+> just hung my system :-(
 
-Heya Carlos!  Thanks for this.  This is a quick heads up for the
-experiment.  Using the Ubuntu glibc package, compiling with gcc-4.2
-instead of gcc-4.1 removes the following failures:
+I just tried this on an Altix from the test lab, and ia32 bash just
+started.
 
-test-float
-tst-cond17
-tst-cond18
-tst-robustpi8
-tst-fork1
+native 64 bit gave this:
 
-Some tests that use C99 initialisers no longer compiler, but that's
-expected with glibc-2.5
+$ ls `find / -xdev -type f` | wc
+      1   89847 4200288
 
-I'll keep you posted as I converge. =)
+but the 32 bit bash kept complaining about his arg list being too long.
+This might be a 32->64 issue (/bin/ls is 64 bit after all - and I
+couldn't find a 32 bit ls in the compat packages), but I really don't
+know. Will look into this.
 
--- 
-Jeff Bailey - http://www.raspberryginger.com/jbailey/
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+The difference I had with what I posted last is below; these changes
+were just me cleaning up. (and fixing one bug on STACK_GROWS_UP
+introduced by the previous patches - but AFAIK that is not relevant to
+ia64)
+
+Signed-off-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
+---
+ fs/exec.c |   15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+Index: linux-2.6-2/fs/exec.c
+===================================================================
+--- linux-2.6-2.orig/fs/exec.c	2007-05-24 09:15:54.000000000 +0200
++++ linux-2.6-2/fs/exec.c	2007-05-24 09:41:49.000000000 +0200
+@@ -532,26 +532,23 @@ int setup_arg_pages(struct linux_binprm 
+ 	stack_base = current->signal->rlim[RLIMIT_STACK].rlim_max;
+ 	if (stack_base > (1 << 30))
+ 		stack_base = 1 << 30;
+-	stack_base = PAGE_ALIGN(stack_top - stack_base);
+ 
+ 	/* Make sure we didn't let the argument array grow too large. */
+ 	if (vma->vm_end - vma->vm_start > stack_base)
+ 		return -ENOMEM;
+ 
++	stack_base = PAGE_ALIGN(stack_top - stack_base);
++
+ 	stack_shift = stack_base - vma->vm_start;
+ 	mm->arg_start = bprm->p + stack_shift;
+ 	bprm->p = vma->vm_end + stack_shift;
+ #else
+ 	BUG_ON(stack_top & ~PAGE_MASK);
+ 
+-	stack_base = arch_align_stack(stack_top - mm->stack_vm*PAGE_SIZE);
+-	stack_base = PAGE_ALIGN(stack_base);
