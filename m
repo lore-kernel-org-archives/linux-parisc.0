@@ -1,17 +1,17 @@
 From: Helge Deller <deller@gmx.de>
 Subject: Re: [parisc-linux] Status of 2.6.22-rc3 ?
-Date: Sun, 27 May 2007 22:41:46 +0200
-Message-ID: <200705272241.46503.deller__26411.1461969607$1416624373$gmane$org@gmx.de>
+Date: Sun, 27 May 2007 22:58:44 +0200
+Message-ID: <200705272258.44572.deller__8159.56732626564$1416624374$gmane$org@gmx.de>
 References: <200705271438.57394.deller@gmx.de>
-	<200705272217.33774.deller@gmx.de>
 	<20070527201829.GF28455@fattire.cabal.ca>
+	<200705272241.46503.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070527201829.GF28455@fattire.cabal.ca>
+In-Reply-To: <200705272241.46503.deller@gmx.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,62 +22,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sunday 27 May 2007, you wrote:
-> On Sun, May 27, 2007 at 10:17:33PM +0200, Helge Deller wrote:
-> > On Sunday 27 May 2007, Kyle McMartin wrote:
-> > > On Sun, May 27, 2007 at 02:38:57PM +0200, Helge Deller wrote:
-> > > > Synthesizing the initial hotplug events...done.
-> > > > Waiting for /dev to be fully populated...<2>Backtrace:
-> > > >  [<1011326c>] unwind_frame_regs+0x48/0x220
-> > > >  [<10113578>] unwind_once+0x10/0x48
-> > > >  [<1011284c>] get_wchan+0x2c/0x68
-> > > >  [<101b9308>] do_task_stat+0x24c/0x500
-> > > >  [<101b4f34>] proc_info_read+0x88/0x108
-> > > >  [<10179db0>] vfs_read+0x8c/0x138
-> > > >  [<1017a10c>] sys_read+0x5c/0xa4
-> > > >  [<1010c080>] syscall_exit+0x0/0x28
-> > > > BUG: spinlock recursion on CPU#0, udevd/560
-> > > >  lock: 1056e08c, .magic: dead4ead, .owner: udevd/560, .owner_cpu: 0
-> > > > Backtrace:
-> > > >  [<1026c5d0>] _raw_spin_lock+0x50/0xa4
-> > > >  [<101076cc>] parisc_terminate+0x58/0xe8
-> > > >  [<10107cbc>] handle_interruption+0x560/0x58c
-> > > >  [<1010b080>] intr_check_sig+0x0/0x34
-> > > > BUG: spinlock lockup on CPU#0, udevd/560, 1056e08c
-> > > 
-> > > What compiler version did you use to build?
-> > 
-> > hppa-linux-gcc (GCC) 3.3.4 (Debian 1:3.3.4-11)
-> > (cross-compiling from i386 -> parisc 32bit)
-> > 
+On Sunday 27 May 2007, Helge Deller wrote:
+> > Hmm, is spinlock debugging enabled? Does it make a difference if you
+> > turn that off?
 > 
-> Ok. I'll try to get a machine plugged in this week and take a look.
+> Yes, they were enabled, but turning them off gave the same problem:
 > 
-> Hmm, is spinlock debugging enabled? Does it make a difference if you
-> turn that off?
+> Waiting for /dev to be fully populated...
+> Backtrace:
+>  [<101124fc>] unwind_frame_regs+0x48/0x220
+>  [<10112808>] unwind_once+0x10/0x48
+>  [<10111b34>] get_wchan+0x2c/0x68
+>  [<101aed2c>] do_task_stat+0x244/0x4f8
+>  [<101aacb8>] proc_info_read+0x88/0x108
+>  [<10173d70>] vfs_read+0x8c/0x138
+>  [<101740cc>] sys_read+0x5c/0xa4
+>  [<1010c080>] syscall_exit+0x0/0x28
 
-Yes, they were enabled, but turning them off gave the same problem:
+The trivial hack below fixed the crash....
 
-Waiting for /dev to be fully populated...
-Backtrace:
- [<101124fc>] unwind_frame_regs+0x48/0x220
- [<10112808>] unwind_once+0x10/0x48
- [<10111b34>] get_wchan+0x2c/0x68
- [<101aed2c>] do_task_stat+0x244/0x4f8
- [<101aacb8>] proc_info_read+0x88/0x108
- [<10173d70>] vfs_read+0x8c/0x138
- [<101740cc>] sys_read+0x5c/0xa4
- [<1010c080>] syscall_exit+0x0/0x28
-Backtrace:
- [<101124fc>] unwind_frame_regs+0x48/0x220
- [<10112808>] unwind_once+0x10/0x48
- [<10106ea8>] do_show_stack+0x28/0xac
- [<101074f8>] parisc_terminate+0x84/0xc8
- [<10107a9c>] handle_interruption+0x560/0x58c
- [<1010b080>] intr_check_sig+0x0/0x34
-(...the last backtrace continues forever...)
+root@c3000:~# uname -a
+Linux c3000 2.6.22-rc3 #39 Sun May 27 22:53:32 CEST 2007 parisc GNU/Linux
 
 Helge
+
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 0dd3847..f9f2b39 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -385,6 +385,8 @@ get_wchan(struct task_struct *p)
+         * These bracket the sleeping functions..
+         */
+
++return 0; /* XXX */
++
+        unwind_frame_init_from_blocked_task(&info, p);
+        do {
+                if (unwind_once(&info) < 0)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
