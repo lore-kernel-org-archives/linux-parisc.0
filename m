@@ -1,50 +1,42 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Status of 2.6.22-rc3 ?
-Date: Sun, 27 May 2007 16:23:47 -0600
-Message-ID: <20070527222347.GA711__9288.49297711185$1416624375$gmane$org@colo.lackof.org>
-References: <200705271438.57394.deller@gmx.de> <20070527201829.GF28455@fattire.cabal.ca> <200705272241.46503.deller@gmx.de> <200705272258.44572.deller@gmx.de> <20070527211143.GG28455@fattire.cabal.ca>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] [PATCH] [PARISC] fix section mismatch in smp.c
+Date: Mon, 28 May 2007 00:26:02 +0200
+Message-ID: <200705280026.03015.deller__8616.90736278451$1416624375$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
- parisc-linux@lists.parisc-linux.org
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org
 To: Kyle McMartin <kyle@mcmartin.ca>
-Return-Path: <grundler@lackof.org>
-In-Reply-To: <20070527211143.GG28455@fattire.cabal.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, May 27, 2007 at 05:11:43PM -0400, Kyle McMartin wrote:
-> On Sun, May 27, 2007 at 10:58:44PM +0200, Helge Deller wrote:
-> > diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-> > index 0dd3847..f9f2b39 100644
-> > --- a/arch/parisc/kernel/process.c
-> > +++ b/arch/parisc/kernel/process.c
-> > @@ -385,6 +385,8 @@ get_wchan(struct task_struct *p)
-> >          * These bracket the sleeping functions..
-> >          */
-> > 
-> > +return 0; /* XXX */
-> > +
-> 
-> 
-> Try without CONFIG_KALLSYMS, I think somehow Alexey's patch to simply
-> kallsyms may have broken things for us.
-> 
-> ffb45122766db220d0bf3d01848d575fbbcb6430 is the commit id.
+[PARISC] fix section mismatch for smp_boot_one_cpu:
+WARNING: arch/parisc/kernel/built-in.o(.text.__cpu_up+0x20): Section mismatch: reference to .init.text:smp_boot_one_cpu (after '__cpu_up')
 
-I don't see anything wrong with this patch.
-It all looks pretty obvious to me.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-I'm more inclined to believe something else changed in kallsyms_lookup()
-code path.
-
-thanks,
-grant
-
-> 
-> Cheers,
-> 	Kyle
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index 4bf7cd1..04c7e1d 100644
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -461,7 +461,7 @@ void __init smp_callin(void)
+ /*
+  * Bring one cpu online.
+  */
+-int __init smp_boot_one_cpu(int cpuid)
++int __cpuinit smp_boot_one_cpu(int cpuid)
+ {
+ 	struct task_struct *idle;
+ 	long timeout;
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
