@@ -1,22 +1,13 @@
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: [parisc-linux] RE: [patch] removes MAX_ARG_PAGES
-Date: Fri, 25 May 2007 11:48:09 -0700
-Message-ID: <617E1C2C70743745A92448908E030B2A018B17DE__31776.6883563765$1416624365$gmane$org@scsmsx411.amr.corp.intel.com>
-References: <1180020019.7019.133.camel@twins>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] [PATCH] [PARISC] fix lasi_82596 build
+Date: Sun, 27 May 2007 14:27:23 +0200
+Message-ID: <200705271427.23620.deller__4709.21444143659$1416624366$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: linux-arch@vger.kernel.org,
- Andrew Morton <akpm@osdl.org>,
- linux-kernel@vger.kernel.org,
- Andi Kleen <ak@suse.de>,
- linux-mm@kvack.org,
- Ollie Wild <aaw@google.com>,
- Ingo Molnar <mingo@elte.hu>,
- parisc-linux@lists.parisc-linux.org
-To: "Peter Zijlstra" <a.p.zijlstra@chello.nl>
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <1180020019.7019.133.camel@twins>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,35 +18,27 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I just tried this on an Altix from the test lab, and ia32 bash just
-> started.
+Hi Kyle,
 
-I don't have any native x86 binaries on my Madison-based testbox, so my
-test case was to compile a simple program that counted total length of
-argument strings on an x86 box, and copy it to my ia64 box.  So that I
-wouldn't have to copy over a bunch of libraries too, I compiled it
-with -static.  This is the test case that "hung" my system (re-running
-it today from /dev/tty1 instead of from an xterm, I see that it actually
-oopsed in rb_next()).  I wasn't even running with a long arglist.  Just
-"*" for my home directory (19 files/directories =3D ~170 bytes).
+this patch allows the current kernel to build the lasi_82596 driver.
 
--Tony
+Please apply, Helge
 
-My test program.  Compile on ia32 box with "cc -static -o args args.c"
+Signed-off-by: Helge Deller <deller@gmx.de>
 
----- begin args.c ----
-main(int argc, char **argv)
-{
-	int n;
 
-	printf("argc =3D %d\n", argc);
-
-	n =3D 0;
-	while (--argc)
-		n +=3D strlen(*++argv);
-
-	printf("bytes =3D %d\n", n);
-}
+diff --git a/drivers/net/lasi_82596.c b/drivers/net/lasi_82596.c
+index 6b49fc4..741780e 100644
+--- a/drivers/net/lasi_82596.c
++++ b/drivers/net/lasi_82596.c
+@@ -83,6 +83,7 @@
+ #include <linux/init.h>
+ #include <linux/types.h>
+ #include <linux/bitops.h>
++#include <linux/dma-mapping.h>
+ 
+ #include <asm/io.h>
+ #include <asm/pgtable.h>
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
