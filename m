@@ -1,19 +1,40 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] [PARISC] Wire up utimensat/signalfd/timerfd/eventfd syscalls
-Date: Sun, 27 May 2007 15:19:11 -0400
-Message-ID: <20070527191911.GH25860__12725.260135676$1416624371$gmane$org@fattire.cabal.ca>
-References: <200705272115.49834.deller@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] [PATCH] [PARISC] Drop -traditional for
+	arch/parisc/kernel
+Date: Sun, 27 May 2007 21:49:21 +0200
+Message-ID: <200705272149.21634.deller__14588.326533749$1416624371$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="us-ascii"
 Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <kyle@fattire.cabal.ca>
-In-Reply-To: <200705272115.49834.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, May 27, 2007 at 09:15:49PM +0200, Helge Deller wrote:
-> [PARISC] Wire up utimensat/signalfd/timerfd/eventfd syscalls and mark select/fadvise64/utimes to be ignored by checksyscalls.sh
-> 
+[PARISC] Drop -traditional for arch/parisc/kernel
 
-applied, thanks
+Follows i386 & x86_64. Clean up whitespace indenting as well.
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
+index 27827bc..cdd0aa8 100644
+--- a/arch/parisc/kernel/Makefile
++++ b/arch/parisc/kernel/Makefile
+@@ -2,12 +2,9 @@
+ # Makefile for arch/parisc/kernel
+ #
+ 
+-extra-y			:= init_task.o head.o vmlinux.lds
++extra-y		:= init_task.o head.o vmlinux.lds
+ 
+-AFLAGS_entry.o	:= -traditional
+-AFLAGS_pacache.o := -traditional
