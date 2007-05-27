@@ -1,27 +1,57 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH] [PARISC] fix section mismatch in parisc/kernel
-Date: Sun, 27 May 2007 13:37:34 -0400
-Message-ID: <20070527173734.GE25860__3653.15752937949$1416624369$gmane$org@fattire.cabal.ca>
-References: <200705271930.36593.deller@gmx.de>
+From: Helge Deller <deller@gmx.de>
+Subject: [parisc-linux] [PATCH] [PARISC] fix section mismatch in parisc eisa
+	driver
+Date: Sun, 27 May 2007 19:57:11 +0200
+Message-ID: <200705271957.11716.deller__4512.20432664758$1416624369$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset="us-ascii"
 Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <kyle@fattire.cabal.ca>
-In-Reply-To: <200705271930.36593.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, May 27, 2007 at 07:30:36PM +0200, Helge Deller wrote:
-> Hi Kyle,
-> 
-> this patch fixes two section mismatches in parisc/kernel:
-> WARNING: arch/parisc/kernel/built-in.o(.data.read_mostly+0xd8): Section mismatch: reference to .init.text:processor_probe (between 'cpu_driver' and 'boot_cpu_data')
-> WARNING: arch/parisc/kernel/built-in.o(.text.alloc_pa_dev+0x140): Section mismatch: reference to .init.text:parisc_hardware_description (after 'alloc_pa_dev')
-> 
-> Additionally, mark some tables as constants.
-> 
-> Please apply, Helge
-> 
+Hi Kyle,
 
-applied, thanks
+this patch fixes the following section mismatch (EISA cards should be hotplug aware, but the EISA bus itself shouldn't):
+WARNING: drivers/built-in.o(.text.eisa_probe+0x220): Section mismatch: reference to .init.text:eisa_root_register (after 'eisa_probe')
+
+Please apply, 
+Helge
+
+    Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/drivers/parisc/eisa.c b/drivers/parisc/eisa.c
+index 309076b..771cef5 100644
+--- a/drivers/parisc/eisa.c
++++ b/drivers/parisc/eisa.c
+@@ -307,7 +307,7 @@ static void init_eisa_pic(void)
+ 
+ #define is_mongoose(dev) (dev->id.sversion == 0x00076)
+ 
+-static int __devinit eisa_probe(struct parisc_device *dev)
++static int __init eisa_probe(struct parisc_device *dev)
+ {
+ 	int i, result;
+ 
+@@ -387,7 +387,7 @@ static int __devinit eisa_probe(struct p
+ 	return 0;
+ }
+ 
+-static struct parisc_device_id eisa_tbl[] = {
++static const struct parisc_device_id eisa_tbl[] = {
+ 	{ HPHW_BA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00076 }, /* Mongoose */
+ 	{ HPHW_BA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00090 }, /* Wax EISA */
+ 	{ 0, }
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
