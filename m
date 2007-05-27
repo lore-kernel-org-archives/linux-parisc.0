@@ -1,8 +1,8 @@
 From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] [PATCH] [PARISC] fix section mismatch in parisc eisa
-	driver
-Date: Sun, 27 May 2007 19:57:11 +0200
-Message-ID: <200705271957.11716.deller__4512.20432664758$1416624369$gmane$org@gmx.de>
+Subject: [parisc-linux] [PATCH] [PARISC] fix section mismatch in superio
+	serial drivers
+Date: Sun, 27 May 2007 20:38:47 +0200
+Message-ID: <200705272038.47588.deller__49557.8307578855$1416624370$gmane$org@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
@@ -19,38 +19,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Kyle,
+This patch fixes two section mismatches in superio serial setup:
+WARNING: drivers/built-in.o(.text.superio_serial_init+0x78): Section mismatch: reference to .init.text:early_serial_setup (after 'superio_serial_init')
+WARNING: drivers/built-in.o(.text.superio_serial_init+0xa4): Section mismatch: reference to .init.text:early_serial_setup (after 'superio_serial_init')
 
-this patch fixes the following section mismatch (EISA cards should be hotplug aware, but the EISA bus itself shouldn't):
-WARNING: drivers/built-in.o(.text.eisa_probe+0x220): Section mismatch: reference to .init.text:eisa_root_register (after 'eisa_probe')
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Please apply, 
-Helge
-
-    Signed-off-by: Helge Deller <deller@gmx.de>
-
-diff --git a/drivers/parisc/eisa.c b/drivers/parisc/eisa.c
-index 309076b..771cef5 100644
---- a/drivers/parisc/eisa.c
-+++ b/drivers/parisc/eisa.c
-@@ -307,7 +307,7 @@ static void init_eisa_pic(void)
- 
- #define is_mongoose(dev) (dev->id.sversion == 0x00076)
- 
--static int __devinit eisa_probe(struct parisc_device *dev)
-+static int __init eisa_probe(struct parisc_device *dev)
- {
- 	int i, result;
- 
-@@ -387,7 +387,7 @@ static int __devinit eisa_probe(struct p
- 	return 0;
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index 1fd97f7..a708c32 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -389,7 +389,7 @@ int superio_fixup_irq(struct pci_dev *pc
+ 	return local_irq;
  }
  
--static struct parisc_device_id eisa_tbl[] = {
-+static const struct parisc_device_id eisa_tbl[] = {
- 	{ HPHW_BA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00076 }, /* Mongoose */
- 	{ HPHW_BA, HVERSION_REV_ANY_ID, HVERSION_ANY_ID, 0x00090 }, /* Wax EISA */
- 	{ 0, }
+-static void __devinit superio_serial_init(void)
++static void __init superio_serial_init(void)
+ {
+ #ifdef CONFIG_SERIAL_8250
+ 	int retval;
+@@ -423,7 +423,7 @@ static void __devinit superio_serial_ini
+ }
+ 
+ 
+-static void __devinit superio_parport_init(void)
++static void __init superio_parport_init(void)
+ {
+ #ifdef CONFIG_PARPORT_PC
+ 	if (!parport_pc_probe_port(sio_dev.pp_base,
+@@ -450,7 +450,7 @@ static void superio_fixup_pci(struct pci
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87415, superio_fixup_pci);
+ 
+ 
+-static int __devinit
++static int __init
+ superio_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ {
+ 	struct superio_device *sio = &sio_dev;
+@@ -485,7 +485,7 @@ superio_probe(struct pci_dev *dev, const
+ 	return -ENODEV;
+ }
+ 
+-static struct pci_device_id superio_tbl[] = {
++static const struct pci_device_id superio_tbl[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87560_LIO) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87560_USB) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_87415) },
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
