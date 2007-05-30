@@ -1,7 +1,7 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] Status of 2.6.22-rc3
-Date: Tue, 29 May 2007 12:10:17 -0400
-Message-ID: <20070529161017.GE10560__3758.09853799201$1416624377$gmane$org@fattire.cabal.ca>
+Date: Wed, 30 May 2007 01:56:28 -0400
+Message-ID: <20070530055628.GA18850__4160.45886599949$1416624378$gmane$org@fattire.cabal.ca>
 References: <JIT7A2$DBBD069B2D6747164554FD17CA1B6184@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -21,14 +21,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 On Tue, May 29, 2007 at 05:34:50PM +0200, Joel Soete wrote:
+> Hello Helge, Kyle,
+> 
 > I just noticed the same pb you mentioned but with 2.6.22-rc2 rebuild with
 > gcc-4.1.3 20070518 (debian pkg) ro run 32bit up kernel only:
 > patst004 login: Backtrace:
+> [<10111500>] unwind_once+0x154/0x38c
+> [<10110aa0>] get_wchan+0x3c/0x80
+> [<101a939c>] do_task_stat+0x69c/0x6a4
+> [<101a6b88>] proc_info_read+0xc4/0x104
+> [<1016d724>] vfs_read+0xb4/0x164
+> [<1016dbec>] sys_read+0x4c/0x90
 
-So on 32-bit it actually makes it to userspace? Interesting.
+I have no idea what caused this, but the infinite recursion should be
+fixed once I push the fixes out. I can look at this over the weekend
+maybe (sorry, I don't have any machines kicking around plugged in and
+wired up that can run 32-bit atm.)
 
-I've spent the last 2 days debugging this, I'll let you know when I have
-something to test.
+Cheers,
+	Kyle M.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
