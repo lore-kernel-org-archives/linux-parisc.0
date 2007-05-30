@@ -1,50 +1,36 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [PATCH] fix possible null ptr deref in
-	kallsyms_lookup
-Date: Wed, 30 May 2007 02:43:16 -0400
-Message-ID: <20070530064316.GA18422__33641.6118698709$1416624379$gmane$org@fattire.cabal.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] Status of 2.6.22-rc3 ?
+Date: Wed, 30 May 2007 02:52:21 -0400
+Message-ID: <20070530065221.GB18422__39453.9687702947$1416624379$gmane$org@fattire.cabal.ca>
+References: <200705271438.57394.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: akpm@osdl.org,
- parisc-linux@lists.parisc-linux.org
-To: torvalds@osdl.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <kyle@fattire.cabal.ca>
+In-Reply-To: <200705271438.57394.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-ugh, this function gets called by our unwinder. recursive backtrace for
-the win... bisection to find this one was "fun."
+On Sun, May 27, 2007 at 02:38:57PM +0200, Helge Deller wrote:
+>
 
-Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+Ok.
 
----
+Pushed out a new HEAD (cc650a7a9f5ebc3f9290a8e20e3f55b4f52f849e) which
+fixes the issues I was having booting on C8000.
 
-commit ffb45122766db220d0bf3d01848d575fbbcb6430 removed our modname
-arg since it was otherwise unused, but i was not cc'd on the patch :/
+http://git.kernel.org/git/?p=linux/kernel/git/kyle/parisc-2.6.git;a=commit;h=376e210b71d7736775f43f32c5c7712f90aaf59a
 
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index f1bda23..fed5441 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -257,7 +257,8 @@ const char *kallsyms_lookup(unsigned long addr,
- 		pos = get_symbol_pos(addr, symbolsize, offset);
- 		/* Grab name */
- 		kallsyms_expand_symbol(get_symbol_offset(pos), namebuf);
--		*modname = NULL;
-+		if (modname)
-+			*modname = NULL;
- 		return namebuf;
- 	}
- 
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+was the fix for why userspace was not working at all for a 64-bit
+kernel.
+
+http://git.kernel.org/git/?p=linux/kernel/git/kyle/parisc-2.6.git;a=commit;h=cb9577958d85896303561d9cc8544885deb272be
+
+was the fix for one(?) of the unwinder bugs. Well, the brown paper bag
+fix at least. Fix for the fix is pending upstream ack.
+
+Now maybe I can get some sleep.
+
+Cheers,
+	Kyle
