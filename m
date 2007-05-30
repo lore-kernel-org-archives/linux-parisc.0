@@ -1,36 +1,62 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Status of 2.6.22-rc3 ?
-Date: Wed, 30 May 2007 02:52:21 -0400
-Message-ID: <20070530065221.GB18422__39453.9687702947$1416624379$gmane$org@fattire.cabal.ca>
-References: <200705271438.57394.deller@gmx.de>
+From: "Joel Soete" <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] Status of 2.6.22-rc3
+Date: Wed, 30 May 2007 15:20:02 +0200
+Message-ID: <JIUVPE$FBD64A69CDAA2AEBDDC759CB9078E755__17124.5902347893$1416624379$gmane$org@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <kyle@fattire.cabal.ca>
-In-Reply-To: <200705271438.57394.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "kyle" <kyle@mcmartin.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, May 27, 2007 at 02:38:57PM +0200, Helge Deller wrote:
->
+> On Tue, May 29, 2007 at 05:34:50PM +0200, Joel Soete wrote:
+> > Hello Helge, Kyle,
+> > 
+> > I just noticed the same pb you mentioned but with 2.6.22-rc2 rebuild =
+with
+> > gcc-4.1.3 20070518 (debian pkg) ro run 32bit up kernel only:
+> > patst004 login: Backtrace:
+> > [<10111500>] unwind_once+0x154/0x38c
+> > [<10110aa0>] get_wchan+0x3c/0x80
+> > [<101a939c>] do_task_stat+0x69c/0x6a4
+> > [<101a6b88>] proc_info_read+0xc4/0x104
+> > [<1016d724>] vfs_read+0xb4/0x164
+> > [<1016dbec>] sys_read+0x4c/0x90
+> 
+> I have no idea what caused this, but the infinite recursion should be
+> fixed once I push the fixes out. I can look at this over the weekend
+> maybe (sorry, I don't have any machines kicking around plugged in and
+> wired up that can run 32-bit atm.)
+> 
+> Cheers,
+> 	Kyle M.
+> 
+> 
+Kyle,
 
-Ok.
+Good news: your latest commit seems to fix the pb.
 
-Pushed out a new HEAD (cc650a7a9f5ebc3f9290a8e20e3f55b4f52f849e) which
-fixes the issues I was having booting on C8000.
+I rebuild it for b2k and b180 config (32 bit only) and boot it successful=
+ly on
+the 2 systems ;-)
 
-http://git.kernel.org/git/?p=linux/kernel/git/kyle/parisc-2.6.git;a=commit;h=376e210b71d7736775f43f32c5c7712f90aaf59a
+More then top, I rebuild a kernel on b2k, git pull and tar kernel tree sr=
+c on
+b180 (and some other day-today stuf scp, apt-get, ...), all seems ok ;-)
 
-was the fix for why userspace was not working at all for a 64-bit
-kernel.
+Thanks a lot,
+    Joel =0A---=0Ahttp://www.scarlet.be/
 
-http://git.kernel.org/git/?p=linux/kernel/git/kyle/parisc-2.6.git;a=commit;h=cb9577958d85896303561d9cc8544885deb272be
-
-was the fix for one(?) of the unwinder bugs. Well, the brown paper bag
-fix at least. Fix for the fix is pending upstream ack.
-
-Now maybe I can get some sleep.
-
-Cheers,
-	Kyle
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
