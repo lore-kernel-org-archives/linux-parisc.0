@@ -1,17 +1,26 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] -pie is broken on hppa
-Date: Fri, 1 Jun 2007 09:05:18 -0400 (EDT)
-Message-ID: <200706011305.l51D5I3i028030__44851.8662168228$1416624380$gmane$org@hiauly1.hia.nrc.ca>
-References: <465FBA5F.2010909@frankengul.org>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] Re: [PATCH] Introduce O_CLOEXEC (take >2)
+Date: Fri, 1 Jun 2007 18:55:49 -0400
+Message-ID: <20070601225549.GD7714__29449.8752373785$1416624381$gmane$org@fattire.cabal.ca>
+References: <200705311809.l4VI9F9X009556@devserv.devel.redhat.com>
+	<20070531162021.4cd4e91a.akpm@linux-foundation.org>
+	<20070601113840.813463db.sfr@canb.auug.org.au>
+	<20070601030754.GB14217@fattire.cabal.ca>
+	<Pine.LNX.4.64.0706011510220.26938@winds.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: seb@frankengul.org (=?ISO-8859-1?Q?S=E9bastien_Bernard?=)
+  charset=us-ascii
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Chris Zankel <chris@zankel.net>,
+ linux-kernel@vger.kernel.org,
+ Ulrich Drepper <drepper@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ torvalds@linux-foundation.org,
+ mingo@elte.hu,
+ parisc-linux@lists.parisc-linux.org
+To: Byron Stanoszek <bstanoszek@comtime.com>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <465FBA5F.2010909@frankengul.org> from
-	"=?ISO-8859-1?Q?S=E9bastien_Bernard?=" at Jun 1, 2007 08:19:11 am
+In-Reply-To: <Pine.LNX.4.64.0706011510220.26938@winds.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,27 +31,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Hi,
-> I discovered that the breakage of portmap on hppa is related to the
-> -pie linkage.
-> Every program linked with the -pie option segfaults at start.
-> Unfortunately, portmap is unconditionnaly built with this option.
-> I suspect nscd is in the same case.
+On Fri, Jun 01, 2007 at 03:17:03PM -0400, Byron Stanoszek wrote:
+> These are octal values, so you really want to use 010000000 instead of
+> 08000000. :-)
+> 
 
-This problem was fixed sometime ago.  I don't see it with libc6
-2.3.6.ds1-13.  Also, nscd doesn't segfault on my system.  Make sure
-the libc6 and binutils packages on your system are up to date.
+Wow. I am totally a dumbass, I saw a 'x' there. Sigh.
 
-If they are up to date and you still have the problem, provide testcase
-and details on libc6, gcc and binutils versions.
-
-The problem was in crt1.o and related to the handling of R_PARISC_PLABEL21L
-and R_PARISC_PLABEL14R relocations.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+diff --git a/include/asm-parisc/fcntl.h b/include/asm-parisc/fcntl.h
+index 317851f..7089507 100644
+--- a/include/asm-parisc/fcntl.h
++++ b/include/asm-parisc/fcntl.h
+@@ -14,6 +14,7 @@
+ #define O_DSYNC		01000000 /* HPUX only */
+ #define O_RSYNC		02000000 /* HPUX only */
+ #define O_NOATIME	04000000
++#define O_CLOEXEC	010000000	/* set close_on_exec */
+ 
+ #define O_DIRECTORY	00010000 /* must be a directory */
+ #define O_NOFOLLOW	00000200 /* don't follow links */
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
