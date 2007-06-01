@@ -1,17 +1,14 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] [PATCH] parisc: Enable arbitary speed tty ioctl
-	interfaces
-Date: Wed, 23 May 2007 13:00:35 -0400
-Message-ID: <20070523170035.GB26781__31719.4354990081$1416624639$gmane$org@fattire.cabal.ca>
-References: <20070523175102.65553ff5@the-village.bc.nu>
+From: =?ISO-8859-1?Q?S=E9bastien_Bernard?= <seb@frankengul.org>
+Subject: [parisc-linux] -pie is broken on hppa
+Date: Fri, 01 Jun 2007 08:19:11 +0200
+Message-ID: <465FBA5F.2010909__6685.40670671991$1416624380$gmane$org@frankengul.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@parisc-linux.org,
- matthew@wil.cx
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+  charset=ISO-8859-1;
+  format=flowed
+To: debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070523175102.65553ff5@the-village.bc.nu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,15 +19,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, May 23, 2007 at 05:51:02PM +0100, Alan Cox wrote:
-> All the code is already present in the tree and used by some other
-> platforms (eg x86_64). Adding the constants and defines activates it for
-> parisc.
-> 
-> Signed-off-by: Alan Cox <alan@redhat.com>
-> 
+Hi,
+I discovered that the breakage of portmap on hppa is related to the
+-pie linkage.
+Every program linked with the -pie option segfaults at start.
+Unfortunately, portmap is unconditionnaly built with this option.
+I suspect nscd is in the same case.
 
-Groovy, thanks Alan. Merged.
+How can I go further in investigation ?
+I would like to identify the responsible component between the toolchain 
+and the glibc.
+
+Any hint is welcome.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
