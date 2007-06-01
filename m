@@ -1,15 +1,23 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Status of 2.6.22-rc3
-Date: Wed, 30 May 2007 09:34:54 -0400
-Message-ID: <20070530133454.GA9230__31108.112660195$1416624380$gmane$org@fattire.cabal.ca>
-References: <JIUVPE$FBD64A69CDAA2AEBDDC759CB9078E755@scarlet.be>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] Re: [PATCH] Introduce O_CLOEXEC (take >2)
+Date: Thu, 31 May 2007 23:07:54 -0400
+Message-ID: <20070601030754.GB14217__21032.8297260732$1416624381$gmane$org@fattire.cabal.ca>
+References: <200705311809.l4VI9F9X009556@devserv.devel.redhat.com>
+	<20070531162021.4cd4e91a.akpm@linux-foundation.org>
+	<20070601113840.813463db.sfr@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Joel Soete <soete.joel@scarlet.be>
+Cc: Chris Zankel <chris@zankel.net>,
+ linux-kernel@vger.kernel.org,
+ Ulrich Drepper <drepper@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ torvalds@linux-foundation.org,
+ mingo@elte.hu,
+ parisc-linux@lists.parisc-linux.org
+To: Stephen Rothwell <sfr@canb.auug.org.au>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <JIUVPE$FBD64A69CDAA2AEBDDC759CB9078E755@scarlet.be>
+In-Reply-To: <20070601113840.813463db.sfr@canb.auug.org.au>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,18 +28,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Wed, May 30, 2007 at 03:20:02PM +0200, Joel Soete wrote:
-> 
-> Good news: your latest commit seems to fix the pb.
-> 
-> I rebuild it for b2k and b180 config (32 bit only) and boot it successfully on
-> the 2 systems ;-)
-> 
-> More then top, I rebuild a kernel on b2k, git pull and tar kernel tree src on
-> b180 (and some other day-today stuf scp, apt-get, ...), all seems ok ;-)
+On Fri, Jun 01, 2007 at 11:38:40AM +1000, Stephen Rothwell wrote:
+> This also breaks Alpha (which uses 02000000 for O_DIRECT) and parisc
+> (which uses 02000000 for O_RSYNC).  So you ether need to choose a
+> different value or define O_CLOEXEC for those two architectures.
 > 
 
-Awesome! Thanks for testing, Joel!
+That's easy enough to fix...
+
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+
+diff --git a/include/asm-parisc/fcntl.h b/include/asm-parisc/fcntl.h
+index 317851f..4ca0fb0 100644
+--- a/include/asm-parisc/fcntl.h
++++ b/include/asm-parisc/fcntl.h
+@@ -14,6 +14,7 @@
+ #define O_DSYNC		01000000 /* HPUX only */
+ #define O_RSYNC		02000000 /* HPUX only */
+ #define O_NOATIME	04000000
++#define O_CLOEXEC	08000000 /* set close_on_exec */
+ 
+ #define O_DIRECTORY	00010000 /* must be a directory */
+ #define O_NOFOLLOW	00000200 /* don't follow links */
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
