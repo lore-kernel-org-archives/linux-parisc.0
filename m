@@ -1,17 +1,26 @@
-From: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Subject: [parisc-linux] [PATCH 0/4] no MAX_ARG_PAGES
-Date: Tue, 05 Jun 2007 17:05:23 +0200
-Message-ID: <20070605150523.786600000__19987.8012216233$1416624390$gmane$org@chello.nl>
-Cc: Andrew Morton <akpm@osdl.org>,
- Ingo Molnar <mingo@elte.hu>,
- Andi Kleen <ak@suse.de>,
- Ollie Wild <aaw@google.com>,
- Peter Zijlstra <a.p.zijlstra@chello.nl>
-To: linux-kernel@vger.kernel.org,
- parisc-linux@lists.parisc-linux.org,
- linux-mm@kvack.org,
- linux-arch@vger.kernel.org
+From: Byron Stanoszek <bstanoszek@comtime.com>
+Subject: [parisc-linux] Re: [PATCH] Introduce O_CLOEXEC (take >2)
+Date: Fri, 1 Jun 2007 15:17:03 -0400 (EDT)
+Message-ID: <Pine.LNX.4.64.0706011510220.26938__29048.9730811261$1416624390$gmane$org@winds.org>
+References: <200705311809.l4VI9F9X009556@devserv.devel.redhat.com>
+	<20070531162021.4cd4e91a.akpm@linux-foundation.org>
+	<20070601113840.813463db.sfr@canb.auug.org.au>
+	<20070601030754.GB14217@fattire.cabal.ca>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN;
+  charset=US-ASCII;
+  format=flowed
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Chris Zankel <chris@zankel.net>,
+ linux-kernel@vger.kernel.org,
+ Ulrich Drepper <drepper@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ torvalds@linux-foundation.org,
+ mingo@elte.hu,
+ parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20070601030754.GB14217@fattire.cabal.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,43 +31,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Thu, 31 May 2007, Kyle McMartin wrote:
 
-This patch-set aims at removing the current limit on argv+env space aka.
-MAX_ARG_PAGES.
+> On Fri, Jun 01, 2007 at 11:38:40AM +1000, Stephen Rothwell wrote:
+>> This also breaks Alpha (which uses 02000000 for O_DIRECT) and parisc
+>> (which uses 02000000 for O_RSYNC).  So you ether need to choose a
+>> different value or define O_CLOEXEC for those two architectures.
+>>
+>
+> That's easy enough to fix...
+>
+> Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+>
+> diff --git a/include/asm-parisc/fcntl.h b/include/asm-parisc/fcntl.h
+> index 317851f..4ca0fb0 100644
+> --- a/include/asm-parisc/fcntl.h
+> +++ b/include/asm-parisc/fcntl.h
+> @@ -14,6 +14,7 @@
+> #define O_DSYNC		01000000 /* HPUX only */
+> #define O_RSYNC		02000000 /* HPUX only */
+> #define O_NOATIME	04000000
+> +#define O_CLOEXEC	08000000 /* set close_on_exec */
+>
+> #define O_DIRECTORY	00010000 /* must be a directory */
+> #define O_NOFOLLOW	00000200 /* don't follow links */
 
-The new mm is created before the binfmt code runs, the stack is placed at the
-highest address supported by that architecture.
+These are octal values, so you really want to use 010000000 instead of
+08000000. :-)
 
-The argv+env data is then copied from the old mm into the new mm (which is
-inactive at that time - this introduces some cache coherency issues).
+While looking at that file further, I noticed these two flags share the same
+value. I don't know DMAPI/XDSM, but could they potentially conflict?
 
-Then we run the binfmt code, which will compute the final stack address. The
-existing stack will be moved downwards (or upwards on PA-RISC) to the desired
-place.
+#define O_NOATIME       04000000
+#define O_INVISIBLE     04000000 /* invisible I/O, for DMAPI/XDSM */
 
-This 'trick' heavily relies on the MMU, so for no-MMU archs we stay with the
-old approach.
+Regards,
+  -Byron
 
-Tested-on: i386, ia64, frv, parisc, ppc64, um, x86_64
-
-Patches against: .22-rc4
-
--- 
-Changes since last time:
-
- - fixed ia64
-     ( va-space constraints )
-
- - fixed ia64 CONFIG_IA32_SUPPORT
-     ( brown paper bags and more va-space constraints)
-
- - fixed powerpc
-     ( address limit on stack extention )
-
- - removed audit_kill() in favour of audit_panic()
-
- - nicely spit out the patches
-
+--
+Byron Stanoszek                         Ph: (330) 644-3059
+Systems Programmer                      Fax: (330) 644-8110
+Commercial Timesharing Inc.             Email: byron@comtime.com
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
