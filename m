@@ -1,36 +1,49 @@
-From: =?ISO-8859-1?Q?S=E9bastien_Bernard?= <seb@frankengul.org>
-Subject: -pie is broken on hppa
-Date: Fri, 01 Jun 2007 08:19:11 +0200
-Message-ID: <465FBA5F.2010909__30209.9019325853$1416624380$gmane$org@frankengul.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] -pie is broken on hppa
+Date: Fri, 1 Jun 2007 09:05:18 -0400 (EDT)
+Message-ID: <200706011305.l51D5I3i028030__44851.8662168228$1416624380$gmane$org@hiauly1.hia.nrc.ca>
+References: <465FBA5F.2010909@frankengul.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-Resent-Message-ID: <pDTdYB.A.FM.Tp7XGB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: seb@frankengul.org (=?ISO-8859-1?Q?S=E9bastien_Bernard?=)
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <465FBA5F.2010909@frankengul.org> from
+	"=?ISO-8859-1?Q?S=E9bastien_Bernard?=" at Jun 1, 2007 08:19:11 am
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
-I discovered that the breakage of portmap on hppa is related to the
--pie linkage.
-Every program linked with the -pie option segfaults at start.
-Unfortunately, portmap is unconditionnaly built with this option.
-I suspect nscd is in the same case.
+> Hi,
+> I discovered that the breakage of portmap on hppa is related to the
+> -pie linkage.
+> Every program linked with the -pie option segfaults at start.
+> Unfortunately, portmap is unconditionnaly built with this option.
+> I suspect nscd is in the same case.
 
-How can I go further in investigation ?
-I would like to identify the responsible component between the toolchain 
-and the glibc.
+This problem was fixed sometime ago.  I don't see it with libc6
+2.3.6.ds1-13.  Also, nscd doesn't segfault on my system.  Make sure
+the libc6 and binutils packages on your system are up to date.
 
-Any hint is welcome.
+If they are up to date and you still have the problem, provide testcase
+and details on libc6, gcc and binutils versions.
 
+The problem was in crt1.o and related to the handling of R_PARISC_PLABEL21L
+and R_PARISC_PLABEL14R relocations.
 
+Dave
 -- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
