@@ -1,23 +1,21 @@
 From: =?ISO-8859-1?Q?S=E9bastien_Bernard?= <seb@frankengul.org>
-Subject: [parisc-linux] -pie is broken on hppa
+Subject: -pie is broken on hppa
 Date: Fri, 01 Jun 2007 08:19:11 +0200
-Message-ID: <465FBA5F.2010909__6685.40670671991$1416624380$gmane$org@frankengul.org>
+Message-ID: <465FBA5F.2010909__30209.9019325853$1416624380$gmane$org@frankengul.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=ISO-8859-1;
   format=flowed
 To: debian-hppa@lists.debian.org,
  parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+Resent-Message-ID: <pDTdYB.A.FM.Tp7XGB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
 Hi,
 I discovered that the breakage of portmap on hppa is related to the
@@ -31,7 +29,8 @@ I would like to identify the responsible component between the toolchain
 and the glibc.
 
 Any hint is welcome.
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
