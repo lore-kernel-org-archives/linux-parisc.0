@@ -1,18 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] -pie is broken on hppa
-Date: Sun, 3 Jun 2007 16:03:15 -0400 (EDT)
-Message-ID: <200706032003.l53K3Gug017078__12317.6646804952$1416624384$gmane$org@hiauly1.hia.nrc.ca>
+Date: Sun, 3 Jun 2007 16:12:16 -0400
+Message-ID: <20070603201216.GA24868__14111.3905389377$1416624384$gmane$org@fattire.cabal.ca>
 References: <20070603195133.GB23062@fattire.cabal.ca>
+	<200706032003.l53K3Gug017078@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=us-ascii
 Cc: matthew@wil.cx,
  parisc-linux@lists.parisc-linux.org,
  debian-hppa@lists.debian.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070603195133.GB23062@fattire.cabal.ca> from "Kyle McMartin" at
-	Jun 3, 2007 03:51:33 pm
+In-Reply-To: <200706032003.l53K3Gug017078@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,14 +23,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> binutils is fucked.
+On Sun, Jun 03, 2007 at 04:03:15PM -0400, John David Anglin wrote:
+> > binutils is fucked.
+> 
+> Crap!  I'll try installing one of my own builds from a different system.
+> 
 
-Crap!  I'll try installing one of my own builds from a different system.
+I've had good luck building kernels with my Etch (Debian 4.0) chroots.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+--Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
