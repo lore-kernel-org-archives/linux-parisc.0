@@ -1,16 +1,18 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: [parisc-linux] [PARISC] Fix kernel panic in check_ivt
-Date: Mon, 4 Jun 2007 06:05:44 -0600
-Message-ID: <20070604120544.GA23968__47870.7346752801$1416624388$gmane$org@parisc-linux.org>
-References: <20070604054954.GA12289@fattire.cabal.ca>
-	<20070604062315.GA12848@fattire.cabal.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] -pie is broken on hppa
+Date: Sun, 3 Jun 2007 21:10:07 -0400
+Message-ID: <20070604011007.GA2075__13926.3891418979$1416624388$gmane$org@fattire.cabal.ca>
+References: <20070603195133.GB23062@fattire.cabal.ca>
+	<200706040102.l5412OUS022106@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@parisc-linux.org>
+Cc: matthew@wil.cx,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070604062315.GA12848@fattire.cabal.ca>
+In-Reply-To: <200706040102.l5412OUS022106@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,16 +23,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 04, 2007 at 02:23:15AM -0400, Kyle McMartin wrote:
-> @@ -802,13 +802,14 @@ void handle_interruption(int code, struct pt_regs *regs)
->  
->  int __init check_ivt(void *iva)
->  {
-> +	extern const u32 os_hpmc[];
-> +	extern const u32 os_hpmc_end[];
+On Sun, Jun 03, 2007 at 09:02:24PM -0400, John David Anglin wrote:
+> 
+> I don't think so.  There's some wierd stuff in check_ivt.  It looks
+> like the function is trying to see if it can compute a checksum for
+> the os_hpmc function without causing a panic.  However, the function
+> pointer stuff is all wrong.  Note that 32 and 64-bit function pointer
+> handling is completely different.
+> 
 
-Cute.  If it works, it's cleaner code, so by all means.
+Er, then why didn't it complain before?
 
+Can you do a quick test if I cook up a patch?
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
