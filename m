@@ -1,48 +1,92 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] -pie is broken on hppa
-Date: Sun, 3 Jun 2007 21:43:13 -0400
-Message-ID: <20070604014313.GB2075__12233.7032844827$1416624386$gmane$org@fattire.cabal.ca>
-References: <200706040123.l541Nnc1022459@hiauly1.hia.nrc.ca> <200706040137.l541bCmm022707@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [PARISC] Fix kernel panic in check_ivt
+Date: Mon, 4 Jun 2007 01:49:54 -0400
+Message-ID: <20070604054954.GA12289__20325.6574845456$1416624386$gmane$org@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org,
- matthew@wil.cx
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200706040137.l541bCmm022707@hiauly1.hia.nrc.ca>
-Resent-Message-ID: <crpKO.A.MUH.uL3YGB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+To: parisc-linux@lists.parisc-linux.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Jun 03, 2007 at 09:37:12PM -0400, John David Anglin wrote:
-> Running svn cleanup with strace, these are the last few syscalls:
-> 
-> lstat64("libgcc/config/ia64/.svn/tmp/propsbase", 0xc02b6f08) = -1 ENOENT (No such file or directory)
-> gettimeofday({1180920486, 457857}, NULL) = 0
-> _newselect(0, NULL, NULL, NULL, {0, 642143}) = 0 (Timeout)
-> write(2, "svn: Can\'t read directory \'libgc"..., 112svn: Can't read directory 'libgcc/config/ia64/.svn/tmp': Partial results are valid but processing is incomplete
-> ) = 112
-> close(3)                                = 0
-> brk(0x80000)                            = 0x80000
-> exit_group(1)                           = ?
-> Process 1357 detached
-> 
+From: Kyle McMartin <kyle@parisc-linux.org>
 
-I don't suppose you could strace in a chroot with a older working glibc
-and see what syscalls are there?
+check_ivt had some seriously broken code wrt function pointers on
+parisc64. Instead of referencing the hpmc code via a function pointer,
+export symbols and reference it as a const array.
 
-I don't see anything offhand that would have changed about this here.
+Thanks to jda for pointing out the broken 64-bit func ptr handling.
 
-Cheers,
-	Kyle
+Signed-off-by: Kyle McMartin <kyle@parisc-linux.org>
+---
+ arch/parisc/kernel/hpmc.S  |    7 ++++---
+ arch/parisc/kernel/traps.c |    8 ++++----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-
+diff --git a/arch/parisc/kernel/hpmc.S b/arch/parisc/kernel/hpmc.S
+index d8baa15..abda491 100644
+--- a/arch/parisc/kernel/hpmc.S
++++ b/arch/parisc/kernel/hpmc.S
+@@ -79,6 +79,8 @@ END(hpmc_pim_data)
+ 	.text
+ 
+ 	.import intr_save, code
++	.export __os_hpmc, data
++__os_hpmc:
+ ENTRY(os_hpmc)
+ 
+ 	/*
+@@ -295,8 +297,7 @@ os_hpmc_6:
+ 	b .
+ 	nop
+ ENDPROC(os_hpmc)
+-
+-	/* this label used to compute os_hpmc checksum */
+-ENTRY(os_hpmc_end)
++__os_hpmc_end:
++	.export __os_hpmc_end, data 	/* this label used to compute os_hpmc checksum */
+ 
+ 	nop
+diff --git a/arch/parisc/kernel/traps.c b/arch/parisc/kernel/traps.c
+index 0ba1d3d..e8b977a 100644
+--- a/arch/parisc/kernel/traps.c
++++ b/arch/parisc/kernel/traps.c
+@@ -807,8 +807,8 @@ int __init check_ivt(void *iva)
+ 	u32 *ivap;
+ 	u32 *hpmcp;
+ 	u32 length;
+-	extern void os_hpmc(void);
+-	extern void os_hpmc_end(void);
++	extern const u32 __os_hpmc[];
++	extern const u32 __os_hpmc_end[];
+ 
+ 	if (strcmp((char *)iva, "cows can fly"))
+ 		return -1;
+@@ -820,10 +820,10 @@ int __init check_ivt(void *iva)
+ 
+ 	/* Compute Checksum for HPMC handler */
+ 
+-	length = (u32)((unsigned long)os_hpmc_end - (unsigned long)os_hpmc);
++	length = __os_hpmc_end - __os_hpmc;
+ 	ivap[7] = length;
+ 
+-	hpmcp = (u32 *)os_hpmc;
++	hpmcp = (u32 *)__os_hpmc;
+ 
+ 	for (i=0; i<length/4; i++)
+ 	    check += *hpmcp++;
 -- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+1.5.1.3
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
