@@ -1,12 +1,12 @@
-From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
-Subject: [parisc-linux] [BUG] XFS broken (again) on parisc
-Date: Sun, 10 Jun 2007 14:51:53 +0200
-Message-ID: <7d01f9f00706100551r57e240a2u510709668f146c03__13824.584746226$1416624395$gmane$org@mail.gmail.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: [parisc-linux] PATCH 2.6.22-rc2 remove globab_ack_eiem
+Date: Sun, 10 Jun 2007 16:31:41 -0600
+Message-ID: <20070610223141.GA25432__47072.4618564875$1416624395$gmane$org@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-To: "Parisc List" <parisc-linux@lists.parisc-linux.org>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,37 +18,109 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi,
 
-What I initially believed to be related to the SCSI offlining problems
-we had seems to be more complex than that: I can reliably kill any XFS
-filesystem with current GIT TOB by just unmouting and remounting, no
-matter if there's any activity on the fs.
+Kudos to Thibaut Varene for spotting the (mis)use of appropriately named 
+gloabl_ack_eiem. This took a long time to figure out and both insight
+>from myself, Kyle McMartin, and James Bottomley were required to narrow
+down which bit of code could have this race condition.
 
-The remount attempt will yield:
+The symptom was interrupts stopped getting delivered while some workload
+was generating IO interrupts on two different CPUs. One of the interrupt
+sources would get masked off and stay unmasked. Problem was global_ack_eiem
+was accessed with read/modified/write sequence and not protected by
+a spinlock.
 
-XFS mounting filesystem sdb1
-XFS: Log inconsistent (didn't find previous header)
-XFS: failed to find log head
-XFS: log mount/recovery failed: error 5
-XFS: log mount failed
-mount: /dev/sdb1: can't read superblock
+PA-RISC doesn't need a global ack flag though. External Interrupts
+are _always_ delivered to a single CPU (except for "global broadcast
+interrupt" which AFAIK currently is not used.) So we don't have to worry
+about any given IRQ vector getting delivered to more than one CPU.
 
-At this point, the fileystem is totally corrupted (I'm still running
-xfs_repair, but have very little hope given the incredible amount of
-errors detected on a fs that's been mounted for about 10s without any
-activity on it before I tried to unmount/remount it)...
+Tested on a500 and rp34xx boxen. rsync to/from gsyprf11 (a500)
+would lock up the box since NIC (tg3) interrupt and SCSI (sym2)
+were on "opposite" CPUs (2 CPU system). Put them on the same CPU
+or apply this patch and 10GB of data would rsync completely.
 
-That happens on 64bit SMP. I'll investigate more later on. According
-to Guy Martin, this doesn't  happen on UP kernels.
+Please apply the following critical patch.
+Can you let us know if this gets into 2.6.22 before final RC is cut?
 
-HTH
+thanks,
+grant
 
-T-Bone
+Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
+Acked-by: Thibaut VARENE <T-Bone@parisc-linux.org>
 
--- 
-Thibaut VARENE
-http://www.parisc-linux.org/~varenet/
+diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
+index c5c9125..76ce5e3 100644
+--- a/arch/parisc/kernel/irq.c
++++ b/arch/parisc/kernel/irq.c
+@@ -46,14 +46,10 @@ extern irqreturn_t ipi_interrupt(int, void *);
+ static volatile unsigned long cpu_eiem = 0;
+ 
+ /*
+-** ack bitmap ... habitually set to 1, but reset to zero
++** local ACK bitmap ... habitually set to 1, but reset to zero
+ ** between ->ack() and ->end() of the interrupt to prevent
+ ** re-interruption of a processing interrupt.
+ */
+-static volatile unsigned long global_ack_eiem = ~0UL;
+-/*
+-** Local bitmap, same as above but for per-cpu interrupts
+-*/
+ static DEFINE_PER_CPU(unsigned long, local_ack_eiem) = ~0UL;
+ 
+ static void cpu_disable_irq(unsigned int irq)
+@@ -94,13 +90,11 @@ void cpu_ack_irq(unsigned int irq)
+ 	int cpu = smp_processor_id();
+ 
+ 	/* Clear in EIEM so we can no longer process */
+-	if (CHECK_IRQ_PER_CPU(irq_desc[irq].status))
+-		per_cpu(local_ack_eiem, cpu) &= ~mask;
+-	else
+-		global_ack_eiem &= ~mask;
++	per_cpu(local_ack_eiem, cpu) &= ~mask;
+ 
+ 	/* disable the interrupt */
+-	set_eiem(cpu_eiem & global_ack_eiem & per_cpu(local_ack_eiem, cpu));
++	set_eiem(cpu_eiem & per_cpu(local_ack_eiem, cpu));
++
+ 	/* and now ack it */
+ 	mtctl(mask, 23);
+ }
+@@ -111,13 +105,10 @@ void cpu_end_irq(unsigned int irq)
+ 	int cpu = smp_processor_id();
+ 
+ 	/* set it in the eiems---it's no longer in process */
+-	if (CHECK_IRQ_PER_CPU(irq_desc[irq].status))
+-		per_cpu(local_ack_eiem, cpu) |= mask;
+-	else
+-		global_ack_eiem |= mask;
++	per_cpu(local_ack_eiem, cpu) |= mask;
+ 
+ 	/* enable the interrupt */
+-	set_eiem(cpu_eiem & global_ack_eiem & per_cpu(local_ack_eiem, cpu));
++	set_eiem(cpu_eiem & per_cpu(local_ack_eiem, cpu));
+ }
+ 
+ #ifdef CONFIG_SMP
+@@ -354,8 +345,7 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ 	local_irq_disable();
+ 	irq_enter();
+ 
+-	eirr_val = mfctl(23) & cpu_eiem & global_ack_eiem &
+-		per_cpu(local_ack_eiem, cpu);
++	eirr_val = mfctl(23) & cpu_eiem & per_cpu(local_ack_eiem, cpu);
+ 	if (!eirr_val)
+ 		goto set_out;
+ 	irq = eirr_to_irq(eirr_val);
+@@ -381,7 +371,7 @@ void do_cpu_irq_mask(struct pt_regs *regs)
+ 	return;
+ 
+  set_out:
+-	set_eiem(cpu_eiem & global_ack_eiem & per_cpu(local_ack_eiem, cpu));
++	set_eiem(cpu_eiem & per_cpu(local_ack_eiem, cpu));
+ 	goto out;
+ }
+ 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
