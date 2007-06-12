@@ -1,13 +1,11 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] [git patches] parisc updates for 2.6.22
-Date: Tue, 12 Jun 2007 01:50:46 -0400
-Message-ID: <20070612055046.GA24425__12178.4887662672$1416624396$gmane$org@fattire.cabal.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] [patch] unwinder improvements
+Date: Tue, 12 Jun 2007 14:27:32 +0800
+Message-ID: <466E3CD4.6000509__28332.4412689128$1416624396$gmane$org@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=us-ascii
-Cc: akpm@linux-foundation.org,
- parisc-linux@lists.parisc-linux.org
-To: torvalds@linux-foundation.org
+Content-Type: multipart/mixed;
+  boundary="------------050403020607080209030200"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,106 +17,124 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Mostly "critical" (if you can call anything on arch/parisc critical)
-bugfixes against 2.6.21 that took me a while to find the time to fix up.
+This is a multi-part message in MIME format.
+--------------050403020607080209030200
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thanks,
-	Kyle M.
 
-The following changes since commit d25790532370e7448e3d3bd25a17e1e9f1299816:
-  Stephen Rothwell (1):
-        Fix headers check fallout
+--------------050403020607080209030200
+Content-Type: text/plain;
+ name="unwind.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="unwind.diff"
 
-are available in the git repository at:
+- Fix unwind record processing on 64-bit systems - this was affected by the
+  PAGE_OFFSET change a few months back
+- Add special-case handling for "handle_interruption" so that we can rewind
+  past the interruption. This is useful for seeing what caused a BUG() or 
+  WARN_ON(); otherwise the unwind stops at the interruption.
 
- master.kernel.org:/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
+Signed-off-by: Randolph Chung <tausq@debian.org>
+
+index e70f57e..e06da53 100644
+--- a/arch/parisc/kernel/unwind.c
++++ b/arch/parisc/kernel/unwind.c
+@@ -16,16 +16,20 @@
  
-Alexandr Andreev (1):
-      parisc: sync compat getdents
+ #include <asm/uaccess.h>
+ #include <asm/assembly.h>
++#include <asm/asm-offsets.h>
++#include <asm/ptrace.h>
+ 
+ #include <asm/unwind.h>
+ 
+ /* #define DEBUG 1 */
+ #ifdef DEBUG
+ #define dbg(x...) printk(x)
+ #else
+ #define dbg(x...)
+ #endif
+ 
++#define KERNEL_START (KERNEL_BINARY_TEXT_START - 0x1000)
++
+ extern struct unwind_table_entry __start___unwind[];
+ extern struct unwind_table_entry __stop___unwind[];
+ 
+@@ -197,6 +201,29 @@ static int unwind_init(void)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_64BIT
++#define get_func_addr(fptr) fptr[2]
++#else
++#define get_func_addr(fptr) fptr[0]
++#endif
++
++static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int frame_size)
++{
++	void handle_interruption(int, struct pt_regs *);
++	static unsigned long *hi = (unsigned long)&handle_interruption;
++
++	if (pc == get_func_addr(hi)) {
++		struct pt_regs *regs = (struct pt_regs *)(info->sp - frame_size - PT_SZ_ALGN);
++		dbg("Unwinding through handle_interruption()\n");
++		info->prev_sp = regs->gr[30];
++		info->prev_ip = regs->iaoq[0];
++
++		return 1;
++	}
++
++	return 0;
++}
++
+ static void unwind_frame_regs(struct unwind_frame_info *info)
+ {
+ 	const struct unwind_table_entry *e;
+@@ -310,13 +337,15 @@ static void unwind_frame_regs(struct unwind_frame_info *info)
+ 			}
+ 		}
+ 
+-		info->prev_sp = info->sp - frame_size;
+-		if (e->Millicode)
+-			info->rp = info->r31;
+-		else if (rpoffset)
+-			info->rp = *(unsigned long *)(info->prev_sp - rpoffset);
+-		info->prev_ip = info->rp;
+-		info->rp = 0;
++		if (!unwind_special(info, e->region_start, frame_size)) {
++			info->prev_sp = info->sp - frame_size;
++			if (e->Millicode)
++				info->rp = info->r31;
++			else if (rpoffset)
++				info->rp = *(unsigned long *)(info->prev_sp - rpoffset);
++			info->prev_ip = info->rp;
++			info->rp = 0;
++		}
+ 
+ 		dbg("analyzing func @ %lx, setting prev_sp=%lx "
+ 		    "prev_ip=%lx npc=%lx\n", info->ip, info->prev_sp, 
+index 7e9afa7..21fbfc5 100644
+--- a/include/asm-parisc/system.h
++++ b/include/asm-parisc/system.h
+@@ -188,7 +188,6 @@ static inline void set_eiem(unsigned long val)
+ # define __lock_aligned __attribute__((__section__(".data.lock_aligned")))
+ #endif
+ 
+-#define KERNEL_START (0x10100000 - 0x1000)
+ #define arch_align_stack(x) (x)
+ 
+ #endif
 
-Alexey Dobriyan (2):
-      parisc: make command_line[] static
-      parisc: convert /proc/gsc/pcxl_dma to seq_file
+--------------050403020607080209030200
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Aurelien Jarno (1):
-      [PARISC] Disable LWS debugging
-
-Grant Grundler (2):
-      [PARISC] remove remnants of parisc-specific softirq code
-      [PARISC] remove global_ack_eiem
-
-Helge Deller (10):
-      [PARISC] fix lasi_82596 build
-      [PARISC] fix section mismatch in parport_gsc
-      [PARISC] fix section mismatch in parisc STI video drivers
-      [PARISC] fix section mismatch in ccio-dma
-      [PARISC] fix section mismatches in arch/parisc/kernel
-      [PARISC] fix section mismatch in parisc eisa driver
-      [PARISC] fix section mismatch in superio serial drivers
-      [PARISC] Wire up utimensat/signalfd/timerfd/eventfd syscalls
-      [PARISC] fix "ENTRY" macro redefinition
-      [PARISC] fix section mismatch in smp.c
-
-Kyle McMartin (11):
-      [PARISC] Move #undef to end of syscall table
-      [PARISC] Wire up kexec_load syscall
-      [PARISC] Let PA-8900 processors boot
-      [PARISC] kobject is embedded in subsys, not kset
-      [PARISC] Build fixes for power.c
-      [PARISC] fix trivial spelling nit in asm/linkage.h
-      [PARISC] fix null ptr deref in unwind.c
-      [PARISC] fix "reduce size of task_struct on 64-bit machines" fallout
-      [PARISC] be more defensive in process.c::get_wchan
-      [PARISC] Fix bug when syscall nr is __NR_Linux_syscalls
-      [PARISC] Fix kernel panic in check_ivt
-
-Milind Arun Choudhary (2):
-      [PARISC] ROUND_UP macro cleanup in arch/parisc
-      [PARISC] ROUNDUP macro cleanup in drivers/parisc
-
-Simon Arlott (1):
-      [PARISC] spelling fixes: arch/parisc/
-
- arch/parisc/hpux/fs.c              |    5 +-
- arch/parisc/kernel/entry.S         |   40 +--------------
- arch/parisc/kernel/firmware.c      |    4 +-
- arch/parisc/kernel/hardware.c      |   14 +++--
- arch/parisc/kernel/hpmc.S          |    5 +--
- arch/parisc/kernel/irq.c           |   26 +++-------
- arch/parisc/kernel/pci-dma.c       |   94 ++++++++++++++++++++----------------
- arch/parisc/kernel/perf.c          |   18 ++++---
- arch/parisc/kernel/process.c       |    4 ++
- arch/parisc/kernel/processor.c     |   14 +++---
- arch/parisc/kernel/setup.c         |    5 +-
- arch/parisc/kernel/signal32.h      |    2 +-
- arch/parisc/kernel/smp.c           |    8 ++--
- arch/parisc/kernel/sys_parisc32.c  |   13 ++++--
- arch/parisc/kernel/syscall.S       |   12 ++--
- arch/parisc/kernel/syscall_table.S |   16 ++++--
- arch/parisc/kernel/time.c          |    2 +-
- arch/parisc/kernel/traps.c         |    9 ++--
- arch/parisc/kernel/unwind.c        |    4 +-
- arch/parisc/math-emu/dbl_float.h   |    4 +-
- arch/parisc/math-emu/dfsqrt.c      |    2 +-
- arch/parisc/math-emu/sfsqrt.c      |    2 +-
- arch/parisc/math-emu/sgl_float.h   |    4 +-
- arch/parisc/mm/init.c              |   10 ++--
- drivers/net/lasi_82596.c           |    1 +
- drivers/parisc/ccio-dma.c          |   14 +++---
- drivers/parisc/eisa.c              |    4 +-
- drivers/parisc/iommu-helpers.h     |    4 +-
- drivers/parisc/pdc_stable.c        |    2 +-
- drivers/parisc/power.c             |    1 +
- drivers/parisc/sba_iommu.c         |    6 +--
- drivers/parisc/superio.c           |    8 ++--
- drivers/parport/parport_gsc.c      |    2 +-
- drivers/video/console/sticore.c    |   50 ++++++++++----------
- include/asm-parisc/hardware.h      |    5 +-
- include/asm-parisc/linkage.h       |    5 ++-
- include/asm-parisc/processor.h     |    8 ++--
- include/asm-parisc/unistd.h        |   13 +++++-
- 38 files changed, 221 insertions(+), 219 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--------------050403020607080209030200--
