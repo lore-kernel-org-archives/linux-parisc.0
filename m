@@ -1,12 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: [parisc-linux] PATCH 2.6.22-rc2 remove globab_ack_eiem
-Date: Sun, 10 Jun 2007 16:31:41 -0600
-Message-ID: <20070610223141.GA25432__47072.4618564875$1416624395$gmane$org@colo.lackof.org>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] [git patches] parisc updates for 2.6.22
+Date: Tue, 12 Jun 2007 01:50:46 -0400
+Message-ID: <20070612055046.GA24425__12178.4887662672$1416624396$gmane$org@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@parisc-linux.org>
+Cc: akpm@linux-foundation.org,
+ parisc-linux@lists.parisc-linux.org
+To: torvalds@linux-foundation.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -18,109 +19,105 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+Mostly "critical" (if you can call anything on arch/parisc critical)
+bugfixes against 2.6.21 that took me a while to find the time to fix up.
 
-Kudos to Thibaut Varene for spotting the (mis)use of appropriately named 
-gloabl_ack_eiem. This took a long time to figure out and both insight
->from myself, Kyle McMartin, and James Bottomley were required to narrow
-down which bit of code could have this race condition.
+Thanks,
+	Kyle M.
 
-The symptom was interrupts stopped getting delivered while some workload
-was generating IO interrupts on two different CPUs. One of the interrupt
-sources would get masked off and stay unmasked. Problem was global_ack_eiem
-was accessed with read/modified/write sequence and not protected by
-a spinlock.
+The following changes since commit d25790532370e7448e3d3bd25a17e1e9f1299816:
+  Stephen Rothwell (1):
+        Fix headers check fallout
 
-PA-RISC doesn't need a global ack flag though. External Interrupts
-are _always_ delivered to a single CPU (except for "global broadcast
-interrupt" which AFAIK currently is not used.) So we don't have to worry
-about any given IRQ vector getting delivered to more than one CPU.
+are available in the git repository at:
 
-Tested on a500 and rp34xx boxen. rsync to/from gsyprf11 (a500)
-would lock up the box since NIC (tg3) interrupt and SCSI (sym2)
-were on "opposite" CPUs (2 CPU system). Put them on the same CPU
-or apply this patch and 10GB of data would rsync completely.
+ master.kernel.org:/pub/scm/linux/kernel/git/kyle/parisc-2.6.git
+ 
+Alexandr Andreev (1):
+      parisc: sync compat getdents
 
-Please apply the following critical patch.
-Can you let us know if this gets into 2.6.22 before final RC is cut?
+Alexey Dobriyan (2):
+      parisc: make command_line[] static
+      parisc: convert /proc/gsc/pcxl_dma to seq_file
 
-thanks,
-grant
+Aurelien Jarno (1):
+      [PARISC] Disable LWS debugging
 
-Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
-Acked-by: Thibaut VARENE <T-Bone@parisc-linux.org>
+Grant Grundler (2):
+      [PARISC] remove remnants of parisc-specific softirq code
+      [PARISC] remove global_ack_eiem
 
-diff --git a/arch/parisc/kernel/irq.c b/arch/parisc/kernel/irq.c
-index c5c9125..76ce5e3 100644
---- a/arch/parisc/kernel/irq.c
-+++ b/arch/parisc/kernel/irq.c
-@@ -46,14 +46,10 @@ extern irqreturn_t ipi_interrupt(int, void *);
- static volatile unsigned long cpu_eiem = 0;
- 
- /*
--** ack bitmap ... habitually set to 1, but reset to zero
-+** local ACK bitmap ... habitually set to 1, but reset to zero
- ** between ->ack() and ->end() of the interrupt to prevent
- ** re-interruption of a processing interrupt.
- */
--static volatile unsigned long global_ack_eiem = ~0UL;
--/*
--** Local bitmap, same as above but for per-cpu interrupts
--*/
- static DEFINE_PER_CPU(unsigned long, local_ack_eiem) = ~0UL;
- 
- static void cpu_disable_irq(unsigned int irq)
-@@ -94,13 +90,11 @@ void cpu_ack_irq(unsigned int irq)
- 	int cpu = smp_processor_id();
- 
- 	/* Clear in EIEM so we can no longer process */
--	if (CHECK_IRQ_PER_CPU(irq_desc[irq].status))
--		per_cpu(local_ack_eiem, cpu) &= ~mask;
--	else
--		global_ack_eiem &= ~mask;
-+	per_cpu(local_ack_eiem, cpu) &= ~mask;
- 
- 	/* disable the interrupt */
--	set_eiem(cpu_eiem & global_ack_eiem & per_cpu(local_ack_eiem, cpu));
-+	set_eiem(cpu_eiem & per_cpu(local_ack_eiem, cpu));
-+
- 	/* and now ack it */
- 	mtctl(mask, 23);
- }
-@@ -111,13 +105,10 @@ void cpu_end_irq(unsigned int irq)
- 	int cpu = smp_processor_id();
- 
- 	/* set it in the eiems---it's no longer in process */
--	if (CHECK_IRQ_PER_CPU(irq_desc[irq].status))
--		per_cpu(local_ack_eiem, cpu) |= mask;
--	else
--		global_ack_eiem |= mask;
-+	per_cpu(local_ack_eiem, cpu) |= mask;
- 
- 	/* enable the interrupt */
--	set_eiem(cpu_eiem & global_ack_eiem & per_cpu(local_ack_eiem, cpu));
-+	set_eiem(cpu_eiem & per_cpu(local_ack_eiem, cpu));
- }
- 
- #ifdef CONFIG_SMP
-@@ -354,8 +345,7 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- 	local_irq_disable();
- 	irq_enter();
- 
--	eirr_val = mfctl(23) & cpu_eiem & global_ack_eiem &
--		per_cpu(local_ack_eiem, cpu);
-+	eirr_val = mfctl(23) & cpu_eiem & per_cpu(local_ack_eiem, cpu);
- 	if (!eirr_val)
- 		goto set_out;
- 	irq = eirr_to_irq(eirr_val);
-@@ -381,7 +371,7 @@ void do_cpu_irq_mask(struct pt_regs *regs)
- 	return;
- 
-  set_out:
--	set_eiem(cpu_eiem & global_ack_eiem & per_cpu(local_ack_eiem, cpu));
-+	set_eiem(cpu_eiem & per_cpu(local_ack_eiem, cpu));
- 	goto out;
- }
- 
+Helge Deller (10):
+      [PARISC] fix lasi_82596 build
+      [PARISC] fix section mismatch in parport_gsc
+      [PARISC] fix section mismatch in parisc STI video drivers
+      [PARISC] fix section mismatch in ccio-dma
+      [PARISC] fix section mismatches in arch/parisc/kernel
+      [PARISC] fix section mismatch in parisc eisa driver
+      [PARISC] fix section mismatch in superio serial drivers
+      [PARISC] Wire up utimensat/signalfd/timerfd/eventfd syscalls
+      [PARISC] fix "ENTRY" macro redefinition
+      [PARISC] fix section mismatch in smp.c
+
+Kyle McMartin (11):
+      [PARISC] Move #undef to end of syscall table
+      [PARISC] Wire up kexec_load syscall
+      [PARISC] Let PA-8900 processors boot
+      [PARISC] kobject is embedded in subsys, not kset
+      [PARISC] Build fixes for power.c
+      [PARISC] fix trivial spelling nit in asm/linkage.h
+      [PARISC] fix null ptr deref in unwind.c
+      [PARISC] fix "reduce size of task_struct on 64-bit machines" fallout
+      [PARISC] be more defensive in process.c::get_wchan
+      [PARISC] Fix bug when syscall nr is __NR_Linux_syscalls
+      [PARISC] Fix kernel panic in check_ivt
+
+Milind Arun Choudhary (2):
+      [PARISC] ROUND_UP macro cleanup in arch/parisc
+      [PARISC] ROUNDUP macro cleanup in drivers/parisc
+
+Simon Arlott (1):
+      [PARISC] spelling fixes: arch/parisc/
+
+ arch/parisc/hpux/fs.c              |    5 +-
+ arch/parisc/kernel/entry.S         |   40 +--------------
+ arch/parisc/kernel/firmware.c      |    4 +-
+ arch/parisc/kernel/hardware.c      |   14 +++--
+ arch/parisc/kernel/hpmc.S          |    5 +--
+ arch/parisc/kernel/irq.c           |   26 +++-------
+ arch/parisc/kernel/pci-dma.c       |   94 ++++++++++++++++++++----------------
+ arch/parisc/kernel/perf.c          |   18 ++++---
+ arch/parisc/kernel/process.c       |    4 ++
+ arch/parisc/kernel/processor.c     |   14 +++---
+ arch/parisc/kernel/setup.c         |    5 +-
+ arch/parisc/kernel/signal32.h      |    2 +-
+ arch/parisc/kernel/smp.c           |    8 ++--
+ arch/parisc/kernel/sys_parisc32.c  |   13 ++++--
+ arch/parisc/kernel/syscall.S       |   12 ++--
+ arch/parisc/kernel/syscall_table.S |   16 ++++--
+ arch/parisc/kernel/time.c          |    2 +-
+ arch/parisc/kernel/traps.c         |    9 ++--
+ arch/parisc/kernel/unwind.c        |    4 +-
+ arch/parisc/math-emu/dbl_float.h   |    4 +-
+ arch/parisc/math-emu/dfsqrt.c      |    2 +-
+ arch/parisc/math-emu/sfsqrt.c      |    2 +-
+ arch/parisc/math-emu/sgl_float.h   |    4 +-
+ arch/parisc/mm/init.c              |   10 ++--
+ drivers/net/lasi_82596.c           |    1 +
+ drivers/parisc/ccio-dma.c          |   14 +++---
+ drivers/parisc/eisa.c              |    4 +-
+ drivers/parisc/iommu-helpers.h     |    4 +-
+ drivers/parisc/pdc_stable.c        |    2 +-
+ drivers/parisc/power.c             |    1 +
+ drivers/parisc/sba_iommu.c         |    6 +--
+ drivers/parisc/superio.c           |    8 ++--
+ drivers/parport/parport_gsc.c      |    2 +-
+ drivers/video/console/sticore.c    |   50 ++++++++++----------
+ include/asm-parisc/hardware.h      |    5 +-
+ include/asm-parisc/linkage.h       |    5 ++-
+ include/asm-parisc/processor.h     |    8 ++--
+ include/asm-parisc/unistd.h        |   13 +++++-
+ 38 files changed, 221 insertions(+), 219 deletions(-)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
