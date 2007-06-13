@@ -1,43 +1,41 @@
-From: seb@frankengul.org
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] glibc is broken because of gcc
-Date: Wed, 13 Jun 2007 10:21:33 +0200
-Message-ID: <20070613082133.GA19999__2196.99216909266$1416624391$gmane$org@frankengul.org>
-References: <466F052F.6080009@frankengul.org> <200706122224.l5CMO7Lk011584@hiauly1.hia.nrc.ca>
+Date: Wed, 13 Jun 2007 09:32:24 -0400 (EDT)
+Message-ID: <200706131332.l5DDWObn025750__45432.7023741373$1416624392$gmane$org@hiauly1.hia.nrc.ca>
+References: <20070613082133.GA19999@frankengul.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: aurelien@aurel32.net,
  parisc-linux@lists.parisc-linux.org,
  debian-hppa@lists.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200706122224.l5CMO7Lk011584@hiauly1.hia.nrc.ca>
-Resent-Message-ID: <6cYt8C.A.k8H.1j6bGB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+To: seb@frankengul.org
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20070613082133.GA19999@frankengul.org> from "seb@frankengul.org"
+	at Jun 13, 2007 10:21:33 am
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jun 12, 2007 at 06:24:06PM -0400, John David Anglin wrote:
-> > Here is the reduced diff. I removed anything that is unrelated to hppa,
-> > C or anything.
-> > The diff is between -7 and -12.
-> > The diff is mere 300 lines long.
-> > The problem lies here.
-> 
-> The odds are the problem lies in the change to varasm.c.
+> I could remove this patch altogether. But I still wonder why this patch works
+> ok on other archs and not on hppa*.
 
-This patch is a part of PR20218.
-4.1/4.2 PATCH: PR middle-end/20218: Can't use __attribute__ ((visibility ("hidden"))) to hide a symbol
+hppa* does a deferred generation of plabels for indirect function calls.
+I think this is affected by the change.  I don't recall exactly but there
+may have been a followup patch to fix this.  Of course, this change isn't
+in the 4.1 GCC tree.
 
-I could remove this patch altogether. But I still wonder why this patch works
-ok on other archs and not on hppa*.
-
-	Seb
-
-
+Dave
 -- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
