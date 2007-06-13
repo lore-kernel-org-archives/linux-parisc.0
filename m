@@ -1,18 +1,15 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] glibc is broken because of gcc
-Date: Wed, 13 Jun 2007 09:32:24 -0400 (EDT)
-Message-ID: <200706131332.l5DDWObn025750__45432.7023741373$1416624392$gmane$org@hiauly1.hia.nrc.ca>
-References: <20070613082133.GA19999@frankengul.org>
+From: Julian Stecklina <der_julian@web.de>
+Subject: Re: [parisc-linux] Status of parport driver in 2.6.20.1
+Date: Wed, 13 Jun 2007 19:17:14 +0200
+Message-ID: <4670269A.1080703__42853.3024540686$1416624392$gmane$org@web.de>
+References: <466F3706.3020907@web.de> <466FB64A.5020800@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: aurelien@aurel32.net,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: seb@frankengul.org
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070613082133.GA19999@frankengul.org> from "seb@frankengul.org"
-	at Jun 13, 2007 10:21:33 am
+In-Reply-To: <466FB64A.5020800@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,18 +20,29 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> I could remove this patch altogether. But I still wonder why this patch works
-> ok on other archs and not on hppa*.
+Randolph Chung wrote:
+>> I am running a 2.6.20.1 kernel on a C3600 workstation and want to hook 
+>> up a printer to the parallel port. But modprobe'ing parport-pc or 
+>> parport-serial gives me:
+> 
+> I think this uses suckyio. Can you post your boot log somewhere? I don't 
+> know if anybody has tried this recently but it did work at some point.
+> 
+> Also, output of lspci -v and cat /proc/interrupts may be helpful
+> 
+> For HPMC, you can recover the some trace data from the boot console. See 
+> http://www.parisc-linux.org/faq/kernelbug-howto.html
 
-hppa* does a deferred generation of plabels for indirect function calls.
-I think this is affected by the change.  I don't recall exactly but there
-may have been a followup patch to fix this.  Of course, this change isn't
-in the 4.1 GCC tree.
+I have build a kernel with parport support (the first try was with 
+parport as module) and was able to get a backtrace:
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+http://web.inf.tu-dresden.de/~s1054849/dmesg.and.hpmc.txt
+http://web.inf.tu-dresden.de/~s1054849/pci.txt
+
+The latter is from the same kernel without parport.
+
+Regards,
+Julian
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
