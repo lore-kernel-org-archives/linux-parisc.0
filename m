@@ -1,40 +1,43 @@
-From: Julian Stecklina <der_julian@web.de>
-Subject: [parisc-linux] Status of parport driver in 2.6.20.1
-Date: Wed, 13 Jun 2007 02:15:02 +0200
-Message-ID: <466F3706.3020907__43784.065944101$1416624391$gmane$org@web.de>
+From: seb@frankengul.org
+Subject: Re: [parisc-linux] glibc is broken because of gcc
+Date: Wed, 13 Jun 2007 10:21:33 +0200
+Message-ID: <20070613082133.GA19999__2196.99216909266$1416624391$gmane$org@frankengul.org>
+References: <466F052F.6080009@frankengul.org> <200706122224.l5CMO7Lk011584@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: aurelien@aurel32.net,
+ parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200706122224.l5CMO7Lk011584@hiauly1.hia.nrc.ca>
+Resent-Message-ID: <6cYt8C.A.k8H.1j6bGB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-Hello,
+On Tue, Jun 12, 2007 at 06:24:06PM -0400, John David Anglin wrote:
+> > Here is the reduced diff. I removed anything that is unrelated to hppa,
+> > C or anything.
+> > The diff is between -7 and -12.
+> > The diff is mere 300 lines long.
+> > The problem lies here.
+> 
+> The odds are the problem lies in the change to varasm.c.
 
-I am running a 2.6.20.1 kernel on a C3600 workstation and want to hook 
-up a printer to the parallel port. But modprobe'ing parport-pc or 
-parport-serial gives me:
+This patch is a part of PR20218.
+4.1/4.2 PATCH: PR middle-end/20218: Can't use __attribute__ ((visibility ("hidden"))) to hide a symbol
 
-Kernel panic - not syncing: High Priority Machine Check (HPMC)
+I could remove this patch altogether. But I still wonder why this patch works
+ok on other archs and not on hppa*.
 
-(This is using a serial line, no clue where the backtrace went...)
+	Seb
 
-What is the current status of the parport driver on C3600 systems? Is 
-this supposed to work? If so I am happy to provide a more thorough bug 
-report.
 
-Regards,
-Julian
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
