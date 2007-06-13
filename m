@@ -1,16 +1,13 @@
-From: dann frazier <dannf@dannf.org>
-Subject: [parisc-linux] Re: directory missing
-Date: Fri, 8 Jun 2007 11:22:51 -0600
-Message-ID: <20070608172251.GC7727__37763.2689349868$1416624391$gmane$org@ldl.fc.hp.com>
-References: <4669591B.9050000@hoendiep.ath.cx>
+From: Julian Stecklina <der_julian@web.de>
+Subject: [parisc-linux] Status of parport driver in 2.6.20.1
+Date: Wed, 13 Jun 2007 02:15:02 +0200
+Message-ID: <466F3706.3020907__43784.065944101$1416624391$gmane$org@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: ftpmaster@ftp.parisc-linux.org,
- parisc-linux@lists.parisc-linux.org
-To: Fabio Bracci <fabio@hoendiep.ath.cx>
+  charset=ISO-8859-1;
+  format=flowed
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4669591B.9050000@hoendiep.ath.cx>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,23 +18,22 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Jun 08, 2007 at 03:26:51PM +0200, Fabio Bracci wrote:
-> Hello,
->     While browsing on the site www.parisc-linux.org, I found a faq
-> pointing at a debian netinstall iso on your ftp site:
-> http://ftp.parisc-linux.org/cd-images/testing/auto-isos/
-> 
-> This link doesn't exist at all, nor I could figure out in which
-> subdirectory those images are to be found. It looks like the whole
-> directory is missing.
-> Are such images still offered on your ftp site? or is it simply a matter
-> of a wrong link by www.parisc-linux.org?
+Hello,
 
-Thanks for the report - forwarding to the developers.
+I am running a 2.6.20.1 kernel on a C3600 workstation and want to hook 
+up a printer to the parallel port. But modprobe'ing parport-pc or 
+parport-serial gives me:
 
--- 
-dann frazier
+Kernel panic - not syncing: High Priority Machine Check (HPMC)
 
+(This is using a serial line, no clue where the backtrace went...)
+
+What is the current status of the parport driver on C3600 systems? Is 
+this supposed to work? If so I am happy to provide a more thorough bug 
+report.
+
+Regards,
+Julian
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
