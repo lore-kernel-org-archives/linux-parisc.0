@@ -1,18 +1,12 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] [patch] Disable parport autoprobing on !X86
-Date: Thu, 14 Jun 2007 23:35:20 +0800
-Message-ID: <46716038.9030007__22830.9388542131$1416624394$gmane$org@tausq.org>
-References: <46715250.4050101@tausq.org>
-	<20070614162812.5c0eea6b@the-village.bc.nu>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] parisc v2.6.22-rc4-pa1
+Date: Thu, 14 Jun 2007 14:13:18 -0400
+Message-ID: <20070614181318.GA10305__27599.5843847797$1416624394$gmane$org@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: linux-parport@lists.infradead.org,
- parisc-linux@lists.parisc-linux.org
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070614162812.5c0eea6b@the-village.bc.nu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,13 +17,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> If io[0] is set the caller has specified a port to probe which seems like
-> it shouldn't be ignored ?
+Hi,
 
-if we do it that way, then it'll be trivial for root to machine check 
-the box... is that ok?
+As some people have noticed, I've been maintaining a "patches.git" quilt
+tree on kernel.org alongside the parisc-2.6.git tree. The idea is to
+branch these patches and maintain a "stable" base for people to work on
+the port, without having to deal with git.
 
-randolph
+So here's v2.6.22-rc4-pa1. I'll be doing autobuilds of our defconfigs as
+soon as I get a bit of sparetime when I'm not travelling to write it.
+
+You can find the patches in:
+	ftp://ftp.kernel.org/pub/linux/kernel/people/kyle/parisc/
+
+Cheers,
+	KyleM.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
