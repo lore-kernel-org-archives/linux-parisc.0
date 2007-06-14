@@ -1,16 +1,13 @@
-From: Julian Stecklina <der_julian@web.de>
-Subject: Re: [parisc-linux] Status of parport driver in 2.6.20.1
-Date: Thu, 14 Jun 2007 13:56:34 +0200
-Message-ID: <46712CF2.1090907__30313.9717354954$1416624393$gmane$org@web.de>
-References: <466F3706.3020907@web.de> <466FB64A.5020800@tausq.org>
-	<4670269A.1080703@web.de> <46709805.3090001@tausq.org>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] [patch] Disable parport autoprobing on !X86
+Date: Thu, 14 Jun 2007 22:36:00 +0800
+Message-ID: <46715250.4050101__11919.6905907758$1416624393$gmane$org@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-To: parisc-linux@lists.parisc-linux.org
+Content-Type: multipart/mixed;
+  boundary="------------060204090905040304060808"
+To: parisc-linux@lists.parisc-linux.org,
+ linux-parport@lists.infradead.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <46709805.3090001@tausq.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,33 +18,61 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Randolph Chung wrote:
-> Hrm, all the automatic probing in parport_pc is causing the HPMC. Can 
-> you do a quick experiment and boot the kernel with "parport=0"? The 
-> SuperIO driver should still register the parallel port.
+This is a multi-part message in MIME format.
+--------------060204090905040304060808
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-It does:
+The attached patch disables auto-probing on non-X86 platforms. On many 
+other platforms, autoprobing causes a machine check.
 
-SuperIO: Found NS87560 Legacy I/O device at 0000:00:0e.1 (IRQ 19)
-SuperIO: Serial port 1 at 0x3f8
-SuperIO: Serial port 2 at 0x2f8
-SuperIO: Parallel port at 0x378
-SuperIO: Floppy controller at 0x3f0
-SuperIO: ACPI at 0x7e0
-SuperIO: USB regulator enabled
-parport0: PC-style at 0x378, irq 5 [PCSPP]
-...
-lp0: using parport0 (interrupt-driven).
+Thanks to Julian Stecklina for reporting and helping to debug the problem.
 
-and CUPS just successfully printed a test page. :) I guess this should 
-be documented somewhere. What about a Wiki page about current problems? 
-I am happy to provide content about the parport issue and document my 
-ALSA experiments, just don't know where to put it.
+thoughts/comments?
 
+randolph
 
-Regards,
-Julian
+--------------060204090905040304060808
+Content-Type: text/plain;
+ name="pp.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="pp.diff"
+
+Disable autoprobing on non-x86 archs because it may cause machine checks.
+
+Signed-off-by: Randolph Chung <tausq@parisc-linux.org>
+
+diff --git a/drivers/parport/parport_pc.c b/drivers/parport/parport_pc.c
+index b61c17b..117f273 100644
+--- a/drivers/parport/parport_pc.c
++++ b/drivers/parport/parport_pc.c
+@@ -3381,6 +3381,8 @@ static int __init parport_pc_init(void)
+ 	if (parse_parport_params())
+ 		return -EINVAL;
+ 
++	/* Most architectures do not allow auto-probing */
++#ifdef CONFIG_X86
+ 	if (io[0]) {
+ 		int i;
+ 		/* Only probe the ports we were given. */
+@@ -3395,6 +3397,7 @@ static int __init parport_pc_init(void)
+ 		}
+ 	} else
+ 		parport_pc_find_ports (irqval[0], dmaval[0]);
++#endif
+ 
+ 	return 0;
+ }
+
+--------------060204090905040304060808
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--------------060204090905040304060808--
