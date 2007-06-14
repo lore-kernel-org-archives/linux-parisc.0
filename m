@@ -1,16 +1,18 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+From: Randolph Chung <randolph@tausq.org>
 Subject: Re: [parisc-linux] [patch] Disable parport autoprobing on !X86
-Date: Thu, 14 Jun 2007 16:28:12 +0100
-Message-ID: <20070614162812.5c0eea6b__3015.16310214556$1416624393$gmane$org@the-village.bc.nu>
+Date: Thu, 14 Jun 2007 23:35:20 +0800
+Message-ID: <46716038.9030007__22830.9388542131$1416624394$gmane$org@tausq.org>
 References: <46715250.4050101@tausq.org>
+	<20070614162812.5c0eea6b@the-village.bc.nu>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
+  charset=ISO-8859-1;
+  format=flowed
 Cc: linux-parport@lists.infradead.org,
  parisc-linux@lists.parisc-linux.org
-To: Randolph Chung <randolph@tausq.org>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <46715250.4050101@tausq.org>
+In-Reply-To: <20070614162812.5c0eea6b@the-village.bc.nu>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,18 +23,13 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, 14 Jun 2007 22:36:00 +0800
-Randolph Chung <randolph@tausq.org> wrote:
+> If io[0] is set the caller has specified a port to probe which seems like
+> it shouldn't be ignored ?
 
-> The attached patch disables auto-probing on non-X86 platforms. On many 
-> other platforms, autoprobing causes a machine check.
-> 
-> Thanks to Julian Stecklina for reporting and helping to debug the problem.
-> 
-> thoughts/comments?
+if we do it that way, then it'll be trivial for root to machine check 
+the box... is that ok?
 
-If io[0] is set the caller has specified a port to probe which seems like
-it shouldn't be ignored ?
+randolph
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
