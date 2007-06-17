@@ -1,15 +1,15 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] LCD driver trims whitespace
-Date: Sun, 17 Jun 2007 22:27:21 +0200
-Message-ID: <200706172227.22345.deller__19128.7974630997$1416624396$gmane$org@gmx.de>
+From: Julian Stecklina <der_julian@web.de>
+Subject: [parisc-linux] LCD driver trims whitespace (again)
+Date: Sun, 17 Jun 2007 23:05:10 +0200
+Message-ID: <4675A206.7060809__26840.8942538828$1416624397$gmane$org@web.de>
 References: <46279704.1080001@web.de> <200704211141.26069.deller@gmx.de>
-	<4672F1B9.507@web.de>
+	<4672F1B9.507@web.de> <200706172227.22345.deller@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: multipart/mixed;
+  boundary="------------090207030900070903060907"
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4672F1B9.507@web.de>
+In-Reply-To: <200706172227.22345.deller@gmx.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,32 +20,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Friday 15 June 2007, Julian Stecklina wrote:
-> Helge Deller wrote:
-> > On Thursday 19 April 2007, Julian Stecklina wrote:
-> >> I have a HP Visualize workstation with this fancy little LCD at the 
-> >> front controllable via /proc/pdc/lcd. The problem is that the 
-> >> responsible driver trims all trailing whitespace, which is quite 
-> >> annoying if you want to scroll some text. The attached trivial patch 
-> >> (against 2.6.20.1) removes this behaviour.
-> > 
-> > I'm sure, there was a reason to strip the whitespaces. 
-> > But I forgot it by now and it was probably a not very good reason :-)
-> > 
-> > Nevertheless, the patch looks good.
-> > 
-> > Kyle, could you add the patch to your git tree ?
-> > -> http://lists.parisc-linux.org/pipermail/parisc-linux/attachments/20070419/d58ce234/no-space-removal.bin
-> 
-> As I was just browsing the git tree, I did not see the patch. Any reason 
-> it was not committed?
+This is a multi-part message in MIME format.
+--------------090207030900070903060907
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-It seems it has been forgotten to be merged into Kyle's tree and thus it didn't went upstream.
-Please, resend the full patch again to this list, add Kyle McMartin <kyle@parisc-linux.org> to CC and (most important) do not forget to add your "signed-off" line.
+Hello,
 
-Thanks,
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+The attached patch removes the behaviour that writes to /proc/pdc/lcd 
+are whitespace trimmed.
+
+Signed-off-by: Helge Deller <deller@parisc-linux.org>
+(See thread "LCD driver trims whitespace" for reference.)
+
+Regards,
+Julian
+--
+Julian Stecklina
+http://berzerkely.net/
+
+"Dealing with failure is easy: Work hard to improve. Success is also
+easy to handle: You've solved the wrong problem. Work hard to
+improve." - Alan Perlis
+
+--------------090207030900070903060907
+Content-Type: text/x-patch;
+ name="no-space-removal.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="no-space-removal.diff"
+
+diff --git a/drivers/parisc/led.c b/drivers/parisc/led.c
+index 98be288..e5d7ed9 100644
+--- a/drivers/parisc/led.c
++++ b/drivers/parisc/led.c
+@@ -195,12 +195,6 @@ static int led_proc_write(struct file *file, const char *buf,
+ 
+ 	cur = lbuf;
+ 
+-	/* skip initial spaces */
+-	while (*cur && isspace(*cur))
+-	{
+-		cur++;
+-	}
+--------------090207030900070903060907--
