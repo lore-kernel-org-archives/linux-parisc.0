@@ -1,29 +1,44 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Unaligned handler broken (kernel BUG at mm/mmap.c:1991!)
-Date: Wed, 20 Jun 2007 14:45:02 -0400
-Message-ID: <20070620184502.GE8184__45148.2110577219$1416624399$gmane$org@fattire.cabal.ca>
-References: <200706182131.06930.deller@gmx.de>
+From: "Joel Soete" <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] Unaligned handler broken (kernel BUG at
+	mm/mmap.c:1991!)
+Date: Tue, 19 Jun 2007 11:35:12 +0200
+Message-ID: <JJVMMO$BDDF688E008708C3728947C9158A4B1D__30060.3789197796$1416624399$gmane$org@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org
-To: Helge Deller <deller@gmx.de>
-Return-Path: <kyle@fattire.cabal.ca>
-In-Reply-To: <200706182131.06930.deller@gmx.de>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=iso-8859-1
+To: "parisc-linux" <parisc-linux@lists.parisc-linux.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jun 18, 2007 at 09:31:06PM +0200, Helge Deller wrote:
-> The following small test case - which is itself wrong - crashes 2.6.22-rc5 (32bit kernel) badly:
-> 
-> #include <stdio.h>
-> int main()
-> {
->         int *ptr = (int *) 0xffffffff;
->         printf("ptr=%x, val=%d\n", ptr, *ptr);
-> }
-> 
+Hello Helge,
 
-I have a fix for this, will post after rudimentary testing.
+Did your system actually crashed?
 
-Cheers,
-	Kyle
+I run your test case and read well same messages on console but my b180 r=
+uning
+also 2.6.22-rc5-pa1 (a merge of mine obviously) was still alive after thi=
+s run???
+
+Even thought I don't know what to thought about ultimate message:
+"Fixing ... but reboot is needed!"
+
+A critical pb would launch a LPMC or a panic?
+
+Should I actualy reboot it (as it's still alive)?
+
+Thx,
+    Joel
+=0A---=0Ahttp://www.scarlet.be/
+
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
