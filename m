@@ -1,16 +1,17 @@
-From: "Helge Deller" <deller@gmx.de>
+From: Helge Deller <deller@gmx.de>
 Subject: Re: [parisc-linux] Unaligned handler broken (kernel BUG at
 	mm/mmap.c:1991!)
-Date: Tue, 19 Jun 2007 21:28:56 +0200
-Message-ID: <20070619192856.137150__41760.30775202$1416624399$gmane$org@gmx.net>
-References: <JJVMMO$BDDF688E008708C3728947C9158A4B1D@scarlet.be>
+Date: Wed, 20 Jun 2007 23:09:39 +0200
+Message-ID: <200706202309.39643.deller__26094.5532740609$1416624400$gmane$org@gmx.de>
+References: <200706182131.06930.deller@gmx.de>
+	<20070620184502.GE8184@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
-To: "Joel Soete" <soete.joel@scarlet.be>,
- parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: Kyle McMartin <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <JJVMMO$BDDF688E008708C3728947C9158A4B1D@scarlet.be>
+In-Reply-To: <20070620184502.GE8184@fattire.cabal.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,36 +22,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Joel,
+Hi Kyle,
 
-Von: "Joel Soete" <soete.joel@scarlet.be>
-> Did your system actually crashed?
+On Wednesday 20 June 2007, Kyle McMartin wrote:
+> On Mon, Jun 18, 2007 at 09:31:06PM +0200, Helge Deller wrote:
+> > The following small test case - which is itself wrong - crashes 2.6.22-rc5 (32bit kernel) badly:
+> > 
+> > #include <stdio.h>
+> > int main()
+> > {
+> >         int *ptr = (int *) 0xffffffff;
+> >         printf("ptr=%x, val=%d\n", ptr, *ptr);
+> > }
+> > 
+> 
+> I have a fix for this, will post after rudimentary testing.
 
-No it didn't.
- 
-> I run your test case and read well same messages on console but my b180
-> runing also 2.6.22-rc5-pa1 (a merge of mine obviously) was still 
-> alive after this run???
+I remembered, that I saw similiar problems with the LTP testsuite last december.
+It's in the archives as thread named "kernel BUG at mm/mmap.c:1990".
 
-Yes.
-
-> Even thought I don't know what to thought about ultimate message:
-> "Fixing ... but reboot is needed!"
-
-Yeah. There is some major bug though : "kernel BUG at mm/mmap.c:1991!"
- 
-> A critical pb would launch a LPMC or a panic?
-
-That's the worst thing which can happen.
-
-> Should I actualy reboot it (as it's still alive)?
-
-I have no idea. Probably the best is to reboot.
+In the end Willy (and I think you as well!) helped me to track the problem down on IRC.
+The final patch which solved this issue is this one, which we had in our old git tree, but which never made it upstream:
+http://git.parisc-linux.org/?p=linux-2.6.git;a=commitdiff;h=0590a4f2beee1d489050cb0ca035294892a46a40
 
 Helge
--- 
-Psssst! Schon vom neuen GMX MultiMessenger gehört?
-Der kanns mit allen: http://www.gmx.net/de/go/multimessenger
+
+PS: I would surround the if-clause check with likely() today...
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
