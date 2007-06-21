@@ -1,13 +1,11 @@
-From: Kyle McMartin <kyle@debian.org>
-Subject: [parisc-linux] [git patches] parisc bugfixes for 2.6.22-rc5
-Date: Thu, 21 Jun 2007 17:39:30 -0400
-Message-ID: <20070621213930.GA11721__21635.4077951566$1416624400$gmane$org@fattire.cabal.ca>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] parisc v2.6.22-rc5-pa1
+Date: Thu, 21 Jun 2007 05:26:33 -0400
+Message-ID: <20070621092633.GB10043__219.452280043875$1416624400$gmane$org@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: akpm@linux-foundation.org,
- parisc-linux@lists.parisc-linux.org
-To: torvalds@linux-foundation.org
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
@@ -19,36 +17,43 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hi Linus,
+http://ftp.kernel.org/pub/linux/kernel/people/kyle/parisc/2.6.22-rc5/v2.6.22-rc5-pa1.diff.bz2
 
-Just a few last minute critical bugfixes for parisc for 2.6.22.
+added:
++parisc/led-lcd-no-space-removal.patch
++parisc/mmap-handle-expand_upwards-wrap.patch
 
-Cheers,
-	Kyle M.
-
-The following changes since commit 188e1f81ba31af1b65a2f3611df4c670b092bbac:
-  Linus Torvalds (1):
-        Linux 2.6.22-rc5
-
-are available in the git repository at:
-
-  /pub/scm/linux/kernel/git/kyle/parisc-2.6.git master
-
-Helge Deller (1):
-      [PARISC] Handle wrapping in expand_upwards()
-
-Julian Stecklina (1):
-      [PARISC] stop lcd driver from stripping initial whitespace
-
-Randolph Chung (2):
-      [PARISC] Fix unwinder on 64-bit kernels
-      [PARISC] unwinder improvements
-
- arch/parisc/kernel/unwind.c |   43 ++++++++++++++++++++++++++++++++++++-------
- drivers/parisc/led.c        |    6 ------
- include/asm-parisc/system.h |    1 -
- mm/mmap.c                   |    9 +++++++--
- 4 files changed, 43 insertions(+), 16 deletions(-)
+merged:
+-parisc/make-command_line-static.patch
+-parisc/sync-compat-getdents.patch
+-parisc/move-undef-to-end-of-syscall-table.patch
+-parisc/wire-up-kexec_load-syscall.patch
+-parisc/convert-proc-gsc-pcxl_dma-to-seq_file.patch
+-parisc/let-pa8900-processors-boot.patch
+-parisc/disable-lws-debugging.patch
+-parisc/spelling-fixes-arch-parisc.patch
+-parisc/ROUND_UP-macro-cleanup-in-arch-parisc.patch
+-parisc/ROUNDUP-macro-cleanup-in-drivers-parisc.patch
+-parisc/kobject-is-embedded-in-subsys-not-kset.patch
+-parisc/build-fixes-for-power.c.patch
+-parisc/fix-lasi_82596-build.patch
+-parisc/fix-section-mismatch-in-parport_gsc.patch
+-parisc/fix-section-mismatch-in-parisc-STI-video-dr.patch
+-parisc/fix-section-mismatch-in-ccio-dma.patch
+-parisc/fix-section-mismatches-in-arch-parisc-kerne.patch
+-parisc/fix-section-mismatch-in-parisc-eisa-driver.patch
+-parisc/fix-section-mismatch-in-superio-serial-driv.patch
+-parisc/wire-up-utimensat-signalfd-timerfd-eventfd.patch
+-parisc/fix-ENTRY-macro-redefinition.patch
+-parisc/fix-section-mismatch-in-smp.c.patch
+-parisc/remove-remnants-of-parisc-specific-softirq.patch
+-parisc/fix-trivial-spelling-nit-in-asm-linkage.h.patch
+-parisc/fix-null-ptr-deref-in-unwind.c.patch
+-parisc/fix-reduce-size-of-task_struct-on-64-bit-m.patch
+-parisc/be-more-defensive-in-process.c-get_wchan.patch
+-parisc/fix-bug-when-syscall-nr-is-__NR_Linux_sysca.patch
+-parisc/fix-kernel-panic-in-check_ivt.patch
+-parisc/remove-global_ack_eiem.patch
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
