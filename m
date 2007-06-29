@@ -1,18 +1,12 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] -pie is broken on hppa
-Date: Sat, 30 Jun 2007 13:51:49 -0400 (EDT)
-Message-ID: <200706301751.l5UHpnrw011062__1000.03481279618$1416624404$gmane$org@hiauly1.hia.nrc.ca>
-References: <20070630165455.GA465@fattire.cabal.ca>
+From: Kyle McMartin <kyle@parisc-linux.org>
+Subject: [parisc-linux] parisc v2.6.22-rc6-pa1
+Date: Fri, 29 Jun 2007 03:01:18 -0400
+Message-ID: <20070629070118.GB9495__31055.2941555672$1416624408$gmane$org@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: matthew@wil.cx,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+  charset=us-ascii
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070630165455.GA465@fattire.cabal.ca> from "Kyle McMartin" at
-	Jun 30, 2007 12:54:55 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,25 +17,19 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> On Sat, Jun 30, 2007 at 11:44:13AM -0400, John David Anglin wrote:
-> > > Could you try this patch?
-> > 
-> > I installed it last night.  svn works, gcc bootstraps and I haven't
-> > seen any other problems.  There was a problem building libjava with
-> > the getdents bug.
-> >
-> 
-> OK. I'll try to build a HEAD kernel and boot with an old glibc to see if
-> it fucks up. Is there a really easy testcase I can try to reproduce
-> this?
+http://ftp.kernel.org/pub/linux/kernel/people/kyle/parisc/2.6.22-rc6/v2.6.22-rc6-pa1.diff.bz2
 
-I phrased my response badly.  I haven't seen any new problems and
-the change fixes the libjava build problem.
+added:
++parisc/add-empty-asm-parisc-vga-h.patch
++parisc/add-dummy-isa_foo_to_bar.patch
++parisc/clean-up-sti_flush.patch
++parisc/do-not-allow-STI_CONSOLE-to-be-modular.patch
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+merged:
+-parisc/led-lcd-no-space-removal.patch
+-parisc/mmap-handle-expand_upwards-wrap.patch
+-parisc/fix-64bit-unwinding.patch
+-parisc/unwinder-improvements.patch
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
