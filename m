@@ -1,18 +1,18 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [parisc-linux] -pie is broken on hppa
-Date: Sat, 30 Jun 2007 11:44:13 -0400 (EDT)
-Message-ID: <200706301544.l5UFiDoG008907__27529.3660852642$1416624401$gmane$org@hiauly1.hia.nrc.ca>
+Date: Sat, 30 Jun 2007 12:54:55 -0400
+Message-ID: <20070630165455.GA465__9495.00177889622$1416624401$gmane$org@fattire.cabal.ca>
 References: <20070629072912.GC9495@fattire.cabal.ca>
+	<200706301544.l5UFiDoG008907@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: matthew@wil.cx,
+  charset=us-ascii
+Cc: debian-hppa@lists.debian.org,
  parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+ matthew@wil.cx
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070629072912.GC9495@fattire.cabal.ca> from "Kyle McMartin" at
-	Jun 29, 2007 03:29:12 am
+In-Reply-To: <200706301544.l5UFiDoG008907@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,21 +23,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Could you try this patch?
+On Sat, Jun 30, 2007 at 11:44:13AM -0400, John David Anglin wrote:
+> > Could you try this patch?
+> 
+> I installed it last night.  svn works, gcc bootstraps and I haven't
+> seen any other problems.  There was a problem building libjava with
+> the getdents bug.
+>
 
-I installed it last night.  svn works, gcc bootstraps and I haven't
-seen any other problems.  There was a problem building libjava with
-the getdents bug.
+OK. I'll try to build a HEAD kernel and boot with an old glibc to see if
+it fucks up. Is there a really easy testcase I can try to reproduce
+this?
 
-> -	/* struct linux_dirent has longs, like 'unsigned long d_ino' which
-> -	 * almost definitely should be 'ino_t d_ino' but it's too late now */
+> > -	/* struct linux_dirent has longs, like 'unsigned long d_ino' which
+> > -	 * almost definitely should be 'ino_t d_ino' but it's too late now */
+> 
+> This is my only concern.
+> 
 
-This is my only concern.
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+It should be fine, since all other compat arches have the same problem.
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
