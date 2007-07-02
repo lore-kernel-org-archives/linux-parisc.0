@@ -1,46 +1,43 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] GCC trunk 20070630
-Date: Mon, 2 Jul 2007 12:53:44 -0400 (EDT)
-Message-ID: <200707021653.l62Grit6023802__1220.75307085669$1416624405$gmane$org@hiauly1.hia.nrc.ca>
-References: <18057.10210.79139.936855@gargle.gargle.HOWL>
+From: =?ISO-8859-1?Q?S=E9bastien_Bernard?= <seb@frankengul.org>
+Subject: Re: [parisc-linux] glibc is broken because of gcc
+Date: Mon, 02 Jul 2007 22:14:23 +0200
+Message-ID: <46895C9F.7020000__40659.0921259069$1416624405$gmane$org@frankengul.org>
+References: <20070613082133.GA19999@frankengul.org>	<200706131332.l5DDWObn025750@hiauly1.hia.nrc.ca>	<20070613142304.GA21970@frankengul.org>	<46705613.8020708@frankengul.org> <18056.11841.395484.508171@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org,
+  charset=ISO-8859-1;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ parisc-linux@lists.parisc-linux.org,
+ aurelien@aurel32.net,
  debian-hppa@lists.debian.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <18057.10210.79139.936855@gargle.gargle.HOWL> from "Matthias
-	Klose" at Jul 2, 2007 06:29:22 pm
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: Matthias Klose <doko@cs.tu-berlin.de>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <18056.11841.395484.508171@gargle.gargle.HOWL>
+Resent-Message-ID: <gyN_hD.A.nbE._yViGB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-> Testing 20070630 including the fix for PR rtl-optimization/32296 shows
-> many new C++ and libstdc++ regressions.
+Matthias Klose a écrit :
+> The proposed fix seems to be wrong, as it disables the backport on all
+> architectures.  Please could you recheck with current trunk? As jda
+> suggested, another backport is missing for hppa.
+> 
+>   Matthias
+> 
 
-Most of these were introduced by the dataflow merge (r125624).  I'm
-currently working to confirm this.
+Oh well, I didn't say I got it all right.
 
-The C++ and libstdc++ regressions are an EH bug in libgcc.  I tried
-debugging this yesterday but didn't find the problem.  I know the
-problems in libgcc since the test that I was debugging doesn't fail
-with the system libgcc.
+I just said the problem was there.
+I submited the bug to the gcc bugtracker and to the debian gcc, but I
+didn't submit this patch as a potential fix.
+There was no reaction on either site.
 
-We also have problems with building hppa64 and Ada.  So, things are
-a mess at the moment...
-
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+If you watch carefuly, this patch is not applied against some archs :
+-ifneq (,$(filter $(DEB_TARGET_ARCH), amd64 i386 powerpc ppc64 sparc s390))
+-  debian_patches += pr20218
+-endif
