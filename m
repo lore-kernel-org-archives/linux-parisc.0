@@ -1,17 +1,17 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] GCC trunk 20070630
-Date: Tue, 3 Jul 2007 11:58:51 +0200
-Message-ID: <18058.7643.461885.7204__18179.4635406279$1416624407$gmane$org@gargle.gargle.HOWL>
-References: <18057.10210.79139.936855@gargle.gargle.HOWL>
-	<200707021653.l62Grit6023802@hiauly1.hia.nrc.ca>
+Date: Tue, 3 Jul 2007 09:48:30 -0400 (EDT)
+Message-ID: <200707031348.l63DmUrJ015142__39625.4758620218$1416624407$gmane$org@hiauly1.hia.nrc.ca>
+References: <18058.7643.461885.7204@gargle.gargle.HOWL>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org,
  debian-hppa@lists.debian.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: doko@cs.tu-berlin.de (Matthias Klose)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200707021653.l62Grit6023802@hiauly1.hia.nrc.ca>
+In-Reply-To: <18058.7643.461885.7204@gargle.gargle.HOWL> from "Matthias Klose"
+	at Jul 3, 2007 11:58:51 am
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,15 +22,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-John David Anglin writes:
-> > Testing 20070630 including the fix for PR rtl-optimization/32296 shows
-> > many new C++ and libstdc++ regressions.
-> 
-> We also have problems with building hppa64 and Ada.  So, things are
-> a mess at the moment...
+> The hppa64 cross compiler at least did build;
 
-The hppa64 cross compiler at least did build; Ada is broken on other
-archs as well (at least 20070702).
+Since the dataflow merge, the hppa64-hp-hpux11.11 build fails at
+the start of stage3.  More info is available in PR middle-end/32398.
+The ptr-plus merge also has some affect.  After the pointer plus
+merge, there's a small test case in the PR that's miscompiled
+with the stage1 compiler.
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
