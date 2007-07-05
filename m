@@ -1,15 +1,16 @@
-From: "Jeff Bailey" <jbailey@raspberryginger.com>
-Subject: Re: [parisc-linux] glibc-2.6 status
-Date: Mon, 30 Jul 2007 09:50:17 -0700
-Message-ID: <5b2e36650707300950k1552c56es93cbb61aeeb06521__26296.0856118754$1416624424$gmane$org@mail.gmail.com>
-References: <200707281608.33638.vapier@gentoo.org>
+From: maximilian attems <max@stro.at>
+Subject: [parisc-linux] [patch] ccio kill old cvstree ref
+Date: Thu, 5 Jul 2007 10:06:23 +0200
+Message-ID: <20070705080623.GI5108__38181.9150331014$1416624639$gmane$org@stro.at>
+References: <20070704153917.GN13523@stro.at>
+	<20070705001953.GB16764@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=UTF-8
-Cc: parisc-linux@lists.parisc-linux.org
-To: "Mike Frysinger" <vapier@gentoo.org>
+  charset=us-ascii
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+To: parisc-linux@parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200707281608.33638.vapier@gentoo.org>
+In-Reply-To: <20070705001953.GB16764@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,20 +21,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 28/07/07, Mike Frysinger <vapier@gentoo.org> wrote:
-> is it worth trying to make vanilla glibc-2.6 work ?  once i fixed elf/elf.h to
-> have all of the new PARISC defines, it cross-compiled fine for me ... or is
-> there more patches needed for runtime ?
-> -mike
+this cvs tree is long defunct, rm co instructions.
+text changes revised by Grant Grundler.
 
-Ubuntu and Debian are now building glibc-2.6 for hppa, so in the event
-of trouble, it's probably worth fishing through there for diffs.  On
-Ubuntu hppa, I've got the same set of failures that Carlos reported.
+Signed-off-by: maximilian attems <max@stro.at>
+Signed-off-by: Grant Grundler <grundler@parisc-linux.org>
 
-(I'm travelling atm, sorry for any slow responses)
+---
+
+ drivers/parisc/ccio-dma.c    |    5 +----
+ drivers/parisc/ccio-rm-dma.c |    4 ----
+ 2 files changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index b3c4dbf..41756b5 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -17,10 +17,7 @@
+ **  U2/Uturn were designed to perform coherency checks w/o using
+ **  the I/O MMU - basically what x86 does.
+ **
+-**  Philipp Rumpf has a "Real Mode" driver for PCX-W machines at:
+-**      CVSROOT=:pserver:anonymous@198.186.203.37:/cvsroot/linux-parisc
+-**      cvs -z3 co linux/arch/parisc/kernel/dma-rm.c
+-**
++**  Philipp Rumpf wrote a "Real Mode" driver for PCX-W machines.
+ **  I've rewritten his code to work under TPG's tree. See ccio-rm-dma.c.
+ **
+ **  Drawbacks of using Real Mode are:
+diff --git a/drivers/parisc/ccio-rm-dma.c b/drivers/parisc/ccio-rm-dma.c
+index 356b835..b5d5bae 100644
+--- a/drivers/parisc/ccio-rm-dma.c
++++ b/drivers/parisc/ccio-rm-dma.c
+@@ -21,10 +21,6 @@
+  * (at your option) any later version.
+  *
+  *
+- * Original version/author:
+- *      CVSROOT=:pserver:anonymous@198.186.203.37:/cvsroot/linux-parisc
+- *      cvs -z3 co linux/arch/parisc/kernel/dma-rm.c
+- *
+  *	(C) Copyright 2000 Philipp Rumpf <prumpf@tux.org>
+  *
+  *
 
 -- 
-Jeff Bailey - http://www.raspberryginger.com/jbailey/
+maks
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
