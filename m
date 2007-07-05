@@ -1,50 +1,47 @@
 From: "Jeff Bailey" <jbailey@raspberryginger.com>
-Subject: Re: [parisc-linux] glibc is broken because of gcc
-Date: Thu, 5 Jul 2007 08:24:12 -0700
-Message-ID: <5b2e36650707050824ud041452reb3c017d85b155dc__3371.94599346748$1416624402$gmane$org@mail.gmail.com>
-References: <20070705142222.GA26105@frankengul.org>
-	 <200707051518.l65FI56n006476@hiauly1.hia.nrc.ca>
+Subject: [parisc-linux] Re: glibc testsuite failures,
+	3 odd filesystem issues.
+Date: Thu, 5 Jul 2007 08:31:07 -0700
+Message-ID: <5b2e36650707050831h7e92ef95u8c5b075edd1baeba__29046.5257749476$1416624403$gmane$org@mail.gmail.com>
+References: <119aab440705031832yf0dd7a4gff0e053e7b52febd@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=UTF-8;
   format=flowed
-Cc: seb@frankengul.org,
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
  parisc-linux@lists.parisc-linux.org,
- aurelien@aurel32.net,
- debian-hppa@lists.debian.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200707051518.l65FI56n006476@hiauly1.hia.nrc.ca>
-Resent-Message-ID: <DhU3PD.A.KfD.E1QjGB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+ aurelien@aurel32.net
+To: "Carlos O'Donell" <carlos@systemhalted.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <119aab440705031832yf0dd7a4gff0e053e7b52febd@mail.gmail.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 05/07/07, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> > > Could you do glibc builds with the gcc trunk before and after the change?
-> > > It's best to base the PR on an unmodified version of gcc.
-> >
-> > The test with the gcc-trunk (Main 4.3.0 head) shows the same error at the same place.
->
-> Ok, it would be useful to file a gcc PR to start.  However, it's not
-> clear that gcc is a fault.
->
-> It may be that glibc isn't using the visibility attribute correctly
-> for this symbol (i.e., hiding a symbol that is externally referenced).
-> You could try building glibc with the attribute removed.  This might
-> be somewhat hppa specific because of the nptl issue.
+On 03/05/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
+> On 5/3/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
 
-As long as LinuxThreads isn't built, this problem doesn't come up.  It
-seems very likely that it's a glibc problem, then.  The Ubuntu builds
-are NPTL-only and don't show this problem.
+(details on tests snipped)
+
+> Triage complete!
+
+Heya Carlos!  FYI that glibc-2.6-0ubuntu2 (being uploaded soonish) now
+matches your set of testsuite failures.  The changes from Debian are:
+dropped LT support, built with gcc-4.2.  The tst-mqueue3 failure is
+probably the next one I'll investigate, since it's a regression from
+being built with gcc-4.1.
+
+Thanks!
 
 -- 
 Jeff Bailey - http://www.raspberryginger.com/jbailey/
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
