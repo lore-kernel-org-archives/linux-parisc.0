@@ -1,18 +1,18 @@
-From: seb@frankengul.org
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] glibc is broken because of gcc
-Date: Thu, 5 Jul 2007 16:22:23 +0200
-Message-ID: <20070705142222.GA26105__4955.21510388262$1416624402$gmane$org@frankengul.org>
-References: <4689855B.1000404@frankengul.org>
-	<200707030158.l631wkrg003150@hiauly1.hia.nrc.ca>
+Date: Thu, 5 Jul 2007 11:18:05 -0400 (EDT)
+Message-ID: <200707051518.l65FI56n006476__16166.9711619199$1416624402$gmane$org@hiauly1.hia.nrc.ca>
+References: <20070705142222.GA26105@frankengul.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
+  charset=US-ASCII
 Cc: parisc-linux@lists.parisc-linux.org,
  aurelien@aurel32.net,
  debian-hppa@lists.debian.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: seb@frankengul.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200707030158.l631wkrg003150@hiauly1.hia.nrc.ca>
+In-Reply-To: <20070705142222.GA26105@frankengul.org> from "seb@frankengul.org"
+	at Jul 5, 2007 04:22:23 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,38 +23,32 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Mon, Jul 02, 2007 at 09:58:45PM -0400, John David Anglin wrote:
-[snip]
+> > Could you do glibc builds with the gcc trunk before and after the change?
+> > It's best to base the PR on an unmodified version of gcc.
 > 
-> Looking at gcc PR 20218, it's clear that there are some very subtle
-> issues here.  So, it's not clear to me where the problem lies.  It
-> could be in glibc (hppa sysdep-cancel.h), binutils or gcc.  The handling
-> of the visibility attribute was broken prior to HJL's change, so it
-> could have exposed bugs in other packages.
+> The test with the gcc-trunk (Main 4.3.0 head) shows the same error at the same place.
+
+Ok, it would be useful to file a gcc PR to start.  However, it's not
+clear that gcc is a fault.
+
+It may be that glibc isn't using the visibility attribute correctly
+for this symbol (i.e., hiding a symbol that is externally referenced).
+You could try building glibc with the attribute removed.  This might
+be somewhat hppa specific because of the nptl issue.
+
+> > It would help to know the exact details of the linker command that
+> > fails, the assembler code generated for mq_timedreceive, and the
+> > __librt_multiple_threads symbols in __librt_multiple_threads librt.so.
 > 
-> Because of this, it was a mistake for Debian to backport this change.
-> The change is only in the unreleased gcc trunk.
-> 
-> Since the problem was introduced by a gcc change, I'd start with
-> a gcc PR and mention the patch that introduced the regression.
-> 
-> Could you do glibc builds with the gcc trunk before and after the change?
-> It's best to base the PR on an unmodified version of gcc.
+> Did you had a look at the info I sent you  (see my previous message) ?
 
-The test with the gcc-trunk (Main 4.3.0 head) shows the same error at the same place.
-By the way, did I mention that the problem is not present if nptl is enabled ?
+I looked at it briefly but don't have a comment at the moment.  I was
+hoping to figure out which package is responsible for this problem.
 
-> 
-> It would help to know the exact details of the linker command that
-> fails, the assembler code generated for mq_timedreceive, and the
-> __librt_multiple_threads symbols in __librt_multiple_threads librt.so.
-
-Did you had a look at the info I sent you  (see my previous message) ?
-
-What do you think of this ?
-
-	Seb
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
