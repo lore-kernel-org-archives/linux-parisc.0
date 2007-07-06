@@ -1,21 +1,12 @@
-From: "Jeff Bailey" <jbailey@raspberryginger.com>
-Subject: Re: [parisc-linux] -pie is broken on hppa
-Date: Fri, 6 Jul 2007 09:20:38 -0700
-Message-ID: <5b2e36650707060920w19b07eeeu1fb2cd8f8c38a996__44531.0251242065$1416624404$gmane$org@mail.gmail.com>
-References: <20070604014313.GB2075@fattire.cabal.ca>
-	<200706040147.l541lAP3022868@hiauly1.hia.nrc.ca>
-	<20070629072912.GC9495@fattire.cabal.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] [palo patch] Implement CTRL-U functionality
+Date: Fri, 06 Jul 2007 16:44:05 -0700
+Message-ID: <468ED3C5.8040104__21588.7906881564$1416624404$gmane$org@tausq.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org,
- matthew@wil.cx
-To: "Kyle McMartin" <kyle@mcmartin.ca>
+Content-Type: multipart/mixed;
+  boundary="------------040204040303090305040207"
+To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070629072912.GC9495@fattire.cabal.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,24 +17,59 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 29/06/07, Kyle McMartin <kyle@mcmartin.ca> wrote:
-> On Sun, Jun 03, 2007 at 09:47:10PM -0400, John David Anglin wrote:
-> > > I don't suppose you could strace in a chroot with a older working glibc
-> > > and see what syscalls are there?
-> >
-> > Probably, I won't have time until next weekend.
-> >
->
-> Could you try this patch?
+This is a multi-part message in MIME format.
+--------------040204040303090305040207
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I tried it to see if it would fix the strangeness in the glibc
-testsuite where three tests can't find files, but if run a couple
-seconds later finds them fine.  It doesn't fix this, but it also
-doesn't cause any further regressions.
+I keep on meaning to do this, and have finally done it.....
 
--- 
-Jeff Bailey - http://www.raspberryginger.com/jbailey/
+The attached patch makes the palo "editor" understand CTRL-U, so that 
+you can quickly clear out a particular command line parameter.
+
+Any comments? If not I will commit this in a few days, and hope that the 
+Debian/Ubuntu/Gentoo folks eventually pick it up :)
+
+randolph
+
+--------------040204040303090305040207
+Content-Type: text/plain;
+ name="palo.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="palo.diff"
+
+diff --git a/ipl/lib.c b/ipl/lib.c
+index 544385e..06d790c 100644
+--- a/ipl/lib.c
++++ b/ipl/lib.c
+@@ -242,6 +242,17 @@ char *enter_text(char *txt, int maxchars)
+ 		putchar(' ');
+ 		putchar(c);
+ 	    }
++	} else if (c == 21)
++	{			/* CTRL-U */
++	    while (pos)
++	    {
++		pos--;
++		c='\b';
++		putchar(c);
++		putchar(' ');
++		putchar(c);
++	    }
++	    txt[0] = 0;
+ 	} else if ((pos < maxchars) && c >= ' ')
+ 	{
+ 	    txt[pos] = c;
+
+--------------040204040303090305040207
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--------------040204040303090305040207--
