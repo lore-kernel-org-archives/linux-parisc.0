@@ -1,44 +1,43 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] glibc is broken because of gcc
-Date: Sun, 8 Jul 2007 11:04:07 -0400 (EDT)
-Message-ID: <200707081504.l68F47s9007180__49138.3553519428$1416624409$gmane$org@hiauly1.hia.nrc.ca>
-References: <4690DC22.1070307@aurel32.net>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] [palo patch] Implement CTRL-U functionality
+Date: Mon, 9 Jul 2007 06:09:53 -0400
+Message-ID: <20070709100953.GA18383__20718.4264123955$1416624409$gmane$org@fattire.cabal.ca>
+References: <468ED3C5.8040104@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: jbailey@raspberryginger.com,
- debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org
-To: aurelien@aurel32.net (Aurelien Jarno)
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <4690DC22.1070307@aurel32.net> from "Aurelien Jarno" at Jul 8, 2007 02:44:18 pm
-Resent-Message-ID: <zKwBn.A.WDC.iJQkGB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Randolph Chung <randolph@tausq.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <468ED3C5.8040104@tausq.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> >> On the other hand, the LinuxThreads build on other architectures are
-> >> still fine even with the latest gcc in Debian.
-> > 
-> > Is the __librt_multiple_threads symbol defined, undefined or not
-> > used in librt.so?
-> > 
+On Fri, Jul 06, 2007 at 04:44:05PM -0700, Randolph Chung wrote:
+> I keep on meaning to do this, and have finally done it.....
 > 
-> On both hppa and m68k I get:
-> 00000000      DO *UND*  00000004  GLIBC_PRIVATE __librt_multiple_threads
+> The attached patch makes the palo "editor" understand CTRL-U, so that 
+> you can quickly clear out a particular command line parameter.
+> 
+> Any comments? If not I will commit this in a few days, and hope that the 
+> Debian/Ubuntu/Gentoo folks eventually pick it up :)
+> 
 
-So, it would seem m68k is also broken if the definition
-in libc-2.5.so is hidden.
+ACK.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Will upload to Debian after you commit it. (Or, I suppose, you could
+upload to Debian and add yourself to Uploaders if you wanted.)
 
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+Cheers,
+	Kyle
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
