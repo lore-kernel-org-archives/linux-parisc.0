@@ -1,75 +1,56 @@
-From: Aurelien Jarno <aurelien@aurel32.net>
-Subject: Re: [parisc-linux] glibc is broken because of gcc
-Date: Tue, 10 Jul 2007 09:23:23 +0200
-Message-ID: <20070710072322.GA28527__35070.9815546454$1416624410$gmane$org@farad.aurel32.net>
-References: <20070705142222.GA26105@frankengul.org> <200707051518.l65FI56n006476@hiauly1.hia.nrc.ca>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: [parisc-linux] Crashed on 2.6.22-rc7, Linus' tree
+Date: Tue, 10 Jul 2007 09:01:02 -0400
+Message-ID: <5b2e36650707100601s50fc0c62k551d387bd755b3cd__46957.9322649681$1416624411$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-15
-Cc: seb@frankengul.org,
- parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org,
- libc-ports@sources.redhat.com,
- Carlos O'Donell <carlos@systemhalted.org>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200707051518.l65FI56n006476@hiauly1.hia.nrc.ca>
-Resent-Message-ID: <oter8.A.BAF.4QzkGB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset=UTF-8;
+  format=flowed
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jul 05, 2007 at 11:18:05AM -0400, John David Anglin wrote:
-> > > Could you do glibc builds with the gcc trunk before and after the change?
-> > > It's best to base the PR on an unmodified version of gcc.
-> > 
-> > The test with the gcc-trunk (Main 4.3.0 head) shows the same error at the same place.
-> 
-> Ok, it would be useful to file a gcc PR to start.  However, it's not
-> clear that gcc is a fault.
-> 
-> It may be that glibc isn't using the visibility attribute correctly
-> for this symbol (i.e., hiding a symbol that is externally referenced).
+Heya!  I'm running 2.6.22-rc7 from Linus' tree, and I occasionally get
+the system dying like this.  I'm mostly surprised by the complete lack
+of information in the crash, is there anything I can do to ask it to
+give more when it dies?
 
+ * INIT: version 2.86 reloading
 
-The patch below based on the m68k version of sysdep-cancel.h fixes the
-problem.
+************* SYSTEM ALERT **************
+SYSTEM NAME: a500-gsp
+DATE: 07/10/2007 TIME: 07:23:03
+ALERT LEVEL: 7 = reserved
 
+REASON FOR ALERT
+SOURCE: 0 = unknown, no source stated
+SOURCE DETAIL: 0 = unknown, no source stated   SOURCE ID: FF
+PROBLEM DETAIL: 0 = no problem detail
 
-2007-07-10  Aurelien Jarno  <aurelien@aurel32.net>
+LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
+       ON       FLASH         OFF       ON         ON
+LED State: There was a system interruption that did not take the system down.
+Check Chassis and Console Logs for error messages.
 
-	* sysdeps/unix/sysv/linux/hppa/linuxthreads/sysdep-cancel.h:
-	(__local_multiple_threads): Declare as hidden only in libc and
-	in libpthread.
-
-Index: ports/sysdeps/unix/sysv/linux/hppa/linuxthreads/sysdep-cancel.h 
-===================================================================
---- ports/sysdeps/unix/sysv/linux/hppa/linuxthreads/sysdep-cancel.h.orig
-+++ ports/sysdeps/unix/sysv/linux/hppa/linuxthreads/sysdep-cancel.h
-@@ -206,7 +206,11 @@
- # endif
- 
- # ifndef __ASSEMBLER__
-- extern int __local_multiple_threads attribute_hidden;
-+#  if !defined NOT_IN_libc || defined IS_IN_libpthread
-+extern int __local_multiple_threads attribute_hidden;
-+#  else
-+extern int __local_multiple_threads;
-+#  endif
- #  define SINGLE_THREAD_P __builtin_expect (__local_multiple_threads == 0, 1)
- # else
- /* This ALT version requires newer kernel support */
-
--- 
-  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
- : :' :  Debian developer           | Electrical Engineer
- `. `'   aurel32@debian.org         | aurelien@aurel32.net
-   `-    people.debian.org/~aurel32 | www.aurel32.net
+0x0000007000FF6292 000000F0 F0000000 - type  0 = Data Field Unused
+0x5800087000FF6292 00006B06 0A071703 - type 11 = Timestamp 07/10/2007 07:23:03
+A: ack read of this entry - X: Disable all future alert messages
+Anything else skip redisplay the log entry
+->Choice:Timeout!
+*****************************************
 
 
 -- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
