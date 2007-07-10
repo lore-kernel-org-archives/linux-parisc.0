@@ -1,81 +1,52 @@
-From: Randolph Chung <tausq@debian.org>
-Subject: [parisc-linux] [PATCH] Fix debugging interface for nptl
-Date: Fri, 13 Jul 2007 01:33:56 +0000
-Message-ID: <20070713013356.GD16077__1432.00616953454$1416624410$gmane$org@tausq.org>
-Reply-To: Randolph Chung <tausq@debian.org>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: Re: [parisc-linux] glibc is broken because of gcc
+Date: Tue, 10 Jul 2007 06:08:21 +0200
+Message-ID: <46930635.7040208__45338.1202686161$1416624410$gmane$org@aurel32.net>
+References: <20070705142222.GA26105@frankengul.org>	<200707051518.l65FI56n006476@hiauly1.hia.nrc.ca> <5b2e36650707050824ud041452reb3c017d85b155dc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-  boundary="CUfgB8w4ZwR/yMy5"
-To: parisc-linux@lists.parisc-linux.org,
- libc-ports@sourceware.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+Content-Type: text/plain;
+  charset=UTF-8
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ debian-hppa@lists.debian.org,
+ parisc-linux@lists.parisc-linux.org
+To: Jeff Bailey <jbailey@raspberryginger.com>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <5b2e36650707050824ud041452reb3c017d85b155dc@mail.gmail.com>
+Resent-Message-ID: <m-Cr2D.A.3_G.CawkGB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+
+Jeff Bailey a écrit :
+> On 05/07/07, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
+>>>> Could you do glibc builds with the gcc trunk before and after the change?
+>>>> It's best to base the PR on an unmodified version of gcc.
+>>> The test with the gcc-trunk (Main 4.3.0 head) shows the same error at the same place.
+>> Ok, it would be useful to file a gcc PR to start.  However, it's not
+>> clear that gcc is a fault.
+>>
+>> It may be that glibc isn't using the visibility attribute correctly
+>> for this symbol (i.e., hiding a symbol that is externally referenced).
+>> You could try building glibc with the attribute removed.  This might
+>> be somewhat hppa specific because of the nptl issue.
+> 
+> As long as LinuxThreads isn't built, this problem doesn't come up.  It
+> seems very likely that it's a glibc problem, then.  The Ubuntu builds
+> are NPTL-only and don't show this problem.
+
+NPTL does not use this symbol at all, that's why the problem does not
+appear.
+
+-- 
+  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
+ : :' :  Debian developer           | Electrical Engineer
+ `. `'   aurel32@debian.org         | aurelien@aurel32.net
+   `-    people.debian.org/~aurel32 | www.aurel32.net
 
 
---CUfgB8w4ZwR/yMy5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Jeff mentioned recently that with a NPTL-enabled glibc, gdb debugging of
-any threaded app fails. For example:
-
-(gdb) run
-Starting program: /home/tausq/userspace/thread_test2
-[Thread debugging using libthread_db enabled]
-Error while reading shared library symbols:
-find_new_threads_callback: cannot get thread info: generic error
-
-Two fixes, one in glibc and one in gdb, are required to fix this. The
-attached patch is the glibc portion.
-
-2007-07-12  Randolph Chung  <tausq@debian.org>
-
-	* sysdeps/hppa/nptl/tls.h (DB_THREAD_SELF): Fix definition.
-
-Please apply if ok.
-
-randolph
-
---CUfgB8w4ZwR/yMy5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="local-threaddb.diff"
-
-Fix the register offset for libthread_db to do THREAD_SELF properly.
-
---- ports/sysdeps/hppa/nptl/tls.h.orig	2007-07-11 22:57:36.000000000 +0000
-+++ ports/sysdeps/hppa/nptl/tls.h	2007-07-11 22:57:50.000000000 +0000
-@@ -117,10 +117,11 @@
-    	__self - 1;				\
-    })
- 
--/* FIXME */
--/* Magic for libthread_db to know how to do THREAD_SELF.  */
-+/* Magic for libthread_db to know how to do THREAD_SELF.
-+   Our thread pointer is stored in cr27.  See asm/elf.h for the offset into
-+   elf_gregset_t.  The thread descriptor is sizeof (struct pthread) away.  */
- # define DB_THREAD_SELF \
--  REGISTER (32, 32, 32 * 4, -sizeof (struct pthread))
-+  REGISTER (32, 32, 53 * 4, -sizeof (struct pthread))
- 
- /* Access to data in the thread descriptor is easy.  */
- # define THREAD_GETMEM(descr, member) \
-
---CUfgB8w4ZwR/yMy5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
---CUfgB8w4ZwR/yMy5--
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
