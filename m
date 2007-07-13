@@ -1,15 +1,13 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] Crashed on 2.6.22-rc7, Linus' tree
-Date: Wed, 11 Jul 2007 18:21:51 -0600
-Message-ID: <20070712002151.GB26794__5731.79262360117$1416624411$gmane$org@colo.lackof.org>
-References: <5b2e36650707100601s50fc0c62k551d387bd755b3cd@mail.gmail.com>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: [parisc-linux] Nonexistance of asm/offsets.h
+Date: Fri, 13 Jul 2007 19:10:57 -0400
+Message-ID: <5b2e36650707131610u7b158370ya591e2076ec980ac__39698.9310779192$1416624412$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: Jeff Bailey <jbailey@raspberryginger.com>
+  charset=UTF-8;
+  format=flowed
+To: parisc-linux <parisc-linux@lists.parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <5b2e36650707100601s50fc0c62k551d387bd755b3cd@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,56 +18,28 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Jul 10, 2007 at 09:01:02AM -0400, Jeff Bailey wrote:
-> Heya!  I'm running 2.6.22-rc7 from Linus' tree, and I occasionally get
-> the system dying like this.  I'm mostly surprised by the complete lack
-> of information in the crash, is there anything I can do to ask it to
-> give more when it dies?
->
-> * INIT: version 2.86 reloading
->
-> ************* SYSTEM ALERT **************
+In the process of getting the world up, running and debugged with
+NPTL, Randolph has provided a patch to make gdb work better.  Building
+this on Ubuntu turned out to be a problem because we're using the
+exported kernel headers rather than the mashup that Debian has been
+using.
 
-The Virtual Front Panel (VFP) is obscuring any kernel output.
-You can get kernel output (if there is any) by looking at the
-console log recorded by the GSP (aka MP).
+The challenge is that the Debian kernel packages used to generate
+asm/offsets.h from the 64-bit kernel build's asm-offsets.h and make
+that available.  When we created linux-kernel-headers, we just
+imported that.
 
-> SYSTEM NAME: a500-gsp
-> DATE: 07/10/2007 TIME: 07:23:03
-> ALERT LEVEL: 7 = reserved
->
-> REASON FOR ALERT
-> SOURCE: 0 = unknown, no source stated
-> SOURCE DETAIL: 0 = unknown, no source stated   SOURCE ID: FF
-> PROBLEM DETAIL: 0 = no problem detail
->
-> LEDs:  RUN      ATTENTION     FAULT     REMOTE     POWER
->       ON       FLASH         OFF       ON         ON
-> LED State: There was a system interruption that did not take the system 
-> down.
-> Check Chassis and Console Logs for error messages.
->
-> 0x0000007000FF6292 000000F0 F0000000 - type  0 = Data Field Unused
-> 0x5800087000FF6292 00006B06 0A071703 - type 11 = Timestamp 07/10/2007 
+Now, with the sanitised kernel headers being produced from the kernel
+source, this no longer seems right.  It means that there's a header
+that's not right for both 32-bit and 64-bit userspace, and it's being
+generated, so it might change by accident and break the userspace ABI.
+ I'd like to propose that we create a hand-crafted offsets.h that is
+intended for userspace consuption and then stop generating the
+asm-offsets.h file at build time.  I'll put together a patch to do
+this over the weekend unless there's objections.
 
-IIRC, FF6292 is a HPMC. Please collect and post the "ser pim" output.
-
-thanks,
-grant
-
-> 07:23:03
-> A: ack read of this entry - X: Disable all future alert messages
-> Anything else skip redisplay the log entry
-> ->Choice:Timeout!
-> *****************************************
->
->
-> -- 
-> Jeff Bailey - http://www.raspberryginger.com/jbailey/
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+-- 
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
