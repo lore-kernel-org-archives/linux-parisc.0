@@ -1,19 +1,14 @@
-From: "Jeff Bailey" <jbailey@raspberryginger.com>
-Subject: Re: [parisc-linux] Crashed on 2.6.22-rc7, Linus' tree
-Date: Thu, 12 Jul 2007 10:03:16 -0400
-Message-ID: <5b2e36650707120703u4bbf7c32r644dab39a67c75a9__46051.1095625863$1416624409$gmane$org@mail.gmail.com>
-References: <5b2e36650707100601s50fc0c62k551d387bd755b3cd@mail.gmail.com>
-	<1184087573.3401.45.camel@localhost.localdomain>
-	<119aab440707120627p65d4a7a7v9cda67fdc406a9a1@mail.gmail.com>
+From: Randolph Chung <tausq@debian.org>
+Subject: [parisc-linux] [PATCH] Fix debugging interface for nptl
+Date: Fri, 13 Jul 2007 01:33:56 +0000
+Message-ID: <20070713013356.GD16077__1432.00616953454$1416624410$gmane$org@tausq.org>
+Reply-To: Randolph Chung <tausq@debian.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset=UTF-8;
-  format=flowed
-Cc: James Bottomley <James.Bottomley@steeleye.com>,
- parisc-linux <parisc-linux@lists.parisc-linux.org>
-To: "Carlos O'Donell" <carlos@systemhalted.org>
+Content-Type: multipart/mixed;
+  boundary="CUfgB8w4ZwR/yMy5"
+To: parisc-linux@lists.parisc-linux.org,
+ libc-ports@sourceware.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440707120627p65d4a7a7v9cda67fdc406a9a1@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,29 +19,63 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 12/07/07, Carlos O'Donell <carlos@systemhalted.org> wrote:
-> On 7/10/07, James Bottomley <James.Bottomley@steeleye.com> wrote:
-> > On Tue, 2007-07-10 at 09:01 -0400, Jeff Bailey wrote:
-> > > Heya!  I'm running 2.6.22-rc7 from Linus' tree, and I occasionally get
-> > > the system dying like this.  I'm mostly surprised by the complete lack
-> > > of information in the crash, is there anything I can do to ask it to
-> > > give more when it dies?
-> >
-> > A register dump with IAOQ and %r2 decoded to the kernel addresses might
-> > (or might not) be helpful.  Given that the interrupt seems to be
-> > advisory (not a machine check) you might have to TOC the box to get
-> > this.  Although, unfortunately, I've seen this several times as the
-> > symptom of A500 flakey HW.
->
-> Right, I saw this failure just before the main board on my A500 died.
 
-Thanks.  I'll try Grant's test, but I'll get my data off that box.
-*pout*  Anyway of adding a GSP to a J6700?  I've been using the a500
-to make remote rebooting not suck.
+--CUfgB8w4ZwR/yMy5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Jeff Bailey - http://www.raspberryginger.com/jbailey/
+Jeff mentioned recently that with a NPTL-enabled glibc, gdb debugging of
+any threaded app fails. For example:
+
+(gdb) run
+Starting program: /home/tausq/userspace/thread_test2
+[Thread debugging using libthread_db enabled]
+Error while reading shared library symbols:
+find_new_threads_callback: cannot get thread info: generic error
+
+Two fixes, one in glibc and one in gdb, are required to fix this. The
+attached patch is the glibc portion.
+
+2007-07-12  Randolph Chung  <tausq@debian.org>
+
+	* sysdeps/hppa/nptl/tls.h (DB_THREAD_SELF): Fix definition.
+
+Please apply if ok.
+
+randolph
+
+--CUfgB8w4ZwR/yMy5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="local-threaddb.diff"
+
+Fix the register offset for libthread_db to do THREAD_SELF properly.
+
+--- ports/sysdeps/hppa/nptl/tls.h.orig	2007-07-11 22:57:36.000000000 +0000
++++ ports/sysdeps/hppa/nptl/tls.h	2007-07-11 22:57:50.000000000 +0000
+@@ -117,10 +117,11 @@
+    	__self - 1;				\
+    })
+ 
+-/* FIXME */
+-/* Magic for libthread_db to know how to do THREAD_SELF.  */
++/* Magic for libthread_db to know how to do THREAD_SELF.
++   Our thread pointer is stored in cr27.  See asm/elf.h for the offset into
++   elf_gregset_t.  The thread descriptor is sizeof (struct pthread) away.  */
+ # define DB_THREAD_SELF \
+-  REGISTER (32, 32, 32 * 4, -sizeof (struct pthread))
++  REGISTER (32, 32, 53 * 4, -sizeof (struct pthread))
+ 
+ /* Access to data in the thread descriptor is easy.  */
+ # define THREAD_GETMEM(descr, member) \
+
+--CUfgB8w4ZwR/yMy5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--CUfgB8w4ZwR/yMy5--
