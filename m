@@ -1,54 +1,39 @@
-From: Helge Deller <deller@gmx.de>
-Subject: [parisc-linux] [PATCH] [PARISC] Clean up syslog output of crashing
-	userspace apps.
-Date: Sun, 15 Jul 2007 15:00:58 +0200
-Message-ID: <200707151500.59050.deller__1925.526923924$1416624413$gmane$org@gmx.de>
+From: Randolph Chung <randolph@tausq.org>
+Subject: Re: [parisc-linux] [PATCH] [PARISC] Clean up syslog output of crashing userspace apps.
+Date: Sun, 15 Jul 2007 14:56:14 +0000
+Message-ID: <20070715145613.GA9938__19981.1472943567$1416624413$gmane$org@tausq.org>
+References: <200707151500.59050.deller@gmx.de>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <randolph@tausq.org>
+In-Reply-To: <200707151500.59050.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-Clean up syslog output of crashing userspace apps.
-With this patch the syslog will print:
-  portmap(1480): invalid access to 0x8232b578 at ip=0x41192af3 (segfault code 15)
-which is consistent with outher output like:
-  hald-probe-stor(1672): unaligned access to 0xfafcbd26 at ip=0x00014013
+In reference to a message from Helge Deller, dated Jul 15:
+> Clean up syslog output of crashing userspace apps.
+> With this patch the syslog will print:
+>   portmap(1480): invalid access to 0x8232b578 at ip=0x41192af3 (segfault code 15)
+> which is consistent with outher output like:
+>   hald-probe-stor(1672): unaligned access to 0xfafcbd26 at ip=0x00014013
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+The verbose dump we have now is actually quite useful for debugging.
+Whereas unaligned accesses are usually very straightforward to debug
+once you know where they are coming from (thus only need ip), segfaults
+are not always that way. The full register dump comes in handy...
 
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index f6f6755..8d6ddf8 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -208,14 +208,9 @@ bad_area:
- 		struct siginfo si;
- 
- #ifdef PRINT_USER_FAULTS
--		printk(KERN_DEBUG "\n");
--		printk(KERN_DEBUG "do_page_fault() pid=%d command='%s' type=%lu address=0x%08lx\n",
--		    tsk->pid, tsk->comm, code, address);
--		if (vma) {
--			printk(KERN_DEBUG "vm_start = 0x%08lx, vm_end = 0x%08lx\n",
--					vma->vm_start, vma->vm_end);
--		}
--		show_regs(regs);
-+		printk(KERN_DEBUG "%s(%d): invalid access to 0x%08lx at ip=0x%08lx" 
-+				  " (segfault code %lu)\n",
-+		    tsk->comm, tsk->pid, address, regs->iaoq[0], code);
- #endif
- 		/* FIXME: actually we need to get the signo and code correct */
- 		si.si_signo = SIGSEGV;
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Can we make this controllable by prctl, so that we can have both verbose
+and terse output options, with the verbose one being the default? My
+rationale is that you don't usually know if an app is going to crash, so
+it's better to have the debug info you need if it does crash, and you
+can turn it off if your app runs in a way that the verbose output is
+somehow adversely affecting it (slowing it down too much, etc).
+
+Also, you might want to remove "segfault" from the output string, since
+the crash can be from SIGSEGV, SIGILL, SIGBUS, etc...
+
+thanks,
+randolph
