@@ -1,7 +1,7 @@
 From: Joel Soete <soete.joel@scarlet.be>
-Subject: [parisc-linux] [PATCH] [PARISC] Clean up syslog output of
-Date: Sun, 22 Jul 2007 12:01:33 +0000
-Message-ID: <46A3471D.6030704__42171.8076024719$1416624416$gmane$org@scarlet.be>
+Subject: [parisc-linux] Some warning: ... cleanup; relay no interest?
+Date: Sun, 22 Jul 2007 12:01:40 +0000
+Message-ID: <46A34724.1090108__44997.8113793351$1416624416$gmane$org@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=ISO-8859-1;
@@ -18,21 +18,15 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello Helge,
+Hello *,
 
-Just try your patch against latest 2.6.22-pa1 and it seems that:
-@@ -303,7 +301,7 @@ static void handle_break(struct pt_regs *regs)
-  	if (unlikely(iir == PARISC_BUG_BREAK_INSN && !user_mode(regs))) {
-  		/* check if a BUG() or WARN() trapped here.  */
-  		enum bug_trap_type tt;
--		tt = report_bug(regs->iaoq[0] & ~3, regs);
-+		tt = report_bug(instruction_pointer(regs), regs);
+There was <http://lists.parisc-linux.org/pipermail/parisc-linux/2007-June/031749.html>
 
-should be
-+		tt = report_bug(instruction_pointer(regs));
+Really no interest, just missed or did I made a big mistake?
 
-Hth,
+Tx,
 	J.
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
