@@ -1,13 +1,15 @@
-From: Joel Soete <soete.joel@scarlet.be>
-Subject: [parisc-linux] Some warning: ... cleanup; relay no interest?
-Date: Sun, 22 Jul 2007 12:01:40 +0000
-Message-ID: <46A34724.1090108__44997.8113793351$1416624416$gmane$org@scarlet.be>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] [PATCH] [PARISC] Clean up syslog output of
+Date: Mon, 23 Jul 2007 22:21:06 +0200
+Message-ID: <200707232221.06720.deller__13450.3740621314$1416624416$gmane$org@gmx.de>
+References: <46A3471D.6030704@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
+  charset="iso-8859-1"
+Cc: Joel Soete <soete.joel@scarlet.be>
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <46A3471D.6030704@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,15 +20,21 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello *,
+Hi Joel,
 
-There was <http://lists.parisc-linux.org/pipermail/parisc-linux/2007-June/031749.html>
+On Sunday 22 July 2007, Joel Soete wrote:
+> Just try your patch against latest 2.6.22-pa1 and it seems that:
+>   		enum bug_trap_type tt;
+> -		tt = report_bug(regs->iaoq[0] & ~3, regs);
+> +		tt = report_bug(instruction_pointer(regs), regs);
+> should be
+> +		tt = report_bug(instruction_pointer(regs));
 
-Really no interest, just missed or did I made a big mistake?
+Why ?
+In include/linux/bug.h the function report_bug() is defined as:
+	report_bug(unsigned long bug_addr, struct pt_regs *regs)
 
-Tx,
-	J.
-
+Helge
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
