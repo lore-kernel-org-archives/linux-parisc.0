@@ -1,41 +1,38 @@
-From: Helge Deller <deller@gmx.de>
-Subject: Re: [parisc-linux] Some warning: ... cleanup; relay no interest?
-Date: Mon, 23 Jul 2007 22:38:11 +0200
-Message-ID: <200707232238.11288.deller__8963.25093131072$1416624417$gmane$org@gmx.de>
-References: <46A34724.1090108@scarlet.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] [PATCH] [PARISC] Clean up syslog output of
+Date: Mon, 23 Jul 2007 16:47:03 -0400 (EDT)
+Message-ID: <200707232047.l6NKl4uj001716__20374.3782513358$1416624417$gmane$org@hiauly1.hia.nrc.ca>
+References: <200707232221.06720.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Cc: Joel Soete <soete.joel@scarlet.be>
-To: parisc-linux@lists.parisc-linux.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <46A34724.1090108@scarlet.be>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+  charset=US-ASCII
+Cc: parisc-linux@lists.parisc-linux.org,
+ soete.joel@scarlet.be
+To: deller@gmx.de (Helge Deller)
+Return-Path: <dave@hiauly1.hia.nrc.ca>
+In-Reply-To: <200707232221.06720.deller@gmx.de> from "Helge Deller" at Jul 23, 2007 10:21:06 pm
+List-ID: <linux-parisc.vger.kernel.org>
 
-Hi Joel,
-
-On Sunday 22 July 2007, Joel Soete wrote:
-> There was <http://lists.parisc-linux.org/pipermail/parisc-linux/2007-June/031749.html>
+> Hi Joel,
 > 
-> Really no interest, just missed or did I made a big mistake?
+> On Sunday 22 July 2007, Joel Soete wrote:
+> > Just try your patch against latest 2.6.22-pa1 and it seems that:
+> >   		enum bug_trap_type tt;
+> > -		tt = report_bug(regs->iaoq[0] & ~3, regs);
+> > +		tt = report_bug(instruction_pointer(regs), regs);
+> > should be
+> > +		tt = report_bug(instruction_pointer(regs));
+> 
+> Why ?
+> In include/linux/bug.h the function report_bug() is defined as:
+> 	report_bug(unsigned long bug_addr, struct pt_regs *regs)
 
-I don't like that patch very much.
-It converts everything needlessly to (unsigned long long), which is 64bit long.
+In 2.6.22.1, it's defined as:
+enum bug_trap_type report_bug(unsigned long bug_addr);
 
-Wouldn't it be better to use "%z" or "%z"<something> ?
-%z refers to size_t which should be the native bit length.
-I'm not sure what others on this list think about it, or if this even works with 64bit...
+I had to make the same change as Joel.
 
-Helge
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
