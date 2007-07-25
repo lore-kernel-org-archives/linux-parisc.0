@@ -1,13 +1,15 @@
-From: Yoann Padioleau <padator@wanadoo.fr>
-Subject: [parisc-linux] [PATCH 11/68] 0 -> NULL, for arch/parisc
-Date: Fri, 27 Jul 2007 11:45:05 +0200 (MEST)
-Message-ID: <200707270945.LAA17250__26185.7494399466$1416624640$gmane$org@ifs.emn.fr>
-Cc: matthew@wil.cx,
- linux-kernel@vger.kernel.org,
- akpm@linux-foundation.org,
- parisc-linux@parisc-linux.org
-To: kernel-janitors@vger.kernel.org
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] Historical artifacts ... going, going
+Date: Wed, 25 Jul 2007 16:47:52 -0600
+Message-ID: <20070725224752.GA6667__14889.1442026526$1416624646$gmane$org@colo.lackof.org>
+References: <20070725134259.GL26883@parisc-linux.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Cc: parisc-linux@parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <20070725134259.GL26883@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -18,52 +20,17 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Wed, Jul 25, 2007 at 07:42:59AM -0600, Matthew Wilcox wrote:
+> 
+> I found a DAT today with the following contents on it.  Looks like it
+> may have been a snapshot of the p-l ftp archive, possibly taken for
+> transport to a show or something.  Anyone want to preserve these for
+> historical purposes, or can I just write over this tape?
 
-When comparing a pointer, it's clearer to compare it to NULL than to 0.
+Write over it. I don't care since all that stuff was SOM based.
 
-Here is an excerpt of the semantic patch: 
-
-@@
-expression *E;
-@@
-
-  E ==
-- 0
-+ NULL
-
-@@
-expression *E;
-@@
-
-  E !=
-- 0
-+ NULL
-
-Signed-off-by: Yoann Padioleau <padator@wanadoo.fr>
-Cc: matthew@wil.cx
-Cc: grundler@parisc-linux.org
-Cc: kyle@parisc-linux.org
-Cc: parisc-linux@parisc-linux.org
-Cc: akpm@linux-foundation.org
----
-
- smp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 04c7e1d..16fccbe 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -333,7 +333,7 @@ smp_call_function (void (*func) (void *i
- 
- 	if (retry) {
- 		spin_lock (&lock);
--		while (smp_call_function_data != 0)
-+		while (smp_call_function_data != NULL)
- 			barrier();
- 	}
- 	else {
-
+thanks for asking though,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
