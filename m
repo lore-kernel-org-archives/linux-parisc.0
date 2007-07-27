@@ -1,16 +1,14 @@
-From: aurel32 <aurelien@aurel32.net>
-Subject: Re: [parisc-linux] -pie is broken on hppa
-Date: Thu, 26 Jul 2007 23:34:55 +0200
-Message-ID: <20070726213455.GE11851__42882.3778908283$1416624418$gmane$org@hall.aurel32.net>
-References: <5b2e36650706110615g20d10f79ue2aa5b11b5fcb185@mail.gmail.com>
-	<200707262113.l6QLD8ZB017056@hiauly1.hia.nrc.ca>
+From: Aurelien Jarno <aurelien@aurel32.net>
+Subject: [parisc-linux] [PATCH] Fix hppa glibc build in HEAD and
+	glibc-2_6-branch
+Date: Fri, 27 Jul 2007 20:34:53 +0200
+Message-ID: <20070727183453.GL32467__25389.6479066045$1416624419$gmane$org@hall.aurel32.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=iso-8859-15
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: libc-ports@sourceware.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200707262113.l6QLD8ZB017056@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,18 +19,50 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Jul 26, 2007 at 05:13:07PM -0400, John David Anglin wrote:
-> > PIE's don't work on NPTL either, FWIW.
-> 
-> I did an apt-get upgrade today on one of my systems and noticed
-> that portmap is now segfaulting at the same spot as nscd (i.e.,
-> in _start).
-> 
+The patch below is necessary to make the hppa glibc buildable in HEAD
+and glibc-2_6-branch wrt recent changes that have been done in NPTL
+code.
 
-portmap has been built against libc6-dev 2.5-9 while the PIE fixed
-appeared in libc6-dev 2.5-11...
 
-So it need to be rebuilt.
+2007-07-27  Aurelien Jarno  <aurelien@aurel32.net>
+
+	* sysdeps/hppa/nptl/tls.h (THREAD_GSCOPE_FLAG_UNUSED,
+	THREAD_GSCOPE_FLAG_USED, THREAD_GSCOPE_FLAG_WAIT): Define.
+	(THREAD_GSCOPE_RESET_FLAG, THREAD_GSCOPE_SET_FLAG,
+	THREAD_GSCOPE_WAIT): Define.
+
+--- ports/sysdeps/hppa/nptl/tls.h.orig	2007-07-27 08:17:35.000000000 -0600
++++ ports/sysdeps/hppa/nptl/tls.h	2007-07-27 08:18:39.000000000 -0600
+@@ -147,6 +147,29 @@
+ 	: : "r" (cr27) : "r26" );
+ }
+ 
++/* Get and set the global scope generation counter in struct pthread.  */
++#define THREAD_GSCOPE_FLAG_UNUSED 0
++#define THREAD_GSCOPE_FLAG_USED   1
++#define THREAD_GSCOPE_FLAG_WAIT   2
++#define THREAD_GSCOPE_RESET_FLAG() \
++  do									     \
++    { int __res								     \
++	= atomic_exchange_rel (&THREAD_SELF->header.gscope_flag,	     \
++			       THREAD_GSCOPE_FLAG_UNUSED);		     \
++      if (__res == THREAD_GSCOPE_FLAG_WAIT)				     \
++	lll_futex_wake (&THREAD_SELF->header.gscope_flag, 1);		     \
++    }									     \
++  while (0)
++#define THREAD_GSCOPE_SET_FLAG() \
++  do									     \
++    {									     \
++      THREAD_SELF->header.gscope_flag = THREAD_GSCOPE_FLAG_USED;	     \
++      atomic_write_barrier ();						     \
++    }									     \
++  while (0)
++#define THREAD_GSCOPE_WAIT() \
++  GL(dl_wait_lookup_done) ()
++
+ #endif /* __ASSEMBLER__ */
+ 
+ #endif	/* tls.h */
 
 -- 
   .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
