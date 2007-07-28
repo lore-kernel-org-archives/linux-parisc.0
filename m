@@ -1,75 +1,92 @@
-From: Aurelien Jarno <aurelien@aurel32.net>
-Subject: [parisc-linux] [PATCH] Fix hppa glibc build in HEAD and
-	glibc-2_6-branch
-Date: Fri, 27 Jul 2007 20:34:53 +0200
-Message-ID: <20070727183453.GL32467__25389.6479066045$1416624419$gmane$org@hall.aurel32.net>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] Some warning: ... cleanup; relay no interest?
+Date: Sat, 28 Jul 2007 14:38:16 +0000
+Message-ID: <46AB54D8.3090204__17432.9393114478$1416624419$gmane$org@scarlet.be>
+References: <46A34724.1090108@scarlet.be> <200707232238.11288.deller@gmx.de> <200707232250.38148.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=iso-8859-15
+  charset=iso-8859-1;
+  format=flowed
 Cc: parisc-linux@lists.parisc-linux.org
-To: libc-ports@sourceware.org
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <soete.joel@scarlet.be>
+In-Reply-To: <200707232250.38148.deller@gmx.de>
+List-ID: <linux-parisc.vger.kernel.org>
 
-The patch below is necessary to make the hppa glibc buildable in HEAD
-and glibc-2_6-branch wrt recent changes that have been done in NPTL
-code.
+Hi Helge,
 
+Helge Deller wrote:
+> On Monday 23 July 2007, Helge Deller wrote:
+>> Hi Joel,
+>>
+>> On Sunday 22 July 2007, Joel Soete wrote:
+>>> There was <http://lists.parisc-linux.org/pipermail/parisc-linux/2007-June/031749.html>
+>>>
+>>> Really no interest, just missed or did I made a big mistake?
+>> I don't like that patch very much.
+>> It converts everything needlessly to (unsigned long long), which is 64bit long.
+>>
+>> Wouldn't it be better to use "%z" or "%z"<something> ?
+>> %z refers to size_t which should be the native bit length.
+> 
+> Hi Joel,
+> 
+> e.g. replace "%lx" by "%Zx" or "%zx" ???
+> (untested!!!)
+> 
+> Helge
+> 
+> 
+I just do a short test again dino.c:
 
-2007-07-27  Aurelien Jarno  <aurelien@aurel32.net>
+./drivers/parisc/dino.c
+     898         if (request_resource(&ioport_resource, res) < 0) {
+     899                 printk(KERN_ERR "%s: request I/O Port region failed "
+     900                        "0x%Zx/%Zx (hpa 0x%p)\n",
+     901                        name, res->start, res->end, dino_dev->hba.base_addr);
+     902                 return 1;
+     903         }
 
-	* sysdeps/hppa/nptl/tls.h (THREAD_GSCOPE_FLAG_UNUSED,
-	THREAD_GSCOPE_FLAG_USED, THREAD_GSCOPE_FLAG_WAIT): Define.
-	(THREAD_GSCOPE_RESET_FLAG, THREAD_GSCOPE_SET_FLAG,
-	THREAD_GSCOPE_WAIT): Define.
+and unfortunately it doesn't help:
+/CAD/linux-2.6.22-pa/drivers/parisc/dino.c: In function âdino_bridge_initâ:
+/CAD/linux-2.6.22-pa/drivers/parisc/dino.c:821: warning: format %lx expects type long unsigned int, but argument 4 has type 
+resource_size_t
+/CAD/linux-2.6.22-pa/drivers/parisc/dino.c:821: warning: format %lx expects type long unsigned int, but argument 5 has type 
+resource_size_t
 
---- ports/sysdeps/hppa/nptl/tls.h.orig	2007-07-27 08:17:35.000000000 -0600
-+++ ports/sysdeps/hppa/nptl/tls.h	2007-07-27 08:18:39.000000000 -0600
-@@ -147,6 +147,29 @@
- 	: : "r" (cr27) : "r26" );
- }
- 
-+/* Get and set the global scope generation counter in struct pthread.  */
-+#define THREAD_GSCOPE_FLAG_UNUSED 0
-+#define THREAD_GSCOPE_FLAG_USED   1
-+#define THREAD_GSCOPE_FLAG_WAIT   2
-+#define THREAD_GSCOPE_RESET_FLAG() \
-+  do									     \
-+    { int __res								     \
-+	= atomic_exchange_rel (&THREAD_SELF->header.gscope_flag,	     \
-+			       THREAD_GSCOPE_FLAG_UNUSED);		     \
-+      if (__res == THREAD_GSCOPE_FLAG_WAIT)				     \
-+	lll_futex_wake (&THREAD_SELF->header.gscope_flag, 1);		     \
-+    }									     \
-+  while (0)
-+#define THREAD_GSCOPE_SET_FLAG() \
-+  do									     \
-+    {									     \
-+      THREAD_SELF->header.gscope_flag = THREAD_GSCOPE_FLAG_USED;	     \
-+      atomic_write_barrier ();						     \
-+    }									     \
-+  while (0)
-+#define THREAD_GSCOPE_WAIT() \
-+  GL(dl_wait_lookup_done) ()
-+
- #endif /* __ASSEMBLER__ */
- 
- #endif	/* tls.h */
+same warning either Z or z qualifier :_(
 
--- 
-  .''`.  Aurelien Jarno	            | GPG: 1024D/F1BCDB73
- : :' :  Debian developer           | Electrical Engineer
- `. `'   aurel32@debian.org         | aurelien@aurel32.net
-   `-    people.debian.org/~aurel32 | www.aurel32.net
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+As far as I understand of headers' comments:
+./lib/vsprintf.c:
+     270         int qualifier;          /* 'h', 'l', or 'L' for integer fields */
+     271                                 /* 'z' support added 23/7/1999 S.H.    */
+     272                                 /* 'z' changed to 'Z' --davidm 1/25/99 */
+     273                                 /* 't' added for ptrdiff_t */
+
+(so Z or z are all acceptable)
+
+     472                 } else if (qualifier == 'Z' || qualifier == 'z') {
+     473                         num = va_arg(args, size_t);
+
+and all for the same type size_t
+
+while here
+./include/linux/ioport.h
+
+      17 struct resource {
+      18         resource_size_t start;
+      19         resource_size_t end;
+      20         const char *name;
+      21         unsigned long flags;
+      22         struct resource *parent, *sibling, *child;
+      23 };
+
+start & end are of type resource_size_t and not size_t.
+
+I suppose that's why somewhere else upstream:
+<http://www.linuxhq.com/kernel/v2.6/18/kernel/resource.c>
+
+(still the same in 2.6.22.1), though.
+
+Tx,
+	Joel
