@@ -1,36 +1,40 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] Re: Boot problem with HPPA 735/125 w/ A1439A CRX
-Date: Sun, 29 Jul 2007 20:12:50 -0400 (EDT)
-Message-ID: <200707300012.l6U0Co1e006326__35326.6855156564$1416624424$gmane$org@hiauly1.hia.nrc.ca>
-References: <200707292101.l6TL13M2002430@hiauly1.hia.nrc.ca>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
+Subject: Re: [parisc-linux] glibc-2.6 status
+Date: Mon, 30 Jul 2007 09:50:17 -0700
+Message-ID: <5b2e36650707300950k1552c56es93cbb61aeeb06521__26296.0856118754$1416624424$gmane$org@mail.gmail.com>
+References: <200707281608.33638.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=US-ASCII
-Cc: deller@gmx.de,
- parisc-linux@lists.parisc-linux.org
-To: dave@hiauly1.hia.nrc.ca (John David Anglin)
-Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <200707292101.l6TL13M2002430@hiauly1.hia.nrc.ca> from "John David Anglin" at Jul 29, 2007 05:01:02 pm
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=UTF-8
+Cc: parisc-linux@lists.parisc-linux.org
+To: "Mike Frysinger" <vapier@gentoo.org>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200707281608.33638.vapier@gentoo.org>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> > So it crashes in userspace ony (and not the kernel). Any backtraces ?
-> 
-> Nothing.  It seems X just exits.  Hmmm, maybe I should set
-> NoTrapSignals and DisableVidModeExtension.
+On 28/07/07, Mike Frysinger <vapier@gentoo.org> wrote:
+> is it worth trying to make vanilla glibc-2.6 work ?  once i fixed elf/elf.h to
+> have all of the new PARISC defines, it cross-compiled fine for me ... or is
+> there more patches needed for runtime ?
+> -mike
 
-Didn't help.  I can get rid of the mode failure by commenting out the
-Modes line in the Display subsection.  However, this doesn't fix the
-problem.  The last lines in the Xorg log are:
+Ubuntu and Debian are now building glibc-2.6 for hppa, so in the event
+of trouble, it's probably worth fishing through there for diffs.  On
+Ubuntu hppa, I've got the same set of failures that Carlos reported.
 
-...
-(II) XINPUT: Adding extended input device "Configured Mouse" (type: MOUSE)
-(II) XINPUT: Adding extended input device "Generic Keyboard" (type: KEYBOARD)
-(II) Configured Mouse: ps2EnableDataReporting: succeeded
-FreeFontPath: FPE "/usr/share/fonts/X11/misc" refcount is 2, should be 1; fixing.
+(I'm travelling atm, sorry for any slow responses)
 
-There are no EEs or WWs in the log file.
-
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
