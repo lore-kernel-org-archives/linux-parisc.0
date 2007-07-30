@@ -1,25 +1,34 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] Re: Boot problem with HPPA 735/125 w/ A1439A CRX
-Date: Sun, 29 Jul 2007 17:01:02 -0400 (EDT)
-Message-ID: <200707292101.l6TL13M2002430__33136.1277298585$1416624424$gmane$org@hiauly1.hia.nrc.ca>
-References: <200707292218.49045.deller@gmx.de>
+Date: Sun, 29 Jul 2007 20:12:50 -0400 (EDT)
+Message-ID: <200707300012.l6U0Co1e006326__35326.6855156564$1416624424$gmane$org@hiauly1.hia.nrc.ca>
+References: <200707292101.l6TL13M2002430@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=US-ASCII
-Cc: parisc-linux@lists.parisc-linux.org
-To: deller@gmx.de (Helge Deller)
+Cc: deller@gmx.de,
+ parisc-linux@lists.parisc-linux.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <dave@hiauly1.hia.nrc.ca>
-In-Reply-To: <200707292218.49045.deller@gmx.de> from "Helge Deller" at Jul 29, 2007 10:18:48 pm
+In-Reply-To: <200707292101.l6TL13M2002430@hiauly1.hia.nrc.ca> from "John David Anglin" at Jul 29, 2007 05:01:02 pm
 List-ID: <linux-parisc.vger.kernel.org>
 
-> So it crashes in userspace ony (and not the kernel). Any backtraces ?
+> > So it crashes in userspace ony (and not the kernel). Any backtraces ?
+> 
+> Nothing.  It seems X just exits.  Hmmm, maybe I should set
+> NoTrapSignals and DisableVidModeExtension.
 
-Nothing.  It seems X just exits.  Hmmm, maybe I should set
-NoTrapSignals and DisableVidModeExtension.
+Didn't help.  I can get rid of the mode failure by commenting out the
+Modes line in the Display subsection.  However, this doesn't fix the
+problem.  The last lines in the Xorg log are:
 
-> Did you tried another resolution as well, e.g. 1024x768 ?
+...
+(II) XINPUT: Adding extended input device "Configured Mouse" (type: MOUSE)
+(II) XINPUT: Adding extended input device "Generic Keyboard" (type: KEYBOARD)
+(II) Configured Mouse: ps2EnableDataReporting: succeeded
+FreeFontPath: FPE "/usr/share/fonts/X11/misc" refcount is 2, should be 1; fixing.
 
-No, maybe later this week.
+There are no EEs or WWs in the log file.
 
 Dave
 -- 
