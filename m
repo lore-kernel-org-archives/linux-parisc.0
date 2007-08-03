@@ -1,17 +1,14 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] Some warning: ... cleanup; realy no interest?
-Date: Fri, 3 Aug 2007 11:39:09 -0400
-Message-ID: <20070803153909.GA7812__21299.0292501219$1416624425$gmane$org@fattire.cabal.ca>
-References: <JM78V2$461E14034C9C293D572DFA91ADC72793@scarlet.be>
-	<200708031516.l73FG8jb002491@hiauly1.hia.nrc.ca>
+From: Randolph Chung <randolph@tausq.org>
+Subject: [parisc-linux] [hppa patch] Fix register definitions for hppa
+Date: Fri, 3 Aug 2007 17:06:46 +0000
+Message-ID: <20070803170646.GB32611__40936.2188111574$1416624426$gmane$org@tausq.org>
+Reply-To: Randolph Chung <randolph@tausq.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset=us-ascii
-Cc: Joel Soete <soete.joel@scarlet.be>,
- parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+Cc: parisc-linux@lists.parisc-linux.org
+To: gdb-patches@sources.redhat.com
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200708031516.l73FG8jb002491@hiauly1.hia.nrc.ca>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,33 +19,97 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Fri, Aug 03, 2007 at 11:16:08AM -0400, John David Anglin wrote:
-> > > > /CAD/linux-2.6.22-pa/drivers/parisc/dino.c: In function ?dino_bridge_init?:
-> > > > /CAD/linux-2.6.22-pa/drivers/parisc/dino.c:821: warning: format %lx
-> > expects type long unsigned int, but argument 4 has type 
-> > > > resource_size_t
-> > > > /CAD/linux-2.6.22-pa/drivers/parisc/dino.c:821: warning: format %lx
-> > expects type long unsigned int, but argument 5 has type 
-> > > > resource_size_t
-> 
-> >From linux/types.h:
-> 
-> #ifdef CONFIG_RESOURCES_64BIT
-> typedef u64 resource_size_t;
-> #else
-> typedef u32 resource_size_t;
-> #endif
-> 
-> %lx looks right for parisc.  This is ugly but you can kill the warning
-> by casting arguments 4 and 5 to unsigned long.
-> 
+Should be self-explanatory. We came across this while debugging
+TLS-enabled thread debugging on hppa-linux. GDB was not reading 
+cr27 (hppa's thread register), so thread-debugging failed quite 
+miserably :(
 
-We're "supposed" to use %llx and cast to a ULL, this is because of
-CONFIG_RESOURCES_64BIT which is for crap architectures which have
-32-bit registers, but the possibility of bigger physical addresses,
-(think i386 with 36-bit PAE addressing.)
+If there are no comments, I shall commit in a couple of days.
 
---Kyle
+thanks,
+randolph
+
+2007-08-03  Randolph Chung  <tausq@debian.org>
+
+	* hppa-tdep.c (hppa32_cannot_fetch_register)
+	(hppa64_cannot_fetch_register): New functions.
+	(hppa_gdbarch_init): Set cannot_fetch_register appropriately.
+	* hppa-tdep.h (hppa_regnum): Add HPPA_CR26_REGNUM.
+
+Index: hppa-tdep.c
+===================================================================
+RCS file: /cvs/src/src/gdb/hppa-tdep.c,v
+retrieving revision 1.234
+diff -u -p -r1.234 hppa-tdep.c
+--- hppa-tdep.c	15 Jun 2007 22:44:55 -0000	1.234
++++ hppa-tdep.c	13 Jul 2007 16:26:29 -0000
+@@ -2676,6 +2676,16 @@ hppa32_cannot_store_register (int regnum
+ }
+ 
+ static int
++hppa32_cannot_fetch_register (int regnum)
++{
++  /* cr26 and cr27 are readable (but not writable) from userspace.  */
++  if (regnum == HPPA_CR26_REGNUM || regnum == HPPA_CR27_REGNUM)
++    return 0;
++  else
++    return hppa32_cannot_store_register (regnum);
++}
++
++static int
+ hppa64_cannot_store_register (int regnum)
+ {
+   return (regnum == 0
+@@ -2684,6 +2694,16 @@ hppa64_cannot_store_register (int regnum
+           || (regnum > HPPA_IPSW_REGNUM && regnum < HPPA64_FP4_REGNUM));
+ }
+ 
++static int
++hppa64_cannot_fetch_register (int regnum)
++{
++  /* cr26 and cr27 are readable (but not writable) from userspace.  */
++  if (regnum == HPPA_CR26_REGNUM || regnum == HPPA_CR27_REGNUM)
++    return 0;
++  else
++    return hppa64_cannot_store_register (regnum);
++}
++
+ static CORE_ADDR
+ hppa_smash_text_address (CORE_ADDR addr)
+ {
+@@ -3076,7 +3096,7 @@ hppa_gdbarch_init (struct gdbarch_info i
+ 	set_gdbarch_cannot_store_register (gdbarch,
+ 					   hppa32_cannot_store_register);
+ 	set_gdbarch_cannot_fetch_register (gdbarch,
+-					   hppa32_cannot_store_register);
++					   hppa32_cannot_fetch_register);
+         break;
+       case 8:
+         set_gdbarch_num_regs (gdbarch, hppa64_num_regs);
+@@ -3087,7 +3107,7 @@ hppa_gdbarch_init (struct gdbarch_info i
+ 	set_gdbarch_cannot_store_register (gdbarch,
+ 					   hppa64_cannot_store_register);
+ 	set_gdbarch_cannot_fetch_register (gdbarch,
+-					   hppa64_cannot_store_register);
++					   hppa64_cannot_fetch_register);
+         break;
+       default:
+         internal_error (__FILE__, __LINE__, _("Unsupported address size: %d"),
+Index: hppa-tdep.h
+===================================================================
+RCS file: /cvs/src/src/gdb/hppa-tdep.h,v
+retrieving revision 1.30
+diff -u -p -r1.30 hppa-tdep.h
+--- hppa-tdep.h	15 Jun 2007 22:44:55 -0000	1.30
++++ hppa-tdep.h	13 Jul 2007 16:26:29 -0000
+@@ -59,6 +59,7 @@ enum hppa_regnum
+   HPPA_PID3_REGNUM = 56,	/* Protection ID */
+   HPPA_CCR_REGNUM = 54,		/* Coprocessor Configuration Register */
+   HPPA_TR0_REGNUM = 57,		/* Temporary Registers (cr24 -> cr31) */
++  HPPA_CR26_REGNUM = 59,
+   HPPA_CR27_REGNUM = 60,	/* Base register for thread-local storage, cr27 */
+   HPPA_FP0_REGNUM = 64,		/* First floating-point.  */
+   HPPA_FP4_REGNUM = 72,
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
