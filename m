@@ -1,18 +1,13 @@
-From: Randolph Chung <randolph@tausq.org>
-Subject: Re: [parisc-linux] [hppa patch] Fix register definitions for hppa
-Date: Fri, 3 Aug 2007 20:12:19 +0000
-Message-ID: <20070803201219.GC32611__37286.3430217423$1416624426$gmane$org@tausq.org>
-References: <20070803170646.GB32611@tausq.org>
-	<119aab440708031132h58d94c38l672a241301bda9ee@mail.gmail.com>
-Reply-To: Randolph Chung <randolph@tausq.org>
+From: "Joel Soete" <soete.joel@scarlet.be>
+Subject: [parisc-linux] Git snaps pb with http?
+Date: Thu,  9 Aug 2007 10:10:36 +0200
+Message-ID: <JMHYPO$B8A03EB59514846D34A78BD0B762C486__44832.8428356492$1416624426$gmane$org@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: parisc-linux@lists.parisc-linux.org,
- gdb-patches@sources.redhat.com
-To: Carlos O'Donell <carlos@systemhalted.org>
+  charset=iso-8859-1
+Cc: parisc-linux <parisc-linux@lists.parisc-linux.org>
+To: "kyle" <kyle@mcmartin.ca>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <119aab440708031132h58d94c38l672a241301bda9ee@mail.gmail.com>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,37 +18,49 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> Isn't there a way we can teach gdb that cr27 is writable via this sequence?
-> 
-> e.g.
-> static inline void __set_cr27(struct pthread *cr27)
-> {
->   asm ( "ble    0xe0(%%sr2, %%r0)\n\t"
->         "copy   %0, %%r26"
->         : : "r" (cr27) : "r26" );
-> }
-> 
-> At the very least please adjust the comment to say "cr27 is writable via
-> a kernel helper function."
-> 
-> How does gdb read cr27? It must know how to use mfctl?
+Hello Kyle,
 
-Remember that gdb is reading the cr27 of the debuggee, not of itself, so
-__set_cr27 is irrelevant.
+Some time ago, I discover your interesting snapshot tree:
+<http://git.kernel.org/?p=3Dlinux/kernel/git/kyle/linux-2.6-snaps.git;a=3D=
+summary>
 
- From the architecture point of view, CR26 and CR27 are only readable
->from userspace, so gdb should not enable somebody to set them from
-inside gdb.
+Saying today:
+[snip]
+description: Daily git snapshots of Linus' tree 
+owner: Kyle McMartin 
+last change: Tue, 7 Aug 2007 01:31:43 +0000 
+URL git://git.kernel.org/pub/scm/linux/kernel/git/kyle/linux-2.6-snaps.gi=
+t 
+ http://www.kernel.org/pub/scm/linux/kernel/git/kyle/linux-2.6-snaps.git =
 
-GDB gets the value of cr26/cr27 the same way it gets the value of other
-registers -- via ptrace or the register set returned in a core dump,
-etc...
+[snip]
 
-randolph
--- 
-Randolph Chung
-Debian GNU/Linux Developer, hppa/ia64 ports
-http://www.tausq.org/
+At home I can use git protocol and there is any pb to update my local tre=
+e
+with 'git-pull'
+
+But at the office I can just use http protocol.
+Here even thought I grab an initial tree with:
+git-clone \
+http://www.kernel.org/pub/scm/linux/kernel/git/kyle/linux-2.6-snaps.git \=
+
+linux-2.6-snaps.git
+
+some weeks ago, each time I try to update this local tree:
+# git-pull  2>&1 | tee -a /var/logs/KyleSnapsGit26.log
+Fetching refs/heads/master from
+http://www.kernel.org/pub/scm/linux/kernel/git/kyle/linux-2.6-snaps.git u=
+sing http
+Already up-to-date.
+
+While I'm sure there was updates.
+
+Is there some known issue I missed about http protocol usage?
+
+Tx,
+    J.=0A---=0APack Scarlet One, ADSL 6 Mbps + Telephonie, a partir de EU=
+R 29,95...=0Ahttp://www.scarlet.be/
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
