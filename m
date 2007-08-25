@@ -1,12 +1,15 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] parisc v2.6.23-rc3-pa1
-Date: Mon, 20 Aug 2007 03:12:13 -0400
-Message-ID: <20070820071213.GC16879__29467.3101082028$1416624428$gmane$org@fattire.cabal.ca>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: [parisc-linux] parisc v2.6.23-rc3-pa1
+Date: Sat, 25 Aug 2007 10:31:13 -0400
+Message-ID: <20070825143113.GA22243__35077.246258925$1416624429$gmane$org@fattire.cabal.ca>
+References: <46CFBE2D.8070507@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@scarlet.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <46CFBE2D.8070507@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,17 +20,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-http://ftp.kernel.org/pub/linux/kernel/people/kyle/parisc/2.6.23-rc3/2.6.23-rc3-pa1.diff.bz2
+On Sat, Aug 25, 2007 at 05:29:17AM +0000, Joel Soete wrote:
+> Hello Kyle,
+> 
+> I didn't test this patch but your linux-2.6-snaps.git (release 2.6.23-rc3-git5) and this boot fine on my b2k as 32bit built 
+> kernel.
+> 
+> Great job ;<)
+> 
 
-no changes aside from Makefile, forgot to release 2.6.23-rc1 back at the
-beginning of the month. oops. not even build tested since i don't have
-any machines powered on.
+Thanks, I've got a few patches that need to go in (getdents fix mostly)
+but right now I'm tracking a null ptr dereference in the unwinder that
+shows up on 64-bit SMP when udev starts.
 
-i've got a slew of stuff at various levels of polish to commit at some
-point.
+(Of course, you don't need the getdents patch for 32-bit, so you should
+be fine just running the -git snaps.)
 
-regards,
-	kyle
+Cheers,
+	Kyle
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
