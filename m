@@ -1,15 +1,19 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] parisc v2.6.23-rc3-pa1
-Date: Sat, 25 Aug 2007 10:31:13 -0400
-Message-ID: <20070825143113.GA22243__35077.246258925$1416624429$gmane$org@fattire.cabal.ca>
-References: <46CFBE2D.8070507@scarlet.be>
+From: Jan Engelhardt <jengelh@computergmbh.de>
+Subject: Re: [parisc-linux] errno codes intertwined
+Date: Sun, 26 Aug 2007 20:43:06 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.0708262038170.12920__25634.216288063$1416624429$gmane$org@fbirervta.pbzchgretzou.qr>
+References: <Pine.LNX.4.64.0708241815540.28540@fbirervta.pbzchgretzou.qr>
+	<200708261345.43165.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: parisc-linux@lists.parisc-linux.org
-To: Joel Soete <soete.joel@scarlet.be>
+Cc: sparclinux@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ parisc-linux@lists.parisc-linux.org,
+ parisc-linux@parisc-linux.org
+To: Mike Frysinger <vapier@gentoo.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <46CFBE2D.8070507@scarlet.be>
+In-Reply-To: <200708261345.43165.vapier@gentoo.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -20,24 +24,30 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Aug 25, 2007 at 05:29:17AM +0000, Joel Soete wrote:
-> Hello Kyle,
-> 
-> I didn't test this patch but your linux-2.6-snaps.git (release 2.6.23-rc3-git5) and this boot fine on my b2k as 32bit built 
-> kernel.
-> 
-> Great job ;<)
-> 
 
-Thanks, I've got a few patches that need to go in (getdents fix mostly)
-but right now I'm tracking a null ptr dereference in the unwinder that
-shows up on 64-bit SMP when udev starts.
+On Aug 26 2007 13:45, Mike Frysinger wrote:
+>> can I rely on the same errno across Linuxes?
+>
+>nope
+>
+>> And should the errno values be fixed up?
+>
+>i guess that depends on whether you think it's even broken :)
+>
+>no spec requires any errno symbol have an exact numeric value ... i'm guessing 
+>your FUSE is only cross-Linux and you're not planning on dipping into any 
+>other OS ?
 
-(Of course, you don't need the getdents patch for 32-bit, so you should
-be fine just running the -git snaps.)
+If the errnos are not the same in the Linux world, it's not even
+cross-Linux ;-) - but it's always translated to fixed numbers now anyway.
 
-Cheers,
-	Kyle
+I have not really thought about putting it in use on other systems yet. I
+don't have macosx to test, and Windows generally lacks some fuses. :^)
+You are free to spin it if you like, http://freshmeat.net/p/ccgfs/
+
+
+	Jan
+-- 
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
