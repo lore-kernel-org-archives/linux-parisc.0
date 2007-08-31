@@ -1,7 +1,7 @@
-From: Kyle McMartin <kyle@parisc-linux.org>
-Subject: [parisc-linux] parisc v2.6.23-rc3-pa2
-Date: Sun, 26 Aug 2007 23:48:31 -0400
-Message-ID: <20070827034831.GC18343__4304.91353986344$1416624429$gmane$org@fattire.cabal.ca>
+From: Rick Vernam <rickv@hobi.com>
+Subject: [parisc-linux] booting a 9000/785/C8000
+Date: Fri, 31 Aug 2007 16:02:02 -0500
+Message-ID: <200708311602.04193.rickv__15920.7046185204$1416624430$gmane$org@hobi.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
@@ -17,16 +17,47 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-This fixes a nullptr deref caused by udev just after userspace entry...
-somehow. Bisected to commit to Makefile added build-id notes.
+I'm new to parisc (hppa) machines - never touched one before.
+I'm trying to boot into linux so that i can do a simple
+	dd if=/dev/null of=/dev/[hard drive]
+I have about 25-30 machines to work on, so I'm looking for a rather clean 
+solution :-)
 
-Cheers,
-	Kyle
+I've tried both Gentoo's and Debian's hppa offerings, but am having the same 
+problems on both (i've used gentoo x86/amd64 for years...):
+1 - I can boot with 'console=tty0 sti=0/4/0/0' (as added by palo) and the boot 
+process will stop with
+	Console: colour dummy device 160x64
+at this point, it is not hard locked - I can ctrl-alt-del to reboot.  it would 
+probably sit there indefinitely - I did leave it for about 16-18 hours 
+(running when I left work, still there the next day).
+2 - I can boot without the 'console=tty0' and the kernel will load, but then 
+fail when it can't find initial console (panic: kernel not syncing).
 
-http://ftp.kernel.org/pub/linux/kernel/people/kyle/parisc/2.6.23-rc3/v2.6.23-rc3-pa2.diff.bz2
+I've tried with both the AGP 8x Fire GL X1 that comes in the machine, and a 
+PCI Rage XL of some sort.
 
-Changes since -pa1:
-+parisc/add-notes-section.patch
+The Gentoo kernel is 2.6.20 (most recent livecd, 2007.0), and debian's is also 
+recent cd with 2.6.18 kernel.
+In both cases, the complete kernel command line were pretty much the same 
+(maybe they varied in looptype? ...and order of arguments)
+
+TERM=linux root=/dev/ram0 init=/linuxrc cdroot looptype=normal 
+loop=/image.loop hda=scsi hdb=scsi console=tty0 sti=/0/4/0/0 sti_font=VGA8x16 
+palo_kernel=0/vmlinux
+
+while it is doing whatever it does prior to when it can be stopped to specify 
+a boot path (analogous to x86 post?) it does say something along the lines 
+of:
+	console device			graph3
+						0/4/0/0.0
+	current console device	graph3
+						0/04/0/0.256
+
+So, upon seeing that tried to set the sti= kernel arg to those values, but 
+found the same results.
+
+anybody, anything?
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
