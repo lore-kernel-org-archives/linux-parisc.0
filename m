@@ -1,7 +1,7 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: Unknown device 0x0005f
-Date: Tue, 4 Sep 2007 16:15:37 -0600
-Message-ID: <20070904221537.GV14130__12737.8516750925$1416624432$gmane$org@parisc-linux.org>
+Subject: Re: [parisc-linux] crash in mux_poll on K200/Kittyhawk (was: Hardware-List (fwd))
+Date: Tue, 4 Sep 2007 16:18:21 -0600
+Message-ID: <20070904221821.GW14130__40028.0528273017$1416624433$gmane$org@parisc-linux.org>
 References: <20070828215632.R6291@saddam.controlq.com> <200709042213.25542.deller@gmx.de> <20070904172254.Q31055@saddam.controlq.com> <200709042344.30215.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -12,7 +12,7 @@ Cc: rob@controlq.com,
 To: Helge Deller <deller@gmx.de>
 Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
 In-Reply-To: <200709042344.30215.deller@gmx.de>
-Resent-Message-ID: <KaF3JB.A.9nD.x4d3GB@murphy>
+Resent-Message-ID: <4orI6.A.-_E._8d3GB@murphy>
 List-Id: linux-parisc.vger.kernel.org
 List-Id: <debian-hppa.lists.debian.org>
 List-Post: <mailto:debian-hppa@lists.debian.org>
@@ -21,22 +21,43 @@ List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
 List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
 On Tue, Sep 04, 2007 at 11:44:29PM +0200, Helge Deller wrote:
-> Additionally, does someone knows what this device is ?
-> > 12. unknown device at 0xf190c000 [10/4/12] { 2, 0x0, 0x004, 0x0005f }
+> CONFIG_SMP=n  ignoring additional CPUs
+> CPU: probe of 34 failed with error 1
+> 
+> Helge: ^^^^???
 
-I don't.  We don't have anything with the 0x0005f programming model in
-the database.  We have:
+He's got a dual-CPU machine and has boted an SMP kernel.  So device 34
+(the second CPU) gets an -EBUSY.
 
-        {HPHW_A_DMA, 0x004, 0x00050, 0x80, "Lanbrusca 802.3 (36967A)"}, 
-        {HPHW_B_DMA, 0x008, 0x00051, 0x80, "HP-PB Transit 802.3"}, 
-        {HPHW_B_DMA, 0x004, 0x00052, 0x80, "Miura LAN/Console (J2146A)"}, 
-        {HPHW_A_DMA, 0x004, 0x00056, 0x80, "HP-PB LoQuix FDDI"}, 
-        {HPHW_A_DMA, 0x004, 0x00057, 0x80, "HP-PB LoQuix FDDI (28670A)"}, 
-        {HPHW_B_DMA, 0x008, 0x00058, 0x80, "HP-PB Transit 802.4"}, 
-        {HPHW_A_DMA, 0x004, 0x0005E, 0x00, "Gecko Add-on Token Ring"}, 
+> Kernel Fault: Code=26 regs=2fd78600 (Addr=00000110)
 
-The owner could probably help us out by taking a look at the card in
-slot 10/4/12 and seeing what chips are on it, and what connectors it has.
+Probably a null pointer offset ...
+
+>      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+> PSW: 00000000000001001111111100001111 Not tainted
+> r00-03  0004ff0f 10370010 1012f7ac 103e7e84
+> r04-07  0000000d 00000000 00000000 00000000
+> r08-11  00000000 faf87e40 00000013 00000000
+> r12-15  00030c4c 00000008 00000007 1013d4e0
+> r16-19  2fd78240 103810b0 00000002 00000000
+> r20-23  0000f000 c1b32767 1026b740 3e4cd8aa
+> r24-27  0000002b 10383300 0000000d 10371010
+> r28-31  00002000 103d3010 2fd78600 1012f7ac
+> sr00-03  00000000 00000000 00000000 00000325
+> sr04-07  00000000 00000000 00000000 00000000
+> 
+> IASQ: 00000000 00000000 IAOQ: 1026ba00 1026ba04
+>  IIR: 48b50220    ISR: 00000000  IOR: 00000110
+>  CPU:        0   CR30: 2fd78000 CR31: 10404000
+>  ORIG_R28: 2fb84200
+>  IAOQ[0]: mux_poll+0x2c0/0x2d4
+>  IAOQ[1]: mux_poll+0x2c4/0x2d4
+>  RP(r2): run_timer_softirq+0x124/0x1bc
+> Kernel panic - not syncing: Kernel Fault
+> _______________________________________________
+> parisc-linux mailing list
+> parisc-linux@lists.parisc-linux.org
+> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
 
 -- 
 Intel are signing my paycheques ... these opinions are still mine
