@@ -1,59 +1,50 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [parisc-linux] linux32 personality & config.guess
-Date: Tue, 4 Sep 2007 17:48:48 -0400 (EDT)
-Message-ID: <200709042148.l84LmnE5017739__17734.959597192$1416624432$gmane$org@hiauly1.hia.nrc.ca>
-References: <18141.49656.228645.911768@gargle.gargle.HOWL>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Unknown device 0x0005f
+Date: Tue, 4 Sep 2007 16:15:37 -0600
+Message-ID: <20070904221537.GV14130__12737.8516750925$1416624432$gmane$org@parisc-linux.org>
+References: <20070828215632.R6291@saddam.controlq.com> <200709042213.25542.deller@gmx.de> <20070904172254.Q31055@saddam.controlq.com> <200709042344.30215.deller@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Cc: parisc-linux@lists.parisc-linux.org,
+  charset=us-ascii
+Cc: rob@controlq.com,
+ parisc-linux@lists.parisc-linux.org,
  debian-hppa@lists.debian.org
-To: doko@cs.tu-berlin.de (Matthias Klose)
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <18141.49656.228645.911768@gargle.gargle.HOWL> from "Matthias
-	Klose" at Sep 4, 2007 10:37:12 pm
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+To: Helge Deller <deller@gmx.de>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200709042344.30215.deller@gmx.de>
+Resent-Message-ID: <KaF3JB.A.9nD.x4d3GB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-> With recent 64bit kernels linux32 seems to work,
-> 
-> $ linux32 uname -m
-> parisc
-> 
-> but
-> 
-> $ linux32 /usr/share/misc/config.guess
-> hppa2.0-unknown-linux-gnu
-> 
-> which seems to break some configury only knowing about hppa and
-> hppa64. Is config.guess correct, and should configure scripts be
-> changed?
+On Tue, Sep 04, 2007 at 11:44:29PM +0200, Helge Deller wrote:
+> Additionally, does someone knows what this device is ?
+> > 12. unknown device at 0xf190c000 [10/4/12] { 2, 0x0, 0x004, 0x0005f }
 
-GCC accepts either parisc or hppa, at least in config.gcc.  I tend
-to think the parisc form should be deprecated since no other PA-RISC
-targets use it.  The others all use hppa.
+I don't.  We don't have anything with the 0x0005f programming model in
+the database.  We have:
 
-With respect to hppa variants, this is a hopeless mess and I don't
-believe this can be fixed.  For example, libgmp treats hppa2.0w as
-indicating a 64-bit runtime.  I'm sure you have hit this.
+        {HPHW_A_DMA, 0x004, 0x00050, 0x80, "Lanbrusca 802.3 (36967A)"}, 
+        {HPHW_B_DMA, 0x008, 0x00051, 0x80, "HP-PB Transit 802.3"}, 
+        {HPHW_B_DMA, 0x004, 0x00052, 0x80, "Miura LAN/Console (J2146A)"}, 
+        {HPHW_A_DMA, 0x004, 0x00056, 0x80, "HP-PB LoQuix FDDI"}, 
+        {HPHW_A_DMA, 0x004, 0x00057, 0x80, "HP-PB LoQuix FDDI (28670A)"}, 
+        {HPHW_B_DMA, 0x008, 0x00058, 0x80, "HP-PB Transit 802.4"}, 
+        {HPHW_A_DMA, 0x004, 0x0005E, 0x00, "Gecko Add-on Token Ring"}, 
 
-Nominally, the first part of the target string represents the
-architecture of the kernel, and not the userspace architecture.
-This is not sufficient to configure runtime applications when multiple
-architectures are supported by one kernel.
+The owner could probably help us out by taking a look at the card in
+slot 10/4/12 and seeing what chips are on it, and what connectors it has.
 
-Dave
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Intel are signing my paycheques ... these opinions are still mine
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
