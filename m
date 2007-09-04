@@ -1,12 +1,15 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: [parisc-linux] 2.6.23-rc5 warnings
-Date: Mon, 3 Sep 2007 18:45:02 -0400 (EDT)
-Message-ID: <200709032245.l83Mj2cU010914__10895.4125702896$1416624430$gmane$org@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] 2.6.23-rc5 warnings
+Date: Mon, 3 Sep 2007 21:19:34 -0400 (EDT)
+Message-ID: <200709040119.l841JYIV015690__18963.691176805$1416624430$gmane$org@hiauly1.hia.nrc.ca>
+References: <no.id>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-To: parisc-linux@lists.parisc-linux.org
+Cc: parisc-linux@lists.parisc-linux.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <no.id> from "John David Anglin" at Sep 3, 2007 06:45:02 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -17,20 +20,8 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Some section mismatches in 64-bit kernel build:
-
-WARNING: vmlinux.o(.text+0xb0): Section mismatch: reference to .init.text:start_
-kernel (between '$pgt_fill_loop' and 'common_stext')
-WARNING: vmlinux.o(.text+0xb4): Section mismatch: reference to .init.text:start_
-kernel (between '$pgt_fill_loop' and 'common_stext')
-WARNING: vmlinux.o(.text+0x290): Section mismatch: reference to .init.text:smp_c
-allin (between 'smp_slave_stext' and 'flush_tlb_all_local')
-WARNING: vmlinux.o(.text+0x294): Section mismatch: reference to .init.text:smp_c
-allin (between 'smp_slave_stext' and 'flush_tlb_all_local')
-WARNING: vmlinux.o(.text.write_profile+0x19c): Section mismatch: reference to .i
-nit.text:setup_profiling_timer (after 'write_profile')
-
-I think there was a warning about a missing syscall fallocate.
+Thumbs down on 2.6.23-rc5.  I had segmentation faults in tools like
+'make' twice in a row.  Back to 2.6.22.6.
 
 Dave
 -- 
