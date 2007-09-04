@@ -1,38 +1,98 @@
-From: Matthias Klose <doko@cs.tu-berlin.de>
-Subject: linux32 personality & config.guess
-Date: Tue, 4 Sep 2007 22:37:12 +0200
-Message-ID: <18141.49656.228645.911768__48279.1645489216$1416624431$gmane$org@gargle.gargle.HOWL>
+From: Helge Deller <deller@gmx.de>
+Subject: Re: [parisc-linux] booting a 9000/785/C8000
+Date: Tue, 4 Sep 2007 23:15:27 +0200
+Message-ID: <200709042315.27478.deller__37686.8483763703$1416624432$gmane$org@gmx.de>
+References: <200708311602.04193.rickv@hobi.com>
+	<200709042217.57061.deller@gmx.de>
+	<200709041604.38199.rickv@hobi.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-To: parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-Resent-Message-ID: <zS1aX.A.fMC.0ec3GB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org
+To: Rick Vernam <rickv@hobi.com>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200709041604.38199.rickv@hobi.com>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-With recent 64bit kernels linux32 seems to work,
+(please keep the parisc-linux list on CC).
 
-$ linux32 uname -m
-parisc
+On Tuesday 04 September 2007, Rick Vernam wrote:
+> On Tuesday 04 September 2007 03:17:56 pm you wrote:
+> > On Friday 31 August 2007, Rick Vernam wrote:
+> > > I'm new to parisc (hppa) machines - never touched one before.
+> > > I'm trying to boot into linux so that i can do a simple
+> > > 	dd if=/dev/null of=/dev/[hard drive]
+> > > I have about 25-30 machines to work on, so I'm looking for a rather clean
+> > > solution :-)
+> > >
+> > > I've tried both Gentoo's and Debian's hppa offerings, but am having the
+> > > same problems on both (i've used gentoo x86/amd64 for years...):
+> > > 1 - I can boot with 'console=tty0 sti=0/4/0/0' (as added by palo) and the
+> > > boot process will stop with
+> > > 	Console: colour dummy device 160x64
+> > > at this point, it is not hard locked - I can ctrl-alt-del to reboot.  it
+> > > would probably sit there indefinitely - I did leave it for about 16-18
+> > > hours (running when I left work, still there the next day).
+> > > 2 - I can boot without the 'console=tty0' and the kernel will load, but
+> > > then fail when it can't find initial console (panic: kernel not syncing).
+> > >
+> > > I've tried with both the AGP 8x Fire GL X1 that comes in the machine, and
+> > > a PCI Rage XL of some sort.
+> > >
+> > > The Gentoo kernel is 2.6.20 (most recent livecd, 2007.0), and debian's is
+> > > also recent cd with 2.6.18 kernel.
+> > > In both cases, the complete kernel command line were pretty much the same
+> > > (maybe they varied in looptype? ...and order of arguments)
+> > >
+> > > TERM=linux root=/dev/ram0 init=/linuxrc cdroot looptype=normal
+> > > loop=/image.loop hda=scsi hdb=scsi console=tty0 sti=/0/4/0/0
+> > > sti_font=VGA8x16 palo_kernel=0/vmlinux
+> > >
+> > > while it is doing whatever it does prior to when it can be stopped to
+> > > specify a boot path (analogous to x86 post?) it does say something along
+> > > the lines of:
+> > > 	console device			graph3
+> > > 						0/4/0/0.0
+> > > 	current console device	graph3
+> > > 						0/04/0/0.256
+> > >
+> > > So, upon seeing that tried to set the sti= kernel arg to those values,
+> > > but found the same results.
+> > >
+> > > anybody, anything?
+> >
+> > Yes.
+> > Probably the reason is, that you are using unsupported graphic cards.
+> > Both, the Fire GL and the Rage XL are not supported, although maybe the
+> > Rage XL could be made working (if a developer will/can try). Please see
+> > http://parisc-linux.org/faq/index.html#fxgfx  and 
+> > http://parisc-linux.org/faq/graphics-howto.html
+> >
+> > Helge
+> 
+> Well, The Fire GL X1 is the original card for the machine...and it boots HP-UX 
+> just fine...
+> I'm not looking even for framebuffer...nor will I be using X.
+> I'd be happy with a non-framebuffered boot.
+> Anything to get me to a shell.  (the machines have come in off-lease, and I 
+> don't have root passwd for the existing HP-UX install).
+> 
+> Can I pass some kind of nofb kernel command line or something?
 
-but
+No, even "plain" text mode ("sticon") needs a driver, and the "STI" (Standard Text Interface) BIOS routines are not supported by the newer HP graphic cards.
+Your only chance is to boot with serial cable and minicom (unplug keyboad/gfx cable):
+http://parisc-linux.org/faq/index.html#serialcon
 
-$ linux32 /usr/share/misc/config.guess
-hppa2.0-unknown-linux-gnu
-
-which seems to break some configury only knowing about hppa and
-hppa64. Is config.guess correct, and should configure scripts be
-changed?
-
-  Matthias
-
-
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+Helge
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
