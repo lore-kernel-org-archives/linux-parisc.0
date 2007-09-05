@@ -1,18 +1,20 @@
-From: Joel Soete <soete.joel@scarlet.be>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: [parisc-linux] Some warning: ... cleanup; realy no interest?
-Date: Wed, 05 Sep 2007 15:51:22 +0000
-Message-ID: <46DED07A.1060102__6911.0095421367$1416624434$gmane$org@scarlet.be>
+Date: Wed, 5 Sep 2007 09:55:12 -0600
+Message-ID: <20070905155512.GZ14130__47677.4463234053$1416624434$gmane$org@parisc-linux.org>
 References: <JM78V2$461E14034C9C293D572DFA91ADC72793@scarlet.be>
 	<200708031516.l73FG8jb002491@hiauly1.hia.nrc.ca>
 	<20070803153909.GA7812@fattire.cabal.ca>
+	<46DED07A.1060102@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ John David Anglin <dave@hiauly1.hia.nrc.ca>,
  parisc-linux@lists.parisc-linux.org
-To: Kyle McMartin <kyle@mcmartin.ca>
+To: Joel Soete <soete.joel@scarlet.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20070803153909.GA7812@fattire.cabal.ca>
+In-Reply-To: <46DED07A.1060102@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,41 +25,16 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+On Wed, Sep 05, 2007 at 03:51:22PM +0000, Joel Soete wrote:
+> mmm and what do you think about adding yet another format letter e.g. [rR] for resource_size_t as it was done for [zZ]?
 
+You'd also have to teach gcc about it.
 
-Kyle McMartin wrote:
-> On Fri, Aug 03, 2007 at 11:16:08AM -0400, John David Anglin wrote:
->>>>> /CAD/linux-2.6.22-pa/drivers/parisc/dino.c: In function ?dino_bridge_init?:
->>>>> /CAD/linux-2.6.22-pa/drivers/parisc/dino.c:821: warning: format %lx
->>> expects type long unsigned int, but argument 4 has type 
->>>>> resource_size_t
->>>>> /CAD/linux-2.6.22-pa/drivers/parisc/dino.c:821: warning: format %lx
->>> expects type long unsigned int, but argument 5 has type 
->>>>> resource_size_t
->> >From linux/types.h:
->>
->> #ifdef CONFIG_RESOURCES_64BIT
->> typedef u64 resource_size_t;
->> #else
->> typedef u32 resource_size_t;
->> #endif
->>
->> %lx looks right for parisc.  This is ugly but you can kill the warning
->> by casting arguments 4 and 5 to unsigned long.
->>
-> 
-> We're "supposed" to use %llx and cast to a ULL, this is because of
-> CONFIG_RESOURCES_64BIT which is for crap architectures which have
-> 32-bit registers, but the possibility of bigger physical addresses,
-> (think i386 with 36-bit PAE addressing.)
-> 
-> --Kyle
-> 
-> 
-mmm and what do you think about adding yet another format letter e.g. [rR] for resource_size_t as it was done for [zZ]?
-
-Tia,
-	j.
+-- 
+Intel are signing my paycheques ... these opinions are still mine
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
