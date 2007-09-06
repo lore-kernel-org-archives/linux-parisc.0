@@ -1,18 +1,17 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] linux32 personality & config.guess
-Date: Thu, 6 Sep 2007 16:37:48 -0400 (EDT)
-Message-ID: <200709062037.l86Kbn9j001113__29005.7661979974$1416624436$gmane$org@hiauly1.hia.nrc.ca>
-References: <200709061552.14960.vapier@gentoo.org>
+Date: Thu, 6 Sep 2007 16:33:00 -0400 (EDT)
+Message-ID: <200709062033.l86KX19p000952__44933.3012490117$1416624436$gmane$org@hiauly1.hia.nrc.ca>
+References: <7d01f9f00709061215q721df5b4wa7b8a0b96eaf491@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: debian-hppa@lists.debian.org,
- parisc-linux@lists.parisc-linux.org,
- varenet@gmail.com
-To: vapier@gentoo.org (Mike Frysinger)
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: varenet@gmail.com (Thibaut VARENE)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200709061552.14960.vapier@gentoo.org> from "Mike Frysinger" at
-	Sep 6, 2007 03:52:13 pm
+In-Reply-To: <7d01f9f00709061215q721df5b4wa7b8a0b96eaf491@mail.gmail.com> from
+	"Thibaut VARENE" at Sep 6, 2007 09:15:48 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,12 +22,25 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-> i didnt misunderstand anything
-> 
-> i'm stating that an autotool based package should treat all hppa2.0 hosts as
-> 32bit userland which is exactly what gmp does not do
+> Seems you misunderstood jda's above comment. We do not have a 64bit
+> userland on hppa. the 'hppa64' part of the target string represents
+> the architecture of the /kernel/. 64bit kernels run a 32bit userland,
+> hence hppa64-linux should be treated (so far) as hppa-linux.
 
-Right.
+No, the architecture portion of the string in the PA case doesn't
+simply represent the architecture of the kernel.  In the hpux case,
+hppa2.0w and hppa64 both indicate a wide PA 2.0 kernel.  As noted
+in the previous message, config.guess selects between the two based
+on the setting of CC.
+
+This has arisen on the PA since we have separate 32 and 64 bit tools.
+In other architectures, a compiler flag is used to select the output
+architecture.
+
+Although we don't have a 64-bit userland in linux, we do have 64-bit
+compilation tools for kernel generation.  To build these, you need
+to specify a hppa64-linux target.  For this reason, we don't treat
+hppa64-linux as equivalent to hppa-linux.
 
 Dave
 -- 
