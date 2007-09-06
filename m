@@ -1,36 +1,33 @@
-From: Joel Soete <soete.joel@scarlet.be>
-Subject: Re: [parisc-linux] 2.6.23-rc5 warnings
-Date: Tue, 11 Sep 2007 14:28:22 +0000
-Message-ID: <46E6A606.5060501__27360.9504373328$1416624440$gmane$org@scarlet.be>
-References: <46E69C26.8060104@scarlet.be> <46E69E49.3020104@scarlet.be> <20070911134725.GA1698@fattire.cabal.ca>
+From: Matthias Klose <doko@cs.tu-berlin.de>
+Subject: Re: [parisc-linux] linux32 personality & config.guess
+Date: Thu, 6 Sep 2007 20:58:44 +0200
+Message-ID: <18144.19940.229381.116411__30792.9654758938$1416624440$gmane$org@gargle.gargle.HOWL>
+References: <18141.49656.228645.911768@gargle.gargle.HOWL>
+	<200709042148.l84LmnE5017739@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: Helge Deller <deller@gmx.de>,
- parisc-linux@lists.parisc-linux.org,
- John David Anglin <dave@hiauly1.hia.nrc.ca>
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-Path: <soete.joel@scarlet.be>
-In-Reply-To: <20070911134725.GA1698@fattire.cabal.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org,
+ debian-hppa@lists.debian.org
+To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200709042148.l84LmnE5017739@hiauly1.hia.nrc.ca>
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
+John David Anglin writes:
+> believe this can be fixed.  For example, libgmp treats hppa2.0w as
+> indicating a 64-bit runtime.  I'm sure you have hit this.
 
-
-Kyle McMartin wrote:
-> On Tue, Sep 11, 2007 at 01:55:21PM +0000, Joel Soete wrote:
->> +       ENTRY_COMP(fallocate)           /* 305 */
-> 
-> I have this fixed on the Apple laptop I travel with, but won't be able
-> to push it out until I get home. I'll release a -rcX-pa1 on Sunday when
-> I'm back in Ottawa.
-> 
-No pb.
-
-Have a nice travel,
-	J.
-
-> Cheers,
-> 	Kyle
-> 
-> 
+no python's internal copy of libffi :)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
