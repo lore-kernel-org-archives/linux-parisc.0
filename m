@@ -1,33 +1,44 @@
-From: Matthew Wilcox <matthew@wil.cx>
-Subject: Re: Unknown device 0x0005f
-Date: Tue, 4 Sep 2007 19:55:40 -0600
-Message-ID: <20070905015540.GX14130__29470.4779553742$1416624434$gmane$org@parisc-linux.org>
-References: <20070828215632.R6291@saddam.controlq.com> <200709042213.25542.deller@gmx.de> <20070904172254.Q31055@saddam.controlq.com> <200709042344.30215.deller@gmx.de> <20070904221537.GV14130@parisc-linux.org> <20070904195341.E32489@saddam.controlq.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] linux32 personality & config.guess
+Date: Thu, 6 Sep 2007 15:47:35 -0400 (EDT)
+Message-ID: <200709061947.l86JlZR2029925__35868.639793671$1416624435$gmane$org@hiauly1.hia.nrc.ca>
+References: <200709061511.38991.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=us-ascii
-Cc: Helge Deller <deller@gmx.de>,
- parisc-linux@lists.parisc-linux.org,
+  charset="us-ascii"
+Cc: parisc-linux@lists.parisc-linux.org,
  debian-hppa@lists.debian.org
-To: Rob Sciuk <rob@controlq.com>
-Return-Path: <willy@parisc-linux.org>
-In-Reply-To: <20070904195341.E32489@saddam.controlq.com>
-List-ID: <linux-parisc.vger.kernel.org>
+To: vapier@gentoo.org (Mike Frysinger)
+Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
+In-Reply-To: <200709061511.38991.vapier@gentoo.org> from "Mike Frysinger" at
+	Sep 6, 2007 03:11:37 pm
+List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
+List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
+List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
+List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
+List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
+List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
+	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
+Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Sep 04, 2007 at 07:56:23PM -0400, Rob Sciuk wrote:
-> >The owner could probably help us out by taking a look at the card in
-> >slot 10/4/12 and seeing what chips are on it, and what connectors it has.
+> > Nominally, the first part of the target string represents the
+> > architecture of the kernel, and not the userspace architecture.
+> > This is not sufficient to configure runtime applications when multiple
+> > architectures are supported by one kernel.
 > 
-> I can photograph it, if you like, how does one determine where slot 
-> 10/4/12 is??  I know that there are a couple of mux boards on the back, 
-> but frankly I haven't opened up the box as of yet.  Pointers?
+> i'm not terribly familiar with the breadth of the parisc family, but isnt
+> 64bit only available with 2.0 ?  so it'd be pretty clean on Linux to say
+> hppa64-*-linux-* means 64bit userland, everything else is 32bit
 
-It's been a few years since I looked at the back of a K-class, but I
-believe the path '10/4/12' is silk-screened onto the outside of the case
-below the slot in question.
+That's what is done now.  config.guess chooses between hppa64 and
+32bit hppa variants based on the architecture of the compiler in use (CC).
 
+Dave
 -- 
-Intel are signing my paycheques ... these opinions are still mine
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
