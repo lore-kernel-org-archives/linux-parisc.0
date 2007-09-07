@@ -1,42 +1,44 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: "Jeff Bailey" <jbailey@raspberryginger.com>
 Subject: Re: [parisc-linux] linux32 personality & config.guess
-Date: Thu, 6 Sep 2007 18:50:02 -0600
-Message-ID: <20070907005002.GG27404__6286.58477585322$1416624436$gmane$org@parisc-linux.org>
+Date: Thu, 6 Sep 2007 18:08:07 -0700
+Message-ID: <5b2e36650709061808u18796ae9k35487aea0bb3a959__45378.7374347032$1416624437$gmane$org@mail.gmail.com>
 References: <7d01f9f00709061215q721df5b4wa7b8a0b96eaf491@mail.gmail.com>
-	<200709062033.l86KX19p000952@hiauly1.hia.nrc.ca>
+	 <200709062033.l86KX19p000952@hiauly1.hia.nrc.ca>
+	 <20070907005002.GG27404@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Cc: debian-hppa@lists.debian.org,
+  charset=UTF-8
+Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>,
+ "Thibaut VARENE" <varenet@gmail.com>,
  parisc-linux@lists.parisc-linux.org,
- Thibaut VARENE <varenet@gmail.com>
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
-Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200709062033.l86KX19p000952@hiauly1.hia.nrc.ca>
-List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
-List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
-List-Archive: <http://lists.parisc-linux.org/pipermail/parisc-linux>
-List-Post: <mailto:parisc-linux@lists.parisc-linux.org>
-List-Help: <mailto:parisc-linux-request@lists.parisc-linux.org?subject=help>
-List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
-	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
-Errors-To: parisc-linux-bounces@lists.parisc-linux.org
+ debian-hppa@lists.debian.org
+To: "Matthew Wilcox" <matthew@wil.cx>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <20070907005002.GG27404@parisc-linux.org>
+Resent-Message-ID: <o4PewB.A.MwC.xYK4GB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
 
-On Thu, Sep 06, 2007 at 04:33:00PM -0400, John David Anglin wrote:
-> This has arisen on the PA since we have separate 32 and 64 bit tools.
-> In other architectures, a compiler flag is used to select the output
-> architecture.
+On 06/09/07, Matthew Wilcox <matthew@wil.cx> wrote:
+> On Thu, Sep 06, 2007 at 04:33:00PM -0400, John David Anglin wrote:
+> > This has arisen on the PA since we have separate 32 and 64 bit tools.
+> > In other architectures, a compiler flag is used to select the output
+> > architecture.
+>
+> Any interest in doing the unification of 32 and 64-bit?  ISTR Jeff
+> Bailey had binutils working.
 
-Any interest in doing the unification of 32 and 64-bit?  ISTR Jeff
-Bailey had binutils working.
+Give me another two weeks to dig myself out and take Grant up on the
+hppa C3000 offer and I'll get that working again.
 
 -- 
-Intel are signing my paycheques ... these opinions are still mine
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
-_______________________________________________
-parisc-linux mailing list
-parisc-linux@lists.parisc-linux.org
-http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+Jeff Bailey - http://www.raspberryginger.com/jbailey/
+
+
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
