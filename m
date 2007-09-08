@@ -1,48 +1,41 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: [parisc-linux] linux32 personality & config.guess
-Date: Fri, 7 Sep 2007 23:30:54 -0400
-Message-ID: <119aab440709072030x242e7373gccad036234907ca7__9615.12853759832$1416624438$gmane$org@mail.gmail.com>
-References: <20070907005002.GG27404@parisc-linux.org>
-	 <200709070125.l871PD6I007142@hiauly1.hia.nrc.ca>
+From: Joel Soete <soete.joel@scarlet.be>
+Subject: Re: [parisc-linux] Some warning: ... cleanup; realy no interest?
+Date: Sat, 08 Sep 2007 09:43:26 +0000
+Message-ID: <46E26EBE.2010909__20770.423502154$1416624438$gmane$org@scarlet.be>
+References: <46E1808B.20301@scarlet.be> <200709071650.l87GoPTZ020957@hiauly1.hia.nrc.ca> <20070907165358.GF23583@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1
-Cc: "Matthew Wilcox" <matthew@wil.cx>,
- varenet@gmail.com,
+  charset=ISO-8859-1;
+  format=flowed
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ matthew@wil.cx,
  parisc-linux@lists.parisc-linux.org,
- debian-hppa@lists.debian.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
-In-Reply-To: <200709070125.l871PD6I007142@hiauly1.hia.nrc.ca>
-Resent-Message-ID: <Lqagh.A.oIB.vkh4GB@murphy>
-List-Id: linux-parisc.vger.kernel.org
-List-Id: <debian-hppa.lists.debian.org>
-List-Post: <mailto:debian-hppa@lists.debian.org>
-List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
-
-On 9/6/07, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> > On Thu, Sep 06, 2007 at 04:33:00PM -0400, John David Anglin wrote:
-> The reality is that a lot of work has been needed to keep up with
-> the rapid changes occuring in the middle of GCC and it has been
-> difficult to keep things from regressing.  For this to happen,
-> somebody else would have to do it.  Personally, I would rather
-> see work on the 64-bit linux userspace.
-
-The binutils unification was to give the 64-bit linker the ability to
-have multiple stub sections, whose eventual goal waws to aid in the
-development of a 64-bit linux userspace.
-
-> I must say though that I find the stability and reliability of
-> hppa-linux much better than it was a year or two ago.
-
-Go cow power! Mooooooo!
-
-Cheers,
-Carlos.
+ deller@gmx.de
+To: Kyle McMartin <kyle@mcmartin.ca>
+Return-Path: <soete.joel@scarlet.be>
+In-Reply-To: <20070907165358.GF23583@fattire.cabal.ca>
+List-ID: <linux-parisc.vger.kernel.org>
 
 
--- 
-To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
-with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
+
+Kyle McMartin wrote:
+> On Fri, Sep 07, 2007 at 12:50:25PM -0400, John David Anglin wrote:
+>>> Matthew Wilcox wrote:
+>>>> On Wed, Sep 05, 2007 at 03:51:22PM +0000, Joel Soete wrote:
+>>>>> mmm and what do you think about adding yet another format letter e.g. [rR] for resource_size_t as it was done for [zZ]?
+>>>> You'd also have to teach gcc about it.
+>>>>
+>>> What should I teach to gcc?
+>> Don't try, it's a waste of effort.  Just do the cast to unsigned long long
+>> as previously suggested.
+>>
+> 
+> I'd rather do neither. Talking to Viro we've been thinking about
+> removing the format check attributes from the kernel and using sparse
+> instead, which is under a bit tighter control.
+> 
+> --Kyle
+> 
+> 
+Tx for feedback,
+	j.
