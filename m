@@ -1,41 +1,38 @@
-From: Joel Soete <soete.joel@scarlet.be>
-Subject: Re: [parisc-linux] Some warning: ... cleanup; realy no interest?
-Date: Sat, 08 Sep 2007 09:43:26 +0000
-Message-ID: <46E26EBE.2010909__20770.423502154$1416624438$gmane$org@scarlet.be>
-References: <46E1808B.20301@scarlet.be> <200709071650.l87GoPTZ020957@hiauly1.hia.nrc.ca> <20070907165358.GF23583@fattire.cabal.ca>
+From: LaMont Jones <lamont@mmjgroup.com>
+Subject: Re: [parisc-linux] linux32 personality & config.guess
+Date: Mon, 10 Sep 2007 13:00:52 -0600
+Message-ID: <20070910190052.GA1818__26271.0745133974$1416624439$gmane$org@mix.mmjgroup.com>
+References: <200709042148.l84LmnE5017739@hiauly1.hia.nrc.ca> <200709061511.38991.vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset=ISO-8859-1;
-  format=flowed
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
- matthew@wil.cx,
- parisc-linux@lists.parisc-linux.org,
- deller@gmx.de
-To: Kyle McMartin <kyle@mcmartin.ca>
-Return-Path: <soete.joel@scarlet.be>
-In-Reply-To: <20070907165358.GF23583@fattire.cabal.ca>
-List-ID: <linux-parisc.vger.kernel.org>
+  charset=us-ascii
+Cc: parisc-linux@lists.parisc-linux.org,
+ John David Anglin <dave@hiauly1.hia.nrc.ca>,
+ Matthias Klose <doko@cs.tu-berlin.de>,
+ debian-hppa@lists.debian.org
+To: Mike Frysinger <vapier@gentoo.org>
+Return-Path: <bounce-debian-hppa=deller=gmx.de@lists.debian.org>
+In-Reply-To: <200709061511.38991.vapier@gentoo.org>
+Resent-Message-ID: <uoOJND.A.C_.2hZ5GB@murphy>
+List-Id: linux-parisc.vger.kernel.org
+List-Id: <debian-hppa.lists.debian.org>
+List-Post: <mailto:debian-hppa@lists.debian.org>
+List-Help: <mailto:debian-hppa-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-hppa-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-hppa-request@lists.debian.org?subject=unsubscribe>
+
+On Thu, Sep 06, 2007 at 03:11:37PM -0400, Mike Frysinger wrote:
+> i'm not terribly familiar with the breadth of the parisc family, but isnt 
+> 64bit only available with 2.0 ?  so it'd be pretty clean on Linux to say: 
+> hppa64-*-linux-* means 64bit userland, everything else is 32bit
+
+Also, with the current config.guess, personality is totally ignored in
+favor of looking at the processor model in /proc/cpuinfo.  Not a good
+answer.
+
+lamont
 
 
-
-Kyle McMartin wrote:
-> On Fri, Sep 07, 2007 at 12:50:25PM -0400, John David Anglin wrote:
->>> Matthew Wilcox wrote:
->>>> On Wed, Sep 05, 2007 at 03:51:22PM +0000, Joel Soete wrote:
->>>>> mmm and what do you think about adding yet another format letter e.g. [rR] for resource_size_t as it was done for [zZ]?
->>>> You'd also have to teach gcc about it.
->>>>
->>> What should I teach to gcc?
->> Don't try, it's a waste of effort.  Just do the cast to unsigned long long
->> as previously suggested.
->>
-> 
-> I'd rather do neither. Talking to Viro we've been thinking about
-> removing the format check attributes from the kernel and using sparse
-> instead, which is under a bit tighter control.
-> 
-> --Kyle
-> 
-> 
-Tx for feedback,
-	j.
+-- 
+To UNSUBSCRIBE, email to debian-hppa-REQUEST@lists.debian.org
+with a subject of "unsubscribe". Trouble? Contact listmaster@lists.debian.org
