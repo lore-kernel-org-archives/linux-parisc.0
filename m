@@ -1,16 +1,17 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] pthread_attr_getstack(): SEGV using ptr
 	stack_addr - stack_size
-Date: Sun, 16 Sep 2007 12:17:13 -0400
-Message-ID: <119aab440709160917q1451a561i3e7724edfa89fedc__16142.6896848299$1416624442$gmane$org@mail.gmail.com>
-References: <200709151832.l8FIWWBw007130@hiauly1.hia.nrc.ca>
+Date: Sun, 16 Sep 2007 12:36:41 -0400 (EDT)
+Message-ID: <200709161636.l8GGagbF025937__41765.7079328366$1416624442$gmane$org@hiauly1.hia.nrc.ca>
+References: <119aab440709160917q1451a561i3e7724edfa89fedc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
 Cc: parisc-linux@lists.parisc-linux.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200709151832.l8FIWWBw007130@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440709160917q1451a561i3e7724edfa89fedc@mail.gmail.com>
+	from "Carlos O'Donell" at Sep 16, 2007 12:17:13 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,23 +22,23 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On 9/15/07, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> Carlos,
->
-> We have a problem with libjava.  The details are here:
-> http://gcc.gnu.org/bugzilla/show_bug.cgi?id=33442
->
-> The problem seems to be pthread_attr_getstack.  It looks like
-> we aren't rounding the returned stack_addr value correctly to
-> ensure that stack_addr - stack_size is equal to or larger than
-> the stack base for a thread.
+> I will look into this. Thanks Dave. Would you like a patch against the
+> current debian glibc? The  patch I checkin upstream won't be much use
+> for you :-)
 
-I will look into this. Thanks Dave. Would you like a patch against the
-current debian glibc? The  patch I checkin upstream won't be much use
-for you :-)
+Yes, please.
 
-Cheers,
-Carlos.
+Something changed a couple of days ago to trigger this.  There might
+be a kernel issue.  The two systems that I'm seeing this on are running
+2.6.22.6.  gsyprf11 running 2.6.22.1 seems unaffected so far.  However,
+the problem appeared sometime after updating to 2.6.22.6.  All systems
+are running debian lenny.
+
+Thanks,
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
