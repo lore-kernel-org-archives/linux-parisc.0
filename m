@@ -1,16 +1,13 @@
-From: "Michael S. Zick" <mszick@morethan.org>
-Subject: Re: [parisc-linux] IBM GXT6000P on parisc linux
-Date: Sun, 30 Sep 2007 15:42:12 -0500
-Message-ID: <200709301542.12192.mszick__27543.4522809975$1416624444$gmane$org@morethan.org>
-References: <200709211949.21664.b.gunreben@web.de>
-	<20070930193534.GA15729@colo.lackof.org>
-	<200709302222.11909.b.gunreben@web.de>
+From: Cyril Brulebois <cyril.brulebois@enst-bretagne.fr>
+Subject: [parisc-linux] (solved) linking problem on HP-PA
+Date: Wed, 10 Oct 2007 18:35:24 +0200
+Message-ID: <20071010163524.GA25910__23624.1880957552$1416624444$gmane$org@evy>
+Reply-To: Cyril Brulebois <cyril.brulebois@enst-bretagne.fr>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: multipart/mixed;
+  boundary="===============0746991653=="
 To: parisc-linux@lists.parisc-linux.org
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200709302222.11909.b.gunreben@web.de>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,85 +18,63 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun September 30 2007 15:22, Berthold Gunreben wrote:
-> Am Sonntag, 30. September 2007 21:35 schrieb Grant Grundler:
-> > On Fri, Sep 21, 2007 at 07:49:21PM +0200, Berthold Gunreben wrote:
-> > > Hi,
-> > >
-> > > I got a used HP parisc workstation, and found a GXT6000P video card in
-> > > there. The card was detected and initialized by the firmware of this
-> > > machine (a C3750).
-> >
-> > wow..that's odd. I didn't see any web page which shows HP ever
-> > supported GXT6000P with HPUX. I suspect someone sold you the wrong card.
-> > Can you explain in more detail what you mean with "detected and initialized
-> > by the firmware"?
-> >
-> > I suspect magic BIOS code isn't getting run. (It _might_ run under
-> > a C8000 but I don't expect it to work).
-> 
-> Well, what can I say. The workstation boots up and displays the usual firmware 
-> messages like press Tab to choose resolution (only 640x480 seems to be 
-> supported at that stage) and I can also enter commands at this console. The 
-> card does not seem to be wrong in this respect.
->
 
-Most likely, all the card hardware required to do 640x480 was a power-on
-reset signal.
+--===============0746991653==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
+Content-Disposition: inline
 
-That rate is very non-hp - it is a rare parisc system monitor that can 
-display at that scan.
- 
-> After booting linux, the messages of the kernel are displayed until the 
-> console switches:
-> 
-> console handover: boot [ttyB0] -> real [tty0]
-> 
-> Then it takes some more seconds, until the display goes dark and I was not yet 
-> successful in bringing it to life again.
->
 
-Sounds like the card never got setup for anything that wasn't hardware defaulted
-by the power-on signal.
+--X1bOJ3K7DJ5YkBrT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If I recall correctly, that means (from non-parisc, vga mode land) that the video
-interrupt generation is also disabled on the card.
- 
-> > You can determine if it's necessary by looking at the driver source code.
-> > Try to find where it registers the IRQ handler with request_irq().
-> > Sounds like either it doesn't or it can't (but should print something
-> > to dmesg buffer in that case).
-> 
-> The driver has no occurence of irq, and it only handles framebuffer (normally, 
-> this card also should have 3D capabilities. It looks like it just does not 
-> need IRQs.
-> 
+Hi,
 
-Perhaps the driver was written to use _only_ the power-on defaults 
-with a lot more work required to do anything else.  
-Like the other 90% of the driver.
+I requested an account yesterday since I was facing a linking problem on
+HP-PA (apparently a missing =E2=80=9C-ffunction-sections=E2=80=9D compiler =
+option), and
+only on this architecture (amongst the 12 supported by Debian).
 
-Mike
+Thanks to Grant, I've been allowed to debug that problem quite quickly,
+and I posted a tiny summary on [1]. Since Grant asked me to reference it
+here, you're reading this mail. ;-)
 
-> It looks like the card is switched off by using 
-> pdc_cons.flags &= ~CON_PRINTBUFFER
-> 
-> At least if I comment this line, booting continues with messages until some 
-> point where the machine just hangs. 
-> 
-> I am sorry, that I did not post more information in the first place, but I 
-> don't have much experience with graphics on parisc-linux ... 
-> 
-> Thanks for your efforts anyway.
-> 
-> Berthold
-> _______________________________________________
-> parisc-linux mailing list
-> parisc-linux@lists.parisc-linux.org
-> http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
-> 
-> 
+ 1. http://ikibiki.org/blog/2007/10/10/Linking_on_hppa/
+
+Again, many thanks for the quick access setup, it is very appreciated,
+and will help users get an updated package in the testing distribution.
+
+Cheers,
+
+--=20
+Cyril Brulebois
+
+PS: I'm not subscribed, that's why I set Reply-To.
+
+--X1bOJ3K7DJ5YkBrT
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFHDP9MeGfVPHR5Nd0RAvJgAKCuYDPlsygZ/JmnwIKn0xsA4aLmuwCfdgY6
+9oWp6id1KrqD5FvUtR/N6Vw=
+=Hn0o
+-----END PGP SIGNATURE-----
+
+--X1bOJ3K7DJ5YkBrT--
+
+--===============0746991653==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
 http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
+--===============0746991653==--
