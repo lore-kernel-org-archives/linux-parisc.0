@@ -1,7 +1,7 @@
 From: Matthew Wilcox <matthew@wil.cx>
-Subject: [parisc-linux] Fix /proc/iomem
-Date: Sun, 14 Oct 2007 08:48:27 -0600
-Message-ID: <20071014144826.GF29934__2018.07328635386$1416624644$gmane$org@parisc-linux.org>
+Subject: [parisc-linux] Fix pcibios_bus_to_resource etc
+Date: Sun, 14 Oct 2007 10:28:55 -0600
+Message-ID: <20071014162855.GG29934__38120.0092532255$1416624645$gmane$org@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
@@ -18,155 +18,206 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 
-commit 5d04e33a34814d0cc3029f4b1ba0e62829cb4610
-Author: Matthew Wilcox <matthew@wil.cx>
-Date:   Sun Oct 14 10:13:31 2007 -0400
+I don't quite have time to finish this off before I get on a plane, but
+it mostly works, so maybe somebody else can finish it off for me.
 
-    parisc: Fix infinite loop in /proc/iomem
-    
-    pcibios_link_hba_resources() could corrupt the resource tree by inserting
-    resources in the wrong place.  Fix this by calling pci_claim_resource()
-    for PCI-PCI bridges.  Delete pcibios_link_hba_resources as we shouldn't
-    need it any more.  Also get rid of lba_claim_dev_resources() and just
-    call pci_claim_resource() directly.
-    
-    Signed-off-by: Matthew Wilcox <willy@linux.intel.com>
+Basically, I fix pcibios_bus_to_resource for the ioport case and then
+use it in lba_fixup_bus.  It should probably be used by Dino too.
+
+Also unconditionally export both pcibios_bus_to_resource and
+pcibios_resource_to_bus.  It's a public API, and should always be
+available.
+
+I also convert PCI_BUS_ADDR to pcibios_bus_addr to avoid the icky
+ifdefs to avoid warnings.
+
+The only problem is that a few resources end up with the wrong parent on
+64-bit due to lack of f-extension:
+
+f0100000-f01fffff : PCI Bus #04
+  f0100000-f01fffff : PCI Bus #02
+  f4900000-f49fffff : PCI Bus #02
+  f6000000-f60fffff : PCI Bus #04
+
+These PCI busses are the ones behind PCI-PCI bridges; eg
+
+fffffffff6000000-fffffffff67fffff : PCI03 LMMIO                                 
+  fffffffff6000000-fffffffff6001fff : 0000:04:04.1                              
+
+Shouldn't be hard to fix, I'm just out of time.
 
 diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
-index 563df00..8263d49 100644
+index 8263d49..a7eab22 100644
 --- a/arch/parisc/kernel/pci.c
 +++ b/arch/parisc/kernel/pci.c
-@@ -194,31 +194,6 @@ void __init pcibios_init_bus(struct pci_bus *bus)
+@@ -194,57 +194,51 @@ void __init pcibios_init_bus(struct pci_bus *bus)
  	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bridge_ctl);
  }
  
--
--/* KLUGE: Link the child and parent resources - generic PCI didn't */
--static void
--pcibios_link_hba_resources( struct resource *hba_res, struct resource *r)
--{
--	if (!r->parent) {
--		printk(KERN_EMERG "PCI: resource not parented! [%p-%p]\n",
--				(void*) r->start, (void*) r->end);
--		r->parent = hba_res;
--
--		/* reverse link is harder *sigh*  */
--		if (r->parent->child) {
--			if (r->parent->sibling) {
--				struct resource *next = r->parent->sibling;
--				while (next->sibling)
--					 next = next->sibling;
--				next->sibling = r;
--			} else {
--				r->parent->sibling = r;
--			}
--		} else
--			r->parent->child = r;
--	}
--}
--
- /* called by drivers/pci/setup-bus.c:pci_setup_bridge().  */
- void __devinit pcibios_resource_to_bus(struct pci_dev *dev,
+-/* called by drivers/pci/setup-bus.c:pci_setup_bridge().  */
+-void __devinit pcibios_resource_to_bus(struct pci_dev *dev,
++/*
++ * Convert from global view of resources to bus-local view.  For port
++ * addresses, this means masking off the upper bits.  For mmio addresses,
++ * it can be more complex -- see include/asm/pci.h
++ */
++void pcibios_resource_to_bus(struct pci_dev *dev,
  		struct pci_bus_region *region, struct resource *res)
-@@ -245,13 +220,6 @@ void __devinit pcibios_resource_to_bus(struct pci_dev *dev,
- 	DBG_RES("pcibios_resource_to_bus(%02x %s [%lx,%lx])\n",
- 		bus->number, res->flags & IORESOURCE_IO ? "IO" : "MEM",
- 		region->start, region->end);
+ {
+-	struct pci_bus *bus = dev->bus;
+-	struct pci_hba_data *hba = HBA_DATA(bus->bridge->platform_data);
 -
--	/* KLUGE ALERT
--	** if this resource isn't linked to a "parent", then it seems
--	** to be a child of the HBA - lets link it in.
--	*/
--	pcibios_link_hba_resources(&hba->io_space, bus->resource[0]);
--	pcibios_link_hba_resources(&hba->lmmio_space, bus->resource[1]);
- }
+ 	if (res->flags & IORESOURCE_IO) {
+-		/*
+-		** I/O space may see busnumbers here. Something
+-		** in the form of 0xbbxxxx where bb is the bus num
+-		** and xxxx is the I/O port space address.
+-		** Remaining address translation are done in the
+-		** PCI Host adapter specific code - ie dino_out8.
+-		*/
+ 		region->start = PCI_PORT_ADDR(res->start);
+-		region->end   = PCI_PORT_ADDR(res->end);
++		region->end = PCI_PORT_ADDR(res->end);
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		/* Convert MMIO addr to PCI addr (undo global virtualization) */
+-		region->start = PCI_BUS_ADDR(hba, res->start);
+-		region->end   = PCI_BUS_ADDR(hba, res->end);
++		struct pci_hba_data *hba =
++			HBA_DATA(dev->bus->bridge->platform_data);
++
++		region->start = pcibios_bus_addr(hba, res->start);
++		region->end = pcibios_bus_addr(hba, res->end);
+ 	}
  
+ 	DBG_RES("pcibios_resource_to_bus(%02x %s [%lx,%lx])\n",
+-		bus->number, res->flags & IORESOURCE_IO ? "IO" : "MEM",
++		dev->bus->number, res->flags & IORESOURCE_IO ? "IO" : "MEM",
+ 		region->start, region->end);
+ }
++EXPORT_SYMBOL(pcibios_resource_to_bus);
+ 
++/*
++ * Convert from bus-local view of resources to global view.  For port
++ * addresses, this means adding a bus number in bits 24-17.  For mmio
++ * addresses, it can be more complex -- see include/asm/pci.h
++ */
  void pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 5b86ee5..5eace9e 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -557,44 +557,6 @@ lba_bios_init(void)
- #ifdef CONFIG_64BIT
+ 			      struct pci_bus_region *region)
+ {
+-#ifdef CONFIG_64BIT
+-	struct pci_bus *bus = dev->bus;
+-	struct pci_hba_data *hba = HBA_DATA(bus->bridge->platform_data);
+-#endif
++	struct pci_hba_data *hba = HBA_DATA(dev->bus->bridge->platform_data);
+ 
+-	if (res->flags & IORESOURCE_MEM) {
++	if (res->flags & IORESOURCE_IO) {
++		int portbase = HBA_PORT_BASE(hba->hba_num);
++		res->start = portbase | region->start;
++		res->end = portbase | region->end;
++	} else if (res->flags & IORESOURCE_MEM) {
+ 		res->start = PCI_HOST_ADDR(hba, region->start);
+ 		res->end = PCI_HOST_ADDR(hba, region->end);
+ 	}
+-
+-	if (res->flags & IORESOURCE_IO) {
+-		res->start = region->start;
+-		res->end = region->end;
+-	}
+ }
+-
+-#ifdef CONFIG_HOTPLUG
+-EXPORT_SYMBOL(pcibios_resource_to_bus);
+ EXPORT_SYMBOL(pcibios_bus_to_resource);
+-#endif
  
  /*
--** Determine if a device is already configured.
--** If so, reserve it resources.
--**
--** Read PCI cfg command register and see if I/O or MMIO is enabled.
--** PAT has to enable the devices it's using.
--**
--** Note: resources are fixed up before we try to claim them.
--*/
--static void
--lba_claim_dev_resources(struct pci_dev *dev)
--{
--	u16 cmd;
--	int i, srch_flags;
--
--	(void) pci_read_config_word(dev, PCI_COMMAND, &cmd);
--
--	srch_flags  = (cmd & PCI_COMMAND_IO) ? IORESOURCE_IO : 0;
--	if (cmd & PCI_COMMAND_MEMORY)
--		srch_flags |= IORESOURCE_MEM;
--
--	if (!srch_flags)
--		return;
--
--	for (i = 0; i <= PCI_ROM_RESOURCE; i++) {
--		if (dev->resource[i].flags & srch_flags) {
--			pci_claim_resource(dev, i);
--			DBG("   claimed %s %d [%lx,%lx]/%lx\n",
--				pci_name(dev), i,
--				dev->resource[i].start,
--				dev->resource[i].end,
--				dev->resource[i].flags
--				);
--		}
--	}
--}
--
--
--/*
-  * truncate_pat_collision:  Deal with overlaps or outright collisions
-  *			between PAT PDC reported ranges.
-  *
-@@ -653,7 +615,6 @@ truncate_pat_collision(struct resource *root, struct resource *new)
- }
+  * pcibios align resources() is called every time generic PCI code
+diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+index 5eace9e..d0128b9 100644
+--- a/drivers/parisc/lba_pci.c
++++ b/drivers/parisc/lba_pci.c
+@@ -743,31 +743,16 @@ lba_fixup_bus(struct pci_bus *bus)
+ 		/* Virtualize Device/Bridge Resources. */
+ 		for (i = 0; i < PCI_BRIDGE_RESOURCES; i++) {
+ 			struct resource *res = &dev->resource[i];
++			struct pci_bus_region region;
  
- #else
--#define lba_claim_dev_resources(dev) do { } while (0)
- #define truncate_pat_collision(r,n)  (0)
- #endif
+ 			/* If resource not allocated - skip it */
+-			if (!res->start)
++			if (!res->flags)
+ 				continue;
  
-@@ -684,8 +645,12 @@ lba_fixup_bus(struct pci_bus *bus)
- 	** pci_alloc_primary_bus() mangles this.
- 	*/
- 	if (bus->self) {
-+		int i;
- 		/* PCI-PCI Bridge */
- 		pci_read_bridge_bases(bus);
-+		for (i = PCI_BRIDGE_RESOURCES; i < PCI_NUM_RESOURCES; i++) {
-+			pci_claim_resource(bus->self, i);
-+		}
- 	} else {
- 		/* Host-PCI Bridge */
- 		int err, i;
-@@ -803,6 +768,9 @@ lba_fixup_bus(struct pci_bus *bus)
- 				DBG("lba_fixup_bus() WTF? 0x%lx [%lx/%lx] XXX",
- 					res->flags, res->start, res->end);
- 			}
-+			if ((i != PCI_ROM_RESOURCE) ||
-+			    (res->flags & IORESOURCE_ROM_ENABLE))
-+				pci_claim_resource(dev, i);
- 		}
+-			if (res->flags & IORESOURCE_IO) {
+-				DBG("lba_fixup_bus() I/O Ports [%lx/%lx] -> ",
+-					res->start, res->end);
+-				res->start |= lba_portbase;
+-				res->end   |= lba_portbase;
+-				DBG("[%lx/%lx]\n", res->start, res->end);
+-			} else if (res->flags & IORESOURCE_MEM) {
+-				/*
+-				** Convert PCI (IO_VIEW) addresses to
+-				** processor (PA_VIEW) addresses
+-				 */
+-				DBG("lba_fixup_bus() MMIO [%lx/%lx] -> ",
+-					res->start, res->end);
+-				res->start = PCI_HOST_ADDR(HBA_DATA(ldev), res->start);
+-				res->end   = PCI_HOST_ADDR(HBA_DATA(ldev), res->end);
+-				DBG("[%lx/%lx]\n", res->start, res->end);
+-			} else {
+-				DBG("lba_fixup_bus() WTF? 0x%lx [%lx/%lx] XXX",
+-					res->flags, res->start, res->end);
+-			}
++			region.start = res->start;
++			region.end = res->end;
++			pcibios_bus_to_resource(dev, res, &region);
++
+ 			if ((i != PCI_ROM_RESOURCE) ||
+ 			    (res->flags & IORESOURCE_ROM_ENABLE))
+ 				pci_claim_resource(dev, i);
+diff --git a/include/asm-parisc/pci.h b/include/asm-parisc/pci.h
+index 61fbd57..7b5da00 100644
+--- a/include/asm-parisc/pci.h
++++ b/include/asm-parisc/pci.h
+@@ -100,16 +100,27 @@ static __inline__  int pci_is_lmmio(struct pci_hba_data *hba, unsigned long a)
+ **	(1) PA_VIEW - IO_VIEW = lmmio_offset for both LMMIO and ELMMIO
+ **	(2) PA_VIEW == IO_VIEW for GMMIO
+ */
+-#define PCI_BUS_ADDR(hba,a)	(PCI_IS_LMMIO(hba,a)	\
+-		?  ((a) - hba->lmmio_space_offset)	/* mangle LMMIO */ \
+-		: (a))					/* GMMIO */
++
++static inline unsigned long pcibios_bus_addr(struct pci_hba_data *hba,
++							unsigned long addr)
++{
++	if (PCI_IS_LMMIO(hba, addr))
++		return addr - hba->lmmio_space_offset;
++	return addr;
++}
++
+ #define PCI_HOST_ADDR(hba,a)	(((a) & PCI_F_EXTEND) == 0 \
+ 		? (a) + hba->lmmio_space_offset \
+ 		: (a))
  
- #ifdef FBB_SUPPORT
-@@ -814,11 +782,6 @@ lba_fixup_bus(struct pci_bus *bus)
- 		bus->bridge_ctl &= ~(status & PCI_STATUS_FAST_BACK);
- #endif
+ #else	/* !CONFIG_64BIT */
  
--		if (is_pdc_pat()) {
--			/* Claim resources for PDC's devices */
--			lba_claim_dev_resources(dev);
--		}
+-#define PCI_BUS_ADDR(hba,a)	(a)
++static inline unsigned long pcibios_bus_addr(struct pci_hba_data *hba,
++							unsigned long addr)
++{
++	return addr;
++}
++
+ #define PCI_HOST_ADDR(hba,a)	(a)
+ #define PCI_F_EXTEND		0UL
+ #define PCI_IS_LMMIO(hba,a)	(1)	/* 32-bit doesn't support GMMIO */
+
+-- 
+Intel are signing my paycheques ... these opinions are still mine
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
+_______________________________________________
+parisc-linux mailing list
+parisc-linux@lists.parisc-linux.org
+http://lists.parisc-linux.org/mailman/listinfo/parisc-linux
