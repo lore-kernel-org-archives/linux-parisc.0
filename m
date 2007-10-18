@@ -1,16 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [parisc-linux] what's in parisc-2.6.git
-Date: Thu, 18 Oct 2007 15:41:00 -0400
-Message-ID: <20071018194100.GA11936__18019.1497588114$1416624445$gmane$org@fattire.cabal.ca>
-References: <20071018082953.GB16148@fattire.cabal.ca>
-	<200710181937.l9IJbeBL009388@hiauly1.hia.nrc.ca>
+Date: Thu, 18 Oct 2007 15:56:46 -0400 (EDT)
+Message-ID: <200710181956.l9IJuk0M010166__19106.7834421576$1416624446$gmane$org@hiauly1.hia.nrc.ca>
+References: <20071018194100.GA11936@fattire.cabal.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
 Cc: parisc-linux@lists.parisc-linux.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200710181937.l9IJbeBL009388@hiauly1.hia.nrc.ca>
+In-Reply-To: <20071018194100.GA11936@fattire.cabal.ca> from "Kyle McMartin" at
+	Oct 18, 2007 03:41:00 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -21,38 +21,18 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Oct 18, 2007 at 03:37:39PM -0400, John David Anglin wrote:
-> Hi Kyle,
+> Er, really? This is bizarre, I'm running tip on all my machines without
+> problem (granted, in 64-bit mode.)
 > 
-> > [Note, I've given up on the quilt tree for now, because it ended up
-> > being a bit more hassle than just keeping topic branches around.]
-> 
-> Have you also given up on your patch tree?  Seems to have disappeared.
-> 
+> Can you upload the failing kernel somewhere, and I'll try to reproduce
+> it?
 
-Just temporarily. The workflow wasn't really working for me, and wasn't
-motivating me to generate diffs. I'll be putting more -pa testkernels
-up.
+It's in linux-2.6.23.1 in my home directory on gsyprf11.
 
-Now that I have some time again, I'll be fixing the autobuilder as well.
-
-> Yesterday, I applied your latest patch set to 2.6.23.1 and built
-> an SMP kernel.  I didn't test it much but there were weird errors
-> (e.g., postfix failed to start because it thought user postfix
-> and user nobody, and apt-get reported missing groups such as
-> Debian-exim).  This is all bogus and the errors don't occur with
-> 2.6.22.9 + your getdents compat patch.  I still have this kernel
-> around.
-> 
-
-Er, really? This is bizarre, I'm running tip on all my machines without
-problem (granted, in 64-bit mode.)
-
-Can you upload the failing kernel somewhere, and I'll try to reproduce
-it?
-
-Cheers,
-	Kyle
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
