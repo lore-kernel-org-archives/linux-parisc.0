@@ -1,18 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] [patch 2/2] backport of sba sg list management
-	to ccio-dma
-Date: Sat, 20 Oct 2007 13:23:28 -0400
-Message-ID: <20071020172328.GI10429__37835.4727560238$1416624647$gmane$org@fattire.cabal.ca>
-References: <4714E800.50709@scarlet.be>
-	<20071017184416.GB11502@fattire.cabal.ca>
-	<471A3928.8040603@scarlet.be>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [parisc-linux] [PATCH] VSC_GSC_HSC bus debugging
+Date: Sun, 21 Oct 2007 13:06:09 -0600
+Message-ID: <20071021190609.GA8421__10149.6737720028$1416624647$gmane$org@parisc-linux.org>
+References: <471B926D.10009@tiscali.nl>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: parisc-linux@parisc-linux.org
-To: Joel Soete <soete.joel@scarlet.be>
+Cc: kernel-janitors@vger.kernel.org,
+ parisc-linux@parisc-linux.org
+To: Roel Kluin <12o3l@tiscali.nl>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <471A3928.8040603@scarlet.be>
+In-Reply-To: <471B926D.10009@tiscali.nl>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -23,18 +21,33 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sat, Oct 20, 2007 at 05:21:44PM +0000, Joel Soete wrote:
-> Hello Kyle,
-> 
-> Hppay that you finaly receive it ;-)
-> (btw sorry for boucing)
-> 
+On Sun, Oct 21, 2007 at 07:54:53PM +0200, Roel Kluin wrote:
+> +config GSC_DEBUG
+> +	bool "VSC_GSC_HSC bus debugging"
 
-I've looked over the code, and it looks fine to me. Will wait for an ack
->from Grant though, since I have no ability to test ccio :/
+What an ugly prompt string ...
 
-Cheers and thanks,
-	Kyle
+> +	depends on GSC
+> +	default n
+
+default is 'n', by default.  No need to specify it.
+
+> +#ifdef GSC_DEBUG
+> +	#define DEBUG 1
+> +#endif
+
+Why the indent?
+
+> -	DEBPRINTK("%s intr, mask=0x%x\n", gsc_asic->name, irr);
+> +	printk("%s intr, mask=0x%x\n", gsc_asic->name, irr);
+
+Presumably you meant pr_debug?
+
+-- 
+Intel are signing my paycheques ... these opinions are still mine
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
