@@ -1,19 +1,17 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [parisc-linux] [patch 2/2] backport of sba sg list management
-	to ccio-dma
-Date: Sun, 28 Oct 2007 23:30:15 -0600
-Message-ID: <20071029053015.GA14763__47402.816967997$1416624650$gmane$org@colo.lackof.org>
-References: <JQIT2V$FB9C8381616CCA32E9FC6CC809E8D81D@scarlet.be>
-	<20071028064158.GB29233@colo.lackof.org>
-	<4724A084.5090709@scarlet.be>
+From: Roel Kluin <12o3l@tiscali.nl>
+Subject: Re: [parisc-linux] [PATCH] VSC_GSC_HSC bus debugging
+Date: Sun, 21 Oct 2007 23:12:17 +0200
+Message-ID: <471BC0B1.7060309__23036.2753653482$1416624650$gmane$org@tiscali.nl>
+References: <471B926D.10009@tiscali.nl>
+	<20071021190609.GA8421@parisc-linux.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: kyle <kyle@mcmartin.ca>,
- parisc-linux <parisc-linux@parisc-linux.org>
-To: Joel Soete <soete.joel@scarlet.be>
+Cc: kernel-janitors@vger.kernel.org,
+ parisc-linux@parisc-linux.org
+To: Matthew Wilcox <matthew@wil.cx>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <4724A084.5090709@scarlet.be>
+In-Reply-To: <20071021190609.GA8421@parisc-linux.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,49 +22,137 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Sun, Oct 28, 2007 at 02:45:24PM +0000, Joel Soete wrote:
-...
-> e.g.
-> # more GetOrder-poc.c
-...
-> give me well same results:
-> # ./GetOrder-poc
-> get_order(1) = 0 (0x0);
-> get_order_poc(1) = 0 (0x0).
-...
+Matthew Wilcox wrote:
+> On Sun, Oct 21, 2007 at 07:54:53PM +0200, Roel Kluin wrote:
+>> +config GSC_DEBUG
+>> +	bool "VSC_GSC_HSC bus debugging"
+> 
+> What an ugly prompt string ...
 
-Good!
+I wrote a script to make these changes, but apparently it's still not perfect
+I should have checked it more. I will make changes and resend previously sent
+patches. Below is the patch previously called [PATCH] VSC_GSC_HSC bus debugging,
+with corrections.
 
-...
-> But I need to check more on a detail:
-> here is the prototype of fls():
-> static inline int fls(int x)
->
-> so I need to be sure that the value of ((size - 1) >> (PAGE_SHIFT)) would 
-> always stand in a int (not unsigned but sign) for 32bit (iirc 
-> size_of(unsigned long)==32) and 64bit (size_of(unsigned long)==64) 
-> implementations?
+I used "VSC/GSC/HSC bus support" from "config GSC" in the Kconfig. the slashes
+were translated to underscores because they previously gave a bug. it's fixed now,
+but I think the name "VSC/GSC/HSC bus debugging" is more appropriate here.
+ 
+>> +	depends on GSC
+>> +	default n
+> 
+> default is 'n', by default.  No need to specify it.
 
-Huh?
-Why do you care how (unsigned long) is handled when the function prototype
-defines the API to pass in an "int"?
+ok fixed that
 
-FWIW, __fls could be extended to handle unsigned long the same way
-that __ffs has been...but I don't think we needed to for anything so far.
+>> +#ifdef GSC_DEBUG
+>> +	#define DEBUG 1
+>> +#endif
+> 
+> Why the indent?
 
-...
->>> 	return (size ? fls((size - 1) >> (PAGE_SHIFT)): 0);
->> fls is inlined already and does the same test for size.
->
-> Yes but here the error (well imo it's an error) came from the unsign long 
-> of (-1 >> PAGE_SHIFT) <> 0
+I thought it was more clear. But have that changed now as well.
 
-Yeah, we'll have to make sure signed int values are handled correctly too.
-But something specific to the parisc version of get_order() can deal
-with sign bits and zero values then call __fls(unsigned long) instead
-of fls(signed int).
+>> -	DEBPRINTK("%s intr, mask=0x%x\n", gsc_asic->name, irr);
+>> +	printk("%s intr, mask=0x%x\n", gsc_asic->name, irr);
+> 
+> Presumably you meant pr_debug?
 
-grant
+yes.
+
+Thanks for your comments. How is the one below instead? It is a replacement for
+[PATCH] VSC_GSC_HSC bus debugging.
+
+Now there's also a change in some printk's and the GSC_DEBUG option has a place
+lower in the Kconfig file. I also added a Kconfig help description.
+
+---
+    Kconfig GSC bus debugging and more elaborate printks
+    
+    Signed-off-by: Roel Kluin <12o3l@tiscali.nl>
+
+diff --git a/drivers/parisc/Kconfig b/drivers/parisc/Kconfig
+index 1d3b84b..8959141 100644
+--- a/drivers/parisc/Kconfig
++++ b/drivers/parisc/Kconfig
+@@ -54,6 +54,12 @@ config EISA
+ 	  supports both the Mongoose & Wax EISA adapters.  It is sadly
+ 	  incomplete and lacks support for card-to-host DMA.
+ 
++config GSC_DEBUG
++	bool "VSC/GSC/HSC bus debugging"
++	depends on GSC
++	help
++	  Say Y here to enable debugging for VSC, GSC and HSC busses.
++
+ source "drivers/eisa/Kconfig"
+ 
+ config ISA
+diff --git a/drivers/parisc/gsc.c b/drivers/parisc/gsc.c
+index 1b3e3fd..8805abb 100644
+--- a/drivers/parisc/gsc.c
++++ b/drivers/parisc/gsc.c
+@@ -27,19 +27,17 @@
+ 
+ #include "gsc.h"
+ 
+-#undef DEBUG
+-
+-#ifdef DEBUG
+-#define DEBPRINTK printk
+-#else
+-#define DEBPRINTK(x,...)
++#ifdef GSC_DEBUG
++#define DEBUG 1
+ #endif
++#include <linux/kernel.h>
++
+ 
+ int gsc_alloc_irq(struct gsc_irq *i)
+ {
+ 	int irq = txn_alloc_irq(GSC_EIM_WIDTH);
+ 	if (irq < 0) {
+-		printk("cannot get irq\n");
++		printk("GSC: cannot get irq\n");
+ 		return irq;
+ 	}
+ 
+@@ -58,7 +56,7 @@ int gsc_claim_irq(struct gsc_irq *i, int irq)
+ 
+ 	irq = txn_claim_irq(irq);
+ 	if (irq < 0) {
+-		printk("cannot claim irq %d\n", c);
++		printk("GSC: cannot claim irq %d\n", c);
+ 		return irq;
+ 	}
+ 
+@@ -82,7 +80,7 @@ irqreturn_t gsc_asic_intr(int gsc_asic_irq, void *dev)
+ 	if (irr == 0)
+ 		return IRQ_NONE;
+ 
+-	DEBPRINTK("%s intr, mask=0x%x\n", gsc_asic->name, irr);
++	pr_debug("%s intr, mask=0x%x\n", gsc_asic->name, irr);
+ 
+ 	do {
+ 		int local_irq = __ffs(irr);
+@@ -112,7 +110,7 @@ static void gsc_asic_disable_irq(unsigned int irq)
+ 	int local_irq = gsc_find_local_irq(irq, irq_dev->global_irq, 32);
+ 	u32 imr;
+ 
+-	DEBPRINTK(KERN_DEBUG "%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
++	pr_debug("%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
+ 			irq_dev->name, imr);
+ 
+ 	/* Disable the IRQ line by clearing the bit in the IMR */
+@@ -127,7 +125,7 @@ static void gsc_asic_enable_irq(unsigned int irq)
+ 	int local_irq = gsc_find_local_irq(irq, irq_dev->global_irq, 32);
+ 	u32 imr;
+ 
+-	DEBPRINTK(KERN_DEBUG "%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
++	pr_debug("%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
+ 			irq_dev->name, imr);
+ 
+ 	/* Enable the IRQ line by setting the bit in the IMR */
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
