@@ -1,20 +1,21 @@
 From: Joel Soete <soete.joel@scarlet.be>
 Subject: Re: [parisc-linux] [patch 2/2] backport of sba sg list management
 	to ccio-dma
-Date: Thu, 01 Nov 2007 17:17:51 +0000
-Message-ID: <472A0A3F.5040007__1408.67351224205$1416624649$gmane$org@scarlet.be>
-References: <JQIT2V$FB9C8381616CCA32E9FC6CC809E8D81D@scarlet.be>
-	<20071028064158.GB29233@colo.lackof.org>
-	<4724A084.5090709@scarlet.be>
-	<20071029053015.GA14763@colo.lackof.org>
+Date: Thu, 01 Nov 2007 17:18:01 +0000
+Message-ID: <472A0A49.8010201__18864.6602714018$1416624649$gmane$org@scarlet.be>
+References: <4714E800.50709@scarlet.be>
+	<20071017184416.GB11502@fattire.cabal.ca>
+	<471A3928.8040603@scarlet.be>
+	<20071020172328.GI10429@fattire.cabal.ca>
+	<20071022043909.GC11869@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: kyle <kyle@mcmartin.ca>,
- parisc-linux <parisc-linux@parisc-linux.org>
+Cc: Kyle McMartin <kyle@mcmartin.ca>,
+ parisc-linux@parisc-linux.org
 To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20071029053015.GA14763@colo.lackof.org>
+In-Reply-To: <20071022043909.GC11869@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -27,59 +28,29 @@ Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
 Grant,
 
+Just come back here because I don't understand this strange stuff:
 
 Grant Grundler wrote:
-> On Sun, Oct 28, 2007 at 02:45:24PM +0000, Joel Soete wrote:
+[snip]
 > ...
->> e.g.
->> # more GetOrder-poc.c
-> ...
->> give me well same results:
->> # ./GetOrder-poc
->> get_order(1) = 0 (0x0);
->> get_order_poc(1) = 0 (0x0).
-> ...
+>  #ifdef CCIO_SEARCH_TIME
+> +	udelay(100);
 > 
-> Good!
+> Did you want to keep udelay() call?
 > 
-> ...
->> But I need to check more on a detail:
->> here is the prototype of fls():
->> static inline int fls(int x)
->>
->> so I need to be sure that the value of ((size - 1) >> (PAGE_SHIFT)) would 
->> always stand in a int (not unsigned but sign) for 32bit (iirc 
->> size_of(unsigned long)==32) and 64bit (size_of(unsigned long)==64) 
->> implementations?
-> 
-> Huh?
-> Why do you care how (unsigned long) is handled when the function prototype
-> defines the API to pass in an "int"?
-> 
-Because I only have a theoritical knowledge of programming :<?
+here is short test:
+without udelay:
+# scp vmlinux  jso@patst007:/var/tmp/vmlinux-2.6.23-pa-d32up3
+Password:
+vmlinux                                                                                    100% 4364KB 101.5KB/s   00:43
 
-> FWIW, __fls could be extended to handle unsigned long the same way
-> that __ffs has been...but I don't think we needed to for anything so far.
-> 
-Ok, I could check if I can recover my stuff about this fls()?
-(should be something like <http://lists.parisc-linux.org/pipermail/parisc-linux/2006-September/030209.html>, I will test more)
+with udelay:
+# scp vmlinux  jso@patst007:/var/tmp/vmlinux-2.6.23-pa-d32up3
+Password:
+vmlinux                                                                                    100% 4364KB 436.4KB/s   00:10
 
-> ...
->>>> 	return (size ? fls((size - 1) >> (PAGE_SHIFT)): 0);
->>> fls is inlined already and does the same test for size.
->> Yes but here the error (well imo it's an error) came from the unsign long 
->> of (-1 >> PAGE_SHIFT) <> 0
-> 
-> Yeah, we'll have to make sure signed int values are handled correctly too.
-> But something specific to the parisc version of get_order() can deal
-> with sign bits and zero values then call __fls(unsigned long) instead
-> of fls(signed int).
-> 
-> grant
-> 
-> 
-Tx again,
-	j.
+well still far from what we could expect (about 800KB/s) but fwiw something supposing slowdown the kernel improve nic perf?
+
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
