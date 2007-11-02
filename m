@@ -1,21 +1,21 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: Joel Soete <soete.joel@scarlet.be>
 Subject: Re: [parisc-linux] [patch 2/2] backport of sba sg list management
 	to ccio-dma
-Date: Thu, 1 Nov 2007 15:21:08 -0600
-Message-ID: <20071101212108.GA27994__16356.9280099638$1416624649$gmane$org@colo.lackof.org>
-References: <4714E800.50709@scarlet.be>
-	<20071017184416.GB11502@fattire.cabal.ca>
-	<471A3928.8040603@scarlet.be>
-	<20071020172328.GI10429@fattire.cabal.ca>
-	<20071022043909.GC11869@colo.lackof.org>
-	<472A0A49.8010201@scarlet.be>
+Date: Fri, 02 Nov 2007 18:00:16 +0000
+Message-ID: <472B65B0.7020300__49602.7772933759$1416624650$gmane$org@scarlet.be>
+References: <JQIT2V$FB9C8381616CCA32E9FC6CC809E8D81D@scarlet.be>
+	<20071028064158.GB29233@colo.lackof.org>
+	<4724A084.5090709@scarlet.be>
+	<20071029053015.GA14763@colo.lackof.org>
+	<472A0A3F.5040007@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: parisc-linux@parisc-linux.org
-To: Joel Soete <soete.joel@scarlet.be>
+Cc: kyle <kyle@mcmartin.ca>,
+ parisc-linux <parisc-linux@parisc-linux.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <472A0A49.8010201@scarlet.be>
+In-Reply-To: <472A0A3F.5040007@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -26,35 +26,49 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Thu, Nov 01, 2007 at 05:18:01PM +0000, Joel Soete wrote:
-> here is short test:
-> without udelay:
-> # scp vmlinux  jso@patst007:/var/tmp/vmlinux-2.6.23-pa-d32up3
 
-For testing NIC perf, please don't start with scp. Use ftp or something
-else that doesn't use encryption. See www.netperf.org and/or iperf.
 
-> Password:
-> vmlinux                                                                     
->                100% 4364KB 101.5KB/s   00:43
->
-> with udelay:
-> # scp vmlinux  jso@patst007:/var/tmp/vmlinux-2.6.23-pa-d32up3
-> Password:
-> vmlinux                                                                     
->                100% 4364KB 436.4KB/s   00:10
->
-> well still far from what we could expect (about 800KB/s) but fwiw something 
-> supposing slowdown the kernel improve nic perf?
+Joel Soete wrote:
+> Grant,
+> 
+> 
+> Grant Grundler wrote:
+>> On Sun, Oct 28, 2007 at 02:45:24PM +0000, Joel Soete wrote:
+>> ...
+>>> e.g.
+>>> # more GetOrder-poc.c
+>> ...
+>>> give me well same results:
+>>> # ./GetOrder-poc
+>>> get_order(1) = 0 (0x0);
+>>> get_order_poc(1) = 0 (0x0).
+>> ...
+>>
+>> Good!
+>>
+>> ...
+>>> But I need to check more on a detail:
+>>> here is the prototype of fls():
+>>> static inline int fls(int x)
+>>>
+>>> so I need to be sure that the value of ((size - 1) >> (PAGE_SHIFT)) 
+>>> would always stand in a int (not unsigned but sign) for 32bit (iirc 
+>>> size_of(unsigned long)==32) and 64bit (size_of(unsigned long)==64) 
+>>> implementations?
+>>
+>> Huh?
+>> Why do you care how (unsigned long) is handled when the function 
+>> prototype
+>> defines the API to pass in an "int"?
+>>
+it seems that I simply forget the existance of fls_long().
 
-Yeah, that happens and it's clearly something wrong with the code.
-Suggests there is contention either between CPU and IOTLB or between
-CPU and IO device for a cacheline(s).
+I can now safely patch get_order() ;<).
 
-BTW, I'm assuming you have DELAYED_RESOURCE_CNT set to 16 or more.
+Tx,
+	J.
 
-thanks,
-grant
+PS: Yes DELAYED_RESOURCE_CNT was set to 16
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
