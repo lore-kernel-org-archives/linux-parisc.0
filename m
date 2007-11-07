@@ -1,17 +1,17 @@
-From: Roel Kluin <12o3l@tiscali.nl>
-Subject: Re: [parisc-linux] [PATCH] VSC_GSC_HSC bus debugging
-Date: Sun, 21 Oct 2007 23:12:17 +0200
-Message-ID: <471BC0B1.7060309__23036.2753653482$1416624650$gmane$org@tiscali.nl>
-References: <471B926D.10009@tiscali.nl>
-	<20071021190609.GA8421@parisc-linux.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [parisc-linux] what's in parisc-2.6.git
+Date: Tue, 6 Nov 2007 22:32:08 -0500 (EST)
+Message-ID: <200711070332.lA73W8O3026888__13228.4265048385$1416624449$gmane$org@hiauly1.hia.nrc.ca>
+References: <200710201917.l9KJHpPZ023957@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: kernel-janitors@vger.kernel.org,
- parisc-linux@parisc-linux.org
-To: Matthew Wilcox <matthew@wil.cx>
+Cc: kyle@mcmartin.ca,
+ parisc-linux@lists.parisc-linux.org
+To: dave@hiauly1.hia.nrc.ca (John David Anglin)
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20071021190609.GA8421@parisc-linux.org>
+In-Reply-To: <200710201917.l9KJHpPZ023957@hiauly1.hia.nrc.ca> from "John David
+	Anglin" at Oct 20, 2007 03:17:50 pm
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,137 +22,52 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Matthew Wilcox wrote:
-> On Sun, Oct 21, 2007 at 07:54:53PM +0200, Roel Kluin wrote:
->> +config GSC_DEBUG
->> +	bool "VSC_GSC_HSC bus debugging"
+> Changing this back to the default "/sbin/hotplug" avoids this udev
+> problem, however the kernel HPMC'd at the end of the boot.  Aside
+> from the hpmc log, there's not much info on what happened.
 > 
-> What an ugly prompt string ...
+> Back to 2.6.22.9,
 
-I wrote a script to make these changes, but apparently it's still not perfect
-I should have checked it more. I will make changes and resend previously sent
-patches. Below is the patch previously called [PATCH] VSC_GSC_HSC bus debugging,
-with corrections.
+I was almost about to say the version as 2007-10-22 resolved the
+issues that I have been seeing with 2.6.23.  This build booted ok
+but died after three days with a soft lockup:
 
-I used "VSC/GSC/HSC bus support" from "config GSC" in the Kconfig. the slashes
-were translated to underscores because they previously gave a bug. it's fixed now,
-but I think the name "VSC/GSC/HSC bus debugging" is more appropriate here.
- 
->> +	depends on GSC
->> +	default n
-> 
-> default is 'n', by default.  No need to specify it.
+BUG: soft lockup - CPU#1 stuck for 11s! [udevd:382]
 
-ok fixed that
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000001000000001100001111 Not tainted
+r00-03  000000000804030f 00000000405c6b20 000000004011dde4 0000000000000000
+r04-07  00000000405bd320 000000004052ff00 000000004052ff00 00000000405f7008
+r08-11  0000000000000001 00000000404a92c0 00000000404b3be0 0000000000000001
+r12-15  0000000000000000 00000000fb111bc0 00000000453be3c0 0000000000000000
+r16-19  00000000459ecec0 00000000475909c0 00000000453439c0 000000004052ff00
+r20-23  0000000000000038 00000000404b4330 0000000000000000 0000000000000001
+r24-27  0000000000000000 0000000000000008 00000000404b4330 00000000405bd320
+r28-31  0000000000000001 000000004487c750 000000004487c700 00000001032c2993
+sr00-03  000000000004a000 0000000000000000 0000000000000000 000000000004a000
+sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
 
->> +#ifdef GSC_DEBUG
->> +	#define DEBUG 1
->> +#endif
-> 
-> Why the indent?
+IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004011de24 000000004011de28
+ IIR: 0e6010dc    ISR: 00000000474e400a  IOR: 00000000401131cc
+ CPU:        1   CR30: 000000004487c000 CR31: fffffff0f0e098e0
+ORIG_R28: 0000000000000101
+IAOQ[0]: smp_call_function+0x2dc/0x390
+IAOQ[1]: smp_call_function+0x2e0/0x390
+RP(r2): smp_call_function+0x29c/0x390
 
-I thought it was more clear. But have that changed now as well.
+The above message repeated every 11 seconds or so on the console.  Nothing
+in any other logs.
 
->> -	DEBPRINTK("%s intr, mask=0x%x\n", gsc_asic->name, irr);
->> +	printk("%s intr, mask=0x%x\n", gsc_asic->name, irr);
-> 
-> Presumably you meant pr_debug?
+The system did get through two gcc builds before crashing.
 
-yes.
+Another minor problem that I see is testsuite timeouts for tests that
+don't normally timeout.  This seems almost random and I have no idea how
+to reproduce it.
 
-Thanks for your comments. How is the one below instead? It is a replacement for
-[PATCH] VSC_GSC_HSC bus debugging.
-
-Now there's also a change in some printk's and the GSC_DEBUG option has a place
-lower in the Kconfig file. I also added a Kconfig help description.
-
----
-    Kconfig GSC bus debugging and more elaborate printks
-    
-    Signed-off-by: Roel Kluin <12o3l@tiscali.nl>
-
-diff --git a/drivers/parisc/Kconfig b/drivers/parisc/Kconfig
-index 1d3b84b..8959141 100644
---- a/drivers/parisc/Kconfig
-+++ b/drivers/parisc/Kconfig
-@@ -54,6 +54,12 @@ config EISA
- 	  supports both the Mongoose & Wax EISA adapters.  It is sadly
- 	  incomplete and lacks support for card-to-host DMA.
- 
-+config GSC_DEBUG
-+	bool "VSC/GSC/HSC bus debugging"
-+	depends on GSC
-+	help
-+	  Say Y here to enable debugging for VSC, GSC and HSC busses.
-+
- source "drivers/eisa/Kconfig"
- 
- config ISA
-diff --git a/drivers/parisc/gsc.c b/drivers/parisc/gsc.c
-index 1b3e3fd..8805abb 100644
---- a/drivers/parisc/gsc.c
-+++ b/drivers/parisc/gsc.c
-@@ -27,19 +27,17 @@
- 
- #include "gsc.h"
- 
--#undef DEBUG
--
--#ifdef DEBUG
--#define DEBPRINTK printk
--#else
--#define DEBPRINTK(x,...)
-+#ifdef GSC_DEBUG
-+#define DEBUG 1
- #endif
-+#include <linux/kernel.h>
-+
- 
- int gsc_alloc_irq(struct gsc_irq *i)
- {
- 	int irq = txn_alloc_irq(GSC_EIM_WIDTH);
- 	if (irq < 0) {
--		printk("cannot get irq\n");
-+		printk("GSC: cannot get irq\n");
- 		return irq;
- 	}
- 
-@@ -58,7 +56,7 @@ int gsc_claim_irq(struct gsc_irq *i, int irq)
- 
- 	irq = txn_claim_irq(irq);
- 	if (irq < 0) {
--		printk("cannot claim irq %d\n", c);
-+		printk("GSC: cannot claim irq %d\n", c);
- 		return irq;
- 	}
- 
-@@ -82,7 +80,7 @@ irqreturn_t gsc_asic_intr(int gsc_asic_irq, void *dev)
- 	if (irr == 0)
- 		return IRQ_NONE;
- 
--	DEBPRINTK("%s intr, mask=0x%x\n", gsc_asic->name, irr);
-+	pr_debug("%s intr, mask=0x%x\n", gsc_asic->name, irr);
- 
- 	do {
- 		int local_irq = __ffs(irr);
-@@ -112,7 +110,7 @@ static void gsc_asic_disable_irq(unsigned int irq)
- 	int local_irq = gsc_find_local_irq(irq, irq_dev->global_irq, 32);
- 	u32 imr;
- 
--	DEBPRINTK(KERN_DEBUG "%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
-+	pr_debug("%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
- 			irq_dev->name, imr);
- 
- 	/* Disable the IRQ line by clearing the bit in the IMR */
-@@ -127,7 +125,7 @@ static void gsc_asic_enable_irq(unsigned int irq)
- 	int local_irq = gsc_find_local_irq(irq, irq_dev->global_irq, 32);
- 	u32 imr;
- 
--	DEBPRINTK(KERN_DEBUG "%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
-+	pr_debug("%s(%d) %s: IMR 0x%x\n", __FUNCTION__, irq,
- 			irq_dev->name, imr);
- 
- 	/* Enable the IRQ line by setting the bit in the IMR */
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
