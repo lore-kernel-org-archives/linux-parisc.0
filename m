@@ -1,19 +1,22 @@
-From: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
-Subject: [parisc-linux] [PATCH] parisc: balance parenthesis in
-	pte_free_kernel()
-Date: Thu, 15 Nov 2007 23:34:27 +0100
-Message-ID: <200711152334.28517.m.kozlowski__2691.70550532198$1416624651$gmane$org@tuxland.pl>
-References: <20071113175906.497a1a6a.akpm@linux-foundation.org>
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+Subject: Re: [parisc-linux] [PATCH] alpha/parisc: Removing config variable
+	DEBUG_RWLOCK
+Date: Thu, 15 Nov 2007 14:54:45 -0500 (EST)
+Message-ID: <alpine.LFD.0.9999.0711151453230.4568@localhost.localdomain>
+References: <473C065D.1000000@gmail.com>
+	<20071115190605.GF20892@colo.lackof.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: linux-kernel@vger.kernel.org,
+Cc: kernel-janitors@vger.kernel.org,
+ ink@jurassic.park.msu.ru,
+ Andrew Morton <akpm@linux-foundation.org>,
+ rth@twiddle.net,
+ Jiri Olsa <olsajiri@gmail.com>,
  parisc-linux@parisc-linux.org
-To: Andrew Morton <akpm@linux-foundation.org>,
- grundler@parisc-linux.org,
- kyle@parisc-linux.org
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <20071113175906.497a1a6a.akpm@linux-foundation.org>
+In-Reply-To: <20071115190605.GF20892@colo.lackof.org>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -24,31 +27,36 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-Hello,
+On Thu, 15 Nov 2007, Grant Grundler wrote:
 
-	Another parenthesis fix.
+> On Thu, Nov 15, 2007 at 09:42:05AM +0100, Jiri Olsa wrote:
+> > Removing config variable DEBUG_RWLOCK, since it is not used
 
-Regards,
+... snip ...
 
-	Mariusz
+> > diff --git a/arch/parisc/configs/a500_defconfig b/arch/parisc/configs/a500_defconfig
+> > index ea07121..ddacc72 100644
+> > --- a/arch/parisc/configs/a500_defconfig
+> > +++ b/arch/parisc/configs/a500_defconfig
+> > @@ -1050,7 +1050,6 @@ CONFIG_SCHED_DEBUG=y
+> >  CONFIG_FORCED_INLINING=y
+> >  # CONFIG_RCU_TORTURE_TEST is not set
+> >  # CONFIG_FAULT_INJECTION is not set
+> > -# CONFIG_DEBUG_RWLOCK is not set
+> >  # CONFIG_DEBUG_RODATA is not set
 
+IIRC, you typically don't bother fixing up the defconfig files --
+those will be regenerated eventually.
 
-Signed-off-by: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
+rday
+--
+========================================================================
+Robert P. J. Day
+Linux Consulting, Training and Annoying Kernel Pedantry
+Waterloo, Ontario, CANADA
 
- include/asm-parisc/pgalloc.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-2.6.24-rc2-mm1-a/include/asm-parisc/pgalloc.h	2007-11-15 11:36:44.000000000 +0100
-+++ linux-2.6.24-rc2-mm1-b/include/asm-parisc/pgalloc.h	2007-11-15 11:37:17.000000000 +0100
-@@ -141,7 +141,7 @@ static inline void pte_free_kernel(struc
- static inline void pte_free_kernel(struct mm_struct *mm, struct page *pte)
- {
- 	pgtable_page_dtor(pte);
--	pte_free_kernel(page_address((pte));
-+	pte_free_kernel(page_address(pte));
- }
-
- #define check_pgt_cache()	do { } while (0)
+http://crashcourse.ca
+========================================================================
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
