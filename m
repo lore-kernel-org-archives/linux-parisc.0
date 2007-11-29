@@ -1,17 +1,16 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [parisc-linux] [parisc] 2.6.24-rc3 (64-bit,
-	smp) fails to boot on 9000/785/J5600
-Date: Tue, 27 Nov 2007 11:45:27 -0500
-Message-ID: <20071127164527.GA28891__9947.95984956927$1416624450$gmane$org@fattire.cabal.ca>
-References: <200711271026.34863.elendil@planet.nl>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [parisc-linux] [patch 2/2] backport of sba sg list management
+	to ccio-dma
+Date: Thu, 29 Nov 2007 11:50:57 -0700
+Message-ID: <20071129185057.GA14893@colo.lackof.org>
+References: <JS7JF3$B26560F4AD894A9D4B4501FF960EB990@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
-Cc: linux-kernel@vger.kernel.org,
- parisc-linux@lists.parisc-linux.org
-To: Frans Pop <elendil@planet.nl>
+Cc: parisc-linux@lists.parisc-linux.org
+To: Joel Soete <soete.joel@scarlet.be>
 Return-Path: <parisc-linux-bounces@lists.parisc-linux.org>
-In-Reply-To: <200711271026.34863.elendil@planet.nl>
+In-Reply-To: <JS7JF3$B26560F4AD894A9D4B4501FF960EB990@scarlet.be>
 List-Id: parisc-linux developers list <parisc-linux.lists.parisc-linux.org>
 List-Unsubscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=unsubscribe>
@@ -22,14 +21,24 @@ List-Subscribe: <http://lists.parisc-linux.org/mailman/listinfo/parisc-linux>,
 	<mailto:parisc-linux-request@lists.parisc-linux.org?subject=subscribe>
 Errors-To: parisc-linux-bounces@lists.parisc-linux.org
 
-On Tue, Nov 27, 2007 at 10:26:34AM +0100, Frans Pop wrote:
-> v2.6.24-rc3-19-g2ffbb83 fails very early in the boot procedure.
-> 2.6.23 compiled with similar config boots fine.
-> 
-> System is running Debian unstable; kernel was compiled using gcc 4.1.2.
-> 
+On Wed, Nov 28, 2007 at 09:25:51AM +0100, Joel Soete wrote:
+> > You need to read about "VIVT" caches (Virtual Indexed, Virtual Tagged).
+> > The "Virtual Index" bits have to be provided by any cache coherent traffic
+> > in order to be cache coherent. That's how the caches know _where_ in the
+> > cache to find potential hits for a given cacheline.
+> >
+> For sure I need more reading but imho this paper is already clear on subject:
+> my understanding (in short terms) is that cpu cache entry should be the same
+> virtual address as DMA cache else it would need additional stuff to check
+> physical address, right?
 
-Ah, I diagnosed this last week. Will post the patch in a bit.
+There is no "DMA Cache". The CPU owns the data cache and it needs enough
+info to verify if particular DMA transactions affect entries in the
+CPU cache (or not). "VIVT" summarizes the type of cache and thus info
+the CPU needs for DMA/cache coherency checking.
+
+cheers,
+grant
 _______________________________________________
 parisc-linux mailing list
 parisc-linux@lists.parisc-linux.org
