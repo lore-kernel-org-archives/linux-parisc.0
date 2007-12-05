@@ -1,27 +1,26 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: Can my space heater run linux?
-Date: Wed, 5 Dec 2007 12:31:32 -0500 (EST)
-Message-ID: <200712051731.lB5HVXtp001215@hiauly1.hia.nrc.ca>
-References: <119aab440712050638u78d6725cr5ddc1188940bb60b@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: Re: gcc-4.2-hppa64 bug
+Date: Wed, 5 Dec 2007 13:02:23 -0500
+Message-ID: <20071205180223.GB3608@fattire.cabal.ca>
+References: <20071205170219.GA3608@fattire.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: carlos@systemhalted.org (Carlos O'Donell)
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-hppa@lists.debian.org
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440712050638u78d6725cr5ddc1188940bb60b@mail.gmail.com> from "Carlos O'Donell" at Dec 5, 2007 09:38:54 am
+In-Reply-To: <20071205170219.GA3608@fattire.cabal.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> I recently purchased a cheap space heater, it says "a500 9000"
-> on the side. I think 9000 means BTU, since it heats the room
-> about as well as my other MAYTAG space heater. I hear that
-> this space heater is so advanced that it can run linux!?
+On Wed, Dec 05, 2007 at 12:02:19PM -0500, Kyle McMartin wrote:
+> The troublesome source file appears to be fs/ocfs2/alloc.o, the rest
+> seem to build fine.
 > 
-> How do I run linux on my space heater?
 
-Suggest you upgrade to a HP heater.
+Randolph pointed out the "-da" argument to me, the last pass it makes it
+to is alloc.c.160r.shorten.
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+I'll leave this one going to check for forward progress as well.
+
+cheers,
+	Kyle
