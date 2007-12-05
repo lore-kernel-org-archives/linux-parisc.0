@@ -1,20 +1,33 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Can my space heater run linux?
-Date: Wed, 5 Dec 2007 09:38:54 -0500
-Message-ID: <119aab440712050638u78d6725cr5ddc1188940bb60b@mail.gmail.com>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: gcc-4.2-hppa64 bug
+Date: Wed, 5 Dec 2007 12:02:19 -0500
+Message-ID: <20071205170219.GA3608@fattire.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Cc: debian-hppa@lists.debian.org
 To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I recently purchased a cheap space heater, it says "a500 9000"
-on the side. I think 9000 means BTU, since it heats the room
-about as well as my other MAYTAG space heater. I hear that
-this space heater is so advanced that it can run linux!?
+John et al,
 
-How do I run linux on my space heater?
+We're currently hitting a gcc bug on hppa64 with both gcc-4.1 and
+gcc-4.2. Symptoms are that a build of the ocfs2 module spins
+(apparently) forever, I'm leaving a copy building to see if it
+eventually makes forward progress.
 
-Cheers,
-Carlos.
+It's pretty easily reproduceable by building a modular kernel with the
+ocfs2 module enabled. Is there anything I can do to help narrow this
+down?
+
+make fs/ocfs2/ocfs2.ko:
+	!SMP	SMP
+32-bit	 y	 y
+64-bit	 y	 fails
+
+The troublesome source file appears to be fs/ocfs2/alloc.o, the rest
+seem to build fine.
+
+cheers,
+	Kyle
