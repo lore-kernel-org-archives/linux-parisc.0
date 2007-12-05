@@ -1,33 +1,27 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: gcc-4.2-hppa64 bug
-Date: Wed, 5 Dec 2007 12:02:19 -0500
-Message-ID: <20071205170219.GA3608@fattire.cabal.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: Can my space heater run linux?
+Date: Wed, 5 Dec 2007 12:31:32 -0500 (EST)
+Message-ID: <200712051731.lB5HVXtp001215@hiauly1.hia.nrc.ca>
+References: <119aab440712050638u78d6725cr5ddc1188940bb60b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: debian-hppa@lists.debian.org
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-parisc@vger.kernel.org
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <119aab440712050638u78d6725cr5ddc1188940bb60b@mail.gmail.com> from "Carlos O'Donell" at Dec 5, 2007 09:38:54 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-John et al,
+> I recently purchased a cheap space heater, it says "a500 9000"
+> on the side. I think 9000 means BTU, since it heats the room
+> about as well as my other MAYTAG space heater. I hear that
+> this space heater is so advanced that it can run linux!?
+> 
+> How do I run linux on my space heater?
 
-We're currently hitting a gcc bug on hppa64 with both gcc-4.1 and
-gcc-4.2. Symptoms are that a build of the ocfs2 module spins
-(apparently) forever, I'm leaving a copy building to see if it
-eventually makes forward progress.
+Suggest you upgrade to a HP heater.
 
-It's pretty easily reproduceable by building a modular kernel with the
-ocfs2 module enabled. Is there anything I can do to help narrow this
-down?
-
-make fs/ocfs2/ocfs2.ko:
-	!SMP	SMP
-32-bit	 y	 y
-64-bit	 y	 fails
-
-The troublesome source file appears to be fs/ocfs2/alloc.o, the rest
-seem to build fine.
-
-cheers,
-	Kyle
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
