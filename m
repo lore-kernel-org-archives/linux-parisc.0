@@ -1,14 +1,14 @@
 From: Joe Perches <joe@perches.com>
 Subject: [PATCH] drivers/parisc/: Spelling fixes
 Date: Mon, 17 Dec 2007 11:40:10 -0800
-Message-ID: <1197920439-5455-4-git-send-email-joe@perches.com>
+Message-ID: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918892.git.joe__29710.4273377501$1197921357$gmane$org@perches.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Grant Grundler <grundler@parisc-linux.org>,
 	Kyle McMartin <kyle@parisc-linux.org>,
 	Matthew Wilcox <matthew@wil.cx>, linux-parisc@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-parisc-owner@vger.kernel.org>
-List-ID: <linux-parisc.vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S936043AbXLQTxe@vger.kernel.org>
+List-ID: <linux-kernel.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
