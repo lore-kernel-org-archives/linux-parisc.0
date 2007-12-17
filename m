@@ -1,58 +1,31 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH] drivers/parisc/: Spelling fixes
-Date: Mon, 17 Dec 2007 11:40:10 -0800
-Message-ID: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918892.git.joe__29710.4273377501$1197921357$gmane$org@perches.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>, linux-parisc@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S936043AbXLQTxe@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: [git patches] parisc fixes for 2.6.24
+Date: Mon, 17 Dec 2007 18:53:48 -0500 (EST)
+Message-ID: <200712172353.lBHNrnWf001417@hiauly1.hia.nrc.ca>
+References: <20071216183215.GB8558@fattire.cabal.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Cc: kyle@hera.kernel.org, linux-parisc@vger.kernel.org
+To: kyle@mcmartin.ca (Kyle McMartin)
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20071216183215.GB8558@fattire.cabal.ca> from "Kyle McMartin" at Dec 16, 2007 01:32:15 pm
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+> On Sun, Dec 16, 2007 at 01:29:38PM -0500, John David Anglin wrote:
+> > I built a SMP PA8800 configuration from this respository yesterday.
+> > Aside from the timeout issue that I've mentioned before, I've experienced
+> > erratic login behavior with this new kernel.  I see this in the debug log:
+> > 
+> 
+> is this using debian sid? or testing? possibly during the update to
+> glibc 2.7 a regression crept in?
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/parisc/ccio-dma.c |    4 ++--
- drivers/parisc/hppb.c     |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Haven't seen any issues after deleting nscd.  However, I built a
+kernel defaulted from the 2.6.22 .config on gsyprf11 yesterday.  This
+one panics during boot.  It's in /boot/vmlinux-2.6.24-rc4.
 
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index 7c60cbd..ca52307 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -363,7 +363,7 @@ ccio_alloc_range(struct ioc *ioc, size_t size)
- 	if (pages_needed <= 8) {
- 		/*
- 		 * LAN traffic will not thrash the TLB IFF the same NIC
--		 * uses 8 adjacent pages to map seperate payload data.
-+		 * uses 8 adjacent pages to map separate payload data.
- 		 * ie the same byte in the resource bit map.
- 		 */
- #if 0
-@@ -1589,7 +1589,7 @@ static int __init ccio_probe(struct parisc_device *dev)
- }
- 
- /**
-- * ccio_init - ccio initalization procedure.
-+ * ccio_init - ccio initialization procedure.
-  *
-  * Register this driver.
-  */
-diff --git a/drivers/parisc/hppb.c b/drivers/parisc/hppb.c
-index a728a7c..65eee67 100644
---- a/drivers/parisc/hppb.c
-+++ b/drivers/parisc/hppb.c
-@@ -95,7 +95,7 @@ static struct parisc_driver hppb_driver = {
- };
- 
- /**
-- * hppb_init - HP-PB bus initalization procedure.
-+ * hppb_init - HP-PB bus initialization procedure.
-  *
-  * Register this driver.   
-  */
+Dave
 -- 
-1.5.3.7.949.g2221a6
-
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
