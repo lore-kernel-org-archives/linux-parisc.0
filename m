@@ -1,23 +1,63 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [git patches] parisc fixes for 2.6.24
-Date: Sun, 16 Dec 2007 13:48:03 -0500 (EST)
-Message-ID: <200712161848.lBGIm4AS014428@hiauly1.hia.nrc.ca>
-References: <20071216183215.GB8558@fattire.cabal.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: kyle@hera.kernel.org, linux-parisc@vger.kernel.org
-To: kyle@mcmartin.ca (Kyle McMartin)
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] arch/parisc/: Spelling fixes
+Date: Mon, 17 Dec 2007 11:30:10 -0800
+Message-ID: <1197919875-5288-11-git-send-email-joe@perches.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	Kyle McMartin <kyle@parisc-linux.org>,
+	Matthew Wilcox <matthew@wil.cx>, linux-parisc@vger.kernel.org
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20071216183215.GB8558@fattire.cabal.ca> from "Kyle McMartin" at Dec 16, 2007 01:32:15 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> is this using debian sid? or testing? possibly during the update to
-> glibc 2.7 a regression crept in?
 
-It's libc6 2.7-3.  I've remove nscd to see if this goes away.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ arch/parisc/kernel/cache.c    |    2 +-
+ arch/parisc/kernel/hardware.c |    2 +-
+ arch/parisc/kernel/signal.c   |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Dave
+diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
+index 395bbce..e10d25d 100644
+--- a/arch/parisc/kernel/cache.c
++++ b/arch/parisc/kernel/cache.c
+@@ -305,7 +305,7 @@ flush_user_cache_page_non_current(struct vm_area_struct *vma,
+ 	/* save the current process space and pgd */
+ 	unsigned long space = mfsp(3), pgd = mfctl(25);
+ 
+-	/* we don't mind taking interrups since they may not
++	/* we don't mind taking interrupts since they may not
+ 	 * do anything with user space, but we can't
+ 	 * be preempted here */
+ 	preempt_disable();
+diff --git a/arch/parisc/kernel/hardware.c b/arch/parisc/kernel/hardware.c
+index 04848b2..1909f88 100644
+--- a/arch/parisc/kernel/hardware.c
++++ b/arch/parisc/kernel/hardware.c
+@@ -1187,7 +1187,7 @@ static struct hp_hardware hp_hardware_list[] __devinitdata = {
+ 	{HPHW_FIO, 0x005, 0x000A9, 0x00, "AllegroLow Core PCI USB KB"}, 
+ 	{HPHW_FIO, 0x006, 0x000A9, 0x00, "AllegroHigh Core PCI SuperIO RS-232"}, 
+ 	{HPHW_FIO, 0x006, 0x000A9, 0x00, "AllegroHigh Core PCI USB KB"}, 
+-	{HPHW_FIO, 0x007, 0x000A9, 0x0, "Miscelaneous PCI Plug-in"}, 
++	{HPHW_FIO, 0x007, 0x000A9, 0x0, "Miscellaneous PCI Plug-in"}, 
+ 	{HPHW_FIO, 0x00A, 0x000A9, 0x0, "Lego 360 Core PCI SuperIO RS-232"}, 
+ 	{HPHW_FIO, 0x00A, 0x000A9, 0x0, "Lego 360 Core PCI USB KB"}, 
+ 	{HPHW_FIO, 0x004, 0x00320, 0x0, "Metheus Frame Buffer"}, 
+diff --git a/arch/parisc/kernel/signal.c b/arch/parisc/kernel/signal.c
+index 2ce3806..58fccc9 100644
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -333,7 +333,7 @@ setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
+ 	flush_user_icache_range((unsigned long) &frame->tramp[0],
+ 			   (unsigned long) &frame->tramp[TRAMP_SIZE]);
+ 
+-	/* TRAMP Words 0-4, Lenght 5 = SIGRESTARTBLOCK_TRAMP
++	/* TRAMP Words 0-4, Length 5 = SIGRESTARTBLOCK_TRAMP
+ 	 * TRAMP Words 5-9, Length 4 = SIGRETURN_TRAMP
+ 	 * So the SIGRETURN_TRAMP is at the end of SIGRESTARTBLOCK_TRAMP
+ 	 */
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+1.5.3.7.949.g2221a6
+
