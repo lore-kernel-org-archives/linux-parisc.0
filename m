@@ -1,49 +1,58 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH] include/asm-parisc/: Spelling fixes
-Date: Mon, 17 Dec 2007 11:30:11 -0800
-Message-ID: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918890.git.joe__29669.2683514722$1197920317$gmane$org@perches.com>
+Subject: [PATCH] drivers/parisc/: Spelling fixes
+Date: Mon, 17 Dec 2007 11:40:10 -0800
+Message-ID: <1197920439-5455-4-git-send-email-joe@perches.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Grant Grundler <grundler@parisc-linux.org>,
 	Kyle McMartin <kyle@parisc-linux.org>,
 	Matthew Wilcox <matthew@wil.cx>, linux-parisc@vger.kernel.org
 To: linux-kernel@vger.kernel.org
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S933292AbXLQTfl@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- include/asm-parisc/elf.h     |    2 +-
- include/asm-parisc/linkage.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/parisc/ccio-dma.c |    4 ++--
+ drivers/parisc/hppb.c     |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/asm-parisc/elf.h b/include/asm-parisc/elf.h
-index f628ac7..8e7946a 100644
---- a/include/asm-parisc/elf.h
-+++ b/include/asm-parisc/elf.h
-@@ -28,7 +28,7 @@
- #define EFA_PARISC_1_1		    0x0210 /* PA-RISC 1.1 big-endian.  */
- #define EFA_PARISC_2_0		    0x0214 /* PA-RISC 2.0 big-endian.  */
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index 7c60cbd..ca52307 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -363,7 +363,7 @@ ccio_alloc_range(struct ioc *ioc, size_t size)
+ 	if (pages_needed <= 8) {
+ 		/*
+ 		 * LAN traffic will not thrash the TLB IFF the same NIC
+-		 * uses 8 adjacent pages to map seperate payload data.
++		 * uses 8 adjacent pages to map separate payload data.
+ 		 * ie the same byte in the resource bit map.
+ 		 */
+ #if 0
+@@ -1589,7 +1589,7 @@ static int __init ccio_probe(struct parisc_device *dev)
+ }
  
--/* Additional section indeces.  */
-+/* Additional section indices.  */
- 
- #define SHN_PARISC_ANSI_COMMON	0xff00	   /* Section for tenatively declared
- 					      symbols in ANSI C.  */
-diff --git a/include/asm-parisc/linkage.h b/include/asm-parisc/linkage.h
-index ad8cd0d..0b19a72 100644
---- a/include/asm-parisc/linkage.h
-+++ b/include/asm-parisc/linkage.h
-@@ -8,7 +8,7 @@
- 
- /*
-  * In parisc assembly a semicolon marks a comment while a
-- * exclamation mark is used to seperate independent lines.
-+ * exclamation mark is used to separate independent lines.
+ /**
+- * ccio_init - ccio initalization procedure.
++ * ccio_init - ccio initialization procedure.
+  *
+  * Register this driver.
   */
- #ifdef __ASSEMBLY__
+diff --git a/drivers/parisc/hppb.c b/drivers/parisc/hppb.c
+index a728a7c..65eee67 100644
+--- a/drivers/parisc/hppb.c
++++ b/drivers/parisc/hppb.c
+@@ -95,7 +95,7 @@ static struct parisc_driver hppb_driver = {
+ };
  
+ /**
+- * hppb_init - HP-PB bus initalization procedure.
++ * hppb_init - HP-PB bus initialization procedure.
+  *
+  * Register this driver.   
+  */
 -- 
 1.5.3.7.949.g2221a6
 
