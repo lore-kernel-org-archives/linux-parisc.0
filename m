@@ -1,7 +1,7 @@
 From: rubisher <rubisher@scarlet.be>
-Subject: dma_addr_t: which comment is correct?
-Date: Sat, 22 Dec 2007 12:15:31 +0000
-Message-ID: <476CFFE3.3040102@scarlet.be>
+Subject: iommu-helpers.h patch
+Date: Sat, 22 Dec 2007 13:45:45 +0000
+Message-ID: <476D1509.1070601@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 To: linux-parisc@vger.kernel.org
@@ -11,44 +11,19 @@ List-Id: linux-parisc.vger.kernel.org
 
 Hello *,
 
-Continuing my blind investigation on ccio-dma stuff, I read those 2 different comments:
-in include/asm-parisc/scatterlist.h, scartterlist structure is defined like this:
-struct scatterlist {
-#ifdef CONFIG_DEBUG_SG
-         unsigned long sg_magic;
-#endif
-         unsigned long page_link;
-         unsigned int offset;
+This seems to be missed a while ago ;-)
 
-         unsigned int length;
+--- drivers-parisc-iommu-helpers.h-git20071218	2007-12-21 19:02:38.000000000 +0000
++++ drivers-parisc-iommu-helpers.h-git20071218.new	2007-12-22 13:39:04.000000000 +0000
+@@ -29,7 +29,7 @@
+  		long size;
 
-         /* an IOVA can be 64-bits on some PA-Risc platforms. */
-         dma_addr_t iova;        /* I/O Virtual Address */
-         __u32      iova_length; /* bytes mapped */
-};
-
-in absolute the comment "an IOVA can be 64-bits on some PA-Risc platforms." seems ok.
-
-but otoh, include/asm-parisc/types.h, defined dma_addr_t like this:
-
-/* Dma addresses are 32-bits wide.  */
-
-typedef u32 dma_addr_t;
-typedef u64 dma64_addr_t;
-
-#endif /* __ASSEMBLY__ */
-
-OK it's just a comment but imho there is interesting matter in x86:
-
-typedef u64 dma64_addr_t;
-#if defined(CONFIG_X86_64) || defined(CONFIG_HIGHMEM64G)
-/* DMA addresses come in 32-bit and 64-bit flavours. */
-typedef u64 dma_addr_t;
-#else
-typedef u32 dma_addr_t;
-#endif
-
-But I simply have no idea which "#if defined" would be the most relevant for parisc, any idea?
+  		DBG_RUN_SG(" %d : %08lx/%05x %08lx/%05x\n", nents,
+-			   (unsigned long)sg_dma_address(startsg), cnt,
++			   (unsigned long)sg_dma_address(startsg), size,
+  			   sg_virt_addr(startsg), startsg->length
+  		);
+=== <> ===
 
 Cheers,
 	r.
