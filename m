@@ -1,36 +1,46 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
-Subject: Re: segv doing execv
-Date: Thu, 27 Dec 2007 23:12:23 -0500
-Message-ID: <119aab440712272012g3ff7c5c6n5e16437bc5dd6003@mail.gmail.com>
-References: <119aab440712271425s8df1ed5i37749ad6c541f8ae@mail.gmail.com>
-	 <200712272328.lBRNSI6s028957@hiauly1.hia.nrc.ca>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: iommu-helpers.h patch
+Date: Fri, 28 Dec 2007 00:56:10 -0700
+Message-ID: <20071228075610.GD17782@colo.lackof.org>
+References: <476D1509.1070601@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Cc: linux-parisc@vger.kernel.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+To: rubisher <rubisher@scarlet.be>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200712272328.lBRNSI6s028957@hiauly1.hia.nrc.ca>
+In-Reply-To: <476D1509.1070601@scarlet.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Dec 27, 2007 6:28 PM, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> That's cool but how do does CodeSourcery actually fix the "kernel"?
-
-By writing reproducible test cases and giving them to the the Linux kernel
-vendor, who in turn gets their kernel engineers to fix the bug :-)
-
-> > Not a clue. How did you capture the failure in the debugger?
+On Sat, Dec 22, 2007 at 01:45:45PM +0000, rubisher wrote:
+> Hello *,
 >
-> With a core dump!  Actually, I was hoping you might recognize the assembler
-> code and understand what failed ;)
+> This seems to be missed a while ago ;-)
+>
+> --- drivers-parisc-iommu-helpers.h-git20071218	2007-12-21 
+> 19:02:38.000000000 +0000
+> +++ drivers-parisc-iommu-helpers.h-git20071218.new	2007-12-22 
+> 13:39:04.000000000 +0000
+> @@ -29,7 +29,7 @@
+>  		long size;
+>
+>  		DBG_RUN_SG(" %d : %08lx/%05x %08lx/%05x\n", nents,
+> -			   (unsigned long)sg_dma_address(startsg), cnt,
+> +			   (unsigned long)sg_dma_address(startsg), size,
 
-I don't recognize the assembler dump as any particularly important
-sequence.
+Sorry - but this is wrong. "size" isn't initialized until later.
+"cnt" was the thing I needed/wanted dumped.
 
-> I'm currently trying to use the debug libraries.  It seems gdb won't
-> load the debug libraries when a failure occurs with non-debug libs.
+cheers,
+grant
 
-Do you actually mean "stripped libraries" vs. "unstripped libraries?"
-
-Cheers,
-Carlos.
+>  			   sg_virt_addr(startsg), startsg->length
+>  		);
+> === <> ===
+>
+> Cheers,
+> 	r.
+> -
+> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
