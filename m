@@ -1,85 +1,30 @@
-From: rubisher <rubisher@scarlet.be>
-Subject: Re: iommu-helpers.h patch
-Date: Fri, 28 Dec 2007 15:27:26 +0000
-Message-ID: <477515DE.7090403@scarlet.be>
-References: <476D1509.1070601@scarlet.be> <20071228075610.GD17782@colo.lackof.org>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Re: segv doing execv
+Date: Fri, 28 Dec 2007 10:52:56 -0500 (EST)
+Message-ID: <200712281553.lBSFrCFK024927@hiauly1.hia.nrc.ca>
+References: <119aab440712272012g3ff7c5c6n5e16437bc5dd6003@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-parisc@vger.kernel.org
-To: Grant Grundler <grundler@parisc-linux.org>
+To: carlos@systemhalted.org (Carlos O'Donell)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20071228075610.GD17782@colo.lackof.org>
+In-Reply-To: <119aab440712272012g3ff7c5c6n5e16437bc5dd6003@mail.gmail.com> from "Carlos O'Donell" at Dec 27, 2007 11:12:23 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Grant Grundler wrote:
-> On Sat, Dec 22, 2007 at 01:45:45PM +0000, rubisher wrote:
->> Hello *,
->>
->> This seems to be missed a while ago ;-)
->>
->> --- drivers-parisc-iommu-helpers.h-git20071218	2007-12-21 
->> 19:02:38.000000000 +0000
->> +++ drivers-parisc-iommu-helpers.h-git20071218.new	2007-12-22 
->> 13:39:04.000000000 +0000
->> @@ -29,7 +29,7 @@
->>  		long size;
->>
->>  		DBG_RUN_SG(" %d : %08lx/%05x %08lx/%05x\n", nents,
->> -			   (unsigned long)sg_dma_address(startsg), cnt,
->> +			   (unsigned long)sg_dma_address(startsg), size,
+> I don't recognize the assembler dump as any particularly important
+> sequence.
+
+Ok, then there's no hope.
+
+> > I'm currently trying to use the debug libraries.  It seems gdb won't
+> > load the debug libraries when a failure occurs with non-debug libs.
 > 
-> Sorry - but this is wrong. "size" isn't initialized until later.
-Agree with you: size is initialized later.
+> Do you actually mean "stripped libraries" vs. "unstripped libraries?"
 
-Anyway cnt variable was gone:
-# grep cnt drivers/parisc/iommu-helpers.h
-                            (unsigned long)sg_dma_address(startsg), cnt,
+Yes, the ones with debug info (i.e., those in /usr/lib/debug).
 
-and imo it was with this patch:
-<http://cvs.parisc-linux.org/linux-2.6/drivers/parisc/ccio-dma.c?r1=1.11&r2=1.12&makepatch=1&diff_format=u>
-
-the interesting hunk's part was:
--		int cnt = sg_dma_len(startsg);
--		sg_dma_len(startsg) = 0;
-+		unsigned long vaddr;
-+		long size;
-
-  		DBG_RUN_SG(" %d : %08lx/%05x %08lx/%05x\n", nents,
-  			   (unsigned long)sg_dma_address(startsg), cnt,
-  			   sg_virt_addr(startsg), startsg->length
-  		);
-
-+
-
-(and make a kernel with DEBUG_CCIO_RUN_SG failed with an error at this place, so we need to patch ;-)
-
-> "cnt" was the thing I needed/wanted dumped.
-> 
-So may be something like:
-
-                 DBG_RUN_SG(" %d : %08lx/%05x %08lx/%05x\n", nents,
--                          (unsigned long)sg_dma_address(startsg), cnt,
-+                          (unsigned long)sg_dma_address(startsg), sg_dma_len(startsg),
-                            sg_virt_addr(startsg), startsg->length
-                 );
-
-Tx,
-	r.
-
-> cheers,
-> grant
-> 
->>  			   sg_virt_addr(startsg), startsg->length
->>  		);
->> === <> ===
->>
->> Cheers,
->> 	r.
->> -
->> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
-
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
