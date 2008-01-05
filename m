@@ -1,74 +1,274 @@
-From: Grant Grundler <grundler@parisc-linux.org>
+From: rubisher <rubisher@scarlet.be>
 Subject: Re: What's up of this if (likely()) bracing?
-Date: Fri, 4 Jan 2008 19:13:58 -0700
-Message-ID: <20080105021358.GB16725@colo.lackof.org>
-References: <JU2GA0$1DD13473BA78D945C68E7311CB765D2D@scarlet.be>
+Date: Sat, 05 Jan 2008 17:44:12 +0000
+Message-ID: <477FC1EC.5080406@scarlet.be>
+References: <JU2GA0$1DD13473BA78D945C68E7311CB765D2D@scarlet.be> <20080105021358.GB16725@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed;
+ boundary="------------070309010903020201020400"
 Cc: linux-parisc <linux-parisc@vger.kernel.org>
-To: rubisher <rubisher@scarlet.be>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <JU2GA0$1DD13473BA78D945C68E7311CB765D2D@scarlet.be>
+In-Reply-To: <20080105021358.GB16725@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Thu, Jan 03, 2008 at 12:37:12PM +0100, rubisher wrote:
-> Hello *,
+This is a multi-part message in MIME format.
+--------------070309010903020201020400
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Grant Grundler wrote:
+> On Thu, Jan 03, 2008 at 12:37:12PM +0100, rubisher wrote:
+>> Hello *,
+>>
+>> I am not sure to have perfectly understand all subtle details of likely() &
+>> unlikely() macros but I think there's some brace at the bad place in following
+>> chunk:
+>> --- arch/parisc/lib/memcpy.c.Orig	2007-10-18 15:27:30.000000000 +0000
+>> +++ arch/parisc/lib/memcpy.c	2008-01-03 10:17:52.000000000 +0000
+>> @@ -299,7 +299,7 @@
+>>  
+>>  	/* Check alignment */
+>>  	t1 = (src ^ dst);
+>> -	if (unlikely(t1 & (sizeof(double)-1)))
+>> +	if (unlikely(t1 & (sizeof(double) - 1)))
 > 
-> I am not sure to have perfectly understand all subtle details of likely() &
-> unlikely() macros but I think there's some brace at the bad place in following
-> chunk:
-> --- arch/parisc/lib/memcpy.c.Orig	2007-10-18 15:27:30.000000000 +0000
-> +++ arch/parisc/lib/memcpy.c	2008-01-03 10:17:52.000000000 +0000
-> @@ -299,7 +299,7 @@
->  
->  	/* Check alignment */
->  	t1 = (src ^ dst);
-> -	if (unlikely(t1 & (sizeof(double)-1)))
-> +	if (unlikely(t1 & (sizeof(double) - 1)))
-
-Please submit separate patches for the white space clean up.
-
->  		goto unaligned_copy;
->  
->  	/* src and dst have same alignment. */
-> @@ -405,7 +405,7 @@
->  
->  unaligned_copy:
->  	/* possibly we are aligned on a word, but not on a double... */
-> -	if (likely(t1 & (sizeof(unsigned int)-1)) == 0) {
-> +	if (likely((t1 & (sizeof(unsigned int) - 1)) == 0)) {
->  		t2 = src & (sizeof(unsigned int) - 1);
->  
->  		if (unlikely(t2 != 0)) {
-> === <> ===
-> First hunk is just to add some whitespace?
+> Please submit separate patches for the white space clean up.
 > 
-> Otoh for the second hunk, my reading of the original stuff was that:
-> > likely(t1 & (sizeof(unsigned int)-1)) 
-> i.e. likely's macro embraced only "t1 & (sizeof(unsigned int)-1)" in place of
-> "(t1 & (sizeof(unsigned int)-1)) == 0".
+>>  		goto unaligned_copy;
+>>  
+>>  	/* src and dst have same alignment. */
+>> @@ -405,7 +405,7 @@
+>>  
+>>  unaligned_copy:
+>>  	/* possibly we are aligned on a word, but not on a double... */
+>> -	if (likely(t1 & (sizeof(unsigned int)-1)) == 0) {
+>> +	if (likely((t1 & (sizeof(unsigned int) - 1)) == 0)) {
+>>  		t2 = src & (sizeof(unsigned int) - 1);
+>>  
+>>  		if (unlikely(t2 != 0)) {
+>> === <> ===
+>> First hunk is just to add some whitespace?
+>>
+>> Otoh for the second hunk, my reading of the original stuff was that:
+>>> likely(t1 & (sizeof(unsigned int)-1)) 
+>> i.e. likely's macro embraced only "t1 & (sizeof(unsigned int)-1)" in place of
+>> "(t1 & (sizeof(unsigned int)-1)) == 0".
+>>
+>> What's your opinion?
 > 
-> What's your opinion?
-
-I think you are right. normally likely() and unlikely() are intended
-to be used with boolean expressions and that's obviously not the case.
-
-Please resubmit this change separately and add "signed-off-by" lines
-so kyle can include this in the next round of parisc patches.
-
-cheers,
-grant
-
-
+> I think you are right. normally likely() and unlikely() are intended
+> to be used with boolean expressions and that's obviously not the case.
 > 
-> Tia,
->     r.
-> ---
-> Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
-> http://www.scarlet.be/
+> Please resubmit this change separately and add "signed-off-by" lines
+> so kyle can include this in the next round of parisc patches.
 > 
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> cheers,
+> grant
+> 
+> 
+Grant,
+
+Ok here there are:
+a white space cleanup/beautify patch:
+Signed-off-by: Joel Soete <soete dot joel at scarlet dot be>
+Index: linux-current/arch/parisc/lib/memcpy.c
+===================================================================
+--- linux-current.orig/arch/parisc/lib/memcpy.c	2008-01-05 13:37:04.000000000 +0000
++++ linux-current/arch/parisc/lib/memcpy.c	2008-01-05 13:55:21.000000000 +0000
+@@ -21,28 +21,28 @@
+   *    Copyright (C) 1991, 1997, 2003 Free Software Foundation, Inc.
+   *
+   * Several strategies are tried to try to get the best performance for various
+- * conditions. In the optimal case, we copy 64-bytes in an unrolled loop using
++ * conditions. In the optimal case, we copy 64-bytes in an unrolled loop using
+   * fp regs. This is followed by loops that copy 32- or 16-bytes at a time using
+- * general registers.  Unaligned copies are handled either by aligning the
+- * destination and then using shift-and-write method, or in a few cases by
++ * general registers.  Unaligned copies are handled either by aligning the
++ * destination and then using shift-and-write method, or in a few cases by
+   * falling back to a byte-at-a-time copy.
+   *
+   * I chose to implement this in C because it is easier to maintain and debug,
+   * and in my experiments it appears that the C code generated by gcc (3.3/3.4
+- * at the time of writing) is fairly optimal. Unfortunately some of the
++ * at the time of writing) is fairly optimal. Unfortunately some of the
+   * semantics of the copy routine (exception handling) is difficult to express
+   * in C, so we have to play some tricks to get it to work.
+   *
+   * All the loads and stores are done via explicit asm() code in order to use
+- * the right space registers.
+- *
+- * Testing with various alignments and buffer sizes shows that this code is
++ * the right space registers.
++ *
++ * Testing with various alignments and buffer sizes shows that this code is
+   * often >10x faster than a simple byte-at-a-time copy, even for strangely
+   * aligned operands. It is interesting to note that the glibc version
+- * of memcpy (written in C) is actually quite fast already. This routine is
+- * able to beat it by 30-40% for aligned copies because of the loop unrolling,
+- * but in some cases the glibc version is still slightly faster. This lends
+- * more credibility that gcc can generate very good code as long as we are
++ * of memcpy (written in C) is actually quite fast already. This routine is
++ * able to beat it by 30-40% for aligned copies because of the loop unrolling,
++ * but in some cases the glibc version is still slightly faster. This lends
++ * more credibility that gcc can generate very good code as long as we are
+   * careful.
+   *
+   * TODO:
+@@ -154,7 +154,7 @@
+  #endif
+
+  /* Copy from a not-aligned src to an aligned dst, using shifts. Handles 4 words
+- * per loop.  This code is derived from glibc.
++ * per loop.  This code is derived from glibc.
+   */
+  static inline unsigned long copy_dstaligned(unsigned long dst, unsigned long src, unsigned long len, unsigned long o_dst, 
+unsigned long o_src, unsigned long o_len)
+  {
+@@ -299,7 +299,7 @@
+
+  	/* Check alignment */
+  	t1 = (src ^ dst);
+-	if (unlikely(t1 & (sizeof(double)-1)))
++	if (unlikely(t1 & (sizeof(double) - 1)))
+  		goto unaligned_copy;
+
+  	/* src and dst have same alignment. */
+@@ -322,7 +322,7 @@
+
+  #if 0
+  	/* Copy 8 doubles at a time */
+-	while (len >= 8*sizeof(double)) {
++	while (len >= 8 * sizeof(double)) {
+  		register double r1, r2, r3, r4, r5, r6, r7, r8;
+  		/* prefetch_src((char *)pds + L1_CACHE_BYTES); */
+  		flddma(s_space, pds, r1, pmc_load_exc);
+@@ -346,7 +346,7 @@
+  		fstdma(d_space, r6, pdd, pmc_store_exc);
+  		fstdma(d_space, r7, pdd, pmc_store_exc);
+  		fstdma(d_space, r8, pdd, pmc_store_exc);
+-		len -= 8*sizeof(double);
++		len -= 8 * sizeof(double);
+  	}
+  #endif
+
+@@ -354,7 +354,7 @@
+  	pwd = (unsigned int *)pdd;
+
+  word_copy:
+-	while (len >= 8*sizeof(unsigned int)) {
++	while (len >= 8 * sizeof(unsigned int)) {
+  		register unsigned int r1,r2,r3,r4,r5,r6,r7,r8;
+  		/* prefetch_src((char *)pws + L1_CACHE_BYTES); */
+  		ldwma(s_space, pws, r1, pmc_load_exc);
+@@ -374,7 +374,7 @@
+  		stwma(d_space, r6, pwd, pmc_store_exc);
+  		stwma(d_space, r7, pwd, pmc_store_exc);
+  		stwma(d_space, r8, pwd, pmc_store_exc);
+-		len -= 8*sizeof(unsigned int);
++		len -= 8 * sizeof(unsigned int);
+  	}
+
+  	while (len >= 4*sizeof(unsigned int)) {
+@@ -387,7 +387,7 @@
+  		stwma(d_space, r2, pwd, pmc_store_exc);
+  		stwma(d_space, r3, pwd, pmc_store_exc);
+  		stwma(d_space, r4, pwd, pmc_store_exc);
+-		len -= 4*sizeof(unsigned int);
++		len -= 4 * sizeof(unsigned int);
+  	}
+
+  	pcs = (unsigned char *)pws;
+@@ -438,7 +438,7 @@
+  		src = (unsigned long)pcs;
+  	}
+
+-	ret = copy_dstaligned(dst, src, len / sizeof(unsigned int),
++	ret = copy_dstaligned(dst, src, len / sizeof(unsigned int),
+  		o_dst, o_src, o_len);
+  	if (ret)
+  		return ret;
+=== <> ===
+
+
+and
+a fixe of likely's macro usage:
+Signed-off-by: Joel Soete <soete dot joel at scarlet dot be>
+Index: linux-current/arch/parisc/lib/memcpy.c
+===================================================================
+--- linux-current.orig/arch/parisc/lib/memcpy.c	2008-01-05 13:57:26.000000000 +0000
++++ linux-current/arch/parisc/lib/memcpy.c	2008-01-05 13:58:01.000000000 +0000
+@@ -405,7 +405,7 @@
+
+  unaligned_copy:
+  	/* possibly we are aligned on a word, but not on a double... */
+-	if (likely(t1 & (sizeof(unsigned int)-1)) == 0) {
++	if (likely((t1 & (sizeof(unsigned int) - 1)) == 0)) {
+  		t2 = src & (sizeof(unsigned int) - 1);
+
+  		if (unlikely(t2 != 0)) {
+=== <> ===
+
+Tx again,
+	r.
+
+
+ps: 1/ I also attached patches' file as compressed format
+     2/ I will also ask fsf to update may 'Discalimer request' to change my email address and extend it to linux tree :<)
+
+
+--------------070309010903020201020400
+Content-Type: application/x-gzip;
+ name="beautify-memcpy.c.patch.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="beautify-memcpy.c.patch.gz"
+
+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
+usGp/IwSAAA=
+--------------070309010903020201020400
+Content-Type: application/x-gzip;
+ name="fix-likely-memcpy.c.patch.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="fix-likely-memcpy.c.patch.gz"
+
+H4sICJCNf0cAA2ZpeC1saWtlbHktbWVtY3B5LmMucGF0Y2gApY/daoQwEIWvzVOc3hRdNyba
+2l0sgrd9iqIxuw3NJhINu7Yv31qx9IddCh2YGRjmO2fmwbTyVEAr409UeOekGVjtxBPraqd6
+wbRq2EEeRDcmgpT/D0Ip/W6XWKf2Zz2DjPMt5SnlOdKbIt8U2V3Cl0A8VRLH8R9f+Cm3LXj6
+S66qQG95vt4gnltVERB4U2u1N7J9FLYbC4KArdDZvleNHnGUqN17ziuwBjWO1rVrNH6AscM8
+aq1vtEySBCtGaKB2CLV6lnoMhxTXCHv1Iu0u9KafdZQZIppGEcoSPMIrib8yFyBQfGIThyAY
+MpTonbiI3E+vBh8m3iynZbhadN4A2IcyTTICAAA=
+--------------070309010903020201020400--
