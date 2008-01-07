@@ -1,34 +1,27 @@
-From: "Carlos O'Donell" <carlos@systemhalted.org>
+From: Matthew Wilcox <matthew@wil.cx>
 Subject: Re: Nanoseconds times on EXT3 always seem to be zero
-Date: Mon, 7 Jan 2008 12:42:56 -0500
-Message-ID: <119aab440801070942v2693dfc2y556cc4aa415c5179@mail.gmail.com>
-References: <200801062013.m06KDdht008111@hiauly1.hia.nrc.ca>
+Date: Mon, 7 Jan 2008 11:04:51 -0700
+Message-ID: <20080107180451.GA20148@parisc-linux.org>
+References: <200801062013.m06KDdht008111@hiauly1.hia.nrc.ca> <119aab440801070942v2693dfc2y556cc4aa415c5179@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org
-To: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Content-Type: text/plain; charset=us-ascii
+Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
+	linux-parisc@vger.kernel.org
+To: Carlos O'Donell <carlos@systemhalted.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200801062013.m06KDdht008111@hiauly1.hia.nrc.ca>
+In-Reply-To: <119aab440801070942v2693dfc2y556cc4aa415c5179@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Jan 6, 2008 3:13 PM, John David Anglin <dave@hiauly1.hia.nrc.ca> wrote:
-> On an EXT3 file system, I see the following:
->
-> dave@mx3210:~$ touch xyzzy
-> dave@mx3210:~$ ls --full-time xyzzy
-> -rw-r--r-- 1 dave dave 0 2008-01-06 15:07:01.000000000 -0500 xyzzy
->
-> However, on tmpfs, proc, etc., I see the sub-seconds time.  This is
-> 2.6.22.14 and 2.6.22.15.
->
-> The behavior of 32 and 64-bit kernels seems to be the same.
->
-> With an old 2.6 x86 kernel (suse), I see sub-second times on a EXT3
-> file system.
+On Mon, Jan 07, 2008 at 12:42:56PM -0500, Carlos O'Donell wrote:
+> Can you distill this into a testcase that uses the kernel fstat* syscalls?
+> 
+> That would definitely rule out glibc getting in the way.
 
-Can you distill this into a testcase that uses the kernel fstat* syscalls?
+ext3 doesn't store nanoseconds on disc ... unless <blah blah blah>
 
-That would definitely rule out glibc getting in the way.
-
-c.
+-- 
+Intel are signing my paycheques ... these opinions are still mine
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
