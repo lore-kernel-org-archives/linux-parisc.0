@@ -1,27 +1,28 @@
-From: Matthew Wilcox <matthew@wil.cx>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Nanoseconds times on EXT3 always seem to be zero
-Date: Mon, 7 Jan 2008 11:04:51 -0700
-Message-ID: <20080107180451.GA20148@parisc-linux.org>
-References: <200801062013.m06KDdht008111@hiauly1.hia.nrc.ca> <119aab440801070942v2693dfc2y556cc4aa415c5179@mail.gmail.com>
+Date: Mon, 7 Jan 2008 14:50:10 -0500 (EST)
+Message-ID: <200801071950.m07JoAqG000941@hiauly1.hia.nrc.ca>
+References: <20080107180451.GA20148@parisc-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	linux-parisc@vger.kernel.org
-To: Carlos O'Donell <carlos@systemhalted.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: carlos@systemhalted.org, linux-parisc@vger.kernel.org
+To: matthew@wil.cx (Matthew Wilcox)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <119aab440801070942v2693dfc2y556cc4aa415c5179@mail.gmail.com>
+In-Reply-To: <20080107180451.GA20148@parisc-linux.org> from "Matthew Wilcox" at Jan 7, 2008 11:04:51 am
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Jan 07, 2008 at 12:42:56PM -0500, Carlos O'Donell wrote:
-> Can you distill this into a testcase that uses the kernel fstat* syscalls?
+> On Mon, Jan 07, 2008 at 12:42:56PM -0500, Carlos O'Donell wrote:
+> > Can you distill this into a testcase that uses the kernel fstat* syscalls?
+> > 
+> > That would definitely rule out glibc getting in the way.
 > 
-> That would definitely rule out glibc getting in the way.
+> ext3 doesn't store nanoseconds on disc ... unless <blah blah blah>
 
-ext3 doesn't store nanoseconds on disc ... unless <blah blah blah>
+I was told today that 2.6.24 may provide nanoseconds with ext3, else ext4.
+The documentation for <blah blah blah> seems lacking.
 
+Dave
 -- 
-Intel are signing my paycheques ... these opinions are still mine
-"Bill, look, we understand that you're interested in selling us this
-operating system, but compare it to ours.  We can't possibly take such
-a retrograde step."
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
