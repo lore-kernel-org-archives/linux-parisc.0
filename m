@@ -1,7 +1,7 @@
 From: "rubisher" <rubisher@scarlet.be>
 Subject: Any idea why gcc "discards qualifiers from pointer target type"?
-Date: Tue, 15 Jan 2008 11:30:02 +0100
-Message-ID: <JUOL62$52B3623E983635E94ACE708B70FF5F2A@scarlet.be>
+Date: Tue, 15 Jan 2008 11:30:24 +0100
+Message-ID: <JUOL6O$C7EEA9CB9692A2BC327179D8052AF7D0@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Cc: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
