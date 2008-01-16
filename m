@@ -1,94 +1,89 @@
 From: "rubisher" <rubisher@scarlet.be>
-Subject: ccio-dma.c: struct ioa_registers{} shouldn't be volatile?
-Date: Wed, 16 Jan 2008 11:10:49 +0100
-Message-ID: <JUQEY1$B4C92480AFB9CFEC8FC7ADE071B4DB88@scarlet.be>
+Subject: ccio_clear_io_tlb() and __raw_write() more question?
+Date: Wed, 16 Jan 2008 13:53:25 +0100
+Message-ID: <JUQMH1$0E837D5F7A1526B30DCF5BF1A8BE2816@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: "linux-parisc" <linux-parisc@vger.kernel.org>,
-	"dave" <dave@hiauly1.hia.nrc.ca>
-To: "matthew" <matthew@wil.cx>
+Cc: "Grant Grundler" <grundler@parisc-linux.org>
+To: "linux-parisc" <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+Hello all,
 
-> On Tue, Jan 15, 2008 at 11:29:37AM +0100, rubisher wrote:
-> > Hello Dave,
-> > 
-> > Compiling p-l with gcc-4.2 I see new warning "discards qualifiers from pointer
-> > target type":
-> 
-> Joel, this is a standard C question ... this list really isn't for
-> teaching people how to program.
-> 
-mmm, it's not because you don't know how to translate your programming idea in
-C that you don't know how to program, though ;-)
+I would try to explain my worry about this function.
 
-> > /SRCTREE/drivers/net/lib82596.c:388: warning: passing argument 2 of
-> > 'dma_cache_sync' discards qualifiers from pointer target type
-> 
-> You're passing a volatile pointer to a function which is expecting a
-> non-volatile pointer.  That's potentially dangerous, so gcc warns about
-> it.
-> 
-> The normal way to fix this would be to add a volatile attribute to the
-> argument in question:
-> 
-> dma_cache_sync(struct device *dev, volatile void *vaddr, size_t size,
->                enum dma_data_direction direction)
-> 
-So may be this ccio-dma.c structure:
-struct ioa_registers {
-        /* Runway Supervisory Set */
-        int32_t unused1[12];
-        u32     io_command;     /* Offset 12 */
-        u32     io_status;      /* Offset 13 */
-        u32     io_control;     /* Offset 14 */
-        int32_t unused2[1];
+It is:
+static CCIO_INLINE void
+ccio_clear_io_tlb(struct ioc *ioc, dma_addr_t iovp, size_t byte_cnt)
+{
+        u32 chain_size = 1 << ioc->chainid_shift;
 
-        /* Runway Auxiliary Register Set */
-        u32     io_err_resp;    /* Offset  0 */
-        u32     io_err_info;    /* Offset  1 */
-        u32     io_err_req;     /* Offset  2 */
-        u32     io_err_resp_hi; /* Offset  3 */
-        u32     io_tlb_entry_m; /* Offset  4 */
-        u32     io_tlb_entry_l; /* Offset  5 */
-        u32 unused3[1];
-        u32     io_pdir_base;   /* Offset  7 */
-        u32     io_io_low_hv;   /* Offset  8 */
-        u32     io_io_high_hv;  /* Offset  9 */
-        u32 unused4[1];
-        u32     io_chain_id_mask;/* Offset 11 */
-        u32 unused5[2];
-        u32     io_io_low;      /* Offset 14 */
-        u32     io_io_high;     /* Offset 15 */
-};
+        iovp &= IOVP_MASK;      /* clear offset bits, just want pagenum */
+        byte_cnt += chain_size;
 
-a member of:
+        while(byte_cnt > chain_size) {
+                __asm__ __volatile__ ("# ccio_clear_io_tlb-in");
+                WRITE_U32(CMD_TLB_PURGE | iovp, &ioc->ioc_regs->io_command);
+                __asm__ __volatile__ ("# ccio_clear_io_tlb-out");
+                iovp += chain_size;
+                byte_cnt -= chain_size;
+        }
+}
 
-struct ioc {
-        struct ioa_registers __iomem *ioc_regs;      /* I/O MMU base address */
-        u8              *res_map;               /* resource map, bit == pdir
-entry */
+Without doc I guess that this call to WRITE_U32() is supposed to do what it
+name says: i.e purge a TLB entry?
+
+In details:
+#define WRITE_U32(value, addr)  __raw_writel((value), (addr))
+
+and finaly:
+static inline void __raw_writel(unsigned int b, volatile void __iomem *addr)
+{
+        __asm__ __volatile__ ("# __raw_writel-in");
+        *(volatile unsigned int __force *) addr = b;
+        __asm__ __volatile__ ("# __raw_writel-out");
+}
+
+I just added __asm__ to see excatly how __raw_write() is assembled:
+
+        # __raw_writel-in
+#NO_APP
+        stw %r19,48(%r28)
+#APP
+        # __raw_writel-out
+
+Otoh, ioc->ioc_regs is set in:
+static int __init ccio_probe(struct parisc_device *dev)
+{
+[snip]      
+        ioc->ioc_regs = ioremap_nocache(dev->hpa.start, 4096);
 [snip]
 };
 
-"struct ioa_registers" I guess according to its name represent the layout of
-internal ioa registers and should be 'qualified' as volatile to prevent gcc to
-reorganize it?
-
-e.g.
-typedef volatile struct ioa_registers v_ioa_regs_t;
-
-and
-struct ioc {
-        v_ioa_regs_t __iomem *ioc_regs;      /* I/O MMU base address */
+and according to __ioremap comment:
+/*
+ * Remap an arbitrary physical address space into the kernel virtual
+ * address space.
+ *
 [snip]
-};
+ */
 
+ioc_regs contains well a virtual address (what seems to me coherent with paper
+on iommu design previously mentioned)?
 
-Tx,
-    r.
+puting all those stuff togther: for CPU, WRITE_U32 (aka __raw_writel), just
+write something at some virtual address, right?
+
+So my worry is that this data write could be cached and btw the actual
+CMD_TLB_PURGE operation could be delay untill this entry would be purged?
+
+What's your opinion?
+What would be the best way to actualy do this write (back) to the io ctrlr?
+
+Tx again,
+  r.
 ---
 Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
 http://www.scarlet.be/
