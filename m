@@ -1,26 +1,43 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: Terrible PA8800 SMP Performance
-Date: Sun, 20 Jan 2008 15:10:42 -0500
-Message-ID: <20080120201042.GA1781@phobos.i.cabal.ca>
-References: <200801201955.m0KJtIer026663@hiauly1.hia.nrc.ca>
+Date: Sun, 20 Jan 2008 15:40:14 -0500 (EST)
+Message-ID: <200801202040.m0KKeExq007167@hiauly1.hia.nrc.ca>
+References: <20080120201042.GA1781@phobos.i.cabal.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: kyle@mcmartin.ca (Kyle McMartin)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200801201955.m0KJtIer026663@hiauly1.hia.nrc.ca>
+In-Reply-To: <20080120201042.GA1781@phobos.i.cabal.ca> from "Kyle McMartin" at Jan 20, 2008 03:10:42 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jan 20, 2008 at 02:55:18PM -0500, John David Anglin wrote:
-> I've been doing GCC builds on a four processor PA8800 currently
-> running 2.6.24-rc6.  With make -j 6 bootstrap, this machine is
-> several hours slower than gsyprf11 doing the same GCC build and
-> check.  gsyprf11 is a two processor PA8700 and I typically
-> use make -j 4 on it.  The PA8800 is also slower than my c3750.
-> 
+> flushing 32MB of cache on every fork and exec? :/
 
-flushing 32MB of cache on every fork and exec? :/
+That's what I was thinking, although the actual situation may be worse.
+It appears we may flush the entire cache (32MB I-cache and 32MB D-cache)
+on every cpu.
 
-cheers,
-	kyle
+static void cacheflush_h_tmp_function(void *dummy)
+{
+        flush_cache_all_local();
+}
+
+void flush_cache_all(void)
+{
+        on_each_cpu(cacheflush_h_tmp_function, NULL, 1, 1);
+}
+
+void flush_cache_mm(struct mm_struct *mm)
+{
+#ifdef CONFIG_SMP
+        flush_cache_all();
+#else
+	flush_cache_all_local();
+#endif
+}
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
