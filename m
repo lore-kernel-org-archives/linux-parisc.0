@@ -1,25 +1,26 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: ccio_clear_io_tlb() and __raw_write() more question?
-Date: Sun, 20 Jan 2008 12:06:40 -0700
-Message-ID: <20080120190640.GA10928@colo.lackof.org>
-References: <JUQMH1$0E837D5F7A1526B30DCF5BF1A8BE2816@scarlet.be> <20080119170705.GC11553@colo.lackof.org> <47931D26.50204@scarlet.be>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+Subject: Terrible PA8800 SMP Performance
+Date: Sun, 20 Jan 2008 14:55:18 -0500 (EST)
+Message-ID: <200801201955.m0KJtIer026663@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>
-To: rubisher <rubisher@scarlet.be>
+Content-Type: text/plain; charset=US-ASCII
+To: linux-parisc@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <47931D26.50204@scarlet.be>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Sun, Jan 20, 2008 at 10:06:30AM +0000, rubisher wrote:
-...
->> Willy is correct - writes to this IO space (0xf0000000) address is 
->> uncached.
-> mmm, is it the reason why you (I mean hp engineers) call it "f-space": IO 
-> space addresses starting by 0xf?
+I've been doing GCC builds on a four processor PA8800 currently
+running 2.6.24-rc6.  With make -j 6 bootstrap, this machine is
+several hours slower than gsyprf11 doing the same GCC build and
+check.  gsyprf11 is a two processor PA8700 and I typically
+use make -j 4 on it.  The PA8800 is also slower than my c3750.
 
-Yes.
+I've mentioned this before but some tests that never timeout even
+on slow machines randomly timeout on the PA8800.
 
-grant
+Any thoughts on what's wrong?
+
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
