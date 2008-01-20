@@ -1,86 +1,42 @@
-From: Helge Deller <deller@gmx.de>
-Subject: some gij-4.3/2.6.24-rc8 crashes
-Date: Sat, 19 Jan 2008 18:16:24 +0100
-Message-ID: <200801191816.25091.deller@gmx.de>
+From: rubisher <rubisher@scarlet.be>
+Subject: Re: ccio_clear_io_tlb() and __raw_write() more question?
+Date: Sun, 20 Jan 2008 10:06:30 +0000
+Message-ID: <47931D26.50204@scarlet.be>
+References: <JUQMH1$0E837D5F7A1526B30DCF5BF1A8BE2816@scarlet.be> <20080119170705.GC11553@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-To: linux-parisc <linux-parisc@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Cc: linux-parisc <linux-parisc@vger.kernel.org>
+To: Grant Grundler <grundler@parisc-linux.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080119170705.GC11553@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-I noticed the following crashes yesterday with a plain 2.6.24-rc8 kernel.
-Maybe someone has an idea?
-The system still worked afterwards.
+Grant Grundler wrote:
+> On Wed, Jan 16, 2008 at 01:53:25PM +0100, rubisher wrote:
+>> Without doc I guess that this call to WRITE_U32() is supposed to do what it
+>> name says: i.e purge a TLB entry?
+> ...
+>> puting all those stuff togther: for CPU, WRITE_U32 (aka __raw_writel), just
+>> write something at some virtual address, right?
+>>
+>> So my worry is that this data write could be cached and btw the actual
+>> CMD_TLB_PURGE operation could be delay untill this entry would be purged?
+> 
+> Willy is correct - writes to this IO space (0xf0000000) address is uncached.
+> 
+mmm, is it the reason why you (I mean hp engineers) call it "f-space": IO space addresses starting by 0xf?
 
-      _______________________________
-     < Your System ate a SPARC! Gah! >
-      -------------------------------
-             \   ^__^
-              \  (xx)\_______
-                 (__)\       )\/\
-                  U  ||----w |
-                     ||     ||
-gij-4.3.bin (pid 23032): Protection id trap (code 27)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001000000000000001111 Not tainted
-r00-03  0004000f 10280000 1018d72c 60314388
-r04-07  00000000 000197a8 00000001 60314388
-r08-11  00000000 fffffff2 603140c8 00000006
-r12-15  00176fc0 0001bb40 00000014 00001000
-r16-19  402c3554 00019840 0001bb54 00000001
-r20-23  000197ae 00000000 6031439e 00000000
-r24-27  00000001 1050eaac 7e6c2970 1059f010
-r28-31  0000000f 00000001 60314500 1018d4e4
-sr00-03  00000000 00000000 00000000 000000ca
-sr04-07  00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 1018d76c 1018d770
- IIR: 0e95d240    ISR: 000000ca  IOR: 000197ae
- CPU:        0   CR30: 60314000 CR31: 11111111
- ORIG_R28: 1017d598
- IAOQ[0]: do_sys_poll+0x138/0x1b0
- IAOQ[1]: do_sys_poll+0x13c/0x1b0
- RP(r2): do_sys_poll+0xf8/0x1b0
-Backtrace:
- [<10106cf0>] die_if_kernel+0x130/0x1a0
- [<1010755c>] handle_interruption+0x3f4/0x58c
- [<1010a078>] intr_check_sig+0x0/0x34
-
-
-      _______________________________
-     < Your System ate a SPARC! Gah! >
-      -------------------------------
-             \   ^__^
-              \  (xx)\_______
-                 (__)\       )\/\
-                  U  ||----w |
-                     ||     ||
-gij-4.3.bin (pid 23166): Protection id trap (code 27)
-
-     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
-PSW: 00000000000001001111111100001111 Tainted: G      D
-r00-03  0004ff0f 10280000 1010f864 600b8148
-r04-07  445e5400 54aec974 54aec778 445e5424
-r08-11  00000000 00000001 54aec974 600b8148
-r12-15  00000012 0001bb40 00000014 00001000
-r16-19  402c3554 00019840 0001bb54 00000001
-r20-23  00000012 fffffff8 37c6ea54 600b80c8
-r24-27  445e5424 600b80c8 445e5424 1059f010
-r28-31  00000012 00040001 600b82c0 10179e38
-sr00-03  00000000 00000000 00000000 000000ca
-sr04-07  00000000 00000000 00000000 00000000
-
-IASQ: 00000000 00000000 IAOQ: 10138ae4 10138ae8
- IIR: 0f54d280    ISR: 000000ca  IOR: 445e5424
- CPU:        0   CR30: 600b8000 CR31: 11111111
- ORIG_R28: 1017d598
- IAOQ[0]: copy_siginfo_to_user+0x54/0x458
- IAOQ[1]: copy_siginfo_to_user+0x58/0x458
- RP(r2): setup_rt_frame+0xb8/0x388
-Backtrace:
- [<10106cf0>] die_if_kernel+0x130/0x1a0
- [<1010755c>] handle_interruption+0x3f4/0x58c
- [<1010a078>] intr_check_sig+0x0/0x34
+> While the write is "posted", it's a fairly short path to the IOMMU (1 hop).
+> Since this is the "unmap path" I don't expect any race conditions since
+> we would have to call map using the same mapping right away in order to
+> pickup the stale IOTLB entry. We avoid this race by allocating IO Pdir
+> entries in a "circular" fashion (start at bottom and work through
+> the entire resource bit map).
+> 
+> hth,
+> grant
+> 
+> 
+Tx,
+	r.
