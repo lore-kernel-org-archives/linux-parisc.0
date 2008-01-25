@@ -1,8 +1,8 @@
 From: "rubisher" <rubisher@scarlet.be>
 Subject: Re: 'Trace patches test' [Was: ccio_clear_io_tlb() and __raw_write()
 	more question?]
-Date: Fri, 25 Jan 2008 11:17:29 +0100
-Message-ID: <JV7395$DBAE1F0684DA4A107D72A32A8088590F@scarlet.be>
+Date: Fri, 25 Jan 2008 11:19:27 +0100
+Message-ID: <JV73CF$6B162801D4BC7B6A71EAE5FBFAB2528F@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Cc: "linux-parisc" <linux-parisc@vger.kernel.org>,
