@@ -1,240 +1,158 @@
-From: "rubisher" <rubisher@scarlet.be>
-Subject: Re: 'Trace patches test' [Was: ccio_clear_io_tlb() and __raw_write()
-	more question?]
-Date: Fri, 25 Jan 2008 11:20:10 +0100
-Message-ID: <JV73DM$DE01A483C09ECB50FC4E5CC75811639E@scarlet.be>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] fix intermittent panics on wide firmware boxes
+Date: Fri, 01 Feb 2008 12:24:01 -0600
+Message-ID: <1201890241.3134.54.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: "linux-parisc" <linux-parisc@vger.kernel.org>,
-	"rubisher" <rubisher@scarlet.be>
-To: "grundler" <grundler@parisc-linux.org>
+Content-Type: text/plain
+To: Parisc List <linux-parisc@vger.kernel.org>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Tue, Jan 22, 2008 at 02:35:21PM +0100, rubisher wrote:
-> > Btw, a while back, I dream to use relayfs to grab debug info.
-> >
-(<http://lists.parisc-linux.org/pipermail/parisc-linux/2006-April/053237.html>)
-> > 
-> > Somebody else write it:
-> > <http://lkml.org/lkml/2007/11/13/208>
-> > 
-> > Obviously, I have to instrument things manually but I test it succesfully.
-> > Here is already some primarily data test:
-> > [snip]
-> > :1201001199222127606:ccio_map_single_1:ccio_map_single() 0x1eb91896 ->
-> > 0x63b4896 size: 0x1000
-> > :1201001199222203288:ccio_map_single_2: pdir 1fcb1da0 038100000eb91017
-> > :1201001199222391065:ccio_map_single_1:ccio_map_single() 0x1febc096 ->
-> > 0x63b5096 size: 0x1000
-> ...
-> > Exciting results?
-> 
-> Yes! Nice!
-> 
-> > (just what would give me DEBUG_RUN() printk() but without
-> >  degrading system performance)
-> 
-> I don't believe that. :)
-> Measure the CPU utilization and/or compare pktgen performance with
-> and without the tracing compiled into the kernel.
-> 
-Having no clue about pktgen, I have a look and rebuild kernels with this
-option and here are some results:
-I use a pktgen-single script like:
-#!/bin/sh
-# "Simply" config: run single port.
+I've been trying to diagnose this panic on a pa8800 box with git head:
 
-#modprobe pktgen
-
-function pgset() {
-    local result
-
-    echo $1 > $PGDEV
-
-    result=`cat $PGDEV | fgrep "Result: OK:"`
-    if [ "$result" = "" ]; then
-         cat $PGDEV | fgrep Result:
-    fi
-}
-
-# On UP systems only one thread exists -- so just add devices 
-# We use eth1, eth2
-
-echo "Adding devices to run". 
-
-# eth0 interrupts on CPU0
-PGDEV=/proc/net/pktgen/kpktgend_0
-pgset "rem_device_all" 
-pgset "add_device eth0" 
-pgset "max_before_softirq 10000"
-
-# Configure the individual devices
-echo "Configuring devices"
-
-PGDEV=/proc/net/pktgen/eth0
-
-pgset "clone_skb 5000000" 
-pgset "min_pkt_size 60" 
-pgset "max_pkt_size 60" 
-pgset "dst 10.24.252.109" 
-pgset "dst_mac 00:50:04:1B:2C:17"
-pgset "count 5000000"
-
-# Time to run
-
-PGDEV=/proc/net/pktgen/pgctrl
-
-echo "Running... ctrl^C to stop"
-
-pgset "start" 
-
-# cat /proc/net/pktgen/eth? | fgrep Result
-=== <> ===
-
-And grab following results:
-# With Kernel including ccio_trace_marker but ccio_trace module not running
-Params: count 5000000  min_pkt_size: 60  max_pkt_size: 60
-     frags: 0  delay: 0  clone_skb: 5000000  ifname: eth0
-     flows: 0 flowlen: 0
-     queue_map_min: 0  queue_map_max: 0
-     dst_min: 10.24.252.109  dst_max: 
-     src_min:   src_max: 
-     src_mac: 08:00:09:d2:89:15 dst_mac: 00:50:04:1b:2c:17
-     udp_src_min: 9  udp_src_max: 9  udp_dst_min: 9  udp_dst_max: 9
-     src_mac_count: 0  dst_mac_count: 0
-     Flags: 
-Current:
-     pkts-sofar: 455759  errors: 0
-     started: 1201169852886722us  stopped: 1201169912731117us idle: 217617us
-     seq_num: 455760  cur_dst_mac_offset: 0  cur_src_mac_offset: 0
-     cur_saddr: 0xa18fc16  cur_daddr: 0xa18fc6d
-     cur_udp_dst: 9  cur_udp_src: 9
-     cur_queue_map: 0
-     flows: 0
-Result: OK: 59844395(c59626778+d217617) usec, 455759 (60byte,0frags)
-  7615pps 3Mb/sec (3655200bps) errors: 0
-
-# With Kernel including ccio_trace_marker and ccio_trace module running
-Params: count 5000000  min_pkt_size: 60  max_pkt_size: 60
-     frags: 0  delay: 0  clone_skb: 5000000  ifname: eth0
-     flows: 0 flowlen: 0
-     queue_map_min: 0  queue_map_max: 0
-     dst_min: 10.24.252.109  dst_max: 
-     src_min:   src_max: 
-     src_mac: 08:00:09:d2:89:15 dst_mac: 00:50:04:1b:2c:17
-     udp_src_min: 9  udp_src_max: 9  udp_dst_min: 9  udp_dst_max: 9
-     src_mac_count: 0  dst_mac_count: 0
-     Flags: 
-Current:
-     pkts-sofar: 138863  errors: 0
-     started: 1201170611403245us  stopped: 1201170675285642us idle: 4334664us
-     seq_num: 138864  cur_dst_mac_offset: 0  cur_src_mac_offset: 0
-     cur_saddr: 0xa18fc16  cur_daddr: 0xa18fc6d
-     cur_udp_dst: 9  cur_udp_src: 9
-     cur_queue_map: 0
-     flows: 0
-Result: OK: 63882397(c59547733+d4334664) usec, 138863 (60byte,0frags)
-  2173pps 1Mb/sec (1043040bps) errors: 0
-
-# With Kernel without ccio_trace_marker
-Params: count 5000000  min_pkt_size: 60  max_pkt_size: 60
-     frags: 0  delay: 0  clone_skb: 5000000  ifname: eth0
-     flows: 0 flowlen: 0
-     queue_map_min: 0  queue_map_max: 0
-     dst_min: 10.24.252.109  dst_max: 
-     src_min:   src_max: 
-     src_mac: 08:00:09:d2:89:15 dst_mac: 00:50:04:1b:2c:17
-     udp_src_min: 9  udp_src_max: 9  udp_dst_min: 9  udp_dst_max: 9
-     src_mac_count: 0  dst_mac_count: 0
-     Flags: 
-Current:
-     pkts-sofar: 474350  errors: 0
-     started: 1201243919209991us  stopped: 1201243981190756us idle: 188937us
-     seq_num: 474351  cur_dst_mac_offset: 0  cur_src_mac_offset: 0
-     cur_saddr: 0xa18fc16  cur_daddr: 0xa18fc6d
-     cur_udp_dst: 9  cur_udp_src: 9
-     cur_queue_map: 0
-     flows: 0
-Result: OK: 61980765(c61791828+d188937) usec, 474350 (60byte,0frags)
-  7653pps 3Mb/sec (3673440bps) errors: 0
-
-I am not sure how to read those results so I also do some ftp and grab
-following data:
-
-# With Kernel including ccio_trace_marker but ccio_trace module not running
-ftp> put linux-2.6.24-rc4-pa-git-20071206.tar.bz2
-local: linux-2.6.24-rc4-pa-git-20071206.tar.bz2 remote:
-linux-2.6.24-rc4-pa-git-20071206.tar.bz2
-200 PORT command successful.
-150 Opening BINARY mode data connection for
-'linux-2.6.24-rc4-pa-git-20071206.tar.bz2'.
-226 Transfer complete.
-47631536 bytes sent in 54.42 secs (854.8 kB/s)
-
-# With Kernel including ccio_trace_marker and ccio_trace module running
-ftp> put linux-2.6.24-rc4-pa-git-20071206.tar.bz2
-local: linux-2.6.24-rc4-pa-git-20071206.tar.bz2 remote:
-linux-2.6.24-rc4-pa-git-20071206.tar.bz2
-200 PORT command successful.
-150 Opening BINARY mode data connection for
-'linux-2.6.24-rc4-pa-git-20071206.tar.bz2'.
-226 Transfer complete.
-47631536 bytes sent in 59.26 secs (784.9 kB/s)
-
-# With kernel without ccio_trace_marker
-ftp> put linux-2.6.24-rc4-pa-git-20071206.tar.bz2
-local: linux-2.6.24-rc4-pa-git-20071206.tar.bz2 remote:
-linux-2.6.24-rc4-pa-git-20071206.tar.bz2
-200 PORT command successful.
-150 Opening BINARY mode data connection for
-'linux-2.6.24-rc4-pa-git-20071206.tar.bz2'.
-226 Transfer complete.
-47631536 bytes sent in 55.66 secs (835.8 kB/s)
-
-I agree it decrease a bit the system performance but doesn't slow it down so
-much that it would take several hours to boot has printk() did to me ;-)
-
-> However, that doesn't mean this is useless. This is alot better than
-> rolling our own "light weight" tracing mechanism and it's certainly
-> alot better than using printk's to debug DMA issues (as long as
-> the system doesn't crash - e.g. HPMC).
-> 
-Yes there are limits to this method but for parisc I know so few kernel
-debugging tools that I would like to mentioned here the easiness of this patch
-implementation (even for a non C programmer as I ;<)
-
-Cheers,
-    r.
-
-PS: I didn't put this code here just because all what I have wouldn't apply on
-the current p-l ccio-dma.c src.
+LBA: Truncating lmmio_space [fffffffff0000000/fffffffffecffffe] to [fffffffff0000000,fffffffffe77ffff]
+powersw: Soft power switch support not available.
+Backtrace:
+ [<000000004011c7a0>] real32_call+0x148/0x178
+ [<000000004013ec7c>] enqueue_task_fair+0x6c/0xb0
+ [<000000004013f418>] update_rq_clock+0x30/0x48
+ [<000000004013e800>] set_next_entity+0x38/0x70
+ [<000000004016dca0>] autoremove_wake_function+0x18/0x48
+ [<00000000401bbda4>] cache_alloc_debugcheck_after+0x24c/0x300
+ [<000000004025c500>] kobject_uevent_env+0x418/0x5a8
+ [<000000004025b10c>] kobject_put+0x24/0x30
+ [<000000004015af60>] __sysctl_head_next+0x78/0x120
+ [<0000000040174234>] sysctl_check_table+0x494/0x938
+ [<000000004015b078>] sysctl_head_finish+0x40/0x60
+ [<000000004011c7a0>] real32_call+0x148/0x178
+ [<000000004013e3f8>] calc_delta_mine+0x68/0xf8
+ [<000000004018621c>] touch_softlockup_watchdog+0x3c/0x50
+ [<000000004014a66c>] task_tick_fair+0x84/0xf0
+ [<0000000040186720>] softlockup_tick+0x128/0x1c0
 
 
-> hth,
-> grant
-> 
-> > I still have to had some more DEBUG_RUN_SG() stuff and hope to be able to
-> > collect more.
-> > 
-> > Cheers,
-> >     r.
-> > 
-> > ---
-> > Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
-> > http://www.scarlet.be/
-> > 
-> > -
-> > To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
----
-Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
-http://www.scarlet.be/
+Kernel Fault: Code=26 regs=000000007f46c7d0 (Addr=0000000000000158)
+
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000001000000000000001111 Not tainted
+r00-03  000000000804000f 0000000040583be0 0000000040104084 000000007f46c290
+r04-07  000000004057f3e0 000000007f46c360 0000000000000000 000000007f44e040
+r08-11  00000000404d7dc0 0000000000000000 000000007f44e288 00000000405bc340
+r12-15  0000000000000001 00000000405bbc00 0000000040447300 0000000000000001
+r16-19  000000007f46c360 00000000404dc400 00000000405bc340 0000000000000000
+r20-23  000000007f46c290 0000000000000000 0000000000000310 0000000000000000
+r24-27  0000000000000000 000000007f46c360 00000000403d5030 000000004057f3e0
+r28-31  000000007f46c000 000000007f46c690 000000007f46c7d0 000000007f46c000
+sr00-03  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+
+IASQ: 0000000000000000 0000000000000000 IAOQ: 000000004011af54 000000004011af58
+ IIR: 4a7702b0    ISR: 0000000000000000  IOR: 0000000000000158
+ CPU:        0   CR30: 000000007f46c000 CR31: fffffff0f0e098e0
+ ORIG_R28: 000000004013e3f8
+ IAOQ[0]: handle_interruption+0x804/0x890
+ IAOQ[1]: handle_interruption+0x808/0x890
+ RP(r2): intr_check_sig+0x0/0x38
+
+The reason is actually that %cr30 is NULL, which should be an
+impossibility.  However, all the real32_call() places in the trace
+intrigued me because they shouldn't happen on a pa8800 ... it has only
+wide firmware, so only 64 bit realmode calls can work.
+
+It transpires that the way we call PDC console constantly causes these
+real32_call() calls to be invoked leading to the panic.  Sure enough, if
+I scrub them out of my build with the attached patch, the panic goes and
+git head boots just fine.
+
+James
+
+diff --git a/arch/parisc/kernel/Makefile b/arch/parisc/kernel/Makefile
+index 27827bc..7ddf756 100644
+--- a/arch/parisc/kernel/Makefile
++++ b/arch/parisc/kernel/Makefile
+@@ -11,10 +11,11 @@ obj-y	     	:= cache.o pacache.o setup.o traps.o time.o irq.o \
+ 		   pa7300lc.o syscall.o entry.o sys_parisc.o firmware.o \
+ 		   ptrace.o hardware.o inventory.o drivers.o semaphore.o \
+ 		   signal.o hpmc.o real2.o parisc_ksyms.o unaligned.o \
+-		   process.o processor.o pdc_cons.o pdc_chassis.o unwind.o \
++		   process.o processor.o pdc_chassis.o unwind.o \
+ 		   topology.o
+ 
+ obj-$(CONFIG_SMP)	+= smp.o
++obj-$(CONFIG_PDC_CONSOLE)	+= pdc_cons.o
+ obj-$(CONFIG_PA11)	+= pci-dma.o
+ obj-$(CONFIG_PCI)	+= pci.o
+ obj-$(CONFIG_MODULES)	+= module.o
+diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
+index 4ab83d5..378bc61 100644
+--- a/arch/parisc/kernel/firmware.c
++++ b/arch/parisc/kernel/firmware.c
+@@ -1080,7 +1080,7 @@ void pdc_io_reset_devices(void)
+ 	spin_unlock_irqrestore(&pdc_lock, flags);
+ }
+ 
+-
++#ifdef CONFIG_PDC_CONSOLE
+ /**
+  * pdc_iodc_print - Console print using IODC.
+  * @str: the string to output.
+@@ -1168,7 +1168,9 @@ int pdc_iodc_getc(void)
+ 	
+ 	return ch;
+ }
++#endif
+ 
++#ifdef CONFIG_FB_STI
+ int pdc_sti_call(unsigned long func, unsigned long flags,
+                  unsigned long inptr, unsigned long outputr,
+                  unsigned long glob_cfg)
+@@ -1183,6 +1185,7 @@ int pdc_sti_call(unsigned long func, unsigned long flags,
+         return retval;
+ }
+ EXPORT_SYMBOL(pdc_sti_call);
++#endif
+ 
+ #ifdef CONFIG_64BIT
+ /**
+@@ -1375,7 +1378,6 @@ int pdc_pat_io_pci_cfg_write(unsigned long pci_addr, int pci_size, u32 val)
+  * to overlay real_stack (real2.S), preparing a 32-bit call frame.
+  * real32_call_asm() then uses this stack in narrow real mode
+  */
+-
+ struct narrow_stack {
+ 	/* use int, not long which is 64 bits */
+ 	unsigned int arg13;
+@@ -1404,6 +1406,14 @@ long real32_call(unsigned long fn, ...)
+ 	extern unsigned long real32_call_asm(unsigned int *,
+ 					     unsigned int *, 
+ 					     unsigned int);
++
++	/* Calling real32_call without narrow firmware is a serious
++	 * problem and can lead to crashes */
++	if (unlikely(!parisc_narrow_firmware)) {
++		printk(KERN_ERR "Invalid call to 32 bit firmware\n");
++		WARN_ON(1);
++		return -EINVAL;
++	}
+ 	
+ 	va_start(args, fn);
+ 	real_stack.arg0 = va_arg(args, unsigned int);
+diff --git a/include/asm-parisc/pdc.h b/include/asm-parisc/pdc.h
+index deda8c3..d11aabb 100644
+--- a/include/asm-parisc/pdc.h
++++ b/include/asm-parisc/pdc.h
+@@ -588,8 +588,13 @@ struct pdc_hpmc_pim_20 { /* PDC_PIM */
+ 	__u64 fr[32];
+ };
+ 
++#ifdef CONFIG_PDC_CONSOLE
+ void pdc_console_init(void);	/* in pdc_console.c */
+ void pdc_console_restart(void);
++#else
++static inline void  pdc_console_init(void) { }
++static inline void pdc_console_restart(void) { }
++#endif
+ 
+ void setup_pdc(void);		/* in inventory.c */
+ 
