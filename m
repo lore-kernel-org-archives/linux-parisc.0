@@ -1,22 +1,24 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 Subject: Re: [PATCH] fix intermittent panics on wide firmware boxes
-Date: Sun, 3 Feb 2008 19:09:08 -0500 (EST)
-Message-ID: <200802040009.m14099EL019300@hiauly1.hia.nrc.ca>
-References: <1201890241.3134.54.camel@localhost.localdomain>
+Date: Sun, 03 Feb 2008 18:36:56 -0600
+Message-ID: <1202085416.3318.134.camel@localhost.localdomain>
+References: <200802040009.m14099EL019300@hiauly1.hia.nrc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Cc: linux-parisc@vger.kernel.org
-To: James.Bottomley@HansenPartnership.com (James Bottomley)
+To: John David Anglin <dave@hiauly1.hia.nrc.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1201890241.3134.54.camel@localhost.localdomain> from "James Bottomley" at Feb 1, 2008 12:24:01 pm
+In-Reply-To: <200802040009.m14099EL019300@hiauly1.hia.nrc.ca>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> +#ifdef CONFIG_FB_STI
 
-Should this be CONFIG_STI_CONSOLE?
+On Sun, 2008-02-03 at 19:09 -0500, John David Anglin wrote:
+> > +#ifdef CONFIG_FB_STI
+> 
+> Should this be CONFIG_STI_CONSOLE?
 
-Dave
--- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+No, they're used in drivers/video/console/sticore.c which has a
+CONFIG_FB_STI gating it.  Whether it should is another patch matter ....
+
+James
