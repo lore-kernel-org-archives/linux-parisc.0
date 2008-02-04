@@ -1,24 +1,28 @@
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [PATCH] fix intermittent panics on wide firmware boxes
-Date: Sun, 03 Feb 2008 18:36:56 -0600
-Message-ID: <1202085416.3318.134.camel@localhost.localdomain>
-References: <200802040009.m14099EL019300@hiauly1.hia.nrc.ca>
+Date: Sun, 3 Feb 2008 19:46:03 -0500 (EST)
+Message-ID: <200802040046.m140k4Io019976@hiauly1.hia.nrc.ca>
+References: <1202085416.3318.134.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-parisc@vger.kernel.org
-To: John David Anglin <dave@hiauly1.hia.nrc.ca>
+To: James.Bottomley@HansenPartnership.com (James Bottomley)
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200802040009.m14099EL019300@hiauly1.hia.nrc.ca>
+In-Reply-To: <1202085416.3318.134.camel@localhost.localdomain> from "James Bottomley" at Feb 3, 2008 06:36:56 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-On Sun, 2008-02-03 at 19:09 -0500, John David Anglin wrote:
-> > +#ifdef CONFIG_FB_STI
+> > Should this be CONFIG_STI_CONSOLE?
 > 
-> Should this be CONFIG_STI_CONSOLE?
+> No, they're used in drivers/video/console/sticore.c which has a
+> CONFIG_FB_STI gating it.  Whether it should is another patch matter ....
 
-No, they're used in drivers/video/console/sticore.c which has a
-CONFIG_FB_STI gating it.  Whether it should is another patch matter ....
+The reason I asked is I tried to apply your change against
+2.6.22.16 and ran into problems with undefined references from
+drivers/video/console/sticore.c.  However, the build didn't work.
+Lost console after the infamous search the FAQ message.
 
-James
+Dave
+-- 
+J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
+National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
