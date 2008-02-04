@@ -1,7 +1,7 @@
 From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
 Subject: Re: [PATCH] fix intermittent panics on wide firmware boxes
-Date: Sun, 3 Feb 2008 19:46:03 -0500 (EST)
-Message-ID: <200802040046.m140k4Io019976@hiauly1.hia.nrc.ca>
+Date: Sun, 3 Feb 2008 20:06:51 -0500 (EST)
+Message-ID: <200802040106.m1416raZ020342@hiauly1.hia.nrc.ca>
 References: <1202085416.3318.134.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -12,15 +12,14 @@ In-Reply-To: <1202085416.3318.134.camel@localhost.localdomain> from "James Botto
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> > Should this be CONFIG_STI_CONSOLE?
-> 
 > No, they're used in drivers/video/console/sticore.c which has a
 > CONFIG_FB_STI gating it.  Whether it should is another patch matter ....
 
-The reason I asked is I tried to apply your change against
-2.6.22.16 and ran into problems with undefined references from
-drivers/video/console/sticore.c.  However, the build didn't work.
-Lost console after the infamous search the FAQ message.
+Looking at the Makefile, I see
+
+obj-$(CONFIG_STI_CONSOLE)         += sticon.o sticore.o font.o
+and
+obj-$(CONFIG_FB_STI)              += sticore.o font.o
 
 Dave
 -- 
