@@ -1,27 +1,39 @@
-From: "John David Anglin" <dave@hiauly1.hia.nrc.ca>
-Subject: Re: [PATCH] fix intermittent panics on wide firmware boxes
-Date: Sun, 3 Feb 2008 20:06:51 -0500 (EST)
-Message-ID: <200802040106.m1416raZ020342@hiauly1.hia.nrc.ca>
-References: <1202085416.3318.134.camel@localhost.localdomain>
+From: Adrian Bunk <bunk@kernel.org>
+Subject: parisc compile error
+Date: Fri, 8 Feb 2008 01:12:32 +0200
+Message-ID: <20080207231232.GF7198@cs181133002.pp.htv.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-parisc@vger.kernel.org
-To: James.Bottomley@HansenPartnership.com (James Bottomley)
+Content-Type: text/plain; charset=utf-8
+Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Christoph Lameter <clameter@sgi.com>, kyle@parisc-linux.org,
+	matthew@wil.cx, grundler@parisc-linux.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1202085416.3318.134.camel@localhost.localdomain> from "James Bottomley" at Feb 3, 2008 06:36:56 pm
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> No, they're used in drivers/video/console/sticore.c which has a
-> CONFIG_FB_STI gating it.  Whether it should is another patch matter ....
+Commit 9e2779fa281cfda13ac060753d674bbcaa23367e broke parisc:
 
-Looking at the Makefile, I see
+<--  snip  -->
 
-obj-$(CONFIG_STI_CONSOLE)         += sticon.o sticore.o font.o
-and
-obj-$(CONFIG_FB_STI)              += sticore.o font.o
+...
+  CC      arch/parisc/kernel/asm-offsets.s
+In file included from include/asm/pgtable.h:13,
+                 from arch/parisc/kernel/asm-offsets.c:36:
+include/linux/mm.h: In function 'is_vmalloc_addr':
+include/linux/mm.h:243: error: 'VMALLOC_START' undeclared (first use in this function)
+include/linux/mm.h:243: error: (Each undeclared identifier is reported only once
+include/linux/mm.h:243: error: for each function it appears in.)
+include/linux/mm.h:243: error: 'VMALLOC_END' undeclared (first use in this function)
+make[1]: *** [arch/parisc/kernel/asm-offsets.s] Error 1
 
-Dave
+<--  snip  -->
+
+cu
+Adrian
+
 -- 
-J. David Anglin                                  dave.anglin@nrc-cnrc.gc.ca
-National Research Council of Canada              (613) 990-0752 (FAX: 952-6602)
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
