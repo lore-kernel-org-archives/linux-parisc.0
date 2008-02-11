@@ -1,45 +1,86 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [PATCH?][arch/parisc/kernel/pci-dma.c]
-	pcxl_dma_ops.alloc_noncoherent
-Date: Mon, 11 Feb 2008 13:58:34 -0500
-Message-ID: <20080211185834.GB4516@phobos.i.cabal.ca>
-References: <200802111708.m1BH8q3p008073@hiauly1.hia.nrc.ca> <47B09A4A.3030907@tiscali.nl>
+	pcxl_dma_ops.alloc_noncoherent = pa11_dma_alloc_consistent?
+Date: Mon, 11 Feb 2008 14:10:46 -0500
+Message-ID: <20080211191046.GD4516@phobos.i.cabal.ca>
+References: <47B07685.5000606@tiscali.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: John David Anglin <dave@hiauly1.hia.nrc.ca>,
-	James.Bottomley@HansenPartnership.com, kyle@parisc-linux.org,
-	matthew@wil.cx, grundler@parisc-linux.org,
-	linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: kyle@parisc-linux.org, Matthew Wilcox <matthew@wil.cx>,
+	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
+	lkml <linux-kernel@vger.kernel.org>
 To: Roel Kluin <12o3l@tiscali.nl>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <47B09A4A.3030907@tiscali.nl>
+In-Reply-To: <47B07685.5000606@tiscali.nl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 11, 2008 at 07:56:10PM +0100, Roel Kluin wrote:
-> +/*
-> + * dma_alloc_noncoherent is a fallback for boxes PA7200 and below which
-> + * cannot allocate coherent memory.
-> + */
->  static void *pa11_dma_alloc_noncoherent(struct device *dev, size_t size,
->  					  dma_addr_t *dma_handle, gfp_t flag)
->  {
+On Mon, Feb 11, 2008 at 05:23:33PM +0100, Roel Kluin wrote:
+>
 
-Why? This is located below pcxl_dma_ops so its obviously only relevant
-for pcx.
+How about just doing something like this:
 
-> @@ -586,6 +590,10 @@ static void pa11_dma_free_noncoherent(struct device *dev, size_t size,
->  	return;
->  }
->  
-> +/*
-> + * PCXL allocates coherent memory even for dma_alloc_noncoherent() due to the
-> + * uncached trick for coherent memory.
-> + */
-
-This isn't correct either.
-
->  struct hppa_dma_ops pcx_dma_ops = {
->  	.dma_supported =	pa11_dma_supported,
->  	.alloc_consistent =	fail_alloc_consistent,
-> 
+diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
+index 9448d4e..63f9b7f 100644
+--- a/arch/parisc/kernel/pci-dma.c
++++ b/arch/parisc/kernel/pci-dma.c
+@@ -409,7 +409,7 @@ pcxl_dma_init(void)
+ 
+ __initcall(pcxl_dma_init);
+ 
+-static void * pa11_dma_alloc_consistent (struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag)
++static void * pcxl_dma_alloc_consistent (struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag)
+ {
+ 	unsigned long vaddr;
+ 	unsigned long paddr;
+@@ -435,7 +435,7 @@ static void * pa11_dma_alloc_consistent (struct device *dev, size_t size, dma_ad
+ 	return (void *)vaddr;
+ }
+ 
+-static void pa11_dma_free_consistent (struct device *dev, size_t size, void *vaddr, dma_addr_t dma_handle)
++static void pcxl_dma_free_consistent (struct device *dev, size_t size, void *vaddr, dma_addr_t dma_handle)
+ {
+ 	int order;
+ 
+@@ -548,9 +548,9 @@ static void pa11_dma_sync_sg_for_device(struct device *dev, struct scatterlist *
+ 
+ struct hppa_dma_ops pcxl_dma_ops = {
+ 	.dma_supported =	pa11_dma_supported,
+-	.alloc_consistent =	pa11_dma_alloc_consistent,
+-	.alloc_noncoherent =	pa11_dma_alloc_consistent,
+-	.free_consistent =	pa11_dma_free_consistent,
++	.alloc_consistent =	pcxl_dma_alloc_consistent,
++	.alloc_noncoherent =	pcxl_dma_alloc_consistent,
++	.free_consistent =	pcxl_dma_free_consistent,
+ 	.map_single =		pa11_dma_map_single,
+ 	.unmap_single =		pa11_dma_unmap_single,
+ 	.map_sg =		pa11_dma_map_sg,
+@@ -567,7 +567,7 @@ static void *fail_alloc_consistent(struct device *dev, size_t size,
+ 	return NULL;
+ }
+ 
+-static void *pa11_dma_alloc_noncoherent(struct device *dev, size_t size,
++static void *pcx_dma_alloc_noncoherent(struct device *dev, size_t size,
+ 					  dma_addr_t *dma_handle, gfp_t flag)
+ {
+ 	void *addr;
+@@ -579,7 +579,7 @@ static void *pa11_dma_alloc_noncoherent(struct device *dev, size_t size,
+ 	return addr;
+ }
+ 
+-static void pa11_dma_free_noncoherent(struct device *dev, size_t size,
++static void pcx_dma_free_noncoherent(struct device *dev, size_t size,
+ 					void *vaddr, dma_addr_t iova)
+ {
+ 	free_pages((unsigned long)vaddr, get_order(size));
+@@ -589,8 +589,8 @@ static void pa11_dma_free_noncoherent(struct device *dev, size_t size,
+ struct hppa_dma_ops pcx_dma_ops = {
+ 	.dma_supported =	pa11_dma_supported,
+ 	.alloc_consistent =	fail_alloc_consistent,
+-	.alloc_noncoherent =	pa11_dma_alloc_noncoherent,
+-	.free_consistent =	pa11_dma_free_noncoherent,
++	.alloc_noncoherent =	pcx_dma_alloc_noncoherent,
++	.free_consistent =	pcx_dma_free_noncoherent,
+ 	.map_single =		pa11_dma_map_single,
+ 	.unmap_single =		pa11_dma_unmap_single,
+ 	.map_sg =		pa11_dma_map_sg,
