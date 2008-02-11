@@ -1,36 +1,29 @@
-From: Roel Kluin <12o3l@tiscali.nl>
-Subject: [PATCH?][arch/parisc/kernel/pci-dma.c] pcxl_dma_ops.alloc_noncoherent
- = pa11_dma_alloc_consistent?
-Date: Mon, 11 Feb 2008 17:23:33 +0100
-Message-ID: <47B07685.5000606@tiscali.nl>
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Re: [PATCH?][arch/parisc/kernel/pci-dma.c] pcxl_dma_ops.alloc_noncoherent = pa11_dma_alloc_consistent?
+Date: Mon, 11 Feb 2008 09:42:15 -0700
+Message-ID: <20080211164215.GM5299@parisc-linux.org>
+References: <47B07685.5000606@tiscali.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-parisc@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-To: kyle@parisc-linux.org, Matthew Wilcox <matthew@wil.cx>,
-	grundler@parisc-linux.org
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757658AbYBKQYc@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: kyle@parisc-linux.org, grundler@parisc-linux.org,
+	linux-parisc@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+To: Roel Kluin <12o3l@tiscali.nl>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <47B07685.5000606@tiscali.nl>
+List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-duplicate pa11_dma_alloc_consistent; more appropriate appears
-pa11_dma_alloc_noncoherent here. 
+On Mon, Feb 11, 2008 at 05:23:33PM +0100, Roel Kluin wrote:
+> duplicate pa11_dma_alloc_consistent; more appropriate appears
+> pa11_dma_alloc_noncoherent here. 
+> 
+> Not tested, please confirm that this fix is correct
 
-Not tested, please confirm that this fix is correct
----
-fix noncoherent allocation
+I don't think it is.  The memories are fading, so I don't recall why it
+is we do it this way, but I'm pretty sure it's correct the way it is.
 
-Signed-off-by: Roel Kluin <12o3l@tiscali.nl>
----
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index 9448d4e..0e8b71f 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -549,7 +549,7 @@ static void pa11_dma_sync_sg_for_device(struct device *dev, struct scatterlist *
- struct hppa_dma_ops pcxl_dma_ops = {
- 	.dma_supported =	pa11_dma_supported,
- 	.alloc_consistent =	pa11_dma_alloc_consistent,
--	.alloc_noncoherent =	pa11_dma_alloc_consistent,
-+	.alloc_noncoherent =	pa11_dma_alloc_noncoherent,
- 	.free_consistent =	pa11_dma_free_consistent,
- 	.map_single =		pa11_dma_map_single,
- 	.unmap_single =		pa11_dma_unmap_single,
+-- 
+Intel are signing my paycheques ... these opinions are still mine
+"Bill, look, we understand that you're interested in selling us this
+operating system, but compare it to ours.  We can't possibly take such
+a retrograde step."
