@@ -1,86 +1,101 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [PATCH?][arch/parisc/kernel/pci-dma.c]
-	pcxl_dma_ops.alloc_noncoherent = pa11_dma_alloc_consistent?
-Date: Mon, 11 Feb 2008 14:10:46 -0500
-Message-ID: <20080211191046.GD4516@phobos.i.cabal.ca>
-References: <47B07685.5000606@tiscali.nl>
+From: "rubisher" <rubi.sher@scarlet.be>
+Subject: Re: parisc compile error
+Date: Wed, 13 Feb 2008 07:49:12 +0100
+Message-ID: <JW60A0$CF80A6CA85E28806A3D1EDDACE158868@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: kyle@parisc-linux.org, Matthew Wilcox <matthew@wil.cx>,
-	grundler@parisc-linux.org, linux-parisc@vger.kernel.org,
-	lkml <linux-kernel@vger.kernel.org>
-To: Roel Kluin <12o3l@tiscali.nl>
+Content-Type: text/plain; charset=US-ASCII
+Cc: "clameter" <clameter@sgi.com>, "kyle" <kyle@mcmartin.ca>,
+	"bunk" <bunk@kernel.org>, "kyle" <kyle@parisc-linux.org>,
+	"matthew" <matthew@wil.cx>, "grundler" <grundler@parisc-linux.org>,
+	"linux-parisc" <linux-parisc@vger.kernel.org>,
+	"linux-kernel" <linux-kernel@vger.kernel.org>,
+	"rubisher" <rubisher@scarlet.be>
+To: "kyle" <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <47B07685.5000606@tiscali.nl>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 11, 2008 at 05:23:33PM +0100, Roel Kluin wrote:
->
+> On Thu, Feb 07, 2008 at 03:33:07PM -0800, Christoph Lameter wrote:
+> > On Thu, 7 Feb 2008, Kyle McMartin wrote:
+> > 
+> > > yes, it's in my batch of fixes.
+> > 
+> > <big sigh of relief> So I do not have to worry about it?
+> > 
+> 
+> haha no. i don't expect people to have to untangle the mess of includes
+> that is <asm-parisc/*.h> :)
+> 
+> cheers, kyle
+> -
+This move to define those symbol before including linux/mm.h seems to make the
+drill:
+--- include/asm-parisc/pgtable.h.Orig	2007-10-22 08:19:20.000000000 +0000
++++ include/asm-parisc/pgtable.h	2008-02-12 16:28:36.000000000 +0000
+@@ -10,6 +10,12 @@
+  * we simulate an x86-style page table for the linux mm code
+  */
+ 
++extern  void *vmalloc_start;
++#define PCXL_DMA_MAP_SIZE   (8*1024*1024)
++#define VMALLOC_START   ((unsigned long)vmalloc_start)
++/* this is a fixmap remnant, see fixmap.h */
++#define VMALLOC_END	(KERNEL_MAP_END)
++
+ #include <linux/mm.h>		/* for vm_area_struct */
+ #include <linux/bitops.h>
+ #include <asm/processor.h>
+@@ -116,14 +122,6 @@
+ 
+ #define FIRST_USER_ADDRESS	0
+ 
+-#ifndef __ASSEMBLY__
+-extern  void *vmalloc_start;
+-#define PCXL_DMA_MAP_SIZE   (8*1024*1024)
+-#define VMALLOC_START   ((unsigned long)vmalloc_start)
+-/* this is a fixmap remnant, see fixmap.h */
+-#define VMALLOC_END	(KERNEL_MAP_END)
+-#endif
+-
+ /* NB: The tlb miss handlers make certain assumptions about the order */
+ /*     of the following bits, so be careful (One example, bits 25-31  */
+ /*     are moved together in one instruction).                        */
+=== <> ====
 
-How about just doing something like this:
+But next compile error appears there:
 
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index 9448d4e..63f9b7f 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -409,7 +409,7 @@ pcxl_dma_init(void)
- 
- __initcall(pcxl_dma_init);
- 
--static void * pa11_dma_alloc_consistent (struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag)
-+static void * pcxl_dma_alloc_consistent (struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag)
- {
- 	unsigned long vaddr;
- 	unsigned long paddr;
-@@ -435,7 +435,7 @@ static void * pa11_dma_alloc_consistent (struct device *dev, size_t size, dma_ad
- 	return (void *)vaddr;
- }
- 
--static void pa11_dma_free_consistent (struct device *dev, size_t size, void *vaddr, dma_addr_t dma_handle)
-+static void pcxl_dma_free_consistent (struct device *dev, size_t size, void *vaddr, dma_addr_t dma_handle)
- {
- 	int order;
- 
-@@ -548,9 +548,9 @@ static void pa11_dma_sync_sg_for_device(struct device *dev, struct scatterlist *
- 
- struct hppa_dma_ops pcxl_dma_ops = {
- 	.dma_supported =	pa11_dma_supported,
--	.alloc_consistent =	pa11_dma_alloc_consistent,
--	.alloc_noncoherent =	pa11_dma_alloc_consistent,
--	.free_consistent =	pa11_dma_free_consistent,
-+	.alloc_consistent =	pcxl_dma_alloc_consistent,
-+	.alloc_noncoherent =	pcxl_dma_alloc_consistent,
-+	.free_consistent =	pcxl_dma_free_consistent,
- 	.map_single =		pa11_dma_map_single,
- 	.unmap_single =		pa11_dma_unmap_single,
- 	.map_sg =		pa11_dma_map_sg,
-@@ -567,7 +567,7 @@ static void *fail_alloc_consistent(struct device *dev, size_t size,
- 	return NULL;
- }
- 
--static void *pa11_dma_alloc_noncoherent(struct device *dev, size_t size,
-+static void *pcx_dma_alloc_noncoherent(struct device *dev, size_t size,
- 					  dma_addr_t *dma_handle, gfp_t flag)
- {
- 	void *addr;
-@@ -579,7 +579,7 @@ static void *pa11_dma_alloc_noncoherent(struct device *dev, size_t size,
- 	return addr;
- }
- 
--static void pa11_dma_free_noncoherent(struct device *dev, size_t size,
-+static void pcx_dma_free_noncoherent(struct device *dev, size_t size,
- 					void *vaddr, dma_addr_t iova)
- {
- 	free_pages((unsigned long)vaddr, get_order(size));
-@@ -589,8 +589,8 @@ static void pa11_dma_free_noncoherent(struct device *dev, size_t size,
- struct hppa_dma_ops pcx_dma_ops = {
- 	.dma_supported =	pa11_dma_supported,
- 	.alloc_consistent =	fail_alloc_consistent,
--	.alloc_noncoherent =	pa11_dma_alloc_noncoherent,
--	.free_consistent =	pa11_dma_free_noncoherent,
-+	.alloc_noncoherent =	pcx_dma_alloc_noncoherent,
-+	.free_consistent =	pcx_dma_free_noncoherent,
- 	.map_single =		pa11_dma_map_single,
- 	.unmap_single =		pa11_dma_unmap_single,
- 	.map_sg =		pa11_dma_map_sg,
+In file included from
+/CAD/linux-2.6.25-rc1-pa-git-20080212/arch/parisc/mm/init.c:26:
+include2/asm/pgalloc.h:142: error: conflicting types for 'pte_free_kernel'
+include2/asm/pgalloc.h:137: error: previous definition of 'pte_free_kernel'
+was here
+include2/asm/pgalloc.h: In function 'pte_free_kernel':
+include2/asm/pgalloc.h:144: error: expected ')' before ';' token
+include2/asm/pgalloc.h:145: error: too few arguments to function 'pte_free_kernel'
+include2/asm/pgalloc.h:145: error: expected ';' before '}' token
+make[2]: *** [arch/parisc/mm/init.o] Error 1
+make[1]: *** [arch/parisc/mm] Error 2
+make: *** [sub-make] Error 2
+
+
+and in include/asm-parisc/pgalloc.h we can read:
+
+static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+{
+        free_page((unsigned long)pte);
+}
+
+static inline void pte_free_kernel(struct mm_struct *mm, struct page *pte)
+{
+        pgtable_page_dtor(pte);
+        pte_free_kernel(page_address((pte));
+}
+
+i.e. 2 time the definition of the same function: which is the right definition?
+
+Cheers,
+    r.
+
+---
+Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
+http://www.scarlet.be/
