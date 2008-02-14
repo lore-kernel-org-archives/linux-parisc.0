@@ -1,69 +1,43 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: parisc compile error
-Date: Thu, 14 Feb 2008 00:22:50 -0500
-Message-ID: <20080214052250.GB29980@phobos.i.cabal.ca>
-References: <JW6GMA$1445536B7A545413BA0D6B6753D6901F@scarlet.be>
+From: =?utf-8?q?S=2E=C3=87a=C4=9Flar=20Onur?= <caglar@pardus.org.tr>
+Subject: [PATCH 03/14] arch/parisc/kernel/unaligned.c: Use time_* macros
+Date: Thu, 14 Feb 2008 17:36:41 +0200
+Message-ID: <1203003412-11594-4-git-send-email-caglar@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: "rubi.sher" <rubi.sher@scarlet.be>, kyle <kyle@mcmartin.ca>,
-	clameter <clameter@sgi.com>, bunk <bunk@kernel.org>,
-	kyle <kyle@parisc-linux.org>, matthew <matthew@wil.cx>,
-	grundler <grundler@parisc-linux.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: rubisher <rubisher@scarlet.be>
+Content-Type: text/plain; charset=utf-8
+Cc: linux-parisc@vger.kernel.org,
+	=?utf-8?q?S=2E=C3=87a=C4=9Flar=20Onur?= <caglar@pardus.org.tr>
+To: linux-kernel@vger.kernel.org
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <JW6GMA$1445536B7A545413BA0D6B6753D6901F@scarlet.be>
+In-Reply-To: y
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Wed, Feb 13, 2008 at 01:42:10PM +0100, rubisher wrote:
->     - some lake of changes of kset to kobj:
+The functions time_before, time_before_eq, time_after, and time_after_e=
+q are more robust for comparing jiffies against other values.
 
-thanks, i don't build this driver, somehow it made its way out of my
-configs. patch looks correct though. applied.
+So following patch implements usage of the time_after() macro, defined =
+at linux/jiffies.h, which deals with wrapping correctly
 
-> --- ./drivers/parisc/pdc_stable.c.Orig	2008-01-28 07:09:26.000000000 +0000
-> +++ ./drivers/parisc/pdc_stable.c	2008-02-13 11:22:16.000000000 +0000
-> @@ -829,7 +829,7 @@
->  				   struct kobj_attribute *attr,
->  				   const char *buf, size_t count)
->  {
-> -	return pdcs_auto_write(kset, attr, buf, count, PF_AUTOBOOT);
-> +	return pdcs_auto_write(kobj, attr, buf, count, PF_AUTOBOOT);
->  }
->  
->  /**
-> @@ -845,7 +845,7 @@
->  				     struct kobj_attribute *attr,
->  				     const char *buf, size_t count)
->  {
-> -	return pdcs_auto_write(kset, attr, buf, count, PF_AUTOSEARCH);
-> +	return pdcs_auto_write(kobj, attr, buf, count, PF_AUTOSEARCH);
->  }
->  
->  /**
-> @@ -1066,7 +1066,7 @@
->  	}
->  
->  	/* Don't forget the root entries */
-> -	error = sysfs_create_group(stable_kobj, pdcs_attr_group);
-> +	error = sysfs_create_group(stable_kobj, &pdcs_attr_group);
->  
->  	/* register the paths kset as a child of the stable kset */
->  	paths_kset = kset_create_and_add("paths", NULL, stable_kobj);
-> === <> ===
-> 
-> And the kernel build, but I don't yet try to boot it...
-> 
-> Hth,
-> r.
-> ---
-> Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
-> http://www.scarlet.be/
-> 
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Cc: linux-parisc@vger.kernel.org
+Signed-off-by: S.=C3=87a=C4=9Flar Onur <caglar@pardus.org.tr>
+---
+ arch/parisc/kernel/unaligned.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unalig=
+ned.c
+index aebf3c1..19b8a79 100644
+--- a/arch/parisc/kernel/unaligned.c
++++ b/arch/parisc/kernel/unaligned.c
+@@ -460,7 +460,7 @@ void handle_unaligned(struct pt_regs *regs)
+ 			goto force_sigbus;
+ 		}
+=20
+-		if (unaligned_count > 5 && jiffies - last_time > 5*HZ) {
++		if (unaligned_count > 5 && time_after(jiffies, last_time + 5 * HZ)) =
+{
+ 			unaligned_count =3D 0;
+ 			last_time =3D jiffies;
+ 		}
+--=20
+1.5.3.7
