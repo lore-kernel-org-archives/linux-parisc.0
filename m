@@ -1,37 +1,31 @@
 From: "rubisher" <rubisher@scarlet.be>
 Subject: Re: parisc compile error
-Date: Fri, 15 Feb 2008 11:42:27 +0100
-Message-ID: <JWA0ER$69F0160369E3E3D45E8196C6620D02EE@scarlet.be>
+Date: Fri, 15 Feb 2008 11:44:52 +0100
+Message-ID: <JWA0IS$52EB33BDF46A1EBD2B77B8DCB8FC63DF@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Cc: "kyle" <kyle@parisc-linux.org>, "matthew" <matthew@wil.cx>,
-	"grundler" <grundler@parisc-linux.org>,
+Cc: "kyle" <kyle@mcmartin.ca>, "clameter" <clameter@sgi.com>,
+	"bunk" <bunk@kernel.org>, "kyle" <kyle@parisc-linux.org>,
+	"matthew" <matthew@wil.cx>, "grundler" <grundler@parisc-linux.org>,
 	"linux-parisc" <linux-parisc@vger.kernel.org>,
+	"linux-kernel" <linux-kernel@vger.kernel.org>,
 	"rubisher" <rubisher@scarlet.be>
 To: "kyle" <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-> On Wed, Feb 13, 2008 at 07:49:12AM +0100, rubisher wrote:
-> > --- include/asm-parisc/pgtable.h.Orig	2007-10-22 08:19:20.000000000 +0000
-> > +++ include/asm-parisc/pgtable.h	2008-02-12 16:28:36.000000000 +0000
-> > +extern  void *vmalloc_start;
-> > +#define PCXL_DMA_MAP_SIZE   (8*1024*1024)
-> > +#define VMALLOC_START   ((unsigned long)vmalloc_start)
-> > +/* this is a fixmap remnant, see fixmap.h */
-> > +#define VMALLOC_END	(KERNEL_MAP_END)
-> > +
+> On Wed, Feb 13, 2008 at 01:42:10PM +0100, rubisher wrote:
+> >     - some lake of changes of kset to kobj:
 > 
-> i moved this to fixmap.h, since i think it makes more sense there,
-> really.
+> thanks, i don't build this driver, somehow it made its way out of my
+> configs. patch looks correct though. applied.
 > 
-Nice to me too ;-)
+Cool ;-)
 
-(btw where can I grab your latest update. I didn't yet see in your git
-linux-2.6-snaps or any other place I know)?
+Btw, it boot fine to me on b2k and d380 running all up 32bit kernels ;-)
 
-Tx,
+Cheers,
     r.
 ---
 Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
