@@ -1,43 +1,38 @@
-From: =?utf-8?q?S=2E=C3=87a=C4=9Flar=20Onur?= <caglar@pardus.org.tr>
-Subject: [PATCH 03/14] arch/parisc/kernel/unaligned.c: Use time_* macros
-Date: Thu, 14 Feb 2008 17:36:41 +0200
-Message-ID: <1203003412-11594-4-git-send-email-caglar@pardus.org.tr>
+From: "rubisher" <rubisher@scarlet.be>
+Subject: Re: parisc compile error
+Date: Fri, 15 Feb 2008 11:42:27 +0100
+Message-ID: <JWA0ER$69F0160369E3E3D45E8196C6620D02EE@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Cc: linux-parisc@vger.kernel.org,
-	=?utf-8?q?S=2E=C3=87a=C4=9Flar=20Onur?= <caglar@pardus.org.tr>
-To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: "kyle" <kyle@parisc-linux.org>, "matthew" <matthew@wil.cx>,
+	"grundler" <grundler@parisc-linux.org>,
+	"linux-parisc" <linux-parisc@vger.kernel.org>,
+	"rubisher" <rubisher@scarlet.be>
+To: "kyle" <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: y
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-The functions time_before, time_before_eq, time_after, and time_after_e=
-q are more robust for comparing jiffies against other values.
+> On Wed, Feb 13, 2008 at 07:49:12AM +0100, rubisher wrote:
+> > --- include/asm-parisc/pgtable.h.Orig	2007-10-22 08:19:20.000000000 +0000
+> > +++ include/asm-parisc/pgtable.h	2008-02-12 16:28:36.000000000 +0000
+> > +extern  void *vmalloc_start;
+> > +#define PCXL_DMA_MAP_SIZE   (8*1024*1024)
+> > +#define VMALLOC_START   ((unsigned long)vmalloc_start)
+> > +/* this is a fixmap remnant, see fixmap.h */
+> > +#define VMALLOC_END	(KERNEL_MAP_END)
+> > +
+> 
+> i moved this to fixmap.h, since i think it makes more sense there,
+> really.
+> 
+Nice to me too ;-)
 
-So following patch implements usage of the time_after() macro, defined =
-at linux/jiffies.h, which deals with wrapping correctly
+(btw where can I grab your latest update. I didn't yet see in your git
+linux-2.6-snaps or any other place I know)?
 
-Cc: linux-parisc@vger.kernel.org
-Signed-off-by: S.=C3=87a=C4=9Flar Onur <caglar@pardus.org.tr>
+Tx,
+    r.
 ---
- arch/parisc/kernel/unaligned.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unalig=
-ned.c
-index aebf3c1..19b8a79 100644
---- a/arch/parisc/kernel/unaligned.c
-+++ b/arch/parisc/kernel/unaligned.c
-@@ -460,7 +460,7 @@ void handle_unaligned(struct pt_regs *regs)
- 			goto force_sigbus;
- 		}
-=20
--		if (unaligned_count > 5 && jiffies - last_time > 5*HZ) {
-+		if (unaligned_count > 5 && time_after(jiffies, last_time + 5 * HZ)) =
-{
- 			unaligned_count =3D 0;
- 			last_time =3D jiffies;
- 		}
---=20
-1.5.3.7
+Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
+http://www.scarlet.be/
