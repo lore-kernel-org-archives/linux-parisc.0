@@ -1,42 +1,40 @@
 From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: parisc compile error
-Date: Mon, 18 Feb 2008 12:14:59 -0500
-Message-ID: <20080218171459.GC6912@phobos.i.cabal.ca>
-References: <JWFJYY$FFD787B99A1F5B88A6B9433FC2F06B18@scarlet.be>
+Subject: Re: [patch 0/4] RFC: PCI: consolidate several
+	pcibios_enable_resources() implementations
+Date: Tue, 19 Feb 2008 01:11:50 -0500
+Message-ID: <20080219061150.GA10115@phobos.i.cabal.ca>
+References: <20080219043952.845136014@ldl.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: kyle <kyle@mcmartin.ca>, clameter <clameter@sgi.com>,
-	bunk <bunk@kernel.org>, kyle <kyle@parisc-linux.org>,
-	matthew <matthew@wil.cx>, grundler <grundler@parisc-linux.org>,
-	linux-parisc <linux-parisc@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-To: rubisher <rubisher@scarlet.be>
+Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-arch@vger.kernel.org,
+	Russell King <rmk@arm.linux.org.uk>,
+	linux-arm-kernel@lists.arm.linux.org.uk,
+	Kyle McMartin <kyle@parisc-linux.org>,
+	Matthew Wilcox <matthew@wil.cx>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	linuxppc-dev@ozlabs.org, Chris Zankel <chris@zankel.net>
+To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <JWFJYY$FFD787B99A1F5B88A6B9433FC2F06B18@scarlet.be>
+In-Reply-To: <20080219043952.845136014@ldl.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 18, 2008 at 11:32:58AM +0100, rubisher wrote:
-> > On Wed, Feb 13, 2008 at 01:42:10PM +0100, rubisher wrote:
-> > >
-> > 
-> > Can I get your Signed-off-by for this, Joel? (I assume you are Joel :)
-> > 
-> Yes the previous account seems to be a bit old and look more and more like a
-> gc; I so take the opportunity of ml's change to use another pseudo ;-)
-> 
-> That said those 2 hunks help build (even boot my 32bit up kernel on b2k and
-> d380 boxes):
->
-
-ok, good to know.
- 
-> Signed-off-by: Joel Soete <soete dot joel at scarlet dot be>
+On Mon, Feb 18, 2008 at 09:39:52PM -0700, Bjorn Helgaas wrote:
+>     - PA-RISC always turns on SERR and PARITY, which no other arch does
 > 
 
-great, thanks!
+I suspect this is because we set the host bus adapters to hard fail
+(HPMC) on detecting an error, since we don't want to
+	1) return possibly bogus (-1) data
+	2) write code to use the (undocumented) error detection
 
-> (any advise is welcome obviously ;-)
-> 
+More to the point, I suspect it's extra paranoia because firmware has
+set it up this way. I put in a quick hack to test whether those bits
+were set, and they came enabled that way by firmware on all the boxes I
+tested. (Disclaimer, I didn't have any easily accessible boxes with
+add-on cards installed, so firmware might just set it up for core
+devices, and we're making sure its set everywhere.)
 
-cheers, kyle
+cheers, Kyle
