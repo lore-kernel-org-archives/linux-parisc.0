@@ -1,13 +1,11 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+From: Kyle McMartin <kyle@mcmartin.ca>
 Subject: Re: [patch 4/4] RFC: PCI: consolidate several
 	pcibios_enable_resources() implementations
-Date: Tue, 19 Feb 2008 17:33:50 +1100
-Message-ID: <1203402830.6740.98.camel@pasglop>
-References: <20080219043952.845136014@ldl.fc.hp.com>
-	 <20080219044307.878416912@ldl.fc.hp.com>
-Reply-To: benh@kernel.crashing.org
+Date: Tue, 19 Feb 2008 02:03:25 -0500
+Message-ID: <20080219070325.GB10115@phobos.i.cabal.ca>
+References: <20080219043952.845136014@ldl.fc.hp.com> <20080219044307.878416912@ldl.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-arch@vger.kernel.org,
 	Russell King <rmk@arm.linux.org.uk>,
 	linux-arm-kernel@lists.arm.linux.org.uk,
@@ -15,6 +13,7 @@ Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-arch@vger.kernel.org,
 	Matthew Wilcox <matthew@wil.cx>,
 	Grant Grundler <grundler@parisc-linux.org>,
 	linux-parisc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 	linuxppc-dev@ozlabs.org, Chris Zankel <chris@zankel.net>
 To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
@@ -22,35 +21,27 @@ In-Reply-To: <20080219044307.878416912@ldl.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
+On Mon, Feb 18, 2008 at 09:39:56PM -0700, Bjorn Helgaas wrote:
+>     parisc: checks DEVICE_COUNT_RESOURCE (12) instead of PCI_NUM_RESOURCES
+>	(11) resources at (1),
+>
 
+Good catch.
 
-> Index: work6/drivers/pci/Makefile
-> ===================================================================
-> --- work6.orig/drivers/pci/Makefile	2008-02-18 21:16:36.000000000 -0700
-> +++ work6/drivers/pci/Makefile	2008-02-18 21:16:38.000000000 -0700
-> @@ -2,7 +2,7 @@
->  # Makefile for the PCI bus specific drivers.
->  #
->  
-> -obj-y		+= access.o bus.o probe.o remove.o pci.o quirks.o \
-> +obj-y		+= access.o bios.o bus.o probe.o remove.o pci.o quirks.o \
->  			pci-driver.o search.o pci-sysfs.o rom.o setup-res.o
->  obj-$(CONFIG_PROC_FS) += proc.o
->  
-> Index: work6/drivers/pci/bios.c
-> ===================================================================
-> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-> +++ work6/drivers/pci/bios.c	2008-02-18 21:16:38.000000000 -070
-                        ^^^^^^
+> has no IORESOURCE_{IO,MEM} check at (3),
 
-Yuck :-)
+What else can it be?
 
-Please, don't call this bios ... whatever is in this file really has
-nothing to do with a "BIOS" in any shape or form :-) I know we used to
-call those things pcibios_* but that's really historical...
+> 	has no PCI_ROM_RESOURCE check at (4), has no collision check at (5)
+> 	always turns on PCI_COMMAND_SERR | PCI_COMMAND_PARITY at (6),
+> 	writes cmd even if unchanged at (7)
+> 
 
-If you want to make clear it's for "utilities" that can be overriden
-by the arch, maybe call it utils.c, or just stick the function in
-pci.c, or setup-res.c
+I'll have to check into 4 & 5, there might be a good reason for it. For
+instance on a four port HP ethernet card (pci-pci bridge + 4 tulips) all
+4 of the rom resources are mapped to the same address, which afaict, is
+allowed but breaks things in mysterious and subtle ways.
 
-Ben.
+That said, the parisc pci code is a rats nest...
+
+cheers, Kyle
