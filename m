@@ -1,14 +1,11 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [patch 4/4] RFC: PCI: consolidate several
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [patch 0/4] RFC: PCI: consolidate several
 	pcibios_enable_resources() implementations
-Date: Wed, 20 Feb 2008 07:21:43 +1100
-Message-ID: <1203452503.18618.8.camel@pasglop>
+Date: Tue, 19 Feb 2008 23:24:55 -0700
+Message-ID: <20080220062455.GB6315@colo.lackof.org>
 References: <20080219043952.845136014@ldl.fc.hp.com>
-	 <20080219044307.878416912@ldl.fc.hp.com> <1203402667.6740.94.camel@pasglop>
-	 <200802190911.56901.bjorn.helgaas@hp.com>
-Reply-To: benh@kernel.crashing.org
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-arch@vger.kernel.org,
 	Russell King <rmk@arm.linux.org.uk>,
 	linux-arm-kernel@lists.arm.linux.org.uk,
@@ -16,26 +13,38 @@ Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-arch@vger.kernel.org,
 	Matthew Wilcox <matthew@wil.cx>,
 	Grant Grundler <grundler@parisc-linux.org>,
 	linux-parisc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 	linuxppc-dev@ozlabs.org, Chris Zankel <chris@zankel.net>
 To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <200802190911.56901.bjorn.helgaas@hp.com>
+In-Reply-To: <20080219043952.845136014@ldl.fc.hp.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-
-> > That is, whatever the arch code decides to use to decide whether
-> > resources are assigned by firmware or by the first pass assignment code
-> > or not and collide or not, once that phase is finished (which is the
-> > case when calling pcibios_enable_device(), having the resource in the
-> > resource-tree or not is, I believe, the proper way to test whether it's
-> > a useable resource.
+On Mon, Feb 18, 2008 at 09:39:52PM -0700, Bjorn Helgaas wrote:
+> There are many implementations of pcibios_enable_resources() that differ
+> in minor ways that look more like bugs than architectural differences.
+> This patch series consolidates most of them to use the x86 version.
 > 
-> So should x86 adopt that collision check?  I don't hear anything about
-> actual architecture differences that are behind this implementation
-> difference.
+> This series is for discussion only at this point.  I'm interested in
+> feedback about whether any of the differences are "real" and need to
+> be preserved.
+> 
+> ARM and PA-RISC, in particular, have interesting differences:
+>     - ARM always enables bridge devices, which no other arch does
+>     - PA-RISC always turns on SERR and PARITY, which no other arch does
+> 
+> Should other arches do the same thing, or are these somehow related to
+> ARM and PA-RISC architecture?
 
-Well, on powerpc we do allow under some circumstances a 0 start value
-in BARs, which is why I wanted to use a different check.
+My impression was most x86 BIOS's did NOT turn on SERR/PERR when I added
+that code to parisc-linux port (2000 or 2001 so) . HPUX was turning on
+SERR/PERR and so I was comfortable the HW was stable and it not crash
+under normal use unless something was really broken.
 
-Ben.
+There is certainly nothing architectural specific about SERR/PERR.
+I felt (at the time) this is more of a case of "if it's not reported to the
+user, we won't get blamed for it not working well."
+
+hth,
+grant
