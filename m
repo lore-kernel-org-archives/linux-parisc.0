@@ -1,50 +1,67 @@
-From: Grant Grundler <grundler@parisc-linux.org>
-Subject: Re: [patch 0/4] RFC: PCI: consolidate several
-	pcibios_enable_resources() implementations
-Date: Tue, 19 Feb 2008 23:24:55 -0700
-Message-ID: <20080220062455.GB6315@colo.lackof.org>
-References: <20080219043952.845136014@ldl.fc.hp.com>
+From: "Thibaut VARENE" <T-Bone@parisc-linux.org>
+Subject: Fwd: AD1889 MAINTAINERS entry
+Date: Wed, 20 Feb 2008 21:05:56 +0100
+Message-ID: <7d01f9f00802201205o4543dbe5p70ac8ad93595ee50@mail.gmail.com>
+References: <7d01f9f00712061302p7851016bj16bf82d79313f95f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-arch@vger.kernel.org,
-	Russell King <rmk@arm.linux.org.uk>,
-	linux-arm-kernel@lists.arm.linux.org.uk,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linuxppc-dev@ozlabs.org, Chris Zankel <chris@zankel.net>
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
+Content-Type: multipart/mixed;
+	boundary="----=_Part_4360_16836045.1203537957034"
+Cc: linux-parisc@vger.kernel.org
+To: "Kyle McMartin" <kyle@mcmartin.ca>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080219043952.845136014@ldl.fc.hp.com>
+In-Reply-To: <7d01f9f00712061302p7851016bj16bf82d79313f95f@mail.gmail.com>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Mon, Feb 18, 2008 at 09:39:52PM -0700, Bjorn Helgaas wrote:
-> There are many implementations of pcibios_enable_resources() that differ
-> in minor ways that look more like bugs than architectural differences.
-> This patch series consolidates most of them to use the x86 version.
-> 
-> This series is for discussion only at this point.  I'm interested in
-> feedback about whether any of the differences are "real" and need to
-> be preserved.
-> 
-> ARM and PA-RISC, in particular, have interesting differences:
->     - ARM always enables bridge devices, which no other arch does
->     - PA-RISC always turns on SERR and PARITY, which no other arch does
-> 
-> Should other arches do the same thing, or are these somehow related to
-> ARM and PA-RISC architecture?
+------=_Part_4360_16836045.1203537957034
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-My impression was most x86 BIOS's did NOT turn on SERR/PERR when I added
-that code to parisc-linux port (2000 or 2001 so) . HPUX was turning on
-SERR/PERR and so I was comfortable the HW was stable and it not crash
-under normal use unless something was really broken.
+Hi all,
 
-There is certainly nothing architectural specific about SERR/PERR.
-I felt (at the time) this is more of a case of "if it's not reported to the
-user, we won't get blamed for it not working well."
+Resending this patch as I think it's been lost at some point...
 
-hth,
-grant
+HTH
+
+T-Bone
+
+---------- Forwarded message ----------
+From: Thibaut VARENE <T-Bone@parisc-linux.org>
+Date: Thu, Dec 6, 2007 at 10:02 PM
+Subject: AD1889 MAINTAINERS entry
+To: Kyle McMartin <kyle@parisc-linux.org>
+
+
+Hi Kyle,
+
+ Bunk deleted our driver's entry. Here's a patch that fixes that and
+ updates the mailing-list address. It's hand-diffed against MAINTAINERS
+ fetched from HEAD in your git tree on git.k.o
+
+ Cheers
+
+ ----------------
+
+ Restore improperly deleted (in
+ b5d425c97f7d4e92151167b01ca038e7853c6b37) AD1889 SOUND DRIVER entry
+
+ Signed-off-by: Thibaut VARENE <varenet@parisc-linux.org>
+
+------=_Part_4360_16836045.1203537957034
+Content-Type: text/x-patch; name=AD1889-MAINTAINERS.patch
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_f9vry3l00
+Content-Disposition: attachment; filename=AD1889-MAINTAINERS.patch
+
+ZGlmZiAtTnJ1IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJTkVSUwotLS0gYS9NQUlOVEFJTkVSUwky
+MDA3LTEyLTA2IDIxOjU3OjA1LjAwMDAwMDAwMCArMDEwMAorKysgYi9NQUlOVEFJTkVSUwkyMDA3
+LTEyLTA2IDIxOjU4OjI4LjAwMDAwMDAwMCArMDEwMApAQCAtMjYxLDYgKzI2MSwxNSBAQAogVzoJ
+aHR0cDovL2FjcGkuc291cmNlZm9yZ2UubmV0LwogUzoJU3VwcG9ydGVkCiAKK0FEMTg4OSBTT1VO
+RCBEUklWRVIKK1A6ICAgICBLeWxlIE1jTWFydGluCitNOiAgICAga3lsZUBwYXJpc2MtbGludXgu
+b3JnCitQOiAgICAgVGhpYmF1dCBWYXJlbmUKK006ICAgICBULUJvbmVAcGFyaXNjLWxpbnV4Lm9y
+ZworVzogICAgIGh0dHA6Ly93aWtpLnBhcmlzYy1saW51eC5vcmcvQUQxODg5CitMOiAgICAgbGlu
+dXgtcGFyaXNjQHZnZXIua2VybmVsLm9yZworUzogICAgIE1haW50YWluZWQKKwogQURNMTAyNSBI
+QVJEV0FSRSBNT05JVE9SIERSSVZFUgogUDoJSmVhbiBEZWx2YXJlCiBNOglraGFsaUBsaW51eC1m
+ci5vcmcK
+------=_Part_4360_16836045.1203537957034--
