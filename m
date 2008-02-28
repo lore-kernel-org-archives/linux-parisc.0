@@ -1,37 +1,40 @@
-From: Kyle McMartin <kyle@mcmartin.ca>
-Subject: Re: [patch 5/6] PARISC: move PERR & SERR enables out of
-	pcibios_enable_resources()
-Date: Thu, 28 Feb 2008 12:38:16 -0500
-Message-ID: <20080228173816.GA32265@phobos.i.cabal.ca>
-References: <20080228000437.880811124@ldl.fc.hp.com> <20080228001053.209248743@ldl.fc.hp.com>
+From: David Howells <dhowells@redhat.com>
+Subject: Re: [patch 6/6] PCI: consolidate several pcibios_enable_resources()
+	implementations
+Date: Thu, 28 Feb 2008 17:55:33 +0000
+Message-ID: <7005.1204221333@redhat.com>
+References: <20080228001053.404893334@ldl.fc.hp.com>
+	<20080228000437.880811124@ldl.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-pci@atrey.karlin.mff.cuni.cz, linux-arch@vger.kernel.org,
-	Russell King <rmk@arm.linux.org.uk>,
-	linux-arm-kernel@lists.arm.linux.org.uk,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linuxppc-dev@ozlabs.org, Chris Zankel <chris@zankel.net>
+Content-Type: text/plain; charset="us-ascii"
+Cc: Chris Zankel <chris@zankel.net>, Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>,
+	Kyle McMartin <kyle@parisc-linux.org>, linuxppc-dev@ozlabs.org,
+	Paul Mackerras <paulus@samba.org>, linux-arm-kernel@lists.arm.linux.org.uk,
+	Russell King <rmk@arm.linux.org.uk>
 To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080228001053.209248743@ldl.fc.hp.com>
-List-ID: <linux-parisc.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
+In-Reply-To: <20080228001053.404893334@ldl.fc.hp.com>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
+List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
 
-On Wed, Feb 27, 2008 at 05:04:42PM -0700, Bjorn Helgaas wrote:
-> Move PERR and SERR enables from pcibios_enable_resources() to
-> platform_pci_enable_device() so the former matches other
-> architectures and can be shared.
+Bjorn Helgaas <bjorn.helgaas@hp.com> wrote:
+
 > 
+>     frv: checks only 6 resources at (1), has a different ROM
+> 	resource check at (4) and (6) that ignores IORESOURCE_ROM_ENABLE
+> ...
+>     mn10300: checks only 6 resources at (1), has no IORESOURCE_{IO,MEM}
+> 	check at (3), has a different ROM resource check at (4) and (6)
+> 	that ignores IORESOURCE_ROM_ENABLE
 
-I don't have any problems with this, but I think the naming needs to
-change. pcibios_* namespace should probably remain arch dependent.
-Renaming the unified implementation to pci_enable_resources, and adding
-a weak function pcibios_enable_resources that can be overridden by
-parisc and arm to enable PERR/SERR after calling the generic
-pci_enable_resources function. No?
+Both parts:
 
-regards, Kyle
+Acked-by: David Howells <dhowells@redhat.com>
