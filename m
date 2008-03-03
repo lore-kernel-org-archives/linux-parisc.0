@@ -1,97 +1,58 @@
-From: "rubisher" <rubisher@scarlet.be>
-Subject: Re: [PATCH -mm 0/3] fix iommu segment boundary problems (parisc)
-Date: Mon,  3 Mar 2008 15:43:38 +0100
-Message-ID: <JX5SWQ$A94FF0865B1A0288BBE6757AA17AC075@scarlet.be>
+From: Jesse Barnes <jbarnes@virtuousgeek.org>
+Subject: Re: [patch 4/6] ARM: move bridge enable out of
+	pcibios_enable_resources()
+Date: Mon, 3 Mar 2008 09:59:35 -0800
+Message-ID: <200803030959.35625.jbarnes@virtuousgeek.org>
+References: <20080228000437.880811124@ldl.fc.hp.com>
+	<20080228001053.013269726@ldl.fc.hp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: "kyle" <kyle@mcmartin.ca>,
-	"fujita\.tomonori" <fujita.tomonori@lab.ntt.co.jp>,
-	"linux-kernel" <linux-kernel@vger.kernel.org>,
-	"linux-parisc" <linux-parisc@vger.kernel.org>,
-	"tomof" <tomof@acm.org>, "kyle" <kyle@parisc-linux.org>,
-	"matthew" <matthew@wil.cx>, "grundler" <grundler@parisc-linux.org>,
-	"akpm" <akpm@linux-foundation.org>,
-	"fujita\.tomonori" <fujita.tomonori@lab.ntt.co.jp>,
-	"rubisher" <rubisher@scarlet.be>
-To: "tomof" <tomof@acm.org>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757512AbYCCOt7@vger.kernel.org>
-List-ID: <linux-kernel.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>,
+	Kyle McMartin <kyle@parisc-linux.org>, linuxppc-dev@ozlabs.org,
+	Paul Mackerras <paulus@samba.org>, linux-arm-kernel@lists.arm.linux.org.uk,
+	Russell King <rmk@arm.linux.org.uk>, Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: linux-pci@atrey.karlin.mff.cuni.cz
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
+In-Reply-To: <20080228001053.013269726@ldl.fc.hp.com>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
+List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
 
-> On Mon,  3 Mar 2008 12:04:00 +0100
-> "rubisher" <rubisher@scarlet.be> wrote:
-> 
-> > > On Sun, Mar 02, 2008 at 03:10:25PM +0900, FUJITA Tomonori wrote:
-> > > > This patchset is another sequel to my patchset to fix iommu segment
-> > > > boundary problems, IOMMUs allocate memory areas without considering a
-> > > > low level driver's segment boundary limits:
-> > > > 
-> > > > http://www.mail-archive.com/linux-scsi@vger.kernel.org/msg11919.html
-> > > > 
-> > > 
-> > > This looks fine. Are you able to test this? If not, we can set you up
-> > > with an account on a machine with remote console and all that jazz, if
-> > > you'd like to.
-> > > 
-> > > cheers, Kyle
-> > > --
-[snip]
-> Thanks a lot for testing!
-> 
-Always welcome ;-)
+On Wednesday, February 27, 2008 4:04 pm Bjorn Helgaas wrote:
+> Move bridge enable from pcibios_enable_resources() to
+> platform_pci_enable_device() so the former matches other
+> architectures and can be shared.
 
-> Really sorry about the bug.
+I really like the direction of these patches.  Getting PCI resources assigned 
+& devices setup correctly for new arches has always been a bit more trouble 
+than it should be...
 
-Don't worry, those boxes are there for my fun...
+>
+> Signed-off-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
+>
+> Index: work6/arch/arm/kernel/bios32.c
+> ===================================================================
+> --- work6.orig/arch/arm/kernel/bios32.c	2008-02-27 11:25:29.000000000 -0700
+> +++ work6/arch/arm/kernel/bios32.c	2008-02-27 11:55:59.000000000 -0700
+> @@ -683,15 +683,32 @@
+>  			cmd |= PCI_COMMAND_MEMORY;
+>  	}
+>
+> +	if (cmd != old_cmd) {
+> +		printk("PCI: enabling device %s (%04x -> %04x)\n",
+> +		       pci_name(dev), old_cmd, cmd);
 
-> Can you try the following patch? It's on the top of the patchset.
-> 
-Good catch: now this first testing system (I mean the b2k) is up and running ;-)
+Probably worth giving this printk a prefix at some point (doesn't matter for 
+this patchset though since you're just moving it around).
 
-I will now try the ccio_dma driver on a d380 ...
+Rest of it looks good.
 
-hth,
-    r.
-
-> Thanks,
-> 
-> diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-> index 2f3b364..d0855a1 100644
-> --- a/drivers/parisc/ccio-dma.c
-> +++ b/drivers/parisc/ccio-dma.c
-> @@ -366,8 +366,8 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev,
-size_t size)
->  	** ggg sacrifices another 710 to the computer gods.
->  	*/
->  
-> -	boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1, 1 << IOVP_SHIFT);
-> -	boundary_size >>= IOVP_SHIFT;
-> +	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
-> +			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
->  
->  	if (pages_needed <= 8) {
->  		/*
-> diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-> index e834127..bdbe780 100644
-> --- a/drivers/parisc/sba_iommu.c
-> +++ b/drivers/parisc/sba_iommu.c
-> @@ -341,8 +341,8 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
->  	unsigned long shift;
->  	int ret;
->  
-> -	boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1, 1 << IOVP_SHIFT);
-> -	boundary_size >>= IOVP_SHIFT;
-> +	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
-> +			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
->  
->  #if defined(ZX1_SUPPORT)
->  	BUG_ON(ioc->ibase & ~IOVP_MASK);
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-parisc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
----
-Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
-http://www.scarlet.be/
+Jesse
