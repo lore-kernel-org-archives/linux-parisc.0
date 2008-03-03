@@ -1,7 +1,7 @@
 From: "rubisher" <rubisher@scarlet.be>
 Subject: Re: [PATCH -mm 0/3] fix iommu segment boundary problems (parisc)
-Date: Mon,  3 Mar 2008 11:36:21 +0100
-Message-ID: <JX5HGL$BEF7E287D07253279B235998ACF88988@scarlet.be>
+Date: Mon,  3 Mar 2008 12:04:00 +0100
+Message-ID: <JX5IQO$1ADFF18D173371DE06D03C11EFEA34BA@scarlet.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Cc: "fujita\.tomonori" <fujita.tomonori@lab.ntt.co.jp>,
@@ -34,16 +34,75 @@ List-Id: linux-parisc.vger.kernel.org
 > the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
 > 
-Dear *,
+Sorry for bad news but using a kernel known to work fine on my b2k (kyle's
+parisc-2.6.git date 2008_02_21) against which I applied those patches, this
+new kernel 32bit up failled to boot with this panic message:
 
-I have access to 3 kind of boxes which needed one of those drivers: a b2k and
-mainly a c110 and a d380 for which I hope a lot of this patch ;-)
+Linux Tulip driver version 1.1.15 (Feb 27, 2007)
+------------[ cut here ]------------
+Kernel BUG at 1029520c [verbose debug info unavailable]
 
-I will so try the patch asap and let you know the results.
+     YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00000000000001001111111100001110 Not tainted
+r00-03  0004ff0e 1054c010 1029e774 80000000
+r04-07  1fc2b020 00000100 00000000 00000001
+r08-11  1fc1d454 1fc2c000 00000000 80000000
+r12-15  00000001 00000001 1fc10858 0001a000
+r16-19  00000011 104a23d0 00000000 ffffffff
+r20-23  00001000 00000000 1fdb6a00 00000000
+r24-27  00000000 00000001 00000100 10507010
+r28-31  00000100 00100000 1fc205c0 00000000
+sr00-03  00000000 00000000 00000000 00000000
+sr04-07  00000000 00000000 00000000 00000000
+IASQ: 00000000 00000000 IAOQ: 1029520c 10295210
+ IIR: 03ffe01f    ISR: 1024003f  IOR: 0802056c
+ CPU:        0   CR30: 1fc20000 CR31: 11111111
+ ORIG_R28: 0000000f
+ IAOQ[0]: iommu_is_span_boundary+0x28/0x30
+ IAOQ[1]: iommu_is_span_boundary+0x2c/0x30
+ RP(r2): sba_alloc_range+0x23c/0x4f8
+Backtrace:
+ [<10107938>] show_regs+0x2c8/0x450
+ [<10107c64>] die_if_kernel+0x98/0x1b0
+ [<101083a0>] handle_interruption+0x624/0x6b4
+ [<1010b078>] intr_check_sig+0x0/0x34
+ [<1015d07c>] rmqueue_bulk+0x44/0x9c
+ [<1015e778>] __alloc_pages+0xc4/0x388
+ [<1015ea74>] __get_free_pages+0x38/0x74
+ [<1029ed64>] sba_alloc_consistent+0x60/0xd4
+ [<105852f0>] tulip_init_one+0x2ac/0xd10
+ [<1029acb0>] pci_device_probe+0x70/0xa8
+ [<102dad50>] driver_probe_device+0xa4/0x1bc
+ [<102db01c>] __driver_attach+0x60/0xf4
+ [<102da1dc>] bus_for_each_dev+0x58/0xa0
+ [<102da978>] bus_add_driver+0xd4/0x1e0
+ [<102db34c>] driver_register+0x48/0x108
+ [<10565880>] kernel_init+0x120/0x33c
 
-hth,
-    r.
+Backtrace:
+ [<10107c6c>] die_if_kernel+0xa0/0x1b0
+ [<101083a0>] handle_interruption+0x624/0x6b4
+ [<1010b078>] intr_check_sig+0x0/0x34
+ [<1015d07c>] rmqueue_bulk+0x44/0x9c
+ [<1015e778>] __alloc_pages+0xc4/0x388
+ [<1015ea74>] __get_free_pages+0x38/0x74
+ [<1029ed64>] sba_alloc_consistent+0x60/0xd4
+ [<105852f0>] tulip_init_one+0x2ac/0xd10
+ [<1029acb0>] pci_device_probe+0x70/0xa8
+ [<102dad50>] driver_probe_device+0xa4/0x1bc
+ [<102db01c>] __driver_attach+0x60/0xf4
+ [<102da1dc>] bus_for_each_dev+0x58/0xa0
+ [<102da978>] bus_add_driver+0xd4/0x1e0
+ [<102db34c>] driver_register+0x48/0x108
+ [<10565880>] kernel_init+0x120/0x33c
+ [<1010ac5c>] ret_from_kernel_thread+0x1c/0x24
 
+Kernel panic - not syncing: Attempted to kill init!
+
+(I haven't a lot a spare time right now, but I will do my best to help as much
+as I can).
+
+r.
 ---
 Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
 http://www.scarlet.be/
