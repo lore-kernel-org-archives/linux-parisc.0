@@ -1,58 +1,41 @@
-From: Jesse Barnes <jbarnes@virtuousgeek.org>
-Subject: Re: [patch 4/6] ARM: move bridge enable out of
-	pcibios_enable_resources()
-Date: Mon, 3 Mar 2008 09:59:35 -0800
-Message-ID: <200803030959.35625.jbarnes@virtuousgeek.org>
-References: <20080228000437.880811124@ldl.fc.hp.com>
-	<20080228001053.013269726@ldl.fc.hp.com>
+From: Stuart Brady <sdbrady@ntlworld.com>
+Subject: Re: Segfault when using SDL with POSIX timers
+Date: Mon, 3 Mar 2008 18:27:47 +0000
+Message-ID: <20080303182747.GA23279@miranda.arrow>
+References: <20080303044727.GA22047@miranda.arrow>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>,
-	Kyle McMartin <kyle@parisc-linux.org>, linuxppc-dev@ozlabs.org,
-	Paul Mackerras <paulus@samba.org>, linux-arm-kernel@lists.arm.linux.org.uk,
-	Russell King <rmk@arm.linux.org.uk>, Bjorn Helgaas <bjorn.helgaas@hp.com>
-To: linux-pci@atrey.karlin.mff.cuni.cz
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
-In-Reply-To: <20080228001053.013269726@ldl.fc.hp.com>
-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
-List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+To: linux-parisc@vger.kernel.org
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <20080303044727.GA22047@miranda.arrow>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-On Wednesday, February 27, 2008 4:04 pm Bjorn Helgaas wrote:
-> Move bridge enable from pcibios_enable_resources() to
-> platform_pci_enable_device() so the former matches other
-> architectures and can be shared.
+Here's a better backtrace, produced with libc6-dbg installed:
 
-I really like the direction of these patches.  Getting PCI resources assigned 
-& devices setup correctly for new arches has always been a bit more trouble 
-than it should be...
+#0  0x00000000 in ?? ()
+#1  0x402b7aac in _dl_close_worker () from /lib/ld.so.1
+#2  0x402b7c08 in _dl_close () from /lib/ld.so.1
+#3  0x400690dc in dlclose_doit () from /lib/libdl.so.2
+#4  0x402b1834 in _dl_catch_error () from /lib/ld.so.1
+#5  0x40069590 in _dlerror_run () from /lib/libdl.so.2
+#6  0x40069118 in dlclose () from /lib/libdl.so.2
+#7  0x407737f4 in ?? () from /usr/lib/libSDL-1.2.so.0
+#8  0x40769ff8 in SDL_VideoQuit () from /usr/lib/libSDL-1.2.so.0
+#9  0x4073cc78 in SDL_QuitSubSystem () from /usr/lib/libSDL-1.2.so.0
+#10 0x4073cd20 in SDL_Quit () from /usr/lib/libSDL-1.2.so.0
+#11 0x000109d4 in main ()
 
->
-> Signed-off-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
->
-> Index: work6/arch/arm/kernel/bios32.c
-> ===================================================================
-> --- work6.orig/arch/arm/kernel/bios32.c	2008-02-27 11:25:29.000000000 -0700
-> +++ work6/arch/arm/kernel/bios32.c	2008-02-27 11:55:59.000000000 -0700
-> @@ -683,15 +683,32 @@
->  			cmd |= PCI_COMMAND_MEMORY;
->  	}
->
-> +	if (cmd != old_cmd) {
-> +		printk("PCI: enabling device %s (%04x -> %04x)\n",
-> +		       pci_name(dev), old_cmd, cmd);
+The double-free when using SDL's parachute seems to be a red-herring --
+SDL_Quit is called a second time, in response to the segfault, and that
+causes the double-free.
 
-Probably worth giving this printk a prefix at some point (doesn't matter for 
-this patchset though since you're just moving it around).
+BTW, tausq has pointed out that there's no crash if SDL_INIT_VIDEO is
+dropped from the call to SDL_Init().  I've also found that it does not
+segfault when using the fbdev with SDL_VIDEODRIVER set to directfb or
+fbcon -- but it does segfault when using the x11 driver, which I what
+I had originally tried.
 
-Rest of it looks good.
-
-Jesse
+Any idea what could be going wrong in dlclose()?
+-- 
+Stuart Brady
