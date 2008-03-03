@@ -1,55 +1,48 @@
-From: Russell King <rmk-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-Subject: Re: [patch 0/6] RFC: PCI: consolidate pcibios_enable_resources() implementations, v2
-Date: Mon, 3 Mar 2008 19:44:09 +0000
-Message-ID: <20080303194408.GC20251@flint.arm.linux.org.uk>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [patch 4/6] ARM: move bridge enable out of
+	pcibios_enable_resources()
+Date: Tue, 04 Mar 2008 07:35:57 +1100
+Message-ID: <1204576557.21545.4.camel@pasglop>
 References: <20080228000437.880811124@ldl.fc.hp.com>
+	<20080228001053.013269726@ldl.fc.hp.com>
+	<200803030959.35625.jbarnes@virtuousgeek.org>
+Reply-To: benh@kernel.crashing.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-pci-jyMamyUUXNJG4ohzP4jBZS1Fcj925eT/@public.gmane.org, linux-arch-u79uwXL29TY76Z2rM5mHXA@public.gmane.org,
-	linux-arm-kernel-xIg/pKzrS19vn6HldHNs0ANdhmdF6hFW@public.gmane.org,
-	Kyle McMartin <kyle-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-	Matthew Wilcox <matthew-Ztpu424NOJ8@public.gmane.org>,
-	Grant Grundler <grundler-6jwH94ZQLHl74goWV3ctuw@public.gmane.org>,
-	linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Paul Mackerras <paulus-eUNUBHrolfbYtjvyW6yDsg@public.gmane.org>,
-	Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>,
-	linuxppc-dev-mnsaURCQ41sdnm+yROfE0A@public.gmane.org, Chris Zankel <chris-YvXeqwSYzG2sTnJN9+BGXg@public.gmane.org>
-To: Bjorn Helgaas <bjorn.helgaas-VXdhtT5mjnY@public.gmane.org>
-Return-path: <linux-arch-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20080228000437.880811124-e+Ta4ugHZmL3oGB3hsPCZA@public.gmane.org>
-List-ID: <linux-arch.vger.kernel.org>
-List-Id: linux-parisc.vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+	Grant Grundler <grundler@parisc-linux.org>,
+	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>,
+	Kyle McMartin <kyle@parisc-linux.org>, linuxppc-dev@ozlabs.org,
+	Paul Mackerras <paulus@samba.org>, linux-pci@atrey.karlin.mff.cuni.cz,
+	linux-arm-kernel@lists.arm.linux.org.uk,
+	Russell King <rmk@arm.linux.org.uk>, Bjorn Helgaas <bjorn.helgaas@hp.com>
+To: Jesse Barnes <jbarnes@virtuousgeek.org>
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
+In-Reply-To: <200803030959.35625.jbarnes@virtuousgeek.org>
+List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
+List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
+List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
+List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
 
-On Wed, Feb 27, 2008 at 05:04:37PM -0700, Bjorn Helgaas wrote:
-> There are many implementations of pcibios_enable_resources() that differ
-> in minor ways that look more like bugs than architectural differences.
-> This patch series consolidates most of them to use the x86 version.
+
+On Mon, 2008-03-03 at 09:59 -0800, Jesse Barnes wrote:
+> On Wednesday, February 27, 2008 4:04 pm Bjorn Helgaas wrote:
+> > Move bridge enable from pcibios_enable_resources() to
+> > platform_pci_enable_device() so the former matches other
+> > architectures and can be shared.
 > 
-> Changes between v1 and v2:
-> 
->   - Moved ARM bridge enable to new platform_pci_enable_device(),
->     called by pcibios_enable_device()
+> I really like the direction of these patches.  Getting PCI resources assigned 
+> & devices setup correctly for new arches has always been a bit more trouble 
+> than it should be...
 
-Looks fine.  However, long term I've no idea what to do about this because
-I don't remember the reasoning behind it.  So to change it risks breakage
-of one sort or another.
+You'll noticed that I recently moved powerpc to something more common to
+x86 in the are of resource allocation. Still -slightly- different but I
+do believe there is room for somebody with some skills to try to turn
+some of that into generic code.
 
-It might have been something to do with the Mobility Cardbus docking
-station, which adds a pair of P2P bridges onto the PCI chain downstream
-of the Cardbus controller, and then a full PCI bus containing USB, VGA,
-and other peripherals.
-
-This _once_ used to work with Linux but I suspect as a result of "fixing"
-other issues its now utterly broken.
-
-In any case, that docking station isn't ARM specific in any way; merely
-a toy Alan Cox sent me.  When I gave up my PCMCIA maintainership, I gave
-up trying to keep it supported by Linux.
-
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:
---
-To unsubscribe from this list: send the line "unsubscribe linux-arch" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Ben.
