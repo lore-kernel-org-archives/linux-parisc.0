@@ -1,41 +1,52 @@
-From: Stuart Brady <sdbrady@ntlworld.com>
-Subject: Re: Segfault when using SDL with POSIX timers
-Date: Mon, 3 Mar 2008 18:27:47 +0000
-Message-ID: <20080303182747.GA23279@miranda.arrow>
-References: <20080303044727.GA22047@miranda.arrow>
+From: Jesse Barnes <jbarnes@virtuousgeek.org>
+Subject: Re: [patch 5/6] PARISC: move PERR & SERR enables out of pcibios_enable_resources()
+Date: Mon, 3 Mar 2008 10:30:58 -0800
+Message-ID: <200803031030.59305.jbarnes@virtuousgeek.org>
+References: <20080228000437.880811124@ldl.fc.hp.com> <20080228001053.209248743@ldl.fc.hp.com> <20080228173125.GA16270@colo.lackof.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-To: linux-parisc@vger.kernel.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Cc: Grant Grundler <grundler@parisc-linux.org>,
+	Bjorn Helgaas <bjorn.helgaas@hp.com>,
+	linux-arch@vger.kernel.org, Russell King <rmk@arm.linux.org.uk>,
+	linux-arm-kernel@lists.arm.linux.org.uk,
+	Kyle McMartin <kyle@parisc-linux.org>,
+	Matthew Wilcox <matthew@wil.cx>, linux-parisc@vger.kernel.org,
+	Paul Mackerras <paulus@samba.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	linuxppc-dev@ozlabs.org, Chris Zankel <chris@zankel.net>
+To: linux-pci@atrey.karlin.mff.cuni.cz
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <20080303044727.GA22047@miranda.arrow>
+In-Reply-To: <20080228173125.GA16270@colo.lackof.org>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-Here's a better backtrace, produced with libc6-dbg installed:
+On Thursday, February 28, 2008 9:31 am Grant Grundler wrote:
+> In general, I'm wondering if the check for device class would be
+> sufficient here to NOT enable PERR/SERR for graphics automatically.
+> While disabling PERR was "the right thing" for older "mostly write"
+> devices of the 1990's and early 2000, it might not be correct for
+> current 3-D graphics devices which use host mem to buffer processed
+> results. I'm thinking of Intel graphics controllers in particular
+> but I don't know any details of how they actually work.
 
-#0  0x00000000 in ?? ()
-#1  0x402b7aac in _dl_close_worker () from /lib/ld.so.1
-#2  0x402b7c08 in _dl_close () from /lib/ld.so.1
-#3  0x400690dc in dlclose_doit () from /lib/libdl.so.2
-#4  0x402b1834 in _dl_catch_error () from /lib/ld.so.1
-#5  0x40069590 in _dlerror_run () from /lib/libdl.so.2
-#6  0x40069118 in dlclose () from /lib/libdl.so.2
-#7  0x407737f4 in ?? () from /usr/lib/libSDL-1.2.so.0
-#8  0x40769ff8 in SDL_VideoQuit () from /usr/lib/libSDL-1.2.so.0
-#9  0x4073cc78 in SDL_QuitSubSystem () from /usr/lib/libSDL-1.2.so.0
-#10 0x4073cd20 in SDL_Quit () from /usr/lib/libSDL-1.2.so.0
-#11 0x000109d4 in main ()
+Well, in general chipset devices aren't required to support parity checking, 
+AIUI; Intel gfx devices don't bother (PERR enable is hardwired to 0).
 
-The double-free when using SDL's parachute seems to be a red-herring --
-SDL_Quit is called a second time, in response to the segfault, and that
-causes the double-free.
+> I'm also a bit concerned about this now becuase (IIRC) AGP didn't
+> implement parity though it looked like PCI protocol. PCI-e certainly
+> does but it's possible BIOS/Firmware disable parity generation
+> on the host bridge when connected to a gfx device.
+> We wouldn't want to enable parity checking on a PCI-e gfx device in this
+> case and I hope someone (perhaps at Intel) could double check this.
 
-BTW, tausq has pointed out that there's no crash if SDL_INIT_VIDEO is
-dropped from the call to SDL_Init().  I've also found that it does not
-segfault when using the fbdev with SDL_VIDEODRIVER set to directfb or
-fbcon -- but it does segfault when using the x11 driver, which I what
-I had originally tried.
+I'd have to ping our BIOS folks to see if that's the case, but I doubt it.  It 
+would be a bad idea to disable any PCIe error reporting (including legacy 
+error mapping) just because a gfx device was attached.  Apparently the AMD 
+PCIe parts include PERR generation, so disabling upstream reporting at boot 
+time seems like it would be an outright bug; it should be left up to driver & 
+OS software.
 
-Any idea what could be going wrong in dlclose()?
--- 
-Stuart Brady
+Jesse
+
+
