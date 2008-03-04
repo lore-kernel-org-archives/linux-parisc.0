@@ -1,49 +1,76 @@
-From: Jesse Barnes <jbarnes@virtuousgeek.org>
-Subject: Re: [patch 4/6] ARM: move bridge enable out of pcibios_enable_resources()
-Date: Mon, 3 Mar 2008 12:43:51 -0800
-Message-ID: <200803031243.51613.jbarnes@virtuousgeek.org>
-References: <20080228000437.880811124@ldl.fc.hp.com> <200803030959.35625.jbarnes@virtuousgeek.org> <1204576557.21545.4.camel@pasglop>
+From: "rubisher" <rubisher@scarlet.be>
+Subject: Re: [PATCH -mm 0/3] fix iommu segment boundary problems (parisc)
+Date: Tue,  4 Mar 2008 17:13:55 +0100
+Message-ID: <JX7RR7$3528E2939A349F65E12E3F27315EEC50@scarlet.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Cc: linux-pci@atrey.karlin.mff.cuni.cz,
-	Bjorn Helgaas <bjorn.helgaas@hp.com>,
-	linux-arch@vger.kernel.org, Russell King <rmk@arm.linux.org.uk>,
-	linux-arm-kernel@lists.arm.linux.org.uk,
-	Kyle McMartin <kyle@parisc-linux.org>,
-	Matthew Wilcox <matthew@wil.cx>,
-	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-	linuxppc-dev@ozlabs.org, Chris Zankel <chris@zankel.net>
-To: benh@kernel.crashing.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: "tomof" <tomof@acm.org>, "kyle" <kyle@mcmartin.ca>,
+	"linux-kernel" <linux-kernel@vger.kernel.org>,
+	"linux-parisc" <linux-parisc@vger.kernel.org>,
+	"tomof" <tomof@acm.org>, "kyle" <kyle@parisc-linux.org>,
+	"matthew" <matthew@wil.cx>, "grundler" <grundler@parisc-linux.org>,
+	"akpm" <akpm@linux-foundation.org>,
+	"fujita\.tomonori" <fujita.tomonori@lab.ntt.co.jp>,
+	"rubisher" <rubisher@scarlet.be>
+To: "fujita\.tomonori" <fujita.tomonori@lab.ntt.co.jp>
 Return-path: <linux-parisc-owner@vger.kernel.org>
-In-Reply-To: <1204576557.21545.4.camel@pasglop>
 List-ID: <linux-parisc.vger.kernel.org>
 List-Id: linux-parisc.vger.kernel.org
 
-On Monday, March 03, 2008 12:35 pm Benjamin Herrenschmidt wrote:
-> On Mon, 2008-03-03 at 09:59 -0800, Jesse Barnes wrote:
-> > On Wednesday, February 27, 2008 4:04 pm Bjorn Helgaas wrote:
-> > > Move bridge enable from pcibios_enable_resources() to
-> > > platform_pci_enable_device() so the former matches other
-> > > architectures and can be shared.
-> >
-> > I really like the direction of these patches.  Getting PCI resources
-> > assigned & devices setup correctly for new arches has always been a bit
-> > more trouble than it should be...
->
-> You'll noticed that I recently moved powerpc to something more common to
-> x86 in the are of resource allocation. Still -slightly- different but I
-> do believe there is room for somebody with some skills to try to turn
-> some of that into generic code.
+[snip]
+> > Can you try the following patch? It's on the top of the patchset.
+> > 
+> Good catch: now this first testing system (I mean the b2k) is up and running ;-)
+> 
+> I will now try the ccio_dma driver on a d380 ...
+> 
+Yes, it works too on a d380 boxe running a 32bit up kernel.
 
-Yeah, I think that would be a good thing to shoot for.  Even on PCs there are 
-times when we need resource allocation to be done (or re-done) by the kernel 
-for hotplug or just because the platform is pared down enough that it doesn't 
-to it all by itself.
+Btw (it was a long time ago), I also resurrect my 64 config for the b2k model
+and it also works fine.
 
-I might be able to find time to look into that myself in the next few weeks; I 
-think we even have some open PCI bugs that could be solved by better resource 
-allocation.
+Many tx again,
+    r.
 
-Jesse
+> hth,
+>     r.
+> 
+> > Thanks,
+> > 
+> > diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+> > index 2f3b364..d0855a1 100644
+> > --- a/drivers/parisc/ccio-dma.c
+> > +++ b/drivers/parisc/ccio-dma.c
+> > @@ -366,8 +366,8 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev,
+> size_t size)
+> >  	** ggg sacrifices another 710 to the computer gods.
+> >  	*/
+> >  
+> > -	boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1, 1 << IOVP_SHIFT);
+> > -	boundary_size >>= IOVP_SHIFT;
+> > +	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
+> > +			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
+> >  
+> >  	if (pages_needed <= 8) {
+> >  		/*
+> > diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
+> > index e834127..bdbe780 100644
+> > --- a/drivers/parisc/sba_iommu.c
+> > +++ b/drivers/parisc/sba_iommu.c
+> > @@ -341,8 +341,8 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
+> >  	unsigned long shift;
+> >  	int ret;
+> >  
+> > -	boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1, 1 << IOVP_SHIFT);
+> > -	boundary_size >>= IOVP_SHIFT;
+> > +	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
+> > +			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
+> >  
+> >  #if defined(ZX1_SUPPORT)
+> >  	BUG_ON(ioc->ibase & ~IOVP_MASK);
+> > --
+
+---
+Scarlet One, ADSL 6 Mbps + Telephone, from EUR 29,95...
+http://www.scarlet.be/
+
