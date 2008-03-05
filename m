@@ -1,8 +1,8 @@
 From: David Howells <dhowells@redhat.com>
-Subject: Re: [patch 05/16] frv: use generic pci_enable_resources()
-Date: Wed, 05 Mar 2008 14:52:46 +0000
-Message-ID: <20881.1204728766@redhat.com>
-References: <20080304185820.723623873@ldl.fc.hp.com>
+Subject: Re: [patch 08/16] mn10300: use generic pci_enable_resources()
+Date: Wed, 05 Mar 2008 15:13:10 +0000
+Message-ID: <28205.1204729990@redhat.com>
+References: <20080304185821.354198782@ldl.fc.hp.com>
 	<20080304185646.864917286@ldl.fc.hp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,7 +15,7 @@ Cc: linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>,
 	Russell King <rmk@arm.linux.org.uk>
 To: Bjorn Helgaas <bjorn.helgaas@hp.com>
 Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
-In-Reply-To: <20080304185820.723623873@ldl.fc.hp.com>
+In-Reply-To: <20080304185821.354198782@ldl.fc.hp.com>
 List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
 List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
 	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
