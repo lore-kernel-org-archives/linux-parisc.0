@@ -1,42 +1,52 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [patch 08/16] mn10300: use generic pci_enable_resources()
-Date: Wed, 05 Mar 2008 15:13:10 +0000
-Message-ID: <28205.1204729990@redhat.com>
-References: <20080304185821.354198782@ldl.fc.hp.com>
-	<20080304185646.864917286@ldl.fc.hp.com>
+From: Grant Grundler <grundler@parisc-linux.org>
+Subject: Re: [PATCH -mm 0/3] fix iommu segment boundary problems (parisc)
+Date: Wed, 5 Mar 2008 08:45:02 -0700
+Message-ID: <20080305154502.GA32538@colo.lackof.org>
+References: <1204438228-4564-1-git-send-email-fujita.tomonori@lab.ntt.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-arch@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+	tomof@acm.org, Kyle McMartin <kyle@parisc-linux.org>,
+	Matthew Wilcox <matthew@wil.cx>,
 	Grant Grundler <grundler@parisc-linux.org>,
-	linux-parisc@vger.kernel.org, Matthew Wilcox <matthew@wil.cx>,
-	Kyle McMartin <kyle@parisc-linux.org>, linuxppc-dev@ozlabs.org,
-	Paul Mackerras <paulus@samba.org>, linux-pci@atrey.karlin.mff.cuni.cz,
-	linux-arm-kernel@lists.arm.linux.org.uk,
-	Russell King <rmk@arm.linux.org.uk>
-To: Bjorn Helgaas <bjorn.helgaas@hp.com>
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org>
-In-Reply-To: <20080304185821.354198782@ldl.fc.hp.com>
-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.ozlabs.org>
-List-Unsubscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=unsubscribe>
-List-Archive: <http://ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@ozlabs.org?subject=help>
-List-Subscribe: <https://ozlabs.org/mailman/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@ozlabs.org
+	Andrew Morton <akpm@linux-foundation.org>
+To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Return-path: <linux-parisc-owner@vger.kernel.org>
+In-Reply-To: <1204438228-4564-1-git-send-email-fujita.tomonori@lab.ntt.co.jp>
+List-ID: <linux-parisc.vger.kernel.org>
+List-Id: linux-parisc.vger.kernel.org
 
-
-Bjorn Helgaas <bjorn.helgaas@hp.com> wrote:
-
-> Use the generic pci_enable_resources() instead of the arch-specific code.
+On Sun, Mar 02, 2008 at 03:10:25PM +0900, FUJITA Tomonori wrote:
+> This patchset is another sequel to my patchset to fix iommu segment
+> boundary problems, IOMMUs allocate memory areas without considering a
+> low level driver's segment boundary limits:
 > 
-> Unlike this arch-specific code, the generic version:
->     - checks PCI_NUM_RESOURCES (11), not 6, resources
->     - skips resources that have neither IORESOURCE_IO nor IORESOURCE_MEM set
->     - skips ROM resources unless IORESOURCE_ROM_ENABLE is set
->     - checks for resource collisions with "!r->parent"
+> http://www.mail-archive.com/linux-scsi@vger.kernel.org/msg11919.html
 > 
-> Signed-off-by: Bjorn Helgaas <bjorn.helgaas@hp.com>
+> This patchset fixes the PARISC IOMMU code (sbc and ccio).
+> 
+> There are three patches in this patchset. The first patch is for the
+> IOMMU helper (lib/iommu-helper.c) to enable PARISC IOMMUs use it.
+> 
+> The second and third patches are for PARISC IOMMUs, the second one is
+> preparation for the third patch, which fixes the IOMMU segment
+> boundary problem.
+> 
+> The third patch assumes that ioc->ibase is on IOVP_SIZE boundary. If
+> not, please let me know. I'll fix the patch.
 
-Acked-by: David Howells <dhowells@redhat.com>
+Please add
+    Acked-by: Grant Grundler <grundler@parisc-linux.org>
+
+This includes the 4th patch posted on march 3, 2008.
+
+Thanks for posting this series. I've reviewed the code and it looks fine
+to me as well (kyle already acked it).
+
+And thanks to Joel Soete (rubisher) for testing. I tried to test the
+sba_iommu code on my local box but had issues with the unpatched kernel
+(using kyle's parisc-2.6.git tree) that I have yet to resolve (could be
+HW problems).
+
+thanks,
+grant
